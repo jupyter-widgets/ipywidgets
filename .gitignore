@@ -5,8 +5,8 @@ _build
 docs/man/*.gz
 docs/source/api/generated
 docs/gh-pages
-jupyter_notebook/static/components
-jupyter_notebook/static/style/*.min.css*
+ipython_widgets/static/components
+ipython_widgets/static/widgets/css/*.min.css*
 node_modules
 *.py[co]
 __pycache__
