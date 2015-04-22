@@ -1,7 +1,7 @@
 // Test widget button class
 casper.notebook_test(function () {
     var button_index = this.append_cell(
-        'from jupyter_notebook import widgets\n' + 
+        'import ipython_widgets as widgets\n' + 
         'from IPython.display import display, clear_output\n' +
         'button = widgets.Button(description="Title")\n' +
         'display(button)\n' +
