@@ -18,7 +18,7 @@ casper.notebook_test(function () {
         this.evaluate(function() {
             IPython.notebook.kernel.widget_manager.create_model({
                 model_name: 'WidgetModel', 
-                widget_class: 'ipython_widgets.widget_int.IntSlider'})
+                widget_class: 'ipython_widgets.IntSlider'})
                 .then(function(model) { 
                     console.log('Create success!', model); 
                     window.slider_id = model.id; 

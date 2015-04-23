@@ -64,7 +64,7 @@ casper.notebook_test(function () {
     var multiset = {};
     multiset.index = this.append_cell([
         'from traitlets import Unicode, CInt',
-        'class MultiSetWidget(widgets.Widget):',
+        'class MultiSetWidget(widgets.DOMWidget):',
         '    _view_name = Unicode("MultiSetView", sync=True)',
         '    a = CInt(0, sync=True)',
         '    b = CInt(0, sync=True)',
@@ -92,7 +92,7 @@ casper.notebook_test(function () {
     index = this.append_cell(
         'print("%d" % (multiset.d))');
     this.execute_cell_then(index, function(index) {
-        this.test.assertEquals(this.get_output_cell(index).text.trim(), '3',
+        this.test.assertEquals(this.get_output_cell(index).text.trim(), '-1',
             'Multiple model.set calls sent a partial state.');
     });
 
