@@ -1,5 +1,7 @@
 # Interactive HTML Widgets
 
+[![Join the chat at https://gitter.im/ipython/ipython_widgets](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ipython/ipython_widgets?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Interactive HTML widgets for Jupyter notebooks and the IPython kernel.
 
 ## install
