@@ -92,7 +92,7 @@ casper.notebook_test(function () {
     index = this.append_cell(
         'print("%d" % (multiset.d))');
     this.execute_cell_then(index, function(index) {
-        this.test.assertEquals(this.get_output_cell(index).text.trim(), '-1',
+        this.test.assertEquals(this.get_output_cell(index).text.trim(), '3',
             'Multiple model.set calls sent a partial state.');
     });
 
