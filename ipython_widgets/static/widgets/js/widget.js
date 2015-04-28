@@ -60,7 +60,7 @@ define(["nbextensions/widgets/widgets/js/manager",
 
             // Force backbone to think that the model has already been
             // synced with the server.  As of backbone 1.1, backbone
-            // ignore `patch` if it thinks the model has never been
+            // ignores `patch` if it thinks the model has never been
             // pushed.
             this.isNew = function() { return false; };
 

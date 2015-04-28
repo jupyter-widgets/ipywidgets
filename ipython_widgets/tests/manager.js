@@ -1,7 +1,10 @@
 // Test the widget manager.
 casper.notebook_test(function () {
     var index;
-    
+
+    index = this.append_cell('from ipython_widgets import Widget\n');
+    this.execute_cell_then(index, function(index) { });
+
     this.then(function () {
     
         // Check if the WidgetManager class is defined.
@@ -34,7 +37,6 @@ casper.notebook_test(function () {
     });
 
     index = this.append_cell(
-        'from ipython_widgets import Widget\n' + 
         'widget = list(Widget.widgets.values())[0]\n' +
         'print(widget.model_id)');
     this.execute_cell_then(index, function(index) {
