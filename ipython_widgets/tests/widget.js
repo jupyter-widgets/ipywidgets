@@ -140,7 +140,7 @@ casper.notebook_test(function () {
 
 
     this.thenEvaluate(function() {
-        define('TestWidget', ['widgets/js/widget', 'base/js/utils', 'underscore'], function(widget, utils, _) {
+        define('TestWidget', ['nbextensions/widgets/widgets/js/widget', 'base/js/utils', 'underscore'], function(widget, utils, _) {
             var floatArray = {
                 deserialize: function (value, model) {
                     if (value===null) {return null;}
