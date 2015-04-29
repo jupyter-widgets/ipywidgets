@@ -64,7 +64,7 @@ casper.notebook_test(function () {
     var multiset = {};
     multiset.index = this.append_cell([
         'from traitlets import Unicode, CInt',
-        'class MultiSetWidget(widgets.Widget):',
+        'class MultiSetWidget(widgets.DOMWidget):',
         '    _view_name = Unicode("MultiSetView", sync=True)',
         '    a = CInt(0, sync=True)',
         '    b = CInt(0, sync=True)',
@@ -140,7 +140,7 @@ casper.notebook_test(function () {
 
 
     this.thenEvaluate(function() {
-        define('TestWidget', ['widgets/js/widget', 'base/js/utils', 'underscore'], function(widget, utils, _) {
+        define('TestWidget', ['nbextensions/widgets/widgets/js/widget', 'base/js/utils', 'underscore'], function(widget, utils, _) {
             var floatArray = {
                 deserialize: function (value, model) {
                     if (value===null) {return null;}
@@ -239,7 +239,7 @@ casper.notebook_test(function () {
     this.wait_for_widget(testwidget);
     this.then(function() {
         var result = this.evaluate(function(index) {
-            var v = IPython.notebook.get_cell(index).widget_views[0];
+            var v = IPython.notebook.get_cell(index).widgetarea.widget_views[0];
             var result = v.model.get('array_list');
             var z = result.slice();
             z[0]+="1234";
