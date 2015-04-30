@@ -282,13 +282,15 @@ class Widget(LoggingConfigurable):
 
     def set_state(self, sync_data):
         """Called when a state is received from the front-end."""
-        for name in self.keys:
-            if name in sync_data:
-                json_value = sync_data[name]
-                from_json = self.trait_metadata(name, 'from_json', self._trait_from_json)
-                with self._lock_property(name, json_value):
-                    setattr(self, name, from_json(json_value))
-    
+        with self.hold_trait_notifications():
+            for name in self.keys:
+                if name in sync_data:
+                    json_value = sync_data[name]
+                    from_json = self.trait_metadata(name, 'from_json',
+                                                    self._trait_from_json)
+                    with self._lock_property(name, json_value):
+                        setattr(self, name, from_json(json_value))
+
     def send(self, content, buffers=None):
         """Sends a custom msg to the widget model in the front-end.
 
