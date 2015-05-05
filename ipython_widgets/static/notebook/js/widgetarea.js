@@ -15,6 +15,7 @@ define(['jquery', 'base/js/events'], function($, events) {
 
         this._create_elements();
         this._bind_events();
+        events.trigger('create.WidgetArea', {widgetarea: this, cell: cell});
     }
 
     /**
