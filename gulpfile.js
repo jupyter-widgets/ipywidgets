@@ -14,7 +14,7 @@ gulp.task('css', function (cb) {
   var p = spawn('python', ['-c',
     "import os,jupyter_notebook; print(os.path.join(jupyter_notebook.DEFAULT_STATIC_FILES_PATH))"]);
   var nb_static_path = p.stdout.toString().trim();
-  return gulp.src('./ipython_widgets/static/widgets/css/widgets.less')
+  return gulp.src('./ipython_widgets/static/widgets/less/widgets.less')
     .pipe(sourcemaps.init())
     .pipe(less({
       paths: [nb_static_path],
