@@ -4,16 +4,16 @@
 
 Interactive HTML widgets for Jupyter notebooks and the IPython kernel.
 
-## install
+## Install
 
-0. install [jupyter_notebook](https://github.com/jupyter/jupyter_notebook)
+0. Install [jupyter_notebook](https://github.com/jupyter/jupyter_notebook)
 
-1. install the package
+1. Install the package
     
         gulp css
         pip install -e .
 
-2. install and register the notebook extension:
+2. Install and register the notebook extension:
 
         python -m ipython_widgets.install --enable
     
@@ -21,3 +21,12 @@ Interactive HTML widgets for Jupyter notebooks and the IPython kernel.
 
         python -m ipython_widgets.install --enable --user --symlink
 
+## Test
+
+To run the Javascript tests:
+
+    python -m ipython_widgets.jstest
+
+To run the Python tests:
+
+    nosetests --with-coverage --cover-package=ipython_widgets ipython_widgets
