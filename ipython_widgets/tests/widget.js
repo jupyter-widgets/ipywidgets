@@ -63,16 +63,28 @@ casper.notebook_test(function () {
     // Try creating the multiset widget, verify that sets the values correctly.
     var multiset = {};
     multiset.index = this.append_cell([
-        'from traitlets import Unicode, CInt',
+        'from traitlets import Unicode, CInt, Bool',
         'class MultiSetWidget(widgets.DOMWidget):',
         '    _view_name = Unicode("MultiSetView", sync=True)',
         '    a = CInt(0, sync=True)',
         '    b = CInt(0, sync=True)',
         '    c = CInt(0, sync=True)',
         '    d = CInt(-1, sync=True)', // See if it sends a full state.
+        '    a_checked = Bool(False)',
+        '    b_checked = Bool(False)',
+        '    c_checked = Bool(False)',
         '    def set_state(self, sync_data):',
         '        widgets.Widget.set_state(self, sync_data)',
         '        self.d = len(sync_data)',
+        '    def _a_changed(self):',
+        '        if self.b == 2 and self.c == 3:',
+        '            self.a_checked = True',
+        '    def _b_changed(self):',
+        '        if self.a == 1 and self.c == 3:',
+        '            self.b_checked = True',
+        '    def _c_changed(self):',
+        '        if self.a == 1 and self.b == 2:',
+        '            self.c_checked = True',
         'multiset = MultiSetWidget()',
         'display(multiset)',
         'print(multiset.model_id)'].join('\n'));
@@ -95,6 +107,14 @@ casper.notebook_test(function () {
         this.test.assertEquals(this.get_output_cell(index).text.trim(), '3',
             'Multiple model.set calls sent a partial state.');
     });
+
+    index = this.append_cell(
+        'print("%s" % (multiset.a_checked and multiset.b_checked and multiset.c_checked))');
+    this.execute_cell_then(index, function(index) {
+        this.test.assertEquals(this.get_output_cell(index).text.trim(), 'True',
+            'Multiple model updates in one sync set simultaneously.');
+    });
+
 
     var textbox = {};
     throttle_index = this.append_cell([
