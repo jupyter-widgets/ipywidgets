@@ -286,11 +286,11 @@ class Widget(LoggingConfigurable):
         # be locked when the hold_trait_notification context manager is
         # released and notifications are fired.
         with self._lock_property(**sync_data), self.hold_trait_notifications():
-            for name, value in sync_data.iteritems():
+            for name in sync_data:
                 if name in self.keys:
                     from_json = self.trait_metadata(name, 'from_json',
                                                     self._trait_from_json)
-                    setattr(self, name, from_json(value))
+                    setattr(self, name, from_json(sync_data[name]))
 
     def send(self, content, buffers=None):
         """Sends a custom msg to the widget model in the front-end.
