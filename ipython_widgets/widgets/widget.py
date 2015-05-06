@@ -282,15 +282,15 @@ class Widget(LoggingConfigurable):
 
     def set_state(self, sync_data):
         """Called when a state is received from the front-end."""
-        data = {}
-        for name in self.keys:
-            if name in sync_data:
-                from_json = self.trait_metadata(name, 'from_json',
-                                                self._trait_from_json)
-                data[name] = from_json(sync_data[name])
-        with self._lock_property(**data), self.hold_trait_notifications():
-            for name in data:
-                setattr(self, name, data[name])
+        # The order of these context managers is important. Properties must
+        # be locked when the hold_trait_notification context manager is
+        # released and notifications are fired.
+        with self._lock_property(**sync_data), self.hold_trait_notifications():
+            for name, value in sync_data.iteritems():
+                if name in self.keys:
+                    from_json = self.trait_metadata(name, 'from_json',
+                                                    self._trait_from_json)
+                    setattr(self, name, from_json(value))
 
     def send(self, content, buffers=None):
         """Sends a custom msg to the widget model in the front-end.
