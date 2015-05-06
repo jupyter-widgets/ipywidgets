@@ -10,6 +10,17 @@ var spawn = require('spawn-sync');
 // var spawn = require('child_process').spawnSync;
 
 
+// Default task set.
+gulp.task('default', ['css']);
+
+
+// Watch for changes.
+gulp.task('watch', function() {
+    gulp.watch('./ipython_widgets/static/**/*.less', ['css']);
+});
+
+
+// Compile less into css.
 gulp.task('css', function (cb) {
   var p = spawn('python', ['-c',
     "import os,jupyter_notebook; print(os.path.join(jupyter_notebook.DEFAULT_STATIC_FILES_PATH))"]);
