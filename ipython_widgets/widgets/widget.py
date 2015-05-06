@@ -157,7 +157,7 @@ class Widget(LoggingConfigurable):
     def _keys_default(self):
         return [name for name in self.traits(sync=True)]
     
-    _property_lock = Tuple((None, None))
+    _property_lock = Dict()
     _send_state_lock = Int(0)
     _states_to_send = Set()
     _display_callbacks = Instance(CallbackDispatcher, ())
@@ -282,14 +282,15 @@ class Widget(LoggingConfigurable):
 
     def set_state(self, sync_data):
         """Called when a state is received from the front-end."""
-        with self.hold_trait_notifications():
-            for name in self.keys:
-                if name in sync_data:
-                    json_value = sync_data[name]
-                    from_json = self.trait_metadata(name, 'from_json',
-                                                    self._trait_from_json)
-                    with self._lock_property(name, json_value):
-                        setattr(self, name, from_json(json_value))
+        data = {}
+        for name in self.keys:
+            if name in sync_data:
+                from_json = self.trait_metadata(name, 'from_json',
+                                                self._trait_from_json)
+                data[name] = from_json(sync_data[name])
+        with self._lock_property(**data), self.hold_trait_notifications():
+            for name in data:
+                setattr(self, name, data[name])
 
     def send(self, content, buffers=None):
         """Sends a custom msg to the widget model in the front-end.
@@ -343,19 +344,19 @@ class Widget(LoggingConfigurable):
     # Support methods
     #-------------------------------------------------------------------------
     @contextmanager
-    def _lock_property(self, key, value):
+    def _lock_property(self, **properties):
         """Lock a property-value pair.
 
         The value should be the JSON state of the property.
 
-        NOTE: This, in addition to the single lock for all state changes, is 
+        NOTE: This, in addition to the single lock for all state changes, is
         flawed.  In the future we may want to look into buffering state changes 
         back to the front-end."""
-        self._property_lock = (key, value)
+        self._property_lock = properties
         try:
             yield
         finally:
-            self._property_lock = (None, None)
+            self._property_lock = {}
 
     @contextmanager
     def hold_sync(self):
@@ -374,8 +375,8 @@ class Widget(LoggingConfigurable):
     def _should_send_property(self, key, value):
         """Check the property lock (property_lock)"""
         to_json = self.trait_metadata(key, 'to_json', self._trait_to_json)
-        if (key == self._property_lock[0]
-            and to_json(value) == self._property_lock[1]):
+        if (key in self._property_lock
+            and to_json(value) == self._property_lock[key]):
             return False
         elif self._send_state_lock > 0:
             self._states_to_send.add(key)
