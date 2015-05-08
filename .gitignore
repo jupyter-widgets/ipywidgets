@@ -5,8 +5,8 @@ _build
 docs/man/*.gz
 docs/source/api/generated
 docs/gh-pages
-ipython_widgets/static/components
-ipython_widgets/static/widgets/css/*.min.css*
+ipywidgets/static/components
+ipywidgets/static/widgets/css/*.min.css*
 node_modules
 *.py[co]
 __pycache__

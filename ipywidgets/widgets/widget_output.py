@@ -21,7 +21,7 @@ class Output(DOMWidget):
     displayed in it instead of the standard output area.
 
     Example
-        import ipython_widgets as widgets
+        import ipywidgets as widgets
         from IPython.display import display
         out = widgets.Output()
         display(out)

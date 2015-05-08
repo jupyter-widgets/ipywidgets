@@ -298,7 +298,7 @@ define([
          * JS:
          * IPython.notebook.kernel.widget_manager.create_model({
          *      model_name: 'WidgetModel',
-         *      widget_class: 'ipython_widgets.IntSlider'})
+         *      widget_class: 'ipywidgets.IntSlider'})
          *      .then(function(model) { console.log('Create success!', model); },
          *      _.bind(console.error, console));
          *

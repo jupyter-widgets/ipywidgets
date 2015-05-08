@@ -7,7 +7,7 @@
 from __future__ import print_function
 
 # the name of the package
-name = 'ipython_widgets'
+name = 'ipywidgets'
 
 #-----------------------------------------------------------------------------
 # Minimal Python version sanity check
@@ -42,8 +42,8 @@ for d, _, _ in os.walk(pjoin(here, name)):
         packages.append(d[len(here)+1:].replace(os.path.sep, '.'))
 
 package_data = {
-    'ipython_widgets': ['static/*/*/*.*'],
-    'ipython_widgets.tests': ['*.js'],
+    'ipywidgets': ['static/*/*/*.*'],
+    'ipywidgets.tests': ['*.js'],
 }
 
 version_ns = {}
