@@ -1,6 +1,6 @@
 # Interactive HTML Widgets
 
-[![Build Status](https://travis-ci.org/ipython/ipython_widgets.svg?branch=master)](https://travis-ci.org/ipython/ipython_widgets) [![Join the chat at https://gitter.im/ipython/ipython_widgets](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ipython/ipython_widgets?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Build Status](https://travis-ci.org/ipython/ipywidgets.svg?branch=master)](https://travis-ci.org/ipython/ipywidgets) [![Join the chat at https://gitter.im/ipython/ipywidgets](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ipython/ipywidgets?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 Interactive HTML widgets for Jupyter notebooks and the IPython kernel.
 
