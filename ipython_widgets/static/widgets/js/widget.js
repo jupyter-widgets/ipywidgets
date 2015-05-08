@@ -645,7 +645,7 @@ define(["nbextensions/widgets/widgets/js/manager",
             for (var i = 0; i < css.length; i++) {
                 // Apply the css traits to all elements that match the selector.
                 var selector = css[i][0];
-                var elements = this._get_selector_element(selector);
+                var elements = this.el.querySelectorAll(selector) || [this.el];
                 if (elements.length > 0) {
                     var trait_key = css[i][1];
                     var trait_value = css[i][2];
@@ -704,19 +704,8 @@ define(["nbextensions/widgets/widgets/js/manager",
 
             this.update_classes(old_classes, new_classes, el || this.el);
         },
-        
-        _get_selector_element: function (selector) {
-            /**
-             * Get the elements via the css selector.
-             */
-            var elements;
-            if (!selector) {
-                elements = [this.el];
-            } else {
-                elements = this.el.querySelectorAll(selector);
-            }
-            return elements;
-        },
+
+
 
         typeset: function(element, text){
             utils.typeset.apply(null, arguments);
