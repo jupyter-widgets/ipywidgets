@@ -441,7 +441,7 @@ define(["nbextensions/widgets/widgets/js/manager",
     widgetmanager.WidgetManager.register_widget_model('WidgetModel', WidgetModel);
 
 
-    var WidgetInterface = {
+    var WidgetViewMixin = {
         initialize: function(parameters) {
             /**
              * Public constructor.
@@ -525,12 +525,12 @@ define(["nbextensions/widgets/widgets/js/manager",
     };
 
 
-    var DOMWidgetInterface = {
+    var DOMWidgetViewMixin = {
         initialize: function (parameters) {
             /**
              * Public constructor
              */
-            DOMWidgetView.__super__.initialize.apply(this, [parameters]);
+            WidgetViewMixin.initialize.apply(this, [parameters]);
             this.model.on('change:visible', this.update_visible, this);
             this.model.on('change:_css', this.update_css, this);
 
@@ -802,15 +802,20 @@ define(["nbextensions/widgets/widgets/js/manager",
         },
     });
 
-    var WidgetView = Backbone.View.extend(WidgetInterface);
-    var DOMWidgetView = WidgetView.extend(DOMWidgetInterface);
+    // For backwards compatibility.
+    var WidgetView = Backbone.View.extend(WidgetViewMixin);
+    var DOMWidgetView = WidgetView.extend(DOMWidgetViewMixin);
 
     var widget = {
         'unpack_models': unpack_models,
         'WidgetModel': WidgetModel,
+        'WidgetViewMixin': WidgetViewMixin,
+        'DOMWidgetViewMixin': DOMWidgetViewMixin,
+        'ViewList': ViewList,
+
+        // For backwards compatibility.
         'WidgetView': WidgetView,
         'DOMWidgetView': DOMWidgetView,
-        'ViewList': ViewList,
     };
 
     // For backwards compatability.
