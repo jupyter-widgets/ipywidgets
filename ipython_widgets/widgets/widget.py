@@ -10,7 +10,7 @@ from contextlib import contextmanager
 import collections
 
 from IPython.core.getipython import get_ipython
-from ipython_kernel.comm import Comm
+from ipykernel.comm import Comm
 from traitlets.config import LoggingConfigurable
 from ipython_genutils.importstring import import_item
 from traitlets import Unicode, Dict, Instance, Bool, List, \
@@ -147,7 +147,7 @@ class Widget(LoggingConfigurable):
         If empty, look in the global registry.""", sync=True)
     _view_name = Unicode(None, allow_none=True, help="""Default view registered in the front-end
         to use to represent the widget.""", sync=True)
-    comm = Instance('ipython_kernel.comm.Comm', allow_none=True)
+    comm = Instance('ipykernel.comm.Comm', allow_none=True)
     
     msg_throttle = Int(3, sync=True, help="""Maximum number of msgs the 
         front-end can send before receiving an idle msg from the back-end.""")
