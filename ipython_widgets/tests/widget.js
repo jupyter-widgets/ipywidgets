@@ -48,15 +48,17 @@ casper.notebook_test(function () {
     this.then(function () {
         // Test multi-set, single touch code.  First create a custom widget.
         this.thenEvaluate(function() {
-            var MultiSetView = IPython.DOMWidgetView.extend({
-                render: function(){
-                    this.model.set('a', 1);
-                    this.model.set('b', 2);
-                    this.model.set('c', 3);
-                    this.touch();
-                },
+            define('MultiSetView', ['nbextensions/widgets/widgets/js/widget'], function(widget) {
+		        var MultiSetView = widget.DOMWidgetView.extend({
+		            render: function(){
+		                this.model.set('a', 1);
+		                this.model.set('b', 2);
+		                this.model.set('c', 3);
+		                this.touch();
+		            },
+		        });
+                return {MultiSetView: MultiSetView};
             });
-            IPython.WidgetManager.register_widget_view('MultiSetView', MultiSetView);
         }, {});
     });
 
@@ -66,6 +68,7 @@ casper.notebook_test(function () {
         'from traitlets import Unicode, CInt, Bool',
         'class MultiSetWidget(widgets.DOMWidget):',
         '    _view_name = Unicode("MultiSetView", sync=True)',
+        '    _view_module = Unicode("MultiSetView", sync=True)',
         '    a = CInt(0, sync=True)',
         '    b = CInt(0, sync=True)',
         '    c = CInt(0, sync=True)',

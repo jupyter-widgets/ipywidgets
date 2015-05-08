@@ -807,8 +807,5 @@ define(["nbextensions/widgets/widgets/js/manager",
         'DOMWidgetView': DOMWidgetView,
     };
 
-    // For backwards compatability.
-    _.extend(IPython, widget);
-
     return widget;
 });
