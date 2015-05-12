@@ -1,3 +1,5 @@
+/// <reference path="../typings/notebook_test.d.ts" />
+
 // Test container class
 casper.notebook_test(function () {
 
@@ -41,7 +43,7 @@ casper.notebook_test(function () {
             'Container parent/child relationship works.');
     });
 
-    index = this.append_cell(
+    var index: number = this.append_cell(
         'container.box_style = "success"\n'+
         'print("Success")\n');
     this.execute_cell_then(index, function(index){

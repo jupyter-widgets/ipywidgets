@@ -1,4 +1,6 @@
-var xor = function (a, b) {return !a ^ !b;}; 
+/// <reference path="../typings/notebook_test.d.ts" />
+
+var xor = function (a, b) {return !a !== !b;}; 
 var isArray = function (a) {
     try {
         return Object.toString.call(a) === "[object Array]" || Object.toString.call(a) === "[object RuntimeArray]";
@@ -37,9 +39,7 @@ var recursive_compare = function(a, b) {
 
 // Test the widget framework.
 casper.notebook_test(function () {
-    var index;
-
-    index = this.append_cell(
+    var index: number = this.append_cell(
         ['import ipywidgets as widgets',
          'from IPython.display import display, clear_output',
          'print("Success")'].join('\n'));
@@ -63,7 +63,7 @@ casper.notebook_test(function () {
     });
 
     // Try creating the multiset widget, verify that sets the values correctly.
-    var multiset = {};
+    var multiset: any = {};
     multiset.index = this.append_cell([
         'from traitlets import Unicode, CInt, Bool',
         'class MultiSetWidget(widgets.DOMWidget):',
@@ -119,8 +119,8 @@ casper.notebook_test(function () {
     });
 
 
-    var textbox = {};
-    throttle_index = this.append_cell([
+    var textbox: any = {};
+    var throttle_index: number = this.append_cell([
         'import time',
         'textbox = widgets.Text()',
         'display(textbox)',
@@ -160,7 +160,6 @@ casper.notebook_test(function () {
         var last_state = outputs[outputs.length-1].data['text/plain'];
         this.test.assertEquals(last_state, "20", "Last state sent when throttling.");
     });
-
 
     this.thenEvaluate(function() {
         define('TestWidget', ['nbextensions/widgets/widgets/js/widget', 'base/js/utils', 'underscore'], function(widget, utils, _) {
@@ -205,7 +204,7 @@ casper.notebook_test(function () {
         });
     });
 
-    var testwidget = {};
+    var testwidget: any = {};
     this.append_cell_execute_then([
         'import ipywidgets as widgets',
         'from traitlets import Unicode, Instance, List',
@@ -290,7 +289,7 @@ casper.notebook_test(function () {
                 v.model.set('array_binary', null);
                 v.model.set('array_binary', z);
                 v.touch();
-            }, textwidget.index);
+            }, testwidget.index);
         });
         this.wait_for_widget(testwidget);
         this.assert_output_equals('x.array_binary.tolist() == [4.5, 7.5, 15.0]',
@@ -300,6 +299,7 @@ casper.notebook_test(function () {
         this.wait_for_widget(testwidget);
 
         this.then(function() {
+            var TextDecoder: any;
             var result = this.evaluate(function(index) {
                 var v = IPython.notebook.get_cell(index).widget_views[0];
                 var d = new TextDecoder('utf-8');

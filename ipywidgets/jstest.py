@@ -1,6 +1,6 @@
 """Run IPython widget javascript tests
 
-run with `python -m jstest`
+run with `gulp tests; python -m jstest`
 """
 
 # Copyright (c) IPython Development Team.
@@ -25,9 +25,10 @@ class WidgetTestController(jstest.JSController):
         # if not section:
         #     section = os.path.join(here, 'tests')
         super(WidgetTestController, self).__init__(section, *args, **kwargs)
+
         # # FIXME: temporary workaround waiting for rm-widgets PR
-        includes = '--includes=' + os.path.join(jstest.get_js_test_dir(), 'util.js')
-        test_cases = os.path.join(here, 'tests', self.section)
+        includes = '--includes=' + os.path.join(jstest.get_js_test_dir(), 'util.js');
+        test_cases = os.path.join(here, '..', 'bin', 'tests', 'tests', self.section)
         self.cmd = ['casperjs', 'test', includes, test_cases, '--engine=%s' % self.engine]
     
     def setup(self):

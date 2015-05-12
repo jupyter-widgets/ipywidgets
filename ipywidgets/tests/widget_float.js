@@ -1,6 +1,8 @@
+/// <reference path="../typings/notebook_test.d.ts" />
+
 // Test widget float class
 casper.notebook_test(function () {
-    var float_text = {};
+    var float_text: any = {};
     float_text.query = '.widget-area .widget-subarea .my-second-float-text input';
     float_text.index = this.append_cell(
         'import ipywidgets as widgets\n' + 
@@ -31,7 +33,7 @@ casper.notebook_test(function () {
 
     this.wait_for_widget(float_text);
 
-    index = this.append_cell('print(float_widget.value)\n');
+    var index: number = this.append_cell('print(float_widget.value)\n');
     this.execute_cell_then(index, function(index){
         this.test.assertEquals(this.get_output_cell(index).text, '1.05\n', 
             'Float textbox value set.');
@@ -58,7 +60,7 @@ casper.notebook_test(function () {
     });
 
     var float_text_query = '.widget-area .widget-subarea .widget-numeric-text';
-    var slider = {};
+    var slider: any = {};
     slider.query = '.widget-area .widget-subarea .slider';
     slider.index = this.append_cell(
         'floatrange = [widgets.BoundedFloatText(), \n' +

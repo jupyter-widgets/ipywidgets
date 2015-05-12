@@ -1,3 +1,5 @@
+/// <reference path="../typings/notebook_test.d.ts" />
+
 // Test widget button class
 casper.notebook_test(function () {
     var button_index = this.append_cell(

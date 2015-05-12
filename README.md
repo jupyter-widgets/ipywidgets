@@ -25,7 +25,7 @@ Interactive HTML widgets for Jupyter notebooks and the IPython kernel.
 
 To run the Javascript tests:
 
-    python -m ipywidgets.jstest
+    gulp tests; python -m ipywidgets.jstest
 
 To run the Python tests:
 

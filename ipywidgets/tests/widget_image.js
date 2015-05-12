@@ -1,3 +1,5 @@
+/// <reference path="../typings/notebook_test.d.ts" />
+
 // Test image class
 casper.notebook_test(function () {
     "use strict";

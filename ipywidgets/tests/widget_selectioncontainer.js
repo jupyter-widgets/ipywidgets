@@ -1,6 +1,8 @@
+/// <reference path="../typings/notebook_test.d.ts" />
+
 // Test multicontainer class
 casper.notebook_test(function () {
-    index = this.append_cell(
+    var index: number = this.append_cell(
         'import ipywidgets as widgets\n' + 
         'from IPython.display import display, clear_output\n' +
         'print("Success")');
@@ -112,6 +114,7 @@ casper.notebook_test(function () {
         this.test.assertEquals(this.get_output_cell(index).text, '1\n', // 0 based
             'selected_index property updated with tab change.');
 
+        var $: any;
         var is_collapsed = this.evaluate(function(s){
              return $(s + ' div.panel:nth-child(2) a').hasClass('collapsed'); // 1 based
         }, {s: multicontainer2_query});

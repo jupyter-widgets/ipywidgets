@@ -1,6 +1,8 @@
+/// <reference path="../typings/notebook_test.d.ts" />
+
 // Test widget int class
 casper.notebook_test(function () {
-    var int_text = {};
+    var int_text: any = {};
     int_text.query = '.widget-area .widget-subarea .my-second-int-text input';
     int_text.index = this.append_cell(
         'import ipywidgets as widgets\n' + 
@@ -31,7 +33,7 @@ casper.notebook_test(function () {
 
     this.wait_for_widget(int_text);
 
-    index = this.append_cell('print(int_widget.value)\n');
+    var index: number = this.append_cell('print(int_widget.value)\n');
     this.execute_cell_then(index, function(index){
         this.test.assertEquals(this.get_output_cell(index).text, '1\n', 
             'Int textbox value set.');
@@ -58,7 +60,7 @@ casper.notebook_test(function () {
     });
 
     var slider_query = '.widget-area .widget-subarea .slider';
-    var int_text2 = {};
+    var int_text2: any = {};
     int_text2.query = '.widget-area .widget-subarea .my-second-num-test-text input';
     int_text2.index = this.append_cell(
         'intrange = [widgets.BoundedIntTextWidget(),\n' +

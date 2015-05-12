@@ -1,6 +1,8 @@
+/// <reference path="../typings/notebook_test.d.ts" />
+
 // Test selection class
 casper.notebook_test(function () {
-    index = this.append_cell(
+    var index: number = this.append_cell(
         'import ipywidgets as widgets\n' + 
         'from IPython.display import display, clear_output\n' +
         'print("Success")');
