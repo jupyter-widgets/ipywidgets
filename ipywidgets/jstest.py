@@ -22,14 +22,10 @@ here = os.path.dirname(__file__)
 class WidgetTestController(jstest.JSController):
     """Javascript test subclass that installs widget nbextension in test environment"""
     def __init__(self, section, *args, **kwargs):
-        # if not section:
-        #     section = os.path.join(here, 'tests')
         super(WidgetTestController, self).__init__(section, *args, **kwargs)
-
-        # # FIXME: temporary workaround waiting for rm-widgets PR
-        includes = '--includes=' + os.path.join(jstest.get_js_test_dir(), 'util.js');
+        
         test_cases = os.path.join(here, '..', 'bin', 'tests', 'tests', self.section)
-        self.cmd = ['casperjs', 'test', includes, test_cases, '--engine=%s' % self.engine]
+        self.cmd = ['casperjs', 'test', test_cases, '--engine=%s' % self.engine]
     
     def setup(self):
         super(WidgetTestController, self).setup()

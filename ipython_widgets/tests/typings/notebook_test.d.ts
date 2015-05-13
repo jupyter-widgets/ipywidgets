@@ -2,9 +2,9 @@
 
 declare var IPython: any;
 declare var define: any;
-declare var casper: NotebookCasper;
+declare var casper: Casper;
 
-interface NotebookCasper extends Casper {
-    notebook_test(test: () => void): void;
-    execute_cell_then(index: number, callback: (...args: any[]) => any): void;
-}
+// For SlimerJS detection.
+declare var InstallTrigger: any;
+
+interface Window { pending_msgs: any; }

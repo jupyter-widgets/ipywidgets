@@ -86,4 +86,5 @@ base.tester
             this.test.assertExists('#hello', 'Hello HTML widget persisted.');
             this.test.assertExists('#world', 'World HTML widget persisted.');
         });
-});
+})
+.stop_notebook_then();
