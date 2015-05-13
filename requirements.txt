@@ -6,4 +6,4 @@
 -e git+https://github.com/ipython/ipython.git#egg=ipython
 -e git+https://github.com/ipython/ipykernel.git#egg=ipykernel
 -e git+https://github.com/jupyter/nbconvert.git#egg=nbconvert
--e git+https://github.com/jupyter/jupyter_notebook.git#egg=jupyter_notebook
+-e git+https://github.com/jupyter/notebook.git#egg=notebook

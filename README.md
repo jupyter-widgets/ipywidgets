@@ -6,7 +6,7 @@ Interactive HTML widgets for Jupyter notebooks and the IPython kernel.
 
 ## Install
 
-0. Install [jupyter_notebook](https://github.com/jupyter/jupyter_notebook)
+0. Install [notebook](https://github.com/jupyter/notebook)
 
 1. Install the package
     

@@ -13,7 +13,7 @@ try:
 except ImportError:
     from mock import patch # py2
 
-from jupyter_notebook import jstest
+from notebook import jstest
 from ipywidgets.install import install
 
 here = os.path.dirname(__file__)

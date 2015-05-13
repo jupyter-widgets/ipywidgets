@@ -9,8 +9,8 @@ from __future__ import print_function
 import argparse
 from os.path import dirname, abspath, join as pjoin
 
-from jupyter_notebook.nbextensions import install_nbextension
-from jupyter_notebook.services.config import ConfigManager
+from notebook.nbextensions import install_nbextension
+from notebook.services.config import ConfigManager
 
 def install(user=False, symlink=False, quiet=False, enable=False):
     """Install the widget nbextension and optionally enable it.
