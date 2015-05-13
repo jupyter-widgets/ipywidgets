@@ -4,10 +4,9 @@
 define(["nbextensions/widgets/widgets/js/manager",
         "underscore",
         "backbone",
-        "jquery",
         "base/js/utils",
         "base/js/namespace",
-], function(widgetmanager, _, Backbone, $, utils, IPython){
+], function(widgetmanager, _, Backbone, utils, IPython){
     "use strict";
 
     var unpack_models = function unpack_models(value, model) {
@@ -15,7 +14,7 @@ define(["nbextensions/widgets/widgets/js/manager",
          * Replace model ids with models recursively.
          */
         var unpacked;
-        if ($.isArray(value)) {
+        if (_.isArray(value)) {
             unpacked = [];
             _.each(value, function(sub_value, key) {
                 unpacked.push(unpack_models(sub_value, model));
@@ -73,8 +72,8 @@ define(["nbextensions/widgets/widgets/js/manager",
                 comm.model = this;
 
                 // Hook comm messages up to model.
-                comm.on_close($.proxy(this._handle_comm_closed, this));
-                comm.on_msg($.proxy(this._handle_comm_msg, this));
+                comm.on_close(_.bind(this._handle_comm_closed, this));
+                comm.on_msg(_.bind(this._handle_comm_msg, this));
 
                 // Assume the comm is alive.
                 this.set_comm_live(true);
@@ -280,9 +279,9 @@ define(["nbextensions/widgets/widgets/js/manager",
             var return_value = WidgetModel.__super__.set.apply(this, arguments);
 
             // Backbone only remembers the diff of the most recent set()
-            // operation.  Calling set multiple times in a row results in a 
+            // operation.  Calling set multiple times in a row results in a
             // loss of diff information.  Here we keep our own running diff.
-            this._buffered_state_diff = $.extend(this._buffered_state_diff, this.changedAttributes() || {});
+            this._buffered_state_diff = _.extend(this._buffered_state_diff, this.changedAttributes() || {});
             return return_value;
         },
 
@@ -338,13 +337,12 @@ define(["nbextensions/widgets/widgets/js/manager",
                 // Check throttle.
                 if (this.pending_msgs >= (this.get('msg_throttle') || 3)) {
                     // The throttle has been exceeded, buffer the current msg so
-                    // it can be sent once the kernel has finished processing 
+                    // it can be sent once the kernel has finished processing
                     // some of the existing messages.
-                    
                     // Combine updates if it is a 'patch' sync, otherwise replace updates
                     switch (method) {
                         case 'patch':
-                            this.msg_buffer = $.extend(this.msg_buffer || {}, attrs);
+                            this.msg_buffer = _.extend(this.msg_buffer || {}, attrs);
                             break;
                         case 'update':
                         case 'create':
@@ -357,7 +355,7 @@ define(["nbextensions/widgets/widgets/js/manager",
                     this.msg_buffer_callbacks = callbacks;
 
                 } else {
-                    // We haven't exceeded the throttle, send the message like 
+                    // We haven't exceeded the throttle, send the message like
                     // normal.
                     this.send_sync_message(attrs, callbacks);
                     this.pending_msgs++;
@@ -443,7 +441,7 @@ define(["nbextensions/widgets/widgets/js/manager",
     widgetmanager.WidgetManager.register_widget_model('WidgetModel', WidgetModel);
 
 
-    var WidgetView = Backbone.View.extend({
+    var WidgetViewMixin = {
         initialize: function(parameters) {
             /**
              * Public constructor.
@@ -477,7 +475,7 @@ define(["nbextensions/widgets/widgets/js/manager",
              * Create and promise that resolves to a child view of a given model
              */
             var that = this;
-            options = $.extend({ parent: this }, options || {});
+            options = _.extend({ parent: this }, options || {});
             return this.model.widget_manager.create_view(child_model, options).catch(utils.reject("Couldn't create child view", true));
         },
 
@@ -524,15 +522,15 @@ define(["nbextensions/widgets/widgets/js/manager",
             WidgetView.__super__.remove.apply(this, arguments);
             this.trigger('remove');
         }
-    });
+    };
 
 
-    var DOMWidgetView = WidgetView.extend({
+    var DOMWidgetViewMixin = {
         initialize: function (parameters) {
             /**
              * Public constructor
              */
-            DOMWidgetView.__super__.initialize.apply(this, [parameters]);
+            WidgetViewMixin.initialize.apply(this, [parameters]);
             this.model.on('change:visible', this.update_visible, this);
             this.model.on('change:_css', this.update_css, this);
 
@@ -620,7 +618,7 @@ define(["nbextensions/widgets/widgets/js/manager",
             /**
              * Set a css attr of the widget view.
              */
-            this.$el.css(name, value);
+            this.el.style[name] = value;
         },
 
         update_visible: function(model, value) {
@@ -629,13 +627,15 @@ define(["nbextensions/widgets/widgets/js/manager",
              */
             switch(value) {
                 case null: // python None
-                    this.$el.show().css('visibility', 'hidden'); break;
+                    this.el.style.display = '';
+                    this.el.style.visibility = 'hidden'; break;
                 case false:
-                    this.$el.hide(); break;
+                    this.el.style.display = 'none'; break;
                 case true:
-                    this.$el.show().css('visibility', ''); break;
+                    this.el.style.display = '';
+                    this.el.style.visibility = ''; break;
             }
-         },
+        },
 
         update_css: function (model, css) {
             /**
@@ -645,27 +645,29 @@ define(["nbextensions/widgets/widgets/js/manager",
             for (var i = 0; i < css.length; i++) {
                 // Apply the css traits to all elements that match the selector.
                 var selector = css[i][0];
-                var elements = this._get_selector_element(selector);
+                var elements = this.el.querySelectorAll(selector) || [this.el];
                 if (elements.length > 0) {
                     var trait_key = css[i][1];
                     var trait_value = css[i][2];
-                    elements.css(trait_key ,trait_value);
+                    _.each(elements, function(e) {
+                        e.style[trait_key] = trait_value;
+                    });
                 }
             }
         },
 
-        update_classes: function (old_classes, new_classes, $el) {
+        update_classes: function (old_classes, new_classes, el) {
             /**
-             * Update the DOM classes applied to an element, default to this.$el.
+             * Update the DOM classes applied to an element, default to this.el.
              */
-            if ($el===undefined) {
-                $el = this.$el;
+            if (el===undefined) {
+                el = this.el;
             }
-            _.difference(old_classes, new_classes).map(function(c) {$el.removeClass(c);})
-            _.difference(new_classes, old_classes).map(function(c) {$el.addClass(c);})
+            _.difference(old_classes, new_classes).map(function(c) { el.classList.remove(c); });
+            _.difference(new_classes, old_classes).map(function(c) { el.classList.add(c); });
         },
 
-        update_mapped_classes: function(class_map, trait_name, previous_trait_value, $el) {
+        update_mapped_classes: function(class_map, trait_name, previous_trait_value, el) {
             /**
              * Update the DOM classes applied to the widget based on a single
              * trait's value.
@@ -689,7 +691,7 @@ define(["nbextensions/widgets/widgets/js/manager",
              *  Name of the trait to check the value of.
              * previous_trait_value: optional string, default ''
              *  Last trait value
-             * $el: optional jQuery element handle, defaults to this.$el
+             * el: optional DOM element handle, defaults to this.$el
              *  Element that the classes are applied to.
              */
             var key = previous_trait_value;
@@ -700,26 +702,15 @@ define(["nbextensions/widgets/widgets/js/manager",
             key = this.model.get(trait_name);
             var new_classes = class_map[key] ? class_map[key] : [];
 
-            this.update_classes(old_classes, new_classes, $el || this.$el);
+            this.update_classes(old_classes, new_classes, el || this.el);
         },
-        
-        _get_selector_element: function (selector) {
-            /**
-             * Get the elements via the css selector.
-             */
-            var elements;
-            if (!selector) {
-                elements = this.$el;
-            } else {
-                elements = this.$el.find(selector).addBack(selector);
-            }
-            return elements;
-        },
+
+
 
         typeset: function(element, text){
             utils.typeset.apply(null, arguments);
         },
-    });
+    };
 
 
     var ViewList = function(create_view, remove_view, context) {
@@ -729,7 +720,7 @@ define(["nbextensions/widgets/widgets/js/manager",
          * - remove_view takes a view and destroys it (including calling `view.remove()`)
          * - each time the update() function is called with a new list, the create and remove
          *   callbacks will be called in an order so that if you append the views created in the
-         *   create callback and remove the views in the remove callback, you will duplicate 
+         *   create callback and remove the views in the remove callback, you will duplicate
          *   the order of the list.
          * - the remove callback defaults to just removing the view (e.g., pass in null for the second parameter)
          * - the context defaults to the created ViewList.  If you pass another context, the create and remove
@@ -766,7 +757,6 @@ define(["nbextensions/widgets/widgets/js/manager",
                     break;
                 }
             }
-            
             var first_removed = i;
             // Remove the non-matching items from the old list.
             var removed = this.views.splice(first_removed, this.views.length-first_removed);
@@ -801,16 +791,21 @@ define(["nbextensions/widgets/widgets/js/manager",
         },
     });
 
+    // For backwards compatibility.
+    var WidgetView = Backbone.View.extend(WidgetViewMixin);
+    var DOMWidgetView = WidgetView.extend(DOMWidgetViewMixin);
+
     var widget = {
         'unpack_models': unpack_models,
         'WidgetModel': WidgetModel,
+        'WidgetViewMixin': WidgetViewMixin,
+        'DOMWidgetViewMixin': DOMWidgetViewMixin,
+        'ViewList': ViewList,
+
+        // For backwards compatibility.
         'WidgetView': WidgetView,
         'DOMWidgetView': DOMWidgetView,
-        'ViewList': ViewList,
     };
-
-    // For backwards compatability.
-    $.extend(IPython, widget);
 
     return widget;
 });
