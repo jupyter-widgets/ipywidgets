@@ -15,18 +15,18 @@ Interactive HTML widgets for Jupyter notebooks and the IPython kernel.
 
 2. Install and register the notebook extension:
 
-        python -m ipython_widgets.install --enable
+        python -m ipywidgets.install --enable
     
     or a symlink for a development install:
 
-        python -m ipython_widgets.install --enable --user --symlink
+        python -m ipywidgets.install --enable --user --symlink
 
 ## Test
 
 To run the Javascript tests:
 
-    python -m ipython_widgets.jstest
+    python -m ipywidgets.jstest
 
 To run the Python tests:
 
-    nosetests --with-coverage --cover-package=ipython_widgets ipython_widgets
+    nosetests --with-coverage --cover-package=ipywidgets ipywidgets

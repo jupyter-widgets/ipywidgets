@@ -14,7 +14,7 @@ except ImportError:
     from mock import patch # py2
 
 from jupyter_notebook import jstest
-from ipython_widgets.install import install
+from ipywidgets.install import install
 
 here = os.path.dirname(__file__)
 

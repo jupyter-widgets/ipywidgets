@@ -2,7 +2,7 @@
 casper.notebook_test(function () {
     "use strict";
     var index = this.append_cell(
-        'import ipython_widgets as widgets\n' + 
+        'import ipywidgets as widgets\n' + 
         'from IPython.display import display, clear_output\n' +
         'print("Success")');
     this.execute_cell_then(index);

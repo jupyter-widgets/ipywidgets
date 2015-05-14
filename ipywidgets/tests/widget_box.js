@@ -3,7 +3,7 @@ casper.notebook_test(function () {
 
     // Create a box widget.
     var container_index = this.append_cell(
-        'import ipython_widgets as widgets\n' + 
+        'import ipywidgets as widgets\n' + 
         'from IPython.display import display, clear_output\n' +
         'container = widgets.Box()\n' +
         'button = widgets.Button()\n'+

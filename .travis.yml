@@ -1,4 +1,4 @@
-# http://travis-ci.org/#!/ipython/ipython_widgets
+# http://travis-ci.org/#!/ipython/ipywidgets
 language: python
 python:
     - 3.4
@@ -14,10 +14,10 @@ before_install:
 install:
     - pip install -f travis-wheels/wheelhouse -r requirements.txt
     - npm install && gulp css
-    - pip install -f travis-wheels/wheelhouse file://$PWD#egg=ipython_widgets[test] coveralls
+    - pip install -f travis-wheels/wheelhouse file://$PWD#egg=ipywidgets[test] coveralls
 script:
-    - 'if [[ $GROUP == js ]]; then python -m ipython_widgets.jstest; fi'
-    - 'if [[ $GROUP == python ]]; then nosetests --with-coverage --cover-package=ipython_widgets ipython_widgets; fi'
+    - 'if [[ $GROUP == js ]]; then python -m ipywidgets.jstest; fi'
+    - 'if [[ $GROUP == python ]]; then nosetests --with-coverage --cover-package=ipywidgets ipywidgets; fi'
 matrix:
     include:
         - python: 3.3

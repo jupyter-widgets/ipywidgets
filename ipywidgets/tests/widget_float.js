@@ -3,7 +3,7 @@ casper.notebook_test(function () {
     var float_text = {};
     float_text.query = '.widget-area .widget-subarea .my-second-float-text input';
     float_text.index = this.append_cell(
-        'import ipython_widgets as widgets\n' + 
+        'import ipywidgets as widgets\n' + 
         'from IPython.display import display, clear_output\n' +
         'float_widget = widgets.FloatText()\n' +
         'display(float_widget)\n' + 
