@@ -23,7 +23,7 @@ gulp.task('watch', function() {
 // Compile less into css.
 gulp.task('css', function (cb) {
   var p = spawn('python', ['-c',
-    "import os,jupyter_notebook; print(os.path.join(jupyter_notebook.DEFAULT_STATIC_FILES_PATH))"]);
+    "import os,notebook; print(os.path.join(notebook.DEFAULT_STATIC_FILES_PATH))"]);
   var nb_static_path = p.stdout.toString().trim();
   return gulp.src('./ipywidgets/static/widgets/less/widgets.less')
     .pipe(sourcemaps.init())
