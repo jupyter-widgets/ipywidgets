@@ -14,16 +14,24 @@ export interface WidgetCasper extends Casper {
     get_output_cell(cell_num: number, out_num: number): string;
     cell_element_exists(index: number, selector: string): boolean;
     cell_element_function(index: string, selector: string, function_name: string, function_args: any[]): any;
-    print_log(): void;
-    capture_log(): void;
-    interact(): void;
+    interact(): void; // TODO
     
+    _logs: string[][];
+    _logs_errors: any[][];
+    _cell_index: number;
+    _cells: string[];
+    _cell_outputs: string[];
+    _cell_outputs_errors: string[];
+    _printed_cells: number[];
+    _init_events(): void; // TODO
     _open_new_notebook(): void;
-    _shutdown_current_kernel(): void;
     _get_notebook_server(): string;
     _page_loaded(): boolean;
     _kernel_running(): boolean;
+    _header(section: string, border_style?: any): void;
+    _body(section: string, body_style?: any, border_style?: any): void;
 
+    colorizer: Colorizer;
     cli: { get: (name: string) => any; };
     on(evt: string, cb: (...args: any[])=>any): void;
     back(): WidgetCasper;
@@ -84,7 +92,14 @@ export interface WidgetCasper extends Casper {
 }
 
 export var tester: WidgetCasper = <WidgetCasper><any>casper;
+// var colorizer = require('colorizer').create();
 
+// Commandline Parameters
+// port
+// url
+// log-all
+
+tester.options.waitTimeout=1000;
 
 tester.start_notebook_then = function(): WidgetCasper {
 
@@ -114,7 +129,12 @@ tester.start_notebook_then = function(): WidgetCasper {
 tester.stop_notebook_then = function(): WidgetCasper {
     
     // Kill the kernel.
-    this._shutdown_current_kernel();
+    // Shut down the current notebook's kernel.
+    this.thenEvaluate(function() {
+        IPython.notebook.session.delete();
+    });
+    // We close the page right after this so we need to give it time to complete.
+    this.wait(1000);
     
     // TODO: Delete the notebook.
     
@@ -144,25 +164,37 @@ tester.cell = function(contents: string, callback?: (index?: number) => void, ce
     let lines: string[] = contents.split('\n');
     let indent: number = null;
     for (let line of lines) {
-        let local_indent = contents.length - contents.replace(/^\s+/, '').length;
-        if (indent === null || indent > local_indent) {
-            indent = local_indent;
+        if (line.trim().length !== 0) {
+            let local_indent = contents.length - contents.replace(/^\s+/, '').length;
+            if (indent === null || indent > local_indent) {
+                indent = local_indent;
+            }
         }
     }
 
     let new_lines: string[] = [];
     for (let line of lines) {
-        new_lines.push(line.substr(indent-1));
+        // Compress by removing blank lines.
+        if (line.trim().length > 0) {
+            new_lines.push(line.substr(Math.max(0,indent-1)));
+        }
     }
     contents = new_lines.join('\n');
     tester.then(() => {
         
         // Inserts a cell at the bottom of the notebook
         // Returns the new cell's index.
-        let index: number = this.evaluate(function (cell_type: string){
-            var cell = IPython.notebook.insert_cell_at_bottom(cell_type);
+        let index: number = this.evaluate(function (cell_type: string, contents: string){
+            var cell: any = IPython.notebook.insert_cell_at_bottom(cell_type);
+            cell.set_text(contents);
             return IPython.notebook.find_cell_index(cell);
-        }, cell_type);
+        }, cell_type, contents);
+
+        // Increment the logged cell index.
+        this._cell_index++;
+        this._logs.push([]);
+        this._logs_errors.push([]);
+        this._cells.push(contents);
 
         // Synchronously execute a cell by index.
         this.then(()=>{
@@ -175,6 +207,32 @@ tester.cell = function(contents: string, callback?: (index?: number) => void, ce
     
         // Check for errors.
         this.then(() => {
+            var nonerrors = this.evaluate(function (index) {
+                var cell = IPython.notebook.get_cell(index);
+                var outputs = cell.output_area.outputs;
+                var nonerrors = [];
+                for (var i = 0; i < outputs.length; i++) {
+                    if (outputs[i].output_type !== 'error') {
+                        nonerrors.push(outputs[i]);
+                    }
+                }
+                return nonerrors;
+            }, index);
+            tester._cell_outputs.push(nonerrors);
+
+            var errors = this.evaluate(function (index) {
+                var cell = IPython.notebook.get_cell(index);
+                var outputs = cell.output_area.outputs;
+                var errors = [];
+                for (var i = 0; i < outputs.length; i++) {
+                    if (outputs[i].output_type === 'error') {
+                        errors.push(outputs[i]);
+                    }
+                }
+                return errors;
+            }, index);
+            tester._cell_outputs_errors.push(errors);
+
             var error = this.evaluate(function (index) {
                 var cell = IPython.notebook.get_cell(index);
                 var outputs = cell.output_area.outputs;
@@ -191,7 +249,7 @@ tester.cell = function(contents: string, callback?: (index?: number) => void, ce
             }
             
             if (error !== false) {
-                this.test.fail("Error running cell:\n" + error.traceback.join('\n'));
+                this.test.fail("Error running cell");
             }
         });
 
@@ -346,23 +404,128 @@ tester.cell_element_function = function(index: string, selector: string, functio
     }, index, selector, function_name, function_args);
 };
 
-tester.print_log = function(): void {
-    // Pass `console.log` calls from page JS to tester.
-    this.on('remote.message', function(msg) {
-        this.echo('Remote message caught: ' + msg);
-    });
-};
-
-tester.capture_log = function(): void {
+tester._init_events = function(): void {
     // show captured errors
-    var captured_log = [];
     var seen_errors = 0;
-    this.on('remote.message', function(msg) {
-        captured_log.push(msg);
+    var reset = () => {
+        tester._logs = [[]];
+        tester._logs_errors = [[]];
+        tester._cell_index = 0;
+        tester._cells = [];
+        tester._printed_cells = [];
+        tester._cell_outputs = [];
+        tester._cell_outputs_errors = [];
+    };
+    reset();
+
+    this.on('remote.message', (msg) => {
+        this._logs[this._cell_index].push(msg);
     });
 
+    this.on("page.error", function onError(msg: string, trace) {
+        // show errors in the browser
+        this.echo('Page error (recorded)', 'WARNING');
+
+        let error = {
+            text: msg,
+            traceback: ''
+        }
+
+        var local_path = this._get_notebook_server();
+        for (var i = 0; i < trace.length; i++) {
+            var frame = trace[i];
+            var file = frame.file;
+            // shorten common phantomjs evaluate url
+            // this will have a different value on slimerjs
+            if (file === "phantomjs://webpage.evaluate()") {
+                file = "evaluate";
+            }
+            // remove the version tag from the path
+            file = file.replace(/(\?v=[0-9abcdef]+)/, '');
+            // remove the local address from the beginning of the path
+            if (file.indexOf(local_path) === 0) {
+                file = file.substr(local_path.length);
+            }
+            var frame_text = (frame.function.length > 0) ? " in " + frame.function : "";
+            error.traceback += "\n    line " + frame.line + " of " + file + frame_text;
+        }
+
+        tester._logs_errors[tester._cell_index].push(error);
+    });
+
+    // Outputs a cell log.
+    var output_cell = (cell_index: number) => {
+        var shown: boolean = (this._printed_cells.indexOf(cell_index) !== -1);
+        if (!shown) this._printed_cells.push(cell_index);
+        if (cell_index===0) {
+            tester._header('Before cell(s)' + (shown ? ', see details above.' : ':'), { bg: 'yellow', fg: 'black', bold: true });
+        } else {
+            tester._header('While in cell ' + String(cell_index) + (shown ? ', see details above.' : ':'), { bg: 'yellow', fg: 'black', bold: true });
+        }
+        if (!shown || that._logs[cell_index].length !== 0 || that._logs_errors[cell_index].length !== 0) {
+
+
+            if (cell_index!==0 && !shown) {
+                tester._header('kernel');
+                tester._body('in:', { bg: 'black', fg: 'cyan', bold: true });
+                tester._body(tester._cells[cell_index-1], { bg: 'black', fg: 'white', bold: false });
+                tester._body('out:', { bg: 'black', fg: 'cyan', bold: true });
+                let outputs = tester._cell_outputs[cell_index-1];
+                for (let output of outputs) {
+                    if (output['output_type']==='stream') {
+                        if (output['name']==='stdout') {
+                            tester._body(output['text'], { bg: 'black', fg: 'white', bold: false });
+                        } else if (output['name']==='stderr') {
+                            tester._body(output['text'], { bg: 'black', fg: 'red', bold: false });
+                        }
+                    }
+                }
+                tester._body('error:', { bg: 'black', fg: 'cyan', bold: true });
+                let errors = tester._cell_outputs_errors[cell_index-1];
+                for (let error of errors) {
+                    tester._body(error['ename'], { bg: 'black', fg: 'red', bold: true });
+                    tester._body(error['evalue'], { bg: 'black', fg: 'red', bold: false });
+                    tester._body(error['traceback'].join('\n'), { bg: 'black', fg: 'white', bold: false });
+                }
+            }
+
+            tester._header('front-end console log' + (shown ? ' (continued)' : ''));
+            tester._body('log:', { bg: 'black', fg: 'cyan', bold: true });
+            if (that._logs[cell_index].length !== 0) {
+                for (var i = 0; i < that._logs[cell_index].length; i++) {
+                    tester._body(that._logs[cell_index][i], { bg: 'black', fg: 'white', bold: false });
+                }
+                that._logs[cell_index] = [];
+            }
+            tester._body('error:', { bg: 'black', fg: 'cyan', bold: true });
+            if (that._logs_errors[cell_index].length !== 0) {
+                for (var i = 0; i < that._logs_errors[cell_index].length; i++) {
+                    tester._body(that._logs_errors[cell_index][i].text, { bg: 'black', fg: 'red', bold: true });
+                    tester._body(that._logs_errors[cell_index][i].traceback, { bg: 'black', fg: 'white', bold: false });
+                }
+                that._logs_errors[cell_index] = [];
+            }
+            
+            tester._header('');
+        }
+        tester.echo('\n');
+    };
+
+    // Handle per-cell failure.
     var that = this;
-    this.test.on("test.done", function (result) {
+    var logall: boolean = Boolean(tester.cli.get('log-all'));
+
+    this.test.on('fail', function(failure) {
+        var timeElapsed = <any>(new Date()) - this.currentTestStartTime;
+        this.currentSuite.addFailure(failure, timeElapsed - this.lastAssertTime);
+        
+        tester.echo('');
+        tester.echo('Details:');
+        output_cell(that._logs.length-1);
+    });
+
+    // Reset logs when notebook test is complete.
+    this.test.on('test.done', function(result) {
         // test.done runs per-file,
         // but suiteResults is per-suite (directory)
         var current_errors;
@@ -374,19 +537,53 @@ tester.capture_log = function(): void {
             current_errors = this.testResults.failed;
         }
 
-        if (current_errors > seen_errors && captured_log.length > 0) {
-            tester.echo("\nCaptured console.log:");
-            for (var i = 0; i < captured_log.length; i++) {
-                var output = String(captured_log[i]).split('\n');
-                for (var j = 0; j < output.length; j++) {
-                    tester.echo("    " + output[j]);
+        if (current_errors > seen_errors) {
+            if (logall) {
+
+                // Output cell information.
+                for (var i = 0; i < that._logs.length; i++) {
+                    output_cell(that._logs.length-1);
                 }
             }
         }
 
         seen_errors = current_errors;
-        captured_log = [];
+        reset();
     });
+};
+
+tester._header = function(section: string, border_style: any={ bg: 'yellow', fg: 'black', bold: false }): void {
+    for (let line of section.split('\n')) {
+        while (line.length < 80) {
+            line += ' ';
+        }
+        console.log(tester.colorizer.format(line, border_style));
+    }
+};
+
+tester._body = function(section: string, body_style: any={ bg: 'black', fg: 'black', bold: false }, border_style: any={ bg: 'yellow', fg: 'black', bold: true }): void {
+    for (let line of section.split('\n')) {
+        // Wrap line if necessary, note- this niave method requires ansi color
+        // codes to be stripped!
+        line = line.replace(/\x1b[^m]*m/g, '');
+        var continuation: boolean = false;
+        while (line.length > 0) {
+            let subline: string = line.substr(0, 77);
+            line = line.replace(subline, '');
+
+            var padding: string = '';
+            while (subline.length + padding.length < 77) {
+                padding += ' ';
+            }
+
+            console.log(
+                <string><any>tester.colorizer.format(continuation ? '>' : ' ', border_style) + 
+                <string><any>tester.colorizer.format(' ' + subline, body_style) +
+                <string><any>tester.colorizer.format(padding, body_style) + 
+                <string><any>tester.colorizer.format(line.length>0 ? '>' : ' ', border_style));
+            continuation = true;
+        }
+    }
 };
 
 tester.interact = function(): void {
@@ -481,15 +678,6 @@ tester._open_new_notebook = function(): void {
     });
 };
 
-tester._shutdown_current_kernel = function(): void {
-    // Shut down the current notebook's kernel.
-    this.thenEvaluate(function() {
-        IPython.notebook.session.delete();
-    });
-    // We close the page right after this so we need to give it time to complete.
-    this.wait(1000);
-};
-
 tester._get_notebook_server = function(): string {
     // Get the URL of a notebook server on which to run tests.
     var port = tester.cli.get("port");
@@ -515,41 +703,4 @@ tester._kernel_running = function(): boolean {
     });
 };
 
-
-// Configuration.
-
-tester.options.waitTimeout=10000;
-tester.on('waitFor.timeout', function onWaitForTimeout(timeout) {
-    this.echo("Timeout for " + tester._get_notebook_server());
-    this.echo("Is the notebook server running?");
-});
-
-tester.on("page.error", function onError(msg, trace) {
-    // show errors in the browser
-    this.echo("Page Error");
-    this.echo("  Message:   " + msg.split('\n').join('\n             '));
-    this.echo("  Call stack:");
-    var local_path = this.get_notebook_server();
-    for (var i = 0; i < trace.length; i++) {
-        var frame = trace[i];
-        var file = frame.file;
-        // shorten common phantomjs evaluate url
-        // this will have a different value on slimerjs
-        if (file === "phantomjs://webpage.evaluate()") {
-            file = "evaluate";
-        }
-        // remove the version tag from the path
-        file = file.replace(/(\?v=[0-9abcdef]+)/, '');
-        // remove the local address from the beginning of the path
-        if (file.indexOf(local_path) === 0) {
-            file = file.substr(local_path.length);
-        }
-        var frame_text = (frame.function.length > 0) ? " in " + frame.function : "";
-        this.echo("    line " + frame.line + " of " + file + frame_text);
-    }
-});
-
-
-
-tester.capture_log();
-
+tester._init_events();

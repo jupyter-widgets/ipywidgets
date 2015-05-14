@@ -28,7 +28,7 @@ base.tester
             }, function(error) { console.log(error); });
     });
 })
-.waitFor(() => { // Wait for the state to be recieved.
+.waitFor(function() { // Wait for the state to be recieved.
     return this.evaluate(function() {
         return (<any>window).slider_id !== undefined;
     });
@@ -52,6 +52,7 @@ base.tester
     `)
 .cell(`
     display(HTML(value="<div id='world'></div>"))
+    # asdfghjkl;asdfghjkl;sdfghjklsdfghjklasdfghjklasdfghjklasdfghjklzxcvbnm,.qwertyuiopsdfghjklsdfghjk
     `)
 
 // Wait for the widgets to be shown.
@@ -70,7 +71,7 @@ base.tester
 })
 
 // Wait for a notebook save.
-.waitFor(() => {
+.waitFor(function() {
     return this.evaluate(() => {
         return (<any>window).was_saved;
     });

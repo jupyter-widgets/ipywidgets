@@ -9,7 +9,6 @@
     "url": "https://github.com/ipython/ipython_widget.git"
   },
   "devDependencies": {
-    "bower": "*",
     "spawn-sync": "*",
     "gulp": "^3.8.11",
     "gulp-less": "^3.0.2",

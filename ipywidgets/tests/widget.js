@@ -95,25 +95,26 @@ base.tester
     `, 
     function(index) {
         multiset.model_id = this.get_output_cell(index).text.trim();
+
+        this
+        .wait_for_widget(multiset)
+
+        .assert_output_equals(
+            `print("%d%d%d" % (multiset.a, multiset.b, multiset.c))`,
+            '123',
+            'Multiple model.set calls and one view.touch update state in back-end.')
+
+        .assert_output_equals(
+            `print("%d" % (multiset.d))`,
+            '3',
+            'Multiple model.set calls sent a partial state.')
+
+        .assert_output_equals(
+            `print("%s" % (multiset.a_checked and multiset.b_checked and multiset.c_checked))`,
+            'True',
+            'Multiple model updates in one sync set simultaneously.');
     }
 )
-
-.wait_for_widget(multiset)
-
-.assert_output_equals(
-    `print("%d%d%d" % (multiset.a, multiset.b, multiset.c))`,
-    '123',
-    'Multiple model.set calls and one view.touch update state in back-end.')
-
-.assert_output_equals(
-    `print("%d" % (multiset.d))`,
-    '3',
-    'Multiple model.set calls sent a partial state.')
-
-.assert_output_equals(
-    `print("%s" % (multiset.a_checked and multiset.b_checked and multiset.c_checked))`,
-    'True',
-    'Multiple model updates in one sync set simultaneously.')
 
 .cell(`
     import time
@@ -139,10 +140,10 @@ base.tester
 
         // Send 20 characters
         this.sendKeys('.my-throttle-textbox input', '12345678901234567890');
+
+        this.wait_for_widget(textbox);
     }
 )
-
-.wait_for_widget(textbox)
 
 .then(function () { 
     var outputs = this.evaluate(function(i) {
@@ -250,90 +251,91 @@ base.tester
     print(x.model_id)
     `, 
     function(index){
-            testwidget.index = index;
-            testwidget.model_id = this.get_output_cell(index).text.trim();
+        testwidget.index = index;
+        testwidget.model_id = this.get_output_cell(index).text.trim();
+
+        this
+        .wait_for_widget(testwidget)
+        .cell(`x.array_list = array("d", [1.5, 2.0, 3.1])`)
+        .wait_for_widget(testwidget)
+
+        .then(function() {
+            var result = this.evaluate(function(index) {
+                var v = IPython.notebook.get_cell(index).widgetarea.widget_views[0];
+                var result = v.model.get('array_list');
+                var z = result.slice();
+                z[0]+="1234";
+                z[1]+="5678";
+                v.model.set('array_list', z);
+                v.touch();
+                return result;
+            }, testwidget.index);
+            this.test.assertEquals(result, ["1.5", "2", "3.1"], "JSON custom serializer kernel -> js");
+        })
+            
+        .assert_output_equals(
+            `print(x.array_list.tolist() == [1.51234, 25678.0, 3.1])`,
+            'True', 
+            'JSON custom serializer js -> kernel');
+
+        if (this.slimerjs) {
+            base.tester
+            .cell(`x.array_binary=array('d', [1.5,2.5,5])`, function() {
+                this.evaluate(function(index) {
+                    var v = IPython.notebook.get_cell(index).widget_views[0];
+                    var z = v.model.get('array_binary');
+                    z[0]*=3;
+                    z[1]*=3;
+                    z[2]*=3;
+                    // we set to null so that we recognize the change
+                    // when we set data back to z
+                    v.model.set('array_binary', null);
+                    v.model.set('array_binary', z);
+                    v.touch();
+                }, testwidget.index);
+            })
+            .wait_for_widget(testwidget)
+            .assert_output_equals(
+                `x.array_binary.tolist() == [4.5, 7.5, 15.0]`,
+                'True\n', 
+                'Binary custom serializer js -> kernel')
+
+            .cell(`x.send("some content", [memoryview(b"binarycontent"), memoryview("morecontent")])`)
+            .wait_for_widget(testwidget)
+
+            .then(function() {
+                var TextDecoder: any;
+                var result = this.evaluate(function(index) {
+                    var v = IPython.notebook.get_cell(index).widget_views[0];
+                    var d = new TextDecoder('utf-8');
+                    return {text: v.msg[0], 
+                            binary0: d.decode(v.msg[1][0]),
+                            binary1: d.decode(v.msg[1][1])};
+                }, testwidget.index);
+                this.test.assertEquals(result, {text: 'some content', 
+                                           binary0: 'binarycontent', 
+                                           binary1: 'morecontent'}, 
+                                  "Binary widget messages kernel -> js");
+            })
+
+            .then(function() {
+                this.evaluate(function(index) {
+                    var v = IPython.notebook.get_cell(index).widget_views[0];
+                    v.send('content back', [new Uint8Array([1,2,3,4]), new Float64Array([2.1828, 3.14159])])
+                }, testwidget.index);
+            })
+            .wait_for_widget(testwidget)
+            .assert_output_equals(`
+                all([x.msg[0] == "content back",
+                     x.msg[1][0].tolist() == [1,2,3,4],
+                     array("d", x.msg[1][1].tobytes()).tolist() == [2.1828, 3.14159]])
+                `,
+                'True', 
+                'Binary buffers message js -> kernel');
+        } else {
+            console.log("skipping binary websocket tests on phantomjs");
+        }
     }
 )
 
-.wait_for_widget(testwidget)
-.cell(`x.array_list = array("d", [1.5, 2.0, 3.1])`)
-.wait_for_widget(testwidget)
-
-.then(function() {
-    var result = this.evaluate(function(index) {
-        var v = IPython.notebook.get_cell(index).widgetarea.widget_views[0];
-        var result = v.model.get('array_list');
-        var z = result.slice();
-        z[0]+="1234";
-        z[1]+="5678";
-        v.model.set('array_list', z);
-        v.touch();
-        return result;
-    }, testwidget.index);
-    this.test.assertEquals(result, ["1.5", "2", "3.1"], "JSON custom serializer kernel -> js");
-})
-    
-.assert_output_equals(
-    `print(x.array_list.tolist() == [1.51234, 25678.0, 3.1])`,
-    'True', 
-    'JSON custom serializer js -> kernel');
-
-if (this.slimerjs) {
-    base.tester
-    .cell(`x.array_binary=array('d', [1.5,2.5,5])`, function() {
-        this.evaluate(function(index) {
-            var v = IPython.notebook.get_cell(index).widget_views[0];
-            var z = v.model.get('array_binary');
-            z[0]*=3;
-            z[1]*=3;
-            z[2]*=3;
-            // we set to null so that we recognize the change
-            // when we set data back to z
-            v.model.set('array_binary', null);
-            v.model.set('array_binary', z);
-            v.touch();
-        }, testwidget.index);
-    })
-    .wait_for_widget(testwidget)
-    .assert_output_equals(
-        `x.array_binary.tolist() == [4.5, 7.5, 15.0]`,
-        'True\n', 
-        'Binary custom serializer js -> kernel')
-
-    .cell(`x.send("some content", [memoryview(b"binarycontent"), memoryview("morecontent")])`)
-    .wait_for_widget(testwidget)
-
-    .then(function() {
-        var TextDecoder: any;
-        var result = this.evaluate(function(index) {
-            var v = IPython.notebook.get_cell(index).widget_views[0];
-            var d = new TextDecoder('utf-8');
-            return {text: v.msg[0], 
-                    binary0: d.decode(v.msg[1][0]),
-                    binary1: d.decode(v.msg[1][1])};
-        }, testwidget.index);
-        this.test.assertEquals(result, {text: 'some content', 
-                                   binary0: 'binarycontent', 
-                                   binary1: 'morecontent'}, 
-                          "Binary widget messages kernel -> js");
-    })
-
-    .then(function() {
-        this.evaluate(function(index) {
-            var v = IPython.notebook.get_cell(index).widget_views[0];
-            v.send('content back', [new Uint8Array([1,2,3,4]), new Float64Array([2.1828, 3.14159])])
-        }, testwidget.index);
-    })
-    .wait_for_widget(testwidget)
-    .assert_output_equals(`
-        all([x.msg[0] == "content back",
-             x.msg[1][0].tolist() == [1,2,3,4],
-             array("d", x.msg[1][1].tobytes()).tolist() == [2.1828, 3.14159]])
-        `,
-        'True', 
-        'Binary buffers message js -> kernel');
-} else {
-    console.log("skipping binary websocket tests on phantomjs");
-}
-
-base.tester.stop_notebook_then();
+.stop_notebook_then();
