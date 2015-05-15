@@ -16,7 +16,7 @@ install:
     - npm install && gulp css
     - pip install -f travis-wheels/wheelhouse file://$PWD#egg=ipywidgets[test] coveralls
 script:
-    - 'if [[ $GROUP == js ]]; then python -m ipywidgets.jstest; fi'
+    - 'if [[ $GROUP == js ]]; then gulp tests; python -m ipywidgets.jstest; fi'
     - 'if [[ $GROUP == python ]]; then nosetests --with-coverage --cover-package=ipywidgets ipywidgets; fi'
 matrix:
     include:
