@@ -23,6 +23,8 @@ export interface WidgetCasper extends Casper {
     _cell_outputs: string[];
     _cell_outputs_errors: string[];
     _printed_cells: number[];
+    _page_error_flag: boolean;
+    _reset_page_error(): void;
     _init_events(): void; // TODO
     _open_new_notebook(): void;
     _get_notebook_server(): string;
@@ -161,6 +163,8 @@ tester.stop_notebook_then = function(): WidgetCasper {
  * @param callback - function to callback when the cell has been executed.
  */
 tester.cell = function(contents: string, callback?: (index?: number) => void, cell_type: string='code'): WidgetCasper {
+    this._reset_page_error();
+
     let lines: string[] = contents.split('\n');
     let indent: number = null;
     for (let line of lines) {
@@ -404,6 +408,13 @@ tester.cell_element_function = function(index: string, selector: string, functio
     }, index, selector, function_name, function_args);
 };
 
+tester._reset_page_error = function(): void {
+    if (this._page_error_flag) {
+        this._page_error_flag = false;
+        this.test.fail('Front-end JS error');
+    }
+};
+
 tester._init_events = function(): void {
     // show captured errors
     var seen_errors = 0;
@@ -415,6 +426,7 @@ tester._init_events = function(): void {
         tester._printed_cells = [];
         tester._cell_outputs = [];
         tester._cell_outputs_errors = [];
+        tester._page_error_flag = false;
     };
     reset();
 
@@ -424,7 +436,7 @@ tester._init_events = function(): void {
 
     this.on("page.error", function onError(msg: string, trace) {
         // show errors in the browser
-        this.echo('Page error (recorded)', 'WARNING');
+        this.echo('Front-end JS (recorded)', 'WARNING');
 
         let error = {
             text: msg,
@@ -451,6 +463,9 @@ tester._init_events = function(): void {
         }
 
         tester._logs_errors[tester._cell_index].push(error);
+
+        // Set the page error flag.
+        tester._page_error_flag = true;
     });
 
     // Outputs a cell log.
@@ -548,6 +563,7 @@ tester._init_events = function(): void {
         }
 
         seen_errors = current_errors;
+        tester._reset_page_error();
         reset();
     });
 };
