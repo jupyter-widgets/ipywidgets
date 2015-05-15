@@ -8,7 +8,7 @@ var slider_query = '.widget-area .widget-subarea .slider';
 base.tester
 .start_notebook_then()
 .cell(`
-    import ipython_widgets as widgets
+    import ipywidgets as widgets
     from IPython.display import display, clear_output
     int_widget = widgets.IntText()
     display(int_widget) 

@@ -40,7 +40,7 @@ var verify_selection = function(context, index){
 base.tester
 .start_notebook_then()
 .cell(`
-    import ipython_widgets as widgets
+    import ipywidgets as widgets
     from IPython.display import display, clear_output
     print("Success")
     `)

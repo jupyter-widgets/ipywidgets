@@ -4,7 +4,7 @@ base.tester
 
 // Test the widget manager.
 .start_notebook_then()
-.cell(`from ipython_widgets import Widget`)
+.cell(`from ipywidgets import Widget`)
 .then(function() {
 
     // Check if the WidgetManager class is defined.
@@ -21,7 +21,7 @@ base.tester
     this.evaluate(function() {
         IPython.notebook.kernel.widget_manager.create_model({
             model_name: 'WidgetModel', 
-            widget_class: 'ipython_widgets.IntSlider'})
+            widget_class: 'ipywidgets.IntSlider'})
             .then(function(model) { 
                 console.log('Create success!', model); 
                 (<any>window).slider_id = model.id; 
@@ -46,7 +46,7 @@ base.tester
 
 // Widget persistence tests
 .cell(`
-    from ipython_widgets import HTML
+    from ipywidgets import HTML
     from IPython.display import display
     display(HTML(value="<div id='hello'></div>"))
     `)

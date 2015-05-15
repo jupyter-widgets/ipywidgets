@@ -12,7 +12,7 @@ base.tester
 
 // Create a box widget.
 .cell(`
-    import ipython_widgets as widgets 
+    import ipywidgets as widgets 
     from IPython.display import display, clear_output
     container = widgets.Box()
     button = widgets.Button()

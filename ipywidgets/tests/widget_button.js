@@ -9,7 +9,7 @@ var widget_button_selector = '.widget-area .widget-subarea button';
 base.tester
 .start_notebook_then()
 .cell(`
-    import ipython_widgets as widgets
+    import ipywidgets as widgets
     from IPython.display import display, clear_output
     button = widgets.Button(description="Title")
     display(button)

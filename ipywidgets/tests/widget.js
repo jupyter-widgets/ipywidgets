@@ -48,7 +48,7 @@ var testwidget: any
 base.tester
 .start_notebook_then()
 .cell(`
-    import ipython_widgets as widgets
+    import ipywidgets as widgets
     from IPython.display import display, clear_output
     print("Success")
 `)
@@ -204,7 +204,7 @@ base.tester
 })
 
 .cell(`
-    import ipython_widgets as widgets
+    import ipywidgets as widgets
     from traitlets import Unicode, Instance, List
     from IPython.display import display
     from array import array

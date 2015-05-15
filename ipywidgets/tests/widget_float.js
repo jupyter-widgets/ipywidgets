@@ -9,7 +9,7 @@ base.tester
 .start_notebook_then()
     
 .cell(`
-    import ipython_widgets as widgets
+    import ipywidgets as widgets
     from IPython.display import display, clear_output
     float_widget = widgets.FloatText()
     display(float_widget)

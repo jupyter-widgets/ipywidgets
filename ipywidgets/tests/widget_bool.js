@@ -11,7 +11,7 @@ base.tester
 
 // Create a checkbox and togglebutton.
 .cell(`
-    import ipython_widgets as widgets
+    import ipywidgets as widgets
     from IPython.display import display, clear_output
     bool_widgets = [widgets.Checkbox(description="Title", value=True),
         widgets.ToggleButton(description="Title", value=True)]

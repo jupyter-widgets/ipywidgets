@@ -11,7 +11,7 @@ base.tester
 .start_notebook_then()
 
 .cell(`
-    import ipython_widgets as widgets
+    import ipywidgets as widgets
     from IPython.display import display, clear_output
     string_widget = [widgets.Text(value = "xyz", placeholder = "abc"),
         widgets.Textarea(value = "xyz", placeholder = "def"),
