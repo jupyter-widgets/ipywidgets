@@ -176,8 +176,9 @@ base.tester
     print("Success")
     `,
     function(index){
-        this.test.assertEquals(0, 0, 'Invalid int range max bound does not cause crash.');
-    }
+        this.test.pass('Invalid int range max bound causes error.');
+    },
+    true
 ) 
 
 .cell(`
@@ -187,8 +188,9 @@ base.tester
     print("Success")
     `,
     function(index){
-        this.test.assertEquals(0, 0, 'Invalid int range min bound does not cause crash.');
-    }
+        this.test.pass('Invalid int range min bound causes error.');
+    },
+    true
 ) 
 
 .stop_notebook_then();

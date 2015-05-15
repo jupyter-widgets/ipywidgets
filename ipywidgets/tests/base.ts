@@ -1,7 +1,7 @@
 /// <reference path="typings/notebook_test.d.ts" />
 
 export interface WidgetCasper extends Casper {
-    cell(text: string, callback?: (index?: number) => void): WidgetCasper;
+    cell(text: string, callback?: (index?: number) => void, expect_error?: boolean, cell_type?: string, execute?: boolean): WidgetCasper;
     assert_output_equals(content: string, output_text: string, message: string): WidgetCasper;
     start_notebook_then(): WidgetCasper;
     stop_notebook_then(): WidgetCasper;
@@ -162,7 +162,7 @@ tester.stop_notebook_then = function(): WidgetCasper {
  * @param contents
  * @param callback - function to callback when the cell has been executed.
  */
-tester.cell = function(contents: string, callback?: (index?: number) => void, cell_type: string='code'): WidgetCasper {
+tester.cell = function(contents: string, callback?: (index?: number) => void, expect_error: boolean=false, cell_type: string='code', execute: boolean=true): WidgetCasper {
     this._reset_page_error();
 
     let lines: string[] = contents.split('\n');
@@ -201,61 +201,68 @@ tester.cell = function(contents: string, callback?: (index?: number) => void, ce
         this._cells.push(contents);
 
         // Synchronously execute a cell by index.
-        this.then(()=>{
-            this.evaluate(function (index) {
-                var cell = IPython.notebook.get_cell(index);
-                cell.execute();
-            }, index);
-        });
-        this.wait_for_idle();
+        if (execute) {
+            this.then(()=>{
+                this.evaluate(function (index) {
+                    var cell = IPython.notebook.get_cell(index);
+                    cell.execute();
+                }, index);
+            });
+            this.wait_for_idle();
     
-        // Check for errors.
-        this.then(() => {
-            var nonerrors = this.evaluate(function (index) {
-                var cell = IPython.notebook.get_cell(index);
-                var outputs = cell.output_area.outputs;
-                var nonerrors = [];
-                for (var i = 0; i < outputs.length; i++) {
-                    if (outputs[i].output_type !== 'error') {
-                        nonerrors.push(outputs[i]);
+            // Check for errors.
+            this.then(() => {
+                var nonerrors = this.evaluate(function (index) {
+                    var cell = IPython.notebook.get_cell(index);
+                    var outputs = cell.output_area.outputs;
+                    var nonerrors = [];
+                    for (var i = 0; i < outputs.length; i++) {
+                        if (outputs[i].output_type !== 'error') {
+                            nonerrors.push(outputs[i]);
+                        }
                     }
-                }
-                return nonerrors;
-            }, index);
-            tester._cell_outputs.push(nonerrors);
+                    return nonerrors;
+                }, index);
+                tester._cell_outputs.push(nonerrors);
 
-            var errors = this.evaluate(function (index) {
-                var cell = IPython.notebook.get_cell(index);
-                var outputs = cell.output_area.outputs;
-                var errors = [];
-                for (var i = 0; i < outputs.length; i++) {
-                    if (outputs[i].output_type === 'error') {
-                        errors.push(outputs[i]);
+                var errors = this.evaluate(function (index) {
+                    var cell = IPython.notebook.get_cell(index);
+                    var outputs = cell.output_area.outputs;
+                    var errors = [];
+                    for (var i = 0; i < outputs.length; i++) {
+                        if (outputs[i].output_type === 'error') {
+                            errors.push(outputs[i]);
+                        }
                     }
-                }
-                return errors;
-            }, index);
-            tester._cell_outputs_errors.push(errors);
+                    return errors;
+                }, index);
+                tester._cell_outputs_errors.push(errors);
 
-            var error = this.evaluate(function (index) {
-                var cell = IPython.notebook.get_cell(index);
-                var outputs = cell.output_area.outputs;
-                for (var i = 0; i < outputs.length; i++) {
-                    if (outputs[i].output_type == 'error') {
-                        return outputs[i];
+                var error = this.evaluate(function (index) {
+                    var cell = IPython.notebook.get_cell(index);
+                    var outputs = cell.output_area.outputs;
+                    for (var i = 0; i < outputs.length; i++) {
+                        if (outputs[i].output_type == 'error') {
+                            return outputs[i];
+                        }
                     }
+                    return false;
+                }, index);
+                
+                if (error === null) {
+                    this.test.fail("Failed to check for error output");
                 }
-                return false;
-            }, index);
-            
-            if (error === null) {
-                this.test.fail("Failed to check for error output");
-            }
-            
-            if (error !== false) {
-                this.test.fail("Error running cell");
-            }
-        });
+                
+                if (!expect_error && error !== false) {
+                    this.test.fail("Error running cell");
+                }
+                
+                if (expect_error && error === false) {
+                    this.test.fail("An error was expected but the cell didn't raise one");
+                }
+            });
+
+        }
 
         // Call the callback if it's defined.
         if (callback!==undefined) {
