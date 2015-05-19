@@ -1,4 +1,4 @@
-/// <reference path="../typings/notebook_test.d.ts" />
+/// <reference path="../notebook_test.d.ts" />
 import base = require('../base');
 base.tester
 

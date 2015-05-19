@@ -1,4 +1,4 @@
-/// <reference path="typings/notebook_test.d.ts" />
+/// <reference path="notebook_test.d.ts" />
 
 export interface WidgetCasper extends Casper {
     cell(text: string, callback?: (index?: number) => void, expect_error?: boolean, cell_type?: string, execute?: boolean): WidgetCasper;

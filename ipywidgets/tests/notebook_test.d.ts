@@ -1,4 +1,4 @@
-/// <reference path="tsd.d.ts" />
+/// <reference path="typings/tsd.d.ts" />
 
 declare var IPython: any;
 declare var define: any;
