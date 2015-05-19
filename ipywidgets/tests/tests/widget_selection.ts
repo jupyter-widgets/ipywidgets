@@ -7,8 +7,7 @@ var multibtn_selector = '.widget-area .widget-subarea .widget-hbox.widget-toggle
 var radio_selector = '.widget-area .widget-subarea .widget-hbox .widget-radio-box';
 var list_selector = '.widget-area .widget-subarea .widget-hbox .widget-listbox';
 var selection_values = 'abcd';
-var selection_index;
-var check_state = function(context, index, state){
+var check_state = function(selection_index, context, index, state){
     if (0 <= index && index < selection_values.length) {
         var multibtn_state = context.cell_element_function(selection_index, multibtn_selector + ' .btn:nth-child(' + (index + 1) + ')', 'hasClass', ['active']);
         var radio_state = context.cell_element_function(selection_index, radio_selector + ' .radio:nth-child(' + (index + 1) + ') input', 'prop', ['checked']);
@@ -27,9 +26,9 @@ var check_state = function(context, index, state){
     return true;
 };
 
-var verify_selection = function(context, index){
+var verify_selection = function(selection_index, context, index){
     for (var i = 0; i < selection_values.length; i++) {
-        if (!check_state(context, i, i==index)) {
+        if (!check_state(selection_index, context, i, i==index)) {
             return false;
         }
     }
@@ -45,9 +44,8 @@ base.tester
     print("Success")
     `)
 
-//values=["' + selection_values + '"[i] for i in range(4)]
 .cell(`
-    options=["' + selection_values + '"[i] for i in range(4)]
+    options=["` + selection_values + `"[i] for i in range(4)]
     selection = [widgets.Dropdown(options=options),
         widgets.ToggleButtons(options=options),
         widgets.RadioButtons(options=options),
@@ -91,7 +89,7 @@ base.tester
                 'Widget list exists.');
 
             // Verify that no items are selected.
-            this.test.assert(verify_selection(this, 0), 'Default first item selected.');
+            this.test.assert(verify_selection(selection_index, this, 0), 'Default first item selected.');
         })
 
         .cell(`
@@ -104,7 +102,7 @@ base.tester
                     'Python select item executed with correct output.');
 
                 // Verify that the first item is selected.
-                this.test.assert(verify_selection(this, 0), 'Python selected');
+                this.test.assert(verify_selection(selection_index, this, 0), 'Python selected');
 
                 // Verify that selecting a radio button updates all of the others.
                 this.cell_element_function(selection_index, radio_selector + ' .radio:nth-child(2) input', 'click');
@@ -113,14 +111,14 @@ base.tester
 
         .wait_for_idle()
         .then(function () {
-            this.test.assert(verify_selection(this, 1), 'Radio button selection updated view states correctly.');
+            this.test.assert(verify_selection(selection_index, this, 1), 'Radio button selection updated view states correctly.');
 
             // Verify that selecting a list option updates all of the others.
             this.cell_element_function(selection_index, list_selector + ' option:nth-child(3)', 'click');
         })
         .wait_for_idle()
         .then(function () {
-            this.test.assert(verify_selection(this, 2), 'List selection updated view states correctly.');
+            this.test.assert(verify_selection(selection_index, this, 2), 'List selection updated view states correctly.');
 
             // Verify that selecting a multibutton option updates all of the others.
             // Bootstrap3 has changed the toggle button group behavior.  Two clicks
@@ -130,14 +128,14 @@ base.tester
         })
         .wait_for_idle()
         .then(function () {
-            this.test.assert(verify_selection(this, 3), 'Multibutton selection updated view states correctly.');
+            this.test.assert(verify_selection(selection_index, this, 3), 'Multibutton selection updated view states correctly.');
 
             // Verify that selecting a combobox option updates all of the others.
             this.cell_element_function(selection_index, '.widget-area .widget-subarea .widget-hbox .btn-group ul.dropdown-menu li:nth-child(3) a', 'click');
         })
         .wait_for_idle()
         .then(function () {
-            this.test.assert(verify_selection(this, 2), 'Combobox selection updated view states correctly.');
+            this.test.assert(verify_selection(selection_index, this, 2), 'Combobox selection updated view states correctly.');
         })
 
         .wait_for_idle()
@@ -152,7 +150,7 @@ base.tester
             `,
             function(index){
                 // Verify that selecting a combobox option updates all of the others.
-                this.test.assert(verify_selection(this, 4), 'Item added to selection widget.');
+                this.test.assert(verify_selection(selection_index, this, 4), 'Item added to selection widget.');
             }
         );
     }

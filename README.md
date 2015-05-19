@@ -23,10 +23,14 @@ Interactive HTML widgets for Jupyter notebooks and the IPython kernel.
 
 ## Test
 
+To run the Python tests:
+
+    nosetests --with-coverage --cover-package=ipywidgets ipywidgets
+
 To run the Javascript tests:
 
     gulp tests; python -m ipywidgets.jstest
 
-To run the Python tests:
+To run the Javascript tests with all output printed:
 
-    nosetests --with-coverage --cover-package=ipywidgets ipywidgets
+    gulp tests; python -m ipywidgets.jstest -- --logall

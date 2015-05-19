@@ -52,18 +52,17 @@ base.tester
     `)
 .cell(`
     display(HTML(value="<div id='world'></div>"))
-    # asdfghjkl;asdfghjkl;sdfghjklsdfghjklasdfghjklasdfghjklasdfghjklzxcvbnm,.qwertyuiopsdfghjklsdfghjk
     `)
 
 // Wait for the widgets to be shown.
 .waitForSelector('#hello')
 .waitForSelector('#world')
-.then(() => {
+.then(function() {
     this.test.assertExists('#hello', 'Hello HTML widget constructed.');
     this.test.assertExists('#world', 'World HTML widget constructed.');
 
     // Save the notebook.
-    this.evaluate(() => {
+    this.evaluate(function() {
         IPython.notebook.save_notebook(false).then(() => {
             (<any>window).was_saved = true;
         });
@@ -75,7 +74,7 @@ base.tester
     return this.evaluate(() => {
         return (<any>window).was_saved;
     });
-}, () => {
+}, function() {
 
     this
         // Reload the page

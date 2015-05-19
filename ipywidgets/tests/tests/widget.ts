@@ -42,7 +42,6 @@ var recursive_compare = function(a, b) {
 var multiset: any = {};
 var textbox: any = {};
 var throttle_index: number;
-var testwidget: any
 
 // Test the widget framework.
 base.tester
@@ -54,21 +53,24 @@ base.tester
 `)
 
 .thenEvaluate(function() {
-    var MultiSetView = IPython.DOMWidgetView.extend({
-        render: function(){
-            this.model.set('a', 1);
-            this.model.set('b', 2);
-            this.model.set('c', 3);
-            this.touch();
-        },
+    define('MultisetWidget', ['nbextensions/widgets/widgets/js/manager', 'nbextensions/widgets/widgets/js/widget'], function(manager, widget) {
+        var MultiSetView = widget.DOMWidgetView.extend({
+            render: function(){
+                this.model.set('a', 1);
+                this.model.set('b', 2);
+                this.model.set('c', 3);
+                this.touch();
+            },
+        });
+        return {MultiSetView: MultiSetView};
     });
-    IPython.WidgetManager.register_widget_view('MultiSetView', MultiSetView);
 }, {})
 
     // Try creating the multiset widget, verify that sets the values correctly.
 .cell(`
     from traitlets import Unicode, CInt, Bool
     class MultiSetWidget(widgets.DOMWidget):
+        _view_module = Unicode("MultisetWidget", sync=True)
         _view_name = Unicode("MultiSetView", sync=True)
         a = CInt(0, sync=True)
         b = CInt(0, sync=True)
@@ -251,8 +253,10 @@ base.tester
     print(x.model_id)
     `, 
     function(index){
-        testwidget.index = index;
-        testwidget.model_id = this.get_output_cell(index).text.trim();
+        var testwidget = {
+            index: index,
+            model_id: this.get_output_cell(index).text.trim()
+        };
 
         this
         .wait_for_widget(testwidget)

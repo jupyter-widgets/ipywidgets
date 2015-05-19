@@ -2,7 +2,6 @@
 import base = require('../base');
 
 // Globals
-var button_index: number;
 var widget_button_selector = '.widget-area .widget-subarea button';
 
 // Test widget button class
@@ -18,7 +17,7 @@ base.tester
         display("Clicked")
     button.on_click(handle_click)
     `,
-    function(index){
+    function(button_index){
         this.test.assertEquals(this.get_output_cell(button_index).text, 'Success\n',
             'Create button cell executed with correct output.');
 

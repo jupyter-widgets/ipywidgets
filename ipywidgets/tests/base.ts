@@ -34,7 +34,7 @@ export interface WidgetCasper extends Casper {
     _body(section: string, body_style?: any, border_style?: any): void;
 
     colorizer: Colorizer;
-    cli: { get: (name: string) => any; };
+    cli: { get: (name: string) => any; has: (name: string) => boolean; };
     on(evt: string, cb: (...args: any[])=>any): void;
     back(): WidgetCasper;
     capture(targetFilePath: string, clipRect: ClipRect): WidgetCasper;
@@ -99,9 +99,13 @@ export var tester: WidgetCasper = <WidgetCasper><any>casper;
 // Commandline Parameters
 // port
 // url
-// log-all
+// logall: don't show cell information at the failure point, instead
+//         show the information for every cell at the end of the
+//         file's tests.
+// logsuccess: Same as logall but additionally shows cell information 
+//             even if no failures occured for the file.
 
-tester.options.waitTimeout=1000;
+tester.options.waitTimeout=10000;
 
 tester.start_notebook_then = function(): WidgetCasper {
 
@@ -535,15 +539,21 @@ tester._init_events = function(): void {
 
     // Handle per-cell failure.
     var that = this;
-    var logall: boolean = Boolean(tester.cli.get('log-all'));
+    var logall: boolean = Boolean(tester.cli.has('logall'));
+    var logsuccess: boolean = Boolean(tester.cli.has('logsuccess'));
 
     this.test.on('fail', function(failure) {
         var timeElapsed = <any>(new Date()) - this.currentTestStartTime;
         this.currentSuite.addFailure(failure, timeElapsed - this.lastAssertTime);
         
         tester.echo('');
-        tester.echo('Details:');
-        output_cell(that._logs.length-1);
+        if (!(logall || logsuccess)) {
+            tester.echo('Details:');
+            output_cell(that._logs.length-1);
+        } else {            
+            tester.echo("For details, see cell " + String(that._logs.length-1) + " bellow.", 'WARN_BAR');
+            tester.echo('');
+        }
     });
 
     // Reset logs when notebook test is complete.
@@ -559,13 +569,10 @@ tester._init_events = function(): void {
             current_errors = this.testResults.failed;
         }
 
-        if (current_errors > seen_errors) {
-            if (logall) {
-
-                // Output cell information.
-                for (var i = 0; i < that._logs.length; i++) {
-                    output_cell(that._logs.length-1);
-                }
+        if (logsuccess || (logall && current_errors > seen_errors)) {
+            // Output cell information.
+            for (var i = 0; i < that._logs.length; i++) {
+                output_cell(i);
             }
         }
 
