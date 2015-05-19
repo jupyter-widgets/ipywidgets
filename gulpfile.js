@@ -50,6 +50,7 @@ gulp.task('tests', [], function() {
             noExternalResolve: false,
             target: 'ES5',
             module: 'commonjs',
+            typescript: require('typescript'),
        }));
 
     return merge([
