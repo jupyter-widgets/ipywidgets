@@ -5,6 +5,7 @@ var minifyCSS = require('gulp-minify-css');
 var rename = require('gulp-rename');
 var sourcemaps = require('gulp-sourcemaps');
 var ts = require('gulp-typescript');
+var tsd = require('gulp-tsd');
 var merge = require('merge2');
 
 // spawn-sync polyfill for nodejs < 0.12
@@ -42,8 +43,16 @@ gulp.task('css', function (cb) {
         .pipe(gulp.dest('./ipywidgets/static/widgets/css/'));
 });
 
+// Download typing definitions for the tests.
+gulp.task('tests_typings', function (callback) {
+    tsd({
+        command: 'reinstall',
+        config: './ipywidgets/tests/tsd.json'
+    }, callback);
+});
+
 // Transpile test typescript to javascript.
-gulp.task('tests', [], function() {
+gulp.task('tests', ['tests_typings'], function() {
     var tsResult = gulp.src('./ipywidgets/tests/**/*.ts')
        .pipe(ts({
             declarationFiles: true,
