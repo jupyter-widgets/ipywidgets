@@ -1,13 +1,17 @@
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
+
 import iwidgetcasper = require('./iwidgetcasper');
 
-export class Notebook {
-    
+/**
+ * Represents a Notebook used for testing.
+ */
+export class Notebook {    
     private _tester: iwidgetcasper.WidgetCasper;
     private _cell_index: number;
     private _cells: string[];
     private _cell_outputs: string[][];
     private _cell_outputs_errors: string[][];
-
 
     public constructor(tester: iwidgetcasper.WidgetCasper) {
         this._cell_index = 0;
@@ -19,22 +23,34 @@ export class Notebook {
         this._open_new_notebook();
     }
 
+    /**
+     * Index of the last appended cell.
+     */
     public get cell_index(): number {
         return this._cell_index;
     }
 
+    /**
+     * Is the notebook busy
+     */
     public is_busy(): boolean {
         return this._tester.evaluate(function () {
             return IPython._status === 'busy';
         });
     }
 
+    /**
+     * Is the notebook idle
+     */
     public is_idle(): boolean {
         return this._tester.evaluate(function () {
             return IPython._status === 'idle';
         });
     }
 
+    /**
+     * Does a cell have output
+     */
     public has_output(cell_index: number, output_index: number=0): boolean {
         return this._tester.evaluate(function get_output(c, o) {
             var cell = IPython.notebook.get_cell(c);
@@ -42,6 +58,9 @@ export class Notebook {
         }, {c : cell_index, o : output_index});
     }
 
+    /**
+     * Get the output of a cell
+     */
     public get_output(cell_index: number, output_index: number=0): any {
         return this._tester.evaluate(function get_output(c, o) {
             var cell = IPython.notebook.get_cell(c);
@@ -53,17 +72,23 @@ export class Notebook {
         }, {c : cell_index, o : output_index});
     }
 
+    /**
+     * Get the cell execution cached outputs.
+     */
     public get_cached_outputs(cell_index: number): any[] {
         return this._cell_outputs[cell_index];
     }
 
+    /**
+     * Get the cell execution cached output errors.
+     */
     public get_cached_output_errors(cell_index: number): any[] {
         return this._cell_outputs_errors[cell_index];
     }
 
-    // is_widget(widget_info: any): boolean;
-    // is_element(index: number, selector: string): boolean;
-
+    /**
+     * Check if an element exists in a cell.
+     */
     public cell_element_exists(cell_index: number, selector: string): boolean {
         return this._tester.evaluate(function (c, s) {
             var $cell = IPython.notebook.get_cell(c).element;
@@ -83,6 +108,9 @@ export class Notebook {
         }, cell_index, selector, function_name, function_args);
     }
 
+    /**
+     * Get the URL for the notebook server.
+     */
     public get_notebook_server(): string {
         // Get the URL of a notebook server on which to run tests.
         var port = this._tester.cli.get("port");
@@ -90,6 +118,10 @@ export class Notebook {
         return this._tester.cli.get("url") || ('http://127.0.0.1:' + port);
     }
 
+    /**
+     * Append a cell to the notebook
+     * @return cell index
+     */
     public append_cell(contents: string, cell_type: string): number {
 
         // Inserts a cell at the bottom of the notebook
@@ -106,10 +138,19 @@ export class Notebook {
         return index;
     }
 
+    /**
+     * Get an appended cell's contents.
+     * @return contents
+     */
     public get_cell(index: number): string {
         return this._cells[index];
     }
 
+    /**
+     * Execute a cell
+     * @param index
+     * @param expect_error - expect an error to occur when running the cell
+     */
     public execute_cell(index: number, expect_error: boolean=false): void {
         this._tester.then(()=>{
             this._tester.evaluate(function (index) {
@@ -172,6 +213,9 @@ export class Notebook {
         });
     }
 
+    /**
+     * Opens a new notebook.
+     */
     private _open_new_notebook(): void {
         // Create and open a new notebook.
         var baseUrl = this.get_notebook_server();
@@ -213,6 +257,9 @@ export class Notebook {
         });
     }
 
+    /**
+     * Whether or not the page has loaded.
+     */
     private _page_loaded(): boolean {
         // Return whether or not the kernel is running.
         return this._tester.evaluate(function() {
@@ -221,6 +268,9 @@ export class Notebook {
         });
     }
 
+    /**
+     * Whether or not the kernel is running
+     */
     private _kernel_running(): boolean {
         // Return whether or not the kernel is running.
         return this._tester.evaluate(function() {

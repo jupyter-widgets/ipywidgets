@@ -53,7 +53,7 @@ base.tester
 `)
 
 .thenEvaluate(function() {
-    define('MultissetWidget', ['nbextensions/widgets/widgets/js/manager', 'nbextensions/widgets/widgets/js/widget'], function(manager, widget) {
+    define('MultisetWidget', ['nbextensions/widgets/widgets/js/manager', 'nbextensions/widgets/widgets/js/widget'], function(manager, widget) {
         var MultiSetView = widget.DOMWidgetView.extend({
             render: function(){
                 this.model.set('a', 1);
@@ -99,7 +99,7 @@ base.tester
         multiset.model_id = this.notebook.get_output(index).text.trim();
 
         this
-        .wait_for_widget(multiset)
+        .wait_for_widget(multiset.model_id)
 
         .assert_output_equals(
             `print("%d%d%d" % (multiset.a, multiset.b, multiset.c))`,
@@ -143,7 +143,7 @@ base.tester
         // Send 20 characters
         this.sendKeys('.my-throttle-textbox input', '12345678901234567890');
 
-        this.wait_for_widget(textbox);
+        this.wait_for_widget(textbox.model_id);
     }
 )
 
@@ -259,9 +259,9 @@ base.tester
         };
 
         this
-        .wait_for_widget(testwidget)
+        .wait_for_widget(testwidget.model_id)
         .cell(`x.array_list = array("d", [1.5, 2.0, 3.1])`)
-        .wait_for_widget(testwidget)
+        .wait_for_widget(testwidget.model_id)
 
         .then(function() {
             var result = this.evaluate(function(index) {
@@ -298,14 +298,14 @@ base.tester
                     v.touch();
                 }, testwidget.index);
             })
-            .wait_for_widget(testwidget)
+            .wait_for_widget(testwidget.model_id)
             .assert_output_equals(
                 `x.array_binary.tolist() == [4.5, 7.5, 15.0]`,
                 'True\n', 
                 'Binary custom serializer js -> kernel')
 
             .cell(`x.send("some content", [memoryview(b"binarycontent"), memoryview("morecontent")])`)
-            .wait_for_widget(testwidget)
+            .wait_for_widget(testwidget.model_id)
 
             .then(function() {
                 var TextDecoder: any;
@@ -328,7 +328,7 @@ base.tester
                     v.send('content back', [new Uint8Array([1,2,3,4]), new Float64Array([2.1828, 3.14159])])
                 }, testwidget.index);
             })
-            .wait_for_widget(testwidget)
+            .wait_for_widget(testwidget.model_id)
             .assert_output_equals(`
                 all([x.msg[0] == "content back",
                      x.msg[1][0].tolist() == [1,2,3,4],

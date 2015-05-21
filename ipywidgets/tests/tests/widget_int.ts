@@ -38,7 +38,7 @@ base.tester
             this.sendKeys(int_text.query, '1.05');
         })
 
-        .wait_for_widget(int_text)
+        .wait_for_widget(int_text.model_id)
 
         .cell(`print(int_widget.value)`, function(index){
             this.test.assertEquals(this.notebook.get_output(index).text, '1\n', 
@@ -47,7 +47,7 @@ base.tester
             this.sendKeys(int_text.query, '123456789');
         })
 
-        .wait_for_widget(int_text)
+        .wait_for_widget(int_text.model_id)
 
         .cell(`print(int_widget.value)`, function(index) {
             this.test.assertEquals(this.notebook.get_output(index).text, '123456789\n', 
@@ -56,7 +56,7 @@ base.tester
             this.sendKeys(int_text.query, '12hello');
         })
 
-        .wait_for_widget(int_text);
+        .wait_for_widget(int_text.model_id);
     }
 )
 
@@ -130,7 +130,7 @@ base.tester
             }
         )
 
-        .wait_for_widget(int_text2)
+        .wait_for_widget(int_text2.model_id)
 
         .cell(`print(intrange[0].value)`, function(index){
             this.test.assertEquals(this.notebook.get_output(index).text, '1\n', 
@@ -145,7 +145,7 @@ base.tester
             }, {q: int_text2.query});
         })
 
-        .wait_for_widget(int_text2)
+        .wait_for_widget(int_text2.model_id)
 
         .cell(`print(intrange[0].value)`, function(index){
             this.test.assertEquals(this.notebook.get_output(index).text, '50\n', 
@@ -160,7 +160,7 @@ base.tester
             }, {q: int_text2.query});
         })
 
-        .wait_for_widget(int_text2);
+        .wait_for_widget(int_text2.model_id);
     }
 )
 

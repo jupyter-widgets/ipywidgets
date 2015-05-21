@@ -1,3 +1,6 @@
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
+
 import iwidgetcasper = require('./iwidgetcasper');
 import notebook = require('./notebook');
 import printer = require('./printer');
@@ -5,25 +8,26 @@ import printer = require('./printer');
 // Alias casperjs, the widget tests
 export var tester: iwidgetcasper.WidgetCasper = <iwidgetcasper.WidgetCasper><any>casper;
 
-// Commandline Parameters
-// port
-// url
-// logall: don't show cell information at the failure point, instead
-//         show the information for every cell at the end of the
-//         file's tests.
-// logsuccess: Same as logall but additionally shows cell information 
-//             even if no failures occured for the file.
-
 tester.options.waitTimeout=10000;
 
+/**
+ * Start a notebook for testing.
+ */
 tester.start_notebook_then = function(): iwidgetcasper.WidgetCasper {
     this.notebook = new notebook.Notebook(this);
     this.printer = new printer.Printer(this, this.notebook);
     this._reset();
 
+    // CONSOLE.ERROR AND LOG HOOKS
+    // ---------------------------
     // Hook the log and error methods of the console, forcing them to
     // serialize their arguments before printing.  This allows the
     // Objects to cross into the phantom/slimer regime for display.
+    // 
+    // Also, intercept and store the console.error messages.  Phantom
+    // cannot discern between console.error and console.log, so we
+    // have to do it ourselves.  Later, when the cell completes, check
+    // the stored console.error messages and fail if any exist.
     this.thenEvaluate(function(){
         var serialize_arguments = function(f, context, iserror?) {
             return function() {
@@ -44,29 +48,34 @@ tester.start_notebook_then = function(): iwidgetcasper.WidgetCasper {
                             pretty_arguments.push(stringify(value));
 
                         } catch(e) {
-
-                            // Fallback to logging a depth of 3
-                            var copy_fixed_depth = function(obj: any, max_depth: number, depth: number=0) {
-                                var clone: any = {};
-                                for (var key of Object.keys(obj)) {
-                                    switch (typeof obj[key]) {
-                                        case 'boolean':
-                                        case 'string':
-                                        case 'number':
-                                            clone[key] = obj[key];
-                                            break;
-                                        case 'object':
-                                            if (depth < max_depth) {
-                                                clone[key] = copy_fixed_depth(obj[key], max_depth, depth+1);
-                                            }
-                                            break;
+                            try {
+                                // Fallback to logging a depth of 3
+                                var copy_fixed_depth = function(obj: any, max_depth: number, depth: number=0) {
+                                    var clone: any = {};
+                                    for (var key of Object.keys(obj)) {
+                                        switch (typeof obj[key]) {
+                                            case 'boolean':
+                                            case 'string':
+                                            case 'number':
+                                                clone[key] = obj[key];
+                                                break;
+                                            case 'object':
+                                                if (depth < max_depth) {
+                                                    clone[key] = copy_fixed_depth(obj[key], max_depth, depth+1);
+                                                }
+                                                break;
+                                        }
                                     }
-                                }
-                                return clone;
-                            };
+                                    return clone;
+                                };
 
-                            pretty_arguments.push(stringify(copy_fixed_depth(value, 2)));
+                                pretty_arguments.push(stringify(copy_fixed_depth(value, 2)));
+                            } catch(f) {
+                                // Couldn't JSONify, push String repr instead.
+                                pretty_arguments.push(String(value) + ' (not JSONable)');
+                            }
                         }
+
                     } else {
                         pretty_arguments.push(value);
                     }
@@ -108,6 +117,9 @@ tester.start_notebook_then = function(): iwidgetcasper.WidgetCasper {
     return this;
 };
 
+/**
+ * Close the started notebook and conclude the tests.
+ */
 tester.stop_notebook_then = function(): iwidgetcasper.WidgetCasper {
     this.then(() => {
         this._reset_page_error();
@@ -142,8 +154,11 @@ tester.stop_notebook_then = function(): iwidgetcasper.WidgetCasper {
 
 /**
  * Appends and exectues a cell.
- * @param contents
- * @param callback - function to callback when the cell has been executed.
+ * @param contents - contents to put in the cell
+ * @param callback - function to call after the cell has been appended (and executed).
+ * @param expect_error - whether or not an error should be expected when the cell executes.
+ * @param cell_type - type of the cell, defaults to 'code'
+ * @param execute - execute the cell after appending it
  */
 tester.cell = function(contents: string, callback?: (index?: number) => void, expect_error: boolean=false, cell_type: string='code', execute: boolean=true): iwidgetcasper.WidgetCasper {
     this.then(() => {
@@ -190,31 +205,36 @@ tester.cell = function(contents: string, callback?: (index?: number) => void, ex
     return this;
 };
 
+/**
+ * Wait for the notebook to be busy
+ */
 tester.wait_for_busy = function (): iwidgetcasper.WidgetCasper {
     this.waitFor(() => this.notebook.is_busy());
     return this;
 };
 
+/**
+ * Wait for the notebook to be idle
+ */
 tester.wait_for_idle = function (): iwidgetcasper.WidgetCasper {
     this.waitFor(() => this.notebook.is_idle());
     return this;
 };
 
+/**
+ * Wait for a cell to execute and recieve output
+ */
 tester.wait_for_output = function (cell_num: number, out_num: number): iwidgetcasper.WidgetCasper {
     this.wait_for_idle();
     this.waitFor(() => this.notebook.has_output(cell_num, out_num));
     return this;
 };
 
-tester.wait_for_widget = function(widget_info: any): iwidgetcasper.WidgetCasper {
-    // wait for a widget msg que to reach 0
-    //
-    // Parameters
-    // ----------
-    // widget_info : object
-    //      Object which contains info related to the widget.  The model_id property
-    //      is used to identify the widget.
-
+/**
+ * Wait for a widget msg que to reach 0
+ * @param model_id - Model id of the widget.
+ */
+tester.wait_for_widget = function(model_id: string): iwidgetcasper.WidgetCasper {
     // Clear the results of a previous query, if they exist.  Make sure a
     // dictionary exists to store the async results in.
     this.thenEvaluate(function(model_id) {
@@ -223,7 +243,7 @@ tester.wait_for_widget = function(widget_info: any): iwidgetcasper.WidgetCasper 
         } else {
             window.pending_msgs[model_id] = -1;
         } 
-    }, {model_id: widget_info.model_id});
+    }, {model_id: model_id});
 
     // Wait for the pending messages to be 0.
     this.waitFor(function () {
@@ -238,7 +258,7 @@ tester.wait_for_widget = function(widget_info: any): iwidgetcasper.WidgetCasper 
 
             // Return the pending_msgs result.
             return window.pending_msgs[model_id];
-        }, {model_id: widget_info.model_id});
+        }, {model_id: model_id});
 
         if (pending === 0) {
             return true;
@@ -249,14 +269,23 @@ tester.wait_for_widget = function(widget_info: any): iwidgetcasper.WidgetCasper 
     return this;
 };
 
-tester.assert_output_equals = function(content: string, output_text: string, message: string): iwidgetcasper.WidgetCasper {
-    // Append a code cell with the content, then assert the output is equal to output_text
-    this.cell(content, (index) => {
+/**
+ * Assert if output isn't equal to what's expected.
+ * @param code
+ * @param output_text - expected output
+ * @param message - message to associate to the assertion
+ */
+tester.assert_output_equals = function(code: string, output_text: string, message: string): iwidgetcasper.WidgetCasper {
+    // Append a code cell with the code, then assert the output is equal to output_text
+    this.cell(code, (index) => {
         this.test.assertEquals(this.notebook.get_output(index).text.trim(), output_text, message);
     });
     return this;
 };
 
+/**
+ * Wait for an element to exist in a cell.
+ */
 tester.wait_for_element = function(index: number, selector: string): iwidgetcasper.WidgetCasper {
     // Utility function that allows us to easily wait for an element 
     // within a cell.  Uses JQuery selector to look for the element.
@@ -264,6 +293,9 @@ tester.wait_for_element = function(index: number, selector: string): iwidgetcasp
     return this;
 };
 
+/**
+ * Resets the page error flag.  Fails a test if it's true.
+ */
 tester._reset_page_error = function(): void {
     // See if console.error was called in the front-end.
     var logged_errors: boolean = this.evaluate(function() {
@@ -295,6 +327,38 @@ tester._reset_page_error = function(): void {
 
 };
 
+/**
+ * Launch an interactive JS prompt
+ */
+tester.interact = function(): iwidgetcasper.WidgetCasper {
+    this.then(() => {
+        // Start an interactive Javascript console.
+        var system = require('system');
+        system.stdout.writeLine('JS interactive console.');
+        system.stdout.writeLine('Type `exit` to quit.');
+
+        function read_line() {
+            system.stdout.writeLine('JS: ');
+            var line = system.stdin.readLine();
+            return line;
+        }
+
+        var input = read_line();
+        while (input.trim() != 'exit') {
+            var output = this.evaluate(function(code) {
+                return String(eval(code));
+            }, {code: input});
+            system.stdout.writeLine('\nOut: ' + output);
+            input = read_line();
+        }
+    });
+
+    return this;
+};
+
+/**
+ * Reset the logging, for a new notebook.
+ */
 tester._reset = function(): void {
     this._logs = [[]];
     this._logs_errors = [[]];
@@ -303,6 +367,9 @@ tester._reset = function(): void {
     this.printer.reset();
 }
 
+/**
+ * Register event listeners.
+ */
 tester._init_events = function(): void {
     // show captured errors
     var seen_errors = 0;
@@ -312,8 +379,10 @@ tester._init_events = function(): void {
     });
 
     this.on("resource.error", function onError(re: any) {
-        this.echo("Front-end resource error (recorded)", "WARNING");
+        // Ignore about:blank errors
+        if (re.url === 'about:blank') return;
 
+        this.echo("Front-end resource error (recorded)", "WARNING");
         tester._logs_errors[tester.notebook.cell_index].push({
             text: re.errorString,
             traceback: re.url
@@ -399,32 +468,6 @@ tester._init_events = function(): void {
         seen_errors = current_errors;
         tester._reset();
     });
-};
-
-tester.interact = function(): iwidgetcasper.WidgetCasper {
-    this.then(() => {
-        // Start an interactive Javascript console.
-        var system = require('system');
-        system.stdout.writeLine('JS interactive console.');
-        system.stdout.writeLine('Type `exit` to quit.');
-
-        function read_line() {
-            system.stdout.writeLine('JS: ');
-            var line = system.stdin.readLine();
-            return line;
-        }
-
-        var input = read_line();
-        while (input.trim() != 'exit') {
-            var output = this.evaluate(function(code) {
-                return String(eval(code));
-            }, {code: input});
-            system.stdout.writeLine('\nOut: ' + output);
-            input = read_line();
-        }
-    });
-
-    return this;
 };
 
 tester._init_events();

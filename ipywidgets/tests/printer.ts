@@ -1,6 +1,12 @@
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
+
 import iwidgetcasper = require('./iwidgetcasper');
 import notebook = require('./notebook');
 
+/**
+ * Class that pretty prints cell information
+ */
 export class Printer {
     private _tester: iwidgetcasper.WidgetCasper;
     private _notebook: notebook.Notebook;
@@ -12,10 +18,21 @@ export class Printer {
         this.reset();
     }
 
+    /**
+     * Resets the printer for a new notebook.
+     * Why?  The printer remembers what cells it has already
+     * printed so that it never re-prints the same information.
+     */
     public reset(): void {
         this._printed_cells = [];
     }
 
+    /**
+     * Pretty print a cell.
+     * @param cell_index
+     * @param logs - console.log logs, stored internally in WidgetCasper
+     * @param logs_errors - console.error and JS error logs, stored internally in WidgetCasper
+     */
     public print_cell(cell_index: number, logs: string[][], logs_errors: any[][]): void {
         var shown: boolean = (this._printed_cells.indexOf(cell_index) !== -1);
         if (!shown) this._printed_cells.push(cell_index);
@@ -73,6 +90,9 @@ export class Printer {
         this._tester.echo('\n');
     }
 
+    /**
+     * Pretty print a header.
+     */
     private _header(section: string, border_style: any={ bg: 'yellow', fg: 'black', bold: false }): void {
         for (let line of section.split('\n')) {
             while (line.length < 80) {
@@ -82,6 +102,9 @@ export class Printer {
         }
     }
 
+    /**
+     * Pretty print body content.
+     */
     private _body(section: string, body_style: any={ bg: 'black', fg: 'black', bold: false }, border_style: any={ bg: 'yellow', fg: 'black', bold: true }): void {
         for (let line of section.split('\n')) {
             // Wrap line if necessary, note- this niave method requires ansi color

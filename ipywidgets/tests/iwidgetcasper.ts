@@ -1,3 +1,6 @@
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
+
 /// <reference path="notebook_test.d.ts" />
 import notebook = require('./notebook');
 import printer = require('./printer');
@@ -17,12 +20,12 @@ export interface WidgetCasper extends Casper {
     wait_for_busy(): WidgetCasper;
     wait_for_idle(): WidgetCasper;
     wait_for_output(cell_num: number, out_num: number): WidgetCasper;
-    wait_for_widget(widget_info: any): WidgetCasper; // move to notebook?
+    wait_for_widget(model_id: string): WidgetCasper; // move to notebook?
     wait_for_element(index: number, selector: string): WidgetCasper;
     assert_output_equals(content: string, output_text: string, message: string): WidgetCasper;
     interact(): WidgetCasper;
     _reset(): void;
-    
+
 
     // Casper builtin methods.
     // Override return value of Casper to WidgetCasper.

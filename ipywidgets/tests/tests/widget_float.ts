@@ -39,7 +39,7 @@ base.tester
             this.sendKeys(float_text.query, '1.05');
         })
 
-        .wait_for_widget(float_text)
+        .wait_for_widget(float_text.model_id)
 
         .cell(`print(float_widget.value)`, 
             function(index){
@@ -50,7 +50,7 @@ base.tester
             }
         )
 
-        .wait_for_widget(float_text)
+        .wait_for_widget(float_text.model_id)
             
         .cell(`print(float_widget.value)`,
             function(index){
@@ -61,7 +61,7 @@ base.tester
             }
         )
 
-        .wait_for_widget(float_text);
+        .wait_for_widget(float_text.model_id);
     }
 )
 
