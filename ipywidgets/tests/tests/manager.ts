@@ -38,7 +38,7 @@ base.tester
     print(widget.model_id)
     `, 
     function(index) {
-        var output = this.get_output_cell(index).text.trim();
+        var output = this.notebook.get_output(index).text.trim();
         var slider_id = this.evaluate(function() { return (<any>window).slider_id; });
         this.test.assertEquals(output, slider_id, "Widget created from the front-end.");
     }

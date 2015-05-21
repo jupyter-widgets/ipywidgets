@@ -21,7 +21,7 @@ base.tester
     print("Success")
     `,
     function(string_index){
-        this.test.assertEquals(this.get_output_cell(string_index).text, 'Success\n', 
+        this.test.assertEquals(this.notebook.get_output(string_index).text, 'Success\n', 
             'Create string widget cell executed with correct output.');
 
         // Wait for the widget to actually display.
@@ -32,35 +32,35 @@ base.tester
 
         // Continue with the tests.
         .then(function(){
-            this.test.assert(this.cell_element_exists(string_index, 
+            this.test.assert(this.notebook.cell_element_exists(string_index, 
                 '.widget-area .widget-subarea'),
                 'Widget subarea exists.');
 
-            this.test.assert(this.cell_element_exists(string_index, 
+            this.test.assert(this.notebook.cell_element_exists(string_index, 
                 textbox_selector),
                 'Textbox exists.');
 
-            this.test.assert(this.cell_element_exists(string_index, 
+            this.test.assert(this.notebook.cell_element_exists(string_index, 
                 textarea_selector),
                 'Textarea exists.');
 
-            this.test.assert(this.cell_element_function(string_index, 
+            this.test.assert(this.notebook.cell_element_function(string_index, 
                 textarea_selector, 'val')=='xyz',
                 'Python set textarea value.');
 
-            this.test.assert(this.cell_element_function(string_index, 
+            this.test.assert(this.notebook.cell_element_function(string_index, 
                 textbox_selector, 'val')=='xyz',
                 'Python set textbox value.');
 
-            this.test.assert(this.cell_element_exists(string_index, 
+            this.test.assert(this.notebook.cell_element_exists(string_index, 
                 latex_selector),
                 'MathJax parsed the LaTeX successfully.');
 
-            this.test.assert(this.cell_element_function(string_index, 
+            this.test.assert(this.notebook.cell_element_function(string_index, 
                 textarea_selector, 'attr', ['placeholder'])=='def',
                 'Python set textarea placeholder.');
 
-            this.test.assert(this.cell_element_function(string_index, 
+            this.test.assert(this.notebook.cell_element_function(string_index, 
                 textbox_selector, 'attr', ['placeholder'])=='abc',
                 'Python set textbox placehoder.');
         });

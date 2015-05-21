@@ -1,100 +1,9 @@
-/// <reference path="notebook_test.d.ts" />
+import iwidgetcasper = require('./iwidgetcasper');
+import notebook = require('./notebook');
+import printer = require('./printer');
 
-export interface WidgetCasper extends Casper {
-    cell(text: string, callback?: (index?: number) => void, expect_error?: boolean, cell_type?: string, execute?: boolean): WidgetCasper;
-    assert_output_equals(content: string, output_text: string, message: string): WidgetCasper;
-    start_notebook_then(): WidgetCasper;
-    stop_notebook_then(): WidgetCasper;
-    wait_for_busy(): WidgetCasper;
-    wait_for_idle(): WidgetCasper;
-    wait_for_output(cell_num: number, out_num: number): WidgetCasper;
-    wait_for_widget(widget_info: any): WidgetCasper;
-    wait_for_element(index: number, selector: string): WidgetCasper;
-    
-    get_output_cell(cell_num: number, out_num: number): string;
-    cell_element_exists(index: number, selector: string): boolean;
-    cell_element_function(index: string, selector: string, function_name: string, function_args: any[]): any;
-    interact(): void; // TODO
-    
-    _logs: string[][];
-    _logs_errors: any[][];
-    _cell_index: number;
-    _cells: string[];
-    _cell_outputs: string[];
-    _cell_outputs_errors: string[];
-    _printed_cells: number[];
-    _page_error_flag: boolean;
-    _reset_page_error(): void;
-    _init_events(): void; // TODO
-    _open_new_notebook(): void;
-    _get_notebook_server(): string;
-    _page_loaded(): boolean;
-    _kernel_running(): boolean;
-    _header(section: string, border_style?: any): void;
-    _body(section: string, body_style?: any, border_style?: any): void;
-
-    colorizer: Colorizer;
-    cli: { get: (name: string) => any; has: (name: string) => boolean; };
-    on(evt: string, cb: (...args: any[])=>any): void;
-    back(): WidgetCasper;
-    capture(targetFilePath: string, clipRect: ClipRect): WidgetCasper;
-    captureSelector(targetFile: string, selector: string): WidgetCasper;
-    clear(): WidgetCasper;
-    debugHTML(selector?: string, outer?: boolean): WidgetCasper;
-    debugPage(): WidgetCasper;
-    die(message: string, status?: number): WidgetCasper;
-    download(url: string, target?: string, method?: string, data?: any): WidgetCasper;
-    each<T>(array: T[], fn: (self: WidgetCasper, item: T, index: number) => void): WidgetCasper;
-    echo(message: string, style?: string): WidgetCasper;
-    evaluate(fn: (...args: any[]) => any, ...args: any[]): any;
-    evaluateOrDie(fn: (...args: any[]) => any, message?: string, status?: number): WidgetCasper;
-    exit(status?: number): WidgetCasper;
-    forward(): WidgetCasper;
-    log(message: string, level?: string, space?: string): WidgetCasper;
-    open(location: string, settings: OpenSettings): WidgetCasper;
-    reload(then?: (response: HttpResponse) => void): WidgetCasper;
-    repeat(times: number, then: Function): WidgetCasper;
-    run(onComplete: Function, time?: number): WidgetCasper;
-    scrollTo(x: number, y: number): WidgetCasper;
-    scrollToBottom(): WidgetCasper;
-    sendKeys(selector: string, keys: string, options?: any): WidgetCasper;
-    setHttpAuth(username: string, password: string): WidgetCasper;
-    start(url?: string, then?: (response: HttpResponse) => void): WidgetCasper;
-    then(fn: (self?: WidgetCasper) => void): WidgetCasper;
-    thenBypass(nb: number): WidgetCasper;
-    thenBypassIf(condition: any, nb: number): WidgetCasper;
-    thenBypassUnless(condition: any, nb: number): WidgetCasper;
-    thenClick(selector: string): WidgetCasper;
-    thenEvaluate(fn: () => any, ...args: any[]): WidgetCasper;
-    thenOpen(location: string, then?: (response: HttpResponse) => void): WidgetCasper;
-    thenOpen(location: string, options?: OpenSettings, then?: (response: HttpResponse) => void): WidgetCasper;
-    thenOpenAndEvaluate(location: string, then?: Function, ...args: any[]): WidgetCasper;
-    unwait(): WidgetCasper;
-    viewport(width: number, height: number): WidgetCasper;
-    wait(timeout: number, then?: Function): WidgetCasper;
-    waitFor(testFx: Function, then?: Function, onTimeout?: Function, timeout?: number): WidgetCasper;
-    waitForAlert(then: Function, onTimeout?: Function, timeout?: number): WidgetCasper;
-    waitForPopup(urlPattern: string, then?: Function, onTimeout?: Function, timeout?: number): WidgetCasper;
-    waitForPopup(urlPattern: RegExp, then?: Function, onTimeout?: Function, timeout?: number): WidgetCasper;
-    waitForUrl(url: string, then?: Function, onTimeout?: Function, timeout?: number): WidgetCasper;
-    waitForUrl(url: RegExp, then?: Function, onTimeout?: Function, timeout?: number): WidgetCasper;
-    waitForSelector(selector: string, then?: Function, onTimeout?: Function, timeout?: number): WidgetCasper;
-    waitWhileSelector(selector: string, then?: Function, onTimeout?: Function, timeout?: number): WidgetCasper;
-    waitForResource(testFx: Function, then?: Function, onTimeout?: Function, timeout?: number): WidgetCasper;
-    waitForText(pattern: string, then?: Function, onTimeout?: Function, timeout?: number): WidgetCasper;
-    waitForText(pattern: RegExp, then?: Function, onTimeout?: Function, timeout?: number): WidgetCasper;
-    waitUntilVisible(selector: string, then?: Function, onTimeout?: Function, timeout?: number): WidgetCasper;
-    waitWhileVisible(selector: string, then?: Function, onTimeout?: Function, timeout?: number): WidgetCasper;
-    warn(message: string): WidgetCasper;
-    withFrame(frameInfo: string, then: Function): WidgetCasper;
-    withFrame(frameInfo: number, then: Function): WidgetCasper;
-    withPopup(popupInfo: string, step: Function): WidgetCasper;
-    withPopup(popupInfo: RegExp, step: Function): WidgetCasper;
-    zoom(factor: number): WidgetCasper;
-}
-
-export var tester: WidgetCasper = <WidgetCasper><any>casper;
-// var colorizer = require('colorizer').create();
+// Alias casperjs, the widget tests
+export var tester: iwidgetcasper.WidgetCasper = <iwidgetcasper.WidgetCasper><any>casper;
 
 // Commandline Parameters
 // port
@@ -107,10 +16,77 @@ export var tester: WidgetCasper = <WidgetCasper><any>casper;
 
 tester.options.waitTimeout=10000;
 
-tester.start_notebook_then = function(): WidgetCasper {
+tester.start_notebook_then = function(): iwidgetcasper.WidgetCasper {
+    this.notebook = new notebook.Notebook(this);
+    this.printer = new printer.Printer(this, this.notebook);
+    this._reset();
 
-    // Wrap a notebook test to reduce boilerplate.
-    this._open_new_notebook();
+    // Hook the log and error methods of the console, forcing them to
+    // serialize their arguments before printing.  This allows the
+    // Objects to cross into the phantom/slimer regime for display.
+    this.thenEvaluate(function(){
+        var serialize_arguments = function(f, context, iserror?) {
+            return function() {
+                var pretty_arguments = [];
+                for (var i = 0; i < arguments.length; i++) {
+                    var value = arguments[i];
+                    if (value instanceof Object) {
+                        var name = value.name || 'Object';
+                        
+                        // Print a JSON string representation of the object.
+                        // If we don't do this, [Object object] gets printed
+                        // by casper, which is useless.  The long regular
+                        // expression reduces the verbosity of the JSON.
+                        var stringify = (obj) => name + ' {' + JSON.stringify(obj, null, '  ')
+                                .replace(/(\s+)?({)?(\s+)?(}(\s+)?,?)?(\s+)?(\s+)?\n/g, '\n')
+                                .replace(/\n(\s+)?\n/g, '\n');
+                        try {
+                            pretty_arguments.push(stringify(value));
+
+                        } catch(e) {
+
+                            // Fallback to logging a depth of 3
+                            var copy_fixed_depth = function(obj: any, max_depth: number, depth: number=0) {
+                                var clone: any = {};
+                                for (var key of Object.keys(obj)) {
+                                    switch (typeof obj[key]) {
+                                        case 'boolean':
+                                        case 'string':
+                                        case 'number':
+                                            clone[key] = obj[key];
+                                            break;
+                                        case 'object':
+                                            if (depth < max_depth) {
+                                                clone[key] = copy_fixed_depth(obj[key], max_depth, depth+1);
+                                            }
+                                            break;
+                                    }
+                                }
+                                return clone;
+                            };
+
+                            pretty_arguments.push(stringify(copy_fixed_depth(value, 2)));
+                        }
+                    } else {
+                        pretty_arguments.push(value);
+                    }
+                }
+                
+                // Phantom loses the knowledge about whether or not this was 
+                // a console.error when passing into the test context, so we
+                // will keep track of that ourselves.
+                
+                if (iserror) {
+                    if (window._logged_error === undefined) window._logged_error = [];
+                    window._logged_error.push(pretty_arguments);
+                } else {
+                    f.apply(context, pretty_arguments);    
+                }
+            };
+        };
+        console.log = serialize_arguments(console.log, console);
+        console.error = serialize_arguments(console.error, console, true);
+    });
 
     // Echo whether or not we are running this test using SlimerJS
     if (this.evaluate(function(){
@@ -132,8 +108,11 @@ tester.start_notebook_then = function(): WidgetCasper {
     return this;
 };
 
-tester.stop_notebook_then = function(): WidgetCasper {
-    
+tester.stop_notebook_then = function(): iwidgetcasper.WidgetCasper {
+    this.then(() => {
+        this._reset_page_error();
+    });
+
     // Kill the kernel.
     // Shut down the current notebook's kernel.
     this.thenEvaluate(function() {
@@ -166,9 +145,11 @@ tester.stop_notebook_then = function(): WidgetCasper {
  * @param contents
  * @param callback - function to callback when the cell has been executed.
  */
-tester.cell = function(contents: string, callback?: (index?: number) => void, expect_error: boolean=false, cell_type: string='code', execute: boolean=true): WidgetCasper {
-    this._reset_page_error();
-
+tester.cell = function(contents: string, callback?: (index?: number) => void, expect_error: boolean=false, cell_type: string='code', execute: boolean=true): iwidgetcasper.WidgetCasper {
+    this.then(() => {
+        this._reset_page_error();
+    });
+    
     let lines: string[] = contents.split('\n');
     let indent: number = null;
     for (let line of lines) {
@@ -189,83 +170,13 @@ tester.cell = function(contents: string, callback?: (index?: number) => void, ex
     }
     contents = new_lines.join('\n');
     tester.then(() => {
-        
-        // Inserts a cell at the bottom of the notebook
-        // Returns the new cell's index.
-        let index: number = this.evaluate(function (cell_type: string, contents: string){
-            var cell: any = IPython.notebook.insert_cell_at_bottom(cell_type);
-            cell.set_text(contents);
-            return IPython.notebook.find_cell_index(cell);
-        }, cell_type, contents);
-
-        // Increment the logged cell index.
-        this._cell_index++;
+        let index: number = this.notebook.append_cell(contents, cell_type);
         this._logs.push([]);
         this._logs_errors.push([]);
-        this._cells.push(contents);
 
         // Synchronously execute a cell by index.
         if (execute) {
-            this.then(()=>{
-                this.evaluate(function (index) {
-                    var cell = IPython.notebook.get_cell(index);
-                    cell.execute();
-                }, index);
-            });
-            this.wait_for_idle();
-    
-            // Check for errors.
-            this.then(() => {
-                var nonerrors = this.evaluate(function (index) {
-                    var cell = IPython.notebook.get_cell(index);
-                    var outputs = cell.output_area.outputs;
-                    var nonerrors = [];
-                    for (var i = 0; i < outputs.length; i++) {
-                        if (outputs[i].output_type !== 'error') {
-                            nonerrors.push(outputs[i]);
-                        }
-                    }
-                    return nonerrors;
-                }, index);
-                tester._cell_outputs.push(nonerrors);
-
-                var errors = this.evaluate(function (index) {
-                    var cell = IPython.notebook.get_cell(index);
-                    var outputs = cell.output_area.outputs;
-                    var errors = [];
-                    for (var i = 0; i < outputs.length; i++) {
-                        if (outputs[i].output_type === 'error') {
-                            errors.push(outputs[i]);
-                        }
-                    }
-                    return errors;
-                }, index);
-                tester._cell_outputs_errors.push(errors);
-
-                var error = this.evaluate(function (index) {
-                    var cell = IPython.notebook.get_cell(index);
-                    var outputs = cell.output_area.outputs;
-                    for (var i = 0; i < outputs.length; i++) {
-                        if (outputs[i].output_type == 'error') {
-                            return outputs[i];
-                        }
-                    }
-                    return false;
-                }, index);
-                
-                if (error === null) {
-                    this.test.fail("Failed to check for error output");
-                }
-                
-                if (!expect_error && error !== false) {
-                    this.test.fail("Error running cell");
-                }
-                
-                if (expect_error && error === false) {
-                    this.test.fail("An error was expected but the cell didn't raise one");
-                }
-            });
-
+            this.notebook.execute_cell(index, expect_error);
         }
 
         // Call the callback if it's defined.
@@ -279,48 +190,23 @@ tester.cell = function(contents: string, callback?: (index?: number) => void, ex
     return this;
 };
 
-tester.wait_for_busy = function (): WidgetCasper {
-    // Waits for the notebook to enter a busy state.
-    this.waitFor(function () {
-        return this.evaluate(function () {
-            return IPython._status == 'busy';
-        });
-    });
+tester.wait_for_busy = function (): iwidgetcasper.WidgetCasper {
+    this.waitFor(() => this.notebook.is_busy());
     return this;
 };
 
-tester.wait_for_idle = function (): WidgetCasper {
-    // Waits for the notebook to idle.
-    this.waitFor(function () {
-        return this.evaluate(function () {
-            return IPython._status == 'idle';
-        });
-    });
+tester.wait_for_idle = function (): iwidgetcasper.WidgetCasper {
+    this.waitFor(() => this.notebook.is_idle());
     return this;
 };
 
-tester.wait_for_output = function (cell_num: number, out_num: number): WidgetCasper {
-    // wait for the nth output in a given cell
+tester.wait_for_output = function (cell_num: number, out_num: number): iwidgetcasper.WidgetCasper {
     this.wait_for_idle();
-    out_num = out_num || 0;
-    this.then(function() {
-        this.waitFor(function (c, o) {
-            return this.evaluate(function get_output(c, o) {
-                var cell = IPython.notebook.get_cell(c);
-                return cell.output_area.outputs.length > o;
-            },
-            // pass parameter from the test suite js to the browser code js
-            {c : cell_num, o : out_num});
-        });
-    },
-    function then() { },
-    function timeout() {
-        this.echo("wait_for_output timed out!");
-    });
+    this.waitFor(() => this.notebook.has_output(cell_num, out_num));
     return this;
 };
 
-tester.wait_for_widget = function(widget_info: any): WidgetCasper {
+tester.wait_for_widget = function(widget_info: any): iwidgetcasper.WidgetCasper {
     // wait for a widget msg que to reach 0
     //
     // Parameters
@@ -363,98 +249,90 @@ tester.wait_for_widget = function(widget_info: any): WidgetCasper {
     return this;
 };
 
-tester.assert_output_equals = function(content: string, output_text: string, message: string): WidgetCasper {
+tester.assert_output_equals = function(content: string, output_text: string, message: string): iwidgetcasper.WidgetCasper {
     // Append a code cell with the content, then assert the output is equal to output_text
     this.cell(content, (index) => {
-        this.test.assertEquals(this.get_output_cell(index).text.trim(), output_text, message);
+        this.test.assertEquals(this.notebook.get_output(index).text.trim(), output_text, message);
     });
     return this;
 };
 
-tester.get_output_cell = function (cell_num: number, out_num: number): string {
-    // return an output of a given cell
-    out_num = out_num || 0;
-    var result = tester.evaluate(function (c, o) {
-        var cell = IPython.notebook.get_cell(c);
-        return cell.output_area.outputs[o];
-    },
-    {c : cell_num, o : out_num});
-    if (!result) {
-        var num_outputs = tester.evaluate(function (c) {
-            var cell = IPython.notebook.get_cell(c);
-            return cell.output_area.outputs.length;
-        },
-        {c : cell_num});
-        this.test.assertTrue(false,
-            "Cell " + cell_num + " has no output #" + out_num + " (" + num_outputs + " total)"
-        );
-    } else {
-        return result;
-    }
-};
-
-tester.wait_for_element = function(index: number, selector: string): WidgetCasper {
+tester.wait_for_element = function(index: number, selector: string): iwidgetcasper.WidgetCasper {
     // Utility function that allows us to easily wait for an element 
     // within a cell.  Uses JQuery selector to look for the element.
-    this.waitFor(() => this.cell_element_exists(index, selector));
+    this.waitFor(() => this.notebook.cell_element_exists(index, selector));
     return this;
 };
 
-tester.cell_element_exists = function(index: number, selector: string): boolean {
-    // Utility function that allows us to easily check if an element exists 
-    // within a cell.  Uses JQuery selector to look for the element.
-    return tester.evaluate(function (index, selector) {
-        var $cell = IPython.notebook.get_cell(index).element;
-        return $cell.find(selector).length > 0;
-    }, index, selector);
-};
-
-tester.cell_element_function = function(index: string, selector: string, function_name: string, function_args: any[]): any {
-    // Utility function that allows us to execute a jQuery function on an 
-    // element within a cell.
-    return tester.evaluate(function (index, selector, function_name, function_args) {
-        var $cell = IPython.notebook.get_cell(index).element;
-        var $el = $cell.find(selector);
-        return $el[function_name].apply($el, function_args);
-    }, index, selector, function_name, function_args);
-};
-
 tester._reset_page_error = function(): void {
-    if (this._page_error_flag) {
+    // See if console.error was called in the front-end.
+    var logged_errors: boolean = this.evaluate(function() {
+        return window._logged_error !== undefined && window._logged_error.length > 0;
+    });
+    
+    // Copy logged errors into page error cache.
+    if (logged_errors) {
+        var errors: any[][] = this.evaluate(function() {
+            var errors = window._logged_error;
+            window._logged_error = [];
+            return errors;
+        });
+
+        for (var error_list of errors) {
+            for (var error of error_list) {
+                tester._logs_errors[tester.notebook.cell_index].push({
+                    text: 'console.error',
+                    traceback: error
+                });
+            }
+        }
+    }
+
+    if (this._page_error_flag || logged_errors) {
         this._page_error_flag = false;
         this.test.fail('Front-end JS error');
     }
+
 };
+
+tester._reset = function(): void {
+    this._logs = [[]];
+    this._logs_errors = [[]];
+    this._page_error_flag = false;
+
+    this.printer.reset();
+}
 
 tester._init_events = function(): void {
     // show captured errors
     var seen_errors = 0;
-    var reset = () => {
-        tester._logs = [[]];
-        tester._logs_errors = [[]];
-        tester._cell_index = 0;
-        tester._cells = [];
-        tester._printed_cells = [];
-        tester._cell_outputs = [];
-        tester._cell_outputs_errors = [];
-        tester._page_error_flag = false;
-    };
-    reset();
-
+    
     this.on('remote.message', (msg) => {
-        this._logs[this._cell_index].push(msg);
+        this._logs[this.notebook.cell_index].push(msg);
+    });
+
+    this.on("resource.error", function onError(re: any) {
+        this.echo("Front-end resource error (recorded)", "WARNING");
+
+        tester._logs_errors[tester.notebook.cell_index].push({
+            text: re.errorString,
+            traceback: re.url
+        });
+
+        // Set the page error flag.
+        tester._page_error_flag = true;
     });
 
     this.on("page.error", function onError(msg: string, trace) {
         // show errors in the browser
-        this.echo('Front-end JS (recorded)', 'WARNING');
+        this.echo('Front-end JS error (recorded)', 'WARNING');
 
         let error = {
             text: msg,
             traceback: ''
         }
 
-        var local_path = this._get_notebook_server();
+        var local_path = this.notebook.get_notebook_server();
         for (var i = 0; i < trace.length; i++) {
             var frame = trace[i];
             var file = frame.file;
@@ -473,74 +351,16 @@ tester._init_events = function(): void {
             error.traceback += "\n    line " + frame.line + " of " + file + frame_text;
         }
 
-        tester._logs_errors[tester._cell_index].push(error);
+        tester._logs_errors[tester.notebook.cell_index].push(error);
 
         // Set the page error flag.
         tester._page_error_flag = true;
     });
 
-    // Outputs a cell log.
-    var output_cell = (cell_index: number) => {
-        var shown: boolean = (this._printed_cells.indexOf(cell_index) !== -1);
-        if (!shown) this._printed_cells.push(cell_index);
-        if (cell_index===0) {
-            tester._header('Before cell(s)' + (shown ? ', see details above.' : ':'), { bg: 'yellow', fg: 'black', bold: true });
-        } else {
-            tester._header('While in cell ' + String(cell_index) + (shown ? ', see details above.' : ':'), { bg: 'yellow', fg: 'black', bold: true });
-        }
-        if (!shown || that._logs[cell_index].length !== 0 || that._logs_errors[cell_index].length !== 0) {
-
-
-            if (cell_index!==0 && !shown) {
-                tester._header('kernel');
-                tester._body('in:', { bg: 'black', fg: 'cyan', bold: true });
-                tester._body(tester._cells[cell_index-1], { bg: 'black', fg: 'white', bold: false });
-                tester._body('out:', { bg: 'black', fg: 'cyan', bold: true });
-                let outputs = tester._cell_outputs[cell_index-1];
-                for (let output of outputs) {
-                    if (output['output_type']==='stream') {
-                        if (output['name']==='stdout') {
-                            tester._body(output['text'], { bg: 'black', fg: 'white', bold: false });
-                        } else if (output['name']==='stderr') {
-                            tester._body(output['text'], { bg: 'black', fg: 'red', bold: false });
-                        }
-                    }
-                }
-                tester._body('error:', { bg: 'black', fg: 'cyan', bold: true });
-                let errors = tester._cell_outputs_errors[cell_index-1];
-                for (let error of errors) {
-                    tester._body(error['ename'], { bg: 'black', fg: 'red', bold: true });
-                    tester._body(error['evalue'], { bg: 'black', fg: 'red', bold: false });
-                    tester._body(error['traceback'].join('\n'), { bg: 'black', fg: 'white', bold: false });
-                }
-            }
-
-            tester._header('front-end console log' + (shown ? ' (continued)' : ''));
-            tester._body('log:', { bg: 'black', fg: 'cyan', bold: true });
-            if (that._logs[cell_index].length !== 0) {
-                for (var i = 0; i < that._logs[cell_index].length; i++) {
-                    tester._body(that._logs[cell_index][i], { bg: 'black', fg: 'white', bold: false });
-                }
-                that._logs[cell_index] = [];
-            }
-            tester._body('error:', { bg: 'black', fg: 'cyan', bold: true });
-            if (that._logs_errors[cell_index].length !== 0) {
-                for (var i = 0; i < that._logs_errors[cell_index].length; i++) {
-                    tester._body(that._logs_errors[cell_index][i].text, { bg: 'black', fg: 'red', bold: true });
-                    tester._body(that._logs_errors[cell_index][i].traceback, { bg: 'black', fg: 'white', bold: false });
-                }
-                that._logs_errors[cell_index] = [];
-            }
-            
-            tester._header('');
-        }
-        tester.echo('\n');
-    };
-
     // Handle per-cell failure.
     var that = this;
-    var logall: boolean = Boolean(tester.cli.has('logall'));
-    var logsuccess: boolean = Boolean(tester.cli.has('logsuccess'));
+    var logall: boolean = tester.cli.has('logall');
+    var logsuccess: boolean = tester.cli.has('logsuccess');
 
     this.test.on('fail', function(failure) {
         var timeElapsed = <any>(new Date()) - this.currentTestStartTime;
@@ -549,7 +369,7 @@ tester._init_events = function(): void {
         tester.echo('');
         if (!(logall || logsuccess)) {
             tester.echo('Details:');
-            output_cell(that._logs.length-1);
+            that.printer.print_cell(that._logs.length-1, that._logs, that._logs_errors);
         } else {            
             tester.echo("For details, see cell " + String(that._logs.length-1) + " bellow.", 'WARN_BAR');
             tester.echo('');
@@ -572,165 +392,39 @@ tester._init_events = function(): void {
         if (logsuccess || (logall && current_errors > seen_errors)) {
             // Output cell information.
             for (var i = 0; i < that._logs.length; i++) {
-                output_cell(i);
+                that.printer.print_cell(i, that._logs, that._logs_errors);
             }
         }
 
         seen_errors = current_errors;
-        tester._reset_page_error();
-        reset();
+        tester._reset();
     });
 };
 
-tester._header = function(section: string, border_style: any={ bg: 'yellow', fg: 'black', bold: false }): void {
-    for (let line of section.split('\n')) {
-        while (line.length < 80) {
-            line += ' ';
+tester.interact = function(): iwidgetcasper.WidgetCasper {
+    this.then(() => {
+        // Start an interactive Javascript console.
+        var system = require('system');
+        system.stdout.writeLine('JS interactive console.');
+        system.stdout.writeLine('Type `exit` to quit.');
+
+        function read_line() {
+            system.stdout.writeLine('JS: ');
+            var line = system.stdin.readLine();
+            return line;
         }
-        console.log(tester.colorizer.format(line, border_style));
-    }
-};
 
-tester._body = function(section: string, body_style: any={ bg: 'black', fg: 'black', bold: false }, border_style: any={ bg: 'yellow', fg: 'black', bold: true }): void {
-    for (let line of section.split('\n')) {
-        // Wrap line if necessary, note- this niave method requires ansi color
-        // codes to be stripped!
-        line = line.replace(/\x1b[^m]*m/g, '');
-        var continuation: boolean = false;
-        while (line.length > 0) {
-            let subline: string = line.substr(0, 77);
-            line = line.replace(subline, '');
-
-            var padding: string = '';
-            while (subline.length + padding.length < 77) {
-                padding += ' ';
-            }
-
-            console.log(
-                <string><any>tester.colorizer.format(continuation ? '>' : ' ', border_style) + 
-                <string><any>tester.colorizer.format(' ' + subline, body_style) +
-                <string><any>tester.colorizer.format(padding, body_style) + 
-                <string><any>tester.colorizer.format(line.length>0 ? '>' : ' ', border_style));
-            continuation = true;
+        var input = read_line();
+        while (input.trim() != 'exit') {
+            var output = this.evaluate(function(code) {
+                return String(eval(code));
+            }, {code: input});
+            system.stdout.writeLine('\nOut: ' + output);
+            input = read_line();
         }
-    }
-};
-
-tester.interact = function(): void {
-    // Start an interactive Javascript console.
-    var system = require('system');
-    system.stdout.writeLine('JS interactive console.');
-    system.stdout.writeLine('Type `exit` to quit.');
-
-    function read_line() {
-        system.stdout.writeLine('JS: ');
-        var line = system.stdin.readLine();
-        return line;
-    }
-
-    var input = read_line();
-    while (input.trim() != 'exit') {
-        var output = this.evaluate(function(code) {
-            return String(eval(code));
-        }, {code: input});
-        system.stdout.writeLine('\nOut: ' + output);
-        input = read_line();
-    }
-};
-
-tester._open_new_notebook = function(): void {
-    // Create and open a new notebook.
-    var baseUrl = this._get_notebook_server();
-    this.start(baseUrl);
-    this.waitFor(this._page_loaded);
-    this.waitForSelector('#kernel-python2 a, #kernel-python3 a');
-    this.thenClick('#kernel-python2 a, #kernel-python3 a');
-    
-    this.waitForPopup('');
-
-    this.withPopup('', function () {this.waitForSelector('.CodeMirror-code');});
-    this.then(function () {
-        this.open(this.popups[0].url);
-    });
-    this.waitFor(this._page_loaded);
-
-    // Hook the log and error methods of the console, forcing them to
-    // serialize their arguments before printing.  This allows the
-    // Objects to cross into the phantom/slimer regime for display.
-    this.thenEvaluate(function(){
-        var serialize_arguments = function(f, context) {
-            return function() {
-                var pretty_arguments = [];
-                for (var i = 0; i < arguments.length; i++) {
-                    var value = arguments[i];
-                    if (value instanceof Object) {
-                        var name = value.name || 'Object';
-                        // Print a JSON string representation of the object.
-                        // If we don't do this, [Object object] gets printed
-                        // by casper, which is useless.  The long regular
-                        // expression reduces the verbosity of the JSON.
-                        pretty_arguments.push(name + ' {' + JSON.stringify(value, null, '  ')
-                            .replace(/(\s+)?({)?(\s+)?(}(\s+)?,?)?(\s+)?(\s+)?\n/g, '\n')
-                            .replace(/\n(\s+)?\n/g, '\n'));
-                    } else {
-                        pretty_arguments.push(value);
-                    }
-                }
-                f.apply(context, pretty_arguments);
-            };
-        };
-        console.log = serialize_arguments(console.log, console);
-        console.error = serialize_arguments(console.error, console);
     });
 
-    // Make sure the kernel has started
-    this.waitFor(this._kernel_running);
-    // track the IPython busy/idle state
-    this.thenEvaluate(function () {
-        (<any>require)(['base/js/namespace', 'base/js/events'], function (IPython, events) {
-        
-            events.on('kernel_idle.Kernel',function () {
-                IPython._status = 'idle';
-            });
-            events.on('kernel_busy.Kernel',function () {
-                IPython._status = 'busy';
-            });
-        });
-    });
-
-    // Because of the asynchronous nature of SlimerJS (Gecko), we need to make
-    // sure the notebook has actually been loaded into the IPython namespace
-    // before running any tests.
-    this.waitFor(function() {
-        return this.evaluate(function () {
-            return IPython.notebook;
-        });
-    });
-};
-
-tester._get_notebook_server = function(): string {
-    // Get the URL of a notebook server on which to run tests.
-    var port = tester.cli.get("port");
-    port = (typeof port === 'undefined') ? '8888' : port;
-    return tester.cli.get("url") || ('http://127.0.0.1:' + port);
-};
-
-tester._page_loaded = function(): boolean {
-    // Return whether or not the kernel is running.
-    return this.evaluate(function() {
-        return typeof IPython !== "undefined" &&
-            IPython.page !== undefined;
-    });
-};
-
-tester._kernel_running = function(): boolean {
-    // Return whether or not the kernel is running.
-    return this.evaluate(function() {
-        return IPython &&
-        IPython.notebook &&
-        IPython.notebook.kernel &&
-        IPython.notebook.kernel.is_connected();
-    });
+    return this;
 };
 
 tester._init_events();

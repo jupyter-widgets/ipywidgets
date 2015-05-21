@@ -9,10 +9,10 @@ var list_selector = '.widget-area .widget-subarea .widget-hbox .widget-listbox';
 var selection_values = 'abcd';
 var check_state = function(selection_index, context, index, state){
     if (0 <= index && index < selection_values.length) {
-        var multibtn_state = context.cell_element_function(selection_index, multibtn_selector + ' .btn:nth-child(' + (index + 1) + ')', 'hasClass', ['active']);
-        var radio_state = context.cell_element_function(selection_index, radio_selector + ' .radio:nth-child(' + (index + 1) + ') input', 'prop', ['checked']);
-        var list_val = context.cell_element_function(selection_index, list_selector, 'val');
-        var combo_val = context.cell_element_function(selection_index, combo_selector, 'html');
+        var multibtn_state = context.notebook.cell_element_function(selection_index, multibtn_selector + ' .btn:nth-child(' + (index + 1) + ')', 'hasClass', ['active']);
+        var radio_state = context.notebook.cell_element_function(selection_index, radio_selector + ' .radio:nth-child(' + (index + 1) + ') input', 'prop', ['checked']);
+        var list_val = context.notebook.cell_element_function(selection_index, list_selector, 'val');
+        var combo_val = context.notebook.cell_element_function(selection_index, combo_selector, 'html');
         
         var val = selection_values.charAt(index);
         var list_state = (val == list_val);
@@ -59,7 +59,7 @@ base.tester
     print("Success")
     `,
     function(selection_index){
-        this.test.assertEquals(this.get_output_cell(selection_index).text, 'Success\n', 
+        this.test.assertEquals(this.notebook.get_output(selection_index).text, 'Success\n', 
             'Create selection cell executed with correct output.');
 
 
@@ -72,20 +72,20 @@ base.tester
 
         // Continue with the tests.
         .then(function() {
-            this.test.assert(this.cell_element_exists(selection_index, 
+            this.test.assert(this.notebook.cell_element_exists(selection_index, 
                 '.widget-area .widget-subarea'),
                 'Widget subarea exists.');
 
-            this.test.assert(this.cell_element_exists(selection_index, combo_selector),
+            this.test.assert(this.notebook.cell_element_exists(selection_index, combo_selector),
                  'Widget combobox exists.');
 
-            this.test.assert(this.cell_element_exists(selection_index, multibtn_selector),
+            this.test.assert(this.notebook.cell_element_exists(selection_index, multibtn_selector),
                 'Widget multibutton exists.');
 
-            this.test.assert(this.cell_element_exists(selection_index, radio_selector),
+            this.test.assert(this.notebook.cell_element_exists(selection_index, radio_selector),
                 'Widget radio buttons exists.');
 
-            this.test.assert(this.cell_element_exists(selection_index, list_selector),
+            this.test.assert(this.notebook.cell_element_exists(selection_index, list_selector),
                 'Widget list exists.');
 
             // Verify that no items are selected.
@@ -98,14 +98,14 @@ base.tester
             print("Success")
             `,
             function(index){
-                this.test.assertEquals(this.get_output_cell(index).text, 'Success\n', 
+                this.test.assertEquals(this.notebook.get_output(index).text, 'Success\n', 
                     'Python select item executed with correct output.');
 
                 // Verify that the first item is selected.
                 this.test.assert(verify_selection(selection_index, this, 0), 'Python selected');
 
                 // Verify that selecting a radio button updates all of the others.
-                this.cell_element_function(selection_index, radio_selector + ' .radio:nth-child(2) input', 'click');
+                this.notebook.cell_element_function(selection_index, radio_selector + ' .radio:nth-child(2) input', 'click');
             }
         )
 
@@ -114,7 +114,7 @@ base.tester
             this.test.assert(verify_selection(selection_index, this, 1), 'Radio button selection updated view states correctly.');
 
             // Verify that selecting a list option updates all of the others.
-            this.cell_element_function(selection_index, list_selector + ' option:nth-child(3)', 'click');
+            this.notebook.cell_element_function(selection_index, list_selector + ' option:nth-child(3)', 'click');
         })
         .wait_for_idle()
         .then(function () {
@@ -123,15 +123,15 @@ base.tester
             // Verify that selecting a multibutton option updates all of the others.
             // Bootstrap3 has changed the toggle button group behavior.  Two clicks
             // are required to actually select an item.
-            this.cell_element_function(selection_index, multibtn_selector + ' .btn:nth-child(4)', 'click');
-            this.cell_element_function(selection_index, multibtn_selector + ' .btn:nth-child(4)', 'click');
+            this.notebook.cell_element_function(selection_index, multibtn_selector + ' .btn:nth-child(4)', 'click');
+            this.notebook.cell_element_function(selection_index, multibtn_selector + ' .btn:nth-child(4)', 'click');
         })
         .wait_for_idle()
         .then(function () {
             this.test.assert(verify_selection(selection_index, this, 3), 'Multibutton selection updated view states correctly.');
 
             // Verify that selecting a combobox option updates all of the others.
-            this.cell_element_function(selection_index, '.widget-area .widget-subarea .widget-hbox .btn-group ul.dropdown-menu li:nth-child(3) a', 'click');
+            this.notebook.cell_element_function(selection_index, '.widget-area .widget-subarea .widget-hbox .btn-group ul.dropdown-menu li:nth-child(3) a', 'click');
         })
         .wait_for_idle()
         .then(function () {

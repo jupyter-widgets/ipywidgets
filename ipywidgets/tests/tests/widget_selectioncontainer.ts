@@ -26,7 +26,7 @@ base.tester
     print("Success")
     `,
     function(multicontainer1_index){
-        this.test.assertEquals(this.get_output_cell(multicontainer1_index).text, 'Success\n', 
+        this.test.assertEquals(this.notebook.get_output(multicontainer1_index).text, 'Success\n', 
             'Create multicontainer cell executed with correct output. (1)');
 
 
@@ -36,11 +36,11 @@ base.tester
 
         // Continue with the tests.
         .then(function() {
-            this.test.assert(this.cell_element_exists(multicontainer1_index, 
+            this.test.assert(this.notebook.cell_element_exists(multicontainer1_index, 
                 '.widget-area .widget-subarea'),
                 'Widget subarea exists.');
 
-            this.test.assert(this.cell_element_exists(multicontainer1_index, multicontainer1_query),
+            this.test.assert(this.notebook.cell_element_exists(multicontainer1_index, multicontainer1_query),
                 'Widget tab list exists.');
 
             // JQuery selector is 1 based
@@ -54,15 +54,15 @@ base.tester
             multicontainer.selected_index = 2 # 0 based
             `,
             function(index){
-                this.test.assertEquals(this.get_output_cell(index).text, '1\n', // 0 based
+                this.test.assertEquals(this.notebook.get_output(index).text, '1\n', // 0 based
                     'selected_index property updated with tab change.');
 
                 // JQuery selector is 1 based
-                this.test.assert(!this.cell_element_function(multicontainer1_index, multicontainer1_query + ' li:nth-child(1)', 'hasClass', ['active']),
+                this.test.assert(!this.notebook.cell_element_function(multicontainer1_index, multicontainer1_query + ' li:nth-child(1)', 'hasClass', ['active']),
                         "Tab 1 is not selected.");
-                this.test.assert(!this.cell_element_function(multicontainer1_index, multicontainer1_query + ' li:nth-child(2)', 'hasClass', ['active']),
+                this.test.assert(!this.notebook.cell_element_function(multicontainer1_index, multicontainer1_query + ' li:nth-child(2)', 'hasClass', ['active']),
                         "Tab 2 is not selected.");
-                this.test.assert(this.cell_element_function(multicontainer1_index, multicontainer1_query + ' li:nth-child(3)', 'hasClass', ['active']),
+                this.test.assert(this.notebook.cell_element_function(multicontainer1_index, multicontainer1_query + ' li:nth-child(3)', 'hasClass', ['active']),
                         "Tab 3 is selected.");
             }
         )
@@ -72,7 +72,7 @@ base.tester
             print("Success") # 0 based
             `,
             function(index){
-                this.test.assert(this.cell_element_function(multicontainer1_index, multicontainer1_query +
+                this.test.assert(this.notebook.cell_element_function(multicontainer1_index, multicontainer1_query +
                     ' li:nth-child(2) a', 'html') == 'hello',
                     'Tab page title set (after display).');
             }
@@ -94,7 +94,7 @@ base.tester
     print("Success")
     `,
     function(multicontainer2_index){
-        this.test.assertEquals(this.get_output_cell(multicontainer2_index).text, 'Success\n', 
+        this.test.assertEquals(this.notebook.get_output(multicontainer2_index).text, 'Success\n', 
             'Create multicontainer cell executed with correct output. (2)');
 
         // Wait for the widget to actually display.
@@ -103,19 +103,19 @@ base.tester
 
         // Continue with the tests.
         .then(function() {
-            this.test.assert(this.cell_element_exists(multicontainer2_index, 
+            this.test.assert(this.notebook.cell_element_exists(multicontainer2_index, 
                 '.widget-area .widget-subarea'),
                 'Widget subarea exists.');
 
-            this.test.assert(this.cell_element_exists(multicontainer2_index, multicontainer2_query),
+            this.test.assert(this.notebook.cell_element_exists(multicontainer2_index, multicontainer2_query),
                 'Widget accordion exists.');
 
-            this.test.assert(this.cell_element_exists(multicontainer2_index, multicontainer2_query + 
+            this.test.assert(this.notebook.cell_element_exists(multicontainer2_index, multicontainer2_query + 
                 ' .panel:nth-child(1) .panel-collapse'),
                 'First accordion page exists.');
 
             // JQuery selector is 1 based
-            this.test.assert(this.cell_element_function(multicontainer2_index, multicontainer2_query + 
+            this.test.assert(this.notebook.cell_element_function(multicontainer2_index, multicontainer2_query + 
                 ' .panel.panel-default:nth-child(3) .panel-heading .accordion-toggle', 
                 'html')=='good', 'Accordion page title set (before display).');
 
@@ -129,7 +129,7 @@ base.tester
             print(multicontainer.selected_index) # 0 based
             `,
             function(index){
-                this.test.assertEquals(this.get_output_cell(index).text, '1\n', // 0 based
+                this.test.assertEquals(this.notebook.get_output(index).text, '1\n', // 0 based
                     'selected_index property updated with tab change.');
 
                 var $: any;

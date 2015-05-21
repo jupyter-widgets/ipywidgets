@@ -18,7 +18,7 @@ base.tester
 // Get the temporary directory that the test server is running in.
 .cell(`!echo $(pwd)`,
     function(index){
-        cwd = this.get_output_cell(index).text.trim();
+        cwd = this.notebook.get_output(index).text.trim();
     }
 )
 
@@ -34,7 +34,7 @@ base.tester
     print("Success")
     `,
     function(image_index){
-        this.test.assertEquals(this.get_output_cell(image_index).text, 'Success\n', 
+        this.test.assertEquals(this.notebook.get_output(image_index).text, 'Success\n', 
             'Create image executed with correct output.');
 
         // Wait for the widget to actually display.
@@ -42,14 +42,14 @@ base.tester
         .wait_for_element(image_index, img_selector)
 
         .then(function(){
-            this.test.assert(this.cell_element_exists(image_index, 
+            this.test.assert(this.notebook.cell_element_exists(image_index, 
                 '.widget-area .widget-subarea'),
                 'Widget subarea exists.');
 
-            this.test.assert(this.cell_element_exists(image_index, img_selector), 'Image exists.');
+            this.test.assert(this.notebook.cell_element_exists(image_index, img_selector), 'Image exists.');
 
             // Verify that the image's base64 data has made it into the DOM.
-            var img_src = this.cell_element_function(image_index, img_selector, 'attr', ['src']);
+            var img_src = this.notebook.cell_element_function(image_index, img_selector, 'attr', ['src']);
             this.test.assert(img_src.indexOf(test_jpg) > -1, 'Image src data exists.');
         });
     }

@@ -7,4 +7,7 @@ declare var casper: Casper;
 // For SlimerJS detection.
 declare var InstallTrigger: any;
 
-interface Window { pending_msgs: any; }
+interface Window { 
+	pending_msgs: any; 
+	_logged_error: any[][];
+}

@@ -20,7 +20,7 @@ base.tester
         var float_text: any = {};
         float_text.query = '.widget-area .widget-subarea .my-second-float-text input';
         float_text.index = index;
-        float_text.model_id = this.get_output_cell(index).text.trim();
+        float_text.model_id = this.notebook.get_output(index).text.trim();
 
         // Wait for the widget to actually display.
         this
@@ -28,14 +28,14 @@ base.tester
 
         // Continue with the tests
         .then(function(){        
-            this.test.assert(this.cell_element_exists(float_text.index, 
+            this.test.assert(this.notebook.cell_element_exists(float_text.index, 
                 '.widget-area .widget-subarea'),
                 'Widget subarea exists.');
 
-            this.test.assert(this.cell_element_exists(float_text.index, float_text.query),
+            this.test.assert(this.notebook.cell_element_exists(float_text.index, float_text.query),
                 'Widget float textbox exists.');
 
-            this.cell_element_function(float_text.index, float_text.query, 'val', ['']);
+            this.notebook.cell_element_function(float_text.index, float_text.query, 'val', ['']);
             this.sendKeys(float_text.query, '1.05');
         })
 
@@ -43,9 +43,9 @@ base.tester
 
         .cell(`print(float_widget.value)`, 
             function(index){
-                this.test.assertEquals(this.get_output_cell(index).text, '1.05\n', 
+                this.test.assertEquals(this.notebook.get_output(index).text, '1.05\n', 
                     'Float textbox value set.');
-                this.cell_element_function(float_text.index, float_text.query, 'val', ['']);
+                this.notebook.cell_element_function(float_text.index, float_text.query, 'val', ['']);
                 this.sendKeys(float_text.query, '123456789.0');
             }
         )
@@ -54,9 +54,9 @@ base.tester
             
         .cell(`print(float_widget.value)`,
             function(index){
-                this.test.assertEquals(this.get_output_cell(index).text, '123456789.0\n', 
+                this.test.assertEquals(this.notebook.get_output(index).text, '123456789.0\n', 
                     'Long float textbox value set (probably triggers throttling).');
-                this.cell_element_function(float_text.index, float_text.query, 'val', ['']);
+                this.notebook.cell_element_function(float_text.index, float_text.query, 'val', ['']);
                 this.sendKeys(float_text.query, '12hello');
             }
         )
@@ -80,7 +80,7 @@ base.tester
         var slider: any = {};
         slider.query = '.widget-area .widget-subarea .slider';
         slider.index = index
-        this.test.assertEquals(this.get_output_cell(index).text, 'Success\n', 
+        this.test.assertEquals(this.notebook.get_output(index).text, 'Success\n', 
             'Create float range cell executed with correct output.');
 
         // Wait for the widgets to actually display.
@@ -89,14 +89,14 @@ base.tester
         .wait_for_element(slider.index, float_text_query)
 
         .then(function(){
-            this.test.assert(this.cell_element_exists(slider.index, 
+            this.test.assert(this.notebook.cell_element_exists(slider.index, 
                 '.widget-area .widget-subarea'),
                 'Widget subarea exists.');
 
-            this.test.assert(this.cell_element_exists(slider.index, slider.query),
+            this.test.assert(this.notebook.cell_element_exists(slider.index, slider.query),
                 'Widget slider exists.');
 
-            this.test.assert(this.cell_element_exists(slider.index, float_text_query),
+            this.test.assert(this.notebook.cell_element_exists(slider.index, float_text_query),
                 'Widget float textbox exists.');
         })
 
@@ -108,13 +108,13 @@ base.tester
             print("Success")
             `,
             function(index){
-                this.test.assertEquals(this.get_output_cell(index).text, 'Success\n', 
+                this.test.assertEquals(this.notebook.get_output(index).text, 'Success\n', 
                     'Float range properties cell executed with correct output.');
 
-                this.test.assert(this.cell_element_exists(slider.index, slider.query), 
+                this.test.assert(this.notebook.cell_element_exists(slider.index, slider.query), 
                     'Widget slider exists.');
 
-                this.test.assert(this.cell_element_function(slider.index, slider.query, 
+                this.test.assert(this.notebook.cell_element_function(slider.index, slider.query, 
                     'slider', ['value']) == 25.0,
                     'Slider set to Python value.');
             }

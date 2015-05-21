@@ -53,7 +53,7 @@ base.tester
 `)
 
 .thenEvaluate(function() {
-    define('MultisetWidget', ['nbextensions/widgets/widgets/js/manager', 'nbextensions/widgets/widgets/js/widget'], function(manager, widget) {
+    define('MultissetWidget', ['nbextensions/widgets/widgets/js/manager', 'nbextensions/widgets/widgets/js/widget'], function(manager, widget) {
         var MultiSetView = widget.DOMWidgetView.extend({
             render: function(){
                 this.model.set('a', 1);
@@ -96,7 +96,7 @@ base.tester
     print(multiset.model_id)
     `, 
     function(index) {
-        multiset.model_id = this.get_output_cell(index).text.trim();
+        multiset.model_id = this.notebook.get_output(index).text.trim();
 
         this
         .wait_for_widget(multiset)
@@ -131,13 +131,13 @@ base.tester
     `, 
     function(index) {
         throttle_index = index;
-        textbox.model_id = this.get_output_cell(index).text.trim();
+        textbox.model_id = this.notebook.get_output(index).text.trim();
 
-        this.test.assert(this.cell_element_exists(index, 
+        this.test.assert(this.notebook.cell_element_exists(index, 
             '.widget-area .widget-subarea'),
             'Widget subarea exists.');
 
-        this.test.assert(this.cell_element_exists(index, 
+        this.test.assert(this.notebook.cell_element_exists(index, 
             '.my-throttle-textbox'), 'Textbox exists.');
 
         // Send 20 characters
@@ -255,7 +255,7 @@ base.tester
     function(index){
         var testwidget = {
             index: index,
-            model_id: this.get_output_cell(index).text.trim()
+            model_id: this.notebook.get_output(index).text.trim()
         };
 
         this
