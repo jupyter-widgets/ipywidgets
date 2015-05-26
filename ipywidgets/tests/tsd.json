@@ -1,0 +1,18 @@
+{
+  "version": "v4",
+  "repo": "borisyankov/DefinitelyTyped",
+  "ref": "master",
+  "path": "typings",
+  "bundle": "typings/tsd.d.ts",
+  "installed": {
+    "phantomjs/phantomjs.d.ts": {
+      "commit": "6fb56c5277d6fda738080c11415c79513b64317e"
+    },
+    "casperjs/casperjs.d.ts": {
+      "commit": "6fb56c5277d6fda738080c11415c79513b64317e"
+    },
+    "es6-promise/es6-promise.d.ts": {
+      "commit": "6fb56c5277d6fda738080c11415c79513b64317e"
+    }
+  }
+}

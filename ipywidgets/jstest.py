@@ -1,6 +1,6 @@
 """Run IPython widget javascript tests
 
-run with `python -m jstest`
+run with `gulp tests; python -m jstest`
 """
 
 # Copyright (c) IPython Development Team.
@@ -22,13 +22,14 @@ here = os.path.dirname(__file__)
 class WidgetTestController(jstest.JSController):
     """Javascript test subclass that installs widget nbextension in test environment"""
     def __init__(self, section, *args, **kwargs):
-        # if not section:
-        #     section = os.path.join(here, 'tests')
+        extra_args = kwargs.pop('extra_args', None)
         super(WidgetTestController, self).__init__(section, *args, **kwargs)
-        # # FIXME: temporary workaround waiting for rm-widgets PR
-        includes = '--includes=' + os.path.join(jstest.get_js_test_dir(), 'util.js')
-        test_cases = os.path.join(here, 'tests', self.section)
-        self.cmd = ['casperjs', 'test', includes, test_cases, '--engine=%s' % self.engine]
+        
+        test_cases = os.path.join(here, '..', 'bin', 'tests', 'tests', self.section)
+        self.cmd = ['casperjs', 'test', test_cases, '--engine=%s' % self.engine]
+
+        if extra_args is not None:
+            self.cmd = self.cmd + extra_args
     
     def setup(self):
         super(WidgetTestController, self).setup()
@@ -45,7 +46,7 @@ def prepare_controllers(options):
         groups = options.testgroups
     else:
         groups = ['']
-    return [ WidgetTestController(g) for g in groups ], []
+    return [ WidgetTestController(g, extra_args=options.extra_args) for g in groups ], []
 
 
 def main():
