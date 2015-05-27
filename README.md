@@ -20,14 +20,6 @@ Interactive HTML widgets for Jupyter notebooks and the IPython kernel.
         gulp css --interpreter /path/to/python
         /path/to/pip install -e .
 
-2. Install and register the notebook extension:
-
-        python -m ipywidgets.install --enable
-    
-    or a symlink for a development install:
-
-        python -m ipywidgets.install --enable --user --symlink
-
 ## Test
 
 To run the Python tests:
