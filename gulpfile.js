@@ -1,4 +1,4 @@
-var gulp = require('gulp');
+var gulp = require('gulp-param')(require('gulp'), process.argv);
 var less = require('gulp-less');
 var path = require('path');
 var minifyCSS = require('gulp-minify-css');
@@ -24,8 +24,8 @@ gulp.task('watch', function() {
 
 
 // Compile less into css.
-gulp.task('css', function (cb) {
-  var p = spawn('python', ['-c',
+gulp.task('css', function (cb, interpreter) {
+  var p = spawn(interpreter || 'python', ['-c',
     "import os,notebook; print(os.path.join(notebook.DEFAULT_STATIC_FILES_PATH))"]);
   var nb_static_path = p.stdout.toString().trim();
   return gulp.src('./ipywidgets/static/widgets/less/widgets.less')
