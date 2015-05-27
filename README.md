@@ -13,6 +13,13 @@ Interactive HTML widgets for Jupyter notebooks and the IPython kernel.
         gulp css
         pip install -e .
 
+    gulp uses the Python interpreter to find the path for the jupyter notebook.
+    If a different interpreter from the one specified in PATH is used, one may
+    write
+
+        gulp css --interpreter /path/to/python
+        /path/to/pip install -e .
+
 2. Install and register the notebook extension:
 
         python -m ipywidgets.install --enable
