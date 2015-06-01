@@ -16,33 +16,50 @@ from ipython_genutils.importstring import import_item
 from traitlets import Unicode, Dict, Instance, Bool, List, \
     CaselessStrEnum, Tuple, CUnicode, Int, Set, getmembers
 from ipython_genutils.py3compat import string_types
-from .trait_types import Color, Signal, Slot
 
 
-def _widget_to_json(x, obj):
+def serialize_widget_attribute(x, obj):
+    """Serialization of widget attributes that may contain widget models.
+
+    Notes
+    -----
+    Widgetmodels are serialized into the string "IPY_MODEL_" + model_id.
+    """
     if isinstance(x, dict):
-        return {k: _widget_to_json(v, obj) for k, v in x.items()}
+        return {k: serialize_widget_attribute(v, obj) for k, v in x.items()}
     elif isinstance(x, (list, tuple)):
-        return [_widget_to_json(v, obj) for v in x]
+        return [serialize_widget_attribute(v, obj) for v in x]
     elif isinstance(x, Widget):
         return "IPY_MODEL_" + x.model_id
     else:
         return x
 
-def _json_to_widget(x, obj):
+
+def deserialize_widget_attribute(x, obj):
+    """Deserialization of widget attributes that may contain widget models
+
+    Notes
+    -----
+    Strings in the form of "IPY_MODEL_" + model_id are deserialized into a the
+    corresponding widget model if it exists.
+    """
     if isinstance(x, dict):
-        return {k: _json_to_widget(v, obj) for k, v in x.items()}
+        return {k: deserialize_widget_attribute(v, obj) for k, v in x.items()}
     elif isinstance(x, (list, tuple)):
-        return [_json_to_widget(v, obj) for v in x]
+        return [deserialize_widget_attribute(v, obj) for v in x]
     elif isinstance(x, string_types) and x.startswith('IPY_MODEL_') and x[10:] in Widget.widgets:
         return Widget.widgets[x[10:]]
     else:
         return x
 
+
 widget_serialization = {
-    'from_json': _json_to_widget,
-    'to_json': _widget_to_json
+    'from_json': serialize_widget_attribute,
+    'to_json': deserialize_widget_attribute,
 }
+
+
+from .trait_types import Color, Signal, Slot
 
 
 class CallbackDispatcher(LoggingConfigurable):
@@ -283,6 +300,8 @@ class Widget(LoggingConfigurable):
                         self.set_trait(name, from_json(sync_data[name], self))
                     else:
                         setattr(self, name, from_json(sync_data[name], self))
+                if name in self.signals():
+                    getattr(self, name).connected_slots = deserialize_widget_attribute(sync_data[name], self)
 
     def send(self, content, buffers=None):
         """Sends a custom msg to the widget model in the front-end.
@@ -389,9 +408,9 @@ class Widget(LoggingConfigurable):
             if 'sync_data' in data:
                 # get binary buffers too
                 sync_data = data['sync_data']
-                for i,k in enumerate(data.get('buffer_keys', [])):
+                for i, k in enumerate(data.get('buffer_keys', [])):
                     sync_data[k] = msg['buffers'][i]
-                self.set_state(sync_data) # handles all methods
+                self.set_state(sync_data)  # handles all methods
 
         # Handle a state request.
         elif method == 'request_state':

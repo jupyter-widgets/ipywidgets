@@ -10,7 +10,7 @@ define([
 
     var ButtonModel = widget.WidgetModel.extend({
         slots: {
-            test_slot: function(index) {
+            test_slot: function test_slot(index) {
                 this.set("button_style", 
                          ['primary', 'success', 'info',
                           'warning', 'danger'][Math.floor(Math.random() * 5)]);

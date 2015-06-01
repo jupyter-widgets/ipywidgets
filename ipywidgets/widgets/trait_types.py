@@ -10,16 +10,7 @@ import re
 import traitlets
 
 from . import eventful
-
-def _widget_to_json(x):
-    if isinstance(x, dict):
-        return {k: _widget_to_json(v) for k, v in x.items()}
-    elif isinstance(x, (list, tuple)):
-        return [_widget_to_json(v) for v in x]
-    elif isinstance(x, traitlets.HasTraits):
-        return "IPY_MODEL_" + x.model_id
-    else:
-        return x
+from .widget import serialize_widget_attribute
 
 
 class BaseSignaling(traitlets.BaseTraitType):
@@ -87,6 +78,7 @@ class _Signal(object):
     def __init__(self, model, signal):
         self.model = model
         self.signal = signal
+        self.connected_slots = []
 
     def connect(self, slot):
         """Sends a `connect` signal to the front-end. This causes the
@@ -99,7 +91,7 @@ class _Signal(object):
         self.model._send({
             'method': 'connect',
             'name': self.signal.name,
-            'slot': _widget_to_json({
+            'slot': serialize_widget_attribute({
                 'model': slot.model,
                 'name': slot.name,
             }),
@@ -114,7 +106,7 @@ class _Signal(object):
         self.model._send({
             'method': 'disconnect',
             'name': self.signal.name,
-            'slot': _widget_to_json({
+            'slot': serialize_widget_attribute({
                 'model': slot.model,
                 'name': slot.name, 
             }),
