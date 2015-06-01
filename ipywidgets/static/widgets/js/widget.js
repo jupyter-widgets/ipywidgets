@@ -6,7 +6,8 @@ define(["nbextensions/widgets/widgets/js/manager",
         "backbone",
         "base/js/utils",
         "base/js/namespace",
-], function(widgetmanager, _, Backbone, utils, IPython){
+        "./signaling",
+], function(widgetmanager, _, Backbone, utils, IPython, signaling) {
     "use strict";
 
     var unpack_models = function unpack_models(value, model) {
@@ -254,8 +255,19 @@ define(["nbextensions/widgets/widgets/js/manager",
                             console.log(data);
                             return;
                         }
-                        that.signals[data.name]
-                            .connect(target_model.slots[data.slot.name], target_model);
+                        var signal = that.signals[data.name];
+                        signal.connect(target_model.slots[data.slot.name], target_model);
+                        var slots = signal._m_slots;
+                        if (slots === null) {
+                            that.set(data.name, []);
+                        } else if (slots instanceof signaling.SlotWrapper) {
+                            that.set(data.name, [slots._m_thisArg, slots._m_slot.name]);
+                        } else {
+                            that.set(data.name, slots.map(function(d) {
+                                return [d._m_thisArg, slots._m_slot.name]
+                            }));
+                        }
+                        that.save_changes();
                     });
                     break;
                 case 'disconnect':
@@ -270,8 +282,19 @@ define(["nbextensions/widgets/widgets/js/manager",
                             console.log(data);
                             return;
                         }
-                        that.signals[data.name]
-                            .disconnect(target_model.slots[data.slot.name], target_model);
+                        var signal = that.signals[data.name];
+                        signal.disconnect(target_model.slots[data.slot.name], target_model);
+                        var slots = signal._m_slots;
+                        if (slots === null) {
+                            that.set(data.name, []);
+                        } else if (slots instanceof SlotWrapper) {
+                            that.set(data.name, [slots._m_thisArg]);
+                        } else {
+                            that.set(data.name, slots.map(function(d) {
+                                return [d._m_thisArg]
+                            }));
+                        }
+                        that.save_changes();
                     });
                     break;
             }
