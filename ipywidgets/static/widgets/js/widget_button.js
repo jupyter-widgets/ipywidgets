@@ -4,8 +4,23 @@
 define([
     "nbextensions/widgets/widgets/js/widget",
     "jquery",
+    "./signaling",
     "bootstrap",
-], function(widget, $){
+], function(widget, $, signaling){
+
+    var ButtonModel = widget.WidgetModel.extend({
+        slots: {
+            test_slot: function(index) {
+                this.set("button_style", 
+                         ['primary', 'success', 'info',
+                          'warning', 'danger'][Math.floor(Math.random() * 5)]);
+                this.save_changes();
+            },
+        },
+        signals: {
+            clicked: new signaling.Signal(),
+        },
+    });
 
     var ButtonView = widget.DOMWidgetView.extend({
         render : function(){
@@ -65,11 +80,13 @@ define([
             /**
              * Handles when the button is clicked.
              */
+            this.model.emit('clicked');
             this.send({event: 'click'});
         },
     });
 
     return {
-        'ButtonView': ButtonView,
+        ButtonView: ButtonView,
+        ButtonModel: ButtonModel,
     };
 });

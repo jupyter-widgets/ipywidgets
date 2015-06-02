@@ -99,7 +99,10 @@ class _Signal(object):
         self.model._send({
             'method': 'connect',
             'name': self.signal.name,
-            'slot': _widget_to_json([slot.model, slot.name]),
+            'slot': _widget_to_json({
+                'model': slot.model,
+                'name': slot.name,
+            }),
         })
 
     def disconnect(self, slot):
@@ -111,7 +114,10 @@ class _Signal(object):
         self.model._send({
             'method': 'disconnect',
             'name': self.signal.name,
-            'slot': _widget_to_json([slot.model, slot.name]),
+            'slot': _widget_to_json({
+                'model': slot.model,
+                'name': slot.name, 
+            }),
         })
 
     def emit(self, value=None):
