@@ -214,17 +214,14 @@ define(["nbextensions/widgets/widgets/js/manager",
         },
 
         set_state: function (state) {
-            var that = this;
             // Handle when a widget is updated via the python side.
-            return new Promise(function(resolve, reject) {
-                that.state_lock = state;
-                try {
-                    WidgetModel.__super__.set.call(that, state);
-                } finally {
-                    that.state_lock = null;
-                }
-                resolve();
-            }).catch(utils.reject("Couldn't set model state", true));
+            that.state_lock = state;
+            try {
+                WidgetModel.__super__.set.call(that, state);
+            } finally {
+                that.state_lock = null;
+            }
+            return Promise.resolve();
         },
 
         get_state: function() {
