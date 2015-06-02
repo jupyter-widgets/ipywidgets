@@ -13,55 +13,54 @@ from . import eventful
 from .widget import serialize_widget_attribute
 
 
-class BaseSignaling(traitlets.BaseTraitType):
-    """This is used as a base class for both Signals and Slots.
-    This is a hook into MetaHasTrait metaclass."""    
+class BaseSignaling(traitlets.BaseDescriptor):
+    """Base class for both Signals and Slots."""    
  
-    def __init__(self, trait_type=None):
+    def __init__(self, trait=None):
         """The constructor takes a trait type specifying
         the signature of the signal."""
-        if trait_type is None:
-            trait_type = traitlets.Any()
-        self.trait_type = trait_type
+        if trait is None:
+            trait = traitlets.Any()
+        self.trait = trait
 
     @property
     def this_class(self):
         """The `this_class` property rebings to the `this_class` attribute
         of the underlying trait type"""
-        return self.trait_type.this_class
+        return self.trait.this_class
 
     @this_class.setter
     def this_class(self, this_class):
         """The setter for the `this_class` property is called in the
         __init__ method of the MetaHasTraits class."""
-        self.trait_type.this_class = this_class
+        self.trait.this_class = this_class
 
     @property
     def name(self):
         """The `name` property rebings to the `name` attribute
         of the underlying trait type"""
-        return self.trait_type.name
+        return self.trait.name
 
     @name.setter
     def name(self, name):
         """The setter for the `name` property is called in the
         __new__ method of the MetaHasTraits class."""
-        self.trait_type.name = name
+        self.trait.name = name
 
     def instance_init(self, obj):
         """Part of the initialization that depend on the underlying
         HasTrait instance
             - calls instance_init on the underlying trait type
         """
-        self.trait_type.instance_init(obj)
+        self.trait.instance_init(obj)
 
     def validate(self, obj, value):
         """Rebinds to the underlying trait type validation"""
-        return self.trait_type._validate(obj, value)
+        return self.trait._validate(obj, value)
 
     def get_metadata(self, key, default=None):
         """Rebinds to the underlying trait type get_metadata"""
-        return self.trait_type.get_metadata(key, default)
+        return self.trait.get_metadata(key, default)
 
 class Signal(BaseSignaling):
 
@@ -117,8 +116,8 @@ class _Signal(object):
         the argument is validated.
 
         Slots are invoked in the order in which they were connected."""
-        to_json = self.signal.trait_type.get_metadata('to_json',
-                                                      self.model._trait_to_json)
+        to_json = self.signal.trait.get_metadata('to_json',
+                                                 self.model._trait_to_json)
         self.model._send({
             'method': 'emit',
             'name': self.signal.name,
@@ -143,8 +142,8 @@ class _Slot(object):
         self.slot = slot
 
     def invoke(self, value=None):
-        to_json = self.slot.trait_type.get_metadata('to_json',
-                                                    self.model._trait_to_json)
+        to_json = self.slot.trait.get_metadata('to_json',
+                                               self.model._trait_to_json)
         self.model._send({
             'method': 'invoke',
             'name': self.slot.name,

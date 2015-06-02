@@ -207,10 +207,18 @@ define(["nbextensions/widgets/widgets/js/manager",
                                     }
                                 }
                             }
-                            return utils.resolve_promises_dict(state);
-                        }).then(function(state) {
-                            return that.set_state(state);
-                        }).catch(utils.reject("Couldn't process update msg for model id '" + String(that.id) + "'", true))
+
+                            var connections = data.connections || {};
+                            return Promise.all([utils.resolve_promises_dict(state),
+                                                unpack_models(connections, that)]);
+                        })
+                        .then(function(state_connections) {
+                            var state = state_connections[0],
+                                connections = state_connections[1];
+                            that.set_connections(connections);
+                            that.set_state(state);
+                        })
+                        .catch(utils.reject("Couldn't process update msg for model id '" + String(that.id) + "'", true))
                         .then(function() {
                             var parent_id = msg.parent_header.msg_id;
                             if (that._resolve_received_state[parent_id] !== undefined) {
@@ -261,7 +269,7 @@ define(["nbextensions/widgets/widgets/js/manager",
                         if (slots === null) {
                             that.set(data.name, []);
                         } else if (slots instanceof signaling.SlotWrapper) {
-                            that.set(data.name, [slots._m_thisArg, slots._m_slot.name]);
+                            that.set(data.name, [[slots._m_thisArg, slots._m_slot.name]]);
                         } else {
                             that.set(data.name, slots.map(function(d) {
                                 return [d._m_thisArg, slots._m_slot.name]
@@ -288,16 +296,28 @@ define(["nbextensions/widgets/widgets/js/manager",
                         if (slots === null) {
                             that.set(data.name, []);
                         } else if (slots instanceof SlotWrapper) {
-                            that.set(data.name, [slots._m_thisArg]);
+                            that.set(data.name, [[slots._m_thisArg, slots._n_slot.name]]);
                         } else {
                             that.set(data.name, slots.map(function(d) {
-                                return [d._m_thisArg]
+                                return [d._m_thisArg, slots._m_slot.name]
                             }));
                         }
                         that.save_changes();
                     });
                     break;
             }
+        },
+
+        set_connections: function (connections) {
+            var that = this;
+            _.each(connections, function(slots, name) {
+                 for (var k=0; k<slots.length; ++k) {
+                     var slot_info = slots[k];
+                     var target_model = slot_info[0];
+                     var method_name = slot_info[1];
+                     that.signals[name].connect(target_model.slots[method_name], target_model);
+                 }
+            }); 
         },
 
         set_state: function (state) {
@@ -533,7 +553,7 @@ define(["nbextensions/widgets/widgets/js/manager",
             /**
              * Public constructor.
              */
-            this.model.on('change',this.update,this);
+            this.model.on('change', this.update, this);
 
             // Bubble the comm live events.
             this.model.on('comm:live', function() {

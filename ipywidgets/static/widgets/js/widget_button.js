@@ -80,7 +80,7 @@ define([
             /**
              * Handles when the button is clicked.
              */
-            this.model.emit('clicked');
+            this.model.emit('clicked');  // this.model.signals['clicked'].emit();
             this.send({event: 'click'});
         },
     });
