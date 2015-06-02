@@ -94,6 +94,18 @@ define(["nbextensions/widgets/widgets/js/manager",
             return Backbone.Model.apply(this);
         },
 
+        emit: function(signal_name, value) {
+            /**
+             * Emit a signal and propagate message to the backend.
+             */
+            this.signals[signal_name].emit(value);
+            if (this.comm !== undefined) {
+                var data = {method: 'emit', name: signal_name, value: value};
+                this.comm.send(data);
+                this.pending_msgs++;
+            }
+        },
+
         send: function (content, callbacks, buffers) {
             /**
              * Send a custom msg over the comm.
@@ -104,6 +116,9 @@ define(["nbextensions/widgets/widgets/js/manager",
                 this.pending_msgs++;
             }
         },
+
+        signals: {},
+        slots: {},
 
         request_state: function(callbacks) {
             /** 
@@ -167,15 +182,16 @@ define(["nbextensions/widgets/widgets/js/manager",
             /**
              * Handle incoming comm msg.
              */
-            var method = msg.content.data.method;
-            
+            var target_model = null;
+            var data = msg.content.data;
+            var method = data.method;
             var that = this;
             switch (method) {
                 case 'update':
                     this.state_change = this.state_change
                         .then(function() {
-                            var state = msg.content.data.state || {};
-                            var buffer_keys = msg.content.data.buffers || [];
+                            var state = data.state || {};
+                            var buffer_keys = data.buffers || [];
                             var buffers = msg.buffers || [];
                             for (var i=0; i<buffer_keys.length; i++) {
                                 state[buffer_keys[i]] = buffers[i];
@@ -203,7 +219,7 @@ define(["nbextensions/widgets/widgets/js/manager",
                         }).catch(utils.reject("Couldn't resolve state request promise", true));
                     break;
                 case 'custom':
-                    this.trigger('msg:custom', msg.content.data.content, msg.buffers);
+                    this.trigger('msg:custom', data.content, msg.buffers);
                     break;
                 case 'display':
                     this.state_change = this.state_change.then(function() {
@@ -211,20 +227,52 @@ define(["nbextensions/widgets/widgets/js/manager",
                     }).catch(utils.reject('Could not process display view msg', true));
                     break;
                 case 'invoke':
-                    console.log('invoke');
-                    console.log(msg.content.data);
+                    if(!target_model.slots[data.slot.name]) {
+                        console.error('No such slot:');
+                        console.log(data);
+                        return;
+                    }
+                    this.slots[data.name].invoke(data.value);
                     break;
                 case 'emit':
-                    console.log('emit');
-                    console.log(msg.content.data);
+                    if(!that.signals[data.name]) {
+                        console.error('No such signal:');
+                        console.log(data);
+                        return;
+                    }
+                    this.emit(data.name, data.value);
                     break;
                 case 'connect':
-                    console.log('connect');
-                    console.log(msg.content.data);
+                    unpack_models(data.slot.model, this).then(function(target_model) {
+                        if(!that.signals[data.name]) {
+                            console.error('No such signal:');
+                            console.log(data);
+                            return;
+                        }
+                        if(!target_model.slots[data.slot.name]) {
+                            console.error('No such slot:');
+                            console.log(data);
+                            return;
+                        }
+                        that.signals[data.name]
+                            .connect(target_model.slots[data.slot.name], target_model);
+                    });
                     break;
                 case 'disconnect':
-                    console.log('disconnect');
-                    console.log(msg.content.data);
+                    unpack_models(data.slot.model, this).then(function(target_model) {
+                        if(!that.signals[data.name]) {
+                            console.error('No such signal:');
+                            console.log(data);
+                            return;
+                        }
+                        if(!target_model.slots[data.slot.name]) {
+                            console.error('No such slot:');
+                            console.log(data);
+                            return;
+                        }
+                        that.signals[data.name]
+                            .disconnect(target_model.slots[data.slot.name], target_model);
+                    });
                     break;
             }
         },
