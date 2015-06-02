@@ -275,14 +275,16 @@ class Widget(LoggingConfigurable):
         -------
         connections: dict of connections
         """
+        signals = self.signals()
         if key is None:
-            keys = self.signals()
-        elif isinstance(key, string_types):
-            keys = [key]
-        elif isinstance(key, collections.Iterable):
-            keys = key
+            keys = signals
         else:
-            raise ValueError("key must be a string, an iterable of keys, or None")
+            if isinstance(key, string_types):
+                keys = [key] if key in signals else []
+            elif isinstance(key, collections.Iterable):
+                keys = [k for k in key if k in signals]
+            else:
+                raise ValueError("key must be a string, an iterable of keys, or None")
         connections = {
             k: serialize_widget_attribute(getattr(self, k).connected_slots) for k in keys
         }
@@ -306,9 +308,9 @@ class Widget(LoggingConfigurable):
         if key is None:
             keys = self.keys
         elif isinstance(key, string_types):
-            keys = [key]
+            keys = [key] if key in self.keys else []
         elif isinstance(key, collections.Iterable):
-            keys = key
+            keys = [k for k in key if k in self.keys]
         else:
             raise ValueError("key must be a string, an iterable of keys, or None")
         state = {}
