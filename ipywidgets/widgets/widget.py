@@ -54,8 +54,8 @@ def deserialize_widget_attribute(x, obj):
 
 
 widget_serialization = {
-    'from_json': serialize_widget_attribute,
-    'to_json': deserialize_widget_attribute,
+    'from_json': deserialize_widget_attribute,
+    'to_json': serialize_widget_attribute,
 }
 
 
@@ -240,7 +240,7 @@ class Widget(LoggingConfigurable):
             self.comm = None
 
     def send_state(self, key=None):
-        """Sends the widget state, or a piece of it, to the front-end.
+        """Sends the widget state and connections, or a piece of it, to the front-end.
 
         Parameters
         ----------
@@ -254,8 +254,40 @@ class Widget(LoggingConfigurable):
                 state.pop(k)
                 buffers.append(v)
                 buffer_keys.append(k)
-        msg = {'method': 'update', 'state': state, 'buffers': buffer_keys}
+        connections = self.get_connections(key=key)
+        msg = {
+            'method': 'update',
+            'state': state,
+            'buffers': buffer_keys,
+            'connections': connections,
+        }
         self._send(msg, buffers=buffers)
+
+    def get_connections(self, key=None):
+        """Gets the widget signal connections, or a piece of it.
+
+        Parameters
+        ----------
+        key : unicode or iterable (optional)
+            A single signal name or iterable of signal names to get
+
+        Returns
+        -------
+        connections: dict of connections
+        """
+        if key is None:
+            keys = self.signals()
+        elif isinstance(key, string_types):
+            keys = [key]
+        elif isinstance(key, collections.Iterable):
+            keys = key
+        else:
+            raise ValueError("key must be a string, an iterable of keys, or None")
+        connections = {
+            k: serialize_widget_attribute(getattr(self, k).connected_slots) for k in keys
+        }
+        return connections 
+
 
     def get_state(self, key=None):
         """Gets the widget state, or a piece of it.
@@ -263,7 +295,7 @@ class Widget(LoggingConfigurable):
         Parameters
         ----------
         key : unicode or iterable (optional)
-            A single property's name or iterable of property names to get.
+            A single property name or iterable of property names to get.
 
         Returns
         -------
@@ -480,6 +512,16 @@ class Widget(LoggingConfigurable):
         is keyed on the name and the values are the Slot objects."""
         return dict([memb for memb in getmembers(self.__class__) if 
                     isinstance(memb[1], Slot)]) 
+
+    def signal_metadata(self, name, key, default=None):
+        """Get metadata values for signal by key."""
+        try:
+            signal = getattr(self.__class__, name)
+        except AttributeError:
+            raise TraitError("Class %s does not have a signal named %s" %
+                                (self.__class__.__name__, name))
+        else:
+            return signal.trait.get_metadata(key, default)
 
 
 class DOMWidget(Widget):

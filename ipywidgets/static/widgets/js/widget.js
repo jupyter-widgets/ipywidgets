@@ -213,8 +213,13 @@ define(["nbextensions/widgets/widgets/js/manager",
                             for (var i=0; i<buffer_keys.length; i++) {
                                 state[buffer_keys[i]] = buffers[i];
                             }
-                            return that._deserialize_state(state); 
-                        }).then(function(state) {
+                            return Promise.all([that._deserialize_state(state),
+  unpack_models(data.connections || {}, that)]);
+                        })
+                        .then(function(state_connections) {
+                            var state = state_connections[0],
+                                connections = state_connections[1];
+                            that.set_connections(connections);
                             that.set_state(state);
                         }).catch(utils.reject("Couldn't process update msg for model id '" + String(that.id) + "'", true))
                         .then(function() {
@@ -267,7 +272,7 @@ define(["nbextensions/widgets/widgets/js/manager",
                         if (slots === null) {
                             that.set(data.name, []);
                         } else if (slots instanceof signaling.SlotWrapper) {
-                            that.set(data.name, [slots._m_thisArg, slots._m_slot.name]);
+                            that.set(data.name, [[slots._m_thisArg, slots._m_slot.name]]);
                         } else {
                             that.set(data.name, slots.map(function(d) {
                                 return [d._m_thisArg, slots._m_slot.name]
@@ -294,16 +299,28 @@ define(["nbextensions/widgets/widgets/js/manager",
                         if (slots === null) {
                             that.set(data.name, []);
                         } else if (slots instanceof SlotWrapper) {
-                            that.set(data.name, [slots._m_thisArg]);
+                            that.set(data.name, [[slots._m_thisArg, slots._n_slot.name]]);
                         } else {
                             that.set(data.name, slots.map(function(d) {
-                                return [d._m_thisArg]
+                                return [d._m_thisArg, slots._m_slot.name]
                             }));
                         }
                         that.save_changes();
                     });
                     break;
             }
+        },
+
+        set_connections: function (connections) {
+            var that = this;
+            _.each(connections, function(slots, name) {
+                 for (var k=0; k<slots.length; ++k) {
+                     var slot_info = slots[k];
+                     var target_model = slot_info[0];
+                     var method_name = slot_info[1];
+                     that.signals[name].connect(target_model.slots[method_name], target_model);
+                 }
+            }); 
         },
 
         set_state: function (state) {
