@@ -14,9 +14,9 @@ from ipykernel.comm import Comm
 from traitlets.config import LoggingConfigurable
 from ipython_genutils.importstring import import_item
 from traitlets import Unicode, Dict, Instance, Bool, List, \
-    CaselessStrEnum, Tuple, CUnicode, Int, Set
+    CaselessStrEnum, Tuple, CUnicode, Int, Set, getmembers
 from ipython_genutils.py3compat import string_types
-from .trait_types import Color
+from .trait_types import Color, Signal, Slot
 
 
 def _widget_to_json(x):
@@ -455,6 +455,18 @@ class Widget(LoggingConfigurable):
     def _send(self, msg, buffers=None):
         """Sends a message to the model in the front-end."""
         self.comm.send(data=msg, buffers=buffers)
+
+    def signals(self):
+        """Returns a `dict` of all the signals of this widget. The dictionary
+        is keyed on the name and the values are the Signal objects."""
+        return dict([memb for memb in getmembers(self.__class__) if 
+                    isinstance(memb[1], Signal)]) 
+        
+    def slots(self):
+        """Returns a `dict` of all the slots of this widget. The dictionary
+        is keyed on the name and the values are the Slot objects."""
+        return dict([memb for memb in getmembers(self.__class__) if 
+                    isinstance(memb[1], Slot)]) 
 
 
 class DOMWidget(Widget):
