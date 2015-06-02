@@ -10,12 +10,16 @@ define([
 
     var ButtonModel = widget.WidgetModel.extend({
         slots: {
-            test_slot: function test_slot(index) {
-                this.set("button_style", 
-                         ['primary', 'success', 'info',
-                          'warning', 'danger'][Math.floor(Math.random() * 5)]);
-                this.save_changes();
-            },
+            test_slot: (function() {
+                func = function () {
+		            this.set("button_style",
+		                     ['primary', 'success', 'info',
+		                      'warning', 'danger'][Math.floor(Math.random() * 5)]);
+		            this.save_changes();
+                };
+                func.slot_name = 'test_slot';
+                return func;
+            })(),
         },
         signals: {
             clicked: new signaling.Signal(),

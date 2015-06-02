@@ -170,7 +170,7 @@ class Widget(LoggingConfigurable):
         front-end can send before receiving an idle msg from the back-end.""")
 
     version = Int(0, sync=True, help="""Widget's version""")
-    keys = List()
+    keys = List(sync=True)
     def _keys_default(self):
         return [name for name in self.traits(sync=True)]
 

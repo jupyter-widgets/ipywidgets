@@ -92,6 +92,19 @@ define(["nbextensions/widgets/widgets/js/manager",
             widget_manager.notebook.events.on('kernel_dead.Kernel', died);
         },
 
+        initialize: function() {
+            var that = this;
+            var keys = this.get('keys');
+            _.each(keys, function(key) {
+                that.slots[key] = function(value) {
+                    that.set(key, value);
+                    // FIXME: should we always save_changes?
+                    that.save_changes();
+                };
+                that.slots[key].slot_name = key;
+	        });
+        },
+
         emit: function(signal_name, value) {
             /**
              * Emit a signal and propagate message to the backend.
@@ -272,10 +285,10 @@ define(["nbextensions/widgets/widgets/js/manager",
                         if (slots === null) {
                             that.set(data.name, []);
                         } else if (slots instanceof signaling.SlotWrapper) {
-                            that.set(data.name, [[slots._m_thisArg, slots._m_slot.name]]);
+                            that.set(data.name, [[slots._m_thisArg, slots._m_slot.slot_name]]);
                         } else {
                             that.set(data.name, slots.map(function(d) {
-                                return [d._m_thisArg, slots._m_slot.name]
+                                return [d._m_thisArg, d._m_slot.slot_name]
                             }));
                         }
                         that.save_changes();
@@ -299,10 +312,10 @@ define(["nbextensions/widgets/widgets/js/manager",
                         if (slots === null) {
                             that.set(data.name, []);
                         } else if (slots instanceof SlotWrapper) {
-                            that.set(data.name, [[slots._m_thisArg, slots._n_slot.name]]);
+                            that.set(data.name, [[slots._m_thisArg, slots._m_slot.slot_name]]);
                         } else {
                             that.set(data.name, slots.map(function(d) {
-                                return [d._m_thisArg, slots._m_slot.name]
+                                return [d._m_thisArg, d._m_slot.slot_name]
                             }));
                         }
                         that.save_changes();
@@ -317,8 +330,8 @@ define(["nbextensions/widgets/widgets/js/manager",
                  for (var k=0; k<slots.length; ++k) {
                      var slot_info = slots[k];
                      var target_model = slot_info[0];
-                     var method_name = slot_info[1];
-                     that.signals[name].connect(target_model.slots[method_name], target_model);
+                     var slot_name = slot_info[1];
+                     that.signals[name].connect(target_model.slots[slot_name], target_model);
                  }
             }); 
         },
