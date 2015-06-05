@@ -333,12 +333,13 @@ class Widget(LoggingConfigurable):
             True if the callback should be unregistered."""
         self._display_callbacks.register_callback(callback, remove=remove)
 
-    def add_trait(self, traitname, trait):
-        """Dynamically add a trait attribute to the Widget."""
-        super(Widget, self).add_trait(traitname, trait)
-        if trait.get_metadata('sync'):
-             self.keys.append(traitname)
-             self.send_state(traitname)
+    def add_traits(self, **traits):
+        """Dynamically add trait attributes to the Widget."""
+        super(Widget, self).add_traits(**traits)
+        for name, trait in traits.items():
+            if trait.get_metadata('sync'):
+                 self.keys.append(name)
+                 self.send_state(name)
 
     #-------------------------------------------------------------------------
     # Support methods
