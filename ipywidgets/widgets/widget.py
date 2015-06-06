@@ -13,7 +13,7 @@ from IPython.core.getipython import get_ipython
 from ipykernel.comm import Comm
 from traitlets.config import LoggingConfigurable
 from ipython_genutils.importstring import import_item
-from traitlets import Unicode, Dict, Instance, Bool, List, \
+from traitlets import Unicode, Dict, Instance, Bool, List, Any, \
     CaselessStrEnum, Tuple, CUnicode, Int, Set, getmembers
 from ipython_genutils.py3compat import string_types
 
@@ -173,6 +173,9 @@ class Widget(LoggingConfigurable):
     keys = List(sync=True)
     def _keys_default(self):
         return [name for name in self.traits(sync=True)]
+
+    # TODO: Replace with Signal(TypeMap(**synced_traits))
+    state_changed = Signal(Any())
     
     _property_lock = Dict()
     _send_state_lock = Int(0)

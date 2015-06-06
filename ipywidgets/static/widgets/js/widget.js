@@ -98,6 +98,8 @@ define(["nbextensions/widgets/widgets/js/manager",
         initialize: function() {
             var that = this;
             var keys = this.get('keys');
+
+            // Create a slot for each key.
             _.each(keys, function(key) {
                 that.slots[key] = function(value) {
                     that.set(key, value);
@@ -106,6 +108,20 @@ define(["nbextensions/widgets/widgets/js/manager",
                 };
                 that.slots[key].slot_name = key;
 	        });
+
+            // state_changed signal
+            that.signals['state_changed'] = new signaling.Signal();
+            this.on('change', function() {
+                var changed = this.changedAttributes();
+                _.each(changed, function(v, k) {
+                    // TODO: use this.emit to propagate to the back-end
+                    this.signals['state_changed'].emit({
+                        'name': k,
+                        'old': this.previous(k),
+                        'new': v,
+                    });
+                }, this);
+            }, this);
         },
 
         emit: function(signal_name, value) {
