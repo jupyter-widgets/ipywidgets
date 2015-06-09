@@ -283,7 +283,17 @@ define(["nbextensions/widgets/widgets/js/manager",
                         console.log(data);
                         return;
                     }
-                    this.slots[data.name].invoke(data.value);
+                    // Deserialize slot argument 
+                    var serializers = that.constructor.serializers;
+                    var deserial;
+                    if (serializers && serializers[data.name] && serializers[data.name].deserialize) {
+                        deserial = (serializers[k].deserialize)(data.value, that);
+                    } else {
+                        deserial = Promise.resolve(data.value);
+                    }
+                    deserial.then(function(deserialized) {
+                        that.slots[data.name].invoke(deserialized);
+                    });
                     break;
                 case 'emit':
                     if(!that.signals[data.name]) {
