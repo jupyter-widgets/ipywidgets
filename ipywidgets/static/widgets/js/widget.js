@@ -111,7 +111,7 @@ define(["nbextensions/widgets/widgets/js/manager",
             this.on('change', function() {
                 var changed = this.changedAttributes();
                 _.each(changed, function(v, k) {
-                    // TODO: use this.emit to propagate to the back-end
+                    // TODO: use `this.emit('state_changed', {` to propagate to the back-end
                     this.signals['state_changed'].emit({
                         'name': k,
                         'old': this.previous(k),
@@ -121,15 +121,25 @@ define(["nbextensions/widgets/widgets/js/manager",
             }, this);
         },
 
-        emit: function(signal_name, value) {
+        emit: function(name, value, callbacks, buffers) {
             /**
              * Emit a signal and propagate message to the backend.
              */
-            this.signals[signal_name].emit(value);
+            this.signals[name].emit(value);
             if (this.comm !== undefined) {
-                var data = {method: 'emit', name: signal_name, value: value};
-                this.comm.send(data);
-                this.pending_msgs++;
+                var serializers = this.constructor.serializers;
+                var serial;
+                if (serializers && serializers[name] && serializers[name].serialize) {
+                    serial = (serializers[name].serialize)(value, this);
+                } else {
+                    serial = Promise.resolve(value)
+                }
+                var that = this;
+                serial.then(function(serialized) {
+                    var data = {method: 'emit', name: name, value: serialized};
+                    that.comm.send(data, callbacks || that.widget_manager.callbacks(), {}, buffers);
+                    that.pending_msgs++;
+                });
             }
         },
 
@@ -281,7 +291,17 @@ define(["nbextensions/widgets/widgets/js/manager",
                         console.log(data);
                         return;
                     }
-                    this.emit(data.name, data.value);
+                    // Deserialize signal
+                    var serializers = that.constructor.serializers;
+                    var deserial;
+                    if (serializers && serializers[data.name] && serializers[data.name].deserialize) {
+                        deserial = (serializers[k].deserialize)(data.value, that);
+                    } else {
+                        deserial = Promise.resolve(data.value);
+                    }
+                    deserial.then(function(deserialized) {
+                        that.emit(data.name, deserialized);
+                    });
                     break;
                 case 'connect':
                     unpack_models(data.slot.model, this).then(function(target_model) {
