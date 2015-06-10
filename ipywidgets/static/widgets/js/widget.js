@@ -6,7 +6,8 @@ define(["nbextensions/widgets/widgets/js/manager",
         "backbone",
         "base/js/utils",
         "base/js/namespace",
-], function(widgetmanager, _, Backbone, utils, IPython){
+        "./signaling",
+], function(widgetmanager, _, Backbone, utils, IPython, signaling) {
     "use strict";
 
     var unpack_models = function unpack_models(value, model) {
@@ -94,6 +95,57 @@ define(["nbextensions/widgets/widgets/js/manager",
             return Backbone.Model.apply(this);
         },
 
+        initialize: function() {
+            var that = this;
+            var keys = this.get('keys');
+
+            // Create a slot for each key.
+            _.each(keys, function(key) {
+                that.slots[key] = function(value) {
+                    that.set(key, value);
+                    // FIXME: should we always save_changes?
+                    that.save_changes();
+                };
+                that.slots[key].slot_name = key;
+	        });
+
+            // state_changed signal
+            that.signals['state_changed'] = new signaling.Signal();
+            this.on('change', function() {
+                var changed = this.changedAttributes();
+                _.each(changed, function(v, k) {
+                    // TODO: use `this.emit('state_changed', {` to propagate to the back-end
+                    this.signals['state_changed'].emit({
+                        'name': k,
+                        'old': this.previous(k),
+                        'new': v,
+                    });
+                }, this);
+            }, this);
+        },
+
+        emit: function(name, value, callbacks, buffers) {
+            /**
+             * Emit a signal and propagate message to the backend.
+             */
+            this.signals[name].emit(value);
+            if (this.comm !== undefined) {
+                var serializers = this.constructor.serializers;
+                var serial;
+                if (serializers && serializers[name] && serializers[name].serialize) {
+                    serial = (serializers[name].serialize)(value, this);
+                } else {
+                    serial = Promise.resolve(value)
+                }
+                var that = this;
+                serial.then(function(serialized) {
+                    var data = {method: 'emit', name: name, value: serialized};
+                    that.comm.send(data, callbacks || that.widget_manager.callbacks(), {}, buffers);
+                    that.pending_msgs++;
+                });
+            }
+        },
+
         send: function (content, callbacks, buffers) {
             /**
              * Send a custom msg over the comm.
@@ -104,6 +156,9 @@ define(["nbextensions/widgets/widgets/js/manager",
                 this.pending_msgs++;
             }
         },
+
+        signals: {},
+        slots: {},
 
         request_state: function(callbacks) {
             /** 
@@ -167,15 +222,16 @@ define(["nbextensions/widgets/widgets/js/manager",
             /**
              * Handle incoming comm msg.
              */
-            var method = msg.content.data.method;
-            
+            var target_model = null;
+            var data = msg.content.data;
+            var method = data.method;
             var that = this;
             switch (method) {
                 case 'update':
                     this.state_change = this.state_change
                         .then(function() {
-                            var state = msg.content.data.state || {};
-                            var buffer_keys = msg.content.data.buffers || [];
+                            var state = data.state || {};
+                            var buffer_keys = data.buffers || [];
                             var buffers = msg.buffers || [];
                             for (var i=0; i<buffer_keys.length; i++) {
                                 state[buffer_keys[i]] = buffers[i];
@@ -190,10 +246,18 @@ define(["nbextensions/widgets/widgets/js/manager",
                                     }
                                 }
                             }
-                            return utils.resolve_promises_dict(state);
-                        }).then(function(state) {
-                            return that.set_state(state);
-                        }).catch(utils.reject("Couldn't process update msg for model id '" + String(that.id) + "'", true))
+
+                            var connections = data.connections || {};
+                            return Promise.all([utils.resolve_promises_dict(state),
+                                                unpack_models(connections, that)]);
+                        })
+                        .then(function(state_connections) {
+                            var state = state_connections[0],
+                                connections = state_connections[1];
+                            that.set_connections(connections);
+                            that.set_state(state);
+                        })
+                        .catch(utils.reject("Couldn't process update msg for model id '" + String(that.id) + "'", true))
                         .then(function() {
                             var parent_id = msg.parent_header.msg_id;
                             if (that._resolve_received_state[parent_id] !== undefined) {
@@ -203,14 +267,116 @@ define(["nbextensions/widgets/widgets/js/manager",
                         }).catch(utils.reject("Couldn't resolve state request promise", true));
                     break;
                 case 'custom':
-                    this.trigger('msg:custom', msg.content.data.content, msg.buffers);
+                    this.trigger('msg:custom', data.content, msg.buffers);
                     break;
                 case 'display':
                     this.state_change = this.state_change.then(function() {
                         that.widget_manager.display_view(msg, that);
                     }).catch(utils.reject('Could not process display view msg', true));
                     break;
+                case 'invoke':
+                    if(!target_model.slots[data.slot.name]) {
+                        console.error('No such slot:');
+                        console.log(data);
+                        return;
+                    }
+                    // Deserialize slot argument 
+                    var serializers = that.constructor.serializers;
+                    var deserial;
+                    if (serializers && serializers[data.name] && serializers[data.name].deserialize) {
+                        deserial = (serializers[k].deserialize)(data.value, that);
+                    } else {
+                        deserial = Promise.resolve(data.value);
+                    }
+                    deserial.then(function(deserialized) {
+                        that.slots[data.name].invoke(deserialized);
+                    });
+                    break;
+                case 'emit':
+                    if(!that.signals[data.name]) {
+                        console.error('No such signal:');
+                        console.log(data);
+                        return;
+                    }
+                    // Deserialize signal
+                    var serializers = that.constructor.serializers;
+                    var deserial;
+                    if (serializers && serializers[data.name] && serializers[data.name].deserialize) {
+                        deserial = (serializers[k].deserialize)(data.value, that);
+                    } else {
+                        deserial = Promise.resolve(data.value);
+                    }
+                    deserial.then(function(deserialized) {
+                        that.emit(data.name, deserialized);
+                    });
+                    break;
+                case 'connect':
+                    unpack_models(data.slot.model, this).then(function(target_model) {
+                        if(!that.signals[data.name]) {
+                            console.error('No such signal:');
+                            console.log(data);
+                            return;
+                        }
+                        if(!target_model.slots[data.slot.name]) {
+                            console.error('No such slot:');
+                            console.log(data);
+                            return;
+                        }
+                        var signal = that.signals[data.name];
+                        signal.connect(target_model.slots[data.slot.name], target_model);
+                        var slots = signal._m_slots;
+                        if (slots === null) {
+                            that.set(data.name, []);
+                        } else if (slots instanceof signaling.SlotWrapper) {
+                            that.set(data.name, [[slots._m_thisArg, slots._m_slot.slot_name]]);
+                        } else {
+                            that.set(data.name, slots.map(function(d) {
+                                return [d._m_thisArg, d._m_slot.slot_name]
+                            }));
+                        }
+                        that.save_changes();
+                    });
+                    break;
+                case 'disconnect':
+                    unpack_models(data.slot.model, this).then(function(target_model) {
+                        if(!that.signals[data.name]) {
+                            console.error('No such signal:');
+                            console.log(data);
+                            return;
+                        }
+                        if(!target_model.slots[data.slot.name]) {
+                            console.error('No such slot:');
+                            console.log(data);
+                            return;
+                        }
+                        var signal = that.signals[data.name];
+                        signal.disconnect(target_model.slots[data.slot.name], target_model);
+                        var slots = signal._m_slots;
+                        if (slots === null) {
+                            that.set(data.name, []);
+                        } else if (slots instanceof SlotWrapper) {
+                            that.set(data.name, [[slots._m_thisArg, slots._m_slot.slot_name]]);
+                        } else {
+                            that.set(data.name, slots.map(function(d) {
+                                return [d._m_thisArg, d._m_slot.slot_name]
+                            }));
+                        }
+                        that.save_changes();
+                    });
+                    break;
             }
+        },
+
+        set_connections: function (connections) {
+            var that = this;
+            _.each(connections, function(slots, name) {
+                 for (var k=0; k<slots.length; ++k) {
+                     var slot_info = slots[k];
+                     var target_model = slot_info[0];
+                     var slot_name = slot_info[1];
+                     that.signals[name].connect(target_model.slots[slot_name], target_model);
+                 }
+            }); 
         },
 
         set_state: function (state) {
@@ -446,7 +612,7 @@ define(["nbextensions/widgets/widgets/js/manager",
             /**
              * Public constructor.
              */
-            this.model.on('change',this.update,this);
+            this.model.on('change', this.update, this);
 
             // Bubble the comm live events.
             this.model.on('comm:live', function() {
