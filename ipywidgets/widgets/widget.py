@@ -289,7 +289,7 @@ class Widget(LoggingConfigurable):
             else:
                 raise ValueError("key must be a string, an iterable of keys, or None")
         connections = {
-            k: serialize_widget_attribute(getattr(self, k).connected_slots) for k in keys
+            k: serialize_widget_attribute(self, getattr(self, k).connected_slots) for k in keys
         }
         return connections 
 
