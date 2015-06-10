@@ -124,6 +124,27 @@ def register(key=None):
     return wrap
 
 
+def _state_change_to_json(self, value):
+    """Convert a state change signal signature json."""
+    name, old, new = value['name'], value['old'], value['new']
+    to_json = self.trait_metadata(name, 'to_json', self._trait_to_json)
+    return {
+        'name': name,
+        'old': to_json(old),
+        'new': to_json(new),
+    }
+
+def _state_change_from_json(self, x):
+    """Convert json to a state change signal signature."""
+    name, old, new = value['name'], value['old'], value['new']
+    from_json = self.trait_metadata(name, 'from_json', self._trait_from_json)
+    return {
+        'name': name,
+        'old': from_json(old),
+        'new': from_json(new),
+    }
+
+
 class Widget(LoggingConfigurable):
     #-------------------------------------------------------------------------
     # Class attributes
@@ -174,8 +195,8 @@ class Widget(LoggingConfigurable):
     def _keys_default(self):
         return [name for name in self.traits(sync=True)]
 
-    # TODO: Replace with Signal(TypeMap(**synced_traits))
-    state_changed = Signal(Any())
+    state_changed = Signal(Dict(to_json=_state_change_to_json,
+                                from_json=_state_change_from_json))
 
     _property_lock = Dict()
     _holding_sync = False
