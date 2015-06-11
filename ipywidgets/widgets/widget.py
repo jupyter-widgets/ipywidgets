@@ -234,10 +234,14 @@ class Widget(LoggingConfigurable):
         key : unicode, or iterable (optional)
             A single property's name or iterable of property names to sync with the front-end.
         """
-        state, buffer_keys, buffers = self.get_state(key=key)
-        msg = {"method": "update", "state": state}
-        if buffer_keys:
-            msg['buffers'] = buffer_keys
+        state = self.get_state(key=key)
+        buffer_keys, buffers = [], []
+        for k, v in state.items():
+            if isinstance(v, memoryview):
+                state.pop(k)
+                buffers.append(v)
+                buffer_keys.append(k)
+        msg = {'method': 'update', 'state': state, 'buffers': buffer_keys}
         self._send(msg, buffers=buffers)
 
     def get_state(self, key=None):
@@ -251,10 +255,6 @@ class Widget(LoggingConfigurable):
         Returns
         -------
         state : dict of states
-        buffer_keys : list of strings
-            the values that are stored in buffers
-        buffers : list of binary memoryviews
-            values to transmit in binary
         metadata : dict
             metadata for each field: {key: metadata}
         """
@@ -267,18 +267,11 @@ class Widget(LoggingConfigurable):
         else:
             raise ValueError("key must be a string, an iterable of keys, or None")
         state = {}
-        buffers = []
-        buffer_keys = []
         for k in keys:
             f = self.trait_metadata(k, 'to_json', self._trait_to_json)
             value = getattr(self, k)
-            serialized = f(value)
-            if isinstance(serialized, memoryview):
-                buffers.append(serialized)
-                buffer_keys.append(k)
-            else:
-                state[k] = serialized
-        return state, buffer_keys, buffers
+            state[k] = f(value)
+        return state
 
     def set_state(self, sync_data):
         """Called when a state is received from the front-end."""
