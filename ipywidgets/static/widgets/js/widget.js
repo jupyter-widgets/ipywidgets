@@ -357,7 +357,7 @@ define(["nbextensions/widgets/widgets/js/manager",
                         var slots = signal._m_slots;
                         if (slots === null) {
                             that.set(data.name, []);
-                        } else if (slots instanceof SlotWrapper) {
+                        } else if (slots instanceof signaling.SlotWrapper) {
                             that.set(data.name, [[slots._m_thisArg, slots._m_slot.slot_name]]);
                         } else {
                             that.set(data.name, slots.map(function(d) {
