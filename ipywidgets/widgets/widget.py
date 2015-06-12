@@ -474,6 +474,11 @@ class Widget(LoggingConfigurable):
         elif method == 'request_state':
             self.send_state()
 
+        # Handle signals.
+        elif method == 'emit':
+            # TODO: handle binary buffers like in the case of backbone messages
+            self._handle_signal(data['name'], data['value'])
+
         # Handle a custom msg from the front-end.
         elif method == 'custom':
             if 'content' in data:
@@ -486,6 +491,10 @@ class Widget(LoggingConfigurable):
     def _handle_custom_msg(self, content, buffers):
         """Called when a custom msg is received."""
         self._msg_callbacks(self, content, buffers)
+
+    def _handle_signal(self, name, value):
+        """"""
+        pass
 
     def _notify_trait(self, name, old_value, new_value):
         """Called when a property has been changed."""
