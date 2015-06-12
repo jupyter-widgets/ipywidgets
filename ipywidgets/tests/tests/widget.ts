@@ -210,7 +210,7 @@ base.tester
     from traitlets import Unicode, Instance, List
     from IPython.display import display
     from array import array
-    def _array_to_memoryview(x):
+    def _array_to_memoryview(obj, x):
         if x is None: return None
         try:
             y = memoryview(x)
@@ -218,7 +218,7 @@ base.tester
             # in python 2, arrays do not support the new buffer protocol
             y = memoryview(buffer(x))
         return y
-    def _memoryview_to_array(x):
+    def _memoryview_to_array(obj, x):
         if x is None: return None
         return array("d", x.tobytes())
     arrays_binary = {
@@ -226,9 +226,9 @@ base.tester
         "to_json": _array_to_memoryview
     }
     
-    def _array_to_list(x):
+    def _array_to_list(obj, x):
         return list(x)
-    def _list_to_array(x):
+    def _list_to_array(obj, x):
         return array("d",x)
     arrays_list = {
         "from_json": _list_to_array,
