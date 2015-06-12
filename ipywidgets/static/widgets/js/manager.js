@@ -438,7 +438,10 @@ define([
 
                     model.set_comm_live(false);
                     var view_promise = Promise.resolve().then(function() {
-                        return model.set_state(state[model.id].state);
+                        var deserialized = model._deserialize_state(state[model.id].state);
+                        return utils.resolve_promises_dict(deserialized);
+                    }).then(function(deserialized) {
+                        model.set_state(deserialized);
                     }).then(function() {
                         model.request_state().then(function() {
                             model.set_comm_live(true);
