@@ -41,6 +41,10 @@ define([
                    }, this);
             this.updating = false;
         },
+    }, {
+        serializers: _.extend({
+            widgets: {deserialize: widget.unpack_models}
+        }, widget.WidgetModel.serializers)
     });
 
     var DirectionalLinkModel = widget.WidgetModel.extend({
@@ -77,6 +81,11 @@ define([
                    }, this);
             this.updating = false;
         },
+    }, { 
+        serializers: _.extend({
+            source: {deserialize: widget.unpack_models},
+            targets: {deserialize: widget.unpack_models},
+        }, widget.WidgetModel.serializers)
     });
 
     return {
