@@ -162,7 +162,25 @@ define(["nbextensions/widgets/widgets/js/manager",
             this.trigger('comm:close');
             this.close(true);
         },
-
+        _deserialize_state: function(state) {
+            /** 
+             * Deserialize fields that have a custom serializer.
+             */
+            var serializers = this.constructor.serializers;
+            if (serializers) {
+                var deserialized = {};
+                for (var k in state) {
+                    if (serializers[k] && serializers[k].deserialize) {
+                         deserialized[k] = (serializers[k].deserialize)(state[k], this);
+                    } else {
+                         deserialized[k] = state[k];
+                    }
+                }
+                return deserialized;
+            } else {
+                return state;
+            }
+        },
         _handle_comm_msg: function (msg) {
             /**
              * Handle incoming comm msg.
@@ -180,16 +198,7 @@ define(["nbextensions/widgets/widgets/js/manager",
                             for (var i=0; i<buffer_keys.length; i++) {
                                 state[buffer_keys[i]] = buffers[i];
                             }
-
-                            // deserialize fields that have custom deserializers
-                            var serializers = that.constructor.serializers;
-                            if (serializers) {
-                                for (var k in state) {
-                                    if (serializers[k] && serializers[k].deserialize) {
-                                        state[k] = (serializers[k].deserialize)(state[k], that);
-                                    }
-                                }
-                            }
+                            state = that._deserialize_state(state); 
                             return utils.resolve_promises_dict(state);
                         }).then(function(state) {
                             return that.set_state(state);
@@ -435,7 +444,7 @@ define(["nbextensions/widgets/widgets/js/manager",
              * Serialize the model.  See the types.js deserialization function
              * and the kernel-side serializer/deserializer
              */
-            return "IPY_MODEL_"+this.id;
+            return "IPY_MODEL_" + this.id;
         }
     });
     widgetmanager.WidgetManager.register_widget_model('WidgetModel', WidgetModel);
