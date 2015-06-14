@@ -6,7 +6,7 @@ Propagate changes between widgets on the javascript side
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from .widget import Widget
+from .widget import Widget, widget_serialization
 from traitlets import Unicode, Tuple, List,Instance, TraitError
 
 class WidgetTraitTuple(Tuple):
@@ -37,7 +37,7 @@ class Link(Widget):
     widgets, a list of (widget, 'trait_name') tuples which should be linked in the frontend.
     """
     _model_name = Unicode('LinkModel', sync=True)
-    widgets = List(WidgetTraitTuple, sync=True)
+    widgets = List(WidgetTraitTuple, sync=True, **widget_serialization)
 
     def __init__(self, widgets, **kwargs):
         if len(widgets) < 2:
@@ -73,8 +73,8 @@ class DirectionalLink(Widget):
     when the source trait changes.
     """
     _model_name = Unicode('DirectionalLinkModel', sync=True)
-    targets = List(WidgetTraitTuple, sync=True)
-    source = WidgetTraitTuple(sync=True)
+    targets = List(WidgetTraitTuple, sync=True, **widget_serialization)
+    source = WidgetTraitTuple(sync=True, **widget_serialization)
 
     # Does not quite behave like other widgets but reproduces
     # the behavior of traitlets.directional_link
