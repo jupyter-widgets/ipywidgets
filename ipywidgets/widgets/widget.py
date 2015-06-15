@@ -6,6 +6,7 @@ in the IPython notebook front-end.
 # Distributed under the terms of the Modified BSD License.
 
 
+
 from contextlib import contextmanager
 import collections
 
