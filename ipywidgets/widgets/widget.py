@@ -219,7 +219,8 @@ class Widget(LoggingConfigurable):
     def __setattr__(self, name, value):
         """Overload of HasTraits.__setattr__to handle read-only-ness of widget
         attributes """
-        if self._read_only_enabled and name in self.traits(read_only=True):
+        if (self._read_only_enabled and self.has_trait(name) and
+            self.trait_metadata(name, 'read_only')): 
             raise TraitError('Widget attribute "%s" is read-only.' % name)
         else:
             super(Widget, self).__setattr__(name, value)
