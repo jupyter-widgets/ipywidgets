@@ -289,7 +289,7 @@ class Widget(LoggingConfigurable):
         # The order of these context managers is important. Properties must
         # be locked when the hold_trait_notification context manager is
         # released and notifications are fired.
-        with self._disable_read_only_ness(),\
+        with self._allow_write(),\
              self._lock_property(**sync_data),\
              self.hold_trait_notifications():
             for name in sync_data:
@@ -366,7 +366,7 @@ class Widget(LoggingConfigurable):
             self._property_lock = {}
 
     @contextmanager
-    def _disable_read_only_ness(self):
+    def _allow_write(self):
         if self._read_only_enabled is False:
             yield
         else:
