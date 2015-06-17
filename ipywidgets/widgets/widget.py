@@ -14,7 +14,7 @@ from ipykernel.comm import Comm
 from traitlets.config import LoggingConfigurable
 from ipython_genutils.importstring import import_item
 from traitlets import Unicode, Dict, Instance, Bool, List, \
-    CaselessStrEnum, Tuple, CUnicode, Int, Set
+    CaselessStrEnum, Tuple, CUnicode, Int, Set, TraitError
 from ipython_genutils.py3compat import string_types
 from .trait_types import Color
 
@@ -112,6 +112,7 @@ class Widget(LoggingConfigurable):
     # Class attributes
     #-------------------------------------------------------------------------
     _widget_construction_callback = None
+    _read_only_enabled = True
     widgets = {}
     widget_types = {}
 
@@ -215,6 +216,16 @@ class Widget(LoggingConfigurable):
     # Methods
     #-------------------------------------------------------------------------
 
+    def __setattr__(self, name, value):
+        """Overload of HasTraits.__setattr__to handle read-only-ness of widget
+        attributes """
+        if (self._read_only_enabled and self.has_trait(name) and
+            self.trait_metadata(name, 'read_only')): 
+            raise TraitError('Widget attribute "%s" is read-only.' % name)
+        else:
+            super(Widget, self).__setattr__(name, value)
+
+
     def close(self):
         """Close method.
 
@@ -278,7 +289,9 @@ class Widget(LoggingConfigurable):
         # The order of these context managers is important. Properties must
         # be locked when the hold_trait_notification context manager is
         # released and notifications are fired.
-        with self._lock_property(**sync_data), self.hold_trait_notifications():
+        with self._allow_write(),\
+             self._lock_property(**sync_data),\
+             self.hold_trait_notifications():
             for name in sync_data:
                 if name in self.keys:
                     from_json = self.trait_metadata(name, 'from_json',
@@ -351,6 +364,17 @@ class Widget(LoggingConfigurable):
             yield
         finally:
             self._property_lock = {}
+
+    @contextmanager
+    def _allow_write(self):
+        if self._read_only_enabled is False:
+            yield
+        else:
+            try:
+                self._read_only_enabled = False
+                yield
+            finally:
+                self._read_only_enabled = True 
 
     @contextmanager
     def hold_sync(self):
