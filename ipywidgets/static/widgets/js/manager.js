@@ -283,7 +283,8 @@ define([
         return this.create_model({
             model_name: msg.content.data.model_name, 
             model_module: msg.content.data.model_module, 
-            comm: comm}).catch(utils.reject("Couldn't create a model.", true));
+            comm: comm,
+        }).catch(utils.reject("Couldn't create a model.", true));
     };
 
     WidgetManager.prototype.create_model = function (options) {
@@ -298,9 +299,10 @@ define([
          * JS:
          * IPython.notebook.kernel.widget_manager.create_model({
          *      model_name: 'WidgetModel',
-         *      widget_class: 'ipywidgets.IntSlider'})
-         *      .then(function(model) { console.log('Create success!', model); },
-         *      _.bind(console.error, console));
+         *      widget_class: 'ipywidgets.IntSlider'
+         * })
+         * .then(function(model) { console.log('Create success!', model); },
+         * _.bind(console.error, console));
          *
          * Parameters
          * ----------
@@ -316,23 +318,22 @@ define([
          *
          * Create a comm if it wasn't provided.
          */
-        var comm = options.comm;
-        if (!comm) {
-            comm = this.comm_manager.new_comm('ipython.widget', {'widget_class': options.widget_class});
+        // Create comm if not provided in the options
+        if (!options.comm) {
+            options.comm = this.comm_manager.new_comm('ipython.widget', {
+                'widget_class': options.widget_class,
+            });
         }
+        var model_id = options.comm.comm_id;
 
+        // Load model type
+        var model_type_promise = this.load_model_type(options);
+
+        // Create model promise and populate this._models
         var that = this;
-        var model_id = comm.comm_id;
-        var model_promise =  utils.load_class(options.model_name, options.model_module, WidgetManager._model_types)
+        var model_promise = model_type_promise
             .then(function(ModelType) {
-                var widget_model = new ModelType(that, model_id, comm);
-                widget_model.once('comm:close', function () {
-                    delete that._models[model_id];
-                });
-                widget_model.name = options.model_name;
-                widget_model.module = options.model_module;
-                return widget_model;
-
+                return that.create_model_from_type(ModelType, options);
             }, function(error) {
                 delete that._models[model_id];
                 var wrapped_error = new utils.WrappedError("Couldn't create model", error);
@@ -340,6 +341,66 @@ define([
             });
         this._models[model_id] = model_promise;
         return model_promise;
+    };
+
+    WidgetManager.prototype.load_model_type = function(options) {
+        /**
+         * Create and return a promise for a new widget model
+         *
+         * Minimally, one must provide the model_name and widget_class
+         * parameters to create a model from Javascript.
+         *
+         * Example
+         * -------
+         * JS:
+         * IPython.notebook.kernel.widget_manager.load_model_type({
+         *      model_name: 'WidgetModel',
+         *      widget_class: 'ipywidgets.IntSlider'
+         * })
+         * .then(function(model_type) { console.log('Load success!', model_type); },
+         * _.bind(console.error, console));
+         *
+         * Parameters
+         * ----------
+         * options: dictionary
+         *  Dictionary of options with the following contents:
+         *      model_name: string
+         *          Target name of the widget model to create.
+         *      model_module: (optional) string
+         *          Module name of the widget model to create.
+         */
+        return utils.load_class(options.model_name, 
+                                options.model_module, 
+                                WidgetManager._model_types);
+    };
+
+    WidgetManager.prototype.create_model_from_type = function(ModelType, options) {
+        /**
+         * Create a model from a model type.
+         *
+         * Minimally, one must provide the model_name and a live comm to create a
+         * model from Javascript.
+         *
+         * Parameters
+         * ----------
+         * options: dictionary
+         *  Dictionary of options with the following contents:
+         *      model_name: string
+         *          Target name of the widget model to create.
+         *      model_module: (optional) string
+         *          Module name of the widget model to create.
+         *      widget_class: (optional) string
+         *          Target name of the widget in the back-end.
+         *      comm: Comm
+         */
+        var model_id = options.comm.comm_id;
+        var widget_model = new ModelType(this, model_id, options.comm);
+        widget_model.once('comm:close', function () {
+            delete this._models[model_id];
+        }, this);
+        widget_model.name = options.model_name;
+        widget_model.module = options.model_module;
+        return widget_model;
     };
 
     WidgetManager.prototype.get_state = function(options) {
