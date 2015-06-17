@@ -85,11 +85,14 @@ class IntSlider(_BoundedInt):
 class IntProgress(_BoundedInt):
     """Progress bar that represents a int bounded by a minimum and maximum value."""
     _view_name = Unicode('ProgressView', sync=True)
+    orientation = CaselessStrEnum(values=['horizontal', 'vertical'], 
+        default_value='horizontal', help="Vertical or horizontal.", sync=True)
 
     bar_style = CaselessStrEnum(
         values=['success', 'info', 'warning', 'danger', ''], 
         default_value='', allow_none=True, sync=True, help="""Use a
         predefined styling for the progess bar.""")
+
 
 class _IntRange(_Int):
     value = Tuple(CInt, CInt, default_value=(0, 1), help="Tuple of (lower, upper) bounds", sync=True)

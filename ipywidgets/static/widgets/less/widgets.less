@@ -198,10 +198,26 @@
     margin : 0px;
 }
 
-.widget-progress {
+.widget-hprogress {
     /* Progress Bar */
     margin-top: 6px;
     min-width : @widget-width;
+
+    .progress-bar {
+        /* Disable progress bar animation */
+        -webkit-transition : none;
+        -moz-transition    : none;
+        -ms-transition     : none;
+        -o-transition      : none;
+        transition         : none;
+    }
+}
+
+.widget-vprogress {
+    /* Progress Bar */
+    margin-top: 6px;
+    min-height : 250px;
+    width: 12px;
 
     .progress-bar {
         /* Disable progress bar animation */
