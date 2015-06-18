@@ -41,6 +41,9 @@ class GamePad(Widget):
     axes = List(trait=Instance(Axis), read_only=True, sync=True,
                 **widget_serialization)
 
+    _view_name = Unicode('GamepadView', sync=True)
+    _view_module = Unicode('nbextensions/gamepad/gamepad', sync=True)
+
     _model_name = Unicode('Gamepad', sync=True)
     _model_module = Unicode('nbextensions/gamepad/gamepad', sync=True)
  
