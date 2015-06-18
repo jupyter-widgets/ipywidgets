@@ -19,21 +19,21 @@ from ipython_genutils.py3compat import string_types
 from .trait_types import Color
 
 
-def _widget_to_json(x):
+def _widget_to_json(x, obj):
     if isinstance(x, dict):
-        return {k: _widget_to_json(v) for k, v in x.items()}
+        return {k: _widget_to_json(v, obj) for k, v in x.items()}
     elif isinstance(x, (list, tuple)):
-        return [_widget_to_json(v) for v in x]
+        return [_widget_to_json(v, obj) for v in x]
     elif isinstance(x, Widget):
         return "IPY_MODEL_" + x.model_id
     else:
         return x
 
-def _json_to_widget(x):
+def _json_to_widget(x, obj):
     if isinstance(x, dict):
-        return {k: _json_to_widget(v) for k, v in x.items()}
+        return {k: _json_to_widget(v, obj) for k, v in x.items()}
     elif isinstance(x, (list, tuple)):
-        return [_json_to_widget(v) for v in x]
+        return [_json_to_widget(v, obj) for v in x]
     elif isinstance(x, string_types) and x.startswith('IPY_MODEL_') and x[10:] in Widget.widgets:
         return Widget.widgets[x[10:]]
     else:
@@ -279,9 +279,8 @@ class Widget(LoggingConfigurable):
             raise ValueError("key must be a string, an iterable of keys, or None")
         state = {}
         for k in keys:
-            f = self.trait_metadata(k, 'to_json', self._trait_to_json)
-            value = getattr(self, k)
-            state[k] = f(value)
+            to_json = self.trait_metadata(k, 'to_json', self._trait_to_json)
+            state[k] = to_json(getattr(self, k), self)
         return state
 
     def set_state(self, sync_data):
@@ -296,7 +295,7 @@ class Widget(LoggingConfigurable):
                 if name in self.keys:
                     from_json = self.trait_metadata(name, 'from_json',
                                                     self._trait_from_json)
-                    setattr(self, name, from_json(sync_data[name]))
+                    setattr(self, name, from_json(sync_data[name], self))
 
     def send(self, content, buffers=None):
         """Sends a custom msg to the widget model in the front-end.
@@ -394,7 +393,7 @@ class Widget(LoggingConfigurable):
         """Check the property lock (property_lock)"""
         to_json = self.trait_metadata(key, 'to_json', self._trait_to_json)
         if (key in self._property_lock
-            and to_json(value) == self._property_lock[key]):
+            and to_json(value, self) == self._property_lock[key]):
             return False
         elif self._send_state_lock > 0:
             self._states_to_send.add(key)
@@ -454,11 +453,13 @@ class Widget(LoggingConfigurable):
         """Called when a view has been displayed for this widget instance"""
         self._display_callbacks(self, **kwargs)
 
-    def _trait_to_json(self, x):
+    @staticmethod
+    def _trait_to_json(x, self):
         """Convert a trait value to json."""
         return x
 
-    def _trait_from_json(self, x):
+    @staticmethod
+    def _trait_from_json(x, self):
         """Convert json values to objects."""
         return x
 
