@@ -24,7 +24,7 @@ class Axis(Widget):
     _view_module = Unicode('nbextensions/gamepad/gamepad', sync=True)
 
 
-class GamePad(Widget):
+class Gamepad(Widget):
     """Represents a game controller"""
     index = Int(sync=True)
 
