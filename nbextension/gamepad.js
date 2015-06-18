@@ -5,7 +5,69 @@ define([
 ], function(widget, utils, _) {
     "use strict";
 
+    var Button = widget.DOMWidgetView.extend({
+        /* Very simple view for a gamepad button. */
+        render : function(){
+            this.$el.css({
+                    'position': 'relative',
+                    'margin': '1px',
+                    'min-width': '16px',
+                    'min-height': '16px',
+                    'border': '1px solid black',
+                    'border-radius': '5px',
+                    'background-color': 'lightgray',
+                });
+            this.$bar = $('<div />')
+                .css({
+                    'position': 'absolute',
+                    'width': '100%',
+                    'bottom': 0,
+                    'background-color': 'gray',
+                    'border-radius': '5px',
+                })
+                .appendTo(this.$el);
+            this.update();
+        },
+        update : function(){
+            this.$bar.css('height', 100 * this.model.get('value') + '%');
+        },
+    });
+
+    var Axis = widget.DOMWidgetView.extend({
+        /* Very simple view for a gamepad axis. */
+        render : function() {
+            this.$el.css('min-width', '16px');
+            this.$support = $('<div />').css({
+                    'position': 'relative',
+                    'margin': '1px',
+                    'width': '4px',
+                    'height': '64px',
+                    'border': '1px solid black',
+                    'border-radius': '2px',
+                    'background-color': 'lightgray',
+                    'overflow': 'visible',
+                })
+                .appendTo(this.$el);
+            this.$bullet = $('<div />')
+                .css({
+                    'position': 'absolute',
+                    'margin-top': '-5px',
+                    'margin-left': '-4px',
+                    'width': '10px',
+                    'height': '10px',
+                    'border-radius': '5px',
+                    'background-color': 'gray',
+                })
+                .appendTo(this.$support);
+            this.update();
+        },
+        update : function() {
+            this.$bullet.css('top', 50 * (this.model.get('value') + 1) + '%');
+        },
+    });
+
     var Gamepad = widget.WidgetModel.extend({
+        /* The Gamepad model. */
         initialize: function() {
             if (navigator.getGamepads === void 0) {
                 // Checks if the browser supports the gamepad API
@@ -127,6 +189,8 @@ define([
     });
 
     return {
+        Button: Button,
+        Axis: Axis,
         Gamepad: Gamepad,
     };
 });

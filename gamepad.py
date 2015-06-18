@@ -12,10 +12,16 @@ class Button(Widget):
     value = Float(min=0.0, max=1.0, read_only=True, sync=True)
     pressed = Bool(read_only=True, sync=True)
 
+    _view_name = Unicode('Button', sync=True)
+    _view_module = Unicode('nbextensions/gamepad/gamepad', sync=True)
+
 
 class Axis(Widget):
     """Represents a gamepad or joystick axis"""
     value = Float(min=-1.0, max=1.0, read_only=True, sync=True)
+
+    _view_name = Unicode('Axis', sync=True)
+    _view_module = Unicode('nbextensions/gamepad/gamepad', sync=True)
 
 
 class GamePad(Widget):
