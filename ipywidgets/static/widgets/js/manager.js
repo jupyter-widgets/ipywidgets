@@ -449,14 +449,11 @@ define([
                 var all_views = [];
                 _.each(models, function(model) {
                     // Display the views of the model.
-                    var views = [];
-                    var model_views = state[model.id].views;
-                    for (var j = 0; j < model_views.length; j++) {
-                        var cell_index = model_views[j];
+                    var views = Promise.all(_.map(state[model.id].views, function(cell_index) {
                         var cell = that.notebook.get_cell(cell_index);
-                        views.push(that.display_view_in_cell(cell, model));
-                    }
-                    all_views.push(Promise.all(views));
+                        return that.display_view_in_cell(cell, model);
+                    }));
+                    all_views.push(views);
                 });
                 return Promise.all(all_views);
             });
