@@ -431,6 +431,13 @@ define([
                     comm: new_comm,
                     model_name: state[model_id].model_name,
                     model_module: state[model_id].model_module,
+                }).then(function(model) {
+                    model.set_comm_live(false);
+                    var deserialized = model._deserialize_state(state[model.id].state);
+                    return utils.resolve_promises_dict(deserialized).then(function(state) {
+                        model.set_state(state);
+                        return model;
+                    });
                 });
             }, this));
 
@@ -441,16 +448,9 @@ define([
                 for (var i = 0; i < models.length; i++) {
                     model = Promise.resolve(models[i]);
                     var views = model.then(function(model) {
-                        model.set_comm_live(false);
                         var view_promise = Promise.resolve().then(function() {
-                            var deserialized = model._deserialize_state(state[model.id].state);
-                            return utils.resolve_promises_dict(deserialized);
-                        }).then(function(deserialized) {
-                             model.set_state(deserialized);
-                        }).then(function() {
                             return model.request_state().then(function() {
                                 model.set_comm_live(true);
-
                                 // Display the views of the model.
                                 var views = [];
                                 var model_views = state[model.id].views;
