@@ -436,34 +436,34 @@ define([
                     var deserialized = model._deserialize_state(state[model.id].state);
                     return utils.resolve_promises_dict(deserialized).then(function(state) {
                         model.set_state(state);
-                        return model;
+                        return model.request_state().then(function() {
+                            model.set_comm_live(true);
+                            return model;
+                        });
                     });
                 });
             }, this));
 
             // Display all the views
             return all_models.then(function(models) {
-                that.all_views = [];
+                var all_views = [];
                 var model;
                 for (var i = 0; i < models.length; i++) {
                     model = Promise.resolve(models[i]);
                     var views = model.then(function(model) {
-                        return model.request_state().then(function() {
-                            model.set_comm_live(true);
-                            // Display the views of the model.
-                            var views = [];
-                            var model_views = state[model.id].views;
-                            for (var j = 0; j < model_views.length; j++) {
-                                var cell_index = model_views[j];
-                                var cell = that.notebook.get_cell(cell_index);
-                                views.push(that.display_view_in_cell(cell, model));
-                            }
-                            return Promise.all(views);
-                        });
+                        // Display the views of the model.
+                        var views = [];
+                        var model_views = state[model.id].views;
+                        for (var j = 0; j < model_views.length; j++) {
+                            var cell_index = model_views[j];
+                            var cell = that.notebook.get_cell(cell_index);
+                            views.push(that.display_view_in_cell(cell, model));
+                        }
+                        return Promise.all(views);
                     });
-                    that.all_views.push(views);
+                    all_views.push(views);
                 }
-                return Promise.all(that.all_views);
+                return Promise.all(all_views);
             });
         }).catch(utils.reject('Could not set widget manager state.', true));
     };
