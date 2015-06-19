@@ -447,22 +447,17 @@ define([
             // Display all the views
             return all_models.then(function(models) {
                 var all_views = [];
-                var model;
-                for (var i = 0; i < models.length; i++) {
-                    model = Promise.resolve(models[i]);
-                    var views = model.then(function(model) {
-                        // Display the views of the model.
-                        var views = [];
-                        var model_views = state[model.id].views;
-                        for (var j = 0; j < model_views.length; j++) {
-                            var cell_index = model_views[j];
-                            var cell = that.notebook.get_cell(cell_index);
-                            views.push(that.display_view_in_cell(cell, model));
-                        }
-                        return Promise.all(views);
-                    });
-                    all_views.push(views);
-                }
+                _.each(models, function(model) {
+                    // Display the views of the model.
+                    var views = [];
+                    var model_views = state[model.id].views;
+                    for (var j = 0; j < model_views.length; j++) {
+                        var cell_index = model_views[j];
+                        var cell = that.notebook.get_cell(cell_index);
+                        views.push(that.display_view_in_cell(cell, model));
+                    }
+                    all_views.push(Promise.all(views));
+                });
                 return Promise.all(all_views);
             });
         }).catch(utils.reject('Could not set widget manager state.', true));
