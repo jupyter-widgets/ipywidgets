@@ -433,8 +433,7 @@ define([
                     model_module: state[model_id].model_module,
                 }).then(function(model) {
                     model.set_comm_live(false);
-                    var deserialized = model._deserialize_state(state[model.id].state);
-                    return utils.resolve_promises_dict(deserialized).then(function(state) {
+                    return model._deserialize_state(state[model.id].state).then(function(state) {
                         model.set_state(state);
                         return model.request_state().then(function() {
                             model.set_comm_live(true);

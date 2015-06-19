@@ -176,10 +176,10 @@ define(["nbextensions/widgets/widgets/js/manager",
                          deserialized[k] = state[k];
                     }
                 }
-                return deserialized;
             } else {
-                return state;
+                deserialized = state;
             }
+            return utils.resolve_promises_dict(deserialized);
         },
         _handle_comm_msg: function (msg) {
             /**
@@ -198,8 +198,7 @@ define(["nbextensions/widgets/widgets/js/manager",
                             for (var i=0; i<buffer_keys.length; i++) {
                                 state[buffer_keys[i]] = buffers[i];
                             }
-                            state = that._deserialize_state(state); 
-                            return utils.resolve_promises_dict(state);
+                            return that._deserialize_state(state); 
                         }).then(function(state) {
                             return that.set_state(state);
                         }).catch(utils.reject("Couldn't process update msg for model id '" + String(that.id) + "'", true))
