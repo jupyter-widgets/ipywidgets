@@ -446,16 +446,13 @@ define([
 
             // Display all the views
             return all_models.then(function(models) {
-                var all_views = [];
-                _.each(models, function(model) {
+                return Promise.all(_.map(models, function(model) {
                     // Display the views of the model.
-                    var views = Promise.all(_.map(state[model.id].views, function(cell_index) {
+                    return Promise.all(_.map(state[model.id].views, function(cell_index) {
                         var cell = that.notebook.get_cell(cell_index);
                         return that.display_view_in_cell(cell, model);
                     }));
-                    all_views.push(views);
-                });
-                return Promise.all(all_views);
+                }));
             });
         }).catch(utils.reject('Could not set widget manager state.', true));
     };
