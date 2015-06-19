@@ -91,7 +91,7 @@ define([
             if (pad) {
                 // Set up the main gamepad attributes
                 this.set({
-                    id: pad.id,
+                    name: pad.id,
                     mapping: pad.mapping,
                     connected: pad.connected,
                     timestamp: pad.timestamp,
@@ -153,7 +153,7 @@ define([
                 axis.close();
             });
             this.set({
-                id: '',
+                name: '',
                 mapping: '',
                 connected: false,
                 timestamp: 0.0,
@@ -237,7 +237,7 @@ define([
         },
 
         update_label: function() {
-            this.$label.text(this.model.get('id') ||
+            this.$label.text(this.model.get('name') ||
                              'Connect gamepad and press any button');
         }, 
 

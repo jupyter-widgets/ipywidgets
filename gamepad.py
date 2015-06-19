@@ -28,9 +28,9 @@ class Gamepad(Widget):
     """Represents a game controller"""
     index = Int(sync=True)
 
-    # General information about the gamepad, button and axes mapping, id.
+    # General information about the gamepad, button and axes mapping, name.
     # These values are all read-only and set by the JavaScript side.
-    id = Unicode(read_only=True, sync=True)
+    name = Unicode(read_only=True, sync=True)
     mapping = Unicode(read_only=True, sync=True)
     connected = Bool(read_only=True, sync=True)
     timestamp = Float(read_only=True, sync=True)
