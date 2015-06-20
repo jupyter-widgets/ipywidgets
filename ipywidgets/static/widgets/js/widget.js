@@ -114,7 +114,9 @@ define(["nbextensions/widgets/widgets/js/manager",
                 return;
             }
 
-            var msg_id = this.comm.send({method: 'request_state'}, callbacks || this.widget_manager.callbacks());
+            var msg_id = this.comm.send({
+                method: 'request_state'
+            }, callbacks || this.widget_manager.callbacks());
 
             // Promise that is resolved when a state is received
             // from the back-end.
@@ -254,7 +256,11 @@ define(["nbextensions/widgets/widgets/js/manager",
                     // throttled.
                     if (this.msg_buffer !== null &&
                         (this.get('msg_throttle') || 3) === this.pending_msgs) {
-                        var data = {method: 'backbone', sync_method: 'update', sync_data: this.msg_buffer};
+                        var data = {
+                            method: 'backbone',
+                            sync_method: 'update',
+                            sync_data: this.msg_buffer
+                        };
                         this.comm.send(data, callbacks);
                         this.msg_buffer = null;
                     } else {
@@ -407,7 +413,11 @@ define(["nbextensions/widgets/widgets/js/manager",
                         }
                     }
                 }
-                that.comm.send({method: 'backbone', sync_data: state, buffer_keys: buffer_keys}, callbacks, {}, buffers);
+                that.comm.send({
+                    method: 'backbone',
+                    sync_data: state,
+                    buffer_keys: buffer_keys
+                }, callbacks, {}, buffers);
             }).catch(function(error) {
                 that.pending_msgs--;
                 return (utils.reject("Couldn't send widget sync message", true))(error);
@@ -420,7 +430,9 @@ define(["nbextensions/widgets/widgets/js/manager",
              *
              * This invokes a Backbone.Sync.
              */
-            this.save(this._buffered_state_diff, {patch: true, callbacks: callbacks});
+            if (this.comm_live) {
+                this.save(this._buffered_state_diff, {patch: true, callbacks: callbacks});
+            }
         },
 
         on_some_change: function(keys, callback, context) {
@@ -672,8 +684,12 @@ define(["nbextensions/widgets/widgets/js/manager",
             if (el===undefined) {
                 el = this.el;
             }
-            _.difference(old_classes, new_classes).map(function(c) { el.classList.remove(c); });
-            _.difference(new_classes, old_classes).map(function(c) { el.classList.add(c); });
+            _.difference(old_classes, new_classes).map(function(c) {
+                el.classList.remove(c);
+            });
+            _.difference(new_classes, old_classes).map(function(c) {
+                el.classList.add(c);
+            });
         },
 
         update_mapped_classes: function(class_map, trait_name, previous_trait_value, el) {
