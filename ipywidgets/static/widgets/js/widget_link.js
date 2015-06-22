@@ -12,11 +12,14 @@ define([
                 return;
             }
             this.updating = true;
-            if (target[0]) {
-                target[0].set(target[1], source[0].get(source[1]));
-                target[0].save_changes();
+            try {
+                if (target[0]) {
+                    target[0].set(target[1], source[0].get(source[1]));
+                    target[0].save_changes();
+                }
+            } finally {
+                this.updating = false;
             }
-            this.updating = false;
         }
     }, {
         serializers: _.extend({
