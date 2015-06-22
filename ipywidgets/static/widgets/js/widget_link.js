@@ -33,7 +33,7 @@ define([
                     this.source[0].off("change:" + this.source[1], null, this);
                 }
                 if (this.target){
-                    this.tatget[0].off("change:" + this.target[1], null, this);
+                    this.target[0].off("change:" + this.target[1], null, this);
                 }
             }, this);
         },
