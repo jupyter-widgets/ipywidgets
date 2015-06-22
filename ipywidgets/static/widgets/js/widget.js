@@ -66,7 +66,7 @@ define(["nbextensions/widgets/widgets/js/manager",
             this.views = {};
             this._resolve_received_state = {};
 
-            if (comm !== undefined) {
+            if (comm) {
                 // Remember comm associated with the model.
                 this.comm = comm;
                 comm.model = this;
@@ -74,11 +74,10 @@ define(["nbextensions/widgets/widgets/js/manager",
                 // Hook comm messages up to model.
                 comm.on_close(_.bind(this._handle_comm_closed, this));
                 comm.on_msg(_.bind(this._handle_comm_msg, this));
-
-                // Assume the comm is alive.
+                
                 this.set_comm_live(true);
             } else {
-                this.set_comm_live(false);
+                this.comm_live = false;
             }
 
             // Listen for the events that lead to the websocket being terminated.
