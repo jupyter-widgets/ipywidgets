@@ -5,49 +5,65 @@ define([
     "nbextensions/widgets/widgets/js/widget",
     "jquery",
 ], function(widget, $){
-    var LinkModel = widget.WidgetModel.extend({
-        initialize: function() {
-            this.on("change:widgets", function(model, value, options) {
-                this.update_bindings(model.previous("widgets") || [], value);
-                this.update_value(this.get("widgets")[0]);
-            }, this);
-            this.once("destroy", function(model, collection, options) {
-                this.update_bindings(this.get("widgets"), []);
-            }, this);
-        },
-        update_bindings: function(oldlist, newlist) {
-            var that = this;
-            _.each(oldlist, function(elt) {elt[0].off("change:" + elt[1], null, that);});
-            _.each(newlist, function(elt) {elt[0].on("change:" + elt[1],
-                                                     function(model, value, options) {
-                                                         that.update_value(elt);
-                                                     }, that);
-                                           // TODO: register for any destruction handlers
-                                           // to take an item out of the list
-                                          });
-        },
-        update_value: function(elt) {
-            if (this.updating) {return;}
-            var model = elt[0];
-            var attr = elt[1];
-            var new_value = model.get(attr);
+
+    var BaseLinkModel = widget.WidgetModel.extend({
+        update_value: function(source, target) {
+            if (this.updating) {
+                return;
+            }
             this.updating = true;
-            _.each(_.without(this.get("widgets"), elt),
-                   function(element, index, list) {
-                       if (element[0]) {
-                           element[0].set(element[1], new_value);
-                           element[0].save_changes();
-                       }
-                   }, this);
-            this.updating = false;
-        },
+            try {
+                if (target[0]) {
+                    target[0].set(target[1], source[0].get(source[1]));
+                    target[0].save_changes();
+                }
+            } finally {
+                this.updating = false;
+            }
+        }
     }, {
         serializers: _.extend({
-            widgets: {deserialize: widget.unpack_models}
-        }, widget.WidgetModel.serializers)
+            target: {deserialize: widget.unpack_models},
+            source: {deserialize: widget.unpack_models},
+        }, widget.WidgetModel.serializers),
     });
 
-    var DirectionalLinkModel = widget.WidgetModel.extend({
+    var LinkModel = BaseLinkModel.extend({
+        initialize: function() {
+            this.on("change", this.update_bindings, this);
+            this.once("destroy", function() {
+                if (this.source){
+                    this.source[0].off("change:" + this.source[1], null, this);
+                }
+                if (this.target){
+                    this.target[0].off("change:" + this.target[1], null, this);
+                }
+            }, this);
+        },
+        update_bindings: function() {
+            if (this.source) {
+                this.source[0].off("change:" + this.source[1], null, this);
+            }
+            if (this.target) {
+                this.target[0].off("change:" + this.target[1], null, this);
+            }
+            this.source = this.get("source");
+            this.target = this.get("target");
+            if (this.source) {
+                this.source[0].on("change:" + this.source[1], function() {
+                    this.update_value(this.source, this.target);
+                }, this);
+                this.update_value(this.source, this.target);
+            }
+            if (this.target) {
+                this.target[0].on("change:" + this.target[1], function() {
+                    this.update_value(this.target, this.source);
+                }, this);
+            }
+        },
+    });
+
+    var DirectionalLinkModel = BaseLinkModel.extend({
         initialize: function() {
             this.on("change", this.update_bindings, this);
             this.once("destroy", function() {
@@ -61,31 +77,14 @@ define([
                 this.source[0].off("change:" + this.source[1], null, this);
             }
             this.source = this.get("source");
+            this.target = this.get("target");
             if (this.source) {
-                this.source[0].on("change:" + this.source[1], function() { this.update_value(this.source); }, this);
-                this.update_value(this.source);
+                this.source[0].on("change:" + this.source[1], function() {
+                    this.update_value(this.source, this.target);
+                }, this);
+                this.update_value(this.source, this.target);
             }
         },
-        update_value: function(elt) {
-            if (this.updating) {return;}
-            var model = elt[0];
-            var attr = elt[1];
-            var new_value = model.get(attr);
-            this.updating = true;
-            _.each(this.get("targets"),
-                   function(element, index, list) {
-                       if (element[0]) {
-                           element[0].set(element[1], new_value);
-                           element[0].save_changes();
-                       }
-                   }, this);
-            this.updating = false;
-        },
-    }, { 
-        serializers: _.extend({
-            source: {deserialize: widget.unpack_models},
-            targets: {deserialize: widget.unpack_models},
-        }, widget.WidgetModel.serializers)
     });
 
     return {
