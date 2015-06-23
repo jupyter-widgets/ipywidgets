@@ -202,7 +202,7 @@ define(["nbextensions/widgets/widgets/js/manager",
                             }
                             return that._deserialize_state(state); 
                         }).then(function(state) {
-                            return that.set_state(state);
+                            that.set_state(state);
                         }).catch(utils.reject("Couldn't process update msg for model id '" + String(that.id) + "'", true))
                         .then(function() {
                             var parent_id = msg.parent_header.msg_id;
@@ -224,17 +224,13 @@ define(["nbextensions/widgets/widgets/js/manager",
         },
 
         set_state: function (state) {
-            var that = this;
             // Handle when a widget is updated via the python side.
-            return new Promise(function(resolve, reject) {
-                that.state_lock = state;
-                try {
-                    WidgetModel.__super__.set.call(that, state);
-                } finally {
-                    that.state_lock = null;
-                }
-                resolve();
-            }).catch(utils.reject("Couldn't set model state", true));
+            this.state_lock = state;
+            try {
+                WidgetModel.__super__.set.call(this, state);
+            } finally {
+                this.state_lock = null;
+            }
         },
 
         get_state: function() {
