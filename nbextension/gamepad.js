@@ -7,6 +7,7 @@ define([
 
     var Button = widget.DOMWidgetView.extend({
         /* Very simple view for a gamepad button. */
+
         render : function(){
             this.$support = $('<div />').css({
                     'position': 'relative',
@@ -35,10 +36,12 @@ define([
         update : function() {
             this.$bar.css('height', 100 * this.model.get('value') + '%');
         },
+
     });
 
     var Axis = widget.DOMWidgetView.extend({
         /* Very simple view for a gamepad axis. */
+
         render : function() {
             this.$el.css({
                     'width': '16px',
@@ -72,10 +75,12 @@ define([
         update : function() {
             this.$bullet.css('top', 50 * (this.model.get('value') + 1) + '%');
         },
+
     });
 
     var Gamepad = widget.WidgetModel.extend({
         /* The Gamepad model. */
+
         initialize: function() {
             if (navigator.getGamepads === void 0) {
                 // Checks if the browser supports the gamepad API
@@ -96,29 +101,41 @@ define([
             var pad = navigator.getGamepads()[index];
             if (pad) {
                 this.index = index;
-                // Set up the main gamepad attributes
-                this.set({
-                    name: pad.id,
-                    mapping: pad.mapping,
-                    connected: pad.connected,
-                    timestamp: pad.timestamp,
-                });
-                // Create buttons and axes. When done, start the update loop
                 var that = this;
-                utils.resolve_promises_dict({
-                    buttons: Promise.all(pad.buttons.map(function(btn, index) {
-                        return that._create_button_model(index);
-                    })),
-                    axes: Promise.all(pad.axes.map(function(axis, index) {
-                        return that._create_axis_model(index);
-                    })),
-                }).then(function(controls) {
+                this.setup(pad).then(function(controls) {
                     that.set(controls);
                     window.requestAnimationFrame(_.bind(that.update_loop, that));
                 });
             } else {
                 window.requestAnimationFrame(_.bind(this.wait_loop, this));
             }
+        },
+
+        setup: function(pad) {
+            /* Given a native gamepad object, returns a promise for a dictionary of
+             * controls, of the form
+             * {
+             *     buttons: list of Button models,
+             *     axes: list of Axis models,
+             * }
+             */
+            // Set up the main gamepad attributes
+            this.set({
+                name: pad.id,
+                mapping: pad.mapping,
+                connected: pad.connected,
+                timestamp: pad.timestamp,
+            });
+            // Create buttons and axes. When done, start the update loop
+            var that = this;
+            return utils.resolve_promises_dict({
+                buttons: Promise.all(pad.buttons.map(function(btn, index) {
+                    return that._create_button_model(index);
+                })),
+                axes: Promise.all(pad.axes.map(function(axis, index) {
+                    return that._create_axis_model(index);
+                })),
+            });
         },
 
         update_loop: function() {
@@ -198,15 +215,19 @@ define([
                  });
             });
         },
+
     }, { 
+
         serializers: _.extend({
             buttons: {deserialize: widget.unpack_models},
             axes: {deserialize: widget.unpack_models},
         }, widget.WidgetModel.serializers)
+
     });
 
     var GamepadView = widget.DOMWidgetView.extend({
         /* A simple view for a gamepad. */
+
         initialize: function() {
             GamepadView.__super__.initialize.apply(this, arguments);
 
