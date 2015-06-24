@@ -159,7 +159,7 @@ class Widget(LoggingConfigurable):
         return [name for name in self.traits(sync=True)]
     
     _property_lock = Dict()
-    _send_state_lock = Int(0)
+    _holding_sync = False
     _states_to_send = Set()
     _display_callbacks = Instance(CallbackDispatcher, ())
     _msg_callbacks = Instance(CallbackDispatcher, ())
@@ -377,15 +377,15 @@ class Widget(LoggingConfigurable):
 
     @contextmanager
     def hold_sync(self):
-        """Hold syncing any state until the context manager is released"""
-        # We increment a value so that this can be nested.  Syncing will happen when
-        # all levels have been released.
-        self._send_state_lock += 1
-        try:
+        """Hold syncing any state until the outermost context manager exits"""
+        if self._holding_sync is True:
             yield
-        finally:
-            self._send_state_lock -=1
-            if self._send_state_lock == 0:
+        else:
+            try:
+                self._holding_sync = True
+                yield
+            finally:
+                self._holding_sync = False     
                 self.send_state(self._states_to_send)
                 self._states_to_send.clear()
 
@@ -395,7 +395,7 @@ class Widget(LoggingConfigurable):
         if (key in self._property_lock
             and to_json(value, self) == self._property_lock[key]):
             return False
-        elif self._send_state_lock > 0:
+        elif self._holding_sync:
             self._states_to_send.add(key)
             return False
         else:
