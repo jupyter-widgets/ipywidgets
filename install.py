@@ -9,7 +9,7 @@ except ImportError:  # IPython 3.x
 
 
 def install(user=False, symlink=False):
-    """Install the gamepad nbextension and optionally enable it.
+    """Install the gamepad nbextension.
     
     Parameters
     ----------
