@@ -90,8 +90,6 @@ define(["nbextensions/widgets/widgets/js/manager",
             widget_manager.notebook.events.on('kernel_killed.Kernel', died);
             widget_manager.notebook.events.on('kernel_restarting.Kernel', died);
             widget_manager.notebook.events.on('kernel_dead.Kernel', died);
-
-            return Backbone.Model.apply(this);
         },
 
         send: function (content, callbacks, buffers) {
