@@ -90,10 +90,10 @@ class _Signal(object):
         self.model._send({
             'method': 'connect',
             'name': self.signal.name,
-            'slot': serialize_widget_attribute(self.model, {
+            'slot': serialize_widget_attribute({
                 'model': slot.model,
                 'name': slot.name,
-            }),
+            }, self.model),
         })
 
     def disconnect(self, slot):
@@ -105,10 +105,10 @@ class _Signal(object):
         self.model._send({
             'method': 'disconnect',
             'name': self.signal.name,
-            'slot': serialize_widget_attribute(self.model, {
+            'slot': serialize_widget_attribute({
                 'model': slot.model,
                 'name': slot.name, 
-            }),
+            }, self.model),
         })
 
     def emit(self, value=None):
@@ -121,8 +121,8 @@ class _Signal(object):
         self.model._send({
             'method': 'emit',
             'name': self.signal.name,
-            'value': to_json(self.model, 
-                             self.signal.validate(self.model, value)),
+            'value': to_json(self.signal.validate(self.model, value),
+                             self.model),
         })
 
 
@@ -148,8 +148,8 @@ class _Slot(object):
         self.model._send({
             'method': 'invoke',
             'name': self.slot.name,
-            'value': to_json(self.model,
-                             self.slot.validate(self.model, value)),
+            'value': to_json(self.slot.validate(self.model, value),
+                             self.model),
         })
 
     @property

@@ -13,7 +13,7 @@ from IPython.core.getipython import get_ipython
 from ipykernel.comm import Comm
 from traitlets.config import LoggingConfigurable
 from ipython_genutils.importstring import import_item
-from traitlets import Unicode, Dict, Instance, Bool, List, Any, \
+from traitlets import Unicode, Dict, Instance, Bool, List, \
     CaselessStrEnum, Tuple, CUnicode, Int, Set, getmembers
 from ipython_genutils.py3compat import string_types
 
@@ -124,24 +124,24 @@ def register(key=None):
     return wrap
 
 
-def _state_change_to_json(self, value):
+def _state_change_to_json(value, self):
     """Convert a state change signal signature json."""
     name, old, new = value['name'], value['old'], value['new']
     to_json = self.trait_metadata(name, 'to_json', self._trait_to_json)
     return {
         'name': name,
-        'old': to_json(old),
-        'new': to_json(new),
+        'old': to_json(old, self),
+        'new': to_json(new, self),
     }
 
-def _state_change_from_json(self, x):
+def _state_change_from_json(value, self):
     """Convert json to a state change signal signature."""
     name, old, new = value['name'], value['old'], value['new']
     from_json = self.trait_metadata(name, 'from_json', self._trait_from_json)
     return {
         'name': name,
-        'old': from_json(old),
-        'new': from_json(new),
+        'old': from_json(old, self),
+        'new': from_json(new, self),
     }
 
 
@@ -310,7 +310,7 @@ class Widget(LoggingConfigurable):
             else:
                 raise ValueError("key must be a string, an iterable of keys, or None")
         connections = {
-            k: serialize_widget_attribute(self, getattr(self, k).connected_slots) for k in keys
+            k: serialize_widget_attribute(getattr(self, k).connected_slots, self) for k in keys
         }
         return connections 
 
