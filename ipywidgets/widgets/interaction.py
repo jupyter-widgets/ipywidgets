@@ -218,6 +218,7 @@ def interactive(__interact_f, **kwargs):
             manual_button.disabled = True
         try:
             container.result = f(**container.kwargs)
+            display(container.result)
         except Exception as e:
             ip = get_ipython()
             if ip is None:
