@@ -104,6 +104,7 @@ define([
                 var that = this;
                 this.setup(pad).then(function(controls) {
                     that.set(controls);
+                    that.save_changes();
                     window.requestAnimationFrame(_.bind(that.update_loop, that));
                 });
             } else {
