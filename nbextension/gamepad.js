@@ -247,17 +247,16 @@ define([
 
         render: function(){
             this.$box = this.$el;
-            this.$box.addClass('widget-box vbox');
-             
+
             this.$label = $('<div />')
                 .appendTo(this.$box);
 
             this.$axis_box = $('<div />')
-                .addClass('widget-box hbox')
+                .css('display', 'flex')
                 .appendTo(this.$box);
 
             this.$button_box = $('<div />')
-                .addClass('widget-box hbox')
+                .css('display', 'flex')
                 .appendTo(this.$box);
 
             this.button_views.update(this.model.get('buttons'));
