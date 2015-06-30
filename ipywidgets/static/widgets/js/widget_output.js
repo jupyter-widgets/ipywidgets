@@ -14,7 +14,7 @@ define([
          */
         initialize: function (parameters) {
             OutputView.__super__.initialize.apply(this, [parameters]);
-            this.model.on('msg:custom', this._handle_route_msg, this);
+            this.listenTo(this.model, 'msg:custom', this._handle_route_msg, this);
         },
 
         /**
@@ -32,7 +32,7 @@ define([
             this.output_area.element.on('changed', function() {
                 that.model.set('contents', that.output_area.element.html());
             });
-            this.model.on('change:contents', function(){
+            this.listenTo(this.model, 'change:contents', function(){
                 var html = this.model.get('contents');
                 if (this.output_area.element.html() != html) {
                     this.output_area.element.html(html);

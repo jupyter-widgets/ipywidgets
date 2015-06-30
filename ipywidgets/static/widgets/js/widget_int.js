@@ -35,7 +35,7 @@ define([
                 .attr('contentEditable', true)
                 .hide();
 
-            this.model.on('change:slider_color', function(sender, value) {
+            this.listenTo(this.model, 'change:slider_color', function(sender, value) {
                 this.$slider.find('a').css('background', value);
             }, this);
             this.$slider.find('a').css('background', this.model.get('slider_color'));
@@ -426,7 +426,7 @@ define([
                 .appendTo(this.$progress);
             this.update(); // Set defaults.
 
-            this.model.on('change:bar_style', function(model, value) {
+            this.listenTo(this.model, 'change:bar_style', function(model, value) {
                 this.update_bar_style();
             }, this);
             this.update_bar_style('');

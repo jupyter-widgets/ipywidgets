@@ -66,8 +66,8 @@ define([
                 .appendTo(this.$el);
             this.update(); // Set defaults.
 
-            this.model.on('msg:custom', $.proxy(this._handle_textarea_msg, this));
-            this.model.on('change:placeholder', function(model, value, options) {
+            this.listenTo(this.model, 'msg:custom', $.proxy(this._handle_textarea_msg, this));
+            this.listenTo(this.model, 'change:placeholder', function(model, value, options) {
                 this.update_placeholder(value);
             }, this);
 
@@ -168,7 +168,7 @@ define([
                 .addClass('widget-text form-control')
                 .appendTo(this.$el);
             this.update(); // Set defaults.
-            this.model.on('change:placeholder', function(model, value, options) {
+            this.listenTo(this.model, 'change:placeholder', function(model, value, options) {
                 this.update_placeholder(value);
             }, this);
 

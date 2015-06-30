@@ -460,13 +460,13 @@ define(["nbextensions/widgets/widgets/js/manager",
             /**
              * Public constructor.
              */
-            this.model.on('change',this.update,this);
+            this.listenTo(this.model, 'change', this.update, this);
 
             // Bubble the comm live events.
-            this.model.on('comm:live', function() {
+            this.listenTo(this.model, 'comm:live', function() {
                 this.trigger('comm:live', this);
             }, this);
-            this.model.on('comm:dead', function() {
+            this.listenTo(this.model, 'comm:dead', function() {
                 this.trigger('comm:dead', this);
             }, this);
 
@@ -545,54 +545,54 @@ define(["nbextensions/widgets/widgets/js/manager",
              * Public constructor
              */
             WidgetViewMixin.initialize.apply(this, [parameters]);
-            this.model.on('change:visible', this.update_visible, this);
-            this.model.on('change:_css', this.update_css, this);
+            this.listenTo(this.model, 'change:visible', this.update_visible, this);
+            this.listenTo(this.model, 'change:_css', this.update_css, this);
 
-            this.model.on('change:_dom_classes', function(model, new_classes) {
+            this.listenTo(this.model, 'change:_dom_classes', function(model, new_classes) {
                 var old_classes = model.previous('_dom_classes');
                 this.update_classes(old_classes, new_classes);
             }, this);
 
-            this.model.on('change:color', function (model, value) { 
+            this.listenTo(this.model, 'change:color', function (model, value) { 
                 this.update_attr('color', value); }, this);
 
-            this.model.on('change:background_color', function (model, value) { 
+            this.listenTo(this.model, 'change:background_color', function (model, value) { 
                 this.update_attr('background', value); }, this);
 
-            this.model.on('change:width', function (model, value) { 
+            this.listenTo(this.model, 'change:width', function (model, value) { 
                 this.update_attr('width', value); }, this);
 
-            this.model.on('change:height', function (model, value) { 
+            this.listenTo(this.model, 'change:height', function (model, value) { 
                 this.update_attr('height', value); }, this);
 
-            this.model.on('change:border_color', function (model, value) { 
+            this.listenTo(this.model, 'change:border_color', function (model, value) { 
                 this.update_attr('border-color', value); }, this);
 
-            this.model.on('change:border_width', function (model, value) { 
+            this.listenTo(this.model, 'change:border_width', function (model, value) { 
                 this.update_attr('border-width', value); }, this);
 
-            this.model.on('change:border_style', function (model, value) { 
+            this.listenTo(this.model, 'change:border_style', function (model, value) { 
                 this.update_attr('border-style', value); }, this);
 
-            this.model.on('change:font_style', function (model, value) { 
+            this.listenTo(this.model, 'change:font_style', function (model, value) { 
                 this.update_attr('font-style', value); }, this);
 
-            this.model.on('change:font_weight', function (model, value) { 
+            this.listenTo(this.model, 'change:font_weight', function (model, value) { 
                 this.update_attr('font-weight', value); }, this);
 
-            this.model.on('change:font_size', function (model, value) { 
+            this.listenTo(this.model, 'change:font_size', function (model, value) { 
                 this.update_attr('font-size', this._default_px(value)); }, this);
 
-            this.model.on('change:font_family', function (model, value) { 
+            this.listenTo(this.model, 'change:font_family', function (model, value) { 
                 this.update_attr('font-family', value); }, this);
 
-            this.model.on('change:padding', function (model, value) { 
+            this.listenTo(this.model, 'change:padding', function (model, value) { 
                 this.update_attr('padding', value); }, this);
 
-            this.model.on('change:margin', function (model, value) { 
+            this.listenTo(this.model, 'change:margin', function (model, value) { 
                 this.update_attr('margin', this._default_px(value)); }, this);
 
-            this.model.on('change:border_radius', function (model, value) { 
+            this.listenTo(this.model, 'change:border_radius', function (model, value) { 
                 this.update_attr('border-radius', this._default_px(value)); }, this);
 
             this.after_displayed(function() {
