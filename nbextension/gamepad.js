@@ -1,8 +1,7 @@
 define([
     "widgets/js/widget", 
     "base/js/utils", 
-    "underscore",
-], function(widget, utils, _) {
+], function(widget, utils) {
     'use strict';
 
     var Button = widget.DOMWidgetView.extend({
@@ -105,10 +104,10 @@ define([
                 this.setup(pad).then(function(controls) {
                     that.set(controls);
                     that.save_changes();
-                    window.requestAnimationFrame(_.bind(that.update_loop, that));
+                    window.requestAnimationFrame(that.update_loop.bind(that));
                 });
             } else {
-                window.requestAnimationFrame(_.bind(this.wait_loop, this));
+                window.requestAnimationFrame(this.wait_loop.bind(this));
             }
         },
 
@@ -151,18 +150,18 @@ define([
                     connected: pad.connected,
                 });
                 this.save_changes();
-                _.each(this.get('buttons'), function(model, index) {
+                this.get('buttons').forEach(function(model, index) {
                     model.set({
                         value: pad.buttons[index].value,
                         pressed: pad.buttons[index].pressed,
                     });
                     model.save_changes();
                 });
-                _.each(this.get('axes'), function(model, index) {
+                this.get('axes').forEach(function(model, index) {
                     model.set('value', pad.axes[index]);
                     model.save_changes();
                 });
-                window.requestAnimationFrame(_.bind(this.update_loop, this));
+                window.requestAnimationFrame(this.update_loop.bind(this));
             } else {
                 this.reset_gamepad();
             } 
@@ -171,10 +170,10 @@ define([
         reset_gamepad: function() {
             /* Resets the gamepad attributes, and calls the wait_loop.
              */
-            _.each(this.get('buttons'), function(button) {
+            this.get('buttons').forEach(function(button) {
                 button.close();
             });
-            _.each(this.get('axes'), function(axis) {
+            this.get('axes').forEach(function(axis) {
                 axis.close();
             });
             this.set({
@@ -186,7 +185,7 @@ define([
                 axes: [],
             });
             this.save_changes();
-            window.requestAnimationFrame(_.bind(this.wait_loop, this));
+            window.requestAnimationFrame(this.wait_loop.bind(this));
         },
 
         _create_button_model: function(index) {
