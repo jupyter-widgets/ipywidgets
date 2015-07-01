@@ -140,7 +140,7 @@ define([
 
         update_loop: function() {
             /* Populates axes and button values, until the gamepad is disconnected.
-             * When the gamepad is disconnection this.reset_gamepad is called.
+             * When the gamepad is disconnected, this.reset_gamepad is called.
              */ 
             var index = this.get('index');
             var pad = navigator.getGamepads()[index];
