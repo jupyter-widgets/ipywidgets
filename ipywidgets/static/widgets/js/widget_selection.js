@@ -40,7 +40,7 @@ define([
                 .addClass('dropdown-menu')
                 .appendTo(this.$buttongroup);
 
-            this.model.on('change:button_style', function(model, value) {
+            this.listenTo(this.model, 'change:button_style', function(model, value) {
                 this.update_button_style();
             }, this);
             this.update_button_style('');
@@ -290,7 +290,7 @@ define([
                 .addClass('btn-group')
                 .appendTo(this.$el);
 
-            this.model.on('change:button_style', function(model, value) {
+            this.listenTo(this.model, 'change:button_style', function(model, value) {
                 this.update_button_style();
             }, this);
             this.update_button_style('');
