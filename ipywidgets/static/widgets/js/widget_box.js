@@ -70,6 +70,18 @@ define([
         },
     });
 
+    var PlaceView = ProxyView.extend({
+        initialize: function() {
+            PlaceView.__super__.initialize.apply(this, arguments);
+            this.update_selector(this.model, this.model.get("selector"));
+            this.listenTo(this.model, "change:selector", this.update_selector);
+        },
+
+        update_selector: function(model, selector) {
+            this.$box = selector ? $(selector) : this.$el;
+        },
+    });
+
     var BoxView = widget.DOMWidgetView.extend({
         initialize: function() {
             /**
