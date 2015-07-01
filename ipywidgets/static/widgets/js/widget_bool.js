@@ -178,7 +178,7 @@ define([
             } 
             this.$el.text(readout);
             $('<i class="fa"></i>').prependTo(this.$el).addClass(icon);
-            this.after_displayed(function() {
+            this.displayed.then(function() {
                 this.$el.css("color", color);
             }, this);
         }

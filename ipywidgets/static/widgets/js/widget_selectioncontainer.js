@@ -141,7 +141,7 @@ define([
                 that.update_titles();
 
                 // Trigger the displayed event of the child view.
-                that.after_displayed(function() {
+                that.displayed.then(function() {
                     view.trigger('displayed');
                 });
                 return view;
@@ -251,7 +251,7 @@ define([
                 view.parent_container = contents_div;
 
                 // Trigger the displayed event of the child view.
-                that.after_displayed(function() {
+                that.displayed.then(function() {
                     view.trigger('displayed');
                     that.update();
                 });

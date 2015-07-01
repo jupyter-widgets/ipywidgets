@@ -471,12 +471,17 @@ define(["nbextensions/widgets/widgets/js/manager",
             }, this);
 
             this.options = parameters.options;
-            this.on('displayed', function() { 
-                this.is_displayed = true; 
-            }, this);
+            /**
+             * this.displayed is a promise that resolves when the view is
+             * inserted in the DOM.
+             */
+            var that = this;
+            this.displayed = new Promise(function(resolve, reject) {
+                that.once('displayed', resolve);
+            });
         },
 
-        update: function(){
+        update: function() {
             /**
              * Triggered on model change.
              *
@@ -521,14 +526,12 @@ define(["nbextensions/widgets/widgets/js/manager",
 
         after_displayed: function (callback, context) {
             /**
-             * Calls the callback right away is the view is already displayed
-             * otherwise, register the callback to the 'displayed' event.
+             * Deprecated method. Calls the callback right away is the view is
+             * already displayed otherwise, register the callback to the 'displayed'
+             * event.
              */
-            if (this.is_displayed) {
-                callback.apply(context);
-            } else {
-                this.on('displayed', callback, context);
-            }
+            console.log('`WidgetView.after_displayed` is deprecated. Use the WidgetView.displayed promise instead.');
+            this.displayed.then(_.bind(callback, context));
         },
 
         remove: function () {
@@ -595,7 +598,7 @@ define(["nbextensions/widgets/widgets/js/manager",
             this.listenTo(this.model, 'change:border_radius', function (model, value) { 
                 this.update_attr('border-radius', this._default_px(value)); }, this);
 
-            this.after_displayed(function() {
+            this.displayed.then(_.bind(function() {
                 this.update_visible(this.model, this.model.get("visible"));
                 this.update_classes([], this.model.get('_dom_classes'));
                 
@@ -615,7 +618,7 @@ define(["nbextensions/widgets/widgets/js/manager",
                 this.update_attr('border-radius', this._default_px(this.model.get('border_radius')));
 
                 this.update_css(this.model, this.model.get("_css"));
-            }, this);
+            }, this));
         },
 
         _default_px: function(value) {

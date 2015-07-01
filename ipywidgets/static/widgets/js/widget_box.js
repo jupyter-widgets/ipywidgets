@@ -91,7 +91,7 @@ define([
                 dummy.replaceWith(view.el);
 
                 // Trigger the displayed event of the child view.
-                that.after_displayed(function() {
+                that.displayed.then(function() {
                     view.trigger('displayed');
                 });
                 return view;
