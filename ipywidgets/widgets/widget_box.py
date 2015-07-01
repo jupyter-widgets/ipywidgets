@@ -66,6 +66,13 @@ class Proxy(Widget):
             self.child._handle_displayed()
 
 
+@register('IPython.Place')
+class Place(Proxy):
+    """Renders the child widget at the specified selector."""
+    _view_name = Unicode('PlaceView', sync=True)
+    selector = Unicode(sync=True)
+
+
 @register('IPython.FlexBox')
 class FlexBox(Box):
     """Displays multiple widgets using the flexible box model."""
