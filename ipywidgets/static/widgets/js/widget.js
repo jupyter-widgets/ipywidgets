@@ -100,7 +100,7 @@ define(["nbextensions/widgets/widgets/js/manager",
             _.each(keys, function(key) {
                 that.slots[key] = function(value) {
                     that.set(key, value);
-                    // FIXME: should we always save_changes?
+                    // TODO: should we always save_changes?
                     that.save_changes();
                 };
                 that.slots[key].slot_name = key;
@@ -132,7 +132,7 @@ define(["nbextensions/widgets/widgets/js/manager",
                 if (serializers && serializers[name] && serializers[name].serialize) {
                     serial = (serializers[name].serialize)(value, this);
                 } else {
-                    serial = Promise.resolve(value)
+                    serial = Promise.resolve(value);
                 }
                 var that = this;
                 serial.then(function(serialized) {
@@ -219,9 +219,9 @@ define(["nbextensions/widgets/widgets/js/manager",
             /** 
              * Deserialize fields that have a custom serializer.
              */
+            var deserialized = {};
             var serializers = this.constructor.serializers;
             if (serializers) {
-                var deserialized = {};
                 for (var k in state) {
                     if (serializers[k] && serializers[k].deserialize) {
                          deserialized[k] = (serializers[k].deserialize)(state[k], this);
@@ -242,6 +242,8 @@ define(["nbextensions/widgets/widgets/js/manager",
             var data = msg.content.data;
             var method = data.method;
             var that = this;
+            var serializers = that.constructor.serializers;
+            var deserial;
             switch (method) {
                 case 'update':
                     this.state_change = this.state_change
@@ -253,7 +255,7 @@ define(["nbextensions/widgets/widgets/js/manager",
                                 state[buffer_keys[i]] = buffers[i];
                             }
                             return Promise.all([that._deserialize_state(state),
-  unpack_models(data.connections || {}, that)]);
+                                                unpack_models(data.connections || {}, that)]);
                         })
                         .then(function(state_connections) {
                             var state = state_connections[0],
@@ -284,8 +286,6 @@ define(["nbextensions/widgets/widgets/js/manager",
                         return;
                     }
                     // Deserialize slot argument 
-                    var serializers = that.constructor.serializers;
-                    var deserial;
                     if (serializers && serializers[data.name] && serializers[data.name].deserialize) {
                         deserial = (serializers[k].deserialize)(data.value, that);
                     } else {
@@ -302,8 +302,6 @@ define(["nbextensions/widgets/widgets/js/manager",
                         return;
                     }
                     // Deserialize signal
-                    var serializers = that.constructor.serializers;
-                    var deserial;
                     if (serializers && serializers[data.name] && serializers[data.name].deserialize) {
                         deserial = (serializers[k].deserialize)(data.value, that);
                     } else {
@@ -326,15 +324,15 @@ define(["nbextensions/widgets/widgets/js/manager",
                             return;
                         }
                         var signal = that.signals[data.name];
-                        signal.connect(target_model.slots[data.slot.name], target_model);
+                        signal.connect(target_model.slots[data.slot.name], target_model, data.slot.name);
                         var slots = signal._m_slots;
                         if (slots === null) {
                             that.set(data.name, []);
                         } else if (slots instanceof signaling.SlotWrapper) {
-                            that.set(data.name, [[slots._m_thisArg, slots._m_slot.slot_name]]);
+                            that.set(data.name, [[slots._m_thisArg, slots._m_name]]);
                         } else {
                             that.set(data.name, slots.map(function(d) {
-                                return [d._m_thisArg, d._m_slot.slot_name]
+                                return [d._m_thisArg, d._m_name];
                             }));
                         }
                         that.save_changes();
@@ -358,10 +356,10 @@ define(["nbextensions/widgets/widgets/js/manager",
                         if (slots === null) {
                             that.set(data.name, []);
                         } else if (slots instanceof signaling.SlotWrapper) {
-                            that.set(data.name, [[slots._m_thisArg, slots._m_slot.slot_name]]);
+                            that.set(data.name, [[slots._m_thisArg, slots._m_name]]);
                         } else {
                             that.set(data.name, slots.map(function(d) {
-                                return [d._m_thisArg, d._m_slot.slot_name]
+                                return [d._m_thisArg, d._m_name];
                             }));
                         }
                         that.save_changes();
@@ -377,7 +375,7 @@ define(["nbextensions/widgets/widgets/js/manager",
                      var slot_info = slots[k];
                      var target_model = slot_info[0];
                      var slot_name = slot_info[1];
-                     that.signals[name].connect(target_model.slots[slot_name], target_model);
+                     that.signals[name].connect(target_model.slots[slot_name], target_model, slot_name);
                  }
             }); 
         },
@@ -559,8 +557,8 @@ define(["nbextensions/widgets/widgets/js/manager",
                     var key = keys[i];
                     var value = state[key];
                     if (value) {
-                        if (value.buffer instanceof ArrayBuffer
-                            || value instanceof ArrayBuffer) {
+                        if (value.buffer instanceof ArrayBuffer ||
+                          value instanceof ArrayBuffer) {
                             buffers.push(value);
                             buffer_keys.push(key);
                             delete state[key];
@@ -949,7 +947,7 @@ define(["nbextensions/widgets/widgets/js/manager",
             var removed = this.views.splice(first_removed, this.views.length-first_removed);
             for (var j = 0; j < removed.length; j++) {
                 removed[j].then(function(view) {
-                    remove.call(context, view)
+                    remove.call(context, view);
                 });
             }
 

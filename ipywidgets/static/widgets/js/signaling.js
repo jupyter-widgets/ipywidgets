@@ -29,8 +29,8 @@ define([], function(widget, $){
          * It is safe to connect a slot while the signal is being emitted.
          * The slot will be invoked the next time the signal is emitted.
          */
-        Signal.prototype.connect = function (slot, thisArg) {
-            var wrapper = new SlotWrapper(slot, thisArg);
+        Signal.prototype.connect = function (slot, thisArg, name) {
+            var wrapper = new SlotWrapper(slot, thisArg, name);
             var slots = this._m_slots;
             if (slots === null) {
                 this._m_slots = wrapper;
@@ -144,9 +144,10 @@ define([], function(widget, $){
         /**
          * Construct a new slot wrapper.
          */
-        function SlotWrapper(slot, thisArg) {
+        function SlotWrapper(slot, thisArg, name) {
             this._m_slot = slot;
             this._m_thisArg = thisArg;
+            this._m_name = name;
         }
         /**
          * Clear the contents of the slot wrapper.
