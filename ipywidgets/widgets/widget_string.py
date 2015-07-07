@@ -8,6 +8,8 @@ Represents a unicode string using a widget.
 
 from .widget import DOMWidget, CallbackDispatcher, register
 from traitlets import Unicode, Bool
+from warnings import warn
+from .trait_types import Signal, Slot
 
 
 class _String(DOMWidget):
@@ -39,8 +41,11 @@ class Latex(_String):
 class Textarea(_String):
     """Multiline text area widget."""
     _view_name = Unicode('TextareaView', sync=True)
+    _model_name = Unicode('TextareaModel', sync=True)
 
-    def scroll_to_bottom(self):
+    scroll_to_bottom = Slot()
+
+    def scroll_to_bottom_legacy(self):
         self.send({"method": "scroll_to_bottom"})
 
 
@@ -48,6 +53,9 @@ class Textarea(_String):
 class Text(_String):
     """Single line textbox widget."""
     _view_name = Unicode('TextView', sync=True)
+    _model_name = Unicode('TextModel', sync=True)
+
+    submitted = Signal()
 
     def __init__(self, *args, **kwargs):
         super(Text, self).__init__(*args, **kwargs)
@@ -75,4 +83,5 @@ class Text(_String):
             Will be called with exactly one argument: the Widget instance
         remove: bool (optional)
             Whether to unregister the callback"""
+        warn('`on_submit` is deprecated, use the `submitted` signal instead') 
         self._submission_callbacks.register_callback(callback, remove=remove)

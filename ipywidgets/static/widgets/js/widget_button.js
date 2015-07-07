@@ -9,18 +9,6 @@ define([
 ], function(widget, $, signaling){
 
     var ButtonModel = widget.WidgetModel.extend({
-        slots: {
-            test_slot: (function() {
-                func = function () {
-		            this.set("button_style",
-		                     ['primary', 'success', 'info',
-		                      'warning', 'danger'][Math.floor(Math.random() * 5)]);
-		            this.save_changes();
-                };
-                func.slot_name = 'test_slot';
-                return func;
-            })(),
-        },
         signals: {
             clicked: new signaling.Signal(),
         },
@@ -84,8 +72,8 @@ define([
             /**
              * Handles when the button is clicked.
              */
-            this.model.emit('clicked');  // this.model.signals['clicked'].emit();
-            this.send({event: 'click'});
+            this.model.emit('clicked');
+            this.send({event: 'click'});  // This is deprecated
         },
     });
 
