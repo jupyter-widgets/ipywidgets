@@ -160,10 +160,10 @@ define([
         },
     });
 
-    var TextModel = widget.WidgetModel.extend({  
-        signals: {
-            submit: new signaling.Signal(),
-        },
+    var TextModel = widget.WidgetModel.extend({
+        initialize: function() {
+            this.signals = { submit: new signaling.Signal(), };
+        }, 
     });
 
     var TextView = widget.DOMWidgetView.extend({  

@@ -9,8 +9,10 @@ define([
 ], function(widget, $, signaling){
 
     var ButtonModel = widget.WidgetModel.extend({
-        signals: {
-            clicked: new signaling.Signal(),
+        initialize: function() {
+            this.signals = {
+                clicked: new signaling.Signal(),
+            };
         },
     });
 
