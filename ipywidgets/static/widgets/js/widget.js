@@ -126,7 +126,7 @@ define(["nbextensions/widgets/widgets/js/manager",
              * Emit a signal and propagate message to the backend.
              */
             this.signals[name].emit(value);
-            if (this.comm !== undefined) {
+            if (this.comm !== undefined && this.comm_live) {
                 var serializers = this.constructor.serializers;
                 var serial;
                 if (serializers && serializers[name] && serializers[name].serialize) {
