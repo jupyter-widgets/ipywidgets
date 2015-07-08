@@ -29,8 +29,85 @@ PY3 = (sys.version_info[0] >= 3)
 
 import os
 from glob import glob
+from distutils import log
+from os.path import join as pjoin
+from distutils.core import setup, Command
+from distutils.command.build_py import build_py
+from distutils.command.sdist import sdist
 
-from distutils.core import setup
+def css_js_prerelease(command, strict=False):
+    """decorator for building minified js/css prior to another command"""
+    class DecoratedCommand(command):
+        def run(self):
+            self.distribution.run_command('jsversion')
+            jsdeps = self.distribution.get_command_obj('jsdeps')
+            css = self.distribution.get_command_obj('css')
+            try:
+                self.distribution.run_command('css')
+                self.distribution.run_command('js')
+            except Exception as e:
+                if strict:
+                    log.warn("rebuilding js and css failed")
+                    raise e
+                else:
+                    log.warn("rebuilding js and css failed (not a problem)")
+                    log.warn(str(e))
+            command.run(self)
+    return DecoratedCommand
+
+class NPM(Command):
+    description = "install package,json dependencies using npm"
+
+    node_modules = pjoin(repo_root, 'node_modules')
+
+    def should_run_npm(self):
+        if not which('npm'):
+            print("npm unavailable", file=sys.stderr)
+            return False
+        if not os.path.exists(self.node_modules):
+            return True
+        return mtime(self.node_modules) < mtime(pjoin(repo_root, 'package.json'))
+
+    def run(self):
+        if self.should_run_npm():
+            print("installing build dependencies with npm")
+            check_call(['npm', 'install'], cwd=repo_root)
+            os.utime(self.node_modules, None)
+
+        env = os.environ.copy()
+        env['PATH'] = npm_path
+
+        # update package data in case this created new files
+        update_package_data(self.distribution)
+
+class CompileCSS(Command):
+    """Recompile Widget CSS
+
+    Regenerate the compiled CSS from LESS sources.
+
+    Requires various dev dependencies, such as gulp and lessc.
+    """
+    description = "Recompile Widget CSS"
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        self.run_command('jsdeps')
+        env = os.environ.copy()
+        env['PATH'] = npm_path
+        try:
+            check_call(['gulp','css'], cwd=repo_root, env=env)
+        except OSError as e:
+            print("Failed to run gulp css: %s" % e, file=sys.stderr)
+            print("You can install js dependencies with `npm install`", file=sys.stderr)
+            raise
+        # update package data in case this created new files
+        update_package_data(self.distribution)
 
 pjoin = os.path.join
 here = os.path.abspath(os.path.dirname(__file__))
@@ -74,7 +151,18 @@ setup_args = dict(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
     ],
+    cmdclass        = {
+        build_py: css_js_prerelease(build_py),
+        sdist: css_js_prerelease(sdist, strict=True),
+        css: CompileCSS,
+        jsdeps: NPM
+    },
 )
+
+if 'setuptools' in sys.modules:
+    # setup.py develop should check for submodules
+    from setuptools.command.develop import develop
+    setup_args['cmdclass']['develop'] = css_js_prerelease(develop)
 
 if 'develop' in sys.argv or any(a.startswith('bdist') for a in sys.argv):
     import setuptools
