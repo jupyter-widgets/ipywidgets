@@ -35,16 +35,17 @@ from distutils.core import setup, Command
 from distutils.command.build_py import build_py
 from distutils.command.sdist import sdist
 
+repo_root = os.path.dirname(os.path.abspath(__file__))
+
 def css_js_prerelease(command, strict=False):
     """decorator for building minified js/css prior to another command"""
     class DecoratedCommand(command):
         def run(self):
-            self.distribution.run_command('jsversion')
             jsdeps = self.distribution.get_command_obj('jsdeps')
             css = self.distribution.get_command_obj('css')
             try:
                 self.distribution.run_command('css')
-                self.distribution.run_command('js')
+                self.distribution.run_command('jsdeps')
             except Exception as e:
                 if strict:
                     log.warn("rebuilding js and css failed")
@@ -97,7 +98,6 @@ class CompileCSS(Command):
         pass
 
     def run(self):
-        self.run_command('jsdeps')
         env = os.environ.copy()
         env['PATH'] = npm_path
         try:
@@ -152,17 +152,17 @@ setup_args = dict(
         'Programming Language :: Python :: 3.3',
     ],
     cmdclass        = {
-        build_py: css_js_prerelease(build_py),
-        sdist: css_js_prerelease(sdist, strict=True),
-        css: CompileCSS,
-        jsdeps: NPM
+        'build_py': css_js_prerelease(build_py),
+        'sdist': css_js_prerelease(sdist, strict=True),
+        'css': CompileCSS,
+        'jsdeps': NPM
     },
 )
 
 if 'setuptools' in sys.modules:
     # setup.py develop should check for submodules
     from setuptools.command.develop import develop
-    setup_args['cmdclass']['develop'] = css_js_prerelease(develop)
+    setup_args['cmdclass']['develop'] = css_js_prerelease(develop, strict=True)
 
 if 'develop' in sys.argv or any(a.startswith('bdist') for a in sys.argv):
     import setuptools
