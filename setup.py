@@ -61,6 +61,12 @@ class NPM(Command):
 
     node_modules = pjoin(repo_root, 'node_modules')
 
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+        
     def should_run_npm(self):
         if not which('npm'):
             print("npm unavailable", file=sys.stderr)
