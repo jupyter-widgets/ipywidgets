@@ -48,7 +48,7 @@ widget_serialization = {
 class CallbackDispatcher(LoggingConfigurable):
     """A structure for registering and running callbacks"""
     callbacks = List()
-    
+
     def __call__(self, *args, **kwargs):
         """Call all of the registered callbacks."""
         value = None
@@ -74,7 +74,7 @@ class CallbackDispatcher(LoggingConfigurable):
             Method to be registered or unregistered.
         remove=False: bool
             Whether to unregister the callback."""
-        
+
         # (Un)Register the callback.
         if remove and callback in self.callbacks:
             self.callbacks.remove(callback)
@@ -96,7 +96,7 @@ def _show_traceback(method):
 
 
 def register(key=None):
-    """Returns a decorator registering a widget class in the widget registry. 
+    """Returns a decorator registering a widget class in the widget registry.
     If no key is provided, the class name is used as a key. A key is
     provided for each core IPython widget so that the frontend can use
     this key regardless of the language of the kernel"""
@@ -142,28 +142,28 @@ class Widget(LoggingConfigurable):
     #-------------------------------------------------------------------------
     _model_module = Unicode(None, allow_none=True, help="""A requirejs module name
         in which to find _model_name. If empty, look in the global registry.""")
-    _model_name = Unicode('WidgetModel', help="""Name of the backbone model 
+    _model_name = Unicode('WidgetModel', help="""Name of the backbone model
         registered in the front-end to create and sync this widget with.""")
     _view_module = Unicode(help="""A requirejs module in which to find _view_name.
         If empty, look in the global registry.""", sync=True)
     _view_name = Unicode(None, allow_none=True, help="""Default view registered in the front-end
         to use to represent the widget.""", sync=True)
     comm = Instance('ipykernel.comm.Comm', allow_none=True)
-    
-    msg_throttle = Int(3, sync=True, help="""Maximum number of msgs the 
+
+    msg_throttle = Int(3, sync=True, help="""Maximum number of msgs the
         front-end can send before receiving an idle msg from the back-end.""")
-    
+
     version = Int(0, sync=True, help="""Widget's version""")
     keys = List()
     def _keys_default(self):
         return [name for name in self.traits(sync=True)]
-    
+
     _property_lock = Dict()
     _holding_sync = False
     _states_to_send = Set()
     _display_callbacks = Instance(CallbackDispatcher, ())
     _msg_callbacks = Instance(CallbackDispatcher, ())
-    
+
     #-------------------------------------------------------------------------
     # (Con/de)structor
     #-------------------------------------------------------------------------
@@ -187,8 +187,7 @@ class Widget(LoggingConfigurable):
         """Open a comm to the frontend if one isn't already open."""
         if self.comm is None:
             args = dict(target_name='ipython.widget',
-                        data={'model_name': self._model_name,
-                              'model_module': self._model_module})
+                        data=this.get_state())
             if self._model_id is not None:
                 args['comm_id'] = self._model_id
             self.comm = Comm(**args)
@@ -198,10 +197,10 @@ class Widget(LoggingConfigurable):
         if new is None:
             return
         self._model_id = self.model_id
-        
+
         self.comm.on_msg(self._handle_msg)
         Widget.widgets[self.model_id] = self
-        
+
         # first update
         self.send_state()
 
@@ -220,7 +219,7 @@ class Widget(LoggingConfigurable):
         """Overload of HasTraits.__setattr__to handle read-only-ness of widget
         attributes """
         if (self._read_only_enabled and self.has_trait(name) and
-            self.trait_metadata(name, 'read_only')): 
+            self.trait_metadata(name, 'read_only')):
             raise TraitError('Widget attribute "%s" is read-only.' % name)
         else:
             super(Widget, self).__setattr__(name, value)
@@ -236,7 +235,7 @@ class Widget(LoggingConfigurable):
             Widget.widgets.pop(self.model_id, None)
             self.comm.close()
             self.comm = None
-    
+
     def send_state(self, key=None):
         """Sends the widget state, or a piece of it, to the front-end.
 
@@ -316,9 +315,9 @@ class Widget(LoggingConfigurable):
         ----------
         callback: callable
             callback will be passed three arguments when a message arrives::
-            
+
                 callback(widget, content, buffers)
-            
+
         remove: bool
             True if the callback should be unregistered."""
         self._msg_callbacks.register_callback(callback, remove=remove)
@@ -330,9 +329,9 @@ class Widget(LoggingConfigurable):
         ----------
         callback: method handler
             Must have a signature of::
-            
+
                 callback(widget, **kwargs)
-            
+
             kwargs from display are passed through without modification.
         remove: bool
             True if the callback should be unregistered."""
@@ -356,7 +355,7 @@ class Widget(LoggingConfigurable):
         The value should be the JSON state of the property.
 
         NOTE: This, in addition to the single lock for all state changes, is
-        flawed.  In the future we may want to look into buffering state changes 
+        flawed.  In the future we may want to look into buffering state changes
         back to the front-end."""
         self._property_lock = properties
         try:
@@ -373,7 +372,7 @@ class Widget(LoggingConfigurable):
                 self._read_only_enabled = False
                 yield
             finally:
-                self._read_only_enabled = True 
+                self._read_only_enabled = True
 
     @contextmanager
     def hold_sync(self):
@@ -385,7 +384,7 @@ class Widget(LoggingConfigurable):
                 self._holding_sync = True
                 yield
             finally:
-                self._holding_sync = False     
+                self._holding_sync = False
                 self.send_state(self._states_to_send)
                 self._states_to_send.clear()
 
@@ -400,7 +399,7 @@ class Widget(LoggingConfigurable):
             return False
         else:
             return True
-    
+
     # Event handlers
     @_show_traceback
     def _handle_msg(self, msg):
@@ -479,7 +478,7 @@ class DOMWidget(Widget):
     visible = Bool(True, allow_none=True, help="Whether the widget is visible.  False collapses the empty space, while None preserves the empty space.", sync=True)
     _css = Tuple(sync=True, help="CSS property list: (selector, key, value)")
     _dom_classes = Tuple(sync=True, help="DOM classes applied to widget.$el.")
-    
+
     width = CUnicode(sync=True)
     height = CUnicode(sync=True)
     # A default padding of 2.5 px makes the widgets look nice when displayed inline.
@@ -493,33 +492,33 @@ class DOMWidget(Widget):
     border_width = CUnicode(sync=True)
     border_radius = CUnicode(sync=True)
     border_style = CaselessStrEnum(values=[ # http://www.w3schools.com/cssref/pr_border-style.asp
-        'none', 
-        'hidden', 
-        'dotted', 
-        'dashed', 
-        'solid', 
-        'double', 
-        'groove', 
-        'ridge', 
-        'inset', 
-        'outset', 
-        'initial', 
+        'none',
+        'hidden',
+        'dotted',
+        'dashed',
+        'solid',
+        'double',
+        'groove',
+        'ridge',
+        'inset',
+        'outset',
+        'initial',
         'inherit', ''],
         default_value='', sync=True)
 
     font_style = CaselessStrEnum(values=[ # http://www.w3schools.com/cssref/pr_font_font-style.asp
-        'normal', 
-        'italic', 
-        'oblique', 
-        'initial', 
-        'inherit', ''], 
+        'normal',
+        'italic',
+        'oblique',
+        'initial',
+        'inherit', ''],
         default_value='', sync=True)
     font_weight = CaselessStrEnum(values=[ # http://www.w3schools.com/cssref/pr_font_weight.asp
-        'normal', 
-        'bold', 
-        'bolder', 
+        'normal',
+        'bold',
+        'bolder',
         'lighter',
-        'initial', 
+        'initial',
         'inherit', ''] + list(map(str, range(100,1000,100))),
         default_value='', sync=True)
     font_size = CUnicode(sync=True)
