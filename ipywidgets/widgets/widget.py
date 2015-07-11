@@ -201,9 +201,6 @@ class Widget(LoggingConfigurable):
         self.comm.on_msg(self._handle_msg)
         Widget.widgets[self.model_id] = self
 
-        # first update
-        self.send_state()
-
     @property
     def model_id(self):
         """Gets the model id of this widget.
