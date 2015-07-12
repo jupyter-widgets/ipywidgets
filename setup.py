@@ -112,14 +112,12 @@ except ImportError:
                         return name
         return None
 
-def css_js_prerelease(command, strict=False):
+def js_prerelease(command, strict=False):
     """decorator for building minified js/css prior to another command"""
     class DecoratedCommand(command):
         def run(self):
             jsdeps = self.distribution.get_command_obj('jsdeps')
-            css = self.distribution.get_command_obj('css')
             try:
-                self.distribution.run_command('css')
                 self.distribution.run_command('jsdeps')
             except Exception as e:
                 if strict:
@@ -212,8 +210,8 @@ setup_args = dict(
         'Programming Language :: Python :: 3.3',
     ],
     cmdclass        = {
-        'build_py': css_js_prerelease(build_py),
-        'sdist': css_js_prerelease(sdist, strict=True),
+        'build_py': js_prerelease(build_py),
+        'sdist': js_prerelease(sdist, strict=True),
         'jsdeps': NPM
     },
 )
@@ -221,7 +219,7 @@ setup_args = dict(
 if 'setuptools' in sys.modules:
     # setup.py develop should check for submodules
     from setuptools.command.develop import develop
-    setup_args['cmdclass']['develop'] = css_js_prerelease(develop, strict=True)
+    setup_args['cmdclass']['develop'] = js_prerelease(develop, strict=True)
 
 if 'develop' in sys.argv or any(a.startswith('bdist') for a in sys.argv):
     import setuptools
