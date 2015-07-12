@@ -247,7 +247,7 @@ define(["nbextensions/widgets/widgets/js/manager",
                     // Send buffer if this message caused another message to be
                     // throttled.
                     if (this.msg_buffer !== null &&
-                        (this.get('msg_throttle') || 3) === this.pending_msgs) {
+                        (this.get('msg_throttle') || 1) === this.pending_msgs) {
                         var data = {
                             method: 'backbone',
                             sync_method: 'update',
@@ -342,7 +342,7 @@ define(["nbextensions/widgets/widgets/js/manager",
                 var callbacks = options.callbacks || this.callbacks();
 
                 // Check throttle.
-                if (this.pending_msgs >= (this.get('msg_throttle') || 3)) {
+                if (this.pending_msgs >= (this.get('msg_throttle') || 1)) {
                     // The throttle has been exceeded, buffer the current msg so
                     // it can be sent once the kernel has finished processing
                     // some of the existing messages.
