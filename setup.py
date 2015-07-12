@@ -216,13 +216,13 @@ setup_args = dict(
     },
 )
 
+if 'develop' in sys.argv or any(a.startswith('bdist') for a in sys.argv):
+    import setuptools
+
 if 'setuptools' in sys.modules:
     # setup.py develop should check for submodules
     from setuptools.command.develop import develop
     setup_args['cmdclass']['develop'] = js_prerelease(develop, strict=True)
-
-if 'develop' in sys.argv or any(a.startswith('bdist') for a in sys.argv):
-    import setuptools
 
 setuptools_args = {}
 install_requires = setuptools_args['install_requires'] = [
