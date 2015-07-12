@@ -9,11 +9,12 @@
     "url": "https://github.com/ipython/ipython_widget.git"
   },
   "scripts": {
+    "build": "npm run css & npm run buildtests",
     "precss": "rimraf ./ipywidgets/static/widgets/css/",
     "css": "node build_css.js",
-    "pretests": "rimraf ./bin/tests",
-    "tests": "tsc ./ipywidgets/tests/**/*.ts --outDir ./bin/tests -d -m commonjs -t ES5",
-    "postinstall": "npm run css"
+    "prebuildtests": "rimraf ./bin/tests",
+    "buildtests": "tsc ./ipywidgets/tests/**/*.ts --outDir ./bin/tests -d -m commonjs -t ES5",
+    "postinstall": "npm run build"
   },
   "devDependencies": {
     "less": "~2",
