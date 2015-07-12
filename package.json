@@ -9,7 +9,7 @@
     "url": "https://github.com/ipython/ipython_widget.git"
   },
   "scripts": {
-    "build": "npm run css & npm run buildtests",
+    "build": "npm run css && npm run buildtests",
     "precss": "rimraf ./ipywidgets/static/widgets/css/",
     "css": "node build_css.js",
     "prebuildtests": "rimraf ./bin/tests",
