@@ -27,15 +27,90 @@ PY3 = (sys.version_info[0] >= 3)
 # get on with it
 #-----------------------------------------------------------------------------
 
-import os
-from glob import glob
 from distutils import log
-from os.path import join as pjoin
 from distutils.core import setup, Command
 from distutils.command.build_py import build_py
 from distutils.command.sdist import sdist
+from glob import glob
+import os
+from os.path import join as pjoin
+from subprocess import check_call
 
 repo_root = os.path.dirname(os.path.abspath(__file__))
+npm_path = os.pathsep.join([
+    pjoin(repo_root, 'node_modules', '.bin'),
+    os.environ.get("PATH", os.defpath),
+])
+
+def mtime(path):
+    """shorthand for mtime"""
+    return os.stat(path).st_mtime
+
+try:
+    from shutil import which
+except ImportError:
+    ## which() function copied from Python 3.4.3; PSF license
+    def which(cmd, mode=os.F_OK | os.X_OK, path=None):
+        """Given a command, mode, and a PATH string, return the path which
+        conforms to the given mode on the PATH, or None if there is no such
+        file.
+
+        `mode` defaults to os.F_OK | os.X_OK. `path` defaults to the result
+        of os.environ.get("PATH"), or can be overridden with a custom search
+        path.
+
+        """
+        # Check that a given file can be accessed with the correct mode.
+        # Additionally check that `file` is not a directory, as on Windows
+        # directories pass the os.access check.
+        def _access_check(fn, mode):
+            return (os.path.exists(fn) and os.access(fn, mode)
+                    and not os.path.isdir(fn))
+
+        # If we're given a path with a directory part, look it up directly rather
+        # than referring to PATH directories. This includes checking relative to the
+        # current directory, e.g. ./script
+        if os.path.dirname(cmd):
+            if _access_check(cmd, mode):
+                return cmd
+            return None
+
+        if path is None:
+            path = os.environ.get("PATH", os.defpath)
+        if not path:
+            return None
+        path = path.split(os.pathsep)
+
+        if sys.platform == "win32":
+            # The current directory takes precedence on Windows.
+            if not os.curdir in path:
+                path.insert(0, os.curdir)
+
+            # PATHEXT is necessary to check on Windows.
+            pathext = os.environ.get("PATHEXT", "").split(os.pathsep)
+            # See if the given file matches any of the expected path extensions.
+            # This will allow us to short circuit when given "python.exe".
+            # If it does match, only test that one, otherwise we have to try
+            # others.
+            if any(cmd.lower().endswith(ext.lower()) for ext in pathext):
+                files = [cmd]
+            else:
+                files = [cmd + ext for ext in pathext]
+        else:
+            # On other platforms you don't have things like PATHEXT to tell you
+            # what file suffixes are executable, so just pass on cmd as-is.
+            files = [cmd]
+
+        seen = set()
+        for dir in path:
+            normdir = os.path.normcase(dir)
+            if not normdir in seen:
+                seen.add(normdir)
+                for thefile in files:
+                    name = os.path.join(dir, thefile)
+                    if _access_check(name, mode):
+                        return name
+        return None
 
 def css_js_prerelease(command, strict=False):
     """decorator for building minified js/css prior to another command"""
@@ -55,6 +130,13 @@ def css_js_prerelease(command, strict=False):
                     log.warn(str(e))
             command.run(self)
     return DecoratedCommand
+
+def update_package_data(distribution):
+    """update package_data to catch changes during setup"""
+    build_py = distribution.get_command_obj('build_py')
+    # distribution.package_data = find_package_data()
+    # re-init build_py options which load package_data
+    build_py.finalize_options()
 
 class NPM(Command):
     description = "install package,json dependencies using npm"
@@ -84,34 +166,6 @@ class NPM(Command):
         env = os.environ.copy()
         env['PATH'] = npm_path
 
-        # update package data in case this created new files
-        update_package_data(self.distribution)
-
-class CompileCSS(Command):
-    """Recompile Widget CSS
-
-    Regenerate the compiled CSS from LESS sources.
-
-    Requires various dev dependencies, such as gulp and lessc.
-    """
-    description = "Recompile Widget CSS"
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        env = os.environ.copy()
-        env['PATH'] = npm_path
-        try:
-            check_call(['gulp','css'], cwd=repo_root, env=env)
-        except OSError as e:
-            print("Failed to run gulp css: %s" % e, file=sys.stderr)
-            print("You can install js dependencies with `npm install`", file=sys.stderr)
-            raise
         # update package data in case this created new files
         update_package_data(self.distribution)
 
@@ -160,7 +214,6 @@ setup_args = dict(
     cmdclass        = {
         'build_py': css_js_prerelease(build_py),
         'sdist': css_js_prerelease(sdist, strict=True),
-        'css': CompileCSS,
         'jsdeps': NPM
     },
 )
