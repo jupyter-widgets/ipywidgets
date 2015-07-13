@@ -33,7 +33,7 @@ gulp.task('css', function (cb, interpreter) {
     .pipe(less({
       paths: [nb_static_path],
     }))
-    .pipe(minifyCSS({restructuring: false}))
+    .pipe(minifyCSS({restructuring: false, advanced: false}))
     .pipe(rename({
             dirname: path.join('..', 'css'),
             suffix: '.min'
