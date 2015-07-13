@@ -67,8 +67,8 @@ base.tester
     'Invald int textbox value caught and filtered.')
 
 .cell(`
-    intrange = [widgets.BoundedIntTextWidget(),
-        widgets.IntSliderWidget()]
+    intrange = [widgets.BoundedIntText(),
+        widgets.IntSlider()]
     [display(intrange[i]) for i in range(2)]
     intrange[0]._dom_classes = ["my-second-num-test-text"]  
     print(intrange[0].model_id)
