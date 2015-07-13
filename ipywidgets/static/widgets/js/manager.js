@@ -294,8 +294,10 @@ define([
                 model_module: msg.content.data._model_module,
                 comm: comm,
             }).then(function(model) {
-                model.set_state(msg.content.data);
-                return model;
+                return model._deserialize_state(msg.content.data).then(function(state) {
+                    model.set_state(state);
+                    return model;
+                });
             });
         }
 
