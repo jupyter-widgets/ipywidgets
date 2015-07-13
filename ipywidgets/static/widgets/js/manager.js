@@ -320,7 +320,7 @@ define([
          *      widget_class: (optional) string
          *          Target name of the widget in the back-end.
          *      comm: (optional) Comm
-         *
+         *          Comm of the widget. If not provided, a new Comm is created.
          * Create a comm if it wasn't provided.
          */
         var comm = options.comm;
@@ -446,7 +446,7 @@ define([
                         });
                     });
                 });
-            }, this));
+            }));
 
             // Display all the views
             return all_models.then(function(models) {
@@ -477,6 +477,17 @@ define([
                     resolve(data.kernel);
                 });
             }
+        });
+    };
+
+    WidgetManager.prototype._get_comm_info = function(kernel) {
+        /**
+         * Gets a promise for the open comms in the backend
+         */
+        return new Promise(function(resolve, reject) {
+             kernel.comm_info(function(msg) {
+                 resolve(msg['content']['comms']);
+             });
         });
     };
 
