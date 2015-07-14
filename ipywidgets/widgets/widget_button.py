@@ -9,7 +9,6 @@ click events on the button and trigger backend code when the clicks are fired.
 
 from .widget import DOMWidget, CallbackDispatcher, register
 from traitlets import Unicode, Bool, CaselessStrEnum
-from .deprecated import DeprecatedClass
 
 
 @register('IPython.Button')
@@ -67,7 +66,3 @@ class Button(DOMWidget):
             Content of the msg."""
         if content.get('event', '') == 'click':
             self._click_handlers(self)
-
-
-# Remove in IPython 4.0
-ButtonWidget = DeprecatedClass(Button, 'ButtonWidget')

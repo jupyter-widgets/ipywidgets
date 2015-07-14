@@ -10,7 +10,6 @@ from .widget import DOMWidget, register
 from .trait_types import Color
 from traitlets import (Unicode, CFloat, Bool, CaselessStrEnum,
                                      Tuple, TraitError)
-from .deprecated import DeprecatedClass
 
 
 class _Float(DOMWidget):
@@ -281,9 +280,3 @@ class FloatRangeSlider(_BoundedFloatRange):
     _range = Bool(True, help="Display a range selector", sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.", sync=True)
     slider_color = Color(None, allow_none=True, sync=True)
-
-# Remove in IPython 4.0
-FloatTextWidget = DeprecatedClass(FloatText, 'FloatTextWidget')
-BoundedFloatTextWidget = DeprecatedClass(BoundedFloatText, 'BoundedFloatTextWidget')
-FloatSliderWidget = DeprecatedClass(FloatSlider, 'FloatSliderWidget')
-FloatProgressWidget = DeprecatedClass(FloatProgress, 'FloatProgressWidget')

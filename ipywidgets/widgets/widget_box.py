@@ -8,7 +8,6 @@ Represents a container that can be used to group other widgets.
 
 from .widget import DOMWidget, Widget, register, widget_serialization
 from traitlets import Unicode, Tuple, TraitError, Int, CaselessStrEnum
-from .deprecated import DeprecatedClass
 
 
 @register('IPython.Box')
@@ -76,7 +75,3 @@ def HBox(*pargs, **kwargs):
     """Displays multiple widgets horizontally using the flexible box model."""
     kwargs['orientation'] = 'horizontal'
     return FlexBox(*pargs, **kwargs)
-
-
-# Remove in IPython 4.0
-ContainerWidget = DeprecatedClass(Box, 'ContainerWidget')

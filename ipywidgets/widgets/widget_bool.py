@@ -8,7 +8,6 @@ Represents a boolean using a widget.
 
 from .widget import DOMWidget, register
 from traitlets import Unicode, Bool, CaselessStrEnum
-from .deprecated import DeprecatedClass
 
 
 class _Bool(DOMWidget):
@@ -74,7 +73,3 @@ class Valid(_Bool):
 """
     readout = Unicode(help="Message displayed when the value is False", sync=True)
     _view_name = Unicode('ValidView', sync=True)
-
-# Remove in IPython 4.0
-CheckboxWidget = DeprecatedClass(Checkbox, 'CheckboxWidget')
-ToggleButtonWidget = DeprecatedClass(ToggleButton, 'ToggleButtonWidget')
