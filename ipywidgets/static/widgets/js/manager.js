@@ -280,28 +280,16 @@ define([
         /**
          * Handle when a comm is opened.
          */
-        // For < 4.x
-        var model;
-        if (msg.content.data.model_name) {
-            model = this.create_model({
-                model_name: msg.content.data.model_name,
-                model_module: msg.content.data.model_module,
-                comm: comm,
+        return this.create_model({
+            model_name: msg.content.data._model_name,
+            model_module: msg.content.data._model_module,
+            comm: comm,
+        }).then(function(model) {
+            return model._deserialize_state(msg.content.data).then(function(state) {
+                model.set_state(state);
+                return model;
             });
-        } else {
-            model = this.create_model({
-                model_name: msg.content.data._model_name,
-                model_module: msg.content.data._model_module,
-                comm: comm,
-            }).then(function(model) {
-                return model._deserialize_state(msg.content.data).then(function(state) {
-                    model.set_state(state);
-                    return model;
-                });
-            });
-        }
-
-        return model.catch(utils.reject("Couldn't create a model.", true));
+        }).catch(utils.reject("Couldn't create a model.", true));
     };
 
     WidgetManager.prototype.create_model = function (options) {
