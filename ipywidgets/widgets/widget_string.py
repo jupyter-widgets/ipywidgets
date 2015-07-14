@@ -8,7 +8,6 @@ Represents a unicode string using a widget.
 
 from .widget import DOMWidget, CallbackDispatcher, register
 from traitlets import Unicode, Bool
-from .deprecated import DeprecatedClass
 
 
 class _String(DOMWidget):
@@ -77,10 +76,3 @@ class Text(_String):
         remove: bool (optional)
             Whether to unregister the callback"""
         self._submission_callbacks.register_callback(callback, remove=remove)
-
-
-# Remove in IPython 4.0
-HTMLWidget = DeprecatedClass(HTML, 'HTMLWidget')
-LatexWidget = DeprecatedClass(Latex, 'LatexWidget')
-TextareaWidget = DeprecatedClass(Textarea, 'TextareaWidget')
-TextWidget = DeprecatedClass(Text, 'TextWidget')

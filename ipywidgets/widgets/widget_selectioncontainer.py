@@ -9,7 +9,7 @@ pages.
 
 from .widget_box import Box, register
 from traitlets import Unicode, Dict, CInt
-from .deprecated import DeprecatedClass
+
 
 class _SelectionContainer(Box):
     """Base class used to display multiple child widgets."""
@@ -41,6 +41,7 @@ class _SelectionContainer(Box):
         else:
             return None
 
+
 @register('IPython.Accordion')
 class Accordion(_SelectionContainer):
     """Displays children each on a separate accordion page."""
@@ -51,8 +52,3 @@ class Accordion(_SelectionContainer):
 class Tab(_SelectionContainer):
     """Displays children each on a separate accordion tab."""
     _view_name = Unicode('TabView', sync=True)
-
-
-# Remove in IPython 4.0
-AccordionWidget = DeprecatedClass(Accordion, 'AccordionWidget')
-TabWidget = DeprecatedClass(Tab, 'TabWidget')

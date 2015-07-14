@@ -10,7 +10,6 @@ from .widget import DOMWidget, register
 from .trait_types import Color
 from traitlets import (Unicode, CInt, Bool, CaselessStrEnum,
                                      Tuple, TraitError)
-from .deprecated import DeprecatedClass
 
 
 class _Int(DOMWidget):
@@ -193,9 +192,3 @@ class IntRangeSlider(_BoundedIntRange):
     _range = Bool(True, help="Display a range selector", sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.", sync=True)
     slider_color = Color(None, allow_none=True, sync=True)
-
-# Remove in IPython 4.0
-IntTextWidget = DeprecatedClass(IntText, 'IntTextWidget')
-BoundedIntTextWidget = DeprecatedClass(BoundedIntText, 'BoundedIntTextWidget')
-IntSliderWidget = DeprecatedClass(IntSlider, 'IntSliderWidget')
-IntProgressWidget = DeprecatedClass(IntProgress, 'IntProgressWidget')
