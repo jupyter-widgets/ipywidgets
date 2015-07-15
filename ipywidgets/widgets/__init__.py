@@ -14,16 +14,3 @@ from .widget_selectioncontainer import Tab, Accordion
 from .widget_string import HTML, Latex, Text, Textarea
 from .interaction import interact, interactive, fixed, interact_manual
 from .widget_link import jslink, jsdlink
-
-# We use warn_explicit so we have very brief messages without file or line numbers.
-# The concern is that file or line numbers will confuse the interactive user.
-# To ignore this warning, do:
-#
-#     from warnings import filterwarnings
-#     filterwarnings('ignore', module='ipywidgets')
-
-from warnings import warn_explicit
-__warningregistry__ = {}
-warn_explicit("IPython widgets are experimental and may change in the future.",
-              FutureWarning, '', 0, module = 'ipywidgets',
-              registry = __warningregistry__, module_globals = globals)

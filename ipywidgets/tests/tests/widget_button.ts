@@ -46,10 +46,7 @@ base.tester
         .wait_for_output(button_index, 1)
 
         .then(function () {
-            var warning_text = this.notebook.get_output(button_index, 1).text;
-            this.test.assertNotEquals(warning_text.indexOf('Warning'), -1,
-                'Importing widgets show a warning');
-            this.test.assertEquals(this.notebook.get_output(button_index, 2).data['text/plain'], "'Clicked'",
+            this.test.assertEquals(this.notebook.get_output(button_index, 1).data['text/plain'], "'Clicked'",
                 'Button click event fires.');
         });
     }
