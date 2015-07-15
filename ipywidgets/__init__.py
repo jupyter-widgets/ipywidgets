@@ -34,3 +34,15 @@ def _handle_ipython():
     load_ipython_extension(ip)
 
 _handle_ipython()
+
+
+# Workaround for the absence of a comm_info_[request/reply] shell message
+class CommInfo(Widget):
+    """CommInfo widgets are is typically instantiated by the front-end. As soon as it is instantiated, it sends the collection of valid comms, and kills itself. It is a workaround to the absence of comm_info shell message."""
+    
+    def __init__(self, **kwargs):
+        super(CommInfo, self).__init__(**kwargs)
+        self.send(dict(comms={
+            k: dict(target_name=v.target_name) for (k, v) in self.comm.kernel.comm_manager.comms.items()
+        }))
+        self.close()
