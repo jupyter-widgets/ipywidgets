@@ -9,7 +9,7 @@ click events on the button and trigger backend code when the clicks are fired.
 
 from .widget import DOMWidget, CallbackDispatcher, register
 from traitlets import Unicode, Bool, CaselessStrEnum
-
+from .trait_types import Signal
 
 @register('IPython.Button')
 class Button(DOMWidget):
@@ -33,6 +33,7 @@ class Button(DOMWidget):
     tooltip = Unicode(help="Tooltip caption of the button.", sync=True)
     disabled = Bool(False, help="Enable or disable user changes.", sync=True)
     icon = Unicode('', help= "Font-awesome icon.", sync=True)
+    clicked = Signal(Bool())
 
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''], 

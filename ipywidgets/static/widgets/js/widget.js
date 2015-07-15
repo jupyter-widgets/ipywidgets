@@ -216,6 +216,22 @@ define(["nbextensions/widgets/widgets/js/manager",
                         that.widget_manager.display_view(msg, that);
                     }).catch(utils.reject('Could not process display view msg', true));
                     break;
+                case 'invoke':
+                    console.log('invoke');
+                    console.log(msg.content.data);
+                    break;
+                case 'emit':
+                    console.log('emit');
+                    console.log(msg.content.data);
+                    break;
+                case 'connect':
+                    console.log('connect');
+                    console.log(msg.content.data);
+                    break;
+                case 'disconnect':
+                    console.log('disconnect');
+                    console.log(msg.content.data);
+                    break;
             }
         },
 
