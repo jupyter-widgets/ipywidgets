@@ -396,7 +396,7 @@ define([
                                 for (var id in model_views) {
                                     if (model_views.hasOwnProperty(id)) {
                                         var view = model_views[id];
-                                        if (view.options.cell_index) {
+                                        if (view.options.cell_index !== undefined) {
                                             local_state.views.push(view.options.cell_index);
                                         }
                                     }
