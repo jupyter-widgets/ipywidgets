@@ -13,10 +13,9 @@ before_install:
     - git clone --quiet --depth 1 https://github.com/minrk/travis-wheels travis-wheels
 install:
     - pip install -f travis-wheels/wheelhouse -r requirements.txt
-    - npm install && gulp css
-    - pip install -f travis-wheels/wheelhouse file://$PWD#egg=ipywidgets[test] coveralls
+    - pip install -f travis-wheels/wheelhouse -e file://$PWD#egg=ipywidgets[test] coveralls
 script:
-    - 'if [[ $GROUP == js ]]; then gulp tests; python -m ipywidgets.jstest; fi'
+    - 'if [[ $GROUP == js ]]; then python -m ipywidgets.jstest; fi'
     - 'if [[ $GROUP == python ]]; then nosetests --with-coverage --cover-package=ipywidgets ipywidgets; fi'
 matrix:
     include:
