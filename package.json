@@ -8,18 +8,19 @@
     "type": "git",
     "url": "https://github.com/ipython/ipython_widget.git"
   },
+  "scripts": {
+    "build": "npm run css && npm run buildtests",
+    "precss": "rimraf ./ipywidgets/static/widgets/css/",
+    "css": "node build_css.js",
+    "prebuildtests": "rimraf ./bin/tests",
+    "buildtests": "tsc ./ipywidgets/tests/**/*.ts --outDir ./bin/tests -d -m commonjs -t ES5",
+    "postinstall": "npm run build"
+  },
   "devDependencies": {
-    "spawn-sync": "*",
-    "gulp": "^3.8.11",
-    "gulp-less": "^3.0.2",
-    "gulp-minify-css": "^1.0.0",
-    "gulp-rename": "^1.2.2",
-    "gulp-sourcemaps": "^1.5.1",
-    "gulp-param": "^0.6.3",
     "less": "~2",
-    "source-map": "^0.4.2",
     "typescript": "~1.5.0-beta",
-    "gulp-typescript": "^2.7",
-    "merge2": "~0.3"
+    "rimraf": "^2.4.1",
+    "spawn-sync": "*",
+    "clean-css": "*"
   }
 }

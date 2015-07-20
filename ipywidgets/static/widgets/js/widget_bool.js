@@ -88,7 +88,7 @@ define([
                     that.handle_click();
                 }));
             this.$el.attr("data-toggle", "tooltip");
-            this.model.on('change:button_style', function(model, value) {
+            this.listenTo(this.model, 'change:button_style', function(model, value) {
                 this.update_button_style();
             }, this);
             this.update_button_style('');
@@ -156,7 +156,7 @@ define([
              * Called when view is rendered.
              */
             this.$el.addClass("widget-valid");
-            this.model.on("change", this.update, this);
+            this.listenTo(this.model, "change", this.update, this);
             this.update();
         },
         update: function() {
@@ -178,7 +178,7 @@ define([
             } 
             this.$el.text(readout);
             $('<i class="fa"></i>').prependTo(this.$el).addClass(icon);
-            this.after_displayed(function() {
+            this.displayed.then(function() {
                 this.$el.css("color", color);
             }, this);
         }

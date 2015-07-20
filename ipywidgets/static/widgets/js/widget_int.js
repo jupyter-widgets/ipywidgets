@@ -35,7 +35,7 @@ define([
                 .attr('contentEditable', true)
                 .hide();
 
-            this.model.on('change:slider_color', function(sender, value) {
+            this.listenTo(this.model, 'change:slider_color', function(sender, value) {
                 this.$slider.find('a').css('background', value);
             }, this);
             this.$slider.find('a').css('background', this.model.get('slider_color'));
@@ -409,23 +409,24 @@ define([
             /**
              * Called when view is rendered.
              */
-            this.$el
-                .addClass('widget-hbox widget-progress');
             this.$label = $('<div />')
                 .appendTo(this.$el)
                 .addClass('widget-label')
                 .hide();
             this.$progress = $('<div />')
                 .addClass('progress')
-                .addClass('widget-progress')
+                .css('position', 'relative')
                 .appendTo(this.$el);
             this.$bar = $('<div />')
                 .addClass('progress-bar')
-                .css('width', '50%')
+                .css({
+                    'position': 'absolute',
+                    'bottom': 0, 'left': 0,
+                })
                 .appendTo(this.$progress);
             this.update(); // Set defaults.
 
-            this.model.on('change:bar_style', function(model, value) {
+            this.listenTo(this.model, 'change:bar_style', function(model, value) {
                 this.update_bar_style();
             }, this);
             this.update_bar_style('');
@@ -441,9 +442,29 @@ define([
             var value = this.model.get('value');
             var max = this.model.get('max');
             var min = this.model.get('min');
+            var orientation = this.model.get('orientation');
             var percent = 100.0 * (value - min) / (max - min);
-            this.$bar.css('width', percent + '%');
-            
+            if (orientation === 'horizontal') {
+                this.$el
+                   .removeClass('widget-vbox')
+                   .addClass('widget-hbox');
+                this.$progress.removeClass('widget-vprogress');
+                this.$progress.addClass('widget-hprogress');
+                this.$bar.css({
+                    'width': percent + '%',
+                    'height': '100%',
+                });
+            } else {
+                this.$el
+                   .removeClass('widget-hbox')
+                   .addClass('widget-vbox');
+                this.$progress.removeClass('widget-hprogress');
+                this.$progress.addClass('widget-vprogress');
+                this.$bar.css({
+                    'width': '100%',
+                    'height': percent + '%',
+                });
+            }
             var description = this.model.get('description');
             if (description.length === 0) {
                 this.$label.hide();

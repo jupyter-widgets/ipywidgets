@@ -10,7 +10,6 @@ from .widget import DOMWidget, register
 from .trait_types import Color
 from traitlets import (Unicode, CFloat, Bool, CaselessStrEnum,
                                      Tuple, TraitError)
-from .deprecated import DeprecatedClass
 
 
 class _Float(DOMWidget):
@@ -148,11 +147,14 @@ class FloatProgress(_BoundedFloat):
 	colors are: 'success'-green, 'info'-light blue, 'warning'-orange, 'danger'-red
 """
     _view_name = Unicode('ProgressView', sync=True)
+    orientation = CaselessStrEnum(values=['horizontal', 'vertical'], 
+        default_value='horizontal', help="Vertical or horizontal.", sync=True)
 
     bar_style = CaselessStrEnum(
         values=['success', 'info', 'warning', 'danger', ''], 
         default_value='', allow_none=True, sync=True, help="""Use a
         predefined styling for the progess bar.""")
+
 
 class _FloatRange(_Float):
     value = Tuple(CFloat, CFloat, default_value=(0.0, 1.0), help="Tuple of (lower, upper) bounds", sync=True)
@@ -208,7 +210,6 @@ class _BoundedFloatRange(_FloatRange):
                           0.25*self.min + 0.75*self.max)
         # callback already set for 'value', 'lower', 'upper'
         self.on_trait_change(self._validate, ['min', 'max'])
-
 
     def _validate(self, name, old, new):
         if name == "min":
@@ -279,9 +280,3 @@ class FloatRangeSlider(_BoundedFloatRange):
     _range = Bool(True, help="Display a range selector", sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.", sync=True)
     slider_color = Color(None, allow_none=True, sync=True)
-
-# Remove in IPython 4.0
-FloatTextWidget = DeprecatedClass(FloatText, 'FloatTextWidget')
-BoundedFloatTextWidget = DeprecatedClass(BoundedFloatText, 'BoundedFloatTextWidget')
-FloatSliderWidget = DeprecatedClass(FloatSlider, 'FloatSliderWidget')
-FloatProgressWidget = DeprecatedClass(FloatProgress, 'FloatProgressWidget')

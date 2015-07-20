@@ -10,7 +10,7 @@ import base64
 
 from .widget import DOMWidget, register
 from traitlets import Unicode, CUnicode, Bytes
-from .deprecated import DeprecatedClass
+
 
 @register('IPython.Image')
 class Image(DOMWidget):
@@ -31,7 +31,3 @@ class Image(DOMWidget):
     value = Bytes()
     def _value_changed(self, name, old, new):
         self._b64value = base64.b64encode(new)
-
-
-# Remove in IPython 4.0
-ImageWidget = DeprecatedClass(Image, 'ImageWidget')

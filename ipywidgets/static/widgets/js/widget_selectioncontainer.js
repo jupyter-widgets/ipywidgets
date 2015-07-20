@@ -28,10 +28,10 @@ define([
             this.$el
                 .attr('id', guid)
                 .addClass('panel-group');
-            this.model.on('change:selected_index', function(model, value, options) {
+            this.listenTo(this.model, 'change:selected_index', function(model, value, options) {
                 this.update_selected_index(options);
             }, this);
-            this.model.on('change:_titles', function(model, value, options) {
+            this.listenTo(this.model, 'change:_titles', function(model, value, options) {
                 this.update_titles(options);
             }, this);
             this.on('displayed', function() {
@@ -141,7 +141,7 @@ define([
                 that.update_titles();
 
                 // Trigger the displayed event of the child view.
-                that.after_displayed(function() {
+                that.displayed.then(function() {
                     view.trigger('displayed');
                 });
                 return view;
@@ -251,7 +251,7 @@ define([
                 view.parent_container = contents_div;
 
                 // Trigger the displayed event of the child view.
-                that.after_displayed(function() {
+                that.displayed.then(function() {
                     view.trigger('displayed');
                     that.update();
                 });

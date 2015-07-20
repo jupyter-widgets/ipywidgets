@@ -66,7 +66,7 @@ define(["nbextensions/widgets/widgets/js/manager",
             this.views = {};
             this._resolve_received_state = {};
 
-            if (comm !== undefined) {
+            if (comm) {
                 // Remember comm associated with the model.
                 this.comm = comm;
                 comm.model = this;
@@ -74,11 +74,10 @@ define(["nbextensions/widgets/widgets/js/manager",
                 // Hook comm messages up to model.
                 comm.on_close(_.bind(this._handle_comm_closed, this));
                 comm.on_msg(_.bind(this._handle_comm_msg, this));
-
-                // Assume the comm is alive.
+                
                 this.set_comm_live(true);
             } else {
-                this.set_comm_live(false);
+                this.comm_live = false;
             }
 
             // Listen for the events that lead to the websocket being terminated.
@@ -90,8 +89,6 @@ define(["nbextensions/widgets/widgets/js/manager",
             widget_manager.notebook.events.on('kernel_killed.Kernel', died);
             widget_manager.notebook.events.on('kernel_restarting.Kernel', died);
             widget_manager.notebook.events.on('kernel_dead.Kernel', died);
-
-            return Backbone.Model.apply(this);
         },
 
         send: function (content, callbacks, buffers) {
@@ -114,7 +111,9 @@ define(["nbextensions/widgets/widgets/js/manager",
                 return;
             }
 
-            var msg_id = this.comm.send({method: 'request_state'}, callbacks || this.widget_manager.callbacks());
+            var msg_id = this.comm.send({
+                method: 'request_state'
+            }, callbacks || this.widget_manager.callbacks());
 
             // Promise that is resolved when a state is received
             // from the back-end.
@@ -162,7 +161,25 @@ define(["nbextensions/widgets/widgets/js/manager",
             this.trigger('comm:close');
             this.close(true);
         },
-
+        _deserialize_state: function(state) {
+            /** 
+             * Deserialize fields that have a custom serializer.
+             */
+            var serializers = this.constructor.serializers;
+            if (serializers) {
+                var deserialized = {};
+                for (var k in state) {
+                    if (serializers[k] && serializers[k].deserialize) {
+                         deserialized[k] = (serializers[k].deserialize)(state[k], this);
+                    } else {
+                         deserialized[k] = state[k];
+                    }
+                }
+            } else {
+                deserialized = state;
+            }
+            return utils.resolve_promises_dict(deserialized);
+        },
         _handle_comm_msg: function (msg) {
             /**
              * Handle incoming comm msg.
@@ -180,19 +197,9 @@ define(["nbextensions/widgets/widgets/js/manager",
                             for (var i=0; i<buffer_keys.length; i++) {
                                 state[buffer_keys[i]] = buffers[i];
                             }
-
-                            // deserialize fields that have custom deserializers
-                            var serializers = that.constructor.serializers;
-                            if (serializers) {
-                                for (var k in state) {
-                                    if (serializers[k] && serializers[k].deserialize) {
-                                        state[k] = (serializers[k].deserialize)(state[k], that);
-                                    }
-                                }
-                            }
-                            return utils.resolve_promises_dict(state);
+                            return that._deserialize_state(state); 
                         }).then(function(state) {
-                            return that.set_state(state);
+                            that.set_state(state);
                         }).catch(utils.reject("Couldn't process update msg for model id '" + String(that.id) + "'", true))
                         .then(function() {
                             var parent_id = msg.parent_header.msg_id;
@@ -214,17 +221,13 @@ define(["nbextensions/widgets/widgets/js/manager",
         },
 
         set_state: function (state) {
-            var that = this;
             // Handle when a widget is updated via the python side.
-            return new Promise(function(resolve, reject) {
-                that.state_lock = state;
-                try {
-                    WidgetModel.__super__.set.call(that, state);
-                } finally {
-                    that.state_lock = null;
-                }
-                resolve();
-            }).catch(utils.reject("Couldn't set model state", true));
+            this.state_lock = state;
+            try {
+                WidgetModel.__super__.set.call(this, state);
+            } finally {
+                this.state_lock = null;
+            }
         },
 
         get_state: function() {
@@ -244,8 +247,12 @@ define(["nbextensions/widgets/widgets/js/manager",
                     // Send buffer if this message caused another message to be
                     // throttled.
                     if (this.msg_buffer !== null &&
-                        (this.get('msg_throttle') || 3) === this.pending_msgs) {
-                        var data = {method: 'backbone', sync_method: 'update', sync_data: this.msg_buffer};
+                        (this.get('msg_throttle') || 1) === this.pending_msgs) {
+                        var data = {
+                            method: 'backbone',
+                            sync_method: 'update',
+                            sync_data: this.msg_buffer
+                        };
                         this.comm.send(data, callbacks);
                         this.msg_buffer = null;
                     } else {
@@ -335,7 +342,7 @@ define(["nbextensions/widgets/widgets/js/manager",
                 var callbacks = options.callbacks || this.callbacks();
 
                 // Check throttle.
-                if (this.pending_msgs >= (this.get('msg_throttle') || 3)) {
+                if (this.pending_msgs >= (this.get('msg_throttle') || 1)) {
                     // The throttle has been exceeded, buffer the current msg so
                     // it can be sent once the kernel has finished processing
                     // some of the existing messages.
@@ -398,7 +405,11 @@ define(["nbextensions/widgets/widgets/js/manager",
                         }
                     }
                 }
-                that.comm.send({method: 'backbone', sync_data: state, buffer_keys: buffer_keys}, callbacks, {}, buffers);
+                that.comm.send({
+                    method: 'backbone',
+                    sync_data: state,
+                    buffer_keys: buffer_keys
+                }, callbacks, {}, buffers);
             }).catch(function(error) {
                 that.pending_msgs--;
                 return (utils.reject("Couldn't send widget sync message", true))(error);
@@ -411,7 +422,9 @@ define(["nbextensions/widgets/widgets/js/manager",
              *
              * This invokes a Backbone.Sync.
              */
-            this.save(this._buffered_state_diff, {patch: true, callbacks: callbacks});
+            if (this.comm_live) {
+                this.save(this._buffered_state_diff, {patch: true, callbacks: callbacks});
+            }
         },
 
         on_some_change: function(keys, callback, context) {
@@ -435,7 +448,7 @@ define(["nbextensions/widgets/widgets/js/manager",
              * Serialize the model.  See the types.js deserialization function
              * and the kernel-side serializer/deserializer
              */
-            return "IPY_MODEL_"+this.id;
+            return "IPY_MODEL_" + this.id;
         }
     });
     widgetmanager.WidgetManager.register_widget_model('WidgetModel', WidgetModel);
@@ -446,23 +459,28 @@ define(["nbextensions/widgets/widgets/js/manager",
             /**
              * Public constructor.
              */
-            this.model.on('change',this.update,this);
+            this.listenTo(this.model, 'change', this.update, this);
 
             // Bubble the comm live events.
-            this.model.on('comm:live', function() {
+            this.listenTo(this.model, 'comm:live', function() {
                 this.trigger('comm:live', this);
             }, this);
-            this.model.on('comm:dead', function() {
+            this.listenTo(this.model, 'comm:dead', function() {
                 this.trigger('comm:dead', this);
             }, this);
 
             this.options = parameters.options;
-            this.on('displayed', function() { 
-                this.is_displayed = true; 
-            }, this);
+            /**
+             * this.displayed is a promise that resolves when the view is
+             * inserted in the DOM.
+             */
+            var that = this;
+            this.displayed = new Promise(function(resolve, reject) {
+                that.once('displayed', resolve);
+            });
         },
 
-        update: function(){
+        update: function() {
             /**
              * Triggered on model change.
              *
@@ -507,14 +525,12 @@ define(["nbextensions/widgets/widgets/js/manager",
 
         after_displayed: function (callback, context) {
             /**
-             * Calls the callback right away is the view is already displayed
-             * otherwise, register the callback to the 'displayed' event.
+             * Deprecated method. Calls the callback right away is the view is
+             * already displayed otherwise, register the callback to the 'displayed'
+             * event.
              */
-            if (this.is_displayed) {
-                callback.apply(context);
-            } else {
-                this.on('displayed', callback, context);
-            }
+            console.log('`WidgetView.after_displayed` is deprecated. Use the WidgetView.displayed promise instead.');
+            this.displayed.then(_.bind(callback, context));
         },
 
         remove: function () {
@@ -531,57 +547,57 @@ define(["nbextensions/widgets/widgets/js/manager",
              * Public constructor
              */
             WidgetViewMixin.initialize.apply(this, [parameters]);
-            this.model.on('change:visible', this.update_visible, this);
-            this.model.on('change:_css', this.update_css, this);
+            this.listenTo(this.model, 'change:visible', this.update_visible, this);
+            this.listenTo(this.model, 'change:_css', this.update_css, this);
 
-            this.model.on('change:_dom_classes', function(model, new_classes) {
+            this.listenTo(this.model, 'change:_dom_classes', function(model, new_classes) {
                 var old_classes = model.previous('_dom_classes');
                 this.update_classes(old_classes, new_classes);
             }, this);
 
-            this.model.on('change:color', function (model, value) { 
+            this.listenTo(this.model, 'change:color', function (model, value) { 
                 this.update_attr('color', value); }, this);
 
-            this.model.on('change:background_color', function (model, value) { 
+            this.listenTo(this.model, 'change:background_color', function (model, value) { 
                 this.update_attr('background', value); }, this);
 
-            this.model.on('change:width', function (model, value) { 
+            this.listenTo(this.model, 'change:width', function (model, value) { 
                 this.update_attr('width', value); }, this);
 
-            this.model.on('change:height', function (model, value) { 
+            this.listenTo(this.model, 'change:height', function (model, value) { 
                 this.update_attr('height', value); }, this);
 
-            this.model.on('change:border_color', function (model, value) { 
+            this.listenTo(this.model, 'change:border_color', function (model, value) { 
                 this.update_attr('border-color', value); }, this);
 
-            this.model.on('change:border_width', function (model, value) { 
+            this.listenTo(this.model, 'change:border_width', function (model, value) { 
                 this.update_attr('border-width', value); }, this);
 
-            this.model.on('change:border_style', function (model, value) { 
+            this.listenTo(this.model, 'change:border_style', function (model, value) { 
                 this.update_attr('border-style', value); }, this);
 
-            this.model.on('change:font_style', function (model, value) { 
+            this.listenTo(this.model, 'change:font_style', function (model, value) { 
                 this.update_attr('font-style', value); }, this);
 
-            this.model.on('change:font_weight', function (model, value) { 
+            this.listenTo(this.model, 'change:font_weight', function (model, value) { 
                 this.update_attr('font-weight', value); }, this);
 
-            this.model.on('change:font_size', function (model, value) { 
+            this.listenTo(this.model, 'change:font_size', function (model, value) { 
                 this.update_attr('font-size', this._default_px(value)); }, this);
 
-            this.model.on('change:font_family', function (model, value) { 
+            this.listenTo(this.model, 'change:font_family', function (model, value) { 
                 this.update_attr('font-family', value); }, this);
 
-            this.model.on('change:padding', function (model, value) { 
+            this.listenTo(this.model, 'change:padding', function (model, value) { 
                 this.update_attr('padding', value); }, this);
 
-            this.model.on('change:margin', function (model, value) { 
+            this.listenTo(this.model, 'change:margin', function (model, value) { 
                 this.update_attr('margin', this._default_px(value)); }, this);
 
-            this.model.on('change:border_radius', function (model, value) { 
+            this.listenTo(this.model, 'change:border_radius', function (model, value) { 
                 this.update_attr('border-radius', this._default_px(value)); }, this);
 
-            this.after_displayed(function() {
+            this.displayed.then(_.bind(function() {
                 this.update_visible(this.model, this.model.get("visible"));
                 this.update_classes([], this.model.get('_dom_classes'));
                 
@@ -601,7 +617,7 @@ define(["nbextensions/widgets/widgets/js/manager",
                 this.update_attr('border-radius', this._default_px(this.model.get('border_radius')));
 
                 this.update_css(this.model, this.model.get("_css"));
-            }, this);
+            }, this));
         },
 
         _default_px: function(value) {
@@ -663,8 +679,12 @@ define(["nbextensions/widgets/widgets/js/manager",
             if (el===undefined) {
                 el = this.el;
             }
-            _.difference(old_classes, new_classes).map(function(c) { el.classList.remove(c); });
-            _.difference(new_classes, old_classes).map(function(c) { el.classList.add(c); });
+            _.difference(old_classes, new_classes).map(function(c) {
+                el.classList.remove(c);
+            });
+            _.difference(new_classes, old_classes).map(function(c) {
+                el.classList.add(c);
+            });
         },
 
         update_mapped_classes: function(class_map, trait_name, previous_trait_value, el) {

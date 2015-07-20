@@ -6,7 +6,7 @@ Propagate changes between widgets on the javascript side
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from .widget import Widget
+from .widget import Widget, widget_serialization
 from traitlets import Unicode, Tuple, List,Instance, TraitError
 
 class WidgetTraitTuple(Tuple):
@@ -34,15 +34,16 @@ class Link(Widget):
     """Link Widget
     
     one trait:
-    widgets, a list of (widget, 'trait_name') tuples which should be linked in the frontend.
+    source: a (Widget, 'trait_name') tuple for the source trait
+    target: a (Widget, 'trait_name') tuple that should be updated
     """
     _model_name = Unicode('LinkModel', sync=True)
-    widgets = List(WidgetTraitTuple, sync=True)
+    target = WidgetTraitTuple(sync=True, **widget_serialization)
+    source = WidgetTraitTuple(sync=True, **widget_serialization)
 
-    def __init__(self, widgets, **kwargs):
-        if len(widgets) < 2:
-            raise TypeError("Require at least two widgets to link")
-        kwargs['widgets'] = widgets
+    def __init__(self, source, target, **kwargs):
+        kwargs['source'] = source
+        kwargs['target'] = target
         super(Link, self).__init__(**kwargs)
 
     # for compatibility with traitlet links
@@ -50,59 +51,45 @@ class Link(Widget):
         self.close()
 
 
-def jslink(*args):
-    """Link traits from different widgets together on the frontend so they remain in sync.
+def jslink(attr1, attr2):
+    """Link two widget attributes on the frontend so they remain in sync.
 
     Parameters
     ----------
-    *args : two or more (Widget, 'trait_name') tuples that should be kept in sync.
+    source : a (Widget, 'trait_name') tuple for the first trait
+    target : a (Widget, 'trait_name') tuple for the second trait
 
     Examples
     --------
 
-    >>> c = link((widget1, 'value'), (widget2, 'value'), (widget3, 'value'))
+    >>> c = link((widget1, 'value'), (widget2, 'value'))
     """
-    return Link(widgets=args)
+    return Link(attr1, attr2)
 
 
-class DirectionalLink(Widget):
+class DirectionalLink(Link):
     """A directional link
     
     source: a (Widget, 'trait_name') tuple for the source trait
-    targets: one or more (Widget, 'trait_name') tuples that should be updated
+    target: a (Widget, 'trait_name') tuple that should be updated
     when the source trait changes.
     """
     _model_name = Unicode('DirectionalLinkModel', sync=True)
-    targets = List(WidgetTraitTuple, sync=True)
-    source = WidgetTraitTuple(sync=True)
 
-    # Does not quite behave like other widgets but reproduces
-    # the behavior of traitlets.directional_link
-    def __init__(self, source, targets, **kwargs):
-        if len(targets) < 1:
-            raise TypeError("Require at least two widgets to link")
-        
-        kwargs['source'] = source
-        kwargs['targets'] = targets
-        super(DirectionalLink, self).__init__(**kwargs)
 
-    # for compatibility with traitlet links
-    def unlink(self):
-        self.close()
-
-def jsdlink(source, *targets):
-    """Link the trait of a source widget with traits of target widgets in the frontend.
+def jsdlink(source, target):
+    """Link a source widget attribute with a target widget attribute on the
+    frontend.
 
     Parameters
     ----------
     source : a (Widget, 'trait_name') tuple for the source trait
-    *targets : one or more (Widget, 'trait_name') tuples that should be updated
-    when the source trait changes.
+    target : a (Widget, 'trait_name') tuple for the target trait
 
     Examples
     --------
 
-    >>> c = dlink((src_widget, 'value'), (tgt_widget1, 'value'), (tgt_widget2, 'value'))
+    >>> c = dlink((src_widget, 'value'), (tgt_widget, 'value'))
     """
-    return DirectionalLink(source=source, targets=targets)
+    return DirectionalLink(source, target)
 

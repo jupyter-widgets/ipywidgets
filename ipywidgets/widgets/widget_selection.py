@@ -14,7 +14,6 @@ from traitlets import (
     Unicode, Bool, Any, Dict, TraitError, CaselessStrEnum, Tuple, List
 )
 from ipython_genutils.py3compat import unicode_type
-from .deprecated import DeprecatedClass
 
 
 class _Selection(DOMWidget):
@@ -229,10 +228,3 @@ class SelectMultiple(_MultipleSelection):
     option values, ``value``, or their labels, ``selected_labels`` must both be
     updated with a list-like object."""
     _view_name = Unicode('SelectMultipleView', sync=True)
-
-
-# Remove in IPython 4.0
-ToggleButtonsWidget = DeprecatedClass(ToggleButtons, 'ToggleButtonsWidget')
-DropdownWidget = DeprecatedClass(Dropdown, 'DropdownWidget')
-RadioButtonsWidget = DeprecatedClass(RadioButtons, 'RadioButtonsWidget')
-SelectWidget = DeprecatedClass(Select, 'SelectWidget')

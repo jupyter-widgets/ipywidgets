@@ -10,7 +10,6 @@ from .widget import DOMWidget, register
 from .trait_types import Color
 from traitlets import (Unicode, CInt, Bool, CaselessStrEnum,
                                      Tuple, TraitError)
-from .deprecated import DeprecatedClass
 
 
 class _Int(DOMWidget):
@@ -85,11 +84,14 @@ class IntSlider(_BoundedInt):
 class IntProgress(_BoundedInt):
     """Progress bar that represents a int bounded by a minimum and maximum value."""
     _view_name = Unicode('ProgressView', sync=True)
+    orientation = CaselessStrEnum(values=['horizontal', 'vertical'], 
+        default_value='horizontal', help="Vertical or horizontal.", sync=True)
 
     bar_style = CaselessStrEnum(
         values=['success', 'info', 'warning', 'danger', ''], 
         default_value='', allow_none=True, sync=True, help="""Use a
         predefined styling for the progess bar.""")
+
 
 class _IntRange(_Int):
     value = Tuple(CInt, CInt, default_value=(0, 1), help="Tuple of (lower, upper) bounds", sync=True)
@@ -190,9 +192,3 @@ class IntRangeSlider(_BoundedIntRange):
     _range = Bool(True, help="Display a range selector", sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.", sync=True)
     slider_color = Color(None, allow_none=True, sync=True)
-
-# Remove in IPython 4.0
-IntTextWidget = DeprecatedClass(IntText, 'IntTextWidget')
-BoundedIntTextWidget = DeprecatedClass(BoundedIntText, 'BoundedIntTextWidget')
-IntSliderWidget = DeprecatedClass(IntSlider, 'IntSliderWidget')
-IntProgressWidget = DeprecatedClass(IntProgress, 'IntProgressWidget')
