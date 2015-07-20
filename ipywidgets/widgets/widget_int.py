@@ -94,7 +94,7 @@ class IntProgress(_BoundedInt):
 
 
 class _IntRange(_Int):
-    value = Tuple(CInt, CInt, default_value=(0, 1), help="Tuple of (lower, upper) bounds", sync=True)
+    value = Tuple(CInt(), CInt(), default_value=(0, 1), help="Tuple of (lower, upper) bounds", sync=True)
     lower = CInt(0, help="Lower bound", sync=False)
     upper = CInt(1, help="Upper bound", sync=False)
     
