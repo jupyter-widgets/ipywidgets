@@ -34,6 +34,7 @@ from distutils.command.sdist import sdist
 from glob import glob
 import os
 from os.path import join as pjoin
+from os.path import dirname, abspath
 from subprocess import check_call
 
 repo_root = os.path.dirname(os.path.abspath(__file__))
@@ -112,10 +113,12 @@ except ImportError:
                         return name
         return None
 
-def js_prerelease(command, strict=False):
+def preinstall(command, strict=False):
     """decorator for building minified js/css prior to another command"""
     class DecoratedCommand(command):
         def run(self):
+            
+            # Run jsdeps
             jsdeps = self.distribution.get_command_obj('jsdeps')
             try:
                 self.distribution.run_command('jsdeps')
@@ -126,6 +129,33 @@ def js_prerelease(command, strict=False):
                 else:
                     log.warn("rebuilding js and css failed (not a problem)")
                     log.warn(str(e))
+                        
+            # Install nbextension
+            try:
+                from notebook.nbextensions import install_nbextension
+                from notebook.services.config import ConfigManager
+                staticdir = pjoin(dirname(abspath(__file__)), 'ipywidgets', 'static')
+                
+                # Installation using symlink failed, try without.
+                try:
+                    install_nbextension(staticdir, destination='widgets', user=True, symlink=True)
+                except:
+                    install_nbextension(staticdir, destination='widgets', user=True, symlink=False)
+                
+                try:
+                    cm = ConfigManager()
+                    cm.update('notebook', {
+                        "load_extensions": {
+                            "widgets/notebook/js/extension": True,
+                        }
+                    })
+                except:
+                    log.warn("could not activate nbextension")
+                log.info("installed nbextension")
+            except Exception as e:
+                log.warn("could not install nbextension")
+                raise e
+                
             command.run(self)
     return DecoratedCommand
 
@@ -210,8 +240,8 @@ setup_args = dict(
         'Programming Language :: Python :: 3.3',
     ],
     cmdclass        = {
-        'build_py': js_prerelease(build_py),
-        'sdist': js_prerelease(sdist, strict=True),
+        'build_py': preinstall(build_py),
+        'sdist': preinstall(sdist, strict=True),
         'jsdeps': NPM
     },
 )
@@ -222,7 +252,7 @@ if 'develop' in sys.argv or any(a.startswith('bdist') for a in sys.argv):
 if 'setuptools' in sys.modules:
     # setup.py develop should check for submodules
     from setuptools.command.develop import develop
-    setup_args['cmdclass']['develop'] = js_prerelease(develop, strict=True)
+    setup_args['cmdclass']['develop'] = preinstall(develop, strict=True)
 
 setuptools_args = {}
 install_requires = setuptools_args['install_requires'] = [
