@@ -24,7 +24,7 @@ class WidgetTraitTuple(Tuple):
         # and throw it away in a new, less informative TraitError
         if trait is None:
             raise TypeError("No such trait: %s" % trait_repr)
-        elif not trait.get_metadata('sync'):
+        elif not trait.metadata.get('sync', False):
             raise TypeError("%s cannot be synced" % trait_repr)
         
         return value
