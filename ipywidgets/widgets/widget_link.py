@@ -37,9 +37,9 @@ class Link(Widget):
     source: a (Widget, 'trait_name') tuple for the source trait
     target: a (Widget, 'trait_name') tuple that should be updated
     """
-    _model_name = Unicode('LinkModel', sync=True)
-    target = WidgetTraitTuple(sync=True, **widget_serialization)
-    source = WidgetTraitTuple(sync=True, **widget_serialization)
+    _model_name = Unicode('LinkModel').tag(sync=True)
+    target = WidgetTraitTuple().tag(sync=True, **widget_serialization)
+    source = WidgetTraitTuple().tag(sync=True, **widget_serialization)
 
     def __init__(self, source, target, **kwargs):
         kwargs['source'] = source
@@ -74,7 +74,7 @@ class DirectionalLink(Link):
     target: a (Widget, 'trait_name') tuple that should be updated
     when the source trait changes.
     """
-    _model_name = Unicode('DirectionalLinkModel', sync=True)
+    _model_name = Unicode('DirectionalLinkModel').tag(sync=True)
 
 
 def jsdlink(source, target):

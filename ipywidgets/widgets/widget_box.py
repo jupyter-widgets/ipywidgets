@@ -13,28 +13,28 @@ from traitlets import Unicode, Tuple, TraitError, Int, CaselessStrEnum
 @register('IPython.Box')
 class Box(DOMWidget):
     """Displays multiple widgets in a group."""
-    _model_name = Unicode('BoxModel', sync=True)
-    _view_name = Unicode('BoxView', sync=True)
+    _model_name = Unicode('BoxModel').tag(sync=True)
+    _view_name = Unicode('BoxView').tag(sync=True)
 
     # Child widgets in the container.
     # Using a tuple here to force reassignment to update the list.
     # When a proper notifying-list trait exists, that is what should be used here.
-    children = Tuple(sync=True, **widget_serialization)
+    children = Tuple().tag(sync=True, **widget_serialization)
     
     _overflow_values = ['visible', 'hidden', 'scroll', 'auto', 'initial', 'inherit', '']
     overflow_x = CaselessStrEnum(
         values=_overflow_values, 
-        default_value='', sync=True, help="""Specifies what
-        happens to content that is too large for the rendered region.""")
+        default_value='', help="""Specifies what
+        happens to content that is too large for the rendered region.""").tag(sync=True)
     overflow_y = CaselessStrEnum(
         values=_overflow_values, 
-        default_value='', sync=True, help="""Specifies what
-        happens to content that is too large for the rendered region.""")
+        default_value='', help="""Specifies what
+        happens to content that is too large for the rendered region.""").tag(sync=True)
 
     box_style = CaselessStrEnum(
         values=['success', 'info', 'warning', 'danger', ''], 
-        default_value='', allow_none=True, sync=True, help="""Use a
-        predefined styling for the box.""")
+        default_value='', allow_none=True, help="""Use a
+        predefined styling for the box.""").tag(sync=True)
 
     def __init__(self, children = (), **kwargs):
         kwargs['children'] = children
@@ -49,9 +49,9 @@ class Box(DOMWidget):
 @register('IPython.FlexBox')
 class FlexBox(Box):
     """Displays multiple widgets using the flexible box model."""
-    _view_name = Unicode('FlexBoxView', sync=True)
-    orientation = CaselessStrEnum(values=['vertical', 'horizontal'], default_value='vertical', sync=True)
-    flex = Int(0, sync=True, help="""Specify the flexible-ness of the model.""")
+    _view_name = Unicode('FlexBoxView').tag(sync=True)
+    orientation = CaselessStrEnum(values=['vertical', 'horizontal'], default_value='vertical').tag(sync=True)
+    flex = Int(0, help="""Specify the flexible-ness of the model.""").tag(sync=True)
     def _flex_changed(self, name, old, new):
         new = min(max(0, new), 2)
         if self.flex != new:
@@ -60,10 +60,10 @@ class FlexBox(Box):
     _locations = ['start', 'center', 'end', 'baseline', 'stretch']
     pack = CaselessStrEnum(
         values=_locations, 
-        default_value='start', sync=True)
+        default_value='start').tag(sync=True)
     align = CaselessStrEnum(
         values=_locations, 
-        default_value='start', sync=True)
+        default_value='start').tag(sync=True)
 
 
 def VBox(*pargs, **kwargs):

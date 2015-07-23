@@ -13,8 +13,8 @@ from traitlets import Unicode, Dict, CInt
 
 class _SelectionContainer(Box):
     """Base class used to display multiple child widgets."""
-    _titles = Dict(help="Titles of the pages", sync=True)
-    selected_index = CInt(0, sync=True)
+    _titles = Dict(help="Titles of the pages").tag(sync=True)
+    selected_index = CInt(0).tag(sync=True)
 
     # Public methods
     def set_title(self, index, title):
@@ -45,10 +45,10 @@ class _SelectionContainer(Box):
 @register('IPython.Accordion')
 class Accordion(_SelectionContainer):
     """Displays children each on a separate accordion page."""
-    _view_name = Unicode('AccordionView', sync=True)
+    _view_name = Unicode('AccordionView').tag(sync=True)
 
 
 @register('IPython.Tab')
 class Tab(_SelectionContainer):
     """Displays children each on a separate accordion tab."""
-    _view_name = Unicode('TabView', sync=True)
+    _view_name = Unicode('TabView').tag(sync=True)

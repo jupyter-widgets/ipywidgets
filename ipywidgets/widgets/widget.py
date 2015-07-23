@@ -141,19 +141,19 @@ class Widget(LoggingConfigurable):
     # Traits
     #-------------------------------------------------------------------------
     _model_module = Unicode(None, allow_none=True, help="""A requirejs module name
-        in which to find _model_name. If empty, look in the global registry.""", sync=True)
+        in which to find _model_name. If empty, look in the global registry.""").tag(sync=True)
     _model_name = Unicode('WidgetModel', help="""Name of the backbone model
-        registered in the front-end to create and sync this widget with.""", sync=True)
+        registered in the front-end to create and sync this widget with.""").tag(sync=True)
     _view_module = Unicode(help="""A requirejs module in which to find _view_name.
-        If empty, look in the global registry.""", sync=True)
+        If empty, look in the global registry.""").tag(sync=True)
     _view_name = Unicode(None, allow_none=True, help="""Default view registered in the front-end
-        to use to represent the widget.""", sync=True)
+        to use to represent the widget.""").tag(sync=True)
     comm = Instance('ipykernel.comm.Comm', allow_none=True)
 
-    msg_throttle = Int(3, sync=True, help="""Maximum number of msgs the
-        front-end can send before receiving an idle msg from the back-end.""")
+    msg_throttle = Int(3, help="""Maximum number of msgs the
+        front-end can send before receiving an idle msg from the back-end.""").tag(sync=True)
 
-    version = Int(0, sync=True, help="""Widget's version""")
+    version = Int(0, help="""Widget's version""").tag(sync=True)
     keys = List()
     def _keys_default(self):
         return [name for name in self.traits(sync=True)]
@@ -472,22 +472,22 @@ class Widget(LoggingConfigurable):
 
 
 class DOMWidget(Widget):
-    visible = Bool(True, allow_none=True, help="Whether the widget is visible.  False collapses the empty space, while None preserves the empty space.", sync=True)
-    _css = Tuple(sync=True, help="CSS property list: (selector, key, value)")
-    _dom_classes = Tuple(sync=True, help="DOM classes applied to widget.$el.")
+    visible = Bool(True, allow_none=True, help="Whether the widget is visible.  False collapses the empty space, while None preserves the empty space.").tag(sync=True)
+    _css = Tuple(help="CSS property list: (selector, key, value)").tag(sync=True)
+    _dom_classes = Tuple(help="DOM classes applied to widget.$el.").tag(sync=True)
 
-    width = CUnicode(sync=True)
-    height = CUnicode(sync=True)
+    width = CUnicode().tag(sync=True)
+    height = CUnicode().tag(sync=True)
     # A default padding of 2.5 px makes the widgets look nice when displayed inline.
-    padding = CUnicode(sync=True)
-    margin = CUnicode(sync=True)
+    padding = CUnicode().tag(sync=True)
+    margin = CUnicode().tag(sync=True)
 
-    color = Color(None, allow_none=True, sync=True)
-    background_color = Color(None, allow_none=True, sync=True)
-    border_color = Color(None, allow_none=True, sync=True)
+    color = Color(None, allow_none=True).tag(sync=True)
+    background_color = Color(None, allow_none=True).tag(sync=True)
+    border_color = Color(None, allow_none=True).tag(sync=True)
 
-    border_width = CUnicode(sync=True)
-    border_radius = CUnicode(sync=True)
+    border_width = CUnicode().tag(sync=True)
+    border_radius = CUnicode().tag(sync=True)
     border_style = CaselessStrEnum(values=[ # http://www.w3schools.com/cssref/pr_border-style.asp
         'none',
         'hidden',
@@ -501,7 +501,7 @@ class DOMWidget(Widget):
         'outset',
         'initial',
         'inherit', ''],
-        default_value='', sync=True)
+        default_value='').tag(sync=True)
 
     font_style = CaselessStrEnum(values=[ # http://www.w3schools.com/cssref/pr_font_font-style.asp
         'normal',
@@ -509,7 +509,7 @@ class DOMWidget(Widget):
         'oblique',
         'initial',
         'inherit', ''],
-        default_value='', sync=True)
+        default_value='').tag(sync=True)
     font_weight = CaselessStrEnum(values=[ # http://www.w3schools.com/cssref/pr_font_weight.asp
         'normal',
         'bold',
@@ -517,9 +517,9 @@ class DOMWidget(Widget):
         'lighter',
         'initial',
         'inherit', ''] + list(map(str, range(100,1000,100))),
-        default_value='', sync=True)
-    font_size = CUnicode(sync=True)
-    font_family = Unicode(sync=True)
+        default_value='').tag(sync=True)
+    font_size = CUnicode().tag(sync=True)
+    font_family = Unicode().tag(sync=True)
 
     def __init__(self, *pargs, **kwargs):
         super(DOMWidget, self).__init__(*pargs, **kwargs)

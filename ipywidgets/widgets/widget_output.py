@@ -30,7 +30,7 @@ class Output(DOMWidget):
 
         with out:
             print('prints to output widget')"""
-    _view_name = Unicode('OutputView', sync=True)
+    _view_name = Unicode('OutputView').tag(sync=True)
 
     def clear_output(self, *pargs, **kwargs):
         with self:
