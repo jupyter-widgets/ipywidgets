@@ -157,7 +157,7 @@ class FloatProgress(_BoundedFloat):
 
 
 class _FloatRange(_Float):
-    value = Tuple(CFloat, CFloat, default_value=(0.0, 1.0), help="Tuple of (lower, upper) bounds", sync=True)
+    value = Tuple(CFloat(), CFloat(), default_value=(0.0, 1.0), help="Tuple of (lower, upper) bounds", sync=True)
     lower = CFloat(0.0, help="Lower bound", sync=False)
     upper = CFloat(1.0, help="Upper bound", sync=False)
     
