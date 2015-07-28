@@ -25,7 +25,7 @@ class WidgetTestController(jstest.JSController):
         extra_args = kwargs.pop('extra_args', None)
         super(WidgetTestController, self).__init__(section, *args, **kwargs)
         
-        test_cases = os.path.join(here, '..', 'bin', 'tests', 'tests', self.section)
+        test_cases = os.path.join(here, 'tests', 'bin', 'tests', self.section)
         self.cmd = ['casperjs', 'test', test_cases, '--engine=%s' % self.engine]
 
         if extra_args is not None:

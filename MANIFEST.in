@@ -1,6 +1,8 @@
 include COPYING.md
 include CONTRIBUTING.md
 include README.md
+include package.json
+include build_css.js
 
 # Documentation
 graft docs
@@ -8,6 +10,8 @@ exclude docs/\#*
 
 # Examples
 graft examples
+graft ipywidgets/tests
+graft ipywidgets/static
 
 # docs subdirs we want to skip
 prune docs/build

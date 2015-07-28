@@ -37,6 +37,8 @@ from os.path import join as pjoin
 from subprocess import check_call
 
 repo_root = os.path.dirname(os.path.abspath(__file__))
+is_repo = os.path.exists(pjoin(repo_root, '.git'))
+
 npm_path = os.pathsep.join([
     pjoin(repo_root, 'node_modules', '.bin'),
     os.environ.get("PATH", os.defpath),
@@ -117,16 +119,25 @@ def js_prerelease(command, strict=False):
     class DecoratedCommand(command):
         def run(self):
             jsdeps = self.distribution.get_command_obj('jsdeps')
+            if not is_repo and all(os.path.exists(t) for t in jsdeps.targets):
+                # sdist, nothing to do
+                command.run(self)
+                return
+            
             try:
                 self.distribution.run_command('jsdeps')
             except Exception as e:
-                if strict:
+                missing = [t for t in jsdeps.targets if not os.path.exists(t)]
+                if strict or missing:
                     log.warn("rebuilding js and css failed")
+                    if missing:
+                        log.error("missing files: %s" % missing)
                     raise e
                 else:
                     log.warn("rebuilding js and css failed (not a problem)")
                     log.warn(str(e))
             command.run(self)
+            update_package_data(self.distribution)
     return DecoratedCommand
 
 def update_package_data(distribution):
@@ -139,7 +150,14 @@ def update_package_data(distribution):
 class NPM(Command):
     description = "install package,json dependencies using npm"
 
+    user_options = []
+    
     node_modules = pjoin(repo_root, 'node_modules')
+
+    targets = [
+        pjoin(repo_root, 'ipywidgets', 'static', 'widgets', 'css', 'widgets.min.css'),
+        pjoin(repo_root, 'ipywidgets', 'tests', 'bin'),
+    ]
 
     def initialize_options(self):
         pass
@@ -154,7 +172,7 @@ class NPM(Command):
         if not os.path.exists(self.node_modules):
             return True
         return mtime(self.node_modules) < mtime(pjoin(repo_root, 'package.json'))
-
+    
     def run(self):
         if self.should_run_npm():
             print("installing build dependencies with npm")
@@ -163,6 +181,12 @@ class NPM(Command):
 
         env = os.environ.copy()
         env['PATH'] = npm_path
+        check_call(['npm', 'run', 'build'])
+        
+        for t in self.targets:
+            if not os.path.exists(t):
+                raise ValueError("Missing file: %s" % t)
+        
 
         # update package data in case this created new files
         update_package_data(self.distribution)
@@ -177,8 +201,7 @@ for d, _, _ in os.walk(pjoin(here, name)):
         packages.append(d[len(here)+1:].replace(os.path.sep, '.'))
 
 package_data = {
-    'ipywidgets': ['static/*/*/*.*'],
-    'ipywidgets.tests': ['*.js'],
+    'ipywidgets': ['static/*/*/*.*', 'tests/**/*.js'],
 }
 
 version_ns = {}
