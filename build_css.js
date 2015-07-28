@@ -24,8 +24,8 @@ function run(cmd) {
 
 run(['lessc',
     '--include-path=' + [
-        './jsdeps/notebook/notebook/static',
-        './jsdeps',
+        './less_include/notebook/notebook/static',
+        './less_include',
         ].join(path.delimiter),
     source,
     css_destination,

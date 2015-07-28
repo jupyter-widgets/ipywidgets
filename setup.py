@@ -27,14 +27,23 @@ PY3 = (sys.version_info[0] >= 3)
 # get on with it
 #-----------------------------------------------------------------------------
 
+import errno
+import os
+import shutil
 from distutils import log
 from distutils.core import setup, Command
 from distutils.command.build_py import build_py
 from distutils.command.sdist import sdist
 from glob import glob
-import os
 from os.path import join as pjoin
 from subprocess import check_call
+from zipfile import ZipFile
+
+try:
+    from urllib.request import urlopen
+except ImportError:
+    from urllib2 import urlopen
+
 
 repo_root = os.path.dirname(os.path.abspath(__file__))
 is_repo = os.path.exists(pjoin(repo_root, '.git'))
@@ -147,6 +156,46 @@ def update_package_data(distribution):
     # re-init build_py options which load package_data
     build_py.finalize_options()
 
+class FetchNotebook(Command):
+    description = "Fetch Notebook source, needed for LESS sources"
+
+    user_options = []
+    
+    def initialize_options(self):
+        pass
+    
+    def finalize_options(self):
+        pass
+    
+    # FIXME: update url to 4.0 when notebook is released
+    url = "https://github.com/jupyter/notebook/archive/master.zip"
+    
+    def run(self):
+        nb_dir = pjoin('less_include', 'notebook')
+        nb_zip = pjoin('less_include', 'notebook.zip')
+        if os.path.exists(nb_dir):
+            return
+        try:
+            os.mkdir('less_include')
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
+        if not os.path.exists(nb_zip):
+            log.info("downloading %s" % self.url)
+            r = urlopen(self.url)
+            with open(nb_zip, 'wb') as f:
+                for chunk in r:
+                    f.write(chunk)
+        log.info("unzipping notebook")
+        zf = ZipFile(nb_zip)
+        if os.path.exists('notebook-tmp'):
+            shutil.rmtree('notebook-tmp')
+        zf.extractall('notebook-tmp')
+        d = glob(pjoin('notebook-tmp', '*'))[0]
+        shutil.move(d, nb_dir)
+        os.rmdir('notebook-tmp')
+    
+
 class NPM(Command):
     description = "install package,json dependencies using npm"
 
@@ -164,7 +213,7 @@ class NPM(Command):
 
     def finalize_options(self):
         pass
-        
+
     def should_run_npm(self):
         if not which('npm'):
             print("npm unavailable", file=sys.stderr)
@@ -174,6 +223,7 @@ class NPM(Command):
         return mtime(self.node_modules) < mtime(pjoin(repo_root, 'package.json'))
     
     def run(self):
+        self.distribution.run_command('fetch_notebook')
         if self.should_run_npm():
             print("installing build dependencies with npm")
             check_call(['npm', 'install'], cwd=repo_root)
@@ -235,7 +285,8 @@ setup_args = dict(
     cmdclass        = {
         'build_py': js_prerelease(build_py),
         'sdist': js_prerelease(sdist, strict=True),
-        'jsdeps': NPM
+        'jsdeps': NPM,
+        'fetch_notebook': FetchNotebook,
     },
 )
 
