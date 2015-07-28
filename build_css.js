@@ -23,10 +23,7 @@ function run(cmd) {
 }
 
 run(['lessc',
-    '--include-path=' + [
-        './less_include/notebook/notebook/static',
-        './less_include',
-        ].join(path.delimiter),
+    '--include-path=./less_include',
     source,
     css_destination,
 ]);
