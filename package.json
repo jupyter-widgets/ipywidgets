@@ -9,13 +9,13 @@
     "url": "https://github.com/ipython/ipywidgets.git"
   },
   "scripts": {
-    "build": "npm run bower && npm run css && npm run buildtests",
+    "build": "npm run css && npm run buildtests",
     "bower": "bower install",
     "precss": "rimraf ./ipywidgets/static/widgets/css/",
     "css": "node build_css.js",
     "prebuildtests": "rimraf ./ipywidgets/tests/bin/tests",
     "buildtests": "tsc ./ipywidgets/tests/**/*.ts --outDir ./ipywidgets/tests/bin -d -m commonjs -t ES5",
-    "postinstall": "npm run build"
+    "postinstall": "npm run bower"
   },
   "devDependencies": {
     "bower": "*",
