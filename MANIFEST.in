@@ -2,6 +2,8 @@ include COPYING.md
 include CONTRIBUTING.md
 include README.md
 include package.json
+include bower.json
+include .bowerrc
 include build_css.js
 
 # Documentation

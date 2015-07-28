@@ -1,0 +1,8 @@
+{
+  "name": "ipywidget-less-deps",
+  "version": "0.0.1",
+  "dependencies": {
+    "bootstrap": "components/bootstrap#~3.3",
+    "font-awesome": "components/font-awesome#~4.2.0"
+  }
+}

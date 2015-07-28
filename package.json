@@ -1,15 +1,16 @@
 {
   "name": "ipython-widget-deps",
   "version": "4.0.0",
-  "description": "IPython widget nodejs dependencies",
+  "description": "IPython widget nodejs build dependencies",
   "author": "IPython Developers",
   "license": "BSD",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ipython/ipython_widget.git"
+    "url": "https://github.com/ipython/ipywidgets.git"
   },
   "scripts": {
-    "build": "npm run css && npm run buildtests",
+    "build": "npm run bower && npm run css && npm run buildtests",
+    "bower": "bower install",
     "precss": "rimraf ./ipywidgets/static/widgets/css/",
     "css": "node build_css.js",
     "prebuildtests": "rimraf ./ipywidgets/tests/bin/tests",
@@ -17,10 +18,11 @@
     "postinstall": "npm run build"
   },
   "devDependencies": {
+    "bower": "*",
+    "clean-css": "*",
     "less": "~2",
-    "typescript": "~1.5.0-beta",
     "rimraf": "^2.4.1",
     "spawn-sync": "*",
-    "clean-css": "*"
+    "typescript": "~1.5.0-beta"
   }
 }
