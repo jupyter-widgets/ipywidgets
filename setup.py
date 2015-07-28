@@ -251,7 +251,7 @@ for d, _, _ in os.walk(pjoin(here, name)):
         packages.append(d[len(here)+1:].replace(os.path.sep, '.'))
 
 package_data = {
-    'ipywidgets': ['static/*/*/*.*', 'tests/**/*.js'],
+    'ipywidgets': ['static/*/*/*.*', 'tests/bin/*.js', 'tests/bin/*/*.js'],
 }
 
 version_ns = {}
