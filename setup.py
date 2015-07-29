@@ -27,16 +27,27 @@ PY3 = (sys.version_info[0] >= 3)
 # get on with it
 #-----------------------------------------------------------------------------
 
+import errno
+import os
+import shutil
 from distutils import log
 from distutils.core import setup, Command
 from distutils.command.build_py import build_py
 from distutils.command.sdist import sdist
 from glob import glob
-import os
 from os.path import join as pjoin
 from subprocess import check_call
+from zipfile import ZipFile
+
+try:
+    from urllib.request import urlopen
+except ImportError:
+    from urllib2 import urlopen
+
 
 repo_root = os.path.dirname(os.path.abspath(__file__))
+is_repo = os.path.exists(pjoin(repo_root, '.git'))
+
 npm_path = os.pathsep.join([
     pjoin(repo_root, 'node_modules', '.bin'),
     os.environ.get("PATH", os.defpath),
@@ -117,16 +128,25 @@ def js_prerelease(command, strict=False):
     class DecoratedCommand(command):
         def run(self):
             jsdeps = self.distribution.get_command_obj('jsdeps')
+            if not is_repo and all(os.path.exists(t) for t in jsdeps.targets):
+                # sdist, nothing to do
+                command.run(self)
+                return
+            
             try:
                 self.distribution.run_command('jsdeps')
             except Exception as e:
-                if strict:
+                missing = [t for t in jsdeps.targets if not os.path.exists(t)]
+                if strict or missing:
                     log.warn("rebuilding js and css failed")
+                    if missing:
+                        log.error("missing files: %s" % missing)
                     raise e
                 else:
                     log.warn("rebuilding js and css failed (not a problem)")
                     log.warn(str(e))
             command.run(self)
+            update_package_data(self.distribution)
     return DecoratedCommand
 
 def update_package_data(distribution):
@@ -136,17 +156,64 @@ def update_package_data(distribution):
     # re-init build_py options which load package_data
     build_py.finalize_options()
 
+class FetchNotebook(Command):
+    description = "Fetch Notebook source, needed for LESS sources"
+
+    user_options = []
+    
+    def initialize_options(self):
+        pass
+    
+    def finalize_options(self):
+        pass
+    
+    # FIXME: update url to 4.0 when notebook is released
+    url = "https://github.com/jupyter/notebook/archive/master.zip"
+    
+    def run(self):
+        nb_dir = pjoin('less_include', 'notebook')
+        nb_zip = pjoin('less_include', 'notebook.zip')
+        if os.path.exists(nb_dir):
+            return
+        try:
+            os.mkdir('less_include')
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise
+        if not os.path.exists(nb_zip):
+            log.info("downloading %s" % self.url)
+            r = urlopen(self.url)
+            with open(nb_zip, 'wb') as f:
+                for chunk in r:
+                    f.write(chunk)
+        log.info("unzipping notebook")
+        zf = ZipFile(nb_zip)
+        if os.path.exists('notebook-tmp'):
+            shutil.rmtree('notebook-tmp')
+        zf.extractall('notebook-tmp')
+        d = glob(pjoin('notebook-tmp', '*'))[0]
+        shutil.move(d, nb_dir)
+        os.rmdir('notebook-tmp')
+    
+
 class NPM(Command):
     description = "install package,json dependencies using npm"
 
+    user_options = []
+    
     node_modules = pjoin(repo_root, 'node_modules')
+
+    targets = [
+        pjoin(repo_root, 'ipywidgets', 'static', 'widgets', 'css', 'widgets.min.css'),
+        pjoin(repo_root, 'ipywidgets', 'tests', 'bin'),
+    ]
 
     def initialize_options(self):
         pass
 
     def finalize_options(self):
         pass
-        
+
     def should_run_npm(self):
         if not which('npm'):
             print("npm unavailable", file=sys.stderr)
@@ -154,8 +221,9 @@ class NPM(Command):
         if not os.path.exists(self.node_modules):
             return True
         return mtime(self.node_modules) < mtime(pjoin(repo_root, 'package.json'))
-
+    
     def run(self):
+        self.distribution.run_command('fetch_notebook')
         if self.should_run_npm():
             print("installing build dependencies with npm")
             check_call(['npm', 'install'], cwd=repo_root)
@@ -163,6 +231,12 @@ class NPM(Command):
 
         env = os.environ.copy()
         env['PATH'] = npm_path
+        check_call(['npm', 'run', 'build'])
+        
+        for t in self.targets:
+            if not os.path.exists(t):
+                raise ValueError("Missing file: %s" % t)
+        
 
         # update package data in case this created new files
         update_package_data(self.distribution)
@@ -177,8 +251,7 @@ for d, _, _ in os.walk(pjoin(here, name)):
         packages.append(d[len(here)+1:].replace(os.path.sep, '.'))
 
 package_data = {
-    'ipywidgets': ['static/*/*/*.*'],
-    'ipywidgets.tests': ['*.js'],
+    'ipywidgets': ['static/*/*/*.*', 'tests/bin/*.js', 'tests/bin/*/*.js'],
 }
 
 version_ns = {}
@@ -212,7 +285,8 @@ setup_args = dict(
     cmdclass        = {
         'build_py': js_prerelease(build_py),
         'sdist': js_prerelease(sdist, strict=True),
-        'jsdeps': NPM
+        'jsdeps': NPM,
+        'fetch_notebook': FetchNotebook,
     },
 )
 
