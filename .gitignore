@@ -6,7 +6,9 @@ docs/man/*.gz
 docs/source/api/generated
 docs/gh-pages
 ipywidgets/static/components
-ipywidgets/static/widgets/css/*.min.css*
+ipywidgets/static/widgets/css
+ipywidgets/tests/bin
+less_include
 node_modules
 *.py[co]
 __pycache__
@@ -20,4 +22,3 @@ __pycache__
 .#*
 .coverage
 .xunit.xml
-bin

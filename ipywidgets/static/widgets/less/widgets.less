@@ -6,11 +6,9 @@
 @import "/components/font-awesome/less/variables.less";
 
 // import variables, mixins from Notebook
-@import "/base/less/variables.less";
-@import "/base/less/mixins.less";
-@import "/base/less/flexbox.less";
-
-@import "/notebook/less/variables.less";
+// layout mixins
+@import "./flexbox.less";
+@import "./mixins.less";
 
 @widget-width: 350px;
 @widget-width-short: 150px;
@@ -58,7 +56,6 @@
         content: @fa-var-chain-broken;
         font-family: 'FontAwesome';
         color: @brand-danger;
-        font-size: @notebook_font_size;
         top: 3px;
         padding: 3px;
     }
@@ -133,7 +130,6 @@
         .ui-slider-range {
             height     : 12px;
             margin-top : -4px;
-            background : @page-backdrop-color; 
         }
     }
 }
@@ -178,7 +174,6 @@
         .ui-slider-range {
             width       : 12px;
             margin-left : -1px;
-            background  : @page-backdrop-color; 
         }
     }
 }
