@@ -41,7 +41,12 @@ define([
 
         remove: function() {
             ProxyView.__super__.remove.apply(this, arguments);
-            this.child_promise.then(this.child.remove);
+            var that = this;
+            this.child_promise.then(function() {
+                if (that.child) {
+                    that.child.remove();
+                }
+            });
         },
 
         set_child: function(value) {
@@ -79,6 +84,7 @@ define([
 
         update_selector: function(model, selector) {
             this.$box = selector ? $(selector) : this.$el;
+            this.set_child(this.model.get("child"));
         },
     });
 
