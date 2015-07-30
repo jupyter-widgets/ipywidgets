@@ -13,9 +13,9 @@ from traitlets import (Unicode, CFloat, Bool, CaselessStrEnum,
 
 
 class _Float(DOMWidget):
-    value = CFloat(0.0, help="Float value", sync=True)
-    disabled = Bool(False, help="Enable or disable user changes", sync=True)
-    description = Unicode(help="Description of the value this widget represents", sync=True)
+    value = CFloat(0.0, help="Float value").tag(sync=True)
+    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
+    description = Unicode(help="Description of the value this widget represents").tag(sync=True)
 
     def __init__(self, value=None, **kwargs):
         if value is not None:
@@ -24,9 +24,9 @@ class _Float(DOMWidget):
 
 
 class _BoundedFloat(_Float):
-    max = CFloat(100.0, help="Max value", sync=True)
-    min = CFloat(0.0, help="Min value", sync=True)
-    step = CFloat(0.1, help="Minimum step to increment the value (ignored by some views)", sync=True)
+    max = CFloat(100.0, help="Max value").tag(sync=True)
+    min = CFloat(0.0, help="Min value").tag(sync=True)
+    step = CFloat(0.1, help="Minimum step to increment the value (ignored by some views)").tag(sync=True)
 
     def __init__(self, *pargs, **kwargs):
         """Constructor"""
@@ -69,7 +69,7 @@ class FloatText(_Float):
 	color : str Unicode color code (eg. '#C13535'), optional
 	    color of the value displayed
     """
-    _view_name = Unicode('FloatTextView', sync=True)
+    _view_name = Unicode('FloatTextView').tag(sync=True)
 
 
 @register('IPython.BoundedFloatText')
@@ -90,7 +90,7 @@ class BoundedFloatText(_BoundedFloat):
 	color : str Unicode color code (eg. '#C13535'), optional
 	    color of the value displayed   
     """
-    _view_name = Unicode('FloatTextView', sync=True)
+    _view_name = Unicode('FloatTextView').tag(sync=True)
 
 
 @register('IPython.FloatSlider')
@@ -118,12 +118,12 @@ class FloatSlider(_BoundedFloat):
 	color : str Unicode color code (eg. '#C13535'), optional
 	    color of the value displayed (if readout == True)
     """
-    _view_name = Unicode('FloatSliderView', sync=True)
+    _view_name = Unicode('FloatSliderView').tag(sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'], 
-        default_value='horizontal', help="Vertical or horizontal.", sync=True)
-    _range = Bool(False, help="Display a range selector", sync=True)
-    readout = Bool(True, help="Display the current value of the slider next to it.", sync=True)
-    slider_color = Color(None, allow_none=True, sync=True)
+        default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
+    _range = Bool(False, help="Display a range selector").tag(sync=True)
+    readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
+    slider_color = Color(None, allow_none=True).tag(sync=True)
 
 
 @register('IPython.FloatProgress')
@@ -146,18 +146,18 @@ class FloatProgress(_BoundedFloat):
 	color of the progress bar, default is '' (blue)
 	colors are: 'success'-green, 'info'-light blue, 'warning'-orange, 'danger'-red
 """
-    _view_name = Unicode('ProgressView', sync=True)
+    _view_name = Unicode('ProgressView').tag(sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'], 
-        default_value='horizontal', help="Vertical or horizontal.", sync=True)
+        default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
 
     bar_style = CaselessStrEnum(
         values=['success', 'info', 'warning', 'danger', ''], 
-        default_value='', allow_none=True, sync=True, help="""Use a
-        predefined styling for the progess bar.""")
+        default_value='', allow_none=True, help="""Use a
+        predefined styling for the progess bar.""").tag(sync=True)
 
 
 class _FloatRange(_Float):
-    value = Tuple(CFloat(), CFloat(), default_value=(0.0, 1.0), help="Tuple of (lower, upper) bounds", sync=True)
+    value = Tuple(CFloat(), CFloat(), default_value=(0.0, 1.0), help="Tuple of (lower, upper) bounds").tag(sync=True)
     lower = CFloat(0.0, help="Lower bound", sync=False)
     upper = CFloat(1.0, help="Upper bound", sync=False)
     
@@ -189,9 +189,9 @@ class _FloatRange(_Float):
             self.value = (self.value[0], new)
 
 class _BoundedFloatRange(_FloatRange):
-    step = CFloat(1.0, help="Minimum step that the value can take (ignored by some views)", sync=True)
-    max = CFloat(100.0, help="Max value", sync=True)
-    min = CFloat(0.0, help="Min value", sync=True)
+    step = CFloat(1.0, help="Minimum step that the value can take (ignored by some views)").tag(sync=True)
+    max = CFloat(100.0, help="Max value").tag(sync=True)
+    min = CFloat(0.0, help="Min value").tag(sync=True)
     
     def __init__(self, *pargs, **kwargs):
         any_value_given = 'value' in kwargs or 'upper' in kwargs or 'lower' in kwargs
@@ -274,9 +274,9 @@ class FloatRangeSlider(_BoundedFloatRange):
 	color : str Unicode color code (eg. '#C13535'), optional
 	    color of the value displayed (if readout == True)
     """
-    _view_name = Unicode('FloatSliderView', sync=True)
+    _view_name = Unicode('FloatSliderView').tag(sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'], 
-        default_value='horizontal', help="Vertical or horizontal.", sync=True)
-    _range = Bool(True, help="Display a range selector", sync=True)
-    readout = Bool(True, help="Display the current value of the slider next to it.", sync=True)
-    slider_color = Color(None, allow_none=True, sync=True)
+        default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
+    _range = Bool(True, help="Display a range selector").tag(sync=True)
+    readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
+    slider_color = Color(None, allow_none=True).tag(sync=True)
