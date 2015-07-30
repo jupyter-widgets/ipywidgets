@@ -75,9 +75,9 @@ define([
         },
     });
 
-    var PlaceView = ProxyView.extend({
+    var PlaceProxyView = ProxyView.extend({
         initialize: function() {
-            PlaceView.__super__.initialize.apply(this, arguments);
+            PlaceProxyView.__super__.initialize.apply(this, arguments);
             this.update_selector(this.model, this.model.get("selector"));
             this.listenTo(this.model, "change:selector", this.update_selector);
         },
@@ -226,6 +226,6 @@ define([
         BoxView: BoxView,
         FlexBoxView: FlexBoxView,
         ProxyView: ProxyView,
-        PlaceView: PlaceView,
+        PlaceProxyView: PlaceProxyView,
     };
 });
