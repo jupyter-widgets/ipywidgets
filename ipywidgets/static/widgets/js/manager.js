@@ -294,6 +294,22 @@ define([
 
     WidgetManager.prototype.create_model = function (options) {
         /**
+         * For backward compatibility. Custom widgets may be relying on the fact
+         * that create_model was creating a comm if none was provided in options.
+         * Unlike the old version of create_model, if no comm is passed,
+         * options.model_id is used to create the new comm.
+         */
+        console.warn('WidgetManager.create_model is deprecated. Use WidgetManager.new_model');
+        if (!options.comm) {
+            options.comm = this.comm_manager.new_comm('ipython.widget',
+                                                      {'widget_class': options.widget_class},
+                                                       options.model_id);
+        }
+        return this.new_model(options);
+    }
+
+    WidgetManager.prototype.new_model = function (options) {
+        /**
          * Create and return a promise for a new widget model
          *
          * Minimally, one must provide the model_name and widget_class
@@ -302,7 +318,7 @@ define([
          * Example
          * --------
          * JS:
-         * IPython.notebook.kernel.widget_manager.create_model({
+         * IPython.notebook.kernel.widget_manager.new_model({
          *      model_name: 'WidgetModel',
          *      widget_class: 'ipywidgets.IntSlider'
          *  })
@@ -320,19 +336,19 @@ define([
          *      widget_class: (optional) string
          *          Target name of the widget in the back-end.
          *      comm: (optional) Comm
+         *           Comm object associated with the widget.
+         *      model_id: (optional) string
+         *           If not provided, the comm id is used.
          *
-         * Create a comm if it wasn't provided.
+         * Either a comm or a model_id must be provided.
          */
-        var comm = options.comm;
-        if (!comm) {
-            comm = this.comm_manager.new_comm('ipython.widget', {'widget_class': options.widget_class});
-        }
-
         var that = this;
-        var model_id = comm.comm_id;
-        var model_promise =  utils.load_class(options.model_name, options.model_module, WidgetManager._model_types)
+        var model_id = options.model_id || options.comm.comm_id;
+        var model_promise = utils.load_class(options.model_name,
+                                             options.model_module,
+                                             WidgetManager._model_types)
             .then(function(ModelType) {
-                var widget_model = new ModelType(that, model_id, comm);
+                var widget_model = new ModelType(that, model_id, options.comm);
                 widget_model.once('comm:close', function () {
                     delete that._models[model_id];
                 });
@@ -423,30 +439,34 @@ define([
         return this._get_connected_kernel().then(function(kernel) {
 
             // Recreate all the widget models for the given notebook state.
-            var all_models = Promise.all(_.map(Object.keys(state), function (model_id) {
-                // Recreate a comm using the widget's model id (model_id == comm_id).
-                var new_comm = new comm.Comm(kernel.widget_manager.comm_target_name, model_id);
-                kernel.comm_manager.register_comm(new_comm);
-
-                // Create the model using the recreated comm.  When the model is
-                // created we don't know yet if the comm is valid so set_comm_live
-                // false.  Once we receive the first state push from the back-end
-                // we know the comm is alive.
-                return kernel.widget_manager.create_model({
-                    comm: new_comm,
-                    model_name: state[model_id].model_name,
-                    model_module: state[model_id].model_module,
-                }).then(function(model) {
-                    model.set_comm_live(false);
-                    return model._deserialize_state(state[model.id].state).then(function(state) {
-                        model.set_state(state);
-                        return model.request_state().then(function() {
-                            model.set_comm_live(true);
-                            return model;
+            var all_models = that._get_comm_info(kernel).then(function(live_comms) {
+                return Promise.all(_.map(Object.keys(state), function (model_id) {
+                    if (live_comms.hasOwnProperty(model_id)) {  // live comm
+                        var new_comm = new comm.Comm(kernel.widget_manager.comm_target_name, model_id);
+                        kernel.comm_manager.register_comm(new_comm);
+                        return kernel.widget_manager.new_model({
+                            comm: new_comm,
+                            model_name: state[model_id].model_name,
+                            model_module: state[model_id].model_module,
+                        }).then(function(model) {
+                            return model.request_state().then(function() {
+                                return model;
+                            });
                         });
-                    });
-                });
-            }, this));
+                    } else { // dead comm
+                        return kernel.widget_manager.new_model({
+                            model_id: model_id,
+                            model_name: state[model_id].model_name,
+                            model_module: state[model_id].model_module,
+                        }).then(function(model) {
+                            return model._deserialize_state(state[model_id].state).then(function(state) {
+                                model.set_state(state);
+                                return model;
+                            });
+                        });
+                    }
+                }));
+            });
 
             // Display all the views
             return all_models.then(function(models) {
@@ -477,6 +497,35 @@ define([
                     resolve(data.kernel);
                 });
             }
+        });
+    };
+
+    WidgetManager.prototype._get_comm_info = function(kernel) {
+        /**
+         * Gets a promise for the open comms in the backend
+         */
+
+        // Version using the comm_list_[request/reply] shell message.
+        /*var that = this;
+        return new Promise(function(resolve, reject) {
+             kernel.comm_info(function(msg) {
+                 resolve(msg['content']['comms']);
+             });
+        });*/
+
+        // Workaround for absence of comm_list_[request/reply] shell message.
+        // Create a new widget that gives the comm list and commits suicide.
+        var that = this;
+        return new Promise(function(resolve, reject) {
+            var comm = that.comm_manager.new_comm('ipython.widget',
+                                {'widget_class': 'ipywidgets.CommInfo'},
+                                'comm_info');
+            comm.on_msg(function(msg) {
+                var data = msg.content.data;
+                if (data.content && data.method === 'custom') {
+                    resolve(data.content.comms);
+                }
+            });
         });
     };
 
