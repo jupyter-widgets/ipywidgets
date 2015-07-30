@@ -19,7 +19,7 @@ base.tester
 
     // Try creating a widget from Javascript.
     this.evaluate(function() {
-        IPython.notebook.kernel.widget_manager.create_model({
+        IPython.notebook.kernel.widget_manager.new_widget({
             model_name: 'WidgetModel', 
             widget_class: 'ipywidgets.IntSlider'})
             .then(function(model) { 
