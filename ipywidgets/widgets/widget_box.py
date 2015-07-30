@@ -66,10 +66,10 @@ class Proxy(Widget):
             self.child._handle_displayed()
 
 
-@register('IPython.Place')
-class Place(Proxy):
+@register('IPython.PlaceProxy')
+class PlaceProxy(Proxy):
     """Renders the child widget at the specified selector."""
-    _view_name = Unicode('PlaceView', sync=True)
+    _view_name = Unicode('PlaceProxyView', sync=True)
     selector = Unicode(sync=True)
 
 
