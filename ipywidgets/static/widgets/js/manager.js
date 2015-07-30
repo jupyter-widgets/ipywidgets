@@ -292,21 +292,27 @@ define([
         }).catch(utils.reject("Couldn't create a model.", true));
     };
 
+    /**
+     * Deprecated, use `new_widget` instead.
+     */
     WidgetManager.prototype.create_model = function (options) {
-        /**
-         * For backward compatibility. Custom widgets may be relying on the fact
-         * that create_model was creating a comm if none was provided in options.
-         * Unlike the old version of create_model, if no comm is passed,
-         * options.model_id is used to create the new comm.
-         */
-        console.warn('WidgetManager.create_model is deprecated. Use WidgetManager.new_model');
+        console.warn('WidgetManager.create_model is deprecated. Use WidgetManager.new_widget');
+        return this.new_widget(options);
+    };
+
+    /**
+     * Create a comm and new widget model.
+     * @param  {Object} options - see new_model
+     * @return {Promise<WidgetModel>}
+     */
+    WidgetManager.prototype.new_widget = function (options) {
         if (!options.comm) {
             options.comm = this.comm_manager.new_comm('ipython.widget',
                                                       {'widget_class': options.widget_class},
                                                        options.model_id);
         }
         return this.new_model(options);
-    }
+    };
 
     WidgetManager.prototype.new_model = function (options) {
         /**
