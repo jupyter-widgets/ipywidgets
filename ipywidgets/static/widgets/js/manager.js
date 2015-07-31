@@ -313,9 +313,7 @@ define([
         }
         return this.new_model(options).then(function(model) {
             // Requesting the state to populate default values.
-            return model.request_state().then(function() {
-                return model;
-            });
+            return model.request_state();
         });
     };
 
@@ -460,9 +458,8 @@ define([
                             model_name: state[model_id].model_name,
                             model_module: state[model_id].model_module,
                         }).then(function(model) {
-                            return model.request_state().then(function() {
-                                return model;
-                            });
+                            // Request the state from the backend
+                            return model.request_state();
                         });
                     } else { // dead comm
                         return kernel.widget_manager.new_model({
