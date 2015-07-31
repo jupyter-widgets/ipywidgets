@@ -544,6 +544,9 @@ define([
               .addClass('widget-select-multiple');
             this.$listbox.attr('multiple', true)
               .on('change', $.proxy(this.handle_change, this));
+
+            // set selected labels *after* setting the listbox to be multiple selection
+            this.$listbox.val(this.model.get('selected_labels'));
             return this;
         },
 
