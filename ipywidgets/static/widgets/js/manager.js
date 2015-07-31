@@ -280,7 +280,7 @@ define([
         /**
          * Handle when a comm is opened.
          */
-        return this.create_model({
+        return this.new_model({
             model_name: msg.content.data._model_name,
             model_module: msg.content.data._model_module,
             comm: comm,
@@ -311,7 +311,12 @@ define([
                                                       {'widget_class': options.widget_class},
                                                        options.model_id);
         }
-        return this.new_model(options);
+        return this.new_model(options).then(function(model) {
+            // Requesting the state to populate default values.
+            return model.request_state().then(function() {
+                return model;
+            });
+        });
     };
 
     WidgetManager.prototype.new_model = function (options) {
