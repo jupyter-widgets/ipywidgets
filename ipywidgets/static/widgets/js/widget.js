@@ -115,13 +115,14 @@ define(["nbextensions/widgets/widgets/js/manager",
                 method: 'request_state'
             }, callbacks || this.widget_manager.callbacks());
 
-            // Promise that is resolved when a state is received
+            // Promise that resolves to the model when the state is received
             // from the back-end.
             var that = this;
-            var received_state = new Promise(function(resolve) {
+            return (new Promise(function(resolve) {
                 that._resolve_received_state[msg_id] = resolve;
+            })).then(function () {
+                return that;
             });
-            return received_state;
         },
 
         set_comm_live: function(live) {
