@@ -178,9 +178,10 @@ define([
             } 
             this.$el.text(readout);
             $('<i class="fa"></i>').prependTo(this.$el).addClass(icon);
+            var that = this;
             this.displayed.then(function() {
-                this.$el.css("color", color);
-            }, this);
+                that.$el.css("color", color);
+            });
         }
     });
 
