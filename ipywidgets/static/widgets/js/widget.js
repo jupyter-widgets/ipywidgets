@@ -118,10 +118,8 @@ define(["nbextensions/widgets/widgets/js/manager",
             // Promise that resolves to the model when the state is received
             // from the back-end.
             var that = this;
-            return (new Promise(function(resolve) {
+            return new Promise(function(resolve) {
                 that._resolve_received_state[msg_id] = resolve;
-            })).then(function () {
-                return that;
             });
         },
 
@@ -205,7 +203,7 @@ define(["nbextensions/widgets/widgets/js/manager",
                         .then(function() {
                             var parent_id = msg.parent_header.msg_id;
                             if (that._resolve_received_state[parent_id] !== undefined) {
-                                that._resolve_received_state[parent_id].call();
+                                that._resolve_received_state[parent_id](that);
                                 delete that._resolve_received_state[parent_id];
                             }
                         }).catch(utils.reject("Couldn't resolve state request promise", true));
