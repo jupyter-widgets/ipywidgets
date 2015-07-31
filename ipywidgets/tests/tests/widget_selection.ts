@@ -46,6 +46,7 @@ base.tester
 
 .cell(`
     options=["` + selection_values + `"[i] for i in range(4)]
+    options.append('  spaces  ')
     selection = [widgets.Dropdown(options=options),
         widgets.ToggleButtons(options=options),
         widgets.RadioButtons(options=options),
@@ -119,6 +120,13 @@ base.tester
         .wait_for_idle()
         .then(function () {
             this.test.assert(verify_selection(selection_index, this, 2), 'List selection updated view states correctly.');
+
+            // Verify that selecting the option with spaces works
+            this.notebook.cell_element_function(selection_index, list_selector + ' option:nth-child(5)', 'click');
+        })
+        .wait_for_idle()
+        .then(function () {
+            this.test.assert(verify_selection(selection_index, this, 4), 'List selection of space element updated view states correctly.');
 
             // Verify that selecting a multibutton option updates all of the others.
             // Bootstrap3 has changed the toggle button group behavior.  Two clicks

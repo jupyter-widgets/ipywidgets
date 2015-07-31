@@ -461,9 +461,9 @@ define([
                    var item_query = 'option[data-value="' + encodeURIComponent(item) + '"]';
                     if (that.$listbox.find(item_query).length === 0) {
                         $('<option />')
-                            .text(item)
+                            .text(item.replace(/ /g, '\xa0')) // replace spaces with &nbsp; for correct rendering
                             .attr('data-value', encodeURIComponent(item))
-                            .attr('selected_label', item)
+                            .val(item)
                             .on("click", $.proxy(that.handle_click, that))
                             .appendTo(that.$listbox);
                     } 
@@ -478,7 +478,7 @@ define([
 
                 // Remove items that no longer exist.
                 this.$listbox.find('option').each(function(i, obj) {
-                    var value = $(obj).text();
+                    var value = $(obj).val();
                     var found = false;
                     _.each(items, function(item, index) {
                         if (item == value) {
