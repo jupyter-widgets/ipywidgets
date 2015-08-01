@@ -7,7 +7,7 @@ from .widgets import *
 def find_static_assets():
     """Return the path to static assets for widgets (js, css)"""
     here = os.path.abspath(__file__)
-    return os.path.join(os.path.dirname(path), 'static')
+    return os.path.join(os.path.dirname(here), 'static')
 
 
 def load_ipython_extension(ip):
@@ -39,7 +39,7 @@ _handle_ipython()
 # Workaround for the absence of a comm_info_[request/reply] shell message
 class CommInfo(Widget):
     """CommInfo widgets are is typically instantiated by the front-end. As soon as it is instantiated, it sends the collection of valid comms, and kills itself. It is a workaround to the absence of comm_info shell message."""
-    
+
     def __init__(self, **kwargs):
         super(CommInfo, self).__init__(**kwargs)
         self.send(dict(comms={
