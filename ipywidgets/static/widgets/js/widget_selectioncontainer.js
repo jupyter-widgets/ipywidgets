@@ -62,7 +62,7 @@ define([
                 var accordian = that.containers[page_index];
                 if (accordian !== undefined) {
                     accordian
-                        .find('.panel-heading')
+                        .children('.panel-heading')
                         .find('.accordion-toggle')
                         .text(title);
                 }
