@@ -1,5 +1,5 @@
 define([
-    "widgets/js/widget", 
+    "nbextensions/widgets/widgets/js/widget", 
     "base/js/utils", 
 ], function(widget, utils) {
     'use strict';
@@ -191,28 +191,24 @@ define([
         _create_button_model: function(index) {
             /* Creates a gamepad button widget.
              */
-            return this.widget_manager.create_model({
+            return this.widget_manager.new_widget({
                  model_name: 'WidgetModel', 
                  widget_class: 'gamepad.gamepad.Button',
             }).then(function(model) {
-                 return model.request_state().then(function() {
-                     model.set('index', index);
-                     return model;
-                 });
+                 model.set('index', index);
+                 return model;
             });
         },
 
         _create_axis_model: function(index) {
             /* Creates a gamepad axis widget.
              */
-            return this.widget_manager.create_model({
+            return this.widget_manager.new_widget({
                  model_name: 'WidgetModel', 
                  widget_class: 'gamepad.gamepad.Axis',
             }).then(function(model) {
-                 return model.request_state().then(function() {
-                     model.set('index', index);
-                     return model;
-                 });
+                 model.set('index', index);
+                 return model;
             });
         },
 
@@ -275,7 +271,7 @@ define([
             that.$button_box.append(dummy);
             return this.create_child_view(model).then(function(view) {
                 dummy.replaceWith(view.el);
-                that.after_displayed(function() {
+                that.displayed.then(function() {
                     view.trigger('displayed');
                 });
                 return view;
@@ -288,7 +284,7 @@ define([
             that.$axis_box.append(dummy);
             return this.create_child_view(model).then(function(view) {
                 dummy.replaceWith(view.el);
-                that.after_displayed(function() {
+                that.displayed.then(function() {
                     view.trigger('displayed');
                 });
                 return view;

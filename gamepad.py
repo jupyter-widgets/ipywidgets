@@ -1,10 +1,5 @@
-try:  # IPython/Jupyter 4.x
-    from ipywidgets import Widget, widget_serialization
-    from traitlets import Bool, Int, Float, Unicode, List, Instance
-except ImportError:  # IPython 3.x
-    from IPython.html.widgets import Widget
-    from IPython.utils.traitlets import Bool, Int, Float, Unicode, List, Instance
-    widget_serialization = {}
+from ipywidgets import Widget, widget_serialization
+from traitlets import Bool, Int, Float, Unicode, List, Instance
 
 
 class Button(Widget):
