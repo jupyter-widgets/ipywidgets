@@ -86,10 +86,12 @@ define([
         initialize: function() {
             if (navigator.getGamepads === void 0) {
                 // Checks if the browser supports the gamepad API
-                console.error('This browser does not support gamepads.');
+                this.readout = 'This browser does not support gamepads.';
+                console.error(this.readout);
             } else {
                 // Start the wait loop, and listen to updates of the only
                 // user-provided attribute, the gamepad index.
+                this.readout = 'Connect gamepad and press any button.';
                 this.wait_loop();
             }
         },
@@ -264,8 +266,7 @@ define([
         },
 
         update_label: function() {
-            this.$label.text(this.model.get('name') ||
-                             'Connect gamepad and press any button');
+            this.$label.text(this.model.get('name') || this.model.readout);
         }, 
 
         add_button: function(model) {
