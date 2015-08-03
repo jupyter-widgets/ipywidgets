@@ -280,7 +280,7 @@ define([
         /**
          * Handle when a comm is opened.
          */
-        return this.create_model({
+        return this.new_model({
             model_name: msg.content.data._model_name,
             model_module: msg.content.data._model_module,
             comm: comm,
@@ -292,21 +292,30 @@ define([
         }).catch(utils.reject("Couldn't create a model.", true));
     };
 
+    /**
+     * Deprecated, use `new_widget` instead.
+     */
     WidgetManager.prototype.create_model = function (options) {
-        /**
-         * For backward compatibility. Custom widgets may be relying on the fact
-         * that create_model was creating a comm if none was provided in options.
-         * Unlike the old version of create_model, if no comm is passed,
-         * options.model_id is used to create the new comm.
-         */
-        console.warn('WidgetManager.create_model is deprecated. Use WidgetManager.new_model');
+        console.warn('WidgetManager.create_model is deprecated. Use WidgetManager.new_widget');
+        return this.new_widget(options);
+    };
+
+    /**
+     * Create a comm and new widget model.
+     * @param  {Object} options - see new_model
+     * @return {Promise<WidgetModel>}
+     */
+    WidgetManager.prototype.new_widget = function (options) {
         if (!options.comm) {
             options.comm = this.comm_manager.new_comm('ipython.widget',
                                                       {'widget_class': options.widget_class},
                                                        options.model_id);
         }
-        return this.new_model(options);
-    }
+        return this.new_model(options).then(function(model) {
+            // Requesting the state to populate default values.
+            return model.request_state();
+        });
+    };
 
     WidgetManager.prototype.new_model = function (options) {
         /**
@@ -449,9 +458,8 @@ define([
                             model_name: state[model_id].model_name,
                             model_module: state[model_id].model_module,
                         }).then(function(model) {
-                            return model.request_state().then(function() {
-                                return model;
-                            });
+                            // Request the state from the backend
+                            return model.request_state();
                         });
                     } else { // dead comm
                         return kernel.widget_manager.new_model({
