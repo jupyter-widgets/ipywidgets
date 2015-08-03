@@ -77,9 +77,9 @@ define([
             if (options === undefined || options.updated_view != this) {
                 var old_index = this.model.previous('selected_index');
                 var new_index = this.model.get('selected_index');
-                this.containers[old_index].find('.panel-collapse').collapse('hide');
+                this.containers[old_index].children('.panel-collapse').collapse('hide');
                 if (0 <= new_index && new_index < this.containers.length) {
-                    this.containers[new_index].find('.panel-collapse').collapse('show');
+                    this.containers[new_index].children('.panel-collapse').collapse('show');
                 }
             }
         },
