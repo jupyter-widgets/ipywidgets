@@ -14,4 +14,7 @@ Interactive HTML widgets for Jupyter notebooks and the IPython kernel.
 Usage
 =====
 
-See the `example notebooks <https://github.com/ipython/ipywidgets/blob/v4.0.2/examples/Index.ipynb>`_.
+.. code-block:: python
+
+    from ipywidgets import IntSlider
+    IntSlider()
