@@ -1,3 +1,6 @@
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
+
 define([
     "nbextensions/widgets/widgets/js/widget", 
     "base/js/utils", 
@@ -77,8 +80,8 @@ define([
 
     });
 
-    var Gamepad = widget.WidgetModel.extend({
-        /* The Gamepad model. */
+    var Controller = widget.WidgetModel.extend({
+        /* The Controller model. */
 
         initialize: function() {
             if (navigator.getGamepads === void 0) {
@@ -193,7 +196,7 @@ define([
              */
             return this.widget_manager.new_widget({
                  model_name: 'WidgetModel', 
-                 widget_class: 'gamepad.gamepad.Button',
+                 widget_class: 'ipywidgets.widgets.widget_controller.Button',
             }).then(function(model) {
                  model.set('index', index);
                  return model;
@@ -205,7 +208,7 @@ define([
              */
             return this.widget_manager.new_widget({
                  model_name: 'WidgetModel', 
-                 widget_class: 'gamepad.gamepad.Axis',
+                 widget_class: 'ipywidgets.widgets.widget_controller.Axis',
             }).then(function(model) {
                  model.set('index', index);
                  return model;
@@ -221,11 +224,11 @@ define([
 
     });
 
-    var GamepadView = widget.DOMWidgetView.extend({
+    var ControllerView = widget.DOMWidgetView.extend({
         /* A simple view for a gamepad. */
 
         initialize: function() {
-            GamepadView.__super__.initialize.apply(this, arguments);
+            ControllerView.__super__.initialize.apply(this, arguments);
 
             this.button_views = new widget.ViewList(this.add_button, null, this);
             this.listenTo(this.model, 'change:buttons', function(model, value) {
@@ -292,7 +295,7 @@ define([
         },
  
         remove: function() {
-            GamepadView.__super__.remove.apply(this, arguments);
+            ControllerView.__super__.remove.apply(this, arguments);
             this.button_views.remove();
             this.axis_views.remove();
         },
@@ -300,9 +303,9 @@ define([
     });
 
     return {
-        Button: Button,
-        Axis: Axis,
-        Gamepad: Gamepad,
-        GamepadView: GamepadView,
+        ControllerButton: Button,
+        ControllerAxis: Axis,
+        Controller: Controller,
+        ControllerView: ControllerView,
     };
 });

@@ -15,6 +15,7 @@ define([
     "nbextensions/widgets/widgets/js/widget_selection",
     "nbextensions/widgets/widgets/js/widget_selectioncontainer",
     "nbextensions/widgets/widgets/js/widget_string",
+    "nbextensions/widgets/widgets/js/widget_controller",
 ], function(widgetmanager, widget) {
     // Register all of the loaded models and views with the widget manager.
     for (var i = 2; i < arguments.length; i++) {

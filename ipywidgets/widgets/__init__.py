@@ -12,5 +12,6 @@ from .widget_output import Output
 from .widget_selection import RadioButtons, ToggleButtons, Dropdown, Select, SelectMultiple
 from .widget_selectioncontainer import Tab, Accordion
 from .widget_string import HTML, Latex, Text, Textarea
+from .widget_controller import Controller 
 from .interaction import interact, interactive, fixed, interact_manual
 from .widget_link import jslink, jsdlink
