@@ -29,7 +29,7 @@ define([
                 })
                 .appendTo(this.$support);
             this.$label = $('<div />')
-                .text(this.model.get('index'))
+                .text(this.model.get('description'))
                 .css('text-align', 'center')
                 .appendTo(this.$el);
             this.update();
@@ -68,7 +68,7 @@ define([
                 })
                 .appendTo(this.$support);
             this.$label = $('<div />')
-                .text(this.model.get('index'))
+                .text(this.model.get('description'))
                 .css('text-align', 'center')
                 .appendTo(this.$el);
             this.update();
@@ -198,7 +198,7 @@ define([
                  model_name: 'WidgetModel', 
                  widget_class: 'ipywidgets.widgets.widget_controller.Button',
             }).then(function(model) {
-                 model.set('index', index);
+                 model.set('description', index);
                  return model;
             });
         },
@@ -210,7 +210,7 @@ define([
                  model_name: 'WidgetModel', 
                  widget_class: 'ipywidgets.widgets.widget_controller.Axis',
             }).then(function(model) {
-                 model.set('index', index);
+                 model.set('description', index);
                  return model;
             });
         },
