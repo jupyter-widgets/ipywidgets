@@ -642,15 +642,15 @@ define(["nbextensions/widgets/widgets/js/manager",
              */
             switch(value) {
                 case null: // python None
-                    if (this._old_display) {
+                    if (this._old_display !== undefined) {
                         this.el.style.display = this._old_display;
                     }
                     this.el.style.visibility = 'hidden'; break;
                 case false:
-                    this._old_display = this.el.style.display;
+                    this._old_display = this.el.style.display || '';
                     this.el.style.display = 'none'; break;
                 case true:
-                    if (this._old_display) {
+                    if (this._old_display !== undefined) {
                         this.el.style.display = this._old_display;
                     }
                     this.el.style.visibility = ''; break;
