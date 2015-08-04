@@ -9,6 +9,29 @@ from __future__ import print_function
 # the name of the package
 name = 'ipywidgets'
 
+LONG_DESCRIPTION = """
+.. image:: https://img.shields.io/pypi/v/ipywidgets.svg
+   :target: https://pypi.python.org/pypi/ipywidgets/
+   :alt: Version Number
+
+.. image:: https://img.shields.io/pypi/dm/ipywidgets.svg
+   :target: https://pypi.python.org/pypi/ipywidgets/
+   :alt: Number of PyPI downloads
+
+Interactive HTML Widgets
+========================
+
+Interactive HTML widgets for Jupyter notebooks and the IPython kernel.
+
+Usage
+=====
+
+.. code-block:: python
+
+    from ipywidgets import IntSlider
+    IntSlider()
+"""
+
 #-----------------------------------------------------------------------------
 # Minimal Python version sanity check
 #-----------------------------------------------------------------------------
@@ -219,6 +242,7 @@ setup_args = dict(
     packages        = packages,
     package_data    = package_data,
     description     = "IPython HTML widgets for Jupyter",
+    long_description = LONG_DESCRIPTION,
     author          = 'IPython Development Team',
     author_email    = 'ipython-dev@scipy.org',
     url             = 'http://ipython.org',
