@@ -62,7 +62,7 @@ define([
                 var accordian = that.containers[page_index];
                 if (accordian !== undefined) {
                     accordian
-                        .find('.panel-heading')
+                        .children('.panel-heading')
                         .find('.accordion-toggle')
                         .text(title);
                 }
@@ -77,9 +77,13 @@ define([
             if (options === undefined || options.updated_view != this) {
                 var old_index = this.model.previous('selected_index');
                 var new_index = this.model.get('selected_index');
-                this.containers[old_index].find('.panel-collapse').collapse('hide');
+                /* old_index can be out of bounds, this check avoids raising
+                   a (hrmless) javascript error. */
+                if (0 <= old_index && old_index < this.containers.length) {
+                    this.containers[old_index].children('.panel-collapse').collapse('hide');
+                }
                 if (0 <= new_index && new_index < this.containers.length) {
-                    this.containers[new_index].find('.panel-collapse').collapse('show');
+                    this.containers[new_index].children('.panel-collapse').collapse('show');
                 }
             }
         },
