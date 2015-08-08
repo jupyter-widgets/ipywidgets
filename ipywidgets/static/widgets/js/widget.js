@@ -107,12 +107,12 @@ define(["nbextensions/widgets/widgets/js/manager",
              * Request a state push from the back-end.
              */
             if (!this.comm) {
-                console.error("Could not request_state because comm doesn't exist!");
+                console.error("Could not request state because comm doesn't exist!");
                 return;
             }
 
             var msg_id = this.comm.send({
-                method: 'request_state'
+                method: 'state_request'
             }, callbacks || this.widget_manager.callbacks());
 
             // Promise that resolves to the model when the state is received
@@ -160,6 +160,7 @@ define(["nbextensions/widgets/widgets/js/manager",
             this.trigger('comm:close');
             this.close(true);
         },
+
         _deserialize_state: function(state) {
             /** 
              * Deserialize fields that have a custom serializer.
@@ -179,34 +180,45 @@ define(["nbextensions/widgets/widgets/js/manager",
             }
             return utils.resolve_promises_dict(deserialized);
         },
+
+        _handle_state_message: function(msg) {
+            /**
+             * Handle state_reply and update messages. 
+             */
+            var that = this;
+            this.state_change = this.state_change
+                .then(function() {
+                    var state = msg.content.data.state || {};
+                    var buffer_keys = msg.content.data.buffers || [];
+                    var buffers = msg.buffers || [];
+                    for (var i=0; i<buffer_keys.length; i++) {
+                        state[buffer_keys[i]] = buffers[i];
+                    }
+                    return that._deserialize_state(state); 
+                }).then(function(state) {
+                    that.set_state(state);
+                }).catch(utils.reject("Couldn't process message for model id '" + String(that.id) + "'", true))
+        },
+
         _handle_comm_msg: function (msg) {
             /**
              * Handle incoming comm msg.
              */
             var method = msg.content.data.method;
-            
             var that = this;
             switch (method) {
                 case 'update':
-                    this.state_change = this.state_change
-                        .then(function() {
-                            var state = msg.content.data.state || {};
-                            var buffer_keys = msg.content.data.buffers || [];
-                            var buffers = msg.buffers || [];
-                            for (var i=0; i<buffer_keys.length; i++) {
-                                state[buffer_keys[i]] = buffers[i];
-                            }
-                            return that._deserialize_state(state); 
-                        }).then(function(state) {
-                            that.set_state(state);
-                        }).catch(utils.reject("Couldn't process update msg for model id '" + String(that.id) + "'", true))
-                        .then(function() {
-                            var parent_id = msg.parent_header.msg_id;
-                            if (that._resolve_received_state[parent_id] !== undefined) {
-                                that._resolve_received_state[parent_id](that);
-                                delete that._resolve_received_state[parent_id];
-                            }
-                        }).catch(utils.reject("Couldn't resolve state request promise", true));
+                    this._handle_state_message(msg);
+                    break;
+                case 'state_reply':
+                    this._handle_state_message(msg);
+                    this.state_change = this.state_change.then(function() {
+                        var parent_id = msg.parent_header.msg_id;
+                        if (that._resolve_received_state[parent_id] !== undefined) {
+                            that._resolve_received_state[parent_id](that);
+                            delete that._resolve_received_state[parent_id];
+                        }
+                    }).catch(utils.reject("Couldn't resolve state request promise", true));
                     break;
                 case 'custom':
                     this.trigger('msg:custom', msg.content.data.content, msg.buffers);
