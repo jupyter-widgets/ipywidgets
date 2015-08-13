@@ -49,7 +49,7 @@ define([
         update: function(options) {
             this.update_titles();
             this.update_selected_index(options);
-            return TabView.__super__.update.apply(this);
+            return AccordionView.__super__.update.apply(this);
         },
 
         update_titles: function() {
