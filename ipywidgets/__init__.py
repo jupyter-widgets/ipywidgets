@@ -1,6 +1,7 @@
 import os
 
 from IPython import get_ipython
+from ._version import version_info, __version__
 from .widgets import *
 
 
