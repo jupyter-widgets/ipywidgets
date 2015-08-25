@@ -9,7 +9,7 @@ Represents an enumeration using a widget.
 from collections import OrderedDict
 from threading import Lock
 
-from .widget import DOMWidget, register
+from .widget import DOMWidget, register, CallbackDispatcher
 from traitlets import (
     Unicode, Bool, Any, Dict, TraitError, CaselessStrEnum, Tuple, List
 )
@@ -50,6 +50,7 @@ class _Selection(DOMWidget):
     def __init__(self, *args, **kwargs):
         self.value_lock = Lock()
         self.options_lock = Lock()
+        self._onchange_callbacks = CallbackDispatcher()
         self.equals = kwargs.pop('equals', lambda x, y: x == y)
         self.on_trait_change(self._options_readonly_changed, ['_options_dict', '_options_labels', '_options_values', '_options'])
         if 'options' in kwargs:
@@ -73,6 +74,19 @@ class _Selection(DOMWidget):
         
         # Value is already in the correct format.
         return x
+
+    def on_change(self, callback, remove=False):
+        """(Un)Register a callback to handle selection change.
+
+        Triggered when the selection changes.
+
+        Parameters
+        ----------
+        callback: callable
+            Will be called with exactly one argument: the Widget instance
+        remove: bool (optional)
+            Whether to unregister the callback"""
+        self._onchange_callbacks.register_callback(callback, remove=remove)
 
     def _options_changed(self, name, old, new):
         """Handles when the options tuple has been changed.
@@ -104,6 +118,7 @@ class _Selection(DOMWidget):
 
     def _value_changed(self, name, old, new):
         """Called when value has been changed"""
+        self._onchange_callbacks(self)
         if self.value_lock.acquire(False):
             try:
                 # Reverse dictionary lookup for the value name
