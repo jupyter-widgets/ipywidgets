@@ -213,7 +213,7 @@ define(["nbextensions/widgets/widgets/js/manager",
                     break;
                 case 'display':
                     this.state_change = this.state_change.then(function() {
-                        that.widget_manager.display_view(msg, that);
+                        that.widget_manager.display_model(msg, that);
                     }).catch(utils.reject('Could not process display view msg', true));
                     break;
             }
