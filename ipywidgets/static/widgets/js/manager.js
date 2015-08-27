@@ -53,9 +53,9 @@ define([
         options = options || {};
         options.root = true; // This element is being displayed not as a child of another.
         
-        return this.create_view(model, options).then((function(view) {
+        return this.create_view(model, options).then(_.bind(function(view) {
             return this.display_view(msg, view, options);
-        }).bind(this)).catch(utils.reject('Could not create view', true));
+        }, this)).catch(utils.reject('Could not create view', true));
     };
     
     ManagerBase.prototype.display_view = function(msg, view, options) {
@@ -366,7 +366,7 @@ define([
     // WidgetManager class
     //--------------------------------------------------------------------
     var WidgetManager = function (comm_manager, notebook) {
-        WidgetManager.apply(this, comm_manager, notebook);
+        ManagerBase.apply(this);
         WidgetManager._managers.push(this);
 
         // Attach a comm manager to the
@@ -375,7 +375,7 @@ define([
         this.comm_manager = comm_manager;
 
         // Register with the comm manager.
-        this.comm_manager.register_target(this.comm_target_name, _.bind(this.handle_comm_open, this));
+        this.comm_manager.register_target(this.comm_target_name, _.bind(this.handle_comm_open.bind,this));
 
         // Load the initial state of the widget manager if a load callback was
         // registered.
@@ -399,11 +399,27 @@ define([
             }
         });
     };
-    WidgetManager.prototype = Object.create(WidgetManager.prototype);
+    WidgetManager.prototype = Object.create(ManagerBase.prototype);
     
     WidgetManager._managers = []; /* List of widget managers */
     WidgetManager._load_callback = null;
     WidgetManager._save_callback = null;
+    
+    
+    WidgetManager.register_widget_model = function (model_name, model_type) {
+        /**
+         * Registers a widget model by name.
+         */
+        return ManagerBase.register_widget_model.apply(this, arguments);
+    };
+
+    WidgetManager.register_widget_view = function (view_name, view_type) {
+        /**
+         * Registers a widget view by name.
+         */
+        return ManagerBase.register_widget_view.apply(this, arguments);
+    };
+    
     WidgetManager.set_state_callbacks = function (load_callback, save_callback, options) {
         /**
          * Registers callbacks for widget state persistence.
@@ -503,7 +519,7 @@ define([
         } else {
             if (options.cell.widgetarea) {
                 var that = this;
-                return options.cell.widgetarea.display_widget_view(view).then(function(view) {
+                return options.cell.widgetarea.display_widget_view(Promise.resolve(view)).then(function(view) {
                     that._handle_display_view(view);
                     return view;
                 }).catch(utils.reject('Could not display view', true));
