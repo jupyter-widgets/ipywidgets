@@ -411,6 +411,22 @@ def test_call_interact():
     )
 
 @nt.with_setup(clear_display)
+def test_call_interact_on_trait_changed_none_return():
+    def foo(a='default'):
+        pass
+    with patch.object(interaction, 'display', record_display):
+        ifoo = interact(foo)
+    nt.assert_equal(len(displayed), 1)
+    w = displayed[0].children[0]
+    check_widget(w,
+        cls=widgets.Text,
+        value='default',
+    )
+    with patch.object(interaction, 'display', record_display):
+        w.value = 'called'
+    nt.assert_equal(len(displayed), 1)
+
+@nt.with_setup(clear_display)
 def test_call_interact_kwargs():
     def foo(a='default'):
         pass
@@ -444,8 +460,11 @@ def test_call_decorated_on_trait_change():
     nt.assert_equal(d['a'], 'hello')
     
     # test that setting trait values calls the function
-    w.value = 'called'
+    with patch.object(interaction, 'display', record_display):
+        w.value = 'called'
     nt.assert_equal(d['a'], 'called')
+    nt.assert_equal(len(displayed), 2)
+    nt.assert_equal(w.value, displayed[-1])
 
 @nt.with_setup(clear_display)
 def test_call_decorated_kwargs_on_trait_change():
@@ -468,8 +487,13 @@ def test_call_decorated_kwargs_on_trait_change():
     nt.assert_equal(d['a'], 'hello')
     
     # test that setting trait values calls the function
-    w.value = 'called'
+    with patch.object(interaction, 'display', record_display):
+        w.value = 'called'
     nt.assert_equal(d['a'], 'called')
+    nt.assert_equal(len(displayed), 2)
+    nt.assert_equal(w.value, displayed[-1])
+
+
 
 def test_fixed():
     c = interactive(f, a=widgets.fixed(5), b='text')

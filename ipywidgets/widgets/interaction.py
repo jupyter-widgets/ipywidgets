@@ -218,7 +218,8 @@ def interactive(__interact_f, **kwargs):
             manual_button.disabled = True
         try:
             container.result = f(**container.kwargs)
-            display(container.result)
+            if container.result is not None:
+                display(container.result)
         except Exception as e:
             ip = get_ipython()
             if ip is None:
@@ -316,7 +317,8 @@ def interact(__interact_f=None, **kwargs):
             # so wrap in a lambda
             f = lambda *args, **kwargs: __interact_f(*args, **kwargs)
             f.widget = w
-        display(w)
+        if w is not None:
+            display(w)
         return f
     else:
         # This branch handles the case 3
