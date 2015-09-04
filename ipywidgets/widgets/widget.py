@@ -222,7 +222,7 @@ class Widget(LoggingConfigurable):
             self.comm.close()
             self.comm = None
 
-    def send_state(self, key=None):
+    def send_state(self, key=None, method='update'):
         """Sends the widget state, or a piece of it, to the front-end.
 
         Parameters
@@ -237,7 +237,7 @@ class Widget(LoggingConfigurable):
                 state.pop(k)
                 buffers.append(v)
                 buffer_keys.append(k)
-        msg = {'method': 'update', 'state': state, 'buffers': buffer_keys}
+        msg = {'method': method, 'state': state, 'buffers': buffer_keys}
         self._send(msg, buffers=buffers)
 
     def get_state(self, key=None):
@@ -394,8 +394,8 @@ class Widget(LoggingConfigurable):
                 self.set_state(sync_data) # handles all methods
 
         # Handle a state request.
-        elif method == 'request_state':
-            self.send_state()
+        elif method == 'state_request':
+            self.send_state(method='state_reply')
 
         # Handle a custom msg from the front-end.
         elif method == 'custom':
