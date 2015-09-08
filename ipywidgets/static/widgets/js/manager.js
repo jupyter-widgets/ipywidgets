@@ -375,7 +375,7 @@ define([
         this.comm_manager = comm_manager;
 
         // Register with the comm manager.
-        this.comm_manager.register_target(this.comm_target_name, _.bind(this.handle_comm_open.bind,this));
+        this.comm_manager.register_target(this.comm_target_name, _.bind(this.handle_comm_open,this));
 
         // Load the initial state of the widget manager if a load callback was
         // registered.
