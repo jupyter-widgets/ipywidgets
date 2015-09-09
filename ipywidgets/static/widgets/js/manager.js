@@ -178,9 +178,10 @@ define([
         }
         
         var options_clone = _.clone(options);
+        var that = this;
         return comm.then(function(comm) {
             options_clone.comm = comm;
-            return this.new_model(options_clone).then(function(model) {
+            return that.new_model(options_clone).then(function(model) {
                 // Requesting the state to populate default values.
                 return model.request_state();
             });
