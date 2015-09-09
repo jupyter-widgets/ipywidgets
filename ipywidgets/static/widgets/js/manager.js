@@ -223,7 +223,14 @@ define([
          * Either a comm or a model_id must be provided.
          */
         var that = this;
-        var model_id = options.model_id || options.comm.comm_id;
+        var model_id;
+        if (options.model_id) {
+            model_id = options.model_id;
+        } else if (options.comm) {
+            model_id = options.comm.comm_id;
+        } else {
+            throw new Error('Neither comm nor model_id provided in options object.  Atleast one must exist.');
+        }
         var model_promise = utils.load_class(options.model_name,
                                              options.model_module,
                                              ManagerBase._model_types)
