@@ -15,7 +15,7 @@
     "css": "node build_css.js",
     "prebuildtests": "rimraf ./ipywidgets/tests/bin/tests",
     "buildtests": "tsc ./ipywidgets/tests/**/*.ts --outDir ./ipywidgets/tests/bin -d -m commonjs -t ES5",
-    "postinstall": "npm run bower"
+    "prepublish": "npm run bower && npm run build"
   },
   "devDependencies": {
     "bower": "*",
