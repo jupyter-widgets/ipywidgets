@@ -169,17 +169,17 @@ define([
      * @return {Promise<WidgetModel>}
      */
     ManagerBase.prototype.new_widget = function(options) {
-        var comm;
-        if (!options.comm) {
-            comm = Promise.resolve(options.comm);
+        var commPromise;
+        if (options.comm) {
+            commPromise = Promise.resolve(options.comm);
         } else {
-            comm = this._create_comm('ipython.widget', options.model_id,
+            commPromise = this._create_comm('ipython.widget', options.model_id,
                                     {'widget_class': options.widget_class});
         }
         
         var options_clone = _.clone(options);
         var that = this;
-        return comm.then(function(comm) {
+        return commPromise.then(function(comm) {
             options_clone.comm = comm;
             return that.new_model(options_clone).then(function(model) {
                 // Requesting the state to populate default values.
