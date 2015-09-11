@@ -388,9 +388,9 @@ define([
         // Load the initial state of the widget manager if a load callback was
         // registered.
         var that = this;
-        if (ManagerBase._load_callback) {
+        if (WidgetManager._load_callback) {
             Promise.resolve().then(function () {
-                return ManagerBase._load_callback.call(that);
+                return WidgetManager._load_callback.call(that);
             }).then(function(state) {
                 that.set_state(state);
             }).catch(utils.reject('Error loading widget manager state', true));
@@ -398,8 +398,8 @@ define([
 
         // Setup state saving code.
         this.notebook.events.on('before_save.Notebook', function() {
-            var save_callback = ManagerBase._save_callback;
-            var options = ManagerBase._get_state_options;
+            var save_callback = WidgetManager._save_callback;
+            var options = WidgetManager._get_state_options;
             if (save_callback) {
                 that.get_state(options).then(function(state) {
                     save_callback.call(that, state);
