@@ -59,7 +59,7 @@ define([
     };
     
     ManagerBase.prototype.display_view = function(msg, view, options) {
-        throw new Error("Manager .display_view not implemented");
+        throw new Error("Manager.display_view not implemented");
     };
 
     ManagerBase.prototype.create_view = function(model, options) {
@@ -363,11 +363,11 @@ define([
     };
 
     ManagerBase.prototype._create_comm = function(comm_target_name, model_id, metadata) {
-        throw new Error("Manager ._create_comm not implemented");
+        throw new Error("Manager._create_comm not implemented");
     };
 
     ManagerBase.prototype._get_comm_info = function() {
-        throw new Error("Manager ._get_comm_info not implemented");
+        throw new Error("Manager._get_comm_info not implemented");
     };
     
     //--------------------------------------------------------------------
