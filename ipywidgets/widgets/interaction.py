@@ -217,6 +217,11 @@ def interactive(__interact_f, **kwargs):
         if manual:
             manual_button.disabled = True
         try:
+            def close_result_widgets(w):
+                if type(w.result) is Box:
+                    close_result_widgets(w.result)
+                    w.result.close()
+            close_result_widgets(container)
             container.result = f(**container.kwargs)
             if container.result is not None:
                 display(container.result)
