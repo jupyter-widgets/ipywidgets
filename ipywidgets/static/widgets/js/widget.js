@@ -444,8 +444,8 @@ define(["nbextensions/widgets/widgets/js/manager",
 
         toJSON: function(options) {
             /**
-             * Serialize the model.  See the types.js deserialization function
-             * and the kernel-side serializer/deserializer
+             * Serialize the model.  See the deserialization function at the top of this file
+             * and the kernel-side serializer/deserializer.
              */
             return "IPY_MODEL_" + this.id;
         }
