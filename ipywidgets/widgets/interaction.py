@@ -14,7 +14,7 @@ from inspect import getcallargs
 from IPython.core.getipython import get_ipython
 from . import (Widget, Text,
     FloatSlider, IntSlider, Checkbox, Dropdown,
-    Box, Button, DOMWidget, widget_box)
+    Box, Button, DOMWidget)
 from IPython.display import display, clear_output
 from ipython_genutils.py3compat import string_types, unicode_type
 from traitlets import HasTraits, Any, Unicode
@@ -218,7 +218,7 @@ def interactive(__interact_f, **kwargs):
             manual_button.disabled = True
         try:
             def close_result_widgets(w):
-                if type(w.result) is widget_box.Box:
+                if type(w.result) is Box:
                     close_result_widgets(w.result)
                     w.result.close()
             close_result_widgets(container)
