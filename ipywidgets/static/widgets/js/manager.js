@@ -156,14 +156,6 @@ define([
     };
 
     /**
-     * Deprecated, use `new_widget` instead.
-     */
-    ManagerBase.prototype.create_model = function (options) {
-        console.warn('ManagerBase.create_model is deprecated. Use ManagerBase.new_widget');
-        return this.new_widget(options);
-    };
-
-    /**
      * Create a comm and new widget model.
      * @param  {Object} options - see new_model
      * @return {Promise<WidgetModel>}
@@ -491,6 +483,14 @@ define([
                 }
             }
         }
+    };
+
+    /**
+     * Deprecated, use `new_widget` instead.
+     */
+    WidgetManager.prototype.create_model = function (options) {
+        console.warn('WidgetManager.create_model is deprecated. Use ManagerBase.new_widget');
+        return this.new_widget(options);
     };
     
     WidgetManager.prototype.display_model = function(msg, model, options) {
