@@ -8,6 +8,7 @@ from .widget_box import Box, FlexBox, Proxy, PlaceProxy, HBox, VBox
 from .widget_float import FloatText, BoundedFloatText, FloatSlider, FloatProgress, FloatRangeSlider
 from .widget_image import Image
 from .widget_int import IntText, BoundedIntText, IntSlider, IntProgress, IntRangeSlider
+from .widget_color import ColorPicker
 from .widget_output import Output
 from .widget_selection import RadioButtons, ToggleButtons, Dropdown, Select, SelectMultiple
 from .widget_selectioncontainer import Tab, Accordion
