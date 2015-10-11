@@ -13,13 +13,6 @@ define([
                 .addClass("widget-label")
                 .appendTo(this.$el);
 
-            var description = this.model.get("description");
-            if (description) {
-                this.$label.text(this.model.get("description"));
-            } else {
-                this.$label.hide();
-            }
-
             this.$color_container = $("<div />")
                 .addClass("hbox")
                 .appendTo(this.$el);
@@ -34,15 +27,26 @@ define([
                 .appendTo(this.$color_container);
 
             this.listenTo(this.model, "change:value", this._update_value, this);
+            this.listenTo(this.model, "change:description", this._update_description, this);
             this.$colorpicker.on("change", this._picker_change.bind(this));
             this.$textbox.on("change", this._text_change.bind(this));
 
             this._update_value();
+            this._update_description();
         },
         _update_value: function() {
             var value = this.model.get("value");
             this.$colorpicker.val(color2hex(value));
             this.$textbox.val(value);
+        },
+        _update_description: function() {
+            var description = this.model.get('description');
+            if (description.length === 0) {
+                this.$label.hide();
+            } else {
+                this.typeset(this.$label, description);
+                this.$label.show();
+            }
         },
         _picker_change: function() {
             this.model.set("value", this.$colorpicker.val());
