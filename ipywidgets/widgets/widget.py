@@ -14,35 +14,52 @@ from ipykernel.comm import Comm
 from traitlets.config import LoggingConfigurable
 from ipython_genutils.importstring import import_item
 from traitlets import Unicode, Dict, Instance, Bool, List, \
-    CaselessStrEnum, Tuple, CUnicode, Int, Set
+    CaselessStrEnum, Tuple, CUnicode, Int, Set, getmembers
 from ipython_genutils.py3compat import string_types
-from .trait_types import Color
 
 
-def _widget_to_json(x, obj):
+def serialize_widget_attribute(x, obj):
+    """Serialization of widget attributes that may contain widget models.
+
+    Notes
+    -----
+    Widgetmodels are serialized into the string "IPY_MODEL_" + model_id.
+    """
     if isinstance(x, dict):
-        return {k: _widget_to_json(v, obj) for k, v in x.items()}
+        return {k: serialize_widget_attribute(v, obj) for k, v in x.items()}
     elif isinstance(x, (list, tuple)):
-        return [_widget_to_json(v, obj) for v in x]
+        return [serialize_widget_attribute(v, obj) for v in x]
     elif isinstance(x, Widget):
         return "IPY_MODEL_" + x.model_id
     else:
         return x
 
-def _json_to_widget(x, obj):
+
+def deserialize_widget_attribute(x, obj):
+    """Deserialization of widget attributes that may contain widget models
+
+    Notes
+    -----
+    Strings in the form of "IPY_MODEL_" + model_id are deserialized into a the
+    corresponding widget model if it exists.
+    """
     if isinstance(x, dict):
-        return {k: _json_to_widget(v, obj) for k, v in x.items()}
+        return {k: deserialize_widget_attribute(v, obj) for k, v in x.items()}
     elif isinstance(x, (list, tuple)):
-        return [_json_to_widget(v, obj) for v in x]
+        return [deserialize_widget_attribute(v, obj) for v in x]
     elif isinstance(x, string_types) and x.startswith('IPY_MODEL_') and x[10:] in Widget.widgets:
         return Widget.widgets[x[10:]]
     else:
         return x
 
+
 widget_serialization = {
-    'from_json': _json_to_widget,
-    'to_json': _widget_to_json
+    'from_json': deserialize_widget_attribute,
+    'to_json': serialize_widget_attribute,
 }
+
+
+from .trait_types import Color, Signal, Slot
 
 
 class CallbackDispatcher(LoggingConfigurable):
@@ -107,6 +124,27 @@ def register(key=None):
     return wrap
 
 
+def _state_change_to_json(value, self):
+    """Convert a state change signal signature json."""
+    name, old, new = value['name'], value['old'], value['new']
+    to_json = self.trait_metadata(name, 'to_json', self._trait_to_json)
+    return {
+        'name': name,
+        'old': to_json(old, self),
+        'new': to_json(new, self),
+    }
+
+def _state_change_from_json(value, self):
+    """Convert json to a state change signal signature."""
+    name, old, new = value['name'], value['old'], value['new']
+    from_json = self.trait_metadata(name, 'from_json', self._trait_from_json)
+    return {
+        'name': name,
+        'old': from_json(old, self),
+        'new': from_json(new, self),
+    }
+
+
 class Widget(LoggingConfigurable):
     #-------------------------------------------------------------------------
     # Class attributes
@@ -153,9 +191,12 @@ class Widget(LoggingConfigurable):
         front-end can send before receiving an idle msg from the back-end.""")
 
     version = Int(0, sync=True, help="""Widget's version""")
-    keys = List()
+    keys = List(sync=True)
     def _keys_default(self):
         return [name for name in self.traits(sync=True)]
+
+    state_changed = Signal(Dict(to_json=_state_change_to_json,
+                                from_json=_state_change_from_json))
 
     _property_lock = Dict()
     _holding_sync = False
@@ -223,7 +264,7 @@ class Widget(LoggingConfigurable):
             self.comm = None
 
     def send_state(self, key=None):
-        """Sends the widget state, or a piece of it, to the front-end.
+        """Sends the widget state and connections, or a piece of it, to the front-end.
 
         Parameters
         ----------
@@ -237,8 +278,42 @@ class Widget(LoggingConfigurable):
                 state.pop(k)
                 buffers.append(v)
                 buffer_keys.append(k)
-        msg = {'method': 'update', 'state': state, 'buffers': buffer_keys}
+        connections = self.get_connections(key=key)
+        msg = {
+            'method': 'update',
+            'state': state,
+            'buffers': buffer_keys,
+            'connections': connections,
+        }
         self._send(msg, buffers=buffers)
+
+    def get_connections(self, key=None):
+        """Gets the widget signal connections, or a piece of it.
+
+        Parameters
+        ----------
+        key : unicode or iterable (optional)
+            A single signal name or iterable of signal names to get
+
+        Returns
+        -------
+        connections: dict of connections
+        """
+        signals = self.signals()
+        if key is None:
+            keys = signals
+        else:
+            if isinstance(key, string_types):
+                keys = [key] if key in signals else []
+            elif isinstance(key, collections.Iterable):
+                keys = [k for k in key if k in signals]
+            else:
+                raise ValueError("key must be a string, an iterable of keys, or None")
+        connections = {
+            k: serialize_widget_attribute(getattr(self, k).connected_slots, self) for k in keys
+        }
+        return connections 
+
 
     def get_state(self, key=None):
         """Gets the widget state, or a piece of it.
@@ -246,7 +321,7 @@ class Widget(LoggingConfigurable):
         Parameters
         ----------
         key : unicode or iterable (optional)
-            A single property's name or iterable of property names to get.
+            A single property name or iterable of property names to get.
 
         Returns
         -------
@@ -257,9 +332,9 @@ class Widget(LoggingConfigurable):
         if key is None:
             keys = self.keys
         elif isinstance(key, string_types):
-            keys = [key]
+            keys = [key] if key in self.keys else []
         elif isinstance(key, collections.Iterable):
-            keys = key
+            keys = [k for k in key if k in self.keys]
         else:
             raise ValueError("key must be a string, an iterable of keys, or None")
         state = {}
@@ -283,6 +358,8 @@ class Widget(LoggingConfigurable):
                         self.set_trait(name, from_json(sync_data[name], self))
                     else:
                         setattr(self, name, from_json(sync_data[name], self))
+                if name in self.signals():
+                    getattr(self, name).connected_slots = deserialize_widget_attribute(sync_data[name], self)
 
     def send(self, content, buffers=None):
         """Sends a custom msg to the widget model in the front-end.
@@ -389,13 +466,18 @@ class Widget(LoggingConfigurable):
             if 'sync_data' in data:
                 # get binary buffers too
                 sync_data = data['sync_data']
-                for i,k in enumerate(data.get('buffer_keys', [])):
+                for i, k in enumerate(data.get('buffer_keys', [])):
                     sync_data[k] = msg['buffers'][i]
-                self.set_state(sync_data) # handles all methods
+                self.set_state(sync_data)  # handles all methods
 
         # Handle a state request.
         elif method == 'request_state':
             self.send_state()
+
+        # Handle signals.
+        elif method == 'emit':
+            # TODO: handle binary buffers like in the case of backbone messages
+            self._handle_signal(data['name'], data['value'])
 
         # Handle a custom msg from the front-end.
         elif method == 'custom':
@@ -409,6 +491,10 @@ class Widget(LoggingConfigurable):
     def _handle_custom_msg(self, content, buffers):
         """Called when a custom msg is received."""
         self._msg_callbacks(self, content, buffers)
+
+    def _handle_signal(self, name, value):
+        """"""
+        pass
 
     def _notify_trait(self, name, old_value, new_value):
         """Called when a property has been changed."""
@@ -449,6 +535,28 @@ class Widget(LoggingConfigurable):
     def _send(self, msg, buffers=None):
         """Sends a message to the model in the front-end."""
         self.comm.send(data=msg, buffers=buffers)
+
+    def signals(self):
+        """Returns a `dict` of all the signals of this widget. The dictionary
+        is keyed on the name and the values are the Signal objects."""
+        return dict([memb for memb in getmembers(self.__class__) if 
+                    isinstance(memb[1], Signal)]) 
+        
+    def slots(self):
+        """Returns a `dict` of all the slots of this widget. The dictionary
+        is keyed on the name and the values are the Slot objects."""
+        return dict([memb for memb in getmembers(self.__class__) if 
+                    isinstance(memb[1], Slot)]) 
+
+    def signal_metadata(self, name, key, default=None):
+        """Get metadata values for signal by key."""
+        try:
+            signal = getattr(self.__class__, name)
+        except AttributeError:
+            raise TraitError("Class %s does not have a signal named %s" %
+                                (self.__class__.__name__, name))
+        else:
+            return signal.trait.get_metadata(key, default)
 
 
 class DOMWidget(Widget):

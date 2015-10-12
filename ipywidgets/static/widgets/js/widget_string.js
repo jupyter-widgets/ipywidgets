@@ -4,8 +4,9 @@
 define([
     "nbextensions/widgets/widgets/js/widget",
     "jquery",
+    "./signaling",
     "bootstrap",
-], function(widget, $){
+], function(widget, $, signaling) {
 
     var HTMLView = widget.DOMWidgetView.extend({  
         render : function(){
@@ -48,6 +49,13 @@ define([
         }, 
     });
 
+    var TextareaModel = widget.WidgetModel.extend({
+        slots: {
+            scroll_to_bottom: function() {
+                this.trigger('scroll_to_bottom');
+            },
+        },
+    });
 
     var TextareaView = widget.DOMWidgetView.extend({  
         render: function(){
@@ -67,6 +75,7 @@ define([
             this.update(); // Set defaults.
 
             this.listenTo(this.model, 'msg:custom', $.proxy(this._handle_textarea_msg, this));
+            this.listenTo(this.model, 'scroll_to_bottom', $.proxy(this.scroll_to_bottom, this));
             this.listenTo(this.model, 'change:placeholder', function(model, value, options) {
                 this.update_placeholder(value);
             }, this);
@@ -151,6 +160,11 @@ define([
         },
     });
 
+    var TextModel = widget.WidgetModel.extend({
+        initialize: function() {
+            this.signals = { submit: new signaling.Signal(), };
+        }, 
+    });
 
     var TextView = widget.DOMWidgetView.extend({  
         render: function(){
@@ -245,7 +259,8 @@ define([
              * Handles text submition
              */
             if (e.keyCode == 13) { // Return key
-                this.send({event: 'submit'});
+                this.model.emit('submit');
+                this.send({event: 'submit'});  // this is deprecated
                 e.stopPropagation();
                 e.preventDefault();
                 return false;
@@ -282,7 +297,9 @@ define([
     return {
         'HTMLView': HTMLView,
         'LatexView': LatexView,
+        'TextareaModel': TextareaModel,
         'TextareaView': TextareaView,
+        'TextModel': TextModel,
         'TextView': TextView,
     };
 });

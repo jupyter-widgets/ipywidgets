@@ -9,7 +9,8 @@ click events on the button and trigger backend code when the clicks are fired.
 
 from .widget import DOMWidget, CallbackDispatcher, register
 from traitlets import Unicode, Bool, CaselessStrEnum
-
+from warnings import warn
+from .trait_types import Signal, Slot
 
 @register('IPython.Button')
 class Button(DOMWidget):
@@ -27,12 +28,14 @@ class Button(DOMWidget):
            font-awesome icon name
     """
     _view_name = Unicode('ButtonView', sync=True)
+    _model_name = Unicode('ButtonModel', sync=True)
 
     # Keys
     description = Unicode('', help="Button label.", sync=True)
     tooltip = Unicode(help="Tooltip caption of the button.", sync=True)
     disabled = Bool(False, help="Enable or disable user changes.", sync=True)
     icon = Unicode('', help= "Font-awesome icon.", sync=True)
+    clicked = Signal()
 
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''], 
@@ -55,6 +58,7 @@ class Button(DOMWidget):
         ----------
         remove : bool (optional)
             Set to true to remove the callback from the list of callbacks."""
+        warn('`on_click` is deprecated, use the `clicked` signal instead')
         self._click_handlers.register_callback(callback, remove=remove)
 
     def _handle_button_msg(self, _, content, buffers):

@@ -46,7 +46,7 @@ base.tester
         .wait_for_output(button_index, 1)
 
         .then(function () {
-            this.test.assertEquals(this.notebook.get_output(button_index, 1).data['text/plain'], "'Clicked'",
+            this.test.assertEquals(this.notebook.get_output(button_index, 2).data['text/plain'], "'Clicked'",
                 'Button click event fires.');
         });
     }
