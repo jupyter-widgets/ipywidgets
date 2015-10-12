@@ -11,6 +11,7 @@ define([
     "nbextensions/widgets/widgets/js/widget_float",
     "nbextensions/widgets/widgets/js/widget_image",
     "nbextensions/widgets/widgets/js/widget_int",
+    "nbextensions/widgets/widgets/js/widget_color",
     "nbextensions/widgets/widgets/js/widget_output",
     "nbextensions/widgets/widgets/js/widget_selection",
     "nbextensions/widgets/widgets/js/widget_selectioncontainer",
