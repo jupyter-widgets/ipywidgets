@@ -44,6 +44,18 @@ define(['jquery', 'base/js/events'], function($, events) {
             // Listen to comm live events for the view.
             view.on('comm:live', that._widget_live, that);
             view.on('comm:dead', that._widget_dead, that);
+            
+            // If the view is removed, check to see if the widget area is empty.
+            // If the widget area is empty, close it.
+            view.on('remove', function() {
+                var index = that.widget_views.indexOf(view);
+                if (index !== -1) that.widget_views.splice(index, 1);
+                
+                if (that.widget_views.length === 0) {
+                    that._clear();
+                }
+            });
+            
             return view;
         });
     };
