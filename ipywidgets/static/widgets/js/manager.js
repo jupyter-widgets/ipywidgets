@@ -165,7 +165,7 @@ define([
         if (options.comm) {
             commPromise = Promise.resolve(options.comm);
         } else {
-            commPromise = this._create_comm('ipython.widget', options.model_id,
+            commPromise = this._create_comm(this.comm_target_name, options.model_id,
                                     {'widget_class': options.widget_class});
         }
         
@@ -317,6 +317,12 @@ define([
         // Recreate all the widget models for the given notebook state.
         var all_models = that._get_comm_info().then(function(live_comms) {
             return Promise.all(_.map(Object.keys(state), function (model_id) {
+                
+                // If the model has already been created, return it.
+                if (that._models[model_id]) {
+                    return that._models[model_id];
+                }
+                
                 if (live_comms.hasOwnProperty(model_id)) {  // live comm
                     return that._create_comm(that.comm_target_name, model_id).then(function(new_comm) {
                         return that.new_model({
@@ -376,17 +382,69 @@ define([
 
         // Register with the comm manager.
         this.comm_manager.register_target(this.comm_target_name, _.bind(this.handle_comm_open,this));
-
-        // Load the initial state of the widget manager if a load callback was
-        // registered.
+        
+        // Attempt to reconstruct any live comms by requesting them from the
+        // back-end.
         var that = this;
-        if (WidgetManager._load_callback) {
-            Promise.resolve().then(function () {
-                return WidgetManager._load_callback.call(that);
-            }).then(function(state) {
-                that.set_state(state);
-            }).catch(utils.reject('Error loading widget manager state', true));
-        }
+        var backed_widgets_loaded = this._get_comm_info().then(function(comm_ids) {
+            
+            // Filter out non-widget comm ids
+            var comm_promises = Object.keys(comm_ids).filter(function(comm_id) { 
+                return comm_ids[comm_id].target_name === that.comm_target_name;
+            
+            // Construct a front-end comm for each comm id
+            }).map(function(comm_id) {
+                return that._create_comm(that.comm_target_name, comm_id);
+            });
+            
+            // Send a state request message out for each widget comm and wait
+            // for the responses.
+            return Promise.all(comm_promises).then(function(comms) {
+                return Promise.all(comms.map(function(comm) {
+                    var update_promise = new Promise(function(resolve, reject) {
+                        comm.on_msg(function (msg) {
+                            
+                            // A suspected response was recieved, check to see if
+                            // it's a state update.  If so, resolve.
+                            if (msg.content.data.method === 'update') {
+                                resolve({
+                                    comm: comm,
+                                    msg: msg
+                                });
+                            }
+                        });
+                    });
+                    
+                    comm.send({
+                        method: 'request_state'
+                    }, that.callbacks());
+                    return update_promise;
+                }));
+            }).then(function(widgets_info) {
+                return Promise.all(widgets_info.map(function(widget_info) {
+                    return that.new_model({
+                        model_name: widget_info.msg.content.data.state._model_name,
+                        model_module: widget_info.msg.content.data.state._model_module,
+                        comm: widget_info.comm,
+                    }).then(function(model) {
+                        return model._handle_comm_msg(widget_info.msg).then(function() {
+                            return model.id;
+                        });
+                    });
+                }));
+            }).then(function(model_ids) {
+                
+                // Load the initial state of the widget manager if a load callback was
+                // registered.
+                if (WidgetManager._load_callback) {
+                    Promise.resolve().then(function () {
+                        return WidgetManager._load_callback.call(that);
+                    }).then(function(state) {
+                        that.set_state(state);
+                    }).catch(utils.reject('Error loading widget manager state', true));
+                }
+            });
+        });
 
         // Setup state saving code.
         this.notebook.events.on('before_save.Notebook', function() {
