@@ -10,169 +10,59 @@ define([
 ], function (_, Backbone, utils, IPython, comm) {
     "use strict";
     //--------------------------------------------------------------------
-    // WidgetManager class
+    // ManagerBase class
     //--------------------------------------------------------------------
-    var WidgetManager = function (comm_manager, notebook) {
+    var ManagerBase = function() {
         /**
          * Public constructor
          */
-        WidgetManager._managers.push(this);
-
-        // Attach a comm manager to the
-        this.keyboard_manager = notebook.keyboard_manager;
-        this.notebook = notebook;
-        this.comm_manager = comm_manager;
+        ManagerBase._managers.push(this);
+        
         this.comm_target_name = 'ipython.widget';
         this._models = {}; /* Dictionary of model ids and model instance promises */
-
-        // Register with the comm manager.
-        this.comm_manager.register_target(this.comm_target_name, _.bind(this._handle_comm_open, this));
-
-        // Load the initial state of the widget manager if a load callback was
-        // registered.
-        var that = this;
-        if (WidgetManager._load_callback) {
-            Promise.resolve().then(function () {
-                return WidgetManager._load_callback.call(that);
-            }).then(function(state) {
-                that.set_state(state);
-            }).catch(utils.reject('Error loading widget manager state', true));
-        }
-
-        // Setup state saving code.
-        this.notebook.events.on('before_save.Notebook', function() {
-            var save_callback = WidgetManager._save_callback;
-            var options = WidgetManager._get_state_options;
-            if (save_callback) {
-                that.get_state(options).then(function(state) {
-                    save_callback.call(that, state);
-                }).catch(utils.reject('Could not call widget save state callback.', true));
-            }
-        });
     };
 
     //--------------------------------------------------------------------
     // Class level
     //--------------------------------------------------------------------
-    WidgetManager._model_types = {}; /* Dictionary of model type names (target_name) and model types. */
-    WidgetManager._view_types = {}; /* Dictionary of view names and view types. */
-    WidgetManager._managers = []; /* List of widget managers */
-    WidgetManager._load_callback = null;
-    WidgetManager._save_callback = null;
+    ManagerBase._model_types = {}; /* Dictionary of model type names (target_name) and model types. */
+    ManagerBase._view_types = {}; /* Dictionary of view names and view types. */
+    ManagerBase._managers = []; /* List of widget managers */
 
-    WidgetManager.register_widget_model = function (model_name, model_type) {
+    ManagerBase.register_widget_model = function (model_name, model_type) {
         /**
          * Registers a widget model by name.
          */
-        WidgetManager._model_types[model_name] = model_type;
+        ManagerBase._model_types[model_name] = model_type;
     };
 
-    WidgetManager.register_widget_view = function (view_name, view_type) {
+    ManagerBase.register_widget_view = function (view_name, view_type) {
         /**
          * Registers a widget view by name.
          */
-        WidgetManager._view_types[view_name] = view_type;
+        ManagerBase._view_types[view_name] = view_type;
     };
-
-    WidgetManager.set_state_callbacks = function (load_callback, save_callback, options) {
-        /**
-         * Registers callbacks for widget state persistence.
-         *
-         * Parameters
-         * ----------
-         * load_callback: function()
-         *      function that is called when the widget manager state should be
-         *      loaded.  This function should return a promise for the widget
-         *      manager state.  An empty state is an empty dictionary `{}`.
-         * save_callback: function(state as dictionary)
-         *      function that is called when the notebook is saved or autosaved.
-         *      The current state of the widget manager is passed in as the first
-         *      argument.
-         */
-        WidgetManager._load_callback = load_callback;
-        WidgetManager._save_callback = save_callback;
-        WidgetManager._get_state_options = options;
-
-        // Use the load callback to immediately load widget states.
-        WidgetManager._managers.forEach(function(manager) {
-            if (load_callback) {
-                Promise.resolve().then(function () {
-                    return load_callback.call(manager);
-                }).then(function(state) {
-                    manager.set_state(state);
-                }).catch(utils.reject('Error loading widget manager state', true));
-            }
-        });
-    };
-
-    // Use local storage to persist widgets across page refresh by default.
-    // LocalStorage is per domain, so we need to explicitly set the URL
-    // that the widgets are associated with so they don't show on other
-    // pages hosted by the noteboook server.
-    var url = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
-    var key = 'widgets:' + url;
-    WidgetManager.set_state_callbacks(function() {
-        if (localStorage[key]) {
-            return JSON.parse(localStorage[key]);
-        }
-        return {};
-    }, function(state) {
-        localStorage[key] = JSON.stringify(state);
-    });
-
+    
     //--------------------------------------------------------------------
     // Instance level
     //--------------------------------------------------------------------
-    WidgetManager.prototype.display_view = function(msg, model) {
+    ManagerBase.prototype.display_model = function(msg, model, options) {
         /**
          * Displays a view for a particular model.
          */
-        var cell = this.get_msg_cell(msg.parent_header.msg_id);
-        if (cell === null) {
-            return Promise.reject(new Error("Could not determine where the display" +
-                " message was from.  Widget will not be displayed"));
-        } else {
-            return this.display_view_in_cell(cell, model)
-                .catch(utils.reject('Could not display view', true));
-        }
+        options = options || {};
+        options.root = true; // This element is being displayed not as a child of another.
+        
+        return this.create_view(model, options).then(_.bind(function(view) {
+            return this.display_view(msg, view, options);
+        }, this)).catch(utils.reject('Could not create view', true));
+    };
+    
+    ManagerBase.prototype.display_view = function(msg, view, options) {
+        throw new Error("Manager.display_view not implemented");
     };
 
-    WidgetManager.prototype.display_view_in_cell = function(cell, model) {
-        // Displays a view in a cell.
-        if (cell.widgetarea) {
-            var that = this;
-            return cell.widgetarea.display_widget_view(this.create_view(model, {
-                cell: cell,
-                // Only set cell_index when view is displayed as directly.
-                cell_index: that.notebook.find_cell_index(cell),
-            })).then(function(view) {
-                that._handle_display_view(view);
-                view.trigger('displayed');
-                return view;
-            }).catch(utils.reject('Could not create or display view', true));
-        } else {
-            return Promise.reject(new Error('Cell does not have a `widgetarea` defined'));
-        }
-    };
-
-    WidgetManager.prototype._handle_display_view = function (view) {
-        /**
-         * Have the IPython keyboard manager disable its event
-         * handling so the widget can capture keyboard input.
-         * Note, this is only done on the outer most widgets.
-         */
-        if (this.keyboard_manager) {
-            this.keyboard_manager.register_events(view.el);
-
-            if (view.additional_elements) {
-                for (var i = 0; i < view.additional_elements.length; i++) {
-                    this.keyboard_manager.register_events(view.additional_elements[i]);
-                }
-            }
-        }
-    };
-
-    WidgetManager.prototype.create_view = function(model, options) {
+    ManagerBase.prototype.create_view = function(model, options) {
         /**
          * Creates a promise for a view of a given model
          *
@@ -182,7 +72,7 @@ define([
         model.state_change = model.state_change.then(function() {
 
             return utils.load_class(model.get('_view_name'), model.get('_view_module'),
-            WidgetManager._view_types).then(function(ViewType) {
+            ManagerBase._view_types).then(function(ViewType) {
 
                 // If a view is passed into the method, use that view's cell as
                 // the cell for the view that is created.
@@ -207,34 +97,7 @@ define([
         return model.state_change;
     };
 
-    WidgetManager.prototype.get_msg_cell = function (msg_id) {
-        var cell = null;
-        // First, check to see if the msg was triggered by cell execution.
-        if (this.notebook) {
-            cell = this.notebook.get_msg_cell(msg_id);
-        }
-        if (cell !== null) {
-            return cell;
-        }
-        // Second, check to see if a get_cell callback was defined
-        // for the message.  get_cell callbacks are registered for
-        // widget messages, so this block is actually checking to see if the
-        // message was triggered by a widget.
-        var kernel = this.comm_manager.kernel;
-        if (kernel) {
-            var callbacks = kernel.get_callbacks_for_msg(msg_id);
-            if (callbacks && callbacks.iopub &&
-                callbacks.iopub.get_cell !== undefined) {
-                return callbacks.iopub.get_cell();
-            }
-        }
-
-        // Not triggered by a cell or widget (no get_cell callback
-        // exists).
-        return null;
-    };
-
-    WidgetManager.prototype.callbacks = function (view) {
+    ManagerBase.prototype.callbacks = function (view) {
         /**
          * callback handlers specific a view
          */
@@ -269,14 +132,14 @@ define([
         return callbacks;
     };
 
-    WidgetManager.prototype.get_model = function (model_id) {
+    ManagerBase.prototype.get_model = function (model_id) {
         /**
          * Get a promise for a model by model id.
          */
         return this._models[model_id];
     };
 
-    WidgetManager.prototype._handle_comm_open = function (comm, msg) {
+    ManagerBase.prototype.handle_comm_open = function (comm, msg) {
         /**
          * Handle when a comm is opened.
          */
@@ -293,31 +156,31 @@ define([
     };
 
     /**
-     * Deprecated, use `new_widget` instead.
-     */
-    WidgetManager.prototype.create_model = function (options) {
-        console.warn('WidgetManager.create_model is deprecated. Use WidgetManager.new_widget');
-        return this.new_widget(options);
-    };
-
-    /**
      * Create a comm and new widget model.
      * @param  {Object} options - see new_model
      * @return {Promise<WidgetModel>}
      */
-    WidgetManager.prototype.new_widget = function (options) {
-        if (!options.comm) {
-            options.comm = this.comm_manager.new_comm('ipython.widget',
-                                                      {'widget_class': options.widget_class},
-                                                       options.model_id);
+    ManagerBase.prototype.new_widget = function(options) {
+        var commPromise;
+        if (options.comm) {
+            commPromise = Promise.resolve(options.comm);
+        } else {
+            commPromise = this._create_comm('ipython.widget', options.model_id,
+                                    {'widget_class': options.widget_class});
         }
-        return this.new_model(options).then(function(model) {
-            // Requesting the state to populate default values.
-            return model.request_state();
+        
+        var options_clone = _.clone(options);
+        var that = this;
+        return commPromise.then(function(comm) {
+            options_clone.comm = comm;
+            return that.new_model(options_clone).then(function(model) {
+                // Requesting the state to populate default values.
+                return model.request_state();
+            });
         });
     };
 
-    WidgetManager.prototype.new_model = function (options) {
+    ManagerBase.prototype.new_model = function(options) {
         /**
          * Create and return a promise for a new widget model
          *
@@ -352,10 +215,17 @@ define([
          * Either a comm or a model_id must be provided.
          */
         var that = this;
-        var model_id = options.model_id || options.comm.comm_id;
+        var model_id;
+        if (options.model_id) {
+            model_id = options.model_id;
+        } else if (options.comm) {
+            model_id = options.comm.comm_id;
+        } else {
+            throw new Error('Neither comm nor model_id provided in options object.  Atleast one must exist.');
+        }
         var model_promise = utils.load_class(options.model_name,
                                              options.model_module,
-                                             WidgetManager._model_types)
+                                             ManagerBase._model_types)
             .then(function(ModelType) {
                 var widget_model = new ModelType(that, model_id, options.comm);
                 widget_model.once('comm:close', function () {
@@ -374,7 +244,7 @@ define([
         return model_promise;
     };
 
-    WidgetManager.prototype.get_state = function(options) {
+    ManagerBase.prototype.get_state = function(options) {
         /**
          * Asynchronously get the state of the widget manager.
          *
@@ -421,8 +291,8 @@ define([
                                 for (var id in model_views) {
                                     if (model_views.hasOwnProperty(id)) {
                                         var view = model_views[id];
-                                        if (view.options.cell_index !== undefined) {
-                                            local_state.views.push(view.options.cell_index);
+                                        if (view.options !== undefined && view.options.root) {
+                                            local_state.views.push(view.options);
                                         }
                                     }
                                 }
@@ -435,25 +305,21 @@ define([
         }).catch(utils.reject('Could not get state of widget manager', true));
     };
 
-    WidgetManager.prototype.set_state = function(state) {
+    ManagerBase.prototype.set_state = function(state) {
         /**
          * Set the notebook's state.
          *
          * Reconstructs all of the widget models and attempts to redisplay the
          * widgets in the appropriate cells by cell index.
          */
-
-        // Get the kernel when it's available.
         var that = this;
-        return this._get_connected_kernel().then(function(kernel) {
 
-            // Recreate all the widget models for the given notebook state.
-            var all_models = that._get_comm_info(kernel).then(function(live_comms) {
-                return Promise.all(_.map(Object.keys(state), function (model_id) {
-                    if (live_comms.hasOwnProperty(model_id)) {  // live comm
-                        var new_comm = new comm.Comm(kernel.widget_manager.comm_target_name, model_id);
-                        kernel.comm_manager.register_comm(new_comm);
-                        return kernel.widget_manager.new_model({
+        // Recreate all the widget models for the given notebook state.
+        var all_models = that._get_comm_info().then(function(live_comms) {
+            return Promise.all(_.map(Object.keys(state), function (model_id) {
+                if (live_comms.hasOwnProperty(model_id)) {  // live comm
+                    return that._create_comm(that.comm_target_name, model_id).then(function(new_comm) {
+                        return that.new_model({
                             comm: new_comm,
                             model_name: state[model_id].model_name,
                             model_module: state[model_id].model_module,
@@ -461,32 +327,284 @@ define([
                             // Request the state from the backend
                             return model.request_state();
                         });
-                    } else { // dead comm
-                        return kernel.widget_manager.new_model({
-                            model_id: model_id,
-                            model_name: state[model_id].model_name,
-                            model_module: state[model_id].model_module,
-                        }).then(function(model) {
-                            return model._deserialize_state(state[model_id].state).then(function(state) {
-                                model.set_state(state);
-                                return model;
-                            });
+                    });
+                } else { // dead comm
+                    return that.new_model({
+                        model_id: model_id,
+                        model_name: state[model_id].model_name,
+                        model_module: state[model_id].model_module,
+                    }).then(function(model) {
+                        return model._deserialize_state(state[model_id].state).then(function(state) {
+                            model.set_state(state);
+                            return model;
                         });
-                    }
-                }));
-            });
+                    });
+                }
+            }));
+        });
 
-            // Display all the views
-            return all_models.then(function(models) {
-                return Promise.all(_.map(models, function(model) {
-                    // Display the views of the model.
-                    return Promise.all(_.map(state[model.id].views, function(cell_index) {
-                        var cell = that.notebook.get_cell(cell_index);
-                        return that.display_view_in_cell(cell, model);
-                    }));
+        // Display all the views
+        return all_models.then(function(models) {
+            return Promise.all(_.map(models, function(model) {
+                // Display the views of the model.
+                return Promise.all(_.map(state[model.id].views, function(options) {
+                    return that.display_model(undefined, model, options);
                 }));
-            });
+            }));
         }).catch(utils.reject('Could not set widget manager state.', true));
+    };
+
+    ManagerBase.prototype._create_comm = function(comm_target_name, model_id, metadata) {
+        throw new Error("Manager._create_comm not implemented");
+    };
+
+    ManagerBase.prototype._get_comm_info = function() {
+        throw new Error("Manager._get_comm_info not implemented");
+    };
+    
+    //--------------------------------------------------------------------
+    // WidgetManager class
+    //--------------------------------------------------------------------
+    var WidgetManager = function (comm_manager, notebook) {
+        ManagerBase.apply(this);
+        WidgetManager._managers.push(this);
+
+        // Attach a comm manager to the
+        this.notebook = notebook;
+        this.keyboard_manager = notebook.keyboard_manager;
+        this.comm_manager = comm_manager;
+
+        // Register with the comm manager.
+        this.comm_manager.register_target(this.comm_target_name, _.bind(this.handle_comm_open,this));
+
+        // Load the initial state of the widget manager if a load callback was
+        // registered.
+        var that = this;
+        if (WidgetManager._load_callback) {
+            Promise.resolve().then(function () {
+                return WidgetManager._load_callback.call(that);
+            }).then(function(state) {
+                that.set_state(state);
+            }).catch(utils.reject('Error loading widget manager state', true));
+        }
+
+        // Setup state saving code.
+        this.notebook.events.on('before_save.Notebook', function() {
+            var save_callback = WidgetManager._save_callback;
+            var options = WidgetManager._get_state_options;
+            if (save_callback) {
+                that.get_state(options).then(function(state) {
+                    save_callback.call(that, state);
+                }).catch(utils.reject('Could not call widget save state callback.', true));
+            }
+        });
+    };
+    WidgetManager.prototype = Object.create(ManagerBase.prototype);
+    
+    WidgetManager._managers = []; /* List of widget managers */
+    WidgetManager._load_callback = null;
+    WidgetManager._save_callback = null;
+    
+    
+    WidgetManager.register_widget_model = function (model_name, model_type) {
+        /**
+         * Registers a widget model by name.
+         */
+        return ManagerBase.register_widget_model.apply(this, arguments);
+    };
+
+    WidgetManager.register_widget_view = function (view_name, view_type) {
+        /**
+         * Registers a widget view by name.
+         */
+        return ManagerBase.register_widget_view.apply(this, arguments);
+    };
+    
+    WidgetManager.set_state_callbacks = function (load_callback, save_callback, options) {
+        /**
+         * Registers callbacks for widget state persistence.
+         *
+         * Parameters
+         * ----------
+         * load_callback: function()
+         *      function that is called when the widget manager state should be
+         *      loaded.  This function should return a promise for the widget
+         *      manager state.  An empty state is an empty dictionary `{}`.
+         * save_callback: function(state as dictionary)
+         *      function that is called when the notebook is saved or autosaved.
+         *      The current state of the widget manager is passed in as the first
+         *      argument.
+         */
+        WidgetManager._load_callback = load_callback;
+        WidgetManager._save_callback = save_callback;
+        WidgetManager._get_state_options = options;
+
+        // Use the load callback to immediately load widget states.
+        WidgetManager._managers.forEach(function(manager) {
+            if (load_callback) {
+                Promise.resolve().then(function () {
+                    return load_callback.call(manager);
+                }).then(function(state) {
+                    manager.set_state(state);
+                }).catch(utils.reject('Error loading widget manager state', true));
+            }
+        });
+    };
+
+    // Use local storage to persist widgets across page refresh by default.
+    // LocalStorage is per domain, so we need to explicitly set the URL
+    // that the widgets are associated with so they don't show on other
+    // pages hosted by the noteboook server.
+    var url = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
+    var key = 'widgets:' + url;
+    WidgetManager.set_state_callbacks(function() {
+        if (localStorage[key]) {
+            return JSON.parse(localStorage[key]);
+        }
+        return {};
+    }, function(state) {
+        localStorage[key] = JSON.stringify(state);
+    });
+
+    WidgetManager.prototype._handle_display_view = function (view) {
+        /**
+         * Have the IPython keyboard manager disable its event
+         * handling so the widget can capture keyboard input.
+         * Note, this is only done on the outer most widgets.
+         */
+        view.trigger('displayed');
+         
+        if (this.keyboard_manager) {
+            this.keyboard_manager.register_events(view.el);
+
+            if (view.additional_elements) {
+                for (var i = 0; i < view.additional_elements.length; i++) {
+                    this.keyboard_manager.register_events(view.additional_elements[i]);
+                }
+            }
+        }
+    };
+
+    /**
+     * Deprecated, use `new_widget` instead.
+     */
+    WidgetManager.prototype.create_model = function (options) {
+        console.warn('WidgetManager.create_model is deprecated. Use ManagerBase.new_widget');
+        return this.new_widget(options);
+    };
+    
+    WidgetManager.prototype.display_model = function(msg, model, options) {
+        options = options || {};
+        if (msg) {
+            var cell = this.get_msg_cell(msg.parent_header.msg_id);
+            if (cell === null) {
+                return Promise.reject(new Error("Could not determine where the display" +
+                    " message was from.  Widget will not be displayed"));
+            } else {
+                options.cell = cell; // TODO: Handle in get state
+                // Only set cell_index when view is displayed as directly.
+                options.cell_index = this.notebook.find_cell_index(cell);
+                
+                return ManagerBase.prototype.display_model.call(this, msg, model, options)
+                    .catch(utils.reject('Could not display model', true));
+            }
+        } else if (options && options.cell_index) {
+            options.cell = this.notebook.get_cell(options.cell_index);
+            return ManagerBase.prototype.display_model.call(this, msg, model, options)
+                .catch(utils.reject('Could not display model', true));
+        } else {
+            return Promise.reject(new Error("Could not determine which cell the " + 
+            "widget belongs to.  Widget will not be displayed"));
+        }
+    };
+    
+    // In display view
+    WidgetManager.prototype.display_view = function(msg, view, options) {
+        if (options.cell === null) {
+            view.remove();
+            return Promise.reject(new Error("Could not determine where the display" +
+                " message was from.  Widget will not be displayed"));
+        } else {
+            if (options.cell.widgetarea) {
+                var that = this;
+                return options.cell.widgetarea.display_widget_view(Promise.resolve(view)).then(function(view) {
+                    that._handle_display_view(view);
+                    return view;
+                }).catch(utils.reject('Could not display view', true));
+            } else {
+                return Promise.reject(new Error('Cell does not have a `widgetarea` defined'));
+            }
+        }
+    };
+
+    WidgetManager.prototype.get_msg_cell = function (msg_id) {
+        var cell = null;
+        // First, check to see if the msg was triggered by cell execution.
+        if (this.notebook) {
+            cell = this.notebook.get_msg_cell(msg_id);
+        }
+        if (cell !== null) {
+            return cell;
+        }
+        // Second, check to see if a get_cell callback was defined
+        // for the message.  get_cell callbacks are registered for
+        // widget messages, so this block is actually checking to see if the
+        // message was triggered by a widget.
+        var kernel = this.comm_manager.kernel;
+        if (kernel) {
+            var callbacks = kernel.get_callbacks_for_msg(msg_id);
+            if (callbacks && callbacks.iopub &&
+                callbacks.iopub.get_cell !== undefined) {
+                return callbacks.iopub.get_cell();
+            }
+        }
+
+        // Not triggered by a cell or widget (no get_cell callback
+        // exists).
+        return null;
+    };
+
+    WidgetManager.prototype._create_comm = function(comm_target_name, model_id, metadata) {
+        return this._get_connected_kernel().then(function(kernel) {
+            if (metadata) {
+                return kernel.comm_manager.new_comm(comm_target_name, metadata, model_id);
+            } else {
+                var new_comm = new comm.Comm(comm_target_name, model_id);
+                kernel.comm_manager.register_comm(new_comm);
+                return new_comm;
+            }
+        });
+    };
+
+    WidgetManager.prototype._get_comm_info = function() {
+        /**
+         * Gets a promise for the open comms in the backend
+         */
+
+        // Version using the comm_list_[request/reply] shell message.
+        /*var that = this;
+        return new Promise(function(resolve, reject) {
+             kernel.comm_info(function(msg) {
+                 resolve(msg['content']['comms']);
+             });
+        });*/
+
+        // Workaround for absence of comm_list_[request/reply] shell message.
+        // Create a new widget that gives the comm list and commits suicide.
+        var that = this;
+        return this._get_connected_kernel().then(function(kernel) {
+            return new Promise(function(resolve, reject) {
+                var comm = kernel.comm_manager.new_comm('ipython.widget',
+                                    {'widget_class': 'ipywidgets.CommInfo'},
+                                    'comm_info');
+                comm.on_msg(function(msg) {
+                    var data = msg.content.data;
+                    if (data.content && data.method === 'custom') {
+                        resolve(data.content.comms);
+                    }
+                });
+            });
+        });
     };
 
     WidgetManager.prototype._get_connected_kernel = function() {
@@ -507,38 +625,12 @@ define([
             }
         });
     };
-
-    WidgetManager.prototype._get_comm_info = function(kernel) {
-        /**
-         * Gets a promise for the open comms in the backend
-         */
-
-        // Version using the comm_list_[request/reply] shell message.
-        /*var that = this;
-        return new Promise(function(resolve, reject) {
-             kernel.comm_info(function(msg) {
-                 resolve(msg['content']['comms']);
-             });
-        });*/
-
-        // Workaround for absence of comm_list_[request/reply] shell message.
-        // Create a new widget that gives the comm list and commits suicide.
-        var that = this;
-        return new Promise(function(resolve, reject) {
-            var comm = that.comm_manager.new_comm('ipython.widget',
-                                {'widget_class': 'ipywidgets.CommInfo'},
-                                'comm_info');
-            comm.on_msg(function(msg) {
-                var data = msg.content.data;
-                if (data.content && data.method === 'custom') {
-                    resolve(data.content.comms);
-                }
-            });
-        });
-    };
-
+    
     // Backwards compatibility.
     IPython.WidgetManager = WidgetManager;
 
-    return {'WidgetManager': WidgetManager};
+    return {
+        'ManagerBase': ManagerBase,
+        'WidgetManager': WidgetManager,
+    };
 });
