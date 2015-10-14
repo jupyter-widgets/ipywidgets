@@ -69,7 +69,7 @@ define([
             }
         },
         
-        updateDescription(options) {
+        updateDescription: function(options) {
             var description = this.model.get('description');
             if (description.length === 0) {
                 this.$label.hide();
@@ -306,7 +306,23 @@ define([
                 .addClass('form-control')
                 .addClass('widget-numeric-text')
                 .appendTo(this.$el);
+                
+            this.listenTo(this.model, 'change:description', function(sender, value) {
+                this.updateDescription();
+            }, this);
+                
             this.update(); // Set defaults.
+            this.updateDescription();
+        },
+        
+        updateDescription: function() {
+            var description = this.model.get('description');
+            if (description.length === 0) {
+                this.$label.hide();
+            } else {
+                this.typeset(this.$label, description);
+                this.$label.show();
+            }
         },
         
         update : function(options){
@@ -326,14 +342,6 @@ define([
                     this.$textbox.attr('disabled','disabled');
                 } else {
                     this.$textbox.removeAttr('disabled');
-                }
-
-                var description = this.model.get('description');
-                if (description.length === 0) {
-                    this.$label.hide();
-                } else {
-                    this.typeset(this.$label, description);
-                    this.$label.show();
                 }
             }
             return IntTextView.__super__.update.apply(this);
@@ -431,12 +439,29 @@ define([
                     'bottom': 0, 'left': 0,
                 })
                 .appendTo(this.$progress);
-            this.update(); // Set defaults.
-
+            
+            // Set defaults.
+            this.update(); 
+            this.updateDescription();
+            
             this.listenTo(this.model, 'change:bar_style', function(model, value) {
                 this.update_bar_style();
             }, this);
+            this.listenTo(this.model, 'change:description', function(sender, value) {
+                this.updateDescription();
+            }, this);
+            
             this.update_bar_style('');
+        },
+        
+        updateDescription: function() {
+            var description = this.model.get('description');
+            if (description.length === 0) {
+                this.$label.hide();
+            } else {
+                this.typeset(this.$label, description);
+                this.$label.show();
+            }    
         },
         
         update : function(){
@@ -471,13 +496,6 @@ define([
                     'width': '100%',
                     'height': percent + '%',
                 });
-            }
-            var description = this.model.get('description');
-            if (description.length === 0) {
-                this.$label.hide();
-            } else {
-                this.typeset(this.$label, description);
-                this.$label.show();
             }
             return ProgressView.__super__.update.apply(this);
         }, 
