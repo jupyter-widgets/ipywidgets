@@ -34,14 +34,19 @@ define([
                 .addClass('widget-readout')
                 .attr('contentEditable', true)
                 .hide();
-
+                
             this.listenTo(this.model, 'change:slider_color', function(sender, value) {
                 this.$slider.find('a').css('background', value);
+            }, this);            
+            this.listenTo(this.model, 'change:description', function(sender, value) {
+                this.updateDescription();
             }, this);
+            
             this.$slider.find('a').css('background', this.model.get('slider_color'));
             
             // Set defaults.
             this.update();
+            this.updateDescription();
         },
 
         update_attr: function(name, value) {
@@ -61,6 +66,16 @@ define([
                 this.$el.css(name, value);
             } else {
                 this.$slider.css(name, value);
+            }
+        },
+        
+        updateDescription(options) {
+            var description = this.model.get('description');
+            if (description.length === 0) {
+                this.$label.hide();
+            } else {
+                this.typeset(this.$label, description);
+                this.$label.show();
             }
         },
         
@@ -153,14 +168,6 @@ define([
                         .addClass('widget-hbox');
                 }
 
-                var description = this.model.get('description');
-                if (description.length === 0) {
-                    this.$label.hide();
-                } else {
-                    this.typeset(this.$label, description);
-                    this.$label.show();
-                }
-                
                 var readout = this.model.get('readout');
                 if (readout) {
                     this.$readout.show();
