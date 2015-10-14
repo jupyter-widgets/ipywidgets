@@ -174,7 +174,7 @@ define([
         events: {
             // Dictionary of events and their handlers.
             "slide": "handleSliderChange",
-            "stop": "handleSliderChanged",
+            "slidestop": "handleSliderChanged",
             "blur [contentEditable=true]": "handleTextChange",
             "keydown [contentEditable=true]": "handleKeyDown"
         }, 
@@ -258,6 +258,17 @@ define([
          * Called when the slider value is changing.
          */
         handleSliderChange: function(e, ui) { 
+            var actual_value;
+            if (this.model.get("_range")) {
+                actual_value = ui.values.map(this._validate_slide_value);
+                this.$readout.text(actual_value.join("-"));
+            } else {
+                actual_value = this._validate_slide_value(ui.value);
+                this.$readout.text(actual_value);
+            }
+            
+            // Only persist the value while sliding if the continuous_update
+            // trait is set to true.
             if (this.model.get('continuous_update')) {
                 this.handleSliderChanged(e, ui);
             }            
@@ -273,10 +284,8 @@ define([
             var actual_value;
             if (this.model.get("_range")) {
                 actual_value = ui.values.map(this._validate_slide_value);
-                this.$readout.text(actual_value.join("-"));
             } else {
                 actual_value = this._validate_slide_value(ui.value);
-                this.$readout.text(actual_value);
             }
             this.model.set('value', actual_value, {updated_view: this});
             this.touch();
