@@ -11,6 +11,7 @@ import sys
 from traitlets import Unicode, List
 from IPython.display import clear_output
 from jupyter_client.session import Message
+from IPython import get_ipython
 
 class Output(DOMWidget):
     """Widget used as a context manager to display output.
