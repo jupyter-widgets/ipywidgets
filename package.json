@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "bower": "^1.5.3",
-    "clean-css": "*",
+    "clean-css": "^3.4.6",
     "less": "^2.5.3",
     "rimraf": "^2.4.1",
     "spawn-sync": "*",
