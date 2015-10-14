@@ -389,11 +389,7 @@ define([
         var backed_widgets_loaded = this._get_comm_info().then(function(comm_ids) {
             
             // Filter out non-widget comm ids
-            var comm_promises = Object.keys(comm_ids).filter(function(comm_id) { 
-                return comm_ids[comm_id].target_name === that.comm_target_name;
-            
-            // Construct a front-end comm for each comm id
-            }).map(function(comm_id) {
+            var comm_promises = Object.keys(comm_ids).map(function(comm_id) {
                 return that._create_comm(that.comm_target_name, comm_id);
             });
             
