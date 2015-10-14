@@ -207,15 +207,15 @@ define(["nbextensions/widgets/widgets/js/manager",
                                 delete that._resolve_received_state[parent_id];
                             }
                         }).catch(utils.reject("Couldn't resolve state request promise", true));
-                    break;
+                    return this.state_change;
                 case 'custom':
                     this.trigger('msg:custom', msg.content.data.content, msg.buffers);
-                    break;
+                    return Promise.resolve();
                 case 'display':
                     this.state_change = this.state_change.then(function() {
                         that.widget_manager.display_model(msg, that);
                     }).catch(utils.reject('Could not process display view msg', true));
-                    break;
+                    return this.state_change;
             }
         },
 
