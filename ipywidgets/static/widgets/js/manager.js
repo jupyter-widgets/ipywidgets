@@ -388,7 +388,7 @@ define([
         var that = this;
         var backed_widgets_loaded = this._get_comm_info().then(function(comm_ids) {
             
-            // Filter out non-widget comm ids
+            // Create comm class instances from comm ids.
             var comm_promises = Object.keys(comm_ids).map(function(comm_id) {
                 return that._create_comm(that.comm_target_name, comm_id);
             });
