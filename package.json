@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "npm run css && npm run buildtests",
-    "bower": "bower install",
+    "bower": "bower install --config.interactive=false",
     "precss": "rimraf ./ipywidgets/static/widgets/css/",
     "css": "node build_css.js",
     "prebuildtests": "rimraf ./ipywidgets/tests/bin/tests",
@@ -18,9 +18,9 @@
     "prepublish": "npm run bower && npm run build"
   },
   "devDependencies": {
-    "bower": "*",
-    "clean-css": "*",
-    "less": "~2",
+    "bower": "^1.5.3",
+    "clean-css": "^3.4.6",
+    "less": "^2.5.3",
     "rimraf": "^2.4.1",
     "spawn-sync": "*",
     "typescript": "~1.5.0-beta"
