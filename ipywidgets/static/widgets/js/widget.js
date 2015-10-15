@@ -56,6 +56,7 @@ define(["nbextensions/widgets/widgets/js/manager",
             this.msg_buffer = null;
             this.state_lock = null;
             this.id = model_id;
+            this._first_state = true;
 
             // Force backbone to think that the model has already been
             // synced with the server.  As of backbone 1.1, backbone
@@ -223,6 +224,10 @@ define(["nbextensions/widgets/widgets/js/manager",
             // Handle when a widget is updated via the python side.
             this.state_lock = state;
             try {
+                if (this._first_state) {
+                    this.trigger('ready', this);
+                    this._first_state = false;
+                }
                 WidgetModel.__super__.set.call(this, state);
             } finally {
                 this.state_lock = null;
