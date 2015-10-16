@@ -461,7 +461,7 @@ define([
                    var item_query = 'option[data-value="' + encodeURIComponent(item) + '"]';
                     if (that.$listbox.find(item_query).length === 0) {
                         $('<option />')
-                            .text(item.replace(/ /g, '\xa0')) // replace spaces with &nbsp; for correct rendering
+                            .text(item.replace ? item.replace(/ /g, '\xa0') : item) // replace string spaces with &nbsp; for correct rendering
                             .attr('data-value', encodeURIComponent(item))
                             .val(item)
                             .on("click", $.proxy(that.handle_click, that))
@@ -577,8 +577,17 @@ define([
              * Calling model.set will trigger all of the other views of the 
              * model to update.
              */
+            
+            // $listbox.val() returns a list of string.  In order to preserve 
+            // type information correctly, we need to map the selected indices
+            // to the options list.
+            var items = this.model.get('_options_labels');
+            var values = Array.prototype.map.call(this.$listbox[0].selectedOptions || [], function(option) {
+                return items[option.index];
+            });
+            
             this.model.set('selected_labels',
-                (this.$listbox.val() || []).slice(),
+                values,
                 {updated_view: this});
             this.touch();
         },
