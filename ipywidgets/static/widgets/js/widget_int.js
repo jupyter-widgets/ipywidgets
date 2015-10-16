@@ -202,8 +202,7 @@ define([
                 // ranges can be expressed either "val-val" or "val:val" (+spaces)
                 var match = this._range_regex.exec(text);
                 if (match) {
-                    var values = [this._parse_value(match[1]),
-                                  this._parse_value(match[2])];
+                    return [this._parse_value(match[1]), this._parse_value(match[2])];
                 } else {
                     return null;
                 }
@@ -239,8 +238,7 @@ define([
              *
              * the step size is not enforced
              */
-            var value = this.stringToValue(text);
-            var text = this.$readout.text();
+            var value = this.stringToValue(this.$readout.text());
             var vmin = this.model.get('min');
             var vmax = this.model.get('max');
             if (this.model.get("_range")) {
