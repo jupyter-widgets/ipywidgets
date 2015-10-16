@@ -200,7 +200,7 @@ def interactive(__interact_f, **kwargs):
     # are not DOMWidgets.
     c = [w for w in kwargs_widgets if isinstance(w, DOMWidget)]
 
-    # If we are only to run the function on demand, add a button to request this
+    # If we are only to run the function on demand, add a button to request this.
     if manual:
         manual_button = Button(description="Run %s" % f.__name__)
         c.append(manual_button)
@@ -236,6 +236,12 @@ def interactive(__interact_f, **kwargs):
     # On-demand running also suppresses running the function with the initial parameters
     if manual:
         manual_button.on_click(call_f)
+        
+        # Also register input handlers on text areas, so the user can hit return to
+        # invoke execution.
+        for w in kwargs_widgets:
+            if isinstance(w, Text):
+                w.on_submit(call_f)
     else:
         for widget in kwargs_widgets:
             widget.on_trait_change(call_f, 'value')
