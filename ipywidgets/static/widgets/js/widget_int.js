@@ -35,7 +35,7 @@ define([
                 .attr('contentEditable', true)
                 .hide();
                 
-            this.listenTo(this.model, 'change:slider_color', function(sender, value) {
+            this.listenTo(this.model, 'change:slider_handleTextChangecolor', function(sender, value) {
                 this.$slider.find('a').css('background', value);
             }, this);            
             this.listenTo(this.model, 'change:description', function(sender, value) {
@@ -133,7 +133,7 @@ define([
                     // values for the range case are validated python-side in
                     // _Bounded{Int,Float}RangeWidget._validate
                     this.$slider.slider('option', 'values', value);
-                    this.$readout.text(value.join("-"));
+                    this.$readout.text(this.valueToString(value));
                 } else {
                     if(value > max) { 
                         value = max; 
@@ -142,7 +142,7 @@ define([
                         value = min; 
                     }
                     this.$slider.slider('option', 'value', value);
-                    this.$readout.text(value);
+                    this.$readout.text(this.valueToString(value));
                 }
 
                 if(this.model.get('value')!=value) {
@@ -178,6 +178,41 @@ define([
             return IntSliderView.__super__.update.apply(this);
         },
         
+        /**
+         * Write value to a string
+         * @param  {number|number[]} value
+         * @return {string}
+         */
+        valueToString: function(value) {
+            if (this.model.get('_range')) {
+                return value.join("-");
+            } else {
+                return String(value);
+            }
+        },
+        
+        /**
+         * Parse value from a string
+         * @param  {string} text
+         * @return {number|number[]} value
+         */
+        stringToValue: function(text) {
+            if (this.model.get("_range")) {
+                // range case
+                // ranges can be expressed either "val-val" or "val:val" (+spaces)
+                var match = this._range_regex.exec(text);
+                if (match) {
+                    var values = [this._parse_value(match[1]),
+                                  this._parse_value(match[2])];
+                } else {
+                    return null;
+                }
+                
+            } else {
+                return this._parse_value(text);
+            }
+        },
+        
         events: {
             // Dictionary of events and their handlers.
             "slide" : "handleSliderChange",
@@ -204,53 +239,45 @@ define([
              *
              * the step size is not enforced
              */
-
+            var value = this.stringToValue(text);
             var text = this.$readout.text();
             var vmin = this.model.get('min');
             var vmax = this.model.get('max');
             if (this.model.get("_range")) {
-                // range case
-                // ranges can be expressed either "val-val" or "val:val" (+spaces)
-                var match = this._range_regex.exec(text);
-                if (match) {
-                    var values = [this._parse_value(match[1]),
-                                  this._parse_value(match[2])];
-                    // reject input where NaN or lower > upper
-                    if (isNaN(values[0]) ||
-                        isNaN(values[1]) ||
-                        (values[0] > values[1])) {
-                        this.$readout.text(this.model.get('value').join('-'));
-                    } else {
-                        // clamp to range
-                        values = [Math.max(Math.min(values[0], vmax), vmin),
-                                  Math.max(Math.min(values[1], vmax), vmin)];
-
-                        if ((values[0] != this.model.get('value')[0]) ||
-                            (values[1] != this.model.get('value')[1])) {
-                            this.$readout.text(values.join('-'));
-                            this.model.set('value', values, {updated_view: this});
-                            this.touch();
-                        } else {
-                            this.$readout.text(this.model.get('value').join('-'));
-                        }
-                    }
+                // reject input where NaN or lower > upper
+                if (value === null ||
+                    isNaN(value[0]) ||
+                    isNaN(value[1]) ||
+                    (value[0] > value[1])) {
+                    this.$readout.text(this.valueToString(this.model.get('value')));
                 } else {
-                    this.$readout.text(this.model.get('value').join('-'));
+                    // clamp to range
+                    value = [Math.max(Math.min(value[0], vmax), vmin),
+                              Math.max(Math.min(value[1], vmax), vmin)];
+
+                    if ((value[0] != this.model.get('value')[0]) ||
+                        (value[1] != this.model.get('value')[1])) {
+                        this.$readout.text(this.valueToString(value));
+                        this.model.set('value', value, {updated_view: this});
+                        this.touch();
+                    } else {
+                        this.$readout.text(this.valueToString(this.model.get('value')));
+                    }
                 }
             } else {
+                
                 // single value case
-                var value = this._parse_value(text);
                 if (isNaN(value)) {
-                    this.$readout.text(this.model.get('value'));
+                    this.$readout.text(this.valueToString(this.model.get('value')));
                 } else {
                     value = Math.max(Math.min(value, vmax), vmin);
 
                     if (value != this.model.get('value')) {
-                        this.$readout.text(value);
+                        this.$readout.text(this.valueToString(value));
                         this.model.set('value', value, {updated_view: this});
                         this.touch();
                     } else {
-                        this.$readout.text(this.model.get('value'));
+                        this.$readout.text(this.valueToString(this.model.get('value')));
                     }
                 }
             }
