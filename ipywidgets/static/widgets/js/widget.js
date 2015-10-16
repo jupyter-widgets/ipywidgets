@@ -224,11 +224,11 @@ define(["nbextensions/widgets/widgets/js/manager",
             // Handle when a widget is updated via the python side.
             this.state_lock = state;
             try {
+                WidgetModel.__super__.set.call(this, state);
                 if (this._first_state) {
                     this.trigger('ready', this);
                     this._first_state = false;
                 }
-                WidgetModel.__super__.set.call(this, state);
             } finally {
                 this.state_lock = null;
             }
