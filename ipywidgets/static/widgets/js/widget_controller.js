@@ -2,8 +2,8 @@
 // Distributed under the terms of the Modified BSD License.
 
 define([
-    "nbextensions/widgets/widgets/js/widget", 
-    "base/js/utils", 
+    "nbextensions/widgets/widgets/js/widget",
+    "base/js/utils",
 ], function(widget, utils) {
     'use strict';
 
@@ -92,7 +92,18 @@ define([
                 // Start the wait loop, and listen to updates of the only
                 // user-provided attribute, the gamepad index.
                 this.readout = 'Connect gamepad and press any button.';
-                this.wait_loop();
+                // Wait for the state to be provided by the backend.
+                this.on('ready', function() {
+                    if (this.get('connected')) {
+                        // No need to re-create Button and Axis widgets, re-use
+                        // the models provided by the backend which may already
+                        // be wired to other things.
+                        this.update_loop();
+                    } else {
+                        // Wait for a gamepad to be connected.
+                        this.wait_loop();
+                    }
+                }, this);
             }
         },
 
@@ -104,7 +115,6 @@ define([
             var index = this.get('index');
             var pad = navigator.getGamepads()[index];
             if (pad) {
-                this.index = index;
                 var that = this;
                 this.setup(pad).then(function(controls) {
                     that.set(controls);
@@ -144,12 +154,13 @@ define([
         },
 
         update_loop: function() {
-            /* Populates axes and button values, until the gamepad is disconnected.
+            /* Update axes and buttons values, until the gamepad is disconnected.
              * When the gamepad is disconnected, this.reset_gamepad is called.
-             */ 
+             */
             var index = this.get('index');
+            var id = this.get('name');
             var pad = navigator.getGamepads()[index];
-            if (pad && this.index === index) {
+            if (pad && index === pad.index && id === pad.id) {
                 this.set({
                     timestamp: pad.timestamp,
                     connected: pad.connected,
@@ -169,11 +180,11 @@ define([
                 window.requestAnimationFrame(this.update_loop.bind(this));
             } else {
                 this.reset_gamepad();
-            } 
+            }
         },
 
         reset_gamepad: function() {
-            /* Resets the gamepad attributes, and calls the wait_loop.
+            /* Resets the gamepad attributes, and start the wait_loop.
              */
             this.get('buttons').forEach(function(button) {
                 button.close();
@@ -197,7 +208,7 @@ define([
             /* Creates a gamepad button widget.
              */
             return this.widget_manager.new_widget({
-                 model_name: 'WidgetModel', 
+                 model_name: 'WidgetModel',
                  widget_class: 'ipywidgets.widgets.widget_controller.Button',
             }).then(function(model) {
                  model.set('description', index);
@@ -209,7 +220,7 @@ define([
             /* Creates a gamepad axis widget.
              */
             return this.widget_manager.new_widget({
-                 model_name: 'WidgetModel', 
+                 model_name: 'WidgetModel',
                  widget_class: 'ipywidgets.widgets.widget_controller.Axis',
             }).then(function(model) {
                  model.set('description', index);
@@ -217,7 +228,7 @@ define([
             });
         },
 
-    }, { 
+    }, {
 
         serializers: _.extend({
             buttons: {deserialize: widget.unpack_models},
@@ -267,7 +278,7 @@ define([
 
         update_label: function() {
             this.$label.text(this.model.get('name') || this.model.readout);
-        }, 
+        },
 
         add_button: function(model) {
             var that = this;
@@ -294,7 +305,7 @@ define([
                 return view;
             }).catch(utils.reject('Could not add axis view', true));
         },
- 
+
         remove: function() {
             ControllerView.__super__.remove.apply(this, arguments);
             this.button_views.remove();
