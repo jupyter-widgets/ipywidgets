@@ -15,7 +15,7 @@ define([
             this.containers = [];
             this.model_containers = {};
             this.children_views = new widget.ViewList(this.add_child_view, this.remove_child_view, this);
-            this.listenTo(this.model, 'change:children', function(model, value) {
+            this.listenTo(this.model, 'change:children', function(model, value, options) {
                 this.children_views.update(value);
             }, this);
         },
@@ -41,21 +41,9 @@ define([
         },
 
         /**
-         * Update the contents of this view
-         *
-         * Called when the model is changed.  The model may have been 
-         * changed by another view or by a state update from the back-end.
+         * Set tab titles
          */
-        update: function(options) {
-            this.update_titles();
-            this.update_selected_index(options);
-            return AccordionView.__super__.update.apply(this);
-        },
-
         update_titles: function() {
-            /**
-             * Set tab titles
-             */
             var titles = this.model.get('_titles');
             var that = this;
             _.each(titles, function(title, page_index) {
@@ -69,25 +57,48 @@ define([
             });
         },
 
+        /**
+         * Only update the selection if the selection wasn't triggered
+         * by the front-end.  It must be triggered by the back-end.
+         */
         update_selected_index: function(options) {
-            /**
-             * Only update the selection if the selection wasn't triggered
-             * by the front-end.  It must be triggered by the back-end.
-             */
             if (options === undefined || options.updated_view != this) {
                 var old_index = this.model.previous('selected_index');
                 var new_index = this.model.get('selected_index');
                 /* old_index can be out of bounds, this check avoids raising
-                   a (hrmless) javascript error. */
-                if (0 <= old_index && old_index < this.containers.length) {
-                    this.containers[old_index].children('.panel-collapse').collapse('hide');
-                }
-                if (0 <= new_index && new_index < this.containers.length) {
-                    this.containers[new_index].children('.panel-collapse').collapse('show');
-                }
+                   a javascript error. */
+                this.collapseTab(old_index);
+                this.expandTab(new_index);
             }
         },
-
+        
+        /**
+         * Collapses an accordion tab.
+         * @param  {number} index
+         */
+        collapseTab: function(index) {
+            // .children('.panel-collapse')
+            var page = this.containers[index].children('.collapse');
+            
+            if (page.hasClass('in')) {
+                page.removeClass('in');
+                page.collapse('hide');
+            }
+        },
+        
+        /**
+         * Expands an accordion tab.
+         * @param  {number} index
+         */
+        expandTab: function(index) {
+            var page = this.containers[index].children('.collapse');
+            
+            if (!page.hasClass('in')) {
+                page.addClass('in');
+                page.collapse('show');
+            }
+        },
+        
         remove_child_view: function(view) {
             /**
              * Called when a child is removed from children list.
@@ -141,7 +152,7 @@ define([
             accordion_inner.append(dummy);
             return this.create_child_view(model).then(function(view) {
                 dummy.replaceWith(view.$el);
-                that.update();
+                that.update_selected_index();
                 that.update_titles();
 
                 // Trigger the displayed event of the child view.
