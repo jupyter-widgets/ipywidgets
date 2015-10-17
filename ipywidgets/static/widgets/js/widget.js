@@ -665,7 +665,8 @@ define(["nbextensions/widgets/widgets/js/manager",
             for (var i = 0; i < css.length; i++) {
                 // Apply the css traits to all elements that match the selector.
                 var selector = css[i][0];
-                var elements = this.el.querySelectorAll(selector) || [this.el];
+                var parent = this.el.parentElement
+                var elements = parent.querySelectorAll(selector) || [this.el];
                 if (elements.length > 0) {
                     var trait_key = css[i][1];
                     var trait_value = css[i][2];
