@@ -565,7 +565,7 @@ define([
                 return ManagerBase.prototype.display_model.call(this, msg, model, options)
                     .catch(utils.reject('Could not display model', true));
             }
-        } else if (options && options.cell_index) {
+        } else if (options && options.cell_index !== undefined) {
             options.cell = this.notebook.get_cell(options.cell_index);
             return ManagerBase.prototype.display_model.call(this, msg, model, options)
                 .catch(utils.reject('Could not display model', true));
