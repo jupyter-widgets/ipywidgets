@@ -124,6 +124,7 @@ class FloatSlider(_BoundedFloat):
     _range = Bool(False, help="Display a range selector", sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.", sync=True)
     slider_color = Color(None, allow_none=True, sync=True)
+    continuous_update = Bool(True, sync=True, help="Update the value of the widget as the user is sliding the slider.")
 
 
 @register('IPython.FloatProgress')
@@ -280,3 +281,4 @@ class FloatRangeSlider(_BoundedFloatRange):
     _range = Bool(True, help="Display a range selector", sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.", sync=True)
     slider_color = Color(None, allow_none=True, sync=True)
+    continuous_update = Bool(True, sync=True, help="Update the value of the widget as the user is sliding the slider.")
