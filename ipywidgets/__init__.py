@@ -52,7 +52,7 @@ class CommInfo(Widget):
         comms = {
             k: dict(target_name=v.target_name)
             for (k, v) in self.comm.kernel.comm_manager.comms.items()
-            if v.target_name == target_name or target_name is None
+            if v is not self.comm and (v.target_name == target_name or target_name is None)
         }
         self.send(dict(comms=comms))
         self.close()
