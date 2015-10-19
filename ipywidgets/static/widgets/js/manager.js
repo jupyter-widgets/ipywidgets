@@ -165,8 +165,11 @@ define([
         if (options.comm) {
             commPromise = Promise.resolve(options.comm);
         } else {
-            commPromise = this._create_comm(this.comm_target_name, options.model_id,
-                                    {'widget_class': options.widget_class});
+            commPromise = this._create_comm(this.comm_target_name,
+                                            options.model_id, {
+                'widget_class': options.widget_class,
+                'target_name': 'ipython.widget',
+            });
         }
         
         var options_clone = _.clone(options);
@@ -562,7 +565,7 @@ define([
                 return ManagerBase.prototype.display_model.call(this, msg, model, options)
                     .catch(utils.reject('Could not display model', true));
             }
-        } else if (options && options.cell_index) {
+        } else if (options && options.cell_index !== undefined) {
             options.cell = this.notebook.get_cell(options.cell_index);
             return ManagerBase.prototype.display_model.call(this, msg, model, options)
                 .catch(utils.reject('Could not display model', true));
