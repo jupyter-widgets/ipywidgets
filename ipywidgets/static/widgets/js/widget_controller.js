@@ -3,7 +3,7 @@
 
 define([
     "nbextensions/widgets/widgets/js/widget",
-    "base/js/utils",
+    "nbextensions/widgets/widgets/js/utils",
 ], function(widget, utils) {
     'use strict';
 
@@ -143,7 +143,7 @@ define([
             });
             // Create buttons and axes. When done, start the update loop
             var that = this;
-            return utils.resolve_promises_dict({
+            return utils.resolvePromisesDict({
                 buttons: Promise.all(pad.buttons.map(function(btn, index) {
                     return that._create_button_model(index);
                 })),

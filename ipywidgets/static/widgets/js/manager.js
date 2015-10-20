@@ -4,11 +4,10 @@
 define([
     "underscore",
     "backbone",
-    "base/js/utils",
-    "base/js/namespace",
+    "nbextensions/widgets/widgets/js/utils",
     "services/kernels/comm",
     "nbextensions/widgets/widgets/js/manager-base"
-], function (_, Backbone, utils, IPython, comm, managerBase) {
+], function (_, Backbone, utils, comm, managerBase) {
     "use strict";
     
     //--------------------------------------------------------------------
@@ -323,9 +322,6 @@ define([
         });
     };
     
-    // Backwards compatibility.
-    IPython.WidgetManager = WidgetManager;
-
     return {
         'WidgetManager': WidgetManager
     };

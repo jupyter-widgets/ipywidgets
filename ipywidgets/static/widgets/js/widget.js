@@ -2,11 +2,10 @@
 // Distributed under the terms of the Modified BSD License.
 
 define(["nbextensions/widgets/widgets/js/manager",
+        "nbextensions/widgets/widgets/js/utils",
         "underscore",
-        "backbone",
-        "base/js/utils",
-        "base/js/namespace",
-], function(widgetmanager, _, Backbone, utils, IPython){
+        "backbone"
+], function(widgetmanager, utils, _, Backbone){
     "use strict";
 
     var unpack_models = function unpack_models(value, model) {
@@ -25,7 +24,7 @@ define(["nbextensions/widgets/widgets/js/manager",
             _.each(value, function(sub_value, key) {
                 unpacked[key] = unpack_models(sub_value, model);
             });
-            return utils.resolve_promises_dict(unpacked);
+            return utils.resolvePromisesDict(unpacked);
         } else if (typeof value === 'string' && value.slice(0,10) === "IPY_MODEL_") {
             // get_model returns a promise already
             return model.widget_manager.get_model(value.slice(10, value.length));
@@ -178,7 +177,7 @@ define(["nbextensions/widgets/widgets/js/manager",
             } else {
                 deserialized = state;
             }
-            return utils.resolve_promises_dict(deserialized);
+            return utils.resolvePromisesDict(deserialized);
         },
         _handle_comm_msg: function (msg) {
             /**
@@ -392,7 +391,7 @@ define(["nbextensions/widgets/widgets/js/manager",
                     }
                 }
             }
-            utils.resolve_promises_dict(attrs).then(function(state) {
+            utils.resolvePromisesDict(attrs).then(function(state) {
                 // get binary values, then send
                 var keys = Object.keys(state);
                 var buffers = [];

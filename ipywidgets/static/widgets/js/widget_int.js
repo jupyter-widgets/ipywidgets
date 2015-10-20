@@ -4,9 +4,8 @@
 define([
     "nbextensions/widgets/widgets/js/widget",
     "jqueryui",
-    "base/js/keyboard",
     "bootstrap"
-], function(widget, $, keyboard){
+], function(widget, $){
     
     var IntSliderView = widget.DOMWidgetView.extend({
         render : function(){
@@ -221,7 +220,7 @@ define([
         }, 
 
         handleKeyDown: function(e) {
-            if (e.keyCode == keyboard.keycodes.enter) {
+            if (e.keyCode == 13) { /* keyboard keycodes `enter` */
                 e.preventDefault();
                 this.handleTextChange();
             }

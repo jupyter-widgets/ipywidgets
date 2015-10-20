@@ -1,6 +1,9 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+// This widget is strongly coupled to the notebook because of the outputarea
+// dependency.
+// TODO: Use jupyter-js-output-area to break the coupling to the notebook.
 define([
     "nbextensions/widgets/widgets/js/widget",
     "jquery",

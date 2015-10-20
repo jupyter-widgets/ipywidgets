@@ -2,6 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 define([
+    "base/js/namespace",
     "nbextensions/widgets/widgets/js/manager",
     "nbextensions/widgets/widgets/js/widget",
     "nbextensions/widgets/widgets/js/widget_link",
@@ -17,7 +18,8 @@ define([
     "nbextensions/widgets/widgets/js/widget_selectioncontainer",
     "nbextensions/widgets/widgets/js/widget_string",
     "nbextensions/widgets/widgets/js/widget_controller",
-], function(widgetmanager, widget) {
+], function(IPython, widgetmanager, widget) {
+    
     // Register all of the loaded models and views with the widget manager.
     for (var i = 2; i < arguments.length; i++) {
         var module = arguments[i];
@@ -32,5 +34,11 @@ define([
             }
         }
     }
+    
+    // For backwards compatibility and interactive use:
+    IPython.WidgetManager = widgetmanager.WidgetManager;
+    IPython.Widget = widget.Widget;
+    IPython.DOMWidget = widget.DOMWidget;
+    
     return {'WidgetManager': widgetmanager.WidgetManager}; 
 });

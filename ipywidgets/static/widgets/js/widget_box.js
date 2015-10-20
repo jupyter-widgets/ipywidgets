@@ -3,11 +3,11 @@
 
 define([
     "nbextensions/widgets/widgets/js/widget",
+    "nbextensions/widgets/widgets/js/utils",
     "jqueryui",
     "underscore",
-    "base/js/utils",
     "bootstrap",
-], function(widget, $, _, utils) {
+], function(widget, utils, $, _) {
     "use strict";
 
     var BoxModel = widget.WidgetModel.extend({}, {

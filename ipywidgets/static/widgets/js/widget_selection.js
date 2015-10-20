@@ -3,7 +3,7 @@
 
 define([
     "nbextensions/widgets/widgets/js/widget",
-    "base/js/utils",
+    "nbextensions/widgets/widgets/js/utils",
     "jquery",
     "underscore",
     "bootstrap",
