@@ -1,6 +1,9 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+// TODO: ATTEMPT TO KILL THIS MODULE USING THIRD PARTY LIBRARIES WHEN IPYWIDGETS 
+// IS CONVERTED TO NODE COMMONJS.
+
 // npm compatibility
 if (typeof define !== 'function') { var define = require('./requirejs-shim')(module); }
 
@@ -141,12 +144,20 @@ define(["jquery"], function($) {
         });
     }
     
+    /**
+     * escape text to HTML
+     */
+    var escape_html = function (text) {
+        return $("<div/>").text(text).html();
+    };
+    
     return {
         uuid: uuid,
         WrappedError: WrappedError,
         loadClass: loadClass,
         resolvePromisesDict: resolvePromisesDict,
         reject: reject,
-        typeset: typeset
+        typeset: typeset,
+        escape_html: escape_html
     };
 });
