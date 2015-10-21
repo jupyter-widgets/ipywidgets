@@ -4,6 +4,10 @@
 // This is the main file that will be loaded when ipywidgets is required in an
 // npm environment.
 
+// HACK: node bootstrap requires this.
+global.jQuery = require('jquery');
+require('underscore');
+
 [
     require("./static/widgets/js/manager-base"),
     require("./static/widgets/js/widget"),

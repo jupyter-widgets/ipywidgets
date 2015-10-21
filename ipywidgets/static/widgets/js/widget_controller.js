@@ -7,7 +7,9 @@ if (typeof define !== 'function') { var define = require('./requirejs-shim')(mod
 define([
     "nbextensions/widgets/widgets/js/widget",
     "nbextensions/widgets/widgets/js/utils",
-], function(widget, utils) {
+    "jquery",
+    "underscore"
+], function(widget, utils, $, _) {
     'use strict';
 
     var Button = widget.DOMWidgetView.extend({

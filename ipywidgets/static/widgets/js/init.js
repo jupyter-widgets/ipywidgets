@@ -34,6 +34,7 @@ define([
             }
         }
     }
+    widgetmanager.WidgetManager.register_widget_model('WidgetModel', widget.WidgetModel);
     
     // For backwards compatibility and interactive use:
     IPython.WidgetManager = widgetmanager.WidgetManager;

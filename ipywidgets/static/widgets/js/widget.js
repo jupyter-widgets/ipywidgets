@@ -4,13 +4,12 @@
 // npm compatibility
 if (typeof define !== 'function') { var define = require('./requirejs-shim')(module); }
 
-define(["nbextensions/widgets/widgets/js/manager",
-        "nbextensions/widgets/widgets/js/utils",
+define(["nbextensions/widgets/widgets/js/utils",
         "underscore",
         "backbone"
-], function(widgetmanager, utils, _, Backbone){
+], function(utils, _, Backbone){
     "use strict";
-
+    
     var unpack_models = function unpack_models(value, model) {
         /**
          * Replace model ids with models recursively.
@@ -457,8 +456,7 @@ define(["nbextensions/widgets/widgets/js/manager",
             return "IPY_MODEL_" + this.id;
         }
     });
-    widgetmanager.WidgetManager.register_widget_model('WidgetModel', WidgetModel);
-
+    
 
     var WidgetViewMixin = {
         initialize: function(parameters) {
