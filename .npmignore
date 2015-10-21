@@ -29,3 +29,4 @@ ipywidgets/tests
 bower.json
 build_css.js
 setup.cfg
+examples/

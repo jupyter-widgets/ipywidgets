@@ -22,3 +22,5 @@ __pycache__
 .#*
 .coverage
 .xunit.xml
+
+index.built.js
