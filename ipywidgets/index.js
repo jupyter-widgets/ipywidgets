@@ -8,6 +8,7 @@
 global.jQuery = require('jquery');
 require('underscore');
 
+var utils = require("./static/widgets/js/utils");
 [
     require("./static/widgets/js/manager-base"),
     require("./static/widgets/js/widget"),
@@ -24,6 +25,8 @@ require('underscore');
     require("./static/widgets/js/widget_string"),
     require("./static/widgets/js/widget_controller")
 ].forEach(function(module) {
+    utils.registerWidgets(module);
+    
     Object.keys(module).forEach(function(name) {
         exports[name] = module[name];
     });

@@ -11,6 +11,7 @@ function requireLocalFiles() {
     require('./utils');
     require('./widget');
     require('./widget_int');
+    require('./manager-base');
 }
 
 module.exports = function createDefine(targetModule) {

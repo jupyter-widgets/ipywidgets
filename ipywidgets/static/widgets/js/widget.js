@@ -5,9 +5,10 @@
 if (typeof define !== 'function') { var define = require('./requirejs-shim')(module); }
 
 define(["nbextensions/widgets/widgets/js/utils",
+        "nbextensions/widgets/widgets/js/manager-base",
         "underscore",
         "backbone"
-], function(utils, _, Backbone){
+], function(utils, managerBase, _, Backbone){
     "use strict";
     
     var unpack_models = function unpack_models(value, model) {
@@ -820,6 +821,8 @@ define(["nbextensions/widgets/widgets/js/utils",
             });
         },
     });
+    
+    managerBase.ManagerBase.register_widget_model('WidgetModel', WidgetModel);
 
     // For backwards compatibility.
     var WidgetView = Backbone.View.extend(WidgetViewMixin);
