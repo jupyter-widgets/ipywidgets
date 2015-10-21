@@ -5,10 +5,12 @@
 // npm environment.
 
 // HACK: node bootstrap requires this.
-global.jQuery = require('jquery');
+global.jQuery = global.$ = require('jquery');
+require('jquery-ui');
+require('bootstrap');
 require('underscore');
 
-var utils = require("./static/widgets/js/utils");
+var register = require("./static/widgets/js/register");
 [
     require("./static/widgets/js/manager-base"),
     require("./static/widgets/js/widget"),
@@ -25,7 +27,7 @@ var utils = require("./static/widgets/js/utils");
     require("./static/widgets/js/widget_string"),
     require("./static/widgets/js/widget_controller")
 ].forEach(function(module) {
-    utils.registerWidgets(module);
+    register.registerWidgets(module);
     
     Object.keys(module).forEach(function(name) {
         exports[name] = module[name];

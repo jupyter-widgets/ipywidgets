@@ -1,0 +1,16 @@
+{
+  "name": "ipywidgets-test",
+  "version": "1.0.0",
+  "description": "Project that tests the ability to npm install ipywidgets within an npm project.",
+  "main": "index.js",
+  "scripts": {
+    "prepublish": "browserify index.js --outfile index.built.js --debug",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "IPython",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "browserify": "^11.2.0",
+    "ipywidgets": "file:../../.."
+  }
+}

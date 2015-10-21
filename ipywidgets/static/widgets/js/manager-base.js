@@ -158,7 +158,9 @@ define([
 
     /**
      * Create a comm and new widget model.
-     * @param  {Object} options - see new_model
+     * @param  {Object} options - same options as new_model but, comm is not
+     *                          needed and additional options are available:
+     * @param  {boolean} options.skipStateRequest - skip the request state call.
      * @return {Promise<WidgetModel>}
      */
     ManagerBase.prototype.new_widget = function(options) {
@@ -179,7 +181,11 @@ define([
             options_clone.comm = comm;
             return that.new_model(options_clone).then(function(model) {
                 // Requesting the state to populate default values.
-                return model.request_state();
+                if (options.skipStateRequest) {
+                    return model;
+                } else {                    
+                    return model.request_state();
+                }
             });
         });
     };

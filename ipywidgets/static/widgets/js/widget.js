@@ -7,8 +7,9 @@ if (typeof define !== 'function') { var define = require('./requirejs-shim')(mod
 define(["nbextensions/widgets/widgets/js/utils",
         "nbextensions/widgets/widgets/js/manager-base",
         "underscore",
-        "backbone"
-], function(utils, managerBase, _, Backbone){
+        "backbone",
+        "jquery"
+], function(utils, managerBase, _, Backbone, $){
     "use strict";
     
     var unpack_models = function unpack_models(value, model) {
@@ -88,10 +89,15 @@ define(["nbextensions/widgets/widgets/js/utils",
             var died = function() {
                 that.set_comm_live(false);
             };
-            widget_manager.notebook.events.on('kernel_disconnected.Kernel', died);
-            widget_manager.notebook.events.on('kernel_killed.Kernel', died);
-            widget_manager.notebook.events.on('kernel_restarting.Kernel', died);
-            widget_manager.notebook.events.on('kernel_dead.Kernel', died);
+            
+            // TODO: Move this logic into manager-base, so users can override it.
+            // Also, notebook related logic should not live in widget!!!
+            if (widget_manager.notebook) {
+                widget_manager.notebook.events.on('kernel_disconnected.Kernel', died);
+                widget_manager.notebook.events.on('kernel_killed.Kernel', died);
+                widget_manager.notebook.events.on('kernel_restarting.Kernel', died);
+                widget_manager.notebook.events.on('kernel_dead.Kernel', died);
+            }
         },
 
         send: function (content, callbacks, buffers) {

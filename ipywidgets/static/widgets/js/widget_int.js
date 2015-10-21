@@ -6,9 +6,10 @@ if (typeof define !== 'function') { var define = require('./requirejs-shim')(mod
 
 define([
     "nbextensions/widgets/widgets/js/widget",
+    "underscore",
     "jqueryui",
     "bootstrap"
-], function(widget, $){
+], function(widget, _, $){
     
     var IntSliderView = widget.DOMWidgetView.extend({
         render : function(){
