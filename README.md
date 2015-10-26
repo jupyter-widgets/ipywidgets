@@ -6,11 +6,26 @@
 
 ## Install
 
-0. Install [notebook](https://github.com/jupyter/notebook)
+You can install the current version of ipywidgets with pip or conda:
 
-1. Install the package
-    
+    pip install ipywidgets
+    # or
+    conda install ipywidgets
+
+
+### Development install
+
+To install ipywidgets from git, you will need [npm](https://www.npmjs.com/).
+
+0. clone the repo:
+
+        git clone https://github.com/ipython/ipywidgets
+        cd ipywidgets
+
+1. Dev-install of the package (run from repo directory):
+
         pip install -e .
+
 
 ## Test
 
