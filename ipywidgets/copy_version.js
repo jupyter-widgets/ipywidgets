@@ -20,12 +20,13 @@ if (dev) {
 }
 
 // Generate the version file contents.
-var contents = 
-    "# DO NOT EDIT!  NPM AUTOMATICALLY WRITES THIS FILE!\nversion_info = (" + 
-    major + ", " + 
-    minor + ", " + 
-    patch + ")\n__version__ = '.'.join(map(str, version_info))" + 
-    (dev ? " + 'dev'" : "");
+var contents =
+    "# DO NOT EDIT!  NPM AUTOMATICALLY WRITES THIS FILE!\nversion_info = (" +
+    major + ", " +
+    minor + ", " +
+    patch +
+    (dev ? ", 'dev'" : "") +
+    ")\n__version__ = '.'.join(map(str, version_info))\n";
 
 // Write the contents to the file.
 var fs = require("fs");
@@ -36,4 +37,4 @@ fs.writeFile("ipywidgets/_version.py", contents, function(err) {
     } else {
         console.log("Python version " + major + "." + minor + "." + patch + (dev ? "dev" : "") + " written");
     }
-}); 
+});
