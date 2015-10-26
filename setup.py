@@ -207,11 +207,15 @@ class NPM(Command):
 
         env = os.environ.copy()
         env['PATH'] = npm_path
-        check_call(['npm', 'run', 'build'])
+        if which('npm'):
+            check_call(['npm', 'run', 'build'])
         
         for t in self.targets:
             if not os.path.exists(t):
-                raise ValueError("Missing file: %s" % t)
+                msg = "Missing file: %s" % t
+                if not which('npm'):
+                    msg += '\nnpm is required to build a development version of ipywidgets'
+                raise ValueError(msg)
         
 
         # update package data in case this created new files
