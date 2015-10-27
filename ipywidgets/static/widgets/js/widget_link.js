@@ -1,10 +1,14 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+// npm compatibility
+if (typeof define !== 'function') { var define = require('./requirejs-shim')(module); }
+
 define([
     "nbextensions/widgets/widgets/js/widget",
     "jquery",
-], function(widget, $){
+    "underscore"
+], function(widget, $, _){
 
     var BaseLinkModel = widget.WidgetModel.extend({
 

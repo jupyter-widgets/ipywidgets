@@ -1,10 +1,15 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+// npm compatibility
+if (typeof define !== 'function') { var define = require('./requirejs-shim')(module); }
+
 define([
     "nbextensions/widgets/widgets/js/widget",
-    "base/js/utils",
-], function(widget, utils) {
+    "nbextensions/widgets/widgets/js/utils",
+    "jquery",
+    "underscore"
+], function(widget, utils, $, _) {
     'use strict';
 
     var Button = widget.DOMWidgetView.extend({
@@ -143,7 +148,7 @@ define([
             });
             // Create buttons and axes. When done, start the update loop
             var that = this;
-            return utils.resolve_promises_dict({
+            return utils.resolvePromisesDict({
                 buttons: Promise.all(pad.buttons.map(function(btn, index) {
                     return that._create_button_model(index);
                 })),

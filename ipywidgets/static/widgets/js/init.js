@@ -2,8 +2,10 @@
 // Distributed under the terms of the Modified BSD License.
 
 define([
+    "base/js/namespace",
     "nbextensions/widgets/widgets/js/manager",
     "nbextensions/widgets/widgets/js/widget",
+    "nbextensions/widgets/widgets/js/register",
     "nbextensions/widgets/widgets/js/widget_link",
     "nbextensions/widgets/widgets/js/widget_bool",
     "nbextensions/widgets/widgets/js/widget_button",
@@ -17,20 +19,18 @@ define([
     "nbextensions/widgets/widgets/js/widget_selectioncontainer",
     "nbextensions/widgets/widgets/js/widget_string",
     "nbextensions/widgets/widgets/js/widget_controller",
-], function(widgetmanager, widget) {
+], function(IPython, widgetmanager, widget, register) {
+    
     // Register all of the loaded models and views with the widget manager.
-    for (var i = 2; i < arguments.length; i++) {
+    for (var i = 4; i < arguments.length; i++) {
         var module = arguments[i];
-        for (var target_name in module) {
-            if (module.hasOwnProperty(target_name)) {
-                var target = module[target_name];
-                if (target.prototype instanceof widget.WidgetModel) {
-                    widgetmanager.WidgetManager.register_widget_model(target_name, target);
-                } else if (target.prototype instanceof widget.WidgetView) {
-                    widgetmanager.WidgetManager.register_widget_view(target_name, target);
-                }
-            }
-        }
+        register.registerWidgets(module);
     }
+    
+    // For backwards compatibility and interactive use:
+    IPython.WidgetManager = widgetmanager.WidgetManager;
+    IPython.Widget = widget.Widget;
+    IPython.DOMWidget = widget.DOMWidget;
+    
     return {'WidgetManager': widgetmanager.WidgetManager}; 
 });

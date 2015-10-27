@@ -1,13 +1,16 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+// npm compatibility
+if (typeof define !== 'function') { var define = require('./requirejs-shim')(module); }
+
 define([
     "nbextensions/widgets/widgets/js/widget",
+    "nbextensions/widgets/widgets/js/utils",
     "jqueryui",
     "underscore",
-    "base/js/utils",
     "bootstrap",
-], function(widget, $, _, utils) {
+], function(widget, utils, $, _) {
     "use strict";
 
     var BoxModel = widget.WidgetModel.extend({}, {

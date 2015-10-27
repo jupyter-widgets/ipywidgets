@@ -1,12 +1,15 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+// npm compatibility
+if (typeof define !== 'function') { var define = require('./requirejs-shim')(module); }
+
 define([
     "nbextensions/widgets/widgets/js/widget",
+    "underscore",
     "jqueryui",
-    "base/js/keyboard",
     "bootstrap"
-], function(widget, $, keyboard){
+], function(widget, _, $){
     
     var IntSliderView = widget.DOMWidgetView.extend({
         render : function(){
@@ -221,7 +224,7 @@ define([
         }, 
 
         handleKeyDown: function(e) {
-            if (e.keyCode == keyboard.keycodes.enter) {
+            if (e.keyCode == 13) { /* keyboard keycodes `enter` */
                 e.preventDefault();
                 this.handleTextChange();
             }

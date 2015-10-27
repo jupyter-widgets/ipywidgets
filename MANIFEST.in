@@ -4,7 +4,7 @@ include README.md
 include package.json
 include bower.json
 include .bowerrc
-include build_css.js
+include ipywidgets/build_css.js
 
 # Documentation
 graft docs

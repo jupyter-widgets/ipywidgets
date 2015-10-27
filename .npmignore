@@ -6,8 +6,6 @@ docs/man/*.gz
 docs/source/api/generated
 docs/gh-pages
 ipywidgets/static/components
-ipywidgets/static/widgets/css
-ipywidgets/tests/bin
 less_include
 node_modules
 *.py[co]
@@ -23,4 +21,12 @@ __pycache__
 .coverage
 .xunit.xml
 
-index.built.js
+*.py
+ipywidgets/widgets
+ipywidgets/tests
+.bowerrc
+.travis.yml
+bower.json
+build_css.js
+setup.cfg
+examples/
