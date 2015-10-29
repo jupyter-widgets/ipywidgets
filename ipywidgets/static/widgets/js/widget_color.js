@@ -17,7 +17,7 @@ define([
                 .appendTo(this.$el);
 
             this.$color_container = $("<div />")
-                .addClass("widget-hbox")
+                .addClass("widget-hbox input-group")
                 .appendTo(this.$el);
 
             this.$textbox = $("<input type='text' />")
@@ -26,7 +26,8 @@ define([
                 .val(this.model.get("value"));
 
             this.$colorpicker = $("<input type='color' />")
-                .addClass("btn btn-default")
+                .addClass("input-group-addon")
+                .css("width", "32px")
                 .appendTo(this.$color_container);
 
             this.listenTo(this.model, "change:value", this._update_value, this);
