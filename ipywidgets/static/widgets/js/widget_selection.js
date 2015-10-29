@@ -10,15 +10,15 @@ define([
     "jquery",
     "underscore",
     "bootstrap",
-], function(widget, utils, $, _){
+], function(widget, utils, $, _) {
 
     var DropdownView = widget.DOMWidgetView.extend({
-        render : function(){
+        render : function() {
             /**
              * Called when view is rendered.
              */
             this.$el
-                .addClass('widget-hbox widget-dropdown');
+                .addClass('ipy-widget widget-hbox widget-dropdown');
             this.$label = $('<div />')
                 .appendTo(this.$el)
                 .addClass('widget-label')
@@ -52,7 +52,7 @@ define([
             this.update();
         },
         
-        update : function(options){
+        update : function(options) {
             /**
              * Update the contents of this view
              *
@@ -162,12 +162,12 @@ define([
 
 
     var RadioButtonsView = widget.DOMWidgetView.extend({    
-        render : function(){
+        render : function() {
             /**
              * Called when view is rendered.
              */
             this.$el
-                .addClass('widget-hbox widget-radio');
+                .addClass('ipy-widget widget-hbox widget-radio');
             this.$label = $('<div />')
                 .appendTo(this.$el)
                 .addClass('widget-label')
@@ -178,7 +178,7 @@ define([
             this.update();
         },
         
-        update : function(options){
+        update : function(options) {
             /**
              * Update the contents of this view
              *
@@ -279,7 +279,7 @@ define([
              * Called when view is rendered.
              */
             this.$el
-                .addClass('widget-hbox widget-toggle-buttons');
+                .addClass('ipy-widget widget-hbox widget-toggle-buttons');
             this.$label = $('<div />')
                 .appendTo(this.$el)
                 .addClass('widget-label')
@@ -295,7 +295,7 @@ define([
             this.update();
         },
         
-        update : function(options){
+        update : function(options) {
             /**
              * Update the contents of this view
              *
@@ -426,12 +426,12 @@ define([
     
 
     var SelectView = widget.DOMWidgetView.extend({    
-        render : function(){
+        render : function() {
             /**
              * Called when view is rendered.
              */
             this.$el
-                .addClass('widget-hbox widget-select');
+                .addClass('ipy-widget widget-hbox widget-select');
             this.$label = $('<div />')
                 .appendTo(this.$el)
                 .addClass('widget-label')
@@ -444,7 +444,7 @@ define([
             this.update();
         },
         
-        update : function(options){
+        update : function(options) {
             /**
              * Update the contents of this view
              *
@@ -533,8 +533,8 @@ define([
 
 
     var SelectMultipleView = SelectView.extend({
-        render: function(){
-            /**
+        render: function() {
+            /**n
              * Called when view is rendered.
              */
             SelectMultipleView.__super__.render.apply(this);
@@ -548,7 +548,7 @@ define([
             return this;
         },
 
-        update: function(){
+        update: function() {
             /**
              * Update the contents of this view
              *
@@ -559,7 +559,7 @@ define([
             this.$listbox.val(this.model.get('selected_labels'));
         },
         
-        handle_click: function(){
+        handle_click: function() {
             /**
              * Overload click from select
              *
