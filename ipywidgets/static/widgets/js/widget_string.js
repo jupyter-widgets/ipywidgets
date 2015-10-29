@@ -65,7 +65,7 @@ define([
                 .hide();
             this.$textbox = $('<textarea />')
                 .attr('rows', 5)
-                .addClass('widget-text form-control')
+                .addClass('form-control')
                 .appendTo(this.$el);
             this.update(); // Set defaults.
 
@@ -128,11 +128,7 @@ define([
             /**
              * Set a css attr of the widget view.
              */
-            if (name == 'padding' || name == 'margin') {
-                this.$el.css(name, value);
-            } else {
-                this.$textbox.css(name, value);
-            }
+            this.$el.css(name, value);
         },
         
         events: {
@@ -168,7 +164,7 @@ define([
                 .hide();
             this.$textbox = $('<input type="text" />')
                 .addClass('input')
-                .addClass('widget-text form-control')
+                .addClass('form-control')
                 .appendTo(this.$el);
             this.update(); // Set defaults.
             this.listenTo(this.model, 'change:placeholder', function(model, value, options) {
@@ -215,11 +211,7 @@ define([
             /**
              * Set a css attr of the widget view.
              */
-            if (name == 'padding' || name == 'margin') {
-                this.$el.css(name, value);
-            } else {
-                this.$textbox.css(name, value);
-            }
+            this.$el.css(name, value);
         },
         
         events: {
