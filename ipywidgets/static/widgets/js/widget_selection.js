@@ -131,15 +131,10 @@ define([
             } else if (name == 'width') {
                 this.$droplist.css(name, value);
                 this.$droplabel.css(name, value);
-            } else if (name == 'padding') {
-                this.$droplist.css(name, value);
-                this.$buttongroup.css(name, value);
-            } else if (name == 'margin') {
-                this.$buttongroup.css(name, value);
             } else if (name == 'height') {
                 this.$droplabel.css(name, value);
                 this.$dropbutton.css(name, value);
-            } else if (name == 'padding' || name == 'margin') {
+            } else if (name == 'margin' || name == 'padding') {
                 this.$el.css(name, value);
             } else {
                 this.$droplist.css(name, value);

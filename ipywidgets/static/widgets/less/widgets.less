@@ -199,6 +199,10 @@
     /* Listbox */
     width         : @widget-width;
     margin-bottom : 0px;
+    /* Bootstrap does some weird stuff with the margins of select boxes.  The 
+    specifity of the media selector needs to be overwritten using important */
+    margin-left   : 0px !important; 
+    margin-right  : 0px !important;
 }
 
 .widget-numeric-text {
