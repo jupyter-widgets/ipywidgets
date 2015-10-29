@@ -8,7 +8,7 @@ click events on the button and trigger backend code when the clicks are fired.
 # Distributed under the terms of the Modified BSD License.
 
 from .widget import DOMWidget, CallbackDispatcher, register
-from traitlets import Unicode, Bool, CaselessStrEnum
+from traitlets import Unicode, Bool, CaselessStrEnum, CUnicode
 
 
 @register('IPython.Button')
@@ -38,6 +38,10 @@ class Button(DOMWidget):
         values=['primary', 'success', 'info', 'warning', 'danger', ''], 
         default_value='', allow_none=True, sync=True, help="""Use a
         predefined styling for the button.""")
+        
+    # Set sensible default styling.
+    width = CUnicode('100px', sync=True)
+    margin = CUnicode('2px', sync=True)
     
     def __init__(self, **kwargs):
         """Constructor"""
