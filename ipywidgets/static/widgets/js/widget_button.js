@@ -11,12 +11,12 @@ define([
 ], function(widget, $){
 
     var ButtonView = widget.DOMWidgetView.extend({
-        render : function(){
+        render: function() {
             /**
              * Called when view is rendered.
              */
             this.setElement($("<button />")
-                .addClass('btn btn-default'));
+                .addClass('widget-button btn btn-default'));
             this.$el.attr("data-toggle", "tooltip");
             this.listenTo(this.model, 'change:button_style', function(model, value) {
                 this.update_button_style();
@@ -26,7 +26,7 @@ define([
             this.update(); // Set defaults.
         },
         
-        update : function(){
+        update: function() {
             /**
              * Update the contents of this view
              *
@@ -64,7 +64,7 @@ define([
             'click': '_handle_click',
         },
         
-        _handle_click: function(){
+        _handle_click: function() {
             /**
              * Handles when the button is clicked.
              */
