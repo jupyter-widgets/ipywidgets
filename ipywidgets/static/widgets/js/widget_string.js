@@ -207,13 +207,6 @@ define([
             return TextView.__super__.update.apply(this);
         },
 
-        update_attr: function(name, value) {
-            /**
-             * Set a css attr of the widget view.
-             */
-            this.$el.css(name, value);
-        },
-        
         events: {
             // Dictionary of events and their handlers.
             "keyup input"    : "handleChanging",
