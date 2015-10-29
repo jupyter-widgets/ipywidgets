@@ -573,16 +573,16 @@ define(["nbextensions/widgets/widgets/js/utils",
                 this.update_attr('background', value); }, this);
 
             this.listenTo(this.model, 'change:width', function (model, value) { 
-                this.update_attr('width', value); }, this);
+                this.update_attr('width', this._default_px(value)); }, this);
 
             this.listenTo(this.model, 'change:height', function (model, value) { 
-                this.update_attr('height', value); }, this);
+                this.update_attr('height', this._default_px(value)); }, this);
 
             this.listenTo(this.model, 'change:border_color', function (model, value) { 
                 this.update_attr('border-color', value); }, this);
 
             this.listenTo(this.model, 'change:border_width', function (model, value) { 
-                this.update_attr('border-width', value); }, this);
+                this.update_attr('border-width', this._default_px(value)); }, this);
 
             this.listenTo(this.model, 'change:border_style', function (model, value) { 
                 this.update_attr('border-style', value); }, this);
@@ -600,7 +600,7 @@ define(["nbextensions/widgets/widgets/js/utils",
                 this.update_attr('font-family', value); }, this);
 
             this.listenTo(this.model, 'change:padding', function (model, value) { 
-                this.update_attr('padding', value); }, this);
+                this.update_attr('padding', this._default_px(value)); }, this);
 
             this.listenTo(this.model, 'change:margin', function (model, value) { 
                 this.update_attr('margin', this._default_px(value)); }, this);
@@ -614,16 +614,16 @@ define(["nbextensions/widgets/widgets/js/utils",
                 
                 this.update_attr('color', this.model.get('color'));
                 this.update_attr('background', this.model.get('background_color'));
-                this.update_attr('width', this.model.get('width'));
-                this.update_attr('height', this.model.get('height'));
+                this.update_attr('width', this._default_px(this.model.get('width')));
+                this.update_attr('height', this._default_px(this.model.get('height')));
                 this.update_attr('border-color', this.model.get('border_color'));
-                this.update_attr('border-width', this.model.get('border_width'));
+                this.update_attr('border-width', this._default_px(this.model.get('border_width')));
                 this.update_attr('border-style', this.model.get('border_style'));
                 this.update_attr('font-style', this.model.get('font_style'));
                 this.update_attr('font-weight', this.model.get('font_weight'));
                 this.update_attr('font-size', this._default_px(this.model.get('font_size')));
                 this.update_attr('font-family', this.model.get('font_family'));
-                this.update_attr('padding', this.model.get('padding'));
+                this.update_attr('padding', this._default_px(this.model.get('padding')));
                 this.update_attr('margin', this._default_px(this.model.get('margin')));
                 this.update_attr('border-radius', this._default_px(this.model.get('border_radius')));
 
