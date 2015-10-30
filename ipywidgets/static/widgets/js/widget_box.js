@@ -36,7 +36,7 @@ define([
 
         render: function() {
             var that = this;
-            var child_view = this.set_child(this.model.get("child"))
+            var child_view = this.set_child(this.model.get("child"));
             this.listenTo(this.model, "change:child", function(model, value) {
                 this.set_child(value);
             });
@@ -105,6 +105,19 @@ define([
             this.listenTo(this.model, 'change:overflow_x', this.update_overflow_x, this);
             this.listenTo(this.model, 'change:overflow_y', this.update_overflow_y, this);
             this.listenTo(this.model, 'change:box_style', this.update_box_style, this);
+            
+            this.deprecationWarning();
+        },
+        
+        /**
+         * Warn when the user tries to use this view directly.
+         */
+        deprecationWarning: function() {
+            if (!BoxView.warned) {
+                BoxView.warned = true;
+                console.warn('BoxView will become FlexBoxView in ipywidgets 6.0 and ' +
+                    'FlexBoxView will be removed.');
+            }
         },
 
         update_attr: function(name, value) {
@@ -191,6 +204,24 @@ define([
             this._pack_changed();
             this._align_changed();
             this.update_orientation();
+            
+            // New properties for 5.0
+            this.listenTo(this.model, 'change:display', this.updateDisplay, this);
+            this.listenTo(this.model, 'change:wrap', this.updateWrap, this);
+            this.listenTo(this.model, 'change:justify', this.updateJustify, this);
+            this.updateDisplay();
+            this.updateWrap();
+            this.updateJustify();
+        },
+        
+        /**
+         * Warn that this view will be renamed.
+         */
+        deprecationWarning: function() {
+            if (!FlexBoxView.warned) {
+                FlexBoxView.warned = true;
+                console.warn('FlexBoxView will be renamed to BoxView in ipywidgets 6.0.');
+            }
         },
 
         update_orientation: function() {
@@ -222,6 +253,27 @@ define([
             }
             this.$box.addClass('align-' + this.model.get('align'));
         },
+
+        /**
+         * Called when the display state changes.
+         */
+        updateDisplay: function() {
+            this.$box.css('display', this.model.get('display'));
+        },
+
+        /**
+         * Called when the display state changes.
+         */
+        updateWrap: function() {
+            this.$box.css('flex-wrap', this.model.get('wrap'));
+        },
+
+        /**
+         * Called when the display state changes.
+         */
+        updateJustify: function() {
+            this.$box.css('justify-content', this.model.get('justify'));
+        }
     });
 
     return {

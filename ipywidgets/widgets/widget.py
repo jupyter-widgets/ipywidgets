@@ -499,7 +499,23 @@ class DOMWidget(Widget):
         default_value='', sync=True)
     font_size = CUnicode(sync=True)
     font_family = Unicode(sync=True)
-
+    
+    # New flex properties added in 5.0
+    order = Int(sync=True, allow_none=True)
+    grow = Int(sync=True, allow_none=True)
+    shrink = Int(sync=True, allow_none=True)
+    basis = CUnicode(sync=True, allow_none=True)
+    flex = CUnicode(sync=True, allow_none=True)
+    align_self = CaselessStrEnum(values=[
+        'auto', 
+        'flex-start', 
+        'flex-end', 
+        'center', 
+        'baseline', 
+        'stretch'],
+        sync=True, allow_none=True)
+    
+    
     def __init__(self, *pargs, **kwargs):
         super(DOMWidget, self).__init__(*pargs, **kwargs)
 
