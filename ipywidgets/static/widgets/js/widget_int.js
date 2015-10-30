@@ -471,9 +471,10 @@ define([
             /**
              * Called when view is rendered.
              */
+            this.$el.addClass('ipy-widget widget-progress');
             this.$label = $('<div />')
                 .appendTo(this.$el)
-                .addClass('ipy-widget widget-label')
+                .addClass('widget-label')
                 .hide();
             this.$progress = $('<div />')
                 .addClass('progress')

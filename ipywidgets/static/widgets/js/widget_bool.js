@@ -84,7 +84,7 @@ define([
              */
             var that = this;
             this.setElement($('<button />')
-                .addClass('btn btn-default')
+                .addClass('ipy-widget widget-button btn btn-default')
                 .attr('type', 'button')
                 .on('click', function (e) {
                     e.preventDefault();
