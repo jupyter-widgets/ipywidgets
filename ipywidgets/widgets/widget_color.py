@@ -6,7 +6,8 @@ Represents an HTML Color .
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from .widget import DOMWidget, register
+from .domwidget import DOMWidget
+from .widget import register
 from .trait_types import Color
 from traitlets import Unicode, Bool
 

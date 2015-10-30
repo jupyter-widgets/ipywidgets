@@ -9,7 +9,8 @@ Represents an enumeration using a widget.
 from collections import OrderedDict
 from threading import Lock
 
-from .widget import DOMWidget, register
+from .domwidget import DOMWidget
+from .widget import register
 from traitlets import (
     Unicode, Bool, Any, Dict, TraitError, CaselessStrEnum, Tuple, List
 )

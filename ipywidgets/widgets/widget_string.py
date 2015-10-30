@@ -6,7 +6,8 @@ Represents a unicode string using a widget.
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from .widget import DOMWidget, CallbackDispatcher, register
+from .domwidget import DOMWidget
+from .widget import CallbackDispatcher, register
 from traitlets import Unicode, Bool
 
 

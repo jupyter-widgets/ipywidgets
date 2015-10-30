@@ -6,7 +6,8 @@ Represents a container that can be used to group other widgets.
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from .widget import Widget, DOMWidget, register, widget_serialization
+from .domwidget import DOMWidget
+from .widget import Widget, register, widget_serialization
 from traitlets import Unicode, Tuple, Int, CaselessStrEnum, Instance
 
 

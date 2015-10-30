@@ -8,7 +8,8 @@ Represents an image in the frontend using a widget.
 
 import base64
 
-from .widget import DOMWidget, register
+from .domwidget import DOMWidget
+from .widget import register
 from traitlets import Unicode, CUnicode, Bytes
 
 

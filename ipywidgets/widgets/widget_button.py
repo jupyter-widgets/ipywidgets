@@ -7,7 +7,8 @@ click events on the button and trigger backend code when the clicks are fired.
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from .widget import DOMWidget, CallbackDispatcher, register
+from .domwidget import DOMWidget
+from .widget import CallbackDispatcher, register
 from traitlets import Unicode, Bool, CaselessStrEnum
 
 

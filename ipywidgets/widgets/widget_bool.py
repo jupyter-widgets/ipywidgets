@@ -6,7 +6,8 @@ Represents a boolean using a widget.
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from .widget import DOMWidget, register
+from .domwidget import DOMWidget
+from .widget import register
 from traitlets import Unicode, Bool, CaselessStrEnum
 
 
