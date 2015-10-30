@@ -191,10 +191,6 @@ define(["nbextensions/widgets/widgets/js/utils",
             return utils.resolvePromisesDict(deserialized);
         },
         
-        serializers: _.extend({
-            style: {deserialize: unpack_models},
-        }, WidgetModel.serializers),
-        
         _handle_comm_msg: function (msg) {
             /**
              * Handle incoming comm msg.
@@ -604,6 +600,11 @@ define(["nbextensions/widgets/widgets/js/utils",
 
             this.listenTo(this.model, 'change:border_radius', function (model, value) { 
                 this.update_attr('border-radius', this._default_px(value)); }, this);
+                
+            this.stylePromise = Promise.resolve();
+            this.listenTo(this.model, "change:style", function(model, value) {
+                this.setStyle(value, model.previous('style'));
+            });
 
             this.displayed.then(_.bind(function() {
                 this.update_visible(this.model, this.model.get("visible"));
@@ -625,7 +626,28 @@ define(["nbextensions/widgets/widgets/js/utils",
                 this.update_attr('border-radius', this._default_px(this.model.get('border_radius')));
 
                 this.update_css(this.model, this.model.get("_css"));
+                
+                this.setStyle(this.model.get('style'));
             }, this));
+        },
+        
+        serializers: _.extend({
+            style: {deserialize: unpack_models},
+        }, WidgetModel.serializers),
+        
+        setStyle: function(style, oldStyle) {
+            if (style) {
+                var that = this;
+                this.stylePromise = this.stylePromise.then(function() {
+                    return that.create_child_view(style).then(function(view) {
+                        
+                        // Trigger the displayed event of the child view.
+                        that.displayed.then(function() {
+                            view.trigger('displayed', that);
+                        });
+                    }).catch(utils.reject("Couldn't add StyleView to DOMWidgetView", true));
+                });
+            }
         },
 
         _default_px: function(value) {
@@ -674,7 +696,7 @@ define(["nbextensions/widgets/widgets/js/utils",
             for (var i = 0; i < css.length; i++) {
                 // Apply the css traits to all elements that match the selector.
                 var selector = css[i][0];
-                var parent = this.el.parentElement
+                var parent = this.el.parentElement;
                 var elements = parent.querySelectorAll(selector) || [this.el];
                 if (elements.length > 0) {
                     var trait_key = css[i][1];
