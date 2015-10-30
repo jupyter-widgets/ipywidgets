@@ -7,18 +7,19 @@ if (typeof define !== 'function') { var define = require('./requirejs-shim')(mod
 define([
     "nbextensions/widgets/widgets/js/widget",
     "jquery",
-], function(widget, $){
+], function(widget, $) {
     
     var ImageView = widget.DOMWidgetView.extend({  
-        render : function(){
+        render : function() {
             /**
              * Called when view is rendered.
              */
-            this.setElement($("<img />"));
+            this.setElement($("<img />")
+                .addClass("ipy-widget widget-image"));
             this.update(); // Set defaults.
         },
         
-        update : function(){
+        update : function() {
             /**
              * Update the contents of this view
              *

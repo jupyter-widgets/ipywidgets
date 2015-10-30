@@ -9,7 +9,7 @@ define([
     "nbextensions/widgets/widgets/js/utils",
     "jquery",
     "bootstrap",
-], function(widget, utils, $){
+], function(widget, utils, $) {
 
     var AccordionView = widget.DOMWidgetView.extend({
         initialize: function(){
@@ -23,14 +23,14 @@ define([
             }, this);
         },
 
-        render: function(){
+        render: function() {
             /**
              * Called when view is rendered.
              */
             var guid = 'panel-group' + utils.uuid();
             this.$el
                 .attr('id', guid)
-                .addClass('panel-group');
+                .addClass('ipy-widget panel-group');
             this.listenTo(this.model, 'change:selected_index', function(model, value, options) {
                 this.update_selected_index(options);
             }, this);
@@ -132,7 +132,7 @@ define([
                 .attr('data-toggle', 'collapse')
                 .attr('data-parent', '#' + this.$el.attr('id'))
                 .attr('href', '#' + uuid)
-                .click(function(evt){ 
+                .click(function(evt) { 
             
                     // Calling model.set will trigger all of the other views of the 
                     // model to update.
@@ -192,7 +192,7 @@ define([
             }, this);
         },
 
-        render: function(){
+        render: function() {
             /**
              * Called when view is rendered.
              */

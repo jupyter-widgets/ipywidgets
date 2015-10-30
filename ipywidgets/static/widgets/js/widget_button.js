@@ -16,7 +16,7 @@ define([
              * Called when view is rendered.
              */
             this.setElement($("<button />")
-                .addClass('widget-button btn btn-default'));
+                .addClass('ipy-widget widget-button btn btn-default'));
             this.$el.attr("data-toggle", "tooltip");
             this.listenTo(this.model, 'change:button_style', function(model, value) {
                 this.update_button_style();

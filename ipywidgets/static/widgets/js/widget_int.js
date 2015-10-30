@@ -9,15 +9,15 @@ define([
     "underscore",
     "jqueryui",
     "bootstrap"
-], function(widget, _, $){
+], function(widget, _, $) {
     
     var IntSliderView = widget.DOMWidgetView.extend({
-        render : function(){
+        render : function() {
             /**
              * Called when view is rendered.
              */
             this.$el
-                .addClass('widget-hbox widget-slider');
+                .addClass('ipy-widget widget-hbox widget-slider');
             this.$label = $('<div />')
                 .appendTo(this.$el)
                 .addClass('widget-label')
@@ -82,7 +82,7 @@ define([
             }
         },
         
-        update : function(options){
+        update : function(options) {
             /**
              * Update the contents of this view
              *
@@ -141,7 +141,7 @@ define([
                     if(value > max) { 
                         value = max; 
                     }
-                    else if(value < min){ 
+                    else if(value < min) { 
                         value = min; 
                     }
                     this.$slider.slider('option', 'value', value);
@@ -339,12 +339,12 @@ define([
 
 
     var IntTextView = widget.DOMWidgetView.extend({    
-        render : function(){
+        render : function() {
             /**
              * Called when view is rendered.
              */
             this.$el
-                .addClass('widget-hbox widget-numeric-text');
+                .addClass('ipy-widget widget-hbox widget-numeric-text');
             this.$label = $('<div />')
                 .appendTo(this.$el)
                 .addClass('widget-label')
@@ -372,7 +372,7 @@ define([
             }
         },
         
-        update : function(options){
+        update : function(options) {
             /**
              * Update the contents of this view
              *
@@ -467,10 +467,11 @@ define([
 
 
     var ProgressView = widget.DOMWidgetView.extend({
-        render : function(){
+        render : function() {
             /**
              * Called when view is rendered.
              */
+            this.$el.addClass('ipy-widget widget-progress');
             this.$label = $('<div />')
                 .appendTo(this.$el)
                 .addClass('widget-label')
@@ -511,7 +512,7 @@ define([
             }    
         },
         
-        update : function(){
+        update : function() {
             /**
              * Update the contents of this view
              *

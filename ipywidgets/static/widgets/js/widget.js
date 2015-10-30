@@ -9,7 +9,7 @@ define(["nbextensions/widgets/widgets/js/utils",
         "underscore",
         "backbone",
         "jquery"
-], function(utils, managerBase, _, Backbone, $){
+], function(utils, managerBase, _, Backbone, $) {
     "use strict";
     
     var unpack_models = function unpack_models(value, model) {

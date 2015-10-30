@@ -11,13 +11,15 @@
 @import "./mixins.less";
 
 @widget-width: 300px;
-@widget-width-short: 150px;
+@widget-width-short: 148px;
 @border-radius-base: 2px;
 
-// Pad interact widgets by default.
-.widget-interact {
-    >div, >input {
-        padding: 2.5px;
+.ipy-widget {
+    & {
+        margin: 2px;
+    }
+    &.widget-container {
+        margin: 0px;
     }
 }
 
@@ -61,7 +63,7 @@
     }
 }
 
-/* THE CLASSES BELOW CAN APPEAR ANYWHERE IN THE DOM (POSSIBLEY OUTSIDE OF
+/* THE CLASSES BELOW CAN APPEAR ANYWHERE IN THE DOM (POSSIBLY OUTSIDE OF
    THE WIDGET AREA). */
 
 .slide-track {
@@ -103,8 +105,8 @@
     width        : @widget-width; 
     height       : 5px;
     max-height   : 5px;
-    margin-top   : 13px;
-    margin-bottom: 10px;
+    margin-top   : 15px;
+    margin-bottom: 12px;
     
     /* Style the slider track */
     .slide-track();
@@ -146,7 +148,7 @@
     width       : 5px;
     max-width   : 5px;
     height      : 250px;
-    margin-left : 12px;
+    margin-left : 14px;
     
     /* Style the slider track */
     .slide-track();
@@ -178,42 +180,39 @@
     }
 }
 
+.widget-colorpicker {
+    /* Button */
+    width : @widget-width-short;
+}
+
 .widget-button {
     /* Button */
-    width         : @widget-width-short;
+    width : @widget-width-short;
 }
 
 .widget-text {
     /* Textbox */
-    width  : @widget-width;
-    margin : 0px;
+    width : @widget-width;
 }
 
 .widget-textarea {
     /* TextAreaView */
-    width  : @widget-width;
-    margin : 0px;
+    width : @widget-width;
 }
 
 .widget-listbox {
     /* Listbox */
-    width         : @widget-width;
-    margin-bottom : 0px;
-    /* Bootstrap does some weird stuff with the margins of select boxes.  The 
-    specifity of the media selector needs to be overwritten using important */
-    margin-left   : 0px !important; 
-    margin-right  : 0px !important;
+    width : @widget-width;
 }
 
 .widget-numeric-text {
     /* Single Line Textbox - used for IntTextView and FloatTextView */
     width : @widget-width-short;
-    margin : 0px;
 }
 
 .widget-hprogress {
     /* Progress Bar */
-    margin-top: 6px;
+    margin-top: 8px;
     min-width : @widget-width;
 
     .progress-bar {
@@ -228,7 +227,7 @@
 
 .widget-vprogress {
     /* Progress Bar */
-    margin-top: 6px;
+    margin-top: 8px;
     min-height : 250px;
     width: 12px;
 
@@ -253,10 +252,11 @@
 }
 
 .widget-valid {
-    margin-top: 9px;
-    margin-bottom: 10px;
-    margin-left: 3px;
-    margin-right: 3px;
+    /* Valid Check */
+    margin-top: 8px;
+    margin-bottom: 16px;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .widget-hbox {
@@ -264,7 +264,7 @@
     .hbox();
 
     input[type="checkbox"] {
-        margin-top: 9px;
+        margin-top: 10px;
         margin-bottom: 10px;
     }
 
@@ -291,7 +291,7 @@
 }
 
 .widget-vbox {
-    /* Vertical widgets */ 
+    /* Vertical Widgets */ 
     .vbox();
 
     input[type="color"] {
@@ -329,7 +329,8 @@
     padding-top: 4px;
 
     label {
-        margin-top: 0px;
-        margin-left: 20px;
+        margin-top: 2px;
+        margin-bottom: 2px;
+        margin-left: 22px;
     }
 }

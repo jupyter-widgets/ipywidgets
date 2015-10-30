@@ -16,7 +16,7 @@ define([
              * Called when view is rendered.
              */
             this.$el
-                .addClass('widget-hbox widget-checkbox');
+                .addClass('ipy-widget widget-hbox widget-checkbox');
             this.$label = $('<div />')
                 .addClass('widget-label')
                 .appendTo(this.$el)
@@ -84,7 +84,7 @@ define([
              */
             var that = this;
             this.setElement($('<button />')
-                .addClass('btn btn-default')
+                .addClass('ipy-widget widget-button btn btn-default')
                 .attr('type', 'button')
                 .on('click', function (e) {
                     e.preventDefault();
@@ -158,7 +158,7 @@ define([
             /**
              * Called when view is rendered.
              */
-            this.$el.addClass("widget-valid");
+            this.$el.addClass("ipy-widget widget-valid");
             this.listenTo(this.model, "change", this.update, this);
             this.update();
         },

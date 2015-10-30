@@ -8,38 +8,42 @@ define([
     "nbextensions/widgets/widgets/js/widget",
     "jquery",
     "bootstrap",
-], function(widget, $){
+], function(widget, $) {
 
     var HTMLView = widget.DOMWidgetView.extend({  
-        render : function(){
+        render : function() {
             /**
              * Called when view is rendered.
              */
+            this.$el
+                .addClass('ipy-widget widget-html');
             this.update(); // Set defaults.
         },
         
-        update : function(){
+        update : function() {
             /**
              * Update the contents of this view
              *
              * Called when the model is changed.  The model may have been 
              * changed by another view or by a state update from the back-end.
              */
-            this.$el.html(this.model.get('value')); // CAUTION! .html(...) CALL MANDITORY!!!
+            this.$el.html(this.model.get('value')); // CAUTION! .html(...) CALL MANDATORY!!!
             return HTMLView.__super__.update.apply(this);
         },
     });
 
 
     var LatexView = widget.DOMWidgetView.extend({  
-        render : function(){
+        render : function() {
             /**
              * Called when view is rendered.
              */
+            this.$el
+                .addClass('ipy-widget widget-latex');
             this.update(); // Set defaults.
         },
         
-        update : function(){
+        update : function() {
             /**
              * Update the contents of this view
              *
@@ -53,12 +57,12 @@ define([
 
 
     var TextareaView = widget.DOMWidgetView.extend({  
-        render: function(){
+        render: function() {
             /**
              * Called when view is rendered.
              */
             this.$el
-                .addClass('widget-hbox widget-textarea');
+                .addClass('ipy-widget widget-hbox widget-textarea');
             this.$label = $('<div />')
                 .appendTo(this.$el)
                 .addClass('widget-label')
@@ -77,7 +81,7 @@ define([
             this.update_placeholder();
         },
 
-        _handle_textarea_msg: function (content){
+        _handle_textarea_msg: function (content) {
             /**
              * Handle when a custom msg is recieved from the back-end.
              */
@@ -93,14 +97,14 @@ define([
             this.$textbox.attr('placeholder', value);
         },
 
-        scroll_to_bottom: function (){
+        scroll_to_bottom: function () {
             /**
              * Scroll the text-area view to the bottom.
              */
             this.$textbox.scrollTop(this.$textbox[0].scrollHeight);
         },
 
-        update: function(options){
+        update: function(options) {
             /**
              * Update the contents of this view
              *
@@ -145,12 +149,12 @@ define([
 
 
     var TextView = widget.DOMWidgetView.extend({  
-        render: function(){
+        render: function() {
             /**
              * Called when view is rendered.
              */
             this.$el
-                .addClass('widget-hbox widget-text');
+                .addClass('ipy-widget widget-hbox widget-text');
             this.$label = $('<div />')
                 .addClass('widget-label')
                 .appendTo(this.$el)
@@ -174,7 +178,7 @@ define([
             this.$textbox.attr('placeholder', value);
         },
         
-        update: function(options){
+        update: function(options) {
             /**
              * Update the contents of this view
              *

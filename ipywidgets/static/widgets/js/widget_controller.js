@@ -15,7 +15,9 @@ define([
     var Button = widget.DOMWidgetView.extend({
         /* Very simple view for a gamepad button. */
 
-        render : function(){
+        render : function() {
+            this.$el.addClass('ipy-widget widget-controller-button');
+
             this.$support = $('<div />').css({
                     'position': 'relative',
                     'margin': '1px',
@@ -50,6 +52,9 @@ define([
         /* Very simple view for a gamepad axis. */
 
         render : function() {
+
+            this.$el.addClass('ipy-widget widget-controller-axis');
+            
             this.$el.css({
                     'width': '16px',
                     'padding': '4px',
@@ -262,6 +267,8 @@ define([
         },
 
         render: function(){
+            this.$el.addClass('ipy-widget widget-controller');
+
             this.$box = this.$el;
 
             this.$label = $('<div />')

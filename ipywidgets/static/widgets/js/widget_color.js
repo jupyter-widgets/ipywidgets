@@ -10,14 +10,14 @@ define([
 
     var ColorPicker = widget.DOMWidgetView.extend({
         render: function() {
-            this.$el.addClass("widget-hbox widget-colorpicker");
+            this.$el.addClass("ipy-widget widget-hbox widget-colorpicker");
 
             this.$label = $("<div />")
                 .addClass("widget-label")
                 .appendTo(this.$el);
 
             this.$color_container = $("<div />")
-                .addClass("hbox")
+                .addClass("widget-hbox input-group")
                 .appendTo(this.$el);
 
             this.$textbox = $("<input type='text' />")
@@ -26,7 +26,8 @@ define([
                 .val(this.model.get("value"));
 
             this.$colorpicker = $("<input type='color' />")
-                .addClass("btn btn-default")
+                .addClass("input-group-addon")
+                .css("width", "32px")
                 .appendTo(this.$color_container);
 
             this.listenTo(this.model, "change:value", this._update_value, this);
