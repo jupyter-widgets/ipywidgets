@@ -160,7 +160,7 @@ define([
 
                 // Trigger the displayed event of the child view.
                 that.displayed.then(function() {
-                    view.trigger('displayed');
+                    view.trigger('displayed', that);
                 });
                 return view;
             }).catch(utils.reject("Couldn't add child view to box", true));
@@ -270,7 +270,7 @@ define([
 
                 // Trigger the displayed event of the child view.
                 that.displayed.then(function() {
-                    view.trigger('displayed');
+                    view.trigger('displayed', that);
                     that.update();
                 });
                 return view;

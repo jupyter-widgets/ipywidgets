@@ -169,13 +169,15 @@ define(["nbextensions/widgets/widgets/js/utils",
             this.trigger('comm:close');
             this.close(true);
         },
+        
         _deserialize_state: function(state) {
             /** 
              * Deserialize fields that have a custom serializer.
              */
             var serializers = this.constructor.serializers;
+            var deserialized;
             if (serializers) {
-                var deserialized = {};
+                deserialized = {};
                 for (var k in state) {
                     if (serializers[k] && serializers[k].deserialize) {
                          deserialized[k] = (serializers[k].deserialize)(state[k], this);
@@ -188,6 +190,11 @@ define(["nbextensions/widgets/widgets/js/utils",
             }
             return utils.resolvePromisesDict(deserialized);
         },
+        
+        serializers: _.extend({
+            style: {deserialize: unpack_models},
+        }, WidgetModel.serializers),
+        
         _handle_comm_msg: function (msg) {
             /**
              * Handle incoming comm msg.
@@ -789,7 +796,7 @@ define(["nbextensions/widgets/widgets/js/utils",
             var removed = this.views.splice(first_removed, this.views.length-first_removed);
             for (var j = 0; j < removed.length; j++) {
                 removed[j].then(function(view) {
-                    remove.call(context, view)
+                    remove.call(context, view);
                 });
             }
 

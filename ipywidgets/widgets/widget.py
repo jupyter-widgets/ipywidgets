@@ -17,6 +17,7 @@ from traitlets import Unicode, Dict, Instance, Bool, List, \
     CaselessStrEnum, Tuple, CUnicode, Int, Set, Bytes
 from ipython_genutils.py3compat import string_types, PY3
 from .trait_types import Color
+from .style import Style
 
 
 def _widget_to_json(x, obj):
@@ -476,6 +477,10 @@ class DOMWidget(Widget):
     visible = Bool(True, allow_none=True, help="Whether the widget is visible.  False collapses the empty space, while None preserves the empty space.", sync=True)
     _css = Tuple(sync=True, help="CSS property list: (selector, key, value)")
     _dom_classes = Tuple(sync=True, help="DOM classes applied to widget.$el.")
+
+    style = Instance(Style, allow_none=True, sync=True, **widget_serialization)
+    def _style_default():
+        return Style()
 
     width = CUnicode(sync=True)
     height = CUnicode(sync=True)
