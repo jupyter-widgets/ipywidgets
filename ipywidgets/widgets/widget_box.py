@@ -14,7 +14,7 @@ from traitlets import Unicode, Tuple, Int, CaselessStrEnum, Instance
 class Box(DOMWidget):
     """Displays multiple widgets in a group."""
     _model_name = Unicode('BoxModel', sync=True)
-    _view_name = Unicode('BoxView', sync=True)
+    _view_name = Unicode('FlexBoxView', sync=True)
 
     # Child widgets in the container.
     # Using a tuple here to force reassignment to update the list.
@@ -35,6 +35,33 @@ class Box(DOMWidget):
         values=['success', 'info', 'warning', 'danger', ''],
         default_value='', allow_none=True, sync=True, help="""Use a
         predefined styling for the box.""")
+        
+    orientation = CaselessStrEnum(values=['vertical', 'horizontal'], default_value='vertical', sync=True)
+    flex = Int(0, sync=True, help="""Specify the flexible-ness of the model.""")
+    def _flex_changed(self, name, old, new):
+        new = min(max(0, new), 2)
+        if self.flex != new:
+            self.flex = new
+
+    _locations = ['start', 'center', 'end', 'baseline', 'stretch']
+    pack = CaselessStrEnum(
+        values=_locations,
+        default_value='start', sync=True)
+    align = CaselessStrEnum(
+        values=_locations,
+        default_value='start', sync=True)
+        
+    display = CaselessStrEnum(
+        values=['flex', 'inline-flex'],
+        sync=True, allow_none=True)
+    
+    wrap = CaselessStrEnum(
+        values=['nowrap', 'wrap', 'wrap-reverse'],
+        sync=True, allow_none=True)
+        
+    justify = CaselessStrEnum(
+        values=['flex-start', 'flex-end', 'center', 'space-between', 'space-around'],
+        sync=True, allow_none=True)
 
     def __init__(self, children = (), **kwargs):
         kwargs['children'] = children
@@ -73,33 +100,13 @@ class PlaceProxy(Proxy):
     selector = Unicode(sync=True)
 
 
-@register('IPython.FlexBox')
-class FlexBox(Box):
-    """Displays multiple widgets using the flexible box model."""
-    _view_name = Unicode('FlexBoxView', sync=True)
-    orientation = CaselessStrEnum(values=['vertical', 'horizontal'], default_value='vertical', sync=True)
-    flex = Int(0, sync=True, help="""Specify the flexible-ness of the model.""")
-    def _flex_changed(self, name, old, new):
-        new = min(max(0, new), 2)
-        if self.flex != new:
-            self.flex = new
-
-    _locations = ['start', 'center', 'end', 'baseline', 'stretch']
-    pack = CaselessStrEnum(
-        values=_locations,
-        default_value='start', sync=True)
-    align = CaselessStrEnum(
-        values=_locations,
-        default_value='start', sync=True)
-
-
 def VBox(*pargs, **kwargs):
     """Displays multiple widgets vertically using the flexible box model."""
     kwargs['orientation'] = 'vertical'
-    return FlexBox(*pargs, **kwargs)
+    return Box(*pargs, **kwargs)
 
 
 def HBox(*pargs, **kwargs):
     """Displays multiple widgets horizontally using the flexible box model."""
     kwargs['orientation'] = 'horizontal'
-    return FlexBox(*pargs, **kwargs)
+    return Box(*pargs, **kwargs)

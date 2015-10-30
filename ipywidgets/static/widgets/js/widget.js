@@ -608,6 +608,32 @@ define(["nbextensions/widgets/widgets/js/utils",
             this.listenTo(this.model, 'change:border_radius', function (model, value) { 
                 this.update_attr('border-radius', this._default_px(value)); }, this);
 
+            // New flexible box model state added in ipywidgets 5.0
+            this.listenTo(this.model, 'change:order', function(model, value) {
+                this.update_attr('order', value);
+            }, this);
+            
+            this.listenTo(this.model, 'change:grow', function(model, value) {
+                this.update_attr('flex-grow', value);
+            }, this);
+            
+            this.listenTo(this.model, 'change:shrink', function(model, value) {
+                this.update_attr('flex-shrink', value);
+            }, this);
+            
+            this.listenTo(this.model, 'change:basis', function(model, value) {
+                this.update_attr('flex-basis', value);
+            }, this);
+            
+            this.listenTo(this.model, 'change:flex', function(model, value) {
+                this.update_attr('flex', value);
+            }, this);
+            
+            this.listenTo(this.model, 'change:align_self', function(model, value) {
+                this.update_attr('align-self', value);
+            }, this);
+            
+
             this.displayed.then(_.bind(function() {
                 this.update_visible(this.model, this.model.get("visible"));
                 this.update_classes([], this.model.get('_dom_classes'));
@@ -626,6 +652,14 @@ define(["nbextensions/widgets/widgets/js/utils",
                 this.update_attr('padding', this._default_px(this.model.get('padding')));
                 this.update_attr('margin', this._default_px(this.model.get('margin')));
                 this.update_attr('border-radius', this._default_px(this.model.get('border_radius')));
+                
+                // New flexible box model state added in ipywidgets 5.0
+                this.update_attr('order', this.model.get('order'));
+                this.update_attr('flex-grow', this.model.get('grow'));
+                this.update_attr('flex-shrink', this.model.get('shrink'));
+                this.update_attr('flex-basis', this.model.get('basis'));
+                this.update_attr('flex', this.model.get('flex'));
+                this.update_attr('align-self', this.model.get('align_self'));
 
                 this.update_css(this.model, this.model.get("_css"));
             }, this));
