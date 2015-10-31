@@ -534,16 +534,6 @@ define(["nbextensions/widgets/widgets/js/utils",
             this.model.save_changes(this.callbacks());
         },
 
-        after_displayed: function (callback, context) {
-            /**
-             * Deprecated method. Calls the callback right away is the view is
-             * already displayed otherwise, register the callback to the 'displayed'
-             * event.
-             */
-            console.log('`WidgetView.after_displayed` is deprecated. Use the WidgetView.displayed promise instead.');
-            this.displayed.then(_.bind(callback, context));
-        },
-
         remove: function () {
             // Raise a remove event when the view is removed.
             WidgetView.__super__.remove.apply(this, arguments);
