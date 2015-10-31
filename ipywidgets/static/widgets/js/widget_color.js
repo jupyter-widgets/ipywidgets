@@ -27,7 +27,6 @@ define([
 
             this.$colorpicker = $("<input type='color' />")
                 .addClass("input-group-addon")
-                .css("width", "32px")
                 .appendTo(this.$color_container);
 
             this.listenTo(this.model, "change:value", this._update_value, this);
