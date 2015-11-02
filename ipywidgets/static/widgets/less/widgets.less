@@ -14,6 +14,11 @@
 @widget-width-short: 148px;
 @border-radius-base: 2px;
 
+// From Material Design Lite
+@shadow-key-umbra-opacity: 0.2;
+@shadow-key-penumbra-opacity: 0.14;
+@shadow-ambient-shadow-opacity: 0.12;
+
 .ipy-widget {
     & {
         margin: 2px;
@@ -188,6 +193,55 @@
 .widget-button {
     /* Button */
     width : @widget-width-short;
+    
+    .outside-shadow-2dp();
+
+    &.btn,
+    &.btn:active,
+    &.btn:focus,
+    &.btn.hover {
+        outline: none !important;
+    }
+    
+    &.btn:active {
+        .outside-shadow-4dp();
+    }
+}
+
+.widget-toggle-button {
+    /* Button */
+    width : @widget-width-short;
+    
+    .outside-shadow-2dp();
+
+    &.btn,
+    &.btn:active,
+    &.btn:focus,
+    &.btn.hover {
+        outline: none !important;
+    }
+    
+    // &.btn:active {
+    //     .outside-shadow-4dp();
+    // }
+}
+
+.widget-toggle-buttons {
+
+    .btn,
+    .btn:active,
+    .btn:focus,
+    .btn.hover {
+        outline: none !important;
+    }
+    
+    .btn.active {
+        box-shadow: none !important;
+    }
+    
+    .btn-group {
+        .outside-shadow-2dp();
+    }
 }
 
 .widget-text {
