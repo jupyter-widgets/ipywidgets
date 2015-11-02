@@ -187,7 +187,13 @@
 
 .widget-colorpicker {
     /* Button */
-    width : @widget-width;
+    & {
+        width : @widget-width;
+    }
+    &.short {
+        width : @widget-width-short;
+    }
+
     display: flex;
 
     .input-group {
