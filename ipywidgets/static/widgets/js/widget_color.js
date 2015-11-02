@@ -27,14 +27,15 @@ define([
 
             this.$colorpicker = $("<input type='color' />")
                 .addClass("input-group-addon")
-                .css("width", "32px")
                 .appendTo(this.$color_container);
 
             this.listenTo(this.model, "change:value", this._update_value, this);
             this.listenTo(this.model, "change:description", this._update_description, this);
+            this.listenTo(this.model, "change:short", this._update_short, this);
             this.$colorpicker.on("change", this._picker_change.bind(this));
             this.$textbox.on("change", this._text_change.bind(this));
 
+            this._update_short();
             this._update_value();
             this._update_description();
         },
@@ -47,9 +48,23 @@ define([
             var description = this.model.get('description');
             if (description.length === 0) {
                 this.$label.hide();
+                this.$color_container.css("justify-content", "auto");
             } else {
                 this.typeset(this.$label, description);
+                this.$color_container.css("justify-content", "flex-end");
                 this.$label.show();
+            }
+        },
+        _update_short: function() {
+            var short = this.model.get('short');
+            if (short) {
+                this.$el.addClass('short');
+                this.$colorpicker.removeClass("input-group-addon");
+                this.$textbox.hide();
+            } else {
+                this.$el.removeClass('short');
+                this.$colorpicker.addClass("input-group-addon");
+                this.$textbox.show();
             }
         },
         _picker_change: function() {

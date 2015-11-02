@@ -187,7 +187,18 @@
 
 .widget-colorpicker {
     /* Button */
-    width : @widget-width-short;
+    & {
+        width : @widget-width;
+    }
+    &.short {
+        width : @widget-width-short;
+    }
+
+    display: flex;
+
+    .input-group {
+        flex-grow: 1;
+    }
 }
 
 .widget-button {
@@ -259,6 +270,20 @@
     width : @widget-width;
 }
 
+.widget-dropdown {
+    /* Dropdown */
+    width : @widget-width;
+
+    .widget_item {
+        display: flex;
+        flex-grow: 1;
+    }
+
+    .widget-combo-btn {
+        flex-grow: 1;
+    }
+}
+
 .widget-numeric-text {
     /* Single Line Textbox - used for IntTextView and FloatTextView */
     width : @widget-width-short;
@@ -324,6 +349,7 @@
 
     input[type="color"] {
         height: 32px;
+        width: 28px;
         padding: 1px;
     }
 
