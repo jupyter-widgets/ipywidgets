@@ -17,7 +17,7 @@ define([
              * Called when view is rendered.
              */
             this.$el
-                .addClass('ipy-widget widget-hbox widget-slider');
+                .addClass('ipy-widget widget-hbox widget-hslider');
             this.$label = $('<div />')
                 .appendTo(this.$el)
                 .addClass('widget-label')
@@ -28,7 +28,7 @@ define([
                 .addClass('slider');
             // Put the slider in a container 
             this.$slider_container = $('<div />')
-                .addClass('widget-hslider')
+                .addClass('slider-container')
                 .append(this.$slider);
             this.$el.append(this.$slider_container);
             
@@ -63,12 +63,10 @@ define([
             } else if (name.substring(0, 6) == 'border') {
                 this.$slider.find('a').css(name, value);
                 this.$slider_container.css(name, value);
-            } else if (name == 'width' || name == 'height' || name == 'background') {
+            } else if (name == 'background') {
                 this.$slider_container.css(name, value);
-            } else if (name == 'padding' || name == 'margin') {
-                this.$el.css(name, value);
             } else {
-                this.$slider.css(name, value);
+                this.$el.css(name, value);
             }
         },
         
@@ -155,7 +153,7 @@ define([
 
                 // Use the right CSS classes for vertical & horizontal sliders
                 if (orientation=='vertical') {
-                    this.$slider_container
+                    this.$el
                         .removeClass('widget-hslider')
                         .addClass('widget-vslider');
                     this.$el
@@ -163,7 +161,7 @@ define([
                         .addClass('widget-vbox');
 
                 } else {
-                    this.$slider_container
+                    this.$el
                         .removeClass('widget-vslider')
                         .addClass('widget-hslider');
                     this.$el
@@ -471,11 +469,12 @@ define([
             /**
              * Called when view is rendered.
              */
-            this.$el.addClass('ipy-widget widget-progress');
+            this.$el.addClass('ipy-widget widget-hprogress');
             this.$label = $('<div />')
                 .appendTo(this.$el)
                 .addClass('widget-label')
                 .hide();
+
             this.$progress = $('<div />')
                 .addClass('progress')
                 .css('position', 'relative')
@@ -491,7 +490,7 @@ define([
             // Set defaults.
             this.update(); 
             this.updateDescription();
-            
+           
             this.listenTo(this.model, 'change:bar_style', function(model, value) {
                 this.update_bar_style();
             }, this);
@@ -528,8 +527,8 @@ define([
                 this.$el
                    .removeClass('widget-vbox')
                    .addClass('widget-hbox');
-                this.$progress.removeClass('widget-vprogress');
-                this.$progress.addClass('widget-hprogress');
+                this.$el.removeClass('widget-vprogress');
+                this.$el.addClass('widget-hprogress');
                 this.$bar.css({
                     'width': percent + '%',
                     'height': '100%',
@@ -538,8 +537,8 @@ define([
                 this.$el
                    .removeClass('widget-hbox')
                    .addClass('widget-vbox');
-                this.$progress.removeClass('widget-hprogress');
-                this.$progress.addClass('widget-vprogress');
+                this.$el.removeClass('widget-hprogress');
+                this.$el.addClass('widget-vprogress');
                 this.$bar.css({
                     'width': '100%',
                     'height': percent + '%',
@@ -562,17 +561,12 @@ define([
             /**
              * Set a css attr of the widget view.
              */
-            if (name.substring(0, 6) == 'border' || name == 'width' || 
-                name == 'height' || name == 'background' || name == 'margin' || 
-                name == 'padding') {
-                
-                this.$progress.css(name, value);
-            } else if (name == 'color') {                
+            if (name == 'color') {                
                 this.$bar.css('background', value);
-            } else if (name == 'padding' || name == 'margin') {
-                this.$el.css(name, value);
+            } else if (name.substring(0, 6) == 'border' || name == 'background') {
+                this.$progress.css(name, value);
             } else {
-                this.$bar.css(name, value);
+                this.$el.css(name, value);
             }
         },
     });
