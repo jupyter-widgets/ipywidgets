@@ -147,27 +147,28 @@
 
 .widget-vslider {
     /* Vertical jQuery Slider */
-    width: 50px;   
- 
+    width: 50px;
+    height: 250px;
+
     .slider-container {
-        /* Fix the padding of the slide track so the ui-slider is sized 
+        /* Fix the padding of the slide track so the ui-slider is sized
         correctly. */
         padding-bottom : 5px;
-        overflow       : visible; 
+        overflow       : visible;
+        flex-grow: 1;
 
         /* Default size of the slider */
         width        : 5px;
-	max-width    : 5px;
-	height       : 250px;
-	margin-left  : auto;
-	margin-right : auto;
-    
+        max-width    : 5px;
+        margin-left  : auto;
+        margin-right : auto;
+
         /* Style the slider track */
         .slide-track();
 
         /* Make the div a flex box (makes FF behave correctly). */
         .vbox();
-    
+
         .ui-slider {
             /* Inner, invisible slide div */
             .vbox();
@@ -301,10 +302,12 @@
 .widget-hprogress {
     /* Progress Bar */
     width : @widget-width;
-    margin-top: 8px;
+    height: 32px;
 
     .progress {
         flex-grow: 1;
+        margin-top: auto;
+        margin-bottom: auto;
     }
 
     .progress-bar {
@@ -319,12 +322,15 @@
 
 .widget-vprogress {
     /* Progress Bar */
-    margin-top: 8px;
-    min-height: 250px;
-    width: 12px;
+    height: 250px;
+    width: 50px;
 
     .progress {
         flex-grow: 1;
+        width: 12px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 0;
     }
 
     .progress-bar {
