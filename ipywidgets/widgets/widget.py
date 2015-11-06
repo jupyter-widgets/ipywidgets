@@ -185,11 +185,19 @@ class Widget(LoggingConfigurable):
     def open(self):
         """Open a comm to the frontend if one isn't already open."""
         if self.comm is None:
+            state, buffer_keys, buffers = self._split_state_buffers(self.get_state())
+            
             args = dict(target_name='ipython.widget',
-                        data=self.get_state())
+                        data=state,
+            )
             if self._model_id is not None:
                 args['comm_id'] = self._model_id
+            
             self.comm = Comm(**args)
+            if buffers:
+                # FIXME: workaround ipykernel missing binary message support in open-on-init
+                # send state with binary elements as second message
+                self.send_state()
 
     def _comm_changed(self, name, new):
         """Called when the comm is changed."""
@@ -221,6 +229,16 @@ class Widget(LoggingConfigurable):
             Widget.widgets.pop(self.model_id, None)
             self.comm.close()
             self.comm = None
+    
+    def _split_state_buffers(self, state):
+        """Return (state_without_buffers, buffer_keys, buffers) for binary message parts"""
+        buffer_keys, buffers = [], []
+        for k, v in list(state.items()):
+            if isinstance(v, memoryview):
+                state.pop(k)
+                buffers.append(v)
+                buffer_keys.append(k)
+        return state, buffer_keys, buffers
 
     def send_state(self, key=None):
         """Sends the widget state, or a piece of it, to the front-end.
@@ -231,12 +249,7 @@ class Widget(LoggingConfigurable):
             A single property's name or iterable of property names to sync with the front-end.
         """
         state = self.get_state(key=key)
-        buffer_keys, buffers = [], []
-        for k, v in state.items():
-            if isinstance(v, memoryview):
-                state.pop(k)
-                buffers.append(v)
-                buffer_keys.append(k)
+        state, buffer_keys, buffers = self._split_state_buffers(state)
         msg = {'method': 'update', 'state': state, 'buffers': buffer_keys}
         self._send(msg, buffers=buffers)
 
