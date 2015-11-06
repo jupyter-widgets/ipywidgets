@@ -12,10 +12,10 @@ import collections
 from IPython.core.getipython import get_ipython
 from ipykernel.comm import Comm
 from traitlets.config import LoggingConfigurable
-from ipython_genutils.importstring import import_item
+from traitlets.utils.importstring import import_item
 from traitlets import Unicode, Dict, Instance, Bool, List, \
-    CaselessStrEnum, Tuple, CUnicode, Int, Set
-from ipython_genutils.py3compat import string_types
+    CaselessStrEnum, Tuple, CUnicode, Int, Set, Bytes
+from ipython_genutils.py3compat import string_types, PY3
 from .trait_types import Color
 
 
@@ -44,6 +44,10 @@ widget_serialization = {
     'to_json': _widget_to_json
 }
 
+if PY3:
+    _binary_types = (memoryview, bytes)
+else:
+    _binary_types = (memoryview, buffer)
 
 class CallbackDispatcher(LoggingConfigurable):
     """A structure for registering and running callbacks"""
@@ -234,7 +238,7 @@ class Widget(LoggingConfigurable):
         """Return (state_without_buffers, buffer_keys, buffers) for binary message parts"""
         buffer_keys, buffers = [], []
         for k, v in list(state.items()):
-            if isinstance(v, memoryview):
+            if isinstance(v, _binary_types):
                 state.pop(k)
                 buffers.append(v)
                 buffer_keys.append(k)
@@ -276,9 +280,13 @@ class Widget(LoggingConfigurable):
         else:
             raise ValueError("key must be a string, an iterable of keys, or None")
         state = {}
+        traits = self.traits() if not PY3 else {} # no need to construct traits on PY3
         for k in keys:
             to_json = self.trait_metadata(k, 'to_json', self._trait_to_json)
-            state[k] = to_json(getattr(self, k), self)
+            value = to_json(getattr(self, k), self)
+            if not PY3 and isinstance(traits[k], Bytes) and isinstance(value, bytes):
+                value = memoryview(value)
+            state[k] = value
         return state
 
     def set_state(self, sync_data):
