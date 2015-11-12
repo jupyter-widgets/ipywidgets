@@ -174,7 +174,7 @@ define(["nbextensions/widgets/widgets/js/utils",
             /** 
              * Deserialize fields that have a custom serializer.
              */
-            var serializers = this.constructor.serializers;
+            var serializers = this.constructor.prototype.serializers;
             var deserialized;
             if (serializers) {
                 deserialized = {};
@@ -544,7 +544,14 @@ define(["nbextensions/widgets/widgets/js/utils",
         }
     };
 
-
+    var DOMWidgetModel = WidgetModel.extend({
+        serializers: _.extend({
+            style: {deserialize: unpack_models},
+        }, WidgetModel.serializers),
+    });
+    
+    managerBase.ManagerBase.register_widget_model('DOMWidgetModel', DOMWidgetModel);
+    
     var DOMWidgetViewMixin = {
         initialize: function (parameters) {
             /**
@@ -631,19 +638,20 @@ define(["nbextensions/widgets/widgets/js/utils",
             }, this));
         },
         
-        serializers: _.extend({
-            style: {deserialize: unpack_models},
-        }, WidgetModel.serializers),
-        
         setStyle: function(style, oldStyle) {
+            var that = this;
             if (style) {
-                var that = this;
-                this.stylePromise = this.stylePromise.then(function() {
+                this.stylePromise = this.stylePromise.then(function(oldStyleView) {
+                    if (oldStyleView) {
+                        oldStyleView.unstyle();
+                    }
+                    
                     return that.create_child_view(style).then(function(view) {
                         
                         // Trigger the displayed event of the child view.
-                        that.displayed.then(function() {
+                        return that.displayed.then(function() {
                             view.trigger('displayed', that);
+                            return view;
                         });
                     }).catch(utils.reject("Couldn't add StyleView to DOMWidgetView", true));
                 });
@@ -859,6 +867,7 @@ define(["nbextensions/widgets/widgets/js/utils",
         'WidgetViewMixin': WidgetViewMixin,
         'DOMWidgetViewMixin': DOMWidgetViewMixin,
         'ViewList': ViewList,
+        'DOMWidgetModel': DOMWidgetModel,
 
         // For backwards compatibility.
         'WidgetView': WidgetView,

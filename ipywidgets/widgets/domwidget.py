@@ -12,12 +12,14 @@ from .style import Style
 class DOMWidget(Widget):
     """Widget that can be inserted into the DOM"""
     
+    _model_name = Unicode('DOMWidgetModel', help="""Name of the backbone model
+        registered in the front-end to create and sync this widget with.""", sync=True)
     visible = Bool(True, allow_none=True, help="Whether the widget is visible.  False collapses the empty space, while None preserves the empty space.", sync=True)
     _css = Tuple(sync=True, help="CSS property list: (selector, key, value)")
     _dom_classes = Tuple(sync=True, help="DOM classes applied to widget.$el.")
 
     style = Instance(Style, allow_none=True, sync=True, **widget_serialization)
-    def _style_default():
+    def _style_default(self):
         return Style()
 
     width = CUnicode(sync=True)

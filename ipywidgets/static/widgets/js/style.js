@@ -7,7 +7,7 @@ if (typeof define !== 'function') { var define = require('./requirejs-shim')(mod
 // Use the CommonJS-like requirejs style.
 define(function(require, exports, module) {
     
-    var Widget = require("nbextensions/widgets/widgets/js/widget");
+    var widget = require("nbextensions/widgets/widgets/js/widget");
     var _ = require("underscore");
     var Backbone = require("backbone");
     var $ = require("jquery");
@@ -24,6 +24,7 @@ define(function(require, exports, module) {
             StyleView.__super__.constructor.apply(this, arguments);
             
             // Register the traits that live on the Python side
+            this._traitNames = [];
             this.initTraits();
         },
         
@@ -31,7 +32,7 @@ define(function(require, exports, module) {
          * Initialize the traits for this Style object
          */
         initTraits: function() {
-            registerTraits(
+            this.registerTraits(
                 'additive-symbols', 'align-content', 'align-items', 'align-self', 
                 'all', 'animation', 'animation-delay', 'animation-direction', 
                 'animation-duration', 'animation-fill-mode', 
@@ -111,6 +112,7 @@ define(function(require, exports, module) {
          * @param  {string} trait
          */
         registerTrait: function(trait) {
+            this._traitNames.push(trait);
             
             // Listen to changes, and set the value on change.
             this.listenTo(this.model, 'change:' + this.modelize(trait), function (model, value) { 
@@ -145,6 +147,21 @@ define(function(require, exports, module) {
                     console.warn("Style not applied because a parent view doesn't exist");
                 }
             }).bind(this));
+        },
+        
+        /**
+         * Remove the styling from the parent view.
+         */
+        unstyle: function() {
+            this._traitNames.forEach(function(trait) {
+                this.displayed.then((function(parent) {
+                    if (parent) {
+                        parent.update_attr(trait, '');
+                    } else {
+                        console.warn("Style not removed because a parent view doesn't exist");
+                    }
+                }).bind(this));
+            }, this);
         }
     });
 });
