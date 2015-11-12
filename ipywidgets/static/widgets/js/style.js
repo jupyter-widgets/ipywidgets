@@ -104,7 +104,7 @@ define(function(require, exports, module) {
             _.flatten(Array.prototype.slice.call(arguments))
 
                 // Call registerTrait on each trait
-                .forEach(this.registerTrait.bind(this));
+                .forEach(_.bind(this.registerTrait, this));
         },
         
         /**
@@ -120,9 +120,9 @@ define(function(require, exports, module) {
             }, this);
 
             // Set the initial value on display.
-            this.displayed.then((function() {
+            this.displayed.then(_.bind(function() {
                 this.handleChange(trait, this.model.get(this.modelize(trait)));
-            }).bind(this));
+            }, this));
         },
         
         /**
@@ -140,13 +140,13 @@ define(function(require, exports, module) {
          * @param  {object} value
          */
         handleChange: function(trait, value) {
-            this.displayed.then((function(parent) {
+            this.displayed.then(_.bind(function(parent) {
                 if (parent) {
                     parent.update_attr(trait, value);
                 } else {
                     console.warn("Style not applied because a parent view doesn't exist");
                 }
-            }).bind(this));
+            }, this));
         },
         
         /**
@@ -154,13 +154,13 @@ define(function(require, exports, module) {
          */
         unstyle: function() {
             this._traitNames.forEach(function(trait) {
-                this.displayed.then((function(parent) {
+                this.displayed.then(_.bind(function(parent) {
                     if (parent) {
                         parent.update_attr(trait, '');
                     } else {
                         console.warn("Style not removed because a parent view doesn't exist");
                     }
-                }).bind(this));
+                }, this));
             }, this);
         }
     });
