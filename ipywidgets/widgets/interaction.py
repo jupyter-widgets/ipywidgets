@@ -37,14 +37,11 @@ def _get_min_max_value(min, max, value=None, step=None):
     if value is None:
         if not max > min:
             raise ValueError('max must be greater than min: (min={0}, max={1})'.format(min, max))
-        t = type(min)
-        try:
-            half = t((max - min) / 2)
-        except TypeError:
-            # Support for types which might raise TypeError when
-            # converting to type(min), such as SageMath's Integer.
-            half = t((max - min) // 2)
-        value = min + half
+        diff = max - min
+        value = min + (diff / 2)
+        # Ensure that value has the same type as diff
+        if not isinstance(value, type(diff)):
+            value = min + (diff // 2)
     elif min is None and max is None:
         if not isinstance(value, Real):
             raise TypeError('expected a real number, got: %r' % value)
