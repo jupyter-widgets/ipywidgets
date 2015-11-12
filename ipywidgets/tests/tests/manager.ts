@@ -34,7 +34,7 @@ base.tester
     });
 })
 .cell(`
-    widget = list(Widget.widgets.values())[0]
+    widget = list(Widget.widgets.values())[1]
     print(widget.model_id)
     `, 
     function(index) {
