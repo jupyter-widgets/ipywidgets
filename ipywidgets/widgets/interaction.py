@@ -4,6 +4,7 @@
 # Distributed under the terms of the Modified BSD License.
 
 from __future__ import print_function
+from __future__ import division
 
 try:  # Python >= 3.3
     from inspect import signature, Parameter
@@ -18,6 +19,7 @@ from . import (Widget, Text,
 from IPython.display import display, clear_output
 from ipython_genutils.py3compat import string_types, unicode_type
 from traitlets import HasTraits, Any, Unicode
+from numbers import Real, Integral
 
 empty = Parameter.empty
 
@@ -35,17 +37,21 @@ def _get_min_max_value(min, max, value=None, step=None):
     if value is None:
         if not max > min:
             raise ValueError('max must be greater than min: (min={0}, max={1})'.format(min, max))
-        value = min + abs(min-max)/2
-        value = type(min)(value)
+        diff = max - min
+        value = min + (diff / 2)
+        # Ensure that value has the same type as diff
+        if not isinstance(value, type(diff)):
+            value = min + (diff // 2)
     elif min is None and max is None:
-        if value == 0.0:
-            min, max, value = 0.0, 1.0, 0.5
-        elif value == 0:
-            min, max, value = 0, 1, 0
-        elif isinstance(value, (int, float)):
-            min, max = (-value, 3*value) if value > 0 else (3*value, -value)
+        if not isinstance(value, Real):
+            raise TypeError('expected a real number, got: %r' % value)
+        if not value:
+            t = type(value)
+            min, max = (t(0), t(1))
+        elif value > 0:
+            min, max = (-value, 3*value)
         else:
-            raise TypeError('expected a number, got: %r' % value)
+            min, max = (3*value, -value)
     else:
         raise ValueError('unable to infer range, value from: ({0}, {1}, {2})'.format(min, max, value))
     if step is not None:
@@ -62,34 +68,33 @@ def _widget_abbrev_single_value(o):
         return Dropdown(options=o)
     elif isinstance(o, bool):
         return Checkbox(value=o)
-    elif isinstance(o, float):
-        min, max, value = _get_min_max_value(None, None, o)
-        return FloatSlider(value=o, min=min, max=max)
-    elif isinstance(o, int):
+    elif isinstance(o, Integral):
         min, max, value = _get_min_max_value(None, None, o)
         return IntSlider(value=o, min=min, max=max)
+    elif isinstance(o, Real):
+        min, max, value = _get_min_max_value(None, None, o)
+        return FloatSlider(value=o, min=min, max=max)
     else:
         return None
 
 def _widget_abbrev(o):
     """Make widgets from abbreviations: single values, lists or tuples."""
-    float_or_int = (float, int)
     if isinstance(o, (list, tuple)):
         if o and all(isinstance(x, string_types) for x in o):
             return Dropdown(options=[unicode_type(k) for k in o])
-        elif _matches(o, (float_or_int, float_or_int)):
+        elif _matches(o, (Real, Real)):
             min, max, value = _get_min_max_value(o[0], o[1])
-            if all(isinstance(_, int) for _ in o):
+            if all(isinstance(_, Integral) for _ in o):
                 cls = IntSlider
             else:
                 cls = FloatSlider
             return cls(value=value, min=min, max=max)
-        elif _matches(o, (float_or_int, float_or_int, float_or_int)):
+        elif _matches(o, (Real, Real, Real)):
             step = o[2]
             if step <= 0:
                 raise ValueError("step must be >= 0, not %r" % step)
             min, max, value = _get_min_max_value(o[0], o[1], step=step)
-            if all(isinstance(_, int) for _ in o):
+            if all(isinstance(_, Integral) for _ in o):
                 cls = IntSlider
             else:
                 cls = FloatSlider
