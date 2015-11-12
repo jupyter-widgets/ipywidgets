@@ -71,12 +71,12 @@ def _widget_abbrev_single_value(o):
         return Dropdown(options=o)
     elif isinstance(o, bool):
         return Checkbox(value=o)
-    elif isinstance(o, Real):
-        min, max, value = _get_min_max_value(None, None, o)
-        return FloatSlider(value=o, min=min, max=max)
     elif isinstance(o, Integral):
         min, max, value = _get_min_max_value(None, None, o)
         return IntSlider(value=o, min=min, max=max)
+    elif isinstance(o, Real):
+        min, max, value = _get_min_max_value(None, None, o)
+        return FloatSlider(value=o, min=min, max=max)
     else:
         return None
 
