@@ -174,7 +174,7 @@ define(["nbextensions/widgets/widgets/js/utils",
             /** 
              * Deserialize fields that have a custom serializer.
              */
-            var serializers = this.constructor.prototype.serializers;
+            var serializers = this.constructor.serializers || this.constructor.prototype.serializers;
             var deserialized;
             if (serializers) {
                 deserialized = {};
