@@ -6,6 +6,7 @@ define([
     "nbextensions/widgets/widgets/js/manager",
     "nbextensions/widgets/widgets/js/widget",
     "nbextensions/widgets/widgets/js/register",
+    "nbextensions/widgets/widgets/js/widget_state",
     "nbextensions/widgets/widgets/js/widget_link",
     "nbextensions/widgets/widgets/js/widget_bool",
     "nbextensions/widgets/widgets/js/widget_button",
@@ -19,10 +20,10 @@ define([
     "nbextensions/widgets/widgets/js/widget_selectioncontainer",
     "nbextensions/widgets/widgets/js/widget_string",
     "nbextensions/widgets/widgets/js/widget_controller",
-], function(IPython, widgetmanager, widget, register) {
+], function(IPython, widgetmanager, widget, register, state) {
     
     // Register all of the loaded models and views with the widget manager.
-    for (var i = 4; i < arguments.length; i++) {
+    for (var i = 5; i < arguments.length; i++) {
         var module = arguments[i];
         register.registerWidgets(module);
     }
