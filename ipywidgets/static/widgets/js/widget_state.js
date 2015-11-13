@@ -1,9 +1,6 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-// npm compatibility
-if (typeof define !== 'function') { var define = require('./requirejs-shim')(module); }
-
 define(["base/js/namespace"], function(Jupyter) {
     "use strict";
 
@@ -17,15 +14,15 @@ define(["base/js/namespace"], function(Jupyter) {
         });
     };
 
-    var load_extension = function() {
-        Jupyter.toolbar.add_buttons_group([{
-            id : 'widget_manager_state',
-            label : 'Download Widget State',
-            icon : 'fa-sliders',
-            callback : save_state
-        }]);
+    var action = {
+        help: 'Download Widget State',
+        icon: 'fa-sliders',
+        help_index : 'zz',
+        handler : save_state
     };
 
-    load_extension();
+    var action_name = 'save-widget-state';
+    var prefix = '';
+    Jupyter.notebook.keyboard_manager.actions.register(action, action_name, prefix);
 
 });
