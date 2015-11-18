@@ -34,13 +34,14 @@ base.tester
     });
 })
 .cell(`
-    widget = list(Widget.widgets.values())[1]
-    print(widget.model_id)
+    import json
+    widget_ids = [w.model_id for w in Widget.widgets.values()]
+    print(json.dumps(widget_ids))
     `, 
     function(index) {
-        var output = this.notebook.get_output(index).text.trim();
+        var output = JSON.parse(this.notebook.get_output(index).text.trim());
         var slider_id = this.evaluate(function() { return (<any>window).slider_id; });
-        this.test.assertEquals(output, slider_id, "Widget created from the front-end.");
+        this.test.assertNotEquals(output.indexOf(slider_id), -1, "Widget created from the front-end.");
     }
 )
 
