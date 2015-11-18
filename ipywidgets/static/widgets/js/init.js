@@ -7,6 +7,7 @@ define([
     "nbextensions/widgets/widgets/js/widget",
     "nbextensions/widgets/widgets/js/register",
     "nbextensions/widgets/widgets/js/widget_state",
+    "nbextensions/widgets/widgets/js/style",
     "nbextensions/widgets/widgets/js/widget_link",
     "nbextensions/widgets/widgets/js/widget_bool",
     "nbextensions/widgets/widgets/js/widget_button",

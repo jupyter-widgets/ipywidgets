@@ -6,7 +6,7 @@ Represents a widget that can be used to display output within the widget area.
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from .widget import DOMWidget
+from .domwidget import DOMWidget
 import sys
 from traitlets import Unicode, List
 from IPython.display import clear_output

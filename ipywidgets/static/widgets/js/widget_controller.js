@@ -299,7 +299,7 @@ define([
             return this.create_child_view(model).then(function(view) {
                 dummy.replaceWith(view.el);
                 that.displayed.then(function() {
-                    view.trigger('displayed');
+                    view.trigger('displayed', that);
                 });
                 return view;
             }).catch(utils.reject('Could not add button view', true));
@@ -312,7 +312,7 @@ define([
             return this.create_child_view(model).then(function(view) {
                 dummy.replaceWith(view.el);
                 that.displayed.then(function() {
-                    view.trigger('displayed');
+                    view.trigger('displayed', that);
                 });
                 return view;
             }).catch(utils.reject('Could not add axis view', true));

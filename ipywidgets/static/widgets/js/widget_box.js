@@ -36,7 +36,7 @@ define([
 
         render: function() {
             var that = this;
-            var child_view = this.set_child(this.model.get("child"))
+            var child_view = this.set_child(this.model.get("child"));
             this.listenTo(this.model, "change:child", function(model, value) {
                 this.set_child(value);
             });
@@ -68,7 +68,7 @@ define([
                         that.$box.empty().append(view.el);
                         // Trigger the displayed event of the child view.
                         that.displayed.then(function() {
-                            view.trigger('displayed');
+                            view.trigger('displayed', that);
                         });
                         that.child = view;
                         that.trigger("child:created");
@@ -76,6 +76,15 @@ define([
                 });
             }
             return this.child_promise;
+        },
+
+        /**
+         * Set a CSS attr of the view
+         * @param  {string} name
+         * @param  {object} value
+         */
+        update_attr: function(name, value) {
+            this.$box.css(name, value);
         },
     });
 
@@ -162,7 +171,7 @@ define([
 
                 // Trigger the displayed event of the child view.
                 that.displayed.then(function() {
-                    view.trigger('displayed');
+                    view.trigger('displayed', that);
                 });
                 return view;
             }).catch(utils.reject("Couldn't add child view to box", true));
