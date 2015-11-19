@@ -5,17 +5,17 @@
 if (typeof define !== 'function') { var define = require('./requirejs-shim')(module); }
 
 // Use the CommonJS-like requirejs style.
-define(function(require, exports, module) {
-    
-    var widget = require("nbextensions/widgets/widgets/js/widget");
-    var _ = require("underscore");
-    var Backbone = require("backbone");
-    var $ = require("jquery");
+define([
+    "nbextensions/widgets/widgets/js/widget",
+    "underscore",
+    "backbone",
+    "jquery"
+], function(widget, _, Backbone, $) {
     
     /**
      * Represents a group of CSS style attributes
      */
-    var StyleView = exports.StyleView = widget.WidgetView.extend({
+    var StyleView = widget.WidgetView.extend({
         
         /**
          * Public constructor
@@ -164,4 +164,6 @@ define(function(require, exports, module) {
             }, this);
         }
     });
+    
+    return {StyleView: StyleView};
 });
