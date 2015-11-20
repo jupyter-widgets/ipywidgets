@@ -17,7 +17,7 @@ define([
         managerBase.ManagerBase.apply(this);
         WidgetManager._managers.push(this);
 
-        // Attach a comm manager to the
+        // Attach a comm manager
         this.notebook = notebook;
         this.keyboard_manager = notebook.keyboard_manager;
         this.comm_manager = comm_manager;
