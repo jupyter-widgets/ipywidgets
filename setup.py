@@ -181,7 +181,6 @@ class NPM(Command):
     node_modules = pjoin(repo_root, 'node_modules')
 
     targets = [
-        pjoin(repo_root, 'ipywidgets', 'static', 'widgets', 'css', 'widgets.min.css'),
         pjoin(repo_root, 'ipywidgets', 'tests', 'bin'),
     ]
 

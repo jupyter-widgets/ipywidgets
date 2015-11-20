@@ -6,7 +6,6 @@ docs/man/*.gz
 docs/source/api/generated
 docs/gh-pages
 ipywidgets/static/components
-less_include
 node_modules
 *.py[co]
 __pycache__
@@ -24,9 +23,6 @@ __pycache__
 *.py
 ipywidgets/widgets
 ipywidgets/tests
-.bowerrc
 .travis.yml
-bower.json
-build_css.js
 setup.cfg
 examples/

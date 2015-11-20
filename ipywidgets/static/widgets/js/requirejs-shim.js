@@ -12,6 +12,7 @@ function requireLocalFiles() {
     require('./widget');
     require('./widget_int');
     require('./manager-base');
+    require('../less/widgets.less');
 }
 
 module.exports = function createDefine(targetModule) {
@@ -23,6 +24,8 @@ module.exports = function createDefine(targetModule) {
             args[0] = args[0].map(function(arg) {
                 if (arg === 'jqueryui') arg = 'jquery';
                 arg = arg.replace('nbextensions/widgets/widgets/js/', './');
+                arg = arg.replace('nbextensions/widgets/widgets/less/', '../less/');
+                arg = arg.replace('nbextensions/widgets/components/require-less/less!', '');
                 return arg;
             });
         }

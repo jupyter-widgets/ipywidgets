@@ -8,7 +8,6 @@ docs/gh-pages
 ipywidgets/static/components
 ipywidgets/static/widgets/css
 ipywidgets/tests/bin
-less_include
 node_modules
 *.py[co]
 __pycache__

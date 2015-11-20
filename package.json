@@ -10,10 +10,10 @@
     "url": "https://github.com/ipython/ipywidgets.git"
   },
   "scripts": {
-    "build": "npm run css && npm run buildtests",
+    "build": "npm run buildtests",
     "bower": "bower install --config.interactive=false",
+    "postinstall": "npm run bower",
     "precss": "rimraf ./ipywidgets/static/widgets/css/",
-    "css": "node ipywidgets/build_css.js",
     "prebuildtests": "rimraf ./ipywidgets/tests/bin/tests",
     "buildtests": "tsc ./ipywidgets/tests/**/*.ts --outDir ./ipywidgets/tests/bin -d -m commonjs -t ES5",
     "prepublish": "npm run bower && npm run build",
@@ -23,14 +23,12 @@
     "postversion": "node ipywidgets/copy_version.js --dev && git add ipywidgets/_version.py && git commit -m \"Back to dev\""
   },
   "devDependencies": {
-    "bower": "^1.5.3",
-    "clean-css": "^3.4.6",
-    "less": "^2.5.3",
     "rimraf": "^2.4.1",
     "spawn-sync": "*",
     "typescript": "~1.5.0-beta"
   },
   "dependencies": {
+    "bower": "^1.5.3",
     "amdefine": "^1.0.0",
     "backbone": "1.2.0",
     "bootstrap": "^3.3.5",
