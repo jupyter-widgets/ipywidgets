@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "amdefine": "^1.0.0",
-    "backbone": "^1.2.3",
+    "backbone": "1.2.0",
     "bootstrap": "^3.3.5",
     "jquery": "^2.1.4",
     "jquery-ui": "^1.10.5",
