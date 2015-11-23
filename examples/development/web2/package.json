@@ -12,6 +12,7 @@
   "dependencies": {
     "browserify": "^11.2.0",
     "node-lessify": "^0.1.1",
+    "jquery-ui": "*",
     "ipywidgets": "file:../../.."
   }
 }

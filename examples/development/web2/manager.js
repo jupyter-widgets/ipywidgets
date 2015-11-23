@@ -1,3 +1,7 @@
+require('./node_modules/ipywidgets/ipywidgets/static/components/bootstrap/less/bootstrap.less')
+require('./node_modules/ipywidgets/ipywidgets/static/components/bootstrap/less/mixins.less')
+require('./node_modules/jquery-ui/themes/smoothness/jquery-ui.min.css')
+
 var ipywidgets = require('ipywidgets');
 console.info('ipywidgets loaded successfully');
 
