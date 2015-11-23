@@ -547,7 +547,7 @@ define(["nbextensions/widgets/widgets/js/utils",
     var DOMWidgetModel = WidgetModel.extend({
         serializers: _.extend({
             style: {deserialize: unpack_models},
-        }, WidgetModel.serializers),
+        }, WidgetModel.prototype.serializers),
     });
     
     managerBase.ManagerBase.register_widget_model('DOMWidgetModel', DOMWidgetModel);

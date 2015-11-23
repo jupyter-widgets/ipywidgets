@@ -243,7 +243,7 @@ define([
         serializers: _.extend({
             buttons: {deserialize: widget.unpack_models},
             axes: {deserialize: widget.unpack_models},
-        }, widget.WidgetModel.serializers)
+        }, widget.WidgetModel.prototype.serializers)
 
     });
 
