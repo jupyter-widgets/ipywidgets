@@ -142,7 +142,7 @@ define([
         handleChange: function(trait, value) {
             this.displayed.then(_.bind(function(parent) {
                 if (parent) {
-                    parent.update_attr(trait, value);
+                    parent.el.style[trait] = value;
                 } else {
                     console.warn("Style not applied because a parent view doesn't exist");
                 }
@@ -156,7 +156,7 @@ define([
             this._traitNames.forEach(function(trait) {
                 this.displayed.then(_.bind(function(parent) {
                     if (parent) {
-                        parent.update_attr(trait, '');
+                        parent.el.style[trait] = '';
                     } else {
                         console.warn("Style not removed because a parent view doesn't exist");
                     }
