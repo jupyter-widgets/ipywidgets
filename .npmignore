@@ -24,5 +24,6 @@ __pycache__
 ipywidgets/widgets
 ipywidgets/tests
 .travis.yml
+build_css.js
 setup.cfg
 examples/

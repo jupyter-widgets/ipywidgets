@@ -4,6 +4,6 @@
   "dependencies": {
     "bootstrap": "components/bootstrap#~3.3",
     "font-awesome": "components/font-awesome#~4.2.0",
-    "require-less": "0.1.5"
+    "require-css": "0.1.8"
   }
 }

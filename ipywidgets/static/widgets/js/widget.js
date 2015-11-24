@@ -9,7 +9,7 @@ define(["nbextensions/widgets/widgets/js/utils",
         "underscore",
         "backbone",
         "jquery",
-        "nbextensions/widgets/components/require-less/less!nbextensions/widgets/widgets/less/widgets.less"
+        "nbextensions/widgets/components/require-css/css!nbextensions/widgets/widgets/css/widgets.min.css"
 ], function(utils, managerBase, _, Backbone, $) {
     "use strict";
     
