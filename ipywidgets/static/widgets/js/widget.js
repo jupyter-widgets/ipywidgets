@@ -4,8 +4,8 @@
 // npm compatibility
 if (typeof define !== 'function') { var define = require('./requirejs-shim')(module); }
 
-define(["nbextensions/widgets/widgets/js/utils",
-        "nbextensions/widgets/widgets/js/manager-base",
+define(["./utils",
+        "./manager-base",
         "underscore",
         "backbone",
         "jquery",

@@ -7,7 +7,7 @@ if (typeof define !== 'function') { var define = require('./requirejs-shim')(mod
 define([
     "underscore",
     "backbone",
-    "nbextensions/widgets/widgets/js/utils"
+    "./utils"
 ], function (_, Backbone, utils) {
     "use strict";
     //--------------------------------------------------------------------

@@ -4,9 +4,9 @@
 define([
     "underscore",
     "backbone",
-    "nbextensions/widgets/widgets/js/utils",
+    "./utils",
     "services/kernels/comm",
-    "nbextensions/widgets/widgets/js/manager-base"
+    "./manager-base"
 ], function (_, Backbone, utils, comm, managerBase) {
     "use strict";
     

@@ -6,7 +6,7 @@ if (typeof define !== 'function') { var define = require('./requirejs-shim')(mod
 
 // Use the CommonJS-like requirejs style.
 define([
-    "nbextensions/widgets/widgets/js/widget",
+    "./widget",
     "underscore",
     "backbone",
     "jquery"

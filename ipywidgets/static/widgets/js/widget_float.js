@@ -5,8 +5,8 @@
 if (typeof define !== 'function') { var define = require('./requirejs-shim')(module); }
 
 define([
-    "nbextensions/widgets/widgets/js/widget",
-    "nbextensions/widgets/widgets/js/widget_int",
+    "./widget",
+    "./widget_int",
 ], function(widget, int_widgets){
     var IntSliderView = int_widgets.IntSliderView;
     var IntTextView = int_widgets.IntTextView;
