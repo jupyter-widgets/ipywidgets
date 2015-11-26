@@ -12,6 +12,7 @@
   "scripts": {
     "build": "npm run css && npm run buildtests",
     "bower": "bower install --config.interactive=false",
+    "postinstall": "npm run bower",
     "precss": "rimraf ./ipywidgets/static/widgets/css/",
     "css": "node ipywidgets/build_css.js",
     "prebuildtests": "rimraf ./ipywidgets/tests/bin/tests",

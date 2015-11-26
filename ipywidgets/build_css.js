@@ -26,7 +26,7 @@ function run(cmd) {
 }
 
 run(['lessc',
-    '--include-path=./less_include',
+    '--include-path=./ipywidgets/static/components',
     source,
     css_destination,
 ]);
