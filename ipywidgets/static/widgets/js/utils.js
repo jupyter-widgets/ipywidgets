@@ -4,9 +4,6 @@
 // TODO: ATTEMPT TO KILL THIS MODULE USING THIRD PARTY LIBRARIES WHEN IPYWIDGETS 
 // IS CONVERTED TO NODE COMMONJS.
 
-// npm compatibility
-if (typeof define !== 'function') { var define = require('./requirejs-shim')(module); }
-
 define([
     "jquery"
 ], function($) {
