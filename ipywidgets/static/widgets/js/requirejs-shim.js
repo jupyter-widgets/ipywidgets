@@ -23,7 +23,6 @@ module.exports = function createDefine(targetModule) {
         if (args.length > 1) {
             args[0] = args[0].map(function(arg) {
                 if (arg === 'jqueryui') arg = 'jquery';
-                arg = arg.replace('nbextensions/widgets/widgets/js/', './');
                 arg = arg.replace('nbextensions/widgets/widgets/css/', '../css/');
                 arg = arg.replace('nbextensions/widgets/components/require-css/css!', '');
                 return arg;

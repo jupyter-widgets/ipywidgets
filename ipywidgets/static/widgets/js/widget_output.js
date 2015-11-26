@@ -5,7 +5,7 @@
 // dependency.
 // TODO: Use jupyter-js-output-area to break the coupling to the notebook.
 define([
-    "nbextensions/widgets/widgets/js/widget",
+    "./widget",
     "jquery",
     'notebook/js/outputarea',
 ], function(widget, $, outputarea) {

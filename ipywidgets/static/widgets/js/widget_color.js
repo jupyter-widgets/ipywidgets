@@ -5,7 +5,7 @@
 if (typeof define !== 'function') { var define = require('./requirejs-shim')(module); }
 
 define([
-    "nbextensions/widgets/widgets/js/widget",
+    "./widget",
 ], function(widget) {
 
     var ColorPicker = widget.DOMWidgetView.extend({
