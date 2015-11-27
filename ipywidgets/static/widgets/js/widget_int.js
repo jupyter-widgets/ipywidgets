@@ -9,7 +9,7 @@ define([
     "underscore",
     "jquery",
     "bootstrap",
-    "jqueryui"
+    "jquery-ui"
 ], function(widget, _, $) {
 
     var IntSliderView = widget.DOMWidgetView.extend({
