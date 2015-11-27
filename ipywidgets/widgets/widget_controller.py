@@ -7,6 +7,7 @@ Represents a Gamepad or Joystick controller.
 # Distributed under the terms of the Modified BSD License.
 
 from .widget import Widget, register, widget_serialization
+from .domwidget import DOMWidget
 from traitlets import Bool, Int, Float, Unicode, List, Instance
 
 
@@ -28,7 +29,7 @@ class Axis(Widget):
 
 
 @register('IPython.Controller')
-class Controller(Widget):
+class Controller(DOMWidget):
     """Represents a game controller"""
     index = Int(sync=True)
 
