@@ -90,7 +90,7 @@ define([
 
     });
 
-    var Controller = widget.WidgetModel.extend({
+    var Controller = widget.DOMWidgetModel.extend({
         /* The Controller model. */
 
         initialize: function() {
@@ -243,7 +243,7 @@ define([
         serializers: _.extend({
             buttons: {deserialize: widget.unpack_models},
             axes: {deserialize: widget.unpack_models},
-        }, widget.WidgetModel.prototype.serializers)
+        }, widget.DOMWidgetModel.prototype.serializers)
 
     });
 
