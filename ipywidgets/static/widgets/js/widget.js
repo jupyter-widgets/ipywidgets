@@ -5,8 +5,7 @@ define(["./utils",
         "./manager-base",
         "underscore",
         "backbone",
-        "jquery",
-        "nbextensions/widgets/components/require-css/css!../css/widgets.min.css"
+        "jquery"
 ], function(utils, managerBase, _, Backbone, $) {
     "use strict";
     
