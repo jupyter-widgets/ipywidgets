@@ -564,8 +564,8 @@ define(["./utils",
             // Create and apply a unique style class name that can be used to
             // style this view directly.
             this.styleClassName = 'widget' + '-' + this.model.id + '-' + this.id;
-            this.el.className += ' ' + this.styleClassName;
-            
+            this.el.classList.add(this.styleClassName);
+
             // Find or create a style tag for this widget view
             this.styleNode = document.querySelectorAll('style.' + this.styleClassName);
             if (this.styleNode && this.styleNode.length > 0) {
