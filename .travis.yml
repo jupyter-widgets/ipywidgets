@@ -9,16 +9,13 @@ env:
     - GROUP=python
 sudo: false
 before_install:
-    - git clone --quiet --depth 1 https://github.com/minrk/travis-wheels travis-wheels
-    - export CHROME_BIN=chromium-browser
-    - export DISPLAY=:99.0
-    - sh -e /etc/init.d/xvfb start
+    - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_before_install_py.sh ; fi'
 install:
-    - 'if [[ $GROUP == js ]]; then cd ipywidgets && npm install; fi'
-    - 'if [[ $GROUP == python ]]; then pip install -f travis-wheels/wheelhouse file://$PWD#egg=ipywidgets[test] coveralls; fi'
+    - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_install_py.sh ; fi'
+    - 'if [[ $GROUP == js ]] ; then bash ./scripts/travis_install_js.sh ; fi'
 script:
-    - 'if [[ $GROUP == js ]]; then npm run test:$BROWSER; fi'
-    - 'if [[ $GROUP == python ]]; then mkdir /tmp/ipywidgets && cd /tmp/ipywidgets && nosetests --with-coverage --cover-package=ipywidgets ipywidgets; fi'
+    - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_script_py.sh ; fi'
+    - 'if [[ $GROUP == js ]] ; then bash ./scripts/travis_script_js.sh ; fi'
 matrix:
     include:
         - python: 2.7
