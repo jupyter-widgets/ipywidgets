@@ -14,10 +14,10 @@ before_install:
     - export DISPLAY=:99.0
     - sh -e /etc/init.d/xvfb start
 install:
-    - pip install -f travis-wheels/wheelhouse file://$PWD#egg=ipywidgets[test] coveralls
+    - 'if [[ $GROUP == js ]]; then cd ipywidgets && npm install; fi'
+    - 'if [[ $GROUP == python ]]; then pip install -f travis-wheels/wheelhouse file://$PWD#egg=ipywidgets[test] coveralls; fi'
 script:
-    - export IPYWIDGETS_PATH=$(python -c "import ipywidgets; print(ipywidgets.__path__)[0]")
-    - 'if [[ $GROUP == js ]]; then cd $IPYWIDGETS_PATH && npm install && npm run test:$BROWSER; fi'
+    - 'if [[ $GROUP == js ]]; then npm run test:$BROWSER; fi'
     - 'if [[ $GROUP == python ]]; then mkdir /tmp/ipywidgets && cd /tmp/ipywidgets && nosetests --with-coverage --cover-package=ipywidgets ipywidgets; fi'
 matrix:
     include:
