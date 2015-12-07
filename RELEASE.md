@@ -1,6 +1,6 @@
 To release a new version of the widgets on PyPI and npm, first checkout
-master can cd into the repo root.  Then run the following, replacing 
-the square bracketed content with appropriate values:
+master can cd into the ipywidgets subfolder of the repo root.  Then run the 
+following, replacing the square bracketed content with appropriate values:
 
 ```
 npm version [patch/minor/major]

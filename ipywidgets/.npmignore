@@ -5,7 +5,7 @@ _build
 docs/man/*.gz
 docs/source/api/generated
 docs/gh-pages
-ipywidgets/static/components
+static/components/
 node_modules
 *.py[co]
 __pycache__
@@ -21,8 +21,8 @@ __pycache__
 .xunit.xml
 
 *.py
-ipywidgets/widgets
-ipywidgets/tests
+widgets/
+tests/
 .travis.yml
 build_css.js
 setup.cfg
