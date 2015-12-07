@@ -64,7 +64,7 @@ repo_root = os.path.dirname(os.path.abspath(__file__))
 is_repo = os.path.exists(pjoin(repo_root, '.git'))
 
 npm_path = os.pathsep.join([
-    pjoin(repo_root, 'node_modules', '.bin'),
+    pjoin(repo_root, 'ipywidgets', 'node_modules', '.bin'),
     os.environ.get("PATH", os.defpath),
 ])
 
@@ -178,11 +178,10 @@ class NPM(Command):
 
     user_options = []
     
-    node_modules = pjoin(repo_root, 'node_modules')
+    node_modules = pjoin(repo_root, 'ipywidgets', 'node_modules')
 
     targets = [
-        pjoin(repo_root, 'ipywidgets', 'static', 'widgets', 'css', 'widgets.min.css'),
-        pjoin(repo_root, 'ipywidgets', 'tests', 'bin'),
+        pjoin(repo_root, 'ipywidgets', 'static', 'widgets', 'css', 'widgets.min.css')
     ]
 
     def initialize_options(self):
@@ -202,13 +201,13 @@ class NPM(Command):
     def run(self):
         if self.should_run_npm():
             print("installing build dependencies with npm")
-            check_call(['npm', 'install'], cwd=repo_root)
+            check_call(['npm', 'install'], cwd=pjoin(repo_root, 'ipywidgets'))
             os.utime(self.node_modules, None)
 
         env = os.environ.copy()
         env['PATH'] = npm_path
         if which('npm'):
-            check_call(['npm', 'run', 'build'])
+            check_call(['npm', 'run', 'build'], cwd=pjoin(repo_root, 'ipywidgets'))
         
         for t in self.targets:
             if not os.path.exists(t):
