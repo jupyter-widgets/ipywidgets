@@ -17,7 +17,7 @@
     "css": "node build_css.js",
     "test": "npm run test:firefox && npm run test:chrome",
     "test:firefox": "karma start karma.conf.js --browsers Firefox",
-    "test:chrome": "karma start karma.conf.js --browsers Chrome",
+    "test:chrome": "karma start karma.conf.js",
     "prepublish": "npm run bower && npm run build",
     "publish": "npm run publish:pypi",
     "publish:pypi": "cd .. && python setup.py sdist upload && python setup.py bdist_wheel upload && cd ipywidgets",
