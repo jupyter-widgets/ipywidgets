@@ -5,9 +5,9 @@ var path = require('path');
 
 var spawn = require('spawn-sync');
 
-var source = './ipywidgets/static/widgets/less/widgets.less';
-var css_destination = './ipywidgets/static/widgets/css/widgets.css';
-var min_destination = './ipywidgets/static/widgets/css/widgets.min.css';
+var source = './static/widgets/less/widgets.less';
+var css_destination = './static/widgets/css/widgets.css';
+var min_destination = './static/widgets/css/widgets.min.css';
 
 function run(cmd) {
     // run a command, with some help:
@@ -26,7 +26,7 @@ function run(cmd) {
 }
 
 run(['lessc',
-    '--include-path=./ipywidgets/static/components',
+    '--include-path=./static/components',
     source,
     css_destination,
 ]);
