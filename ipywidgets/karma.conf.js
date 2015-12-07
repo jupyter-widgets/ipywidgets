@@ -31,7 +31,8 @@ module.exports = function(config) {
         },
 
         browserify: {
-            debug: true
+            debug: true,
+            transform: [ 'node-lessify' ]
         },
 
 
@@ -60,7 +61,7 @@ module.exports = function(config) {
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: ['Chrome', 'Firefox'],
+        browsers: ['Chrome'],
 
         customLaunchers: {
             Chrome_travis_ci: {

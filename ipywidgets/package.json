@@ -38,6 +38,7 @@
     "karma-mocha-reporter": "^1.1.3",
     "less": "^2.5.3",
     "mocha": "^2.3.4",
+    "node-lessify": "^0.1.1",
     "rimraf": "^2.4.1",
     "spawn-sync": "^1.0.14"
   },
