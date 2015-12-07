@@ -30,7 +30,7 @@ var contents =
 
 // Write the contents to the file.
 var fs = require("fs");
-fs.writeFile("ipywidgets/_version.py", contents, function(err) {
+fs.writeFile("_version.py", contents, function(err) {
     if(err) {
         console.error("Could not write the Python version file", err);
         process.exit(1);
