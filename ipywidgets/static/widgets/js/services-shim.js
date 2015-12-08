@@ -7,6 +7,9 @@
  * embed live widgets in a context outside of the notebook.
  */
 
+ // npm compatibility
+ if (typeof define !== 'function') { var define = require('./requirejs-shim')(module); }
+
 define([
     'jquery',
     'base/js/utils',

@@ -34,3 +34,7 @@ var register = require("./static/widgets/js/register");
         exports[name] = module[name];
     });
 });
+
+exports.shims = {
+    services: require("./static/widgets/js/services-shim")
+};
