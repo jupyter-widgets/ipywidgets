@@ -41,6 +41,7 @@
     "mocha": "^2.3.4",
     "node-lessify": "^0.1.1",
     "rimraf": "^2.4.1",
+    "sinon": "^1.17.2",
     "spawn-sync": "^1.0.14"
   },
   "dependencies": {
