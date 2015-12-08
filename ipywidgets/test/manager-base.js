@@ -65,7 +65,7 @@ describe("ManagerBase", function() {
         expect(this.managerBase.callbacks).to.not.throw(Error);
         
         // Cell-less call
-        var c = this.managerBase.callbacks();
+        let c = this.managerBase.callbacks();
         expect(c).to.be.an('object');
         expect(c.iopub).to.be.undefined;
         

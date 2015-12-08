@@ -27,14 +27,16 @@ module.exports = function(config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            'test/**/*.js': [ 'babel', 'browserify' ]
+            'test/**/*.js': [ 'browserify' ]
         },
 
         browserify: {
             debug: true,
-            transform: [ 'node-lessify' ]
+            transform: [ 
+                ['babelify', {presets: ['es2015']}],
+                'node-lessify'
+            ]
         },
-
 
         // test results reporter to use
         // possible values: 'dots', 'progress'
