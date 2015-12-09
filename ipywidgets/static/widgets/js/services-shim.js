@@ -27,20 +27,6 @@ define([
     };
     
     /**
-     * Mapping of comm IDs to comms.
-     * @return {{string: Comm}}
-     */
-    Object.defineProperty(CommManager.prototype, 'comms', {
-        get: function() {
-            var commMap = {};
-            Object.keys(jsServicesKernel._comms).forEach(function(commId) {
-                commMap[commId] = new Comm(jsServicesKernel._comms[commId]);
-            });
-            return commMap;
-        }
-    });
-    
-    /**
      * Handles when a comm, without a target module, connects.
      * @param  {object} content - msg content
      * @return {Comm}
@@ -113,35 +99,7 @@ define([
     CommManager.prototype.unregister_target = function (target_name, f) {
         delete this.targets[target_name];
     };
-    
-    /**
-     * Registers a comm with the comm manager.
-     * @param  {Comm} comm
-     * @return {string} comm id
-     */
-    CommManager.prototype.register_comm = function (comm) {
-        if (comm.jsServicesComm === undefined) {
-            throw new Error('comm must be a jupyter-js-services shim comm');
-        }
         
-        this.jsServicesKernel._comms.set(comm.comm_id, comm.jsServicesComm);
-        comm.kernel = this.kernel;
-        return comm.comm_id;
-    };
-    
-    /**
-     * Unregisters a comm with the comm manager.
-     * @param  {Comm} comm
-     */
-    CommManager.prototype.unregister_comm = function (comm) {
-        if (comm.jsServicesComm === undefined) {
-            throw new Error('comm must be a jupyter-js-services shim comm');
-        }
-        
-        this.jsServicesKernel._unregisterComm(comm.commId);
-    };
-    
-    
     
     
     /**
