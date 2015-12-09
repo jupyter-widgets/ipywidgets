@@ -1,15 +1,15 @@
-require('./node_modules/ipywidgets/static/components/bootstrap/css/bootstrap.css')
+require('./node_modules/jupyter-js-widgets/static/components/bootstrap/css/bootstrap.css')
 require('./node_modules/jquery-ui/themes/smoothness/jquery-ui.min.css')
 
-var ipywidgets = require('ipywidgets');
-console.info('ipywidgets loaded successfully');
+var jpywidgets = require('jupyter-js-widgets');
+console.info('jupyter-js-widgets loaded successfully');
 
 var WidgetManager = exports.WidgetManager = function(el) {
     //  Call the base class.
-    ipywidgets.ManagerBase.call(this);
+    jpywidgets.ManagerBase.call(this);
     this.el = el;
 };
-WidgetManager.prototype = Object.create(ipywidgets.ManagerBase.prototype);
+WidgetManager.prototype = Object.create(jpywidgets.ManagerBase.prototype);
 
 WidgetManager.prototype.display_view = function(msg, view, options) {
     var that = this;
