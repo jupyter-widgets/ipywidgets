@@ -1,5 +1,5 @@
 {
-  "name": "ipywidgets",
+  "name": "jupyter-js-widgets",
   "version": "4.1.0",
   "description": "IPython widget Javascript",
   "author": "IPython",

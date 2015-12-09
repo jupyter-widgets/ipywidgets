@@ -7,10 +7,11 @@ if (typeof define !== 'function') { var define = require('./requirejs-shim')(mod
 define([
     "./widget",
     "underscore",
-    "jqueryui",
-    "bootstrap"
+    "jquery",
+    "bootstrap",
+    "jqueryui"
 ], function(widget, _, $) {
-    
+
     var IntSliderView = widget.DOMWidgetView.extend({
         render : function() {
             /**

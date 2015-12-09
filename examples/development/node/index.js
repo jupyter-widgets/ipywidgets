@@ -6,11 +6,11 @@ jsdom.env('<html><head/><body/></html>', function (err, window) {
         global.window = window;
         global.document = window.document;
         global.navigator = require('navigator');
-        
+
         // DEMO
-        // Log the keys of ipywidgets.
-        var ipywidgets = require('ipywidgets');
-        console.log(Object.keys(ipywidgets));
+        // Log the keys of jupyter-js-widgets.
+        var jpywidgets = require('jupyter-js-widgets');
+        console.log(Object.keys(jpywidgets));
 
         // Clean-up DOM
         window.close();

@@ -4,17 +4,27 @@
   "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
   "main": "index.js",
   "scripts": {
-    "prepublish": "browserify -g node-lessify index.js --outfile index.built.js --debug",
+    "prepublish": "npm run build",
+    "build": "npm run build:es5 && npm run build:bundle",
+    "build:es5": "babel src --out-dir es5 --presets es2015",
+    "build:bundle": "browserify -g node-lessify ./es5/index.js --outfile ./index.built.js --debug",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "IPython",
   "license": "BSD-3-Clause",
   "dependencies": {
     "browserify": "^11.2.0",
+    "codemirror": "^5.9.0",
+    "font-awesome": "^4.5.0",
     "jupyter-js-widgets": "file:../../../ipywidgets",
+    "jquery": "^2.1.4",
+    "jquery-ui": "^1.10.5",
+    "jupyter-js-services": "^0.2.2",
     "node-lessify": "^0.1.1"
   },
   "devDependencies": {
+    "babel-cli": "^6.3.15",
+    "babel-preset-es2015": "^6.3.13",
     "bower": "^1.7.0"
   }
 }
