@@ -214,10 +214,12 @@ define(["./utils",
                             that.set_state(state);
                         }).catch(utils.reject("Couldn't process update msg for model id '" + String(that.id) + "'", true))
                         .then(function() {
-                            var parent_id = msg.parent_header.msg_id;
-                            if (that._resolve_received_state[parent_id] !== undefined) {
-                                that._resolve_received_state[parent_id](that);
-                                delete that._resolve_received_state[parent_id];
+                            if (msg.parent_header) {
+                                var parent_id = msg.parent_header.msg_id;
+                                if (that._resolve_received_state[parent_id] !== undefined) {
+                                    that._resolve_received_state[parent_id](that);
+                                    delete that._resolve_received_state[parent_id];
+                                }
                             }
                         }).catch(utils.reject("Couldn't resolve state request promise", true));
                     return this.state_change;

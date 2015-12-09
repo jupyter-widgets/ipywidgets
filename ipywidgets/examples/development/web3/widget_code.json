@@ -1,0 +1,11 @@
+[
+    "from ipywidgets import IntSlider, Text, VBox",
+    "from IPython.display import display",
+    "",
+    "s = IntSlider(max=200, value=100)",
+    "t = Text()",
+    "def update_text():",
+    "    t.value = str(s.value ** 2)",
+    "s.on_trait_change(update_text, 'value')",
+    "display(VBox([s, t]))"
+]

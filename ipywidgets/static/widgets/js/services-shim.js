@@ -12,7 +12,7 @@
 
 define([
     'jquery',
-    'base/js/utils',
+    './utils',
     'underscore',
 ], function($, utils, _) {
     "use strict";
@@ -30,7 +30,7 @@ define([
      * Mapping of comm IDs to comms.
      * @return {{string: Comm}}
      */
-    Object.defineProperty(CommManager, 'comms', {
+    Object.defineProperty(CommManager.prototype, 'comms', {
         get: function() {
             var commMap = {};
             Object.keys(jsServicesKernel._comms).forEach(function(commId) {
@@ -45,7 +45,7 @@ define([
      * @param  {object} content - msg content
      * @return {Comm}
      */
-    CommManager.prototype._handle_comm_connect = function(content) {
+    CommManager.prototype._handle_comm_connect = function(kernel, content) {
         var targetName = content.target_name;
         
         // Get the target from the registry.
@@ -156,7 +156,7 @@ define([
      * Comm id
      * @return {string}
      */
-    Object.defineProperty(Comm, 'comm_id', {
+    Object.defineProperty(Comm.prototype, 'comm_id', {
         get: function() {
             return this.jsServicesComm.commId;
         }
@@ -166,7 +166,7 @@ define([
      * Target name
      * @return {string}
      */
-    Object.defineProperty(Comm, 'target_name', {
+    Object.defineProperty(Comm.prototype, 'target_name', {
         get: function() {
             return this.jsServicesComm.targetName;
         }
@@ -217,7 +217,9 @@ define([
      * @param  {(object) => void} callback - signature of f(msg)
      */
     Comm.prototype.on_msg = function (callback) {
-        this.jsServicesComm.onMsg = callback;
+        this.jsServicesComm.onMsg = function(data) {
+            callback.call(this, {content : {data: data}});
+        };
     };
     
     /**
@@ -225,7 +227,9 @@ define([
      * @param  {(object) => void} callback - signature of f(msg)
      */
     Comm.prototype.on_close = function (callback) {
-        this.jsServicesComm.onClose = callback;
+        this.jsServicesComm.onClose = function(data) {
+            callback.call(this, {content : {data: data}});
+        };
     };
     
     /**
@@ -234,25 +238,21 @@ define([
      * @param  {object} callbacks
      */
     Comm.prototype._hookupCallbacks = function(future, callbacks) {
-        // callbacks = {
-        //     shell: {
-        //         reply: msg => {}
-        //     },
-        //     iopub: msg => {},
-        //     input: {
-        //         input: msg => {}
-        //     }
-        // }
         if (callbacks) {
-            if (callbacks.shell && callbacks.shell.reply) {
-                future.onReply = callbacks.shell.reply;
-            }
-            if (callbacks.input && callbacks.input.input) {
-                future.onStdin = callbacks.input.input;
-            }
-            if (callbacks.iopub) {
-                future.onIOPub = callbacks.iopub;
-            }
+            future.onReply = function(msg) {
+                if (callbacks.shell && callbacks.shell.reply) callbacks.shell.reply(msg);
+                // TODO: Handle payloads.  See https://github.com/jupyter/notebook/blob/master/notebook/static/services/kernels/kernel.js#L923-L947
+            };
+            
+            future.onStdin = function(msg) {
+                if (callbacks.input) callbacks.input(msg);
+            };
+            
+            future.onIOPub = function(msg) {
+                if (callbacks.iopub && callbacks.iopub.status) callbacks.iopub.status(msg);
+                if (callbacks.iopub && callbacks.iopub.clear_output) callbacks.iopub.clear_output(msg);
+                if (callbacks.iopub && callbacks.iopub.output) callbacks.iopub.output(msg);
+            };
         }
     };
     
