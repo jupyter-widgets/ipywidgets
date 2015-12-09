@@ -4,13 +4,16 @@
   "description": "Project that tests the ability to npm install ipywidgets within an npm project.",
   "main": "index.js",
   "scripts": {
+    "prepublish": "browserify -g node-lessify index.js --outfile index.built.js --debug",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "IPython",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "ipywidgets": "file:../../..",
-    "jsdom": "^7.0.1",
-    "navigator": "^1.0.1"
+    "browserify": "^11.2.0",
+    "ipywidgets": "file:../../../ipywidgets"
+  },
+  "devDependencies": {
+    "bower": "^1.7.0"
   }
 }

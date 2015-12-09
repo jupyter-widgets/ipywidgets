@@ -14,7 +14,7 @@
     "node-lessify": "^0.1.1",
     "codemirror": "^5.9.0",
     "jquery-ui": "^1.10.5",
-    "ipywidgets": "file:../../.."
+    "ipywidgets": "file:../../../ipywidgets"
   },
   "devDependencies": {
     "bower": "^1.7.0"

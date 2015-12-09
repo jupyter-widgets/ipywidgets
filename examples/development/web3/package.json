@@ -15,7 +15,7 @@
   "dependencies": {
     "browserify": "^11.2.0",
     "codemirror": "^5.9.0",
-    "ipywidgets": "file:../../..",
+    "ipywidgets": "file:../../../ipywidgets",
     "jquery-ui": "^1.10.5",
     "jupyter-js-services": "^0.2.2",
     "node-lessify": "^0.1.1"
