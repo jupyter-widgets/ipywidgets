@@ -165,7 +165,6 @@ define([
      * Create a comm and new widget model.
      * @param  {Object} options - same options as new_model but, comm is not
      *                          needed and additional options are available:
-     * @param  {boolean} options.skipStateRequest - skip the request state call.
      * @return {Promise<WidgetModel>}
      */
     ManagerBase.prototype.new_widget = function(options) {
@@ -179,19 +178,21 @@ define([
                 'target_name': 'ipython.widget',
             });
         }
-        
+
         var options_clone = _.clone(options);
         var that = this;
         return commPromise.then(function(comm) {
+            // Comm Promise Resolved.
             options_clone.comm = comm;
             return that.new_model(options_clone).then(function(model) {
-                // Requesting the state to populate default values.
-                if (options.skipStateRequest) {
-                    return model;
-                } else {                    
-                    return model.request_state();
-                }
+                return model.request_state();
             });
+        }, function() {
+            // Comme Promise Rejected.
+            if (!options_clone.model_id) {
+                options_clone.model_id = utils.uuid();
+            }
+            return that.new_model(options_clone);
         });
     };
 
@@ -249,7 +250,6 @@ define([
                 widget_model.name = options.model_name;
                 widget_model.module = options.model_module;
                 return widget_model;
-
             }, function(error) {
                 delete that._models[model_id];
                 var wrapped_error = new utils.WrappedError("Couldn't create model", error);
