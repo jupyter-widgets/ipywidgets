@@ -7,7 +7,7 @@ if (typeof define !== 'function') { var define = require('./requirejs-shim')(mod
 define([
     "./widget",
     "./utils",
-    "jqueryui",
+    "jquery",
     "underscore",
     "bootstrap",
 ], function(widget, utils, $, _) {
