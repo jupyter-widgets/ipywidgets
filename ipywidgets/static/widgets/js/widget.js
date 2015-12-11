@@ -52,7 +52,6 @@ define(["./utils",
              *      An ID unique to this model.
              * comm : Comm instance (optional)
              */
-            WidgetModel.__super__.constructor.apply(this);
             this.widget_manager = widget_manager;
             this.state_change = Promise.resolve();
             this._buffered_state_diff = {};
@@ -99,6 +98,7 @@ define(["./utils",
                 widget_manager.notebook.events.on('kernel_restarting.Kernel', died);
                 widget_manager.notebook.events.on('kernel_dead.Kernel', died);
             }
+            WidgetModel.__super__.constructor.apply(this);
         },
 
         send: function (content, callbacks, buffers) {
