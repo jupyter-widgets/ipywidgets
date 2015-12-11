@@ -386,13 +386,13 @@ define([
     };
 
     ManagerBase.prototype._create_comm = function(comm_target_name, model_id, metadata) {
-        throw new Error("Manager._create_comm not implemented");
+        return Promise.reject("No backend.");
     };
 
     ManagerBase.prototype._get_comm_info = function() {
-        throw new Error("Manager._get_comm_info not implemented");
+        return Promise.resolve({});
     };
-    
+
     return {
         'ManagerBase': ManagerBase
     };

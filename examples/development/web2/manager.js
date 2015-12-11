@@ -21,11 +21,3 @@ WidgetManager.prototype.display_view = function(msg, view, options) {
         return view;
     });
 };
-
-WidgetManager.prototype._create_comm = function(comm_target_name, model_id, metadata) {
-    return Promise.reject("No backend");
-};
-
-WidgetManager.prototype._get_comm_info = function() {
-    return Promise.resolve({});
-};
