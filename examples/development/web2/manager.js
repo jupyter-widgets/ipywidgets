@@ -21,3 +21,7 @@ WidgetManager.prototype.display_view = function(msg, view, options) {
         return view;
     });
 };
+
+WidgetManager.prototype._get_comm_info = function() {
+    return Promise.resolve({});
+};

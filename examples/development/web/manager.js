@@ -32,3 +32,7 @@ WidgetManager.prototype.setCSS = function(css) {
         this.styleTag.appendChild(document.createTextNode(css));
     }
 };
+
+WidgetManager.prototype._get_comm_info = function() {
+    return Promise.resolve({});
+};

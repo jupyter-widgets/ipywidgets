@@ -390,7 +390,7 @@ define([
     };
 
     ManagerBase.prototype._get_comm_info = function() {
-        return Promise.resolve({});
+        return Promise.reject("No backend.");
     };
 
     return {
