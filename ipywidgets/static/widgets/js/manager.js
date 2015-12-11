@@ -266,30 +266,13 @@ define([
 
     WidgetManager.prototype._get_comm_info = function() {
         /**
-         * Gets a promise for the open comms in the backend
+         * Gets a promise for the valid widget models.
          */
-
-        // Version using the comm_list_[request/reply] shell message.
-        /*var that = this;
-        return new Promise(function(resolve, reject) {
-             kernel.comm_info(function(msg) {
-                 resolve(msg['content']['comms']);
-             });
-        });*/
-
-        // Workaround for absence of comm_list_[request/reply] shell message.
-        // Create a new widget that gives the comm list and commits suicide.
         var that = this;
         return this._get_connected_kernel().then(function(kernel) {
             return new Promise(function(resolve, reject) {
-                var comm = kernel.comm_manager.new_comm('ipython.widget',
-                                    {'widget_class': 'ipywidgets.CommInfo'},
-                                    'comm_info');
-                comm.on_msg(function(msg) {
-                    var data = msg.content.data;
-                    if (data.content && data.method === 'custom') {
-                        resolve(data.content.comms);
-                    }
+                kernel.comm_info('ipython.widget', function(msg) {
+                    resolve(msg['content']['comms']);
                 });
             });
         });
