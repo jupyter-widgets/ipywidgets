@@ -28,12 +28,16 @@ describe("ManagerBase", function() {
 
     it('_create_comm', function() {
         expect(this.managerBase._create_comm).to.not.be.undefined;
-        expect(this.managerBase._create_comm).to.throw(Error);
+        return this.managerBase._create_comm().then(() => {
+            assert.ok(false, 'Promise should fail');
+        }).catch(err => {});
     });
 
     it('_get_comm_info', function() {
         expect(this.managerBase._get_comm_info).to.not.be.undefined;
-        expect(this.managerBase._get_comm_info).to.throw(Error);
+        return this.managerBase._get_comm_info().then(() => {
+            assert.ok(false, 'Promise should fail');
+        }).catch(err => {});
     });
 
     it('get_state', function() {

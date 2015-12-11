@@ -14,16 +14,6 @@ export class DummyManager extends ManagerBase {
         });
     }
     
-    _create_comm(comm_target_name, model_id, metadata) {
-        function nullFunction() {}
-        return Promise.resolve({
-            on_close: nullFunction,
-            on_msg: nullFunction,
-            send: nullFunction,
-            close: nullFunction
-        });
-    }
-    
     _get_comm_info() {
         return Promise.resolve({});
     }
