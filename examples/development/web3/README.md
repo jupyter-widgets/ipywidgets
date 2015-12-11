@@ -5,8 +5,10 @@ a context other than the notebook.
 
 ## Try it
 1. Open a command line in the `ipywidgets/ipywidgets` subdirectory and run `npm install`.
-2. Cd into this directory and run `npm install`.
-3. Now open the `index.html` file.
+2. Do `npm link`
+3. Cd into this directory and run `npm link jupyter-js-widgets`.
+4. Run `npm install`
+5. Now open the `index.html` file.
 
 ## Details
 If you plan to reproduce this in your own project, pay careful attention to the 

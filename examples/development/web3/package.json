@@ -16,7 +16,6 @@
     "browserify": "^11.2.0",
     "codemirror": "^5.9.0",
     "font-awesome": "^4.5.0",
-    "jupyter-js-widgets": "file:../../../ipywidgets",
     "jquery": "^2.1.4",
     "jquery-ui": "^1.10.5",
     "jupyter-js-services": "^0.2.2",
