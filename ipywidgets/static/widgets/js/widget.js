@@ -152,8 +152,10 @@ define(["./utils",
             }
             this.stopListening();
             this.trigger('destroy', this);
-            delete this.comm.model; // Delete ref so GC will collect widget model.
-            delete this.comm;
+            if (this.comm) {
+                delete this.comm.model; // Delete ref so GC will collect widget model.
+                delete this.comm;
+            }
             delete this.model_id; // Delete id from model so widget manager cleans up.
             _.each(this.views, function(v, id, views) {
                 v.then(function(view) {
@@ -164,7 +166,7 @@ define(["./utils",
         },
 
         _handle_comm_closed: function (msg) {
-            /** 
+            /**
              * Handle when a widget is closed.
              */
             this.trigger('comm:close');

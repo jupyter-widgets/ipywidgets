@@ -188,7 +188,7 @@ define([
                 return model.request_state();
             });
         }, function() {
-            // Comme Promise Rejected.
+            // Comm Promise Rejected.
             if (!options_clone.model_id) {
                 options_clone.model_id = utils.uuid();
             }
