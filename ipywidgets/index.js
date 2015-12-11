@@ -26,10 +26,11 @@ var register = require("./static/widgets/js/register");
     require("./static/widgets/js/widget_selection"),
     require("./static/widgets/js/widget_selectioncontainer"),
     require("./static/widgets/js/widget_string"),
-    require("./static/widgets/js/widget_controller")
+    require("./static/widgets/js/widget_controller"),
+    require("./static/widgets/js/utils")
 ].forEach(function(module) {
     register.registerWidgets(module);
-    
+
     Object.keys(module).forEach(function(name) {
         exports[name] = module[name];
     });
