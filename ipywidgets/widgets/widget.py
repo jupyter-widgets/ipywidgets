@@ -231,7 +231,7 @@ class Widget(LoggingConfigurable):
             Widget.widgets.pop(self.model_id, None)
             self.comm.close()
             self.comm = None
-    
+
     def _split_state_buffers(self, state):
         """Return (state_without_buffers, buffer_keys, buffers) for binary message parts"""
         buffer_keys, buffers = [], []
@@ -430,19 +430,17 @@ class Widget(LoggingConfigurable):
         self._msg_callbacks(self, content, buffers)
 
     def _notify_trait(self, name, old_value, new_value):
-        """Called when a property has been changed."""
-        # Trigger default traitlet callback machinery.  This allows any user
-        # registered validation to be processed prior to allowing the widget
-        # machinery to handle the state.
-        LoggingConfigurable._notify_trait(self, name, old_value, new_value)
-
-        # Send the state after the user registered callbacks for trait changes
-        # have all fired (allows for user to validate values).
+        """Called when a property has changed."""
+        # Send the state before the user registered callbacks for trait changess
+        # have all fired.
         if self.comm is not None and name in self.keys:
             # Make sure this isn't information that the front-end just sent us.
             if self._should_send_property(name, new_value):
                 # Send new state to front-end
                 self.send_state(key=name)
+
+        # Trigger default traitlet callback machinery.
+        LoggingConfigurable._notify_trait(self, name, old_value, new_value)
 
     def _handle_displayed(self, **kwargs):
         """Called when a view has been displayed for this widget instance"""
