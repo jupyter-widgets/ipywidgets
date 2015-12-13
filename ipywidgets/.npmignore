@@ -27,3 +27,4 @@ tests/
 build_css.js
 setup.cfg
 examples/
+.jshintrc

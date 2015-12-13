@@ -1,27 +1,26 @@
 # http://travis-ci.org/#!/ipython/ipywidgets
 language: python
 python:
-    - 3.5
-    - 3.4
     - 2.7
-sudo: false
+    - 3.3
+    - 3.4
+    - 3.5
 env:
-  matrix:
     - GROUP=python
-    - GROUP=js
+sudo: false
 before_install:
-    - 'if [[ $GROUP == js* ]]; then npm install -g casperjs; fi'
-    - git clone --quiet --depth 1 https://github.com/minrk/travis-wheels travis-wheels
+    - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_before_install_py.sh ; fi'
 install:
-    - pip install -f travis-wheels/wheelhouse file://$PWD#egg=ipywidgets[test] coveralls
+    - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_install_py.sh ; fi'
+    - 'if [[ $GROUP == js ]] ; then bash ./scripts/travis_install_js.sh ; fi'
 script:
-    - mkdir /tmp/ipywidgets && cd /tmp/ipywidgets
-    - 'if [[ $GROUP == js ]]; then python -m ipywidgets.jstest; fi'
-    - 'if [[ $GROUP == python ]]; then nosetests --with-coverage --cover-package=ipywidgets ipywidgets; fi'
+    - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_script_py.sh ; fi'
+    - 'if [[ $GROUP == js ]] ; then bash ./scripts/travis_script_js.sh ; fi'
 matrix:
     include:
-        - python: 3.3
-          env: GROUP=python
-
+        - python: 2.7
+          env: GROUP=js; BROWSER=firefox
+        - python: 2.7
+          env: GROUP=js; BROWSER=chrome
 after_success:
     - coveralls

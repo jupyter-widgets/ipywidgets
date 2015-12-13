@@ -1,0 +1,2 @@
+cd ipywidgets
+npm install
