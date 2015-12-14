@@ -455,8 +455,11 @@ define(["./utils",
              * the second form will result in foo being called twice
              * while the first will call foo only once.
              */
-            console.warn('Widget.on_some_change was deprecated in ipywidgets 5.0 and will be removed in ipywidgets 6.0.  Use the Backbone feature Widget.on("change:key1, change:key2", foo, context) instead (pay attention to the commas).');
-            this.on(keys.map(function(x) { return 'change:' + x; }).join(', '), callback, context);
+            this.on("change", function() {
+                if (keys.some(this.hasChanged, this)) {
+                    callback.apply(context, arguments);
+                }
+            }, this);
         },
 
         toJSON: function(options) {
@@ -467,7 +470,7 @@ define(["./utils",
             return "IPY_MODEL_" + this.id;
         }
     });
-    
+
 
     var WidgetViewMixin = {
         initialize: function(parameters) {
