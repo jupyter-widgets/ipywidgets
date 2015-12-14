@@ -4,7 +4,7 @@
   "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
   "main": "index.js",
   "scripts": {
-    "prepublish": "browserify -g node-lessify index.js --outfile index.built.js --debug",
+    "prepublish": "browserify -g deamdify -g node-lessify index.js --outfile index.built.js --debug",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "IPython",
@@ -13,6 +13,7 @@
     "browserify": "^11.2.0",
     "codemirror": "^5.9.0",
     "font-awesome": "^4.5.0",
+    "deamdify": "https://github.com/jaredhanson/deamdify.git",
     "jupyter-js-widgets": "file:../../../ipywidgets",
     "jquery": "^2.1.4",
     "jquery-ui": "^1.10.5",

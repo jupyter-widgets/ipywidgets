@@ -65,8 +65,18 @@ define([
             }
         });
     }
-    
+
+    function load_css () {
+    // FIXME: this should be done with require-css
+        var css = document.createElement("link");
+        css.setAttribute("rel", "stylesheet");
+        css.setAttribute("type", "text/css");
+        css.setAttribute("href", IPython.notebook.base_url + "nbextensions/widgets/widgets/css/widgets.min.css");
+        document.getElementsByTagName("head")[0].appendChild(css);
+    }
+
     function load_ipython_extension () {
+        load_css();
         register_events();
         console.log("loaded widgets");
     }
