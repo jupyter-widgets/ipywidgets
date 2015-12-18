@@ -52,6 +52,8 @@ Contents
    :maxdepth: 2
    :caption: About ipywidgets
 
+   changelog
+
 .. toctree::
    :maxdepth: 2
    :caption: Questions? Suggestions?
