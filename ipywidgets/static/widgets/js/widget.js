@@ -564,20 +564,6 @@ define(["./utils",
             WidgetViewMixin.initialize.apply(this, [parameters]);
             this.id = utils.uuid();
             
-            // Create and apply a unique style class name that can be used to
-            // style this view directly.
-            this.styleClassName = 'widget' + '-' + this.model.id + '-' + this.id;
-            this.el.classList.add(this.styleClassName);
-
-            // Find or create a style tag for this widget view
-            this.styleNode = document.querySelectorAll('style.' + this.styleClassName);
-            if (this.styleNode && this.styleNode.length > 0) {
-                this.styleNode = this.styleNode[0];
-            } else {
-                this.styleNode = this.model.widget_manager.createStyleTag();
-                this.styleNode.className = this.styleClassName;
-            }
-            
             this.listenTo(this.model, 'change:visible', this.update_visible, this); // TODO: Deprecated in 5.0
             
             this.listenTo(this.model, 'change:_dom_classes', function(model, new_classes) {
@@ -653,17 +639,6 @@ define(["./utils",
                 
                 this.setStyle(this.model.get('style'));
             }, this));
-        },
-
-        remove: function () {
-            // Raise a remove event when the view is removed.
-            WidgetViewMixin.remove.apply(this, arguments);
-            
-            // Remove the style tag from the DOM so the GC can collect it
-            if (this.styleNode) {                
-                this.styleNode.remove();
-                delete this.styleNode;
-            }
         },
         
         setStyle: function(style, oldStyle) {

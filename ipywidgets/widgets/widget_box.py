@@ -9,7 +9,7 @@ Represents a container that can be used to group other widgets.
 from .domwidget import DOMWidget
 from .widget import Widget, register, widget_serialization
 from traitlets import Unicode, Tuple, Int, CaselessStrEnum, Instance
-from warning import warn
+from warnings import warn
 
 
 @register('IPython.Box')
