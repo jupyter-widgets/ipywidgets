@@ -52,8 +52,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'ipywidgets'
-copyright = '2015, Project Jupyter'
-author = 'Project Jupyter'
+copyright = '2015, Jupyter Team, https://jupyter.org'
+author = 'The Jupyter Team'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -113,7 +113,7 @@ todo_include_todos = False
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -228,7 +228,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
   (master_doc, 'ipywidgets.tex', 'ipywidgets Documentation',
-   'Project Jupyter', 'manual'),
+   'https://jupyter.org', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -360,4 +360,19 @@ epub_exclude_files = ['search.html']
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {
+    'ipython': ('http://ipython.org/ipython-doc/dev/', None),
+    'nbconvert': ('http://nbconvert.readthedocs.org/en/latest/', None),
+    'nbformat': ('http://nbformat.readthedocs.org/en/latest/', None),
+    'jupyter': ('http://jupyter.readthedocs.org/en/latest/', None),
+}
+
+# on_rtd is whether we are on readthedocs.org, this line of code grabbed from docs.readthedocs.org
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
+if not on_rtd:  # only import and set the theme if we're building docs locally
+    import sphinx_rtd_theme
+    html_theme = 'sphinx_rtd_theme'
+    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+
+# otherwise, readthedocs.org uses their theme by default, so no need to specify it

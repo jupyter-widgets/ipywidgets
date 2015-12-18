@@ -1,22 +1,38 @@
-.. ipywidgets documentation master file, created by
-   sphinx-quickstart on Thu Dec 17 16:20:27 2015.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+==========
+ipywidgets
+==========
 
-Welcome to ipywidgets's documentation!
-======================================
 
-Contents:
+.. sidebar:: What's New in ipywidgets
+   :subtitle: *** DRAFT ***
+
+   - I am a placeholder
+
+.. toctree::
+   :maxdepth: 1
+   :caption: User Documentation
 
 .. toctree::
    :maxdepth: 2
+   :caption: Configuration
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Developer Documentation
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Community documentation
 
-Indices and tables
-==================
+.. toctree::
+   :maxdepth: 2
+   :caption: About ipywidgets
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. toctree::
+   :maxdepth: 1
+   :caption: Questions? Suggestions?
 
+   Jupyter mailing list <https://groups.google.com/forum/#!forum/jupyter>
+   Jupyter website <https://jupyter.org>
+   Stack Overflow - Jupyter <https://stackoverflow.com/questions/tagged/jupyter>
+   Stack Overflow - Jupyter-notebook <https://stackoverflow.com/questions/tagged/jupyter-notebook>
