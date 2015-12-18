@@ -4,21 +4,23 @@ ipywidgets
 
 Interactive HTML Widgets
 ------------------------
-**ipywidgets** are interactive HTML widgets for Jupyter notebooks and the IPython
+**ipywidgets** are interactive HTML widgets for
+`Jupyter <https://www.jupyter.org>`_ notebooks and the IPython
 kernel.
 
-.. sidebar:: What's New in ipywidgets
-   :subtitle: *** DRAFT ***
+Installation
+------------
+Users can install the current version of **ipywidgets** with `pip` or
+`conda`. 
 
-   - I am a placeholder
-
-
-Users can install the current version of ipywidgets with `pip` or
-`conda`. ::
+.. code-block:: bash
 
     pip install ipywidgets
     # or
     conda install ipywidgets
+
+Contents
+--------
 
 .. toctree::
    :maxdepth: 2
@@ -32,10 +34,10 @@ Users can install the current version of ipywidgets with `pip` or
    :maxdepth: 2
    :caption: Developer Documentation
 
-   dev_release
    dev_install
    dev_testing
-
+   dev_release
+   
 .. toctree::
    :maxdepth: 2
    :caption: Community documentation

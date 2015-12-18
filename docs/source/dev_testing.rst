@@ -7,18 +7,22 @@ Running Python tests
 
 To run the Python tests:
 
-.. code-block::bash
+.. code-block:: bash
 
     nosetests --with-coverage --cover-package=ipywidgets ipywidgets
 
-Runnning the Javascript tests
+Running the Javascript tests
 -----------------------------
 
 To run the Javascript tests:
 
+.. code-block:: bash
+
     npm run buildtests; python -m ipywidgets.jstest
 
 To run the Javascript tests with all output printed:
+
+.. code-block:: bash
 
     npm run buildtests; python -m ipywidgets.jstest -- --logall
 

@@ -1,19 +1,19 @@
-Development install
-===================
+Installation for Developers
+===========================
 
-#. To install **ipywidgets** from GitHub using git, you will need to have
+1. To install **ipywidgets** from GitHub using git, you will need to have
    `npm <https://www.npmjs.com/>`_ installed.
 
-#. Clone the repo:
-
-.. codeblock::bash
+2. Clone the repo
+   
+.. code-block:: bash
 
         git clone https://github.com/ipython/ipywidgets
         cd ipywidgets
 
-#. Do a Dev-install of the iypwidgets package by running the following from
-   the repo's root directory):
+3. Do a development install of the **ipywidgets** package by running the following from
+   the repo's root directory)
 
-.. code-block::bash
+.. code-block:: bash
 
         pip install -e .
