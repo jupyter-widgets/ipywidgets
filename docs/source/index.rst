@@ -21,7 +21,7 @@ Users can install the current version of ipywidgets with `pip` or
     conda install ipywidgets
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: User Documentation
 
 .. toctree::
@@ -29,7 +29,7 @@ Users can install the current version of ipywidgets with `pip` or
    :caption: Configuration
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Developer Documentation
 
    dev_release
@@ -37,7 +37,7 @@ Users can install the current version of ipywidgets with `pip` or
    dev_testing
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Community documentation
 
 .. toctree::
