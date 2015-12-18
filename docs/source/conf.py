@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # ipywidgets documentation build configuration file, created by
-# sphinx-quickstart on Thu Dec 17 16:20:27 2015.
+# sphinx-quickstart on Thu Dec 17 17:39:10 2015.
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -53,7 +53,7 @@ master_doc = 'index'
 # General information about the project.
 project = 'ipywidgets'
 copyright = '2015, Jupyter Team, https://jupyter.org'
-author = 'The Jupyter Team'
+author = 'Jupyter Team'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -79,7 +79,7 @@ language = None
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build']
+exclude_patterns = []
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
