@@ -29,7 +29,7 @@ define([
             this.update(); // Set defaults.
         },
 
-        update_attr: function(name, value) {
+        update_attr: function(name, value) { // TODO: Deprecated in 5.0
             /**
              * Set a css attr of the widget view.
              */

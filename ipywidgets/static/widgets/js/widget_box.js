@@ -83,7 +83,7 @@ define([
          * @param  {string} name
          * @param  {object} value
          */
-        update_attr: function(name, value) {
+        update_attr: function(name, value) { // TODO: Deprecated in 5.0
             this.$box.css(name, value);
         },
     });
@@ -116,7 +116,7 @@ define([
             this.listenTo(this.model, 'change:box_style', this.update_box_style, this);
         },
 
-        update_attr: function(name, value) {
+        update_attr: function(name, value) { // TODO: Deprecated in 5.0
             /**
              * Set a css attr of the widget view.
              */
@@ -189,7 +189,7 @@ define([
     });
 
 
-    var FlexBoxView = BoxView.extend({
+    var FlexBoxView = BoxView.extend({ // TODO: Deprecated in 5.0 (entire view)
         render: function() {
             FlexBoxView.__super__.render.apply(this);
             this.listenTo(this.model, 'change:orientation', this.update_orientation, this);
@@ -237,7 +237,7 @@ define([
         BoxModel: BoxModel,
         ProxyModel: ProxyModel,
         BoxView: BoxView,
-        FlexBoxView: FlexBoxView,
+        FlexBoxView: FlexBoxView, // TODO: Deprecated in 5.0
         ProxyView: ProxyView,
         PlaceProxyView: PlaceProxyView,
     };

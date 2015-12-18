@@ -375,16 +375,6 @@ define([
         }).catch(utils.reject('Could not set widget manager state.', true));
     };
 
-    /**
-     * Create a style tag element in the current context.
-     * @return {HTMLElement}
-     */
-    ManagerBase.prototype.createStyleTag = function() {
-        var style = document.createElement('style');
-        document.querySelectorAll('body')[0].appendChild(style);
-        return style;
-    };
-
     ManagerBase.prototype._create_comm = function(comm_target_name, model_id, metadata) {
         return Promise.reject("No backend.");
     };

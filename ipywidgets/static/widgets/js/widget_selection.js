@@ -120,7 +120,7 @@ define([
             this.update_mapped_classes(class_map, 'button_style', previous_trait_value, this.$dropbutton[0]);
         },
 
-        update_attr: function(name, value) {
+        update_attr: function(name, value) { // TODO: Deprecated in 5.0
             /**
              * Set a css attr of the widget view.
              */
@@ -364,7 +364,7 @@ define([
             return ToggleButtonsView.__super__.update.apply(this);
         },
 
-        update_attr: function(name, value) {
+        update_attr: function(name, value) { // TODO: Deprecated in 5.0
             /**
              * Set a css attr of the widget view.
              */
@@ -492,7 +492,7 @@ define([
             return SelectView.__super__.update.apply(this);
         },
 
-        update_attr: function(name, value) {
+        update_attr: function(name, value) { // TODO: Deprecated in 5.0
             /**
              * Set a css attr of the widget view.
              */

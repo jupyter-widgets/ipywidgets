@@ -25,14 +25,6 @@ WidgetManager.prototype.display_view = function(msg, view, options) {
     });
 };
 
-WidgetManager.prototype.setCSS = function(css) {
-    if (this.styleTag.styleSheet) {
-        this.styleTag.styleSheet.cssText = css;
-    } else {
-        this.styleTag.appendChild(document.createTextNode(css));
-    }
-};
-
 WidgetManager.prototype._get_comm_info = function() {
     return Promise.resolve({});
 };

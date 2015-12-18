@@ -207,7 +207,7 @@ define([
             this.children_views.update(this.model.get('children'));
         },
 
-        update_attr: function(name, value) {
+        update_attr: function(name, value) { // TODO: Deprecated in 5.0
             /**
              * Set a css attr of the widget view.
              */
