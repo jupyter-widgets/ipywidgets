@@ -20,12 +20,6 @@ describe("ManagerBase", function() {
         expect(() => ManagerBase.register_widget_view('test', {})).to.not.throw(Error);
     });
 
-    it('createStyleTag', function() {
-        expect(this.managerBase.createStyleTag).to.not.be.undefined;
-        expect(this.managerBase.createStyleTag).to.not.throw(Error);
-        expect(this.managerBase.createStyleTag().tagName).to.equal('STYLE');
-    });
-
     it('_create_comm', function() {
         expect(this.managerBase._create_comm).to.not.be.undefined;
         return this.managerBase._create_comm().then(() => {
