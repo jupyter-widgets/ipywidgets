@@ -13,6 +13,58 @@ from traitlets import (Unicode, CInt, Bool, CaselessStrEnum,
                                      Tuple, TraitError)
 
 
+_int_doc_t = """
+Parameters
+----------
+
+value: integer
+    The initial value.
+"""
+
+_bounded_int_doc_t = """
+Parameters
+----------
+
+value: integer
+    The initial value.
+min: integer
+    The lower limit for the value.
+max: integer
+    The upper limit for the value.
+step: integer
+    The step between allowed values.
+"""
+
+def _int_doc(cls):
+    """Add int docstring template to class init"""
+    def __init__(self, value=None, **kwargs):
+        if value is not None:
+            kwargs['value'] = value
+        super(cls, self).__init__(**kwargs)
+    
+    __init__.__doc__ = _int_doc_t
+    cls.__init__ = __init__
+    return cls
+
+def _bounded_int_doc(cls):
+    """Add bounded int docstring template to class init"""
+    def __init__(self, value=None, min=None, max=None, step=None, **kwargs):
+        if value is not None:
+            kwargs['value'] = value
+        if min is not None:
+            kwargs['min'] = min
+        if max is not None:
+            kwargs['max'] = max
+        if step is not None:
+            kwargs['step'] = step
+        
+        super(cls, self).__init__(**kwargs)
+    
+    __init__.__doc__ = _bounded_int_doc_t
+    cls.__init__ = __init__
+    return cls
+
+
 class _Int(DOMWidget):
     """Base class used to create widgets that represent an int."""
     value = CInt(0, help="Int value", sync=True)
@@ -26,15 +78,24 @@ class _Int(DOMWidget):
 
 
 class _BoundedInt(_Int):
-    """Base class used to create widgets that represent a int that is bounded
-    by a minium and maximum."""
+    """Base class used to create widgets that represent an integer that is bounded
+    by a minium and maximum.
+    """
     step = CInt(1, help="Minimum step to increment the value (ignored by some views)", sync=True)
     max = CInt(100, help="Max value", sync=True)
     min = CInt(0, help="Min value", sync=True)
 
-    def __init__(self, *pargs, **kwargs):
-        """Constructor"""
-        super(_BoundedInt, self).__init__(*pargs, **kwargs)
+    def __init__(self, value=None, min=None, max=None, step=None, **kwargs):
+        if value is not None:
+            kwargs['value'] = value
+        if min is not None:
+            kwargs['min'] = min
+        if max is not None:
+            kwargs['max'] = max
+        if step is not None:
+            kwargs['step'] = step
+        
+        super(_BoundedInt, self).__init__(**kwargs)
 
     def _value_validate(self, value, trait):
         """Cap and floor value"""
@@ -59,20 +120,23 @@ class _BoundedInt(_Int):
         return max
 
 @register('IPython.IntText')
+@_int_doc
 class IntText(_Int):
-    """Textbox widget that represents a int."""
+    """Textbox widget that represents an integer."""
     _view_name = Unicode('IntTextView', sync=True)
 
 
 @register('IPython.BoundedIntText')
+@_bounded_int_doc
 class BoundedIntText(_BoundedInt):
-    """Textbox widget that represents a int bounded by a minimum and maximum value."""
+    """Textbox widget that represents an integer bounded by a minimum and maximum value."""
     _view_name = Unicode('IntTextView', sync=True)
 
 
 @register('IPython.IntSlider')
+@_bounded_int_doc
 class IntSlider(_BoundedInt):
-    """Slider widget that represents a int bounded by a minimum and maximum value."""
+    """Slider widget that represents an integer bounded by a minimum and maximum value."""
     _view_name = Unicode('IntSliderView', sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'], 
         default_value='horizontal', help="Vertical or horizontal.", sync=True)
@@ -83,8 +147,9 @@ class IntSlider(_BoundedInt):
 
 
 @register('IPython.IntProgress')
+@_bounded_int_doc
 class IntProgress(_BoundedInt):
-    """Progress bar that represents a int bounded by a minimum and maximum value."""
+    """Progress bar that represents an integer bounded by a minimum and maximum value."""
     _view_name = Unicode('ProgressView', sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'], 
         default_value='horizontal', help="Vertical or horizontal.", sync=True)
@@ -187,7 +252,20 @@ class _BoundedIntRange(_IntRange):
 
 @register('IPython.IntRangeSlider')
 class IntRangeSlider(_BoundedIntRange):
-    """Slider widget that represents a pair of ints between a minimum and maximum value."""
+    """Slider widget that represents a pair of ints between a minimum and maximum value.
+    
+    Parameters
+    ----------
+    
+    lower: int
+        The lower bound of the range
+    upper: int
+        The upper bound of the range
+    min: int
+        The lowest allowed value for `lower`
+    max: int
+        The highest allowed value for `upper`
+    """
     _view_name = Unicode('IntSliderView', sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'], 
         default_value='horizontal', help="Vertical or horizontal.", sync=True)
