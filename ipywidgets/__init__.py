@@ -1,7 +1,6 @@
 """IPython widgets for Jupyter notebooks.
 
 IPython Widgets provide simple interactive controls in the notebook.
-Widgets provide a mechanism for creating intera
 Each Widget corresponds to an object in Python and Javascript,
 with controls on the page.
 
