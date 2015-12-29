@@ -7,33 +7,33 @@ from traitlets import Unicode, Dict, Instance, Bool, List, \
     CaselessStrEnum, Tuple, CUnicode, Int, Set
 from .widget import Widget, widget_serialization
 from .trait_types import Color
-from .style import Style
+from .widget_layout import Layout
+from warnings import warn # TODO: Remove when traitlet deprection is removed post 5.0
 
 class DOMWidget(Widget):
     """Widget that can be inserted into the DOM"""
     
     _model_name = Unicode('DOMWidgetModel', help="""Name of the backbone model
         registered in the front-end to create and sync this widget with.""", sync=True)
-    visible = Bool(True, allow_none=True, help="Whether the widget is visible.  False collapses the empty space, while None preserves the empty space.", sync=True)
-    _css = Tuple(sync=True, help="CSS property list: (selector, key, value)")
+    visible = Bool(True, allow_none=True, help="Whether the widget is visible.  False collapses the empty space, while None preserves the empty space.", sync=True)  # TODO: Deprecated in ipywidgets 5.0
     _dom_classes = Tuple(sync=True, help="DOM classes applied to widget.$el.")
 
-    style = Instance(Style, allow_none=True, sync=True, **widget_serialization)
-    def _style_default(self):
-        return Style()
+    layout = Instance(Layout, allow_none=True, sync=True, **widget_serialization)
+    def _layout_default(self):
+        return Layout()
 
-    width = CUnicode(sync=True)
-    height = CUnicode(sync=True)
-    padding = CUnicode(sync=True)
-    margin = CUnicode(sync=True)
+    width = CUnicode(sync=True) # TODO: Deprecated in ipywidgets 5.0
+    height = CUnicode(sync=True) # TODO: Deprecated in ipywidgets 5.0
+    padding = CUnicode(sync=True) # TODO: Deprecated in ipywidgets 5.0
+    margin = CUnicode(sync=True) # TODO: Deprecated in ipywidgets 5.0
 
-    color = Color(None, allow_none=True, sync=True)
-    background_color = Color(None, allow_none=True, sync=True)
-    border_color = Color(None, allow_none=True, sync=True)
+    color = Color(None, allow_none=True, sync=True) # TODO: Deprecated in ipywidgets 5.0
+    background_color = Color(None, allow_none=True, sync=True) # TODO: Deprecated in ipywidgets 5.0
+    border_color = Color(None, allow_none=True, sync=True) # TODO: Deprecated in ipywidgets 5.0
 
-    border_width = CUnicode(sync=True)
-    border_radius = CUnicode(sync=True)
-    border_style = CaselessStrEnum(values=[ # http://www.w3schools.com/cssref/pr_border-style.asp
+    border_width = CUnicode(sync=True) # TODO: Deprecated in ipywidgets 5.0
+    border_radius = CUnicode(sync=True) # TODO: Deprecated in ipywidgets 5.0
+    border_style = CaselessStrEnum(values=[ # http://www.w3schools.com/cssref/pr_border-style.asp # TODO: Deprecated in ipywidgets 5.0
         'none',
         'hidden',
         'dotted',
@@ -48,14 +48,14 @@ class DOMWidget(Widget):
         'inherit', ''],
         default_value='', sync=True)
 
-    font_style = CaselessStrEnum(values=[ # http://www.w3schools.com/cssref/pr_font_font-style.asp
+    font_style = CaselessStrEnum(values=[ # http://www.w3schools.com/cssref/pr_font_font-style.asp # TODO: Deprecated in ipywidgets 5.0
         'normal',
         'italic',
         'oblique',
         'initial',
         'inherit', ''],
         default_value='', sync=True)
-    font_weight = CaselessStrEnum(values=[ # http://www.w3schools.com/cssref/pr_font_weight.asp
+    font_weight = CaselessStrEnum(values=[ # http://www.w3schools.com/cssref/pr_font_weight.asp # TODO: Deprecated in ipywidgets 5.0
         'normal',
         'bold',
         'bolder',
@@ -63,8 +63,8 @@ class DOMWidget(Widget):
         'initial',
         'inherit', ''] + list(map(str, range(100,1000,100))),
         default_value='', sync=True)
-    font_size = CUnicode(sync=True)
-    font_family = Unicode(sync=True)
+    font_size = CUnicode(sync=True) # TODO: Deprecated in ipywidgets 5.0
+    font_family = Unicode(sync=True) # TODO: Deprecated in ipywidgets 5.0
 
     def __init__(self, *pargs, **kwargs):
         super(DOMWidget, self).__init__(*pargs, **kwargs)
@@ -76,3 +76,36 @@ class DOMWidget(Widget):
                 if name != 'border_style' and self.border_style == '':
                     self.border_style = 'solid'
         self.on_trait_change(_validate_border, ['border_width', 'border_style', 'border_color'])
+
+        # Deprecation added in 5.0.  TODO: Remove me and corresponging traits.
+        self._deprecate_traits(['width', 'height', 'padding', 'margin', 'color', 
+        'background_color', 'border_color', 'border_width', 'border_radius', 
+        'border_style', 'font_style', 'font_weight', 'font_size', 'font_family',
+        'visible'])
+
+    def add_class(self, className):
+        """
+        Adds a class to the top level element of the widget.
+        
+        Doesn't add the class if it already exists.
+        """
+        if className not in self._dom_classes:
+            self._dom_classes.append(className)
+        return self
+
+    def remove_class(self, className):
+        """
+        Removes a class from the top level element of the widget.
+        
+        Doesn't remove the class if it doesn't exist.
+        """
+        if className in self._dom_classes:
+            self._dom_classes.remove(className)
+        return self
+
+    def _deprecate_traits(self, traits): # TODO: Deprecation added in 5.0.  Remove me and corresponging traits.
+        for trait in traits:
+            def traitWarn():
+                warn("%s deprecated" % trait, DeprecationWarning)
+            self.on_trait_change(traitWarn, trait)
+        

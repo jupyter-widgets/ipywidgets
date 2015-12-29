@@ -550,7 +550,7 @@ define(["./utils",
 
     var DOMWidgetModel = WidgetModel.extend({
         serializers: _.extend({
-            style: {deserialize: unpack_models},
+            layout: {deserialize: unpack_models},
         }, WidgetModel.prototype.serializers),
     });
     
@@ -564,132 +564,104 @@ define(["./utils",
             WidgetViewMixin.initialize.apply(this, [parameters]);
             this.id = utils.uuid();
             
-            // Create and apply a unique style class name that can be used to
-            // style this view directly.
-            this.styleClassName = 'widget' + '-' + this.model.id + '-' + this.id;
-            this.el.classList.add(this.styleClassName);
-
-            // Find or create a style tag for this widget view
-            this.styleNode = document.querySelectorAll('style.' + this.styleClassName);
-            if (this.styleNode && this.styleNode.length > 0) {
-                this.styleNode = this.styleNode[0];
-            } else {
-                this.styleNode = this.model.widget_manager.createStyleTag();
-                this.styleNode.className = this.styleClassName;
-            }
+            this.listenTo(this.model, 'change:visible', this.update_visible, this); // TODO: Deprecated in 5.0
             
-            this.listenTo(this.model, 'change:visible', this.update_visible, this);
-            this.listenTo(this.model, 'change:_css', this.update_css, this);
-
             this.listenTo(this.model, 'change:_dom_classes', function(model, new_classes) {
                 var old_classes = model.previous('_dom_classes');
                 this.update_classes(old_classes, new_classes);
             }, this);
 
-            this.listenTo(this.model, 'change:color', function (model, value) { 
+            this.listenTo(this.model, 'change:color', function (model, value) { // TODO: Deprecated in 5.0
                 this.update_attr('color', value); }, this);
 
-            this.listenTo(this.model, 'change:background_color', function (model, value) { 
+            this.listenTo(this.model, 'change:background_color', function (model, value) { // TODO: Deprecated in 5.0
                 this.update_attr('background', value); }, this);
 
-            this.listenTo(this.model, 'change:width', function (model, value) { 
+            this.listenTo(this.model, 'change:width', function (model, value) { // TODO: Deprecated in 5.0
                 this.update_attr('width', this._default_px(value)); }, this);
 
-            this.listenTo(this.model, 'change:height', function (model, value) { 
+            this.listenTo(this.model, 'change:height', function (model, value) { // TODO: Deprecated in 5.0
                 this.update_attr('height', this._default_px(value)); }, this);
 
-            this.listenTo(this.model, 'change:border_color', function (model, value) { 
+            this.listenTo(this.model, 'change:border_color', function (model, value) { // TODO: Deprecated in 5.0
                 this.update_attr('border-color', value); }, this);
 
-            this.listenTo(this.model, 'change:border_width', function (model, value) { 
+            this.listenTo(this.model, 'change:border_width', function (model, value) { // TODO: Deprecated in 5.0
                 this.update_attr('border-width', this._default_px(value)); }, this);
 
-            this.listenTo(this.model, 'change:border_style', function (model, value) { 
+            this.listenTo(this.model, 'change:border_style', function (model, value) { // TODO: Deprecated in 5.0
                 this.update_attr('border-style', value); }, this);
 
-            this.listenTo(this.model, 'change:font_style', function (model, value) { 
+            this.listenTo(this.model, 'change:font_style', function (model, value) { // TODO: Deprecated in 5.0
                 this.update_attr('font-style', value); }, this);
 
-            this.listenTo(this.model, 'change:font_weight', function (model, value) { 
+            this.listenTo(this.model, 'change:font_weight', function (model, value) { // TODO: Deprecated in 5.0
                 this.update_attr('font-weight', value); }, this);
 
-            this.listenTo(this.model, 'change:font_size', function (model, value) { 
+            this.listenTo(this.model, 'change:font_size', function (model, value) { // TODO: Deprecated in 5.0
                 this.update_attr('font-size', this._default_px(value)); }, this);
 
-            this.listenTo(this.model, 'change:font_family', function (model, value) { 
+            this.listenTo(this.model, 'change:font_family', function (model, value) { // TODO: Deprecated in 5.0
                 this.update_attr('font-family', value); }, this);
 
-            this.listenTo(this.model, 'change:padding', function (model, value) { 
+            this.listenTo(this.model, 'change:padding', function (model, value) { // TODO: Deprecated in 5.0
                 this.update_attr('padding', this._default_px(value)); }, this);
 
-            this.listenTo(this.model, 'change:margin', function (model, value) { 
+            this.listenTo(this.model, 'change:margin', function (model, value) { // TODO: Deprecated in 5.0
                 this.update_attr('margin', this._default_px(value)); }, this);
 
-            this.listenTo(this.model, 'change:border_radius', function (model, value) { 
+            this.listenTo(this.model, 'change:border_radius', function (model, value) { // TODO: Deprecated in 5.0
                 this.update_attr('border-radius', this._default_px(value)); }, this);
                 
-            this.stylePromise = Promise.resolve();
-            this.listenTo(this.model, "change:style", function(model, value) {
-                this.setStyle(value, model.previous('style'));
+            this.layoutPromise = Promise.resolve();
+            this.listenTo(this.model, "change:layout", function(model, value) {
+                this.setLayout(value, model.previous('layout'));
             });
 
             this.displayed.then(_.bind(function() {
-                this.update_visible(this.model, this.model.get("visible"));
+                this.update_visible(this.model, this.model.get("visible")); // TODO: Deprecated in 5.0
                 this.update_classes([], this.model.get('_dom_classes'));
+                 
+                this.update_attr('color', this.model.get('color')); // TODO: Deprecated in 5.0
+                this.update_attr('background', this.model.get('background_color')); // TODO: Deprecated in 5.0
+                this.update_attr('width', this._default_px(this.model.get('width'))); // TODO: Deprecated in 5.0
+                this.update_attr('height', this._default_px(this.model.get('height'))); // TODO: Deprecated in 5.0
+                this.update_attr('border-color', this.model.get('border_color')); // TODO: Deprecated in 5.0
+                this.update_attr('border-width', this._default_px(this.model.get('border_width'))); // TODO: Deprecated in 5.0
+                this.update_attr('border-style', this.model.get('border_style')); // TODO: Deprecated in 5.0
+                this.update_attr('font-style', this.model.get('font_style')); // TODO: Deprecated in 5.0
+                this.update_attr('font-weight', this.model.get('font_weight')); // TODO: Deprecated in 5.0
+                this.update_attr('font-size', this._default_px(this.model.get('font_size'))); // TODO: Deprecated in 5.0
+                this.update_attr('font-family', this.model.get('font_family')); // TODO: Deprecated in 5.0
+                this.update_attr('padding', this._default_px(this.model.get('padding'))); // TODO: Deprecated in 5.0
+                this.update_attr('margin', this._default_px(this.model.get('margin'))); // TODO: Deprecated in 5.0
+                this.update_attr('border-radius', this._default_px(this.model.get('border_radius'))); // TODO: Deprecated in 5.0
                 
-                this.update_attr('color', this.model.get('color'));
-                this.update_attr('background', this.model.get('background_color'));
-                this.update_attr('width', this._default_px(this.model.get('width')));
-                this.update_attr('height', this._default_px(this.model.get('height')));
-                this.update_attr('border-color', this.model.get('border_color'));
-                this.update_attr('border-width', this._default_px(this.model.get('border_width')));
-                this.update_attr('border-style', this.model.get('border_style'));
-                this.update_attr('font-style', this.model.get('font_style'));
-                this.update_attr('font-weight', this.model.get('font_weight'));
-                this.update_attr('font-size', this._default_px(this.model.get('font_size')));
-                this.update_attr('font-family', this.model.get('font_family'));
-                this.update_attr('padding', this._default_px(this.model.get('padding')));
-                this.update_attr('margin', this._default_px(this.model.get('margin')));
-                this.update_attr('border-radius', this._default_px(this.model.get('border_radius')));
-
-                this.update_css(this.model, this.model.get("_css"));
-                
-                this.setStyle(this.model.get('style'));
+                this.setLayout(this.model.get('layout'));
             }, this));
         },
-
-        remove: function () {
-            // Raise a remove event when the view is removed.
-            WidgetViewMixin.remove.apply(this, arguments);
-            
-            // Remove the style tag from the DOM so the GC can collect it
-            if (this.styleNode) {                
-                this.styleNode.remove();
-                delete this.styleNode;
-            }
-        },
         
-        setStyle: function(style, oldStyle) {
+        setLayout: function(layout, oldLayout) {
             var that = this;
-            if (style) {
-                this.stylePromise = this.stylePromise.then(function(oldStyleView) {
-                    if (oldStyleView) {
-                        oldStyleView.unstyle();
+            if (layout) {
+                this.layoutPromise = this.layoutPromise.then(function(oldLayoutView) {
+                    if (oldLayoutView) {
+                        oldLayoutView.unlayout();
                     }
                     
-                    return that.create_child_view(style).then(function(view) {
+                    return that.create_child_view(layout).then(function(view) {
                         
                         // Trigger the displayed event of the child view.
                         return that.displayed.then(function() {
                             view.trigger('displayed', that);
                             return view;
                         });
-                    }).catch(utils.reject("Couldn't add StyleView to DOMWidgetView", true));
+                    }).catch(utils.reject("Couldn't add LayoutView to DOMWidgetView", true));
                 });
             }
         },
 
-        _default_px: function(value) {
+        _default_px: function(value) { // TODO: Deprecated in 5.0
             /**
              * Makes browser interpret a numerical string as a pixel value.
              */
@@ -699,14 +671,14 @@ define(["./utils",
             return value;
         },
 
-        update_attr: function(name, value) {
+        update_attr: function(name, value) { // TODO: Deprecated in 5.0
             /**
              * Set a css attr of the widget view.
              */
             this.el.style[name] = value;
         },
 
-        update_visible: function(model, value) {
+        update_visible: function(model, value) { // TODO: Deprecated in 5.0
             /**
              * Update visibility
              */
@@ -724,48 +696,6 @@ define(["./utils",
                         this.el.style.display = this._old_display;
                     }
                     this.el.style.visibility = ''; break;
-            }
-        },
-
-        update_css: function (model, css) {
-            /**
-             * Update the css styling of this view.
-             */
-            
-            // Convert the list of tuples into individual strings, which together
-            // form the complete CSS to apply to the view.
-            var styleStrings = [];
-            css.forEach(function(tuple) {
-                var selector = String(tuple[0]).trim();
-                var key = String(tuple[1]);
-                var value = String(tuple[2]);
-                
-                // If the selector starts with an ampersand, remove the ampersand
-                // and concatenate the selector to the styleClassName.
-                if (selector.length > 0 && selector[0] === ':') {
-                    selector = '.' + this.styleClassName + selector;
-                } else {
-                    selector = '.' + this.styleClassName + ' ' + selector;
-                }
-                
-                styleStrings.push(selector + ' { ' + key + ': ' + value + '; }');
-            }, this);
-            
-            // Set the style string on the style element.
-            var styleString = styleStrings.join('\n');
-            if (this.styleNode.styleSheet) {
-                
-                // Change styling
-                this.styleNode.styleSheet.cssText = styleString;
-            } else {
-                
-                // Remove existing styling
-                while (this.styleNode.firstChild) {
-                    this.styleNode.removeChild(this.styleNode.firstChild);
-                }
-                
-                // Add new styling
-                this.styleNode.appendChild(document.createTextNode(styleString));
             }
         },
 

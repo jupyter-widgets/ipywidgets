@@ -53,7 +53,7 @@ define([
             this.updateDescription();
         },
 
-        update_attr: function(name, value) {
+        update_attr: function(name, value) { // TODO: Deprecated in 5.0
             /**
              * Set a css attr of the widget view.
              */
@@ -393,7 +393,7 @@ define([
             return IntTextView.__super__.update.apply(this);
         },
 
-        update_attr: function(name, value) {
+        update_attr: function(name, value) { // TODO: Deprecated in 5.0
             /**
              * Set a css attr of the widget view.
              */
@@ -558,7 +558,7 @@ define([
             this.update_mapped_classes(class_map, 'bar_style', previous_trait_value, this.$bar[0]);
         },
 
-        update_attr: function(name, value) {
+        update_attr: function(name, value) { // TODO: Deprecated in 5.0
             /**
              * Set a css attr of the widget view.
              */
