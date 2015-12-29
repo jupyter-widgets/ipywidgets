@@ -15,13 +15,13 @@ define([
     /**
      * Represents a group of CSS style attributes
      */
-    var StyleView = widget.WidgetView.extend({
+    var LayoutView = widget.WidgetView.extend({
         
         /**
          * Public constructor
          */
         constructor: function() {
-            StyleView.__super__.constructor.apply(this, arguments);
+            LayoutView.__super__.constructor.apply(this, arguments);
             
             // Register the traits that live on the Python side
             this._traitNames = [];
@@ -29,7 +29,7 @@ define([
         },
         
         /**
-         * Initialize the traits for this Style object
+         * Initialize the traits for this layout object
          */
         initTraits: function() {
             this.registerTraits(
@@ -115,7 +115,7 @@ define([
         /**
          * Remove the styling from the parent view.
          */
-        unstyle: function() {
+        unlayout: function() {
             this._traitNames.forEach(function(trait) {
                 this.displayed.then(_.bind(function(parent) {
                     if (parent) {
@@ -128,5 +128,5 @@ define([
         }
     });
     
-    return {StyleView: StyleView};
+    return {LayoutView: LayoutView};
 });

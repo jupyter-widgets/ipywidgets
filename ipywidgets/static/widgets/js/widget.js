@@ -550,7 +550,7 @@ define(["./utils",
 
     var DOMWidgetModel = WidgetModel.extend({
         serializers: _.extend({
-            style: {deserialize: unpack_models},
+            layout: {deserialize: unpack_models},
         }, WidgetModel.prototype.serializers),
     });
     
@@ -613,9 +613,9 @@ define(["./utils",
             this.listenTo(this.model, 'change:border_radius', function (model, value) { // TODO: Deprecated in 5.0
                 this.update_attr('border-radius', this._default_px(value)); }, this);
                 
-            this.stylePromise = Promise.resolve();
-            this.listenTo(this.model, "change:style", function(model, value) {
-                this.setStyle(value, model.previous('style'));
+            this.layoutPromise = Promise.resolve();
+            this.listenTo(this.model, "change:layout", function(model, value) {
+                this.setLayout(value, model.previous('layout'));
             });
 
             this.displayed.then(_.bind(function() {
@@ -637,26 +637,26 @@ define(["./utils",
                 this.update_attr('margin', this._default_px(this.model.get('margin'))); // TODO: Deprecated in 5.0
                 this.update_attr('border-radius', this._default_px(this.model.get('border_radius'))); // TODO: Deprecated in 5.0
                 
-                this.setStyle(this.model.get('style'));
+                this.setLayout(this.model.get('layout'));
             }, this));
         },
         
-        setStyle: function(style, oldStyle) {
+        setLayout: function(layout, oldLayout) {
             var that = this;
-            if (style) {
-                this.stylePromise = this.stylePromise.then(function(oldStyleView) {
-                    if (oldStyleView) {
-                        oldStyleView.unstyle();
+            if (layout) {
+                this.layoutPromise = this.layoutPromise.then(function(oldLayoutView) {
+                    if (oldLayoutView) {
+                        oldLayoutView.unlayout();
                     }
                     
-                    return that.create_child_view(style).then(function(view) {
+                    return that.create_child_view(layout).then(function(view) {
                         
                         // Trigger the displayed event of the child view.
                         return that.displayed.then(function() {
                             view.trigger('displayed', that);
                             return view;
                         });
-                    }).catch(utils.reject("Couldn't add StyleView to DOMWidgetView", true));
+                    }).catch(utils.reject("Couldn't add LayoutView to DOMWidgetView", true));
                 });
             }
         },

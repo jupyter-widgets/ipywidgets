@@ -13,7 +13,7 @@ require('underscore');
 var register = require("./static/widgets/js/register");
 [
     require("./static/widgets/js/manager-base"),
-    require("./static/widgets/js/style"),
+    require("./static/widgets/js/layout"),
     require("./static/widgets/js/widget"),
     require("./static/widgets/js/widget_link"),
     require("./static/widgets/js/widget_bool"),

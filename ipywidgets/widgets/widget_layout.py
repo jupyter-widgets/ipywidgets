@@ -1,4 +1,4 @@
-"""Contains the Style class"""
+"""Contains the Layout class"""
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
@@ -7,14 +7,14 @@ from .widget import Widget, register
 from traitlets import Unicode, CUnicode
 
 @register('IPython.Button')
-class Style(Widget):
-    """Style specification
+class Layout(Widget):
+    """Layout specification
     
-    Defines a style that can be expressed using CSS.  Supports a subset of
+    Defines a layout that can be expressed using CSS.  Supports a subset of
     https://developer.mozilla.org/en-US/docs/Web/CSS/Reference
     """
     
-    _view_name = Unicode('StyleView', sync=True)
+    _view_name = Unicode('LayoutView', sync=True)
 
     # Keys
     align_content = CUnicode(sync=True, allow_none=True)

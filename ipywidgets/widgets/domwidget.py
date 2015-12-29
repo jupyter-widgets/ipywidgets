@@ -7,7 +7,7 @@ from traitlets import Unicode, Dict, Instance, Bool, List, \
     CaselessStrEnum, Tuple, CUnicode, Int, Set
 from .widget import Widget, widget_serialization
 from .trait_types import Color
-from .style import Style
+from .widget_layout import Layout
 from warnings import warn # TODO: Remove when traitlet deprection is removed post 5.0
 
 class DOMWidget(Widget):
@@ -18,9 +18,9 @@ class DOMWidget(Widget):
     visible = Bool(True, allow_none=True, help="Whether the widget is visible.  False collapses the empty space, while None preserves the empty space.", sync=True)  # TODO: Deprecated in ipywidgets 5.0
     _dom_classes = Tuple(sync=True, help="DOM classes applied to widget.$el.")
 
-    style = Instance(Style, allow_none=True, sync=True, **widget_serialization)
-    def _style_default(self):
-        return Style()
+    layout = Instance(Layout, allow_none=True, sync=True, **widget_serialization)
+    def _layout_default(self):
+        return Layout()
 
     width = CUnicode(sync=True) # TODO: Deprecated in ipywidgets 5.0
     height = CUnicode(sync=True) # TODO: Deprecated in ipywidgets 5.0

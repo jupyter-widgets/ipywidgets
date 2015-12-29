@@ -7,7 +7,7 @@ define([
     "./widget",
     "./register",
     "./widget_state",
-    "./style",
+    "./layout",
     "./widget_link",
     "./widget_bool",
     "./widget_button",
