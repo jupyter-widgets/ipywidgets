@@ -15,7 +15,7 @@ from inspect import getcallargs
 from IPython.core.getipython import get_ipython
 from . import (Widget, Text,
     FloatSlider, IntSlider, Checkbox, Dropdown,
-    Box, Button, DOMWidget)
+    ScrollableDropdown, Box, Button, DOMWidget)
 from IPython.display import display, clear_output
 from ipython_genutils.py3compat import string_types, unicode_type
 from traitlets import HasTraits, Any, Unicode
@@ -64,6 +64,8 @@ def _widget_abbrev_single_value(o):
     """Make widgets from single values, which can be used as parameter defaults."""
     if isinstance(o, string_types):
         return Text(value=unicode_type(o))
+    elif isinstance(o, dict) and len(o) > 10:
+        return ScrollableDropdown(options=o)
     elif isinstance(o, dict):
         return Dropdown(options=o)
     elif isinstance(o, bool):
