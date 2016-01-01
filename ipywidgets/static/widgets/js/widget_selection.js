@@ -152,8 +152,143 @@ define([
     });
 
     var ScrollableDropdownView = widget.DOMWidgetView.extend({
-    });
+        render: function() {
+            /**
+             * Called when view is rendered.
+             */
+            this.$el
+                .addClass('ipywidget widget-hbox widget-scrollable-dropdown');
+            this.$label = $('<div/>')
+                .appendTo(this.$el)
+                .addClass('widget-label')
+                .hide();
+            this.$buttongroup = $('<div/>')
+                .addClass('widget_item')
+                .addClass('btn-group')
+                .appendTo(this.$el)
+            this.$droplabel = $('<button />')
+                .addClass('btn btn-default')
+                .addClass('widget-combo-btn')
+                .html("&nbsp;")
+                .appendTo(this.$buttongroup);
+            this.$dropbutton = $('<button />')
+                .addClass('btn btn-default')
+                .addClass('dropdown-toggle')
+                .addClass('widget-combo-carrot-btn')
+                .attr('data-toggle', 'dropdown')
+                .append($('<span />').addClass("caret"))
+                .appendTo(this.$buttongroup);
+            this.$droplist = $('<ul />')
+                .addClass('dropdown-menu')
+                .appendTo(this.$buttongroup);
 
+            this.listenTo(this.model, 'change:button_style', function(model, value) {
+                this.update_button_style();
+            }, this);
+            this.update_button_style('');
+            
+            // Set defaults.
+            this.update();
+        },
+        
+        update : function(options) {
+            /**
+             * Update the contents of this view
+             *
+             * Called when the model is changed.  The model may have been
+             * changed by another view or by a state update from the back-end.
+             */
+
+            if (options === undefined || options.updated_view != this) {
+                var selected_item_text = this.model.get('selected_label');
+                if (selected_item_text.trim().length === 0) {
+                    this.$droplabel.html("&nbsp;");
+                } else {
+                    this.$droplabel.text(selected_item_text);
+                }
+                
+                var items = this.model.get('_options_labels');
+                var $replace_droplist = $('<ul />')
+                    .addClass('dropdown-menu');
+                // Copy the style
+                $replace_droplist.attr('style', this.$droplist.attr('style'));
+                var that = this;
+                _.each(items, function(item, i) {
+                    var item_button = $('<a href="#"/>')
+                        .text(item)
+                        .on('click', $.proxy(that.handle_click, that));
+                    $replace_droplist.append($('<li />').append(item_button));
+                });
+
+                this.$droplist.replaceWith($replace_droplist);
+                this.$droplist.remove();
+                this.$droplist = $replace_droplist;
+                
+                if (this.model.get('disabled')) {
+                    this.$buttongroup.attr('disabled','disabled');
+                    this.$droplabel.attr('disabled','disabled');
+                    this.$dropbutton.attr('disabled','disabled');
+                    this.$droplist.attr('disabled','disabled');
+                } else {
+                    this.$buttongroup.removeAttr('disabled');
+                    this.$droplabel.removeAttr('disabled');
+                    this.$dropbutton.removeAttr('disabled');
+                    this.$droplist.removeAttr('disabled');
+                }
+
+                var description = this.model.get('description');
+                if (description.length === 0) {
+                    this.$label.hide();
+                } else {
+                    this.typeset(this.$label, description);
+                    this.$label.show();
+                }
+            }
+            return ScrollableDropdownView.__super__.update.apply(this);
+        },
+
+        update_button_style: function(previous_trait_value) {
+            var class_map = {
+                primary: ['btn-primary'],
+                success: ['btn-success'],
+                info: ['btn-info'],
+                warning: ['btn-warning'],
+                danger: ['btn-danger']
+            };
+            this.update_mapped_classes(class_map, 'button_style', previous_trait_value, this.$droplabel[0]);
+            this.update_mapped_classes(class_map, 'button_style', previous_trait_value, this.$dropbutton[0]);
+        },
+
+        update_attr: function(name, value) { // TODO: Deprecated in 5.0
+            /**
+             * Set a css attr of the widget view.
+             */
+            if (name.substring(0, 6) == 'border' || name == 'background' || name == 'color') {
+                this.$droplabel.css(name, value);
+                this.$dropbutton.css(name, value);
+                this.$droplist.css(name, value);
+            } else { 
+                this.$el.css(name, value);
+            }
+        },
+
+        handle_click: function (e) {
+            /**
+             * Handle when a value is clicked.
+             *
+             * Calling model.set will trigger all of the other views of the 
+             * model to update.
+             */
+            this.model.set('selected_label', $(e.target).text(), {updated_view: this});
+            this.touch();
+
+            // Manually hide the droplist.
+            e.stopPropagation();
+            e.preventDefault();
+            this.$buttongroup.removeClass('open');
+        },
+        
+    });
 
     var RadioButtonsView = widget.DOMWidgetView.extend({    
         render : function() {
@@ -588,7 +723,7 @@ define([
 
     return {
         'DropdownView': DropdownView,
-        'ScrollbarView': ScrollableDropdownView,
+        'ScrollableDropdownView': ScrollableDropdownView,
         'RadioButtonsView': RadioButtonsView,
         'ToggleButtonsView': ToggleButtonsView,
         'SelectView': SelectView,
