@@ -208,6 +208,16 @@ class Dropdown(_Selection):
         default_value='', allow_none=True, sync=True, help="""Use a
         predefined styling for the buttons.""")
 
+@register('IPython.ScrollableDropdown')
+class ScrollableDropdown(_Selection):
+    """Allows you to select a single item from a dropdown."""
+    _view_name = Unicode('ScrollableDropdownView', sync=True)
+
+    button_style = CaselessStrEnum(
+        values=['primary', 'success', 'info', 'warning', 'danger', ''],
+        default_value='', allow_none=True, sync=True, help="""Use a
+        predefined styling for the buttons.""")
+
 @register('IPython.RadioButtons')
 class RadioButtons(_Selection):
     """Group of radio buttons that represent an enumeration.  Only one radio
