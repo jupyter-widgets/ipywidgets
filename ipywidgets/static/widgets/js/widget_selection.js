@@ -151,6 +151,9 @@ define([
         
     });
 
+    var ScrollableDropdownView = widget.DOMWidgetView.extend({
+    });
+
 
     var RadioButtonsView = widget.DOMWidgetView.extend({    
         render : function() {
@@ -585,6 +588,7 @@ define([
 
     return {
         'DropdownView': DropdownView,
+        'ScrollbarView': ScrollableDropdownView,
         'RadioButtonsView': RadioButtonsView,
         'ToggleButtonsView': ToggleButtonsView,
         'SelectView': SelectView,
