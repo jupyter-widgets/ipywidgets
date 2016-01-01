@@ -17,14 +17,14 @@ define([
              */
             this.$el
                 .addClass('ipy-widget widget-hbox widget-checkbox');
-            this.$label = $('<div />')
-                .addClass('widget-label')
-                .appendTo(this.$el)
-                .hide();
             this.$checkbox = $('<input />')
                 .attr('type', 'checkbox')
                 .appendTo(this.$el)
                 .click($.proxy(this.handle_click, this));
+            this.$label = $('<div />')
+                .addClass('widget-label')
+                .appendTo(this.$el)
+                .hide();
 
             this.update(); // Set defaults.
         },
