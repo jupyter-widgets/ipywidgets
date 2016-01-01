@@ -123,6 +123,17 @@ def test_single_value_dict():
             value=next(iter(d.values())),
         )
 
+def test_long_single_value_dict():
+    d = {hex(x) : x for x in range(15)}
+    c = interactive(f, d=d)
+    w = c.children[0]
+    check_widget(w,
+            cls=widgets.ScrollableDropdown,
+            description='d',
+            options=d,
+            value=next(iter(d.values())),
+        )
+
 def test_single_value_float():
     for a in (2.25, 1.0, -3.5):
         c = interactive(f, a=a)
