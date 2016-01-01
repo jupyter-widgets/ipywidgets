@@ -294,6 +294,18 @@
     }
 }
 
+.widget-scrollable-dropdown {
+    /* Scrollable dropdowns have the same styles as regular dropdowns. */
+    .widget-dropdown;
+
+    /* Include styles to enable a vertical scrollbar. */
+    ul.dropdown-menu {
+        max-height: 200px;
+        overflow: hidden;
+        overflow-y: auto;
+    }
+}
+
 .widget-numeric-text {
     /* Single Line Textbox - used for IntTextView and FloatTextView */
     width : @widget-width-short;
