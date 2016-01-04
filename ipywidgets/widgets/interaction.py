@@ -15,7 +15,7 @@ from inspect import getcallargs
 from IPython.core.getipython import get_ipython
 from . import (Widget, Text,
     FloatSlider, IntSlider, Checkbox, Dropdown,
-    ScrollableDropdown, Box, Button, DOMWidget)
+    Box, Button, DOMWidget)
 from IPython.display import display, clear_output
 from ipython_genutils.py3compat import string_types, unicode_type
 from traitlets import HasTraits, Any, Unicode
@@ -64,8 +64,6 @@ def _widget_abbrev_single_value(o):
     """Make widgets from single values, which can be used as parameter defaults."""
     if isinstance(o, string_types):
         return Text(value=unicode_type(o))
-    elif isinstance(o, dict) and len(o) > 10:
-        return ScrollableDropdown(options=o)
     elif isinstance(o, dict):
         return Dropdown(options=o)
     elif isinstance(o, bool):
@@ -243,7 +241,7 @@ def interactive(__interact_f, **kwargs):
     # On-demand running also suppresses running the function with the initial parameters
     if manual:
         manual_button.on_click(call_f)
-        
+
         # Also register input handlers on text areas, so the user can hit return to
         # invoke execution.
         for w in kwargs_widgets:
@@ -286,17 +284,17 @@ def interact(__interact_f=None, **kwargs):
        def greeting(text="World"):
            print "Hello {}".format(text)
        interact(greeting, text="IPython Widgets")
-        
+
        # 2. Using interact as a decorator
        @interact
        def greeting(text="World"):
            print "Hello {}".format(text)
-        
+
        # 3. Using interact as a decorator with named parameters
        @interact(text="IPython Widgets")
        def greeting(text="World"):
            print "Hello {}".format(text)
-        
+
     Render an interactive slider widget and prints square of number::
 
        # 1. Using interact as a function
@@ -308,7 +306,7 @@ def interact(__interact_f=None, **kwargs):
        @interact
        def square(num=2):
            print "{} squared is {}".format(num, num*num)
-        
+
        # 3. Using interact as a decorator with named parameters
        @interact(num=5)
        def square(num=2):
@@ -344,7 +342,7 @@ def interact(__interact_f=None, **kwargs):
 
 def interact_manual(__interact_f=None, **kwargs):
     """interact_manual(f, **kwargs)
-    
+
     As `interact()`, generates widgets for each argument, but rather than running
     the function after each widget change, adds a "Run" button and waits for it
     to be clicked. Useful if the function is long-running and has several
