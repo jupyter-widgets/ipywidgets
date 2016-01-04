@@ -35,12 +35,6 @@ To run the Python tests:
 
 To run the Javascript tests:
 
-    npm run buildtests; python -m ipywidgets.jstest
+    npm run test
 
-To run the Javascript tests with all output printed:
-
-    npm run buildtests; python -m ipywidgets.jstest -- --logall
-
-Description of jstest additional arguments:
-logall - If there is atleast one failure in the notebook, log information for every cell.
-logsuccess - Log information for every cell in the notebook, regardless of failure.
+This will run the test suit using `karma` with 'debug' level logging.
