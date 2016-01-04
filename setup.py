@@ -135,7 +135,9 @@ class NPM(Command):
             return False
 
     def should_run_npm_install(self):
-        return self.has_npm() and time(self.node_modules) < mtime(pjoin(repo_root, 'package.json'))
+        package_json = pjoin(repo_root, 'ipywidgets', 'package.json')
+        node_modules_exists = os.path.exists(self.node_modules)
+        return self.has_npm() and (not node_modules_exists or mtime(self.node_modules) < mtime(package_json))
     
     def run(self):
         has_npm = self.has_npm()
