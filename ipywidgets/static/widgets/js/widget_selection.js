@@ -584,7 +584,6 @@ define([
 
     return {
         'DropdownView': DropdownView,
-        'ScrollableDropdownView': ScrollableDropdownView,
         'RadioButtonsView': RadioButtonsView,
         'ToggleButtonsView': ToggleButtonsView,
         'SelectView': SelectView,
