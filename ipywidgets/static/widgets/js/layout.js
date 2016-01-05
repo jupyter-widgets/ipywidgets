@@ -11,23 +11,22 @@ define([
     "backbone",
     "jquery"
 ], function(widget, _, Backbone, $) {
-    
+
     /**
      * Represents a group of CSS style attributes
      */
     var LayoutView = widget.WidgetView.extend({
-        
+
         /**
          * Public constructor
          */
-        constructor: function() {
-            LayoutView.__super__.constructor.apply(this, arguments);
-            
+        initialize: function() {
+            LayoutView.__super__.initialize.apply(this, arguments);
             // Register the traits that live on the Python side
             this._traitNames = [];
             this.initTraits();
         },
-        
+
         /**
          * Initialize the traits for this layout object
          */
@@ -56,7 +55,7 @@ define([
                 'width'
             );
         },
-        
+
         /**
          * Register CSS traits that are known by the model
          * @param  {...string[]} traits
@@ -69,34 +68,35 @@ define([
                 // Call registerTrait on each trait
                 .forEach(_.bind(this.registerTrait, this));
         },
-        
+
         /**
          * Register a CSS trait that is known by the model
          * @param  {string} trait
          */
         registerTrait: function(trait) {
             this._traitNames.push(trait);
-            
+
             // Listen to changes, and set the value on change.
-            this.listenTo(this.model, 'change:' + this.modelize(trait), function (model, value) { 
+            this.listenTo(this.model, 'change:' + trait, function (model, value) {
                 this.handleChange(trait, value);
             }, this);
 
             // Set the initial value on display.
             this.displayed.then(_.bind(function() {
-                this.handleChange(trait, this.model.get(this.modelize(trait)));
+                this.handleChange(trait, this.model.get(trait));
             }, this));
         },
-        
+
         /**
-         * Get the the name of the trait as it appears in the model
-         * @param  {string} trait - CSS trait name
-         * @return {string} model key name
+         * Get the the name of the style attribute from the trait name
+         * @param  {string} model attribute name
+         * @return {string} css attribute name.
          */
-        modelize: function(trait) {
-            return trait.replace('-', '_');
+        css_name: function(trait) {
+            return trait.replace('_', '-');
         },
-        
+
+
         /**
          * Handles when a trait value changes
          * @param  {string} trait
@@ -104,14 +104,14 @@ define([
          */
         handleChange: function(trait, value) {
             this.displayed.then(_.bind(function(parent) {
-                if (parent) {
-                    parent.el.style[trait] = value;
+                if (parent && value) {
+                    parent.el.style[this.css_name(trait)] = value;
                 } else {
                     console.warn("Style not applied because a parent view doesn't exist");
                 }
             }, this));
         },
-        
+
         /**
          * Remove the styling from the parent view.
          */
@@ -119,7 +119,7 @@ define([
             this._traitNames.forEach(function(trait) {
                 this.displayed.then(_.bind(function(parent) {
                     if (parent) {
-                        parent.el.style[trait] = '';
+                        parent.el.style[this.css_name(trait)] = '';
                     } else {
                         console.warn("Style not removed because a parent view doesn't exist");
                     }
@@ -127,6 +127,6 @@ define([
             }, this);
         }
     });
-    
+
     return {LayoutView: LayoutView};
 });
