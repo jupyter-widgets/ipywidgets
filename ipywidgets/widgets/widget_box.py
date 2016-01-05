@@ -93,9 +93,10 @@ class FlexBox(Box): # TODO: Deprecated in 5.0 (entire class)
     align = CaselessStrEnum(
         values=_locations,
         default_value='start', sync=True)
-        
+
     def __init__(self, *pargs, **kwargs):
         warn('FlexBox, VBox, and HBox deprecated in ipywidgets 5.0.  Use Box and Box.style instead.', DeprecationWarning)
+        super(FlexBox, self).__init__(*pargs, **kwargs)
 
 
 def VBox(*pargs, **kwargs): # TODO: Deprecated in 5.0 (entire class)
