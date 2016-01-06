@@ -177,7 +177,7 @@ define(["./utils",
             /**
              * Deserialize fields that have a custom serializer.
              */
-            var serializers = this.constructor.prototype.serializers;
+            var serializers = this.constructor.serializers || this.constructor.prototype.serializers;
             var deserialized;
             if (serializers) {
                 deserialized = {};
@@ -400,7 +400,7 @@ define(["./utils",
             var that = this;
             // first, build a state dictionary with key=the attribute and the value
             // being the value or the promise of the serialized value
-            var serializers = this.constructor.prototype.serializers;
+            var serializers = this.constructor.serializers || this.constructor.prototype.serializers;
             if (serializers) {
                 for (var k in attrs) {
                     if (serializers[k] && serializers[k].serialize) {

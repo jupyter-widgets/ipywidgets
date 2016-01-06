@@ -137,7 +137,7 @@ describe("Widget", function() {
         
         // Create some dummy deserializers.  One returns synchronously, and the
         // other asynchronously using a promise.
-        this.widget.constructor.prototype.serializers = {
+        this.widget.constructor.serializers = {
             a: {
                 deserialize: (value, widget) => {
                     return value*3.0;
