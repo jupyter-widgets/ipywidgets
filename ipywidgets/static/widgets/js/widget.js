@@ -400,7 +400,7 @@ define(["./utils",
             var that = this;
             // first, build a state dictionary with key=the attribute and the value
             // being the value or the promise of the serialized value
-            var serializers = this.constructor.serializers;
+            var serializers = this.constructor.serializers || this.constructor.prototype.serializers;
             if (serializers) {
                 for (var k in attrs) {
                     if (serializers[k] && serializers[k].serialize) {
@@ -548,14 +548,14 @@ define(["./utils",
         }
     };
 
-    var DOMWidgetModel = WidgetModel.extend({
+    var DOMWidgetModel = WidgetModel.extend({}, {
         serializers: _.extend({
             layout: {deserialize: unpack_models},
         }, WidgetModel.prototype.serializers),
     });
-    
+
     managerBase.ManagerBase.register_widget_model('DOMWidgetModel', DOMWidgetModel);
-    
+
     var DOMWidgetViewMixin = {
         initialize: function (parameters) {
             /**
@@ -751,8 +751,6 @@ define(["./utils",
 
             this.update_classes(old_classes, new_classes, el || this.el);
         },
-
-
 
         typeset: function(element, text){
             utils.typeset.apply(null, arguments);
