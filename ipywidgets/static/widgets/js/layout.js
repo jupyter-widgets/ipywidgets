@@ -38,16 +38,12 @@ define([
                 'bottom',
                 'display',
                 'flex',
-                'flex_basis',
-                'flex_direction',
                 'flex_flow',
-                'flex_grow',
-                'flex_shrink',
-                'flex_wrap',
                 'height',
                 'justify_content',
                 'left',
                 'margin',
+                'overflow',
                 'padding',
                 'right',
                 'top',
@@ -88,9 +84,9 @@ define([
         },
 
         /**
-         * Get the the name of the style attribute from the trait name
+         * Get the the name of the css property from the trait name
          * @param  {string} model attribute name
-         * @return {string} css attribute name.
+         * @return {string} css property name.
          */
         css_name: function(trait) {
             return trait.replace('_', '-');
@@ -104,7 +100,7 @@ define([
          */
         handleChange: function(trait, value) {
             this.displayed.then(_.bind(function(parent) {
-                if (parent && value) {
+                if (parent) {
                     parent.el.style[this.css_name(trait)] = value;
                 } else {
                     console.warn("Style not applied because a parent view doesn't exist");
@@ -128,5 +124,7 @@ define([
         }
     });
 
-    return {LayoutView: LayoutView};
+    return {
+        LayoutView: LayoutView
+    };
 });
