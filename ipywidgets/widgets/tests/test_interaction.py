@@ -237,10 +237,6 @@ def test_list_tuple_str():
 def test_list_tuple_invalid():
     for bad in [
         (),
-        (5, 'hi'),
-        ('hi', 5),
-        ({},),
-        (None,),
     ]:
         with nt.assert_raises(ValueError):
             print(bad) # because there is no custom message in assert_raises
