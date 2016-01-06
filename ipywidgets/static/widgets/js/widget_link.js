@@ -44,7 +44,7 @@ define([
         serializers: _.extend({
             target: {deserialize: widget.unpack_models},
             source: {deserialize: widget.unpack_models},
-        }, widget.WidgetModel.prototype.serializers),
+        }, widget.WidgetModel.serializers),
 
     });
 

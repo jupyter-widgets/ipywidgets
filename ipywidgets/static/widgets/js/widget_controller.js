@@ -239,12 +239,10 @@ define([
         },
 
     }, {
-
         serializers: _.extend({
             buttons: {deserialize: widget.unpack_models},
             axes: {deserialize: widget.unpack_models},
-        }, widget.DOMWidgetModel.prototype.serializers)
-
+        }, widget.DOMWidgetModel.serializers)
     });
 
     var ControllerView = widget.DOMWidgetView.extend({
