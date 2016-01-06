@@ -548,14 +548,14 @@ define(["./utils",
         }
     };
 
-    var DOMWidgetModel = WidgetModel.extend({
+    var DOMWidgetModel = WidgetModel.extend({}, {
         serializers: _.extend({
             layout: {deserialize: unpack_models},
         }, WidgetModel.prototype.serializers),
     });
-    
+
     managerBase.ManagerBase.register_widget_model('DOMWidgetModel', DOMWidgetModel);
-    
+
     var DOMWidgetViewMixin = {
         initialize: function (parameters) {
             /**
@@ -751,8 +751,6 @@ define(["./utils",
 
             this.update_classes(old_classes, new_classes, el || this.el);
         },
-
-
 
         typeset: function(element, text){
             utils.typeset.apply(null, arguments);
