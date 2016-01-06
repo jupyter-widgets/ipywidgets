@@ -16,13 +16,13 @@ define([
     var BoxModel = widget.DOMWidgetModel.extend({}, {
         serializers: _.extend({
             children: {deserialize: widget.unpack_models},
-        }, widget.DOMWidgetModel.prototype.serializers)
+        }, widget.DOMWidgetModel.serializers)
     });
 
     var ProxyModel = widget.DOMWidgetModel.extend({}, {
         serializers: _.extend({
             child: {deserialize: widget.unpack_models},
-        }, widget.DOMWidgetModel.prototype.serializers),
+        }, widget.DOMWidgetModel.serializers),
     });
 
     var ProxyView = widget.WidgetView.extend({
