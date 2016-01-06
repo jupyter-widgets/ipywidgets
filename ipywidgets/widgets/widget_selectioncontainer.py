@@ -42,13 +42,13 @@ class _SelectionContainer(Box):
             return None
 
 
-@register('IPython.Accordion')
+@register('Jupyter.Accordion')
 class Accordion(_SelectionContainer):
     """Displays children each on a separate accordion page."""
     _view_name = Unicode('AccordionView', sync=True)
 
 
-@register('IPython.Tab')
+@register('Jupyter.Tab')
 class Tab(_SelectionContainer):
     """Displays children each on a separate accordion tab."""
     _view_name = Unicode('TabView', sync=True)

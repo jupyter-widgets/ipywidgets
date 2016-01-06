@@ -23,20 +23,20 @@ class _String(DOMWidget):
             kwargs['value'] = value
         super(_String, self).__init__(**kwargs)
 
-@register('IPython.HTML')
+@register('Jupyter.HTML')
 class HTML(_String):
     """Renders the string `value` as HTML."""
     _view_name = Unicode('HTMLView', sync=True)
 
 
-@register('IPython.Latex')
+@register('Jupyter.Latex')
 class Latex(_String):
     """Renders math inside the string `value` as Latex (requires $ $ or $$ $$ 
     and similar latex tags)."""
     _view_name = Unicode('LatexView', sync=True)
 
 
-@register('IPython.Textarea')
+@register('Jupyter.Textarea')
 class Textarea(_String):
     """Multiline text area widget."""
     _view_name = Unicode('TextareaView', sync=True)
@@ -45,7 +45,7 @@ class Textarea(_String):
         self.send({"method": "scroll_to_bottom"})
 
 
-@register('IPython.Text')
+@register('Jupyter.Text')
 class Text(_String):
     """Single line textbox widget."""
     _view_name = Unicode('TextView', sync=True)

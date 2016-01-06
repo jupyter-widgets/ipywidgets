@@ -12,10 +12,10 @@ from .widget import CallbackDispatcher, register
 from traitlets import Unicode, Bool, CaselessStrEnum
 
 
-@register('IPython.Button')
+@register('Jupyter.Button')
 class Button(DOMWidget):
     """Button widget.
-       This widget has an `on_click` method that allows you to listen for the 
+       This widget has an `on_click` method that allows you to listen for the
        user clicking on the button.  The click event itself is stateless.
 
        Parameters
@@ -36,10 +36,10 @@ class Button(DOMWidget):
     icon = Unicode('', help= "Font-awesome icon.", sync=True)
 
     button_style = CaselessStrEnum(
-        values=['primary', 'success', 'info', 'warning', 'danger', ''], 
+        values=['primary', 'success', 'info', 'warning', 'danger', ''],
         default_value='', allow_none=True, sync=True, help="""Use a
         predefined styling for the button.""")
-    
+
     def __init__(self, **kwargs):
         """Constructor"""
         super(Button, self).__init__(**kwargs)

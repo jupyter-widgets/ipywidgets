@@ -22,7 +22,8 @@ class _Bool(DOMWidget):
             kwargs['value'] = value
         super(_Bool, self).__init__(**kwargs)
 
-@register('IPython.Checkbox')
+
+@register('Jupyter.Checkbox')
 class Checkbox(_Bool):
     """Displays a boolean `value` in the form of a checkbox.
 
@@ -36,7 +37,7 @@ class Checkbox(_Bool):
     _view_name = Unicode('CheckboxView', sync=True)
 
 
-@register('IPython.ToggleButton')
+@register('Jupyter.ToggleButton')
 class ToggleButton(_Bool):
     """Displays a boolean `value` in the form of a toggle button.
 
@@ -61,7 +62,7 @@ class ToggleButton(_Bool):
         predefined styling for the button.""")
 
 
-@register('IPython.Valid')
+@register('Jupyter.Valid')
 class Valid(_Bool):
 
     """Displays a boolean `value` in the form of a green check (True / valid)

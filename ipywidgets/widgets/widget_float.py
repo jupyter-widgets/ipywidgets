@@ -29,10 +29,6 @@ class _BoundedFloat(_Float):
     min = CFloat(0.0, help="Min value", sync=True)
     step = CFloat(0.1, help="Minimum step to increment the value (ignored by some views)", sync=True)
 
-    def __init__(self, *pargs, **kwargs):
-        """Constructor"""
-        super(_BoundedFloat, self).__init__(*pargs, **kwargs)
-
     def _value_validate(self, value, trait):
         """Cap and floor value"""
         if self.min > value or self.max < value:
@@ -56,7 +52,7 @@ class _BoundedFloat(_Float):
         return max
 
 
-@register('IPython.FloatText')
+@register('Jupyter.FloatText')
 class FloatText(_Float):
     """ Displays a float value within a textbox. For a textbox in
 	which the value must be within a specific range, use BoundedFloatText.
@@ -73,7 +69,7 @@ class FloatText(_Float):
     _view_name = Unicode('FloatTextView', sync=True)
 
 
-@register('IPython.BoundedFloatText')
+@register('Jupyter.BoundedFloatText')
 class BoundedFloatText(_BoundedFloat):
     """ Displays a float value within a textbox. Value must be within the range specified.
 	For a textbox in which the value doesn't need to be within a specific range, use FloatText.
@@ -87,14 +83,14 @@ class BoundedFloatText(_BoundedFloat):
 	max : float
 	    maximal value of the range of possible values displayed
 	description : str
-	    description displayed next to the textbox  
+	    description displayed next to the textbox
 	color : str Unicode color code (eg. '#C13535'), optional
-	    color of the value displayed   
+	    color of the value displayed
     """
     _view_name = Unicode('FloatTextView', sync=True)
 
 
-@register('IPython.FloatSlider')
+@register('Jupyter.FloatSlider')
 class FloatSlider(_BoundedFloat):
     """ Slider/trackbar of floating values with the specified range.
 
@@ -113,14 +109,14 @@ class FloatSlider(_BoundedFloat):
 	orientation : {'vertical', 'horizontal}, optional
             default is horizontal
 	readout : {True, False}, optional
-	    default is True, display the current value of the slider next to it		
-	slider_color : str Unicode color code (eg. '#C13535'), optional 
-	    color of the slider 
+	    default is True, display the current value of the slider next to it
+	slider_color : str Unicode color code (eg. '#C13535'), optional
+	    color of the slider
 	color : str Unicode color code (eg. '#C13535'), optional
 	    color of the value displayed (if readout == True)
     """
     _view_name = Unicode('FloatSliderView', sync=True)
-    orientation = CaselessStrEnum(values=['horizontal', 'vertical'], 
+    orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.", sync=True)
     _range = Bool(False, help="Display a range selector", sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.", sync=True)
@@ -128,7 +124,7 @@ class FloatSlider(_BoundedFloat):
     continuous_update = Bool(True, sync=True, help="Update the value of the widget as the user is sliding the slider.")
 
 
-@register('IPython.FloatProgress')
+@register('Jupyter.FloatProgress')
 class FloatProgress(_BoundedFloat):
     """ Displays a progress bar.
 
@@ -251,7 +247,7 @@ class _BoundedFloatRange(_FloatRange):
             self.lower = low
 
 
-@register('IPython.FloatRangeSlider')
+@register('Jupyter.FloatRangeSlider')
 class FloatRangeSlider(_BoundedFloatRange):
     """ Slider/trackbar for displaying a floating value range (within the specified range of values).
 
@@ -270,9 +266,9 @@ class FloatRangeSlider(_BoundedFloatRange):
 	orientation : {'vertical', 'horizontal}, optional
             default is horizontal
 	readout : {True, False}, optional
-	    default is True, display the current value of the slider next to it		
-	slider_color : str Unicode color code (eg. '#C13535'), optional 
-	    color of the slider 
+	    default is True, display the current value of the slider next to it
+	slider_color : str Unicode color code (eg. '#C13535'), optional
+	    color of the slider
 	color : str Unicode color code (eg. '#C13535'), optional
 	    color of the value displayed (if readout == True)
     """
