@@ -94,6 +94,13 @@ define([
                 }).catch(utils.reject('Could not call widget save state callback.', true));
             }
         });
+        
+        // Validate the version requested by the backend.
+        this.validateVersion().then(function(valid) {
+            if (!valid) {
+                console.warn('Widget frontend version does not match the backend.');
+            }
+        });
     };
     WidgetManager.prototype = Object.create(managerBase.ManagerBase.prototype);
 

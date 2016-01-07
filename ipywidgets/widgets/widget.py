@@ -13,7 +13,7 @@ from IPython.core.getipython import get_ipython
 from ipykernel.comm import Comm
 from traitlets.config import LoggingConfigurable
 from traitlets.utils.importstring import import_item
-from traitlets import Unicode, Dict, Instance, List, Int, Set, Bytes
+from traitlets import Unicode, Dict, Instance, List, Int, Set, Bytes, Bool
 from ipython_genutils.py3compat import string_types, PY3
 
 
@@ -464,9 +464,28 @@ class Widget(LoggingConfigurable):
         """Called when `IPython.display.display` is called on the widget."""
         # Show view.
         if self._view_name is not None:
+            version_widget = get_version_widget()
+            
+            # Before the user tries to display a widget.  Validate that the
+            # widget front-end is what is expected.
+            if version_widget is None:
+                self.log.warn('Widget Javascript not detected.  It may not be installed properly.')
+            elif not version_widget.validated:
+                self.log.warn('The installed widget Javascript is the wrong version.')
+            
             self._send({"method": "display"})
             self._handle_displayed(**kwargs)
 
     def _send(self, msg, buffers=None):
         """Sends a message to the model in the front-end."""
         self.comm.send(data=msg, buffers=buffers)
+
+@register('Jupyter.__version')
+class VersionWidget(Widget):
+    version = Unicode('4.1.0dev', help="Expected front-end version", sync=True)
+    validated = Bool(False, help="Version validated by the front-end", sync=True)
+    
+def get_version_widget():
+    for widget in Widget.widgets.values():
+        if isinstance(widget, VersionWidget):
+            return widget

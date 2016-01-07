@@ -1,6 +1,9 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+// jupyter-js-widgets version
+var version = '4.1.0dev';
+
 // npm compatibility
 if (typeof define !== 'function') { var define = require('./requirejs-shim')(module); }
 
@@ -10,6 +13,7 @@ define([
     "./utils"
 ], function (_, Backbone, utils) {
     "use strict";
+    
     //--------------------------------------------------------------------
     // ManagerBase class
     //--------------------------------------------------------------------
@@ -164,7 +168,7 @@ define([
     /**
      * Create a comm and new widget model.
      * @param  {Object} options - same options as new_model but, comm is not
-     *                          needed and additional options are available:
+     *                          needed and additional options are available.
      * @return {Promise<WidgetModel>}
      */
     ManagerBase.prototype.new_widget = function(options) {
@@ -194,6 +198,66 @@ define([
             }
             return that.new_model(options_clone);
         });
+    };
+    
+    /**
+     * Parse a version string
+     * @param  {string} version i.e. "1.0.2dev" or "2.4"
+     * @return {object} version object {major, minor, patch, dev}
+     */
+    ManagerBase.prototype._parseVersion = function(version) {
+        if (!version) return null;
+        var versionParts = version.split('.');
+        var versionTail = versionParts.slice(-1)[0];
+        var versionSuffix = versionTail.slice(String(parseInt(versionTail)).length);
+        return {
+            major: parseInt(versionParts[0]),
+            minor: versionParts.length > 1 ? parseInt(versionParts[1]) : 0,
+            patch: versionParts.length > 2 ? parseInt(versionParts[2]) : 0,
+            dev: versionSuffix.trim().toLowerCase() === 'dev'
+        };
+    };
+    
+    /**
+     * Validate the version of the Javascript against the version requested by
+     * the backend.
+     * @return {Promise<Boolean>} Whether or not the versions are okay
+     */
+    ManagerBase.prototype.validateVersion = function() {
+        console.info('validateVersion');
+        return this.new_widget({
+            model_name: 'WidgetModel',
+            widget_class: 'Jupyter.__version',
+            model_id: utils.uuid()
+        }).then((function(model) {
+            console.info('version widget created');
+            var validated = true;
+            var backendVersion = this._parseVersion(model.get('version', null));
+            if (backendVersion) {
+                var frontendVersion = this._parseVersion(version);
+                if (frontendVersion.major !== backendVersion.major) {
+                    validated = false;
+                }
+                if (frontendVersion.minor < backendVersion.minor) {
+                    validated = false;
+                }
+                if (frontendVersion.patch < backendVersion.patch) {
+                    validated = false;
+                }
+                if (frontendVersion.dev && !backendVersion.dev) {
+                    if (!(frontendVersion.patch > backendVersion.patch || 
+                    frontendVersion.minor > backendVersion.minor)) {
+                        validated = false;
+                    }
+                }
+            } else {
+                validated = false;
+            }
+            model.set('validated', validated);
+            model.save();
+            
+            return validated;
+        }).bind(this));
     };
 
     ManagerBase.prototype.new_model = function(options) {
@@ -384,6 +448,7 @@ define([
     };
 
     return {
-        'ManagerBase': ManagerBase
+        'ManagerBase': ManagerBase,
+        'version': version
     };
 });
