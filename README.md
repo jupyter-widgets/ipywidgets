@@ -1,5 +1,6 @@
 # Interactive HTML Widgets
 
+[![Google Group](https://img.shields.io/badge/-Google%20Group-lightgrey.svg)](https://groups.google.com/forum/#!forum/jupyter)
 [![Build Status](https://travis-ci.org/ipython/ipywidgets.svg?branch=master)](https://travis-ci.org/ipython/ipywidgets)
 [![Documentation Status](https://readthedocs.org/projects/ipywidgets/badge/?version=latest)](http://ipywidgets.readthedocs.org/en/latest/?badge=latest)
 [![Join the chat at https://gitter.im/ipython/ipywidgets](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ipython/ipywidgets?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -44,3 +45,11 @@ To run the Javascript tests:
     npm run test
 
 This will run the test suit using `karma` with 'debug' level logging.
+
+## Resources
+- [Project Jupyter website](https://jupyter.org)
+- [Online Demo at try.jupyter.org](https://try.jupyter.org)
+- [Documentation for ipywidgets](http://ipywidgets.readthedocs.org/en/latest/) [[PDF](https://media.readthedocs.org/pdf/ipywidgets/latest/ipywidgets.pdf)]
+- [Documentation for Project Jupyter](http://jupyter.readthedocs.org/en/latest/index.html) [[PDF](https://media.readthedocs.org/pdf/jupyter/latest/jupyter.pdf)]
+- [Issues](https://github.com/ipython/ipywidgets/issues)
+- [Technical support - Jupyter Google Group](https://groups.google.com/forum/#!forum/jupyter)
