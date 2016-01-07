@@ -8,11 +8,11 @@
 [Interactive HTML widgets](https://github.com/ipython/ipywidgets/blob/master/examples/notebooks/Index.ipynb)
 for Jupyter notebooks and the IPython kernel.
 
-A [demonstration notebook](https://github.com/ipython/ipywidgets/blob/master/examples/notebooks/Index.ipynb) provides an overview of the interactive widgets. For detailed information, please refer to the [ipywidgets documentation](http://ipywidgets.readthedocs.org/en/latest/)
+A [demonstration notebook](https://github.com/ipython/ipywidgets/blob/master/examples/notebooks/Index.ipynb) provides an overview of the interactive widgets. For detailed information, please refer to the [ipywidgets documentation](http://ipywidgets.readthedocs.org/en/latest/).
 
 ## Install
 
-You can install the current version of ipywidgets with pip or conda:
+Install the current version of ipywidgets using pip or conda:
 
     pip install ipywidgets
 
@@ -53,7 +53,7 @@ This will run the test suite using `karma` with 'debug' level logging.
 
 ## Resources
 ### ipywidgets
-- [Demo notebook](https://github.com/ipython/ipywidgets/blob/master/examples/notebooks/Index.ipynb)
+- [Demo notebook of interactive widgets](https://github.com/ipython/ipywidgets/blob/master/examples/notebooks/Index.ipynb)
 - [Documentation for ipywidgets](http://ipywidgets.readthedocs.org/en/latest/) [[PDF](https://media.readthedocs.org/pdf/ipywidgets/latest/ipywidgets.pdf)]
 - [Issues](https://github.com/ipython/ipywidgets/issues)
 - [Technical support - Jupyter Google Group](https://groups.google.com/forum/#!forum/jupyter)
