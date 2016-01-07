@@ -12,7 +12,7 @@ from traitlets import Unicode, Tuple, Int, CaselessStrEnum, Instance
 from warnings import warn
 
 
-@register('IPython.Box')
+@register('Jupyter.Box')
 class Box(DOMWidget):
     """Displays multiple widgets in a group."""
     _model_name = Unicode('BoxModel', sync=True)
@@ -48,7 +48,7 @@ class Box(DOMWidget):
             child._handle_displayed()
 
 
-@register('IPython.Proxy')
+@register('Jupyter.Proxy')
 class Proxy(Widget):
     """A DOMWidget that holds another DOMWidget or nothing."""
     _model_name = Unicode('ProxyModel', sync=True)
@@ -68,7 +68,7 @@ class Proxy(Widget):
             self.child._handle_displayed()
 
 
-@register('IPython.PlaceProxy')
+@register('Jupyter.PlaceProxy')
 class PlaceProxy(Proxy):
     """Renders the child widget at the specified selector."""
     _view_name = Unicode('PlaceProxyView', sync=True)
@@ -90,7 +90,7 @@ def HBox(*pargs, **kwargs):
     return box
 
 
-@register('IPython.FlexBox')
+@register('Jupyter.FlexBox')
 class FlexBox(Box): # TODO: Deprecated in 5.0 (entire class)
     """Displays multiple widgets using the flexible box model."""
     _view_name = Unicode('FlexBoxView', sync=True)

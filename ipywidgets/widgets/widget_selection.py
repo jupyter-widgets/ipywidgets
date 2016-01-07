@@ -185,7 +185,7 @@ class _MultipleSelection(_Selection):
                 self.value_lock.release()
 
 
-@register('IPython.ToggleButtons')
+@register('Jupyter.ToggleButtons')
 class ToggleButtons(_Selection):
     """Group of toggle buttons that represent an enumeration.  Only one toggle
     button can be toggled at any point in time."""
@@ -198,7 +198,8 @@ class ToggleButtons(_Selection):
         default_value='', allow_none=True, sync=True, help="""Use a
         predefined styling for the buttons.""")
 
-@register('IPython.Dropdown')
+
+@register('Jupyter.Dropdown')
 class Dropdown(_Selection):
     """Allows you to select a single item from a dropdown."""
     _view_name = Unicode('DropdownView', sync=True)
@@ -208,21 +209,21 @@ class Dropdown(_Selection):
         default_value='', allow_none=True, sync=True, help="""Use a
         predefined styling for the buttons.""")
 
-@register('IPython.RadioButtons')
+
+@register('Jupyter.RadioButtons')
 class RadioButtons(_Selection):
     """Group of radio buttons that represent an enumeration.  Only one radio
     button can be toggled at any point in time."""
     _view_name = Unicode('RadioButtonsView', sync=True)
 
 
-
-@register('IPython.Select')
+@register('Jupyter.Select')
 class Select(_Selection):
     """Listbox that only allows one item to be selected at any given time."""
     _view_name = Unicode('SelectView', sync=True)
 
 
-@register('IPython.SelectMultiple')
+@register('Jupyter.SelectMultiple')
 class SelectMultiple(_MultipleSelection):
     """Listbox that allows many items to be selected at any given time.
     Despite their names, inherited from ``_Selection``, the currently chosen

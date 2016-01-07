@@ -119,21 +119,21 @@ class _BoundedInt(_Int):
             self.value = max
         return max
 
-@register('IPython.IntText')
+@register('Jupyter.IntText')
 @_int_doc
 class IntText(_Int):
     """Textbox widget that represents an integer."""
     _view_name = Unicode('IntTextView', sync=True)
 
 
-@register('IPython.BoundedIntText')
+@register('Jupyter.BoundedIntText')
 @_bounded_int_doc
 class BoundedIntText(_BoundedInt):
     """Textbox widget that represents an integer bounded by a minimum and maximum value."""
     _view_name = Unicode('IntTextView', sync=True)
 
 
-@register('IPython.IntSlider')
+@register('Jupyter.IntSlider')
 @_bounded_int_doc
 class IntSlider(_BoundedInt):
     """Slider widget that represents an integer bounded by a minimum and maximum value."""
@@ -146,7 +146,7 @@ class IntSlider(_BoundedInt):
     continuous_update = Bool(True, sync=True, help="Update the value of the widget as the user is sliding the slider.")
 
 
-@register('IPython.IntProgress')
+@register('Jupyter.IntProgress')
 @_bounded_int_doc
 class IntProgress(_BoundedInt):
     """Progress bar that represents an integer bounded by a minimum and maximum value."""
@@ -250,7 +250,7 @@ class _BoundedIntRange(_IntRange):
             self.upper = high
             self.lower = low
 
-@register('IPython.IntRangeSlider')
+@register('Jupyter.IntRangeSlider')
 class IntRangeSlider(_BoundedIntRange):
     """Slider widget that represents a pair of ints between a minimum and maximum value.
     
@@ -267,7 +267,7 @@ class IntRangeSlider(_BoundedIntRange):
         The highest allowed value for `upper`
     """
     _view_name = Unicode('IntSliderView', sync=True)
-    orientation = CaselessStrEnum(values=['horizontal', 'vertical'], 
+    orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.", sync=True)
     _range = Bool(True, help="Display a range selector", sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.", sync=True)
