@@ -5,14 +5,19 @@
 [![Documentation Status](https://readthedocs.org/projects/ipywidgets/badge/?version=latest)](http://ipywidgets.readthedocs.org/en/latest/?badge=latest)
 [![Join the chat at https://gitter.im/ipython/ipywidgets](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ipython/ipywidgets?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[Interactive HTML widgets](https://github.com/ipython/ipywidgets/blob/master/examples/notebooks/Index.ipynb) for Jupyter notebooks and the IPython kernel.
+[Interactive HTML widgets](https://github.com/ipython/ipywidgets/blob/master/examples/notebooks/Index.ipynb)
+for Jupyter notebooks and the IPython kernel.
+
+A [demonstration notebook](https://github.com/ipython/ipywidgets/blob/master/examples/notebooks/Index.ipynb) provides an overview of the interactive widgets. For detailed information, please refer to the [ipywidgets documentation](http://ipywidgets.readthedocs.org/en/latest/)
 
 ## Install
 
 You can install the current version of ipywidgets with pip or conda:
 
     pip install ipywidgets
-    # or
+
+or
+
     conda install ipywidgets
 
 
@@ -29,8 +34,8 @@ To install ipywidgets from git, you will need [npm](https://www.npmjs.com/).
 
         pip install -v -e .
 
-    Note: You need to have npm installed.  The installation process will 
-    complain if you don't.  If you install using sudo, you need to make sure 
+    Note: You need to have npm installed.  The installation process will
+    complain if you don't.  If you install using sudo, you need to make sure
     that npm is also available in the PATH used with sudo.
 
 
@@ -44,12 +49,16 @@ To run the Javascript tests:
 
     npm run test
 
-This will run the test suit using `karma` with 'debug' level logging.
+This will run the test suite using `karma` with 'debug' level logging.
 
 ## Resources
-- [Project Jupyter website](https://jupyter.org)
-- [Online Demo at try.jupyter.org](https://try.jupyter.org)
+### ipywidgets
+- [Demo notebook](https://github.com/ipython/ipywidgets/blob/master/examples/notebooks/Index.ipynb)
 - [Documentation for ipywidgets](http://ipywidgets.readthedocs.org/en/latest/) [[PDF](https://media.readthedocs.org/pdf/ipywidgets/latest/ipywidgets.pdf)]
-- [Documentation for Project Jupyter](http://jupyter.readthedocs.org/en/latest/index.html) [[PDF](https://media.readthedocs.org/pdf/jupyter/latest/jupyter.pdf)]
 - [Issues](https://github.com/ipython/ipywidgets/issues)
 - [Technical support - Jupyter Google Group](https://groups.google.com/forum/#!forum/jupyter)
+
+### Project Jupyter
+- [Project Jupyter website](https://jupyter.org)
+- [Online Demo of Jupyter Notebook at try.jupyter.org](https://try.jupyter.org)
+- [Documentation for Project Jupyter](http://jupyter.readthedocs.org/en/latest/index.html) [[PDF](https://media.readthedocs.org/pdf/jupyter/latest/jupyter.pdf)]
