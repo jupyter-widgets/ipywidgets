@@ -39,6 +39,15 @@ define(["./utils",
     };
 
     var WidgetModel = Backbone.Model.extend({
+
+        defaults: {
+            _model_module: null,
+            _model_name: "WidgetModel",
+            _view_module: "",
+            _view_name: null,
+            msg_throttle: 3
+        },
+
         constructor: function (widget_manager, model_id, comm) {
             /**
              * Constructor
@@ -548,7 +557,11 @@ define(["./utils",
         }
     };
 
-    var DOMWidgetModel = WidgetModel.extend({}, {
+    var DOMWidgetModel = WidgetModel.extend({
+        defaults: _.extend({}, WidgetModel.prototype.defaults, {
+            layout: undefined,
+        }),
+    }, {
         serializers: _.extend({
             layout: {deserialize: unpack_models},
         }, WidgetModel.serializers),
@@ -830,7 +843,7 @@ define(["./utils",
             });
         },
     });
-    
+
     managerBase.ManagerBase.register_widget_model('WidgetModel', WidgetModel);
 
     // For backwards compatibility.
@@ -838,16 +851,16 @@ define(["./utils",
     var DOMWidgetView = WidgetView.extend(DOMWidgetViewMixin);
 
     var widget = {
-        'unpack_models': unpack_models,
-        'WidgetModel': WidgetModel,
-        'WidgetViewMixin': WidgetViewMixin,
-        'DOMWidgetViewMixin': DOMWidgetViewMixin,
-        'ViewList': ViewList,
-        'DOMWidgetModel': DOMWidgetModel,
+        unpack_models: unpack_models,
+        WidgetModel: WidgetModel,
+        WidgetViewMixin: WidgetViewMixin,
+        DOMWidgetViewMixin: DOMWidgetViewMixin,
+        ViewList: ViewList,
+        DOMWidgetModel: DOMWidgetModel,
 
         // For backwards compatibility.
-        'WidgetView': WidgetView,
-        'DOMWidgetView': DOMWidgetView,
+        WidgetView: WidgetView,
+        DOMWidgetView: DOMWidgetView,
     };
 
     return widget;
