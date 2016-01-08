@@ -492,14 +492,12 @@ define([
             this.update(); 
             this.updateDescription();
            
-            this.listenTo(this.model, 'change:bar_style', function(model, value) {
-                this.update_bar_style();
-            }, this);
-            this.listenTo(this.model, 'change:description', function(sender, value) {
+            this.listenTo(this.model, "change:bar_style", this.update_bar_style, this);
+            this.listenTo(this.model, "change:description", function(sender, value) {
                 this.updateDescription();
             }, this);
             
-            this.update_bar_style('');
+            this.update_bar_style();
         },
         
         updateDescription: function() {
@@ -548,14 +546,14 @@ define([
             return ProgressView.__super__.update.apply(this);
         }, 
 
-        update_bar_style: function(previous_trait_value) {
+        update_bar_style: function() {
             var class_map = {
                 success: ['progress-bar-success'],
                 info: ['progress-bar-info'],
                 warning: ['progress-bar-warning'],
                 danger: ['progress-bar-danger']
             };
-            this.update_mapped_classes(class_map, 'bar_style', previous_trait_value, this.$bar[0]);
+            this.update_mapped_classes(class_map, 'bar_style', this.$bar[0]);
         },
 
         update_attr: function(name, value) { // TODO: Deprecated in 5.0

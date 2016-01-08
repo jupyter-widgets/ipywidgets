@@ -43,10 +43,8 @@ define([
                 .addClass('dropdown-menu')
                 .appendTo(this.$buttongroup);
 
-            this.listenTo(this.model, 'change:button_style', function(model, value) {
-                this.update_button_style();
-            }, this);
-            this.update_button_style('');
+            this.listenTo(this.model, "change:button_style", this.update_button_style, this);
+            this.update_button_style();
 
             // Set defaults.
             this.update();
@@ -108,7 +106,7 @@ define([
             return DropdownView.__super__.update.apply(this);
         },
 
-        update_button_style: function(previous_trait_value) {
+        update_button_style: function() {
             var class_map = {
                 primary: ['btn-primary'],
                 success: ['btn-success'],
@@ -116,8 +114,8 @@ define([
                 warning: ['btn-warning'],
                 danger: ['btn-danger']
             };
-            this.update_mapped_classes(class_map, 'button_style', previous_trait_value, this.$droplabel[0]);
-            this.update_mapped_classes(class_map, 'button_style', previous_trait_value, this.$dropbutton[0]);
+            this.update_mapped_classes(class_map, 'button_style', this.$droplabel[0]);
+            this.update_mapped_classes(class_map, 'button_style', this.$dropbutton[0]);
         },
 
         update_attr: function(name, value) { // TODO: Deprecated in 5.0
@@ -278,10 +276,8 @@ define([
                 .addClass('btn-group')
                 .appendTo(this.$el);
 
-            this.listenTo(this.model, 'change:button_style', function(model, value) {
-                this.update_button_style();
-            }, this);
-            this.update_button_style('');
+            this.listenTo(this.model, 'change:button_style', this.update_button_style, this);
+            this.update_button_style();
             this.update();
         },
 
@@ -391,7 +387,7 @@ define([
             }
         },
 
-        update_button_style: function(previous_trait_value) {
+        update_button_style: function() {
             var class_map = {
                 primary: ['btn-primary'],
                 success: ['btn-success'],
@@ -399,7 +395,7 @@ define([
                 warning: ['btn-warning'],
                 danger: ['btn-danger']
             };
-            this.update_mapped_classes(class_map, 'button_style', previous_trait_value, this.$buttongroup.find('button')[0]);
+            this.update_mapped_classes(class_map, 'button_style', this.$buttongroup.find('button')[0]);
         },
 
         handle_click: function (e) {
@@ -416,7 +412,7 @@ define([
 
 
     var SelectView = widget.DOMWidgetView.extend({
-        render : function() {
+        render: function() {
             /**
              * Called when view is rendered.
              */
@@ -434,7 +430,7 @@ define([
             this.update();
         },
 
-        update : function(options) {
+        update: function(options) {
             /**
              * Update the contents of this view
              *

@@ -714,7 +714,7 @@ define(["./utils",
             });
         },
 
-        update_mapped_classes: function(class_map, trait_name, previous_trait_value, el) {
+        update_mapped_classes: function(class_map, trait_name, el) {
             /**
              * Update the DOM classes applied to the widget based on a single
              * trait's value.
@@ -736,15 +736,10 @@ define(["./utils",
              *      };
              * trait_name: string
              *  Name of the trait to check the value of.
-             * previous_trait_value: optional string, default ''
-             *  Last trait value
              * el: optional DOM element handle, defaults to this.$el
              *  Element that the classes are applied to.
              */
-            var key = previous_trait_value;
-            if (key === undefined) {
-                key = this.model.previous(trait_name);
-            }
+            var key = this.model.previous(trait_name);
             var old_classes = class_map[key] ? class_map[key] : [];
             key = this.model.get(trait_name);
             var new_classes = class_map[key] ? class_map[key] : [];
