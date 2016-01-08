@@ -57,9 +57,8 @@ class ToggleButton(_Bool):
     icon = Unicode('', help= "Font-awesome icon.", sync=True)
 
     button_style = CaselessStrEnum(
-        values=['primary', 'success', 'info', 'warning', 'danger', ''],
-        default_value='', allow_none=True, sync=True, help="""Use a
-        predefined styling for the button.""")
+        values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
+        sync=True, help="""Use a predefined styling for the button.""")
 
 
 @register('Jupyter.Valid')

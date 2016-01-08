@@ -34,9 +34,8 @@ class Box(DOMWidget):
         happens to content that is too large for the rendered region.""")
 
     box_style = CaselessStrEnum(
-        values=['success', 'info', 'warning', 'danger', ''],
-        default_value='', allow_none=True, sync=True, help="""Use a
-        predefined styling for the box.""")
+        values=['success', 'info', 'warning', 'danger', ''], default_value='',
+        sync=True, help="""Use a predefined styling for the box.""")
 
     def __init__(self, children = (), **kwargs):
         kwargs['children'] = children

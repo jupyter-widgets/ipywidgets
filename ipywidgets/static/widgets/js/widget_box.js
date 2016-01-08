@@ -113,7 +113,9 @@ define([
             }, this);
             this.listenTo(this.model, 'change:overflow_x', this.update_overflow_x, this);
             this.listenTo(this.model, 'change:overflow_y', this.update_overflow_y, this);
-            this.listenTo(this.model, 'change:box_style', this.update_box_style, this);
+            this.listenTo(this.model, "change:box_style", function(model, value) {
+                this.update_box_style();
+            }, this);
         },
 
         update_attr: function(name, value) { // TODO: Deprecated in 5.0

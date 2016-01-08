@@ -18,10 +18,10 @@ define([
             this.setElement($("<button />")
                 .addClass('ipy-widget widget-button btn btn-default'));
             this.$el.attr("data-toggle", "tooltip");
-            this.listenTo(this.model, 'change:button_style', function(model, value) {
+            this.listenTo(this.model, "change:button_style", function(model, value) {
                 this.update_button_style();
             }, this);
-            this.update_button_style('');
+            this.update_button_style("");
 
             this.update(); // Set defaults.
         },
