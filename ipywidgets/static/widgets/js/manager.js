@@ -96,10 +96,18 @@ define([
         });
         
         // Validate the version requested by the backend.
-        this.validateVersion().then(function(valid) {
-            if (!valid) {
-                console.warn('Widget frontend version does not match the backend.');
-            }
+        var validate = (function validate() {
+            this.validateVersion().then(function(valid) {
+                if (!valid) {
+                    console.warn('Widget frontend version does not match the backend.');
+                }
+            });
+        }).bind(this);
+        validate();
+        
+        // Revalidate the version when a new kernel connects.
+        this.notebook.events.on('kernel_connected.Kernel', function(event, data) {
+            validate();
         });
     };
     WidgetManager.prototype = Object.create(managerBase.ManagerBase.prototype);

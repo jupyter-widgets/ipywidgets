@@ -224,13 +224,11 @@ define([
      * @return {Promise<Boolean>} Whether or not the versions are okay
      */
     ManagerBase.prototype.validateVersion = function() {
-        console.info('validateVersion');
         return this.new_widget({
             model_name: 'WidgetModel',
             widget_class: 'Jupyter.__version',
             model_id: utils.uuid()
         }).then((function(model) {
-            console.info('version widget created');
             var validated = true;
             var backendVersion = this._parseVersion(model.get('version', null));
             if (backendVersion) {
@@ -256,6 +254,7 @@ define([
             model.set('validated', validated);
             model.save();
             
+            if (validated) console.info('Widget backend and frontend versions are compatible');
             return validated;
         }).bind(this));
     };
