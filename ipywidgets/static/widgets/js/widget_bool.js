@@ -9,7 +9,7 @@ define([
     "jquery",
     "underscore",
     "bootstrap",
-], function(widget, $, _){
+], function(widget, $, _) {
 
     var BoolModel = widget.DOMWidgetModel.extend({
         defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
