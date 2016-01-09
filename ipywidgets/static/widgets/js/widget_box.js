@@ -13,13 +13,28 @@ define([
 ], function(widget, utils, $, _) {
     "use strict";
 
-    var BoxModel = widget.DOMWidgetModel.extend({}, {
+    var BoxModel = widget.DOMWidgetModel.extend({
+        defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
+            _view_name: "BoxView",
+            _model_name: "BoxModel",
+            children: [],
+            box_style: "",
+            overflow_x: "",
+            overflow_y: "",
+        }),
+    }, {
         serializers: _.extend({
             children: {deserialize: widget.unpack_models},
-        }, widget.DOMWidgetModel.serializers)
+        }, widget.DOMWidgetModel.serializers),
     });
 
-    var ProxyModel = widget.DOMWidgetModel.extend({}, {
+    var ProxyModel = widget.DOMWidgetModel.extend({
+        defaults: {
+            _view_name: "ProxyView",
+            _model_name: "ProxyModel",
+            child: null,
+        },
+    }, {
         serializers: _.extend({
             child: {deserialize: widget.unpack_models},
         }, widget.DOMWidgetModel.serializers),

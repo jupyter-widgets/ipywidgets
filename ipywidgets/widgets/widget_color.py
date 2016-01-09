@@ -18,4 +18,5 @@ class ColorPicker(DOMWidget):
     short = Bool(sync=True)
     description = Unicode(sync=True)
 
-    _view_name = Unicode('ColorPicker', sync=True)
+    _view_name = Unicode('ColorPickerView', sync=True)
+    _model_name = Unicode('ColorPickerModel', sync=True)

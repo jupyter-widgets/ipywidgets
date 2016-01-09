@@ -6,9 +6,20 @@ if (typeof define !== 'function') { var define = require('./requirejs-shim')(mod
 
 define([
     "./widget",
-], function(widget) {
+    "underscore",
+], function(widget, _) {
 
-    var ColorPicker = widget.DOMWidgetView.extend({
+    var ColorPickerModel = widget.DOMWidgetModel.extend({
+        defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
+            value: "black",
+            description: "",
+            "short": false,
+            _model_name: "ColorPickerModel",
+            _view_name: "ColorPickerView",
+        }),
+    });
+
+    var ColorPickerView = widget.DOMWidgetView.extend({
         render: function() {
             this.$el.addClass("ipy-widget widget-hbox widget-colorpicker");
 
@@ -103,6 +114,7 @@ define([
     };
 
     return {
-        ColorPicker: ColorPicker,
+        ColorPickerModel: ColorPickerModel,
+        ColorPickerView: ColorPickerView,
     };
 });
