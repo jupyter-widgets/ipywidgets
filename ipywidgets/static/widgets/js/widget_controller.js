@@ -219,7 +219,7 @@ define([
              */
             return this.widget_manager.new_widget({
                  model_name: 'WidgetModel',
-                 widget_class: 'ipywidgets.widgets.widget_controller.Button',
+                 widget_class: 'Jupyter.ControllerButton',
             }).then(function(model) {
                  model.set('description', index);
                  return model;
@@ -231,7 +231,7 @@ define([
              */
             return this.widget_manager.new_widget({
                  model_name: 'WidgetModel',
-                 widget_class: 'ipywidgets.widgets.widget_controller.Axis',
+                 widget_class: 'Jupyter.ControllerAxis',
             }).then(function(model) {
                  model.set('description', index);
                  return model;
