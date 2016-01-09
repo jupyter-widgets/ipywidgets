@@ -35,6 +35,7 @@ define([
                 'align_content',
                 'align_items',
                 'align_self',
+                'border',
                 'bottom',
                 'display',
                 'flex',
