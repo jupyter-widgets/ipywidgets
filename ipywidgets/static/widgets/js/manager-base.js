@@ -19,7 +19,7 @@ define([
          */
         ManagerBase._managers.push(this);
         
-        this.comm_target_name = 'ipython.widget';
+        this.comm_target_name = 'jupyter.widget';
         this._models = {}; /* Dictionary of model ids and model instance promises */
     };
 
@@ -174,8 +174,8 @@ define([
         } else {
             commPromise = this._create_comm(this.comm_target_name,
                                             options.model_id, {
-                'widget_class': options.widget_class,
-                'target_name': 'ipython.widget',
+                widget_class: options.widget_class,
+                target_name: 'jupyter.widget',
             });
         }
 
@@ -208,7 +208,7 @@ define([
          * JS:
          * IPython.notebook.kernel.widget_manager.new_model({
          *      model_name: 'WidgetModel',
-         *      widget_class: 'ipywidgets.IntSlider'
+         *      widget_class: 'Jupyter.IntSlider'
          *  })
          *  .then(function(model) { console.log('Create success!', model); },
          *  _.bind(console.error, console));

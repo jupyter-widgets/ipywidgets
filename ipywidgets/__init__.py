@@ -1,6 +1,6 @@
-"""IPython widgets for Jupyter notebooks.
+"""Interactive widgets for the Jupyter notebook.
 
-IPython Widgets provide simple interactive controls in the notebook.
+Provide simple interactive controls in the notebook.
 Each Widget corresponds to an object in Python and Javascript,
 with controls on the page.
 
@@ -36,16 +36,16 @@ def load_ipython_extension(ip):
 
 
 def register_comm_target(kernel=None):
-    """Register the ipython.widget comm target"""
+    """Register the jupyter.widget comm target"""
     if kernel is None:
         ip = get_ipython().kernel
-    kernel.comm_manager.register_target('ipython.widget', Widget.handle_comm_opened)
+    kernel.comm_manager.register_target('jupyter.widget', Widget.handle_comm_opened)
 
 # deprecated alias
 handle_kernel = register_comm_target
 
 def _handle_ipython():
-    """register with the comm target at import if running in IPython"""
+    """Register with the comm target at import if running in IPython"""
     ip = get_ipython()
     if ip is None:
         return

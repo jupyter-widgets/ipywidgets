@@ -7,7 +7,7 @@ describe("ManagerBase", function() {
 
     it('comm_target_name', function() {
         expect(ManagerBase.comm_target_name).to.be.undefined;
-        expect(this.managerBase.comm_target_name).to.equal('ipython.widget');
+        expect(this.managerBase.comm_target_name).to.equal('jupyter.widget');
     });
 
     it('register_widget_model', function() {

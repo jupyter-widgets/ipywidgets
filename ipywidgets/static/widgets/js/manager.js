@@ -71,7 +71,7 @@ define([
                     });
                 }));
             }).then(function(model_ids) {
-                
+
                 // Load the initial state of the widget manager if a load callback was
                 // registered.
                 if (WidgetManager._load_callback) {
@@ -96,7 +96,7 @@ define([
         });
     };
     WidgetManager.prototype = Object.create(managerBase.ManagerBase.prototype);
-    
+
     WidgetManager._managers = []; /* List of widget managers */
     WidgetManager._load_callback = null;
     WidgetManager._save_callback = null;
@@ -271,7 +271,7 @@ define([
         var that = this;
         return this._get_connected_kernel().then(function(kernel) {
             return new Promise(function(resolve, reject) {
-                kernel.comm_info('ipython.widget', function(msg) {
+                kernel.comm_info('jupyter.widget', function(msg) {
                     resolve(msg['content']['comms']);
                 });
             });
