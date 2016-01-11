@@ -12,11 +12,26 @@ define([
     "bootstrap",
 ], function(widget, utils, $, _) {
 
+    var SelectionModel = widget.DOMWidgetModel.extend({
+        defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
+            _model_name: "SelectionModel",
+            selected_label: "",
+            _options_labels: [],
+            disabled: false,
+            description: "",
+        }),
+    });
+
+    var DropdownModel = SelectionModel.extend({
+        defaults: _.extend({}, SelectionModel.prototype.defaults, {
+            _model_name: "DropdownModel",
+            _view_name: "DropdownView",
+            button_style: ""
+        }),
+    });
+
     var DropdownView = widget.DOMWidgetView.extend({
         render : function() {
-            /**
-             * Called when view is rendered.
-             */
             this.$el
                 .addClass('ipy-widget widget-hbox widget-dropdown');
             this.$label = $('<div />')
@@ -149,6 +164,16 @@ define([
 
     });
 
+    var RadioButtonsModel = SelectionModel.extend({
+        defaults: _.extend({}, SelectionModel.prototype.defaults, {
+            _model_name: "RadioButtonsModel",
+            _view_name: "RadioButtonsView",
+            tooltips: [],
+            icons: [],
+            button_style: ""
+        }),
+    });
+
     var RadioButtonsView = widget.DOMWidgetView.extend({
         render : function() {
             /**
@@ -255,6 +280,12 @@ define([
         },
     });
 
+    var ToggleButtonsModel = SelectionModel.extend({
+        defaults: _.extend({}, SelectionModel.prototype.defaults, {
+            _model_name: "ToggleButtonsModel",
+            _view_name: "ToggleButtonsView",
+        }),
+    });
 
     var ToggleButtonsView = widget.DOMWidgetView.extend({
         initialize: function() {
@@ -410,6 +441,12 @@ define([
         },
     });
 
+    var SelectModel = SelectionModel.extend({
+        defaults: _.extend({}, SelectionModel.prototype.defaults, {
+            _model_name: "SelectModel",
+            _view_name: "SelectView",
+        }),
+    });
 
     var SelectView = widget.DOMWidgetView.extend({
         render: function() {
@@ -517,6 +554,19 @@ define([
         },
     });
 
+    var MultipleSelectionModel = SelectionModel.extend({
+        defaults: _.extend({}, SelectionModel.prototype.defaults, {
+            _model_name: "MultipleSelectionModel",
+            selected_labels: [],
+        }),
+    });
+
+    var SelectMultipleModel = MultipleSelectionModel.extend({
+        defaults: _.extend({}, MultipleSelectionModel.prototype.defaults, {
+            _model_name: "SelectMultipleModel",
+            _view_name: "SelectMultipleView",
+        }),
+    });
 
     var SelectMultipleView = SelectView.extend({
         render: function() {
@@ -577,12 +627,18 @@ define([
         },
     });
 
-
     return {
-        'DropdownView': DropdownView,
-        'RadioButtonsView': RadioButtonsView,
-        'ToggleButtonsView': ToggleButtonsView,
-        'SelectView': SelectView,
-        'SelectMultipleView': SelectMultipleView,
+        SelectionModel: SelectionModel,
+        DropdownView: DropdownView,
+        DropdownModel: DropdownModel,
+        RadioButtonsView: RadioButtonsView,
+        RadioButtonsModel: RadioButtonsModel,
+        ToggleButtonsView: ToggleButtonsView,
+        ToggleButtonsModel: ToggleButtonsModel,
+        SelectView: SelectView,
+        SelectModel: SelectModel,
+        MultipleSelectionModel: MultipleSelectionModel,
+        SelectMultipleView: SelectMultipleView,
+        SelectMultipleModel: SelectMultipleModel,
     };
 });
