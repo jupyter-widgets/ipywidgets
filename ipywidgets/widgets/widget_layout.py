@@ -23,6 +23,7 @@ class Layout(Widget):
     """
 
     _view_name = Unicode('LayoutView', sync=True)
+    _model_name = Unicode('LayoutModel', sync=True)
 
     # Keys
     align_content = CUnicode(sync=True)

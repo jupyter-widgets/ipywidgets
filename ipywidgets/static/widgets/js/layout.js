@@ -13,8 +13,39 @@ define([
 ], function(widget, _, Backbone, $) {
 
     /**
+     * css properties exposed by the layout widget with their default values.
+     */
+    var css_properties = {
+        align_content: "",
+        align_items: "",
+        align_self: "",
+        border: "",
+        bottom: "",
+        display: "",
+        flex: "",
+        flex_flow: "",
+        height: "",
+        justify_content: "",
+        left: "",
+        margin: "",
+        overflow: "",
+        padding: "",
+        right: "",
+        top: "",
+        visibility: "",
+        width: ""
+    };
+
+    /**
      * Represents a group of CSS style attributes
      */
+    var LayoutModel = widget.WidgetModel.extend({
+        defaults: _.extend({}, widget.WidgetModel.prototype.defaults, {
+            _model_name: "LayoutModel",
+            _view_name: "LayoutView"
+        }, css_properties),
+    });
+
     var LayoutView = widget.WidgetView.extend({
 
         /**
@@ -24,33 +55,7 @@ define([
             LayoutView.__super__.initialize.apply(this, arguments);
             // Register the traits that live on the Python side
             this._traitNames = [];
-            this.initTraits();
-        },
-
-        /**
-         * Initialize the traits for this layout object
-         */
-        initTraits: function() {
-            this.registerTraits(
-                'align_content',
-                'align_items',
-                'align_self',
-                'border',
-                'bottom',
-                'display',
-                'flex',
-                'flex_flow',
-                'height',
-                'justify_content',
-                'left',
-                'margin',
-                'overflow',
-                'padding',
-                'right',
-                'top',
-                'visibility',
-                'width'
-            );
+            this.registerTraits(Object.keys(css_properties));
         },
 
         /**
@@ -126,6 +131,7 @@ define([
     });
 
     return {
-        LayoutView: LayoutView
+        LayoutView: LayoutView,
+        LayoutModel: LayoutModel
     };
 });
