@@ -4,9 +4,6 @@
 // jupyter-js-widgets version
 var version = '4.1.0dev';
 
-// npm compatibility
-if (typeof define !== 'function') { var define = require('./requirejs-shim')(module); }
-
 define([
     "underscore",
     "backbone",
