@@ -14,15 +14,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         // Create the widget model.
         return manager.new_widget({
-            model_name: 'WidgetModel',
-            widget_class: 'ipywidgets.' + widgetType,
+            model_name: widgetType + 'Model',
+            widget_class: 'jupyter.' + widgetType,
             model_id: uuid()
         // Create a view for the model.
         }).then(function(model) {
             console.log(widgetType + ' model created', model);
 
             model.set({
-                _view_name: widgetType + 'View',
                 description: description || '',
                 value: value || null,
                 visible: true
