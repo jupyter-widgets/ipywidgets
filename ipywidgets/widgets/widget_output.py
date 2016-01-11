@@ -1,4 +1,4 @@
-"""Output class.  
+"""Output class.
 
 Represents a widget that can be used to display output within the widget area.
 """
@@ -21,17 +21,19 @@ class Output(DOMWidget):
     manager.  Any output produced while in it's context will be captured and
     displayed in it instead of the standard output area.
 
-    Example
+    Example::
         import ipywidgets as widgets
         from IPython.display import display
         out = widgets.Output()
         display(out)
-        
+
         print('prints to output area')
 
         with out:
-            print('prints to output widget')"""
+            print('prints to output widget')
+    """
     _view_name = Unicode('OutputView', sync=True)
+    _model_name = Unicode('OutputModel', sync=True)
 
     def clear_output(self, *pargs, **kwargs):
         with self:
@@ -47,7 +49,7 @@ class Output(DOMWidget):
         self._session = session
 
         def send_hook(stream, msg_or_type, content=None, parent=None, ident=None,
-             buffers=None, track=False, header=None, metadata=None): 
+             buffers=None, track=False, header=None, metadata=None):
 
             # Handle both prebuild messages and unbuilt messages.
             if isinstance(msg_or_type, (Message, dict)):
@@ -55,13 +57,13 @@ class Output(DOMWidget):
                 msg = dict(msg_or_type)
             else:
                 msg_type = msg_or_type
-                msg = session.msg(msg_type, content=content, parent=parent, 
+                msg = session.msg(msg_type, content=content, parent=parent,
                     header=header, metadata=metadata)
 
             # If this is a message type that we want to forward, forward it.
             if stream is kernel.iopub_socket and msg_type in ['clear_output', 'stream', 'display_data']:
                 self.send(msg)
-            else: 
+            else:
                 send(stream, msg, ident=ident, buffers=buffers, track=track)
 
         session.send = send_hook
