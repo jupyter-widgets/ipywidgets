@@ -18,10 +18,8 @@ define([
             this.setElement($("<button />")
                 .addClass('ipy-widget widget-button btn btn-default'));
             this.$el.attr("data-toggle", "tooltip");
-            this.listenTo(this.model, 'change:button_style', function(model, value) {
-                this.update_button_style();
-            }, this);
-            this.update_button_style('');
+            this.listenTo(this.model, "change:button_style", this.update_button_style, this);
+            this.update_button_style();
 
             this.update(); // Set defaults.
         },
@@ -48,7 +46,7 @@ define([
             return ButtonView.__super__.update.apply(this);
         },
 
-        update_button_style: function(previous_trait_value) {
+        update_button_style: function() {
             var class_map = {
                 primary: ['btn-primary'],
                 success: ['btn-success'],
@@ -56,7 +54,7 @@ define([
                 warning: ['btn-warning'],
                 danger: ['btn-danger']
             };
-            this.update_mapped_classes(class_map, 'button_style', previous_trait_value);
+            this.update_mapped_classes(class_map, 'button_style');
         },
 
         events: {
