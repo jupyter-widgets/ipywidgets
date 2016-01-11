@@ -17,11 +17,13 @@ from traitlets import Unicode, CUnicode, Bytes
 class Image(DOMWidget):
     """Displays an image as a widget.
 
-    The `value` of this widget accepts a byte string.  The byte string is the raw
-    image data that you want the browser to display.  You can explicitly define
-    the format of the byte string using the `format` trait (which defaults to
-    "png")."""
+    The `value` of this widget accepts a byte string.  The byte string is the
+    raw image data that you want the browser to display.  You can explicitly
+    define the format of the byte string using the `format` trait (which
+    defaults to "png").
+    """
     _view_name = Unicode('ImageView', sync=True)
+    _model_name = Unicode('ImageModel', sync=True)
 
     # Define the custom state properties to sync with the front-end
     format = Unicode('png', sync=True)
