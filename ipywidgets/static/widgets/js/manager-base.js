@@ -156,6 +156,7 @@ define([
         }).then(function(model) {
             return model._deserialize_state(msg.content.data).then(function(state) {
                 model.set_state(state);
+                model._buffered_state_diff = {};
                 return model;
             });
         }).catch(utils.reject("Couldn't create a model.", true));
