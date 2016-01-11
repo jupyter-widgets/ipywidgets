@@ -463,13 +463,13 @@ class Widget(LoggingConfigurable):
         """Called when `IPython.display.display` is called on the widget."""
         # Show view.
         if self._view_name is not None:
-            version_widget = get_version_widget()
+            validated = validate_version()
             
             # Before the user tries to display a widget.  Validate that the
             # widget front-end is what is expected.
-            if version_widget is None:
+            if validated is None:
                 self.log.warn('Widget Javascript not detected.  It may not be installed properly.')
-            elif not version_widget.validated:
+            elif not validated:
                 self.log.warn('The installed widget Javascript is the wrong version.')
             
             self._send({"method": "display"})
@@ -479,12 +479,15 @@ class Widget(LoggingConfigurable):
         """Sends a message to the model in the front-end."""
         self.comm.send(data=msg, buffers=buffers)
 
-@register('Jupyter.__version')
-class VersionWidget(Widget):
-    version = Unicode('4.1.0dev', help="Expected front-end version", sync=True)
-    validated = Bool(False, help="Version validated by the front-end", sync=True)
+
+_version_validated = None
+def handle_version_comm_opened(comm, msg):
+    """Called when version comm is opened, because the front-end wants to 
+    validate the version."""
+    def handle_version_message(msg):
+        _version_validated = msg['content']['data']['validated']
+    comm.on_msg(handle_version_message)
+    comm.send({'version': '4.1.0dev'})
     
-def get_version_widget():
-    for widget in Widget.widgets.values():
-        if isinstance(widget, VersionWidget):
-            return widget
+def validate_version():
+    return _version_validated

@@ -24,6 +24,7 @@ define([
         ManagerBase._managers.push(this);
         
         this.comm_target_name = 'jupyter.widget';
+        this.version_comm_target_name = 'jupyter.widget.version';
         this._models = {}; /* Dictionary of model ids and model instance promises */
     };
 
@@ -224,38 +225,40 @@ define([
      * @return {Promise<Boolean>} Whether or not the versions are okay
      */
     ManagerBase.prototype.validateVersion = function() {
-        return this.new_widget({
-            model_name: 'WidgetModel',
-            widget_class: 'Jupyter.__version',
-            model_id: utils.uuid()
-        }).then((function(model) {
-            var validated = true;
-            var backendVersion = this._parseVersion(model.get('version', null));
-            if (backendVersion) {
-                var frontendVersion = this._parseVersion(version);
-                if (frontendVersion.major !== backendVersion.major) {
-                    validated = false;
-                }
-                if (frontendVersion.minor < backendVersion.minor) {
-                    validated = false;
-                }
-                if (frontendVersion.patch < backendVersion.patch) {
-                    validated = false;
-                }
-                if (frontendVersion.dev && !backendVersion.dev) {
-                    if (!(frontendVersion.patch > backendVersion.patch || 
-                    frontendVersion.minor > backendVersion.minor)) {
+        return this._create_comm(this.version_comm_target_name, undefined, {}).then((function(comm) {
+            return new Promise((function(resolve, reject) {
+                comm.on_msg((function(msg) {
+                    var validated = true;
+                    var backendVersion = this._parseVersion(msg.content.data.version);
+                    if (backendVersion) {
+                        var frontendVersion = this._parseVersion(version);
+                        if (frontendVersion.major !== backendVersion.major) {
+                            validated = false;
+                        }
+                        if (frontendVersion.minor < backendVersion.minor) {
+                            validated = false;
+                        }
+                        if (frontendVersion.patch < backendVersion.patch) {
+                            validated = false;
+                        }
+                        if (frontendVersion.dev && !backendVersion.dev) {
+                            if (!(frontendVersion.patch > backendVersion.patch || 
+                            frontendVersion.minor > backendVersion.minor)) {
+                                validated = false;
+                            }
+                        }
+                    } else {
                         validated = false;
                     }
-                }
-            } else {
-                validated = false;
-            }
-            model.set('validated', validated);
-            model.save();
-            
-            if (validated) console.info('Widget backend and frontend versions are compatible');
-            return validated;
+                    comm.send({'validated': validated});
+                    if (validated) console.info('Widget backend and frontend versions are compatible');
+                    resolve(validated);
+                }).bind(this));
+                
+                setTimeout(function() {
+                    reject(new Error('Timeout while trying to cross validate the widget frontend and backend versions.'));
+                }, 3000);
+            }).bind(this));
         }).bind(this));
     };
 

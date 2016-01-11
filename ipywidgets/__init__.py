@@ -38,8 +38,9 @@ def load_ipython_extension(ip):
 def register_comm_target(kernel=None):
     """Register the jupyter.widget comm target"""
     if kernel is None:
-        ip = get_ipython().kernel
+        kernel = get_ipython().kernel
     kernel.comm_manager.register_target('jupyter.widget', Widget.handle_comm_opened)
+    kernel.comm_manager.register_target('jupyter.widget.version', handle_version_comm_opened)
 
 # deprecated alias
 handle_kernel = register_comm_target
