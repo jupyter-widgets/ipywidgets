@@ -1,4 +1,4 @@
-"""SelectionContainer class.  
+"""SelectionContainer class.
 
 Represents a multipage container that can be used to group other widgets into
 pages.
@@ -46,9 +46,11 @@ class _SelectionContainer(Box):
 class Accordion(_SelectionContainer):
     """Displays children each on a separate accordion page."""
     _view_name = Unicode('AccordionView', sync=True)
+    _model_name = Unicode('AccordionModel', sync=True)
 
 
 @register('Jupyter.Tab')
 class Tab(_SelectionContainer):
     """Displays children each on a separate accordion tab."""
     _view_name = Unicode('TabView', sync=True)
+    _model_name = Unicode('TabModel', sync=True)
