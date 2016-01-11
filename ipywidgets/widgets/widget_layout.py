@@ -29,6 +29,7 @@ class Layout(Widget):
     align_items = CUnicode(sync=True)
     align_self = CUnicode(sync=True)
     bottom = CUnicode(sync=True)
+    border = CUnicode(sync=True)
     display = CUnicode(sync=True)
     flex = CUnicode(sync=True)
     flex_flow = CUnicode(sync=True)
