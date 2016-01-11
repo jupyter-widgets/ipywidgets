@@ -7,8 +7,21 @@ if (typeof define !== 'function') { var define = require('./requirejs-shim')(mod
 define([
     "./widget",
     "jquery",
+    "underscore",
     "bootstrap",
-], function(widget, $){
+], function(widget, $, _) {
+
+    var ButtonModel = widget.DOMWidgetModel.extend({
+        defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
+            description: "",
+            tooltip: "",
+            disabled: false,
+            icon: "",
+            button_style: "",
+            _view_name: "ButtonView",
+            _model_name: "ButtonModel"
+        }),
+    });
 
     var ButtonView = widget.DOMWidgetView.extend({
         render: function() {
@@ -23,12 +36,12 @@ define([
 
             this.update(); // Set defaults.
         },
-        
+
         update: function() {
             /**
              * Update the contents of this view
              *
-             * Called when the model is changed. The model may have been 
+             * Called when the model is changed. The model may have been
              * changed by another view or by a state update from the back-end.
              */
             this.$el.prop("disabled", this.model.get("disabled"));
@@ -61,7 +74,7 @@ define([
             // Dictionary of events and their handlers.
             'click': '_handle_click',
         },
-        
+
         _handle_click: function() {
             /**
              * Handles when the button is clicked.
@@ -71,6 +84,7 @@ define([
     });
 
     return {
-        'ButtonView': ButtonView,
+        ButtonView: ButtonView,
+        ButtonModel: ButtonModel
     };
 });

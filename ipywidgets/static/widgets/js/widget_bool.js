@@ -99,7 +99,7 @@ define([
             _model_name: "ToggleButtonModel",
             tooltip: "",
             icon: "",
-            button_style: "primary",
+            button_style: "",
         }),
     });
 

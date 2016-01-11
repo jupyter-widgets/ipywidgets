@@ -29,8 +29,8 @@ class Button(DOMWidget):
        font-awesome icon name
     """
     _view_name = Unicode('ButtonView', sync=True)
+    _model_name = Unicode('ButtonModel', sync=True)
 
-    # Keys
     description = Unicode('', help="Button label.", sync=True)
     tooltip = Unicode(help="Tooltip caption of the button.", sync=True)
     disabled = Bool(False, help="Enable or disable user changes.", sync=True)
@@ -41,7 +41,6 @@ class Button(DOMWidget):
         sync=True, help="""Use a predefined styling for the button.""")
 
     def __init__(self, **kwargs):
-        """Constructor"""
         super(Button, self).__init__(**kwargs)
         self._click_handlers = CallbackDispatcher()
         self.on_msg(self._handle_button_msg)
