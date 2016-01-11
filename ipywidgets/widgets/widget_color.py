@@ -15,7 +15,7 @@ from traitlets import Unicode, Bool
 @register('Jupyter.ColorPicker')
 class ColorPicker(DOMWidget):
     value = Color('black', sync=True)
-    short = Bool(sync=True)
+    concise = Bool(sync=True)
     description = Unicode(sync=True)
 
     _view_name = Unicode('ColorPickerView', sync=True)
