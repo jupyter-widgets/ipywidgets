@@ -4,17 +4,19 @@
   "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
   "main": "index.js",
   "scripts": {
-    "prepublish": "browserify -g node-lessify index.js --outfile index.built.js --debug",
+    "prepublish": "webpack index.js index.built.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "IPython",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "browserify": "^11.2.0",
-    "jupyter-js-widgets": "file:../../../ipywidgets",
-    "node-lessify": "^0.1.1"
+    "jupyter-js-widgets": "file:../../../ipywidgets"
   },
   "devDependencies": {
-    "bower": "^1.7.0"
+    "bower": "^1.7.0",
+    "css-loader": "^0.23.1",
+    "file-loader": "^0.8.5",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.12.10"
   }
 }
