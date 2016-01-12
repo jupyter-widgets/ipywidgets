@@ -31,7 +31,7 @@ define([
     });
 
     return {
-        'FloatSliderView': FloatSliderView,
-        'FloatTextView': FloatTextView,
+        FloatSliderView: FloatSliderView,
+        FloatTextView: FloatTextView,
     };
 });

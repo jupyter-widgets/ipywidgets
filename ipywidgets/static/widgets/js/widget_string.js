@@ -7,10 +7,28 @@ if (typeof define !== 'function') { var define = require('./requirejs-shim')(mod
 define([
     "./widget",
     "jquery",
+    "underscore",
     "bootstrap",
-], function(widget, $) {
+], function(widget, $, _) {
 
-    var HTMLView = widget.DOMWidgetView.extend({  
+    var StringModel = widget.DOMWidgetModel.extend({
+        defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
+            value: "",
+            disabled: false,
+            description: "",
+            placeholder: "",
+            _model_name: "StringModel"
+        }),
+    });
+
+    var HTMLModel = StringModel.extend({
+        defaults: _.extend({}, StringModel.prototype.defaults, {
+            _view_name: "HTMLView",
+            _model_name: "HTMLModel"
+        }),
+    });
+
+    var HTMLView = widget.DOMWidgetView.extend({
         render : function() {
             /**
              * Called when view is rendered.
@@ -19,12 +37,12 @@ define([
                 .addClass('ipy-widget widget-html');
             this.update(); // Set defaults.
         },
-        
+
         update : function() {
             /**
              * Update the contents of this view
              *
-             * Called when the model is changed.  The model may have been 
+             * Called when the model is changed.  The model may have been
              * changed by another view or by a state update from the back-end.
              */
             this.$el.html(this.model.get('value')); // CAUTION! .html(...) CALL MANDATORY!!!
@@ -32,8 +50,14 @@ define([
         },
     });
 
+    var LatexModel = StringModel.extend({
+        defaults: _.extend({}, StringModel.prototype.defaults, {
+            _view_name: "LatexView",
+            _model_name: "LatexModel"
+        }),
+    });
 
-    var LatexView = widget.DOMWidgetView.extend({  
+    var LatexView = widget.DOMWidgetView.extend({
         render : function() {
             /**
              * Called when view is rendered.
@@ -42,21 +66,27 @@ define([
                 .addClass('ipy-widget widget-latex');
             this.update(); // Set defaults.
         },
-        
+
         update : function() {
             /**
              * Update the contents of this view
              *
-             * Called when the model is changed.  The model may have been 
+             * Called when the model is changed.  The model may have been
              * changed by another view or by a state update from the back-end.
              */
             this.typeset(this.$el, this.model.get('value'));
             return LatexView.__super__.update.apply(this);
-        }, 
+        },
     });
 
+    var TextareaModel = StringModel.extend({
+        defaults: _.extend({}, StringModel.prototype.defaults, {
+            _view_name: "TextareaView",
+            _model_name: "TextareaModel"
+        }),
+    });
 
-    var TextareaView = widget.DOMWidgetView.extend({  
+    var TextareaView = widget.DOMWidgetView.extend({
         render: function() {
             /**
              * Called when view is rendered.
@@ -134,12 +164,12 @@ define([
             "paste textarea" : "handleChanging",
             "cut textarea"   : "handleChanging"
         },
-        
-        handleChanging: function(e) { 
+
+        handleChanging: function(e) {
             /**
              * Handles and validates user input.
              *
-             * Calling model.set will trigger all of the other views of the 
+             * Calling model.set will trigger all of the other views of the
              * model to update.
              */
             this.model.set('value', e.target.value, {updated_view: this});
@@ -147,8 +177,14 @@ define([
         },
     });
 
+    var TextModel = StringModel.extend({
+        defaults: _.extend({}, StringModel.prototype.defaults, {
+            _view_name: "TextView",
+            _model_name: "TextModel"
+        }),
+    });
 
-    var TextView = widget.DOMWidgetView.extend({  
+    var TextView = widget.DOMWidgetView.extend({
         render: function() {
             /**
              * Called when view is rendered.
@@ -225,7 +261,7 @@ define([
             this.touch();
         },
         
-        handleKeypress: function(e) { 
+        handleKeypress: function(e) {
             /**
              * Handles text submition
              */
@@ -237,7 +273,7 @@ define([
             }
         },
 
-        handleBlur: function(e) { 
+        handleBlur: function(e) {
             /**
              * Prevent a blur from firing if the blur was not user intended.
              * This is a workaround for the return-key focus loss bug.
@@ -251,7 +287,7 @@ define([
             }
         },
 
-        handleFocusOut: function(e) { 
+        handleFocusOut: function(e) {
             /**
              * Prevent a blur from firing if the blur was not user intended.
              * This is a workaround for the return-key focus loss bug.
@@ -265,9 +301,14 @@ define([
     });
 
     return {
-        'HTMLView': HTMLView,
-        'LatexView': LatexView,
-        'TextareaView': TextareaView,
-        'TextView': TextView,
+        StringModel: StringModel,
+        HTMLView: HTMLView,
+        HTMLModel: HTMLModel,
+        LatexView: LatexView,
+        LatexModel: LatexModel,
+        TextareaView: TextareaView,
+        TextareaModel: TextareaModel,
+        TextView: TextView,
+        TextModel: TextModel,
     };
 });

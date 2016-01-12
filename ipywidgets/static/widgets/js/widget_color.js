@@ -6,9 +6,20 @@ if (typeof define !== 'function') { var define = require('./requirejs-shim')(mod
 
 define([
     "./widget",
-], function(widget) {
+    "underscore",
+], function(widget, _) {
 
-    var ColorPicker = widget.DOMWidgetView.extend({
+    var ColorPickerModel = widget.DOMWidgetModel.extend({
+        defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
+            value: "black",
+            description: "",
+            concise: false,
+            _model_name: "ColorPickerModel",
+            _view_name: "ColorPickerView",
+        }),
+    });
+
+    var ColorPickerView = widget.DOMWidgetView.extend({
         render: function() {
             this.$el.addClass("ipy-widget widget-hbox widget-colorpicker");
 
@@ -31,11 +42,11 @@ define([
 
             this.listenTo(this.model, "change:value", this._update_value, this);
             this.listenTo(this.model, "change:description", this._update_description, this);
-            this.listenTo(this.model, "change:short", this._update_short, this);
+            this.listenTo(this.model, "change:concise", this._update_concise, this);
             this.$colorpicker.on("change", this._picker_change.bind(this));
             this.$textbox.on("change", this._text_change.bind(this));
 
-            this._update_short();
+            this._update_concise();
             this._update_value();
             this._update_description();
         },
@@ -55,14 +66,14 @@ define([
                 this.$label.show();
             }
         },
-        _update_short: function() {
-            var short = this.model.get('short');
-            if (short) {
-                this.$el.addClass('short');
+        _update_concise: function() {
+            var concise = this.model.get("concise");
+            if (concise) {
+                this.$el.addClass("concise");
                 this.$colorpicker.removeClass("input-group-addon");
                 this.$textbox.hide();
             } else {
-                this.$el.removeClass('short');
+                this.$el.removeClass("concise");
                 this.$colorpicker.addClass("input-group-addon");
                 this.$textbox.show();
             }
@@ -103,6 +114,7 @@ define([
     };
 
     return {
-        ColorPicker: ColorPicker,
+        ColorPickerModel: ColorPickerModel,
+        ColorPickerView: ColorPickerView,
     };
 });

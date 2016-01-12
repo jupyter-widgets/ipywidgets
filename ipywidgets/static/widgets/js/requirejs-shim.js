@@ -11,13 +11,14 @@ function requireLocalFiles() {
     require('./utils');
     require('./widget');
     require('./widget_int');
+    require('./widget_box');
     require('./manager-base');
     require('../css/widgets.min.css');
 }
 
 module.exports = function createDefine(targetModule) {
     var amdefine = require('amdefine')(targetModule, require);
-    
+
     return function define() {
         var args = Array.prototype.slice.call(arguments);
         if (args.length > 1) {

@@ -12,6 +12,36 @@ define([
     "jquery-ui"
 ], function(widget, _, $) {
 
+    var IntModel = widget.DOMWidgetModel.extend({
+        defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
+            _model_name: "IntModel",
+            value: 0,
+            disabled: false,
+            description: ""
+        }),
+    });
+
+    var BoundedIntModel = IntModel.extend({
+        defaults: _.extend({}, IntModel.prototype.defaults, {
+            _model_name: "BoundedIntModel",
+            step: 1,
+            max: 100,
+            min: 0
+        }),
+    });
+
+    var IntSliderModel = BoundedIntModel.extend({
+        defaults: _.extend({}, BoundedIntModel.prototype.defaults, {
+            _model_name: "IntSliderModel",
+            _view_name: "IntSliderView",
+            orientation: "horizontal",
+            _range: false,
+            readout: true,
+            slider_color: null,
+            continuous_update: true
+        }),
+    });
+
     var IntSliderView = widget.DOMWidgetView.extend({
         render : function() {
             /**
@@ -27,7 +57,7 @@ define([
             this.$slider = $('<div />')
                 .slider({})
                 .addClass('slider');
-            // Put the slider in a container 
+            // Put the slider in a container
             this.$slider_container = $('<div />')
                 .addClass('slider-container')
                 .append(this.$slider);
@@ -41,7 +71,7 @@ define([
                 
             this.listenTo(this.model, 'change:slider_handleTextChangecolor', function(sender, value) {
                 this.$slider.find('a').css('background', value);
-            }, this);            
+            }, this);
             this.listenTo(this.model, 'change:description', function(sender, value) {
                 this.updateDescription();
             }, this);
@@ -336,8 +366,14 @@ define([
         },
     });
 
+    var IntTextModel = IntModel.extend({
+        defaults: _.extend({}, IntModel.prototype.defaults, {
+            _model_name: "IntTextModel",
+            _view_name: "IntTextView"
+        }),
+    });
 
-    var IntTextView = widget.DOMWidgetView.extend({    
+    var IntTextView = widget.DOMWidgetView.extend({
         render : function() {
             /**
              * Called when view is rendered.
@@ -352,7 +388,7 @@ define([
                 .addClass('form-control')
                 .addClass('widget-numeric-text')
                 .appendTo(this.$el);
-                
+
             this.listenTo(this.model, 'change:description', function(sender, value) {
                 this.updateDescription();
             }, this);
@@ -412,9 +448,9 @@ define([
 
             // Fires only when control is validated or looses focus.
             "change input" : "handleChanged"
-        }, 
+        },
         
-        handleChanging: function(e) { 
+        handleChanging: function(e) {
             /**
              * Handles and validates user input.
              *
@@ -443,15 +479,15 @@ define([
                 
                 // Apply the value if it has changed.
                 if (numericalValue != this.model.get('value')) {
-            
-                    // Calling model.set will trigger all of the other views of the 
+
+                    // Calling model.set will trigger all of the other views of the
                     // model to update.
                     this.model.set('value', numericalValue, {updated_view: this});
                     this.touch();
                 }
             }
         },
-        
+
         handleChanged: function(e) {
             /**
              * Applies validated input.
@@ -464,6 +500,14 @@ define([
         _parse_value: parseInt
     });
 
+    var ProgressModel = BoundedIntModel.extend({
+        defaults: _.extend({}, BoundedIntModel.prototype.defaults, {
+            _model_name: "ProgressModel",
+            _view_name: "ProgressView",
+            orientation: "horisontal",
+            bar_style: ""
+        }),
+    });
 
     var ProgressView = widget.DOMWidgetView.extend({
         render : function() {
@@ -487,9 +531,9 @@ define([
                     'bottom': 0, 'left': 0,
                 })
                 .appendTo(this.$progress);
-            
+
             // Set defaults.
-            this.update(); 
+            this.update();
             this.updateDescription();
            
             this.listenTo(this.model, "change:bar_style", this.update_bar_style, this);
@@ -507,14 +551,14 @@ define([
             } else {
                 this.typeset(this.$label, description);
                 this.$label.show();
-            }    
+            }
         },
         
         update : function() {
             /**
              * Update the contents of this view
              *
-             * Called when the model is changed.  The model may have been 
+             * Called when the model is changed.  The model may have been
              * changed by another view or by a state update from the back-end.
              */
             var value = this.model.get('value');
@@ -544,7 +588,7 @@ define([
                 });
             }
             return ProgressView.__super__.update.apply(this);
-        }, 
+        },
 
         update_bar_style: function() {
             var class_map = {
@@ -560,7 +604,7 @@ define([
             /**
              * Set a css attr of the widget view.
              */
-            if (name == 'color') {                
+            if (name == "color") {
                 this.$bar.css('background', value);
             } else if (name.substring(0, 6) == 'border' || name == 'background') {
                 this.$progress.css(name, value);
@@ -571,8 +615,13 @@ define([
     });
 
     return {
-        'IntSliderView': IntSliderView, 
-        'IntTextView': IntTextView,
-        'ProgressView': ProgressView,
+        IntModel: IntModel,
+        BoundedIntModel: BoundedIntModel,
+        IntSliderModel: IntSliderModel,
+        IntSliderView: IntSliderView,
+        IntTextModel: IntTextModel,
+        IntTextView: IntTextView,
+        ProgressModel: ProgressModel,
+        ProgressView: ProgressView,
     };
 });

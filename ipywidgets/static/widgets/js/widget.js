@@ -39,6 +39,15 @@ define(["./utils",
     };
 
     var WidgetModel = Backbone.Model.extend({
+
+        defaults: {
+            _model_module: null,
+            _model_name: "WidgetModel",
+            _view_module: "",
+            _view_name: null,
+            msg_throttle: 3
+        },
+
         constructor: function (widget_manager, model_id, comm) {
             /**
              * Constructor
@@ -240,7 +249,7 @@ define(["./utils",
             // Handle when a widget is updated via the python side.
             this.state_lock = state;
             try {
-                WidgetModel.__super__.set.call(this, state);
+                this.set(state);
                 if (this._first_state) {
                     this.trigger('ready', this);
                     this._first_state = false;
@@ -305,10 +314,16 @@ define(["./utils",
              */
             var return_value = WidgetModel.__super__.set.apply(this, arguments);
 
-            // Backbone only remembers the diff of the most recent set()
-            // operation.  Calling set multiple times in a row results in a
-            // loss of diff information.  Here we keep our own running diff.
-            this._buffered_state_diff = _.extend(this._buffered_state_diff, this.changedAttributes() || {});
+            if (!this._first_state) {
+                // Backbone only remembers the diff of the most recent set()
+                // operation.  Calling set multiple times in a row results in a
+                // loss of diff information.  Here we keep our own running diff.
+                //
+                // However, we don't buffer the initial state comming from the
+                // backend or the default values specified in `defaults`.
+                // 
+                this._buffered_state_diff = _.extend(this._buffered_state_diff, this.changedAttributes() || {});
+            }
             return return_value;
         },
 
@@ -548,7 +563,11 @@ define(["./utils",
         }
     };
 
-    var DOMWidgetModel = WidgetModel.extend({}, {
+    var DOMWidgetModel = WidgetModel.extend({
+        defaults: _.extend({}, WidgetModel.prototype.defaults, {
+            layout: undefined,
+        }),
+    }, {
         serializers: _.extend({
             layout: {deserialize: unpack_models},
         }, WidgetModel.serializers),
@@ -830,7 +849,7 @@ define(["./utils",
             });
         },
     });
-    
+
     managerBase.ManagerBase.register_widget_model('WidgetModel', WidgetModel);
 
     // For backwards compatibility.
@@ -838,16 +857,16 @@ define(["./utils",
     var DOMWidgetView = WidgetView.extend(DOMWidgetViewMixin);
 
     var widget = {
-        'unpack_models': unpack_models,
-        'WidgetModel': WidgetModel,
-        'WidgetViewMixin': WidgetViewMixin,
-        'DOMWidgetViewMixin': DOMWidgetViewMixin,
-        'ViewList': ViewList,
-        'DOMWidgetModel': DOMWidgetModel,
+        unpack_models: unpack_models,
+        WidgetModel: WidgetModel,
+        WidgetViewMixin: WidgetViewMixin,
+        DOMWidgetViewMixin: DOMWidgetViewMixin,
+        ViewList: ViewList,
+        DOMWidgetModel: DOMWidgetModel,
 
         // For backwards compatibility.
-        'WidgetView': WidgetView,
-        'DOMWidgetView': DOMWidgetView,
+        WidgetView: WidgetView,
+        DOMWidgetView: DOMWidgetView,
     };
 
     return widget;

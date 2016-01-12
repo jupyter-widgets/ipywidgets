@@ -17,7 +17,8 @@ class Button(Widget):
     value = Float(min=0.0, max=1.0, read_only=True, sync=True)
     pressed = Bool(read_only=True, sync=True)
 
-    _view_name = Unicode('ControllerButton', sync=True)
+    _view_name = Unicode('ControllerButtonView', sync=True)
+    _model_name = Unicode('ControllerButtonModel', sync=True)
 
 
 @register('Jupyter.ControllerAxis')
@@ -25,7 +26,8 @@ class Axis(Widget):
     """Represents a gamepad or joystick axis"""
     value = Float(min=-1.0, max=1.0, read_only=True, sync=True)
 
-    _view_name = Unicode('ControllerAxis', sync=True)
+    _view_name = Unicode('ControllerAxisView', sync=True)
+    _model_name = Unicode('ControllerAxisModel', sync=True)
 
 
 @register('Jupyter.Controller')
@@ -47,5 +49,5 @@ class Controller(DOMWidget):
                 **widget_serialization)
 
     _view_name = Unicode('ControllerView', sync=True)
-    _model_name = Unicode('Controller', sync=True)
+    _model_name = Unicode('ControllerModel', sync=True)
 

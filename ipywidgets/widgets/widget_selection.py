@@ -187,9 +187,13 @@ class _MultipleSelection(_Selection):
 
 @register('Jupyter.ToggleButtons')
 class ToggleButtons(_Selection):
-    """Group of toggle buttons that represent an enumeration.  Only one toggle
-    button can be toggled at any point in time."""
+    """Group of toggle buttons that represent an enumeration.
+
+    Only one toggle button can be toggled at any point in time.
+    """
     _view_name = Unicode('ToggleButtonsView', sync=True)
+    _model_name = Unicode('ToggleButtonsModel', sync=True)
+
     tooltips = List(Unicode(), sync=True)
     icons = List(Unicode(), sync=True)
 
@@ -203,6 +207,7 @@ class ToggleButtons(_Selection):
 class Dropdown(_Selection):
     """Allows you to select a single item from a dropdown."""
     _view_name = Unicode('DropdownView', sync=True)
+    _model_name = Unicode('DropdownModel', sync=True)
 
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''],
@@ -212,21 +217,28 @@ class Dropdown(_Selection):
 
 @register('Jupyter.RadioButtons')
 class RadioButtons(_Selection):
-    """Group of radio buttons that represent an enumeration.  Only one radio
-    button can be toggled at any point in time."""
+    """Group of radio buttons that represent an enumeration.
+
+    Only one radio button can be toggled at any point in time.
+    """
     _view_name = Unicode('RadioButtonsView', sync=True)
+    _modelname = Unicode('RadioButtonsModel', sync=True)
 
 
 @register('Jupyter.Select')
 class Select(_Selection):
     """Listbox that only allows one item to be selected at any given time."""
     _view_name = Unicode('SelectView', sync=True)
+    _model_name = Unicode('SelectModel', sync=True)
 
 
 @register('Jupyter.SelectMultiple')
 class SelectMultiple(_MultipleSelection):
     """Listbox that allows many items to be selected at any given time.
+
     Despite their names, inherited from ``_Selection``, the currently chosen
     option values, ``value``, or their labels, ``selected_labels`` must both be
-    updated with a list-like object."""
+    updated with a list-like object.
+    """
     _view_name = Unicode('SelectMultipleView', sync=True)
+    _model_name = Unicode('SelectMultipleModel', sync=True)

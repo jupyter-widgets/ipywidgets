@@ -71,6 +71,7 @@ class Proxy(Widget):
 class PlaceProxy(Proxy):
     """Renders the child widget at the specified selector."""
     _view_name = Unicode('PlaceProxyView', sync=True)
+    _model_name = Unicode('PlaceProxyModel', sync=True)
     selector = Unicode(sync=True)
 
 
@@ -93,6 +94,7 @@ def HBox(*pargs, **kwargs):
 class FlexBox(Box): # TODO: Deprecated in 5.0 (entire class)
     """Displays multiple widgets using the flexible box model."""
     _view_name = Unicode('FlexBoxView', sync=True)
+    _model_name = Unicode('FlexBoxModel', sync=True)
     orientation = CaselessStrEnum(values=['vertical', 'horizontal'], default_value='vertical', sync=True)
     flex = Int(0, sync=True, help="""Specify the flexible-ness of the model.""")
     def _flex_changed(self, name, old, new):

@@ -7,27 +7,29 @@
 define([
     "./widget",
     "jquery",
-    'notebook/js/outputarea',
-], function(widget, $, outputarea) {
-    'use strict';
+    "notebook/js/outputarea",
+    "underscore",
+], function(widget, $, outputarea, _) {
+    "use strict";
+
+    var OutputModel = widget.DOMWidgetModel.extend({
+        defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
+            _model_name: "OutputModel",
+            _view_name: "OutputView"
+        }),
+    });
 
     var OutputView = widget.DOMWidgetView.extend({
-        /**
-         * Public constructor
-         */
         initialize: function (parameters) {
             OutputView.__super__.initialize.apply(this, [parameters]);
             this.listenTo(this.model, 'msg:custom', this._handle_route_msg, this);
         },
 
-        /**
-         * Called when view is rendered.
-         */
         render: function(){
             this.output_area = new outputarea.OutputArea({
-                selector: this.$el, 
-                prompt_area: false, 
-                events: this.model.widget_manager.notebook.events, 
+                selector: this.$el,
+                prompt_area: false,
+                events: this.model.widget_manager.notebook.events,
                 keyboard_manager: this.model.widget_manager.keyboard_manager });
 
             // Make output area reactive.
@@ -45,7 +47,7 @@ define([
             // Set initial contents.
             this.output_area.element.html(this.model.get('contents'));
         },
-        
+
         /**
          * Handles re-routed iopub messages.
          */
@@ -62,6 +64,7 @@ define([
     });
 
     return {
-        'OutputView': OutputView,
+        OutputView: OutputView,
+        OutputModel: OutputModel,
     };
 });
