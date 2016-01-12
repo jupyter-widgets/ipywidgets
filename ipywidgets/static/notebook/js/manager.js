@@ -5,10 +5,11 @@ define([
     "underscore",
     "backbone",
     "services/kernels/comm",
-    "jupyter-js-widgets"
-], function (_, Backbone, comm, widgets) {
+    "jupyter-js-widgets",
+    "../../components/html2canvas/build/html2canvas"
+], function (_, Backbone, comm, widgets, html2canvas) {
     "use strict";
-
+    
     //--------------------------------------------------------------------
     // WidgetManager class
     //--------------------------------------------------------------------
@@ -40,6 +41,7 @@ define([
                 return Promise.all(comms.map(function(comm) {
                     var update_promise = new Promise(function(resolve, reject) {
                         comm.on_msg(function (msg) {
+                            
                             // A suspected response was received, check to see if
                             // it's a state update.  If so, resolve.
                             if (msg.content.data.method === 'update') {
@@ -50,6 +52,7 @@ define([
                             }
                         });
                     });
+                    
                     comm.send({
                         method: 'request_state'
                     }, that.callbacks());
@@ -82,15 +85,20 @@ define([
         });
 
         // Setup state saving code.
-        this.notebook.events.on('before_save.Notebook', function() {
+        this.notebook.events.on('before_save.Notebook', (function() {
+            
+            // Append snapshots of the widgets to the notebook's state before
+            // saving the notebook.
+            this.prependSnapshots();
+            
             var save_callback = WidgetManager._save_callback;
             var options = WidgetManager._get_state_options;
             if (save_callback) {
-                that.get_state(options).then(function(state) {
-                    save_callback.call(that, state);
-                }).catch(widgets.reject('Could not call widget save state callback.', true));
+                this.get_state(options).then((function(state) {
+                    save_callback.call(this, state);
+                }).bind(this)).catch(widgets.reject('Could not call widget save state callback.', true));
             }
-        });
+        }).bind(this));
 
         // Validate the version requested by the backend.
         var validate = (function validate() {
@@ -108,6 +116,13 @@ define([
         this.notebook.events.on('kernel_connected.Kernel', function(event, data) {
             validate();
         });
+        
+        // Delete the snapshots when the notebook has saved, failed to save, is
+        // loaded from disk, and when the widget manager is constructed.
+        this.notebook.events.on('notebook_saved.Notebook', this.deleteSnapshots.bind(this));
+        this.notebook.events.on('notebook_save_failed.Notebook', this.deleteSnapshots.bind(this));
+        this.notebook.events.on('notebook_loaaded.Notebook', this.deleteSnapshots.bind(this));
+        this.deleteSnapshots();
     };
     WidgetManager.prototype = Object.create(widgets.ManagerBase.prototype);
 
@@ -193,6 +208,9 @@ define([
                 }
             }
         }
+    
+        // Update the widget area snapshots.
+        this.updateSnapshots();
     };
 
     WidgetManager.prototype.display_model = function(msg, model, options) {
@@ -264,6 +282,96 @@ define([
         // Not triggered by a cell or widget (no get_cell callback
         // exists).
         return null;
+    };
+    
+    /**
+     * Updates rendered snapshots of all of the widget areas in the notebook.
+     * @return {Promise<void>} success
+     */
+    WidgetManager.prototype.updateSnapshots = function() {
+        var cells = Jupyter.notebook.get_cells();
+        return Promise.all(cells.map((function(cell) {
+            var widgetSubarea = cell.element[0].querySelector(".widget-subarea");
+            if (widgetSubarea.children.length > 0) {
+                return new Promise((function(resolve) {
+                    html2canvas(widgetSubarea, {
+                        onrendered: function(canvas) {
+                            // Save the screenshot of the canvas to the widget-subarea
+                            var mimetype = "image/png";
+                            widgetSubarea.widgetSnapshot = {
+                                mimetype: mimetype,
+                                data: canvas.toDataURL(mimetype)
+                            };
+                            
+                            resolve();
+                        }
+                    });
+                }).bind(this));
+            } else {
+                if (widgetSubarea.widgetSnapshot) {
+                    delete widgetSubarea.widgetSnapshot;
+                }
+            }
+        }).bind(this)));
+    };
+    
+    /**
+     * Render the widget views that are live as images and prepend them as
+     * outputs.
+     *
+     * Note: This function must be synchronous, in order to work with the 
+     * notebook's save machinery.
+     */
+    WidgetManager.prototype.prependSnapshots = function() {
+        var cells = Jupyter.notebook.get_cells();
+        cells.forEach((function(cell) {
+            var widgetSubarea = cell.element[0].querySelector(".widget-subarea");
+            if (widgetSubarea.children.length > 0 && widgetSubarea.widgetSnapshot) {
+                
+                // Get the last screenshot of the widget sub-area
+                var mimetype = widgetSubarea.widgetSnapshot.mimetype;
+                var screenshot = widgetSubarea.widgetSnapshot.data;
+                
+                // Create a mime bundle for the screenshot. Remove
+                // URL information, so only the b64 encoded data 
+                // exists, because that's what the notebook likes.
+                var data = {};
+                data[mimetype] = screenshot.split(',').slice(-1)[0];
+                
+                // Create an output for the screenshot.
+                var output = {
+                    data: data,
+                    output_type: "display_data",
+                    metadata: {isWidgetSnapshot: true}
+                };
+                
+                // Move the new output to the top, so it appears
+                // where the widget area appears.
+                var outputState = cell.output_area.outputs;
+                outputState.splice(0,0,output);
+                cell.output_area.outputs = outputState;
+            }
+        }).bind(this));
+    };
+    
+    /**
+     * Remove the outputs that rendered widget view's.
+     *
+     * Note: This function must be synchronous, in order to work with the 
+     * notebook's save machinery.
+     */
+    WidgetManager.prototype.deleteSnapshots = function() {
+        var cells = Jupyter.notebook.get_cells();
+        cells.forEach((function(cell) {
+            
+            // Remove the outputs with isWidgetSnapshot: true.
+            var outputState = cell.output_area.toJSON();
+            outputState = outputState.filter((function(output) {
+                return !(output.metadata && output.metadata.isWidgetSnapshot);
+            }).bind(this));
+            cell.output_area.clear_output();
+            cell.output_area.fromJSON(outputState);
+        }).bind(this));
     };
 
     WidgetManager.prototype._create_comm = function(comm_target_name, model_id, metadata) {
