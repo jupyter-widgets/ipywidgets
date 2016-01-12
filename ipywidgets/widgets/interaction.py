@@ -86,7 +86,7 @@ def _widget_abbrev(o):
         # of tuples to specify slider widget attributes. This will be removed
         # in ipywidgets 6.0.
         if len(o) in [2, 3] and all(isinstance(x, Real) for x in o):
-            warn("For Sliders, use a tuple", DeprecationWarning)
+            warn("For Sliders, use a tuple: %s" % (tuple(o),), DeprecationWarning)
             return _widget_abbrev(tuple(o))
         # --------------------------------------------------------------------
         return Dropdown(options=[unicode_type(k) for k in o])
@@ -96,7 +96,7 @@ def _widget_abbrev(o):
         # Handle deprecated behavior of using tuples for selection widget. This
         # will be removed in ipywidgets 6.0.
         if any(not isinstance(x, Real) for x in o):
-            warn("For Selection widgets, use a list", DeprecationWarning)
+            warn("For Selection widgets, use a list %s" %(list(o),), DeprecationWarning)
             return Dropdown(options=[unicode_type(k) for k in o])
         # --------------------------------------------------------------------
         if _matches(o, (Real, Real)):
