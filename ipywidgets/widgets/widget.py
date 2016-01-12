@@ -13,7 +13,7 @@ from IPython.core.getipython import get_ipython
 from ipykernel.comm import Comm
 from traitlets.config import LoggingConfigurable
 from traitlets.utils.importstring import import_item
-from traitlets import Unicode, Dict, Instance, List, Int, Set, Bytes, Bool
+from traitlets import Unicode, Dict, Instance, List, Int, Set, Bytes
 from ipython_genutils.py3compat import string_types, PY3
 
 
