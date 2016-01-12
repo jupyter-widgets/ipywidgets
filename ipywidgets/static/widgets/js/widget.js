@@ -249,7 +249,7 @@ define(["./utils",
             // Handle when a widget is updated via the python side.
             this.state_lock = state;
             try {
-                WidgetModel.__super__.set.call(this, state);
+                this.set(state);
                 if (this._first_state) {
                     this.trigger('ready', this);
                     this._first_state = false;
@@ -314,10 +314,16 @@ define(["./utils",
              */
             var return_value = WidgetModel.__super__.set.apply(this, arguments);
 
-            // Backbone only remembers the diff of the most recent set()
-            // operation.  Calling set multiple times in a row results in a
-            // loss of diff information.  Here we keep our own running diff.
-            this._buffered_state_diff = _.extend(this._buffered_state_diff, this.changedAttributes() || {});
+            if (!this._first_state) {
+                // Backbone only remembers the diff of the most recent set()
+                // operation.  Calling set multiple times in a row results in a
+                // loss of diff information.  Here we keep our own running diff.
+                //
+                // However, we don't buffer the initial state comming from the
+                // backend or the default values specified in `defaults`.
+                // 
+                this._buffered_state_diff = _.extend(this._buffered_state_diff, this.changedAttributes() || {});
+            }
             return return_value;
         },
 
