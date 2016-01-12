@@ -94,6 +94,23 @@ define([
                 }).catch(utils.reject('Could not call widget save state callback.', true));
             }
         });
+        
+        // Validate the version requested by the backend.
+        var validate = (function validate() {
+            this.validateVersion().then(function(valid) {
+                if (!valid) {
+                    console.warn('Widget frontend version does not match the backend.');
+                }
+            }).catch(function(err) {
+                console.error('Could not cross validate the widget frontend and backend versions.', err);
+            });
+        }).bind(this);
+        validate();
+        
+        // Revalidate the version when a new kernel connects.
+        this.notebook.events.on('kernel_connected.Kernel', function(event, data) {
+            validate();
+        });
     };
     WidgetManager.prototype = Object.create(managerBase.ManagerBase.prototype);
 

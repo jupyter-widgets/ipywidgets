@@ -160,7 +160,6 @@ class Widget(LoggingConfigurable):
     msg_throttle = Int(3, sync=True, help="""Maximum number of msgs the
         front-end can send before receiving an idle msg from the back-end.""")
 
-    version = Int(0, sync=True, help="""Widget's version""")
     keys = List()
     def _keys_default(self):
         return [name for name in self.traits(sync=True)]
@@ -464,9 +463,31 @@ class Widget(LoggingConfigurable):
         """Called when `IPython.display.display` is called on the widget."""
         # Show view.
         if self._view_name is not None:
+            validated = validate_version()
+            
+            # Before the user tries to display a widget.  Validate that the
+            # widget front-end is what is expected.
+            if validated is None:
+                self.log.warn('Widget Javascript not detected.  It may not be installed properly.')
+            elif not validated:
+                self.log.warn('The installed widget Javascript is the wrong version.')
+            
             self._send({"method": "display"})
             self._handle_displayed(**kwargs)
 
     def _send(self, msg, buffers=None):
         """Sends a message to the model in the front-end."""
         self.comm.send(data=msg, buffers=buffers)
+
+
+_version_validated = None
+def handle_version_comm_opened(comm, msg):
+    """Called when version comm is opened, because the front-end wants to 
+    validate the version."""
+    def handle_version_message(msg):
+        _version_validated = msg['content']['data']['validated']
+    comm.on_msg(handle_version_message)
+    comm.send({'version': '4.1.0dev'})
+    
+def validate_version():
+    return _version_validated
