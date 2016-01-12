@@ -35,7 +35,7 @@ step: integer
 """
 
 def _int_doc(cls):
-    """Add int docstring template to class init"""
+    """Add int docstring template to class init."""
     def __init__(self, value=None, **kwargs):
         if value is not None:
             kwargs['value'] = value

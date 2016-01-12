@@ -134,19 +134,19 @@ class FloatProgress(_BoundedFloat):
     Parameters
     -----------
     value : float
-	position within the range of the progress bar
+	    position within the range of the progress bar
     min : float
-	minimal position of the slider
+	    minimal position of the slider
     max : float
-	maximal position of the slider
+	    maximal position of the slider
     step : float
-	step of the progress bar
+	    step of the progress bar
     description : str
-	name of the progress bar
+	    name of the progress bar
     bar_style: {'success', 'info', 'warning', 'danger', ''}, optional
-	color of the progress bar, default is '' (blue)
-	colors are: 'success'-green, 'info'-light blue, 'warning'-orange, 'danger'-red
-"""
+	    color of the progress bar, default is '' (blue)
+	    colors are: 'success'-green, 'info'-light blue, 'warning'-orange, 'danger'-red
+    """
     _view_name = Unicode('ProgressView', sync=True)
     _model_name = Unicode('ProgressModel', sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
@@ -195,15 +195,15 @@ class _BoundedFloatRange(_FloatRange):
     step = CFloat(1.0, help="Minimum step that the value can take (ignored by some views)", sync=True)
     max = CFloat(100.0, help="Max value", sync=True)
     min = CFloat(0.0, help="Min value", sync=True)
-    
+
     def __init__(self, *pargs, **kwargs):
         any_value_given = 'value' in kwargs or 'upper' in kwargs or 'lower' in kwargs
         _FloatRange.__init__(self, *pargs, **kwargs)
-        
+
         # ensure a minimal amount of sanity
         if self.min > self.max:
             raise ValueError("min must be <= max")
-        
+
         if any_value_given:
             # if a value was given, clamp it within (min, max)
             self._validate("value", None, self.value)

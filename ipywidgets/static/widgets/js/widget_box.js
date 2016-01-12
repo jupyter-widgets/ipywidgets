@@ -29,11 +29,11 @@ define([
     });
 
     var ProxyModel = widget.DOMWidgetModel.extend({
-        defaults: {
+        defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
             _view_name: "ProxyView",
             _model_name: "ProxyModel",
             child: null,
-        },
+        }),
     }, {
         serializers: _.extend({
             child: {deserialize: widget.unpack_models},
@@ -101,6 +101,14 @@ define([
         update_attr: function(name, value) { // TODO: Deprecated in 5.0
             this.$box.css(name, value);
         },
+    });
+
+    var PlaceProxyModel = ProxyModel.extend({
+        defaults: _.extend({}, ProxyModel.prototype.defaults, {
+            _view_name: "PlaceProxyView",
+            _model_name: "PlaceProxyModel",
+            selector: "",
+        }),
     });
 
     var PlaceProxyView = ProxyView.extend({
@@ -203,6 +211,15 @@ define([
         },
     });
 
+    var FlexBoxModel = BoxModel.extend({ // TODO: Deprecated in 5.0 (entire model)
+        defaults: _.extend({}, BoxModel.prototype.defaults, {
+            _view_name: "FlexBoxView",
+            _model_name: "FlexBoxModel",
+            orientation: "vertical",
+            pack: "start",
+            alignt: "start",
+        }),
+    });
 
     var FlexBoxView = BoxView.extend({ // TODO: Deprecated in 5.0 (entire view)
         render: function() {
@@ -250,10 +267,12 @@ define([
 
     return {
         BoxModel: BoxModel,
-        ProxyModel: ProxyModel,
         BoxView: BoxView,
+        FlexBoxModel: FlexBoxModel, // TODO: Deprecated in 5.0
         FlexBoxView: FlexBoxView, // TODO: Deprecated in 5.0
+        ProxyModel: ProxyModel,
         ProxyView: ProxyView,
+        PlaceProxyModel: PlaceProxyModel,
         PlaceProxyView: PlaceProxyView,
     };
 });
