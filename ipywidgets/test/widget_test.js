@@ -1,8 +1,7 @@
-const classes = require('../index.js'); 
+const classes = require('../index.js');
 const Widget = classes.Widget;
 const DOMWidget = classes.DOMWidget;
 const DummyManager = require('./dummy-manager').DummyManager;
-const sinon = require('sinon');
 
 describe("Widget", function() {
     beforeEach(function() {
@@ -73,7 +72,7 @@ describe("Widget", function() {
 
     it('send', function() {
         expect(this.widget.send).to.not.be.undefined;
-        
+
         // TODO: Test pending message buffer for comm-full widgets
         // let p = this.widget.pending_msgs;
         // this.widget.send({}, {});
@@ -87,20 +86,20 @@ describe("Widget", function() {
     it('set_comm_live', function() {
         expect(this.widget.set_comm_live).to.not.be.undefined;
         expect(this.widget.comm_live).to.be.false;
-        
+
         let liveEventCallback = sinon.spy();
         let deadEventCallback = sinon.spy();
         this.widget.on('comm:live', liveEventCallback);
         this.widget.on('comm:dead', deadEventCallback);
-        
+
         this.widget.set_comm_live(true);
         expect(this.widget.comm_live).to.be.true;
         expect(deadEventCallback.calledOnce).to.be.false;
         expect(liveEventCallback.calledOnce).to.be.true;
-        
+
         deadEventCallback.reset();
         liveEventCallback.reset();
-        
+
         this.widget.set_comm_live(false);
         expect(this.widget.comm_live).to.be.false;
         expect(deadEventCallback.calledOnce).to.be.true;
@@ -109,10 +108,10 @@ describe("Widget", function() {
 
     it('close', function() {
         expect(this.widget.close).to.not.be.undefined;
-        
+
         let destroyEventCallback = sinon.spy();
         this.widget.on('destroy', destroyEventCallback);
-        
+
         this.widget.close();
         expect(destroyEventCallback.calledOnce).to.be.true;
         expect(this.widget.comm).to.be.undefined;
@@ -122,11 +121,11 @@ describe("Widget", function() {
 
     it('_handle_comm_closed', function() {
         expect(this.widget._handle_comm_closed).to.not.be.undefined;
-        
+
         let closeSpy = sinon.spy(this.widget, "close");
         let closeEventCallback = sinon.spy();
         this.widget.on('comm:close', closeEventCallback);
-        
+
         this.widget._handle_comm_closed({});
         expect(closeEventCallback.calledOnce).to.be.true;
         expect(closeSpy.calledOnce).to.be.true;
@@ -134,7 +133,7 @@ describe("Widget", function() {
 
     it('_deserialize_state', function() {
         expect(this.widget._deserialize_state).to.not.be.undefined;
-        
+
         // Create some dummy deserializers.  One returns synchronously, and the
         // other asynchronously using a promise.
         this.widget.constructor.serializers = {
@@ -149,7 +148,7 @@ describe("Widget", function() {
                 }
             }
         };
-        
+
         let deserialized = this.widget._deserialize_state({ a: 2.0, b: 2.0, c: 2.0 });
         expect(deserialized).to.be.an.instanceof(Promise);
         return deserialized.then(state => {
@@ -161,27 +160,27 @@ describe("Widget", function() {
 
     it('_handle_comm_msg', function() {
         expect(this.widget._handle_comm_msg).to.not.be.undefined;
-        
+
         // Update message
         let setStateSpy = sinon.spy(this.widget, "set_state");
         this.widget._handle_comm_msg({content: {data: {method: 'update'}}});
-        let p1 = this.widget.state_change = this.widget.state_change.then(() => {            
+        let p1 = this.widget.state_change = this.widget.state_change.then(() => {
             expect(setStateSpy.calledOnce).to.be.true;
         });
-        
+
         // Custom message
         let customEventCallback = sinon.spy();
         this.widget.on('msg:custom', customEventCallback);
         this.widget._handle_comm_msg({content: {data: {method: 'custom'}}});
         expect(customEventCallback.calledOnce).to.be.true; // Triggered synchronously
-        
+
         // Display message
         let displaySpy = sinon.spy(this.manager, "display_model");
         this.widget._handle_comm_msg({content: {data: {method: 'display'}}});
         let p2 = this.widget.state_change = this.widget.state_change.then(() => {
             expect(displaySpy.calledOnce).to.be.true;
         });
-        
+
         return Promise.all([p1, p2]);
     });
 
@@ -203,12 +202,12 @@ describe("Widget", function() {
 
     it('callbacks', function() {
         expect(this.widget.callbacks).to.not.be.undefined;
-        
+
         let c = this.widget.callbacks();
         expect(c).to.be.an('object');
         expect(c.iopub).to.be.an('object');
         expect(c.iopub.status).to.be.a('function');
-        
+
         let statusSpy = sinon.spy(this.widget, "_handle_status");
         c.iopub.status({content: {data: {}}});
         expect(statusSpy.calledOnce).to.be.true;
@@ -232,15 +231,15 @@ describe("Widget", function() {
 
     it('on_some_change', function() {
         expect(this.widget.on_some_change).to.not.be.undefined;
-        
+
         let changeCallback = sinon.spy();
         let someChangeCallback = sinon.spy();
         this.widget.on('change:a change:b', changeCallback, this.widget);
         this.widget.set_state({ a: true, b: true });
-        
+
         return this.widget.state_change.then(() => {
             expect(changeCallback.callCount).to.equal(2);
-            
+
             this.widget.on_some_change(['a', 'b'], someChangeCallback, this.widget);
             this.widget.set_state({ a: false, b: false });
             return this.widget.state_change;

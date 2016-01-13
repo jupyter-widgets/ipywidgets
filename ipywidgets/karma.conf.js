@@ -10,7 +10,7 @@ module.exports = function(config) {
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ['mocha', 'chai'],
+        frameworks: ['mocha', 'chai', 'sinon-chai'],
 
 
         // list of files / patterns to load in the browser
@@ -34,7 +34,6 @@ module.exports = function(config) {
             module: {
                 loaders: [
                     // sinon does not play well with webpack cf https://github.com/webpack/webpack/issues/177
-                    { test: /sinon.*\.js$/, loader: "imports?define=>false,require=>false" },
                     { test: /\.jsx?$/, exclude: /node_modules/, loader: "babel?presets[]=es2015" },
                     { test: /\.css$/, loader: "style-loader!css-loader" },
                     { test: /\.json$/, loader: "json-loader" },
@@ -95,10 +94,10 @@ module.exports = function(config) {
         // how many browser should be started simultanous
         concurrency: Infinity
     };
-    
+
     if (process.env.TRAVIS) {
         cfg.browsers = ['Chrome_travis_ci'];
     }
-    
+
     config.set(cfg);
 };
