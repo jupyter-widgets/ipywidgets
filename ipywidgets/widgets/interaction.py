@@ -10,7 +10,7 @@ try:  # Python >= 3.3
     from inspect import signature, Parameter
 except ImportError:
     from IPython.utils.signatures import signature, Parameter
-from inspect import getcallargs
+from inspect import getcallargs, getargspec
 
 from IPython.core.getipython import get_ipython
 from . import (Widget, Text,
@@ -146,7 +146,13 @@ def _yield_abbreviations_for_parameter(param, kwargs):
 def _find_abbreviations(f, kwargs):
     """Find the abbreviations for a function and kwargs passed to interact."""
     new_kwargs = []
-    for param in signature(f).parameters.values():
+    try:
+        sig = signature(f)
+    except (ValueError, TypeError):
+        # can't inspect, no info from function; only use kwargs
+        return [ (key, value, value) for key, value in kwargs.items() ]
+
+    for param in sig.parameters.values():
         for name, value, default in _yield_abbreviations_for_parameter(param, kwargs):
             if value is empty:
                 raise ValueError('cannot find widget or abbreviation for argument: {!r}'.format(name))
@@ -196,7 +202,13 @@ def interactive(__interact_f, **kwargs):
     # Before we proceed, let's make sure that the user has passed a set of args+kwargs
     # that will lead to a valid call of the function. This protects against unspecified
     # and doubly-specified arguments.
-    getcallargs(f, **{n:v for n,v,_ in new_kwargs})
+    try:
+        getargspec(f)
+    except TypeError:
+        # if we can't inspect, we can't validate
+        pass
+    else:
+        getcallargs(f, **{n:v for n,v,_ in new_kwargs})
     # Now build the widgets from the abbreviations.
     kwargs_widgets.extend(_widgets_from_abbreviations(new_kwargs))
 
