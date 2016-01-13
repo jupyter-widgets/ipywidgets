@@ -12,11 +12,26 @@ define([
     "bootstrap",
 ], function(widget, utils, $, _) {
 
+    var SelectionModel = widget.DOMWidgetModel.extend({
+        defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
+            _model_name: "SelectionModel",
+            selected_label: "",
+            _options_labels: [],
+            disabled: false,
+            description: "",
+        }),
+    });
+
+    var DropdownModel = SelectionModel.extend({
+        defaults: _.extend({}, SelectionModel.prototype.defaults, {
+            _model_name: "DropdownModel",
+            _view_name: "DropdownView",
+            button_style: ""
+        }),
+    });
+
     var DropdownView = widget.DOMWidgetView.extend({
         render : function() {
-            /**
-             * Called when view is rendered.
-             */
             this.$el
                 .addClass('ipy-widget widget-hbox widget-dropdown');
             this.$label = $('<div />')
@@ -43,15 +58,13 @@ define([
                 .addClass('dropdown-menu')
                 .appendTo(this.$buttongroup);
 
-            this.listenTo(this.model, 'change:button_style', function(model, value) {
-                this.update_button_style();
-            }, this);
-            this.update_button_style('');
-            
+            this.listenTo(this.model, "change:button_style", this.update_button_style, this);
+            this.update_button_style();
+
             // Set defaults.
             this.update();
         },
-        
+
         update : function(options) {
             /**
              * Update the contents of this view
@@ -67,7 +80,7 @@ define([
                 } else {
                     this.$droplabel.text(selected_item_text);
                 }
-                
+
                 var items = this.model.get('_options_labels');
                 var $replace_droplist = $('<ul />')
                     .addClass('dropdown-menu');
@@ -84,7 +97,7 @@ define([
                 this.$droplist.replaceWith($replace_droplist);
                 this.$droplist.remove();
                 this.$droplist = $replace_droplist;
-                
+
                 if (this.model.get('disabled')) {
                     this.$buttongroup.attr('disabled','disabled');
                     this.$droplabel.attr('disabled','disabled');
@@ -108,7 +121,7 @@ define([
             return DropdownView.__super__.update.apply(this);
         },
 
-        update_button_style: function(previous_trait_value) {
+        update_button_style: function() {
             var class_map = {
                 primary: ['btn-primary'],
                 success: ['btn-success'],
@@ -116,11 +129,11 @@ define([
                 warning: ['btn-warning'],
                 danger: ['btn-danger']
             };
-            this.update_mapped_classes(class_map, 'button_style', previous_trait_value, this.$droplabel[0]);
-            this.update_mapped_classes(class_map, 'button_style', previous_trait_value, this.$dropbutton[0]);
+            this.update_mapped_classes(class_map, 'button_style', this.$droplabel[0]);
+            this.update_mapped_classes(class_map, 'button_style', this.$dropbutton[0]);
         },
 
-        update_attr: function(name, value) {
+        update_attr: function(name, value) { // TODO: Deprecated in 5.0
             /**
              * Set a css attr of the widget view.
              */
@@ -128,7 +141,7 @@ define([
                 this.$droplabel.css(name, value);
                 this.$dropbutton.css(name, value);
                 this.$droplist.css(name, value);
-            } else { 
+            } else {
                 this.$el.css(name, value);
             }
         },
@@ -137,7 +150,7 @@ define([
             /**
              * Handle when a value is clicked.
              *
-             * Calling model.set will trigger all of the other views of the 
+             * Calling model.set will trigger all of the other views of the
              * model to update.
              */
             this.model.set('selected_label', $(e.target).text(), {updated_view: this});
@@ -148,11 +161,20 @@ define([
             e.preventDefault();
             this.$buttongroup.removeClass('open');
         },
-        
+
     });
 
+    var RadioButtonsModel = SelectionModel.extend({
+        defaults: _.extend({}, SelectionModel.prototype.defaults, {
+            _model_name: "RadioButtonsModel",
+            _view_name: "RadioButtonsView",
+            tooltips: [],
+            icons: [],
+            button_style: ""
+        }),
+    });
 
-    var RadioButtonsView = widget.DOMWidgetView.extend({    
+    var RadioButtonsView = widget.DOMWidgetView.extend({
         render : function() {
             /**
              * Called when view is rendered.
@@ -168,12 +190,12 @@ define([
                 .addClass('widget-radio-box');
             this.update();
         },
-        
+
         update : function(options) {
             /**
              * Update the contents of this view
              *
-             * Called when the model is changed.  The model may have been 
+             * Called when the model is changed.  The model may have been
              * changed by another view or by a state update from the back-end.
              */
             if (options === undefined || options.updated_view != this) {
@@ -188,7 +210,7 @@ define([
                             .addClass('radio')
                             .text(item)
                             .appendTo(that.$container);
-                        
+
                         $('<input />')
                             .attr('type', 'radio')
                             .addClass(that.model)
@@ -197,7 +219,7 @@ define([
                             .prependTo($label)
                             .on('click', $.proxy(that.handle_click, that));
                     }
-                    
+
                     var $item_element = that.$container.find(item_query);
                     if (that.model.get('selected_label') == item) {
                         $item_element.prop('checked', true);
@@ -206,7 +228,7 @@ define([
                     }
                     $item_element.prop('disabled', disabled);
                 });
-                
+
                 // Remove items that no longer exist.
                 this.$container.find('input').each(function(i, obj) {
                     var value = $(obj).val();
@@ -217,7 +239,7 @@ define([
                             return false;
                         }
                     });
-                    
+
                     if (!found) {
                         $(obj).parent().remove();
                     }
@@ -250,14 +272,20 @@ define([
             /**
              * Handle when a value is clicked.
              *
-             * Calling model.set will trigger all of the other views of the 
+             * Calling model.set will trigger all of the other views of the
              * model to update.
              */
             this.model.set('selected_label', $(e.target).val(), {updated_view: this});
             this.touch();
         },
     });
-    
+
+    var ToggleButtonsModel = SelectionModel.extend({
+        defaults: _.extend({}, SelectionModel.prototype.defaults, {
+            _model_name: "ToggleButtonsModel",
+            _view_name: "ToggleButtonsView",
+        }),
+    });
 
     var ToggleButtonsView = widget.DOMWidgetView.extend({
         initialize: function() {
@@ -279,18 +307,16 @@ define([
                 .addClass('btn-group')
                 .appendTo(this.$el);
 
-            this.listenTo(this.model, 'change:button_style', function(model, value) {
-                this.update_button_style();
-            }, this);
-            this.update_button_style('');
+            this.listenTo(this.model, 'change:button_style', this.update_button_style, this);
+            this.update_button_style();
             this.update();
         },
-        
+
         update : function(options) {
             /**
              * Update the contents of this view
              *
-             * Called when the model is changed.  The model may have been 
+             * Called when the model is changed.  The model may have been
              * changed by another view or by a state update from the back-end.
              */
             if (options === undefined || options.updated_view != this) {
@@ -335,7 +361,7 @@ define([
                         .removeClass(previous_icons[index])
                         .addClass(icons[index]);
                 });
-                
+
                 // Remove items that no longer exist.
                 this.$buttongroup.find('button').each(function(i, obj) {
                     var value = $(obj).attr('value');
@@ -364,7 +390,7 @@ define([
             return ToggleButtonsView.__super__.update.apply(this);
         },
 
-        update_attr: function(name, value) {
+        update_attr: function(name, value) { // TODO: Deprecated in 5.0
             /**
              * Set a css attr of the widget view.
              */
@@ -392,7 +418,7 @@ define([
             }
         },
 
-        update_button_style: function(previous_trait_value) {
+        update_button_style: function() {
             var class_map = {
                 primary: ['btn-primary'],
                 success: ['btn-success'],
@@ -400,24 +426,30 @@ define([
                 warning: ['btn-warning'],
                 danger: ['btn-danger']
             };
-            this.update_mapped_classes(class_map, 'button_style', previous_trait_value, this.$buttongroup.find('button')[0]);
+            this.update_mapped_classes(class_map, 'button_style', this.$buttongroup.find('button')[0]);
         },
 
         handle_click: function (e) {
             /**
              * Handle when a value is clicked.
              *
-             * Calling model.set will trigger all of the other views of the 
+             * Calling model.set will trigger all of the other views of the
              * model to update.
              */
             this.model.set('selected_label', $(e.target).attr('value'), {updated_view: this});
             this.touch();
-        },    
+        },
     });
-    
 
-    var SelectView = widget.DOMWidgetView.extend({    
-        render : function() {
+    var SelectModel = SelectionModel.extend({
+        defaults: _.extend({}, SelectionModel.prototype.defaults, {
+            _model_name: "SelectModel",
+            _view_name: "SelectView",
+        }),
+    });
+
+    var SelectView = widget.DOMWidgetView.extend({
+        render: function() {
             /**
              * Called when view is rendered.
              */
@@ -434,12 +466,12 @@ define([
                 .on('change', $.proxy(this.handle_change, this));
             this.update();
         },
-        
-        update : function(options) {
+
+        update: function(options) {
             /**
              * Update the contents of this view
              *
-             * Called when the model is changed.  The model may have been 
+             * Called when the model is changed.  The model may have been
              * changed by another view or by a state update from the back-end.
              */
             if (options === undefined || options.updated_view != this) {
@@ -455,12 +487,12 @@ define([
                             .val(item)
                             .on("click", $.proxy(that.handle_click, that))
                             .appendTo(that.$listbox);
-                    } 
+                    }
                 });
 
                 // Select the correct element
                 this.$listbox.val(this.model.get('selected_label'));
-                
+
                 // Disable listbox if needed
                 var disabled = this.model.get('disabled');
                 this.$listbox.prop('disabled', disabled);
@@ -475,7 +507,7 @@ define([
                             return false;
                         }
                     });
-                    
+
                     if (!found) {
                         $(obj).remove();
                     }
@@ -492,7 +524,7 @@ define([
             return SelectView.__super__.update.apply(this);
         },
 
-        update_attr: function(name, value) {
+        update_attr: function(name, value) { // TODO: Deprecated in 5.0
             /**
              * Set a css attr of the widget view.
              */
@@ -514,7 +546,7 @@ define([
             /**
              * Handle when a new value is selected.
              *
-             * Calling model.set will trigger all of the other views of the 
+             * Calling model.set will trigger all of the other views of the
              * model to update.
              */
             this.model.set('selected_label', this.$listbox.val(), {updated_view: this});
@@ -522,6 +554,19 @@ define([
         },
     });
 
+    var MultipleSelectionModel = SelectionModel.extend({
+        defaults: _.extend({}, SelectionModel.prototype.defaults, {
+            _model_name: "MultipleSelectionModel",
+            selected_labels: [],
+        }),
+    });
+
+    var SelectMultipleModel = MultipleSelectionModel.extend({
+        defaults: _.extend({}, MultipleSelectionModel.prototype.defaults, {
+            _model_name: "SelectMultipleModel",
+            _view_name: "SelectMultipleView",
+        }),
+    });
 
     var SelectMultipleView = SelectView.extend({
         render: function() {
@@ -543,13 +588,13 @@ define([
             /**
              * Update the contents of this view
              *
-             * Called when the model is changed.  The model may have been 
+             * Called when the model is changed.  The model may have been
              * changed by another view or by a state update from the back-end.
              */
             SelectMultipleView.__super__.update.apply(this, arguments);
             this.$listbox.val(this.model.get('selected_labels'));
         },
-        
+
         handle_click: function() {
             /**
              * Overload click from select
@@ -563,31 +608,37 @@ define([
             /**
              * Handle when a new value is selected.
              *
-             * Calling model.set will trigger all of the other views of the 
+             * Calling model.set will trigger all of the other views of the
              * model to update.
              */
-            
-            // $listbox.val() returns a list of string.  In order to preserve 
+
+            // $listbox.val() returns a list of string.  In order to preserve
             // type information correctly, we need to map the selected indices
             // to the options list.
             var items = this.model.get('_options_labels');
             var values = Array.prototype.map.call(this.$listbox[0].selectedOptions || [], function(option) {
                 return items[option.index];
             });
-            
+
             this.model.set('selected_labels',
                 values,
                 {updated_view: this});
             this.touch();
         },
     });
-    
 
     return {
-        'DropdownView': DropdownView,
-        'RadioButtonsView': RadioButtonsView,
-        'ToggleButtonsView': ToggleButtonsView,
-        'SelectView': SelectView,
-        'SelectMultipleView': SelectMultipleView,
+        SelectionModel: SelectionModel,
+        DropdownView: DropdownView,
+        DropdownModel: DropdownModel,
+        RadioButtonsView: RadioButtonsView,
+        RadioButtonsModel: RadioButtonsModel,
+        ToggleButtonsView: ToggleButtonsView,
+        ToggleButtonsModel: ToggleButtonsModel,
+        SelectView: SelectView,
+        SelectModel: SelectModel,
+        MultipleSelectionModel: MultipleSelectionModel,
+        SelectMultipleView: SelectMultipleView,
+        SelectMultipleModel: SelectMultipleModel,
     };
 });

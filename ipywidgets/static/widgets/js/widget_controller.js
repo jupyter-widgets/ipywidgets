@@ -10,12 +10,21 @@ define([
     "jquery",
     "underscore"
 ], function(widget, utils, $, _) {
-    'use strict';
+    "use strict";
 
-    var Button = widget.DOMWidgetView.extend({
+    var ControllerButtonModel = widget.DOMWidgetModel.extend({
+        defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
+            _model_name: "ControllerButtonModel",
+            _view_name: "ControllerButtonView",
+            value: 0.0,
+            pressed: false,
+        }),
+    });
+
+    var ControllerButtonView = widget.DOMWidgetView.extend({
         /* Very simple view for a gamepad button. */
 
-        render : function() {
+        render: function() {
             this.$el.addClass('ipy-widget widget-controller-button');
 
             this.$support = $('<div />').css({
@@ -42,17 +51,23 @@ define([
             this.update();
         },
 
-        update : function() {
+        update: function() {
             this.$bar.css('height', 100 * this.model.get('value') + '%');
         },
 
     });
 
-    var Axis = widget.DOMWidgetView.extend({
+    var ControllerAxisModel = widget.DOMWidgetModel.extend({
+        defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
+            _model_name: "ControllerAxisModel",
+            _view_name: "ControllerAxisView",
+            value: 0.0,
+        }),
+    });
+
+    var ControllerAxisView = widget.DOMWidgetView.extend({
         /* Very simple view for a gamepad axis. */
-
-        render : function() {
-
+        render: function() {
             this.$el.addClass('ipy-widget widget-controller-axis');
             
             this.$el.css({
@@ -84,14 +99,25 @@ define([
             this.update();
         },
 
-        update : function() {
+        update: function() {
             this.$bullet.css('top', 50 * (this.model.get('value') + 1) + '%');
         },
 
     });
 
-    var Controller = widget.DOMWidgetModel.extend({
+    var ControllerModel = widget.DOMWidgetModel.extend({
         /* The Controller model. */
+        defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
+            _model_name: "ControllerModel",
+            _view_name: "ControllerView",
+            index: 0,
+            name: "",
+            mapping: "",
+            connected: false,
+            timestamp: 0,
+            buttons: [],
+            axez: [],
+        }),
 
         initialize: function() {
             if (navigator.getGamepads === void 0) {
@@ -219,7 +245,7 @@ define([
              */
             return this.widget_manager.new_widget({
                  model_name: 'WidgetModel',
-                 widget_class: 'ipywidgets.widgets.widget_controller.Button',
+                 widget_class: 'Jupyter.ControllerButton',
             }).then(function(model) {
                  model.set('description', index);
                  return model;
@@ -231,7 +257,7 @@ define([
              */
             return this.widget_manager.new_widget({
                  model_name: 'WidgetModel',
-                 widget_class: 'ipywidgets.widgets.widget_controller.Axis',
+                 widget_class: 'Jupyter.ControllerAxis',
             }).then(function(model) {
                  model.set('description', index);
                  return model;
@@ -239,12 +265,10 @@ define([
         },
 
     }, {
-
         serializers: _.extend({
             buttons: {deserialize: widget.unpack_models},
             axes: {deserialize: widget.unpack_models},
-        }, widget.DOMWidgetModel.prototype.serializers)
-
+        }, widget.DOMWidgetModel.serializers)
     });
 
     var ControllerView = widget.DOMWidgetView.extend({
@@ -327,9 +351,11 @@ define([
     });
 
     return {
-        ControllerButton: Button,
-        ControllerAxis: Axis,
-        Controller: Controller,
+        ControllerButtonView: ControllerButtonView,
+        ControllerButtonModel: ControllerButtonModel,
+        ControllerAxisView: ControllerAxisView,
+        ControllerAxisModel: ControllerAxisModel,      
+        ControllerModel: ControllerModel,
         ControllerView: ControllerView,
     };
 });

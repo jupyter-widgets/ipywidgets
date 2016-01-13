@@ -1,5 +1,9 @@
 To release a new version of the widgets on PyPI and npm, first checkout
-master can cd into the ipywidgets subfolder of the repo root.  Then run the 
+master can cd into the ipywidgets subfolder of the repo root.  Make sure the
+`VersionWidget` in `widget.py` has the correct JS front-end version.  Also check 
+that the front-end version specified in `manager-base.js` (`version`) is correct.
+
+Then run the 
 following, replacing the square bracketed content with appropriate values:
 
 ```

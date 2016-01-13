@@ -7,29 +7,46 @@ if (typeof define !== 'function') { var define = require('./requirejs-shim')(mod
 define([
     "./widget",
     "jquery",
+    "underscore",
     "bootstrap",
-], function(widget, $){
+], function(widget, $, _) {
+
+    var BoolModel = widget.DOMWidgetModel.extend({
+        defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
+            value: false,
+            description: "",
+            disabled: false,
+            _model_name: "BoolModel"
+        }),
+    });
+
+    var CheckboxModel = BoolModel.extend({
+        defaults: _.extend({}, BoolModel.prototype.defaults, {
+            _view_name: "CheckboxView",
+            _model_name: "CheckboxModel"
+        }),
+    });
 
     var CheckboxView = widget.DOMWidgetView.extend({
-        render : function(){
+        render: function(){
             /**
              * Called when view is rendered.
              */
             this.$el
                 .addClass('ipy-widget widget-hbox widget-checkbox');
-            this.$label = $('<div />')
-                .addClass('widget-label')
-                .appendTo(this.$el)
-                .hide();
             this.$checkbox = $('<input />')
                 .attr('type', 'checkbox')
                 .appendTo(this.$el)
                 .click($.proxy(this.handle_click, this));
+            this.$label = $('<div />')
+                .addClass('widget-label')
+                .appendTo(this.$el)
+                .hide();
 
             this.update(); // Set defaults.
         },
 
-        update_attr: function(name, value) {
+        update_attr: function(name, value) { // TODO: Deprecated in 5.0
             /**
              * Set a css attr of the widget view.
              */
@@ -52,7 +69,7 @@ define([
             this.touch();
         },
 
-        update : function(options){
+        update: function(options){
             /**
              * Update the contents of this view
              *
@@ -76,9 +93,18 @@ define([
         },
     });
 
+    var ToggleButtonModel = BoolModel.extend({
+        defaults: _.extend({}, BoolModel.prototype.defaults, {
+            _view_name: "ToggleButtonView",
+            _model_name: "ToggleButtonModel",
+            tooltip: "",
+            icon: "",
+            button_style: "",
+        }),
+    });
 
     var ToggleButtonView = widget.DOMWidgetView.extend({
-        render : function() {
+        render: function() {
             /**
              * Called when view is rendered.
              */
@@ -91,15 +117,13 @@ define([
                     that.handle_click();
                 }));
             this.$el.attr("data-toggle", "tooltip");
-            this.listenTo(this.model, 'change:button_style', function(model, value) {
-                this.update_button_style();
-            }, this);
-            this.update_button_style('');
+            this.listenTo(this.model, "change:button_style", this.update_button_style, this);
+            this.update_button_style();
 
             this.update(); // Set defaults.
         },
 
-        update_button_style: function(previous_trait_value) {
+        update_button_style: function() {
             var class_map = {
                 primary: ['btn-primary'],
                 success: ['btn-success'],
@@ -107,10 +131,10 @@ define([
                 warning: ['btn-warning'],
                 danger: ['btn-danger']
             };
-            this.update_mapped_classes(class_map, 'button_style', previous_trait_value);
+            this.update_mapped_classes(class_map, 'button_style');
         },
 
-        update : function(options){
+        update: function(options){
             /**
              * Update the contents of this view
              *
@@ -152,6 +176,13 @@ define([
         },
     });
 
+    var ValidModel = BoolModel.extend({
+        defaults: _.extend({}, BoolModel.prototype.defaults, {
+            readout: "Invalid",
+            _view_name: "ValidView",
+            _model_name: "ValidModel"
+        }),
+    });
 
     var ValidView = widget.DOMWidgetView.extend({
         render: function() {
@@ -162,6 +193,7 @@ define([
             this.listenTo(this.model, "change", this.update, this);
             this.update();
         },
+
         update: function() {
             /**
              * Update the contents of this view
@@ -190,8 +222,12 @@ define([
 
 
     return {
-        'CheckboxView': CheckboxView,
-        'ToggleButtonView': ToggleButtonView,
-        'ValidView': ValidView,
+        BoolModel: BoolModel,
+        CheckboxModel: CheckboxModel,
+        CheckboxView: CheckboxView,
+        ToggleButtonModel: ToggleButtonModel,
+        ToggleButtonView: ToggleButtonView,
+        ValidModel: ValidModel,
+        ValidView: ValidView,
     };
 });

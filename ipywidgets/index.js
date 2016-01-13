@@ -13,7 +13,7 @@ require('underscore');
 var register = require("./static/widgets/js/register");
 [
     require("./static/widgets/js/manager-base"),
-    require("./static/widgets/js/style"),
+    require("./static/widgets/js/layout"),
     require("./static/widgets/js/widget"),
     require("./static/widgets/js/widget_link"),
     require("./static/widgets/js/widget_bool"),
@@ -26,11 +26,16 @@ var register = require("./static/widgets/js/register");
     require("./static/widgets/js/widget_selection"),
     require("./static/widgets/js/widget_selectioncontainer"),
     require("./static/widgets/js/widget_string"),
-    require("./static/widgets/js/widget_controller")
+    require("./static/widgets/js/widget_controller"),
+    require("./static/widgets/js/utils")
 ].forEach(function(module) {
     register.registerWidgets(module);
-    
+
     Object.keys(module).forEach(function(name) {
         exports[name] = module[name];
     });
 });
+
+exports.shims = {
+    services: require("./static/widgets/js/services-shim")
+};

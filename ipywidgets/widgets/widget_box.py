@@ -9,9 +9,10 @@ Represents a container that can be used to group other widgets.
 from .domwidget import DOMWidget
 from .widget import Widget, register, widget_serialization
 from traitlets import Unicode, Tuple, Int, CaselessStrEnum, Instance
+from warnings import warn
 
 
-@register('IPython.Box')
+@register('Jupyter.Box')
 class Box(DOMWidget):
     """Displays multiple widgets in a group."""
     _model_name = Unicode('BoxModel', sync=True)
@@ -33,9 +34,8 @@ class Box(DOMWidget):
         happens to content that is too large for the rendered region.""")
 
     box_style = CaselessStrEnum(
-        values=['success', 'info', 'warning', 'danger', ''],
-        default_value='', allow_none=True, sync=True, help="""Use a
-        predefined styling for the box.""")
+        values=['success', 'info', 'warning', 'danger', ''], default_value='',
+        sync=True, help="""Use a predefined styling for the box.""")
 
     def __init__(self, children = (), **kwargs):
         kwargs['children'] = children
@@ -47,7 +47,7 @@ class Box(DOMWidget):
             child._handle_displayed()
 
 
-@register('IPython.Proxy')
+@register('Jupyter.Proxy')
 class Proxy(Widget):
     """A DOMWidget that holds another DOMWidget or nothing."""
     _model_name = Unicode('ProxyModel', sync=True)
@@ -67,17 +67,34 @@ class Proxy(Widget):
             self.child._handle_displayed()
 
 
-@register('IPython.PlaceProxy')
+@register('Jupyter.PlaceProxy')
 class PlaceProxy(Proxy):
     """Renders the child widget at the specified selector."""
     _view_name = Unicode('PlaceProxyView', sync=True)
+    _model_name = Unicode('PlaceProxyModel', sync=True)
     selector = Unicode(sync=True)
 
 
-@register('IPython.FlexBox')
-class FlexBox(Box):
+def VBox(*pargs, **kwargs):
+    """Displays multiple widgets vertically using the flexible box model."""
+    box = Box(*pargs, **kwargs)
+    box.layout.display = 'flex'
+    box.layout.flex_flow = 'column'
+    return box
+
+
+def HBox(*pargs, **kwargs):
+    """Displays multiple widgets horizontally using the flexible box model."""
+    box = Box(*pargs, **kwargs)
+    box.layout.display = 'flex'
+    return box
+
+
+@register('Jupyter.FlexBox')
+class FlexBox(Box): # TODO: Deprecated in 5.0 (entire class)
     """Displays multiple widgets using the flexible box model."""
     _view_name = Unicode('FlexBoxView', sync=True)
+    _model_name = Unicode('FlexBoxModel', sync=True)
     orientation = CaselessStrEnum(values=['vertical', 'horizontal'], default_value='vertical', sync=True)
     flex = Int(0, sync=True, help="""Specify the flexible-ness of the model.""")
     def _flex_changed(self, name, old, new):
@@ -93,14 +110,7 @@ class FlexBox(Box):
         values=_locations,
         default_value='start', sync=True)
 
+    def __init__(self, *pargs, **kwargs):
+        warn('FlexBox is deprecated in ipywidgets 5.0.  Use Box and Box.layout instead.', DeprecationWarning)
+        super(FlexBox, self).__init__(*pargs, **kwargs)
 
-def VBox(*pargs, **kwargs):
-    """Displays multiple widgets vertically using the flexible box model."""
-    kwargs['orientation'] = 'vertical'
-    return FlexBox(*pargs, **kwargs)
-
-
-def HBox(*pargs, **kwargs):
-    """Displays multiple widgets horizontally using the flexible box model."""
-    kwargs['orientation'] = 'horizontal'
-    return FlexBox(*pargs, **kwargs)

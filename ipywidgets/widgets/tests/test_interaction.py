@@ -23,13 +23,13 @@ from ipython_genutils.py3compat import annotate
 
 class DummyComm(Comm):
     comm_id = 'a-b-c-d'
-    
+
     def open(self, *args, **kwargs):
         pass
-    
+
     def send(self, *args, **kwargs):
         pass
-    
+
     def close(self, *args, **kwargs):
         pass
 
@@ -83,11 +83,11 @@ def check_widgets(container, **to_check):
     widgets = {}
     for w in container.children:
         widgets[w.description] = w
-    
+
     for key, d in to_check.items():
         nt.assert_in(key, widgets)
         check_widget(widgets[key], **d)
-    
+
 
 def test_single_value_string():
     a = u'hello'
@@ -250,7 +250,7 @@ def test_defaults():
     @annotate(n=10)
     def f(n, f=4.5, g=1):
         pass
-    
+
     c = interactive(f)
     check_widgets(c,
         n=dict(
@@ -271,7 +271,7 @@ def test_default_values():
     @annotate(n=10, f=(0, 10.), g=5, h={'a': 1, 'b': 2}, j=['hi', 'there'])
     def f(n, f=4.5, g=1, h=2, j='there'):
         pass
-    
+
     c = interactive(f)
     check_widgets(c,
         n=dict(
@@ -302,7 +302,7 @@ def test_default_out_of_bounds():
     @annotate(f=(0, 10.), h={'a': 1}, j=['hi', 'there'])
     def f(f='hi', h=5, j='other'):
         pass
-    
+
     c = interactive(f)
     check_widgets(c,
         f=dict(
@@ -325,7 +325,7 @@ def test_annotations():
     @annotate(n=10, f=widgets.FloatText())
     def f(n, f):
         pass
-    
+
     c = interactive(f)
     check_widgets(c,
         n=dict(
@@ -341,7 +341,7 @@ def test_priority():
     @annotate(annotate='annotate', kwarg='annotate')
     def f(kwarg='default', annotate='default', default='default'):
         pass
-    
+
     c = interactive(f, kwarg='kwarg')
     check_widgets(c,
         kwarg=dict(
@@ -374,7 +374,7 @@ def test_interact_instancemethod():
             print(x)
 
     f = Foo()
-    
+
     with patch.object(interaction, 'display', record_display):
         g = interact(f.show, x=(1,10))
     nt.assert_equal(len(displayed), 1)
@@ -458,7 +458,7 @@ def test_call_decorated_on_trait_change():
     a = foo('hello')
     nt.assert_equal(a, 'hello')
     nt.assert_equal(d['a'], 'hello')
-    
+
     # test that setting trait values calls the function
     with patch.object(interaction, 'display', record_display):
         w.value = 'called'
@@ -485,7 +485,7 @@ def test_call_decorated_kwargs_on_trait_change():
     a = foo('hello')
     nt.assert_equal(a, 'hello')
     nt.assert_equal(d['a'], 'hello')
-    
+
     # test that setting trait values calls the function
     with patch.object(interaction, 'display', record_display):
         w.value = 'called'
@@ -519,7 +519,7 @@ def test_custom_description():
     def record_kwargs(**kwargs):
         d.clear()
         d.update(kwargs)
-    
+
     c = interactive(record_kwargs, b=widgets.Text(value='text', description='foo'))
     w = c.children[0]
     check_widget(w,
@@ -555,7 +555,7 @@ def test_int_range_logic():
     check_widget(w, cls=irsw, value=(3, 6), min=3, max=6)
     w.max = 3
     check_widget(w, cls=irsw, value=(3, 3), min=3, max=3)
-    
+
     w.min = 0
     w.max = 6
     w.lower = 2
@@ -573,7 +573,7 @@ def test_int_range_logic():
     check_widget(w, cls=irsw, value=(0, 0), min=0, max=6)
     w.value = (7, 8)
     check_widget(w, cls=irsw, value=(6, 6), min=0, max=6)
-    
+
     with nt.assert_raises(ValueError):
         w.min = 7
     with nt.assert_raises(ValueError):
@@ -582,12 +582,12 @@ def test_int_range_logic():
         w.lower = 5
     with nt.assert_raises(ValueError):
         w.upper = 1
-    
+
     w = irsw(min=2, max=3)
     check_widget(w, min=2, max=3)
     w = irsw(min=100, max=200)
     check_widget(w, lower=125, upper=175, value=(125, 175))
-    
+
     with nt.assert_raises(ValueError):
         irsw(value=(2, 4), lower=3)
     with nt.assert_raises(ValueError):
@@ -600,7 +600,7 @@ def test_int_range_logic():
         irsw(lower=5)
     with nt.assert_raises(ValueError):
         irsw(upper=5)
-    
+
 
 def test_float_range_logic():
     frsw = widgets.FloatRangeSlider
@@ -614,7 +614,7 @@ def test_float_range_logic():
     check_widget(w, cls=frsw, value=(.3, .6), min=.3, max=.6)
     w.max = .3
     check_widget(w, cls=frsw, value=(.3, .3), min=.3, max=.3)
-    
+
     w.min = 0.
     w.max = .6
     w.lower = .2
@@ -632,7 +632,7 @@ def test_float_range_logic():
     check_widget(w, cls=frsw, value=(0., 0.), min=0., max=.6)
     w.value = (.7, .8)
     check_widget(w, cls=frsw, value=(.6, .6), min=.0, max=.6)
-    
+
     with nt.assert_raises(ValueError):
         w.min = .7
     with nt.assert_raises(ValueError):
@@ -641,12 +641,12 @@ def test_float_range_logic():
         w.lower = .5
     with nt.assert_raises(ValueError):
         w.upper = .1
-    
+
     w = frsw(min=2, max=3)
     check_widget(w, min=2, max=3)
     w = frsw(min=1., max=2.)
     check_widget(w, lower=1.25, upper=1.75, value=(1.25, 1.75))
-    
+
     with nt.assert_raises(ValueError):
         frsw(value=(2, 4), lower=3)
     with nt.assert_raises(ValueError):

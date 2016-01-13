@@ -1,7 +1,7 @@
 {
-  "name": "ipywidgets-test",
+  "name": "jupyter-js-widgets-test",
   "version": "1.0.0",
-  "description": "Project that tests the ability to npm install ipywidgets within an npm project.",
+  "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
   "main": "index.js",
   "scripts": {
     "prepublish": "browserify -g node-lessify index.js --outfile index.built.js --debug",
@@ -11,8 +11,14 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "browserify": "^11.2.0",
-    "node-lessify": "^0.1.1",
     "codemirror": "^5.9.0",
-    "ipywidgets": "file:../../.."
+    "font-awesome": "^4.5.0",
+    "jupyter-js-widgets": "file:../../../ipywidgets",
+    "jquery": "^2.1.4",
+    "jquery-ui": "^1.10.5",
+    "node-lessify": "^0.1.1"
+  },
+  "devDependencies": {
+    "bower": "^1.7.0"
   }
 }

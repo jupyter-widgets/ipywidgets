@@ -80,12 +80,12 @@
 }
 
 .widget-hslider {
-    /* Horizontal jQuery Slider 
+    /* Horizontal jQuery Slider
 
     Both the horizontal and vertical versions of the slider are characterized
-    by a styled div that contains an invisible jQuery slide div which 
+    by a styled div that contains an invisible jQuery slide div which
     contains a visible slider handle div.  This is requred so we can control
-    how the slider is drawn and 'fix' the issue where the slide handle 
+    how the slider is drawn and 'fix' the issue where the slide handle
     doesn't stop at the end of the slide.
 
     Both horizontal and vertical sliders have this div nesting:
@@ -100,10 +100,10 @@
     +------------------------------------------+
     */
 
-    width        : @widget-width; 
+    width        : @widget-width;
 
     .slider-container {
-        /* Fix the padding of the slide track so the ui-slider is sized 
+        /* Fix the padding of the slide track so the ui-slider is sized
         correctly. */
         padding-left  : 8px;
         padding-right : 2px;
@@ -115,7 +115,7 @@
         max-height   : 5px;
         margin-top   : 15px;
         margin-bottom: 12px;
-    
+
         /* Style the slider track */
         .slide-track();
 
@@ -213,7 +213,7 @@
 .widget-button {
     /* Button */
     width : @widget-width-short;
-    
+
     .outside-shadow-2dp();
 
     &.btn,
@@ -222,16 +222,20 @@
     &.btn.hover {
         outline: none !important;
     }
-    
+
     &.btn:active {
         .outside-shadow-4dp();
     }
 }
 
+.widget-checkbox {
+    width: @widget-width-short;
+}
+
 .widget-toggle-button {
     /* Button */
     width : @widget-width-short;
-    
+
     .outside-shadow-2dp();
 
     &.btn,
@@ -240,7 +244,7 @@
     &.btn.hover {
         outline: none !important;
     }
-    
+
     // &.btn:active {
     //     .outside-shadow-4dp();
     // }
@@ -254,11 +258,11 @@
     .btn.hover {
         outline: none !important;
     }
-    
+
     .btn.active {
         box-shadow: none !important;
     }
-    
+
     .btn-group {
         .outside-shadow-2dp();
     }
@@ -291,6 +295,12 @@
     .widget-combo-btn {
         flex-grow: 1;
         min-width: 10px;
+    }
+
+    .dropdown-menu {
+        max-height: 200px;
+        overflow: hidden;
+        overflow-y: auto;
     }
 }
 
@@ -346,7 +356,7 @@
 .widget-combo-btn {
     /* ComboBox Main Button */
     /* Subtract 25px to account for the drop arrow button */
-    min-width : @widget-width-short - 25px; 
+    min-width : @widget-width-short - 25px;
 }
 
 .widget_item .dropdown-menu li a {
@@ -395,7 +405,7 @@
 }
 
 .widget-vbox {
-    /* Vertical Widgets */ 
+    /* Vertical Widgets */
     .vbox();
 
     input[type="color"] {
@@ -429,7 +439,7 @@
     /* Contains RadioButtonsWidget */
     .vbox();
     .border-box-sizing();
-    
+
     padding-top: 4px;
 
     label {

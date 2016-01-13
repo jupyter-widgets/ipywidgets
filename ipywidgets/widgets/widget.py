@@ -99,9 +99,11 @@ def _show_traceback(method):
 
 def register(key=None):
     """Returns a decorator registering a widget class in the widget registry.
-    If no key is provided, the class name is used as a key. A key is
-    provided for each core IPython widget so that the frontend can use
-    this key regardless of the language of the kernel"""
+
+    If no key is provided, the class name is used as a key.
+    A key is provided for each core Jupyter widget so that the frontend can use
+    this key regardless of the language of the kernel.
+    """
     def wrap(widget):
         l = key if key is not None else widget.__module__ + widget.__name__
         Widget.widget_types[l] = widget
@@ -134,7 +136,11 @@ class Widget(LoggingConfigurable):
     @staticmethod
     def handle_comm_opened(comm, msg):
         """Static method, called when a widget is constructed."""
-        widget_class = import_item(str(msg['content']['data']['widget_class']))
+        class_name = str(msg['content']['data']['widget_class'])
+        if class_name in Widget.widget_types:
+            widget_class = Widget.widget_types[class_name]
+        else:
+            widget_class = import_item(class_name)
         widget = widget_class(comm=comm)
 
 
@@ -154,7 +160,6 @@ class Widget(LoggingConfigurable):
     msg_throttle = Int(3, sync=True, help="""Maximum number of msgs the
         front-end can send before receiving an idle msg from the back-end.""")
 
-    version = Int(0, sync=True, help="""Widget's version""")
     keys = List()
     def _keys_default(self):
         return [name for name in self.traits(sync=True)]
@@ -189,9 +194,7 @@ class Widget(LoggingConfigurable):
         if self.comm is None:
             state, buffer_keys, buffers = self._split_state_buffers(self.get_state())
             
-            args = dict(target_name='ipython.widget',
-                        data=state,
-            )
+            args = dict(target_name='jupyter.widget', data=state)
             if self._model_id is not None:
                 args['comm_id'] = self._model_id
             
@@ -231,7 +234,7 @@ class Widget(LoggingConfigurable):
             Widget.widgets.pop(self.model_id, None)
             self.comm.close()
             self.comm = None
-    
+
     def _split_state_buffers(self, state):
         """Return (state_without_buffers, buffer_keys, buffers) for binary message parts"""
         buffer_keys, buffers = [], []
@@ -430,19 +433,17 @@ class Widget(LoggingConfigurable):
         self._msg_callbacks(self, content, buffers)
 
     def _notify_trait(self, name, old_value, new_value):
-        """Called when a property has been changed."""
-        # Trigger default traitlet callback machinery.  This allows any user
-        # registered validation to be processed prior to allowing the widget
-        # machinery to handle the state.
-        LoggingConfigurable._notify_trait(self, name, old_value, new_value)
-
-        # Send the state after the user registered callbacks for trait changes
-        # have all fired (allows for user to validate values).
+        """Called when a property has changed."""
+        # Send the state before the user registered callbacks for trait changess
+        # have all fired.
         if self.comm is not None and name in self.keys:
             # Make sure this isn't information that the front-end just sent us.
             if self._should_send_property(name, new_value):
                 # Send new state to front-end
                 self.send_state(key=name)
+
+        # Trigger default traitlet callback machinery.
+        LoggingConfigurable._notify_trait(self, name, old_value, new_value)
 
     def _handle_displayed(self, **kwargs):
         """Called when a view has been displayed for this widget instance"""
@@ -462,9 +463,31 @@ class Widget(LoggingConfigurable):
         """Called when `IPython.display.display` is called on the widget."""
         # Show view.
         if self._view_name is not None:
+            validated = validate_version()
+            
+            # Before the user tries to display a widget.  Validate that the
+            # widget front-end is what is expected.
+            if validated is None:
+                self.log.warn('Widget Javascript not detected.  It may not be installed properly.')
+            elif not validated:
+                self.log.warn('The installed widget Javascript is the wrong version.')
+            
             self._send({"method": "display"})
             self._handle_displayed(**kwargs)
 
     def _send(self, msg, buffers=None):
         """Sends a message to the model in the front-end."""
         self.comm.send(data=msg, buffers=buffers)
+
+
+_version_validated = None
+def handle_version_comm_opened(comm, msg):
+    """Called when version comm is opened, because the front-end wants to 
+    validate the version."""
+    def handle_version_message(msg):
+        _version_validated = msg['content']['data']['validated']
+    comm.on_msg(handle_version_message)
+    comm.send({'version': '4.1.0dev'})
+    
+def validate_version():
+    return _version_validated

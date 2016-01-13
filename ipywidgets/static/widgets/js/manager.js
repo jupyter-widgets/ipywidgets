@@ -71,7 +71,7 @@ define([
                     });
                 }));
             }).then(function(model_ids) {
-                
+
                 // Load the initial state of the widget manager if a load callback was
                 // registered.
                 if (WidgetManager._load_callback) {
@@ -94,9 +94,26 @@ define([
                 }).catch(utils.reject('Could not call widget save state callback.', true));
             }
         });
+        
+        // Validate the version requested by the backend.
+        var validate = (function validate() {
+            this.validateVersion().then(function(valid) {
+                if (!valid) {
+                    console.warn('Widget frontend version does not match the backend.');
+                }
+            }).catch(function(err) {
+                console.error('Could not cross validate the widget frontend and backend versions.', err);
+            });
+        }).bind(this);
+        validate();
+        
+        // Revalidate the version when a new kernel connects.
+        this.notebook.events.on('kernel_connected.Kernel', function(event, data) {
+            validate();
+        });
     };
     WidgetManager.prototype = Object.create(managerBase.ManagerBase.prototype);
-    
+
     WidgetManager._managers = []; /* List of widget managers */
     WidgetManager._load_callback = null;
     WidgetManager._save_callback = null;
@@ -266,30 +283,13 @@ define([
 
     WidgetManager.prototype._get_comm_info = function() {
         /**
-         * Gets a promise for the open comms in the backend
+         * Gets a promise for the valid widget models.
          */
-
-        // Version using the comm_list_[request/reply] shell message.
-        /*var that = this;
-        return new Promise(function(resolve, reject) {
-             kernel.comm_info(function(msg) {
-                 resolve(msg['content']['comms']);
-             });
-        });*/
-
-        // Workaround for absence of comm_list_[request/reply] shell message.
-        // Create a new widget that gives the comm list and commits suicide.
         var that = this;
         return this._get_connected_kernel().then(function(kernel) {
             return new Promise(function(resolve, reject) {
-                var comm = kernel.comm_manager.new_comm('ipython.widget',
-                                    {'widget_class': 'ipywidgets.CommInfo'},
-                                    'comm_info');
-                comm.on_msg(function(msg) {
-                    var data = msg.content.data;
-                    if (data.content && data.method === 'custom') {
-                        resolve(data.content.comms);
-                    }
+                kernel.comm_info('jupyter.widget', function(msg) {
+                    resolve(msg['content']['comms']);
                 });
             });
         });

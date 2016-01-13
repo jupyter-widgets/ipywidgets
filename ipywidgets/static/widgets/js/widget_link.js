@@ -12,6 +12,11 @@ define([
 
     var BaseLinkModel = widget.WidgetModel.extend({
 
+        defaults: _.extend({}, widget.WidgetModel.prototype.defaults, {
+            target: undefined,
+            source: undefined,
+        }),
+
         update_value: function(source, target) {
             if (this.updating) {
                 return;
@@ -44,11 +49,15 @@ define([
         serializers: _.extend({
             target: {deserialize: widget.unpack_models},
             source: {deserialize: widget.unpack_models},
-        }, widget.WidgetModel.prototype.serializers),
+        }, widget.WidgetModel.serializers),
 
     });
 
     var LinkModel = BaseLinkModel.extend({
+
+        defaults: _.extend({}, BaseLinkModel.prototype.defaults, {
+            _model_name: "LinkModel"
+        }),
 
         initialize: function() {
             this.on("change", this.update_bindings, this);
@@ -72,10 +81,13 @@ define([
                 this.listenToOnce(this.target[0], "destroy", this.cleanup, this);
             }
         },
-
     });
 
     var DirectionalLinkModel = BaseLinkModel.extend({
+
+        defaults: _.extend({}, BaseLinkModel.prototype.defaults, {
+            _model_name: "DirectionalLinkModel"
+        }),
 
         initialize: function() {
             this.on("change", this.update_bindings, this);
@@ -100,7 +112,7 @@ define([
     });
 
     return {
-        "LinkModel": LinkModel,
-        "DirectionalLinkModel": DirectionalLinkModel,
+        LinkModel: LinkModel,
+        DirectionalLinkModel: DirectionalLinkModel,
     }
 });

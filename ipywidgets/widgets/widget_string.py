@@ -23,32 +23,42 @@ class _String(DOMWidget):
             kwargs['value'] = value
         super(_String, self).__init__(**kwargs)
 
-@register('IPython.HTML')
+    _model_name = Unicode('StringModel', sync=True)
+
+
+@register('Jupyter.HTML')
 class HTML(_String):
     """Renders the string `value` as HTML."""
     _view_name = Unicode('HTMLView', sync=True)
+    _model_name = Unicode('HTMLModel', sync=True)
 
 
-@register('IPython.Latex')
+@register('Jupyter.Latex')
 class Latex(_String):
-    """Renders math inside the string `value` as Latex (requires $ $ or $$ $$ 
-    and similar latex tags)."""
+    """Label widget.
+
+    It also renders math inside the string `value` as Latex (requires $ $ or
+    $$ $$ and similar latex tags).
+    """
     _view_name = Unicode('LatexView', sync=True)
+    _model_name = Unicode('LatexModel', sync=True)
 
 
-@register('IPython.Textarea')
+@register('Jupyter.Textarea')
 class Textarea(_String):
     """Multiline text area widget."""
     _view_name = Unicode('TextareaView', sync=True)
+    _model_name = Unicode('TextareaModel', sync=True)
 
     def scroll_to_bottom(self):
         self.send({"method": "scroll_to_bottom"})
 
 
-@register('IPython.Text')
+@register('Jupyter.Text')
 class Text(_String):
     """Single line textbox widget."""
     _view_name = Unicode('TextView', sync=True)
+    _model_name = Unicode('TextModel', sync=True)
 
     def __init__(self, *args, **kwargs):
         super(Text, self).__init__(*args, **kwargs)
