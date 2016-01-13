@@ -33,6 +33,8 @@ module.exports = function(config) {
         webpack: {
             module: {
                 loaders: [
+                    // sinon does not play well with webpack cf https://github.com/webpack/webpack/issues/177
+                    { test: /sinon.*\.js$/, loader: "imports?define=>false,require=>false" },
                     { test: /\.jsx?$/, exclude: /node_modules/, loader: "babel?presets[]=es2015" },
                     { test: /\.css$/, loader: "style-loader!css-loader" },
                     { test: /\.json$/, loader: "json-loader" },
