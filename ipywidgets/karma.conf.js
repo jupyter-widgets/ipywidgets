@@ -33,11 +33,12 @@ module.exports = function(config) {
         webpack: {
             module: {
                 loaders: [
-                    // sinon does not play well with webpack cf https://github.com/webpack/webpack/issues/177
                     { test: /\.jsx?$/, exclude: /node_modules/, loader: "babel?presets[]=es2015" },
                     { test: /\.css$/, loader: "style-loader!css-loader" },
                     { test: /\.json$/, loader: "json-loader" },
+                    // jquery-ui loads some images
                     { test: /\.(jpg|png|gif)$/, loader: "file" },
+                    // required to load font-awesome
                     { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/font-woff" },
                     { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/font-woff" },
                     { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/octet-stream" },
