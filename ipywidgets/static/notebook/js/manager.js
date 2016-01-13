@@ -210,7 +210,7 @@ define([
         }
     
         // Update the widget area snapshots.
-        this.updateSnapshots();
+        setTimeout(this.updateSnapshots.bind(this), 1);
     };
 
     WidgetManager.prototype.display_model = function(msg, model, options) {
