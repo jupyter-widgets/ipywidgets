@@ -25,24 +25,25 @@
     "postversion": "node copy_version.js --dev && git add _version.py && git commit -m \"Back to dev\""
   },
   "devDependencies": {
+    "babel-core": "^6.4.0",
+    "babel-loader": "^6.2.1",
     "babel-preset-es2015": "^6.3.13",
-    "babelify": "^7.2.0",
     "bower": "^1.5.3",
     "chai": "^3.4.1",
     "clean-css": "^3.4.6",
     "karma": "^0.13.15",
-    "karma-browserify": "^4.4.2",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^0.2.2",
     "karma-firefox-launcher": "^0.1.7",
     "karma-mocha": "^0.2.1",
     "karma-mocha-reporter": "^1.1.3",
+    "karma-webpack": "^1.7.0",
     "less": "^2.5.3",
     "mocha": "^2.3.4",
-    "node-lessify": "^0.1.1",
     "rimraf": "^2.4.1",
     "sinon": "^1.17.2",
-    "spawn-sync": "^1.0.14"
+    "spawn-sync": "^1.0.14",
+    "webpack": "^1.12.11"
   },
   "dependencies": {
     "backbone": "1.2.0",
