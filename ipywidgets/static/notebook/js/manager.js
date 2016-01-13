@@ -123,6 +123,18 @@ define([
         this.notebook.events.on('notebook_save_failed.Notebook', this.deleteSnapshots.bind(this));
         this.notebook.events.on('notebook_loaaded.Notebook', this.deleteSnapshots.bind(this));
         this.deleteSnapshots();
+        
+        var notifier = Jupyter.notification_area.new_notification_widget('widgets');
+        Jupyter.toolbar.actions.register({
+            handler: (function() {
+                this.updateSnapshots().then((function() {
+                    notifier.set_message('Widgets rendered', 3000);
+                }).bind(this));
+            }).bind(this),
+            icon: 'fa-truck',
+            help: 'Rasterizes the current state of the widgets to the notebook as PNG images.'
+        }, 'widgets-build-snapshots');
+        Jupyter.toolbar.add_buttons_group(['auto:widgets-build-snapshots'], 'widgets');
     };
     WidgetManager.prototype = Object.create(widgets.ManagerBase.prototype);
 
@@ -208,9 +220,6 @@ define([
                 }
             }
         }
-    
-        // Update the widget area snapshots.
-        setTimeout(this.updateSnapshots.bind(this), 1);
     };
 
     WidgetManager.prototype.display_model = function(msg, model, options) {
@@ -292,7 +301,7 @@ define([
         var cells = Jupyter.notebook.get_cells();
         return Promise.all(cells.map((function(cell) {
             var widgetSubarea = cell.element[0].querySelector(".widget-subarea");
-            if (widgetSubarea.children.length > 0) {
+            if (widgetSubarea && widgetSubarea.children.length > 0) {
                 return new Promise((function(resolve) {
                     html2canvas(widgetSubarea, {
                         onrendered: function(canvas) {
@@ -308,7 +317,7 @@ define([
                     });
                 }).bind(this));
             } else {
-                if (widgetSubarea.widgetSnapshot) {
+                if (widgetSubarea && widgetSubarea.widgetSnapshot) {
                     delete widgetSubarea.widgetSnapshot;
                 }
             }
@@ -326,7 +335,7 @@ define([
         var cells = Jupyter.notebook.get_cells();
         cells.forEach((function(cell) {
             var widgetSubarea = cell.element[0].querySelector(".widget-subarea");
-            if (widgetSubarea.children.length > 0 && widgetSubarea.widgetSnapshot) {
+            if (widgetSubarea && widgetSubarea.children.length > 0 && widgetSubarea.widgetSnapshot) {
                 
                 // Get the last screenshot of the widget sub-area
                 var mimetype = widgetSubarea.widgetSnapshot.mimetype;
@@ -365,12 +374,14 @@ define([
         cells.forEach((function(cell) {
             
             // Remove the outputs with isWidgetSnapshot: true.
-            var outputState = cell.output_area.toJSON();
-            outputState = outputState.filter((function(output) {
-                return !(output.metadata && output.metadata.isWidgetSnapshot);
-            }).bind(this));
-            cell.output_area.clear_output();
-            cell.output_area.fromJSON(outputState);
+            if (cell.output_area) {
+                var outputState = cell.output_area.toJSON();
+                outputState = outputState.filter((function(output) {
+                    return !(output.metadata && output.metadata.isWidgetSnapshot);
+                }).bind(this));
+                cell.output_area.clear_output();
+                cell.output_area.fromJSON(outputState);                
+            }
         }).bind(this));
     };
 
