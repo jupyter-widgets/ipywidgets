@@ -2,21 +2,21 @@
 // Distributed under the terms of the Modified BSD License.
 
 define([
-    'nbextensions/widgets/widgets/js/init',
+    'nbextensions/widgets/jupyter-js-widgets',
     'nbextensions/widgets/notebook/js/widgetarea',
     'base/js/events',
     'base/js/namespace',
-], function(widgetmanager, widgetarea, events, IPython) {
+], function(jupyter_js_widgets, widgetarea, events, IPython) {
     "use strict";
     /**
      * Create a widget manager for a kernel instance.
      */
     var handle_kernel = function(kernel) {
         if (kernel.comm_manager && kernel.widget_manager === undefined) {
-            
+
             // Create a widget manager instance.  Use the global
             // IPython.notebook handle.
-            var manager = new widgetmanager.WidgetManager(kernel.comm_manager, IPython.notebook);
+            var manager = new jupyter_js_widgets.WidgetManager(kernel.comm_manager, IPython.notebook);
 
             // Store a handle to the manager so we know not to
             // another for this kernel.  This also is a convinience
@@ -35,7 +35,7 @@ define([
             cell.widgetarea = area;
         }
     };
-    
+
     function register_events () {
         // If a kernel already exists, create a widget manager.
         if (IPython.notebook && IPython.notebook.kernel) {
@@ -80,7 +80,7 @@ define([
         register_events();
         console.log("loaded widgets");
     }
-    
+
     return {
       load_ipython_extension: load_ipython_extension,
     };
