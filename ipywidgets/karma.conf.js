@@ -10,12 +10,12 @@ module.exports = function(config) {
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ['browserify', 'mocha', 'chai'],
+        frameworks: ['mocha', 'chai', 'sinon-chai'],
 
 
         // list of files / patterns to load in the browser
         files: [
-            'test/**/*.js'
+            'test/**/*_test.js'
         ],
 
 
@@ -27,15 +27,30 @@ module.exports = function(config) {
         // preprocess matching files before serving them to the browser
         // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
         preprocessors: {
-            'test/**/*.js': [ 'browserify' ]
+            'test/**/*.js': [ 'webpack' ]
         },
 
-        browserify: {
-            debug: true,
-            transform: [ 
-                ['babelify', {presets: ['es2015']}],
-                'node-lessify'
-            ]
+        webpack: {
+            module: {
+                loaders: [
+                    { test: /\.jsx?$/, exclude: /node_modules/, loader: "babel?presets[]=es2015" },
+                    { test: /\.css$/, loader: "style-loader!css-loader" },
+                    { test: /\.json$/, loader: "json-loader" },
+                    // jquery-ui loads some images
+                    { test: /\.(jpg|png|gif)$/, loader: "file" },
+                    // required to load font-awesome
+                    { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/font-woff" },
+                    { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/font-woff" },
+                    { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=application/octet-stream" },
+                    { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
+                    { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=image/svg+xml" }
+                ]
+            },
+            externals: {
+                "base/js/namespace": "base/js/namespace",
+                "notebook/js/outputarea": "notebook/js/outputarea",
+                "services/kernels/comm": "services/kernels/comm"
+            },
         },
 
         // test results reporter to use
@@ -80,10 +95,10 @@ module.exports = function(config) {
         // how many browser should be started simultanous
         concurrency: Infinity
     };
-    
+
     if (process.env.TRAVIS) {
         cfg.browsers = ['Chrome_travis_ci'];
     }
-    
+
     config.set(cfg);
 };
