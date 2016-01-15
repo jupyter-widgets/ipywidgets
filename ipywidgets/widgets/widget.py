@@ -8,6 +8,7 @@ in the IPython notebook front-end.
 
 from contextlib import contextmanager
 import collections
+import sys
 
 from IPython.core.getipython import get_ipython
 from ipykernel.comm import Comm
@@ -461,16 +462,20 @@ class Widget(LoggingConfigurable):
 
     def _ipython_display_(self, **kwargs):
         """Called when `IPython.display.display` is called on the widget."""
+        def loud_error(message):
+            self.log.warn(message)
+            sys.stderr.write('%s\n' % message)
+            
         # Show view.
         if self._view_name is not None:
-            validated = validate_version()
+            validated = Widget._version_validated
             
             # Before the user tries to display a widget.  Validate that the
             # widget front-end is what is expected.
             if validated is None:
-                self.log.warn('Widget Javascript not detected.  It may not be installed properly.')
+                loud_error('Widget Javascript not detected.  It may not be installed properly.')
             elif not validated:
-                self.log.warn('The installed widget Javascript is the wrong version.')
+                loud_error('The installed widget Javascript is the wrong version.')
             
             self._send({"method": "display"})
             self._handle_displayed(**kwargs)
@@ -480,14 +485,11 @@ class Widget(LoggingConfigurable):
         self.comm.send(data=msg, buffers=buffers)
 
 
-_version_validated = None
+Widget._version_validated = None
 def handle_version_comm_opened(comm, msg):
     """Called when version comm is opened, because the front-end wants to 
     validate the version."""
     def handle_version_message(msg):
-        _version_validated = msg['content']['data']['validated']
+        Widget._version_validated = msg['content']['data']['validated']
     comm.on_msg(handle_version_message)
     comm.send({'version': '4.1.0dev'})
-    
-def validate_version():
-    return _version_validated
