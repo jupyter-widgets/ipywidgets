@@ -1,13 +1,22 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+requirejs.config({
+    map: {
+        "*": {
+            "jupyter-js-widgets": "nbextensions/widgets/index",
+        },
+    }
+});
+
 define([
-    'nbextensions/widgets/jupyter-js-widgets',
-    'nbextensions/widgets/notebook/js/widgetarea',
-    'base/js/events',
-    'base/js/namespace',
+    "jupyter-js-widgets",
+    "nbextensions/widgets/notebook/js/widgetarea",
+    "base/js/events",
+    "base/js/namespace",
 ], function(jupyter_js_widgets, widgetarea, events, IPython) {
     "use strict";
+
     /**
      * Create a widget manager for a kernel instance.
      */
@@ -51,7 +60,7 @@ define([
         for (var i = 0; i < cells.length; i++) {
             handle_cell(cells[i]);
         }
-    
+
         // Listen to cell creation and deletion events.  When a
         // cell is created, create a widget area for that cell.
         events.on('create.Cell', function(event, data) {
@@ -67,7 +76,7 @@ define([
     }
 
     function load_css () {
-    // FIXME: this should be done with require-css
+        // FIXME: this should be done with require-css
         var css = document.createElement("link");
         css.setAttribute("rel", "stylesheet");
         css.setAttribute("type", "text/css");
