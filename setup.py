@@ -226,9 +226,9 @@ if 'setuptools' in sys.modules:
 setuptools_args = {}
 install_requires = setuptools_args['install_requires'] = [
     'ipython>=4.0.0',
-    'ipykernel>=4.2.0',
-    'traitlets',
-    'notebook>=4.1.0b1',
+    'ipykernel>=4.2.2',
+    'traitlets>=4.1.0',
+    'notebook>=4.1.0',
 ]
 
 extras_require = setuptools_args['extras_require'] = {
