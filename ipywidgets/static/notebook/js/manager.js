@@ -10,6 +10,10 @@ define([
 ], function (_, Backbone, comm, widgets, html2canvas) {
     "use strict";
     
+    // html2canvas cannot be loaded by AMD and pollutes the global namespace.
+    // Grab it from the global namespace.
+    html2canvas = window.html2canvas;
+    
     //--------------------------------------------------------------------
     // WidgetManager class
     //--------------------------------------------------------------------
@@ -124,17 +128,7 @@ define([
         this.notebook.events.on('notebook_loaaded.Notebook', this.deleteSnapshots.bind(this));
         this.deleteSnapshots();
         
-        var notifier = Jupyter.notification_area.new_notification_widget('widgets');
-        Jupyter.toolbar.actions.register({
-            handler: (function() {
-                this.updateSnapshots().then((function() {
-                    notifier.set_message('Widgets rendered', 3000);
-                }).bind(this));
-            }).bind(this),
-            icon: 'fa-truck',
-            help: 'Rasterizes the current state of the widgets to the notebook as PNG images.'
-        }, 'widgets-build-snapshots');
-        Jupyter.toolbar.add_buttons_group(['auto:widgets-build-snapshots'], 'widgets');
+        this._init_actions();
     };
     WidgetManager.prototype = Object.create(widgets.ManagerBase.prototype);
 
@@ -222,6 +216,54 @@ define([
         }
     };
 
+    /**
+     * Registers manager level actions with the notebook actions list and
+     * creates a menubar item for the widgets.
+     */
+    WidgetManager.prototype._init_actions = function() {
+        var notifier = Jupyter.notification_area.new_notification_widget('widgets');
+        var buildSnapshotsAction = {
+            handler: (function() {
+                console.log('clicked!');
+                this.updateSnapshots().then((function() {
+                    notifier.set_message('Widgets rendered', 3000);
+                }).bind(this));
+            }).bind(this),
+            icon: 'fa-truck',
+            help: 'Rasterizes the current state of the widgets to the notebook as PNG images.'
+        };
+        Jupyter.menubar.actions.register(buildSnapshotsAction, 'build-snapshots', 'widgets');
+        
+        // Add a widgets menubar item, before help.
+        var widgets_menu = document.createElement('li');
+        widgets_menu.classList.add('dropdown');
+        var help_menu = document.querySelector('#help_menu').parentElement;
+        help_menu.parentElement.insertBefore(widgets_menu, help_menu);
+        
+        var widgets_menu_link = document.createElement('a');
+        widgets_menu_link.setAttribute('href', '#');
+        widgets_menu_link.setAttribute('data-toggle', 'dropdown');
+        widgets_menu_link.classList.add('dropdown-toggle');
+        widgets_menu_link.innerText = 'Widgets';
+        widgets_menu.appendChild(widgets_menu_link);
+        
+        var widgets_submenu = document.createElement('ul');
+        widgets_submenu.setAttribute('id', 'widget-submenu');
+        widgets_submenu.classList.add('dropdown-menu');
+        widgets_menu.appendChild(widgets_submenu);
+        
+        var build_snapshots = document.createElement('li');
+        build_snapshots.setAttribute('title', buildSnapshotsAction.help);
+        widgets_submenu.appendChild(build_snapshots);
+        
+        var build_snapshots_link = document.createElement('a');
+        build_snapshots_link.setAttribute('href', '#');
+        build_snapshots_link.innerText = 'Build snapshots';
+        build_snapshots.appendChild(build_snapshots_link);
+        
+        build_snapshots.onclick = buildSnapshotsAction.handler;
+    };
+    
     WidgetManager.prototype.display_model = function(msg, model, options) {
         options = options || {};
         if (msg) {
