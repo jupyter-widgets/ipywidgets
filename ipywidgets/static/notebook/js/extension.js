@@ -14,7 +14,7 @@ define([
     "nbextensions/widgets/notebook/js/widgetarea",
     "base/js/events",
     "base/js/namespace",
-], function(jupyter_js_widgets, widgetarea, events, IPython) {
+], function(widgets, widgetarea, events, IPython) {
     "use strict";
 
     /**
@@ -25,7 +25,7 @@ define([
 
             // Create a widget manager instance.  Use the global
             // IPython.notebook handle.
-            var manager = new jupyter_js_widgets.WidgetManager(kernel.comm_manager, IPython.notebook);
+            var manager = new widgets.WidgetManager(kernel.comm_manager, IPython.notebook);
 
             // Store a handle to the manager so we know not to
             // another for this kernel.  This also is a convinience

@@ -301,11 +301,7 @@ class Widget(LoggingConfigurable):
                 if name in self.keys:
                     from_json = self.trait_metadata(name, 'from_json',
                                                     self._trait_from_json)
-                    # traitlets < 4.1 don't support read-only attributes
-                    if hasattr(self, 'set_trait'):
-                        self.set_trait(name, from_json(sync_data[name], self))
-                    else:
-                        setattr(self, name, from_json(sync_data[name], self))
+                    self.set_trait(name, from_json(sync_data[name], self))
 
     def send(self, content, buffers=None):
         """Sends a custom msg to the widget model in the front-end.
