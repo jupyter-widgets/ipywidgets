@@ -194,11 +194,11 @@ class Widget(LoggingConfigurable):
         """Open a comm to the frontend if one isn't already open."""
         if self.comm is None:
             state, buffer_keys, buffers = self._split_state_buffers(self.get_state())
-            
+
             args = dict(target_name='jupyter.widget', data=state)
             if self._model_id is not None:
                 args['comm_id'] = self._model_id
-            
+
             self.comm = Comm(**args)
             if buffers:
                 # FIXME: workaround ipykernel missing binary message support in open-on-init
@@ -352,6 +352,18 @@ class Widget(LoggingConfigurable):
                  self.keys.append(name)
                  self.send_state(name)
 
+    def notify_change(self, change):
+        """Called when a property has changed."""
+        # Send the state before the user registered callbacks for trait changes
+        # have all fired.
+        name = change['name']
+        if self.comm is not None and name in self.keys:
+            # Make sure this isn't information that the front-end just sent us.
+            if self._should_send_property(name, change['new']):
+                # Send new state to front-end
+                self.send_state(key=name)
+        LoggingConfigurable.notify_change(self, change)
+
     #-------------------------------------------------------------------------
     # Support methods
     #-------------------------------------------------------------------------
@@ -429,19 +441,6 @@ class Widget(LoggingConfigurable):
         """Called when a custom msg is received."""
         self._msg_callbacks(self, content, buffers)
 
-    def _notify_trait(self, name, old_value, new_value):
-        """Called when a property has changed."""
-        # Send the state before the user registered callbacks for trait changess
-        # have all fired.
-        if self.comm is not None and name in self.keys:
-            # Make sure this isn't information that the front-end just sent us.
-            if self._should_send_property(name, new_value):
-                # Send new state to front-end
-                self.send_state(key=name)
-
-        # Trigger default traitlet callback machinery.
-        LoggingConfigurable._notify_trait(self, name, old_value, new_value)
-
     def _handle_displayed(self, **kwargs):
         """Called when a view has been displayed for this widget instance"""
         self._display_callbacks(self, **kwargs)
@@ -461,18 +460,18 @@ class Widget(LoggingConfigurable):
         def loud_error(message):
             self.log.warn(message)
             sys.stderr.write('%s\n' % message)
-            
+
         # Show view.
         if self._view_name is not None:
             validated = Widget._version_validated
-            
+
             # Before the user tries to display a widget.  Validate that the
             # widget front-end is what is expected.
             if validated is None:
                 loud_error('Widget Javascript not detected.  It may not be installed properly.')
             elif not validated:
                 loud_error('The installed widget Javascript is the wrong version.')
-            
+
             self._send({"method": "display"})
             self._handle_displayed(**kwargs)
 
@@ -483,7 +482,7 @@ class Widget(LoggingConfigurable):
 
 Widget._version_validated = None
 def handle_version_comm_opened(comm, msg):
-    """Called when version comm is opened, because the front-end wants to 
+    """Called when version comm is opened, because the front-end wants to
     validate the version."""
     def handle_version_message(msg):
         Widget._version_validated = msg['content']['data']['validated']
