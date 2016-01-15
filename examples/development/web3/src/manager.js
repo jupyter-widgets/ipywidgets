@@ -1,16 +1,16 @@
 require('../node_modules/jupyter-js-widgets/static/components/bootstrap/css/bootstrap.css');
 require('../node_modules/jquery-ui/themes/smoothness/jquery-ui.min.css');
 
-const jpywidgets = require('jupyter-js-widgets');
+const widgets = require('jupyter-js-widgets');
 
-export class WidgetManager extends jpywidgets.ManagerBase {
+export class WidgetManager extends widgets.ManagerBase {
     constructor(kernel, el) {
         super();
         this.kernel = kernel;
         this.el = el;
 
         // Create a comm manager shim
-        this.commManager = new jpywidgets.shims.services.CommManager(kernel);
+        this.commManager = new widgets.shims.services.CommManager(kernel);
 
         // Register the comm target
         this.commManager.register_target(this.comm_target_name, this.handle_comm_open.bind(this));
@@ -26,7 +26,7 @@ export class WidgetManager extends jpywidgets.ManagerBase {
             return view;
         });
     }
-    
+
     _create_comm(targetName, id, metadata) {
         return this.commManager.new_comm(targetName, metadata, id);
     }

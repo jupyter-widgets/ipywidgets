@@ -25,4 +25,5 @@ define(["base/js/namespace"], function(Jupyter) {
     var prefix = '';
     Jupyter.notebook.keyboard_manager.actions.register(action, action_name, prefix);
 
+    return {};
 });
