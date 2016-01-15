@@ -10,7 +10,12 @@ try:  # Python >= 3.3
     from inspect import signature, Parameter
 except ImportError:
     from IPython.utils.signatures import signature, Parameter
-from inspect import getcallargs, getargspec
+from inspect import getcallargs
+
+try:
+    from inspect import getfullargspec as check_argspec
+except ImportError:
+    from inspect import getargspec as check_argspec # py2
 
 from IPython.core.getipython import get_ipython
 from . import (Widget, Text,
@@ -203,7 +208,7 @@ def interactive(__interact_f, **kwargs):
     # that will lead to a valid call of the function. This protects against unspecified
     # and doubly-specified arguments.
     try:
-        getargspec(f)
+        check_argspec(f)
     except TypeError:
         # if we can't inspect, we can't validate
         pass
