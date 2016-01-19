@@ -41,7 +41,7 @@ define([
         initialize: function() {
             // Public constructor
             ProxyView.__super__.initialize.apply(this, arguments);
-            this.$el.addClass("ipy-widget widget-container");
+            this.$el.addClass("jupyter-widgets widget-container");
             this.$box = this.$el;
             this.child_promise = Promise.resolve();
         },
@@ -147,7 +147,7 @@ define([
             /**
              * Called when view is rendered.
              */
-            this.$el.addClass("ipy-widget widget-container widget-box");
+            this.$el.addClass("jupyter-widgets widget-container widget-box");
             this.$box = this.$el;
             this.children_views.update(this.model.get('children'));
             this.update_overflow_x();

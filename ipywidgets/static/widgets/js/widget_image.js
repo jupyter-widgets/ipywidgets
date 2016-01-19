@@ -24,7 +24,7 @@ define([
              * Called when view is rendered.
              */
             this.setElement($("<img />")
-                .addClass("ipy-widget widget-image"));
+                .addClass("jupyter-widgets widget-image"));
             this.update(); // Set defaults.
         },
 
