@@ -31,7 +31,7 @@ define([
              * Called when view is rendered.
              */
             this.$el
-                .addClass('ipy-widget widget-html');
+                .addClass('jupyter-widgets widget-html');
             this.update(); // Set defaults.
         },
 
@@ -60,7 +60,7 @@ define([
              * Called when view is rendered.
              */
             this.$el
-                .addClass('ipy-widget widget-latex');
+                .addClass('jupyter-widgets widget-latex');
             this.update(); // Set defaults.
         },
 
@@ -89,7 +89,7 @@ define([
              * Called when view is rendered.
              */
             this.$el
-                .addClass('ipy-widget widget-hbox widget-textarea');
+                .addClass('jupyter-widgets widget-hbox widget-textarea');
             this.$label = $('<div />')
                 .appendTo(this.$el)
                 .addClass('widget-label')
@@ -187,7 +187,7 @@ define([
              * Called when view is rendered.
              */
             this.$el
-                .addClass('ipy-widget widget-hbox widget-text');
+                .addClass('jupyter-widgets widget-hbox widget-text');
             this.$label = $('<div />')
                 .addClass('widget-label')
                 .appendTo(this.$el)
@@ -210,7 +210,7 @@ define([
             }
             this.$textbox.attr('placeholder', value);
         },
-        
+
         update: function(options) {
             /**
              * Update the contents of this view

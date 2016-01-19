@@ -18,7 +18,7 @@ define([
 
     var ColorPickerView = widget.DOMWidgetView.extend({
         render: function() {
-            this.$el.addClass("ipy-widget widget-hbox widget-colorpicker");
+            this.$el.addClass("jupyter-widgets widget-hbox widget-colorpicker");
 
             this.$label = $("<div />")
                 .addClass("widget-label")
