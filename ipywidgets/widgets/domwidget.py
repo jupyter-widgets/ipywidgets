@@ -86,21 +86,21 @@ class DOMWidget(Widget):
     def add_class(self, className):
         """
         Adds a class to the top level element of the widget.
-        
+
         Doesn't add the class if it already exists.
         """
         if className not in self._dom_classes:
-            self._dom_classes.append(className)
+            self._dom_classes = list(self._dom_classes) + [className]
         return self
 
     def remove_class(self, className):
         """
         Removes a class from the top level element of the widget.
-        
+
         Doesn't remove the class if it doesn't exist.
         """
         if className in self._dom_classes:
-            self._dom_classes.remove(className)
+            self._dom_classes = [c for c in self._dom_classes if c != className]
         return self
 
     def _deprecate_traits(self, traits): # TODO: Deprecation added in 5.0.  Remove me and corresponging traits.
@@ -108,4 +108,3 @@ class DOMWidget(Widget):
             def traitWarn():
                 warn("%s deprecated" % trait, DeprecationWarning)
             self.on_trait_change(traitWarn, trait)
-        
