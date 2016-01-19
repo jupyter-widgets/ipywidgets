@@ -22,14 +22,14 @@ class Image(DOMWidget):
     define the format of the byte string using the `format` trait (which
     defaults to "png").
     """
-    _view_name = Unicode('ImageView', sync=True)
-    _model_name = Unicode('ImageModel', sync=True)
+    _view_name = Unicode('ImageView').tag(sync=True)
+    _model_name = Unicode('ImageModel').tag(sync=True)
 
     # Define the custom state properties to sync with the front-end
-    format = Unicode('png', sync=True)
-    width = CUnicode(sync=True)
-    height = CUnicode(sync=True)
-    _b64value = Unicode(sync=True)
+    format = Unicode('png').tag(sync=True)
+    width = CUnicode().tag(sync=True)
+    height = CUnicode().tag(sync=True)
+    _b64value = Unicode().tag(sync=True)
 
     value = Bytes()
     def _value_changed(self, name, old, new):

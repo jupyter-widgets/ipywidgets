@@ -28,17 +28,17 @@ class Button(DOMWidget):
     icon: str
        font-awesome icon name
     """
-    _view_name = Unicode('ButtonView', sync=True)
-    _model_name = Unicode('ButtonModel', sync=True)
+    _view_name = Unicode('ButtonView').tag(sync=True)
+    _model_name = Unicode('ButtonModel').tag(sync=True)
 
-    description = Unicode('', help="Button label.", sync=True)
-    tooltip = Unicode(help="Tooltip caption of the button.", sync=True)
-    disabled = Bool(False, help="Enable or disable user changes.", sync=True)
-    icon = Unicode('', help="Font-awesome icon.", sync=True)
+    description = Unicode('', help="Button label.").tag(sync=True)
+    tooltip = Unicode(help="Tooltip caption of the button.").tag(sync=True)
+    disabled = Bool(False, help="Enable or disable user changes.").tag(sync=True)
+    icon = Unicode('', help="Font-awesome icon.").tag(sync=True)
 
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
-        sync=True, help="""Use a predefined styling for the button.""")
+        help="""Use a predefined styling for the button.""").tag(sync=True)
 
     def __init__(self, **kwargs):
         super(Button, self).__init__(**kwargs)
