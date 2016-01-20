@@ -15,12 +15,13 @@ var WSURL = 'ws:' + BASEURL.split(':').slice(1).join(':');
 document.addEventListener("DOMContentLoaded", function(event) {
 
     // Connect to the notebook webserver.
-    getKernelSpecs(BASEURL).then(kernelSpecs => {
-        return startNewKernel({
-            baseUrl: BASEURL,
-            wsUrl: WSURL,
-            name: kernelSpecs.default,
-        });
+    let connectionInfo = {
+        baseUrl: BASEURL,
+        wsUrl: WSURL
+    };
+    getKernelSpecs(connectionInfo).then(kernelSpecs => {
+        connectionInfo.name = kernelSpecs.default;
+        return startNewKernel(connectionInfo);
     }).then(kernel => {
 
         // Create a codemirror instance
