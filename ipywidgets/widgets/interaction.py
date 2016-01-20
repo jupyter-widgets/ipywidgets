@@ -25,6 +25,7 @@ from IPython.display import display, clear_output
 from ipython_genutils.py3compat import string_types, unicode_type
 from traitlets import HasTraits, Any, Unicode
 from numbers import Real, Integral
+from warnings import warn
 
 empty = Parameter.empty
 
@@ -84,10 +85,26 @@ def _widget_abbrev_single_value(o):
 
 def _widget_abbrev(o):
     """Make widgets from abbreviations: single values, lists or tuples."""
-    if isinstance(o, (list, tuple)):
-        if o and all(isinstance(x, string_types) for x in o):
+    if isinstance(o, list):
+        # --------------------------------------------------------------------
+        # Handle deprecated behavior of using lists of length 2 or 3 in place
+        # of tuples to specify slider widget attributes. This will be removed
+        # in ipywidgets 6.0.
+        if len(o) in [2, 3] and all(isinstance(x, Real) for x in o):
+            warn("For Sliders, use a tuple: %s" % (tuple(o),), DeprecationWarning)
+            return _widget_abbrev(tuple(o))
+        # --------------------------------------------------------------------
+        return Dropdown(options=[unicode_type(k) for k in o])
+
+    elif isinstance(o, tuple):
+        # --------------------------------------------------------------------
+        # Handle deprecated behavior of using tuples for selection widget. This
+        # will be removed in ipywidgets 6.0.
+        if any(not isinstance(x, Real) for x in o):
+            warn("For Selection widgets, use a list %s" %(list(o),), DeprecationWarning)
             return Dropdown(options=[unicode_type(k) for k in o])
-        elif _matches(o, (Real, Real)):
+        # --------------------------------------------------------------------
+        if _matches(o, (Real, Real)):
             min, max, value = _get_min_max_value(o[0], o[1])
             if all(isinstance(_, Integral) for _ in o):
                 cls = IntSlider
@@ -104,6 +121,7 @@ def _widget_abbrev(o):
             else:
                 cls = FloatSlider
             return cls(value=value, min=min, max=max, step=step)
+
     else:
         return _widget_abbrev_single_value(o)
 
