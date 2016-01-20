@@ -22,38 +22,38 @@ define([
         this.targets = {};
         this.init_kernel(jsServicesKernel);
     };
-    
+
     /**
      * Handles when a comm, without a target module, connects.
      * @param  {object} content - msg content
      * @return {Comm}
      */
-    CommManager.prototype._handle_comm_connect = function(kernel, content) {
-        var targetName = content.target_name;
-        
+    CommManager.prototype._handle_comm_connect = function(kernel, msg) {
+        var targetName = msg.content.target_name;
+
         // Get the target from the registry.
         var target = this.targets[targetName];
         if (target === undefined) {
             console.error('Comm target "'  + targetName + '" not registered');
             return;
         }
-        
+
         // Create the comm.
-        var comm = new Comm(this.jsServicesKernel.connectToComm(targetName, content.comm_id));
-        
+        var comm = new Comm(this.jsServicesKernel.connectToComm(targetName, msg.content.comm_id));
+
         // Call the callback for the comm.
         try {
-            var response = target(comm, {content: content});
+            var response = target(comm, msg);
         } catch (e) {
             comm.close();
             var wrapped_error = new utils.WrappedError("Exception opening new comm", e);
             console.error(wrapped_error);
             return;
         }
-        
+
         return comm;
     };
-    
+
     /**
      * Hookup kernel events.
      * @param  {IKernel} jsServicesKernel - jupyter-js-services IKernel instance
@@ -63,7 +63,7 @@ define([
         this.jsServicesKernel = jsServicesKernel;
         this.jsServicesKernel.commOpened.connect(_.bind(this._handle_comm_connect, this));
     };
-    
+
     /**
      * Creates a new connected comm
      * @param  {string} target_name
@@ -78,17 +78,17 @@ define([
         comm.open(data, callbacks, metadata);
         return comm;
     };
-    
+
     /**
      * Register a comm target
      * @param  {string} target_name
-     * @param  {(Comm, object) => void} f - callback that is called when the 
+     * @param  {(Comm, object) => void} f - callback that is called when the
      *                         comm is made.  Signature of f(comm, msg).
      */
     CommManager.prototype.register_target = function (target_name, f) {
         this.targets[target_name] = f;
     };
-    
+
     /**
      * Unregisters a comm target
      * @param  {string} target_name
@@ -96,9 +96,9 @@ define([
     CommManager.prototype.unregister_target = function (target_name, f) {
         delete this.targets[target_name];
     };
-        
-    
-    
+
+
+
     /**
      * Public constructor
      * @param  {IComm} jsServicesComm - jupyter-js-services IComm instance
@@ -106,7 +106,7 @@ define([
     var Comm = function(jsServicesComm) {
         this.jsServicesComm = jsServicesComm;
     };
-    
+
     /**
      * Comm id
      * @return {string}
@@ -116,7 +116,7 @@ define([
             return this.jsServicesComm.commId;
         }
     });
-    
+
     /**
      * Target name
      * @return {string}
@@ -126,7 +126,7 @@ define([
             return this.jsServicesComm.targetName;
         }
     });
-    
+
     /**
      * Opens a sibling comm in the backend
      * @param  {object} data
@@ -139,7 +139,7 @@ define([
         this._hookupCallbacks(future, callbacks);
         return future.msgId;
     };
-    
+
     /**
      * Sends a message to the sibling comm in the backend
      * @param  {object} data
@@ -153,7 +153,7 @@ define([
         this._hookupCallbacks(future, callbacks);
         return future.msgId;
     };
-    
+
     /**
      * Closes the sibling comm in the backend
      * @param  {object} data
@@ -166,27 +166,23 @@ define([
         this._hookupCallbacks(future, callbacks);
         return future.msgId;
     };
-    
+
     /**
      * Register a message handler
      * @param  {(object) => void} callback - signature of f(msg)
      */
     Comm.prototype.on_msg = function (callback) {
-        this.jsServicesComm.onMsg = function(data) {
-            callback.call(this, {content : {data: data}});
-        };
+        this.jsServicesComm.onMsg = callback.bind(this);
     };
-    
+
     /**
      * Register a handler for when the comm is closed by the backend
      * @param  {(object) => void} callback - signature of f(msg)
      */
     Comm.prototype.on_close = function (callback) {
-        this.jsServicesComm.onClose = function(data) {
-            callback.call(this, {content : {data: data}});
-        };
+        this.jsServicesComm.onClose = callback.bind(this);
     };
-    
+
     /**
      * Hooks callback object up with jupyter-js-services IKernelFuture
      * @param  {IKernelFuture} future - jupyter-js-services IKernelFuture instance
@@ -198,11 +194,11 @@ define([
                 if (callbacks.shell && callbacks.shell.reply) callbacks.shell.reply(msg);
                 // TODO: Handle payloads.  See https://github.com/jupyter/notebook/blob/master/notebook/static/services/kernels/kernel.js#L923-L947
             };
-            
+
             future.onStdin = function(msg) {
                 if (callbacks.input) callbacks.input(msg);
             };
-            
+
             future.onIOPub = function(msg) {
                 if (callbacks.iopub && callbacks.iopub.status) callbacks.iopub.status(msg);
                 if (callbacks.iopub && callbacks.iopub.clear_output) callbacks.iopub.clear_output(msg);
@@ -210,7 +206,7 @@ define([
             };
         }
     };
-    
+
     return {
         'CommManager': CommManager,
         'Comm': Comm
