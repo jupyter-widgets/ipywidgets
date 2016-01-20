@@ -6,7 +6,9 @@ a context other than the notebook.
 ## Try it
 1. Open a command line in the `ipywidgets/ipywidgets` subdirectory and run `npm install`.
 2. Cd into this directory and run `npm install`.
-3. Now open the `index.html` file.
+3. Run `npm run host`
+4. In a new terminal run `python -m notebook --no-browser --NotebookApp.allow_origin="*"`
+5. In a web browser, navigate to `http://localhost:8080/` (or the address specified by the `npm run host` command)
 
 ## Details
 If you plan to reproduce this in your own project, pay careful attention to the 
