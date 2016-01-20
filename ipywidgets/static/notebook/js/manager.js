@@ -6,13 +6,12 @@ define([
     "backbone",
     "services/kernels/comm",
     "jupyter-js-widgets",
-    "../../components/html2canvas/build/html2canvas"
+    "../../components/html2canvas/dist/html2canvas"
 ], function (_, Backbone, comm, widgets, html2canvas) {
     "use strict";
     
-    // html2canvas cannot be loaded by AMD and pollutes the global namespace.
-    // Grab it from the global namespace.
-    html2canvas = window.html2canvas;
+    // Work around for a logging bug, reported in https://github.com/niklasvh/html2canvas/issues/543
+    window.html2canvas = html2canvas;
     
     //--------------------------------------------------------------------
     // WidgetManager class
@@ -204,7 +203,7 @@ define([
          * Note, this is only done on the outer most widgets.
          */
         view.trigger('displayed');
-
+         
         if (this.keyboard_manager) {
             this.keyboard_manager.register_events(view.el);
 
@@ -340,6 +339,7 @@ define([
      * @return {Promise<void>} success
      */
     WidgetManager.prototype.updateSnapshots = function() {
+        document.querySelector('#site').style.overflow = 'visible';
         var cells = Jupyter.notebook.get_cells();
         return Promise.all(cells.map((function(cell) {
             var widgetSubarea = cell.element[0].querySelector(".widget-subarea");
@@ -363,7 +363,9 @@ define([
                     delete widgetSubarea.widgetSnapshot;
                 }
             }
-        }).bind(this)));
+        }).bind(this))).then((function() {
+            document.querySelector('#site').style.overflow = '';
+        }).bind(this));
     };
     
     /**
