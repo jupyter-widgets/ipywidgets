@@ -6,7 +6,7 @@ docs/man/*.gz
 docs/source/api/generated
 docs/gh-pages
 static/components/
-static/js/notebook/
+static/notebook/js/
 node_modules
 *.py[co]
 __pycache__

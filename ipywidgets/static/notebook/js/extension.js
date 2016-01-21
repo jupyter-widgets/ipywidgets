@@ -14,6 +14,7 @@ define([
     "nbextensions/widgets/notebook/js/widgetarea",
     "base/js/events",
     "base/js/namespace",
+    "./save_state"
 ], function(widgets, widgetarea, events, IPython) {
     "use strict";
 
