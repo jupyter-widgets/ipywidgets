@@ -1,8 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-// This is the main file that will be loaded when ipywidgets is required in an
-// npm environment.
+// This is the main file that will be loaded when jupyter-js-widgets is
+// required in an npm environment.
 
 // HACK: node bootstrap requires this.
 global.jQuery = global.$ = require('jquery');

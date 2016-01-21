@@ -10,11 +10,13 @@ requirejs.config({
 });
 
 define([
-    "jupyter-js-widgets",
-    "nbextensions/widgets/notebook/js/widgetarea",
+    "./manager",
+    "./widgetarea",
     "base/js/events",
     "base/js/namespace",
-], function(widgets, widgetarea, events, IPython) {
+    "./save_state",
+    "./widget_output"
+], function(mngr, widgetarea, events, IPython) {
     "use strict";
 
     /**
@@ -25,10 +27,13 @@ define([
 
             // Create a widget manager instance.  Use the global
             // IPython.notebook handle.
-            var manager = new widgets.WidgetManager(kernel.comm_manager, IPython.notebook);
+            var manager = new mngr.WidgetManager(kernel.comm_manager, IPython.notebook);
+
+            // For backwards compatibility and interactive use.
+            IPython.WidgetManager = manager;
 
             // Store a handle to the manager so we know not to
-            // another for this kernel.  This also is a convinience
+            // another for this kernel.This also is a convenience
             // for the user.
             kernel.widget_manager = manager;
         }

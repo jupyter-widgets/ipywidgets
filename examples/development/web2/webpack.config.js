@@ -13,9 +13,4 @@ module.exports = {
       { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=image/svg+xml" }
     ]
   },
-  externals: {
-      "base/js/namespace": "base/js/namespace",
-      "notebook/js/outputarea": "notebook/js/outputarea",
-      "services/kernels/comm": "services/kernels/comm"
-  }
 }
