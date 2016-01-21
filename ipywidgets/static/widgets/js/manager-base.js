@@ -267,7 +267,7 @@ define([
          * Example
          * --------
          * JS:
-         * IPython.notebook.kernel.widget_manager.new_model({
+         * Jupyter.notebook.kernel.widget_manager.new_model({
          *      model_name: 'WidgetModel',
          *      widget_class: 'Jupyter.IntSlider'
          *  })
@@ -405,10 +405,7 @@ define([
                             comm: new_comm,
                             model_name: state[model_id].model_name,
                             model_module: state[model_id].model_module,
-                        });//.then(function(model) {
-                        //    // Request the state from the backend
-                        //    return model.request_state();
-                        //});
+                        });
                     });
                 } else { // dead comm
                     return that.new_model({
