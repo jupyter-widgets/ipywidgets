@@ -4,17 +4,16 @@
 define([
     "underscore",
     "backbone",
-    "./utils",
     "services/kernels/comm",
-    "./manager-base"
-], function (_, Backbone, utils, comm, managerBase) {
+    "jupyter-js-widgets"
+], function (_, Backbone, comm, widgets) {
     "use strict";
-    
+
     //--------------------------------------------------------------------
     // WidgetManager class
     //--------------------------------------------------------------------
     var WidgetManager = function (comm_manager, notebook) {
-        managerBase.ManagerBase.apply(this);
+        widgets.ManagerBase.apply(this);
         WidgetManager._managers.push(this);
 
         // Attach a comm manager
@@ -24,24 +23,24 @@ define([
 
         // Register with the comm manager.
         this.comm_manager.register_target(this.comm_target_name, _.bind(this.handle_comm_open,this));
-        
+
         // Attempt to reconstruct any live comms by requesting them from the
         // back-end.
         var that = this;
         var backed_widgets_loaded = this._get_comm_info().then(function(comm_ids) {
-            
+
             // Create comm class instances from comm ids.
             var comm_promises = Object.keys(comm_ids).map(function(comm_id) {
                 return that._create_comm(that.comm_target_name, comm_id);
             });
-            
+
             // Send a state request message out for each widget comm and wait
             // for the responses.
             return Promise.all(comm_promises).then(function(comms) {
                 return Promise.all(comms.map(function(comm) {
                     var update_promise = new Promise(function(resolve, reject) {
                         comm.on_msg(function (msg) {
-                            
+
                             // A suspected response was received, check to see if
                             // it's a state update.  If so, resolve.
                             if (msg.content.data.method === 'update') {
@@ -52,7 +51,7 @@ define([
                             }
                         });
                     });
-                    
+
                     comm.send({
                         method: 'request_state'
                     }, that.callbacks());
@@ -79,7 +78,7 @@ define([
                         return WidgetManager._load_callback.call(that);
                     }).then(function(state) {
                         that.set_state(state);
-                    }).catch(utils.reject('Error loading widget manager state', true));
+                    }).catch(widgets.reject('Error loading widget manager state', true));
                 }
             });
         });
@@ -91,10 +90,10 @@ define([
             if (save_callback) {
                 that.get_state(options).then(function(state) {
                     save_callback.call(that, state);
-                }).catch(utils.reject('Could not call widget save state callback.', true));
+                }).catch(widgets.reject('Could not call widget save state callback.', true));
             }
         });
-        
+
         // Validate the version requested by the backend.
         var validate = (function validate() {
             this.validateVersion().then(function(valid) {
@@ -112,7 +111,7 @@ define([
             validate();
         });
     };
-    WidgetManager.prototype = Object.create(managerBase.ManagerBase.prototype);
+    WidgetManager.prototype = Object.create(widgets.ManagerBase.prototype);
 
     WidgetManager._managers = []; /* List of widget managers */
     WidgetManager._load_callback = null;
@@ -123,16 +122,16 @@ define([
         /**
          * Registers a widget model by name.
          */
-        return managerBase.ManagerBase.register_widget_model.apply(this, arguments);
+        return widgets.ManagerBase.register_widget_model.apply(this, arguments);
     };
 
     WidgetManager.register_widget_view = function (view_name, view_type) {
         /**
          * Registers a widget view by name.
          */
-        return managerBase.ManagerBase.register_widget_view.apply(this, arguments);
+        return widgets.ManagerBase.register_widget_view.apply(this, arguments);
     };
-    
+
     WidgetManager.set_state_callbacks = function (load_callback, save_callback, options) {
         /**
          * Registers callbacks for widget state persistence.
@@ -159,7 +158,7 @@ define([
                     return load_callback.call(manager);
                 }).then(function(state) {
                     manager.set_state(state);
-                }).catch(utils.reject('Error loading widget manager state', true));
+                }).catch(widgets.reject('Error loading widget manager state', true));
             }
         });
     };
@@ -186,7 +185,7 @@ define([
          * Note, this is only done on the outer most widgets.
          */
         view.trigger('displayed');
-         
+
         if (this.keyboard_manager) {
             this.keyboard_manager.register_events(view.el);
 
@@ -197,7 +196,7 @@ define([
             }
         }
     };
-    
+
     WidgetManager.prototype.display_model = function(msg, model, options) {
         options = options || {};
         if (msg) {
@@ -209,16 +208,16 @@ define([
                 options.cell = cell; // TODO: Handle in get state
                 // Only set cell_index when view is displayed as directly.
                 options.cell_index = this.notebook.find_cell_index(cell);
-                
-                return managerBase.ManagerBase.prototype.display_model.call(this, msg, model, options)
-                    .catch(utils.reject('Could not display model', true));
+
+                return widgets.ManagerBase.prototype.display_model.call(this, msg, model, options)
+                    .catch(widgets.reject('Could not display model', true));
             }
         } else if (options && options.cell_index !== undefined) {
             options.cell = this.notebook.get_cell(options.cell_index);
-            return managerBase.ManagerBase.prototype.display_model.call(this, msg, model, options)
-                .catch(utils.reject('Could not display model', true));
+            return widgets.ManagerBase.prototype.display_model.call(this, msg, model, options)
+                .catch(widgets.reject('Could not display model', true));
         } else {
-            return Promise.reject(new Error("Could not determine which cell the " + 
+            return Promise.reject(new Error("Could not determine which cell the " +
             "widget belongs to.  Widget will not be displayed"));
         }
     };
@@ -235,7 +234,7 @@ define([
                 return options.cell.widgetarea.display_widget_view(Promise.resolve(view)).then(function(view) {
                     that._handle_display_view(view);
                     return view;
-                }).catch(utils.reject('Could not display view', true));
+                }).catch(widgets.reject('Could not display view', true));
             } else {
                 return Promise.reject(new Error('Cell does not have a `widgetarea` defined'));
             }
@@ -313,8 +312,8 @@ define([
             }
         });
     };
-    
+
     return {
-        'WidgetManager': WidgetManager
+        WidgetManager: WidgetManager
     };
 });

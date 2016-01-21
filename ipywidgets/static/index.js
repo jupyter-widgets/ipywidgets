@@ -5,7 +5,6 @@ define([
     "base/js/namespace",
     "./widgets/js/register",
     "./widgets/js/manager-base",
-    "./widgets/js/manager",
     "./widgets/js/utils",
     "./widgets/js/widget",
     "./widgets/js/widget_layout",
@@ -29,15 +28,15 @@ define([
     });
 
     // Register all of the loaded models and views with the widget manager.
-    for (var i = 5; i < arguments.length; i++) {
+    for (var i = 4; i < arguments.length; i++) {
         var module = arguments[i];
         register.registerWidgets(module);
     }
 
     // For backwards compatibility and interactive use.
-    IPython.WidgetManager = exports.WidgetManager;
-    IPython.Widget = exports.Widget;
-    IPython.DOMWidget = exports.DOMWidget;
+    // IPython.WidgetManager = exports.WidgetManager;
+    // IPython.Widget = exports.Widget;
+    // IPython.DOMWidget = exports.DOMWidget;
 
     return exports;
 });
