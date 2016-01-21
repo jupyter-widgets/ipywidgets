@@ -25,15 +25,15 @@ define([
     var handle_kernel = function(kernel) {
         if (kernel.comm_manager && kernel.widget_manager === undefined) {
 
-            // Create a widget manager instance.  Use the global
+            // Create a widget manager instance. Use the global
             // IPython.notebook handle.
             var manager = new mngr.WidgetManager(kernel.comm_manager, IPython.notebook);
 
             // For backwards compatibility and interactive use.
-            IPython.WidgetManager = manager;
+            IPython.WidgetManager = mngr.WidgetManager;
 
             // Store a handle to the manager so we know not to
-            // another for this kernel.This also is a convenience
+            // another for this kernel. This also is a convenience
             // for the user.
             kernel.widget_manager = manager;
         }
