@@ -232,6 +232,20 @@ class Select(_Selection):
     _model_name = Unicode('SelectModel', sync=True)
 
 
+@register('Jupyter.SelectionSlider')
+class SelectionSlider(_Selection):
+    """Slider to select a single item from a list or dictionary."""
+    _view_name = Unicode('SelectionSliderView', sync=True)
+    _modelname = Unicode('SelectionSliderModel', sync=True)
+
+    orientation = CaselessStrEnum(
+        values=['horizontal', 'vertical'],
+        default_value='horizontal', allow_none=False, sync=True,
+        help="""Vertical or horizontal.""")
+    readout = Bool(True, sync=True,
+        help="""Display the current selected label next to the slider""")
+
+
 @register('Jupyter.SelectMultiple')
 class SelectMultiple(_MultipleSelection):
     """Listbox that allows many items to be selected at any given time.
