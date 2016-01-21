@@ -186,9 +186,7 @@ define([
         return commPromise.then(function(comm) {
             // Comm Promise Resolved.
             options_clone.comm = comm;
-            return that.new_model(options_clone).then(function(model) {
-                return model.request_state();
-            });
+            return that.new_model(options_clone);
         }, function() {
             // Comm Promise Rejected.
             if (!options_clone.model_id) {
@@ -197,7 +195,7 @@ define([
             return that.new_model(options_clone);
         });
     };
-    
+
     /**
      * Parse a version string
      * @param  {string} version i.e. "1.0.2dev" or "2.4"
@@ -392,7 +390,7 @@ define([
          */
         var that = this;
 
-        // Recreate all the widget models for the given widget manager  state.
+        // Recreate all the widget models for the given widget manager state.
         var all_models = that._get_comm_info().then(function(live_comms) {
             return Promise.all(_.map(Object.keys(state), function (model_id) {
 
@@ -407,10 +405,10 @@ define([
                             comm: new_comm,
                             model_name: state[model_id].model_name,
                             model_module: state[model_id].model_module,
-                        }).then(function(model) {
-                            // Request the state from the backend
-                            return model.request_state();
-                        });
+                        });//.then(function(model) {
+                        //    // Request the state from the backend
+                        //    return model.request_state();
+                        //});
                     });
                 } else { // dead comm
                     return that.new_model({
