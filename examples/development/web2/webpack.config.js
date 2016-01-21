@@ -14,8 +14,6 @@ module.exports = {
     ]
   },
   externals: {
-      "base/js/namespace": "base/js/namespace",
       "notebook/js/outputarea": "notebook/js/outputarea",
-      "services/kernels/comm": "services/kernels/comm"
   }
 }
