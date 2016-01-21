@@ -73,7 +73,6 @@ define(["./utils",
             this.isNew = function() { return false; };
 
             this.views = {};
-            this._resolve_received_state = {};
 
             if (comm) {
                 // Remember comm associated with the model.
@@ -115,27 +114,6 @@ define(["./utils",
                 this.comm.send(data, callbacks, {}, buffers);
                 this.pending_msgs++;
             }
-        },
-
-        request_state: function(callbacks) {
-            /** 
-             * Request a state push from the back-end.
-             */
-            if (!this.comm) {
-                console.error("Could not request_state because comm doesn't exist!");
-                return;
-            }
-
-            var msg_id = this.comm.send({
-                method: 'request_state'
-            }, callbacks || this.widget_manager.callbacks());
-
-            // Promise that resolves to the model when the state is received
-            // from the back-end.
-            var that = this;
-            return new Promise(function(resolve) {
-                that._resolve_received_state[msg_id] = resolve;
-            });
         },
 
         set_comm_live: function(live) {
@@ -220,15 +198,6 @@ define(["./utils",
                         }).then(function(state) {
                             that.set_state(state);
                         }).catch(utils.reject("Couldn't process update msg for model id '" + String(that.id) + "'", true))
-                        .then(function() {
-                            if (msg.parent_header) {
-                                var parent_id = msg.parent_header.msg_id;
-                                if (that._resolve_received_state[parent_id] !== undefined) {
-                                    that._resolve_received_state[parent_id](that);
-                                    delete that._resolve_received_state[parent_id];
-                                }
-                            }
-                        }).catch(utils.reject("Couldn't resolve state request promise", true));
                     return this.state_change;
                 case 'custom':
                     this.trigger('msg:custom', msg.content.data.content, msg.buffers);

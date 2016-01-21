@@ -79,10 +79,6 @@ describe("Widget", function() {
         // expect(this.widget.pending_msgs).to.equal(p + 1);
     });
 
-    it('request_state', function() {
-        expect(this.widget.request_state).to.not.be.undefined;
-    });
-
     it('set_comm_live', function() {
         expect(this.widget.set_comm_live).to.not.be.undefined;
         expect(this.widget.comm_live).to.be.false;
