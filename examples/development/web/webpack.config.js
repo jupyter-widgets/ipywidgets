@@ -6,7 +6,4 @@ module.exports = {
       { test: /\.(jpg|png|gif)$/, loader: "file" },
     ]
   },
-  externals: {
-      "notebook/js/outputarea": "notebook/js/outputarea",
-  }
 }

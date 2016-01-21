@@ -14,7 +14,8 @@ define([
     "./widgetarea",
     "base/js/events",
     "base/js/namespace",
-    "./save_state"
+    "./save_state",
+    "./widget_output"
 ], function(mngr, widgetarea, events, IPython) {
     "use strict";
 

@@ -3,23 +3,23 @@
 
 // This widget is strongly coupled to the notebook because of the outputarea
 // dependency.
-// TODO: Use jupyter-js-output-area to break the coupling to the notebook.
 define([
-    "./widget",
+    "jupyter-js-widgets",
     "jquery",
-    "notebook/js/outputarea",
+    "notebook/js/outputarea", // TODO: Use jupyter-js-output-area
     "underscore",
-], function(widget, $, outputarea, _) {
+], function(widgets, $, outputarea, _) {
     "use strict";
 
-    var OutputModel = widget.DOMWidgetModel.extend({
-        defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
+    var OutputModel = widgets.DOMWidgetModel.extend({
+        defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
             _model_name: "OutputModel",
             _view_name: "OutputView"
         }),
     });
 
-    var OutputView = widget.DOMWidgetView.extend({
+    var OutputView = widgets.DOMWidgetView.extend({
+
         initialize: function (parameters) {
             OutputView.__super__.initialize.apply(this, [parameters]);
             this.listenTo(this.model, 'msg:custom', this._handle_route_msg, this);
@@ -62,6 +62,9 @@ define([
             }
         },
     });
+
+    widgets.ManagerBase.register_widget_model('OutputModel', OutputModel);
+    widgets.ManagerBase.register_widget_view('OutputView', OutputView);
 
     return {
         OutputView: OutputView,

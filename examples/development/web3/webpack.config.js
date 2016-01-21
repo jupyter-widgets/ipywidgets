@@ -12,8 +12,5 @@ module.exports = {
       { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
       { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=image/svg+xml" }
     ]
-  },
-  externals: {
-      "notebook/js/outputarea": "notebook/js/outputarea",
   }
 }
