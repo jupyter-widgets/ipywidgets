@@ -1,6 +1,6 @@
 """Link and DirectionalLink classes.
 
-Propagate changes between widgets on the javascript side
+Propagate changes between widgets on the javascript side.
 """
 
 # Copyright (c) Jupyter Development Team.
@@ -9,12 +9,13 @@ Propagate changes between widgets on the javascript side
 from .widget import Widget, widget_serialization
 from traitlets import Unicode, Tuple, List,Instance, TraitError
 
+
 class WidgetTraitTuple(Tuple):
     """Traitlet for validating a single (Widget, 'trait_name') pair"""
-    
+
     def __init__(self, **kwargs):
         super(WidgetTraitTuple, self).__init__(Instance(Widget), Unicode, **kwargs)
-    
+
     def validate_elements(self, obj, value):
         value = super(WidgetTraitTuple, self).validate_elements(obj, value)
         widget, trait_name = value
@@ -26,20 +27,18 @@ class WidgetTraitTuple(Tuple):
             raise TypeError("No such trait: %s" % trait_repr)
         elif not trait.get_metadata('sync'):
             raise TypeError("%s cannot be synced" % trait_repr)
-        
         return value
 
 
 class Link(Widget):
     """Link Widget
-    
-    one trait:
+
     source: a (Widget, 'trait_name') tuple for the source trait
     target: a (Widget, 'trait_name') tuple that should be updated
     """
-    _model_name = Unicode('LinkModel', sync=True)
-    target = WidgetTraitTuple(sync=True, **widget_serialization)
-    source = WidgetTraitTuple(sync=True, **widget_serialization)
+    _model_name = Unicode('LinkModel').tag(sync=True)
+    target = WidgetTraitTuple().tag(sync=True, **widget_serialization)
+    source = WidgetTraitTuple().tag(sync=True, **widget_serialization)
 
     def __init__(self, source, target, **kwargs):
         kwargs['source'] = source
@@ -69,12 +68,12 @@ def jslink(attr1, attr2):
 
 class DirectionalLink(Link):
     """A directional link
-    
+
     source: a (Widget, 'trait_name') tuple for the source trait
     target: a (Widget, 'trait_name') tuple that should be updated
     when the source trait changes.
     """
-    _model_name = Unicode('DirectionalLinkModel', sync=True)
+    _model_name = Unicode('DirectionalLinkModel').tag(sync=True)
 
 
 def jsdlink(source, target):

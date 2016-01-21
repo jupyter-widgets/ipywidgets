@@ -149,17 +149,16 @@ class Widget(LoggingConfigurable):
     # Traits
     #-------------------------------------------------------------------------
     _model_module = Unicode(None, allow_none=True, help="""A requirejs module name
-        in which to find _model_name. If empty, look in the global registry.""", sync=True)
+        in which to find _model_name. If empty, look in the global registry.""").tag(sync=True)
     _model_name = Unicode('WidgetModel', help="""Name of the backbone model
-        registered in the front-end to create and sync this widget with.""", sync=True)
+        registered in the front-end to create and sync this widget with.""").tag(sync=True)
     _view_module = Unicode(help="""A requirejs module in which to find _view_name.
-        If empty, look in the global registry.""", sync=True)
+        If empty, look in the global registry.""").tag(sync=True)
     _view_name = Unicode(None, allow_none=True, help="""Default view registered in the front-end
-        to use to represent the widget.""", sync=True)
+        to use to represent the widget.""").tag(sync=True)
     comm = Instance('ipykernel.comm.Comm', allow_none=True)
 
-    msg_throttle = Int(3, sync=True, help="""Maximum number of msgs the
-        front-end can send before receiving an idle msg from the back-end.""")
+    msg_throttle = Int(3, help="""Maximum number of msgs the front-end can send before receiving an idle msg from the back-end.""").tag(sync=True)
 
     keys = List()
     def _keys_default(self):

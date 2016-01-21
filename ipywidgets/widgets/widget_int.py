@@ -15,7 +15,6 @@ from traitlets import Unicode, CInt, Bool, CaselessStrEnum, Tuple, TraitError
 _int_doc_t = """
 Parameters
 ----------
-
 value: integer
     The initial value.
 """
@@ -23,7 +22,6 @@ value: integer
 _bounded_int_doc_t = """
 Parameters
 ----------
-
 value: integer
     The initial value.
 min: integer
@@ -65,9 +63,9 @@ def _bounded_int_doc(cls):
 
 class _Int(DOMWidget):
     """Base class for widgets that represent an integer."""
-    value = CInt(0, help="Int value", sync=True)
-    disabled = Bool(False, help="Enable or disable user changes", sync=True)
-    description = Unicode(help="Description of the value this widget represents", sync=True)
+    value = CInt(0, help="Int value").tag(sync=True)
+    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
+    description = Unicode(help="Description of the value this widget represents").tag(sync=True)
 
     def __init__(self, value=None, **kwargs):
         if value is not None:
@@ -78,9 +76,9 @@ class _Int(DOMWidget):
 class _BoundedInt(_Int):
     """Base class for widgets that represent an integer bounded from above and below.
     """
-    step = CInt(1, help="Minimum step to increment the value (ignored by some views)", sync=True)
-    max = CInt(100, help="Max value", sync=True)
-    min = CInt(0, help="Min value", sync=True)
+    step = CInt(1, help="Minimum step to increment the value (ignored by some views)").tag(sync=True)
+    max = CInt(100, help="Max value").tag(sync=True)
+    min = CInt(0, help="Min value").tag(sync=True)
 
     def __init__(self, value=None, min=None, max=None, step=None, **kwargs):
         if value is not None:
@@ -119,8 +117,8 @@ class _BoundedInt(_Int):
 @_int_doc
 class IntText(_Int):
     """Textbox widget that represents an integer."""
-    _view_name = Unicode('IntTextView', sync=True)
-    _model_name = Unicode('IntTextModel', sync=True)
+    _view_name = Unicode('IntTextView').tag(sync=True)
+    _model_name = Unicode('IntTextModel').tag(sync=True)
 
 
 @register('Jupyter.BoundedIntText')
@@ -128,8 +126,8 @@ class IntText(_Int):
 class BoundedIntText(_BoundedInt):
     """Textbox widget that represents an integer bounded from above and below.
     """
-    _view_name = Unicode('IntTextView', sync=True)
-    _model_name = Unicode('IntTextModel', sync=True)
+    _view_name = Unicode('IntTextView').tag(sync=True)
+    _model_name = Unicode('IntTextModel').tag(sync=True)
 
 
 @register('Jupyter.IntSlider')
@@ -137,14 +135,14 @@ class BoundedIntText(_BoundedInt):
 class IntSlider(_BoundedInt):
     """Slider widget that represents an integer bounded from above and below.
     """
-    _view_name = Unicode('IntSliderView', sync=True)
-    _model_name = Unicode('IntSliderModel', sync=True)
+    _view_name = Unicode('IntSliderView').tag(sync=True)
+    _model_name = Unicode('IntSliderModel').tag(sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
-        default_value='horizontal', help="Vertical or horizontal.", sync=True)
-    _range = Bool(False, help="Display a range selector", sync=True)
-    readout = Bool(True, help="Display the current value of the slider next to it.", sync=True)
-    slider_color = Color(None, allow_none=True, sync=True)
-    continuous_update = Bool(True, sync=True, help="Update the value of the widget as the user is sliding the slider.")
+        default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
+    _range = Bool(False, help="Display a range selector").tag(sync=True)
+    readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
+    slider_color = Color(None, allow_none=True).tag(sync=True)
+    continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)
 
 
 @register('Jupyter.IntProgress')
@@ -152,21 +150,21 @@ class IntSlider(_BoundedInt):
 class IntProgress(_BoundedInt):
     """Progress bar that represents an integer bounded from above and below.
     """
-    _view_name = Unicode('ProgressView', sync=True)
-    _model_name = Unicode('ProgressModel', sync=True)
+    _view_name = Unicode('ProgressView').tag(sync=True)
+    _model_name = Unicode('ProgressModel').tag(sync=True)
 
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
-        default_value='horizontal', help="Vertical or horizontal.", sync=True)
+        default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
 
     bar_style = CaselessStrEnum(
         values=['success', 'info', 'warning', 'danger', ''], default_value='',
-        sync=True, help="""Use a predefined styling for the progess bar.""")
+        help="""Use a predefined styling for the progess bar.""").tag(sync=True)
 
 
 class _IntRange(_Int):
-    value = Tuple(CInt(), CInt(), default_value=(0, 1), help="Tuple of (lower, upper) bounds", sync=True)
-    lower = CInt(0, help="Lower bound", sync=False)
-    upper = CInt(1, help="Upper bound", sync=False)
+    value = Tuple(CInt(), CInt(), default_value=(0, 1), help="Tuple of (lower, upper) bounds").tag(sync=True)
+    lower = CInt(0, help="Lower bound")
+    upper = CInt(1, help="Upper bound")
 
     def __init__(self, *pargs, **kwargs):
         value_given = 'value' in kwargs
@@ -176,9 +174,9 @@ class _IntRange(_Int):
             raise ValueError("Cannot specify both 'value' and 'lower'/'upper' for range widget")
         if lower_given != upper_given:
             raise ValueError("Must specify both 'lower' and 'upper' for range widget")
-        
+
         super(_IntRange, self).__init__(*pargs, **kwargs)
-        
+
         # ensure the traits match, preferring whichever (if any) was given in kwargs
         if value_given:
             self.lower, self.upper = self.value
@@ -186,7 +184,7 @@ class _IntRange(_Int):
             self.value = (self.lower, self.upper)
 
         self.on_trait_change(self._validate, ['value', 'upper', 'lower'])
-    
+
     def _validate(self, name, old, new):
         if name == 'value':
             self.lower, self.upper = min(new), max(new)
@@ -196,25 +194,25 @@ class _IntRange(_Int):
             self.value = (self.value[0], new)
 
 class _BoundedIntRange(_IntRange):
-    step = CInt(1, help="Minimum step that the value can take (ignored by some views)", sync=True)
-    max = CInt(100, help="Max value", sync=True)
-    min = CInt(0, help="Min value", sync=True)
+    step = CInt(1, help="Minimum step that the value can take (ignored by some views)").tag(sync=True)
+    max = CInt(100, help="Max value").tag(sync=True)
+    min = CInt(0, help="Min value").tag(sync=True)
 
     def __init__(self, *pargs, **kwargs):
         any_value_given = 'value' in kwargs or 'upper' in kwargs or 'lower' in kwargs
         _IntRange.__init__(self, *pargs, **kwargs)
-        
+
         # ensure a minimal amount of sanity
         if self.min > self.max:
             raise ValueError("min must be <= max")
-        
+
         if any_value_given:
             # if a value was given, clamp it within (min, max)
             self._validate("value", None, self.value)
         else:
             # otherwise, set it to 25-75% to avoid the handles overlapping
-            self.value = (0.75*self.min + 0.25*self.max,
-                          0.25*self.min + 0.75*self.max)
+            self.value = (0.75 * self.min + 0.25 * self.max,
+                          0.25 * self.min + 0.75 * self.max)
         # callback already set for 'value', 'lower', 'upper'
         self.on_trait_change(self._validate, ['min', 'max'])
 
@@ -225,7 +223,7 @@ class _BoundedIntRange(_IntRange):
         elif name == "max":
             if new < self.min:
                 raise ValueError("setting max < min")
-        
+
         low, high = self.value
         if name == "value":
             low, high = min(new), max(new)
@@ -268,11 +266,11 @@ class IntRangeSlider(_BoundedIntRange):
     max: int
         The highest allowed value for `upper`
     """
-    _view_name = Unicode('IntSliderView', sync=True)
-    _model_name = Unicode('IntSliderModel', sync=True)
+    _view_name = Unicode('IntSliderView').tag(sync=True)
+    _model_name = Unicode('IntSliderModel').tag(sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
-        default_value='horizontal', help="Vertical or horizontal.", sync=True)
-    _range = Bool(True, help="Display a range selector", sync=True)
-    readout = Bool(True, help="Display the current value of the slider next to it.", sync=True)
-    slider_color = Color(None, allow_none=True, sync=True)
-    continuous_update = Bool(True, sync=True, help="Update the value of the widget as the user is sliding the slider.")
+        default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
+    _range = Bool(True, help="Display a range selector").tag(sync=True)
+    readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
+    slider_color = Color(None, allow_none=True).tag(sync=True)
+    continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)

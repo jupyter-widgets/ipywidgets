@@ -23,7 +23,7 @@ from . import (Widget, Text,
     Box, Button, DOMWidget)
 from IPython.display import display, clear_output
 from ipython_genutils.py3compat import string_types, unicode_type
-from traitlets import HasTraits, Any, Unicode
+from traitlets import HasTraits, Any, Unicode, observe
 from numbers import Real, Integral
 from warnings import warn
 
@@ -247,7 +247,8 @@ def interactive(__interact_f, **kwargs):
     container.children = c
 
     # Build the callback
-    def call_f(name=None, old=None, new=None):
+    def call_f(change):
+        name, old, new = change['name'], change['old'], change['new']
         container.kwargs = {}
         for widget in kwargs_widgets:
             value = widget.value
@@ -284,9 +285,9 @@ def interactive(__interact_f, **kwargs):
                 w.on_submit(call_f)
     else:
         for widget in kwargs_widgets:
-            widget.on_trait_change(call_f, 'value')
+            widget.observe(call_f, names='value')
 
-        container.on_displayed(lambda _: call_f(None, None, None))
+        container.on_displayed(lambda _: call_f(dict(name=None, old=None, new=None)))
 
     return container
 
