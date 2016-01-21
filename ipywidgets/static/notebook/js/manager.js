@@ -6,8 +6,9 @@ define([
     "backbone",
     "services/kernels/comm",
     "jupyter-js-widgets",
-    "../../components/html2canvas/dist/html2canvas"
-], function (_, Backbone, comm, widgets, html2canvas) {
+    "../../components/html2canvas/dist/html2canvas",
+    "./progress-modal"
+], function (_, Backbone, comm, widgets, html2canvas, progressModal) {
     "use strict";
     
     // Work around for a logging bug, reported in https://github.com/niklasvh/html2canvas/issues/543
@@ -128,6 +129,9 @@ define([
         this.deleteSnapshots();
         
         this._init_actions();
+        
+        // Initialize the widget screenshot rendering dialog.
+        this.progressModal = new progressModal.ProgressModal();
     };
     WidgetManager.prototype = Object.create(widgets.ManagerBase.prototype);
 
@@ -223,7 +227,6 @@ define([
         var notifier = Jupyter.notification_area.new_notification_widget('widgets');
         var buildSnapshotsAction = {
             handler: (function() {
-                console.log('clicked!');
                 this.updateSnapshots().then((function() {
                     notifier.set_message('Widgets rendered', 3000);
                 }).bind(this));
@@ -339,33 +342,68 @@ define([
      * @return {Promise<void>} success
      */
     WidgetManager.prototype.updateSnapshots = function() {
-        document.querySelector('#site').style.overflow = 'visible';
-        var cells = Jupyter.notebook.get_cells();
-        return Promise.all(cells.map((function(cell) {
-            var widgetSubarea = cell.element[0].querySelector(".widget-subarea");
-            if (widgetSubarea && widgetSubarea.children.length > 0) {
-                return new Promise((function(resolve) {
-                    html2canvas(widgetSubarea, {
-                        onrendered: function(canvas) {
-                            // Save the screenshot of the canvas to the widget-subarea
-                            var mimetype = "image/png";
-                            widgetSubarea.widgetSnapshot = {
-                                mimetype: mimetype,
-                                data: canvas.toDataURL(mimetype)
-                            };
+        var that = this;
+        
+        // Wait for the progress modal to show before continuing
+        return this.progressModal.show().then(function() {
+            
+            // Disable overflow to prevent the document from having elements
+            // that are scrolled out of visibility.
+            document.querySelector('#site').style.overflow = 'visible';
+            
+            // Render the widgets of each cell.
+            var progress = 0;
+            var renderPromise = Promise.resolve();
+            var cells = Jupyter.notebook.get_cells();
+            cells.forEach(function(cell, index) {
+                renderPromise = renderPromise.then(function() {
+                    var widgetSubarea = cell.element[0].querySelector(".widget-subarea");
+                    if (widgetSubarea && widgetSubarea.children.length > 0) {
+                        
+                        return that.progressModal.setText(
+                            'Rendering widget ' + String(index + 1) + '/' + String(cells.length) + ' ...'
+                        ).then(function() {
+                            return new Promise(function(resolve) {
+                                html2canvas(widgetSubarea, {
+                                    onrendered: function(canvas) {
+                                        
+                                        // Save the screenshot of the canvas to the widget-subarea
+                                        var mimetype = "image/png";
+                                        widgetSubarea.widgetSnapshot = {
+                                            mimetype: mimetype,
+                                            data: canvas.toDataURL(mimetype)
+                                        };
+                                        
+                                        resolve();
+                                    }
+                                });
+                            });
+                        }).then(function() {
+                            return that.progressModal.setValue(++progress/cells.length);
+                        });
+                    } else {
+                        if (widgetSubarea && widgetSubarea.widgetSnapshot) {
+                            delete widgetSubarea.widgetSnapshot;
                             
-                            resolve();
+                            return that.progressModal.setValue(++progress/cells.length);
                         }
-                    });
-                }).bind(this));
-            } else {
-                if (widgetSubarea && widgetSubarea.widgetSnapshot) {
-                    delete widgetSubarea.widgetSnapshot;
-                }
-            }
-        }).bind(this))).then((function() {
-            document.querySelector('#site').style.overflow = '';
-        }).bind(this));
+                    }
+                });
+            });
+            
+            // When all of the rendering is complete, re-enable scrolling in the
+            // notebook.
+            return renderPromise.then(function() {
+                document.querySelector('#site').style.overflow = '';
+            });    
+        
+        // When the entire process has completed, hide the progress modal.
+        }).then(function() {
+            return that.progressModal.hide();
+        }).then(function() {
+            that.progressModal.setText('Rendering widgets...');
+            return that.progressModal.setValue(0);
+        });
     };
     
     /**

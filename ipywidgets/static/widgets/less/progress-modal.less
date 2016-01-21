@@ -1,0 +1,59 @@
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
+@modal-opacity: 0.5;
+
+.widget-modal-backdrop {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background: black;
+    z-index: 999;
+    opacity: @modal-opacity;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    
+    &.widget-modal-hidden {
+        display: none;
+    }
+    
+    &.widget-modal-hide {
+        animation: fadeout 0.25s;
+    }
+    
+    &.widget-modal-show {
+        animation: fadein 0.25s;
+    }
+}
+
+@keyframes fadein {
+    from { opacity: 0.0; }
+    to   { opacity: @modal-opacity; }
+}
+
+@keyframes fadeout {
+    from { opacity: @modal-opacity; }
+    to   { opacity: 0.0; }
+}
+
+.widget-modal-text {
+    color: white;
+    font-size: x-large;
+    font-weight: bold;
+    
+    i, div {
+        display: inline;
+    }
+    
+    div {
+        padding-left: 1ex;
+    }
+}
+
+.widget-modal-progress {
+    width: 300px;
+}
