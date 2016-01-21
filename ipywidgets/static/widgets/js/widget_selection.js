@@ -550,7 +550,190 @@ define([
             this.touch();
         },
     });
+    
+    var SelectionSliderModel = SelectionModel.extend({
+        defaults: _.extend({}, SelectionModel.prototype.defaults, {
+            _model_name: "SelectionSliderModel",
+            _view_name: "SelectionSliderView",
+            orientation: "horizontal",
+            readout: true
+        }),
+    });
+    
+    var SelectionSliderView = widget.DOMWidgetView.extend({
+        render : function() {
+            /**
+             * Called when view is rendered.
+             */
+            this.$el
+                .addClass('jupyter-widgets widget-hbox widget-hslider');
+            this.$label = $('<div />')
+                .appendTo(this.$el)
+                .addClass('widget-label')
+                .hide();
+            
+            this.$slider = $('<div />')
+                .slider({})
+                .addClass('slider');
+            // Put the slider in a container
+            this.$slider_container = $('<div />')
+                .addClass('slider-container')
+                .append(this.$slider);
+            this.$el.append(this.$slider_container);
+            
+            this.$readout = $('<div/>')
+                .appendTo(this.$el)
+                .addClass('widget-readout')
+                .hide();
+                
+            this.listenTo(this.model, 'change:slider_handleTextChangecolor', function(sender, value) {
+                this.$slider.find('a').css('background', value);
+            }, this);
+            this.listenTo(this.model, 'change:description', function(sender, value) {
+                this.updateDescription();
+            }, this);
+            
+            this.$slider.find('a').css('background', this.model.get('slider_color'));
+            
+            // Set defaults.
+            this.update();
+            this.updateDescription();
+        },
 
+        update_attr: function(name, value) { // TODO: Deprecated in 5.0
+            /**
+             * Set a css attr of the widget view.
+             */
+            if (name == 'color') {
+                this.$readout.css(name, value);
+            } else if (name.substring(0, 4) == 'font') {
+                this.$readout.css(name, value);
+            } else if (name.substring(0, 6) == 'border') {
+                this.$slider.find('a').css(name, value);
+                this.$slider_container.css(name, value);
+            } else if (name == 'background') {
+                this.$slider_container.css(name, value);
+            } else {
+                this.$el.css(name, value);
+            }
+        },
+        
+        updateDescription: function(options) {
+            var description = this.model.get('description');
+            if (description.length === 0) {
+                this.$label.hide();
+            } else {
+                this.typeset(this.$label, description);
+                this.$label.show();
+            }
+        },
+        
+        update: function(options) {
+            /**
+             * Update the contents of this view
+             *
+             * Called when the model is changed.  The model may have been 
+             * changed by another view or by a state update from the back-end.
+             */
+            if (options === undefined || options.updated_view != this) {
+                var labels = this.model.get("_options_labels");
+                var max = labels.length - 1;
+                var min = 0;
+                this.$slider.slider('option', 'step', 1);
+                this.$slider.slider('option', 'max', max);
+                this.$slider.slider('option', 'min', min);
+                
+                // WORKAROUND FOR JQUERY SLIDER BUG.
+                // The horizontal position of the slider handle
+                // depends on the value of the slider at the time
+                // of orientation change.  Before applying the new
+                // workaround, we set the value to the minimum to
+                // make sure that the horizontal placement of the
+                // handle in the vertical slider is always 
+                // consistent.
+                var orientation = this.model.get('orientation');
+                this.$slider.slider('option', 'value', min);
+                this.$slider.slider('option', 'orientation', orientation);
+                
+                var selected_label = this.model.get("selected_label");                
+                var index = labels.indexOf(selected_label);
+                this.$slider.slider('option', 'value', index);
+                this.$readout.text(selected_label);
+
+                // Use the right CSS classes for vertical & horizontal sliders
+                if (orientation=='vertical') {
+                    this.$el
+                        .removeClass('widget-hslider')
+                        .addClass('widget-vslider');
+                    this.$el
+                        .removeClass('widget-hbox')
+                        .addClass('widget-vbox');
+
+                } else {
+                    this.$el
+                        .removeClass('widget-vslider')
+                        .addClass('widget-hslider');
+                    this.$el
+                        .removeClass('widget-vbox')
+                        .addClass('widget-hbox');
+                }
+
+                var readout = this.model.get('readout');
+                if (readout) {
+                    this.$readout.show();
+                } else {
+                    this.$readout.hide();
+                }
+            }
+            return SelectionSliderView.__super__.update.apply(this);
+        },
+        
+        events: {
+            // Dictionary of events and their handlers.
+            "slide": "handleSliderChange",
+            "slidestop": "handleSliderChanged",
+        }, 
+
+        /**
+         * Called when the slider value is changing.
+         */
+        handleSliderChange: function(e, ui) { 
+            var actual_value = this._validate_slide_value(ui.value);
+            var selected_label = this.model.get("_options_labels")[actual_value];
+            this.$readout.text(selected_label);
+            
+            // Only persist the value while sliding if the continuous_update
+            // trait is set to true.
+            if (this.model.get('continuous_update')) {
+                this.handleSliderChanged(e, ui);
+            }            
+        },
+        
+        /**
+         * Called when the slider value has changed.
+         *
+         * Calling model.set will trigger all of the other views of the 
+         * model to update.
+         */
+        handleSliderChanged: function(e, ui) {
+            var actual_value = this._validate_slide_value(ui.value);
+            var selected_label = this.model.get("_options_labels")[actual_value];
+            this.$readout.text(selected_label);
+            this.model.set('selected_label', selected_label, {updated_view: this});
+            this.touch();
+        },
+
+        _validate_slide_value: function(x) {
+            /**
+             * Validate the value of the slider before sending it to the back-end
+             * and applying it to the other views on the page.
+             *
+             * Double bit-wise not truncates the decimal (int cast).
+             */
+            return ~~x;
+        },
+    });    
+    
     var MultipleSelectionModel = SelectionModel.extend({
         defaults: _.extend({}, SelectionModel.prototype.defaults, {
             _model_name: "MultipleSelectionModel",
@@ -634,6 +817,8 @@ define([
         ToggleButtonsModel: ToggleButtonsModel,
         SelectView: SelectView,
         SelectModel: SelectModel,
+        SelectionSliderView: SelectionSliderView,
+        SelectionSliderModel: SelectionSliderModel,
         MultipleSelectionModel: MultipleSelectionModel,
         SelectMultipleView: SelectMultipleView,
         SelectMultipleModel: SelectMultipleModel,
