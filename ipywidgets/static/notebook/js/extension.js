@@ -28,8 +28,11 @@ define([
             // IPython.notebook handle.
             var manager = new mngr.WidgetManager(kernel.comm_manager, IPython.notebook);
 
+            // For backwards compatibility and interactive use.
+            IPython.WidgetManager = manager;
+
             // Store a handle to the manager so we know not to
-            // another for this kernel.  This also is a convinience
+            // another for this kernel.This also is a convenience
             // for the user.
             kernel.widget_manager = manager;
         }
