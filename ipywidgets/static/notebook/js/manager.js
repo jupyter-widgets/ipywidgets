@@ -362,13 +362,18 @@ define([
      */
     WidgetManager.prototype.updateSnapshots = function() {
         var that = this;
+        var site = document.querySelector('#site');
         
         // Wait for the progress modal to show before continuing
         return this.progressModal.show().then(function() {
-            
+        
             // Disable overflow to prevent the document from having elements
             // that are scrolled out of visibility.
-            document.querySelector('#site').style.overflow = 'visible';
+            var siteScrollTop = site.scrollTop;
+            site.style.overflow = 'visible';
+            site.style.position = 'relative';
+            site.style.top = '-' + siteScrollTop + 'px';
+            document.body.style.overflow = 'hidden';    
             
             // Render the widgets of each cell.
             var progress = 0;
@@ -413,7 +418,10 @@ define([
             // When all of the rendering is complete, re-enable scrolling in the
             // notebook.
             return renderPromise.then(function() {
-                document.querySelector('#site').style.overflow = '';
+                site.style.overflow = '';
+                site.style.position = '';
+                site.style.top = '';
+                document.body.style.overflow = '';
             });    
         
         // When the entire process has completed, hide the progress modal.
