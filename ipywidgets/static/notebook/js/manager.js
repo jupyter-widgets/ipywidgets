@@ -6,7 +6,7 @@ define([
     "backbone",
     "services/kernels/comm",
     "jupyter-js-widgets",
-    "../../components/html2canvas/dist/html2canvas",
+    "../../components/html2canvas/dist/html2canvas", // TODO: NPM package
     "./progress-modal",
     "./save_state"
 ], function (_, Backbone, comm, widgets, html2canvas, progressModal, saveState) {
@@ -126,7 +126,7 @@ define([
         // loaded from disk, and when the widget manager is constructed.
         this.notebook.events.on('notebook_saved.Notebook', this.deleteSnapshots.bind(this));
         this.notebook.events.on('notebook_save_failed.Notebook', this.deleteSnapshots.bind(this));
-        this.notebook.events.on('notebook_loaaded.Notebook', this.deleteSnapshots.bind(this));
+        this.notebook.events.on('notebook_loaded.Notebook', this.deleteSnapshots.bind(this));
         this.deleteSnapshots();
         
         // Create the actions and menu
