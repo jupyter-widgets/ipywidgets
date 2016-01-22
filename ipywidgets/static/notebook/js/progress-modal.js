@@ -33,7 +33,7 @@ define([], function() {
     }
     
     ProgressModal.prototype.show = function() {
-        return new Promise((function(resolve) {
+        return new Promise((function(resolve, reject) {
             this._backdrop.classList.remove('widget-modal-hidden');
             this._backdrop.classList.add('widget-modal-show');
             
@@ -42,7 +42,13 @@ define([], function() {
                 this._backdrop.removeEventListener('animationend', shown);
                 resolve();
             }).bind(this);
-            this._backdrop.addEventListener('animationend', shown);    
+            this._backdrop.addEventListener('animationend', shown);
+            
+            // Timeout if the dialog doesn't show in 2 seconds.  Something must
+            // be wrong.
+            setTimeout(function() {
+                reject('Could not show the save dialog, your css may be out of date.');
+            }, 2000);
         }).bind(this));
     };
     

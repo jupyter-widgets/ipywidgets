@@ -7,8 +7,9 @@ define([
     "services/kernels/comm",
     "jupyter-js-widgets",
     "../../components/html2canvas/dist/html2canvas",
-    "./progress-modal"
-], function (_, Backbone, comm, widgets, html2canvas, progressModal) {
+    "./progress-modal",
+    "./save_state"
+], function (_, Backbone, comm, widgets, html2canvas, progressModal, saveState) {
     "use strict";
     
     // Work around for a logging bug, reported in https://github.com/niklasvh/html2canvas/issues/543
@@ -128,7 +129,9 @@ define([
         this.notebook.events.on('notebook_loaaded.Notebook', this.deleteSnapshots.bind(this));
         this.deleteSnapshots();
         
+        // Create the actions and menu
         this._init_actions();
+        this._init_menu();
         
         // Initialize the widget screenshot rendering dialog.
         this.progressModal = new progressModal.ProgressModal();
@@ -220,12 +223,11 @@ define([
     };
 
     /**
-     * Registers manager level actions with the notebook actions list and
-     * creates a menubar item for the widgets.
+     * Registers manager level actions with the notebook actions list
      */
     WidgetManager.prototype._init_actions = function() {
         var notifier = Jupyter.notification_area.new_notification_widget('widgets');
-        var buildSnapshotsAction = {
+        this.buildSnapshotsAction = {
             handler: (function() {
                 this.updateSnapshots().then((function() {
                     notifier.set_message('Widgets rendered', 3000);
@@ -234,36 +236,53 @@ define([
             icon: 'fa-truck',
             help: 'Rasterizes the current state of the widgets to the notebook as PNG images.'
         };
-        Jupyter.menubar.actions.register(buildSnapshotsAction, 'build-snapshots', 'widgets');
+        Jupyter.menubar.actions.register(this.buildSnapshotsAction, 'save-with-snapshots', 'widgets');
+    };
+    
+    /**
+     * Initialize the widget menu
+     */
+    WidgetManager.prototype._init_menu = function() {
         
         // Add a widgets menubar item, before help.
-        var widgets_menu = document.createElement('li');
-        widgets_menu.classList.add('dropdown');
-        var help_menu = document.querySelector('#help_menu').parentElement;
-        help_menu.parentElement.insertBefore(widgets_menu, help_menu);
+        var widgetsMenu = document.createElement('li');
+        widgetsMenu.classList.add('dropdown');
+        var helpMenu = document.querySelector('#help_menu').parentElement;
+        helpMenu.parentElement.insertBefore(widgetsMenu, helpMenu);
         
-        var widgets_menu_link = document.createElement('a');
-        widgets_menu_link.setAttribute('href', '#');
-        widgets_menu_link.setAttribute('data-toggle', 'dropdown');
-        widgets_menu_link.classList.add('dropdown-toggle');
-        widgets_menu_link.innerText = 'Widgets';
-        widgets_menu.appendChild(widgets_menu_link);
+        var widgetsMenuLink = document.createElement('a');
+        widgetsMenuLink.setAttribute('href', '#');
+        widgetsMenuLink.setAttribute('data-toggle', 'dropdown');
+        widgetsMenuLink.classList.add('dropdown-toggle');
+        widgetsMenuLink.innerText = 'Widgets';
+        widgetsMenu.appendChild(widgetsMenuLink);
         
-        var widgets_submenu = document.createElement('ul');
-        widgets_submenu.setAttribute('id', 'widget-submenu');
-        widgets_submenu.classList.add('dropdown-menu');
-        widgets_menu.appendChild(widgets_submenu);
+        var widgetsSubmenu = document.createElement('ul');
+        widgetsSubmenu.setAttribute('id', 'widget-submenu');
+        widgetsSubmenu.classList.add('dropdown-menu');
+        widgetsMenu.appendChild(widgetsSubmenu);
         
-        var build_snapshots = document.createElement('li');
-        build_snapshots.setAttribute('title', buildSnapshotsAction.help);
-        widgets_submenu.appendChild(build_snapshots);
+        widgetsSubmenu.appendChild(this._createMenuItem('Save notebook with snapshots', this.buildSnapshotsAction));
+        widgetsSubmenu.appendChild(this._createMenuItem('Download widget state', saveState.action));
+    };
+    
+    /**
+     * Creates a menu item for an action.
+     * @param  {string} title - display string for the menu item
+     * @param  {Action} action
+     * @return {HTMLElement} menu item
+     */
+    WidgetManager.prototype._createMenuItem = function(title, action) {
+        var item = document.createElement('li');
+        item.setAttribute('title', action.help);
         
-        var build_snapshots_link = document.createElement('a');
-        build_snapshots_link.setAttribute('href', '#');
-        build_snapshots_link.innerText = 'Build snapshots';
-        build_snapshots.appendChild(build_snapshots_link);
+        var itemLink = document.createElement('a');
+        itemLink.setAttribute('href', '#');
+        itemLink.innerText = title;
+        item.appendChild(itemLink);
         
-        build_snapshots.onclick = buildSnapshotsAction.handler;
+        item.onclick = action.handler;
+        return item;
     };
     
     WidgetManager.prototype.display_model = function(msg, model, options) {
@@ -401,9 +420,13 @@ define([
         }).then(function() {
             return that.progressModal.hide();
         }).then(function() {
+            // Reset the values of the modal
             that.progressModal.setText('Rendering widgets...');
             return that.progressModal.setValue(0);
-        });
+        }).then(function() {
+            // Invoke a notebook save
+            Jupyter.menubar.actions.get('jupyter-notebook:save-notebook').handler({notebook: Jupyter.notebook});
+        }).catch(widgets.reject('Could not create widget snapshots and save the notebook', true));
     };
     
     /**
