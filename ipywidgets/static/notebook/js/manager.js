@@ -40,7 +40,6 @@ define([
                 return Promise.all(comms.map(function(comm) {
                     var update_promise = new Promise(function(resolve, reject) {
                         comm.on_msg(function (msg) {
-
                             // A suspected response was received, check to see if
                             // it's a state update.  If so, resolve.
                             if (msg.content.data.method === 'update') {
@@ -51,7 +50,6 @@ define([
                             }
                         });
                     });
-
                     comm.send({
                         method: 'request_state'
                     }, that.callbacks());

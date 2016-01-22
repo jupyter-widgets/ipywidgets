@@ -16,7 +16,7 @@ define([
     "base/js/namespace",
     "./save_state",
     "./widget_output"
-], function(mngr, widgetarea, events, IPython) {
+], function(mngr, widgetarea, events, Jupyter) {
     "use strict";
 
     /**
@@ -25,15 +25,15 @@ define([
     var handle_kernel = function(kernel) {
         if (kernel.comm_manager && kernel.widget_manager === undefined) {
 
-            // Create a widget manager instance.  Use the global
-            // IPython.notebook handle.
-            var manager = new mngr.WidgetManager(kernel.comm_manager, IPython.notebook);
+            // Create a widget manager instance. Use the global
+            // Jupyter.notebook handle.
+            var manager = new mngr.WidgetManager(kernel.comm_manager, Jupyter.notebook);
 
             // For backwards compatibility and interactive use.
-            IPython.WidgetManager = manager;
+            Jupyter.WidgetManager = mngr.WidgetManager;
 
             // Store a handle to the manager so we know not to
-            // another for this kernel.This also is a convenience
+            // another for this kernel. This also is a convenience
             // for the user.
             kernel.widget_manager = manager;
         }
@@ -52,8 +52,8 @@ define([
 
     function register_events () {
         // If a kernel already exists, create a widget manager.
-        if (IPython.notebook && IPython.notebook.kernel) {
-            handle_kernel(IPython.notebook.kernel);
+        if (Jupyter.notebook && Jupyter.notebook.kernel) {
+            handle_kernel(Jupyter.notebook.kernel);
         }
         // When the kernel is created, create a widget manager.
         events.on('kernel_created.Kernel kernel_created.Session', function(event, data) {
@@ -61,7 +61,7 @@ define([
         });
 
         // Create widget areas for cells that already exist.
-        var cells = IPython.notebook.get_cells();
+        var cells = Jupyter.notebook.get_cells();
         for (var i = 0; i < cells.length; i++) {
             handle_cell(cells[i]);
         }
@@ -85,7 +85,7 @@ define([
         var css = document.createElement("link");
         css.setAttribute("rel", "stylesheet");
         css.setAttribute("type", "text/css");
-        css.setAttribute("href", IPython.notebook.base_url + "nbextensions/widgets/widgets/css/widgets.min.css");
+        css.setAttribute("href", Jupyter.notebook.base_url + "nbextensions/widgets/widgets/css/widgets.min.css");
         document.getElementsByTagName("head")[0].appendChild(css);
     }
 
