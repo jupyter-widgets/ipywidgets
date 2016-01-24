@@ -126,17 +126,15 @@ define([
                 // user-provided attribute, the gamepad index.
                 this.readout = 'Connect gamepad and press any button.';
                 // Wait for the state to be provided by the backend.
-                this.on('ready', function() {
-                    if (this.get('connected')) {
-                        // No need to re-create Button and Axis widgets, re-use
-                        // the models provided by the backend which may already
-                        // be wired to other things.
-                        this.update_loop();
-                    } else {
-                        // Wait for a gamepad to be connected.
-                        this.wait_loop();
-                    }
-                }, this);
+                if (this.get('connected')) {
+                    // No need to re-create Button and Axis widgets, re-use
+                    // the models provided by the backend which may already
+                    // be wired to other things.
+                    this.update_loop();
+                } else {
+                    // Wait for a gamepad to be connected.
+                    this.wait_loop();
+                }
             }
         },
 

@@ -8,7 +8,7 @@ define(["./utils",
         "jquery"
 ], function(utils, managerBase, _, Backbone, $) {
     "use strict";
-    
+
     var unpack_models = function unpack_models(value, model) {
         /**
          * Replace model ids with models recursively.
@@ -64,7 +64,6 @@ define(["./utils",
             this.msg_buffer = null;
             this.state_lock = null;
             this.id = model_id;
-            this._first_state = true;
 
             // Force backbone to think that the model has already been
             // synced with the server.  As of backbone 1.1, backbone
@@ -82,7 +81,7 @@ define(["./utils",
                 // Hook comm messages up to model.
                 comm.on_close(_.bind(this._handle_comm_closed, this));
                 comm.on_msg(_.bind(this._handle_comm_msg, this));
-                
+
                 this.set_comm_live(true);
             } else {
                 this.comm_live = false;
@@ -93,7 +92,7 @@ define(["./utils",
             var died = function() {
                 that.set_comm_live(false);
             };
-            
+
             // TODO: Move this logic into manager-base, so users can override it.
             // Also, notebook related logic should not live in widget!!!
             if (widget_manager.notebook) {
@@ -117,7 +116,7 @@ define(["./utils",
         },
 
         set_comm_live: function(live) {
-            /** 
+            /**
              * Change the comm_live state of the model.
              */
             if (this.comm_live === undefined || this.comm_live != live) {
@@ -176,13 +175,13 @@ define(["./utils",
             }
             return utils.resolvePromisesDict(deserialized);
         },
-        
+
         _handle_comm_msg: function (msg) {
             /**
              * Handle incoming comm msg.
              */
             var method = msg.content.data.method;
-            
+
             var that = this;
             switch (method) {
                 case 'update':
@@ -194,10 +193,10 @@ define(["./utils",
                             for (var i=0; i<buffer_keys.length; i++) {
                                 state[buffer_keys[i]] = buffers[i];
                             }
-                            return that._deserialize_state(state); 
+                            return that._deserialize_state(state);
                         }).then(function(state) {
                             that.set_state(state);
-                        }).catch(utils.reject("Couldn't process update msg for model id '" + String(that.id) + "'", true))
+                        }).catch(utils.reject("Couldn't process update msg for model id '" + String(that.id) + "'", true));
                     return this.state_change;
                 case 'custom':
                     this.trigger('msg:custom', msg.content.data.content, msg.buffers);
@@ -215,10 +214,6 @@ define(["./utils",
             this.state_lock = state;
             try {
                 this.set(state);
-                if (this._first_state) {
-                    this.trigger('ready', this);
-                    this._first_state = false;
-                }
             } finally {
                 this.state_lock = null;
             }
@@ -229,7 +224,7 @@ define(["./utils",
             // Equivalent to Backbone.Model.toJSON()
             return _.clone(this.attributes);
         },
-        
+
         _handle_status: function (msg, callbacks) {
             /**
              * Handle status msgs.
@@ -277,18 +272,15 @@ define(["./utils",
             /**
              * Set a value.
              */
+            // Backbone only remembers the diff of the most recent set()
+            // operation.  Calling set multiple times in a row results in a
+            // loss of diff information.  Here we keep our own running diff
+            // in this._buffered_state_diff.
+            //
+            // However, we don't buffer the initial state comming from the
+            // backend or the default values specified with `defaults`.
             var return_value = WidgetModel.__super__.set.apply(this, arguments);
-
-            if (!this._first_state) {
-                // Backbone only remembers the diff of the most recent set()
-                // operation.  Calling set multiple times in a row results in a
-                // loss of diff information.  Here we keep our own running diff.
-                //
-                // However, we don't buffer the initial state comming from the
-                // backend or the default values specified in `defaults`.
-                // 
-                this._buffered_state_diff = _.extend(this._buffered_state_diff, this.changedAttributes() || {});
-            }
+            this._buffered_state_diff = _.extend(this._buffered_state_diff, this.changedAttributes() || {});
             return return_value;
         },
 
@@ -309,7 +301,7 @@ define(["./utils",
              * options : dict
              *   the `attrs` key, if it exists, gives an {attr: value} dict that should be synced,
              *   otherwise, sync all attributes
-             * 
+             *
              */
             var error = options.error || function() {
                 console.error('Backbone sync error:', arguments);
