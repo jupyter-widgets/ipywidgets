@@ -1,6 +1,6 @@
 {
-  "name": "ipywidget-less-deps",
-  "version": "0.0.1",
+  "name": "jupyter-js-widgets",
+  "version": "0.0.3",
   "dependencies": {
     "bootstrap": "components/bootstrap#~3.3",
     "font-awesome": "components/font-awesome#~4.2.0",
