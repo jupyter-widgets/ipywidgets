@@ -10,7 +10,7 @@
   "author": "IPython",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "jupyter-js-widgets": "file:../../../ipywidgets"
+    "jupyter-js-widgets": "file:../../.."
   },
   "devDependencies": {
     "bower": "^1.7.0",

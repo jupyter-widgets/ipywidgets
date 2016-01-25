@@ -1,8 +1,8 @@
 {
   "name": "jupyter-js-widgets",
-  "version": "4.1.0",
-  "description": "IPython widget Javascript",
-  "author": "IPython",
+  "version": "0.0.3",
+  "description": "Jupyter widget Javascript",
+  "author": "Jupyter",
   "license": "BSD-3-Clause",
   "main": "index.js",
   "repository": {
@@ -19,10 +19,6 @@
     "test:firefox": "karma start karma.conf.js --browsers Firefox --log-level debug",
     "test:chrome": "karma start karma.conf.js --log-level debug",
     "prepublish": "npm run bower && npm run build",
-    "publish": "npm run publish:pypi",
-    "publish:pypi": "cd .. && python setup.py sdist upload && python setup.py bdist_wheel upload && cd ipywidgets",
-    "version": "node copy_version.js && git add _version.py",
-    "postversion": "node copy_version.js --dev && git add _version.py && git commit -m \"Back to dev\""
   },
   "devDependencies": {
     "babel-core": "^6.4.0",

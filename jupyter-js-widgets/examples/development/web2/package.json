@@ -14,7 +14,7 @@
     "font-awesome": "^4.5.0",
     "jquery": "^2.1.4",
     "jquery-ui": "^1.10.5",
-    "jupyter-js-widgets": "file:../../../ipywidgets"
+    "jupyter-js-widgets": "file:../../.."
   },
   "devDependencies": {
     "bower": "^1.7.0",
