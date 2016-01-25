@@ -5,9 +5,8 @@ _build
 docs/man/*.gz
 docs/source/api/generated
 docs/gh-pages
-ipywidgets/static/components
-ipywidgets/static/widgets/css
-ipywidgets/tests/bin
+jupyter-js-services/src/components
+jupyter-js-services/src/widgets/css
 node_modules
 *.py[co]
 __pycache__
