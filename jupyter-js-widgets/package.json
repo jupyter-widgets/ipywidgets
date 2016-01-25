@@ -18,7 +18,7 @@
     "test": "npm run test:firefox && npm run test:chrome",
     "test:firefox": "karma start karma.conf.js --browsers Firefox --log-level debug",
     "test:chrome": "karma start karma.conf.js --log-level debug",
-    "prepublish": "npm run bower && npm run build",
+    "prepublish": "npm run bower && npm run build"
   },
   "devDependencies": {
     "babel-core": "^6.4.0",

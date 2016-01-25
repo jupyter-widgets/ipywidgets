@@ -28,7 +28,7 @@ def install(user=False, symlink=False, quiet=False, enable=False):
     """
     if not quiet:
         print("Installing nbextension ...")
-    staticdir = pjoin(dirname(abspath(__file__)), 'static')
+    staticdir = pjoin(dirname(abspath(__file__)), 'node_modules', 'jupyter-js-widgets', 'src')
     install_nbextension(staticdir, destination='widgets', user=user, symlink=symlink)
     
     if enable:

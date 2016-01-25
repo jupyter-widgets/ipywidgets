@@ -67,6 +67,7 @@ repo_root = os.path.dirname(os.path.abspath(__file__))
 is_repo = os.path.exists(pjoin(repo_root, '.git'))
 
 npm_path = os.pathsep.join([
+    pjoin(repo_root, 'jupyter-js-widgets', 'node_modules', '.bin'),
     pjoin(repo_root, 'ipywidgets', 'node_modules', '.bin'),
     os.environ.get("PATH", os.defpath),
 ])
@@ -118,7 +119,7 @@ class NPM(Command):
     node_modules = pjoin(repo_root, 'ipywidgets', 'node_modules')
 
     targets = [
-        pjoin(repo_root, 'ipywidgets', 'static', 'widgets', 'css', 'widgets.min.css')
+        pjoin(repo_root, 'ipywidgets', 'node_modules', 'jupyter-js-widgets', 'src', 'widgets', 'css', 'widgets.min.css')
     ]
 
     def initialize_options(self):
@@ -144,17 +145,15 @@ class NPM(Command):
         if not has_npm:
             log.error("`npm` unavailable.  If you're running this command using sudo, make sure `npm` is available to sudo")
             
+        env = os.environ.copy()
+        env['PATH'] = npm_path
+        
         if self.should_run_npm_install():
             log.info("Installing build dependencies with npm.  This may take a while...")
+            check_call(['npm', 'install'], cwd=pjoin(repo_root, 'jupyter-js-widgets'), stdout=sys.stdout, stderr=sys.stderr)
             check_call(['npm', 'install'], cwd=pjoin(repo_root, 'ipywidgets'), stdout=sys.stdout, stderr=sys.stderr)
             os.utime(self.node_modules, None)
 
-        env = os.environ.copy()
-        env['PATH'] = npm_path
-        if has_npm:
-            log.info("Running `npm run build`...")
-            check_call(['npm', 'run', 'build'], cwd=pjoin(repo_root, 'ipywidgets'), stdout=sys.stdout, stderr=sys.stderr)
-        
         for t in self.targets:
             if not os.path.exists(t):
                 msg = "Missing file: %s" % t
@@ -176,7 +175,7 @@ for d, _, _ in os.walk(pjoin(here, name)):
         packages.append(d[len(here)+1:].replace(os.path.sep, '.'))
 
 package_data = {
-    'ipywidgets': ['static/*/*/*.*', 'tests/bin/*.js', 'tests/bin/*/*.js'],
+    'ipywidgets': ['node_modules/jupyter-js-widgets/src/*/*/*.*'],
 }
 
 version_ns = {}
@@ -187,7 +186,7 @@ with open(pjoin(here, name, '_version.py')) as f:
 setup_args = dict(
     name            = name,
     version         = version_ns['__version__'],
-    scripts         = glob(pjoin('scripts', '*')),
+    scripts         = [],
     packages        = packages,
     package_data    = package_data,
     description     = "IPython HTML widgets for Jupyter",

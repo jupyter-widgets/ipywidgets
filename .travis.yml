@@ -12,10 +12,10 @@ before_install:
     - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_before_install_py.sh ; fi'
 install:
     - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_install_py.sh ; fi'
-    - 'if [[ $GROUP == js ]] ; then bash ./jupyter-js-services/scripts/travis_install_js.sh ; fi'
+    - 'if [[ $GROUP == js ]] ; then bash ./jupyter-js-widgets/scripts/travis_install_js.sh ; fi'
 script:
     - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_script_py.sh ; fi'
-    - 'if [[ $GROUP == js ]] ; then bash ./jupyter-js-services/scripts/travis_script_js.sh ; fi'
+    - 'if [[ $GROUP == js ]] ; then bash ./jupyter-js-widgets/scripts/travis_script_js.sh ; fi'
 matrix:
     include:
         - python: 2.7
