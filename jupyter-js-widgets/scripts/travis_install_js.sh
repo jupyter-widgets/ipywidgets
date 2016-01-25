@@ -1,2 +1,2 @@
-cd ipywidgets
+cd jupyter-js-widgets
 npm install
