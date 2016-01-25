@@ -10,24 +10,24 @@ require('jquery-ui');
 require('bootstrap');
 require('underscore');
 
-var register = require("./static/widgets/js/register");
+var register = require("./src/widgets/js/register");
 [
-    require("./static/widgets/js/manager-base"),
-    require("./static/widgets/js/widget"),
-    require("./static/widgets/js/widget_layout"),
-    require("./static/widgets/js/widget_link"),
-    require("./static/widgets/js/widget_bool"),
-    require("./static/widgets/js/widget_button"),
-    require("./static/widgets/js/widget_box"),
-    require("./static/widgets/js/widget_float"),
-    require("./static/widgets/js/widget_image"),
-    require("./static/widgets/js/widget_int"),
-    require("./static/widgets/js/widget_color"),
-    require("./static/widgets/js/widget_selection"),
-    require("./static/widgets/js/widget_selectioncontainer"),
-    require("./static/widgets/js/widget_string"),
-    require("./static/widgets/js/widget_controller"),
-    require("./static/widgets/js/utils")
+    require("./src/widgets/js/manager-base"),
+    require("./src/widgets/js/widget"),
+    require("./src/widgets/js/widget_layout"),
+    require("./src/widgets/js/widget_link"),
+    require("./src/widgets/js/widget_bool"),
+    require("./src/widgets/js/widget_button"),
+    require("./src/widgets/js/widget_box"),
+    require("./src/widgets/js/widget_float"),
+    require("./src/widgets/js/widget_image"),
+    require("./src/widgets/js/widget_int"),
+    require("./src/widgets/js/widget_color"),
+    require("./src/widgets/js/widget_selection"),
+    require("./src/widgets/js/widget_selectioncontainer"),
+    require("./src/widgets/js/widget_string"),
+    require("./src/widgets/js/widget_controller"),
+    require("./src/widgets/js/utils")
 ].forEach(function(module) {
     register.registerWidgets(module);
 
@@ -37,5 +37,5 @@ var register = require("./static/widgets/js/register");
 });
 
 exports.shims = {
-    services: require("./static/widgets/js/services-shim")
+    services: require("./src/widgets/js/services-shim")
 };
