@@ -5,15 +5,10 @@ _build
 docs/man/*.gz
 docs/source/api/generated
 docs/gh-pages
-static/components/
-static/notebook/js/
+src/components/
 node_modules
-*.py[co]
-__pycache__
-*.egg-info
 *~
 *.bak
-.ipynb_checkpoints
 .tox
 .DS_Store
 \#*#
@@ -21,11 +16,8 @@ __pycache__
 .coverage
 .xunit.xml
 
-*.py
-widgets/
-tests/
+test/
 .travis.yml
 build_css.js
-setup.cfg
 examples/
 .jshintrc
