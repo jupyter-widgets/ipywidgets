@@ -20,6 +20,11 @@ or
 
     conda install ipywidgets
 
+### JavaScript only
+
+If you're interested in only installing the JavaScript, you may do so by running
+
+    npm install jupyter-js-widgets
 
 ### Development install
 
@@ -47,7 +52,7 @@ To run the Python tests:
 
 To run the Javascript tests:
 
-    npm run test
+    cd jupyter-js-widgets; npm run test
 
 This will run the test suite using `karma` with 'debug' level logging.
 
