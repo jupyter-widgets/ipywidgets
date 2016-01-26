@@ -4,7 +4,7 @@
 # Distributed under the terms of the Modified BSD License.
 
 from traitlets import Unicode, Dict, Instance, Bool, List, \
-    CaselessStrEnum, Tuple, CUnicode, Int, Set
+    CaselessStrEnum, Tuple, CUnicode, Int, Set, observe
 from .widget import Widget, widget_serialization
 from .trait_types import Color
 from .widget_layout import Layout
@@ -69,19 +69,20 @@ class DOMWidget(Widget):
     def __init__(self, *pargs, **kwargs):
         super(DOMWidget, self).__init__(*pargs, **kwargs)
 
-        def _validate_border(name, old, new):
-            if new is not None and new != '':
-                if name != 'border_width' and not self.border_width:
-                    self.border_width = 1
-                if name != 'border_style' and self.border_style == '':
-                    self.border_style = 'solid'
-        self.on_trait_change(_validate_border, ['border_width', 'border_style', 'border_color'])
-
         # Deprecation added in 5.0.  TODO: Remove me and corresponging traits.
         self._deprecate_traits(['width', 'height', 'padding', 'margin', 'color',
         'background_color', 'border_color', 'border_width', 'border_radius',
         'border_style', 'font_style', 'font_weight', 'font_size', 'font_family',
         'visible'])
+
+    @observe('border_width', 'border_style', 'border_color')
+    def _update_border(self, change):
+        name, new = change['name'], change['new']
+        if new is not None and new != '':
+            if name != 'border_width' and not self.border_width:
+                self.border_width = 1
+            if name != 'border_style' and self.border_style == '':
+                self.border_style = 'solid'
 
     def add_class(self, className):
         """
@@ -104,7 +105,6 @@ class DOMWidget(Widget):
         return self
 
     def _deprecate_traits(self, traits): # TODO: Deprecation added in 5.0.  Remove me and corresponging traits.
-        for trait in traits:
-            def traitWarn():
-                warn("%s deprecated" % trait, DeprecationWarning)
-            self.on_trait_change(traitWarn, trait)
+        def traitWarn(change):
+            warn("%s deprecated" % change['name'], DeprecationWarning)
+        self.observe(traitWarn, names=traits)

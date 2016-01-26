@@ -52,7 +52,7 @@ class _Selection(DOMWidget):
         self.value_lock = Lock()
         self.options_lock = Lock()
         self.equals = kwargs.pop('equals', lambda x, y: x == y)
-        self.on_trait_change(self._options_readonly_changed, ['_options_dict', '_options_labels', '_options_values', '_options'])
+        self.observe(self._options_readonly_changed, names=['_options_dict', '_options_labels', '_options_values', '_options'])
         if 'options' in kwargs:
             self.options = kwargs.pop('options')
         DOMWidget.__init__(self, *args, **kwargs)
@@ -99,9 +99,9 @@ class _Selection(DOMWidget):
             if self.value not in self._options_values:
                 self.value = next(iter(self._options_values))
 
-    def _options_readonly_changed(self, name, old, new):
+    def _options_readonly_changed(self, change):
         if not self.options_lock.locked():
-            raise TraitError("`.%s` is a read-only trait. Use the `.options` tuple instead." % name)
+            raise TraitError("`.%s` is a read-only trait. Use the `.options` tuple instead." % change['name'])
 
     def _value_changed(self, name, old, new):
         """Called when value has been changed"""
