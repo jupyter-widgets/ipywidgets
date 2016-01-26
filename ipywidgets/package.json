@@ -11,7 +11,7 @@
     "type": "git",
     "url": "git+https://github.com/ipython/ipywidgets.git"
   },
-  "author": "Jupyter",
+  "author": "Project Jupyter",
   "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/ipython/ipywidgets/issues"
@@ -19,5 +19,6 @@
   "homepage": "https://github.com/ipython/ipywidgets#readme",
   "dependencies": {
     "ncp": "^2.0.0"
-  }
+  },
+  "private": true
 }

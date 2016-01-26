@@ -2,7 +2,7 @@
   "name": "jupyter-js-widgets",
   "version": "0.0.3",
   "description": "Jupyter widget Javascript",
-  "author": "Jupyter",
+  "author": "Project Jupyter",
   "license": "BSD-3-Clause",
   "main": "index.js",
   "repository": {
