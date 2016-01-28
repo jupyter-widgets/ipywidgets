@@ -45,7 +45,7 @@ define([
              * Called when view is rendered.
              */
             this.$el
-                .addClass('ipy-widget widget-hbox widget-hslider');
+                .addClass('jupyter-widgets widget-hbox widget-hslider');
             this.$label = $('<div />')
                 .appendTo(this.$el)
                 .addClass('widget-label')
@@ -376,7 +376,7 @@ define([
              * Called when view is rendered.
              */
             this.$el
-                .addClass('ipy-widget widget-hbox widget-numeric-text');
+                .addClass('jupyter-widgets widget-hbox widget-numeric-text');
             this.$label = $('<div />')
                 .appendTo(this.$el)
                 .addClass('widget-label')
@@ -389,11 +389,11 @@ define([
             this.listenTo(this.model, 'change:description', function(sender, value) {
                 this.updateDescription();
             }, this);
-                
+
             this.update(); // Set defaults.
             this.updateDescription();
         },
-        
+
         updateDescription: function() {
             var description = this.model.get('description');
             if (description.length === 0) {
@@ -511,7 +511,7 @@ define([
             /**
              * Called when view is rendered.
              */
-            this.$el.addClass('ipy-widget widget-hprogress');
+            this.$el.addClass('jupyter-widgets widget-hprogress');
             this.$label = $('<div />')
                 .appendTo(this.$el)
                 .addClass('widget-label')
@@ -532,7 +532,7 @@ define([
             // Set defaults.
             this.update();
             this.updateDescription();
-           
+
             this.listenTo(this.model, "change:bar_style", this.update_bar_style, this);
             this.listenTo(this.model, "change:description", function(sender, value) {
                 this.updateDescription();

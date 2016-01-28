@@ -2,11 +2,8 @@
 // Distributed under the terms of the Modified BSD License.
 
 define([
-    "base/js/namespace",
     "./widgets/js/register",
-    "./widgets/js/save_state",
     "./widgets/js/manager-base",
-    "./widgets/js/manager",
     "./widgets/js/utils",
     "./widgets/js/widget",
     "./widgets/js/widget_layout",
@@ -22,24 +19,19 @@ define([
     "./widgets/js/widget_selectioncontainer",
     "./widgets/js/widget_string",
     "./widgets/js/widget_controller"
-], function(IPython, register) {
+], function(register) {
 
     // Bundle all the exports
-    exports = Array.prototype.slice.call(arguments, 3).reduce(function(obj, e) {
+    exports = Array.prototype.slice.call(arguments, 1).reduce(function(obj, e) {
         return _.extend(obj, e);
     });
 
     // Register all of the loaded models and views with the widget manager.
-    for (var i = 6; i < arguments.length; i++) {
+    for (var i = 3; i < arguments.length; i++) {
         var module = arguments[i];
         register.registerWidgets(module);
     }
-    
-    // For backwards compatibility and interactive use.
-    IPython.WidgetManager = exports.WidgetManager;
-    IPython.Widget = exports.Widget;
-    IPython.DOMWidget = exports.DOMWidget;
-    
+
     return exports;
 });
 

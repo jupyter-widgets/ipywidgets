@@ -30,7 +30,7 @@ define([
              * Called when view is rendered.
              */
             this.$el
-                .addClass('ipy-widget widget-hbox widget-checkbox');
+                .addClass('jupyter-widgets widget-hbox widget-checkbox');
             this.$checkbox = $('<input />')
                 .attr('type', 'checkbox')
                 .appendTo(this.$el)
@@ -107,7 +107,7 @@ define([
              */
             var that = this;
             this.setElement($('<button />')
-                .addClass('ipy-widget widget-toggle-button btn btn-default')
+                .addClass('jupyter-widgets widget-toggle-button btn btn-default')
                 .attr('type', 'button')
                 .on('click', function (e) {
                     e.preventDefault();
@@ -186,7 +186,7 @@ define([
             /**
              * Called when view is rendered.
              */
-            this.$el.addClass("ipy-widget widget-valid");
+            this.$el.addClass("jupyter-widgets widget-valid");
             this.listenTo(this.model, "change", this.update, this);
             this.update();
         },
@@ -207,7 +207,7 @@ define([
                 icon = "fa-close";
                 color = "red";
                 readout = this.model.get("readout");
-            } 
+            }
             this.$el.text(readout);
             $('<i class="fa"></i>').prependTo(this.$el).addClass(icon);
             var that = this;

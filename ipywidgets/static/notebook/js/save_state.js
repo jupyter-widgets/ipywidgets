@@ -15,15 +15,15 @@ define(["base/js/namespace"], function(Jupyter) {
     };
 
     var action = {
-        help: 'Download Widget State',
+        help: 'Download the widget state as a JSON file',
         icon: 'fa-sliders',
         help_index : 'zz',
         handler : save_state
     };
 
     var action_name = 'save-widget-state';
-    var prefix = '';
+    var prefix = 'widgets';
     Jupyter.notebook.keyboard_manager.actions.register(action, action_name, prefix);
 
-    return {};
+    return {action: action};
 });

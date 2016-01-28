@@ -13,16 +13,16 @@ from traitlets import Unicode, Bool, CaselessStrEnum
 
 class _Bool(DOMWidget):
     """A base class for creating widgets that represent booleans."""
-    value = Bool(False, help="Bool value", sync=True)
-    description = Unicode('', help="Description of the boolean (label).", sync=True)
-    disabled = Bool(False, help="Enable or disable user changes.", sync=True)
+    value = Bool(False, help="Bool value").tag(sync=True)
+    description = Unicode('', help="Description of the boolean (label).").tag(sync=True)
+    disabled = Bool(False, help="Enable or disable user changes.").tag(sync=True)
 
     def __init__(self, value=None, **kwargs):
         if value is not None:
             kwargs['value'] = value
         super(_Bool, self).__init__(**kwargs)
 
-    _model_name = Unicode('BoolModel', sync=True)
+    _model_name = Unicode('BoolModel').tag(sync=True)
 
 
 @register('Jupyter.Checkbox')
@@ -36,8 +36,8 @@ class Checkbox(_Bool):
     description : str
 	     description displayed next to the checkbox
     """
-    _view_name = Unicode('CheckboxView', sync=True)
-    _model_name = Unicode('CheckboxModel', sync=True)
+    _view_name = Unicode('CheckboxView').tag(sync=True)
+    _model_name = Unicode('CheckboxModel').tag(sync=True)
 
 
 @register('Jupyter.ToggleButton')
@@ -55,15 +55,15 @@ class ToggleButton(_Bool):
     icon: str
         font-awesome icon name
     """
-    _view_name = Unicode('ToggleButtonView', sync=True)
-    _model_name = Unicode('ToggleButtonModel', sync=True)
+    _view_name = Unicode('ToggleButtonView').tag(sync=True)
+    _model_name = Unicode('ToggleButtonModel').tag(sync=True)
 
-    tooltip = Unicode(help="Tooltip caption of the toggle button.", sync=True)
-    icon = Unicode('', help= "Font-awesome icon.", sync=True)
+    tooltip = Unicode(help="Tooltip caption of the toggle button.").tag(sync=True)
+    icon = Unicode('', help= "Font-awesome icon.").tag(sync=True)
 
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
-        sync=True, help="""Use a predefined styling for the button.""")
+        help="""Use a predefined styling for the button.""").tag(sync=True)
 
 
 @register('Jupyter.Valid')
@@ -76,7 +76,7 @@ class Valid(_Bool):
     value: {True,False}
         value of the Valid widget
     """
-    readout = Unicode('Invalid', help="Message displayed when the value is False", sync=True)
-    _view_name = Unicode('ValidView', sync=True)
-    _model_name = Unicode('ValidModel', sync=True)
+    readout = Unicode('Invalid', help="Message displayed when the value is False").tag(sync=True)
+    _view_name = Unicode('ValidView').tag(sync=True)
+    _model_name = Unicode('ValidModel').tag(sync=True)
 

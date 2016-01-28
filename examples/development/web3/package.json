@@ -8,6 +8,7 @@
     "build": "npm run build:es5 && npm run build:bundle",
     "build:es5": "babel src --out-dir es5 --presets es2015",
     "build:bundle": "webpack ./es5/index.js index.built.js",
+    "host": "http-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "IPython",
@@ -15,10 +16,11 @@
   "dependencies": {
     "codemirror": "^5.9.0",
     "font-awesome": "^4.5.0",
+    "http-server": "^0.8.5",
     "jquery": "^2.1.4",
     "jquery-ui": "^1.10.5",
-    "jupyter-js-widgets": "file:../../../ipywidgets",
-    "jupyter-js-services": "^0.2.2"
+    "jupyter-js-services": "^0.3.3",
+    "jupyter-js-widgets": "file:../../../ipywidgets"
   },
   "devDependencies": {
     "babel-cli": "^6.3.15",

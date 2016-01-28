@@ -22,7 +22,7 @@ define([
         /* Very simple view for a gamepad button. */
 
         render: function() {
-            this.$el.addClass('ipy-widget widget-controller-button');
+            this.$el.addClass('jupyter-widgets widget-controller-button');
 
             this.$support = $('<div />').css({
                     'position': 'relative',
@@ -65,7 +65,7 @@ define([
     var ControllerAxisView = widget.DOMWidgetView.extend({
         /* Very simple view for a gamepad axis. */
         render: function() {
-            this.$el.addClass('ipy-widget widget-controller-axis');
+            this.$el.addClass('jupyter-widgets widget-controller-axis');
             
             this.$el.css({
                     'width': '16px',
@@ -288,7 +288,7 @@ define([
         },
 
         render: function(){
-            this.$el.addClass('ipy-widget widget-controller');
+            this.$el.addClass('jupyter-widgets widget-controller');
 
             this.$box = this.$el;
 

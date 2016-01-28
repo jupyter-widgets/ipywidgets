@@ -1,3 +1,6 @@
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
+
 // minimal imports from bootstrap - only variables and mixins
 @import "../../components/bootstrap/less/variables.less";
 @import "../../components/bootstrap/less/mixins.less";
@@ -9,6 +12,7 @@
 // layout mixins
 @import "./flexbox.less";
 @import "./mixins.less";
+@import "./progress-modal.less";
 
 @widget-width: 300px;
 @widget-width-short: 148px;
@@ -19,7 +23,7 @@
 @shadow-key-penumbra-opacity: 0.14;
 @shadow-ambient-shadow-opacity: 0.12;
 
-.ipy-widget {
+.jupyter-widgets {
     & {
         margin: 2px;
     }
@@ -30,7 +34,7 @@
 
 .widget-area {
     /*
-    LESS file that styles IPython notebook widgets and the area they sit in.
+    LESS file that styles Jupyter widgets and the area they sit in.
 
     The widget area typically looks something like this:
      +------------------------------------------+

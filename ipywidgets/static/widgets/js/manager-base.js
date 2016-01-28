@@ -186,9 +186,7 @@ define([
         return commPromise.then(function(comm) {
             // Comm Promise Resolved.
             options_clone.comm = comm;
-            return that.new_model(options_clone).then(function(model) {
-                return model.request_state();
-            });
+            return that.new_model(options_clone);
         }, function() {
             // Comm Promise Rejected.
             if (!options_clone.model_id) {
@@ -197,7 +195,7 @@ define([
             return that.new_model(options_clone);
         });
     };
-    
+
     /**
      * Parse a version string
      * @param  {string} version i.e. "1.0.2dev" or "2.4"
@@ -251,7 +249,7 @@ define([
                     if (validated) console.info('Widget backend and frontend versions are compatible');
                     resolve(validated);
                 }).bind(this));
-                
+
                 setTimeout(function() {
                     reject(new Error('Timeout while trying to cross validate the widget frontend and backend versions.'));
                 }, 3000);
@@ -269,7 +267,7 @@ define([
          * Example
          * --------
          * JS:
-         * IPython.notebook.kernel.widget_manager.new_model({
+         * Jupyter.notebook.kernel.widget_manager.new_model({
          *      model_name: 'WidgetModel',
          *      widget_class: 'Jupyter.IntSlider'
          *  })
@@ -385,31 +383,28 @@ define([
 
     ManagerBase.prototype.set_state = function(state) {
         /**
-         * Set the notebook's state.
+         * Set the widget manager state.
          *
          * Reconstructs all of the widget models and attempts to redisplay the
          * widgets in the appropriate cells by cell index.
          */
         var that = this;
 
-        // Recreate all the widget models for the given notebook state.
+        // Recreate all the widget models for the given widget manager state.
         var all_models = that._get_comm_info().then(function(live_comms) {
             return Promise.all(_.map(Object.keys(state), function (model_id) {
-                
+
                 // If the model has already been created, return it.
                 if (that._models[model_id]) {
                     return that._models[model_id];
                 }
-                
+
                 if (live_comms.hasOwnProperty(model_id)) {  // live comm
                     return that._create_comm(that.comm_target_name, model_id).then(function(new_comm) {
                         return that.new_model({
                             comm: new_comm,
                             model_name: state[model_id].model_name,
                             model_module: state[model_id].model_module,
-                        }).then(function(model) {
-                            // Request the state from the backend
-                            return model.request_state();
                         });
                     });
                 } else { // dead comm

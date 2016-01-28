@@ -13,8 +13,8 @@ from traitlets import Unicode, Dict, CInt
 
 class _SelectionContainer(Box):
     """Base class used to display multiple child widgets."""
-    _titles = Dict(help="Titles of the pages", sync=True)
-    selected_index = CInt(0, sync=True)
+    _titles = Dict(help="Titles of the pages").tag(sync=True)
+    selected_index = CInt().tag(sync=True)
 
     # Public methods
     def set_title(self, index, title):
@@ -25,7 +25,8 @@ class _SelectionContainer(Box):
         index : int
             Index of the container page
         title : unicode
-            New title"""
+            New title
+        """
         self._titles[index] = title
         self.send_state('_titles')
 
@@ -35,7 +36,8 @@ class _SelectionContainer(Box):
         Parameters
         ----------
         index : int
-            Index of the container page"""
+            Index of the container page
+        """
         if index in self._titles:
             return self._titles[index]
         else:
@@ -45,12 +47,12 @@ class _SelectionContainer(Box):
 @register('Jupyter.Accordion')
 class Accordion(_SelectionContainer):
     """Displays children each on a separate accordion page."""
-    _view_name = Unicode('AccordionView', sync=True)
-    _model_name = Unicode('AccordionModel', sync=True)
+    _view_name = Unicode('AccordionView').tag(sync=True)
+    _model_name = Unicode('AccordionModel').tag(sync=True)
 
 
 @register('Jupyter.Tab')
 class Tab(_SelectionContainer):
     """Displays children each on a separate accordion tab."""
-    _view_name = Unicode('TabView', sync=True)
-    _model_name = Unicode('TabModel', sync=True)
+    _view_name = Unicode('TabView').tag(sync=True)
+    _model_name = Unicode('TabModel').tag(sync=True)

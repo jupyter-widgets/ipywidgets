@@ -4,8 +4,10 @@
     "",
     "s = IntSlider(max=200, value=100)",
     "t = Text()",
-    "def update_text():",
+    "",
+    "def update_text(change):",
     "    t.value = str(s.value ** 2)",
-    "s.on_trait_change(update_text, 'value')",
+    "",
+    "s.observe(update_text, names='value')",
     "display(VBox([s, t]))"
 ]

@@ -44,7 +44,7 @@ define([
             var guid = 'panel-group' + utils.uuid();
             this.$el
                 .attr('id', guid)
-                .addClass('ipy-widget panel-group');
+                .addClass('jupyter-widgets panel-group');
             this.listenTo(this.model, 'change:selected_index', function(model, value, options) {
                 this.update_selected_index(options);
             }, this);
