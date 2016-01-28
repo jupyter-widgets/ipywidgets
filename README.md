@@ -39,6 +39,11 @@ To install ipywidgets from git, you will need [npm](https://www.npmjs.com/).
 
         pip install -v -e .
 
+2. Install the Jupyter Widgets nbextension
+
+        cd jupyter-js-widgets-nbextension
+        pip install -v -e .
+
     Note: You need to have npm installed.  The installation process will
     complain if you don't.  If you install using sudo, you need to make sure
     that npm is also available in the PATH used with sudo.
