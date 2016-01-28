@@ -1,4 +1,4 @@
-const ManagerBase = require('../index.js').ManagerBase;
+const ManagerBase = require('../src/index.js').ManagerBase;
 
 export class DummyManager extends ManagerBase {
     constructor() {

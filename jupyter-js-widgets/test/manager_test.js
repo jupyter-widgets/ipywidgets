@@ -1,4 +1,4 @@
-const ManagerBase = require('../index.js').ManagerBase;
+const ManagerBase = require('../src/index.js').ManagerBase;
 
 describe("ManagerBase", function() {
     beforeEach(function() {

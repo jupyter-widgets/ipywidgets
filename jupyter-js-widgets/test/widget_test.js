@@ -1,4 +1,4 @@
-const classes = require('../index.js');
+const classes = require('../src/index.js');
 const Widget = classes.Widget;
 const DOMWidget = classes.DOMWidget;
 const DummyManager = require('./dummy-manager').DummyManager;

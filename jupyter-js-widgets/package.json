@@ -4,21 +4,19 @@
   "description": "Jupyter widget Javascript",
   "author": "Project Jupyter",
   "license": "BSD-3-Clause",
-  "main": "index.js",
+  "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/ipython/ipywidgets.git"
   },
   "scripts": {
     "build": "npm run css",
-    "bower": "bower install --config.interactive=false",
-    "postinstall": "npm run bower",
-    "precss": "rimraf ./static/widgets/css/",
+    "precss": "rimraf ./css/",
     "css": "node build_css.js",
     "test": "npm run test:firefox && npm run test:chrome",
     "test:firefox": "karma start karma.conf.js --browsers Firefox --log-level debug",
     "test:chrome": "karma start karma.conf.js --log-level debug",
-    "prepublish": "npm run bower && npm run build"
+    "prepublish": "npm run build"
   },
   "devDependencies": {
     "babel-core": "^6.4.0",
@@ -27,6 +25,7 @@
     "bower": "^1.5.3",
     "chai": "^3.4.1",
     "clean-css": "^3.4.6",
+    "font-awesome": "^4.5.0",
     "karma": "^0.13.15",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^0.2.2",

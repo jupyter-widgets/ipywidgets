@@ -1,0 +1,33 @@
+{
+  "name": "jupyter-js-widgets-nbextension",
+  "version": "0.0.1",
+  "description": "Jupyter Widgets nbextension",
+  "main": "src/extension.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "prepublish": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ipython/ipywidgets.git"
+  },
+  "author": "Jupyter Project",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/ipython/ipywidgets/issues"
+  },
+  "homepage": "https://github.com/ipython/ipywidgets#readme",
+  "dependencies": {
+    "backbone": "^1.2.3",
+    "html2canvas": "^0.5.0-beta4",
+    "jquery": "^2.2.0",
+    "jupyter-js-widgets": "file:///Users/jon/github.com/ipython/ipywidgets/jupyter-js-widgets",
+    "underscore": "^1.8.3"
+  },
+  "devDependencies": {
+    "css-loader": "^0.23.1",
+    "style-loader": "^0.13.0",
+    "webpack": "^1.12.12"
+  }
+}
