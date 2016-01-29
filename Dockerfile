@@ -5,8 +5,6 @@ FROM andrewosh/binder-base
 MAINTAINER Raymond Yee  <raymond.yee@gmail.com>
 
 USER main
-RUN pwd
-RUN echo $HOME
+COPY * $HOME/
 RUN ls *
-RUN ls /home/andrew/binder/apps/rdhyee-ipywidgets/build/app/repo/*
 RUN pip install -v -e .
