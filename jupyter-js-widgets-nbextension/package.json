@@ -22,7 +22,7 @@
     "backbone": "^1.2.3",
     "html2canvas": "^0.5.0-beta4",
     "jquery": "^2.2.0",
-    "jupyter-js-widgets": "file:///Users/jon/github.com/ipython/ipywidgets/jupyter-js-widgets",
+    "jupyter-js-widgets": "../jupyter-js-widgets",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
