@@ -5,6 +5,6 @@ FROM andrewosh/binder-base
 MAINTAINER Raymond Yee  <raymond.yee@gmail.com>
 
 USER main
-COPY * $HOME/
+COPY . $HOME/
 RUN ls *
 RUN pip install -v -e .
