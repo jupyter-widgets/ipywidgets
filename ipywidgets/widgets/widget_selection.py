@@ -65,7 +65,11 @@ class _Selection(DOMWidget):
 
         # Make sure x is a list or tuple.
         if not isinstance(x, (list, tuple)):
-            raise ValueError('x')
+            msg = (
+                "Attempted to set options for '{}' widget with an object of type `{}`\n"
+                "Expected a list, tuple or OrderdDict."
+            )
+            raise ValueError(msg.format(self.__class__.__name__, type(x)))
 
         # If x is an ordinary list, use the option values as names.
         for y in x:
