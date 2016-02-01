@@ -247,8 +247,7 @@ def interactive(__interact_f, **kwargs):
     container.children = c
 
     # Build the callback
-    def call_f(change):
-        name, old, new = change['name'], change['old'], change['new']
+    def call_f(sender):
         container.kwargs = {}
         for widget in kwargs_widgets:
             value = widget.value
