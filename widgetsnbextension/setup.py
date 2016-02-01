@@ -7,15 +7,15 @@
 from __future__ import print_function
 
 # the name of the package
-name = 'jupyter-js-widgets-nbextension'
+name = 'widgetsnbextension'
 
 LONG_DESCRIPTION = """
-.. image:: https://img.shields.io/pypi/v/jupyter-js-widgets-nbextension.svg
-   :target: https://pypi.python.org/pypi/jupyter-js-widgets-nbextension/
+.. image:: https://img.shields.io/pypi/v/widgetsnbextension.svg
+   :target: https://pypi.python.org/pypi/widgetsnbextension/
    :alt: Version Number
 
-.. image:: https://img.shields.io/pypi/dm/jupyter-js-widgets-nbextension.svg
-   :target: https://pypi.python.org/pypi/jupyter-js-widgets-nbextension/
+.. image:: https://img.shields.io/pypi/dm/widgetsnbextension.svg
+   :target: https://pypi.python.org/pypi/widgetsnbextension/
    :alt: Number of PyPI downloads
 
 Interactive HTML Widgets
@@ -70,9 +70,6 @@ npm_path = os.pathsep.join([
     os.environ.get("PATH", os.defpath),
 ])
 
-print('!!!! INSTALLING')
-print(name)
-
 def mtime(path):
     """shorthand for mtime"""
     return os.stat(path).st_mtime
@@ -120,7 +117,7 @@ class NPM(Command):
     node_modules = pjoin(repo_root, 'node_modules')
 
     targets = [
-        pjoin(repo_root, 'jupyter-js-widgets-nbextension', 'static', 'extension.js')
+        pjoin(repo_root, 'widgetsnbextension', 'static', 'extension.js')
     ]
 
     def initialize_options(self):
@@ -158,7 +155,7 @@ class NPM(Command):
             if not os.path.exists(t):
                 msg = "Missing file: %s" % t
                 if not has_npm:
-                    msg += '\nnpm is required to build a development version of jupyter-js-widgets-nbextension'
+                    msg += '\nnpm is required to build a development version of widgetsnbextension'
                 raise ValueError(msg)
         
 
@@ -178,9 +175,9 @@ setup_args = dict(
     name            = name,
     version         = version_ns['__version__'],
     scripts         = [],
-    packages        = ['jupyter-js-widgets-nbextension'],
+    packages        = ['widgetsnbextension'],
     package_data    = {
-                        'jupyter-js-widgets-nbextension': ['jupyter-js-widgets-nbextension/static/extension.js'],
+                        'widgetsnbextension': ['widgetsnbextension/static/extension.js'],
                     },
     description     = "IPython HTML widgets for Jupyter",
     long_description = LONG_DESCRIPTION,
