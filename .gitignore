@@ -25,4 +25,4 @@ index.built.js
 **/es5/
 
 jupyter-js-widgets/css
-jupyter-js-widgets-nbextension/jupyter-js-widgets-nbextension/static
+widgetsnbextension/widgetsnbextension/static

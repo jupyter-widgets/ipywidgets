@@ -7,7 +7,7 @@
  * embed live widgets in a context outside of the notebook.
  */
 
-var $ = require('jquery');
+var $ = require('./jquery');
 var utils = require('./utils');
 var _ = require('underscore');
 

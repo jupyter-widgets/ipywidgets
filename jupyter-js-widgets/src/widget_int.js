@@ -3,9 +3,7 @@
 
 var widget = require("./widget");
 var _ = require("underscore");
-var $ = require("jquery");
-require("bootstrap");
-require("jquery-ui");
+var $ = require("./jquery");
 
     var IntModel = widget.DOMWidgetModel.extend({
         defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {

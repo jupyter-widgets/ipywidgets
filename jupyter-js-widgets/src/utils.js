@@ -4,7 +4,7 @@
 // TODO: ATTEMPT TO KILL THIS MODULE USING THIRD PARTY LIBRARIES WHEN IPYWIDGETS 
 // IS CONVERTED TO NODE COMMONJS.
 
-var $ = require("jquery");
+var $ = require("./jquery");
     "use strict";
     
     /**

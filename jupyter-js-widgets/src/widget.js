@@ -5,7 +5,7 @@ var utils = require("./utils");
 var managerBase = require("./manager-base");
 var _ = require("underscore");
 var Backbone = require("backbone");
-var $ = require("jquery");
+var $ = require("./jquery");
 
     "use strict";
     

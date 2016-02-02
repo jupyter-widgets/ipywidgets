@@ -4,9 +4,8 @@
 var widget = require("./widget");
 var utils = require("./utils");
 var box = require("./widget_box");
-var $ = require("jquery");
+var $ = require("./jquery");
 var _ = require("underscore");
-require("bootstrap");
 
     var SelectionContainerModel = box.BoxModel.extend({
         defaults: _.extend({}, box.BoxModel.prototype.defaults, {

@@ -3,9 +3,8 @@
 
 var widget = require("./widget");
 var utils = require("./utils");
-var $ = require("jquery");
+var $ = require("./jquery");
 var _ = require("underscore");
-require("bootstrap");
 
     var SelectionModel = widget.DOMWidgetModel.extend({
         defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {

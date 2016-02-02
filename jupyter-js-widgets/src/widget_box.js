@@ -3,7 +3,7 @@
 
 var widget = require("./widget");
 var utils = require("./utils");
-var $ = require("jquery");
+var $ = require("./jquery");
 var _ = require("underscore");
     "use strict";
 

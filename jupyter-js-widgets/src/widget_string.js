@@ -2,9 +2,8 @@
 // Distributed under the terms of the Modified BSD License.
 
 var widget = require("./widget");
-var $ = require("jquery");
+var $ = require("./jquery");
 var _ = require("underscore");
-require("bootstrap");
 
     var StringModel = widget.DOMWidgetModel.extend({
         defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {

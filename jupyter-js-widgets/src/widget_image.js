@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 var widget = require("./widget");
-var $ = require("jquery");
+var $ = require("./jquery");
 var _ = require("underscore");
 
     var ImageModel = widget.DOMWidgetModel.extend({
