@@ -501,7 +501,7 @@ var saveState = require("./save_state");
             if (metadata) {
                 return kernel.comm_manager.new_comm(comm_target_name, metadata, model_id);
             } else {
-                return new Promise(function(resove) {
+                return new Promise(function(resolve) {
                     requirejs(["services/kernels/comm"], function(comm) {
                         var new_comm = new comm.Comm(comm_target_name, model_id);
                         kernel.comm_manager.register_comm(new_comm);
