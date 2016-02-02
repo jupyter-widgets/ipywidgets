@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-requirejs.config({
+window['requirejs'].config({
     map: {
         "*": {
             "jupyter-js-widgets": "nbextensions/widgets/extension",
@@ -91,7 +91,8 @@ require("./widget_output");
         });
     }
 
-    module.exports = {
-      load_ipython_extension: load_ipython_extension,
-      jupyterWidgets: require("jupyter-js-widgets")
-    };
+var _ = require('underscore');
+module.exports = _.extend({
+    load_ipython_extension: load_ipython_extension,
+}, require('jupyter-js-widgets'));
+
