@@ -4,7 +4,7 @@
 requirejs.config({
     map: {
         "*": {
-            "jupyter-js-widgets": "nbextensions/widgets/index",
+            "jupyter-js-widgets": "nbextensions/widgets/extension",
         },
     }
 });
@@ -93,4 +93,5 @@ require("./widget_output");
 
     module.exports = {
       load_ipython_extension: load_ipython_extension,
+      jupyterWidgets: require("jupyter-js-widgets")
     };
