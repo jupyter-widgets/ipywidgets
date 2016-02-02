@@ -247,7 +247,7 @@ def interactive(__interact_f, **kwargs):
     container.children = c
 
     # Build the callback
-    def call_f(sender):
+    def call_f(*args):
         container.kwargs = {}
         for widget in kwargs_widgets:
             value = widget.value
