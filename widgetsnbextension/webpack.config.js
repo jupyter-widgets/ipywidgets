@@ -3,7 +3,7 @@ module.exports = {
     entry: './src/extension.js',
     output: {
         filename: 'extension.js',
-        path: './jupyter-js-widgets-nbextension/static',
+        path: './widgetsnbextension/static',
         libraryTarget: 'amd'
     },
     module: {
