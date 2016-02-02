@@ -1,5 +1,5 @@
 {
-  "name": "jupyter-js-widgets-nbextension",
+  "name": "widgetsnbextension",
   "version": "0.0.1",
   "description": "Jupyter Widgets nbextension",
   "main": "src/extension.js",
