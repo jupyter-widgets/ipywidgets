@@ -58,5 +58,5 @@ for (var i in loadedModules) {
                 module.exports[target_name] = loadedModule[target_name];
             }
         }
-    }    
+    }
 }
