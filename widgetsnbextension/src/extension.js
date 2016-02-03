@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-requirejs.config({
+window['requirejs'].config({
     map: {
         "*": {
             "jupyter-js-widgets": "nbextensions/widgets/extension",
