@@ -1,34 +1,34 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-    "use strict";
+"use strict";
 
-    var save_state = function() {
-        return new Promise(function(resolve) {
-            requirejs(["base/js/namespace"], function(Jupyter) {
-                return Jupyter.WidgetManager._managers[0].get_state().then(function(state) {
-                    var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, "    "));
-                    var a = document.createElement("a");
-                    a.download = "state.json";
-                    a.href = "data:" + data;
-                    a.click();
-                });
+var save_state = function() {
+    return new Promise(function(resolve) {
+        requirejs(["base/js/namespace"], function(Jupyter) {
+            return Jupyter.WidgetManager._managers[0].get_state().then(function(state) {
+                var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, "    "));
+                var a = document.createElement("a");
+                a.download = "state.json";
+                a.href = "data:" + data;
+                a.click();
             });
         });
-        
-    };
-
-    var action = {
-        help: 'Download the widget state as a JSON file',
-        icon: 'fa-sliders',
-        help_index : 'zz',
-        handler : save_state
-    };
-
-    var action_name = 'save-widget-state';
-    var prefix = 'widgets';
-    requirejs(["base/js/namespace"], function(Jupyter) {        
-        Jupyter.notebook.keyboard_manager.actions.register(action, action_name, prefix);
     });
 
-    module.exports = {action: action};
+};
+
+var action = {
+    help: 'Download the widget state as a JSON file',
+    icon: 'fa-sliders',
+    help_index : 'zz',
+    handler : save_state
+};
+
+var action_name = 'save-widget-state';
+var prefix = 'widgets';
+requirejs(["base/js/namespace"], function(Jupyter) {
+    Jupyter.notebook.keyboard_manager.actions.register(action, action_name, prefix);
+});
+
+module.exports = {action: action};
