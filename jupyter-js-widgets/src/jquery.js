@@ -7,7 +7,9 @@ if (typeof window !== 'undefined' && window['$']) {
     $ = window['$'];
 } else {
     $ = require("jquery");
-    require("jquery-ui"); 
+    global.jQuery = $; // Required for bootstrap to load correctly
+
+    require("jquery-ui");
     require("bootstrap");
 }
 module.exports = $;
