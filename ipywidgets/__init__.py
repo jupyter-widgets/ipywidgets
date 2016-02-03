@@ -22,12 +22,6 @@ from ._version import version_info, __version__
 from .widgets import *
 
 
-def find_static_assets():
-    """Return the path to static assets for widgets (js, css)"""
-    here = os.path.abspath(__file__)
-    return os.path.join(os.path.dirname(here), 'static')
-
-
 def load_ipython_extension(ip):
     """Set up IPython to work with widgets"""
     if not hasattr(ip, 'kernel'):

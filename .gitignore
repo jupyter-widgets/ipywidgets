@@ -5,9 +5,8 @@ _build
 docs/man/*.gz
 docs/source/api/generated
 docs/gh-pages
-ipywidgets/static/components
-ipywidgets/static/widgets/css
-ipywidgets/tests/bin
+jupyter-js-widgets/src/components
+jupyter-js-widgets/css
 node_modules
 *.py[co]
 __pycache__
@@ -22,6 +21,9 @@ __pycache__
 .coverage
 .xunit.xml
 .tern-project
+npm-debug.log
+
+widgetsnbextension/widgetsnbextension/static
 
 index.built.js
 **/es5/

@@ -1,14 +1,23 @@
 To release a new version of the widgets on PyPI and npm, first checkout
-master can cd into the ipywidgets subfolder of the repo root.  Make sure the
-`VersionWidget` in `widget.py` has the correct JS front-end version.  Also check 
-that the front-end version specified in `manager-base.js` (`version`) is correct.
+master and cd into the repo root.  Make sure the version in `widget.py`  matches 
+the JS frontend version.  Also check that the frontend version specified in 
+`manager-base.js` (`version`) is correct.
 
 Then run the 
 following, replacing the square bracketed content with appropriate values:
 
-```
+```bash
+# Remove "dev" from the version.
+nano ipywidgets/_version.py
+python setup.py sdist upload && python setup.py bdist_wheel upload
+cd ../jupyter-js-widgets
 npm version [patch/minor/major]
 npm publish
+cd ..
+# Increase version to next "dev" version.
+nano ipywidgets/_version.py
+git add ipywidgets/_version.py
+git commit -m "Back to dev"
 git push [upstream master]
 git push [upstream] --tags
 ```

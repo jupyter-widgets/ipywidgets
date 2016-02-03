@@ -20,6 +20,11 @@ or
 
     conda install ipywidgets
 
+### JavaScript only
+
+If you're interested in only installing the JavaScript, you may do so by running
+
+    npm install jupyter-js-widgets
 
 ### Development install
 
@@ -32,6 +37,11 @@ To install ipywidgets from git, you will need [npm](https://www.npmjs.com/).
 
 1. Dev-install of the package (run from repo directory):
 
+        pip install -v -e .
+
+2. Install the Jupyter Widgets nbextension
+
+        cd widgetsnbextension
         pip install -v -e .
 
     Note: You need to have npm installed.  The installation process will
@@ -47,7 +57,7 @@ To run the Python tests:
 
 To run the Javascript tests:
 
-    npm run test
+    cd jupyter-js-widgets; npm run test
 
 This will run the test suite using `karma` with 'debug' level logging.
 
