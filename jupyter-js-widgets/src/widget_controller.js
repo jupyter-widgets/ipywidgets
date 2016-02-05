@@ -239,7 +239,7 @@ var ControllerModel = widget.DOMWidgetModel.extend({
         /* Creates a gamepad button widget.
          */
         return this.widget_manager.new_widget({
-             model_name: 'WidgetModel',
+             model_name: 'ControllerButtonModel',
              widget_class: 'Jupyter.ControllerButton',
         }).then(function(model) {
              model.set('description', index);
@@ -251,7 +251,7 @@ var ControllerModel = widget.DOMWidgetModel.extend({
         /* Creates a gamepad axis widget.
          */
         return this.widget_manager.new_widget({
-             model_name: 'WidgetModel',
+             model_name: 'ControllerAxisModel',
              widget_class: 'Jupyter.ControllerAxis',
         }).then(function(model) {
              model.set('description', index);
