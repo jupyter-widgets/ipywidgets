@@ -203,8 +203,13 @@ Comm.prototype._hookupCallbacks = function(future, callbacks) {
                     callbacks.iopub.status(msg);
                 } else if (callbacks.iopub.clear_output && msg.msg_type === 'clear_output') {
                     callbacks.iopub.clear_output(msg);
-                } else if (callbacks.iopub.output && msg.msg_type === 'display_data') {
-                    callbacks.iopub.output(msg);
+                } else if (callbacks.iopub.output) {
+                    switch(msg.msg_type) {
+                        case 'display_data':
+                        case 'execute_result':
+                            callbacks.iopub.output(msg);
+                            break;
+                    };
                 }
             }
         };
