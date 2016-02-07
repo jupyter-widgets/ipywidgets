@@ -198,9 +198,15 @@ Comm.prototype._hookupCallbacks = function(future, callbacks) {
         };
 
         future.onIOPub = function(msg) {
-            if (callbacks.iopub && callbacks.iopub.status) callbacks.iopub.status(msg);
-            if (callbacks.iopub && callbacks.iopub.clear_output) callbacks.iopub.clear_output(msg);
-            if (callbacks.iopub && callbacks.iopub.output) callbacks.iopub.output(msg);
+            if(callbacks.iopub) {
+                if (callbacks.iopub.status && msg.msg_type === 'status') {
+                    callbacks.iopub.status(msg);
+                } else if (callbacks.iopub.clear_output && msg.msg_type === 'clear_output') {
+                    callbacks.iopub.clear_output(msg);
+                } else if (callbacks.iopub.output && msg.msg_type === 'display_data') {
+                    callbacks.iopub.output(msg);
+                }
+            }
         };
     }
 };
