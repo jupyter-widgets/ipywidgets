@@ -367,10 +367,7 @@ WidgetManager.prototype.updateSnapshots = function() {
 
         // Disable overflow to prevent the document from having elements
         // that are scrolled out of visibility.
-        var siteScrollTop = site.scrollTop;
         site.style.overflow = 'visible';
-        site.style.position = 'relative';
-        site.style.top = '-' + siteScrollTop + 'px';
         document.body.style.overflow = 'hidden';
 
         // Render the widgets of each cell.
@@ -417,8 +414,6 @@ WidgetManager.prototype.updateSnapshots = function() {
         // notebook.
         return renderPromise.then(function() {
             site.style.overflow = '';
-            site.style.position = '';
-            site.style.top = '';
             document.body.style.overflow = '';
         });
 
