@@ -13,9 +13,14 @@
     "build": "npm run css",
     "precss": "rimraf ./css/",
     "css": "node build_css.js",
-    "test": "npm run test:firefox && npm run test:chrome",
-    "test:firefox": "karma start karma.conf.js --browsers Firefox --log-level debug",
-    "test:chrome": "karma start karma.conf.js --log-level debug",
+    "test": "npm run test:unit && npm run test:examples",
+    "test:unit": "npm run test:firefox && npm run test:chrome",
+    "test:unit:firefox": "karma start karma.conf.js --browsers Firefox --log-level debug",
+    "test:unit:chrome": "karma start karma.conf.js --log-level debug",
+    "test:examples": "npm run test:examples:web1 && npm run test:examples:web2 && npm run test:examples:web3",
+    "test:examples:web1": "cd examples/web1; npm install; npm t; cd ../..",
+    "test:examples:web2": "cd examples/web2; npm install; npm t; cd ../..",
+    "test:examples:web3": "cd examples/web3; npm install; npm t; cd ../..",
     "prepublish": "npm run build"
   },
   "devDependencies": {
