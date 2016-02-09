@@ -7,8 +7,9 @@
     "prepublish": "npm run build",
     "build": "webpack index.js index.built.js",
     "test": "npm run test:firefox && npm run test:chrome",
-    "test:firefox": "karma start karma.config.js --browsers Firefox --log-level debug",
-    "test:chrome": "karma start karma.config.js --log-level debug"
+    "test:default": "karma start karma.config.js --log-level debug",
+    "test:firefox": "npm run test:default -- --browsers Firefox",
+    "test:chrome": "npm run test:default"
   },
   "author": "IPython",
   "license": "BSD-3-Clause",

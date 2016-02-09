@@ -9,7 +9,8 @@
     "build:es5": "babel src --out-dir es5 --presets es2015",
     "build:bundle": "webpack",
     "host": "http-server",
-    "test": "echo \"Error: no test specified\""
+    "test": "npm run test:default",
+    "test:default": "echo \"No test specified\""
   },
   "author": "IPython",
   "license": "BSD-3-Clause",
