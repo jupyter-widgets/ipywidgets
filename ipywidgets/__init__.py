@@ -47,3 +47,6 @@ def _handle_ipython():
     load_ipython_extension(ip)
 
 _handle_ipython()
+
+# 4.x compat. Removing this prevents notebook 4.x from starting
+from widgetsnbextension import find_static_assets
