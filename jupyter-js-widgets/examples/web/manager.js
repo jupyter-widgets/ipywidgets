@@ -6,12 +6,6 @@ var WidgetManager = exports.WidgetManager = function(el) {
     //  Call the base class.
     ManagerBase.call(this);
     this.el = el;
-
-    // Create a style tag that will be used to apply stateful styling to the
-    // widgets.  Using a style tag allows us to clear/undo the styling.
-    this.styleTag = document.createElement('style');
-    this.styleTag.type = 'text/css';
-    document.querySelectorAll('body')[0].appendChild(this.styleTag);
 };
 WidgetManager.prototype = Object.create(ManagerBase.prototype);
 

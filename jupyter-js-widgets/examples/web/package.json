@@ -4,8 +4,11 @@
   "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
   "main": "index.js",
   "scripts": {
-    "prepublish": "webpack index.js index.built.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublish": "npm run build",
+    "build": "webpack index.js index.built.js",
+    "test": "npm run test:firefox && npm run test:chrome",
+    "test:firefox": "karma start karma.config.js --browsers Firefox --log-level debug",
+    "test:chrome": "karma start karma.config.js --log-level debug"
   },
   "author": "IPython",
   "license": "BSD-3-Clause",
@@ -17,6 +20,13 @@
     "css-loader": "^0.23.1",
     "file-loader": "^0.8.5",
     "style-loader": "^0.13.0",
-    "webpack": "^1.12.10"
+    "webpack": "^1.12.10",
+    "karma": "^0.13.19",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^0.2.2",
+    "karma-firefox-launcher": "^0.1.7",
+    "karma-mocha": "^0.2.1",
+    "karma-mocha-reporter": "^1.1.3",
+    "karma-webpack": "^1.7.0"
   }
 }
