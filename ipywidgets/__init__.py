@@ -47,3 +47,15 @@ def _handle_ipython():
     load_ipython_extension(ip)
 
 _handle_ipython()
+
+
+def find_static_assets():
+    import warnings
+    try:
+        import widgetsnbextension.find_static_assets
+    except ImportError:
+        warnings.warn("widgetsnbextension provides static assets, but is missing", RuntimeWarning)
+        return []
+    else:
+        warnings.warn("widgetsnbextension now provides static assets", DeprecationWarning)
+        return widgetsnbextension.find_static_assets()
