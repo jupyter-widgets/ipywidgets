@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prepublish": "webpack",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\""
   },
   "author": "IPython",
   "license": "BSD-3-Clause",

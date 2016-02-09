@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             model_id: uuid()
         // Create a view for the model.
         }).then(function(model) {
-            console.log(widgetType + ' model created', model);
+            console.log(widgetType + ' model created');
 
             model.set({
                 description: description || '',
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         // Display the view.
         ).then(function(view) {
-            console.log(widgetType + ' view created', view);
+            console.log(widgetType + ' view created');
             manager.display_view(null, view);
             return view;
         }, console.error.bind(console));
@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }).then(function(link) {
         console.log('link created');
 
-        Promise.all([textArea, html]).then(
+        return Promise.all([textArea, html]).then(
             function(models) {
                 console.log('setting link');
                 var textArea = models[0];
@@ -65,5 +65,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 console.log('link set');
             }
         );
+    }).then(function() {
+        var event = new Event('widgetsRendered');
+        document.dispatchEvent(event);
     });
 });

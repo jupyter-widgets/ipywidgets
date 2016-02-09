@@ -7,6 +7,7 @@ docs/source/api/generated
 docs/gh-pages
 jupyter-js-widgets/src/components
 jupyter-js-widgets/css
+jupyter-js-widgets/examples/*/built
 node_modules
 *.py[co]
 __pycache__
