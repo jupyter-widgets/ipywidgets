@@ -18,9 +18,9 @@
     "test:unit:firefox": "karma start karma.conf.js --browsers Firefox --log-level debug",
     "test:unit:chrome": "karma start karma.conf.js --log-level debug",
     "test:examples": "npm run test:examples:web1 && npm run test:examples:web2 && npm run test:examples:web3",
-    "test:examples:web1": "cd examples/web; npm install; npm t; cd ../..",
-    "test:examples:web2": "cd examples/web2; npm install; npm t; cd ../..",
-    "test:examples:web3": "cd examples/web3; npm install; npm t; cd ../..",
+    "test:examples:web1": "cd examples/web && npm install && npm test",
+    "test:examples:web2": "cd examples/web2 && npm install && npm test",
+    "test:examples:web3": "cd examples/web3 && npm install && npm test",
     "prepublish": "npm run build"
   },
   "devDependencies": {
