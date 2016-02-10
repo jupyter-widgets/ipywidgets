@@ -107,6 +107,7 @@ install_requires = setuptools_args['install_requires'] = [
     'ipykernel>=4.2.2',
     'traitlets>=4.1.0',
     'notebook>=4.1.0',
+    'widgetsnbextension>=0.0.2dev',
 ]
 
 extras_require = setuptools_args['extras_require'] = {
