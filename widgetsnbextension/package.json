@@ -23,7 +23,7 @@
     "backbone": "^1.2.3",
     "html2canvas": "^0.5.0-beta4",
     "jquery": "^2.2.0",
-    "jupyter-js-widgets": "0.0.13",
+    "jupyter-js-widgets": "0.0.14",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
