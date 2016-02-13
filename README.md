@@ -28,7 +28,9 @@ If you're interested in only installing the JavaScript, you may do so by running
 
 ### Development install
 
-To install ipywidgets from git, you will need [npm](https://www.npmjs.com/).
+To install ipywidgets from git, you will need [npm](https://www.npmjs.com/).  If
+you install using sudo, you need to make sure that npm is also available in the
+PATH used with sudo.
 
 0. clone the repo:
 
@@ -44,18 +46,11 @@ To install ipywidgets from git, you will need [npm](https://www.npmjs.com/).
         cd widgetsnbextension
         pip install -v -e .
 
-    Note: You need to have npm installed.  The installation process will
-    complain if you don't.  If you install using sudo, you need to make sure
-    that npm is also available in the PATH used with sudo.
+3. When you've made changes to `jupyter-js-widgets` and you'd like to test those
+changes, run the following, empty your browsers cache, and refresh the page.
 
-    Note: Devlopment of the jupyter-js-widgets Javascript is normally done
-    separate to the nbextension and ipywidgets.  If you'd like to develop
-    both at the same time, change the npm package.json of widgetsnbextension
-    so jupyter-js-widgets is "file:../jupyter-js-widgets".  Each time you
-    make changes to jupyter-js-widgets you'll need to update it in
-    widgetsnbextension by removing it and reinstalling it.  This can be done
-    from within the widgets nbextension directory by running
-    `rm -rf node_modules/jupyter-js-widgets; npm install`.
+        cd widgetsnbextension
+        npm run update:widgets
 
 
 ## Test
