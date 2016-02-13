@@ -48,7 +48,7 @@ To install ipywidgets from git, you will need [npm](https://www.npmjs.com/).
     complain if you don't.  If you install using sudo, you need to make sure
     that npm is also available in the PATH used with sudo.
 
-    Note: Devlopment of the jupyter-js-widgets Javascript is normally done
+    Note: Development of the jupyter-js-widgets Javascript is normally done
     separate to the nbextension and ipywidgets.  If you'd like to develop
     both at the same time, change the npm package.json of widgetsnbextension
     so jupyter-js-widgets is "file:../jupyter-js-widgets".  Each time you
