@@ -49,7 +49,10 @@ var IntSliderView = widget.DOMWidgetView.extend({
             .hide();
 
         this.$slider = $('<div />')
-            .slider({})
+            .slider({
+                slide: this.handleSliderChange.bind(this),
+                stop: this.handleSliderChange.bind(this)
+            })
             .addClass('slider');
         // Put the slider in a container
         this.$slider_container = $('<div />')
