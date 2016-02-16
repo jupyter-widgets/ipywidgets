@@ -67,13 +67,9 @@ var WidgetManager = function (comm_manager, notebook) {
                     model_name: widget_info.msg.content.data.state._model_name,
                     model_module: widget_info.msg.content.data.state._model_module,
                     comm: widget_info.comm,
-                }).then(function(model) {
-                    return model._handle_comm_msg(widget_info.msg).then(function() {
-                        return model.id;
-                    });
-                });
+                }, widget_info.msg.content.data.state);
             }));
-        }).then(function(model_ids) {
+        }).then(function(models) {
 
             // Load the initial state of the widget manager if a load callback was
             // registered.
