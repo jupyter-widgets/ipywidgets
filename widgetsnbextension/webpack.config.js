@@ -6,6 +6,7 @@ module.exports = {
         path: './widgetsnbextension/static',
         libraryTarget: 'amd'
     },
+    devtool: 'source-map',
     module: {
         loaders: [
             { test: /\.css$/, loader: "style-loader!css-loader" },
