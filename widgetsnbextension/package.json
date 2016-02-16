@@ -7,6 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
+    "update:widgets": "rimraf node_modules/jupyter-js-widgets; npm install file:../jupyter-js-widgets; npm run build",
     "prepublish": "npm run build"
   },
   "repository": {
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "css-loader": "^0.23.1",
+    "rimraf": "^2.5.1",
     "style-loader": "^0.13.0",
     "webpack": "^1.12.12"
   }
