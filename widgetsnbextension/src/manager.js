@@ -403,9 +403,8 @@ WidgetManager.prototype.updateSnapshots = function() {
                 } else {
                     if (widgetSubarea && widgetSubarea.widgetSnapshot) {
                         delete widgetSubarea.widgetSnapshot;
-
-                        return that.progressModal.setValue(++progress/cells.length);
                     }
+                    return that.progressModal.setValue(++progress/cells.length);
                 }
             });
         });
