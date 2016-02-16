@@ -47,6 +47,7 @@ var DropdownView = widget.DOMWidgetView.extend({
             .addClass('dropdown-toggle')
             .addClass('widget-combo-carrot-btn')
             .attr('data-toggle', 'dropdown')
+            .click(this._showDropdown.bind(this))
             .append($('<span />').addClass("caret"))
             .appendTo(this.$buttongroup);
         this.$droplist = $('<ul />')
@@ -58,6 +59,37 @@ var DropdownView = widget.DOMWidgetView.extend({
 
         // Set defaults.
         this.update();
+    },
+
+    /**
+     * Show the dropdown list.
+     *
+     * If the dropdown list doesn't fit below the dropdown label, this will
+     * cause the dropdown to be dropped "up".
+     * @param  {Event} e
+     */
+    _showDropdown: function(e) {
+        // Don't allow bootstrap to show the dropdown!
+        e.stopImmediatePropagation();
+        e.preventDefault();
+
+        // Get the bottom of the dropdown label, and the bottom of the nb site.
+        // The difference is the maximum height of the dropmenu when displayed
+        // below the button.
+        var droplabelRect = this.$droplabel[0].getBoundingClientRect();
+        var siteRect = document.querySelector('#site').getBoundingClientRect();
+        var maxHeight = siteRect.bottom - droplabelRect.bottom;
+
+        // If the maximum height of the dropdown's space is less than the
+        // height of the dropdown itself, make it drop up!
+        if (maxHeight < 200) {
+            this.$buttongroup[0].classList.add('dropup');
+        } else {
+            this.$buttongroup[0].classList.remove('dropup');
+        }
+
+        // Show the dropdown(or up)
+        this.$dropbutton.dropdown('toggle');
     },
 
     update : function(options) {
