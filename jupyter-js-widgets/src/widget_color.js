@@ -4,6 +4,7 @@
 
 var widget = require("./widget");
 var _ = require("underscore");
+var $ = require('./jquery');
 
 var ColorPickerModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
