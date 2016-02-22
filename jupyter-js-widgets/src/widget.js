@@ -172,7 +172,7 @@ var WidgetModel = Backbone.Model.extend({
                         for (var i=0; i<buffer_keys.length; i++) {
                             state[buffer_keys[i]] = buffers[i];
                         }
-                        return that.constructor._deserialize_state(state, that.manager);
+                        return that.constructor._deserialize_state(state, that.widget_manager);
                     }).then(function(state) {
                         that.set_state(state);
                     }).catch(utils.reject("Couldn't process update msg for model id '" + String(that.id) + "'", true))
