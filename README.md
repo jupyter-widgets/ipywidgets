@@ -41,7 +41,7 @@ the latest [development copy of the Jupyter
 notebook](https://github.com/jupyter/notebook) because everything in the
 ipywidgets repository is developed using Jupyter notebook master. If you want
 to have a copy of ipywidgets that works against a stable version of the
-notebook, checkout the appropriate tag (see the compatibility table above).
+notebook, checkout the appropriate tag (see the Compatibility table above).
 
 If you install using sudo, you need to make sure that npm is also
 available in the PATH used with sudo.
@@ -69,16 +69,16 @@ available in the PATH used with sudo.
         pip install -v -e .
         cd ..
 
-Later, when you've made changes to `jupyter-js-widgets` and you'd like to test those
+After you've made changes to `jupyter-js-widgets` and you'd like to test those
 changes, run the following, empty your browsers cache, and refresh the page.
 
         cd widgetsnbextension
         npm run update:widgets
         cd ..
 
-TIPS: If you have any problems with the above install procedure, make sure than
+TIPS: If you have any problems with the above install procedure, make sure that
 permissions on npm and pip related install directories are correct.  Sometimes
-it helps to clear cached files too by running `git clean -d -f -x`.  Also, when
+it helps to clear cached files too by running `git clean -dfx`.  Also, when
 you make changes to the Javascript, if you're not seeing the changes it could
 be your browser caching aggressively.  Try using "incognito" or "private"
 browsing tabs to avoid caching.
