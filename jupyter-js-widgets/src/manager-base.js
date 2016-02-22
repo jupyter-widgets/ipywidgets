@@ -153,22 +153,20 @@ ManagerBase.prototype.handle_comm_open = function (comm, msg) {
         model_name: msg.content.data._model_name,
         model_module: msg.content.data._model_module,
         comm: comm,
-    }).then(function(model) {
-        return model._deserialize_state(msg.content.data).then(function(state) {
-            model.set_state(state);
-            return model;
-        });
-    }).catch(utils.reject("Couldn't create a model.", true));
+    }, msg.content.data).catch(utils.reject("Couldn't create a model.", true));
 };
 
 /**
  * Create a comm and new widget model.
  * @param  {Object} options - same options as new_model but, comm is not
- *                          needed and additional options are available.
+ *                          required and additional options are available.
+ * @param  {Object} serialized_state - serialized model attributes.
  * @return {Promise<WidgetModel>}
  */
-ManagerBase.prototype.new_widget = function(options) {
+ManagerBase.prototype.new_widget = function(options, serialized_state) {
     var commPromise;
+    // If no comm is provided, a new comm is opened for the jupyter.widget
+    // target.
     if (options.comm) {
         commPromise = Promise.resolve(options.comm);
     } else {
@@ -178,19 +176,21 @@ ManagerBase.prototype.new_widget = function(options) {
             target_name: 'jupyter.widget',
         });
     }
-
+    // The options dictionary is copied since data will be added to it.
     var options_clone = _.clone(options);
+    // Create the model. In the case where the comm promise is rejected a
+    // comm-less model is still created with the required model id.
     var that = this;
     return commPromise.then(function(comm) {
         // Comm Promise Resolved.
         options_clone.comm = comm;
-        return that.new_model(options_clone);
+        return that.new_model(options_clone, serialized_state);
     }, function() {
         // Comm Promise Rejected.
         if (!options_clone.model_id) {
             options_clone.model_id = utils.uuid();
         }
-        return that.new_model(options_clone);
+        return that.new_model(options_clone, serialized_state);
     });
 };
 
@@ -255,7 +255,7 @@ ManagerBase.prototype.validateVersion = function() {
     }).bind(this));
 };
 
-ManagerBase.prototype.new_model = function(options) {
+ManagerBase.prototype.new_model = function(options, serialized_state) {
     /**
      * Create and return a promise for a new widget model
      *
@@ -286,6 +286,8 @@ ManagerBase.prototype.new_model = function(options) {
      *           Comm object associated with the widget.
      *      model_id: (optional) string
      *           If not provided, the comm id is used.
+     * serialized_state: dictionary
+     *  Dictionary of the attribute values for the model.
      *
      * Either a comm or a model_id must be provided.
      */
@@ -302,13 +304,15 @@ ManagerBase.prototype.new_model = function(options) {
                                        options.model_module,
                                        ManagerBase._model_types)
         .then(function(ModelType) {
-            var widget_model = new ModelType(that, model_id, options.comm);
-            widget_model.once('comm:close', function () {
-                delete that._models[model_id];
+            return ModelType._deserialize_state(serialized_state, that).then(function(attributes) {
+                var widget_model = new ModelType(that, model_id, options.comm, attributes);
+                widget_model.once('comm:close', function () {
+                    delete that._models[model_id];
+                });
+                widget_model.name = options.model_name;
+                widget_model.module = options.model_module;
+                return widget_model;
             });
-            widget_model.name = options.model_name;
-            widget_model.module = options.model_module;
-            return widget_model;
         }, function(error) {
             delete that._models[model_id];
             var wrapped_error = new utils.WrappedError("Couldn't create model", error);
@@ -322,8 +326,7 @@ ManagerBase.prototype.get_state = function(options) {
     /**
      * Asynchronously get the state of the widget manager.
      *
-     * This includes all of the widget models and the cells that they are
-     * displayed in.
+     * This includes all of the widget models.
      *
      * Parameters
      * ----------
@@ -383,8 +386,7 @@ ManagerBase.prototype.set_state = function(state) {
     /**
      * Set the widget manager state.
      *
-     * Reconstructs all of the widget models and attempts to redisplay the
-     * widgets in the appropriate cells by cell index.
+     * Reconstructs all of the widget models and attempts to redisplay them..
      */
     var that = this;
 
@@ -410,12 +412,7 @@ ManagerBase.prototype.set_state = function(state) {
                     model_id: model_id,
                     model_name: state[model_id].model_name,
                     model_module: state[model_id].model_module,
-                }).then(function(model) {
-                    return model._deserialize_state(state[model_id].state).then(function(state) {
-                        model.set_state(state);
-                        return model;
-                    });
-                });
+                }, state[model_id].state);
             }
         }));
     });

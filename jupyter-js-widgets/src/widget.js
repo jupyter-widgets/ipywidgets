@@ -9,7 +9,7 @@ var Backbone = require("backbone");
 var $ = require("./jquery");
 
 
-var unpack_models = function unpack_models(value, model) {
+var unpack_models = function unpack_models(value, manager) {
     /**
      * Replace model ids with models recursively.
      */
@@ -17,18 +17,18 @@ var unpack_models = function unpack_models(value, model) {
     if (_.isArray(value)) {
         unpacked = [];
         _.each(value, function(sub_value, key) {
-            unpacked.push(unpack_models(sub_value, model));
+            unpacked.push(unpack_models(sub_value, manager));
         });
         return Promise.all(unpacked);
     } else if (value instanceof Object) {
         unpacked = {};
         _.each(value, function(sub_value, key) {
-            unpacked[key] = unpack_models(sub_value, model);
+            unpacked[key] = unpack_models(sub_value, manager);
         });
         return utils.resolvePromisesDict(unpacked);
     } else if (typeof value === 'string' && value.slice(0,10) === "IPY_MODEL_") {
         // get_model returns a promise already
-        return model.widget_manager.get_model(value.slice(10, value.length));
+        return manager.get_model(value.slice(10, value.length));
     } else {
         return Promise.resolve(value);
     }
@@ -44,7 +44,7 @@ var WidgetModel = Backbone.Model.extend({
         msg_throttle: 3
     },
 
-    constructor: function (widget_manager, model_id, comm) {
+    constructor: function (widget_manager, model_id, comm, attributes) {
         /**
          * Constructor
          *
@@ -64,7 +64,6 @@ var WidgetModel = Backbone.Model.extend({
         this.msg_buffer = null;
         this.state_lock = null;
         this.id = model_id;
-        this._first_state = true;
 
         // Force backbone to think that the model has already been
         // synced with the server.  As of backbone 1.1, backbone
@@ -102,7 +101,7 @@ var WidgetModel = Backbone.Model.extend({
             widget_manager.notebook.events.on('kernel_restarting.Kernel', died);
             widget_manager.notebook.events.on('kernel_dead.Kernel', died);
         }
-        WidgetModel.__super__.constructor.apply(this);
+        WidgetModel.__super__.constructor.apply(this, [attributes]);
     },
 
     send: function (content, callbacks, buffers) {
@@ -156,27 +155,6 @@ var WidgetModel = Backbone.Model.extend({
         this.close(true);
     },
 
-    _deserialize_state: function(state) {
-        /**
-         * Deserialize fields that have a custom serializer.
-         */
-        var serializers = this.constructor.serializers;
-        var deserialized;
-        if (serializers) {
-            deserialized = {};
-            for (var k in state) {
-                if (serializers[k] && serializers[k].deserialize) {
-                     deserialized[k] = (serializers[k].deserialize)(state[k], this);
-                } else {
-                     deserialized[k] = state[k];
-                }
-            }
-        } else {
-            deserialized = state;
-        }
-        return utils.resolvePromisesDict(deserialized);
-    },
-
     _handle_comm_msg: function (msg) {
         /**
          * Handle incoming comm msg.
@@ -194,7 +172,7 @@ var WidgetModel = Backbone.Model.extend({
                         for (var i=0; i<buffer_keys.length; i++) {
                             state[buffer_keys[i]] = buffers[i];
                         }
-                        return that._deserialize_state(state);
+                        return that.constructor._deserialize_state(state, that.manager);
                     }).then(function(state) {
                         that.set_state(state);
                     }).catch(utils.reject("Couldn't process update msg for model id '" + String(that.id) + "'", true))
@@ -211,16 +189,13 @@ var WidgetModel = Backbone.Model.extend({
     },
 
     set_state: function (state) {
-        // Handle when a widget is updated via the python side.
+        // Handles when a widget is updated from the backend.
         this.state_lock = state;
         try {
             this.set(state);
-            if (this._first_state) {
-                this.trigger('ready', this);
-                this._first_state = false;
-            }
-        } finally {
             this.state_lock = null;
+        } catch(e) {
+            console.error('Error setting state:', e.message);
         }
     },
 
@@ -279,16 +254,14 @@ var WidgetModel = Backbone.Model.extend({
          */
         var return_value = WidgetModel.__super__.set.apply(this, arguments);
 
-        if (!this._first_state) {
-            // Backbone only remembers the diff of the most recent set()
-            // operation.  Calling set multiple times in a row results in a
-            // loss of diff information.  Here we keep our own running diff.
-            //
-            // However, we don't buffer the initial state comming from the
-            // backend or the default values specified in `defaults`.
-            //
-            this._buffered_state_diff = _.extend(this._buffered_state_diff, this.changedAttributes() || {});
-        }
+        // Backbone only remembers the diff of the most recent set()
+        // operation.  Calling set multiple times in a row results in a
+        // loss of diff information.  Here we keep our own running diff.
+        //
+        // However, we don't buffer the initial state comming from the
+        // backend or the default values specified in `defaults`.
+        //
+        this._buffered_state_diff = _.extend(this._buffered_state_diff, this.changedAttributes() || {});
         return return_value;
     },
 
@@ -449,6 +422,29 @@ var WidgetModel = Backbone.Model.extend({
          */
         return "IPY_MODEL_" + this.id;
     }
+}, {
+    _deserialize_state: function(state, manager) {
+        /**
+         * Returns a promised for the deserialized state. The second argument
+         * is an instance of widget manager, which is required for the
+         * deserialization of widget models.
+         */
+        var serializers = this.serializers;
+        var deserialized;
+        if (serializers) {
+            deserialized = {};
+            for (var k in state) {
+                if (serializers[k] && serializers[k].deserialize) {
+                     deserialized[k] = (serializers[k].deserialize)(state[k], manager);
+                } else {
+                     deserialized[k] = state[k];
+                }
+            }
+        } else {
+            deserialized = state;
+        }
+        return utils.resolvePromisesDict(deserialized);
+    },
 });
 
 
@@ -667,7 +663,7 @@ var DOMWidgetViewMixin = {
          * Update visibility
          */
         switch(value) {
-            case null: // python None
+            case null:
                 if (this._old_display !== undefined) {
                     this.el.style.display = this._old_display;
                 }
