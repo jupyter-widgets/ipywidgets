@@ -35,7 +35,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         //     .appendTo(this.$el)
         //     .addClass('widget-label')
         //     .hide();
-        var this.label = document.createElement('div');
+        this.label = document.createElement('div');
         this.el.appendChild(this.label);
         this.label.classList.add('widget-label');
         this.label.style.visibility = 'hidden';
@@ -44,7 +44,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         //     .addClass('widget_item')
         //     .addClass('btn-group')
         //     .appendTo(this.$el);
-        var this.buttongroup = document.createElement('div');
+        this.buttongroup = document.createElement('div');
         this.buttongroup.classList.add('widget_item');
         this.buttongroup.classList.add('btn-group');
         this.el.appendChild(this.buttongroup);
@@ -54,7 +54,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         //     .addClass('widget-combo-btn')
         //     .html("&nbsp;")
         //     .appendTo(this.$buttongroup);
-        var this.droplabel = document.createElement('button');
+        this.droplabel = document.createElement('button');
         this.droplabel.classList.add('btn btn-default');
         this.droplabel.classList.add('widget-combo-btn');
         this.droplabel.innerHTML = "&nbsp;";
@@ -68,7 +68,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         //     .click(this._showDropdown.bind(this))
         //     .append($('<span />').addClass("caret"))
         //     .appendTo(this.$buttongroup);
-        var this.dropbutton = document.createElement('button');
+        this.dropbutton = document.createElement('button');
         this.dropbutton.classList.add('btn btn-default');
         this.dropbutton.classList.add('dropdown-toggle');
         this.dropbutton.classList.add('widget-combo-carrot-btn');

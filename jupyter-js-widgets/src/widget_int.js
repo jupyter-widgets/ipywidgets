@@ -490,7 +490,7 @@ var IntTextView = widget.DOMWidgetView.extend({
         if (options === undefined || options.updated_view != this) {
             var value = this.model.get('value');
             // if (this._parse_value(this.$textbox.val()) != value) {
-            if (this._parse_value(this.textbox.value != value)) {}
+            if (this._parse_value(this.textbox.value != value)) {
                 // this.$textbox.val(value);
                 this.textbox.value = value;
             }
