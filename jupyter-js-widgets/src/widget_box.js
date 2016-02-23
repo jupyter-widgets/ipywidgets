@@ -73,7 +73,7 @@ var ProxyView = widget.WidgetView.extend({
             this.child_promise = this.child_promise.then(function() {
                 return that.create_child_view(value).then(function(view) {
                     // if (that.$box.length === 0) {
-                    if (that.box.length === 0 ) {}
+                    if (that.box.length === 0 ) {
                         console.error("Widget place holder does not exist");
                         return;
                     }
@@ -259,17 +259,17 @@ var FlexBoxView = BoxView.extend({ // TODO: Deprecated in 5.0 (entire view)
         } else {
             // this.$box.removeClass("vbox").addClass("hbox");
             this.box.classList.remove('vbox');
-            this.box.classList.add('hbox';)
+            this.box.classList.add('hbox');
         }
     },
 
     _flex_changed: function() {
         if (this.model.previous('flex')) {
             // this.$box.removeClass('box-flex' + this.model.previous('flex'));
-            this.box.classList.remove('box-flex' + this.model.previous('flex'))
+            this.box.classList.remove('box-flex' + this.model.previous('flex'));
         }
         // this.$box.addClass('box-flex' + this.model.get('flex'));
-        this.box.classList.add('box-flex' + this.model.get('flex');
+        this.box.classList.add('box-flex' + this.model.get('flex'));
     },
 
     _pack_changed: function() {
