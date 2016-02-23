@@ -3,7 +3,7 @@
 "use strict";
 
 var widget = require("./widget");
-var $ = require("./jquery");
+// var $ = require("./jquery");
 var _ = require("underscore");
 
 var BaseLinkModel = widget.WidgetModel.extend({

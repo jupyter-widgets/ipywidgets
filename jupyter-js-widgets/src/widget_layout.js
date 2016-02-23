@@ -5,7 +5,7 @@
 var widget = require("./widget");
 var _ = require("underscore");
 var Backbone = require("backbone");
-var $ = require("./jquery");
+// var $ = require("./jquery");
 
 /**
  * css properties exposed by the layout widget with their default values.
