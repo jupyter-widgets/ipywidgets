@@ -73,12 +73,14 @@ var DropdownView = widget.DOMWidgetView.extend({
         e.stopImmediatePropagation();
         e.preventDefault();
 
-        // Get the bottom of the dropdown label, and the bottom of the nb site.
+        // Get the bottom of the dropdown label, and the bottom of the nb body.
         // The difference is the maximum height of the dropmenu when displayed
         // below the button.
         var droplabelRect = this.$droplabel[0].getBoundingClientRect();
-        var siteRect = document.querySelector('#site').getBoundingClientRect();
-        var maxHeight = siteRect.bottom - droplabelRect.bottom;
+        var parent = this.$droplabel[0].parentNode;
+        while (parent.parentNode) parent = parent.parentNode;
+        var bodyRect = parent.body.getBoundingClientRect();
+        var maxHeight = bodyRect.bottom - droplabelRect.bottom;
 
         // If the maximum height of the dropdown's space is less than the
         // height of the dropdown itself, make it drop up!
