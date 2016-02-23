@@ -10,7 +10,8 @@ for Jupyter notebooks and the IPython kernel.
 
 A [demonstration notebook](https://github.com/ipython/ipywidgets/blob/master/examples/Index.ipynb) provides an overview of the interactive widgets. For detailed information, please refer to the [ipywidgets documentation](http://ipywidgets.readthedocs.org/en/latest/).
 
-**Compatibility**
+**Compatibility**  
+
 | ipywidgets version  | Jupyter/notebook version |
 | ------------------- | ------------------------ |
 | master              | master                   |
