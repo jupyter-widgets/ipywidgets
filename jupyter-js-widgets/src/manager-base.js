@@ -184,13 +184,19 @@ ManagerBase.prototype.new_widget = function(options, serialized_state) {
     return commPromise.then(function(comm) {
         // Comm Promise Resolved.
         options_clone.comm = comm;
-        return that.new_model(options_clone, serialized_state);
+        var temp = that.new_model(options_clone, serialized_state);
+        console.log('COMM Promise resolved :', temp);
+        return temp;
     }, function() {
         // Comm Promise Rejected.
         if (!options_clone.model_id) {
             options_clone.model_id = utils.uuid();
         }
-        return that.new_model(options_clone, serialized_state);
+        var temp = that.new_model(options_clone, serialized_state);
+        console.log('COMM Promise rejected :', temp);
+        return temp;
+    }).catch((error) => {
+      console.log("WIDGET CREATION ERROR!! : ", error);
     });
 };
 
@@ -319,6 +325,7 @@ ManagerBase.prototype.new_model = function(options, serialized_state) {
             return Promise.reject(wrapped_error);
         });
     this._models[model_id] = model_promise;
+    console.log('New model returning promise:', model_promise);
     return model_promise;
 };
 
