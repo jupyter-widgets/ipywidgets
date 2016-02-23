@@ -4,7 +4,7 @@
 
 var widget = require("./widget");
 var utils = require("./utils");
-var $ = require("./jquery");
+// var $ = require("./jquery");
 var _ = require("underscore");
 
 var BoxModel = widget.DOMWidgetModel.extend({
@@ -38,8 +38,10 @@ var ProxyView = widget.DOMWidgetView.extend({
     initialize: function() {
         // Public constructor
         ProxyView.__super__.initialize.apply(this, arguments);
-        this.$el.addClass("jupyter-widgets widget-container");
-        this.$box = this.$el;
+        // this.$el.addClass("jupyter-widgets widget-container");
+        this.el.classList.add("jupyter-widgets widget-container")
+        // this.$box = this.$el;
+        this.box = this.el;
         this.child_promise = Promise.resolve();
     },
 
@@ -70,11 +72,17 @@ var ProxyView = widget.DOMWidgetView.extend({
             var that = this;
             this.child_promise = this.child_promise.then(function() {
                 return that.create_child_view(value).then(function(view) {
-                    if (that.$box.length === 0) {
+                    // if (that.$box.length === 0) {
+                    if (that.box.length === 0 ) {}
                         console.error("Widget place holder does not exist");
                         return;
                     }
-                    that.$box.empty().append(view.el);
+                    // that.$box.empty().append(view.el);
+                    while (that.box.firstChild) { // a fast empty()
+                        that.box.removeChild(that.box.firstChild);
+                    }
+                    that.box.appendChild(view.el);
+
                     // Trigger the displayed event of the child view.
                     that.displayed.then(function() {
                         view.trigger('displayed', that);
@@ -93,7 +101,8 @@ var ProxyView = widget.DOMWidgetView.extend({
      * @param  {object} value
      */
     update_attr: function(name, value) { // TODO: Deprecated in 5.0
-        this.$box.css(name, value);
+        // this.$box.css(name, value);
+        this.box.style.visibility[name] = value;
     },
 });
 
@@ -113,7 +122,8 @@ var PlaceProxyView = ProxyView.extend({
     },
 
     update_selector: function(model, selector) {
-        this.$box = selector ? $(selector) : this.$el;
+        // this.$box = selector ? $(selector) : this.$el;
+        this.box = document.querySelectorAll(selector) || this.el; // TODO
         this.set_child(this.model.get("child"));
     },
 });
@@ -137,15 +147,20 @@ var BoxView = widget.DOMWidgetView.extend({
         /**
          * Set a css attr of the widget view.
          */
-        this.$box.css(name, value);
+        // this.$box.css(name, value);
+        this.box.style[name] = value;
     },
 
     render: function() {
         /**
          * Called when view is rendered.
          */
-        this.$el.addClass("jupyter-widgets widget-container widget-box");
-        this.$box = this.$el;
+        // this.$el.addClass("jupyter-widgets widget-container widget-box");
+        this.el.classList.add("jupyter-widgets widget-container widget-box");
+
+        // this.$box = this.$el;
+        this.box = this.el;
+
         this.children_views.update(this.model.get('children'));
         this.update_overflow_x();
         this.update_overflow_y();
@@ -156,14 +171,16 @@ var BoxView = widget.DOMWidgetView.extend({
         /**
          * Called when the x-axis overflow setting is changed.
          */
-        this.$box.css('overflow-x', this.model.get('overflow_x'));
+        // this.$box.css('overflow-x', this.model.get('overflow_x'));
+        this.box.style['overflow-x'] = this.model.get('overflow_x');
     },
 
     update_overflow_y: function() {
         /**
          * Called when the y-axis overflow setting is changed.
          */
-        this.$box.css('overflow-y', this.model.get('overflow_y'));
+        // this.$box.css('overflow-y', this.model.get('overflow_y'));
+        this.box.style['overflow-y'] = this.model.get('overflow_y');
     },
 
     update_box_style: function() {
@@ -173,7 +190,8 @@ var BoxView = widget.DOMWidgetView.extend({
             warning: ['alert', 'alert-warning'],
             danger: ['alert', 'alert-danger']
         };
-        this.update_mapped_classes(class_map, 'box_style', this.$box[0]);
+        // this.update_mapped_classes(class_map, 'box_style', this.$box[0]);
+        this.update_mapped_classes(class_map, 'box_style', this.box);
     },
 
     add_child_model: function(model) {
@@ -181,8 +199,12 @@ var BoxView = widget.DOMWidgetView.extend({
          * Called when a model is added to the children list.
          */
         var that = this;
-        var dummy = $('<div/>');
-        that.$box.append(dummy);
+        // var dummy = $('<div/>');
+        var dummy = document.createElement('div');
+
+        // that.$box.append(dummy);
+        that.box.appendChild(dummy);
+
         return this.create_child_view(model).then(function(view) {
             dummy.replaceWith(view.el);
 
@@ -231,31 +253,41 @@ var FlexBoxView = BoxView.extend({ // TODO: Deprecated in 5.0 (entire view)
     update_orientation: function() {
         var orientation = this.model.get("orientation");
         if (orientation == "vertical") {
-            this.$box.removeClass("hbox").addClass("vbox");
+            // this.$box.removeClass("hbox").addClass("vbox");
+            this.box.classList.remove('hbox');
+            this.box.classList.add(vbox);
         } else {
-            this.$box.removeClass("vbox").addClass("hbox");
+            // this.$box.removeClass("vbox").addClass("hbox");
+            this.box.classList.remove('vbox');
+            this.box.classList.add('hbox';)
         }
     },
 
     _flex_changed: function() {
         if (this.model.previous('flex')) {
-            this.$box.removeClass('box-flex' + this.model.previous('flex'));
+            // this.$box.removeClass('box-flex' + this.model.previous('flex'));
+            this.box.classList.remove('box-flex' + this.model.previous('flex'))
         }
-        this.$box.addClass('box-flex' + this.model.get('flex'));
+        // this.$box.addClass('box-flex' + this.model.get('flex'));
+        this.box.classList.add('box-flex' + this.model.get('flex');
     },
 
     _pack_changed: function() {
         if (this.model.previous('pack')) {
-            this.$box.removeClass(this.model.previous('pack'));
+            // this.$box.removeClass(this.model.previous('pack'));
+            this.box.classList.remove(this.model.previous('pack'));
         }
-        this.$box.addClass(this.model.get('pack'));
+        // this.$box.addClass(this.model.get('pack'));
+        this.box.classList.add(this.model.get('pack'));
     },
 
     _align_changed: function() {
         if (this.model.previous('align')) {
-            this.$box.removeClass('align-' + this.model.previous('align'));
+            // this.$box.removeClass('align-' + this.model.previous('align'));
+            this.box.classList.remove('align-' + this.model.previous('align'));
         }
-        this.$box.addClass('align-' + this.model.get('align'));
+        // this.$box.addClass('align-' + this.model.get('align'));
+        this.box.classList.add('align-' + this.model.get('align'));
     },
 });
 
