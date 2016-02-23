@@ -4,7 +4,7 @@
 
 var widget = require("./widget");
 var utils = require("./utils");
-var $ = require("./jquery");
+// var $ = require("./jquery");
 var _ = require("underscore");
 
 var SelectionModel = widget.DOMWidgetModel.extend({
@@ -27,32 +27,64 @@ var DropdownModel = SelectionModel.extend({
 
 var DropdownView = widget.DOMWidgetView.extend({
     render : function() {
-        this.$el
-            .addClass('jupyter-widgets widget-hbox widget-dropdown');
-        this.$label = $('<div />')
-            .appendTo(this.$el)
-            .addClass('widget-label')
-            .hide();
-        this.$buttongroup = $('<div />')
-            .addClass('widget_item')
-            .addClass('btn-group')
-            .appendTo(this.$el);
-        this.$droplabel = $('<button />')
-            .addClass('btn btn-default')
-            .addClass('widget-combo-btn')
-            .html("&nbsp;")
-            .appendTo(this.$buttongroup);
-        this.$dropbutton = $('<button />')
-            .addClass('btn btn-default')
-            .addClass('dropdown-toggle')
-            .addClass('widget-combo-carrot-btn')
-            .attr('data-toggle', 'dropdown')
-            .click(this._showDropdown.bind(this))
-            .append($('<span />').addClass("caret"))
-            .appendTo(this.$buttongroup);
-        this.$droplist = $('<ul />')
-            .addClass('dropdown-menu')
-            .appendTo(this.$buttongroup);
+        // this.$el
+        //     .addClass('jupyter-widgets widget-hbox widget-dropdown');
+        this.el.classList.add('jupyter-widgets widget-hbox widget-dropdown');
+
+        // this.$label = $('<div />')
+        //     .appendTo(this.$el)
+        //     .addClass('widget-label')
+        //     .hide();
+        var this.label = document.createElement('div');
+        this.el.appendChild(this.label);
+        this.label.classList.add('widget-label');
+        this.label.style.visibility = 'hidden';
+
+        // this.$buttongroup = $('<div />')
+        //     .addClass('widget_item')
+        //     .addClass('btn-group')
+        //     .appendTo(this.$el);
+        var this.buttongroup = document.createElement('div');
+        this.buttongroup.classList.add('widget_item');
+        this.buttongroup.classList.add('btn-group');
+        this.el.appendChild(this.buttongroup);
+
+        // this.$droplabel = $('<button />')
+        //     .addClass('btn btn-default')
+        //     .addClass('widget-combo-btn')
+        //     .html("&nbsp;")
+        //     .appendTo(this.$buttongroup);
+        var this.droplabel = document.createElement('button');
+        this.droplabel.classList.add('btn btn-default');
+        this.droplabel.classList.add('widget-combo-btn');
+        this.droplabel.innerHTML = "&nbsp;";
+        this.buttongroup.appendChild(this.droplabel);
+
+        // this.$dropbutton = $('<button />')
+        //     .addClass('btn btn-default')
+        //     .addClass('dropdown-toggle')
+        //     .addClass('widget-combo-carrot-btn')
+        //     .attr('data-toggle', 'dropdown')
+        //     .click(this._showDropdown.bind(this))
+        //     .append($('<span />').addClass("caret"))
+        //     .appendTo(this.$buttongroup);
+        var this.dropbutton = document.createElement('button');
+        this.dropbutton.classList.add('btn btn-default');
+        this.dropbutton.classList.add('dropdown-toggle');
+        this.dropbutton.classList.add('widget-combo-carrot-btn');
+        this.dropbutton.setAttribute('data-toggle', 'dropdown');
+        this.dropbutton.onclick = () => {this._showDropdown.bind(this); };
+        var caret = document.createElement('span');
+        caret.classList.add('caret');
+        this.dropbutton.appendChild(caret);
+        this.buttongroup.appendChild(this.dropbutton);
+        //
+        // this.$droplist = $('<ul />')
+        //     .addClass('dropdown-menu')
+        //     .appendTo(this.$buttongroup);
+        this.droplist = document.createElement('ul');
+        this.droplist.classList.add('dropdown-menu');
+        this.buttongroup.appendChild(this.droplist);
 
         this.listenTo(this.model, "change:button_style", this.update_button_style, this);
         this.update_button_style();
@@ -76,7 +108,10 @@ var DropdownView = widget.DOMWidgetView.extend({
         // Get the bottom of the dropdown label, and the bottom of the nb body.
         // The difference is the maximum height of the dropmenu when displayed
         // below the button.
-        var droplabelRect = this.$droplabel[0].getBoundingClientRect();
+
+        // var droplabelRect = this.$droplabel[0].getBoundingClientRect();
+        var droplabelRect = this.droplabel.getBoundingClientRect();
+
         var parent = this.$droplabel[0].parentNode;
         while (parent.parentNode) parent = parent.parentNode;
         var bodyRect = parent.body.getBoundingClientRect();
@@ -85,13 +120,13 @@ var DropdownView = widget.DOMWidgetView.extend({
         // If the maximum height of the dropdown's space is less than the
         // height of the dropdown itself, make it drop up!
         if (maxHeight < 200) {
-            this.$buttongroup[0].classList.add('dropup');
+            this.buttongroup.classList.add('dropup');
         } else {
-            this.$buttongroup[0].classList.remove('dropup');
+            this.buttongroup.classList.remove('dropup');
         }
 
         // Show the dropdown(or up)
-        this.$dropbutton.dropdown('toggle');
+        this.dropbutton.dropdown('toggle');
     },
 
     update : function(options) {
@@ -105,46 +140,69 @@ var DropdownView = widget.DOMWidgetView.extend({
         if (options === undefined || options.updated_view != this) {
             var selected_item_text = this.model.get('value');
             if (selected_item_text.trim().length === 0) {
-                this.$droplabel.html("&nbsp;");
+                // this.$droplabel.html("&nbsp;");
+                this.droplabel.innerHTML = "&nbsp;";
             } else {
-                this.$droplabel.text(selected_item_text);
+                // this.$droplabel.text(selected_item_text);
+                this.droplabel.innerText = selected_item_text;
             }
 
             var items = this.model.get('_options_labels');
-            var $replace_droplist = $('<ul />')
-                .addClass('dropdown-menu');
+            // var $replace_droplist = $('<ul />')
+            //     .addClass('dropdown-menu');
+            var replace_droplist = document.createElement(ul);
+            replace_droplist.classList.add('dropdown-menu');
+
             // Copy the style
-            $replace_droplist.attr('style', this.$droplist.attr('style'));
+            // $replace_droplist.attr('style', this.$droplist.attr('style'));
+            replace_droplist.setAttribute('style', this.droplist.style);
             var that = this;
             _.each(items, function(item, i) {
-                var item_button = $('<a href="#"/>')
-                    .text(item)
-                    .on('click', $.proxy(that.handle_click, that));
-                $replace_droplist.append($('<li />').append(item_button));
+                // var item_button = $('<a href="#"/>')
+                //     .text(item)
+                //     .on('click', $.proxy(that.handle_click, that));
+                var item_button = document.createElement('a');
+                item_button.innerText = item;
+                item_button.onclick = () => { that.handle_click(); }; // TODO - confirm.
+
+                // $replace_droplist.append($('<li />').append(item_button));
+                var btn_li = document.createElement('li');
+                btn_li.appendChild(item_button);
+                replace_droplist.appendChild(btn_li);
             });
 
+
             this.$droplist.replaceWith($replace_droplist);
-            this.$droplist.remove();
-            this.$droplist = $replace_droplist;
+            var parent = this.droplist.parentNode;
+            parent.replaceChild(replace_droplist, this.droplist);
+
+            // this.$droplist.remove();
+            parent.removeChild(this.droplist);
+
+            this.droplist = replace_droplist;
 
             if (this.model.get('disabled')) {
-                this.$buttongroup.attr('disabled','disabled');
-                this.$droplabel.attr('disabled','disabled');
-                this.$dropbutton.attr('disabled','disabled');
-                this.$droplist.attr('disabled','disabled');
+                this.buttongroup.setAttribute('disabled','disabled');
+                this.droplabel.setAttribute('disabled','disabled');
+                this.dropbutton.setAttribute('disabled','disabled');
+                this.droplist.setAttribute('disabled','disabled');
             } else {
-                this.$buttongroup.removeAttr('disabled');
-                this.$droplabel.removeAttr('disabled');
-                this.$dropbutton.removeAttr('disabled');
-                this.$droplist.removeAttr('disabled');
+                this.buttongroup.setAttribute('disabled');
+                this.droplabel.setAttribute('disabled');
+                this.dropbutton.setAttribute('disabled');
+                this.droplist.setAttribute('disabled');
             }
 
             var description = this.model.get('description');
             if (description.length === 0) {
-                this.$label.hide();
+                // this.$label.hide();
+                this.label.style.visibility = 'hidden';
             } else {
-                this.typeset(this.$label, description);
-                this.$label.show();
+                // this.typeset(this.$label, description);
+                this.typeset(this.label, description);
+
+                // this.$label.show();
+                this.label.style.visibility = 'visible';
             }
         }
         return DropdownView.__super__.update.apply(this);
@@ -158,8 +216,8 @@ var DropdownView = widget.DOMWidgetView.extend({
             warning: ['btn-warning'],
             danger: ['btn-danger']
         };
-        this.update_mapped_classes(class_map, 'button_style', this.$droplabel[0]);
-        this.update_mapped_classes(class_map, 'button_style', this.$dropbutton[0]);
+        this.update_mapped_classes(class_map, 'button_style', this.droplabel);
+        this.update_mapped_classes(class_map, 'button_style', this.dropbutton);
     },
 
     update_attr: function(name, value) { // TODO: Deprecated in 5.0
@@ -167,11 +225,17 @@ var DropdownView = widget.DOMWidgetView.extend({
          * Set a css attr of the widget view.
          */
         if (name.substring(0, 6) == 'border' || name == 'background' || name == 'color') {
-            this.$droplabel.css(name, value);
-            this.$dropbutton.css(name, value);
-            this.$droplist.css(name, value);
+            // this.$droplabel.css(name, value);
+            this.droplabel.style[name] = value;
+
+            // this.$dropbutton.css(name, value);
+            this.dropbutton.style[name] = value;
+
+            // this.$droplist.css(name, value);
+            this.droplist.style[name] = value;
         } else {
-            this.$el.css(name, value);
+            // this.$el.css(name, value);
+            this.el.style[name] = value;
         }
     },
 
@@ -182,13 +246,19 @@ var DropdownView = widget.DOMWidgetView.extend({
          * Calling model.set will trigger all of the other views of the
          * model to update.
          */
-        this.model.set('value', $(e.target).text(), {updated_view: this});
+        // this.model.set('value', $(e.target).text(), {updated_view: this});
+        this.model.set(
+            'value',
+            document.querySelectorAll(e.target).innerText,
+            { updated_view: this }
+        );
         this.touch();
 
         // Manually hide the droplist.
         e.stopPropagation();
         e.preventDefault();
-        this.$buttongroup.removeClass('open');
+        // this.$buttongroup.removeClass('open');
+        this.buttongroup.classList.remove('open');
     },
 
 });
@@ -208,15 +278,28 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.$el
-            .addClass('jupyter-widgets widget-hbox widget-radio');
-        this.$label = $('<div />')
-            .appendTo(this.$el)
-            .addClass('widget-label')
-            .hide();
-        this.$container = $('<div />')
-            .appendTo(this.$el)
-            .addClass('widget-radio-box');
+        // this.$el
+        //     .addClass('jupyter-widgets widget-hbox widget-radio');
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-radio');
+
+        // this.$label = $('<div />')
+        //     .appendTo(this.$el)
+        //     .addClass('widget-label')
+        //     .hide();
+        this.label = document.createElement('div');
+        this.el.appendChild(this.label);
+        this.label.classList.add('widget-label');
+        this.label.style.visibility = 'hidden';
+
+        // this.$container = $('<div />')
+        //     .appendTo(this.$el)
+        //     .addClass('widget-radio-box');
+        this.container = document.createElement('div');
+        this.el.appendChild(this.el);
+        this.container.classList.add('widget-radio-box');
+
         this.update();
     },
 
@@ -234,33 +317,53 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
             var that = this;
             _.each(items, function(item, index) {
                 var item_query = ' :input[data-value="' + encodeURIComponent(item) + '"]';
-                if (that.$el.find(item_query).length === 0) {
-                    var $label = $('<label />')
-                        .addClass('radio')
-                        .text(item)
-                        .appendTo(that.$container);
+                // if (that.$el.find(item_query).length === 0) {
+                if (that.el.getElementsByClassName(item_query).length === 0) {
+                    // var $label = $('<label />')
+                    //     .addClass('radio')
+                    //     .text(item)
+                    //     .appendTo(that.$container);
+                    var label = document.createElement('label');
+                    label.classList.add('radio');
+                    label.innerText = item;
+                    that.container.appendChild(label);
 
-                    $('<input />')
-                        .attr('type', 'radio')
-                        .addClass(that.model)
-                        .val(item)
-                        .attr('data-value', encodeURIComponent(item))
-                        .prependTo($label)
-                        .on('click', $.proxy(that.handle_click, that));
+                    // $('<input />')
+                    //     .attr('type', 'radio')
+                    //     .addClass(that.model)
+                    //     .val(item)
+                    //     .attr('data-value', encodeURIComponent(item))
+                    //     .prependTo($label)
+                    //     .on('click', $.proxy(that.handle_click, that));
+                    var radio = document.createElement('input');
+                    radio.setAttribute('type', 'radio');
+                    radio.classList.add(that.model);
+                    radio.value = item;
+                    radio.setAttribute('data-value', encodeURIComponent(item));
+                    that.label.appendChild(radio);
+                    radio.onclick = () => { that.handle_click(); };
                 }
 
-                var $item_element = that.$container.find(item_query);
-                if (that.model.get('value') == item) {
-                    $item_element.prop('checked', true);
-                } else {
-                    $item_element.prop('checked', false);
+                // var $item_element = that.$container.find(item_query);
+                var item_elements = that.container.getElementsByClassName(item_query);
+                if (item_elements.length > 0) {
+                  let item_el = item_elements[0];
+
+                  if (that.model.get('value') == item) {
+                      item_el.prop('checked', true);
+                  } else {
+                      item_el.prop('checked', false);
+                  }
+                  item_el.prop('disabled', disabled);
                 }
-                $item_element.prop('disabled', disabled);
+
             });
 
             // Remove items that no longer exist.
-            this.$container.find('input').each(function(i, obj) {
-                var value = $(obj).val();
+            // this.$container.find('input').each(function(i, obj) {
+            this.container.getElementsByClassName('input').forEach(function(i, obj) {
+                // var value = $(obj).val();
+                var value = obj.value;
                 var found = false;
                 _.each(items, function(item, index) {
                     if (item == value) {
@@ -271,6 +374,7 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
 
                 if (!found) {
                     $(obj).parent().remove();
+                    
                 }
             });
 

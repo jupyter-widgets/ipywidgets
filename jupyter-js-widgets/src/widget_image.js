@@ -3,7 +3,7 @@
 "use strict";
 
 var widget = require("./widget");
-var $ = require("./jquery");
+// var $ = require("./jquery");
 var _ = require("underscore");
 
 var ImageModel = widget.DOMWidgetModel.extend({
@@ -22,8 +22,12 @@ var ImageView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.setElement($("<img />")
-            .addClass("jupyter-widgets widget-image"));
+        // this.setElement($("<img />")
+        //     .addClass("jupyter-widgets widget-image"));
+        var el = document.createElement('img');
+        el.classList.add("jupyter-widgets widget-image");
+        this.setElement(el);
+
         this.update(); // Set defaults.
     },
 
@@ -35,20 +39,25 @@ var ImageView = widget.DOMWidgetView.extend({
          * changed by another view or by a state update from the back-end.
          */
         var image_src = 'data:image/' + this.model.get('format') + ';base64,' + this.model.get('_b64value');
-        this.$el.attr('src', image_src);
+        // this.$el.attr('src', image_src);
+        this.el.src = image_src;
 
         var width = this.model.get('width');
         if (width !== undefined && width.length > 0) {
-            this.$el.attr('width', width);
+            // this.$el.attr('width', width);
+            this.el.width = width;
         } else {
-            this.$el.removeAttr('width');
+            // this.$el.removeAttr('width');
+            this.el.removeAttribute(width);
         }
 
         var height = this.model.get('height');
         if (height !== undefined && height.length > 0) {
-            this.$el.attr('height', height);
+            // this.$el.attr('height', height);
+            this.el.height = height;
         } else {
-            this.$el.removeAttr('height');
+            // this.$el.removeAttr('height');
+            this.el.removeAttribute('height');
         }
         return ImageView.__super__.update.apply(this);
     },
