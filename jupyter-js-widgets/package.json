@@ -55,7 +55,9 @@
     "webpack": "^1.12.11"
   },
   "dependencies": {
-    "backbone": "1.2.0",
+    "backbone": "^1.2.3",
+    "jquery": "^2.1.4",
+    "jquery-ui": "^1.10.5",
     "underscore": "^1.8.3"
   }
 }
