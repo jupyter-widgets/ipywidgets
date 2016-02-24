@@ -6,7 +6,7 @@
 var version = '4.1.0dev';
 
 var _ = require("underscore");
-var Backbone = require("backbone");
+// var Backbone = require("backbone");
 var utils = require("./utils");
 
 //--------------------------------------------------------------------
