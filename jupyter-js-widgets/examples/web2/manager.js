@@ -1,5 +1,4 @@
-require('bootstrap/dist/css/bootstrap.css')
-require('jquery-ui/themes/smoothness/jquery-ui.min.css')
+// require('jquery-ui/themes/smoothness/jquery-ui.min.css')
 
 var widgets = require('jupyter-js-widgets');
 console.info('jupyter-js-widgets loaded successfully');
