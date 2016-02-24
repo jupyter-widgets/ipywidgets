@@ -1,0 +1,39 @@
+p.caption {
+  padding-left: 0.75em;
+  margin-bottom: 0em;
+}
+p.caption:not(:first-child) {
+  padding-top: 0.75em;
+}
+.toctree-l1 a.reference:before {
+  padding-right: 0.5em !important;
+  content: '';
+}
+.glyphicon-spin {
+  -webkit-animation: spin 1000ms infinite linear;
+  animation: spin 1000ms infinite linear;
+}
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+.widget-loading {
+  text-align: center;
+  padding: 10px;
+}

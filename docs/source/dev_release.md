@@ -1,9 +1,9 @@
 To release a new version of the widgets on PyPI and npm, first checkout
-master and cd into the repo root.  Make sure the version in `widget.py`  matches 
-the JS frontend version.  Also check that the frontend version specified in 
+master and cd into the repo root.  Make sure the version in `widget.py`  matches
+the JS frontend version.  Also check that the frontend version specified in
 `manager-base.js` (`version`) is correct.
 
-Then run the 
+Then run the
 following, replacing the square bracketed content with appropriate values:
 
 ```bash
