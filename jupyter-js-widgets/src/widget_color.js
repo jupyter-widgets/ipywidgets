@@ -19,7 +19,6 @@ var ColorPickerView = widget.DOMWidgetView.extend({
     render: function() {
         this.el.className = 'jupyter-widgets widget-hbox widget-colorpicker';
 
-
         this.label = document.createElement('div');
         this.label.classList.add('widget-label');
         this.el.appendChild(this.label);

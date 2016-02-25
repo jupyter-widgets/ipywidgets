@@ -134,7 +134,7 @@ var BoxView = widget.DOMWidgetView.extend({
         }, this);
         this.listenTo(this.model, 'change:overflow_x', this.update_overflow_x, this);
         this.listenTo(this.model, 'change:overflow_y', this.update_overflow_y, this);
-        this.listenTo(this.model, "change:box_style", this.update_box_style, this);
+        this.listenTo(this.model, 'change:box_style', this.update_box_style, this);
     },
 
     update_attr: function(name, value) { // TODO: Deprecated in 5.0
@@ -161,14 +161,14 @@ var BoxView = widget.DOMWidgetView.extend({
         /**
          * Called when the x-axis overflow setting is changed.
          */
-        this.box.style['overflow-x'] = this.model.get('overflow_x');
+        this.box.style.overflowX = this.model.get('overflow_x');
     },
 
     update_overflow_y: function() {
         /**
          * Called when the y-axis overflow setting is changed.
          */
-        this.box.style['overflow-y'] = this.model.get('overflow_y');
+        this.box.style.overflowY = this.model.get('overflow_y');
     },
 
     update_box_style: function() {

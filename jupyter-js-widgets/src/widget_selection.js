@@ -40,8 +40,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         this.el.appendChild(this.buttongroup);
 
         this.droplabel = document.createElement('button');
-        this.droplabel.className = 'btn btn-default';
-        this.droplabel.classList.add('widget-combo-btn');
+        this.droplabel.className = 'btn btn-default widget-combo-btn';
         this.droplabel.innerHTML = "&nbsp;";
         this.buttongroup.appendChild(this.droplabel);
 
