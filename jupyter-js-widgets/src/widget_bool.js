@@ -1,23 +1,23 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var _ = require("underscore");
+var widget = require('./widget');
+var _ = require('underscore');
 
 var BoolModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
         value: false,
-        description: "",
+        description: '',
         disabled: false,
-        _model_name: "BoolModel"
+        _model_name: 'BoolModel'
     }),
 });
 
 var CheckboxModel = BoolModel.extend({
     defaults: _.extend({}, BoolModel.prototype.defaults, {
-        _view_name: "CheckboxView",
-        _model_name: "CheckboxModel"
+        _view_name: 'CheckboxView',
+        _model_name: 'CheckboxModel'
     }),
 });
 
@@ -26,7 +26,7 @@ var CheckboxView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.classList.add('jupyter-widgets widget-hbox widget-checkbox');
+        this.el.className = 'jupyter-widgets widget-hbox widget-checkbox';
 
         this.checkbox = document.createElement('input');
         this.checkbox.setAttribute('type', 'checkbox');
@@ -36,7 +36,7 @@ var CheckboxView = widget.DOMWidgetView.extend({
         this.label = document.createElement('div');
         this.label.classList.add('widget-label');
         this.el.appendChild(this.label);
-        this.label.style.visibility = "hidden";
+        this.label.style.visibility = 'hidden';
 
         this.update(); // Set defaults.
     },
@@ -74,14 +74,14 @@ var CheckboxView = widget.DOMWidgetView.extend({
         this.checkbox.checked = this.model.get('value');
 
         if (options === undefined || options.updated_view != this) {
-            this.checkbox.disabled = this.model.get("disabled");
+            this.checkbox.disabled = this.model.get('disabled');
 
-            var description = this.model.get("description");
+            var description = this.model.get('description');
             if (description.trim().length === 0) {
-                this.label.style.visibility = "hidden";
+                this.label.style.visibility = 'hidden';
             } else {
                 this.typeset(this.label, description);
-                this.label.style.visibility = "visible";
+                this.label.style.visibility = 'visible';
             }
         }
         return CheckboxView.__super__.update.apply(this);
@@ -90,11 +90,11 @@ var CheckboxView = widget.DOMWidgetView.extend({
 
 var ToggleButtonModel = BoolModel.extend({
     defaults: _.extend({}, BoolModel.prototype.defaults, {
-        _view_name: "ToggleButtonView",
-        _model_name: "ToggleButtonModel",
-        tooltip: "",
-        icon: "",
-        button_style: "",
+        _view_name: 'ToggleButtonView',
+        _model_name: 'ToggleButtonModel',
+        tooltip: '',
+        icon: '',
+        button_style: '',
     }),
 });
 
@@ -106,7 +106,7 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
         var that = this;
 
         var btn = document.createElement('button');
-        btn.classList.add('jupyter-widgets widget-toggle-button btn btn-default');
+        btn.className = 'jupyter-widgets widget-toggle-button btn btn-default';
         btn.type = 'button';
         btn.onclick = function (e) {
             e.preventDefault();
@@ -114,8 +114,8 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
         }
         this.setElement(btn);
 
-        this.el["data-toggle"] = "tooltip";
-        this.listenTo(this.model, "change:button_style", this.update_button_style, this);
+        this.el['data-toggle'] = 'tooltip';
+        this.listenTo(this.model, 'change:button_style', this.update_button_style, this);
         this.update_button_style();
 
         this.update(); // Set defaults.
@@ -146,13 +146,13 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
         }
 
         if (options === undefined || options.updated_view != this) {
-            this.el.disabled = this.model.get("disabled");
-            this.el.title = this.model.get("tooltip");
+            this.el.disabled = this.model.get('disabled');
+            this.el.title = this.model.get('tooltip');
 
-            var description = this.model.get("description");
-            var icon = this.model.get("icon");
+            var description = this.model.get('description');
+            var icon = this.model.get('icon');
             if (description.trim().length === 0 && icon.trim().length ===0) {
-                this.el.innerHTML = "&nbsp;"; // Preserve button height
+                this.el.innerHTML = '&nbsp;'; // Preserve button height
             } else {
                 this.el.innerText = description;
 
@@ -179,9 +179,9 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
 
 var ValidModel = BoolModel.extend({
     defaults: _.extend({}, BoolModel.prototype.defaults, {
-        readout: "Invalid",
-        _view_name: "ValidView",
-        _model_name: "ValidModel"
+        readout: 'Invalid',
+        _view_name: 'ValidView',
+        _model_name: 'ValidModel'
     }),
 });
 
@@ -190,8 +190,8 @@ var ValidView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.classList.add("jupyter-widgets widget-valid");
-        this.listenTo(this.model, "change", this.update, this);
+        this.el.className = 'jupyter-widgets widget-valid';
+        this.listenTo(this.model, 'change', this.update, this);
         this.update();
     },
 
@@ -203,19 +203,19 @@ var ValidView = widget.DOMWidgetView.extend({
          * changed by another view or by a state update from the back-end.
          */
         var icon, color, readout;
-        if (this.model.get("value")) {
-            icon = "fa-check";
-            color = "green";
-            readout = "";
+        if (this.model.get('value')) {
+            icon = 'fa-check';
+            color = 'green';
+            readout = '';
         } else {
-            icon = "fa-close";
-            color = "red";
-            readout = this.model.get("readout");
+            icon = 'fa-close';
+            color = 'red';
+            readout = this.model.get('readout');
         }
         this.el.innerText = readout;
 
         var i = document.createElement('i');
-        i.classList.add("fa");
+        i.classList.add('fa');
         this.el.insertBefore(i, this.el.firstChild);
         i.classList.add(icon);
 

@@ -22,7 +22,7 @@ var ImageView = widget.DOMWidgetView.extend({
          * Called when view is rendered.
          */
         var img = document.createElement('img');
-        img.classList.add('jupyter-widgets widget-image');
+        img.className = 'jupyter-widgets widget-image';
         this.el.textContent = '';
         this.el.appendChild(img);
 

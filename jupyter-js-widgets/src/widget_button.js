@@ -23,7 +23,7 @@ var ButtonView = widget.DOMWidgetView.extend({
          * Called when view is rendered.
          */
         var btn = document.createElement('button');
-        btn.classList.add('jupyter-widgets widget-button btn btn-default');
+        btn.className = 'jupyter-widgets widget-button btn btn-default';
         this.setElement(btn);
 
         this.el['data-toggle'] = 'tooltip';
