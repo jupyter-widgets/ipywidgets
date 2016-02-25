@@ -34,7 +34,7 @@ var ProxyModel = widget.DOMWidgetModel.extend({
     }, widget.DOMWidgetModel.serializers),
 });
 
-var ProxyView = widget.WidgetView.extend({
+var ProxyView = widget.DOMWidgetView.extend({
     initialize: function() {
         // Public constructor
         ProxyView.__super__.initialize.apply(this, arguments);
