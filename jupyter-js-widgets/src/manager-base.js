@@ -90,7 +90,7 @@ ManagerBase.prototype.create_view = function(model, options) {
             var parameters = {model: model, options: options};
             var view = new ViewType(parameters);
             view.listenTo(model, 'destroy', view.remove);
-            return Promise.resolve(view.render()).then(function() {return view;});
+            return Promise.resolve(view.render()).then(function() { return view; });
         }).catch(utils.reject("Couldn't create a view for model id '" + String(model.id) + "'", true));
     });
     var id = utils.uuid();
@@ -107,35 +107,7 @@ ManagerBase.prototype.callbacks = function (view) {
     /**
      * callback handlers specific a view
      */
-    var callbacks = {};
-    if (view && view.options.cell) {
-
-        // Try to get output handlers
-        var cell = view.options.cell;
-        var handle_output = null;
-        var handle_clear_output = null;
-        if (cell.output_area) {
-            handle_output = _.bind(cell.output_area.handle_output, cell.output_area);
-            handle_clear_output = _.bind(cell.output_area.handle_clear_output, cell.output_area);
-        }
-
-        // Create callback dictionary using what is known
-        var that = this;
-        callbacks = {
-            iopub : {
-                output : handle_output,
-                clear_output : handle_clear_output,
-
-                // Special function only registered by widget messages.
-                // Allows us to get the cell for a message so we know
-                // where to add widgets if the code requires it.
-                get_cell : function () {
-                    return cell;
-                },
-            },
-        };
-    }
-    return callbacks;
+    return {};
 };
 
 ManagerBase.prototype.get_model = function (model_id) {

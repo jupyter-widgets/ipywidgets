@@ -502,6 +502,43 @@ WidgetManager.prototype._create_comm = function(comm_target_name, model_id, meta
     });
 };
 
+
+WidgetManager.prototype.callbacks = function (view) {
+    /**
+     * callback handlers specific a view
+     */
+    var callbacks = {};
+    if (view && view.options.cell) {
+
+        // Try to get output handlers
+        var cell = view.options.cell;
+        var handle_output = null;
+        var handle_clear_output = null;
+        if (cell.output_area) {
+            handle_output = _.bind(cell.output_area.handle_output, cell.output_area);
+            handle_clear_output = _.bind(cell.output_area.handle_clear_output, cell.output_area);
+        }
+
+        // Create callback dictionary using what is known
+        var that = this;
+        callbacks = {
+            iopub : {
+                output : handle_output,
+                clear_output : handle_clear_output,
+
+                // Special function only registered by widget messages.
+                // Allows us to get the cell for a message so we know
+                // where to add widgets if the code requires it.
+                get_cell : function () {
+                    return cell;
+                },
+            },
+        };
+    }
+    return callbacks;
+};
+
+
 WidgetManager.prototype._get_comm_info = function() {
     /**
      * Gets a promise for the valid widget models.
