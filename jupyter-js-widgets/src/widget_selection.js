@@ -4,7 +4,7 @@
 
 var widget = require("./widget");
 var utils = require("./utils");
-// var $ = require("./jquery");
+var $ = require('./jquery');
 var _ = require("underscore");
 
 var SelectionModel = widget.DOMWidgetModel.extend({
@@ -27,47 +27,24 @@ var DropdownModel = SelectionModel.extend({
 
 var DropdownView = widget.DOMWidgetView.extend({
     render : function() {
-        // this.$el
-        //     .addClass('jupyter-widgets widget-hbox widget-dropdown');
         this.el.classList.add('jupyter-widgets widget-hbox widget-dropdown');
 
-        // this.$label = $('<div />')
-        //     .appendTo(this.$el)
-        //     .addClass('widget-label')
-        //     .hide();
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
         this.label.classList.add('widget-label');
         this.label.style.visibility = 'hidden';
 
-        // this.$buttongroup = $('<div />')
-        //     .addClass('widget_item')
-        //     .addClass('btn-group')
-        //     .appendTo(this.$el);
         this.buttongroup = document.createElement('div');
         this.buttongroup.classList.add('widget_item');
         this.buttongroup.classList.add('btn-group');
         this.el.appendChild(this.buttongroup);
 
-        // this.$droplabel = $('<button />')
-        //     .addClass('btn btn-default')
-        //     .addClass('widget-combo-btn')
-        //     .html("&nbsp;")
-        //     .appendTo(this.$buttongroup);
         this.droplabel = document.createElement('button');
         this.droplabel.classList.add('btn btn-default');
         this.droplabel.classList.add('widget-combo-btn');
         this.droplabel.innerHTML = "&nbsp;";
         this.buttongroup.appendChild(this.droplabel);
 
-        // this.$dropbutton = $('<button />')
-        //     .addClass('btn btn-default')
-        //     .addClass('dropdown-toggle')
-        //     .addClass('widget-combo-carrot-btn')
-        //     .attr('data-toggle', 'dropdown')
-        //     .click(this._showDropdown.bind(this))
-        //     .append($('<span />').addClass("caret"))
-        //     .appendTo(this.$buttongroup);
         this.dropbutton = document.createElement('button');
         this.dropbutton.classList.add('btn btn-default');
         this.dropbutton.classList.add('dropdown-toggle');
@@ -78,10 +55,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         caret.classList.add('caret');
         this.dropbutton.appendChild(caret);
         this.buttongroup.appendChild(this.dropbutton);
-        //
-        // this.$droplist = $('<ul />')
-        //     .addClass('dropdown-menu')
-        //     .appendTo(this.$buttongroup);
+
         this.droplist = document.createElement('ul');
         this.droplist.classList.add('dropdown-menu');
         this.buttongroup.appendChild(this.droplist);
@@ -109,7 +83,6 @@ var DropdownView = widget.DOMWidgetView.extend({
         // The difference is the maximum height of the dropmenu when displayed
         // below the button.
 
-        // var droplabelRect = this.$droplabel[0].getBoundingClientRect();
         var droplabelRect = this.droplabel.getBoundingClientRect();
 
         var siteRect = document.querySelector('#site').getBoundingClientRect();

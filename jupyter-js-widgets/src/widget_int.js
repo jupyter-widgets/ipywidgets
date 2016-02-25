@@ -4,7 +4,6 @@
 
 var widget = require("./widget");
 var _ = require("underscore");
-// var $ = require("./jquery");
 
 var IntModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
@@ -41,14 +40,8 @@ var IntSliderView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        // this.$el
-        //     .addClass('jupyter-widgets widget-hbox widget-hslider');
         this.el.classList.add('jupyter-widgets widget-hbox widget-hslider');
 
-        // this.$label = $('<div />')
-        //     .appendTo(this.$el)
-        //     .addClass('widget-label')
-        //     .hide();
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
         this.label.classList.add('widget-label');
@@ -61,7 +54,6 @@ var IntSliderView = widget.DOMWidgetView.extend({
         //     })
         //     .addClass('slider');
         this.slider = document.createElement('div');
-        // TODO - jquery slider alternative.
         this.slider.classList.add('slider');
 
         // Put the slider in a container
