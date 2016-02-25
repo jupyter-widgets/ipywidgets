@@ -3,7 +3,6 @@
 "use strict";
 
 var widget = require("./widget");
-// var $ = require("./jquery");
 var _ = require("underscore");
 
 var ButtonModel = widget.DOMWidgetModel.extend({
@@ -23,13 +22,10 @@ var ButtonView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        // this.setElement($("<button />")
-        //     .addClass('jupyter-widgets widget-button btn btn-default'));
         var btn = document.createElement('button');
         btn.classList.add('jupyter-widgets widget-button btn btn-default');
         this.setElement(btn);
 
-        // this.$el.attr("data-toggle", "tooltip");
         this.el['data-toggle'] = 'tooltip';
         this.listenTo(this.model, "change:button_style", this.update_button_style, this);
         this.update_button_style();
@@ -44,22 +40,16 @@ var ButtonView = widget.DOMWidgetView.extend({
          * Called when the model is changed. The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        // this.$el.prop("disabled", this.model.get("disabled"));
         this.el['disabled'] = this.model.get('disabled');
-
-        // this.$el.attr("title", this.model.get("tooltip"));
         this.el['title'] = this.model.get('tooltip');
 
         var description = this.model.get("description");
         var icon = this.model.get("icon");
         if (description.trim().length === 0 && icon.trim().length ===0) {
-            // this.$el.html("&nbsp;"); // Preserve button height
-            this.el.innerHTML = "&nbsp;";
+            this.el.innerHTML = "&nbsp;"; // Preserve button height
         } else {
-            // this.$el.text(description);
             this.el.innerText = description;
 
-            // $('<i class="fa"></i>').prependTo(this.$el).addClass(icon);
             var i = document.createElement('i');
             this.el.insertBefore(i, this.el.firstChild);
             this.el.classList.add(icon);

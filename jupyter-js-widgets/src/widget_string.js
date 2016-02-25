@@ -3,7 +3,6 @@
 "use strict";
 
 var widget = require("./widget");
-// var $ = require("./jquery");
 var _ = require("underscore");
 
 var StringModel = widget.DOMWidgetModel.extend({
@@ -28,8 +27,6 @@ var HTMLView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        // this.$el
-        //     .addClass('jupyter-widgets widget-html');
         this.el.classList.add('jupyter-widgets widget-html');
         this.update(); // Set defaults.
     },
@@ -41,7 +38,6 @@ var HTMLView = widget.DOMWidgetView.extend({
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        // this.$el.html(this.model.get('value')); // CAUTION! .html(...) CALL MANDATORY!!!
         this.el.innerHTML = this.model.get('value');
         return HTMLView.__super__.update.apply(this);
     },
@@ -59,8 +55,6 @@ var LabelView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        // this.$el
-        //     .addClass('jupyter-widgets widget-latex');
         this.el.classList.add('jupyter-widgets widget-latex');
         this.update(); // Set defaults.
     },
@@ -72,7 +66,6 @@ var LabelView = widget.DOMWidgetView.extend({
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        // this.typeset(this.$el, this.model.get('value'));
         this.typeset(this.el, this.model.get('value'));
         return LabelView.__super__.update.apply(this);
     },
@@ -90,33 +83,20 @@ var TextareaView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        // this.$el
-        //     .addClass('jupyter-widgets widget-hbox widget-textarea');
         this.el.classList.add('jupyter-widgets widget-hbox widget-textarea');
 
-        // this.$label = $('<div />')
-        //     .appendTo(this.$el)
-        //     .addClass('widget-label')
-        //     .hide();
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
         this.label.classList.add('widget-label');
         this.label.style.visibility = 'hidden';
 
-        // this.$textbox = $('<textarea />')
-        //     .attr('rows', 5)
-        //     .addClass('form-control')
-        //     .appendTo(this.$el);
         this.textbox = document.createElement('textarea');
         this.textbox.setAttribute('rows', 5);
         this.textbox.classList.add('form-control');
         this.el.appendChild(this.textbox);
 
         this.update(); // Set defaults.
-
-        // this.listenTo(this.model, 'msg:custom', $.proxy(this._handle_textarea_msg, this));
         this.listenTo(this.model, 'msg:custom', () => { this._handle_textarea_msg() }); //TODO: ??
-
         this.listenTo(this.model, 'change:placeholder', function(model, value, options) {
             this.update_placeholder(value);
         }, this);
@@ -137,7 +117,6 @@ var TextareaView = widget.DOMWidgetView.extend({
         if (!value) {
             value = this.model.get('placeholder');
         }
-        // this.$textbox.attr('placeholder', value);
         this.textbox.setAttribute('placeholder', value);
     },
 
@@ -156,21 +135,16 @@ var TextareaView = widget.DOMWidgetView.extend({
          * changed by another view or by a state update from the back-end.
          */
         if (options === undefined || options.updated_view != this) {
-            // this.$textbox.val(this.model.get('value'));
             this.textbox.value = this.model.get('value');
 
             var disabled = this.model.get('disabled');
-            // this.$textbox.prop('disabled', disabled);
             this.textbox.setAttribute('disabled', disabled);
 
             var description = this.model.get('description');
             if (description.length === 0) {
-                // this.$label.hide();
                 this.label.style.visibility = 'hidden';
             } else {
-                // this.typeset(this.$label, description);
                 this.typeset(this.label, description);
-                // this.$label.show()
                 this.label.style.visibility = 'visible';
             }
         }
@@ -208,23 +182,12 @@ var TextView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        // this.$el
-        //     .addClass('jupyter-widgets widget-hbox widget-text');
         this.el.classList.add('jupyter-widgets widget-hbox widget-text');
-
-        // this.$label = $('<div />')
-        //     .addClass('widget-label')
-        //     .appendTo(this.$el)
-        //     .hide();
         this.label = document.createElement('div');
         this.label.classList.add('widget-label');
         this.el.appendChild(this.label);
         this.label.style.visibility = 'hidden';
 
-        // this.$textbox = $('<input type="text" />')
-        //     .addClass('input')
-        //     .addClass('form-control')
-        //     .appendTo(this.$el);
         this.textbox = document.createElement('input');
         this.textbox.setAttribute('type', 'text');
         this.textbox.classList.add('input');
@@ -243,7 +206,6 @@ var TextView = widget.DOMWidgetView.extend({
         if (!value) {
             value = this.model.get('placeholder');
         }
-        // this.$textbox.attr('placeholder', value);
         this.textbox.setAttribute('placeholder', value);
     },
 
@@ -255,25 +217,18 @@ var TextView = widget.DOMWidgetView.extend({
          * changed by another view or by a state update from the back-end.
          */
         if (options === undefined || options.updated_view != this) {
-            // if (this.$textbox.val() != this.model.get('value')) {
-            //     this.$textbox.val(this.model.get('value'));
-            // }
             if (this.textbox.value != this.model.get('value')) {
               this.textbox.value = this.model.get('value');
             }
 
             var disabled = this.model.get('disabled');
-            // this.$textbox.prop('disabled', disabled);
             this.textbox.setAttribute('disabled', disabled);
 
             var description = this.model.get('description');
             if (description.length === 0) {
-                // this.$label.hide();
                 this.label.style.visibility = 'hidden';
             } else {
-                // this.typeset(this.$label, description);
                 this.typeset(this.label, description);
-                // this.$label.show();
                 this.label.style.visibility = 'visible';
             }
         }
