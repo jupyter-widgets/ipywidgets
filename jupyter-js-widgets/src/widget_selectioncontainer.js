@@ -40,10 +40,7 @@ var AccordionView = widget.DOMWidgetView.extend({
          * Called when view is rendered.
          */
         var guid = 'panel-group' + utils.uuid();
-        // this.$el
-        //     .attr('id', guid)
-        //     .addClass('jupyter-widgets panel-group');
-        this.el.setAttribute('id', guid);
+        this.el.id = guid;
         this.el.classList.add('jupyter-widgets panel-group');
 
         this.listenTo(this.model, 'change:selected_index', function(model, value, options) {
@@ -254,7 +251,7 @@ var TabView = widget.DOMWidgetView.extend({
         //     .addClass('nav-tabs')
         //     .appendTo(this.$el);
         this.tabs = document.createElement('div');
-        this.tabs.setAttribute('id', uuid);
+        this.tabs.id = uuid;
         this.tabs.classList.add('nav');
         this.tabs.classList.add('nav-tabs');
         this.el.appendChild(this.tabs);
@@ -341,7 +338,7 @@ var TabView = widget.DOMWidgetView.extend({
         //     .append(dummy)
         //     .appendTo(that.$tab_contents);
         var contents_div = document.createElement('div');
-        contents_div.setAttribute('id', uuid);
+        contents_div.id = uuid;
         contents_div.classList.add('tab-pane');
         contents_div.classList.add('fade');
         contents_div.appendChild(dummy);
