@@ -687,10 +687,18 @@ var DOMWidgetViewMixin = {
             el = this.el;
         }
         _.difference(old_classes, new_classes).map(function(c) {
-            el.classList.remove(c);
+            if (el.classList) { // classList is not supported by IE for svg elements
+                el.classList.remove(c);
+            } else {
+                el.setAttribute("class", el.getAttribute("class").replace(c, ""));
+            }
         });
         _.difference(new_classes, old_classes).map(function(c) {
-            el.classList.add(c);
+            if (el.classList) { // classList is not supported by IE for svg elements
+                el.classList.add(c);
+            } else {
+                el.setAttribute("class", el.getAttribute("class").concat(" ", c));
+            }
         });
     },
 
