@@ -179,7 +179,7 @@ var AccordionView = widget.DOMWidgetView.extend({
         //     .addClass('panel-collapse collapse')
         //     .appendTo(accordion_group);
         var accordion_body = document.createElement('div');
-        accordion_body.id = uuid;
+        accordion_body.setAttribute('id', uuid);
         accordion_body.classList.add('panel-collapse collapse');
         accordion_group.appendChild(accordion_body);
 
@@ -254,7 +254,7 @@ var TabView = widget.DOMWidgetView.extend({
         //     .addClass('nav-tabs')
         //     .appendTo(this.$el);
         this.tabs = document.createElement('div');
-        this.tabs.id = uuid;
+        this.tabs.setAttribute('id', uuid);
         this.tabs.classList.add('nav');
         this.tabs.classList.add('nav-tabs');
         this.el.appendChild(this.tabs);
@@ -263,7 +263,7 @@ var TabView = widget.DOMWidgetView.extend({
         //     .addClass('tab-content')
         //     .appendTo(this.$el);
         this.tab_contents = document.createElement('div');
-        this.tab_contents.id = uuid + 'Content';
+        this.tab_contents.setAttribute('id', uuid + 'Content');
         this.el.appendChild(this.tab_contents);
 
         this.children_views.update(this.model.get('children'));
@@ -341,7 +341,7 @@ var TabView = widget.DOMWidgetView.extend({
         //     .append(dummy)
         //     .appendTo(that.$tab_contents);
         var contents_div = document.createElement('div');
-        contents_div.id = uuid;
+        contents_div.setAttribute('id', uuid);
         contents_div.classList.add('tab-pane');
         contents_div.classList.add('fade');
         contents_div.appendChild(dummy);

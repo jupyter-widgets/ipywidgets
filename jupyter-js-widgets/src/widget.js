@@ -62,6 +62,7 @@ var WidgetModel = Backbone.Model.extend({
         this.pending_msgs = 0;
         this.msg_buffer = null;
         this.state_lock = null;
+        console.log('WIDGET CONSTRUCTOR: ', model_id);
         this.id = model_id;
 
         // Force backbone to think that the model has already been

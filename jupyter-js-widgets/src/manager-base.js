@@ -184,17 +184,13 @@ ManagerBase.prototype.new_widget = function(options, serialized_state) {
     return commPromise.then(function(comm) {
         // Comm Promise Resolved.
         options_clone.comm = comm;
-        var temp = that.new_model(options_clone, serialized_state);
-        console.log('COMM Promise resolved :', temp);
-        return temp;
+        return that.new_model(options_clone, serialized_state);
     }, function() {
         // Comm Promise Rejected.
         if (!options_clone.model_id) {
             options_clone.model_id = utils.uuid();
         }
-        var temp = that.new_model(options_clone, serialized_state);
-        console.log('COMM Promise rejected :', temp);
-        return temp;
+        return that.new_model(options_clone, serialized_state);
     }).catch((error) => {
       console.log("WIDGET CREATION ERROR!! : ", error);
     });
@@ -325,7 +321,7 @@ ManagerBase.prototype.new_model = function(options, serialized_state) {
             return Promise.reject(wrapped_error);
         });
     this._models[model_id] = model_promise;
-    console.log('New model returning promise:', model_promise);
+    // console.log('New model returning promise:', model_promise);
     return model_promise;
 };
 
@@ -426,8 +422,10 @@ ManagerBase.prototype.set_state = function(state) {
 
     // Display all the views
     return all_models.then(function(models) {
-        return Promise.all(_.map(models, function(model) {
+      let mods = state.filter((m) => m.id !== undefined);
+        return Promise.all(_.map(mods, function(model) {
             // Display the views of the model.
+
             return Promise.all(_.map(state[model.id].views, function(options) {
                 return that.display_model(undefined, model, options);
             }));
