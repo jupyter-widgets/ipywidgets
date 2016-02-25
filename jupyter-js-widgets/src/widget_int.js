@@ -47,53 +47,53 @@ var IntSliderView = widget.DOMWidgetView.extend({
         this.label.classList.add('widget-label');
         this.label.style.visibility = 'hidden';
 
-        // this.$slider = $('<div />')
-        //     .slider({
-        //         slide: this.handleSliderChange.bind(this),
-        //         stop: this.handleSliderChange.bind(this)
-        //     })
-        //     .addClass('slider');
-        this.slider = document.createElement('div');
-        this.slider.classList.add('slider');
+        this.$slider = $('<div />')
+            .slider({
+                slide: this.handleSliderChange.bind(this),
+                stop: this.handleSliderChange.bind(this)
+            })
+            .addClass('slider');
+        // this.slider = document.createElement('div');
+        // this.slider.classList.add('slider');
 
         // Put the slider in a container
-        // this.$slider_container = $('<div />')
-        //     .addClass('slider-container')
-        //     .append(this.$slider);
-        this.slider_container = document.createElement('div');
-        this.slider_container.classList.add('slider-container');
-        this.slider_container.appendChild(this.slider);
+        this.$slider_container = $('<div />')
+            .addClass('slider-container')
+            .append(this.$slider);
+        // this.slider_container = document.createElement('div');
+        // this.slider_container.classList.add('slider-container');
+        // this.slider_container.appendChild(this.slider);
 
-        // this.$el.append(this.$slider_container);
-        this.el.appendChild(this.slider_container);
+        this.$el.append(this.$slider_container);
+        // this.el.appendChild(this.slider_container);
 
-        // this.$readout = $('<div/>')
-        //     .appendTo(this.$el)
-        //     .addClass('widget-readout')
-        //     .attr('contentEditable', true)
-        //     .hide();
-        this.readout = document.createElement('div');
-        this.el.appendChild(this.readout);
-        this.readout.classList.add('widget-readout');
-        this.readout.contentEditable = true;
-        this.readout.style.visibility = 'hidden';
+        this.$readout = $('<div/>')
+            .appendTo(this.$el)
+            .addClass('widget-readout')
+            .attr('contentEditable', true)
+            .hide();
+        // this.readout = document.createElement('div');
+        // this.el.appendChild(this.readout);
+        // this.readout.classList.add('widget-readout');
+        // this.readout.contentEditable = true;
+        // this.readout.style.visibility = 'hidden';
 
         this.listenTo(this.model, 'change:slider_handleTextChangecolor', function(sender, value) {
-            // this.$slider.find('a').css('background', value);
-            var elems = this.slider.getElementsByClassName('a');
-            if (elems.length > 0) {
-              elems.style.visibility.background = value;
-            }
+            this.$slider.find('a').css('background', value);
+            // var elems = this.slider.getElementsByClassName('a');
+            // if (elems.length > 0) {
+            //   elems.style.visibility.background = value;
+            // }
         }, this);
         this.listenTo(this.model, 'change:description', function(sender, value) {
             this.updateDescription();
         }, this);
 
-        // this.$slider.find('a').css('background', this.model.get('slider_color'));
-        var a_elems = this.slider.getElementsByClassName('a');
-        if (a_elems > 0) {
-          a_elems.style.background = this.model.get('slider_color');
-        }
+        this.$slider.find('a').css('background', this.model.get('slider_color'));
+        // var a_elems = this.slider.getElementsByClassName('a');
+        // if (a_elems > 0) {
+        //   a_elems.style.background = this.model.get('slider_color');
+        // }
 
         // Set defaults.
         this.update();
@@ -111,17 +111,17 @@ var IntSliderView = widget.DOMWidgetView.extend({
             // this.$readout.css(name, value);
             this.readout.style[name] = value;
         } else if (name.substring(0, 6) == 'border') {
-            // this.$slider.find('a').css(name, value);
-            var elems = this.slider.getElementsByClassName('a');
-            if (elems.length > 0) {
-              elems.style[name] = value;
-            }
+            this.$slider.find('a').css(name, value);
+            // var elems = this.slider.getElementsByClassName('a');
+            // if (elems.length > 0) {
+            //   elems.style[name] = value;
+            // }
 
-            // this.$slider_container.css(name, value);
-            this.slider_container.style[name] = value;
+            this.$slider_container.css(name, value);
+            // this.slider_container.style[name] = value;
         } else if (name == 'background') {
-            // this.$slider_container.css(name, value);
-            this.slider_container.style[name] = value;
+            this.$slider_container.css(name, value);
+            // this.slider_container.style[name] = value;
         } else {
             // this.$el.css(name, value);
             this.el.style[name] = value;
@@ -243,10 +243,10 @@ var IntSliderView = widget.DOMWidgetView.extend({
 
             var readout = this.model.get('readout');
             if (readout) {
-                this.$readout.show();
+                // this.$readout.show();
                 this.readout.style.visibility = 'visible';
             } else {
-                this.$readout.hide();
+                // this.$readout.hide();
                 this.readout.style.visibility = 'hidden';
             }
         }
