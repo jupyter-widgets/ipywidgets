@@ -27,7 +27,7 @@ var HTMLView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.classList.add('jupyter-widgets', 'widget-html');
+        this.el.className = 'jupyter-widgets widget-html';
         this.update(); // Set defaults.
     },
 
@@ -55,7 +55,7 @@ var LatexView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.classList.add('jupyter-widgets', 'widget-latex');
+        this.el.className = 'jupyter-widgets widget-latex';
         this.update(); // Set defaults.
     },
 
@@ -83,8 +83,7 @@ var TextareaView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.classList.add('jupyter-widgets', 'widget-hbox', 'widget-textarea');
-
+        this.el.className = 'jupyter-widgets widget-hbox widget-textarea';
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
         this.label.classList.add('widget-label');
@@ -182,7 +181,7 @@ var TextView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.classList.add('jupyter-widgets', 'widget-hbox', 'widget-text');
+        this.el.className = 'jupyter-widgets widget-hbox widget-text';
         this.label = document.createElement('div');
         this.label.classList.add('widget-label');
         this.el.appendChild(this.label);

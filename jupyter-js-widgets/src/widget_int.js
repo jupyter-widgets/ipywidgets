@@ -40,7 +40,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.classList.add('jupyter-widgets', 'widget-hbox', 'widget-hslider');
+        this.el.className = 'jupyter-widgets widget-hbox widget-hslider';
 
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
@@ -429,23 +429,13 @@ var IntTextView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        // this.$el
-        //     .addClass('jupyter-widgets widget-hbox widget-numeric-text');
-        this.el.classList.add('jupyter-widgets', 'widget-hbox', 'widget-numeric-text');
+        this.el.className = 'jupyter-widgets widget-hbox widget-numeric-text';
 
-        // this.$label = $('<div />')
-        //     .appendTo(this.$el)
-        //     .addClass('widget-label')
-        //     .hide();
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
         this.label.classList.add('widget-label');
         this.label.style.visibility = 'hidden';
 
-        // this.$textbox = $('<input type="text" />')
-        //     .addClass('form-control')
-        //     .addClass('widget-numeric-text')
-        //     .appendTo(this.$el);
         this.textbox = document.createElement('input');
         this.textbox.setAttribute('type', 'text');
         this.textbox.classList.add('form-control');

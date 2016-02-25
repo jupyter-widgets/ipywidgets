@@ -27,7 +27,7 @@ var DropdownModel = SelectionModel.extend({
 
 var DropdownView = widget.DOMWidgetView.extend({
     render : function() {
-        this.el.classList.add('jupyter-widgets', 'widget-hbox', 'widget-dropdown');
+        this.el.className = 'jupyter-widgets widget-hbox widget-dropdown';
 
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
@@ -40,13 +40,13 @@ var DropdownView = widget.DOMWidgetView.extend({
         this.el.appendChild(this.buttongroup);
 
         this.droplabel = document.createElement('button');
-        this.droplabel.classList.add('btn', 'btn-default');
+        this.droplabel.className = 'btn btn-default';
         this.droplabel.classList.add('widget-combo-btn');
         this.droplabel.innerHTML = "&nbsp;";
         this.buttongroup.appendChild(this.droplabel);
 
         this.dropbutton = document.createElement('button');
-        this.dropbutton.classList.add('btn', 'btn-default');
+        this.dropbutton.className = 'btn btn-default';
         this.dropbutton.classList.add('dropdown-toggle');
         this.dropbutton.classList.add('widget-combo-carrot-btn');
         this.dropbutton.setAttribute('data-toggle', 'dropdown');
@@ -403,22 +403,13 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        // this.$el
-        //     .addClass('jupyter-widgets widget-hbox widget-toggle-buttons');
-        this.el.classList.add('jupyter-widgets', 'widgets-hbox', 'widget-toggle-buttons');
+        this.el.className = 'jupyter-widgets widgets-hbox widget-toggle-buttons';
 
-        // this.$label = $('<div />')
-        //     .appendTo(this.$el)
-        //     .addClass('widget-label')
-        //     .hide();
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
         this.label.classList.add('widget-label');
         this.label.style.visibility = 'hidden';
 
-        // this.$buttongroup = $('<div />')
-        //     .addClass('btn-group')
-        //     .appendTo(this.$el);
         this.buttongroup = document.createElement('div');
         this.buttongroup.classList.add('btn-group');
         this.el.appendChild(this.buttongroup);
@@ -475,7 +466,7 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
 
                   var item_el = document.createElement('button');
                   item_el.setAttribute('type', 'button');
-                  item_el.classList.add('btn', 'btn-default');
+                  item_el.className = 'btn btn-default';
                   item_el.innerHTML = item_html;
                   that.buttongroup.appendChild(item_el);
                   item_el.setAttribute('data-value', encodeURIComponent(item));
@@ -616,26 +607,15 @@ var SelectView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        // this.$el
-        //     .addClass('jupyter-widgets widget-hbox widget-select');
-        this.el.classList.add('jupyter-widgets', 'widget-hbox', 'widget-select');
+        this.el.className = 'jupyter-widgets widget-hbox widget-select';
 
-        // this.$label = $('<div />')
-        //     .appendTo(this.$el)
-        //     .addClass('widget-label')
-        //     .hide();
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
         this.el.classList.ad('widget-label');
         this.el.style.visibility = 'hidden';
 
-        // this.$listbox = $('<select />')
-        //     .addClass('widget-listbox form-control')
-        //     .attr('size', 6)
-        //     .appendTo(this.$el)
-        //     .on('change', $.proxy(this.handle_change, this));
         this.listbox = document.createElement('select');
-        this.listbox.classList.add('widget-listbox', 'form-control');
+        this.listbox.className = 'widget-listbox form-control';
         this.listbox.setAttribute('size', 6);
         this.el.appendChild(this.listbox);
         this.el.onchange = () => { this.handle_change.bind(this); };
@@ -758,15 +738,8 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        // this.$el
-        //     .addClass('jupyter-widgets widget-hbox widget-hslider');
+        this.el.className = 'jupyter-widgets widget-hbox widget-hslider';
 
-        this.el.classList.add('jupyter-widgets', 'widget-hbox', 'widget-hslider');
-
-        // this.$label = $('<div />')
-        //     .appendTo(this.$el)
-        //     .addClass('widget-label')
-        //     .hide();
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
         this.label.classList.add('widget-label');
@@ -778,7 +751,6 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         this.slider = document.createElement('input');
         this.slider.setAttribute('type', 'range');
         this.slider.classList.add('slider'); // TODO - is this necessary.
-
 
         // Put the slider in a container
         // this.$slider_container = $('<div />')
