@@ -107,15 +107,15 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
 
         var btn = document.createElement('button');
         btn.classList.add('jupyter-widgets widget-toggle-button btn btn-default');
-        btn.type = 'button';
+        btn.setAttribute('type', 'button');
         btn.onclick = function (e) {
             e.preventDefault();
             that.handle_click();
         }
         this.setElement(btn);
 
-        this.el["data-toggle"] = "tooltip";
-        this.listenTo(this.model, "change:button_style", this.update_button_style, this);
+        this.el.setAttribute('data-toggle', 'tooltip');
+        this.listenTo(this.model, 'change:button_style', this.update_button_style, this);
         this.update_button_style();
 
         this.update(); // Set defaults.
@@ -179,9 +179,9 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
 
 var ValidModel = BoolModel.extend({
     defaults: _.extend({}, BoolModel.prototype.defaults, {
-        readout: "Invalid",
-        _view_name: "ValidView",
-        _model_name: "ValidModel"
+        readout: 'Invalid',
+        _view_name: 'ValidView',
+        _model_name: 'ValidModel'
     }),
 });
 
@@ -190,8 +190,8 @@ var ValidView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.classList.add("jupyter-widgets widget-valid");
-        this.listenTo(this.model, "change", this.update, this);
+        this.el.classList.add('jupyter-widgets widget-valid');
+        this.listenTo(this.model, 'change', this.update, this);
         this.update();
     },
 

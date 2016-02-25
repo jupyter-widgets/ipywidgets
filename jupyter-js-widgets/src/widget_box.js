@@ -161,14 +161,14 @@ var BoxView = widget.DOMWidgetView.extend({
         /**
          * Called when the x-axis overflow setting is changed.
          */
-        this.box.style['overflow-x'] = this.model.get('overflow_x');
+        this.box.style.overflowX = this.model.get('overflow_x');
     },
 
     update_overflow_y: function() {
         /**
          * Called when the y-axis overflow setting is changed.
          */
-        this.box.style['overflow-y'] = this.model.get('overflow_y');
+        this.box.style.overflowY = this.model.get('overflow_y');
     },
 
     update_box_style: function() {
