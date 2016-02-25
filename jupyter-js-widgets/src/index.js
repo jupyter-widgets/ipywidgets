@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 // HACK: node bootstrap requires this.
-// global.jQuery = global.$ = require('./jquery');
+global.jQuery = global.$ = require('./jquery');
 var _ = require('underscore');
 
 var managerBase = require("./manager-base");
