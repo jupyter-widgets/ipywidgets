@@ -40,7 +40,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.classList.add('jupyter-widgets widget-hbox widget-hslider');
+        this.el.className = 'jupyter-widgets widget-hbox widget-hslider';
 
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
@@ -431,7 +431,7 @@ var IntTextView = widget.DOMWidgetView.extend({
          */
         // this.$el
         //     .addClass('jupyter-widgets widget-hbox widget-numeric-text');
-        this.el.classList.add('jupyter-widgets widget-hbox widget-numeric-text');
+        this.el.className = 'jupyter-widgets widget-hbox widget-numeric-text';
 
         // this.$label = $('<div />')
         //     .appendTo(this.$el)
