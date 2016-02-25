@@ -59,10 +59,10 @@ var ColorPickerView = widget.DOMWidgetView.extend({
         var description = this.model.get('description');
         if (description.length === 0) {
             this.label.style.visibility = 'hidden';
-            this.color_container.style['justify-content'] = 'auto';
+            this.color_container.style.justifyContent = 'auto';
         } else {
             this.typeset(this.label, description);
-            this.color_container.style['justify-content'] = 'flex-end';
+            this.color_container.style.justifyContent = 'flex-end';
             this.label.style.visibility = 'visible';
         }
     },

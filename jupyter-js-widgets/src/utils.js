@@ -5,7 +5,6 @@
 // IS CONVERTED TO NODE COMMONJS.
 "use strict";
 
-var $ = require("./jquery");
 
 /**
  * http://www.ietf.org/rfc/rfc4122.txt
@@ -141,24 +140,35 @@ function reject(message, log) {
  * text: option string
  */
 function typeset(element, text) {
-    var $el = element.jquery ? element : $(element);
-    if(arguments.length > 1){
-        $el.text(text);
+    // var $el = element.jquery ? element : $(element);
+    // if(arguments.length > 1){
+    //     $el.text(text);
+    // }
+    // if(!window.MathJax){
+    //     return;
+    // }
+    // return $el.map(function(){
+    //     // MathJax takes a DOM node: $.map makes `this` the context
+    //     return MathJax.Hub.Queue(["Typeset", MathJax.Hub, this]);
+    // });
+    if (arguments.length > 1) {
+      element.innerText = text;
     }
-    if(!window.MathJax){
-        return;
+    if (!window.MathJax) {
+      return;
     }
-    return $el.map(function(){
-        // MathJax takes a DOM node: $.map makes `this` the context
-        return MathJax.Hub.Queue(["Typeset", MathJax.Hub, this]);
-    });
+
+    return MathJax.Hub.Queue(["TypeSet", MathJax.Hub, element]);
 }
 
 /**
  * escape text to HTML
  */
 var escape_html = function (text) {
-    return $("<div/>").text(text).html();
+    // return $("<div/>").text(text).html();
+    let esc  = document.createElement('div');
+    esc.innerText = text;
+    return esc.innerHTML;
 };
 
 module.exports = {

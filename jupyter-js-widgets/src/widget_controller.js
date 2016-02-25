@@ -40,7 +40,7 @@ var ControllerButtonView = widget.DOMWidgetView.extend({
         this.update();
         this.label = document.createElement('div');
         this.label.innerText = this.model.get('description');
-        this.label.style['text-align'] = 'center';
+        this.label.style.textAlign = 'center';
         this.el.appendChild(this.label);
     },
 
@@ -83,7 +83,7 @@ var ControllerAxisView = widget.DOMWidgetView.extend({
 
         this.label = document.createElement('div');
         this.label.innerText = this.model.get('description');
-        this.label.style.css['text-align'] = 'center';
+        this.label.style.textAlign = 'center';
         this.el.appendChild(this.label);
 
         this.update();
