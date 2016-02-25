@@ -41,7 +41,7 @@ var AccordionView = widget.DOMWidgetView.extend({
          */
         var guid = 'panel-group' + utils.uuid();
         this.el.id = guid;
-        this.el.className = 'jupyter-widgets panel-group';
+        this.el.classList.add('jupyter-widgets', 'panel-group');
 
         this.listenTo(this.model, 'change:selected_index', function(model, value, options) {
             this.update_selected_index(options);
@@ -136,7 +136,7 @@ var AccordionView = widget.DOMWidgetView.extend({
         //     .addClass('panel panel-default')
         //     .appendTo(this.$el);
         var accordion_group = document.createElement('div');
-        accordion_group.className = 'panel panel-default';
+        accordion_group.classList.add('panel', 'panel-default');
         this.el.appendChild(accordion_group);
 
         // var accordion_heading = $('<div />')

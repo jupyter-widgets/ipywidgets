@@ -26,7 +26,7 @@ var CheckboxView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.className = 'jupyter-widgets widget-hbox widget-checkbox';
+        this.el.classList.add('jupyter-widgets', 'widget-hbox', 'widget-checkbox');
 
         this.checkbox = document.createElement('input');
         this.checkbox.setAttribute('type', 'checkbox');
@@ -106,7 +106,7 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
         var that = this;
 
         var btn = document.createElement('button');
-        btn.className = 'jupyter-widgets widget-toggle-button btn btn-default';
+        btn.classList.add('jupyter-widgets', 'widget-toggle-button', 'btn', 'btn-default');
         btn.setAttribute('type', 'button');
         btn.onclick = function (e) {
             e.preventDefault();
@@ -190,7 +190,7 @@ var ValidView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.classList.add('jupyter-widgets widget-valid');
+        this.el.classList.add('jupyter-widgets', 'widget-valid');
         this.listenTo(this.model, 'change', this.update, this);
         this.update();
     },

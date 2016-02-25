@@ -19,7 +19,7 @@ var ControllerButtonView = widget.DOMWidgetView.extend({
     /* Very simple view for a gamepad button. */
 
     render: function() {
-        this.el.className = 'jupyter-widgets widget-controller-button';
+        this.el.classList.add('jupyter-widgets', 'widget-controller-button');
 
         this.support = document.createElement('div');
         this.support.style.position = "relative";
@@ -60,7 +60,7 @@ var ControllerAxisModel = widget.DOMWidgetModel.extend({
 var ControllerAxisView = widget.DOMWidgetView.extend({
     /* Very simple view for a gamepad axis. */
     render: function() {
-        this.el.className = 'jupyter-widgets widget-controller-axis';
+        this.el.classList.add('jupyter-widgets widget-controller-axis');
         this.el.style.width = '16px';
         this.el.style.padding = '4px';
 
@@ -232,7 +232,6 @@ var ControllerModel = widget.DOMWidgetModel.extend({
          */
         return this.widget_manager.new_widget({
              model_name: 'ControllerButtonModel',
-             model_module: 'jupyter-js-widgets',
              widget_class: 'Jupyter.ControllerButton',
         }).then(function(model) {
              model.set('description', index);
@@ -245,7 +244,6 @@ var ControllerModel = widget.DOMWidgetModel.extend({
          */
         return this.widget_manager.new_widget({
              model_name: 'ControllerAxisModel',
-             model_module: 'jupyter-js-widgets',
              widget_class: 'Jupyter.ControllerAxis',
         }).then(function(model) {
              model.set('description', index);
@@ -280,7 +278,7 @@ var ControllerView = widget.DOMWidgetView.extend({
     },
 
     render: function(){
-        this.el.className = 'jupyter-widgets widget-controller';
+        this.el.classList.add('jupyter-widgets widget-controller');
         this.box = this.el;
         this.label = document.createElement('div');
         this.box.appendChild(this.label);
