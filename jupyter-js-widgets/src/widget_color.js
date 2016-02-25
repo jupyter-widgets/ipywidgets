@@ -17,14 +17,14 @@ var ColorPickerModel = widget.DOMWidgetModel.extend({
 
 var ColorPickerView = widget.DOMWidgetView.extend({
     render: function() {
-        this.el.classList.add("jupyter-widgets widget-hbox widget-colorpicker");
+        this.el.classList.add('jupyter-widgets', 'widget-hbox', 'widget-colorpicker');
 
         this.label = document.createElement('div');
         this.label.classList.add('widget-label');
         this.el.appendChild(this.label);
 
         this.color_container = document.createElement('div');
-        this.color_container.classList.add("widget-hbox input-group");
+        this.color_container.classList.add('widget-hbox', 'input-group');
         this.el.appendChild(this.color_container);
 
         this.textbox = document.createElement('input');
