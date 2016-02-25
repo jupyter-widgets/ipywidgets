@@ -321,7 +321,6 @@ ManagerBase.prototype.new_model = function(options, serialized_state) {
             return Promise.reject(wrapped_error);
         });
     this._models[model_id] = model_promise;
-    // console.log('New model returning promise:', model_promise);
     return model_promise;
 };
 
@@ -422,7 +421,7 @@ ManagerBase.prototype.set_state = function(state) {
 
     // Display all the views
     return all_models.then(function(models) {
-      let mods = state.filter((m) => m.id !== undefined);
+      let mods = models.filter((m) => m.id !== undefined);
         return Promise.all(_.map(mods, function(model) {
             // Display the views of the model.
 

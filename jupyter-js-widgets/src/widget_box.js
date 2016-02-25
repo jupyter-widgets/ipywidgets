@@ -37,7 +37,7 @@ var ProxyView = widget.WidgetView.extend({
     initialize: function() {
         // Public constructor
         ProxyView.__super__.initialize.apply(this, arguments);
-        this.el.classList.add("jupyter-widgets widget-container")
+        this.el.classList.add('jupyter-widgets', 'widget-container')
         this.box = this.el;
         this.child_promise = Promise.resolve();
     },
@@ -134,7 +134,7 @@ var BoxView = widget.DOMWidgetView.extend({
         }, this);
         this.listenTo(this.model, 'change:overflow_x', this.update_overflow_x, this);
         this.listenTo(this.model, 'change:overflow_y', this.update_overflow_y, this);
-        this.listenTo(this.model, "change:box_style", this.update_box_style, this);
+        this.listenTo(this.model, 'change:box_style', this.update_box_style, this);
     },
 
     update_attr: function(name, value) { // TODO: Deprecated in 5.0
@@ -148,7 +148,7 @@ var BoxView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.classList.add("jupyter-widgets widget-container widget-box");
+        this.el.classList.add('jupyter-widgets', 'widget-container', 'widget-box');
         this.box = this.el;
 
         this.children_views.update(this.model.get('children'));
