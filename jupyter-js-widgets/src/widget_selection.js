@@ -27,22 +27,22 @@ var DropdownModel = SelectionModel.extend({
 
 var DropdownView = widget.DOMWidgetView.extend({
     render : function() {
-        this.el.classList.add('jupyter-widgets', 'widget-hbox', 'widget-dropdown');
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-dropdown');
 
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
-        this.label.classList.add('widget-label');
-        this.label.style.visibility = 'hidden';
+        this.label.className = 'widget-label';
+        this.label.style.display = 'none';
 
         this.buttongroup = document.createElement('div');
-        this.buttongroup.classList.add('widget_item');
-        this.buttongroup.classList.add('btn-group');
+        this.buttongroup.className = 'widget_item btn-group';
         this.el.appendChild(this.buttongroup);
 
         this.droplabel = document.createElement('button');
-        this.droplabel.className = 'btn btn-default';
-        this.droplabel.classList.add('widget-combo-btn');
-        this.droplabel.innerHTML = "&nbsp;";
+        this.droplabel.className = 'btn btn-default widget-combo-btn';
+        this.droplabel.innerHTML = '&nbsp;';
         this.buttongroup.appendChild(this.droplabel);
 
         this.dropbutton = document.createElement('button');
@@ -169,13 +169,13 @@ var DropdownView = widget.DOMWidgetView.extend({
             var description = this.model.get('description');
             if (description.length === 0) {
                 // this.$label.hide();
-                this.label.style.visibility = 'hidden';
+                this.label.style.display = 'none';
             } else {
                 // this.typeset(this.$label, description);
                 this.typeset(this.label, description);
 
                 // this.$label.show();
-                this.label.style.visibility = 'visible';
+                this.label.style.display = '';
             }
         }
         return DropdownView.__super__.update.apply(this);
@@ -262,9 +262,9 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
         //     .addClass('widget-label')
         //     .hide();
         this.label = document.createElement('div');
+        this.label.className = 'widget-label';
+        this.label.style.display = 'none';
         this.el.appendChild(this.label);
-        this.label.classList.add('widget-label');
-        this.label.style.visibility = 'hidden';
 
         // this.$container = $('<div />')
         //     .appendTo(this.$el)
@@ -403,24 +403,17 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        // this.$el
-        //     .addClass('jupyter-widgets widget-hbox widget-toggle-buttons');
-        this.el.classList.add('jupyter-widgets', 'widgets-hbox', 'widget-toggle-buttons');
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widgets-hbox');
+        this.el.classList.add('widget-toggle-buttons');
 
-        // this.$label = $('<div />')
-        //     .appendTo(this.$el)
-        //     .addClass('widget-label')
-        //     .hide();
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
-        this.label.classList.add('widget-label');
-        this.label.style.visibility = 'hidden';
+        this.label.className = 'widget-label';
+        this.label.style.display = 'none';
 
-        // this.$buttongroup = $('<div />')
-        //     .addClass('btn-group')
-        //     .appendTo(this.$el);
         this.buttongroup = document.createElement('div');
-        this.buttongroup.classList.add('btn-group');
+        this.buttongroup.className = 'btn-group';
         this.el.appendChild(this.buttongroup);
 
         this.listenTo(this.model, 'change:button_style', this.update_button_style, this);
@@ -527,7 +520,7 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
             var description = this.model.get('description');
             if (description.length === 0) {
                 // this.$label.hide();
-                this.label.style.visibility = 'hidden';
+                this.label.style.display = 'none';
             } else {
                 // this.$label.text();
                 this.label.innerText = '';
@@ -536,7 +529,7 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
                 this.typeset(this.label, description);
 
                 // this.$label.show();
-                this.label.style.visibility = 'visible';
+                this.label.style.display = '';
             }
         }
         return ToggleButtonsView.__super__.update.apply(this);
@@ -616,29 +609,20 @@ var SelectView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        // this.$el
-        //     .addClass('jupyter-widgets widget-hbox widget-select');
-        this.el.classList.add('jupyter-widgets', 'widget-hbox', 'widget-select');
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-select');
 
-        // this.$label = $('<div />')
-        //     .appendTo(this.$el)
-        //     .addClass('widget-label')
-        //     .hide();
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
-        this.el.classList.ad('widget-label');
-        this.el.style.visibility = 'hidden';
+        this.label.className = 'widget-label';
+        this.label.style.display = 'none';
 
-        // this.$listbox = $('<select />')
-        //     .addClass('widget-listbox form-control')
-        //     .attr('size', 6)
-        //     .appendTo(this.$el)
-        //     .on('change', $.proxy(this.handle_change, this));
         this.listbox = document.createElement('select');
-        this.listbox.classList.add('widget-listbox', 'form-control');
-        this.listbox.setAttribute('size', 6);
+        this.listbox.className = 'widget-listbox form-control';
+        this.listbox.setAttribute('size', '6');
         this.el.appendChild(this.listbox);
-        this.el.onchange = () => { this.handle_change.bind(this); };
+        this.el.addEventListener('change', this.handle_change.bind(this));
 
         this.update();
     },
@@ -701,11 +685,11 @@ var SelectView = widget.DOMWidgetView.extend({
             var description = this.model.get('description');
             if (description.length === 0) {
                 // this.$label.hide();
-                this.label.style.visibility = 'hidden';
+                this.label.style.display = 'none';
             } else {
                 this.typeset(this.$label, description);
                 // this.$label.show();
-                this.label.style.visibility = 'visible';
+                this.label.style.display = '';
             }
         }
         return SelectView.__super__.update.apply(this);
@@ -761,16 +745,18 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         // this.$el
         //     .addClass('jupyter-widgets widget-hbox widget-hslider');
 
-        this.el.classList.add('jupyter-widgets', 'widget-hbox', 'widget-hslider');
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-hslider');
 
         // this.$label = $('<div />')
         //     .appendTo(this.$el)
         //     .addClass('widget-label')
         //     .hide();
         this.label = document.createElement('div');
-        this.el.appendChild(this.label);
         this.label.classList.add('widget-label');
-        this.label.style.visibility = 'hidden';
+        this.label.style.display = 'none';
+        this.el.appendChild(this.label);
 
         // this.$slider = $('<div />')
         //     .slider({})
@@ -797,7 +783,7 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         this.readout = document.createElement('div');
         this.el.appendChild(this.readout);
         this.readout.classList.add('widget-readout');
-        this.readout.style.visibility = 'hidden';
+        this.readout.style.display = 'none';
 
         this.listenTo(this.model, 'change:slider_color', function(sender, value) {
             // this.$slider.find('a').css('background', value);
@@ -853,12 +839,12 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         var description = this.model.get('description');
         if (description.length === 0) {
             // this.$label.hide();
-            this.label.style.visibility = 'hidden';
+            this.label.style.display = 'none';
         } else {
             // this.typeset(this.$label, description);
             this.typeset(this.label, description);
             // this.$label.show();
-            this.label.style.visibility = 'visible';
+            this.label.style.display = '';
         }
     },
 
@@ -927,10 +913,10 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
             var readout = this.model.get('readout');
             if (readout) {
                 // this.$readout.show();
-                this.readout.style.visibility = 'visible';
+                this.readout.style.display = '';
             } else {
                 // this.$readout.hide();
-                this.readout.style.visibility = 'hidden';
+                this.readout.style.display = 'none';
             }
         }
         return SelectionSliderView.__super__.update.apply(this);

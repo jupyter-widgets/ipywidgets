@@ -27,7 +27,8 @@ var HTMLView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.classList.add('jupyter-widgets', 'widget-html');
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-html');
         this.update(); // Set defaults.
     },
 
@@ -55,7 +56,8 @@ var LabelView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.classList.add('jupyter-widgets', 'widget-latex');
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-latex');
         this.update(); // Set defaults.
     },
 
@@ -83,12 +85,14 @@ var TextareaView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.classList.add('jupyter-widgets', 'widget-hbox', 'widget-textarea');
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-textarea');
 
         this.label = document.createElement('div');
-        this.el.appendChild(this.label);
         this.label.classList.add('widget-label');
-        this.label.style.visibility = 'hidden';
+        this.label.style.display = 'none';
+        this.el.appendChild(this.label);
 
         this.textbox = document.createElement('textarea');
         this.textbox.setAttribute('rows', 5);
@@ -142,10 +146,10 @@ var TextareaView = widget.DOMWidgetView.extend({
 
             var description = this.model.get('description');
             if (description.length === 0) {
-                this.label.style.visibility = 'hidden';
+                this.label.style.display = 'none';
             } else {
                 this.typeset(this.label, description);
-                this.label.style.visibility = 'visible';
+                this.label.style.display = '';
             }
         }
         return TextareaView.__super__.update.apply(this);
@@ -153,9 +157,9 @@ var TextareaView = widget.DOMWidgetView.extend({
 
     events: {
         // Dictionary of events and their handlers.
-        "keyup textarea" : "handleChanging",
-        "paste textarea" : "handleChanging",
-        "cut textarea"   : "handleChanging"
+        'keyup textarea' : 'handleChanging',
+        'paste textarea' : 'handleChanging',
+        'cut textarea'   : 'handleChanging'
     },
 
     handleChanging: function(e) {
@@ -182,16 +186,17 @@ var TextView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.classList.add('jupyter-widgets', 'widget-hbox', 'widget-text');
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-text');
         this.label = document.createElement('div');
-        this.label.classList.add('widget-label');
+        this.label.className = 'widget-label';
         this.el.appendChild(this.label);
-        this.label.style.visibility = 'hidden';
+        this.label.style.display = 'none';
 
         this.textbox = document.createElement('input');
         this.textbox.setAttribute('type', 'text');
-        this.textbox.classList.add('input');
-        this.textbox.classList.add('form-control');
+        this.textbox.className = 'input form-control';
         this.el.appendChild(this.textbox);
 
         this.update(); // Set defaults.
@@ -226,10 +231,10 @@ var TextView = widget.DOMWidgetView.extend({
 
             var description = this.model.get('description');
             if (description.length === 0) {
-                this.label.style.visibility = 'hidden';
+                this.label.style.display = 'none';
             } else {
                 this.typeset(this.label, description);
-                this.label.style.visibility = 'visible';
+                this.label.style.display = '';
             }
         }
         return TextView.__super__.update.apply(this);
