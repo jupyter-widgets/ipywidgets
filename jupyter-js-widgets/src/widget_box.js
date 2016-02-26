@@ -37,7 +37,8 @@ var ProxyView = widget.WidgetView.extend({
     initialize: function() {
         // Public constructor
         ProxyView.__super__.initialize.apply(this, arguments);
-        this.el.className = 'jupyter-widgets widget-container';
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-container');
         this.box = this.el;
         this.child_promise = Promise.resolve();
     },
@@ -148,7 +149,9 @@ var BoxView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.className = 'jupyter-widgets widget-container widget-box';
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-container');
+        this.el.classList.add('widget-box');
         this.box = this.el;
 
         this.children_views.update(this.model.get('children'));
