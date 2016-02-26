@@ -40,8 +40,11 @@ var AccordionView = widget.DOMWidgetView.extend({
          * Called when view is rendered.
          */
         var guid = 'panel-group' + utils.uuid();
+        // this.$el
+        //     .attr('id', guid)
+        //     .addClass('jupyter-widgets panel-group');
         this.el.id = guid;
-        this.el.classList.add('jupyter-widgets', 'panel-group');
+        this.el.className = 'jupyter-widgets panel-group';
 
         this.listenTo(this.model, 'change:selected_index', function(model, value, options) {
             this.update_selected_index(options);
@@ -136,7 +139,7 @@ var AccordionView = widget.DOMWidgetView.extend({
         //     .addClass('panel panel-default')
         //     .appendTo(this.$el);
         var accordion_group = document.createElement('div');
-        accordion_group.classList.add('panel', 'panel-default');
+        accordion_group.className = 'panel panel-default';
         this.el.appendChild(accordion_group);
 
         // var accordion_heading = $('<div />')
@@ -176,8 +179,8 @@ var AccordionView = widget.DOMWidgetView.extend({
         //     .addClass('panel-collapse collapse')
         //     .appendTo(accordion_group);
         var accordion_body = document.createElement('div');
-        accordion_body.setAttribute('id', uuid);
-        accordion_body.classList.add('panel-collapse', 'collapse');
+        accordion_body.id = uuid;
+        accordion_body.className = 'panel-collapse collapse';
         accordion_group.appendChild(accordion_body);
 
         // var accordion_inner = $('<div />')
