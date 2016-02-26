@@ -67,6 +67,14 @@ ManagerBase.prototype.loadClass = function(class_name, module_name, registry) {
     return utils.loadClass(class_name, module_name, registry);
 };
 
+ManagerBase.prototype.setViewOptions = function(options) {
+    /**
+     * Modifies view options. Generally overloaded in custom widget manager
+     * implementations.
+     */
+    return options || {};
+}
+
 ManagerBase.prototype.create_view = function(model, options) {
     /**
      * Creates a promise for a view of a given model
@@ -79,18 +87,14 @@ ManagerBase.prototype.create_view = function(model, options) {
 
         return that.loadClass(model.get('_view_name'), model.get('_view_module'),
         ManagerBase._view_types).then(function(ViewType) {
-
-            // If a view is passed into the method, use that view's cell as
-            // the cell for the view that is created.
-            options = options || {};
-            if (options.parent !== undefined) {
-                options.cell = options.parent.options.cell;
-            }
-            // Create and render the view...
-            var parameters = {model: model, options: options};
-            var view = new ViewType(parameters);
+            var view = new ViewType({
+                model: model,
+                options: that.setViewOptions(options)
+            });
             view.listenTo(model, 'destroy', view.remove);
-            return Promise.resolve(view.render()).then(function() { return view; });
+            return Promise.resolve(view.render()).then(function() {
+                return view;
+            });
         }).catch(utils.reject("Couldn't create a view for model id '" + String(model.id) + "'", true));
     });
     var id = utils.uuid();
