@@ -40,12 +40,14 @@ var IntSliderView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.className = 'jupyter-widgets widget-hbox widget-hslider';
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-hslider');
 
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
         this.label.classList.add('widget-label');
-        this.label.style.visibility = 'hidden';
+        this.label.style.display = 'none';
 
         this.$slider = $('<div />')
             .slider({
@@ -132,13 +134,13 @@ var IntSliderView = widget.DOMWidgetView.extend({
         var description = this.model.get('description');
         if (description.length === 0) {
             // this.$label.hide();
-            this.label.style.visibility = 'hidden';
+            this.label.style.display = 'none';
         } else {
             // this.typeset(this.$label, description);
             this.typeset(this.label, description);
 
             // this.$label.show();
-            this.label.style.visibility = 'visible';
+            this.label.style.display = '';
         }
     },
 
@@ -244,10 +246,10 @@ var IntSliderView = widget.DOMWidgetView.extend({
             var readout = this.model.get('readout');
             if (readout) {
                 // this.$readout.show();
-                this.readout.style.visibility = 'visible';
+                this.readout.style.display = '';
             } else {
                 // this.$readout.hide();
-                this.readout.style.visibility = 'hidden';
+                this.readout.style.display = 'none';
             }
         }
         return IntSliderView.__super__.update.apply(this);
@@ -429,17 +431,18 @@ var IntTextView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.className = 'jupyter-widgets widget-hbox widget-numeric-text';
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-numeric-text');
 
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
-        this.label.classList.add('widget-label');
-        this.label.style.visibility = 'hidden';
+        this.label.className = 'widget-label';
+        this.label.style.display = 'none';
 
         this.textbox = document.createElement('input');
         this.textbox.setAttribute('type', 'text');
-        this.textbox.classList.add('form-control');
-        this.textbox.classList.add('widget-numeric-text');
+        this.textbox.className = 'form-control widget-numeric-text';
         this.el.appendChild(this.textbox);
 
         this.listenTo(this.model, 'change:description', function(sender, value) {
@@ -454,11 +457,11 @@ var IntTextView = widget.DOMWidgetView.extend({
         var description = this.model.get('description');
         if (description.length === 0) {
             // this.$label.hide();
-            this.label.style.visibility = 'hidden';
+            this.label.style.display = 'none';
         } else {
             this.typeset(this.$label, description);
             // this.$label.show();
-            this.label.style.visibility = 'visible';
+            this.label.style.display = '';
         }
     },
 
@@ -586,7 +589,7 @@ var ProgressView = widget.DOMWidgetView.extend({
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
         this.label.classList.add('widget-label');
-        this.label.style.visibility = 'hidden';
+        this.label.style.display = 'none';
 
         // this.$progress = $('<div />')
         //     .addClass('progress')
@@ -627,11 +630,11 @@ var ProgressView = widget.DOMWidgetView.extend({
         var description = this.model.get('description');
         if (description.length === 0) {
             // this.$label.hide();
-            this.label.style.visibility = 'hidden';
+            this.label.style.display = 'none';
         } else {
             this.typeset(this.$label, description);
             // this.$label.show();
-            this.label.style.visibility = 'visible';
+            this.label.style.display = '';
         }
     },
 

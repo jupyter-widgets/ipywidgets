@@ -40,8 +40,9 @@ var AccordionView = widget.DOMWidgetView.extend({
          * Called when view is rendered.
          */
         var guid = 'panel-group' + utils.uuid();
-        this.el.setAttribute('id', guid);
-        this.el.className = 'jupyter-widgets panel-group';
+        this.el.id = guid;
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('panel-group');
 
         this.listenTo(this.model, 'change:selected_index', function(model, value, options) {
             this.update_selected_index(options);

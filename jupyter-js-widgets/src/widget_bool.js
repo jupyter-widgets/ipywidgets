@@ -26,17 +26,19 @@ var CheckboxView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.className = 'jupyter-widgets widget-hbox widget-checkbox';
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-checkbox');
 
         this.checkbox = document.createElement('input');
         this.checkbox.setAttribute('type', 'checkbox');
+        this.checkbox.addEventListener('click', this.handle_click.bind(this));
         this.el.appendChild(this.checkbox);
-        this.checkbox.onclick = () => { this.handle_click; };
 
         this.label = document.createElement('div');
         this.label.classList.add('widget-label');
+        this.label.style.display = 'none';
         this.el.appendChild(this.label);
-        this.label.style.visibility = 'hidden';
 
         this.update(); // Set defaults.
     },
@@ -78,10 +80,10 @@ var CheckboxView = widget.DOMWidgetView.extend({
 
             var description = this.model.get('description');
             if (description.trim().length === 0) {
-                this.label.style.visibility = 'hidden';
+                this.label.style.display = 'none';
             } else {
                 this.typeset(this.label, description);
-                this.label.style.visibility = 'visible';
+                this.label.style.display = '';
             }
         }
         return CheckboxView.__super__.update.apply(this);
@@ -190,7 +192,8 @@ var ValidView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.className = 'jupyter-widgets widget-valid';
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-valid');
         this.listenTo(this.model, 'change', this.update, this);
         this.update();
     },

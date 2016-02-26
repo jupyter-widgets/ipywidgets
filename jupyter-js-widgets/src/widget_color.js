@@ -17,7 +17,9 @@ var ColorPickerModel = widget.DOMWidgetModel.extend({
 
 var ColorPickerView = widget.DOMWidgetView.extend({
     render: function() {
-        this.el.className = 'jupyter-widgets widget-hbox widget-colorpicker';
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-colorpicker');
 
         this.label = document.createElement('div');
         this.label.classList.add('widget-label');
@@ -57,12 +59,12 @@ var ColorPickerView = widget.DOMWidgetView.extend({
     _update_description: function() {
         var description = this.model.get('description');
         if (description.length === 0) {
-            this.label.style.visibility = 'hidden';
-            this.color_container.style.justifyContent = 'auto';
+            this.label.style.display = 'none';
+            this.color_container.style['justify-content'] = 'auto';
         } else {
             this.typeset(this.label, description);
-            this.color_container.style.justifyContent = 'flex-end';
-            this.label.style.visibility = 'visible';
+            this.color_container.style['justify-content'] = 'flex-end';
+            this.label.style.display = '';
         }
     },
     _update_concise: function() {
@@ -70,11 +72,11 @@ var ColorPickerView = widget.DOMWidgetView.extend({
         if (concise) {
             this.el.classList.add('concise');
             this.colorpicker.classList.remove('input-group-addon');
-            this.textbox.style.visibility = 'hidden';
+            this.textbox.style.display = 'none';
         } else {
             this.el.classList.remove('concise');
             this.colorpicker.classList.add('input-group-addon');
-            this.textbox.style.visibility = 'visible';
+            this.textbox.style.display = '';
         }
     },
     _picker_change: function() {
