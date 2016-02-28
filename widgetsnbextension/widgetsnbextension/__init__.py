@@ -16,6 +16,7 @@ accessible as a `value` attribute.
 """
 
 import os
+from ._version import __version__
 
 def find_static_assets():
     """Return the path to static assets for widgets (js, css)"""
