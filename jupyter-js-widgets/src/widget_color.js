@@ -26,18 +26,16 @@ var ColorPickerView = widget.DOMWidgetView.extend({
         this.el.appendChild(this.label);
 
         this.color_container = document.createElement('div');
-        this.color_container.className = 'widget-hbox input-group';
+        this.color_container.className = 'widget-hbox';
         this.el.appendChild(this.color_container);
 
         this.textbox = document.createElement('input');
         this.textbox.setAttribute('type', 'text');
-        this.textbox.classList.add('form-control');
         this.color_container.appendChild(this.textbox);
         this.textbox.value = this.model.get('value');
 
         this.colorpicker = document.createElement('input');
         this.colorpicker.setAttribute('type', 'color');
-        this.colorpicker.classList.add('input-group-addon');
         this.color_container.appendChild(this.colorpicker);
 
         this.listenTo(this.model, 'change:value', this._update_value, this);
@@ -71,11 +69,9 @@ var ColorPickerView = widget.DOMWidgetView.extend({
         var concise = this.model.get('concise');
         if (concise) {
             this.el.classList.add('concise');
-            this.colorpicker.classList.remove('input-group-addon');
             this.textbox.style.display = 'none';
         } else {
             this.el.classList.remove('concise');
-            this.colorpicker.classList.add('input-group-addon');
             this.textbox.style.display = '';
         }
     },
