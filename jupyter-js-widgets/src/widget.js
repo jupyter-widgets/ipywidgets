@@ -171,7 +171,7 @@ var WidgetModel = Backbone.Model.extend({
                         for (var i=0; i<buffer_keys.length; i++) {
                             state[buffer_keys[i]] = buffers[i];
                         }
-                        return that.constructor._deserialize_state(state, that.manager);
+                        return that.constructor._deserialize_state(state, that.widget_manager);
                     }).then(function(state) {
                         that.set_state(state);
                     }).catch(utils.reject("Couldn't process update msg for model id '" + String(that.id) + "'", true))
@@ -686,10 +686,18 @@ var DOMWidgetViewMixin = {
             el = this.el;
         }
         _.difference(old_classes, new_classes).map(function(c) {
-            el.classList.remove(c);
+            if (el.classList) { // classList is not supported by IE for svg elements
+                el.classList.remove(c);
+            } else {
+                el.setAttribute("class", el.getAttribute("class").replace(c, ""));
+            }
         });
         _.difference(new_classes, old_classes).map(function(c) {
-            el.classList.add(c);
+            if (el.classList) { // classList is not supported by IE for svg elements
+                el.classList.add(c);
+            } else {
+                el.setAttribute("class", el.getAttribute("class").concat(" ", c));
+            }
         });
     },
 

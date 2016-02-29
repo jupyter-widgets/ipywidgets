@@ -10,6 +10,15 @@ for Jupyter notebooks and the IPython kernel.
 
 A [demonstration notebook](https://github.com/ipython/ipywidgets/blob/master/examples/Index.ipynb) provides an overview of the interactive widgets. For detailed information, please refer to the [ipywidgets documentation](http://ipywidgets.readthedocs.org/en/latest/).
 
+**Compatibility**  
+
+| ipywidgets version  | Jupyter/notebook version |
+| ------------------- | ------------------------ |
+| master              | master                   |
+| 4.1.x               | 4.1                      |
+| 4.0.x               | 4.0                      |
+
+
 ## Install
 
 Install the current version of ipywidgets using pip or conda:
@@ -28,9 +37,15 @@ If you're interested in only installing the JavaScript, you may do so by running
 
 ### Development install
 
-To install ipywidgets from git, you will need [npm](https://www.npmjs.com/).  If
-you install using sudo, you need to make sure that npm is also available in the
-PATH used with sudo.
+To install ipywidgets from git, you will need [npm](https://www.npmjs.com/) and
+the latest [development copy of the Jupyter
+notebook](https://github.com/jupyter/notebook) because everything in the
+ipywidgets repository is developed using Jupyter notebook master. If you want
+to have a copy of ipywidgets that works against a stable version of the
+notebook, checkout the appropriate tag (see the Compatibility table above).
+
+If you install using sudo, you need to make sure that npm is also
+available in the PATH used with sudo.
 
 0. clone the repo:
 
@@ -41,16 +56,33 @@ PATH used with sudo.
 
         pip install -v -e .
 
-2. Install the Jupyter Widgets nbextension
+2. Build the Jupyter Widgets package
+
+        cd jupyter-js-widgets
+        npm install
+        cd ..
+
+3. Install the Jupyter Widgets nbextension
 
         cd widgetsnbextension
+        npm install
+        npm run update:widgets
         pip install -v -e .
+        cd ..
 
-3. When you've made changes to `jupyter-js-widgets` and you'd like to test those
+After you've made changes to `jupyter-js-widgets` and you'd like to test those
 changes, run the following, empty your browsers cache, and refresh the page.
 
         cd widgetsnbextension
         npm run update:widgets
+        cd ..
+
+TIPS: If you have any problems with the above install procedure, make sure that
+permissions on npm and pip related install directories are correct.  Sometimes
+it helps to clear cached files too by running `git clean -dfx`.  Also, when
+you make changes to the Javascript, if you're not seeing the changes it could
+be your browser caching aggressively.  Try using "incognito" or "private"
+browsing tabs to avoid caching.
 
 
 ## Test

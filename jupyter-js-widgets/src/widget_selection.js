@@ -79,14 +79,16 @@ var DropdownView = widget.DOMWidgetView.extend({
         e.stopImmediatePropagation();
         e.preventDefault();
 
-        // Get the bottom of the dropdown label, and the bottom of the nb site.
+        // Get the bottom of the dropdown label, and the bottom of the nb body.
         // The difference is the maximum height of the dropmenu when displayed
         // below the button.
-
         var droplabelRect = this.droplabel.getBoundingClientRect();
-
-        var siteRect = document.querySelector('#site').getBoundingClientRect();
-        var maxHeight = siteRect.bottom - droplabelRect.bottom;
+        var parent = this.droplabel.parentNode;
+        while (parent.parentNode) {
+          parent = parent.parentNode;
+        }
+        var bodyRect = parent.body.getBoundingClientRect();
+        var maxHeight = bodyRect.bottom - droplabelRect.bottom;
 
         // If the maximum height of the dropdown's space is less than the
         // height of the dropdown itself, make it drop up!
@@ -740,17 +742,10 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        // this.$el
-        //     .addClass('jupyter-widgets widget-hbox widget-hslider');
-
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-hslider');
 
-        // this.$label = $('<div />')
-        //     .appendTo(this.$el)
-        //     .addClass('widget-label')
-        //     .hide();
         this.label = document.createElement('div');
         this.label.classList.add('widget-label');
         this.label.style.display = 'none';
@@ -762,7 +757,6 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         this.slider = document.createElement('input');
         this.slider.setAttribute('type', 'range');
         this.slider.classList.add('slider'); // TODO - is this necessary.
-
 
         // Put the slider in a container
         // this.$slider_container = $('<div />')

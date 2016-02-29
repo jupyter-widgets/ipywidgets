@@ -21,44 +21,12 @@ var CommManager = function(jsServicesKernel) {
 };
 
 /**
- * Handles when a comm, without a target module, connects.
- * @param  {object} content - msg content
- * @return {Comm}
- */
-CommManager.prototype._handle_comm_connect = function(kernel, msg) {
-    var targetName = msg.content.target_name;
-
-    // Get the target from the registry.
-    var target = this.targets[targetName];
-    if (target === undefined) {
-        console.error('Comm target "'  + targetName + '" not registered');
-        return;
-    }
-
-    // Create the comm.
-    var comm = new Comm(this.jsServicesKernel.connectToComm(targetName, msg.content.comm_id));
-
-    // Call the callback for the comm.
-    try {
-        var response = target(comm, msg);
-    } catch (e) {
-        comm.close();
-        var wrapped_error = new utils.WrappedError("Exception opening new comm", e);
-        console.error(wrapped_error);
-        return;
-    }
-
-    return comm;
-};
-
-/**
  * Hookup kernel events.
  * @param  {IKernel} jsServicesKernel - jupyter-js-services IKernel instance
  */
 CommManager.prototype.init_kernel = function(jsServicesKernel) {
     this.kernel = jsServicesKernel; // These aren't really the same.
     this.jsServicesKernel = jsServicesKernel;
-    this.jsServicesKernel.commOpened.connect(_.bind(this._handle_comm_connect, this));
 };
 
 /**
@@ -83,7 +51,21 @@ CommManager.prototype.new_comm = function(target_name, data, callbacks, metadata
  *                         comm is made.  Signature of f(comm, msg).
  */
 CommManager.prototype.register_target = function (target_name, f) {
-    this.targets[target_name] = f;
+    var handle = this.jsServicesKernel.registerCommTarget(target_name, function(jsServicesComm, msg) {
+        // Create the comm.
+        var comm = new Comm(jsServicesComm);
+
+        // Call the callback for the comm.
+        try {
+            var response = f(comm, msg);
+        } catch (e) {
+            comm.close();
+            var wrapped_error = new utils.WrappedError("Exception opening new comm", e);
+            console.error(wrapped_error);
+            return;
+        }
+    });
+    this.targets[target_name] = handle;
 };
 
 /**
@@ -91,6 +73,8 @@ CommManager.prototype.register_target = function (target_name, f) {
  * @param  {string} target_name
  */
 CommManager.prototype.unregister_target = function (target_name, f) {
+    var handle = this.targets[target_name];
+    handle.dispose();
     delete this.targets[target_name];
 };
 

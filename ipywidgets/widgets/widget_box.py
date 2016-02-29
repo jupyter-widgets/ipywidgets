@@ -48,7 +48,7 @@ class Box(DOMWidget):
 
 
 @register('Jupyter.Proxy')
-class Proxy(Widget):
+class Proxy(DOMWidget):
     """A DOMWidget that holds another DOMWidget or nothing."""
     _model_name = Unicode('ProxyModel').tag(sync=True)
     _view_name = Unicode('ProxyView').tag(sync=True)

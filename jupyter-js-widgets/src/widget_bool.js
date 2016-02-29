@@ -109,13 +109,13 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
 
         var btn = document.createElement('button');
         btn.className = 'jupyter-widgets widget-toggle-button btn btn-default';
-        btn.setAttribute('type', 'button');
+        btn.type = 'button';
         btn.onclick = function (e) {
             e.preventDefault();
             that.handle_click();
         }
         this.setElement(btn);
-        this.el.setAttribute('data-toggle', 'tooltip');
+        this.el['data-toggle'] = 'tooltip';
         this.listenTo(this.model, 'change:button_style', this.update_button_style, this);
         this.update_button_style();
 

@@ -40,9 +40,6 @@ var AccordionView = widget.DOMWidgetView.extend({
          * Called when view is rendered.
          */
         var guid = 'panel-group' + utils.uuid();
-        // this.$el
-        //     .attr('id', guid)
-        //     .addClass('jupyter-widgets panel-group');
         this.el.id = guid;
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('panel-group');
@@ -136,34 +133,15 @@ var AccordionView = widget.DOMWidgetView.extend({
          */
         var index = this.containers.length;
         var uuid = utils.uuid();
-        // var accordion_group = $('<div />')
-        //     .addClass('panel panel-default')
-        //     .appendTo(this.$el);
         var accordion_group = document.createElement('div');
         accordion_group.className = 'panel panel-default';
         this.el.appendChild(accordion_group);
 
-        // var accordion_heading = $('<div />')
-        //     .addClass('panel-heading')
-        //     .appendTo(accordion_group);
         var accordion_heading = document.createElement('div');
         accordion_heading.classList.add('panel-heading');
         accordion_group.appendChild(accordion_heading);
 
         var that = this;
-        // var accordion_toggle = $('<a />')
-        //     .addClass('accordion-toggle')
-        //     .attr('data-toggle', 'collapse')
-        //     .attr('data-parent', '#' + this.$el.attr('id'))
-        //     .attr('href', '#' + uuid)
-        //     .click(function(evt) {
-        //         // Calling model.set will trigger all of the other views of
-        //         // the model to update.
-        //         that.model.set("selected_index", index, {updated_view: that});
-        //         that.touch();
-        //      })
-        //     .text('Page ' + index)
-        //     .appendTo(accordion_heading);
         var accordion_toggle = document.createElement('a');
         accordion_toggle.classList.add('accordion-toggle');
         accordion_toggle.setAttribute('data-toggle', 'collapse');
@@ -176,17 +154,11 @@ var AccordionView = widget.DOMWidgetView.extend({
         accordion_toggle.innerText('Page ' + index);
         accordion_heading.appendChild(accordion_toggle);
 
-        // var accordion_body = $('<div />', {id: uuid})
-        //     .addClass('panel-collapse collapse')
-        //     .appendTo(accordion_group);
         var accordion_body = document.createElement('div');
         accordion_body.id = uuid;
         accordion_body.className = 'panel-collapse collapse';
         accordion_group.appendChild(accordion_body);
 
-        // var accordion_inner = $('<div />')
-        //     .addClass('panel-body')
-        //     .appendTo(accordion_body);
         var accordion_inner = document.createElement('div');
         accordion_inner.classList.add('panel-body');
         accordion_body.appendChild(accordion_inner);
@@ -195,12 +167,10 @@ var AccordionView = widget.DOMWidgetView.extend({
         accordion_group.container_index = container_index;
         this.model_containers[model.id] = accordion_group;
 
-        // var dummy = $('<div/>');
         var dummy = document.createElement('div');
         accordion_inner.appendChild(dummy);
         return this.create_child_view(model).then(function(view) {
 
-            // dummy.replaceWith(view.$el);
             dummy.parentNode.replaceChild(dummy, view.el);
 
             that.update_selected_index();

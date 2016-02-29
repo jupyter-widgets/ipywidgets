@@ -47,6 +47,7 @@
     "npm-run-all": "^1.5.1",
     "rimraf": "^2.4.1",
     "sinon": "^1.17.2",
+    "sinon-chai": "^2.8.0",
     "spawn-sync": "^1.0.14",
     "webpack": "^1.12.11"
   },
