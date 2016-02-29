@@ -133,7 +133,6 @@ var AccordionView = widget.DOMWidgetView.extend({
          */
         var index = this.containers.length;
         var uuid = utils.uuid();
-
         var accordion_group = document.createElement('div');
         accordion_group.className = 'panel panel-default';
         this.el.appendChild(accordion_group);
@@ -171,6 +170,7 @@ var AccordionView = widget.DOMWidgetView.extend({
         var dummy = document.createElement('div');
         accordion_inner.appendChild(dummy);
         return this.create_child_view(model).then(function(view) {
+
             dummy.parentNode.replaceChild(dummy, view.el);
 
             that.update_selected_index();

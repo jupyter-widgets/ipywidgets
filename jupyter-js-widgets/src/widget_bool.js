@@ -115,7 +115,6 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
             that.handle_click();
         }
         this.setElement(btn);
-
         this.el['data-toggle'] = 'tooltip';
         this.listenTo(this.model, 'change:button_style', this.update_button_style, this);
         this.update_button_style();
