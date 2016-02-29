@@ -618,7 +618,7 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
             .addClass('widget-readout')
             .hide();
 
-        this.listenTo(this.model, 'change:slider_handleTextChangecolor', function(sender, value) {
+        this.listenTo(this.model, 'change:slider_color', function(sender, value) {
             this.$slider.find('a').css('background', value);
         }, this);
         this.listenTo(this.model, 'change:description', function(sender, value) {
