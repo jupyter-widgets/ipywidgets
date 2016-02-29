@@ -22,9 +22,8 @@ var ImageView = widget.DOMWidgetView.extend({
          * Called when view is rendered.
          */
         var img = document.createElement('img');
-        img.classList.add('jupyter-widgets', 'widget-image');
-        this.el.textContent = '';
-        this.el.appendChild(img);
+        img.className = 'jupyter-widgets widget-image';
+        this.setElement(img);
 
         this.update(); // Set defaults.
     },
@@ -37,21 +36,20 @@ var ImageView = widget.DOMWidgetView.extend({
          * changed by another view or by a state update from the back-end.
          */
         var image_src = 'data:image/' + this.model.get('format') + ';base64,' + this.model.get('_b64value');
-        var img = this.el.querySelector('img');
-        img.setAttribute('src', image_src);
+        this.el.setAttribute('src', image_src);
 
         var width = this.model.get('width');
         if (width !== undefined && width.length > 0) {
-            img.setAttribute('width', width);
+            this.el.setAttribute('width', width);
         } else {
-            img.removeAttribute('width');
+            this.el.removeAttribute('width');
         }
 
         var height = this.model.get('height');
         if (height !== undefined && height.length > 0) {
-            img.setAttribute('height', height);
+            this.el.setAttribute('height', height);
         } else {
-            img.removeAttribute('height');
+            this.el.removeAttribute('height');
         }
         return ImageView.__super__.update.apply(this);
     },
