@@ -1,16 +1,15 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var utils = require("./utils");
-var box = require("./widget_box");
-// var $ = require("./jquery");
-var _ = require("underscore");
+var widget = require('./widget');
+var utils = require('./utils');
+var box = require('./widget_box');
+var _ = require('underscore');
 
 var SelectionContainerModel = box.BoxModel.extend({
     defaults: _.extend({}, box.BoxModel.prototype.defaults, {
-        _model_name: "SelectionContainerModel",
+        _model_name: 'SelectionContainerModel',
         selected_index: 0,
         _titles: {},
     }),
@@ -18,8 +17,8 @@ var SelectionContainerModel = box.BoxModel.extend({
 
 var AccordionModel = SelectionContainerModel.extend({
     defaults: _.extend({}, SelectionContainerModel.prototype.defaults, {
-        _model_name: "AccordionModel",
-        _view_name: "AccordionView"
+        _model_name: 'AccordionModel',
+        _view_name: 'AccordionView'
     }),
 });
 
@@ -93,7 +92,6 @@ var AccordionView = widget.DOMWidgetView.extend({
      * @param  {number} index
      */
     collapseTab: function(index) {
-        // .children('.panel-collapse')
         var page = this.containers[index].children('.collapse');
 
         if (page.hasClass('in')) {
@@ -197,8 +195,8 @@ var AccordionView = widget.DOMWidgetView.extend({
 
 var TabModel = SelectionContainerModel.extend({
     defaults: _.extend({}, SelectionContainerModel.prototype.defaults, {
-        _model_name: "TabModel",
-        _view_name: "TabView"
+        _model_name: 'TabModel',
+        _view_name: 'TabView'
     }),
 });
 
@@ -220,19 +218,13 @@ var TabView = widget.DOMWidgetView.extend({
          * Called when view is rendered.
          */
         var uuid = 'tabs'+utils.uuid();
-        // this.$tabs = $('<div />', {id: uuid})
-        //     .addClass('nav')
-        //     .addClass('nav-tabs')
-        //     .appendTo(this.$el);
+
         this.tabs = document.createElement('div');
         this.tabs.id = uuid;
         this.tabs.classList.add('nav');
         this.tabs.classList.add('nav-tabs');
         this.el.appendChild(this.tabs);
 
-        // this.$tab_contents = $('<div />', {id: uuid + 'Content'})
-        //     .addClass('tab-content')
-        //     .appendTo(this.$el);
         this.tab_contents = document.createElement('div');
         this.tab_contents.setAttribute('id', uuid + 'Content');
         this.el.appendChild(this.tab_contents);
@@ -245,10 +237,8 @@ var TabView = widget.DOMWidgetView.extend({
          * Set a css attr of the widget view.
          */
         if (['padding', 'margin', 'height', 'width'].indexOf(name) !== -1) {
-            // this.$el.css(name, value);
             this.el.style[name] = value;
         } else {
-            // this.$tabs.css(name, value);
             this.tabs.style[name] = value;
         }
     },
@@ -309,7 +299,7 @@ var TabView = widget.DOMWidgetView.extend({
                 that.update();
             });
             return view;
-        }).catch(utils.reject("Couldn't add child view to box", true));
+        }).catch(utils.reject('Could not add child view to box', true));
     },
 
     update: function(options) {
@@ -354,8 +344,6 @@ var TabView = widget.DOMWidgetView.extend({
         /**
          * Select a page.
          */
-        // this.$tabs.find('li')
-        //     .removeClass('active');
         var tab_li = this.tabs.getElementsByClassName('li');
         if (tab_li.length) {
           tab_li[0].classList.remove('active');
