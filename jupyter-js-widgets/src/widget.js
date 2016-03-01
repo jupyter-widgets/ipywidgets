@@ -56,7 +56,6 @@ var WidgetModel = Backbone.Model.extend({
          *      An ID unique to this model.
          * comm : Comm instance (optional)
          */
-        debugger;
         this.widget_manager = widget_manager;
         this.state_change = Promise.resolve();
         this._buffered_state_diff = {};
@@ -159,7 +158,6 @@ var WidgetModel = Backbone.Model.extend({
         /**
          * Handle incoming comm msg.
          */
-        // debugger;
         var method = msg.content.data.method;
         if (this.id === undefined) { this.id = msg.content.comm_id; }
         var that = this;
