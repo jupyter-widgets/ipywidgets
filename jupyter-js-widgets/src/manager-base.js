@@ -86,7 +86,6 @@ ManagerBase.prototype.create_view = function(model, options) {
      * Make sure the view creation is not out of order with
      * any state updates.
      */
-    if (model.id === undefined) { debugger; }
     var that = this;
     model.state_change = model.state_change.then(function() {
 
@@ -145,8 +144,6 @@ ManagerBase.prototype.handle_comm_open = function (comm, msg) {
  * @return {Promise<WidgetModel>}
  */
 ManagerBase.prototype.new_widget = function(options, serialized_state) {
-
-    debugger;
     var commPromise;
     // If no comm is provided, a new comm is opened for the jupyter.widget
     // target.
@@ -276,7 +273,6 @@ ManagerBase.prototype.new_model = function(options, serialized_state) {
      *
      * Either a comm or a model_id must be provided.
      */
-    debugger;
     var that = this;
     var model_id;
     if (options.model_id) {
@@ -385,14 +381,11 @@ ManagerBase.prototype.set_state = function(state) {
         return Promise.all(_.map(Object.keys(state), function (model_id) {
 
             // If the model has already been created, return it.
-            console.log('all models (model id): ', model_id)
             if (that._models[model_id]) {
                 return that._models[model_id];
             }
 
             if (live_comms.hasOwnProperty(model_id)) {  // live comm
-                console.log('live comm: ', model_id);
-                console.log(new_comm);
                 return that._create_comm(that.comm_target_name, model_id).then(function(new_comm) {
                     return that.new_model({
                         comm: new_comm,
@@ -401,7 +394,6 @@ ManagerBase.prototype.set_state = function(state) {
                     });
                 });
             } else { // dead comm
-                console.log('dead comm: ', model_id);
                 return that.new_model({
                     model_id: model_id,
                     model_name: state[model_id].model_name,
@@ -416,7 +408,6 @@ ManagerBase.prototype.set_state = function(state) {
       // let mods = models.filter((m) => m.id !== undefined);
         return Promise.all(_.map(models, function(model) {
             // Display the views of the model.
-            if (model.id === undefined) { debugger; }
             return Promise.all(_.map(state[model.id].views, function(options) {
                 return that.display_model(undefined, model, options);
             }));

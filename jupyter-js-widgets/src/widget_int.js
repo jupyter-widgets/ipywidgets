@@ -119,7 +119,6 @@ var IntSliderView = widget.DOMWidgetView.extend({
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        debugger;
         if (options === undefined || options.updated_view != this) {
             // JQuery slider option keys.  These keys happen to have a
             // one-to-one mapping with the corresponding keys of the model.
