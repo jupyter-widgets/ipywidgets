@@ -100,7 +100,7 @@ This will run the test suite using `karma` with 'debug' level logging.
 ## Resources
 ### ipywidgets
 - [Demo notebook of interactive widgets](https://github.com/ipython/ipywidgets/blob/master/examples/Index.ipynb)
-- [Documentation for ipywidgets](http://ipywidgets.readthedocs.org/en/latest/) [[PDF](https://media.readthedocs.org/pdf/ipywidgets/latest/ipywidgets.pdf)]
+- [Documentation for ipywidgets](http://ipywidgets.readthedocs.org/en/latest/) [[PDF](https://media.readthedocs.org/pdf/ipywidgets/latest/ipywidgets.pdf)
 - [Issues](https://github.com/ipython/ipywidgets/issues)
 - [Technical support - Jupyter Google Group](https://groups.google.com/forum/#!forum/jupyter)
 

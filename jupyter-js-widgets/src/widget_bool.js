@@ -156,7 +156,7 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
             if (description.trim().length === 0 && icon.trim().length ===0) {
                 this.el.innerHTML = '&nbsp;'; // Preserve button height
             } else {
-                this.el.innerText = description;
+                this.el.textContent = description;
 
                 var i = document.createElement('i');
                 this.el.insertBefore(i, this.el.firstChild);
@@ -215,7 +215,7 @@ var ValidView = widget.DOMWidgetView.extend({
             color = 'red';
             readout = this.model.get('readout');
         }
-        this.el.innerText = readout;
+        this.el.textContent = readout;
 
         var i = document.createElement('i');
         i.classList.add('fa');

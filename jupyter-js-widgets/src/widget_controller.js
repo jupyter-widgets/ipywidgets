@@ -40,7 +40,7 @@ var ControllerButtonView = widget.DOMWidgetView.extend({
 
         this.update();
         this.label = document.createElement('div');
-        this.label.innerText = this.model.get('description');
+        this.label.textContent = this.model.get('description');
         this.label.style.textAlign = 'center';
         this.el.appendChild(this.label);
     },
@@ -84,7 +84,7 @@ var ControllerAxisView = widget.DOMWidgetView.extend({
         this.el.appendChild(this.support);
 
         this.label = document.createElement('div');
-        this.label.innerText = this.model.get('description');
+        this.label.textContent = this.model.get('description');
         this.label.style.textAlign = 'center';
         this.el.appendChild(this.label);
 
@@ -300,7 +300,7 @@ var ControllerView = widget.DOMWidgetView.extend({
     },
 
     update_label: function() {
-        this.label.innerText = this.model.get('name') || this.model.readout;
+        this.label.textContent = this.model.get('name') || this.model.readout;
     },
 
     add_button: function(model) {

@@ -79,7 +79,6 @@ CommManager.prototype.unregister_target = function (target_name, f) {
 };
 
 
-
 /**
  * Public constructor
  * @param  {IComm} jsServicesComm - jupyter-js-services IComm instance

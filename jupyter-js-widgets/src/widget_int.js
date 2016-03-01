@@ -151,6 +151,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
+        debugger;
         if (options === undefined || options.updated_view != this) {
             // JQuery slider option keys.  These keys happen to have a
             // one-to-one mapping with the corresponding keys of the model.
@@ -200,7 +201,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
                 // _Bounded{Int,Float}RangeWidget._validate
                 this.$slider.slider('option', 'values', value);
                 // this.$readout.text(this.valueToString(value));
-                this.readout.innerText = this.valueToString(value);
+                this.readout.textContent = this.valueToString(value);
             } else {
                 if(value > max) {
                     value = max;
@@ -210,7 +211,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
                 }
                 this.$slider.slider('option', 'value', value);
                 // this.$readout.text(this.valueToString(value));
-                this.readout.innerText = this.valueToString(value);
+                this.readout.textContent = this.valueToString(value);
             }
 
             if(this.model.get('value')!=value) {
@@ -326,7 +327,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
                 isNaN(value[1]) ||
                 (value[0] > value[1])) {
                 // this.$readout.text(this.valueToString(this.model.get('value')));
-                this.readout.innerText = this.valueToString(this.model.get('value'));
+                this.readout.textContent = this.valueToString(this.model.get('value'));
             } else {
                 // clamp to range
                 value = [Math.max(Math.min(value[0], vmax), vmin),
@@ -335,12 +336,12 @@ var IntSliderView = widget.DOMWidgetView.extend({
                 if ((value[0] != this.model.get('value')[0]) ||
                     (value[1] != this.model.get('value')[1])) {
                     // this.$readout.text(this.valueToString(value));
-                    this.readout.innerText = this.valueToString(value);
+                    this.readout.textContent = this.valueToString(value);
                     this.model.set('value', value, {updated_view: this});
                     this.touch();
                 } else {
                     // this.$readout.text(this.valueToString(this.model.get('value')));
-                    this.readout.innerText = this.valueToString(this.mode.get('value'));
+                    this.readout.textContent = this.valueToString(this.mode.get('value'));
                 }
             }
         } else {
@@ -348,18 +349,18 @@ var IntSliderView = widget.DOMWidgetView.extend({
             // single value case
             if (isNaN(value)) {
                 // this.$readout.text(this.valueToString(this.model.get('value')));
-                this.readout.innerText = this.valueToString(this.mode.get('value'));
+                this.readout.textContent = this.valueToString(this.mode.get('value'));
             } else {
                 value = Math.max(Math.min(value, vmax), vmin);
 
                 if (value != this.model.get('value')) {
                     // this.$readout.text(this.valueToString(value));
-                    this.readout.innerText = this.valueToString(value);
+                    this.readout.textContent = this.valueToString(value);
                     this.model.set('value', value, {updated_view: this});
                     this.touch();
                 } else {
                     // this.$readout.text(this.valueToString(this.model.get('value')));
-                    this.readout.innerText = this.valueToString(this.model.get('value'));
+                    this.readout.textContent = this.valueToString(this.model.get('value'));
                 }
             }
         }
@@ -377,11 +378,11 @@ var IntSliderView = widget.DOMWidgetView.extend({
         if (this.model.get("_range")) {
             actual_value = ui.values.map(this._validate_slide_value);
             // this.$readout.text(actual_value.join("-"));
-            this.readout.innerText = actual_value.join('-');
+            this.readout.textContent = actual_value.join('-');
         } else {
             actual_value = this._validate_slide_value(ui.value);
             // this.$readout.text(actual_value);
-            this.readout.innerText = actual_value;
+            this.readout.textContent = actual_value;
         }
 
         // Only persist the value while sliding if the continuous_update
