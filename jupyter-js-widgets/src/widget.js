@@ -1,11 +1,11 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var utils = require("./utils");
-var managerBase = require("./manager-base");
-var _ = require("underscore");
-var Backbone = require("backbone");
+var utils = require('./utils');
+var managerBase = require('./manager-base');
+var _ = require('underscore');
+var Backbone = require('backbone');
 
 
 var unpack_models = function unpack_models(value, manager) {
@@ -25,7 +25,7 @@ var unpack_models = function unpack_models(value, manager) {
             unpacked[key] = unpack_models(sub_value, manager);
         });
         return utils.resolvePromisesDict(unpacked);
-    } else if (typeof value === 'string' && value.slice(0,10) === "IPY_MODEL_") {
+    } else if (typeof value === 'string' && value.slice(0,10) === 'IPY_MODEL_') {
         // get_model returns a promise already
         return manager.get_model(value.slice(10, value.length));
     } else {
@@ -36,9 +36,9 @@ var unpack_models = function unpack_models(value, manager) {
 var WidgetModel = Backbone.Model.extend({
 
     defaults: {
-        _model_module: "jupyter-js-widgets",
-        _model_name: "WidgetModel",
-        _view_module: "jupyter-js-widgets",
+        _model_module: 'jupyter-js-widgets',
+        _model_name: 'WidgetModel',
+        _view_module: 'jupyter-js-widgets',
         _view_name: null,
         msg_throttle: 3
     },
@@ -135,7 +135,6 @@ var WidgetModel = Backbone.Model.extend({
          * Handle incoming comm msg.
          */
         var method = msg.content.data.method;
-        if (this.id === undefined) { this.id = msg.content.comm_id; }
         var that = this;
         switch (method) {
             case 'update':
@@ -150,7 +149,7 @@ var WidgetModel = Backbone.Model.extend({
                         return that.constructor._deserialize_state(state, that.widget_manager);
                     }).then(function(state) {
                         that.set_state(state);
-                    }).catch(utils.reject("Couldn't process update msg for model id '" + String(that.id) + "'", true))
+                    }).catch(utils.reject('Could not process update msg for model id: ' + String(that.id), true))
                 return this.state_change;
             case 'custom':
                 this.trigger('msg:custom', msg.content.data.content, msg.buffers);
@@ -374,7 +373,7 @@ var WidgetModel = Backbone.Model.extend({
             }, callbacks, {}, buffers);
         }).catch(function(error) {
             that.pending_msgs--;
-            return (utils.reject("Couldn't send widget sync message", true))(error);
+            return (utils.reject('Could not send widget sync message', true))(error);
         });
     },
 
@@ -397,7 +396,7 @@ var WidgetModel = Backbone.Model.extend({
          * the second form will result in foo being called twice
          * while the first will call foo only once.
          */
-        this.on("change", function() {
+        this.on('change', function() {
             if (keys.some(this.hasChanged, this)) {
                 callback.apply(context, arguments);
             }
@@ -409,7 +408,7 @@ var WidgetModel = Backbone.Model.extend({
          * Serialize the model.  See the deserialization function at the top of this file
          * and the kernel-side serializer/deserializer.
          */
-        return "IPY_MODEL_" + this.id;
+        return 'IPY_MODEL_' + this.id;
     }
 }, {
     _deserialize_state: function(state, manager) {
@@ -594,12 +593,12 @@ var DOMWidgetViewMixin = {
             this.update_attr('border-radius', this._default_px(value)); }, this);
 
         this.layoutPromise = Promise.resolve();
-        this.listenTo(this.model, "change:layout", function(model, value) {
+        this.listenTo(this.model, 'change:layout', function(model, value) {
             this.setLayout(value, model.previous('layout'));
         });
 
         this.displayed.then(_.bind(function() {
-            this.update_visible(this.model, this.model.get("visible")); // TODO: Deprecated in 5.0
+            this.update_visible(this.model, this.model.get('visible')); // TODO: Deprecated in 5.0
             this.update_classes([], this.model.get('_dom_classes'));
 
             this.update_attr('color', this.model.get('color')); // TODO: Deprecated in 5.0
@@ -690,14 +689,14 @@ var DOMWidgetViewMixin = {
             if (el.classList) { // classList is not supported by IE for svg elements
                 el.classList.remove(c);
             } else {
-                el.setAttribute("class", el.getAttribute("class").replace(c, ""));
+                el.setAttribute('class', el.getAttribute('class').replace(c, ''));
             }
         });
         _.difference(new_classes, old_classes).map(function(c) {
             if (el.classList) { // classList is not supported by IE for svg elements
                 el.classList.add(c);
             } else {
-                el.setAttribute("class", el.getAttribute("class").concat(" ", c));
+                el.setAttribute('class', el.getAttribute('class').concat(' ', c));
             }
         });
     },

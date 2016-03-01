@@ -18,7 +18,6 @@ function uuid() {
     s[12] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
     s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
 
-    console.log('uuid: ' + s.join(""));
     return s.join("");
 }
 
@@ -141,17 +140,6 @@ function reject(message, log) {
  * text: option string
  */
 function typeset(element, text) {
-    // var $el = element.jquery ? element : $(element);
-    // if(arguments.length > 1){
-    //     $el.text(text);
-    // }
-    // if(!window.MathJax){
-    //     return;
-    // }
-    // return $el.map(function(){
-    //     // MathJax takes a DOM node: $.map makes `this` the context
-    //     return MathJax.Hub.Queue(["Typeset", MathJax.Hub, this]);
-    // });
     if (arguments.length > 1) {
       element.textContent = text;
     }
