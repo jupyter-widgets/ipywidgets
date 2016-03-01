@@ -1,15 +1,15 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var utils= require("./utils");
-var _ = require("underscore");
+var widget = require('./widget');
+var utils= require('./utils');
+var _ = require('underscore');
 
 var ControllerButtonModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: "ControllerButtonModel",
-        _view_name: "ControllerButtonView",
+        _model_name: 'ControllerButtonModel',
+        _view_name: 'ControllerButtonView',
         value: 0.0,
         pressed: false,
     }),
@@ -23,19 +23,19 @@ var ControllerButtonView = widget.DOMWidgetView.extend({
         this.el.classList.add('widget-controller-button');
 
         this.support = document.createElement('div');
-        this.support.style.position = "relative";
-        this.support.style.margin = "1px";
-        this.support.style.width = "16px";
-        this.support.style.height = "16px";
-        this.support.style.border = "1px solid black";
-        this.support.style.background = "lightgray";
+        this.support.style.position = 'relative';
+        this.support.style.margin = '1px';
+        this.support.style.width = '16px';
+        this.support.style.height = '16px';
+        this.support.style.border = '1px solid black';
+        this.support.style.background = 'lightgray';
         this.el.appendChild(this.support);
 
         this.bar = document.createElement('div');
         this.bar.style.position = 'absolute';
-        this.bar.style.width = "100%";
+        this.bar.style.width = '100%';
         this.bar.style.bottom = 0;
-        this.bar.style.background = "gray";
+        this.bar.style.background = 'gray';
         this.support.appendChild(this.bar);
 
         this.update();
@@ -52,8 +52,8 @@ var ControllerButtonView = widget.DOMWidgetView.extend({
 
 var ControllerAxisModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: "ControllerAxisModel",
-        _view_name: "ControllerAxisView",
+        _model_name: 'ControllerAxisModel',
+        _view_name: 'ControllerAxisView',
         value: 0.0,
     }),
 });
@@ -100,11 +100,11 @@ var ControllerAxisView = widget.DOMWidgetView.extend({
 var ControllerModel = widget.DOMWidgetModel.extend({
     /* The Controller model. */
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: "ControllerModel",
-        _view_name: "ControllerView",
+        _model_name: 'ControllerModel',
+        _view_name: 'ControllerView',
         index: 0,
-        name: "",
-        mapping: "",
+        name: '',
+        mapping: '',
         connected: false,
         timestamp: 0,
         buttons: [],

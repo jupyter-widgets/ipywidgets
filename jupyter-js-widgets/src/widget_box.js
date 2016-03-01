@@ -70,8 +70,7 @@ var ProxyView = widget.DOMWidgetView.extend({
             var that = this;
             this.child_promise = this.child_promise.then(function() {
                 return that.create_child_view(value).then(function(view) {
-                    // if (that.$box.length === 0) {
-                    if (that.box.length === 0 ) {
+                    if (that.box === undefined) {
                         console.error("Widget place holder does not exist");
                         return;
                     }
@@ -118,7 +117,7 @@ var PlaceProxyView = ProxyView.extend({
     },
 
     update_selector: function(model, selector) {
-        this.box = document.querySelectorAll(selector) || this.el; // TODO
+        this.box = document.querySelectorAll(selector) || this.el;
         this.set_child(this.model.get("child"));
     },
 });
