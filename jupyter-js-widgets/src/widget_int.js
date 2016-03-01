@@ -129,7 +129,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
             _.each(jquery_slider_keys, function(key, i) {
                 var model_value = that.model.get(key);
                 if (model_value !== undefined) {
-                    that.$slider.slider('option', key, model_value); // TODO
+                    that.$slider.slider('option', key, model_value);
                 }
             });
 
@@ -186,35 +186,21 @@ var IntSliderView = widget.DOMWidgetView.extend({
 
             // Use the right CSS classes for vertical & horizontal sliders
             if (orientation=='vertical') {
-                // this.$el
-                //     .removeClass('widget-hslider')
-                //     .addClass('widget-vslider');
                 this.el.classList.remove('widget-hslider');
                 this.el.classList.add('widget-vslider');
-                // this.$el
-                //     .removeClass('widget-hbox')
-                //     .addClass('widget-vbox');
                 this.el.classList.remove('widget-hbox');
                 this.el.classList.add('widget-vbox');
             } else {
-                // this.$el
-                //     .removeClass('widget-vslider')
-                //     .addClass('widget-hslider');
                 this.el.classList.remove('widget-vslider');
                 this.el.classList.add('widget-hslider');
-                // this.$el
-                //     .removeClass('widget-vbox')
-                //     .addClass('widget-hbox');
                 this.el.classList.remove('widget-vbox');
-                this.el.classList.add('widget-hslider');
+                this.el.classList.add('widget-hbox');
             }
 
             var readout = this.model.get('readout');
             if (readout) {
-                // this.$readout.show();
                 this.readout.style.display = '';
             } else {
-                // this.$readout.hide();
                 this.readout.style.display = 'none';
             }
         }
