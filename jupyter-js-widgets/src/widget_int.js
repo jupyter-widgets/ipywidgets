@@ -2,21 +2,22 @@
 // Distributed under the terms of the Modified BSD License.
 "use strict";
 
-var widget = require("./widget");
-var _ = require("underscore");
+var widget = require('./widget');
+var $ = require('./jquery');
+var _ = require('underscore');
 
 var IntModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: "IntModel",
+        _model_name: 'IntModel',
         value: 0,
         disabled: false,
-        description: ""
+        description: ''
     }),
 });
 
 var BoundedIntModel = IntModel.extend({
     defaults: _.extend({}, IntModel.prototype.defaults, {
-        _model_name: "BoundedIntModel",
+        _model_name: 'BoundedIntModel',
         step: 1,
         max: 100,
         min: 0
@@ -25,9 +26,9 @@ var BoundedIntModel = IntModel.extend({
 
 var IntSliderModel = BoundedIntModel.extend({
     defaults: _.extend({}, BoundedIntModel.prototype.defaults, {
-        _model_name: "IntSliderModel",
-        _view_name: "IntSliderView",
-        orientation: "horizontal",
+        _model_name: 'IntSliderModel',
+        _view_name: 'IntSliderView',
+        orientation: 'horizontal',
         _range: false,
         readout: true,
         slider_color: null,
@@ -55,25 +56,14 @@ var IntSliderView = widget.DOMWidgetView.extend({
                 stop: this.handleSliderChange.bind(this)
             })
             .addClass('slider');
-        // this.slider = document.createElement('div');
-        // this.slider.classList.add('slider');
 
         // Put the slider in a container
         this.$slider_container = $('<div />')
             .addClass('slider-container')
             .append(this.$slider);
-        // this.slider_container = document.createElement('div');
-        // this.slider_container.classList.add('slider-container');
-        // this.slider_container.appendChild(this.slider);
 
         this.$el.append(this.$slider_container);
-        // this.el.appendChild(this.slider_container);
 
-        // this.$readout = $('<div/>')
-        //     .appendTo(this.$el)
-        //     .addClass('widget-readout')
-        //     .attr('contentEditable', true)
-        //     .hide();
         this.readout = document.createElement('div');
         this.el.appendChild(this.readout);
         this.readout.classList.add('widget-readout');
@@ -82,20 +72,12 @@ var IntSliderView = widget.DOMWidgetView.extend({
 
         this.listenTo(this.model, 'change:slider_handleTextChangecolor', function(sender, value) {
             this.$slider.find('a').css('background', value);
-            // var elems = this.slider.getElementsByClassName('a');
-            // if (elems.length > 0) {
-            //   elems.style.visibility.background = value;
-            // }
         }, this);
         this.listenTo(this.model, 'change:description', function(sender, value) {
             this.updateDescription();
         }, this);
 
         this.$slider.find('a').css('background', this.model.get('slider_color'));
-        // var a_elems = this.slider.getElementsByClassName('a');
-        // if (a_elems > 0) {
-        //   a_elems.style.background = this.model.get('slider_color');
-        // }
 
         // Set defaults.
         this.update();
@@ -107,25 +89,15 @@ var IntSliderView = widget.DOMWidgetView.extend({
          * Set a css attr of the widget view.
          */
         if (name == 'color') {
-            // this.$readout.css(name, value);
             this.readout.style[name] = value;
         } else if (name.substring(0, 4) == 'font') {
-            // this.$readout.css(name, value);
             this.readout.style[name] = value;
         } else if (name.substring(0, 6) == 'border') {
             this.$slider.find('a').css(name, value);
-            // var elems = this.slider.getElementsByClassName('a');
-            // if (elems.length > 0) {
-            //   elems.style[name] = value;
-            // }
-
             this.$slider_container.css(name, value);
-            // this.slider_container.style[name] = value;
         } else if (name == 'background') {
             this.$slider_container.css(name, value);
-            // this.slider_container.style[name] = value;
         } else {
-            // this.$el.css(name, value);
             this.el.style[name] = value;
         }
     },
@@ -133,13 +105,9 @@ var IntSliderView = widget.DOMWidgetView.extend({
     updateDescription: function(options) {
         var description = this.model.get('description');
         if (description.length === 0) {
-            // this.$label.hide();
             this.label.style.display = 'none';
         } else {
-            // this.typeset(this.$label, description);
             this.typeset(this.label, description);
-
-            // this.$label.show();
             this.label.style.display = '';
         }
     },
@@ -157,12 +125,12 @@ var IntSliderView = widget.DOMWidgetView.extend({
             // one-to-one mapping with the corresponding keys of the model.
             var jquery_slider_keys = ['step', 'disabled'];
             var that = this;
-            that.$slider.slider({}); // TODO jquery slider().
+            that.$slider.slider({});
 
             _.each(jquery_slider_keys, function(key, i) {
                 var model_value = that.model.get(key);
                 if (model_value !== undefined) {
-                    that.$slider.slider("option", key, model_value); // TODO
+                    that.$slider.slider('option', key, model_value); // TODO
                 }
             });
 
@@ -173,9 +141,9 @@ var IntSliderView = widget.DOMWidgetView.extend({
                 if (min !== undefined) this.$slider.slider('option', 'min', min);
             }
 
-            var range_value = this.model.get("_range");
+            var range_value = this.model.get('_range');
             if (range_value !== undefined) {
-                this.$slider.slider("option", "range", range_value);
+                this.$slider.slider('option', 'range', range_value);
             }
 
             // WORKAROUND FOR JQUERY SLIDER BUG.
@@ -200,7 +168,6 @@ var IntSliderView = widget.DOMWidgetView.extend({
                 // values for the range case are validated python-side in
                 // _Bounded{Int,Float}RangeWidget._validate
                 this.$slider.slider('option', 'values', value);
-                // this.$readout.text(this.valueToString(value));
                 this.readout.textContent = this.valueToString(value);
             } else {
                 if(value > max) {
@@ -210,7 +177,6 @@ var IntSliderView = widget.DOMWidgetView.extend({
                     value = min;
                 }
                 this.$slider.slider('option', 'value', value);
-                // this.$readout.text(this.valueToString(value));
                 this.readout.textContent = this.valueToString(value);
             }
 
@@ -263,7 +229,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
      */
     valueToString: function(value) {
         if (this.model.get('_range')) {
-            return value.join("-");
+            return value.join('-');
         } else {
             return String(value);
         }
@@ -292,10 +258,10 @@ var IntSliderView = widget.DOMWidgetView.extend({
 
     events: {
         // Dictionary of events and their handlers.
-        "slide": "handleSliderChange",
-        "slidestop": "handleSliderChanged",
-        "blur [contentEditable=true]": "handleTextChange",
-        "keydown [contentEditable=true]": "handleKeyDown"
+        'slide': 'handleSliderChange',
+        'slidestop': 'handleSliderChanged',
+        'blur [contentEditable=true]': 'handleTextChange',
+        'keydown [contentEditable=true]': 'handleKeyDown'
     },
 
     handleKeyDown: function(e) {
@@ -320,13 +286,12 @@ var IntSliderView = widget.DOMWidgetView.extend({
         var value = this.stringToValue(this.$readout.text());
         var vmin = this.model.get('min');
         var vmax = this.model.get('max');
-        if (this.model.get("_range")) {
+        if (this.model.get('_range')) {
             // reject input where NaN or lower > upper
             if (value === null ||
                 isNaN(value[0]) ||
                 isNaN(value[1]) ||
                 (value[0] > value[1])) {
-                // this.$readout.text(this.valueToString(this.model.get('value')));
                 this.readout.textContent = this.valueToString(this.model.get('value'));
             } else {
                 // clamp to range
@@ -335,12 +300,10 @@ var IntSliderView = widget.DOMWidgetView.extend({
 
                 if ((value[0] != this.model.get('value')[0]) ||
                     (value[1] != this.model.get('value')[1])) {
-                    // this.$readout.text(this.valueToString(value));
                     this.readout.textContent = this.valueToString(value);
                     this.model.set('value', value, {updated_view: this});
                     this.touch();
                 } else {
-                    // this.$readout.text(this.valueToString(this.model.get('value')));
                     this.readout.textContent = this.valueToString(this.mode.get('value'));
                 }
             }
@@ -348,18 +311,15 @@ var IntSliderView = widget.DOMWidgetView.extend({
 
             // single value case
             if (isNaN(value)) {
-                // this.$readout.text(this.valueToString(this.model.get('value')));
                 this.readout.textContent = this.valueToString(this.mode.get('value'));
             } else {
                 value = Math.max(Math.min(value, vmax), vmin);
 
                 if (value != this.model.get('value')) {
-                    // this.$readout.text(this.valueToString(value));
                     this.readout.textContent = this.valueToString(value);
                     this.model.set('value', value, {updated_view: this});
                     this.touch();
                 } else {
-                    // this.$readout.text(this.valueToString(this.model.get('value')));
                     this.readout.textContent = this.valueToString(this.model.get('value'));
                 }
             }
@@ -377,11 +337,9 @@ var IntSliderView = widget.DOMWidgetView.extend({
         var actual_value;
         if (this.model.get("_range")) {
             actual_value = ui.values.map(this._validate_slide_value);
-            // this.$readout.text(actual_value.join("-"));
             this.readout.textContent = actual_value.join('-');
         } else {
             actual_value = this._validate_slide_value(ui.value);
-            // this.$readout.text(actual_value);
             this.readout.textContent = actual_value;
         }
 
@@ -457,11 +415,9 @@ var IntTextView = widget.DOMWidgetView.extend({
     updateDescription: function() {
         var description = this.model.get('description');
         if (description.length === 0) {
-            // this.$label.hide();
             this.label.style.display = 'none';
         } else {
             this.typeset(this.$label, description);
-            // this.$label.show();
             this.label.style.display = '';
         }
     },
@@ -475,17 +431,13 @@ var IntTextView = widget.DOMWidgetView.extend({
          */
         if (options === undefined || options.updated_view != this) {
             var value = this.model.get('value');
-            // if (this._parse_value(this.$textbox.val()) != value) {
             if (this._parse_value(this.textbox.value != value)) {
-                // this.$textbox.val(value);
                 this.textbox.value = value;
             }
 
             if (this.model.get('disabled')) {
-                // this.$textbox.attr('disabled','disabled');
                 this.textbox.setAttribute('disabled', 'disabled');
             } else {
-                // this.$textbox.removeAttr('disabled');
                 this.textbox.removeAttribute('disabled', 'disabled');
             }
         }
@@ -497,22 +449,20 @@ var IntTextView = widget.DOMWidgetView.extend({
          * Set a css attr of the widget view.
          */
         if (name == 'padding' || name == 'margin') {
-            // this.$el.css(name, value);
             this.el.style[name] = value;
         } else {
-            // this.$textbox.css(name, value);
             this.textbox.style[name] = value;
         }
     },
 
     events: {
         // Dictionary of events and their handlers.
-        "keyup input"  : "handleChanging",
-        "paste input"  : "handleChanging",
-        "cut input"    : "handleChanging",
+        'keyup input'  : 'handleChanging',
+        'paste input'  : 'handleChanging',
+        'cut input'    : 'handleChanging',
 
         // Fires only when control is validated or looses focus.
-        "change input" : "handleChanged"
+        'change input' : 'handleChanged'
     },
 
     handleChanging: function(e) {
@@ -579,35 +529,19 @@ var ProgressView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        // this.$el.addClass('jupyter-widgets widget-hprogress');
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hprogress');
 
-        // this.$label = $('<div />')
-        //     .appendTo(this.$el)
-        //     .addClass('widget-label')
-        //     .hide();
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
         this.label.classList.add('widget-label');
         this.label.style.display = 'none';
 
-        // this.$progress = $('<div />')
-        //     .addClass('progress')
-        //     .css('position', 'relative')
-        //     .appendTo(this.$el);
         this.progress = document.createElement('div');
         this.progress.classList.add('progress');
         this.progress.style.position = 'relative';
         this.el.appendChild(this.progress);
 
-        // this.$bar = $('<div />')
-        //     .addClass('progress-bar')
-        //     .css({
-        //         'position': 'absolute',
-        //         'bottom': 0, 'left': 0,
-        //     })
-        //     .appendTo(this.$progress);
         this.bar = document.createElement('div');
         this.bar.classList.add('progress-bar');
         this.bar.style.position = 'absolute';
@@ -630,11 +564,9 @@ var ProgressView = widget.DOMWidgetView.extend({
     updateDescription: function() {
         var description = this.model.get('description');
         if (description.length === 0) {
-            // this.$label.hide();
             this.label.style.display = 'none';
         } else {
             this.typeset(this.$label, description);
-            // this.$label.show();
             this.label.style.display = '';
         }
     },
@@ -652,40 +584,21 @@ var ProgressView = widget.DOMWidgetView.extend({
         var orientation = this.model.get('orientation');
         var percent = 100.0 * (value - min) / (max - min);
         if (orientation === 'horizontal') {
-            // this.$el
-            //    .removeClass('widget-vbox')
-            //    .addClass('widget-hbox');
             this.el.classList.remove('widget-vbox');
             this.el.classList.add('widget-hbox');
 
-            // this.$el.removeClass('widget-vprogress');
             this.el.classList.remove('widget-vprogress');
-
-            // this.$el.addClass('widget-hprogress');
             this.el.classList.add('widget-hprogress');
 
-            // this.$bar.css({
-            //     'width': percent + '%',
-            //     'height': '100%',
-            // });
             this.bar.style.width = percent + '%';
             this.bar.style.height = '100%';
         } else {
-            // this.$el
-            //    .removeClass('widget-hbox')
-            //    .addClass('widget-vbox');
             this.el.classList.remove('widget-hbox');
             this.el.classList.add('widget-vbox');
 
-            // this.$el.removeClass('widget-hprogress');
-            // this.$el.addClass('widget-vprogress');
             this.el.classList.remove('widget-hprogress');
             this.el.classList.add('widget-hprogress');
 
-            // this.$bar.css({
-            //     'width': '100%',
-            //     'height': percent + '%',
-            // });
             this.bar.style.width = '100%';
             this.bar.style.height = percent + '%';
         }
@@ -707,13 +620,10 @@ var ProgressView = widget.DOMWidgetView.extend({
          * Set a css attr of the widget view.
          */
         if (name == "color") {
-            // this.$bar.css('background', value);
             this.bar.style.background = value;
         } else if (name.substring(0, 6) == 'border' || name == 'background') {
-            // this.$progress.css(name, value);
             this.progress.style[name] = value;
         } else {
-            // this.$el.css(name, value);
             this.el.style[name] = value
         }
     },
