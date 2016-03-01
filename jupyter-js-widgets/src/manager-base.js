@@ -391,8 +391,6 @@ ManagerBase.prototype.set_state = function(state) {
      * Reconstructs all of the widget models and attempts to redisplay them..
      */
     var that = this;
-    console.log('SET STATE: ')
-    console.log(state)
 
     // Recreate all the widget models for the given widget manager state.
     var all_models = that._get_comm_info().then(function(live_comms) {
