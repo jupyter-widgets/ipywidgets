@@ -44,10 +44,6 @@ WidgetArea.prototype.display_widget_view = function(view_promise) {
             that._widget_dead(view);
         }
 
-        // Listen to comm live events for the view.
-        view.on('comm:live', that._widget_live, that);
-        view.on('comm:dead', that._widget_dead, that);
-
         // If the view is removed, check to see if the widget area is empty.
         // If the widget area is empty, close it.
         view.on('remove', function() {
@@ -96,10 +92,6 @@ WidgetArea.prototype._create_elements = function() {
                 for (var i = 0; i < that.widget_views.length; i++) {
                     var view = that.widget_views[i];
                     view.remove();
-
-                    // Remove widget live events.
-                    view.off('comm:live', that._widget_live);
-                    view.off('comm:dead', that._widget_dead);
                 }
                 that.widget_views = [];
                 widget_subarea.html('');
@@ -131,7 +123,7 @@ WidgetArea.prototype._bind_events = function() {
  * Handles when a widget loses it's comm connection.
  * @param {WidgetView} view
  */
-WidgetArea.prototype._widget_dead = function(view) {
+WidgetArea.prototype._widget_dead = function() {
     if (this._widgets_live) {
         this._widgets_live = false;
         this.widget_area.addClass('connection-problems');
@@ -141,14 +133,15 @@ WidgetArea.prototype._widget_dead = function(view) {
 
 /**
  * Handles when a widget is connected to a live comm.
- * @param {WidgetView} view
  */
-WidgetArea.prototype._widget_live = function(view) {
+WidgetArea.prototype._widget_live = function() {
     if (!this._widgets_live) {
         // Check that the other widgets are live too.  O(N) operation.
         // Abort the function at the first dead widget found.
         for (var i = 0; i < this.widget_views.length; i++) {
-            if (!this.widget_views[i].model.comm_live) return;
+            if (!this.widget_views[i].model.comm_live) {
+                return;
+            }
         }
         this._widgets_live = true;
         this.widget_area.removeClass('connection-problems');
@@ -163,10 +156,6 @@ WidgetArea.prototype._clear = function() {
     for (var i = 0; i < this.widget_views.length; i++) {
         var view = this.widget_views[i];
         view.remove();
-
-        // Remove widget live events.
-        view.off('comm:live', this._widget_live);
-        view.off('comm:dead', this._widget_dead);
     }
     this.widget_views = [];
     this.widget_subarea.html('');
@@ -175,4 +164,6 @@ WidgetArea.prototype._clear = function() {
     this.widget_area.hide();
 };
 
-module.exports = {WidgetArea: WidgetArea};
+module.exports = {
+    WidgetArea: WidgetArea
+};
