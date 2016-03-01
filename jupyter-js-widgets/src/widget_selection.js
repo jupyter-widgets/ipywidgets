@@ -168,13 +168,9 @@ var DropdownView = widget.DOMWidgetView.extend({
 
             var description = this.model.get('description');
             if (description.length === 0) {
-                // this.$label.hide();
                 this.label.style.display = 'none';
             } else {
-                // this.typeset(this.$label, description);
                 this.typeset(this.label, description);
-
-                // this.$label.show();
                 this.label.style.display = '';
             }
         }
@@ -230,7 +226,6 @@ var DropdownView = widget.DOMWidgetView.extend({
         // Manually hide the droplist.
         e.stopPropagation();
         e.preventDefault();
-        // this.$buttongroup.removeClass('open');
         this.buttongroup.classList.remove('open');
     },
 
@@ -238,11 +233,11 @@ var DropdownView = widget.DOMWidgetView.extend({
 
 var RadioButtonsModel = SelectionModel.extend({
     defaults: _.extend({}, SelectionModel.prototype.defaults, {
-        _model_name: "RadioButtonsModel",
-        _view_name: "RadioButtonsView",
+        _model_name: 'RadioButtonsModel',
+        _view_name: 'RadioButtonsView',
         tooltips: [],
         icons: [],
-        button_style: ""
+        button_style: ''
     }),
 });
 
@@ -251,26 +246,18 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        // this.$el
-        //     .addClass('jupyter-widgets widget-hbox widget-radio');
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-radio');
 
-        // this.$label = $('<div />')
-        //     .appendTo(this.$el)
-        //     .addClass('widget-label')
-        //     .hide();
+
         this.label = document.createElement('div');
         this.label.className = 'widget-label';
         this.label.style.display = 'none';
         this.el.appendChild(this.label);
 
-        // this.$container = $('<div />')
-        //     .appendTo(this.$el)
-        //     .addClass('widget-radio-box');
         this.container = document.createElement('div');
-        this.el.appendChild(this.el);
+        this.el.appendChild(this.container);
         this.container.classList.add('widget-radio-box');
 
         this.update();
@@ -290,24 +277,12 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
             var that = this;
             _.each(items, function(item, index) {
                 var item_query = ' :input[data-value="' + encodeURIComponent(item) + '"]';
-                // if (that.$el.find(item_query).length === 0) {
                 if (that.el.getElementsByClassName(item_query).length === 0) {
-                    // var $label = $('<label />')
-                    //     .addClass('radio')
-                    //     .text(item)
-                    //     .appendTo(that.$container);
                     var label = document.createElement('label');
                     label.classList.add('radio');
                     label.textContent = item;
                     that.container.appendChild(label);
 
-                    // $('<input />')
-                    //     .attr('type', 'radio')
-                    //     .addClass(that.model)
-                    //     .val(item)
-                    //     .attr('data-value', encodeURIComponent(item))
-                    //     .prependTo($label)
-                    //     .on('click', $.proxy(that.handle_click, that));
                     var radio = document.createElement('input');
                     radio.setAttribute('type', 'radio');
                     radio.classList.add(that.model);
@@ -317,7 +292,6 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
                     radio.onclick = () => { that.handle_click(); };
                 }
 
-                // var $item_element = that.$container.find(item_query);
                 var item_elements = that.container.getElementsByClassName(item_query);
                 if (item_elements.length > 0) {
                   let item_el = item_elements[0];
@@ -335,7 +309,6 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
             // Remove items that no longer exist.
             // this.$container.find('input').each(function(i, obj) {
             this.container.getElementsByClassName('input').forEach(function(i, obj) {
-                // var value = $(obj).val();
                 var value = obj.value;
                 var found = false;
                 _.each(items, function(item, index) {
@@ -353,11 +326,11 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
 
             var description = this.model.get('description');
             if (description.length === 0) {
-                this.$label.hide();
+                this.label.style.display = 'none';
             } else {
-                this.$label.text(description);
-                this.typeset(this.$label, description);
-                this.$label.show();
+                this.label.textContent = description;
+                this.typeset(this.label, description);
+                this.label.style.display = '';
             }
         }
         return RadioButtonsView.__super__.update.apply(this);
@@ -368,9 +341,9 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
          * Set a css attr of the widget view.
          */
         if (name == 'padding' || name == 'margin') {
-            this.$el.css(name, value);
+            this.el.style[name] = value;
         } else {
-            this.$container.css(name, value);
+            this.container.style[name] = value;
         }
     },
 
@@ -388,8 +361,8 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
 
 var ToggleButtonsModel = SelectionModel.extend({
     defaults: _.extend({}, SelectionModel.prototype.defaults, {
-        _model_name: "ToggleButtonsModel",
-        _view_name: "ToggleButtonsView",
+        _model_name: 'ToggleButtonsModel',
+        _view_name: 'ToggleButtonsView',
     }),
 });
 
@@ -444,27 +417,10 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
                     item_html = utils.escape_html(item);
                 }
                 var item_query = '[data-value="' + encodeURIComponent(item) + '"]';
-
-                // var $item_element = that.$buttongroup.find(item_query);
                 var item_elements = that.buttongroup.getElementsByClassName(item_query);
 
-                // var $icon_element = $item_element.find('.fa');
                 if (item_elements.length > 0) {
                   var icon_element = item_elements[0].getElementsByClassName('.fa');
-
-                  // if (!$item_element.length) {
-                  // $item_element = $('<button/>')
-                  //     .attr('type', 'button')
-                  //     .addClass('btn btn-default')
-                  //     .html(item_html)
-                  //     .appendTo(that.$buttongroup)
-                  //     .attr('data-value', encodeURIComponent(item))
-                  //     .attr('data-toggle', 'tooltip')
-                  //     .attr('value', item)
-                  //     .on('click', $.proxy(that.handle_click, that));
-                  // that.update_style_traits($item_element);
-                  // $icon_element = $('<i class="fa"></i>').prependTo($item_element);
-                  // }
 
                   var item_el = document.createElement('button');
                   item_el.setAttribute('type', 'button');
@@ -481,22 +437,14 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
                 }
 
                 if (that.model.get('selected_label') == item) {
-                    // $item_element.addClass('active');
                     item_el.classList.add('active');
                 } else {
-                    // $item_element.removeClass('active');
                     item_el.classList.add('active');
                 }
 
-                // $item_element.prop('disabled', disabled);
                 item_el.setAttribute('disabled', disabled);
-
-                // $item_element.attr('title', that.model.get('tooltips')[index]);
                 item_el.setAttribute('title', that.model.get('tooltips')[index]);
 
-                // $icon_element
-                //     .removeClass(previous_icons[index])
-                //     .addClass(icons[index]);
                 icon_element.classList.remove(previous_icons[index]);
                 icon_element.classList.add(icons[index]);
             });
@@ -519,16 +467,10 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
 
             var description = this.model.get('description');
             if (description.length === 0) {
-                // this.$label.hide();
                 this.label.style.display = 'none';
             } else {
-                // this.$label.text();
                 this.label.textContent = '';
-
-                // this.typeset(this.$label, description);
                 this.typeset(this.label, description);
-
-                // this.$label.show();
                 this.label.style.display = '';
             }
         }
@@ -540,7 +482,6 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
          * Set a css attr of the widget view.
          */
         if (name == 'padding' || name == 'margin') {
-            // this.$el.css(name, value);
             this.el.style[name] = value;
         } else {
             this._css_state[name] = value;
@@ -552,14 +493,11 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
         for (var name in this._css_state) {
             if (this._css_state.hasOwnProperty(name)) {
                 if (name == 'margin') {
-                    // this.$buttongroup.css(name, this._css_state[name]);
                     this.buttongroup.style[name] = this._css_state[name];
                 } else if (name != 'width') {
                     if (button) {
-                        // button.css(name, this._css_state[name]);
                         button.style[name] = this._css_state[name];
                     } else {
-                        // this.$buttongroup.find('button').css(name, this._css_state[name]);
                         var btns = this.buttongroup.getElementsByClassName('button');
                         if (btns.length) {
                           btns[0].style[name] = this._css_state[name];

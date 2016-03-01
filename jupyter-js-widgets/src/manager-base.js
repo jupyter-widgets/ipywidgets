@@ -421,7 +421,6 @@ ManagerBase.prototype.set_state = function(state) {
 
     // Display all the views
     return all_models.then(function(models) {
-      // let mods = models.filter((m) => m.id !== undefined);
         return Promise.all(_.map(models, function(model) {
             // Display the views of the model.
             return Promise.all(_.map(state[model.id].views, function(options) {
