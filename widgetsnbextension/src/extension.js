@@ -43,13 +43,6 @@ var handle_cell = function(cell) {
     if (cell.cell_type==='code') {
         var area = new widgetarea.WidgetArea(cell);
         cell.widgetarea = area;
-        var died = function () {
-            area._widget_dead();
-        }
-        cell.notebook.events.on('kernel_disconnected.Kernel', died);
-        cell.notebook.events.on('kernel_killed.Kernel', died);
-        cell.notebook.events.on('kernel_restarting.Kernel', died);
-        cell.notebook.events.on('kernel_dead.Kernel', died);
     }
 };
 

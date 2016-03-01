@@ -19,6 +19,13 @@ var WidgetArea = function(cell) {
     requirejs(['base/js/events'], (function(events) {
         events.trigger('create.WidgetArea', {widgetarea: this, cell: cell});
     }).bind(this));
+
+    var that = this;
+    var died = function () { that._widget_dead(); };
+    cell.notebook.events.on('kernel_disconnected.Kernel', died);
+    cell.notebook.events.on('kernel_killed.Kernel', died);
+    cell.notebook.events.on('kernel_restarting.Kernel', died);
+    cell.notebook.events.on('kernel_dead.Kernel', died);
 };
 
 /**
@@ -63,6 +70,10 @@ WidgetArea.prototype.display_widget_view = function(view_promise) {
  * Disposes of the widget area and its widgets.
  */
 WidgetArea.prototype.dispose = function() {
+    this._cell.notebook.events.off('kernel_disconnected.Kernel');
+    this._cell.notebook.events.off('kernel_killed.Kernel');
+    this._cell.notebook.events.off('kernel_restarting.Kernel');
+    this._cell.notebook.events.off('kernel_dead.Kernel');
     this._clear();
     this.disposed = true;
 };
