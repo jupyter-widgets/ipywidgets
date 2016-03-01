@@ -117,7 +117,7 @@ var DropdownView = widget.DOMWidgetView.extend({
                 this.droplabel.innerHTML = "&nbsp;";
             } else {
                 // this.$droplabel.text(selected_item_text);
-                this.droplabel.innerText = selected_item_text;
+                this.droplabel.textContent = selected_item_text;
             }
 
             var items = this.model.get('_options_labels');
@@ -135,7 +135,7 @@ var DropdownView = widget.DOMWidgetView.extend({
                 //     .text(item)
                 //     .on('click', $.proxy(that.handle_click, that));
                 var item_button = document.createElement('a');
-                item_button.innerText = item;
+                item_button.textContent = item;
                 item_button.onclick = () => { that.handle_click(); }; // TODO - confirm.
 
                 // $replace_droplist.append($('<li />').append(item_button));
@@ -222,7 +222,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         // this.model.set('selected_label', $(e.target).text(), {updated_view: this});
         this.model.set(
             'selected_label',
-            document.querySelectorAll(e.target).innerText,
+            document.querySelectorAll(e.target).textContent,
             { updated_view: this }
         );
         this.touch();
@@ -298,7 +298,7 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
                     //     .appendTo(that.$container);
                     var label = document.createElement('label');
                     label.classList.add('radio');
-                    label.innerText = item;
+                    label.textContent = item;
                     that.container.appendChild(label);
 
                     // $('<input />')
@@ -523,7 +523,7 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
                 this.label.style.display = 'none';
             } else {
                 // this.$label.text();
-                this.label.innerText = '';
+                this.label.textContent = '';
 
                 // this.typeset(this.$label, description);
                 this.typeset(this.label, description);
@@ -648,7 +648,7 @@ var SelectView = widget.DOMWidgetView.extend({
                     //     .on("click", $.proxy(that.handle_click, that))
                     //     .appendTo(that.$listbox);
                     var option = document.createElement('option');
-                    option.innerText = item.replace ? item.replace(/ /g, '\xa0') : item;
+                    option.textContent = item.replace ? item.replace(/ /g, '\xa0') : item;
                     option.setAttribute('data-value', encodeURIComponent(item));
                     option.value = item;
                     option.onclick = () => {that.handle_click.bind(that); };
@@ -872,7 +872,7 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
             // this.$slider.slider('option', 'value', index);
 
             // this.$readout.text(selected_label);
-            this.readout.innerText = selected_label;
+            this.readout.textContent = selected_label;
 
             // Use the right CSS classes for vertical & horizontal sliders
             if (orientation=='vertical') {
@@ -927,7 +927,7 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         var actual_value = this._validate_slide_value(ui.value);
         var selected_label = this.model.get("_options_labels")[actual_value];
         // this.$readout.text(selected_label);
-        this.readout.innerText = selected_label;
+        this.readout.textContent = selected_label;
 
         // Only persist the value while sliding if the continuous_update
         // trait is set to true.
@@ -946,7 +946,7 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         var actual_value = this._validate_slide_value(ui.value);
         var selected_label = this.model.get("_options_labels")[actual_value];
         // this.$readout.text(selected_label);
-        this.readout.innerText = selected_label;
+        this.readout.textContent = selected_label;
         this.model.set('selected_label', selected_label, {updated_view: this});
         this.touch();
     },

@@ -56,6 +56,7 @@ var WidgetModel = Backbone.Model.extend({
          *      An ID unique to this model.
          * comm : Comm instance (optional)
          */
+        debugger;
         this.widget_manager = widget_manager;
         this.state_change = Promise.resolve();
         this._buffered_state_diff = {};
@@ -541,7 +542,9 @@ var DOMWidgetViewMixin = {
          * Public constructor
          */
         WidgetViewMixin.initialize.apply(this, [parameters]);
-        this.id = utils.uuid();
+        let the_id = utils.uuid();
+        console.log('Initializing Widget View Mixin' + the_id);
+        this.id = the_id;
 
         this.listenTo(this.model, 'change:visible', this.update_visible, this); // TODO: Deprecated in 5.0
 

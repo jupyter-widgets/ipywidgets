@@ -151,7 +151,7 @@ var AccordionView = widget.DOMWidgetView.extend({
           that.model.set("selected_index", index, {updated_view: that});
           that.touch();
         };
-        accordion_toggle.innerText('Page ' + index);
+        accordion_toggle.textContent('Page ' + index);
         accordion_heading.appendChild(accordion_toggle);
 
         var accordion_body = document.createElement('div');
@@ -271,29 +271,14 @@ var TabView = widget.DOMWidgetView.extend({
         var uuid = utils.uuid();
 
         var that = this;
-        // var tab = $('<li />')
-        //     .css('list-style-type', 'none')
-        //     .appendTo(this.$tabs);
         var tab = document.createElement('li');
         tab.style['list-style-type'] = 'none';
         this.tabs.appendChild(tab);
 
-        // var tab_text = $('<a />')
-        //     .attr('href', '#' + uuid)
-        //     .attr('data-toggle', 'tab')
-        //     .text('Page ' + index)
-        //     .appendTo(tab)
-        //     .click(function (e) {
-        //         // Calling model.set will trigger all of the other views of
-        //         // the model to update.
-        //         that.model.set("selected_index", index, {updated_view: that});
-        //         that.touch();
-        //         that.select_page(index);
-        //     });
         var tab_text = document.createElement('a');
         tab_text.setAttribute('href', '#' + uuid);
         tab_text.setAttribute('data-toggle', 'tab');
-        tab_text.innerText = 'Page ' + index;
+        tab_text.textContent = 'Page ' + index;
         tab.appendChild(tab_text);
         tab_text.onclick = () => {
           that.model.set("selected_index", index, {updated_view: that});
@@ -303,14 +288,8 @@ var TabView = widget.DOMWidgetView.extend({
 
         tab.tab_text_index = that.containers.push(tab_text) - 1;
 
-        // var dummy = $('<div />');
         var dummy = document.createElement('div');
 
-        // var contents_div = $('<div />', {id: uuid})
-        //     .addClass('tab-pane')
-        //     .addClass('fade')
-        //     .append(dummy)
-        //     .appendTo(that.$tab_contents);
         var contents_div = document.createElement('div');
         contents_div.id = uuid;
         contents_div.classList.add('tab-pane');

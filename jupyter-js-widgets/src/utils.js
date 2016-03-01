@@ -18,6 +18,7 @@ function uuid() {
     s[12] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
     s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
 
+    console.log('uuid: ' + s.join(""));
     return s.join("");
 }
 
@@ -139,7 +140,7 @@ function typeset(element, text) {
     //     return MathJax.Hub.Queue(["Typeset", MathJax.Hub, this]);
     // });
     if (arguments.length > 1) {
-      element.innerText = text;
+      element.textContent = text;
     }
     if (!window.MathJax) {
       return;
@@ -152,9 +153,8 @@ function typeset(element, text) {
  * escape text to HTML
  */
 var escape_html = function (text) {
-    // return $("<div/>").text(text).html();
     let esc  = document.createElement('div');
-    esc.innerText = text;
+    esc.innerHTML = text;
     return esc.innerHTML;
 };
 
