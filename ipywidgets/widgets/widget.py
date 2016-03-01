@@ -234,6 +234,7 @@ class Widget(LoggingConfigurable):
             Widget.widgets.pop(self.model_id, None)
             self.comm.close()
             self.comm = None
+            self._ipython_display_ = None
 
     def _split_state_buffers(self, state):
         """Return (state_without_buffers, buffer_keys, buffers) for binary message parts"""
