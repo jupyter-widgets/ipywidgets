@@ -250,7 +250,6 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-radio');
 
-
         this.label = document.createElement('div');
         this.label.className = 'widget-label';
         this.label.style.display = 'none';
@@ -307,7 +306,6 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
             });
 
             // Remove items that no longer exist.
-            // this.$container.find('input').each(function(i, obj) {
             this.container.getElementsByClassName('input').forEach(function(i, obj) {
                 var value = obj.value;
                 var found = false;

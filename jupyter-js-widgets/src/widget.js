@@ -273,13 +273,14 @@ var WidgetModel = Backbone.Model.extend({
          * ----------
          * method : create, update, patch, delete, read
          *   create/update always send the full attribute set
-         *   patch - only send attributes listed in options.attrs, and if we are queuing
-         *     up messages, combine with previous messages that have not been sent yet
+         *   patch - only send attributes listed in options.attrs, and if we
+         *   are queuing up messages, combine with previous messages that have
+         *   not been sent yet
          * model : the model we are syncing
          *   will normally be the same as `this`
          * options : dict
-         *   the `attrs` key, if it exists, gives an {attr: value} dict that should be synced,
-         *   otherwise, sync all attributes
+         *   the `attrs` key, if it exists, gives an {attr: value} dict that
+         *   should be synced, otherwise, sync all attributes.
          *
          */
         var error = options.error || function() {
@@ -292,9 +293,11 @@ var WidgetModel = Backbone.Model.extend({
 
         var attrs = (method === 'patch') ? options.attrs : model.get_state(options);
 
-        // the state_lock lists attributes that are currently be changed right now from a kernel message
-        // we don't want to send these non-changes back to the kernel, so we delete them out of attrs
-        // (but we only delete them if the value hasn't changed from the value stored in the state_lock
+        // The state_lock lists attributes that are currently being changed
+        // right now from a kernel message.
+        // We don't want to send these non-changes back to the kernel, so we
+        // delete them out of attrs, (but we only delete them if the value
+        // hasn't changed from the value stored in the state_lock).
         if (this.state_lock !== null) {
             var keys = Object.keys(this.state_lock);
             for (var i=0; i<keys.length; i++) {
