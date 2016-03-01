@@ -135,8 +135,9 @@ var WidgetModel = Backbone.Model.extend({
         /**
          * Handle incoming comm msg.
          */
+        // debugger;
         var method = msg.content.data.method;
-
+        if (this.id === undefined) { this.id = msg.content.comm_id; }
         var that = this;
         switch (method) {
             case 'update':

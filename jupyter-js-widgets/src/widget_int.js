@@ -69,16 +69,16 @@ var IntSliderView = widget.DOMWidgetView.extend({
         this.$el.append(this.$slider_container);
         // this.el.appendChild(this.slider_container);
 
-        this.$readout = $('<div/>')
-            .appendTo(this.$el)
-            .addClass('widget-readout')
-            .attr('contentEditable', true)
-            .hide();
-        // this.readout = document.createElement('div');
-        // this.el.appendChild(this.readout);
-        // this.readout.classList.add('widget-readout');
-        // this.readout.contentEditable = true;
-        // this.readout.style.visibility = 'hidden';
+        // this.$readout = $('<div/>')
+        //     .appendTo(this.$el)
+        //     .addClass('widget-readout')
+        //     .attr('contentEditable', true)
+        //     .hide();
+        this.readout = document.createElement('div');
+        this.el.appendChild(this.readout);
+        this.readout.classList.add('widget-readout');
+        this.readout.contentEditable = true;
+        this.readout.style.visibility = 'hidden';
 
         this.listenTo(this.model, 'change:slider_color', function(sender, value) {
             this.$slider.find('a').css('background', value);
