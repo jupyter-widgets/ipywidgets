@@ -17,14 +17,19 @@ var ImageModel = widget.DOMWidgetModel.extend({
 });
 
 var ImageView = widget.DOMWidgetView.extend({
-    render : function() {
+    initialize: function() {
+        /**
+         * Called when view is instantiated.
+         */
+        this.setElement(document.createElement('img'));
+        ImageView.__super__.initialize.apply(this, arguments);
+    },
+
+    render: function() {
         /**
          * Called when view is rendered.
          */
-        var img = document.createElement('img');
-        img.className = 'jupyter-widgets widget-image';
-        this.setElement(img);
-
+        this.el.className = 'jupyter-widgets widget-image';
         this.update(); // Set defaults.
     },
 

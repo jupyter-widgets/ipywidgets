@@ -101,34 +101,31 @@ var ToggleButtonModel = BoolModel.extend({
 });
 
 var ToggleButtonView = widget.DOMWidgetView.extend({
+    initialize: function() {
+        /**
+         * Called when view is instantiated.
+         */
+        this.setElement(document.createElement('button'));
+        ToggleButtonView.__super__.initialize.apply(this, arguments);
+    },
+
     render: function() {
         /**
          * Called when view is rendered.
          */
-        var that = this;
-
-        var btn = document.createElement('button');
-        btn.className = 'jupyter-widgets widget-toggle-button btn btn-default';
-        btn.type = 'button';
-        btn.onclick = function (e) {
-            e.preventDefault();
-            that.handle_click();
-        }
-        this.setElement(btn);
-        this.el['data-toggle'] = 'tooltip';
+        this.el.className = 'jupyter-widgets widget-toggle-button';
         this.listenTo(this.model, 'change:button_style', this.update_button_style, this);
         this.update_button_style();
-
         this.update(); // Set defaults.
     },
 
     update_button_style: function() {
         var class_map = {
-            primary: ['btn-primary'],
-            success: ['btn-success'],
-            info: ['btn-info'],
-            warning: ['btn-warning'],
-            danger: ['btn-danger']
+            primary: ['mod-primary'],
+            success: ['mod-success'],
+            info: ['mod-info'],
+            warning: ['mod-warning'],
+            danger: ['mod-danger']
         };
         this.update_mapped_classes(class_map, 'button_style');
     },
@@ -141,9 +138,9 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
          * changed by another view or by a state update from the back-end.
          */
         if (this.model.get('value')) {
-            this.el.classList.add('active');
+            this.el.classList.add('mod-active');
         } else {
-            this.el.classList.remove('active');
+            this.el.classList.remove('mod-active');
         }
 
         if (options === undefined || options.updated_view != this) {
@@ -165,7 +162,12 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
         return ToggleButtonView.__super__.update.apply(this);
     },
 
-    handle_click: function(e) {
+    events: {
+        // Dictionary of events and their handlers.
+        'click': '_handle_click',
+    },
+
+    _handle_click: function() {
         /**
          * Handles and validates user input.
          *
@@ -173,7 +175,7 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
          * model to update.
          */
         var value = this.model.get('value');
-        this.model.set('value', ! value, {updated_view: this});
+        this.model.set('value', !value, {updated_view: this});
         this.touch();
     },
 });
