@@ -14,6 +14,8 @@ import nose.tools as nt
 
 from ipykernel.comm import Comm
 import ipywidgets as widgets
+
+from traitlets import TraitError
 from ipywidgets import interact, interactive, Widget, interaction
 from ipython_genutils.py3compat import annotate
 
@@ -602,14 +604,6 @@ def test_float_range_logic():
     frsw = widgets.FloatRangeSlider
     w = frsw(value=(.2, .4), min=0., max=.6)
     check_widget(w, cls=frsw, value=(.2, .4), min=0., max=.6)
-    w.value = (.4, .2)
-    check_widget(w, cls=frsw, value=(.2, .4), min=0., max=.6)
-    w.value = (-.1, .7)
-    check_widget(w, cls=frsw, value=(0., .6), min=0., max=.6)
-    w.min = .3
-    check_widget(w, cls=frsw, value=(.3, .6), min=.3, max=.6)
-    w.max = .3
-    check_widget(w, cls=frsw, value=(.3, .3), min=.3, max=.3)
 
     w.min = 0.
     w.max = .6
@@ -620,41 +614,23 @@ def test_float_range_logic():
     check_widget(w, cls=frsw, value=(0., .1), min=0., max=.6)
     w.value = (.5, .6) #upper non-overlapping range
     check_widget(w, cls=frsw, value=(.5, .6), min=0., max=.6)
-    w.value = (-.1, .4) #semi out-of-range
-    check_widget(w, cls=frsw, value=(0., .4), min=0., max=.6)
     w.lower = .2
-    check_widget(w, cls=frsw, value=(.2, .4), min=0., max=.6)
-    w.value = (-.2, -.1) #wholly out of range
-    check_widget(w, cls=frsw, value=(0., 0.), min=0., max=.6)
-    w.value = (.7, .8)
-    check_widget(w, cls=frsw, value=(.6, .6), min=.0, max=.6)
+    check_widget(w, cls=frsw, value=(.2, .6), min=0., max=.6)
 
-    with nt.assert_raises(ValueError):
+    with nt.assert_raises(TraitError):
         w.min = .7
-    with nt.assert_raises(ValueError):
+    with nt.assert_raises(TraitError):
         w.max = -.1
-    with nt.assert_raises(ValueError):
-        w.lower = .5
-    with nt.assert_raises(ValueError):
-        w.upper = .1
+    with nt.assert_raises(TraitError):
+        w.lower = -.1
+    with nt.assert_raises(TraitError):
+        w.upper = .7
 
-    w = frsw(min=2, max=3)
+    w = frsw(min=2, max=3, value=(2.2, 2.5))
     check_widget(w, min=2, max=3)
-    w = frsw(min=1., max=2.)
-    check_widget(w, lower=1.25, upper=1.75, value=(1.25, 1.75))
 
-    with nt.assert_raises(ValueError):
-        frsw(value=(2, 4), lower=3)
-    with nt.assert_raises(ValueError):
-        frsw(value=(2, 4), upper=3)
-    with nt.assert_raises(ValueError):
-        frsw(value=(2, 4), lower=3, upper=3)
-    with nt.assert_raises(ValueError):
+    with nt.assert_raises(TraitError):
         frsw(min=.2, max=.1)
-    with nt.assert_raises(ValueError):
-        frsw(lower=5)
-    with nt.assert_raises(ValueError):
-        frsw(upper=5)
 
 
 def test_multiple_selection():
