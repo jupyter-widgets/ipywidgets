@@ -323,6 +323,16 @@ WidgetManager.prototype.display_view = function(msg, view, options) {
     }
 };
 
+WidgetManager.prototype.setViewOptions = function(options) {
+    var options = options || {};
+    // If a view is passed into the method, use that view's cell as
+    // the cell for the view that is created.
+    if (options.parent !== undefined) {
+        options.cell = options.parent.options.cell;
+    }
+    return options;
+}
+
 WidgetManager.prototype.get_msg_cell = function (msg_id) {
     var cell = null;
     // First, check to see if the msg was triggered by cell execution.
@@ -501,6 +511,43 @@ WidgetManager.prototype._create_comm = function(comm_target_name, model_id, meta
         }
     });
 };
+
+
+WidgetManager.prototype.callbacks = function (view) {
+    /**
+     * callback handlers specific a view
+     */
+    var callbacks = {};
+    if (view && view.options.cell) {
+
+        // Try to get output handlers
+        var cell = view.options.cell;
+        var handle_output = null;
+        var handle_clear_output = null;
+        if (cell.output_area) {
+            handle_output = _.bind(cell.output_area.handle_output, cell.output_area);
+            handle_clear_output = _.bind(cell.output_area.handle_clear_output, cell.output_area);
+        }
+
+        // Create callback dictionary using what is known
+        var that = this;
+        callbacks = {
+            iopub : {
+                output : handle_output,
+                clear_output : handle_clear_output,
+
+                // Special function only registered by widget messages.
+                // Allows us to get the cell for a message so we know
+                // where to add widgets if the code requires it.
+                get_cell : function () {
+                    return cell;
+                },
+            },
+        };
+    }
+    return callbacks;
+};
+
 
 WidgetManager.prototype._get_comm_info = function() {
     /**

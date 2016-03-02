@@ -670,7 +670,7 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         this.readout.classList.add('widget-readout');
         this.readout.style.display = 'none';
 
-        this.listenTo(this.model, 'change:slider_handleTextChangecolor', function(sender, value) {
+        this.listenTo(this.model, 'change:slider_color', function(sender, value) {
             var a_items = this.slider.getElementsByClassName('a');
             if (a_items.length) {
               a_items[0].style.background = value;
