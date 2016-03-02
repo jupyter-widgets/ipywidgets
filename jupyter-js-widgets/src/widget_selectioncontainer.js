@@ -164,7 +164,7 @@ var AccordionView = widget.DOMWidgetView.extend({
         accordion_toggle.setAttribute('data-toggle', 'collapse');
         accordion_toggle.setAttribute('data-parent', '#' + this.el.id);
         accordion_toggle.setAttribute('href', '#' + uuid);
-        accordion_toggle.onclick = () => {
+        accordion_toggle.onclick = function() {
           that.model.set("selected_index", index, {updated_view: that});
           that.touch();
         };
