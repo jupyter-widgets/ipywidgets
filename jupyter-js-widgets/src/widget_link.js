@@ -57,6 +57,7 @@ var LinkModel = BaseLinkModel.extend({
 
     initialize: function() {
         this.on("change", this.update_bindings, this);
+        this.update_bindings();
     },
 
     update_bindings: function() {
@@ -87,6 +88,7 @@ var DirectionalLinkModel = BaseLinkModel.extend({
 
     initialize: function() {
         this.on("change", this.update_bindings, this);
+        this.update_bindings();
     },
 
     update_bindings: function() {
