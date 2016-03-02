@@ -43,8 +43,8 @@ var ButtonView = widget.DOMWidgetView.extend({
          * Called when the model is changed. The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        this.el['disabled'] = this.model.get('disabled');
-        this.el['title'] = this.model.get('tooltip');
+        this.el.disabled = this.model.get('disabled');
+        this.el.setAttribute('title', this.model.get('tooltip'));
 
         var description = this.model.get('description');
         var icon = this.model.get('icon');
@@ -58,7 +58,6 @@ var ButtonView = widget.DOMWidgetView.extend({
                 this.el.classList.add(icon);
             }
         }
-
         return ButtonView.__super__.update.apply(this);
     },
 

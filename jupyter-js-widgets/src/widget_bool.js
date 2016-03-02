@@ -143,9 +143,9 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
             this.el.classList.remove('mod-active');
         }
 
-        if (options === undefined || options.updated_view != this) {
+        if (options === undefined || options.updated_view !== this) {
             this.el.disabled = this.model.get('disabled');
-            this.el.title = this.model.get('tooltip');
+            this.el.setAttribute('title', this.model.get('tooltip'));
 
             var description = this.model.get('description');
             var icon = this.model.get('icon');
@@ -153,10 +153,11 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
                 this.el.innerHTML = '&nbsp;'; // Preserve button height
             } else {
                 this.el.textContent = description;
-
-                var i = document.createElement('i');
-                this.el.insertBefore(i, this.el.firstChild);
-                i.classList.add(icon);
+                if (icon.trim().length) {
+                    var i = document.createElement('i');
+                    this.el.insertBefore(i, this.el.firstChild);
+                    this.el.classList.add(icon);
+                }
             }
         }
         return ToggleButtonView.__super__.update.apply(this);
