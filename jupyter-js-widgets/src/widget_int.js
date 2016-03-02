@@ -53,7 +53,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
         this.$slider = $('<div />')
             .slider({
                 slide: this.handleSliderChange.bind(this),
-                stop: this.handleSliderChange.bind(this)
+                stop: this.handleSliderChanged.bind(this)
             })
             .addClass('slider');
 
@@ -70,7 +70,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
         this.readout.contentEditable = true;
         this.readout.style.visibility = 'hidden';
 
-        this.listenTo(this.model, 'change:slider_handleTextChangecolor', function(sender, value) {
+        this.listenTo(this.model, 'change:slider_color', function(sender, value) {
             this.$slider.find('a').css('background', value);
         }, this);
         this.listenTo(this.model, 'change:description', function(sender, value) {

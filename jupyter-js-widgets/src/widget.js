@@ -81,25 +81,11 @@ var WidgetModel = Backbone.Model.extend({
             comm.on_close(_.bind(this._handle_comm_closed, this));
             comm.on_msg(_.bind(this._handle_comm_msg, this));
 
-            this.set_comm_live(true);
+            this.comm_live = true;
         } else {
             this.comm_live = false;
         }
 
-        // Listen for the events that lead to the websocket being terminated.
-        var that = this;
-        var died = function() {
-            that.set_comm_live(false);
-        };
-
-        // TODO: Move this logic into manager-base, so users can override it.
-        // Also, notebook related logic should not live in widget!!!
-        if (widget_manager.notebook) {
-            widget_manager.notebook.events.on('kernel_disconnected.Kernel', died);
-            widget_manager.notebook.events.on('kernel_killed.Kernel', died);
-            widget_manager.notebook.events.on('kernel_restarting.Kernel', died);
-            widget_manager.notebook.events.on('kernel_dead.Kernel', died);
-        }
         WidgetModel.__super__.constructor.apply(this, [attributes]);
     },
 
@@ -111,16 +97,6 @@ var WidgetModel = Backbone.Model.extend({
             var data = {method: 'custom', content: content};
             this.comm.send(data, callbacks, {}, buffers);
             this.pending_msgs++;
-        }
-    },
-
-    set_comm_live: function(live) {
-        /**
-         * Change the comm_live state of the model.
-         */
-        if (this.comm_live === undefined || this.comm_live != live) {
-            this.comm_live = live;
-            this.trigger(live ? 'comm:live' : 'comm:dead', {model: this});
         }
     },
 
@@ -455,14 +431,6 @@ var WidgetViewMixin = {
          * Public constructor.
          */
         this.listenTo(this.model, 'change', this.update, this);
-
-        // Bubble the comm live events.
-        this.listenTo(this.model, 'comm:live', function() {
-            this.trigger('comm:live', this);
-        }, this);
-        this.listenTo(this.model, 'comm:dead', function() {
-            this.trigger('comm:dead', this);
-        }, this);
 
         this.options = parameters.options;
         /**
