@@ -18,18 +18,21 @@ var ButtonModel = widget.DOMWidgetModel.extend({
 });
 
 var ButtonView = widget.DOMWidgetView.extend({
+    initialize: function() {
+        /**
+         * Called when view is instantiated.
+         */
+        this.setElement(document.createElement('button'));
+        ButtonView.__super__.initialize.apply(this, arguments);
+    },
+
     render: function() {
         /**
          * Called when view is rendered.
          */
-        var btn = document.createElement('button');
-        btn.className = 'jupyter-widgets widget-button';
-        this.setElement(btn);
-
-        this.el['data-toggle'] = 'tooltip';
+        this.el.className = 'jupyter-widgets widget-button';
         this.listenTo(this.model, 'change:button_style', this.update_button_style, this);
         this.update_button_style();
-
         this.update(); // Set defaults.
     },
 
@@ -61,11 +64,11 @@ var ButtonView = widget.DOMWidgetView.extend({
 
     update_button_style: function() {
         var class_map = {
-            primary: ['widget-button-primary'],
-            success: ['widget-button-success'],
-            info: ['widget-button-info'],
-            warning: ['widget-button-warning'],
-            danger: ['widget-button-danger']
+            primary: ['mod-primary'],
+            success: ['mod-success'],
+            info: ['mod-info'],
+            warning: ['mod-warning'],
+            danger: ['mod-danger']
         };
         this.update_mapped_classes(class_map, 'button_style');
     },
