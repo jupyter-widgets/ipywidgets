@@ -191,7 +191,7 @@ ManagerBase.prototype.new_widget = function(options, serialized_state) {
             options_clone.model_id = utils.uuid();
         }
         return that.new_model(options_clone, serialized_state);
-    }).catch((error) => {
+    }).catch(function(error) {
       console.log("Widget creation error: ", error);
     });
 };

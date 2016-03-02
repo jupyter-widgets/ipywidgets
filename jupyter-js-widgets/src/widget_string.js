@@ -100,8 +100,13 @@ var TextareaView = widget.DOMWidgetView.extend({
         this.el.appendChild(this.textbox);
 
         this.update(); // Set defaults.
-        this.listenTo(this.model, 'msg:custom', () => { this._handle_textarea_msg() }); //TODO: ??
-        this.listenTo(this.model, 'change:placeholder', function(model, value, options) {
+        var model = this;
+        this.listenTo(this.model, 'msg:custom', function() {
+          model._handle_textarea_msg()
+        });
+        this.listenTo(this.model,
+                      'change:placeholder',
+                      function(model, value, options) {
             this.update_placeholder(value);
         }, this);
 

@@ -27,6 +27,7 @@ var DropdownModel = SelectionModel.extend({
 
 var DropdownView = widget.DOMWidgetView.extend({
     render : function() {
+        var model = this;
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-dropdown');
@@ -50,7 +51,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         this.dropbutton.classList.add('dropdown-toggle');
         this.dropbutton.classList.add('widget-combo-carrot-btn');
         this.dropbutton.setAttribute('data-toggle', 'dropdown');
-        this.dropbutton.onclick = () => {this._showDropdown.bind(this); };
+        this.dropbutton.onclick = function() { model._showDropdown.bind(model); };
         var caret = document.createElement('span');
         caret.classList.add('caret');
         this.dropbutton.appendChild(caret);
@@ -113,43 +114,31 @@ var DropdownView = widget.DOMWidgetView.extend({
         if (options === undefined || options.updated_view != this) {
             var selected_item_text = this.model.get('selected_label');
             if (selected_item_text.trim().length === 0) {
-                // this.$droplabel.html("&nbsp;");
                 this.droplabel.innerHTML = "&nbsp;";
             } else {
-                // this.$droplabel.text(selected_item_text);
                 this.droplabel.textContent = selected_item_text;
             }
 
             var items = this.model.get('_options_labels');
-            // var $replace_droplist = $('<ul />')
-            //     .addClass('dropdown-menu');
             var replace_droplist = document.createElement(ul);
             replace_droplist.classList.add('dropdown-menu');
 
             // Copy the style
-            // $replace_droplist.attr('style', this.$droplist.attr('style'));
             replace_droplist.setAttribute('style', this.droplist.style);
             var that = this;
             _.each(items, function(item, i) {
-                // var item_button = $('<a href="#"/>')
-                //     .text(item)
-                //     .on('click', $.proxy(that.handle_click, that));
                 var item_button = document.createElement('a');
                 item_button.textContent = item;
-                item_button.onclick = () => { that.handle_click(); }; // TODO - confirm.
+                item_button.onclick = () => { that.handle_click(); };
 
-                // $replace_droplist.append($('<li />').append(item_button));
                 var btn_li = document.createElement('li');
                 btn_li.appendChild(item_button);
                 replace_droplist.appendChild(btn_li);
             });
 
-
             this.$droplist.replaceWith($replace_droplist);
             var parent = this.droplist.parentNode;
             parent.replaceChild(replace_droplist, this.droplist);
-
-            // this.$droplist.remove();
             parent.removeChild(this.droplist);
 
             this.droplist = replace_droplist;
@@ -194,16 +183,10 @@ var DropdownView = widget.DOMWidgetView.extend({
          * Set a css attr of the widget view.
          */
         if (name.substring(0, 6) == 'border' || name == 'background' || name == 'color') {
-            // this.$droplabel.css(name, value);
             this.droplabel.style[name] = value;
-
-            // this.$dropbutton.css(name, value);
             this.dropbutton.style[name] = value;
-
-            // this.$droplist.css(name, value);
             this.droplist.style[name] = value;
         } else {
-            // this.$el.css(name, value);
             this.el.style[name] = value;
         }
     },
@@ -215,7 +198,6 @@ var DropdownView = widget.DOMWidgetView.extend({
          * Calling model.set will trigger all of the other views of the
          * model to update.
          */
-        // this.model.set('selected_label', $(e.target).text(), {updated_view: this});
         this.model.set(
             'selected_label',
             document.querySelectorAll(e.target).textContent,
@@ -288,7 +270,7 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
                     radio.value = item;
                     radio.setAttribute('data-value', encodeURIComponent(item));
                     that.label.appendChild(radio);
-                    radio.onclick = () => { that.handle_click(); };
+                    radio.onclick = function() { that.handle_click(); };
                 }
 
                 var item_elements = that.container.getElementsByClassName(item_query);
@@ -581,7 +563,7 @@ var SelectView = widget.DOMWidgetView.extend({
                     option.textContent = item.replace ? item.replace(/ /g, '\xa0') : item;
                     option.setAttribute('data-value', encodeURIComponent(item));
                     option.value = item;
-                    option.onclick = () => {that.handle_click.bind(that); };
+                    option.onclick = function() { that.handle_click.bind(that); };
                     that.listbox.appendChild(option);
                 }
             });
