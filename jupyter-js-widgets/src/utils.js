@@ -131,7 +131,7 @@ function reject(message, log) {
  *
  * If MathJax is not available, make no changes.
  *
- * Returns the output any number of typeset elements, or undefined if
+ * Returns the output any number of typeset elements as an array or undefined if
  * MathJax was not available.
  *
  * Parameters
@@ -141,13 +141,28 @@ function reject(message, log) {
  */
 function typeset(element, text) {
     if (arguments.length > 1) {
-      element.textContent = text;
+        if (element.length) {
+            for (var i = 0; i < element.length; ++i) {
+                var el = element[i];
+                el.textContent = text;
+            }
+        } else {
+            element.textContent = text;
+        }
     }
     if (!window.MathJax) {
       return;
     }
-
-    return MathJax.Hub.Queue(["TypeSet", MathJax.Hub, element]);
+    var output = [];
+    if (element.length) {
+        for (var i = 0; i < element.length; ++i) {
+            var el = element[i];
+            output.push(MathJax.Hub.Queue(['Typeset', MathJax.Hub, el]));
+        }
+    } else {
+        output.push(MathJax.Hub.Queue(['Typeset', MathJax.Hub, element]));
+    }
+    return output;
 }
 
 /**
