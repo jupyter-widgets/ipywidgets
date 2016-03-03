@@ -213,7 +213,7 @@ class _BoundedFloatRange(_FloatRange):
 
 @register('Jupyter.FloatRangeSlider')
 class FloatRangeSlider(_BoundedFloatRange):
-    """ Slider/trackbar for displaying a floating value range (within the specified range of values).
+    """ Slider/trackbar that represents a pair of floats bounded by minimum and maximum value.
 
 	Parameters
 	----------
