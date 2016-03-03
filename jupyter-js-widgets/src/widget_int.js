@@ -504,7 +504,7 @@ var ProgressModel = BoundedIntModel.extend({
     defaults: _.extend({}, BoundedIntModel.prototype.defaults, {
         _model_name: 'ProgressModel',
         _view_name: 'ProgressView',
-        orientation: 'horisontal',
+        orientation: 'horizontal',
         bar_style: ''
     }),
 });

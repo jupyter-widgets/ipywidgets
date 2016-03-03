@@ -257,7 +257,7 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
             var disabled = this.model.get('disabled');
             var that = this;
             _.each(items, function(item, index) {
-                var item_query = ' :input[data-value='' + encodeURIComponent(item) + '']';
+                var item_query = ' :input[data-value="' + encodeURIComponent(item) + '"]';
                 if (that.el.getElementsByClassName(item_query).length === 0) {
                     var label = document.createElement('label');
                     label.classList.add('radio');
@@ -396,7 +396,7 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
                 } else {
                     item_html = utils.escape_html(item);
                 }
-                var item_query = '[data-value='' + encodeURIComponent(item) + '']';
+                var item_query = '[data-value="' + encodeURIComponent(item) + '"]';
                 var item_elements = that.buttongroup.getElementsByClassName(item_query);
 
                 if (item_elements.length > 0) {
@@ -557,7 +557,7 @@ var SelectView = widget.DOMWidgetView.extend({
             var items = this.model.get('_options_labels');
             var that = this;
             _.each(items, function(item, index) {
-               var item_query = 'option[data-value='' + encodeURIComponent(item) + '']';
+               var item_query = 'option[data-value="' + encodeURIComponent(item) + '"]';
                 if (that.listbox.getElementsByClassName(item_query).length === 0) {
                     var option = document.createElement('option');
                     option.textContent = item.replace ? item.replace(/ /g, '\xa0') : item;
