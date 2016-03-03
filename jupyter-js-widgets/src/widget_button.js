@@ -51,12 +51,13 @@ var ButtonView = widget.DOMWidgetView.extend({
         if (description.trim().length === 0 && icon.trim().length === 0) {
             this.el.innerHTML = '&nbsp;'; // Preserve button height
         } else {
-            this.el.innerText = description;
+            this.el.textContent = '';
             if (icon.trim().length) {
                 var i = document.createElement('i');
-                this.el.insertBefore(i, this.el.firstChild);
+                this.el.appendChild(i);
                 this.el.classList.add(icon);
             }
+            this.el.appendChild(document.createTextNode(description));
         }
         return ButtonView.__super__.update.apply(this);
     },
