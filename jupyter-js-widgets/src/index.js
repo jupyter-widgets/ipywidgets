@@ -5,8 +5,8 @@
 global.jQuery = global.$ = require('./jquery');
 var _ = require('underscore');
 
-var managerBase = require("./manager-base");
-var widget = require("./widget");
+var managerBase = require('./manager-base');
+var widget = require('./widget');
 
 /**
  * Registers all of the widget models and views in an object.
@@ -28,27 +28,27 @@ function register(module) {
 
 module.exports = {
     shims: {
-        services: require("./services-shim")
+        services: require('./services-shim')
     }
 };
 
 var loadedModules = [
     managerBase,
-    require("./utils"),
+    require('./utils'),
     register(widget),
-    register(require("./widget_layout")),
-    register(require("./widget_link")),
-    register(require("./widget_bool")),
-    register(require("./widget_button")),
-    register(require("./widget_box")),
-    register(require("./widget_float")),
-    register(require("./widget_image")),
-    register(require("./widget_int")),
-    register(require("./widget_color")),
-    register(require("./widget_selection")),
-    register(require("./widget_selectioncontainer")),
-    register(require("./widget_string")),
-    register(require("./widget_controller")),
+    register(require('./widget_layout')),
+    register(require('./widget_link')),
+    register(require('./widget_bool')),
+    register(require('./widget_button')),
+    register(require('./widget_box')),
+    register(require('./widget_float')),
+    register(require('./widget_image')),
+    register(require('./widget_int')),
+    register(require('./widget_color')),
+    register(require('./widget_selection')),
+    register(require('./widget_selectioncontainer')),
+    register(require('./widget_string')),
+    register(require('./widget_controller'))
 ];
 for (var i in loadedModules) {
     if (loadedModules.hasOwnProperty(i)) {

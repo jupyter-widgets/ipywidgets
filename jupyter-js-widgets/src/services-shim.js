@@ -6,7 +6,7 @@
  * old comm API.  Use this, jupyter-js-services, and the widget base manager to
  * embed live widgets in a context outside of the notebook.
  */
-"use strict";
+'use strict';
 
 var utils = require('./utils');
 var _ = require('underscore');
@@ -60,7 +60,7 @@ CommManager.prototype.register_target = function (target_name, f) {
             var response = f(comm, msg);
         } catch (e) {
             comm.close();
-            var wrapped_error = new utils.WrappedError("Exception opening new comm", e);
+            var wrapped_error = new utils.WrappedError('Exception opening new comm', e);
             console.error(wrapped_error);
             return;
         }
