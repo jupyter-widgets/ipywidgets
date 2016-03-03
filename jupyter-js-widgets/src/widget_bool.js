@@ -214,25 +214,21 @@ var ValidView = widget.DOMWidgetView.extend({
          */
         var icon, color, readout;
         if (this.model.get('value')) {
-            icon = 'fa-check';
+            icon = 'mod-check';
             color = 'green';
             readout = '';
         } else {
-            icon = 'fa-close';
+            icon = 'mod-close';
             color = 'red';
             readout = this.model.get('readout');
         }
-        this.el.textContent = readout;
 
         var i = document.createElement('i');
-        i.classList.add('fa');
-        this.el.insertBefore(i, this.el.firstChild);
+        this.el.appendChild(i);
         i.classList.add(icon);
 
-        var that = this;
-        this.displayed.then(function() {
-            that.el.style.color = color;
-        });
+        this.el.style.color = color;
+        this.el.appendChild(document.createTextNode(readout));
     }
 });
 
