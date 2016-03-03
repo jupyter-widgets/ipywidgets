@@ -214,11 +214,11 @@ var ValidView = widget.DOMWidgetView.extend({
          */
         var icon, color, readout;
         if (this.model.get('value')) {
-            icon = 'mod-check';
+            icon = 'mod-valid';
             color = 'green';
             readout = '';
         } else {
-            icon = 'mod-close';
+            icon = 'mod-invalid';
             color = 'red';
             readout = this.model.get('readout');
         }
