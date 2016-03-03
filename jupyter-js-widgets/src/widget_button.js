@@ -43,22 +43,22 @@ var ButtonView = widget.DOMWidgetView.extend({
          * Called when the model is changed. The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        this.el['disabled'] = this.model.get('disabled');
-        this.el['title'] = this.model.get('tooltip');
+        this.el.disabled = this.model.get('disabled');
+        this.el.setAttribute('title', this.model.get('tooltip'));
 
         var description = this.model.get('description');
         var icon = this.model.get('icon');
         if (description.trim().length === 0 && icon.trim().length === 0) {
             this.el.innerHTML = '&nbsp;'; // Preserve button height
         } else {
-            this.el.innerText = description;
+            this.el.textContent = '';
             if (icon.trim().length) {
                 var i = document.createElement('i');
-                this.el.insertBefore(i, this.el.firstChild);
+                this.el.appendChild(i);
                 this.el.classList.add(icon);
             }
+            this.el.appendChild(document.createTextNode(description));
         }
-
         return ButtonView.__super__.update.apply(this);
     },
 
@@ -78,10 +78,11 @@ var ButtonView = widget.DOMWidgetView.extend({
         'click': '_handle_click',
     },
 
-    _handle_click: function() {
+    _handle_click: function(event) {
         /**
          * Handles when the button is clicked.
          */
+        event.preventDefault();
         this.send({event: 'click'});
     },
 });

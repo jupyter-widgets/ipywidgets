@@ -22,7 +22,7 @@ var CheckboxModel = BoolModel.extend({
 });
 
 var CheckboxView = widget.DOMWidgetView.extend({
-    render: function(){
+    render: function() {
         /**
          * Called when view is rendered.
          */
@@ -32,7 +32,6 @@ var CheckboxView = widget.DOMWidgetView.extend({
 
         this.checkbox = document.createElement('input');
         this.checkbox.setAttribute('type', 'checkbox');
-        this.checkbox.addEventListener('click', this.handle_click.bind(this));
         this.el.appendChild(this.checkbox);
 
         this.label = document.createElement('div');
@@ -47,14 +46,19 @@ var CheckboxView = widget.DOMWidgetView.extend({
         /**
          * Set a css attr of the widget view.
          */
-        if (name == 'padding' || name == 'margin') {
+        if (name === 'padding' || name === 'margin') {
             this.el.style[name] = value;
         } else {
             this.checkbox.style[name] = value;
         }
     },
 
-    handle_click: function() {
+    events: {
+        // Dictionary of events and their handlers.
+        'click input[type="checkbox"]': '_handle_click'
+    },
+
+    _handle_click: function() {
         /**
          * Handles when the checkbox is clicked.
          *
@@ -62,11 +66,11 @@ var CheckboxView = widget.DOMWidgetView.extend({
          * model to update.
          */
         var value = this.model.get('value');
-        this.model.set('value', ! value, {updated_view: this});
+        this.model.set('value', !value, {updated_view: this});
         this.touch();
     },
 
-    update: function(options){
+    update: function(options) {
         /**
          * Update the contents of this view
          *
@@ -143,20 +147,22 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
             this.el.classList.remove('mod-active');
         }
 
-        if (options === undefined || options.updated_view != this) {
+        if (options === undefined || options.updated_view !== this) {
             this.el.disabled = this.model.get('disabled');
-            this.el.title = this.model.get('tooltip');
+            this.el.setAttribute('title', this.model.get('tooltip'));
 
             var description = this.model.get('description');
             var icon = this.model.get('icon');
             if (description.trim().length === 0 && icon.trim().length ===0) {
                 this.el.innerHTML = '&nbsp;'; // Preserve button height
             } else {
-                this.el.textContent = description;
-
-                var i = document.createElement('i');
-                this.el.insertBefore(i, this.el.firstChild);
-                i.classList.add(icon);
+                this.el.textContent = '';
+                if (icon.trim().length) {
+                    var i = document.createElement('i');
+                    this.el.appendChild(i);
+                    this.el.classList.add(icon);
+                }
+                this.el.appendChild(document.createTextNode(description));
             }
         }
         return ToggleButtonView.__super__.update.apply(this);
@@ -167,13 +173,14 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
         'click': '_handle_click',
     },
 
-    _handle_click: function() {
+    _handle_click: function(event) {
         /**
          * Handles and validates user input.
          *
          * Calling model.set will trigger all of the other views of the
          * model to update.
          */
+        event.preventDefault();
         var value = this.model.get('value');
         this.model.set('value', !value, {updated_view: this});
         this.touch();
@@ -195,7 +202,6 @@ var ValidView = widget.DOMWidgetView.extend({
          */
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-valid');
-        this.listenTo(this.model, 'change', this.update, this);
         this.update();
     },
 
