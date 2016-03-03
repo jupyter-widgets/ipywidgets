@@ -75,7 +75,7 @@ var ButtonView = widget.DOMWidgetView.extend({
 
     events: {
         // Dictionary of events and their handlers.
-        'click': '_handle_click',
+        'click': '_handle_click'
     },
 
     _handle_click: function(event) {

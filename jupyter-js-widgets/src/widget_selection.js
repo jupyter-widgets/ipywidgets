@@ -1,27 +1,27 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var utils = require("./utils");
+var widget = require('./widget');
+var utils = require('./utils');
 var $ = require('./jquery');
-var _ = require("underscore");
+var _ = require('underscore');
 
 var SelectionModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: "SelectionModel",
-        selected_label: "",
+        _model_name: 'SelectionModel',
+        selected_label: '',
         _options_labels: [],
         disabled: false,
-        description: "",
+        description: ''
     }),
 });
 
 var DropdownModel = SelectionModel.extend({
     defaults: _.extend({}, SelectionModel.prototype.defaults, {
-        _model_name: "DropdownModel",
-        _view_name: "DropdownView",
-        button_style: ""
+        _model_name: 'DropdownModel',
+        _view_name: 'DropdownView',
+        button_style: ''
     }),
 });
 
@@ -61,7 +61,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         this.droplist.classList.add('dropdown-menu');
         this.buttongroup.appendChild(this.droplist);
 
-        this.listenTo(this.model, "change:button_style", this.update_button_style, this);
+        this.listenTo(this.model, 'change:button_style', this.update_button_style, this);
         this.update_button_style();
 
         // Set defaults.
@@ -72,7 +72,7 @@ var DropdownView = widget.DOMWidgetView.extend({
      * Show the dropdown list.
      *
      * If the dropdown list doesn't fit below the dropdown label, this will
-     * cause the dropdown to be dropped "up".
+     * cause the dropdown to be dropped 'up'.
      * @param  {Event} e
      */
     _showDropdown: function(e) {
@@ -114,7 +114,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         if (options === undefined || options.updated_view != this) {
             var selected_item_text = this.model.get('selected_label');
             if (selected_item_text.trim().length === 0) {
-                this.droplabel.innerHTML = "&nbsp;";
+                this.droplabel.innerHTML = '&nbsp;';
             } else {
                 this.droplabel.textContent = selected_item_text;
             }
@@ -342,7 +342,7 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
 var ToggleButtonsModel = SelectionModel.extend({
     defaults: _.extend({}, SelectionModel.prototype.defaults, {
         _model_name: 'ToggleButtonsModel',
-        _view_name: 'ToggleButtonsView',
+        _view_name: 'ToggleButtonsView'
     }),
 });
 
@@ -392,7 +392,7 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
             _.each(items, function(item, index) {
                 if (item.trim().length === 0 && (!icons[index] ||
                     icons[index].trim().length === 0)) {
-                    item_html = "&nbsp;";
+                    item_html = '&nbsp;';
                 } else {
                     item_html = utils.escape_html(item);
                 }
@@ -517,8 +517,8 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
 
 var SelectModel = SelectionModel.extend({
     defaults: _.extend({}, SelectionModel.prototype.defaults, {
-        _model_name: "SelectModel",
-        _view_name: "SelectView",
+        _model_name: 'SelectModel',
+        _view_name: 'SelectView'
     }),
 });
 
@@ -634,9 +634,9 @@ var SelectView = widget.DOMWidgetView.extend({
 
 var SelectionSliderModel = SelectionModel.extend({
     defaults: _.extend({}, SelectionModel.prototype.defaults, {
-        _model_name: "SelectionSliderModel",
-        _view_name: "SelectionSliderView",
-        orientation: "horizontal",
+        _model_name: 'SelectionSliderModel',
+        _view_name: 'SelectionSliderView',
+        orientation: 'horizontal',
         readout: true
     }),
 });
@@ -730,7 +730,7 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
          * changed by another view or by a state update from the back-end.
          */
         if (options === undefined || options.updated_view != this) {
-            var labels = this.model.get("_options_labels");
+            var labels = this.model.get('_options_labels');
             var max = labels.length - 1;
             var min = 0;
             // this.$slider.slider('option', 'step', 1); // DW TODO
@@ -749,7 +749,7 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
             // this.$slider.slider('option', 'value', min); // DW TODO
             // this.$slider.slider('option', 'orientation', orientation); // DW TODO
 
-            var selected_label = this.model.get("selected_label");
+            var selected_label = this.model.get('selected_label');
             var index = labels.indexOf(selected_label);
             // this.$slider.slider('option', 'value', index);
 
@@ -799,7 +799,7 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
     events: {
         // Dictionary of events and their handlers.
         'slide': 'handleSliderChange',
-        'slidestop': 'handleSliderChanged',
+        'slidestop': 'handleSliderChanged'
     },
 
     /**
@@ -847,14 +847,14 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
 var MultipleSelectionModel = SelectionModel.extend({
     defaults: _.extend({}, SelectionModel.prototype.defaults, {
         _model_name: 'MultipleSelectionModel',
-        selected_labels: [],
+        selected_labels: []
     }),
 });
 
 var SelectMultipleModel = MultipleSelectionModel.extend({
     defaults: _.extend({}, MultipleSelectionModel.prototype.defaults, {
         _model_name: 'SelectMultipleModel',
-        _view_name: 'SelectMultipleView',
+        _view_name: 'SelectMultipleView'
     }),
 });
 
@@ -932,5 +932,5 @@ module.exports = {
     SelectionSliderModel: SelectionSliderModel,
     MultipleSelectionModel: MultipleSelectionModel,
     SelectMultipleView: SelectMultipleView,
-    SelectMultipleModel: SelectMultipleModel,
+    SelectMultipleModel: SelectMultipleModel
 };

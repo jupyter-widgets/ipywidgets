@@ -1,24 +1,24 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var _ = require("underscore");
+var widget = require('./widget');
+var _ = require('underscore');
 
 var StringModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        value: "",
+        value: '',
         disabled: false,
-        description: "",
-        placeholder: "",
-        _model_name: "StringModel"
+        description: '',
+        placeholder: '',
+        _model_name: 'StringModel'
     }),
 });
 
 var HTMLModel = StringModel.extend({
     defaults: _.extend({}, StringModel.prototype.defaults, {
-        _view_name: "HTMLView",
-        _model_name: "HTMLModel"
+        _view_name: 'HTMLView',
+        _model_name: 'HTMLModel'
     }),
 });
 
@@ -46,8 +46,8 @@ var HTMLView = widget.DOMWidgetView.extend({
 
 var LatexModel = StringModel.extend({
     defaults: _.extend({}, StringModel.prototype.defaults, {
-        _view_name: "LatexView",
-        _model_name: "LatexModel"
+        _view_name: 'LatexView',
+        _model_name: 'LatexModel'
     }),
 });
 
@@ -75,8 +75,8 @@ var LatexView = widget.DOMWidgetView.extend({
 
 var TextareaModel = StringModel.extend({
     defaults: _.extend({}, StringModel.prototype.defaults, {
-        _view_name: "TextareaView",
-        _model_name: "TextareaModel"
+        _view_name: 'TextareaView',
+        _model_name: 'TextareaModel'
     }),
 });
 
@@ -104,11 +104,10 @@ var TextareaView = widget.DOMWidgetView.extend({
         this.listenTo(this.model, 'msg:custom', function() {
           model._handle_textarea_msg()
         });
-        this.listenTo(this.model,
-                      'change:placeholder',
-                      function(model, value, options) {
-            this.update_placeholder(value);
-        }, this);
+        this.listenTo(this.model, 'change:placeholder',
+            function(model, value, options) {
+                this.update_placeholder(value);
+            }, this);
 
         this.update_placeholder();
     },
@@ -117,15 +116,13 @@ var TextareaView = widget.DOMWidgetView.extend({
         /**
          * Handle when a custom msg is recieved from the back-end.
          */
-        if (content.method == "scroll_to_bottom") {
+        if (content.method == 'scroll_to_bottom') {
             this.scroll_to_bottom();
         }
     },
 
     update_placeholder: function(value) {
-        if (!value) {
-            value = this.model.get('placeholder');
-        }
+        value = value || this.model.get('placeholder');
         this.textbox.setAttribute('placeholder', value);
     },
 
@@ -181,8 +178,8 @@ var TextareaView = widget.DOMWidgetView.extend({
 
 var TextModel = StringModel.extend({
     defaults: _.extend({}, StringModel.prototype.defaults, {
-        _view_name: "TextView",
-        _model_name: "TextModel"
+        _view_name: 'TextView',
+        _model_name: 'TextModel'
     }),
 });
 
@@ -247,12 +244,12 @@ var TextView = widget.DOMWidgetView.extend({
 
     events: {
         // Dictionary of events and their handlers.
-        "keyup input"    : "handleChanging",
-        "paste input"    : "handleChanging",
-        "cut input"      : "handleChanging",
-        "keypress input" : "handleKeypress",
-        "blur input" : "handleBlur",
-        "focusout input" : "handleFocusOut"
+        'keyup input'    : 'handleChanging',
+        'paste input'    : 'handleChanging',
+        'cut input'      : 'handleChanging',
+        'keypress input' : 'handleKeypress',
+        'blur input' : 'handleBlur',
+        'focusout input' : 'handleFocusOut'
     },
 
     handleChanging: function(e) {
@@ -314,5 +311,5 @@ module.exports = {
     TextareaView: TextareaView,
     TextareaModel: TextareaModel,
     TextView: TextView,
-    TextModel: TextModel,
+    TextModel: TextModel
 };

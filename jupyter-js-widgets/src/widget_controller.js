@@ -11,7 +11,7 @@ var ControllerButtonModel = widget.DOMWidgetModel.extend({
         _model_name: 'ControllerButtonModel',
         _view_name: 'ControllerButtonView',
         value: 0.0,
-        pressed: false,
+        pressed: false
     }),
 });
 
@@ -47,14 +47,14 @@ var ControllerButtonView = widget.DOMWidgetView.extend({
 
     update: function() {
         this.bar.style.height = 100 * this.model.get('value') + '%';
-    },
+    }
 });
 
 var ControllerAxisModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
         _model_name: 'ControllerAxisModel',
         _view_name: 'ControllerAxisView',
-        value: 0.0,
+        value: 0.0
     }),
 });
 
@@ -108,7 +108,7 @@ var ControllerModel = widget.DOMWidgetModel.extend({
         connected: false,
         timestamp: 0,
         buttons: [],
-        axes: [],
+        axes: []
     }),
 
     initialize: function() {
@@ -164,7 +164,7 @@ var ControllerModel = widget.DOMWidgetModel.extend({
             name: pad.id,
             mapping: pad.mapping,
             connected: pad.connected,
-            timestamp: pad.timestamp,
+            timestamp: pad.timestamp
         });
         // Create buttons and axes. When done, start the update loop
         var that = this;
@@ -188,13 +188,13 @@ var ControllerModel = widget.DOMWidgetModel.extend({
         if (pad && index === pad.index && id === pad.id) {
             this.set({
                 timestamp: pad.timestamp,
-                connected: pad.connected,
+                connected: pad.connected
             });
             this.save_changes();
             this.get('buttons').forEach(function(model, index) {
                 model.set({
                     value: pad.buttons[index].value,
-                    pressed: pad.buttons[index].pressed,
+                    pressed: pad.buttons[index].pressed
                 });
                 model.save_changes();
             });
@@ -223,7 +223,7 @@ var ControllerModel = widget.DOMWidgetModel.extend({
             connected: false,
             timestamp: 0.0,
             buttons: [],
-            axes: [],
+            axes: []
         });
         this.save_changes();
         window.requestAnimationFrame(this.wait_loop.bind(this));
@@ -234,7 +234,7 @@ var ControllerModel = widget.DOMWidgetModel.extend({
          */
         return this.widget_manager.new_widget({
              model_name: 'ControllerButtonModel',
-             widget_class: 'Jupyter.ControllerButton',
+             widget_class: 'Jupyter.ControllerButton'
         }).then(function(model) {
              model.set('description', index);
              return model;
@@ -246,7 +246,7 @@ var ControllerModel = widget.DOMWidgetModel.extend({
          */
         return this.widget_manager.new_widget({
              model_name: 'ControllerAxisModel',
-             widget_class: 'Jupyter.ControllerAxis',
+             widget_class: 'Jupyter.ControllerAxis'
         }).then(function(model) {
              model.set('description', index);
              return model;
@@ -256,7 +256,7 @@ var ControllerModel = widget.DOMWidgetModel.extend({
 }, {
     serializers: _.extend({
         buttons: {deserialize: widget.unpack_models},
-        axes: {deserialize: widget.unpack_models},
+        axes: {deserialize: widget.unpack_models}
     }, widget.DOMWidgetModel.serializers)
 });
 
@@ -345,5 +345,5 @@ module.exports = {
     ControllerAxisView: ControllerAxisView,
     ControllerAxisModel: ControllerAxisModel,
     ControllerModel: ControllerModel,
-    ControllerView: ControllerView,
+    ControllerView: ControllerView
 };

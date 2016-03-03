@@ -1,6 +1,6 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
 var widget = require('./widget');
 var $ = require('./jquery');
@@ -226,9 +226,9 @@ var IntSliderView = widget.DOMWidgetView.extend({
      * @return {number|number[]} value
      */
     stringToValue: function(text) {
-        if (this.model.get("_range")) {
+        if (this.model.get('_range')) {
             // range case
-            // ranges can be expressed either "val-val" or "val:val" (+spaces)
+            // ranges can be expressed either 'val-val' or 'val:val' (+spaces)
             var match = this._range_regex.exec(text);
             if (match) {
                 return [this._parse_value(match[1]), this._parse_value(match[2])];
@@ -320,7 +320,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
      */
     handleSliderChange: function(e, ui) {
         var actual_value;
-        if (this.model.get("_range")) {
+        if (this.model.get('_range')) {
             actual_value = ui.values.map(this._validate_slide_value);
             this.readout.textContent = actual_value.join('-');
         } else {
@@ -343,7 +343,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
      */
     handleSliderChanged: function(e, ui) {
         var actual_value;
-        if (this.model.get("_range")) {
+        if (this.model.get('_range')) {
             actual_value = ui.values.map(this._validate_slide_value);
         } else {
             actual_value = this._validate_slide_value(ui.value);
@@ -357,7 +357,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
          * Validate the value of the slider before sending it to the back-end
          * and applying it to the other views on the page.
          *
-         * Double bit-wise not truncates the decimel (int cast).
+         * Double bit-wise not truncates the decimal (int cast).
          */
         return ~~x;
     },
@@ -365,8 +365,8 @@ var IntSliderView = widget.DOMWidgetView.extend({
 
 var IntTextModel = IntModel.extend({
     defaults: _.extend({}, IntModel.prototype.defaults, {
-        _model_name: "IntTextModel",
-        _view_name: "IntTextView"
+        _model_name: 'IntTextModel',
+        _view_name: 'IntTextView'
     }),
 });
 
@@ -502,10 +502,10 @@ var IntTextView = widget.DOMWidgetView.extend({
 
 var ProgressModel = BoundedIntModel.extend({
     defaults: _.extend({}, BoundedIntModel.prototype.defaults, {
-        _model_name: "ProgressModel",
-        _view_name: "ProgressView",
-        orientation: "horisontal",
-        bar_style: ""
+        _model_name: 'ProgressModel',
+        _view_name: 'ProgressView',
+        orientation: 'horizontal',
+        bar_style: ''
     }),
 });
 
@@ -538,8 +538,8 @@ var ProgressView = widget.DOMWidgetView.extend({
         this.update();
         this.updateDescription();
 
-        this.listenTo(this.model, "change:bar_style", this.update_bar_style, this);
-        this.listenTo(this.model, "change:description", function(sender, value) {
+        this.listenTo(this.model, 'change:bar_style', this.update_bar_style, this);
+        this.listenTo(this.model, 'change:description', function(sender, value) {
             this.updateDescription();
         }, this);
 
@@ -604,7 +604,7 @@ var ProgressView = widget.DOMWidgetView.extend({
         /**
          * Set a css attr of the widget view.
          */
-        if (name == "color") {
+        if (name == 'color') {
             this.bar.style.background = value;
         } else if (name.substring(0, 6) == 'border' || name == 'background') {
             this.progress.style[name] = value;
@@ -622,5 +622,5 @@ module.exports = {
     IntTextModel: IntTextModel,
     IntTextView: IntTextView,
     ProgressModel: ProgressModel,
-    ProgressView: ProgressView,
+    ProgressView: ProgressView
 };
