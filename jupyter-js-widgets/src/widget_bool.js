@@ -55,7 +55,7 @@ var CheckboxView = widget.DOMWidgetView.extend({
 
     events: {
         // Dictionary of events and their handlers.
-        'click input[type='checkbox']': '_handle_click'
+        'click input[type="checkbox"]': '_handle_click'
     },
 
     _handle_click: function() {
