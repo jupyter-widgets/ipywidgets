@@ -194,6 +194,13 @@ class _BoundedIntRange(_IntRange):
     max = CInt(100, help="Max value").tag(sync=True)
     min = CInt(0, help="Min value").tag(sync=True)
 
+    def __init__(self, *args, **kwargs):
+        min, max = kwargs.get('min', 0), kwargs.get('max', 100)
+        if not kwargs.get('value', None):
+            kwargs['value'] = (0.75 * min + 0.25 * max,
+                               0.25 * min + 0.75 * max)
+        super(_BoundedIntRange, self).__init__(*args, **kwargs)
+
     @validate('min', 'max')
     def _validate_bounds(self, proposal):
         trait = proposal['trait']

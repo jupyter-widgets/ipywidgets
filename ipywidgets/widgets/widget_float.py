@@ -191,6 +191,13 @@ class _BoundedFloatRange(_FloatRange):
     max = CFloat(100.0, help="Max value").tag(sync=True)
     min = CFloat(0.0, help="Min value").tag(sync=True)
 
+    def __init__(self, *args, **kwargs):
+        min, max = kwargs.get('min', 0.0), kwargs.get('max', 100.0)
+        if not kwargs.get('value', None):
+            kwargs['value'] = (0.75 * min + 0.25 * max,
+                               0.25 * min + 0.75 * max)
+        super(_BoundedFloatRange, self).__init__(*args, **kwargs)
+
     @validate('min', 'max')
     def _validate_bounds(self, proposal):
         trait = proposal['trait']
