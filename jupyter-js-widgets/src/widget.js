@@ -393,8 +393,8 @@ var WidgetModel = Backbone.Model.extend({
 
     on_some_change: function(keys, callback, context) {
         /**
-         * on_some_change(["key1", "key2"], foo, context) differs from
-         * on("change:key1 change:key2", foo, context).
+         * on_some_change(['key1', 'key2'], foo, context) differs from
+         * on('change:key1 change:key2', foo, context).
          * If the widget attributes key1 and key2 are both modified,
          * the second form will result in foo being called twice
          * while the first will call foo only once.
@@ -471,7 +471,8 @@ var WidgetViewMixin = {
          */
         var that = this;
         options = _.extend({ parent: this }, options || {});
-        return this.model.widget_manager.create_view(child_model, options).catch(utils.reject("Couldn't create child view", true));
+        return this.model.widget_manager.create_view(child_model, options)
+            .catch(utils.reject('Couldn\'t create child view', true));
     },
 
     callbacks: function(){
@@ -638,7 +639,7 @@ var DOMWidgetViewMixin = {
                         view.trigger('displayed', that);
                         return view;
                     });
-                }).catch(utils.reject("Couldn't add LayoutView to DOMWidgetView", true));
+                }).catch(utils.reject('Couldn\'t add LayoutView to DOMWidgetView', true));
             });
         }
     },
@@ -835,7 +836,7 @@ var widget = {
 
     // For backwards compatibility.
     WidgetView: WidgetView,
-    DOMWidgetView: DOMWidgetView,
+    DOMWidgetView: DOMWidgetView
 };
 
 module.exports = widget;

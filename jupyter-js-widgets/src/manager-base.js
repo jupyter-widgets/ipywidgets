@@ -1,13 +1,13 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
 // jupyter-js-widgets version
 var version = '4.1.0dev';
 
-var _ = require("underscore");
-var Backbone = require("backbone");
-var utils = require("./utils");
+var _ = require('underscore');
+var Backbone = require('backbone');
+var utils = require('./utils');
 
 //--------------------------------------------------------------------
 // ManagerBase class
@@ -64,7 +64,7 @@ ManagerBase.prototype.display_model = function(msg, model, options) {
 };
 
 ManagerBase.prototype.display_view = function(msg, view, options) {
-    throw new Error("Manager.display_view not implemented");
+    throw new Error('Manager.display_view not implemented');
 };
 
 ManagerBase.prototype.loadClass = function(class_name, module_name, registry) {
@@ -99,7 +99,7 @@ ManagerBase.prototype.create_view = function(model, options) {
             return Promise.resolve(view.render()).then(function() {
                 return view;
             });
-        }).catch(utils.reject("Couldn't create a view for model id '" + String(model.id) + "'", true));
+        }).catch(utils.reject('Couldn\'t create a view for model id ' + String(model.id), true));
     });
     var id = utils.uuid();
     model.views[id] = model.state_change;
@@ -133,7 +133,7 @@ ManagerBase.prototype.handle_comm_open = function (comm, msg) {
         model_name: msg.content.data._model_name,
         model_module: msg.content.data._model_module,
         comm: comm,
-    }, msg.content.data).catch(utils.reject("Couldn't create a model.", true));
+    }, msg.content.data).catch(utils.reject('Couldn\'t create a model.', true));
 };
 
 /**
@@ -172,13 +172,13 @@ ManagerBase.prototype.new_widget = function(options, serialized_state) {
         }
         return that.new_model(options_clone, serialized_state);
     }).catch(function(error) {
-      console.log("Widget creation error: ", error);
+      console.log('Widget creation error: ', error);
     });
 };
 
 /**
  * Parse a version string
- * @param  {string} version i.e. "1.0.2dev" or "2.4"
+ * @param  {string} version i.e. '1.0.2dev' or '2.4'
  * @return {object} version object {major, minor, patch, dev}
  */
 ManagerBase.prototype._parseVersion = function(version) {
@@ -297,7 +297,7 @@ ManagerBase.prototype.new_model = function(options, serialized_state) {
             });
         }, function(error) {
             delete that._models[model_id];
-            var wrapped_error = new utils.WrappedError("Couldn't create model", error);
+            var wrapped_error = new utils.WrappedError('Couldn\'t create model', error);
             return Promise.reject(wrapped_error);
         });
     this._models[model_id] = model_promise;
@@ -388,14 +388,14 @@ ManagerBase.prototype.set_state = function(state) {
                     return that.new_model({
                         comm: new_comm,
                         model_name: state[model_id].model_name,
-                        model_module: state[model_id].model_module,
+                        model_module: state[model_id].model_module
                     });
                 });
             } else { // dead comm
                 return that.new_model({
                     model_id: model_id,
                     model_name: state[model_id].model_name,
-                    model_module: state[model_id].model_module,
+                    model_module: state[model_id].model_module
                 }, state[model_id].state);
             }
         }));
@@ -413,11 +413,11 @@ ManagerBase.prototype.set_state = function(state) {
 };
 
 ManagerBase.prototype._create_comm = function(comm_target_name, model_id, metadata) {
-    return Promise.reject("No backend.");
+    return Promise.reject('No backend.');
 };
 
 ManagerBase.prototype._get_comm_info = function() {
-    return Promise.reject("No backend.");
+    return Promise.reject('No backend.');
 };
 
 module.exports = {

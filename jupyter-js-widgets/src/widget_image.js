@@ -62,5 +62,5 @@ var ImageView = widget.DOMWidgetView.extend({
 
 module.exports = {
     ImageView: ImageView,
-    ImageModel: ImageModel,
+    ImageModel: ImageModel
 };

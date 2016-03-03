@@ -1,19 +1,19 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var utils = require("./utils");
-var _ = require("underscore");
+var widget = require('./widget');
+var utils = require('./utils');
+var _ = require('underscore');
 
 var BoxModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _view_name: "BoxView",
-        _model_name: "BoxModel",
+        _view_name: 'BoxView',
+        _model_name: 'BoxModel',
         children: [],
-        box_style: "",
-        overflow_x: "",
-        overflow_y: "",
+        box_style: '',
+        overflow_x: '',
+        overflow_y: ''
     }),
 }, {
     serializers: _.extend({
@@ -23,14 +23,14 @@ var BoxModel = widget.DOMWidgetModel.extend({
 
 var ProxyModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _view_name: "ProxyView",
-        _model_name: "ProxyModel",
-        child: null,
-    }),
+        _view_name: 'ProxyView',
+        _model_name: 'ProxyModel',
+        child: null
+    })
 }, {
     serializers: _.extend({
         child: {deserialize: widget.unpack_models},
-    }, widget.DOMWidgetModel.serializers),
+    }, widget.DOMWidgetModel.serializers)
 });
 
 var ProxyView = widget.DOMWidgetView.extend({
@@ -45,8 +45,8 @@ var ProxyView = widget.DOMWidgetView.extend({
 
     render: function() {
         var that = this;
-        var child_view = this.set_child(this.model.get("child"));
-        this.listenTo(this.model, "change:child", function(model, value) {
+        var child_view = this.set_child(this.model.get('child'));
+        this.listenTo(this.model, 'change:child', function(model, value) {
             this.set_child(value);
         });
         return child_view;
@@ -71,7 +71,7 @@ var ProxyView = widget.DOMWidgetView.extend({
             this.child_promise = this.child_promise.then(function() {
                 return that.create_child_view(value).then(function(view) {
                     if (that.box === undefined) {
-                        console.error("Widget place holder does not exist");
+                        console.error('Widget place holder does not exist');
                         return;
                     }
                     while (that.box.firstChild) {
@@ -84,8 +84,8 @@ var ProxyView = widget.DOMWidgetView.extend({
                         view.trigger('displayed', that);
                     });
                     that.child = view;
-                    that.trigger("child:created");
-                }).catch(utils.reject("Couldn't add child view to proxy", true));
+                    that.trigger('child:created');
+                }).catch(utils.reject('Couldn\'t add child view to proxy', true));
             });
         }
         return this.child_promise;
@@ -103,22 +103,22 @@ var ProxyView = widget.DOMWidgetView.extend({
 
 var PlaceProxyModel = ProxyModel.extend({
     defaults: _.extend({}, ProxyModel.prototype.defaults, {
-        _view_name: "PlaceProxyView",
-        _model_name: "PlaceProxyModel",
-        selector: "",
+        _view_name: 'PlaceProxyView',
+        _model_name: 'PlaceProxyModel',
+        selector: ''
     }),
 });
 
 var PlaceProxyView = ProxyView.extend({
     initialize: function() {
         PlaceProxyView.__super__.initialize.apply(this, arguments);
-        this.update_selector(this.model, this.model.get("selector"));
-        this.listenTo(this.model, "change:selector", this.update_selector);
+        this.update_selector(this.model, this.model.get('selector'));
+        this.listenTo(this.model, 'change:selector', this.update_selector);
     },
 
     update_selector: function(model, selector) {
         this.box = document.querySelectorAll(selector) || this.el;
-        this.set_child(this.model.get("child"));
+        this.set_child(this.model.get('child'));
     },
 });
 
@@ -199,7 +199,7 @@ var BoxView = widget.DOMWidgetView.extend({
                 view.trigger('displayed', that);
             });
             return view;
-        }).catch(utils.reject("Couldn't add child view to box", true));
+        }).catch(utils.reject('Couldn\'t add child view to box', true));
     },
 
     remove: function() {
@@ -215,11 +215,11 @@ var BoxView = widget.DOMWidgetView.extend({
 
 var FlexBoxModel = BoxModel.extend({ // TODO: Deprecated in 5.0 (entire model)
     defaults: _.extend({}, BoxModel.prototype.defaults, {
-        _view_name: "FlexBoxView",
-        _model_name: "FlexBoxModel",
-        orientation: "vertical",
-        pack: "start",
-        alignt: "start",
+        _view_name: 'FlexBoxView',
+        _model_name: 'FlexBoxModel',
+        orientation: 'vertical',
+        pack: 'start',
+        alignt: 'start'
     }),
 });
 
@@ -237,8 +237,8 @@ var FlexBoxView = BoxView.extend({ // TODO: Deprecated in 5.0 (entire view)
     },
 
     update_orientation: function() {
-        var orientation = this.model.get("orientation");
-        if (orientation == "vertical") {
+        var orientation = this.model.get('orientation');
+        if (orientation == 'vertical') {
             this.box.classList.remove('hbox');
             this.box.classList.add(vbox);
         } else {
@@ -277,5 +277,5 @@ module.exports = {
     ProxyModel: ProxyModel,
     ProxyView: ProxyView,
     PlaceProxyModel: PlaceProxyModel,
-    PlaceProxyView: PlaceProxyView,
+    PlaceProxyView: PlaceProxyView
 };

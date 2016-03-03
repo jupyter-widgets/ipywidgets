@@ -11,7 +11,7 @@ var SelectionContainerModel = box.BoxModel.extend({
     defaults: _.extend({}, box.BoxModel.prototype.defaults, {
         _model_name: 'SelectionContainerModel',
         selected_index: 0,
-        _titles: {},
+        _titles: {}
     }),
 });
 
@@ -62,9 +62,9 @@ var AccordionView = widget.DOMWidgetView.extend({
         var titles = this.model.get('_titles');
         var that = this;
         _.each(titles, function(title, page_index) {
-            var accordian = that.containers[page_index];
-            if (accordian !== undefined) {
-                accordian
+            var accordion = that.containers[page_index];
+            if (accordion !== undefined) {
+                accordion
                     .children('.panel-heading')
                     .find('.accordion-toggle')
                     .text(title);
@@ -165,7 +165,7 @@ var AccordionView = widget.DOMWidgetView.extend({
         accordion_toggle.setAttribute('data-parent', '#' + this.el.id);
         accordion_toggle.setAttribute('href', '#' + uuid);
         accordion_toggle.onclick = function() {
-          that.model.set("selected_index", index, {updated_view: that});
+          that.model.set('selected_index', index, {updated_view: that});
           that.touch();
         };
         accordion_toggle.textContent('Page ' + index);
@@ -206,7 +206,7 @@ var AccordionView = widget.DOMWidgetView.extend({
                 view.trigger('displayed', that);
             });
             return view;
-        }).catch(utils.reject("Couldn't add child view to box", true));
+        }).catch(utils.reject('Couldn\'t add child view to box', true));
     },
 
     remove: function() {
@@ -298,7 +298,7 @@ var TabView = widget.DOMWidgetView.extend({
         tab_text.textContent = 'Page ' + index;
         tab.appendChild(tab_text);
         tab_text.onclick = () => {
-          that.model.set("selected_index", index, {updated_view: that});
+          that.model.set('selected_index', index, {updated_view: that});
           that.touch();
           that.select_page(index);
         };
@@ -394,5 +394,5 @@ module.exports = {
     AccordionModel: AccordionModel,
     AccordionView: AccordionView,
     TabModel: TabModel,
-    TabView: TabView,
+    TabView: TabView
 };

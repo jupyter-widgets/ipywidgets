@@ -11,7 +11,7 @@ var ColorPickerModel = widget.DOMWidgetModel.extend({
         description: '',
         concise: false,
         _model_name: 'ColorPickerModel',
-        _view_name: 'ColorPickerView',
+        _view_name: 'ColorPickerView'
     }),
 });
 
@@ -111,5 +111,5 @@ function rgb3_to_rgb6(rgb) {
 
 module.exports = {
     ColorPickerModel: ColorPickerModel,
-    ColorPickerView: ColorPickerView,
+    ColorPickerView: ColorPickerView
 };

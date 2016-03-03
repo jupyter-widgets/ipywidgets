@@ -55,7 +55,7 @@ var CheckboxView = widget.DOMWidgetView.extend({
 
     events: {
         // Dictionary of events and their handlers.
-        'click input[type="checkbox"]': '_handle_click'
+        'click input[type='checkbox']': '_handle_click'
     },
 
     _handle_click: function() {
@@ -100,7 +100,7 @@ var ToggleButtonModel = BoolModel.extend({
         _model_name: 'ToggleButtonModel',
         tooltip: '',
         icon: '',
-        button_style: '',
+        button_style: ''
     }),
 });
 
@@ -170,7 +170,7 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
 
     events: {
         // Dictionary of events and their handlers.
-        'click': '_handle_click',
+        'click': '_handle_click'
     },
 
     _handle_click: function(event) {
@@ -236,5 +236,5 @@ module.exports = {
     ToggleButtonModel: ToggleButtonModel,
     ToggleButtonView: ToggleButtonView,
     ValidModel: ValidModel,
-    ValidView: ValidView,
+    ValidView: ValidView
 };

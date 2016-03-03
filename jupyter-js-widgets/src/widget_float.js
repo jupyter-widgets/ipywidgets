@@ -1,9 +1,9 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var int_widgets = require("./widget_int");
+var widget = require('./widget');
+var int_widgets = require('./widget_int');
 
 var IntSliderView = int_widgets.IntSliderView;
 var IntTextView = int_widgets.IntTextView;
@@ -29,5 +29,5 @@ var FloatTextView = IntTextView.extend({
 
 module.exports = {
     FloatSliderView: FloatSliderView,
-    FloatTextView: FloatTextView,
+    FloatTextView: FloatTextView
 };
