@@ -77,10 +77,11 @@ var ButtonView = widget.DOMWidgetView.extend({
         'click': '_handle_click',
     },
 
-    _handle_click: function() {
+    _handle_click: function(event) {
         /**
          * Handles when the button is clicked.
          */
+        event.preventDefault();
         this.send({event: 'click'});
     },
 });
