@@ -212,23 +212,20 @@ var ValidView = widget.DOMWidgetView.extend({
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        var icon, color, readout;
+        this.el.textContent = '';
+        this.el.classList.remove('mod-valid');
+        this.el.classList.remove('mod-invalid');
+
+        var icon = document.createElement('i');
+        this.el.appendChild(icon);
+
         if (this.model.get('value')) {
-            icon = 'mod-valid';
-            color = 'green';
-            readout = '';
+            this.el.classList.add('mod-valid');
         } else {
-            icon = 'mod-invalid';
-            color = 'red';
-            readout = this.model.get('readout');
+            var readout = document.createTextNode(this.model.get('readout'));
+            this.el.classList.add('mod-invalid');
+            this.el.appendChild(readout);
         }
-
-        var i = document.createElement('i');
-        this.el.appendChild(i);
-        i.classList.add(icon);
-
-        this.el.style.color = color;
-        this.el.appendChild(document.createTextNode(readout));
     }
 });
 
