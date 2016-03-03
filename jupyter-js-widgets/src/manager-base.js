@@ -99,7 +99,7 @@ ManagerBase.prototype.create_view = function(model, options) {
             return Promise.resolve(view.render()).then(function() {
                 return view;
             });
-        }).catch(utils.reject('Couldn\'t create a view for model id ' + String(model.id), true));
+        }).catch(utils.reject('Couldn\'t create a view for model id ' + model.id, true));
     });
     var id = utils.uuid();
     model.views[id] = model.state_change;
