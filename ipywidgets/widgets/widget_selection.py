@@ -14,10 +14,8 @@ from traitlets import (Unicode, Bool, Any, Dict, TraitError, CaselessStrEnum,
 from ipython_genutils.py3compat import unicode_type
 
 def _value_to_label(value, obj):
-    # Reverse dictionary lookup for the value name
-    for k, v in obj._options_dict.items():
-        if obj.equals(value, v):
-            return k
+    options = obj._make_options(obj.options)
+    return next((k for k, v in options if obj.equals(v, value)), None)
 
 def _label_to_value(k, obj):
     return obj._options_dict[k]
@@ -36,8 +34,9 @@ class _Selection(DOMWidget):
     one may set equals=np.array_equal.
     """
 
-    value = Any(help="Selected value").tag(sync=True, to_json=_value_to_label,
-                from_json=_label_to_value)
+    value = Any(help="Selected value").tag(sync=True,
+                                           to_json=_value_to_label,
+                                           from_json=_label_to_value)
 
     options = Any(help="""List of (key, value) tuples or dict of values that the
         user can select.
@@ -51,7 +50,7 @@ class _Selection(DOMWidget):
     _options_labels = Tuple(read_only=True).tag(sync=True)
     _options_values = Tuple(read_only=True)
 
-    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
+    disabled = Bool(help="Enable or disable user changes").tag(sync=True)
     description = Unicode(help="Description of the value this widget represents").tag(sync=True)
 
     def __init__(self, *args, **kwargs):
@@ -70,7 +69,7 @@ class _Selection(DOMWidget):
                 "Attempted to set options for '{}' widget with an object of type `{}`\n"
                 "Expected a list, tuple or OrderdDict."
             )
-            raise ValueError(msg.format(self.__class__.__name__, type(x)))
+            raise TraitError(msg.format(self.__class__.__name__, type(x)))
 
         # If x is an ordinary list, use the option values as names.
         for y in x:
