@@ -68,7 +68,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
         this.el.appendChild(this.readout);
         this.readout.classList.add('widget-readout');
         this.readout.contentEditable = true;
-        this.readout.style.visibility = 'hidden';
+        this.readout.style.display = 'none';
 
         this.listenTo(this.model, 'change:slider_color', function(sender, value) {
             this.$slider.find('a').css('background', value);
@@ -327,6 +327,8 @@ var IntSliderView = widget.DOMWidgetView.extend({
             actual_value = this._validate_slide_value(ui.value);
             this.readout.textContent = actual_value;
         }
+
+        console.log('READOUT: ' + this.readout.textContent);
 
         // Only persist the value while sliding if the continuous_update
         // trait is set to true.
