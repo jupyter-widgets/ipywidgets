@@ -328,8 +328,6 @@ var IntSliderView = widget.DOMWidgetView.extend({
             this.readout.textContent = actual_value;
         }
 
-        console.log('READOUT: ' + this.readout.textContent);
-
         // Only persist the value while sliding if the continuous_update
         // trait is set to true.
         if (this.model.get('continuous_update')) {
