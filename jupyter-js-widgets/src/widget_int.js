@@ -268,7 +268,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
          *
          * the step size is not enforced
          */
-        var value = this.stringToValue(this.$readout.text());
+        var value = this.stringToValue(this.readout.text());
         var vmin = this.model.get('min');
         var vmax = this.model.get('max');
         if (this.model.get('_range')) {
@@ -404,7 +404,7 @@ var IntTextView = widget.DOMWidgetView.extend({
         if (description.length === 0) {
             this.label.style.display = 'none';
         } else {
-            this.typeset(this.$label, description);
+            this.typeset(this.label, description);
             this.label.style.display = '';
         }
     },
@@ -422,10 +422,11 @@ var IntTextView = widget.DOMWidgetView.extend({
                 this.textbox.value = value;
             }
 
-            if (this.model.get('disabled')) {
-                this.textbox.setAttribute('disabled', 'disabled');
+            var disabled = this.model.get('disabled');
+            if (disabled) {
+                this.textbox.setAttribute('disabled', disabled);
             } else {
-                this.textbox.removeAttribute('disabled', 'disabled');
+                this.textbox.removeAttribute('disabled');
             }
         }
         return IntTextView.__super__.update.apply(this);
@@ -553,7 +554,7 @@ var ProgressView = widget.DOMWidgetView.extend({
         if (description.length === 0) {
             this.label.style.display = 'none';
         } else {
-            this.typeset(this.$label, description);
+            this.typeset(this.label, description);
             this.label.style.display = '';
         }
     },

@@ -130,7 +130,7 @@ var TextareaView = widget.DOMWidgetView.extend({
         /**
          * Scroll the text-area view to the bottom.
          */
-        this.$textbox.scrollTop(this.$textbox[0].scrollHeight); // DW TODO
+        //this.$textbox.scrollTop(this.$textbox[0].scrollHeight); // DW TODO
     },
 
     update: function(options) {
@@ -144,7 +144,7 @@ var TextareaView = widget.DOMWidgetView.extend({
             this.textbox.value = this.model.get('value');
 
             var disabled = this.model.get('disabled');
-            this.textbox.setAttribute('disabled', disabled);
+            this.textbox.disabled = disabled;
 
             var description = this.model.get('description');
             if (description.length === 0) {
@@ -214,6 +214,7 @@ var TextView = widget.DOMWidgetView.extend({
             value = this.model.get('placeholder');
         }
         this.textbox.setAttribute('placeholder', value);
+        console.log('Updating placeholder: ', value)
     },
 
     update: function(options) {
@@ -229,9 +230,11 @@ var TextView = widget.DOMWidgetView.extend({
             }
 
             var disabled = this.model.get('disabled');
-            this.textbox.setAttribute('disabled', disabled);
+            console.log('Disabled: ', disabled);
+            this.textbox.disabled = disabled;
 
             var description = this.model.get('description');
+            console.log('Description: ', description.length);
             if (description.length === 0) {
                 this.label.style.display = 'none';
             } else {
