@@ -29,22 +29,28 @@ class _BoundedFloat(_Float):
     min = CFloat(0.0, help="Min value").tag(sync=True)
     step = CFloat(0.1, help="Minimum step to increment the value (ignored by some views)").tag(sync=True)
 
-    def _value_validate(self, value, trait):
+    @validate('value')
+    def _validate_value(self, proposal):
         """Cap and floor value"""
+        value = proposal['value']
         if self.min > value or self.max < value:
             value = min(max(value, self.min), self.max)
         return value
 
-    def _min_validate(self, min, trait):
+    @validate('min')
+    def _validate_min(self, proposal):
         """Enforce min <= value <= max"""
+        min = proposal['value']
         if min > self.max:
             raise TraitError('Setting min > max')
         if min > self.value:
             self.value = min
         return min
 
-    def _max_validate(self, max, trait):
+    @validate('max')
+    def _validate_max(self, proposal):
         """Enforce min <= value <= max"""
+        max = proposal['value']
         if max < self.min:
             raise TraitError('setting max < min')
         if max < self.value:
