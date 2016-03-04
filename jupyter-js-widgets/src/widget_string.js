@@ -214,7 +214,6 @@ var TextView = widget.DOMWidgetView.extend({
             value = this.model.get('placeholder');
         }
         this.textbox.setAttribute('placeholder', value);
-        console.log('Updating placeholder: ', value)
     },
 
     update: function(options) {
@@ -230,11 +229,9 @@ var TextView = widget.DOMWidgetView.extend({
             }
 
             var disabled = this.model.get('disabled');
-            console.log('Disabled: ', disabled);
             this.textbox.disabled = disabled;
 
             var description = this.model.get('description');
-            console.log('Description: ', description.length);
             if (description.length === 0) {
                 this.label.style.display = 'none';
             } else {

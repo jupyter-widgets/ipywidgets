@@ -544,7 +544,6 @@ var DOMWidgetViewMixin = {
          */
         WidgetViewMixin.initialize.apply(this, [parameters]);
         let the_id = utils.uuid();
-        console.log('Initializing Widget View Mixin' + the_id);
         this.id = the_id;
 
         this.listenTo(this.model, 'change:visible', this.update_visible, this); // TODO: Deprecated in 5.0
