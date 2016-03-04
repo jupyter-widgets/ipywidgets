@@ -145,7 +145,6 @@ ManagerBase.prototype.handle_comm_open = function (comm, msg) {
  * @return {Promise<WidgetModel>}
  */
 ManagerBase.prototype.new_widget = function(options, serialized_state) {
-    debugger;
     var commPromise;
     // If no comm is provided, a new comm is opened for the jupyter.widget
     // target.
