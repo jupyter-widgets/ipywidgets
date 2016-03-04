@@ -89,8 +89,11 @@ ManagerBase.prototype.create_view = function(model, options) {
     var that = this;
     model.state_change = model.state_change.then(function() {
 
-        return that.loadClass(model.get('_view_name'), model.get('_view_module'),
-        ManagerBase._view_types).then(function(ViewType) {
+        return that.loadClass(
+            model.get('_view_name'),
+            model.get('_view_module'),
+            ManagerBase._view_types
+        ).then(function(ViewType) {
             var view = new ViewType({
                 model: model,
                 options: that.setViewOptions(options)
@@ -104,9 +107,7 @@ ManagerBase.prototype.create_view = function(model, options) {
     var id = utils.uuid();
     model.views[id] = model.state_change;
     model.state_change.then(function(view) {
-        view.once('remove', function() {
-            delete view.model.views[id];
-        }, this);
+        view.once('remove', function() { delete view.model.views[id]; }, this);
     });
     return model.state_change;
 };
@@ -132,7 +133,7 @@ ManagerBase.prototype.handle_comm_open = function (comm, msg) {
     return this.new_model({
         model_name: msg.content.data._model_name,
         model_module: msg.content.data._model_module,
-        comm: comm,
+        comm: comm
     }, msg.content.data).catch(utils.reject('Couldn\'t create a model.', true));
 };
 
@@ -151,11 +152,14 @@ ManagerBase.prototype.new_widget = function(options, serialized_state) {
     if (options.comm) {
         commPromise = Promise.resolve(options.comm);
     } else {
-        commPromise = this._create_comm(this.comm_target_name,
-                                        options.model_id, {
-            widget_class: options.widget_class,
-            target_name: 'jupyter.widget',
-        });
+        commPromise = this._create_comm(
+            this.comm_target_name,
+            options.model_id,
+            {
+                widget_class: options.widget_class,
+                target_name: 'jupyter.widget'
+            }
+        );
     }
     // The options dictionary is copied since data will be added to it.
     var options_clone = _.clone(options);
@@ -281,11 +285,13 @@ ManagerBase.prototype.new_model = function(options, serialized_state) {
     } else {
         throw new Error('Neither comm nor model_id provided in options object. At least one must exist.');
     }
-    var model_promise = this.loadClass(options.model_name,
-                                       options.model_module,
-                                       ManagerBase._model_types)
-        .then(function(ModelType) {
-            return ModelType._deserialize_state(serialized_state || ModelType.prototype.defaults, that).then(function(attributes) {
+    var model_promise = this.loadClass(
+        options.model_name,
+        options.model_module,
+        ManagerBase._model_types
+    ).then(function(ModelType) {
+        return ModelType._deserialize_state(serialized_state || ModelType.prototype.defaults, that)
+            .then(function(attributes) {
                 var widget_model = new ModelType(that, model_id, options.comm, attributes);
                 widget_model.once('comm:close', function () {
                     delete that._models[model_id];
@@ -294,11 +300,11 @@ ManagerBase.prototype.new_model = function(options, serialized_state) {
                 widget_model.module = options.model_module;
                 return widget_model;
             });
-        }, function(error) {
-            delete that._models[model_id];
-            var wrapped_error = new utils.WrappedError('Couldn\'t create model', error);
-            return Promise.reject(wrapped_error);
-        });
+    }, function(error) {
+        delete that._models[model_id];
+        var wrapped_error = new utils.WrappedError('Couldn\'t create model', error);
+        return Promise.reject(wrapped_error);
+    });
     this._models[model_id] = model_promise;
     return model_promise;
 };
@@ -327,8 +333,8 @@ ManagerBase.prototype.get_state = function(options) {
     var that = this;
     return utils.resolvePromisesDict(this._models).then(function(models) {
         var state = {};
-
         var model_promises = [];
+
         for (var model_id in models) {
             if (models.hasOwnProperty(model_id)) {
                 var model = models[model_id];
@@ -342,7 +348,7 @@ ManagerBase.prototype.get_state = function(options) {
                         model_name: model.name,
                         model_module: model.module,
                         state: model.get_state(options.drop_defaults),
-                        views: [],
+                        views: []
                     };
 
                     // Get the views that are displayed *now*.
