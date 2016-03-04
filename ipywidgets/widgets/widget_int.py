@@ -9,8 +9,8 @@ Represents an unbounded int using a widget.
 from .domwidget import DOMWidget
 from .widget import register
 from .trait_types import Color
-from traitlets import Unicode, CInt, Bool, CaselessStrEnum, Tuple, TraitError
-
+from traitlets import (Unicode, CInt, Bool, CaselessStrEnum, Tuple, TraitError,
+                       validate)
 
 _int_doc_t = """
 Parameters
@@ -100,7 +100,7 @@ class _BoundedInt(_Int):
     def _min_validate(self, min, trait):
         """Enforce min <= value <= max"""
         if min > self.max:
-            raise TraitError("Setting min > max")
+            raise TraitError('setting min > max')
         if min > self.value:
             self.value = min
         return min
@@ -108,7 +108,7 @@ class _BoundedInt(_Int):
     def _max_validate(self, max, trait):
         """Enforce min <= value <= max"""
         if max < self.min:
-            raise TraitError("setting max < min")
+            raise TraitError('setting max < min')
         if max < self.value:
             self.value = max
         return max
@@ -162,108 +162,76 @@ class IntProgress(_BoundedInt):
 
 
 class _IntRange(_Int):
-    value = Tuple(CInt(), CInt(), default_value=(0, 1), help="Tuple of (lower, upper) bounds").tag(sync=True)
-    lower = CInt(0, help="Lower bound")
-    upper = CInt(1, help="Upper bound")
+    value = Tuple(CInt(), CInt(), default_value=(0, 1),
+                  help="Tuple of (lower, upper) bounds").tag(sync=True)
 
-    def __init__(self, *pargs, **kwargs):
-        value_given = 'value' in kwargs
-        lower_given = 'lower' in kwargs
-        upper_given = 'upper' in kwargs
-        if value_given and (lower_given or upper_given):
-            raise ValueError("Cannot specify both 'value' and 'lower'/'upper' for range widget")
-        if lower_given != upper_given:
-            raise ValueError("Must specify both 'lower' and 'upper' for range widget")
+    @property
+    def lower(self):
+        return self.value[0]
 
-        super(_IntRange, self).__init__(*pargs, **kwargs)
+    @lower.setter
+    def lower(self, lower):
+        self.value = (lower, self.value[1])
 
-        # ensure the traits match, preferring whichever (if any) was given in kwargs
-        if value_given:
-            self.lower, self.upper = self.value
-        else:
-            self.value = (self.lower, self.upper)
+    @property
+    def upper(self):
+        return self.value[1]
 
-        self.on_trait_change(self._validate, ['value', 'upper', 'lower'])
+    @upper.setter
+    def upper(self, upper):
+        self.value = (self.value[0], upper)
 
-    def _validate(self, name, old, new):
-        if name == 'value':
-            self.lower, self.upper = min(new), max(new)
-        elif name == 'lower':
-            self.value = (new, self.value[1])
-        elif name == 'upper':
-            self.value = (self.value[0], new)
+    @validate('value')
+    def _validate_value(self, proposal):
+        lower, upper = proposal['value']
+        if upper < lower:
+            raise TraitError('setting lower > upper')
+        return lower, upper
+
 
 class _BoundedIntRange(_IntRange):
     step = CInt(1, help="Minimum step that the value can take (ignored by some views)").tag(sync=True)
     max = CInt(100, help="Max value").tag(sync=True)
     min = CInt(0, help="Min value").tag(sync=True)
 
-    def __init__(self, *pargs, **kwargs):
-        any_value_given = 'value' in kwargs or 'upper' in kwargs or 'lower' in kwargs
-        _IntRange.__init__(self, *pargs, **kwargs)
+    def __init__(self, *args, **kwargs):
+        min, max = kwargs.get('min', 0), kwargs.get('max', 100)
+        if not kwargs.get('value', None):
+            kwargs['value'] = (0.75 * min + 0.25 * max,
+                               0.25 * min + 0.75 * max)
+        super(_BoundedIntRange, self).__init__(*args, **kwargs)
 
-        # ensure a minimal amount of sanity
-        if self.min > self.max:
-            raise ValueError("min must be <= max")
+    @validate('min', 'max')
+    def _validate_bounds(self, proposal):
+        trait = proposal['trait']
+        new = proposal['value']
+        if trait.name == 'min' and new > self.lower:
+            raise TraitError('setting min > lower')
+        if trait.name == 'max' and new < self.upper:
+            raise TraitError('setting max < upper')
+        return new
 
-        if any_value_given:
-            # if a value was given, clamp it within (min, max)
-            self._validate("value", None, self.value)
-        else:
-            # otherwise, set it to 25-75% to avoid the handles overlapping
-            self.value = (0.75 * self.min + 0.25 * self.max,
-                          0.25 * self.min + 0.75 * self.max)
-        # callback already set for 'value', 'lower', 'upper'
-        self.on_trait_change(self._validate, ['min', 'max'])
+    @validate('value')
+    def _validate_value(self, proposal):
+        lower, upper = super(_BoundedIntRange, self)._validate_value(proposal)
+        if lower < self.min:
+            raise TraitError('setting lower < min')
+        if upper > self.max:
+            raise TraitError('setting upper > max')
+        return lower, upper
 
-    def _validate(self, name, old, new):
-        if name == "min":
-            if new > self.max:
-                raise ValueError("setting min > max")
-        elif name == "max":
-            if new < self.min:
-                raise ValueError("setting max < min")
-
-        low, high = self.value
-        if name == "value":
-            low, high = min(new), max(new)
-        elif name == "upper":
-            if new < self.lower:
-                raise ValueError("setting upper < lower")
-            high = new
-        elif name == "lower":
-            if new > self.upper:
-                raise ValueError("setting lower > upper")
-            low = new
-
-        low = max(self.min, min(low, self.max))
-        high = min(self.max, max(high, self.min))
-
-        # determine the order in which we should update the
-        # lower, upper traits to avoid a temporary inverted overlap
-        lower_first = high < self.lower
-
-        self.value = (low, high)
-        if lower_first:
-            self.lower = low
-            self.upper = high
-        else:
-            self.upper = high
-            self.lower = low
 
 @register('Jupyter.IntRangeSlider')
 class IntRangeSlider(_BoundedIntRange):
-    """Slider widget that represents a pair of ints bounded by minimum and maximum value.
+    """Slider/trackbar that represents a pair of ints bounded by minimum and maximum value.
 
     Parameters
     ----------
-    lower: int
-        The lower bound of the range
-    upper: int
-        The upper bound of the range
-    min: int
+    value : int tuple
+        The pair (`lower`, `upper`) of integers
+    min : int
         The lowest allowed value for `lower`
-    max: int
+    max : int
         The highest allowed value for `upper`
     """
     _view_name = Unicode('IntSliderView').tag(sync=True)
