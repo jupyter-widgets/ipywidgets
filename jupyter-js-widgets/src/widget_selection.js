@@ -837,10 +837,8 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         /**
          * Validate the value of the slider before sending it to the back-end
          * and applying it to the other views on the page.
-         *
-         * Double bit-wise not truncates the decimal (int cast).
          */
-        return ~~x;
+        return Math.floor(x);
     },
 });
 
