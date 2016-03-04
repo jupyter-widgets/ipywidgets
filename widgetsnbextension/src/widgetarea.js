@@ -2,8 +2,6 @@
 // Distributed under the terms of the Modified BSD License.
 "use strict";
 
-var $ = require('jquery');
-
 /**
  * WidgetArea
  */
@@ -34,14 +32,14 @@ var WidgetArea = function(cell) {
 WidgetArea.prototype.display_widget_view = function(view_promise) {
 
     // Display a dummy element
-    var dummy = $('<div/>');
-    this.widget_subarea.append(dummy);
+    var dummy = document.createElement('div');
+    this.widget_subarea.appendChild(dummy);
 
     // Display the view.
     var that = this;
     return view_promise.then(function(view) {
-        that.widget_area.show();
-        dummy.replaceWith(view.el);
+        that.widget_area.style.display = '';
+        dummy.parentNode.replaceChild(view.el, dummy);
         that.widget_views.push(view);
 
         // Check the live state of the view's model.
@@ -83,32 +81,36 @@ WidgetArea.prototype.dispose = function() {
  * to the associated cell.
  */
 WidgetArea.prototype._create_elements = function() {
-    var widget_area = $('<div/>')
-        .addClass('widget-area')
-        .hide();
+    var widget_area = document.createElement('div');
+    widget_area.classList.add('widget-area');
+    widget_area.style.display = 'none';
+
     this.widget_area = widget_area;
-    var widget_prompt = $('<div/>')
-        .addClass('prompt')
-        .appendTo(widget_area);
-    var widget_subarea = $('<div/>')
-        .addClass('widget-subarea')
-        .appendTo(widget_area);
+
+    var widget_prompt = document.createElement('div');
+    widget_prompt.classList.add('prompt');
+    widget_area.appendChild(widget_prompt);
+
+    var widget_subarea = document.createElement('div');
+    widget_subarea.classList.add('widget-subarea');
+    widget_area.appendChild(widget_subarea);
+
     this.widget_subarea = widget_subarea;
     var that = this;
-    var widget_clear_buton = $('<button />')
-        .addClass('close')
-        .html('&times;')
-        .click(function() {
-            widget_area.slideUp('', function(){
-                for (var i = 0; i < that.widget_views.length; i++) {
-                    var view = that.widget_views[i];
-                    view.remove();
-                }
-                that.widget_views = [];
-                widget_subarea.html('');
-            });
-        })
-        .appendTo(widget_prompt);
+
+    var widget_clear_button = document.createElement('button');
+    widget_clear_button.classList.add('close');
+    widget_clear_button.innerHTML = '&times;';
+    widget_clear_button.onclick = function() {
+      for (var i = 0; i < that.widget_views.length; i++) {
+        var view = that.widget_views[i];
+        view.remove();
+      }
+      that.widget_views = [];
+      widget_subarea.innerHTML = '';
+    }
+
+    widget_prompt.appendChild(widget_clear_button);
 
     if (this._cell.input) {
         this._cell.input.after(widget_area);
@@ -137,7 +139,7 @@ WidgetArea.prototype._bind_events = function() {
 WidgetArea.prototype._widget_dead = function() {
     if (this._widgets_live) {
         this._widgets_live = false;
-        this.widget_area.addClass('connection-problems');
+        this.widget_area.classList.add('connection-problems');
     }
 
 };
@@ -155,7 +157,7 @@ WidgetArea.prototype._widget_live = function() {
             }
         }
         this._widgets_live = true;
-        this.widget_area.removeClass('connection-problems');
+        this.widget_area.classList.remove('connection-problems');
     }
 };
 
@@ -169,10 +171,10 @@ WidgetArea.prototype._clear = function() {
         view.remove();
     }
     this.widget_views = [];
-    this.widget_subarea.html('');
-    this.widget_subarea.height('');
-    this.widget_area.height('');
-    this.widget_area.hide();
+    this.widget_subarea.innerHTML = '';
+    this.widget_subarea.style.height = '';
+    this.widget_area.style.height = '';
+    this.widget_area.style.display = 'none';
 };
 
 module.exports = {

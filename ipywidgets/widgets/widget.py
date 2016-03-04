@@ -422,6 +422,7 @@ class Widget(LoggingConfigurable):
                 sync_data = data['sync_data']
                 for i,k in enumerate(data.get('buffer_keys', [])):
                     sync_data[k] = msg['buffers'][i]
+
                 self.set_state(sync_data) # handles all methods
 
         # Handle a state request.
