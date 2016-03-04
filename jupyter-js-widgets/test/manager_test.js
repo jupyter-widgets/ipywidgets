@@ -59,17 +59,21 @@ describe("ManagerBase", function() {
     });
 
     it('callbacks', function() {
+        console.log('managerBase.callbacks:', this.managerBase.callbacks);
         expect(this.managerBase.callbacks).to.not.be.undefined;
         expect(this.managerBase.callbacks).to.not.throw(Error);
-        
+
         // Cell-less call
         let c = this.managerBase.callbacks();
+        console.log('callback called:', c);
         expect(c).to.be.an('object');
         expect(c.iopub).to.be.undefined;
-        
+
         // Spoof a call with a cell
         c = this.managerBase.callbacks({ options: { cell: true } });
+        console.log('spoof: ', c);
         expect(c).to.be.an('object');
+        console.log('spoof iopub: ', c.iopub);
         expect(c.iopub).to.be.an('object');
         expect(c.iopub.output).to.not.be.undefined;
         expect(c.iopub.clear_output).to.not.be.undefined;

@@ -5,7 +5,6 @@
 // This widget is strongly coupled to the notebook because of the outputarea
 // dependency.
 var widgets = require("jupyter-js-widgets");
-var $ = require("jquery");
 var _ = require("underscore");
 
 var OutputModel = widgets.DOMWidgetModel.extend({
@@ -26,7 +25,7 @@ var OutputView = widgets.DOMWidgetView.extend({
         // TODO: Use jupyter-js-output-area
         requirejs(["notebook/js/outputarea"], (function(outputarea) {
             this.output_area = new outputarea.OutputArea({
-                selector: this.$el,
+                selector: this.el,
                 prompt_area: false,
                 events: this.model.widget_manager.notebook.events,
                 keyboard_manager: this.model.widget_manager.keyboard_manager });
