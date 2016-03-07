@@ -6,7 +6,7 @@ Propagate changes between widgets on the javascript side.
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from .widget import Widget, widget_serialization
+from .widget import Widget, register, widget_serialization
 from traitlets import Unicode, Tuple, List,Instance, TraitError
 
 
@@ -30,6 +30,7 @@ class WidgetTraitTuple(Tuple):
         return value
 
 
+@register('jupyter.Link')
 class Link(Widget):
     """Link Widget
 
@@ -53,6 +54,9 @@ class Link(Widget):
 def jslink(attr1, attr2):
     """Link two widget attributes on the frontend so they remain in sync.
 
+    The link is created in the front-end and does not rely on a roundtrip
+    to the backend.
+
     Parameters
     ----------
     source : a (Widget, 'trait_name') tuple for the first trait
@@ -66,6 +70,7 @@ def jslink(attr1, attr2):
     return Link(attr1, attr2)
 
 
+@register('jupyter.DirectionalLink')
 class DirectionalLink(Link):
     """A directional link
 
@@ -77,8 +82,10 @@ class DirectionalLink(Link):
 
 
 def jsdlink(source, target):
-    """Link a source widget attribute with a target widget attribute on the
-    frontend.
+    """Link a source widget attribute with a target widget attribute.
+
+    The link is created in the front-end and does not rely on a roundtrip
+    to the backend.
 
     Parameters
     ----------
