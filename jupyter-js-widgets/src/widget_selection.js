@@ -561,9 +561,9 @@ var SelectView = widget.DOMWidgetView.extend({
                 var item_query = 'option[data-value="' +
                     encodeURIComponent(item) + '"]';
                 var item_exists = view.listbox
-                    .getElementsByClassName(item_query).length === 0;
+                    .getElementsByClassName(item_query).length !== 0;
                 var option;
-                if (item_exists) {
+                if (!item_exists) {
                     option = document.createElement('option');
                     option.textContent = item.replace ?
                         item.replace(/ /g, '\xa0') : item;
@@ -836,14 +836,14 @@ var MultipleSelectionModel = SelectionModel.extend({
     defaults: _.extend({}, SelectionModel.prototype.defaults, {
         _model_name: 'MultipleSelectionModel',
         selected_labels: []
-    }),
+    })
 });
 
 var SelectMultipleModel = MultipleSelectionModel.extend({
     defaults: _.extend({}, MultipleSelectionModel.prototype.defaults, {
         _model_name: 'SelectMultipleModel',
         _view_name: 'SelectMultipleView'
-    }),
+    })
 });
 
 var SelectMultipleView = SelectView.extend({
@@ -854,13 +854,9 @@ var SelectMultipleView = SelectView.extend({
         SelectMultipleView.__super__.render.apply(this);
         this.el.classList.remove('widget-select');
         this.el.classList.add('widget-select-multiple');
+        this.listbox.multiple = true;
 
-        this.listbox.setAttribute('multiple', true);
-        this.listbox.onchange = () => { this.handle_change.bind(this); };
-
-        // set selected labels *after* setting the listbox to be multiple selection
-        this.listbox.value = this.model.get('selected_labels');
-        return this;
+        this.update();
     },
 
     update: function() {
@@ -871,19 +867,21 @@ var SelectMultipleView = SelectView.extend({
          * changed by another view or by a state update from the back-end.
          */
         SelectMultipleView.__super__.update.apply(this, arguments);
-        this.listbox.value = this.model.get('selected_labels');
+        var selected = this.model.get('selected_labels');
+        var values = _.map(selected, encodeURIComponent);
+        var options = this.listbox.options;
+        for (var i = 0, len = options.length; i < len; ++i) {
+            var value = options[i].getAttribute('data-value');
+            options[i].selected = _.contains(values, value);
+        }
     },
 
-    handle_click: function() {
-        /**
-         * Overload click from select
-         *
-         * Apparently it's needed from there for testing purposes,
-         * but breaks behavior of this.
-         */
+    events: {
+        // Dictionary of events and their handlers.
+        'change select': '_handle_change'
     },
 
-    handle_change: function (e) {
+    _handle_change: function() {
         /**
          * Handle when a new value is selected.
          *
@@ -891,19 +889,16 @@ var SelectMultipleView = SelectView.extend({
          * model to update.
          */
 
-        // $listbox.val() returns a list of string.  In order to preserve
-        // type information correctly, we need to map the selected indices
-        // to the options list.
+        // In order to preserve type information correctly, we need to map
+        // the selected indices to the options list.
         var items = this.model.get('_options_labels');
-        var values = Array.prototype.map.call(this.listbox.selectedOptions || [], function(option) {
-            return items[option.index];
-        });
-
-        this.model.set('selected_labels',
-            values,
-            {updated_view: this});
+        var values = Array.prototype.map
+            .call(this.listbox.selectedOptions || [], function(option) {
+                return items[option.index];
+            });
+        this.model.set('selected_labels', values, {updated_view: this});
         this.touch();
-    },
+    }
 });
 
 module.exports = {
