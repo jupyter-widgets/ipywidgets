@@ -414,7 +414,7 @@ var IntTextView = widget.DOMWidgetView.extend({
          */
         if (options === undefined || options.updated_view != this) {
             var value = this.model.get('value');
-            if (this._parse_value(this.textbox.value != value)) {
+            if (this._parse_value(this.textbox.value) != value) {
                 this.textbox.value = value;
             }
 
@@ -453,7 +453,7 @@ var IntTextView = widget.DOMWidgetView.extend({
         /**
          * Handles and validates user input.
          *
-         * Try to parse value as a int.
+         * Try to parse value as an int.
          */
         var numericalValue = 0;
         var trimmed = e.target.value.trim();
