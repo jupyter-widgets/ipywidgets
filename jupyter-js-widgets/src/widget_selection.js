@@ -563,7 +563,7 @@ var SelectView = widget.DOMWidgetView.extend({
                 var item_exists = view.listbox
                     .getElementsByClassName(item_query).length === 0;
                 var option;
-                if (item_exists) {
+                if (!item_exists) {
                     option = document.createElement('option');
                     option.textContent = item.replace ?
                         item.replace(/ /g, '\xa0') : item;
