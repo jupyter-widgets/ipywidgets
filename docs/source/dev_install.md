@@ -1,80 +1,29 @@
 Developer Install
 =================
 
-<div>
-<widget-state>
-{
-  "ce43564c49054e1aad1a1fd5ff021b84": {
-    "model_name": "LayoutModel",
-    "model_module": null,
-    "state": {
-      "_view_name": "LayoutView",
-      "right": "",
-      "justify_content": "",
-      "_view_module": "",
-      "overflow": "",
-      "height": "",
-      "flex_flow": "",
-      "border": "",
-      "align_items": "",
-      "bottom": "",
-      "_model_module": null,
-      "top": "",
-      "width": "",
-      "flex": "",
-      "_model_name": "LayoutModel",
-      "visibility": "",
-      "padding": "",
-      "align_self": "",
-      "align_content": "",
-      "msg_throttle": 3,
-      "margin": "",
-      "display": "",
-      "left": ""
-    }
-  },
+<script>
+w({
   "e43a868c5c0b4db39f0416d0fe9cc476": {
     "model_name": "IntSliderModel",
     "model_module": null,
     "state": {
-      "_view_name": "FloatSliderView",
-      "orientation": "horizontal",
-      "color": null,
-      "_view_module": "",
-      "height": "",
-      "disabled": false,
-      "visible": true,
-      "border_radius": "",
-      "border_width": "",
-      "background_color": null,
-      "font_style": "",
-      "layout": "IPY_MODEL_ce43564c49054e1aad1a1fd5ff021b84",
-      "min": 0,
-      "_range": false,
-      "_model_module": null,
-      "slider_color": null,
-      "width": "",
-      "continuous_update": true,
-      "font_family": "",
-      "_dom_classes": [],
-      "description": "testtesttesttesttesttesttesttesttesttest",
       "_model_name": "IntSliderModel",
+      "_view_name": "FloatSliderView",
+      "description": "testtesttesttesttesttesttesttesttesttest",
+       "min": 0,
       "max": 4,
-      "border_color": null,
-      "readout": true,
-      "padding": "",
-      "font_weight": "",
-      "step": 0.3333333333333333,
-      "border_style": "",
-      "font_size": "",
-      "msg_throttle": 3,
       "value": 0,
-      "margin": ""
+      "step": 0.3333333333333333
     }
   }
-}
-</widget-state>
-</div>
+});
+</script>
+
+<script>
+w({
+  "e43a868c5c0b4db39f0416d0fe9cc476": null
+});
+</script>
 
 To install ipywidgets from git, you will need [npm](https://www.npmjs.com/) and
 the latest [development copy of the Jupyter

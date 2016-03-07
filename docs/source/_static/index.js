@@ -16,11 +16,17 @@ class WidgetManager extends widgets.ManagerBase {
   displayWidgetState(models, el) {
     const displays = [];
     for (var id of Object.keys(models)) {
-      displays.push(this.new_model({
-        model_id: id,
-        model_name: models[id].model_name,
-        model_module: models[id].model_module,
-      }, models[id].state).then(model => this.display_model({}, model, { el })));
+      if (this._models[id]) {
+        displays.push(this._models[id].then(model => {
+          return this.display_model({}, model, { el })
+        }));
+      } else {
+        displays.push(this.new_model({
+          model_id: id,
+          model_name: models[id].model_name,
+          model_module: models[id].model_module,
+        }, models[id].state).then(model => this.display_model({}, model, { el })));
+      }
     }
     return Promise.all(displays);
   }
@@ -38,34 +44,33 @@ class WidgetManager extends widgets.ManagerBase {
 }
 const manager = window.widgetManager = new WidgetManager();
 
-const widgetTag = Object.create(HTMLElement.prototype);
-widgetTag.createdCallback = function() {
-  console.info('Widget(s) detected...');
-  const widgetStateJS = this.innerHTML;
-  this.innerHTML = `
+// Magic global widget rendering function:
+window.w = function renderWidgetState(widgetStateObject) {
+
+  // Create the container div and insert it into the DOM immediately above the
+  // current script tag.
+  console.info('Inserting widget(s)...');
+  var container = document.createElement('div');
+  container.innerHTML = `
     <div class="widget-loading">
       <span class="glyphicon glyphicon-hourglass glyphicon-spin" aria-hidden="true"></span>
     </div>
   `;
 
-  let widgetState;
-  try {
-    widgetState = JSON.parse(widgetStateJS);
-  } catch (err) {
-    console.error('Could not parse widget state', err);
-    return;
-  }
+  // Assume that the current script tag is the last script tag, because the
+  // script tags are processed immediately as the browser traverses through the
+  // DOM.
+  var context = Array.prototype.slice.call(document.querySelectorAll('script'), -1)[0];
+  context.parentElement.insertBefore(container, context);
 
-  console.info('Rendering widgets...', widgetState);
+  // Create and render the widget, replacing the loading view.
   const widgetContainer = document.createElement('div');
   widgetContainer.className = 'widget-area';
-  manager.displayWidgetState(widgetState, widgetContainer).then(() => {
-    this.innerHTML = '';
-    this.appendChild(widgetContainer);
+  manager.displayWidgetState(widgetStateObject, widgetContainer).then(() => {
+    container.innerHTML = '';
+    container.appendChild(widgetContainer);
   });
-};
-
-document.registerElement('widget-state', {prototype: widgetTag});
+}
 
 window.onload = function() {
   // TODO: See if md parsing conf can do this, or extension (compile time)
