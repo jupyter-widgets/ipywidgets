@@ -247,8 +247,8 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
             var disabled = this.model.get('disabled');
             var that = this;
             _.each(items, function(item, index) {
-                var item_query = ' :input[data-value="' + encodeURIComponent(item) + '"]';
-                if (that.el.getElementsByClassName(item_query).length === 0) {
+                var item_query = 'input[data-value="' + encodeURIComponent(item) + '"]';
+                if (that.el.querySelectorAll(item_query).length === 0) {
                     var label = document.createElement('label');
                     label.classList.add('radio');
                     label.textContent = item;
@@ -509,7 +509,7 @@ var SelectModel = SelectionModel.extend({
     defaults: _.extend({}, SelectionModel.prototype.defaults, {
         _model_name: 'SelectModel',
         _view_name: 'SelectView'
-    }),
+    })
 });
 
 var SelectView = widget.DOMWidgetView.extend({
@@ -530,7 +530,6 @@ var SelectView = widget.DOMWidgetView.extend({
         this.listbox.className = 'widget-listbox form-control';
         this.listbox.setAttribute('size', '6');
         this.el.appendChild(this.listbox);
-        this.el.addEventListener('change', this.handle_change.bind(this));
 
         this.update();
     },
@@ -542,35 +541,44 @@ var SelectView = widget.DOMWidgetView.extend({
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        if (options === undefined || options.updated_view != this) {
-            // Add missing items to the DOM.
-            var items = this.model.get('_options_labels');
-            var that = this;
+        var view = this;
+        var items = this.model.get('_options_labels');
+        var options = _.pluck(this.listbox.options, 'value');
+        var stale = false;
+
+        for (var i = 0, len = items.length; i < len; ++i) {
+            if (options[i] !== items[i]) {
+                stale = true;
+                break;
+            }
+        }
+
+        if (stale && (options === undefined || options.updated_view !== this)) {
+            // Add items to the DOM.
+            this.listbox.textContent = '';
+
             _.each(items, function(item, index) {
-               var item_query = 'option[data-value="' + encodeURIComponent(item) + '"]';
-                if (that.listbox.getElementsByClassName(item_query).length === 0) {
-                    var option = document.createElement('option');
-                    option.textContent = item.replace ? item.replace(/ /g, '\xa0') : item;
+                var item_query = 'option[data-value="' +
+                    encodeURIComponent(item) + '"]';
+                var item_exists = view.listbox
+                    .getElementsByClassName(item_query).length === 0;
+                var option;
+                if (item_exists) {
+                    option = document.createElement('option');
+                    option.textContent = item.replace ?
+                        item.replace(/ /g, '\xa0') : item;
                     option.setAttribute('data-value', encodeURIComponent(item));
                     option.value = item;
-                    option.onclick = function() { that.handle_click.bind(that); };
-                    that.listbox.appendChild(option);
+                    view.listbox.appendChild(option);
                 }
             });
-
-            // Select the correct element
-            this.listbox.value = this.model.get('selected_label');
 
             // Disable listbox if needed
             this.listbox.disabled = this.model.get('disabled');
 
-            // Remove items that no longer exist.
-            var options = this.listbox.querySelectorAll('option');
-            for (var i = options.length - 1; i > -1; --i) {
-                if (!_.contains(items, options[i].value)) {
-                    this.listbox.removeChild(options[i]);
-                }
-            }
+            // Select the correct element
+            var value = view.model.get('selected_label');
+            view.listbox.selectedIndex = items.indexOf(value);
 
             var description = this.model.get('description');
             if (description.length === 0) {
@@ -594,23 +602,22 @@ var SelectView = widget.DOMWidgetView.extend({
         }
     },
 
-    handle_click: function (e) {
-        /**
-         * Handle when a new value is clicked.
-         */
-        this.$listbox.val($(e.target).val()).change(); // TODO
+    events: {
+        // Dictionary of events and their handlers.
+        'change select': '_handle_change'
     },
 
-    handle_change: function (e) {
+    _handle_change: function() {
         /**
          * Handle when a new value is selected.
          *
          * Calling model.set will trigger all of the other views of the
          * model to update.
          */
-        this.model.set('selected_label', this.listbox.value, {updated_view: this});
+        var value = this.listbox.options[this.listbox.selectedIndex].value;
+        this.model.set('selected_label', value, {updated_view: this});
         this.touch();
-    },
+    }
 });
 
 var SelectionSliderModel = SelectionModel.extend({
