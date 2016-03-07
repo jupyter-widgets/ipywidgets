@@ -120,7 +120,7 @@ var DropdownView = widget.DOMWidgetView.extend({
             }
 
             var items = this.model.get('_options_labels');
-            var replace_droplist = document.createElement(ul);
+            var replace_droplist = document.createElement('ul');
             replace_droplist.classList.add('dropdown-menu');
 
             // Copy the style
