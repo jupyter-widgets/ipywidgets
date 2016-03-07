@@ -543,8 +543,7 @@ var DOMWidgetViewMixin = {
          * Public constructor
          */
         WidgetViewMixin.initialize.apply(this, [parameters]);
-        let the_id = utils.uuid();
-        this.id = the_id;
+        this.id = utils.uuid();
 
         this.listenTo(this.model, 'change:visible', this.update_visible, this); // TODO: Deprecated in 5.0
 
