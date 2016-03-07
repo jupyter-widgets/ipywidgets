@@ -74,7 +74,7 @@ class _Selection(DOMWidget):
         # If x is an ordinary list, use the option values as names.
         for y in x:
             if not isinstance(y, (list, tuple)) or len(y) < 2:
-                return [(i, i) for i in x]
+                return [(str(i), i) for i in x]
 
         # Value is already in the correct format.
         return x
