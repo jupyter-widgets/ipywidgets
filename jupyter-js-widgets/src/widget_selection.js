@@ -565,26 +565,18 @@ var SelectView = widget.DOMWidgetView.extend({
             this.listbox.disabled = this.model.get('disabled');
 
             // Remove items that no longer exist.
-            this.$listbox.find('option').each(function(i, obj) {
-                var value = $(obj).val();
-                var found = false;
-                _.each(items, function(item, index) {
-                    if (item == value) {
-                        found = true;
-                        return false;
-                    }
-                });
-
-                if (!found) {
-                    $(obj).remove();
+            var options = this.listbox.querySelectorAll('option');
+            for (var i = options.length - 1; i > -1; --i) {
+                if (!_.contains(items, options[i].value)) {
+                    this.listbox.removeChild(options[i]);
                 }
-            });
+            }
 
             var description = this.model.get('description');
             if (description.length === 0) {
                 this.label.style.display = 'none';
             } else {
-                this.typeset(this.$label, description);
+                this.typeset(this.label, description);
                 this.label.style.display = '';
             }
         }
