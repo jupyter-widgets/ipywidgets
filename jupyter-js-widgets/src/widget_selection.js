@@ -527,7 +527,7 @@ var SelectView = widget.DOMWidgetView.extend({
         this.label.style.display = 'none';
 
         this.listbox = document.createElement('select');
-        this.listbox.className = 'widget-listbox form-control';
+        this.listbox.className = 'widget-listbox';
         this.listbox.setAttribute('size', '6');
         this.el.appendChild(this.listbox);
 
