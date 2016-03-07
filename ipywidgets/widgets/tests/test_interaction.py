@@ -615,21 +615,21 @@ def test_multiple_selection():
 
     # degenerate multiple select
     w = smw()
-    check_widget(w, value=tuple(), options=None, selected_labels=tuple())
+    check_widget(w, value=tuple(), options=None)
 
     # don't accept random other value when no options
-    with nt.assert_raises(KeyError):
+    with nt.assert_raises(TraitError):
         w.value = (2,)
-    check_widget(w, value=tuple(), selected_labels=tuple())
+    check_widget(w, value=tuple())
 
     # basic multiple select
     w = smw(options=[(1, 1)], value=[1])
     check_widget(w, cls=smw, value=(1,), options=[(1, 1)])
 
     # don't accept random other value
-    with nt.assert_raises(KeyError):
+    with nt.assert_raises(TraitError):
         w.value = w.value + (2,)
-    check_widget(w, value=(1,), selected_labels=(1,))
+    check_widget(w, value=(1,))
 
     # change options
     w.options = w.options + [(2, 2)]
@@ -637,31 +637,14 @@ def test_multiple_selection():
 
     # change value
     w.value = w.value + (2,)
-    check_widget(w, value=(1, 2), selected_labels=(1, 2))
-
-    # change value name
-    w.selected_labels = (1,)
-    check_widget(w, value=(1,))
-
-    # don't accept random other names when no options
-    with nt.assert_raises(KeyError):
-        w.selected_labels = (3,)
-    check_widget(w, value=(1,))
-
-    # don't accept selected_label (from superclass)
-    with nt.assert_raises(AttributeError):
-        w.selected_label = 3
-
-    # don't return selected_label (from superclass)
-    with nt.assert_raises(AttributeError):
-        print(w.selected_label)
+    check_widget(w, value=(1, 2))
 
     # dict style
     w.options = {1: 1}
     check_widget(w, options={1: 1})
 
     # updating
-    with nt.assert_raises(KeyError):
+    with nt.assert_raises(TraitError):
         w.value = (2,)
     check_widget(w, options={1: 1})
 
