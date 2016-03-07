@@ -27,7 +27,7 @@ var DropdownModel = SelectionModel.extend({
 
 var DropdownView = widget.DOMWidgetView.extend({
     render : function() {
-        var model = this;
+        var view = this;
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-dropdown');
@@ -51,7 +51,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         this.dropbutton.classList.add('dropdown-toggle');
         this.dropbutton.classList.add('widget-combo-carrot-btn');
         this.dropbutton.setAttribute('data-toggle', 'dropdown');
-        this.dropbutton.onclick = function() { model._showDropdown.bind(model); };
+        this.dropbutton.onclick = view._showDropdown.bind(view);
         var caret = document.createElement('span');
         caret.classList.add('caret');
         this.dropbutton.appendChild(caret);
@@ -136,24 +136,14 @@ var DropdownView = widget.DOMWidgetView.extend({
                 replace_droplist.appendChild(btn_li);
             });
 
-            this.$droplist.replaceWith($replace_droplist);
             var parent = this.droplist.parentNode;
-            parent.replaceChild(replace_droplist, this.droplist);
-            parent.removeChild(this.droplist);
+            this.droplist = parent.replaceChild(replace_droplist, this.droplist);
 
-            this.droplist = replace_droplist;
-
-            if (this.model.get('disabled')) {
-                this.buttongroup.setAttribute('disabled','disabled');
-                this.droplabel.setAttribute('disabled','disabled');
-                this.dropbutton.setAttribute('disabled','disabled');
-                this.droplist.setAttribute('disabled','disabled');
-            } else {
-                this.buttongroup.setAttribute('disabled');
-                this.droplabel.setAttribute('disabled');
-                this.dropbutton.setAttribute('disabled');
-                this.droplist.setAttribute('disabled');
-            }
+            var disabled = this.model.get('disabled');
+            this.buttongroup.disabled = disabled;
+            this.droplabel.disabled = disabled;
+            this.dropbutton.disabled = disabled;
+            this.droplist.disabled = disabled;
 
             var description = this.model.get('description');
             if (description.length === 0) {
@@ -422,7 +412,7 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
                     item_el.classList.add('active');
                 }
 
-                item_el.setAttribute('disabled', disabled);
+                item_el.disabled = disabled;
                 item_el.setAttribute('title', that.model.get('tooltips')[index]);
 
                 icon_element.classList.remove(previous_icons[index]);
@@ -572,8 +562,7 @@ var SelectView = widget.DOMWidgetView.extend({
             this.listbox.value = this.model.get('selected_label');
 
             // Disable listbox if needed
-            var disabled = this.model.get('disabled');
-            this.listbox.setAttribute('disabled', disabled);
+            this.listbox.disabled = this.model.get('disabled');
 
             // Remove items that no longer exist.
             this.$listbox.find('option').each(function(i, obj) {
