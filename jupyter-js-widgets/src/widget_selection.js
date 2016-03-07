@@ -14,7 +14,7 @@ var SelectionModel = widget.DOMWidgetModel.extend({
         _options_labels: [],
         disabled: false,
         description: ''
-    }),
+    })
 });
 
 var DropdownModel = SelectionModel.extend({
@@ -22,7 +22,7 @@ var DropdownModel = SelectionModel.extend({
         _model_name: 'DropdownModel',
         _view_name: 'DropdownView',
         button_style: ''
-    }),
+    })
 });
 
 var DropdownView = widget.DOMWidgetView.extend({
@@ -199,7 +199,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         e.stopPropagation();
         e.preventDefault();
         this.buttongroup.classList.remove('open');
-    },
+    }
 
 });
 
@@ -210,7 +210,7 @@ var RadioButtonsModel = SelectionModel.extend({
         tooltips: [],
         icons: [],
         button_style: ''
-    }),
+    })
 });
 
 var RadioButtonsView = widget.DOMWidgetView.extend({
@@ -326,14 +326,14 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
          */
         this.model.set('value', $(e.target).val(), {updated_view: this});
         this.touch();
-    },
+    }
 });
 
 var ToggleButtonsModel = SelectionModel.extend({
     defaults: _.extend({}, SelectionModel.prototype.defaults, {
         _model_name: 'ToggleButtonsModel',
         _view_name: 'ToggleButtonsView'
-    }),
+    })
 });
 
 var ToggleButtonsView = widget.DOMWidgetView.extend({
@@ -502,7 +502,7 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
          */
         this.model.set('value', $(e.target).attr('value'), {updated_view: this});
         this.touch();
-    },
+    }
 });
 
 var SelectModel = SelectionModel.extend({
@@ -626,7 +626,7 @@ var SelectionSliderModel = SelectionModel.extend({
         _view_name: 'SelectionSliderView',
         orientation: 'horizontal',
         readout: true
-    }),
+    })
 });
 
 var SelectionSliderView = widget.DOMWidgetView.extend({
@@ -829,7 +829,7 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
          * Double bit-wise not truncates the decimal (int cast).
          */
         return Math.floor(x);
-    },
+    }
 });
 
 var MultipleSelectionModel = SelectionModel.extend({
