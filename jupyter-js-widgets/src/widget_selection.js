@@ -224,7 +224,7 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
 
         this.label = document.createElement('div');
         this.label.className = 'widget-label';
-        this.label.style.display = 'none';
+        this.label.style.display = 'block';
         this.el.appendChild(this.label);
 
         this.container = document.createElement('div');
@@ -251,16 +251,17 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
                 if (that.el.querySelectorAll(item_query).length === 0) {
                     var label = document.createElement('label');
                     label.classList.add('radio');
-                    label.textContent = item;
                     that.container.appendChild(label);
 
                     var radio = document.createElement('input');
                     radio.setAttribute('type', 'radio');
-                    // radio.classList.add(that.model);
                     radio.value = item;
+                    radio.name = that.label.textContent;
                     radio.setAttribute('data-value', encodeURIComponent(item));
-                    that.label.appendChild(radio);
-                    radio.onclick = function() { that.handle_click(); };
+                    label.appendChild(radio);
+
+                    label.appendChild(document.createTextNode(item));
+                    radio.onclick = function() { that.handle_click(radio); };
                 }
 
                 var item_elements = that.container.getElementsByClassName(item_query);
@@ -325,7 +326,7 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
          * Calling model.set will trigger all of the other views of the
          * model to update.
          */
-        this.model.set('selected_label', $(e.target).val(), {updated_view: this});
+        this.model.set('selected_label', e.value, {updated_view: this});
         this.touch();
     }
 });
