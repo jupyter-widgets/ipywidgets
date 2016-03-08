@@ -3,6 +3,7 @@
 
 // minimal imports from font-awesome
 @import "./font-awesome/less/variables.less";
+@fa-font-path: "./font-awesome/fonts";
 
 // import variables, mixins from Notebook
 // layout mixins
@@ -365,13 +366,14 @@
 
 .widget-valid {
     font-size: 1em;
+    position: relative;
     i {margin-right: 1.5em;}
     i:before {
         font-family: FontAwesome;
         font-style: normal;
         font-size: 1.5em;
         position: absolute;
-        top: -2px;
+        top: 0;
     }
     &.mod-valid {
         color: green;
