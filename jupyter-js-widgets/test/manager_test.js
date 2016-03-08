@@ -1,6 +1,6 @@
 const ManagerBase = require('../src/index.js').ManagerBase;
 
-describe("ManagerBase", function() {
+describe('ManagerBase', function() {
     beforeEach(function() {
         this.managerBase = new ManagerBase();
     });
@@ -61,7 +61,7 @@ describe("ManagerBase", function() {
     it('callbacks', function() {
 
         // Cell-less call
-        let c = this.managerBase.callbacks();
+        var c = this.managerBase.callbacks();
         expect(c).to.be.an('object');
         expect(c.iopub).to.be.undefined;
 

@@ -3,7 +3,7 @@ require("codemirror/lib/codemirror.css");
 require("jupyter-js-widgets/css/widgets.min.css");
 require("codemirror/mode/python/python");
 
-var WidgetManager = require("./manager").WidgetManager;
+var WidgetManager = require('./manager').WidgetManager;
 
 var services = require('jupyter-js-services');
 var getKernelSpecs = services.getKernelSpecs;
@@ -12,10 +12,10 @@ var startNewKernel = services.startNewKernel;
 var BASEURL = prompt('Notebook BASEURL', 'http://localhost:8888');
 var WSURL = 'ws:' + BASEURL.split(':').slice(1).join(':');
 
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener('DOMContentLoaded', function(event) {
 
     // Connect to the notebook webserver.
-    let connectionInfo = {
+    var connectionInfo = {
         baseUrl: BASEURL,
         wsUrl: WSURL
     };
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         var inputarea = document.getElementsByClassName("inputarea")[0];
         var editor = CodeMirror(inputarea, {
             value: code,
-            mode: "python",
+            mode: 'python',
             tabSize: 4,
             showCursorWhenSelecting: true,
             viewportMargin: Infinity,
