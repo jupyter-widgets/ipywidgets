@@ -155,8 +155,8 @@ function typeset(element, text) {
 /**
  * escape text to HTML
  */
-var escape_html = function (text) {
-    let esc  = document.createElement('div');
+var escape_html = function(text) {
+    var esc  = document.createElement('div');
     esc.innerHTML = text;
     return esc.innerHTML;
 };
