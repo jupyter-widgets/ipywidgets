@@ -50,7 +50,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         this.dropbutton.classList.add('dropdown-toggle');
         this.dropbutton.classList.add('widget-combo-carrot-btn');
         this.dropbutton.setAttribute('data-toggle', 'dropdown');
-
+        this.dropbutton.onclick = view._showDropdown.bind(view);
         var caret = document.createElement('span');
         caret.classList.add('caret');
         this.dropbutton.appendChild(caret);
@@ -226,7 +226,7 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
 
         this.label = document.createElement('div');
         this.label.className = 'widget-label';
-        this.label.style.display = 'none';
+        this.label.style.display = 'block';
         this.el.appendChild(this.label);
 
         this.container = document.createElement('div');
@@ -270,14 +270,17 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
                 if (!item_exists) {
                     label = document.createElement('label');
                     label.classList.add('radio');
-                    label.textContent = item;
                     view.container.appendChild(label);
 
                     radio = document.createElement('input');
                     radio.setAttribute('type', 'radio');
                     radio.value = item;
+                    radio.name = that.label.textContent;
                     radio.setAttribute('data-value', encodeURIComponent(item));
                     label.appendChild(radio);
+
+                    label.appendChild(document.createTextNode(item));
+                    radio.onclick = function() { that.handle_click(radio); };
                 }
             });
         }
