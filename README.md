@@ -58,8 +58,6 @@ See the [Installation](docs/source/user_install.md) section of the documentation
 See the [examples](docs/source/examples.md) section of the documentation. The widgets are being used in a variety of ways; some uses can be seen in these notebooks:
 
 - [Demo notebook of interactive widgets](https://github.com/ipython/ipywidgets/blob/master/examples/Index.ipynb)
-- Example 1
-- Example 2
 
 ## Contributing to ipywidgets
 - [Developer install](docs/source/dev_install.md)

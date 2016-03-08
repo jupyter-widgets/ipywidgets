@@ -1,30 +1,5 @@
 Developer Install
 =================
-
-<script>
-w({
-  "e43a868c5c0b4db39f0416d0fe9cc476": {
-    "model_name": "IntSliderModel",
-    "model_module": null,
-    "state": {
-      "_model_name": "IntSliderModel",
-      "_view_name": "FloatSliderView",
-      "description": "testtesttesttesttesttesttesttesttesttest",
-       "min": 0,
-      "max": 4,
-      "value": 0,
-      "step": 0.3333333333333333
-    }
-  }
-});
-</script>
-
-<script>
-w({
-  "e43a868c5c0b4db39f0416d0fe9cc476": null
-});
-</script>
-
 To install ipywidgets from git, you will need [npm](https://www.npmjs.com/) and
 the latest [development copy of the Jupyter
 notebook](https://github.com/jupyter/notebook) because everything in the
