@@ -12,24 +12,24 @@ describe('ManagerBase', function() {
 
     it('register_widget_model', function() {
         expect(ManagerBase.register_widget_model).to.not.be.undefined;
-        expect(() => ManagerBase.register_widget_model('test', {})).to.not.throw(Error);
+        expect(function() { ManagerBase.register_widget_model('test', {}); }).to.not.throw(Error);
     });
 
     it('register_widget_view', function() {
         expect(ManagerBase.register_widget_view).to.not.be.undefined;
-        expect(() => ManagerBase.register_widget_view('test', {})).to.not.throw(Error);
+        expect(function() { ManagerBase.register_widget_view('test', {}); }).to.not.throw(Error);
     });
 
     it('_create_comm', function() {
         expect(this.managerBase._create_comm).to.not.be.undefined;
-        return this.managerBase._create_comm().then(() => {
+        return this.managerBase._create_comm().then(function() {
             assert.ok(false, 'Promise should fail');
         }).catch(err => {});
     });
 
     it('_get_comm_info', function() {
         expect(this.managerBase._get_comm_info).to.not.be.undefined;
-        return this.managerBase._get_comm_info().then(() => {
+        return this.managerBase._get_comm_info().then(function() {
             assert.ok(false, 'Promise should fail');
         }).catch(err => {});
     });

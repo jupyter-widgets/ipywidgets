@@ -1,7 +1,7 @@
 const widgetsRendered = new Promise((resolve, reject) => {
-    setTimeout(() => reject(Error('timeout waiting for widgets to render')), 5000); // 5s timeout
+    setTimeout(function() { reject(Error('timeout waiting for widgets to render'); }, 5000); // 5s timeout
 
-    const listener = () => {
+    const listener = function() {
         resolve();
         document.removeEventListener('widgetsRendered', listener);
     };
@@ -11,23 +11,21 @@ const widgetsRendered = new Promise((resolve, reject) => {
 describe('index.html', function() {
     this.timeout(10000);
 
-    beforeEach(() => {
-        return widgetsRendered;
-    });
+    beforeEach(function() { return widgetsRendered; });
 
-    describe('textArea', () => {
-        it('exists', () => {
+    describe('textArea', function() {
+        it('exists', function() {
             expect(document.querySelector('textarea')).to.be.ok;
         });
-        it('correct value', () => {
+        it('correct value', function() {
             expect(document.querySelector('textarea').value).to.equal('test <b>text</b>');
         });
     });
-    describe('html', () => {
-        it('exists', () => {
+    describe('html', function() {
+        it('exists', function() {
             expect(document.querySelector('div.widget-html')).to.be.ok;
         });
-        it('correct value', () => {
+        it('correct value', function() {
             expect(document.querySelector('div.widget-html').innerHTML).to.equal('test <b>text</b>');
         });
     });

@@ -144,7 +144,7 @@ describe("Widget", function() {
         // Update message
         var setStateSpy = sinon.spy(this.widget, "set_state");
         this.widget._handle_comm_msg({content: {data: {method: 'update'}}});
-        var p1 = this.widget.state_change = this.widget.state_change.then(() => {
+        var p1 = this.widget.state_change = this.widget.state_change.then(function() {
             expect(setStateSpy.calledOnce).to.be.true;
         });
 
@@ -157,7 +157,7 @@ describe("Widget", function() {
         // Display message
         var displaySpy = sinon.spy(this.manager, "display_model");
         this.widget._handle_comm_msg({content: {data: {method: 'display'}}});
-        var p2 = this.widget.state_change = this.widget.state_change.then(() => {
+        var p2 = this.widget.state_change = this.widget.state_change.then(function() {
             expect(displaySpy.calledOnce).to.be.true;
         });
 
@@ -217,13 +217,13 @@ describe("Widget", function() {
         this.widget.on('change:a change:b', changeCallback, this.widget);
         this.widget.set_state({ a: true, b: true });
 
-        return this.widget.state_change.then(() => {
+        return this.widget.state_change.then(function() {
             expect(changeCallback.callCount).to.equal(2);
 
             this.widget.on_some_change(['a', 'b'], someChangeCallback, this.widget);
             this.widget.set_state({ a: false, b: false });
             return this.widget.state_change;
-        }).then(() => {
+        }).then(function() {
             expect(someChangeCallback.calledOnce).to.be.true;
         });
     });

@@ -297,7 +297,7 @@ var TabView = widget.DOMWidgetView.extend({
         tab_text.setAttribute('data-toggle', 'tab');
         tab_text.textContent = 'Page ' + index;
         tab.appendChild(tab_text);
-        tab_text.onclick = () => {
+        tab_text.onclick = function() {
           that.model.set('selected_index', index, {updated_view: that});
           that.touch();
           that.select_page(index);
