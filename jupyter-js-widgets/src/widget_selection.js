@@ -262,27 +262,15 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
             // Add items to the DOM.
             this.container.textContent = '';
             _.each(items, function(item) {
-                var item_query = 'input[data-value="' +
-                    encodeURIComponent(item) + '"]';
-                var item_exists = view.container
-                    .getElementsByClassName(item_query).length !== 0;
-                var radio, label;
-                if (!item_exists) {
-                    var label = document.createElement('label');
-                    label.classList.add('radio');
-                    label.textContent = item;
-                    view.container.appendChild(label);
+                var label = document.createElement('label');
+                label.textContent = item;
+                view.container.appendChild(label);
 
-                    var radio = document.createElement('input');
-                    radio.setAttribute('type', 'radio');
-                    radio.value = item;
-                    radio.name = that.label.textContent;
-                    radio.setAttribute('data-value', encodeURIComponent(item));
-                    label.appendChild(radio);
-
-                    label.appendChild(document.createTextNode(item));
-                    radio.onclick = function() { that.handle_click(radio); };
-                }
+                var radio = document.createElement('input');
+                radio.setAttribute('type', 'radio');
+                radio.value = item;
+                radio.setAttribute('data-value', encodeURIComponent(item));
+                label.appendChild(radio);
             });
         }
         var description = this.model.get('description');
@@ -362,11 +350,9 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
         this.label.style.display = 'none';
 
         this.buttongroup = document.createElement('div');
-        this.buttongroup.className = 'btn-group';
         this.el.appendChild(this.buttongroup);
 
         this.listenTo(this.model, 'change:button_style', this.update_button_style, this);
-        this.update_button_style();
         this.update();
     },
 
@@ -377,80 +363,76 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        if (options === undefined || options.updated_view != this) {
-            // Add missing items to the DOM.
-            var items = this.model.get('_options_labels');
-            var icons = this.model.get('icons');
-            var previous_icons = this.model.previous('icons') || [];
-            var disabled = this.model.get('disabled');
-            var that = this;
-            var item_html;
+        var view = this;
+        var items = this.model.get('_options_labels');
+        var icons = this.model.get('icons') || [];
+        var previous_icons = this.model.previous('icons') || [];
+        var tooltips = view.model.get('tooltips') || [];
+        var disabled = this.model.get('disabled');
+        var buttons = this.buttongroup.querySelectorAll('button');
+        var values = _.pluck(buttons, 'value');
+        var stale = false;
+
+        for (var i = 0, len = items.length; i < len; ++i) {
+            if (values[i] !== items[i] || icons[i] !== previous_icons[i]) {
+                stale = true;
+                break;
+            }
+        }
+
+        if (stale && options === undefined || options.updated_view !== this) {
+            // Add items to the DOM.
+            this.buttongroup.textContent = '';
             _.each(items, function(item, index) {
-                if (item.trim().length === 0 && (!icons[index] ||
-                    icons[index].trim().length === 0)) {
+                var item_html;
+                var empty = item.trim().length === 0 &&
+                    (!icons[index] || icons[index].trim().length === 0);
+                if (empty) {
                     item_html = '&nbsp;';
                 } else {
                     item_html = utils.escape_html(item);
                 }
-                var item_query = '[data-value="' + encodeURIComponent(item) + '"]';
-                var item_elements = that.buttongroup.getElementsByClassName(item_query);
 
-                if (item_elements.length > 0) {
-                  var icon_element = item_elements[0].getElementsByClassName('.fa');
-
-                  var item_el = document.createElement('button');
-                  item_el.setAttribute('type', 'button');
-                  item_el.className = 'btn btn-default';
-                  item_el.innerHTML = item_html;
-                  that.buttongroup.appendChild(item_el);
-                  item_el.setAttribute('data-value', encodeURIComponent(item));
-                  item_el.setAttribute('data-toggle', 'tooltip');
-                  item_el.setAttribute('value', item);
-                  // TODO: AD
-                  // item_el.onclick = () => { that.handle_click.bind(that); };
-                  that.update_style_traits(item_el);
-                  icon_element = document.createElement('i');
-                  item_el.appendChild(icon_element);
+                var icon = document.createElement('i');
+                var button = document.createElement('button');
+                if (icons[index]) {
+                    icon.className = 'fa fa-' + icons[index];
                 }
-
-                if (that.model.get('value') == item) {
-                    item_el.classList.add('active');
-                } else {
-                    item_el.classList.add('active');
+                button.setAttribute('type', 'button');
+                button.className = 'widget-toggle-button';
+                button.innerHTML = item_html;
+                button.setAttribute('data-value', encodeURIComponent(item));
+                button.setAttribute('value', item);
+                button.appendChild(icon);
+                button.disabled = disabled;
+                if (tooltips[index]) {
+                    button.setAttribute('title', tooltips[index]);
                 }
-
-                item_el.disabled = disabled;
-                item_el.setAttribute('title', that.model.get('tooltips')[index]);
-
-                icon_element.classList.remove(previous_icons[index]);
-                icon_element.classList.add(icons[index]);
+                view.update_style_traits(button);
+                view.buttongroup.appendChild(button);
             });
-
-            // Remove items that no longer exist.
-            this.$buttongroup.find('button').each(function(i, obj) {
-                var value = $(obj).attr('value');
-                var found = false;
-                _.each(items, function(item, index) {
-                    if (item == value) {
-                        found = true;
-                        return false;
-                    }
-                });
-
-                if (!found) {
-                    $(obj).remove();
-                }
-            });
-
-            var description = this.model.get('description');
-            if (description.length === 0) {
-                this.label.style.display = 'none';
-            } else {
-                this.label.textContent = '';
-                this.typeset(this.label, description);
-                this.label.style.display = '';
-            }
         }
+
+        // Select active button.
+        _.each(items, function(item) {
+            var item_query = '[data-value="' + encodeURIComponent(item) + '"]';
+            var button = view.buttongroup.querySelector(item_query);
+            if (view.model.get('value') === item) {
+                button.classList.add('mod-active');
+            } else {
+                button.classList.remove('mod-active');
+            }
+        });
+
+        var description = this.model.get('description');
+        if (description.length === 0) {
+            this.label.style.display = 'none';
+        } else {
+            this.label.textContent = '';
+            this.typeset(this.label, description);
+            this.label.style.display = '';
+        }
+        this.update_button_style();
         return ToggleButtonsView.__super__.update.apply(this);
     },
 
@@ -475,7 +457,7 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
                     if (button) {
                         button.style[name] = this._css_state[name];
                     } else {
-                        var btns = this.buttongroup.getElementsByClassName('button');
+                        var btns = this.buttongroup.querySelectorAll('button');
                         if (btns.length) {
                           btns[0].style[name] = this._css_state[name];
                         }
@@ -487,27 +469,33 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
 
     update_button_style: function() {
         var class_map = {
-            primary: ['btn-primary'],
-            success: ['btn-success'],
-            info: ['btn-info'],
-            warning: ['btn-warning'],
-            danger: ['btn-danger']
+            primary: ['mod-primary'],
+            success: ['mod-success'],
+            info: ['mod-info'],
+            warning: ['mod-warning'],
+            danger: ['mod-danger']
         };
-        this.update_mapped_classes(
-          class_map,
-          'button_style',
-          this.buttongroup.getElementsByClassName('button')[0]
-        );
+        var view = this;
+        var buttons = this.buttongroup.querySelectorAll('button');
+        _.each(buttons, function(button) {
+            view.update_mapped_classes(class_map, 'button_style', button);
+        });
     },
 
-    handle_click: function (e) {
+    events: {
+        // Dictionary of events and their handlers.
+        'click button': '_handle_click'
+    },
+
+    _handle_click: function (event) {
         /**
          * Handle when a value is clicked.
          *
          * Calling model.set will trigger all of the other views of the
          * model to update.
          */
-        this.model.set('value', $(e.target).attr('value'), {updated_view: this});
+        var value = event.target.getAttribute('value');
+        this.model.set('value', value, { updated_view: this });
         this.touch();
     }
 });
