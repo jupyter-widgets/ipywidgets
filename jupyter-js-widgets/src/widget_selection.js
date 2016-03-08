@@ -256,7 +256,7 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
 
                     var radio = document.createElement('input');
                     radio.setAttribute('type', 'radio');
-                    radio.classList.add(that.model);
+                    // radio.classList.add(that.model);
                     radio.value = item;
                     radio.setAttribute('data-value', encodeURIComponent(item));
                     that.label.appendChild(radio);
@@ -267,7 +267,7 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
                 if (item_elements.length > 0) {
                   let item_el = item_elements[0];
 
-                  if (that.model.get('selected_label') == item) {
+                  if (that.model.get('selected_label') === item) {
                       item_el.prop('checked', true);
                   } else {
                       item_el.prop('checked', false);
@@ -278,7 +278,9 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
             });
 
             // Remove items that no longer exist.
-            this.container.getElementsByClassName('input').forEach(function(i, obj) {
+            var inputs = this.container.getElementsByClassName('input');
+            for (var i = 0; i < inputs.length; i++) {
+                var obj = inputs[i];
                 var value = obj.value;
                 var found = false;
                 _.each(items, function(item, index) {
@@ -289,10 +291,9 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
                 });
 
                 if (!found) {
-                    $(obj).parent().remove();
-
+                    obj.parentNode.parentNode.removeChild(obj.parentNode);
                 }
-            });
+            }
 
             var description = this.model.get('description');
             if (description.length === 0) {
