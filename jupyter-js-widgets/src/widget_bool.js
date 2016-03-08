@@ -153,14 +153,14 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
 
             var description = this.model.get('description');
             var icon = this.model.get('icon');
-            if (description.trim().length === 0 && icon.trim().length ===0) {
+            if (description.trim().length === 0 && icon.trim().length === 0) {
                 this.el.innerHTML = '&nbsp;'; // Preserve button height
             } else {
                 this.el.textContent = '';
                 if (icon.trim().length) {
                     var i = document.createElement('i');
                     this.el.appendChild(i);
-                    this.el.classList.add(icon);
+                    i.classList.add(icon);
                 }
                 this.el.appendChild(document.createTextNode(description));
             }

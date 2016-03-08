@@ -281,6 +281,8 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
                 }
             });
         }
+
+
         var description = this.model.get('description');
         if (description.length === 0) {
             this.label.style.display = 'none';
@@ -289,6 +291,8 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
             this.typeset(this.label, description);
             this.label.style.display = '';
         }
+
+
         _.each(items, function(item) {
             var item_query = 'input[data-value="' +
                 encodeURIComponent(item) + '"]';
