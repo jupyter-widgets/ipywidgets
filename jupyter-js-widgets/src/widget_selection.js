@@ -50,7 +50,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         this.dropbutton.classList.add('dropdown-toggle');
         this.dropbutton.classList.add('widget-combo-carrot-btn');
         this.dropbutton.setAttribute('data-toggle', 'dropdown');
-        this.dropbutton.onclick = view._showDropdown.bind(view);
+
         var caret = document.createElement('span');
         caret.classList.add('caret');
         this.dropbutton.appendChild(caret);
@@ -268,11 +268,12 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
                     .getElementsByClassName(item_query).length !== 0;
                 var radio, label;
                 if (!item_exists) {
-                    label = document.createElement('label');
+                    var label = document.createElement('label');
                     label.classList.add('radio');
+                    label.textContent = item;
                     view.container.appendChild(label);
 
-                    radio = document.createElement('input');
+                    var radio = document.createElement('input');
                     radio.setAttribute('type', 'radio');
                     radio.value = item;
                     radio.name = that.label.textContent;
@@ -284,8 +285,6 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
                 }
             });
         }
-
-
         var description = this.model.get('description');
         if (description.length === 0) {
             this.label.style.display = 'none';
@@ -294,8 +293,6 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
             this.typeset(this.label, description);
             this.label.style.display = '';
         }
-
-
         _.each(items, function(item) {
             var item_query = 'input[data-value="' +
                 encodeURIComponent(item) + '"]';
