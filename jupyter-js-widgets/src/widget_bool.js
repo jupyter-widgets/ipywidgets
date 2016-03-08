@@ -11,14 +11,14 @@ var BoolModel = widget.DOMWidgetModel.extend({
         description: '',
         disabled: false,
         _model_name: 'BoolModel'
-    }),
+    })
 });
 
 var CheckboxModel = BoolModel.extend({
     defaults: _.extend({}, BoolModel.prototype.defaults, {
         _view_name: 'CheckboxView',
         _model_name: 'CheckboxModel'
-    }),
+    })
 });
 
 var CheckboxView = widget.DOMWidgetView.extend({
@@ -91,7 +91,7 @@ var CheckboxView = widget.DOMWidgetView.extend({
             }
         }
         return CheckboxView.__super__.update.apply(this);
-    },
+    }
 });
 
 var ToggleButtonModel = BoolModel.extend({
@@ -101,7 +101,7 @@ var ToggleButtonModel = BoolModel.extend({
         tooltip: '',
         icon: '',
         button_style: ''
-    }),
+    })
 });
 
 var ToggleButtonView = widget.DOMWidgetView.extend({
@@ -184,7 +184,7 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
         var value = this.model.get('value');
         this.model.set('value', !value, {updated_view: this});
         this.touch();
-    },
+    }
 });
 
 var ValidModel = BoolModel.extend({
@@ -192,7 +192,7 @@ var ValidModel = BoolModel.extend({
         readout: 'Invalid',
         _view_name: 'ValidView',
         _model_name: 'ValidModel'
-    }),
+    })
 });
 
 var ValidView = widget.DOMWidgetView.extend({
@@ -212,29 +212,20 @@ var ValidView = widget.DOMWidgetView.extend({
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        var icon, color, readout;
+        this.el.textContent = '';
+        this.el.classList.remove('mod-valid');
+        this.el.classList.remove('mod-invalid');
+
+        var icon = document.createElement('i');
+        this.el.appendChild(icon);
+
         if (this.model.get('value')) {
-          icon = 'fa-check';
-          color = 'green';
-          readout = '';
+            this.el.classList.add('mod-valid');
         } else {
-          icon = 'fa-close';
-          color = 'red';
-          readout = this.model.get('readout');
+            var readout = document.createTextNode(this.model.get('readout'));
+            this.el.classList.add('mod-invalid');
+            this.el.appendChild(readout);
         }
-
-        console.log('Readout: ', readout);
-        var text = document.createTextNode(readout);
-        var i = document.createElement('i');
-        i.classList.add('fa');
-        this.el.appendChild(i);
-        i.classList.add(icon);
-        this.el.appendChild(text);
-
-        var that = this;
-        this.displayed.then(function() {
-          that.el.style.color = color;
-        });
     }
 });
 
