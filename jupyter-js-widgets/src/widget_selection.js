@@ -4,7 +4,6 @@
 
 var widget = require('./widget');
 var utils = require('./utils');
-var $ = require('./jquery');
 var _ = require('underscore');
 
 var SelectionModel = widget.DOMWidgetModel.extend({
@@ -51,7 +50,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         this.dropbutton.classList.add('dropdown-toggle');
         this.dropbutton.classList.add('widget-combo-carrot-btn');
         this.dropbutton.setAttribute('data-toggle', 'dropdown');
-        this.dropbutton.onclick = view._showDropdown.bind(view);
+
         var caret = document.createElement('span');
         caret.classList.add('caret');
         this.dropbutton.appendChild(caret);
@@ -66,41 +65,6 @@ var DropdownView = widget.DOMWidgetView.extend({
 
         // Set defaults.
         this.update();
-    },
-
-    /**
-     * Show the dropdown list.
-     *
-     * If the dropdown list doesn't fit below the dropdown label, this will
-     * cause the dropdown to be dropped 'up'.
-     * @param  {Event} e
-     */
-    _showDropdown: function(e) {
-        // Don't allow bootstrap to show the dropdown!
-        e.stopImmediatePropagation();
-        e.preventDefault();
-
-        // Get the bottom of the dropdown label, and the bottom of the nb body.
-        // The difference is the maximum height of the dropmenu when displayed
-        // below the button.
-        var droplabelRect = this.droplabel.getBoundingClientRect();
-        var parent = this.droplabel.parentNode;
-        while (parent.parentNode) {
-          parent = parent.parentNode;
-        }
-        var bodyRect = parent.body.getBoundingClientRect();
-        var maxHeight = bodyRect.bottom - droplabelRect.bottom;
-
-        // If the maximum height of the dropdown's space is less than the
-        // height of the dropdown itself, make it drop up!
-        if (maxHeight < 200) {
-            this.buttongroup.classList.add('dropup');
-        } else {
-            this.buttongroup.classList.remove('dropup');
-        }
-
-        // Show the dropdown(or up)
-        this.dropbutton.dropdown('toggle');
     },
 
     update : function(options) {
@@ -129,7 +93,6 @@ var DropdownView = widget.DOMWidgetView.extend({
             _.each(items, function(item, i) {
                 var item_button = document.createElement('a');
                 item_button.textContent = item;
-                item_button.onclick = () => { that.handle_click(); };
 
                 var btn_li = document.createElement('li');
                 btn_li.appendChild(item_button);
@@ -172,7 +135,9 @@ var DropdownView = widget.DOMWidgetView.extend({
         /**
          * Set a css attr of the widget view.
          */
-        if (name.substring(0, 6) == 'border' || name == 'background' || name == 'color') {
+        if (name.substring(0, 6) === 'border' ||
+            name === 'background' ||
+            name === 'color') {
             this.droplabel.style[name] = value;
             this.dropbutton.style[name] = value;
             this.droplist.style[name] = value;
@@ -181,26 +146,63 @@ var DropdownView = widget.DOMWidgetView.extend({
         }
     },
 
-    handle_click: function (e) {
+    events: {
+        // Dictionary of events and their handlers.
+        'click a': '_handle_click',
+        'click button.widget-combo-carrot-btn': '_show_dropdown'
+    },
+
+    _handle_click: function (event) {
         /**
          * Handle when a value is clicked.
          *
          * Calling model.set will trigger all of the other views of the
          * model to update.
          */
-        this.model.set(
-            'selected_label',
-            document.querySelectorAll(e.target).textContent,
-            { updated_view: this }
-        );
-        this.touch();
-
         // Manually hide the droplist.
-        e.stopPropagation();
-        e.preventDefault();
+        event.stopPropagation();
+        event.preventDefault();
         this.buttongroup.classList.remove('open');
-    }
 
+        var value = event.target.textContent;
+        this.model.set('selected_label', value, { updated_view: this });
+        this.touch();
+    },
+
+    /**
+     * Show the dropdown list.
+     *
+     * If the dropdown list doesn't fit below the dropdown label, this will
+     * cause the dropdown to be dropped 'up'.
+     * @param  {Event} event
+     */
+    _show_dropdown: function(event) {
+        // Don't allow bootstrap to show the dropdown!
+        event.stopImmediatePropagation();
+        event.preventDefault();
+
+        // Get the bottom of the dropdown label, and the bottom of the nb body.
+        // The difference is the maximum height of the dropmenu when displayed
+        // below the button.
+        var droplabelRect = this.droplabel.getBoundingClientRect();
+        var parent = this.droplabel.parentNode;
+        while (parent.parentNode) {
+          parent = parent.parentNode;
+        }
+        var bodyRect = parent.body.getBoundingClientRect();
+        var maxHeight = bodyRect.bottom - droplabelRect.bottom;
+
+        // If the maximum height of the dropdown's space is less than the
+        // height of the dropdown itself, make it drop up!
+        if (maxHeight < 200) {
+            this.buttongroup.classList.add('dropup');
+        } else {
+            this.buttongroup.classList.remove('dropup');
+        }
+
+        // Show the dropdown(or up)
+        this.dropbutton.dropdown('toggle');
+    }
 });
 
 var RadioButtonsModel = SelectionModel.extend({
@@ -241,68 +243,62 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        if (options === undefined || options.updated_view != this) {
-            // Add missing items to the DOM.
-            var items = this.model.get('_options_labels');
-            var disabled = this.model.get('disabled');
-            var that = this;
-            _.each(items, function(item, index) {
-                var item_query = 'input[data-value="' + encodeURIComponent(item) + '"]';
-                if (that.el.querySelectorAll(item_query).length === 0) {
-                    var label = document.createElement('label');
-                    label.classList.add('radio');
-                    label.textContent = item;
-                    that.container.appendChild(label);
+        var view = this;
+        var items = this.model.get('_options_labels');
+        var radios = _.pluck(
+            this.container.querySelectorAll('input[type="radio"]'),
+            'value'
+        );
+        var stale = false;
 
-                    var radio = document.createElement('input');
-                    radio.setAttribute('type', 'radio');
-                    radio.classList.add(that.model);
-                    radio.value = item;
-                    radio.setAttribute('data-value', encodeURIComponent(item));
-                    that.label.appendChild(radio);
-                    radio.onclick = function() { that.handle_click(); };
-                }
-
-                var item_elements = that.container.getElementsByClassName(item_query);
-                if (item_elements.length > 0) {
-                  let item_el = item_elements[0];
-
-                  if (that.model.get('selected_label') == item) {
-                      item_el.prop('checked', true);
-                  } else {
-                      item_el.prop('checked', false);
-                  }
-                  item_el.prop('disabled', disabled);
-                }
-
-            });
-
-            // Remove items that no longer exist.
-            this.container.getElementsByClassName('input').forEach(function(i, obj) {
-                var value = obj.value;
-                var found = false;
-                _.each(items, function(item, index) {
-                    if (item == value) {
-                        found = true;
-                        return false;
-                    }
-                });
-
-                if (!found) {
-                    $(obj).parent().remove();
-
-                }
-            });
-
-            var description = this.model.get('description');
-            if (description.length === 0) {
-                this.label.style.display = 'none';
-            } else {
-                this.label.textContent = description;
-                this.typeset(this.label, description);
-                this.label.style.display = '';
+        for (var i = 0, len = items.length; i < len; ++i) {
+            if (radios[i] !== items[i]) {
+                stale = true;
+                break;
             }
         }
+
+        if (stale && (options === undefined || options.updated_view !== this)) {
+            // Add items to the DOM.
+            this.container.textContent = '';
+            _.each(items, function(item) {
+                var item_query = 'input[data-value="' +
+                    encodeURIComponent(item) + '"]';
+                var item_exists = view.container
+                    .getElementsByClassName(item_query).length !== 0;
+                var radio, label;
+                if (!item_exists) {
+                    label = document.createElement('label');
+                    label.classList.add('radio');
+                    label.textContent = item;
+                    view.container.appendChild(label);
+
+                    radio = document.createElement('input');
+                    radio.setAttribute('type', 'radio');
+                    radio.value = item;
+                    radio.setAttribute('data-value', encodeURIComponent(item));
+                    label.appendChild(radio);
+                }
+            });
+        }
+        var description = this.model.get('description');
+        if (description.length === 0) {
+            this.label.style.display = 'none';
+        } else {
+            this.label.textContent = description;
+            this.typeset(this.label, description);
+            this.label.style.display = '';
+        }
+        _.each(items, function(item) {
+            var item_query = 'input[data-value="' +
+                encodeURIComponent(item) + '"]';
+            var radio = view.container.querySelectorAll(item_query);
+            if (radio.length > 0) {
+              var radio_el = radio[0];
+              radio_el.checked = view.model.get('selected_label') === item;
+              radio_el.disabled = view.model.get('disabled');
+            }
+        });
         return RadioButtonsView.__super__.update.apply(this);
     },
 
@@ -317,14 +313,20 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
         }
     },
 
-    handle_click: function (e) {
+    events: {
+        // Dictionary of events and their handlers.
+        'click input[type="radio"]': '_handle_click'
+    },
+
+    _handle_click: function (event) {
         /**
          * Handle when a value is clicked.
          *
          * Calling model.set will trigger all of the other views of the
          * model to update.
          */
-        this.model.set('selected_label', $(e.target).val(), {updated_view: this});
+        var value = event.target.value;
+        this.model.set('selected_label', value, {updated_view: this});
         this.touch();
     }
 });
@@ -400,7 +402,8 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
                   item_el.setAttribute('data-value', encodeURIComponent(item));
                   item_el.setAttribute('data-toggle', 'tooltip');
                   item_el.setAttribute('value', item);
-                  item_el.onclick = () => { that.handle_click.bind(that); };
+                  // TODO: AD
+                  // item_el.onclick = () => { that.handle_click.bind(that); };
                   that.update_style_traits(item_el);
                   icon_element = document.createElement('i');
                   item_el.appendChild(icon_element);
