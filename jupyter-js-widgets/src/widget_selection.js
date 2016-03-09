@@ -76,7 +76,7 @@ var DropdownView = widget.DOMWidgetView.extend({
          */
 
         if (options === undefined || options.updated_view != this) {
-            var selected_item_text = this.model.get('selected_label');
+            var selected_item_text = this.model.get('value');
             if (selected_item_text.trim().length === 0) {
                 this.droplabel.innerHTML = '&nbsp;';
             } else {
@@ -503,7 +503,7 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
          * Calling model.set will trigger all of the other views of the
          * model to update.
          */
-        this.model.set('selected_label', $(e.target).attr('value'), {updated_view: this});
+        this.model.set('value', $(e.target).attr('value'), {updated_view: this});
         this.touch();
     }
 });
@@ -637,18 +637,17 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-hbox');
-        this.el.classList.add('widget-hslider');
+        this.$el
+            .addClass('jupyter-widgets widget-hbox widget-hslider');
+        this.$label = $('<div />')
+            .appendTo(this.$el)
+            .addClass('widget-label')
+            .hide();
 
-        this.label = document.createElement('div');
-        this.label.classList.add('widget-label');
-        this.label.style.display = 'none';
-        this.el.appendChild(this.label);
-
-        this.slider = document.createElement('input');
-        this.slider.setAttribute('type', 'range');
-        this.slider.classList.add('slider'); // TODO - is this necessary.
+        this.$slider = $('<div />')
+            .slider({})
+            .addClass('slider')
+            .on('slidechange', $.proxy(this.handleSliderChange, this));
 
         // Put the slider in a container
         this.slider_container = document.createElement('div');
@@ -724,9 +723,9 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
             var labels = this.model.get('_options_labels');
             var max = labels.length - 1;
             var min = 0;
-            // this.$slider.slider('option', 'step', 1); // DW TODO
-            // this.$slider.slider('option', 'max', max); // DW TODO
-            // this.$slider.slider('option', 'min', min); // DW TODO
+            this.$slider.slider('option', 'step', 1);
+            this.$slider.slider('option', 'max', max);
+            this.$slider.slider('option', 'min', min);
 
             // WORKAROUND FOR JQUERY SLIDER BUG.
             // The horizontal position of the slider handle
@@ -737,42 +736,31 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
             // handle in the vertical slider is always
             // consistent.
             var orientation = this.model.get('orientation');
-            // this.$slider.slider('option', 'value', min); // DW TODO
-            // this.$slider.slider('option', 'orientation', orientation); // DW TODO
+            this.$slider.slider('option', 'value', min);
+            this.$slider.slider('option', 'orientation', orientation);
 
-            var selected_label = this.model.get('selected_label');
-            var index = labels.indexOf(selected_label);
-            // this.$slider.slider('option', 'value', index);
-
-            // this.$readout.text(selected_label);
-            this.readout.textContent = selected_label;
+            var value = this.model.get('value');
+            var index = labels.indexOf(value);
+            this.$slider.slider('option', 'value', index);
+            this.$readout.text(value);
 
             // Use the right CSS classes for vertical & horizontal sliders
-            if (orientation=='vertical') {
-                // this.$el
-                //     .removeClass('widget-hslider')
-                //     .addClass('widget-vslider');
-                this.el.classList.remove('widget-hslider');
-                this.el.classList.add('widget-vslider');
-
-                // this.$el
-                //     .removeClass('widget-hbox')
-                //     .addClass('widget-vbox');
-              this.el.classList.remove('widget-hbox');
-              this.el.classList.add('widget-vbox');
+            if (orientation === 'vertical') {
+                this.$el
+                    .removeClass('widget-hslider')
+                    .addClass('widget-vslider');
+                this.$el
+                    .removeClass('widget-hbox')
+                    .addClass('widget-vbox');
 
             } else {
-                // this.$el
-                //     .removeClass('widget-vslider')
-                //     .addClass('widget-hslider');
-                this.el.classList.remove('widget-vslider');
-                this.el.classList.add('widget-hslider');
+                this.$el
+                    .removeClass('widget-vslider')
+                    .addClass('widget-hslider');
 
-                // this.$el
-                //     .removeClass('widget-vbox')
-                //     .addClass('widget-hbox');
-                this.el.classList.remove('widget-vbox');
-                this.el.classList.add('widget-hbox');
+                this.$el
+                    .removeClass('widget-vbox')
+                    .addClass('widget-hbox');
             }
 
             var readout = this.model.get('readout');
@@ -799,7 +787,6 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
     handleSliderChange: function(e, ui) {
         var actual_value = this._validate_slide_value(ui.value);
         var selected_label = this.model.get('_options_labels')[actual_value];
-        // this.$readout.text(selected_label);
         this.readout.textContent = selected_label;
 
         // Only persist the value while sliding if the continuous_update
@@ -818,7 +805,6 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
     handleSliderChanged: function(e, ui) {
         var actual_value = this._validate_slide_value(ui.value);
         var selected_label = this.model.get('_options_labels')[actual_value];
-        // this.$readout.text(selected_label);
         this.readout.textContent = selected_label;
         this.model.set('selected_label', selected_label, {updated_view: this});
         this.touch();
@@ -858,7 +844,6 @@ var SelectMultipleView = SelectView.extend({
         this.el.classList.remove('widget-select');
         this.el.classList.add('widget-select-multiple');
         this.listbox.multiple = true;
-
         this.update();
     },
 
