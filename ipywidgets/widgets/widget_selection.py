@@ -187,7 +187,7 @@ class RadioButtons(_Selection):
     Only one radio button can be toggled at any point in time.
     """
     _view_name = Unicode('RadioButtonsView').tag(sync=True)
-    _modelname = Unicode('RadioButtonsModel').tag(sync=True)
+    _model_name = Unicode('RadioButtonsModel').tag(sync=True)
 
 
 @register('Jupyter.Select')
@@ -200,8 +200,8 @@ class Select(_Selection):
 @register('Jupyter.SelectionSlider')
 class SelectionSlider(_Selection):
     """Slider to select a single item from a list or dictionary."""
-    _view_name = Unicode('SelectionSliderView', sync=True)
-    _modelname = Unicode('SelectionSliderModel', sync=True)
+    _view_name = Unicode('SelectionSliderView').tag(sync=True)
+    _model_name = Unicode('SelectionSliderModel').tag(sync=True)
 
     orientation = CaselessStrEnum(
         values=['horizontal', 'vertical'],

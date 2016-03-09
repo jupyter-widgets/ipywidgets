@@ -429,6 +429,7 @@ var WidgetViewMixin = {
         /**
          * Public constructor.
          */
+        console.log('Hooking up model update...');
         this.listenTo(this.model, 'change', this.update, this);
 
         this.options = parameters.options;

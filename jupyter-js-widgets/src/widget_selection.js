@@ -606,7 +606,9 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
 
         this.$slider = $('<div />')
             .slider({})
-            .addClass('slider');
+            .addClass('slider')
+            .on('slidechange', $.proxy(this.handleSliderChange, this));
+
         // Put the slider in a container
         this.$slider_container = $('<div />')
             .addClass('slider-container')
@@ -667,6 +669,7 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
+        console.log('Update called');
         if (options === undefined || options.updated_view != this) {
             var labels = this.model.get("_options_labels");
             var max = labels.length - 1;
@@ -693,7 +696,7 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
             this.$readout.text(value);
 
             // Use the right CSS classes for vertical & horizontal sliders
-            if (orientation=='vertical') {
+            if (orientation === 'vertical') {
                 this.$el
                     .removeClass('widget-hslider')
                     .addClass('widget-vslider');
