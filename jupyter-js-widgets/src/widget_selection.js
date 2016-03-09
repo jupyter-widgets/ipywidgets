@@ -645,28 +645,22 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         // Put the slider in a container
         this.slider_container = document.createElement('div');
         this.slider_container.classList.add('slider-container');
-        this.slider_container.appendChild(this.slider);
-        this.el.appendChild(this.slider_container);
+        this.slider_container.appendChild(this.$slider[0]);
+        this.$el.append(this.slider_container);
 
         this.readout = document.createElement('div');
-        this.el.appendChild(this.readout);
+        this.$el.append(this.readout);
         this.readout.classList.add('widget-readout');
         this.readout.style.display = 'none';
 
         this.listenTo(this.model, 'change:slider_color', function(sender, value) {
-            var a_items = this.slider.getElementsByClassName('a');
-            if (a_items.length) {
-              a_items[0].style.background = value;
-            }
+            this.$slider.find('a').css('background', value);
         }, this);
         this.listenTo(this.model, 'change:description', function(sender, value) {
             this.updateDescription();
         }, this);
 
-        var a_items = this.slider.getElementsByClassName('a');
-        if (a_items.length) {
-          a_items[0].style.background = value;
-        }
+        this.$slider.find('a').css('background', this.model.get('slider_color'));
 
         // Set defaults.
         this.update();
@@ -735,8 +729,6 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
             var value = this.model.get('value');
             var index = labels.indexOf(value);
             // this.$slider.slider('option', 'value', index);
-
-            // this.$readout.text(value);
             this.readout.textContent = value;
 
             // Use the right CSS classes for vertical & horizontal sliders
