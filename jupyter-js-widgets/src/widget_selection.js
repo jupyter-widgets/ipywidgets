@@ -669,7 +669,6 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        console.log('Update called');
         if (options === undefined || options.updated_view != this) {
             var labels = this.model.get("_options_labels");
             var max = labels.length - 1;
