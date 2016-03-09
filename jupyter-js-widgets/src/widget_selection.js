@@ -606,7 +606,9 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
 
         this.$slider = $('<div />')
             .slider({})
-            .addClass('slider');
+            .addClass('slider')
+            .on('slidechange', $.proxy(this.handleSliderChange, this));
+
         // Put the slider in a container
         this.$slider_container = $('<div />')
             .addClass('slider-container')
@@ -693,7 +695,7 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
             this.$readout.text(value);
 
             // Use the right CSS classes for vertical & horizontal sliders
-            if (orientation=='vertical') {
+            if (orientation === 'vertical') {
                 this.$el
                     .removeClass('widget-hslider')
                     .addClass('widget-vslider');
