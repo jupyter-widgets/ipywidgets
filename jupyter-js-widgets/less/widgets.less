@@ -210,61 +210,66 @@
     }
 }
 
-.widget-button {
-    /* Button */
-    width : @widget-width-short;
-
-    .outside-shadow-2dp();
-
-    &.btn,
-    &.btn:active,
-    &.btn:focus,
-    &.btn.hover {
-        outline: none !important;
-    }
-
-    &.btn:active {
-        .outside-shadow-4dp();
-    }
-}
-
 .widget-checkbox {
     width: @widget-width-short;
 }
 
-.widget-toggle-button {
-    /* Button */
+.widget-button, .widget-toggle-button {
+    background-image: none;
+    border: 1px solid #dbdbdb;
+    color: white;
+    cursor: pointer;
+    display: inline-block;
+    margin-bottom: 0;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
     width : @widget-width-short;
 
     .outside-shadow-2dp();
 
-    &.btn,
-    &.btn:active,
-    &.btn:focus,
-    &.btn.hover {
+    &:hover {
         outline: none !important;
     }
+    &:active {
+        .outside-shadow-4dp();
+    }
 
-    // &.btn:active {
-    //     .outside-shadow-4dp();
-    // }
+    &.mod-primary {
+      background-color: #337ab7;
+      border-color: #245580;
+    }
+
+    &.mod-success {
+      background-color: #5cb85c;
+      border-color: #3e8f3e;
+    }
+
+    &.mod-info {
+      background-color: #5bc0de;
+      border-color: #28a4c9;
+    }
+
+    &.mod-warning {
+      background-color: #f0ad4e;
+      border-color: #e38d13;
+    }
+
+    &.mod-danger {
+      background-color: #d9534f;
+      border-color: #b92c28;
+    }
+
+    &.mod-active {
+      border-color: #000000;
+      color: #000000;
+    }
 }
 
 .widget-toggle-buttons {
-
-    .btn,
-    .btn:active,
-    .btn:focus,
-    .btn.hover {
-        outline: none !important;
-    }
-
-    .btn.active {
-        box-shadow: none !important;
-    }
-
-    .btn-group {
-        .outside-shadow-2dp();
+    button {
+        margin: 2px;
+        min-width: 100px;
     }
 }
 
@@ -473,4 +478,10 @@
         margin-bottom: 2px;
         margin-left: 22px;
     }
+
+    input {
+        float: left;
+        margin-right: 5px;
+    }
+
 }
