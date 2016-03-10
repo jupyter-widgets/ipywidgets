@@ -18,5 +18,7 @@ class ColorPicker(DOMWidget):
     concise = Bool().tag(sync=True)
     description = Unicode().tag(sync=True)
 
+    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_name = Unicode('ColorPickerView').tag(sync=True)
     _model_name = Unicode('ColorPickerModel').tag(sync=True)

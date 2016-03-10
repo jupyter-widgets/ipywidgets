@@ -50,6 +50,9 @@ class _Selection(DOMWidget):
     _options_labels = Tuple(read_only=True).tag(sync=True)
     _options_values = Tuple(read_only=True)
 
+    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
+
     disabled = Bool(help="Enable or disable user changes").tag(sync=True)
     description = Unicode(help="Description of the value this widget represents").tag(sync=True)
 

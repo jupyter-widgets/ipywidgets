@@ -13,6 +13,9 @@ from traitlets import Unicode, Dict, CInt
 
 class _SelectionContainer(Box):
     """Base class used to display multiple child widgets."""
+    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
+
     _titles = Dict(help="Titles of the pages").tag(sync=True)
     selected_index = CInt().tag(sync=True)
 

@@ -30,17 +30,21 @@ ManagerBase._model_types = {}; /* Dictionary of model type names (target_name) a
 ManagerBase._view_types = {}; /* Dictionary of view names and view types. */
 ManagerBase._managers = []; /* List of widget managers */
 
+// TODO: Remove me in ipywidgets 6.0
 ManagerBase.register_widget_model = function (model_name, model_type) {
     /**
      * Registers a widget model by name.
      */
+    console.warn('register_widget_model is deprecated.  Models and views should be linked to their backend counterparts using the require.js load path (see the `_view_module` and `_model_module` traits)');
     ManagerBase._model_types[model_name] = model_type;
 };
 
+// TODO: Remove me in ipywidgets 6.0
 ManagerBase.register_widget_view = function (view_name, view_type) {
     /**
      * Registers a widget view by name.
      */
+    console.warn('register_widget_view is deprecated.  Models and views should be linked to their backend counterparts using the require.js load path (see the `_view_module` and `_model_module` traits)');
     ManagerBase._view_types[view_name] = view_type;
 };
 

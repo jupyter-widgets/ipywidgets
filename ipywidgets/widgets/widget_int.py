@@ -67,6 +67,9 @@ class _Int(DOMWidget):
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
     description = Unicode(help="Description of the value this widget represents").tag(sync=True)
 
+    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
+
     def __init__(self, value=None, **kwargs):
         if value is not None:
             kwargs['value'] = value
