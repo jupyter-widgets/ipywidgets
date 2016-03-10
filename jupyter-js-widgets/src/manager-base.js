@@ -284,7 +284,7 @@ ManagerBase.prototype.new_model = function(options, serialized_state) {
                                        options.model_module,
                                        ManagerBase._model_types)
         .then(function(ModelType) {
-            return ModelType._deserialize_state(serialized_state, that).then(function(attributes) {
+            return ModelType._deserialize_state(serialized_state || ModelType.prototype.defaults, that).then(function(attributes) {
                 var widget_model = new ModelType(that, model_id, options.comm, attributes);
                 widget_model.once('comm:close', function () {
                     delete that._models[model_id];

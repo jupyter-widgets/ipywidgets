@@ -323,7 +323,6 @@ var WidgetModel = Backbone.Model.extend({
         this._buffered_state_diff = {};
     },
 
-
     send_sync_message: function(attrs, callbacks) {
         // prepare and send a comm message syncing attrs
         var that = this;
