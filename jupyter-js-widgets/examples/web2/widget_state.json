@@ -1,7 +1,7 @@
 {
     "46fefff7d0514b9698a6f770ae4dc358": {
         "model_name": "WidgetModel",
-        "model_module": null,
+        "model_module": "jupyter-js-widgets",
         "state": {
             "_view_name": "StyleView",
             "all": "",
@@ -211,7 +211,7 @@
     },
     "6ee0715ca08744a2a56130a8690c20d7": {
         "model_name": "DOMWidgetModel",
-        "model_module": null,
+        "model_module": "jupyter-js-widgets",
         "state": {
             "_view_name": "IntSliderView",
             "orientation": "horizontal",
@@ -253,7 +253,7 @@
     },
     "965024f29efc40d1928cd75493cf9801": {
         "model_name": "WidgetModel",
-        "model_module": null,
+        "model_module": "jupyter-js-widgets",
         "state": {
             "_view_name": "StyleView",
             "all": "",
@@ -463,7 +463,7 @@
     },
     "ed92d97210db4eda9cda154d12e60943": {
         "model_name": "DOMWidgetModel",
-        "model_module": null,
+        "model_module": "jupyter-js-widgets",
         "state": {
             "_view_name": "IntSliderView",
             "orientation": "horizontal",
@@ -505,7 +505,7 @@
     },
     "551e83bfd33f4bdcb7a77a544f71367b": {
         "model_name": "WidgetModel",
-        "model_module": null,
+        "model_module": "jupyter-js-widgets",
         "state": {
             "_view_name": "StyleView",
             "all": "",
@@ -715,7 +715,7 @@
     },
     "2dc9fe11af4443549089fbcc6663d067": {
         "model_name": "DOMWidgetModel",
-        "model_module": null,
+        "model_module": "jupyter-js-widgets",
         "state": {
             "_view_name": "ButtonView",
             "color": null,
@@ -751,7 +751,7 @@
     },
     "438280c9629847fb9e27a7d1b1cb7189": {
         "model_name": "DirectionalLinkModel",
-        "model_module": null,
+        "model_module": "jupyter-js-widgets",
         "state": {
             "_view_name": null,
             "target": [
@@ -772,7 +772,7 @@
     },
     "5ab35ac5562d44d382799cad4cd4d3d6": {
         "model_name": "WidgetModel",
-        "model_module": null,
+        "model_module": "jupyter-js-widgets",
         "state": {
             "_view_name": "StyleView",
             "all": "",
@@ -982,7 +982,7 @@
     },
     "fc4bc7c75a9c48a883a13c3f22cc4b75": {
         "model_name": "BoxModel",
-        "model_module": null,
+        "model_module": "jupyter-js-widgets",
         "state": {
             "_view_name": "FlexBoxView",
             "orientation": "vertical",

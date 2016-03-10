@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         // Create the widget model.
         return manager.new_widget({
+            model_module: 'jupyter-js-widgets',
             model_name: widgetType + 'Model',
             widget_class: 'jupyter.' + widgetType,
             model_id: uuid()
@@ -41,6 +42,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     // Create a link model.
     manager.new_widget({
+        model_module: 'jupyter-js-widgets',
         model_name: 'LinkModel',
         widget_class: 'jupyter.JSLink',
         model_id: uuid()
