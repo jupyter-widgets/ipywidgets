@@ -37,9 +37,9 @@ var unpack_models = function unpack_models(value, manager) {
 var WidgetModel = Backbone.Model.extend({
 
     defaults: {
-        _model_module: null,
+        _model_module: "jupyter-js-widgets",
         _model_name: "WidgetModel",
-        _view_module: "",
+        _view_module: "jupyter-js-widgets",
         _view_name: null,
         msg_throttle: 3
     },
