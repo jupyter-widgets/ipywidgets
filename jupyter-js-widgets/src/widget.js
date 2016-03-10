@@ -502,8 +502,6 @@ var DOMWidgetModel = WidgetModel.extend({
     }, WidgetModel.serializers),
 });
 
-managerBase.ManagerBase.register_widget_model('DOMWidgetModel', DOMWidgetModel);
-
 var DOMWidgetViewMixin = {
     initialize: function (parameters) {
         /**
@@ -786,8 +784,6 @@ _.extend(ViewList.prototype, {
         });
     },
 });
-
-managerBase.ManagerBase.register_widget_model('WidgetModel', WidgetModel);
 
 // For backwards compatibility.
 var WidgetView = Backbone.View.extend(WidgetViewMixin);
