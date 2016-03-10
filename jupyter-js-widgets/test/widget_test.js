@@ -1,5 +1,3 @@
-require('./test-helper');
-
 const classes = require('../src/index.js');
 const Widget = classes.Widget;
 const DOMWidget = classes.DOMWidget;

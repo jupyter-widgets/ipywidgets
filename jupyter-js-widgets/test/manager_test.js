@@ -1,4 +1,3 @@
-require('./test-helper');
 const ManagerBase = require('../src/index.js').ManagerBase;
 
 describe("ManagerBase", function() {
