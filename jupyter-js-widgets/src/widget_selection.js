@@ -5,6 +5,7 @@
 var widget = require('./widget');
 var utils = require('./utils');
 var _ = require('underscore');
+var $ = require('jquery');
 
 var SelectionModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
@@ -40,7 +41,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         this.label.style.display = 'none';
 
         this.buttongroup = document.createElement('div');
-        this.buttongroup.className = 'widget_item';
+        this.buttongroup.className = 'widget-item';
         this.el.appendChild(this.buttongroup);
 
         this.droplabel = document.createElement('button');
@@ -60,6 +61,10 @@ var DropdownView = widget.DOMWidgetView.extend({
 
         this.droplist = document.createElement('ul');
         this.droplist.className = 'widget-dropdown-droplist';
+
+        // Drop lists are appended to the document body and absolutely
+        // positioned so that they can appear outside the flow of whichever
+        // container they were instantiated in.
         document.body.appendChild(this.droplist);
         this.droplist.addEventListener('click', this._handle_click.bind(this));
 
@@ -70,7 +75,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         this.update();
     },
 
-    update : function(options) {
+    update: function(options) {
         /**
          * Update the contents of this view
          *
@@ -162,9 +167,10 @@ var DropdownView = widget.DOMWidgetView.extend({
          * Calling model.set will trigger all of the other views of the
          * model to update.
          */
-        // Manually hide the droplist.
         event.stopPropagation();
         event.preventDefault();
+
+        // Manually hide the droplist.
         this._toggle(event);
 
         var value = event.target.textContent;
@@ -189,7 +195,6 @@ var DropdownView = widget.DOMWidgetView.extend({
             this.droplist.classList.remove('mod-active');
             return;
         }
-
 
         var buttongroupRect = this.buttongroup.getBoundingClientRect();
         var availableHeightAbove = buttongroupRect.top;
@@ -267,7 +272,7 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
         this.update();
     },
 
-    update : function(options) {
+    update: function(options) {
         /**
          * Update the contents of this view
          *
@@ -387,7 +392,7 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
         this.update();
     },
 
-    update : function(options) {
+    update: function(options) {
         /**
          * Update the contents of this view
          *
@@ -525,7 +530,7 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
          * Calling model.set will trigger all of the other views of the
          * model to update.
          */
-        var value = event.target.getAttribute('value');
+        var value = event.target.value;
         this.model.set('value', value, { updated_view: this });
         this.touch();
     }
@@ -707,11 +712,10 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         } else if (name.substring(0, 4) == 'font') {
             this.readout.style[name] = value;
         } else if (name.substring(0, 6) == 'border') {
-            var slider_items = this.slider.getElementsByClassName('a');
+            var slider_items = this.slider.querySelectorAll('a');
             if (slider_items.length) {
               slider_items[0].style[name] = value;
             }
-
             this.slider_container.style[name] = value;
         } else if (name == 'background') {
             this.slider_container.style[name] = value;
@@ -872,7 +876,6 @@ var SelectMultipleView = SelectView.extend({
         this.el.classList.remove('widget-select');
         this.el.classList.add('widget-select-multiple');
         this.listbox.multiple = true;
-
         this.update();
     },
 
