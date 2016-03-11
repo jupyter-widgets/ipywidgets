@@ -205,7 +205,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         // Account for 1px border.
         this.droplist.style.left = (buttongroupRect.left - 1) + 'px';
 
-        // If dropdown fits below, render below.
+        // If the drop list fits below, render below.
         if (droplistRect.height <= availableHeightBelow) {
             // Account for 1px border.
             this.droplist.style.top = (buttongroupRect.bottom - 1) + 'px';
@@ -213,7 +213,7 @@ var DropdownView = widget.DOMWidgetView.extend({
             this.droplist.classList.add('mod-active');
             return;
         }
-        // If droplist fits above, render above.
+        // If the drop list fits above, render above.
         if (droplistRect.height <= availableHeightAbove) {
             // Account for 1px border.
             this.droplist.style.top = (buttongroupRect.top -
