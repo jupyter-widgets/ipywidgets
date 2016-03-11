@@ -487,15 +487,16 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
     update_style_traits: function(button) {
         for (var name in this._css_state) {
             if (this._css_state.hasOwnProperty(name)) {
-                if (name == 'margin') {
+                if (name === 'margin') {
                     this.buttongroup.style[name] = this._css_state[name];
-                } else if (name != 'width') {
+                } else if (name !== 'width') {
                     if (button) {
                         button.style[name] = this._css_state[name];
                     } else {
-                        var btns = this.buttongroup.querySelectorAll('button');
-                        if (btns.length) {
-                          btns[0].style[name] = this._css_state[name];
+                        var buttons = this.buttongroup
+                            .querySelectorAll('button');
+                        if (buttons.length) {
+                            buttons[0].style[name] = this._css_state[name];
                         }
                     }
                 }
