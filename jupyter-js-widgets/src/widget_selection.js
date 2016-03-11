@@ -25,8 +25,11 @@ var DropdownModel = SelectionModel.extend({
 });
 
 var DropdownView = widget.DOMWidgetView.extend({
-    render : function() {
-        var view = this;
+    remove: function() {
+        document.body.removeChild(this.droplist);
+        return DropdownView.__super__.remove.call(this);
+    },
+    render: function() {
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-dropdown');
@@ -37,28 +40,28 @@ var DropdownView = widget.DOMWidgetView.extend({
         this.label.style.display = 'none';
 
         this.buttongroup = document.createElement('div');
-        this.buttongroup.className = 'widget_item btn-group';
+        this.buttongroup.className = 'widget_item';
         this.el.appendChild(this.buttongroup);
 
         this.droplabel = document.createElement('button');
-        this.droplabel.className = 'btn btn-default widget-combo-btn';
+        this.droplabel.className = 'widget-dropdown-toggle ' +
+            'widget-toggle-button';
         this.droplabel.innerHTML = '&nbsp;';
         this.buttongroup.appendChild(this.droplabel);
 
         this.dropbutton = document.createElement('button');
-        this.dropbutton.className = 'btn btn-default';
-        this.dropbutton.classList.add('dropdown-toggle');
-        this.dropbutton.classList.add('widget-combo-carrot-btn');
-        this.dropbutton.setAttribute('data-toggle', 'dropdown');
+        this.dropbutton.className = 'widget-dropdown-toggle ' +
+            'widget-toggle-button';
 
-        var caret = document.createElement('span');
-        caret.classList.add('caret');
-        this.dropbutton.appendChild(caret);
+        this.caret = document.createElement('i');
+        this.caret.className = 'widget-caret';
+        this.dropbutton.appendChild(this.caret);
         this.buttongroup.appendChild(this.dropbutton);
 
         this.droplist = document.createElement('ul');
-        this.droplist.classList.add('dropdown-menu');
-        this.buttongroup.appendChild(this.droplist);
+        this.droplist.className = 'widget-dropdown-droplist';
+        document.body.appendChild(this.droplist);
+        this.droplist.addEventListener('click', this._handle_click.bind(this));
 
         this.listenTo(this.model, 'change:button_style', this.update_button_style, this);
         this.update_button_style();
@@ -74,58 +77,59 @@ var DropdownView = widget.DOMWidgetView.extend({
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
+        var view = this;
+        var items = this.model.get('_options_labels');
+        var links = _.pluck(this.droplist.querySelectorAll('a'), 'textContent');
+        var disabled = this.model.get('disabled');
+        var stale = false;
 
-        if (options === undefined || options.updated_view != this) {
-            var selected_item_text = this.model.get('value');
-            if (selected_item_text.trim().length === 0) {
-                this.droplabel.innerHTML = '&nbsp;';
-            } else {
-                this.droplabel.textContent = selected_item_text;
-            }
-
-            var items = this.model.get('_options_labels');
-            var replace_droplist = document.createElement('ul');
-            replace_droplist.classList.add('dropdown-menu');
-
-            // Copy the style
-            replace_droplist.setAttribute('style', this.droplist.style);
-            var that = this;
-            _.each(items, function(item, i) {
-                var item_button = document.createElement('a');
-                item_button.textContent = item;
-
-                var btn_li = document.createElement('li');
-                btn_li.appendChild(item_button);
-                replace_droplist.appendChild(btn_li);
-            });
-
-            var parent = this.droplist.parentNode;
-            this.droplist = parent.replaceChild(replace_droplist, this.droplist);
-
-            var disabled = this.model.get('disabled');
-            this.buttongroup.disabled = disabled;
-            this.droplabel.disabled = disabled;
-            this.dropbutton.disabled = disabled;
-            this.droplist.disabled = disabled;
-
-            var description = this.model.get('description');
-            if (description.length === 0) {
-                this.label.style.display = 'none';
-            } else {
-                this.typeset(this.label, description);
-                this.label.style.display = '';
+        for (var i = 0, len = items.length; i < len; ++i) {
+            if (links[i] !== items[i]) {
+                stale = true;
+                break;
             }
         }
-        return DropdownView.__super__.update.apply(this);
+
+        if (stale && (options === undefined || options.updated_view !== this)) {
+            this.droplist.textContent = '';
+            _.each(items, function(item) {
+                var li = document.createElement('li');
+                var a = document.createElement('a');
+                a.setAttribute('href', '#');
+                a.textContent = item;
+                li.appendChild(a);
+                view.droplist.appendChild(li);
+            });
+        }
+
+        this.droplabel.disabled = disabled;
+        this.dropbutton.disabled = disabled;
+
+        var value = this.model.get('value') || '';
+        if (value.trim().length === 0) {
+            this.droplabel.innerHTML = '&nbsp;';
+        } else {
+            this.droplabel.textContent = value;
+        }
+
+        var description = this.model.get('description');
+        if (description.length === 0) {
+            this.label.style.display = 'none';
+        } else {
+            this.typeset(this.label, description);
+            this.label.style.display = '';
+        }
+
+        return DropdownView.__super__.update.call(this);
     },
 
     update_button_style: function() {
         var class_map = {
-            primary: ['btn-primary'],
-            success: ['btn-success'],
-            info: ['btn-info'],
-            warning: ['btn-warning'],
-            danger: ['btn-danger']
+            primary: ['mod-primary'],
+            success: ['mod-success'],
+            info: ['mod-info'],
+            warning: ['mod-warning'],
+            danger: ['mod-danger']
         };
         this.update_mapped_classes(class_map, 'button_style', this.droplabel);
         this.update_mapped_classes(class_map, 'button_style', this.dropbutton);
@@ -148,11 +152,10 @@ var DropdownView = widget.DOMWidgetView.extend({
 
     events: {
         // Dictionary of events and their handlers.
-        'click a': '_handle_click',
-        'click button.widget-combo-carrot-btn': '_show_dropdown'
+        'click button.widget-toggle-button': '_toggle'
     },
 
-    _handle_click: function (event) {
+    _handle_click: function(event) {
         /**
          * Handle when a value is clicked.
          *
@@ -162,46 +165,74 @@ var DropdownView = widget.DOMWidgetView.extend({
         // Manually hide the droplist.
         event.stopPropagation();
         event.preventDefault();
-        this.buttongroup.classList.remove('open');
+        this._toggle(event);
 
         var value = event.target.textContent;
-        this.model.set('selected_label', value, { updated_view: this });
+        this.model.set('value', value, { updated_view: this });
         this.touch();
     },
 
     /**
-     * Show the dropdown list.
+     * Toggle the dropdown list.
      *
      * If the dropdown list doesn't fit below the dropdown label, this will
      * cause the dropdown to be dropped 'up'.
      * @param  {Event} event
      */
-    _show_dropdown: function(event) {
-        // Don't allow bootstrap to show the dropdown!
-        event.stopImmediatePropagation();
+    _toggle: function(event) {
         event.preventDefault();
+        _.each(this.buttongroup.querySelectorAll('button'), function(button) {
+            button.blur();
+        });
 
-        // Get the bottom of the dropdown label, and the bottom of the nb body.
-        // The difference is the maximum height of the dropmenu when displayed
-        // below the button.
-        var droplabelRect = this.droplabel.getBoundingClientRect();
-        var parent = this.droplabel.parentNode;
-        while (parent.parentNode) {
-          parent = parent.parentNode;
+        if (this.droplist.classList.contains('mod-active')) {
+            this.droplist.classList.remove('mod-active');
+            return;
         }
-        var bodyRect = parent.body.getBoundingClientRect();
-        var maxHeight = bodyRect.bottom - droplabelRect.bottom;
 
-        // If the maximum height of the dropdown's space is less than the
-        // height of the dropdown itself, make it drop up!
-        if (maxHeight < 200) {
-            this.buttongroup.classList.add('dropup');
+
+        var buttongroupRect = this.buttongroup.getBoundingClientRect();
+        var availableHeightAbove = buttongroupRect.top;
+        var availableHeightBelow = window.innerHeight -
+            buttongroupRect.bottom - buttongroupRect.height;
+        var droplistRect = this.droplist.getBoundingClientRect();
+
+        // Account for 1px border.
+        this.droplist.style.left = (buttongroupRect.left - 1) + 'px';
+
+        // If dropdown fits below, render below.
+        if (droplistRect.height <= availableHeightBelow) {
+            // Account for 1px border.
+            this.droplist.style.top = (buttongroupRect.bottom - 1) + 'px';
+            this.droplist.style.maxHeight = 'none';
+            this.droplist.classList.add('mod-active');
+            return;
+        }
+        // If droplist fits above, render above.
+        if (droplistRect.height <= availableHeightAbove) {
+            // Account for 1px border.
+            this.droplist.style.top = (buttongroupRect.top -
+                droplistRect.height + 1) + 'px';
+            this.droplist.style.maxHeight = 'none';
+            this.droplist.classList.add('mod-active');
+            return;
+        }
+        // Otherwise, render in whichever has more space, above or below, and
+        // set the maximum height of the drop list.
+        if (availableHeightBelow >= availableHeightAbove) {
+            // Account for 1px border.
+            this.droplist.style.top = (buttongroupRect.bottom - 1) + 'px';
+            this.droplist.style.maxHeight = availableHeightBelow + 'px';
+            this.droplist.classList.add('mod-active');
+            return;
         } else {
-            this.buttongroup.classList.remove('dropup');
+            // Account for 1px border.
+            this.droplist.style.top = (buttongroupRect.top -
+                droplistRect.height + 1) + 'px';
+            this.droplist.style.maxHeight = availableHeightAbove + 'px';
+            this.droplist.classList.add('mod-active');
+            return;
         }
-
-        // Show the dropdown(or up)
-        this.dropbutton.dropdown('toggle');
     }
 });
 
@@ -291,7 +322,7 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
               radio_el.disabled = view.model.get('disabled');
             }
         });
-        return RadioButtonsView.__super__.update.apply(this);
+        return RadioButtonsView.__super__.update.call(this);
     },
 
     update_attr: function(name, value) {
@@ -433,7 +464,7 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
             this.label.style.display = '';
         }
         this.update_button_style();
-        return ToggleButtonsView.__super__.update.apply(this);
+        return ToggleButtonsView.__super__.update.call(this);
     },
 
     update_attr: function(name, value) { // TODO: Deprecated in 5.0
@@ -556,7 +587,7 @@ var SelectView = widget.DOMWidgetView.extend({
                 var item_query = 'option[data-value="' +
                     encodeURIComponent(item) + '"]';
                 var item_exists = view.listbox
-                    .getElementsByClassName(item_query).length !== 0;
+                    .querySelectorAll(item_query).length !== 0;
                 var option;
                 if (!item_exists) {
                     option = document.createElement('option');
@@ -583,7 +614,7 @@ var SelectView = widget.DOMWidgetView.extend({
                 this.label.style.display = '';
             }
         }
-        return SelectView.__super__.update.apply(this);
+        return SelectView.__super__.update.call(this);
     },
 
     update_attr: function(name, value) { // TODO: Deprecated in 5.0
@@ -759,7 +790,7 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
                 this.readout.style.display = 'none';
             }
         }
-        return SelectionSliderView.__super__.update.apply(this);
+        return SelectionSliderView.__super__.update.call(this);
     },
 
     events: {
@@ -827,7 +858,7 @@ var SelectMultipleView = SelectView.extend({
         /**
          * Called when view is rendered.
          */
-        SelectMultipleView.__super__.render.apply(this);
+        SelectMultipleView.__super__.render.call(this);
         this.el.classList.remove('widget-select');
         this.el.classList.add('widget-select-multiple');
         this.listbox.multiple = true;
