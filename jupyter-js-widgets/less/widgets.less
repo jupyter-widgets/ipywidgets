@@ -289,34 +289,36 @@
 }
 
 .widget-dropdown {
-    margin-left: 1px;
+    display: block;
 
     div.widget-item {
         display: flex;
+        margin: 0;
+        padding: 0;
         width : @widget-width;
-    }
 
-    button {
-        flex: 1;
-        margin-left: -1px;
-        outline: 0;
-    }
+        button {
+            flex: 1;
+            outline: 0;
+        }
 
-    button:last-child {
-        flex: 0;
-        flex-basis: 2em;
-    }
+        button:last-child {
+            flex: 0;
+            flex-basis: 2em;
+            margin-left: -1px;
 
-    i.widget-caret {
-        font-size: 1em;
-        font-style: normal;
-        font-family: FontAwesome;
-        line-height: 1em;
-        position: relative;
-    }
+            i.widget-caret {
+                font-size: 1em;
+                font-style: normal;
+                font-family: FontAwesome;
+                line-height: 1em;
+                position: relative;
+            }
 
-    i.widget-caret:before {
-        content: "\f0d7";
+            i.widget-caret:before {
+                content: "\f0d7";
+            }
+        }
     }
 }
 
@@ -325,14 +327,16 @@ ul.widget-dropdown-droplist {
     border-width: 1px;
     border-style: solid;
     border-color: #dddddd;
+    box-sizing: border-box;
     list-style-type: none;
     position: absolute;
     margin: 0;
+    z-index: 2; /* This might not be necessary once Bootstrap is gone. */
+    width : @widget-width;
     padding: 0;
-    width : (@widget-width - 1);
     height: auto;
     overflow: auto;
-    visibility: hidden;
+    display: none;
 
     a {
         color: inherit;
@@ -349,7 +353,7 @@ ul.widget-dropdown-droplist {
     }
 
     &.mod-active {
-        visibility: visible;
+        display: block;
     }
 }
 
