@@ -1,7 +1,7 @@
 {
     "46fefff7d0514b9698a6f770ae4dc358": {
         "model_name": "WidgetModel",
-        "model_module": null,
+        "model_module": "jupyter-js-widgets",
         "state": {
             "_view_name": "StyleView",
             "all": "",
@@ -155,7 +155,7 @@
             "orientation": "",
             "flex": "",
             "background_attachment": "",
-            "_view_module": "",
+            "_view_module": "jupyter-js-widgets",
             "object_position": "",
             "border_width": "",
             "offset_inline_start": "",
@@ -211,12 +211,12 @@
     },
     "6ee0715ca08744a2a56130a8690c20d7": {
         "model_name": "DOMWidgetModel",
-        "model_module": null,
+        "model_module": "jupyter-js-widgets",
         "state": {
             "_view_name": "IntSliderView",
             "orientation": "horizontal",
             "color": null,
-            "_view_module": "",
+            "_view_module": "jupyter-js-widgets",
             "height": "",
             "disabled": false,
             "visible": true,
@@ -253,7 +253,7 @@
     },
     "965024f29efc40d1928cd75493cf9801": {
         "model_name": "WidgetModel",
-        "model_module": null,
+        "model_module": "jupyter-js-widgets",
         "state": {
             "_view_name": "StyleView",
             "all": "",
@@ -407,7 +407,7 @@
             "orientation": "",
             "flex": "",
             "background_attachment": "",
-            "_view_module": "",
+            "_view_module": "jupyter-js-widgets",
             "object_position": "",
             "border_width": "",
             "offset_inline_start": "",
@@ -463,12 +463,12 @@
     },
     "ed92d97210db4eda9cda154d12e60943": {
         "model_name": "DOMWidgetModel",
-        "model_module": null,
+        "model_module": "jupyter-js-widgets",
         "state": {
             "_view_name": "IntSliderView",
             "orientation": "horizontal",
             "color": null,
-            "_view_module": "",
+            "_view_module": "jupyter-js-widgets",
             "height": "",
             "disabled": false,
             "visible": true,
@@ -505,7 +505,7 @@
     },
     "551e83bfd33f4bdcb7a77a544f71367b": {
         "model_name": "WidgetModel",
-        "model_module": null,
+        "model_module": "jupyter-js-widgets",
         "state": {
             "_view_name": "StyleView",
             "all": "",
@@ -659,7 +659,7 @@
             "orientation": "",
             "flex": "",
             "background_attachment": "",
-            "_view_module": "",
+            "_view_module": "jupyter-js-widgets",
             "object_position": "",
             "border_width": "",
             "offset_inline_start": "",
@@ -715,11 +715,11 @@
     },
     "2dc9fe11af4443549089fbcc6663d067": {
         "model_name": "DOMWidgetModel",
-        "model_module": null,
+        "model_module": "jupyter-js-widgets",
         "state": {
             "_view_name": "ButtonView",
             "color": null,
-            "_view_module": "",
+            "_view_module": "jupyter-js-widgets",
             "height": "",
             "disabled": false,
             "visible": true,
@@ -751,7 +751,7 @@
     },
     "438280c9629847fb9e27a7d1b1cb7189": {
         "model_name": "DirectionalLinkModel",
-        "model_module": null,
+        "model_module": "jupyter-js-widgets",
         "state": {
             "_view_name": null,
             "target": [
@@ -760,7 +760,7 @@
             ],
             "msg_throttle": 3,
             "_model_name": "DirectionalLinkModel",
-            "_view_module": "",
+            "_view_module": "jupyter-js-widgets",
             "source": [
                 "IPY_MODEL_6ee0715ca08744a2a56130a8690c20d7",
                 "value"
@@ -772,7 +772,7 @@
     },
     "5ab35ac5562d44d382799cad4cd4d3d6": {
         "model_name": "WidgetModel",
-        "model_module": null,
+        "model_module": "jupyter-js-widgets",
         "state": {
             "_view_name": "StyleView",
             "all": "",
@@ -926,7 +926,7 @@
             "orientation": "",
             "flex": "",
             "background_attachment": "",
-            "_view_module": "",
+            "_view_module": "jupyter-js-widgets",
             "object_position": "",
             "border_width": "",
             "offset_inline_start": "",
@@ -982,12 +982,12 @@
     },
     "fc4bc7c75a9c48a883a13c3f22cc4b75": {
         "model_name": "BoxModel",
-        "model_module": null,
+        "model_module": "jupyter-js-widgets",
         "state": {
             "_view_name": "FlexBoxView",
             "orientation": "vertical",
             "color": null,
-            "_view_module": "",
+            "_view_module": "jupyter-js-widgets",
             "height": "",
             "visible": true,
             "box_style": "",

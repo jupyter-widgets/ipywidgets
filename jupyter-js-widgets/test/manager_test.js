@@ -59,21 +59,15 @@ describe("ManagerBase", function() {
     });
 
     it('callbacks', function() {
-        expect(this.managerBase.callbacks).to.not.be.undefined;
-        expect(this.managerBase.callbacks).to.not.throw(Error);
-        
+
         // Cell-less call
         let c = this.managerBase.callbacks();
         expect(c).to.be.an('object');
         expect(c.iopub).to.be.undefined;
-        
+
         // Spoof a call with a cell
         c = this.managerBase.callbacks({ options: { cell: true } });
         expect(c).to.be.an('object');
-        expect(c.iopub).to.be.an('object');
-        expect(c.iopub.output).to.not.be.undefined;
-        expect(c.iopub.clear_output).to.not.be.undefined;
-        expect(c.iopub.get_cell).to.be.an('function');
     });
 
     it('create_view', function() {

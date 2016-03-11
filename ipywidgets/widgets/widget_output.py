@@ -35,6 +35,8 @@ class Output(DOMWidget):
     """
     _view_name = Unicode('OutputView').tag(sync=True)
     _model_name = Unicode('OutputModel').tag(sync=True)
+    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
 
     def clear_output(self, *pargs, **kwargs):
         with self:

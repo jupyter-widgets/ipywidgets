@@ -37,6 +37,9 @@ class Link(Widget):
     source: a (Widget, 'trait_name') tuple for the source trait
     target: a (Widget, 'trait_name') tuple that should be updated
     """
+
+    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_name = Unicode('LinkModel').tag(sync=True)
     target = WidgetTraitTuple().tag(sync=True, **widget_serialization)
     source = WidgetTraitTuple().tag(sync=True, **widget_serialization)
@@ -98,4 +101,3 @@ def jsdlink(source, target):
     >>> c = dlink((src_widget, 'value'), (tgt_widget, 'value'))
     """
     return DirectionalLink(source, target)
-

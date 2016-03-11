@@ -37,9 +37,9 @@ var unpack_models = function unpack_models(value, manager) {
 var WidgetModel = Backbone.Model.extend({
 
     defaults: {
-        _model_module: null,
+        _model_module: "jupyter-js-widgets",
         _model_name: "WidgetModel",
-        _view_module: "",
+        _view_module: "jupyter-js-widgets",
         _view_name: null,
         msg_throttle: 3
     },
@@ -323,7 +323,6 @@ var WidgetModel = Backbone.Model.extend({
         this._buffered_state_diff = {};
     },
 
-
     send_sync_message: function(attrs, callbacks) {
         // prepare and send a comm message syncing attrs
         var that = this;
@@ -501,8 +500,6 @@ var DOMWidgetModel = WidgetModel.extend({
         layout: {deserialize: unpack_models},
     }, WidgetModel.serializers),
 });
-
-managerBase.ManagerBase.register_widget_model('DOMWidgetModel', DOMWidgetModel);
 
 var DOMWidgetViewMixin = {
     initialize: function (parameters) {
@@ -786,8 +783,6 @@ _.extend(ViewList.prototype, {
         });
     },
 });
-
-managerBase.ManagerBase.register_widget_model('WidgetModel', WidgetModel);
 
 // For backwards compatibility.
 var WidgetView = Backbone.View.extend(WidgetViewMixin);

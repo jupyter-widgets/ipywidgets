@@ -63,9 +63,6 @@ var OutputView = widgets.DOMWidgetView.extend({
     },
 });
 
-widgets.ManagerBase.register_widget_model('OutputModel', OutputModel);
-widgets.ManagerBase.register_widget_view('OutputView', OutputView);
-
 module.exports = {
     OutputView: OutputView,
     OutputModel: OutputModel,
