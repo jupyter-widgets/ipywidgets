@@ -102,8 +102,8 @@ var DropdownView = widget.DOMWidgetView.extend({
             });
         }
 
+        this.droplabel.disabled = disabled;
         this.dropbutton.disabled = disabled;
-        this.caret.disabled = disabled;
 
         var value = this.model.get('value') || '';
         if (value.trim().length === 0) {
