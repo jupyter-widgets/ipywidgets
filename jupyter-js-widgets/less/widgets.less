@@ -291,9 +291,20 @@
 .widget-dropdown {
     margin-left: 1px;
 
+    div.widget-item {
+        display: flex;
+        width: 150px;
+    }
+
     button {
+        flex: 1;
         margin-left: -1px;
         outline: 0;
+    }
+
+    button:last-child {
+        flex: 0;
+        flex-basis: 2em;
     }
 
     i.widget-caret {
@@ -318,7 +329,7 @@ ul.widget-dropdown-droplist {
     position: absolute;
     margin: 0;
     padding: 0;
-    width: auto;
+    width: 149px;
     height: auto;
     overflow: auto;
     visibility: hidden;
