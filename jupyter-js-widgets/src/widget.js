@@ -175,10 +175,25 @@ var WidgetModel = Backbone.Model.extend({
         }
     },
 
-    get_state: function() {
-        // Get the serializable state of the model.
-        // Equivalent to Backbone.Model.toJSON()
-        return _.clone(this.attributes);
+    get_state: function(drop_defaults) {
+        /**
+         * Get the serializable state of the model.
+         *
+         * If drop_default is thruthy, attributes that are equal to their default
+         * values are dropped.
+         */
+        var state = this.attributes;
+        if (drop_defaults) {
+            var defaults = _.result(this, 'defaults');
+            return Object.keys(state).reduce(function(obj, key) {
+                if (!_.isEqual(state[key], defaults[key])) {
+                    obj[key] = state[key];
+                }
+                return obj;
+            }, {});
+        } else {
+            return _.clone(state);
+        }
     },
 
     _handle_status: function (msg, callbacks) {
@@ -494,6 +509,25 @@ var WidgetViewMixin = {
 var DOMWidgetModel = WidgetModel.extend({
     defaults: _.extend({}, WidgetModel.prototype.defaults, {
         layout: undefined,
+        visible: true,
+        _dom_classes: [],
+
+        // Deprecated attributes
+        color: null,
+        height: "",
+        border_radius: "",
+        border_width: "",
+        background_color: null,
+        font_style: "",
+        width: "",
+        font_family: "",
+        border_color: null,
+        padding: "",
+        font_weight: "",
+        icon: "",
+        border_style: "",
+        font_size: "",
+        margin: ""
     }),
 }, {
     serializers: _.extend({
