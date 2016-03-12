@@ -237,6 +237,7 @@ var ControllerModel = widget.DOMWidgetModel.extend({
          */
         return this.widget_manager.new_widget({
              model_name: 'ControllerButtonModel',
+             model_module: 'jupyter-js-widgets',
              widget_class: 'Jupyter.ControllerButton',
         }).then(function(model) {
              model.set('description', index);
@@ -249,6 +250,7 @@ var ControllerModel = widget.DOMWidgetModel.extend({
          */
         return this.widget_manager.new_widget({
              model_name: 'ControllerAxisModel',
+             model_module: 'jupyter-js-widgets',
              widget_class: 'Jupyter.ControllerAxis',
         }).then(function(model) {
              model.set('description', index);
