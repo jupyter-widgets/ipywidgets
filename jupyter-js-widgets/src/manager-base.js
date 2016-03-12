@@ -316,6 +316,8 @@ ManagerBase.prototype.get_state = function(options) {
      *          Only return models with one or more displayed views.
      *      not_live: (optional) boolean=false
      *          Include models that have comms with severed connections.
+     *      drop_defaults: (optional) boolean=false
+     *          Drop model attributed that are equal to their default values.
      *
      * Returns
      * -------
@@ -338,7 +340,7 @@ ManagerBase.prototype.get_state = function(options) {
                     state[model_id] = {
                         model_name: model.name,
                         model_module: model.module,
-                        state: model.get_state(),
+                        state: model.get_state(options.drop_defaults),
                         views: [],
                     };
 
