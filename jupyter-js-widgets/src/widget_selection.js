@@ -231,7 +231,6 @@ var DropdownView = widget.DOMWidgetView.extend({
             this.droplist.style.top = (buttongroupRect.top -
                 droplistRect.height + 1) + 'px';
             this.droplist.style.maxHeight = availableHeightAbove + 'px';
-            this.droplist.classList.add('mod-active');
             return;
         }
     }
