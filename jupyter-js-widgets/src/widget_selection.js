@@ -168,7 +168,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         event.preventDefault();
 
         // Manually hide the droplist.
-        this._toggle(event);
+        this._toggle();
 
         var value = event.target.textContent;
         this.model.set('value', value, { updated_view: this });
@@ -180,7 +180,6 @@ var DropdownView = widget.DOMWidgetView.extend({
      *
      * If the dropdown list doesn't fit below the dropdown label, this will
      * cause the dropdown to be dropped 'up'.
-     * @param  {Event} event
      */
     _toggle: function() {
         _.each(this.buttongroup.querySelectorAll('button'), function(button) {
