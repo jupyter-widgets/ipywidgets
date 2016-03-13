@@ -70,7 +70,9 @@ function loadClass(class_name, module_name, registry) {
                 modulePromise = Promise.resolve(require('../'));
             } else {
                 modulePromise = new Promise(function(innerResolve, innerReject) {
-                    requirejs([module_name], function(module) { innerResolve(module); }, innerReject);
+                    window.require([module_name], function(module) {
+                        innerResolve(module);
+                    }, innerReject);
                 });
             }
 
