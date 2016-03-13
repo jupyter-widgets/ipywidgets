@@ -47,7 +47,6 @@ var DropdownView = widget.DOMWidgetView.extend({
 
         this.droplabel = document.createElement('button');
         this.droplabel.className = 'widget-dropdown-toggle widget-button';
-        this.droplabel.innerHTML = '&nbsp;';
         this.buttongroup.appendChild(this.droplabel);
 
         this.dropbutton = document.createElement('button');
