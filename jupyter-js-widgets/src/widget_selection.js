@@ -30,6 +30,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         document.body.removeChild(this.droplist);
         return DropdownView.__super__.remove.call(this);
     },
+
     render: function() {
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
