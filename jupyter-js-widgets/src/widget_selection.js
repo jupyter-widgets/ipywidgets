@@ -4,8 +4,9 @@
 
 var widget = require('./widget');
 var utils = require('./utils');
+var $ = require('./jquery');
 var _ = require('underscore');
-var $ = require('jquery');
+
 
 var SelectionModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
@@ -705,7 +706,7 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         } else if (name.substring(0, 4) == 'font') {
             this.readout.style[name] = value;
         } else if (name.substring(0, 6) == 'border') {
-            var slider_items = this.slider.querySelectorAll('a');
+            var slider_items = this.$slider[0].querySelectorAll('a');
             if (slider_items.length) {
               slider_items[0].style[name] = value;
             }
