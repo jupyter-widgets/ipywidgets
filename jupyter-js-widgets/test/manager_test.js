@@ -59,6 +59,8 @@ describe('ManagerBase', function() {
     });
 
     it('callbacks', function() {
+        expect(this.managerBase.callbacks).to.not.be.undefined;
+        expect(this.managerBase.callbacks).to.not.throw(Error);
 
         // Cell-less call
         var c = this.managerBase.callbacks();
