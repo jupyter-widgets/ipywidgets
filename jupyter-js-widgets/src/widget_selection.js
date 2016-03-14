@@ -30,6 +30,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         document.body.removeChild(this.droplist);
         return DropdownView.__super__.remove.call(this);
     },
+
     render: function() {
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
@@ -45,26 +46,22 @@ var DropdownView = widget.DOMWidgetView.extend({
         this.el.appendChild(this.buttongroup);
 
         this.droplabel = document.createElement('button');
-        this.droplabel.className = 'widget-dropdown-toggle ' +
-            'widget-toggle-button';
-        this.droplabel.innerHTML = '&nbsp;';
+        this.droplabel.className = 'widget-dropdown-toggle widget-button';
         this.buttongroup.appendChild(this.droplabel);
 
         this.dropbutton = document.createElement('button');
-        this.dropbutton.className = 'widget-dropdown-toggle ' +
-            'widget-toggle-button';
+        this.dropbutton.className = 'widget-dropdown-toggle widget-button';
 
         this.caret = document.createElement('i');
         this.caret.className = 'widget-caret';
         this.dropbutton.appendChild(this.caret);
         this.buttongroup.appendChild(this.dropbutton);
 
-        this.droplist = document.createElement('ul');
-        this.droplist.className = 'widget-dropdown-droplist';
-
         // Drop lists are appended to the document body and absolutely
         // positioned so that they can appear outside the flow of whichever
         // container they were instantiated in.
+        this.droplist = document.createElement('ul');
+        this.droplist.className = 'widget-dropdown-droplist';
         document.body.appendChild(this.droplist);
         this.droplist.addEventListener('click', this._handle_click.bind(this));
 
@@ -157,7 +154,7 @@ var DropdownView = widget.DOMWidgetView.extend({
 
     events: {
         // Dictionary of events and their handlers.
-        'click button.widget-toggle-button': '_toggle'
+        'click button.widget-button': '_toggle'
     },
 
     _handle_click: function(event) {
@@ -171,7 +168,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         event.preventDefault();
 
         // Manually hide the droplist.
-        this._toggle(event);
+        this._toggle();
 
         var value = event.target.textContent;
         this.model.set('value', value, { updated_view: this });
@@ -183,13 +180,10 @@ var DropdownView = widget.DOMWidgetView.extend({
      *
      * If the dropdown list doesn't fit below the dropdown label, this will
      * cause the dropdown to be dropped 'up'.
-     * @param  {Event} event
      */
-    _toggle: function(event) {
-        event.preventDefault();
-        _.each(this.buttongroup.querySelectorAll('button'), function(button) {
-            button.blur();
-        });
+    _toggle: function() {
+        this.droplabel.blur();
+        this.dropbutton.blur();
 
         if (this.droplist.classList.contains('mod-active')) {
             this.droplist.classList.remove('mod-active');
@@ -197,20 +191,22 @@ var DropdownView = widget.DOMWidgetView.extend({
         }
 
         var buttongroupRect = this.buttongroup.getBoundingClientRect();
+
+        this.droplist.style.left = buttongroupRect.left + 'px';
+
+        // Make drop list visible to compute its dimensions.
+        this.droplist.classList.add('mod-active');
+
         var availableHeightAbove = buttongroupRect.top;
         var availableHeightBelow = window.innerHeight -
             buttongroupRect.bottom - buttongroupRect.height;
         var droplistRect = this.droplist.getBoundingClientRect();
-
-        // Account for 1px border.
-        this.droplist.style.left = (buttongroupRect.left - 1) + 'px';
 
         // If the drop list fits below, render below.
         if (droplistRect.height <= availableHeightBelow) {
             // Account for 1px border.
             this.droplist.style.top = (buttongroupRect.bottom - 1) + 'px';
             this.droplist.style.maxHeight = 'none';
-            this.droplist.classList.add('mod-active');
             return;
         }
         // If the drop list fits above, render above.
@@ -219,7 +215,6 @@ var DropdownView = widget.DOMWidgetView.extend({
             this.droplist.style.top = (buttongroupRect.top -
                 droplistRect.height + 1) + 'px';
             this.droplist.style.maxHeight = 'none';
-            this.droplist.classList.add('mod-active');
             return;
         }
         // Otherwise, render in whichever has more space, above or below, and
@@ -228,14 +223,12 @@ var DropdownView = widget.DOMWidgetView.extend({
             // Account for 1px border.
             this.droplist.style.top = (buttongroupRect.bottom - 1) + 'px';
             this.droplist.style.maxHeight = availableHeightBelow + 'px';
-            this.droplist.classList.add('mod-active');
             return;
         } else {
             // Account for 1px border.
             this.droplist.style.top = (buttongroupRect.top -
                 droplistRect.height + 1) + 'px';
             this.droplist.style.maxHeight = availableHeightAbove + 'px';
-            this.droplist.classList.add('mod-active');
             return;
         }
     }

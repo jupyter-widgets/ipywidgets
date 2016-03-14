@@ -12,7 +12,7 @@ var IntModel = widget.DOMWidgetModel.extend({
         value: 0,
         disabled: false,
         description: ''
-    }),
+    })
 });
 
 var BoundedIntModel = IntModel.extend({
@@ -21,7 +21,7 @@ var BoundedIntModel = IntModel.extend({
         step: 1,
         max: 100,
         min: 0
-    }),
+    })
 });
 
 var IntSliderModel = BoundedIntModel.extend({
@@ -33,11 +33,11 @@ var IntSliderModel = BoundedIntModel.extend({
         readout: true,
         slider_color: null,
         continuous_update: true
-    }),
+    })
 });
 
 var IntSliderView = widget.DOMWidgetView.extend({
-    render : function() {
+    render: function() {
         /**
          * Called when view is rendered.
          */
@@ -112,7 +112,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
         }
     },
 
-    update : function(options) {
+    update: function(options) {
         /**
          * Update the contents of this view
          *
@@ -358,18 +358,18 @@ var IntSliderView = widget.DOMWidgetView.extend({
          * and applying it to the other views on the page.
          */
         return Math.floor(x);
-    },
+    }
 });
 
 var IntTextModel = IntModel.extend({
     defaults: _.extend({}, IntModel.prototype.defaults, {
         _model_name: 'IntTextModel',
         _view_name: 'IntTextView'
-    }),
+    })
 });
 
 var IntTextView = widget.DOMWidgetView.extend({
-    render : function() {
+    render: function() {
         /**
          * Called when view is rendered.
          */
@@ -405,7 +405,7 @@ var IntTextView = widget.DOMWidgetView.extend({
         }
     },
 
-    update : function(options) {
+    update: function(options) {
         /**
          * Update the contents of this view
          *
@@ -505,11 +505,11 @@ var ProgressModel = BoundedIntModel.extend({
         _view_name: 'ProgressView',
         orientation: 'horizontal',
         bar_style: ''
-    }),
+    })
 });
 
 var ProgressView = widget.DOMWidgetView.extend({
-    render : function() {
+    render: function() {
         /**
          * Called when view is rendered.
          */
@@ -555,7 +555,7 @@ var ProgressView = widget.DOMWidgetView.extend({
         }
     },
 
-    update : function() {
+    update: function() {
         /**
          * Update the contents of this view
          *
@@ -610,7 +610,7 @@ var ProgressView = widget.DOMWidgetView.extend({
         } else {
             this.el.style[name] = value
         }
-    },
+    }
 });
 
 module.exports = {
