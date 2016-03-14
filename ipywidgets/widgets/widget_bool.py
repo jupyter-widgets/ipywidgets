@@ -22,6 +22,8 @@ class _Bool(DOMWidget):
             kwargs['value'] = value
         super(_Bool, self).__init__(**kwargs)
 
+    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_name = Unicode('BoolModel').tag(sync=True)
 
 
@@ -79,4 +81,3 @@ class Valid(_Bool):
     readout = Unicode('Invalid', help="Message displayed when the value is False").tag(sync=True)
     _view_name = Unicode('ValidView').tag(sync=True)
     _model_name = Unicode('ValidModel').tag(sync=True)
-

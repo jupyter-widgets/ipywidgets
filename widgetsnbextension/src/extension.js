@@ -93,4 +93,4 @@ function load_ipython_extension () {
 var _ = require('underscore');
 module.exports = _.extend({
   load_ipython_extension: load_ipython_extension,
-}, require('jupyter-js-widgets'));
+}, require('jupyter-js-widgets'), require('./widget_output'));

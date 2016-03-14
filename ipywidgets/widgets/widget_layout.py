@@ -22,6 +22,8 @@ class Layout(Widget):
     - ``margin-[top/bottom/left/right]`` values are bound to ``margin``, etc.
     """
 
+    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_name = Unicode('LayoutView').tag(sync=True)
     _model_name = Unicode('LayoutModel').tag(sync=True)
 
@@ -44,4 +46,3 @@ class Layout(Widget):
     top = CUnicode().tag(sync=True)
     visibility = CUnicode().tag(sync=True)
     width = CUnicode().tag(sync=True)
-

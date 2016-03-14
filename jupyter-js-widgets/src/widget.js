@@ -36,9 +36,9 @@ var unpack_models = function unpack_models(value, manager) {
 var WidgetModel = Backbone.Model.extend({
 
     defaults: {
-        _model_module: null,
-        _model_name: 'WidgetModel',
-        _view_module: '',
+        _model_module: "jupyter-js-widgets",
+        _model_name: "WidgetModel",
+        _view_module: "jupyter-js-widgets",
         _view_name: null,
         msg_throttle: 3
     },
@@ -173,10 +173,25 @@ var WidgetModel = Backbone.Model.extend({
         }
     },
 
-    get_state: function() {
-        // Get the serializable state of the model.
-        // Equivalent to Backbone.Model.toJSON()
-        return _.clone(this.attributes);
+    get_state: function(drop_defaults) {
+        /**
+         * Get the serializable state of the model.
+         *
+         * If drop_default is thruthy, attributes that are equal to their default
+         * values are dropped.
+         */
+        var state = this.attributes;
+        if (drop_defaults) {
+            var defaults = _.result(this, 'defaults');
+            return Object.keys(state).reduce(function(obj, key) {
+                if (!_.isEqual(state[key], defaults[key])) {
+                    obj[key] = state[key];
+                }
+                return obj;
+            }, {});
+        } else {
+            return _.clone(state);
+        }
     },
 
     _handle_status: function (msg, callbacks) {
@@ -323,7 +338,6 @@ var WidgetModel = Backbone.Model.extend({
         // this means we miss out on the 'sync' event.
         this._buffered_state_diff = {};
     },
-
 
     send_sync_message: function(attrs, callbacks) {
         // prepare and send a comm message syncing attrs
@@ -497,14 +511,31 @@ var WidgetViewMixin = {
 var DOMWidgetModel = WidgetModel.extend({
     defaults: _.extend({}, WidgetModel.prototype.defaults, {
         layout: undefined,
+        visible: true,
+        _dom_classes: [],
+
+        // Deprecated attributes
+        color: null,
+        height: "",
+        border_radius: "",
+        border_width: "",
+        background_color: null,
+        font_style: "",
+        width: "",
+        font_family: "",
+        border_color: null,
+        padding: "",
+        font_weight: "",
+        icon: "",
+        border_style: "",
+        font_size: "",
+        margin: ""
     }),
 }, {
     serializers: _.extend({
         layout: {deserialize: unpack_models},
     }, WidgetModel.serializers),
 });
-
-managerBase.ManagerBase.register_widget_model('DOMWidgetModel', DOMWidgetModel);
 
 var DOMWidgetViewMixin = {
     initialize: function (parameters) {
@@ -788,8 +819,6 @@ _.extend(ViewList.prototype, {
         });
     },
 });
-
-managerBase.ManagerBase.register_widget_model('WidgetModel', WidgetModel);
 
 // For backwards compatibility.
 var WidgetView = Backbone.View.extend(WidgetViewMixin);

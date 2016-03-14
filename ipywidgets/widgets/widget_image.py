@@ -24,6 +24,8 @@ class Image(DOMWidget):
     """
     _view_name = Unicode('ImageView').tag(sync=True)
     _model_name = Unicode('ImageModel').tag(sync=True)
+    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
 
     # Define the custom state properties to sync with the front-end
     format = Unicode('png').tag(sync=True)

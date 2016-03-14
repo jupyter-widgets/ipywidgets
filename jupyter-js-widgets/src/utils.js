@@ -62,13 +62,26 @@ function loadClass(class_name, module_name, registry) {
 
         // Try loading the view module using require.js
         if (module_name) {
-            requirejs([module_name], function(module) {
+
+            // If the module is jupyter-js-widgets, we can just self import.
+            var modulePromise;
+            if (module_name === 'jupyter-js-widgets') {
+                modulePromise = Promise.resolve(require('../'));
+            } else {
+                modulePromise = new Promise(function(innerResolve, innerReject) {
+                    window.require([module_name], function(module) {
+                        innerResolve(module);
+                    }, innerReject);
+                });
+            }
+
+            modulePromise.then(function(module) {
                 if (module[class_name] === undefined) {
                     reject(new Error('Class '+class_name+' not found in module '+module_name));
                 } else {
                     resolve(module[class_name]);
                 }
-            }, reject);
+            });
         } else {
             if (registry && registry[class_name]) {
                 resolve(registry[class_name]);

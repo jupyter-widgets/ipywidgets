@@ -15,6 +15,8 @@ from warnings import warn
 @register('Jupyter.Box')
 class Box(DOMWidget):
     """Displays multiple widgets in a group."""
+    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_name = Unicode('BoxModel').tag(sync=True)
     _view_name = Unicode('BoxView').tag(sync=True)
 
@@ -50,6 +52,8 @@ class Box(DOMWidget):
 @register('Jupyter.Proxy')
 class Proxy(DOMWidget):
     """A DOMWidget that holds another DOMWidget or nothing."""
+    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_name = Unicode('ProxyModel').tag(sync=True)
     _view_name = Unicode('ProxyView').tag(sync=True)
 
@@ -108,4 +112,3 @@ class FlexBox(Box): # TODO: Deprecated in 5.0 (entire class)
     def __init__(self, *pargs, **kwargs):
         warn('FlexBox is deprecated in ipywidgets 5.0.  Use Box and Box.layout instead.', DeprecationWarning)
         super(FlexBox, self).__init__(*pargs, **kwargs)
-

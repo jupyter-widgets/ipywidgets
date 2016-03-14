@@ -30,17 +30,21 @@ ManagerBase._model_types = {}; /* Dictionary of model type names (target_name) a
 ManagerBase._view_types = {}; /* Dictionary of view names and view types. */
 ManagerBase._managers = []; /* List of widget managers */
 
+// TODO: Remove me in ipywidgets 6.0
 ManagerBase.register_widget_model = function (model_name, model_type) {
     /**
      * Registers a widget model by name.
      */
+    console.warn('register_widget_model is deprecated.  Models and views should be linked to their backend counterparts using the require.js load path (see the `_view_module` and `_model_module` traits)');
     ManagerBase._model_types[model_name] = model_type;
 };
 
+// TODO: Remove me in ipywidgets 6.0
 ManagerBase.register_widget_view = function (view_name, view_type) {
     /**
      * Registers a widget view by name.
      */
+    console.warn('register_widget_view is deprecated.  Models and views should be linked to their backend counterparts using the require.js load path (see the `_view_module` and `_model_module` traits)');
     ManagerBase._view_types[view_name] = view_type;
 };
 
@@ -280,13 +284,12 @@ ManagerBase.prototype.new_model = function(options, serialized_state) {
     } else {
         throw new Error('Neither comm nor model_id provided in options object. At least one must exist.');
     }
-    var model_promise = this.loadClass(
-        options.model_name,
-        options.model_module,
-        ManagerBase._model_types
-    ).then(function(ModelType) {
-        return ModelType._deserialize_state(serialized_state, that)
-            .then(function(attributes) {
+
+    var model_promise = this.loadClass(options.model_name,
+                                       options.model_module,
+                                       ManagerBase._model_types)
+        .then(function(ModelType) {
+            return ModelType._deserialize_state(serialized_state || ModelType.prototype.defaults, that).then(function(attributes) {
                 var widget_model = new ModelType(that, model_id, options.comm, attributes);
                 widget_model.once('comm:close', function () {
                     delete that._models[model_id];
@@ -318,6 +321,8 @@ ManagerBase.prototype.get_state = function(options) {
      *          Only return models with one or more displayed views.
      *      not_live: (optional) boolean=false
      *          Include models that have comms with severed connections.
+     *      drop_defaults: (optional) boolean=false
+     *          Drop model attributed that are equal to their default values.
      *
      * Returns
      * -------
@@ -340,8 +345,8 @@ ManagerBase.prototype.get_state = function(options) {
                     state[model_id] = {
                         model_name: model.name,
                         model_module: model.module,
-                        state: model.get_state(),
-                        views: []
+                        state: model.get_state(options.drop_defaults),
+                        views: [],
                     };
 
                     // Get the views that are displayed *now*.

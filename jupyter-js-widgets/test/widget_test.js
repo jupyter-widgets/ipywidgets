@@ -8,13 +8,20 @@ describe("Widget", function() {
         this.manager = new DummyManager();
         this.modelId = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
         return this.manager.new_widget({
+            model_module: 'jupyter-js-widgets',
             model_name: 'WidgetModel',
             model_id: this.modelId,
             widget_class: 'ipywidgets.Widget'
         }).then(model => {
             this.widget = model;
         }).catch(err => {
-            console.error('Could not create widget', err);
+            console.error('Could not create widget', Error.prototype.toString.call(err));
+            if (err.stack) {
+              console.error('  Trace:', err.stack);
+            }
+            if (err.error_stack) {
+              err.error_stack.forEach((subErr, i) => console.error(`  Chain[${i}]:`, Error.prototype.toString.call(subErr)));
+            }
         });
     });
 
@@ -79,6 +86,7 @@ describe("Widget", function() {
         // expect(this.widget.pending_msgs).to.equal(p + 1);
     });
 
+<<<<<<< HEAD
     it('set_comm_live', function() {
         expect(this.widget.set_comm_live).to.not.be.undefined;
         expect(this.widget.comm_live).to.be.false;
@@ -102,6 +110,8 @@ describe("Widget", function() {
         expect(liveEventCallback.calledOnce).to.be.false;
     });
 
+=======
+>>>>>>> master
     it('close', function() {
         expect(this.widget.close).to.not.be.undefined;
 
@@ -128,7 +138,7 @@ describe("Widget", function() {
     });
 
     it('_deserialize_state', function() {
-        expect(this.widget._deserialize_state).to.not.be.undefined;
+        expect(this.widget.constructor._deserialize_state).to.not.be.undefined;
 
         // Create some dummy deserializers.  One returns synchronously, and the
         // other asynchronously using a promise.
@@ -145,7 +155,11 @@ describe("Widget", function() {
             }
         };
 
+<<<<<<< HEAD
         var deserialized = this.widget._deserialize_state({ a: 2.0, b: 2.0, c: 2.0 });
+=======
+        let deserialized = this.widget.constructor._deserialize_state({ a: 2.0, b: 2.0, c: 2.0 });
+>>>>>>> master
         expect(deserialized).to.be.an.instanceof(Promise);
         return deserialized.then(state => {
             expect(state.a).to.equal(6.0);
