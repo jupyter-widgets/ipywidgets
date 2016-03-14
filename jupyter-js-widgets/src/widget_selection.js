@@ -871,7 +871,7 @@ var SelectMultipleView = SelectView.extend({
          * changed by another view or by a state update from the back-end.
          */
         SelectMultipleView.__super__.update.apply(this, arguments);
-        var selected = this.model.get('selected_labels');
+        var selected = this.model.get('value') || [];
         var values = _.map(selected, encodeURIComponent);
         var options = this.listbox.options;
         for (var i = 0, len = options.length; i < len; ++i) {
@@ -900,7 +900,7 @@ var SelectMultipleView = SelectView.extend({
             .call(this.listbox.selectedOptions || [], function(option) {
                 return items[option.index];
             });
-        this.model.set('selected_labels', values, {updated_view: this});
+        this.model.set('value', values, {updated_view: this});
         this.touch();
     }
 });
