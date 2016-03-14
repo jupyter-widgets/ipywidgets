@@ -6,6 +6,7 @@ var widget = require('./widget');
 var $ = require('./jquery');
 var _ = require('underscore');
 
+
 var IntModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
         _model_name: 'IntModel',
@@ -356,6 +357,8 @@ var IntSliderView = widget.DOMWidgetView.extend({
         /**
          * Validate the value of the slider before sending it to the back-end
          * and applying it to the other views on the page.
+         *
+         * Double bit-wise not truncates the decimel (int cast).
          */
         return Math.floor(x);
     }
@@ -570,19 +573,15 @@ var ProgressView = widget.DOMWidgetView.extend({
         if (orientation === 'horizontal') {
             this.el.classList.remove('widget-vbox');
             this.el.classList.add('widget-hbox');
-
             this.el.classList.remove('widget-vprogress');
             this.el.classList.add('widget-hprogress');
-
             this.bar.style.width = percent + '%';
             this.bar.style.height = '100%';
         } else {
             this.el.classList.remove('widget-hbox');
             this.el.classList.add('widget-vbox');
-
             this.el.classList.remove('widget-hprogress');
             this.el.classList.add('widget-hprogress');
-
             this.bar.style.width = '100%';
             this.bar.style.height = percent + '%';
         }
@@ -608,7 +607,7 @@ var ProgressView = widget.DOMWidgetView.extend({
         } else if (name.substring(0, 6) == 'border' || name == 'background') {
             this.progress.style[name] = value;
         } else {
-            this.el.style[name] = value
+            this.el.style[name] = value;
         }
     }
 });
