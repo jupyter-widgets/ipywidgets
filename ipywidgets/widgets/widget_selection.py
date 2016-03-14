@@ -15,7 +15,7 @@ from ipython_genutils.py3compat import unicode_type
 
 def _value_to_label(value, obj):
     options = obj._make_options(obj.options)
-    return next((k for k, v in options if obj.equals(v, value)), None)
+    return next((k for k, v in options if obj.equals(v, value)), '')
 
 def _label_to_value(k, obj):
     return obj._options_dict[k]
@@ -59,12 +59,12 @@ class _Selection(DOMWidget):
     def __init__(self, *args, **kwargs):
         self.equals = kwargs.pop('equals', lambda x, y: x == y)
         super(_Selection, self).__init__(*args, **kwargs)
-        self._value_in_options()
 
     def _make_options(self, x):
+        # Return a list of key-value pairs where the keys are strings
         # If x is a dict, convert it to list format.
         if isinstance(x, (OrderedDict, dict)):
-            return [(k, v) for k, v in x.items()]
+            return [(str(k), v) for k, v in x.items()]
 
         # If x is an ordinary list, use the option values as names.
         for y in x:
@@ -97,7 +97,7 @@ class _Selection(DOMWidget):
     @validate('value')
     def _validate_value(self, proposal):
         value = proposal['value']
-        if _value_to_label(value, self) is not None:
+        if _value_to_label(value, self):
             return value
         else:
             raise TraitError('Invalid selection')
@@ -125,21 +125,16 @@ class _MultipleSelection(_Selection):
                   to_json=_values_to_labels, from_json=_labels_to_values)
 
     def _value_in_options(self):
-        if self.options:
-            old_value = self.value or []
-            new_value = []
-            for value in old_value:
-                if value in self._options_dict.values():
-                    new_value.append(value)
-            if new_value:
-                self.value = new_value
-            else:
-                self.value = [next(iter(self._options_dict.values()))]
+        new_value = []
+        for v in self.value:
+            if v in self._options_dict.values():
+                new_value.append(v)
+        self.value = new_value
 
     @validate('value')
     def _validate_value(self, proposal):
         value = proposal['value']
-        if all(_value_to_label(v, self) is not None for v in value):
+        if all(_value_to_label(v, self) for v in value):
             return value
         else:
             raise TraitError('Invalid selection')
