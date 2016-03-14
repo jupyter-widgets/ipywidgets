@@ -217,12 +217,13 @@ describe("Widget", function() {
         this.widget.on('change:a change:b', changeCallback, this.widget);
         this.widget.set_state({ a: true, b: true });
 
+        var that = this;
         return this.widget.state_change.then(function() {
             expect(changeCallback.callCount).to.equal(2);
 
-            this.widget.on_some_change(['a', 'b'], someChangeCallback, this.widget);
-            this.widget.set_state({ a: false, b: false });
-            return this.widget.state_change;
+            that.widget.on_some_change(['a', 'b'], someChangeCallback, that.widget);
+            that.widget.set_state({ a: false, b: false });
+            return that.widget.state_change;
         }).then(function() {
             expect(someChangeCallback.calledOnce).to.be.true;
         });
