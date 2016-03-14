@@ -97,7 +97,7 @@ var ProxyView = widget.DOMWidgetView.extend({
      * @param  {object} value
      */
     update_attr: function(name, value) { // TODO: Deprecated in 5.0
-        this.box.style.visibility[name] = value;
+        this.box.style[name] = value;
     },
 });
 
