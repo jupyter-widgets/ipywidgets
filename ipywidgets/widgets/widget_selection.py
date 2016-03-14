@@ -10,7 +10,7 @@ from collections import OrderedDict
 from .domwidget import DOMWidget
 from .widget import register
 from traitlets import (Unicode, Bool, Any, Dict, TraitError, CaselessStrEnum,
-                       Tuple, List, observe, validate)
+                       Tuple, List, Union, observe, validate)
 from ipython_genutils.py3compat import unicode_type
 
 def _value_to_label(value, obj):
@@ -38,8 +38,8 @@ class _Selection(DOMWidget):
                                            to_json=_value_to_label,
                                            from_json=_label_to_value)
 
-    options = Any(help="""List of (key, value) tuples or dict of values that the
-        user can select.
+    options = Union([List(), Dict()],
+    help="""List of (key, value) tuples or dict of values that the user can select.
 
     The keys of this list are the strings that will be displayed in the UI,
     representing the actual Python choices.
@@ -65,14 +65,6 @@ class _Selection(DOMWidget):
         # If x is a dict, convert it to list format.
         if isinstance(x, (OrderedDict, dict)):
             return [(k, v) for k, v in x.items()]
-
-        # Make sure x is a list or tuple.
-        if not isinstance(x, (list, tuple)):
-            msg = (
-                "Attempted to set options for '{}' widget with an object of type `{}`\n"
-                "Expected a list, tuple or OrderdDict."
-            )
-            raise TraitError(msg.format(self.__class__.__name__, type(x)))
 
         # If x is an ordinary list, use the option values as names.
         for y in x:
