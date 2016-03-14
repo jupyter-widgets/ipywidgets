@@ -86,29 +86,6 @@ describe("Widget", function() {
         // expect(this.widget.pending_msgs).to.equal(p + 1);
     });
 
-    it('set_comm_live', function() {
-        expect(this.widget.set_comm_live).to.not.be.undefined;
-        expect(this.widget.comm_live).to.be.false;
-
-        var liveEventCallback = sinon.spy();
-        var deadEventCallback = sinon.spy();
-        this.widget.on('comm:live', liveEventCallback);
-        this.widget.on('comm:dead', deadEventCallback);
-
-        this.widget.set_comm_live(true);
-        expect(this.widget.comm_live).to.be.true;
-        expect(deadEventCallback.calledOnce).to.be.false;
-        expect(liveEventCallback.calledOnce).to.be.true;
-
-        deadEventCallback.reset();
-        liveEventCallback.reset();
-
-        this.widget.set_comm_live(false);
-        expect(this.widget.comm_live).to.be.false;
-        expect(deadEventCallback.calledOnce).to.be.true;
-        expect(liveEventCallback.calledOnce).to.be.false;
-    });
-
     it('close', function() {
         expect(this.widget.close).to.not.be.undefined;
 
