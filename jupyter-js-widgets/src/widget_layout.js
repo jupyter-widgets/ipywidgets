@@ -1,34 +1,33 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var _ = require("underscore");
-var Backbone = require("backbone");
-var $ = require("./jquery");
+var widget = require('./widget');
+var _ = require('underscore');
+var Backbone = require('backbone');
 
 /**
  * css properties exposed by the layout widget with their default values.
  */
 var css_properties = {
-    align_content: "",
-    align_items: "",
-    align_self: "",
-    border: "",
-    bottom: "",
-    display: "",
-    flex: "",
-    flex_flow: "",
-    height: "",
-    justify_content: "",
-    left: "",
-    margin: "",
-    overflow: "",
-    padding: "",
-    right: "",
-    top: "",
-    visibility: "",
-    width: ""
+    align_content: '',
+    align_items: '',
+    align_self: '',
+    border: '',
+    bottom: '',
+    display: '',
+    flex: '',
+    flex_flow: '',
+    height: '',
+    justify_content: '',
+    left: '',
+    margin: '',
+    overflow: '',
+    padding: '',
+    right: '',
+    top: '',
+    visibility: '',
+    width: ''
 };
 
 /**
@@ -36,8 +35,8 @@ var css_properties = {
  */
 var LayoutModel = widget.WidgetModel.extend({
     defaults: _.extend({}, widget.WidgetModel.prototype.defaults, {
-        _model_name: "LayoutModel",
-        _view_name: "LayoutView"
+        _model_name: 'LayoutModel',
+        _view_name: 'LayoutView'
     }, css_properties),
 });
 
@@ -104,7 +103,7 @@ var LayoutView = widget.WidgetView.extend({
             if (parent) {
                 parent.el.style[this.css_name(trait)] = value;
             } else {
-                console.warn("Style not applied because a parent view doesn't exist");
+                console.warn('Style not applied because a parent view doesn\'t exist');
             }
         }, this));
     },
@@ -118,7 +117,7 @@ var LayoutView = widget.WidgetView.extend({
                 if (parent) {
                     parent.el.style[this.css_name(trait)] = '';
                 } else {
-                    console.warn("Style not removed because a parent view doesn't exist");
+                    console.warn('Style not removed because a parent view doesn\'t exist');
                 }
             }, this));
         }, this);

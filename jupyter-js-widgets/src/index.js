@@ -5,12 +5,12 @@
 global.jQuery = global.$ = require('./jquery');
 var _ = require('underscore');
 
-var managerBase = require("./manager-base");
-var widget = require("./widget");
+var managerBase = require('./manager-base');
+var widget = require('./widget');
 
 module.exports = {
     shims: {
-        services: require("./services-shim")
+        services: require('./services-shim')
     }
 };
 

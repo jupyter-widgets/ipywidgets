@@ -81,7 +81,7 @@ describe("Widget", function() {
         expect(this.widget.send).to.not.be.undefined;
 
         // TODO: Test pending message buffer for comm-full widgets
-        // let p = this.widget.pending_msgs;
+        // var p = this.widget.pending_msgs;
         // this.widget.send({}, {});
         // expect(this.widget.pending_msgs).to.equal(p + 1);
     });
@@ -89,7 +89,7 @@ describe("Widget", function() {
     it('close', function() {
         expect(this.widget.close).to.not.be.undefined;
 
-        let destroyEventCallback = sinon.spy();
+        var destroyEventCallback = sinon.spy();
         this.widget.on('destroy', destroyEventCallback);
 
         this.widget.close();
@@ -102,8 +102,8 @@ describe("Widget", function() {
     it('_handle_comm_closed', function() {
         expect(this.widget._handle_comm_closed).to.not.be.undefined;
 
-        let closeSpy = sinon.spy(this.widget, "close");
-        let closeEventCallback = sinon.spy();
+        var closeSpy = sinon.spy(this.widget, "close");
+        var closeEventCallback = sinon.spy();
         this.widget.on('comm:close', closeEventCallback);
 
         this.widget._handle_comm_closed({});
@@ -142,22 +142,22 @@ describe("Widget", function() {
         expect(this.widget._handle_comm_msg).to.not.be.undefined;
 
         // Update message
-        let setStateSpy = sinon.spy(this.widget, "set_state");
+        var setStateSpy = sinon.spy(this.widget, "set_state");
         this.widget._handle_comm_msg({content: {data: {method: 'update'}}});
-        let p1 = this.widget.state_change = this.widget.state_change.then(() => {
+        var p1 = this.widget.state_change = this.widget.state_change.then(function() {
             expect(setStateSpy.calledOnce).to.be.true;
         });
 
         // Custom message
-        let customEventCallback = sinon.spy();
+        var customEventCallback = sinon.spy();
         this.widget.on('msg:custom', customEventCallback);
         this.widget._handle_comm_msg({content: {data: {method: 'custom'}}});
         expect(customEventCallback.calledOnce).to.be.true; // Triggered synchronously
 
         // Display message
-        let displaySpy = sinon.spy(this.manager, "display_model");
+        var displaySpy = sinon.spy(this.manager, "display_model");
         this.widget._handle_comm_msg({content: {data: {method: 'display'}}});
-        let p2 = this.widget.state_change = this.widget.state_change.then(() => {
+        var p2 = this.widget.state_change = this.widget.state_change.then(function() {
             expect(displaySpy.calledOnce).to.be.true;
         });
 
@@ -183,12 +183,12 @@ describe("Widget", function() {
     it('callbacks', function() {
         expect(this.widget.callbacks).to.not.be.undefined;
 
-        let c = this.widget.callbacks();
+        var c = this.widget.callbacks();
         expect(c).to.be.an('object');
         expect(c.iopub).to.be.an('object');
         expect(c.iopub.status).to.be.a('function');
 
-        let statusSpy = sinon.spy(this.widget, "_handle_status");
+        var statusSpy = sinon.spy(this.widget, "_handle_status");
         c.iopub.status({content: {data: {}}});
         expect(statusSpy.calledOnce).to.be.true;
     });
@@ -212,18 +212,19 @@ describe("Widget", function() {
     it('on_some_change', function() {
         expect(this.widget.on_some_change).to.not.be.undefined;
 
-        let changeCallback = sinon.spy();
-        let someChangeCallback = sinon.spy();
+        var changeCallback = sinon.spy();
+        var someChangeCallback = sinon.spy();
         this.widget.on('change:a change:b', changeCallback, this.widget);
         this.widget.set_state({ a: true, b: true });
 
-        return this.widget.state_change.then(() => {
+        var that = this;
+        return this.widget.state_change.then(function() {
             expect(changeCallback.callCount).to.equal(2);
 
-            this.widget.on_some_change(['a', 'b'], someChangeCallback, this.widget);
-            this.widget.set_state({ a: false, b: false });
-            return this.widget.state_change;
-        }).then(() => {
+            that.widget.on_some_change(['a', 'b'], someChangeCallback, that.widget);
+            that.widget.set_state({ a: false, b: false });
+            return that.widget.state_change;
+        }).then(function() {
             expect(someChangeCallback.calledOnce).to.be.true;
         });
     });

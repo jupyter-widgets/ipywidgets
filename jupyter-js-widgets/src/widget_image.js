@@ -1,29 +1,35 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var $ = require("./jquery");
-var _ = require("underscore");
+var widget = require('./widget');
+var _ = require('underscore');
 
 var ImageModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: "ImageModel",
-        _view_name: "ImageView",
-        format: "png",
-        width: "",
-        height: "",
-        _b64value: ""
+        _model_name: 'ImageModel',
+        _view_name: 'ImageView',
+        format: 'png',
+        width: '',
+        height: '',
+        _b64value: ''
     }),
 });
 
 var ImageView = widget.DOMWidgetView.extend({
-    render : function() {
+    initialize: function() {
+        /**
+         * Called when view is instantiated.
+         */
+        this.setElement(document.createElement('img'));
+        ImageView.__super__.initialize.apply(this, arguments);
+    },
+
+    render: function() {
         /**
          * Called when view is rendered.
          */
-        this.setElement($("<img />")
-            .addClass("jupyter-widgets widget-image"));
+        this.el.className = 'jupyter-widgets widget-image';
         this.update(); // Set defaults.
     },
 
@@ -35,20 +41,20 @@ var ImageView = widget.DOMWidgetView.extend({
          * changed by another view or by a state update from the back-end.
          */
         var image_src = 'data:image/' + this.model.get('format') + ';base64,' + this.model.get('_b64value');
-        this.$el.attr('src', image_src);
+        this.el.setAttribute('src', image_src);
 
         var width = this.model.get('width');
         if (width !== undefined && width.length > 0) {
-            this.$el.attr('width', width);
+            this.el.setAttribute('width', width);
         } else {
-            this.$el.removeAttr('width');
+            this.el.removeAttribute('width');
         }
 
         var height = this.model.get('height');
         if (height !== undefined && height.length > 0) {
-            this.$el.attr('height', height);
+            this.el.setAttribute('height', height);
         } else {
-            this.$el.removeAttr('height');
+            this.el.removeAttribute('height');
         }
         return ImageView.__super__.update.apply(this);
     },
@@ -56,5 +62,5 @@ var ImageView = widget.DOMWidgetView.extend({
 
 module.exports = {
     ImageView: ImageView,
-    ImageModel: ImageModel,
+    ImageModel: ImageModel
 };
