@@ -182,9 +182,8 @@ var DropdownView = widget.DOMWidgetView.extend({
      * cause the dropdown to be dropped 'up'.
      */
     _toggle: function() {
-        _.each(this.buttongroup.querySelectorAll('button'), function(button) {
-            button.blur();
-        });
+        this.droplabel.blur();
+        this.dropbutton.blur();
 
         if (this.droplist.classList.contains('mod-active')) {
             this.droplist.classList.remove('mod-active');
