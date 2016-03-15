@@ -1,0 +1,28 @@
+{
+  "name": "jupyter-js-widgets-test",
+  "version": "1.0.0",
+  "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
+  "main": "index.js",
+  "scripts": {
+    "prepublish": "webpack",
+    "test": "npm run test:default",
+    "test:default": "echo \"No test specified\""
+  },
+  "author": "IPython",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "bootstrap": "^3.3.6",
+    "font-awesome": "^4.5.0",
+    "jquery": "^2.1.4",
+    "jquery-ui": "^1.10.5",
+    "jupyter-js-widgets": "file:../.."
+  },
+  "devDependencies": {
+    "bower": "^1.7.0",
+    "css-loader": "^0.23.1",
+    "file-loader": "^0.8.5",
+    "style-loader": "^0.13.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.10"
+  }
+}
