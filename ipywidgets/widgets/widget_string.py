@@ -9,6 +9,7 @@ Represents a unicode string using a widget.
 from .domwidget import DOMWidget
 from .widget import CallbackDispatcher, register
 from traitlets import Unicode, Bool
+from warnings import warn
 
 
 class _String(DOMWidget):
@@ -37,15 +38,22 @@ class HTML(_String):
     _model_name = Unicode('HTMLModel').tag(sync=True)
 
 
-@register('Jupyter.Latex')
-class Latex(_String):
+@register('Jupyter.Label')
+class Label(_String):
     """Label widget.
 
     It also renders math inside the string `value` as Latex (requires $ $ or
     $$ $$ and similar latex tags).
     """
-    _view_name = Unicode('LatexView').tag(sync=True)
-    _model_name = Unicode('LatexModel').tag(sync=True)
+    _view_name = Unicode('LabelView').tag(sync=True)
+    _model_name = Unicode('LabelModel').tag(sync=True)
+
+
+class Latex(Label):
+
+    def __init__(self, *args, **kwargs):
+        warn('The Latex widget is deprecated. Use Label instead')
+        super(Latex, self).__init__(*args, **kwargs)
 
 
 @register('Jupyter.Textarea')

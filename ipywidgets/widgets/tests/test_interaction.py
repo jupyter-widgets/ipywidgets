@@ -615,7 +615,7 @@ def test_multiple_selection():
 
     # degenerate multiple select
     w = smw()
-    check_widget(w, value=tuple(), options=None)
+    check_widget(w, value=tuple())
 
     # don't accept random other value when no options
     with nt.assert_raises(TraitError):

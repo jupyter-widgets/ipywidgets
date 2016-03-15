@@ -45,14 +45,14 @@ var HTMLView = widget.DOMWidgetView.extend({
     },
 });
 
-var LatexModel = StringModel.extend({
+var LabelModel = StringModel.extend({
     defaults: _.extend({}, StringModel.prototype.defaults, {
-        _view_name: "LatexView",
-        _model_name: "LatexModel"
+        _view_name: "LabelView",
+        _model_name: "LabelModel"
     }),
 });
 
-var LatexView = widget.DOMWidgetView.extend({
+var LabelView = widget.DOMWidgetView.extend({
     render : function() {
         /**
          * Called when view is rendered.
@@ -70,7 +70,7 @@ var LatexView = widget.DOMWidgetView.extend({
          * changed by another view or by a state update from the back-end.
          */
         this.typeset(this.$el, this.model.get('value'));
-        return LatexView.__super__.update.apply(this);
+        return LabelView.__super__.update.apply(this);
     },
 });
 
@@ -299,8 +299,8 @@ module.exports = {
     StringModel: StringModel,
     HTMLView: HTMLView,
     HTMLModel: HTMLModel,
-    LatexView: LatexView,
-    LatexModel: LatexModel,
+    LabelView: LabelView,
+    LabelModel: LabelModel,
     TextareaView: TextareaView,
     TextareaModel: TextareaModel,
     TextView: TextView,
