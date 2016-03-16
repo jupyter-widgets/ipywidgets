@@ -8,6 +8,7 @@ var widgets = require("jupyter-js-widgets");
 var html2canvas = require("html2canvas");
 var progressModal = require("./progress-modal");
 var saveState = require("./save_state");
+var embedWidgets = require("./embed_widgets");
 
 
 // Work around for a logging bug, reported in https://github.com/niklasvh/html2canvas/issues/543
@@ -258,6 +259,7 @@ WidgetManager.prototype._init_menu = function() {
 
     widgetsSubmenu.appendChild(this._createMenuItem('Save notebook with snapshots', this.buildSnapshotsAction));
     widgetsSubmenu.appendChild(this._createMenuItem('Download widget state', saveState.action));
+    widgetsSubmenu.appendChild(this._createMenuItem('Embed widgets', embedWidgets.action));
 };
 
 /**
