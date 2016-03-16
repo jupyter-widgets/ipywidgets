@@ -24,6 +24,7 @@
     "test:example:web1": "cd examples/web && npm install && npm run test:default",
     "test:example:web2": "cd examples/web2 && npm install && npm run test:default",
     "test:example:web3": "cd examples/web3 && npm install && npm run test:default",
+    "test:example:web4": "cd examples/web3 && npm install && npm run test:default",
     "prepublish": "npm run build",
     "css:less": "lessc --include-path=./node_modules ./less/widgets.less ./css/widgets.css",
     "css:cleancss": "cleancss --source-map --skip-restructuring -o ./css/widgets.min.css ./css/widgets.css"
