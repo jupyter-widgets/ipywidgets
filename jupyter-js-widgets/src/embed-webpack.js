@@ -18,10 +18,10 @@ require("../css/widgets.min.css");
 const widgets = require('./index');
 console.info('jupyter-js-widgets loaded successfully');
 
-const manager = widgets.EmbedManager();
+const manager = new widgets.EmbedManager();
 
 // Magic global widget rendering function:
-window.w = function renderWidgetState(widgetStateObject) {
+function renderWidgetState(widgetStateObject) {
 
   // Create the container div and insert it into the DOM immediately above the
   // current script tag.
@@ -46,4 +46,12 @@ window.w = function renderWidgetState(widgetStateObject) {
     container.innerHTML = '';
     container.appendChild(widgetContainer);
   });
-};
+}
+
+// Module exports
+exports.manager = manager;
+exports.renderWidgetState = renderWidgetState;
+
+// Set window globals
+window.manager = manager;
+window.w = exports.renderWidgetState;
