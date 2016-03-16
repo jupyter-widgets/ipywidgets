@@ -1,17 +1,20 @@
-require('bootstrap/dist/css/bootstrap.css')
-require('jquery-ui/themes/smoothness/jquery-ui.min.css');
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
 
-var widgets = require('jupyter-js-widgets');
-console.info('jupyter-js-widgets loaded successfully');
+var manager = require('./manager-base');
 
-var WidgetManager = exports.WidgetManager = function(el) {
+var EmbedManager = exports.EmbedManager = function(el) {
     //  Call the base class.
-    widgets.ManagerBase.call(this);
+    manager.ManagerBase.call(this);
     this.el = el;
 };
-WidgetManager.prototype = Object.create(widgets.ManagerBase.prototype);
+EmbedManager.prototype = Object.create(manager.ManagerBase.prototype);
 
-WidgetManager.prototype.display_view = function(msg, view, options) {
+EmbedManager.prototype.display_widget_state = function(models, el) {
+    // TODO: Add ability to display state subsets in a specific element.
+}
+
+EmbedManager.prototype.display_view = function(msg, view, options) {
     var that = this;
     return Promise.resolve(view).then(function(view) {
         that.el.appendChild(view.el);
@@ -22,6 +25,6 @@ WidgetManager.prototype.display_view = function(msg, view, options) {
     });
 };
 
-WidgetManager.prototype._get_comm_info = function() {
+EmbedManager.prototype._get_comm_info = function() {
     return Promise.resolve({});
 };
