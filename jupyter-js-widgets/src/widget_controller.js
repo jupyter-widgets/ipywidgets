@@ -1,18 +1,17 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var utils= require("./utils");
-var $ = require("./jquery");
-var _ = require("underscore");
+var widget = require('./widget');
+var utils= require('./utils');
+var _ = require('underscore');
 
 var ControllerButtonModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: "ControllerButtonModel",
-        _view_name: "ControllerButtonView",
+        _model_name: 'ControllerButtonModel',
+        _view_name: 'ControllerButtonView',
         value: 0.0,
-        pressed: false,
+        pressed: false
     }),
 });
 
@@ -20,82 +19,80 @@ var ControllerButtonView = widget.DOMWidgetView.extend({
     /* Very simple view for a gamepad button. */
 
     render: function() {
-        this.$el.addClass('jupyter-widgets widget-controller-button');
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-controller-button');
 
-        this.$support = $('<div />').css({
-                'position': 'relative',
-                'margin': '1px',
-                'width': '16px',
-                'height': '16px',
-                'border': '1px solid black',
-                'background': 'lightgray',
-            })
-            .appendTo(this.$el);
-        this.$bar = $('<div />')
-            .css({
-                'position': 'absolute',
-                'width': '100%',
-                'bottom': 0,
-                'background': 'gray',
-            })
-            .appendTo(this.$support);
-        this.$label = $('<div />')
-            .text(this.model.get('description'))
-            .css('text-align', 'center')
-            .appendTo(this.$el);
+        this.support = document.createElement('div');
+        this.support.style.position = 'relative';
+        this.support.style.margin = '1px';
+        this.support.style.width = '16px';
+        this.support.style.height = '16px';
+        this.support.style.border = '1px solid black';
+        this.support.style.background = 'lightgray';
+        this.el.appendChild(this.support);
+
+        this.bar = document.createElement('div');
+        this.bar.style.position = 'absolute';
+        this.bar.style.width = '100%';
+        this.bar.style.bottom = 0;
+        this.bar.style.background = 'gray';
+        this.support.appendChild(this.bar);
+
         this.update();
+        this.label = document.createElement('div');
+        this.label.textContent = this.model.get('description');
+        this.label.style.textAlign = 'center';
+        this.el.appendChild(this.label);
     },
 
     update: function() {
-        this.$bar.css('height', 100 * this.model.get('value') + '%');
-    },
-
+        this.bar.style.height = 100 * this.model.get('value') + '%';
+    }
 });
 
 var ControllerAxisModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: "ControllerAxisModel",
-        _view_name: "ControllerAxisView",
-        value: 0.0,
+        _model_name: 'ControllerAxisModel',
+        _view_name: 'ControllerAxisView',
+        value: 0.0
     }),
 });
 
 var ControllerAxisView = widget.DOMWidgetView.extend({
     /* Very simple view for a gamepad axis. */
     render: function() {
-        this.$el.addClass('jupyter-widgets widget-controller-axis');
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-controller-axis');
+        this.el.style.width = '16px';
+        this.el.style.padding = '4px';
 
-        this.$el.css({
-                'width': '16px',
-                'padding': '4px',
-            });
-        this.$support = $('<div />').css({
-                'position': 'relative',
-                'margin': '1px',
-                'width': '4px',
-                'height': '64px',
-                'border': '1px solid black',
-                'background': 'lightgray',
-            })
-            .appendTo(this.$el);
-        this.$bullet = $('<div />')
-            .css({
-                'position': 'absolute',
-                'margin': '-4px',
-                'width': '10px',
-                'height': '10px',
-                'background': 'gray',
-            })
-            .appendTo(this.$support);
-        this.$label = $('<div />')
-            .text(this.model.get('description'))
-            .css('text-align', 'center')
-            .appendTo(this.$el);
+        this.support = document.createElement('div');
+        this.support.style.position = 'relative';
+        this.support.style.margin = '1px';
+        this.support.style.width = '4px';
+        this.support.style.height = '64px';
+        this.support.style.border = '1px solid black';
+        this.support.style.background = 'lightgray';
+        this.el.appendChild(this.support);
+
+        this.bullet = document.createElement('div');
+        this.bullet.style.position = 'absolute';
+        this.bullet.style.margin = '-4px';
+        this.bullet.style.width = '10px';
+        this.bullet.style.height = '10px';
+        this.bullet.style.background = 'gray';
+        this.el.appendChild(this.support);
+
+        this.label = document.createElement('div');
+        this.label.textContent = this.model.get('description');
+        this.label.style.textAlign = 'center';
+        this.el.appendChild(this.label);
+
         this.update();
     },
 
     update: function() {
-        this.$bullet.css('top', 50 * (this.model.get('value') + 1) + '%');
+        this.bullet.style.top = 50 * (this.model.get('value') + 1) + '%';
     },
 
 });
@@ -103,15 +100,15 @@ var ControllerAxisView = widget.DOMWidgetView.extend({
 var ControllerModel = widget.DOMWidgetModel.extend({
     /* The Controller model. */
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: "ControllerModel",
-        _view_name: "ControllerView",
+        _model_name: 'ControllerModel',
+        _view_name: 'ControllerView',
         index: 0,
-        name: "",
-        mapping: "",
+        name: '',
+        mapping: '',
         connected: false,
         timestamp: 0,
         buttons: [],
-        axes: [],
+        axes: []
     }),
 
     initialize: function() {
@@ -167,7 +164,7 @@ var ControllerModel = widget.DOMWidgetModel.extend({
             name: pad.id,
             mapping: pad.mapping,
             connected: pad.connected,
-            timestamp: pad.timestamp,
+            timestamp: pad.timestamp
         });
         // Create buttons and axes. When done, start the update loop
         var that = this;
@@ -191,13 +188,13 @@ var ControllerModel = widget.DOMWidgetModel.extend({
         if (pad && index === pad.index && id === pad.id) {
             this.set({
                 timestamp: pad.timestamp,
-                connected: pad.connected,
+                connected: pad.connected
             });
             this.save_changes();
             this.get('buttons').forEach(function(model, index) {
                 model.set({
                     value: pad.buttons[index].value,
-                    pressed: pad.buttons[index].pressed,
+                    pressed: pad.buttons[index].pressed
                 });
                 model.save_changes();
             });
@@ -226,7 +223,7 @@ var ControllerModel = widget.DOMWidgetModel.extend({
             connected: false,
             timestamp: 0.0,
             buttons: [],
-            axes: [],
+            axes: []
         });
         this.save_changes();
         window.requestAnimationFrame(this.wait_loop.bind(this));
@@ -238,7 +235,7 @@ var ControllerModel = widget.DOMWidgetModel.extend({
         return this.widget_manager.new_widget({
              model_name: 'ControllerButtonModel',
              model_module: 'jupyter-js-widgets',
-             widget_class: 'Jupyter.ControllerButton',
+             widget_class: 'Jupyter.ControllerButton'
         }).then(function(model) {
              model.set('description', index);
              return model;
@@ -251,7 +248,7 @@ var ControllerModel = widget.DOMWidgetModel.extend({
         return this.widget_manager.new_widget({
              model_name: 'ControllerAxisModel',
              model_module: 'jupyter-js-widgets',
-             widget_class: 'Jupyter.ControllerAxis',
+             widget_class: 'Jupyter.ControllerAxis'
         }).then(function(model) {
              model.set('description', index);
              return model;
@@ -261,7 +258,7 @@ var ControllerModel = widget.DOMWidgetModel.extend({
 }, {
     serializers: _.extend({
         buttons: {deserialize: widget.unpack_models},
-        axes: {deserialize: widget.unpack_models},
+        axes: {deserialize: widget.unpack_models}
     }, widget.DOMWidgetModel.serializers)
 });
 
@@ -285,20 +282,18 @@ var ControllerView = widget.DOMWidgetView.extend({
     },
 
     render: function(){
-        this.$el.addClass('jupyter-widgets widget-controller');
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-controller');
+        this.box = this.el;
+        this.label = document.createElement('div');
+        this.box.appendChild(this.label);
+        this.axis_box = document.createElement('div');
+        this.axis_box.style.display = 'flex';
+        this.box.appendChild(this.axis_box);
 
-        this.$box = this.$el;
-
-        this.$label = $('<div />')
-            .appendTo(this.$box);
-
-        this.$axis_box = $('<div />')
-            .css('display', 'flex')
-            .appendTo(this.$box);
-
-        this.$button_box = $('<div />')
-            .css('display', 'flex')
-            .appendTo(this.$box);
+        this.button_box = document.createElement('div');
+        this.button_box.style.display = 'flex';
+        this.box.appendChild(this.button_box);
 
         this.button_views.update(this.model.get('buttons'));
         this.axis_views.update(this.model.get('axes'));
@@ -307,13 +302,14 @@ var ControllerView = widget.DOMWidgetView.extend({
     },
 
     update_label: function() {
-        this.$label.text(this.model.get('name') || this.model.readout);
+        this.label.textContent = this.model.get('name') || this.model.readout;
     },
 
     add_button: function(model) {
         var that = this;
-        var dummy = $('<div/>');
-        that.$button_box.append(dummy);
+        var dummy = document.createElement('div');
+
+        that.button_box.appendChild(dummy);
         return this.create_child_view(model).then(function(view) {
             dummy.replaceWith(view.el);
             that.displayed.then(function() {
@@ -325,8 +321,9 @@ var ControllerView = widget.DOMWidgetView.extend({
 
     add_axis: function(model) {
         var that = this;
-        var dummy = $('<div/>');
-        that.$axis_box.append(dummy);
+        var dummy = document.createElement('div');
+
+        that.axis_box.appendChild(dummy);
         return this.create_child_view(model).then(function(view) {
             dummy.replaceWith(view.el);
             that.displayed.then(function() {
@@ -350,5 +347,5 @@ module.exports = {
     ControllerAxisView: ControllerAxisView,
     ControllerAxisModel: ControllerAxisModel,
     ControllerModel: ControllerModel,
-    ControllerView: ControllerView,
+    ControllerView: ControllerView
 };
