@@ -3,7 +3,6 @@
 "use strict";
 
 var widget = require("./widget");
-var $ = require("./jquery");
 var _ = require("underscore");
 
 var BoolModel = widget.DOMWidgetModel.extend({

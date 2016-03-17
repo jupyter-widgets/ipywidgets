@@ -6,7 +6,6 @@ var utils = require("./utils");
 var managerBase = require("./manager-base");
 var _ = require("underscore");
 var Backbone = require("backbone");
-var $ = require("./jquery");
 
 
 var unpack_models = function unpack_models(value, manager) {

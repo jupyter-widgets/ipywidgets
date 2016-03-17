@@ -4,7 +4,6 @@
 
 var widget = require("./widget");
 var utils= require("./utils");
-var $ = require("./jquery");
 var _ = require("underscore");
 
 var ControllerButtonModel = widget.DOMWidgetModel.extend({
