@@ -307,6 +307,25 @@ ManagerBase.prototype.new_model = function(options, serialized_state) {
     return model_promise;
 };
 
+/**
+
+ * Close all widgets and empty the widget state.
+ * @param  {boolean} commlessOnly should only commless widgets be removed
+ * @return {Promise}              promise that resolves when the widget state is
+ *                                cleared.
+ */
+ManagerBase.prototype.clear_state = function(commlessOnly) {
+    var that = this;
+    return utils.resolvePromisesDict(this._models).then(function(models) {
+        Object.keys(models).forEach(function(id) {
+            if (!commlessOnly || models[id].comm) {
+                models[id].close();
+            }
+        });
+        that._models = {};
+    });
+};
+
 ManagerBase.prototype.get_state = function(options) {
     /**
      * Asynchronously get the state of the widget manager.
