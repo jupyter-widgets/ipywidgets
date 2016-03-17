@@ -3,21 +3,18 @@
 
 var manager = require('./manager-base');
 
-var EmbedManager = exports.EmbedManager = function(el) {
-    //  Call the base class.
+var EmbedManager = exports.EmbedManager = function() {
     manager.ManagerBase.call(this);
-    this.el = el;
 };
 EmbedManager.prototype = Object.create(manager.ManagerBase.prototype);
 
 EmbedManager.prototype.display_widget_state = function(models, el) {
-    // TODO: Add ability to display state subsets in a specific element.
-}
+    this.set_state(models, { el });
+};
 
 EmbedManager.prototype.display_view = function(msg, view, options) {
-    var that = this;
     return Promise.resolve(view).then(function(view) {
-        that.el.appendChild(view.el);
+        options.el.appendChild(view.el);
         view.on('remove', function() {
             console.log('View removed', view);
         });
