@@ -1,28 +1,29 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var utils = require("./utils");
-var $ = require("./jquery");
-var _ = require("underscore");
+var widget = require('./widget');
+var utils = require('./utils');
+var $ = require('./jquery');
+var _ = require('underscore');
+
 
 var SelectionModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: "SelectionModel",
-        value: "",
+        _model_name: 'SelectionModel',
+        selected_label: '',
         _options_labels: [],
         disabled: false,
-        description: "",
-    }),
+        description: ''
+    })
 });
 
 var DropdownModel = SelectionModel.extend({
     defaults: _.extend({}, SelectionModel.prototype.defaults, {
-        _model_name: "DropdownModel",
-        _view_name: "DropdownView",
-        button_style: ""
-    }),
+        _model_name: 'DropdownModel',
+        _view_name: 'DropdownView',
+        button_style: ''
+    })
 });
 
 var DropdownView = widget.DOMWidgetView.extend({
@@ -916,5 +917,5 @@ module.exports = {
     SelectionSliderModel: SelectionSliderModel,
     MultipleSelectionModel: MultipleSelectionModel,
     SelectMultipleView: SelectMultipleView,
-    SelectMultipleModel: SelectMultipleModel,
+    SelectMultipleModel: SelectMultipleModel
 };

@@ -1,19 +1,19 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var _ = require("underscore");
+var widget = require('./widget');
+var _ = require('underscore');
 
 var ImageModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: "ImageModel",
-        _view_name: "ImageView",
-        format: "png",
-        width: "",
-        height: "",
-        _b64value: ""
-    }),
+        _model_name: 'ImageModel',
+        _view_name: 'ImageView',
+        format: 'png',
+        width: '',
+        height: '',
+        _b64value: ''
+    })
 });
 
 var ImageView = widget.DOMWidgetView.extend({
@@ -62,5 +62,5 @@ var ImageView = widget.DOMWidgetView.extend({
 
 module.exports = {
     ImageView: ImageView,
-    ImageModel: ImageModel,
+    ImageModel: ImageModel
 };

@@ -1,18 +1,18 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var utils= require("./utils");
-var _ = require("underscore");
+var widget = require('./widget');
+var utils= require('./utils');
+var _ = require('underscore');
 
 var ControllerButtonModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: "ControllerButtonModel",
-        _view_name: "ControllerButtonView",
+        _model_name: 'ControllerButtonModel',
+        _view_name: 'ControllerButtonView',
         value: 0.0,
-        pressed: false,
-    }),
+        pressed: false
+    })
 });
 
 var ControllerButtonView = widget.DOMWidgetView.extend({
@@ -52,10 +52,10 @@ var ControllerButtonView = widget.DOMWidgetView.extend({
 
 var ControllerAxisModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: "ControllerAxisModel",
-        _view_name: "ControllerAxisView",
-        value: 0.0,
-    }),
+        _model_name: 'ControllerAxisModel',
+        _view_name: 'ControllerAxisView',
+        value: 0.0
+    })
 });
 
 var ControllerAxisView = widget.DOMWidgetView.extend({
@@ -100,15 +100,15 @@ var ControllerAxisView = widget.DOMWidgetView.extend({
 var ControllerModel = widget.DOMWidgetModel.extend({
     /* The Controller model. */
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: "ControllerModel",
-        _view_name: "ControllerView",
+        _model_name: 'ControllerModel',
+        _view_name: 'ControllerView',
         index: 0,
-        name: "",
-        mapping: "",
+        name: '',
+        mapping: '',
         connected: false,
         timestamp: 0,
         buttons: [],
-        axes: [],
+        axes: []
     }),
 
     initialize: function() {
@@ -164,7 +164,7 @@ var ControllerModel = widget.DOMWidgetModel.extend({
             name: pad.id,
             mapping: pad.mapping,
             connected: pad.connected,
-            timestamp: pad.timestamp,
+            timestamp: pad.timestamp
         });
         // Create buttons and axes. When done, start the update loop
         var that = this;
@@ -188,13 +188,13 @@ var ControllerModel = widget.DOMWidgetModel.extend({
         if (pad && index === pad.index && id === pad.id) {
             this.set({
                 timestamp: pad.timestamp,
-                connected: pad.connected,
+                connected: pad.connected
             });
             this.save_changes();
             this.get('buttons').forEach(function(model, index) {
                 model.set({
                     value: pad.buttons[index].value,
-                    pressed: pad.buttons[index].pressed,
+                    pressed: pad.buttons[index].pressed
                 });
                 model.save_changes();
             });
@@ -223,7 +223,7 @@ var ControllerModel = widget.DOMWidgetModel.extend({
             connected: false,
             timestamp: 0.0,
             buttons: [],
-            axes: [],
+            axes: []
         });
         this.save_changes();
         window.requestAnimationFrame(this.wait_loop.bind(this));
@@ -253,12 +253,12 @@ var ControllerModel = widget.DOMWidgetModel.extend({
              model.set('description', index);
              return model;
         });
-    },
+    }
 
 }, {
     serializers: _.extend({
         buttons: {deserialize: widget.unpack_models},
-        axes: {deserialize: widget.unpack_models},
+        axes: {deserialize: widget.unpack_models}
     }, widget.DOMWidgetModel.serializers)
 });
 
@@ -337,7 +337,7 @@ var ControllerView = widget.DOMWidgetView.extend({
         ControllerView.__super__.remove.apply(this, arguments);
         this.button_views.remove();
         this.axis_views.remove();
-    },
+    }
 
 });
 
@@ -347,5 +347,5 @@ module.exports = {
     ControllerAxisView: ControllerAxisView,
     ControllerAxisModel: ControllerAxisModel,
     ControllerModel: ControllerModel,
-    ControllerView: ControllerView,
+    ControllerView: ControllerView
 };

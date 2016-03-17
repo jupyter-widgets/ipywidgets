@@ -1,26 +1,25 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var $ = require("./jquery");
-var _ = require("underscore");
+var widget = require('./widget');
+var _ = require('underscore');
 
 var StringModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        value: "",
+        value: '',
         disabled: false,
-        description: "",
-        placeholder: "",
-        _model_name: "StringModel"
-    }),
+        description: '',
+        placeholder: '',
+        _model_name: 'StringModel'
+    })
 });
 
 var HTMLModel = StringModel.extend({
     defaults: _.extend({}, StringModel.prototype.defaults, {
-        _view_name: "HTMLView",
-        _model_name: "HTMLModel"
-    }),
+        _view_name: 'HTMLView',
+        _model_name: 'HTMLModel'
+    })
 });
 
 var HTMLView = widget.DOMWidgetView.extend({
@@ -117,7 +116,7 @@ var TextareaView = widget.DOMWidgetView.extend({
         /**
          * Handle when a custom msg is recieved from the back-end.
          */
-        if (content.method == "scroll_to_bottom") {
+        if (content.method == 'scroll_to_bottom') {
             this.scroll_to_bottom();
         }
     },
@@ -160,9 +159,9 @@ var TextareaView = widget.DOMWidgetView.extend({
 
     events: {
         // Dictionary of events and their handlers.
-        "keyup textarea" : "handleChanging",
-        "paste textarea" : "handleChanging",
-        "cut textarea"   : "handleChanging"
+        'keyup textarea' : 'handleChanging',
+        'paste textarea' : 'handleChanging',
+        'cut textarea'   : 'handleChanging'
     },
 
     handleChanging: function(e) {
@@ -174,14 +173,14 @@ var TextareaView = widget.DOMWidgetView.extend({
          */
         this.model.set('value', e.target.value, {updated_view: this});
         this.touch();
-    },
+    }
 });
 
 var TextModel = StringModel.extend({
     defaults: _.extend({}, StringModel.prototype.defaults, {
-        _view_name: "TextView",
-        _model_name: "TextModel"
-    }),
+        _view_name: 'TextView',
+        _model_name: 'TextModel'
+    })
 });
 
 var TextView = widget.DOMWidgetView.extend({
@@ -245,12 +244,12 @@ var TextView = widget.DOMWidgetView.extend({
 
     events: {
         // Dictionary of events and their handlers.
-        "keyup input"    : "handleChanging",
-        "paste input"    : "handleChanging",
-        "cut input"      : "handleChanging",
-        "keypress input" : "handleKeypress",
-        "blur input" : "handleBlur",
-        "focusout input" : "handleFocusOut"
+        'keyup input'    : 'handleChanging',
+        'paste input'    : 'handleChanging',
+        'cut input'      : 'handleChanging',
+        'keypress input' : 'handleKeypress',
+        'blur input'     : 'handleBlur',
+        'focusout input' : 'handleFocusOut'
     },
 
     handleChanging: function(e) {
@@ -300,7 +299,7 @@ var TextView = widget.DOMWidgetView.extend({
             e.preventDefault();
             return false;
         }
-    },
+    }
 });
 
 module.exports = {
@@ -312,5 +311,5 @@ module.exports = {
     TextareaView: TextareaView,
     TextareaModel: TextareaModel,
     TextView: TextView,
-    TextModel: TextModel,
+    TextModel: TextModel
 };

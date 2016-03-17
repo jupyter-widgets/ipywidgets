@@ -1,20 +1,20 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var _ = require("underscore");
+var widget = require('./widget');
+var _ = require('underscore');
 
 var ButtonModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        description: "",
-        tooltip: "",
+        description: '',
+        tooltip: '',
         disabled: false,
-        icon: "",
-        button_style: "",
-        _view_name: "ButtonView",
-        _model_name: "ButtonModel"
-    }),
+        icon: '',
+        button_style: '',
+        _view_name: 'ButtonView',
+        _model_name: 'ButtonModel'
+    })
 });
 
 var ButtonView = widget.DOMWidgetView.extend({

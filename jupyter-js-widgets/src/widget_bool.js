@@ -1,24 +1,24 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var _ = require("underscore");
+var widget = require('./widget');
+var _ = require('underscore');
 
 var BoolModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
         value: false,
-        description: "",
+        description: '',
         disabled: false,
-        _model_name: "BoolModel"
-    }),
+        _model_name: 'BoolModel'
+    })
 });
 
 var CheckboxModel = BoolModel.extend({
     defaults: _.extend({}, BoolModel.prototype.defaults, {
-        _view_name: "CheckboxView",
-        _model_name: "CheckboxModel"
-    }),
+        _view_name: 'CheckboxView',
+        _model_name: 'CheckboxModel'
+    })
 });
 
 var CheckboxView = widget.DOMWidgetView.extend({
@@ -96,12 +96,12 @@ var CheckboxView = widget.DOMWidgetView.extend({
 
 var ToggleButtonModel = BoolModel.extend({
     defaults: _.extend({}, BoolModel.prototype.defaults, {
-        _view_name: "ToggleButtonView",
-        _model_name: "ToggleButtonModel",
-        tooltip: "",
-        icon: "",
-        button_style: "",
-    }),
+        _view_name: 'ToggleButtonView',
+        _model_name: 'ToggleButtonModel',
+        tooltip: '',
+        icon: '',
+        button_style: ''
+    })
 });
 
 var ToggleButtonView = widget.DOMWidgetView.extend({
@@ -189,10 +189,10 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
 
 var ValidModel = BoolModel.extend({
     defaults: _.extend({}, BoolModel.prototype.defaults, {
-        readout: "Invalid",
-        _view_name: "ValidView",
-        _model_name: "ValidModel"
-    }),
+        readout: 'Invalid',
+        _view_name: 'ValidView',
+        _model_name: 'ValidModel'
+    })
 });
 
 var ValidView = widget.DOMWidgetView.extend({
@@ -236,5 +236,5 @@ module.exports = {
     ToggleButtonModel: ToggleButtonModel,
     ToggleButtonView: ToggleButtonView,
     ValidModel: ValidModel,
-    ValidView: ValidView,
+    ValidView: ValidView
 };

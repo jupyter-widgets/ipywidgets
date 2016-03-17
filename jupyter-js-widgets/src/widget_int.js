@@ -1,43 +1,44 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var _ = require("underscore");
-var $ = require("./jquery");
+var widget = require('./widget');
+var _ = require('underscore');
+var $ = require('jquery');
+
 
 var IntModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: "IntModel",
+        _model_name: 'IntModel',
         value: 0,
         disabled: false,
-        description: ""
-    }),
+        description: ''
+    })
 });
 
 var BoundedIntModel = IntModel.extend({
     defaults: _.extend({}, IntModel.prototype.defaults, {
-        _model_name: "BoundedIntModel",
+        _model_name: 'BoundedIntModel',
         step: 1,
         max: 100,
         min: 0
-    }),
+    })
 });
 
 var IntSliderModel = BoundedIntModel.extend({
     defaults: _.extend({}, BoundedIntModel.prototype.defaults, {
-        _model_name: "IntSliderModel",
-        _view_name: "IntSliderView",
-        orientation: "horizontal",
+        _model_name: 'IntSliderModel',
+        _view_name: 'IntSliderView',
+        orientation: 'horizontal',
         _range: false,
         readout: true,
         slider_color: null,
         continuous_update: true
-    }),
+    })
 });
 
 var IntSliderView = widget.DOMWidgetView.extend({
-    render : function() {
+    render: function() {
         /**
          * Called when view is rendered.
          */
@@ -119,14 +120,15 @@ var IntSliderView = widget.DOMWidgetView.extend({
          */
         if (options === undefined || options.updated_view != this) {
             // JQuery slider option keys.  These keys happen to have a
-            // one-to-one mapping with the corrosponding keys of the model.
+            // one-to-one mapping with the corresponding keys of the model.
             var jquery_slider_keys = ['step', 'disabled'];
             var that = this;
             that.$slider.slider({});
+
             _.each(jquery_slider_keys, function(key, i) {
                 var model_value = that.model.get(key);
                 if (model_value !== undefined) {
-                    that.$slider.slider("option", key, model_value);
+                    that.$slider.slider('option', key, model_value);
                 }
             });
 
@@ -137,9 +139,9 @@ var IntSliderView = widget.DOMWidgetView.extend({
                 if (min !== undefined) this.$slider.slider('option', 'min', min);
             }
 
-            var range_value = this.model.get("_range");
+            var range_value = this.model.get('_range');
             if (range_value !== undefined) {
-                this.$slider.slider("option", "range", range_value);
+                this.$slider.slider('option', 'range', range_value);
             }
 
             // WORKAROUND FOR JQUERY SLIDER BUG.
@@ -211,7 +213,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
      */
     valueToString: function(value) {
         if (this.model.get('_range')) {
-            return value.join("-");
+            return value.join('-');
         } else {
             return String(value);
         }
@@ -223,9 +225,9 @@ var IntSliderView = widget.DOMWidgetView.extend({
      * @return {number|number[]} value
      */
     stringToValue: function(text) {
-        if (this.model.get("_range")) {
+        if (this.model.get('_range')) {
             // range case
-            // ranges can be expressed either "val-val" or "val:val" (+spaces)
+            // ranges can be expressed either 'val-val' or 'val:val' (+spaces)
             var match = this._range_regex.exec(text);
             if (match) {
                 return [this._parse_value(match[1]), this._parse_value(match[2])];
@@ -240,10 +242,10 @@ var IntSliderView = widget.DOMWidgetView.extend({
 
     events: {
         // Dictionary of events and their handlers.
-        "slide": "handleSliderChange",
-        "slidestop": "handleSliderChanged",
-        "blur [contentEditable=true]": "handleTextChange",
-        "keydown [contentEditable=true]": "handleKeyDown"
+        'slide': 'handleSliderChange',
+        'slidestop': 'handleSliderChanged',
+        'blur [contentEditable=true]': 'handleTextChange',
+        'keydown [contentEditable=true]': 'handleKeyDown'
     },
 
     handleKeyDown: function(e) {
@@ -340,7 +342,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
      */
     handleSliderChanged: function(e, ui) {
         var actual_value;
-        if (this.model.get("_range")) {
+        if (this.model.get('_range')) {
             actual_value = ui.values.map(this._validate_slide_value);
         } else {
             actual_value = this._validate_slide_value(ui.value);
@@ -360,9 +362,9 @@ var IntSliderView = widget.DOMWidgetView.extend({
 
 var IntTextModel = IntModel.extend({
     defaults: _.extend({}, IntModel.prototype.defaults, {
-        _model_name: "IntTextModel",
-        _view_name: "IntTextView"
-    }),
+        _model_name: 'IntTextModel',
+        _view_name: 'IntTextView'
+    })
 });
 
 var IntTextView = widget.DOMWidgetView.extend({
@@ -498,11 +500,11 @@ var IntTextView = widget.DOMWidgetView.extend({
 
 var ProgressModel = BoundedIntModel.extend({
     defaults: _.extend({}, BoundedIntModel.prototype.defaults, {
-        _model_name: "ProgressModel",
-        _view_name: "ProgressView",
-        bar_style: ""
-    }),
+        _model_name: 'ProgressModel',
+        _view_name: 'ProgressView',
         orientation: 'horizontal',
+        bar_style: ''
+    })
 });
 
 var ProgressView = widget.DOMWidgetView.extend({
@@ -534,8 +536,8 @@ var ProgressView = widget.DOMWidgetView.extend({
         this.update();
         this.updateDescription();
 
-        this.listenTo(this.model, "change:bar_style", this.update_bar_style, this);
-        this.listenTo(this.model, "change:description", function(sender, value) {
+        this.listenTo(this.model, 'change:bar_style', this.update_bar_style, this);
+        this.listenTo(this.model, 'change:description', function(sender, value) {
             this.updateDescription();
         }, this);
 
@@ -614,5 +616,5 @@ module.exports = {
     IntTextModel: IntTextModel,
     IntTextView: IntTextView,
     ProgressModel: ProgressModel,
-    ProgressView: ProgressView,
+    ProgressView: ProgressView
 };

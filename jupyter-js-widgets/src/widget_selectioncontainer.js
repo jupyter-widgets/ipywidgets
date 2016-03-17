@@ -1,26 +1,26 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var utils = require("./utils");
-var box = require("./widget_box");
-var $ = require("./jquery");
-var _ = require("underscore");
+var widget = require('./widget');
+var utils = require('./utils');
+var box = require('./widget_box');
+var $ = require('./jquery');
+var _ = require('underscore');
 
 var SelectionContainerModel = box.BoxModel.extend({
     defaults: _.extend({}, box.BoxModel.prototype.defaults, {
-        _model_name: "SelectionContainerModel",
+        _model_name: 'SelectionContainerModel',
         selected_index: 0,
-        _titles: {},
-    }),
+        _titles: {}
+    })
 });
 
 var AccordionModel = SelectionContainerModel.extend({
     defaults: _.extend({}, SelectionContainerModel.prototype.defaults, {
-        _model_name: "AccordionModel",
-        _view_name: "AccordionView"
-    }),
+        _model_name: 'AccordionModel',
+        _view_name: 'AccordionView'
+    })
 });
 
 var AccordionView = widget.DOMWidgetView.extend({
@@ -180,7 +180,7 @@ var AccordionView = widget.DOMWidgetView.extend({
                 view.trigger('displayed', that);
             });
             return view;
-        }).catch(utils.reject("Couldn't add child view to box", true));
+        }).catch(utils.reject('Couldn\'t add child view to box', true));
     },
 
     remove: function() {
@@ -191,14 +191,14 @@ var AccordionView = widget.DOMWidgetView.extend({
          */
         AccordionView.__super__.remove.apply(this, arguments);
         this.children_views.remove();
-    },
+    }
 });
 
 var TabModel = SelectionContainerModel.extend({
     defaults: _.extend({}, SelectionContainerModel.prototype.defaults, {
-        _model_name: "TabModel",
-        _view_name: "TabView"
-    }),
+        _model_name: 'TabModel',
+        _view_name: 'TabView'
+    })
 });
 
 var TabView = widget.DOMWidgetView.extend({
@@ -300,7 +300,7 @@ var TabView = widget.DOMWidgetView.extend({
                 that.update();
             });
             return view;
-        }).catch(utils.reject("Couldn't add child view to box", true));
+        }).catch(utils.reject('Could not add child view to box', true));
     },
 
     update: function(options) {
@@ -360,7 +360,7 @@ var TabView = widget.DOMWidgetView.extend({
          */
         TabView.__super__.remove.apply(this, arguments);
         this.children_views.remove();
-    },
+    }
 });
 
 module.exports = {
@@ -368,5 +368,5 @@ module.exports = {
     AccordionModel: AccordionModel,
     AccordionView: AccordionView,
     TabModel: TabModel,
-    TabView: TabView,
+    TabView: TabView
 };
