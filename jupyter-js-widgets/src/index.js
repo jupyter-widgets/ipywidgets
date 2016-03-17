@@ -16,21 +16,21 @@ module.exports = {
 
 var loadedModules = [
     managerBase,
-    require('./utils'),
-    register(widget),
-    register(require('./widget_layout')),
-    register(require('./widget_link')),
-    register(require('./widget_bool')),
-    register(require('./widget_button')),
-    register(require('./widget_box')),
-    register(require('./widget_float')),
-    register(require('./widget_image')),
-    register(require('./widget_int')),
-    register(require('./widget_color')),
-    register(require('./widget_selection')),
-    register(require('./widget_selectioncontainer')),
-    register(require('./widget_string')),
-    register(require('./widget_controller'))
+    require("./utils"),
+    widget,
+    require("./widget_layout"),
+    require("./widget_link"),
+    require("./widget_bool"),
+    require("./widget_button"),
+    require("./widget_box"),
+    require("./widget_float"),
+    require("./widget_image"),
+    require("./widget_int"),
+    require("./widget_color"),
+    require("./widget_selection"),
+    require("./widget_selectioncontainer"),
+    require("./widget_string"),
+    require("./widget_controller"),
 ];
 for (var i in loadedModules) {
     if (loadedModules.hasOwnProperty(i)) {

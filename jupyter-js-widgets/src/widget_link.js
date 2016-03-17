@@ -9,7 +9,7 @@ var BaseLinkModel = widget.WidgetModel.extend({
 
     defaults: _.extend({}, widget.WidgetModel.prototype.defaults, {
         target: undefined,
-        source: undefined,
+        source: undefined
     }),
 
     update_value: function(source, target) {
@@ -43,7 +43,7 @@ var BaseLinkModel = widget.WidgetModel.extend({
 
     serializers: _.extend({
         target: {deserialize: widget.unpack_models},
-        source: {deserialize: widget.unpack_models},
+        source: {deserialize: widget.unpack_models}
     }, widget.WidgetModel.serializers),
 
 });

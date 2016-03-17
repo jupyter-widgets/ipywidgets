@@ -46,8 +46,8 @@ var HTMLView = widget.DOMWidgetView.extend({
 
 var LabelModel = StringModel.extend({
     defaults: _.extend({}, StringModel.prototype.defaults, {
-        _view_name: "LabelView",
-        _model_name: "LabelModel"
+        _view_name: 'LabelView',
+        _model_name: 'LabelModel'
     }),
 });
 

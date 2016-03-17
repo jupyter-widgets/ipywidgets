@@ -31,6 +31,7 @@ var ColorPickerView = widget.DOMWidgetView.extend({
 
         this.textbox = document.createElement('input');
         this.textbox.setAttribute('type', 'text');
+
         this.color_container.appendChild(this.textbox);
         this.textbox.value = this.model.get('value');
 

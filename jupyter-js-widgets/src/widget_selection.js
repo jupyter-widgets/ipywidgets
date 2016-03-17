@@ -740,9 +740,9 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
             var labels = this.model.get('_options_labels');
             var max = labels.length - 1;
             var min = 0;
-            // this.$slider.slider('option', 'step', 1); // DW TODO
-            // this.$slider.slider('option', 'max', max); // DW TODO
-            // this.$slider.slider('option', 'min', min); // DW TODO
+            this.$slider.slider('option', 'step', 1);
+            this.$slider.slider('option', 'max', max);
+            this.$slider.slider('option', 'min', min);
 
             // WORKAROUND FOR JQUERY SLIDER BUG.
             // The horizontal position of the slider handle
@@ -753,40 +753,31 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
             // handle in the vertical slider is always
             // consistent.
             var orientation = this.model.get('orientation');
-            // this.$slider.slider('option', 'value', min); // DW TODO
-            // this.$slider.slider('option', 'orientation', orientation); // DW TODO
+            this.$slider.slider('option', 'value', min);
+            this.$slider.slider('option', 'orientation', orientation);
 
             var value = this.model.get('value');
             var index = labels.indexOf(value);
-            // this.$slider.slider('option', 'value', index);
+            this.$slider.slider('option', 'value', index);
             this.readout.textContent = value;
 
             // Use the right CSS classes for vertical & horizontal sliders
             if (orientation === 'vertical') {
-                // this.$el
-                //     .removeClass('widget-hslider')
-                //     .addClass('widget-vslider');
-                this.el.classList.remove('widget-hslider');
-                this.el.classList.add('widget-vslider');
-
-                // this.$el
-                //     .removeClass('widget-hbox')
-                //     .addClass('widget-vbox');
-              this.el.classList.remove('widget-hbox');
-              this.el.classList.add('widget-vbox');
+                this.$el
+                    .removeClass('widget-hslider')
+                    .addClass('widget-vslider');
+                this.$el
+                    .removeClass('widget-hbox')
+                    .addClass('widget-vbox');
 
             } else {
-                // this.$el
-                //     .removeClass('widget-vslider')
-                //     .addClass('widget-hslider');
-                this.el.classList.remove('widget-vslider');
-                this.el.classList.add('widget-hslider');
+                this.$el
+                    .removeClass('widget-vslider')
+                    .addClass('widget-hslider');
 
-                // this.$el
-                //     .removeClass('widget-vbox')
-                //     .addClass('widget-hbox');
-                this.el.classList.remove('widget-vbox');
-                this.el.classList.add('widget-hbox');
+                this.$el
+                    .removeClass('widget-vbox')
+                    .addClass('widget-hbox');
             }
 
             var readout = this.model.get('readout');
@@ -813,7 +804,6 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
     handleSliderChange: function(e, ui) {
         var actual_value = this._validate_slide_value(ui.value);
         var value = this.model.get('_options_labels')[actual_value];
-        // this.$readout.text(value);
         this.readout.textContent = value;
 
         // Only persist the value while sliding if the continuous_update
@@ -832,7 +822,6 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
     handleSliderChanged: function(e, ui) {
         var actual_value = this._validate_slide_value(ui.value);
         var value = this.model.get('_options_labels')[actual_value];
-        // this.$readout.text(value);
         this.readout.textContent = value;
         this.model.set('value', value, {updated_view: this});
         this.touch();
@@ -911,7 +900,6 @@ var SelectMultipleView = SelectView.extend({
             .call(this.listbox.selectedOptions || [], function(option) {
                 return items[option.index];
             });
-
         this.model.set('value', value, {updated_view: this});
         this.touch();
     }
