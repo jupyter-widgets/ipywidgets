@@ -308,7 +308,7 @@ module.exports = {
     HTMLView: HTMLView,
     HTMLModel: HTMLModel,
     LabelView: LabelView,
-    LabelModel: LabelModel,
+    LatexModel: LatexModel,
     TextareaView: TextareaView,
     TextareaModel: TextareaModel,
     TextView: TextView,
