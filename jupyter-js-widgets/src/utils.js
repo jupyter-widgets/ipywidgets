@@ -5,7 +5,6 @@
 // IS CONVERTED TO NODE COMMONJS.
 "use strict";
 
-var $ = require("./jquery");
 
 /**
  * http://www.ietf.org/rfc/rfc4122.txt
@@ -169,8 +168,10 @@ function typeset(element, text) {
 /**
  * escape text to HTML
  */
-var escape_html = function (text) {
-    return $("<div/>").text(text).html();
+var escape_html = function(text) {
+    var esc  = document.createElement('div');
+    esc.innerHTML = text;
+    return esc.innerHTML;
 };
 
 module.exports = {
