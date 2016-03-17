@@ -353,11 +353,9 @@ var IntSliderView = widget.DOMWidgetView.extend({
         /**
          * Validate the value of the slider before sending it to the back-end
          * and applying it to the other views on the page.
-         *
-         * Double bit-wise not truncates the decimel (int cast).
          */
-        return ~~x;
-    },
+        return Math.floor(x);
+    }
 });
 
 var IntTextModel = IntModel.extend({
