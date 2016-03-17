@@ -4,7 +4,6 @@
 
 var widget = require("./widget");
 var _ = require("underscore");
-var $ = require('./jquery');
 
 var ColorPickerModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
@@ -18,72 +17,79 @@ var ColorPickerModel = widget.DOMWidgetModel.extend({
 
 var ColorPickerView = widget.DOMWidgetView.extend({
     render: function() {
-        this.$el.addClass("jupyter-widgets widget-hbox widget-colorpicker");
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-colorpicker');
 
-        this.$label = $("<div />")
-            .addClass("widget-label")
-            .appendTo(this.$el);
+        this.label = document.createElement('div');
+        this.label.classList.add('widget-label');
+        this.el.appendChild(this.label);
 
-        this.$color_container = $("<div />")
-            .addClass("widget-hbox input-group")
-            .appendTo(this.$el);
+        this.color_container = document.createElement('div');
+        this.color_container.className = 'widget-hbox';
+        this.el.appendChild(this.color_container);
 
-        this.$textbox = $("<input type='text' />")
-            .addClass("form-control")
-            .appendTo(this.$color_container)
-            .val(this.model.get("value"));
+        this.textbox = document.createElement('input');
+        this.textbox.setAttribute('type', 'text');
 
-        this.$colorpicker = $("<input type='color' />")
-            .addClass("input-group-addon")
-            .appendTo(this.$color_container);
+        this.color_container.appendChild(this.textbox);
+        this.textbox.value = this.model.get('value');
 
-        this.listenTo(this.model, "change:value", this._update_value, this);
-        this.listenTo(this.model, "change:description", this._update_description, this);
-        this.listenTo(this.model, "change:concise", this._update_concise, this);
-        this.$colorpicker.on("change", this._picker_change.bind(this));
-        this.$textbox.on("change", this._text_change.bind(this));
+        this.colorpicker = document.createElement('input');
+        this.colorpicker.setAttribute('type', 'color');
+        this.color_container.appendChild(this.colorpicker);
+
+        this.listenTo(this.model, 'change:value', this._update_value, this);
+        this.listenTo(this.model, 'change:description', this._update_description, this);
+        this.listenTo(this.model, 'change:concise', this._update_concise, this);
+        this.colorpicker.addEventListener('change', this._picker_change.bind(this));
+
+        this.colorpicker.addEventListener('change', this._text_change.bind(this));
 
         this._update_concise();
         this._update_value();
         this._update_description();
     },
+
     _update_value: function() {
-        var value = this.model.get("value");
-        this.$colorpicker.val(color2hex(value));
-        this.$textbox.val(value);
+        var value = this.model.get('value');
+        this.colorpicker.value = color2hex(value);
+        this.textbox.value = value;
     },
+
     _update_description: function() {
         var description = this.model.get('description');
         if (description.length === 0) {
-            this.$label.hide();
-            this.$color_container.css("justify-content", "auto");
+            this.label.style.display = 'none';
+            this.color_container.style['justify-content'] = 'auto';
         } else {
-            this.typeset(this.$label, description);
-            this.$color_container.css("justify-content", "flex-end");
-            this.$label.show();
+            this.typeset(this.label, description);
+            this.color_container.style['justify-content'] = 'flex-end';
+            this.label.style.display = '';
         }
     },
+
     _update_concise: function() {
-        var concise = this.model.get("concise");
+        var concise = this.model.get('concise');
         if (concise) {
-            this.$el.addClass("concise");
-            this.$colorpicker.removeClass("input-group-addon");
-            this.$textbox.hide();
+            this.el.classList.add('concise');
+            this.textbox.style.display = 'none';
         } else {
-            this.$el.removeClass("concise");
-            this.$colorpicker.addClass("input-group-addon");
-            this.$textbox.show();
+            this.el.classList.remove('concise');
+            this.textbox.style.display = '';
         }
     },
+
     _picker_change: function() {
-        this.model.set("value", this.$colorpicker.val());
+        this.model.set('value', this.colorpicker.value);
         this.touch();
     },
+
     _text_change: function() {
-        this.model.set("value", this._validate_color(this.$textbox.val(),
-                                                     this.model.get("value")));
+        this.model.set('value', this._validate_color(this.textbox.value, this.model.get('value')));
         this.touch();
     },
+
     _validate_color: function(color, fallback) {
         return color.match(/#[a-fA-F0-9]{3}(?:[a-fA-F0-9]{3})?$/) ||
           named_colors[color.toLowerCase()] ? color: fallback;
