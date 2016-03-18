@@ -1,26 +1,26 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var utils = require("./utils");
-var box = require("./widget_box");
-var $ = require("./jquery");
-var _ = require("underscore");
+var widget = require('./widget');
+var utils = require('./utils');
+var box = require('./widget_box');
+var $ = require('./jquery');
+var _ = require('underscore');
 
 var SelectionContainerModel = box.BoxModel.extend({
     defaults: _.extend({}, box.BoxModel.prototype.defaults, {
-        _model_name: "SelectionContainerModel",
+        _model_name: 'SelectionContainerModel',
         selected_index: 0,
-        _titles: {},
-    }),
+        _titles: {}
+    })
 });
 
 var AccordionModel = SelectionContainerModel.extend({
     defaults: _.extend({}, SelectionContainerModel.prototype.defaults, {
-        _model_name: "AccordionModel",
-        _view_name: "AccordionView"
-    }),
+        _model_name: 'AccordionModel',
+        _view_name: 'AccordionView'
+    })
 });
 
 var AccordionView = widget.DOMWidgetView.extend({
@@ -40,9 +40,10 @@ var AccordionView = widget.DOMWidgetView.extend({
          * Called when view is rendered.
          */
         var guid = 'panel-group' + utils.uuid();
-        this.$el
-            .attr('id', guid)
-            .addClass('jupyter-widgets panel-group');
+        this.el.id = guid;
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('panel-group');
+
         this.listenTo(this.model, 'change:selected_index', function(model, value, options) {
             this.update_selected_index(options);
         }, this);
@@ -62,9 +63,9 @@ var AccordionView = widget.DOMWidgetView.extend({
         var titles = this.model.get('_titles');
         var that = this;
         _.each(titles, function(title, page_index) {
-            var accordian = that.containers[page_index];
-            if (accordian !== undefined) {
-                accordian
+            var accordion = that.containers[page_index];
+            if (accordion !== undefined) {
+                accordion
                     .children('.panel-heading')
                     .find('.accordion-toggle')
                     .text(title);
@@ -92,7 +93,6 @@ var AccordionView = widget.DOMWidgetView.extend({
      * @param  {number} index
      */
     collapseTab: function(index) {
-        // .children('.panel-collapse')
         var page = this.containers[index].children('.collapse');
 
         if (page.hasClass('in')) {
@@ -132,40 +132,46 @@ var AccordionView = widget.DOMWidgetView.extend({
          */
         var index = this.containers.length;
         var uuid = utils.uuid();
-        var accordion_group = $('<div />')
-            .addClass('panel panel-default')
-            .appendTo(this.$el);
-        var accordion_heading = $('<div />')
-            .addClass('panel-heading')
-            .appendTo(accordion_group);
+        var accordion_group = document.createElement('div');
+        accordion_group.className = 'panel panel-default';
+        this.el.appendChild(accordion_group);
+
+        var accordion_heading = document.createElement('div');
+        accordion_heading.classList.add('panel-heading');
+        accordion_group.appendChild(accordion_heading);
+
         var that = this;
-        var accordion_toggle = $('<a />')
-            .addClass('accordion-toggle')
-            .attr('data-toggle', 'collapse')
-            .attr('data-parent', '#' + this.$el.attr('id'))
-            .attr('href', '#' + uuid)
-            .click(function(evt) {
-                // Calling model.set will trigger all of the other views of
-                // the model to update.
-                that.model.set("selected_index", index, {updated_view: that});
-                that.touch();
-             })
-            .text('Page ' + index)
-            .appendTo(accordion_heading);
-        var accordion_body = $('<div />', {id: uuid})
-            .addClass('panel-collapse collapse')
-            .appendTo(accordion_group);
-        var accordion_inner = $('<div />')
-            .addClass('panel-body')
-            .appendTo(accordion_body);
+        var accordion_toggle = document.createElement('a');
+        accordion_toggle.classList.add('accordion-toggle');
+        accordion_toggle.setAttribute('data-toggle', 'collapse');
+        accordion_toggle.setAttribute('data-parent', '#' + this.el.id);
+        accordion_toggle.setAttribute('href', '#' + uuid);
+        accordion_toggle.onclick = function() {
+          that.model.set('selected_index', index, {updated_view: that});
+          that.touch();
+        };
+        accordion_toggle.textContent('Page ' + index);
+        accordion_heading.appendChild(accordion_toggle);
+
+        var accordion_body = document.createElement('div');
+        accordion_body.id = uuid;
+        accordion_body.className = 'panel-collapse collapse';
+        accordion_group.appendChild(accordion_body);
+
+        var accordion_inner = document.createElement('div');
+        accordion_inner.classList.add('panel-body');
+        accordion_body.appendChild(accordion_inner);
+
         var container_index = this.containers.push(accordion_group) - 1;
         accordion_group.container_index = container_index;
         this.model_containers[model.id] = accordion_group;
 
-        var dummy = $('<div/>');
-        accordion_inner.append(dummy);
+        var dummy = document.createElement('div');
+        accordion_inner.appendChild(dummy);
         return this.create_child_view(model).then(function(view) {
-            dummy.replaceWith(view.$el);
+
+            dummy.parentNode.replaceChild(dummy, view.el);
+
             that.update_selected_index();
             that.update_titles();
 
@@ -174,7 +180,7 @@ var AccordionView = widget.DOMWidgetView.extend({
                 view.trigger('displayed', that);
             });
             return view;
-        }).catch(utils.reject("Couldn't add child view to box", true));
+        }).catch(utils.reject('Couldn\'t add child view to box', true));
     },
 
     remove: function() {
@@ -185,14 +191,14 @@ var AccordionView = widget.DOMWidgetView.extend({
          */
         AccordionView.__super__.remove.apply(this, arguments);
         this.children_views.remove();
-    },
+    }
 });
 
 var TabModel = SelectionContainerModel.extend({
     defaults: _.extend({}, SelectionContainerModel.prototype.defaults, {
-        _model_name: "TabModel",
-        _view_name: "TabView"
-    }),
+        _model_name: 'TabModel',
+        _view_name: 'TabView'
+    })
 });
 
 var TabView = widget.DOMWidgetView.extend({
@@ -213,13 +219,17 @@ var TabView = widget.DOMWidgetView.extend({
          * Called when view is rendered.
          */
         var uuid = 'tabs'+utils.uuid();
-        this.$tabs = $('<div />', {id: uuid})
-            .addClass('nav')
-            .addClass('nav-tabs')
-            .appendTo(this.$el);
-        this.$tab_contents = $('<div />', {id: uuid + 'Content'})
-            .addClass('tab-content')
-            .appendTo(this.$el);
+
+        this.tabs = document.createElement('div');
+        this.tabs.id = uuid;
+        this.tabs.classList.add('nav');
+        this.tabs.classList.add('nav-tabs');
+        this.el.appendChild(this.tabs);
+
+        this.tab_contents = document.createElement('div');
+        this.tab_contents.setAttribute('id', uuid + 'Content');
+        this.el.appendChild(this.tab_contents);
+
         this.children_views.update(this.model.get('children'));
     },
 
@@ -228,9 +238,9 @@ var TabView = widget.DOMWidgetView.extend({
          * Set a css attr of the widget view.
          */
         if (['padding', 'margin', 'height', 'width'].indexOf(name) !== -1) {
-            this.$el.css(name, value);
+            this.el.style[name] = value;
         } else {
-            this.$tabs.css(name, value);
+            this.tabs.style[name] = value;
         }
     },
 
@@ -252,30 +262,31 @@ var TabView = widget.DOMWidgetView.extend({
         var uuid = utils.uuid();
 
         var that = this;
-        var tab = $('<li />')
-            .css('list-style-type', 'none')
-            .appendTo(this.$tabs);
+        var tab = document.createElement('li');
+        tab.style['list-style-type'] = 'none';
+        this.tabs.appendChild(tab);
 
-        var tab_text = $('<a />')
-            .attr('href', '#' + uuid)
-            .attr('data-toggle', 'tab')
-            .text('Page ' + index)
-            .appendTo(tab)
-            .click(function (e) {
-                // Calling model.set will trigger all of the other views of
-                // the model to update.
-                that.model.set("selected_index", index, {updated_view: that});
-                that.touch();
-                that.select_page(index);
-            });
+        var tab_text = document.createElement('a');
+        tab_text.setAttribute('href', '#' + uuid);
+        tab_text.setAttribute('data-toggle', 'tab');
+        tab_text.textContent = 'Page ' + index;
+        tab.appendChild(tab_text);
+        tab_text.onclick = function() {
+          that.model.set('selected_index', index, {updated_view: that});
+          that.touch();
+          that.select_page(index);
+        };
+
         tab.tab_text_index = that.containers.push(tab_text) - 1;
 
-        var dummy = $('<div />');
-        var contents_div = $('<div />', {id: uuid})
-            .addClass('tab-pane')
-            .addClass('fade')
-            .append(dummy)
-            .appendTo(that.$tab_contents);
+        var dummy = document.createElement('div');
+
+        var contents_div = document.createElement('div');
+        contents_div.id = uuid;
+        contents_div.classList.add('tab-pane');
+        contents_div.classList.add('fade');
+        contents_div.appendChild(dummy);
+        that.tab_contents.appendChild(contents_div);
 
         this.update();
         return this.create_child_view(model).then(function(view) {
@@ -289,7 +300,7 @@ var TabView = widget.DOMWidgetView.extend({
                 that.update();
             });
             return view;
-        }).catch(utils.reject("Couldn't add child view to box", true));
+        }).catch(utils.reject('Could not add child view to box', true));
     },
 
     update: function(options) {
@@ -334,8 +345,10 @@ var TabView = widget.DOMWidgetView.extend({
         /**
          * Select a page.
          */
-        this.$tabs.find('li')
-            .removeClass('active');
+        var tab_li = this.tabs.getElementsByClassName('li');
+        if (tab_li.length) {
+          tab_li[0].classList.remove('active');
+        }
         this.containers[index].tab('show');
     },
 
@@ -347,7 +360,7 @@ var TabView = widget.DOMWidgetView.extend({
          */
         TabView.__super__.remove.apply(this, arguments);
         this.children_views.remove();
-    },
+    }
 });
 
 module.exports = {
@@ -355,5 +368,5 @@ module.exports = {
     AccordionModel: AccordionModel,
     AccordionView: AccordionView,
     TabModel: TabModel,
-    TabView: TabView,
+    TabView: TabView
 };

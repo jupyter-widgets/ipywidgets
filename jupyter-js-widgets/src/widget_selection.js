@@ -1,206 +1,248 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var utils = require("./utils");
-var $ = require("./jquery");
-var _ = require("underscore");
+var widget = require('./widget');
+var utils = require('./utils');
+var $ = require('./jquery');
+var _ = require('underscore');
+
 
 var SelectionModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: "SelectionModel",
-        value: "",
+        _model_name: 'SelectionModel',
+        selected_label: '',
         _options_labels: [],
         disabled: false,
-        description: "",
-    }),
+        description: ''
+    })
 });
 
 var DropdownModel = SelectionModel.extend({
     defaults: _.extend({}, SelectionModel.prototype.defaults, {
-        _model_name: "DropdownModel",
-        _view_name: "DropdownView",
-        button_style: ""
-    }),
+        _model_name: 'DropdownModel',
+        _view_name: 'DropdownView',
+        button_style: ''
+    })
 });
 
 var DropdownView = widget.DOMWidgetView.extend({
-    render : function() {
-        this.$el
-            .addClass('jupyter-widgets widget-hbox widget-dropdown');
-        this.$label = $('<div />')
-            .appendTo(this.$el)
-            .addClass('widget-label')
-            .hide();
-        this.$buttongroup = $('<div />')
-            .addClass('widget_item')
-            .addClass('btn-group')
-            .appendTo(this.$el);
-        this.$droplabel = $('<button />')
-            .addClass('btn btn-default')
-            .addClass('widget-combo-btn')
-            .html("&nbsp;")
-            .appendTo(this.$buttongroup);
-        this.$dropbutton = $('<button />')
-            .addClass('btn btn-default')
-            .addClass('dropdown-toggle')
-            .addClass('widget-combo-carrot-btn')
-            .attr('data-toggle', 'dropdown')
-            .click(this._showDropdown.bind(this))
-            .append($('<span />').addClass("caret"))
-            .appendTo(this.$buttongroup);
-        this.$droplist = $('<ul />')
-            .addClass('dropdown-menu')
-            .appendTo(this.$buttongroup);
+    remove: function() {
+        document.body.removeChild(this.droplist);
+        return DropdownView.__super__.remove.call(this);
+    },
 
-        this.listenTo(this.model, "change:button_style", this.update_button_style, this);
+    render: function() {
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-dropdown');
+
+        this.label = document.createElement('div');
+        this.el.appendChild(this.label);
+        this.label.className = 'widget-label';
+        this.label.style.display = 'none';
+
+        this.buttongroup = document.createElement('div');
+        this.buttongroup.className = 'widget-item';
+        this.el.appendChild(this.buttongroup);
+
+        this.droplabel = document.createElement('button');
+        this.droplabel.className = 'widget-dropdown-toggle widget-button';
+        this.buttongroup.appendChild(this.droplabel);
+
+        this.dropbutton = document.createElement('button');
+        this.dropbutton.className = 'widget-dropdown-toggle widget-button';
+
+        this.caret = document.createElement('i');
+        this.caret.className = 'widget-caret';
+        this.dropbutton.appendChild(this.caret);
+        this.buttongroup.appendChild(this.dropbutton);
+
+        // Drop lists are appended to the document body and absolutely
+        // positioned so that they can appear outside the flow of whichever
+        // container they were instantiated in.
+        this.droplist = document.createElement('ul');
+        this.droplist.className = 'widget-dropdown-droplist';
+        document.body.appendChild(this.droplist);
+        this.droplist.addEventListener('click', this._handle_click.bind(this));
+
+        this.listenTo(this.model, 'change:button_style', this.update_button_style, this);
         this.update_button_style();
 
         // Set defaults.
         this.update();
     },
 
-    /**
-     * Show the dropdown list.
-     *
-     * If the dropdown list doesn't fit below the dropdown label, this will
-     * cause the dropdown to be dropped "up".
-     * @param  {Event} e
-     */
-    _showDropdown: function(e) {
-        // Don't allow bootstrap to show the dropdown!
-        e.stopImmediatePropagation();
-        e.preventDefault();
-
-        // Get the bottom of the dropdown label, and the bottom of the nb body.
-        // The difference is the maximum height of the dropmenu when displayed
-        // below the button.
-        var droplabelRect = this.$droplabel[0].getBoundingClientRect();
-        var parent = this.$droplabel[0].parentNode;
-        while (parent.parentNode) parent = parent.parentNode;
-        var bodyRect = parent.body.getBoundingClientRect();
-        var maxHeight = bodyRect.bottom - droplabelRect.bottom;
-
-        // If the maximum height of the dropdown's space is less than the
-        // height of the dropdown itself, make it drop up!
-        if (maxHeight < 200) {
-            this.$buttongroup[0].classList.add('dropup');
-        } else {
-            this.$buttongroup[0].classList.remove('dropup');
-        }
-
-        // Show the dropdown(or up)
-        this.$dropbutton.dropdown('toggle');
-    },
-
-    update : function(options) {
+    update: function(options) {
         /**
          * Update the contents of this view
          *
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
+        var view = this;
+        var items = this.model.get('_options_labels');
+        var links = _.pluck(this.droplist.querySelectorAll('a'), 'textContent');
+        var disabled = this.model.get('disabled');
+        var stale = false;
 
-        if (options === undefined || options.updated_view != this) {
-            var selected_item_text = this.model.get('value');
-            if (selected_item_text.trim().length === 0) {
-                this.$droplabel.html("&nbsp;");
-            } else {
-                this.$droplabel.text(selected_item_text);
-            }
-
-            var items = this.model.get('_options_labels');
-            var $replace_droplist = $('<ul />')
-                .addClass('dropdown-menu');
-            // Copy the style
-            $replace_droplist.attr('style', this.$droplist.attr('style'));
-            var that = this;
-            _.each(items, function(item, i) {
-                var item_button = $('<a href="#"/>')
-                    .text(item)
-                    .on('click', $.proxy(that.handle_click, that));
-                $replace_droplist.append($('<li />').append(item_button));
-            });
-
-            this.$droplist.replaceWith($replace_droplist);
-            this.$droplist.remove();
-            this.$droplist = $replace_droplist;
-
-            if (this.model.get('disabled')) {
-                this.$buttongroup.attr('disabled','disabled');
-                this.$droplabel.attr('disabled','disabled');
-                this.$dropbutton.attr('disabled','disabled');
-                this.$droplist.attr('disabled','disabled');
-            } else {
-                this.$buttongroup.removeAttr('disabled');
-                this.$droplabel.removeAttr('disabled');
-                this.$dropbutton.removeAttr('disabled');
-                this.$droplist.removeAttr('disabled');
-            }
-
-            var description = this.model.get('description');
-            if (description.length === 0) {
-                this.$label.hide();
-            } else {
-                this.typeset(this.$label, description);
-                this.$label.show();
+        for (var i = 0, len = items.length; i < len; ++i) {
+            if (links[i] !== items[i]) {
+                stale = true;
+                break;
             }
         }
-        return DropdownView.__super__.update.apply(this);
+
+        if (stale && (options === undefined || options.updated_view !== this)) {
+            this.droplist.textContent = '';
+            _.each(items, function(item) {
+                var li = document.createElement('li');
+                var a = document.createElement('a');
+                a.setAttribute('href', '#');
+                a.textContent = item;
+                li.appendChild(a);
+                view.droplist.appendChild(li);
+            });
+        }
+
+        this.droplabel.disabled = disabled;
+        this.dropbutton.disabled = disabled;
+
+        var value = this.model.get('value') || '';
+        if (value.trim().length === 0) {
+            this.droplabel.innerHTML = '&nbsp;';
+        } else {
+            this.droplabel.textContent = value;
+        }
+
+        var description = this.model.get('description');
+        if (description.length === 0) {
+            this.label.style.display = 'none';
+        } else {
+            this.typeset(this.label, description);
+            this.label.style.display = '';
+        }
+
+        return DropdownView.__super__.update.call(this);
     },
 
     update_button_style: function() {
         var class_map = {
-            primary: ['btn-primary'],
-            success: ['btn-success'],
-            info: ['btn-info'],
-            warning: ['btn-warning'],
-            danger: ['btn-danger']
+            primary: ['mod-primary'],
+            success: ['mod-success'],
+            info: ['mod-info'],
+            warning: ['mod-warning'],
+            danger: ['mod-danger']
         };
-        this.update_mapped_classes(class_map, 'button_style', this.$droplabel[0]);
-        this.update_mapped_classes(class_map, 'button_style', this.$dropbutton[0]);
+        this.update_mapped_classes(class_map, 'button_style', this.droplabel);
+        this.update_mapped_classes(class_map, 'button_style', this.dropbutton);
     },
 
     update_attr: function(name, value) { // TODO: Deprecated in 5.0
         /**
          * Set a css attr of the widget view.
          */
-        if (name.substring(0, 6) == 'border' || name == 'background' || name == 'color') {
-            this.$droplabel.css(name, value);
-            this.$dropbutton.css(name, value);
-            this.$droplist.css(name, value);
+        if (name.substring(0, 6) === 'border' ||
+            name === 'background' ||
+            name === 'color') {
+            this.droplabel.style[name] = value;
+            this.dropbutton.style[name] = value;
+            this.droplist.style[name] = value;
         } else {
-            this.$el.css(name, value);
+            this.el.style[name] = value;
         }
     },
 
-    handle_click: function (e) {
+    events: {
+        // Dictionary of events and their handlers.
+        'click button.widget-button': '_toggle'
+    },
+
+    _handle_click: function(event) {
         /**
          * Handle when a value is clicked.
          *
          * Calling model.set will trigger all of the other views of the
          * model to update.
          */
-        this.model.set('value', $(e.target).text(), {updated_view: this});
-        this.touch();
+        event.stopPropagation();
+        event.preventDefault();
 
         // Manually hide the droplist.
-        e.stopPropagation();
-        e.preventDefault();
-        this.$buttongroup.removeClass('open');
+        this._toggle();
+
+        var value = event.target.textContent;
+        this.model.set('value', value, { updated_view: this });
+        this.touch();
     },
 
+    /**
+     * Toggle the dropdown list.
+     *
+     * If the dropdown list doesn't fit below the dropdown label, this will
+     * cause the dropdown to be dropped 'up'.
+     */
+    _toggle: function() {
+        this.droplabel.blur();
+        this.dropbutton.blur();
+
+        if (this.droplist.classList.contains('mod-active')) {
+            this.droplist.classList.remove('mod-active');
+            return;
+        }
+
+        var buttongroupRect = this.buttongroup.getBoundingClientRect();
+
+        this.droplist.style.left = buttongroupRect.left + 'px';
+
+        // Make drop list visible to compute its dimensions.
+        this.droplist.classList.add('mod-active');
+
+        var availableHeightAbove = buttongroupRect.top;
+        var availableHeightBelow = window.innerHeight -
+            buttongroupRect.bottom - buttongroupRect.height;
+        var droplistRect = this.droplist.getBoundingClientRect();
+
+        // If the drop list fits below, render below.
+        if (droplistRect.height <= availableHeightBelow) {
+            // Account for 1px border.
+            this.droplist.style.top = (buttongroupRect.bottom - 1) + 'px';
+            this.droplist.style.maxHeight = 'none';
+            return;
+        }
+        // If the drop list fits above, render above.
+        if (droplistRect.height <= availableHeightAbove) {
+            // Account for 1px border.
+            this.droplist.style.top = (buttongroupRect.top -
+                droplistRect.height + 1) + 'px';
+            this.droplist.style.maxHeight = 'none';
+            return;
+        }
+        // Otherwise, render in whichever has more space, above or below, and
+        // set the maximum height of the drop list.
+        if (availableHeightBelow >= availableHeightAbove) {
+            // Account for 1px border.
+            this.droplist.style.top = (buttongroupRect.bottom - 1) + 'px';
+            this.droplist.style.maxHeight = availableHeightBelow + 'px';
+            return;
+        } else {
+            // Account for 1px border.
+            this.droplist.style.top = (buttongroupRect.top -
+                droplistRect.height + 1) + 'px';
+            this.droplist.style.maxHeight = availableHeightAbove + 'px';
+            return;
+        }
+    }
 });
 
 var RadioButtonsModel = SelectionModel.extend({
     defaults: _.extend({}, SelectionModel.prototype.defaults, {
-        _model_name: "RadioButtonsModel",
-        _view_name: "RadioButtonsView",
+        _model_name: 'RadioButtonsModel',
+        _view_name: 'RadioButtonsView',
         tooltips: [],
         icons: [],
-        button_style: ""
-    }),
+        button_style: ''
+    })
 });
 
 var RadioButtonsView = widget.DOMWidgetView.extend({
@@ -208,82 +250,78 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.$el
-            .addClass('jupyter-widgets widget-hbox widget-radio');
-        this.$label = $('<div />')
-            .appendTo(this.$el)
-            .addClass('widget-label')
-            .hide();
-        this.$container = $('<div />')
-            .appendTo(this.$el)
-            .addClass('widget-radio-box');
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-radio');
+
+        this.label = document.createElement('div');
+        this.label.className = 'widget-label';
+        this.label.style.display = 'none';
+        this.el.appendChild(this.label);
+
+        this.container = document.createElement('div');
+        this.el.appendChild(this.container);
+        this.container.classList.add('widget-radio-box');
+
         this.update();
     },
 
-    update : function(options) {
+    update: function(options) {
         /**
          * Update the contents of this view
          *
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        if (options === undefined || options.updated_view != this) {
-            // Add missing items to the DOM.
-            var items = this.model.get('_options_labels');
-            var disabled = this.model.get('disabled');
-            var that = this;
-            _.each(items, function(item, index) {
-                var item_query = ' :input[data-value="' + encodeURIComponent(item) + '"]';
-                if (that.$el.find(item_query).length === 0) {
-                    var $label = $('<label />')
-                        .addClass('radio')
-                        .text(item)
-                        .appendTo(that.$container);
+        var view = this;
+        var items = this.model.get('_options_labels');
+        var radios = _.pluck(
+            this.container.querySelectorAll('input[type="radio"]'),
+            'value'
+        );
+        var stale = false;
 
-                    $('<input />')
-                        .attr('type', 'radio')
-                        .addClass(that.model)
-                        .val(item)
-                        .attr('data-value', encodeURIComponent(item))
-                        .prependTo($label)
-                        .on('click', $.proxy(that.handle_click, that));
-                }
-
-                var $item_element = that.$container.find(item_query);
-                if (that.model.get('value') == item) {
-                    $item_element.prop('checked', true);
-                } else {
-                    $item_element.prop('checked', false);
-                }
-                $item_element.prop('disabled', disabled);
-            });
-
-            // Remove items that no longer exist.
-            this.$container.find('input').each(function(i, obj) {
-                var value = $(obj).val();
-                var found = false;
-                _.each(items, function(item, index) {
-                    if (item == value) {
-                        found = true;
-                        return false;
-                    }
-                });
-
-                if (!found) {
-                    $(obj).parent().remove();
-                }
-            });
-
-            var description = this.model.get('description');
-            if (description.length === 0) {
-                this.$label.hide();
-            } else {
-                this.$label.text(description);
-                this.typeset(this.$label, description);
-                this.$label.show();
+        for (var i = 0, len = items.length; i < len; ++i) {
+            if (radios[i] !== items[i]) {
+                stale = true;
+                break;
             }
         }
-        return RadioButtonsView.__super__.update.apply(this);
+
+        if (stale && (options === undefined || options.updated_view !== this)) {
+            // Add items to the DOM.
+            this.container.textContent = '';
+            _.each(items, function(item) {
+                var label = document.createElement('label');
+                label.textContent = item;
+                view.container.appendChild(label);
+
+                var radio = document.createElement('input');
+                radio.setAttribute('type', 'radio');
+                radio.value = item;
+                radio.setAttribute('data-value', encodeURIComponent(item));
+                label.appendChild(radio);
+            });
+        }
+        var description = this.model.get('description');
+        if (description.length === 0) {
+            this.label.style.display = 'none';
+        } else {
+            this.label.textContent = description;
+            this.typeset(this.label, description);
+            this.label.style.display = '';
+        }
+        _.each(items, function(item) {
+            var item_query = 'input[data-value="' +
+                encodeURIComponent(item) + '"]';
+            var radio = view.container.querySelectorAll(item_query);
+            if (radio.length > 0) {
+              var radio_el = radio[0];
+              radio_el.checked = view.model.get('selected_label') === item;
+              radio_el.disabled = view.model.get('disabled');
+            }
+        });
+        return RadioButtonsView.__super__.update.call(this);
     },
 
     update_attr: function(name, value) {
@@ -291,29 +329,35 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
          * Set a css attr of the widget view.
          */
         if (name == 'padding' || name == 'margin') {
-            this.$el.css(name, value);
+            this.el.style[name] = value;
         } else {
-            this.$container.css(name, value);
+            this.container.style[name] = value;
         }
     },
 
-    handle_click: function (e) {
+    events: {
+        // Dictionary of events and their handlers.
+        'click input[type="radio"]': '_handle_click'
+    },
+
+    _handle_click: function (event) {
         /**
          * Handle when a value is clicked.
          *
          * Calling model.set will trigger all of the other views of the
          * model to update.
          */
-        this.model.set('value', $(e.target).val(), {updated_view: this});
+        var value = event.target.value;
+        this.model.set('selected_label', value, {updated_view: this});
         this.touch();
-    },
+    }
 });
 
 var ToggleButtonsModel = SelectionModel.extend({
     defaults: _.extend({}, SelectionModel.prototype.defaults, {
-        _model_name: "ToggleButtonsModel",
-        _view_name: "ToggleButtonsView",
-    }),
+        _model_name: 'ToggleButtonsModel',
+        _view_name: 'ToggleButtonsView'
+    })
 });
 
 var ToggleButtonsView = widget.DOMWidgetView.extend({
@@ -326,173 +370,19 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.$el
-            .addClass('jupyter-widgets widget-hbox widget-toggle-buttons');
-        this.$label = $('<div />')
-            .appendTo(this.$el)
-            .addClass('widget-label')
-            .hide();
-        this.$buttongroup = $('<div />')
-            .addClass('btn-group')
-            .appendTo(this.$el);
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widgets-hbox');
+        this.el.classList.add('widget-toggle-buttons');
+
+        this.label = document.createElement('div');
+        this.el.appendChild(this.label);
+        this.label.className = 'widget-label';
+        this.label.style.display = 'none';
+
+        this.buttongroup = document.createElement('div');
+        this.el.appendChild(this.buttongroup);
 
         this.listenTo(this.model, 'change:button_style', this.update_button_style, this);
-        this.update_button_style();
-        this.update();
-    },
-
-    update : function(options) {
-        /**
-         * Update the contents of this view
-         *
-         * Called when the model is changed.  The model may have been
-         * changed by another view or by a state update from the back-end.
-         */
-        if (options === undefined || options.updated_view != this) {
-            // Add missing items to the DOM.
-            var items = this.model.get('_options_labels');
-            var icons = this.model.get('icons');
-            var previous_icons = this.model.previous('icons') || [];
-            var disabled = this.model.get('disabled');
-            var that = this;
-            var item_html;
-            _.each(items, function(item, index) {
-                if (item.trim().length === 0 && (!icons[index] ||
-                    icons[index].trim().length === 0)) {
-                    item_html = "&nbsp;";
-                } else {
-                    item_html = utils.escape_html(item);
-                }
-                var item_query = '[data-value="' + encodeURIComponent(item) + '"]';
-                var $item_element = that.$buttongroup.find(item_query);
-                var $icon_element = $item_element.find('.fa');
-                if (!$item_element.length) {
-                    $item_element = $('<button/>')
-                        .attr('type', 'button')
-                        .addClass('btn btn-default')
-                        .html(item_html)
-                        .appendTo(that.$buttongroup)
-                        .attr('data-value', encodeURIComponent(item))
-                        .attr('data-toggle', 'tooltip')
-                        .attr('value', item)
-                        .on('click', $.proxy(that.handle_click, that));
-                    that.update_style_traits($item_element);
-                    $icon_element = $('<i class="fa"></i>').prependTo($item_element);
-                }
-                if (that.model.get('value') == item) {
-                    $item_element.addClass('active');
-                } else {
-                    $item_element.removeClass('active');
-                }
-                $item_element.prop('disabled', disabled);
-                $item_element.attr('title', that.model.get('tooltips')[index]);
-                $icon_element
-                    .removeClass(previous_icons[index])
-                    .addClass(icons[index]);
-            });
-
-            // Remove items that no longer exist.
-            this.$buttongroup.find('button').each(function(i, obj) {
-                var value = $(obj).attr('value');
-                var found = false;
-                _.each(items, function(item, index) {
-                    if (item == value) {
-                        found = true;
-                        return false;
-                    }
-                });
-
-                if (!found) {
-                    $(obj).remove();
-                }
-            });
-
-            var description = this.model.get('description');
-            if (description.length === 0) {
-                this.$label.hide();
-            } else {
-                this.$label.text();
-                this.typeset(this.$label, description);
-                this.$label.show();
-            }
-        }
-        return ToggleButtonsView.__super__.update.apply(this);
-    },
-
-    update_attr: function(name, value) { // TODO: Deprecated in 5.0
-        /**
-         * Set a css attr of the widget view.
-         */
-        if (name == 'padding' || name == 'margin') {
-            this.$el.css(name, value);
-        } else {
-            this._css_state[name] = value;
-            this.update_style_traits();
-        }
-    },
-
-    update_style_traits: function(button) {
-        for (var name in this._css_state) {
-            if (this._css_state.hasOwnProperty(name)) {
-                if (name == 'margin') {
-                    this.$buttongroup.css(name, this._css_state[name]);
-                } else if (name != 'width') {
-                    if (button) {
-                        button.css(name, this._css_state[name]);
-                    } else {
-                        this.$buttongroup.find('button').css(name, this._css_state[name]);
-                    }
-                }
-            }
-        }
-    },
-
-    update_button_style: function() {
-        var class_map = {
-            primary: ['btn-primary'],
-            success: ['btn-success'],
-            info: ['btn-info'],
-            warning: ['btn-warning'],
-            danger: ['btn-danger']
-        };
-        this.update_mapped_classes(class_map, 'button_style', this.$buttongroup.find('button')[0]);
-    },
-
-    handle_click: function (e) {
-        /**
-         * Handle when a value is clicked.
-         *
-         * Calling model.set will trigger all of the other views of the
-         * model to update.
-         */
-        this.model.set('value', $(e.target).attr('value'), {updated_view: this});
-        this.touch();
-    },
-});
-
-var SelectModel = SelectionModel.extend({
-    defaults: _.extend({}, SelectionModel.prototype.defaults, {
-        _model_name: "SelectModel",
-        _view_name: "SelectView",
-    }),
-});
-
-var SelectView = widget.DOMWidgetView.extend({
-    render: function() {
-        /**
-         * Called when view is rendered.
-         */
-        this.$el
-            .addClass('jupyter-widgets widget-hbox widget-select');
-        this.$label = $('<div />')
-            .appendTo(this.$el)
-            .addClass('widget-label')
-            .hide();
-        this.$listbox = $('<select />')
-            .addClass('widget-listbox form-control')
-            .attr('size', 6)
-            .appendTo(this.$el)
-            .on('change', $.proxy(this.handle_change, this));
         this.update();
     },
 
@@ -503,54 +393,77 @@ var SelectView = widget.DOMWidgetView.extend({
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        if (options === undefined || options.updated_view != this) {
-            // Add missing items to the DOM.
-            var items = this.model.get('_options_labels');
-            var that = this;
-            _.each(items, function(item, index) {
-               var item_query = 'option[data-value="' + encodeURIComponent(item) + '"]';
-                if (that.$listbox.find(item_query).length === 0) {
-                    $('<option />')
-                        .text(item.replace ? item.replace(/ /g, '\xa0') : item) // replace string spaces with &nbsp; for correct rendering
-                        .attr('data-value', encodeURIComponent(item))
-                        .val(item)
-                        .on("click", $.proxy(that.handle_click, that))
-                        .appendTo(that.$listbox);
-                }
-            });
+        var view = this;
+        var items = this.model.get('_options_labels');
+        var icons = this.model.get('icons') || [];
+        var previous_icons = this.model.previous('icons') || [];
+        var tooltips = view.model.get('tooltips') || [];
+        var disabled = this.model.get('disabled');
+        var buttons = this.buttongroup.querySelectorAll('button');
+        var values = _.pluck(buttons, 'value');
+        var stale = false;
 
-            // Select the correct element
-            this.$listbox.val(this.model.get('value'));
-
-            // Disable listbox if needed
-            var disabled = this.model.get('disabled');
-            this.$listbox.prop('disabled', disabled);
-
-            // Remove items that no longer exist.
-            this.$listbox.find('option').each(function(i, obj) {
-                var value = $(obj).val();
-                var found = false;
-                _.each(items, function(item, index) {
-                    if (item == value) {
-                        found = true;
-                        return false;
-                    }
-                });
-
-                if (!found) {
-                    $(obj).remove();
-                }
-            });
-
-            var description = this.model.get('description');
-            if (description.length === 0) {
-                this.$label.hide();
-            } else {
-                this.typeset(this.$label, description);
-                this.$label.show();
+        for (var i = 0, len = items.length; i < len; ++i) {
+            if (values[i] !== items[i] || icons[i] !== previous_icons[i]) {
+                stale = true;
+                break;
             }
         }
-        return SelectView.__super__.update.apply(this);
+
+        if (stale && options === undefined || options.updated_view !== this) {
+            // Add items to the DOM.
+            this.buttongroup.textContent = '';
+            _.each(items, function(item, index) {
+                var item_html;
+                var empty = item.trim().length === 0 &&
+                    (!icons[index] || icons[index].trim().length === 0);
+                if (empty) {
+                    item_html = '&nbsp;';
+                } else {
+                    item_html = utils.escape_html(item);
+                }
+
+                var icon = document.createElement('i');
+                var button = document.createElement('button');
+                if (icons[index]) {
+                    icon.className = 'fa fa-' + icons[index];
+                }
+                button.setAttribute('type', 'button');
+                button.className = 'widget-toggle-button';
+                button.innerHTML = item_html;
+                button.setAttribute('data-value', encodeURIComponent(item));
+                button.setAttribute('value', item);
+                button.appendChild(icon);
+                button.disabled = disabled;
+                if (tooltips[index]) {
+                    button.setAttribute('title', tooltips[index]);
+                }
+                view.update_style_traits(button);
+                view.buttongroup.appendChild(button);
+            });
+        }
+
+        // Select active button.
+        _.each(items, function(item) {
+            var item_query = '[data-value="' + encodeURIComponent(item) + '"]';
+            var button = view.buttongroup.querySelector(item_query);
+            if (view.model.get('value') === item) {
+                button.classList.add('mod-active');
+            } else {
+                button.classList.remove('mod-active');
+            }
+        });
+
+        var description = this.model.get('description');
+        if (description.length === 0) {
+            this.label.style.display = 'none';
+        } else {
+            this.label.textContent = '';
+            this.typeset(this.label, description);
+            this.label.style.display = '';
+        }
+        this.update_button_style();
+        return ToggleButtonsView.__super__.update.call(this);
     },
 
     update_attr: function(name, value) { // TODO: Deprecated in 5.0
@@ -558,38 +471,188 @@ var SelectView = widget.DOMWidgetView.extend({
          * Set a css attr of the widget view.
          */
         if (name == 'padding' || name == 'margin') {
-            this.$el.css(name, value);
+            this.el.style[name] = value;
         } else {
-            this.$listbox.css(name, value);
+            this._css_state[name] = value;
+            this.update_style_traits();
         }
     },
 
-    handle_click: function (e) {
-        /**
-         * Handle when a new value is clicked.
-         */
-        this.$listbox.val($(e.target).val()).change();
+    update_style_traits: function(button) {
+        for (var name in this._css_state) {
+            if (this._css_state.hasOwnProperty(name)) {
+                if (name === 'margin') {
+                    this.buttongroup.style[name] = this._css_state[name];
+                } else if (name !== 'width') {
+                    if (button) {
+                        button.style[name] = this._css_state[name];
+                    } else {
+                        var buttons = this.buttongroup
+                            .querySelectorAll('button');
+                        if (buttons.length) {
+                            buttons[0].style[name] = this._css_state[name];
+                        }
+                    }
+                }
+            }
+        }
     },
 
-    handle_change: function (e) {
+    update_button_style: function() {
+        var class_map = {
+            primary: ['mod-primary'],
+            success: ['mod-success'],
+            info: ['mod-info'],
+            warning: ['mod-warning'],
+            danger: ['mod-danger']
+        };
+        var view = this;
+        var buttons = this.buttongroup.querySelectorAll('button');
+        _.each(buttons, function(button) {
+            view.update_mapped_classes(class_map, 'button_style', button);
+        });
+    },
+
+    events: {
+        // Dictionary of events and their handlers.
+        'click button': '_handle_click'
+    },
+
+    _handle_click: function (event) {
+        /**
+         * Handle when a value is clicked.
+         *
+         * Calling model.set will trigger all of the other views of the
+         * model to update.
+         */
+        var value = event.target.value;
+        this.model.set('value', value, { updated_view: this });
+        this.touch();
+    }
+});
+
+var SelectModel = SelectionModel.extend({
+    defaults: _.extend({}, SelectionModel.prototype.defaults, {
+        _model_name: 'SelectModel',
+        _view_name: 'SelectView'
+    })
+});
+
+var SelectView = widget.DOMWidgetView.extend({
+    render: function() {
+        /**
+         * Called when view is rendered.
+         */
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-select');
+
+        this.label = document.createElement('div');
+        this.el.appendChild(this.label);
+        this.label.className = 'widget-label';
+        this.label.style.display = 'none';
+
+        this.listbox = document.createElement('select');
+        this.listbox.className = 'widget-listbox';
+        this.listbox.setAttribute('size', '6');
+        this.el.appendChild(this.listbox);
+
+        this.update();
+    },
+
+    update: function(options) {
+        /**
+         * Update the contents of this view
+         *
+         * Called when the model is changed.  The model may have been
+         * changed by another view or by a state update from the back-end.
+         */
+        var view = this;
+        var items = this.model.get('_options_labels');
+        var options = _.pluck(this.listbox.options, 'value');
+        var stale = false;
+
+        for (var i = 0, len = items.length; i < len; ++i) {
+            if (options[i] !== items[i]) {
+                stale = true;
+                break;
+            }
+        }
+
+        if (stale && (options === undefined || options.updated_view !== this)) {
+            // Add items to the DOM.
+            this.listbox.textContent = '';
+
+            _.each(items, function(item, index) {
+                var item_query = 'option[data-value="' +
+                    encodeURIComponent(item) + '"]';
+                var item_exists = view.listbox
+                    .querySelectorAll(item_query).length !== 0;
+                var option;
+                if (!item_exists) {
+                    option = document.createElement('option');
+                    option.textContent = item.replace ?
+                        item.replace(/ /g, '\xa0') : item;
+                    option.setAttribute('data-value', encodeURIComponent(item));
+                    option.value = item;
+                    view.listbox.appendChild(option);
+                }
+            });
+
+            // Disable listbox if needed
+            this.listbox.disabled = this.model.get('disabled');
+
+            // Select the correct element
+            var value = view.model.get('selected_label');
+            view.listbox.selectedIndex = items.indexOf(value);
+
+            var description = this.model.get('description');
+            if (description.length === 0) {
+                this.label.style.display = 'none';
+            } else {
+                this.typeset(this.label, description);
+                this.label.style.display = '';
+            }
+        }
+        return SelectView.__super__.update.call(this);
+    },
+
+    update_attr: function(name, value) { // TODO: Deprecated in 5.0
+        /**
+         * Set a css attr of the widget view.
+         */
+        if (name == 'padding' || name == 'margin') {
+            this.el.style[name] = value;
+        } else {
+            this.listbox.style[name] = value;
+        }
+    },
+
+    events: {
+        // Dictionary of events and their handlers.
+        'change select': '_handle_change'
+    },
+
+    _handle_change: function() {
         /**
          * Handle when a new value is selected.
          *
          * Calling model.set will trigger all of the other views of the
          * model to update.
          */
-        this.model.set('value', this.$listbox.val(), {updated_view: this});
+        var value = this.listbox.options[this.listbox.selectedIndex].value;
+        this.model.set('selected_label', value, {updated_view: this});
         this.touch();
-    },
+    }
 });
 
 var SelectionSliderModel = SelectionModel.extend({
     defaults: _.extend({}, SelectionModel.prototype.defaults, {
-        _model_name: "SelectionSliderModel",
-        _view_name: "SelectionSliderView",
-        orientation: "horizontal",
+        _model_name: 'SelectionSliderModel',
+        _view_name: 'SelectionSliderView',
+        orientation: 'horizontal',
         readout: true
-    }),
+    })
 });
 
 var SelectionSliderView = widget.DOMWidgetView.extend({
@@ -597,12 +660,12 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.$el
-            .addClass('jupyter-widgets widget-hbox widget-hslider');
-        this.$label = $('<div />')
-            .appendTo(this.$el)
-            .addClass('widget-label')
-            .hide();
+        this.$el.addClass('jupyter-widgets widget-hbox widget-hslider');
+
+        this.label = document.createElement('div');
+        this.label.classList.add('widget-label');
+        this.label.style.display = 'none';
+        this.$el.append(this.label);
 
         this.$slider = $('<div />')
             .slider({})
@@ -610,15 +673,15 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
             .on('slidechange', $.proxy(this.handleSliderChange, this));
 
         // Put the slider in a container
-        this.$slider_container = $('<div />')
-            .addClass('slider-container')
-            .append(this.$slider);
-        this.$el.append(this.$slider_container);
+        this.slider_container = document.createElement('div');
+        this.slider_container.classList.add('slider-container');
+        this.slider_container.appendChild(this.$slider[0]);
+        this.$el.append(this.slider_container);
 
-        this.$readout = $('<div/>')
-            .appendTo(this.$el)
-            .addClass('widget-readout')
-            .hide();
+        this.readout = document.createElement('div');
+        this.$el.append(this.readout);
+        this.readout.classList.add('widget-readout');
+        this.readout.style.display = 'none';
 
         this.listenTo(this.model, 'change:slider_color', function(sender, value) {
             this.$slider.find('a').css('background', value);
@@ -639,26 +702,29 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
          * Set a css attr of the widget view.
          */
         if (name == 'color') {
-            this.$readout.css(name, value);
+            this.readout.style[name] = value;
         } else if (name.substring(0, 4) == 'font') {
-            this.$readout.css(name, value);
+            this.readout.style[name] = value;
         } else if (name.substring(0, 6) == 'border') {
-            this.$slider.find('a').css(name, value);
-            this.$slider_container.css(name, value);
+            var slider_items = this.$slider[0].querySelectorAll('a');
+            if (slider_items.length) {
+              slider_items[0].style[name] = value;
+            }
+            this.slider_container.style[name] = value;
         } else if (name == 'background') {
-            this.$slider_container.css(name, value);
+            this.slider_container.style[name] = value;
         } else {
-            this.$el.css(name, value);
+            this.el.style[name] = value;
         }
     },
 
     updateDescription: function(options) {
         var description = this.model.get('description');
         if (description.length === 0) {
-            this.$label.hide();
+            this.label.style.display = 'none';
         } else {
-            this.typeset(this.$label, description);
-            this.$label.show();
+            this.typeset(this.label, description);
+            this.label.style.display = '';
         }
     },
 
@@ -670,7 +736,7 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
          * changed by another view or by a state update from the back-end.
          */
         if (options === undefined || options.updated_view != this) {
-            var labels = this.model.get("_options_labels");
+            var labels = this.model.get('_options_labels');
             var max = labels.length - 1;
             var min = 0;
             this.$slider.slider('option', 'step', 1);
@@ -692,7 +758,7 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
             var value = this.model.get('value');
             var index = labels.indexOf(value);
             this.$slider.slider('option', 'value', index);
-            this.$readout.text(value);
+            this.readout.textContent = value;
 
             // Use the right CSS classes for vertical & horizontal sliders
             if (orientation === 'vertical') {
@@ -707,6 +773,7 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
                 this.$el
                     .removeClass('widget-vslider')
                     .addClass('widget-hslider');
+
                 this.$el
                     .removeClass('widget-vbox')
                     .addClass('widget-hbox');
@@ -714,18 +781,20 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
 
             var readout = this.model.get('readout');
             if (readout) {
-                this.$readout.show();
+                // this.$readout.show();
+                this.readout.style.display = '';
             } else {
-                this.$readout.hide();
+                // this.$readout.hide();
+                this.readout.style.display = 'none';
             }
         }
-        return SelectionSliderView.__super__.update.apply(this);
+        return SelectionSliderView.__super__.update.call(this);
     },
 
     events: {
         // Dictionary of events and their handlers.
-        "slide": "handleSliderChange",
-        "slidestop": "handleSliderChanged",
+        'slide': 'handleSliderChange',
+        'slidestop': 'handleSliderChanged'
     },
 
     /**
@@ -733,8 +802,8 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
      */
     handleSliderChange: function(e, ui) {
         var actual_value = this._validate_slide_value(ui.value);
-        var value = this.model.get("_options_labels")[actual_value];
-        this.$readout.text(value);
+        var selected_label = this.model.get('_options_labels')[actual_value];
+        this.readout.textContent = selected_label;
 
         // Only persist the value while sliding if the continuous_update
         // trait is set to true.
@@ -751,9 +820,9 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
      */
     handleSliderChanged: function(e, ui) {
         var actual_value = this._validate_slide_value(ui.value);
-        var value = this.model.get("_options_labels")[actual_value];
-        this.$readout.text(value);
-        this.model.set('value', value, {updated_view: this});
+        var selected_label = this.model.get('_options_labels')[actual_value];
+        this.readout.textContent = selected_label;
+        this.model.set('selected_label', selected_label, {updated_view: this});
         this.touch();
     },
 
@@ -761,40 +830,35 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         /**
          * Validate the value of the slider before sending it to the back-end
          * and applying it to the other views on the page.
-         *
-         * Double bit-wise not truncates the decimal (int cast).
          */
-        return ~~x;
-    },
+        return Math.floor(x);
+    }
 });
 
 var MultipleSelectionModel = SelectionModel.extend({
     defaults: _.extend({}, SelectionModel.prototype.defaults, {
-        _model_name: "MultipleSelectionModel",
-    }),
+        _model_name: 'MultipleSelectionModel',
+        selected_labels: []
+    })
 });
 
 var SelectMultipleModel = MultipleSelectionModel.extend({
     defaults: _.extend({}, MultipleSelectionModel.prototype.defaults, {
-        _model_name: "SelectMultipleModel",
-        _view_name: "SelectMultipleView",
-    }),
+        _model_name: 'SelectMultipleModel',
+        _view_name: 'SelectMultipleView'
+    })
 });
 
 var SelectMultipleView = SelectView.extend({
     render: function() {
-        /**n
+        /**
          * Called when view is rendered.
          */
-        SelectMultipleView.__super__.render.apply(this);
-        this.$el.removeClass('widget-select')
-          .addClass('widget-select-multiple');
-        this.$listbox.attr('multiple', true)
-          .on('change', $.proxy(this.handle_change, this));
-
-        // set selected labels *after* setting the listbox to be multiple selection
-        this.$listbox.val(this.model.get('value'));
-        return this;
+        SelectMultipleView.__super__.render.call(this);
+        this.el.classList.remove('widget-select');
+        this.el.classList.add('widget-select-multiple');
+        this.listbox.multiple = true;
+        this.update();
     },
 
     update: function() {
@@ -805,19 +869,21 @@ var SelectMultipleView = SelectView.extend({
          * changed by another view or by a state update from the back-end.
          */
         SelectMultipleView.__super__.update.apply(this, arguments);
-        this.$listbox.val(this.model.get('value'));
+        var selected = this.model.get('value') || [];
+        var values = _.map(selected, encodeURIComponent);
+        var options = this.listbox.options;
+        for (var i = 0, len = options.length; i < len; ++i) {
+            var value = options[i].getAttribute('data-value');
+            options[i].selected = _.contains(values, value);
+        }
     },
 
-    handle_click: function() {
-        /**
-         * Overload click from select
-         *
-         * Apparently it's needed from there for testing purposes,
-         * but breaks behavior of this.
-         */
+    events: {
+        // Dictionary of events and their handlers.
+        'change select': '_handle_change'
     },
 
-    handle_change: function (e) {
+    _handle_change: function() {
         /**
          * Handle when a new value is selected.
          *
@@ -825,19 +891,16 @@ var SelectMultipleView = SelectView.extend({
          * model to update.
          */
 
-        // $listbox.val() returns a list of string.  In order to preserve
-        // type information correctly, we need to map the selected indices
-        // to the options list.
+        // In order to preserve type information correctly, we need to map
+        // the selected indices to the options list.
         var items = this.model.get('_options_labels');
-        var value = Array.prototype.map.call(this.$listbox[0].selectedOptions || [], function(option) {
-            return items[option.index];
-        });
-
-        this.model.set('value',
-            value,
-            {updated_view: this});
+        var values = Array.prototype.map
+            .call(this.listbox.selectedOptions || [], function(option) {
+                return items[option.index];
+            });
+        this.model.set('value', values, {updated_view: this});
         this.touch();
-    },
+    }
 });
 
 module.exports = {
@@ -854,5 +917,5 @@ module.exports = {
     SelectionSliderModel: SelectionSliderModel,
     MultipleSelectionModel: MultipleSelectionModel,
     SelectMultipleView: SelectMultipleView,
-    SelectMultipleModel: SelectMultipleModel,
+    SelectMultipleModel: SelectMultipleModel
 };

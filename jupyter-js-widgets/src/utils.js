@@ -3,23 +3,22 @@
 
 // TODO: ATTEMPT TO KILL THIS MODULE USING THIRD PARTY LIBRARIES WHEN IPYWIDGETS
 // IS CONVERTED TO NODE COMMONJS.
-"use strict";
+'use strict';
 
-var $ = require("./jquery");
 
 /**
  * http://www.ietf.org/rfc/rfc4122.txt
  */
 function uuid() {
     var s = [];
-    var hexDigits = "0123456789ABCDEF";
+    var hexDigits = '0123456789ABCDEF';
     for (var i = 0; i < 32; i++) {
         s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
     }
-    s[12] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
+    s[12] = '4';  // bits 12-15 of the time_hi_and_version field to 0010
     s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
 
-    return s.join("");
+    return s.join('');
 }
 
 /**
@@ -132,7 +131,7 @@ function reject(message, log) {
  *
  * If MathJax is not available, make no changes.
  *
- * Returns the output any number of typeset elements, or undefined if
+ * Returns the output any number of typeset elements as an array or undefined if
  * MathJax was not available.
  *
  * Parameters
@@ -141,24 +140,38 @@ function reject(message, log) {
  * text: option string
  */
 function typeset(element, text) {
-    var $el = element.jquery ? element : $(element);
-    if(arguments.length > 1){
-        $el.text(text);
+    if (arguments.length > 1) {
+        if (element.length) {
+            for (var i = 0; i < element.length; ++i) {
+                var el = element[i];
+                el.textContent = text;
+            }
+        } else {
+            element.textContent = text;
+        }
     }
-    if(!window.MathJax){
-        return;
+    if (!window.MathJax) {
+      return;
     }
-    return $el.map(function(){
-        // MathJax takes a DOM node: $.map makes `this` the context
-        return MathJax.Hub.Queue(["Typeset", MathJax.Hub, this]);
-    });
+    var output = [];
+    if (element.length) {
+        for (var i = 0; i < element.length; ++i) {
+            var el = element[i];
+            output.push(MathJax.Hub.Queue(['Typeset', MathJax.Hub, el]));
+        }
+    } else {
+        output.push(MathJax.Hub.Queue(['Typeset', MathJax.Hub, element]));
+    }
+    return output;
 }
 
 /**
  * escape text to HTML
  */
-var escape_html = function (text) {
-    return $("<div/>").text(text).html();
+var escape_html = function(text) {
+    var esc  = document.createElement('div');
+    esc.innerHTML = text;
+    return esc.innerHTML;
 };
 
 module.exports = {
