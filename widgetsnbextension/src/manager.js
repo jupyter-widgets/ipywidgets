@@ -74,7 +74,7 @@ var WidgetManager = function (comm_manager, notebook) {
             // Load the initial state of the widget manager if a load callback was
             // registered.
             if (WidgetManager._load_callback) {
-                Promise.resolve().then(function () {
+                that.clear_state(true).then(function () {
                     return WidgetManager._load_callback.call(that);
                 }).then(function(state) {
                     that.set_state(state);
