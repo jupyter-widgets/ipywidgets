@@ -117,7 +117,7 @@ var PlaceProxyView = ProxyView.extend({
     },
 
     update_selector: function(model, selector) {
-        this.box = document.querySelectorAll(selector) || this.el;
+        this.box = selector && document.querySelector(selector) || this.el;
         this.set_child(this.model.get('child'));
     }
 });
