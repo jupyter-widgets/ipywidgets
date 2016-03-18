@@ -27,6 +27,11 @@ var DropdownModel = SelectionModel.extend({
 });
 
 var DropdownView = widget.DOMWidgetView.extend({
+    initialize: function() {
+        this.keydown = this._handle_keydown.bind(this);
+        DropdownView.__super__.initialize.apply(this, arguments);
+    },
+
     remove: function() {
         document.body.removeChild(this.droplist);
         return DropdownView.__super__.remove.call(this);
@@ -98,6 +103,7 @@ var DropdownView = widget.DOMWidgetView.extend({
             _.each(items, function(item) {
                 var li = document.createElement('li');
                 var a = document.createElement('a');
+                li.className = 'widget-dropdown-item';
                 a.setAttribute('href', '#');
                 a.textContent = item;
                 li.appendChild(a);
@@ -155,7 +161,8 @@ var DropdownView = widget.DOMWidgetView.extend({
 
     events: {
         // Dictionary of events and their handlers.
-        'click button.widget-button': '_toggle'
+        'click button.widget-button': '_toggle',
+        'keydown button.widget-button': '_activate'
     },
 
     _handle_click: function(event) {
@@ -176,6 +183,96 @@ var DropdownView = widget.DOMWidgetView.extend({
         this.touch();
     },
 
+    _handle_keydown: function(event) {
+        if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+            return;
+        }
+
+        // If some error condition has caused the keydown listener to still
+        // be active despite the drop list being invisible, remove the listener.
+        if (!this.droplist.classList.contains('mod-active')) {
+            document.removeEventListener('keydown', this.keydown);
+            return;
+        }
+
+        switch (event.keyCode) {
+        case 13:  // Enter key
+            event.preventDefault();
+            event.stopPropagation();
+            var active = this.droplist.querySelector('.mod-active');
+            if (active) {
+                var value = active.textContent;
+                this.model.set('value', value, { updated_view: this });
+                this.touch();
+            }
+            // Close the drop list.
+            this._toggle();
+            this.dropbutton.focus();
+            return;
+        case 27:  // Escape key
+            event.preventDefault();
+            event.stopPropagation();
+            // Close the drop list.
+            this._toggle();
+            this.dropbutton.focus();
+            return;
+        case 38:  // Up arrow key
+            event.preventDefault();
+            event.stopPropagation();
+            var active = this.droplist.querySelector('.mod-active');
+            var items = this.droplist.querySelectorAll('.widget-dropdown-item');
+            var index;
+            if (active) {
+                index = _.indexOf(items, active);
+                index = index > 0 ? index - 1 : items.length - 1;
+                active.classList.remove('mod-active');
+            } else {
+                // If there is no selection, up arrow selects the last item.
+                index = items.length - 1;
+            }
+            items[index].classList.add('mod-active');
+            return;
+        case 40:  // Down arrow key
+            event.preventDefault();
+            event.stopPropagation();
+            var active = this.droplist.querySelector('.mod-active');
+            var items = this.droplist.querySelectorAll('.widget-dropdown-item');
+            var index;
+            if (active) {
+                index = _.indexOf(items, active);
+                index = index < items.length - 1 ? index + 1 : 0;
+                active.classList.remove('mod-active');
+            } else {
+                // If there is no selection, down arrow selects the first item.
+                index = 0;
+            }
+            items[index].classList.add('mod-active');
+            return;
+        }
+    },
+
+    /**
+     * Activate the drop list.
+     *
+     * If the drop button is focused and the user presses enter, up, or down,
+     * activate the drop list.
+     */
+    _activate: function(event) {
+        if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+            return;
+        }
+
+        switch (event.keyCode) {
+        case 13:  // Enter key
+        case 38:  // Up arrow key
+        case 40:  // Down arrow key
+            event.preventDefault();
+            event.stopPropagation();
+            this._toggle();
+            return;
+        }
+    },
+
     /**
      * Toggle the dropdown list.
      *
@@ -187,9 +284,20 @@ var DropdownView = widget.DOMWidgetView.extend({
         this.dropbutton.blur();
 
         if (this.droplist.classList.contains('mod-active')) {
+            // Deselect active item.
+            var active = this.droplist.querySelector('.mod-active');
+            if (active) {
+                active.classList.remove('mod-active');
+            }
+            // Close the drop list.
             this.droplist.classList.remove('mod-active');
+            // Remove global event listener.
+            document.removeEventListener('keydown', this.keydown);
             return;
         }
+
+        // Add a global keydown listener for drop list events.
+        document.addEventListener('keydown', this.keydown);
 
         var buttongroupRect = this.buttongroup.getBoundingClientRect();
 
