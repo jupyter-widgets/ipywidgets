@@ -288,14 +288,14 @@ var IntSliderView = widget.DOMWidgetView.extend({
                     this.model.set('value', value, {updated_view: this});
                     this.touch();
                 } else {
-                    this.readout.textContent = this.valueToString(this.mode.get('value'));
+                    this.readout.textContent = this.valueToString(this.model.get('value'));
                 }
             }
         } else {
 
             // single value case
             if (isNaN(value)) {
-                this.readout.textContent = this.valueToString(this.mode.get('value'));
+                this.readout.textContent = this.valueToString(this.model.get('value'));
             } else {
                 value = Math.max(Math.min(value, vmax), vmin);
 
