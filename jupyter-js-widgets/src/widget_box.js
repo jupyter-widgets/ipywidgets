@@ -70,7 +70,7 @@ var ProxyView = widget.DOMWidgetView.extend({
             var that = this;
             this.child_promise = this.child_promise.then(function() {
                 return that.create_child_view(value).then(function(view) {
-                    if (that.box === undefined) {
+                    if (!that.box) {
                         console.error('Widget place holder does not exist');
                         return;
                     }
