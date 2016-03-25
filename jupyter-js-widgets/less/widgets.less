@@ -273,6 +273,94 @@
     }
 }
 
+.widget-tab {
+    /* TabView */
+    height: 100%;
+
+    .widget-tab-contents {
+        height: 100%;
+
+        .widget-tab-child {
+            display: none;
+            height: 100%;
+
+            &.mod-active {
+              display: block;
+            }
+        }
+    }
+
+    .widget-tab-bar {
+        &.p-TabBar {
+            min-height: 28px;
+            max-height: 28px;
+            color: #757575;
+            background: #F5F5F5;
+            font: 12px Helvetica, Arial, sans-serif;
+        }
+
+        &.p-TabBar > .p-TabBar-header {
+            flex: 0 0 1px;
+            background: #BDBDBD;
+        }
+
+        &.p-TabBar > .p-TabBar-footer {
+            flex: 0 0 3px;
+            background: #FAFAFA;
+            border-top: 1px solid #BDBDBD;
+            border-bottom: 1px solid #E0E0E0;
+        }
+
+        .p-TabBar-content {
+            min-width: 0;
+            max-height: 22px;
+        }
+
+        .p-TabBar-tab {
+            flex-basis: 124px;
+            min-height: 23px;
+            max-height: 23px;
+            min-width: 35px;
+            margin-left: -1px;
+            padding: 0px 10px;
+            background: #EEEEEE;
+            border: 1px solid #BDBDBD;
+            border-bottom: none;
+            transform: translateY(-1px);
+
+            &:last-child {
+                margin-right: -1px;
+            }
+
+            &.p-mod-current {
+                min-height: 24px;
+                max-height: 24px;
+                background: #FAFAFA;
+                border-top: 1px solid #F27624;
+            }
+
+            &:hover:not(.p-mod-current) {
+                background: #FAFAFA;
+            }
+
+            &.p-mod-closable > .p-TabBar-tabCloseIcon {
+                margin-left: 4px;
+
+                &:before {
+                    font-family: FontAwesome;
+                    content: '\f00d'; /* close */
+                }
+            }
+        }
+
+        .p-TabBar-tabIcon,
+        .p-TabBar-tabText,
+        .p-TabBar-tabCloseIcon {
+            line-height: 22px;
+        }
+    }
+}
+
 .widget-text {
     /* Textbox */
     width : @widget-width;
