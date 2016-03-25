@@ -213,9 +213,14 @@ var TabView = widget.DOMWidgetView.extend({
             this.removeChildView,
             this
         );
-        this.listenTo(this.model, 'change:children', function(model, value) {
-            this.childrenViews.update(value);
-        }, this);
+        this.listenTo(this.model, 'change:children',
+            function(model, value) { this.childrenViews.update(value); },
+            this
+        );
+        this.listenTo(this.model, 'change:_titles',
+            function(model, value, options) { this.updateTitles(options); },
+            this
+        );
     },
 
     render: function() {
@@ -294,14 +299,14 @@ var TabView = widget.DOMWidgetView.extend({
      * Updates the tab page titles.
      */
     updateTitles: function() {
-        var titles = this.model.get('_titles') || [];
+        var titles = this.model.get('_titles') || {};
         for (var i = this.tabBar.itemCount() - 1; i > -1; i--) {
             this.tabBar.itemAt(i).title.text = titles[i] || (i + 1) + '';
         }
     },
 
     /**
-     * Updates the tab page titles.
+     * Updates the selected index.
      */
     updateSelectedIndex: function(options) {
         if (options === undefined || options.updated_view !== this) {
@@ -315,10 +320,10 @@ var TabView = widget.DOMWidgetView.extend({
         }
     },
 
+    /**
+     * Select a page.
+     */
     selectPage: function(index) {
-        /**
-         * Select a page.
-         */
         var actives = this.el.querySelectorAll('.mod-active');
         if (actives.length) {
             for (var i = 0, len = actives.length; i < len; i++) {
@@ -333,6 +338,11 @@ var TabView = widget.DOMWidgetView.extend({
     },
 
     remove: function() {
+        /*
+         * The tab bar needs to be disposed before its node is removed by the
+         * super call, otherwise phosphor's Widget.detach will throw an error.
+         */
+        this.tabBar.dispose();
         /**
          * We remove this widget before removing the children as an optimization
          * we want to remove the entire container from the DOM first before
@@ -340,7 +350,6 @@ var TabView = widget.DOMWidgetView.extend({
          */
         TabView.__super__.remove.apply(this, arguments);
         this.childrenViews.remove();
-        this.tabBar.dispose();
     },
 
     _onTabChanged: function(sender, args) {
@@ -349,14 +358,18 @@ var TabView = widget.DOMWidgetView.extend({
     },
 
     _onTabCloseRequested: function(sender, args) {
-        var children = this.model.get('children');
-        var titles = this.model.get('_titles') || [];
-        this.model.set('_titles', _.filter(titles, function(title, index) {
-            return index !== args.index;
-        }));
-        this.model.set('children', _.filter(children, function(child, index) {
-            return index !== args.index;
-        }));
+        var children = _.filter(
+            this.model.get('children'),
+            function(child, index) { return index !== args.index; }
+        );
+
+        var titles = this.model.get('_titles') || {};
+        delete titles[args.index];
+
+        this.model.set(
+            { 'children': children, '_titles': titles },
+            { updated_view: this }
+        );
         this.touch();
     }
 });
