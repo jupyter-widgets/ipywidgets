@@ -5,8 +5,9 @@
 var widget = require('./widget');
 var utils = require('./utils');
 var box = require('./widget_box');
-var $ = require('./jquery');
 var _ = require('underscore');
+var TabBar = require('phosphor-tabs').TabBar;
+var Title = require('phosphor-widget').Title;
 
 var SelectionContainerModel = box.BoxModel.extend({
     defaults: _.extend({}, box.BoxModel.prototype.defaults, {
@@ -207,10 +208,13 @@ var TabView = widget.DOMWidgetView.extend({
          * Public constructor.
          */
         TabView.__super__.initialize.apply(this, arguments);
-        this.containers = [];
-        this.children_views = new widget.ViewList(this.add_child_view, this.remove_child_view, this);
+        this.childrenViews = new widget.ViewList(
+            this.addChildView,
+            this.removeChildView,
+            this
+        );
         this.listenTo(this.model, 'change:children', function(model, value) {
-            this.children_views.update(value);
+            this.childrenViews.update(value);
         }, this);
     },
 
@@ -218,90 +222,61 @@ var TabView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        var uuid = 'tabs'+utils.uuid();
+        var parent = this;
 
-        this.tabs = document.createElement('div');
-        this.tabs.id = uuid;
-        this.tabs.classList.add('nav');
-        this.tabs.classList.add('nav-tabs');
-        this.el.appendChild(this.tabs);
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-tab');
 
-        this.tab_contents = document.createElement('div');
-        this.tab_contents.setAttribute('id', uuid + 'Content');
-        this.el.appendChild(this.tab_contents);
+        this.tabBar = new TabBar();
+        this.tabBar.tabsMovable = false;
+        this.tabBar.addClass('widget-tab-bar');
+        this.tabBar.currentChanged.connect(this._onTabChanged, this);
+        this.tabBar.tabCloseRequested.connect(this._onTabCloseRequested, this);
 
-        this.children_views.update(this.model.get('children'));
+        this.tabContents = document.createElement('div');
+        this.tabContents.className = 'widget-tab-contents';
+
+        this.childrenViews.update(this.model.get('children'));
+
+        this.displayed.then(function() {
+            parent.tabBar.attach(parent.el);
+            parent.el.appendChild(parent.tabContents);
+        });
     },
 
-    update_attr: function(name, value) { // TODO: Deprecated in 5.0
-        /**
-         * Set a css attr of the widget view.
-         */
-        if (['padding', 'margin', 'height', 'width'].indexOf(name) !== -1) {
-            this.el.style[name] = value;
-        } else {
-            this.tabs.style[name] = value;
-        }
-    },
-
-    remove_child_view: function(view) {
-        /**
-         * Called when a child is removed from children list.
-         */
-        this.containers.splice(view.parent_tab.tab_text_index, 1);
-        view.parent_tab.remove();
-        view.parent_container.remove();
-        view.remove();
-    },
-
-    add_child_view: function(model) {
+    addChildView: function(model) {
         /**
          * Called when a child is added to children list.
          */
-        var index = this.containers.length;
-        var uuid = utils.uuid();
+        var parent = this;
 
-        var that = this;
-        var tab = document.createElement('li');
-        tab.style['list-style-type'] = 'none';
-        this.tabs.appendChild(tab);
+        return this.create_child_view(model).then(function(child) {
+            var current = parent.el.querySelector('.mod-active');
+            if (current) {
+                current.classList.remove('mod-active');
+            }
 
-        var tab_text = document.createElement('a');
-        tab_text.setAttribute('href', '#' + uuid);
-        tab_text.setAttribute('data-toggle', 'tab');
-        tab_text.textContent = 'Page ' + index;
-        tab.appendChild(tab_text);
-        tab_text.onclick = function() {
-          that.model.set('selected_index', index, {updated_view: that});
-          that.touch();
-          that.select_page(index);
-        };
+            child.el.classList.add('widget-tab-child');
+            child.el.classList.add('mod-active');
 
-        tab.tab_text_index = that.containers.push(tab_text) - 1;
-
-        var dummy = document.createElement('div');
-
-        var contents_div = document.createElement('div');
-        contents_div.id = uuid;
-        contents_div.classList.add('tab-pane');
-        contents_div.classList.add('fade');
-        contents_div.appendChild(dummy);
-        that.tab_contents.appendChild(contents_div);
-
-        this.update();
-        return this.create_child_view(model).then(function(view) {
-            dummy.replaceWith(view.$el);
-            view.parent_tab = tab;
-            view.parent_container = contents_div;
-
-            // Trigger the displayed event of the child view.
-            that.displayed.then(function() {
-                view.trigger('displayed', that);
-                that.update();
+            parent.tabContents.appendChild(child.el);
+            parent.tabBar.addItem({
+                title: new Title({ text: '', closable: true })
             });
-            return view;
-        }).catch(utils.reject('Could not add child view to box', true));
+            var tab = parent.tabBar.itemAt(parent.tabBar.itemCount() - 1);
+
+            parent.displayed.then(function() {
+                child.trigger('displayed', parent);
+                parent.update();
+            });
+
+            child.on('remove', function() { parent.tabBar.removeItem(tab); });
+
+            return child;
+        }).catch(utils.reject('Couldn\'t add child view to box', true));
     },
+
+    removeChildView: function(child) { child.remove(); },
 
     update: function(options) {
         /**
@@ -310,46 +285,51 @@ var TabView = widget.DOMWidgetView.extend({
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        this.update_titles();
-        this.update_selected_index(options);
-        return TabView.__super__.update.apply(this);
+        this.updateTitles();
+        this.updateSelectedIndex(options);
+        return TabView.__super__.update.call(this);
     },
 
     /**
      * Updates the tab page titles.
      */
-    update_titles: function() {
-        var titles = this.model.get('_titles');
-        var that = this;
-        _.each(titles, function(title, page_index) {
-           var tab_text = that.containers[page_index];
-            if (tab_text !== undefined) {
-                tab_text.text(title);
+    updateTitles: function() {
+        var titles = this.model.get('_titles') || [];
+        for (var i = this.tabBar.itemCount() - 1; i > -1; i--) {
+            this.tabBar.itemAt(i).title.text = titles[i] || (i + 1) + '';
+        }
+    },
+
+    /**
+     * Updates the tab page titles.
+     */
+    updateSelectedIndex: function(options) {
+        if (options === undefined || options.updated_view !== this) {
+            var index = this.model.get('selected_index');
+            if (typeof index === 'undefined') {
+                index = 0;
             }
-        });
-    },
-
-    /**
-     * Updates the tab page titles.
-     */
-    update_selected_index: function(options) {
-        if (options === undefined || options.updated_view != this) {
-            var selected_index = this.model.get('selected_index');
-            if (0 <= selected_index && selected_index < this.containers.length) {
-                this.select_page(selected_index);
+            if (0 <= index && index < this.tabBar.itemCount()) {
+                this.selectPage(index);
             }
         }
     },
 
-    select_page: function(index) {
+    selectPage: function(index) {
         /**
          * Select a page.
          */
-        var tab_li = this.tabs.getElementsByClassName('li');
-        if (tab_li.length) {
-          tab_li[0].classList.remove('active');
+        var actives = this.el.querySelectorAll('.mod-active');
+        if (actives.length) {
+            for (var i = 0, len = actives.length; i < len; i++) {
+                actives[i].classList.remove('mod-active');
+            }
         }
-        this.containers[index].tab('show');
+
+        var active = this.el.querySelectorAll('.widget-tab-child')[index];
+        if (active) {
+            active.classList.add('mod-active');
+        }
     },
 
     remove: function() {
@@ -359,7 +339,25 @@ var TabView = widget.DOMWidgetView.extend({
          * removing each individual child separately.
          */
         TabView.__super__.remove.apply(this, arguments);
-        this.children_views.remove();
+        this.childrenViews.remove();
+        this.tabBar.dispose();
+    },
+
+    _onTabChanged: function(sender, args) {
+        this.model.set('selected_index', args.index, { updated_view: this });
+        this.touch();
+    },
+
+    _onTabCloseRequested: function(sender, args) {
+        var children = this.model.get('children');
+        var titles = this.model.get('_titles') || [];
+        this.model.set('_titles', _.filter(titles, function(title, index) {
+            return index !== args.index;
+        }));
+        this.model.set('children', _.filter(children, function(child, index) {
+            return index !== args.index;
+        }));
+        this.touch();
     }
 });
 

@@ -12,7 +12,7 @@
   "scripts": {
     "build": "npm run css",
     "precss": "rimraf ./css/",
-    "css": "npm run css:less && npm run css:cleancss",
+    "css": "npm run precss && npm run css:less && npm run css:cleancss",
     "test": "npm run test:unit && npm run test:examples",
     "test:unit": "npm run test:unit:firefox && npm run test:unit:chrome",
     "test:unit:default": "karma start karma.conf.js --log-level debug",
@@ -59,6 +59,8 @@
     "bootstrap": "^3.3.5",
     "jquery": "^2.1.4",
     "jquery-ui": "^1.10.5",
+    "phosphor-tabs": "^1.0.0-rc.2",
+    "phosphor-widget": "^1.0.0-rc.1",
     "underscore": "^1.8.3"
   }
 }
