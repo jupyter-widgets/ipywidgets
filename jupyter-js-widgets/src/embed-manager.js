@@ -9,7 +9,7 @@ var EmbedManager = exports.EmbedManager = function() {
 EmbedManager.prototype = Object.create(manager.ManagerBase.prototype);
 
 EmbedManager.prototype.display_widget_state = function(models, el) {
-    this.set_state(models, { el });
+    this.set_state(models, { el: el });
 };
 
 EmbedManager.prototype.display_view = function(msg, view, options) {
