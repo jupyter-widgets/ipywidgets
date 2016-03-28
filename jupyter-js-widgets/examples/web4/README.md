@@ -1,7 +1,7 @@
 # Using jupyter-js-widgets in non-notebook, web context
 ## Description
 This directory is an example project that shows how you can embed the widgets in
-a context other than the notebook, and declare widget manager state in the html
+a context other than the notebook by embedding inline widget state in the html
 document.
 
 ## Try it

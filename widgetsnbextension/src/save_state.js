@@ -11,7 +11,7 @@ var save_state = function() {
             }).then(function(state) {
                 var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, "    "));
                 var a = document.createElement("a");
-                a.download = "state.json";
+                a.download = "widget_state.json";
                 a.href = "data:" + data;
                 a.click();
             });
