@@ -42,7 +42,7 @@ function renderWidgetState(widgetStateObject) {
   // Create and render the widget, replacing the loading view.
   const widgetContainer = document.createElement('div');
   widgetContainer.className = 'widget-area';
-  manager.display_widget_state(widgetStateObject, widgetContainer).then(() => {
+  manager.display_widget_state(widgetStateObject, widgetContainer).then(function() {
     container.innerHTML = '';
     container.appendChild(widgetContainer);
   });
