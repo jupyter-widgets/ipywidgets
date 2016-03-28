@@ -13,5 +13,5 @@ function generateEmbedScript(widgetState, alternativeHtml) {
 }
 
 module.exports = {
-  generateEmbedScript,
+  generateEmbedScript: generateEmbedScript,
 };
