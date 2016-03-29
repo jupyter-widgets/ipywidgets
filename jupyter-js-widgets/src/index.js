@@ -16,6 +16,8 @@ module.exports = {
 
 var loadedModules = [
     managerBase,
+    require("./embed-helper"),
+    require("./embed-manager"),
     require("./utils"),
     widget,
     require("./widget_layout"),

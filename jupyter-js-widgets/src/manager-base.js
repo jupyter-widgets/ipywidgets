@@ -383,11 +383,13 @@ ManagerBase.prototype.get_state = function(options) {
     }).catch(utils.reject('Could not get state of widget manager', true));
 };
 
-ManagerBase.prototype.set_state = function(state) {
+ManagerBase.prototype.set_state = function(state, displayOptions) {
     /**
      * Set the widget manager state.
      *
-     * Reconstructs all of the widget models and attempts to redisplay them..
+     * Reconstructs all of the widget models in the state, merges that with the
+     * current manager state, and then attempts to redisplay the widgets in the
+     * state.
      */
     var that = this;
 
@@ -395,9 +397,14 @@ ManagerBase.prototype.set_state = function(state) {
     var all_models = that._get_comm_info().then(function(live_comms) {
         return Promise.all(_.map(Object.keys(state), function (model_id) {
 
-            // If the model has already been created, return it.
+            // If the model has already been created, set it's state and then
+            // return it.
             if (that._models[model_id]) {
-                return that._models[model_id];
+                return that._models[model_id].then(function(model) {
+                    return model.set_state(state[model_id].state).then(function() {
+                        return model;
+                    });
+                });
             }
 
             if (live_comms.hasOwnProperty(model_id)) {  // live comm
@@ -422,9 +429,13 @@ ManagerBase.prototype.set_state = function(state) {
     return all_models.then(function(models) {
         return Promise.all(_.map(models, function(model) {
             // Display the views of the model.
-            return Promise.all(_.map(state[model.id].views, function(options) {
-                return that.display_model(undefined, model, options);
-            }));
+            if (state[model.id] !== undefined) {
+                return Promise.all(_.map(state[model.id].views, function(options) {
+                    // Display the model using the display options merged with the
+                    // options.
+                    return that.display_model(undefined, model, Object.assign({}, options, displayOptions));
+                }));
+            }
         }));
     }).catch(utils.reject('Could not set widget manager state.', true));
 };
