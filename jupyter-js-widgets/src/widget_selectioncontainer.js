@@ -358,13 +358,22 @@ var TabView = widget.DOMWidgetView.extend({
     },
 
     _onTabCloseRequested: function(sender, args) {
+        /*
+         * When a tab is removed, the titles dictionary must be reset for all
+         * indices that are larger than the index of the tab that was removed.
+         */
+        var len = this.model.get('children').length;
+        var titles = this.model.get('_titles') || {};
+        delete titles[args.index];
+        for (var i = args.index + 1; i < len; i++) {
+            titles[i - 1] = titles[i];
+            delete titles[i];
+        }
+
         var children = _.filter(
             this.model.get('children'),
             function(child, index) { return index !== args.index; }
         );
-
-        var titles = this.model.get('_titles') || {};
-        delete titles[args.index];
 
         this.model.set(
             { 'children': children, '_titles': titles },
