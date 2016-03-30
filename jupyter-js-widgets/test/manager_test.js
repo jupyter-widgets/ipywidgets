@@ -74,16 +74,9 @@ describe("ManagerBase", function() {
         expect(this.managerBase.create_view).to.not.be.undefined;
     });
 
-    it('loadClass', function() {
-        expect(this.managerBase.loadClass).to.not.be.undefined;
-    });
-
     it('display_view', function() {
         expect(this.managerBase.display_view).to.not.be.undefined;
         expect(this.managerBase.display_view).to.throw(Error);
     });
 
-    it('display_model', function() {
-        expect(this.managerBase.loadClass).to.not.be.undefined;
-    });
 });

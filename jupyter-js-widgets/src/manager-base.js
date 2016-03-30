@@ -67,10 +67,6 @@ ManagerBase.prototype.display_view = function(msg, view, options) {
     throw new Error("Manager.display_view not implemented");
 };
 
-ManagerBase.prototype.loadClass = function(class_name, module_name, registry) {
-    return utils.loadClass(class_name, module_name, registry);
-};
-
 ManagerBase.prototype.setViewOptions = function(options) {
     /**
      * Modifies view options. Generally overloaded in custom widget manager
@@ -89,7 +85,7 @@ ManagerBase.prototype.create_view = function(model, options) {
     var that = this;
     model.state_change = model.state_change.then(function() {
 
-        return that.loadClass(model.get('_view_name'), model.get('_view_module'),
+        return utils.loadClass(model.get('_view_name'), model.get('_view_module'),
         ManagerBase._view_types).then(function(ViewType) {
             var view = new ViewType({
                 model: model,
@@ -280,9 +276,9 @@ ManagerBase.prototype.new_model = function(options, serialized_state) {
     } else {
         throw new Error('Neither comm nor model_id provided in options object.  Atleast one must exist.');
     }
-    var model_promise = this.loadClass(options.model_name,
-                                       options.model_module,
-                                       ManagerBase._model_types)
+    var model_promise = utils.loadClass(options.model_name,
+                                        options.model_module,
+                                        ManagerBase._model_types)
         .then(function(ModelType) {
             return ModelType._deserialize_state(serialized_state || ModelType.prototype.defaults, that).then(function(attributes) {
                 var widget_model = new ModelType(that, model_id, options.comm, attributes);
