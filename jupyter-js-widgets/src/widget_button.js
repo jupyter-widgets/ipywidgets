@@ -31,7 +31,12 @@ var ButtonView = widget.DOMWidgetView.extend({
          * Called when view is rendered.
          */
         this.el.className = 'jupyter-widgets widget-button';
-        this.listenTo(this.model, 'change:button_style', this.update_button_style, this);
+        this.listenTo(
+            this.model,
+            'change:button_style',
+            this.update_button_style,
+            this
+        );
         this.update_button_style();
         this.update(); // Set defaults.
     },
@@ -48,9 +53,7 @@ var ButtonView = widget.DOMWidgetView.extend({
 
         var description = this.model.get('description');
         var icon = this.model.get('icon');
-        if (description.trim().length === 0 && icon.trim().length === 0) {
-            this.el.innerHTML = '&nbsp;'; // Preserve button height
-        } else {
+        if (description.trim().length || icon.trim().length) {
             this.el.textContent = '';
             if (icon.trim().length) {
                 var i = document.createElement('i');
