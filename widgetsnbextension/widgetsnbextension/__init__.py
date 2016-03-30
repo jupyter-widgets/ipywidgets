@@ -19,7 +19,7 @@ from ._version import __version__
 def _jupyter_nbextension_paths():
     return [{
         'section': 'notebook',
-        'src': '../src',
+        'src': 'static',
         'dest': 'widgets',
         'require': 'widgets/extension'
     }]
