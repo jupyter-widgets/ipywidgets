@@ -52,10 +52,17 @@ _handle_ipython()
 def find_static_assets():
     import warnings
     try:
-        import widgetsnbextension.find_static_assets
+        import widgetsnbextension
+        if hasattr(widgetsnbextension, 'find_static_assets'):
+            return widgetsnbextension.find_static_assets()
+        else:
+            warnings.warn("""The version of ipywidgets that you have installed
+            only works with Jupyter Notebook 4.2 or later.  Your version of the
+            Jupyter Notebook is too old. If you'd like to use ipywidgets with an
+            older version of the notebook, use ipywidgets 4.x or earlier.
+            """, RuntimeWarning)
+            return []
     except ImportError:
-        warnings.warn("widgetsnbextension provides static assets, but is missing", RuntimeWarning)
+        warnings.warn("""To use the widgets with your installed Jupyter Notebook
+        version, please install ipywidgets 4.x or earlier.""", RuntimeWarning)
         return []
-    else:
-        warnings.warn("widgetsnbextension now provides static assets", DeprecationWarning)
-        return widgetsnbextension.find_static_assets()

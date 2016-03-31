@@ -29,6 +29,11 @@ or
 
     conda install ipywidgets
 
+Then run
+
+    jupyter nbextensions install --py --symlink widgetsnbextension
+    jupyter nbextensions enable --py --symlink widgetsnbextension
+
 ### JavaScript only
 
 If you're interested in only installing the JavaScript, you may do so by running
