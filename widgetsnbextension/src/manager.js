@@ -169,7 +169,7 @@ WidgetManager.set_state_callbacks = function (load_callback, save_callback, opti
      */
     WidgetManager._load_callback = load_callback;
     WidgetManager._save_callback = save_callback;
-    WidgetManager._get_state_options = options;
+    WidgetManager._get_state_options = options || {};
 
     // Use the load callback to immediately load widget states.
     WidgetManager._managers.forEach(function(manager) {
