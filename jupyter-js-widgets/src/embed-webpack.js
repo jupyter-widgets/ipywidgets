@@ -20,8 +20,8 @@ console.info('jupyter-js-widgets loaded successfully');
 const manager = new widgets.EmbedManager();
 
 // Magic global widget rendering function:
-function renderInlineWidgets(element) {
-  var element = element || document;
+function renderInlineWidgets(event) {
+  var element = event.target || document;
   var tags = element.querySelectorAll('script.jupyter-widgets');
   for (var i=0; i!=tags.length; ++i) {
     var tag = tags[i];
@@ -41,4 +41,4 @@ exports.renderInlineWidgets = renderInlineWidgets;
 // Set window globals
 window.manager = manager;
 
-window.onload = renderInlineWidgets;
+window.addEventListener('load', renderInlineWidgets);
