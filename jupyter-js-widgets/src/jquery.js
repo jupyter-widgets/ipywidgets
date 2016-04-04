@@ -12,5 +12,4 @@ if (typeof window !== 'undefined' && window['$']) {
     $ = require('jquery');
     global.jQuery = $; // Required for bootstrap to load correctly
 }
-require('jquery-ui');
 module.exports = $;

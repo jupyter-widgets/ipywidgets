@@ -5,6 +5,7 @@
 var widget = require('./widget');
 var _ = require('underscore');
 var $ = require('jquery');
+require('jquery-ui');
 
 
 var IntModel = widget.DOMWidgetModel.extend({
