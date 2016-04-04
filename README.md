@@ -1,23 +1,31 @@
-# Interactive HTML Widgets
+# ipywidgets: Interactive HTML Widgets
 
-[![Google Group](https://img.shields.io/badge/-Google%20Group-lightgrey.svg)](https://groups.google.com/forum/#!forum/jupyter)
+[![Version](https://img.shields.io/pypi/v/ipywidgets.svg)](https://pypi.python.org/pypi/ipywidgets)
+[![Downloads](https://img.shields.io/pypi/dm/ipywidgets.svg)](https://pypi.python.org/pypi/ipywidgets)
 [![Build Status](https://travis-ci.org/ipython/ipywidgets.svg?branch=master)](https://travis-ci.org/ipython/ipywidgets)
 [![Documentation Status](https://readthedocs.org/projects/ipywidgets/badge/?version=latest)](http://ipywidgets.readthedocs.org/en/latest/?badge=latest)
 [![Join the chat at https://gitter.im/ipython/ipywidgets](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ipython/ipywidgets?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-[Interactive HTML widgets](https://github.com/ipython/ipywidgets/blob/master/examples/Index.ipynb)
+ipywidgets are [interactive HTML widgets](https://github.com/ipython/ipywidgets/blob/master/examples/Index.ipynb)
 for Jupyter notebooks and the IPython kernel.
 
-A [demonstration notebook](https://github.com/ipython/ipywidgets/blob/master/examples/Index.ipynb) provides an overview of the interactive widgets. For detailed information, please refer to the [ipywidgets documentation](http://ipywidgets.readthedocs.org/en/latest/).
+![sample slider](docs/source/images/widgettest.png)
 
-**Compatibility**  
+Notebooks come alive when interactive widgets are used. Users gain control of their data and can visualize changes in the data.
 
-| ipywidgets version  | Jupyter/notebook version |
-| ------------------- | ------------------------ |
-| master              | master                   |
-| 4.1.x               | 4.1                      |
-| 4.0.x               | 4.0                      |
+Learning becomes an immersive, plus fun, experience. Researchers can easily see how changing inputs to a model impact the results. We hope you will add ipywidgets to your notebooks, and we're here to help you get started.
 
+## Features
+A [demonstration notebook](https://github.com/ipython/ipywidgets/blob/master/examples/Index.ipynb) provides an overview of the interactive widgets, including:
+
+- sliders
+- progress bars
+- text boxes
+- toggle buttons and checkboxes
+- display areas
+- and more
+
+For detailed information, please refer to the [ipywidgets documentation](http://ipywidgets.readthedocs.org/en/latest/).
 
 ## Install
 
@@ -34,82 +42,28 @@ Then run
     jupyter nbextensions install --py --symlink widgetsnbextension
     jupyter nbextensions enable --py --symlink widgetsnbextension
 
-### JavaScript only
+See the [Installation](docs/source/user_install.md) section of the documentation for additional details.
 
-If you're interested in only installing the JavaScript, you may do so by running
+#### Compatibility
 
-    npm install jupyter-js-widgets
+| ipywidgets version  | Jupyter/notebook version |
+| ------------------- | ------------------------ |
+| master              | master                   |
+| 4.1.x               | 4.1                      |
+| 4.0.x               | 4.0                      |
 
-### Development install
+[Change log](docs/source/changelog.md)
 
-To install ipywidgets from git, you will need [npm](https://www.npmjs.com/) and
-the latest [development copy of the Jupyter
-notebook](https://github.com/jupyter/notebook) because everything in the
-ipywidgets repository is developed using Jupyter notebook master. If you want
-to have a copy of ipywidgets that works against a stable version of the
-notebook, checkout the appropriate tag (see the Compatibility table above).
+## Usage
+See the [examples](docs/source/examples.md) section of the documentation. The widgets are being used in a variety of ways; some uses can be seen in these notebooks:
 
-If you install using sudo, you need to make sure that npm is also
-available in the PATH used with sudo.
-
-0. clone the repo:
-
-        git clone https://github.com/ipython/ipywidgets
-        cd ipywidgets
-
-1. Dev-install of the package (run from repo directory):
-
-        pip install -v -e .
-
-2. Build the Jupyter Widgets package
-
-        cd jupyter-js-widgets
-        npm install
-        cd ..
-
-3. Install the Jupyter Widgets nbextension
-
-        cd widgetsnbextension
-        npm install
-        npm run update:widgets
-        pip install -v -e .
-        cd ..
-
-After you've made changes to `jupyter-js-widgets` and you'd like to test those
-changes, run the following, empty your browsers cache, and refresh the page.
-
-        cd widgetsnbextension
-        npm run update:widgets
-        cd ..
-
-TIPS: If you have any problems with the above install procedure, make sure that
-permissions on npm and pip related install directories are correct.  Sometimes
-it helps to clear cached files too by running `git clean -dfx`.  Also, when
-you make changes to the Javascript, if you're not seeing the changes it could
-be your browser caching aggressively.  Try using "incognito" or "private"
-browsing tabs to avoid caching.
-
-
-## Test
-
-To run the Python tests:
-
-    nosetests --with-coverage --cover-package=ipywidgets ipywidgets
-
-To run the Javascript tests:
-
-    cd jupyter-js-widgets; npm run test
-
-This will run the test suite using `karma` with 'debug' level logging.
-
-## Resources
-### ipywidgets
 - [Demo notebook of interactive widgets](https://github.com/ipython/ipywidgets/blob/master/examples/Index.ipynb)
-- [Documentation for ipywidgets](http://ipywidgets.readthedocs.org/en/latest/) [[PDF](https://media.readthedocs.org/pdf/ipywidgets/latest/ipywidgets.pdf)]
-- [Issues](https://github.com/ipython/ipywidgets/issues)
-- [Technical support - Jupyter Google Group](https://groups.google.com/forum/#!forum/jupyter)
 
-### Project Jupyter
+## Contributing to ipywidgets
+- [Developer install](docs/source/dev_install.md)
+
+### Project Jupyter resources
 - [Project Jupyter website](https://jupyter.org)
 - [Online Demo of Jupyter Notebook at try.jupyter.org](https://try.jupyter.org)
 - [Documentation for Project Jupyter](http://jupyter.readthedocs.org/en/latest/index.html) [[PDF](https://media.readthedocs.org/pdf/jupyter/latest/jupyter.pdf)]
+- [![Google Group](https://img.shields.io/badge/-Google%20Group-lightgrey.svg)](https://groups.google.com/forum/#!forum/jupyter)

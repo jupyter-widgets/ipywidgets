@@ -7,7 +7,6 @@ docs/source/api/generated
 docs/gh-pages
 jupyter-js-widgets/src/components
 jupyter-js-widgets/css
-jupyter-js-widgets/examples/*/built
 node_modules
 *.py[co]
 __pycache__
@@ -27,4 +26,7 @@ npm-debug.log
 widgetsnbextension/widgetsnbextension/static
 
 index.built.js
+index.built.js.map
 **/es5/
+
+**/built
