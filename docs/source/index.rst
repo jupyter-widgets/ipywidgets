@@ -13,7 +13,7 @@ Contents
 
 .. toctree::
     :maxdepth: 2
-    :caption: Dev Doc
+    :caption: Developer Docs
 
     dev_install.md
     test
