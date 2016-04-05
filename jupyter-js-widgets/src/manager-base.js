@@ -434,7 +434,7 @@ ManagerBase.prototype.set_state = function(state, displayOptions) {
             if (state[model.id] !== undefined) {
                 // Display the model using the display options merged with the
                 // options.
-                if (displayOptions.displayOnce && state[model.id].views) {
+                if (displayOptions.displayOnce && state[model.id].views && state[model.id].views.length) {
                     return that.display_model(undefined, model, Object.assign({}, displayOptions));
                 } else {
                     return Promise.all(_.map(state[model.id].views, function(options) {

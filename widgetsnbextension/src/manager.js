@@ -432,10 +432,7 @@ WidgetManager.prototype._updateCellSnapshots = function(cell, index) {
         // Create a mime bundle.
         const bundle = {};
         bundle[imageMimetype] = imageData;
-        bundle['text/html'] = widgets.generateEmbedScript(
-            widgetState,
-            'Could not render widget, embed-manager missing from page context.'
-        );
+        bundle['text/html'] = widgets.generateEmbedScript(widgetState, imageData);
         widgetSubarea.widgetSnapshot = bundle;
     }).then(function() {
         return that.progressModal.setValue(++that._progress/cells.length);
@@ -567,10 +564,7 @@ WidgetManager.prototype._updateCellSnapshots = function(cell, index) {
         // Create a mime bundle.
         const bundle = {};
         bundle[imageMimetype] = imageData;
-        bundle['text/html'] = widgets.generateEmbedScript(
-            widgetState,
-            'Could not render widget, embed-manager missing from page context.'
-        );
+        bundle['text/html'] = widgets.generateEmbedScript(widgetState, imageData);
         widgetSubarea.widgetSnapshot = bundle;
     }).then(function() {
         return that.progressModal.setValue(++that._progress/cells.length);
