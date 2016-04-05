@@ -215,9 +215,9 @@
 }
 
 .widget-button, .widget-toggle-button {
-    background-image: none;
-    border: 1px solid #dbdbdb;
-    color: white;
+    background: #888888;
+    border: 1px solid #111111;
+    color: #eeeeee;
     cursor: pointer;
     display: inline-block;
     margin-bottom: 0;
@@ -231,33 +231,44 @@
     &:hover {
         outline: none !important;
     }
+
     &:active {
         .outside-shadow-4dp();
+    }
+
+    &:empty:before {
+        /* Add a space character if the button text is empty */
+        content: "\00a0"
     }
 
     &.mod-primary {
       background-color: #337ab7;
       border-color: #245580;
+      color: #eeeeee;
     }
 
     &.mod-success {
       background-color: #5cb85c;
       border-color: #3e8f3e;
+      color: #eeeeee;
     }
 
     &.mod-info {
       background-color: #5bc0de;
       border-color: #28a4c9;
+      color: #eeeeee;
     }
 
     &.mod-warning {
       background-color: #f0ad4e;
       border-color: #e38d13;
+      color: #eeeeee;
     }
 
     &.mod-danger {
       background-color: #d9534f;
       border-color: #b92c28;
+      color: #eeeeee;
     }
 
     &.mod-active {
