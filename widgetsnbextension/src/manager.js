@@ -421,18 +421,19 @@ WidgetManager.prototype._updateCellSnapshots = function(cell, index) {
             that._rasterizeEl(widgetSubarea),
             that._getCellWidgetStates(cell, index),
         ]);
-    }).then(function(canvas, widgetState) {
-
+    }).then(function(results) {
+        var canvas = results[0];
+        var widgetState = results[1];
         // Remove URL information, so only the b64 encoded data
         // exists, because that's what the notebook likes.
-        const imageMimetype = 'image/png';
-        const imageDataUrl = canvas.toDataURL(imageMimetype);
-        const imageData = imageDataUrl.split(',').slice(-1)[0];
+        var imageMimetype = 'image/png';
+        var imageDataUrl = canvas.toDataURL(imageMimetype);
+        var imageData = imageDataUrl.split(',').slice(-1)[0];
 
         // Create a mime bundle.
-        const bundle = {};
+        var bundle = {};
         bundle[imageMimetype] = imageData;
-        bundle['text/html'] = widgets.generateEmbedScript(widgetState, imageData);
+        bundle['text/html'] = widgets.generateEmbedScript(widgetState, imageDataUrl);
         widgetSubarea.widgetSnapshot = bundle;
     }).then(function() {
         return that.progressModal.setValue(++that._progress/cells.length);
@@ -444,13 +445,17 @@ WidgetManager.prototype._getCellWidgetStates = function(cell, index) {
     var modelIds = Object.keys(this._models);
     return Promise.all(modelIds.map(function(modelId) {
         return that._models[modelId].then(function(model) {
-            if (model.options.cell_index === index) {
-                return that
-                    ._traverseWidgetTree(model)
-                    .map(function(widget) { return widget.get_state(true); });
-            } else {
+            return widgets.resolvePromisesDict(model.views).then(function(views) {
+                if (Object.keys(views).some(function(k) {
+                    return views[k].options.cell_index == index;
+                })) {
+                    return that._traverseWidgetTree(model)
+                        .map(function(widget) {
+                            return widget.get_state(true);
+                        });
+                }
                 return [null];
-            }
+            });
         });
     })).then(function(states) {
         return states
@@ -474,9 +479,9 @@ WidgetManager.prototype._traverseWidgetTree = function(parentWidget, cache) {
     cache[parentWidget.id] = true;
 
     // Traverse the parent widget's state for child widgets
-    const state = parentWidget.get_state(true);
-    const subWidgets = this._traverseWidgetState(state);
-    const that = this;
+    var state = parentWidget.get_state(true);
+    var subWidgets = this._traverseWidgetState(state);
+    var that = this;
     return _.flatten(subWidgets.map(function(subWidget) {
         return that._traverseWidgetTree(subWidget, cache);
     })).concat([ parentWidget ]);
@@ -484,7 +489,7 @@ WidgetManager.prototype._traverseWidgetTree = function(parentWidget, cache) {
 
 WidgetManager.prototype._traverseWidgetState = function(state) {
     var that = this;
-    if (state instanceof widgets.Widget) {
+    if (state instanceof widgets.WidgetModel) {
         return [state];
     } else if (_.isArray(state)) {
         return _.flatten(state.map(this._traverseWidgetState.bind(this)));
@@ -529,137 +534,6 @@ WidgetManager.prototype._rasterizeEl = function(el) {
     });
 };
 
-/**
- * Update the widget snapshots for a single cell
- * @param  {object} cell
- * @param  {number} index - of the cell
- * @return {Promise}
- */
-WidgetManager.prototype._updateCellSnapshots = function(cell, index) {
-    var that = this;
-    var widgetSubarea = cell.element[0].querySelector(".widget-subarea");
-    var cells = Jupyter.notebook.get_cells();
-    if (!(widgetSubarea && widgetSubarea.children.length > 0)) {
-        if (widgetSubarea && widgetSubarea.widgetSnapshot) {
-            delete widgetSubarea.widgetSnapshot;
-        }
-        return that.progressModal.setValue(++that._progress/cells.length);
-    }
-
-    return that.progressModal.setText(
-        'Rendering widget ' + String(index + 1) + '/' + String(cells.length) + ' ...'
-    ).then(function() {
-        return Promise.all([
-            that._rasterizeEl(widgetSubarea),
-            that._getCellWidgetStates(cell, index),
-        ]);
-    }).then(function(canvas, widgetState) {
-
-        // Remove URL information, so only the b64 encoded data
-        // exists, because that's what the notebook likes.
-        const imageMimetype = 'image/png';
-        const imageDataUrl = canvas.toDataURL(imageMimetype);
-        const imageData = imageDataUrl.split(',').slice(-1)[0];
-
-        // Create a mime bundle.
-        const bundle = {};
-        bundle[imageMimetype] = imageData;
-        bundle['text/html'] = widgets.generateEmbedScript(widgetState, imageData);
-        widgetSubarea.widgetSnapshot = bundle;
-    }).then(function() {
-        return that.progressModal.setValue(++that._progress/cells.length);
-    });
-};
-
-WidgetManager.prototype._getCellWidgetStates = function(cell, index) {
-    var that = this;
-    var modelIds = Object.keys(this._models);
-    return Promise.all(modelIds.map(function(modelId) {
-        return that._models[modelId].then(function(model) {
-            if (model.options.cell_index === index) {
-                return that
-                    ._traverseWidgetTree(model)
-                    .map(function(widget) { return widget.get_state(true); });
-            } else {
-                return [null];
-            }
-        });
-    })).then(function(states) {
-        return states
-            .reduce(function(a, b) { return a.concat(b); }, [])
-            .filter(function(state) { return state !== null; });
-    });
-};
-
-WidgetManager.prototype._traverseWidgetTree = function(parentWidget, cache) {
-    // Setup a cache if it doesn't already exist
-    if (!cache) {
-        cache = {};
-    }
-
-    // Don't continue if this widget has already been traversed
-    if (parentWidget.id in cache) {
-        return [];
-    }
-
-    // Remember that this widget has been traversed
-    cache[parentWidget.id] = true;
-
-    // Traverse the parent widget's state for child widgets
-    const state = parentWidget.get_state(true);
-    const subWidgets = this._traverseWidgetState(state);
-    const that = this;
-    return _.flatten(subWidgets.map(function(subWidget) {
-        return that._traverseWidgetTree(subWidget, cache);
-    })).concat([ parentWidget ]);
-};
-
-WidgetManager.prototype._traverseWidgetState = function(state) {
-    var that = this;
-    if (state instanceof widgets.Widget) {
-        return [state];
-    } else if (_.isArray(state)) {
-        return _.flatten(state.map(this._traverseWidgetState.bind(this)));
-    } else if (state instanceof Object) {
-        var states = [];
-        _.each(state, function(value, key) {
-            states.push(that._traverseWidgetState(value));
-        });
-        return _.flatten(states);
-    } else {
-        return [];
-    }
-};
-
-/**
- * Create a sequentially executed promise chain from an array of promises.
- * @param  {Array<Promise>} promises
- * @return {Promise}
- */
-WidgetManager.prototype._sequentialPromise = function(promises) {
-    var chain = Promise.resolve();
-    promises.forEach(function(promise) {
-        chain = chain.then(function() {
-            return promise;
-        });
-    });
-    return chain;
-};
-
-/**
- * Rasterize an HTMLElement to and HTML5 canvas
- * @param  {HTMLElement} el
- * @return {Promise<HTMLCanvasElement>}
- */
-WidgetManager.prototype._rasterizeEl = function(el) {
-    return new Promise(function(resolve) {
-        html2canvas(el, {
-            onrendered: function(canvas) {
-                resolve(canvas);
-            }
-        });
-    });
-};
 
 /**
  * Render the widget views that are live as images and prepend them as

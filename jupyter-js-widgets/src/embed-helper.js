@@ -3,7 +3,7 @@
 
 function generateEmbedScript(widgetState, imageDataUrl) {
   return [
-      '<img src=' + imageDataUrl + ' />',
+      '<img src=' + imageDataUrl + ' class="jupyter-widget">',
       '<script type="application/vnd.jupyter-embedded-widgets">' + JSON.stringify(widgetState) + '</script>'
   ].join('\n');
 }
