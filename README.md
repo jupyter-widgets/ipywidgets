@@ -9,8 +9,6 @@
 ipywidgets are [interactive HTML widgets](https://github.com/ipython/ipywidgets/blob/master/examples/Index.ipynb)
 for Jupyter notebooks and the IPython kernel.
 
-![sample slider](docs/source/images/widgettest.png)
-
 Notebooks come alive when interactive widgets are used. Users gain control of their data and can visualize changes in the data.
 
 Learning becomes an immersive, plus fun, experience. Researchers can easily see how changing inputs to a model impact the results. We hope you will add ipywidgets to your notebooks, and we're here to help you get started.
