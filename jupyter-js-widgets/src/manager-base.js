@@ -455,6 +455,5 @@ ManagerBase.prototype._get_comm_info = function() {
 };
 
 module.exports = {
-    'ManagerBase': ManagerBase,
-    'version': version
+    ManagerBase: ManagerBase
 };

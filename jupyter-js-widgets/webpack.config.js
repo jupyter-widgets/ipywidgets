@@ -1,9 +1,10 @@
 module.exports = {
-    entry: './index.js',
+    entry: './src/embed-webpack.js',
     output: {
-        filename: 'index.built.js',
-        path: './built/'
+        filename: 'embed.js',
+        path: './dist',
     },
+    devtool: 'source-map',
     module: {
         loaders: [
             { test: /\.css$/, loader: "style-loader!css-loader" },
@@ -17,5 +18,5 @@ module.exports = {
             { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
             { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&minetype=image/svg+xml" }
         ]
-    },
+    }
 };
