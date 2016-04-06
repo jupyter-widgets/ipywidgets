@@ -1,7 +1,9 @@
-nvm install 5.3
-nvm use 5.3
+source ~/.nvm/nvm.sh
+nvm install "v$TRAVIS_NODE_VERSION"
+nvm use "v$TRAVIS_NODE_VERSION"
+nvm alias default "v$TRAVIS_NODE_VERSION"
 npm update -g npm
-npm -v
-node -v
+echo `npm -v`
+echo `node -v`
 cd jupyter-js-widgets
 npm install

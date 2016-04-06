@@ -12,7 +12,7 @@
   "scripts": {
     "build": "npm run css",
     "precss": "rimraf ./css/",
-    "css": "npm run css:less && npm run css:cleancss",
+    "css": "npm run precss && npm run css:less && npm run css:cleancss",
     "test": "npm run test:unit && npm run test:examples",
     "test:unit": "npm run test:unit:firefox && npm run test:unit:chrome",
     "test:unit:default": "karma start karma.conf.js --log-level debug",
@@ -36,6 +36,7 @@
     "bower": "^1.5.3",
     "chai": "^3.4.1",
     "clean-css": "^3.4.6",
+    "css-loader": "^0.23.1",
     "font-awesome": "^4.5.0",
     "karma": "^0.13.15",
     "karma-chai": "^0.1.0",
@@ -52,6 +53,7 @@
     "sinon": "^1.17.2",
     "sinon-chai": "^2.8.0",
     "spawn-sync": "^1.0.14",
+    "style-loader": "^0.13.1",
     "webpack": "^1.12.11"
   },
   "dependencies": {
@@ -59,6 +61,8 @@
     "bootstrap": "^3.3.5",
     "jquery": "^2.1.4",
     "jquery-ui": "^1.10.5",
+    "phosphor-tabs": "^1.0.0-rc.2",
+    "phosphor-widget": "^1.0.0-rc.1",
     "underscore": "^1.8.3"
   }
 }
