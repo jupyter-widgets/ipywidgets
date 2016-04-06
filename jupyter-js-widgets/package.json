@@ -39,6 +39,7 @@
     "css-loader": "^0.23.1",
     "file-loader": "^0.8.5",
     "font-awesome": "^4.5.0",
+    "json-loader": "^0.5.4",
     "karma": "^0.13.15",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^0.2.2",

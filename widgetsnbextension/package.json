@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "css-loader": "^0.23.1",
+    "json-loader": "^0.5.4",
     "rimraf": "^2.5.1",
     "style-loader": "^0.13.0",
     "webpack": "^1.12.12"
