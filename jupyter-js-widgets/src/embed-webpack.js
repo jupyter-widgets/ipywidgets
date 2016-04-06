@@ -22,13 +22,17 @@ const manager = new widgets.EmbedManager();
 // Magic global widget rendering function:
 function renderInlineWidgets(event) {
   var element = event.target || document;
-  var tags = element.querySelectorAll('script.jupyter-widgets');
+  var tags = element.querySelectorAll('script[type="application/vnd.jupyter-embedded-widgets"]');
   for (var i=0; i!=tags.length; ++i) {
     var tag = tags[i];
     var widgetStateObject = JSON.parse(tag.innerHTML);
     var widgetContainer = document.createElement('div');
     widgetContainer.className = 'widget-area';
     manager.display_widget_state(widgetStateObject, widgetContainer).then(function() {
+        if (tag.previousElementSibling &&
+            tag.previousElementSibling.matches('img.jupyter-widget')) {
+            tag.parentElement.removeChild(tag.previousElementSibling);
+        }
         tag.parentElement.insertBefore(widgetContainer, tag);
     });
   }
