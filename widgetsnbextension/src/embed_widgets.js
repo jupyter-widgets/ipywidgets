@@ -11,7 +11,7 @@ var embed_widgets = function() {
                 'drop_defaults': true
             }).then(function(state) {
                 var data = JSON.stringify(state, null, '    ');
-                var value = '<script src="http://perso.crans.org/corlay/built/index.built.js"></script><script>w(' + data + ');</script>';
+                var value = '<script src="https://npmcdn.com/jupyter-js-widgets@0.0.17/dist/embed.js"></script><script type="application/vdn.jupyter-embedded-widgets">' + data + '</script>';
                 var content = $('<textarea/>')
                     .attr('readonly', true)
                     .css({'width': '100%', 'min-height': '250px'})
