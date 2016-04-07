@@ -169,7 +169,7 @@ WidgetManager.set_state_callbacks = function (load_callback, save_callback, opti
      */
     WidgetManager._load_callback = load_callback;
     WidgetManager._save_callback = save_callback;
-    WidgetManager._get_state_options = options;
+    WidgetManager._get_state_options = options || {};
 
     // Use the load callback to immediately load widget states.
     WidgetManager._managers.forEach(function(manager) {
@@ -421,21 +421,19 @@ WidgetManager.prototype._updateCellSnapshots = function(cell, index) {
             that._rasterizeEl(widgetSubarea),
             that._getCellWidgetStates(cell, index),
         ]);
-    }).then(function(canvas, widgetState) {
-
+    }).then(function(results) {
+        var canvas = results[0];
+        var widgetState = results[1];
         // Remove URL information, so only the b64 encoded data
         // exists, because that's what the notebook likes.
-        const imageMimetype = 'image/png';
-        const imageDataUrl = canvas.toDataURL(imageMimetype);
-        const imageData = imageDataUrl.split(',').slice(-1)[0];
+        var imageMimetype = 'image/png';
+        var imageDataUrl = canvas.toDataURL(imageMimetype);
+        var imageData = imageDataUrl.split(',').slice(-1)[0];
 
         // Create a mime bundle.
-        const bundle = {};
+        var bundle = {};
         bundle[imageMimetype] = imageData;
-        bundle['text/html'] = widgets.generateEmbedScript(
-            widgetState,
-            'Could not render widget, embed-manager missing from page context.'
-        );
+        bundle['text/html'] = widgets.generateEmbedScript(widgetState, imageDataUrl);
         widgetSubarea.widgetSnapshot = bundle;
     }).then(function() {
         return that.progressModal.setValue(++that._progress/cells.length);
@@ -447,13 +445,17 @@ WidgetManager.prototype._getCellWidgetStates = function(cell, index) {
     var modelIds = Object.keys(this._models);
     return Promise.all(modelIds.map(function(modelId) {
         return that._models[modelId].then(function(model) {
-            if (model.options.cell_index === index) {
-                return that
-                    ._traverseWidgetTree(model)
-                    .map(function(widget) { return widget.get_state(true); });
-            } else {
+            return widgets.resolvePromisesDict(model.views).then(function(views) {
+                if (Object.keys(views).some(function(k) {
+                    return views[k].options.cell_index == index;
+                })) {
+                    return that._traverseWidgetTree(model)
+                        .map(function(widget) {
+                            return widget.get_state(true);
+                        });
+                }
                 return [null];
-            }
+            });
         });
     })).then(function(states) {
         return states
@@ -477,9 +479,9 @@ WidgetManager.prototype._traverseWidgetTree = function(parentWidget, cache) {
     cache[parentWidget.id] = true;
 
     // Traverse the parent widget's state for child widgets
-    const state = parentWidget.get_state(true);
-    const subWidgets = this._traverseWidgetState(state);
-    const that = this;
+    var state = parentWidget.get_state(true);
+    var subWidgets = this._traverseWidgetState(state);
+    var that = this;
     return _.flatten(subWidgets.map(function(subWidget) {
         return that._traverseWidgetTree(subWidget, cache);
     })).concat([ parentWidget ]);
@@ -487,7 +489,7 @@ WidgetManager.prototype._traverseWidgetTree = function(parentWidget, cache) {
 
 WidgetManager.prototype._traverseWidgetState = function(state) {
     var that = this;
-    if (state instanceof widgets.Widget) {
+    if (state instanceof widgets.WidgetModel) {
         return [state];
     } else if (_.isArray(state)) {
         return _.flatten(state.map(this._traverseWidgetState.bind(this)));
@@ -531,6 +533,7 @@ WidgetManager.prototype._rasterizeEl = function(el) {
         });
     });
 };
+
 
 /**
  * Render the widget views that are live as images and prepend them as
@@ -583,9 +586,11 @@ WidgetManager.prototype.deleteSnapshots = function() {
 };
 
 WidgetManager.prototype._create_comm = function(comm_target_name, model_id, metadata) {
+    var that = this;
     return this._get_connected_kernel().then(function(kernel) {
         if (metadata) {
-            return kernel.comm_manager.new_comm(comm_target_name, metadata, model_id);
+            return kernel.comm_manager.new_comm(comm_target_name, {},
+                                                that.callbacks(), metadata, model_id);
         } else {
             return new Promise(function(resolve) {
                 requirejs(["services/kernels/comm"], function(comm) {

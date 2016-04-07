@@ -3,7 +3,7 @@
 This project is licensed under the terms of the Modified BSD License
 (also known as New or Revised or 3-Clause BSD), as follows:
 
-- Copyright (c) 2015, IPython Development Team
+- Copyright (c) 2016, Jupyter Development Team
 
 All rights reserved.
 
@@ -17,7 +17,7 @@ Redistributions in binary form must reproduce the above copyright notice, this
 list of conditions and the following disclaimer in the documentation and/or
 other materials provided with the distribution.
 
-Neither the name of the IPython Development Team nor the names of its
+Neither the name of the Jupyter Development Team nor the names of its
 contributors may be used to endorse or promote products derived from this
 software without specific prior written permission.
 
@@ -32,28 +32,29 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-## About the IPython Development Team
+## About the Jupyter Development Team
 
-The IPython Development Team is the set of all contributors to the IPython project.
-This includes all of the IPython subprojects.
+The Jupyter Development Team is the set of all contributors to the Jupyter project.
+This includes all of the Jupyter subprojects.
 
 The core team that coordinates development on GitHub can be found here:
-https://github.com/ipython/.
+- https://github.com/jupyter/
+- https://github.com/ipython/ 
 
 ## Our Copyright Policy
 
-IPython uses a shared copyright model. Each contributor maintains copyright
-over their contributions to IPython. But, it is important to note that these
-contributions are typically only changes to the repositories. Thus, the IPython
+Jupyter uses a shared copyright model. Each contributor maintains copyright
+over their contributions to Jupyter. But, it is important to note that these
+contributions are typically only changes to the repositories. Thus, the Jupyter
 source code, in its entirety is not the copyright of any single person or
-institution.  Instead, it is the collective copyright of the entire IPython
+institution.  Instead, it is the collective copyright of the entire Jupyter
 Development Team.  If individual contributors want to maintain a record of what
 changes/contributions they have specific copyright on, they should indicate
 their copyright in the commit message of the change, when they commit the
-change to one of the IPython repositories.
+change to one of the Jupyter repositories.
 
 With this in mind, the following banner should be used in any source code file
 to indicate the copyright and license terms:
 
-    # Copyright (c) IPython Development Team.
+    # Copyright (c) Jupyter Development Team.
     # Distributed under the terms of the Modified BSD License.

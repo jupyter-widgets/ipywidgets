@@ -1,6 +1,6 @@
 {
   "name": "jupyter-js-widgets",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "Jupyter widget Javascript",
   "author": "Project Jupyter",
   "license": "BSD-3-Clause",
@@ -10,7 +10,7 @@
     "url": "https://github.com/ipython/ipywidgets.git"
   },
   "scripts": {
-    "build": "npm run css",
+    "build": "npm run css && webpack",
     "precss": "rimraf ./css/",
     "css": "npm run precss && npm run css:less && npm run css:cleancss",
     "test": "npm run test:unit && npm run test:examples",
@@ -37,7 +37,9 @@
     "chai": "^3.4.1",
     "clean-css": "^3.4.6",
     "css-loader": "^0.23.1",
+    "file-loader": "^0.8.5",
     "font-awesome": "^4.5.0",
+    "json-loader": "^0.5.4",
     "karma": "^0.13.15",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^0.2.2",

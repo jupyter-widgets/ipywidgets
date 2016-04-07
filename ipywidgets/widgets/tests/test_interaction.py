@@ -565,8 +565,6 @@ def test_int_range_logic():
         w.min = 7
     with nt.assert_raises(TraitError):
         w.max = -1
-    with nt.assert_raises(TraitError):
-        w.upper = 1
 
     w = irsw(min=2, max=3, value=(2, 3))
     check_widget(w, min=2, max=3, value=(2, 3))
@@ -598,10 +596,6 @@ def test_float_range_logic():
         w.min = .7
     with nt.assert_raises(TraitError):
         w.max = -.1
-    with nt.assert_raises(TraitError):
-        w.lower = -.1
-    with nt.assert_raises(TraitError):
-        w.upper = .7
 
     w = frsw(min=2, max=3, value=(2.2, 2.5))
     check_widget(w, min=2, max=3)

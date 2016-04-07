@@ -43,4 +43,5 @@ for (var i in loadedModules) {
             }
         }
     }
+    module.exports['version'] = require('../package.json').version;
 }
