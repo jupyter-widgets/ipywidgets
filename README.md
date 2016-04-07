@@ -38,7 +38,7 @@ or
 Then run
 
     jupyter nbextensions install --py --symlink widgetsnbextension
-    jupyter nbextensions enable --py --symlink widgetsnbextension
+    jupyter nbextensions enable --py widgetsnbextension
 
 See the [Installation](docs/source/user_install.md) section of the documentation for additional details.
 
