@@ -7,7 +7,7 @@ Represents a unicode string using a widget.
 # Distributed under the terms of the Modified BSD License.
 
 from .domwidget import DOMWidget
-from .widget import CallbackDispatcher, register
+from .xobject import CallbackDispatcher, register
 from traitlets import Unicode, Bool
 from warnings import warn
 

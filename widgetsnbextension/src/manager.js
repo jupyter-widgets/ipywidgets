@@ -489,7 +489,7 @@ WidgetManager.prototype._traverseWidgetTree = function(parentWidget, cache) {
 
 WidgetManager.prototype._traverseWidgetState = function(state) {
     var that = this;
-    if (state instanceof widgets.WidgetModel) {
+    if (state instanceof widgets.XObject) {
         return [state];
     } else if (_.isArray(state)) {
         return _.flatten(state.map(this._traverseWidgetState.bind(this)));

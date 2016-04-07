@@ -8,7 +8,7 @@ Represents an enumeration using a widget.
 from collections import OrderedDict
 
 from .domwidget import DOMWidget
-from .widget import register
+from .xobject import register
 from traitlets import (Unicode, Bool, Any, Dict, TraitError, CaselessStrEnum,
                        Tuple, List, Union, observe, validate)
 from ipython_genutils.py3compat import unicode_type

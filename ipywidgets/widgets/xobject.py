@@ -1,4 +1,4 @@
-"""Base Widget class.  Allows user to create widgets in the back-end that render
+"""Base XObject class.  Allows user to create widgets in the back-end that render
 in the IPython notebook front-end.
 """
 
@@ -23,7 +23,7 @@ def _widget_to_json(x, obj):
         return {k: _widget_to_json(v, obj) for k, v in x.items()}
     elif isinstance(x, (list, tuple)):
         return [_widget_to_json(v, obj) for v in x]
-    elif isinstance(x, Widget):
+    elif isinstance(x, XObject):
         return "IPY_MODEL_" + x.model_id
     else:
         return x
@@ -33,8 +33,8 @@ def _json_to_widget(x, obj):
         return {k: _json_to_widget(v, obj) for k, v in x.items()}
     elif isinstance(x, (list, tuple)):
         return [_json_to_widget(v, obj) for v in x]
-    elif isinstance(x, string_types) and x.startswith('IPY_MODEL_') and x[10:] in Widget.widgets:
-        return Widget.widgets[x[10:]]
+    elif isinstance(x, string_types) and x.startswith('IPY_MODEL_') and x[10:] in XObject.widgets:
+        return XObject.widgets[x[10:]]
     else:
         return x
 
@@ -107,12 +107,12 @@ def register(key=None):
     """
     def wrap(widget):
         l = key if key is not None else widget.__module__ + widget.__name__
-        Widget.widget_types[l] = widget
+        XObject.widget_types[l] = widget
         return widget
     return wrap
 
 
-class Widget(LoggingConfigurable):
+class XObject(LoggingConfigurable):
     #-------------------------------------------------------------------------
     # Class attributes
     #-------------------------------------------------------------------------
@@ -126,20 +126,20 @@ class Widget(LoggingConfigurable):
 
         The callback must have the following signature:
         callback(widget)"""
-        Widget._widget_construction_callback = callback
+        XObject._widget_construction_callback = callback
 
     @staticmethod
     def _call_widget_constructed(widget):
         """Static method, called when a widget is constructed."""
-        if Widget._widget_construction_callback is not None and callable(Widget._widget_construction_callback):
-            Widget._widget_construction_callback(widget)
+        if XObject._widget_construction_callback is not None and callable(XObject._widget_construction_callback):
+            XObject._widget_construction_callback(widget)
 
     @staticmethod
     def handle_comm_opened(comm, msg):
         """Static method, called when a widget is constructed."""
         class_name = str(msg['metadata']['widget_class'])
-        if class_name in Widget.widget_types:
-            widget_class = Widget.widget_types[class_name]
+        if class_name in XObject.widget_types:
+            widget_class = XObject.widget_types[class_name]
         else:
             widget_class = import_item(class_name)
         widget = widget_class(comm=comm)
@@ -150,7 +150,7 @@ class Widget(LoggingConfigurable):
     #-------------------------------------------------------------------------
     _model_module = Unicode(None, allow_none=True, help="""A requirejs module name
         in which to find _model_name. If empty, look in the global registry.""").tag(sync=True)
-    _model_name = Unicode('WidgetModel', help="""Name of the backbone model
+    _model_name = Unicode('XObject', help="""Name of the backbone model
         registered in the front-end to create and sync this widget with.""").tag(sync=True)
     _view_module = Unicode(help="""A requirejs module in which to find _view_name.
         If empty, look in the global registry.""").tag(sync=True)
@@ -176,9 +176,9 @@ class Widget(LoggingConfigurable):
     def __init__(self, **kwargs):
         """Public constructor"""
         self._model_id = kwargs.pop('model_id', None)
-        super(Widget, self).__init__(**kwargs)
+        super(XObject, self).__init__(**kwargs)
 
-        Widget._call_widget_constructed(self)
+        XObject._call_widget_constructed(self)
         self.open()
 
     def __del__(self):
@@ -211,7 +211,7 @@ class Widget(LoggingConfigurable):
         self._model_id = self.model_id
 
         self.comm.on_msg(self._handle_msg)
-        Widget.widgets[self.model_id] = self
+        XObject.widgets[self.model_id] = self
 
     @property
     def model_id(self):
@@ -231,7 +231,7 @@ class Widget(LoggingConfigurable):
         When the comm is closed, all of the widget views are automatically
         removed from the front-end."""
         if self.comm is not None:
-            Widget.widgets.pop(self.model_id, None)
+            XObject.widgets.pop(self.model_id, None)
             self.comm.close()
             self.comm = None
             self._ipython_display_ = None
@@ -345,8 +345,8 @@ class Widget(LoggingConfigurable):
         self._display_callbacks.register_callback(callback, remove=remove)
 
     def add_traits(self, **traits):
-        """Dynamically add trait attributes to the Widget."""
-        super(Widget, self).add_traits(**traits)
+        """Dynamically add trait attributes to the XObject."""
+        super(XObject, self).add_traits(**traits)
         for name, trait in traits.items():
             if trait.get_metadata('sync'):
                  self.keys.append(name)
@@ -463,12 +463,12 @@ class Widget(LoggingConfigurable):
 
         # Show view.
         if self._view_name is not None:
-            validated = Widget._version_validated
+            validated = XObject._version_validated
 
             # Before the user tries to display a widget.  Validate that the
             # widget front-end is what is expected.
             if validated is None:
-                loud_error('Widget Javascript not detected.  It may not be installed properly.')
+                loud_error('XObject Javascript not detected.  It may not be installed properly.')
             elif not validated:
                 loud_error('The installed widget Javascript is the wrong version.')
 
@@ -479,12 +479,16 @@ class Widget(LoggingConfigurable):
         """Sends a message to the model in the front-end."""
         self.comm.send(data=msg, buffers=buffers)
 
+class Widget(XObject):
+    def __init__(self, *args, **kwargs):
+        warn('Widget is deprecated, use XObject instead')
+        super(Widget, self).__init__(*args, **kwargs)
 
-Widget._version_validated = None
+XObject._version_validated = None
 def handle_version_comm_opened(comm, msg):
     """Called when version comm is opened, because the front-end wants to
     validate the version."""
     def handle_version_message(msg):
-        Widget._version_validated = msg['content']['data']['validated']
+        XObject._version_validated = msg['content']['data']['validated']
     comm.on_msg(handle_version_message)
     comm.send({'version': '4.1.0dev'})

@@ -6,15 +6,15 @@ Propagate changes between widgets on the javascript side.
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from .widget import Widget, register, widget_serialization
+from .xobject import XObject, register, widget_serialization
 from traitlets import Unicode, Tuple, List,Instance, TraitError
 
 
 class WidgetTraitTuple(Tuple):
-    """Traitlet for validating a single (Widget, 'trait_name') pair"""
+    """Traitlet for validating a single (XObject, 'trait_name') pair"""
 
     def __init__(self, **kwargs):
-        super(WidgetTraitTuple, self).__init__(Instance(Widget), Unicode, **kwargs)
+        super(WidgetTraitTuple, self).__init__(Instance(XObject), Unicode, **kwargs)
 
     def validate_elements(self, obj, value):
         value = super(WidgetTraitTuple, self).validate_elements(obj, value)
@@ -31,11 +31,11 @@ class WidgetTraitTuple(Tuple):
 
 
 @register('jupyter.Link')
-class Link(Widget):
-    """Link Widget
+class Link(XObject):
+    """Link XObject
 
-    source: a (Widget, 'trait_name') tuple for the source trait
-    target: a (Widget, 'trait_name') tuple that should be updated
+    source: a (XObject, 'trait_name') tuple for the source trait
+    target: a (XObject, 'trait_name') tuple that should be updated
     """
 
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
@@ -62,8 +62,8 @@ def jslink(attr1, attr2):
 
     Parameters
     ----------
-    source : a (Widget, 'trait_name') tuple for the first trait
-    target : a (Widget, 'trait_name') tuple for the second trait
+    source : a (XObject, 'trait_name') tuple for the first trait
+    target : a (XObject, 'trait_name') tuple for the second trait
 
     Examples
     --------
@@ -77,8 +77,8 @@ def jslink(attr1, attr2):
 class DirectionalLink(Link):
     """A directional link
 
-    source: a (Widget, 'trait_name') tuple for the source trait
-    target: a (Widget, 'trait_name') tuple that should be updated
+    source: a (XObject, 'trait_name') tuple for the source trait
+    target: a (XObject, 'trait_name') tuple that should be updated
     when the source trait changes.
     """
     _model_name = Unicode('DirectionalLinkModel').tag(sync=True)
@@ -92,8 +92,8 @@ def jsdlink(source, target):
 
     Parameters
     ----------
-    source : a (Widget, 'trait_name') tuple for the source trait
-    target : a (Widget, 'trait_name') tuple for the target trait
+    source : a (XObject, 'trait_name') tuple for the source trait
+    target : a (XObject, 'trait_name') tuple for the target trait
 
     Examples
     --------

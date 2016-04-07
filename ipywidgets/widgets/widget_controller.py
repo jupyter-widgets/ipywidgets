@@ -6,13 +6,13 @@ Represents a Gamepad or Joystick controller.
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from .widget import Widget, register, widget_serialization
+from .xobject import XObject, register, widget_serialization
 from .domwidget import DOMWidget
 from traitlets import Bool, Int, Float, Unicode, List, Instance
 
 
 @register('Jupyter.ControllerButton')
-class Button(Widget):
+class Button(XObject):
     """Represents a gamepad or joystick button."""
     value = Float(min=0.0, max=1.0, read_only=True).tag(sync=True)
     pressed = Bool(read_only=True).tag(sync=True)
@@ -24,7 +24,7 @@ class Button(Widget):
 
 
 @register('Jupyter.ControllerAxis')
-class Axis(Widget):
+class Axis(XObject):
     """Represents a gamepad or joystick axis."""
     value = Float(min=-1.0, max=1.0, read_only=True).tag(sync=True)
 

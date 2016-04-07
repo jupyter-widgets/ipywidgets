@@ -8,7 +8,7 @@ click events on the button and trigger backend code when the clicks are fired.
 # Distributed under the terms of the Modified BSD License.
 
 from .domwidget import DOMWidget
-from .widget import CallbackDispatcher, register
+from .xobject import CallbackDispatcher, register
 from traitlets import Unicode, Bool, CaselessStrEnum
 
 
