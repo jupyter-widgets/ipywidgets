@@ -188,11 +188,13 @@ var BoxView = widget.DOMWidgetView.extend({
          * Called when a model is added to the children list.
          */
         var that = this;
+        // we insert a dummy element so the order is preserved when we add
+        // the rendered content later.
         var dummy = document.createElement('div');
         that.box.appendChild(dummy);
 
         return this.create_child_view(model).then(function(view) {
-            dummy.replaceWith(view.el);
+            that.box.replaceChild(view.el, dummy);
 
             // Trigger the displayed event of the child view.
             that.displayed.then(function() {
