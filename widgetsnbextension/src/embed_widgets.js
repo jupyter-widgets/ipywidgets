@@ -5,13 +5,13 @@
 
 var embed_widgets = function() {
     return new Promise(function(resolve) {
-        requirejs(['base/js/namespace', 'base/js/dialog'], function(Jupyter, dialog) {
+        requirejs(['base/js/namespace', 'base/js/dialog', 'jupyter-js-widgets'], function(Jupyter, dialog, widgets) {
 
             Jupyter.WidgetManager._managers[0].get_state({
                 'drop_defaults': true
             }).then(function(state) {
                 var data = JSON.stringify(state, null, '    ');
-                var value = '<script src="http://perso.crans.org/corlay/built/index.built.js"></script><script>w(' + data + ');</script>';
+                var value = '<script src="https://npmcdn.com/jupyter-js-widgets@' + widgets.version + '/dist/embed.js"></script><script type="application/vdn.jupyter-embedded-widgets">' + data + '</script>';
                 var content = $('<textarea/>')
                     .attr('readonly', true)
                     .css({'width': '100%', 'min-height': '250px'})

@@ -14,11 +14,12 @@ To put a Widget on the page, you can display it with IPython's display machinery
 Moving the slider will change the value. Most Widgets have a current value,
 accessible as a `value` attribute.
 """
-
-import os
 from ._version import __version__
 
-def find_static_assets():
-    """Return the path to static assets for widgets (js, css)"""
-    here = os.path.abspath(__file__)
-    return os.path.join(os.path.dirname(here), 'static')
+def _jupyter_nbextension_paths():
+    return [{
+        'section': 'notebook',
+        'src': 'static',
+        'dest': 'widgets',
+        'require': 'widgets/extension'
+    }]

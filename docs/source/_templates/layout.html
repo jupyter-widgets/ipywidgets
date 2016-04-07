@@ -1,0 +1,9 @@
+{# Import the theme's layout. #}
+{% extends "!layout.html" %}
+
+{% set bootswatch_css_custom = ['_static/custom.css'] %}
+
+{% block extrahead %}
+{{ super() }}
+<script src='_static/built/index.js'></script>
+{% endblock extrahead %}

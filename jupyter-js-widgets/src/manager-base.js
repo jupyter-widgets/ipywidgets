@@ -73,7 +73,7 @@ ManagerBase.prototype.setViewOptions = function(options) {
      * implementations.
      */
     return options || {};
-}
+};
 
 ManagerBase.prototype.create_view = function(model, options) {
     /**
@@ -402,9 +402,15 @@ ManagerBase.prototype.set_state = function(state, displayOptions) {
             // return it.
             if (that._models[model_id]) {
                 return that._models[model_id].then(function(model) {
-                    return model.set_state(state[model_id].state).then(function() {
-                        return model;
-                    });
+                    if (state[model_id].state) {
+                        return model.set_state(state[model_id].state).then(function() {
+                            return model;
+                        });
+                    } else {
+                        return model.state_change.then(function() {
+                            return model;
+                        });
+                    }
                 });
             }
 
@@ -431,11 +437,17 @@ ManagerBase.prototype.set_state = function(state, displayOptions) {
         return Promise.all(_.map(models, function(model) {
             // Display the views of the model.
             if (state[model.id] !== undefined) {
-                return Promise.all(_.map(state[model.id].views, function(options) {
+                // Display the model using the display options merged with the
+                // options.
+                if (displayOptions && displayOptions.displayOnce && state[model.id].views && state[model.id].views.length) {
+                    return that.display_model(undefined, model, Object.assign({}, displayOptions));
+                } else {
                     // Display the model using the display options merged with the
                     // options.
-                    return that.display_model(undefined, model, Object.assign({}, options, displayOptions));
-                }));
+                    return Promise.all(_.map(state[model.id].views, function(options) {
+                        return that.display_model(undefined, model, Object.assign({}, options, displayOptions));
+                    }));
+                }
             }
         }));
     }).catch(utils.reject('Could not set widget manager state.', true));
@@ -450,6 +462,5 @@ ManagerBase.prototype._get_comm_info = function() {
 };
 
 module.exports = {
-    'ManagerBase': ManagerBase,
-    'version': version
+    ManagerBase: ManagerBase
 };
