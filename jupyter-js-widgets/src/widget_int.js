@@ -400,7 +400,7 @@ var IntTextView = widget.DOMWidgetView.extend({
         if (description.length === 0) {
             this.label.style.display = 'none';
         } else {
-            this.typeset(this.$label, description);
+            this.typeset(this.label, description);
             this.label.style.display = '';
         }
     },
