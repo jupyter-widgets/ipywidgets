@@ -311,7 +311,7 @@ var ControllerView = widget.DOMWidgetView.extend({
 
         that.button_box.appendChild(dummy);
         return this.create_child_view(model).then(function(view) {
-            dummy.replaceWith(view.el);
+            that.button_box.replaceChild(view.el, dummy);
             that.displayed.then(function() {
                 view.trigger('displayed', that);
             });
@@ -325,7 +325,7 @@ var ControllerView = widget.DOMWidgetView.extend({
 
         that.axis_box.appendChild(dummy);
         return this.create_child_view(model).then(function(view) {
-            dummy.replaceWith(view.el);
+            that.axis_box.replaceChild(view.el, dummy);
             that.displayed.then(function() {
                 view.trigger('displayed', that);
             });
