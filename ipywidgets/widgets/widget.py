@@ -16,6 +16,7 @@ from traitlets.config import LoggingConfigurable
 from traitlets.utils.importstring import import_item
 from traitlets import Unicode, Dict, Instance, List, Int, Set, Bytes
 from ipython_genutils.py3compat import string_types, PY3
+from IPython.display import display
 
 
 def _widget_to_json(x, obj):
@@ -472,7 +473,21 @@ class Widget(LoggingConfigurable):
             elif not validated:
                 loud_error('The installed widget Javascript is the wrong version.')
 
+
+            # TODO: delete this sending of a comm message when the display statement
+            # below works. Then add a 'text/plain' mimetype to the dictionary below.
             self._send({"method": "display"})
+
+            # The 'application/vnd.jupyter.widget' mimetype has not been registered yet.
+            # See the registration process and naming convention at
+            # http://tools.ietf.org/html/rfc6838
+            # and the currently registered mimetypes at
+            # http://www.iana.org/assignments/media-types/media-types.xhtml.
+            # We don't have a 'text/plain' entry so that the display message will be
+            # will be invisible in the current notebook.
+            data = { 'application/vnd.jupyter.widget': self._model_id }
+            display(data, raw=True)
+
             self._handle_displayed(**kwargs)
 
     def _send(self, msg, buffers=None):
