@@ -586,9 +586,11 @@ WidgetManager.prototype.deleteSnapshots = function() {
 };
 
 WidgetManager.prototype._create_comm = function(comm_target_name, model_id, metadata) {
+    var that = this;
     return this._get_connected_kernel().then(function(kernel) {
         if (metadata) {
-            return kernel.comm_manager.new_comm(comm_target_name, metadata, model_id);
+            return kernel.comm_manager.new_comm(comm_target_name, {},
+                                                that.callbacks(), metadata, model_id);
         } else {
             return new Promise(function(resolve) {
                 requirejs(["services/kernels/comm"], function(comm) {
