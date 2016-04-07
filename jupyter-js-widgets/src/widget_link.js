@@ -6,9 +6,9 @@ var widget = require("./widget");
 var $ = require("./jquery");
 var _ = require("underscore");
 
-var BaseLinkModel = widget.WidgetModel.extend({
+var BaseLinkModel = widget.XObject.extend({
 
-    defaults: _.extend({}, widget.WidgetModel.prototype.defaults, {
+    defaults: _.extend({}, widget.XObject.prototype.defaults, {
         target: undefined,
         source: undefined,
     }),
@@ -45,7 +45,7 @@ var BaseLinkModel = widget.WidgetModel.extend({
     serializers: _.extend({
         target: {deserialize: widget.unpack_models},
         source: {deserialize: widget.unpack_models},
-    }, widget.WidgetModel.serializers),
+    }, widget.XObject.serializers),
 
 });
 

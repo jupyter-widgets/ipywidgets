@@ -137,7 +137,7 @@ ManagerBase.prototype.handle_comm_open = function (comm, msg) {
  * @param  {Object} options - same options as new_model but, comm is not
  *                          required and additional options are available.
  * @param  {Object} serialized_state - serialized model attributes.
- * @return {Promise<WidgetModel>}
+ * @return {Promise<XObject>}
  */
 ManagerBase.prototype.new_widget = function(options, serialized_state) {
     var commPromise;
@@ -242,7 +242,7 @@ ManagerBase.prototype.new_model = function(options, serialized_state) {
      * --------
      * JS:
      * Jupyter.notebook.kernel.widget_manager.new_model({
-     *      model_name: 'WidgetModel',
+     *      model_name: 'XObject',
      *      widget_class: 'Jupyter.IntSlider'
      *  })
      *  .then(function(model) { console.log('Create success!', model); },

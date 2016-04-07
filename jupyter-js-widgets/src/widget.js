@@ -34,11 +34,11 @@ var unpack_models = function unpack_models(value, manager) {
     }
 };
 
-var WidgetModel = Backbone.Model.extend({
+var XObject = Backbone.Model.extend({
 
     defaults: {
         _model_module: "jupyter-js-widgets",
-        _model_name: "WidgetModel",
+        _model_name: "XObject",
         _view_module: "jupyter-js-widgets",
         _view_name: null,
         msg_throttle: 3
@@ -48,7 +48,7 @@ var WidgetModel = Backbone.Model.extend({
         /**
          * Constructor
          *
-         * Creates a WidgetModel instance.
+         * Creates a XObject instance.
          *
          * Parameters
          * ----------
@@ -73,11 +73,7 @@ var WidgetModel = Backbone.Model.extend({
 
         this.views = {};
 
-        if (comm) {
-            // Remember comm associated with the model.
-            this.comm = comm;
-            comm.model = this;
-
+    initialize: function() {
             // Hook comm messages up to model.
             comm.on_close(_.bind(this._handle_comm_closed, this));
             comm.on_msg(_.bind(this._handle_comm_msg, this));
@@ -87,7 +83,7 @@ var WidgetModel = Backbone.Model.extend({
             this.comm_live = false;
         }
 
-        WidgetModel.__super__.constructor.apply(this, [attributes]);
+        XObject.__super__.constructor.apply(this, [attributes]);
     },
 
     send: function (content, callbacks, buffers) {
@@ -243,7 +239,7 @@ var WidgetModel = Backbone.Model.extend({
         /**
          * Set a value.
          */
-        var return_value = WidgetModel.__super__.set.apply(this, arguments);
+        var return_value = XObject.__super__.set.apply(this, arguments);
 
         // Backbone only remembers the diff of the most recent set()
         // operation.  Calling set multiple times in a row results in a
@@ -506,8 +502,15 @@ var WidgetViewMixin = {
     }
 };
 
-var DOMWidgetModel = WidgetModel.extend({
-    defaults: _.extend({}, WidgetModel.prototype.defaults, {
+var WidgetModel = XObject.extend({
+    constructor() {
+        console.warn('WidgetModel is deprecate, use XObject instead');
+        XObject.prototype.apply(this, arguments);
+    }
+});
+
+var DOMWidgetModel = XObject.extend({
+    defaults: _.extend({}, XObject.prototype.defaults, {
         layout: undefined,
         visible: true,
         _dom_classes: [],
@@ -532,7 +535,7 @@ var DOMWidgetModel = WidgetModel.extend({
 }, {
     serializers: _.extend({
         layout: {deserialize: unpack_models},
-    }, WidgetModel.serializers),
+    }, XObject.serializers),
 });
 
 var DOMWidgetViewMixin = {
@@ -824,7 +827,7 @@ var DOMWidgetView = WidgetView.extend(DOMWidgetViewMixin);
 
 var widget = {
     unpack_models: unpack_models,
-    WidgetModel: WidgetModel,
+    XObject: XObject,
     WidgetViewMixin: WidgetViewMixin,
     DOMWidgetViewMixin: DOMWidgetViewMixin,
     ViewList: ViewList,
@@ -833,6 +836,8 @@ var widget = {
     // For backwards compatibility.
     WidgetView: WidgetView,
     DOMWidgetView: DOMWidgetView,
+    // TODO: Remove in ipywidget 6.0
+    WidgetModel: WidgetModel,
 };
 
 module.exports = widget;

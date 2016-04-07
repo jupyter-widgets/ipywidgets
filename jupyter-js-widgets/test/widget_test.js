@@ -9,7 +9,7 @@ describe("Widget", function() {
         this.modelId = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
         return this.manager.new_widget({
             model_module: 'jupyter-js-widgets',
-            model_name: 'WidgetModel',
+            model_name: 'XObject',
             model_id: this.modelId,
             widget_class: 'ipywidgets.Widget'
         }).then(model => {

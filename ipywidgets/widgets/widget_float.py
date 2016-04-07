@@ -7,7 +7,7 @@ Represents an unbounded float using a widget.
 # Distributed under the terms of the Modified BSD License.
 
 from .domwidget import DOMWidget
-from .widget import register
+from .xobject import register
 from .trait_types import Color
 from traitlets import (Unicode, CFloat, Bool, CaselessStrEnum,
                        Tuple, TraitError, validate)

@@ -34,8 +34,8 @@ var css_properties = {
 /**
  * Represents a group of CSS style attributes
  */
-var LayoutModel = widget.WidgetModel.extend({
-    defaults: _.extend({}, widget.WidgetModel.prototype.defaults, {
+var LayoutModel = widget.XObject.extend({
+    defaults: _.extend({}, widget.XObject.prototype.defaults, {
         _model_name: "LayoutModel",
         _view_name: "LayoutView"
     }, css_properties),

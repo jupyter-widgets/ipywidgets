@@ -9,7 +9,7 @@ Represents an image in the frontend using a widget.
 import base64
 
 from .domwidget import DOMWidget
-from .widget import register
+from .xobject import register
 from traitlets import Unicode, CUnicode, Bytes
 
 
