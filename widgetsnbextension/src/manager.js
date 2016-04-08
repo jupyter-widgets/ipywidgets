@@ -417,9 +417,11 @@ WidgetManager.prototype._updateCellSnapshots = function(cell, index) {
     return that.progressModal.setText(
         'Rendering widget ' + String(index + 1) + '/' + String(cells.length) + ' ...'
     ).then(function() {
+        return that._widgetGraph();
+    }).then(function(widgetGraph) {
         return Promise.all([
             that._rasterizeEl(widgetSubarea),
-            that._getCellWidgetStates(cell, index),
+            that._getCellWidgetStates(index, widgetGraph),
         ]);
     }).then(function(results) {
         var canvas = results[0];
@@ -440,7 +442,111 @@ WidgetManager.prototype._updateCellSnapshots = function(cell, index) {
     });
 };
 
-WidgetManager.prototype._getCellWidgetStates = function(cell, index) {
+/**
+ * Construct a widget relationship graph from the widget state
+ *
+ * O(N*M) for N widgets and M max widget state depth (M usually ~2)
+ * @return {Array<Node>} where Node is an object of {widget, children, parents}
+ */
+WidgetManager.prototype._widgetGraph = function() {
+    function Node(widget, children, parents) {
+        this.widget = widget;
+        this.children = children || [];
+        this.parents = parents || [];
+    }
+
+    // Access each known model, make sure a node exists with the correct children
+    var that = this;
+    var modelIds = Object.keys(this._models);
+    var nodes = {};
+    return Promise.all(modelIds.map(function(modelId) {
+        return that._models[modelId].then(function(model) {
+            if (!nodes[modelId]) {
+                nodes[modelId] = new Node(model);
+            }
+
+            // Traverse the parent widget's state for child widgets
+            var state = model.get_state(true);
+            nodes[modelId].children = that._findStateChildWidgets(state).map(function(childWidget) {
+                if (!nodes[childWidget.id]) {
+                    nodes[childWidget.id] = new Node(childWidget);
+                }
+                nodes[childWidget.id].parents.push(nodes[modelId]);
+                return nodes[childWidget.id];
+            });
+            return nodes[modelId];
+        });
+    })).then(function() {
+        return nodes;
+    });
+};
+
+/**
+ * Finds all of the child widgets inside given widget state
+ *
+ * O(N) where N is the state depth
+ * @param  {object} state resolved widget state object
+ * @return {Array<WidgetModel>} children
+ */
+WidgetManager.prototype._findStateChildWidgets = function(state) {
+    var that = this;
+    if (state instanceof widgets.WidgetModel) {
+        return [state];
+    } else if (_.isArray(state)) {
+        return _.flatten(state.map(this._findStateChildWidgets.bind(this)));
+    } else if (state instanceof Object) {
+        var states = [];
+        _.each(state, function(value, key) {
+            states.push(that._findStateChildWidgets(value));
+        });
+        return _.flatten(states);
+    } else {
+        return [];
+    }
+};
+
+/**
+ * Find all relatives of the widget of a widget graph
+ *
+ * O(N) for N widgets
+ * @param  {Node} widgetNode - from _widgetGraph
+ * @return {Array<WidgetModel>}
+ */
+WidgetManager.prototype._findWidgetRelatives = function(widgetNode) {
+    return this._findWidgetRelativeNodes(widgetNode).map(function(node) {
+        return node.widget;
+    });
+};
+
+/**
+ * Find all relatives of the widget of a widget graph
+ *
+ * O(N) for N widgets
+ * @param  {Node} widgetNode - from _widgetGraph
+ * @return {Array<Node>} widgetNodes
+ */
+WidgetManager.prototype._findWidgetRelativeNodes = function(widgetNode, cache) {
+    // Memoization
+    if (!cache) cache = {};
+
+    if (!cache[widgetNode.id]) {
+        cache[widgetNode.id] = true;
+
+        return [widgetNode]
+            .concat(this._findWidgetRelativeNodes(widgetNode.children, cache))
+            .concat(this._findWidgetRelativeNodes(widgetNode.parents, cache));
+    } else {
+        return [];
+    }
+};
+
+/**
+ * Get the widget states associated with a particular cell.
+ * @param  {number} index - index of the cell
+ * @param  {object} widgetGraph - object containing widget graph nodes by id
+ * @return {object} widget state for use with manager.set_state
+ */
+WidgetManager.prototype._getCellWidgetStates = function(index, widgetGraph) {
     var that = this;
     var modelIds = Object.keys(this._models);
     return Promise.all(modelIds.map(function(modelId) {
@@ -449,59 +555,21 @@ WidgetManager.prototype._getCellWidgetStates = function(cell, index) {
                 if (Object.keys(views).some(function(k) {
                     return views[k].options.cell_index == index;
                 })) {
-                    return that._traverseWidgetTree(model)
-                        .map(function(widget) {
-                            return widget.get_state(true);
-                        });
+                    return that._findWidgetRelatives(widgetGraph[modelId]).map(function(subModel) {
+                        return subModel.id;
+                    });
                 }
-                return [null];
+                return [];
             });
         });
-    })).then(function(states) {
-        return states
+    })).then(function(ids) {
+        var validIds = _.uniq(ids
             .reduce(function(a, b) { return a.concat(b); }, [])
-            .filter(function(state) { return state !== null; });
-    });
-};
-
-WidgetManager.prototype._traverseWidgetTree = function(parentWidget, cache) {
-    // Setup a cache if it doesn't already exist
-    if (!cache) {
-        cache = {};
-    }
-
-    // Don't continue if this widget has already been traversed
-    if (parentWidget.id in cache) {
-        return [];
-    }
-
-    // Remember that this widget has been traversed
-    cache[parentWidget.id] = true;
-
-    // Traverse the parent widget's state for child widgets
-    var state = parentWidget.get_state(true);
-    var subWidgets = this._traverseWidgetState(state);
-    var that = this;
-    return _.flatten(subWidgets.map(function(subWidget) {
-        return that._traverseWidgetTree(subWidget, cache);
-    })).concat([ parentWidget ]);
-};
-
-WidgetManager.prototype._traverseWidgetState = function(state) {
-    var that = this;
-    if (state instanceof widgets.WidgetModel) {
-        return [state];
-    } else if (_.isArray(state)) {
-        return _.flatten(state.map(this._traverseWidgetState.bind(this)));
-    } else if (state instanceof Object) {
-        var states = [];
-        _.each(state, function(value, key) {
-            states.push(that._traverseWidgetState(value));
+            .filter(function(state) { return state !== null; }));
+        return that.get_state({ drop_defaults: true }).then(function(state) {
+            return _.pick(state, validIds);
         });
-        return _.flatten(states);
-    } else {
-        return [];
-    }
+    });
 };
 
 /**
@@ -533,7 +601,6 @@ WidgetManager.prototype._rasterizeEl = function(el) {
         });
     });
 };
-
 
 /**
  * Render the widget views that are live as images and prepend them as
