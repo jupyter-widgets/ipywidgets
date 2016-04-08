@@ -3,10 +3,6 @@
 
 // HACK: node bootstrap requires this.
 global.jQuery = global.$ = require('./jquery');
-var _ = require('underscore');
-
-var managerBase = require("./manager-base");
-var widget = require("./widget");
 
 module.exports = {
     shims: {
@@ -15,11 +11,11 @@ module.exports = {
 };
 
 var loadedModules = [
-    managerBase,
+    require("./manager-base"),
     require("./embed-helper"),
     require("./embed-manager"),
     require("./utils"),
-    widget,
+    require("./widget"),
     require("./widget_layout"),
     require("./widget_link"),
     require("./widget_bool"),
