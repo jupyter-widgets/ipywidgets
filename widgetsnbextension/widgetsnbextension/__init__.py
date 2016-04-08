@@ -15,6 +15,7 @@ Moving the slider will change the value. Most Widgets have a current value,
 accessible as a `value` attribute.
 """
 from ._version import __version__
+from warnings import warn
 
 def _jupyter_nbextension_paths():
     return [{
@@ -23,3 +24,8 @@ def _jupyter_nbextension_paths():
         'dest': 'widgets',
         'require': 'widgets/extension'
     }]
+
+def find_static_assets():
+    warn("""To use widgets nbextension, you'll need to update your
+        version of the Jupyter notebook to version 4.2 or later.""")
+    return []
