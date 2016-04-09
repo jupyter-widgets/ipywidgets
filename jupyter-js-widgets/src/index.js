@@ -30,6 +30,7 @@ var loadedModules = [
     require("./widget_string"),
     require("./widget_controller"),
 ];
+
 for (var i in loadedModules) {
     if (loadedModules.hasOwnProperty(i)) {
         var loadedModule = loadedModules[i];
@@ -39,5 +40,6 @@ for (var i in loadedModules) {
             }
         }
     }
-    module.exports['version'] = require('../package.json').version;
 }
+
+module.exports['version'] = require('../package.json').version;
