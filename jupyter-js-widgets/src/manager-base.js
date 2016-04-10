@@ -274,13 +274,13 @@ ManagerBase.prototype.new_model = function(options, serialized_state) {
     } else if (options.comm) {
         model_id = options.comm.comm_id;
     } else {
-        throw new Error('Neither comm nor model_id provided in options object.  Atleast one must exist.');
+        throw new Error('Neither comm nor model_id provided in options object. At least one must exist.');
     }
     var model_promise = utils.loadClass(options.model_name,
                                         options.model_module,
                                         ManagerBase._model_types)
         .then(function(ModelType) {
-            return ModelType._deserialize_state(serialized_state || ModelType.prototype.defaults, that).then(function(attributes) {
+            return ModelType._deserialize_state(serialized_state || {}, that).then(function(attributes) {
                 var widget_model = new ModelType(that, model_id, options.comm, attributes);
                 widget_model.once('comm:close', function () {
                     delete that._models[model_id];
@@ -397,15 +397,10 @@ ManagerBase.prototype.set_state = function(state, displayOptions) {
             // return it.
             if (that._models[model_id]) {
                 return that._models[model_id].then(function(model) {
-                    if (state[model_id].state) {
-                        return model.set_state(state[model_id].state).then(function() {
-                            return model;
-                        });
-                    } else {
-                        return model.state_change.then(function() {
-                            return model;
-                        });
-                    }
+                    return model.constructor._deserialize_state(state[model_id].state, that).then(function(attributes) {
+                        model.set_state(attributes);
+                        return model;
+                    });
                 });
             }
 
