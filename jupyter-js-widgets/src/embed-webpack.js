@@ -14,12 +14,20 @@ require('jquery-ui');
 require('jquery-ui/themes/smoothness/jquery-ui.min.css');
 require('../css/widgets.min.css');
 
-const widgets = require('./index');
-console.info('jupyter-js-widgets loaded successfully');
+// Define jupyter-js-widget requirejs module
+// This is needed for custom widget model to be able to require
+// jupyter-js-widgets.
+var widgets = require('./index');
 
-const manager = new widgets.EmbedManager();
+if (window.define) {
+    window.define('jupyter-js-widgets', function() {
+        return widgets;
+    });
+}
 
 // Magic global widget rendering function:
+var manager = new widgets.EmbedManager();
+
 function renderInlineWidgets(event) {
   var element = event.target || document;
   var tags = element.querySelectorAll('script[type="application/vnd.jupyter-embedded-widgets"]');
@@ -38,11 +46,10 @@ function renderInlineWidgets(event) {
   }
 }
 
-// Module exports
-exports.manager = manager;
-exports.renderInlineWidgets = renderInlineWidgets;
-
-// Set window globals
-window.manager = manager;
-
 window.addEventListener('load', renderInlineWidgets);
+
+// Module exports
+module.exports = {
+    manager: manager,
+    renderInlineWidgets: renderInlineWidgets
+}
