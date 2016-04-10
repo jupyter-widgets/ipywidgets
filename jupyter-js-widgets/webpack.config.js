@@ -1,8 +1,11 @@
+var version = require('./package.json').version;
+
 module.exports = {
     entry: './src/embed-webpack.js',
     output: {
         filename: 'embed.js',
         path: './dist',
+        publicPath: 'https://npmcdn.com/jupyter-js-widgets@' + version + '/dist/'
     },
     devtool: 'source-map',
     module: {
