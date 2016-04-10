@@ -355,7 +355,7 @@ ManagerBase.prototype.get_state = function(options) {
                     state[model_id] = {
                         model_name: model.name,
                         model_module: model.module,
-                        state: model.get_state(options.drop_defaults),
+                        state: model.constructor._serialize_state(model.get_state(options.drop_defaults), that),
                         views: [],
                     };
 
