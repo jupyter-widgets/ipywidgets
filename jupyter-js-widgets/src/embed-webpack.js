@@ -12,6 +12,7 @@ require('jquery-ui');
 
 // Load styling
 require('jquery-ui/themes/smoothness/jquery-ui.min.css');
+require('font-awesome/css/font-awesome.css');
 require('../css/widgets.min.css');
 
 // Define jupyter-js-widget requirejs module
