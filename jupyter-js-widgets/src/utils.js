@@ -66,14 +66,23 @@ function loadClass(class_name, module_name, registry) {
 
             // If the module is jupyter-js-widgets, we can just self import.
             var modulePromise;
-            if (module_name === 'jupyter-js-widgets') {
+            var requirejsDefined = typeof window !== 'undefined' && window.requirejs;
+            if (requirejsDefined) {
+                if (module_name !== 'jupyter-js-widgets' || window.requirejs.defined('jupyter-js-widgets')) {
+                    modulePromise = new Promise(function(innerResolve, innerReject) {
+                        window.requirejs([module_name], function(module) {
+                            innerResolve(module);
+                        }, innerReject);
+                    });
+                } else if (module_name === 'jupyter-js-widgets') {
+                    modulePromise = Promise.resolve(require('../'));
+                }
+            } else if (module_name === 'jupyter-js-widgets') {
                 modulePromise = Promise.resolve(require('../'));
             } else {
-                modulePromise = new Promise(function(innerResolve, innerReject) {
-                    window.require([module_name], function(module) {
-                        innerResolve(module);
-                    }, innerReject);
-                });
+                // FUTURE: Investigate dynamic loading methods other than require.js.
+                throw new Error(['In order to use third party widgets, you ',
+                    'must have require.js loaded on the page.'].join(''));
             }
 
             modulePromise.then(function(module) {
