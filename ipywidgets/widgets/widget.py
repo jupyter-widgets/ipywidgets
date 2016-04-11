@@ -148,11 +148,11 @@ class Widget(LoggingConfigurable):
     #-------------------------------------------------------------------------
     # Traits
     #-------------------------------------------------------------------------
-    _model_module = Unicode(None, allow_none=True, help="""A requirejs module name
+    _model_module = Unicode('jupyter-js-widgets', help="""A requirejs module name
         in which to find _model_name. If empty, look in the global registry.""").tag(sync=True)
     _model_name = Unicode('WidgetModel', help="""Name of the backbone model
         registered in the front-end to create and sync this widget with.""").tag(sync=True)
-    _view_module = Unicode(help="""A requirejs module in which to find _view_name.
+    _view_module = Unicode(None, allow_none=True, help="""A requirejs module in which to find _view_name.
         If empty, look in the global registry.""").tag(sync=True)
     _view_name = Unicode(None, allow_none=True, help="""Default view registered in the front-end
         to use to represent the widget.""").tag(sync=True)
