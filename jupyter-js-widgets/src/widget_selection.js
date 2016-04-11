@@ -759,7 +759,8 @@ var SelectionSliderModel = SelectionModel.extend({
         _model_name: 'SelectionSliderModel',
         _view_name: 'SelectionSliderView',
         orientation: 'horizontal',
-        readout: true
+        readout: true,
+        continuous_update: true
     })
 });
 
@@ -776,9 +777,11 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         this.$el.append(this.label);
 
         this.$slider = $('<div />')
-            .slider({})
-            .addClass('slider')
-            .on('slidechange', $.proxy(this.handleSliderChange, this));
+            .slider({
+                slide: this.handleSliderChange.bind(this),
+                stop: this.handleSliderChanged.bind(this)
+            })
+            .addClass('slider');
 
         // Put the slider in a container
         this.slider_container = document.createElement('div');

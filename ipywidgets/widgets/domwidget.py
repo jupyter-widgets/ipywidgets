@@ -13,8 +13,8 @@ from warnings import warn # TODO: Remove when traitlet deprection is removed pos
 class DOMWidget(Widget):
     """Widget that can be inserted into the DOM"""
 
-    _model_name = Unicode('DOMWidgetModel', help="""Name of the backbone model
-        registered in the front-end to create and sync this widget with.""").tag(sync=True)
+    _model_name = Unicode('DOMWidgetModel').tag(sync=True)
+
     visible = Bool(True, allow_none=True, help="Whether the widget is visible.  False collapses the empty space, while None preserves the empty space.").tag(sync=True)  # TODO: Deprecated in ipywidgets 5.0
     _dom_classes = Tuple(help="DOM classes applied to widget.$el.").tag(sync=True)
 

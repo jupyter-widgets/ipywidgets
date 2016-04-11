@@ -194,11 +194,12 @@ class SelectionSlider(_Selection):
     _model_name = Unicode('SelectionSliderModel').tag(sync=True)
 
     orientation = CaselessStrEnum(
-        values=['horizontal', 'vertical'],
-        default_value='horizontal', allow_none=False, sync=True,
-        help="""Vertical or horizontal.""")
-    readout = Bool(True, sync=True,
-        help="""Display the current selected label next to the slider""")
+        values=['horizontal', 'vertical'], default_value='horizontal',
+        allow_none=False, help="Vertical or horizontal.").tag(sync=True)
+    readout = Bool(True,
+        help="Display the current selected label next to the slider").tag(sync=True)
+    continuous_update = Bool(True,
+        help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
 
 
 @register('Jupyter.SelectMultiple')

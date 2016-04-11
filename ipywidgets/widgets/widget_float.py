@@ -133,7 +133,7 @@ class FloatSlider(_BoundedFloat):
     _range = Bool(False, help="Display a range selector").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
     slider_color = Color(None, allow_none=True).tag(sync=True)
-    continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)
+    continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
 
 
 @register('Jupyter.FloatProgress')

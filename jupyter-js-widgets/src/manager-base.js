@@ -285,7 +285,7 @@ ManagerBase.prototype.new_model = function(options, serialized_state) {
                                         options.model_module,
                                         ManagerBase._model_types)
         .then(function(ModelType) {
-            return ModelType._deserialize_state(serialized_state || ModelType.prototype.defaults, that).then(function(attributes) {
+            return ModelType._deserialize_state(serialized_state || {}, that).then(function(attributes) {
                 var widget_model = new ModelType(that, model_id, options.comm, attributes);
                 widget_model.once('comm:close', function () {
                     delete that._models[model_id];
@@ -360,7 +360,7 @@ ManagerBase.prototype.get_state = function(options) {
                     state[model_id] = {
                         model_name: model.name,
                         model_module: model.module,
-                        state: model.get_state(options.drop_defaults),
+                        state: model.constructor._serialize_state(model.get_state(options.drop_defaults), that),
                         views: [],
                     };
 
@@ -402,15 +402,10 @@ ManagerBase.prototype.set_state = function(state, displayOptions) {
             // return it.
             if (that._models[model_id]) {
                 return that._models[model_id].then(function(model) {
-                    if (state[model_id].state) {
-                        return model.set_state(state[model_id].state).then(function() {
-                            return model;
-                        });
-                    } else {
-                        return model.state_change.then(function() {
-                            return model;
-                        });
-                    }
+                    return model.constructor._deserialize_state(state[model_id].state, that).then(function(attributes) {
+                        model.set_state(attributes);
+                        return model;
+                    });
                 });
             }
 

@@ -1,6 +1,6 @@
 {
   "name": "jupyter-js-widgets",
-  "version": "0.0.18",
+  "version": "0.0.22",
   "description": "Jupyter widget Javascript",
   "author": "Project Jupyter",
   "license": "BSD-3-Clause",
@@ -56,6 +56,7 @@
     "sinon-chai": "^2.8.0",
     "spawn-sync": "^1.0.14",
     "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
     "webpack": "^1.12.11"
   },
   "dependencies": {
