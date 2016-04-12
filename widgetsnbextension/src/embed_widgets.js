@@ -21,6 +21,7 @@ var embed_widgets = function() {
                     title: 'Embed widgets',
                     body: content,
                     keyboard_manager: Jupyter.notebook.keyboard_manager,
+                    notebook: Jupyter.notebook,
                     buttons: {
                         'Copy to Clipboard': {
                             class: 'btn-primary',
