@@ -2,11 +2,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-// This file must be webpacked because it contains .css imports
-
 // Load jquery and jquery-ui
 var $ = require('jquery');
-require('jquery-ui');
 window.$ = window.jQuery = $;
 require('jquery-ui');
 
@@ -15,21 +12,30 @@ require('jquery-ui/themes/smoothness/jquery-ui.min.css');
 require('font-awesome/css/font-awesome.css');
 require('../css/widgets.min.css');
 
-// Define jupyter-js-widget requirejs module
-// This is needed for custom widget model to be able to require
-// jupyter-js-widgets.
-var widgets = require('./index');
-
-if (window.define) {
-    window.define('jupyter-js-widgets', function() {
-        return widgets;
-    });
-}
-
 // Magic global widget rendering function:
+var widgets = require('./index');
 var manager = new widgets.EmbedManager();
 
+function loadInlineWidgets(event) {
+    // If requirejs is not on the page on page load, load it from cdn.
+    if (!window.requirejs) {
+        var scriptjs = require('scriptjs');
+        scriptjs('https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js', function() {
+            renderInlineWidgets(event);
+        });
+    } else {
+        renderInlineWidgets(event);
+    }
+}
+
 function renderInlineWidgets(event) {
+  // Define jupyter-js-widget requirejs module
+  // This is needed for custom widget model to be able to require
+  // jupyter-js-widgets.
+  window.define('jupyter-js-widgets', function() {
+      return widgets;
+  });
+
   var element = event.target || document;
   var tags = element.querySelectorAll('script[type="application/vnd.jupyter-embedded-widgets"]');
   for (var i=0; i!=tags.length; ++i) {
@@ -47,7 +53,7 @@ function renderInlineWidgets(event) {
   }
 }
 
-window.addEventListener('load', renderInlineWidgets);
+window.addEventListener('load', loadInlineWidgets);
 
 // Module exports
 module.exports = {
