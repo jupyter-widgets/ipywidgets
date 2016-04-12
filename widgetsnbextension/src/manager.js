@@ -9,6 +9,7 @@ var html2canvas = require("html2canvas");
 var progressModal = require("./progress-modal");
 var saveState = require("./save_state");
 var embedWidgets = require("./embed_widgets");
+var version = require("../package.json").version;
 
 
 // Work around for a logging bug, reported in https://github.com/niklasvh/html2canvas/issues/543
@@ -189,19 +190,19 @@ var url = [window.location.protocol, '//', window.location.host, window.location
 var key = 'widgets:' + url;
 WidgetManager.set_state_callbacks(function() {
     if (Jupyter.notebook.metadata.widgets) {
-        return return Promise.resolve(Jupyter.notebook.metadata.widgets.state);
+        return Promise.resolve(Jupyter.notebook.metadata.widgets.state);
     }
     return Promise.resolve({});
 }, function(state) {
     Jupyter.notebook.metadata.widgets = {
 
         // Persisted widget state version
-        version: '1.0.0',
+        version: version,
 
         // Only persist the views of the widget
         state: _.mapObject(state, function(widgetState) {
             return _.pick(widgetState, 'views');
-        }),
+        })
     };
 });
 
