@@ -28,7 +28,7 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "css-loader": "^0.23.1",
+    "css-loader": "^0.18.0",
     "json-loader": "^0.5.4",
     "rimraf": "^2.5.1",
     "style-loader": "^0.13.0",
