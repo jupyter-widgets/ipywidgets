@@ -20,7 +20,7 @@ function loadInlineWidgets(event) {
     // If requirejs is not on the page on page load, load it from cdn.
     if (!window.requirejs) {
         var scriptjs = require('scriptjs');
-        scriptjs('https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js', function() {
+        scriptjs('https://npmcdn.com/requirejs/require.js', function() {
             renderInlineWidgets(event);
         });
     } else {
