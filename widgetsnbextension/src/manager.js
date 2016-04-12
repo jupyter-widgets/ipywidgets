@@ -75,9 +75,7 @@ var WidgetManager = function (comm_manager, notebook) {
             // Load the initial state of the widget manager if a load callback was
             // registered.
             if (WidgetManager._load_callback) {
-                that.clear_state(true).then(function () {
-                    return WidgetManager._load_callback.call(that);
-                }).then(function(state) {
+                WidgetManager._load_callback.call(that).then(function(state) {
                     that.set_state(state);
                 }).catch(widgets.reject('Error loading widget manager state', true));
             }
@@ -190,12 +188,21 @@ WidgetManager.set_state_callbacks = function (load_callback, save_callback, opti
 var url = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
 var key = 'widgets:' + url;
 WidgetManager.set_state_callbacks(function() {
-    if (localStorage[key]) {
-        return JSON.parse(localStorage[key]);
+    if (Jupyter.notebook.metadata.widgets) {
+        return return Promise.resolve(Jupyter.notebook.metadata.widgets.state);
     }
-    return {};
+    return Promise.resolve({});
 }, function(state) {
-    localStorage[key] = JSON.stringify(state);
+    Jupyter.notebook.metadata.widgets = {
+
+        // Persisted widget state version
+        version: '1.0.0',
+
+        // Only persist the views of the widget
+        state: _.mapObject(state, function(widgetState) {
+            return _.pick(widgetState, 'views');
+        }),
+    };
 });
 
 WidgetManager.prototype._handle_display_view = function (view) {
