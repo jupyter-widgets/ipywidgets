@@ -75,6 +75,16 @@ ManagerBase.prototype.setViewOptions = function(options) {
     return options || {};
 };
 
+ManagerBase.prototype.require_error = function (success_callback) {
+    /**
+     * Takes a requirejs success handler and returns a requirejs error handler.
+     * The default implementation just throws the original error.
+     */
+    return function(err) {
+        throw err;
+    };
+};
+
 ManagerBase.prototype.create_view = function(model, options) {
     /**
      * Creates a promise for a view of a given model
@@ -86,7 +96,7 @@ ManagerBase.prototype.create_view = function(model, options) {
     model.state_change = model.state_change.then(function() {
 
         return utils.loadClass(model.get('_view_name'), model.get('_view_module'),
-        ManagerBase._view_types).then(function(ViewType) {
+        ManagerBase._view_types, that.require_error).then(function(ViewType) {
             var view = new ViewType({
                 model: model,
                 options: that.setViewOptions(options)
@@ -278,7 +288,8 @@ ManagerBase.prototype.new_model = function(options, serialized_state) {
     }
     var model_promise = utils.loadClass(options.model_name,
                                         options.model_module,
-                                        ManagerBase._model_types)
+                                        ManagerBase._model_types,
+                                        that.require_error)
         .then(function(ModelType) {
             return ModelType._deserialize_state(serialized_state || {}, that).then(function(attributes) {
                 var widget_model = new ModelType(that, model_id, options.comm, attributes);
