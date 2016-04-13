@@ -1,5 +1,4 @@
 var version = require('./package.json').version;
-require('es6-promise').polyfill();
 
 module.exports = {
     entry: './src/embed-webpack.js',
