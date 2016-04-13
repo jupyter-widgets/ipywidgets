@@ -432,10 +432,10 @@ ManagerBase.prototype.set_state = function(state, displayOptions) {
                 // Display the model using the display options merged with the
                 // options.
                 if (displayOptions && displayOptions.displayOnce && state[model.id].views && state[model.id].views.length) {
-                    return that.display_model(undefined, model, Object.assign({}, displayOptions));
+                    return that.display_model(undefined, model, _.extend({}, displayOptions));
                 } else {
                     return Promise.all(_.map(state[model.id].views, function(options) {
-                        return that.display_model(undefined, model, Object.assign({}, options, displayOptions));
+                        return that.display_model(undefined, model, _.extend({}, options, displayOptions));
                     }));
                 }
             }
