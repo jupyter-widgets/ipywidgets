@@ -367,16 +367,11 @@ ManagerBase.prototype.get_state = function(options) {
                         model_module: model.module,
                         state: model.constructor._serialize_state(model.get_state(options.drop_defaults), that),
                         views: utils.resolvePromisesDict(model.views).then(function (views) {
-                            var v = [];
-                            for (var id in views) {
-                                if (views.hasOwnProperty(id)) {
-                                    var view = views[id];
-                                    if (view.options !== undefined && view.options.root) {
-                                        v.push(view.options);
-                                    }
-                                }
-                            }
-                            return v;
+                            return _.values(views).filter(function(view) {
+                                    return view.options !== undefined && view.options.root;
+                                }).map(function(view) {
+                                    return view.options;
+                                });
                         })
                     });
                 }
