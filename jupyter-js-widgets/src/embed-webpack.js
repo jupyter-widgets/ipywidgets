@@ -44,7 +44,7 @@ function renderInlineWidgets(event) {
     var tag = tags[i];
     var widgetStateObject = JSON.parse(tag.innerHTML);
     var widgetContainer = document.createElement('div');
-    widgetContainer.className = 'widget-area';
+    widgetContainer.className = 'widget-subarea';
     manager.display_widget_state(widgetStateObject, widgetContainer).then(function() {
         if (tag.previousElementSibling &&
             tag.previousElementSibling.matches('img.jupyter-widget')) {
