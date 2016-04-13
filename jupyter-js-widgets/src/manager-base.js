@@ -353,7 +353,6 @@ ManagerBase.prototype.get_state = function(options) {
     return utils.resolvePromisesDict(this._models).then(function(models) {
         var state = {};
 
-        var model_promises = [];
         for (var model_id in models) {
             if (models.hasOwnProperty(model_id)) {
                 var model = models[model_id];
@@ -363,30 +362,27 @@ ManagerBase.prototype.get_state = function(options) {
                 var displayed_flag = !(options && options.only_displayed) || Object.keys(model.views).length > 0;
                 var live_flag = (options && options.not_live) || model.comm_live;
                 if (displayed_flag && live_flag) {
-                    state[model_id] = {
+                    state[model_id] = utils.resolvePromisesDict({
                         model_name: model.name,
                         model_module: model.module,
                         state: model.constructor._serialize_state(model.get_state(options.drop_defaults), that),
-                        views: [],
-                    };
-
-                    // Get the views that are displayed *now*.
-                    (function(local_state) {
-                        model_promises.push(utils.resolvePromisesDict(model.views).then(function(model_views) {
-                            for (var id in model_views) {
-                                if (model_views.hasOwnProperty(id)) {
-                                    var view = model_views[id];
+                        views: utils.resolvePromisesDict(model.views).then(function (views) {
+                            var v = [];
+                            for (var id in views) {
+                                if (views.hasOwnProperty(id)) {
+                                    var view = views[id];
                                     if (view.options !== undefined && view.options.root) {
-                                        local_state.views.push(view.options);
+                                        v.push(view.options);
                                     }
                                 }
                             }
-                        }));
-                    })(state[model_id]);
+                            return v;
+                        })
+                    });
                 }
             }
         }
-        return Promise.all(model_promises).then(function() { return state; });
+        return utils.resolvePromisesDict(state);
     }).catch(utils.reject('Could not get state of widget manager', true));
 };
 
