@@ -399,7 +399,7 @@ ManagerBase.prototype.set_state = function(state, displayOptions) {
             // return it.
             if (that._models[model_id]) {
                 return that._models[model_id].then(function(model) {
-                    return model.constructor._deserialize_state(state[model_id].state, that).then(function(attributes) {
+                    return model.constructor._deserialize_state(state[model_id].state || {}, that).then(function(attributes) {
                         model.set_state(attributes);
                         return model;
                     });
