@@ -10,7 +10,7 @@ from collections import OrderedDict
 from .domwidget import DOMWidget
 from .widget import register
 from traitlets import (Unicode, Bool, Any, Dict, TraitError, CaselessStrEnum,
-                       Tuple, List, Union, observe, validate)
+                       Tuple, List, Union, observe, validate, default)
 from ipython_genutils.py3compat import unicode_type
 
 def _value_to_label(value, obj):
@@ -46,6 +46,10 @@ class _Selection(DOMWidget):
 
     The keys of this list are also available as _options_labels.
     """)
+    @default('options')
+    def _options_default(self):
+        return []
+
     _options_dict = Dict(read_only=True)
     _options_labels = Tuple(read_only=True).tag(sync=True)
     _options_values = Tuple(read_only=True)
