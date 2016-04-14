@@ -9,6 +9,14 @@ require('jquery-ui');
 // ES6 Promise polyfill
 require('es6-promise').polyfill();
 
+// Element.prototype.matches polyfill
+if (Element && !Element.prototype.matches) {
+    var proto = Element.prototype;
+    proto.matches = proto.matchesSelector ||
+    proto.mozMatchesSelector || proto.msMatchesSelector ||
+    proto.oMatchesSelector || proto.webkitMatchesSelector;
+}
+
 // Load styling
 require('jquery-ui/themes/smoothness/jquery-ui.min.css');
 require('font-awesome/css/font-awesome.css');
