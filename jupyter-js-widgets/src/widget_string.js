@@ -191,7 +191,6 @@ var TextView = widget.DOMWidgetView.extend({
             .appendTo(this.$el)
             .hide();
         this.$textbox = $('<input type="text" />')
-            .addClass('input')
             .addClass('form-control')
             .appendTo(this.$el);
         this.update(); // Set defaults.
