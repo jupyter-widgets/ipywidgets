@@ -1,6 +1,6 @@
 {
   "name": "jupyter-js-widgets",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Jupyter widget Javascript",
   "author": "Project Jupyter",
   "license": "BSD-3-Clause",
@@ -66,6 +66,7 @@
     "jquery": "^2.1.4",
     "jquery-ui": "^1.10.5",
     "scriptjs": "^2.5.8",
+    "semver": "^5.1.0",
     "underscore": "^1.8.3"
   }
 }
