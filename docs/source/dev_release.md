@@ -6,29 +6,40 @@ master and cd into the repo root.  Make sure the version in `widget.py`  matches
 the JS frontend version.  Also check that the frontend version specified in
 `manager-base.js` (`version`) is correct.
 
-Then run the
-following, replacing the square bracketed content with appropriate values:
-
-```bash
-# Remove "dev" from the version.
-nano ipywidgets/_version.py
-python setup.py sdist upload && python setup.py bdist_wheel upload
-cd ../jupyter-js-widgets
+### Publish jupyter-js-widgets
+```
+# nuke the  `dist` and `node_modules`
+git clean -fdx
 npm version [patch/minor/major]
+npm install
 npm publish
-cd ..
-cd widgetsnbextension
-# Update package.json to point to the appropriate version of jupyter-js-widgets
-nano package.json
+```
+
+### Prepare widgetsnbextension npm module  
+ - npm module
+```
+npm update jupyter-js-widgets --save
 npm version [patch/minor/major]
-# Remove "dev" from the version.
-nano widgetsnbextension/_version.py
+```
+
+### Here we commit our changes to the two package.json files
+ - python module
+```
+edit widgetsnbextension/_version.py (remove dev from the version)
 python setup.py sdist upload && python setup.py bdist_wheel upload
-cd ..
-# Increase version to next "dev" version.
-nano ipywidgets/_version.py
-nano widgetsnbextension/widgetsnbextension/_version.py
+
+edit ipywidgets/_version.py (remove dev from the version)
+Change install_requires to point to new widgetsnbextension version
+python setup.py sdist upload && python setup.py bdist_wheel upload
+commit and tag (ipywidgets) release
+```
+
+### Back to dev  
+```
+edit ipywidgets/_version.py (increase version and add dev tag)
+edit widgetsnbextension/widgetsnbextension/_version.py (increase version and add dev tag)
 git add ipywidgets/_version.py
+git add widgetsnbextension/widgetsnbextension/_version.py
 git commit -m "Back to dev"
 git push [upstream master]
 git push [upstream] --tags
