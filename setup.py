@@ -106,7 +106,7 @@ install_requires = setuptools_args['install_requires'] = [
     'ipython>=4.0.0',
     'ipykernel>=4.2.2',
     'traitlets>=4.2.0',
-    'widgetsnbextension>=0.0.2dev',  # TODO: Remove this dependency in 6.0
+    'widgetsnbextension>=1.0.0b1',   # TODO: Remove this dependency in 6.0
                                      # (We should be able to install the python
                                      #  side of ipywidgets on bare python
                                      #  kernels)

@@ -10,6 +10,7 @@ the JS frontend version.  Also check that the frontend version specified in
 ```
 # nuke the  `dist` and `node_modules`
 git clean -fdx
+edit manager-base.py to point "version" to next release of ipywidgets
 npm version [patch/minor/major]
 npm install
 npm publish
@@ -18,17 +19,18 @@ npm publish
 ### Prepare widgetsnbextension npm module  
  - npm module
 ```
-npm update jupyter-js-widgets --save
+edit package.json to point to new jupyter-js-widgets version
 npm version [patch/minor/major]
 ```
 
 ### Here we commit our changes to the two package.json files
  - python module
 ```
-edit widgetsnbextension/_version.py (remove dev from the version)
+edit widgetsnbextension/_version.py (Remove dev from the version.  If it's the first beta, use b1, etc...)
 python setup.py sdist upload && python setup.py bdist_wheel upload
 
 edit ipywidgets/_version.py (remove dev from the version)
+edit ipywidgets/ipywidgets/widget.py at the bottom of the file update the version number to the version number used in the frontend
 Change install_requires to point to new widgetsnbextension version
 python setup.py sdist upload && python setup.py bdist_wheel upload
 commit and tag (ipywidgets) release

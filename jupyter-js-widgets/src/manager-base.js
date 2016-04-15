@@ -3,7 +3,7 @@
 "use strict";
 
 // jupyter-js-widgets version
-var version = '4.1.0dev';
+var version = '5.0.0';
 
 var _ = require("underscore");
 var Backbone = require("backbone");
