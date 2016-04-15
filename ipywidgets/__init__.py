@@ -18,7 +18,7 @@ accessible as a `value` attribute.
 import os
 
 from IPython import get_ipython
-from ._version import version_info, __version__
+from ._version import version_info, __version__, __frontend_version__
 from .widgets import *
 
 

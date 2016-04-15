@@ -16,7 +16,7 @@ npm install
 npm publish
 ```
 
-### Prepare widgetsnbextension npm module  
+### Prepare widgetsnbextension npm module
  - npm module
 ```
 edit package.json to point to new jupyter-js-widgets version
@@ -29,14 +29,14 @@ npm version [patch/minor/major]
 edit widgetsnbextension/_version.py (Remove dev from the version.  If it's the first beta, use b1, etc...)
 python setup.py sdist upload && python setup.py bdist_wheel upload
 
-edit ipywidgets/_version.py (remove dev from the version)
-edit ipywidgets/ipywidgets/widget.py at the bottom of the file update the version number to the version number used in the frontend
+edit ipywidgets/_version.py (remove dev from the version and update the frontend version requirement)
+
 Change install_requires to point to new widgetsnbextension version
 python setup.py sdist upload && python setup.py bdist_wheel upload
 commit and tag (ipywidgets) release
 ```
 
-### Back to dev  
+### Back to dev
 ```
 edit ipywidgets/_version.py (increase version and add dev tag)
 edit widgetsnbextension/widgetsnbextension/_version.py (increase version and add dev tag)
