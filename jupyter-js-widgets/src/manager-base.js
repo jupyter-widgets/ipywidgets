@@ -2,12 +2,10 @@
 // Distributed under the terms of the Modified BSD License.
 "use strict";
 
-// jupyter-js-widgets version
-var version = '5.0.0';
-
 var _ = require("underscore");
 var Backbone = require("backbone");
 var utils = require("./utils");
+var semver = require("semver");
 
 //--------------------------------------------------------------------
 // ManagerBase class
@@ -181,24 +179,6 @@ ManagerBase.prototype.new_widget = function(options, serialized_state) {
 };
 
 /**
- * Parse a version string
- * @param  {string} version i.e. "1.0.2dev" or "2.4"
- * @return {object} version object {major, minor, patch, dev}
- */
-ManagerBase.prototype._parseVersion = function(version) {
-    if (!version) return null;
-    var versionParts = version.split('.');
-    var versionTail = versionParts.slice(-1)[0];
-    var versionSuffix = versionTail.slice(String(parseInt(versionTail)).length);
-    return {
-        major: parseInt(versionParts[0]),
-        minor: versionParts.length > 1 ? parseInt(versionParts[1]) : 0,
-        patch: versionParts.length > 2 ? parseInt(versionParts[2]) : 0,
-        dev: versionSuffix.trim().toLowerCase() === 'dev'
-    };
-};
-
-/**
  * Validate the version of the Javascript against the version requested by
  * the backend.
  * @return {Promise<Boolean>} Whether or not the versions are okay
@@ -207,33 +187,15 @@ ManagerBase.prototype.validateVersion = function() {
     return this._create_comm(this.version_comm_target_name, undefined, {}).then((function(comm) {
         return new Promise((function(resolve, reject) {
             comm.on_msg((function(msg) {
-                var validated = true;
-                var backendVersion = this._parseVersion(msg.content.data.version);
-                if (backendVersion) {
-                    var frontendVersion = this._parseVersion(version);
-                    if (frontendVersion.major !== backendVersion.major) {
-                        validated = false;
-                    }
-                    if (frontendVersion.minor < backendVersion.minor) {
-                        validated = false;
-                    }
-                    if (frontendVersion.patch < backendVersion.patch) {
-                        validated = false;
-                    }
-                    if (frontendVersion.dev && !backendVersion.dev) {
-                        if (!(frontendVersion.patch > backendVersion.patch ||
-                        frontendVersion.minor > backendVersion.minor)) {
-                            validated = false;
-                        }
-                    }
-                } else {
-                    validated = false;
-                }
+                var version = require('../package.json').version;
+                var requirement = msg.content.data.version;
+                var validated = semver.satisfies(version, requirement);
                 comm.send({'validated': validated});
-                if (validated) console.info('Widget backend and frontend versions are compatible');
+                if (validated) {
+                    console.info('Widget backend and frontend versions are compatible');
+                }
                 resolve(validated);
             }).bind(this));
-
             setTimeout(function() {
                 reject(new Error('Timeout while trying to cross validate the widget frontend and backend versions.'));
             }, 3000);

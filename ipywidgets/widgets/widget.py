@@ -487,4 +487,4 @@ def handle_version_comm_opened(comm, msg):
     def handle_version_message(msg):
         Widget._version_validated = msg['content']['data']['validated']
     comm.on_msg(handle_version_message)
-    comm.send({'version': '5.0.0'})
+    comm.send({'version': '~0.3.0'})
