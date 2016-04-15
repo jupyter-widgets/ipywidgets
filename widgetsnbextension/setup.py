@@ -202,6 +202,7 @@ setup_args = dict(
         'sdist': js_prerelease(sdist, strict=True),
         'jsdeps': NPM,
     },
+    include_package_data = True,
 )
 
 if 'develop' in sys.argv or any(a.startswith('bdist') for a in sys.argv):
