@@ -14,7 +14,7 @@ Notebooks come alive when interactive widgets are used. Users gain control of th
 Learning becomes an immersive, plus fun, experience. Researchers can easily see how changing inputs to a model impact the results. We hope you will add ipywidgets to your notebooks, and we're here to help you get started.
 
 ## Features
-A [demonstration notebook](https://github.com/ipython/ipywidgets/blob/master/docs/source/examples/Index.ipynb) provides an overview of the interactive widgets, including:
+A [demonstration notebook](https://github.com/ipython/ipywidgets/blob/master/docs/source/examples/Index.ipynb) provides an overview of the core interactive widgets, including:
 
 - sliders
 - progress bars
@@ -22,6 +22,18 @@ A [demonstration notebook](https://github.com/ipython/ipywidgets/blob/master/doc
 - toggle buttons and checkboxes
 - display areas
 - and more
+
+Besides the widgets already provided with the library, the framework can be
+extended with custom widget libraries. Examples of custom widget libraries
+built upon ipywidgets are
+
+- [bqplot](https://github.com/bloomberg/bqplot) a 2d data visualization library
+  enable custom mouse interaction.
+- [pythreejs](https://github.com/jovyan/pythreejs) a Jupyter - Three.js wrapper,
+  bringing Three.js to the notebook.
+
+The resulting widgets can then be embeded into web pages other than the
+Jupyter notebook.
 
 For detailed information, please refer to the [ipywidgets documentation](http://ipywidgets.readthedocs.org/en/latest/).
 
@@ -37,7 +49,7 @@ or
 
 Then run
 
-    jupyter nbextension install --py --symlink widgetsnbextension
+    jupyter nbextension install --py widgetsnbextension
     jupyter nbextension enable --py widgetsnbextension
 
 See the [Installation](docs/source/user_install.md) section of the documentation for additional details.
