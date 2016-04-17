@@ -28,7 +28,7 @@ extended with custom widget libraries. Examples of custom widget libraries
 built upon ipywidgets are
 
 - [bqplot](https://github.com/bloomberg/bqplot) a 2d data visualization library
-  enable custom mouse interaction.
+  enabling custom user interactions.
 - [pythreejs](https://github.com/jovyan/pythreejs) a Jupyter - Three.js wrapper,
   bringing Three.js to the notebook.
 
