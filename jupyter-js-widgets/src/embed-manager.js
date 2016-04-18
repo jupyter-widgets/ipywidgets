@@ -15,6 +15,7 @@ EmbedManager.prototype.display_widget_state = function(models, el) {
 EmbedManager.prototype.display_view = function(msg, view, options) {
     return Promise.resolve(view).then(function(view) {
         options.el.appendChild(view.el);
+        view.trigger('displayed');
         view.on('remove', function() {
             console.log('View removed', view);
         });
