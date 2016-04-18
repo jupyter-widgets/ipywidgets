@@ -435,7 +435,8 @@ var WidgetModel = Backbone.Model.extend({
             deserialized = state;
         }
         return utils.resolvePromisesDict(deserialized);
-    }
+    },
+
     _serialize_state: function(state, manager) {
         /**
          * Returns a promise for the serialized state. The second argument
