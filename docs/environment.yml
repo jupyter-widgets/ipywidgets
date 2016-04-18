@@ -1,0 +1,14 @@
+name: ipywidget_docs
+dependencies:
+- python=3.5
+- sphinx_rtd_theme
+- jinja2
+- tornado
+- nbformat
+- jupyter_client
+- ipykernel
+- ipywidgets
+- pip:
+  - sphinx==1.3.6
+  - nbsphinx
+  - jupyter_sphinx_theme==0.0.6

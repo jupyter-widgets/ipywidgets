@@ -13,6 +13,7 @@ WidgetManager.prototype.display_view = function(msg, view, options) {
     var that = this;
     return Promise.resolve(view).then(function(view) {
         that.el.appendChild(view.el);
+        view.trigger('displayed');
         view.on('remove', function() {
             console.log('View removed', view);
         });

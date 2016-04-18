@@ -18,6 +18,8 @@ from traitlets import Unicode, Dict, Instance, List, Int, Set, Bytes
 from ipython_genutils.py3compat import string_types, PY3
 from IPython.display import display
 
+from .._version import __frontend_version__
+
 
 def _widget_to_json(x, obj):
     if isinstance(x, dict):
@@ -502,4 +504,4 @@ def handle_version_comm_opened(comm, msg):
     def handle_version_message(msg):
         Widget._version_validated = msg['content']['data']['validated']
     comm.on_msg(handle_version_message)
-    comm.send({'version': '4.1.0dev'})
+    comm.send({'version': __frontend_version__})

@@ -198,7 +198,7 @@ var TextView = widget.DOMWidgetView.extend({
 
         this.textbox = document.createElement('input');
         this.textbox.setAttribute('type', 'text');
-        this.textbox.className = 'input form-control';
+        this.textbox.className = 'form-control';
         this.el.appendChild(this.textbox);
 
         this.update(); // Set defaults.

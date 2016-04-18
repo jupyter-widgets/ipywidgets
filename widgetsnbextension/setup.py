@@ -51,9 +51,9 @@ PY3 = (sys.version_info[0] >= 3)
 
 import os
 from distutils import log
-from distutils.core import setup, Command
-from distutils.command.build_py import build_py
-from distutils.command.sdist import sdist
+from setuptools import setup, Command
+from setuptools.command.build_py import build_py
+from setuptools.command.sdist import sdist
 from glob import glob
 from os.path import join as pjoin
 from subprocess import check_call
@@ -202,6 +202,7 @@ setup_args = dict(
         'sdist': js_prerelease(sdist, strict=True),
         'jsdeps': NPM,
     },
+    include_package_data = True,
 )
 
 if 'develop' in sys.argv or any(a.startswith('bdist') for a in sys.argv):
@@ -214,9 +215,7 @@ if 'setuptools' in sys.modules:
 
 setuptools_args = {}
 install_requires = setuptools_args['install_requires'] = [
-    'notebook>=4.2.0dev',
-    # TODO: Add ipywidgets dependency when ipywidgets does not depend
-    # on widgetsnbextension.
+    'notebook>=4.2.0',
 ]
 
 extras_require = setuptools_args['extras_require'] = {

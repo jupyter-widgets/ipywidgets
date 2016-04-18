@@ -63,3 +63,5 @@ html_static_path = ['_static']
 html_theme_options = {
     'navbar_title': "ipywidgets and jupyter-js-widgets",
 }
+
+nbsphinx_allow_errors = True
