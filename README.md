@@ -49,7 +49,6 @@ or
 
 Then run
 
-    jupyter nbextension install --py widgetsnbextension
     jupyter nbextension enable --py widgetsnbextension
 
 See the [Installation](docs/source/user_install.md) section of the documentation for additional details.

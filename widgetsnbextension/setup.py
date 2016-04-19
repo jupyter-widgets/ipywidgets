@@ -202,6 +202,12 @@ setup_args = dict(
         'sdist': js_prerelease(sdist, strict=True),
         'jsdeps': NPM,
     },
+    data_files      = [(
+            'share/jupyter/nbextensions/jupyter-js-widgets', [
+                'widgetsnbextension/static/extension.js',
+                'widgetsnbextension/static/extension.js.map'
+        ]),
+    ],
     include_package_data = True,
 )
 
