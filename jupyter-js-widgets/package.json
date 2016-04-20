@@ -1,6 +1,6 @@
 {
   "name": "jupyter-js-widgets",
-  "version": "0.4.2",
+  "version": "1.0.0",
   "description": "Jupyter interactive widgets",
   "author": "Project Jupyter",
   "license": "BSD-3-Clause",
