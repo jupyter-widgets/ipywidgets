@@ -28,7 +28,8 @@ var DropdownModel = SelectionModel.extend({
 
 var DropdownView = widget.DOMWidgetView.extend({
     initialize: function() {
-        this.keydown = this._handle_keydown.bind(this);
+        this.onKeydown = this._handle_keydown.bind(this);
+        this.onDismiss = this._handle_dismiss.bind(this);
         DropdownView.__super__.initialize.apply(this, arguments);
     },
 
@@ -165,13 +166,13 @@ var DropdownView = widget.DOMWidgetView.extend({
         'keydown button.widget-button': '_activate'
     },
 
+    /**
+     * Handles when a value is clicked.
+     *
+     * Calling model.set will trigger all of the other views of the
+     * model to update.
+     */
     _handle_click: function(event) {
-        /**
-         * Handle when a value is clicked.
-         *
-         * Calling model.set will trigger all of the other views of the
-         * model to update.
-         */
         event.stopPropagation();
         event.preventDefault();
 
@@ -183,15 +184,58 @@ var DropdownView = widget.DOMWidgetView.extend({
         this.touch();
     },
 
+    /**
+     * Handles browser events that cause a dismissal of the drop list.
+     */
+    _handle_dismiss: function(event) {
+        // Check if the event came from the drop list itself.
+        var node = event.target;
+        var dropdownEvent;
+        while (node !== document.documentElement) {
+            dropdownEvent = node === this.droplist ||
+                node === this.droplabel || // This is only relevant for clicks.
+                node === this.dropbutton;  // This is only relevant for clicks.
+            if (dropdownEvent) {
+                return;
+            }
+            node = node.parentNode;
+        }
+        // If some error condition has caused this listener to still be active
+        // despite the drop list being invisible, remove all global listeners.
+        if (!this.droplist.classList.contains('mod-active')) {
+            document.removeEventListener('keydown', this.onKeydown);
+            document.removeEventListener('click', this.onDismiss);
+            window.removeEventListener('scroll', this.onDismiss);
+            return;
+        }
+        // Deselect active item.
+        var active = this.droplist.querySelector('.mod-active');
+        if (active) {
+            active.classList.remove('mod-active');
+        }
+        // Close the drop list.
+        this.droplist.classList.remove('mod-active');
+        // Remove global keydown listener.
+        document.removeEventListener('keydown', this.keydown);
+        // Remove global scroll listener.
+        window.removeEventListener('scroll', this.scroll);
+        return;
+    },
+
+    /**
+     * Handles keydown events for navigating the drop list.
+     */
     _handle_keydown: function(event) {
         if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
             return;
         }
 
-        // If some error condition has caused the keydown listener to still
-        // be active despite the drop list being invisible, remove the listener.
+        // If some error condition has caused this listener to still be active
+        // despite the drop list being invisible, remove all global listeners.
         if (!this.droplist.classList.contains('mod-active')) {
-            document.removeEventListener('keydown', this.keydown);
+            document.removeEventListener('keydown', this.onKeydown);
+            document.removeEventListener('click', this.onDismiss);
+            window.removeEventListener('scroll', this.onDismiss);
             return;
         }
 
@@ -291,53 +335,64 @@ var DropdownView = widget.DOMWidgetView.extend({
             }
             // Close the drop list.
             this.droplist.classList.remove('mod-active');
-            // Remove global event listener.
+            // Remove global keydown listener.
             document.removeEventListener('keydown', this.keydown);
+            // Remove global scroll listener.
+            window.removeEventListener('scroll', this.scroll);
             return;
         }
 
         // Add a global keydown listener for drop list events.
-        document.addEventListener('keydown', this.keydown);
+        document.addEventListener('keydown', this.onKeydown);
+        // Add a global click listener to dismiss drop list.
+        document.addEventListener('click', this.onDismiss, true);
+        // Add a global scroll listener to dismiss drop list.
+        window.addEventListener('scroll', this.onDismiss, true); // useCapture
 
         var buttongroupRect = this.buttongroup.getBoundingClientRect();
+        var availableHeightAbove = buttongroupRect.top;
+        var availableHeightBelow = window.innerHeight - buttongroupRect.bottom;
+        // Account for 1px border.
+        availableHeightAbove += 1;
+        availableHeightBelow -= 1;
+        var maxHeight = Math.floor(
+            Math.max(availableHeightAbove, availableHeightBelow)
+        );
+        var top = 0;
+        var left = buttongroupRect.left;
 
-        this.droplist.style.left = buttongroupRect.left + 'px';
+        this.droplist.style.left = left + 'px';
+        this.droplist.style.maxHeight = maxHeight + 'px';
 
         // Make drop list visible to compute its dimensions.
         this.droplist.classList.add('mod-active');
 
-        var availableHeightAbove = buttongroupRect.top;
-        var availableHeightBelow = window.innerHeight -
-            buttongroupRect.bottom - buttongroupRect.height;
         var droplistRect = this.droplist.getBoundingClientRect();
 
         // If the drop list fits below, render below.
         if (droplistRect.height <= availableHeightBelow) {
             // Account for 1px border.
-            this.droplist.style.top = (buttongroupRect.bottom - 1) + 'px';
-            this.droplist.style.maxHeight = 'none';
+            top = Math.ceil(buttongroupRect.bottom + 1);
+            this.droplist.style.top = top + 'px';
             return;
         }
         // If the drop list fits above, render above.
         if (droplistRect.height <= availableHeightAbove) {
             // Account for 1px border.
-            this.droplist.style.top = (buttongroupRect.top -
-                droplistRect.height + 1) + 'px';
-            this.droplist.style.maxHeight = 'none';
+            top = Math.floor(buttongroupRect.top - droplistRect.height + 1);
+            this.droplist.style.top = top + 'px';
             return;
         }
-        // Otherwise, render in whichever has more space, above or below, and
-        // set the maximum height of the drop list.
+        // Otherwise, render in whichever has more space, above or below.
         if (availableHeightBelow >= availableHeightAbove) {
             // Account for 1px border.
-            this.droplist.style.top = (buttongroupRect.bottom - 1) + 'px';
-            this.droplist.style.maxHeight = availableHeightBelow + 'px';
+            top = Math.ceil(buttongroupRect.bottom + 1);
+            this.droplist.style.top = top + 'px';
             return;
         } else {
             // Account for 1px border.
-            this.droplist.style.top = (buttongroupRect.top -
-                droplistRect.height + 1) + 'px';
-            this.droplist.style.maxHeight = availableHeightAbove + 'px';
+            top = Math.floor(buttongroupRect.top - droplistRect.height + 1);
+            this.droplist.style.top = top + 'px';
             return;
         }
     }
