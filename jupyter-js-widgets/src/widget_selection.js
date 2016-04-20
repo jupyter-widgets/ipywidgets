@@ -217,8 +217,10 @@ var DropdownView = widget.DOMWidgetView.extend({
         this.droplist.classList.remove('mod-active');
         // Remove global keydown listener.
         document.removeEventListener('keydown', this.keydown);
+        // Remove global click listener.
+        document.removeEventListener('click', this.onDismiss);
         // Remove global scroll listener.
-        window.removeEventListener('scroll', this.scroll);
+        window.removeEventListener('scroll', this.onDismiss);
         return;
     },
 
@@ -337,8 +339,10 @@ var DropdownView = widget.DOMWidgetView.extend({
             this.droplist.classList.remove('mod-active');
             // Remove global keydown listener.
             document.removeEventListener('keydown', this.keydown);
+            // Remove global click listener.
+            document.removeEventListener('click', this.onDismiss);
             // Remove global scroll listener.
-            window.removeEventListener('scroll', this.scroll);
+            window.removeEventListener('scroll', this.onDismiss);
             return;
         }
 
