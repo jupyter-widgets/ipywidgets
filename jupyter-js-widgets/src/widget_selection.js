@@ -6,6 +6,7 @@ var widget = require('./widget');
 var utils = require('./utils');
 var $ = require('./jquery');
 var _ = require('underscore');
+require('jquery-ui');
 
 
 var SelectionModel = widget.DOMWidgetModel.extend({
@@ -776,9 +777,11 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         this.$el.append(this.label);
 
         this.$slider = $('<div />')
-            .slider({})
-            .addClass('slider')
-            .on('slidechange', $.proxy(this.handleSliderChange, this));
+            .slider({
+                slide: this.handleSliderChange.bind(this),
+                stop: this.handleSliderChanged.bind(this)
+            })
+            .addClass('slider');
 
         // Put the slider in a container
         this.slider_container = document.createElement('div');
@@ -899,18 +902,12 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         return SelectionSliderView.__super__.update.call(this);
     },
 
-    events: {
-        // Dictionary of events and their handlers.
-        'slide': 'handleSliderChange',
-        'slidestop': 'handleSliderChanged'
-    },
-
     /**
      * Called when the slider value is changing.
      */
     handleSliderChange: function(e, ui) {
-        var actual_value = this._validate_slide_value(ui.value);
-        var selected_label = this.model.get('_options_labels')[actual_value];
+        var index = Math.floor(ui.value);
+        var selected_label = this.model.get('_options_labels')[index];
         this.readout.textContent = selected_label;
 
         // Only persist the value while sliding if the continuous_update
@@ -927,19 +924,14 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
      * model to update.
      */
     handleSliderChanged: function(e, ui) {
-        var actual_value = this._validate_slide_value(ui.value);
-        var selected_label = this.model.get('_options_labels')[actual_value];
+        var index = Math.floor(ui.value);
+        var selected_label = this.model.get('_options_labels')[index];
         this.readout.textContent = selected_label;
-        this.model.set('selected_label', selected_label, {updated_view: this});
+        this.model.set({
+            'selected_label': selected_label,
+            'value': selected_label
+        }, {updated_view: this});
         this.touch();
-    },
-
-    _validate_slide_value: function(x) {
-        /**
-         * Validate the value of the slider before sending it to the back-end
-         * and applying it to the other views on the page.
-         */
-        return Math.floor(x);
     }
 });
 

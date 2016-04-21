@@ -58,6 +58,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
                 stop: this.handleSliderChanged.bind(this)
             })
             .addClass('slider');
+
         // Put the slider in a container
         this.$slider_container = $('<div />')
             .addClass('slider-container')
@@ -243,8 +244,6 @@ var IntSliderView = widget.DOMWidgetView.extend({
 
     events: {
         // Dictionary of events and their handlers.
-        'slide': 'handleSliderChange',
-        'slidestop': 'handleSliderChanged',
         'blur [contentEditable=true]': 'handleTextChange',
         'keydown [contentEditable=true]': 'handleKeyDown'
     },
