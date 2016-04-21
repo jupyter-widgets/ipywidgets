@@ -193,8 +193,8 @@ var DropdownView = widget.DOMWidgetView.extend({
         var dropdownEvent;
         while (node !== document.documentElement) {
             dropdownEvent = node === this.droplist ||
-                node === this.droplabel || // This is only relevant for clicks.
-                node === this.dropbutton;  // This is only relevant for clicks.
+                node === this.droplabel || // This is relevant for mousedowns.
+                node === this.dropbutton;  // This is relevant for mousedowns.
             if (dropdownEvent) {
                 return;
             }
@@ -204,7 +204,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         // despite the drop list being invisible, remove all global listeners.
         if (!this.droplist.classList.contains('mod-active')) {
             document.removeEventListener('keydown', this.onKeydown);
-            document.removeEventListener('click', this.onDismiss);
+            document.removeEventListener('mousedown', this.onDismiss);
             window.removeEventListener('scroll', this.onDismiss);
             return;
         }
@@ -217,8 +217,8 @@ var DropdownView = widget.DOMWidgetView.extend({
         this.droplist.classList.remove('mod-active');
         // Remove global keydown listener.
         document.removeEventListener('keydown', this.onKeydown);
-        // Remove global click listener.
-        document.removeEventListener('click', this.onDismiss);
+        // Remove global mousedown listener.
+        document.removeEventListener('mousedown', this.onDismiss);
         // Remove global scroll listener.
         window.removeEventListener('scroll', this.onDismiss);
         return;
@@ -236,7 +236,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         // despite the drop list being invisible, remove all global listeners.
         if (!this.droplist.classList.contains('mod-active')) {
             document.removeEventListener('keydown', this.onKeydown);
-            document.removeEventListener('click', this.onDismiss);
+            document.removeEventListener('mousedown', this.onDismiss);
             window.removeEventListener('scroll', this.onDismiss);
             return;
         }
@@ -339,8 +339,8 @@ var DropdownView = widget.DOMWidgetView.extend({
             this.droplist.classList.remove('mod-active');
             // Remove global keydown listener.
             document.removeEventListener('keydown', this.onKeydown);
-            // Remove global click listener.
-            document.removeEventListener('click', this.onDismiss);
+            // Remove global mousedown listener.
+            document.removeEventListener('mousedown', this.onDismiss);
             // Remove global scroll listener.
             window.removeEventListener('scroll', this.onDismiss);
             return;
@@ -348,8 +348,8 @@ var DropdownView = widget.DOMWidgetView.extend({
 
         // Add a global keydown listener for drop list events.
         document.addEventListener('keydown', this.onKeydown);
-        // Add a global click listener to dismiss drop list.
-        document.addEventListener('click', this.onDismiss, true);
+        // Add a global mousedown listener to dismiss drop list.
+        document.addEventListener('mousedown', this.onDismiss, true);
         // Add a global scroll listener to dismiss drop list.
         window.addEventListener('scroll', this.onDismiss, true); // useCapture
 
