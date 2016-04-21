@@ -331,9 +331,9 @@ ManagerBase.prototype.get_state = function(options) {
                         views: utils.resolvePromisesDict(model.views).then(function (views) {
                             return _.values(views).filter(function(view) {
                                     return view.options !== undefined && view.options.root;
-                                }).map(function(view) {
-                                    return view.options;
-                                });
+                            }).map(function (view) {
+                                return that.filterViewOptions(view.options);
+                            });
                         })
                     });
                 }
@@ -341,6 +341,17 @@ ManagerBase.prototype.get_state = function(options) {
         }
         return utils.resolvePromisesDict(state);
     }).catch(utils.reject('Could not get state of widget manager', true));
+};
+
+ManagerBase.prototype.filterViewOptions = function(options) {
+    /**
+     * Returns the keys of view options that must be stored in the serialized
+     * widget manager state.
+     *
+     * This is meant to be overloaded in custom managers, which may register
+     * the cell index.
+     */
+    return {};
 };
 
 ManagerBase.prototype.set_state = function(state, displayOptions) {

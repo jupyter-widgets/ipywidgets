@@ -333,7 +333,13 @@ WidgetManager.prototype.display_view = function(msg, view, options) {
     }
 };
 
-WidgetManager.prototype.setViewOptions = function(options) {
+WidgetManager.prototype.filterViewOptions = function (options) {
+    return {
+        cell_index : options.cell_index
+    };
+};
+
+WidgetManager.prototype.setViewOptions = function (options) {
     var options = options || {};
     // If a view is passed into the method, use that view's cell as
     // the cell for the view that is created.
@@ -341,7 +347,7 @@ WidgetManager.prototype.setViewOptions = function(options) {
         options.cell = options.parent.options.cell;
     }
     return options;
-}
+};
 
 WidgetManager.prototype.get_msg_cell = function (msg_id) {
     var cell = null;
