@@ -405,7 +405,7 @@ ManagerBase.prototype.set_state = function(state, displayOptions) {
     }).catch(utils.reject('Could not set widget manager state.', true));
 };
 
-ManagerBase.prototype._create_comm = function(comm_target_name, model_id, metadata) {
+ManagerBase.prototype._create_comm = function(comm_target_name, model_id, data) {
     return Promise.reject("No backend.");
 };
 

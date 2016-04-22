@@ -593,12 +593,12 @@ WidgetManager.prototype.deleteSnapshots = function() {
     }).bind(this));
 };
 
-WidgetManager.prototype._create_comm = function(comm_target_name, model_id, metadata) {
+WidgetManager.prototype._create_comm = function(comm_target_name, model_id, data) {
     var that = this;
     return this._get_connected_kernel().then(function(kernel) {
-        if (metadata) {
-            return kernel.comm_manager.new_comm(comm_target_name, {},
-                                                that.callbacks(), metadata, model_id);
+        if (data) {
+            return kernel.comm_manager.new_comm(comm_target_name, data,
+                                                that.callbacks(), {}, model_id);
         } else {
             return new Promise(function(resolve) {
                 requirejs(["services/kernels/comm"], function(comm) {
