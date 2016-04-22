@@ -13,8 +13,11 @@ or
 conda install ipywidgets
 ```
 
-After **ipywidgets** has been installed, the associated nbextension assets can be enabled in Jupyter Notebook by running the commands below. If installing through conda or using virtualenv, the <code>--sys-prefix</code> parameter may be required to keep the environment isolated.
+After **ipywidgets** has been installed, the associated nbextension assets can
+be enabled in Jupyter Notebook by running the commands below.
+If installing through conda or using virtualenv, the <code>--sys-prefix</code>
+parameter may be required to keep the environment isolated.
 
 ``` sourceCode
-jupyter nbextension enable widgetsnbextension --py
+jupyter nbextension enable --py widgetsnbextension
 ```
