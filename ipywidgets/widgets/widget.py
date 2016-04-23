@@ -139,7 +139,7 @@ class Widget(LoggingConfigurable):
     @staticmethod
     def handle_comm_opened(comm, msg):
         """Static method, called when a widget is constructed."""
-        class_name = str(msg['metadata']['widget_class'])
+        class_name = str(msg['content']['data']['widget_class'])
         if class_name in Widget.widget_types:
             widget_class = Widget.widget_types[class_name]
         else:
