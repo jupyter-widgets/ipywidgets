@@ -1,6 +1,3 @@
-require('bootstrap/dist/css/bootstrap.css');
-require('jquery-ui/themes/smoothness/jquery-ui.min.css');
-
 const widgets = require('jupyter-js-widgets');
 
 export class WidgetManager extends widgets.ManagerBase {
