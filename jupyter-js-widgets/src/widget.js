@@ -416,7 +416,7 @@ var WidgetModel = Backbone.Model.extend({
 }, {
     _deserialize_state: function(state, manager) {
         /**
-         * Returns a promised for the deserialized state. The second argument
+         * Returns a promise for the deserialized state. The second argument
          * is an instance of widget manager, which is required for the
          * deserialization of widget models.
          */
@@ -435,6 +435,28 @@ var WidgetModel = Backbone.Model.extend({
             deserialized = state;
         }
         return utils.resolvePromisesDict(deserialized);
+    },
+
+    _serialize_state: function(state, manager) {
+        /**
+         * Returns a promise for the serialized state. The second argument
+         * is an instance of widget manager.
+         */
+        var serializers = this.serializers;
+        var serialized;
+        if (serializers) {
+            serialized = {};
+            for (var k in state) {
+                if (serializers[k] && serializers[k].serialize) {
+                     serialized[k] = (serializers[k].serialize)(state[k], manager);
+                } else {
+                     serialized[k] = state[k];
+                }
+            }
+        } else {
+            serialized = state;
+        }
+        return utils.resolvePromisesDict(serialized);
     }
 });
 

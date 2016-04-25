@@ -15,6 +15,7 @@ EmbedManager.prototype.display_widget_state = function(models, el) {
 EmbedManager.prototype.display_view = function(msg, view, options) {
     return Promise.resolve(view).then(function(view) {
         options.el.appendChild(view.el);
+        view.trigger('displayed');
         view.on('remove', function() {
             console.log('View removed', view);
         });
@@ -24,4 +25,19 @@ EmbedManager.prototype.display_view = function(msg, view, options) {
 
 EmbedManager.prototype._get_comm_info = function() {
     return Promise.resolve({});
+};
+
+EmbedManager.prototype.require_error = function(success_callback) {
+    /**
+     * Takes a requirejs success handler and returns a requirejs error handler
+     * that attempts loading the module from npmcdn. 
+     */
+    return function(err) {
+        var failedId = err.requireModules && err.requireModules[0];
+        if (failedId) {
+            window.require(['https://npmcdn.com/' + failedId + '/dist/index.js'], success_callback);
+        } else {
+            throw err;
+        }
+    };
 };

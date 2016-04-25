@@ -18,6 +18,8 @@ from traitlets import Unicode, Dict, Instance, List, Int, Set, Bytes
 from ipython_genutils.py3compat import string_types, PY3
 from IPython.display import display
 
+from .._version import __frontend_version__
+
 
 def _widget_to_json(x, obj):
     if isinstance(x, dict):
@@ -149,11 +151,11 @@ class Widget(LoggingConfigurable):
     #-------------------------------------------------------------------------
     # Traits
     #-------------------------------------------------------------------------
-    _model_module = Unicode(None, allow_none=True, help="""A requirejs module name
+    _model_module = Unicode('jupyter-js-widgets', help="""A requirejs module name
         in which to find _model_name. If empty, look in the global registry.""").tag(sync=True)
     _model_name = Unicode('WidgetModel', help="""Name of the backbone model
         registered in the front-end to create and sync this widget with.""").tag(sync=True)
-    _view_module = Unicode(help="""A requirejs module in which to find _view_name.
+    _view_module = Unicode(None, allow_none=True, help="""A requirejs module in which to find _view_name.
         If empty, look in the global registry.""").tag(sync=True)
     _view_name = Unicode(None, allow_none=True, help="""Default view registered in the front-end
         to use to represent the widget.""").tag(sync=True)
@@ -502,4 +504,4 @@ def handle_version_comm_opened(comm, msg):
     def handle_version_message(msg):
         Widget._version_validated = msg['content']['data']['validated']
     comm.on_msg(handle_version_message)
-    comm.send({'version': '4.1.0dev'})
+    comm.send({'version': __frontend_version__})

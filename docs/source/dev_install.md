@@ -15,26 +15,29 @@ available in the PATH used with sudo.
 
         git clone https://github.com/ipython/ipywidgets
 
-1. Dev-install of the package (run from ipywidgets repo directory):
-
-        cd ipywidgets
-        pip install -v -e .
-
-2. Build the Jupyter Widgets package
+1. Build the Jupyter Widgets package
 
         cd jupyter-js-widgets
         npm install
         cd ..
 
-3. Install the Jupyter Widgets nbextension
+2. Install the Jupyter Widgets nbextension
 
         cd widgetsnbextension
         npm install
         npm run update:widgets
         pip install -v -e .
         cd ..
+        jupyter nbextension install --py --symlink widgetsnbextension
+        jupyter nbextension enable --py widgetsnbextension
 
-After you've made changes to `jupyter-js-widgets` and you'd like to test those
+3. Dev-install of the package (run from ipywidgets repo directory):
+
+        cd ipywidgets
+        pip install -v -e .
+
+
+After you've made changes to `jupyter-js-widgets` if you want to test those
 changes, run the following, empty your browsers cache, and refresh the page.
 
         cd widgetsnbextension

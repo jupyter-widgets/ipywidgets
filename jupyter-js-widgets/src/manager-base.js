@@ -2,12 +2,10 @@
 // Distributed under the terms of the Modified BSD License.
 'use strict';
 
-// jupyter-js-widgets version
-var version = '4.1.0dev';
-
 var _ = require('underscore');
 var Backbone = require('backbone');
 var utils = require('./utils');
+var semver = require('semver');
 
 //--------------------------------------------------------------------
 // ManagerBase class
@@ -75,6 +73,16 @@ ManagerBase.prototype.setViewOptions = function(options) {
     return options || {};
 };
 
+ManagerBase.prototype.require_error = function (success_callback) {
+    /**
+     * Takes a requirejs success handler and returns a requirejs error handler.
+     * The default implementation just throws the original error.
+     */
+    return function(err) {
+        throw err;
+    };
+};
+
 ManagerBase.prototype.create_view = function(model, options) {
     /**
      * Creates a promise for a view of a given model
@@ -88,7 +96,8 @@ ManagerBase.prototype.create_view = function(model, options) {
         return utils.loadClass(
             model.get('_view_name'),
             model.get('_view_module'),
-            ManagerBase._view_types
+            ManagerBase._view_types,
+            that.require_error
         ).then(function(ViewType) {
             var view = new ViewType({
                 model: model,
@@ -175,24 +184,6 @@ ManagerBase.prototype.new_widget = function(options, serialized_state) {
 };
 
 /**
- * Parse a version string
- * @param  {string} version i.e. '1.0.2dev' or '2.4'
- * @return {object} version object {major, minor, patch, dev}
- */
-ManagerBase.prototype._parseVersion = function(version) {
-    if (!version) return null;
-    var versionParts = version.split('.');
-    var versionTail = versionParts.slice(-1)[0];
-    var versionSuffix = versionTail.slice(String(parseInt(versionTail)).length);
-    return {
-        major: parseInt(versionParts[0]),
-        minor: versionParts.length > 1 ? parseInt(versionParts[1]) : 0,
-        patch: versionParts.length > 2 ? parseInt(versionParts[2]) : 0,
-        dev: versionSuffix.trim().toLowerCase() === 'dev'
-    };
-};
-
-/**
  * Validate the version of the Javascript against the version requested by
  * the backend.
  * @return {Promise<Boolean>} Whether or not the versions are okay
@@ -201,33 +192,15 @@ ManagerBase.prototype.validateVersion = function() {
     return this._create_comm(this.version_comm_target_name, undefined, {}).then((function(comm) {
         return new Promise((function(resolve, reject) {
             comm.on_msg((function(msg) {
-                var validated = true;
-                var backendVersion = this._parseVersion(msg.content.data.version);
-                if (backendVersion) {
-                    var frontendVersion = this._parseVersion(version);
-                    if (frontendVersion.major !== backendVersion.major) {
-                        validated = false;
-                    }
-                    if (frontendVersion.minor < backendVersion.minor) {
-                        validated = false;
-                    }
-                    if (frontendVersion.patch < backendVersion.patch) {
-                        validated = false;
-                    }
-                    if (frontendVersion.dev && !backendVersion.dev) {
-                        if (!(frontendVersion.patch > backendVersion.patch ||
-                        frontendVersion.minor > backendVersion.minor)) {
-                            validated = false;
-                        }
-                    }
-                } else {
-                    validated = false;
-                }
+                var version = require('../package.json').version;
+                var requirement = msg.content.data.version;
+                var validated = semver.satisfies(version, requirement);
                 comm.send({'validated': validated});
-                if (validated) console.info('Widget backend and frontend versions are compatible');
+                if (validated) {
+                    console.info('Widget backend and frontend versions are compatible');
+                }
                 resolve(validated);
             }).bind(this));
-
             setTimeout(function() {
                 reject(new Error('Timeout while trying to cross validate the widget frontend and backend versions.'));
             }, 3000);
@@ -283,9 +256,10 @@ ManagerBase.prototype.new_model = function(options, serialized_state) {
 
     var model_promise = utils.loadClass(options.model_name,
                                         options.model_module,
-                                        ManagerBase._model_types)
+                                        ManagerBase._model_types,
+                                        that.require_error)
         .then(function(ModelType) {
-            return ModelType._deserialize_state(serialized_state || ModelType.prototype.defaults, that).then(function(attributes) {
+            return ModelType._deserialize_state(serialized_state || {}, that).then(function(attributes) {
                 var widget_model = new ModelType(that, model_id, options.comm, attributes);
                 widget_model.once('comm:close', function () {
                     delete that._models[model_id];
@@ -346,7 +320,6 @@ ManagerBase.prototype.get_state = function(options) {
     var that = this;
     return utils.resolvePromisesDict(this._models).then(function(models) {
         var state = {};
-        var model_promises = [];
 
         for (var model_id in models) {
             if (models.hasOwnProperty(model_id)) {
@@ -357,30 +330,22 @@ ManagerBase.prototype.get_state = function(options) {
                 var displayed_flag = !(options && options.only_displayed) || Object.keys(model.views).length > 0;
                 var live_flag = (options && options.not_live) || model.comm_live;
                 if (displayed_flag && live_flag) {
-                    state[model_id] = {
+                    state[model_id] = utils.resolvePromisesDict({
                         model_name: model.name,
                         model_module: model.module,
-                        state: model.get_state(options.drop_defaults),
-                        views: [],
-                    };
-
-                    // Get the views that are displayed *now*.
-                    (function(local_state) {
-                        model_promises.push(utils.resolvePromisesDict(model.views).then(function(model_views) {
-                            for (var id in model_views) {
-                                if (model_views.hasOwnProperty(id)) {
-                                    var view = model_views[id];
-                                    if (view.options !== undefined && view.options.root) {
-                                        local_state.views.push(view.options);
-                                    }
-                                }
-                            }
-                        }));
-                    })(state[model_id]);
+                        state: model.constructor._serialize_state(model.get_state(options.drop_defaults), that),
+                        views: utils.resolvePromisesDict(model.views).then(function (views) {
+                            return _.values(views).filter(function(view) {
+                                    return view.options !== undefined && view.options.root;
+                                }).map(function(view) {
+                                    return view.options;
+                                });
+                        })
+                    });
                 }
             }
         }
-        return Promise.all(model_promises).then(function() { return state; });
+        return utils.resolvePromisesDict(state);
     }).catch(utils.reject('Could not get state of widget manager', true));
 };
 
@@ -402,15 +367,10 @@ ManagerBase.prototype.set_state = function(state, displayOptions) {
             // return it.
             if (that._models[model_id]) {
                 return that._models[model_id].then(function(model) {
-                    if (state[model_id].state) {
-                        return model.set_state(state[model_id].state).then(function() {
-                            return model;
-                        });
-                    } else {
-                        return model.state_change.then(function() {
-                            return model;
-                        });
-                    }
+                    return model.constructor._deserialize_state(state[model_id].state || {}, that).then(function(attributes) {
+                        model.set_state(attributes);
+                        return model;
+                    });
                 });
             }
 
@@ -440,12 +400,12 @@ ManagerBase.prototype.set_state = function(state, displayOptions) {
                 // Display the model using the display options merged with the
                 // options.
                 if (displayOptions && displayOptions.displayOnce && state[model.id].views && state[model.id].views.length) {
-                    return that.display_model(undefined, model, Object.assign({}, displayOptions));
+                    return that.display_model(undefined, model, _.extend({}, displayOptions));
                 } else {
                     // Display the model using the display options merged with the
                     // options.
                     return Promise.all(_.map(state[model.id].views, function(options) {
-                        return that.display_model(undefined, model, Object.assign({}, options, displayOptions));
+                        return that.display_model(undefined, model, _.extend({}, options, displayOptions));
                     }));
                 }
             }

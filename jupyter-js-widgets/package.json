@@ -1,6 +1,6 @@
 {
   "name": "jupyter-js-widgets",
-  "version": "0.0.18",
+  "version": "0.4.1",
   "description": "Jupyter widget Javascript",
   "author": "Project Jupyter",
   "license": "BSD-3-Clause",
@@ -37,6 +37,7 @@
     "chai": "^3.4.1",
     "clean-css": "^3.4.6",
     "css-loader": "^0.23.1",
+    "es6-promise": "^3.1.2",
     "file-loader": "^0.8.5",
     "font-awesome": "^4.5.0",
     "json-loader": "^0.5.4",
@@ -56,6 +57,7 @@
     "sinon-chai": "^2.8.0",
     "spawn-sync": "^1.0.14",
     "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
     "webpack": "^1.12.11"
   },
   "dependencies": {
@@ -65,6 +67,8 @@
     "jquery-ui": "^1.10.5",
     "phosphor-tabs": "^1.0.0-rc.2",
     "phosphor-widget": "^1.0.0-rc.1",
+    "scriptjs": "^2.5.8",
+    "semver": "^5.1.0",
     "underscore": "^1.8.3"
   }
 }
