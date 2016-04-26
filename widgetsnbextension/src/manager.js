@@ -106,7 +106,7 @@ var WidgetManager = function (comm_manager, notebook) {
                 console.warn('Widget frontend version does not match the backend.');
             }
         }).catch(function(err) {
-            console.error('Could not cross validate the widget frontend and backend versions.', err);
+            console.warn('Could not cross validate the widget frontend and backend versions.', err);
         });
     }).bind(this);
     validate();
