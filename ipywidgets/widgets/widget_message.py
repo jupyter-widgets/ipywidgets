@@ -8,16 +8,14 @@ Represents a widget that can be used to intercept display messages.
 # Distributed under the terms of the Modified BSD License.
 
 from .domwidget import DOMWidget
-import sys
 from io import StringIO
 from traitlets import (
-    Unicode, List, Instance, default, observe, Any
+    Unicode, List, Instance, default, observe
 )
 from IPython.display import clear_output
 from IPython import get_ipython
-from ipykernel.displayhook import ZMQMessageHook
+from ipykernel.hookmanager import MessageHookFor
 from ipykernel.zmqshell import ZMQDisplayPublisher
-from jupyter_client.session import Message
 
 from .widget import register
 
@@ -47,33 +45,22 @@ class MessageWidget(DOMWidget):
     # messages, change this attribute name.
     _message_type = Unicode('display_data')
 
-    _message_hook = Instance(ZMQMessageHook)
-
     # Hookable messages are only implemented on the ZMQDisplayPublisher
     #
     _pub = Instance(ZMQDisplayPublisher)
-
-    #
-    # String buffer to catch stdout/stderr
-    #
-    _std_buffer = Any()
 
     # The list of messages stored by the hook when activated
     # (in context).
     #
     stored_messages = List().tag(sync=True)
 
-    @default('_message_hook')
-    def _message_hook_default(self):
-        return ZMQMessageHook(self._message_type, self.store)
+    # The context manager for capturing the messages
+    #
+    capture = Instance(MessageHookFor)
 
     @default('_pub')
     def _pub_default(self):
         return get_ipython().display_pub
-
-    @default('_std_buffer')
-    def _std_buffer_default(self):
-        return StringIO()
 
     def clear_output(self, *args, **kwargs):
         self.clear()
@@ -82,7 +69,6 @@ class MessageWidget(DOMWidget):
         """
         Clear the stored messages list.
         """
-        self._std_buffer.truncate(0)
         self.stored_messages = []
         self.value = []
 
