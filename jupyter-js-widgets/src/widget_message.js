@@ -33,7 +33,6 @@ var MessageWidgetView = widget.DOMWidgetView.extend({
          *
          * Called when the model is changed.
          */
-        console.log('Update called on: MESSAGE WIDGET');
         while (this.el.firstChild) {
          this.el.removeChild(this.el.firstChild);
         }
@@ -41,7 +40,6 @@ var MessageWidgetView = widget.DOMWidgetView.extend({
         let items = this.model.get('stored_messages');
         var el = this.el;
         _.each(items, function(item) {
-          console.log('Iterating over STORED MESSAGES');
           var label = document.createElement('div');
           label.textContent = item['content']['data']['text/plain'];
           el.appendChild(label);
