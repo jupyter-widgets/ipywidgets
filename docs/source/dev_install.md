@@ -28,8 +28,8 @@ available in the PATH used with sudo.
         npm run update:widgets
         pip install -v -e .
         cd ..
-        jupyter nbextension install --py --symlink widgetsnbextension
-        jupyter nbextension enable --py widgetsnbextension
+        jupyter nbextension install --py --symlink --user widgetsnbextension
+        jupyter nbextension enable --py --user widgetsnbextension
 
 3. Dev-install of the package (run from ipywidgets repo directory):
 
