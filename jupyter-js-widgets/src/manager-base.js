@@ -1,11 +1,11 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var _ = require("underscore");
-var Backbone = require("backbone");
-var utils = require("./utils");
-var semver = require("semver");
+var _ = require('underscore');
+var Backbone = require('backbone');
+var utils = require('./utils');
+var semver = require('semver');
 
 //--------------------------------------------------------------------
 // ManagerBase class
@@ -62,7 +62,7 @@ ManagerBase.prototype.display_model = function(msg, model, options) {
 };
 
 ManagerBase.prototype.display_view = function(msg, view, options) {
-    throw new Error("Manager.display_view not implemented");
+    throw new Error('Manager.display_view not implemented');
 };
 
 ManagerBase.prototype.setViewOptions = function(options) {
@@ -93,8 +93,12 @@ ManagerBase.prototype.create_view = function(model, options) {
     var that = this;
     model.state_change = model.state_change.then(function() {
 
-        return utils.loadClass(model.get('_view_name'), model.get('_view_module'),
-        ManagerBase._view_types, that.require_error).then(function(ViewType) {
+        return utils.loadClass(
+            model.get('_view_name'),
+            model.get('_view_module'),
+            ManagerBase._view_types,
+            that.require_error
+        ).then(function(ViewType) {
             var view = new ViewType({
                 model: model,
                 options: that.setViewOptions(options)
@@ -103,14 +107,12 @@ ManagerBase.prototype.create_view = function(model, options) {
             return Promise.resolve(view.render()).then(function() {
                 return view;
             });
-        }).catch(utils.reject("Couldn't create a view for model id '" + String(model.id) + "'", true));
+        }).catch(utils.reject('Couldn\'t create a view for model id ' + model.id, true));
     });
     var id = utils.uuid();
     model.views[id] = model.state_change;
     model.state_change.then(function(view) {
-        view.once('remove', function() {
-            delete view.model.views[id];
-        }, this);
+        view.once('remove', function() { delete view.model.views[id]; }, this);
     });
     return model.state_change;
 };
@@ -136,8 +138,8 @@ ManagerBase.prototype.handle_comm_open = function (comm, msg) {
     return this.new_model({
         model_name: msg.content.data._model_name,
         model_module: msg.content.data._model_module,
-        comm: comm,
-    }, msg.content.data).catch(utils.reject("Couldn't create a model.", true));
+        comm: comm
+    }, msg.content.data).catch(utils.reject('Couldn\'t create a model.', true));
 };
 
 /**
@@ -154,11 +156,14 @@ ManagerBase.prototype.new_widget = function(options, serialized_state) {
     if (options.comm) {
         commPromise = Promise.resolve(options.comm);
     } else {
-        commPromise = this._create_comm(this.comm_target_name,
-                                        options.model_id, {
-            widget_class: options.widget_class,
-            target_name: 'jupyter.widget',
-        });
+        commPromise = this._create_comm(
+            this.comm_target_name,
+            options.model_id,
+            {
+                widget_class: options.widget_class,
+                target_name: 'jupyter.widget'
+            }
+        );
     }
     // The options dictionary is copied since data will be added to it.
     var options_clone = _.clone(options);
@@ -248,6 +253,7 @@ ManagerBase.prototype.new_model = function(options, serialized_state) {
     } else {
         throw new Error('Neither comm nor model_id provided in options object. At least one must exist.');
     }
+
     var model_promise = utils.loadClass(options.model_name,
                                         options.model_module,
                                         ManagerBase._model_types,
@@ -262,11 +268,11 @@ ManagerBase.prototype.new_model = function(options, serialized_state) {
                 widget_model.module = options.model_module;
                 return widget_model;
             });
-        }, function(error) {
-            delete that._models[model_id];
-            var wrapped_error = new utils.WrappedError("Couldn't create model", error);
-            return Promise.reject(wrapped_error);
-        });
+    }, function(error) {
+        delete that._models[model_id];
+        var wrapped_error = new utils.WrappedError('Couldn\'t create model', error);
+        return Promise.reject(wrapped_error);
+    });
     this._models[model_id] = model_promise;
     return model_promise;
 };
@@ -373,14 +379,14 @@ ManagerBase.prototype.set_state = function(state, displayOptions) {
                     return that.new_model({
                         comm: new_comm,
                         model_name: state[model_id].model_name,
-                        model_module: state[model_id].model_module,
+                        model_module: state[model_id].model_module
                     });
                 });
             } else { // dead comm
                 return that.new_model({
                     model_id: model_id,
                     model_name: state[model_id].model_name,
-                    model_module: state[model_id].model_module,
+                    model_module: state[model_id].model_module
                 }, state[model_id].state);
             }
         }));
@@ -396,6 +402,8 @@ ManagerBase.prototype.set_state = function(state, displayOptions) {
                 if (displayOptions && displayOptions.displayOnce && state[model.id].views && state[model.id].views.length) {
                     return that.display_model(undefined, model, _.extend({}, displayOptions));
                 } else {
+                    // Display the model using the display options merged with the
+                    // options.
                     return Promise.all(_.map(state[model.id].views, function(options) {
                         return that.display_model(undefined, model, _.extend({}, options, displayOptions));
                     }));
@@ -406,11 +414,11 @@ ManagerBase.prototype.set_state = function(state, displayOptions) {
 };
 
 ManagerBase.prototype._create_comm = function(comm_target_name, model_id, data) {
-    return Promise.reject("No backend.");
+    return Promise.reject('No backend.');
 };
 
 ManagerBase.prototype._get_comm_info = function() {
-    return Promise.reject("No backend.");
+    return Promise.reject('No backend.');
 };
 
 module.exports = {

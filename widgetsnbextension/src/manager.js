@@ -572,7 +572,7 @@ WidgetManager.prototype.prependSnapshots = function() {
 };
 
 /**
- * Remove the outputs that rendered widget view's.
+ * Remove the outputs that rendered widget views.
  *
  * Note: This function must be synchronous, in order to work with the
  * notebook's save machinery.

@@ -6,7 +6,7 @@ global.jQuery = global.$ = require('./jquery');
 
 module.exports = {
     shims: {
-        services: require("./services-shim")
+        services: require('./services-shim')
     }
 };
 

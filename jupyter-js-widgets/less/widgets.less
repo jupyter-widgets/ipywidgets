@@ -1,10 +1,6 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-// minimal imports from bootstrap - only variables and mixins
-@import "./bootstrap/less/variables.less";
-@import "./bootstrap/less/mixins.less";
-
 // minimal imports from font-awesome
 @import "./font-awesome/less/variables.less";
 
@@ -66,7 +62,7 @@
     &.connection-problems .prompt:after {
         content: @fa-var-chain-broken;
         font-family: 'FontAwesome';
-        color: @brand-danger;
+        color: #d9534f;
         top: 3px;
         padding: 3px;
     }
@@ -214,61 +210,165 @@
     }
 }
 
-.widget-button {
-    /* Button */
-    width : @widget-width-short;
-
-    .outside-shadow-2dp();
-
-    &.btn,
-    &.btn:active,
-    &.btn:focus,
-    &.btn.hover {
-        outline: none !important;
-    }
-
-    &.btn:active {
-        .outside-shadow-4dp();
-    }
-}
-
 .widget-checkbox {
     width: @widget-width-short;
 }
 
-.widget-toggle-button {
-    /* Button */
+.widget-button, .widget-toggle-button {
+    background: #888888;
+    border: 1px solid #111111;
+    color: #eeeeee;
+    cursor: pointer;
+    display: inline-block;
+    margin-bottom: 0;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
     width : @widget-width-short;
 
     .outside-shadow-2dp();
 
-    &.btn,
-    &.btn:active,
-    &.btn:focus,
-    &.btn.hover {
+    &:hover {
         outline: none !important;
     }
 
-    // &.btn:active {
-    //     .outside-shadow-4dp();
-    // }
+    &:active {
+        .outside-shadow-4dp();
+    }
+
+    &:empty:before {
+        /* Add a space character if the button text is empty */
+        content: "\00a0"
+    }
+
+    &.mod-primary {
+      background-color: #337ab7;
+      border-color: #245580;
+      color: #eeeeee;
+    }
+
+    &.mod-success {
+      background-color: #5cb85c;
+      border-color: #3e8f3e;
+      color: #eeeeee;
+    }
+
+    &.mod-info {
+      background-color: #5bc0de;
+      border-color: #28a4c9;
+      color: #eeeeee;
+    }
+
+    &.mod-warning {
+      background-color: #f0ad4e;
+      border-color: #e38d13;
+      color: #eeeeee;
+    }
+
+    &.mod-danger {
+      background-color: #d9534f;
+      border-color: #b92c28;
+      color: #eeeeee;
+    }
+
+    &.mod-active {
+      border-color: #000000;
+      color: #000000;
+    }
 }
 
 .widget-toggle-buttons {
+    button {
+        margin: 2px;
+        min-width: 100px;
+    }
+}
 
-    .btn,
-    .btn:active,
-    .btn:focus,
-    .btn.hover {
-        outline: none !important;
+.widget-tab {
+    /* TabView */
+    height: 100%;
+
+    .widget-tab-contents {
+        height: 100%;
+
+        .widget-tab-child {
+            display: none;
+            height: 100%;
+
+            &.mod-active {
+              display: block;
+            }
+        }
     }
 
-    .btn.active {
-        box-shadow: none !important;
-    }
+    .widget-tab-bar {
+        &.p-TabBar {
+            min-height: 28px;
+            max-height: 28px;
+            color: #757575;
+            background: #F5F5F5;
+            font: 12px Helvetica, Arial, sans-serif;
+        }
 
-    .btn-group {
-        .outside-shadow-2dp();
+        &.p-TabBar > .p-TabBar-header {
+            flex: 0 0 1px;
+            background: #BDBDBD;
+        }
+
+        &.p-TabBar > .p-TabBar-footer {
+            flex: 0 0 3px;
+            background: #FAFAFA;
+            border-top: 1px solid #BDBDBD;
+            border-bottom: 1px solid #E0E0E0;
+        }
+
+        .p-TabBar-content {
+            min-width: 0;
+            max-height: 22px;
+        }
+
+        .p-TabBar-tab {
+            flex-basis: 124px;
+            min-height: 23px;
+            max-height: 23px;
+            min-width: 35px;
+            margin-left: -1px;
+            padding: 0px 10px;
+            background: #EEEEEE;
+            border: 1px solid #BDBDBD;
+            border-bottom: none;
+            transform: translateY(-1px);
+
+            &:last-child {
+                margin-right: -1px;
+            }
+
+            &.p-mod-current {
+                min-height: 24px;
+                max-height: 24px;
+                background: #FAFAFA;
+                border-top: 1px solid #F27624;
+            }
+
+            &:hover:not(.p-mod-current) {
+                background: #FAFAFA;
+            }
+
+            &.p-mod-closable > .p-TabBar-tabCloseIcon {
+                margin-left: 4px;
+
+                &:before {
+                    font-family: FontAwesome;
+                    content: '\f00d'; /* close */
+                }
+            }
+        }
+
+        .p-TabBar-tabIcon,
+        .p-TabBar-tabText,
+        .p-TabBar-tabCloseIcon {
+            line-height: 22px;
+        }
     }
 }
 
@@ -288,23 +388,76 @@
 }
 
 .widget-dropdown {
-    /* Dropdown */
-    width : @widget-width;
+    display: block;
 
-    .widget_item {
+    div.widget-item {
         display: flex;
-        flex-grow: 1;
+        margin: 0;
+        padding: 0;
+        width : @widget-width;
+
+        button {
+            flex: 1;
+            outline: 0;
+        }
+
+        button:last-child {
+            flex: 0;
+            flex-basis: 2em;
+            margin-left: -1px;
+
+            i.widget-caret {
+                font-size: 1em;
+                font-style: normal;
+                font-family: FontAwesome;
+                line-height: 1em;
+                position: relative;
+            }
+
+            i.widget-caret:before {
+                content: "\f0d7";
+            }
+        }
+    }
+}
+
+ul.widget-dropdown-droplist {
+    background: #eeeeee;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #dddddd;
+    box-sizing: border-box;
+    list-style-type: none;
+    position: absolute;
+    margin: 0;
+    z-index: 101; /* This is to appear above the #header */
+    width : @widget-width;
+    padding: 0;
+    height: auto;
+    overflow: auto;
+    display: none;
+
+    a {
+        color: inherit;
+        text-decoration: none;
     }
 
-    .widget-combo-btn {
-        flex-grow: 1;
-        min-width: 10px;
+    li {
+        display: block;
+        padding: 0 5px;
+
+        &:hover {
+            background: #dddddd;
+        }
+
+        &.mod-active {
+          background: #999999;
+          color: #eeeeee;
+        }
     }
 
-    .dropdown-menu {
-        max-height: 200px;
-        overflow: hidden;
-        overflow-y: auto;
+    &.mod-active {
+        display: block;
     }
 }
 
@@ -368,11 +521,30 @@
 }
 
 .widget-valid {
-    /* Valid Check */
-    margin-top: 8px;
-    margin-bottom: 16px;
-    margin-left: 5px;
-    margin-right: 5px;
+    font-size: 1em;
+    position: relative;
+    i {margin-right: 1.5em;}
+    i:before {
+        font-family: FontAwesome;
+        font-style: normal;
+        font-size: 1.5em;
+        position: absolute;
+        top: 0;
+    }
+    &.mod-valid {
+        color: green;
+        i:before {
+            /* Check mark character icon */
+            content: "\f00c";
+        }
+    }
+    &.mod-invalid {
+        color: red;
+        i:before {
+            /* "X" character icon */
+            content: "\f00d";
+        }
+    }
 }
 
 .widget-hbox {
@@ -439,6 +611,7 @@
 
 }
 
+
 .widget-box {
     /* Box */
     .border-box-sizing();
@@ -457,4 +630,10 @@
         margin-bottom: 2px;
         margin-left: 22px;
     }
+
+    input {
+        float: left;
+        margin-right: 5px;
+    }
+
 }

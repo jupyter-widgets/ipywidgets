@@ -1,26 +1,27 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var utils = require("./utils");
-var box = require("./widget_box");
-var $ = require("./jquery");
-var _ = require("underscore");
+var widget = require('./widget');
+var utils = require('./utils');
+var box = require('./widget_box');
+var _ = require('underscore');
+var TabBar = require('phosphor-tabs').TabBar;
+var Title = require('phosphor-widget').Title;
 
 var SelectionContainerModel = box.BoxModel.extend({
     defaults: _.extend({}, box.BoxModel.prototype.defaults, {
-        _model_name: "SelectionContainerModel",
+        _model_name: 'SelectionContainerModel',
         selected_index: 0,
-        _titles: {},
-    }),
+        _titles: {}
+    })
 });
 
 var AccordionModel = SelectionContainerModel.extend({
     defaults: _.extend({}, SelectionContainerModel.prototype.defaults, {
-        _model_name: "AccordionModel",
-        _view_name: "AccordionView"
-    }),
+        _model_name: 'AccordionModel',
+        _view_name: 'AccordionView'
+    })
 });
 
 var AccordionView = widget.DOMWidgetView.extend({
@@ -40,9 +41,10 @@ var AccordionView = widget.DOMWidgetView.extend({
          * Called when view is rendered.
          */
         var guid = 'panel-group' + utils.uuid();
-        this.$el
-            .attr('id', guid)
-            .addClass('jupyter-widgets panel-group');
+        this.el.id = guid;
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('panel-group');
+
         this.listenTo(this.model, 'change:selected_index', function(model, value, options) {
             this.update_selected_index(options);
         }, this);
@@ -62,9 +64,9 @@ var AccordionView = widget.DOMWidgetView.extend({
         var titles = this.model.get('_titles');
         var that = this;
         _.each(titles, function(title, page_index) {
-            var accordian = that.containers[page_index];
-            if (accordian !== undefined) {
-                accordian
+            var accordion = that.containers[page_index];
+            if (accordion !== undefined) {
+                accordion
                     .children('.panel-heading')
                     .find('.accordion-toggle')
                     .text(title);
@@ -92,7 +94,6 @@ var AccordionView = widget.DOMWidgetView.extend({
      * @param  {number} index
      */
     collapseTab: function(index) {
-        // .children('.panel-collapse')
         var page = this.containers[index].children('.collapse');
 
         if (page.hasClass('in')) {
@@ -132,40 +133,46 @@ var AccordionView = widget.DOMWidgetView.extend({
          */
         var index = this.containers.length;
         var uuid = utils.uuid();
-        var accordion_group = $('<div />')
-            .addClass('panel panel-default')
-            .appendTo(this.$el);
-        var accordion_heading = $('<div />')
-            .addClass('panel-heading')
-            .appendTo(accordion_group);
+        var accordion_group = document.createElement('div');
+        accordion_group.className = 'panel panel-default';
+        this.el.appendChild(accordion_group);
+
+        var accordion_heading = document.createElement('div');
+        accordion_heading.classList.add('panel-heading');
+        accordion_group.appendChild(accordion_heading);
+
         var that = this;
-        var accordion_toggle = $('<a />')
-            .addClass('accordion-toggle')
-            .attr('data-toggle', 'collapse')
-            .attr('data-parent', '#' + this.$el.attr('id'))
-            .attr('href', '#' + uuid)
-            .click(function(evt) {
-                // Calling model.set will trigger all of the other views of
-                // the model to update.
-                that.model.set("selected_index", index, {updated_view: that});
-                that.touch();
-             })
-            .text('Page ' + index)
-            .appendTo(accordion_heading);
-        var accordion_body = $('<div />', {id: uuid})
-            .addClass('panel-collapse collapse')
-            .appendTo(accordion_group);
-        var accordion_inner = $('<div />')
-            .addClass('panel-body')
-            .appendTo(accordion_body);
+        var accordion_toggle = document.createElement('a');
+        accordion_toggle.classList.add('accordion-toggle');
+        accordion_toggle.setAttribute('data-toggle', 'collapse');
+        accordion_toggle.setAttribute('data-parent', '#' + this.el.id);
+        accordion_toggle.setAttribute('href', '#' + uuid);
+        accordion_toggle.onclick = function() {
+          that.model.set('selected_index', index, {updated_view: that});
+          that.touch();
+        };
+        accordion_toggle.textContent('Page ' + index);
+        accordion_heading.appendChild(accordion_toggle);
+
+        var accordion_body = document.createElement('div');
+        accordion_body.id = uuid;
+        accordion_body.className = 'panel-collapse collapse';
+        accordion_group.appendChild(accordion_body);
+
+        var accordion_inner = document.createElement('div');
+        accordion_inner.classList.add('panel-body');
+        accordion_body.appendChild(accordion_inner);
+
         var container_index = this.containers.push(accordion_group) - 1;
         accordion_group.container_index = container_index;
         this.model_containers[model.id] = accordion_group;
 
-        var dummy = $('<div/>');
-        accordion_inner.append(dummy);
+        var dummy = document.createElement('div');
+        accordion_inner.appendChild(dummy);
         return this.create_child_view(model).then(function(view) {
-            dummy.replaceWith(view.$el);
+
+            dummy.parentNode.replaceChild(dummy, view.el);
+
             that.update_selected_index();
             that.update_titles();
 
@@ -174,7 +181,7 @@ var AccordionView = widget.DOMWidgetView.extend({
                 view.trigger('displayed', that);
             });
             return view;
-        }).catch(utils.reject("Couldn't add child view to box", true));
+        }).catch(utils.reject('Couldn\'t add child view to box', true));
     },
 
     remove: function() {
@@ -185,14 +192,14 @@ var AccordionView = widget.DOMWidgetView.extend({
          */
         AccordionView.__super__.remove.apply(this, arguments);
         this.children_views.remove();
-    },
+    }
 });
 
 var TabModel = SelectionContainerModel.extend({
     defaults: _.extend({}, SelectionContainerModel.prototype.defaults, {
-        _model_name: "TabModel",
-        _view_name: "TabView"
-    }),
+        _model_name: 'TabModel',
+        _view_name: 'TabView'
+    })
 });
 
 var TabView = widget.DOMWidgetView.extend({
@@ -201,96 +208,80 @@ var TabView = widget.DOMWidgetView.extend({
          * Public constructor.
          */
         TabView.__super__.initialize.apply(this, arguments);
-        this.containers = [];
-        this.children_views = new widget.ViewList(this.add_child_view, this.remove_child_view, this);
-        this.listenTo(this.model, 'change:children', function(model, value) {
-            this.children_views.update(value);
-        }, this);
+        this.childrenViews = new widget.ViewList(
+            this.addChildView,
+            this.removeChildView,
+            this
+        );
+        this.listenTo(this.model, 'change:children',
+            function(model, value) { this.childrenViews.update(value); },
+            this
+        );
+        this.listenTo(this.model, 'change:_titles',
+            function(model, value, options) { this.updateTitles(options); },
+            this
+        );
     },
 
     render: function() {
         /**
          * Called when view is rendered.
          */
-        var uuid = 'tabs'+utils.uuid();
-        this.$tabs = $('<div />', {id: uuid})
-            .addClass('nav')
-            .addClass('nav-tabs')
-            .appendTo(this.$el);
-        this.$tab_contents = $('<div />', {id: uuid + 'Content'})
-            .addClass('tab-content')
-            .appendTo(this.$el);
-        this.children_views.update(this.model.get('children'));
+        var parent = this;
+
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-tab');
+
+        this.tabBar = new TabBar();
+        this.tabBar.tabsMovable = false;
+        this.tabBar.addClass('widget-tab-bar');
+        this.tabBar.currentChanged.connect(this._onTabChanged, this);
+        this.tabBar.tabCloseRequested.connect(this._onTabCloseRequested, this);
+
+        this.tabContents = document.createElement('div');
+        this.tabContents.className = 'widget-tab-contents';
+
+        this.childrenViews.update(this.model.get('children'));
+
+        this.displayed.then(function() {
+            parent.tabBar.attach(parent.el);
+            parent.el.appendChild(parent.tabContents);
+        });
     },
 
-    update_attr: function(name, value) { // TODO: Deprecated in 5.0
-        /**
-         * Set a css attr of the widget view.
-         */
-        if (['padding', 'margin', 'height', 'width'].indexOf(name) !== -1) {
-            this.$el.css(name, value);
-        } else {
-            this.$tabs.css(name, value);
-        }
-    },
-
-    remove_child_view: function(view) {
-        /**
-         * Called when a child is removed from children list.
-         */
-        this.containers.splice(view.parent_tab.tab_text_index, 1);
-        view.parent_tab.remove();
-        view.parent_container.remove();
-        view.remove();
-    },
-
-    add_child_view: function(model) {
+    addChildView: function(model) {
         /**
          * Called when a child is added to children list.
          */
-        var index = this.containers.length;
-        var uuid = utils.uuid();
+        var parent = this;
 
-        var that = this;
-        var tab = $('<li />')
-            .css('list-style-type', 'none')
-            .appendTo(this.$tabs);
+        return this.create_child_view(model).then(function(child) {
+            var current = parent.el.querySelector('.mod-active');
+            if (current) {
+                current.classList.remove('mod-active');
+            }
 
-        var tab_text = $('<a />')
-            .attr('href', '#' + uuid)
-            .attr('data-toggle', 'tab')
-            .text('Page ' + index)
-            .appendTo(tab)
-            .click(function (e) {
-                // Calling model.set will trigger all of the other views of
-                // the model to update.
-                that.model.set("selected_index", index, {updated_view: that});
-                that.touch();
-                that.select_page(index);
+            child.el.classList.add('widget-tab-child');
+            child.el.classList.add('mod-active');
+
+            parent.tabContents.appendChild(child.el);
+            parent.tabBar.addItem({
+                title: new Title({ text: '', closable: true })
             });
-        tab.tab_text_index = that.containers.push(tab_text) - 1;
+            var tab = parent.tabBar.itemAt(parent.tabBar.itemCount() - 1);
 
-        var dummy = $('<div />');
-        var contents_div = $('<div />', {id: uuid})
-            .addClass('tab-pane')
-            .addClass('fade')
-            .append(dummy)
-            .appendTo(that.$tab_contents);
-
-        this.update();
-        return this.create_child_view(model).then(function(view) {
-            dummy.replaceWith(view.$el);
-            view.parent_tab = tab;
-            view.parent_container = contents_div;
-
-            // Trigger the displayed event of the child view.
-            that.displayed.then(function() {
-                view.trigger('displayed', that);
-                that.update();
+            parent.displayed.then(function() {
+                child.trigger('displayed', parent);
+                parent.update();
             });
-            return view;
-        }).catch(utils.reject("Couldn't add child view to box", true));
+
+            child.on('remove', function() { parent.tabBar.removeItem(tab); });
+
+            return child;
+        }).catch(utils.reject('Couldn\'t add child view to box', true));
     },
+
+    removeChildView: function(child) { child.remove(); },
 
     update: function(options) {
         /**
@@ -299,55 +290,97 @@ var TabView = widget.DOMWidgetView.extend({
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        this.update_titles();
-        this.update_selected_index(options);
-        return TabView.__super__.update.apply(this);
+        this.updateTitles();
+        this.updateSelectedIndex(options);
+        return TabView.__super__.update.call(this);
     },
 
     /**
      * Updates the tab page titles.
      */
-    update_titles: function() {
-        var titles = this.model.get('_titles');
-        var that = this;
-        _.each(titles, function(title, page_index) {
-           var tab_text = that.containers[page_index];
-            if (tab_text !== undefined) {
-                tab_text.text(title);
+    updateTitles: function() {
+        var titles = this.model.get('_titles') || {};
+        for (var i = this.tabBar.itemCount() - 1; i > -1; i--) {
+            this.tabBar.itemAt(i).title.text = titles[i] || (i + 1) + '';
+        }
+    },
+
+    /**
+     * Updates the selected index.
+     */
+    updateSelectedIndex: function(options) {
+        if (options === undefined || options.updated_view !== this) {
+            var index = this.model.get('selected_index');
+            if (typeof index === 'undefined') {
+                index = 0;
             }
-        });
-    },
-
-    /**
-     * Updates the tab page titles.
-     */
-    update_selected_index: function(options) {
-        if (options === undefined || options.updated_view != this) {
-            var selected_index = this.model.get('selected_index');
-            if (0 <= selected_index && selected_index < this.containers.length) {
-                this.select_page(selected_index);
+            if (0 <= index && index < this.tabBar.itemCount()) {
+                this.selectPage(index);
             }
         }
     },
 
-    select_page: function(index) {
-        /**
-         * Select a page.
-         */
-        this.$tabs.find('li')
-            .removeClass('active');
-        this.containers[index].tab('show');
+    /**
+     * Select a page.
+     */
+    selectPage: function(index) {
+        var actives = this.el.querySelectorAll('.mod-active');
+        if (actives.length) {
+            for (var i = 0, len = actives.length; i < len; i++) {
+                actives[i].classList.remove('mod-active');
+            }
+        }
+
+        var active = this.el.querySelectorAll('.widget-tab-child')[index];
+        if (active) {
+            active.classList.add('mod-active');
+        }
     },
 
     remove: function() {
+        /*
+         * The tab bar needs to be disposed before its node is removed by the
+         * super call, otherwise phosphor's Widget.detach will throw an error.
+         */
+        this.tabBar.dispose();
         /**
          * We remove this widget before removing the children as an optimization
          * we want to remove the entire container from the DOM first before
          * removing each individual child separately.
          */
         TabView.__super__.remove.apply(this, arguments);
-        this.children_views.remove();
+        this.childrenViews.remove();
     },
+
+    _onTabChanged: function(sender, args) {
+        this.model.set('selected_index', args.index, { updated_view: this });
+        this.touch();
+    },
+
+    _onTabCloseRequested: function(sender, args) {
+        /*
+         * When a tab is removed, the titles dictionary must be reset for all
+         * indices that are larger than the index of the tab that was removed.
+         */
+        var len = this.model.get('children').length;
+        var titles = this.model.get('_titles') || {};
+        delete titles[args.index];
+        for (var i = args.index + 1; i < len; i++) {
+            titles[i - 1] = titles[i];
+            delete titles[i];
+        }
+
+        var children = _.filter(
+            this.model.get('children'),
+            function(child, index) { return index !== args.index; }
+        );
+
+        this.model.set(
+            { 'children': children, '_titles': titles },
+            { updated_view: this }
+        );
+        this.touch();
+    }
 });
 
 module.exports = {
@@ -355,5 +388,5 @@ module.exports = {
     AccordionModel: AccordionModel,
     AccordionView: AccordionView,
     TabModel: TabModel,
-    TabView: TabView,
+    TabView: TabView
 };

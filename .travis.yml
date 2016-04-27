@@ -6,7 +6,7 @@ python:
     - 3.4
     - 3.5
 env:
-    - GROUP=python
+    - GROUP=python TRAVIS_NODE_VERSION=5.1
 sudo: false
 before_install:
     - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_before_install_py.sh ; fi'
@@ -19,8 +19,8 @@ script:
 matrix:
     include:
         - python: 2.7
-          env: GROUP=js; BROWSER=firefox
+          env: GROUP=js BROWSER=firefox TRAVIS_NODE_VERSION=5.1
         - python: 2.7
-          env: GROUP=js; BROWSER=chrome
+          env: GROUP=js BROWSER=chrome TRAVIS_NODE_VERSION=5.1
 after_success:
     - coveralls

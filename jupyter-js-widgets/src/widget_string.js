@@ -1,26 +1,25 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-"use strict";
+'use strict';
 
-var widget = require("./widget");
-var $ = require("./jquery");
-var _ = require("underscore");
+var widget = require('./widget');
+var _ = require('underscore');
 
 var StringModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        value: "",
+        value: '',
         disabled: false,
-        description: "",
-        placeholder: "",
-        _model_name: "StringModel"
-    }),
+        description: '',
+        placeholder: '',
+        _model_name: 'StringModel'
+    })
 });
 
 var HTMLModel = StringModel.extend({
     defaults: _.extend({}, StringModel.prototype.defaults, {
-        _view_name: "HTMLView",
-        _model_name: "HTMLModel"
-    }),
+        _view_name: 'HTMLView',
+        _model_name: 'HTMLModel'
+    })
 });
 
 var HTMLView = widget.DOMWidgetView.extend({
@@ -28,8 +27,8 @@ var HTMLView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.$el
-            .addClass('jupyter-widgets widget-html');
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-html');
         this.update(); // Set defaults.
     },
 
@@ -40,16 +39,16 @@ var HTMLView = widget.DOMWidgetView.extend({
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        this.$el.html(this.model.get('value')); // CAUTION! .html(...) CALL MANDATORY!!!
+        this.el.innerHTML = this.model.get('value');
         return HTMLView.__super__.update.apply(this);
-    },
+    }
 });
 
 var LabelModel = StringModel.extend({
     defaults: _.extend({}, StringModel.prototype.defaults, {
-        _view_name: "LabelView",
-        _model_name: "LabelModel"
-    }),
+        _view_name: 'LabelView',
+        _model_name: 'LabelModel'
+    })
 });
 
 var LabelView = widget.DOMWidgetView.extend({
@@ -57,8 +56,8 @@ var LabelView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.$el
-            .addClass('jupyter-widgets widget-latex');
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-latex');
         this.update(); // Set defaults.
     },
 
@@ -69,16 +68,16 @@ var LabelView = widget.DOMWidgetView.extend({
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        this.typeset(this.$el, this.model.get('value'));
+        this.typeset(this.el, this.model.get('value'));
         return LabelView.__super__.update.apply(this);
-    },
+    }
 });
 
 var TextareaModel = StringModel.extend({
     defaults: _.extend({}, StringModel.prototype.defaults, {
-        _view_name: "TextareaView",
-        _model_name: "TextareaModel"
-    }),
+        _view_name: 'TextareaView',
+        _model_name: 'TextareaModel'
+    })
 });
 
 var TextareaView = widget.DOMWidgetView.extend({
@@ -86,22 +85,29 @@ var TextareaView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.$el
-            .addClass('jupyter-widgets widget-hbox widget-textarea');
-        this.$label = $('<div />')
-            .appendTo(this.$el)
-            .addClass('widget-label')
-            .hide();
-        this.$textbox = $('<textarea />')
-            .attr('rows', 5)
-            .addClass('form-control')
-            .appendTo(this.$el);
-        this.update(); // Set defaults.
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-textarea');
 
-        this.listenTo(this.model, 'msg:custom', $.proxy(this._handle_textarea_msg, this));
-        this.listenTo(this.model, 'change:placeholder', function(model, value, options) {
-            this.update_placeholder(value);
-        }, this);
+        this.label = document.createElement('div');
+        this.label.classList.add('widget-label');
+        this.label.style.display = 'none';
+        this.el.appendChild(this.label);
+
+        this.textbox = document.createElement('textarea');
+        this.textbox.setAttribute('rows', 5);
+        this.textbox.classList.add('form-control');
+        this.el.appendChild(this.textbox);
+
+        this.update(); // Set defaults.
+        var model = this;
+        this.listenTo(this.model, 'msg:custom', function() {
+          model._handle_textarea_msg()
+        });
+        this.listenTo(this.model, 'change:placeholder',
+            function(model, value, options) {
+                this.update_placeholder(value);
+            }, this);
 
         this.update_placeholder();
     },
@@ -110,23 +116,21 @@ var TextareaView = widget.DOMWidgetView.extend({
         /**
          * Handle when a custom msg is recieved from the back-end.
          */
-        if (content.method == "scroll_to_bottom") {
+        if (content.method == 'scroll_to_bottom') {
             this.scroll_to_bottom();
         }
     },
 
     update_placeholder: function(value) {
-        if (!value) {
-            value = this.model.get('placeholder');
-        }
-        this.$textbox.attr('placeholder', value);
+        value = value || this.model.get('placeholder');
+        this.textbox.setAttribute('placeholder', value);
     },
 
     scroll_to_bottom: function () {
         /**
          * Scroll the text-area view to the bottom.
          */
-        this.$textbox.scrollTop(this.$textbox[0].scrollHeight);
+        //this.$textbox.scrollTop(this.$textbox[0].scrollHeight); // DW TODO
     },
 
     update: function(options) {
@@ -137,17 +141,17 @@ var TextareaView = widget.DOMWidgetView.extend({
          * changed by another view or by a state update from the back-end.
          */
         if (options === undefined || options.updated_view != this) {
-            this.$textbox.val(this.model.get('value'));
+            this.textbox.value = this.model.get('value');
 
             var disabled = this.model.get('disabled');
-            this.$textbox.prop('disabled', disabled);
+            this.textbox.disabled = disabled;
 
             var description = this.model.get('description');
             if (description.length === 0) {
-                this.$label.hide();
+                this.label.style.display = 'none';
             } else {
-                this.typeset(this.$label, description);
-                this.$label.show();
+                this.typeset(this.label, description);
+                this.label.style.display = '';
             }
         }
         return TextareaView.__super__.update.apply(this);
@@ -155,9 +159,9 @@ var TextareaView = widget.DOMWidgetView.extend({
 
     events: {
         // Dictionary of events and their handlers.
-        "keyup textarea" : "handleChanging",
-        "paste textarea" : "handleChanging",
-        "cut textarea"   : "handleChanging"
+        'keyup textarea' : 'handleChanging',
+        'paste textarea' : 'handleChanging',
+        'cut textarea'   : 'handleChanging'
     },
 
     handleChanging: function(e) {
@@ -169,14 +173,14 @@ var TextareaView = widget.DOMWidgetView.extend({
          */
         this.model.set('value', e.target.value, {updated_view: this});
         this.touch();
-    },
+    }
 });
 
 var TextModel = StringModel.extend({
     defaults: _.extend({}, StringModel.prototype.defaults, {
-        _view_name: "TextView",
-        _model_name: "TextModel"
-    }),
+        _view_name: 'TextView',
+        _model_name: 'TextModel'
+    })
 });
 
 var TextView = widget.DOMWidgetView.extend({
@@ -184,15 +188,19 @@ var TextView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.$el
-            .addClass('jupyter-widgets widget-hbox widget-text');
-        this.$label = $('<div />')
-            .addClass('widget-label')
-            .appendTo(this.$el)
-            .hide();
-        this.$textbox = $('<input type="text" />')
-            .addClass('form-control')
-            .appendTo(this.$el);
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-text');
+        this.label = document.createElement('div');
+        this.label.className = 'widget-label';
+        this.el.appendChild(this.label);
+        this.label.style.display = 'none';
+
+        this.textbox = document.createElement('input');
+        this.textbox.setAttribute('type', 'text');
+        this.textbox.className = 'form-control';
+        this.el.appendChild(this.textbox);
+
         this.update(); // Set defaults.
         this.listenTo(this.model, 'change:placeholder', function(model, value, options) {
             this.update_placeholder(value);
@@ -205,7 +213,7 @@ var TextView = widget.DOMWidgetView.extend({
         if (!value) {
             value = this.model.get('placeholder');
         }
-        this.$textbox.attr('placeholder', value);
+        this.textbox.setAttribute('placeholder', value);
     },
 
     update: function(options) {
@@ -216,19 +224,19 @@ var TextView = widget.DOMWidgetView.extend({
          * changed by another view or by a state update from the back-end.
          */
         if (options === undefined || options.updated_view != this) {
-            if (this.$textbox.val() != this.model.get('value')) {
-                this.$textbox.val(this.model.get('value'));
+            if (this.textbox.value != this.model.get('value')) {
+              this.textbox.value = this.model.get('value');
             }
 
             var disabled = this.model.get('disabled');
-            this.$textbox.prop('disabled', disabled);
+            this.textbox.disabled = disabled;
 
             var description = this.model.get('description');
             if (description.length === 0) {
-                this.$label.hide();
+                this.label.style.display = 'none';
             } else {
-                this.typeset(this.$label, description);
-                this.$label.show();
+                this.typeset(this.label, description);
+                this.label.style.display = '';
             }
         }
         return TextView.__super__.update.apply(this);
@@ -236,12 +244,12 @@ var TextView = widget.DOMWidgetView.extend({
 
     events: {
         // Dictionary of events and their handlers.
-        "keyup input"    : "handleChanging",
-        "paste input"    : "handleChanging",
-        "cut input"      : "handleChanging",
-        "keypress input" : "handleKeypress",
-        "blur input" : "handleBlur",
-        "focusout input" : "handleFocusOut"
+        'keyup input'    : 'handleChanging',
+        'paste input'    : 'handleChanging',
+        'cut input'      : 'handleChanging',
+        'keypress input' : 'handleKeypress',
+        'blur input'     : 'handleBlur',
+        'focusout input' : 'handleFocusOut'
     },
 
     handleChanging: function(e) {
@@ -291,7 +299,7 @@ var TextView = widget.DOMWidgetView.extend({
             e.preventDefault();
             return false;
         }
-    },
+    }
 });
 
 module.exports = {
@@ -303,5 +311,5 @@ module.exports = {
     TextareaView: TextareaView,
     TextareaModel: TextareaModel,
     TextView: TextView,
-    TextModel: TextModel,
+    TextModel: TextModel
 };
