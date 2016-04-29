@@ -11,24 +11,28 @@ var $ = require("./jquery");
  * css properties exposed by the layout widget with their default values.
  */
 var css_properties = {
-    align_content: "",
-    align_items: "",
-    align_self: "",
-    border: "",
-    bottom: "",
-    display: "",
-    flex: "",
-    flex_flow: "",
-    height: "",
-    justify_content: "",
-    left: "",
-    margin: "",
-    overflow: "",
-    padding: "",
-    right: "",
-    top: "",
-    visibility: "",
-    width: ""
+    align_content: '',
+    align_items: '',
+    align_self: '',
+    border: '',
+    bottom: '',
+    display: '',
+    flex: '',
+    flex_flow: '',
+    height: '',
+    justify_content: '',
+    left: '',
+    margin: '',
+    max_height: '',
+    max_width: '',
+    min_height: '',
+    min_width: '',
+    overflow: '',
+    padding: '',
+    right: '',
+    top: '',
+    visibility: '',
+    width: ''
 };
 
 /**
