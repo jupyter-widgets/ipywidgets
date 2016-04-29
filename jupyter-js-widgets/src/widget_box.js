@@ -85,7 +85,7 @@ var ProxyView = widget.DOMWidgetView.extend({
                     });
                     that.child = view;
                     that.trigger('child:created');
-                }).catch(utils.reject('Couldn\'t add child view to proxy', true));
+                }).catch(utils.reject('Could not add child view to proxy', true));
             });
         }
         return this.child_promise;
@@ -201,7 +201,7 @@ var BoxView = widget.DOMWidgetView.extend({
                 view.trigger('displayed', that);
             });
             return view;
-        }).catch(utils.reject('Couldn\'t add child view to box', true));
+        }).catch(utils.reject('Could not add child view to box', true));
     },
 
     remove: function() {

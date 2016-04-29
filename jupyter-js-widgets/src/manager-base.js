@@ -107,7 +107,7 @@ ManagerBase.prototype.create_view = function(model, options) {
             return Promise.resolve(view.render()).then(function() {
                 return view;
             });
-        }).catch(utils.reject('Couldn\'t create a view for model id ' + model.id, true));
+        }).catch(utils.reject('Could not create a view for model id ' + model.id, true));
     });
     var id = utils.uuid();
     model.views[id] = model.state_change;
@@ -139,7 +139,7 @@ ManagerBase.prototype.handle_comm_open = function (comm, msg) {
         model_name: msg.content.data._model_name,
         model_module: msg.content.data._model_module,
         comm: comm
-    }, msg.content.data).catch(utils.reject('Couldn\'t create a model.', true));
+    }, msg.content.data).catch(utils.reject('Could not create a model.', true));
 };
 
 /**
@@ -270,7 +270,7 @@ ManagerBase.prototype.new_model = function(options, serialized_state) {
             });
     }, function(error) {
         delete that._models[model_id];
-        var wrapped_error = new utils.WrappedError('Couldn\'t create model', error);
+        var wrapped_error = new utils.WrappedError('Could not create model', error);
         return Promise.reject(wrapped_error);
     });
     this._models[model_id] = model_promise;
