@@ -494,7 +494,7 @@ var WidgetViewMixin = {
         var that = this;
         options = _.extend({ parent: this }, options || {});
         return this.model.widget_manager.create_view(child_model, options)
-            .catch(utils.reject('Couldn\'t create child view', true));
+            .catch(utils.reject('Could not create child view', true));
     },
 
     callbacks: function(){
@@ -659,7 +659,7 @@ var DOMWidgetViewMixin = {
                         view.trigger('displayed', that);
                         return view;
                     });
-                }).catch(utils.reject('Couldn\'t add LayoutView to DOMWidgetView', true));
+                }).catch(utils.reject('Could not add LayoutView to DOMWidgetView', true));
             });
         }
     },

@@ -42,13 +42,16 @@ var ColorPickerView = widget.DOMWidgetView.extend({
         this.listenTo(this.model, 'change:value', this._update_value, this);
         this.listenTo(this.model, 'change:description', this._update_description, this);
         this.listenTo(this.model, 'change:concise', this._update_concise, this);
-        this.colorpicker.addEventListener('change', this._picker_change.bind(this));
-
-        this.colorpicker.addEventListener('change', this._text_change.bind(this));
 
         this._update_concise();
         this._update_value();
         this._update_description();
+    },
+
+    events: {
+        // Dictionary of events and their handlers.
+        'change [type="color"]': '_picker_change',
+        'change [type="text"]': '_text_change'
     },
 
     _update_value: function() {
@@ -86,7 +89,11 @@ var ColorPickerView = widget.DOMWidgetView.extend({
     },
 
     _text_change: function() {
-        this.model.set('value', this._validate_color(this.textbox.value, this.model.get('value')));
+        var value = this._validate_color(
+            this.textbox.value,
+            this.model.get('value')
+        );
+        this.model.set('value', value);
         this.touch();
     },
 

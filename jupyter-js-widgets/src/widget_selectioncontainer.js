@@ -181,7 +181,7 @@ var AccordionView = widget.DOMWidgetView.extend({
                 view.trigger('displayed', that);
             });
             return view;
-        }).catch(utils.reject('Couldn\'t add child view to box', true));
+        }).catch(utils.reject('Could not add child view to box', true));
     },
 
     remove: function() {
@@ -278,7 +278,7 @@ var TabView = widget.DOMWidgetView.extend({
             child.on('remove', function() { parent.tabBar.removeItem(tab); });
 
             return child;
-        }).catch(utils.reject('Couldn\'t add child view to box', true));
+        }).catch(utils.reject('Could not add child view to box', true));
     },
 
     removeChildView: function(child) { child.remove(); },

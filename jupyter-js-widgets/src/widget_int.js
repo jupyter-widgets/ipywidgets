@@ -384,7 +384,7 @@ var IntTextView = widget.DOMWidgetView.extend({
 
         this.textbox = document.createElement('input');
         this.textbox.setAttribute('type', 'text');
-        this.textbox.className = 'form-control widget-numeric-text';
+        this.textbox.className = 'widget-numeric-text';
         this.el.appendChild(this.textbox);
 
         this.listenTo(this.model, 'change:description', function(sender, value) {
