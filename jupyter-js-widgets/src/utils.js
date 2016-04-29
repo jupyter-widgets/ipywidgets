@@ -186,7 +186,7 @@ function typeset(element, text) {
  */
 var escape_html = function(text) {
     var esc  = document.createElement('div');
-    esc.innerHTML = text;
+    esc.textContent = text;
     return esc.innerHTML;
 };
 
