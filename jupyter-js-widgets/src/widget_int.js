@@ -322,10 +322,10 @@ var IntSliderView = widget.DOMWidgetView.extend({
         var actual_value;
         if (this.model.get('_range')) {
             actual_value = ui.values.map(this._validate_slide_value);
-            this.readout.textContent = actual_value.join('-');
+            this.readout.textContent = this.valueToString(actual_value);
         } else {
             actual_value = this._validate_slide_value(ui.value);
-            this.readout.textContent = actual_value;
+            this.readout.textContent = this.valueToString(actual_value);
         }
 
         // Only persist the value while sliding if the continuous_update
