@@ -242,7 +242,7 @@ var FlexBoxView = BoxView.extend({ // TODO: Deprecated in 5.0 (entire view)
         var orientation = this.model.get('orientation');
         if (orientation == 'vertical') {
             this.box.classList.remove('hbox');
-            this.box.classList.add(vbox);
+            this.box.classList.add('vbox');
         } else {
             this.box.classList.remove('vbox');
             this.box.classList.add('hbox');
