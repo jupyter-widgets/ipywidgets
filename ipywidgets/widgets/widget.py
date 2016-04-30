@@ -471,7 +471,11 @@ class Widget(LoggingConfigurable):
             # Before the user tries to display a widget.  Validate that the
             # widget front-end is what is expected.
             if validated is None:
-                loud_error('Widget Javascript not detected.  It may not be installed properly.')
+                loud_error('Widget Javascript not detected.  It may not be '
+                           'installed properly. Did you enable the '
+                           'widgetsnbextension? If not, then run "jupyter '
+                           'nbextension enable --py --sys-prefix '
+                           'widgetsnbextension"')
             elif not validated:
                 loud_error('The installed widget Javascript is the wrong version.')
 
