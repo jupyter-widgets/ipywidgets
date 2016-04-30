@@ -38,7 +38,17 @@ var IntSliderModel = BoundedIntModel.extend({
         readout_format: 'd',
         slider_color: null,
         continuous_update: true
-    })
+    }),
+
+    initialize: function () {
+        IntSliderModel.__super__.initialize.apply(this, arguments);
+        this.on('change:readout_format', this.update_readout_format, this);
+        this.update_readout_format();
+    },
+
+    update_readout_format: function() {
+        this.readout_formatter = d3format(this.get('readout_format'));
+    }
 });
 
 var IntSliderView = widget.DOMWidgetView.extend({
@@ -231,7 +241,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
      * @return {string}
      */
     valueToString: function(value) {
-        var format = d3format(this.model.get('readout_format'));
+        var format = this.model.readout_formatter;
         if (this.model.get('_range')) {
             return value.map(function (v) {
                 return format(v);

@@ -39,6 +39,16 @@ var FloatSliderModel = BoundedFloatModel.extend({
         slider_color: null,
         continuous_update: true
     }),
+
+    initialize: function () {
+        FloatSliderModel.__super__.initialize.apply(this, arguments);
+        this.on('change:readout_format', this.update_readout_format, this);
+        this.update_readout_format();
+    },
+
+    update_readout_format: function() {
+        this.readout_formatter = d3format(this.get('readout_format'));
+    }
 });
 
 
@@ -68,9 +78,11 @@ var FloatTextModel = FloatModel.extend({
     }),
 });
 
+
 var FloatTextView = IntTextView.extend({
     _parse_value: parseFloat
 });
+
 
 module.exports = {
     FloatSliderModel: FloatSliderModel,
