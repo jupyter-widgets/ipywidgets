@@ -72,7 +72,7 @@ class FloatText(_Float):
         value displayed
     description : str
         description displayed next to the text box
-    color : str Unicode color code (eg. '#C13535'), optional
+    color : str Unicode color code (eg. '#C13535')
         color of the value displayed
     """
     _view_name = Unicode('FloatTextView').tag(sync=True)
@@ -95,7 +95,7 @@ class BoundedFloatText(_BoundedFloat):
         maximal value of the range of possible values displayed
     description : str
         description displayed next to the textbox
-    color : str Unicode color code (eg. '#C13535'), optional
+    color : str Unicode color code (eg. '#C13535')
         color of the value displayed
     """
     _view_name = Unicode('FloatTextView').tag(sync=True)
@@ -118,15 +118,16 @@ class FloatSlider(_BoundedFloat):
         step of the trackbar
     description : str
         name of the slider
-    orientation : {'horizontal', 'vertical'}, optional
+    orientation : {'horizontal', 'vertical'}
         default is 'horizontal', orientation of the slider
-    readout : {True, False}, optional
+    readout : {True, False}
         default is True, display the current value of the slider next to it
-    readout_precision : int, optional
-        default is True, display the current value of the slider next to it
-    slider_color : str Unicode color code (eg. '#C13535'), optional
+    readout_format : str
+        default is '.2f', specifier for the format function used to represent
+        slider value as a string in the readout.
+    slider_color : str Unicode color code (eg. '#C13535')
         color of the slider
-    color : str Unicode color code (eg. '#C13535'), optional
+    color : str Unicode color code (eg. '#C13535')
         color of the value displayed (if readout == True)
     """
     _view_name = Unicode('FloatSliderView').tag(sync=True)
@@ -135,7 +136,7 @@ class FloatSlider(_BoundedFloat):
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     _range = Bool(False, help="Display a range selector").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
-    readout_precision = Int(5, help="Number of significant digits in readout.").tag(sync=True)
+    readout_format = Unicode('.2f', help="Format for the readout").tag(sync=True)
     slider_color = Color(None, allow_none=True).tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
 
@@ -156,9 +157,9 @@ class FloatProgress(_BoundedFloat):
         step of the progress bar
     description : str
         name of the progress bar
-    orientation : {'horizontal', 'vertical'}, optional
+    orientation : {'horizontal', 'vertical'}
         default is 'horizontal', orientation of the progress bar
-    bar_style: {'success', 'info', 'warning', 'danger', ''}, optional
+    bar_style: {'success', 'info', 'warning', 'danger', ''}
         color of the progress bar, default is '' (blue)
         colors are: 'success'-green, 'info'-light blue, 'warning'-orange, 'danger'-red
     """
@@ -251,15 +252,13 @@ class FloatRangeSlider(_BoundedFloatRange):
         step of the trackbar
     description : str
         name of the slider
-    orientation : {'horizontal', 'vertical'}, optional
+    orientation : {'horizontal', 'vertical'}
         default is 'horizontal'
-    readout : {True, False}, optional
+    readout : {True, False}
         default is True, display the current value of the slider next to it
-    readout_precision : int, optional
-        default is 5, display the current value of the slider next to it
-    slider_color : str Unicode color code (eg. '#C13535'), optional
+    slider_color : str Unicode color code (eg. '#C13535')
         color of the slider
-    color : str Unicode color code (eg. '#C13535'), optional
+    color : str Unicode color code (eg. '#C13535')
         color of the value displayed (if readout == True)
     """
     _view_name = Unicode('FloatSliderView').tag(sync=True)
@@ -268,6 +267,5 @@ class FloatRangeSlider(_BoundedFloatRange):
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     _range = Bool(True, help="Display a range selector").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
-    readout_precision = Int(5, help="Number of significant digits in readout.").tag(sync=True)
     slider_color = Color(None, allow_none=True).tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)

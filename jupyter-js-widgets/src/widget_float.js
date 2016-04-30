@@ -5,6 +5,7 @@
 var _ = require('underscore');
 var widget = require('./widget');
 var int_widgets = require('./widget_int');
+var d3format = require('d3-format').format;
 
 
 var FloatModel = widget.DOMWidgetModel.extend({
@@ -34,7 +35,7 @@ var FloatSliderModel = BoundedFloatModel.extend({
         orientation: "horizontal",
         _range: false,
         readout: true,
-        readout_precision: 5,
+        readout_format: '.2f',
         slider_color: null,
         continuous_update: true
     }),
@@ -57,23 +58,6 @@ var FloatSliderView = IntSliderView.extend({
          */
         return x;
     },
-
-    /**
-     * Write value to a string
-     * @param  {number|number[]} value
-     * @return {string}
-     */
-    valueToString: function(value) {
-        if (this.model.get('_range')) {
-            var that = this;
-            return value.map(function(v) {
-                return v.toPrecision(that.model.get('readout_precision'));
-            }).join("-");
-        } else {
-            return value.toPrecision(this.model.get('readout_precision'));
-        }
-    },
-
 });
 
 
