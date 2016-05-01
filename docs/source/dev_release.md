@@ -29,7 +29,7 @@ npm version [patch/minor/major]
 edit widgetsnbextension/_version.py (Remove dev from the version.  If it's the first beta, use b1, etc...)
 python setup.py sdist upload && python setup.py bdist_wheel upload
 
-edit ipywidgets/_version.py (remove dev from the version and update the frontend version requirement)
+edit ipywidgets/_version.py (remove dev from the version and update the frontend version requirement to match the one of jupyter-js-widgets)
 
 Change install_requires to point to new widgetsnbextension version
 python setup.py sdist upload && python setup.py bdist_wheel upload
