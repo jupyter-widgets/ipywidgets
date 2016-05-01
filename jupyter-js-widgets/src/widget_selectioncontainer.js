@@ -27,171 +27,103 @@ var AccordionModel = SelectionContainerModel.extend({
 var AccordionView = widget.DOMWidgetView.extend({
     initialize: function(){
         AccordionView.__super__.initialize.apply(this, arguments);
+        this.childrenViews = new widget.ViewList(this.addChildView, this.removeChildView, this);
+        this.accordionButtons = [];
+        this.accordionContainers = [];
+        this.viewIndices = {};
 
-        this.containers = [];
-        this.model_containers = {};
-        this.children_views = new widget.ViewList(this.add_child_view, this.remove_child_view, this);
         this.listenTo(this.model, 'change:children', function(model, value, options) {
-            this.children_views.update(value);
+            this.childrenViews.update(value);
         }, this);
+        this.listenTo(this.model, 'change:selected_index', this.updateSelectedIndex, this);
+        this.listenTo(this.model, 'change:_titles', this.updateTitles, this);
+        this.listenTo('displayed', this.updateTitles, this);
+        this.childrenViews.update(this.model.get('children'));
     },
 
     render: function() {
-        /**
-         * Called when view is rendered.
-         */
-        var guid = 'panel-group' + utils.uuid();
-        this.el.id = guid;
-        this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('panel-group');
-
-        this.listenTo(this.model, 'change:selected_index', function(model, value, options) {
-            this.update_selected_index(options);
-        }, this);
-        this.listenTo(this.model, 'change:_titles', function(model, value, options) {
-            this.update_titles(options);
-        }, this);
-        this.on('displayed', function() {
-            this.update_titles();
-        }, this);
-        this.children_views.update(this.model.get('children'));
+        this.el.className = 'widget-accordion';
     },
 
-    /**
-     * Set tab titles
-     */
-    update_titles: function() {
+    updateTitles: function(model, value, options) {
         var titles = this.model.get('_titles');
-        var that = this;
-        _.each(titles, function(title, page_index) {
-            var accordion = that.containers[page_index];
-            if (accordion !== undefined) {
-                accordion
-                    .children('.panel-heading')
-                    .find('.accordion-toggle')
-                    .text(title);
+        this.accordionButtons.forEach(function(el, index) {
+            if (titles.length > index) {
+                el.innerText = titles[index];
+            } else {
+                el.innerText = 'Tab ' + String(index);
             }
-        });
+        }, this);
     },
 
-    /**
-     * Only update the selection if the selection wasn't triggered
-     * by the front-end.  It must be triggered by the back-end.
-     */
-    update_selected_index: function(options) {
+    updateSelectedIndex: function(model, value, options) {
         if (options === undefined || options.updated_view != this) {
-            var old_index = this.model.previous('selected_index');
-            var new_index = this.model.get('selected_index');
-            /* old_index can be out of bounds, this check avoids raising
-               a javascript error. */
-            this.collapseTab(old_index);
-            this.expandTab(new_index);
+            this.activateTab(this.model.get('selected_index'));
         }
     },
 
-    /**
-     * Collapses an accordion tab.
-     * @param  {number} index
-     */
-    collapseTab: function(index) {
-        var page = this.containers[index].children('.collapse');
-
-        if (page.hasClass('in')) {
-            page.removeClass('in');
-            page.collapse('hide');
-        }
+    activateTab: function (index) {
+        this.accordionContainers.forEach(function(el, subIndex) {
+            if (subIndex === index) {
+                this.accordionButtons[subIndex].classList.add('active');
+                this.accordionContainers[subIndex].classList.add('active');
+                this.accordionContainers[subIndex].style.display = '';
+            } else {
+                this.accordionButtons[subIndex].classList.remove('active');
+                this.accordionContainers[subIndex].classList.remove('active');
+                this.accordionContainers[subIndex].style.display = 'none';
+            }
+        }, this);
     },
 
-    /**
-     * Expands an accordion tab.
-     * @param  {number} index
-     */
-    expandTab: function(index) {
-        var page = this.containers[index].children('.collapse');
+    removeChildView: function(view) {
+        var index = this.viewIndices[view.id];
+        delete this.viewIndices[view.id];
 
-        if (!page.hasClass('in')) {
-            page.addClass('in');
-            page.collapse('show');
-        }
+        this.accordionButtons.splice(index, 1);
+        this.accordionContainers.splice(index, 1);
     },
 
-    remove_child_view: function(view) {
-        /**
-         * Called when a child is removed from children list.
-         * TODO: does this handle two different views of the same model as children?
-         */
-        var model = view.model;
-        var accordion_group = this.model_containers[model.id];
-        this.containers.splice(accordion_group.container_index, 1);
-        delete this.model_containers[model.id];
-        accordion_group.remove();
-    },
+    addChildView: function(model) {
+        return this.create_child_view(model).then((function(view) {
+            var index = this.accordionContainers.length;
+            this.viewIndices[view.id] = index;
 
-    add_child_view: function(model) {
-        /**
-         * Called when a child is added to children list.
-         */
-        var index = this.containers.length;
-        var uuid = utils.uuid();
-        var accordion_group = document.createElement('div');
-        accordion_group.className = 'panel panel-default';
-        this.el.appendChild(accordion_group);
+            var button = document.createElement('button');
+            button.className = 'tabButton';
+            this.accordionButtons.push(button);
+            this.el.appendChild(button);
 
-        var accordion_heading = document.createElement('div');
-        accordion_heading.classList.add('panel-heading');
-        accordion_group.appendChild(accordion_heading);
+            var container = document.createElement('div');
+            container.className = 'container';
+            this.accordionContainers.push(container);
+            this.el.appendChild(container);
 
-        var that = this;
-        var accordion_toggle = document.createElement('a');
-        accordion_toggle.classList.add('accordion-toggle');
-        accordion_toggle.setAttribute('data-toggle', 'collapse');
-        accordion_toggle.setAttribute('data-parent', '#' + this.el.id);
-        accordion_toggle.setAttribute('href', '#' + uuid);
-        accordion_toggle.onclick = function() {
-          that.model.set('selected_index', index, {updated_view: that});
-          that.touch();
-        };
-        accordion_toggle.textContent('Page ' + index);
-        accordion_heading.appendChild(accordion_toggle);
-
-        var accordion_body = document.createElement('div');
-        accordion_body.id = uuid;
-        accordion_body.className = 'panel-collapse collapse';
-        accordion_group.appendChild(accordion_body);
-
-        var accordion_inner = document.createElement('div');
-        accordion_inner.classList.add('panel-body');
-        accordion_body.appendChild(accordion_inner);
-
-        var container_index = this.containers.push(accordion_group) - 1;
-        accordion_group.container_index = container_index;
-        this.model_containers[model.id] = accordion_group;
-
-        var dummy = document.createElement('div');
-        accordion_inner.appendChild(dummy);
-        return this.create_child_view(model).then(function(view) {
-
-            dummy.parentNode.replaceChild(dummy, view.el);
-
-            that.update_selected_index();
-            that.update_titles();
+            container.appendChild(view.el);
 
             // Trigger the displayed event of the child view.
-            that.displayed.then(function() {
+            this.displayed.then(function() {
                 view.trigger('displayed', that);
             });
             return view;
-        }).catch(utils.reject('Couldn\'t add child view to box', true));
+
+            // Listen for the tab button click
+            button.onclick = (function() {
+                this.model.set('selected_index', index);
+                view.touch();
+            }).bind(this);
+        }).bind(this))
+            .catch(utils.reject('Couldn\'t add child view to box', true));
     },
 
+    /**
+     * We remove this widget before removing the children as an optimization
+     * we want to remove the entire container from the DOM first before
+     * removing each individual child separately.
+     */
     remove: function() {
-        /**
-         * We remove this widget before removing the children as an optimization
-         * we want to remove the entire container from the DOM first before
-         * removing each individual child separately.
-         */
         AccordionView.__super__.remove.apply(this, arguments);
-        this.children_views.remove();
+        this.childrenViews.remove();
     }
 });
 
