@@ -5,6 +5,8 @@
 var widget = require('./widget');
 var _ = require('underscore');
 var $ = require('jquery');
+var d3format = require('d3-format').format;
+
 require('jquery-ui');
 
 
@@ -33,9 +35,20 @@ var IntSliderModel = BoundedIntModel.extend({
         orientation: 'horizontal',
         _range: false,
         readout: true,
+        readout_format: 'd',
         slider_color: null,
         continuous_update: true
-    })
+    }),
+
+    initialize: function () {
+        IntSliderModel.__super__.initialize.apply(this, arguments);
+        this.on('change:readout_format', this.update_readout_format, this);
+        this.update_readout_format();
+    },
+
+    update_readout_format: function() {
+        this.readout_formatter = d3format(this.get('readout_format'));
+    }
 });
 
 var IntSliderView = widget.DOMWidgetView.extend({
@@ -200,11 +213,26 @@ var IntSliderView = widget.DOMWidgetView.extend({
             var readout = this.model.get('readout');
             if (readout) {
                 this.readout.style.display = '';
+                this.displayed.then(function() {
+                    if (that.readout_overflow()) {
+                        that.readout.classList.add('overflow');
+                    } else {
+                        that.readout.classList.remove('overflow');
+                    }
+                });
             } else {
                 this.readout.style.display = 'none';
             }
+
         }
         return IntSliderView.__super__.update.apply(this);
+    },
+
+    /**
+     * Returns true if the readout box content overflows.
+     */
+    readout_overflow: function() {
+        return this.readout.scrollWidth > this.readout.clientWidth;
     },
 
     /**
@@ -213,10 +241,13 @@ var IntSliderView = widget.DOMWidgetView.extend({
      * @return {string}
      */
     valueToString: function(value) {
+        var format = this.model.readout_formatter;
         if (this.model.get('_range')) {
-            return value.join('-');
+            return value.map(function (v) {
+                return format(v);
+            }).join('-');
         } else {
-            return String(value);
+            return format(value);
         }
     },
 
@@ -268,7 +299,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
          *
          * the step size is not enforced
          */
-        var value = this.stringToValue(this.readout.text());
+        var value = this.stringToValue(this.readout.textContent);
         var vmin = this.model.get('min');
         var vmax = this.model.get('max');
         if (this.model.get('_range')) {
@@ -322,10 +353,10 @@ var IntSliderView = widget.DOMWidgetView.extend({
         var actual_value;
         if (this.model.get('_range')) {
             actual_value = ui.values.map(this._validate_slide_value);
-            this.readout.textContent = actual_value.join('-');
+            this.readout.textContent = this.valueToString(actual_value);
         } else {
             actual_value = this._validate_slide_value(ui.value);
-            this.readout.textContent = actual_value;
+            this.readout.textContent = this.valueToString(actual_value);
         }
 
         // Only persist the value while sliding if the continuous_update

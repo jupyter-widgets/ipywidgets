@@ -150,6 +150,7 @@ class IntSlider(_BoundedInt):
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     _range = Bool(False, help="Display a range selector").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
+    readout_format = Unicode('d', help="Format for the readout").tag(sync=True)
     slider_color = Color(None, allow_none=True).tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
 
