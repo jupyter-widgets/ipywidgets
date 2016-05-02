@@ -73,11 +73,17 @@ var WidgetManager = function (comm_manager, notebook) {
             }));
         }).then(function(models) {
 
-            // Load the initial state of the widget manager if a load callback was
-            // registered.
+            // Load the view information from the notebook metadata.
             if (WidgetManager._load_callback) {
                 WidgetManager._load_callback.call(that).then(function(state) {
-                    that.set_state(state);
+                    var filtered_state = Object.keys(state).reduce(function(obj, key) {
+                        // Filter for keys that are live model ids.
+                        if (that.get_model(key)) {
+                            obj[key] = state[key];
+                        }
+                        return obj;
+                    }, {});
+                    that.set_state(filtered_state);
                 }).catch(widgets.reject('Error loading widget manager state', true));
             }
         });
