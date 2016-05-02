@@ -124,7 +124,8 @@ class FloatSlider(_BoundedFloat):
         default is True, display the current value of the slider next to it
     readout_format : str
         default is '.2f', specifier for the format function used to represent
-        slider value as a string in the readout.
+        slider value for human consumption, modeled after Python 3’s format
+        specification mini-language (PEP 3101).
     slider_color : str Unicode color code (eg. '#C13535')
         color of the slider
     color : str Unicode color code (eg. '#C13535')
@@ -256,6 +257,10 @@ class FloatRangeSlider(_BoundedFloatRange):
         default is 'horizontal'
     readout : {True, False}
         default is True, display the current value of the slider next to it
+    readout_format : str
+        default is '.2f', specifier for the format function used to represent
+        slider value for human consumption, modeled after Python 3’s format
+        specification mini-language (PEP 3101).
     slider_color : str Unicode color code (eg. '#C13535')
         color of the slider
     color : str Unicode color code (eg. '#C13535')
