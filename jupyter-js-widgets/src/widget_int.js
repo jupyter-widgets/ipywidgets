@@ -2,9 +2,10 @@
 // Distributed under the terms of the Modified BSD License.
 "use strict";
 
-var widget = require("./widget");
-var _ = require("underscore");
+var widget = require('./widget');
+var _ = require('underscore');
 var $ = require("./jquery");
+var d3format = require('d3-format').format;
 
 var IntModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
@@ -31,9 +32,20 @@ var IntSliderModel = BoundedIntModel.extend({
         orientation: "horizontal",
         _range: false,
         readout: true,
+        readout_format: 'd',
         slider_color: null,
         continuous_update: true
     }),
+
+    initialize: function () {
+        IntSliderModel.__super__.initialize.apply(this, arguments);
+        this.on('change:readout_format', this.update_readout_format, this);
+        this.update_readout_format();
+    },
+
+    update_readout_format: function() {
+        this.readout_formatter = d3format(this.get('readout_format'));
+    }
 });
 
 var IntSliderView = widget.DOMWidgetView.extend({
@@ -117,7 +129,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
          */
         if (options === undefined || options.updated_view != this) {
             // JQuery slider option keys.  These keys happen to have a
-            // one-to-one mapping with the corrosponding keys of the model.
+            // one-to-one mapping with the corresponding keys of the model.
             var jquery_slider_keys = ['step', 'disabled'];
             var that = this;
             that.$slider.slider({});
@@ -200,11 +212,26 @@ var IntSliderView = widget.DOMWidgetView.extend({
             var readout = this.model.get('readout');
             if (readout) {
                 this.$readout.show();
+                this.displayed.then(function() {
+                    if (that.readout_overflow()) {
+                        that.$readout.addClass('overflow');
+                    } else {
+                        that.$readout.removeClass('overflow');
+                    }
+                });
             } else {
                 this.$readout.hide();
             }
+
         }
         return IntSliderView.__super__.update.apply(this);
+    },
+
+    /**
+     * Returns true if the readout box content overflows.
+     */
+    readout_overflow: function() {
+        return this.$readout[0].scrollWidth > this.$readout[0].clientWidth;
     },
 
     /**
@@ -213,10 +240,13 @@ var IntSliderView = widget.DOMWidgetView.extend({
      * @return {string}
      */
     valueToString: function(value) {
+        var format = this.model.readout_formatter;
         if (this.model.get('_range')) {
-            return value.join("-");
+            return value.map(function (v) {
+                return format(v);
+            }).join('-');
         } else {
-            return String(value);
+            return format(value);
         }
     },
 
@@ -322,10 +352,10 @@ var IntSliderView = widget.DOMWidgetView.extend({
         var actual_value;
         if (this.model.get("_range")) {
             actual_value = ui.values.map(this._validate_slide_value);
-            this.$readout.text(actual_value.join("-"));
+            this.$readout.text(this.valueToString(actual_value));
         } else {
             actual_value = this._validate_slide_value(ui.value);
-            this.$readout.text(actual_value);
+            this.$readout.text(this.valueToString(actual_value));
         }
 
         // Only persist the value while sliding if the continuous_update
@@ -356,11 +386,9 @@ var IntSliderView = widget.DOMWidgetView.extend({
         /**
          * Validate the value of the slider before sending it to the back-end
          * and applying it to the other views on the page.
-         *
-         * Double bit-wise not truncates the decimel (int cast).
          */
-        return ~~x;
-    },
+        return Math.floor(x);
+    }
 });
 
 var IntTextModel = IntModel.extend({
@@ -439,19 +467,19 @@ var IntTextView = widget.DOMWidgetView.extend({
 
     events: {
         // Dictionary of events and their handlers.
-        "keyup input"  : "handleChanging",
-        "paste input"  : "handleChanging",
-        "cut input"    : "handleChanging",
+        'keyup input'  : 'handleChanging',
+        'paste input'  : 'handleChanging',
+        'cut input'    : 'handleChanging',
 
         // Fires only when control is validated or looses focus.
-        "change input" : "handleChanged"
+        'change input' : 'handleChanged'
     },
 
     handleChanging: function(e) {
         /**
          * Handles and validates user input.
          *
-         * Try to parse value as a int.
+         * Try to parse value as an int.
          */
         var numericalValue = 0;
         var trimmed = e.target.value.trim();
@@ -619,5 +647,5 @@ module.exports = {
     IntTextModel: IntTextModel,
     IntTextView: IntTextView,
     ProgressModel: ProgressModel,
-    ProgressView: ProgressView,
+    ProgressView: ProgressView
 };
