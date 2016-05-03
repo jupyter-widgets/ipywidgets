@@ -57,8 +57,9 @@ var ButtonView = widget.DOMWidgetView.extend({
             this.el.textContent = '';
             if (icon.trim().length) {
                 var i = document.createElement('i');
+                i.classList.add('fa');
+                i.classList.add('fa-' + icon);
                 this.el.appendChild(i);
-                this.el.classList.add(icon);
             }
             this.el.appendChild(document.createTextNode(description));
         }
