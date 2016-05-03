@@ -156,29 +156,10 @@ function reject(message, log) {
  * text: option string
  */
 function typeset(element, text) {
-    if (arguments.length > 1) {
-        if (element.length) {
-            for (var i = 0; i < element.length; ++i) {
-                var el = element[i];
-                el.textContent = text;
-            }
-        } else {
-            element.textContent = text;
-        }
+    element.textContent = text;
+    if (window.MathJax) {
+      MathJax.Hub.Queue(['Typeset', MathJax.Hub, element]);
     }
-    if (!window.MathJax) {
-      return;
-    }
-    var output = [];
-    if (element.length) {
-        for (var i = 0; i < element.length; ++i) {
-            var el = element[i];
-            output.push(MathJax.Hub.Queue(['Typeset', MathJax.Hub, el]));
-        }
-    } else {
-        output.push(MathJax.Hub.Queue(['Typeset', MathJax.Hub, element]));
-    }
-    return output;
 }
 
 /**

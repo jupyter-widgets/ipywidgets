@@ -759,7 +759,7 @@ var DOMWidgetViewMixin = {
     },
 
     typeset: function(element, text){
-        utils.typeset.apply(null, arguments);
+        utils.typeset(element, text);
     }
 };
 
