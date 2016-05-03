@@ -153,7 +153,7 @@ function reject(message, log) {
  * text: optional string
  */
 function typeset(element, text) {
-    if (text) {
+    if (text !== void 0) {
         element.textContent = text;
     }
     if (window.MathJax) {
