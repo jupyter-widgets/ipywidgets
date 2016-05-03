@@ -1,0 +1,43 @@
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+
+<!--
+This behavior is used to encapsulate Notebook specific properties
+-->
+<script>
+    'use strict';
+    (function() {
+        var Urth = window.Urth = window.Urth || {};
+
+        /**
+         * Behavior that contains notebook related properties
+         *
+         * @group Urth Core
+         * @polymerBehavior Urth.JupyterNotebookEnv
+         */
+        Urth.JupyterNotebookEnv = {
+
+            properties: {
+                _baseURL: {
+                    value: function(){
+                        return Urth._baseURL || '/';
+                    }
+                },
+
+                _importBaseURL: {
+                    value: function() {
+                        var url = window.Urth.BASE_URL;
+                        // Ensure url is '/' terminated.
+                        if (url && url[url.length - 1] !== '/') {
+                            url = url + '/';
+                        }
+                        return url;
+                    }
+                }
+            }
+
+        };
+    })();
+</script>

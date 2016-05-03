@@ -1,0 +1,542 @@
+<!doctype html>
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- STEP 1: Provide a title for the test suite. -->
+    <title>urth-core-bind tests</title>
+    <meta name='viewport' content='width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes'>
+
+    <!-- Need the web component polyfill for browsers without native support. -->
+    <script src='../../webcomponentsjs/webcomponents-lite.js'></script>
+
+    <!-- Load test framework and helpers. -->
+    <script src='../../web-component-tester/browser.js'></script>
+    <script src='../../test-fixture/test-fixture-mocha.js'></script>
+    <link rel='import' href='../../test-fixture/test-fixture.html'>
+
+    <!-- STEP 2: Import the element to test. -->
+    <link rel='import' href='../urth-core-channel-broker.html'>
+    <link rel='import' href='../urth-core-channel.html'>
+</head>
+
+<body>
+    <!-- STEP 3: Setup document with DOM to test. Use test-fixture elements
+         to ease setup and cleanup of elements. -->
+
+    <urth-core-channel id="channelDefault"></urth-core-channel>
+    <urth-core-channel id="channel1" name="channel1"></urth-core-channel>
+    <urth-core-channel id="channel2" name="channel2"></urth-core-channel>
+
+    <script>
+        // STEP 4: Define any globals needed by the test suite.
+        var broker;
+
+        before(function () {
+            /*
+             * Non-lifecycle methods must be mocked on the prototype.
+             * Lifecycle methods(e.g. detached, ready) remain in the behavior, so they
+             * must be mocked there.
+             */
+            sinon.stub(Urth['urth-core-channel-broker'].prototype, 'createModel');
+            sinon.stub(Urth.JupyterKernelObserver, 'created');
+            sinon.stub(Urth.JupyterWidgetBehaviorImpl, 'detached');
+            sinon.stub(Urth['urth-core-channel-broker'].prototype, '_callbacks');
+        });
+
+        beforeEach(function() {
+            broker = window.Urth['urth-core-channel-broker'].getChannelBroker();
+        });
+
+        afterEach(function() {
+
+            broker.clear(channel1.name);
+            broker.clear(channel2.name);
+            broker.clear(channelDefault.name);
+
+            broker.removeChannelElement(channel1.name, channel1);
+            broker.removeChannelElement(channel2.name, channel2);
+            broker.removeChannelElement(channelDefault.name, channelDefault);
+
+            broker.save(channel1.name);
+            broker.save(channel2.name);
+            broker.save(channelDefault.name);
+        });
+
+        // STEP 5: Define suite(s) and tests.
+        describe('addChannelElement', function() {
+
+            it('should cause element to get data channel updates', function() {
+                broker.addChannelElement(channel1);
+                broker.set(channel1.name, 'foo', 'bar');
+                broker.set(channel1.name, 'bar', 'baz');
+
+                expect(channel1.get('foo')).to.equal('bar');
+                expect(channel1.get('bar')).to.equal('baz');
+            });
+
+            it('should set existing channel data on element', function() {
+                broker.set(channel1.name, 'foo', 'shizel');
+                broker.set(channel1.name, 'bar', 'none');
+                broker.addChannelElement(channel1);
+
+                expect(channel1.get('foo')).to.equal('shizel');
+                expect(channel1.get('bar')).to.equal('none');
+            });
+
+            it('should only add a given channel element once', function() {
+                var eventSpy = sinon.spy();
+                channel1.addEventListener('urth-channel-data-update', eventSpy);
+                broker.addChannelElement(channel1.name, channel1);
+                broker.addChannelElement(channel1.name, channel1);
+
+                broker.set(channel1.name, 'foo', 'bar');
+
+                channel1.removeEventListener('urth-channel-data-update', eventSpy);
+
+                expect(eventSpy).to.have.been.calledOnce;
+            });
+
+            it('should cause element to only get data channel updates for ' +
+                'the specified channel', function() {
+                var eventSpy = sinon.spy();
+                channel1.addEventListener('urth-channel-data-update', eventSpy);
+                broker.addChannelElement(channel1.name, channel1);
+                broker.addChannelElement(channel1.name, channel1);
+
+                broker.set(channel1.name, 'foo', 'bar');
+                broker.set(channel2.name, 'bar', 'none');
+
+                channel1.removeEventListener('urth-channel-data-update', eventSpy);
+
+                expect(eventSpy).to.have.been.calledOnce;
+            });
+        });
+
+        describe('clear', function() {
+            it('should remove all previously set values', function() {
+                broker.set(channel1.name, 'foo', 'bar');
+                broker.set(channel1.name, 'bar', { myval: 'awesome'});
+                broker.set(channel1.name, 'baz', true);
+                broker.clear(channel1.name);
+
+                expect(broker.get(channel1.name, 'foo')).to.be.undefined;
+                expect(broker.get(channel1.name, 'bar')).to.be.undefined;
+                expect(broker.get(channel1.name, 'baz')).to.be.undefined;
+            });
+
+            it('can be invoked when data is already empty', function() {
+                broker.clear(channel1.name);
+                broker.clear(channel1.name);
+
+                expect(broker.get(channel1.name, 'foo')).to.be.undefined;
+            });
+
+            it('should clear property values on registered channel elements', function() {
+                broker.addChannelElement(channel1);
+                broker.set(channel1.name, 'foo', 'bar');
+                broker.set(channel1.name, 'bar', 'baz');
+
+                expect(channel1.get('foo')).to.equal('bar');
+                expect(channel1.get('bar')).to.equal('baz');
+
+                broker.clear(channel1.name);
+
+                expect(channel1.get('foo')).to.be.undefined;
+                expect(channel1.get('bar')).to.be.undefined;
+            });
+
+            it('can be invoked on a non-existant channel', function() {
+                broker.clear('doesnotexist');
+            });
+        });
+
+        describe('get', function() {
+            it('should retrieve the value for the specified key', function() {
+                broker.set(channel1.name, 'foo', 'bar');
+
+                expect(broker.get(channel1.name, 'foo')).to.equal('bar');
+            });
+
+            it('should return undefined for an invalid key', function() {
+                expect(broker.get(channel1.name, 'foo')).to.be.undefined;
+            });
+
+            it('should retrieve the value from the default channel when ' +
+                'no channel argument is provided', function() {
+                broker.set(undefined, 'foo', 'bar');
+
+                expect(broker.get(undefined, 'foo')).to.equal(channelDefault.get('foo'));
+            });
+
+            it('should retrieve the value for the specified array path', function() {
+                var fooArray = [
+                    {name: 'foo', value: 'bar'},
+                    {name: 'bar', value: 'none'}
+                ];
+                broker.set(channel1.name, 'fooArray', fooArray);
+
+                expect(broker.get(channel1.name, 'fooArray.#0.value')).to.equal('bar');
+            });
+
+            it('should retrieve the value for the specified object path', function() {
+                var fooObj = {
+                    name: 'foo',
+                    value: 'bar'
+                };
+
+                broker.set(channel1.name, 'fooObj', fooObj);
+
+                expect(broker.get(channel1.name, 'fooObj.value')).to.equal('bar');
+            });
+        });
+
+        describe('onModelChange', function(){
+
+            it('should call set with right channel, key and value', function(){
+                var setSpy = sinon.spy(broker, 'set');
+
+                broker.onModelChange({
+                    changed: {
+                        'one:oneKey': 1,
+                        'two:twoKey': 2
+                    }
+                });
+
+                setSpy.restore();
+
+                assert(setSpy.calledTwice, 'Method was called ' + setSpy.callCount + ' expected 2');
+                var argsOne = setSpy.getCall(0).args;
+                expect(argsOne[0]).to.equal('one');
+                expect(argsOne[1]).to.equal('oneKey');
+                expect(argsOne[2]).to.equal(1);
+
+                var argsTwo = setSpy.getCall(1).args;
+                expect(argsTwo[0]).to.equal('two');
+                expect(argsTwo[1]).to.equal('twoKey');
+                expect(argsTwo[2]).to.equal(2);
+            });
+
+            it('should not call set when invalid path specified', function() {
+                var setSpy = sinon.spy(broker, 'set');
+
+                broker.onModelChange({
+                    changed: {
+                        'one:oneKey': 1,
+                        'foo': 2
+                    }
+                });
+
+                setSpy.restore();
+
+                assert(setSpy.calledOnce, 'Method was called ' + setSpy.callCount + ' expected 1');
+                var argsOne = setSpy.getCall(0).args;
+                expect(argsOne[0]).to.equal('one');
+                expect(argsOne[1]).to.equal('oneKey');
+                expect(argsOne[2]).to.equal(1);
+            });
+        });
+
+        describe('reload', function() {
+            it('should reload previously saved values', function() {
+                broker.set(channel1.name, 'foo', 'bar');
+                broker.set(channel1.name, 'bar', 'none');
+                broker.save(channel1.name);
+
+                broker.set(channel1.name, 'foo', 'shizel');
+                broker.set(channel1.name, 'bar', 'all');
+
+                broker.reload(channel1.name);
+
+                expect(broker.get(channel1.name, 'foo')).to.equal('bar');
+                expect(broker.get(channel1.name, 'bar')).to.equal('none');
+            });
+
+            it('should reload previously saved values from the proper channel', function() {
+                broker.set(channel1.name, 'foo', 'bar');
+                broker.set(channel1.name, 'bar', 'none');
+                broker.save(channel1.name);
+
+                broker.set(channel2.name, 'foo', 'sure');
+                broker.set(channel2.name, 'bar', 'open');
+                broker.save(channel2.name);
+
+                broker.set(channel1.name, 'foo', 'sball');
+                broker.set(channel1.name, 'bar', 'ber');
+
+                broker.reload(channel1.name);
+
+                expect(broker.get(channel1.name, 'foo')).to.equal('bar');
+                expect(broker.get(channel1.name, 'bar')).to.equal('none');
+            });
+        });
+
+        describe('removeChannelElement', function() {
+            it('should remove element from channel updates', function() {
+                broker.addChannelElement(channel1.name, channel1);
+                var eventSpy = sinon.spy();
+
+                channel1.addEventListener('urth-channel-data-update', eventSpy);
+                broker.removeChannelElement(channel1.name, channel1);
+
+                broker.set(channel1.name, 'foo', 'shizel');
+
+                channel1.removeEventListener('urth-channel-data-update', eventSpy);
+
+                expect(eventSpy).to.not.have.been.called;
+            });
+        });
+
+        describe('save', function() {
+            it('should save values', function() {
+                broker.set(channel1.name, 'foo', 'bar');
+                broker.set(channel1.name, 'bar', 'none');
+                broker.save(channel1.name);
+
+                broker.set(channel1.name, 'foo', 'shizel');
+                broker.set(channel1.name, 'bar', 'all');
+
+                broker.reload(channel1.name);
+
+                expect(broker.get(channel1.name, 'foo')).to.equal('bar');
+                expect(broker.get(channel1.name, 'bar')).to.equal('none');
+            });
+        });
+
+        describe('set', function() {
+            it('should not error if channelName is not specified', function() {
+                broker.set(undefined, 'foo', 'bar');
+            });
+
+            it ('should not error if key is not specified', function() {
+                broker.set(channel1.name, undefined, 'bar');
+            });
+
+            it('should save the specified key and value', function() {
+                broker.set(channel1.name, 'foo', 'bar');
+
+                expect(broker.get(channel1.name, 'foo')).to.equal('bar');
+            });
+
+            it('should overwrite a previously set value', function() {
+                broker.set(channel1.name, 'foo', 'bar');
+                broker.set(channel1.name, 'foo', 'baz');
+
+                expect(broker.get(channel1.name, 'foo')).to.equal('baz');
+            });
+
+            it('should clear the key value if a value is not specified', function() {
+                broker.set(channel1.name, 'foo');
+
+                expect(broker.get(channel1.name, 'foo')).to.be.undefined;
+            });
+
+            it('should send the update to the model', function() {
+                var sendSpy = sinon.spy(broker, 'send');
+                broker.set(channel1.name, 'foo', 'bar');
+
+                sendSpy.restore();
+
+                var sendArgs = sendSpy.getCall(0).args[0];
+                expect(sendSpy).to.have.been.called;
+                expect(sendArgs.event).to.equal('change');
+                expect(sendArgs.data.name).to.equal('foo');
+                expect(sendArgs.data.new_val).to.equal('bar');
+                expect(sendArgs.data.channel).to.equal(channel1.name);
+            });
+
+            it('should not send the update to the model if the value did not change', function() {
+                broker.set(channel1.name, 'foo', 'bar');
+                broker.set(channel1.name, 'fooArray', [{user: 'foo', value: 'sure'}]);
+                broker.set(channel1.name, 'fooObj', {user: 'foo', value: 'yes'});
+
+                var sendSpy = sinon.spy(broker, 'send');
+                broker.set(channel1.name, 'foo', 'bar');
+                broker.set(channel1.name, 'fooArray', [{user: 'foo', value: 'sure'}]);
+                broker.set(channel1.name, 'fooObj', {user: 'foo', value: 'yes'});
+
+                sendSpy.restore();
+
+                expect(sendSpy).to.have.not.been.called;
+            });
+
+            it('should send the array to the model when an item in the array is modifed', function() {
+                var fooArray = [
+                    {name: 'foo', value: 'new'},
+                    {name: 'bar', value: 'it'}
+                ];
+                broker.set(channel1.name, 'fooArray', fooArray);
+                var sendSpy = sinon.spy(broker, 'send');
+                broker.set(channel1.name, 'fooArray.#0.value', 'bar');
+
+                sendSpy.restore();
+
+                var sendArgs = sendSpy.getCall(0).args[0];
+                expect(sendSpy).to.have.been.called;
+                expect(sendArgs.event).to.equal('change');
+                expect(sendArgs.data.name).to.equal('fooArray');
+                expect(sendArgs.data.new_val).to.deep.equal([
+                    {name: 'foo', value: 'bar'},
+                    {name: 'bar', value: 'it'}
+                ]);
+                expect(sendArgs.data.old_val).to.deep.equal([
+                    {name: 'foo', value: 'new'},
+                    {name: 'bar', value: 'it'}
+                ]);
+                expect(sendArgs.data.channel).to.equal(channel1.name);
+            });
+
+            it('should send the object to the model when a property of the object is modifed', function() {
+                var fooObj = {
+                    name: 'foo',
+                    value: 'not'
+                };
+                broker.set(channel1.name, 'fooObj', fooObj);
+                var sendSpy = sinon.spy(broker, 'send');
+                broker.set(channel1.name, 'fooObj.value', 'shizle');
+
+                sendSpy.restore();
+
+                var sendArgs = sendSpy.getCall(0).args[0];
+                expect(sendSpy).to.have.been.called;
+                expect(sendArgs.event).to.equal('change');
+                expect(sendArgs.data.name).to.equal('fooObj');
+                expect(sendArgs.data.new_val).to.deep.equal({name: 'foo', value: 'shizle'});
+                expect(sendArgs.data.old_val).to.deep.equal({name: 'foo', value: 'not'});
+                expect(sendArgs.data.channel).to.equal(channel1.name);
+            });
+
+            it('should fire the "urth-channel-data-update" event on registered channel elements', function() {
+                broker.addChannelElement(channel1.name, channel1);
+                broker.addChannelElement(channel2.name, channel2);
+
+                var eventSpy = sinon.spy();
+                var eventSpy2 = sinon.spy();
+
+                broker.set(channel1.name, 'foo', 'shizel');
+
+                channel1.addEventListener('urth-channel-data-update', eventSpy);
+                channel2.addEventListener('urth-channel-data-update', eventSpy2);
+
+                broker.set(channel1.name, 'foo', 'bar');
+
+                channel1.removeEventListener('urth-channel-data-update', eventSpy);
+                channel2.removeEventListener('urth-channel-data-update', eventSpy2);
+
+                var eventArgs = eventSpy.getCall(0).args[0].detail;
+                expect(eventSpy).to.have.been.calledOnce;
+                expect(eventArgs.key).to.equal('foo');
+                expect(eventArgs.oldValue).to.equal('shizel');
+                expect(eventArgs.value).to.equal('bar');
+                expect(eventSpy2).to.not.have.been.called;
+            });
+
+            it('should fire the "urth-channel-data-update" event on registered channel elements and include root info for array path modifications', function() {
+                broker.addChannelElement(channel1.name, channel1);
+                broker.addChannelElement(channel2.name, channel2);
+
+                var fooArray = [
+                    {name: 'foo', value: 'sure'},
+                    {name: 'bar', value: 'not'}
+                ];
+                broker.set(channel1.name, 'fooArray', fooArray);
+
+                var eventSpy = sinon.spy();
+                var eventSpy2 = sinon.spy();
+
+                channel1.addEventListener('urth-channel-data-update', eventSpy);
+
+                broker.set(channel1.name, 'fooArray.#0.value', 'shizel');
+
+                channel1.removeEventListener('urth-channel-data-update', eventSpy);
+
+                var eventArgs = eventSpy.getCall(0).args[0].detail;
+                expect(eventSpy).to.have.been.calledOnce;
+                expect(eventArgs.key).to.equal('fooArray.#0.value');
+                expect(eventArgs.oldValue).to.equal('sure');
+                expect(eventArgs.value).to.equal('shizel');
+                expect(eventArgs.root).to.deep.equal({
+                    key: 'fooArray',
+                    oldValue: [
+                        {name: 'foo', value: 'sure'},
+                        {name: 'bar', value: 'not'}
+                    ],
+                    value: [
+                        {name: 'foo', value: 'shizel'},
+                        {name: 'bar', value: 'not'}
+                    ]
+                });
+            });
+
+            it('should fire the "urth-channel-data-update" event on registered channel elements and include root info for object property modifications', function() {
+                broker.addChannelElement(channel1.name, channel1);
+                broker.addChannelElement(channel2.name, channel2);
+
+                var fooObj = {
+                    name: 'foo',
+                    value: 'who'
+                };
+                broker.set(channel1.name, 'fooObj', fooObj);
+
+                var eventSpy = sinon.spy();
+
+                channel1.addEventListener('urth-channel-data-update', eventSpy);
+
+                broker.set(channel1.name, 'fooObj.value', 'you');
+
+                channel1.removeEventListener('urth-channel-data-update', eventSpy);
+
+                var eventArgs = eventSpy.getCall(0).args[0].detail;
+                expect(eventSpy).to.have.been.calledOnce;
+                expect(eventArgs.key).to.equal('fooObj.value');
+                expect(eventArgs.oldValue).to.equal('who');
+                expect(eventArgs.value).to.equal('you');
+                expect(eventArgs.root).to.deep.equal({
+                    key: 'fooObj',
+                    oldValue: {name: 'foo', value: 'who'},
+                    value: {name: 'foo', value: 'you'}
+                });
+            });
+
+            it('should set the specified array path', function() {
+                var fooArray = [
+                    {name: 'foo', value: 'shoo'},
+                    {name: 'bar', value: 'open'}
+                ];
+                broker.set(channel1.name, 'fooArray', fooArray);
+
+                broker.set(channel1.name, 'fooArray.#0.value', 'too');
+                broker.set(channel1.name, 'fooArray.#1.value', 'closed')
+
+                expect(broker.get(channel1.name, 'fooArray.#0.value')).to.equal('too');
+                expect(broker.get(channel1.name, 'fooArray.#1.value')).to.equal('closed');
+                expect(broker.get(channel1.name, 'fooArray')).to.deep.equal([
+                    {name: 'foo', value: 'too'},
+                    {name: 'bar', value: 'closed'}
+                ]);
+            });
+
+            it('should set the specified object property', function() {
+                var fooObj = {
+                    name: 'foo',
+                    value: 'bar'
+                };
+                broker.set(channel1.name, 'fooObj', fooObj);
+
+                broker.set(channel1.name, 'fooObj.name', 'foot');
+                broker.set(channel1.name, 'fooObj.value', 'ball')
+
+                expect(broker.get(channel1.name, 'fooObj.name')).to.equal('foot');
+                expect(broker.get(channel1.name, 'fooObj.value')).to.equal('ball');
+                expect(broker.get(channel1.name, 'fooObj')).to.deep.equal({
+                    name: 'foot',
+                    value: 'ball'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,153 @@
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../promise-polyfill/promise-polyfill-lite.html">
+<link rel="import" href="../urth-core-behaviors/jupyter-widget-behavior.html">
+<link rel="import" href="../urth-core-behaviors/jupyter-kernel-observer.html">
+<link rel="import" href="../urth-core-storage/urth-core-storage.html">
+
+<!--
+`urth-core-import-broker` is a singleton element that is used to
+keep track of pending imports and package downloads for `urth-core-import`
+elements. _This element is not intended for use as a standalone element._
+
+Example: _Retrieve the singleton instance._
+
+```javascript
+var broker = window.Urth['urth-core-import-broker'].getImportBroker();
+```
+
+@group Urth Core
+@element urth-core-import-broker
+-->
+<dom-module id='urth-core-import-broker'>
+    <script>
+    (function() {
+        'use strict';
+
+        // Initializes an import object that can be used to track the
+        // completion and result of the import process.
+        var initImport = function(href, packageRef, handler) {
+            return new function() {
+                // The requested url.
+                this.href = href;
+
+                // An option package reference.
+                this.packageRef = packageRef;
+
+                // Promise that indicates success or failure to import.
+                this.result = new Promise(handler);
+
+                // Promise that resolves with either success or failure of
+                // import.
+                this.completed = Promise.resolve({
+                    then: function(resolve) {
+                        this.result.then(function() {
+                            resolve();
+                        }, function() {
+                            resolve();
+                        });
+                    }.bind(this)
+                });
+            };
+        };
+
+        // Keeps track of the pending imports
+        var pendingImports = {};
+        var IMPORT_PROMISES = [];
+
+        var singleton;
+
+        window.Urth = window.Urth || {};
+
+        window.Urth['urth-core-import-broker'] = Polymer({
+            is: 'urth-core-import-broker',
+
+            /**
+             * Tracks the completion of an `urth-core-import` element.
+             *
+             * @method addImport
+             * @param {HTMLElement} importElement The `urth-core-import` element
+             * associated with the specified `href`.
+             * @param {String} href The requested resource url.
+             * @param {String} packageName The requested resources installable
+             * package name.
+             * @return {{completed: Promise, href: String, packageRef: String, result: Promise}}
+             */
+            addImport: function(importElement, href, packageName) {
+                var key = href + packageName;
+                if (!importElement || !href) {
+                    return null;
+                }
+
+                if (!pendingImports[key]) {
+                    var item = initImport(href, packageName, function(resolve, reject) {
+                        var resolver = function(event) {
+                            importElement.removeEventListener('load', resolver);
+
+                            Polymer.Base.fire('finished', {
+                                    href: importElement.getAttribute('href'),
+                                    package: packageName,
+                                    loaded: true
+                                }, {
+                                    node: importElement
+                                }
+                            );
+                            delete pendingImports[key];
+                            resolve();
+                        }
+                        var rejector = function(event) {
+                            importElement.removeEventListener('importerror', rejector);
+
+                            Polymer.Base.fire('finished', {
+                                    href: importElement.getAttribute('href'),
+                                    package: packageName,
+                                    loaded: false
+                                }, {
+                                    node: importElement
+                                }
+                            );
+                            delete pendingImports[key];
+                            reject();
+                        }
+                        importElement.addEventListener('load', resolver);
+                        importElement.addEventListener('importerror', rejector);
+                    });
+                    pendingImports[key] = item;
+                }
+
+                return pendingImports[key];
+            },
+
+            /**
+             * Returns an array of imports that are pending completion.
+             *
+             * @method getPendingImports
+             * @return {Array} The pending imports. Each item in the array is
+             * an object with the following properties:
+             * `{completed: Promise, href: String, packageRef: String, result: Promise}`
+             */
+            getPendingImports: function() {
+                // Convert the object into an array.
+                return Object.keys(pendingImports).map(function(key) {
+                    return pendingImports[key];
+                });
+            }
+        });
+
+        /**
+         * Retrieves the singleton instance of `urth-core-import-broker`.
+         *
+         * @method getChannelBroker
+         * @return {HTMLElement} The singleton `urth-core-import-broker` element.
+         */
+        Urth['urth-core-import-broker'].getImportBroker = function() {
+            if (!singleton) {
+                singleton = new Urth['urth-core-import-broker']();
+            }
+            return singleton;
+        }
+    })();
+</script>

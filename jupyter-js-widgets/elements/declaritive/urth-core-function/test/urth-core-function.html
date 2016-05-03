@@ -1,0 +1,1079 @@
+<!doctype html>
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- STEP 1: Provide a title for the test suite. -->
+    <title>urth-core-function tests</title>
+    <meta name='viewport' content='width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes'>
+
+    <!-- Need the web component polyfill for browsers without native support. -->
+    <script src='../../webcomponentsjs/webcomponents-lite.js'></script>
+
+    <!-- Load test framework and helpers. -->
+    <script src='../../web-component-tester/browser.js'></script>
+    <script src='../../test-fixture/test-fixture-mocha.js'></script>
+    <link rel='import' href='../../test-fixture/test-fixture.html'>
+
+    <!-- STEP 2: Import the element to test. -->
+    <link rel='import' href='../urth-core-function.html'>
+
+</head>
+
+<body>
+
+    <!-- STEP 3: Setup document with DOM to test. Use test-fixture elements
+         to ease setup and cleanup of elements. -->
+    <test-fixture id='basic'>
+        <template>
+            <urth-core-function ref="someFunction"></urth-core-function>
+        </template>
+    </test-fixture>
+
+    <test-fixture id='attributes'>
+        <template>
+            <urth-core-function ref="someFunction" arg-x="a" arg-y="b" arg-z="5" someotherattr="foo"></urth-core-function>
+        </template>
+    </test-fixture>
+
+    <test-fixture id='properties'>
+        <template>
+            <urth-core-function ref="someFunction" args='{"x":"a","y":"b","z":5}' someotherattr="foo"></urth-core-function>
+        </template>
+    </test-fixture>
+
+    <test-fixture id='with_auto'>
+        <template>
+            <urth-core-function ref="someFunction" auto></urth-core-function>
+        </template>
+    </test-fixture>
+
+    <script>
+        // STEP 4: Define any globals needed by the test suite.
+        before(function() {
+            /*
+             * Non-lifecycle methods must be mocked on the prototype.
+             * Lifecycle methods(e.g. detached, ready) remain in the behavior, so they
+             * must be mocked there.
+             */
+            sinon.stub(Urth["urth-core-function"].prototype, "createModel");
+            sinon.stub(Urth["urth-core-function"].prototype, "displayErrorMessage");
+            sinon.stub(Urth.ExecutionCompleteBehavior, "ready");
+            sinon.stub(Urth.ExecutionCompleteBehavior, "detached");
+        });
+
+        // STEP 5: Define suite(s) and tests.
+        describe('onModelResultChange', function() {
+            it('should call _setResult with newVal when object is passed in', function () {
+                var fElmt = fixture('basic');
+
+                var _setResult = sinon.spy(fElmt, "_setResult");
+
+                fElmt.onModelResultChange({a:1});
+
+                //another attribute set.
+                assert(_setResult.calledOnce, "_setResult was called " + _setResult.callCount);
+                assert(_setResult.calledWith({a:1}), "_setResult called with wrong arguments");
+            });
+
+            it('should call _setResult with 0 when 0 is passed in', function () {
+                var fElmt = fixture('basic');
+
+                var _setResult = sinon.spy(fElmt, "_setResult");
+
+                fElmt.onModelResultChange(0);
+
+                //another attribute set.
+                assert(_setResult.calledOnce, "_setResult was called " + _setResult.callCount);
+                assert(_setResult.calledWith(0), "_setResult called with wrong arguments");
+            });
+        });
+
+        describe('_onArgsPropertyChanged', function() {
+            it('should call _syncParamAttributes with correct param object when record is for all args', function() {
+                var fElmt = fixture('basic');
+
+                var _syncParamAttributes = sinon.spy(fElmt, "_syncParamAttributes");
+                var _onParameterChange = sinon.spy(fElmt, "_onParameterChange");
+                fElmt._onArgsPropertyChanged({
+                    path: "args",
+                    value: {
+                        x:"1",
+                        y:"2"
+                    }
+                });
+
+                assert(_syncParamAttributes.calledOnce, "_syncParamAttributes was called " + _syncParamAttributes.callCount);
+                assert(_syncParamAttributes.calledWith({
+                    x:"1",
+                    y:"2"
+                }), "_syncParamAttributes called with wrong arguments");
+
+                assert(_onParameterChange.calledOnce, "_onParameterChange was called " + _onParameterChange.callCount);
+                assert(_onParameterChange.calledWith("args", {
+                    x:"1",
+                    y:"2"
+                }), "_onParameterChange called with wrong arguments");
+            });
+
+            it('should call _syncParamAttributes with correct param object when record is for specific parameter', function() {
+                var fElmt = fixture('basic');
+
+                var _syncParamAttributes = sinon.spy(fElmt, "_syncParamAttributes");
+                var _onParameterChange = sinon.spy(fElmt, "_onParameterChange");
+                fElmt._onArgsPropertyChanged({
+                    path: "args.x",
+                    base: {
+                        x: "1"
+                    }
+                });
+
+                assert(_syncParamAttributes.calledOnce, "_syncParamAttributes was called " + _syncParamAttributes.callCount);
+                assert(_syncParamAttributes.calledWith({
+                    x:"1"
+                }), "_syncParamAttributes called with wrong arguments");
+
+                assert(_onParameterChange.calledOnce, "_onParameterChange was called " + _onParameterChange.callCount);
+                assert(_onParameterChange.calledWith("x", "1"), "_onParameterChange called with wrong arguments");
+            });
+
+            // Temporarily disabling since failing on Safari
+            it('should call _syncParamAttributes and _onParameterChange for array parameters', function() {
+                var fElmt = fixture('basic');
+
+                var _syncParamAttributes = sinon.spy(fElmt, "_syncParamAttributes");
+                var _onParameterChange = sinon.spy(fElmt, "_onParameterChange");
+
+                fElmt.set("args.x", [1,2,3])
+                assert(_syncParamAttributes.calledOnce, "_syncParamAttributes was called " + _syncParamAttributes.callCount);
+                assert(_syncParamAttributes.calledWith({
+                    x: [1,2,3]
+                }), "_syncParamAttributes called with wrong arguments");
+
+                assert(_onParameterChange.calledOnce, "_onParameterChange was called " + _onParameterChange.callCount);
+                assert(_onParameterChange.calledWith("x", [1,2,3]), "_onParameterChange called with wrong arguments");
+
+                _syncParamAttributes.reset();
+                _onParameterChange.reset();
+
+                fElmt.push("args.x", 4);
+
+                //NOTE: Polymer sends 2 events when arrays are spliced
+                assert(_syncParamAttributes.calledTwice, "_syncParamAttributes was called " + _syncParamAttributes.callCount);
+
+                //NOTE: Safari exposes an issue with "push" whereas the property "x" has more Object properties than
+                // a simple array and thuse fails the deep comparison. Have to compare individual items
+                var expectedArgs = _syncParamAttributes.getCall(0).args;
+                expect(expectedArgs[0].x[0]).to.equal(1);
+                expect(expectedArgs[0].x[1]).to.equal(2);
+                expect(expectedArgs[0].x[2]).to.equal(3);
+                expect(expectedArgs[0].x[3]).to.equal(4);
+
+                assert(_onParameterChange.calledTwice, "_onParameterChange was called " + _onParameterChange.callCount);
+
+                //NOTE: After a push, polymer records the event in a "splices" member in the Array. This breaks deep equality
+                //Have to compare individual items
+                expectedArgs = _onParameterChange.getCall(0).args;
+                expect(expectedArgs[0]).to.equal("x");
+                expect(expectedArgs[1][0]).to.equal(1);
+                expect(expectedArgs[1][1]).to.equal(2);
+                expect(expectedArgs[1][2]).to.equal(3);
+                expect(expectedArgs[1][3]).to.equal(4);
+
+            });
+
+            it('should call _syncParamAttributes and _onParameterChange for object parameters', function() {
+                var fElmt = fixture('basic');
+
+                var _syncParamAttributes = sinon.spy(fElmt, "_syncParamAttributes");
+                var _onParameterChange = sinon.spy(fElmt, "_onParameterChange");
+
+                fElmt.set("args.x", {a:1,b:2})
+
+                assert(_syncParamAttributes.calledOnce, "_syncParamAttributes was called " + _syncParamAttributes.callCount);
+                assert(_syncParamAttributes.calledWith({
+                    x: {a:1,b:2}
+                }), "_syncParamAttributes called with wrong arguments");
+
+                assert(_onParameterChange.calledOnce, "_onParameterChange was called " + _onParameterChange.callCount);
+                assert(_onParameterChange.calledWith("x", {a:1,b:2}), "_onParameterChange called with wrong arguments");
+
+                _syncParamAttributes.reset();
+                _onParameterChange.reset();
+
+                fElmt.set("args.x.c", 3);
+
+                assert(_syncParamAttributes.calledOnce, "_syncParamAttributes was called " + _syncParamAttributes.callCount);
+                assert(_syncParamAttributes.calledWith({
+                    x: {a:1,b:2,c:3}
+                }), "_syncParamAttributes called with wrong arguments");
+
+                assert(_onParameterChange.calledOnce, "_onParameterChange was called " + _onParameterChange.callCount);
+                assert(_onParameterChange.calledWith("x", {a:1,b:2,c:3}), "_onParameterChange called with wrong arguments");
+
+            });
+
+            it('should call _syncParamAttributes and _onParameterChange for simple parameters', function() {
+                var fElmt = fixture('basic');
+
+                var _syncParamAttributes = sinon.spy(fElmt, "_syncParamAttributes");
+                var _onParameterChange = sinon.spy(fElmt, "_onParameterChange");
+
+                fElmt.set("args.x", 1)
+
+                assert(_syncParamAttributes.calledOnce, "_syncParamAttributes was called " + _syncParamAttributes.callCount);
+                assert(_syncParamAttributes.calledWith({
+                    x: 1
+                }), "_syncParamAttributes called with wrong arguments");
+
+                assert(_onParameterChange.calledOnce, "_onParameterChange was called " + _onParameterChange.callCount);
+                assert(_onParameterChange.calledWith("x", 1), "_onParameterChange called with wrong arguments");
+
+                _syncParamAttributes.reset();
+                _onParameterChange.reset();
+
+                fElmt.set("args.x", 2);
+
+                assert(_syncParamAttributes.calledOnce, "_syncParamAttributes was called " + _syncParamAttributes.callCount);
+                assert(_syncParamAttributes.calledWith({
+                    x: 2
+                }), "_syncParamAttributes called with wrong arguments");
+
+                assert(_onParameterChange.calledOnce, "_onParameterChange was called " + _onParameterChange.callCount);
+                assert(_onParameterChange.calledWith("x", 2), "_onParameterChange called with wrong arguments");
+
+            });
+
+
+        });
+
+        describe('_syncParamAttributes', function() {
+            it('should update arg- properties', function() {
+                var fElmt = fixture('basic');
+
+                fElmt._onSignatureChange({
+                    x: {},
+                    y: {},
+                    z: {}
+                });
+                fElmt._syncParamAttributes({x:1, y:"2", z:"3"});
+
+                expect(fElmt['argX']).to.equal(1);
+                expect(fElmt['argY']).to.equal("2");
+                expect(fElmt['argZ']).to.equal("3");
+            });
+
+            it('should update only the arg- properties that exist in the signature', function() {
+                var fElmt = fixture('basic');
+
+                fElmt._onSignatureChange({
+                    y: {},
+                    z: {}
+                });
+                fElmt._syncParamAttributes({x:"1", y:"2", z:"3"});
+
+                expect(fElmt['argX']).to.not.exist;
+                expect(fElmt['argY']).to.equal("2");
+                expect(fElmt['argZ']).to.equal("3");
+            });
+        });
+
+        describe('isValid', function() {
+            it('should return false if signature is undefined', function() {
+                var fElmt = fixture('basic');
+                expect(fElmt.isValid()).to.be.false;
+            });
+
+            it('should return true if signature is {}', function() {
+                var fElmt = fixture('basic');
+                fElmt._setSignature({});
+                expect(fElmt.isValid()).to.be.true;
+            });
+
+            it('should return true if all of required args in signature are in args', function() {
+                var fElmt = fixture('basic');
+                fElmt.args = {
+                    x: "5",
+                    y: "4",
+                    z: "3"
+                }
+                fElmt._setSignature({
+                    x: {'required': true},
+                    y: {'required': true},
+                    z: {'required': true}
+                });
+                expect(fElmt.isValid()).to.be.true;
+            });
+
+            it('should return false if any required args in signature is missing from args', function() {
+                var fElmt = fixture('basic');
+
+                fElmt.args = {
+                    x: "5",
+                    y: "4"
+                }
+                fElmt._setSignature({
+                    x: {'required': true},
+                    y: {'required': true},
+                    z: {'required': true}
+                });
+                expect(fElmt.isValid()).to.be.false;
+            });
+
+            it('should return false if more required args in signature than are in args', function() {
+                var fElmt = fixture('basic');
+                
+                fElmt.args = {
+                    x: "5",
+                    y: "4"
+                }
+                fElmt._setSignature({
+                    x: {'required': true},
+                    y: {},
+                    z: {'required': true}
+                });
+                expect(fElmt.isValid()).to.be.false;
+            });
+
+            it('should return true if only required args in signature are in args', function() {
+                var fElmt = fixture('basic');
+                fElmt.args = {
+                    x: "5",
+                    z: "4"
+                }
+                fElmt._setSignature({
+                    x: {'required': true},
+                    y: {},
+                    z: {'required': true}
+                });
+                expect(fElmt.isValid()).to.be.true;
+            });
+        });
+
+        describe('_isParameterAttribute', function() {
+            it('should return true if string starts with param prefix', function() {
+                var fElmt = fixture('basic');
+                expect(fElmt._isParameterAttribute( "arg-x")).to.be.true;
+            });
+            it('should return false if string does not starts with param prefix', function() {
+                var fElmt = fixture('basic');
+
+                expect(fElmt._isParameterAttribute( "arg-")).to.be.false;
+                expect(fElmt._isParameterAttribute( "another_property")).to.be.false;
+                expect(fElmt._isParameterAttribute( "anotherargs-")).to.be.false;
+                expect(fElmt._isParameterAttribute( "anotherargs-asdfa")).to.be.false;
+            });
+
+        });
+
+        describe('_isParameterUnset', function() {
+            it('should return false if sent a string', function() {
+                var fElmt = fixture('basic');
+                expect(fElmt._isParameterUnset("some string")).to.be.false;
+            });
+            it('should return false if sent an empty string', function() {
+                var fElmt = fixture('basic');
+                expect(fElmt._isParameterUnset("")).to.be.false;
+            });
+            it('should return false if sent a number', function() {
+                var fElmt = fixture('basic');
+                expect(fElmt._isParameterUnset(5)).to.be.false;
+            });
+            it('should return false if sent zero', function() {
+                var fElmt = fixture('basic');
+                expect(fElmt._isParameterUnset(0)).to.be.false;
+            });
+            it('should return false if sent array', function() {
+                var fElmt = fixture('basic');
+                expect(fElmt._isParameterUnset([])).to.be.false;
+            });
+            it('should return false if sent object', function() {
+                var fElmt = fixture('basic');
+                expect(fElmt._isParameterUnset({})).to.be.false;
+            });
+            it('should return true if sent null', function() {
+                var fElmt = fixture('basic');
+                expect(fElmt._isParameterUnset(null)).to.be.true;
+            });
+            it('should return true if sent undefined', function() {
+                var fElmt = fixture('basic');
+                expect(fElmt._isParameterUnset(undefined)).to.be.true;
+            });
+            it('should return true if sent NaN', function() {
+                var fElmt = fixture('basic');
+                expect(fElmt._isParameterUnset(NaN)).to.be.true;
+            });
+        });
+
+        describe('_toParamName', function() {
+            it('should return parameter name based on attribute name', function() {
+                var fElmt = fixture('attributes');
+                expect(fElmt._toParamName( "arg-x")).to.equal("x");
+
+                var anAttr = fElmt.getAttributeNode("arg-x");
+                expect(fElmt._toParamName(anAttr)).to.equal("x")
+            });
+
+            it('should return undefined if attribute name does not match pattern', function() {
+                var fElmt = fixture('attributes');
+                expect(fElmt._toParamName( "x")).to.be.undefined;
+            });
+        });
+
+        describe('_paramsFromAttributes', function() {
+            it('should return an object with parameters based on attributes', function() {
+                var fElmt = fixture('attributes');
+                expect(fElmt._paramsFromAttributes()).to.eql({x:"a", y:"b", z:"5"});
+            });
+        });
+
+        describe('_onParameterChange', function() {
+            it('should not call _tryInvoke when auto attribute is not set', function() {
+                var fElmt = fixture('basic');
+
+                var _tryInvoke = sinon.spy(fElmt, "_tryInvoke");
+
+                fElmt._onParameterChange( "some arg", "some value");
+                assert(!_tryInvoke.called, "Method was called " + _tryInvoke.callCount);
+            });
+
+            it('should call _tryInvoke when auto attribute is set', function() {
+                var fElmt = fixture('with_auto');
+
+                var _tryInvoke = sinon.spy(fElmt, "_tryInvoke");
+
+                fElmt._onParameterChange( "some arg", "some value");
+                assert(_tryInvoke.calledOnce, "Method was called " + _tryInvoke.callCount + " expected 1");
+            });
+        });
+
+        describe('_onSignatureChange', function() {
+            it('should set default values to args property', function() {
+                var fElmt = fixture('basic');
+                sinon.stub(fElmt, "_tryInvoke");
+
+                fElmt._onSignatureChange({
+                    x: {'required': true},
+                    y: {'value': 5},
+                    z: {'value': 'some val'}
+                });
+
+                expect(fElmt.args).to.eql({
+                    y: 5,
+                    z: 'some val'
+                })
+
+                expect(fElmt.hasOwnProperty('argX')).to.be.true;
+                expect(fElmt.hasOwnProperty('argY')).to.be.true;
+                expect(fElmt.hasOwnProperty('argZ')).to.be.true;
+
+                expect(fElmt.argX).to.not.exist;
+                expect(fElmt.argY).to.equal(5);
+                expect(fElmt.argZ).to.equal('some val');
+            });
+
+            it('should not set default values to args property if signature params does not contain value', function() {
+                var fElmt = fixture('basic');
+                sinon.stub(fElmt, "_tryInvoke");
+
+                fElmt._onSignatureChange({
+                    x: {'required': true},
+                    y: {'required': true},
+                    z: {}
+                });
+
+                expect(fElmt.args).to.eql({});
+
+                expect(fElmt.hasOwnProperty('argX')).to.be.true;
+                expect(fElmt.hasOwnProperty('argY')).to.be.true;
+                expect(fElmt.hasOwnProperty('argZ')).to.be.true;
+
+                expect(fElmt.argX).to.not.exist
+                expect(fElmt.argY).to.not.exist
+                expect(fElmt.argZ).to.not.exist
+            });
+
+            it('should not set default values to args property if empty signature', function() {
+                var fElmt = fixture('basic');
+                sinon.stub(fElmt, "_tryInvoke");
+
+                fElmt._onSignatureChange({});
+
+                expect(fElmt.args).to.eql({});
+
+                expect(fElmt.hasOwnProperty('argX')).to.be.false;
+                expect(fElmt.hasOwnProperty('argY')).to.be.false;
+                expect(fElmt.hasOwnProperty('argZ')).to.be.false;
+
+            });
+
+            it('should not set default values to args property if the property already contains a value', function() {
+                var fElmt = fixture('properties');
+                sinon.stub(fElmt, "_tryInvoke");
+
+                fElmt._onSignatureChange({
+                    x: {'value': 'another a'},
+                    y: {'value': 'another b'},
+                    z: {'value': 'another 5'}
+                });
+
+                expect(fElmt.args).to.eql({
+                    x: 'a',
+                    y: 'b',
+                    z: 5
+                })
+
+                expect(fElmt.hasOwnProperty('argX')).to.be.true;
+                expect(fElmt.hasOwnProperty('argY')).to.be.true;
+                expect(fElmt.hasOwnProperty('argZ')).to.be.true;
+
+                expect(fElmt.argX).to.equal('a');
+                expect(fElmt.argY).to.equal('b');
+                expect(fElmt.argZ).to.equal(5);
+            });
+
+
+            it('should set value of argName property if it is set in the args property from attributes at init', function() {
+                var fElmt = fixture('attributes');
+                sinon.stub(fElmt, "_tryInvoke");
+
+                fElmt._onSignatureChange({
+                    x: {'value': 'another a'},
+                    y: {'value': 'another b'},
+                    z: {'value': 'another 5'}
+                });
+
+                expect(fElmt.args).to.eql({
+                    x: 'a',
+                    y: 'b',
+                    z: '5'
+                })
+
+                expect(fElmt.hasOwnProperty('argX')).to.be.true;
+                expect(fElmt.hasOwnProperty('argY')).to.be.true;
+                expect(fElmt.hasOwnProperty('argZ')).to.be.true;
+
+                expect(fElmt.argX).to.equal('a');
+                expect(fElmt.argY).to.equal('b');
+                expect(fElmt.argZ).to.equal('5');
+            });
+
+            it('should set values already present on the element\'s proto to args property', function() {
+                var fElmt = fixture('basic');
+                sinon.stub(fElmt, "_tryInvoke");
+
+                fElmt.argX = "pre existing value";
+
+                fElmt._onSignatureChange({
+                    x: {'required': true},
+                    y: {'value': 5},
+                    z: {'value': 'some val'}
+                });
+
+                expect(fElmt.args).to.eql({
+                    x: "pre existing value",
+                    y: 5,
+                    z: 'some val'
+                })
+
+                expect(fElmt.hasOwnProperty('argX')).to.be.true;
+                expect(fElmt.hasOwnProperty('argY')).to.be.true;
+                expect(fElmt.hasOwnProperty('argZ')).to.be.true;
+
+                expect(fElmt.argX).to.equal("pre existing value")
+                expect(fElmt.argY).to.equal(5);
+                expect(fElmt.argZ).to.equal('some val');
+            });
+
+            it('should set default values to args property if it is set to NaN', function() {
+                var fElmt = fixture('basic');
+                sinon.stub(fElmt, "_tryInvoke");
+
+                fElmt.args.x = NaN;
+
+                fElmt._onSignatureChange({
+                    x: {'value': 5}
+                });
+
+                expect(fElmt.args).to.eql({
+                    x: 5
+                })
+
+                expect(fElmt.hasOwnProperty('argX')).to.be.true;
+
+                expect(fElmt.argX).to.equal(5);
+            });
+
+            it('should set to values on property when they are either 0 or false', function() {
+                var fElmt = fixture('basic');
+                sinon.stub(fElmt, "_tryInvoke");
+
+                fElmt.argX = 0;
+                fElmt.argY = false;
+
+                fElmt._onSignatureChange({
+                    x: {'required': true},
+                    y: {'required': true},
+                    z: {}
+                });
+
+                expect(fElmt.args).to.eql({x: 0, y: false});
+
+                expect(fElmt.hasOwnProperty('argX')).to.be.true;
+                expect(fElmt.hasOwnProperty('argY')).to.be.true;
+
+                expect(fElmt.argX).to.equal(0);
+                expect(fElmt.argY).to.be.false;
+            });
+
+            it('should try to invoke the function if auto is set', function() {
+                var fElmt = fixture('with_auto');
+
+                var _tryInvoke = sinon.spy(fElmt, "_tryInvoke");
+
+                fElmt._onSignatureChange({});
+
+                assert(_tryInvoke.calledOnce, "_tryInvoke was called " + _tryInvoke.callCount);
+            });
+
+            it('should not try to invoke the function if auto is not set', function() {
+                var fElmt = fixture('basic');
+
+                var _tryInvoke = sinon.spy(fElmt, "_tryInvoke");
+
+                fElmt._onSignatureChange({});
+
+                expect(_tryInvoke.callCount).to.equal(0);
+            });
+
+            it('should handle multiple signature changes', function() {
+                var fElmt = fixture('basic');
+
+                fElmt._onSignatureChange({
+                    x: {}
+                });
+
+                fElmt._onSignatureChange({
+                    x: {'value': 3}
+                });
+
+                expect(fElmt.hasOwnProperty('argX')).to.be.true;
+                expect(fElmt.argX).to.equal(3);
+            });
+
+            it('should add new argument properties in the new signature', function() {
+                var fElmt = fixture('basic');
+
+                fElmt._onSignatureChange({
+                    x: {}
+                });
+
+                fElmt._onSignatureChange({
+                    x: {},
+                    y: {}
+                });
+
+                expect(fElmt.hasOwnProperty('argX')).to.be.true;
+                expect(fElmt.hasOwnProperty('argY')).to.be.true;
+            });
+
+            it('should remove an argument property if it is not in the new signature', function(){
+                var fElmt = fixture('basic');
+
+                fElmt._onSignatureChange({
+                    x: {},
+                    y: {}
+                });
+
+                fElmt._onSignatureChange({
+                    x: {}
+                });
+
+                expect(fElmt.hasOwnProperty('argX')).to.be.true;
+                expect(fElmt.hasOwnProperty('argY')).to.be.false;
+            });
+
+        });
+
+        describe('invoke', function() {
+            it('should skip validation is passed true', function() {
+                var fElmt = fixture('properties');
+
+                //stub the debouncing support
+                sinon.stub(fElmt, "debounce");
+                sinon.stub(fElmt, "isDebouncerActive").returns(false);
+
+                var isValid = sinon.spy(fElmt, "isValid");
+
+                fElmt.invoke(true);
+                assert(isValid.callCount == 0, "Method was called " + isValid.callCount + " expected 0");
+
+            });
+
+            it('should call validation if no argument passed', function() {
+                var fElmt = fixture('properties');
+
+                //stub the debouncing support
+                sinon.stub(fElmt, "debounce");
+                sinon.stub(fElmt, "isDebouncerActive").returns(false);
+
+                var isValid = sinon.spy(fElmt, "isValid");
+
+                try {
+                    fElmt.invoke();
+                }catch(e){}
+
+                assert(isValid.calledOnce, "Method was called " + isValid.callCount + " expected 0");
+
+            });
+
+            it('should throw error if not valid', function() {
+                var fElmt = fixture('basic');
+
+                //stub the debouncing support
+                sinon.stub(fElmt, "debounce");
+                sinon.stub(fElmt, "isDebouncerActive").returns(false);
+
+                sinon.stub(fElmt, "isValid").returns(false);
+                expect(fElmt.invoke.bind(fElmt), false).to.throw(/not in valid state/);
+
+            });
+
+            it('should debounce the messaging if is valid', function() {
+                var fElmt = fixture('basic');
+
+                //stub the debouncing support
+                var debounce = sinon.spy(fElmt, "debounce");
+                sinon.stub(fElmt, "isDebouncerActive").returns(false);
+
+                sinon.stub(fElmt, "isValid").returns(true);
+
+                expect(fElmt.invoke.bind(fElmt)).to.not.throw();
+                assert(debounce.calledOnce, "Method was called " + debounce.callCount + " expected 1");
+
+            });
+
+            it('should send invoke message with args based on attribute style definition', function(done) {
+                var fElmt = fixture('attributes');
+
+                //stub the debouncing support
+                sinon.stub(fElmt, "isDebouncerActive").returns(false);
+
+                sinon.stub(fElmt, "isValid").returns(true);
+
+                var send = sinon.spy(fElmt, "send");
+
+                fElmt._setSignature({
+                    x: {},
+                    y: {},
+                    z: {}
+                });
+
+                fElmt.invoke();
+                setTimeout(function(){
+                    assert(send.calledOnce, "Method was called " + send.callCount + " expected 1");
+                    expect(send.getCall(0).args[0].event).to.equal('invoke');
+                    expect(send.getCall(0).args[0].args).to.deep.equal({
+                        'x':'a',
+                        'y':'b',
+                        'z':'5'
+                    });
+                    done()
+                });
+
+            });
+
+            it('should not send args that are set to the default value based on the signature', function(done) {
+                var fElmt = fixture('attributes');
+
+                //stub the debouncing support
+                sinon.stub(fElmt, "isDebouncerActive").returns(false);
+
+                sinon.stub(fElmt, "isValid").returns(true);
+
+                fElmt._setSignature({
+                    x: {'required': true},
+                    y: {'value': 'b'},
+                    z: {'value': '4'}
+                });
+
+                var send = sinon.spy(fElmt, "send");
+
+                fElmt.invoke();
+                setTimeout(function(){
+                    assert(send.calledOnce, "Method was called " + send.callCount + " expected 1");
+                    expect(send.getCall(0).args[0].event).to.equal('invoke');
+                    expect(send.getCall(0).args[0].args).to.deep.equal({
+                        'x':'a',
+                        'z':'5'
+                    });
+                    done()
+                });
+
+            });
+
+            it('should not send args that are not declared in the signature', function(done) {
+                var fElmt = fixture('attributes');
+
+                //stub the debouncing support
+                sinon.stub(fElmt, "isDebouncerActive").returns(false);
+
+                sinon.stub(fElmt, "isValid").returns(true);
+
+                fElmt._setSignature({
+                    x: {},
+                    y: {}
+                });
+
+                var send = sinon.spy(fElmt, "send");
+
+                fElmt.invoke();
+                setTimeout(function(){
+                    assert(send.calledOnce, "Method was called " + send.callCount + " expected 1");
+                    expect(send.getCall(0).args[0].event).to.equal('invoke');
+                    expect(send.getCall(0).args[0].args).to.deep.equal({
+                        'x':'a',
+                        'y': 'b'
+                    });
+                    done()
+                });
+
+            });
+
+            it('should send invoke message with args based on args property style definition', function(done) {
+                var fElmt = fixture('properties');
+
+                //stub the debouncing support
+                sinon.stub(fElmt, "isDebouncerActive").returns(false);
+
+                sinon.stub(fElmt, "isValid").returns(true);
+
+                var send = sinon.spy(fElmt, "send");
+
+                fElmt._setSignature({
+                    x: {},
+                    y: {},
+                    z: {}
+                });
+
+                fElmt.invoke();
+                setTimeout(function(){
+                    assert(send.calledOnce, "Method was called " + send.callCount + " expected 1");
+                    expect(send.getCall(0).args[0].event).to.equal('invoke');
+                    expect(send.getCall(0).args[0].args).to.deep.equal({
+                        'x':'a',
+                        'y':'b',
+                        'z':5
+                    });
+                    done()
+                });
+
+            });
+
+            it('should send invoke message with boolean arg set to false', function(done) {
+                var fElmt = fixture('basic');
+
+                //stub the debouncing support
+                sinon.stub(fElmt, "isDebouncerActive").returns(false);
+
+                sinon.stub(fElmt, "isValid").returns(true);
+
+                var send = sinon.spy(fElmt, "send");
+
+                fElmt.argX = false;
+
+                fElmt._setSignature({
+                    x: {'value': true}
+                });
+
+                fElmt.invoke();
+                setTimeout(function(){
+                    assert(send.calledOnce, "Method was called " + send.callCount + " expected 1");
+                    expect(send.getCall(0).args[0].event).to.equal('invoke');
+                    expect(send.getCall(0).args[0].args).to.deep.equal({
+                        'x':false
+                    });
+                    done()
+                });
+
+            });
+
+            it('should send invoke message without boolean arg if it matches default of true', function(done) {
+                var fElmt = fixture('basic');
+
+                //stub the debouncing support
+                sinon.stub(fElmt, "isDebouncerActive").returns(false);
+
+                sinon.stub(fElmt, "isValid").returns(true);
+
+                var send = sinon.spy(fElmt, "send");
+
+                fElmt.argX = true;
+
+                fElmt._setSignature({
+                    x: {'value': true}
+                });
+
+                fElmt.invoke();
+                setTimeout(function(){
+                    assert(send.calledOnce, "Method was called " + send.callCount + " expected 1");
+                    expect(send.getCall(0).args[0].event).to.equal('invoke');
+                    expect(send.getCall(0).args[0].args).to.deep.equal({});
+                    done()
+                });
+
+            });
+
+            it('should send invoke message without boolean arg if it matches default of false', function(done) {
+                var fElmt = fixture('basic');
+
+                //stub the debouncing support
+                sinon.stub(fElmt, "isDebouncerActive").returns(false);
+
+                sinon.stub(fElmt, "isValid").returns(true);
+
+                var send = sinon.spy(fElmt, "send");
+
+                fElmt.argX = false;
+
+                fElmt._setSignature({
+                    x: {'value': false}
+                });
+
+                fElmt.invoke();
+                setTimeout(function(){
+                    assert(send.calledOnce, "Method was called " + send.callCount + " expected 1");
+                    expect(send.getCall(0).args[0].event).to.equal('invoke');
+                    expect(send.getCall(0).args[0].args).to.deep.equal({});
+                    done()
+                });
+
+            });
+
+            it('should send invoke message with boolean arg of true if required', function(done) {
+                var fElmt = fixture('basic');
+
+                //stub the debouncing support
+                sinon.stub(fElmt, "isDebouncerActive").returns(false);
+
+                sinon.stub(fElmt, "isValid").returns(true);
+
+                var send = sinon.spy(fElmt, "send");
+
+                fElmt.argX = true;
+
+                fElmt._setSignature({
+                    x: {required: true}
+                });
+
+                fElmt.invoke();
+                setTimeout(function(){
+                    assert(send.calledOnce, "Method was called " + send.callCount + " expected 1");
+                    expect(send.getCall(0).args[0].event).to.equal('invoke');
+                    expect(send.getCall(0).args[0].args).to.deep.equal({
+                        'x':true
+                    });
+                    done()
+                });
+
+            });
+
+            it('should send invoke message with boolean arg of false if required', function(done) {
+                var fElmt = fixture('basic');
+
+                //stub the debouncing support
+                sinon.stub(fElmt, "isDebouncerActive").returns(false);
+
+                sinon.stub(fElmt, "isValid").returns(true);
+
+                var send = sinon.spy(fElmt, "send");
+
+                fElmt.argX = false;
+
+                fElmt._setSignature({
+                    x: {required: true}
+                });
+
+                fElmt.invoke();
+                setTimeout(function(){
+                    assert(send.calledOnce, "Method was called " + send.callCount + " expected 1");
+                    expect(send.getCall(0).args[0].event).to.equal('invoke');
+                    expect(send.getCall(0).args[0].args).to.deep.equal({
+                        'x':false
+                    });
+                    done()
+                });
+
+            });
+        });
+        describe('#dynamic property modification', function() {
+            // Temporarilly disabling since failing on Safari.
+            it('should invoke _onParameterChange when adding to an array type', function() {
+                var fElmt = fixture('basic');
+
+                fElmt._setSignature({
+                    x: {}
+                });
+
+                fElmt.argX = [1,2,3];
+
+                var _onParameterChange = sinon.spy(fElmt, "_onParameterChange");
+
+                fElmt.push("argX", 4);
+
+                assert(_onParameterChange.calledOnce, "_onParameterChange was called " + _onParameterChange.callCount);
+
+                //NOTE: Safari exposes an issue with "push" whereas the property "x" has more Object properties than
+                // a simple array and thuse fails the deep comparison. Have to compare individual items
+                var expectedArgs =  _onParameterChange.getCall(0).args;
+                expect(expectedArgs[0]).to.equal("x")
+
+                expect(expectedArgs[1][0]).to.equal(1)
+                expect(expectedArgs[1][1]).to.equal(2)
+                expect(expectedArgs[1][2]).to.equal(3)
+                expect(expectedArgs[1][3]).to.equal(4)
+
+            });
+
+            it('should invoke _onParameterChange when adding setting a key in an object type', function() {
+                var fElmt = fixture('basic');
+
+                fElmt._setSignature({
+                    x: {}
+                });
+
+                fElmt.argX = {a:1, b:2};
+
+                var _onParameterChange = sinon.spy(fElmt, "_onParameterChange");
+
+                fElmt.set("argX.c", 3);
+
+                assert(_onParameterChange.calledOnce, "_onParameterChange was called " + _onParameterChange.callCount);
+                assert(_onParameterChange.calledWith("x", {a:1, b:2, c:3}), "_onParameterChange called with wrong arguments");
+
+            });
+
+            it('should invoke _onParameterChange when adding setting a length key in an object type', function() {
+                var fElmt = fixture('basic');
+
+                fElmt._setSignature({
+                    x: {}
+                });
+
+                fElmt.argX = {a:1, b:2};
+
+                var _onParameterChange = sinon.spy(fElmt, "_onParameterChange");
+
+                fElmt.set("argX.length", 3);
+
+                assert(_onParameterChange.calledOnce, "_onParameterChange was called " + _onParameterChange.callCount);
+                assert(_onParameterChange.calledWith("x", {a:1, b:2, length:3}), "_onParameterChange called with wrong arguments");
+
+            });
+        });
+    </script>
+</body>
+</html>

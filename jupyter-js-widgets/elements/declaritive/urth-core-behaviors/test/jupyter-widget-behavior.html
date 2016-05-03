@@ -1,0 +1,226 @@
+<!doctype html>
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- STEP 1: Provide a title for the test suite. -->
+    <title>urth-core-function tests</title>
+    <meta name='viewport' content='width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes'>
+
+    <!-- Need the web component polyfill for browsers without native support. -->
+    <script src='../../webcomponentsjs/webcomponents-lite.js'></script>
+
+    <script>
+        // Needed for IE10
+        window.console = window.console || {};
+        window.console.log = window.console.log || function() {};
+        ['debug', 'error', 'trace', 'warn'].forEach(function(method) {
+            window.console[method] = window.console[method] || window.console.log;
+        });
+    </script>
+    <!-- Load test framework and helpers. -->
+    <script src='../../web-component-tester/browser.js'></script>
+    <script src='../../test-fixture/test-fixture-mocha.js'></script>
+    <link rel='import' href='../../test-fixture/test-fixture.html'>
+
+    <!-- STEP 2: Import the element to test. -->
+    <link rel='import' href='../../polymer/polymer.html'>
+    <link rel='import' href='../jupyter-widget-behavior.html'>
+
+</head>
+
+<body>
+
+    <!-- STEP 3: Setup document with DOM to test. Use test-fixture elements
+         to ease setup and cleanup of elements. -->
+    <!-- no need for fixtures -->
+
+    <script>
+        // STEP 4: Define any globals needed by the test suite.
+
+        // STEP 5: Define suite(s) and tests.
+        describe('_onModelChange', function() {
+            it('should call a change method based on what changed', function() {
+                var optionFixture = {
+                    changed: {
+                        result: "new value"
+                    }
+                };
+
+                var testObject = Polymer.Base.mixin({
+                    onModelResultChange: function(){}
+                }, Urth.JupyterWidgetBehaviorImpl);
+
+                var onModelResultChange = sinon.spy(testObject, "onModelResultChange")
+
+                testObject._onModelChange(optionFixture);
+
+                assert(onModelResultChange.calledOnce, "onModelResultChange was called " + onModelResultChange.callCount);
+                assert(onModelResultChange.calledWith("new value"), "onModelResultChange called with wrong arguments");
+            });
+
+        });
+
+        describe('onModel__status__Change', function() {
+            it('should call displayErrorMessage on status error', function() {
+                var optionFixture = {
+                    status: "error"
+                };
+
+                var testObject = Polymer.Base.mixin({
+                    displayErrorMessage:function(){}
+                }, Urth.JupyterWidgetBehaviorImpl);
+
+                var displayFunc = sinon.stub(testObject, "displayErrorMessage");
+
+                testObject.onModel__status__Change(optionFixture);
+
+                assert(displayFunc.calledOnce, "displayErrorMessage was called " + displayFunc.callCount);
+            });
+
+        });
+
+        describe('sync', function() {
+            it('should call set on the model on each property and save changes', function() {
+
+                var testObject = Polymer.Base.mixin({
+                    model: {
+                        set:function(){},
+                        save_changes: function(){}
+                    }
+                }, Urth.JupyterWidgetBehaviorImpl);
+
+                var setFunc = sinon.spy(testObject.model, "set");
+                var save_changes = sinon.spy(testObject.model, "save_changes");
+
+                testObject.sync( {
+                    a: 5,
+                    b: "hello"
+                });
+
+                assert(setFunc.calledTwice, "set was called " + setFunc.callCount);
+
+                expect(setFunc.getCall(0).args[0]).to.equal("a");
+                expect(setFunc.getCall(0).args[1]).to.equal(5);
+
+                expect(setFunc.getCall(1).args[0]).to.equal("b");
+                expect(setFunc.getCall(1).args[1]).to.equal("hello");
+
+                assert(save_changes.calledOnce, "save_changes was called " + save_changes.callCount);
+
+            }) ;
+
+            it('should not call set nor save_changes on model if values is {}', function() {
+
+                var testObject = Polymer.Base.mixin({
+                    model: {
+                        set:function(){},
+                        save_changes: function(){}
+                    }
+                }, Urth.JupyterWidgetBehaviorImpl);
+
+                var setFunc = sinon.spy(testObject.model, "set");
+                var save_changes = sinon.spy(testObject.model, "save_changes");
+
+                testObject.sync( {});
+
+                assert(setFunc.callCount == 0, "set was called " + setFunc.callCount);
+                assert(save_changes.callCount == 0, "save_changes was called " + save_changes.callCount);
+
+            });
+
+            it('should not call set nor save_changes on model if values is undefined', function() {
+
+                var testObject = Polymer.Base.mixin({
+                    model: {
+                        set:function(){},
+                        save_changes: function(){}
+                    }
+                }, Urth.JupyterWidgetBehaviorImpl);
+
+                var setFunc = sinon.spy(testObject.model, "set");
+                var save_changes = sinon.spy(testObject.model, "save_changes");
+
+                testObject.sync();
+
+                assert(setFunc.callCount == 0, "set was called " + setFunc.callCount);
+                assert(save_changes.callCount == 0, "save_changes was called " + save_changes.callCount);
+
+            });
+        });
+
+        describe('_callback', function() {
+            it('should return the minimum set of iopub callbacks if element does not have parent cell', function() {
+
+                var testObject = Polymer.Base.mixin(Urth.JupyterWidgetBehaviorImpl, {
+                    parentCell: function(){
+                        //mocked to return undefined
+                        return undefined;
+                    },
+                    model: {
+                        callbacks: function(){
+                           return {
+                               iopub: {
+                                   status: "the status handler"
+                               }
+                           }
+                        }
+                    },
+                    mixin: Polymer.Base.mixin
+                });
+
+                expect(testObject._callbacks()).to.eql( {
+                    iopub: {
+                        status: "the status handler"
+                    }
+                })
+            });
+
+            it('should return the a combination of parent cell callbacks and model callbacks if element has a parent cell', function() {
+
+                var testObject = Polymer.Base.mixin(Urth.JupyterWidgetBehaviorImpl, {
+                    parentCell: function(){
+                        //mocked to return undefined
+                        return {
+                            get_callbacks: function(){
+                                return {
+                                    shell: {
+                                        reply: "the reply handler"
+                                    },
+                                    iopub: {
+                                        output: "the output handler"
+                                    }
+                                }
+                            }
+                        };
+                    },
+                    model: {
+                        callbacks: function(){
+                            return {
+                                iopub: {
+                                    status: "the status handler"
+                                }
+                            }
+                        }
+                    },
+                    mixin: Polymer.Base.mixin
+                });
+
+                expect(testObject._callbacks()).to.eql( {
+                    shell: {
+                        reply: "the reply handler"
+                    },
+                    iopub: {
+                        output: "the output handler",
+                        status: "the status handler"
+                    }
+                })
+            });
+        });
+
+    </script>
+</body>
+</html>

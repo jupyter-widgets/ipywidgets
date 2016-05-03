@@ -1,0 +1,25 @@
+{
+  "name": "urth-core-behaviors",
+  "version": "0.0.1",
+  "authors": [
+    "Jupyter Community"
+  ],
+  "description": "Provides a set of behaviors for the urth-core elements.",
+  "main": [
+    "jupyter-kernel-observer.html",
+    "jupyter-widget-behavior.html"
+  ],
+  "keywords": [
+    "urth",
+    "web-components",
+    "jupyter"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "private": true
+}

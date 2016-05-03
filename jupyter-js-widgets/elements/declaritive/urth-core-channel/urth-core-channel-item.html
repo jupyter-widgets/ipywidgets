@@ -1,0 +1,69 @@
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+A simple element that provides a `key` and `value` attribute. This
+element is typically used with `urth-core-channel`.
+
+Example: Initialize channel data.
+
+```html
+<urth-core-channel>
+    <urth-core-channel-item key='foo' value='bar'></urth-core-channel-item>
+    <urth-core-channel-item key='bar' value='none'></urth-core-channel-item>
+</urth-core-channel>
+```
+
+@group Urth Framework
+@element urth-core-channel-item
+-->
+
+<dom-module id='urth-core-channel-item'>
+    <script>
+    (function() {
+        'use strict';
+        window.Urth = window.Urth || {};
+
+        window.Urth['urth-core-channel'] = Polymer({
+            is: 'urth-core-channel-item',
+            properties: {
+                /** The key for the data property. */
+                key: {
+                    type: String
+                },
+                /** The value of the data property. */
+                value: {
+                    type: Object
+                }
+            },
+
+            observers: [
+                '_notifyItemChange(key, value)'
+            ],
+
+            _notifyItemChange: function() {
+                if (!this.key) {
+                    return;
+                }
+
+                this.fire('urth-core-channel-item-change', {
+                    key: this.key,
+                    value: this.value
+                });
+            }
+
+            /**
+             * Fired when key or value changes.
+             *
+             * @event urth-core-channel-item-change
+             * @param {{key:string, value:object}} detail -
+             *     key: The property name.
+             *     value: The property value.
+             */
+        });
+    })();
+    </script>
+</dom-module>

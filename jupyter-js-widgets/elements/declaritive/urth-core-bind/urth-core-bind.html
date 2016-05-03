@@ -1,0 +1,158 @@
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../promise-polyfill/promise-polyfill.html">
+<link rel="import" href="./dom-bind-behavior.html">
+<link rel="import" href="../urth-core-channel/urth-core-channel.html">
+<link rel="import" href="../urth-core-import/urth-core-import-broker.html">
+
+<!--
+ Provides a mechanism to enable [Polymer binding](https://www.polymer-project.org/1.0/docs/devguide/data-binding.html)
+ features between elements across a common data channel. Property updates within
+ an `urth-core-bind` template are synchronized with other `urth-core-bind` templates
+ to update all related bindings.
+
+ Example: _Specifying a value in the input box will update the value in the `span`_
+
+ ```html
+ <template is='urth-core-bind'>
+     <div>Hello <span>{{user}}</span></div>
+ </template>
+
+ <template is='urth-core-bind'>
+     <input value={{user::input}}></input>
+ </template>
+ ```
+
+ By default, `urth-core-bind` will wait to render the template until all
+ preceding `urth-core-import` dependencies have completed. Set the `no-wait`
+ attribute on the element to ignore dependencies and render immediately.
+
+ Example: _Do not wait for dependencies to load before rendering._
+
+ ```html
+ <template is='urth-core-bind' no-wait>
+     <div>Hello <span>{{user}}</span></div>
+ </template>
+ ```
+
+ @group Urth Core
+ @element urth-core-bind
+ -->
+<dom-module id='urth-core-bind'>
+
+    <script>
+    (function() {
+        'use strict';
+
+        var importBroker = Urth['urth-core-import-broker'].getImportBroker();
+
+        window.Urth = window.Urth || {};
+
+        window.Urth['urth-core-bind'] = Polymer({
+            /**
+             * Fired when DOM is stamped by this template.
+             *
+             * @event dom-change
+             */
+
+            is: 'urth-core-bind',
+            extends: 'template',
+            properties: {
+                /**
+                 * Determines whether to wait for dependencies to load before
+                 * rendering. Set to `true` to render immediately and not wait.
+                 */
+                noWait: {
+                    type: Boolean,
+                    // Not defining a default value because Polymer > v1.3 does
+                    // not set the value specified here anyway since this
+                    // element extends `template` and does its own stamping.
+                    reflectToAttribute: true
+                },
+                /**
+                 * The name of the channel to use for data binding.
+                 */
+                channel: {
+                    type: String,
+                    // Not defining a default value since `urth-core-channel`
+                    // defines it and Polymer > v1.3 does not set the value
+                    // specified here anyway since this element extends
+                    // `template` and does its own stamping.
+                    observer: '_onChannelChange'
+                }
+            },
+            behaviors: [Urth.DomBindBehavior],
+
+            created: function() {
+                this._createChannel();
+            },
+
+            detached: function() {
+                // Unregister from the channel when element is detached.
+                this.channelElement.unregister(this);
+            },
+
+            _createChannel: function() {
+                if (!this.channelElement) {
+                    this.channelElement = document.createElement('urth-core-channel');
+                    if (this.channel) {
+                        this.channelElement.setAttribute('name', this.channel);
+                    }
+                    Polymer.dom(this.root).appendChild(this.channelElement);
+                    this.channelElement.register(this);
+                }
+            },
+
+            showLoadingMsg: function(show) {
+                if (show) {
+                    Polymer.dom(this.root).classList.add('loading');
+                } else {
+                    Polymer.dom(this).classList.remove('loading');
+                }
+            },
+
+            /**
+             * Invoked by DomBindBehavior on `attached`. Used to delay rendering
+             * until after dependencies have loaded if `noWait` is not
+             * true.
+             */
+            _customRender: function() {
+                // Have to use `hasAttribute` here because at the time this
+                // method is invoked, the properties for the element have not
+                // been initialized (so can't check this.noWait). Since
+                // `no-wait` is a boolean property, just check for its
+                // existance (any value is assumed `true`).
+                if (!this.hasAttribute('no-wait')) {
+                    var pendingImports = importBroker.getPendingImports().map(function(key) {
+                        return key.completed;
+                    });
+                    this.showLoadingMsg(true);
+                    this._pendingImports = Promise.all(pendingImports);
+                } else {
+                    this._pendingImports = Promise.resolve(true);
+                }
+                this._pendingImports.then(function() {
+                    this.showLoadingMsg(false);
+                }.bind(this));
+                return this._pendingImports;
+            },
+
+            _onChannelChange: function(newVal, oldVal) {
+                this.channelElement.setAttribute('name', newVal);
+            },
+
+            _propertyChanged: function(property, newVal, oldVal) {
+                // Only set the update on the channel if it is an actual
+                // value change. Channel change is handled separately.
+                if (newVal !== oldVal && property !== 'channel' &&
+                        property !== 'noWait') {
+                    this.channelElement.set(property, newVal, { oldValue: oldVal });
+                }
+            }
+        });
+    })();
+    </script>
+</dom-module>

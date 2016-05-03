@@ -1,0 +1,65 @@
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<link rel="import" href="../polymer/polymer.html">
+<!--
+Creates an element that listens to changes to the `value` property. When it changes, it fires 'watch_notify' custom
+event on child elements.
+
+The element provides a declarative way of handling changes to {{variables}}.
+
+Example: _One or more children. urth-core-function and urth-core-dataframe support the custom event._
+
+ ```html
+ <template>
+    <urth-core-watch value={{observed}}>
+        <urth-core-function ref="someFunction" .../>
+    </urth-core-watch>
+ </template>
+
+ <template>
+    <urth-core-watch value={{observed}}>
+        <urth-core-dataframe ref="someDataframe" .../>
+        <urth-core-function ref="someFunction" .../>
+    </urth-core-watch>
+ </template>
+ ```
+
+@group Urth Core
+@element urth-core-watch
+-->
+<dom-module id="urth-core-watch">
+    <template>
+        <content></content>
+    </template>
+    <script>
+
+        window.Urth = window.Urth || {};
+
+        window.Urth['urth-core-watch'] = Polymer({
+
+            is: 'urth-core-watch',
+
+            properties: {
+                /**
+                 * Value that is observed for changes.
+                 */
+                value: Object
+            },
+
+            observers: [
+                '_valueChanged(value.*)'
+            ],
+
+            _valueChanged: function() {
+                console.log('urth-core-watch: valueChanged');
+                for (var i = 0, iLen = this.childNodes.length; i < iLen; i++) {
+                    this.fire( 'watch_notify', null, {
+                        node: this.childNodes[i]
+                    });
+                }
+            }
+        });
+    </script>
+</dom-module>

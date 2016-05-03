@@ -1,0 +1,51 @@
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+
+<!--
+This behavior is used to encapsulate some of the services needed for urth elements.
+-->
+<link rel="import" href="shared-styles.html">
+<style is="custom-style" include="shared-styles"></style>
+<script>
+    'use strict';
+    (function() {
+        window.Urth = window.Urth || {};
+
+        /**
+         * Behavior that encapsulate some of the functions needed by
+         * both urth-core and urth-viz elements.
+         *
+         * @polymerBehavior Urth.DisplayErrorBehavior
+         */
+        Urth.DisplayErrorBehavior = {
+
+            _clearErrorMessages: function(){
+                var errs = Polymer.dom(this.root).querySelectorAll(".urth-widget-error");
+                var numErrs = errs.length;
+                for (var i = 0; i < numErrs; i++){
+                    Polymer.dom(this.root).removeChild(errs[i]);
+                }
+            },
+
+            /**
+             * Displays the given error message in the output area associated
+             * with this widget.
+             *
+             * @method displayErrorMessage
+             * @param String msg
+             */
+            displayErrorMessage: function(msg){
+                if (!window.Urth.suppressErrors) {
+                    var errorNode = document.createElement("pre")
+                    errorNode.innerHTML = msg;
+                    errorNode.classList.add("urth-widget-error");
+                    Polymer.dom(this.root).appendChild(errorNode);
+                }
+                var widgetName = this.nodeName.toLowerCase();
+                console.error(widgetName + ": " + msg);
+            }
+        };
+    })();
+</script>

@@ -1,0 +1,156 @@
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../urth-core-behaviors/jupyter-widget-behavior.html">
+<link rel="import" href="../urth-core-behaviors/execution-complete-behavior.html">
+
+<!--
+Represents a widget that binds to a DataFrame variable. The DataFrame's
+representation is surfaced in the 'value' property.
+
+Example:
+
+    <urth-core-dataframe id="f1" ref="aDataFrame" value="{{x}}" auto></urth-core-dataframe>
+
+@group Urth Core
+@element urth-core-dataframe
+-->
+<script>
+
+(function(){
+    'use strict';
+
+    window.Urth = window.Urth || {};
+
+    window.Urth['urth-core-dataframe'] = Polymer({
+        is: 'urth-core-dataframe',
+
+        properties: {
+
+            /**
+             * The name of the DataFrame variable that this element
+             * will bind to.
+             */
+            ref: {
+                type: String,
+                value: ''
+            },
+
+            /**
+             * The serialized representation of the DataFrame `ref`.
+             */
+            value: {
+                type: Object,
+                readOnly: true,
+                notify: true
+            },
+
+            /**
+             * Toggles automatic updates upon the completion of code execution.
+             */
+            auto: {
+                type: Boolean,
+                value: false
+            },
+
+            /**
+             * Sets the maximun number of rows to bring to the client.
+             */
+            limit: {
+              type: Number,
+              value: 100,
+              reflectToAttribute: true,
+              observer: '_onLimitChange'
+            }
+        },
+
+        behaviors: [
+            Urth.JupyterWidgetBehavior,
+            Urth.ExecutionCompleteBehavior
+        ],
+
+        listeners: {
+            'watch_notify': 'refresh'
+        },
+
+        created: function(){
+            console.debug('urth-core-datafram created', arguments);
+            this.createModel('urth.widgets.widget_dataframe.DataFrame');
+        },
+
+        ready: function() {
+            console.debug("urth-core-dataframe ready");
+        },
+
+        /*
+         * onModelReady is invoked when have created the model portion of the widget
+         */
+        onModelReady: function(){
+            console.debug('urth-core-dataframe onModelReady');
+
+            var syncData = {
+                variable_name: this.ref,
+                limit: this.limit
+            }
+            console.debug('urth-core-dataframe sending initial sync', syncData);
+            this.sync(syncData);
+
+            this.refresh();
+        },
+
+        /*
+         * onModelValueChange is invoked by JupyterWidgetBehavior when the `value` `property in
+         * the Backbone model changes.
+         */
+        onModelValueChange: function(newVal){
+            console.debug( "urth-core-dataframe onModelValueChange", newVal );
+            this._setValue(newVal || {data:[]});
+        },
+
+        /* 
+         * to override onModel__status__Change in jupyter-widget-behavior.html
+         * We need to clear error message on status ok
+         */
+        onModel__status__Change: function(newStatus) {
+            if (newStatus.status === "ok") {
+              this._clearErrorMessages();
+            } else {
+              this.displayErrorMessage(newStatus.msg);
+            }
+        },
+
+        _onExecutionComplete: function(){
+            if (this.auto) {
+                this.refresh();
+            }
+        },
+
+        /**
+         * Update the DataFrame `value` held by this element with
+         * the DataFrame's current state on the kernel.
+         *
+         * @method refresh
+         */
+        refresh: function() {
+            var jName = "urth-core-dataframe.refresh";
+            if( this.isDebouncerActive(jName) ) {
+                this.cancelDebouncer(jName);
+            }
+
+            this.debounce(jName, function(){
+              console.debug("urth-core-dataframe sending sync message...");
+              this.send({ "event": "sync" });
+            }.bind(this), 200);
+        },
+
+        _onLimitChange: function(){
+            console.debug('urth-core-dataframe sending new limit value', this.limit);
+            this.sync({limit: this.limit});
+            this.refresh();
+        }
+
+    });
+})();
+</script>
