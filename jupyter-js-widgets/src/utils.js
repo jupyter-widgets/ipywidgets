@@ -143,42 +143,22 @@ function reject(message, log) {
 }
 
 /**
- * Apply MathJax rendering to an element, and optionally set its text
+ * Apply MathJax rendering to an element, and optionally set its text.
  *
  * If MathJax is not available, make no changes.
  *
- * Returns the output any number of typeset elements as an array or undefined if
- * MathJax was not available.
- *
  * Parameters
  * ----------
- * element: Node, NodeList, or jQuery selection
- * text: option string
+ * element: Node
+ * text: optional string
  */
 function typeset(element, text) {
-    if (arguments.length > 1) {
-        if (element.length) {
-            for (var i = 0; i < element.length; ++i) {
-                var el = element[i];
-                el.textContent = text;
-            }
-        } else {
-            element.textContent = text;
-        }
+    if (text !== void 0) {
+        element.textContent = text;
     }
-    if (!window.MathJax) {
-      return;
+    if (window.MathJax) {
+      MathJax.Hub.Queue(['Typeset', MathJax.Hub, element]);
     }
-    var output = [];
-    if (element.length) {
-        for (var i = 0; i < element.length; ++i) {
-            var el = element[i];
-            output.push(MathJax.Hub.Queue(['Typeset', MathJax.Hub, el]));
-        }
-    } else {
-        output.push(MathJax.Hub.Queue(['Typeset', MathJax.Hub, element]));
-    }
-    return output;
 }
 
 /**
