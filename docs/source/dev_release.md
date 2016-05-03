@@ -10,7 +10,6 @@ the JS frontend version.  Also check that the frontend version specified in
 ```
 # nuke the  `dist` and `node_modules`
 git clean -fdx
-edit manager-base.py to point "version" to next release of ipywidgets
 npm version [patch/minor/major]
 npm install
 npm publish
