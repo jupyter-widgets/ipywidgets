@@ -347,11 +347,11 @@ var DropdownView = widget.DOMWidgetView.extend({
         }
 
         // Add a global keydown listener for drop list events.
-        document.addEventListener('keydown', this.onKeydown);
+        document.addEventListener('keydown', this.onKeydown, true);
         // Add a global mousedown listener to dismiss drop list.
         document.addEventListener('mousedown', this.onDismiss, true);
         // Add a global scroll listener to dismiss drop list.
-        window.addEventListener('scroll', this.onDismiss, true); // useCapture
+        window.addEventListener('scroll', this.onDismiss, true);
 
         var buttongroupRect = this.buttongroup.getBoundingClientRect();
         var availableHeightAbove = buttongroupRect.top;
@@ -359,6 +359,7 @@ var DropdownView = widget.DOMWidgetView.extend({
         // Account for 1px border.
         availableHeightAbove += 1;
         availableHeightBelow -= 1;
+        var width = buttongroupRect.width;
         var maxHeight = Math.floor(
             Math.max(availableHeightAbove, availableHeightBelow)
         );
@@ -367,6 +368,7 @@ var DropdownView = widget.DOMWidgetView.extend({
 
         this.droplist.style.left = left + 'px';
         this.droplist.style.maxHeight = maxHeight + 'px';
+        this.droplist.style.width = width + 'px';
 
         // Make drop list visible to compute its dimensions.
         this.droplist.classList.add('mod-active');
