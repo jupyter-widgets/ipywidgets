@@ -160,7 +160,8 @@ var ToggleButtonView = widget.DOMWidgetView.extend({
                 if (icon.trim().length) {
                     var i = document.createElement('i');
                     this.el.appendChild(i);
-                    i.classList.add(icon);
+                    i.classList.add('fa');
+                    i.classList.add('fa-' + icon);
                 }
                 this.el.appendChild(document.createTextNode(description));
             }

@@ -544,8 +544,11 @@ var ProgressView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
+        var orientation = this.model.get('orientation');
+        var className = orientation === 'horizontal' ? 'widget-hprogress'
+            : 'widget-vprogress';
         this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-hprogress');
+        this.el.classList.add(className);
 
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
@@ -600,16 +603,20 @@ var ProgressView = widget.DOMWidgetView.extend({
         var percent = 100.0 * (value - min) / (max - min);
         if (orientation === 'horizontal') {
             this.el.classList.remove('widget-vbox');
-            this.el.classList.add('widget-hbox');
             this.el.classList.remove('widget-vprogress');
+
+            this.el.classList.add('widget-hbox');
             this.el.classList.add('widget-hprogress');
+
             this.bar.style.width = percent + '%';
             this.bar.style.height = '100%';
         } else {
             this.el.classList.remove('widget-hbox');
-            this.el.classList.add('widget-vbox');
             this.el.classList.remove('widget-hprogress');
+
+            this.el.classList.add('widget-vbox');
             this.el.classList.add('widget-hprogress');
+
             this.bar.style.width = '100%';
             this.bar.style.height = percent + '%';
         }

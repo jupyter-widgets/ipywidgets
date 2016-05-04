@@ -195,7 +195,6 @@
 }
 
 .widget-colorpicker {
-    /* Button */
     & {
         width : @widget-width;
     }
@@ -205,7 +204,11 @@
 
     display: flex;
 
-    .input-group {
+    .widget-hbox {
+        flex-grow: 1;
+    }
+
+    input[type="text"] {
         flex-grow: 1;
     }
 }
@@ -225,6 +228,10 @@
     vertical-align: middle;
     white-space: nowrap;
     width : @widget-width-short;
+
+    i.fa {
+        padding-right: 3px;
+    }
 
     .outside-shadow-2dp();
 
@@ -390,11 +397,23 @@
 .widget-dropdown {
     display: block;
 
+    & {
+        width : @widget-width;
+    }
+
+    &.short {
+        width : @widget-width-short;
+    }
+
+    .widget-button {
+        width: auto;
+    }
+
     div.widget-item {
         display: flex;
+        flex-grow: 1;
         margin: 0;
         padding: 0;
-        width : @widget-width;
 
         button {
             flex: 1;
@@ -431,7 +450,6 @@ ul.widget-dropdown-droplist {
     position: absolute;
     margin: 0;
     z-index: 101; /* This is to appear above the #header */
-    width : @widget-width;
     padding: 0;
     height: auto;
     overflow: auto;
