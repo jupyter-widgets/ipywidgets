@@ -270,7 +270,7 @@ var DropdownView = widget.DOMWidgetView.extend({
             var index;
             if (active) {
                 index = _.indexOf(items, active);
-                index = index > 0 ? index - 1 : items.length - 1;
+                index = Math.max(0, index - 1);
                 active.classList.remove('mod-active');
             } else {
                 // If there is no selection, up arrow selects the last item.
@@ -286,7 +286,7 @@ var DropdownView = widget.DOMWidgetView.extend({
             var index;
             if (active) {
                 index = _.indexOf(items, active);
-                index = index < items.length - 1 ? index + 1 : 0;
+                index = Math.min(items.length - 1, index + 1);
                 active.classList.remove('mod-active');
             } else {
                 // If there is no selection, down arrow selects the first item.
