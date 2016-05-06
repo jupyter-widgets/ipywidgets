@@ -8,6 +8,16 @@ var $ = require('./jquery');
 var _ = require('underscore');
 
 
+function scrollIfNeeded(area, elem) {
+    let ar = area.getBoundingClientRect();
+    let er = elem.getBoundingClientRect();
+    if (er.top < ar.top) {
+        area.scrollTop -= ar.top - er.top;
+    } else if (er.bottom > ar.bottom) {
+        area.scrollTop += er.bottom - ar.bottom;
+    }
+}
+
 var SelectionModel = widget.DOMWidgetModel.extend({
     defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
         _model_name: 'SelectionModel',
@@ -277,6 +287,7 @@ var DropdownView = widget.DOMWidgetView.extend({
                 index = items.length - 1;
             }
             items[index].classList.add('mod-active');
+            scrollIfNeeded(this.droplist, items[index]);
             return;
         case 40:  // Down arrow key
             event.preventDefault();
@@ -293,6 +304,7 @@ var DropdownView = widget.DOMWidgetView.extend({
                 index = 0;
             }
             items[index].classList.add('mod-active');
+            scrollIfNeeded(this.droplist, items[index]);
             return;
         }
     },
@@ -388,26 +400,25 @@ var DropdownView = widget.DOMWidgetView.extend({
             // Account for 1px border.
             top = Math.ceil(buttongroupRect.bottom + 1);
             this.droplist.style.top = top + 'px';
-            return;
-        }
         // If the drop list fits above, render above.
-        if (droplistRect.height <= availableHeightAbove) {
+        } else if (droplistRect.height <= availableHeightAbove) {
             // Account for 1px border.
             top = Math.floor(buttongroupRect.top - droplistRect.height + 1);
             this.droplist.style.top = top + 'px';
-            return;
-        }
         // Otherwise, render in whichever has more space, above or below.
-        if (availableHeightBelow >= availableHeightAbove) {
+        } else if (availableHeightBelow >= availableHeightAbove) {
             // Account for 1px border.
             top = Math.ceil(buttongroupRect.bottom + 1);
             this.droplist.style.top = top + 'px';
-            return;
         } else {
             // Account for 1px border.
             top = Math.floor(buttongroupRect.top - droplistRect.height + 1);
             this.droplist.style.top = top + 'px';
-            return;
+        }
+
+        // If a selection is active, scroll to it if necessary.
+        if (selectedIndex > -1) {
+            scrollIfNeeded(this.droplist, items[selectedIndex]);
         }
     }
 });
