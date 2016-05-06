@@ -353,6 +353,14 @@ var DropdownView = widget.DOMWidgetView.extend({
         // Add a global scroll listener to dismiss drop list.
         window.addEventListener('scroll', this.onDismiss, true);
 
+        // Set the currently selected item of the drop list.
+        var value = this.model.get('value');
+        var selectedIndex = _.indexOf(this.model.get('_options_labels'), value);
+        if (selectedIndex > -1) {
+            var items = this.droplist.querySelectorAll('.widget-dropdown-item');
+            items[selectedIndex].classList.add('mod-active');
+        }
+
         var buttongroupRect = this.buttongroup.getBoundingClientRect();
         var availableHeightAbove = buttongroupRect.top;
         var availableHeightBelow = window.innerHeight - buttongroupRect.bottom;
