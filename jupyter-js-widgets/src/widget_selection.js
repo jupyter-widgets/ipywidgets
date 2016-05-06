@@ -9,8 +9,8 @@ var _ = require('underscore');
 
 
 function scrollIfNeeded(area, elem) {
-    let ar = area.getBoundingClientRect();
-    let er = elem.getBoundingClientRect();
+    var ar = area.getBoundingClientRect();
+    var er = elem.getBoundingClientRect();
     if (er.top < ar.top) {
         area.scrollTop -= ar.top - er.top;
     } else if (er.bottom > ar.bottom) {
