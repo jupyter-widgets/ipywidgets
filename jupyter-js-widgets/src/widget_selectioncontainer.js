@@ -97,7 +97,7 @@ var AccordionView = widget.DOMWidgetView.extend({
 
         if (page.hasClass('in')) {
             page.removeClass('in');
-            page.collapse('hide');
+            $(this.el.children[index]).children('.panel-heading').children('accordion-toggle').trigger('click');
         }
     },
 
@@ -110,7 +110,7 @@ var AccordionView = widget.DOMWidgetView.extend({
 
         if (!page.hasClass('in')) {
             page.addClass('in');
-            page.collapse('show');
+            $(this.el.children[index]).children('.panel-heading').children('accordion-toggle').trigger('click');
         }
     },
 
