@@ -595,12 +595,11 @@ WidgetManager.prototype.deleteSnapshots = function() {
 
         // Remove the outputs with isWidgetSnapshot: true.
         if (cell.output_area) {
-            var outputState = cell.output_area.toJSON();
-            outputState = outputState.filter((function(output) {
-                return !(output.metadata && output.metadata.isWidgetSnapshot);
-            }).bind(this));
-            cell.output_area.clear_output();
-            cell.output_area.fromJSON(outputState);
+            // filter out outputs that are snapshots
+            // only touch the data, not the page.
+            cell.output_area.outputs = cell.output_area.outputs.filter(function (output) {
+                return !(output.metadata && output.metadata.isWidgetSnapShot);
+            });
         }
     }).bind(this));
 };
