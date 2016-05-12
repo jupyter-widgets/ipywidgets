@@ -15,6 +15,8 @@ Package Install
 **Prerequisites**
 - [node](http://nodejs.org/)
 
+Run the following command **at the root of this repository**.
+
 ```bash
 npm install --save jupyter-js-widgets
 ```
