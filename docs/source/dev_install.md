@@ -25,15 +25,12 @@ available in the PATH used with sudo.
 
         cd widgetsnbextension
         npm install
-        npm run update:widgets
-        pip install -v -e .
+        npm run update
+        npm run nbextension
         cd ..
-        jupyter nbextension install --py --symlink --user widgetsnbextension
-        jupyter nbextension enable --py --user widgetsnbextension
 
 3. Dev-install of the package (run from ipywidgets repo directory):
 
-        cd ipywidgets
         pip install -v -e .
 
 
@@ -41,7 +38,7 @@ After you've made changes to `jupyter-js-widgets` if you want to test those
 changes, run the following, empty your browsers cache, and refresh the page.
 
         cd widgetsnbextension
-        npm run update:widgets
+        npm run update
         cd ..
 
 TIPS: If you have any problems with the above install procedure, make sure that

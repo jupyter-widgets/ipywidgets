@@ -7,8 +7,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "update:widgets": "rimraf node_modules/jupyter-js-widgets; npm install file:../jupyter-js-widgets; npm run build",
-    "prepublish": "npm run build"
+    "update": "rimraf node_modules/jupyter-js-widgets; npm install file:../jupyter-js-widgets; npm run build",
+    "prepublish": "npm run build",
+    "nbextension": "pip install -v -e . && jupyter nbextension install --py --symlink --user widgetsnbextension && jupyter nbextension enable --py --user widgetsnbextension"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,6 @@
     "backbone": "^1.2.3",
     "html2canvas": "^0.5.0-beta4",
     "jquery": "^2.2.0",
-    "jupyter-js-widgets": "2.0.0-dev",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
@@ -33,5 +33,8 @@
     "rimraf": "^2.5.1",
     "style-loader": "^0.13.0",
     "webpack": "^1.12.12"
+  },
+  "optionalDependencies": {
+    "jupyter-js-widgets": "2.0.0-dev"
   }
 }
