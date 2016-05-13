@@ -1,6 +1,6 @@
 Developer Install
 =================
-To install ipywidgets from git, you will need [npm](https://www.npmjs.com/) and
+To install ipywidgets from git, **you will need [npm](https://www.npmjs.com/) version 3.x or later** (check you version by running `npm -v` from a terminal) and
 the latest [development copy of the Jupyter
 notebook](https://github.com/jupyter/notebook) because everything in the
 ipywidgets repository is developed using Jupyter notebook master. If you want

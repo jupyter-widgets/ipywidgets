@@ -53,6 +53,10 @@ Then run
 
 See the [Installation](docs/source/user_install.md) section of the documentation for additional details.
 
+### Installing from git
+
+If you want to install ipywidgets from git, **you will need [npm](https://www.npmjs.com/) version 3.x or later** (check you version by running `npm -v` from a terminal).  Installing from git is more complicated and requires a developer install, see the [developer install](docs/source/dev_install.md) instructions.
+
 #### Compatibility
 
 | ipywidgets version  | Jupyter/notebook version |
