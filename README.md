@@ -9,11 +9,15 @@
 ipywidgets are [interactive HTML widgets](https://github.com/ipython/ipywidgets/blob/master/docs/source/examples/Index.ipynb)
 for Jupyter notebooks and the IPython kernel.
 
-Notebooks come alive when interactive widgets are used. Users gain control of their data and can visualize changes in the data.
+Notebooks come alive when interactive widgets are used. Users gain control of
+their data and can visualize changes in the data.
 
-Learning becomes an immersive, plus fun, experience. Researchers can easily see how changing inputs to a model impact the results. We hope you will add ipywidgets to your notebooks, and we're here to help you get started.
+Learning becomes an immersive, plus fun, experience. Researchers can easily see
+how changing inputs to a model impact the results. We hope you will add
+ipywidgets to your notebooks, and we're here to help you get started.
 
-## Features
+## Core Interative Widgets
+
 A [demonstration notebook](https://github.com/ipython/ipywidgets/blob/master/docs/source/examples/Index.ipynb) provides an overview of the core interactive widgets, including:
 
 - sliders
@@ -23,19 +27,39 @@ A [demonstration notebook](https://github.com/ipython/ipywidgets/blob/master/doc
 - display areas
 - and more
 
+## Jupyter Interactive Widgets as a Framework
+
 Besides the widgets already provided with the library, the framework can be
-extended with custom widget libraries. Examples of custom widget libraries
-built upon ipywidgets are
+extended with custom widget libraries.
+
+A template project is available in the form of a cookie cutter [here](https://github.com/jupyter/widget-cookiecutter).
+
+This project is meant to help custom widget authors get started with the
+packaging and the distribution of Jupyter interactive widgets.
+
+It produces a project for a Jupyter interactive widget library following the
+current best practices for using interactive widgets. An implementation for a
+placeholder "Hello World" widget is provided.
+
+Popular widget libraries such as
+[bqplot](https://github.com/bloomberg/bqplot),
+[pythreejs](https://github.com/jovyan/pythreejs) and
+[ipyleaflet](https://github.com/ellisonbg/ipyleaflet)
+
+follow exactly the same template and directory structure. They can serve as
+more advanced examples of usage of the Jupyter widget infrastructure.
+
+For detailed information, please refer to the [ipywidgets documentation](http://ipywidgets.readthedocs.org/en/latest/).
+
+## More advanced examples
+
+Examples of custom widget libraries built upon ipywidgets are
 
 - [bqplot](https://github.com/bloomberg/bqplot) a 2d data visualization library
   enabling custom user interactions.
 - [pythreejs](https://github.com/jovyan/pythreejs) a Jupyter - Three.js wrapper,
   bringing Three.js to the notebook.
-
-The resulting widgets can then be embeded into web pages other than the
-Jupyter notebook.
-
-For detailed information, please refer to the [ipywidgets documentation](http://ipywidgets.readthedocs.org/en/latest/).
+- [ipyleaflet](https://github.com/ellisonbg/ipyleaflet) a leaflet widget for Jupyter.
 
 ## Install
 
@@ -55,11 +79,12 @@ See the [Installation](docs/source/user_install.md) section of the documentation
 
 #### Compatibility
 
-| ipywidgets version  | Jupyter/notebook version |
-| ------------------- | ------------------------ |
-| master              | master                   |
-| 4.1.x               | 4.1                      |
-| 4.0.x               | 4.0                      |
+| ipywidgets version  | Required notebook version |
+| ------------------- | ------------------------- |
+| master              | master                    |
+| 5.x                 | 4.2                       |
+| 4.1.x               | 4.1                       |
+| 4.0.x               | 4.0                       |
 
 [Change log](docs/source/changelog.md)
 
