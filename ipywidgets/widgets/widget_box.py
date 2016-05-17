@@ -83,6 +83,7 @@ def VBox(*pargs, **kwargs):
     box = Box(*pargs, **kwargs)
     box.layout.display = 'flex'
     box.layout.flex_flow = 'column'
+    box.layout.align_items = 'stretch'
     return box
 
 
@@ -90,6 +91,7 @@ def HBox(*pargs, **kwargs):
     """Displays multiple widgets horizontally using the flexible box model."""
     box = Box(*pargs, **kwargs)
     box.layout.display = 'flex'
+    box.layout.align_items = 'stretch'
     return box
 
 
