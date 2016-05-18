@@ -18,7 +18,9 @@ available in the PATH used with sudo.
 1. Navigate into the cloned repo and install
 
         cd ipywidgets
-        bash dev-install.sh
+        bash dev-install.sh --user
+
+(If you do not want a user install, remove the `--user`)
 
 After you've made changes to `jupyter-js-widgets` if you want to test those
 changes, run the following, empty your browsers cache, and refresh the page.
