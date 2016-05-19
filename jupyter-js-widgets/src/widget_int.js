@@ -404,14 +404,13 @@ var IntTextView = widget.DOMWidgetView.extend({
          * Called when view is rendered.
          */
         this.$el
-            .addClass('jupyter-widgets widget-hbox widget-numeric-text');
+            .addClass('jupyter-widgets widget-hbox widget-text');
         this.$label = $('<div />')
             .appendTo(this.$el)
             .addClass('widget-label')
             .hide();
         this.$textbox = $('<input type="text" />')
             .addClass('form-control')
-            .addClass('widget-numeric-text')
             .appendTo(this.$el);
 
         this.listenTo(this.model, 'change:description', function(sender, value) {
