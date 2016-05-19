@@ -58,7 +58,7 @@ CommManager.prototype.register_target = function (target_name, f) {
 
         // Call the callback for the comm.
         try {
-            var response = f(comm, msg);
+            return f(comm, msg);
         } catch (e) {
             comm.close();
             var wrapped_error = new utils.WrappedError("Exception opening new comm", e);
