@@ -406,7 +406,7 @@ var IntTextView = widget.DOMWidgetView.extend({
          */
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
-        this.el.classList.add('widget-numeric-text');
+        this.el.classList.add('widget-text');
 
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
@@ -415,7 +415,7 @@ var IntTextView = widget.DOMWidgetView.extend({
 
         this.textbox = document.createElement('input');
         this.textbox.setAttribute('type', 'text');
-        this.textbox.className = 'widget-numeric-text';
+        this.textbox.className = 'form-control';
         this.el.appendChild(this.textbox);
 
         this.listenTo(this.model, 'change:description', function(sender, value) {
