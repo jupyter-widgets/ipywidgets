@@ -107,7 +107,7 @@ setuptools_args = {}
 install_requires = setuptools_args['install_requires'] = [
     'ipython>=4.0.0',
     'ipykernel>=4.2.2',
-    'traitlets>=4.2.0',
+    'traitlets>=4.2.1',
     # TODO: Dynamically add this dependency
     # only if notebook 4.x is installed in this
     # interpreter, to allow ipywidgets to be
