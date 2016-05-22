@@ -27,6 +27,7 @@ var css_properties = {
     min_height: '',
     min_width: '',
     overflow: '',
+    order: '',
     padding: '',
     right: '',
     top: '',
