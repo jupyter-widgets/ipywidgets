@@ -49,13 +49,6 @@ class Label(_String):
     _model_name = Unicode('LabelModel').tag(sync=True)
 
 
-class Latex(Label):
-
-    def __init__(self, *args, **kwargs):
-        warn('The Latex widget is deprecated. Use Label instead')
-        super(Latex, self).__init__(*args, **kwargs)
-
-
 @register('Jupyter.Textarea')
 class Textarea(_String):
     """Multiline text area widget."""
