@@ -154,87 +154,17 @@ def test_single_value_int():
             readout=True,
         )
 
-def test_list_tuple_2_int():
-    with nt.assert_raises(ValueError):
-        c = interactive(f, tup=(1,1))
-    with nt.assert_raises(ValueError):
-        c = interactive(f, tup=(1,-1))
-    for min, max in [ (0,1), (1,10), (1,2), (-5,5), (-20,-19) ]:
-        c = interactive(f, tup=(min, max), lis=[min, max])
-        nt.assert_equal(len(c.children), 2)
-        d = dict(
-            cls=widgets.IntSlider,
-            min=min,
-            max=max,
-            step=1,
-            readout=True,
-        )
-        check_widgets(c, tup=d, lis=d)
-
-def test_list_tuple_3_int():
-    with nt.assert_raises(ValueError):
-        c = interactive(f, tup=(1,2,0))
-    with nt.assert_raises(ValueError):
-        c = interactive(f, tup=(1,2,-1))
-    for min, max, step in [ (0,2,1), (1,10,2), (1,100,2), (-5,5,4), (-100,-20,4) ]:
-        c = interactive(f, tup=(min, max, step), lis=[min, max, step])
-        nt.assert_equal(len(c.children), 2)
-        d = dict(
-            cls=widgets.IntSlider,
-            min=min,
-            max=max,
-            step=step,
-            readout=True,
-        )
-        check_widgets(c, tup=d, lis=d)
-
-def test_list_tuple_2_float():
-    with nt.assert_raises(ValueError):
-        c = interactive(f, tup=(1.0,1.0))
-    with nt.assert_raises(ValueError):
-        c = interactive(f, tup=(0.5,-0.5))
-    for min, max in [ (0.5, 1.5), (1.1,10.2), (1,2.2), (-5.,5), (-20,-19.) ]:
-        c = interactive(f, tup=(min, max), lis=[min, max])
-        nt.assert_equal(len(c.children), 2)
-        d = dict(
-            cls=widgets.FloatSlider,
-            min=min,
-            max=max,
-            step=.1,
-            readout=True,
-        )
-        check_widgets(c, tup=d, lis=d)
-
-def test_list_tuple_3_float():
-    with nt.assert_raises(ValueError):
-        c = interactive(f, tup=(1,2,0.0))
-    with nt.assert_raises(ValueError):
-        c = interactive(f, tup=(-1,-2,1.))
-    with nt.assert_raises(ValueError):
-        c = interactive(f, tup=(1,2.,-1.))
-    for min, max, step in [ (0.,2,1), (1,10.,2), (1,100,2.), (-5.,5.,4), (-100,-20.,4.) ]:
-        c = interactive(f, tup=(min, max, step), lis=[min, max, step])
-        nt.assert_equal(len(c.children), 2)
-        d = dict(
-            cls=widgets.FloatSlider,
-            min=min,
-            max=max,
-            step=step,
-            readout=True,
-        )
-        check_widgets(c, tup=d, lis=d)
-
 def test_list_tuple_str():
     values = ['hello', 'there', 'guy']
     first = values[0]
-    c = interactive(f, tup=tuple(values), lis=list(values))
-    nt.assert_equal(len(c.children), 2)
+    c = interactive(f, lis=list(values))
+    nt.assert_equal(len(c.children), 1)
     d = dict(
         cls=widgets.Dropdown,
         value=first,
         options=values
     )
-    check_widgets(c, tup=d, lis=d)
+    check_widgets(c, lis=d)
 
 def test_list_tuple_invalid():
     for bad in [

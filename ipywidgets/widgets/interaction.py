@@ -86,24 +86,9 @@ def _widget_abbrev_single_value(o):
 def _widget_abbrev(o):
     """Make widgets from abbreviations: single values, lists or tuples."""
     if isinstance(o, list):
-        # --------------------------------------------------------------------
-        # Handle deprecated behavior of using lists of length 2 or 3 in place
-        # of tuples to specify slider widget attributes. This will be removed
-        # in ipywidgets 6.0.
-        if len(o) in [2, 3] and all(isinstance(x, Real) for x in o):
-            warn("For Sliders, use a tuple: %s" % (tuple(o),), DeprecationWarning)
-            return _widget_abbrev(tuple(o))
-        # --------------------------------------------------------------------
         return Dropdown(options=[unicode_type(k) for k in o])
 
     elif isinstance(o, tuple):
-        # --------------------------------------------------------------------
-        # Handle deprecated behavior of using tuples for selection widget. This
-        # will be removed in ipywidgets 6.0.
-        if any(not isinstance(x, Real) for x in o):
-            warn("For Selection widgets, use a list %s" %(list(o),), DeprecationWarning)
-            return Dropdown(options=[unicode_type(k) for k in o])
-        # --------------------------------------------------------------------
         if _matches(o, (Real, Real)):
             min, max, value = _get_min_max_value(o[0], o[1])
             if all(isinstance(_, Integral) for _ in o):
