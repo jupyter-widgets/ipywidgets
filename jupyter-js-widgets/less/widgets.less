@@ -10,6 +10,7 @@
 @import "./mixins.less";
 @import "./progress-modal.less";
 
+@inline-widget-height: 32px;
 @widget-width: 300px;
 @widget-width-short: 148px;
 @border-radius-base: 2px;
@@ -215,6 +216,7 @@
 
 .widget-checkbox {
     width: @widget-width-short;
+    height : @inline-widget-height;
 }
 
 .widget-button, .widget-toggle-button {
@@ -228,6 +230,7 @@
     vertical-align: middle;
     white-space: nowrap;
     width : @widget-width-short;
+    height : @inline-widget-height;
 
     i.fa {
         padding-right: 3px;
@@ -401,6 +404,7 @@
 
 .widget-dropdown {
     display: block;
+    height : @inline-widget-height;
 
     & {
         width : @widget-width;
@@ -487,7 +491,7 @@ ul.widget-dropdown-droplist {
 .widget-hprogress {
     /* Progress Bar */
     width : @widget-width;
-    height: 32px;
+    height : @inline-widget-height;
 
     .progress {
         flex-grow: 1;
@@ -575,7 +579,7 @@ ul.widget-dropdown-droplist {
     }
 
     input[type="color"] {
-        height: 32px;
+        height : @inline-widget-height;
         width: 28px;
         padding: 1px;
     }
@@ -596,7 +600,7 @@ ul.widget-dropdown-droplist {
         /* Horizontal Readout */
         padding-left   : 4px;
         padding-top    : 5px;
-        height         : 32px;
+        height         : @inline-widget-height;
         text-align     : center;
         vertical-align : text-top;
         min-width      : 7em;
@@ -619,7 +623,7 @@ ul.widget-dropdown-droplist {
     .vbox();
 
     input[type="color"] {
-        height: 32px;
+        height: @inline-widget-height;
         padding: 1px;
     }
 
