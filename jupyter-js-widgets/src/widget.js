@@ -533,7 +533,6 @@ var WidgetViewMixin = {
 var DOMWidgetModel = WidgetModel.extend({
     defaults: _.extend({}, WidgetModel.prototype.defaults, {
         layout: undefined,
-        visible: true,
         _dom_classes: [],
     }),
 }, {
@@ -550,8 +549,6 @@ var DOMWidgetViewMixin = {
         WidgetViewMixin.initialize.apply(this, [parameters]);
         this.id = utils.uuid();
 
-        this.listenTo(this.model, 'change:visible', this.update_visible, this);
-
         this.listenTo(this.model, 'change:_dom_classes', function(model, new_classes) {
             var old_classes = model.previous('_dom_classes');
             this.update_classes(old_classes, new_classes);
@@ -563,7 +560,6 @@ var DOMWidgetViewMixin = {
         });
 
         this.displayed.then(_.bind(function() {
-            this.update_visible(this.model, this.model.get('visible'));
             this.update_classes([], this.model.get('_dom_classes'));
             this.setLayout(this.model.get('layout'));
         }, this));
@@ -585,27 +581,6 @@ var DOMWidgetViewMixin = {
                     });
                 }).catch(utils.reject('Could not add LayoutView to DOMWidgetView', true));
             });
-        }
-    },
-
-    update_visible: function(model, value) {
-        /**
-         * Update visibility
-         */
-        switch(value) {
-            case null:
-                if (this._old_display !== undefined) {
-                    this.el.style.display = this._old_display;
-                }
-                this.el.style.visibility = 'hidden'; break;
-            case false:
-                this._old_display = this.el.style.display || '';
-                this.el.style.display = 'none'; break;
-            case true:
-                if (this._old_display !== undefined) {
-                    this.el.style.display = this._old_display;
-                }
-                this.el.style.visibility = ''; break;
         }
     },
 
