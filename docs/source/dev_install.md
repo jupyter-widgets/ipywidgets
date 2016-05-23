@@ -1,6 +1,6 @@
 Developer Install
 =================
-To install ipywidgets from git, you will need [npm](https://www.npmjs.com/) and
+To install ipywidgets from git, **you will need [npm](https://www.npmjs.com/) version 3.x or later** (check you version by running `npm -v` from a terminal) and
 the latest [development copy of the Jupyter
 notebook](https://github.com/jupyter/notebook) because everything in the
 ipywidgets repository is developed using Jupyter notebook master. If you want
@@ -15,33 +15,18 @@ available in the PATH used with sudo.
 
         git clone https://github.com/ipython/ipywidgets
 
-1. Build the Jupyter Widgets package
-
-        cd jupyter-js-widgets
-        npm install
-        cd ..
-
-2. Install the Jupyter Widgets nbextension
-
-        cd widgetsnbextension
-        npm install
-        npm run update:widgets
-        pip install -v -e .
-        cd ..
-        jupyter nbextension install --py --symlink --user widgetsnbextension
-        jupyter nbextension enable --py --user widgetsnbextension
-
-3. Dev-install of the package (run from ipywidgets repo directory):
+1. Navigate into the cloned repo and install
 
         cd ipywidgets
-        pip install -v -e .
+        bash dev-install.sh --user
 
+(If you do not want a user install, remove the `--user`)
 
 After you've made changes to `jupyter-js-widgets` if you want to test those
 changes, run the following, empty your browsers cache, and refresh the page.
 
         cd widgetsnbextension
-        npm run update:widgets
+        npm run update
         cd ..
 
 TIPS: If you have any problems with the above install procedure, make sure that

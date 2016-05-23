@@ -7,7 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack",
-    "update:widgets": "rimraf node_modules/jupyter-js-widgets; npm install file:../jupyter-js-widgets; npm run build",
+    "update": "rimraf node_modules/jupyter-js-widgets; npm install file:../jupyter-js-widgets; npm run build",
     "prepublish": "npm run build"
   },
   "repository": {
@@ -24,8 +24,8 @@
     "backbone": "^1.2.3",
     "html2canvas": "^0.5.0-beta4",
     "jquery": "^2.2.0",
-    "jupyter-js-widgets": "2.0.0-dev",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "jupyter-js-widgets": "file:../jupyter-js-widgets"
   },
   "devDependencies": {
     "css-loader": "^0.23.1",
