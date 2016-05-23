@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 nbExtFlags=$1
 
 npm -v
