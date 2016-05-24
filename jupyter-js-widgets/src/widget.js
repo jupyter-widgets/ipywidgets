@@ -535,20 +535,11 @@ var DOMWidgetModel = WidgetModel.extend({
 
         // Deprecated attributes
         color: null,
-        height: "",
-        border_radius: "",
-        border_width: "",
         background_color: null,
         font_style: "",
-        width: "",
         font_family: "",
-        border_color: null,
-        padding: "",
         font_weight: "",
-        icon: "",
-        border_style: "",
         font_size: "",
-        margin: ""
     }),
 }, {
     serializers: _.extend({
@@ -564,54 +555,12 @@ var DOMWidgetViewMixin = {
         WidgetViewMixin.initialize.apply(this, [parameters]);
         this.id = utils.uuid();
 
-        this.listenTo(this.model, 'change:visible', this.update_visible, this); // TODO: Deprecated in 5.0
+        this.listenTo(this.model, 'change:visible', this.update_visible, this);
 
         this.listenTo(this.model, 'change:_dom_classes', function(model, new_classes) {
             var old_classes = model.previous('_dom_classes');
             this.update_classes(old_classes, new_classes);
         }, this);
-
-        this.listenTo(this.model, 'change:color', function (model, value) { // TODO: Deprecated in 5.0
-            this.update_attr('color', value); }, this);
-
-        this.listenTo(this.model, 'change:background_color', function (model, value) { // TODO: Deprecated in 5.0
-            this.update_attr('background', value); }, this);
-
-        this.listenTo(this.model, 'change:width', function (model, value) { // TODO: Deprecated in 5.0
-            this.update_attr('width', this._default_px(value)); }, this);
-
-        this.listenTo(this.model, 'change:height', function (model, value) { // TODO: Deprecated in 5.0
-            this.update_attr('height', this._default_px(value)); }, this);
-
-        this.listenTo(this.model, 'change:border_color', function (model, value) { // TODO: Deprecated in 5.0
-            this.update_attr('border-color', value); }, this);
-
-        this.listenTo(this.model, 'change:border_width', function (model, value) { // TODO: Deprecated in 5.0
-            this.update_attr('border-width', this._default_px(value)); }, this);
-
-        this.listenTo(this.model, 'change:border_style', function (model, value) { // TODO: Deprecated in 5.0
-            this.update_attr('border-style', value); }, this);
-
-        this.listenTo(this.model, 'change:font_style', function (model, value) { // TODO: Deprecated in 5.0
-            this.update_attr('font-style', value); }, this);
-
-        this.listenTo(this.model, 'change:font_weight', function (model, value) { // TODO: Deprecated in 5.0
-            this.update_attr('font-weight', value); }, this);
-
-        this.listenTo(this.model, 'change:font_size', function (model, value) { // TODO: Deprecated in 5.0
-            this.update_attr('font-size', this._default_px(value)); }, this);
-
-        this.listenTo(this.model, 'change:font_family', function (model, value) { // TODO: Deprecated in 5.0
-            this.update_attr('font-family', value); }, this);
-
-        this.listenTo(this.model, 'change:padding', function (model, value) { // TODO: Deprecated in 5.0
-            this.update_attr('padding', this._default_px(value)); }, this);
-
-        this.listenTo(this.model, 'change:margin', function (model, value) { // TODO: Deprecated in 5.0
-            this.update_attr('margin', this._default_px(value)); }, this);
-
-        this.listenTo(this.model, 'change:border_radius', function (model, value) { // TODO: Deprecated in 5.0
-            this.update_attr('border-radius', this._default_px(value)); }, this);
 
         this.layoutPromise = Promise.resolve();
         this.listenTo(this.model, "change:layout", function(model, value) {
@@ -619,24 +568,8 @@ var DOMWidgetViewMixin = {
         });
 
         this.displayed.then(_.bind(function() {
-            this.update_visible(this.model, this.model.get("visible")); // TODO: Deprecated in 5.0
+            this.update_visible(this.model, this.model.get("visible"));
             this.update_classes([], this.model.get('_dom_classes'));
-
-            this.update_attr('color', this.model.get('color')); // TODO: Deprecated in 5.0
-            this.update_attr('background', this.model.get('background_color')); // TODO: Deprecated in 5.0
-            this.update_attr('width', this._default_px(this.model.get('width'))); // TODO: Deprecated in 5.0
-            this.update_attr('height', this._default_px(this.model.get('height'))); // TODO: Deprecated in 5.0
-            this.update_attr('border-color', this.model.get('border_color')); // TODO: Deprecated in 5.0
-            this.update_attr('border-width', this._default_px(this.model.get('border_width'))); // TODO: Deprecated in 5.0
-            this.update_attr('border-style', this.model.get('border_style')); // TODO: Deprecated in 5.0
-            this.update_attr('font-style', this.model.get('font_style')); // TODO: Deprecated in 5.0
-            this.update_attr('font-weight', this.model.get('font_weight')); // TODO: Deprecated in 5.0
-            this.update_attr('font-size', this._default_px(this.model.get('font_size'))); // TODO: Deprecated in 5.0
-            this.update_attr('font-family', this.model.get('font_family')); // TODO: Deprecated in 5.0
-            this.update_attr('padding', this._default_px(this.model.get('padding'))); // TODO: Deprecated in 5.0
-            this.update_attr('margin', this._default_px(this.model.get('margin'))); // TODO: Deprecated in 5.0
-            this.update_attr('border-radius', this._default_px(this.model.get('border_radius'))); // TODO: Deprecated in 5.0
-
             this.setLayout(this.model.get('layout'));
         }, this));
     },
@@ -661,24 +594,7 @@ var DOMWidgetViewMixin = {
         }
     },
 
-    _default_px: function(value) { // TODO: Deprecated in 5.0
-        /**
-         * Makes browser interpret a numerical string as a pixel value.
-         */
-        if (value && /^\d+\.?(\d+)?$/.test(value.trim())) {
-            return value.trim() + 'px';
-        }
-        return value;
-    },
-
-    update_attr: function(name, value) { // TODO: Deprecated in 5.0
-        /**
-         * Set a css attr of the widget view.
-         */
-        this.el.style[name] = value;
-    },
-
-    update_visible: function(model, value) { // TODO: Deprecated in 5.0
+    update_visible: function(model, value) {
         /**
          * Update visibility
          */
