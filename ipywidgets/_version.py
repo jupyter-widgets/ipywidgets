@@ -1,3 +1,3 @@
-version_info = (5, 2, 0, 'dev')
+version_info = (5, 1, 5)
 __version__ = '.'.join(map(str, version_info))
-__frontend_version__ = '~1.1.1'
+__frontend_version__ = '~1.1.2'
