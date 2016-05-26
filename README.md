@@ -63,17 +63,20 @@ Examples of custom widget libraries built upon ipywidgets are
 
 ## Install
 
-Install the current version of ipywidgets using pip or conda:
+Install the current version of ipywidgets using pip or conda.
 
-    pip install ipywidgets
+- With pip:
 
-or
+```
+pip install ipywidgets
+jupyter nbextension enable --py widgetsnbextension
+```
 
-    conda install ipywidgets
+- With conda:
 
-Then run
-
-    jupyter nbextension enable --py widgetsnbextension
+```
+conda install -c conda-forge ipywidgets
+```
 
 See the [Installation](docs/source/user_install.md) section of the documentation for additional details.
 
@@ -85,7 +88,7 @@ If you want to install ipywidgets from git, **you will need [npm](https://www.np
 
 | ipywidgets version  | Required notebook version |
 | ------------------- | ------------------------- |
-| master              | master                    |
+| master              | 4.2                       |
 | 5.x                 | 4.2                       |
 | 4.1.x               | 4.1                       |
 | 4.0.x               | 4.0                       |
