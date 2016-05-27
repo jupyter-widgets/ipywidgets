@@ -84,8 +84,12 @@ var AccordionView = widget.DOMWidgetView.extend({
             var new_index = this.model.get('selected_index');
             /* old_index can be out of bounds, this check avoids raising
                a javascript error. */
-            this.collapseTab(old_index);
-            this.expandTab(new_index);
+            if (0 <= old_index && old_index < this.containers.length) {
+                this.collapseTab(old_index);
+            }
+            if (0 <= new_index && new_index < this.containers.length) {
+                this.expandTab(new_index);
+            }
         }
     },
 
