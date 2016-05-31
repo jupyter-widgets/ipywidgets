@@ -73,7 +73,6 @@ var ControllerAxisView = widget.DOMWidgetView.extend({
         this.support.style.height = '64px';
         this.support.style.border = '1px solid black';
         this.support.style.background = 'lightgray';
-        this.el.appendChild(this.support);
 
         this.bullet = document.createElement('div');
         this.bullet.style.position = 'absolute';
@@ -81,11 +80,13 @@ var ControllerAxisView = widget.DOMWidgetView.extend({
         this.bullet.style.width = '10px';
         this.bullet.style.height = '10px';
         this.bullet.style.background = 'gray';
-        this.el.appendChild(this.support);
 
         this.label = document.createElement('div');
         this.label.textContent = this.model.get('description');
         this.label.style.textAlign = 'center';
+
+        this.support.appendChild(this.bullet);
+        this.el.appendChild(this.support);
         this.el.appendChild(this.label);
 
         this.update();
