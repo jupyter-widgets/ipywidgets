@@ -1,0 +1,472 @@
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../urth-core-behaviors/jupyter-widget-behavior.html">
+<link rel='import' href='../urth-core-behaviors/dynamic-properties-behavior.html'>
+<link rel="import" href="../urth-core-behaviors/execution-complete-behavior.html">
+
+<!--
+Creates a client side proxy to a function defined in the kernel. This function is specified by
+name using the `ref` attribute.
+
+The elements allows setting parameters in 2 ways:
+
+1. Using properties named in the patters `arg-<parameter name>`
+    <urth-core-function ref="aFunction" arg-x='5' arg-y='4'></urth-core-function>
+
+2. Using the `args` property. The `args` property is a JSON Object where the keys are the parameter names
+    <urth-core-function ref="aFunction" args='{"x":5, "y":4}'></urth-core-function>
+
+Both examples are equivalent to invoking `aFunction(x=5, y=4)`
+
+`urth-core-function` will invoke in the following ways:
+
+ 1. By calling the `invoke` method using Javascript
+ 2. By setting the `auto` property and it automatically invokes when parameters set
+ 3. By handling the `click` event of a child element. For example, just placing a `button` inside this element.
+
+
+Note that when using the 'click' event approach described above in #3, a click on any child will trigger an invocation.
+
+@group Urth Core
+@element urth-core-function
+-->
+<script>
+    (function(){
+    'use strict';
+
+        var ParamAttrPattern = /^arg-(.+)/;
+        var ParamPropPathPattern = /^args\.([^\.\n]+)\.?/;
+
+        window.Urth = window.Urth || {};
+
+        window.Urth['urth-core-function'] = Polymer({
+            is: 'urth-core-function',
+            properties: {
+
+                /**
+                 * Name of the function to proxy. Must be a function that is
+                 * defined in the kernel.
+                 */
+                ref: {
+                    type: String,
+                    value: ''
+                },
+
+                /**
+                 * Object reflecting the current values of the parameters to the
+                 * function. This property can be used for binding.
+                 */
+                args: {
+                    type: Object,
+                    notify: true
+                },
+
+                /**
+                 * Object representing the function return value after invocation.
+                 */
+                result: {
+                    readOnly: true,
+                    notify: true
+                },
+
+                /**
+                 * Controls if the function is invoked automatically on any
+                 * change to its parameters, and whether the `signature` is
+                 * refreshed after each code execution.
+                 */
+                auto: {
+                    type: Boolean,
+                    value: false,
+                    reflectToAttribute: true
+                },
+
+                /**
+                 * Sets the maximun number of rows to bring to the client.
+                 */
+                limit: {
+                  type: Number,
+                  value: 100,
+                  reflectToAttribute: true,
+                  observer: '_onLimitChange'
+                },
+
+                /**
+                 * Describes the signature of the parameters to the function.
+                 * This object will contain objects keyed by the parameter name
+                 * and information about type and requirement. It is used to
+                 * determine if the current arguments are in a valid state to
+                 * invoke the function.
+                 */
+                signature: {
+                    type: Object,
+                    readOnly: true,
+                    observer: '_onSignatureChange'
+                },
+
+                /**
+                 * Flag to signal that the function is ready to be called.
+                 * Ready means that the signature of the function is known and
+                 * any required arguments have values assigned.
+                 */
+                isReady: {
+                    type: Boolean,
+                    readOnly: true,
+                    computed: '_computeReady(args.*, signature)',
+                    notify: true
+                },
+
+                /**
+                 * Sets a delay time, in milliseconds, for debouncing the
+                 * invocation of the function. This time will debounce for
+                 * every argument change as well as every call to invoke.
+                 */
+                delay: {
+                  type: Number
+                }
+
+            },
+
+            behaviors: [
+                Urth.JupyterWidgetBehavior,
+                Urth.ExecutionCompleteBehavior,
+                Urth.DynamicPropertiesBehavior
+            ],
+
+            observers: [
+                '_onArgsPropertyChanged(args.*)'
+            ],
+
+            listeners: {
+                'watch_notify': 'invoke',
+                'click': '_tryInvoke'
+            },
+
+            created: function(){
+                console.debug('urth-core-function created', arguments);
+                this.createModel('urth.widgets.widget_function.Function');
+            },
+
+            ready: function() {
+                console.debug('urth-core-function ready');
+
+                if( !this.args ){
+                    //sync with the attributes
+                    this.args = this._paramsFromAttributes();
+                }
+            },
+
+            /*
+             * onModelReady is invoked when have created the model portion of the widget
+             */
+            onModelReady: function(){
+                console.debug('urth-core-function onModelReady');
+
+                var syncData = {
+                    function_name: this.ref,
+                    limit: this.limit
+                }
+                console.debug('urth-core-function sending initial sync', syncData);
+                this.sync(syncData);
+            },
+
+            /*
+             * onModelResultChange is invoked by JupyterWidgetBehavior when the `result` property in
+             * the Backbone model changes.
+             */
+            onModelResultChange: function(newVal){
+                console.debug( 'urth-core-function onModelResultChange', newVal );
+                //Using _setName function because we want result to be read-pnly to the outside world
+                this._setResult( newVal );
+            },
+
+            onModelSignatureChange: function(newVal){
+                console.debug('urth-core-function onModelSignatureChange', newVal);
+                this._setSignature( newVal );
+            },
+
+            _onArgsPropertyChanged: function(rec){
+                if(this._syncing)
+                    return;
+
+                console.debug('urth-core-function _onArgsChanged', rec);
+                if( rec.path === 'args' ){
+                    //entire parameter map changed
+                    this._syncParamAttributes(rec.value);
+                    this._onParameterChange(rec.path, rec.value);
+                }
+                else if (ParamPropPathPattern.test(rec.path)){
+                    //a single parameter changed
+                    var matches = ParamPropPathPattern.exec(rec.path)
+                    var param =  matches.length === 2 ? matches[1] : undefined;
+
+                    if( param ){
+                        console.debug('urth-core-function got change for param', param);
+                        //reflect on the attibutes
+                        var params = {};
+                        var newVal = rec.base[param];
+                        params[param] = newVal;
+                        this._syncParamAttributes(params);
+                        this._onParameterChange(param, newVal);
+
+                    }
+                }
+            },
+
+            _onExecutionComplete: function(){
+                if (this.auto) {
+                    this.refresh();
+                }
+            },
+
+            _syncParamAttributes: function( params ){
+                params = !params ? {} : params;
+                this._syncing = true;
+                try {
+                    Object.keys(params).forEach(function (param) {
+                        var argPropName = this._toParamPropertyName(param);
+
+                        if( this.hasOwnProperty(argPropName) ){
+                            this[argPropName] = params[param];
+                        }
+
+                    }.bind(this))
+                }
+                finally {
+                    delete this._syncing;
+                }
+            },
+
+            /**
+             * Forces an invocation of the function
+             *
+             * @method invoke
+             * @param {boolean} skipValidate Optional flag to skip validation of params before sending message to invoke
+             */
+            invoke: function(skipValidate){
+                if(!skipValidate && !this.isValid()){
+                    throw new Error("Function arguments are not in valid state");
+                }
+
+                var jName = "urth-core-function.invoke";
+                if( this.isDebouncerActive(jName) ) {
+                    this.cancelDebouncer(jName);
+                }
+
+                this.debounce(jName, function(){
+                    console.debug("urth-core-function invoking...");
+
+                    this.send({
+                        event: 'invoke',
+                        args: this._serializeParamsForSend()
+                    });
+                }.bind(this), this.delay);
+            },
+
+            /**
+             * Function is valid if all necessary parameter for the function are set. Necessary parameters refers to
+             * parameters that are listed and do not have a default value.
+             *
+             * @method isValid
+             * @return {boolean} true if all necessary parameters are set, else false
+             */
+            isValid: function(){
+                return (!this.signature) ? false : Object.keys(this.signature)
+                        .filter(function(arg){
+                            return !!this.signature[arg].required
+                        }.bind(this))
+                        .every(function(arg){
+                            return this.args[arg] !== undefined;
+                        }.bind(this));
+            },
+
+            /**
+             * Builds the `args` section of the 'invoke' message by serializing each
+             * param as necessary.
+             */
+            _serializeParamsForSend: function(){
+                var serArgs = {};
+                Object.keys(this.args).filter(function(arg){
+                    //remove args that contain the default value.
+                    return this.signature[arg] && this.args[arg] !== this.signature[arg].value;
+                }.bind(this)).forEach(function(arg){
+                    var value = this.args[arg];
+                    serArgs[arg] = (typeof value == 'boolean') ? value : this.serialize(value);
+                }.bind(this));
+
+                return serArgs;
+            },
+
+            _isParameterAttribute: function(attr /*attribute or string*/){
+                var attrName =  typeof attr === 'string' ? attr : attr.name;
+                return ParamAttrPattern.test(attrName);
+            },
+
+            /**
+             * Returns false if paramValue is undefined, null and NaN.
+             *
+             * @method _isParameterUnset
+             * @param {*} paramValue Any value sent to test
+             * @return {boolean} true if considered unset
+             */
+            _isParameterUnset: function(paramValue){
+                /*
+                 * Testing undefined, null and NaN.
+                 * From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN#Testing_against_NaN
+                 * a valid test for NaN is to test inequality to itself.
+                 */
+                return paramValue === undefined || paramValue == null || (paramValue !== paramValue);
+            },
+
+            _toParamName: function(attr /*attribute or string*/){
+                var attrName =  typeof attr === 'string' ? attr : attr.name;
+
+                var matches = ParamAttrPattern.exec(attrName)
+                return matches && matches.length === 2 ? matches[1] : undefined;
+            },
+
+            _toParamPropertyName: function(paramName){
+                return 'arg' + paramName[0].toUpperCase() + paramName.substring(1);
+            },
+
+            _toParamPropertyObserverName: function(paramName){
+                var paramPropName = this._toParamPropertyName(paramName);
+                return '_on'+paramPropName[0].toUpperCase() + paramPropName.substring(1)+'Change'
+            },
+
+            _paramsFromAttributes: function(){
+                var attrs = this.attributes,
+                        params = {};
+
+                for (var i = 0; i < attrs.length; i++) {
+                    var attr = attrs[i];
+                    if (this._isParameterAttribute(attr)) {
+                        params[this._toParamName(attr)] = attr.nodeValue;
+                    }
+                }
+
+                return params;
+            },
+
+            _onParameterChange: function( argName, argValue ){
+                console.debug("urth-core-function _onParameterChange", argName, argValue);
+
+                if (this.auto) {
+                    this._tryInvoke();
+                }
+            },
+
+            _onLimitChange: function(limit){
+                console.debug('urth-core-function _onLimitChange sending new limit value', this.limit);
+                this.sync({limit: limit});
+                this._tryInvoke();
+            },
+
+            /**
+             * This method handles changes to the signature of the method. It will create a new property based on
+             * the name of the parameter. These new properties will allow data binding and will be kept in sync with
+             * the contents of the `args` property.
+             *
+             */
+            _onSignatureChange: function(sig){
+                console.debug('urth-core-function _onSignatureChange got new signature', sig);
+                this._clearErrorMessages();
+                this.resetDynamicProperties();
+
+                var paramNames = Object.keys(sig);
+                if( paramNames.length > 0 ){
+
+                    //create new properties based on signature
+                    var paramProperties = {}
+                    paramNames.forEach(function(param){
+                        var argPropName = this._toParamPropertyName(param);
+                        var argPropObserverName = this._toParamPropertyObserverName(param);
+
+                        //create an observer
+                        this[argPropObserverName] = this._createArgChangeHandler(param);
+
+                        paramProperties[argPropName] = {
+                            notify: true,
+                            reflectToAttribute: true,
+                            observer: argPropObserverName,
+                            value: this[argPropName] !== undefined ? this[argPropName] : sig[param].value
+                        }
+
+                    }.bind(this));
+
+                    this.setDynamicProperties(paramProperties);
+
+                    //set the defaults values and sync if necessary
+                    var paramsToSync = {};
+
+                    paramNames.forEach(function(param){
+                        if(this._isParameterUnset(this.args[param])){
+                            var propValue = paramProperties[this._toParamPropertyName(param)].value
+                            if( propValue !== undefined ) {
+                                this.set('args.' + param, propValue);
+                            }
+                        }
+                        else{
+                            paramsToSync[param] = this.args[param];
+                        }
+                    }.bind(this));
+
+                    this._syncParamAttributes(paramsToSync);
+                }
+
+                if (this.auto) {
+                    this._tryInvoke();
+                }
+            },
+
+            /**
+             * Update the `signature` held by this element with
+             * the function signature's current state on the kernel.
+             *
+             * @method refresh
+             */
+            refresh: function() {
+                console.debug("urth-core-function sending sync message...");
+                this.send({ "event": "sync" });
+            },
+
+            _createArgChangeHandler: function(param){
+
+                return function(newVal){
+                    console.log('urth-core-function handling change to', param);
+
+                    if(this._syncing)
+                        return;
+
+                    this._syncing = true;
+                    try {
+                        this.set("args." + param, newVal); //keep the property updated
+                        this._onParameterChange(param, newVal);
+                    }
+                    finally {
+                        delete this._syncing;
+                    }
+                }
+            },
+
+            _tryInvoke: function() {
+                if(this.isValid()) {
+                    this.invoke(true);
+                }
+                else {
+                    console.warn('urth-core-function tried to invoke but arguments are not in valid state', this.args);
+                }
+            },
+
+            /*
+             * Currently using isValid as a way to compute isReady. isValid includes the check for available signature.
+             */
+            _computeReady: function(args, signature){
+                return this.isValid();
+            }
+    });
+})();
+
+</script>

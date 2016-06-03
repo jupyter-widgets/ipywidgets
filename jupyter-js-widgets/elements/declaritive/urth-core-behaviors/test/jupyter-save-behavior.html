@@ -1,0 +1,106 @@
+<!doctype html>
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- STEP 1: Provide a title for the test suite. -->
+    <title>urth-core-function tests</title>
+    <meta name='viewport' content='width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes'>
+
+    <!-- Need the web component polyfill for browsers without native support. -->
+    <script src='../../webcomponentsjs/webcomponents-lite.js'></script>
+
+    <!-- Load test framework and helpers. -->
+    <script src='../../web-component-tester/browser.js'></script>
+    <script src='../../test-fixture/test-fixture-mocha.js'></script>
+    <link rel='import' href='../../polymer/polymer.html'>
+    <link rel='import' href='../../test-fixture/test-fixture.html'>
+
+    <!-- STEP 2: Import the element to test. -->
+    <link rel='import' href='../jupyter-save-behavior.html'>
+
+</head>
+
+<body>
+
+    <!-- STEP 3: Setup document with DOM to test. Use test-fixture elements
+         to ease setup and cleanup of elements. -->
+
+    <test-fixture id='basic'>
+        <template>
+            <test-save id='testSave'></test-save>
+        </template>
+    </test-fixture>
+
+    <!-- This is a custom element that will be used to test
+         save invocation. -->
+    <dom-module id="test-save">
+        <script>
+            HTMLImports.whenReady(function () {
+                Polymer({
+                    is: 'test-save',
+                    behaviors: [ Urth.JupyterSaveBehavior],
+                    onSave: function() {
+                        if (this._saveHandler) {
+                            this._saveHandler();
+                        }
+                    },
+                    setSaveHandler: function(cb) {
+                        if (typeof cb === 'function') {
+                            this._saveHandler = cb;
+                        }
+                    }
+                });
+            });
+        </script>
+    </dom-module>
+
+    <script>
+        // STEP 4: Define any globals needed by the test suite.
+
+        before(function () {
+            window.Urth = window.Urth || {};
+            Urth.events = Urth.events || new function() {
+                this.__mocked = true;
+                this.__events = {};
+                this.on = function(event, cb) {
+                    this.__events[event] = cb;
+                };
+                this.off = function(event, cb) {
+                    if (this.__events[event] === cb) {
+                        delete this.__events[event];
+                    }
+                },
+                this.trigger = function(event, obj) {
+                    if (this.__events[event]) {
+                        this.__events[event](obj);
+                    }
+                }
+            };
+        });
+
+        after(function() {
+            if (Urth.events.__mocked) {
+                delete Urth.events;
+            }
+        });
+
+        // STEP 5: Define suite(s) and tests.
+        describe('save event', function() {
+            it('should invoke the onSave method of elements that implement the behavior', function() {
+                var testSave = fixture('basic');
+                var saveSpy = sinon.spy();
+
+                testSave.setSaveHandler(saveSpy);
+
+                Urth.events.trigger('before_save.Notebook');
+
+                expect(saveSpy).to.have.been.calledOnce;
+            });
+        });
+    </script>
+</body>
+</html>

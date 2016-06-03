@@ -1,0 +1,234 @@
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<link rel='import' href='../polymer/polymer.html'>
+<link rel='import' href='../iron-ajax/iron-ajax.html'>
+<link rel='import' href='../urth-core-behaviors/jupyter-notebook-env.html'>
+<link rel='import' href='./urth-core-import-broker.html'>
+
+<!--
+ Adds functionality to `<link>` to provide a mechanism to
+ install web components registered as [bower](http://bower.io/) packages. This
+ element works with a server side REST endpoint to install the specified package
+ and then upon successfull install, injects the appropriate HTML import into the page.
+
+ The `href` attribute should be specified as a relative path as the appropriate
+ base URL for the environment will be prefixed automatically. In the notebook
+ all `href` values should be of the form `urth_components/<package_name>/<file>`.
+
+ Example: _Install and import the paper-slider element_
+
+ ```html
+ <link rel='import' href='urth_components/paper-slider/paper-slider.html'
+        is='urth-core-import' package='PolymerElements/paper-slider'>
+ ```
+
+ @group Urth Core
+ @element urth-core-import
+ -->
+<dom-module id='urth-core-import'>
+    <template>
+        <iron-ajax id='ajaxPost' url='{{_importEndpointURL}}'
+            body='{{requestBody}}'
+            content-type='application/json'
+            handle-as='json'
+            method='POST'></iron-ajax>
+    </template>
+</dom-module>
+
+<script>
+(function() {
+    'use strict';
+    var loadedPackages = {},
+        LOG_TAG = 'urth-core-import: ',
+        importBroker = Urth['urth-core-import-broker'].getImportBroker();
+
+    window.Urth = window.Urth || {};
+
+    window.Urth['urth-core-import'] = Polymer({
+        is: 'urth-core-import',
+        extends: 'link',
+        /**
+         * fired if the specified package or href fails to load.
+         *
+         * @event `importerror`
+         */
+
+        /**
+         * fired if the specified package or href loads successfully.
+         *
+         * @event `load`
+         */
+
+        /**
+         * fired when the specified package or href begins loading.
+         *
+         * @event `loading`
+         */
+
+        /**
+         * fired when the specified package or href finishes loading. Listen
+         * to `load` and `error` and `importerror` events to determine success
+         * or failure of loading.
+         *
+         * @event `finished`
+         */
+
+        properties: {
+            /**
+            * If `true`, console output will be written to indicate the
+            * progress of importing the specified `package`.
+            */
+            debug: {
+                type: Boolean,
+                value: false
+            },
+
+            /**
+             * The project dependency to load. Any endpoints that are
+             * valid for the [`bower install`](http://bower.io/docs/api/#install)
+             * command may be specified.
+             */
+            package: {
+                type: String,
+                observer: '_packageChanged',
+                reflectToAttribute: true
+            },
+
+            /**
+             * This is the URL to the import endpoint on the notebook.
+             */
+            _importEndpointURL: {
+                computed: '_getImportEndpointURL(_baseURL)'
+            }
+        },
+
+        behaviors: [Urth.JupyterNotebookEnv],
+
+        listeners: {
+            'load': '_onLinkLoad'
+        },
+
+        attributeChanged: function(name, type) {
+            if (name === 'href') {
+                this._onHrefAttrChange(this.getAttribute('href'));
+            }
+        },
+
+        attached: function() {
+            var href = this.getAttribute('href');
+            this.fire('loading', {
+                href: href,
+                package: this.package
+            });
+        },
+
+        ready: function() {
+            this._onHrefAttrChange(this.getAttribute('href'));
+        },
+
+        _downloadPackage: function(successCB, errorCB) {
+            if (this.debug) {
+                console.debug(LOG_TAG + 'Sending server request to install ' + this.package);
+            }
+
+            // Listen to the 'response' event to handle the ajax POST return value.
+            this.$.ajaxPost.addEventListener('response', function(response) {
+                if (response && response.detail.status === 200) {
+                    if (this.debug) {
+                        console.debug(LOG_TAG + 'Successfully installed ' + this.package);
+                    }
+
+                    // Add a dummy parameter to the url to force the browser
+                    // to reload.
+                    var url = new URL(this.href);
+                    url.search += '&urthdummy=urth';
+
+                    this.importHref(url.href, successCB, function(e) {
+                        errorCB.call(this, 'Failed to import ' + this.href);
+                    }.bind(this));
+                } else if (typeof errorCB === 'function') {
+                    // Assuming an error has occurred.
+                    errorCB.call(this, 'Failed to send request to server for ' + this.href);
+                }
+            }.bind(this));
+
+            // `iron-ajax` sets xhr errors on the `error` event.
+            if (typeof errorCB === 'function') {
+                this.$.ajaxPost.addEventListener('error', function(error) {
+                    var msg = error && error.detail && error.detail.request &&
+                            error.detail.request.statusText ?
+                            error.detail.request.statusText :
+                            error.detail.error;
+                    errorCB.call(this, msg);
+                }.bind(this));
+            }
+
+            this.$.ajaxPost.generateRequest();
+        },
+
+        _onHrefAttrChange: function(newHref) {
+            // When the href changes, need to inject a new link tag
+            // to force the resource to be retrieved. Changing the
+            // href dynamically works on Chrome but other browsers
+            // require a new link tag so this always injects a new
+            // link tag to ensure the new href is retrieved.
+            if (newHref && this.rel === 'import') {
+                var prefixedHref = this._prefixHref(newHref);
+                if (prefixedHref !== newHref) {
+                    importBroker.addImport(this, newHref, this.package);
+                    this.setAttribute('href', prefixedHref);
+
+                    this.importHref(this.href, this._onLoadSuccess, function(e) {
+                        // If the href doesn't load, try to download
+                        // the package if it is specified.
+                        if (this.package && !loadedPackages[this.href]) {
+                            this._downloadPackage(this._onLoadSuccess, this._onLoadError);
+                        } else {
+                            this._onLoadError('Failed to import ' + this.href);
+                        }
+                    }.bind(this));
+                }
+            }
+        },
+
+        _onLinkLoad: function() {
+            // Save the fact that the link href was loaded successfully.
+            loadedPackages[this.href] = true;
+        },
+
+        _onLoadError: function(msg) {
+            console.warn(LOG_TAG + msg);
+            this.fire('importerror', { msg: msg });
+        },
+
+        _onLoadSuccess: function() {
+            this.fire('load');
+            if (this.debug) {
+                console.debug(LOG_TAG + 'Successfully imported ' + this.href);
+            }
+        },
+
+        _packageChanged: function(newVal, oldVal) {
+            this.requestBody = '{"package": ' + '"' + newVal + '"}';
+        },
+
+        // Imports need to have their href prefixed with the configured
+        // import base URL in order to prevent duplication of resources between
+        // the notebook initialization and cell imports.
+        _prefixHref: function(newHref) {
+            if (newHref && this._importBaseURL && newHref.indexOf(this._importBaseURL) !== 0) {
+                var prefixed = this._importBaseURL + newHref;
+                newHref = this._prefixedHref = prefixed.replace(/((?!:).|^)\/\//g, '$1/');
+            }
+
+            return newHref;
+        },
+
+        _getImportEndpointURL: function(baseURL) {
+            return baseURL + 'urth_import';
+        }
+    });
+})();
+</script>

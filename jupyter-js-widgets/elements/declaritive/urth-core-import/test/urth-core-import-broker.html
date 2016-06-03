@@ -1,0 +1,181 @@
+<!doctype html>
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- STEP 1: Provide a title for the test suite. -->
+    <title>urth-core-import-broker tests</title>
+    <meta name='viewport' content='width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes'>
+
+    <!-- Need the web component polyfill for browsers without native support. -->
+    <script src='../../webcomponentsjs/webcomponents-lite.js'></script>
+
+    <!-- Load test framework and helpers. -->
+    <script src='../../web-component-tester/browser.js'></script>
+    <script src='../../test-fixture/test-fixture-mocha.js'></script>
+    <link rel='import' href='../../test-fixture/test-fixture.html'>
+
+    <!-- STEP 2: Import the element to test. -->
+    <link rel='import' href='../urth-core-import-broker.html'>
+</head>
+
+<body>
+    <!-- STEP 3: Setup document with DOM to test. Use test-fixture elements
+         to ease setup and cleanup of elements. -->
+    <test-fixture id='basic'>
+        <template>
+            <urth-core-import-broker id='basicBroker'></urth-core-import-broker>
+        </template>
+    </test-fixture>
+
+    <div id='mockImport'></div>
+
+    <div id='completedImport'></div>
+
+    <script>
+        // STEP 4: Define any globals needed by the test suite.
+        var basicBroker;
+        var mockImport = document.getElementById('mockImport');
+        var completedImport = document.getElementById('completedImport');
+
+        beforeEach(function() {
+            basicBroker = fixture('basic');
+        });
+
+        // STEP 5: Define suite(s) and tests.
+        describe('addImport', function() {
+            it('should return null if element not specified', function() {
+                var rtn = basicBroker.addImport(null, '/my/url', 'mypackage');
+
+                expect(rtn).to.be.null;
+            });
+
+            it('should return null if href not specified', function() {
+                var rtn = basicBroker.addImport(mockImport, null, 'mypackage');
+
+                expect(rtn).to.be.null;
+            });
+
+            it('should return an object with fields set based on specified inputs', function() {
+                var rtn = basicBroker.addImport(mockImport, '/my/url', 'mypackage');
+
+                expect(rtn).to.not.be.null;
+                expect(rtn.href).to.equal('/my/url');
+                expect(rtn.packageRef).to.equal('mypackage');
+            });
+
+            it('should mark the return object completed and successfull when the import loads', function(done) {
+                var rtn = basicBroker.addImport(mockImport, '/my/url', 'mypackage');
+
+                expect(rtn).to.not.be.null;
+                expect(rtn.href).to.equal('/my/url');
+                expect(rtn.packageRef).to.equal('mypackage');
+
+                rtn.completed.then(function() {
+                    rtn.result.then(function() {
+                        done();
+                    });
+                }).catch(function() {
+                    expect.fail();
+                    done();
+                });
+
+                Polymer.Base.fire('load', null, {node: mockImport});
+            });
+
+            it('should mark the return object completed and unsuccessfull when the import errors', function(done) {
+                var rtn = basicBroker.addImport(mockImport, '/my/url', 'mypackage');
+
+                expect(rtn).to.not.be.null;
+                expect(rtn.href).to.equal('/my/url');
+                expect(rtn.packageRef).to.equal('mypackage');
+
+                rtn.completed.then(function() {
+                    rtn.result.then(function() {
+                        expect.fail();
+                        done();
+                    }, function() {
+                        // Expectation is the result is a failure.
+                        done();
+                    });
+                }, function() {
+                    expect.fail();
+                    done();
+                });
+
+                Polymer.Base.fire('importerror', null, {node: mockImport});
+            });
+        });
+
+        describe('getPendingImports', function() {
+            it('should return an empty array if there are no pending imports', function() {
+                var pending = basicBroker.getPendingImports();
+
+                expect(pending).to.be.instanceof(Array);
+                expect(pending).to.be.empty;
+            });
+
+            it('should return pending imports', function() {
+                basicBroker.addImport(mockImport, '/url/one', 'onepackage');
+                basicBroker.addImport(mockImport, '/url/two', 'twopackage');
+
+                var pending = basicBroker.getPendingImports();
+
+                expect(pending).to.be.instanceof(Array);
+                expect(pending).to.have.length(2);
+                expect(pending[0].href).to.equal('/url/one');
+                expect(pending[0].packageRef).to.equal('onepackage');
+                expect(pending[1].href).to.equal('/url/two', 'twopackage');
+                expect(pending[1].packageRef).to.equal('twopackage');
+            });
+
+            it('should not include imports that have already completed successfully', function() {
+                basicBroker.addImport(mockImport, '/url/one', 'onepackage');
+                basicBroker.addImport(completedImport, 'url/completed', 'completedpackage');
+                basicBroker.addImport(mockImport, '/url/two', 'twopackage');
+
+                Polymer.Base.fire('load', null, {node: completedImport});
+
+                var pending = basicBroker.getPendingImports();
+
+                expect(pending).to.be.instanceof(Array);
+                expect(pending).to.have.length(2);
+                expect(pending[0].href).to.equal('/url/one');
+                expect(pending[0].packageRef).to.equal('onepackage');
+                expect(pending[1].href).to.equal('/url/two', 'twopackage');
+                expect(pending[1].packageRef).to.equal('twopackage');
+            });
+
+            it('should not include imports that have already completed with error', function() {
+                basicBroker.addImport(mockImport, '/url/one', 'onepackage');
+                basicBroker.addImport(completedImport, 'url/completed', 'completedpackage');
+                basicBroker.addImport(mockImport, '/url/two', 'twopackage');
+
+                Polymer.Base.fire('importerror', null, {node: completedImport});
+
+                var pending = basicBroker.getPendingImports();
+
+                expect(pending).to.be.instanceof(Array);
+                expect(pending).to.have.length(2);
+                expect(pending[0].href).to.equal('/url/one');
+                expect(pending[0].packageRef).to.equal('onepackage');
+                expect(pending[1].href).to.equal('/url/two', 'twopackage');
+                expect(pending[1].packageRef).to.equal('twopackage');
+            });
+        });
+
+        describe('getImportBroker', function() {
+            it('should return a singleton instance of the import broker', function() {
+                var one = window.Urth['urth-core-import-broker'].getImportBroker();
+                var two = window.Urth['urth-core-import-broker'].getImportBroker();
+
+                expect(one).to.equal(two);
+            });
+        });
+
+    </script>
+</body>
+</html>

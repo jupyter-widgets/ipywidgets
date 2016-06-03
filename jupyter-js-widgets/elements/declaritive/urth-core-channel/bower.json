@@ -1,0 +1,25 @@
+{
+  "name": "urth-core-channel",
+  "version": "0.0.1",
+  "authors": [
+    "Jupyter Community"
+  ],
+  "description": "Monostate data channel.",
+  "main": "urth-core-channel.html",
+  "keywords": [
+    "urth",
+    "web-components",
+    "jupyter"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.2.4"
+  },
+  "private": true
+}

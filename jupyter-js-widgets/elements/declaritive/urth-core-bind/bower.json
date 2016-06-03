@@ -1,0 +1,27 @@
+{
+  "name": "urth-core-bind",
+  "version": "0.0.1",
+  "authors": [
+    "Jupyter Community"
+  ],
+  "description": "Data binding through shared channels.",
+  "main": "urth-core-bind.html",
+  "keywords": [
+    "urth",
+    "web-components",
+    "jupyter"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.2.4",
+    "iron-ajax": "PolymerElements/iron-ajax#^1.0.4",
+    "promise-polyfill": "polymerlabs/promise-polyfill#^1.0.0"
+  },
+  "private": true
+}

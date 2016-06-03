@@ -1,0 +1,117 @@
+<!doctype html>
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- Step 1: Provide a title for the test suite. -->
+    <title>urth-core-watch tests</title>
+    <meta name='viewport' content='width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes'>
+
+    <!-- Need the web component polyfill for browsers without native support. -->
+    <script src='../../webcomponentsjs/webcomponents-lite.js'></script>
+
+    <!-- Load test framework and helpers. -->
+    <script src='../../web-component-tester/browser.js'></script>
+    <script src='../../test-fixture/test-fixture-mocha.js'></script>
+    <link rel='import' href='../../test-fixture/test-fixture.html'>
+
+    <!-- Step 2: Import the element to test. -->
+    <link rel='import' href='../urth-core-watch.html'>
+
+</head>
+
+<body>
+    <!-- Step 3: Setup document with DOM to test. -->
+    <test-fixture id="basic">
+        <template>
+            <urth-core-watch id="watch" value="{{the_var}}">
+                <div id='child'></div>
+            </urth-core-watch>
+        </template>
+    </test-fixture>
+
+    <test-fixture id="multi_children">
+        <template>
+            <urth-core-watch id="watch" value="{{the_var}}">
+                <div id='child1'></div>
+                <div id='child2'></div>
+                <div id='child3'></div>
+            </urth-core-watch>
+        </template>
+    </test-fixture>
+
+    <script>
+        'use strict';
+
+        // Step 4: Define any globals needed by the test suite.
+
+        // Step 5: Define suite(s) and tests.
+        describe('_valueChanged', function() {
+
+            it('should be invoke on change to simple value', function() {
+                var fElmt = fixture('basic');
+                var _valueChangeSpy = sinon.spy(fElmt, '_valueChanged');
+
+                fElmt.value = "some value";
+                fElmt.value = "another value";
+
+                expect(_valueChangeSpy).to.have.been.calledTwice;
+
+            });
+
+            it('should be invoke on change to complex value', function() {
+                var fElmt = fixture('basic');
+                var _valueChangeSpy = sinon.spy(fElmt, '_valueChanged');
+
+                fElmt.value = {
+                    a: 1,
+                    b: "some value"
+                };
+                fElmt.set("value.b", "another value");
+
+                expect(_valueChangeSpy).to.have.been.calledTwice;
+
+            });
+
+            it('should fire event on child node when invoked', function(){
+                var fElmt = fixture('basic');
+                var child = document.getElementById("child");
+
+                var handler = sinon.spy();
+                child.addEventListener('watch_notify', handler);
+
+                fElmt.value = "some value";
+
+                expect(handler).to.have.been.calledOnce;
+
+            });
+
+            it('should fire event on all children nodes when invoked', function(){
+                var fElmt = fixture('multi_children');
+
+                var childrenIds = ['child1', 'child2', 'child3'];
+
+                var handlers = childrenIds
+                    .map(document.getElementById.bind(document))
+                    .map(function(child){
+                        var handler = sinon.spy();
+                        child.addEventListener('watch_notify', handler);
+                        return handler;
+                    });
+
+                fElmt.value = "some value";
+
+                handlers.forEach(function(handler) {
+                    expect(handler).to.have.been.calledOnce;
+                });
+
+            });
+        });
+    </script>
+
+</body>
+
+</html>

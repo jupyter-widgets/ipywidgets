@@ -1,0 +1,132 @@
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+
+<script>
+    'use strict';
+    (function() {
+        var SplicesPathPattern = /\.splices$/;
+        var LengthPathPattern = /\.length$/;
+        var ObjectKeyPathPattern = /(^arg[^\.\n]+?)(\.[^\.\n]+)+/
+
+        window.Urth = window.Urth || {};
+
+        /**
+         * Behavior that allows a Polymer element to define new properties at runtime. To
+         * support this, several methods from Polymer.Bind were copied and redefined.
+         *
+         * @group Urth Core
+         * @polymerBehavior Urth.DynamicPropertiesBehavior
+         */
+        Urth.DynamicPropertiesBehavior = {
+
+            /**
+             * Sets the specified properties to this instance of an element. The
+             * dynProps parameter is in the same format as the `properties` object used
+             * in defining new Polymer elements.
+             *
+             * @param dynProps - Object with properties to set
+             * @method setDynamicProperties
+             */
+            setDynamicProperties: function(dynProps){
+                this._dynamicProperties = dynProps;
+                this._addPropertyEffects(dynProps);
+
+                //add a complex observer to handle Arrays and Objects
+                Object.keys(dynProps).forEach(function(dynProp){
+                    this._addComplexObserverEffect("__complexObserver(" + dynProp + ".*" + ")")
+                }.bind(this))
+
+                this.__createBindings(dynProps);
+            },
+
+            /**
+             * Removes all dynamic properties added to this element.
+             *
+             * @method resetDynamicProperties
+             */
+            resetDynamicProperties: function(){
+                // copy the properties from the prototype
+                this._propertyEffects = {};
+                this.mixin(this._propertyEffects, this.constructor.prototype._propertyEffects);
+
+                // delete existing dynamic properties from this object
+                var propsToRemove =  this._dynamicProperties || {};
+                Object.keys(propsToRemove).forEach(function(prop){
+                    delete this[prop];
+                }.bind(this));
+
+                delete this._dynamicProperties;
+            },
+
+            /*
+             * Modified from Polymer.Bind.createBindings to allow only createBindings the
+             * given properties and to call our __createAccessors function.
+             */
+            __createBindings: function(dynProps) {
+                //console.group(model.is);
+                // map of properties to effects
+                var fx$ = this._propertyEffects;
+                if (fx$) {
+                    // for each property with effects
+                    for (var n in fx$) {
+
+                        if( dynProps[n] ){
+                            // array of effects
+                            var fx = fx$[n];
+                            // effects have priority
+                            fx.sort(this._sortPropertyEffects);
+
+                            // create accessors
+                            this.__createAccessors(n, fx);
+                        }
+                    }
+                }
+                //console.groupEnd();
+            },
+
+            /*
+             * Modified to add `configurable` to the descriptor object to allow for
+             * deletion of dynamically added properties.
+             * see http://stackoverflow.com/questions/7141210/how-do-i-undo-a-object-defineproperty-call
+             */
+            __createAccessors: function(property, effects){
+                var defun = {
+                    get: function() {
+                        return this.__data__[property];
+                    },
+                    configurable: true //necessary to allow for a delete
+                };
+                var setter = function(value) {
+                    this._propertySetter(property, value, effects);
+                };
+                var info = this.getPropertyInfo && this.getPropertyInfo(property);
+                if (info && info.readOnly) {
+                    if (!info.computed) {
+                        this['_set' + Polymer.Bind.upper(property)] = setter;
+                    }
+                }
+                else {
+                    defun.set = setter;
+                }
+
+                Object.defineProperty(this, property, defun)
+            },
+
+            /*
+             * Generic complex observer to handle changes within arrays and objects
+             */
+            __complexObserver: function(rec){
+                //test that path ends with "splices"
+                if( (Array.isArray(rec.base) && SplicesPathPattern.test(rec.path)) ||
+                    (!Array.isArray(rec.base) && ObjectKeyPathPattern.test(rec.path))){
+                    //the first part of the path is the name of the arg
+                    var propName = rec.path.substring(0, rec.path.indexOf('.'));
+                    this[this._dynamicProperties[propName].observer].call(this, this[propName]);
+                }
+            }
+
+        };
+    })();
+</script>

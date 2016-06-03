@@ -16,6 +16,7 @@ var loadedModules = [
     require("./embed-manager"),
     require("./utils"),
     require("./widget"),
+    require("./declarative-widget"),
     require("./widget_layout"),
     require("./widget_link"),
     require("./widget_bool"),

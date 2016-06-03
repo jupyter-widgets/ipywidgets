@@ -1,0 +1,25 @@
+{
+  "name": "urth-core-watch",
+  "version": "0.0.1",
+  "authors": [
+    "Jupyter Community"
+  ],
+  "description": "Watches changes to a variable and invokes children elements.",
+  "main": "urth-core-watch.html",
+  "keywords": [
+    "urth",
+    "web-components",
+    "jupyter"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.2.4"
+  },
+  "private": true
+}

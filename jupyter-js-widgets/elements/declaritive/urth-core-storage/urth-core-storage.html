@@ -1,0 +1,165 @@
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+ Provides an API to persist key value pairs.
+
+ Examples:
+
+ ```html
+ <urth-core-storage collection='teams' id='teamStorage'></urth-core-storage>
+ ```
+
+ Values can be persisted and retrieved with the `set` and `get` API:
+
+ ```javascript
+ var ts = document.getElementById('teamStorage');
+ ts.set('albuquerque', 'isotopes');
+ ts.get('albuquerque');
+ ```
+
+@group Urth Core
+@element urth-core-storage
+-->
+<dom-module id='urth-core-storage'>
+    <script>
+    (function() {
+        'use strict';
+
+        // Use local storage to persist widgets across page refresh by default.
+        // LocalStorage is per domain, so we need to explicitly set the URL
+        // that the widgets are associated with so they don't show on other
+        // pages hosted by the noteboook server.
+        var STORAGE_PREFIX = 'declarative_widgets:' + window.location.pathname + ':';
+        var ENABLED = isStorageEnabled();
+
+        function isStorageEnabled() {
+            try {
+                localStorage.setItem(STORAGE_PREFIX, STORAGE_PREFIX);
+                localStorage.removeItem(STORAGE_PREFIX);
+                return true;
+            } catch(e) {
+                console.debug('Storage is disabled. Client state is not persisted.');
+                return false;
+            }
+        }
+
+        window.Urth = window.Urth || {};
+
+        window.Urth['urth-core-storage'] = Polymer({
+            is: 'urth-core-storage',
+            properties: {
+                /**
+                 * Whether storage persistance is enabled.
+                 * `true` if storage is enabled.
+                 */
+                enabled: {
+                    type: Boolean,
+                    readOnly: true,
+                    value: function() {
+                        return ENABLED;
+                    }
+                },
+                /**
+                 * The name of the collection to store and retrieve values from
+                 * storage.
+                 */
+                collection: {
+                    type: String,
+                    value: '__default__'
+                }
+            },
+
+            /**
+             * Removes all of the keys for the configured collection from
+             * storage.
+             */
+            clear: function() {
+                this.getKeys().forEach(function(key) {
+                    this.remove(key);
+                }.bind(this));
+            },
+
+            /**
+             * Returns the value for the key in storage or null if it
+             * is not defined.
+             *
+             * @method get
+             * @param key {String} key The name of the key in storage.
+             * @return {Object} The value stored for the key.
+             */
+            get: function(key) {
+                var value;
+                if (this.enabled && key) {
+                    value = localStorage.getItem(this._getPrefixedKey(key));
+                }
+                return value ? JSON.parse(value) : null;
+            },
+
+            /**
+             * Returns all of the keys in storage for the configured collection.
+             *
+             * @method getKeys
+             * @return {Array} The array of keys for the collection.
+             */
+            getKeys: function() {
+                var keys = [];
+                if (this.enabled) {
+                    var prefix = this._getPrefixedKey();
+                    keys = Object.keys(localStorage).filter(function(key) {
+                        return key.indexOf(prefix) === 0;
+                    }).map(function(key) {
+                        return key.slice(prefix.length);
+                    });
+                }
+
+                return keys;
+            },
+
+            /**
+             * Removes the specified key from storage.
+             *
+             * @method remove
+             * @param {String} key The name of the key in storage.
+             */
+            remove: function(key) {
+                if (this.enabled && key) {
+                    localStorage.removeItem(this._getPrefixedKey(key));
+                }
+            },
+
+            /**
+             * Sets the value of the specified key in storage. If a value is not
+             * specified, the key is removed from storage.
+             *
+             * @method set
+             * @param {String} key The name of the key to set in storage.
+             * @param {Object} value The value for the key.
+             */
+            set: function(key, value) {
+                if (this.enabled && key) {
+                    if (value) {
+                        try {
+                            localStorage.setItem(this._getPrefixedKey(key),
+                                JSON.stringify(value));
+                        } catch(e) {
+                            console.error('Failed to save ' + key + ' to storage.', e);
+                        }
+                    } else {
+                        this.remove(key);
+                    }
+                }
+            },
+
+            _getPrefixedKey: function(key) {
+                return STORAGE_PREFIX +
+                        (this.collection ? this.collection + ':' : '') +
+                        (key ? key : '');
+            }
+        });
+    })();
+    </script>
+</dom-module>

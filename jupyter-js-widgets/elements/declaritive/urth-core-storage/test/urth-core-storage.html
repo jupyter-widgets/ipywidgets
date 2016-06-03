@@ -1,0 +1,203 @@
+<!doctype html>
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<html>
+<head>
+    <meta charset='utf-8'>
+    <!-- STEP 1: Provide a title for the test suite. -->
+    <title>urth-core-bind tests</title>
+    <meta name='viewport' content='width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes'>
+
+    <!-- Need the web component polyfill for browsers without native support. -->
+    <script src='../../webcomponentsjs/webcomponents-lite.js'></script>
+
+    <!-- Load test framework and helpers. -->
+    <script src='../../web-component-tester/browser.js'></script>
+    <script src='../../test-fixture/test-fixture-mocha.js'></script>
+    <link rel='import' href='../../test-fixture/test-fixture.html'>
+
+    <!-- STEP 2: Import the element to test. -->
+    <link rel='import' href='../urth-core-storage.html'>
+</head>
+
+<body>
+    <!-- STEP 3: Setup document with DOM to test. Use test-fixture elements
+         to ease setup and cleanup of elements. -->
+
+    <test-fixture id='basic'>
+        <template>
+            <urth-core-storage id='basicStorage'></urth-core-storage>
+        </template>
+    </test-fixture>
+
+    <test-fixture id='collectionA'>
+        <template>
+            <urth-core-storage id='storageA' collection='a'></urth-core-storage>
+        </template>
+    </test-fixture>
+
+    <script>
+    // STEP 4: Define any globals needed by the test suite.
+    var basic;
+
+    beforeEach(function() {
+        basic = fixture('basic');
+        collectionA = fixture('collectionA');
+    });
+
+    afterEach(function() {
+        basic.clear();
+        collectionA.clear();
+    });
+
+    // STEP 5: Define suite(s) and tests.
+
+    describe('clear', function() {
+        it('should remove all previously set values', function() {
+            basic.set('foo', 'bar');
+            basic.set('bar', { myval: 'awesome'});
+            basic.set('baz', true);
+            basic.clear();
+
+            expect(basic.get('foo')).to.be.null;
+            expect(basic.get('bar')).to.be.null;
+            expect(basic.get('baz')).to.be.null;
+        });
+
+        it('can be invoked when data is already empty', function() {
+            basic.clear();
+            basic.clear();
+
+            expect(basic.get('foo')).to.be.null;
+        });
+
+        it('should only clear the data in the associated collection', function() {
+            collectionA.set('foo', 'bar');
+            basic.set('bar', 'none');
+
+            basic.clear();
+
+            expect(basic.get('bar')).to.be.null;
+            expect(collectionA.get('foo')).to.equal('bar');
+        });
+    });
+
+    describe('get', function() {
+        it('should return null for an invalid key', function() {
+            expect(basic.get('foo')).to.be.null;
+        });
+
+        it('should return null if the key is not specified', function() {
+            expect(basic.get()).to.be.null;
+        });
+
+        it('should retrieve the value for the specified key', function() {
+            basic.set('foo', 'bar');
+
+            expect(basic.get('foo')).to.equal('bar');
+        });
+
+        it('should retrieve the value for the specified key from the proper collection', function() {
+            collectionA.set('foo', 'shizel');
+            basic.set('foo', 'bar');
+
+            expect(collectionA.get('foo')).to.equal('shizel');
+        });
+    });
+
+    describe('getKeys', function() {
+        it('should return empty array when no values set', function() {
+            expect(basic.getKeys()).to.be.empty;
+        });
+
+        it('should return the keys for the collection', function() {
+            basic.set('foo', 'bar');
+            basic.set('bar', { myval: 'awesome'});
+            basic.set('baz', true);
+
+            collectionA.set('name', 'Luke');
+            collectionA.set('force', true);
+            collectionA.set('dark', 'inevitable');
+
+            expect(basic.getKeys()).to.have.members(['foo', 'bar', 'baz']);
+            expect(collectionA.getKeys()).to.have.members(['name', 'force', 'dark']);
+        });
+    });
+
+    describe('remove', function() {
+        it('should do not modify the collection if key is not specified', function() {
+            basic.set('foo', 'bar');
+            basic.set('bar', { myval: 'awesome'});
+            basic.set('baz', true);
+            basic.remove();
+
+            collectionA.set('name', 'Luke');
+            collectionA.set('force', true);
+            collectionA.set('dark', 'inevitable');
+            collectionA.remove();
+
+            expect(basic.getKeys()).to.have.members(['foo', 'bar', 'baz']);
+            expect(collectionA.getKeys()).to.have.members(['name', 'force', 'dark']);
+        });
+
+        it('should remove the specified key from the collection', function() {
+            basic.set('foo', 'bar');
+            basic.set('bar', { myval: 'awesome'});
+            basic.set('baz', true);
+
+            basic.remove('bar');
+
+            collectionA.set('name', 'Luke');
+            collectionA.set('force', true);
+            collectionA.set('dark', 'inevitable');
+
+            collectionA.remove('force');
+
+            expect(basic.getKeys()).to.have.members(['foo', 'baz']);
+            expect(collectionA.getKeys()).to.have.members(['name', 'dark']);
+        });
+    });
+
+    describe('set', function() {
+        it('should save the specified key and value', function() {
+            basic.set('foo', 'bar');
+
+            expect(basic.get('foo')).to.equal('bar');
+        });
+
+        it('should overwrite a previously set value', function() {
+            basic.set('foo', 'bar');
+            basic.set('foo', 'baz');
+
+            expect(basic.get('foo')).to.equal('baz');
+        });
+
+        it('should clear the key value if a value is not specified', function() {
+            basic.set('foo');
+
+            expect(basic.get('foo')).to.be.null;
+        });
+
+        it('should set the value on the collection and not affect other collections', function() {
+            basic.set('foo', 'bar');
+            collectionA.set('foo', 'baz');
+
+            expect(basic.get('foo')).to.equal('bar');
+        });
+
+        it('should store various value types', function() {
+            basic.set('foo', 'bar');
+            basic.set('bar', {myval: 'awesome'});
+            basic.set('baz', true);
+
+            expect(basic.get('foo')).to.equal('bar');
+            expect(basic.get('bar')).to.eql({myval: 'awesome'});
+            expect(basic.get('baz')).to.equal(true);
+        });
+    });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,625 @@
+<!doctype html>
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- STEP 1: Provide a title for the test suite. -->
+    <title>urth-core-bind tests</title>
+    <meta name='viewport' content='width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes'>
+
+    <!-- Need the web component polyfill for browsers without native support. -->
+    <script src='../../webcomponentsjs/webcomponents-lite.js'></script>
+
+    <!-- Load test framework and helpers. -->
+    <script src='../../web-component-tester/browser.js'></script>
+    <script src='../../test-fixture/test-fixture-mocha.js'></script>
+    <link rel='import' href='../../test-fixture/test-fixture.html'>
+
+    <!-- STEP 2: Import the element to test. -->
+    <link rel='import' href='../urth-core-channel.html'>
+</head>
+
+<body>
+
+    <!-- STEP 3: Setup document with DOM to test. Use test-fixture elements
+         to ease setup and cleanup of elements. -->
+    <urth-core-channel id="channelDefault"></urth-core-channel>
+    <urth-core-channel id="channel1" name="channel1"></urth-core-channel>
+    <urth-core-channel id="channel2" name="channel2"></urth-core-channel>
+
+    <test-fixture id="basic">
+        <template>
+            <urth-core-channel id="basicChannel"></urth-core-channel>
+        </template>
+    </test-fixture>
+
+    <test-fixture id="channelConsumer">
+        <template>
+            <test-channel-consumer></test-channel-consumer>
+        </template>
+    </test-fixture>
+
+    <test-channel-consumer id="dummyConsumer"></test-channel-consumer>
+
+    <!-- This is a custom element that will be used to test
+         registration/unregistration with a data channel. -->
+    <dom-module id="test-channel-consumer">
+        <template>
+            <div>Foo: <span>{{foo}}</span></div>
+            <div>Bar: <span>{{bar}}</span></div>
+        </template>
+        <script>
+            HTMLImports.whenReady(function () {
+                Polymer({
+                    is: 'test-channel-consumer',
+                    properties: {
+                        foo: {
+                            type: String,
+                            observer: '_fooChanged'
+                        },
+                        bar: {
+                            type: String,
+                            observer: '_barChanged'
+                        }
+                    },
+                    _fooChanged: function() { console.debug('Changed foo'); },
+                    _barChanged: function() { console.debug('Changed bar'); }
+                });
+            });
+        </script>
+    </dom-module>
+
+    <script>
+        // STEP 4: Define any globals needed by the test suite.
+        var channel;
+
+        before(function () {
+            /*
+             * Non-lifecycle methods must be mocked on the prototype.
+             * Lifecycle methods(e.g. detached, ready) remain in the behavior, so they
+             * must be mocked there.
+             */
+            sinon.stub(Urth['urth-core-channel-broker'].prototype, 'createModel');
+            sinon.stub(Urth.JupyterKernelObserver, 'created');
+            sinon.stub(Urth.JupyterWidgetBehaviorImpl, 'detached');
+            sinon.stub(Urth['urth-core-channel-broker'].prototype, '_callbacks');
+        });
+
+        beforeEach(function() {
+            channel = fixture('basic');
+        });
+
+        afterEach(function() {
+            channel1.clear();
+            channel2.clear();
+            channelDefault.clear();
+
+            channel1.save();
+            channel2.save();
+            channelDefault.save();
+
+            channel.unregister();
+        });
+
+        // STEP 5: Define suite(s) and tests.
+        describe('clear', function() {
+            it('should remove all previously set values', function() {
+                channel.set('foo', 'bar');
+                channel.set('bar', { myval: 'awesome'});
+                channel.set('baz', true);
+                channel.clear();
+
+                expect(channel.get('foo')).to.be.undefined;
+                expect(channel.get('bar')).to.be.undefined;
+                expect(channel.get('baz')).to.be.undefined;
+            });
+
+            it('can be invoked when data is already empty', function() {
+                channel.clear();
+                channel.clear();
+
+                expect(channel.get('foo')).to.be.undefined;
+            });
+
+            it('should clear property values on registered elements', function() {
+                var consumer = fixture('channelConsumer');
+
+                channel.register(consumer);
+                channel.set('foo', 'bar');
+                channel.set('bar', 'baz');
+
+                expect(consumer.foo).to.equal('bar');
+                expect(consumer.bar).to.equal('baz');
+
+                channel.clear();
+
+                expect(consumer.foo).to.be.undefined;
+                expect(consumer.bar).to.be.undefined;
+            });
+        });
+
+        describe('get', function() {
+            it('should retrieve the value for the specified key', function() {
+                channel.set('foo', 'bar');
+
+                expect(channel.get('foo')).to.equal('bar');
+            });
+
+            it('should return undefined for an invalid key', function() {
+                expect(channel.get('foo')).to.be.undefined;
+            });
+
+            it('should retrieve the value from the default channel when ' +
+                'no channel argument is provided', function() {
+                channel.set('foo', 'bar');
+
+                expect(channel.get('foo')).to.equal(channelDefault.get('foo'));
+            });
+        });
+
+        describe('register', function() {
+            var consumer;
+            var consumer2;
+
+            beforeEach(function() {
+                consumer = fixture('channelConsumer');
+                consumer2 = fixture('channelConsumer');
+            });
+
+            it('should cause element to get data channel updates', function() {
+                consumer.foo = consumer.bar = 'initial';
+                channel.register(consumer);
+                channel.set('foo', 'bar');
+                channel.set('bar', 'baz');
+
+                expect(consumer.foo).to.equal('bar');
+                expect(consumer.bar).to.equal('baz');
+            });
+
+            it('should set existing channel data on element', function() {
+                channel.set('foo', 'shizel');
+                channel.set('bar', 'none');
+                channel.register(consumer);
+
+                expect(consumer.foo).to.equal('shizel');
+                expect(consumer.bar).to.equal('none');
+            });
+
+            it('should only register a given element once', function() {
+                var fooSpy = sinon.spy(consumer, '_fooChanged');
+                var barSpy = sinon.spy(consumer, '_barChanged');
+
+                channel.register(consumer);
+                channel.register(consumer);
+                channel.set('foo', 'bar');
+                channel.set('bar', 'baz');
+
+                fooSpy.restore();
+                barSpy.restore();
+
+                expect(fooSpy).to.have.been.calledOnce;
+                expect(barSpy).to.have.been.calledOnce;
+            });
+
+            it('should cause element to only get data channel updates for ' +
+                'the specified channel', function() {
+                consumer.foo = 'foo';
+
+                channel.register(consumer);
+
+                channel.set('foo', 'bar');
+                channel1.set('foo', 'baz');
+                channel2.set('foo', 'shizel');
+
+                expect(consumer.foo).to.equal('bar');
+            });
+        });
+
+        describe('reload', function() {
+            it('should reload previously saved values', function() {
+                channel.set('foo', 'bar');
+                channel.set('bar', 'none');
+                channel.save();
+
+                channel.set('foo', 'shizel');
+                channel.set('bar', 'all');
+
+                channel.reload();
+
+                expect(channel.get('foo')).to.equal('bar');
+                expect(channel.get('bar')).to.equal('none');
+            });
+
+            it('should reload previously saved values from the proper channel', function() {
+                channel.set('foo', 'bar');
+                channel.set('bar', 'none');
+                channel.save();
+
+                channel1.set('foo', 'sure');
+                channel1.set('bar', 'open');
+                channel1.save();
+
+                channel1.set('foo', 'sball');
+                channel1.set('bar', 'ber');
+
+                channel.name = 'channel1';
+
+                channel.reload();
+
+                expect(channel.get('foo')).to.equal('sure');
+                expect(channel.get('bar')).to.equal('open');
+            });
+
+            it('should reload property values from previous save on registered elements', function() {
+                var consumer = fixture('channelConsumer');
+                channel.set('foo', 'bar');
+                channel.set('bar', 'none');
+                channel.save();
+
+                channel.register(consumer);
+                channel.set('foo', 'sure');
+                channel.set('bar', 'open');
+
+                expect(consumer.foo).to.equal('sure');
+                expect(consumer.bar).to.equal('open');
+
+                channel.reload();
+
+                expect(consumer.foo).to.equal('bar');
+                expect(consumer.bar).to.equal('none');
+            });
+        });
+
+        describe('save', function() {
+            it('should save values', function() {
+                channel.set('foo', 'bar');
+                channel.set('bar', 'none');
+                channel.save();
+
+                channel.set('foo', 'shizel');
+                channel.set('bar', 'all');
+
+                channel.reload();
+
+                expect(channel.get('foo')).to.equal('bar');
+                expect(channel.get('bar')).to.equal('none');
+            });
+        });
+
+        describe('set', function() {
+            it('should save the specified key and value', function() {
+                channel.set('foo', 'bar');
+
+                expect(channel.get('foo')).to.equal('bar');
+            });
+
+            it('should overwrite a previously set value', function() {
+                channel.set('foo', 'bar');
+                channel.set('foo', 'baz');
+
+                expect(channel.get('foo')).to.equal('baz');
+            });
+
+            it('should clear the key value if a value is not specified', function() {
+                channel.set('foo');
+
+                expect(channel.get('foo')).to.be.undefined;
+            });
+        });
+
+        describe('switch channel', function() {
+            var consumer;
+
+            beforeEach(function() {
+                consumer = fixture('channelConsumer');
+            });
+
+            it('should cause element to get data channel updates only from the new channel', function() {
+                consumer.foo = 'initial';
+                channel.register(consumer);
+                channel.name = 'channel1';
+
+                channel.set('foo', 'bar');
+                expect(consumer.foo).to.equal('bar');
+
+                channelDefault.set('foo', 'bean');
+                expect(consumer.foo).to.equal('bar');
+            });
+
+            it('should remove element data associated with the old channel', function() {
+                consumer.foo = 'initial';
+                channel.register(consumer);
+                channel.set('foo', 'bar');
+
+                channel.name = 'channel1';
+                expect(consumer.foo).to.equal(undefined);
+            });
+
+            it('should set existing channel data on element for the new channel', function() {
+                consumer.foo = consumer.bar = 'initial';
+                channel.register(consumer);
+
+                channel1.set('foo', 'shizel');
+                channel1.set('bar', 'none');
+
+                channel.name = 'channel1';
+
+                expect(consumer.foo).to.equal('shizel');
+                expect(consumer.bar).to.equal('none');
+            });
+
+            it('should reset existing channel data on element for the new channel', function() {
+                consumer.foo = 'initial';
+                channel.register(consumer);
+
+                channel1.set('foo', '1');
+                channel.set('foo', 'd');
+
+                expect(consumer.foo).to.equal('d');
+                channel.name = 'channel1';
+                expect(consumer.foo).to.equal('1');
+
+                channel.name = 'channel2';
+                expect(consumer.foo).to.equal(undefined);
+
+                channel.name = 'default';
+                expect(consumer.foo).to.equal('d');
+            });
+        });
+
+        describe('unregister', function() {
+            var consumer;
+
+            beforeEach(function() {
+                consumer = fixture('channelConsumer');
+            });
+
+            it('should remove element from channel updates', function() {
+                consumer.foo = consumer.bar = 'initial';
+
+                channel.register(consumer);
+                channel.unregister(consumer);
+                channel.set('foo', 'bar');
+                channel.set('bar', 'baz');
+
+                expect(consumer.foo).to.equal('initial');
+                expect(consumer.bar).to.equal('initial');
+            });
+
+            it('should ignore elements not registered', function() {
+                consumer.foo = consumer.bar = 'initial';
+
+                channel.register(consumer);
+
+                channel.unregister(dummyConsumer);
+
+                channel.set('foo', 'shizel');
+                channel.set('bar', 'none');
+
+                expect(consumer.foo).to.equal('shizel');
+                expect(consumer.bar).to.equal('none');
+            });
+
+            it('should unregister all listeners if no element specified', function() {
+                consumer.foo = consumer.bar = 'initial';
+
+                var fooSpy = sinon.spy(consumer, '_fooChanged');
+                var barSpy = sinon.spy(consumer, '_barChanged');
+                channel.register(consumer);
+                channel.unregister()
+                channel.set('foo', 'bar');
+                channel.set('bar', 'baz');
+
+                fooSpy.restore();
+                barSpy.restore();
+
+                expect(fooSpy).to.have.not.been.called;
+                expect(barSpy).to.have.not.been.called;
+                expect(consumer.foo).to.equal('initial');
+                expect(consumer.bar).to.equal('initial');
+            });
+        });
+
+        describe('unwatch', function() {
+            it('should remove watcher from channel updates', function() {
+                var watchSpy = sinon.spy();
+                channel.watch('foo', watchSpy);
+                channel.unwatch('foo', watchSpy);
+
+                channel.set('foo', 'bar');
+
+                expect(watchSpy).to.have.not.been.called;
+            });
+
+            it('should ignore watchers not registered', function() {
+                var watchSpy = sinon.spy();
+                var noWatchSpy = sinon.spy();
+                channel.watch('foo', watchSpy);
+                channel.unwatch('foo', noWatchSpy);
+
+                channel.set('foo', 'bar');
+
+                expect(watchSpy).to.have.been.calledOnce;
+                expect(noWatchSpy).to.have.not.been.called;
+            });
+
+            it('should unwatch all watchers if no key or handler specified', function() {
+                var watchSpy = sinon.spy();
+                var watch2Spy = sinon.spy();
+                channel.watch('foo', watchSpy);
+                channel.watch('bar', watch2Spy);
+
+                channel.unwatch();
+
+                channel.set('foo', 'bar');
+                channel.set('bar', 'none');
+
+                expect(watchSpy).to.have.not.been.called;
+                expect(watch2Spy).to.have.not.been.called;
+            });
+
+            it('should unwatch all watchers for a property when handler is not specified', function() {
+                var watchSpy = sinon.spy();
+                var watch2Spy = sinon.spy();
+                var barWatchSpy = sinon.spy();
+                channel.watch('foo', watchSpy);
+                channel.watch('foo', watch2Spy);
+                channel.watch('bar', barWatchSpy);
+
+                channel.unwatch('foo');
+                channel.set('foo', 'bar');
+                channel.set('bar', 'none');
+
+                expect(watchSpy).to.have.not.been.called;
+                expect(watch2Spy).to.have.not.been.called;
+                expect(barWatchSpy).to.have.been.calledOnce;
+            });
+        });
+
+
+        describe('watch', function() {
+            it('should register a watcher that gets fired when the property changes.', function() {
+                channel.set('foo', 'bar');
+                var watchSpy = sinon.spy();
+                channel.watch('foo', watchSpy);
+
+                channel.set('foo', 'shizel');
+                channel.set('foo', 'you');
+
+                expect(watchSpy).to.have.been.calledTwice;
+                var watchSpyArgs = watchSpy.getCall(0).args;
+                expect(watchSpyArgs[0]).to.equal('foo');
+                expect(watchSpyArgs[1]).to.equal('bar');
+                expect(watchSpyArgs[2]).to.equal('shizel');
+
+                watchSpyArgs = watchSpy.getCall(1).args;
+                expect(watchSpyArgs[0]).to.equal('foo');
+                expect(watchSpyArgs[1]).to.equal('shizel');
+                expect(watchSpyArgs[2]).to.equal('you');
+            });
+
+            it('should only register a given watcher once.', function() {
+                channel.set('foo', 'bar');
+                var watchSpy = sinon.spy();
+                channel.watch('foo', watchSpy);
+                channel.watch('foo', watchSpy);
+
+                channel.set('foo', 'shizel');
+
+                expect(watchSpy).to.have.been.calledOnce;
+            });
+
+            it('should allow multiple watchers to be registered for the same property.', function() {
+                channel.set('foo', 'bar');
+                var watchSpy = sinon.spy();
+                var watch2Spy = sinon.spy();
+                channel.watch('foo', watchSpy);
+                channel.watch('foo', watch2Spy)
+
+                channel.set('foo', 'shizel');
+
+                expect(watchSpy).to.have.been.calledOnce;
+                expect(watch2Spy).to.have.been.calledOnce;
+            });
+
+            it('should allow multiple property watchers.', function() {
+                channel.set('foo', 'bar');
+                channel.set('bar', 'none');
+                var watchSpy = sinon.spy();
+                var watch2Spy = sinon.spy();
+                channel.watch('foo', watchSpy);
+                channel.watch('bar', watch2Spy)
+
+                channel.set('foo', 'shizel');
+                channel.set('bar', 'open');
+
+                expect(watchSpy).to.have.been.calledOnce;
+                expect(watch2Spy).to.have.been.calledOnce;
+
+                var watchSpyArgs = watchSpy.getCall(0).args;
+                expect(watchSpyArgs[0]).to.equal('foo');
+                expect(watchSpyArgs[1]).to.equal('bar');
+                expect(watchSpyArgs[2]).to.equal('shizel');
+
+                var watch2SpyArgs = watch2Spy.getCall(0).args;
+                expect(watch2SpyArgs[0]).to.equal('bar');
+                expect(watch2SpyArgs[1]).to.equal('none');
+                expect(watch2SpyArgs[2]).to.equal('open');
+            });
+
+            it('should register an array watcher that gets invoked when an item from the array is modified.', function() {
+                var foo = [
+                    {name: 'bar', value: 'none'},
+                    {name: 'open', value: 'yes'}
+                ];
+                channel.set('foo', foo);
+                var watchSpy = sinon.spy();
+                var propSpy = sinon.spy();
+
+                // Modifying an item in the array should call watchers for the
+                // top level array and for the path that was modified.
+                channel.watch('foo', watchSpy);
+                channel.watch('foo.#1.value', propSpy);
+
+                channel.set('foo.#1.value', 'no');
+
+                expect(watchSpy).to.have.been.calledOnce;
+                var watchSpyArgs = watchSpy.getCall(0).args;
+                expect(watchSpyArgs[0]).to.equal('foo');
+                expect(watchSpyArgs[1]).to.deep.equal([
+                    {name: 'bar', value: 'none'},
+                    {name: 'open', value: 'yes'}
+                ]);
+                expect(watchSpyArgs[2]).to.deep.equal([
+                    {name: 'bar', value: 'none'},
+                    {name: 'open', value: 'no'}
+                ]);
+
+                expect(propSpy).to.have.been.calledOnce;
+                var propSpyArgs = propSpy.getCall(0).args;
+                expect(propSpyArgs[0]).to.equal('foo.#1.value');
+                expect(propSpyArgs[1]).to.equal('yes');
+                expect(propSpyArgs[2]).to.equal('no');
+            });
+
+            it('should register an object watcher that gets invoked when a property from the object is modified.', function() {
+                var foo = {
+                    name: 'bar',
+                    value: 'none'
+                };
+                channel.set('foo', foo);
+                var watchSpy = sinon.spy();
+                var propSpy = sinon.spy();
+
+                // Modifying a property in an object should call watchers for the
+                // top level object and for the path that was modified.
+                channel.watch('foo', watchSpy);
+                channel.watch('foo.value', propSpy);
+
+                channel.set('foo.value', 'all');
+
+                expect(watchSpy).to.have.been.calledOnce;
+                var watchSpyArgs = watchSpy.getCall(0).args;
+                expect(watchSpyArgs[0]).to.equal('foo');
+                expect(watchSpyArgs[1]).to.deep.equal({
+                    name: 'bar',
+                    value: 'none'
+                });
+                expect(watchSpyArgs[2]).to.deep.equal({
+                    name: 'bar',
+                    value: 'all'
+                });
+
+                expect(propSpy).to.have.been.calledOnce;
+                var propSpyArgs = propSpy.getCall(0).args;
+                expect(propSpyArgs[0]).to.equal('foo.value');
+                expect(propSpyArgs[1]).to.equal('none');
+                expect(propSpyArgs[2]).to.equal('all');
+            });
+        });
+    </script>
+</body>
+</html>

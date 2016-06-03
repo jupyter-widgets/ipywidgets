@@ -1,0 +1,132 @@
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+Internal element used to render the data within an `urth-core-channel`.
+
+@group Urth Core
+@element urth-core-channel-viewer
+-->
+<dom-module id='urth-core-channel-viewer'>
+    <template>
+        <style>
+            #viewer {
+                border: 1px solid #CCCCCC;
+                margin: 5px 0;
+            }
+
+            #viewer .viewer-title {
+                border-bottom: 1px solid #CCCCCC;
+                padding: 3px 5px;
+            }
+
+            #viewer .viewer-title button {
+                float: right;
+            }
+
+            #viewer .viewer-cell-name {
+                width: 30%;
+            }
+
+            #viewer .viewer-empty-msg {
+                margin: 0 5px;
+                text-align: center;
+                color: #999;
+                font-style: italic;
+            }
+
+            #viewer > table {
+                margin: 0 5px;
+                width: 100%;
+                table-layout: fixed;
+            }
+
+            #viewer td > div {
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+            }
+        </style>
+        <div id='viewer'>
+            <div class='viewer-title'>Channel: <span>[[name]]</span>
+                <template is='dom-if' if='{{!empty}}'>
+                    <button on-click="clear">clear</button>
+                </template>
+            </div>
+            <template is='dom-if' if='{{!empty}}'>
+                <table>
+                    <template id='viewer-repeat' is='dom-repeat' items='{{_computeDataAsArray(data.*, _updates)}}'>
+                        <tr>
+                            <td class="viewer-cell-name"><div title='{{item.name}}'>{{item.name}}</div></td>
+                            <td class="viewer-cell-value"><div title='{{item.value}}'>{{item.value}}</div></td>
+                        </tr>
+                    </template>
+                </table>
+            </template>
+            <template is='dom-if' if='{{empty}}'>
+                <div class='viewer-empty-msg'><span>Empty</span></div>
+            </template>
+        </div>
+    </template>
+
+    <script>
+    (function() {
+        'use strict';
+
+        window.Urth = window.Urth || {};
+
+        window.Urth['urth-core-channel-viewer'] = Polymer({
+            is: 'urth-core-channel-viewer',
+            properties: {
+                data: {
+                    type: Object,
+                    value: function(){return {}}
+                },
+
+                empty: {
+                    type: Boolean,
+                    computed: '_computeEmpty(data.*, _updates)'
+                },
+
+                name: {
+                    type: String
+                },
+
+                _updates: {
+                    type: Number,
+                    value: 0
+                }
+            },
+
+            clear: function() {
+                this.fire("clear");
+            },
+
+            refresh: function(){
+                this._updates++;
+            },
+
+            updateData: function(data){
+                this.data = data;
+                this.refresh();
+            },
+
+            _computeDataAsArray: function(){
+                return Object.keys(this.data).map(function(key){
+                    return {
+                        name: key,
+                        value: JSON.stringify(this.data[key])
+                    };
+                }.bind(this))
+            },
+
+            _computeEmpty: function(){
+                return this.data && Object.keys(this.data).length == 0;
+            }
+        });
+    })();
+    </script>
+</dom-module>

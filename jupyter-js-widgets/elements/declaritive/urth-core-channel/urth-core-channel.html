@@ -1,0 +1,433 @@
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="./urth-core-channel-broker.html">
+<link rel="import" href="./urth-core-channel-viewer.html">
+
+
+<!--
+An element that provides [monostate](http://c2.com/cgi/wiki?MonostatePattern)
+data channels. All instances of `urth-core-channel` have access to the shared
+data. Use the `register` API to register elements as listeners of the data
+channel. When a property value change occurs, all listeners of the data channel
+are notified by having the associated property set on the element.
+
+Examples:
+
+```html
+<urth-core-channel id='dataChannel'></urth-core-channel>
+```
+
+Property values can be set and retrieved using the `set` and `get`
+API:
+
+```javascript
+document.getElementById('dataChannel').set('user', 'Luke');
+```
+
+If the instance is included in a Polymer element, values can be set
+and retrieved as follows:
+
+```html
+<urth-core-channel id='dataChannel'></urth-core-channel>
+...
+this.$.dataChannel.set('user', 'Luke');
+this.$.dataChannel.get('user') // Returns 'Luke'
+```
+
+Register an element with the data channel to receive property updates:
+
+```html
+<urth-core-channel id='dataChannel'></urth-core-channel>
+<template is='dom-bind' id='mytemplate'>
+    <div><span>{{user}}</span>, may the force be with you</div>
+</template>
+...
+var dataChannel = document.getElementById('dataChannel');
+var mytemplate = document.getElementById('mytemplate');
+dataChannel.register(mytemplate);
+dataChannel.set('user', 'Luke');
+```
+
+@group Urth Core
+@element urth-core-channel
+-->
+<dom-module id='urth-core-channel'>
+    <template>
+        <content id='contentItems' select='urth-core-channel-item'></content>
+        <template is='dom-if' if='{{debug}}'>
+            <urth-core-channel-viewer on-clear='clear' name='{{name}}'></urth-core-channel-viewer>
+        </template>
+    </template>
+
+    <script>
+    (function() {
+        'use strict';
+
+        window.Urth = window.Urth || {};
+
+        window.Urth['urth-core-channel'] = Polymer({
+            is: 'urth-core-channel',
+            properties: {
+                /**
+                 * The name of the channel to use.
+                 */
+                name: {
+                    type: String,
+                    observer: '_onNameChange',
+                    notify: true,
+                    reflectToAttribute: true,
+                    value: 'default'
+                },
+                /**
+                 * An array of DOM elements registered with the channel.
+                 */
+                registeredElements: {
+                    type: Array,
+                    notify: true,
+                    readOnly: true,
+                    value: function() { return []; }
+                },
+                /**
+                 * An object containing the properties being watched and
+                 * the associated handlers. Keys of the object are the
+                 * properties being watched. Value of the keys is an
+                 * array of functions.
+                 */
+                watchers: {
+                    type: Object,
+                    notify: true,
+                    readOnly: true,
+                    value: function() { return {}; }
+                },
+                /**
+                 * A boolean that when set to true renders the content of the channel
+                 * in the DOM.
+                 */
+                debug: {
+                    type: Boolean,
+                    value: false
+                }
+            },
+
+            /**
+             * Clears all the data in the channel.
+             *
+             * @method clear
+             */
+            clear: function() {
+                this._broker.clear(this.name);
+            },
+
+            created: function() {
+                this._broker = Urth['urth-core-channel-broker'].getChannelBroker();
+            },
+
+            detached: function() {
+                this._broker.removeChannelElement(this.name, this);
+
+                if (this._contentObserver) {
+                    Polymer.dom(this.$.contentItems).unobserveNodes(this._contentObserver);
+                }
+
+                if (this._itemChangeHandler) {
+                    var channelItems = this.getContentChildren('#contentItems');
+                    channelItems.forEach(function(channelItem) {
+                        channelItem.removeEventListener('urth-core-channel-item-change',
+                            this._itemChangeHandler);
+                    }.bind(this));
+                }
+
+                // Clear out the registered elements and watchers.
+                this.unregister();
+                this.unwatch();
+            },
+
+            /**
+             * Retrieves the value of the specified key on the channel or
+             * undefined if the key has not been set.
+             *
+             * @method get
+             * @param {String} key The key of the value to return.
+             * @return {Object} The value stored for the key or undefined.
+             */
+            get: function(key) {
+                return this._broker.get(this.name, key);
+            },
+
+            ready: function() {
+                this._dataUpdateHandler = this._updateData.bind(this);
+                this.addEventListener('urth-channel-data-update', this._dataUpdateHandler);
+
+                // Observe changes to the content children in order to add or
+                // remove event listeners for urth-core-channel-item
+                // property changes.
+                this._itemChangeHandler = this._onChannelItemChange.bind(this);
+                this._contentObserver = Polymer.dom(this.$.contentItems)
+                                        .observeNodes(function(info) {
+                    var addedElements = info.addedNodes.filter(function(node) {
+                        return (node.nodeType === Node.ELEMENT_NODE);
+                    });
+                    var removedElements = info.removedNodes.filter(function(node) {
+                        return (node.nodeType === Node.ELEMENT_NODE);
+                    });
+
+                    addedElements.forEach(function(element) {
+                        // Set the initial value that is configured on the
+                        // element.
+                        var key = element.key;
+                        if (key) {
+                            this.set(key, element.value);
+                        }
+
+                        // Listen for future changes.
+                        element.addEventListener('urth-core-channel-item-change',
+                            this._itemChangeHandler);
+                    }.bind(this));
+
+                    removedElements.forEach(function(element) {
+                        element.removeEventListener('urth-core-channel-item-change',
+                            this._itemChangeHandler);
+                    }.bind(this));
+                }.bind(this));
+
+                if(this.debug) {
+                    this._updateViewer();
+                }
+            },
+
+            /**
+             * Registers an element as a listener for data channel changes.
+             * The element will have its property set when a key is set
+             * on the channel.
+             *
+             * @method register
+             * @param {HTMLElement} element The DOM element to register.
+             */
+            register: function(element) {
+                if (!element) {
+                    return;
+                }
+
+                // Register the element if not already registered and
+                // set the channel data on it.
+                if (this !== element && this.registeredElements &&
+                        this.registeredElements.indexOf(element) === -1) {
+                    var data = this._broker.get(this.name);
+                    this.push('registeredElements', element);
+
+                    Object.keys(data).forEach(function(key) {
+                        element[key] = data[key];
+                    });
+                    console.debug('urth-core-channel registered element to channel',
+                            this.name);
+                }
+            },
+
+            /**
+             * Reloads the data on the channel from saved values in storage.
+             *
+             * @method save
+             */
+            reload: function() {
+                this._broker.reload(this.name);
+            },
+
+            /**
+             * Saves the data on the channel to storage.
+             *
+             * @method save
+             */
+            save: function() {
+                this._broker.save(this.name);
+            },
+
+            /**
+             * Sets the value of a key on the channel.
+             *
+             * @method set
+             * @param {String} key The key to be associated with the value.
+             * @param {Object} value The value to set.
+             * @param {Object} options Additional options. Currently
+             * only `oldValue` is supported. If not specified, the current value
+             * will be retrieved with the `get` method.
+             */
+            set: function(key, value, options) {
+                this._broker.set(this.name, key, value, options);
+            },
+
+            /**
+             * Removes the specified element as a listener on the channel.
+             * If no element is specified then all registrations for the channel
+             * are removed.
+             *
+             * @method unregister
+             * @param {HTMLElement} element The DOM element to register.
+             */
+            unregister: function(element) {
+                if (!element) {
+                    this._setRegisteredElements([]);
+                } else {
+                    var index = this.registeredElements.indexOf(element);
+                    if (index !== -1) {
+                        this.splice('registeredElements', index, 1);
+                    }
+                }
+            },
+
+            /**
+             * Removes a watch function from the specified property key.
+             * If no key is specified then all watchers for the channel
+             * are removed. If a key is specified but no handler is specified
+             * then all watchers for the key are removed.
+             *
+             * @method unregister
+             * @param {String} key The property to unwatch.
+             * @param {Function} handler The previously registered watch function.
+             */
+            unwatch: function(key, handler) {
+                if (!key && !handler) {
+                    this._setWatchers({});
+                } else if (!handler) {
+                    if (this.watchers[key]) {
+                        delete this.watchers[key];
+                        this.notifyPath('watchers.' + key);
+                    }
+                } else if (Array.isArray(this.watchers[key])){
+                    var index = this.watchers[key].indexOf(handler);
+                    if (index !== -1) {
+                        this.watchers[key].splice(index, 1);
+                        this.notifyPath('watchers.' + key, this.watchers[key]);
+                    }
+                }
+            },
+
+            /**
+             * Registers a function that will be invoked when the specified
+             * property is modified.
+             *
+             * @method watch
+             * @param {String} key The property to watch.
+             * @param {Function} handler(key, oldValue, value) Function to
+             * invoke when property is modified.
+             */
+            watch: function(key, handler) {
+                if (!key || !handler) {
+                    return;
+                }
+
+                if (this.watchers && Array.isArray(this.watchers[key])) {
+                    if (this.watchers[key].indexOf(handler) === -1) {
+                        this.watchers[key] = this.watchers[key].concat([handler]);
+                        this.notifyPath('watchers.' + key, this.watchers[key]);
+                    }
+                } else {
+                    this.watchers[key] = [handler];
+                    this.notifyPath('watchers.' + key, this.watchers[key]);
+                }
+            },
+
+            _onNameChange: function(newVal, oldVal) {
+                if (!newVal) {
+                    this.name = 'default';
+                    return;
+                }
+
+                if (newVal !== oldVal) {
+                    var oldData = this._broker.removeChannelElement(oldVal, this);
+                    var newData = this._broker.addChannelElement(newVal, this);
+                    var newKeys = Object.keys(newData);
+
+                    /**
+                     * Clear element data properties from the old channel which
+                     * are not in the new channel. This ensures that values from
+                     * the old channel are not carried over to the new channel
+                     * when switching.
+                     */
+                    if (oldData) {
+                        Object.keys(oldData).filter(function(key) {
+                            return typeof newData[key] === 'undefined';
+                        }).forEach(function(key) {
+                            this._updateRegistered(key, undefined, oldData[key], false);
+                        }.bind(this));
+                    }
+
+                    Object.keys(newData).forEach(function(key) {
+                        this._updateRegistered(key, newData[key], oldData[key], true);
+                    }.bind(this));
+                }
+            },
+
+            _onChannelItemChange: function(item) {
+                if (item && item.detail) {
+                    this.set(item.detail.key, item.detail.value);
+                }
+            },
+
+            _updateData: function(item) {
+                if (item && item.detail && item.detail.key) {
+                    this._updateRegistered(item.detail.key,
+                        item.detail.value, item.detail.oldValue, true,
+                        item.detail.root);
+
+                    if(this.debug) {
+                        this._updateViewer();
+                    }
+                }
+            },
+
+            _updateRegistered: function(key, newVal, oldVal, updateWatchers, root) {
+                if (key && oldVal !== newVal) {
+                    if (this.registeredElements) {
+                        this.registeredElements.forEach(function(element) {
+                            if (this !== element) {
+                                // $$ is a function that is added to Polymer
+                                // elements. If the element is a Polymer element
+                                // then use the `set` API which handles paths
+                                // correctly, otherwise have to resort to just
+                                // setting a value for the property directly on
+                                // the element.
+                                typeof element.$$ === 'function' ?
+                                        element.set(key, newVal) :
+                                        element[key] = newVal;
+                            }
+                        }.bind(this));
+                    }
+
+                    if (updateWatchers) {
+                        this._updateWatchers(key, newVal, oldVal);
+
+                        // If this was a complex path update (ie. key = myprop.#0.myvar),
+                        // then send the watchers on the root the updated info.
+                        if (root && root.key) {
+                            this._updateWatchers(root.key, root.value, root.oldValue);
+                        }
+                    }
+
+                }
+            },
+
+            _updateWatchers: function(key, newVal, oldVal) {
+                if (this.watchers && Array.isArray(this.watchers[key])) {
+                    this.watchers[key].forEach(function(handler) {
+                        handler(key, oldVal, newVal);
+                    });
+                }
+            },
+
+            _updateViewer: function(){
+                var jName = "urth-core-channel._updateViewer";
+                if( this.isDebouncerActive(jName) ) {
+                    this.cancelDebouncer(jName);
+                }
+
+                this.debounce(jName, function(){
+                    this.$$('urth-core-channel-viewer').updateData(this._broker.get(this.name));
+                }.bind(this), 250);
+            }
+        });
+    })();
+    </script>
+</dom-module>

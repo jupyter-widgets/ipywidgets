@@ -1,0 +1,62 @@
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+
+<!--
+This behavior is used to implement handlers to kernel events
+-->
+<script>
+    (function() {
+        'use strict';
+        var Urth = window.Urth = window.Urth || {};
+
+        /**
+         * Behavior that provides pre-attached callbacks to kernel events.
+         *
+         * @group Urth Core
+         * @polymerBehavior Urth.JupyterKernelObserver
+         */
+        Urth.JupyterKernelObserver = {
+
+            created: function(){
+                if (!Urth.events) {
+                    return;
+                }
+                console.debug("Registering onKernelReady for Kernel Ready messages.")
+
+                this.__kernelReadyCallback = function(){
+                    this.onKernelReady(Urth.kernel);
+                }.bind(this);
+                Urth.events.on(
+                    'kernel_ready.Kernel', this.__kernelReadyCallback
+                );
+
+                if (Urth.kernel && Urth.kernel.is_connected()) {
+                  this.onKernelReady(Urth.kernel);
+                }
+            },
+
+            detached: function(){
+                if (this.__kernelReadyCallback) {
+                    console.debug("Unregistering onKernelReady for Kernel Ready messages.")
+                    Urth.events.off(
+                        'kernel_ready.Kernel', this.__kernelReadyCallback
+                    );
+                }
+            },
+
+            /**
+             * Handler for kernel ready events. This event fires when a
+             * kernel is created and gets to ready state. It also triggers
+             * `onLoad` of the page if there is already a ready kernel.
+             *
+             * @method onKerneReady
+             * @param kernel - the kernel object
+             */
+            onKernelReady: function(kernel){}
+
+
+        };
+    })();
+</script>

@@ -1,0 +1,280 @@
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+
+<!--
+This behavior is used to encapsulate some of the services needed for ipywidgets.
+-->
+<link rel='import' href='error-display-behavior.html'>
+<script>
+    (function() {
+        'use strict';
+        var Urth = window.Urth = window.Urth || {};
+
+        /**
+         * Behavior that encapsulate some of the functions needed by
+         * IPyWidgets to properly communicate with their Kernel counterparts.
+         *
+         * @group Urth Core
+         * @polymerBehavior Urth.JupyterWidgetBehavior
+         */
+        Urth.JupyterWidgetBehaviorImpl = {
+
+            detached: function() {
+                this._unRegisterModelCallbacks();
+                this._unRegisterNotebookCallbacks();
+            },
+
+            /**
+             * Creates a backbone model and a comm connection with an instance
+             * of the specified kernelClass on the kernel.
+             *
+             * Upon completion, invokes `onModelReady` with the created model.
+             *
+             * @method createModel
+             * @param {String} kernelClass A class name to instantiate kernel side.
+             * @param {Number} retryCount The number of times to retry the model creation if a failure occurs.
+             */
+            createModel: function( kernelClass, retryCount ){
+                this.kernelClass = kernelClass;
+                this.retryCount = retryCount || 0;
+
+                this._doCreateModel();
+            },
+
+            _doCreateModel: function(){
+                console.debug('Urth.JupyterWidgetBehavior createModel', this.kernelClass);
+                Urth.kernel.widget_manager.new_widget(
+                    {
+                        model_module: 'jupyter-decl-widgets/DeclWidgetModel',
+                        model_name: 'DeclWidgetModel',
+                        widget_class: this.kernelClass
+                    }
+                ).then(function(model) {
+                        //This check is to protect against a timing in ipywidgets where the comm can be close
+                        //by the time it gets to resolve this promise
+                        if (this._isCommDisposed(model.comm)) {
+                            this._handleCommDisconnect();
+                            return;
+                        }
+
+                        console.log('Model creation successful!', model);
+                        this.__modelChangeCallback = this._onModelChange.bind(this);
+                        this.__commCloseCallback = this._handleCommDisconnect.bind(this);
+
+                        model.on('change', this.__modelChangeCallback);
+                        model.once('comm:close', this.__commCloseCallback);
+
+                        this.model = model;
+                        this.onModelReady();
+                        this.fire('connected');
+                    }.bind(this),
+                    function(error){
+                        console.error(error);
+                    }
+                );
+            },
+
+            /**
+             * Determine if the comm object is disposed (closed). This function works with both
+             * legacy and jupyter-js-services' comm objects.
+             * @param  {IComm|Comm} comm
+             * @return {boolean}
+             */
+            _isCommDisposed: function(comm) {
+                return typeof comm.isDisposed === 'boolean' ? comm.isDisposed :         // IComm
+                        comm.jsServicesComm ? comm.jsServicesComm.isDisposed :          // shim
+                        comm.kernel && !comm.kernel.comm_manager.comms[comm.comm_id];   // legacy
+            },
+
+            _retryCreateModel: function(){
+                console.debug('Urth.JupyterWidgetBehavior _retryCreateModel - Waiting for another code exec...');
+                this.__shellReplyCallback = function(){
+                    console.debug('Urth.JupyterWidgetBehavior createModel - retrying...');
+                    this._doCreateModel();
+                }.bind(this);
+
+                Urth.events.one(
+                    'shell_reply.Kernel', this.__shellReplyCallback
+                );
+            },
+
+            _handleCommDisconnect: function(){
+                console.debug('Urth.JupyterWidgetBehavior _handleCommDisconnect - Model comm got closed');
+                if( this.retryCount > 0 ){
+                    try{
+                        this._retryCreateModel();
+                    }
+                    finally{
+                        this.retryCount--;
+                    }
+                } else {
+                    console.error('Urth.JupyterWidgetBehavior no longer retrying createModel!');
+                }
+            },
+
+            /**
+             * Unregister event callbacks associated with the model.
+             */
+            _unRegisterModelCallbacks: function() {
+                if (this.model){
+                    this.model.off('change', this.__modelChangeCallback);
+                    this.model.off('comm:close', this.__commCloseCallback);
+                }
+            },
+
+            /**
+             * Unregister event callbacks associated with the notebook.
+             */
+            _unRegisterNotebookCallbacks: function() {
+                if (this.__shellReplyCallback){
+                    Urth.events.off(
+                        'shell_reply.Kernel', this.__shellReplyCallback
+                    );
+                }
+            },
+
+            /**
+             * Sends a message to the kernel side proxy of this element.
+             *
+             * @method send
+             * @param {Object} msg A json message.
+             */
+            send: function( msg ){
+                if(this.isConnected()){
+                    console.debug('Urth.JupyterWidgetBehavior send - sending message', msg);
+                    this.model.send(msg, this._callbacks());
+                }
+                else{
+                    console.warn('Urth.JupyterWidgetBehavior send - model not ready, cannot send message');
+                }
+            },
+
+            /**
+             * Synchronizes the state provided with the kernel side proxy of this element.
+             *
+             * @method sync
+             * @param {Object} values An object containing the state to synchronize.
+             *                 The keys match properties on the kernel side proxy.
+             */
+            sync: function( values ){
+                if(this.isConnected()) {
+                    console.debug('Urth.JupyterWidgetBehavior sync - sending values', values);
+                    var valKeys = Object.keys(values || {});
+                    valKeys.forEach(function (value) {
+                        this.model.set(value, values[value], {silent: true});
+                    }.bind(this));
+
+                    if (valKeys.length > 0)
+                        this.model.save_changes();
+                }
+                else{
+                    console.warn('Urth.JupyterWidgetBehavior sync - model not ready, cannot sync');
+                }
+            },
+
+            /**
+             * Returns the state of the connection to the kernel side proxy.
+             *
+             * @method isConnected
+             * @return {Boolean} Returns `true` if the element is able to communicate with the
+             *                  kernel side proxy.
+             */
+            isConnected: function(){
+                return !!this.model;
+            },
+
+            /**
+             * Returns the parent Code cell that may contain this element.
+             *
+             * Note: Not all element will be under a code cell, so this might return null.
+             *
+             * @method: parentCell
+             * @return {CodeCell| Returns the CodeCell that is the parent of this element or null if element is somewhere else
+             */
+            parentCell: function(){
+                var cellElement = $(this).parents(".cell");
+
+                var cellElementData = cellElement.data();
+                return cellElementData && cellElementData.cell;
+            },
+
+            _callbacks: function(){
+                // this.model is from Jupyter widgets widgets.js and
+                // keeps track of a pending_msgs counter. Specifying
+                // this.model.callbacks() as the callback handler for
+                // send allows widgets.js to properly decrement the
+                // counter when responses are received.
+
+                // parentCell also has additional callbacks that will handle
+                // 'display_type' messages (among others)
+                var parentCell = this.parentCell();
+
+                var callbacks = (parentCell && parentCell.get_callbacks()) || {iopub:{}};
+                this.mixin(callbacks.iopub,this.model.callbacks().iopub);
+
+                return callbacks;
+            },
+
+            /**
+             * Notification handler invoked when the model is ready.
+             *
+             * @method onModelReady
+             */
+            onModelReady: function(){},
+
+            _onModelChange: function(options){
+                console.debug('Urth.JupyterWidgetBehavior _onModelChange', options);
+                var changes = options.changed;
+                Object.keys(changes).forEach(function(change){
+                    var funcName = "onModel"+(change[0].toUpperCase()+change.substring(1))+"Change";
+                    if(this[funcName]){
+                        this[funcName].call(this, changes[change]);
+                    }
+                }.bind(this));
+
+                this.onModelChange.call(this, options);
+            },
+
+            /**
+             * Notification handler for changes to the model. This is a general handler that
+             * will be called when one or more model properties are changed. If interested in
+             * only a particular property, a client can define a function with the following name:
+             *
+             * `onModel<property_name>Change`, where `<property_name>` is camel case capitalized.
+             * For example, a change to property `foo` will call a method with name `onModelFooChange`.
+             *
+             * @method onModelChange
+             * @param {Object} options
+             */
+            onModelChange: function(options){},
+
+            /**
+             * Clears or displays error messages according to the status
+             * sent from the kernel. The status is "ok" when execution was
+             * successful, and "error" when an error occurred.
+             */
+            onModel__status__Change: function(newVal){
+                this._statusMsg = newVal;
+
+                if (newVal.status === "error") {
+                    this.displayErrorMessage(newVal.msg);
+                } /* the error message can be cleared once user excecutes the cell and there's no kernel or client side error (see any widget element's code) */
+            },
+
+            /**
+             * returns the model's __status__ object,
+             * so elements who has this behavior can check for error if __status__.status is "error"
+             *
+             * @method getModelStatusMsg
+             */
+            getModelStatusMsg: function() {
+                return this._statusMsg || { status: 'ok', msg: '' };
+            }
+        };
+
+        // JupyterWidgetBehavior inherits DisplayErrorBehavior
+        Urth.JupyterWidgetBehavior = [Urth.DisplayErrorBehavior, Urth.JupyterWidgetBehaviorImpl];
+    })();
+</script>

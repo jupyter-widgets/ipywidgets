@@ -1,0 +1,25 @@
+{
+  "name": "urth-core-dataframe",
+  "version": "0.0.1",
+  "authors": [
+    "Jupyter Community"
+  ],
+  "description": "Dataframe binding.",
+  "main": "urth-core-dataframe.html",
+  "keywords": [
+    "urth",
+    "web-components",
+    "jupyter"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.2.4"
+  },
+  "private": true
+}

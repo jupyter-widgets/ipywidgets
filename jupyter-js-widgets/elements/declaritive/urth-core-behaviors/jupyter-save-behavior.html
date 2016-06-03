@@ -1,0 +1,42 @@
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+
+<script>
+    (function() {
+        'use strict';
+        var SAVE_EVENT = 'before_save.Notebook';
+        var Urth = window.Urth = window.Urth || {};
+
+        /**
+         * Behavior that provides registration with the save event. Elements
+         * that implement this behavior must implement the `onSave` method to
+         * define the element specific save procedure.
+         *
+         * @group Urth Core
+         * @polymerBehavior Urth.JupyterSaveBehavior
+         */
+        Urth.JupyterSaveBehavior = {
+            created: function(event, callback) {
+                if (Urth.events) {
+                    this.__saveCallback = this.onSave.bind(this);
+                    Urth.events.on(SAVE_EVENT, this.__saveCallback);
+                }
+            },
+
+            detached: function(event, callback) {
+                if (this.__saveCallback) {
+                    Urth.events.off(SAVE_EVENT, this.__saveCallback);
+                }
+            },
+
+            /**
+             * Element specific handler for the save event.
+             *
+             * @method onSave
+             */
+            onSave: function() {}
+        };
+    })();
+</script>

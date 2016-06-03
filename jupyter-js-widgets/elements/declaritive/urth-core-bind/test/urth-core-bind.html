@@ -1,0 +1,214 @@
+<!doctype html>
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- Step 1: Provide a title for the test suite. -->
+    <title>urth-core-bind tests</title>
+    <meta name='viewport' content='width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes'>
+
+    <!-- Need the web component polyfill for browsers without native support. -->
+    <script src='../../webcomponentsjs/webcomponents-lite.js'></script>
+
+    <!-- Load test framework and helpers. -->
+    <script src='../../web-component-tester/browser.js'></script>
+
+    <!-- Step 2: Import the element to test. -->
+    <link rel='import' href='../urth-core-bind.html'>
+    <link rel='import' href='../../urth-core-channel/urth-core-channel.html'>
+
+</head>
+
+<body>
+    <!-- Step 3: Setup document with DOM to test. -->
+
+    <urth-core-channel id='channelDefault'></urth-core-channel>
+    <urth-core-channel id='channelA' name='a'></urth-core-channel>
+    <urth-core-channel id='channelB' name='b'></urth-core-channel>
+
+    <template is='urth-core-bind' id='firstBind'>
+        Hello
+        <span id='firstUserSpan'>[[user]]</span>
+    </template>
+
+    <template is='urth-core-bind' id='secondBind'>
+        Hello
+        <span id='secondUserSpan'>{{user}}</span>
+    </template>
+
+    <template is='urth-core-bind' id='defaultChannelBind'>
+        Hello
+        <span id='defaultChannelUserSpan'>[[user]]</span>
+    </template>
+
+    <template is='urth-core-bind' id='firstChannelBind' channel='a'>
+        Hello
+        <span id='firstChannelUserSpan'>[[user]]</span>
+    </template>
+
+    <template is='urth-core-bind' id='secondChannelBind' channel='b'>
+        Hello
+        <span id='secondChannelUserSpan'>{{user}}</span>
+    </template>
+
+    <template is='urth-core-bind'>
+        <test-bind id='notifyBind' notifyingvalue='{{user}}'></test-bind>
+    </template>
+
+    <template is='urth-core-bind' id='parentBind' channel='a'>
+        <div>Parent <span id='parentUser'>[[user]]</span></div>
+        <template is='urth-core-bind' id='childBind' channel='b'>
+            <div>Child <span id='childUser'>[[user]]</span></div>
+        </template>
+    </template>
+
+    <!-- This is a custom element that will be used to test
+         data binding with urth-core-bind -->
+    <dom-module id="test-bind">
+        <script>
+            HTMLImports.whenReady(function () {
+                Polymer({
+                    is: 'test-bind',
+                    properties: {
+                        notifyingvalue: {
+                            notify: true,
+                            observer: '_notifyChanged'
+                        }
+                    },
+                    _notifyChanged: function(newval) {
+                        console.log('notifyingvalue changed');
+                    }
+                });
+            });
+        </script>
+    </dom-module>
+
+    <script>
+        'use strict';
+
+        // Step 4: Define any globals needed by the test suite.
+
+        // Step 5: Define suite(s) and tests.
+
+        afterEach(function(){
+            channelDefault.clear();
+            channelA.clear();
+            channelB.clear();
+        });
+
+        describe('property change', function() {
+            it('should flow top-down', function() {
+                firstBind.user = 'foo';
+                expect(firstUserSpan.textContent).to.equal('foo');
+            });
+
+            it('should be synced between components using the same channel', function() {
+                firstBind.user = 'bar';
+                expect(firstUserSpan.textContent).to.equal('bar');
+                expect(secondUserSpan.textContent).to.equal('bar');
+
+                secondBind.user = 'foo';
+                expect(firstUserSpan.textContent).to.equal('foo');
+                expect(secondUserSpan.textContent).to.equal('foo');
+            });
+
+            it('should update components on the data channel when two way bound child property is modified', function() {
+                notifyBind.notifyingvalue = 'baz';
+                expect(firstUserSpan.textContent).to.equal('baz');
+                expect(secondUserSpan.textContent).to.equal('baz');
+            });
+        });
+
+        describe('channel change', function() {
+
+            afterEach(function(){
+                defaultChannelBind.channel = 'default';
+                firstChannelBind.channel = 'a';
+                secondChannelBind.channel = 'b';
+            });
+
+            it('should switch element data to the new channels data', function() {
+                firstChannelBind.user = 'userA';
+                secondChannelBind.user = 'userB';
+                firstChannelBind.channel = secondChannelBind.channel;
+                expect(firstChannelBind.user).to.equal(secondChannelBind.user);
+            });
+
+            it('should receive property updates only from the subscribed channel', function() {
+                defaultChannelBind.user = 'userDefault';
+                firstChannelBind.user = 'userA';
+                secondChannelBind.user = 'userB';
+                firstChannelBind.channel = secondChannelBind.channel;
+
+                // update should propagate to firstChannelBind since they are
+                // on the same channel 'b'
+                secondChannelBind.user = 'newUserB'
+                expect(firstChannelBind.user).to.equal('newUserB');
+
+                // default channel updates should not propagate to firstChannelBind
+                defaultChannelBind.user = 'newUserDefault';
+                expect(firstChannelBind.user).to.equal('newUserB');
+            });
+
+            it('should clear a property from the old channel that is not ' +
+                'set in the new channel', function() {
+                secondChannelBind.user = 'userB';
+                var oldChannel = firstChannelBind.channel;
+                firstChannelBind.channel = secondChannelBind.channel;
+                expect(firstChannelBind.user).to.equal('userB');
+
+                firstChannelBind.channel = oldChannel;
+                expect(firstChannelBind.user).to.equal(undefined);
+            });
+        });
+
+        describe('nested templates', function() {
+            it('should use proper channel data', function() {
+                parentBind.user = 'foo';
+                childBind.user = 'bar';
+                expect(parentUser.textContent).to.equal('foo');
+                expect(childUser.textContent).to.equal('bar');
+            });
+        });
+
+        describe('_customRender', function() {
+            it('should get invoked when the element is attached', function(done) {
+                var renderTemplate = new window.Urth['urth-core-bind']();
+                var renderSpy = sinon.spy(renderTemplate, '_customRender');
+                document.body.appendChild(renderTemplate);
+                /* Force flush because some browsers don't attach synchronously
+                 * and the following tests were being executed too soon. */
+                flush(function() {
+                    renderSpy.restore();
+                    expect(renderSpy).to.have.been.calledOnce;
+                    done();
+                });
+            });
+
+            it('should retrieve the pending imports', function() {
+                var importBroker = window.Urth['urth-core-import-broker'].getImportBroker();
+                var importSpy = sinon.spy(importBroker, 'getPendingImports');
+                var renderTemplate = new window.Urth['urth-core-bind']();
+                renderTemplate._customRender();
+                importSpy.restore();
+                expect(importSpy).to.have.been.calledOnce;
+            });
+
+            it('should not retrieve the pending imports if "no-wait" is specified', function() {
+                var importBroker = window.Urth['urth-core-import-broker'].getImportBroker();
+                var importSpy = sinon.spy(importBroker, 'getPendingImports');
+                var renderTemplate = new window.Urth['urth-core-bind']();
+                renderTemplate.setAttribute('no-wait', true);
+                renderTemplate._customRender();
+                importSpy.restore();
+                expect(importSpy).to.have.not.been.called;
+            });
+        });
+    </script>
+
+</body>
+
+</html>

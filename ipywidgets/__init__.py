@@ -20,7 +20,7 @@ import os
 from IPython import get_ipython
 from ._version import version_info, __version__, __frontend_version__
 from .widgets import *
-
+from .declarative import *
 
 def load_ipython_extension(ip):
     """Set up IPython to work with widgets"""

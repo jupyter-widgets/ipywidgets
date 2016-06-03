@@ -1,0 +1,234 @@
+<!doctype html>
+<!--
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+-->
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- STEP 1: Provide a title for the test suite. -->
+    <title>urth-core-import tests</title>
+    <meta name='viewport' content='width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes'>
+
+    <!-- Need the web component polyfill for browsers without native support. -->
+    <script src='../../webcomponentsjs/webcomponents-lite.js'></script>
+    <script>
+        window.Urth = {
+            BASE_URL: '/'
+        };
+    </script>
+
+    <!-- Load test framework and helpers. -->
+    <script src='../../web-component-tester/browser.js'></script>
+    <script src='../../test-fixture/test-fixture-mocha.js'></script>
+    <link rel='import' href='../../test-fixture/test-fixture.html'>
+
+    <!-- STEP 2: Import the element to test. -->
+    <link rel='import' href='../urth-core-import.html'>
+</head>
+
+<body>
+    <!-- STEP 3: Setup document with DOM to test. Use test-fixture elements
+         to ease setup and cleanup of elements. -->
+    <test-fixture id='invalidHref'>
+        <template>
+            <link rel='import' href='../../doesnotexist/doesnotexist.html'
+                    is='urth-core-import' package='UrthTest/urthtest'>
+        </template>
+    </test-fixture>
+
+    <test-fixture id='invalidHref2'>
+        <template>
+            <link rel='import' href='../../doesnotexist/doesnotexist2.html'
+                    is='urth-core-import' package='UrthTest/urthtest'>
+        </template>
+    </test-fixture>
+
+    <test-fixture id='invalidHref3'>
+        <template>
+            <link rel='import' href='../../doesnotexist/doesnotexist3.html'
+                    is='urth-core-import' package='UrthTest/urthtest'>
+        </template>
+    </test-fixture>
+
+    <test-fixture id='invalidHref4'>
+        <template>
+            <link rel='import' href='../../doesnotexist/doesnotexist4.html'
+                    is='urth-core-import' package='UrthTest/urthtest'>
+        </template>
+    </test-fixture>
+
+    <test-fixture id='validHref'>
+        <template>
+            <link rel='import' href='/elements/iron-ajax/iron-ajax.html'
+                    is='urth-core-import' package='PolymerElements/iron-ajax'>
+        </template>
+    </test-fixture>
+
+    <test-fixture id='loadingHref'>
+        <template>
+            <link rel='import' href='elements/iron-ajax/iron-ajax.html'
+                    is='urth-core-import' package='PolymerElements/iron-ajax'>
+        </template>
+    </test-fixture>
+
+    <test-fixture id='errorLoadHref'>
+        <template>
+            <link rel='import' href='elementsNo/iron-ajax/iron-ajax.html'
+                    is='urth-core-import' package='PolymerElements/iron-ajax'>
+        </template>
+    </test-fixture>
+
+    <script>
+        // STEP 4: Define any globals needed by the test suite.
+        var server;
+        var serverUrthImportCalledCount = 0;
+        var restEndpoint = '/urth_import';
+
+        beforeEach(function() {
+            server = sinon.fakeServer.create();
+            server.respondImmediately = true;
+        });
+        afterEach(function() {
+            server.restore();
+            serverUrthImportCalledCount = 0;
+        });
+
+        function setupServer() {
+            serverUrthImportCalledCount = 0;
+
+            server.respondWith('POST', restEndpoint, function(xhr, id) {
+                serverUrthImportCalledCount++;
+                xhr.respond(200, { 'Content-Type': 'application/json' }, '{ "status": 0}');
+            });
+
+            server.xhr.useFilters = true;
+            server.xhr.addFilter(function(method, uri) {
+                return !uri || !(uri.substr(0, restEndpoint.length) === restEndpoint);
+            });
+        }
+
+        // STEP 5: Define suite(s) and tests.
+        describe('package attribute', function() {
+            it('should cause POST server request to install the package if href is not found', function(done) {
+                setupServer();
+                var link = fixture('invalidHref');
+
+                link.addEventListener('load', function() {
+                    expect.fail('should have resulted in `importerror` instead of successful `load`');
+                    done();
+                });
+                link.addEventListener('importerror', function() {
+                    expect(serverUrthImportCalledCount).to.equal(1);
+                    done();
+                });
+            });
+
+            it('should not invoke POST server request if href exists', function(done) {
+                setupServer();
+                var link = fixture('validHref');
+
+                link.onload = function() {
+                    expect(serverUrthImportCalledCount).to.equal(0);
+                    done();
+                };
+                link.onerror = function() {
+                    expect.fail();
+                    done();
+                };
+            });
+        });
+
+        describe('importerror', function() {
+            it('should fire if the server is not responding', function(done) {
+                var link = fixture('invalidHref2');
+
+                link.addEventListener('importerror', function(event) {
+                    expect(event.detail.msg).to.not.be.null;
+                    done();
+                });
+
+                link.addEventListener('load', function(event) {
+                    expect.fail();
+                    done();
+                });
+            });
+
+            it('should fire if the href can not be loaded', function(done) {
+                setupServer();
+                var link = fixture('invalidHref3');
+
+                link.addEventListener('importerror', function(event) {
+                    expect(event.detail.msg).to.not.be.null;
+                    expect(serverUrthImportCalledCount).to.equal(1);
+                    done();
+                });
+
+                link.addEventListener('load', function(event) {
+                    expect.fail();
+                    done();
+                });
+            });
+        });
+
+        describe('href', function() {
+            it('change should add the url to the pending imports', function() {
+                var dummyURL = '../../dummy/dummy.html';
+                var link = fixture('invalidHref4');
+
+                var importBroker = window.Urth['urth-core-import-broker'].getImportBroker();
+                var addSpy = sinon.spy(importBroker, 'addImport');
+                link.setAttribute('href', dummyURL);
+
+                addSpy.restore();
+
+                expect(addSpy).to.be.calledOnce;
+                var addSpyArgs = addSpy.getCall(0).args;
+                expect(addSpyArgs[0]).to.equal(link);
+                expect(addSpyArgs[1]).to.equal(dummyURL);
+                expect(addSpyArgs[2]).to.equal(link.package);
+            });
+        });
+
+        describe('loading event', function() {
+            it('should fire when the element is attached and bubble to body', function(done) {
+                var handler = function(event) {
+                    document.body.removeEventListener('loading', handler);
+                    done();
+                };
+                document.body.addEventListener('loading', handler);
+                var link = fixture('validHref');
+            });
+        });
+
+        describe('finished event', function() {
+            it('should fire when the element has loaded and bubble to body', function(done) {
+                var handler = function(event) {
+                    if (event.detail && event.detail.href === link.getAttribute('href')) {
+                        document.body.removeEventListener('finished', handler);
+                        expect(event.detail.loaded).to.be.true;
+                        done();
+                    }
+                };
+                document.body.addEventListener('finished', handler);
+
+                var link = fixture('loadingHref');
+            });
+
+            it('should fire when the element has failed to load and bubble to body', function(done) {
+                var handler = function(event) {
+                    if (event.detail && event.detail.href === link.getAttribute('href')) {
+                        document.body.removeEventListener('finished', handler);
+                        expect(event.detail.loaded).to.be.false;
+                        done();
+                    }
+                };
+                document.body.addEventListener('finished', handler);
+
+                var link = fixture('errorLoadHref');
+            });
+        });
+
+    </script>
+</body>
+</html>
