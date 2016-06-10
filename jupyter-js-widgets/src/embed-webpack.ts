@@ -3,15 +3,15 @@
 
 // Load jquery and jquery-ui
 var $ = require('jquery');
-window.$ = window.jQuery = $;
+window['$'] = window['jQuery'] = $;
 require('jquery-ui');
 
 // ES6 Promise polyfill
-require('es6-promise').polyfill();
+(require('es6-promise') as any).polyfill();
 
 // Element.prototype.matches polyfill
 if (Element && !Element.prototype.matches) {
-    var proto = Element.prototype;
+    var proto = Element.prototype as any;
     proto.matches = proto.matchesSelector ||
     proto.mozMatchesSelector || proto.msMatchesSelector ||
     proto.oMatchesSelector || proto.webkitMatchesSelector;
@@ -23,17 +23,17 @@ require('font-awesome/css/font-awesome.css');
 require('../css/widgets.min.css');
 
 // Magic global widget rendering function:
-var widgets = require('./index');
+import * as widgets from './index';
 
 function loadInlineWidgets(event) {
     // If requirejs is not on the page on page load, load it from cdn.
-    if (!window.requirejs) {
-        var scriptjs = require('scriptjs');
+    if (!(window as any).requirejs) {
+        var scriptjs = require('scriptjs') as any;
         scriptjs('https://npmcdn.com/requirejs/require.js', function() {
             // Define jupyter-js-widget requirejs module
             //
             // (This is needed for custom widget model to be able to AMD require jupyter-js-widgets.)
-            window.define('jupyter-js-widgets', function() {
+            (window as any).define('jupyter-js-widgets', function() {
                 return widgets;
             });
             // Render inline widgets
@@ -45,6 +45,7 @@ function loadInlineWidgets(event) {
     }
 }
 
+export
 function renderInlineWidgets(event) {
     var element = event.target || document;
     var tags = element.querySelectorAll('script[type="application/vnd.jupyter-embedded-widgets"]');
@@ -68,8 +69,3 @@ function replaceTag(tag) {
 }
 
 window.addEventListener('load', loadInlineWidgets);
-
-// Module exports
-module.exports = {
-    renderInlineWidgets: renderInlineWidgets
-}

@@ -5,11 +5,11 @@
 // Update March 2016: JQuery removed from most widgets, only
 // still used in slider (jquery-ui) in widget_int.js.
 
-var $;
+export var $;
 if (typeof window !== 'undefined' && window['$']) {
     $ = window['$'];
 } else {
     $ = require('jquery');
-    global.jQuery = $; // Required for bootstrap to load correctly
+    (window as any).jQuery = $; // Required for bootstrap to load correctly
 }
-module.exports = $;
+export default $;

@@ -409,9 +409,12 @@ class WidgetModel extends Backbone.Model {
      *
      * This invokes a Backbone.Sync.
      */
-    save_changes(callbacks) {
+    save_changes(callbacks?) {
         if (this.comm_live) {
-            let options = {patch: true, callbacks: callbacks};
+            let options: any = {patch: true}
+            if (callbacks) {
+                options.callbacks = callbacks;
+            }
             this.save(this._buffered_state_diff, options);
         }
     }
@@ -550,7 +553,7 @@ class ViewList {
      * if you want to perform some action on the list of views, do something like
      * `Promise.all(myviewlist.views).then(function(views) {...});`
      */
-    update(new_models, create_view, remove_view, context) {
+    update(new_models, create_view?, remove_view?, context?) {
         var remove = remove_view || this._remove_view;
         var create = create_view || this._create_view;
         context = context || this._handler_context;
@@ -612,11 +615,8 @@ abstract class WidgetView extends NativeView<WidgetModel> {
     initialize(parameters) {
         this.listenTo(this.model, 'change', this.update);
 
-        this.options = parameters.options;
-        /**
-         * this.displayed is a promise that resolves when the view is
-         * inserted in the DOM.
-         */
+        // TODO: is anyone using this.options??
+        //this.options = parameters.options;
         this.displayed = new Promise((resolve, reject) => {
             this.once('displayed', resolve);
         });
@@ -627,7 +627,7 @@ abstract class WidgetView extends NativeView<WidgetModel> {
      *
      * Update view to be consistent with this.model
      */
-    update() {
+    update(options?) {
     };
 
     /**
@@ -673,7 +673,8 @@ abstract class WidgetView extends NativeView<WidgetModel> {
         return this;
     }
 
-    options: any;
+    // TODO: do we need this? Is anyone using it?
+    //options: any;
     /**
      * A promise that resolves to the parent view when a child view is displayed.
      */
@@ -686,7 +687,7 @@ class DOMWidgetView extends WidgetView {
      * Public constructor
      */
     initialize(parameters) {
-        super.initialize.apply(this, [parameters]);
+        super.initialize(parameters);
         this.id = utils.uuid();
 
         this.listenTo(this.model, 'change:_dom_classes', function(model, new_classes) {
@@ -816,11 +817,3 @@ class DOMWidgetView extends WidgetView {
     pWidget: Widget;
     layoutPromise: Promise<any>;
 }
-
-
-/**
- * TODO:
- * 
- * - [X] Make a Backbone.PhosphorView class that has .pWidget point to a phosphor widget
- *       and .el point to .pWidget.node
- */

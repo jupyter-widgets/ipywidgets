@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
-    //"declaration": true,
+    "declaration": true,
     //"noImplicitAny": true,
-    "allowJs": true,
     "noEmitOnError": true,
     "module": "commonjs",
     "moduleResolution": "node",
