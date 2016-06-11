@@ -72,11 +72,10 @@ var IntSliderView = widget.DOMWidgetView.extend({
             })
             .addClass('slider');
         // Put the slider in a container
-        this.$slider_container = $('<div />')
-            .addClass('slider-container')
-            .append(this.$slider);
-        this.$el.append(this.$slider_container);
-
+        this.slider_container = document.createElement('div');
+        this.slider_container.classList.add('slider-container');
+        this.slider_container.appendChild(this.$slider[0]);
+        this.el.appendChild(this.slider_container);
         this.readout = document.createElement('div');
         this.el.appendChild(this.readout);
         this.readout.classList.add('widget-readout');
@@ -107,9 +106,9 @@ var IntSliderView = widget.DOMWidgetView.extend({
             this.readout.style[name] = value;
         } else if (name.substring(0, 6) == 'border') {
             this.$slider.find('a').css(name, value);
-            this.$slider_container.css(name, value);
+            this.slider_container.style[name] = value;
         } else if (name == 'background') {
-            this.$slider_container.css(name, value);
+            this.slider_container.style[name] = value;
         } else {
             this.el.style[name] = value;
         }

@@ -849,12 +849,11 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         /**
          * Called when view is rendered.
          */
-        this.$el.addClass('jupyter-widgets widget-hbox widget-hslider');
-
+        this.el.classList.add('jupyter-widgets', 'widget-hbox', 'widget-hslider');
         this.label = document.createElement('div');
         this.label.classList.add('widget-label');
         this.label.style.display = 'none';
-        this.$el.append(this.label);
+        this.el.appendChild(this.label);
 
         this.$slider = $('<div />')
             .slider({
@@ -867,10 +866,10 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
         this.slider_container = document.createElement('div');
         this.slider_container.classList.add('slider-container');
         this.slider_container.appendChild(this.$slider[0]);
-        this.$el.append(this.slider_container);
+        this.el.appendChild(this.slider_container);
 
         this.readout = document.createElement('div');
-        this.$el.append(this.readout);
+        this.el.appendChild(this.readout);
         this.readout.classList.add('widget-readout');
         this.readout.style.display = 'none';
 
@@ -953,21 +952,11 @@ var SelectionSliderView = widget.DOMWidgetView.extend({
 
             // Use the right CSS classes for vertical & horizontal sliders
             if (orientation === 'vertical') {
-                this.$el
-                    .removeClass('widget-hslider')
-                    .addClass('widget-vslider');
-                this.$el
-                    .removeClass('widget-hbox')
-                    .addClass('widget-vbox');
-
+                this.el.classList.remove('widget-hslider', 'widget-hbox');
+                this.el.classList.add('widget-vslider', 'widget-vbox');
             } else {
-                this.$el
-                    .removeClass('widget-vslider')
-                    .addClass('widget-hslider');
-
-                this.$el
-                    .removeClass('widget-vbox')
-                    .addClass('widget-hbox');
+                this.el.classList.remove('widget-vslider', 'widget-vbox');
+                this.el.classList.add('widget-hslider', 'widget-hbox');
             }
 
             var readout = this.model.get('readout');
