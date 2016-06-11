@@ -9,10 +9,13 @@ import * as managerBase from './manager-base';
 import * as Backbone from 'backbone';
 import * as _ from 'underscore';
 import * as utils from './utils';
-
 import {
     Widget
 } from 'phosphor-widget';
+
+import {
+    NativeView
+} from './nativeview';
 
 /**
  * Replace model ids with models recursively.
@@ -602,7 +605,7 @@ class ViewList {
 
 
 export
-abstract class WidgetView extends Backbone.View<WidgetModel> {
+abstract class WidgetView extends NativeView<WidgetModel> {
     /**
      * Public constructor.
      */
@@ -784,7 +787,7 @@ class DOMWidgetView extends WidgetView {
         this.displayed.then(function() {utils.typeset(element, text);});
     }
 
-    setElement(el) {
+    setElement(el: HTMLElement): this {
         // when we migrate to the new Phosphor, we'll
         // be able to construct a widget with a given 
         // DOM element.
