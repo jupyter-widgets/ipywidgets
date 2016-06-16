@@ -647,28 +647,91 @@ var PlayModel = BoundedIntModel.extend({
     }),
 
     initialize: function () {
-       this.on('change:_playing', function () {
-           if (this.get('_playing')) {
-               this.loop();
-           }
-       }, this);  
+        this.on('change:_playing', function () {
+            if (this.get('_playing')) {
+                this.loop();
+            }
+        }, this);  
     },
 
     loop: function () {
-       var next_value = this.get('value') + this.get('step');
-       if (next_value < this.get('max')) {
-           this.set('value', next_value);
-           this.save_changes();
-           window.setTimeout(this.loop.bind(this), this.get('interval'));
-       } else {
-           this.set('value', this.get('min'));
-           this.set('_playing', false);
-       }   
+        if (this.get('_playing')) {
+            var next_value = this.get('value') + this.get('step');
+            if (next_value < this.get('max')) {
+                this.set('value', next_value);
+                window.setTimeout(this.loop.bind(this), this.get('interval'));
+            } else {
+                this.set('value', this.get('min'));
+                this.set('_playing', false);
+            }
+            this.save_changes();
+        }   
+    },
+
+    stop: function () {
+        this.set('_playing', false);
+        this.set('value', this.get('min'));
+        this.save_changes();
+    },
+
+    pause: function () {
+        this.set('_playing', false);
+        this.save_changes();
+    },
+
+    play: function() {
+        this.set('_playing', true);
+        this.save_changes();
     }
 });
 
 var PlayView = widget.DOMWidgetView.extend({
     render: function() {
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widgets-hbox');
+        this.el.classList.add('widget-play');
+
+        this.playButton = document.createElement('button');
+        this.pauseButton = document.createElement('button');
+        this.stopButton = document.createElement('button');
+
+        this.playButton.className = 'jupyter-button';
+        this.pauseButton.className = 'jupyter-button';
+        this.stopButton.className = 'jupyter-button';
+
+        this.el.appendChild(this.playButton);  // Toggle button with playing
+        this.el.appendChild(this.pauseButton); // Disable if not playing
+        this.el.appendChild(this.stopButton);  // Disable if not playing
+        
+        this.listenTo(this.model, 'change:_playing', this.update_playing, this);
+        this.update_playing();
+
+        var playIcon = document.createElement('i');
+        playIcon.className = 'fa fa-play';
+        this.playButton.appendChild(playIcon);
+        var pauseIcon = document.createElement('i');
+        pauseIcon.className = 'fa fa-pause';
+        this.pauseButton.appendChild(pauseIcon);
+        var stopIcon = document.createElement('i');
+        stopIcon.className = 'fa fa-stop';
+        this.stopButton.appendChild(stopIcon);
+
+        this.playButton.onclick = this.model.play.bind(this.model);
+        this.pauseButton.onclick = this.model.pause.bind(this.model);
+        this.stopButton.onclick = this.model.stop.bind(this.model);
+    },
+
+    update_playing: function() {
+        var playing = this.model.get('_playing');
+        if (playing) {
+            this.pauseButton.disabled = false;
+            this.stopButton.disabled = false;
+            this.playButton.classList.add('mod-active');
+        } else {
+            this.pauseButton.disabled = true;
+            this.stopButton.disabled = true;
+            this.playButton.classList.remove('mod-active');
+        }
     },
 });
 
