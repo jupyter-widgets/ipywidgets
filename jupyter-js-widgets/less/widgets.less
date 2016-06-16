@@ -219,7 +219,7 @@
     height : @inline-widget-height;
 }
 
-.widget-button, .widget-toggle-button {
+.jupyter-button {
     background: #888888;
     border: 1px solid #111111;
     color: #eeeeee;
@@ -228,8 +228,6 @@
     text-align: center;
     vertical-align: middle;
     white-space: nowrap;
-    width : @widget-width-short;
-    height : @inline-widget-height;
 
     i.fa {
         padding-right: 3px;
@@ -284,6 +282,24 @@
       border-color: #000000;
       color: #000000;
     }
+}
+
+.widget-button, .widget-toggle-button {
+    .jupyter-button();
+
+    width : @widget-width-short;
+    height : @inline-widget-height;
+}
+
+.widget-play {
+    button {
+        height : @inline-widget-height;
+        width : 48px;
+    }
+    
+    width : @widget-width-short;
+    display : flex;
+    justify-content : space-between;
 }
 
 .widget-toggle-buttons {
