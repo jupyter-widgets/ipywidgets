@@ -638,6 +638,40 @@ var ProgressView = widget.DOMWidgetView.extend({
     },
 });
 
+var PlayModel = BoundedIntModel.extend({
+    defaults: _.extend({}, BoundedIntModel.prototype.defaults, {
+        _model_name: 'PlayModel',
+        _view_name: 'PlayView',
+        _playing: false,
+        interval: 100
+    }),
+
+    initialize: function () {
+       this.on('change:_playing', function () {
+           if (this.get('_playing')) {
+               this.loop();
+           }
+       }, this);  
+    },
+
+    loop: function () {
+       var next_value = this.get('value') + this.get('step');
+       if (next_value < this.get('max')) {
+           this.set('value', next_value);
+           this.save_changes();
+           window.setTimeout(this.loop.bind(this), this.get('interval'));
+       } else {
+           this.set('value', this.get('min'));
+           this.set('_playing', false);
+       }   
+    }
+});
+
+var PlayView = widget.DOMWidgetView.extend({
+    render: function() {
+    },
+});
+
 module.exports = {
     IntModel: IntModel,
     BoundedIntModel: BoundedIntModel,
@@ -646,5 +680,7 @@ module.exports = {
     IntTextModel: IntTextModel,
     IntTextView: IntTextView,
     ProgressModel: ProgressModel,
-    ProgressView: ProgressView
+    ProgressView: ProgressView,
+    PlayModel: PlayModel,
+    PlayView: PlayView
 };
