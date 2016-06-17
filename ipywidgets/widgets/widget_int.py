@@ -254,3 +254,15 @@ class IntRangeSlider(_BoundedIntRange):
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
     slider_color = Color(None, allow_none=True).tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)
+
+
+@register('Jupyter.Play')
+class Play(_BoundedInt):
+    interval = CInt(100).tag(sync=True)
+
+    _view_name = Unicode('PlayView').tag(sync=True)
+    _model_name = Unicode('PlayModel').tag(sync=True)
+    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+
+    _playing = Bool().tag(sync=True)
