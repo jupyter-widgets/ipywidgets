@@ -40,7 +40,7 @@ var WidgetModel = Backbone.Model.extend({
         _model_name: "WidgetModel",
         _view_module: "jupyter-js-widgets",
         _view_name: null,
-        msg_throttle: 3
+        msg_throttle: 1,
     },
 
     constructor: function (widget_manager, model_id, comm, attributes) {
