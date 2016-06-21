@@ -200,15 +200,20 @@ WidgetManager.set_state_callbacks(function() {
     }
     return Promise.resolve({});
 }, function(state) {
+    // Only persist the views of the widget
+    var stateToSave = _.mapObject(state, function(widgetState) {
+        return _.pick(widgetState, 'views');
+    });
+    // check if there are any views to persist
+    if (Object.keys(stateToSave).length === 0) {
+        // no widget state, don't save empty widget state in metadata
+        delete Jupyter.notebook.metadata.widgets;
+        return;
+    }
     Jupyter.notebook.metadata.widgets = {
-
+        state: stateToSave,
         // Persisted widget state version
         version: version,
-
-        // Only persist the views of the widget
-        state: _.mapObject(state, function(widgetState) {
-            return _.pick(widgetState, 'views');
-        })
     };
 });
 
