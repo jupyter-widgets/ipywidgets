@@ -788,27 +788,23 @@ class DOMWidgetView extends WidgetView {
         this.displayed.then(function() {utils.typeset(element, text);});
     }
 
+    _createElement(tagName: string) {
+        this.pWidget = (this.constructor as typeof DOMWidgetView).createPhosphorWidget();
+        return this.pWidget.node;
+    }
+
     setElement(el: HTMLElement): this {
-        // when we migrate to the new Phosphor, we'll
-        // be able to construct a widget with a given 
-        // DOM element.
-        console.error(['setElement not supported until we migrate to the new phosphor', el]);
-        return this;
+        // only can be set once for now
+        if (this.el) {
+            // when we migrate to the new Phosphor, we'll
+            // be able to construct a widget with a given 
+            // DOM element.
+            console.error(['setElement not supported until we migrate to the new phosphor', el]);
+            return this;
+        }
+        return super.setElement(el) as this;
     }
 
-    get el() {
-        if (this.pWidget) {
-            return this.pWidget.node;
-        } else {
-            return void 0
-        }
-    }
-
-    _ensureElement() {
-        if (!this.el) {
-            this.pWidget = (this.constructor as typeof DOMWidgetView).createPhosphorWidget();
-        }
-    }
     remove() {
         this.pWidget.dispose();
         return super.remove();

@@ -54,6 +54,7 @@ class LayoutView extends DOMWidgetView {
      * Public constructor
      */
     initialize(parameters) {
+        this._traitNames = [];
         super.initialize(parameters);
         // Register the traits that live on the Python side
         for (let key of Object.keys(css_properties)) {
@@ -117,5 +118,5 @@ class LayoutView extends DOMWidgetView {
         }, this);
     }
 
-    private _traitNames = [];
+    private _traitNames: string[];
 }

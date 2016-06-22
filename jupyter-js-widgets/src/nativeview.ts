@@ -59,12 +59,7 @@ interface IDOMEvent {
 
 export
 class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
-    private _domEvents: IDOMEvent[] =  null;
-
-    constructor() {
-      super();
-      this._domEvents = [];
-    }
+    private _domEvents: IDOMEvent[];
 
     _removeElement() {
       this.undelegateEvents();
@@ -106,6 +101,13 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
         selector = null;
       }
 
+      // We have to initialize this here, instead of in the constructor, because the
+      // super constructor eventually calls this method before we get a chance to initialize
+      // this._domEvents to an empty list.
+      if (this._domEvents === void 0) {
+          this._domEvents = [];
+      }
+
       var root = this.el;
       var handler = selector ? function (e) {
         var node = e.target || e.srcElement;
@@ -134,7 +136,7 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
         selector = null;
       }
 
-      if (this.el) {
+      if (this.el && this._domEvents) {
         var handlers = this._domEvents.slice();
         var i = handlers.length;
         while (i--) {
@@ -155,7 +157,7 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
 
     // Remove all events created with `delegate` from `el`
     undelegateEvents() {
-      if (this.el) {
+      if (this.el && this._domEvents) {
         for (var i = 0, len = this._domEvents.length; i < len; i++) {
           var item = this._domEvents[i];
           this.el.removeEventListener(item.eventName, item.handler, false);
