@@ -682,6 +682,37 @@ abstract class WidgetView extends NativeView<WidgetModel> {
 }
 
 export
+class JupyterPhosphorWidget extends Widget {
+    constructor(view: DOMWidgetView) {
+        super();
+        this._view = view
+    }
+
+    onAfterAttach(msg) {
+        super.onAfterAttach(msg);
+        this._view.trigger('displayed');
+    }
+
+    dispose() {
+        if (this.isDisposed) {
+            return;
+        }
+        this._view.remove();
+        this._view = null;
+        super.dispose();
+    }
+
+    onResize(msg) {
+        if (this._view.onResize) {
+            this._view.onResize(msg);
+        }
+        super.onResize(msg);
+    }
+
+    private _view: DOMWidgetView;
+}
+
+export
 class DOMWidgetView extends WidgetView {
     /**
      * Public constructor
@@ -704,10 +735,6 @@ class DOMWidgetView extends WidgetView {
             this.update_classes([], this.model.get('_dom_classes'));
             this.setLayout(this.model.get('layout'));
         });
-    }
-
-    static createPhosphorWidget() {
-        return new Widget();
     }
 
     setLayout(layout, oldLayout?) {
@@ -789,7 +816,7 @@ class DOMWidgetView extends WidgetView {
     }
 
     _createElement(tagName: string) {
-        this.pWidget = (this.constructor as typeof DOMWidgetView).createPhosphorWidget();
+        this.pWidget = new JupyterPhosphorWidget(this);
         return this.pWidget.node;
     }
 
@@ -809,6 +836,8 @@ class DOMWidgetView extends WidgetView {
         this.pWidget.dispose();
         return super.remove();
     }
+
+    onResize(msg) {}
 
     pWidget: Widget;
     layoutPromise: Promise<any>;
