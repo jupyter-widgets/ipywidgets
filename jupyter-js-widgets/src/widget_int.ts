@@ -119,24 +119,6 @@ class IntSliderView extends DOMWidgetView {
         this.updateDescription();
     }
 
-    update_attr(name, value) { // TODO: Deprecated in 5.0
-        /**
-         * Set a css attr of the widget view.
-         */
-        if (name == 'color') {
-            this.readout.style[name] = value;
-        } else if (name.substring(0, 4) == 'font') {
-            this.readout.style[name] = value;
-        } else if (name.substring(0, 6) == 'border') {
-            this.$slider.find('a').css(name, value);
-            this.slider_container.style[name] = value;
-        } else if (name == 'background') {
-            this.slider_container.style[name] = value;
-        } else {
-            this.el.style[name] = value;
-        }
-    }
-
     updateDescription() {
         var description = this.model.get('description');
         if (description.length === 0) {
@@ -490,17 +472,6 @@ class IntTextView extends DOMWidgetView {
         return super.update();
     }
 
-    update_attr(name, value) { // TODO: Deprecated in 5.0
-        /**
-         * Set a css attr of the widget view.
-         */
-        if (name == 'padding' || name == 'margin') {
-            this.el.style[name] = value;
-        } else {
-            this.textbox.style[name] = value;
-        }
-    }
-
     events(): {[e: string]: string} {
         return {
             // Dictionary of events and their handlers.
@@ -674,19 +645,6 @@ class ProgressView extends DOMWidgetView {
             danger: ['progress-bar-danger']
         };
         this.update_mapped_classes(class_map, 'bar_style', this.bar);
-    }
-
-    update_attr(name, value) { // TODO: Deprecated in 5.0
-        /**
-         * Set a css attr of the widget view.
-         */
-        if (name == 'color') {
-            this.bar.style.background = value;
-        } else if (name.substring(0, 6) == 'border' || name == 'background') {
-            this.progress.style[name] = value;
-        } else {
-            this.el.style[name] = value;
-        }
     }
 }
 

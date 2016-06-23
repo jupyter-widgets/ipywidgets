@@ -109,14 +109,6 @@ class ProxyView extends DOMWidgetView {
         return this.child_promise;
     }
 
-    /**
-     * Set a CSS attr of the view
-     * @param  {string} name
-     * @param  {object} value
-     */
-    update_attr(name, value) { // TODO: Deprecated in 5.0
-        this.box.style[name] = value;
-    }
     box: any;
     /**
      * TODO: Should be Promise<DOMWidgetView>, but we set it to Promise<void> at the start. Why???
@@ -173,13 +165,6 @@ class BoxView extends DOMWidgetView {
 
     static createPhosphorWidget() {
         return new Panel();
-    }
-
-    /**
-     * Set a css attr of the widget view.
-     */
-    update_attr(name, value) { // TODO: Deprecated in 5.0
-        this.pWidget.node.style[name] = value;
     }
 
     /**

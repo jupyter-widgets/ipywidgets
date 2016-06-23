@@ -171,21 +171,6 @@ class DropdownView extends DOMWidgetView {
         this.update_mapped_classes(class_map, 'button_style', this.dropbutton);
     }
 
-    /**
-     * Set a css attr of the widget view.
-     */
-    update_attr(name, value) { // TODO: Deprecated in 5.0
-        if (name.substring(0, 6) === 'border' ||
-            name === 'background' ||
-            name === 'color') {
-            this.droplabel.style[name] = value;
-            this.dropbutton.style[name] = value;
-            this.droplist.style[name] = value;
-        } else {
-            this.el.style[name] = value;
-        }
-    }
-
     events(): {[e: string]: string} {
         return {
             'click button.widget-button': '_toggle',
@@ -537,17 +522,6 @@ class RadioButtonsView extends DOMWidgetView {
         return super.update(options);
     }
 
-    /**
-     * Set a css attr of the widget view.
-     */
-    update_attr(name, value) {
-        if (name == 'padding' || name == 'margin') {
-            this.el.style[name] = value;
-        } else {
-            this.container.style[name] = value;
-        }
-    }
-
     events(): {[e: string]: string} {
         return {
             'click input[type="radio"]': '_handle_click'
@@ -687,18 +661,6 @@ class ToggleButtonsView extends DOMWidgetView {
         }
         this.update_button_style();
         return super.update(options);
-    }
-
-    /**
-     * Set a css attr of the widget view.
-     */
-    update_attr(name, value) { // TODO: Deprecated in 5.0
-        if (name == 'padding' || name == 'margin') {
-            this.el.style[name] = value;
-        } else {
-            this._css_state[name] = value;
-            this.update_style_traits();
-        }
     }
 
     update_style_traits(button?) {
@@ -848,17 +810,6 @@ class SelectView extends DOMWidgetView {
         return super.update(options);
     }
 
-    /**
-     * Set a css attr of the widget view.
-     */
-    update_attr(name, value) { // TODO: Deprecated in 5.0
-        if (name == 'padding' || name == 'margin') {
-            this.el.style[name] = value;
-        } else {
-            this.listbox.style[name] = value;
-        }
-    }
-
     events(): {[e: string]: string} {
         return {
             'change select': '_handle_change'
@@ -943,27 +894,6 @@ class SelectionSliderView extends DOMWidgetView {
         // Set defaults.
         this.update();
         this.updateDescription();
-    }
-
-    /**
-     * Set a css attr of the widget view.
-     */
-    update_attr(name, value) { // TODO: Deprecated in 5.0
-        if (name == 'color') {
-            this.readout.style[name] = value;
-        } else if (name.substring(0, 4) == 'font') {
-            this.readout.style[name] = value;
-        } else if (name.substring(0, 6) == 'border') {
-            var slider_items = this.$slider[0].querySelectorAll('a');
-            if (slider_items.length) {
-              slider_items[0].style[name] = value;
-            }
-            this.slider_container.style[name] = value;
-        } else if (name == 'background') {
-            this.slider_container.style[name] = value;
-        } else {
-            this.el.style[name] = value;
-        }
     }
 
     updateDescription() {

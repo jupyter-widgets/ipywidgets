@@ -59,17 +59,6 @@ class CheckboxView extends DOMWidgetView {
         this.update(); // Set defaults.
     }
 
-    /**
-     * Set a css attr of the widget view.
-     */
-    update_attr(name, value) { // TODO: Deprecated in 5.0
-        if (name === 'padding' || name === 'margin') {
-            this.el.style[name] = value;
-        } else {
-            this.checkbox.style[name] = value;
-        }
-    }
-
     events(): {[e: string]: string} {
         return {
             'click input[type="checkbox"]': '_handle_click'
