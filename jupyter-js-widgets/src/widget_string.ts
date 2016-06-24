@@ -98,9 +98,6 @@ class TextareaModel extends StringModel {
 
 export
 class TextareaView extends DOMWidgetView {
-    label: HTMLDivElement;
-    textbox: HTMLTextAreaElement;
-
     /**
      * Called when view is rendered.
      */
@@ -196,6 +193,8 @@ class TextareaView extends DOMWidgetView {
         this.touch();
     }
 
+    label: HTMLDivElement;
+    textbox: HTMLTextAreaElement;
 }
 
 export
@@ -210,9 +209,6 @@ class TextModel extends StringModel {
 
 export
 class TextView extends DOMWidgetView {
-
-    label: HTMLDivElement;
-    textbox: HTMLInputElement;
     /**
      * Called when view is rendered.
      */
@@ -331,4 +327,8 @@ class TextView extends DOMWidgetView {
             return false;
         }
     }
+
+
+    label: HTMLDivElement;
+    textbox: HTMLInputElement;
 }

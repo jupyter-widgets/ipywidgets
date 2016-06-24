@@ -145,6 +145,10 @@ class PlaceProxyView extends ProxyView {
 
 export
 class BoxView extends DOMWidgetView {
+    static createPhosphorWidget() {
+        return new Panel();
+    }
+
     /**
      * Public constructor
      */
@@ -161,10 +165,6 @@ class BoxView extends DOMWidgetView {
         this.pWidget.addClass('jupyter-widgets');
         this.pWidget.addClass('widget-container');
         this.pWidget.addClass('widget-box');
-    }
-
-    static createPhosphorWidget() {
-        return new Panel();
     }
 
     /**

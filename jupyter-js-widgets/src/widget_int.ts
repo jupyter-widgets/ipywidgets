@@ -63,18 +63,6 @@ class IntSliderModel extends IntModel {
 
 export
 class IntSliderView extends DOMWidgetView {
-    label: HTMLElement;
-    $slider: any;
-    slider_container: HTMLElement;
-    readout: HTMLDivElement;
-    model: IntSliderModel;
-    _parse_value = parseInt;
-
-    _range_regex = /^\s*([+-]?\d+)\s*[-:]\s*([+-]?\d+)/;
-
-
-
-
     render() {
         /**
          * Called when view is rendered.
@@ -393,6 +381,13 @@ class IntSliderView extends DOMWidgetView {
         return Math.floor(x);
     }
 
+    label: HTMLElement;
+    $slider: any;
+    slider_container: HTMLElement;
+    readout: HTMLDivElement;
+    model: IntSliderModel;
+    _parse_value = parseInt;
+    _range_regex = /^\s*([+-]?\d+)\s*[-:]\s*([+-]?\d+)/;
 }
 
 export
@@ -407,11 +402,6 @@ class IntTextModel extends IntModel {
 
 export
 class IntTextView extends DOMWidgetView {
-
-    label: HTMLElement;
-    textbox: HTMLInputElement;
-
-
     render() {
         /**
          * Called when view is rendered.
@@ -532,6 +522,8 @@ class IntTextView extends DOMWidgetView {
     }
 
     _parse_value = parseInt
+    label: HTMLElement;
+    textbox: HTMLInputElement;
 }
 
 export
@@ -549,11 +541,6 @@ class ProgressModel extends BoundedIntModel {
 
 export
 class ProgressView extends DOMWidgetView {
-
-    label: HTMLDivElement;
-    progress: HTMLDivElement;
-    bar: HTMLDivElement;
-
     render() {
         /**
          * Called when view is rendered.
@@ -646,6 +633,10 @@ class ProgressView extends DOMWidgetView {
         };
         this.update_mapped_classes(class_map, 'bar_style', this.bar);
     }
+
+    label: HTMLDivElement;
+    progress: HTMLDivElement;
+    bar: HTMLDivElement;
 }
 
 export
@@ -699,10 +690,6 @@ class PlayModel extends BoundedIntModel {
 
 export
 class PlayView extends DOMWidgetView {
-    playButton: HTMLButtonElement;
-    pauseButton: HTMLButtonElement;
-    stopButton: HTMLButtonElement;
-    model: PlayModel;
     render() {
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widgets-hbox');
@@ -749,4 +736,8 @@ class PlayView extends DOMWidgetView {
         }
     }
 
+    playButton: HTMLButtonElement;
+    pauseButton: HTMLButtonElement;
+    stopButton: HTMLButtonElement;
+    model: PlayModel;
 }

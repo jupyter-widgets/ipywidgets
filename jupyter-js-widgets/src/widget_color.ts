@@ -4,6 +4,7 @@
 import {
     DOMWidgetModel, DOMWidgetView
 } from './widget';
+
 import * as _ from 'underscore';
 
 

@@ -59,8 +59,6 @@ interface IDOMEvent {
 
 export
 class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
-    private _domEvents: IDOMEvent[];
-
     _removeElement() {
       this.undelegateEvents();
       if (this.el.parentNode) {
@@ -166,4 +164,6 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
       }
       return this;
     }
+
+    private _domEvents: IDOMEvent[];
   }

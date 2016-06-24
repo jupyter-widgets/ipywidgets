@@ -24,10 +24,6 @@ class ControllerButtonModel extends DOMWidgetModel {
  */
 export
 class ControllerButtonView extends DOMWidgetView {
-    support: HTMLDivElement;
-    bar: HTMLDivElement;
-    label: HTMLDivElement;
-
     render() {
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-controller-button');
@@ -58,6 +54,10 @@ class ControllerButtonView extends DOMWidgetView {
     update() {
         this.bar.style.height = `${100 * this.model.get('value')}%`;
     }
+
+    support: HTMLDivElement;
+    bar: HTMLDivElement;
+    label: HTMLDivElement;
 }
 
 
@@ -77,10 +77,6 @@ class ControllerAxisModel extends DOMWidgetModel {
  */
 export
 class ControllerAxisView extends DOMWidgetView {
-    support: HTMLDivElement;
-    bullet: HTMLDivElement;
-    label: HTMLDivElement;
-
     render() {
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-controller-axis');
@@ -116,11 +112,18 @@ class ControllerAxisView extends DOMWidgetView {
     update() {
         this.bullet.style.top = `${50 * (this.model.get('value') + 1)}%`
     }
+
+    support: HTMLDivElement;
+    bullet: HTMLDivElement;
+    label: HTMLDivElement;
 }
 
 export
 class ControllerModel extends DOMWidgetModel {
-    readout: string;
+    static serializers = _.extend({
+        buttons: {deserialize: unpack_models},
+        axes: {deserialize: unpack_models}
+    }, DOMWidgetModel.serializers)
 
     defaults() {
         return _.extend(super.defaults(), {
@@ -286,11 +289,7 @@ class ControllerModel extends DOMWidgetModel {
         });
     }
 
-    static serializers = _.extend({
-        buttons: {deserialize: unpack_models},
-        axes: {deserialize: unpack_models}
-    }, DOMWidgetModel.serializers)
-
+    readout: string;
 }
 
 /**
@@ -298,14 +297,6 @@ class ControllerModel extends DOMWidgetModel {
  */
 export
 class ControllerView extends DOMWidgetView {
-    button_views: any;
-    axis_views: any;
-    box: HTMLElement;
-    label: HTMLDivElement;
-    axis_box: HTMLDivElement;
-    button_box: HTMLDivElement;
-    model: ControllerModel;
-
     initialize(parameters) {
         super.initialize(parameters);
 
@@ -380,4 +371,11 @@ class ControllerView extends DOMWidgetView {
         this.axis_views.remove();
     }
 
+    button_views: any;
+    axis_views: any;
+    box: HTMLElement;
+    label: HTMLDivElement;
+    axis_box: HTMLDivElement;
+    button_box: HTMLDivElement;
+    model: ControllerModel;
 }

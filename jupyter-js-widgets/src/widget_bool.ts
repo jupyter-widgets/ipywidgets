@@ -6,12 +6,13 @@ import {
 } from './widget';
 
 import {
+    ButtonPWidget
+} from './widget_button';
+
+import {
     Widget
 } from 'phosphor-widget';
 
-import {
-    ButtonPWidget
-} from './widget_button';
 import * as _ from 'underscore';
 
 

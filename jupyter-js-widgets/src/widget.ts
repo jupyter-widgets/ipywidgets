@@ -9,13 +9,14 @@ import * as managerBase from './manager-base';
 import * as Backbone from 'backbone';
 import * as _ from 'underscore';
 import * as utils from './utils';
-import {
-    Widget
-} from 'phosphor-widget';
 
 import {
     NativeView
 } from './nativeview';
+
+import {
+    Widget
+} from 'phosphor-widget';
 
 /**
  * Replace model ids with models recursively.
@@ -66,7 +67,6 @@ class WidgetModel extends Backbone.Model {
      * As of backbone 1.1, backbone ignores `patch` if it thinks the
      * model has never been pushed.
      */
-
     isNew() {
         return false;
     }
@@ -487,11 +487,7 @@ class WidgetModel extends Backbone.Model {
         return utils.resolvePromisesDict(serialized);
     }
 
-
-
-
     static serializers: any;
-
     widget_manager: any;
     state_change: any
     _buffered_state_diff: any;
@@ -602,8 +598,6 @@ class ViewList {
     views: any[];
     _create_view: Function;
     _remove_view: Function;
-
-
 }
 
 
@@ -838,7 +832,7 @@ class DOMWidgetView extends WidgetView {
     }
 
     onResize(msg) {}
-
+    
     pWidget: Widget;
     layoutPromise: Promise<any>;
 }

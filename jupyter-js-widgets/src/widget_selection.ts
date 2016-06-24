@@ -45,16 +45,6 @@ class DropdownModel extends SelectionModel {
 
 export
 class DropdownView extends DOMWidgetView {
-    onKeydown: any;
-    onDismiss: any;
-    droplist: any;
-    label: HTMLDivElement;
-    buttongroup: HTMLDivElement;
-    droplabel: HTMLButtonElement;
-    dropbutton: HTMLButtonElement;
-    caret: HTMLPhraseElement;
-
-
     initialize(options) {
         this.onKeydown = this._handle_keydown.bind(this);
         this.onDismiss = this._handle_dismiss.bind(this);
@@ -423,6 +413,15 @@ class DropdownView extends DOMWidgetView {
             scrollIfNeeded(this.droplist, items[selectedIndex]);
         }
     }
+
+    onKeydown: any;
+    onDismiss: any;
+    droplist: any;
+    label: HTMLDivElement;
+    buttongroup: HTMLDivElement;
+    droplabel: HTMLButtonElement;
+    dropbutton: HTMLButtonElement;
+    caret: HTMLPhraseElement;
 }
 
 export
@@ -441,9 +440,6 @@ class RadioButtonsModel extends SelectionModel {
 
 export
 class RadioButtonsView extends DOMWidgetView {
-    label: HTMLDivElement;
-    container: HTMLDivElement;
-
     /**
      * Called when view is rendered.
      */
@@ -539,6 +535,9 @@ class RadioButtonsView extends DOMWidgetView {
         this.model.set('selected_label', value, {updated_view: this});
         this.touch();
     }
+
+    label: HTMLDivElement;
+    container: HTMLDivElement;
 }
 
 export
@@ -554,10 +553,6 @@ class ToggleButtonsModel extends SelectionModel {
 
 export
 class ToggleButtonsView extends DOMWidgetView {
-    private _css_state: any;
-    label: HTMLDivElement;
-    buttongroup: HTMLDivElement;
-
     initialize(options) {
         this._css_state = {};
         super.initialize(options);
@@ -715,6 +710,10 @@ class ToggleButtonsView extends DOMWidgetView {
         this.model.set('value', value, { updated_view: this });
         this.touch();
     }
+
+    private _css_state: any;
+    label: HTMLDivElement;
+    buttongroup: HTMLDivElement;
 }
 
 export
@@ -729,9 +728,6 @@ class SelectModel extends SelectionModel {
 
 export
 class SelectView extends DOMWidgetView {
-    label: HTMLDivElement;
-    listbox: HTMLSelectElement;
-
     /**
      * Called when view is rendered.
      */
@@ -830,6 +826,9 @@ class SelectView extends DOMWidgetView {
         this.model.set('selected_label', value, {updated_view: this});
         this.touch();
     }
+
+    label: HTMLDivElement;
+    listbox: HTMLSelectElement;
 }
 
 export
@@ -848,12 +847,6 @@ class SelectionSliderModel extends SelectionModel {
 
 export
 class SelectionSliderView extends DOMWidgetView {
-    label: HTMLDivElement;
-    $slider: any;
-    slider_container: HTMLDivElement;
-    readout: HTMLDivElement;
-
-
     /**
      * Called when view is rendered.
      */
@@ -1002,6 +995,11 @@ class SelectionSliderView extends DOMWidgetView {
          */
         return Math.floor(x);
     }
+
+    label: HTMLDivElement;
+    $slider: any;
+    slider_container: HTMLDivElement;
+    readout: HTMLDivElement;
 }
 
 export

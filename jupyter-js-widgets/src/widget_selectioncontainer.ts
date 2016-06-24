@@ -44,9 +44,6 @@ class AccordionModel extends SelectionContainerModel {
 
 export
 class AccordionView extends DOMWidgetView {
-    containers: any[];
-    model_containers: any;
-    children_views: ViewList;
     initialize(parameters){
         super.initialize(parameters)
         this.containers = [];
@@ -219,6 +216,10 @@ class AccordionView extends DOMWidgetView {
         super.remove();
         this.children_views.remove();
     }
+
+    containers: any[];
+    model_containers: any;
+    children_views: ViewList;
 }
 
 export
@@ -233,9 +234,6 @@ class TabModel extends SelectionContainerModel {
 
 export
 class TabView extends DOMWidgetView {
-    childrenViews: ViewList;
-    tabBar: TabBar;
-    tabContents: HTMLDivElement;
     /**
      * Public constructor.
      */
@@ -410,4 +408,8 @@ class TabView extends DOMWidgetView {
         );
         this.touch();
     }
+
+    childrenViews: ViewList;
+    tabBar: TabBar;
+    tabContents: HTMLDivElement;
 }

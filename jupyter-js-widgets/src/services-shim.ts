@@ -23,7 +23,6 @@ namespace shims {
          */
         export
         class CommManager {
-
             constructor(jsServicesKernel: IKernel) {
                 this.init_kernel(jsServicesKernel);
             };
