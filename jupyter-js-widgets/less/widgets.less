@@ -220,9 +220,9 @@
 }
 
 .jupyter-button {
-    background: #888888;
-    border: 1px solid #111111;
-    color: #eeeeee;
+    background: #ffffff;
+    border: 1px solid #cccccc;
+    color: #333333;
     cursor: pointer;
     display: inline-block;
     text-align: center;
@@ -235,12 +235,14 @@
 
     .outside-shadow-2dp();
 
-    &:hover {
-        outline: none !important;
+    &:hover, &:focus, &:active, &.mod-active {
+      outline: none !important;
+      background-color: #d4d4d4;
+      border-color: #8c8c8c;
     }
 
-    &:active {
-        .outside-shadow-4dp();
+    &:active, &.mod-active {
+      box-shadow: none;
     }
 
     &:empty:before {
@@ -250,37 +252,62 @@
 
     &.mod-primary {
       background-color: #337ab7;
-      border-color: #245580;
-      color: #eeeeee;
+      border-color: #2e6da4;
+      color: #ffffff;
+
+      &:hover, &:focus, &.mod-active {
+        outline: none !important;
+        background-color: #204d74;
+        border-color: #122b40;
+      }
     }
 
     &.mod-success {
       background-color: #5cb85c;
-      border-color: #3e8f3e;
-      color: #eeeeee;
+      border-color: #4cae4c;
+      color: #ffffff;
+
+      &:hover, &:focus, &.mod-active {
+        outline: none !important;
+        background-color: #398439;
+        border-color: #255625;
+      }
     }
 
     &.mod-info {
       background-color: #5bc0de;
-      border-color: #28a4c9;
-      color: #eeeeee;
+      border-color: #46b8da;
+      color: #ffffff;
+
+      &:hover, &:focus, &.mod-active {
+        outline: none !important;
+        background-color: #269abc;
+        border-color: #1b6d85;
+      }
     }
 
     &.mod-warning {
       background-color: #f0ad4e;
-      border-color: #e38d13;
-      color: #eeeeee;
+      border-color: #eea236;
+      color: #ffffff;
+
+      &:hover, &:focus, &.mod-active {
+        outline: none !important;
+        background-color: #d58512;
+        border-color: #985f0d;
+      }
     }
 
     &.mod-danger {
       background-color: #d9534f;
-      border-color: #b92c28;
-      color: #eeeeee;
-    }
+      border-color: #d43f3a;
+      color: #ffffff;
 
-    &.mod-active {
-      border-color: #000000;
-      color: #000000;
+      &:hover, &:focus, &.mod-active {
+        outline: none !important;
+        background-color: #ac2925;
+        border-color: #761c19;
+      }
     }
 }
 
@@ -296,7 +323,7 @@
         height : @inline-widget-height;
         width : 48px;
     }
-    
+
     width : @widget-width-short;
     display : flex;
     justify-content : space-between;
