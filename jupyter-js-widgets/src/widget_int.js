@@ -711,9 +711,6 @@ var PlayView = widget.DOMWidgetView.extend({
         this.el.appendChild(this.playButton);  // Toggle button with playing
         this.el.appendChild(this.pauseButton); // Disable if not playing
         this.el.appendChild(this.stopButton);  // Disable if not playing
-        
-        this.listenTo(this.model, 'change:_playing', this.update_playing, this);
-        this.update_playing();
 
         var playIcon = document.createElement('i');
         playIcon.className = 'fa fa-play';
@@ -728,17 +725,18 @@ var PlayView = widget.DOMWidgetView.extend({
         this.playButton.onclick = this.model.play.bind(this.model);
         this.pauseButton.onclick = this.model.pause.bind(this.model);
         this.stopButton.onclick = this.model.stop.bind(this.model);
+
+        this.listenTo(this.model, 'change:_playing', this.update_playing, this);
+        this.update_playing();
     },
 
     update_playing: function() {
         var playing = this.model.get('_playing');
         if (playing) {
             this.pauseButton.disabled = false;
-            this.stopButton.disabled = false;
             this.playButton.classList.add('mod-active');
         } else {
             this.pauseButton.disabled = true;
-            this.stopButton.disabled = true;
             this.playButton.classList.remove('mod-active');
         }
     },
