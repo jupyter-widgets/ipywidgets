@@ -19,7 +19,7 @@ class Output(DOMWidget):
 
     This widget can capture and display stdout, stderr, and rich output.  To use
     it, create an instance of it and display it.  Then use it as a context
-    manager.  Any output produced while in it's context will be captured and
+    manager.  Any output produced while in its context will be captured and
     displayed in it instead of the standard output area.
 
     Example::
