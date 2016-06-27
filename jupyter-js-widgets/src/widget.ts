@@ -609,8 +609,7 @@ abstract class WidgetView extends NativeView<WidgetModel> {
     initialize(parameters) {
         this.listenTo(this.model, 'change', this.update);
 
-        // TODO: is anyone using this.options??
-        //this.options = parameters.options;
+        this.options = parameters.options;
         this.displayed = new Promise((resolve, reject) => {
             this.once('displayed', resolve);
         });
@@ -667,8 +666,8 @@ abstract class WidgetView extends NativeView<WidgetModel> {
         return this;
     }
 
-    // TODO: do we need this? Is anyone using it?
-    //options: any;
+    options: any;
+
     /**
      * A promise that resolves to the parent view when a child view is displayed.
      */
