@@ -20,6 +20,38 @@ import {
 import * as _ from 'underscore';
 
 export
+class JupyterPhosphorPanelWidget extends Panel {
+    constructor(view: DOMWidgetView) {
+        super();
+        this._view = view
+    }
+
+    onAfterAttach(msg) {
+        super.onAfterAttach(msg);
+        this._view.trigger('displayed');
+    }
+
+    dispose() {
+        if (this.isDisposed) {
+            return;
+        }
+        this._view.remove();
+        this._view = null;
+        super.dispose();
+    }
+
+    onResize(msg) {
+        if (this._view.onResize) {
+            this._view.onResize(msg);
+        }
+        super.onResize(msg);
+    }
+
+    private _view: DOMWidgetView;
+}
+
+
+export
 class BoxModel extends DOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
@@ -145,8 +177,11 @@ class PlaceProxyView extends ProxyView {
 
 export
 class BoxView extends DOMWidgetView {
-    static createPhosphorWidget() {
-        return new Panel();
+
+
+    _createElement(tagName: string) {
+        this.pWidget = new JupyterPhosphorPanelWidget(this);
+        return this.pWidget.node;
     }
 
     /**
@@ -233,5 +268,5 @@ class BoxView extends DOMWidgetView {
         this.children_views.remove();
     }
     children_views: any;
-    pWidget: Panel;
+    pWidget: JupyterPhosphorPanelWidget;
 }
