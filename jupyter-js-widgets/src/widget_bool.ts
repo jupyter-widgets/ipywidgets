@@ -11,7 +11,7 @@ import {
 
 import {
     Widget
-} from 'phosphor-widget';
+} from 'phosphor/lib/ui/widget';
 
 import * as _ from 'underscore';
 

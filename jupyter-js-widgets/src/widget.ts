@@ -17,7 +17,7 @@ import {
 
 import {
     Widget
-} from 'phosphor-widget';
+} from 'phosphor/lib/ui/widget';
 
 /**
  * Replace model ids with models recursively.
@@ -687,13 +687,18 @@ class JupyterPhosphorWidget extends Widget {
         this._view.trigger('displayed');
     }
 
+    get isDisposed() {
+        return this._view === null;
+    }
+
     dispose() {
         if (this.isDisposed) {
             return;
         }
-        this._view.remove();
-        this._view = null;
         super.dispose();
+        let view = this._view;
+        this._view = null;
+        view.remove();
     }
 
     onResize(msg) {

@@ -11,14 +11,24 @@ import {
 
 import {
     TabBar
-} from 'phosphor-tabs';
+} from 'phosphor/lib/ui/tabbar';
 
 import {
     Title
-} from 'phosphor-widget';
+} from 'phosphor/lib/ui/title';
+
+import {
+    Widget
+} from 'phosphor/lib/ui/widget';
+
+import {
+    each, enumerate
+} from 'phosphor/lib/algorithm/iteration';
 
 import * as _ from 'underscore';
 import * as utils from './utils';
+
+import 'phosphor/styles/base.css';
 
 
 export
@@ -271,7 +281,7 @@ class TabView extends DOMWidgetView {
         this.childrenViews.update(this.model.get('children'));
 
         this.displayed.then(function() {
-            parent.tabBar.attach(parent.el);
+            Widget.attach(parent.tabBar, parent.el)
             parent.el.appendChild(parent.tabContents);
         });
     }
@@ -292,17 +302,15 @@ class TabView extends DOMWidgetView {
             child.el.classList.add('mod-active');
 
             parent.tabContents.appendChild(child.el);
-            parent.tabBar.addItem({
-                title: new Title({ text: '', closable: true })
-            });
-            var tab = parent.tabBar.itemAt(parent.tabBar.itemCount() - 1);
+            let title = new Title({ label: '', closable: true })
+            parent.tabBar.addTab(title);
 
             parent.displayed.then(function() {
                 child.trigger('displayed', parent);
                 parent.update();
             });
 
-            child.on('remove', function() { parent.tabBar.removeItem(tab); });
+            child.on('remove', function() { parent.tabBar.removeTab(title); });
 
             return child;
         }).catch(utils.reject('Could not add child view to box', true));
@@ -327,8 +335,8 @@ class TabView extends DOMWidgetView {
      */
     updateTitles() {
         var titles = this.model.get('_titles') || {};
-        for (var i = this.tabBar.itemCount() - 1; i > -1; i--) {
-            this.tabBar.itemAt(i).title.text = titles[i] || (i + 1) + '';
+        for (let i = 0, len = this.tabBar.titles.length; i < len; i++) {
+            this.tabBar.titles.at(i).label = titles[i] || (i + 1).toString();
         }
     }
 
@@ -341,7 +349,7 @@ class TabView extends DOMWidgetView {
             if (typeof index === 'undefined') {
                 index = 0;
             }
-            if (0 <= index && index < this.tabBar.itemCount()) {
+            if (0 <= index && index < this.tabBar.titles.length) {
                 this.selectPage(index);
             }
         }
@@ -351,6 +359,8 @@ class TabView extends DOMWidgetView {
      * Select a page.
      */
     selectPage(index) {
+        this.tabBar.currentIndex = index;
+
         var actives = this.el.querySelectorAll('.mod-active');
         if (actives.length) {
             for (var i = 0, len = actives.length; i < len; i++) {
@@ -380,7 +390,7 @@ class TabView extends DOMWidgetView {
     }
 
     _onTabChanged(sender, args) {
-        this.model.set('selected_index', args.index, { updated_view: this });
+        this.model.set('selected_index', args.currentIndex, { updated_view: this });
         this.touch();
     }
 

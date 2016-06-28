@@ -11,11 +11,15 @@ import {
 
 import {
     Panel
-} from 'phosphor-panel';
+} from 'phosphor/lib/ui/panel';
 
 import {
     Widget
-} from 'phosphor-widget';
+} from 'phosphor/lib/ui/widget';
+
+import {
+    indexOf
+} from 'phosphor/lib/algorithm/searching';
 
 import * as _ from 'underscore';
 
@@ -244,12 +248,12 @@ class BoxView extends DOMWidgetView {
         // we insert a dummy element so the order is preserved when we add
         // the rendered content later.
         var dummy = new Widget();
-        this.pWidget.addChild(dummy);
+        this.pWidget.addWidget(dummy);
 
         return this.create_child_view(model).then((view) => {
             // replace the dummy widget with the new one.
-            let i = this.pWidget.childIndex(dummy);
-            this.pWidget.insertChild(i, view.pWidget);
+            let i = indexOf(this.pWidget.widgets, dummy);
+            this.pWidget.insertWidget(i, view.pWidget);
             dummy.dispose();
 
             // Trigger the displayed event of the child view.
