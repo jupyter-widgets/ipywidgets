@@ -400,12 +400,12 @@ class TabView extends DOMWidgetView {
          * indices that are larger than the index of the tab that was removed.
          */
         var len = this.model.get('children').length;
-        var titles = this.model.get('_titles') || {};
+        var titles = _.extend({}, this.model.get('_titles')) || {};
         delete titles[args.index];
         for (var i = args.index + 1; i < len; i++) {
             titles[i - 1] = titles[i];
-            delete titles[i];
         }
+        delete titles[len - 1];
 
         var children = _.filter(
             this.model.get('children'),
