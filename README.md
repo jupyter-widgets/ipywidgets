@@ -16,7 +16,7 @@ Learning becomes an immersive, plus fun, experience. Researchers can easily see
 how changing inputs to a model impact the results. We hope you will add
 ipywidgets to your notebooks, and we're here to help you get started.
 
-## Core Interative Widgets
+## Core Interactive Widgets
 
 A [demonstration notebook](https://github.com/ipython/ipywidgets/blob/master/docs/source/examples/Index.ipynb) provides an overview of the core interactive widgets, including:
 
