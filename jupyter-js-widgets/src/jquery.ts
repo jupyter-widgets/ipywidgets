@@ -9,7 +9,7 @@ export var $;
 if (typeof window !== 'undefined' && window['$']) {
     $ = window['$'];
 } else {
-    $ = require('jquery');
+    $ = (require('jquery') as any).$;
     (window as any).jQuery = $; // Required for bootstrap to load correctly
 }
 export default $;

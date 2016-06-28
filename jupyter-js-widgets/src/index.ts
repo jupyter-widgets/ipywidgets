@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 // HACK: node bootstrap requires this.
-import * as jQuery from './jquery';
+import jQuery from './jquery';
 
 window['jQuery'] = window['$'] = jQuery
 
