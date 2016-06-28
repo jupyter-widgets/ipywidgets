@@ -61,18 +61,17 @@ function loadClass(class_name, module_name, registry, require_error): Promise<an
 
         // Try loading the view module using require.js
         if (module_name) {
-            let window: any = Window;
             // If the module is jupyter-js-widgets, we can just self import.
             var modulePromise;
-            var requirejsDefined = typeof window !== 'undefined' && window.requirejs;
+            var requirejsDefined = typeof window !== 'undefined' && (window as any).requirejs;
             if (requirejsDefined) {
-                if (module_name !== 'jupyter-js-widgets' || window.requirejs.defined('jupyter-js-widgets')) {
+                if (module_name !== 'jupyter-js-widgets' || (window as any).requirejs.defined('jupyter-js-widgets')) {
                     modulePromise = new Promise(function(innerResolve, innerReject) {
                         var success_callback = function(module) {
                             innerResolve(module);
                         };
                         var failure_callback = require_error ? require_error(success_callback) : innerReject;
-                        window.require([module_name], success_callback, failure_callback);
+                        (window as any).require([module_name], success_callback, failure_callback);
                     });
                 } else if (module_name === 'jupyter-js-widgets') {
                     modulePromise = Promise.resolve(require('../'));
