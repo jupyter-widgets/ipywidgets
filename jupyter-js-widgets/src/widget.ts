@@ -706,9 +706,8 @@ class JupyterPhosphorWidget extends Widget {
             return;
         }
         super.dispose();
-        let view = this._view;
         this._view = null;
-        view.remove();
+        let view = this._view;
     }
 
     onResize(msg) {
