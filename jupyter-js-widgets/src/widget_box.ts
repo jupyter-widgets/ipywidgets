@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetModel, DOMWidgetView, unpack_models, ViewList
+    DOMWidgetModel, DOMWidgetView, unpack_models, ViewList, JupyterPhosphorWidget
 } from './widget';
 
 import {
@@ -25,9 +25,11 @@ import * as _ from 'underscore';
 
 export
 class JupyterPhosphorPanelWidget extends Panel {
-    constructor(view: DOMWidgetView) {
-        super();
-        this._view = view
+    constructor(options: JupyterPhosphorWidget.IOptions) {
+        let view = options.view;
+        delete options.view;
+        super(options);
+        this._view = view;
     }
 
     onAfterAttach(msg) {
@@ -35,13 +37,16 @@ class JupyterPhosphorPanelWidget extends Panel {
         this._view.trigger('displayed');
     }
 
+    get isDisposed() {
+        return this._view === null;
+    }
+
     dispose() {
         if (this.isDisposed) {
             return;
         }
-        this._view.remove();
-        this._view = null;
         super.dispose();
+        this._view = null;
     }
 
     onResize(msg) {
@@ -183,9 +188,17 @@ export
 class BoxView extends DOMWidgetView {
 
 
-    _createElement(tagName: string) {
-        this.pWidget = new JupyterPhosphorPanelWidget(this);
-        return this.pWidget.node;
+    _setElement(el: HTMLElement) {
+        if (this.pWidget) {
+            this.pWidget.dispose();
+        }
+
+        this.$el = el instanceof $ ? el : $(el);
+        this.el = this.$el[0];
+        this.pWidget = new JupyterPhosphorPanelWidget({
+            node: el,
+            view: this
+        });
     }
 
     /**

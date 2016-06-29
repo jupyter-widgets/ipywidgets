@@ -707,7 +707,6 @@ class JupyterPhosphorWidget extends Widget {
         }
         super.dispose();
         this._view = null;
-        let view = this._view;
     }
 
     onResize(msg) {
@@ -845,6 +844,6 @@ class DOMWidgetView extends WidgetView {
 
     onResize(msg) {}
     '$el': any;
-    pWidget: Widget = null;
+    pWidget: Widget;
     layoutPromise: Promise<any>;
 }
