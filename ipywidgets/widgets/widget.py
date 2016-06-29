@@ -14,7 +14,7 @@ from IPython.core.getipython import get_ipython
 from ipykernel.comm import Comm
 from traitlets.config import LoggingConfigurable
 from traitlets.utils.importstring import import_item
-from traitlets import Unicode, Dict, Instance, List, Int, Set, Bytes
+from traitlets import Unicode, Dict, Instance, List, Int, Set, Bytes, observe
 from ipython_genutils.py3compat import string_types, PY3
 from IPython.display import display
 
@@ -207,9 +207,10 @@ class Widget(LoggingConfigurable):
                 # send state with binary elements as second message
                 self.send_state()
 
-    def _comm_changed(self, name, new):
+    @observe('comm')
+    def _comm_changed(self, change):
         """Called when the comm is changed."""
-        if new is None:
+        if change['new'] is None:
             return
         self._model_id = self.model_id
 
