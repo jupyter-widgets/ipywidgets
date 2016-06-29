@@ -301,6 +301,7 @@ class TabView extends DOMWidgetView {
             child.el.classList.add('widget-tab-child');
             child.el.classList.add('mod-active');
 
+            // TODO: add a child widget, rather than DOM nodes
             parent.tabContents.appendChild(child.el);
             let title = new Title({ label: '', closable: true })
             parent.tabBar.addTab(title);
