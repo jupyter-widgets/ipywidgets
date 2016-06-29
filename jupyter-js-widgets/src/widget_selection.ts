@@ -563,7 +563,7 @@ class ToggleButtonsView extends DOMWidgetView {
      */
     render() {
         this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widgets-hbox');
+        this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-toggle-buttons');
 
         this.label = document.createElement('div');

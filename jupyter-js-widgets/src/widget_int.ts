@@ -692,7 +692,7 @@ export
 class PlayView extends DOMWidgetView {
     render() {
         this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widgets-hbox');
+        this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-play');
 
         this.playButton = document.createElement('button');
