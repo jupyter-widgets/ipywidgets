@@ -676,10 +676,20 @@ abstract class WidgetView extends NativeView<WidgetModel> {
 }
 
 export
+namespace JupyterPhosphorWidget {
+    export
+    interface IOptions extends Widget.IOptions {
+        view: DOMWidgetView;
+    }
+}
+
+export
 class JupyterPhosphorWidget extends Widget {
-    constructor(view: DOMWidgetView) {
-        super();
-        this._view = view
+    constructor(options: JupyterPhosphorWidget.IOptions) {
+        let view = options.view;
+        delete options.view;
+        super(options);
+        this._view = view;
     }
 
     onAfterAttach(msg) {
@@ -814,31 +824,28 @@ class DOMWidgetView extends WidgetView {
         this.displayed.then(function() {utils.typeset(element, text);});
     }
 
-    _createElement(tagName: string) {
-        this.pWidget = new JupyterPhosphorWidget(this);
-        return this.pWidget.node;
-    }
-
-    setElement(el: HTMLElement): this {
-        // only can be set once for now
-        if (this.el) {
-            // when we migrate to the new Phosphor, we'll
-            // be able to construct a widget with a given 
-            // DOM element.
-            console.error(['setElement not supported until we migrate to the new phosphor', el]);
-            return this;
+    _setElement(el: HTMLElement) {
+        if (this.pWidget) {
+            this.pWidget.dispose();
         }
-        this.$el = $(el);
-        return super.setElement(el) as this;
+
+        this.$el = el instanceof $ ? el : $(el);
+        this.el = this.$el[0];
+        this.pWidget = new JupyterPhosphorWidget({
+            node: el,
+            view: this
+        });
     }
 
     remove() {
-        this.pWidget.dispose();
+        if (this.pWidget) {
+            this.pWidget.dispose();
+        }
         return super.remove();
     }
 
     onResize(msg) {}
     '$el': any;
-    pWidget: Widget;
+    pWidget: Widget = null;
     layoutPromise: Promise<any>;
 }
