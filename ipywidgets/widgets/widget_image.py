@@ -10,7 +10,7 @@ import base64
 
 from .domwidget import DOMWidget
 from .widget import register
-from traitlets import Unicode, CUnicode, Bytes
+from traitlets import Unicode, CUnicode, Bytes, observe
 
 
 @register('Jupyter.Image')
@@ -34,5 +34,7 @@ class Image(DOMWidget):
     _b64value = Unicode().tag(sync=True)
 
     value = Bytes()
-    def _value_changed(self, name, old, new):
-        self._b64value = base64.b64encode(new)
+
+    @observe('value')
+    def _value_changed(self, change):
+        self._b64value = base64.b64encode(change['new'])
