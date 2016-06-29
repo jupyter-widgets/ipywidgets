@@ -24,12 +24,18 @@ import {
 import * as _ from 'underscore';
 
 export
+namespace JupyterPhosphorPanelWidget {
+    export
+    interface IOptions {
+        view: DOMWidgetView;
+    }
+}
+
+export
 class JupyterPhosphorPanelWidget extends Panel {
-    constructor(options: JupyterPhosphorWidget.IOptions) {
-        let view = options.view;
-        delete options.view;
-        super(options);
-        this._view = view;
+    constructor(options: JupyterPhosphorPanelWidget.IOptions) {
+        super();
+        this._view = options.view;
     }
 
     onAfterAttach(msg) {
@@ -187,19 +193,20 @@ class PlaceProxyView extends ProxyView {
 export
 class BoxView extends DOMWidgetView {
 
+    _createElement(tagName: string) {
+        this.pWidget = new JupyterPhosphorPanelWidget({ view: this });
+        return this.pWidget.node;
+    }
 
     _setElement(el: HTMLElement) {
-        if (this.pWidget) {
-            this.pWidget.dispose();
+        if (this.el || el !== this.pWidget.node) {
+            // Boxes don't allow setting the element beyond the initial creation.
+            throw new Error('Cannot reset the DOM element.');
         }
 
-        this.$el = el instanceof $ ? el : $(el);
-        this.el = this.$el[0];
-        this.pWidget = new JupyterPhosphorPanelWidget({
-            node: el,
-            view: this
-        });
-    }
+        this.el = this.pWidget.node;
+        this.$el = $(this.el);
+     }
 
     /**
      * Public constructor
