@@ -24,3 +24,11 @@ WidgetManager.prototype.display_view = function(msg, view, options) {
 WidgetManager.prototype._get_comm_info = function() {
     return Promise.resolve({});
 };
+
+WidgetManager.prototype._create_comm = function() {
+    return Promise.resolve({
+        on_close: () => {},
+        on_msg: () => {},
+        close: () => {}
+    });
+}

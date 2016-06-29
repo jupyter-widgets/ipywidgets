@@ -1,4 +1,4 @@
-const ManagerBase = require('../src/index.js').ManagerBase;
+const ManagerBase = require('../lib/index.js').ManagerBase;
 
 describe("ManagerBase", function() {
     beforeEach(function() {
@@ -8,30 +8,6 @@ describe("ManagerBase", function() {
     it('comm_target_name', function() {
         expect(ManagerBase.comm_target_name).to.be.undefined;
         expect(this.managerBase.comm_target_name).to.equal('jupyter.widget');
-    });
-
-    it('register_widget_model', function() {
-        expect(ManagerBase.register_widget_model).to.not.be.undefined;
-        expect(() => ManagerBase.register_widget_model('test', {})).to.not.throw(Error);
-    });
-
-    it('register_widget_view', function() {
-        expect(ManagerBase.register_widget_view).to.not.be.undefined;
-        expect(() => ManagerBase.register_widget_view('test', {})).to.not.throw(Error);
-    });
-
-    it('_create_comm', function() {
-        expect(this.managerBase._create_comm).to.not.be.undefined;
-        return this.managerBase._create_comm().then(() => {
-            assert.ok(false, 'Promise should fail');
-        }).catch(err => {});
-    });
-
-    it('_get_comm_info', function() {
-        expect(this.managerBase._get_comm_info).to.not.be.undefined;
-        return this.managerBase._get_comm_info().then(() => {
-            assert.ok(false, 'Promise should fail');
-        }).catch(err => {});
     });
 
     it('get_state', function() {
@@ -73,10 +49,4 @@ describe("ManagerBase", function() {
     it('create_view', function() {
         expect(this.managerBase.create_view).to.not.be.undefined;
     });
-
-    it('display_view', function() {
-        expect(this.managerBase.display_view).to.not.be.undefined;
-        expect(this.managerBase.display_view).to.throw(Error);
-    });
-
 });

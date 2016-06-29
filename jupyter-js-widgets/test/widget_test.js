@@ -1,4 +1,4 @@
-const classes = require('../src/index.js');
+const classes = require('../lib/index.js');
 const Widget = classes.Widget;
 const DOMWidget = classes.DOMWidget;
 const DummyManager = require('./dummy-manager').DummyManager;
@@ -66,15 +66,12 @@ describe("Widget", function() {
     });
 
     it('comm', function() {
-        // Comm will be undefined because the dummy manager used in these tests
-        // doesn't construct a comm.
-        // TODO: Test comm-full widgets
-        expect(this.widget.comm).to.be.undefined;
+        expect(this.widget.comm).to.not.be.undefined;
     });
 
     it('comm_live', function() {
         expect(this.widget.comm_live).to.not.be.undefined;
-        expect(this.widget.comm_live).to.be.false;
+        expect(this.widget.comm_live).to.be.true;
     });
 
     it('send', function() {

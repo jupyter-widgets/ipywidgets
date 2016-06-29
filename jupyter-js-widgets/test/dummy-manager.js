@@ -1,4 +1,4 @@
-const ManagerBase = require('../src/index.js').ManagerBase;
+const ManagerBase = require('../lib/index.js').ManagerBase;
 
 export class DummyManager extends ManagerBase {
     constructor() {
@@ -16,5 +16,13 @@ export class DummyManager extends ManagerBase {
     
     _get_comm_info() {
         return Promise.resolve({});
+    }
+
+    _create_comm() {
+        return Promise.resolve({
+            on_close: () => {},
+            on_msg: () => {},
+            close: () => {}
+        });
     }
 }
