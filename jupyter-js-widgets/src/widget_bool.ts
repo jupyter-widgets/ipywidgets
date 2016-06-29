@@ -48,14 +48,14 @@ class CheckboxView extends DOMWidgetView {
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-checkbox');
 
-        this.checkbox = document.createElement('input');
-        this.checkbox.setAttribute('type', 'checkbox');
-        this.el.appendChild(this.checkbox);
-
         this.label = document.createElement('div');
         this.label.classList.add('widget-label');
         this.label.style.display = 'none';
         this.el.appendChild(this.label);
+
+        this.checkbox = document.createElement('input');
+        this.checkbox.setAttribute('type', 'checkbox');
+        this.el.appendChild(this.checkbox);
 
         this.update(); // Set defaults.
     }
