@@ -137,29 +137,26 @@ abstract class ManagerBase<T> {
      * any state updates.
      */
     create_view(model, options) {
-        var that = this;
-        model.state_change = model.state_change.then(function() {
+        model.state_change = model.state_change.then(() => {
 
             return utils.loadClass(
                 model.get('_view_name'),
                 model.get('_view_module'),
                 null,
-                that.require_error
-            ).then(function(ViewType) {
+                this.require_error
+            ).then((ViewType) => {
                 var view = new ViewType({
                     model: model,
-                    options: that.setViewOptions(options)
+                    options: this.setViewOptions(options)
                 });
                 view.listenTo(model, 'destroy', view.remove);
-                return Promise.resolve(view.render()).then(function() {
-                    return view;
-                });
+                return Promise.resolve(view.render()).then(() => {return view;});
             }).catch(utils.reject('Could not create a view for model id ' + model.id, true));
         });
         var id = utils.uuid();
         model.views[id] = model.state_change;
-        model.state_change.then(function(view) {
-            view.once('remove', function() { delete view.model.views[id]; }, this);
+        model.state_change.then((view) => {
+            view.once('remove', () => { delete view.model.views[id]; }, this);
         });
         return model.state_change;
     };
@@ -215,17 +212,16 @@ abstract class ManagerBase<T> {
         var options_clone = _.clone(options);
         // Create the model. In the case where the comm promise is rejected a
         // comm-less model is still created with the required model id.
-        var that = this;
-        return commPromise.then(function(comm) {
+        return commPromise.then((comm) => {
             // Comm Promise Resolved.
             options_clone.comm = comm;
-            return that.new_model(options_clone, serialized_state);
-        }, function() {
+            return this.new_model(options_clone, serialized_state);
+        }, () => {
             // Comm Promise Rejected.
             if (!options_clone.model_id) {
                 options_clone.model_id = utils.uuid();
             }
-            return that.new_model(options_clone, serialized_state);
+            return this.new_model(options_clone, serialized_state);
         });
     };
 
