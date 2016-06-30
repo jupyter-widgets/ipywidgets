@@ -1,10 +1,6 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-//var utils = require('./utils');
-//var managerBase = require('./manager-base');
-//var _ = require('underscore');
-
 import * as managerBase from './manager-base';
 import * as Backbone from 'backbone';
 import * as _ from 'underscore';
@@ -645,7 +641,7 @@ abstract class WidgetView extends NativeView<WidgetModel> {
     /**
      * Create msg callbacks for a comm msg.
      */
-    callbacks(){
+    callbacks() {
         return this.model.callbacks(this);
     }
 
