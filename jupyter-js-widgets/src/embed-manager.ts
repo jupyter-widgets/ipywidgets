@@ -27,14 +27,18 @@ class EmbedManager extends ManagerBase<HTMLElement> {
     };
 
     _create_comm() {
-        return Promise.resolve({});
+        return Promise.resolve({
+            on_close: () => {},
+            on_msg: () => {},
+            close: () => {}
+        });
     };
 
+    /**
+     * Takes a requirejs success handler and returns a requirejs error handler
+     * that attempts loading the module from npmcdn. 
+     */
     require_error(success_callback) {
-        /**
-         * Takes a requirejs success handler and returns a requirejs error handler
-         * that attempts loading the module from npmcdn. 
-         */
         return function(err) {
             var failedId = err.requireModules && err.requireModules[0];
             if (failedId) {
@@ -44,7 +48,5 @@ class EmbedManager extends ManagerBase<HTMLElement> {
                 throw err;
             }
         };
-}
-
-
+    }
 };
