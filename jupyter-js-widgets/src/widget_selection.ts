@@ -57,7 +57,9 @@ class DropdownView extends DOMWidgetView {
     }
 
     render() {
-        this.el.classList.add('jupyter-widgets', 'widget-hbox', 'widget-dropdown');
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-dropdown');
 
         this.label = document.createElement('div');
         this.el.appendChild(this.label);
@@ -851,7 +853,9 @@ class SelectionSliderView extends DOMWidgetView {
      * Called when view is rendered.
      */
     render () {
-        this.el.classList.add('jupyter-widgets', 'widget-hbox', 'widget-hslider');
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-hslider');
         this.label = document.createElement('div');
         this.label.classList.add('widget-label');
         this.label.style.display = 'none';
@@ -933,11 +937,15 @@ class SelectionSliderView extends DOMWidgetView {
 
             // Use the right CSS classes for vertical & horizontal sliders
             if (orientation === 'vertical') {
-                this.el.classList.remove('widget-hslider', 'widget-hbox');
-                this.el.classList.add('widget-vslider', 'widget-vbox');
+                this.el.classList.remove('widget-hslider');
+                this.el.classList.remove('widget-hbox');
+                this.el.classList.add('widget-vslider');
+                this.el.classList.add('widget-vbox');
             } else {
-                this.el.classList.remove('widget-vslider', 'widget-vbox');
-                this.el.classList.add('widget-hslider', 'widget-hbox');
+                this.el.classList.remove('widget-vslider');
+                this.el.classList.remove('widget-vbox');
+                this.el.classList.add('widget-hslider');
+                this.el.classList.add('widget-hbox');
             }
 
             var readout = this.model.get('readout');
