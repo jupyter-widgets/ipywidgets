@@ -1,24 +1,30 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-'use strict';
 
-var widget = require('./widget');
-var utils= require('./utils');
-var _ = require('underscore');
+import {
+    DOMWidgetModel, DOMWidgetView, unpack_models, ViewList
+} from './widget';
+import * as _ from 'underscore';
+import * as utils from './utils';
 
-var ControllerButtonModel = widget.DOMWidgetModel.extend({
-    defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: 'ControllerButtonModel',
-        _view_name: 'ControllerButtonView',
-        value: 0.0,
-        pressed: false
-    })
-});
+export
+class ControllerButtonModel extends DOMWidgetModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'ControllerButtonModel',
+            _view_name: 'ControllerButtonView',
+            value: 0.0,
+            pressed: false
+        });
+    }
+}
 
-var ControllerButtonView = widget.DOMWidgetView.extend({
-    /* Very simple view for a gamepad button. */
-
-    render: function() {
+/**
+ * Very simple view for a gamepad button.
+ */
+export
+class ControllerButtonView extends DOMWidgetView {
+    render() {
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-controller-button');
 
@@ -34,7 +40,7 @@ var ControllerButtonView = widget.DOMWidgetView.extend({
         this.bar = document.createElement('div');
         this.bar.style.position = 'absolute';
         this.bar.style.width = '100%';
-        this.bar.style.bottom = 0;
+        this.bar.style.bottom = '0px';
         this.bar.style.background = 'gray';
         this.support.appendChild(this.bar);
 
@@ -43,24 +49,35 @@ var ControllerButtonView = widget.DOMWidgetView.extend({
         this.label.textContent = this.model.get('description');
         this.label.style.textAlign = 'center';
         this.el.appendChild(this.label);
-    },
-
-    update: function() {
-        this.bar.style.height = 100 * this.model.get('value') + '%';
     }
-});
 
-var ControllerAxisModel = widget.DOMWidgetModel.extend({
-    defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: 'ControllerAxisModel',
-        _view_name: 'ControllerAxisView',
-        value: 0.0
-    })
-});
+    update() {
+        this.bar.style.height = `${100 * this.model.get('value')}%`;
+    }
 
-var ControllerAxisView = widget.DOMWidgetView.extend({
-    /* Very simple view for a gamepad axis. */
-    render: function() {
+    support: HTMLDivElement;
+    bar: HTMLDivElement;
+    label: HTMLDivElement;
+}
+
+
+export
+class ControllerAxisModel extends DOMWidgetModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'ControllerAxisModel',
+            _view_name: 'ControllerAxisView',
+            value: 0.0
+        });
+    }
+}
+
+/**
+ * Very simple view for a gamepad axis.
+ */
+export
+class ControllerAxisView extends DOMWidgetView {
+    render() {
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-controller-axis');
         this.el.style.width = '16px';
@@ -90,29 +107,39 @@ var ControllerAxisView = widget.DOMWidgetView.extend({
         this.el.appendChild(this.label);
 
         this.update();
-    },
-
-    update: function() {
-        this.bullet.style.top = 50 * (this.model.get('value') + 1) + '%';
     }
 
-});
+    update() {
+        this.bullet.style.top = `${50 * (this.model.get('value') + 1)}%`
+    }
 
-var ControllerModel = widget.DOMWidgetModel.extend({
-    /* The Controller model. */
-    defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: 'ControllerModel',
-        _view_name: 'ControllerView',
-        index: 0,
-        name: '',
-        mapping: '',
-        connected: false,
-        timestamp: 0,
-        buttons: [],
-        axes: []
-    }),
+    support: HTMLDivElement;
+    bullet: HTMLDivElement;
+    label: HTMLDivElement;
+}
 
-    initialize: function() {
+export
+class ControllerModel extends DOMWidgetModel {
+    static serializers = _.extend({
+        buttons: {deserialize: unpack_models},
+        axes: {deserialize: unpack_models}
+    }, DOMWidgetModel.serializers)
+
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'ControllerModel',
+            _view_name: 'ControllerView',
+            index: 0,
+            name: '',
+            mapping: '',
+            connected: false,
+            timestamp: 0,
+            buttons: [],
+            axes: []
+        });
+    }
+
+    initialize() {
         if (navigator.getGamepads === void 0) {
             // Checks if the browser supports the gamepad API
             this.readout = 'This browser does not support gamepads.';
@@ -131,13 +158,14 @@ var ControllerModel = widget.DOMWidgetModel.extend({
                 this.wait_loop();
             }
         }
-    },
+    }
 
-    wait_loop: function() {
-        /* Waits for a gamepad to be connected at the provided index.
-         * Once one is connected, it will start the update loop, which
-         * populates the update of axes and button values.
-         */
+    /**
+     * Waits for a gamepad to be connected at the provided index.
+     * Once one is connected, it will start the update loop, which
+     * populates the update of axes and button values.
+     */
+    wait_loop() {
         var index = this.get('index');
         var pad = navigator.getGamepads()[index];
         if (pad) {
@@ -150,16 +178,17 @@ var ControllerModel = widget.DOMWidgetModel.extend({
         } else {
             window.requestAnimationFrame(this.wait_loop.bind(this));
         }
-    },
+    }
 
-    setup: function(pad) {
-        /* Given a native gamepad object, returns a promise for a dictionary of
-         * controls, of the form
-         * {
-         *     buttons: list of Button models,
-         *     axes: list of Axis models,
-         * }
-         */
+    /**
+     * Given a native gamepad object, returns a promise for a dictionary of
+     * controls, of the form
+     * {
+     *     buttons: list of Button models,
+     *     axes: list of Axis models,
+     * }
+     */
+    setup(pad) {
         // Set up the main gamepad attributes
         this.set({
             name: pad.id,
@@ -177,12 +206,13 @@ var ControllerModel = widget.DOMWidgetModel.extend({
                 return that._create_axis_model(index);
             })),
         });
-    },
+    }
 
-    update_loop: function() {
-        /* Update axes and buttons values, until the gamepad is disconnected.
-         * When the gamepad is disconnected, this.reset_gamepad is called.
-         */
+    /**
+     * Update axes and buttons values, until the gamepad is disconnected.
+     * When the gamepad is disconnected, this.reset_gamepad is called.
+     */
+    update_loop() {
         var index = this.get('index');
         var id = this.get('name');
         var pad = navigator.getGamepads()[index];
@@ -207,11 +237,12 @@ var ControllerModel = widget.DOMWidgetModel.extend({
         } else {
             this.reset_gamepad();
         }
-    },
+    }
 
-    reset_gamepad: function() {
-        /* Resets the gamepad attributes, and start the wait_loop.
-         */
+    /**
+     * Resets the gamepad attributes, and start the wait_loop.
+     */
+    reset_gamepad() {
         this.get('buttons').forEach(function(button) {
             button.close();
         });
@@ -228,11 +259,12 @@ var ControllerModel = widget.DOMWidgetModel.extend({
         });
         this.save_changes();
         window.requestAnimationFrame(this.wait_loop.bind(this));
-    },
+    }
 
-    _create_button_model: function(index) {
-        /* Creates a gamepad button widget.
-         */
+    /**
+     * Creates a gamepad button widget.
+     */
+    _create_button_model(index) {
         return this.widget_manager.new_widget({
              model_name: 'ControllerButtonModel',
              model_module: 'jupyter-js-widgets',
@@ -241,11 +273,12 @@ var ControllerModel = widget.DOMWidgetModel.extend({
              model.set('description', index);
              return model;
         });
-    },
+    }
 
-    _create_axis_model: function(index) {
-        /* Creates a gamepad axis widget.
-         */
+    /**
+     * Creates a gamepad axis widget.
+     */
+    _create_axis_model(index) {
         return this.widget_manager.new_widget({
              model_name: 'ControllerAxisModel',
              model_module: 'jupyter-js-widgets',
@@ -256,33 +289,31 @@ var ControllerModel = widget.DOMWidgetModel.extend({
         });
     }
 
-}, {
-    serializers: _.extend({
-        buttons: {deserialize: widget.unpack_models},
-        axes: {deserialize: widget.unpack_models}
-    }, widget.DOMWidgetModel.serializers)
-});
+    readout: string;
+}
 
-var ControllerView = widget.DOMWidgetView.extend({
-    /* A simple view for a gamepad. */
+/**
+ * A simple view for a gamepad.
+ */
+export
+class ControllerView extends DOMWidgetView {
+    initialize(parameters) {
+        super.initialize(parameters);
 
-    initialize: function() {
-        ControllerView.__super__.initialize.apply(this, arguments);
-
-        this.button_views = new widget.ViewList(this.add_button, null, this);
+        this.button_views = new ViewList(this.add_button, null, this);
         this.listenTo(this.model, 'change:buttons', function(model, value) {
             this.button_views.update(value);
-        }, this);
+        });
 
-        this.axis_views = new widget.ViewList(this.add_axis, null, this);
+        this.axis_views = new ViewList(this.add_axis, null, this);
         this.listenTo(this.model, 'change:axes', function(model, value) {
             this.axis_views.update(value);
-        }, this);
+        });
 
-        this.listenTo(this.model, 'change:name', this.update_label, this);
-    },
+        this.listenTo(this.model, 'change:name', this.update_label);
+    }
 
-    render: function(){
+    render(){
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-controller');
         this.box = this.el;
@@ -300,13 +331,13 @@ var ControllerView = widget.DOMWidgetView.extend({
         this.axis_views.update(this.model.get('axes'));
 
         this.update_label();
-    },
+    }
 
-    update_label: function() {
+    update_label() {
         this.label.textContent = this.model.get('name') || this.model.readout;
-    },
+    }
 
-    add_button: function(model) {
+    add_button(model) {
         var that = this;
         var dummy = document.createElement('div');
 
@@ -318,9 +349,9 @@ var ControllerView = widget.DOMWidgetView.extend({
             });
             return view;
         }).catch(utils.reject('Could not add button view', true));
-    },
+    }
 
-    add_axis: function(model) {
+    add_axis(model) {
         var that = this;
         var dummy = document.createElement('div');
 
@@ -332,21 +363,19 @@ var ControllerView = widget.DOMWidgetView.extend({
             });
             return view;
         }).catch(utils.reject('Could not add axis view', true));
-    },
+    }
 
-    remove: function() {
-        ControllerView.__super__.remove.apply(this, arguments);
+    remove() {
+        super.remove();
         this.button_views.remove();
         this.axis_views.remove();
     }
 
-});
-
-module.exports = {
-    ControllerButtonView: ControllerButtonView,
-    ControllerButtonModel: ControllerButtonModel,
-    ControllerAxisView: ControllerAxisView,
-    ControllerAxisModel: ControllerAxisModel,
-    ControllerModel: ControllerModel,
-    ControllerView: ControllerView
-};
+    button_views: any;
+    axis_views: any;
+    box: HTMLElement;
+    label: HTMLDivElement;
+    axis_box: HTMLDivElement;
+    button_box: HTMLDivElement;
+    model: ControllerModel;
+}

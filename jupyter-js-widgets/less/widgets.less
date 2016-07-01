@@ -339,9 +339,11 @@
 .widget-tab {
     /* TabView */
     height: 100%;
+    border-bottom: 1px solid #BDBDBD;
+    border-left: 1px solid #BDBDBD;
+    border-right: 1px solid #BDBDBD;
 
     .widget-tab-contents {
-        height: 100%;
 
         .widget-tab-child {
             display: none;
@@ -417,11 +419,19 @@
         }
 
         .p-TabBar-tabIcon,
-        .p-TabBar-tabText,
+        .p-TabBar-tabLabel,
         .p-TabBar-tabCloseIcon {
             line-height: 22px;
         }
     }
+}
+
+.widget-width {
+    width : @widget-width;
+}
+
+.widget-width-short {
+    width : @widget-width-short;
 }
 
 .widget-text {

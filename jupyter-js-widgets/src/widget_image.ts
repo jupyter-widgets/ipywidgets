@@ -1,39 +1,42 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-'use strict';
 
-var widget = require('./widget');
-var _ = require('underscore');
+import {
+    DOMWidgetModel, DOMWidgetView
+} from './widget';
 
-var ImageModel = widget.DOMWidgetModel.extend({
-    defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: 'ImageModel',
-        _view_name: 'ImageView',
-        format: 'png',
-        width: '',
-        height: '',
-        _b64value: ''
-    })
-});
+import {
+    Widget
+} from 'phosphor/lib/ui/widget';
 
-var ImageView = widget.DOMWidgetView.extend({
-    initialize: function() {
-        /**
-         * Called when view is instantiated.
-         */
-        this.setElement(document.createElement('img'));
-        ImageView.__super__.initialize.apply(this, arguments);
-    },
+import * as _ from 'underscore';
 
-    render: function() {
+export
+class ImageModel extends DOMWidgetModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'ImageModel',
+            _view_name: 'ImageView',
+            format: 'png',
+            width: '',
+            height: '',
+            _b64value: ''
+        });
+    }
+}
+
+export
+class ImageView extends DOMWidgetView {
+    render() {
         /**
          * Called when view is rendered.
          */
-        this.el.className = 'jupyter-widgets widget-image';
+        this.pWidget.addClass('jupyter-widgets');
+        this.pWidget.addClass('widget-image');
         this.update(); // Set defaults.
-    },
+    }
 
-    update : function() {
+    update() {
         /**
          * Update the contents of this view
          *
@@ -56,11 +59,22 @@ var ImageView = widget.DOMWidgetView.extend({
         } else {
             this.el.removeAttribute('height');
         }
-        return ImageView.__super__.update.apply(this);
+        return super.update();
     }
-});
+    
+    /**
+     * The default tag name.
+     *
+     * #### Notes
+     * This is a read-only attribute.
+     */
+    get tagName() {
+        // We can't make this an attribute with a default value
+        // since it would be set after it is needed in the
+        // constructor.
+        return 'img';
+    }
 
-module.exports = {
-    ImageView: ImageView,
-    ImageModel: ImageModel
-};
+
+    el: HTMLImageElement;
+}

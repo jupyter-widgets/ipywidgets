@@ -3,13 +3,12 @@
 
 // TODO: ATTEMPT TO KILL THIS MODULE USING THIRD PARTY LIBRARIES WHEN IPYWIDGETS
 // IS CONVERTED TO NODE COMMONJS.
-'use strict';
-
 
 /**
  * http://www.ietf.org/rfc/rfc4122.txt
  */
-function uuid() {
+export
+function uuid(): string {
     var s = [];
     var hexDigits = '0123456789ABCDEF';
     for (var i = 0; i < 32; i++) {
@@ -28,27 +27,20 @@ function uuid() {
  * returns a new instance of Error.  Here we capture that instance so we
  * can apply it's properties to `this`.
  */
-function WrappedError(message, error){
-    var tmp = Error.apply(this, [message]);
-
-    // Copy the properties of the error over to this.
-    var properties = Object.getOwnPropertyNames(tmp);
-    for (var i = 0; i < properties.length; i++) {
-        this[properties[i]] = tmp[properties[i]];
+export
+class WrappedError extends Error {
+    constructor(message, error) {
+        super(message);
+        // Keep a stack of the original error messages.
+        if (error instanceof WrappedError) {
+            this.error_stack = error.error_stack;
+        } else {
+            this.error_stack = [error];
+        }
+        this.error_stack.push(this);
     }
-
-    // Keep a stack of the original error messages.
-    if (error instanceof WrappedError) {
-        this.error_stack = error.error_stack;
-    } else {
-        this.error_stack = [error];
-    }
-    this.error_stack.push(tmp);
-
-    return this;
+    error_stack: this[];
 }
-WrappedError.prototype = Object.create(Error.prototype, {});
-
 
 /**
  * Tries to load a class
@@ -62,23 +54,24 @@ WrappedError.prototype = Object.create(Error.prototype, {});
  * handler with a fallback module.
  *
  */
-function loadClass(class_name, module_name, registry, require_error) {
+
+export
+function loadClass(class_name, module_name, registry, require_error): Promise<any> {
     return new Promise(function(resolve, reject) {
 
         // Try loading the view module using require.js
         if (module_name) {
-
             // If the module is jupyter-js-widgets, we can just self import.
             var modulePromise;
-            var requirejsDefined = typeof window !== 'undefined' && window.requirejs;
+            var requirejsDefined = typeof window !== 'undefined' && (window as any).requirejs;
             if (requirejsDefined) {
-                if (module_name !== 'jupyter-js-widgets' || window.requirejs.defined('jupyter-js-widgets')) {
+                if (module_name !== 'jupyter-js-widgets' || (window as any).requirejs.defined('jupyter-js-widgets')) {
                     modulePromise = new Promise(function(innerResolve, innerReject) {
                         var success_callback = function(module) {
                             innerResolve(module);
                         };
                         var failure_callback = require_error ? require_error(success_callback) : innerReject;
-                        window.require([module_name], success_callback, failure_callback);
+                        (window as any).require([module_name], success_callback, failure_callback);
                     });
                 } else if (module_name === 'jupyter-js-widgets') {
                     modulePromise = Promise.resolve(require('../'));
@@ -108,11 +101,13 @@ function loadClass(class_name, module_name, registry, require_error) {
     });
 }
 
+
 /**
  * Resolve a promiseful dictionary.
  * Returns a single Promise.
  */
-function resolvePromisesDict(d) {
+export
+function resolvePromisesDict(d): Promise<any> {
     var keys = Object.keys(d);
     var values = [];
     keys.forEach(function(key) {
@@ -134,6 +129,7 @@ function resolvePromisesDict(d) {
  * that has the provided message and wraps the original error that
  * caused the promise to reject.
  */
+export
 function reject(message, log) {
     return function promiseRejection(error) {
         var wrapped_error = new WrappedError(message, error);
@@ -141,6 +137,7 @@ function reject(message, log) {
         return Promise.reject(wrapped_error);
     };
 }
+
 
 /**
  * Apply MathJax rendering to an element, and optionally set its text.
@@ -152,30 +149,23 @@ function reject(message, log) {
  * element: Node
  * text: optional string
  */
-function typeset(element, text) {
+export
+function typeset(element: HTMLElement, text: string): void {
     if (text !== void 0) {
         element.textContent = text;
     }
-    if (window.MathJax) {
+    if (typeof MathJax !== "undefined") {
       MathJax.Hub.Queue(['Typeset', MathJax.Hub, element]);
     }
 }
 
+
 /**
  * escape text to HTML
  */
-var escape_html = function(text) {
+export
+function escape_html(text: string): string {
     var esc  = document.createElement('div');
     esc.textContent = text;
     return esc.innerHTML;
-};
-
-module.exports = {
-    uuid: uuid,
-    WrappedError: WrappedError,
-    loadClass: loadClass,
-    resolvePromisesDict: resolvePromisesDict,
-    reject: reject,
-    typeset: typeset,
-    escape_html: escape_html
 };

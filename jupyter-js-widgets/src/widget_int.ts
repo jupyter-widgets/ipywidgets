@@ -1,58 +1,69 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-'use strict';
 
-var widget = require('./widget');
-var _ = require('underscore');
-var $ = require('jquery');
-var d3format = require('d3-format').format;
+import {
+    DOMWidgetModel, DOMWidgetView
+} from './widget';
+import * as _ from 'underscore';
+
+var $: any = require('jquery');
+var d3format: any = (require('d3-format') as any).format;
 
 require('jquery-ui');
 
+export
+class IntModel extends DOMWidgetModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'IntModel',
+            value: 0,
+            disabled: false,
+            description: ''
+        });
+    }
+}
 
-var IntModel = widget.DOMWidgetModel.extend({
-    defaults: _.extend({}, widget.DOMWidgetModel.prototype.defaults, {
-        _model_name: 'IntModel',
-        value: 0,
-        disabled: false,
-        description: ''
-    })
-});
+export
+class BoundedIntModel extends IntModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'BoundedIntModel',
+            step: 1,
+            max: 100,
+            min: 0
+        });
+    }
+}
 
-var BoundedIntModel = IntModel.extend({
-    defaults: _.extend({}, IntModel.prototype.defaults, {
-        _model_name: 'BoundedIntModel',
-        step: 1,
-        max: 100,
-        min: 0
-    })
-});
-
-var IntSliderModel = BoundedIntModel.extend({
-    defaults: _.extend({}, BoundedIntModel.prototype.defaults, {
-        _model_name: 'IntSliderModel',
-        _view_name: 'IntSliderView',
-        orientation: 'horizontal',
-        _range: false,
-        readout: true,
-        readout_format: 'd',
-        slider_color: null,
-        continuous_update: true
-    }),
-
-    initialize: function () {
-        IntSliderModel.__super__.initialize.apply(this, arguments);
+export
+class IntSliderModel extends IntModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'IntSliderModel',
+            _view_name: 'IntSliderView',
+            orientation: 'horizontal',
+            _range: false,
+            readout: true,
+            readout_format: 'd',
+            slider_color: null,
+            continuous_update: true
+        });
+    }
+    initialize() {
+        super.initialize();
         this.on('change:readout_format', this.update_readout_format, this);
         this.update_readout_format();
-    },
-
-    update_readout_format: function() {
+    }
+    update_readout_format() {
         this.readout_formatter = d3format(this.get('readout_format'));
     }
-});
+    readout_formatter: any;
+}
 
-var IntSliderView = widget.DOMWidgetView.extend({
-    render: function() {
+
+export
+class IntSliderView extends DOMWidgetView {
+    render() {
         /**
          * Called when view is rendered.
          */
@@ -72,50 +83,31 @@ var IntSliderView = widget.DOMWidgetView.extend({
             })
             .addClass('slider');
         // Put the slider in a container
-        this.$slider_container = $('<div />')
-            .addClass('slider-container')
-            .append(this.$slider);
-        this.$el.append(this.$slider_container);
-
+        this.slider_container = document.createElement('div');
+        this.slider_container.classList.add('slider-container');
+        this.slider_container.appendChild(this.$slider[0]);
+        this.el.appendChild(this.slider_container);
         this.readout = document.createElement('div');
         this.el.appendChild(this.readout);
         this.readout.classList.add('widget-readout');
-        this.readout.contentEditable = true;
+        this.readout.contentEditable = 'true';
         this.readout.style.display = 'none';
 
         this.listenTo(this.model, 'change:slider_color', function(sender, value) {
             this.$slider.find('a').css('background', value);
-        }, this);
+        });
         this.listenTo(this.model, 'change:description', function(sender, value) {
             this.updateDescription();
-        }, this);
+        });
 
         this.$slider.find('a').css('background', this.model.get('slider_color'));
 
         // Set defaults.
         this.update();
         this.updateDescription();
-    },
+    }
 
-    update_attr: function(name, value) { // TODO: Deprecated in 5.0
-        /**
-         * Set a css attr of the widget view.
-         */
-        if (name == 'color') {
-            this.readout.style[name] = value;
-        } else if (name.substring(0, 4) == 'font') {
-            this.readout.style[name] = value;
-        } else if (name.substring(0, 6) == 'border') {
-            this.$slider.find('a').css(name, value);
-            this.$slider_container.css(name, value);
-        } else if (name == 'background') {
-            this.$slider_container.css(name, value);
-        } else {
-            this.el.style[name] = value;
-        }
-    },
-
-    updateDescription: function(options) {
+    updateDescription() {
         var description = this.model.get('description');
         if (description.length === 0) {
             this.label.style.display = 'none';
@@ -123,9 +115,9 @@ var IntSliderView = widget.DOMWidgetView.extend({
             this.typeset(this.label, description);
             this.label.style.display = '';
         }
-    },
+    }
 
-    update: function(options) {
+    update(options?) {
         /**
          * Update the contents of this view
          *
@@ -225,22 +217,22 @@ var IntSliderView = widget.DOMWidgetView.extend({
             }
 
         }
-        return IntSliderView.__super__.update.apply(this);
-    },
+        return super.update();
+    }
 
     /**
      * Returns true if the readout box content overflows.
      */
-    readout_overflow: function() {
+    readout_overflow() {
         return this.readout.scrollWidth > this.readout.clientWidth;
-    },
+    }
 
     /**
      * Write value to a string
      * @param  {number|number[]} value
      * @return {string}
      */
-    valueToString: function(value) {
+    valueToString(value) {
         var format = this.model.readout_formatter;
         if (this.model.get('_range')) {
             return value.map(function (v) {
@@ -249,14 +241,14 @@ var IntSliderView = widget.DOMWidgetView.extend({
         } else {
             return format(value);
         }
-    },
+    }
 
     /**
      * Parse value from a string
      * @param  {string} text
      * @return {number|number[]} value
      */
-    stringToValue: function(text) {
+    stringToValue(text): number | number[] {
         if (this.model.get('_range')) {
             // range case
             // ranges can be expressed either 'val-val' or 'val:val' (+spaces)
@@ -270,24 +262,26 @@ var IntSliderView = widget.DOMWidgetView.extend({
         } else {
             return this._parse_value(text);
         }
-    },
+    }
 
-    events: {
-        // Dictionary of events and their handlers.
-        'slide': 'handleSliderChange',
-        'slidestop': 'handleSliderChanged',
-        'blur [contentEditable=true]': 'handleTextChange',
-        'keydown [contentEditable=true]': 'handleKeyDown'
-    },
+    events(): {[e: string]: string} {
+        return {
+            // Dictionary of events and their handlers.
+            'slide': 'handleSliderChange',
+            'slidestop': 'handleSliderChanged',
+            'blur [contentEditable=true]': 'handleTextChange',
+            'keydown [contentEditable=true]': 'handleKeyDown'
+        }
+    }
 
-    handleKeyDown: function(e) {
+    handleKeyDown(e) {
         if (e.keyCode == 13) { /* keyboard keycodes `enter` */
             e.preventDefault();
             this.handleTextChange();
         }
-    },
+    }
 
-    handleTextChange: function() {
+    handleTextChange() {
         /**
          * this handles the entry of text into the contentEditable label
          * first, the value is checked if it contains a parseable number
@@ -326,10 +320,10 @@ var IntSliderView = widget.DOMWidgetView.extend({
         } else {
 
             // single value case
-            if (isNaN(value)) {
+            if (isNaN(value as number)) {
                 this.readout.textContent = this.valueToString(this.model.get('value'));
             } else {
-                value = Math.max(Math.min(value, vmax), vmin);
+                value = Math.max(Math.min(value as number, vmax), vmin);
 
                 if (value != this.model.get('value')) {
                     this.readout.textContent = this.valueToString(value);
@@ -340,16 +334,12 @@ var IntSliderView = widget.DOMWidgetView.extend({
                 }
             }
         }
-    },
-
-    _parse_value: parseInt,
-
-    _range_regex: /^\s*([+-]?\d+)\s*[-:]\s*([+-]?\d+)/,
+    }
 
     /**
      * Called when the slider value is changing.
      */
-    handleSliderChange: function(e, ui) {
+    handleSliderChange(e, ui) {
         var actual_value;
         if (this.model.get('_range')) {
             actual_value = ui.values.map(this._validate_slide_value);
@@ -364,7 +354,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
         if (this.model.get('continuous_update')) {
             this.handleSliderChanged(e, ui);
         }
-    },
+    }
 
     /**
      * Called when the slider value has changed.
@@ -372,7 +362,7 @@ var IntSliderView = widget.DOMWidgetView.extend({
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    handleSliderChanged: function(e, ui) {
+    handleSliderChanged(e, ui) {
         var actual_value;
         if (this.model.get('_range')) {
             actual_value = ui.values.map(this._validate_slide_value);
@@ -381,26 +371,38 @@ var IntSliderView = widget.DOMWidgetView.extend({
         }
         this.model.set('value', actual_value, {updated_view: this});
         this.touch();
-    },
+    }
 
-    _validate_slide_value: function(x) {
+    _validate_slide_value(x) {
         /**
          * Validate the value of the slider before sending it to the back-end
          * and applying it to the other views on the page.
          */
         return Math.floor(x);
     }
-});
 
-var IntTextModel = IntModel.extend({
-    defaults: _.extend({}, IntModel.prototype.defaults, {
-        _model_name: 'IntTextModel',
-        _view_name: 'IntTextView'
-    })
-});
+    label: HTMLElement;
+    $slider: any;
+    slider_container: HTMLElement;
+    readout: HTMLDivElement;
+    model: IntSliderModel;
+    _parse_value = parseInt;
+    _range_regex = /^\s*([+-]?\d+)\s*[-:]\s*([+-]?\d+)/;
+}
 
-var IntTextView = widget.DOMWidgetView.extend({
-    render: function() {
+export
+class IntTextModel extends IntModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'IntTextModel',
+            _view_name: 'IntTextView'
+        });
+    }
+}
+
+export
+class IntTextView extends DOMWidgetView {
+    render() {
         /**
          * Called when view is rendered.
          */
@@ -420,13 +422,13 @@ var IntTextView = widget.DOMWidgetView.extend({
 
         this.listenTo(this.model, 'change:description', function(sender, value) {
             this.updateDescription();
-        }, this);
+        });
 
         this.update(); // Set defaults.
         this.updateDescription();
-    },
+    }
 
-    updateDescription: function() {
+    updateDescription() {
         var description = this.model.get('description');
         if (description.length === 0) {
             this.label.style.display = 'none';
@@ -434,9 +436,9 @@ var IntTextView = widget.DOMWidgetView.extend({
             this.typeset(this.label, description);
             this.label.style.display = '';
         }
-    },
+    }
 
-    update: function(options) {
+    update(options?) {
         /**
          * Update the contents of this view
          *
@@ -444,9 +446,10 @@ var IntTextView = widget.DOMWidgetView.extend({
          * changed by another view or by a state update from the back-end.
          */
         if (options === undefined || options.updated_view != this) {
-            var value = this.model.get('value');
-            if (this._parse_value(this.textbox.value != value)) {
-                this.textbox.value = value;
+            var value: number = this.model.get('value');
+
+            if (this._parse_value(this.textbox.value) !== value) {
+                this.textbox.value = value.toString();
             }
 
             var disabled = this.model.get('disabled');
@@ -456,31 +459,22 @@ var IntTextView = widget.DOMWidgetView.extend({
                 this.textbox.removeAttribute('disabled');
             }
         }
-        return IntTextView.__super__.update.apply(this);
-    },
+        return super.update();
+    }
 
-    update_attr: function(name, value) { // TODO: Deprecated in 5.0
-        /**
-         * Set a css attr of the widget view.
-         */
-        if (name == 'padding' || name == 'margin') {
-            this.el.style[name] = value;
-        } else {
-            this.textbox.style[name] = value;
-        }
-    },
+    events(): {[e: string]: string} {
+        return {
+            // Dictionary of events and their handlers.
+            'keyup input'  : 'handleChanging',
+            'paste input'  : 'handleChanging',
+            'cut input'    : 'handleChanging',
 
-    events: {
-        // Dictionary of events and their handlers.
-        'keyup input'  : 'handleChanging',
-        'paste input'  : 'handleChanging',
-        'cut input'    : 'handleChanging',
+            // Fires only when control is validated or looses focus.
+            'change input' : 'handleChanged'
+        };
+    }
 
-        // Fires only when control is validated or looses focus.
-        'change input' : 'handleChanged'
-    },
-
-    handleChanging: function(e) {
+    handleChanging(e) {
         /**
          * Handles and validates user input.
          *
@@ -516,31 +510,38 @@ var IntTextView = widget.DOMWidgetView.extend({
                 this.touch();
             }
         }
-    },
+    }
 
-    handleChanged: function(e) {
+    handleChanged(e) {
         /**
          * Applies validated input.
          */
         if (e.target.value.trim() === '' || e.target.value !== this.model.get('value')) {
             e.target.value = this.model.get('value');
         }
-    },
+    }
 
-    _parse_value: parseInt
-});
+    _parse_value = parseInt
+    label: HTMLElement;
+    textbox: HTMLInputElement;
+}
 
-var ProgressModel = BoundedIntModel.extend({
-    defaults: _.extend({}, BoundedIntModel.prototype.defaults, {
-        _model_name: 'ProgressModel',
-        _view_name: 'ProgressView',
-        orientation: 'horizontal',
-        bar_style: ''
-    })
-});
+export
+class ProgressModel extends BoundedIntModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'ProgressModel',
+            _view_name: 'ProgressView',
+            orientation: 'horizontal',
+            bar_style: ''
+        });
+    }
+}
 
-var ProgressView = widget.DOMWidgetView.extend({
-    render: function() {
+
+export
+class ProgressView extends DOMWidgetView {
+    render() {
         /**
          * Called when view is rendered.
          */
@@ -563,23 +564,23 @@ var ProgressView = widget.DOMWidgetView.extend({
         this.bar = document.createElement('div');
         this.bar.classList.add('progress-bar');
         this.bar.style.position = 'absolute';
-        this.bar.style.bottom = 0;
-        this.bar.style.left = 0;
+        this.bar.style.bottom = '0px';
+        this.bar.style.left = '0px';
         this.progress.appendChild(this.bar);
 
         // Set defaults.
         this.update();
         this.updateDescription();
 
-        this.listenTo(this.model, 'change:bar_style', this.update_bar_style, this);
+        this.listenTo(this.model, 'change:bar_style', this.update_bar_style);
         this.listenTo(this.model, 'change:description', function(sender, value) {
             this.updateDescription();
-        }, this);
+        });
 
         this.update_bar_style();
-    },
+    }
 
-    updateDescription: function() {
+    updateDescription() {
         var description = this.model.get('description');
         if (description.length === 0) {
             this.label.style.display = 'none';
@@ -587,9 +588,9 @@ var ProgressView = widget.DOMWidgetView.extend({
             this.typeset(this.label, description);
             this.label.style.display = '';
         }
-    },
+    }
 
-    update: function() {
+    update() {
         /**
          * Update the contents of this view
          *
@@ -620,10 +621,10 @@ var ProgressView = widget.DOMWidgetView.extend({
             this.bar.style.width = '100%';
             this.bar.style.height = percent + '%';
         }
-        return ProgressView.__super__.update.apply(this);
-    },
+        return super.update();
+    }
 
-    update_bar_style: function() {
+    update_bar_style() {
         var class_map = {
             success: ['progress-bar-success'],
             info: ['progress-bar-info'],
@@ -631,39 +632,32 @@ var ProgressView = widget.DOMWidgetView.extend({
             danger: ['progress-bar-danger']
         };
         this.update_mapped_classes(class_map, 'bar_style', this.bar);
-    },
-
-    update_attr: function(name, value) { // TODO: Deprecated in 5.0
-        /**
-         * Set a css attr of the widget view.
-         */
-        if (name == 'color') {
-            this.bar.style.background = value;
-        } else if (name.substring(0, 6) == 'border' || name == 'background') {
-            this.progress.style[name] = value;
-        } else {
-            this.el.style[name] = value;
-        }
     }
-});
 
-var PlayModel = BoundedIntModel.extend({
-    defaults: _.extend({}, BoundedIntModel.prototype.defaults, {
-        _model_name: 'PlayModel',
-        _view_name: 'PlayView',
-        _playing: false,
-        interval: 100
-    }),
+    label: HTMLDivElement;
+    progress: HTMLDivElement;
+    bar: HTMLDivElement;
+}
 
-    initialize: function () {
+export
+class PlayModel extends BoundedIntModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'PlayModel',
+            _view_name: 'PlayView',
+            _playing: false,
+            interval: 100
+        });
+    }
+    initialize() {
         this.on('change:_playing', function () {
             if (this.get('_playing')) {
                 this.loop();
             }
         }, this);  
-    },
+    }
 
-    loop: function () {
+    loop() {
         if (this.get('_playing')) {
             var next_value = this.get('value') + this.get('step');
             if (next_value < this.get('max')) {
@@ -675,29 +669,30 @@ var PlayModel = BoundedIntModel.extend({
             }
             this.save_changes();
         }   
-    },
+    }
 
-    stop: function () {
+    stop() {
         this.set('_playing', false);
         this.set('value', this.get('min'));
         this.save_changes();
-    },
+    }
 
-    pause: function () {
+    pause() {
         this.set('_playing', false);
         this.save_changes();
-    },
+    }
 
-    play: function() {
+    play() {
         this.set('_playing', true);
         this.save_changes();
     }
-});
+}
 
-var PlayView = widget.DOMWidgetView.extend({
-    render: function() {
+export
+class PlayView extends DOMWidgetView {
+    render() {
         this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widgets-hbox');
+        this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-play');
 
         this.playButton = document.createElement('button');
@@ -726,11 +721,11 @@ var PlayView = widget.DOMWidgetView.extend({
         this.pauseButton.onclick = this.model.pause.bind(this.model);
         this.stopButton.onclick = this.model.stop.bind(this.model);
 
-        this.listenTo(this.model, 'change:_playing', this.update_playing, this);
+        this.listenTo(this.model, 'change:_playing', this.update_playing);
         this.update_playing();
-    },
+    }
 
-    update_playing: function() {
+    update_playing() {
         var playing = this.model.get('_playing');
         if (playing) {
             this.pauseButton.disabled = false;
@@ -739,18 +734,10 @@ var PlayView = widget.DOMWidgetView.extend({
             this.pauseButton.disabled = true;
             this.playButton.classList.remove('mod-active');
         }
-    },
-});
+    }
 
-module.exports = {
-    IntModel: IntModel,
-    BoundedIntModel: BoundedIntModel,
-    IntSliderModel: IntSliderModel,
-    IntSliderView: IntSliderView,
-    IntTextModel: IntTextModel,
-    IntTextView: IntTextView,
-    ProgressModel: ProgressModel,
-    ProgressView: ProgressView,
-    PlayModel: PlayModel,
-    PlayView: PlayView
-};
+    playButton: HTMLButtonElement;
+    pauseButton: HTMLButtonElement;
+    stopButton: HTMLButtonElement;
+    model: PlayModel;
+}

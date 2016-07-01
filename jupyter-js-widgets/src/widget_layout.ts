@@ -1,15 +1,15 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-'use strict';
 
-var widget = require('./widget');
-var _ = require('underscore');
-var Backbone = require('backbone');
+import {
+    DOMWidgetModel, DOMWidgetView
+} from './widget';
+import * as _ from 'underscore';
 
 /**
  * css properties exposed by the layout widget with their default values.
  */
-var css_properties = {
+let css_properties = {
     align_content: '',
     align_items: '',
     align_self: '',
@@ -38,98 +38,85 @@ var css_properties = {
 /**
  * Represents a group of CSS style attributes
  */
-var LayoutModel = widget.WidgetModel.extend({
-    defaults: _.extend({}, widget.WidgetModel.prototype.defaults, {
+export
+class LayoutModel extends DOMWidgetModel {
+    defaults() {
+        return _.extend(super.defaults(), {
         _model_name: 'LayoutModel',
         _view_name: 'LayoutView'
-    }, css_properties)
-});
+        }, css_properties);
+    }
+}
 
-var LayoutView = widget.WidgetView.extend({
-
+export
+class LayoutView extends DOMWidgetView {
     /**
      * Public constructor
      */
-    initialize: function() {
-        LayoutView.__super__.initialize.apply(this, arguments);
-        // Register the traits that live on the Python side
+    initialize(parameters) {
         this._traitNames = [];
-        this.registerTraits(Object.keys(css_properties));
-    },
-
-    /**
-     * Register CSS traits that are known by the model
-     * @param  {...string[]} traits
-     */
-    registerTraits: function() {
-
-        // Expand any args that are arrays
-        _.flatten(Array.prototype.slice.call(arguments))
-
-            // Call registerTrait on each trait
-            .forEach(_.bind(this.registerTrait, this));
-    },
+        super.initialize(parameters);
+        // Register the traits that live on the Python side
+        for (let key of Object.keys(css_properties)) {
+            this.registerTrait(key)
+        }
+    }
 
     /**
      * Register a CSS trait that is known by the model
-     * @param  {string} trait
+     * @param trait
      */
-    registerTrait: function(trait) {
+    registerTrait(trait: string) {
         this._traitNames.push(trait);
 
         // Listen to changes, and set the value on change.
-        this.listenTo(this.model, 'change:' + trait, function (model, value) {
+        this.listenTo(this.model, 'change:' + trait, (model, value) => {
             this.handleChange(trait, value);
-        }, this);
+        });
 
         // Set the initial value on display.
-        this.displayed.then(_.bind(function() {
+        this.displayed.then(() => {
             this.handleChange(trait, this.model.get(trait));
-        }, this));
-    },
+        });
+    }
 
     /**
      * Get the the name of the css property from the trait name
-     * @param  {string} model attribute name
-     * @return {string} css property name.
+     * @param  model attribute name
+     * @return css property name
      */
-    css_name: function(trait) {
+    css_name(trait: string): string {
         return trait.replace('_', '-');
-    },
+    }
 
 
     /**
      * Handles when a trait value changes
-     * @param  {string} trait
-     * @param  {object} value
      */
-    handleChange: function(trait, value) {
-        this.displayed.then(_.bind(function(parent) {
+    handleChange(trait: string, value: any) {
+        this.displayed.then((parent) => {
             if (parent) {
                 parent.el.style[this.css_name(trait)] = value;
             } else {
                 console.warn('Style not applied because a parent view doesn\'t exist');
             }
-        }, this));
-    },
+        });
+    }
 
     /**
      * Remove the styling from the parent view.
      */
-    unlayout: function() {
-        this._traitNames.forEach(function(trait) {
-            this.displayed.then(_.bind(function(parent) {
+    unlayout() {
+        this._traitNames.forEach((trait) => {
+            this.displayed.then((parent) => {
                 if (parent) {
                     parent.el.style[this.css_name(trait)] = '';
                 } else {
                     console.warn('Style not removed because a parent view doesn\'t exist');
                 }
-            }, this));
+            });
         }, this);
     }
-});
 
-module.exports = {
-    LayoutView: LayoutView,
-    LayoutModel: LayoutModel
-};
+    private _traitNames: string[];
+}

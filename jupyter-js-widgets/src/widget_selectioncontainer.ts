@@ -1,45 +1,73 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
-'use strict';
 
-var widget = require('./widget');
-var utils = require('./utils');
-var box = require('./widget_box');
-var _ = require('underscore');
-var TabBar = require('phosphor-tabs').TabBar;
-var Title = require('phosphor-widget').Title;
+import {
+    DOMWidgetModel, DOMWidgetView, ViewList
+} from './widget';
 
-var SelectionContainerModel = box.BoxModel.extend({
-    defaults: _.extend({}, box.BoxModel.prototype.defaults, {
-        _model_name: 'SelectionContainerModel',
-        selected_index: 0,
-        _titles: {}
-    })
-});
+import {
+    BoxModel
+} from './widget_box';
 
-var AccordionModel = SelectionContainerModel.extend({
-    defaults: _.extend({}, SelectionContainerModel.prototype.defaults, {
-        _model_name: 'AccordionModel',
-        _view_name: 'AccordionView'
-    })
-});
+import {
+    TabBar
+} from 'phosphor/lib/ui/tabbar';
 
-var AccordionView = widget.DOMWidgetView.extend({
-    initialize: function(){
-        AccordionView.__super__.initialize.apply(this, arguments);
+import {
+    Title
+} from 'phosphor/lib/ui/title';
 
+import {
+    Widget
+} from 'phosphor/lib/ui/widget';
+
+import {
+    each, enumerate
+} from 'phosphor/lib/algorithm/iteration';
+
+import * as _ from 'underscore';
+import * as utils from './utils';
+
+import 'phosphor/styles/base.css';
+
+
+export
+class SelectionContainerModel extends BoxModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'SelectionContainerModel',
+            selected_index: 0,
+            _titles: {}
+        });
+    }
+}
+
+export
+class AccordionModel extends SelectionContainerModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'AccordionModel',
+            _view_name: 'AccordionView'
+        });
+    }
+}
+
+export
+class AccordionView extends DOMWidgetView {
+    initialize(parameters){
+        super.initialize(parameters)
         this.containers = [];
         this.model_containers = {};
-        this.children_views = new widget.ViewList(this.add_child_view, this.remove_child_view, this);
+        this.children_views = new ViewList(this.add_child_view, this.remove_child_view, this);
         this.listenTo(this.model, 'change:children', function(model, value, options) {
             this.children_views.update(value);
-        }, this);
-    },
+        });
+    }
 
-    render: function() {
-        /**
-         * Called when view is rendered.
-         */
+    /**
+     * Called when view is rendered.
+     */
+    render() {
         var guid = 'panel-group' + utils.uuid();
         this.el.id = guid;
         this.el.classList.add('jupyter-widgets');
@@ -47,20 +75,20 @@ var AccordionView = widget.DOMWidgetView.extend({
 
         this.listenTo(this.model, 'change:selected_index', function(model, value, options) {
             this.update_selected_index(options);
-        }, this);
+        });
         this.listenTo(this.model, 'change:_titles', function(model, value, options) {
             this.update_titles(options);
-        }, this);
+        });
         this.on('displayed', function() {
             this.update_titles();
-        }, this);
+        });
         this.children_views.update(this.model.get('children'));
-    },
+    }
 
     /**
      * Set tab titles
      */
-    update_titles: function() {
+    update_titles() {
         var titles = this.model.get('_titles');
         var that = this;
         _.each(titles, function(title, page_index) {
@@ -72,13 +100,13 @@ var AccordionView = widget.DOMWidgetView.extend({
                     .text(title);
             }
         });
-    },
+    }
 
     /**
      * Only update the selection if the selection wasn't triggered
      * by the front-end.  It must be triggered by the back-end.
      */
-    update_selected_index: function(options) {
+    update_selected_index(options?) {
         if (options === undefined || options.updated_view != this) {
             var old_index = this.model.previous('selected_index');
             var new_index = this.model.get('selected_index');
@@ -91,50 +119,50 @@ var AccordionView = widget.DOMWidgetView.extend({
                 this.expandTab(new_index);
             }
         }
-    },
+    }
 
     /**
      * Collapses an accordion tab.
      * @param  {number} index
      */
-    collapseTab: function(index) {
+    collapseTab(index) {
         var page = this.containers[index].children('.collapse');
 
         if (page.hasClass('in')) {
             page.removeClass('in');
             page.collapse('hide');
         }
-    },
+    }
 
     /**
      * Expands an accordion tab.
      * @param  {number} index
      */
-    expandTab: function(index) {
+    expandTab(index) {
         var page = this.containers[index].children('.collapse');
 
         if (!page.hasClass('in')) {
             page.addClass('in');
             page.collapse('show');
         }
-    },
+    }
 
-    remove_child_view: function(view) {
-        /**
-         * Called when a child is removed from children list.
-         * TODO: does this handle two different views of the same model as children?
-         */
+    /**
+     * Called when a child is removed from children list.
+     * TODO: does this handle two different views of the same model as children?
+     */
+    remove_child_view(view) {
         var model = view.model;
         var accordion_group = this.model_containers[model.id];
-        this.containers.splice(accordion_group.container_index, 1);
+        this.containers.splice(accordion_group['container_index'], 1);
         delete this.model_containers[model.id];
         accordion_group.remove();
-    },
+    }
 
-    add_child_view: function(model) {
-        /**
-         * Called when a child is added to children list.
-         */
+    /**
+     * Called when a child is added to children list.
+     */
+    add_child_view(model) {
         var index = this.containers.length;
         var uuid = utils.uuid();
         var accordion_group = document.createElement('div');
@@ -155,7 +183,7 @@ var AccordionView = widget.DOMWidgetView.extend({
           that.model.set('selected_index', index, {updated_view: that});
           that.touch();
         };
-        accordion_toggle.textContent('Page ' + index);
+        accordion_toggle.textContent = `Page ${index}`;
         accordion_heading.appendChild(accordion_toggle);
 
         var accordion_body = document.createElement('div');
@@ -168,7 +196,8 @@ var AccordionView = widget.DOMWidgetView.extend({
         accordion_body.appendChild(accordion_inner);
 
         var container_index = this.containers.push(accordion_group) - 1;
-        accordion_group.container_index = container_index;
+        // TODO: Fix container_index to be an attached property or something that we keep track of, rather than an attribute directly on the node.
+        accordion_group['container_index'] = container_index;
         this.model_containers[model.id] = accordion_group;
 
         var dummy = document.createElement('div');
@@ -186,51 +215,55 @@ var AccordionView = widget.DOMWidgetView.extend({
             });
             return view;
         }).catch(utils.reject('Could not add child view to box', true));
-    },
+    }
 
-    remove: function() {
-        /**
-         * We remove this widget before removing the children as an optimization
-         * we want to remove the entire container from the DOM first before
-         * removing each individual child separately.
-         */
-        AccordionView.__super__.remove.apply(this, arguments);
+    /**
+     * We remove this widget before removing the children as an optimization
+     * we want to remove the entire container from the DOM first before
+     * removing each individual child separately.
+     */
+    remove() {
+        super.remove();
         this.children_views.remove();
     }
-});
 
-var TabModel = SelectionContainerModel.extend({
-    defaults: _.extend({}, SelectionContainerModel.prototype.defaults, {
-        _model_name: 'TabModel',
-        _view_name: 'TabView'
-    })
-});
+    containers: any[];
+    model_containers: any;
+    children_views: ViewList;
+}
 
-var TabView = widget.DOMWidgetView.extend({
-    initialize: function() {
-        /**
-         * Public constructor.
-         */
-        TabView.__super__.initialize.apply(this, arguments);
-        this.childrenViews = new widget.ViewList(
+export
+class TabModel extends SelectionContainerModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'TabModel',
+            _view_name: 'TabView'
+        });
+    }
+}
+
+export
+class TabView extends DOMWidgetView {
+    /**
+     * Public constructor.
+     */
+    initialize(parameters) {
+        super.initialize(parameters)
+        this.childrenViews = new ViewList(
             this.addChildView,
             this.removeChildView,
             this
         );
         this.listenTo(this.model, 'change:children',
-            function(model, value) { this.childrenViews.update(value); },
-            this
-        );
+            function(model, value) { this.childrenViews.update(value); });
         this.listenTo(this.model, 'change:_titles',
-            function(model, value, options) { this.updateTitles(options); },
-            this
-        );
-    },
+            function(model, value, options) { this.updateTitles(options); });
+    }
 
-    render: function() {
-        /**
-         * Called when view is rendered.
-         */
+    /**
+     * Called when view is rendered.
+     */
+    render() {
         var parent = this;
 
         this.el.classList.add('jupyter-widgets');
@@ -248,15 +281,15 @@ var TabView = widget.DOMWidgetView.extend({
         this.childrenViews.update(this.model.get('children'));
 
         this.displayed.then(function() {
-            parent.tabBar.attach(parent.el);
+            Widget.attach(parent.tabBar, parent.el)
             parent.el.appendChild(parent.tabContents);
         });
-    },
+    }
 
-    addChildView: function(model) {
-        /**
-         * Called when a child is added to children list.
-         */
+    /**
+     * Called when a child is added to children list.
+     */
+    addChildView(model) {
         var parent = this;
 
         return this.create_child_view(model).then(function(child) {
@@ -268,66 +301,67 @@ var TabView = widget.DOMWidgetView.extend({
             child.el.classList.add('widget-tab-child');
             child.el.classList.add('mod-active');
 
+            // TODO: add a child widget, rather than DOM nodes
             parent.tabContents.appendChild(child.el);
-            parent.tabBar.addItem({
-                title: new Title({ text: '', closable: true })
-            });
-            var tab = parent.tabBar.itemAt(parent.tabBar.itemCount() - 1);
+            let title = new Title({ label: '', closable: true })
+            parent.tabBar.addTab(title);
 
             parent.displayed.then(function() {
                 child.trigger('displayed', parent);
                 parent.update();
             });
 
-            child.on('remove', function() { parent.tabBar.removeItem(tab); });
+            child.on('remove', function() { parent.tabBar.removeTab(title); });
 
             return child;
         }).catch(utils.reject('Could not add child view to box', true));
-    },
+    }
 
-    removeChildView: function(child) { child.remove(); },
+    removeChildView(child) { child.remove(); }
 
-    update: function(options) {
-        /**
-         * Update the contents of this view
-         *
-         * Called when the model is changed.  The model may have been
-         * changed by another view or by a state update from the back-end.
-         */
+    /**
+     * Update the contents of this view
+     *
+     * Called when the model is changed.  The model may have been
+     * changed by another view or by a state update from the back-end.
+     */
+    update(options?) {
         this.updateTitles();
         this.updateSelectedIndex(options);
-        return TabView.__super__.update.call(this);
-    },
+        return super.update();
+    }
 
     /**
      * Updates the tab page titles.
      */
-    updateTitles: function() {
+    updateTitles() {
         var titles = this.model.get('_titles') || {};
-        for (var i = this.tabBar.itemCount() - 1; i > -1; i--) {
-            this.tabBar.itemAt(i).title.text = titles[i] || (i + 1) + '';
+        for (let i = 0, len = this.tabBar.titles.length; i < len; i++) {
+            this.tabBar.titles.at(i).label = titles[i] || (i + 1).toString();
         }
-    },
+    }
 
     /**
      * Updates the selected index.
      */
-    updateSelectedIndex: function(options) {
+    updateSelectedIndex(options?) {
         if (options === undefined || options.updated_view !== this) {
             var index = this.model.get('selected_index');
             if (typeof index === 'undefined') {
                 index = 0;
             }
-            if (0 <= index && index < this.tabBar.itemCount()) {
+            if (0 <= index && index < this.tabBar.titles.length) {
                 this.selectPage(index);
             }
         }
-    },
+    }
 
     /**
      * Select a page.
      */
-    selectPage: function(index) {
+    selectPage(index) {
+        this.tabBar.currentIndex = index;
+
         var actives = this.el.querySelectorAll('.mod-active');
         if (actives.length) {
             for (var i = 0, len = actives.length; i < len; i++) {
@@ -339,40 +373,40 @@ var TabView = widget.DOMWidgetView.extend({
         if (active) {
             active.classList.add('mod-active');
         }
-    },
+    }
 
-    remove: function() {
+    remove() {
         /*
          * The tab bar needs to be disposed before its node is removed by the
          * super call, otherwise phosphor's Widget.detach will throw an error.
          */
         this.tabBar.dispose();
-        /**
+        /*
          * We remove this widget before removing the children as an optimization
          * we want to remove the entire container from the DOM first before
          * removing each individual child separately.
          */
-        TabView.__super__.remove.apply(this, arguments);
+        super.remove();
         this.childrenViews.remove();
-    },
+    }
 
-    _onTabChanged: function(sender, args) {
-        this.model.set('selected_index', args.index, { updated_view: this });
+    _onTabChanged(sender, args) {
+        this.model.set('selected_index', args.currentIndex, { updated_view: this });
         this.touch();
-    },
+    }
 
-    _onTabCloseRequested: function(sender, args) {
+    _onTabCloseRequested(sender, args) {
         /*
          * When a tab is removed, the titles dictionary must be reset for all
          * indices that are larger than the index of the tab that was removed.
          */
         var len = this.model.get('children').length;
-        var titles = this.model.get('_titles') || {};
+        var titles = _.extend({}, this.model.get('_titles')) || {};
         delete titles[args.index];
         for (var i = args.index + 1; i < len; i++) {
             titles[i - 1] = titles[i];
-            delete titles[i];
         }
+        delete titles[len - 1];
 
         var children = _.filter(
             this.model.get('children'),
@@ -385,12 +419,8 @@ var TabView = widget.DOMWidgetView.extend({
         );
         this.touch();
     }
-});
 
-module.exports = {
-    SelectionContainerModel: SelectionContainerModel,
-    AccordionModel: AccordionModel,
-    AccordionView: AccordionView,
-    TabModel: TabModel,
-    TabView: TabView
-};
+    childrenViews: ViewList;
+    tabBar: TabBar;
+    tabContents: HTMLDivElement;
+}
