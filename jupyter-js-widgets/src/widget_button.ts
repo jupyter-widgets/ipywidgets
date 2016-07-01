@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetModel, DOMWidgetView
+    DOMWidgetModel, DOMWidgetView, JupyterPhosphorWidget
 } from './widget';
 
 import {
@@ -27,18 +27,7 @@ class ButtonModel extends DOMWidgetModel {
 }
 
 export
-class ButtonPWidget extends Widget {
-    static createNode(): HTMLButtonElement {
-        return document.createElement('button');
-    }
-}
-
-export
 class ButtonView extends DOMWidgetView {
-    static createPhosphorWidget(): ButtonPWidget {
-        return new ButtonPWidget();
-    }
-
     /**
      * Called when view is rendered.
      */
@@ -101,6 +90,19 @@ class ButtonView extends DOMWidgetView {
     _handle_click(event) {
         event.preventDefault();
         this.send({event: 'click'});
+    }
+
+    /**
+     * The default tag name.
+     *
+     * #### Notes
+     * This is a read-only attribute.
+     */
+    get tagName() {
+        // We can't make this an attribute with a default value
+        // since it would be set after it is needed in the
+        // constructor.
+        return 'button';
     }
 
     el: HTMLButtonElement;

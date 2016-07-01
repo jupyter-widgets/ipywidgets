@@ -26,18 +26,7 @@ class ImageModel extends DOMWidgetModel {
 }
 
 export
-class ImagePWidget extends Widget {
-    static createNode(): HTMLImageElement {
-        return document.createElement('img');
-    }
-}
-
-export
 class ImageView extends DOMWidgetView {
-    static createPhosphorWidget(): ImagePWidget {
-        return new ImagePWidget();
-    }
-
     render() {
         /**
          * Called when view is rendered.
@@ -73,5 +62,19 @@ class ImageView extends DOMWidgetView {
         return super.update();
     }
     
+    /**
+     * The default tag name.
+     *
+     * #### Notes
+     * This is a read-only attribute.
+     */
+    get tagName() {
+        // We can't make this an attribute with a default value
+        // since it would be set after it is needed in the
+        // constructor.
+        return 'img';
+    }
+
+
     el: HTMLImageElement;
 }

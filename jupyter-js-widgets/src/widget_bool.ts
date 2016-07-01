@@ -6,10 +6,6 @@ import {
 } from './widget';
 
 import {
-    ButtonPWidget
-} from './widget_button';
-
-import {
     Widget
 } from 'phosphor/lib/ui/widget';
 
@@ -120,10 +116,6 @@ class ToggleButtonModel extends BoolModel {
 
 export
 class ToggleButtonView extends DOMWidgetView {
-    static createPhosphorWidget(): ButtonPWidget {
-        return new ButtonPWidget();
-    }
-
     /**
      * Called when view is rendered.
      */
@@ -199,6 +191,20 @@ class ToggleButtonView extends DOMWidgetView {
         this.model.set('value', !value, {updated_view: this});
         this.touch();
     }
+
+    /**
+     * The default tag name.
+     *
+     * #### Notes
+     * This is a read-only attribute.
+     */
+    get tagName() {
+        // We can't make this an attribute with a default value
+        // since it would be set after it is needed in the
+        // constructor.
+        return 'button';
+    }
+
     el: HTMLButtonElement;
 }
 
