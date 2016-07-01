@@ -688,11 +688,6 @@ class JupyterPhosphorWidget extends Widget {
         this._view = view;
     }
 
-    onAfterAttach(msg) {
-        super.onAfterAttach(msg);
-        this._view.trigger('displayed');
-    }
-
     get isDisposed() {
         return this._view === null;
     }
