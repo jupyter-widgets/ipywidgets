@@ -1,5 +1,5 @@
 module.exports = function (config) {
-  var cfg = {
+  config.set({
     basePath: '..',
     frameworks: ['mocha'],
     reporters: ['mocha'],
@@ -7,19 +7,6 @@ module.exports = function (config) {
     port: 9876,
     colors: true,
     singleRun: true,
-    logLevel: config.LOG_INFO,
-    browsers: ['Chrome'],
-    customLaunchers: {
-        Chrome_travis_ci: {
-            base: 'Chrome',
-            flags: ['--no-sandbox']
-        }
-    },
-  }
-
-  if (process.env.TRAVIS) {
-      cfg.browsers = ['Chrome_travis_ci'];
-  }
-
-  config.set(cfg);
+    logLevel: config.LOG_INFO
+  });
 };
