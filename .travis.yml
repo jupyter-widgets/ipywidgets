@@ -7,7 +7,8 @@ python:
     - 3.5
 env:
     - GROUP=python TRAVIS_NODE_VERSION=5.1
-sudo: false
+# sudo needed to install updated chrome for js tests
+sudo: true
 before_install:
     - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_before_install_py.sh ; fi'
 install:
