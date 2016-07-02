@@ -18,9 +18,7 @@ script:
     - 'if [[ $GROUP == js ]] ; then bash ./jupyter-js-widgets/scripts/travis_script_js.sh ; fi'
 matrix:
     include:
-        - python: 2.7
+        - python: 3.5
           env: GROUP=js BROWSER=firefox TRAVIS_NODE_VERSION=5.1
-        - python: 2.7
-          env: GROUP=js BROWSER=chrome TRAVIS_NODE_VERSION=5.1
 after_success:
     - coveralls
