@@ -374,15 +374,13 @@ class DropdownView extends DOMWidgetView {
         availableHeightAbove += border;
         availableHeightBelow -= border;
         var width = buttongroupRect.width;
-        var maxHeight = Math.floor(
-            Math.max(availableHeightAbove, availableHeightBelow)
-        );
+        var maxHeight = Math.max(availableHeightAbove, availableHeightBelow);
         var top = 0;
         var left = buttongroupRect.left;
 
-        this.droplist.style.left = left + 'px';
-        this.droplist.style.maxHeight = maxHeight + 'px';
-        this.droplist.style.width = width + 'px';
+        this.droplist.style.left = Math.floor(left) + 'px';
+        this.droplist.style.maxHeight = Math.floor(maxHeight) + 'px';
+        this.droplist.style.width = Math.floor(width) + 'px';
 
         // Make drop list visible to compute its dimensions.
         this.droplist.classList.add('mod-active');
@@ -403,8 +401,7 @@ class DropdownView extends DOMWidgetView {
             this.droplist.style.top = Math.ceil(top) + 'px';
         } else {
             top = buttongroupRect.top - droplistRect.height + border;
-            top = Math.floor(top);
-            this.droplist.style.top = top + 'px';
+            this.droplist.style.top = Math.floor(top) + 'px';
         }
 
         // If a selection is active, scroll to it if necessary.
