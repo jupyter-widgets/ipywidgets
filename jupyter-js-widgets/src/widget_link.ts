@@ -45,8 +45,8 @@ class DirectionalLinkModel extends WidgetModel {
 
     updateBindings() {
         this.cleanup();
-        [this.sourceModel, this.sourceAttr] = this.get('source');
-        [this.targetModel, this.targetAttr] = this.get('target');
+        [this.sourceModel, this.sourceAttr] = this.get('source') || [null, null];
+        [this.targetModel, this.targetAttr] = this.get('target') || [null, null];
         if (this.sourceModel) {
             this.listenTo(this.sourceModel, 'change:' + this.sourceAttr, () => {
                 this.updateValue(this.sourceModel, this.sourceAttr, this.targetModel, this.targetAttr);
@@ -75,7 +75,7 @@ class DirectionalLinkModel extends WidgetModel {
     targetModel: WidgetModel;
     targetAttr: string;
 
-    private _updating: boolean;    
+    private _updating: boolean;
 }
 
 export
