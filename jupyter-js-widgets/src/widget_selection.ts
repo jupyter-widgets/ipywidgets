@@ -370,9 +370,9 @@ class DropdownView extends DOMWidgetView {
         var buttongroupRect = this.buttongroup.getBoundingClientRect();
         var availableHeightAbove = buttongroupRect.top;
         var availableHeightBelow = window.innerHeight - buttongroupRect.bottom;
-        // Account for 1px border.
-        availableHeightAbove += 1;
-        availableHeightBelow -= 1;
+        var border = parseInt(getComputedStyle(this.droplist).borderWidth, 10);
+        availableHeightAbove += border;
+        availableHeightBelow -= border;
         var width = buttongroupRect.width;
         var maxHeight = Math.floor(
             Math.max(availableHeightAbove, availableHeightBelow)
@@ -391,22 +391,19 @@ class DropdownView extends DOMWidgetView {
 
         // If the drop list fits below, render below.
         if (droplistRect.height <= availableHeightBelow) {
-            // Account for 1px border.
-            top = Math.ceil(buttongroupRect.bottom + 1);
-            this.droplist.style.top = top + 'px';
+            top = buttongroupRect.bottom + border;
+            this.droplist.style.top = Math.ceil(top) + 'px';
         // If the drop list fits above, render above.
         } else if (droplistRect.height <= availableHeightAbove) {
-            // Account for 1px border.
-            top = Math.floor(buttongroupRect.top - droplistRect.height + 1);
-            this.droplist.style.top = top + 'px';
+            top = buttongroupRect.top - droplistRect.height + border;
+            this.droplist.style.top = Math.floor(top) + 'px';
         // Otherwise, render in whichever has more space, above or below.
         } else if (availableHeightBelow >= availableHeightAbove) {
-            // Account for 1px border.
-            top = Math.ceil(buttongroupRect.bottom + 1);
-            this.droplist.style.top = top + 'px';
+            top = buttongroupRect.bottom + border;
+            this.droplist.style.top = Math.ceil(top) + 'px';
         } else {
-            // Account for 1px border.
-            top = Math.floor(buttongroupRect.top - droplistRect.height + 1);
+            top = buttongroupRect.top - droplistRect.height + border;
+            top = Math.floor(top);
             this.droplist.style.top = top + 'px';
         }
 
@@ -822,7 +819,7 @@ class SelectView extends DOMWidgetView {
      */
     _handle_change() {
         // TODO: typecasting not needed in Typescript 2.0
-        // (see https://github.com/Microsoft/TypeScript/issues/9334 and 
+        // (see https://github.com/Microsoft/TypeScript/issues/9334 and
         // https://github.com/Microsoft/TypeScript/issues/8220)
         var value = (this.listbox.options[this.listbox.selectedIndex] as HTMLOptionElement).value;
         this.model.set('selected_label', value, {updated_view: this});
@@ -1058,7 +1055,7 @@ class SelectMultipleView extends SelectView {
         for (var i = 0, len = options.length; i < len; ++i) {
             var value = options[i].getAttribute('data-value');
             // TODO: typecasting not needed in Typescript 2.0
-            // (see https://github.com/Microsoft/TypeScript/issues/9334 and 
+            // (see https://github.com/Microsoft/TypeScript/issues/9334 and
             // https://github.com/Microsoft/TypeScript/issues/8220)
             (options[i] as HTMLOptionElement).selected = _.contains(values, value);
         }
