@@ -23,6 +23,7 @@ import {
 
 import * as _ from 'underscore';
 
+
 export
 namespace JupyterPhosphorPanelWidget {
     export
@@ -90,12 +91,12 @@ class ProxyModel extends DOMWidgetModel {
         return _.extend(super.defaults(), {
             _view_name: 'ProxyView',
             _model_name: 'ProxyModel',
-            child: null            
+            child: null
         })
     }
 
     static serializers = _.extend({
-        child: {deserialize: unpack_models}        
+        child: {deserialize: unpack_models}
     }, DOMWidgetModel.serializers);
 }
 
@@ -171,7 +172,7 @@ class PlaceProxyModel extends ProxyModel {
         return _.extend(super.defaults(), {
             _view_name: 'PlaceProxyView',
             _model_name: 'PlaceProxyModel',
-            selector: ''          
+            selector: ''
         })
     }
 }
@@ -205,7 +206,9 @@ class BoxView extends DOMWidgetView {
         }
 
         this.el = this.pWidget.node;
-        this.$el = $(this.el);
+        if ((window as any).jQuery) {
+            this.$el = (window as any).jQuery(this.pWidget.node);
+        }
      }
 
     /**
