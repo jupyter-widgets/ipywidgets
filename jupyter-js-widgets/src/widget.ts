@@ -59,7 +59,7 @@ class WidgetModel extends Backbone.Model {
 
     /**
      * Test to see if the model has been synced with the server.
-     * 
+     *
      * #### Notes
      * As of backbone 1.1, backbone ignores `patch` if it thinks the
      * model has never been pushed.
@@ -258,7 +258,7 @@ class WidgetModel extends Backbone.Model {
 
     /**
      * Set a value.
-     * 
+     *
      * We just call the super method, in which val and options are optional
      */
     set(key, val?, options?) {
@@ -279,7 +279,7 @@ class WidgetModel extends Backbone.Model {
      * Handle sync to the back-end.  Called when a model.save() is called.
      *
      * Make sure a comm exists.
-     * 
+     *
      * Parameters
      * ----------
      * method : create, update, patch, delete, read
@@ -622,7 +622,7 @@ abstract class WidgetView extends NativeView<WidgetModel> {
 
     /**
      * Render a view
-     * 
+     *
      * @returns the view or a promise to the view.
      */
     render(): any {

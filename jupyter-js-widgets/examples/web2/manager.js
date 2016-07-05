@@ -28,6 +28,7 @@ WidgetManager.prototype._create_comm = function() {
     return Promise.resolve({
         on_close: () => {},
         on_msg: () => {},
-        close: () => {}
+        close: () => {},
+        send: () => {}
     });
 }
