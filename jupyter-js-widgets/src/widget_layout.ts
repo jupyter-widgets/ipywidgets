@@ -27,6 +27,8 @@ let css_properties = {
     min_height: '',
     min_width: '',
     overflow: '',
+    overflow_x: '',
+    overflow_y: '',
     order: '',
     padding: '',
     right: '',

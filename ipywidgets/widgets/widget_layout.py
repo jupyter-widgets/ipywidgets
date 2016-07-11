@@ -45,6 +45,8 @@ class Layout(Widget):
     min_height = CUnicode().tag(sync=True)
     min_width = CUnicode().tag(sync=True)
     overflow = CUnicode().tag(sync=True)
+    overflow_x = CUnicode().tag(sync=True)
+    overflow_y = CUnicode().tag(sync=True)
     order = CUnicode().tag(sync=True)
     padding = CUnicode().tag(sync=True)
     right = CUnicode().tag(sync=True)
