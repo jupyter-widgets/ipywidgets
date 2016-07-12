@@ -1,0 +1,56 @@
+{
+  "name": "jupyter-js-widgets-labextension",
+  "version": "0.0.1",
+  "description": "The JupyterLab extension providing Jupyter widgets.",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "dependencies": {
+    "jupyterlab": "^0.0.11",
+    "jupyter-js-services": "0.15.0",
+    "jupyter-js-widgets": "2.0.0-dev.8"
+  },
+  "devDependencies": {
+    "css-loader": "^0.23.1",
+    "expect.js": "^0.3.1",
+    "istanbul": "^0.3.18",
+    "json-loader": "^0.5.4",
+    "mocha": "^2.2.5",
+    "requirejs": "^2.2.0",
+    "rimraf": "^2.4.2",
+    "style-loader": "^0.13.1",
+    "text-encoding": "^0.5.2",
+    "typedoc": "^0.4.4",
+    "typescript": "^1.8.0",
+    "webpack": "^1.13.1"
+  },
+  "scripts": {
+    "clean": "rimraf docs && rimraf lib && rimraf dist",
+    "build:src": "tsc --project src",
+    "build": "npm run build:src",
+    "example:browser": "cd examples/browser && npm run update && npm run build",
+    "example:node": "cd examples/node && npm install",
+    "build:examples": "npm run example:browser && npm run example:node",
+    "docs": "typedoc --mode file --module commonjs --excludeNotExported --target es5 --moduleResolution node --out docs/ src",
+    "prepublish": "npm run build && webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ipython/ipywidgets"
+  },
+  "keywords": [
+    "jupyter",
+    "services",
+    "notebook"
+  ],
+  "files": [
+    "lib/*.js",
+    "lib/*.d.ts",
+    "dist/*.js"
+  ],
+  "author": "Project Jupyter",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/ipython/ipywidgets/issues"
+  },
+  "homepage": "https://github.com/ipython/ipywidgets"
+}
