@@ -94,7 +94,7 @@ abstract class ManagerBase<T> {
     /**
      * Display a view for a particular model.
      */
-    display_model(msg: services.IKernelMessage, model: Backbone.Model, options: any): Promise<T> {
+    display_model(msg: services.KernelMessage.IMessage, model: Backbone.Model, options: any): Promise<T> {
         options = options || {};
         options.root = true; // This element is at the root of the widget hierarchy.
 
@@ -110,7 +110,7 @@ abstract class ManagerBase<T> {
      * This must be implemented by a subclass. The implementation must trigger the view's displayed
      * event after the view is on the page: `view.trigger('displayed')`
      */
-    abstract display_view(msg: services.IKernelMessage, view: Backbone.View<Backbone.Model>, options: any): Promise<T>;
+    abstract display_view(msg: services.KernelMessage.IMessage, view: Backbone.View<Backbone.Model>, options: any): Promise<T>;
 
     /**
      * Modifies view options. Generally overloaded in custom widget manager
@@ -178,10 +178,10 @@ abstract class ManagerBase<T> {
     /**
      * Handle when a comm is opened.
      */
-    handle_comm_open(comm: shims.services.Comm, msg: services.IKernelIOPubCommOpenMessage): Promise<Backbone.Model> {
+    handle_comm_open(comm: shims.services.Comm, msg: services.KernelMessage.ICommOpenMsg): Promise<Backbone.Model> {
         return this.new_model({
-            model_name: msg.content.data._model_name,
-            model_module: msg.content.data._model_module,
+            model_name: msg.content.data['_model_name'],
+            model_module: msg.content.data['_model_module'],
             comm: comm
         }, msg.content.data).catch(utils.reject('Could not create a model.', true));
     };

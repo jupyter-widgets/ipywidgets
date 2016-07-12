@@ -6,7 +6,6 @@
   "typings": "lib/index.d.ts",
   "dependencies": {
     "jupyterlab": "^0.0.11",
-    "jupyter-js-services": "0.15.0",
     "jupyter-js-widgets": "2.0.0-dev.8"
   },
   "devDependencies": {
@@ -14,6 +13,7 @@
     "expect.js": "^0.3.1",
     "istanbul": "^0.3.18",
     "json-loader": "^0.5.4",
+    "jupyter-js-services": "^0.15.0",
     "mocha": "^2.2.5",
     "requirejs": "^2.2.0",
     "rimraf": "^2.4.2",

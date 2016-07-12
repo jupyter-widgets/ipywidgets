@@ -4,7 +4,7 @@
 import * as Backbone from 'backbone';
 
 import {
-  IKernel, KernelMessage
+  IKernel
 } from 'jupyter-js-services';
 
 import {
