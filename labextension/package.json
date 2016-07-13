@@ -5,8 +5,11 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "dependencies": {
+    "jupyter-js-widgets": "2.0.0-dev.9",
     "jupyterlab": "^0.0.11",
-    "jupyter-js-widgets": "2.0.0-dev.9"
+    "phosphor-disposable": "^1.0.5",
+    "phosphor-panel": "^1.0.0-rc.1",
+    "phosphor-widget": "^1.0.0-rc.1"
   },
   "devDependencies": {
     "css-loader": "^0.23.1",

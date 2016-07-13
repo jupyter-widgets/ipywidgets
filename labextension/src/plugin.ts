@@ -10,10 +10,6 @@ import {
 } from 'phosphor-disposable';
 
 import {
-  Widget
-} from 'phosphor-widget';
-
-import {
   INotebookModel
 } from 'jupyterlab/lib/notebook/notebook/model';
 
