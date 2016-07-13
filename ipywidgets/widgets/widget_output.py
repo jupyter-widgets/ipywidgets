@@ -8,9 +8,8 @@ Represents a widget that can be used to display output within the widget area.
 
 from .domwidget import DOMWidget
 import sys
-from traitlets import Unicode, List
+from traitlets import Unicode
 from IPython.display import clear_output
-from jupyter_client.session import Message
 from IPython import get_ipython
 
 
@@ -37,6 +36,7 @@ class Output(DOMWidget):
     _model_name = Unicode('OutputModel').tag(sync=True)
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    msg_id = Unicode('').tag(sync=True)
 
     def clear_output(self, *pargs, **kwargs):
         with self:
@@ -45,36 +45,14 @@ class Output(DOMWidget):
     def __enter__(self):
         """Called upon entering output widget context manager."""
         self._flush()
-        kernel = get_ipython().kernel
-        session = kernel.session
-        send = session.send
-        self._original_send = send
-        self._session = session
-
-        def send_hook(stream, msg_or_type, content=None, parent=None, ident=None,
-             buffers=None, track=False, header=None, metadata=None):
-
-            # Handle both prebuild messages and unbuilt messages.
-            if isinstance(msg_or_type, (Message, dict)):
-                msg_type = msg_or_type['msg_type']
-                msg = dict(msg_or_type)
-            else:
-                msg_type = msg_or_type
-                msg = session.msg(msg_type, content=content, parent=parent,
-                    header=header, metadata=metadata)
-
-            # If this is a message type that we want to forward, forward it.
-            if stream is kernel.iopub_socket and msg_type in ['clear_output', 'stream', 'display_data']:
-                self.send(msg)
-            else:
-                send(stream, msg, ident=ident, buffers=buffers, track=track)
-
-        session.send = send_hook
+        ip = get_ipython()
+        if ip and hasattr(ip, 'kernel') and hasattr(ip.kernel, '_parent_header'):
+            self.msg_id = ip.kernel._parent_header['header']['msg_id']
 
     def __exit__(self, exception_type, exception_value, traceback):
         """Called upon exiting output widget context manager."""
         self._flush()
-        self._session.send = self._original_send
+        self.msg_id = ''
 
     def _flush(self):
         """Flush stdout and stderr buffers."""

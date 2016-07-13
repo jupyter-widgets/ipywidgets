@@ -65,7 +65,9 @@ class OutputModel extends DOMWidgetModel {
     });
   }
 
-  initialize() {
+  initialize(attributes: any, options: any) {
+    super.initialize(attributes, options)
+    this._outputs = new OutputAreaModel();
     this.listenTo(this, 'change:msg_id', this.reset_msg_id);
     this.widget_manager.context.kernelChanged.connect((sender, kernel) => {
       this._msgHook.dispose();
@@ -74,7 +76,6 @@ class OutputModel extends DOMWidgetModel {
   }
 
   reset_msg_id() {
-    this.clear_output();
     if (this._msgHook) {
       this._msgHook.dispose();
     }
@@ -83,6 +84,7 @@ class OutputModel extends DOMWidgetModel {
     let kernel = this.widget_manager.context.kernel;
     let msgId = this.get('msg_id');
     if (msgId && kernel) {
+      this.clear_output();
       this._msgHook = kernel.registerMessageHook(this.get('msg_id'), msg => {
         this.add(msg);
         return false;
@@ -110,10 +112,13 @@ class OutputModel extends DOMWidgetModel {
     this._outputs.clear();
   }
 
+  get outputs() {
+    return this._outputs;
+  }
   widget_manager: WidgetManager;
 
   private _msgHook: IDisposable = null;
-  private _outputs = new OutputAreaModel();
+  private _outputs: OutputAreaModel;
 }
 
 
@@ -126,6 +131,9 @@ class OutputView extends DOMWidgetView {
     this._outputView = new OutputAreaWidget({
       rendermime: this.model.widget_manager.rendermime
     });
+    this._outputView.model = this.model.outputs;
+    this._outputView.trusted = true;
+
     this.setElement(this._outputView.node);
     this.pWidget.addClass('jupyter-widgets');
     this.pWidget.addClass('widget-output');
