@@ -7,6 +7,7 @@
   "dependencies": {
     "jupyter-js-widgets": "2.0.0-dev.9",
     "jupyterlab": "^0.0.11",
+    "phosphor": "0.5.0",
     "phosphor-disposable": "^1.0.5",
     "phosphor-panel": "^1.0.0-rc.1",
     "phosphor-widget": "^1.0.0-rc.1"
