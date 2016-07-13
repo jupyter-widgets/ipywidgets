@@ -80,16 +80,18 @@ class WidgetModel extends Backbone.Model {
      *      An ID unique to this model.
      * comm : Comm instance (optional)
      */
-    constructor(widget_manager, model_id, comm, attributes) {
-        super(attributes);
+    initialize(attributes, options) {
+        super.initialize(attributes, options);
 
-        this.widget_manager = widget_manager;
+        this.widget_manager = options.widget_manager;
+        this.id = options.model_id;
+        let comm = options.comm;
+
         this.state_change = Promise.resolve();
         this._buffered_state_diff = {};
         this.pending_msgs = 0;
         this.msg_buffer = null;
         this.state_lock = null;
-        this.id = model_id;
 
         this.views = {};
 

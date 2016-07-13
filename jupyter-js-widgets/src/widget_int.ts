@@ -49,8 +49,8 @@ class IntSliderModel extends IntModel {
             continuous_update: true
         });
     }
-    initialize() {
-        super.initialize();
+    initialize(attributes, options) {
+        super.initialize(attributes, options);
         this.on('change:readout_format', this.update_readout_format, this);
         this.update_readout_format();
     }

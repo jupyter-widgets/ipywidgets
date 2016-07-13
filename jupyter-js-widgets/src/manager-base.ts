@@ -283,7 +283,12 @@ abstract class ManagerBase<T> {
                                             that.require_error)
             .then(function(ModelType) {
                 return ModelType._deserialize_state(serialized_state || {}, that).then(function(attributes) {
-                    var widget_model = new ModelType(that, model_id, options.comm, attributes);
+                    let modelOptions = {
+                        widget_manager: that,
+                        model_id: model_id,
+                        comm: options.comm,
+                    }
+                    var widget_model = new ModelType(attributes, modelOptions);
                     widget_model.once('comm:close', function () {
                         delete that._models[model_id];
                     });
