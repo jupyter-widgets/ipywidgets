@@ -437,7 +437,7 @@ abstract class ManagerBase<T> {
      * Load a class and return a promise to the loaded object.
      */
     protected loadClass(className, moduleName, error) {
-        return this.loadClass(className, moduleName, error);
+        return utils.loadClass(className, moduleName, null, error);
     }
 
     abstract _create_comm(comm_target_name, model_id, data?): Promise<any>;

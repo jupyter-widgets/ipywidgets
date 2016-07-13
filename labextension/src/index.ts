@@ -31,6 +31,10 @@ import {
   IDocumentContext, IDocumentModel
 } from 'jupyterlab/lib/docregistry';
 
+import {
+  OutputModel, OutputView
+} from './output';
+
 import 'jquery-ui/themes/smoothness/jquery-ui.min.css';
 
 import 'jupyter-js-widgets/css/widgets.min.css';
@@ -123,6 +127,23 @@ class WidgetManager extends ManagerBase<HTMLElement> implements IDisposable {
     }
     this._context = null;
   }
+
+  /**
+   * Load a class and return a promise to the loaded object.
+   */
+  protected loadClass(className: string, moduleName: string, error: any): any {
+    if (moduleName === 'jupyter-js-widgets'
+        && (className === 'OutputModel'
+            || className === 'OutputView')) {
+      if (className === 'OutputModel') {
+        return Promise.resolve(OutputModel);
+      } else if (className === 'OutputView') {
+        return Promise.resolve(OutputView);
+      }
+    }
+    return super.loadClass(className, moduleName, error);
+  }
+
 
   get context() {
     return this._context;
