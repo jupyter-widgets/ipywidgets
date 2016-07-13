@@ -43,10 +43,45 @@ import 'jupyter-js-widgets/css/widgets.min.css';
 // TODO: and add it to the WidgetRenderer.render's panel directly.
 
 /**
+ * The class name added to an BackboneViewWrapper widget.
+ */
+const BACKBONEVIEWWRAPPER_CLASS = 'jp-BackboneViewWrapper';
+
+export
+class BackboneViewWrapper extends Widget {
+  /**
+   * Construct a new `Backbone` wrapper widget.
+   *
+   * @param view - The `Backbone.View` instance being wrapped.
+   */
+  constructor(view: Backbone.View<any>) {
+    super();
+    this._view = view;
+    view.on('remove', () => {
+      this.dispose();
+      console.log('View removed', view);
+    });
+    this.addClass(BACKBONEVIEWWRAPPER_CLASS);
+    this.node.appendChild(view.el);
+  }
+
+  onAfterAttach(msg: any) {
+    this._view.trigger('displayed');
+  }
+
+  dispose() {
+    this._view = null;
+    super.dispose();
+  }
+
+  private _view: Backbone.View<any> = null;
+}
+
+/**
  * A widget manager that returns phosphor widgets.
  */
 export
-class WidgetManager extends ManagerBase<HTMLElement> implements IDisposable {
+class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   constructor(context: IDocumentContext<IDocumentModel>, rendermime: RenderMime<Widget>) {
     super();
     this._context = context;
@@ -82,10 +117,12 @@ class WidgetManager extends ManagerBase<HTMLElement> implements IDisposable {
   /**
    * Return a phosphor widget representing the view
    */
-  display_view(msg: any, view: DOMWidgetView, options: any): Promise<HTMLElement> {
-    // TODO: if view.pWidget exists, use it instead of BackboneViewWrapper.
-    return Promise.resolve(view.el);
+  display_view(msg: any, view: Backbone.View<Backbone.Model>, options: any): Promise<Widget> {
+    return Promise.resolve(new BackboneViewWrapper(view))
+    //TODO: when we switch to the phosphor monorepo, so we can return those widgets
+    //return (view as any).pWidget ? (view as any).pWidget : new BackboneViewWrapper(view);
   }
+
   /**
    * Create a comm.
    */
@@ -176,10 +213,8 @@ class WidgetRenderer implements IRenderer<Widget>, IDisposable {
     let w = new Panel();
     this._manager.get_model(data).then((model: any) => {
       return this._manager.display_model(void 0, model, void 0);
-    }).then((view: HTMLElement) => {
-      let child = new Widget();
-      child.node.appendChild(view);
-      w.addChild(child);
+    }).then((view: Widget) => {
+      w.addChild(view);
     });
     return w;
   }
