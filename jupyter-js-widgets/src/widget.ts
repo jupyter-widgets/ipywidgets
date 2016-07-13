@@ -157,32 +157,32 @@ class WidgetModel extends Backbone.Model {
     _handle_comm_msg(msg) {
         var method = msg.content.data.method;
         switch (method) {
-        case 'update':
-            this.state_change = this.state_change
-                .then(() => {
-                    var state = msg.content.data.state || {};
-                    var buffer_keys = msg.content.data.buffers || [];
-                    var buffers = msg.buffers || [];
-                    for (var i=0; i<buffer_keys.length; i++) {
-                        state[buffer_keys[i]] = buffers[i];
-                    }
-                    return (this.constructor as typeof WidgetModel)._deserialize_state(state, this.widget_manager);
-                }).then((state) => {
-                    this.set_state(state);
-                }).catch(utils.reject('Could not process update msg for model id: ' + String(this.id), true))
-            return this.state_change;
-        case 'custom':
-            this.trigger('msg:custom', msg.content.data.content, msg.buffers);
-            return Promise.resolve();
-        case 'display':
-            if (this.widget_manager.displayWithOutput) {
-                return;
+            case 'update':
+                this.state_change = this.state_change
+                    .then(() => {
+                        var state = msg.content.data.state || {};
+                        var buffer_keys = msg.content.data.buffers || [];
+                        var buffers = msg.buffers || [];
+                        for (var i=0; i<buffer_keys.length; i++) {
+                            state[buffer_keys[i]] = buffers[i];
+                        }
+                        return (this.constructor as typeof WidgetModel)._deserialize_state(state, this.widget_manager);
+                    }).then((state) => {
+                        this.set_state(state);
+                    }).catch(utils.reject('Could not process update msg for model id: ' + String(this.id), true))
+                return this.state_change;
+            case 'custom':
+                this.trigger('msg:custom', msg.content.data.content, msg.buffers);
+                return Promise.resolve();
+            case 'display':
+                if (this.widget_manager.displayWithOutput) {
+                    return;
+                }
+                this.state_change = this.state_change.then(() => {
+                    this.widget_manager.display_model(msg, this);
+                }).catch(utils.reject('Could not process display view msg', true));
+                return this.state_change;
             }
-            this.state_change = this.state_change.then(() => {
-                this.widget_manager.display_model(msg, this);
-            }).catch(utils.reject('Could not process display view msg', true));
-            return this.state_change;
-        }
     }
 
     /**
@@ -340,16 +340,16 @@ class WidgetModel extends Backbone.Model {
                 // some of the existing messages.
                 // Combine updates if it is a 'patch' sync, otherwise replace updates
                 switch (method) {
-                case 'patch':
-                    this.msg_buffer = _.extend(this.msg_buffer || {}, attrs);
-                    break;
-                case 'update':
-                case 'create':
-                    this.msg_buffer = attrs;
-                    break;
-                default:
-                    error();
-                    return false;
+                    case 'patch':
+                        this.msg_buffer = _.extend(this.msg_buffer || {}, attrs);
+                        break;
+                    case 'update':
+                    case 'create':
+                        this.msg_buffer = attrs;
+                        break;
+                    default:
+                        error();
+                        return false;
                 }
                 this.msg_buffer_callbacks = callbacks;
 
