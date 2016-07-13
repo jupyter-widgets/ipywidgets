@@ -190,6 +190,10 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     return this._rendermime;
   }
 
+  get displayWithOutput() {
+    return true;
+  }
+
   private _context: IDocumentContext<IDocumentModel>;
   private _rendermime: RenderMime<Widget>;
   _commRegistration: IDisposable;
