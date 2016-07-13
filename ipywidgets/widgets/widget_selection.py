@@ -85,10 +85,10 @@ class _Selection(DOMWidget):
         self.set_trait('_options_dict', { i[0]: i[1] for i in options })
         self.set_trait('_options_labels', [ i[0] for i in options ])
         self.set_trait('_options_values', [ i[1] for i in options ])
-        self._value_in_options()
         return new
 
-    def _value_in_options(self):
+    @observe('options')
+    def _value_in_options(self, change):
         # ensure that the chosen value is one of the choices
         if self._options_values:
             if self.value not in self._options_values:
@@ -124,7 +124,8 @@ class _MultipleSelection(_Selection):
     value = Tuple(help="Selected values").tag(sync=True,
                   to_json=_values_to_labels, from_json=_labels_to_values)
 
-    def _value_in_options(self):
+    @observe('options')
+    def _value_in_options(self, change):
         new_value = []
         for v in self.value:
             if v in self._options_dict.values():

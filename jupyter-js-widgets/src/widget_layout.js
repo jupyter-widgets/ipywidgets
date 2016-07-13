@@ -28,6 +28,8 @@ var css_properties = {
     min_height: '',
     min_width: '',
     overflow: '',
+    overflow_x: '',
+    overflow_y: '',
     padding: '',
     right: '',
     top: '',
