@@ -214,7 +214,7 @@
     }
 }
 
-.widget-button {
+.jupyter-button {
     /* Button */
     width : @widget-width-short;
 
@@ -234,6 +234,24 @@
 
 .widget-checkbox {
     width: @widget-width-short;
+}
+
+.widget-button, .widget-toggle-button {
+    .jupyter-button();
+
+    width : @widget-width-short;
+    height : 32px;
+}
+
+.widget-play {
+    button {
+        height : 32px;
+        width : 48px;
+    }
+
+    width : @widget-width-short;
+    display : flex;
+    justify-content : space-between;
 }
 
 .widget-toggle-button {
