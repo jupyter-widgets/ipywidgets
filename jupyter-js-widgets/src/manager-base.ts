@@ -139,10 +139,9 @@ abstract class ManagerBase<T> {
     create_view(model, options) {
         model.state_change = model.state_change.then(() => {
 
-            return utils.loadClass(
+            return this.loadClass(
                 model.get('_view_name'),
                 model.get('_view_module'),
-                null,
                 this.require_error
             ).then((ViewType) => {
                 var view = new ViewType({
@@ -279,9 +278,8 @@ abstract class ManagerBase<T> {
             throw new Error('Neither comm nor model_id provided in options object. At least one must exist.');
         }
 
-        var model_promise = utils.loadClass(options.model_name,
+        var model_promise = this.loadClass(options.model_name,
                                             options.model_module,
-                                            null,
                                             that.require_error)
             .then(function(ModelType) {
                 return ModelType._deserialize_state(serialized_state || {}, that).then(function(attributes) {
@@ -434,6 +432,13 @@ abstract class ManagerBase<T> {
             }));
         }).catch(utils.reject('Could not set widget manager state.', true));
     };
+
+    /**
+     * Load a class and return a promise to the loaded object.
+     */
+    protected loadClass(className, moduleName, error) {
+        return this.loadClass(className, moduleName, error);
+    }
 
     abstract _create_comm(comm_target_name, model_id, data?): Promise<any>;
 
