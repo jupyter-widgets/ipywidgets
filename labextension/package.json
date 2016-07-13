@@ -5,8 +5,8 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "dependencies": {
-    "jupyter-js-widgets": "2.0.0-dev.12",
     "jupyterlab": "^0.0.11",
+    "jupyter-js-widgets": "2.0.0-dev.13",
     "phosphor": "0.5.0",
     "phosphor-disposable": "^1.0.5",
     "phosphor-panel": "^1.0.0-rc.1",
@@ -17,7 +17,7 @@
     "expect.js": "^0.3.1",
     "istanbul": "^0.3.18",
     "json-loader": "^0.5.4",
-    "jupyter-js-services": "^0.15.0",
+    "jupyter-js-services": "^0.15.1",
     "mocha": "^2.2.5",
     "requirejs": "^2.2.0",
     "rimraf": "^2.4.2",
