@@ -242,13 +242,3 @@ class WidgetRenderer implements IRenderer<Widget>, IDisposable {
   public mimetypes = ['application/vnd.jupyter.widget'];
   private _manager: WidgetManager;
 }
-
-/**
- * An output widget
- * 
- * The output widget maintains a list of output messages and renders them.
- * When an output widget is sent a capture message, it takes over processing
- * of outputs for that particular message id. So we need a hook at the kernel level
- * for processing messages, and the capability to install filters on kernel messages
- * with a particular parent id.
- */

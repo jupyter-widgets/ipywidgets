@@ -31,14 +31,6 @@ import {
 
 const WIDGET_MIMETYPE = 'application/vnd.jupyter.widget';
 
-
-/**
- * set up the import path for jupyter-js-widgets to include *more* than jupyter-js-widgets.
- * 
- * 
- */
-
-
 /**
  * The widget manager provider.
  */

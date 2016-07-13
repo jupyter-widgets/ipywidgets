@@ -27,34 +27,7 @@ import {
 
 import * as _ from 'underscore';
 
-/**
- * Output widget:
- *
- * Model has the msg_id to listen for. The *model*, on change of msg_id, registers a hook for that message id. The hook stores the output message in the model's message list with a unique id and returns false to halt other processing of that output message. The hook also maybe changes the 'current change' index???
- *
- * The view is notified of changes to the output message queue (how?). Perhaps we finally use backbone collections? Perhaps we trigger a single update of the output index that changed/added (maybe -1 if the output was cleared?). The view the renders the appropriate output index and updates the widget appropriately.
- *
- * OR the view is a wrapper around an OutputWidget, and just feeds it the list??
- *
- * The *view* merely renders whatever output messages it sees. Should it use the output area widget, or just the output renderer??? My guess is just the output renderer. It tries to be smart about not rerendering output that it has already renderered.
- */
 
-
-/**
- * We end up transmitting output messages twice - once through the output system, and then once again back through the widget system. Perhaps we shouldn't store the messages in the normal data that is synced back to the kernel, but it would be saved???
- *
- * actually, it's not made for very output intensive things, so maybe we can try it out for a bit. Adapt if it becomes a problem...
- */
-
-/**
- * The output widget needs to depend on the thing that is installed. Maybe we should go back to the concept of registering a package.
- */
-
-
-// how is the output model going to get a handle on the kernel?
-// how is the view going to get a handle on the rendermime instance?
-// how is the widget manager know to instantiate an output model/renderer with those particular options,
-// but not other widgets with similar options?
 export
 class OutputModel extends DOMWidgetModel {
   defaults() {
