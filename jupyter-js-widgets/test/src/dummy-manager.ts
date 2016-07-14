@@ -23,7 +23,7 @@ class DummyManager extends ManagerBase<HTMLElement> {
         this.el = window.document.createElement('div');
     }
     
-    display_view(msg: services.IKernelMessage, view: Backbone.View<Backbone.Model>, options: any) {
+    display_view(msg: services.KernelMessage.IMessage, view: Backbone.View<Backbone.Model>, options: any) {
         return Promise.resolve(view).then(view => {
             this.el.appendChild(view.el);
             view.on('remove', () => console.log('view removed', view));

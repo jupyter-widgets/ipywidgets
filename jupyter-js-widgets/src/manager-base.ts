@@ -94,7 +94,7 @@ abstract class ManagerBase<T> {
     /**
      * Display a view for a particular model.
      */
-    display_model(msg: services.IKernelMessage, model: Backbone.Model, options: any): Promise<T> {
+    display_model(msg: services.KernelMessage.IMessage, model: Backbone.Model, options: any): Promise<T> {
         options = options || {};
         options.root = true; // This element is at the root of the widget hierarchy.
 
@@ -110,7 +110,7 @@ abstract class ManagerBase<T> {
      * This must be implemented by a subclass. The implementation must trigger the view's displayed
      * event after the view is on the page: `view.trigger('displayed')`
      */
-    abstract display_view(msg: services.IKernelMessage, view: Backbone.View<Backbone.Model>, options: any): Promise<T>;
+    abstract display_view(msg: services.KernelMessage.IMessage, view: Backbone.View<Backbone.Model>, options: any): Promise<T>;
 
     /**
      * Modifies view options. Generally overloaded in custom widget manager
@@ -139,10 +139,9 @@ abstract class ManagerBase<T> {
     create_view(model, options) {
         model.state_change = model.state_change.then(() => {
 
-            return utils.loadClass(
+            return this.loadClass(
                 model.get('_view_name'),
                 model.get('_view_module'),
-                null,
                 this.require_error
             ).then((ViewType) => {
                 var view = new ViewType({
@@ -178,10 +177,10 @@ abstract class ManagerBase<T> {
     /**
      * Handle when a comm is opened.
      */
-    handle_comm_open(comm: shims.services.Comm, msg: services.IKernelIOPubCommOpenMessage): Promise<Backbone.Model> {
+    handle_comm_open(comm: shims.services.Comm, msg: services.KernelMessage.ICommOpenMsg): Promise<Backbone.Model> {
         return this.new_model({
-            model_name: msg.content.data._model_name,
-            model_module: msg.content.data._model_module,
+            model_name: msg.content.data['_model_name'],
+            model_module: msg.content.data['_model_module'],
             comm: comm
         }, msg.content.data).catch(utils.reject('Could not create a model.', true));
     };
@@ -279,13 +278,17 @@ abstract class ManagerBase<T> {
             throw new Error('Neither comm nor model_id provided in options object. At least one must exist.');
         }
 
-        var model_promise = utils.loadClass(options.model_name,
+        var model_promise = this.loadClass(options.model_name,
                                             options.model_module,
-                                            null,
                                             that.require_error)
             .then(function(ModelType) {
                 return ModelType._deserialize_state(serialized_state || {}, that).then(function(attributes) {
-                    var widget_model = new ModelType(that, model_id, options.comm, attributes);
+                    let modelOptions = {
+                        widget_manager: that,
+                        model_id: model_id,
+                        comm: options.comm,
+                    }
+                    var widget_model = new ModelType(attributes, modelOptions);
                     widget_model.once('comm:close', function () {
                         delete that._models[model_id];
                     });
@@ -434,6 +437,13 @@ abstract class ManagerBase<T> {
             }));
         }).catch(utils.reject('Could not set widget manager state.', true));
     };
+
+    /**
+     * Load a class and return a promise to the loaded object.
+     */
+    protected loadClass(className, moduleName, error) {
+        return utils.loadClass(className, moduleName, null, error);
+    }
 
     abstract _create_comm(comm_target_name, model_id, data?): Promise<any>;
 

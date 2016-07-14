@@ -480,7 +480,6 @@ class Widget(LoggingConfigurable):
             elif not validated:
                 loud_error('The installed widget Javascript is the wrong version.')
 
-
             # TODO: delete this sending of a comm message when the display statement
             # below works. Then add a 'text/plain' mimetype to the dictionary below.
             self._send({"method": "display"})
@@ -492,7 +491,7 @@ class Widget(LoggingConfigurable):
             # http://www.iana.org/assignments/media-types/media-types.xhtml.
             # We don't have a 'text/plain' entry so that the display message will be
             # will be invisible in the current notebook.
-            data = { 'application/vnd.jupyter.widget': self._model_id }
+            data = {'application/vnd.jupyter.widget': self._model_id}
             display(data, raw=True)
 
             self._handle_displayed(**kwargs)

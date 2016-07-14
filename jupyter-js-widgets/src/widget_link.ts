@@ -23,7 +23,8 @@ class DirectionalLinkModel extends WidgetModel {
         });
     }
 
-    initialize() {
+    initialize(attributes, options) {
+        super.initialize(attributes, options)
         this.on('change', this.updateBindings, this);
         this.updateBindings();
     }

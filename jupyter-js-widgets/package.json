@@ -1,6 +1,6 @@
 {
   "name": "jupyter-js-widgets",
-  "version": "2.0.0-dev.8",
+  "version": "2.0.0-dev.15",
   "description": "Jupyter interactive widgets",
   "author": "Project Jupyter",
   "license": "BSD-3-Clause",
@@ -73,7 +73,7 @@
     "d3-format": "^0.5.1",
     "jquery": "^2.1.4",
     "jquery-ui": "^1.10.5",
-    "jupyter-js-services": "^0.10.4",
+    "jupyter-js-services": "^0.15.1",
     "lolex": "^1.4.0",
     "phosphor": "^0.5.0",
     "scriptjs": "^2.5.8",

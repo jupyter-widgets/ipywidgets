@@ -20,7 +20,7 @@ except ImportError:
 from IPython.core.getipython import get_ipython
 from . import (Widget, Text,
     FloatSlider, IntSlider, Checkbox, Dropdown,
-    Box, Button, DOMWidget)
+    Box, Button, DOMWidget, Output)
 from IPython.display import display, clear_output
 from ipython_genutils.py3compat import string_types, unicode_type
 from traitlets import HasTraits, Any, Unicode, observe
@@ -229,10 +229,13 @@ def interactive(__interact_f, **kwargs):
     if manual:
         manual_button = Button(description="Run %s" % f.__name__)
         c.append(manual_button)
+    out = Output()
+    c.append(out)
     container.children = c
 
     # Build the callback
     def call_f(*args):
+
         container.kwargs = {}
         for widget in kwargs_widgets:
             value = widget.value
@@ -242,9 +245,10 @@ def interactive(__interact_f, **kwargs):
         if manual:
             manual_button.disabled = True
         try:
-            container.result = f(**container.kwargs)
-            if container.result is not None:
-                display(container.result)
+            with out:
+                container.result = f(**container.kwargs)
+                if container.result is not None:
+                    display(container.result)
         except Exception as e:
             ip = get_ipython()
             if ip is None:

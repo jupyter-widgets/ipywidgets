@@ -28,8 +28,6 @@ import {
 import * as _ from 'underscore';
 import * as utils from './utils';
 
-import 'phosphor/styles/base.css';
-
 
 export
 class SelectionContainerModel extends BoxModel {

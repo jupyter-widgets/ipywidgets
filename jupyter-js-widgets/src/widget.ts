@@ -80,16 +80,18 @@ class WidgetModel extends Backbone.Model {
      *      An ID unique to this model.
      * comm : Comm instance (optional)
      */
-    constructor(widget_manager, model_id, comm, attributes) {
-        super(attributes);
+    initialize(attributes, options) {
+        super.initialize(attributes, options);
 
-        this.widget_manager = widget_manager;
+        this.widget_manager = options.widget_manager;
+        this.id = options.model_id;
+        let comm = options.comm;
+
         this.state_change = Promise.resolve();
         this._buffered_state_diff = {};
         this.pending_msgs = 0;
         this.msg_buffer = null;
         this.state_lock = null;
-        this.id = model_id;
 
         this.views = {};
 
@@ -173,11 +175,14 @@ class WidgetModel extends Backbone.Model {
                 this.trigger('msg:custom', msg.content.data.content, msg.buffers);
                 return Promise.resolve();
             case 'display':
+                if (this.widget_manager.displayWithOutput) {
+                    return;
+                }
                 this.state_change = this.state_change.then(() => {
                     this.widget_manager.display_model(msg, this);
                 }).catch(utils.reject('Could not process display view msg', true));
                 return this.state_change;
-        }
+            }
     }
 
     /**
