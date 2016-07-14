@@ -649,12 +649,13 @@ class PlayModel extends BoundedIntModel {
             interval: 100
         });
     }
-    initialize() {
+    initialize(attributes, options) {
+        super.initialize(attributes, options);
         this.on('change:_playing', function () {
             if (this.get('_playing')) {
                 this.loop();
             }
-        }, this);  
+        }, this);
     }
 
     loop() {
@@ -668,7 +669,7 @@ class PlayModel extends BoundedIntModel {
                 this.set('_playing', false);
             }
             this.save_changes();
-        }   
+        }
     }
 
     stop() {
