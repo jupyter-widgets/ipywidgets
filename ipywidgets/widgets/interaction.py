@@ -240,12 +240,12 @@ def interactive(__interact_f, **kwargs):
         for widget in kwargs_widgets:
             value = widget.value
             container.kwargs[widget._kwarg] = value
-        if co:
-            clear_output(wait=True)
         if manual:
             manual_button.disabled = True
         try:
             with out:
+                if co:
+                    clear_output(wait=True)
                 container.result = f(**container.kwargs)
                 if container.result is not None:
                     display(container.result)

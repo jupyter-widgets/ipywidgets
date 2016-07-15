@@ -57,7 +57,7 @@ class OutputModel extends DOMWidgetModel {
     let kernel = this.widget_manager.context.kernel;
     let msgId = this.get('msg_id');
     if (msgId && kernel) {
-      this.clear_output();
+      this.clear_output(true);
       this._msgHook = kernel.registerMessageHook(this.get('msg_id'), msg => {
         this.add(msg);
         return false;
@@ -81,8 +81,8 @@ class OutputModel extends DOMWidgetModel {
     }
   }
 
-  clear_output() {
-    this._outputs.clear();
+  clear_output(wait: boolean = false) {
+    this._outputs.clear(wait);
   }
 
   get outputs() {
