@@ -7,8 +7,8 @@ dependencies:
 - jinja2
 - tornado
 - nbformat
-- ipywidgets
-- notebook>=4.2
+- ipywidgets==5.2.2
+- notebook>=4.2.1
 - pip:
   - sphinx==1.4.5
   - nbsphinx==0.2.7
