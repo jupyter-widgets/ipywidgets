@@ -1,6 +1,7 @@
 name: ipywidget_docs
 channels:
 - conda-forge
+- defaults
 dependencies:
 - python=3.5
 - sphinx_rtd_theme
