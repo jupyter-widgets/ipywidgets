@@ -5,7 +5,8 @@ Users can install the current version of **ipywidgets** with
 [pip](https://pip.pypa.io/en/stable/) or
 [conda](http://conda.readthedocs.io/en/latest/).
 
-- With pip:
+With pip
+--------
 
 ``` bash
 pip install ipywidgets
@@ -17,7 +18,8 @@ an activated virtual environment, the ``--sys-prefix`` option may be required
 to enable the extension and keep the environment isolated (i.e. 
 ``jupyter nbextension enable --py widgetsnbextension --sys-prefix``).
 
-- With conda:
+With conda
+----------
 
 ``` bash
 conda install -c conda-forge ipywidgets
