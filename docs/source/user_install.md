@@ -1,21 +1,28 @@
 Installation
 ============
 
-Users can install the current version of **ipywidgets** with **pip** or **conda**.
+Users can install the current version of **ipywidgets** with
+[pip](https://pip.pypa.io/en/stable/) or
+[conda](http://conda.readthedocs.io/en/latest/).
 
-- With pip:
+With pip
+--------
 
-``` sourceCode
+``` bash
 pip install ipywidgets
 jupyter nbextension enable --py widgetsnbextension
 ```
 
-When using virtualenv, the <code>--sys-prefix</code> option may be required for
-the extension enabling command in order to keep the environment isolated.
+When using [virtualenv](https://virtualenv.pypa.io/en/stable/) and working in
+an activated virtual environment, the ``--sys-prefix`` option may be required
+to enable the extension and keep the environment isolated (i.e. 
+``jupyter nbextension enable --py widgetsnbextension --sys-prefix``).
 
-- With conda:
+With conda
+----------
 
-``` sourceCode
+``` bash
 conda install -c conda-forge ipywidgets
 ```
 
+Installing **ipywidgets** with conda will also enable the extension for you.
