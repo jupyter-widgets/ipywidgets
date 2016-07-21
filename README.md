@@ -84,6 +84,9 @@ See the [Installation](docs/source/user_install.md) section of the documentation
 
 If you want to install ipywidgets from git, **you will need [npm](https://www.npmjs.com/) version 3.x or later** (check you version by running `npm -v` from a terminal).  Installing from git is more complicated and requires a developer install, see the [developer install](docs/source/dev_install.md) instructions.
 
+To install the latest master version from the root directory of the source
+code, run ``dev-install.sh``. To only build the Python package enter ``pip install -e .``.
+
 #### Compatibility
 
 | ipywidgets version  | Required notebook version |
