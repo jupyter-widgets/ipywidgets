@@ -80,8 +80,6 @@ var AccordionView = widget.DOMWidgetView.extend({
         if (options === undefined || options.updated_view != this) {
             var old_index = this.model.previous('selected_index');
             var new_index = this.model.get('selected_index');
-            /* old_index can be out of bounds, this check avoids raising
-               a javascript error. */
             this.collapseTab(old_index);
             this.expandTab(new_index);
         }
