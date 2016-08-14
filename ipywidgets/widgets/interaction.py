@@ -199,6 +199,7 @@ def interactive(__interact_f, **kwargs):
     f = __interact_f
     co = kwargs.pop('clear_output', True)
     manual = kwargs.pop('__manual', False)
+    output_result = kwargs.pop('__output_result', True)
     kwargs_widgets = []
     container = Box(_dom_classes=['widget-interact'])
     container.result = None
@@ -247,7 +248,7 @@ def interactive(__interact_f, **kwargs):
                 if co:
                     clear_output(wait=True)
                 container.result = f(**container.kwargs)
-                if container.result is not None:
+                if output_result and container.result is not None:
                     display(container.result)
         except Exception as e:
             ip = get_ipython()
