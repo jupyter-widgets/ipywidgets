@@ -104,11 +104,15 @@ var AccordionView = widget.DOMWidgetView.extend({
      * @param  {number} index
      */
     expandTab: function(index) {
-        var page = this.containers[index].children('.collapse');
+        /* to be able to disable all pages we must be sure
+           that the index exists before proceed */
+        if (index in this.containers) {
+            var page = this.containers[index].children('.collapse');
 
-        if (!page.hasClass('in')) {
-            page.addClass('in');
-            $(this.el.children[index]).children('.panel-heading').children('accordion-toggle').trigger('click');
+            if (!page.hasClass('in')) {
+                page.addClass('in');
+                $(this.el.children[index]).children('.panel-heading').children('accordion-toggle').trigger('click');
+            }
         }
     },
 
