@@ -4,4 +4,4 @@ Contributing
 We appreciate contributions from the community.
 
 We follow the [IPython Contributing Guide](https://github.com/ipython/ipython/blob/master/CONTRIBUTING.md)
-and [Jupyter document on Contributing to the Code](https://jupyter.readthedocs.io/en/latest/contrib_guide_code.html).
+and [Jupyter Contributing Guides](http://jupyter.readthedocs.io/en/latest/contributor/content-contributor.html).
