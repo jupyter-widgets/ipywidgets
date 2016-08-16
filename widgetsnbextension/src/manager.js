@@ -245,7 +245,7 @@ WidgetManager.prototype._handle_display_view = function (view) {
  * Registers manager level actions with the notebook actions list
  */
 WidgetManager.prototype._init_actions = function() {
-    var notifier = Jupyter.notification_area.new_notification_widget('widgets');
+    var notifier = Jupyter.notification_area.widget('widgets');
     this.buildSnapshotsAction = {
         handler: (function() {
             this.updateSnapshots().then((function() {
