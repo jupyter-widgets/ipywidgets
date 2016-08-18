@@ -69,7 +69,7 @@ Install the current version of ipywidgets using pip or conda.
 
 ```
 pip install ipywidgets
-jupyter nbextension enable --py widgetsnbextension
+jupyter nbextension enable --py --sys-prefix widgetsnbextension
 ```
 
 - With conda:
