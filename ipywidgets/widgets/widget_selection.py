@@ -5,7 +5,7 @@ Represents an enumeration using a widget.
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
-from collections import OrderedDict
+from collections import Mapping
 
 from .domwidget import DOMWidget
 from .widget import register
@@ -63,7 +63,7 @@ class _Selection(DOMWidget):
     def _make_options(self, x):
         # Return a list of key-value pairs where the keys are strings
         # If x is a dict, convert it to list format.
-        if isinstance(x, (OrderedDict, dict)):
+        if isinstance(x, Mapping):
             return [(unicode_type(k), v) for k, v in x.items()]
 
         # If x is an ordinary list, use the option values as names.
