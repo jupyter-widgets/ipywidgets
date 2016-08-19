@@ -235,17 +235,24 @@ def interactive(__interact_f, **kwargs):
 
     # Build the callback
     def call_f(*args):
-
-        container.kwargs = {}
-        for widget in kwargs_widgets:
-            value = widget.value
-            container.kwargs[widget._kwarg] = value
         if manual:
             manual_button.disabled = True
         try:
             with out:
                 if co:
                     clear_output(wait=True)
+                container.kwargs = {}
+                for widget in kwargs_widgets:
+                    value = widget.value
+                    # If the widget has an "eval" attribute, call it on
+                    # the obtained value.
+                    try:
+                        ev = widget.eval
+                    except AttributeError:
+                        pass
+                    else:
+                        value = ev(value)
+                    container.kwargs[widget._kwarg] = value
                 container.result = f(**container.kwargs)
                 if container.result is not None:
                     display(container.result)
