@@ -1,4 +1,4 @@
-require("jupyter-js-widgets/src/embed-webpack");
+require("jupyter-js-widgets/lib/embed-webpack");
 
 window.onload = function() {
   // TODO: See if md parsing conf can do this, or extension (compile time)
