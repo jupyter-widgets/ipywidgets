@@ -26,6 +26,7 @@ from ipython_genutils.py3compat import string_types, unicode_type
 from traitlets import HasTraits, Any, Unicode, observe
 from numbers import Real, Integral
 from warnings import warn
+from collections import Iterable, Mapping
 
 empty = Parameter.empty
 
@@ -70,8 +71,6 @@ def _widget_abbrev_single_value(o):
     """Make widgets from single values, which can be used as parameter defaults."""
     if isinstance(o, string_types):
         return Text(value=unicode_type(o))
-    elif isinstance(o, dict):
-        return Dropdown(options=o)
     elif isinstance(o, bool):
         return Checkbox(value=o)
     elif isinstance(o, Integral):
@@ -83,32 +82,51 @@ def _widget_abbrev_single_value(o):
     else:
         return None
 
+def _widget_abbrev_tuple(o):
+    """Make widgets from a tuple abbreviation."""
+    if _matches(o, (Real, Real)):
+        min, max, value = _get_min_max_value(o[0], o[1])
+        if all(isinstance(_, Integral) for _ in o):
+            cls = IntSlider
+        else:
+            cls = FloatSlider
+        return cls(value=value, min=min, max=max)
+    elif _matches(o, (Real, Real, Real)):
+        step = o[2]
+        if step <= 0:
+            raise ValueError("step must be >= 0, not %r" % step)
+        min, max, value = _get_min_max_value(o[0], o[1], step=step)
+        if all(isinstance(_, Integral) for _ in o):
+            cls = IntSlider
+        else:
+            cls = FloatSlider
+        return cls(value=value, min=min, max=max, step=step)
+
 def _widget_abbrev(o):
     """Make widgets from abbreviations: single values, lists or tuples."""
-    if isinstance(o, list):
-        return Dropdown(options=[unicode_type(k) for k in o])
+    if isinstance(o, tuple):
+        return _widget_abbrev_tuple(o)
 
-    elif isinstance(o, tuple):
-        if _matches(o, (Real, Real)):
-            min, max, value = _get_min_max_value(o[0], o[1])
-            if all(isinstance(_, Integral) for _ in o):
-                cls = IntSlider
-            else:
-                cls = FloatSlider
-            return cls(value=value, min=min, max=max)
-        elif _matches(o, (Real, Real, Real)):
-            step = o[2]
-            if step <= 0:
-                raise ValueError("step must be >= 0, not %r" % step)
-            min, max, value = _get_min_max_value(o[0], o[1], step=step)
-            if all(isinstance(_, Integral) for _ in o):
-                cls = IntSlider
-            else:
-                cls = FloatSlider
-            return cls(value=value, min=min, max=max, step=step)
+    # Try single value
+    w = _widget_abbrev_single_value(o)
+    if w is not None:
+        return w
 
-    else:
-        return _widget_abbrev_single_value(o)
+    # Something iterable (list, dict, generator, ...). Note that str and
+    # tuple should be handled before, that is why we check this case last.
+    if isinstance(o, Iterable):
+        # Dropdown expects a dict or list, so we convert an arbitrary
+        # iterable to either of those.
+        if isinstance(o, (list, dict)):
+            return Dropdown(options=o)
+        elif isinstance(o, Mapping):
+            return Dropdown(options=list(o.items()))
+        else:
+            return Dropdown(options=list(o))
+
+    # No idea...
+    return None
+
 
 def _widget_from_abbrev(abbrev, default=empty):
     """Build a Widget instance given an abbreviation or Widget."""
