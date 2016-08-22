@@ -148,8 +148,8 @@
 
 .widget-vslider {
     /* Vertical jQuery Slider */
-    width: 50px;
     height: 250px;
+    width: 70px;
 
     .slider-container {
         /* Fix the padding of the slide track so the ui-slider is sized
@@ -225,6 +225,7 @@
     color: #333333;
     cursor: pointer;
     display: inline-block;
+    overflow: hidden;
     text-align: center;
     vertical-align: middle;
     white-space: nowrap;
@@ -564,7 +565,7 @@ ul.widget-dropdown-droplist {
 .widget-vprogress {
     /* Progress Bar */
     height: 250px;
-    width: 50px;
+    width: 70px;
 
     .progress {
         flex-grow: 1;
@@ -638,14 +639,13 @@ ul.widget-dropdown-droplist {
 
     .widget-label {
         /* Horizontal Label */
-        min-width      : 10ex;
-        max-width      : 10ex;
+        min-width      : 15ex;
+        max-width      : 15ex;
         padding-right  : 8px;
         padding-top    : 5px;
         text-align     : right;
         vertical-align : text-top;
-
-        word-wrap: break-word;
+        overflow: 'hidden';
     }
 
     .widget-readout {
@@ -655,7 +655,7 @@ ul.widget-dropdown-droplist {
         height         : @inline-widget-height;
         text-align     : center;
         vertical-align : text-top;
-        min-width      : 7em;
+        min-width      : 3em;
         max-width      : 7em;
         margin-left    : 3px;
         overflow       : hidden;
@@ -684,6 +684,7 @@ ul.widget-dropdown-droplist {
         padding-bottom : 5px;
         text-align     : center;
         vertical-align : text-bottom;
+        overflow       : hidden;
     }
 
     .widget-readout {
