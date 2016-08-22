@@ -14,7 +14,7 @@ Contents
     examples/Widget List.ipynb
     examples/Widget Events.ipynb
     examples/Widget Styling.ipynb
-    examples/Custom Widget - Hello World.ipynb
+    examples/Widget Custom.ipynb
     examples/Widget Layout.ipynb
     examples/Widget Low Level.ipynb
     contributing.md
