@@ -60,12 +60,12 @@ permissions on npm and pip related install directories are correct.
   following process:
   
     - Deep clean of the cloned repository:
-      
-            git clean -dfx .
+    
+      ```
+      git clean -dfx .
+      ```
 
     - Remove anything with `widgetsnbextension` in the name of files within
         the `conda` directory
-        
-    - Remove `node_modules` directory
-      
+
     - Try reinstalling ipywidgets
