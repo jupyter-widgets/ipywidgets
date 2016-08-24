@@ -7,15 +7,17 @@ Prerequisites
 To install ipywidgets from git, you will need:
 
 - [npm](https://www.npmjs.com/) **version 3.x or later**
-  Check your version by running `npm -v` from a terminal. *Note: If you 
-  install using sudo, you need to make sure that npm is also available in the
-  PATH used with sudo.*
+
+      Check your version by running `npm -v` from a terminal. *Note: If you 
+      install using sudo, you need to make sure that npm is also available in the
+      PATH used with sudo.*
   
-- the latest [Jupyter notebook development release](https://github.com/jupyter/notebook) 
-  Everything in the ipywidgets repository is developed using Jupyter 
-  notebook's master branch. If you want to have a copy of ipywidgets that
-  works against a stable version of the notebook, checkout the appropriate tag 
-  (see the [Compatibility table](https://github.com/ipython/ipywidgets#compatibility)).
+- the latest [Jupyter notebook development release](https://github.com/jupyter/notebook)
+      
+      Everything in the ipywidgets repository is developed using Jupyter 
+      notebook's master branch. If you want to have a copy of ipywidgets that
+      works against a stable version of the notebook, checkout the appropriate tag 
+      (see the [Compatibility table](https://github.com/ipython/ipywidgets#compatibility)).
 
 Steps
 -----
@@ -57,13 +59,13 @@ permissions on npm and pip related install directories are correct.
 - If troubleshooting an upgrade and its build, you may need to do the
   following process:
   
-      - Deep clean of the cloned repository:
+    - Deep clean of the cloned repository:
       
-             git clean -dfx .
+            git clean -dfx .
 
-      - Remove anything with `widgetsnbextension` in the name of files within
+    - Remove anything with `widgetsnbextension` in the name of files within
         the `conda` directory
         
-      - Remove `node_modules` directory
+    - Remove `node_modules` directory
       
-      - Try reinstalling
+    - Try reinstalling ipywidgets
