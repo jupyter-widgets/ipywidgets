@@ -17,7 +17,7 @@ To install ipywidgets from git, you will need:
     notebook's master branch. 
   + If you want to have a copy of ipywidgets that works against a stable
     version of the notebook, checkout the appropriate tag.
-  + See the see the
+  + See the
     [Compatibility table](https://github.com/ipython/ipywidgets#compatibility).
 
 Steps
