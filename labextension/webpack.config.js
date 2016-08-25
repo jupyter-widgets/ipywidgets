@@ -5,12 +5,6 @@ var webpack = require('webpack');
 
 var jlabHelpers = require('jupyterlab/scripts/extension_helpers');
 
-var findImports = require('find-imports');
-
-// Get the list of vendor files.
-//var VENDOR_FILES = findImports('./lib/**/*.js', { flatten: true });
-// console.log(VENDOR_FILES);
-
 try {
   fs.mkdirSync('./dist')
 } catch(err) {
@@ -25,7 +19,6 @@ for (var lib of ['jupyter-js-widgets']) {
 }
 
 fs.writeFileSync('./dist/HELLO.js', jlabHelpers.upstreamExternals(require));
-//fs.writeFileSync('./dist/jupyter-js-widgets-labextension-shim.js', jlabHelpers.createShim('jupyter-js-widgets-labextension'));
 
 var loaders = [
     { test: /\.css$/, loader: "style-loader!css-loader" },
@@ -47,18 +40,14 @@ module.exports = [
   {
     entry: {
       labextension: './lib',
-      // vendor: VENDOR_FILES
     },
     output: {
         filename: 'lab-extension.js',
         path: './dist',
         //library: 'jupyter-js-widgets-labextension',
-        //libraryTarget: 'this',
+        libraryTarget: 'amd',
         publicPath: 'https://npmcdn.com/jupyter-js-widgets-labextension@' + version + '/dist/'
     },
-    // plugins: [
-    //   new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.bundle.js')
-    // ],
     bail: true,
     devtool: 'source-map',
     module: { loaders: loaders },
