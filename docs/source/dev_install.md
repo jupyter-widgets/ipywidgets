@@ -7,17 +7,18 @@ Prerequisites
 To install ipywidgets from git, you will need:
 
 - [npm](https://www.npmjs.com/) **version 3.x or later**
+  + Check your version by running `npm -v` from a terminal.
+  + *Note: If you install using sudo, you need to make sure that npm is also
+    available in the PATH used with sudo.*
 
-      Check your version by running `npm -v` from a terminal. *Note: If you 
-      install using sudo, you need to make sure that npm is also available in the
-      PATH used with sudo.*
-  
+
 - the latest [Jupyter notebook development release](https://github.com/jupyter/notebook)
-      
-      Everything in the ipywidgets repository is developed using Jupyter 
-      notebook's master branch. If you want to have a copy of ipywidgets that
-      works against a stable version of the notebook, checkout the appropriate tag 
-      (see the [Compatibility table](https://github.com/ipython/ipywidgets#compatibility)).
+  + Everything in the ipywidgets repository is developed using Jupyter 
+    notebook's master branch. 
+  + If you want to have a copy of ipywidgets that works against a stable
+    version of the notebook, checkout the appropriate tag.
+  + See the see the
+    [Compatibility table](https://github.com/ipython/ipywidgets#compatibility).
 
 Steps
 -----
