@@ -309,7 +309,7 @@ class WidgetModel extends Backbone.Model {
             return false;
         }
 
-        var attrs = (method === 'patch') ? options.attrs : model.get_state(options);
+        var attrs = (method === 'patch') ? options.attrs : model.get_state(options.drop_defaults);
 
         // The state_lock lists attributes that are currently being changed
         // right now from a kernel message.
