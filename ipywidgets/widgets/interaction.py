@@ -168,7 +168,7 @@ def _find_abbreviations(f, kwargs):
     return new_kwargs
 
 def _widgets_from_abbreviations(seq):
-    """Given a sequence of (name, abbrev) tuples, return a sequence of Widgets."""
+    """Given a sequence of (name, abbrev, default) tuples, return a sequence of Widgets."""
     result = []
     for name, abbrev, default in seq:
         widget = _widget_from_abbrev(abbrev, default)
