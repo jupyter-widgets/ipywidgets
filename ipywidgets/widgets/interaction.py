@@ -52,8 +52,8 @@ def _get_min_max_value(min, max, value=None, step=None):
         if not isinstance(value, Real):
             raise TypeError('expected a real number, got: %r' % value)
         if not value:
-            t = type(value)
-            min, max = (t(0), t(1))
+            # This gives (0, 1) of the correct type
+            min, max = (value, value + 1)
         elif value > 0:
             min, max = (-value, 3*value)
         else:
