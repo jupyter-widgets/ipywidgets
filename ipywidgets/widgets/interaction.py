@@ -178,14 +178,10 @@ def _widgets_from_abbreviations(seq):
         result.append(widget)
     return result
 
-def interactive(__interact_f, **kwargs):
+class interactive(Box):
     """
-    Builds a group of interactive widgets tied to a function and places the
-    group into a Box container.
-
-    Returns
-    -------
-    container : a Box instance containing multiple widgets
+    A Box container containing a group of interactive widgets tied to a
+    function.
 
     Parameters
     ----------
@@ -196,88 +192,87 @@ def interactive(__interact_f, **kwargs):
         An interactive widget is created for each keyword argument that is a
         valid widget abbreviation.
     """
-    f = __interact_f
-    co = kwargs.pop('clear_output', True)
-    manual = kwargs.pop('__manual', False)
-    kwargs_widgets = []
-    container = Box(_dom_classes=['widget-interact'])
-    container.result = None
-    container.args = []
-    container.kwargs = dict()
-    kwargs = kwargs.copy()
+    def __init__(self, __interact_f, **kwargs):
+        Box.__init__(self, _dom_classes=['widget-interact'])
+        self.result = None
+        self.args = []
+        self.kwargs = {}
 
-    new_kwargs = _find_abbreviations(f, kwargs)
-    # Before we proceed, let's make sure that the user has passed a set of args+kwargs
-    # that will lead to a valid call of the function. This protects against unspecified
-    # and doubly-specified arguments.
-    try:
-        check_argspec(f)
-    except TypeError:
-        # if we can't inspect, we can't validate
-        pass
-    else:
-        getcallargs(f, **{n:v for n,v,_ in new_kwargs})
-    # Now build the widgets from the abbreviations.
-    kwargs_widgets.extend(_widgets_from_abbreviations(new_kwargs))
+        self.f = f = __interact_f
+        self.clear_output = kwargs.pop('clear_output', True)
+        self.manual = kwargs.pop('__manual', False)
 
-    # This has to be done as an assignment, not using container.children.append,
-    # so that traitlets notices the update. We skip any objects (such as fixed) that
-    # are not DOMWidgets.
-    c = [w for w in kwargs_widgets if isinstance(w, DOMWidget)]
+        new_kwargs = _find_abbreviations(f, kwargs)
+        # Before we proceed, let's make sure that the user has passed a set of args+kwargs
+        # that will lead to a valid call of the function. This protects against unspecified
+        # and doubly-specified arguments.
+        try:
+            check_argspec(f)
+        except TypeError:
+            # if we can't inspect, we can't validate
+            pass
+        else:
+            getcallargs(f, **{n:v for n,v,_ in new_kwargs})
+        # Now build the widgets from the abbreviations.
+        self.kwargs_widgets = _widgets_from_abbreviations(new_kwargs)
 
-    # If we are only to run the function on demand, add a button to request this.
-    if manual:
-        manual_button = Button(description="Run %s" % f.__name__)
-        c.append(manual_button)
-    out = Output()
-    c.append(out)
-    container.children = c
+        # This has to be done as an assignment, not using self.children.append,
+        # so that traitlets notices the update. We skip any objects (such as fixed) that
+        # are not DOMWidgets.
+        c = [w for w in self.kwargs_widgets if isinstance(w, DOMWidget)]
 
-    # Build the callback
-    def call_f(*args):
+        # If we are only to run the function on demand, add a button to request this.
+        if self.manual:
+            manual_button = Button(description="Run %s" % f.__name__)
+            c.append(manual_button)
 
-        container.kwargs = {}
-        for widget in kwargs_widgets:
-            value = widget.value
-            container.kwargs[widget._kwarg] = value
-        if manual:
+        self.out = Output()
+        c.append(self.out)
+        self.children = c
+
+        # Wire up the widgets
+        # If we are doing manual running, the callback is only triggered by the button
+        # Otherwise, it is triggered for every trait change received
+        # On-demand running also suppresses running the function with the initial parameters
+        if self.manual:
+            manual_button.on_click(self.call_f)
+
+            # Also register input handlers on text areas, so the user can hit return to
+            # invoke execution.
+            for w in self.kwargs_widgets:
+                if isinstance(w, Text):
+                    w.on_submit(self.call_f)
+        else:
+            for widget in self.kwargs_widgets:
+                widget.observe(self.call_f, names='value')
+
+            self.on_displayed(lambda _: self.call_f(dict(name=None, old=None, new=None)))
+
+    # Callback function
+    def call_f(self, *args):
+        self.kwargs = {}
+        if self.manual:
             manual_button.disabled = True
         try:
-            with out:
-                if co:
+            for widget in self.kwargs_widgets:
+                value = widget.value
+                self.kwargs[widget._kwarg] = value
+            with self.out:
+                if self.clear_output:
                     clear_output(wait=True)
-                container.result = f(**container.kwargs)
-                if container.result is not None:
-                    display(container.result)
+                self.result = self.f(**self.kwargs)
+                if self.result is not None:
+                    display(self.result)
         except Exception as e:
             ip = get_ipython()
             if ip is None:
-                container.log.warn("Exception in interact callback: %s", e, exc_info=True)
+                self.log.warn("Exception in interact callback: %s", e, exc_info=True)
             else:
                 ip.showtraceback()
         finally:
-            if manual:
+            if self.manual:
                 manual_button.disabled = False
 
-    # Wire up the widgets
-    # If we are doing manual running, the callback is only triggered by the button
-    # Otherwise, it is triggered for every trait change received
-    # On-demand running also suppresses running the function with the initial parameters
-    if manual:
-        manual_button.on_click(call_f)
-
-        # Also register input handlers on text areas, so the user can hit return to
-        # invoke execution.
-        for w in kwargs_widgets:
-            if isinstance(w, Text):
-                w.on_submit(call_f)
-    else:
-        for widget in kwargs_widgets:
-            widget.observe(call_f, names='value')
-
-        container.on_displayed(lambda _: call_f(dict(name=None, old=None, new=None)))
-
-    return container
 
 def interact(__interact_f=None, **kwargs):
     """
