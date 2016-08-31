@@ -5,7 +5,7 @@ module.exports = {
     output: {
         filename: 'embed.js',
         path: './dist',
-        publicPath: 'https://npmcdn.com/jupyter-js-widgets@' + version + '/dist/'
+        publicPath: 'https://unpkg.com/jupyter-js-widgets@' + version + '/dist/'
     },
     devtool: 'source-map',
     module: {

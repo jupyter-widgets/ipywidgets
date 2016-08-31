@@ -29,7 +29,7 @@ function loadInlineWidgets(event) {
     // If requirejs is not on the page on page load, load it from cdn.
     if (!(window as any).requirejs) {
         var scriptjs = require('scriptjs') as any;
-        scriptjs('https://npmcdn.com/requirejs/require.js', function() {
+        scriptjs('https://unpkg.com/requirejs/require.js', function() {
             // Define jupyter-js-widget requirejs module
             //
             // (This is needed for custom widget model to be able to AMD require jupyter-js-widgets.)
