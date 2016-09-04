@@ -47,6 +47,7 @@ namespace shims {
              */
             new_comm(target_name: string, data: any, callbacks: any, metadata: any, comm_id: string): Comm {
                 var comm = new Comm(this.jsServicesKernel.connectToComm(target_name, comm_id));
+                this.register_comm(comm);
                 comm.open(data, callbacks, metadata);
                 return comm;
             };
@@ -61,6 +62,7 @@ namespace shims {
                 var handle = this.jsServicesKernel.registerCommTarget(target_name, function(jsServicesComm, msg) {
                     // Create the comm.
                     var comm = new Comm(jsServicesComm);
+                    this.register_comm(comm);
 
                     // Call the callback for the comm.
                     try {
@@ -85,7 +87,17 @@ namespace shims {
                 delete this.targets[target_name];
             };
 
+            /**
+         	 * Register a comm in the mapping
+             */
+            register_comm = function (comm) {
+              this.comms[comm.comm_id] = Promise.resolve(comm);
+              comm.kernel = this.kernel;
+              return comm.comm_id;
+            };
+
             targets = Object.create(null);
+			comms = Object.create(null);
             kernel: IKernel = null; 
             jsServicesKernel: IKernel = null;
         }
