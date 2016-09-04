@@ -59,7 +59,7 @@ namespace shims {
              *                         comm is made.  Signature of f(comm, msg).
              */
             register_target (target_name, f) {
-                var handle = this.jsServicesKernel.registerCommTarget(target_name, function(jsServicesComm, msg) {
+                var handle = this.jsServicesKernel.registerCommTarget(target_name, _.bind(function(jsServicesComm, msg) {
                     // Create the comm.
                     var comm = new Comm(jsServicesComm);
                     this.register_comm(comm);
@@ -73,7 +73,7 @@ namespace shims {
                         console.error(wrapped_error);
                         return;
                     }
-                });
+                }, this));
                 this.targets[target_name] = handle;
             };
 
@@ -88,7 +88,7 @@ namespace shims {
             };
 
             /**
-         	 * Register a comm in the mapping
+             * Register a comm in the mapping
              */
             register_comm = function (comm) {
               this.comms[comm.comm_id] = Promise.resolve(comm);
@@ -97,7 +97,7 @@ namespace shims {
             };
 
             targets = Object.create(null);
-			comms = Object.create(null);
+            comms = Object.create(null);
             kernel: IKernel = null; 
             jsServicesKernel: IKernel = null;
         }
