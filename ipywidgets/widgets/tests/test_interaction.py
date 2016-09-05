@@ -78,6 +78,13 @@ def check_widget(w, **d):
             nt.assert_equal(value, expected,
                 "%s.%s = %r != %r" % (w.__class__.__name__, attr, value, expected)
             )
+            # For numeric values, the types should match too
+            if isinstance(value, (int, float)):
+                tv = type(value)
+                te = type(expected)
+                nt.assert_is(tv, te,
+                    "type(%s.%s) = %r != %r" % (w.__class__.__name__, attr, tv, te)
+                )
 
 def check_widgets(container, **to_check):
     """Check that widgets are created as expected"""
@@ -127,21 +134,39 @@ def test_single_value_dict():
         )
 
 def test_single_value_float():
-    for a in (2.25, 1.0, -3.5):
+    for a in (2.25, 1.0, -3.5, 0.0):
+        if not a:
+            expected_min = 0.0
+            expected_max = 1.0
+        elif a > 0:
+            expected_min = -a
+            expected_max = 3*a
+        else:
+            expected_min = 3*a
+            expected_max = -a
         c = interactive(f, a=a)
         w = c.children[0]
         check_widget(w,
             cls=widgets.FloatSlider,
             description='a',
             value=a,
-            min= -a if a > 0 else 3*a,
-            max= 3*a if a > 0 else -a,
+            min=expected_min,
+            max=expected_max,
             step=0.1,
             readout=True,
         )
 
 def test_single_value_int():
-    for a in (1, 5, -3):
+    for a in (1, 5, -3, 0):
+        if not a:
+            expected_min = 0
+            expected_max = 1
+        elif a > 0:
+            expected_min = -a
+            expected_max = 3*a
+        else:
+            expected_min = 3*a
+            expected_max = -a
         c = interactive(f, a=a)
         nt.assert_equal(len(c.children), 2)
         w = c.children[0]
@@ -149,8 +174,8 @@ def test_single_value_int():
             cls=widgets.IntSlider,
             description='a',
             value=a,
-            min= -a if a > 0 else 3*a,
-            max= 3*a if a > 0 else -a,
+            min=expected_min,
+            max=expected_max,
             step=1,
             readout=True,
         )
@@ -529,7 +554,7 @@ def test_float_range_logic():
         w.max = -.1
 
     w = frsw(min=2, max=3, value=(2.2, 2.5))
-    check_widget(w, min=2, max=3)
+    check_widget(w, min=2., max=3.)
 
     with nt.assert_raises(TraitError):
         frsw(min=.2, max=.1)
