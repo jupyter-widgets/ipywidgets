@@ -36,14 +36,14 @@ class EmbedManager extends ManagerBase<HTMLElement> {
 
     /**
      * Takes a requirejs success handler and returns a requirejs error handler
-     * that attempts loading the module from npmcdn. 
+     * that attempts loading the module from unpkg. 
      */
     require_error(success_callback) {
         return function(err) {
             var failedId = err.requireModules && err.requireModules[0];
             if (failedId) {
                 // TODO: Get typing to work for requirejs
-                (window as any).require(['https://npmcdn.com/' + failedId + '/dist/index.js'], success_callback);
+                (window as any).require(['https://unpkg.com/' + failedId + '/dist/index.js'], success_callback);
             } else {
                 throw err;
             }

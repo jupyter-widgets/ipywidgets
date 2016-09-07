@@ -8,7 +8,7 @@ module.exports = {
         library: 'jupyter-js-widgets-labextension',
         libraryTarget: 'umd',
         umdNamedDefine: true,
-        publicPath: 'https://npmcdn.com/jupyter-js-widgets-labextension@' + version + '/dist/'
+        publicPath: 'https://unpkg.com/jupyter-js-widgets-labextension@' + version + '/dist/'
     },
     bail: true,
     devtool: 'source-map',
