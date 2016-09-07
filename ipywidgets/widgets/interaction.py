@@ -18,7 +18,7 @@ except ImportError:
     from inspect import getargspec as check_argspec # py2
 
 from IPython.core.getipython import get_ipython
-from . import (Widget, Text,
+from . import (ValueWidget, Text,
     FloatSlider, IntSlider, Checkbox, Dropdown,
     Box, Button, DOMWidget, Output)
 from IPython.display import display, clear_output
@@ -130,7 +130,7 @@ def _widget_abbrev(o):
 
 def _widget_from_abbrev(abbrev, default=empty):
     """Build a Widget instance given an abbreviation or Widget."""
-    if isinstance(abbrev, Widget) or isinstance(abbrev, fixed):
+    if isinstance(abbrev, ValueWidget) or isinstance(abbrev, fixed):
         return abbrev
 
     widget = _widget_abbrev(abbrev)
@@ -190,6 +190,7 @@ def _widgets_from_abbreviations(seq):
     result = []
     for name, abbrev, default in seq:
         widget = _widget_from_abbrev(abbrev, default)
+        assert isinstance(widget, ValueWidget) or isinstance(widget, fixed)
         if not widget.description:
             widget.description = name
         widget._kwarg = name

@@ -8,6 +8,7 @@ Represents an enumeration using a widget.
 from collections import Mapping
 
 from .domwidget import DOMWidget
+from .valuewidget import ValueWidget
 from .widget import register
 from traitlets import (Unicode, Bool, Any, Dict, TraitError, CaselessStrEnum,
                        Tuple, List, Union, observe, validate)
@@ -21,7 +22,7 @@ def _label_to_value(k, obj):
     return obj._options_dict[k]
 
 
-class _Selection(DOMWidget):
+class _Selection(DOMWidget, ValueWidget):
     """Base class for Selection widgets
 
     ``options`` can be specified as a list or dict. If given as a list,
