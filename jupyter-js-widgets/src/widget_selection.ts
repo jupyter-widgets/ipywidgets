@@ -738,8 +738,7 @@ class SelectView extends DOMWidgetView {
         this.label.style.display = 'none';
 
         this.listbox = document.createElement('select');
-        this.listbox.className = 'widget-listbox';
-        this.listbox.setAttribute('size', '6');
+        this.listbox.style['width'] = '100%';
         this.el.appendChild(this.listbox);
 
         this.update();
