@@ -5,31 +5,27 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "dependencies": {
-    "jupyterlab": "^0.1.0",
     "jupyter-js-widgets": "file:../jupyter-js-widgets",
+    "jupyterlab": "file://../../jupyterlab",
     "phosphor": "0.6.1"
   },
   "devDependencies": {
-    "css-loader": "^0.23.1",
     "expect.js": "^0.3.1",
-    "file-loader": "^0.8.5",
     "istanbul": "^0.3.18",
-    "json-loader": "^0.5.4",
-    "jupyter-js-services": "^0.18.0",
+    "jupyter-js-services": "^0.18.1",
+    "jupyterlab-extension-builder": "^0.1.1",
     "mocha": "^2.2.5",
     "requirejs": "^2.2.0",
     "rimraf": "^2.4.2",
-    "style-loader": "^0.13.1",
     "text-encoding": "^0.5.2",
     "typedoc": "^0.4.4",
-    "typescript": "^1.8.0",
-    "url-loader": "^0.5.7",
-    "webpack": "^1.13.1"
+    "typescript": "^1.8.0"
   },
   "scripts": {
     "clean": "rimraf docs && rimraf lib && rimraf dist",
     "build:src": "tsc --project src",
-    "build": "npm run build:src && webpack",
+    "build:extension": "node scripts/buildExtension.js",
+    "build": "npm run build:src && npm run build:extension",
     "example:browser": "cd examples/browser && npm run update && npm run build",
     "example:node": "cd examples/node && npm install",
     "build:examples": "npm run example:browser && npm run example:node",
