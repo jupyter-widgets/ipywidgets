@@ -71,8 +71,10 @@ class _Selection(DOMWidget):
             if not isinstance(y, (list, tuple)) or len(y) < 2:
                 return [(unicode_type(i), i) for i in x]
 
-        # Value is already in the correct format.
-        return x
+        # x is already in the correct format: a list of 2-tuples.
+        # The first element of each tuple should be unicode, this might
+        # not yet be the case.
+        return [(unicode_type(k), v) for k, v in x]
 
     @validate('options')
     def _validate_options(self, proposal):

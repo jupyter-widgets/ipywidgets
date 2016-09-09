@@ -119,20 +119,6 @@ def test_single_value_bool():
             value=a,
         )
 
-def test_single_value_dict():
-    for d in [
-        dict(a=5),
-        dict(a=5, b='b', c=dict),
-    ]:
-        c = interactive(f, d=d)
-        w = c.children[0]
-        check_widget(w,
-            cls=widgets.Dropdown,
-            description='d',
-            options=d,
-            value=next(iter(d.values())),
-        )
-
 def test_single_value_float():
     for a in (2.25, 1.0, -3.5, 0.0):
         if not a:
@@ -180,15 +166,45 @@ def test_single_value_int():
             readout=True,
         )
 
-def test_list_tuple_str():
+def test_list_str():
     values = ['hello', 'there', 'guy']
     first = values[0]
-    c = interactive(f, lis=list(values))
+    c = interactive(f, lis=values)
     nt.assert_equal(len(c.children), 2)
     d = dict(
         cls=widgets.Dropdown,
         value=first,
-        options=values
+        options=values,
+        _options_labels=tuple(values),
+        _options_values=tuple(values),
+    )
+    check_widgets(c, lis=d)
+
+def test_list_int():
+    values = [3, 1, 2]
+    first = values[0]
+    c = interactive(f, lis=values)
+    nt.assert_equal(len(c.children), 2)
+    d = dict(
+        cls=widgets.Dropdown,
+        value=first,
+        options=values,
+        _options_labels=("3", "1", "2"),
+        _options_values=tuple(values),
+    )
+    check_widgets(c, lis=d)
+
+def test_list_tuple():
+    values = [(3, 300), (1, 100), (2, 200)]
+    first = values[0][1]
+    c = interactive(f, lis=values)
+    nt.assert_equal(len(c.children), 2)
+    d = dict(
+        cls=widgets.Dropdown,
+        value=first,
+        options=values,
+        _options_labels=("3", "1", "2"),
+        _options_values=(300, 100, 200),
     )
     check_widgets(c, lis=d)
 
@@ -199,6 +215,98 @@ def test_list_tuple_invalid():
         with nt.assert_raises(ValueError):
             print(bad) # because there is no custom message in assert_raises
             c = interactive(f, tup=bad)
+
+def test_dict():
+    for d in [
+        dict(a=5),
+        dict(a=5, b='b', c=dict),
+    ]:
+        c = interactive(f, d=d)
+        w = c.children[0]
+        check_widget(w,
+            cls=widgets.Dropdown,
+            description='d',
+            value=next(iter(d.values())),
+            options=d,
+            _options_labels=tuple(d.keys()),
+            _options_values=tuple(d.values()),
+        )
+
+def test_ordereddict():
+    from collections import OrderedDict
+    items = [(3, 300), (1, 100), (2, 200)]
+    first = items[0][1]
+    values = OrderedDict(items)
+    c = interactive(f, lis=values)
+    nt.assert_equal(len(c.children), 2)
+    d = dict(
+        cls=widgets.Dropdown,
+        value=first,
+        options=values,
+        _options_labels=("3", "1", "2"),
+        _options_values=(300, 100, 200),
+    )
+    check_widgets(c, lis=d)
+
+def test_iterable():
+    def yield_values():
+        yield 3
+        yield 1
+        yield 2
+    first = next(yield_values())
+    c = interactive(f, lis=yield_values())
+    nt.assert_equal(len(c.children), 2)
+    d = dict(
+        cls=widgets.Dropdown,
+        value=first,
+        options=list(yield_values()),
+        _options_labels=("3", "1", "2"),
+        _options_values=(3, 1, 2),
+    )
+    check_widgets(c, lis=d)
+
+def test_iterable_tuple():
+    values = [(3, 300), (1, 100), (2, 200)]
+    first = values[0][1]
+    c = interactive(f, lis=iter(values))
+    nt.assert_equal(len(c.children), 2)
+    d = dict(
+        cls=widgets.Dropdown,
+        value=first,
+        options=values,
+        _options_labels=("3", "1", "2"),
+        _options_values=(300, 100, 200),
+    )
+    check_widgets(c, lis=d)
+
+def test_mapping():
+    from collections import Mapping, OrderedDict
+    class TestMapping(Mapping):
+        def __init__(self, values):
+            self.values = values
+        def __getitem__(self):
+            raise NotImplementedError
+        def __len__(self):
+            raise NotImplementedError
+        def __iter__(self):
+            raise NotImplementedError
+        def items(self):
+            return self.values
+
+    items = [(3, 300), (1, 100), (2, 200)]
+    first = items[0][1]
+    values = TestMapping(items)
+    c = interactive(f, lis=values)
+    nt.assert_equal(len(c.children), 2)
+    d = dict(
+        cls=widgets.Dropdown,
+        value=first,
+        options=items,
+        _options_labels=("3", "1", "2"),
+        _options_values=(300, 100, 200),
+    )
+    check_widgets(c, lis=d)
+
 
 def test_defaults():
     @annotate(n=10)
