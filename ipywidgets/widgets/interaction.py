@@ -67,85 +67,6 @@ def _get_min_max_value(min, max, value=None, step=None):
         value = value - r
     return min, max, value
 
-def _widget_abbrev_single_value(o):
-    """Make widgets from single values, which can be used as parameter defaults."""
-    if isinstance(o, string_types):
-        return Text(value=unicode_type(o))
-    elif isinstance(o, bool):
-        return Checkbox(value=o)
-    elif isinstance(o, Integral):
-        min, max, value = _get_min_max_value(None, None, o)
-        return IntSlider(value=o, min=min, max=max)
-    elif isinstance(o, Real):
-        min, max, value = _get_min_max_value(None, None, o)
-        return FloatSlider(value=o, min=min, max=max)
-    else:
-        return None
-
-def _widget_abbrev_tuple(o):
-    """Make widgets from a tuple abbreviation."""
-    if _matches(o, (Real, Real)):
-        min, max, value = _get_min_max_value(o[0], o[1])
-        if all(isinstance(_, Integral) for _ in o):
-            cls = IntSlider
-        else:
-            cls = FloatSlider
-        return cls(value=value, min=min, max=max)
-    elif _matches(o, (Real, Real, Real)):
-        step = o[2]
-        if step <= 0:
-            raise ValueError("step must be >= 0, not %r" % step)
-        min, max, value = _get_min_max_value(o[0], o[1], step=step)
-        if all(isinstance(_, Integral) for _ in o):
-            cls = IntSlider
-        else:
-            cls = FloatSlider
-        return cls(value=value, min=min, max=max, step=step)
-
-def _widget_abbrev(o):
-    """Make widgets from abbreviations: single values, lists or tuples."""
-    if isinstance(o, tuple):
-        return _widget_abbrev_tuple(o)
-
-    # Try single value
-    w = _widget_abbrev_single_value(o)
-    if w is not None:
-        return w
-
-    # Something iterable (list, dict, generator, ...). Note that str and
-    # tuple should be handled before, that is why we check this case last.
-    if isinstance(o, Iterable):
-        # Dropdown expects a dict or list, so we convert an arbitrary
-        # iterable to either of those.
-        if isinstance(o, (list, dict)):
-            return Dropdown(options=o)
-        elif isinstance(o, Mapping):
-            return Dropdown(options=list(o.items()))
-        else:
-            return Dropdown(options=list(o))
-
-    # No idea...
-    return None
-
-
-def _widget_from_abbrev(abbrev, default=empty):
-    """Build a Widget instance given an abbreviation or Widget."""
-    if isinstance(abbrev, ValueWidget) or isinstance(abbrev, fixed):
-        return abbrev
-
-    widget = _widget_abbrev(abbrev)
-    if default is not empty and isinstance(abbrev, (list, tuple, dict)):
-        # if it's not a single-value abbreviation,
-        # set the initial value from the default
-        try:
-            widget.value = default
-        except Exception:
-            # ignore failure to set default
-            pass
-    if widget is None:
-        raise ValueError("%r cannot be transformed to a Widget" % (abbrev,))
-    return widget
-
 def _yield_abbreviations_for_parameter(param, kwargs):
     """Get an abbreviation for a function parameter."""
     name = param.name
@@ -169,33 +90,6 @@ def _yield_abbreviations_for_parameter(param, kwargs):
             kwargs.pop(k)
             yield k, v, empty
 
-def _find_abbreviations(f, kwargs):
-    """Find the abbreviations for a function and kwargs passed to interact."""
-    new_kwargs = []
-    try:
-        sig = signature(f)
-    except (ValueError, TypeError):
-        # can't inspect, no info from function; only use kwargs
-        return [ (key, value, value) for key, value in kwargs.items() ]
-
-    for param in sig.parameters.values():
-        for name, value, default in _yield_abbreviations_for_parameter(param, kwargs):
-            if value is empty:
-                raise ValueError('cannot find widget or abbreviation for argument: {!r}'.format(name))
-            new_kwargs.append((name, value, default))
-    return new_kwargs
-
-def _widgets_from_abbreviations(seq):
-    """Given a sequence of (name, abbrev, default) tuples, return a sequence of Widgets."""
-    result = []
-    for name, abbrev, default in seq:
-        widget = _widget_from_abbrev(abbrev, default)
-        assert isinstance(widget, ValueWidget) or isinstance(widget, fixed)
-        if not widget.description:
-            widget.description = name
-        widget._kwarg = name
-        result.append(widget)
-    return result
 
 class interactive(Box):
     """
@@ -221,7 +115,7 @@ class interactive(Box):
         self.clear_output = kwargs.pop('clear_output', True)
         self.manual = kwargs.pop('__manual', False)
 
-        new_kwargs = _find_abbreviations(f, kwargs)
+        new_kwargs = self.find_abbreviations(kwargs)
         # Before we proceed, let's make sure that the user has passed a set of args+kwargs
         # that will lead to a valid call of the function. This protects against unspecified
         # and doubly-specified arguments.
@@ -233,7 +127,7 @@ class interactive(Box):
         else:
             getcallargs(f, **{n:v for n,v,_ in new_kwargs})
         # Now build the widgets from the abbreviations.
-        self.kwargs_widgets = _widgets_from_abbreviations(new_kwargs)
+        self.kwargs_widgets = self.widgets_from_abbreviations(new_kwargs)
 
         # This has to be done as an assignment, not using self.children.append,
         # so that traitlets notices the update. We skip any objects (such as fixed) that
@@ -292,101 +186,230 @@ class interactive(Box):
             if self.manual:
                 manual_button.disabled = False
 
+    # Find abbreviations
+    def signature(self):
+        return signature(self.f)
 
-def interact(__interact_f=None, **kwargs):
-    """
-    Displays interactive widgets which are tied to a function.
-    Expects the first argument to be a function. Parameters to this function are
-    widget abbreviations passed in as keyword arguments (`**kwargs`). Can be used
-    as a decorator (see examples).
-
-    Returns
-    -------
-    f : __interact_f with interactive widget attached to it.
-
-    Parameters
-    ----------
-    __interact_f : function
-        The function to which the interactive widgets are tied. The `**kwargs`
-        should match the function signature. Passed to :func:`interactive()`
-    **kwargs : various, optional
-        An interactive widget is created for each keyword argument that is a
-        valid widget abbreviation. Passed to :func:`interactive()`
-
-    Examples
-    --------
-    Render an interactive text field that shows the greeting with the passed in
-    text::
-
-       # 1. Using interact as a function
-       def greeting(text="World"):
-           print "Hello {}".format(text)
-       interact(greeting, text="IPython Widgets")
-
-       # 2. Using interact as a decorator
-       @interact
-       def greeting(text="World"):
-           print "Hello {}".format(text)
-
-       # 3. Using interact as a decorator with named parameters
-       @interact(text="IPython Widgets")
-       def greeting(text="World"):
-           print "Hello {}".format(text)
-
-    Render an interactive slider widget and prints square of number::
-
-       # 1. Using interact as a function
-       def square(num=1):
-           print "{} squared is {}".format(num, num*num)
-       interact(square, num=5)
-
-       # 2. Using interact as a decorator
-       @interact
-       def square(num=2):
-           print "{} squared is {}".format(num, num*num)
-
-       # 3. Using interact as a decorator with named parameters
-       @interact(num=5)
-       def square(num=2):
-           print "{} squared is {}".format(num, num*num)
-    """
-    # positional arg support in: https://gist.github.com/8851331
-    if __interact_f is not None:
-        # This branch handles the cases 1 and 2
-        # 1. interact(f, **kwargs)
-        # 2. @interact
-        #    def f(*args, **kwargs):
-        #        ...
-        f = __interact_f
-        w = interactive(f, **kwargs)
+    def find_abbreviations(self, kwargs):
+        """Find the abbreviations for the given function and kwargs.
+        Return (name, abbrev, default) tuples.
+        """
+        new_kwargs = []
         try:
-            f.widget = w
-        except AttributeError:
-            # some things (instancemethods) can't have attributes attached,
-            # so wrap in a lambda
-            f = lambda *args, **kwargs: __interact_f(*args, **kwargs)
-            f.widget = w
-        if w is not None:
+            sig = self.signature()
+        except (ValueError, TypeError):
+            # can't inspect, no info from function; only use kwargs
+            return [ (key, value, value) for key, value in kwargs.items() ]
+
+        for param in sig.parameters.values():
+            for name, value, default in _yield_abbreviations_for_parameter(param, kwargs):
+                if value is empty:
+                    raise ValueError('cannot find widget or abbreviation for argument: {!r}'.format(name))
+                new_kwargs.append((name, value, default))
+        return new_kwargs
+
+    # Abbreviations to widgets
+    def widgets_from_abbreviations(self, seq):
+        """Given a sequence of (name, abbrev, default) tuples, return a sequence of Widgets."""
+        result = []
+        for name, abbrev, default in seq:
+            widget = self.widget_from_abbrev(abbrev, default)
+            if not (isinstance(widget, ValueWidget) or isinstance(widget, fixed)):
+                if widget is None:
+                    raise ValueError("{!r} cannot be transformed to a widget".format(abbrev))
+                else:
+                    raise TypeError("{!r} is not a ValueWidget".format(widget))
+            if not widget.description:
+                widget.description = name
+            widget._kwarg = name
+            result.append(widget)
+        return result
+
+    def widget_from_abbrev(self, abbrev, default=empty):
+        """Build a ValueWidget instance given an abbreviation or Widget."""
+        if isinstance(abbrev, ValueWidget) or isinstance(abbrev, fixed):
+            return abbrev
+
+        if isinstance(abbrev, tuple):
+            widget = self.widget_from_tuple(abbrev)
+            if default is not empty:
+                try:
+                    widget.value = default
+                except Exception:
+                    # ignore failure to set default
+                    pass
+            return widget
+
+        # Try single value
+        widget = self.widget_from_single_value(abbrev)
+        if widget is not None:
+            return widget
+
+        # Something iterable (list, dict, generator, ...). Note that str and
+        # tuple should be handled before, that is why we check this case last.
+        if isinstance(abbrev, Iterable):
+            widget = self.widget_from_iterable(abbrev)
+            if default is not empty:
+                try:
+                    widget.value = default
+                except Exception:
+                    # ignore failure to set default
+                    pass
+            return widget
+
+        # No idea...
+        return None
+
+    @staticmethod
+    def widget_from_single_value(o):
+        """Make widgets from single values, which can be used as parameter defaults."""
+        if isinstance(o, string_types):
+            return Text(value=unicode_type(o))
+        elif isinstance(o, bool):
+            return Checkbox(value=o)
+        elif isinstance(o, Integral):
+            min, max, value = _get_min_max_value(None, None, o)
+            return IntSlider(value=o, min=min, max=max)
+        elif isinstance(o, Real):
+            min, max, value = _get_min_max_value(None, None, o)
+            return FloatSlider(value=o, min=min, max=max)
+        else:
+            return None
+
+    @staticmethod
+    def widget_from_tuple(o):
+        """Make widgets from a tuple abbreviation."""
+        if _matches(o, (Real, Real)):
+            min, max, value = _get_min_max_value(o[0], o[1])
+            if all(isinstance(_, Integral) for _ in o):
+                cls = IntSlider
+            else:
+                cls = FloatSlider
+            return cls(value=value, min=min, max=max)
+        elif _matches(o, (Real, Real, Real)):
+            step = o[2]
+            if step <= 0:
+                raise ValueError("step must be >= 0, not %r" % step)
+            min, max, value = _get_min_max_value(o[0], o[1], step=step)
+            if all(isinstance(_, Integral) for _ in o):
+                cls = IntSlider
+            else:
+                cls = FloatSlider
+            return cls(value=value, min=min, max=max, step=step)
+
+    @staticmethod
+    def widget_from_iterable(o):
+        """Make widgets from an iterable. This should not be done for
+        a string or tuple."""
+        # Dropdown expects a dict or list, so we convert an arbitrary
+        # iterable to either of those.
+        if isinstance(o, (list, dict)):
+            return Dropdown(options=o)
+        elif isinstance(o, Mapping):
+            return Dropdown(options=list(o.items()))
+        else:
+            return Dropdown(options=list(o))
+
+    # User-facing constructors
+    @classmethod
+    def interact(cls, __interact_f=None, **kwargs):
+        """
+        Displays interactive widgets which are tied to a function.
+        Expects the first argument to be a function. Parameters to this function are
+        widget abbreviations passed in as keyword arguments (`**kwargs`). Can be used
+        as a decorator (see examples).
+
+        Returns
+        -------
+        f : __interact_f with interactive widget attached to it.
+
+        Parameters
+        ----------
+        __interact_f : function
+            The function to which the interactive widgets are tied. The `**kwargs`
+            should match the function signature. Passed to :func:`interactive()`
+        **kwargs : various, optional
+            An interactive widget is created for each keyword argument that is a
+            valid widget abbreviation. Passed to :func:`interactive()`
+
+        Examples
+        --------
+        Render an interactive text field that shows the greeting with the passed in
+        text::
+
+           # 1. Using interact as a function
+           def greeting(text="World"):
+               print "Hello {}".format(text)
+           interact(greeting, text="IPython Widgets")
+
+           # 2. Using interact as a decorator
+           @interact
+           def greeting(text="World"):
+               print "Hello {}".format(text)
+
+           # 3. Using interact as a decorator with named parameters
+           @interact(text="IPython Widgets")
+           def greeting(text="World"):
+               print "Hello {}".format(text)
+
+        Render an interactive slider widget and prints square of number::
+
+           # 1. Using interact as a function
+           def square(num=1):
+               print "{} squared is {}".format(num, num*num)
+           interact(square, num=5)
+
+           # 2. Using interact as a decorator
+           @interact
+           def square(num=2):
+               print "{} squared is {}".format(num, num*num)
+
+           # 3. Using interact as a decorator with named parameters
+           @interact(num=5)
+           def square(num=2):
+               print "{} squared is {}".format(num, num*num)
+        """
+        # positional arg support in: https://gist.github.com/8851331
+        if __interact_f is not None:
+            # This branch handles the cases 1 and 2
+            # 1. interact(f, **kwargs)
+            # 2. @interact
+            #    def f(*args, **kwargs):
+            #        ...
+            f = __interact_f
+            w = cls(f, **kwargs)
+            try:
+                f.widget = w
+            except AttributeError:
+                # some things (instancemethods) can't have attributes attached,
+                # so wrap in a lambda
+                f = lambda *args, **kwargs: __interact_f(*args, **kwargs)
+                f.widget = w
             display(w)
-        return f
-    else:
-        # This branch handles the case 3
-        # @interact(a=30, b=40)
-        # def f(*args, **kwargs):
-        #     ...
-        def dec(f):
-            return interact(f, **kwargs)
-        return dec
+            return f
+        else:
+            # This branch handles the case 3
+            # @interact(a=30, b=40)
+            # def f(*args, **kwargs):
+            #     ...
+            def decorate(f):
+                return cls.interact(f, **kwargs)
+            return decorate
 
-def interact_manual(__interact_f=None, **kwargs):
-    """interact_manual(f, **kwargs)
+    @classmethod
+    def interact_manual(cls, __interact_f=None, **kwargs):
+        """interact_manual(f, **kwargs)
 
-    As `interact()`, generates widgets for each argument, but rather than running
-    the function after each widget change, adds a "Run" button and waits for it
-    to be clicked. Useful if the function is long-running and has several
-    parameters to change.
-    """
-    return interact(__interact_f, __manual=True, **kwargs)
+        As `interact()`, generates widgets for each argument, but rather than running
+        the function after each widget change, adds a "Run" button and waits for it
+        to be clicked. Useful if the function is long-running and has several
+        parameters to change.
+        """
+        return cls.interact(__interact_f, __manual=True, **kwargs)
+
+interact = interactive.interact
+interact_manual = interactive.interact_manual
+
 
 class fixed(HasTraits):
     """A pseudo-widget whose value is fixed and never synced to the client."""
