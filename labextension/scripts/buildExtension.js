@@ -5,5 +5,6 @@ var buildExtension = require('jupyterlab-extension-builder').buildExtension;
 
 buildExtension({
   name: 'ipywidgets',
-  entryPath: './lib/index.js',
+  entryPath: './lib/plugin.js',
+  extractCSS: true
 });

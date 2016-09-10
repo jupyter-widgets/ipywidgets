@@ -48,13 +48,15 @@ interface IIPyWidgetExtension extends IPyWidgetExtension {};
 /**
  * The widget manager provider.
  */
-export
 const widgetManagerProvider: JupyterLabPlugin<IIPyWidgetExtension> = {
   id: 'jupyter.extensions.widgetManager',
   provides: IIPyWidgetExtension,
   requires: [IDocumentRegistry],
-  activate: activateWidgetExtension
+  activate: activateWidgetExtension,
+  autoStart: true
 };
+
+export default widgetManagerProvider;
 
 export
 class IPyWidgetExtension implements IWidgetExtension<NotebookPanel, INotebookModel> {
