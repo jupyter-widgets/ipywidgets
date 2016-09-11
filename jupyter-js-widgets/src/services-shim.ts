@@ -59,7 +59,8 @@ namespace shims {
              *                         comm is made.  Signature of f(comm, msg).
              */
             register_target (target_name, f) {
-                var handle = this.jsServicesKernel.registerCommTarget(target_name, _.bind(function(jsServicesComm, msg) {
+                var handle = this.jsServicesKernel.registerCommTarget(target_name,
+                (jsServicesComm, msg) => {
                     // Create the comm.
                     var comm = new Comm(jsServicesComm);
                     this.register_comm(comm);
@@ -73,7 +74,7 @@ namespace shims {
                         console.error(wrapped_error);
                         return;
                     }
-                }, this));
+                });
                 this.targets[target_name] = handle;
             };
 
