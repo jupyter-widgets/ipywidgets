@@ -15,7 +15,7 @@ from ipython_genutils.py3compat import unicode_type
 
 def _value_to_label(value, obj):
     options = obj._make_options(obj.options)
-    return next((k for k, v in options if obj.equals(v, value)), '')
+    return next((k for k, v in options if obj.equals(v, value)))
 
 def _label_to_value(k, obj):
     return obj._options_dict[k]
@@ -99,9 +99,10 @@ class _Selection(DOMWidget):
     @validate('value')
     def _validate_value(self, proposal):
         value = proposal['value']
-        if _value_to_label(value, self):
+        try:
+            _value_to_label(value, self)
             return value
-        else:
+        except StopIteration:
             raise TraitError('Invalid selection')
 
 
@@ -137,9 +138,11 @@ class _MultipleSelection(_Selection):
     @validate('value')
     def _validate_value(self, proposal):
         value = proposal['value']
-        if all(_value_to_label(v, self) for v in value):
+        try:
+            for v in value:
+                _value_to_label(v, self)
             return value
-        else:
+        except StopIteration:
             raise TraitError('Invalid selection')
 
 
