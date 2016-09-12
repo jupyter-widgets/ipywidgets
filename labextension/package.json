@@ -7,14 +7,14 @@
   "typings": "lib/index.d.ts",
   "dependencies": {
     "jupyter-js-widgets": "file:../jupyter-js-widgets",
-    "jupyterlab": "file://../../jupyterlab",
-    "phosphor": "0.6.1"
+    "jupyterlab": "^0.3.0",
+    "phosphor": "^0.6.1"
   },
   "devDependencies": {
     "expect.js": "^0.3.1",
     "istanbul": "^0.3.18",
     "jupyter-js-services": "^0.18.1",
-    "jupyterlab-extension-builder": "^0.1.1",
+    "jupyterlab-extension-builder": "^0.3.0",
     "mocha": "^2.2.5",
     "requirejs": "^2.2.0",
     "rimraf": "^2.4.2",
@@ -47,14 +47,6 @@
     "lib/*.d.ts",
     "dist/*.js"
   ],
-  "jupyter": {
-    "lab": {
-      "main": true,
-      "externals": {
-        "module": "./externals"
-      }
-    }
-  },
   "author": "Project Jupyter",
   "license": "BSD-3-Clause",
   "bugs": {
