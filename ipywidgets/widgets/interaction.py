@@ -63,8 +63,8 @@ def _get_min_max_value(min, max, value=None, step=None):
         raise ValueError('unable to infer range, value from: ({0}, {1}, {2})'.format(min, max, value))
     if step is not None:
         # ensure value is on a step
-        r = (value - min) % step
-        value = value - r
+        tick = int((value - min) / step)
+        value = min + tick * step
     return min, max, value
 
 def _widget_abbrev_single_value(o):
