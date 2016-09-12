@@ -78,18 +78,18 @@ class PlaceProxy(Proxy):
     selector = Unicode().tag(sync=True)
 
 
-def VBox(*pargs, **kwargs):
+class VBox(Box):
     """Displays multiple widgets vertically using the flexible box model."""
-    box = Box(*pargs, **kwargs)
-    box.layout.display = 'flex'
-    box.layout.flex_flow = 'column'
-    box.layout.align_items = 'stretch'
-    return box
+    def __init__(self, *pargs, **kwargs):
+        super(VBox, self).__init__(*pargs, **kwargs)
+        self.layout.display = 'flex'
+        self.layout.flex_flow = 'column'
+        self.layout.align_items = 'stretch'
 
 
-def HBox(*pargs, **kwargs):
+class HBox(Box):
     """Displays multiple widgets horizontally using the flexible box model."""
-    box = Box(*pargs, **kwargs)
-    box.layout.display = 'flex'
-    box.layout.align_items = 'stretch'
-    return box
+    def __init__(self, *pargs, **kwargs):
+        super(HBox, self).__init__(*pargs, **kwargs)
+        self.layout.display = 'flex'
+        self.layout.align_items = 'stretch'
