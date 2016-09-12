@@ -9,6 +9,7 @@ from __future__ import print_function
 # the name of the package
 name = 'widgetslabextension'
 
+DESCRIPTION = 'JupyterLab extension providing HTML widgets'
 LONG_DESCRIPTION = """
 .. image:: https://img.shields.io/pypi/v/widgetslabextension.svg
    :target: https://pypi.python.org/pypi/widgetslabextension/
@@ -21,13 +22,13 @@ LONG_DESCRIPTION = """
 Interactive HTML Widgets
 ========================
 
-Interactive HTML widgets for Jupyter notebooks.
+Interactive HTML widgets for JupyterLab notebooks.
 
 Usage
 =====
 
-Install the corresponding package for your kernel.  i.e. Python users would also
-install `ipywidgets`.  Refer to that package's documentation for usage 
+Install the corresponding package for your kernel (i.e. Python users would also
+install `ipywidgets`).  Refer to that package's documentation for usage
 instructions.
 """
 
@@ -179,11 +180,11 @@ setup_args = dict(
     version         = version_ns['__version__'],
     scripts         = [],
     packages        = ['widgetslabextension'],
-    description     = "IPython HTML widgets for Jupyter",
+    description     = DESCRIPTION,
     long_description = LONG_DESCRIPTION,
-    author          = 'IPython Development Team',
-    author_email    = 'ipython-dev@scipy.org',
-    url             = 'http://ipython.org',
+    author          = 'Jupyter Development Team',
+    author_email    = 'jupyter@googlegroups.com',
+    url             = 'https://github.com/ipython/ipywidgets',
     license         = 'BSD',
     platforms       = "Linux, Mac OS X, Windows",
     keywords        = ['Interactive', 'Interpreter', 'Shell', 'Web'],
