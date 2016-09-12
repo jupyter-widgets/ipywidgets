@@ -17,8 +17,6 @@ accessible as a `value` attribute.
 
 def _jupyter_labextension_paths():
     return [{
-        'section': 'notebook',
+        'name': 'widgetslabextension',
         'src': 'static',
-        'dest': 'jupyter-js-widgets',
-        'require': 'jupyter-js-widgets/extension'
     }]
