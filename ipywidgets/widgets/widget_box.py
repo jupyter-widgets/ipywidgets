@@ -6,9 +6,10 @@ Represents a container that can be used to group other widgets.
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
+from .widget import register, widget_serialization
 from .domwidget import DOMWidget
-from .widget import Widget, register, widget_serialization
-from traitlets import Unicode, Tuple, Int, CaselessStrEnum, Instance
+from .widget_layout import Layout
+from traitlets import Unicode, Tuple, Int, CaselessStrEnum, Instance, default
 from warnings import warn
 
 
@@ -49,6 +50,24 @@ class Box(DOMWidget):
             child._handle_displayed()
 
 
+@register('Jupyter.VBox')
+class VBox(Box):
+    """Displays multiple widgets vertically using the flexible box model."""
+
+    @default('layout')
+    def _default_layout(self):
+        return Layout(display='flex', flex_flow='column', align_items='strech')
+
+
+@register('Jupyter.HBox')
+class HBox(Box):
+    """Displays multiple widgets horizontally using the flexible box model."""
+
+    @default('layout')
+    def _default_layout(self):
+        return Layout(display='flex', align_items='strech')
+
+
 @register('Jupyter.Proxy')
 class Proxy(DOMWidget):
     """A DOMWidget that holds another DOMWidget or nothing."""
@@ -77,19 +96,3 @@ class PlaceProxy(Proxy):
     _model_name = Unicode('PlaceProxyModel').tag(sync=True)
     selector = Unicode().tag(sync=True)
 
-
-class VBox(Box):
-    """Displays multiple widgets vertically using the flexible box model."""
-    def __init__(self, *pargs, **kwargs):
-        super(VBox, self).__init__(*pargs, **kwargs)
-        self.layout.display = 'flex'
-        self.layout.flex_flow = 'column'
-        self.layout.align_items = 'stretch'
-
-
-class HBox(Box):
-    """Displays multiple widgets horizontally using the flexible box model."""
-    def __init__(self, *pargs, **kwargs):
-        super(HBox, self).__init__(*pargs, **kwargs)
-        self.layout.display = 'flex'
-        self.layout.align_items = 'stretch'
