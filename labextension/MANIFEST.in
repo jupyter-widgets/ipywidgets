@@ -1,0 +1,3 @@
+graft widgetslabextension/static
+graft src
+include package.json

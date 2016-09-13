@@ -2,12 +2,16 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-  IWidgetExtension, IDocumentContext, IDocumentModel, DocumentRegistry
+  IWidgetExtension, IDocumentContext, IDocumentModel, IDocumentRegistry
 } from 'jupyterlab/lib/docregistry';
 
 import {
   IDisposable, DisposableDelegate
-} from 'phosphor-disposable';
+} from 'phosphor/lib/core/disposable';
+
+import {
+  Token
+} from 'phosphor/lib/core/token';
 
 import {
   INotebookModel
@@ -16,6 +20,10 @@ import {
 import {
   NotebookPanel
 } from 'jupyterlab/lib/notebook/notebook/panel';
+
+import {
+  JupyterLabPlugin, JupyterLab
+} from 'jupyterlab/lib/application';
 
 import {
   Application
@@ -31,15 +39,24 @@ import {
 
 const WIDGET_MIMETYPE = 'application/vnd.jupyter.widget';
 
+export
+const IIPyWidgetExtension = new Token<IIPyWidgetExtension>('jupyter.extensions.widgetManager');
+
+export
+interface IIPyWidgetExtension extends IPyWidgetExtension {};
+
 /**
  * The widget manager provider.
  */
-export
-const widgetManagerExtension = {
+const widgetManagerProvider: JupyterLabPlugin<IIPyWidgetExtension> = {
   id: 'jupyter.extensions.widgetManager',
-  requires: [DocumentRegistry],
-  activate: activateWidgetExtension
+  provides: IIPyWidgetExtension,
+  requires: [IDocumentRegistry],
+  activate: activateWidgetExtension,
+  autoStart: true
 };
+
+export default widgetManagerProvider;
 
 export
 class IPyWidgetExtension implements IWidgetExtension<NotebookPanel, INotebookModel> {
@@ -64,6 +81,8 @@ class IPyWidgetExtension implements IWidgetExtension<NotebookPanel, INotebookMod
 /**
  * Activate the widget extension.
  */
-function activateWidgetExtension(app: Application, registry: DocumentRegistry) {
-  registry.addWidgetExtension('Notebook', new IPyWidgetExtension());
+function activateWidgetExtension(app: JupyterLab, registry: IDocumentRegistry) {
+  let extension = new IPyWidgetExtension();
+  registry.addWidgetExtension('Notebook', extension);
+  return extension;
 }

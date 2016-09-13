@@ -13,18 +13,22 @@ import {
 
 import {
   IDisposable
-} from 'phosphor-disposable';
+} from 'phosphor/lib/core/disposable';
 
 import {
   Panel
-} from 'phosphor-panel';
+} from 'phosphor/lib/ui/panel';
+
+import {
+  Token
+} from 'phosphor/lib/core/token';
 
 import {
   Widget
-} from 'phosphor-widget';
+} from 'phosphor/lib/ui/widget';
 
 import {
-  IRenderer, RenderMime
+  IRenderMime, RenderMime
 } from 'jupyterlab/lib/rendermime';
 
 import {
@@ -82,7 +86,7 @@ class BackboneViewWrapper extends Widget {
  */
 export
 class WidgetManager extends ManagerBase<Widget> implements IDisposable {
-  constructor(context: IDocumentContext<IDocumentModel>, rendermime: RenderMime<Widget>) {
+  constructor(context: IDocumentContext<IDocumentModel>, rendermime: IRenderMime) {
     super();
     this._context = context;
     this._rendermime = rendermime;
@@ -118,9 +122,8 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * Return a phosphor widget representing the view
    */
   display_view(msg: any, view: Backbone.View<Backbone.Model>, options: any): Promise<Widget> {
-    return Promise.resolve(new BackboneViewWrapper(view))
-    //TODO: when we switch to the phosphor monorepo, so we can return those widgets
-    //return (view as any).pWidget ? (view as any).pWidget : new BackboneViewWrapper(view);
+    let widget = (view as any).pWidget ? (view as any).pWidget : new BackboneViewWrapper(view);
+    return Promise.resolve(widget);
   }
 
   /**
@@ -195,7 +198,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   }
 
   private _context: IDocumentContext<IDocumentModel>;
-  private _rendermime: RenderMime<Widget>;
+  private _rendermime: IRenderMime;
   _commRegistration: IDisposable;
 }
 
@@ -204,21 +207,35 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
  * A renderer for widgets.
  */
 export
-class WidgetRenderer implements IRenderer<Widget>, IDisposable {
+class WidgetRenderer implements RenderMime.IRenderer, IDisposable {
   constructor(widgetManager: WidgetManager) {
     this._manager = widgetManager;
   }
 
   /**
+   * Whether the input can safely sanitized for a given mimetype.
+   */
+  isSanitizable(mimetype: string): boolean {
+    return false;
+  }
+
+  /**
+   * Whether the input is safe without sanitization.
+   */
+  isSafe(mimetype: string): boolean {
+    return false;
+  }
+
+  /**
    * Render a widget mimetype.
    */
-  render(mimetype: string, data: string): Widget {
+  render(options: RenderMime.IRenderOptions): Widget {
     // data is a model id
     let w = new Panel();
-    this._manager.get_model(data).then((model: any) => {
+    this._manager.get_model(options.source).then((model: any) => {
       return this._manager.display_model(void 0, model, void 0);
     }).then((view: Widget) => {
-      w.addChild(view);
+      w.addWidget(view);
     });
     return w;
   }
