@@ -6,14 +6,6 @@ import {
 } from 'jupyterlab/lib/docregistry';
 
 import {
-  IDisposable, DisposableDelegate
-} from 'phosphor/lib/core/disposable';
-
-import {
-  Token
-} from 'phosphor/lib/core/token';
-
-import {
   INotebookModel
 } from 'jupyterlab/lib/notebook/notebook/model';
 
@@ -26,16 +18,20 @@ import {
 } from 'jupyterlab/lib/application';
 
 import {
-  Application
-} from 'phosphide/lib/core/application';
+  IKernel
+} from 'jupyter-js-services';
+
+import {
+  IDisposable, DisposableDelegate
+} from 'phosphor/lib/core/disposable';
+
+import {
+  Token
+} from 'phosphor/lib/core/token';
 
 import {
   WidgetManager, WidgetRenderer
 } from './index';
-
-import {
-  IKernel
-} from 'jupyter-js-services';
 
 const WIDGET_MIMETYPE = 'application/vnd.jupyter.widget';
 
