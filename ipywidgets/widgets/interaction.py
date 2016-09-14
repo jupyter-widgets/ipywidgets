@@ -136,8 +136,8 @@ class interactive(Box):
 
         # If we are only to run the function on demand, add a button to request this.
         if self.manual:
-            manual_button = Button(description="Run %s" % f.__name__)
-            c.append(manual_button)
+            self.manual_button = Button(description="Run %s" % f.__name__)
+            c.append(self.manual_button)
 
         self.out = Output()
         c.append(self.out)
@@ -148,7 +148,7 @@ class interactive(Box):
         # Otherwise, it is triggered for every trait change received
         # On-demand running also suppresses running the function with the initial parameters
         if self.manual:
-            manual_button.on_click(self.call_f)
+            self.manual_button.on_click(self.call_f)
 
             # Also register input handlers on text areas, so the user can hit return to
             # invoke execution.
@@ -165,7 +165,7 @@ class interactive(Box):
     def call_f(self, *args):
         self.kwargs = {}
         if self.manual:
-            manual_button.disabled = True
+            self.manual_button.disabled = True
         try:
             for widget in self.kwargs_widgets:
                 value = widget.value
@@ -184,7 +184,7 @@ class interactive(Box):
                 ip.showtraceback()
         finally:
             if self.manual:
-                manual_button.disabled = False
+                self.manual_button.disabled = False
 
     # Find abbreviations
     def signature(self):
