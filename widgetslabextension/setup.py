@@ -187,8 +187,9 @@ setup_args = dict(
     url             = 'https://github.com/ipython/ipywidgets',
     license         = 'BSD',
     platforms       = "Linux, Mac OS X, Windows",
-    keywords        = ['Interactive', 'Interpreter', 'Shell', 'Web'],
+    keywords        = ['Jupyter', 'Interactive', 'Web'],
     classifiers     = [
+        'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
         'Intended Audience :: Science/Research',
