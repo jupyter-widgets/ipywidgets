@@ -101,11 +101,18 @@ class interactive(Box):
     __interact_f : function
         The function to which the interactive widgets are tied. The `**kwargs`
         should match the function signature.
+    __options : dict
+        A dict of options. Currently, the only supported key is
+        ``"manual"``.
     **kwargs : various, optional
         An interactive widget is created for each keyword argument that is a
         valid widget abbreviation.
+
+    Note that the first two parameters intentionally start with a double
+    underscore to avoid being mixed up with keyword arguments passed by
+    ``**kwargs``.
     """
-    def __init__(self, __interact_f, **kwargs):
+    def __init__(self, __interact_f, __options={}, **kwargs):
         Box.__init__(self, _dom_classes=['widget-interact'])
         self.result = None
         self.args = []
@@ -113,7 +120,7 @@ class interactive(Box):
 
         self.f = f = __interact_f
         self.clear_output = kwargs.pop('clear_output', True)
-        self.manual = kwargs.pop('__manual', False)
+        self.manual = __options.get("manual", False)
 
         new_kwargs = self.find_abbreviations(kwargs)
         # Before we proceed, let's make sure that the user has passed a set of args+kwargs
@@ -310,14 +317,65 @@ class interactive(Box):
         else:
             return Dropdown(options=list(o))
 
-    # User-facing constructors
+    # Return a constructor for interactive functions
     @classmethod
-    def interact(cls, __interact_f=None, **kwargs):
+    def constructor(cls):
+        options = dict(manual=False)
+        return _InteractConstructor(cls, options)
+
+
+class _InteractConstructor(object):
+    """
+    Constructor for instances of :class:`interactive`.
+
+    This class is needed to support options like::
+
+        >>> @interact.options(manual=True)
+        ... def greeting(text="World"):
+        ...     print("Hello {}".format(text))
+
+    Parameters
+    ----------
+    cls : class
+        The subclass of :class:`interactive` to construct.
+    options : dict
+        A dict of options used to construct the interactive
+        function. By default, this is returned by
+        ``cls.default_options()``.
+    kwargs : dict
+        A dict of **kwargs to use for widgets.
+    """
+    def __init__(self, cls, options, kwargs={}):
+        self.cls = cls
+        self.opts = options
+        self.kwargs = kwargs
+
+    def widget(self, f):
         """
-        Displays interactive widgets which are tied to a function.
-        Expects the first argument to be a function. Parameters to this function are
-        widget abbreviations passed in as keyword arguments (`**kwargs`). Can be used
-        as a decorator (see examples).
+        Return an interactive function widget for the given function.
+
+        The widget is only constructed, not displayed nor attached to
+        the function.
+
+        Returns
+        -------
+        An instance of ``self.cls`` (typically :class:`interactive`).
+
+        Parameters
+        ----------
+        f : function
+            The function to which the interactive widgets are tied.
+        """
+        return self.cls(f, self.opts, **self.kwargs)
+
+    def __call__(self, __interact_f=None, **kwargs):
+        """
+        Make the given function interactive by adding and displaying
+        the corresponding :class:`interactive` widget.
+
+        Expects the first argument to be a function. Parameters to this
+        function are widget abbreviations passed in as keyword arguments
+        (``**kwargs``). Can be used as a decorator (see examples).
 
         Returns
         -------
@@ -337,78 +395,95 @@ class interactive(Box):
         Render an interactive text field that shows the greeting with the passed in
         text::
 
-           # 1. Using interact as a function
-           def greeting(text="World"):
-               print "Hello {}".format(text)
-           interact(greeting, text="IPython Widgets")
+            # 1. Using interact as a function
+            def greeting(text="World"):
+                print("Hello {}".format(text))
+            interact(greeting, text="IPython Widgets")
 
-           # 2. Using interact as a decorator
-           @interact
-           def greeting(text="World"):
-               print "Hello {}".format(text)
+            # 2. Using interact as a decorator
+            @interact
+            def greeting(text="World"):
+                print("Hello {}".format(text))
 
-           # 3. Using interact as a decorator with named parameters
-           @interact(text="IPython Widgets")
-           def greeting(text="World"):
-               print "Hello {}".format(text)
+            # 3. Using interact as a decorator with named parameters
+            @interact(text="IPython Widgets")
+            def greeting(text="World"):
+                print("Hello {}".format(text))
 
         Render an interactive slider widget and prints square of number::
 
-           # 1. Using interact as a function
-           def square(num=1):
-               print "{} squared is {}".format(num, num*num)
-           interact(square, num=5)
+            # 1. Using interact as a function
+            def square(num=1):
+                print("{} squared is {}".format(num, num*num))
+            interact(square, num=5)
 
-           # 2. Using interact as a decorator
-           @interact
-           def square(num=2):
-               print "{} squared is {}".format(num, num*num)
+            # 2. Using interact as a decorator
+            @interact
+            def square(num=2):
+                print("{} squared is {}".format(num, num*num))
 
-           # 3. Using interact as a decorator with named parameters
-           @interact(num=5)
-           def square(num=2):
-               print "{} squared is {}".format(num, num*num)
+            # 3. Using interact as a decorator with named parameters
+            @interact(num=5)
+            def square(num=2):
+                print("{} squared is {}".format(num, num*num))
         """
-        # positional arg support in: https://gist.github.com/8851331
-        if __interact_f is not None:
-            # This branch handles the cases 1 and 2
-            # 1. interact(f, **kwargs)
-            # 2. @interact
-            #    def f(*args, **kwargs):
-            #        ...
-            f = __interact_f
-            w = cls(f, **kwargs)
-            try:
-                f.widget = w
-            except AttributeError:
-                # some things (instancemethods) can't have attributes attached,
-                # so wrap in a lambda
-                f = lambda *args, **kwargs: __interact_f(*args, **kwargs)
-                f.widget = w
-            display(w)
-            return f
-        else:
+        # If kwargs are given, replace self by a new
+        # _InteractConstructor with the updated kwargs
+        if kwargs:
+            kw = dict(self.kwargs)
+            kw.update(kwargs)
+            self = type(self)(self.cls, self.opts, kw)
+
+        f = __interact_f
+        if f is None:
             # This branch handles the case 3
             # @interact(a=30, b=40)
             # def f(*args, **kwargs):
             #     ...
-            def decorate(f):
-                return cls.interact(f, **kwargs)
-            return decorate
+            #
+            # Simply return the new constructor
+            return self
 
-    @classmethod
-    def interact_manual(cls, __interact_f=None, **kwargs):
-        """interact_manual(f, **kwargs)
+        # positional arg support in: https://gist.github.com/8851331
+        # Handle the cases 1 and 2
+        # 1. interact(f, **kwargs)
+        # 2. @interact
+        #    def f(*args, **kwargs):
+        #        ...
+        w = self.widget(f)
+        try:
+            f.widget = w
+        except AttributeError:
+            # some things (instancemethods) can't have attributes attached,
+            # so wrap in a lambda
+            f = lambda *args, **kwargs: __interact_f(*args, **kwargs)
+            f.widget = w
+        display(w)
+        return f
 
-        As `interact()`, generates widgets for each argument, but rather than running
-        the function after each widget change, adds a "Run" button and waits for it
-        to be clicked. Useful if the function is long-running and has several
-        parameters to change.
+    def options(self, **kwds):
         """
-        return cls.interact(__interact_f, __manual=True, **kwargs)
+        Change options for interactive functions.
 
-interact = interactive.interact
-interact_manual = interactive.interact_manual
+        Returns
+        -------
+        A new :class:`_InteractConstructor` which will apply the
+        options when called.
+        """
+        opts = dict(self.opts)
+        for k in kwds:
+            try:
+                # Ensure that the key exists because we want to change
+                # existing options, not add new ones.
+                _ = opts[k]
+            except KeyError:
+                raise ValueError("invalid option {!r}".format(k))
+            opts[k] = kwds[k]
+        return type(self)(self.cls, opts, self.kwargs)
+
+
+interact = interactive.constructor()
+interact_manual = interact.options(manual=True)
 
 
 class fixed(HasTraits):

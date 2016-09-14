@@ -16,7 +16,8 @@ from ipykernel.comm import Comm
 import ipywidgets as widgets
 
 from traitlets import TraitError
-from ipywidgets import interact, interactive, Widget, interaction, Output
+from ipywidgets import (interact, interact_manual, interactive, Widget,
+    interaction, Output)
 from ipython_genutils.py3compat import annotate
 
 #-----------------------------------------------------------------------------
@@ -593,7 +594,7 @@ def test_custom_description():
     nt.assert_equal(d, {'b': 'different text'})
 
 def test_interact_manual_button():
-    c = interactive(f, __manual=True)
+    c = interact.options(manual=True).widget(f)
     w = c.children[0]
     check_widget(w, cls=widgets.Button)
 
@@ -601,9 +602,32 @@ def test_interact_manual_nocall():
     callcount = 0
     def calltest(testarg):
         callcount += 1
-    c = interactive(calltest, testarg=5, __manual=True)
+    c = interact.options(manual=True)(calltest, testarg=5).widget
     c.children[0].value = 10
     nt.assert_equal(callcount, 0)
+
+def test_interact_call():
+    w = interact.widget(f)
+    w.call_f()
+
+    w = interact_manual.widget(f)
+    w.call_f()
+
+def test_interact_options():
+    def f(x):
+        return x
+    w = interact.options(manual=False).options(manual=True)(f, x=21).widget
+    nt.assert_equal(w.manual, True)
+
+    w = interact_manual.options(manual=False).options()(x=21).widget(f)
+    nt.assert_equal(w.manual, False)
+
+    w = interact(x=21)().options(manual=True)(f).widget
+    nt.assert_equal(w.manual, True)
+
+def test_interact_options_bad():
+    with nt.assert_raises(ValueError):
+        interact.options(bad="foo")
 
 def test_int_range_logic():
     irsw = widgets.IntRangeSlider
