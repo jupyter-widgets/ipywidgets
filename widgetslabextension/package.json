@@ -14,7 +14,7 @@
     "expect.js": "^0.3.1",
     "istanbul": "^0.3.18",
     "jupyter-js-services": "^0.18.1",
-    "jupyterlab-extension-builder": "^0.3.0",
+    "jupyterlab-extension-builder": "^0.4.0",
     "mocha": "^2.2.5",
     "requirejs": "^2.2.0",
     "rimraf": "^2.4.2",
