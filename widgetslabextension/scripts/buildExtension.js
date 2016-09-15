@@ -8,5 +8,5 @@ var buildExtension = require('jupyterlab-extension-builder').buildExtension;
 buildExtension({
   name: 'widgetslabextension',
   entry: './lib/plugin',
-  outputDir : 'widgetslabextension/static'
+  outputDir : './widgetslabextension/static'
 });
