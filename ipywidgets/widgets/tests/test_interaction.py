@@ -716,3 +716,16 @@ def test_interact_noinspect():
         description='a',
         value=a,
     )
+
+
+def test_get_interact_value():
+    from ipywidgets.widgets import ValueWidget
+    from traitlets import Unicode
+    class TheAnswer(ValueWidget):
+        description = Unicode()
+        def get_interact_value(self):
+            return 42
+    w = TheAnswer()
+    c = interactive(lambda v: v, v=w)
+    c.call_f()
+    nt.assert_equal(c.result, 42)

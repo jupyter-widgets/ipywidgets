@@ -168,7 +168,7 @@ class interactive(Box):
             self.manual_button.disabled = True
         try:
             for widget in self.kwargs_widgets:
-                value = widget.value
+                value = widget.get_interact_value()
                 self.kwargs[widget._kwarg] = value
             with self.out:
                 if self.clear_output:
