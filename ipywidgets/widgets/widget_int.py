@@ -7,6 +7,7 @@ Represents an unbounded int using a widget.
 # Distributed under the terms of the Modified BSD License.
 
 from .domwidget import DOMWidget
+from .valuewidget import ValueWidget
 from .widget import register
 from .trait_types import Color
 from traitlets import (Unicode, CInt, Bool, CaselessStrEnum, Tuple, TraitError,
@@ -61,7 +62,7 @@ def _bounded_int_doc(cls):
     return cls
 
 
-class _Int(DOMWidget):
+class _Int(DOMWidget, ValueWidget):
     """Base class for widgets that represent an integer."""
     value = CInt(0, help="Int value").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)

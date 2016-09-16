@@ -7,12 +7,13 @@ Represents a unicode string using a widget.
 # Distributed under the terms of the Modified BSD License.
 
 from .domwidget import DOMWidget
+from .valuewidget import ValueWidget
 from .widget import CallbackDispatcher, register
 from traitlets import Unicode, Bool
 from warnings import warn
 
 
-class _String(DOMWidget):
+class _String(DOMWidget, ValueWidget):
     """Base class used to create widgets that represent a string."""
 
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)

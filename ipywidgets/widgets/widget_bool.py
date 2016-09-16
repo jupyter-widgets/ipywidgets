@@ -7,11 +7,12 @@ Represents a boolean using a widget.
 # Distributed under the terms of the Modified BSD License.
 
 from .domwidget import DOMWidget
+from .valuewidget import ValueWidget
 from .widget import register
 from traitlets import Unicode, Bool, CaselessStrEnum
 
 
-class _Bool(DOMWidget):
+class _Bool(DOMWidget, ValueWidget):
     """A base class for creating widgets that represent booleans."""
     value = Bool(False, help="Bool value").tag(sync=True)
     description = Unicode('', help="Description of the boolean (label).").tag(sync=True)

@@ -7,13 +7,14 @@ Represents an HTML Color .
 # Distributed under the terms of the Modified BSD License.
 
 from .domwidget import DOMWidget
+from .valuewidget import ValueWidget
 from .widget import register
 from .trait_types import Color
 from traitlets import Unicode, Bool
 
 
 @register('Jupyter.ColorPicker')
-class ColorPicker(DOMWidget):
+class ColorPicker(DOMWidget, ValueWidget):
     value = Color('black').tag(sync=True)
     concise = Bool().tag(sync=True)
     description = Unicode().tag(sync=True)
