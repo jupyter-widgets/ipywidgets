@@ -10,31 +10,31 @@ import * as _ from 'underscore';
  * css properties exposed by the layout widget with their default values.
  */
 let css_properties = {
-    align_content: '',
-    align_items: '',
-    align_self: '',
-    border: '',
-    bottom: '',
-    display: '',
-    flex: '',
-    flex_flow: '',
-    height: '',
-    justify_content: '',
-    left: '',
-    margin: '',
-    max_height: '',
-    max_width: '',
-    min_height: '',
-    min_width: '',
-    overflow: '',
-    overflow_x: '',
-    overflow_y: '',
-    order: '',
-    padding: '',
-    right: '',
-    top: '',
-    visibility: '',
-    width: ''
+    align_content: null,
+    align_items: null,
+    align_self: null,
+    border: null,
+    bottom: null,
+    display: null,
+    flex: null,
+    flex_flow: null,
+    height: null,
+    justify_content: null,
+    left: null,
+    margin: null,
+    max_height: null,
+    max_width: null,
+    min_height: null,
+    min_width: null,
+    overflow: null,
+    overflow_x: null,
+    overflow_y: null,
+    order: null,
+    padding: null,
+    right: null,
+    top: null,
+    visibility: null,
+    width: null
 };
 
 /**
@@ -98,7 +98,11 @@ class LayoutView extends DOMWidgetView {
     handleChange(trait: string, value: any) {
         this.displayed.then((parent) => {
             if (parent) {
-                parent.el.style[this.css_name(trait)] = value;
+                if (value === null) {
+                    parent.el.style.removeProperty(this.css_name(trait));
+                } else {
+                    parent.el.style[this.css_name(trait)] = value;
+                }
             } else {
                 console.warn('Style not applied because a parent view doesn\'t exist');
             }
@@ -112,7 +116,7 @@ class LayoutView extends DOMWidgetView {
         this._traitNames.forEach((trait) => {
             this.displayed.then((parent) => {
                 if (parent) {
-                    parent.el.style[this.css_name(trait)] = '';
+                    parent.el.style.removeProperty(this.css_name(trait));
                 } else {
                     console.warn('Style not removed because a parent view doesn\'t exist');
                 }
