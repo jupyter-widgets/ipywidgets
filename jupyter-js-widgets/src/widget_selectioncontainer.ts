@@ -202,7 +202,7 @@ class AccordionView extends DOMWidgetView {
         accordion_inner.appendChild(dummy);
         return this.create_child_view(model).then(function(view) {
 
-            dummy.parentNode.replaceChild(dummy, view.el);
+            dummy.parentNode.replaceChild(view.el, dummy);
 
             that.update_selected_index();
             that.update_titles();
