@@ -15,7 +15,7 @@ Contents
     examples/Widget Events.ipynb
     examples/Widget Styling.ipynb
     examples/Widget Custom.ipynb
-    examples/Widget Layout.ipynb
+    examples/Widget Alignment.ipynb
     examples/Widget Low Level.ipynb
     contributing.md
     changelog.md
