@@ -124,11 +124,12 @@ class AccordionView extends DOMWidgetView {
      * @param  {number} index
      */
     collapseTab(index) {
-        var page = this.containers[index].children('.collapse');
-
-        if (page.hasClass('in')) {
-            page.removeClass('in');
-            page.collapse('hide');
+        var pages = this.containers[index].querySelectorAll('.collapse');
+        for (var page of pages) {
+            if (page.classList.contains('in')) {
+                page.classList.remove('in');
+                //page.style['visibility'] = 'hidden';
+            }
         }
     }
 
@@ -137,11 +138,12 @@ class AccordionView extends DOMWidgetView {
      * @param  {number} index
      */
     expandTab(index) {
-        var page = this.containers[index].children('.collapse');
-
-        if (!page.hasClass('in')) {
-            page.addClass('in');
-            page.collapse('show');
+        var pages = this.containers[index].querySelectorAll('.collapse');
+        for (var page of pages) {
+            if (!page.classList.contains('in')) {
+                page.classList.add('in');
+                //page.style['visibility'] = 'visible';
+            }
         }
     }
 
