@@ -166,7 +166,7 @@ class interactive(Box):
             for widget in self.kwargs_widgets:
                 widget.observe(self.update, names='value')
 
-            self.on_displayed(lambda _: self.update(dict(name=None, old=None, new=None)))
+            self.on_displayed(self.update)
 
     # Callback function
     def update(self, *args):
