@@ -608,10 +608,10 @@ def test_interact_manual_nocall():
 
 def test_interact_call():
     w = interact.widget(f)
-    w.call_f()
+    w.update()
 
     w = interact_manual.widget(f)
-    w.call_f()
+    w.update()
 
 def test_interact_options():
     def f(x):
@@ -751,5 +751,5 @@ def test_get_interact_value():
             return 42
     w = TheAnswer()
     c = interactive(lambda v: v, v=w)
-    c.call_f()
+    c.update()
     nt.assert_equal(c.result, 42)

@@ -155,21 +155,30 @@ class interactive(Box):
         # Otherwise, it is triggered for every trait change received
         # On-demand running also suppresses running the function with the initial parameters
         if self.manual:
-            self.manual_button.on_click(self.call_f)
+            self.manual_button.on_click(self.update)
 
             # Also register input handlers on text areas, so the user can hit return to
             # invoke execution.
             for w in self.kwargs_widgets:
                 if isinstance(w, Text):
-                    w.on_submit(self.call_f)
+                    w.on_submit(self.update)
         else:
             for widget in self.kwargs_widgets:
-                widget.observe(self.call_f, names='value')
+                widget.observe(self.update, names='value')
 
-            self.on_displayed(lambda _: self.call_f(dict(name=None, old=None, new=None)))
+            self.on_displayed(lambda _: self.update(dict(name=None, old=None, new=None)))
 
     # Callback function
-    def call_f(self, *args):
+    def update(self, *args):
+        """
+        Call the interact function and update the output widget with
+        the result of the function call.
+
+        Parameters
+        ----------
+        *args : ignored
+            Required for this method to be used as traitlets callback.
+        """
         self.kwargs = {}
         if self.manual:
             self.manual_button.disabled = True
