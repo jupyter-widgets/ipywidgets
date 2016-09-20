@@ -50,7 +50,7 @@ PY3 = (sys.version_info[0] >= 3)
 #-----------------------------------------------------------------------------
 
 import os
-from distutils import log
+import logging as log
 from setuptools import setup, Command
 from setuptools.command.build_py import build_py
 from setuptools.command.sdist import sdist
@@ -58,7 +58,7 @@ from glob import glob
 from os.path import join as pjoin
 from subprocess import check_call
 
-log.set_verbosity(log.DEBUG)
+log.basicConfig(level=log.DEBUG)
 log.info('setup.py entered')
 log.info('$PATH=%s' % os.environ['PATH'])
 
