@@ -21,9 +21,6 @@
     "build:src": "tsc --project src",
     "build:extension": "node scripts/buildExtension.js",
     "build": "npm run build:src && npm run build:extension",
-    "example:browser": "cd examples/browser && npm run update && npm run build",
-    "example:node": "cd examples/node && npm install",
-    "build:examples": "npm run example:browser && npm run example:node",
     "docs": "typedoc --mode file --module commonjs --excludeNotExported --target es5 --moduleResolution node --out docs/ src",
     "prepublish": "npm run build"
   },
