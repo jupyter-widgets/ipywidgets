@@ -96,7 +96,11 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     super();
     this._context = context;
     this._rendermime = rendermime;
-    this.register('jupyter-js-widgets', widgets.version, widgets);
+    this.register({
+      name: 'jupyter-js-widgets',
+      version: '2.0.0', // hardcoded because '*' doesn't match pre-release versions
+      exports: widgets
+    });
 
     context.kernelChanged.connect((sender, kernel) => {
       if (context.kernel) {
@@ -202,8 +206,8 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     return true;
   }
 
-  register(name: string, version: string, exports: any) {
-    this._registry.set(name, version, exports)
+  register(data: WidgetManager.IWidgetData) {
+    this._registry.set(data.name, data.version, data.exports);
   }
 
   private _context: IDocumentContext<IDocumentModel>;
@@ -211,6 +215,16 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   private _rendermime: IRenderMime;
 
   _commRegistration: IDisposable;
+}
+
+export
+namespace WidgetManager {
+  export
+  interface IWidgetData {
+    name: string,
+    version: string,
+    exports: any
+  }
 }
 
 
