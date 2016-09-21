@@ -7,16 +7,16 @@
 from __future__ import print_function
 
 # the name of the package
-name = 'widgetslabextension'
+name = 'jupyterlab_widgets'
 
 DESCRIPTION = 'JupyterLab extension providing HTML widgets'
 LONG_DESCRIPTION = """
-.. image:: https://img.shields.io/pypi/v/widgetslabextension.svg
-   :target: https://pypi.python.org/pypi/widgetslabextension/
+.. image:: https://img.shields.io/pypi/v/jupyterlab_widgets.svg
+   :target: https://pypi.python.org/pypi/jupyterlab_widgets/
    :alt: Version Number
 
-.. image:: https://img.shields.io/pypi/dm/widgetslabextension.svg
-   :target: https://pypi.python.org/pypi/widgetslabextension/
+.. image:: https://img.shields.io/pypi/dm/jupyterlab_widgets.svg
+   :target: https://pypi.python.org/pypi/jupyterlab_widgets/
    :alt: Number of PyPI downloads
 
 Interactive HTML Widgets
@@ -58,6 +58,7 @@ from setuptools.command.sdist import sdist
 from glob import glob
 from os.path import join as pjoin, isfile
 from subprocess import check_call
+import json
 
 log.set_verbosity(log.DEBUG)
 log.info('setup.py entered')
@@ -118,7 +119,7 @@ class NPM(Command):
     node_modules = pjoin(repo_root, 'node_modules')
 
     targets = [
-        pjoin(repo_root, 'widgetslabextension', 'static', 'widgetslabextension.bundle.js')
+        pjoin(repo_root, 'jupyterlab_widgets', 'static', 'jupyterlab_widgets.bundle.js')
     ]
 
     def initialize_options(self):
@@ -156,7 +157,7 @@ class NPM(Command):
             if not os.path.exists(t):
                 msg = "Missing file: %s" % t
                 if not has_npm:
-                    msg += '\nnpm is required to build a development version of widgetslabextension'
+                    msg += '\nnpm is required to build a development version of jupyterlab_widgets'
                 raise ValueError(msg)
         
 
@@ -167,19 +168,14 @@ pjoin = os.path.join
 here = os.path.abspath(os.path.dirname(__file__))
 pkg_root = pjoin(here, name)
 
-version_ns = {}
-with open(pjoin(here, name, '_version.py')) as f:
-    exec(f.read(), {}, version_ns)
-
-#STATIC_DIR = './widgetslabextension/static/'
-#STATIC_FILES = [pjoin(STATIC_DIR, f) for f in os.listdir(STATIC_DIR)]
-#print(STATIC_FILES)
+with open(pjoin(here, 'package.json')) as f:
+    pkg = json.load(f)
 
 setup_args = dict(
     name            = name,
-    version         = version_ns['__version__'],
+    version         = pkg['version'],
     scripts         = [],
-    packages        = ['widgetslabextension'],
+    packages        = ['jupyterlab_widgets'],
     description     = DESCRIPTION,
     long_description = LONG_DESCRIPTION,
     author          = 'Jupyter Development Team',

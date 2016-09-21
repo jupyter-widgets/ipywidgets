@@ -6,7 +6,7 @@ var path = require('path');
 var buildExtension = require('jupyterlab-extension-builder').buildExtension;
 
 buildExtension({
-  name: 'widgetslabextension',
+  name: 'jupyterlab_widgets',
   entry: './lib/plugin',
-  outputDir : './widgetslabextension/static'
+  outputDir : './jupyterlab_widgets/static'
 });

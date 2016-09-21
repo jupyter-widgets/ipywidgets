@@ -96,7 +96,6 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     super();
     this._context = context;
     this._rendermime = rendermime;
-    this._registry = new SemVerCache();
     this.register('jupyter-js-widgets', widgets.version, widgets);
 
     context.kernelChanged.connect((sender, kernel) => {
@@ -182,11 +181,11 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   protected loadClass(className: string, moduleName: string, error: any): any {
     let mod: any = this._registry.get(moduleName, '*');
     if (!mod) {
-      Promise.reject(`Module ${moduleName} not registered as a widget module`);
+      return Promise.reject(`Module ${moduleName} not registered as a widget module`);
     }
     let cls: any = mod[className];
     if (!cls) {
-      Promise.reject(`Class ${className} not found in module ${moduleName}`);
+      return Promise.reject(`Class ${className} not found in module ${moduleName}`);
     }
     return Promise.resolve(cls);
   }
@@ -208,8 +207,9 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   }
 
   private _context: IDocumentContext<IDocumentModel>;
+  private _registry = new SemVerCache<Promise<any>>();
   private _rendermime: IRenderMime;
-  private _registry = new SemVerCache<any>();
+
   _commRegistration: IDisposable;
 }
 

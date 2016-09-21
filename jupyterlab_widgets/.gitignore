@@ -11,4 +11,4 @@ dist
 build
 docs
 example/*.js
-widgetslabextension/static
+jupyterlab_widgets/static

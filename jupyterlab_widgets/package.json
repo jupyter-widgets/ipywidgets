@@ -1,5 +1,5 @@
 {
-  "name": "jupyterlab-widgets",
+  "name": "jupyterlab_widgets",
   "version": "0.1.0",
   "description": "The JupyterLab extension providing Jupyter widgets.",
   "main": "lib/index.js",
@@ -17,7 +17,7 @@
     "typescript": "^1.8.0"
   },
   "scripts": {
-    "clean": "rimraf docs && rimraf lib && rimraf widgetslabextension/static",
+    "clean": "rimraf docs && rimraf lib && rimraf jupyterlab_widgets/static",
     "build:src": "tsc --project src",
     "build:extension": "node scripts/buildExtension.js",
     "build": "npm run build:src && npm run build:extension",
