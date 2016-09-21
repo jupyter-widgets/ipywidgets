@@ -1,6 +1,5 @@
 {
-  "private": true,
-  "name": "widgetslabextension",
+  "name": "jupyterlab-widgets",
   "version": "0.1.0",
   "description": "The JupyterLab extension providing Jupyter widgets.",
   "main": "lib/index.js",
@@ -11,14 +10,9 @@
     "phosphor": "^0.6.1"
   },
   "devDependencies": {
-    "expect.js": "^0.3.1",
-    "istanbul": "^0.3.18",
     "jupyter-js-services": "^0.18.1",
     "jupyterlab-extension-builder": "^0.4.0",
-    "mocha": "^2.2.5",
-    "requirejs": "^2.2.0",
     "rimraf": "^2.4.2",
-    "text-encoding": "^0.5.2",
     "typedoc": "^0.4.4",
     "typescript": "^1.8.0"
   },
@@ -39,6 +33,7 @@
   },
   "keywords": [
     "jupyter",
+    "jupyterlab",
     "services",
     "notebook"
   ],

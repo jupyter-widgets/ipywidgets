@@ -61,6 +61,9 @@ class IPyWidgetExtension implements IWidgetExtension<NotebookPanel, INotebookMod
    */
   createNew(nb: NotebookPanel, context: IDocumentContext<INotebookModel>): IDisposable {
     let wManager = new WidgetManager(context, nb.content.rendermime);
+    for (let m of this._registry) {
+      wManager.register(m[0], m[1], m[2]);
+    }
     let wRenderer = new WidgetRenderer(wManager);
 
     nb.content.rendermime.addRenderer(WIDGET_MIMETYPE, wRenderer, 0);
@@ -72,6 +75,14 @@ class IPyWidgetExtension implements IWidgetExtension<NotebookPanel, INotebookMod
       wManager.dispose();
     });
   }
+
+  /**
+   * Register a widget module.
+   */
+  registerWidgets(name: string, version: string, mod: any) {
+    this._registry.push([name, version, mod]);
+  }
+  private _registry = Object.create(null);
 }
 
 /**

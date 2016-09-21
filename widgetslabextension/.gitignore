@@ -11,3 +11,4 @@ dist
 build
 docs
 example/*.js
+widgetslabextension/static
