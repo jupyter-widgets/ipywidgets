@@ -1,5 +1,5 @@
 {
-  "name": "jupyterlab-widgets",
+  "name": "jupyterlab_widgets",
   "version": "0.1.0",
   "description": "The JupyterLab extension providing Jupyter widgets.",
   "main": "lib/index.js",

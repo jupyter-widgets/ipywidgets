@@ -119,7 +119,7 @@ class NPM(Command):
     node_modules = pjoin(repo_root, 'node_modules')
 
     targets = [
-        pjoin(repo_root, 'jupyterlab_widgets', 'static', 'jupyterlab-widgets.bundle.js')
+        pjoin(repo_root, 'jupyterlab_widgets', 'static', 'jupyterlab_widgets.bundle.js')
     ]
 
     def initialize_options(self):
