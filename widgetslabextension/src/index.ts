@@ -11,6 +11,8 @@ import {
     ManagerBase, shims, DOMWidgetView
 } from 'jupyter-js-widgets';
 
+import * as widgets from 'jupyter-js-widgets';
+
 import {
   IDisposable
 } from 'phosphor/lib/core/disposable';
@@ -43,8 +45,12 @@ import 'jquery-ui/themes/smoothness/jquery-ui.min.css';
 
 import 'jupyter-js-widgets/css/widgets.min.css';
 
-// TODO: when upgrading to phosphor monorepo, return the monorepo widget from display_view
-// TODO: and add it to the WidgetRenderer.render's panel directly.
+import {
+  SemVerCache
+} from './semvercache';
+
+(widgets as any)['OutputModel'] = OutputModel;
+(widgets as any)['OutputView'] = OutputView;
 
 /**
  * The class name added to an BackboneViewWrapper widget.
@@ -90,6 +96,8 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     super();
     this._context = context;
     this._rendermime = rendermime;
+    this._registry = new SemVerCache();
+    this.register('jupyter-js-widgets', widgets.version, widgets);
 
     context.kernelChanged.connect((sender, kernel) => {
       if (context.kernel) {
@@ -172,18 +180,16 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * Load a class and return a promise to the loaded object.
    */
   protected loadClass(className: string, moduleName: string, error: any): any {
-    if (moduleName === 'jupyter-js-widgets'
-        && (className === 'OutputModel'
-            || className === 'OutputView')) {
-      if (className === 'OutputModel') {
-        return Promise.resolve(OutputModel);
-      } else if (className === 'OutputView') {
-        return Promise.resolve(OutputView);
-      }
+    let mod: any = this._registry.get(moduleName, '*');
+    if (!mod) {
+      Promise.reject(`Module ${moduleName} not registered as a widget module`);
     }
-    return super.loadClass(className, moduleName, error);
+    let cls: any = mod[className];
+    if (!cls) {
+      Promise.reject(`Class ${className} not found in module ${moduleName}`);
+    }
+    return Promise.resolve(cls);
   }
-
 
   get context() {
     return this._context;
@@ -197,8 +203,13 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     return true;
   }
 
+  register(name: string, version: string, exports: any) {
+    this._registry.set(name, version, exports)
+  }
+
   private _context: IDocumentContext<IDocumentModel>;
   private _rendermime: IRenderMime;
+  private _registry = new SemVerCache<any>();
   _commRegistration: IDisposable;
 }
 
