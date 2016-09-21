@@ -17,6 +17,6 @@ accessible as a `value` attribute.
 
 def _jupyter_labextension_paths():
     return [{
-        'name': 'widgetslabextension',
+        'name': 'jupyterlab_widgets',
         'src': 'static',
     }]

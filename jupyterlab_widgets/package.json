@@ -17,7 +17,7 @@
     "typescript": "^1.8.0"
   },
   "scripts": {
-    "clean": "rimraf docs && rimraf lib && rimraf widgetslabextension/static",
+    "clean": "rimraf docs && rimraf lib && rimraf jupyterlab_widgets/static",
     "build:src": "tsc --project src",
     "build:extension": "node scripts/buildExtension.js",
     "build": "npm run build:src && npm run build:extension",
