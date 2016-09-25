@@ -12,11 +12,10 @@ except ImportError:
 
 import nose.tools as nt
 
-from ipykernel.comm import Comm
 import ipywidgets as widgets
 
 from traitlets import TraitError
-from ipywidgets import (interact, interact_manual, interactive, Widget,
+from ipywidgets import (interact, interact_manual, interactive,
     interaction, Output)
 from ipython_genutils.py3compat import annotate
 
@@ -24,40 +23,18 @@ from ipython_genutils.py3compat import annotate
 # Utility stuff
 #-----------------------------------------------------------------------------
 
-class DummyComm(Comm):
-    comm_id = 'a-b-c-d'
-
-    def open(self, *args, **kwargs):
-        pass
-
-    def send(self, *args, **kwargs):
-        pass
-
-    def close(self, *args, **kwargs):
-        pass
-
-_widget_attrs = {}
-displayed = []
-undefined = object()
+from . import setup_test_comm, teardown_test_comm
 
 def setup():
-    _widget_attrs['_comm_default'] = getattr(Widget, '_comm_default', undefined)
-    Widget._comm_default = lambda self: DummyComm()
-    _widget_attrs['_ipython_display_'] = Widget._ipython_display_
-    def raise_not_implemented(*args, **kwargs):
-        raise NotImplementedError()
-    Widget._ipython_display_ = raise_not_implemented
+    setup_test_comm()
 
 def teardown():
-    for attr, value in _widget_attrs.items():
-        if value is undefined:
-            delattr(Widget, attr)
-        else:
-            setattr(Widget, attr, value)
+    teardown_test_comm()
 
 def f(**kwargs):
     pass
 
+displayed = []
 def clear_display():
     global displayed
     displayed = []
