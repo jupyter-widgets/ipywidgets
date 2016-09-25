@@ -142,7 +142,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    */
    _create_comm(target_name: string, model_id: string, data?: any): Promise<any> {
     let comm = this._context.kernel.connectToComm(target_name, model_id);
-    comm.open(); // should we open it???
+    comm.open(data);
     return Promise.resolve(new shims.services.Comm(comm));
   }
 
