@@ -712,6 +712,11 @@ class JupyterPhosphorWidget extends Widget {
         super.onResize(msg);
     }
 
+    onAfterAttach(msg) {
+        super.onAfterAttach(msg);
+        this._view.trigger('displayed');
+    }
+
     private _view: DOMWidgetView;
 }
 
