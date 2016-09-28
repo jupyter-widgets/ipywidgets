@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "dependencies": {
-    "jupyter-js-widgets": "^2.0.0-dev.22",
+    "jupyter-js-widgets": "^2.0.0-dev.23",
     "jupyterlab": "^0.3.0",
     "phosphor": "^0.6.1"
   },
