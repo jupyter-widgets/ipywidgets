@@ -139,7 +139,8 @@ class ControllerModel extends DOMWidgetModel {
         });
     }
 
-    initialize() {
+    initialize(attributes, options) {
+        super.initialize(attributes, options);
         if (navigator.getGamepads === void 0) {
             // Checks if the browser supports the gamepad API
             this.readout = 'This browser does not support gamepads.';
