@@ -15,6 +15,14 @@ import {
     Widget
 } from 'phosphor/lib/ui/widget';
 
+import {
+  sendMessage
+} from 'phosphor/lib/core/messaging';
+
+import {
+  ResizeMessage
+} from 'phosphor/lib/ui/widget';
+
 /**
  * Replace model ids with models recursively.
  */
@@ -750,12 +758,17 @@ class DOMWidgetView extends WidgetView {
             this.layoutPromise = this.layoutPromise.then((oldLayoutView) => {
                 if (oldLayoutView) {
                     oldLayoutView.unlayout();
+                    this.stopListening(oldLayout);
+                    oldLayoutView.remove();
                 }
 
                 return this.create_child_view(layout).then((view) => {
                     // Trigger the displayed event of the child view.
                     return this.displayed.then(() => {
                         view.trigger('displayed', this);
+                        this.listenTo(layout, 'change', () => {
+                            sendMessage(this.pWidget, ResizeMessage.UnknownSize);
+                        });
                         return view;
                     });
                 }).catch(utils.reject('Could not add LayoutView to DOMWidgetView', true));
