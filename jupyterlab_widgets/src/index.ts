@@ -45,9 +45,9 @@ import {
   OutputModel, OutputView
 } from './output';
 
-import 'jquery-ui/themes/base/all.css';
+import 'jupyter-js-widgets/css/widgetslab-base.css';
 
-import 'jupyter-js-widgets/css/widgets.min.css';
+import 'jupyter-js-widgets/css/widgetslab.css';
 
 import {
   SemVerCache

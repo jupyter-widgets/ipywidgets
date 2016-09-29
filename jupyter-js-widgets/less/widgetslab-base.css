@@ -1,0 +1,144 @@
+:root {
+    --jp-widgets-font-size: var(--jp-ui-font-size1);
+    --jp-widgets-margin: 2px;
+    --jp-widgets-inline-height: 28px;
+    --jp-widgets-inline-width: 300px;
+    --jp-widgets-inline-width-short: calc(var(--jp-widgets-inline-width) / 2 - var(--jp-widgets-margin));
+    --jp-widgets-border-width : var(--jp-border-width);
+    --jp-widgets-button-color : white;
+}
+
+.p-Widget.jupyter-widgets {
+    overflow: visible;
+}
+
+.jupyter-widgets {
+    margin: 2px;
+}
+
+.jupyter-widgets.widget-container {
+    margin: 0px;
+}
+
+/* General Button Styling */
+
+.jupyter-button {
+    padding: 0;
+    border: var(--jp-widgets-border-width) solid var(--jp-border-color2);
+    display: inline-block;
+    overflow: hidden;
+    cursor: pointer;
+    white-space: nowrap;
+    text-align: center;
+    font-size: var(--jp-ui-font-size1);
+    line-height: calc(var(--jp-widgets-inline-height) - 2 * var(--jp-widgets-border-width));
+    
+    /* From Material Design Lite
+        shadow-key-umbra-opacity: 0.2;
+        shadow-key-penumbra-opacity: 0.14;
+        shadow-ambient-shadow-opacity: 0.12;
+     */
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+                0 3px 1px -2px rgba(0, 0, 0, 0.14),
+                0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+.jupyter-button i.fa {
+    padding-right: 3px;
+}
+
+.jupyter-button:empty:before {
+    content: "\00a0"
+}
+
+.jupyter-button:active, .jupyter-button.mod-active {
+     box-shadow: none;
+}
+
+.jupyter-button:hover, .jupyter-button:focus, .jupyter-button:active {
+    outline: none !important
+}
+
+/* "Default" Styling */
+
+.jupyter-button {
+    background-color: var(--jp-widgets-button-color);
+    color: var(--jp-ui-font-color1);
+}
+
+.jupyter-button:hover, .jupyter-button:active, .jupyter-button.mod-active {
+    background-color: #d4d4d4;
+    border-color: #8c8c8c;
+}
+
+/* "Primary" Styling */
+
+.jupyter-button.mod-primary {
+    color: white;
+    background-color: var(--jp-brand-color1);
+    border-color: var(--jp-brand-color1);
+}
+
+.jupyter-button.mod-primary:hover, .jupyter-button.mod-primary.mod-active {
+    background-color: var(--jp-brand-color0);
+    border-color: var(--jp-brand-color0);
+}
+
+/* "Success" Styling */
+
+.jupyter-button.mod-success {
+    color: white;
+    background-color: var(--jp-success-color1);
+    border-color: var(--jp-success-color1);
+}
+
+.jupyter-button.mod-success:hover, .jupyter-button.mod-success.mod-active {
+    background-color: var(--jp-success-color0);
+    border-color: var(--jp-success-color0);
+ }
+
+ /* "Info" Styling */
+
+.jupyter-button.mod-info {
+    color: white;
+    background-color: var(--jp-info-color1);
+    border-color: var(--jp-info-color1);
+}
+
+.jupyter-button.mod-info:hover, .jupyter-button.mod-info.mod-active {
+    background-color: var(--jp-info-color0);
+    border-color: var(--jp-info-color0);
+}
+
+/* "Warning" Styling */
+
+.jupyter-button.mod-warning {
+    color: white;
+    background-color: var(--jp-warn-color1);
+    border-color: var(--jp-warn-color1);
+}
+
+.jupyter-button.mod-warning:hover, .jupyter-button.mod-warning.mod-active {
+    background-color: var(--jp-warn-color0);
+    border-color: var(--jp-warn-color0);
+}
+
+/* "Warning" Styling */
+
+.jupyter-button.mod-danger {
+    color: white;
+    background-color: var(--jp-error-color1);
+    border-color: var(--jp-error-color1);
+}
+
+.jupyter-button.mod-danger:hover, .jupyter-button.mod-danger.mod-active {
+    background-color: var(--jp-error-color0);
+    border-color: var(--jp-error-color0);
+}
+
+/* Button and Toggle Button Styling */
+
+.jupyter-button.widget-button, .jupyter-button.widget-toggle-button {
+	height: var(--jp-widgets-inline-height);
+	width: var(--jp-widgets-inline-width-short);
+}
