@@ -125,7 +125,7 @@ abstract class ManagerBase<T> {
      * The default implementation just throws the original error.
      */
     require_error (success_callback) {
-        return function(err) {
+        return function(err) : any {
             throw err;
         };
     };

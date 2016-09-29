@@ -62,7 +62,7 @@
     "spawn-sync": "^1.0.14",
     "style-loader": "^0.13.1",
     "typedoc": "^0.4.2",
-    "typescript": "^1.8.10",
+    "typescript": "^2.0.3",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.11"
   },

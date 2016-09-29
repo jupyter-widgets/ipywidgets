@@ -39,7 +39,7 @@ class EmbedManager extends ManagerBase<HTMLElement> {
      * that attempts loading the module from unpkg. 
      */
     require_error(success_callback) {
-        return function(err) {
+        return function(err) : any {
             var failedId = err.requireModules && err.requireModules[0];
             if (failedId) {
                 // TODO: Get typing to work for requirejs
