@@ -24,13 +24,16 @@
 
 .jupyter-button {
     padding: 0;
-    border: var(--jp-widgets-border-width) solid var(--jp-border-color2);
     display: inline-block;
     overflow: hidden;
     cursor: pointer;
     white-space: nowrap;
     text-align: center;
     font-size: var(--jp-ui-font-size1);
+
+    height: var(--jp-widgets-inline-height);
+    width: var(--jp-widgets-inline-width-short);
+    border: var(--jp-widgets-border-width) solid;
     line-height: calc(var(--jp-widgets-inline-height) - 2 * var(--jp-widgets-border-width));
     
     /* From Material Design Lite
@@ -38,6 +41,12 @@
         shadow-key-penumbra-opacity: 0.14;
         shadow-ambient-shadow-opacity: 0.12;
      */
+    -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+                        0 3px 1px -2px rgba(0, 0, 0, 0.14),
+                        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    -moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+                     0 3px 1px -2px rgba(0, 0, 0, 0.14),
+                     0 1px 5px 0 rgba(0, 0, 0, 0.12);
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
                 0 3px 1px -2px rgba(0, 0, 0, 0.14),
                 0 1px 5px 0 rgba(0, 0, 0, 0.12);
@@ -62,13 +71,14 @@
 /* "Default" Styling */
 
 .jupyter-button {
-    background-color: var(--jp-widgets-button-color);
     color: var(--jp-ui-font-color1);
+    background-color: var(--jp-layout-color2);
+    border-color: var(--jp-border-color2);
 }
 
 .jupyter-button:hover, .jupyter-button:active, .jupyter-button.mod-active {
-    background-color: #d4d4d4;
-    border-color: #8c8c8c;
+    background-color: var(--jp-layout-color1);
+    border-color: var(--jp-border-color1);
 }
 
 /* "Primary" Styling */
@@ -136,9 +146,158 @@
     border-color: var(--jp-error-color0);
 }
 
-/* Button and Toggle Button Styling */
+/* Widget Label Styling */
 
-.jupyter-button.widget-button, .jupyter-button.widget-toggle-button {
-	height: var(--jp-widgets-inline-height);
-	width: var(--jp-widgets-inline-width-short);
+.widget-label {
+    /* Label */
+    font-size : var(--jp-widgets-font-size);
+    overflow: hidden;
 }
+
+.widget-hbox .widget-label {
+    /* Horizontal Widget Label */
+    text-align     : right;
+    vertical-align : text-top;
+    min-width      : 15ex;
+    max-width      : 15ex;
+}
+
+.widget-vbox .widget-label {
+    /* Vertical Widget Label */
+    text-align     : center;
+    vertical-align : text-bottom;
+}
+
+/* Widget Readout Styling */
+
+.widget-readout {
+    /* Label */
+    font-size : var(--jp-widgets-font-size);
+}
+
+.widget-readout.overflow {
+    /* Overflowing Readout */
+
+    /* From Material Design Lite
+        shadow-key-umbra-opacity: 0.2;
+        shadow-key-penumbra-opacity: 0.14;
+        shadow-ambient-shadow-opacity: 0.12;
+     */
+    -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+                        0 3px 1px -2px rgba(0, 0, 0, 0.14),
+                        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+
+    -moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+                     0 3px 1px -2px rgba(0, 0, 0, 0.14),
+                     0 1px 5px 0 rgba(0, 0, 0, 0.12);
+
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+                0 3px 1px -2px rgba(0, 0, 0, 0.14),
+                0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+/* Widget Checkbox Styling */
+
+.widget-checkbox {
+    width: var(--jp-widgets-inline-width-short);
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+    justify-content: space-between;
+}
+
+.widget-checkbox input[type="checkbox"] {
+    margin: 0px 4px 0px 4px;
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+    font-size : large;
+}
+
+/* Widget Valid Styling */
+
+.widget-valid {
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+    width: var(--jp-widgets-inline-width-short);
+    font-size: var(--jp-widgets-font-size);
+}
+
+.widget-valid i:before {
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+    font-family: FontAwesome;
+    font-style: normal;
+    margin-right: 4px;
+    margin-left: 4px;
+}
+
+.widget-valid.mod-valid i:before {
+    content: "\f00c";
+    color: green;
+}
+
+.widget-valid.mod-invalid i:before {
+    content: "\f00d";
+    color: red;
+}
+
+/* Widget Text and TextArea Stying */
+
+.widget-text {
+    /* Textbox */
+    width: var(--jp-widgets-inline-width);
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+}
+
+.widget-textarea {
+    /* TextAreaView */
+    width : var(--jp-widgets-inline-width);
+}
+
+.widget-text input, .widget-textarea input {
+    width: inherit;
+    outline: none !important;
+    margin-left: 4px;
+}
+
+.widget-text input:focus, .widget-textarea input:focus {
+    -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+                        0 3px 1px -2px rgba(0, 0, 0, 0.14),
+                        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+
+    -moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+                     0 3px 1px -2px rgba(0, 0, 0, 0.14),
+                     0 1px 5px 0 rgba(0, 0, 0, 0.12);
+
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+                0 3px 1px -2px rgba(0, 0, 0, 0.14),
+                0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+/* hbox 
+    .widget-readout {
+        /* Horizontal Readout /
+        padding-left   : 4px;
+        padding-top    : 5px;
+        height         : var(--jp-widgets-inline-height);
+        text-align     : center;
+        vertical-align : text-top;
+        min-width      : 3em;
+        max-width      : 7em;
+        margin-left    : 3px;
+        overflow       : hidden;
+        white-space    : nowrap;
+    }
+
+/* vbox /
+
+    .widget-readout {
+        /* Vertical Readout /
+        padding-top    : 5px;
+        white-space    : nowrap;
+        text-align     : center;
+        vertical-align : text-top;
+        margin-top     : 4px;
+        overflow       : hidden;
+    }
+*/
