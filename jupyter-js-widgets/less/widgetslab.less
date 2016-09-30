@@ -54,127 +54,6 @@
 /* THE CLASSES BELOW CAN APPEAR ANYWHERE IN THE DOM (POSSIBLY OUTSIDE OF
    THE WIDGET AREA). */
 
-.slide-track {
-    /* Slider Track */
-    border     : 1px solid #CCCCCC;
-    background : #FFFFFF;
-
-    .corner-all(); /* Round the corners of the slide track */
-}
-
-.widget-hslider {
-    /* Horizontal jQuery Slider
-
-    Both the horizontal and vertical versions of the slider are characterized
-    by a styled div that contains an invisible jQuery slide div which
-    contains a visible slider handle div.  This is requred so we can control
-    how the slider is drawn and 'fix' the issue where the slide handle
-    doesn't stop at the end of the slide.
-
-    Both horizontal and vertical sliders have this div nesting:
-    +------------------------------------------+
-    | widget-(h/v)slider                       |
-    |  +--------+---------------------------+  |
-    |  | ui-slider                          |  |
-    |  |          +------------------+      |  |
-    |  |          | ui-slider-handle |      |  |
-    |  |          +------------------+      |  |
-    |  +--------+---------------------------+  |
-    +------------------------------------------+
-    */
-
-    width        : var(--jp-widgets-inline-width);
-
-    .slider-container {
-        /* Fix the padding of the slide track so the ui-slider is sized
-        correctly. */
-        padding-left  : 8px;
-        padding-right : 2px;
-        overflow      : visible;
-
-        /* Default size of the slider */
-        flex-grow    : 1;
-        height       : 5px;
-        max-height   : 5px;
-        margin-top   : 15px;
-        margin-bottom: 12px;
-
-        /* Style the slider track */
-        .slide-track();
-
-        /* Make the div a flex box (makes FF behave correctly). */
-        .hbox();
-
-        .ui-slider {
-            /* Inner, invisible slide div */
-            .hbox();
-            .box-flex1();
-
-            border     : 0px;
-            background : none;
-
-            .ui-slider-handle {
-                width: 12px;
-                height: 28px;
-                margin-top: -8px;
-            }
-
-            .ui-slider-range {
-                height     : 12px;
-                margin-top : -4px;
-            }
-        }
-    }
-}
-
-.widget-vslider {
-    /* Vertical jQuery Slider */
-    height: 250px;
-    width: 70px;
-
-    .slider-container {
-        /* Fix the padding of the slide track so the ui-slider is sized
-        correctly. */
-        padding-bottom : 5px;
-        overflow       : visible;
-        flex-grow: 1;
-
-        /* Default size of the slider */
-        width        : 5px;
-        max-width    : 5px;
-        margin-left  : auto;
-        margin-right : auto;
-
-        /* Style the slider track */
-        .slide-track();
-
-        /* Make the div a flex box (makes FF behave correctly). */
-        .vbox();
-
-        .ui-slider {
-            /* Inner, invisible slide div */
-            .vbox();
-            .box-flex1();
-
-            border      : 0px;
-            background  : none;
-            margin-left : -4px;
-            margin-top  : 5px;
-
-            .ui-slider-handle {
-                width       : 28px;
-                height      : 12px;
-                margin-left : -9px;
-            }
-
-            .ui-slider-range {
-                width       : 12px;
-                margin-left : -1px;
-            }
-        }
-    }
-}
-
 .widget-colorpicker {
     & {
         width : var(--jp-widgets-inline-width);
@@ -478,7 +357,6 @@ ul.widget-dropdown-droplist {
     }
 }
 
-
 .widget-box {
     /* Box */
     .border-box-sizing();
@@ -502,5 +380,4 @@ ul.widget-dropdown-droplist {
         float: left;
         margin-right: 5px;
     }
-
 }

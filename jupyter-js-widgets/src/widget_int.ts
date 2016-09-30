@@ -67,6 +67,7 @@ class IntSliderView extends DOMWidgetView {
          */
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-slider');
         this.el.classList.add('widget-hslider');
 
         this.label = document.createElement('div');
