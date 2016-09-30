@@ -849,6 +849,7 @@ class SelectionSliderView extends DOMWidgetView {
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-hslider');
+        this.el.classList.add('widget-slider');
         this.label = document.createElement('div');
         this.label.classList.add('widget-label');
         this.label.style.display = 'none';
