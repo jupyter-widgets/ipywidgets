@@ -158,7 +158,7 @@
     /* Horizontal Widget Label */
     text-align: right;
     vertical-align: text-top;
-    width: 60px;
+    width: 80px;
 }
 
 .widget-vbox .widget-label {
@@ -360,7 +360,7 @@
 
 .widget-hslider .slider-container {
     /* Fix the padding of the slide track so the ui-slider is sized correctly. */
-    width: 200px;
+    width: 180px;
     height: var(--jp-widgets-inline-height);
     margin-left: calc(var(--jp-widgets-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
     margin-right: calc(var(--jp-widgets-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
@@ -398,3 +398,68 @@
 
     margin-left: calc((6px - var(--jp-widgets-track-thickness)) / 2);
 }
+
+/* Widget Progress */
+
+.widget-hprogress {
+    /* Progress Bar */
+    width : var(--jp-widgets-inline-width);
+    height : var(--jp-widgets-inline-height);
+    line-height : var(--jp-widgets-inline-height);
+}
+
+.widget-hprogress .progress {
+    width : var(--jp-widgets-inline-width);
+    height: var(--jp-widgets-inline-height);
+    background-color: var(--jp-layout-color2);
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.progress-bar {
+    height: var(--jp-widgets-inline-height);
+}
+
+.progress-bar {
+    background-color: var(--jp-brand-color1);
+}
+
+.progress-bar-success {
+    background-color: var(--jp-success-color1);
+}
+
+.progress-bar-info {
+    background-color: var(--jp-info-color1);
+}
+
+.progress-bar-warning {
+    background-color: var(--jp-warn-color1);
+}
+
+.progress-bar-danger {
+    background-color: var(--jp-error-color1);
+}
+
+/*
+.widget-vprogress {
+
+    height: 250px;
+    width: 70px;
+
+    .progress {
+        flex-grow: 1;
+        width: 12px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 0;
+    }
+
+    .progress-bar {
+
+        -webkit-transition : none;
+        -moz-transition    : none;
+        -ms-transition     : none;
+        -o-transition      : none;
+        transition         : none;
+    }
+}*/
