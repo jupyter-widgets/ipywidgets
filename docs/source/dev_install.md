@@ -70,3 +70,18 @@ permissions on npm and pip related install directories are correct.
         the `conda` directory
 
     - Try reinstalling ipywidgets
+    
+Releasing new versions
+----------------------
+
+See [dev_release.md](dev_release.md) for a details on how to release new versions of ipywidgets to PyPI and jupyter-js-widgets on npm. 
+
+Testing
+-------
+
+See [dev_testing.md](dev_testing.md) for a details on how to run Python and Javascript tests. 
+
+Building documentation
+----------------------
+
+See [dev_docs.md](dev_docs.md) for a details on how to build the docs. 
