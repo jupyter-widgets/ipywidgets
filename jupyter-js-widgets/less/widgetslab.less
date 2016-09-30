@@ -194,11 +194,6 @@
     }
 }
 
-.widget-checkbox {
-    width: var(--jp-widgets-inline-width-short);
-    height : var(--jp-widgets-inline-height);
-}
-
 .widget-play {
     button {
         height : var(--jp-widgets-inline-height);
@@ -315,16 +310,6 @@
     width : var(--jp-widgets-inline-width-short);
 }
 
-.widget-text {
-    /* Textbox */
-    width : var(--jp-widgets-inline-width);
-}
-
-.widget-textarea {
-    /* TextAreaView */
-    width : var(--jp-widgets-inline-width);
-}
-
 .widget-select-multiple {
     /* Multiple Selection */
     width : var(--jp-widgets-inline-width);
@@ -333,6 +318,7 @@
 .widget-dropdown {
     display: block;
     height : var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
 
     & {
         width : var(--jp-widgets-inline-width);
@@ -420,6 +406,7 @@ ul.widget-dropdown-droplist {
     /* Progress Bar */
     width : var(--jp-widgets-inline-width);
     height : var(--jp-widgets-inline-height);
+    line-height : var(--jp-widgets-inline-height);
 
     .progress {
         flex-grow: 1;
@@ -470,88 +457,14 @@ ul.widget-dropdown-droplist {
     color: inherit;
 }
 
-.widget-valid {
-    font-size: 1em;
-    position: relative;
-    i {margin-right: 1.5em;}
-    i:before {
-        font-family: FontAwesome;
-        font-style: normal;
-        font-size: 1.5em;
-        position: absolute;
-        top: 0;
-    }
-    &.mod-valid {
-        color: green;
-        i:before {
-            /* Check mark character icon */
-            content: "\f00c";
-        }
-    }
-    &.mod-invalid {
-        color: red;
-        i:before {
-            /* "X" character icon */
-            content: "\f00d";
-        }
-    }
-}
-
-.widget-label {
-    /* Label */
-    font-size : var(--jp-widgets-font-size);
-}
-
-.widget-readout {
-    /* Label */
-    font-size : var(--jp-widgets-font-size);
-}
-
 .widget-hbox {
     /* Horizontal widgets */
     .hbox();
-
-    input[type="checkbox"] {
-        margin-top: 10px;
-        margin-bottom: 10px;
-    }
 
     input[type="color"] {
         height : var(--jp-widgets-inline-height);
         width: 28px;
         padding: 1px;
-    }
-
-    .widget-label {
-        /* Horizontal Label */
-        min-width      : 15ex;
-        max-width      : 15ex;
-        padding-right  : 8px;
-        padding-top    : 5px;
-        text-align     : right;
-        vertical-align : text-top;
-        overflow: hidden;
-    }
-
-    .widget-readout {
-        /* Horizontal Readout */
-        padding-left   : 4px;
-        padding-top    : 5px;
-        height         : var(--jp-widgets-inline-height);
-        text-align     : center;
-        vertical-align : text-top;
-        min-width      : 3em;
-        max-width      : 7em;
-        margin-left    : 3px;
-        overflow       : hidden;
-        white-space    : nowrap;
-    }
-
-    .widget-readout.overflow {
-        /* Overflowing Readout */
-        -webkit-box-shadow: 0px 0px 0px 1px rgba(77,0,0,0.15);
-        -moz-box-shadow: 0px 0px 0px 1px rgba(77,0,0,0.15);
-        box-shadow: 0px 0px 0px 1px rgba(77,0,0,0.15);
     }
 }
 
@@ -562,31 +475,6 @@ ul.widget-dropdown-droplist {
     input[type="color"] {
         height: var(--jp-widgets-inline-height);
         padding: 1px;
-    }
-
-    .widget-label {
-        /* Vertical Label */
-        padding-bottom : 5px;
-        text-align     : center;
-        vertical-align : text-bottom;
-        overflow       : hidden;
-    }
-
-    .widget-readout {
-        /* Vertical Readout */
-        padding-top    : 5px;
-        white-space    : nowrap;
-        text-align     : center;
-        vertical-align : text-top;
-        margin-top     : 4px;
-        overflow       : hidden;
-    }
-
-    .widget-readout.overflow {
-        /* Overflowing Readout */
-        -webkit-box-shadow: 0px 0px 0px 1px rgba(77,0,0,0.15);
-        -moz-box-shadow: 0px 0px 0px 1px rgba(77,0,0,0.15);
-        box-shadow: 0px 0px 0px 1px rgba(77,0,0,0.15);
     }
 }
 
