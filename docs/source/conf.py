@@ -2,7 +2,42 @@
 # -*- coding: utf-8 -*-
 #
 
-from jupyter_sphinx_theme import *
+import sphinx_rtd_theme
+import os
+import subprocess
+import sys
+
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
+def bash(fileName):
+    """Runs a bash script in the local directory"""
+    sys.stdout.flush()
+    subprocess.call("bash {}".format(fileName), shell=True)
+
+# The suffix(es) of source filenames.
+# You can specify multiple suffix as a list of string:
+source_suffix = ['.rst', '.ipynb']
+
+# Conf.py import settings
+source_parsers = {}
+
+def init_theme():
+    from recommonmark.parser import CommonMarkParser
+    source_parsers['.md'] = CommonMarkParser
+    source_suffix.append('.md')
+
+html_theme = "sphinx_rtd_theme"
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.mathjax',
+    'nbsphinx',
+    'IPython.sphinxext.ipython_console_highlighting',
+]
+
 init_theme()
 
 if on_rtd:
@@ -60,8 +95,6 @@ html_static_path = ['_static']
 
 # Theme options are theme-specific and customize the look and feel of a
 # theme further.
-html_theme_options = {
-    'navbar_title': "ipywidgets and jupyter-js-widgets",
-}
+html_theme_options = {}
 
 nbsphinx_allow_errors = True
