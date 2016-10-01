@@ -71,11 +71,11 @@ class DropdownView extends DOMWidgetView {
         this.el.appendChild(this.buttongroup);
 
         this.droplabel = document.createElement('button');
-        this.droplabel.className = 'widget-dropdown-toggle widget-button';
+        this.droplabel.className = 'jupyter-button widget-dropdown-toggle';
         this.buttongroup.appendChild(this.droplabel);
 
         this.dropbutton = document.createElement('button');
-        this.dropbutton.className = 'widget-dropdown-toggle widget-button';
+        this.dropbutton.className = 'jupyter-button widget-dropdown-toggle';
 
         this.caret = document.createElement('i');
         this.caret.className = 'widget-caret';
@@ -165,8 +165,8 @@ class DropdownView extends DOMWidgetView {
 
     events(): {[e: string]: string} {
         return {
-            'click button.widget-button': '_toggle',
-            'keydown button.widget-button': '_activate'
+            'click button.jupyter-button': '_toggle',
+            'keydown button.jupyter-button': '_activate'
         }
     }
 
