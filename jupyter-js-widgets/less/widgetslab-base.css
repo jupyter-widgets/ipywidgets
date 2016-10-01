@@ -4,8 +4,10 @@
     --jp-widgets-inline-height: 28px;
     --jp-widgets-inline-width: 300px;
     --jp-widgets-inline-width-short: calc(var(--jp-widgets-inline-width) / 2 - var(--jp-widgets-margin));
+    --jp-widgets-inline-width-tiny: calc(var(--jp-widgets-inline-width-short) / 2 - var(--jp-widgets-margin));
     --jp-widgets-border-width: var(--jp-border-width);
     --jp-widgets-button-color: white;
+    --jp-widgets-tall-height: 250px;
 }
 
 .p-Widget.jupyter-widgets {
@@ -14,6 +16,7 @@
 
 .jupyter-widgets {
     margin: var(--jp-widgets-margin);
+    box-sizing: border-box;
 }
 
 .jupyter-widgets.widget-container {
@@ -32,7 +35,6 @@
     font-size: var(--jp-ui-font-size1);
 
     height: var(--jp-widgets-inline-height);
-    width: var(--jp-widgets-inline-width-short);
     border: var(--jp-widgets-border-width) solid;
     line-height: calc(var(--jp-widgets-inline-height) - 2 * var(--jp-widgets-border-width));
     
@@ -146,6 +148,12 @@
     border-color: var(--jp-error-color0);
 }
 
+/* Widget Button*/
+
+.widget-button {
+    width: var(--jp-widgets-inline-width-short);
+}
+
 /* Widget Label Styling */
 
 .widget-label {
@@ -157,6 +165,7 @@
 .widget-hbox .widget-label {
     /* Horizontal Widget Label */
     text-align: right;
+    margin-right: 4px;
     vertical-align: text-top;
     width: 80px;
 }
@@ -174,6 +183,7 @@
     font-size: var(--jp-widgets-font-size);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
+    margin-left: 4px;
     overflow: hidden;
     white-space: nowrap;
     text-align: center;
@@ -265,7 +275,7 @@
     line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-textarea {
+.widget-textarea textarea {
     /* TextAreaView */
     width: var(--jp-widgets-inline-width);
 }
@@ -360,7 +370,7 @@
 
 .widget-hslider .slider-container {
     /* Fix the padding of the slide track so the ui-slider is sized correctly. */
-    width: 180px;
+    width: 50%;
     height: var(--jp-widgets-inline-height);
     margin-left: calc(var(--jp-widgets-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
     margin-right: calc(var(--jp-widgets-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
@@ -377,13 +387,12 @@
 
 .widget-vslider {
     /* Vertical Slider */
-    height: 250px;
-    width: 70px;
+    height: var(--jp-widgets-tall-height);
+    width: var(--jp-widgets-inline-width-tiny);
 }
 
 .widget-vslider .slider-container {
-    height: 150px;
-    width: 6px;
+    height: 50%;
     margin-left: auto;
     margin-right: auto;
 
@@ -399,19 +408,20 @@
     margin-left: calc((6px - var(--jp-widgets-track-thickness)) / 2);
 }
 
-/* Widget Progress */
+/* Widget Progress Styling */
 
 .widget-hprogress {
     /* Progress Bar */
-    width : var(--jp-widgets-inline-width);
-    height : var(--jp-widgets-inline-height);
-    line-height : var(--jp-widgets-inline-height);
+    width: var(--jp-widgets-inline-width);
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
 }
 
 .widget-hprogress .progress {
-    width : var(--jp-widgets-inline-width);
-    height: var(--jp-widgets-inline-height);
+    width: var(--jp-widgets-inline-width);
     background-color: var(--jp-layout-color2);
+    border: var(--jp-widgets-border-width) solid var(--jp-border-color2);
+    height: 20px;
     margin-top: auto;
     margin-bottom: auto;
 }
@@ -456,10 +466,72 @@
 
     .progress-bar {
 
-        -webkit-transition : none;
-        -moz-transition    : none;
-        -ms-transition     : none;
-        -o-transition      : none;
-        transition         : none;
+        -webkit-transition: none;
+        -moz-transition: none;
+        -ms-transition: none;
+        -o-transition: none;
+        transition: none;
     }
 }*/
+
+/* Select Widget Styling */
+
+.widget-select {
+    width : var(--jp-widgets-inline-width);
+    height : var(--jp-widgets-inline-height);
+    line-height : var(--jp-widgets-inline-height);
+}
+
+.widget-select select {
+    height: var(--jp-widgets-inline-width);
+    line-height : var(--jp-widgets-inline-height);
+}
+
+/* Toggle Buttons Styling */
+
+.widget-toggle-buttons {
+    width : var(--jp-widgets-inline-width);
+    height : var(--jp-widgets-inline-height);
+    line-height : var(--jp-widgets-inline-height);
+}
+
+/* Radio Buttons Styling */
+
+.widget-radio-box {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    box-sizing: border-box;
+}
+
+.widget-radio-box label {
+    height : var(--jp-widgets-inline-height);
+    line-height : var(--jp-widgets-inline-height);
+    font-size: var(--jp-widgets-font-size);
+}
+
+.widget-radio-box input {
+    height : var(--jp-widgets-inline-height);
+    line-height : var(--jp-widgets-inline-height);
+    margin: 0px 2px 0px 2px;
+}
+
+/* Color Picker Styling */
+
+.widget-color-picker input[type="color"] {
+    width: var(--jp-widgets-inline-width-short);
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+}
+
+.widget-colorpicker input[type="text"] {
+    flex-grow: 1;
+}
+
+/* Play Widget */
+
+.widget-play {
+    width : var(--jp-widgets-inline-width-short);
+    display : flex;
+    justify-content : space-between;
+}

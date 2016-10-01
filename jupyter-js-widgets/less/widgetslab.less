@@ -54,36 +54,6 @@
 /* THE CLASSES BELOW CAN APPEAR ANYWHERE IN THE DOM (POSSIBLY OUTSIDE OF
    THE WIDGET AREA). */
 
-.widget-colorpicker {
-    & {
-        width : var(--jp-widgets-inline-width);
-    }
-    &.short {
-        width : var(--jp-widgets-inline-width-short);
-    }
-
-    display: flex;
-
-    .widget-hbox {
-        flex-grow: 1;
-    }
-
-    input[type="text"] {
-        flex-grow: 1;
-    }
-}
-
-.widget-play {
-    button {
-        height : var(--jp-widgets-inline-height);
-        width : 48px;
-    }
-
-    width : var(--jp-widgets-inline-width-short);
-    display : flex;
-    justify-content : space-between;
-}
-
 .widget-toggle-buttons {
     button {
         margin: 2px;
@@ -305,34 +275,10 @@ ul.widget-dropdown-droplist {
 .widget-vbox {
     /* Vertical Widgets */
     .vbox();
-
-    input[type="color"] {
-        height: var(--jp-widgets-inline-height);
-        padding: 1px;
-    }
 }
 
 .widget-box {
     /* Box */
     .border-box-sizing();
     .align-start();
-}
-
-.widget-radio-box {
-    /* Contains RadioButtonsWidget */
-    .vbox();
-    .border-box-sizing();
-
-    padding-top: 4px;
-
-    label {
-        margin-top: 2px;
-        margin-bottom: 2px;
-        margin-left: 22px;
-    }
-
-    input {
-        float: left;
-        margin-right: 5px;
-    }
 }
