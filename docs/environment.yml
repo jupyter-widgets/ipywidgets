@@ -12,4 +12,4 @@ dependencies:
 - pip:
   - sphinx==1.4.5
   - nbsphinx==0.2.7
-  - jupyter_sphinx_theme==0.0.6
+  - sphinx_rtd_theme==0.1.10-alpha
