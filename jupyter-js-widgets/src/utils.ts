@@ -39,7 +39,7 @@ class WrappedError extends Error {
         }
         this.error_stack.push(this);
     }
-    error_stack: this[];
+    error_stack: any[];
 }
 
 /**

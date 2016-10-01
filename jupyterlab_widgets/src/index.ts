@@ -30,6 +30,10 @@ import {
 } from 'phosphor/lib/ui/widget';
 
 import {
+  JSONObject
+} from 'phosphor/lib/algorithm/json';
+
+import {
   IRenderMime, RenderMime
 } from 'jupyterlab/lib/rendermime';
 
@@ -254,7 +258,7 @@ class WidgetRenderer implements RenderMime.IRenderer, IDisposable {
   /**
    * Render a widget mimetype.
    */
-  render(options: RenderMime.IRenderOptions): Widget {
+  render(options: RenderMime.IRendererOptions<string>): Widget {
     // data is a model id
     let w = new Panel();
     this._manager.get_model(options.source).then((model: any) => {

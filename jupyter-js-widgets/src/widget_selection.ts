@@ -417,7 +417,7 @@ class DropdownView extends DOMWidgetView {
     buttongroup: HTMLDivElement;
     droplabel: HTMLButtonElement;
     dropbutton: HTMLButtonElement;
-    caret: HTMLPhraseElement;
+    caret: HTMLElement;
 }
 
 export
