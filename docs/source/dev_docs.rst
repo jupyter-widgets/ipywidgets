@@ -8,8 +8,8 @@ To install (and activate) a `conda environment`_ named ``notebook_docs``
 containing all the necessary packages (except pandoc), use::
 
     conda env create -f docs/environment.yml
-    source activate notebook_docs  # Linux and OS X
-    activate notebook_docs         # Windows
+    source activate ipywidget_docs  # Linux and OS X
+    activate ipywidget_docs         # Windows
 
 .. _conda environment:
     http://conda.pydata.org/docs/using/envs.html#use-environment-from-file
@@ -17,11 +17,12 @@ containing all the necessary packages (except pandoc), use::
 If you want to install the necessary packages with ``pip`` instead, use
 (omitting --user if working in a virtual environment)::
 
-    pip install -r docs/doc-requirements.txt --user
+    pip install -r docs/requirements.txt --user
 
 Once you have installed the required packages, you can build the docs with::
 
     cd docs
+    make clean
     make html
 
 After that, the generated HTML files will be available at

@@ -27,5 +27,5 @@ Contents
 
     dev_install.md
     dev_testing.md
-    dev_docs.md
+    dev_docs
     dev_release.md

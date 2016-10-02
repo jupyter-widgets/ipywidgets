@@ -4,4 +4,7 @@ nvm install 5
 nvm use 5
 nvm alias default 5
 npm install -g npm
-bash build-local.sh
+cd ../../jupyter-js-widgets
+npm install
+cd ../docs
+npm install

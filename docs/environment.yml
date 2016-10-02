@@ -1,6 +1,7 @@
 name: ipywidget_docs
 channels:
 - conda-forge
+- defaults
 dependencies:
 - python=3.5
 - sphinx_rtd_theme
@@ -9,8 +10,10 @@ dependencies:
 - nbformat
 - ipywidgets
 - notebook>=4.2
+- sphinx>=1.4.6
+- ipykernel
 - pip:
-  - sphinx==1.4.5
-  - nbsphinx==0.2.7
+  - nbsphinx==0.2.9
   - sphinx_rtd_theme==0.1.10-alpha
   - python-dateutil
+  - recommonmark==0.4.0
