@@ -3,7 +3,7 @@ Installation
 
 Users can install the current version of **ipywidgets** with
 [pip](https://pip.pypa.io/en/stable/) or
-[conda](http://conda.readthedocs.io/en/latest/).
+[conda](https://conda.readthedocs.io/en/latest/).
 
 With pip
 --------
