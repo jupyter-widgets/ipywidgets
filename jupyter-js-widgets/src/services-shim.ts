@@ -10,7 +10,7 @@
 import * as _ from 'underscore';
 import * as utils from './utils';
 import {
-    IKernel
+    IKernel, Kernel
 } from 'jupyter-js-services';
 
 export
@@ -109,7 +109,7 @@ namespace shims {
          */
         export
         class Comm {
-            constructor(jsServicesComm: IKernel.IComm) {
+            constructor(jsServicesComm: Kernel.IComm) {
                 this.jsServicesComm = jsServicesComm;
             }
 
@@ -190,7 +190,7 @@ namespace shims {
              * @param  jupyter-js-services IKernelFuture instance
              * @param  callbacks
              */
-            _hookupCallbacks(future: IKernel.IFuture, callbacks: any) {
+            _hookupCallbacks(future: Kernel.IFuture, callbacks: any) {
                 if (callbacks) {
                     future.onReply = function(msg) {
                         if (callbacks.shell && callbacks.shell.reply) callbacks.shell.reply(msg);
@@ -220,7 +220,7 @@ namespace shims {
                 }
             };
 
-            jsServicesComm: IKernel.IComm = null;
+            jsServicesComm: Kernel.IComm = null;
         }
     }
 }
