@@ -3,7 +3,7 @@
 [![Version](https://img.shields.io/pypi/v/ipywidgets.svg)](https://pypi.python.org/pypi/ipywidgets)
 [![Downloads](https://img.shields.io/pypi/dm/ipywidgets.svg)](https://pypi.python.org/pypi/ipywidgets)
 [![Build Status](https://travis-ci.org/ipython/ipywidgets.svg?branch=master)](https://travis-ci.org/ipython/ipywidgets)
-[![Documentation Status](http://readthedocs.org/projects/ipywidgets/badge/?version=latest)](http://ipywidgets.readthedocs.io/en/latest/?badge=latest)
+[![Documentation Status](http://readthedocs.org/projects/ipywidgets/badge/?version=latest)](https://ipywidgets.readthedocs.io/en/latest/?badge=latest)
 [![Join the chat at https://gitter.im/ipython/ipywidgets](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ipython/ipywidgets?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ipywidgets are [interactive HTML widgets](https://github.com/ipython/ipywidgets/blob/master/docs/source/examples/Index.ipynb)
@@ -49,7 +49,7 @@ Popular widget libraries such as
 follow exactly the same template and directory structure. They can serve as
 more advanced examples of usage of the Jupyter widget infrastructure.
 
-For detailed information, please refer to the [ipywidgets documentation](http://ipywidgets.readthedocs.org/en/latest/).
+For detailed information, please refer to the [ipywidgets documentation](https://ipywidgets.readthedocs.io/en/latest/).
 
 ## More advanced examples
 
@@ -109,5 +109,5 @@ See the [examples](docs/source/examples.md) section of the documentation. The wi
 ### Project Jupyter resources
 - [Project Jupyter website](https://jupyter.org)
 - [Online Demo of Jupyter Notebook at try.jupyter.org](https://try.jupyter.org)
-- [Documentation for Project Jupyter](http://jupyter.readthedocs.org/en/latest/index.html) [[PDF](https://media.readthedocs.org/pdf/jupyter/latest/jupyter.pdf)]
+- [Documentation for Project Jupyter](https://jupyter.readthedocs.io/en/latest/index.html) [[PDF](https://media.readthedocs.org/pdf/jupyter/latest/jupyter.pdf)]
 - [![Google Group](https://img.shields.io/badge/-Google%20Group-lightgrey.svg)](https://groups.google.com/forum/#!forum/jupyter)
