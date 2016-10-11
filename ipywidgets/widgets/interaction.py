@@ -507,3 +507,9 @@ class fixed(HasTraits):
     description = Unicode('', help="Any Python object")
     def __init__(self, value, **kwargs):
         super(fixed, self).__init__(value=value, **kwargs)
+    def get_interact_value(self):
+        """Return the value for this widget which should be passed to
+        interactive functions. Custom widgets can change this method
+        to process the raw value ``self.value``.
+        """
+        return self.value
