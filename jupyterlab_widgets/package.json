@@ -5,13 +5,11 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "dependencies": {
-    "jupyter-js-widgets": "^2.0.1",
+    "jupyter-js-widgets": "^2.0.2",
     "jupyterlab": "^0.5.0",
     "phosphor": "^0.6.1"
   },
   "devDependencies": {
-    "@types/node": "^6.0.45",
-    "jupyter-js-services": "^0.20.0",
     "jupyterlab-extension-builder": "^0.6.2",
     "rimraf": "^2.4.2",
     "typedoc": "^0.4.4",
