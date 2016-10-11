@@ -1,6 +1,6 @@
 {
   "name": "jupyter-js-widgets",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Jupyter interactive widgets",
   "author": "Project Jupyter",
   "license": "BSD-3-Clause",
@@ -39,7 +39,9 @@
     "test:example:web4": "cd examples/web3 && npm install && npm run test:default"
   },
   "devDependencies": {
-    "@types/node": "^6.0.45",
+    "@types/expect.js": "^0.3.29",
+    "@types/mocha": "^2.2.32",
+    "@types/sinon": "^1.16.31",
     "clean-css": "^3.4.18",
     "css-loader": "^0.23.1",
     "es6-promise": "^3.1.2",
@@ -62,19 +64,22 @@
     "sinon": "^1.17.2",
     "spawn-sync": "^1.0.14",
     "style-loader": "^0.13.1",
-    "typedoc": "^0.4.2",
+    "typedoc": "github:jasongrout/typedoc#ts2",
     "typescript": "^2.0.3",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.11"
   },
   "dependencies": {
+    "@types/backbone": "^1.3.33",
+    "@types/mathjax": "0.0.31",
+    "@types/semver": "^5.3.30",
     "backbone": "1.2.0",
     "bootstrap": "^3.3.5",
     "d3-format": "^0.5.1",
     "font-awesome": "^4.5.0",
     "jquery": "^2.1.4",
     "jquery-ui": "1.10.4",
-    "jupyter-js-services": "^0.20.0",
+    "jupyter-js-services": "^0.21.1",
     "lolex": "^1.4.0",
     "phosphor": "^0.6.1",
     "scriptjs": "^2.5.8",

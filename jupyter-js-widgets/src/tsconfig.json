@@ -2,6 +2,7 @@
   "compilerOptions": {
     "declaration": true,
     //"noImplicitAny": true,
+    "lib": [],
     "noEmitOnError": true,
     "module": "commonjs",
     "moduleResolution": "node",
