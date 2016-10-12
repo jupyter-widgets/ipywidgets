@@ -64,7 +64,7 @@
     "sinon": "^1.17.2",
     "spawn-sync": "^1.0.14",
     "style-loader": "^0.13.1",
-    "typedoc": "github:jasongrout/typedoc#ts2",
+    "typedoc": "^0.5.0",
     "typescript": "^2.0.3",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.11"
