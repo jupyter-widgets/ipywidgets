@@ -128,7 +128,9 @@ class NPM(Command):
         
     def has_npm(self):
         try:
-            check_call(['npm', '--version'])
+            ## shell=True needs to be passed for windows to look at non .exe files.
+            shell = (sys.platform == 'win32')
+            check_call(['npm', '--version'], shell=shell)
             return True
         except:
             return False
