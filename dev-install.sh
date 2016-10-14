@@ -28,7 +28,13 @@ cd widgetsnbextension
 npm install
 npm run update
 pip install -v -e .
-jupyter nbextension install --py --symlink $nbExtFlags widgetsnbextension
+
+if [[ "$OSTYPE" == "msys" ]]; then
+    jupyter nbextension install --py $nbExtFlags widgetsnbextension
+else
+    jupyter nbextension install --py --symlink $nbExtFlags widgetsnbextension
+fi
+
 jupyter nbextension enable --py $nbExtFlags widgetsnbextension
 cd ..
 pip install -v -e .
