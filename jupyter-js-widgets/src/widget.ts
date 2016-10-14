@@ -91,7 +91,7 @@ class WidgetModel extends Backbone.Model {
         this.pending_msgs = 0;
         this.msg_buffer = null;
         this.state_lock = null;
-        // this.initialized = true;
+        this.initialized = true;
 
         this.views = {};
 
@@ -276,7 +276,7 @@ class WidgetModel extends Backbone.Model {
         // However, we don't buffer the initial state coming from the
         // backend or the default values specified in `defaults`.
         //
-        if (true) {}
+        if (this.initialized) {
             this._buffered_state_diff = _.extend(this._buffered_state_diff || {}, this.changedAttributes() || {});
         }
         return return_value;
@@ -503,6 +503,7 @@ class WidgetModel extends Backbone.Model {
     comm_live: boolean;
     model_id: string;
     msg_buffer_callbacks: any;
+    initialized: boolean;
 }
 
 export
