@@ -5,7 +5,7 @@ import * as _ from 'underscore';
 import * as utils from './utils';
 import * as semver from 'semver';
 import * as Backbone from 'backbone';
-import * as services from 'jupyter-js-services';
+import * as services from '@jupyterlab/services';
 
 import {
     WidgetModel

@@ -19,7 +19,7 @@ import {
 
 import {
   IKernel
-} from 'jupyter-js-services';
+} from '@jupyterlab/services';
 
 import {
   IDisposable, DisposableDelegate

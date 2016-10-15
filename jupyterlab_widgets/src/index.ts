@@ -5,7 +5,7 @@ import * as Backbone from 'backbone';
 
 import {
   IKernel
-} from 'jupyter-js-services';
+} from '@jupyterlab/services';
 
 import {
     ManagerBase, shims, DOMWidgetView

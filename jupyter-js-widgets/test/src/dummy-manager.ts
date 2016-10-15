@@ -6,7 +6,7 @@ import expect = require('expect.js');
 import {
     ManagerBase
 } from '../../lib';
-import * as services from 'jupyter-js-services';
+import * as services from '@jupyterlab/services';
 import * as Backbone from 'backbone';
 
 export
