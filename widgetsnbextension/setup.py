@@ -27,7 +27,7 @@ Usage
 =====
 
 Install the corresponding package for your kernel.  i.e. Python users would also
-install `ipywidgets`.  Refer to that package's documentation for usage 
+install `ipywidgets`.  Refer to that package's documentation for usage
 instructions.
 """
 
@@ -83,7 +83,7 @@ def js_prerelease(command, strict=False):
                 # sdist, nothing to do
                 command.run(self)
                 return
-            
+
             try:
                 self.distribution.run_command('jsdeps')
             except Exception as e:
@@ -113,7 +113,7 @@ class NPM(Command):
     description = "install package,json dependencies using npm"
 
     user_options = []
-    
+
     node_modules = pjoin(repo_root, 'node_modules')
 
     targets = [
@@ -125,30 +125,28 @@ class NPM(Command):
 
     def finalize_options(self):
         pass
-        
+
     def has_npm(self):
         try:
-            check_call(['npm', '--version'])
+            ## shell=True needs to be passed for windows to look at non .exe files.
+            shell = (sys.platform == 'win32')
+            check_call(['npm', '--version'], shell=shell)
             return True
         except:
             return False
 
-    def should_run_npm_install(self):
-        package_json = pjoin(repo_root, 'package.json')
-        node_modules_exists = os.path.exists(self.node_modules)
-        return self.has_npm()
-    
     def run(self):
         has_npm = self.has_npm()
         if not has_npm:
             log.error("`npm` unavailable.  If you're running this command using sudo, make sure `npm` is available to sudo")
-            
+
         env = os.environ.copy()
         env['PATH'] = npm_path
-        
-        if self.should_run_npm_install():
+
+        if self.has_npm():
             log.info("Installing build dependencies with npm.  This may take a while...")
-            check_call(['npm', 'install'], cwd=repo_root, stdout=sys.stdout, stderr=sys.stderr)
+            check_call(['npm', 'install'], cwd=repo_root, stdout=sys.stdout, stderr=sys.stderr,
+                       shell=(sys.platform == 'win32'))
             os.utime(self.node_modules, None)
 
         for t in self.targets:
@@ -157,7 +155,7 @@ class NPM(Command):
                 if not has_npm:
                     msg += '\nnpm is required to build a development version of widgetsnbextension'
                 raise ValueError(msg)
-        
+
 
         # update package data in case this created new files
         update_package_data(self.distribution)
