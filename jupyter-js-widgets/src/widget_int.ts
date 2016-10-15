@@ -5,11 +5,9 @@ import {
     DOMWidgetModel, DOMWidgetView
 } from './widget';
 import * as _ from 'underscore';
-
-var $: any = require('jquery');
+import * as $ from 'jquery';
+import 'jquery-ui/ui/widgets/slider';
 var d3format: any = (require('d3-format') as any).format;
-
-require('jquery-ui');
 
 export
 class IntModel extends DOMWidgetModel {
@@ -76,7 +74,7 @@ class IntSliderView extends DOMWidgetView {
         this.label.classList.add('widget-label');
         this.label.style.display = 'none';
 
-        this.$slider = $('<div />')
+        (this.$slider = $('<div />') as any)
             .slider({
                 slide: this.handleSliderChange.bind(this),
                 stop: this.handleSliderChanged.bind(this)

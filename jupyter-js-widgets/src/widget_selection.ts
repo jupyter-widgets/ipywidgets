@@ -7,7 +7,7 @@ import {
 
 import * as _ from 'underscore';
 import * as utils from './utils';
-var $: any = require('jquery');
+import * as $ from 'jquery';
 
 function scrollIfNeeded(area, elem) {
     var ar = area.getBoundingClientRect();
@@ -854,7 +854,7 @@ class SelectionSliderView extends DOMWidgetView {
         this.label.style.display = 'none';
         this.el.appendChild(this.label);
 
-        this.$slider = $('<div />')
+        (this.$slider = $('<div />') as any)
             .slider({
                 slide: this.handleSliderChange.bind(this),
                 stop: this.handleSliderChanged.bind(this)

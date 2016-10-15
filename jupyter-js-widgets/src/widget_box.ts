@@ -22,7 +22,7 @@ import {
 } from 'phosphor/lib/algorithm/searching';
 
 import * as _ from 'underscore';
-
+import * as $ from 'jquery';
 
 export
 namespace JupyterPhosphorPanelWidget {
@@ -206,9 +206,7 @@ class BoxView extends DOMWidgetView {
         }
 
         this.el = this.pWidget.node;
-        if ((window as any).jQuery) {
-            this.$el = (window as any).jQuery(this.pWidget.node);
-        }
+        this.$el = $(this.pWidget.node);
      }
 
     /**

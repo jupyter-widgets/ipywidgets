@@ -1,11 +1,6 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-// HACK: node bootstrap requires this.
-import jQuery from './jquery';
-
-window['jQuery'] = window['$'] = jQuery
-
 export * from "./manager-base";
 export * from "./embed-helper";
 export * from "./embed-manager";

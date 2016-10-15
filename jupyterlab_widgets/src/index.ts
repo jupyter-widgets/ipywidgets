@@ -45,7 +45,7 @@ import {
   OutputModel, OutputView
 } from './output';
 
-import 'jquery-ui/themes/smoothness/jquery-ui.min.css';
+import 'jquery-ui/themes/base/all.css';
 
 import 'jupyter-js-widgets/css/widgets.min.css';
 
