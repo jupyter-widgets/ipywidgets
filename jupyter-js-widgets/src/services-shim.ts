@@ -2,8 +2,8 @@
 // Distributed under the terms of the Modified BSD License.
 
 /**
- * This module defines shims for jupyter-js-services that allows you to use the
- * old comm API.  Use this, jupyter-js-services, and the widget base manager to
+ * This module defines shims for @jupyterlab/services that allows you to use the
+ * old comm API.  Use this, @jupyterlab/services, and the widget base manager to
  * embed live widgets in a context outside of the notebook.
  */
 
@@ -11,7 +11,7 @@ import * as _ from 'underscore';
 import * as utils from './utils';
 import {
     IKernel, Kernel
-} from 'jupyter-js-services';
+} from '@jupyterlab/services';
 
 export
 namespace shims {
@@ -19,7 +19,7 @@ namespace shims {
     namespace services {
         /**
          * Public constructor
-         * @param jsServicesKernel - jupyter-js-services IKernel instance
+         * @param jsServicesKernel - @jupyterlab/services IKernel instance
          */
         export
         class CommManager {
@@ -29,7 +29,7 @@ namespace shims {
 
             /**
              * Hookup kernel events.
-             * @param  {IKernel} jsServicesKernel - jupyter-js-services IKernel instance
+             * @param  {IKernel} jsServicesKernel - @jupyterlab/services IKernel instance
              */
             init_kernel(jsServicesKernel) {
                 this.kernel = jsServicesKernel; // These aren't really the same.
@@ -105,7 +105,7 @@ namespace shims {
 
         /**
          * Public constructor
-         * @param  {IComm} jsServicesComm - jupyter-js-services IComm instance
+         * @param  {IComm} jsServicesComm - @jupyterlab/services IComm instance
          */
         export
         class Comm {
@@ -186,8 +186,8 @@ namespace shims {
             };
 
             /**
-             * Hooks callback object up with jupyter-js-services IKernelFuture
-             * @param  jupyter-js-services IKernelFuture instance
+             * Hooks callback object up with @jupyterlab/services IKernelFuture
+             * @param  @jupyterlab/services IKernelFuture instance
              * @param  callbacks
              */
             _hookupCallbacks(future: Kernel.IFuture, callbacks: any) {

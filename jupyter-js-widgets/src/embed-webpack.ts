@@ -18,7 +18,7 @@ if (Element && !Element.prototype.matches) {
 }
 
 // Load styling
-require('jquery-ui/themes/smoothness/jquery-ui.min.css');
+require('jquery-ui/themes/base/all.css');
 require('font-awesome/css/font-awesome.css');
 require('../css/widgets.min.css');
 

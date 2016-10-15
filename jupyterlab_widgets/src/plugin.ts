@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-  IWidgetExtension, IDocumentContext, IDocumentModel, IDocumentRegistry
+  DocumentRegistry, IDocumentRegistry
 } from 'jupyterlab/lib/docregistry';
 
 import {
@@ -19,7 +19,7 @@ import {
 
 import {
   IKernel
-} from 'jupyter-js-services';
+} from '@jupyterlab/services';
 
 import {
   IDisposable, DisposableDelegate
@@ -55,11 +55,11 @@ const widgetManagerProvider: JupyterLabPlugin<IIPyWidgetExtension> = {
 export default widgetManagerProvider;
 
 export
-class IPyWidgetExtension implements IWidgetExtension<NotebookPanel, INotebookModel> {
+class IPyWidgetExtension implements DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel> {
   /**
    * Create a new extension object.
    */
-  createNew(nb: NotebookPanel, context: IDocumentContext<INotebookModel>): IDisposable {
+  createNew(nb: NotebookPanel, context: DocumentRegistry.IContext<INotebookModel>): IDisposable {
     let wManager = new WidgetManager(context, nb.content.rendermime);
     this._registry.forEach(data => wManager.register(data));
     let wRenderer = new WidgetRenderer(wManager);

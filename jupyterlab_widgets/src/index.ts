@@ -5,7 +5,7 @@ import * as Backbone from 'backbone';
 
 import {
   IKernel
-} from 'jupyter-js-services';
+} from '@jupyterlab/services';
 
 import {
     ManagerBase, shims, DOMWidgetView
@@ -38,14 +38,14 @@ import {
 } from 'jupyterlab/lib/rendermime';
 
 import {
-  IDocumentContext, IDocumentModel
+  DocumentRegistry
 } from 'jupyterlab/lib/docregistry';
 
 import {
   OutputModel, OutputView
 } from './output';
 
-import 'jquery-ui/themes/smoothness/jquery-ui.min.css';
+import 'jquery-ui/themes/base/all.css';
 
 import 'jupyter-js-widgets/css/widgets.min.css';
 
@@ -96,7 +96,7 @@ class BackboneViewWrapper extends Widget {
  */
 export
 class WidgetManager extends ManagerBase<Widget> implements IDisposable {
-  constructor(context: IDocumentContext<IDocumentModel>, rendermime: IRenderMime) {
+  constructor(context: DocumentRegistry.IContext<DocumentRegistry.IModel>, rendermime: IRenderMime) {
     super();
     this._context = context;
     this._rendermime = rendermime;
@@ -214,7 +214,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     this._registry.set(data.name, data.version, data.exports);
   }
 
-  private _context: IDocumentContext<IDocumentModel>;
+  private _context: DocumentRegistry.IContext<DocumentRegistry.IModel>;
   private _registry = new SemVerCache<Promise<any>>();
   private _rendermime: IRenderMime;
 

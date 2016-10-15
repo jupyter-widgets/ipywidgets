@@ -6,11 +6,11 @@
   "typings": "lib/index.d.ts",
   "dependencies": {
     "jupyter-js-widgets": "^2.0.2",
-    "jupyterlab": "^0.5.0",
+    "jupyterlab": "^0.5.1",
     "phosphor": "^0.6.1"
   },
   "devDependencies": {
-    "jupyterlab-extension-builder": "^0.6.2",
+    "@jupyterlab/extension-builder": "^0.7.0",
     "rimraf": "^2.4.2",
     "typedoc": "^0.5.0",
     "typescript": "^2.0.3"

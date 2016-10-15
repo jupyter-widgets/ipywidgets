@@ -5,7 +5,7 @@ import * as managerBase from './manager-base';
 import * as Backbone from 'backbone';
 import * as _ from 'underscore';
 import * as utils from './utils';
-var $: any = require('jquery');
+import * as $ from 'jquery';
 
 import {
     NativeView
