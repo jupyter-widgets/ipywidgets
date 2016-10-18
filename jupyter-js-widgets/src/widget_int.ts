@@ -463,6 +463,8 @@ class IntTextView extends DOMWidgetView {
     events(): {[e: string]: string} {
         return {
             // Dictionary of events and their handlers.
+            'keydown input'  : 'handleKeyDown',
+            'keypress input' : 'handleKeypress',
             'keyup input'  : 'handleChanging',
             'paste input'  : 'handleChanging',
             'cut input'    : 'handleChanging',
@@ -470,6 +472,24 @@ class IntTextView extends DOMWidgetView {
             // Fires only when control is validated or looses focus.
             'change input' : 'handleChanged'
         };
+    }
+
+    /**
+     * Handle key down
+     *
+     * Stop propagation so the event isn't sent to the application.
+     */
+    handleKeyDown(e) {
+        e.stopPropagation();
+    }
+
+    /**
+     * Handles key press
+     *
+     * Stop propagation so the event isn't sent to the application.
+     */
+    handleKeypress(e) {
+        e.stopPropagation();
     }
 
     handleChanging(e) {

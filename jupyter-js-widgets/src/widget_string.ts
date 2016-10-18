@@ -26,7 +26,7 @@ class HTMLModel extends StringModel {
             _view_name: 'HTMLView',
             _model_name: 'HTMLModel'
         });
-    } 
+    }
 }
 
 export
@@ -60,7 +60,7 @@ class LabelModel extends StringModel {
             _view_name: 'LabelView',
             _model_name: 'LabelModel'
         });
-    } 
+    }
 }
 
 export
@@ -176,10 +176,30 @@ class TextareaView extends DOMWidgetView {
     events(): {[e: string]: string} {
         return {
             // Dictionary of events and their handlers.
+            'keydown textarea'  : 'handleKeyDown',
+            'keypress textarea' : 'handleKeypress',
             'keyup textarea' : 'handleChanging',
             'paste textarea' : 'handleChanging',
             'cut textarea'   : 'handleChanging'
         }
+    }
+
+    /**
+     * Handle key down
+     *
+     * Stop propagation so the event isn't sent to the application.
+     */
+    handleKeyDown(e) {
+        e.stopPropagation();
+    }
+
+    /**
+     * Handles key press
+     *
+     * Stop propagation so the keypress isn't sent to the application.
+     */
+    handleKeypress(e) {
+        e.stopPropagation();
     }
 
     /**
@@ -270,12 +290,33 @@ class TextView extends DOMWidgetView {
     events(): {[e: string]: string} {
         return {
             // Dictionary of events and their handlers.
+            'keydown input'  : 'handleKeyDown',
+            'keypress input' : 'handleKeypress',
             'keyup input'    : 'handleChanging',
             'paste input'    : 'handleChanging',
             'cut input'      : 'handleChanging',
-            'keypress input' : 'handleKeypress',
             'blur input'     : 'handleBlur',
             'focusout input' : 'handleFocusOut'
+        }
+    }
+
+    /**
+     * Handle key down
+     *
+     * Stop propagation so the keypress isn't sent to the application.
+     */
+    handleKeyDown(e) {
+        e.stopPropagation();
+    }
+
+    /**
+     * Handles text submission
+     */
+    handleKeypress(e) {
+        e.stopPropagation();
+        if (e.keyCode == 13) { // Return key
+            this.send({event: 'submit'});
+            e.preventDefault();
         }
     }
 
@@ -286,20 +327,9 @@ class TextView extends DOMWidgetView {
      * model to update.
      */
     handleChanging(e) {
+        e.stopPropagation();
         this.model.set('value', e.target.value, {updated_view: this});
         this.touch();
-    }
-
-    /**
-     * Handles text submition
-     */
-    handleKeypress(e) {
-        if (e.keyCode == 13) { // Return key
-            this.send({event: 'submit'});
-            e.stopPropagation();
-            e.preventDefault();
-            return false;
-        }
     }
 
     /**
@@ -312,7 +342,6 @@ class TextView extends DOMWidgetView {
         if (e.relatedTarget === null) {
             e.stopPropagation();
             e.preventDefault();
-            return false;
         }
     }
 
@@ -324,7 +353,6 @@ class TextView extends DOMWidgetView {
         if (e.relatedTarget === null) {
             e.stopPropagation();
             e.preventDefault();
-            return false;
         }
     }
 
