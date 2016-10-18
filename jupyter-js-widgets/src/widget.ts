@@ -88,7 +88,6 @@ class WidgetModel extends Backbone.Model {
         let comm = options.comm;
 
         this.state_change = Promise.resolve();
-        this._buffered_state_diff = {};
         this.pending_msgs = 0;
         this.msg_buffer = null;
         this.state_lock = null;
@@ -276,7 +275,7 @@ class WidgetModel extends Backbone.Model {
         // However, we don't buffer the initial state coming from the
         // backend or the default values specified in `defaults`.
         //
-        this._buffered_state_diff = _.extend(this._buffered_state_diff, this.changedAttributes() || {});
+        this._buffered_state_diff = _.extend(this._buffered_state_diff || {}, this.changedAttributes() || {});
         return return_value;
     }
 
