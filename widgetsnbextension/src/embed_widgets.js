@@ -12,10 +12,11 @@ var embed_widgets = function() {
             }).then(function(state) {
                 var data = JSON.stringify(state, null, '    ');
                 var value = '<script src="https://unpkg.com/jupyter-js-widgets@~' + widgets.version + '/dist/embed.js"></script><script type="application/vnd.jupyter-embedded-widgets">' + data + '</script>';
-                var content = $('<textarea/>')
-                    .attr('readonly', true)
-                    .css({'width': '100%', 'min-height': '250px'})
-                    .val(value);
+                var content = document.createElement('textarea');
+                content.setAttribute('readonly', 'true');
+                content.style.width = '100%';
+                content.style.minHeight = '250px';
+                content.value = value;
                 var mod = dialog.modal({
                     show: true,
                     title: 'Embed widgets',
