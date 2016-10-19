@@ -332,16 +332,16 @@ class interactive(Box):
         else:
             return Dropdown(options=list(o))
 
-    # Return a constructor for interactive functions
+    # Return a factory for interactive functions
     @classmethod
-    def constructor(cls):
+    def factory(cls):
         options = dict(manual=False)
-        return _InteractConstructor(cls, options)
+        return _InteractFactory(cls, options)
 
 
-class _InteractConstructor(object):
+class _InteractFactory(object):
     """
-    Constructor for instances of :class:`interactive`.
+    Factory for instances of :class:`interactive`.
 
     This class is needed to support options like::
 
@@ -443,7 +443,7 @@ class _InteractConstructor(object):
                 print("{} squared is {}".format(num, num*num))
         """
         # If kwargs are given, replace self by a new
-        # _InteractConstructor with the updated kwargs
+        # _InteractFactory with the updated kwargs
         if kwargs:
             kw = dict(self.kwargs)
             kw.update(kwargs)
@@ -456,7 +456,7 @@ class _InteractConstructor(object):
             # def f(*args, **kwargs):
             #     ...
             #
-            # Simply return the new constructor
+            # Simply return the new factory
             return self
 
         # positional arg support in: https://gist.github.com/8851331
@@ -482,7 +482,7 @@ class _InteractConstructor(object):
 
         Returns
         -------
-        A new :class:`_InteractConstructor` which will apply the
+        A new :class:`_InteractFactory` which will apply the
         options when called.
         """
         opts = dict(self.opts)
@@ -497,7 +497,7 @@ class _InteractConstructor(object):
         return type(self)(self.cls, opts, self.kwargs)
 
 
-interact = interactive.constructor()
+interact = interactive.factory()
 interact_manual = interact.options(manual=True)
 
 
