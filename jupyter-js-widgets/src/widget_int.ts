@@ -34,7 +34,7 @@ class BoundedIntModel extends IntModel {
 }
 
 export
-class IntSliderModel extends IntModel {
+class IntSliderModel extends BoundedIntModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'IntSliderModel',
