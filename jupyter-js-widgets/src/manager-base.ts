@@ -289,6 +289,7 @@ abstract class ManagerBase<T> {
                         comm: options.comm,
                     }
                     var widget_model = new ModelType(attributes, modelOptions);
+                    widget_model.sync('create', widget_model);
                     widget_model.once('comm:close', function () {
                         delete that._models[model_id];
                     });

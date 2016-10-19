@@ -53,7 +53,7 @@ class WidgetModel extends Backbone.Model {
             _model_name: "WidgetModel",
             _view_module: "jupyter-js-widgets",
             _view_name: null,
-        msg_throttle: 1,
+            msg_throttle: 1,
         }
     }
 
@@ -91,7 +91,8 @@ class WidgetModel extends Backbone.Model {
         this.pending_msgs = 0;
         this.msg_buffer = null;
         this.state_lock = null;
-        this.initialized = true;
+        this._buffered_state_diff = {};
+
 
         this.views = {};
 
@@ -182,7 +183,7 @@ class WidgetModel extends Backbone.Model {
                     this.widget_manager.display_model(msg, this);
                 }).catch(utils.reject('Could not process display view msg', true));
                 return this.state_change;
-            }
+        }
     }
 
     /**
@@ -273,11 +274,11 @@ class WidgetModel extends Backbone.Model {
         // operation.  Calling set multiple times in a row results in a
         // loss of diff information.  Here we keep our own running diff.
         //
-        // However, we don't buffer the initial state coming from the
-        // backend or the default values specified in `defaults`.
-        //
-        if (this.initialized) {
-            this._buffered_state_diff = _.extend(this._buffered_state_diff || {}, this.changedAttributes() || {});
+        // We don't buffer the state set in the constructor (including
+        // defaults), so we first check to see if we've initialized _buffered_state_diff.
+        // which happens after the constructor sets attributes at creation.
+        if (this._buffered_state_diff !== void 0) {
+            this._buffered_state_diff = _.extend(this._buffered_state_diff, this.changedAttributes() || {});
         }
         return return_value;
     }
@@ -301,7 +302,7 @@ class WidgetModel extends Backbone.Model {
      *   should be synced, otherwise, sync all attributes.
      *
      */
-    sync(method, model, options): any {
+    sync(method, model, options: any = {}): any {
         // the typing is to return `any` since the super.sync method returns a JqXHR, but we just return false if there is an error.
         var error = options.error || function() {
             console.error('Backbone sync error:', arguments);
@@ -360,12 +361,14 @@ class WidgetModel extends Backbone.Model {
                 // normal.
                 this.send_sync_message(attrs, callbacks);
                 this.pending_msgs++;
+                // Since the comm is a one-way communication, assume the message
+                // arrived and was processed successfully.
+                // Don't call options.success since we don't have a model back from
+                // the server. Note that this means we don't have the Backbone
+                // 'sync' event.
+
             }
         }
-        // Since the comm is a one-way communication, assume the message
-        // arrived.  Don't call success since we don't have a model back from the server
-        // this means we miss out on the 'sync' event.
-        this._buffered_state_diff = {};
     }
 
     send_sync_message(attrs, callbacks) {
@@ -420,6 +423,7 @@ class WidgetModel extends Backbone.Model {
                 options.callbacks = callbacks;
             }
             this.save(this._buffered_state_diff, options);
+            this._buffered_state_diff = {};
         }
     }
 
