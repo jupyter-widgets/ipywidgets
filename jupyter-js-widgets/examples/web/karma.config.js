@@ -31,14 +31,6 @@ module.exports = function(config) {
             'test/**/*.js': [ 'webpack' ]
         },
 
-        webpack: {
-            module: {
-                loaders: [
-                    { test: /\.jsx?$/, exclude: /node_modules/, loader: "babel?presets[]=es2015" },
-                ]
-            },
-        },
-
         // test results reporter to use
         // possible values: 'dots', 'progress'
         // available reporters: https://npmjs.org/browse/keyword/karma-reporter

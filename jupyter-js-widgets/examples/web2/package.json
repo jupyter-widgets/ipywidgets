@@ -13,12 +13,9 @@
   "dependencies": {
     "codemirror": "^5.9.0",
     "font-awesome": "^4.5.0",
-    "jquery": "^2.1.4",
-    "jquery-ui": "^1.10.5",
     "jupyter-js-widgets": "file:../.."
   },
   "devDependencies": {
-    "bower": "^1.7.0",
     "css-loader": "^0.23.1",
     "file-loader": "^0.8.5",
     "json-loader": "^0.5.4",

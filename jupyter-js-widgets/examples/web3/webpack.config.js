@@ -1,5 +1,5 @@
 module.exports = {
-    entry: './es5/index.js',
+    entry: './lib/index.js',
     output: {
         filename: 'index.built.js',
         path: './built/',

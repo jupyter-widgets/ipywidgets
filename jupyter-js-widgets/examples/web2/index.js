@@ -1,11 +1,6 @@
 var CodeMirror = require("codemirror");
 require("codemirror/lib/codemirror.css");
 require("codemirror/mode/python/python");
-
-require('bootstrap/dist/css/bootstrap.css');
-require('jquery-ui/themes/smoothness/jquery-ui.min.css');
-require("jupyter-js-widgets/css/widgets.min.css");
-
 var WidgetManager = require("./manager").WidgetManager;
 
 document.addEventListener("DOMContentLoaded", function(event) {
