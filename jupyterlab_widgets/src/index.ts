@@ -261,11 +261,19 @@ class WidgetRenderer implements RenderMime.IRenderer, IDisposable {
   render(options: RenderMime.IRendererOptions<string>): Widget {
     // data is a model id
     let w = new Panel();
-    this._manager.get_model(options.source).then((model: any) => {
-      return this._manager.display_model(void 0, model, void 0);
-    }).then((view: Widget) => {
-      w.addWidget(view);
-    });
+    let model = this._manager.get_model(options.source);
+    if (model) {
+      model.then((model: any) => {
+        return this._manager.display_model(void 0, model, void 0);
+      }).then((view: Widget) => {
+        w.addWidget(view);
+      });
+    } else {
+      // Model doesn't exist
+      let error = document.createElement('p');
+      error.textContent = 'Widget not found.';
+      w.addWidget(new Widget({node: error}));
+    }
     return w;
   }
 
