@@ -64,8 +64,7 @@ class AccordionView extends DOMWidgetView {
      * Called when view is rendered.
      */
     render() {
-        this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-accordion');
+        this.el.className = 'jupyter-widgets widget-container widget-accordion';
 
         this.listenTo(this.model, 'change:selected_index', function(model, value, options) {
             this.update_selected_index(options);
@@ -200,9 +199,7 @@ class TabView extends DOMWidgetView {
      */
     render() {
         var parent = this;
-
-        this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-tab');
+        this.el.className = 'jupyter-widgets widget-container widget-tab';
 
         this.tabBar = new TabBar();
         this.tabBar.tabsMovable = false;
