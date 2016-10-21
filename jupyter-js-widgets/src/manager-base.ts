@@ -171,6 +171,7 @@ abstract class ManagerBase<T> {
      * Get a promise for a model by model id.
      */
     get_model(model_id: string): Promise<Backbone.Model> {
+        // Perhaps we should return a Promise.reject if the model is not found.
         return this._models[model_id];
     };
 
