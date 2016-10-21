@@ -730,3 +730,30 @@ ul.widget-dropdown-droplist {
     }
 
 }
+
+.widget-accordion {
+    > .accordion-page {
+        margin-bottom: 0;
+        border-radius: 2px;
+        border: 1px solid #ddd;
+        > .accordion-header {
+            padding: 5px;
+            background: #eeeeee;
+            cursor: pointer;
+            color: #333333;
+            background-color: #f5f5f5;
+            border-color: #ddd;
+            padding: 10px 15px;
+            border-top-right-radius: 1px;
+            border-top-left-radius: 1px;
+        }
+        > .accordion-content {
+            padding: 15px;
+            border-top-color: #ddd;
+        }
+    }
+
+    > .accordion-page + .accordion-page {
+            margin-top: 5px;
+    }
+}
