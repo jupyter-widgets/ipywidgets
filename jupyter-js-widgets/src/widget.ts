@@ -507,7 +507,6 @@ class WidgetModel extends Backbone.Model {
     comm_live: boolean;
     model_id: string;
     msg_buffer_callbacks: any;
-    initialized: boolean;
 }
 
 export
