@@ -106,7 +106,13 @@ See the [examples](docs/source/examples.md) section of the documentation. The wi
 ## Contributing to ipywidgets
 - [Developer install](docs/source/dev_install.md)
 
-### Project Jupyter resources
+## License
+We use a shared copyright model that enables all contributors to maintain the
+copyright on their contributions.
+
+See the [LICENSE](LICENSE) file in this repository for details.
+
+## Project Jupyter resources
 - [Project Jupyter website](https://jupyter.org)
 - [Online Demo of Jupyter Notebook at try.jupyter.org](https://try.jupyter.org)
 - [Documentation for Project Jupyter](https://jupyter.readthedocs.io/en/latest/index.html) [[PDF](https://media.readthedocs.org/pdf/jupyter/latest/jupyter.pdf)]
