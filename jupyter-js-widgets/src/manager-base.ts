@@ -214,7 +214,11 @@ abstract class ManagerBase<T> {
         return commPromise.then((comm) => {
             // Comm Promise Resolved.
             options_clone.comm = comm;
-            return this.new_model(options_clone, serialized_state);
+            let widget_model = this.new_model(options_clone, serialized_state);
+            return widget_model.then(model => {
+                model.sync('create', model);
+                return model;
+            });
         }, () => {
             // Comm Promise Rejected.
             if (!options_clone.model_id) {
