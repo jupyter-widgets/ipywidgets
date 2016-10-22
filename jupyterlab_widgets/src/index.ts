@@ -34,6 +34,14 @@ import {
 } from 'phosphor/lib/algorithm/json';
 
 import {
+  NotebookPanel
+} from 'jupyterlab/lib/notebook/notebook/panel';
+
+import {
+  INotebookModel
+} from 'jupyterlab/lib/notebook/notebook/model';
+
+import {
   IRenderMime, RenderMime
 } from 'jupyterlab/lib/rendermime';
 
@@ -44,10 +52,6 @@ import {
 import {
   OutputModel, OutputView
 } from './output';
-
-import 'jquery-ui/themes/base/all.css';
-
-import 'jupyter-js-widgets/css/widgets.min.css';
 
 import {
   SemVerCache
@@ -300,3 +304,10 @@ class WidgetRenderer implements RenderMime.IRenderer, IDisposable {
   public mimetypes = ['application/vnd.jupyter.widget'];
   private _manager: WidgetManager;
 }
+
+
+export
+const IIPyWidgetExtension = new Token<IIPyWidgetExtension>('jupyter.extensions.widgetManager');
+
+export
+interface IIPyWidgetExtension extends DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel> {};

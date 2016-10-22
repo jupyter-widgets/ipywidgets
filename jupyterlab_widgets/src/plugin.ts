@@ -30,32 +30,17 @@ import {
 } from 'phosphor/lib/core/token';
 
 import {
-  WidgetManager, WidgetRenderer
+  WidgetManager, WidgetRenderer, IIPyWidgetExtension
 } from './index';
 
 const WIDGET_MIMETYPE = 'application/vnd.jupyter.widget';
 
-export
-const IIPyWidgetExtension = new Token<IIPyWidgetExtension>('jupyter.extensions.widgetManager');
+
+import 'jquery-ui/themes/base/all.css';
+import 'jupyter-js-widgets/css/widgets.min.css';
 
 export
-interface IIPyWidgetExtension extends IPyWidgetExtension {};
-
-/**
- * The widget manager provider.
- */
-const widgetManagerProvider: JupyterLabPlugin<IIPyWidgetExtension> = {
-  id: 'jupyter.extensions.widgetManager',
-  provides: IIPyWidgetExtension,
-  requires: [IDocumentRegistry],
-  activate: activateWidgetExtension,
-  autoStart: true
-};
-
-export default widgetManagerProvider;
-
-export
-class IPyWidgetExtension implements DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel> {
+class IPyWidgetExtension implements IIPyWidgetExtension {
   /**
    * Create a new extension object.
    */
@@ -82,6 +67,21 @@ class IPyWidgetExtension implements DocumentRegistry.IWidgetExtension<NotebookPa
   }
   private _registry: WidgetManager.IWidgetData[] = [];
 }
+
+
+
+/**
+ * The widget manager provider.
+ */
+const widgetManagerProvider: JupyterLabPlugin<IIPyWidgetExtension> = {
+  id: 'jupyter.extensions.widgetManager',
+  provides: IIPyWidgetExtension,
+  requires: [IDocumentRegistry],
+  activate: activateWidgetExtension,
+  autoStart: true
+};
+
+export default widgetManagerProvider;
 
 
 /**
