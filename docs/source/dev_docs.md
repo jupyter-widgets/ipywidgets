@@ -13,10 +13,10 @@ source activate ipywidget_docs  # Linux and OS X
 activate ipywidget_docs         # Windows
 ```  
 
-If you want to install the necessary packages with ``pip`` instead, use
+If you want to install the necessary packages with `pip` instead, use
 (omitting `--user` if working in a virtual environment):
 
-````
+```
 pip install -r docs/requirements.txt --user
 ```
 
