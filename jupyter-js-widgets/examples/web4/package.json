@@ -11,14 +11,10 @@
   "author": "IPython",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "bootstrap": "^3.3.6",
     "font-awesome": "^4.5.0",
-    "jquery": "^2.1.4",
-    "jquery-ui": "^1.10.5",
     "jupyter-js-widgets": "file:../.."
   },
   "devDependencies": {
-    "bower": "^1.7.0",
     "css-loader": "^0.23.1",
     "file-loader": "^0.8.5",
     "style-loader": "^0.13.0",

@@ -17,7 +17,6 @@
     "jupyter-js-widgets": "file:../.."
   },
   "devDependencies": {
-    "bower": "^1.7.0",
     "chai": "^3.5.0",
     "css-loader": "^0.23.1",
     "file-loader": "^0.8.5",

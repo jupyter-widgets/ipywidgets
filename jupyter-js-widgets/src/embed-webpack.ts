@@ -1,11 +1,6 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-// Load jquery and jquery-ui
-var $ = require('jquery');
-window['$'] = window['jQuery'] = $;
-require('jquery-ui');
-
 // ES6 Promise polyfill
 (require('es6-promise') as any).polyfill();
 

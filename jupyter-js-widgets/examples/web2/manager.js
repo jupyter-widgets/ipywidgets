@@ -1,4 +1,7 @@
 var widgets = require('jupyter-js-widgets');
+require('jquery-ui/themes/base/all.css');
+require('jupyter-js-widgets/css/widgets.min.css');
+
 console.info('jupyter-js-widgets loaded successfully');
 
 var WidgetManager = exports.WidgetManager = function(el) {

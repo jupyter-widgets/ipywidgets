@@ -2,6 +2,9 @@
 // Create a widget manager instance.
 var WidgetManager = require('./manager').WidgetManager;
 var uuid = require("jupyter-js-widgets").uuid;
+require('jquery-ui/themes/base/all.css');
+require('jupyter-js-widgets/css/widgets.min.css');
+
 
 document.addEventListener("DOMContentLoaded", function(event) {
     var manager = new WidgetManager(document.body);

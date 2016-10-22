@@ -1,6 +1,9 @@
-const widgets = require('jupyter-js-widgets');
+import * as widgets from 'jupyter-js-widgets';
+import 'jquery-ui/themes/base/all.css';
+import 'jupyter-js-widgets/css/widgets.min.css';
 
-export class WidgetManager extends widgets.ManagerBase {
+export
+class WidgetManager extends widgets.ManagerBase<HTMLElement> {
     constructor(kernel, el) {
         super();
         this.kernel = kernel;
@@ -14,9 +17,8 @@ export class WidgetManager extends widgets.ManagerBase {
     }
 
     display_view(msg, view, options) {
-        var that = this;
-        return Promise.resolve(view).then(function(view) {
-            that.el.appendChild(view.el);
+        return Promise.resolve(view).then((view) => {
+            this.el.appendChild(view.el);
             view.trigger('displayed');
             view.on('remove', function() {
                 console.log('view removed', view);
@@ -32,4 +34,8 @@ export class WidgetManager extends widgets.ManagerBase {
     _get_comm_info() {
         return Promise.resolve({});
     }
+
+    kernel: any;
+    el: HTMLElement;
+    commManager: any;
 }
