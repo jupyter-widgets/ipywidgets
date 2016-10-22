@@ -229,10 +229,11 @@
     color: #333333;
     cursor: pointer;
     display: inline-block;
-    overflow: hidden;
     text-align: center;
     vertical-align: middle;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
     i.fa {
         padding-right: 3px;
@@ -643,7 +644,9 @@ ul.widget-dropdown-droplist {
         padding-top    : 5px;
         text-align     : right;
         vertical-align : text-top;
-        overflow: 'hidden';
+        white-space    : nowrap;
+        overflow       : hidden;
+        text-overflow  : ellipsis;
     }
 
     .widget-readout {
@@ -682,7 +685,9 @@ ul.widget-dropdown-droplist {
         padding-bottom : 5px;
         text-align     : center;
         vertical-align : text-bottom;
+        white-space    : nowrap;
         overflow       : hidden;
+        text-overflow  : ellipsis;
     }
 
     .widget-readout {
