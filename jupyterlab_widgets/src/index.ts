@@ -61,6 +61,18 @@ import {
 (widgets as any)['OutputView'] = OutputView;
 
 /**
+ * The token identifying the JupyterLab plugin.
+ */
+export
+const INBWidgetExtension = new Token<INBWidgetExtension>('jupyter.extensions.nbWidgetManager');
+
+/**
+ * The type of the provided value of the plugin in JupyterLab.
+ */
+export
+type INBWidgetExtension = DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel>;
+
+/**
  * The class name added to an BackboneViewWrapper widget.
  */
 const BACKBONEVIEWWRAPPER_CLASS = 'jp-BackboneViewWrapper';
@@ -304,10 +316,3 @@ class WidgetRenderer implements RenderMime.IRenderer, IDisposable {
   public mimetypes = ['application/vnd.jupyter.widget'];
   private _manager: WidgetManager;
 }
-
-
-export
-const IIPyWidgetExtension = new Token<IIPyWidgetExtension>('jupyter.extensions.widgetManager');
-
-export
-interface IIPyWidgetExtension extends DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel> {};
