@@ -469,14 +469,11 @@ class Widget(LoggingConfigurable):
         if self._view_name is not None:
             validated = Widget._version_validated
 
-            # Before the user tries to display a widget.  Validate that the
+            # Before the user tries to display a widget, validate that the
             # widget front-end is what is expected.
             if validated is None:
                 loud_error('Widget Javascript not detected.  It may not be '
-                           'installed properly. Did you enable the '
-                           'widgetsnbextension? If not, then run "jupyter '
-                           'nbextension enable --py --sys-prefix '
-                           'widgetsnbextension"')
+                           'installed or enabled properly.')
             elif not validated:
                 loud_error('The installed widget Javascript is the wrong version.')
 
@@ -489,7 +486,7 @@ class Widget(LoggingConfigurable):
             # http://tools.ietf.org/html/rfc6838
             # and the currently registered mimetypes at
             # http://www.iana.org/assignments/media-types/media-types.xhtml.
-            # We don't have a 'text/plain' entry so that the display message will be
+            # We don't have a 'text/plain' entry, so this display message will be
             # will be invisible in the current notebook.
             data = {'application/vnd.jupyter.widget': self._model_id}
             display(data, raw=True)
