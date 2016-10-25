@@ -41,6 +41,9 @@ If you are not on Windows, use the `--symlink` option in the `labextension insta
 step so that you don't have to install during rebuilds.
 
 **Rebuild**
+
+If you want to pull in changes to `jupyter-js-widgets`, first run `npm run update` to update the version of `jupyter-js-widgets` in the node_modules directory.
+
 ```bash
 npm run clean
 npm run build
