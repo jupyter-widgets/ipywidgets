@@ -8,5 +8,6 @@
     "moduleResolution": "node",
     "target": "ES5",
     "outDir": "../lib"
-  }
+  },
+  "exclude": ["typedoc.d.ts"]
 }
