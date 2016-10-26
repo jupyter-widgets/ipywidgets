@@ -8,6 +8,7 @@
     --jp-widgets-border-width: var(--jp-border-width);
     --jp-widgets-button-color: white;
     --jp-widgets-tall-height: 250px;
+    --jp-widgets-horizontal-tab-height: 24px;
 }
 
 .p-Widget.jupyter-widgets {
@@ -568,74 +569,74 @@
 
 /* Tab Widget */
 
-.jupyter-widgets.widget-tab .widget-tab-bar.p-TabBar {
-    background: white
+.jupyter-widgets.widget-tab .widget-tab-contents {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    background: var(--jp-layout-color1);
+    border: var(--jp-border-width) solid var(--jp-border-color1);
 }
 
-.jupyter-widgets.widget-tab {
-    height: 100%;
-    border-bottom: 1px solid #BDBDBD;
-    border-left: 1px solid #BDBDBD;
-    border-right: 1px solid #BDBDBD;
-}
-
-.jupyter-widgets.widget-tab .widget-tab-contents .widget-tab-child {
+.jupyter-widgets.widget-tab .widget-tab-contents .widget-tab-child.mod-hidden {
     display: none;
-    height: 100%;
-}
-
-.jupyter-widgets.widget-tab .widget-tab-contents .widget-tab-child.mod-active {
-    display: block;
 }
 
 .jupyter-widgets.widget-tab .widget-tab-bar.p-TabBar {
-    min-height: 28px;
-    max-height: 28px;
+}
+
+.jupyter-widgets.widget-tab .widget-tab-bar.p-TabBar {
     color: #757575;
     font: 12px Helvetica, Arial, sans-serif;
 }
 
 .jupyter-widgets.widget-tab.p-TabBar > .p-TabBar-header {
-    flex: 0 0 1px;
+    /*flex: 0 0 1px;*/
     background: #BDBDBD;
 }
 
 .jupyter-widgets.widget-tab.p-TabBar > .p-TabBar-footer {
-    flex: 0 0 3px;
-    border-top: 1px solid #BDBDBD;
-    border-bottom: 1px solid #E0E0E0;
+    /*flex: 0 0 3px;*/
+    border-top: var(--jp-border-width) solid #BDBDBD;
+    border-bottom: var(--jp-border-width) solid #E0E0E0;
 }
 
 .jupyter-widgets.widget-tab .p-TabBar-content {
     min-width: 0;
-    max-height: 22px;
 }
 
 .jupyter-widgets.widget-tab .p-TabBar-tab {
+    min-height: var(--jp-widgets-horizontal-tab-height);
+    line-height: var(--jp-widgets-horizontal-tab-height);
     flex-basis: 124px;
-    min-height: 23px;
-    max-height: 23px;
     min-width: 35px;
-    margin-left: -1px;
+    margin-left: calc(-1 * var(--jp-border-width));
     padding: 0px 10px;
-    background: #EEEEEE;
-    border: 1px solid #BDBDBD;
+    background: var(--jp-layout-color2);
+    border: var(--jp-border-width) solid var(--jp-border-color1);
     border-bottom: none;
-    transform: translateY(-1px);
 }
 
-.jupyter-widgets.widget-tab .p-TabBar-tab:last-child {
-    margin-right: -1px;
+.jupyter-widgets.widget-tab .p-TabBar-tab.p-mod-current {
+    background: var(--jp-layout-color1);
+    min-height: calc(var(--jp-widgets-horizontal-tab-height) + 2 * var(--jp-border-width));
+    transform: translateY(var(--jp-border-width));
 }
 
-.jupyter-widgets.widget-tab.p-mod-current {
-    min-height: 24px;
-    max-height: 24px;
-    background: #FAFAFA;
-    border-top: 1px solid #F27624;
+.jupyter-widgets.widget-tab .p-TabBar-tab.p-mod-current:before {
+    position: absolute;
+    top: calc(-2 * var(--jp-border-width));
+    left: calc(-1 * var(--jp-border-width));
+    content: '';
+    height: calc(2 * var(--jp-border-width));
+    width: calc(100% + 2 * var(--jp-border-width));
+    background: var(--jp-brand-color1);
 }
 
-.jupyter-widgets.widget-tab:hover:not(.p-mod-current) {
+.jupyter-widgets.widget-tab .p-TabBar-tab:first-child {
+    margin-left: 0;
+}
+
+.jupyter-widgets.widget-tab .p-TabBar-tab:hover:not(.p-mod-current) {
     background: #FAFAFA;
 }
 
@@ -651,5 +652,5 @@
 .jupyter-widgets.widget-tab .p-TabBar-tabIcon,
 .jupyter-widgets.widget-tab .p-TabBar-tabLabel,
 .jupyter-widgets.widget-tab .p-TabBar-tabCloseIcon {
-    line-height: 22px;
+    line-height: var(--jp-widgets-horizontal-tab-height);
 }
