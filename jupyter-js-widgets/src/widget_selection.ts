@@ -617,7 +617,7 @@ class ToggleButtonsView extends DOMWidgetView {
                     icon.className = 'fa fa-' + icons[index];
                 }
                 button.setAttribute('type', 'button');
-                button.className = 'widget-toggle-button';
+                button.className = 'jupyter-button widget-toggle-button';
                 button.innerHTML = item_html;
                 button.setAttribute('data-value', encodeURIComponent(item));
                 button.setAttribute('value', item);

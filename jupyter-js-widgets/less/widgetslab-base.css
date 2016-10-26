@@ -506,7 +506,6 @@
 /* Toggle Buttons Styling */
 
 .widget-toggle-buttons {
-    width: var(--jp-widgets-inline-width);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
 }
@@ -585,17 +584,14 @@
 }
 
 .jupyter-widgets.widget-tab .widget-tab-bar.p-TabBar {
-    color: #757575;
     font: 12px Helvetica, Arial, sans-serif;
 }
 
 .jupyter-widgets.widget-tab.p-TabBar > .p-TabBar-header {
-    /*flex: 0 0 1px;*/
     background: #BDBDBD;
 }
 
 .jupyter-widgets.widget-tab.p-TabBar > .p-TabBar-footer {
-    /*flex: 0 0 3px;*/
     border-top: var(--jp-border-width) solid #BDBDBD;
     border-bottom: var(--jp-border-width) solid #E0E0E0;
 }
