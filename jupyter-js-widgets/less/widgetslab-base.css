@@ -523,12 +523,16 @@
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
     font-size: var(--jp-widgets-font-size);
+    margin: 0 2px 0 2px;
+    width: 100%;
 }
 
 .widget-radio-box input {
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
-    margin: 0px 2px 0px 2px;
+    margin: 0 2px 0 2px;
+    vertical-align: top;
+    float: right;
 }
 
 /* Color Picker Styling */
