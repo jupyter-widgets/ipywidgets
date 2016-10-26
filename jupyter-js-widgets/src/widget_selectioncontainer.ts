@@ -227,11 +227,13 @@ class TabView extends DOMWidgetView {
         return this.create_child_view(model).then(function(child) {
             var current = parent.el.querySelector('.mod-active');
             if (current) {
-                current.classList.remove('mod-active');
+                current.classList.add('mod-active');
+                current.classList.add('mod-hidden');
             }
 
             child.el.classList.add('widget-tab-child');
             child.el.classList.add('mod-active');
+            child.el.classList.remove('mod-hidden');
 
             // TODO: add a child widget, rather than DOM nodes
             parent.tabContents.appendChild(child.el);
@@ -298,12 +300,14 @@ class TabView extends DOMWidgetView {
         if (actives.length) {
             for (var i = 0, len = actives.length; i < len; i++) {
                 actives[i].classList.remove('mod-active');
+                actives[i].classList.add('mod-hidden');
             }
         }
 
         var active = this.el.querySelectorAll('.widget-tab-child')[index];
         if (active) {
             active.classList.add('mod-active');
+            active.classList.remove('mod-hidden');
         }
     }
 
