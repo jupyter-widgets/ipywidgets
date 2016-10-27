@@ -6,9 +6,12 @@
     --jp-widgets-inline-width-short: calc(var(--jp-widgets-inline-width) / 2 - var(--jp-widgets-margin));
     --jp-widgets-inline-width-tiny: calc(var(--jp-widgets-inline-width-short) / 2 - var(--jp-widgets-margin));
     --jp-widgets-border-width: var(--jp-border-width);
-    --jp-widgets-button-color: white;
-    --jp-widgets-tall-height: 250px;
+    --jp-widgets-tall-height: 200px;
     --jp-widgets-horizontal-tab-height: 24px;
+    --jp-widgets-horizontal-tab-width: 144px;
+    --jp-widgets-horizontal-tab-top-border: 2px;    
+    --jp-widgets-button-color: white;
+    --jp-widgets-progress-thickness: 20px;
 }
 
 .p-Widget.jupyter-widgets {
@@ -305,6 +308,7 @@
 /* Widget Slider */
 
 .widget-slider {
+    /* Local Variables for the slider */
     --jp-widgets-track-thickness: 6px;
     --jp-widgets-handle-thickness: 12px;
     --jp-widgets-handle-size: var(--jp-widgets-inline-height);
@@ -314,7 +318,7 @@
 .widget-slider .ui-slider {
     /* Slider Track */
     border: var(--jp-widgets-slider-border-width) solid var(--jp-border-color2);
-    background: white;
+    background: var(--jp-layout-color1);
     box-sizing: border-box;
     position: relative;
 }
@@ -337,6 +341,7 @@
 }
 
 .widget-slider .ui-slider-range {
+    /* Interval between the two specified value of a double slider */
     position: absolute;
     background: var(--jp-layout-color3);
     z-index: 0;
@@ -398,6 +403,11 @@
 
 /* Vertical Slider */
 
+.widget-vbox .widget-label {
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+}
+
 .widget-vslider {
     /* Vertical Slider */
     height: var(--jp-widgets-tall-height);
@@ -405,7 +415,7 @@
 }
 
 .widget-vslider .slider-container {
-    height: 50%;
+    height: 140px;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: calc(var(--jp-widgets-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
@@ -421,20 +431,12 @@
 
 /* Widget Progress Styling */
 
-.widget-hprogress {
-    /* Progress Bar */
-    width: var(--jp-widgets-inline-width);
-    height: var(--jp-widgets-inline-height);
-    line-height: var(--jp-widgets-inline-height);
-}
-
-.widget-hprogress .progress {
-    width: var(--jp-widgets-inline-width);
-    background-color: var(--jp-layout-color2);
-    border: var(--jp-widgets-border-width) solid var(--jp-border-color2);
-    height: 20px;
-    margin-top: auto;
-    margin-bottom: auto;
+.progress-bar {
+    -webkit-transition: none;
+    -moz-transition: none;
+    -ms-transition: none;
+    -o-transition: none;
+    transition: none;
 }
 
 .progress-bar {
@@ -461,29 +463,41 @@
     background-color: var(--jp-error-color1);
 }
 
-/*
+.progress {
+    background-color: var(--jp-layout-color2);
+    border: var(--jp-widgets-border-width) solid var(--jp-border-color2);
+}
+
+/* Horisontal Progress */
+
+.widget-hprogress {
+    /* Progress Bar */
+    width: var(--jp-widgets-inline-width);
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+}
+
+.widget-hprogress .progress {
+    width: var(--jp-widgets-inline-width);
+    height: var(--jp-widgets-progress-thickness);
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+/* Vertical Progress */
+
 .widget-vprogress {
+    height: var(--jp-widgets-tall-height);
+    width: var(--jp-widgets-inline-width-tiny);
+}
 
-    height: 250px;
-    width: 70px;
-
-    .progress {
-        flex-grow: 1;
-        width: 12px;
-        margin-left: auto;
-        margin-right: auto;
-        margin-bottom: 0;
-    }
-
-    .progress-bar {
-
-        -webkit-transition: none;
-        -moz-transition: none;
-        -ms-transition: none;
-        -o-transition: none;
-        transition: none;
-    }
-}*/
+.widget-vprogress .progress {
+    flex-grow: 1;
+    width: var(--jp-widgets-progress-thickness);
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+}
 
 /* Select Widget Styling */
 
@@ -568,6 +582,10 @@
 
 /* Tab Widget */
 
+.jupyter-widgets.widget-tab .p-TabBar.p-mod-horizontal > .p-TabBar-content {
+    align-items: flex-end;
+}
+
 .jupyter-widgets.widget-tab .widget-tab-contents {
     width: 100%;
     box-sizing: border-box;
@@ -581,49 +599,34 @@
 }
 
 .jupyter-widgets.widget-tab .widget-tab-bar.p-TabBar {
-}
-
-.jupyter-widgets.widget-tab .widget-tab-bar.p-TabBar {
     font: 12px Helvetica, Arial, sans-serif;
 }
 
-.jupyter-widgets.widget-tab.p-TabBar > .p-TabBar-header {
-    background: #BDBDBD;
-}
-
-.jupyter-widgets.widget-tab.p-TabBar > .p-TabBar-footer {
-    border-top: var(--jp-border-width) solid #BDBDBD;
-    border-bottom: var(--jp-border-width) solid #E0E0E0;
-}
-
-.jupyter-widgets.widget-tab .p-TabBar-content {
-    min-width: 0;
-}
-
 .jupyter-widgets.widget-tab .p-TabBar-tab {
-    min-height: var(--jp-widgets-horizontal-tab-height);
-    line-height: var(--jp-widgets-horizontal-tab-height);
-    flex-basis: 124px;
+    flex: 0 1 var(--jp-widgets-horizontal-tab-width);
     min-width: 35px;
+    min-height: calc(var(--jp-widgets-horizontal-tab-height) + var(--jp-border-width));
+    line-height: var(--jp-widgets-horizontal-tab-height);
     margin-left: calc(-1 * var(--jp-border-width));
     padding: 0px 10px;
     background: var(--jp-layout-color2);
     border: var(--jp-border-width) solid var(--jp-border-color1);
     border-bottom: none;
+    position: relative;
 }
 
 .jupyter-widgets.widget-tab .p-TabBar-tab.p-mod-current {
-    background: var(--jp-layout-color1);
+    background: var(--jp-layout-color0);
     min-height: calc(var(--jp-widgets-horizontal-tab-height) + 2 * var(--jp-border-width));
     transform: translateY(var(--jp-border-width));
 }
 
 .jupyter-widgets.widget-tab .p-TabBar-tab.p-mod-current:before {
     position: absolute;
-    top: calc(-2 * var(--jp-border-width));
+    top: calc(-1 * var(--jp-border-width));
     left: calc(-1 * var(--jp-border-width));
     content: '';
-    height: calc(2 * var(--jp-border-width));
+    height: var(--jp-widgets-horizontal-tab-top-border);
     width: calc(100% + 2 * var(--jp-border-width));
     background: var(--jp-brand-color1);
 }
@@ -633,7 +636,7 @@
 }
 
 .jupyter-widgets.widget-tab .p-TabBar-tab:hover:not(.p-mod-current) {
-    background: #FAFAFA;
+    background: var(--jp-layout-color1);
 }
 
 .jupyter-widgets.widget-tab.p-mod-closable > .p-TabBar-tabCloseIcon {
