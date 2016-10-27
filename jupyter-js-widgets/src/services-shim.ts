@@ -10,7 +10,7 @@
 import * as _ from 'underscore';
 import * as utils from './utils';
 import {
-    IKernel, Kernel
+    Kernel
 } from '@jupyterlab/services';
 
 export
@@ -19,17 +19,17 @@ namespace shims {
     namespace services {
         /**
          * Public constructor
-         * @param jsServicesKernel - @jupyterlab/services IKernel instance
+         * @param jsServicesKernel - @jupyterlab/services Kernel.IKernel instance
          */
         export
         class CommManager {
-            constructor(jsServicesKernel: IKernel) {
+            constructor(jsServicesKernel: Kernel.IKernel) {
                 this.init_kernel(jsServicesKernel);
             };
 
             /**
              * Hookup kernel events.
-             * @param  {IKernel} jsServicesKernel - @jupyterlab/services IKernel instance
+             * @param  {Kernel.IKernel} jsServicesKernel - @jupyterlab/services Kernel.IKernel instance
              */
             init_kernel(jsServicesKernel) {
                 this.kernel = jsServicesKernel; // These aren't really the same.
@@ -99,8 +99,8 @@ namespace shims {
 
             targets = Object.create(null);
             comms = Object.create(null);
-            kernel: IKernel = null; 
-            jsServicesKernel: IKernel = null;
+            kernel: Kernel.IKernel = null;
+            jsServicesKernel: Kernel.IKernel = null;
         }
 
         /**
