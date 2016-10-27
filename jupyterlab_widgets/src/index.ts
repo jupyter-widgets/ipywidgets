@@ -4,7 +4,7 @@
 import * as Backbone from 'backbone';
 
 import {
-  IKernel
+  Kernel
 } from '@jupyterlab/services';
 
 import {
@@ -139,7 +139,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     }
   }
 
-  newKernel(kernel: IKernel) {
+  newKernel(kernel: Kernel.IKernel) {
     if (this._commRegistration) {
       this._commRegistration.dispose();
     }
