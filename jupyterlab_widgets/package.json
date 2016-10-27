@@ -5,8 +5,8 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "dependencies": {
-    "jupyter-js-widgets": "^2.0.2",
-    "jupyterlab": "^0.5.1",
+    "jupyter-js-widgets": "^2.0.3",
+    "jupyterlab": "^0.6.0",
     "phosphor": "^0.6.1"
   },
   "devDependencies": {
@@ -20,6 +20,7 @@
     "build:src": "tsc --project src",
     "build:extension": "node scripts/buildExtension.js",
     "build": "npm run build:src && npm run build:extension",
+    "update": "rimraf node_modules/jupyter-js-widgets; npm install file:../jupyter-js-widgets; npm run build",
     "docs": "typedoc --mode file --module commonjs --excludeNotExported --target es5 --moduleResolution node --out docs/ src",
     "prepublish": "npm run build"
   },

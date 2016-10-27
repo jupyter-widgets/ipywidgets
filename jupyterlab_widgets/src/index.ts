@@ -34,6 +34,14 @@ import {
 } from 'phosphor/lib/algorithm/json';
 
 import {
+  NotebookPanel
+} from 'jupyterlab/lib/notebook/notebook/panel';
+
+import {
+  INotebookModel
+} from 'jupyterlab/lib/notebook/notebook/model';
+
+import {
   IRenderMime, RenderMime
 } from 'jupyterlab/lib/rendermime';
 
@@ -45,16 +53,24 @@ import {
   OutputModel, OutputView
 } from './output';
 
-import 'jquery-ui/themes/base/all.css';
-
-import 'jupyter-js-widgets/css/widgets.min.css';
-
 import {
   SemVerCache
 } from './semvercache';
 
 (widgets as any)['OutputModel'] = OutputModel;
 (widgets as any)['OutputView'] = OutputView;
+
+/**
+ * The token identifying the JupyterLab plugin.
+ */
+export
+const INBWidgetExtension = new Token<INBWidgetExtension>('jupyter.extensions.nbWidgetManager');
+
+/**
+ * The type of the provided value of the plugin in JupyterLab.
+ */
+export
+type INBWidgetExtension = DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel>;
 
 /**
  * The class name added to an BackboneViewWrapper widget.
