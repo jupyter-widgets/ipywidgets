@@ -653,3 +653,27 @@
 .jupyter-widgets.widget-tab .p-TabBar-tabCloseIcon {
     line-height: var(--jp-widgets-horizontal-tab-height);
 }
+
+.widget-accordion > .accordion-page {
+    margin-bottom: 0;
+}
+
+.widget-accordion > .accordion-page > .accordion-header {
+    padding: 5px;
+    cursor: pointer;
+    color: var(--jp-ui-font-color2);
+    background-color: var(--jp-layout-color2);
+    border: var(--jp-widgets-border-width) solid var(--jp-border-color2);
+    border-top-right-radius: 1px;
+    border-top-left-radius: 1px;
+    padding: 10px 15px;
+    font-weight: bold;
+}
+
+.widget-accordion > .accordion-page > .accordion-content {
+    padding: 15px;
+}
+
+.widget-accordion > .accordion-page + .accordion-page {
+    margin-top: 5px;
+}
