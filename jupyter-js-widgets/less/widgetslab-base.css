@@ -12,6 +12,7 @@
     --jp-widgets-horizontal-tab-top-border: 2px;    
     --jp-widgets-button-color: white;
     --jp-widgets-progress-thickness: 20px;
+    --jp-widgets-container-padding: 15px;
 }
 
 .p-Widget.jupyter-widgets {
@@ -596,6 +597,7 @@
     margin: 0;
     background: var(--jp-layout-color1);
     border: var(--jp-border-width) solid var(--jp-border-color1);
+    padding: var(--jp-widgets-container-padding);
 }
 
 .jupyter-widgets.widget-tab .widget-tab-contents .widget-tab-child.mod-hidden {
@@ -670,12 +672,12 @@
     border: var(--jp-widgets-border-width) solid var(--jp-border-color2);
     border-top-right-radius: 1px;
     border-top-left-radius: 1px;
-    padding: 10px 15px;
+    padding: calc(var(--jp-widgets-container-padding) * 2 / 3) var(--jp-widgets-container-padding);
     font-weight: bold;
 }
 
 .widget-accordion > .accordion-page > .accordion-content {
-    padding: 15px;
+    padding: var(--jp-widgets-container-padding);
 }
 
 .widget-accordion > .accordion-page + .accordion-page {
