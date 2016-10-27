@@ -32,11 +32,12 @@
 .jupyter-button {
     padding: 0;
     display: inline-block;
-    overflow: hidden;
-    cursor: pointer;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     text-align: center;
     font-size: var(--jp-ui-font-size1);
+    cursor: pointer;
 
     height: var(--jp-widgets-inline-height);
     border: var(--jp-widgets-border-width) solid;
@@ -165,6 +166,9 @@
     /* Label */
     font-size: var(--jp-widgets-font-size);
     overflow: hidden;
+    text-overflow  : ellipsis;
+    white-space    : nowrap;
+
 }
 
 .widget-hbox .widget-label {
