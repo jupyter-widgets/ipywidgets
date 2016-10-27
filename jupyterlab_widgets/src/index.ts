@@ -53,10 +53,6 @@ import {
   OutputModel, OutputView
 } from './output';
 
-import 'jupyter-js-widgets/css/widgetslab-base.css';
-
-import 'jupyter-js-widgets/css/widgetslab.css';
-
 import {
   SemVerCache
 } from './semvercache';
