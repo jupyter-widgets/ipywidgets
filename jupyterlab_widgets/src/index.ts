@@ -4,7 +4,7 @@
 import * as Backbone from 'backbone';
 
 import {
-  IKernel
+  Kernel
 } from '@jupyterlab/services';
 
 import {
@@ -52,6 +52,10 @@ import {
 import {
   OutputModel, OutputView
 } from './output';
+
+import 'jupyter-js-widgets/css/widgetslab-base.css';
+
+import 'jupyter-js-widgets/css/widgetslab.css';
 
 import {
   SemVerCache
@@ -135,7 +139,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     }
   }
 
-  newKernel(kernel: IKernel) {
+  newKernel(kernel: Kernel.IKernel) {
     if (this._commRegistration) {
       this._commRegistration.dispose();
     }

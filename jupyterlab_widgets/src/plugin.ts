@@ -18,10 +18,6 @@ import {
 } from 'jupyterlab/lib/application';
 
 import {
-  IKernel
-} from '@jupyterlab/services';
-
-import {
   IDisposable, DisposableDelegate
 } from 'phosphor/lib/core/disposable';
 

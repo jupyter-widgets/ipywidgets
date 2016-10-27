@@ -71,11 +71,11 @@ class DropdownView extends DOMWidgetView {
         this.el.appendChild(this.buttongroup);
 
         this.droplabel = document.createElement('button');
-        this.droplabel.className = 'widget-dropdown-toggle widget-button';
+        this.droplabel.className = 'jupyter-button widget-dropdown-toggle';
         this.buttongroup.appendChild(this.droplabel);
 
         this.dropbutton = document.createElement('button');
-        this.dropbutton.className = 'widget-dropdown-toggle widget-button';
+        this.dropbutton.className = 'jupyter-button widget-dropdown-toggle';
 
         this.caret = document.createElement('i');
         this.caret.className = 'widget-caret';
@@ -165,8 +165,8 @@ class DropdownView extends DOMWidgetView {
 
     events(): {[e: string]: string} {
         return {
-            'click button.widget-button': '_toggle',
-            'keydown button.widget-button': '_activate'
+            'click button.jupyter-button': '_toggle',
+            'keydown button.jupyter-button': '_activate'
         }
     }
 
@@ -617,7 +617,7 @@ class ToggleButtonsView extends DOMWidgetView {
                     icon.className = 'fa fa-' + icons[index];
                 }
                 button.setAttribute('type', 'button');
-                button.className = 'widget-toggle-button';
+                button.className = 'jupyter-button widget-toggle-button';
                 button.innerHTML = item_html;
                 button.setAttribute('data-value', encodeURIComponent(item));
                 button.setAttribute('value', item);
@@ -849,6 +849,7 @@ class SelectionSliderView extends DOMWidgetView {
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-hslider');
+        this.el.classList.add('widget-slider');
         this.label = document.createElement('div');
         this.label.classList.add('widget-label');
         this.label.style.display = 'none';

@@ -14,7 +14,7 @@
     "clean:src": "rimraf lib",
     "clean:css": "rimraf ./css/",
     "clean": "npm run clean:src && npm run clean:css",
-    "css:less": "lessc --include-path=./node_modules ./less/widgets.less ./css/widgets.css",
+    "css:less": "lessc --include-path=./node_modules ./less/widgets.less ./css/widgets.css && lessc --include-path=./node_modules --strict-math=on ./less/widgetslab.less ./css/widgetslab.css && cpx ./less/widgetslab-base.css ./css",
     "css:cleancss": "cleancss --source-map --skip-restructuring -o ./css/widgets.min.css ./css/widgets.css",
     "build:test": "tsc --project test/src && webpack --config test/webpack.conf.js",
     "build:src": "tsc --project src",
@@ -45,6 +45,7 @@
     "@types/requirejs": "^2.1.28",
     "@types/sinon": "^1.16.31",
     "clean-css": "^3.4.18",
+    "cpx": "^1.5.0",
     "css-loader": "^0.23.1",
     "es6-promise": "^3.1.2",
     "expect.js": "^0.3.1",
@@ -72,7 +73,7 @@
     "webpack": "^1.12.11"
   },
   "dependencies": {
-    "@jupyterlab/services": "^0.22.0",
+    "@jupyterlab/services": "^0.25.0",
     "@types/backbone": "^1.3.33",
     "@types/semver": "^5.3.30",
     "backbone": "1.2.0",

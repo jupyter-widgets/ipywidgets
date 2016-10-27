@@ -15,11 +15,6 @@
 @widget-width-short: 148px;
 @border-radius-base: 2px;
 
-// From Material Design Lite
-@shadow-key-umbra-opacity: 0.2;
-@shadow-key-penumbra-opacity: 0.14;
-@shadow-ambient-shadow-opacity: 0.12;
-
 .p-Widget.jupyter-widgets {
     overflow: visible;
 }
@@ -229,11 +224,10 @@
     color: #333333;
     cursor: pointer;
     display: inline-block;
+    overflow: hidden;
     text-align: center;
     vertical-align: middle;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
 
     i.fa {
         padding-right: 3px;
@@ -344,12 +338,12 @@
 
 .widget-tab {
     /* TabView */
+    height: 100%;
     border-bottom: 1px solid #BDBDBD;
     border-left: 1px solid #BDBDBD;
     border-right: 1px solid #BDBDBD;
 
     .widget-tab-contents {
-        padding: 15px;
 
         .widget-tab-child {
             display: none;
@@ -397,6 +391,7 @@
             background: #EEEEEE;
             border: 1px solid #BDBDBD;
             border-bottom: none;
+            transform: translateY(-1px);
 
             &:last-child {
                 margin-right: -1px;
@@ -681,9 +676,7 @@ ul.widget-dropdown-droplist {
         padding-top    : 5px;
         text-align     : right;
         vertical-align : text-top;
-        white-space    : nowrap;
         overflow       : hidden;
-        text-overflow  : ellipsis;
     }
 
     .widget-readout {
@@ -722,9 +715,7 @@ ul.widget-dropdown-droplist {
         padding-bottom : 5px;
         text-align     : center;
         vertical-align : text-bottom;
-        white-space    : nowrap;
         overflow       : hidden;
-        text-overflow  : ellipsis;
     }
 
     .widget-readout {
@@ -770,31 +761,4 @@ ul.widget-dropdown-droplist {
         margin-right: 5px;
     }
 
-}
-
-.widget-accordion {
-    > .accordion-page {
-        margin-bottom: 0;
-        border-radius: 2px;
-        border: 1px solid #ddd;
-        > .accordion-header {
-            padding: 5px;
-            background: #eeeeee;
-            cursor: pointer;
-            color: #333333;
-            background-color: #f5f5f5;
-            border-color: #ddd;
-            padding: 10px 15px;
-            border-top-right-radius: 1px;
-            border-top-left-radius: 1px;
-        }
-        > .accordion-content {
-            padding: 15px;
-            border-top-color: #ddd;
-        }
-    }
-
-    > .accordion-page + .accordion-page {
-            margin-top: 5px;
-    }
 }
