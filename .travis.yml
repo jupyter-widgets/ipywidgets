@@ -19,6 +19,6 @@ script:
 matrix:
     include:
         - python: 3.5
-          env: GROUP=js BROWSER=firefox TRAVIS_NODE_VERSION=5.1
+          env: GROUP=js BROWSER=firefox TRAVIS_NODE_VERSION=6.9
 after_success:
     - coveralls
