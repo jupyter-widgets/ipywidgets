@@ -11,49 +11,6 @@
 @import "./flexbox.less";
 @import "./mixins.less";
 
-.widget-area {
-    /*
-    LESS file that styles Jupyter widgets and the area they sit in.
-
-    The widget area typically looks something like this:
-     +------------------------------------------+
-     | widget-area                              |
-     |  +--------+---------------------------+  |
-     |  | prompt | widget-subarea            |  |
-     |  |        | +-----------------------+ |  |
-     |  |        | |         widget        | |  |
-     |  |        | +-----------------------+ |  |
-     |  |        | +-----------------------+ |  |
-     |  |        | |         widget        | |  |
-     |  |        | +-----------------------+ |  |
-     |  +--------+---------------------------+  |
-     +------------------------------------------+
-    */
-
-    page-break-inside : avoid;
-    .hbox();
-
-    .widget-subarea {
-        padding     : 0.4em 0 0.4em 0;
-
-        .border-box-sizing();
-        .box-flex2();
-        .align-start();
-        .vbox();
-    }
-
-    &.connection-problems .prompt:after {
-        content: @fa-var-chain-broken;
-        font-family: 'FontAwesome';
-        color: #d9534f;
-        top: 3px;
-        padding: 3px;
-    }
-}
-
-/* THE CLASSES BELOW CAN APPEAR ANYWHERE IN THE DOM (POSSIBLY OUTSIDE OF
-   THE WIDGET AREA). */
-
 .widget-width {
     width : var(--jp-widgets-inline-width);
 }
@@ -62,117 +19,15 @@
     width : var(--jp-widgets-inline-width-short);
 }
 
-.widget-select-multiple {
-    /* Multiple Selection */
-    width : var(--jp-widgets-inline-width);
-}
-
-.widget-dropdown {
-    display: block;
-    height : var(--jp-widgets-inline-height);
-    line-height: var(--jp-widgets-inline-height);
-
-    & {
-        width : var(--jp-widgets-inline-width);
-    }
-
-    &.short {
-        width : var(--jp-widgets-inline-width-short);
-    }
-
-    .widget-button {
-        width: auto;
-    }
-
-    div.widget-item {
-        display: flex;
-        flex-grow: 1;
-        margin: 0;
-        padding: 0;
-
-        button {
-            flex: 1;
-            outline: 0;
-        }
-
-        button:last-child {
-            flex: 0;
-            flex-basis: 2em;
-            margin-left: -1px;
-
-            i.widget-caret {
-                font-size: 1em;
-                font-style: normal;
-                font-family: FontAwesome;
-                line-height: 1em;
-                position: relative;
-            }
-
-            i.widget-caret:before {
-                content: "\f0d7";
-            }
-        }
-    }
-}
-
-ul.widget-dropdown-droplist {
-    background: #eeeeee;
-    border-width: 1px;
-    border-style: solid;
-    border-color: #dddddd;
-    box-sizing: border-box;
-    list-style-type: none;
-    position: absolute;
-    margin: 0;
-    z-index: 101; /* This is to appear above the #header */
-    padding: 0;
-    height: auto;
-    overflow: auto;
-    display: none;
-
-    a {
-        color: inherit;
-        text-decoration: none;
-    }
-
-    li {
-        display: block;
-        padding: 0 5px;
-
-        &:hover {
-            background: #dddddd;
-        }
-
-        &.mod-active {
-          background: #999999;
-          color: #eeeeee;
-        }
-    }
-
-    &.mod-active {
-        display: block;
-    }
-}
-
 .widget-combo-btn {
     /* ComboBox Main Button */
     /* Subtract 25px to account for the drop arrow button */
     min-width : calc(var(--jp-widgets-inline-width-short) - 25px);
 }
 
-.widget_item .dropdown-menu li a {
-    color: inherit;
-}
-
 .widget-hbox {
     /* Horizontal widgets */
     .hbox();
-
-    input[type="color"] {
-        height : var(--jp-widgets-inline-height);
-        width: 28px;
-        padding: 1px;
-    }
 }
 
 .widget-vbox {

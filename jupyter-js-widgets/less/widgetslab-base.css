@@ -9,7 +9,7 @@
     --jp-widgets-tall-height: 200px;
     --jp-widgets-horizontal-tab-height: 24px;
     --jp-widgets-horizontal-tab-width: 144px;
-    --jp-widgets-horizontal-tab-top-border: 2px;    
+    --jp-widgets-horizontal-tab-top-border: 2px;
     --jp-widgets-button-color: white;
     --jp-widgets-progress-thickness: 20px;
     --jp-widgets-container-padding: 15px;
@@ -24,8 +24,9 @@
     box-sizing: border-box;
 }
 
-.jupyter-widgets.widget-container {
-    margin: 0px;
+.jp-Output-result > .jupyter-widgets {
+    margin-left: 0;
+    margin-right: 0;
 }
 
 /* General Button Styling */
@@ -177,7 +178,15 @@
     text-align: right;
     margin-right: 4px;
     vertical-align: text-top;
-    width: 80px;
+
+    /* When labels are short, the min-width takes over,
+     * and labeled horizontal widgets are aligned.
+     *
+     * When labels are longer, the actual widget is shifted to the right.
+     * There is a maximum length for a label.
+     */
+    min-width: 80px;
+    max-width: 160px;
 }
 
 .widget-vbox .widget-label {
@@ -223,7 +232,7 @@
 .widget-hbox .widget-readout {
     /* Horizontal Readout */
     text-align: center;
-    width: 40px;
+    width: var(--jp-widgets-inline-width-tiny);
     margin-left: 4px;
 }
 
@@ -382,7 +391,7 @@
 /* Horizontal Slider */
 
 .widget-hslider {
-    width: var(--jp-widgets-inline-width);
+    min-width: var(--jp-widgets-inline-width);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
 }
@@ -392,9 +401,8 @@
 }
 
 .widget-hslider .slider-container {
-    /* Fix the padding of the slide track so the ui-slider is sized correctly. */
-    width: 50%;
     height: var(--jp-widgets-inline-height);
+    width: var(--jp-widgets-inline-width-short);
     margin-left: calc(var(--jp-widgets-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
     margin-right: calc(var(--jp-widgets-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
 }
@@ -477,7 +485,6 @@
 
 .widget-hprogress {
     /* Progress Bar */
-    width: var(--jp-widgets-inline-width);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
 }
@@ -504,10 +511,101 @@
     margin-bottom: 0;
 }
 
+/* Dropdown Widget Styling */
+
+.widget-dropdown {
+    display: block;
+    height : var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+    min-width: var(--jp-widgets-inline-width);
+}
+
+.widget-dropdown.short {
+    min-width: var(--jp-widgets-inline-width-short);
+}
+
+.widget-dropdown .widget-item {
+    float: right;
+    flex-grow: 0;
+    min-width: var(--jp-widgets-inline-width-short);
+    max-width: var(--jp-widgets-inline-width);
+}
+
+.widget-dropdown div.widget-item {
+    display: flex;
+    flex-grow: 1;
+    margin: 0;
+    padding: 0;
+}
+
+.widget-dropdown .widget_item .dropdown-menu li a {
+    color: inherit;
+}
+
+.widget-dropdown .widget-item button {
+    flex: 1;
+    outline: 0;
+}
+
+.widget-dropdown .widget-item button:last-child {
+    flex: 0;
+    flex-basis: 2em;
+    margin-left: calc(-1 * var(--jp-border-width));
+}
+
+.widget-dropdown .widget-item button:last-child i.widget-caret {
+    font-size: 1em;
+    font-style: normal;
+    font-family: FontAwesome;
+    line-height: 1em;
+    position: relative;
+}
+
+.widget-dropdown .widget-item button:last-child i.widget-caret:before {
+    content: "\f0d7";
+}
+
+ul.widget-dropdown-droplist {
+    background: var(--jp-layout-color1);
+    border: var(--jp-border-width) solid var(--jp-border-color1);
+    box-sizing: border-box;
+    list-style-type: none;
+    position: absolute;
+    margin: 0;
+    z-index: 101; /* This is to appear above the #header */
+    padding: 0;
+    height: auto;
+    overflow: auto;
+    display: none;
+}
+
+ul.widget-dropdown-droplist a {
+    color: inherit;
+    text-decoration: none;
+}
+
+ul.widget-dropdown-droplist li {
+    display: block;
+    padding: 0 5px;
+}
+
+ul.widget-dropdown-droplist li:hover {
+    background: var(--jp-layout-color2);
+}
+
+ul.widget-dropdown-droplist li.mod-active {
+    background: var(--jp-layout-color2);
+    color: #eeeeee;
+}
+
+ul.widget-dropdown-droplist.mod-active {
+    display: block;
+}
+
 /* Select Widget Styling */
 
 .widget-select {
-    width: var(--jp-widgets-inline-width);
+    min-width: var(--jp-widgets-inline-width);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
 }
@@ -520,6 +618,19 @@
     border-radius: 0;
     outline: none;
     background: var(--jp-layout-color1);
+    min-width: var(--jp-widgets-inline-width-short);
+    max-width: var(--jp-widgets-inline-width);
+}
+
+/* Select Multiple */
+
+.widget-select-multiple {
+    min-width: var(--jp-widgets-inline-width);
+}
+
+.widget-select-multiple select {
+    min-width: var(--jp-widgets-inline-width-short);
+    max-width: var(--jp-widgets-inline-width);
 }
 
 /* Toggle Buttons Styling */
@@ -530,6 +641,16 @@
 }
 
 /* Radio Buttons Styling */
+
+.widget-radio {
+    min-width: var(--jp-widgets-inline-width);
+}
+
+.widget-radio-box {
+    float: right;
+    min-width: var(--jp-widgets-inline-width-short);
+    max-width: var(--jp-widgets-inline-width);
+}
 
 .widget-radio-box {
     display: flex;
@@ -557,31 +678,33 @@
 /* Color Picker Styling */
 
 .widget-colorpicker {
-    width: var(--jp-widgets-inline-width);
+    min-width: var(--jp-widgets-inline-width);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
 }
 
 .widget-colorpicker input[type="color"] {
-    width: var(--jp-widgets-inline-width-short);
-    height: var(--jp-widgets-inline-height);
-    line-height: var(--jp-widgets-inline-height);
+    width: var(--jp-widgets-inline-height);
+    height: auto;
+    padding: 0;
+    border-left: none;
 }
 
 .widget-colorpicker input[type="text"] {
     flex-grow: 1;
+    outline: none !important;
 }
 
 /* Play Widget */
 
 .widget-play {
-    width: var(--jp-widgets-inline-width-short);
+    min-width: var(--jp-widgets-inline-width-short);
     display: flex;
     justify-content: space-between;
 }
 
 .widget-play .jupyter-button {
-    width: calc(var(--jp-widgets-inline-width-short) / 3 - 2 * var(--jp-widgets-margin));
+    min-width: calc(var(--jp-widgets-inline-width-short) / 3 - 2 * var(--jp-widgets-margin));
     text-align: center;
 }
 
@@ -595,7 +718,7 @@
     width: 100%;
     box-sizing: border-box;
     margin: 0;
-    background: var(--jp-layout-color1);
+    background: var(--jp-layout-color0);
     border: var(--jp-border-width) solid var(--jp-border-color1);
     padding: var(--jp-widgets-container-padding);
 }
@@ -660,26 +783,41 @@
     line-height: var(--jp-widgets-horizontal-tab-height);
 }
 
+/* Accordion Widget */
+
 .widget-accordion > .accordion-page {
     margin-bottom: 0;
 }
 
 .widget-accordion > .accordion-page > .accordion-header {
-    padding: 5px;
+    padding: 4px;
     cursor: pointer;
     color: var(--jp-ui-font-color2);
     background-color: var(--jp-layout-color2);
-    border: var(--jp-widgets-border-width) solid var(--jp-border-color2);
-    border-top-right-radius: 1px;
-    border-top-left-radius: 1px;
+    border: var(--jp-widgets-border-width) solid var(--jp-border-color1);
     padding: calc(var(--jp-widgets-container-padding) * 2 / 3) var(--jp-widgets-container-padding);
     font-weight: bold;
 }
 
+.widget-accordion > .accordion-page > .accordion-header:hover {
+    background-color: var(--jp-layout-color1);
+}
+
+.widget-accordion > .accordion-page.accordion-active > .accordion-header {
+    background-color: var(--jp-layout-color0);
+    cursor: default;
+    border-bottom: none;
+    color: var(--jp-ui-font-color0);
+}
+
 .widget-accordion > .accordion-page > .accordion-content {
     padding: var(--jp-widgets-container-padding);
+    background-color: var(--jp-layout-color0);
+    border-left: var(--jp-widgets-border-width) solid var(--jp-border-color1);
+    border-right: var(--jp-widgets-border-width) solid var(--jp-border-color1);
+    border-bottom: var(--jp-widgets-border-width) solid var(--jp-border-color1);
 }
 
 .widget-accordion > .accordion-page + .accordion-page {
-    margin-top: 5px;
+    margin-top: 4px;
 }
