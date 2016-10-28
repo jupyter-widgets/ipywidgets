@@ -805,6 +805,7 @@ ul.widget-dropdown-droplist.mod-active {
 
 .widget-accordion > .accordion-page.accordion-active > .accordion-header {
     background-color: var(--jp-layout-color0);
+    cursor: default;
     border-bottom: none;
     color: var(--jp-ui-font-color0);
 }
