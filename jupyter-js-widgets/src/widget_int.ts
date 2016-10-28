@@ -67,6 +67,7 @@ class IntSliderView extends DOMWidgetView {
          */
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-slider');
         this.el.classList.add('widget-hslider');
 
         this.label = document.createElement('div');
@@ -634,7 +635,7 @@ class ProgressView extends DOMWidgetView {
             this.el.classList.remove('widget-hprogress');
 
             this.el.classList.add('widget-vbox');
-            this.el.classList.add('widget-hprogress');
+            this.el.classList.add('widget-vprogress');
 
             this.bar.style.width = '100%';
             this.bar.style.height = percent + '%';

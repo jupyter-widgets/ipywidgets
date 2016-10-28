@@ -1,0 +1,685 @@
+:root {
+    --jp-widgets-font-size: var(--jp-ui-font-size1);
+    --jp-widgets-margin: 2px;
+    --jp-widgets-inline-height: 28px;
+    --jp-widgets-inline-width: 300px;
+    --jp-widgets-inline-width-short: calc(var(--jp-widgets-inline-width) / 2 - var(--jp-widgets-margin));
+    --jp-widgets-inline-width-tiny: calc(var(--jp-widgets-inline-width-short) / 2 - var(--jp-widgets-margin));
+    --jp-widgets-border-width: var(--jp-border-width);
+    --jp-widgets-tall-height: 200px;
+    --jp-widgets-horizontal-tab-height: 24px;
+    --jp-widgets-horizontal-tab-width: 144px;
+    --jp-widgets-horizontal-tab-top-border: 2px;    
+    --jp-widgets-button-color: white;
+    --jp-widgets-progress-thickness: 20px;
+    --jp-widgets-container-padding: 15px;
+}
+
+.p-Widget.jupyter-widgets {
+    overflow: visible;
+}
+
+.jupyter-widgets {
+    margin: var(--jp-widgets-margin);
+    box-sizing: border-box;
+}
+
+.jupyter-widgets.widget-container {
+    margin: 0px;
+}
+
+/* General Button Styling */
+
+.jupyter-button {
+    padding: 0;
+    display: inline-block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    font-size: var(--jp-ui-font-size1);
+    cursor: pointer;
+
+    height: var(--jp-widgets-inline-height);
+    border: var(--jp-widgets-border-width) solid;
+    line-height: calc(var(--jp-widgets-inline-height) - 2 * var(--jp-widgets-border-width));
+
+    /* From Material Design Lite
+        shadow-key-umbra-opacity: 0.2;
+        shadow-key-penumbra-opacity: 0.14;
+        shadow-ambient-shadow-opacity: 0.12;
+     */
+
+    -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+                        0 3px 1px -2px rgba(0, 0, 0, 0.14),
+                        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    -moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+                     0 3px 1px -2px rgba(0, 0, 0, 0.14),
+                     0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+                0 3px 1px -2px rgba(0, 0, 0, 0.14),
+                0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+.jupyter-button i.fa {
+    padding-right: 4px;
+}
+
+.jupyter-button:empty:before {
+    content: "\00a0"
+}
+
+.jupyter-button:active, .jupyter-button.mod-active {
+     box-shadow: none;
+}
+
+.jupyter-button:hover, .jupyter-button:focus, .jupyter-button:active {
+    outline: none !important;
+}
+
+/* Button "Default" Styling */
+
+.jupyter-button {
+    color: var(--jp-ui-font-color1);
+    background-color: var(--jp-layout-color2);
+    border-color: var(--jp-border-color2);
+}
+
+.jupyter-button:hover, .jupyter-button:active, .jupyter-button.mod-active {
+    background-color: var(--jp-layout-color1);
+    border-color: var(--jp-border-color1);
+}
+
+/* Button "Primary" Styling */
+
+.jupyter-button.mod-primary {
+    color: white;
+    background-color: var(--jp-brand-color1);
+    border-color: var(--jp-brand-color1);
+}
+
+.jupyter-button.mod-primary:hover, .jupyter-button.mod-primary.mod-active {
+    background-color: var(--jp-brand-color0);
+    border-color: var(--jp-brand-color0);
+}
+
+/* Button "Success" Styling */
+
+.jupyter-button.mod-success {
+    color: white;
+    background-color: var(--jp-success-color1);
+    border-color: var(--jp-success-color1);
+}
+
+.jupyter-button.mod-success:hover, .jupyter-button.mod-success.mod-active {
+    background-color: var(--jp-success-color0);
+    border-color: var(--jp-success-color0);
+ }
+
+ /* Button "Info" Styling */
+
+.jupyter-button.mod-info {
+    color: white;
+    background-color: var(--jp-info-color1);
+    border-color: var(--jp-info-color1);
+}
+
+.jupyter-button.mod-info:hover, .jupyter-button.mod-info.mod-active {
+    background-color: var(--jp-info-color0);
+    border-color: var(--jp-info-color0);
+}
+
+/* Button "Warning" Styling */
+
+.jupyter-button.mod-warning {
+    color: white;
+    background-color: var(--jp-warn-color1);
+    border-color: var(--jp-warn-color1);
+}
+
+.jupyter-button.mod-warning:hover, .jupyter-button.mod-warning.mod-active {
+    background-color: var(--jp-warn-color0);
+    border-color: var(--jp-warn-color0);
+}
+
+/* Button "Danger" Styling */
+
+.jupyter-button.mod-danger {
+    color: white;
+    background-color: var(--jp-error-color1);
+    border-color: var(--jp-error-color1);
+}
+
+.jupyter-button.mod-danger:hover, .jupyter-button.mod-danger.mod-active {
+    background-color: var(--jp-error-color0);
+    border-color: var(--jp-error-color0);
+}
+
+/* Widget Button*/
+
+.widget-button, .widget-toggle-button {
+    width: var(--jp-widgets-inline-width-short);
+}
+
+/* Widget Label Styling */
+
+.widget-label {
+    /* Label */
+    font-size: var(--jp-widgets-font-size);
+    overflow: hidden;
+    text-overflow  : ellipsis;
+    white-space    : nowrap;
+
+}
+
+.widget-hbox .widget-label {
+    /* Horizontal Widget Label */
+    text-align: right;
+    margin-right: 4px;
+    vertical-align: text-top;
+    width: 80px;
+}
+
+.widget-vbox .widget-label {
+    /* Vertical Widget Label */
+    text-align: center;
+    vertical-align: text-bottom;
+}
+
+/* Widget Readout Styling */
+
+.widget-readout {
+    /* Label */
+    font-size: var(--jp-widgets-font-size);
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+    margin-left: 4px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.widget-readout.overflow {
+    /* Overflowing Readout */
+
+    /* From Material Design Lite
+        shadow-key-umbra-opacity: 0.2;
+        shadow-key-penumbra-opacity: 0.14;
+        shadow-ambient-shadow-opacity: 0.12;
+     */
+    -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+                        0 3px 1px -2px rgba(0, 0, 0, 0.14),
+                        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+
+    -moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+                     0 3px 1px -2px rgba(0, 0, 0, 0.14),
+                     0 1px 5px 0 rgba(0, 0, 0, 0.12);
+
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+                0 3px 1px -2px rgba(0, 0, 0, 0.14),
+                0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+.widget-hbox .widget-readout {
+    /* Horizontal Readout */
+    text-align: center;
+    width: 40px;
+    margin-left: 4px;
+}
+
+.widget-vbox .widget-readout {
+    /* Vertical Readout */
+    margin-top: 4px;
+}
+
+/* Widget Checkbox Styling */
+
+.widget-checkbox {
+    width: var(--jp-widgets-inline-width-short);
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+    justify-content: space-between;
+}
+
+.widget-checkbox input[type="checkbox"] {
+    margin: 0px 4px 0px 4px;
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+    font-size: large;
+}
+
+/* Widget Valid Styling */
+
+.widget-valid {
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+    width: var(--jp-widgets-inline-width-short);
+    font-size: var(--jp-widgets-font-size);
+}
+
+.widget-valid i:before {
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+    font-family: FontAwesome;
+    font-style: normal;
+    margin-right: 4px;
+    margin-left: 4px;
+}
+
+.widget-valid.mod-valid i:before {
+    content: "\f00c";
+    color: green;
+}
+
+.widget-valid.mod-invalid i:before {
+    content: "\f00d";
+    color: red;
+}
+
+/* Widget Text and TextArea Stying */
+
+.widget-text {
+    /* Textbox */
+    width: var(--jp-widgets-inline-width);
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+}
+
+.widget-textarea textarea {
+    /* TextAreaView */
+    width: var(--jp-widgets-inline-width);
+}
+
+.widget-text input, .widget-textarea input {
+    outline: none !important;
+    width: inherit;
+    margin-left: 4px;
+}
+
+.widget-text input:focus, .widget-textarea input:focus {
+    -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+                        0 3px 1px -2px rgba(0, 0, 0, 0.14),
+                        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+
+    -moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+                     0 3px 1px -2px rgba(0, 0, 0, 0.14),
+                     0 1px 5px 0 rgba(0, 0, 0, 0.12);
+
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+                0 3px 1px -2px rgba(0, 0, 0, 0.14),
+                0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+/* Widget Slider */
+
+.widget-slider {
+    /* Local Variables for the slider */
+    --jp-widgets-track-thickness: 6px;
+    --jp-widgets-handle-thickness: 12px;
+    --jp-widgets-handle-size: var(--jp-widgets-inline-height);
+    --jp-widgets-slider-border-width: var(--jp-widgets-border-width);
+}
+
+.widget-slider .ui-slider {
+    /* Slider Track */
+    border: var(--jp-widgets-slider-border-width) solid var(--jp-border-color2);
+    background: var(--jp-layout-color1);
+    box-sizing: border-box;
+    position: relative;
+}
+
+.widget-slider .ui-slider-handle {
+    /* Slider Handle */
+    outline: none !important;
+    position: absolute;
+    background-color: var(--jp-layout-color2);
+    border: var(--jp-widgets-slider-border-width) solid var(--jp-border-color2);
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+.widget-slider .ui-slider-handle:active, .widget-slider .ui-slider-handle:hover {
+    /* Slider Handle Active or Hovered */
+    background-color: var(--jp-layout-color1);
+    border-color: var(--jp-border-color1);
+    z-index: 2;
+}
+
+.widget-slider .ui-slider-range {
+    /* Interval between the two specified value of a double slider */
+    position: absolute;
+    background: var(--jp-layout-color3);
+    z-index: 0;
+}
+
+/* Shapes of Slider Handles */
+
+.widget-hslider .ui-slider-handle {
+    width: var(--jp-widgets-handle-thickness);
+    height: var(--jp-widgets-handle-size);
+    margin-top: calc((var(--jp-widgets-track-thickness) - var(--jp-widgets-handle-size)) / 2 - var(--jp-widgets-slider-border-width));
+    margin-left: calc(var(--jp-widgets-handle-thickness) / -2 + var(--jp-widgets-slider-border-width));
+    top: 0;
+}
+
+.widget-vslider .ui-slider-handle {
+    width: var(--jp-widgets-handle-size);
+    height: var(--jp-widgets-handle-thickness);
+    margin-bottom: calc(var(--jp-widgets-handle-thickness) / -2 + var(--jp-widgets-slider-border-width));
+    margin-left: calc((var(--jp-widgets-track-thickness) - var(--jp-widgets-handle-size)) / 2 - var(--jp-widgets-slider-border-width));
+}
+
+.widget-hslider .ui-slider-range {
+    height: calc(var(--jp-widgets-track-thickness) * 2);
+    margin-top: calc((var(--jp-widgets-track-thickness) - var(--jp-widgets-track-thickness) * 2) / 2 - var(--jp-widgets-slider-border-width));
+}
+
+.widget-vslider .ui-slider-range {
+    width: calc(var(--jp-widgets-track-thickness) * 2);
+    margin-left: calc((var(--jp-widgets-track-thickness) - var(--jp-widgets-track-thickness) * 2) / 2 - var(--jp-widgets-slider-border-width));
+}
+
+/* Horizontal Slider */
+
+.widget-hslider {
+    width: var(--jp-widgets-inline-width);
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+}
+
+.widgets-slider .slider-container {
+    overflow: visible;
+}
+
+.widget-hslider .slider-container {
+    /* Fix the padding of the slide track so the ui-slider is sized correctly. */
+    width: 50%;
+    height: var(--jp-widgets-inline-height);
+    margin-left: calc(var(--jp-widgets-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
+    margin-right: calc(var(--jp-widgets-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
+}
+
+.widget-hslider .ui-slider {
+    /* Inner, invisible slide div */
+    height: var(--jp-widgets-track-thickness);
+    margin-top: calc((var(--jp-widgets-inline-height) - var(--jp-widgets-track-thickness)) / 2);
+    width: 100%;
+}
+
+/* Vertical Slider */
+
+.widget-vbox .widget-label {
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+}
+
+.widget-vslider {
+    /* Vertical Slider */
+    height: var(--jp-widgets-tall-height);
+    width: var(--jp-widgets-inline-width-tiny);
+}
+
+.widget-vslider .slider-container {
+    height: 140px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: calc(var(--jp-widgets-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
+    margin-top: calc(var(--jp-widgets-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
+}
+
+.widget-vslider .ui-slider {
+    /* Inner, invisible slide div */
+    width: var(--jp-widgets-track-thickness);
+    height: 100%;
+    margin-left: calc((6px - var(--jp-widgets-track-thickness)) / 2);
+}
+
+/* Widget Progress Styling */
+
+.progress-bar {
+    -webkit-transition: none;
+    -moz-transition: none;
+    -ms-transition: none;
+    -o-transition: none;
+    transition: none;
+}
+
+.progress-bar {
+    height: var(--jp-widgets-inline-height);
+}
+
+.progress-bar {
+    background-color: var(--jp-brand-color1);
+}
+
+.progress-bar-success {
+    background-color: var(--jp-success-color1);
+}
+
+.progress-bar-info {
+    background-color: var(--jp-info-color1);
+}
+
+.progress-bar-warning {
+    background-color: var(--jp-warn-color1);
+}
+
+.progress-bar-danger {
+    background-color: var(--jp-error-color1);
+}
+
+.progress {
+    background-color: var(--jp-layout-color2);
+    border: var(--jp-widgets-border-width) solid var(--jp-border-color2);
+}
+
+/* Horisontal Progress */
+
+.widget-hprogress {
+    /* Progress Bar */
+    width: var(--jp-widgets-inline-width);
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+}
+
+.widget-hprogress .progress {
+    width: var(--jp-widgets-inline-width);
+    height: var(--jp-widgets-progress-thickness);
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+/* Vertical Progress */
+
+.widget-vprogress {
+    height: var(--jp-widgets-tall-height);
+    width: var(--jp-widgets-inline-width-tiny);
+}
+
+.widget-vprogress .progress {
+    flex-grow: 1;
+    width: var(--jp-widgets-progress-thickness);
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 0;
+}
+
+/* Select Widget Styling */
+
+.widget-select {
+    width: var(--jp-widgets-inline-width);
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+}
+
+.widget-select select {
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+    border: var(--jp-border-width) solid var(--jp-border-color1);
+    -webkit-appearance: menulist;
+    border-radius: 0;
+    outline: none;
+    background: var(--jp-layout-color1);
+}
+
+/* Toggle Buttons Styling */
+
+.widget-toggle-buttons {
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+}
+
+/* Radio Buttons Styling */
+
+.widget-radio-box {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    box-sizing: border-box;
+}
+
+.widget-radio-box label {
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+    font-size: var(--jp-widgets-font-size);
+    margin: 0 2px 0 2px;
+    width: 100%;
+}
+
+.widget-radio-box input {
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+    margin: 0 2px 0 2px;
+    vertical-align: top;
+    float: right;
+}
+
+/* Color Picker Styling */
+
+.widget-colorpicker {
+    width: var(--jp-widgets-inline-width);
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+}
+
+.widget-colorpicker input[type="color"] {
+    width: var(--jp-widgets-inline-width-short);
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+}
+
+.widget-colorpicker input[type="text"] {
+    flex-grow: 1;
+}
+
+/* Play Widget */
+
+.widget-play {
+    width: var(--jp-widgets-inline-width-short);
+    display: flex;
+    justify-content: space-between;
+}
+
+.widget-play .jupyter-button {
+    width: calc(var(--jp-widgets-inline-width-short) / 3 - 2 * var(--jp-widgets-margin));
+    text-align: center;
+}
+
+/* Tab Widget */
+
+.jupyter-widgets.widget-tab .p-TabBar.p-mod-horizontal > .p-TabBar-content {
+    align-items: flex-end;
+}
+
+.jupyter-widgets.widget-tab .widget-tab-contents {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    background: var(--jp-layout-color1);
+    border: var(--jp-border-width) solid var(--jp-border-color1);
+    padding: var(--jp-widgets-container-padding);
+}
+
+.jupyter-widgets.widget-tab .widget-tab-contents .widget-tab-child.mod-hidden {
+    display: none;
+}
+
+.jupyter-widgets.widget-tab .widget-tab-bar.p-TabBar {
+    font: 12px Helvetica, Arial, sans-serif;
+}
+
+.jupyter-widgets.widget-tab .p-TabBar-tab {
+    flex: 0 1 var(--jp-widgets-horizontal-tab-width);
+    min-width: 35px;
+    min-height: calc(var(--jp-widgets-horizontal-tab-height) + var(--jp-border-width));
+    line-height: var(--jp-widgets-horizontal-tab-height);
+    margin-left: calc(-1 * var(--jp-border-width));
+    padding: 0px 10px;
+    background: var(--jp-layout-color2);
+    border: var(--jp-border-width) solid var(--jp-border-color1);
+    border-bottom: none;
+    position: relative;
+}
+
+.jupyter-widgets.widget-tab .p-TabBar-tab.p-mod-current {
+    background: var(--jp-layout-color0);
+    min-height: calc(var(--jp-widgets-horizontal-tab-height) + 2 * var(--jp-border-width));
+    transform: translateY(var(--jp-border-width));
+}
+
+.jupyter-widgets.widget-tab .p-TabBar-tab.p-mod-current:before {
+    position: absolute;
+    top: calc(-1 * var(--jp-border-width));
+    left: calc(-1 * var(--jp-border-width));
+    content: '';
+    height: var(--jp-widgets-horizontal-tab-top-border);
+    width: calc(100% + 2 * var(--jp-border-width));
+    background: var(--jp-brand-color1);
+}
+
+.jupyter-widgets.widget-tab .p-TabBar-tab:first-child {
+    margin-left: 0;
+}
+
+.jupyter-widgets.widget-tab .p-TabBar-tab:hover:not(.p-mod-current) {
+    background: var(--jp-layout-color1);
+}
+
+.jupyter-widgets.widget-tab.p-mod-closable > .p-TabBar-tabCloseIcon {
+    margin-left: 4px;
+}
+
+.jupyter-widgets.widget-tab.p-mod-closable > .p-TabBar-tabCloseIcon:before {
+    font-family: FontAwesome;
+    content: '\f00d'; /* close */
+}
+
+.jupyter-widgets.widget-tab .p-TabBar-tabIcon,
+.jupyter-widgets.widget-tab .p-TabBar-tabLabel,
+.jupyter-widgets.widget-tab .p-TabBar-tabCloseIcon {
+    line-height: var(--jp-widgets-horizontal-tab-height);
+}
+
+.widget-accordion > .accordion-page {
+    margin-bottom: 0;
+}
+
+.widget-accordion > .accordion-page > .accordion-header {
+    padding: 5px;
+    cursor: pointer;
+    color: var(--jp-ui-font-color2);
+    background-color: var(--jp-layout-color2);
+    border: var(--jp-widgets-border-width) solid var(--jp-border-color2);
+    border-top-right-radius: 1px;
+    border-top-left-radius: 1px;
+    padding: calc(var(--jp-widgets-container-padding) * 2 / 3) var(--jp-widgets-container-padding);
+    font-weight: bold;
+}
+
+.widget-accordion > .accordion-page > .accordion-content {
+    padding: var(--jp-widgets-container-padding);
+}
+
+.widget-accordion > .accordion-page + .accordion-page {
+    margin-top: 5px;
+}

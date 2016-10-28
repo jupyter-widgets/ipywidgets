@@ -29,11 +29,11 @@ import {
   WidgetManager, WidgetRenderer, INBWidgetExtension
 } from './index';
 
+import 'jupyter-js-widgets/css/widgetslab.css';
+
+
 const WIDGET_MIMETYPE = 'application/vnd.jupyter.widget';
 
-
-import 'jquery-ui/themes/base/all.css';
-import 'jupyter-js-widgets/css/widgets.min.css';
 
 export
 class NBWidgetExtension implements INBWidgetExtension {
