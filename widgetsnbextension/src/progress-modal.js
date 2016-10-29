@@ -3,6 +3,8 @@
 
 "use strict";
 
+require('../css/progress-modal.css');
+
 function ProgressModal() {
     this._backdrop = document.createElement('div');
     this._backdrop.classList.add('widget-modal-backdrop');

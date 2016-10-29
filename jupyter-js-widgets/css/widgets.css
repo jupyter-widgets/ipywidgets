@@ -404,6 +404,7 @@
     height: var(--jp-widgets-handle-thickness);
     margin-bottom: calc(var(--jp-widgets-handle-thickness) / -2 + var(--jp-widgets-slider-border-width));
     margin-left: calc((var(--jp-widgets-track-thickness) - var(--jp-widgets-handle-size)) / 2 - var(--jp-widgets-slider-border-width));
+    left: 0;
 }
 
 .widget-hslider .ui-slider-range {

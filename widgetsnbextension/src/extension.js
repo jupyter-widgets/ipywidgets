@@ -84,7 +84,8 @@ function load_ipython_extension () {
             "base/js/events"
         ], function(Jupyter, events) {
             require("phosphor/styles/base.css")
-            require("jupyter-js-widgets/css/widgets.min.css");
+            require("jupyter-js-widgets/css/labvariables.css");
+            require("jupyter-js-widgets/css/widgets.css");
             register_events(Jupyter, events);
             console.log("loaded widgets");
             resolve();
