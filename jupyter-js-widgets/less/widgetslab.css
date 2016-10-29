@@ -1,3 +1,7 @@
+/* Copyright (c) Jupyter Development Team.
+ * Distributed under the terms of the Modified BSD License. 
+ */
+
 :root {
     --jp-widgets-font-size: var(--jp-ui-font-size1);
     --jp-widgets-margin: 2px;
@@ -27,6 +31,30 @@
 .jp-Output-result > .jupyter-widgets {
     margin-left: 0;
     margin-right: 0;
+}
+
+/* vbox and hbox */
+
+.widget-hbox {
+    /* Horizontal widgets */
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+.widget-vbox {
+    /* Vertical Widgets */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.widget-box {
+    /* Box */
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    align-items: flex-start;
 }
 
 /* General Button Styling */
@@ -514,7 +542,6 @@
 /* Dropdown Widget Styling */
 
 .widget-dropdown {
-    display: block;
     height : var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
     min-width: var(--jp-widgets-inline-width);
