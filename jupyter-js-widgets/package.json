@@ -14,7 +14,7 @@
     "clean:src": "rimraf lib",
     "clean:css": "rimraf ./css/",
     "clean": "npm run clean:src && npm run clean:css",
-    "css:less": "lessc --include-path=./node_modules ./less/widgets.less ./css/widgets.css && lessc --include-path=./node_modules --strict-math=on ./less/widgetslab.less ./css/widgetslab.css && cpx ./less/widgetslab-base.css ./css",
+    "css:less": "lessc --include-path=./node_modules ./less/widgets.less ./css/widgets.css && cpx ./less/widgetslab.css ./css",
     "css:cleancss": "cleancss --source-map --skip-restructuring -o ./css/widgets.min.css ./css/widgets.css",
     "build:test": "tsc --project test/src && webpack --config test/webpack.conf.js",
     "build:src": "tsc --project src",
