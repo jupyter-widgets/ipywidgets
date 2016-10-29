@@ -2,6 +2,8 @@
 // Distributed under the terms of the Modified BSD License.
 "use strict";
 
+require('../css/outputarea.css');
+
 /**
  * WidgetArea
  */

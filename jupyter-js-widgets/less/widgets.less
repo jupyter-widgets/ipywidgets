@@ -28,49 +28,6 @@
     }
 }
 
-.widget-area {
-    /*
-    LESS file that styles Jupyter widgets and the area they sit in.
-
-    The widget area typically looks something like this:
-     +------------------------------------------+
-     | widget-area                              |
-     |  +--------+---------------------------+  |
-     |  | prompt | widget-subarea            |  |
-     |  |        | +-----------------------+ |  |
-     |  |        | |         widget        | |  |
-     |  |        | +-----------------------+ |  |
-     |  |        | +-----------------------+ |  |
-     |  |        | |         widget        | |  |
-     |  |        | +-----------------------+ |  |
-     |  +--------+---------------------------+  |
-     +------------------------------------------+
-    */
-
-    page-break-inside : avoid;
-    .hbox();
-
-    .widget-subarea {
-        padding     : 0.4em 0 0.4em 0;
-
-        .border-box-sizing();
-        .box-flex2();
-        .align-start();
-        .vbox();
-    }
-
-    &.connection-problems .prompt:after {
-        content: @fa-var-chain-broken;
-        font-family: 'FontAwesome';
-        color: #d9534f;
-        top: 3px;
-        padding: 3px;
-    }
-}
-
-/* THE CLASSES BELOW CAN APPEAR ANYWHERE IN THE DOM (POSSIBLY OUTSIDE OF
-   THE WIDGET AREA). */
-
 .slide-track {
     /* Slider Track */
     border     : 1px solid #CCCCCC;
