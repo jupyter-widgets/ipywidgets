@@ -1,6 +1,5 @@
 import * as widgets from 'jupyter-js-widgets';
-import 'jquery-ui/themes/base/all.css';
-import 'jupyter-js-widgets/css/widgets.min.css';
+import './widgets.css';
 
 export
 class WidgetManager extends widgets.ManagerBase<HTMLElement> {

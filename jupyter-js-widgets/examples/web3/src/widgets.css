@@ -1,0 +1,11 @@
+/* Copyright (c) Jupyter Development Team.
+ * Distributed under the terms of the Modified BSD License.
+ */
+
+/* We import all of these together in a single css file because the Webpack
+loader sees only one file at a time. This allows postcss to see the variable
+definitions when they are used. */
+
+@import "../node_modules/jupyter-js-widgets/css/materialcolors.css";
+@import "../node_modules/jupyter-js-widgets/css/labvariables.css";
+@import "../node_modules/jupyter-js-widgets/css/widgets.css";
