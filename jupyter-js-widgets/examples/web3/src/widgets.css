@@ -6,6 +6,5 @@
 loader sees only one file at a time. This allows postcss to see the variable
 definitions when they are used. */
 
-@import "../node_modules/jupyter-js-widgets/css/materialcolors.css";
 @import "../node_modules/jupyter-js-widgets/css/labvariables.css";
-@import "../node_modules/jupyter-js-widgets/css/widgets.css";
+@import "../node_modules/jupyter-js-widgets/css/widgets-base.css";
