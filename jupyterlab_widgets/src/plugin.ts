@@ -29,7 +29,7 @@ import {
   WidgetManager, WidgetRenderer, INBWidgetExtension
 } from './index';
 
-import 'jupyter-js-widgets/css/widgetslab.css';
+import 'jupyter-js-widgets/lib/widgets-base.css';
 
 
 const WIDGET_MIMETYPE = 'application/vnd.jupyter.widget';
