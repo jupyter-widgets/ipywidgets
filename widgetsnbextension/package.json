@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
+    "build": "npm run clean && webpack",
+    "clean": "rimraf widgetsnbextension/static",
     "update": "rimraf node_modules/jupyter-js-widgets; npm install file:../jupyter-js-widgets; npm run build",
     "prepublish": "npm run build"
   },
@@ -29,6 +30,10 @@
   "devDependencies": {
     "css-loader": "^0.23.1",
     "json-loader": "^0.5.4",
+    "postcss": "^5.2.5",
+    "postcss-cssnext": "^2.8.0",
+    "postcss-import": "^8.1.2",
+    "postcss-loader": "^1.1.0",
     "rimraf": "^2.5.1",
     "style-loader": "^0.13.0",
     "webpack": "^1.12.12"
