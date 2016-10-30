@@ -1,6 +1,13 @@
 /* Copyright (c) Jupyter Development Team.
- * Distributed under the terms of the Modified BSD License. 
+ * Distributed under the terms of the Modified BSD License.
  */
+
+/*
+ * We assume that the CSS variables in
+ * https://github.com/jupyterlab/jupyterlab/blob/master/src/default-theme/variables.css
+ * have been defined.
+ */
+
 
 :root {
     --jp-widgets-font-size: var(--jp-ui-font-size1);

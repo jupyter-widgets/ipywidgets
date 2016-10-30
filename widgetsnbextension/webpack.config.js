@@ -9,7 +9,7 @@ module.exports = {
     devtool: 'source-map',
     module: {
         loaders: [
-            { test: /\.css$/, loader: "style-loader!css-loader!postcss-loader" },
+            { test: /\.css$/, loader: "style-loader!css-loader" },
             { test: /\.json$/, loader: "json-loader" },
             // jquery-ui loads some images
             { test: /\.(jpg|png|gif)$/, loader: "file" },
@@ -21,11 +21,4 @@ module.exports = {
             { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" }
         ]
     },
-    postcss: function () {
-        return [
-            require('postcss-import'),
-            require('postcss-cssnext')
-        ];
-    }
-
 };

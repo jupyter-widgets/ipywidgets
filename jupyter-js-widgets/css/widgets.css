@@ -7,4 +7,4 @@ loader sees only one file at a time. This allows postcss to see the variable
 definitions when they are used. */
 
 @import "./labvariables.css";
-@import "./widgets.css";
+@import "./widgets-base.css";
