@@ -6,8 +6,7 @@
  * This example shows how to customize the theming and still compile the CSS
  * down to something that all browsers support.
  */
-@import "jupyter-js-widgets/css/labvariables.css";
-@import "jupyter-js-widgets/css/widgets-base.css";
+@import "jupyter-js-widgets/css/widgets.css";
 :root {
     --jp-widgets-border-width: 2px;
 }

@@ -1,5 +1,5 @@
 var widgets = require('jupyter-js-widgets');
-require('jupyter-js-widgets/lib/widgets.css');
+require('jupyter-js-widgets/css/widgets.built.css');
 
 console.info('jupyter-js-widgets loaded successfully');
 

@@ -10,12 +10,18 @@
     "type": "git",
     "url": "https://github.com/ipython/ipywidgets.git"
   },
+  "files": [
+    "lib/*.d.ts",
+    "lib/*.js",
+    "css/*.css",
+    "dist/"
+  ],
   "scripts": {
     "clean:src": "rimraf lib",
     "clean": "npm run clean:src",
     "build:test": "tsc --project test/src && webpack --config test/webpack.conf.js",
     "build:src": "tsc --project src",
-    "build:css": "postcss --use postcss-import --use postcss-cssnext -o lib/widgets.css css/widgets.css && cpx css/widgets-base.css lib/",
+    "build:css": "postcss --use postcss-import --use postcss-cssnext -o css/widgets.built.css css/widgets.css",
     "build": "npm run build:src && npm run build:css && webpack",
     "docs": "typedoc --mode file --module commonjs --excludeNotExported --target es5 --moduleResolution node --out docs/ src",
     "postinstall": "npm dedupe",
