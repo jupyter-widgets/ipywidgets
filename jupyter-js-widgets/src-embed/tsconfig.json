@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    //"noImplicitAny": true,
+    "lib": ["dom", "es5", "es2015.promise"],
+    "types": ["requirejs"],
+    "noEmitOnError": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "ES5",
+    "outDir": "../lib-embed"
+  },
+  "exclude": ["typedoc.d.ts"]
+}
