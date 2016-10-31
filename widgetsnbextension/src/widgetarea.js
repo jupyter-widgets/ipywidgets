@@ -95,6 +95,7 @@ WidgetArea.prototype._create_elements = function() {
 
     var widget_subarea = document.createElement('div');
     widget_subarea.classList.add('widget-subarea');
+    widget_subarea.classList.add('jp-Output-result');
     widget_area.appendChild(widget_subarea);
 
     this.widget_subarea = widget_subarea;

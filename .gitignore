@@ -6,7 +6,6 @@ docs/man/*.gz
 docs/source/api/generated
 docs/gh-pages
 jupyter-js-widgets/src/components
-jupyter-js-widgets/css/
 jupyter-js-widgets/lib/
 jupyter-js-widgets/docs/
 node_modules
