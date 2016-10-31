@@ -42,10 +42,11 @@ jupyter lab --version
 if [ $? -eq 0 ]; then
     echo jupyter lab is installed
 else
-    echo "'jupyter lab --version' failed, therefore pip is not installed. In order to
+    echo "'jupyter lab --version' failed, therefore jupyter lab is not installed. In order to
     perform a developer install of jupyterlab_widgets you must have jupyter lab on
-    your machine! Install using 'pip install jupyterlab && jupyter serverextension
-    enable --py jupyterlab --sys-prefix' or follow instructions at https://github.com/jupyterlab/jupyterlab/blob/master/CONTRIBUTING.md#installing-jupyterlab for developer install."
+    your machine! Install using 'pip install jupyterlab && jupyter labextension
+    install --py --sys-prefix jupyterlab && jupyter labextension
+    enable --py --sys-prefix jupyterlab' or follow instructions at https://github.com/jupyterlab/jupyterlab/blob/master/CONTRIBUTING.md#installing-jupyterlab for developer install."
     exit 1
 fi
 cd jupyterlab_widgets
