@@ -2,9 +2,12 @@
  * Distributed under the terms of the Modified BSD License.
  */
 
-/* We import all of these together in a single css file because the Webpack
-loader sees only one file at a time. This allows postcss to see the variable
-definitions when they are used. */
-
-@import "../node_modules/jupyter-js-widgets/css/labvariables.css";
-@import "../node_modules/jupyter-js-widgets/css/widgets-base.css";
+/*
+ * This example shows how to customize the theming and still compile the CSS
+ * down to something that all browsers support.
+ */
+@import "jupyter-js-widgets/css/labvariables.css";
+@import "jupyter-js-widgets/css/widgets-base.css";
+:root {
+    --jp-widgets-border-width: 2px;
+}
