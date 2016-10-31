@@ -14,7 +14,7 @@ if (Element && !Element.prototype.matches) {
 
 // Load styling
 require('font-awesome/css/font-awesome.css');
-require('./widgets.css');
+require('../css/widgets.built.css');
 
 // Magic global widget rendering function:
 import * as widgets from './index';
