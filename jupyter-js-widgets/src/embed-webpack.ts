@@ -13,9 +13,8 @@ if (Element && !Element.prototype.matches) {
 }
 
 // Load styling
-require('jquery-ui/themes/base/all.css');
 require('font-awesome/css/font-awesome.css');
-require('../css/widgets.min.css');
+require('./widgets.css');
 
 // Magic global widget rendering function:
 import * as widgets from './index';

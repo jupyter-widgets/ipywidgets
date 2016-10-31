@@ -4,10 +4,9 @@
   "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
   "main": "index.js",
   "scripts": {
+    "clean": "rimraf lib && rimraf built",
     "prepublish": "npm run build",
-    "build": "npm run build:es5 && npm run build:bundle",
-    "build:es5": "tsc --project src",
-    "build:bundle": "webpack",
+    "build": "npm run clean && tsc --project src && node scripts/copyfiles.js && webpack",
     "host": "http-server",
     "test": "npm run test:default",
     "test:default": "echo \"No test specified\""
@@ -25,7 +24,13 @@
   "devDependencies": {
     "css-loader": "^0.23.1",
     "file-loader": "^0.8.5",
+    "fs-extra": "^0.30.0",
     "json-loader": "^0.5.4",
+    "postcss": "^5.2.5",
+    "postcss-cssnext": "^2.8.0",
+    "postcss-import": "^8.1.2",
+    "postcss-loader": "^1.1.0",
+    "rimraf": "^2.5.4",
     "style-loader": "^0.13.0",
     "typescript": "^2.0.3",
     "url-loader": "^0.5.7",

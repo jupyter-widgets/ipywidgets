@@ -1,0 +1,13 @@
+/* Copyright (c) Jupyter Development Team.
+ * Distributed under the terms of the Modified BSD License.
+ */
+
+/*
+ * This example shows how to customize the theming and still compile the CSS
+ * down to something that all browsers support.
+ */
+@import "jupyter-js-widgets/css/labvariables.css";
+@import "jupyter-js-widgets/css/widgets-base.css";
+:root {
+    --jp-widgets-border-width: 2px;
+}

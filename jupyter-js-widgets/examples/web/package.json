@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prepublish": "npm run build",
-    "build": "webpack index.js index.built.js",
+    "build": "webpack",
     "test": "npm run test:firefox && npm run test:chrome",
     "test:default": "karma start karma.config.js --log-level debug",
     "test:firefox": "npm run test:default -- --browsers Firefox",

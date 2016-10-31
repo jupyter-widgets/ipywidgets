@@ -6,7 +6,8 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
+    "build": "npm run clean && webpack",
+    "clean": "rimraf widgetsnbextension/static",
     "update": "rimraf node_modules/jupyter-js-widgets; npm install file:../jupyter-js-widgets; npm run build",
     "prepublish": "npm run build"
   },
