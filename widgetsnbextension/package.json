@@ -1,6 +1,6 @@
 {
   "name": "widgetsnbextension",
-  "version": "2.0.0-dev",
+  "version": "2.0.4",
   "description": "Jupyter Widgets nbextension",
   "main": "src/extension.js",
   "private": true,
@@ -25,7 +25,7 @@
     "backbone": "^1.2.3",
     "html2canvas": "^0.5.0-beta4",
     "underscore": "^1.8.3",
-    "jupyter-js-widgets": "file:../jupyter-js-widgets"
+    "jupyter-js-widgets": "2.0.4"
   },
   "devDependencies": {
     "css-loader": "^0.23.1",
