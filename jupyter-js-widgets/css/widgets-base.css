@@ -271,7 +271,8 @@
 .widget-hbox .widget-readout {
     /* Horizontal Readout */
     text-align: center;
-    width: var(--jp-widgets-inline-width-tiny);
+    max-width: var(--jp-widgets-inline-width-short);
+    min-width: var(--jp-widgets-inline-width-tiny);
     margin-left: 4px;
 }
 
@@ -338,10 +339,14 @@
     width: var(--jp-widgets-inline-width);
 }
 
-.widget-text input, .widget-textarea input {
+.widget-text input[type="text"], .widget-textarea input {
     outline: none !important;
     width: inherit;
     margin-left: 4px;
+}
+
+.widget-text input[type="text"] {
+    height: auto;
 }
 
 .widget-text input:focus, .widget-textarea input:focus {
@@ -743,6 +748,11 @@ ul.widget-dropdown-droplist.mod-active {
 }
 
 /* Tab Widget */
+
+.jupyter-widgets .p-TabBar {
+    overflow-x: visible;
+    overflow-y: visible;
+}
 
 .jupyter-widgets.widget-tab .p-TabBar.p-mod-horizontal > .p-TabBar-content {
     align-items: flex-end;
