@@ -2,8 +2,6 @@
 // Distributed under the terms of the Modified BSD License.
 
 export * from "./manager-base";
-export * from "./embed-helper";
-export * from "./embed-manager";
 export * from "./utils";
 export * from "./widget";
 export * from "./widget_layout";
