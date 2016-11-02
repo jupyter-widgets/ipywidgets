@@ -400,10 +400,16 @@
     border: var(--jp-widgets-slider-border-width) solid var(--jp-border-color2);
     box-sizing: border-box;
     z-index: 1;
+    background-image: none; /* Override jquery-ui */
 }
 
-.widget-slider .ui-slider-handle:active, .widget-slider .ui-slider-handle:hover {
-    /* Slider Handle Active or Hovered */
+/* Override jquery-ui */
+.widget-slider .ui-slider-handle:hover {
+    background-color: var(--jp-layout-color1);
+    border: var(--jp-widgets-slider-border-width) solid var(--jp-border-color1);
+}
+
+.widget-slider .ui-slider-handle:focus {
     background-color: var(--jp-widgets-slider-active-handle-background);
     border-color: var(--jp-border-color1);
     z-index: 2;
