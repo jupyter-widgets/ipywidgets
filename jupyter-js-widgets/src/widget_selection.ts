@@ -603,6 +603,7 @@ class ToggleButtonsView extends DOMWidgetView {
         var items = this.model.get('_options_labels');
         var icons = this.model.get('icons') || [];
         var previous_icons = this.model.previous('icons') || [];
+        var previous_bstyle = ToggleButtonsView.classMap[this.model.previous('button_style')] || '';
         var tooltips = view.model.get('tooltips') || [];
         var disabled = this.model.get('disabled');
         var buttons = this.buttongroup.querySelectorAll('button');
@@ -619,7 +620,7 @@ class ToggleButtonsView extends DOMWidgetView {
         if (stale && options === undefined || options.updated_view !== this) {
             // Add items to the DOM.
             this.buttongroup.textContent = '';
-            _.each(items, function(item: any, index) {
+            _.each(items, (item: any, index) => {
                 var item_html;
                 var empty = item.trim().length === 0 &&
                     (!icons[index] || icons[index].trim().length === 0);
@@ -636,6 +637,9 @@ class ToggleButtonsView extends DOMWidgetView {
                 }
                 button.setAttribute('type', 'button');
                 button.className = 'jupyter-button widget-toggle-button';
+                if (previous_bstyle) {
+                    button.classList.add(previous_bstyle);
+                }
                 button.innerHTML = item_html;
                 button.setAttribute('data-value', encodeURIComponent(item));
                 button.setAttribute('value', item);
@@ -693,17 +697,10 @@ class ToggleButtonsView extends DOMWidgetView {
     }
 
     update_button_style() {
-        var class_map = {
-            primary: ['mod-primary'],
-            success: ['mod-success'],
-            info: ['mod-info'],
-            warning: ['mod-warning'],
-            danger: ['mod-danger']
-        };
         var view = this;
         var buttons = this.buttongroup.querySelectorAll('button');
         _.each(buttons, function(button) {
-            view.update_mapped_classes(class_map, 'button_style', button);
+            view.update_mapped_classes(ToggleButtonsView.classMap, 'button_style', button);
         });
     }
 
@@ -729,6 +726,19 @@ class ToggleButtonsView extends DOMWidgetView {
     label: HTMLDivElement;
     buttongroup: HTMLDivElement;
 }
+
+export
+namespace ToggleButtonsView {
+    export
+    const classMap = {
+        primary: ['mod-primary'],
+        success: ['mod-success'],
+        info: ['mod-info'],
+        warning: ['mod-warning'],
+        danger: ['mod-danger']
+    };
+}
+
 
 export
 class SelectModel extends SelectionModel {
