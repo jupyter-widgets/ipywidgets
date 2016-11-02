@@ -829,7 +829,7 @@ ul.widget-dropdown-droplist.mod-active {
     padding: 0px 10px;
     background: var(--jp-layout-color2);
     color: var(--jp-ui-font-color2);
-    border: var(--jp-border-width) solid var(--jp-border-color2);
+    border: var(--jp-border-width) solid var(--jp-border-color1);
     border-bottom: none;
     position: relative;
 }
