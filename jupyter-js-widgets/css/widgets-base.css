@@ -621,7 +621,7 @@ ul.widget-dropdown-droplist {
     list-style-type: none;
     position: absolute;
     margin: 0;
-    z-index: 101; /* This is to appear above the #header */
+    z-index: 9999; /* This is to appear above the #header */
     padding: 0;
     cursor: pointer;
     height: auto;
