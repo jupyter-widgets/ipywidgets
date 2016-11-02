@@ -24,6 +24,7 @@
     --jp-widgets-button-color: white;
     --jp-widgets-progress-thickness: 20px;
     --jp-widgets-container-padding: 15px;
+    --jp-widgets-input-padding: 4px;
     --jp-widgets-slider-track-thickness: 6px;
     --jp-widgets-slider-handle-thickness: 12px;
     --jp-widgets-slider-handle-size: var(--jp-widgets-inline-height);
@@ -349,7 +350,7 @@
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
     font-size: var(--jp-widgets-font-size);
-    padding: 4px;
+    padding: var(--jp-widgets-input-padding);
 }
 
 .widget-text input[type="text"], .widget-textarea input {
@@ -364,7 +365,7 @@
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
     font-size: var(--jp-widgets-font-size);
-    padding: 4px;
+    padding: var(--jp-widgets-input-padding);
 }
 
 .widget-text input:focus, .widget-textarea input:focus {
@@ -768,6 +769,7 @@ ul.widget-dropdown-droplist.mod-active {
     color: var(--jp-ui-font-color1);
     border: var(--jp-widgets-border-width) solid var(--jp-border-color1);
     font-size: var(--jp-widgets-font-size);
+    padding: var(--jp-widgets-input-padding);
 }
 
 /* Play Widget */
