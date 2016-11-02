@@ -349,6 +349,7 @@
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
     font-size: var(--jp-widgets-font-size);
+    padding: 4px;
 }
 
 .widget-text input[type="text"], .widget-textarea input {
@@ -363,6 +364,7 @@
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
     font-size: var(--jp-widgets-font-size);
+    padding: 4px;
 }
 
 .widget-text input:focus, .widget-textarea input:focus {
