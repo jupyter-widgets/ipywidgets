@@ -28,6 +28,7 @@
     --jp-widgets-slider-handle-thickness: 12px;
     --jp-widgets-slider-handle-size: var(--jp-widgets-inline-height);
     --jp-widgets-slider-border-width: var(--jp-widgets-border-width);
+    --jp-widgets-slider-active-handle-background: var(--jp-brand-color1);
 }
 
 .p-Widget.jupyter-widgets {
@@ -37,6 +38,7 @@
 .jupyter-widgets {
     margin: var(--jp-widgets-margin);
     box-sizing: border-box;
+    color: var(--jp-content-font-color1);
 }
 
 .jp-Output-result > .jupyter-widgets {
@@ -121,24 +123,26 @@
 
 .jupyter-button {
     color: var(--jp-ui-font-color1);
-    background-color: var(--jp-layout-color2);
-    border-color: var(--jp-border-color2);
-}
-
-.jupyter-button:hover, .jupyter-button:active, .jupyter-button.mod-active {
     background-color: var(--jp-layout-color1);
     border-color: var(--jp-border-color1);
+}
+
+.jupyter-button:active, .jupyter-button.mod-active {
+    color: var(--jp-ui-font-color0);
+    background-color: var(--jp-layout-color0);
+    border-color: var(--jp-border-color0);
 }
 
 /* Button "Primary" Styling */
 
 .jupyter-button.mod-primary {
-    color: white;
+    color: var(--jp-inverse-ui-font-color1);
     background-color: var(--jp-brand-color1);
     border-color: var(--jp-brand-color1);
 }
 
-.jupyter-button.mod-primary:hover, .jupyter-button.mod-primary.mod-active {
+.jupyter-button.mod-primary.mod-active {
+    color: var(--jp-inverse-ui-font-color0);
     background-color: var(--jp-brand-color0);
     border-color: var(--jp-brand-color0);
 }
@@ -146,12 +150,13 @@
 /* Button "Success" Styling */
 
 .jupyter-button.mod-success {
-    color: white;
+    color: var(--jp-inverse-ui-font-color1);
     background-color: var(--jp-success-color1);
     border-color: var(--jp-success-color1);
 }
 
-.jupyter-button.mod-success:hover, .jupyter-button.mod-success.mod-active {
+.jupyter-button.mod-success.mod-active {
+    color: var(--jp-inverse-ui-font-color0);
     background-color: var(--jp-success-color0);
     border-color: var(--jp-success-color0);
  }
@@ -159,12 +164,13 @@
  /* Button "Info" Styling */
 
 .jupyter-button.mod-info {
-    color: white;
+    color: var(--jp-inverse-ui-font-color1);
     background-color: var(--jp-info-color1);
     border-color: var(--jp-info-color1);
 }
 
-.jupyter-button.mod-info:hover, .jupyter-button.mod-info.mod-active {
+.jupyter-button.mod-info.mod-active {
+    color: var(--jp-inverse-ui-font-color0);
     background-color: var(--jp-info-color0);
     border-color: var(--jp-info-color0);
 }
@@ -172,12 +178,13 @@
 /* Button "Warning" Styling */
 
 .jupyter-button.mod-warning {
-    color: white;
+    color: var(--jp-inverse-ui-font-color1);
     background-color: var(--jp-warn-color1);
     border-color: var(--jp-warn-color1);
 }
 
-.jupyter-button.mod-warning:hover, .jupyter-button.mod-warning.mod-active {
+.jupyter-button.mod-warning.mod-active {
+    color: var(--jp-inverse-ui-font-color0);
     background-color: var(--jp-warn-color0);
     border-color: var(--jp-warn-color0);
 }
@@ -185,12 +192,13 @@
 /* Button "Danger" Styling */
 
 .jupyter-button.mod-danger {
-    color: white;
+    color: var(--jp-inverse-ui-font-color1);
     background-color: var(--jp-error-color1);
     border-color: var(--jp-error-color1);
 }
 
-.jupyter-button.mod-danger:hover, .jupyter-button.mod-danger.mod-active {
+.jupyter-button.mod-danger.mod-active {
+    color: var(--jp-inverse-ui-font-color0);
     background-color: var(--jp-error-color0);
     border-color: var(--jp-error-color0);
 }
@@ -337,6 +345,10 @@
 .widget-textarea textarea {
     /* TextAreaView */
     width: var(--jp-widgets-inline-width);
+    border: var(--jp-border-width) solid var(--jp-border-color1);
+    background-color: var(--jp-layout-color1);
+    color: var(--jp-ui-font-color1);
+    font-size: var(--jp-widgets-font-size);
 }
 
 .widget-text input[type="text"], .widget-textarea input {
@@ -347,6 +359,10 @@
 
 .widget-text input[type="text"] {
     height: auto;
+    border: var(--jp-border-width) solid var(--jp-border-color1);
+    background-color: var(--jp-layout-color1);
+    color: var(--jp-ui-font-color1);
+    font-size: var(--jp-widgets-font-size);
 }
 
 .widget-text input:focus, .widget-textarea input:focus {
@@ -364,9 +380,6 @@
 }
 
 /* Widget Slider */
-
-.widget-slider {
-}
 
 .widget-slider .ui-slider {
     /* Slider Track */
@@ -388,7 +401,7 @@
 
 .widget-slider .ui-slider-handle:active, .widget-slider .ui-slider-handle:hover {
     /* Slider Handle Active or Hovered */
-    background-color: var(--jp-layout-color1);
+    background-color: var(--jp-widgets-slider-active-handle-background);
     border-color: var(--jp-border-color1);
     z-index: 2;
 }
@@ -563,49 +576,37 @@
     min-width: var(--jp-widgets-inline-width-short);
 }
 
-.widget-dropdown .widget-item {
+.widget-dropdown-toggle {
     float: right;
-    flex-grow: 0;
     min-width: var(--jp-widgets-inline-width-short);
     max-width: var(--jp-widgets-inline-width);
-}
-
-.widget-dropdown div.widget-item {
     display: flex;
     flex-grow: 1;
     margin: 0;
     padding: 0;
+    border: var(--jp-border-width) solid var(--jp-border-color1);
+    color: var(--jp-ui-font-color1);
+    background-color: var(--jp-layout-color1);
+    font-size: var(--jp-widgets-font-size);
 }
 
-.widget-dropdown .widget_item .dropdown-menu li a {
-    color: inherit;
+.widget-dropdown .widget-dropdown-toggle-selected {
+    flex-grow: 1;
 }
 
-.widget-dropdown .widget-item button {
-    flex: 1;
-    outline: 0;
-}
-
-.widget-dropdown .widget-item button:last-child {
+.widget-dropdown .widget-dropdown-caret {
     flex: 0;
-    flex-basis: 2em;
-    margin-left: calc(-1 * var(--jp-border-width));
+    align-self: center;
+    margin-right: 4px;
 }
 
-.widget-dropdown .widget-item button:last-child i.widget-caret {
-    font-size: 1em;
-    font-style: normal;
-    font-family: FontAwesome;
-    line-height: 1em;
-    position: relative;
-}
-
-.widget-dropdown .widget-item button:last-child i.widget-caret:before {
-    content: "\f0d7";
+.widget-dropdown .widget-dropdown-toggle .dropdown-menu li a {
+    color: inherit;
 }
 
 ul.widget-dropdown-droplist {
     background: var(--jp-layout-color1);
+    color: var(--jp-ui-font-color1);
     border: var(--jp-border-width) solid var(--jp-border-color1);
     box-sizing: border-box;
     list-style-type: none;
@@ -613,6 +614,7 @@ ul.widget-dropdown-droplist {
     margin: 0;
     z-index: 101; /* This is to appear above the #header */
     padding: 0;
+    cursor: pointer;
     height: auto;
     overflow: auto;
     display: none;
@@ -625,17 +627,24 @@ ul.widget-dropdown-droplist a {
 
 ul.widget-dropdown-droplist li {
     display: block;
-    padding: 0 5px;
-}
-
-ul.widget-dropdown-droplist li:hover {
-    background: var(--jp-layout-color2);
+    padding: 0 18px;
 }
 
 ul.widget-dropdown-droplist li.mod-active {
-    background: var(--jp-layout-color2);
-    color: #eeeeee;
+    background: var(--jp-brand-color0);
+    color: var(--jp-inverse-ui-font-color0);
 }
+
+ul.widget-dropdown-droplist .widget-droplist-check {
+    width: 18px;
+    padding-right: 2px;
+    box-sizing: border-box;
+}
+
+ul.widget-dropdown-droplist li.mod-selected {
+    padding-left: 0;
+}
+
 
 ul.widget-dropdown-droplist.mod-active {
     display: block;
@@ -656,9 +665,16 @@ ul.widget-dropdown-droplist.mod-active {
     -webkit-appearance: menulist;
     border-radius: 0;
     outline: none;
-    background: var(--jp-layout-color1);
+    background-color: var(--jp-layout-color1);
+    color: var(--jp-ui-font-color1);
     min-width: var(--jp-widgets-inline-width-short);
     max-width: var(--jp-widgets-inline-width);
+    font-size: var(--jp-widgets-font-size);
+}
+
+.widget-select select option:checked {
+    color: var(--jp-ui-font-color0);
+    background: var(--jp-layout-color0) repeat url("data:image/gif;base64,R0lGO...");
 }
 
 /* Select Multiple */
@@ -670,7 +686,18 @@ ul.widget-dropdown-droplist.mod-active {
 .widget-select-multiple select {
     min-width: var(--jp-widgets-inline-width-short);
     max-width: var(--jp-widgets-inline-width);
+    border: var(--jp-border-width) solid var(--jp-border-color1);
+    background-color: var(--jp-layout-color1);
+    color: var(--jp-ui-font-color1);
+    font-size: var(--jp-widgets-font-size);
 }
+
+.widget-select-multiple select option:checked {
+    color: var(--jp-ui-font-color0);
+    background: var(--jp-layout-color0) repeat url("data:image/gif;base64,R0lGO...");
+}
+
+
 
 /* Toggle Buttons Styling */
 
@@ -726,12 +753,19 @@ ul.widget-dropdown-droplist.mod-active {
     width: var(--jp-widgets-inline-height);
     height: auto;
     padding: 0;
+    background: var(--jp-layout-color1);
+    color: var(--jp-ui-font-color1);
+    border: var(--jp-widgets-border-width) solid var(--jp-border-color1);
     border-left: none;
 }
 
 .widget-colorpicker input[type="text"] {
     flex-grow: 1;
     outline: none !important;
+    background: var(--jp-layout-color1);
+    color: var(--jp-ui-font-color1);
+    border: var(--jp-widgets-border-width) solid var(--jp-border-color1);
+    font-size: var(--jp-widgets-font-size);
 }
 
 /* Play Widget */
@@ -762,7 +796,8 @@ ul.widget-dropdown-droplist.mod-active {
     width: 100%;
     box-sizing: border-box;
     margin: 0;
-    background: var(--jp-layout-color0);
+    background: var(--jp-layout-color1);
+    color: var(--jp-ui-font-color1);
     border: var(--jp-border-width) solid var(--jp-border-color1);
     padding: var(--jp-widgets-container-padding);
 }
@@ -783,13 +818,16 @@ ul.widget-dropdown-droplist.mod-active {
     margin-left: calc(-1 * var(--jp-border-width));
     padding: 0px 10px;
     background: var(--jp-layout-color2);
-    border: var(--jp-border-width) solid var(--jp-border-color1);
+    color: var(--jp-ui-font-color2);
+    border: var(--jp-border-width) solid var(--jp-border-color2);
     border-bottom: none;
     position: relative;
 }
 
 .jupyter-widgets.widget-tab .p-TabBar-tab.p-mod-current {
-    background: var(--jp-layout-color0);
+    color: var(--jp-ui-font-color0);
+    /* We want the background to match the tab content background */
+    background: var(--jp-layout-color1);
     min-height: calc(var(--jp-widgets-horizontal-tab-height) + 2 * var(--jp-border-width));
     transform: translateY(var(--jp-border-width));
 }
@@ -810,6 +848,7 @@ ul.widget-dropdown-droplist.mod-active {
 
 .jupyter-widgets.widget-tab .p-TabBar-tab:hover:not(.p-mod-current) {
     background: var(--jp-layout-color1);
+    color: var(--jp-ui-font-color1);
 }
 
 .jupyter-widgets.widget-tab.p-mod-closable > .p-TabBar-tabCloseIcon {
@@ -845,18 +884,20 @@ ul.widget-dropdown-droplist.mod-active {
 
 .widget-accordion > .accordion-page > .accordion-header:hover {
     background-color: var(--jp-layout-color1);
+    color: var(--jp-ui-font-color1);
 }
 
 .widget-accordion > .accordion-page.accordion-active > .accordion-header {
-    background-color: var(--jp-layout-color0);
+    background-color: var(--jp-layout-color1);
+    color: var(--jp-ui-font-color0);
     cursor: default;
     border-bottom: none;
-    color: var(--jp-ui-font-color0);
 }
 
 .widget-accordion > .accordion-page > .accordion-content {
     padding: var(--jp-widgets-container-padding);
-    background-color: var(--jp-layout-color0);
+    background-color: var(--jp-layout-color1);
+    color: var(--jp-ui-font-color1);
     border-left: var(--jp-widgets-border-width) solid var(--jp-border-color1);
     border-right: var(--jp-widgets-border-width) solid var(--jp-border-color1);
     border-bottom: var(--jp-widgets-border-width) solid var(--jp-border-color1);
