@@ -22,12 +22,18 @@ import {
 } from 'phosphor/lib/core/disposable';
 
 import {
-  Token
-} from 'phosphor/lib/core/token';
-
-import {
   WidgetManager, WidgetRenderer, INBWidgetExtension
 } from './index';
+
+import {
+  OutputModel, OutputView
+} from './output';
+
+import * as widgets from 'jupyter-js-widgets';
+
+(widgets as any)['OutputModel'] = OutputModel;
+(widgets as any)['OutputView'] = OutputView;
+
 
 import 'jupyter-js-widgets/css/widgets-base.css';
 
@@ -42,6 +48,12 @@ class NBWidgetExtension implements INBWidgetExtension {
    */
   createNew(nb: NotebookPanel, context: DocumentRegistry.IContext<INotebookModel>): IDisposable {
     let wManager = new WidgetManager(context, nb.content.rendermime);
+    wManager.register({
+      name: 'jupyter-js-widgets',
+      version: '2.0.0', // hardcoded because '*' doesn't match pre-release versions
+      exports: widgets
+    });
+
     this._registry.forEach(data => wManager.register(data));
     let wRenderer = new WidgetRenderer(wManager);
 
@@ -83,7 +95,7 @@ export default widgetManagerProvider;
 /**
  * Activate the widget extension.
  */
-function activateWidgetExtension(app: JupyterLab, registry: IDocumentRegistry) {
+function activateWidgetExtension(app: JupyterLab, registry: IDocumentRegistry): INBWidgetExtension {
   let extension = new NBWidgetExtension();
   registry.addWidgetExtension('Notebook', extension);
   return extension;
