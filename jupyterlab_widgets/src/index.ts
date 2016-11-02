@@ -8,10 +8,8 @@ import {
 } from '@jupyterlab/services';
 
 import {
-    ManagerBase, shims, DOMWidgetView
+    ManagerBase, shims
 } from 'jupyter-js-widgets';
-
-import * as widgets from 'jupyter-js-widgets';
 
 import {
   IDisposable
@@ -30,10 +28,6 @@ import {
 } from 'phosphor/lib/ui/widget';
 
 import {
-  JSONObject
-} from 'phosphor/lib/algorithm/json';
-
-import {
   NotebookPanel
 } from 'jupyterlab/lib/notebook/notebook/panel';
 
@@ -50,15 +44,9 @@ import {
 } from 'jupyterlab/lib/docregistry';
 
 import {
-  OutputModel, OutputView
-} from './output';
-
-import {
   SemVerCache
 } from './semvercache';
 
-(widgets as any)['OutputModel'] = OutputModel;
-(widgets as any)['OutputView'] = OutputView;
 
 /**
  * The token identifying the JupyterLab plugin.
@@ -116,11 +104,6 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     super();
     this._context = context;
     this._rendermime = rendermime;
-    this.register({
-      name: 'jupyter-js-widgets',
-      version: '2.0.0', // hardcoded because '*' doesn't match pre-release versions
-      exports: widgets
-    });
 
     context.kernelChanged.connect((sender, kernel) => {
       if (context.kernel) {

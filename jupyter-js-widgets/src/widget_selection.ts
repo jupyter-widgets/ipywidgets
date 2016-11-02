@@ -48,6 +48,7 @@ class DropdownView extends DOMWidgetView {
     initialize(options) {
         this.onKeydown = this._handle_keydown.bind(this);
         this.onDismiss = this._handle_dismiss.bind(this);
+        this.onHover = this._handle_hover.bind(this);
         super.initialize(options);
     }
 
@@ -66,21 +67,21 @@ class DropdownView extends DOMWidgetView {
         this.label.className = 'widget-label';
         this.label.style.display = 'none';
 
-        this.buttongroup = document.createElement('div');
-        this.buttongroup.className = 'widget-item';
-        this.el.appendChild(this.buttongroup);
+        this.toggle = document.createElement('div');
+        this.toggle.className = 'widget-dropdown-toggle jupyter-button';
+        this.toggle.tabIndex = 0;
+        this.el.appendChild(this.toggle);
 
-        this.droplabel = document.createElement('button');
-        this.droplabel.className = 'jupyter-button widget-dropdown-toggle';
-        this.buttongroup.appendChild(this.droplabel);
+        this.selected = document.createElement('div');
+        this.selected.className = 'widget-dropdown-toggle-selected';
+        this.toggle.appendChild(this.selected);
 
-        this.dropbutton = document.createElement('button');
-        this.dropbutton.className = 'jupyter-button widget-dropdown-toggle';
+        this.caret = document.createElement('span');
+        this.caret.className = 'widget-dropdown-caret fa fa-lg fa-caret-down';
+        this.toggle.appendChild(this.caret);
 
-        this.caret = document.createElement('i');
-        this.caret.className = 'widget-caret';
-        this.dropbutton.appendChild(this.caret);
-        this.buttongroup.appendChild(this.dropbutton);
+        this.check = document.createElement('span');
+        this.check.className = 'widget-droplist-check fa fa-check';
 
         // Drop lists are appended to the document body and absolutely
         // positioned so that they can appear outside the flow of whichever
@@ -130,14 +131,11 @@ class DropdownView extends DOMWidgetView {
             });
         }
 
-        this.droplabel.disabled = disabled;
-        this.dropbutton.disabled = disabled;
-
         var value = this.model.get('value') || '';
         if (value.trim().length === 0) {
-            this.droplabel.innerHTML = '&nbsp;';
+            this.selected.textContent = '\u200B'; // zero-width space
         } else {
-            this.droplabel.textContent = value;
+            this.selected.textContent = value;
         }
 
         var description = this.model.get('description');
@@ -159,17 +157,82 @@ class DropdownView extends DOMWidgetView {
             warning: ['mod-warning'],
             danger: ['mod-danger']
         };
-        this.update_mapped_classes(class_map, 'button_style', this.droplabel);
-        this.update_mapped_classes(class_map, 'button_style', this.dropbutton);
+        this.update_mapped_classes(class_map, 'button_style', this.toggle);
     }
 
     events(): {[e: string]: string} {
         return {
-            'click button.jupyter-button': '_toggle',
-            'keydown button.jupyter-button': '_activate'
+            'click .widget-dropdown-toggle': '_toggle',
+            'keydown .widget-dropdown-toggle': '_activate'
         }
     }
 
+    _dismiss() {
+        // If some error condition has caused this listener to still be active
+        // despite the drop list being invisible, remove all global listeners.
+        if (!this.droplist.classList.contains('mod-active')) {
+            document.removeEventListener('keydown', this.onKeydown);
+            document.removeEventListener('mousedown', this.onDismiss);
+            window.removeEventListener('scroll', this.onDismiss);
+            return;
+        }
+        // Deselect active item.
+        var active = this.droplist.querySelector('.mod-active');
+        if (active) {
+            active.classList.remove('mod-active');
+        }
+        var selected = this.droplist.querySelector('.mod-selected');
+        if (selected) {
+            selected.classList.remove('mod-selected');
+        }
+        // Close the drop list.
+        this.droplist.classList.remove('mod-active');
+        this._check_droplist_events();
+        return;
+    }
+
+    _add_droplist_events() {
+        // Add a global keydown listener for drop list events.
+        document.addEventListener('keydown', this.onKeydown, true);
+        // Add a global mousedown listener to dismiss drop list.
+        document.addEventListener('mousedown', this.onDismiss, true);
+        // Add a global scroll listener to dismiss drop list.
+        window.addEventListener('scroll', this.onDismiss, true);
+        // Add a hover listener for drop list events.
+        this.droplist.addEventListener('mousemove', this.onHover, true)
+    }
+
+    _check_droplist_events() {
+        // If some error condition has caused this listener to still be active
+        // despite the drop list being invisible, remove all global listeners.
+        if (!this.droplist.classList.contains('mod-active')) {
+            document.removeEventListener('keydown', this.onKeydown);
+            document.removeEventListener('mousedown', this.onDismiss);
+            window.removeEventListener('scroll', this.onDismiss);
+            this.droplist.removeEventListener('mousemove', this.onHover);
+            return;
+        }
+    }
+    /**
+     * Handles when the droplist is hovered over.
+     *
+     * Changes the active element.
+     */
+    _handle_hover(event) {
+        // Find the option that was hovered over
+        var items = this.droplist.querySelectorAll('.widget-dropdown-item');
+        for (let i = 0; i < items.length; i++) {
+            let current = items[i];
+            if (current.contains(event.target)) {
+                let active = this.droplist.querySelector('.mod-active');
+                if (active !== current) {
+                    active.classList.remove('mod-active');
+                    current.classList.add('mod-active');
+                }
+                return;
+            }
+        }
+    }
     /**
      * Handles when a value is clicked.
      *
@@ -179,6 +242,9 @@ class DropdownView extends DOMWidgetView {
     _handle_click(event) {
         event.stopPropagation();
         event.preventDefault();
+        if (this.model.get('disabled')) {
+            return;
+        }
 
         // Manually hide the droplist.
         this._toggle();
@@ -193,57 +259,22 @@ class DropdownView extends DOMWidgetView {
      */
     _handle_dismiss(event) {
         // Check if the event came from the drop list itself.
-        var node = event.target;
-        var dropdownEvent;
-        while (node !== document.documentElement) {
-            dropdownEvent = node === this.droplist ||
-                node === this.droplabel || // This is relevant for mousedowns.
-                node === this.dropbutton;  // This is relevant for mousedowns.
-            if (dropdownEvent) {
-                return;
-            }
-            node = node.parentNode;
-        }
-        // If some error condition has caused this listener to still be active
-        // despite the drop list being invisible, remove all global listeners.
-        if (!this.droplist.classList.contains('mod-active')) {
-            document.removeEventListener('keydown', this.onKeydown);
-            document.removeEventListener('mousedown', this.onDismiss);
-            window.removeEventListener('scroll', this.onDismiss);
+        if (this.droplist.contains(event.target) ||
+            this.toggle.contains(event.target)) {
             return;
         }
-        // Deselect active item.
-        var active = this.droplist.querySelector('.mod-active');
-        if (active) {
-            active.classList.remove('mod-active');
-        }
-        // Close the drop list.
-        this.droplist.classList.remove('mod-active');
-        // Remove global keydown listener.
-        document.removeEventListener('keydown', this.onKeydown);
-        // Remove global mousedown listener.
-        document.removeEventListener('mousedown', this.onDismiss);
-        // Remove global scroll listener.
-        window.removeEventListener('scroll', this.onDismiss);
-        return;
+        this._dismiss();
     }
 
     /**
      * Handles keydown events for navigating the drop list.
      */
     _handle_keydown(event) {
-        if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+        if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || this.model.get('disabled')) {
             return;
         }
 
-        // If some error condition has caused this listener to still be active
-        // despite the drop list being invisible, remove all global listeners.
-        if (!this.droplist.classList.contains('mod-active')) {
-            document.removeEventListener('keydown', this.onKeydown);
-            document.removeEventListener('mousedown', this.onDismiss);
-            window.removeEventListener('scroll', this.onDismiss);
-            return;
-        }
+        this._check_droplist_events();
 
         switch (event.keyCode) {
         case 13:  // Enter key
@@ -257,14 +288,14 @@ class DropdownView extends DOMWidgetView {
             }
             // Close the drop list.
             this._toggle();
-            this.dropbutton.focus();
+            this.toggle.focus();
             return;
         case 27:  // Escape key
             event.preventDefault();
             event.stopPropagation();
             // Close the drop list.
             this._toggle();
-            this.dropbutton.focus();
+            this.toggle.focus();
             return;
         case 38:  // Up arrow key
             event.preventDefault();
@@ -332,42 +363,28 @@ class DropdownView extends DOMWidgetView {
      * cause the dropdown to be dropped 'up'.
      */
     _toggle() {
-        this.droplabel.blur();
-        this.dropbutton.blur();
+        this.toggle.blur();
 
         if (this.droplist.classList.contains('mod-active')) {
-            // Deselect active item.
-            var active = this.droplist.querySelector('.mod-active');
-            if (active) {
-                active.classList.remove('mod-active');
-            }
-            // Close the drop list.
-            this.droplist.classList.remove('mod-active');
-            // Remove global keydown listener.
-            document.removeEventListener('keydown', this.onKeydown);
-            // Remove global mousedown listener.
-            document.removeEventListener('mousedown', this.onDismiss);
-            // Remove global scroll listener.
-            window.removeEventListener('scroll', this.onDismiss);
+            this._dismiss();
+            return;
+        }
+        if (this.model.get('disabled')) {
             return;
         }
 
-        // Add a global keydown listener for drop list events.
-        document.addEventListener('keydown', this.onKeydown, true);
-        // Add a global mousedown listener to dismiss drop list.
-        document.addEventListener('mousedown', this.onDismiss, true);
-        // Add a global scroll listener to dismiss drop list.
-        window.addEventListener('scroll', this.onDismiss, true);
-
+        this._add_droplist_events();
         // Set the currently selected item of the drop list.
         var value = this.model.get('value');
         var selectedIndex = _.indexOf(this.model.get('_options_labels'), value);
         if (selectedIndex > -1) {
             var items = this.droplist.querySelectorAll('.widget-dropdown-item');
-            items[selectedIndex].classList.add('mod-active');
+            var selected = items[selectedIndex]
+            selected.classList.add('mod-active', 'mod-selected');
+            selected.insertBefore(this.check, selected.firstChild);
         }
 
-        var buttongroupRect = this.buttongroup.getBoundingClientRect();
+        var buttongroupRect = this.toggle.getBoundingClientRect();
         var availableHeightAbove = buttongroupRect.top;
         var availableHeightBelow = window.innerHeight - buttongroupRect.bottom;
         var border = parseInt(getComputedStyle(this.droplist).borderWidth, 10);
@@ -412,12 +429,13 @@ class DropdownView extends DOMWidgetView {
 
     onKeydown: any;
     onDismiss: any;
-    droplist: any;
+    onHover: any;
+    droplist: HTMLUListElement;
     label: HTMLDivElement;
-    buttongroup: HTMLDivElement;
-    droplabel: HTMLButtonElement;
-    dropbutton: HTMLButtonElement;
-    caret: HTMLElement;
+    toggle: HTMLDivElement;
+    selected: HTMLDivElement;
+    caret: HTMLSpanElement;
+    check: HTMLSpanElement;
 }
 
 export
@@ -585,6 +603,7 @@ class ToggleButtonsView extends DOMWidgetView {
         var items = this.model.get('_options_labels');
         var icons = this.model.get('icons') || [];
         var previous_icons = this.model.previous('icons') || [];
+        var previous_bstyle = ToggleButtonsView.classMap[this.model.previous('button_style')] || '';
         var tooltips = view.model.get('tooltips') || [];
         var disabled = this.model.get('disabled');
         var buttons = this.buttongroup.querySelectorAll('button');
@@ -601,7 +620,7 @@ class ToggleButtonsView extends DOMWidgetView {
         if (stale && options === undefined || options.updated_view !== this) {
             // Add items to the DOM.
             this.buttongroup.textContent = '';
-            _.each(items, function(item: any, index) {
+            _.each(items, (item: any, index) => {
                 var item_html;
                 var empty = item.trim().length === 0 &&
                     (!icons[index] || icons[index].trim().length === 0);
@@ -618,6 +637,9 @@ class ToggleButtonsView extends DOMWidgetView {
                 }
                 button.setAttribute('type', 'button');
                 button.className = 'jupyter-button widget-toggle-button';
+                if (previous_bstyle) {
+                    button.classList.add(previous_bstyle);
+                }
                 button.innerHTML = item_html;
                 button.setAttribute('data-value', encodeURIComponent(item));
                 button.setAttribute('value', item);
@@ -675,17 +697,10 @@ class ToggleButtonsView extends DOMWidgetView {
     }
 
     update_button_style() {
-        var class_map = {
-            primary: ['mod-primary'],
-            success: ['mod-success'],
-            info: ['mod-info'],
-            warning: ['mod-warning'],
-            danger: ['mod-danger']
-        };
         var view = this;
         var buttons = this.buttongroup.querySelectorAll('button');
         _.each(buttons, function(button) {
-            view.update_mapped_classes(class_map, 'button_style', button);
+            view.update_mapped_classes(ToggleButtonsView.classMap, 'button_style', button);
         });
     }
 
@@ -711,6 +726,19 @@ class ToggleButtonsView extends DOMWidgetView {
     label: HTMLDivElement;
     buttongroup: HTMLDivElement;
 }
+
+export
+namespace ToggleButtonsView {
+    export
+    const classMap = {
+        primary: ['mod-primary'],
+        success: ['mod-success'],
+        info: ['mod-info'],
+        warning: ['mod-warning'],
+        danger: ['mod-danger']
+    };
+}
+
 
 export
 class SelectModel extends SelectionModel {
