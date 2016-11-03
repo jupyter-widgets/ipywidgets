@@ -205,7 +205,7 @@ setup_args = dict(
             'jupyterlab_widgets/static/jupyterlab_widgets.bundle.js',
             'jupyterlab_widgets/static/jupyterlab_widgets.bundle.js.manifest',
             'jupyterlab_widgets/static/jupyterlab_widgets.bundle.css'
-        ]),
+        ])],
     zip_safe=False,
     include_package_data = True,
 )
@@ -220,7 +220,7 @@ if 'setuptools' in sys.modules:
 
 setuptools_args = {}
 install_requires = setuptools_args['install_requires'] = [
-    'notebook>=4.2.0',
+    'jupyterlab>=0.8.0'
 ]
 
 extras_require = setuptools_args['extras_require'] = {
