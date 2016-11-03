@@ -200,6 +200,12 @@ setup_args = dict(
         'sdist': js_prerelease(sdist, strict=True),
         'jsdeps': NPM,
     },
+    data_files      = [(
+        'share/jupyter/labextensions/jupyterlab_widgets', [
+            'jupyterlab_widgets/static/jupyterlab_widgets.bundle.js',
+            'jupyterlab_widgets/static/jupyterlab_widgets.bundle.js.manifest',
+            'jupyterlab_widgets/static/jupyterlab_widgets.bundle.css'
+        ]),
     zip_safe=False,
     include_package_data = True,
 )
