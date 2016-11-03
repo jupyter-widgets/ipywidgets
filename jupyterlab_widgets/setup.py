@@ -203,8 +203,7 @@ setup_args = dict(
     data_files      = [(
         'share/jupyter/labextensions/jupyterlab_widgets', [
             'jupyterlab_widgets/static/jupyterlab_widgets.bundle.js',
-            'jupyterlab_widgets/static/jupyterlab_widgets.bundle.js.manifest',
-            'jupyterlab_widgets/static/jupyterlab_widgets.bundle.css'
+            'jupyterlab_widgets/static/jupyterlab_widgets.bundle.js.manifest'
         ])],
     zip_safe=False,
     include_package_data = True,
