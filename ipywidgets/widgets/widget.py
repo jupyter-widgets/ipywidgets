@@ -475,7 +475,11 @@ class Widget(LoggingConfigurable):
                 loud_error('Widget Javascript not detected.  It may not be '
                            'installed or enabled properly.')
             elif not validated:
-                loud_error('The installed widget Javascript is the wrong version.')
+                msg = ('The installed widget Javascript is the wrong version.'
+                      ' It must satisfy the semver range %s.'%__frontend_version__)
+                if (Widget._version_frontend):
+                    msg += ' The widget Javascript is version %s.'%Widget._version_frontend
+                loud_error(msg)
 
             # TODO: delete this sending of a comm message when the display statement
             # below works. Then add a 'text/plain' mimetype to the dictionary below.
@@ -499,10 +503,12 @@ class Widget(LoggingConfigurable):
 
 
 Widget._version_validated = None
+Widget._version_frontend = None
 def handle_version_comm_opened(comm, msg):
     """Called when version comm is opened, because the front-end wants to
     validate the version."""
     def handle_version_message(msg):
         Widget._version_validated = msg['content']['data']['validated']
+        Widget._version_frontend = msg['content']['data'].get('frontend_version', '')
     comm.on_msg(handle_version_message)
     comm.send({'version': __frontend_version__})
