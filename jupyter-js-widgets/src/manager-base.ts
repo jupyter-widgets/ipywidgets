@@ -244,6 +244,8 @@ abstract class ManagerBase<T> {
                     comm.send({'validated': validated});
                     if (validated) {
                         console.info('Widget backend and frontend versions are compatible');
+                    } else {
+                        console.warn(`Widget backend and frontend versions are not compatible. The backend wants a version in the range ${requirement}, but the frontend is version ${version}.`)
                     }
                     resolve(validated);
                 }).bind(this));
