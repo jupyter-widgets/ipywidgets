@@ -401,24 +401,31 @@ class DropdownView extends DOMWidgetView {
 
         // Make drop list visible to compute its dimensions.
         this.droplist.classList.add('mod-active');
-
         var droplistRect = this.droplist.getBoundingClientRect();
 
         // If the drop list fits below, render below.
         if (droplistRect.height <= availableHeightBelow) {
-            top = buttongroupRect.bottom + border;
+            top = buttongroupRect.bottom;
             this.droplist.style.top = Math.ceil(top) + 'px';
+            this.droplist.classList.add('below');
+            this.droplist.classList.remove('above');
         // If the drop list fits above, render above.
         } else if (droplistRect.height <= availableHeightAbove) {
-            top = buttongroupRect.top - droplistRect.height + border;
+            top = buttongroupRect.top - droplistRect.height;
             this.droplist.style.top = Math.floor(top) + 'px';
+            this.droplist.classList.remove('below');
+            this.droplist.classList.add('above');
         // Otherwise, render in whichever has more space, above or below.
         } else if (availableHeightBelow >= availableHeightAbove) {
-            top = buttongroupRect.bottom + border;
+            top = buttongroupRect.bottom;
             this.droplist.style.top = Math.ceil(top) + 'px';
+            this.droplist.classList.add('below');
+            this.droplist.classList.remove('above');
         } else {
-            top = buttongroupRect.top - droplistRect.height + border;
+            top = buttongroupRect.top - droplistRect.height;
             this.droplist.style.top = Math.floor(top) + 'px';
+            this.droplist.classList.remove('below');
+            this.droplist.classList.add('above');
         }
 
         // If a selection is active, scroll to it if necessary.
