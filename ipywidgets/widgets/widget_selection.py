@@ -6,6 +6,10 @@ Represents an enumeration using a widget.
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 from collections import Mapping
+try:
+    from itertools import izip
+except ImportError:  #python3.x
+    izip = zip
 
 from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
@@ -15,24 +19,37 @@ from traitlets import (Unicode, Bool, Any, Dict, TraitError, CaselessStrEnum,
 from ipython_genutils.py3compat import unicode_type
 
 def _value_to_label(value, obj):
-    options = obj._make_options(obj.options)
-    return next((k for k, v in options if obj.equals(v, value)))
+    """Convert a value to a label, given a _Selection object.
+    
+    Raises a KeyError if the value is not found."""
+    # use an iterator approach as a shortcut
+    try:
+        return next(k for (k, v) in izip(obj._options_labels, obj._options_values)
+            if obj.equals(v, value))
+    except StopIteration:
+        raise KeyError(value)
 
 def _label_to_value(k, obj):
+    """Convert a label to a value, given a _Selection object."""
     return obj._options_dict[k]
 
 
 class _Selection(DOMWidget, ValueWidget):
     """Base class for Selection widgets
 
-    ``options`` can be specified as a list or dict. If given as a list,
-    it will be transformed to a dict of the form ``{unicode_type(value): value}``.
+    ``options`` can be specified as a list of values, list of (label, value)
+    tuples, or a dict of {label: value}. The labels are the strings that will be
+    displayed in the UI, representing the actual Python choices, and should be
+    unique. If labels are not specified, they are generated from the values.
 
     When programmatically setting the value, a reverse lookup is performed
     among the options to check that the value is valid. The reverse lookup uses
     the equality operator by default, but another predicate may be provided via
     the ``equals`` keyword argument. For example, when dealing with numpy arrays,
     one may set equals=np.array_equal.
+
+    Only labels are synced (values are converted to/from labels), so the labels should
+    be unique.
     """
 
     value = Any(help="Selected value").tag(sync=True,
@@ -40,12 +57,13 @@ class _Selection(DOMWidget, ValueWidget):
                                            from_json=_label_to_value)
 
     options = Union([List(), Dict()],
-    help="""List of (key, value) tuples or dict of values that the user can select.
+    help="""List of values, or (label, value) tuples, or a dict of {label: value} pairs that the user can select.
 
-    The keys of this list are the strings that will be displayed in the UI,
-    representing the actual Python choices.
+    The labels are the strings that will be displayed in the UI, representing the
+    actual Python choices, and should be unique. If labels are not specified, they
+    are generated from the values.
 
-    The keys of this list are also available as _options_labels.
+    The keys are also available as _options_labels.
     """)
     _options_dict = Dict(read_only=True)
     _options_labels = Tuple(read_only=True).tag(sync=True)
@@ -81,21 +99,23 @@ class _Selection(DOMWidget, ValueWidget):
     def _validate_options(self, proposal):
         """Handles when the options tuple has been changed.
 
-        Setting options implies setting option labels from the keys of the dict.
+        Setting options with a dict implies setting option labels from the keys of the dict.
         """
         new = proposal['value']
         options = self._make_options(new)
-        self.set_trait('_options_dict', { i[0]: i[1] for i in options })
+        self.set_trait('_options_dict', dict(options))
         self.set_trait('_options_labels', [ i[0] for i in options ])
         self.set_trait('_options_values', [ i[1] for i in options ])
         return new
 
     @observe('options')
     def _value_in_options(self, change):
-        # ensure that the chosen value is one of the choices
-        if self._options_values:
-            if self.value not in self._options_values:
-                self.value = next(iter(self._options_values))
+        "Ensure the value is an option; if not, set to the first value"
+        # ensure that the chosen value is still one of the options
+        try:
+            _value_to_label(self.value, self)
+        except KeyError:
+            self.value = self._options_values[0]
 
     @validate('value')
     def _validate_value(self, proposal):
@@ -103,23 +123,23 @@ class _Selection(DOMWidget, ValueWidget):
         try:
             _value_to_label(value, self)
             return value
-        except StopIteration:
+        except KeyError:
             raise TraitError('Invalid selection')
 
 
 def _values_to_labels(values, obj):
+    "Convert values to labels from a _MultipleSelection object"
     return tuple(_value_to_label(v, obj) for v in values)
 
 def _labels_to_values(k, obj):
+    "Convert labels to values from a _MultipleSelection object"
     return tuple(_label_to_value(l, obj) for l in k)
 
 
 class _MultipleSelection(_Selection):
     """Base class for MultipleSelection widgets.
 
-    As with ``_Selection``, ``options`` can be specified as a list or dict. If
-    given as a list, it will be transformed to a dict of the form
-    ``{unicode_type(value): value}``.
+    As with ``_Selection``, ``options`` can be specified as a list or dict.
 
     Despite its name, the ``value`` attribute is a tuple, even if only a single
     option is selected.
@@ -130,11 +150,16 @@ class _MultipleSelection(_Selection):
 
     @observe('options')
     def _value_in_options(self, change):
+        "Filter and reset the current value to make sure it is valid."
         new_value = []
         for v in self.value:
-            if v in self._options_dict.values():
+            try:
+                _value_to_label(v, self)
                 new_value.append(v)
-        self.value = new_value
+            except KeyError:
+                continue
+        if len(self.value) != len(new_value):
+            self.value = tuple(new_value)
 
     @validate('value')
     def _validate_value(self, proposal):
@@ -143,8 +168,8 @@ class _MultipleSelection(_Selection):
             for v in value:
                 _value_to_label(v, self)
             return value
-        except StopIteration:
-            raise TraitError('Invalid selection')
+        except KeyError as k:
+            raise TraitError('Invalid selection: %r'%k.args[0])
 
 
 @register('Jupyter.ToggleButtons')
