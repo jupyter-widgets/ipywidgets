@@ -30,6 +30,7 @@
     --jp-widgets-slider-handle-size: var(--jp-widgets-inline-height);
     --jp-widgets-slider-border-width: var(--jp-widgets-border-width);
     --jp-widgets-slider-active-handle-background: var(--jp-brand-color1);
+    --jp-widgets-menu-item-height: 24px;
 }
 
 .p-Widget.jupyter-widgets {
@@ -629,6 +630,16 @@ ul.widget-dropdown-droplist {
     display: none;
 }
 
+ul.widget-dropdown-droplist.below {
+    border-top: none;
+    transform: translateY(calc(-1 * var(--jp-border-width)));
+}
+
+ul.widget-dropdown-droplist.above {
+    border-bottom: none;
+    transform: translateY(calc(2 * var(--jp-border-width)));
+}
+
 ul.widget-dropdown-droplist a {
     color: inherit;
     text-decoration: none;
@@ -637,21 +648,23 @@ ul.widget-dropdown-droplist a {
 ul.widget-dropdown-droplist li {
     display: block;
     padding: 0 18px;
+    font-size: var(--jp-widgets-font-size);
+    height: var(--jp-widgets-menu-item-height);
+    line-height: var(--jp-widgets-menu-item-height);
 }
 
 ul.widget-dropdown-droplist li.mod-active {
-    background: var(--jp-brand-color0);
-    color: var(--jp-inverse-ui-font-color0);
+    background: var(--jp-layout-color2);
 }
 
 ul.widget-dropdown-droplist .widget-droplist-check {
-    width: 18px;
-    padding-right: 2px;
+    width: 15px;
+    padding-right: 3px;
     box-sizing: border-box;
 }
 
 ul.widget-dropdown-droplist li.mod-selected {
-    padding-left: 0;
+    padding-left: 3px;
 }
 
 

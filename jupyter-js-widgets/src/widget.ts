@@ -54,7 +54,7 @@ class WidgetModel extends Backbone.Model {
             _view_module: "jupyter-js-widgets",
             _view_name: null,
             msg_throttle: 1,
-        }
+        };
     }
 
     /**
