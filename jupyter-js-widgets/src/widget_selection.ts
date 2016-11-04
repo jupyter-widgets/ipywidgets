@@ -24,7 +24,7 @@ class SelectionModel extends DOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'SelectionModel',
-            selected_label: '',
+            value: '',
             _options_labels: [],
             disabled: false,
             description: ''
@@ -525,7 +525,7 @@ class RadioButtonsView extends DOMWidgetView {
             var radio = view.container.querySelectorAll(item_query);
             if (radio.length > 0) {
               var radio_el = radio[0] as HTMLInputElement;
-              radio_el.checked = view.model.get('selected_label') === item;
+              radio_el.checked = view.model.get('value') === item;
               radio_el.disabled = view.model.get('disabled');
             }
         });
@@ -546,7 +546,7 @@ class RadioButtonsView extends DOMWidgetView {
      */
     _handle_click (event) {
         var value = event.target.value;
-        this.model.set('selected_label', value, {updated_view: this});
+        this.model.set('value', value, {updated_view: this});
         this.touch();
     }
 
@@ -814,7 +814,7 @@ class SelectView extends DOMWidgetView {
             this.listbox.disabled = this.model.get('disabled');
 
             // Select the correct element
-            var value = view.model.get('selected_label');
+            var value = view.model.get('value');
             view.listbox.selectedIndex = items.indexOf(value);
 
             var description = this.model.get('description');
@@ -845,7 +845,7 @@ class SelectView extends DOMWidgetView {
         // (see https://github.com/Microsoft/TypeScript/issues/9334 and
         // https://github.com/Microsoft/TypeScript/issues/8220)
         var value = (this.listbox.options[this.listbox.selectedIndex] as HTMLOptionElement).value;
-        this.model.set('selected_label', value, {updated_view: this});
+        this.model.set('value', value, {updated_view: this});
         this.touch();
     }
 
@@ -1013,7 +1013,7 @@ class SelectionSliderView extends DOMWidgetView {
         var actual_value = this._validate_slide_value(ui.value);
         var selected_label = this.model.get('_options_labels')[actual_value];
         this.readout.textContent = selected_label;
-        this.model.set('selected_label', selected_label, {updated_view: this});
+        this.model.set('value', selected_label, {updated_view: this});
         this.touch();
     }
 
@@ -1036,7 +1036,6 @@ class MultipleSelectionModel extends SelectionModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'MultipleSelectionModel',
-            selected_labels: []
         });
     }
 }
