@@ -22,10 +22,14 @@ def _value_to_label(value, obj):
     """Convert a value to a label, given a _Selection object.
     
     Raises a KeyError if the value is not found."""
-    # use an iterator approach as a shortcut
+    # We can't rely on _options_labels and _options_values since we
+    # might be called before the options are validated and those are filled.
+    # TODO: make a separate validation function so this doesn't have
+    # to redo the work of parsing the options object.
+    options = obj._make_options(obj.options)
     try:
-        return next(k for (k, v) in izip(obj._options_labels, obj._options_values)
-            if obj.equals(v, value))
+        # use an iterator approach as a shortcut
+        return next(k for (k, v) in options if obj.equals(v, value))
     except StopIteration:
         raise KeyError(value)
 
@@ -169,7 +173,7 @@ class _MultipleSelection(_Selection):
                 _value_to_label(v, self)
             return value
         except KeyError as k:
-            raise TraitError('Invalid selection: %r'%k.args[0])
+            raise TraitError('Invalid selection: %r'%(k.args[0],))
 
 
 @register('Jupyter.ToggleButtons')
