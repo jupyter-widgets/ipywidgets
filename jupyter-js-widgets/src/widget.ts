@@ -523,6 +523,14 @@ class DOMWidgetModel extends WidgetModel {
     }
 }
 
+export
+class LabeledDOMWidgetModel extends DOMWidgetModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            description: '',
+        });
+    }
+}
 
 /**
  * - create_view and remove_view are default functions called when adding or removing views
@@ -853,4 +861,30 @@ class DOMWidgetView extends WidgetView {
     '$el': any;
     pWidget: Widget;
     layoutPromise: Promise<any>;
+}
+
+export
+class LabeledDOMWidgetView extends DOMWidgetView {
+
+    render() {
+        this.label = document.createElement('div');
+        this.el.appendChild(this.label);
+        this.label.className = 'widget-label';
+        this.label.style.display = 'none';
+
+        this.listenTo(this.model, 'change:description', this.updateDescription);
+        this.updateDescription();
+    }
+
+    updateDescription() {
+        var description = this.model.get('description');
+        if (description.length === 0) {
+            this.label.style.display = 'none';
+        } else {
+            this.typeset(this.label, description);
+            this.label.style.display = '';
+        }
+    }
+
+    label: HTMLDivElement;
 }
