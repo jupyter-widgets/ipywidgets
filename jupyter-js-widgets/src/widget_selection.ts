@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetModel, DOMWidgetView, unpack_models, ViewList
+    LabeledDOMWidgetModel, LabeledDOMWidgetView, unpack_models, ViewList
 } from './widget';
 
 import * as _ from 'underscore';
@@ -20,14 +20,13 @@ function scrollIfNeeded(area, elem) {
 }
 
 export
-class SelectionModel extends DOMWidgetModel {
+class SelectionModel extends LabeledDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'SelectionModel',
             value: '',
             _options_labels: [],
             disabled: false,
-            description: ''
         });
     }
 }
@@ -44,7 +43,7 @@ class DropdownModel extends SelectionModel {
 }
 
 export
-class DropdownView extends DOMWidgetView {
+class DropdownView extends LabeledDOMWidgetView {
     initialize(options) {
         this.onKeydown = this._handle_keydown.bind(this);
         this.onDismiss = this._handle_dismiss.bind(this);
@@ -58,14 +57,11 @@ class DropdownView extends DOMWidgetView {
     }
 
     render() {
+        super.render();
+
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-dropdown');
-
-        this.label = document.createElement('div');
-        this.el.appendChild(this.label);
-        this.label.className = 'widget-label';
-        this.label.style.display = 'none';
 
         this.toggle = document.createElement('div');
         this.toggle.className = 'widget-dropdown-toggle jupyter-button';
@@ -136,14 +132,6 @@ class DropdownView extends DOMWidgetView {
             this.selected.textContent = '\u200B'; // zero-width space
         } else {
             this.selected.textContent = value;
-        }
-
-        var description = this.model.get('description');
-        if (description.length === 0) {
-            this.label.style.display = 'none';
-        } else {
-            this.typeset(this.label, description);
-            this.label.style.display = '';
         }
 
         return super.update(options);
@@ -438,7 +426,6 @@ class DropdownView extends DOMWidgetView {
     onDismiss: any;
     onHover: any;
     droplist: HTMLUListElement;
-    label: HTMLDivElement;
     toggle: HTMLDivElement;
     selected: HTMLDivElement;
     caret: HTMLSpanElement;
@@ -460,19 +447,16 @@ class RadioButtonsModel extends SelectionModel {
 
 
 export
-class RadioButtonsView extends DOMWidgetView {
+class RadioButtonsView extends LabeledDOMWidgetView {
     /**
      * Called when view is rendered.
      */
     render() {
+        super.render();
+
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-radio');
-
-        this.label = document.createElement('div');
-        this.label.className = 'widget-label';
-        this.label.style.display = 'none';
-        this.el.appendChild(this.label);
 
         this.container = document.createElement('div');
         this.el.appendChild(this.container);
@@ -518,14 +502,6 @@ class RadioButtonsView extends DOMWidgetView {
                 label.appendChild(radio);
             });
         }
-        var description = this.model.get('description');
-        if (description.length === 0) {
-            this.label.style.display = 'none';
-        } else {
-            this.label.textContent = description;
-            this.typeset(this.label, description);
-            this.label.style.display = '';
-        }
         _.each(items, function(item: any) {
             var item_query = 'input[data-value="' +
                 encodeURIComponent(item) + '"]';
@@ -557,7 +533,6 @@ class RadioButtonsView extends DOMWidgetView {
         this.touch();
     }
 
-    label: HTMLDivElement;
     container: HTMLDivElement;
 }
 
@@ -573,7 +548,7 @@ class ToggleButtonsModel extends SelectionModel {
 
 
 export
-class ToggleButtonsView extends DOMWidgetView {
+class ToggleButtonsView extends LabeledDOMWidgetView {
     initialize(options) {
         this._css_state = {};
         super.initialize(options);
@@ -583,19 +558,18 @@ class ToggleButtonsView extends DOMWidgetView {
      * Called when view is rendered.
      */
     render() {
+        super.render();
+
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-toggle-buttons');
-
-        this.label = document.createElement('div');
-        this.el.appendChild(this.label);
-        this.label.className = 'widget-label';
-        this.label.style.display = 'none';
 
         this.buttongroup = document.createElement('div');
         this.el.appendChild(this.buttongroup);
 
         this.listenTo(this.model, 'change:button_style', this.update_button_style);
+        this.update_button_style();
+
         this.update();
     }
 
@@ -671,15 +645,6 @@ class ToggleButtonsView extends DOMWidgetView {
             }
         });
 
-        var description = this.model.get('description');
-        if (description.length === 0) {
-            this.label.style.display = 'none';
-        } else {
-            this.label.textContent = '';
-            this.typeset(this.label, description);
-            this.label.style.display = '';
-        }
-        this.update_button_style();
         return super.update(options);
     }
 
@@ -730,7 +695,6 @@ class ToggleButtonsView extends DOMWidgetView {
     }
 
     private _css_state: any;
-    label: HTMLDivElement;
     buttongroup: HTMLDivElement;
 }
 
@@ -758,19 +722,16 @@ class SelectModel extends SelectionModel {
 }
 
 export
-class SelectView extends DOMWidgetView {
+class SelectView extends LabeledDOMWidgetView {
     /**
      * Called when view is rendered.
      */
     render() {
+        super.render();
+
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-select');
-
-        this.label = document.createElement('div');
-        this.el.appendChild(this.label);
-        this.label.className = 'widget-label';
-        this.label.style.display = 'none';
 
         this.listbox = document.createElement('select');
         this.el.appendChild(this.listbox);
@@ -824,13 +785,6 @@ class SelectView extends DOMWidgetView {
             var value = view.model.get('value');
             view.listbox.selectedIndex = items.indexOf(value);
 
-            var description = this.model.get('description');
-            if (description.length === 0) {
-                this.label.style.display = 'none';
-            } else {
-                this.typeset(this.label, description);
-                this.label.style.display = '';
-            }
         }
         return super.update(options);
     }
@@ -856,7 +810,6 @@ class SelectView extends DOMWidgetView {
         this.touch();
     }
 
-    label: HTMLDivElement;
     listbox: HTMLSelectElement;
 }
 
@@ -875,19 +828,17 @@ class SelectionSliderModel extends SelectionModel {
 
 
 export
-class SelectionSliderView extends DOMWidgetView {
+class SelectionSliderView extends LabeledDOMWidgetView {
     /**
      * Called when view is rendered.
      */
     render () {
+        super.render();
+
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-hslider');
         this.el.classList.add('widget-slider');
-        this.label = document.createElement('div');
-        this.label.classList.add('widget-label');
-        this.label.style.display = 'none';
-        this.el.appendChild(this.label);
 
         (this.$slider = $('<div />') as any)
             .slider({
@@ -907,28 +858,14 @@ class SelectionSliderView extends DOMWidgetView {
         this.readout.classList.add('widget-readout');
         this.readout.style.display = 'none';
 
-        this.listenTo(this.model, 'change:slider_color', function(sender, value) {
+        this.listenTo(this.model, 'change:slider_color', (sender, value) => {
             this.$slider.find('a').css('background', value);
-        });
-        this.listenTo(this.model, 'change:description', function(sender, value) {
-            this.updateDescription();
         });
 
         this.$slider.find('a').css('background', this.model.get('slider_color'));
 
         // Set defaults.
         this.update();
-        this.updateDescription();
-    }
-
-    updateDescription() {
-        var description = this.model.get('description');
-        if (description.length === 0) {
-            this.label.style.display = 'none';
-        } else {
-            this.typeset(this.label, description);
-            this.label.style.display = '';
-        }
     }
 
     /**
@@ -1032,7 +969,6 @@ class SelectionSliderView extends DOMWidgetView {
         return Math.floor(x);
     }
 
-    label: HTMLDivElement;
     $slider: any;
     slider_container: HTMLDivElement;
     readout: HTMLDivElement;
@@ -1084,10 +1020,7 @@ class SelectMultipleView extends SelectView {
         var options = this.listbox.options;
         for (var i = 0, len = options.length; i < len; ++i) {
             var value = options[i].getAttribute('data-value');
-            // TODO: typecasting not needed in Typescript 2.0
-            // (see https://github.com/Microsoft/TypeScript/issues/9334 and
-            // https://github.com/Microsoft/TypeScript/issues/8220)
-            (options[i] as HTMLOptionElement).selected = _.contains(values, value);
+            options[i].selected = _.contains(values, value);
         }
     }
 
