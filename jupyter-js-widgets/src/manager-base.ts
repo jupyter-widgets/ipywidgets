@@ -241,9 +241,11 @@ abstract class ManagerBase<T> {
                     var version = (require('../package.json') as any).version;
                     var requirement = msg.content.data.version;
                     var validated = semver.satisfies(version, requirement);
-                    comm.send({'validated': validated});
+                    comm.send({'validated': validated, 'frontend_version': version});
                     if (validated) {
                         console.info('Widget backend and frontend versions are compatible');
+                    } else {
+                        console.warn(`Widget backend and frontend versions are not compatible. The backend wants a version in the range ${requirement}, but the frontend is version ${version}.`)
                     }
                     resolve(validated);
                 }).bind(this));
