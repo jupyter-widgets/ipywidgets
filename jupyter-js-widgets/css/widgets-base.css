@@ -594,6 +594,7 @@
     flex-grow: 1;
     margin: 0;
     padding: 0;
+    box-shadow: none;
     border: var(--jp-border-width) solid var(--jp-border-color1);
     color: var(--jp-ui-font-color1);
     background-color: var(--jp-layout-color1);
