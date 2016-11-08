@@ -86,7 +86,7 @@ copyright = '2016, Jupyter Team, https://jupyter.org'
 author = 'Jupyter Team'
 
 language = None
-exclude_patterns = ['_build', '**.ipynb_checkpoints', 'examples/Imag*']
+exclude_patterns = ['_build', '**.ipynb_checkpoints', 'examples/Imag*', 'examples/Index.ipynb']
 pygments_style = 'sphinx'
 todo_include_todos = False
 
