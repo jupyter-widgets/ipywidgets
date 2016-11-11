@@ -6,7 +6,7 @@ Represents an unbounded float using a widget.
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from .domwidget import DOMWidget
+from .domwidget import LabeledWidget
 from .valuewidget import ValueWidget
 from .widget import register
 from .trait_types import Color
@@ -14,10 +14,9 @@ from traitlets import (Unicode, CFloat, Bool, Int, CaselessStrEnum,
                        Tuple, TraitError, validate)
 
 
-class _Float(DOMWidget, ValueWidget):
+class _Float(LabeledWidget, ValueWidget):
     value = CFloat(0.0, help="Float value").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
-    description = Unicode(help="Description of the value this widget represents").tag(sync=True)
 
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)

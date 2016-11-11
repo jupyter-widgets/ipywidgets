@@ -6,7 +6,7 @@ Represents an unbounded int using a widget.
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from .domwidget import DOMWidget
+from .domwidget import LabeledWidget
 from .valuewidget import ValueWidget
 from .widget import register
 from .trait_types import Color
@@ -62,11 +62,10 @@ def _bounded_int_doc(cls):
     return cls
 
 
-class _Int(DOMWidget, ValueWidget):
+class _Int(LabeledWidget, ValueWidget):
     """Base class for widgets that represent an integer."""
     value = CInt(0, help="Int value").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
-    description = Unicode(help="Description of the value this widget represents").tag(sync=True)
 
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
