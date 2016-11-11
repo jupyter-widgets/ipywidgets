@@ -57,7 +57,6 @@ class OutputModel extends DOMWidgetModel {
     let kernel = this.widget_manager.context.kernel;
     let msgId = this.get('msg_id');
     if (msgId && kernel) {
-      this.clear_output(true);
       this._msgHook = kernel.registerMessageHook(this.get('msg_id'), msg => {
         this.add(msg);
         return false;
@@ -66,16 +65,19 @@ class OutputModel extends DOMWidgetModel {
   }
 
   add(msg: KernelMessage.IIOPubMessage) {
-    let msgType = msg.header.msg_type as nbformat.OutputType;
+    let msgType = msg.header.msg_type;
     switch (msgType) {
     case 'execute_result':
     case 'display_data':
     case 'stream':
     case 'error':
       let model = msg.content as nbformat.IOutput;
-      model.output_type = msgType;
+      model.output_type = msgType as nbformat.OutputType;
       this._outputs.add(model);
       break;
+    case 'clear_output':
+        this.clear_output((msg as KernelMessage.IClearOutputMsg).content.wait);
+        break;
     default:
       break;
     }
