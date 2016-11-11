@@ -10,6 +10,10 @@ import {
 } from 'phosphor/lib/core/disposable';
 
 import {
+    Panel
+} from 'phosphor/lib/ui/panel';
+
+import {
   WidgetManager
 } from './index';
 
@@ -26,6 +30,7 @@ import {
 } from '@jupyterlab/services';
 
 import * as _ from 'underscore';
+import * as $ from 'jquery';
 
 
 export
@@ -97,6 +102,22 @@ class OutputModel extends DOMWidgetModel {
 
 export
 class OutputView extends DOMWidgetView {
+
+    _createElement(tagName: string) {
+        this.pWidget = new Panel();
+        return this.pWidget.node;
+    }
+
+    _setElement(el: HTMLElement) {
+        if (this.el || el !== this.pWidget.node) {
+            // Boxes don't allow setting the element beyond the initial creation.
+            throw new Error('Cannot reset the DOM element.');
+        }
+
+        this.el = this.pWidget.node;
+        this.$el = $(this.pWidget.node);
+     }
+
   /**
    * Called when view is rendered.
    */
@@ -106,8 +127,8 @@ class OutputView extends DOMWidgetView {
     });
     this._outputView.model = this.model.outputs;
     this._outputView.trusted = true;
+    this.pWidget.insertWidget(0, this._outputView);
 
-    this.setElement(this._outputView.node);
     this.pWidget.addClass('jupyter-widgets');
     this.pWidget.addClass('widget-output');
     this.update(); // Set defaults.
@@ -130,4 +151,5 @@ class OutputView extends DOMWidgetView {
 
   model: OutputModel;
   _outputView: OutputAreaWidget;
+  pWidget: Panel
 }
