@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetModel, DOMWidgetView
+    LabeledDOMWidgetModel, LabeledDOMWidgetView, DOMWidgetView
 } from './widget';
 
 import {
@@ -13,11 +13,10 @@ import * as _ from 'underscore';
 
 
 export
-class BoolModel extends DOMWidgetModel {
+class BoolModel extends LabeledDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             value: false,
-            description: '',
             disabled: false,
             _model_name: 'BoolModel'
         });
@@ -25,7 +24,7 @@ class BoolModel extends DOMWidgetModel {
 }
 
 export
-class CheckboxModel extends DOMWidgetModel {
+class CheckboxModel extends LabeledDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             _view_name: 'CheckboxView',
@@ -35,19 +34,15 @@ class CheckboxModel extends DOMWidgetModel {
 }
 
 export
-class CheckboxView extends DOMWidgetView {
+class CheckboxView extends LabeledDOMWidgetView {
     /**
      * Called when view is rendered.
      */
     render() {
+        super.render();
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-checkbox');
-
-        this.label = document.createElement('div');
-        this.label.classList.add('widget-label');
-        this.label.style.display = 'none';
-        this.el.appendChild(this.label);
 
         this.checkbox = document.createElement('input');
         this.checkbox.setAttribute('type', 'checkbox');
@@ -85,19 +80,10 @@ class CheckboxView extends DOMWidgetView {
 
         if (options === undefined || options.updated_view != this) {
             this.checkbox.disabled = this.model.get('disabled');
-
-            var description = this.model.get('description');
-            if (description.trim().length === 0) {
-                this.label.style.display = 'none';
-            } else {
-                this.typeset(this.label, description);
-                this.label.style.display = '';
-            }
         }
         return super.update();
     }
     checkbox: HTMLInputElement;
-    label: HTMLElement;
 }
 
 

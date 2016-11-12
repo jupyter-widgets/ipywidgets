@@ -6,14 +6,14 @@ Represents a unicode string using a widget.
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from .domwidget import DOMWidget
+from .domwidget import LabeledWidget
 from .valuewidget import ValueWidget
 from .widget import CallbackDispatcher, register
 from traitlets import Unicode, Bool
 from warnings import warn
 
 
-class _String(DOMWidget, ValueWidget):
+class _String(LabeledWidget, ValueWidget):
     """Base class used to create widgets that represent a string."""
 
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
@@ -21,7 +21,6 @@ class _String(DOMWidget, ValueWidget):
 
     value = Unicode(help="String value").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
-    description = Unicode(help="Description of the value this widget represents").tag(sync=True)
     placeholder = Unicode("", help="Placeholder text to display when nothing has been typed").tag(sync=True)
 
     def __init__(self, value=None, **kwargs):

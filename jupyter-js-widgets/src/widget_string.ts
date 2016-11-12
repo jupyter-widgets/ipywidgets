@@ -2,17 +2,16 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetModel, DOMWidgetView
+    LabeledDOMWidgetModel, LabeledDOMWidgetView
 } from './widget';
 import * as _ from 'underscore';
 
 export
-class StringModel extends DOMWidgetModel {
+class StringModel extends LabeledDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             value: '',
             disabled: false,
-            description: '',
             placeholder: '',
             _model_name: 'StringModel'
         });
@@ -30,11 +29,12 @@ class HTMLModel extends StringModel {
 }
 
 export
-class HTMLView extends DOMWidgetView {
+class HTMLView extends LabeledDOMWidgetView {
     /**
      * Called when view is rendered.
      */
     render() {
+        super.render();
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-html');
         this.update(); // Set defaults.
@@ -64,11 +64,12 @@ class LabelModel extends StringModel {
 }
 
 export
-class LabelView extends DOMWidgetView {
+class LabelView extends LabeledDOMWidgetView {
     /**
      * Called when view is rendered.
      */
     render() {
+        super.render();
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-label');
         this.update(); // Set defaults.
@@ -97,19 +98,15 @@ class TextareaModel extends StringModel {
 }
 
 export
-class TextareaView extends DOMWidgetView {
+class TextareaView extends LabeledDOMWidgetView {
     /**
      * Called when view is rendered.
      */
     render() {
+        super.render();
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-textarea');
-
-        this.label = document.createElement('div');
-        this.label.classList.add('widget-label');
-        this.label.style.display = 'none';
-        this.el.appendChild(this.label);
 
         this.textbox = document.createElement('textarea');
         this.textbox.setAttribute('rows', '5');
@@ -161,14 +158,6 @@ class TextareaView extends DOMWidgetView {
 
             var disabled = this.model.get('disabled');
             this.textbox.disabled = disabled;
-
-            var description = this.model.get('description');
-            if (description.length === 0) {
-                this.label.style.display = 'none';
-            } else {
-                this.typeset(this.label, description);
-                this.label.style.display = '';
-            }
         }
         return super.update();
     }
@@ -213,7 +202,6 @@ class TextareaView extends DOMWidgetView {
         this.touch();
     }
 
-    label: HTMLDivElement;
     textbox: HTMLTextAreaElement;
 }
 
@@ -228,18 +216,15 @@ class TextModel extends StringModel {
 }
 
 export
-class TextView extends DOMWidgetView {
+class TextView extends LabeledDOMWidgetView {
     /**
      * Called when view is rendered.
      */
     render() {
+        super.render();
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-text');
-        this.label = document.createElement('div');
-        this.label.className = 'widget-label';
-        this.el.appendChild(this.label);
-        this.label.style.display = 'none';
 
         this.textbox = document.createElement('input');
         this.textbox.setAttribute('type', 'text');
@@ -275,14 +260,6 @@ class TextView extends DOMWidgetView {
 
             var disabled = this.model.get('disabled');
             this.textbox.disabled = disabled;
-
-            var description = this.model.get('description');
-            if (description.length === 0) {
-                this.label.style.display = 'none';
-            } else {
-                this.typeset(this.label, description);
-                this.label.style.display = '';
-            }
         }
         return super.update();
     }
@@ -356,7 +333,5 @@ class TextView extends DOMWidgetView {
         }
     }
 
-
-    label: HTMLDivElement;
     textbox: HTMLInputElement;
 }

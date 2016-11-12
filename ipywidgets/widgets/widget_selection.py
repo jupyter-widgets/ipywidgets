@@ -11,7 +11,7 @@ try:
 except ImportError:  #python3.x
     izip = zip
 
-from .domwidget import DOMWidget
+from .domwidget import LabeledWidget
 from .valuewidget import ValueWidget
 from .widget import register
 from traitlets import (Unicode, Bool, Any, Dict, TraitError, CaselessStrEnum,
@@ -38,7 +38,7 @@ def _label_to_value(k, obj):
     return obj._options_dict[k]
 
 
-class _Selection(DOMWidget, ValueWidget):
+class _Selection(LabeledWidget, ValueWidget):
     """Base class for Selection widgets
 
     ``options`` can be specified as a list of values, list of (label, value)
@@ -77,7 +77,6 @@ class _Selection(DOMWidget, ValueWidget):
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
 
     disabled = Bool(help="Enable or disable user changes").tag(sync=True)
-    description = Unicode(help="Description of the value this widget represents").tag(sync=True)
 
     def __init__(self, *args, **kwargs):
         self.equals = kwargs.pop('equals', lambda x, y: x == y)

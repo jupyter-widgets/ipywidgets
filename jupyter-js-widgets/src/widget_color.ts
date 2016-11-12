@@ -2,18 +2,17 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetModel, DOMWidgetView
+    LabeledDOMWidgetModel, LabeledDOMWidgetView
 } from './widget';
 
 import * as _ from 'underscore';
 
 
 export
-class ColorPickerModel extends DOMWidgetModel {
+class ColorPickerModel extends LabeledDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             value: 'black',
-            description: '',
             concise: false,
             _model_name: 'ColorPickerModel',
             _view_name: 'ColorPickerView'
@@ -22,15 +21,12 @@ class ColorPickerModel extends DOMWidgetModel {
 }
 
 export
-class ColorPickerView extends DOMWidgetView {
+class ColorPickerView extends LabeledDOMWidgetView {
     render() {
+        super.render();
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-colorpicker');
-
-        this._label = document.createElement('div');
-        this._label.classList.add('widget-label');
-        this.el.appendChild(this._label);
 
         this._color_container = document.createElement('div');
         this._color_container.className = 'widget-hbox';
@@ -47,12 +43,10 @@ class ColorPickerView extends DOMWidgetView {
         this._color_container.appendChild(this._colorpicker);
 
         this.listenTo(this.model, 'change:value', this._update_value);
-        this.listenTo(this.model, 'change:description', this._update_description);
         this.listenTo(this.model, 'change:concise', this._update_concise);
 
         this._update_concise();
         this._update_value();
-        this._update_description();
     }
 
     events(): {[e: string]: string} {
@@ -66,18 +60,6 @@ class ColorPickerView extends DOMWidgetView {
         var value = this.model.get('value');
         this._colorpicker.value = color2hex(value);
         this._textbox.value = value;
-    }
-
-    private _update_description() {
-        var description = this.model.get('description');
-        if (description.length === 0) {
-            this._label.style.display = 'none';
-            this._color_container.style['justify-content'] = 'auto';
-        } else {
-            this.typeset(this._label, description);
-            this._color_container.style['justify-content'] = 'flex-end';
-            this._label.style.display = '';
-        }
     }
 
     private _update_concise() {
@@ -110,7 +92,6 @@ class ColorPickerView extends DOMWidgetView {
           named_colors[color.toLowerCase()] ? color: fallback;
     }
 
-    private _label: HTMLDivElement;
     private _color_container: HTMLDivElement;
     private _textbox: HTMLInputElement;
     private _colorpicker: HTMLInputElement;

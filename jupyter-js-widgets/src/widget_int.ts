@@ -2,6 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
+    LabeledDOMWidgetModel, LabeledDOMWidgetView,
     DOMWidgetModel, DOMWidgetView
 } from './widget';
 import * as _ from 'underscore';
@@ -10,13 +11,12 @@ import 'jquery-ui/ui/widgets/slider';
 var d3format: any = (require('d3-format') as any).format;
 
 export
-class IntModel extends DOMWidgetModel {
+class IntModel extends LabeledDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'IntModel',
             value: 0,
             disabled: false,
-            description: ''
         });
     }
 }
@@ -60,20 +60,13 @@ class IntSliderModel extends BoundedIntModel {
 
 
 export
-class IntSliderView extends DOMWidgetView {
+class IntSliderView extends LabeledDOMWidgetView {
     render() {
-        /**
-         * Called when view is rendered.
-         */
+        super.render();
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-slider');
         this.el.classList.add('widget-hslider');
-
-        this.label = document.createElement('div');
-        this.el.appendChild(this.label);
-        this.label.classList.add('widget-label');
-        this.label.style.display = 'none';
 
         (this.$slider = $('<div />') as any)
             .slider({
@@ -95,26 +88,13 @@ class IntSliderView extends DOMWidgetView {
         this.listenTo(this.model, 'change:slider_color', function(sender, value) {
             this.$slider.find('a').css('background', value);
         });
-        this.listenTo(this.model, 'change:description', function(sender, value) {
-            this.updateDescription();
-        });
 
         this.$slider.find('a').css('background', this.model.get('slider_color'));
 
         // Set defaults.
         this.update();
-        this.updateDescription();
     }
 
-    updateDescription() {
-        var description = this.model.get('description');
-        if (description.length === 0) {
-            this.label.style.display = 'none';
-        } else {
-            this.typeset(this.label, description);
-            this.label.style.display = '';
-        }
-    }
 
     update(options?) {
         /**
@@ -380,7 +360,6 @@ class IntSliderView extends DOMWidgetView {
         return Math.floor(x);
     }
 
-    label: HTMLElement;
     $slider: any;
     slider_container: HTMLElement;
     readout: HTMLDivElement;
@@ -400,41 +379,19 @@ class IntTextModel extends IntModel {
 }
 
 export
-class IntTextView extends DOMWidgetView {
+class IntTextView extends LabeledDOMWidgetView {
     render() {
-        /**
-         * Called when view is rendered.
-         */
+        super.render();
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-text');
-
-        this.label = document.createElement('div');
-        this.el.appendChild(this.label);
-        this.label.className = 'widget-label';
-        this.label.style.display = 'none';
 
         this.textbox = document.createElement('input');
         this.textbox.setAttribute('type', 'text');
         this.textbox.className = 'form-control';
         this.el.appendChild(this.textbox);
 
-        this.listenTo(this.model, 'change:description', function(sender, value) {
-            this.updateDescription();
-        });
-
         this.update(); // Set defaults.
-        this.updateDescription();
-    }
-
-    updateDescription() {
-        var description = this.model.get('description');
-        if (description.length === 0) {
-            this.label.style.display = 'none';
-        } else {
-            this.typeset(this.label, description);
-            this.label.style.display = '';
-        }
     }
 
     update(options?) {
@@ -541,7 +498,6 @@ class IntTextView extends DOMWidgetView {
     }
 
     _parse_value = parseInt
-    label: HTMLElement;
     textbox: HTMLInputElement;
 }
 
@@ -559,21 +515,14 @@ class ProgressModel extends BoundedIntModel {
 
 
 export
-class ProgressView extends DOMWidgetView {
+class ProgressView extends LabeledDOMWidgetView {
     render() {
-        /**
-         * Called when view is rendered.
-         */
+        super.render();
         var orientation = this.model.get('orientation');
         var className = orientation === 'horizontal' ? 'widget-hprogress'
             : 'widget-vprogress';
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add(className);
-
-        this.label = document.createElement('div');
-        this.el.appendChild(this.label);
-        this.label.classList.add('widget-label');
-        this.label.style.display = 'none';
 
         this.progress = document.createElement('div');
         this.progress.classList.add('progress');
@@ -589,24 +538,9 @@ class ProgressView extends DOMWidgetView {
 
         // Set defaults.
         this.update();
-        this.updateDescription();
 
         this.listenTo(this.model, 'change:bar_style', this.update_bar_style);
-        this.listenTo(this.model, 'change:description', function(sender, value) {
-            this.updateDescription();
-        });
-
         this.update_bar_style();
-    }
-
-    updateDescription() {
-        var description = this.model.get('description');
-        if (description.length === 0) {
-            this.label.style.display = 'none';
-        } else {
-            this.typeset(this.label, description);
-            this.label.style.display = '';
-        }
     }
 
     update() {
@@ -653,7 +587,6 @@ class ProgressView extends DOMWidgetView {
         this.update_mapped_classes(class_map, 'bar_style', this.bar);
     }
 
-    label: HTMLDivElement;
     progress: HTMLDivElement;
     bar: HTMLDivElement;
 }
@@ -711,6 +644,7 @@ class PlayModel extends BoundedIntModel {
 export
 class PlayView extends DOMWidgetView {
     render() {
+        super.render();
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-hbox');
         this.el.classList.add('widget-play');

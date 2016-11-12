@@ -39,3 +39,9 @@ class DOMWidget(Widget):
         if className in self._dom_classes:
             self._dom_classes = [c for c in self._dom_classes if c != className]
         return self
+
+class LabeledWidget(DOMWidget):
+    """Widget that has a description label to the side."""
+
+    _model_name = Unicode('LabeledWidgetModel').tag(sync=True)
+    description = Unicode('', help="Description of the control.").tag(sync=True)
