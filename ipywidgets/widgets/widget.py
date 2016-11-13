@@ -46,6 +46,10 @@ widget_serialization = {
     'to_json': _widget_to_json
 }
 
+def get_kernel():
+    """Return the current kernel instance, or None if not running in a kernel."""
+    return getattr(get_ipython(), 'kernel', None)
+
 if PY3:
     _binary_types = (memoryview, bytes)
 else:
@@ -182,7 +186,11 @@ class Widget(LoggingConfigurable):
         super(Widget, self).__init__(**kwargs)
 
         Widget._call_widget_constructed(self)
-        self.open()
+        if get_kernel() is not None:
+            self.open()
+        else:
+            self.log.warn('Jupyter widgets must be run from a Jupyter kernel')
+
 
     def __del__(self):
         """Object disposal"""
