@@ -56,7 +56,7 @@ class WrappedError extends Error {
  */
 
 export
-function loadClass(class_name, module_name, registry, require_error): Promise<any> {
+function loadClass(class_name, module_name, module_version, registry, require_error): Promise<any> {
     return new Promise(function(resolve, reject) {
 
         // Try loading the view module using require.js
@@ -70,7 +70,7 @@ function loadClass(class_name, module_name, registry, require_error): Promise<an
                         var success_callback = function(module) {
                             innerResolve(module);
                         };
-                        var failure_callback = require_error ? require_error(success_callback) : innerReject;
+                        var failure_callback = require_error ? require_error(success_callback, module_version) : innerReject;
                         (window as any).require([module_name], success_callback, failure_callback);
                     });
                 } else if (module_name === 'jupyter-js-widgets') {
