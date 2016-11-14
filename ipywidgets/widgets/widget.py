@@ -151,6 +151,15 @@ class Widget(LoggingConfigurable):
             widget_class = import_item(class_name)
         widget = widget_class(comm=comm)
 
+    @staticmethod
+    def get_manager_state(drop_defaults=False):
+        return {
+            k: {
+                'model_name': Widget.widgets[k]._model_name,
+                'model_module': Widget.widgets[k]._model_module,
+                'state': Widget.widgets[k].get_state(drop_defaults=drop_defaults)
+            } for k in Widget.widgets
+        }
 
     #-------------------------------------------------------------------------
     # Traits
@@ -271,7 +280,7 @@ class Widget(LoggingConfigurable):
         msg = {'method': 'update', 'state': state, 'buffers': buffer_keys}
         self._send(msg, buffers=buffers)
 
-    def get_state(self, key=None):
+    def get_state(self, key=None, drop_defaults=False):
         """Gets the widget state, or a piece of it.
 
         Parameters
@@ -294,13 +303,14 @@ class Widget(LoggingConfigurable):
         else:
             raise ValueError("key must be a string, an iterable of keys, or None")
         state = {}
-        traits = self.traits() if not PY3 else {} # no need to construct traits on PY3
+        traits = self.traits()
         for k in keys:
             to_json = self.trait_metadata(k, 'to_json', self._trait_to_json)
             value = to_json(getattr(self, k), self)
             if not PY3 and isinstance(traits[k], Bytes) and isinstance(value, bytes):
                 value = memoryview(value)
-            state[k] = value
+            if not drop_defaults or value != traits[k].default_value:
+                state[k] = value
         return state
 
     def set_state(self, sync_data):
