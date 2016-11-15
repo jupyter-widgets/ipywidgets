@@ -10,6 +10,7 @@ try:
 except ImportError:
     from mock import patch
 
+import os
 import nose.tools as nt
 
 import ipywidgets as widgets
@@ -730,3 +731,14 @@ def test_get_interact_value():
     c = interactive(lambda v: v, v=w)
     c.update()
     nt.assert_equal(c.result, 42)
+
+def test_state_schema():
+    from ipywidgets.widgets import IntSlider, Widget
+    import json
+    import jsonschema
+    s = IntSlider()
+    state = Widget.get_manager_state(drop_defaults=True)
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../../', 'state.schema.json')) as f:
+        schema = json.load(f)
+    jsonschema.validate(state, schema)
+
