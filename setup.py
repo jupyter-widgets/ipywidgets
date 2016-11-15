@@ -108,7 +108,7 @@ if 'develop' in sys.argv or any(a.startswith('bdist') for a in sys.argv):
 setuptools_args = {}
 install_requires = setuptools_args['install_requires'] = [
     'ipython>=4.0.0',
-    'ipykernel>=4.2.2',
+    'ipykernel==git+https://github.com/ipython/traitlets.git',
     'traitlets>=4.3.1',
     # TODO: Dynamically add this dependency
     # only if notebook 4.x is installed in this
