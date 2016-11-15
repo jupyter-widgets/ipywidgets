@@ -35,6 +35,11 @@ interface ModelOptions {
     model_module: string;
 
     /**
+     * Semver version requirement for the model module.
+     */
+    model_module_version: string;
+
+    /**
      * Target name of the widget in the back end.
      */
     widget_class?: string;
@@ -124,7 +129,7 @@ abstract class ManagerBase<T> {
      * Takes a requirejs success handler and returns a requirejs error handler.
      * The default implementation just throws the original error.
      */
-    require_error (success_callback) {
+    require_error (success_callback, version: string) {
         return function(err) : any {
             throw err;
         };
@@ -142,6 +147,7 @@ abstract class ManagerBase<T> {
             return this.loadClass(
                 model.get('_view_name'),
                 model.get('_view_module'),
+                model.get('_view_module_version'),
                 this.require_error
             ).then((ViewType) => {
                 var view = new ViewType({
@@ -182,6 +188,7 @@ abstract class ManagerBase<T> {
         return this.new_model({
             model_name: msg.content.data['_model_name'],
             model_module: msg.content.data['_model_module'],
+            model_module_version: msg.content.data['_model_module_version'],
             comm: comm
         }, msg.content.data).catch(utils.reject('Could not create a model.', true));
     };
@@ -286,8 +293,9 @@ abstract class ManagerBase<T> {
         }
 
         var model_promise = this.loadClass(options.model_name,
-                                            options.model_module,
-                                            that.require_error)
+                                           options.model_module,
+                                           options.model_module_version,
+                                           that.require_error)
             .then(function(ModelType) {
                 return ModelType._deserialize_state(serialized_state || {}, that).then(function(attributes) {
                     let modelOptions = {
@@ -411,14 +419,16 @@ abstract class ManagerBase<T> {
                         return that.new_model({
                             comm: new_comm,
                             model_name: state[model_id].model_name,
-                            model_module: state[model_id].model_module
+                            model_module: state[model_id].model_module,
+                            model_module_version: state[model_id].model_module_version
                         });
                     });
                 } else { // dead comm
                     return that.new_model({
                         model_id: model_id,
                         model_name: state[model_id].model_name,
-                        model_module: state[model_id].model_module
+                        model_module: state[model_id].model_module,
+                        model_module_version: state[model_id].model_module_version
                     }, state[model_id].state);
                 }
             }));
@@ -448,8 +458,8 @@ abstract class ManagerBase<T> {
     /**
      * Load a class and return a promise to the loaded object.
      */
-    protected loadClass(className, moduleName, error) {
-        return utils.loadClass(className, moduleName, null, error);
+    protected loadClass(className, moduleName, moduleVersion, error) {
+        return utils.loadClass(className, moduleName, moduleVersion, null, error);
     }
 
     abstract _create_comm(comm_target_name, model_id, data?): Promise<any>;
@@ -457,7 +467,7 @@ abstract class ManagerBase<T> {
     abstract _get_comm_info();
 
     /**
-     * Dictionary of model ids and model instance promises 
+     * Dictionary of model ids and model instance promises
      */
     private _models: any = Object.create(null);
 }

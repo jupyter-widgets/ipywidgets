@@ -164,14 +164,18 @@ class Widget(LoggingConfigurable):
     #-------------------------------------------------------------------------
     # Traits
     #-------------------------------------------------------------------------
-    _model_module = Unicode('jupyter-js-widgets', help="""A requirejs module name
-        in which to find _model_name. If empty, look in the global registry.""").tag(sync=True)
-    _model_name = Unicode('WidgetModel', help="""Name of the backbone model
-        registered in the front-end to create and sync this widget with.""").tag(sync=True)
-    _view_module = Unicode(None, allow_none=True, help="""A requirejs module in which to find _view_name.
-        If empty, look in the global registry.""").tag(sync=True)
-    _view_name = Unicode(None, allow_none=True, help="""Default view registered in the front-end
-        to use to represent the widget.""").tag(sync=True)
+    _model_module = Unicode('jupyter-js-widgets',
+        help="A JavaScript module name in which to find _model_name.").tag(sync=True)
+    _model_name = Unicode('WidgetModel',
+        help="Name of the model object in the front-end.").tag(sync=True)
+    _model_module_version = Unicode('*',
+        help="A semver requirement for the model module version.").tag(sync=True)
+    _view_module = Unicode(None, allow_none=True,
+        help="A JavaScript module in which to find _view_name.").tag(sync=True)
+    _view_name = Unicode(None, allow_none=True,
+        help="Name of the view object.").tag(sync=True)
+    _view_module_version = Unicode('*',
+        help="A semver requirement for the view module version.").tag(sync=True)
     comm = Instance('ipykernel.comm.Comm', allow_none=True)
 
     msg_throttle = Int(1, help="""Maximum number of msgs the front-end can send before receiving an idle msg from the back-end.""").tag(sync=True)
