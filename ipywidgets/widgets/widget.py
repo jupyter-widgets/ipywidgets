@@ -157,6 +157,7 @@ class Widget(LoggingConfigurable):
             k: {
                 'model_name': Widget.widgets[k]._model_name,
                 'model_module': Widget.widgets[k]._model_module,
+                'model_module_version': Widget.widgets[k]._model_module_version,
                 'state': Widget.widgets[k].get_state(drop_defaults=drop_defaults)
             } for k in Widget.widgets
         }
