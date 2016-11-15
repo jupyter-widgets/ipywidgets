@@ -9,8 +9,8 @@ click events on the button and trigger backend code when the clicks are fired.
 
 from .domwidget import DOMWidget
 from .widget import CallbackDispatcher, register
-from traitlets import Unicode, Bool, CaselessStrEnum
-
+from traitlets import Unicode, Bool, CaselessStrEnum, validate
+import warnings
 
 @register('Jupyter.Button')
 class Button(DOMWidget):
@@ -36,7 +36,7 @@ class Button(DOMWidget):
     description = Unicode('', help="Button label.").tag(sync=True)
     tooltip = Unicode(help="Tooltip caption of the button.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes.").tag(sync=True)
-    icon = Unicode('', help="Font-awesome icon.").tag(sync=True)
+    icon = Unicode('', help="Font-awesome icon name, without the 'fa-' prefix.").tag(sync=True)
 
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
@@ -46,6 +46,16 @@ class Button(DOMWidget):
         super(Button, self).__init__(**kwargs)
         self._click_handlers = CallbackDispatcher()
         self.on_msg(self._handle_button_msg)
+
+    @validate('icon')
+    def _validate_icon(self, proposal):
+        """Strip 'fa-' if necessary'"""
+        value = proposal['value']
+        if value.startswith('fa-'):
+            warnings.warn("icons names no longer start with 'fa-', "
+            "just use the class name itself (for example, 'check' instead of 'fa-check')", DeprecationWarning)
+            value = value[3:]
+        return value
 
     def on_click(self, callback, remove=False):
         """Register a callback to execute when the button is clicked.
