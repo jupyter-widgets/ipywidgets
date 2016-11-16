@@ -17,6 +17,7 @@ Contents
     examples/Widget Custom.ipynb
     examples/Widget Alignment.ipynb
     examples/Widget Low Level.ipynb
+    embedding.md
     contributing.md
     changelog.md
 

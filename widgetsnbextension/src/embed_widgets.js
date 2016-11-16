@@ -10,6 +10,8 @@ var embed_widgets = function() {
             Jupyter.WidgetManager._managers[0].get_state({
                 'drop_defaults': true
             }).then(function(state) {
+                state.version_major = 1;
+                state.version_minor = 0;
                 var data = JSON.stringify(state, null, '    ');
                 var value = '<script src="https://unpkg.com/jupyter-js-widgets@~' + widgets.version + '/dist/embed.js"></script><script type="application/vnd.jupyter-embedded-widgets">' + data + '</script>';
                 var content = document.createElement('textarea');

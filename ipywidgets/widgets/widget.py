@@ -153,14 +153,14 @@ class Widget(LoggingConfigurable):
 
     @staticmethod
     def get_manager_state(drop_defaults=False):
-        return {
+        return dict(version_major=1, version_minor=0, **{
             k: {
                 'model_name': Widget.widgets[k]._model_name,
                 'model_module': Widget.widgets[k]._model_module,
                 'model_module_version': Widget.widgets[k]._model_module_version,
                 'state': Widget.widgets[k].get_state(drop_defaults=drop_defaults)
             } for k in Widget.widgets
-        }
+        })
 
     #-------------------------------------------------------------------------
     # Traits
