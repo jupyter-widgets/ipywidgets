@@ -101,8 +101,6 @@ abstract class ManagerBase<T> {
      */
     display_model(msg: services.KernelMessage.IMessage, model: Backbone.Model, options: any): Promise<T> {
         options = options || {};
-        options.root = true; // This element is at the root of the widget hierarchy.
-
         return this.create_view(model, options).then(_.bind(function(view) {
             return this.display_view(msg, view, options);
         }, this)).catch(utils.reject('Could not create view', true));
@@ -349,44 +347,19 @@ abstract class ManagerBase<T> {
         var that = this;
         return utils.resolvePromisesDict(this._models).then(function(models) {
             var state = {};
-
             for (var model_id in models) {
                 if (models.hasOwnProperty(model_id)) {
                     var model = models[model_id];
-
-                    // If the model has one or more views defined for it,
-                    // consider it displayed.
-                    var displayed_flag = !(options && options.only_displayed) || Object.keys(model.views).length > 0;
-                    var live_flag = (options && options.not_live) || model.comm_live;
-                    if (displayed_flag && live_flag) {
-                        state[model_id] = utils.resolvePromisesDict({
-                            model_name: model.name,
-                            model_module: model.module,
-                            state: model.constructor._serialize_state(model.get_state(options.drop_defaults), that),
-                            views: utils.resolvePromisesDict(model.views).then(function (views) {
-                                return _.values(views).filter(function(view) {
-                                        return view.options !== undefined && view.options.root;
-                                }).map(function (view) {
-                                    return that.filterViewOptions(view.options);
-                                });
-                            })
-                        });
-                    }
+                    state[model_id] = utils.resolvePromisesDict({
+                        model_name: model.name,
+                        model_module: model.module,
+                        model_module_version: model.get('_model_module_version'),
+                        state: model.constructor._serialize_state(model.get_state(options.drop_defaults), that)
+                    });
                 }
             }
             return utils.resolvePromisesDict(state);
         }).catch(utils.reject('Could not get state of widget manager', true));
-    };
-
-    /**
-     * Returns the keys of view options that must be stored in the serialized
-     * widget manager state.
-     *
-     * This is meant to be overloaded in custom managers, which may register
-     * the cell index.
-     */
-    filterViewOptions(options) {
-        return {};
     };
 
     /**
@@ -423,7 +396,7 @@ abstract class ManagerBase<T> {
                             model_module_version: state[model_id].model_module_version
                         });
                     });
-                } else { // dead comm
+                } else {                                    // dead comm
                     return that.new_model({
                         model_id: model_id,
                         model_name: state[model_id].model_name,
@@ -434,25 +407,7 @@ abstract class ManagerBase<T> {
             }));
         });
 
-        // Display all the views
-        return all_models.then(function(models: Backbone.Model[]) {
-            return Promise.all(_.map(models, function(model) {
-                // Display the views of the model.
-                if (state[model.id] !== undefined) {
-                    // Display the model using the display options merged with the
-                    // options.
-                    if (displayOptions && displayOptions.displayOnce && state[model.id].views && state[model.id].views.length) {
-                        return that.display_model(undefined, model, _.extend({}, displayOptions));
-                    } else {
-                        // Display the model using the display options merged with the
-                        // options.
-                        return Promise.all(_.map(state[model.id].views, function(options) {
-                            return that.display_model(undefined, model, _.extend({}, options, displayOptions));
-                        }));
-                    }
-                }
-            }));
-        }).catch(utils.reject('Could not set widget manager state.', true));
+        return all_models;
     };
 
     /**

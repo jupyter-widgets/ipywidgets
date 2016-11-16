@@ -23,10 +23,10 @@ This HTML snippet is composed of two script tags:
 
  - The first script tag loads a custom widget manager from the `unpkg` cdn.
  - The second script tag contains the state of all the widget model currently
-   in use. It has the mime type `application/vnd.jupyter-embedded-widgets`, and
-   the json schema for that script tag is:
+   in use. It has the mime type `application/vnd.jupyter.widget-state+json`.
+   The json schema for the content of that script tag is:
 
-   ```json
+    ```json
     {
         "$schema": "http://json-schema.org/draft-04/schema#",
         "description": "Jupyter Interactive Widget State JSON schema.",
@@ -41,33 +41,38 @@ This HTML snippet is composed of two script tags:
             "version_minor" : {
                 "description": "Format version (minor)",
                 "type": "number"
+            },
+            "state": {
+                "description": "Model State for All Widget Models",
+                "type": "object",
+                "additionalProperties": true,
+                "additionalProperties" : {
+                    "type": "object"
+                    "properties": {
+                        "model_name": {
+                            "description" : "Name of the JavaScript class holding the model implementation",
+                            "type": "string"
+                        },
+                        "model_module": {
+                            "description" : "Name of the JavaScript module holding the model implementation",
+                            "type": "string"
+                        },
+                        "model_module_version": {
+                            "description" : "Semver range for the JavaScript module holding the model implementation",
+                            "type": "string"
+                        },
+                        "state": {
+                            "description" : "Serialized state of the model",
+                            "type": "object",
+                            "additional_properties": true
+                        }
+                    },
+                    "required": [ "model_name", "model_module", "state" ],
+                    "additionalProperties": false
+                }
             }
         },
-        "additionalProperties": true,
-        "additionalProperties" : {
-            "type": "object",
-            "properties": {
-                "model_name": {
-                    "description" : "Name of the JavaScript class holding the model implementation",
-                    "type": "string"
-                },
-                "model_module": {
-                    "description" : "Name of the JavaScript module holding the model implementation",
-                    "type": "string"
-                },
-                "model_module_version": {
-                    "description" : "Semver range for the JavaScript module holding the model implementation",
-                    "type": "string"
-                },
-                "state": {
-                    "description" : "Serialized state of the model",
-                    "type": "object",
-                    "additional_properties": true
-                }
-            },
-            "required": [ "model_name", "model_module", "state" ],
-            "additional_properties": true
-        }
+        "additionalProperties": false
     }
     ```
 

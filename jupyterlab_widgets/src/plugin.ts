@@ -38,7 +38,7 @@ import * as widgets from 'jupyter-js-widgets';
 import 'jupyter-js-widgets/css/widgets-base.css';
 
 
-const WIDGET_MIMETYPE = 'application/vnd.jupyter.widget';
+const WIDGET_MIMETYPE = 'application/vnd.jupyter.widget-view+json';
 
 
 export
