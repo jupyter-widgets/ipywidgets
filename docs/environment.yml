@@ -13,7 +13,7 @@ dependencies:
 - sphinx>=1.4.6
 - ipykernel
 - pip:
-  - nbsphinx==0.2.9
+  - nbsphinx==0.2.11
   - sphinx_rtd_theme==0.1.10-alpha
   - python-dateutil
   - recommonmark==0.4.0
