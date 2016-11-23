@@ -313,10 +313,16 @@
 .widget-valid i:before {
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
-    font-family: FontAwesome;
-    font-style: normal;
     margin-right: 4px;
     margin-left: 4px;
+
+    /* from the fa class in FontAwesome: https://github.com/FortAwesome/Font-Awesome/blob/49100c7c3a7b58d50baa71efef11af41a66b03d3/css/font-awesome.css#L14 */
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .widget-valid.mod-valid i:before {
