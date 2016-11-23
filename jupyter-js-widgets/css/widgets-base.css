@@ -16,6 +16,7 @@
     --jp-widgets-inline-width: 300px;
     --jp-widgets-inline-width-short: calc(var(--jp-widgets-inline-width) / 2 - var(--jp-widgets-margin));
     --jp-widgets-inline-width-tiny: calc(var(--jp-widgets-inline-width-short) / 2 - var(--jp-widgets-margin));
+    --jp-widgets-inline-label-width: 100px;
     --jp-widgets-border-width: var(--jp-border-width);
     --jp-widgets-tall-height: 200px;
     --jp-widgets-horizontal-tab-height: 24px;
@@ -228,15 +229,7 @@
     text-align: right;
     margin-right: 4px;
     vertical-align: text-top;
-
-    /* When labels are short, the min-width takes over,
-     * and labeled horizontal widgets are aligned.
-     *
-     * When labels are longer, the actual widget is shifted to the right.
-     * There is a maximum length for a label.
-     */
-    min-width: 80px;
-    max-width: 160px;
+    width: var(--jp-widgets-inline-label-width);
 }
 
 .widget-vbox .widget-label {
