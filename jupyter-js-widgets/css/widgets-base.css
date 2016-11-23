@@ -456,7 +456,7 @@
 /* Horizontal Slider */
 
 .widget-hslider {
-    min-width: var(--jp-widgets-inline-width);
+    width: var(--jp-widgets-inline-width);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
 }
@@ -552,10 +552,10 @@
     /* Progress Bar */
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
+    width: var(--jp-widgets-inline-width);
 }
 
 .widget-hprogress .progress {
-    width: var(--jp-widgets-inline-width);
     height: var(--jp-widgets-progress-thickness);
     margin-top: auto;
     margin-bottom: auto;
