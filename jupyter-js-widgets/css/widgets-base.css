@@ -219,7 +219,7 @@
     overflow: hidden;
     text-overflow  : ellipsis;
     white-space    : nowrap;
-
+    line-height: var(--jp-widgets-inline-height);
 }
 
 .widget-hbox .widget-label {
@@ -341,6 +341,10 @@
     /* Textbox */
     width: var(--jp-widgets-inline-width);
     height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+}
+
+.widget-textarea {
     line-height: var(--jp-widgets-inline-height);
 }
 
@@ -704,6 +708,7 @@ ul.widget-dropdown-droplist.mod-active {
 
 .widget-select-multiple {
     min-width: var(--jp-widgets-inline-width);
+    line-height: var(--jp-widgets-inline-height);
 }
 
 .widget-select-multiple select {
@@ -720,6 +725,14 @@ ul.widget-dropdown-droplist.mod-active {
     background: var(--jp-layout-color0) repeat url("data:image/gif;base64,R0lGO...");
 }
 
+.wiget-select-multiple select option {
+    padding-left: var(--jp-widgets-input-padding);
+    line-height: var(--jp-widgets-inline-height);
+    /* line-height doesn't work on some browsers for select options */
+    padding-top: calc(var(--jp-widgets-inline-height)-var(--jp-widgets-font-size)/2);
+    padding-bottom: calc(var(--jp-widgets-inline-height)-var(--jp-widgets-font-size)/2);
+}
+
 
 
 /* Toggle Buttons Styling */
@@ -733,6 +746,7 @@ ul.widget-dropdown-droplist.mod-active {
 
 .widget-radio {
     min-width: var(--jp-widgets-inline-width);
+    line-height: var(--jp-widgets-inline-height);
 }
 
 .widget-radio-box {
@@ -929,4 +943,8 @@ ul.widget-dropdown-droplist.mod-active {
 
 .widget-accordion > .accordion-page + .accordion-page {
     margin-top: 4px;
+}
+
+.widget-html {
+    line-height: var(--jp-widgets-inline-height);
 }
