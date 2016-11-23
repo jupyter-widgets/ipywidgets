@@ -76,12 +76,12 @@
     "spawn-sync": "^1.0.14",
     "style-loader": "^0.13.1",
     "typedoc": "^0.5.0",
-    "typescript": "^2.0.3",
+    "typescript": "^2.0.10",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.11"
   },
   "dependencies": {
-    "@jupyterlab/services": "^0.25.0",
+    "@jupyterlab/services": "^0.34.2",
     "@types/backbone": "^1.3.33",
     "@types/semver": "^5.3.30",
     "backbone": "1.2.0",
@@ -90,7 +90,7 @@
     "jquery": "^3.1.1",
     "jquery-ui": "^1.12.1",
     "lolex": "^1.4.0",
-    "phosphor": "^0.6.1",
+    "phosphor": "^0.7.0",
     "scriptjs": "^2.5.8",
     "semver": "^5.1.0",
     "underscore": "^1.8.3"
