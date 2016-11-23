@@ -217,8 +217,8 @@
     /* Label */
     font-size: var(--jp-widgets-font-size);
     overflow: hidden;
-    text-overflow  : ellipsis;
-    white-space    : nowrap;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     line-height: var(--jp-widgets-inline-height);
 }
 
@@ -581,7 +581,7 @@
 /* Dropdown Widget Styling */
 
 .widget-dropdown {
-    height : var(--jp-widgets-inline-height);
+    height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
     min-width: var(--jp-widgets-inline-width);
 }
