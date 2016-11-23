@@ -111,7 +111,7 @@
 }
 
 .jupyter-button:empty:before {
-    content: "\00a0"
+    content: "\200b"; /* zero-width space */
 }
 
 .jupyter-button:active, .jupyter-button.mod-active {
