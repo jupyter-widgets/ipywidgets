@@ -117,9 +117,10 @@
      box-shadow: none;
 }
 
-.jupyter-button:hover, .jupyter-button:focus, .jupyter-button:active {
+/*.jupyter-button:hover, .jupyter-button:focus, .jupyter-button:active {
     outline: none !important;
 }
+*/
 
 /* Button "Default" Styling */
 
@@ -359,7 +360,7 @@
 }
 
 .widget-text input[type="text"], .widget-textarea input {
-    outline: none !important;
+    /*outline: none !important;*/
     width: inherit;
     margin-left: 4px;
 }
@@ -399,7 +400,7 @@
 
 .widget-slider .ui-slider-handle {
     /* Slider Handle */
-    outline: none !important;
+    outline: none !important; /* focused slider handles are colored - see below */
     position: absolute;
     background-color: var(--jp-layout-color2);
     border: var(--jp-widgets-slider-border-width) solid var(--jp-border-color2);
@@ -691,7 +692,7 @@ ul.widget-dropdown-droplist.mod-active {
     border: var(--jp-border-width) solid var(--jp-border-color1);
     -webkit-appearance: menulist;
     border-radius: 0;
-    outline: none;
+    /*outline: none;*/
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
     min-width: var(--jp-widgets-inline-width-short);
@@ -798,7 +799,7 @@ ul.widget-dropdown-droplist.mod-active {
 
 .widget-colorpicker input[type="text"] {
     flex-grow: 1;
-    outline: none !important;
+    /*outline: none !important;*/
     background: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
     border: var(--jp-widgets-border-width) solid var(--jp-border-color1);
