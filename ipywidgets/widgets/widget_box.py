@@ -56,7 +56,7 @@ class VBox(Box):
 
     @default('layout')
     def _default_layout(self):
-        return Layout(display='flex', flex_flow='column', align_items='strech')
+        return Layout(display='flex', flex_flow='column')
 
 
 @register('Jupyter.HBox')
@@ -65,7 +65,7 @@ class HBox(Box):
 
     @default('layout')
     def _default_layout(self):
-        return Layout(display='flex', align_items='strech')
+        return Layout(display='flex')
 
 
 @register('Jupyter.Proxy')

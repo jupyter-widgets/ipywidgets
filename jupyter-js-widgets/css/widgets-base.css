@@ -57,7 +57,7 @@
     /* Horizontal widgets */
     display: flex;
     flex-direction: row;
-    align-items: stretch;
+    align-items: baseline;
 }
 
 .widget-vbox {
@@ -72,7 +72,7 @@
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
-    align-items: flex-start;
+    align-items: baseline;
 }
 
 /* General Button Styling */
@@ -301,6 +301,8 @@
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
     font-size: large;
+    flex-grow: 1;
+    align-self: center;
 }
 
 /* Widget Valid Styling */
@@ -474,6 +476,7 @@
     width: var(--jp-widgets-inline-width-short);
     margin-left: calc(var(--jp-widgets-slider-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
     margin-right: calc(var(--jp-widgets-slider-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
+    align-self: stretch;
 }
 
 .widget-hslider .ui-slider {
@@ -796,6 +799,7 @@ ul.widget-dropdown-droplist.mod-active {
     color: var(--jp-ui-font-color1);
     border: var(--jp-widgets-border-width) solid var(--jp-border-color1);
     border-left: none;
+    align-self: stretch;
 }
 
 .widget-colorpicker input[type="text"] {
