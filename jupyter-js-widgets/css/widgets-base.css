@@ -359,6 +359,9 @@
     color: var(--jp-ui-font-color1);
     font-size: var(--jp-widgets-font-size);
     padding: var(--jp-widgets-input-padding);
+    flex-grow: 1;
+    min-width: 0; /* This makes it possible for the flexbox to shrink this input */
+    flex-shrink: 1;
 }
 
 .widget-text input:focus, .widget-textarea textarea:focus {
@@ -547,6 +550,7 @@
 }
 
 .widget-hprogress .progress {
+    flex-grow: 1;
     height: var(--jp-widgets-progress-thickness);
     margin-top: auto;
     margin-bottom: auto;
@@ -581,7 +585,7 @@
 
 .widget-dropdown-toggle {
     float: right;
-    min-width: var(--jp-widgets-inline-width-short);
+    min-width: var(--jp-widgets-inline-width-tiny);
     max-width: var(--jp-widgets-inline-width);
     display: flex;
     flex-grow: 1;
@@ -695,6 +699,7 @@ ul.widget-dropdown-droplist.mod-active {
     min-width: var(--jp-widgets-inline-width-short);
     max-width: var(--jp-widgets-inline-width);
     font-size: var(--jp-widgets-font-size);
+    flex-grow: 1;
 }
 
 .widget-select select option:checked {
@@ -716,6 +721,7 @@ ul.widget-dropdown-droplist.mod-active {
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
     font-size: var(--jp-widgets-font-size);
+    flex-grow: 1;
 }
 
 .widget-select-multiple select option:checked {
@@ -744,13 +750,8 @@ ul.widget-dropdown-droplist.mod-active {
 
 .widget-radio {
     min-width: var(--jp-widgets-inline-width);
+    width: var(--jp-widgets-inline-width);
     line-height: var(--jp-widgets-inline-height);
-}
-
-.widget-radio-box {
-    float: right;
-    min-width: var(--jp-widgets-inline-width-short);
-    max-width: var(--jp-widgets-inline-width);
 }
 
 .widget-radio-box {
@@ -758,6 +759,7 @@ ul.widget-dropdown-droplist.mod-active {
     flex-direction: column;
     align-items: stretch;
     box-sizing: border-box;
+    flex-grow: 1;
 }
 
 .widget-radio-box label {
@@ -776,9 +778,15 @@ ul.widget-dropdown-droplist.mod-active {
 /* Color Picker Styling */
 
 .widget-colorpicker {
-    min-width: var(--jp-widgets-inline-width);
+    width: var(--jp-widgets-inline-width);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
+}
+
+.widget-colorpicker > .widget-colorpicker-input {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: var(--jp-widgets-inline-width-tiny);
 }
 
 .widget-colorpicker input[type="color"] {
@@ -789,6 +797,9 @@ ul.widget-dropdown-droplist.mod-active {
     color: var(--jp-ui-font-color1);
     border: var(--jp-widgets-border-width) solid var(--jp-border-color1);
     border-left: none;
+    flex-grow: 0;
+    flex-shrink: 0;
+    box-sizing: border-box;
     align-self: stretch;
 }
 
@@ -801,6 +812,9 @@ ul.widget-dropdown-droplist.mod-active {
     border: var(--jp-widgets-border-width) solid var(--jp-border-color1);
     font-size: var(--jp-widgets-font-size);
     padding: var(--jp-widgets-input-padding);
+    min-width: 0; /* This makes it possible for the flexbox to shrink this input */
+    flex-shrink: 1;
+    box-sizing: border-box;
 }
 
 /* Play Widget */
