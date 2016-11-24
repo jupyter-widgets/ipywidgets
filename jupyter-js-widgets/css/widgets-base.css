@@ -16,6 +16,9 @@
     --jp-widgets-inline-width: 300px;
     --jp-widgets-inline-width-short: calc(var(--jp-widgets-inline-width) / 2 - var(--jp-widgets-margin));
     --jp-widgets-inline-width-tiny: calc(var(--jp-widgets-inline-width-short) / 2 - var(--jp-widgets-margin));
+    --jp-widgets-inline-margin: 4px; /* margin between inline elements */
+    --jp-widgets-inline-label-min-width: 80px;
+    --jp-widgets-inline-label-max-width: calc(var(--jp-widgets-inline-width) - var(--jp-widgets-inline-margin) - var(--jp-widgets-inline-width-short));
     --jp-widgets-border-width: var(--jp-border-width);
     --jp-widgets-tall-height: 200px;
     --jp-widgets-horizontal-tab-height: 24px;
@@ -54,7 +57,7 @@
     /* Horizontal widgets */
     display: flex;
     flex-direction: row;
-    align-items: stretch;
+    align-items: baseline;
 }
 
 .widget-vbox {
@@ -69,7 +72,7 @@
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
-    align-items: flex-start;
+    align-items: baseline;
 }
 
 /* General Button Styling */
@@ -81,7 +84,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: center;
-    font-size: var(--jp-ui-font-size1);
+    font-size: var(--jp-widgets-font-size);
     cursor: pointer;
 
     height: var(--jp-widgets-inline-height);
@@ -106,20 +109,21 @@
 }
 
 .jupyter-button i.fa {
-    padding-right: 4px;
+    margin-right: var(--jp-widgets-inline-margin);
 }
 
 .jupyter-button:empty:before {
-    content: "\00a0"
+    content: "\200b"; /* zero-width space */
 }
 
 .jupyter-button:active, .jupyter-button.mod-active {
      box-shadow: none;
 }
 
-.jupyter-button:hover, .jupyter-button:focus, .jupyter-button:active {
+/*.jupyter-button:hover, .jupyter-button:focus, .jupyter-button:active {
     outline: none !important;
 }
+*/
 
 /* Button "Default" Styling */
 
@@ -217,31 +221,23 @@
     /* Label */
     font-size: var(--jp-widgets-font-size);
     overflow: hidden;
-    text-overflow  : ellipsis;
-    white-space    : nowrap;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     line-height: var(--jp-widgets-inline-height);
 }
 
 .widget-hbox .widget-label {
     /* Horizontal Widget Label */
     text-align: right;
-    margin-right: 4px;
-    vertical-align: text-top;
-
-    /* When labels are short, the min-width takes over,
-     * and labeled horizontal widgets are aligned.
-     *
-     * When labels are longer, the actual widget is shifted to the right.
-     * There is a maximum length for a label.
-     */
-    min-width: 80px;
-    max-width: 160px;
+    margin-right: var(--jp-widgets-inline-margin);
+    max-width: var(--jp-widgets-inline-label-max-width);
+    min-width: var(--jp-widgets-inline-label-min-width);
+    flex-shrink: 0;
 }
 
 .widget-vbox .widget-label {
     /* Vertical Widget Label */
     text-align: center;
-    vertical-align: text-bottom;
 }
 
 /* Widget Readout Styling */
@@ -251,7 +247,7 @@
     font-size: var(--jp-widgets-font-size);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
-    margin-left: 4px;
+    margin-left: var(--jp-widgets-inline-margin);
     overflow: hidden;
     white-space: nowrap;
     text-align: center;
@@ -283,12 +279,12 @@
     text-align: center;
     max-width: var(--jp-widgets-inline-width-short);
     min-width: var(--jp-widgets-inline-width-tiny);
-    margin-left: 4px;
+    margin-left: var(--jp-widgets-inline-margin);
 }
 
 .widget-vbox .widget-readout {
     /* Vertical Readout */
-    margin-top: 4px;
+    margin-top: var(--jp-widgets-inline-margin);
 }
 
 /* Widget Checkbox Styling */
@@ -301,10 +297,12 @@
 }
 
 .widget-checkbox input[type="checkbox"] {
-    margin: 0px 4px 0px 4px;
+    margin: 0px var(--jp-widgets-inline-margin) 0px var(--jp-widgets-inline-margin);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
     font-size: large;
+    flex-grow: 1;
+    align-self: center;
 }
 
 /* Widget Valid Styling */
@@ -319,10 +317,16 @@
 .widget-valid i:before {
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
-    font-family: FontAwesome;
-    font-style: normal;
-    margin-right: 4px;
-    margin-left: 4px;
+    margin-right: var(--jp-widgets-inline-margin);
+    margin-left: var(--jp-widgets-inline-margin);
+
+    /* from the fa class in FontAwesome: https://github.com/FortAwesome/Font-Awesome/blob/49100c7c3a7b58d50baa71efef11af41a66b03d3/css/font-awesome.css#L14 */
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 .widget-valid.mod-valid i:before {
@@ -337,43 +341,28 @@
 
 /* Widget Text and TextArea Stying */
 
-.widget-text {
-    /* Textbox */
+.widget-textarea, .widget-text {
     width: var(--jp-widgets-inline-width);
+}
+
+.widget-text input[type="text"] {
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-textarea {
-    line-height: var(--jp-widgets-inline-height);
-}
-
-.widget-textarea textarea {
-    /* TextAreaView */
-    width: var(--jp-widgets-inline-width);
+.widget-text input[type="text"], .widget-textarea textarea {
+    box-sizing: border-box;
     border: var(--jp-border-width) solid var(--jp-border-color1);
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
     font-size: var(--jp-widgets-font-size);
     padding: var(--jp-widgets-input-padding);
+    flex-grow: 1;
+    min-width: var(--jp-widget-inline-short); /* This makes it possible for the flexbox to shrink this input */
+    flex-shrink: 1;
 }
 
-.widget-text input[type="text"], .widget-textarea input {
-    outline: none !important;
-    width: inherit;
-    margin-left: 4px;
-}
-
-.widget-text input[type="text"] {
-    height: auto;
-    border: var(--jp-border-width) solid var(--jp-border-color1);
-    background-color: var(--jp-layout-color1);
-    color: var(--jp-ui-font-color1);
-    font-size: var(--jp-widgets-font-size);
-    padding: var(--jp-widgets-input-padding);
-}
-
-.widget-text input:focus, .widget-textarea input:focus {
+.widget-text input:focus, .widget-textarea textarea:focus {
     -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
                         0 3px 1px -2px rgba(0, 0, 0, 0.14),
                         0 1px 5px 0 rgba(0, 0, 0, 0.12);
@@ -399,7 +388,7 @@
 
 .widget-slider .ui-slider-handle {
     /* Slider Handle */
-    outline: none !important;
+    outline: none !important; /* focused slider handles are colored - see below */
     position: absolute;
     background-color: var(--jp-layout-color2);
     border: var(--jp-widgets-slider-border-width) solid var(--jp-border-color2);
@@ -458,7 +447,7 @@
 /* Horizontal Slider */
 
 .widget-hslider {
-    min-width: var(--jp-widgets-inline-width);
+    width: var(--jp-widgets-inline-width);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
 }
@@ -472,6 +461,7 @@
     width: var(--jp-widgets-inline-width-short);
     margin-left: calc(var(--jp-widgets-slider-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
     margin-right: calc(var(--jp-widgets-slider-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
+    align-self: stretch;
 }
 
 .widget-hslider .ui-slider {
@@ -554,10 +544,11 @@
     /* Progress Bar */
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
+    width: var(--jp-widgets-inline-width);
 }
 
 .widget-hprogress .progress {
-    width: var(--jp-widgets-inline-width);
+    flex-grow: 1;
     height: var(--jp-widgets-progress-thickness);
     margin-top: auto;
     margin-bottom: auto;
@@ -581,7 +572,7 @@
 /* Dropdown Widget Styling */
 
 .widget-dropdown {
-    height : var(--jp-widgets-inline-height);
+    height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
     min-width: var(--jp-widgets-inline-width);
 }
@@ -592,12 +583,21 @@
 
 .widget-dropdown-toggle {
     float: right;
-    min-width: var(--jp-widgets-inline-width-short);
+    min-width: var(--jp-widgets-inline-width-tiny);
     max-width: var(--jp-widgets-inline-width);
     display: flex;
     flex-grow: 1;
     margin: 0;
     padding: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    cursor: pointer;
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+
+    /* TODO: figure out why the outline isn't working... */
     box-shadow: none;
     border: var(--jp-border-width) solid var(--jp-border-color1);
     color: var(--jp-ui-font-color1);
@@ -691,12 +691,13 @@ ul.widget-dropdown-droplist.mod-active {
     border: var(--jp-border-width) solid var(--jp-border-color1);
     -webkit-appearance: menulist;
     border-radius: 0;
-    outline: none;
+    /*outline: none;*/
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
     min-width: var(--jp-widgets-inline-width-short);
     max-width: var(--jp-widgets-inline-width);
     font-size: var(--jp-widgets-font-size);
+    flex-grow: 1;
 }
 
 .widget-select select option:checked {
@@ -718,6 +719,7 @@ ul.widget-dropdown-droplist.mod-active {
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
     font-size: var(--jp-widgets-font-size);
+    flex-grow: 1;
 }
 
 .widget-select-multiple select option:checked {
@@ -746,13 +748,8 @@ ul.widget-dropdown-droplist.mod-active {
 
 .widget-radio {
     min-width: var(--jp-widgets-inline-width);
+    width: var(--jp-widgets-inline-width);
     line-height: var(--jp-widgets-inline-height);
-}
-
-.widget-radio-box {
-    float: right;
-    min-width: var(--jp-widgets-inline-width-short);
-    max-width: var(--jp-widgets-inline-width);
 }
 
 .widget-radio-box {
@@ -760,50 +757,62 @@ ul.widget-dropdown-droplist.mod-active {
     flex-direction: column;
     align-items: stretch;
     box-sizing: border-box;
+    flex-grow: 1;
 }
 
 .widget-radio-box label {
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
     font-size: var(--jp-widgets-font-size);
-    margin: 0 2px 0 2px;
-    width: 100%;
 }
 
 .widget-radio-box input {
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
-    margin: 0 2px 0 2px;
-    vertical-align: top;
-    float: right;
+    margin: 0 var(--jp-widgets-input-padding) 0 var(--jp-widgets-input-padding);
+    float: left;
 }
 
 /* Color Picker Styling */
 
 .widget-colorpicker {
-    min-width: var(--jp-widgets-inline-width);
+    width: var(--jp-widgets-inline-width);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
 }
 
+.widget-colorpicker > .widget-colorpicker-input {
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: var(--jp-widgets-inline-width-tiny);
+}
+
 .widget-colorpicker input[type="color"] {
     width: var(--jp-widgets-inline-height);
-    height: auto;
-    padding: 0;
+    height: var(--jp-widgets-inline-height);
+    padding: 0 2px; /* make the color square actually square on Chrome on OS X */
     background: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
     border: var(--jp-widgets-border-width) solid var(--jp-border-color1);
     border-left: none;
+    flex-grow: 0;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    align-self: stretch;
 }
 
 .widget-colorpicker input[type="text"] {
     flex-grow: 1;
-    outline: none !important;
+    /*outline: none !important;*/
+    height: var(--jp-widgets-inline-height);
     background: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
     border: var(--jp-widgets-border-width) solid var(--jp-border-color1);
     font-size: var(--jp-widgets-font-size);
     padding: var(--jp-widgets-input-padding);
+    min-width: 0; /* This makes it possible for the flexbox to shrink this input */
+    flex-shrink: 1;
+    box-sizing: border-box;
 }
 
 /* Play Widget */
@@ -911,7 +920,7 @@ ul.widget-dropdown-droplist.mod-active {
 }
 
 .widget-accordion > .accordion-page > .accordion-header {
-    padding: 4px;
+    padding: var(--jp-widgets-input-padding);
     cursor: pointer;
     color: var(--jp-ui-font-color2);
     background-color: var(--jp-layout-color2);
@@ -946,5 +955,5 @@ ul.widget-dropdown-droplist.mod-active {
 }
 
 .widget-html {
-    line-height: var(--jp-widgets-inline-height);
+    font-size: var(--jp-widgets-font-size);
 }

@@ -29,7 +29,7 @@ class ColorPickerView extends LabeledDOMWidgetView {
         this.el.classList.add('widget-colorpicker');
 
         this._color_container = document.createElement('div');
-        this._color_container.className = 'widget-hbox';
+        this._color_container.className = 'widget-hbox widget-colorpicker-input';
         this.el.appendChild(this._color_container);
 
         this._textbox = document.createElement('input');

@@ -64,7 +64,7 @@ class DropdownView extends LabeledDOMWidgetView {
         this.el.classList.add('widget-dropdown');
 
         this.toggle = document.createElement('div');
-        this.toggle.className = 'widget-dropdown-toggle jupyter-button';
+        this.toggle.className = 'widget-dropdown-toggle';
         this.toggle.tabIndex = 0;
         this.el.appendChild(this.toggle);
 
@@ -617,7 +617,7 @@ class ToggleButtonsView extends LabeledDOMWidgetView {
                     icon.className = 'fa fa-' + icons[index];
                 }
                 button.setAttribute('type', 'button');
-                button.className = 'jupyter-button widget-toggle-button';
+                button.className = 'widget-toggle-button jupyter-button';
                 if (previous_bstyle) {
                     button.classList.add(previous_bstyle);
                 }
