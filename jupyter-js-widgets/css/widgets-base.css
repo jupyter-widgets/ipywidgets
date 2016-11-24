@@ -84,7 +84,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     text-align: center;
-    font-size: var(--jp-ui-font-size1);
+    font-size: var(--jp-widgets-font-size);
     cursor: pointer;
 
     height: var(--jp-widgets-inline-height);
@@ -349,12 +349,11 @@
 }
 
 .widget-textarea {
+    width: var(--jp-widgets-inline-width);
     line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-textarea textarea {
-    /* TextAreaView */
-    width: var(--jp-widgets-inline-width);
+.widget-text input[type="text"], .widget-textarea textarea {
     border: var(--jp-border-width) solid var(--jp-border-color1);
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
@@ -362,22 +361,7 @@
     padding: var(--jp-widgets-input-padding);
 }
 
-.widget-text input[type="text"], .widget-textarea input {
-    /*outline: none !important;*/
-    width: inherit;
-    margin-left: 4px;
-}
-
-.widget-text input[type="text"] {
-    height: auto;
-    border: var(--jp-border-width) solid var(--jp-border-color1);
-    background-color: var(--jp-layout-color1);
-    color: var(--jp-ui-font-color1);
-    font-size: var(--jp-widgets-font-size);
-    padding: var(--jp-widgets-input-padding);
-}
-
-.widget-text input:focus, .widget-textarea input:focus {
+.widget-text input:focus, .widget-textarea textarea:focus {
     -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
                         0 3px 1px -2px rgba(0, 0, 0, 0.14),
                         0 1px 5px 0 rgba(0, 0, 0, 0.12);
@@ -603,6 +587,15 @@
     flex-grow: 1;
     margin: 0;
     padding: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    cursor: pointer;
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+
+    /* TODO: figure out why the outline isn't working... */
     box-shadow: none;
     border: var(--jp-border-width) solid var(--jp-border-color1);
     color: var(--jp-ui-font-color1);
@@ -771,16 +764,13 @@ ul.widget-dropdown-droplist.mod-active {
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
     font-size: var(--jp-widgets-font-size);
-    margin: 0 2px 0 2px;
-    width: 100%;
 }
 
 .widget-radio-box input {
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
-    margin: 0 2px 0 2px;
-    vertical-align: top;
-    float: right;
+    margin: 0 var(--jp-widgets-input-padding) 0 var(--jp-widgets-input-padding);
+    float: left;
 }
 
 /* Color Picker Styling */
@@ -793,8 +783,8 @@ ul.widget-dropdown-droplist.mod-active {
 
 .widget-colorpicker input[type="color"] {
     width: var(--jp-widgets-inline-height);
-    height: auto;
-    padding: 0;
+    height: var(--jp-widgets-inline-height);
+    padding: 0 2px; /* make the color square actually square on Chrome on OS X */
     background: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
     border: var(--jp-widgets-border-width) solid var(--jp-border-color1);
@@ -805,6 +795,7 @@ ul.widget-dropdown-droplist.mod-active {
 .widget-colorpicker input[type="text"] {
     flex-grow: 1;
     /*outline: none !important;*/
+    height: var(--jp-widgets-inline-height);
     background: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
     border: var(--jp-widgets-border-width) solid var(--jp-border-color1);
