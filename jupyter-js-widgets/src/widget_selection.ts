@@ -617,7 +617,7 @@ class ToggleButtonsView extends LabeledDOMWidgetView {
                     icon.className = 'fa fa-' + icons[index];
                 }
                 button.setAttribute('type', 'button');
-                button.className = 'widget-toggle-button';
+                button.className = 'widget-toggle-button jupyter-button';
                 if (previous_bstyle) {
                     button.classList.add(previous_bstyle);
                 }
