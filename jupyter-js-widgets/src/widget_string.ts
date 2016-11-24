@@ -110,7 +110,6 @@ class TextareaView extends LabeledDOMWidgetView {
 
         this.textbox = document.createElement('textarea');
         this.textbox.setAttribute('rows', '5');
-        this.textbox.classList.add('form-control');
         this.el.appendChild(this.textbox);
 
         this.update(); // Set defaults.
@@ -228,7 +227,6 @@ class TextView extends LabeledDOMWidgetView {
 
         this.textbox = document.createElement('input');
         this.textbox.setAttribute('type', 'text');
-        this.textbox.className = 'form-control';
         this.el.appendChild(this.textbox);
 
         this.update(); // Set defaults.

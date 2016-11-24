@@ -341,26 +341,24 @@
 
 /* Widget Text and TextArea Stying */
 
-.widget-text {
-    /* Textbox */
+.widget-textarea, .widget-text {
     width: var(--jp-widgets-inline-width);
+}
+
+.widget-text input[type="text"] {
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-textarea {
-    width: var(--jp-widgets-inline-width);
-    line-height: var(--jp-widgets-inline-height);
-}
-
 .widget-text input[type="text"], .widget-textarea textarea {
+    box-sizing: border-box;
     border: var(--jp-border-width) solid var(--jp-border-color1);
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
     font-size: var(--jp-widgets-font-size);
     padding: var(--jp-widgets-input-padding);
     flex-grow: 1;
-    min-width: 0; /* This makes it possible for the flexbox to shrink this input */
+    min-width: var(--jp-widget-inline-short); /* This makes it possible for the flexbox to shrink this input */
     flex-shrink: 1;
 }
 
