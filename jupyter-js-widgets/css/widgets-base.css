@@ -358,7 +358,7 @@
     font-size: var(--jp-widgets-font-size);
     padding: var(--jp-widgets-input-padding);
     flex-grow: 1;
-    min-width: var(--jp-widget-inline-short); /* This makes it possible for the flexbox to shrink this input */
+    min-width: var(--jp-widgets-inline-width-short); /* This makes it possible for the flexbox to shrink this input */
     flex-shrink: 1;
 }
 
