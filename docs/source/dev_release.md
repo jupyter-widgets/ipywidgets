@@ -1,10 +1,9 @@
 Developer Release Procedure
 ===========================
 
-To release a new version of the widgets on PyPI and npm, first checkout
-master and cd into the repo root.  Make sure the version in `widget.py`  matches
-the JS frontend version.  Also check that the frontend version specified in
-`manager-base.js` (`version`) is correct.
+To release a new version of the widgets on PyPI and npm, first checkout master
+and cd into the repo root.  Make sure the frontend version in
+`ipywidgets/_version.py` matches the JS frontend version.
 
 ### Publish jupyter-js-widgets
 
@@ -13,7 +12,7 @@ the JS frontend version.  Also check that the frontend version specified in
 git clean -fdx
 npm version [patch/minor/major]
 npm install
-npm publish
+npm publish --tag next
 ```
 
 ### Prepare widgetsnbextension npm module
@@ -39,8 +38,25 @@ Change install_requires to point to new widgetsnbextension version
 python setup.py sdist
 python setup.py bdist_wheel --universal
 twine upload dist/*
-commit and tag (ipywidgets) release
 ```
+
+### JupyterLab
+
+Edit the package.json to have jupyter-js-widgets point to the correct version.
+```
+npm version patch/minor/major
+npm install
+npm run build
+npm publish
+python setup.py sdist
+python setup.py bdist_wheel --universal
+twine upload dist/*
+```
+
+### Push changes back
+
+commit and tag (ipywidgets) release
+
 
 ### Back to dev
 ```
