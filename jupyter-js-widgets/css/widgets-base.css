@@ -944,5 +944,5 @@ ul.widget-dropdown-droplist.mod-active {
 }
 
 .widget-html {
-    line-height: var(--jp-widgets-inline-height);
+    font-size: var(--jp-widgets-font-size);
 }
