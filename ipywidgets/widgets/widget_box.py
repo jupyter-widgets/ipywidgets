@@ -53,19 +53,15 @@ class Box(DOMWidget):
 @register('Jupyter.VBox')
 class VBox(Box):
     """Displays multiple widgets vertically using the flexible box model."""
-
-    @default('layout')
-    def _default_layout(self):
-        return Layout(display='flex', flex_flow='column')
+    _model_name = Unicode('VBoxModel').tag(sync=True)
+    _view_name = Unicode('VBoxView').tag(sync=True)
 
 
 @register('Jupyter.HBox')
 class HBox(Box):
     """Displays multiple widgets horizontally using the flexible box model."""
-
-    @default('layout')
-    def _default_layout(self):
-        return Layout(display='flex')
+    _model_name = Unicode('HBoxModel').tag(sync=True)
+    _view_name = Unicode('HBoxView').tag(sync=True)
 
 
 @register('Jupyter.Proxy')

@@ -86,6 +86,26 @@ class BoxModel extends DOMWidgetModel {
 }
 
 export
+class HBoxModel extends BoxModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _view_name: 'HBoxView',
+            _model_name: 'HBoxModel',
+        });
+    }
+}
+
+export
+class VBoxModel extends BoxModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _view_name: 'VBoxView',
+            _model_name: 'VBoxModel',
+        });
+    }
+}
+
+export
 class ProxyModel extends DOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
@@ -231,6 +251,7 @@ class BoxView extends DOMWidgetView {
      * Called when view is rendered.
      */
     render() {
+        super.render();
         this.children_views.update(this.model.get('children'));
         this.update_overflow_x();
         this.update_overflow_y();
@@ -294,4 +315,26 @@ class BoxView extends DOMWidgetView {
     }
     children_views: any;
     pWidget: JupyterPhosphorPanelWidget;
+}
+
+export
+class HBoxView extends BoxView {
+    /**
+     * Public constructor
+     */
+    initialize(parameters) {
+        super.initialize(parameters);
+        this.pWidget.addClass('widget-hbox');
+    }
+}
+
+export
+class VBoxView extends BoxView {
+    /**
+     * Public constructor
+     */
+    initialize(parameters) {
+        super.initialize(parameters);
+        this.pWidget.addClass('widget-vbox');
+    }
 }
