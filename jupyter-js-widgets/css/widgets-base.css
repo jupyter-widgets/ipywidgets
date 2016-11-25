@@ -36,14 +36,11 @@
     --jp-widgets-menu-item-height: 24px;
 }
 
-.p-Widget.jupyter-widgets {
-    overflow: visible;
-}
-
 .jupyter-widgets {
     margin: var(--jp-widgets-margin);
     box-sizing: border-box;
     color: var(--jp-content-font-color1);
+    overflow: visible;
 }
 
 .jp-Output-result > .jupyter-widgets {
