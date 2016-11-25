@@ -53,14 +53,14 @@
 
 /* vbox and hbox */
 
-.widget-hbox {
+.widget-inline-hbox {
     /* Horizontal widgets */
     display: flex;
     flex-direction: row;
     align-items: baseline;
 }
 
-.widget-vbox {
+.widget-inline-vbox {
     /* Vertical Widgets */
     display: flex;
     flex-direction: column;
@@ -72,7 +72,20 @@
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
-    align-items: baseline;
+}
+
+.widget-hbox {
+    /* Horizontal widgets */
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+.widget-vbox {
+    /* Vertical Widgets */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 }
 
 /* General Button Styling */
