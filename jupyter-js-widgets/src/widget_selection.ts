@@ -60,7 +60,7 @@ class DropdownView extends LabeledDOMWidgetView {
         super.render();
 
         this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-dropdown');
 
         this.toggle = document.createElement('div');
@@ -455,7 +455,7 @@ class RadioButtonsView extends LabeledDOMWidgetView {
         super.render();
 
         this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-radio');
 
         this.container = document.createElement('div');
@@ -561,7 +561,7 @@ class ToggleButtonsView extends LabeledDOMWidgetView {
         super.render();
 
         this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-toggle-buttons');
 
         this.buttongroup = document.createElement('div');
@@ -730,7 +730,7 @@ class SelectView extends LabeledDOMWidgetView {
         super.render();
 
         this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-select');
 
         this.listbox = document.createElement('select');
@@ -836,7 +836,7 @@ class SelectionSliderView extends LabeledDOMWidgetView {
         super.render();
 
         this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-hslider');
         this.el.classList.add('widget-slider');
 
@@ -903,14 +903,14 @@ class SelectionSliderView extends LabeledDOMWidgetView {
             // Use the right CSS classes for vertical & horizontal sliders
             if (orientation === 'vertical') {
                 this.el.classList.remove('widget-hslider');
-                this.el.classList.remove('widget-hbox');
+                this.el.classList.remove('widget-inline-hbox');
                 this.el.classList.add('widget-vslider');
-                this.el.classList.add('widget-vbox');
+                this.el.classList.add('widget-inline-vbox');
             } else {
                 this.el.classList.remove('widget-vslider');
-                this.el.classList.remove('widget-vbox');
+                this.el.classList.remove('widget-inline-vbox');
                 this.el.classList.add('widget-hslider');
-                this.el.classList.add('widget-hbox');
+                this.el.classList.add('widget-inline-hbox');
             }
 
             var readout = this.model.get('readout');

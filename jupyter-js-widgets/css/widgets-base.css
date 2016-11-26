@@ -36,14 +36,11 @@
     --jp-widgets-menu-item-height: 24px;
 }
 
-.p-Widget.jupyter-widgets {
-    overflow: visible;
-}
-
 .jupyter-widgets {
     margin: var(--jp-widgets-margin);
     box-sizing: border-box;
     color: var(--jp-content-font-color1);
+    overflow: visible;
 }
 
 .jp-Output-result > .jupyter-widgets {
@@ -53,14 +50,14 @@
 
 /* vbox and hbox */
 
-.widget-hbox {
+.widget-inline-hbox {
     /* Horizontal widgets */
     display: flex;
     flex-direction: row;
     align-items: baseline;
 }
 
-.widget-vbox {
+.widget-inline-vbox {
     /* Vertical Widgets */
     display: flex;
     flex-direction: column;
@@ -72,7 +69,20 @@
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
-    align-items: baseline;
+}
+
+.widget-hbox {
+    /* Horizontal widgets */
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+.widget-vbox {
+    /* Vertical Widgets */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 }
 
 /* General Button Styling */
