@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@jupyterlab/extension-builder": "^0.8.1",
+    "@types/lodash": "4.14.40",
     "rimraf": "^2.4.2",
     "typedoc": "^0.5.0",
     "typescript": "^2.0.10"
