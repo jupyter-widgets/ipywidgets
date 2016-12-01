@@ -19,11 +19,12 @@ Embeddable HTML Snippet
 The first option, `Embed widgets`, provides a dialog containing an HTML snippet
 which can be used to embed jupyter interactive widgets into any web page.
 
-This HTML snippet is composed of two script tags:
+This HTML snippet is composed of multiple `<script>` tags:
 
  - The first script tag loads a custom widget manager from the `unpkg` cdn.
- - The second script tag contains the state of all the widget model currently
+ - The second script tag contains the state of all the widget models currently
    in use. It has the mime type `application/vnd.jupyter.widget-state+json`.
+
    The json schema for the content of that script tag is:
 
     ```json
@@ -75,6 +76,32 @@ This HTML snippet is composed of two script tags:
         "additionalProperties": false
     }
     ```
+
+- The following script tags correspond to the views which you want to display
+  in the web page. They have the mime type `application/vnd.jupyter.widget-view+json`.
+
+  The *Embed Widgets* action currently creates such a tag for each view
+  displayed in the notebook at this time.
+
+  The json schema for the content of that script tag is:
+
+    ```json
+    {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "description": "Jupyter Interactive Widget View JSON schema.",
+        "type": "object",
+        "properties" : {
+            "model_id" : {
+                "description": "Unique identifier of the widget model to be displayed",
+                "type": "string"
+            }
+        }
+    }
+    ```
+
+  If you want to lay out these script tags in a custom fashion or only keep
+  some of them, you can change their location in the DOM when including the snippet
+  into a web page.
 
 Widget State Json
 -----------------
