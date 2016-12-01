@@ -12,6 +12,10 @@ import {
 } from 'jupyter-js-widgets';
 
 import {
+  JSONObject
+} from 'phosphor/lib/algorithm/json';
+
+import {
   IDisposable
 } from 'phosphor/lib/core/disposable';
 
@@ -257,10 +261,10 @@ class WidgetRenderer implements RenderMime.IRenderer, IDisposable {
   /**
    * Render a widget mimetype.
    */
-  render(options: RenderMime.IRendererOptions<string>): Widget {
+  render(options: RenderMime.IRendererOptions<string | JSONObject>): Widget {
     // data is a model id
     let w = new Panel();
-    let model = this._manager.get_model(options.source);
+    let model = this._manager.get_model((options.source as any).model_id);
     if (model) {
       model.then((model: any) => {
         return this._manager.display_model(void 0, model, void 0);
@@ -296,6 +300,6 @@ class WidgetRenderer implements RenderMime.IRenderer, IDisposable {
     this._manager = null;
   }
 
-  public mimetypes = ['application/vnd.jupyter.widget'];
+  public mimetypes = ['application/vnd.jupyter.widget-view+json'];
   private _manager: WidgetManager;
 }

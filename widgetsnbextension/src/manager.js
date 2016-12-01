@@ -68,11 +68,11 @@ var WidgetManager = function (comm_manager, notebook) {
                 return that.new_model({
                     model_name: widget_info.msg.content.data.state._model_name,
                     model_module: widget_info.msg.content.data.state._model_module,
+                    model_module_version: widget_info.msg.content.data.state._model_module_version,
                     comm: widget_info.comm,
                 }, widget_info.msg.content.data.state);
             }));
         }).then(function(models) {
-
             // Load the view information from the notebook metadata.
             if (WidgetManager._load_callback) {
                 WidgetManager._load_callback.call(that).then(function(state) {
@@ -200,23 +200,8 @@ WidgetManager.set_state_callbacks(function() {
     }
     return Promise.resolve({});
 }, function(state) {
-    var stateToSave = {};
-    _.mapObject(state, function(widgetState, key) {
-        // don't persist widget state with no views
-        if (widgetState.views.length === 0) return;
-        // Only persist the views of the widget
-        stateToSave[key] = _.pick(widgetState, 'views');
-    });
-
-    // check if there are any views to persist
-    if (Object.keys(stateToSave).length === 0) {
-        // no widget state, don't save empty widget state in metadata
-        delete Jupyter.notebook.metadata.widgets;
-        return;
-    }
-
     Jupyter.notebook.metadata.widgets = {
-        state: stateToSave,
+        state: state,
         // Persisted widget state version
         version: version,
     };
@@ -308,26 +293,16 @@ WidgetManager.prototype._createMenuItem = function(title, action) {
 WidgetManager.prototype.display_model = function(msg, model, options) {
     options = options || {};
     if (msg) {
-        var cell = this.get_msg_cell(msg.parent_header.msg_id);
-        if (cell === null) {
-            return Promise.reject(new Error("Could not determine where the display" +
-                " message was from.  Widget will not be displayed"));
-        } else {
-            options.cell = cell; // TODO: Handle in get state
-            // Only set cell_index when view is displayed as directly.
-            options.cell_index = this.notebook.find_cell_index(cell);
-
-            return widgets.ManagerBase.prototype.display_model.call(this, msg, model, options)
-                .catch(widgets.reject('Could not display model', true));
-        }
+        options.cell = this.get_msg_cell(msg.parent_header.msg_id);
+        // Only set cell_index when view is displayed as directly.
+        options.cell_index = this.notebook.find_cell_index(options.cell);
     } else if (options && options.cell_index !== undefined) {
         options.cell = this.notebook.get_cell(options.cell_index);
-        return widgets.ManagerBase.prototype.display_model.call(this, msg, model, options)
-            .catch(widgets.reject('Could not display model', true));
     } else {
-        return Promise.reject(new Error("Could not determine which cell the " +
-        "widget belongs to.  Widget will not be displayed"));
+        options.cell = null;
     }
+    return widgets.ManagerBase.prototype.display_model.call(this, msg, model, options)
+        .catch(widgets.reject('Could not display model', true));
 };
 
 // In display view
@@ -347,12 +322,6 @@ WidgetManager.prototype.display_view = function(msg, view, options) {
             return Promise.reject(new Error('Cell does not have a `widgetarea` defined'));
         }
     }
-};
-
-WidgetManager.prototype.filterViewOptions = function (options) {
-    return {
-        cell_index : options.cell_index
-    };
 };
 
 WidgetManager.prototype.setViewOptions = function (options) {

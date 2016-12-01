@@ -149,7 +149,7 @@ class Widget(LoggingConfigurable):
 
     @staticmethod
     def get_manager_state(drop_defaults=False):
-        return dict(version_major=1, version_minor=0, **{
+        return dict(version_major=1, version_minor=0, state={
             k: {
                 'model_name': Widget.widgets[k]._model_name,
                 'model_module': Widget.widgets[k]._model_module,
@@ -500,14 +500,18 @@ class Widget(LoggingConfigurable):
             # below works. Then add a 'text/plain' mimetype to the dictionary below.
             self._send({"method": "display"})
 
-            # The 'application/vnd.jupyter.widget' mimetype has not been registered yet.
+            # The 'application/vnd.jupyter.widget-view+json' mimetype has not been registered yet.
             # See the registration process and naming convention at
             # http://tools.ietf.org/html/rfc6838
             # and the currently registered mimetypes at
             # http://www.iana.org/assignments/media-types/media-types.xhtml.
             # We don't have a 'text/plain' entry, so this display message will be
             # will be invisible in the current notebook.
-            data = {'application/vnd.jupyter.widget': self._model_id}
+            data = {
+                'application/vnd.jupyter.widget-view+json': {
+                    'model_id': self._model_id
+                }
+            }
             display(data, raw=True)
 
             self._handle_displayed(**kwargs)

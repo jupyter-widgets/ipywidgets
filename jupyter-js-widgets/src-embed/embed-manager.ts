@@ -7,10 +7,11 @@ import {
 
 export
 class EmbedManager extends ManagerBase<HTMLElement> {
-    display_widget_state(models, el) {
-        return this.set_state(models, { el: el, displayOnce: true });
-    }
 
+    /**
+     * Display the specified view. Element where the view is displayed
+     * is specified in the `options` argument.
+     */
     display_view(msg, view, options) {
         return Promise.resolve(view).then(function(view) {
             options.el.appendChild(view.el);
@@ -22,10 +23,16 @@ class EmbedManager extends ManagerBase<HTMLElement> {
         });
     };
 
+    /**
+     * Placeholder implementation for _get_comm_info.
+     */
     _get_comm_info() {
         return Promise.resolve({});
     };
 
+    /**
+     * Placeholder implementation for _create_comm.
+     */
     _create_comm() {
         return Promise.resolve({
             on_close: () => {},

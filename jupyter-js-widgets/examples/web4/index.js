@@ -1,1 +1,1 @@
-require('jupyter-js-widgets/lib/embed-webpack');
+require('jupyter-js-widgets/dist/embed.js');
