@@ -41,7 +41,7 @@ class CheckboxView extends LabeledDOMWidgetView {
     render() {
         super.render();
         this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-checkbox');
 
         this.checkbox = document.createElement('input');

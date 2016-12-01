@@ -64,7 +64,7 @@ class IntSliderView extends LabeledDOMWidgetView {
     render() {
         super.render();
         this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-slider');
         this.el.classList.add('widget-hslider');
 
@@ -172,13 +172,13 @@ class IntSliderView extends LabeledDOMWidgetView {
             if (orientation=='vertical') {
                 this.el.classList.remove('widget-hslider');
                 this.el.classList.add('widget-vslider');
-                this.el.classList.remove('widget-hbox');
-                this.el.classList.add('widget-vbox');
+                this.el.classList.remove('widget-inline-hbox');
+                this.el.classList.add('widget-inline-vbox');
             } else {
                 this.el.classList.remove('widget-vslider');
                 this.el.classList.add('widget-hslider');
-                this.el.classList.remove('widget-vbox');
-                this.el.classList.add('widget-hbox');
+                this.el.classList.remove('widget-inline-vbox');
+                this.el.classList.add('widget-inline-hbox');
             }
 
             var readout = this.model.get('readout');
@@ -383,7 +383,7 @@ class IntTextView extends LabeledDOMWidgetView {
     render() {
         super.render();
         this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-text');
 
         this.textbox = document.createElement('input');
@@ -555,19 +555,19 @@ class ProgressView extends LabeledDOMWidgetView {
         var orientation = this.model.get('orientation');
         var percent = 100.0 * (value - min) / (max - min);
         if (orientation === 'horizontal') {
-            this.el.classList.remove('widget-vbox');
+            this.el.classList.remove('widget-inline-vbox');
             this.el.classList.remove('widget-vprogress');
 
-            this.el.classList.add('widget-hbox');
+            this.el.classList.add('widget-inline-hbox');
             this.el.classList.add('widget-hprogress');
 
             this.bar.style.width = percent + '%';
             this.bar.style.height = '100%';
         } else {
-            this.el.classList.remove('widget-hbox');
+            this.el.classList.remove('widget-inline-hbox');
             this.el.classList.remove('widget-hprogress');
 
-            this.el.classList.add('widget-vbox');
+            this.el.classList.add('widget-inline-vbox');
             this.el.classList.add('widget-vprogress');
 
             this.bar.style.width = '100%';
@@ -645,7 +645,7 @@ class PlayView extends DOMWidgetView {
     render() {
         super.render();
         this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-play');
 
         this.playButton = document.createElement('button');

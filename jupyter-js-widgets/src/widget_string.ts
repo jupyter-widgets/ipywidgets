@@ -105,7 +105,7 @@ class TextareaView extends LabeledDOMWidgetView {
     render() {
         super.render();
         this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-textarea');
 
         this.textbox = document.createElement('textarea');
@@ -222,7 +222,7 @@ class TextView extends LabeledDOMWidgetView {
     render() {
         super.render();
         this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-hbox');
+        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-text');
 
         this.textbox = document.createElement('input');
