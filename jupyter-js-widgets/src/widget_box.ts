@@ -297,11 +297,6 @@ class BoxView extends DOMWidgetView {
             let i = indexOf(this.pWidget.widgets, dummy);
             this.pWidget.insertWidget(i, view.pWidget);
             dummy.dispose();
-
-            // Trigger the displayed event of the child view.
-            this.displayed.then(() => {
-                view.trigger('displayed', this);
-            });
             return view;
         }).catch(reject('Could not add child view to box', true));
     }
