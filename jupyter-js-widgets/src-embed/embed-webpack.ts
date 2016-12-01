@@ -19,6 +19,7 @@ require('../css/widgets.built.css');
 // Load json schema validator
 var Ajv = require('ajv');
 var widget_state_schema = require('jupyter-widget-schema').v1.state;
+var widget_view_schema = require('jupyter-widget-schema').v1.view;
 
 
 // Magic global widget rendering function:
@@ -73,10 +74,10 @@ export function renderInlineWidgets(event) {
 function renderManager(element, tag) {
     var widgetStateObject = JSON.parse(tag.innerHTML);
     var ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
-    var validate = ajv.compile(widget_state_schema);
-    var valid = validate(widgetStateObject);
+    var model_validate = ajv.compile(widget_state_schema);
+    var valid = model_validate(widgetStateObject);
     if (!valid) {
-        console.log(validate.errors);
+        console.log(model_validate.errors);
     }
     var manager = new widgets.EmbedManager();
     manager.set_state(widgetStateObject.state, {}).then(function(models) {
@@ -84,7 +85,13 @@ function renderManager(element, tag) {
         for (var i=0; i!=tags.length; ++i) {
             // TODO: validate view schema
             let viewtag = tags[i];
-            let model_id = JSON.parse(viewtag.innerHTML).model_id;
+            let widgetViewObject = JSON.parse(viewtag.innerHTML);
+            var view_validate = ajv.compile(widget_view_schema);
+            var valid = view_validate(widgetViewObject);
+            if (!valid) {
+                console.log(view_validate.errors);
+            }
+            let model_id = widgetViewObject.model_id;
             let model = models.find(function(item) {
                 return item.id == model_id;
             });

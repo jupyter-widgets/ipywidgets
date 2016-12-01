@@ -48,7 +48,7 @@ This HTML snippet is composed of multiple `<script>` tags:
                 "type": "object",
                 "additionalProperties": true,
                 "additionalProperties" : {
-                    "type": "object"
+                    "type": "object",
                     "properties": {
                         "model_name": {
                             "description" : "Name of the JavaScript class holding the model implementation",
@@ -73,6 +73,7 @@ This HTML snippet is composed of multiple `<script>` tags:
                 }
             }
         },
+        "required": [ "version_major", "version_minor", "state" ],
         "additionalProperties": false
     }
     ```
@@ -91,11 +92,23 @@ This HTML snippet is composed of multiple `<script>` tags:
         "description": "Jupyter Interactive Widget View JSON schema.",
         "type": "object",
         "properties" : {
-            "model_id" : {
+            "version_major" : {
+                "description": "Format version (major)",
+                "type": "number",
+                "minimum": 1,
+                "maximum": 1
+            },
+            "version_minor" : {
+                "description": "Format version (minor)",
+                "type": "number"
+            },
+            "model_id": {
                 "description": "Unique identifier of the widget model to be displayed",
                 "type": "string"
-            }
-        }
+            },
+            "required": [ "model_id" ]
+        },
+        "additionalProperties": false
     }
     ```
 

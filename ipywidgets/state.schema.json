@@ -43,5 +43,6 @@
             }
         }
     },
+    "required": [ "version_major", "version_minor", "state" ],
     "additionalProperties": false
 }

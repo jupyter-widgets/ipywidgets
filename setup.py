@@ -74,7 +74,7 @@ setup_args = dict(
     scripts         = [],
     packages        = packages,
     package_data    = {
-        'ipywidgets': [ 'state.schema.json' ]
+        'ipywidgets': [ 'state.schema.json', 'view.schema.json' ]
     },
     description     = "IPython HTML widgets for Jupyter",
     long_description = LONG_DESCRIPTION,
