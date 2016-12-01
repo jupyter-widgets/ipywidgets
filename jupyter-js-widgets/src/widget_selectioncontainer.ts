@@ -6,12 +6,16 @@ import {
 } from './widget';
 
 import {
-    BoxModel
+    BoxModel, JupyterPhosphorPanelWidget
 } from './widget_box';
 
 import {
     TabBar
 } from 'phosphor/lib/ui/tabbar';
+
+import {
+    Panel
+} from 'phosphor/lib/ui/panel';
 
 import {
     Title
@@ -176,82 +180,81 @@ class TabModel extends SelectionContainerModel {
     }
 }
 
+// We implement our own tab widget since Phoshpor's TabPanel uses an absolute
+// positioning BoxLayout, but we want a more an html/css-based Panel layout.
+
 export
 class TabView extends DOMWidgetView {
+
+    _createElement(tagName: string) {
+        this.pWidget = new JupyterPhosphorPanelWidget({ view: this });
+        return this.pWidget.node;
+    }
+
+    _setElement(el: HTMLElement) {
+        if (this.el || el !== this.pWidget.node) {
+            // TabViews don't allow setting the element beyond the initial creation.
+            throw new Error('Cannot reset the DOM element.');
+        }
+
+        this.el = this.pWidget.node;
+        this.$el = $(this.pWidget.node);
+     }
+
     /**
      * Public constructor.
      */
     initialize(parameters) {
-        super.initialize(parameters)
+        super.initialize(parameters);
         this.childrenViews = new ViewList(
             this.addChildView,
-            this.removeChildView,
+            (view) => {view.remove()},
             this
         );
         this.listenTo(this.model, 'change:children',
-            function(model, value) { this.childrenViews.update(value); });
+            (model, value) => { this.childrenViews.update(value); });
         this.listenTo(this.model, 'change:_titles',
-            function(model, value, options) { this.updateTitles(options); });
+            (model, value) => { this.updateTitles(); });
     }
 
     /**
      * Called when view is rendered.
      */
     render() {
-        var parent = this;
-        this.el.className = 'jupyter-widgets widget-container widget-tab';
+        this.pWidget.addClass('jupyter-widgets');
+        this.pWidget.addClass('widget-container');
+        this.pWidget.addClass('widget-tab');
 
         this.tabBar = new TabBar();
         this.tabBar.tabsMovable = false;
         this.tabBar.addClass('widget-tab-bar');
         this.tabBar.currentChanged.connect(this._onTabChanged, this);
-        this.tabBar.tabCloseRequested.connect(this._onTabCloseRequested, this);
 
-        this.tabContents = document.createElement('div');
-        this.tabContents.className = 'widget-tab-contents';
+        this.tabContents = new Panel();
+        this.tabContents.addClass('widget-tab-contents');
+
+        this.pWidget.addWidget(this.tabBar);
+        this.pWidget.addWidget(this.tabContents);
 
         this.childrenViews.update(this.model.get('children'));
-
-        this.displayed.then(function() {
-            Widget.attach(parent.tabBar, parent.el)
-            parent.el.appendChild(parent.tabContents);
-        });
     }
 
     /**
      * Called when a child is added to children list.
      */
     addChildView(model) {
-        var parent = this;
-
-        return this.create_child_view(model).then(function(child) {
-            var current = parent.el.querySelector('.mod-active');
-            if (current) {
-                current.classList.add('mod-active');
-                current.classList.add('mod-hidden');
-            }
-
-            child.el.classList.add('widget-tab-child');
-            child.el.classList.add('mod-active');
-            child.el.classList.remove('mod-hidden');
-
-            // TODO: add a child widget, rather than DOM nodes
-            parent.tabContents.appendChild(child.el);
-            let title = new Title({ label: '', closable: true })
-            parent.tabBar.addTab(title);
-
-            parent.displayed.then(function() {
-                child.trigger('displayed', parent);
-                parent.update();
-            });
-
-            child.on('remove', function() { parent.tabBar.removeTab(title); });
-
-            return child;
+        return this.create_child_view(model).then((view: DOMWidgetView) => {
+            view.pWidget.hide();
+            view.pWidget.addClass('widget-tab-child');
+            this.tabContents.addWidget(view.pWidget);
+            let title = view.pWidget.title;
+            title.closable = false;
+            this.tabBar.addTab(title);
+            this.update();
+            view.on('remove', () => this.tabBar.removeTab(title));
+            return view;
         }).catch(utils.reject('Could not add child view to box', true));
     }
-
-    removeChildView(child) { child.remove(); }
 
     /**
      * Update the contents of this view
@@ -259,9 +262,9 @@ class TabView extends DOMWidgetView {
      * Called when the model is changed.  The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update(options?) {
+    update() {
         this.updateTitles();
-        this.updateSelectedIndex(options);
+        this.updateSelectedIndex();
         return super.update();
     }
 
@@ -270,93 +273,53 @@ class TabView extends DOMWidgetView {
      */
     updateTitles() {
         var titles = this.model.get('_titles') || {};
-        for (let i = 0, len = this.tabBar.titles.length; i < len; i++) {
-            this.tabBar.titles.at(i).label = titles[i] || (i + 1).toString();
-        }
+        each(enumerate(this.tabBar.titles), ([i, title]) => {
+            title.label = titles[i] || (i+1).toString();
+        });
     }
 
     /**
      * Updates the selected index.
      */
-    updateSelectedIndex(options?) {
-        if (options === undefined || options.updated_view !== this) {
-            var index = this.model.get('selected_index');
-            if (typeof index === 'undefined') {
-                index = 0;
-            }
-            if (0 <= index && index < this.tabBar.titles.length) {
-                this.selectPage(index);
-            }
+    updateSelectedIndex() {
+        let current = this.model.get('selected_index');
+        let previous = this.model.previous('selected_index');
+        if (current === void 0) {
+            current = 0;
         }
-    }
-
-    /**
-     * Select a page.
-     */
-    selectPage(index) {
-        this.tabBar.currentIndex = index;
-
-        var actives = this.el.querySelectorAll('.mod-active');
-        if (actives.length) {
-            for (var i = 0, len = actives.length; i < len; i++) {
-                actives[i].classList.remove('mod-active');
-                actives[i].classList.add('mod-hidden');
+        let titles = this.tabBar.titles;
+        if (0 <= current && current < titles.length) {
+            if(previous !== void 0 && previous !== current) {
+                let previousTitle = titles.at(previous);
+                let previousWidget = previousTitle ? previousTitle.owner : null;
+                if (previousWidget) {
+                    previousWidget.hide();
+                }
             }
-        }
-
-        var active = this.el.querySelectorAll('.widget-tab-child')[index];
-        if (active) {
-            active.classList.add('mod-active');
-            active.classList.remove('mod-hidden');
+            let currentWidget = titles.at(current).owner;
+            if (currentWidget) {
+                currentWidget.show();
+            }
         }
     }
 
     remove() {
-        /*
-         * The tab bar needs to be disposed before its node is removed by the
-         * super call, otherwise phosphor's Widget.detach will throw an error.
-         */
-        this.tabBar.dispose();
-        /*
-         * We remove this widget before removing the children as an optimization
-         * we want to remove the entire container from the DOM first before
-         * removing each individual child separately.
-         */
+        this.tabBar = null;
+        this.tabContents = null;
+
+        // Remove this widget before children so that the entire container
+        // leaves the DOM at once.
         super.remove();
         this.childrenViews.remove();
     }
 
-    _onTabChanged(sender, args) {
-        this.model.set('selected_index', args.currentIndex, { updated_view: this });
-        this.touch();
-    }
-
-    _onTabCloseRequested(sender, args) {
-        /*
-         * When a tab is removed, the titles dictionary must be reset for all
-         * indices that are larger than the index of the tab that was removed.
-         */
-        var len = this.model.get('children').length;
-        var titles = _.extend({}, this.model.get('_titles')) || {};
-        delete titles[args.index];
-        for (var i = args.index + 1; i < len; i++) {
-            titles[i - 1] = titles[i];
-        }
-        delete titles[len - 1];
-
-        var children = _.filter(
-            this.model.get('children'),
-            function(child, index) { return index !== args.index; }
-        );
-
-        this.model.set(
-            { 'children': children, '_titles': titles },
-            { updated_view: this }
-        );
+    _onTabChanged(sender: TabBar, args: TabBar.ICurrentChangedArgs) {
+        this.model.set('selected_index', args.currentIndex);
         this.touch();
     }
 
     childrenViews: ViewList;
     tabBar: TabBar;
-    tabContents: HTMLDivElement;
+    tabContents: Panel;
+    pWidget: JupyterPhosphorPanelWidget;
 }
