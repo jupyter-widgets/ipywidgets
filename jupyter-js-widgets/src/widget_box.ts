@@ -44,6 +44,13 @@ class JupyterPhosphorPanelWidget extends Panel {
         this._view.trigger('displayed');
     }
 
+    onResize(msg) {
+        if (this._view.onResize) {
+            this._view.onResize(msg);
+        }
+        super.onResize(msg);
+    }
+
     get isDisposed() {
         return this._view === null;
     }
@@ -54,13 +61,6 @@ class JupyterPhosphorPanelWidget extends Panel {
         }
         super.dispose();
         this._view = null;
-    }
-
-    onResize(msg) {
-        if (this._view.onResize) {
-            this._view.onResize(msg);
-        }
-        super.onResize(msg);
     }
 
     private _view: DOMWidgetView;
@@ -292,16 +292,11 @@ class BoxView extends DOMWidgetView {
         var dummy = new Widget();
         this.pWidget.addWidget(dummy);
 
-        return this.create_child_view(model).then((view) => {
+        return this.create_child_view(model).then((view: DOMWidgetView) => {
             // replace the dummy widget with the new one.
             let i = indexOf(this.pWidget.widgets, dummy);
             this.pWidget.insertWidget(i, view.pWidget);
             dummy.dispose();
-
-            // Trigger the displayed event of the child view.
-            this.displayed.then(() => {
-                view.trigger('displayed', this);
-            });
             return view;
         }).catch(reject('Could not add child view to box', true));
     }
