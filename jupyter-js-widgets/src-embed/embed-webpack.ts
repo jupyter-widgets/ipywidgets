@@ -16,6 +16,11 @@ if (Element && !Element.prototype.matches) {
 require('font-awesome/css/font-awesome.css');
 require('../css/widgets.built.css');
 
+// Load json schema validator
+var Ajv = require('ajv');
+var widget_state_schema = require('jupyter-widget-schema').v1.state;
+
+
 // Magic global widget rendering function:
 import * as widgets from './index';
 
@@ -66,8 +71,13 @@ export function renderInlineWidgets(event) {
 // Besides, if the view script tag has an <img> sibling DOM node with class `jupyter-widget`,
 // the <img> tag is deleted.
 function renderManager(element, tag) {
-    // TODO: validate state schema
     var widgetStateObject = JSON.parse(tag.innerHTML);
+    var ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
+    var validate = ajv.compile(widget_state_schema);
+    var valid = validate(widgetStateObject);
+    if (!valid) {
+        console.log(validate.errors);
+    }
     var manager = new widgets.EmbedManager();
     manager.set_state(widgetStateObject.state, {}).then(function(models) {
         var tags = element.querySelectorAll('script[type="application/vnd.jupyter.widget-view+json"]');

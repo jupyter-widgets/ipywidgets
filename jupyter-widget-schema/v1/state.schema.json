@@ -1,0 +1,47 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "description": "Jupyter Interactive Widget State JSON schema.",
+    "type": "object",
+    "properties" : {
+        "version_major" : {
+            "description": "Format version (major)",
+            "type": "number",
+            "minimum": 1,
+            "maximum": 1
+        },
+        "version_minor" : {
+            "description": "Format version (minor)",
+            "type": "number"
+        },
+        "state": {
+            "description": "Model State for All Widget Models",
+            "type": "object",
+            "additionalProperties": true,
+            "additionalProperties" : {
+                "type": "object",
+                "properties": {
+                    "model_name": {
+                        "description" : "Name of the JavaScript class holding the model implementation",
+                        "type": "string"
+                    },
+                    "model_module": {
+                        "description" : "Name of the JavaScript module holding the model implementation",
+                        "type": "string"
+                    },
+                    "model_module_version": {
+                        "description" : "Semver range for the JavaScript module holding the model implementation",
+                        "type": "string"
+                    },
+                    "state": {
+                        "description" : "Serialized state of the model",
+                        "type": "object",
+                        "additional_properties": true
+                    }
+                },
+                "required": [ "model_name", "model_module", "state" ],
+                "additionalProperties": false
+            }
+        }
+    },
+    "additionalProperties": false
+}
