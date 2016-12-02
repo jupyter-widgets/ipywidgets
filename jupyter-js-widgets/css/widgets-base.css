@@ -857,8 +857,8 @@ ul.widget-dropdown-droplist.mod-active {
     padding: var(--jp-widgets-container-padding);
 }
 
-.jupyter-widgets.widget-tab .widget-tab-contents .widget-tab-child.mod-hidden {
-    display: none;
+.jupyter-widgets.widget-tab .widget-tab-contents .widget-tab-child.p-mod-hidden {
+    display: none !important;
 }
 
 .jupyter-widgets.widget-tab .widget-tab-bar.p-TabBar {
