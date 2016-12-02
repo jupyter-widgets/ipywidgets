@@ -28,18 +28,6 @@ python setup.py bdist_wheel --universal
 twine upload dist/*
 ```
 
-### ipywidgets
-
-edit ipywidgets/_version.py (remove dev from the version and update the frontend version requirement to match the one of jupyter-js-widgets)
-
-Change `setup.py` `install_requires` parameter to point to new widgetsnbextension version
-
-```
-python setup.py sdist
-python setup.py bdist_wheel --universal
-twine upload dist/*
-```
-
 ### JupyterLab
 
 Edit the package.json to have jupyter-js-widgets point to the correct version.
@@ -53,6 +41,19 @@ python setup.py sdist
 python setup.py bdist_wheel --universal
 twine upload dist/*
 ```
+
+### ipywidgets
+
+edit ipywidgets/_version.py (remove dev from the version and update the frontend version requirement to match the one of jupyter-js-widgets)
+
+Change `setup.py` `install_requires` parameter to point to new widgetsnbextension version
+
+```
+python setup.py sdist
+python setup.py bdist_wheel --universal
+twine upload dist/*
+```
+
 
 ### Push changes back
 
