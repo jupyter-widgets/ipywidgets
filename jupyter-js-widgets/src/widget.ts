@@ -536,7 +536,7 @@ class LabeledDOMWidgetModel extends DOMWidgetModel {
 
 /**
  * - create_view and remove_view are default functions called when adding or removing views
- * - create_view takes a model and returns a view or a promise for a view for that model
+ * - create_view takes a model and an index and returns a view or a promise for a view for that model
  * - remove_view takes a view and destroys it (including calling `view.remove()`)
  * - each time the update() function is called with a new list, the create and remove
  *   callbacks will be called in an order so that if you append the views created in the
@@ -589,7 +589,7 @@ class ViewList {
 
         // Add the rest of the new list items.
         for (; i < new_models.length; i++) {
-            this.views.push(Promise.resolve(create.call(context, new_models[i])));
+            this.views.push(Promise.resolve(create.call(context, new_models[i], i)));
         }
         // make a copy of the input array
         this._models = new_models.slice();
