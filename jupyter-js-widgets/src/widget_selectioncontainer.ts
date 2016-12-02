@@ -29,6 +29,10 @@ import {
     each, enumerate
 } from 'phosphor/lib/algorithm/iteration';
 
+import {
+    indexOf
+} from 'phosphor/lib/algorithm/searching';
+
 import * as _ from 'underscore';
 import * as utils from './utils';
 import * as $ from 'jquery';
@@ -211,10 +215,8 @@ class TabView extends DOMWidgetView {
             (view) => {view.remove()},
             this
         );
-        this.listenTo(this.model, 'change:children',
-            (model, value) => { this.childrenViews.update(value); });
-        this.listenTo(this.model, 'change:_titles',
-            (model, value) => { this.updateTitles(); });
+        this.listenTo(this.model, 'change:children', () => this.updateTabs());
+        this.listenTo(this.model, 'change:_titles', () => this.updateTitles());
     }
 
     /**
@@ -225,7 +227,7 @@ class TabView extends DOMWidgetView {
         this.pWidget.addClass('widget-container');
         this.pWidget.addClass('widget-tab');
 
-        this.tabBar = new TabBar();
+        this.tabBar = new TabBar({insertBehavior: 'none'});
         this.tabBar.tabsMovable = false;
         this.tabBar.addClass('widget-tab-bar');
         this.tabBar.currentChanged.connect(this._onTabChanged, this);
@@ -235,22 +237,53 @@ class TabView extends DOMWidgetView {
 
         this.pWidget.addWidget(this.tabBar);
         this.pWidget.addWidget(this.tabContents);
+        this.updateTabs();
+        this.update();
+    }
 
+    /**
+     * Render tab views based on the current model's children.
+     */
+    updateTabs() {
+        // While we are updating, the index may not be valid, so deselect the
+        // tabs before updating so we don't get spurious changes in the index.
+        this.updatingTabs = true;
+        let oldTitle = this.tabBar.currentTitle;
+        this.tabBar.currentIndex = -1;
         this.childrenViews.update(this.model.get('children'));
+        this.tabBar.currentIndex = this.model.get('selected_index');
+        let newTitle = this.tabBar.currentTitle;
+        if (oldTitle !== newTitle) {
+            if (oldTitle && oldTitle.owner) {
+                oldTitle.owner.hide();
+            }
+            if (newTitle && newTitle.owner) {
+                newTitle.owner.show();
+            }
+        }
+        this.updatingTabs = false;
     }
 
     /**
      * Called when a child is added to children list.
      */
-    addChildView(model) {
+    addChildView(model, index) {
+        // Placeholder title to keep our position in the tab bar while we create the view.
+        let label = this.model.get('_titles')[index] || (index+1).toString();
+        let tempTitle = new Title({label});
+        this.tabBar.addTab(tempTitle);
         return this.create_child_view(model).then((view: DOMWidgetView) => {
             view.pWidget.hide();
             view.pWidget.addClass('widget-tab-child');
             this.tabContents.addWidget(view.pWidget);
             let title = view.pWidget.title;
             title.closable = false;
-            this.tabBar.addTab(title);
-            this.update();
+            title.label = tempTitle.label;
+            let i = indexOf(this.tabBar.titles, tempTitle);
+            // insert after the temporary tab so that when the temp tab is
+            // removed, the new tab is selected
+            this.tabBar.insertTab(i+1, title);
+            this.tabBar.removeTab(tempTitle);
             view.on('remove', () => this.tabBar.removeTab(title));
             return view;
         }).catch(utils.reject('Could not add child view to box', true));
@@ -263,7 +296,9 @@ class TabView extends DOMWidgetView {
      * changed by another view or by a state update from the back-end.
      */
     update() {
-        this.updateTitles();
+        // Update the selected index in the overall update method because it
+        // should be run after the tabs have been updated. Otherwise the
+        // selected index may not be a valid tab in the tab bar.
         this.updateSelectedIndex();
         return super.update();
     }
@@ -296,7 +331,8 @@ class TabView extends DOMWidgetView {
                     previousWidget.hide();
                 }
             }
-            let currentWidget = titles.at(current).owner;
+            this.tabBar.currentIndex = current;
+            let currentWidget = this.tabBar.currentTitle.owner;
             if (currentWidget) {
                 currentWidget.show();
             }
@@ -314,10 +350,13 @@ class TabView extends DOMWidgetView {
     }
 
     _onTabChanged(sender: TabBar, args: TabBar.ICurrentChangedArgs) {
-        this.model.set('selected_index', args.currentIndex);
-        this.touch();
+        if (!this.updatingTabs) {
+            this.model.set('selected_index', args.currentIndex);
+            this.touch();
+        }
     }
 
+    updatingTabs: boolean = false;
     childrenViews: ViewList;
     tabBar: TabBar;
     tabContents: Panel;
