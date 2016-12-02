@@ -1,5 +1,5 @@
-Jupyter Widget Schema
-=====================
+Jupyter Widgets Schema
+======================
 
 JSON schema for the json serialization of Jupyter Interactive Widgets.
 
