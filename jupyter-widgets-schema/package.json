@@ -1,6 +1,6 @@
 {
-  "name": "jupyter-widget-schema",
-  "version": "0.0.1",
+  "name": "jupyter-widgets-schema",
+  "version": "0.1.0",
   "description": "Schemas for the Jupyter interactive Widgets",
   "main": "index.js",
   "scripts": {
