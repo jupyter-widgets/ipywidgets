@@ -234,7 +234,7 @@
     line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-hbox .widget-label {
+.widget-inline-hbox .widget-label {
     /* Horizontal Widget Label */
     text-align: right;
     margin-right: var(--jp-widgets-inline-margin);
@@ -243,7 +243,7 @@
     flex-shrink: 0;
 }
 
-.widget-vbox .widget-label {
+.widget-inline-vbox .widget-label {
     /* Vertical Widget Label */
     text-align: center;
 }
@@ -282,7 +282,7 @@
                 0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 
-.widget-hbox .widget-readout {
+.widget-inline-hbox .widget-readout {
     /* Horizontal Readout */
     text-align: center;
     max-width: var(--jp-widgets-inline-width-short);
@@ -290,7 +290,7 @@
     margin-left: var(--jp-widgets-inline-margin);
 }
 
-.widget-vbox .widget-readout {
+.widget-inline-vbox .widget-readout {
     /* Vertical Readout */
     margin-top: var(--jp-widgets-inline-margin);
 }
