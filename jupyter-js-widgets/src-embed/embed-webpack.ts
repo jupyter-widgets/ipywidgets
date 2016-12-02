@@ -18,8 +18,8 @@ require('../css/widgets.built.css');
 
 // Load json schema validator
 var Ajv = require('ajv');
-var widget_state_schema = require('jupyter-widget-schema').v1.state;
-var widget_view_schema = require('jupyter-widget-schema').v1.view;
+var widget_state_schema = require('jupyter-widgets-schema').v1.state;
+var widget_view_schema = require('jupyter-widgets-schema').v1.view;
 
 
 // Magic global widget rendering function:
