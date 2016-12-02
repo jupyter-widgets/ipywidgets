@@ -10,6 +10,14 @@ import {
 } from './utils';
 
 import {
+    indexOf
+} from 'phosphor/lib/algorithm/searching';
+
+import {
+    Message
+} from 'phosphor/lib/core/messaging';
+
+import {
     Panel
 } from 'phosphor/lib/ui/panel';
 
@@ -17,49 +25,42 @@ import {
     Widget
 } from 'phosphor/lib/ui/widget';
 
-import {
-    indexOf
-} from 'phosphor/lib/algorithm/searching';
-
 import * as _ from 'underscore';
 import * as $ from 'jquery';
 
 export
-namespace JupyterPhosphorPanelWidget {
-    export
-    interface IOptions {
-        view: DOMWidgetView;
-    }
-}
-
-export
 class JupyterPhosphorPanelWidget extends Panel {
-    constructor(options: JupyterPhosphorPanelWidget.IOptions) {
-        super();
-        this._view = options.view;
+    constructor(options: JupyterPhosphorWidget.IOptions & Panel.IOptions) {
+        let view = options.view;
+        delete options.view;
+        super(options);
+        this._view = view;
     }
 
-    onAfterAttach(msg) {
-        super.onAfterAttach(msg);
-        this._view.trigger('displayed');
+    /**
+     * Process the phosphor message.
+     *
+     * Any custom phosphor widget used inside a Jupyter widget should override
+     * the processMessage function like this.
+     */
+    processMessage(msg: Message) {
+        super.processMessage(msg);
+        this._view.processPhosphorMessage(msg);
     }
 
-    onResize(msg) {
-        if (this._view.onResize) {
-            this._view.onResize(msg);
-        }
-        super.onResize(msg);
-    }
-
-    get isDisposed() {
-        return this._view === null;
-    }
-
+    /**
+     * Dispose the widget.
+     *
+     * This causes the view to be destroyed as well with 'remove'
+     */
     dispose() {
         if (this.isDisposed) {
             return;
         }
         super.dispose();
+        if (this._view) {
+            this._view.remove();
+        }
         this._view = null;
     }
 
