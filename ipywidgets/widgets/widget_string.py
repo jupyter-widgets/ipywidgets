@@ -21,7 +21,12 @@ class _String(LabeledWidget, ValueWidget):
 
     value = Unicode(help="String value").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
-    placeholder = Unicode("", help="Placeholder text to display when nothing has been typed").tag(sync=True)
+
+    # We set a zero-width space as a default placeholder to make sure the baseline matches
+    # the text, not the bottom margin. See the last paragraph of
+    # https://www.w3.org/TR/CSS2/visudet.html#leading
+    placeholder = Unicode("\u200b", help="Placeholder text to display when nothing has been typed").tag(sync=True)
+
 
     def __init__(self, value=None, **kwargs):
         if value is not None:

@@ -12,7 +12,7 @@ class StringModel extends LabeledDOMWidgetModel {
         return _.extend(super.defaults(), {
             value: '',
             disabled: false,
-            placeholder: '',
+            placeholder: '\u200b',
             _model_name: 'StringModel'
         });
     }
