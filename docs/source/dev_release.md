@@ -15,26 +15,26 @@ npm install
 npm publish --tag next
 ```
 
-### Prepare widgetsnbextension npm module
- - npm module
+### widgetsnbextension
 
-```
-edit package.json to point to new jupyter-js-widgets version
+Edit package.json to point to new jupyter-js-widgets version
 npm version [patch/minor/major]
-```
 
-### Here we commit our changes to the two package.json files
- - python module
+Edit `widgetsnbextension/_version.py` (Remove dev from the version.  If it's the first beta, use b1, etc...)
 
 ```
-edit widgetsnbextension/_version.py (Remove dev from the version.  If it's the first beta, use b1, etc...)
 python setup.py sdist
 python setup.py bdist_wheel --universal
 twine upload dist/*
+```
+
+### ipywidgets
 
 edit ipywidgets/_version.py (remove dev from the version and update the frontend version requirement to match the one of jupyter-js-widgets)
 
-Change install_requires to point to new widgetsnbextension version
+Change `setup.py` `install_requires` parameter to point to new widgetsnbextension version
+
+```
 python setup.py sdist
 python setup.py bdist_wheel --universal
 twine upload dist/*
@@ -43,6 +43,7 @@ twine upload dist/*
 ### JupyterLab
 
 Edit the package.json to have jupyter-js-widgets point to the correct version.
+
 ```
 npm version patch/minor/major
 npm install
