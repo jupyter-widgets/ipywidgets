@@ -213,8 +213,6 @@ WidgetManager.prototype._handle_display_view = function (view) {
      * handling so the widget can capture keyboard input.
      * Note, this is only done on the outer most widgets.
      */
-    view.trigger('displayed');
-
     if (this.keyboard_manager) {
         this.keyboard_manager.register_events(view.el);
 
