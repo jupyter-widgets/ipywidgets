@@ -83,7 +83,6 @@ function renderManager(element, tag) {
     manager.set_state(widgetStateObject.state, {}).then(function(models) {
         var tags = element.querySelectorAll('script[type="application/vnd.jupyter.widget-view+json"]');
         for (var i=0; i!=tags.length; ++i) {
-            // TODO: validate view schema
             let viewtag = tags[i];
             let widgetViewObject = JSON.parse(viewtag.innerHTML);
             var view_validate = ajv.compile(widget_view_schema);
