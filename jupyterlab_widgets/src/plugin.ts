@@ -50,7 +50,7 @@ class NBWidgetExtension implements INBWidgetExtension {
     let wManager = new WidgetManager(context, nb.content.rendermime);
     wManager.register({
       name: 'jupyter-js-widgets',
-      version: '2.0.0', // hardcoded because '*' doesn't match pre-release versions
+      version: widgets.version,
       exports: widgets
     });
 
@@ -82,7 +82,7 @@ class NBWidgetExtension implements INBWidgetExtension {
  * The widget manager provider.
  */
 const widgetManagerProvider: JupyterLabPlugin<INBWidgetExtension> = {
-  id: 'jupyter.extensions.widgetManager',
+  id: 'jupyter.extensions.nbWidgetManager',
   provides: INBWidgetExtension,
   requires: [IDocumentRegistry],
   activate: activateWidgetExtension,
