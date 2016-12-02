@@ -30,6 +30,18 @@ from collections import Iterable, Mapping
 
 empty = Parameter.empty
 
+def interact_hookup(f, controls):
+    from ipywidgets import Output
+    out = Output()
+    def observer(change):
+        out.clear_output()
+        kwargs = {k:v.value for k,v in controls.items()}
+        with out:
+            f(**kwargs)
+    for k,w in controls.items():
+        w.observe(observer, 'value')
+    observer(None)
+    return out
 
 def _matches(o, pattern):
     """Match a pattern of types in a sequence."""
