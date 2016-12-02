@@ -273,18 +273,25 @@ class TabView extends DOMWidgetView {
         let tempTitle = new Title({label});
         this.tabBar.addTab(tempTitle);
         return this.create_child_view(model).then((view: DOMWidgetView) => {
-            view.pWidget.hide();
-            view.pWidget.addClass('widget-tab-child');
-            this.tabContents.addWidget(view.pWidget);
-            let title = view.pWidget.title;
+            let widget = view.pWidget;
+            widget.hide();
+            widget.addClass('widget-tab-child');
+            this.tabContents.addWidget(widget);
+
+            let title = widget.title;
             title.closable = false;
             title.label = tempTitle.label;
+
             let i = indexOf(this.tabBar.titles, tempTitle);
-            // insert after the temporary tab so that when the temp tab is
-            // removed, the new tab is selected
+            // insert after tempTitle so that if tempTitle is selected,
+            // after this the replacement title will be selected.
             this.tabBar.insertTab(i+1, title);
             this.tabBar.removeTab(tempTitle);
             view.on('remove', () => this.tabBar.removeTab(title));
+
+            if (this.tabBar.currentTitle === title) {
+                widget.show();
+            }
             return view;
         }).catch(utils.reject('Could not add child view to box', true));
     }
