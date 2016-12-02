@@ -15,6 +15,10 @@ import {
     Widget
 } from 'phosphor/lib/ui/widget';
 
+import {
+    Message
+} from 'phosphor/lib/core/messaging';
+
 /**
  * Replace model ids with models recursively.
  */
@@ -695,42 +699,45 @@ abstract class WidgetView extends NativeView<WidgetModel> {
 export
 namespace JupyterPhosphorWidget {
     export
-    interface IOptions extends Widget.IOptions {
+    interface IOptions {
         view: DOMWidgetView;
     }
 }
 
 export
 class JupyterPhosphorWidget extends Widget {
-    constructor(options: JupyterPhosphorWidget.IOptions) {
+    constructor(options: Widget.IOptions & JupyterPhosphorWidget.IOptions) {
         let view = options.view;
         delete options.view;
         super(options);
         this._view = view;
     }
 
-    get isDisposed() {
-        return this._view === null;
-    }
-
+    /**
+     * Dispose the widget.
+     *
+     * This causes the view to be destroyed as well with 'remove'
+     */
     dispose() {
         if (this.isDisposed) {
             return;
         }
         super.dispose();
+        if (this._view) {
+            this._view.remove();
+        }
         this._view = null;
     }
 
-    onResize(msg) {
-        if (this._view.onResize) {
-            this._view.onResize(msg);
-        }
-        super.onResize(msg);
-    }
-
-    onAfterAttach(msg) {
-        super.onAfterAttach(msg);
-        this._view.trigger('displayed');
+    /**
+     * Process the phosphor message.
+     *
+     * Any custom phosphor widget used inside a Jupyter widget should override
+     * the processMessage function like this.
+     */
+    processMessage(msg: Message) {
+        super.processMessage(msg);
+        this._view.processPhosphorMessage(msg);
     }
 
     private _view: DOMWidgetView;
@@ -859,7 +866,14 @@ class DOMWidgetView extends WidgetView {
         return super.remove();
     }
 
-    onResize(msg) {}
+    processPhosphorMessage(msg: Message) {
+        switch (msg.type) {
+        case 'after-attach':
+            this.trigger('displayed');
+            break;
+        }
+    }
+
     '$el': any;
     pWidget: Widget;
     layoutPromise: Promise<any>;
