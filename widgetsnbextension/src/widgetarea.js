@@ -4,6 +4,9 @@
 
 require('../css/outputarea.css');
 
+var messaging = require('phosphor/lib/core/messaging');
+var widgets = require('phosphor/lib/ui/widget');
+
 /**
  * WidgetArea
  */
@@ -41,7 +44,12 @@ WidgetArea.prototype.display_widget_view = function(view_promise) {
     var that = this;
     return view_promise.then(function(view) {
         that.widget_area.style.display = '';
-        dummy.parentNode.replaceChild(view.el, dummy);
+
+        // Do basically the same as Phosphor's Widget.attach, except we replace
+        // a child rather than appending the view's Phosphor widget
+        dummy.parentNode.replaceChild(view.pWidget.node, dummy);
+        messaging.sendMessage(view.pWidget, widgets.WidgetMessage.AfterAttach)
+
         that.widget_views.push(view);
 
         // Check the live state of the view's model.
