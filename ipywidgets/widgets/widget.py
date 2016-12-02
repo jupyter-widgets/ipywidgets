@@ -158,6 +158,9 @@ class Widget(LoggingConfigurable):
             } for k in Widget.widgets
         })
 
+    def get_view_spec(self):
+        return dict(version_major=1, version_minor=0, model_id=self._model_id)
+
     #-------------------------------------------------------------------------
     # Traits
     #-------------------------------------------------------------------------
