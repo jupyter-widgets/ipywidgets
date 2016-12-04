@@ -16,8 +16,8 @@
         "model_id": {
             "description": "Unique identifier of the widget model to be displayed",
             "type": "string"
-        },
-        "required": [ "model_id" ]
+        }
     },
+    "required": [ "model_id" ],
     "additionalProperties": false
 }
