@@ -29,7 +29,7 @@ Source Build
 
 ```bash
 git clone https://github.com/ipython/ipywidgets.git
-cd ipywidgets/labextension
+cd ipywidgets/jupyterlab_widgets
 npm install
 npm run build
 pip install -e .
