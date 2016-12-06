@@ -201,9 +201,11 @@ WidgetManager.set_state_callbacks(function() {
     return Promise.resolve({});
 }, function(state) {
     Jupyter.notebook.metadata.widgets = {
-        state: state,
-        // Persisted widget state version
-        version: version,
+        'application/vnd.jupyter.widget-state+json' : {
+            version_major: 1,
+            version_minor: 0,
+            state: state
+        }
     };
 });
 
