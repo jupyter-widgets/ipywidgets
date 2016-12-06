@@ -232,6 +232,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     line-height: var(--jp-widgets-inline-height);
+    max-width: var(--jp-widgets-inline-width);
 }
 
 .widget-inline-hbox .widget-label {
