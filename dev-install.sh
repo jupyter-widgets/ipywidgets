@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-nbExtFlags=$1
+nbExtFlags="--sys-prefix $1"
 
 npm -v
 if [ $? -eq 0 ]; then
@@ -31,9 +31,9 @@ cd widgetsnbextension
 npm install
 pip install -v -e .
 if [[ "$OSTYPE" == "msys" ]]; then
-    jupyter nbextension install --py $nbExtFlags widgetsnbextension
+    jupyter nbextension install --overwrite --py $nbExtFlags widgetsnbextension
 else
-    jupyter nbextension install --py --symlink $nbExtFlags widgetsnbextension
+    jupyter nbextension install --overwrite --py --symlink $nbExtFlags widgetsnbextension
 fi
 jupyter nbextension enable --py $nbExtFlags widgetsnbextension
 cd ..
@@ -53,9 +53,9 @@ cd jupyterlab_widgets
 npm install
 pip install -v -e .
 if [[ "$OSTYPE" == "msys" ]]; then
-    jupyter labextension install --py $nbExtFlags jupyterlab_widgets
+    jupyter labextension install --overwrite --py $nbExtFlags jupyterlab_widgets
 else
-    jupyter labextension install --py --symlink $nbExtFlags jupyterlab_widgets
+    jupyter labextension install --overwrite --py --symlink $nbExtFlags jupyterlab_widgets
 fi
 jupyter labextension enable --py $nbExtFlags jupyterlab_widgets
 cd ..
