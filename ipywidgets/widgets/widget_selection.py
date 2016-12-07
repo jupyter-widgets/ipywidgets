@@ -27,9 +27,11 @@ def _value_to_label(value, obj):
     # TODO: make a separate validation function so this doesn't have
     # to redo the work of parsing the options object.
     options = obj._make_options(obj.options)
+    if len(options) == 0:
+        raise TraitError("`options` must not be empty.")
     try:
-        # use an iterator approach as a shortcut
-        return next(k for (k, v) in options if obj.equals(v, value))
+        # return the first label whose value is equal to the desired value
+        return next(l for (l, v) in options if obj.equals(v, value))
     except StopIteration:
         raise KeyError(value)
 
