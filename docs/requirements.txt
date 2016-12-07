@@ -4,3 +4,4 @@ sphinx_rtd_theme==0.1.10-alpha
 nbsphinx==0.2.9
 recommonmark==0.4.0
 ipykernel
+jupyter_sphinx
