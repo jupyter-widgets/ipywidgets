@@ -5,5 +5,5 @@
 
 {% block extrahead %}
 {{ super() }}
-<script src='_static/built/index.js'></script>
+<script src='{{pathto("_static/built/index.js", 1)}}'></script>
 {% endblock extrahead %}
