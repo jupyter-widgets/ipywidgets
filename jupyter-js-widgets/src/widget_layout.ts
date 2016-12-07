@@ -4,6 +4,15 @@
 import {
     DOMWidgetModel, DOMWidgetView
 } from './widget';
+
+import {
+    ResizeMessage
+} from 'phosphor/lib/ui/widget';
+
+import {
+    sendMessage
+} from 'phosphor/lib/core/messaging';
+
 import * as _ from 'underscore';
 
 /**
@@ -62,6 +71,14 @@ class LayoutView extends DOMWidgetView {
         for (let key of Object.keys(css_properties)) {
             this.registerTrait(key)
         }
+        let sendResize = () => {
+            this.displayed.then(() => {
+                // Let the widget know its size might have changed.
+                sendMessage(this.options.parent.pWidget, ResizeMessage.UnknownSize);
+            })
+        }
+        this.listenTo(this.model, 'change', sendResize);
+        sendResize();
     }
 
     /**
@@ -77,9 +94,7 @@ class LayoutView extends DOMWidgetView {
         });
 
         // Set the initial value on display.
-        this.displayed.then(() => {
-            this.handleChange(trait, this.model.get(trait));
-        });
+        this.handleChange(trait, this.model.get(trait));
     }
 
     /**
@@ -96,7 +111,8 @@ class LayoutView extends DOMWidgetView {
      * Handles when a trait value changes
      */
     handleChange(trait: string, value: any) {
-        this.displayed.then((parent) => {
+        this.displayed.then(() => {
+            let parent = this.options.parent as DOMWidgetView;
             if (parent) {
                 if (value === null) {
                     parent.el.style.removeProperty(this.css_name(trait));

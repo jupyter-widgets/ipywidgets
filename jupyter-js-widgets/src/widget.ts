@@ -752,13 +752,13 @@ class DOMWidgetView extends WidgetView {
         super.initialize(parameters);
         this.id = utils.uuid();
 
-        this.listenTo(this.model, 'change:_dom_classes', function(model, new_classes) {
+        this.listenTo(this.model, 'change:_dom_classes', (model, new_classes) => {
             var old_classes = model.previous('_dom_classes');
             this.update_classes(old_classes, new_classes);
         });
 
         this.layoutPromise = Promise.resolve();
-        this.listenTo(this.model, 'change:layout', function(model, value) {
+        this.listenTo(this.model, 'change:layout', (model, value) => {
             this.setLayout(value, model.previous('layout'));
         });
 
@@ -778,7 +778,7 @@ class DOMWidgetView extends WidgetView {
                 return this.create_child_view(layout).then((view) => {
                     // Trigger the displayed event of the child view.
                     return this.displayed.then(() => {
-                        view.trigger('displayed', this);
+                        view.trigger('displayed');
                         return view;
                     });
                 }).catch(utils.reject('Could not add LayoutView to DOMWidgetView', true));
