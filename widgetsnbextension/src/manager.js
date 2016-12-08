@@ -86,9 +86,8 @@ var WidgetManager = function (comm_manager, notebook) {
     // Setup state saving code.
     this.notebook.events.on('before_save.Notebook', (function() {
         var save_callback = WidgetManager._save_callback;
-        var options = WidgetManager._get_state_options;
         if (save_callback) {
-            this.get_state(options).then((function(state) {
+            this.get_state(WidgetManager._get_state_options).then((function(state) {
                 save_callback.call(this, state);
             }).bind(this)).catch(widgets.reject('Could not call widget save state callback.', true));
         }
@@ -200,7 +199,9 @@ WidgetManager.prototype._init_actions = function() {
     var notifier = Jupyter.notification_area.widget('widgets');
     this.saveWidgetsAction = {
         handler: (function() {
-            this.get_state(WidgetManager._get_state_options).then(function(state) {
+            this.get_state({
+                drop_defaults: true
+            }).then(function(state) {
                 Jupyter.notebook.metadata.widgets = {
                     'application/vnd.jupyter.widget-state+json' : {
                         version_major: 1,
