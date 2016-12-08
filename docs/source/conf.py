@@ -40,6 +40,7 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
     'nbsphinx',
+    'jupyter_sphinx.embed_widgets',
     'IPython.sphinxext.ipython_console_highlighting',
 ]
 
@@ -52,24 +53,6 @@ intersphinx_mapping = {
 
 nbsphinx_allow_errors = True   # exception ipstruct.py ipython_genutils
 
-# -- RTD and local build instructions -----------------------
-
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-
-if on_rtd:
-    print('On RTD, installing node and building...')
-    bash('../build-rtd.sh')
-else:
-    print('Local build not on RTD, building...')
-
-    # set theme; see end of file for theme options
-    html_theme = "sphinx_rtd_theme"
-    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-    bash('../build-local.sh')
-
-print('Done bulding')
-
-
 # -- General information -------
 
 _release = {}
@@ -78,7 +61,7 @@ version = '.'.join(map(str, _release['version_info'][:2]))
 release = _release['__version__']
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+# templates_path = ['_templates']
 
 master_doc = 'index'
 project = 'ipywidgets and jupyter-js-widgets'
@@ -93,7 +76,7 @@ todo_include_todos = False
 
 # -- html --------------------------
 
-html_static_path = ['_static']
+# html_static_path = ['_static']
 htmlhelp_basename = 'ipywidgetsdoc'
 
 

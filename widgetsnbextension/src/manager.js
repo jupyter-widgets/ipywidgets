@@ -5,15 +5,9 @@
 var _ = require("underscore");
 var Backbone = require("backbone");
 var widgets = require("jupyter-js-widgets");
-var html2canvas = require("html2canvas");
-var progressModal = require("./progress-modal");
 var saveState = require("./save_state");
 var embedWidgets = require("./embed_widgets");
 var version = require("../package.json").version;
-
-
-// Work around for a logging bug, reported in https://github.com/niklasvh/html2canvas/issues/543
-window.html2canvas = html2canvas;
 
 //--------------------------------------------------------------------
 // WidgetManager class
@@ -91,11 +85,6 @@ var WidgetManager = function (comm_manager, notebook) {
 
     // Setup state saving code.
     this.notebook.events.on('before_save.Notebook', (function() {
-
-        // Append snapshots of the widgets to the notebook's state before
-        // saving the notebook.
-        this.prependSnapshots();
-
         var save_callback = WidgetManager._save_callback;
         var options = WidgetManager._get_state_options;
         if (save_callback) {
@@ -122,26 +111,15 @@ var WidgetManager = function (comm_manager, notebook) {
         validate();
     });
 
-    // Delete the snapshots when the notebook has saved, failed to save, is
-    // loaded from disk, and when the widget manager is constructed.
-    this.notebook.events.on('notebook_saved.Notebook', this.deleteSnapshots.bind(this));
-    this.notebook.events.on('notebook_save_failed.Notebook', this.deleteSnapshots.bind(this));
-    this.notebook.events.on('notebook_loaded.Notebook', this.deleteSnapshots.bind(this));
-    this.deleteSnapshots();
-
     // Create the actions and menu
     this._init_actions();
     this._init_menu();
-
-    // Initialize the widget screenshot rendering dialog.
-    this.progressModal = new progressModal.ProgressModal();
 };
-WidgetManager.prototype = Object.create(widgets.ManagerBase.prototype);
 
+WidgetManager.prototype = Object.create(widgets.ManagerBase.prototype);
 WidgetManager._managers = []; /* List of widget managers */
 WidgetManager._load_callback = null;
 WidgetManager._save_callback = null;
-
 
 WidgetManager.register_widget_model = function (model_name, model_type) {
     /**
@@ -188,10 +166,6 @@ WidgetManager.set_state_callbacks = function (load_callback, save_callback, opti
     });
 };
 
-// Use local storage to persist widgets across page refresh by default.
-// LocalStorage is per domain, so we need to explicitly set the URL
-// that the widgets are associated with so they don't show on other
-// pages hosted by the noteboook server.
 var url = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
 var key = 'widgets:' + url;
 WidgetManager.set_state_callbacks(function() {
@@ -231,16 +205,16 @@ WidgetManager.prototype._handle_display_view = function (view) {
  */
 WidgetManager.prototype._init_actions = function() {
     var notifier = Jupyter.notification_area.widget('widgets');
-    this.buildSnapshotsAction = {
+    this.saveWidgetsAction = {
         handler: (function() {
-            this.updateSnapshots().then((function() {
+            (function() {
                 notifier.set_message('Widgets rendered', 3000);
-            }).bind(this));
+            }).bind(this);
         }).bind(this),
         icon: 'fa-truck',
-        help: 'Rasterizes the current state of the widgets to the notebook as PNG images.'
+        help: 'Save the notebook with the widget state information for static rendering'
     };
-    Jupyter.menubar.actions.register(this.buildSnapshotsAction, 'save-with-snapshots', 'widgets');
+    Jupyter.menubar.actions.register(this.saveWidgetsAction, 'save-with-widgets', 'widgets');
 };
 
 /**
@@ -266,7 +240,7 @@ WidgetManager.prototype._init_menu = function() {
     widgetsSubmenu.classList.add('dropdown-menu');
     widgetsMenu.appendChild(widgetsSubmenu);
 
-    widgetsSubmenu.appendChild(this._createMenuItem('Save notebook with snapshots', this.buildSnapshotsAction));
+    widgetsSubmenu.appendChild(this._createMenuItem('Save notebook with widgets', this.saveWidgetsAction));
     widgetsSubmenu.appendChild(this._createMenuItem('Download widget state', saveState.action));
     widgetsSubmenu.appendChild(this._createMenuItem('Embed widgets', embedWidgets.action));
 };
@@ -361,147 +335,6 @@ WidgetManager.prototype.get_msg_cell = function (msg_id) {
     return null;
 };
 
-/**
- * Updates rendered snapshots of all of the widget areas in the notebook.
- * @return {Promise<void>} success
- */
-WidgetManager.prototype.updateSnapshots = function() {
-    var that = this;
-    var site = document.querySelector('#site');
-
-    // Wait for the progress modal to show before continuing
-    return this.progressModal.show().then(function() {
-        // Disable overflow to prevent the document from having elements
-        // that are scrolled out of visibility.
-        site.style.overflow = 'visible';
-        document.body.style.overflow = 'hidden';
-        // Render the widgets of each cell.
-        that._progress = 0;
-        var cells = Jupyter.notebook.get_cells();
-        return that._sequentialPromise(cells.map(that._updateCellSnapshots.bind(that)));
-    }).then(function() {
-        // When all of the rendering is complete, re-enable scrolling in the
-        // notebook.
-        site.style.overflow = '';
-        document.body.style.overflow = '';
-        // When the entire process has completed, hide the progress modal.
-        return that.progressModal.hide();
-    }).then(function() {
-        // Reset the values of the modal
-        that.progressModal.setText('Rendering widgets...');
-        return that.progressModal.setValue(0);
-    }).then(function() {
-        // Invoke a notebook save
-        Jupyter.menubar.actions.get('jupyter-notebook:save-notebook').handler({notebook: Jupyter.notebook});
-    }).catch(widgets.reject('Could not create widget snapshots and save the notebook', true));
-};
-
-/**
- * Update the widget snapshots for a single cell
- * @param  {object} cell
- * @param  {number} index - of the cell
- * @return {Promise}
- */
-WidgetManager.prototype._updateCellSnapshots = function(cell, index) {
-    var that = this;
-    var widgetSubarea = cell.element[0].querySelector(".widget-subarea");
-    var cells = Jupyter.notebook.get_cells();
-    if (!(widgetSubarea && widgetSubarea.children.length > 0)) {
-        if (widgetSubarea && widgetSubarea.widgetSnapshot) {
-            delete widgetSubarea.widgetSnapshot;
-        }
-        return that.progressModal.setValue(++that._progress/cells.length);
-    }
-
-    return that.progressModal.setText(
-        'Rendering widget ' + String(index + 1) + '/' + String(cells.length) + ' ...'
-    ).then(function() {
-        return Promise.all([
-            that._rasterizeEl(widgetSubarea),
-            that._getCellWidgetStates(cell, index),
-        ]);
-    }).then(function(results) {
-        var canvas = results[0];
-        var widgetState = results[1];
-        // Remove URL information, so only the b64 encoded data
-        // exists, because that's what the notebook likes.
-        var imageMimetype = 'image/png';
-        var imageDataUrl = canvas.toDataURL(imageMimetype);
-        var imageData = imageDataUrl.split(',').slice(-1)[0];
-
-        // Create a mime bundle.
-        var bundle = {};
-        bundle[imageMimetype] = imageData;
-        bundle['text/html'] = widgets.generateEmbedScript(widgetState, imageDataUrl);
-        widgetSubarea.widgetSnapshot = bundle;
-    }).then(function() {
-        return that.progressModal.setValue(++that._progress/cells.length);
-    });
-};
-
-WidgetManager.prototype._getCellWidgetStates = function(cell, index) {
-    var that = this;
-    var modelIds = Object.keys(this._models);
-    return Promise.all(modelIds.map(function(modelId) {
-        return that._models[modelId].then(function(model) {
-            return widgets.resolvePromisesDict(model.views).then(function(views) {
-                if (Object.keys(views).some(function(k) {
-                    return views[k].options.cell_index == index;
-                })) {
-                    return that._traverseWidgetTree(model)
-                        .map(function(widget) {
-                            return widget.get_state(true);
-                        });
-                }
-                return [null];
-            });
-        });
-    })).then(function(states) {
-        return states
-            .reduce(function(a, b) { return a.concat(b); }, [])
-            .filter(function(state) { return state !== null; });
-    });
-};
-
-WidgetManager.prototype._traverseWidgetTree = function(parentWidget, cache) {
-    // Setup a cache if it doesn't already exist
-    if (!cache) {
-        cache = {};
-    }
-
-    // Don't continue if this widget has already been traversed
-    if (parentWidget.id in cache) {
-        return [];
-    }
-
-    // Remember that this widget has been traversed
-    cache[parentWidget.id] = true;
-
-    // Traverse the parent widget's state for child widgets
-    var state = parentWidget.get_state(true);
-    var subWidgets = this._traverseWidgetState(state);
-    var that = this;
-    return _.flatten(subWidgets.map(function(subWidget) {
-        return that._traverseWidgetTree(subWidget, cache);
-    })).concat([ parentWidget ]);
-};
-
-WidgetManager.prototype._traverseWidgetState = function(state) {
-    var that = this;
-    if (state instanceof widgets.WidgetModel) {
-        return [state];
-    } else if (_.isArray(state)) {
-        return _.flatten(state.map(this._traverseWidgetState.bind(this)));
-    } else if (state instanceof Object) {
-        var states = [];
-        _.each(state, function(value, key) {
-            states.push(that._traverseWidgetState(value));
-        });
-        return _.flatten(states);
-    } else {
-        return [];
-    }
-};
 
 /**
  * Create a sequentially executed promise chain from an array of promises.
@@ -518,77 +351,6 @@ WidgetManager.prototype._sequentialPromise = function(promises) {
     return chain;
 };
 
-/**
- * Rasterize an HTMLElement to and HTML5 canvas
- * @param  {HTMLElement} el
- * @return {Promise<HTMLCanvasElement>}
- */
-WidgetManager.prototype._rasterizeEl = function(el) {
-    return new Promise(function(resolve) {
-        html2canvas(el, {
-            onrendered: function(canvas) {
-                resolve(canvas);
-            }
-        });
-    });
-};
-
-
-/**
- * Render the widget views that are live as images and prepend them as
- * outputs.
- *
- * Note: This function must be synchronous, in order to work with the
- * notebook's save machinery.
- */
-WidgetManager.prototype.prependSnapshots = function() {
-    var cells = Jupyter.notebook.get_cells();
-    cells.forEach((function(cell) {
-        var widgetSubarea = cell.element[0].querySelector(".widget-subarea");
-        if (widgetSubarea && widgetSubarea.children.length > 0 && widgetSubarea.widgetSnapshot) {
-            // Create an output for the screenshot.
-            var output = {
-                data: widgetSubarea.widgetSnapshot,
-                output_type: "display_data",
-                metadata: {isWidgetSnapshot: true}
-            };
-
-            // Move the new output to the top, so it appears
-            // where the widget area appears.
-            var outputState = cell.output_area.outputs;
-            outputState.splice(0,0,output);
-            cell.output_area.outputs = outputState;
-        }
-    }).bind(this));
-};
-
-/**
- * Remove the outputs that rendered widget views.
- *
- * Note: This function must be synchronous, in order to work with the
- * notebook's save machinery.
- */
-WidgetManager.prototype.deleteSnapshots = function() {
-    var cells = Jupyter.notebook.get_cells();
-    cells.forEach((function(cell) {
-
-        // Remove the outputs with isWidgetSnapshot: true.
-        if (cell.output_area) {
-            // Filter out outputs that are snapshots
-            // Only touch the data, not the page
-            cell.output_area.outputs = cell.output_area.outputs.filter(function (output) {
-                return !(output.metadata && output.metadata.isWidgetSnapShot);
-            });
-
-            // Remove the corresponding elements from the page
-            cell.output_area.element
-              .find('img.jupyter-widget')
-              .each(function (index, el) {
-                el.remove();
-              });
-        }
-    }).bind(this));
-};
 
 WidgetManager.prototype._create_comm = function(comm_target_name, model_id, data) {
     var that = this;
@@ -607,7 +369,6 @@ WidgetManager.prototype._create_comm = function(comm_target_name, model_id, data
         }
     });
 };
-
 
 WidgetManager.prototype.callbacks = function (view) {
     /**
@@ -643,7 +404,6 @@ WidgetManager.prototype.callbacks = function (view) {
     }
     return callbacks;
 };
-
 
 WidgetManager.prototype._get_comm_info = function() {
     /**

@@ -1,32 +1,14 @@
 ipywidgets
 ==========
 
-Contents
---------
+.. ipywidgets-setup::
 
-.. toctree::
-    :maxdepth: 2
-    :caption: User Guide
+	from ipywidgets import VBox, jsdlink, IntSlider, Button
 
-    user_install.md
-    examples/Using Interact.ipynb
-    examples/Widget Basics.ipynb
-    examples/Widget List.ipynb
-    examples/Widget Events.ipynb
-    examples/Widget Styling.ipynb
-    examples/Widget Custom.ipynb
-    examples/Widget Alignment.ipynb
-    examples/Widget Low Level.ipynb
-    embedding.md
-    contributing.md
-    changelog.md
+.. ipywidgets-display::
 
+	s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
+	b = Button(icon='legal')
+	jsdlink((s1, 'value'), (s2, 'max'))
+	VBox([s1, s2, b])
 
-.. toctree::
-    :maxdepth: 2
-    :caption: Developer Docs
-
-    dev_install.md
-    dev_testing.md
-    dev_docs
-    dev_release.md

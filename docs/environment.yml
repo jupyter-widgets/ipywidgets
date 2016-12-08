@@ -14,6 +14,7 @@ dependencies:
 - ipykernel
 - pip:
   - nbsphinx==0.2.11
+  - jupyter_sphinx
   - sphinx_rtd_theme==0.1.10-alpha
   - python-dateutil
   - recommonmark==0.4.0
