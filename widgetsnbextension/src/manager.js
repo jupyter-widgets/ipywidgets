@@ -171,16 +171,9 @@ var key = 'widgets:' + url;
 WidgetManager.set_state_callbacks(function() {
     if (Jupyter.notebook.metadata.widgets) {
         return Promise.resolve(Jupyter.notebook.metadata.widgets.state);
+    } else {
+        return Promise.resolve({});
     }
-    return Promise.resolve({});
-}, function(state) {
-    Jupyter.notebook.metadata.widgets = {
-        'application/vnd.jupyter.widget-state+json' : {
-            version_major: 1,
-            version_minor: 0,
-            state: state
-        }
-    };
 });
 
 WidgetManager.prototype._handle_display_view = function (view) {
@@ -207,9 +200,18 @@ WidgetManager.prototype._init_actions = function() {
     var notifier = Jupyter.notification_area.widget('widgets');
     this.saveWidgetsAction = {
         handler: (function() {
-            (function() {
-                notifier.set_message('Widgets rendered', 3000);
-            }).bind(this);
+            this.get_state(WidgetManager._get_state_options).then(function(state) {
+                Jupyter.notebook.metadata.widgets = {
+                    'application/vnd.jupyter.widget-state+json' : {
+                        version_major: 1,
+                        version_minor: 0,
+                        state: state
+                    }
+                };
+                Jupyter.menubar.actions.get('jupyter-notebook:save-notebook').handler({
+                    notebook: Jupyter.notebook
+                });
+            });
         }).bind(this),
         icon: 'fa-truck',
         help: 'Save the notebook with the widget state information for static rendering'
