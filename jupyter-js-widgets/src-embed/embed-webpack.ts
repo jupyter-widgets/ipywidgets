@@ -109,4 +109,8 @@ function renderManager(element, tag) {
     });
 }
 
-window.addEventListener('load', loadInlineWidgets);
+// Prevent the embedder to be defined twice.
+if (!(window as any)._jupyter_widget_embedder) {
+    (window as any)._jupyter_widget_embedder = true;
+    window.addEventListener('load', loadInlineWidgets);
+}
