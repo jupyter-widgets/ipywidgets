@@ -14,7 +14,6 @@ var mngr = require("./manager");
 var widgetarea = require("./widgetarea");
 require("./save_state");
 require("./embed_widgets");
-require("./widget_output");
 
 /**
  * Create a widget manager for a kernel instance.
