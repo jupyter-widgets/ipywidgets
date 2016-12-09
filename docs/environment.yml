@@ -13,6 +13,7 @@ dependencies:
 - sphinx>=1.4.6
 - ipykernel
 - pip:
+  - jupyter_sphinx
   - git+https://github.com/SylvainCorlay/nbsphinx.git@widgets-all-the-things#egg=nbsphinx
   - sphinx_rtd_theme==0.1.10-alpha
   - python-dateutil

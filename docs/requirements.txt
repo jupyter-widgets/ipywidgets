@@ -1,7 +1,8 @@
 jupyter_client
 sphinx>=1.4.6
 sphinx_rtd_theme==0.1.10-alpha
-nbsphinx==0.2.9
+nbsphinx==git+https://github.com/SylvainCorlay/nbsphinx.git@widgets-all-the-things
+jupyter_sphinx
 recommonmark==0.4.0
 ipykernel
 jupyter_sphinx
