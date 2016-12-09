@@ -4,7 +4,7 @@
 # Distributed under the terms of the Modified BSD License.
 
 from .widget import Widget, register
-from traitlets import Unicode
+from traitlets import Unicode, Instance
 
 
 class Layout(Widget):
@@ -53,3 +53,13 @@ class Layout(Widget):
     top = Unicode(None, allow_none=True).tag(sync=True)
     visibility = Unicode(None, allow_none=True).tag(sync=True)
     width = Unicode(None, allow_none=True).tag(sync=True)
+
+class LayoutTraitType(Instance):
+
+    klass = Layout
+
+    def validate(self, obj, value):
+        if isinstance(value, dict):
+            return super(LayoutTraitType, self).validate(obj, Layout(**value))
+        else:
+            return super(LayoutTraitType, self).validate(obj, value)
