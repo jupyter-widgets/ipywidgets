@@ -24,8 +24,7 @@ var WidgetManager = function (comm_manager, notebook) {
     // Register with the comm manager.
     this.comm_manager.register_target(this.comm_target_name, _.bind(this.handle_comm_open,this));
 
-    // Attempt to reconstruct any live comms by requesting them from the
-    // back-end.
+    // Attempt to reconstruct any live comms by requesting them from the back-end.
     var that = this;
     var backed_widgets_loaded = this._get_comm_info().then(function(comm_ids) {
 
@@ -40,9 +39,8 @@ var WidgetManager = function (comm_manager, notebook) {
             return Promise.all(comms.map(function(comm) {
                 var update_promise = new Promise(function(resolve, reject) {
                     comm.on_msg(function (msg) {
-
                         // A suspected response was received, check to see if
-                        // it's a state update.  If so, resolve.
+                        // it's a state update. If so, resolve.
                         if (msg.content.data.method === 'update') {
                             resolve({
                                 comm: comm,
@@ -51,7 +49,6 @@ var WidgetManager = function (comm_manager, notebook) {
                         }
                     });
                 });
-
                 comm.send({
                     method: 'request_state'
                 }, that.callbacks());
@@ -66,19 +63,24 @@ var WidgetManager = function (comm_manager, notebook) {
                     comm: widget_info.comm,
                 }, widget_info.msg.content.data.state);
             }));
-        }).then(function(models) {
-            // Load the view information from the notebook metadata.
-            if (WidgetManager._load_callback) {
-                WidgetManager._load_callback.call(that).then(function(state) {
-                    var filtered_state = Object.keys(state).reduce(function(obj, key) {
-                        // Filter for keys that are live model ids.
-                        if (that.get_model(key)) {
-                            obj[key] = state[key];
+        }).then(function() {
+            var cells = that.notebook.get_cells();
+            var outputs, cell;
+            for (var i = 0; i < cells.length; ++i) {
+                cell = cells[i];
+                if (cell.output_area) {
+                    outputs = cell.output_area.outputs;
+                    for (var j = 0; j < outputs.length; ++j) {
+                        if (outputs[j].data['application/vnd.jupyter.widget-view+json']) {
+                            var model_promise = that.get_model(outputs[j].data['application/vnd.jupyter.widget-view+json'].model_id);
+                            model_promise.then((function(cell_index) {
+                                return function (model) {
+                                    that.display_model(undefined, model, { cell_index: cell_index });
+                                };
+                            })(i));
                         }
-                        return obj;
-                    }, {});
-                    that.set_state(filtered_state);
-                }).catch(widgets.reject('Error loading widget manager state', true));
+                    }
+                }
             }
         });
     });
