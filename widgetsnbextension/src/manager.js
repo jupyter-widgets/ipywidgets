@@ -245,9 +245,9 @@ WidgetManager.prototype._init_menu = function() {
     widgetsSubmenu.classList.add('dropdown-menu');
     widgetsMenu.appendChild(widgetsSubmenu);
 
-    widgetsSubmenu.appendChild(this._createMenuItem('Save notebook with widgets', this.saveWidgetsAction));
-    widgetsSubmenu.appendChild(this._createMenuItem('Download widget state', saveState.action));
-    widgetsSubmenu.appendChild(this._createMenuItem('Embed widgets', embedWidgets.action));
+    widgetsSubmenu.appendChild(this._createMenuItem('Save Notebook with Widgets', this.saveWidgetsAction));
+    widgetsSubmenu.appendChild(this._createMenuItem('Download Widget State', saveState.action));
+    widgetsSubmenu.appendChild(this._createMenuItem('Embed Widgets', embedWidgets.action));
 };
 
 /**

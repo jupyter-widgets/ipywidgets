@@ -1,23 +1,28 @@
-Embedding Jupyter Widgets in Static Webpages
-============================================
+# Embedding Jupyter Widgets in Other Contexts than the Notebook
 
-Jupyter interactive widgets can be serialized and embedded into static web pages.
+Jupyter interactive widgets can be serialized and embedded into
 
-The notebook interface provides a context menu for generating an HTML snippet that
-can be embedded into any static web page:
+ - static web pages
+ - sphinx documentation
+ - html-converted notebooks on nbviewer
+
+## Embedding Widgets in HTML Web Pages
+
+The notebook interface provides a context menu for generating an HTML snippet
+that can be embedded into any static web page:
 
 ![embedding](./embed.gif)
 
-The context menu provides two actions
+The context menu provides three actions
 
- - Download widget state
- - Embed widgets
+ - Save Notebook with Widgets
+ - Download Widget State
+ - Embed Widgets
 
-Embeddable HTML Snippet
------------------------
+### Embeddable HTML Snippet
 
-The first option, `Embed widgets`, provides a dialog containing an HTML snippet
-which can be used to embed jupyter interactive widgets into any web page.
+The last option, `Embed widgets`, provides a dialog containing an HTML snippet
+which can be used to embed Jupyter interactive widgets into any web page.
 
 This HTML snippet is composed of multiple `<script>` tags:
 
@@ -25,7 +30,7 @@ This HTML snippet is composed of multiple `<script>` tags:
  - The second script tag contains the state of all the widget models currently
    in use. It has the mime type `application/vnd.jupyter.widget-state+json`.
 
-   The json schema for the content of that script tag is:
+   The JSON schema for the content of that script tag is:
 
     ```json
     {
@@ -84,7 +89,7 @@ This HTML snippet is composed of multiple `<script>` tags:
   The *Embed Widgets* action currently creates such a tag for each view
   displayed in the notebook at this time.
 
-  The json schema for the content of that script tag is:
+  The JSON schema for the content of that script tag is:
 
     ```json
     {
@@ -113,12 +118,58 @@ This HTML snippet is composed of multiple `<script>` tags:
     ```
 
   If you want to lay out these script tags in a custom fashion or only keep
-  some of them, you can change their location in the DOM when including the snippet
-  into a web page.
+  some of them, you can change their location in the DOM when including the
+  snippet into a web page.
 
-Widget State Json
------------------
+### Widget State JSON
 
-The second option, `Download widget state`, triggers the downloading of a json file
-containing the serialized state of all the widget models currently in use, corresponding
-to the same json schema.
+The second option, `Download Widget State`, triggers the downloading of a JSON
+file containing the serialized state of all the widget models currently in use,
+corresponding to the same JSON schema.
+
+## Embedding Widgets in the Sphinx HTML Documentation
+
+As of ipywidgets 6.0, Jupyter interactive widgets can be rendered and
+interacted with in sphinx html documentation. Two means of achieving this are
+provided
+
+### Using the Jupyter Sphinx Extension
+
+The [jupyter_sphinx](https://github.com/jupyter/jupyter-sphinx) extension
+enables jupyter-specific features in sphinx. It can be install with `pip` and
+`conda`.
+
+In the `conf.py` sphinx configuration file, add `jupyter_sphinx.embed_widgets`
+to list of enabled extensions.
+
+Two directives are provided: `ipywidgets-setup` and `ipywidgets-display`.
+
+`ipywidgets-setup` code is used run potential boilerplate and configuration
+code prior to running the display code. For example:
+
+```rst
+.. ipywidgets-setup::
+
+    from ipywidgets import VBox, jsdlink, IntSlider, Button
+
+.. ipywidgets-display::
+
+    s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
+    b = Button(icon='legal')
+    jsdlink((s1, 'value'), (s2, 'max'))
+    VBox([s1, s2, b])
+```
+
+In the case of the `ipywidgets-display` code, the *last statement* of the
+code-block should contain the widget object you wish to be rendered.
+
+### Using the `nbsphinx` Project
+
+The [nbsphinx](https://github.com/spatialaudio/nbsphinx) sphinx extension
+provides a source parser for `*.ipynb` files. Custom Sphinx directives are used
+to show Jupyter Notebook code cells (and of course their results) in both HTML
+and LaTeX output.
+
+In the case of the HTML output, Jupyter Interactive Widgets are also supported.
+However, it is a requirement that the notebook was correctly saved with the
+special "Save Notebook with Widgets" action in the widget menu.
