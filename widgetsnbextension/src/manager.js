@@ -73,11 +73,13 @@ var WidgetManager = function (comm_manager, notebook) {
                     for (var j = 0; j < outputs.length; ++j) {
                         if (outputs[j].data['application/vnd.jupyter.widget-view+json']) {
                             var model_promise = that.get_model(outputs[j].data['application/vnd.jupyter.widget-view+json'].model_id);
-                            model_promise.then((function(cell_index) {
-                                return function (model) {
-                                    that.display_model(undefined, model, { cell_index: cell_index });
-                                };
-                            })(i));
+                            if (model_promise !== undefined) {
+                                model_promise.then((function(cell_index) {
+                                    return function (model) {
+                                        that.display_model(undefined, model, { cell_index: cell_index });
+                                    };
+                                })(i));
+                            }
                         }
                     }
                 }
