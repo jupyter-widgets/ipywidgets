@@ -199,9 +199,10 @@ class WidgetModel extends Backbone.Model {
         this.state_lock = state;
         try {
             this.set(state);
-            this.state_lock = null;
         } catch(e) {
             console.error('Error setting state:', e.message);
+        } finally {
+            this.state_lock = null;
         }
     }
 
