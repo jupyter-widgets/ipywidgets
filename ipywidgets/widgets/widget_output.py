@@ -49,8 +49,11 @@ class Output(DOMWidget):
         if ip and hasattr(ip, 'kernel') and hasattr(ip.kernel, '_parent_header'):
             self.msg_id = ip.kernel._parent_header['header']['msg_id']
 
-    def __exit__(self, exception_type, exception_value, traceback):
+    def __exit__(self, etype, evalue, tb):
         """Called upon exiting output widget context manager."""
+        ip = get_ipython()
+        if etype is not None:
+            ip.showtraceback((etype, evalue, tb), tb_offset=0)
         self._flush()
         self.msg_id = ''
 
