@@ -6,7 +6,7 @@
   "typings": "lib/index.d.ts",
   "dependencies": {
     "jupyter-js-widgets": "^2.0.12",
-    "jupyterlab": "^0.10.0",
+    "jupyterlab": "^0.11.0",
     "phosphor": "^0.7.0"
   },
   "devDependencies": {
