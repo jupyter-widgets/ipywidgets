@@ -340,23 +340,6 @@ WidgetManager.prototype.get_msg_cell = function (msg_id) {
     return null;
 };
 
-
-/**
- * Create a sequentially executed promise chain from an array of promises.
- * @param  {Array<Promise>} promises
- * @return {Promise}
- */
-WidgetManager.prototype._sequentialPromise = function(promises) {
-    var chain = Promise.resolve();
-    promises.forEach(function(promise) {
-        chain = chain.then(function() {
-            return promise;
-        });
-    });
-    return chain;
-};
-
-
 WidgetManager.prototype._create_comm = function(comm_target_name, model_id, data) {
     var that = this;
     return this._get_connected_kernel().then(function(kernel) {

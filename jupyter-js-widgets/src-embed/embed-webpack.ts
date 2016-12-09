@@ -14,7 +14,8 @@ if (Element && !Element.prototype.matches) {
 
 // Load styling
 require('font-awesome/css/font-awesome.css');
-require('../css/widgets.built.css');
+require('../css/widgets.css');
+require('phosphor/styles/base.css');
 
 // Load json schema validator
 var Ajv = require('ajv');
