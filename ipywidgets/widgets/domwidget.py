@@ -3,10 +3,10 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from traitlets import Unicode, Instance, Bool, Tuple, default
+from traitlets import Unicode, Bool, Tuple, default
 from .widget import Widget, widget_serialization
 from .trait_types import Color
-from .widget_layout import Layout
+from .widget_layout import Layout, LayoutTraitType
 
 
 class DOMWidget(Widget):
@@ -14,7 +14,7 @@ class DOMWidget(Widget):
 
     _model_name = Unicode('DOMWidgetModel').tag(sync=True)
     _dom_classes = Tuple(help="DOM classes applied to widget.$el.").tag(sync=True)
-    layout = Instance(Layout).tag(sync=True, **widget_serialization)
+    layout = LayoutTraitType().tag(sync=True, **widget_serialization)
 
     @default('layout')
     def _default_layout(self):
