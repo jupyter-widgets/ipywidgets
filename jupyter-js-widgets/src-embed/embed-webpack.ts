@@ -23,7 +23,7 @@ var widget_state_schema = require('jupyter-widgets-schema').v1.state;
 var widget_view_schema = require('jupyter-widgets-schema').v1.view;
 
 // Magic global widget rendering function:
-import * as widgets from '../../jupyter-js-widgets/src/index';
+import * as widgets from '../../jupyter-js-widgets/lib/index';
 import * as embed from './embed-manager';
 
 // `LoadInlineWidget` is the main function called on load of the web page.
