@@ -138,6 +138,7 @@ function reject(message, log) {
     };
 }
 
+var MathJax = require('mathjax');
 
 /**
  * Apply MathJax rendering to an element, and optionally set its text.
@@ -155,7 +156,7 @@ function typeset(element: HTMLElement, text: string): void {
         element.textContent = text;
     }
     if (typeof MathJax !== "undefined") {
-      MathJax.Hub.Queue(['Typeset', MathJax.Hub, element]);
+        MathJax.Hub.Queue(['Typeset', MathJax.Hub, element]);
     }
 }
 
