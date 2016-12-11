@@ -10,55 +10,87 @@ var _ = require("underscore");
 var OutputModel = widgets.DOMWidgetModel.extend({
     defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
         _model_name: "OutputModel",
-        _view_name: "OutputView"
+        _view_name: "OutputView",
+        msg_id: "",
     }),
+
+    initialize: function(attributes, options) {
+        OutputModel.__super__.initialize.apply(this, arguments);
+        this.kernel = this.comm.kernel;
+        this.listenTo(this, 'change:msg_id', this.reset_msg_id);
+        console.log('initializing model');
+        if (this.kernel) {
+            this.kernel.set_callbacks_for_msg(this.id, this.callbacks(), false);
+        }
+        this._outputs = [];
+    },
+
+    // make callbacks
+    callbacks: function() {
+        return {
+            iopub: {
+                output: function(msg) {
+                    this.trigger('new_message', msg);
+                    this._outputs.push(msg);
+                }.bind(this),
+                clear_output: function(msg) {
+                    this.trigger('clear_output', msg);
+                    this._outputs = [];
+                }.bind(this)
+            }
+        }
+    },
+
+    reset_msg_id() {
+        var kernel = this.kernel;
+        // Pop previous message id
+        var prev_msg_id = this.previous('msg_id');
+        if (prev_msg_id && kernel) {
+            var previous_callback = kernel.output_callback_overrides_pop(prev_msg_id);
+            if (previous_callback !== this.id) {
+                console.error('Popped wrong message ('+previous_callback+' instead of '+this.id+') - likely the stack was not maintained in kernel.');
+            }
+        }
+        var msg_id = this.get('msg_id');
+        if (msg_id && kernel) {
+            kernel.output_callback_overrides_push(msg_id, this.id);
+        }
+    },
+
 });
 
 var OutputView = widgets.DOMWidgetView.extend({
 
     initialize: function (parameters) {
-        OutputView.__super__.initialize.apply(this, [parameters]);
-        this.listenTo(this.model, 'msg:custom', this._handle_route_msg, this);
+        OutputView.__super__.initialize.apply(this, arguments);
     },
 
     render: function(){
-        // TODO: Use jupyter-js-output-area
-        requirejs(["notebook/js/outputarea"], (function(outputarea) {
+        requirejs(["notebook"], (function(notebookApp) {
+            var outputarea = notebookApp["notebook/js/outputarea"];
             this.output_area = new outputarea.OutputArea({
                 selector: this.el,
+                config: this.options.cell.config,
                 prompt_area: false,
                 events: this.model.widget_manager.notebook.events,
                 keyboard_manager: this.model.widget_manager.keyboard_manager });
-
-            // Make output area reactive.
-            var that = this;
-            this.output_area.element.on('changed', function() {
-                that.model.set('contents', that.output_area.element.html());
-            });
-            this.listenTo(this.model, 'change:contents', function(){
-                var html = this.model.get('contents');
-                if (this.output_area.element.html() != html) {
-                    this.output_area.element.html(html);
-                }
-            }, this);
-
-            // Set initial contents.
-            this.output_area.element.html(this.model.get('contents'));
-        }).bind(this));
-    },
-
-    /**
-     * Handles re-routed iopub messages.
-     */
-    _handle_route_msg: function(msg) {
-        if (msg) {
-            var msg_type = msg.msg_type;
-            if (msg_type=='clear_output') {
-                this.output_area.handle_clear_output(msg);
-            } else {
+            this.listenTo(this.model, 'new_message', function(msg) {
+                console.log('View new output message');
+                console.log(msg);
                 this.output_area.handle_output(msg);
-            }
-        }
+            }, this);
+            this.listenTo(this.model, 'clear_output', function(msg) {
+                console.log('View clear output');
+                console.log(msg);
+                this.output_area.handle_clear_output(msg);
+            })
+
+            // Render initial contents from this.model._outputs
+            this.model._outputs.forEach(function(msg) {
+                this.output_area.handle_output(msg);
+            }, this)
+
+        }).bind(this));
     },
 });
 
