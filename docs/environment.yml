@@ -12,10 +12,10 @@ dependencies:
 - notebook>=4.2
 - sphinx>=1.4.6
 - ipykernel
-- docutils<0.13.1
 - pip:
+  - docutils<0.13.1
   - jupyter_sphinx
-  - git+https://github.com/SylvainCorlay/nbsphinx.git@widgets-all-the-things#egg=nbsphinx
+  - git+https://github.com/spatialaudio/nbsphinx.git#egg=nbsphinx
   - sphinx_rtd_theme==0.1.10-alpha
   - python-dateutil
   - recommonmark==0.4.0
