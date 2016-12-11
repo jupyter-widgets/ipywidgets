@@ -22,9 +22,9 @@ var Ajv = require('ajv');
 var widget_state_schema = require('jupyter-widgets-schema').v1.state;
 var widget_view_schema = require('jupyter-widgets-schema').v1.view;
 
-
 // Magic global widget rendering function:
-import * as widgets from './index';
+import * as widgets from '../../jupyter-js-widgets/src/index';
+import * as embed from './embed-manager';
 
 // `LoadInlineWidget` is the main function called on load of the web page.
 // All it does is inserting a <script> tag for requirejs in the case it is not
@@ -80,7 +80,7 @@ function renderManager(element, tag) {
     if (!valid) {
         console.log(model_validate.errors);
     }
-    var manager = new widgets.EmbedManager();
+    var manager = new embed.EmbedManager();
     manager.set_state(widgetStateObject.state, {}).then(function(models) {
         var tags = element.querySelectorAll('script[type="application/vnd.jupyter.widget-view+json"]');
         for (var i=0; i!=tags.length; ++i) {
