@@ -30,8 +30,14 @@ from collections import Iterable, Mapping
 
 empty = Parameter.empty
 
-def interact_hookup(f, controls):
-    from ipywidgets import Output
+def interactive_output(f, controls):
+    """Connect widget controls to a function.
+
+    This function does not generate a user interface for the widgets (unlike `interact`).
+    This enables customisation of the widget user interface layout.
+    The user interface layout must be defined and displayed manually.
+    """
+
     out = Output()
     def observer(change):
         out.clear_output()
