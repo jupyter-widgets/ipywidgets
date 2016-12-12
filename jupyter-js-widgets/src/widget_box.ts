@@ -126,6 +126,21 @@ class ProxyModel extends CoreDOMWidgetModel {
 
 export
 class ProxyView extends DOMWidgetView {
+    _createElement(tagName: string) {
+        this.pWidget = new JupyterPhosphorPanelWidget({ view: this });
+        return this.pWidget.node;
+    }
+
+    _setElement(el: HTMLElement) {
+        if (this.el || el !== this.pWidget.node) {
+            // Boxes don't allow setting the element beyond the initial creation.
+            throw new Error('Cannot reset the DOM element.');
+        }
+
+        this.el = this.pWidget.node;
+        this.$el = $(this.pWidget.node);
+     }
+
     initialize(parameters) {
         // Public constructor
         super.initialize(parameters);
@@ -136,9 +151,8 @@ class ProxyView extends DOMWidgetView {
     }
 
     render() {
-        var that = this;
         var child_view = this.set_child(this.model.get('child'));
-        this.listenTo(this.model, 'change:child', function(model, value) {
+        this.listenTo(this.model, 'change:child', (model, value) => {
             this.set_child(value);
         });
         return child_view;
@@ -159,20 +173,13 @@ class ProxyView extends DOMWidgetView {
         }
         if (value) {
             this.child_promise = this.child_promise.then(() => {
-                return this.create_child_view(value).then((view) => {
+                return this.create_child_view(value).then((view: DOMWidgetView) => {
                     if (!this.box) {
                         console.error('Widget place holder does not exist');
                         return;
                     }
-                    while (this.box.firstChild) {
-                        this.box.removeChild(this.box.firstChild);
-                    }
-                    this.box.appendChild(view.el);
+                    this.pWidget.addWidget(view.pWidget);
 
-                    // Trigger the displayed event of the child view.
-                    this.displayed.then(() => {
-                        view.trigger('displayed', this);
-                    });
                     this.child = view;
                     this.trigger('child:created');
                 }).catch(reject('Could not add child view to proxy', true));
@@ -181,7 +188,11 @@ class ProxyView extends DOMWidgetView {
         return this.child_promise;
     }
 
-    box: any;
+    pWidget: JupyterPhosphorPanelWidget;
+    /**
+     * The element that contains
+     */
+    box: HTMLElement;
     /**
      * TODO: Should be Promise<DOMWidgetView>, but we set it to Promise<void> at the start. Why???
      */
@@ -203,15 +214,20 @@ class PlaceProxyModel extends ProxyModel {
 
 export
 class PlaceProxyView extends ProxyView {
-    initialize(parameters) {
-        super.initialize(parameters);
+    render() {
         this.update_selector(this.model, this.model.get('selector'));
         this.listenTo(this.model, 'change:selector', this.update_selector);
+        return super.render();
     }
 
     update_selector(model, selector) {
-        this.box = selector && document.querySelector(selector) || this.el;
-        this.set_child(this.model.get('child'));
+        // attach ourselves to the selected element
+        if (selector) {
+            let host = document.querySelector(selector);
+            if (host) {
+                Widget.attach(this.pWidget, host);
+            }
+        }
     }
 }
 
