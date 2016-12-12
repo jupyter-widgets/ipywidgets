@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetModel, DOMWidgetView, ViewList
+    DOMWidgetModel, DOMWidgetView, ViewList, JupyterPhosphorWidget
 } from './widget';
 
 import {
@@ -12,6 +12,10 @@ import {
 import {
     TabBar
 } from 'phosphor/lib/ui/tabbar';
+
+import {
+    TabPanel
+} from './phosphor_widgets';
 
 import {
     Panel
@@ -32,6 +36,10 @@ import {
 import {
     indexOf
 } from 'phosphor/lib/algorithm/searching';
+
+import {
+    Message, installMessageHook
+} from 'phosphor/lib/core/messaging';
 
 import * as _ from 'underscore';
 import * as utils from './utils';
@@ -188,10 +196,52 @@ class TabModel extends SelectionContainerModel {
 // positioning BoxLayout, but we want a more an html/css-based Panel layout.
 
 export
+class JupyterPhosphorTabPanelWidget extends TabPanel {
+    constructor(options: JupyterPhosphorWidget.IOptions & TabPanel.IOptions) {
+        let view = options.view;
+        delete options.view;
+        super(options);
+        this._view = view;
+        // We want the view's messages to be the messages the tabContents panel
+        // gets.
+        installMessageHook(this.tabContents, (handler, msg) => {
+            // There may be times when we want the view's handler to be called
+            // *after* the message has been processed by the widget, in which
+            // case we'll need to revisit using a message hook.
+            this._view.processPhosphorMessage(msg);
+            return true;
+        });
+    }
+
+    /**
+     * Dispose the widget.
+     *
+     * This causes the view to be destroyed as well with 'remove'
+     */
+    dispose() {
+        if (this.isDisposed) {
+            return;
+        }
+        super.dispose();
+        if (this._view) {
+            this._view.remove();
+        }
+        this._view = null;
+    }
+
+    private _view: DOMWidgetView;
+}
+
+
+
+
+export
 class TabView extends DOMWidgetView {
 
     _createElement(tagName: string) {
-        this.pWidget = new JupyterPhosphorPanelWidget({ view: this });
+        this.pWidget = new JupyterPhosphorTabPanelWidget({
+            view: this,
+        });
         return this.pWidget.node;
     }
 
@@ -217,26 +267,24 @@ class TabView extends DOMWidgetView {
         );
         this.listenTo(this.model, 'change:children', () => this.updateTabs());
         this.listenTo(this.model, 'change:_titles', () => this.updateTitles());
+        this.tabBar = this.pWidget.tabBar;
     }
 
     /**
      * Called when view is rendered.
      */
     render() {
-        this.pWidget.addClass('jupyter-widgets');
-        this.pWidget.addClass('widget-container');
-        this.pWidget.addClass('widget-tab');
+        let tabs = this.pWidget;
+        tabs.addClass('jupyter-widgets');
+        tabs.addClass('widget-container');
+        tabs.addClass('widget-tab');
+        tabs.tabBar.insertBehavior = 'none';
+        tabs.tabBar.tabsMovable = true;
+        tabs.tabBar.addClass('widget-tab-bar');
+        tabs.tabBar.currentChanged.connect(this._onTabChanged, this);
 
-        this.tabBar = new TabBar({insertBehavior: 'none'});
-        this.tabBar.tabsMovable = false;
-        this.tabBar.addClass('widget-tab-bar');
-        this.tabBar.currentChanged.connect(this._onTabChanged, this);
+        tabs.tabContents.addClass('widget-tab-contents');
 
-        this.tabContents = new Panel();
-        this.tabContents.addClass('widget-tab-contents');
-
-        this.pWidget.addWidget(this.tabBar);
-        this.pWidget.addWidget(this.tabContents);
         this.updateTabs();
         this.update();
     }
@@ -268,30 +316,27 @@ class TabView extends DOMWidgetView {
      * Called when a child is added to children list.
      */
     addChildView(model, index) {
-        // Placeholder title to keep our position in the tab bar while we create the view.
+        // Placeholder widget to keep our position in the tab panel while we create the view.
         let label = this.model.get('_titles')[index] || (index+1).toString();
-        let tempTitle = new Title({label});
-        this.tabBar.addTab(tempTitle);
+        let tabs = this.pWidget;
+        let placeholder = new Widget();
+        placeholder.title.label = label;
+        tabs.addWidget(placeholder);
         return this.create_child_view(model).then((view: DOMWidgetView) => {
             let widget = view.pWidget;
             widget.hide();
             widget.addClass('widget-tab-child');
-            this.tabContents.addWidget(widget);
 
-            let title = widget.title;
-            title.closable = false;
-            title.label = tempTitle.label;
+            widget.title.label = placeholder.title.label;
+            widget.title.closable = true;
 
-            let i = indexOf(this.tabBar.titles, tempTitle);
-            // insert after tempTitle so that if tempTitle is selected,
-            // after this the replacement title will be selected.
-            this.tabBar.insertTab(i+1, title);
-            this.tabBar.removeTab(tempTitle);
-            view.on('remove', () => this.tabBar.removeTab(title));
-
-            if (this.tabBar.currentTitle === title) {
-                widget.show();
-            }
+            let i = indexOf(tabs.widgets, placeholder);
+            let show = tabs.currentWidget === placeholder;
+            // insert after placeholder so that if placholder is selected, the
+            // real widget will be selected now (this depends on the tab bar
+            // insert behavior)
+            tabs.insertWidget(i+1, widget);
+            placeholder.dispose();
             return view;
         }).catch(utils.reject('Could not add child view to box', true));
     }
@@ -315,7 +360,7 @@ class TabView extends DOMWidgetView {
      */
     updateTitles() {
         var titles = this.model.get('_titles') || {};
-        each(enumerate(this.tabBar.titles), ([i, title]) => {
+        each(enumerate(this.pWidget.tabBar.titles), ([i, title]) => {
             title.label = titles[i] || (i+1).toString();
         });
     }
@@ -347,9 +392,6 @@ class TabView extends DOMWidgetView {
     }
 
     remove() {
-        this.tabBar = null;
-        this.tabContents = null;
-
         // Remove this widget before children so that the entire container
         // leaves the DOM at once.
         super.remove();
@@ -367,5 +409,5 @@ class TabView extends DOMWidgetView {
     childrenViews: ViewList;
     tabBar: TabBar;
     tabContents: Panel;
-    pWidget: JupyterPhosphorPanelWidget;
+    pWidget: JupyterPhosphorTabPanelWidget;
 }
