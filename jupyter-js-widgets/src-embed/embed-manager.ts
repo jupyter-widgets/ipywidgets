@@ -5,6 +5,8 @@ import {
     ManagerBase
 } from '../lib/manager-base';
 
+import * as PhosphorWidget from 'phosphor/lib/ui/widget';
+
 export
 class EmbedManager extends ManagerBase<HTMLElement> {
 
@@ -14,8 +16,7 @@ class EmbedManager extends ManagerBase<HTMLElement> {
      */
     display_view(msg, view, options) {
         return Promise.resolve(view).then(function(view) {
-            options.el.appendChild(view.el);
-            view.trigger('displayed');
+            PhosphorWidget.Widget.attach(view.pWidget, options.el);
             view.on('remove', function() {
                 console.log('View removed', view);
             });
