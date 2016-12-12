@@ -30,6 +30,24 @@ from collections import Iterable, Mapping
 
 empty = Parameter.empty
 
+def interactive_output(f, controls):
+    """Connect widget controls to a function.
+
+    This function does not generate a user interface for the widgets (unlike `interact`).
+    This enables customisation of the widget user interface layout.
+    The user interface layout must be defined and displayed manually.
+    """
+
+    out = Output()
+    def observer(change):
+        out.clear_output()
+        kwargs = {k:v.value for k,v in controls.items()}
+        with out:
+            f(**kwargs)
+    for k,w in controls.items():
+        w.observe(observer, 'value')
+    observer(None)
+    return out
 
 def _matches(o, pattern):
     """Match a pattern of types in a sequence."""
