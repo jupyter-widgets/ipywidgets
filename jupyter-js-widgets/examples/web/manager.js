@@ -1,4 +1,5 @@
 var widgets = require('jupyter-js-widgets');
+var PhosphorWidget = require('phosphor/lib/ui/widget').Widget;
 var ManagerBase = widgets.ManagerBase;
 console.info('jupyter-js-widgets loaded successfully');
 
@@ -12,8 +13,7 @@ WidgetManager.prototype = Object.create(ManagerBase.prototype);
 WidgetManager.prototype.display_view = function(msg, view, options) {
     var that = this;
     return Promise.resolve(view).then(function(view) {
-        that.el.appendChild(view.el);
-        view.trigger('displayed');
+        PhosphorWidget.attach(view.pWidget, that.el);
         view.on('remove', function() {
             console.log('View removed', view);
         });

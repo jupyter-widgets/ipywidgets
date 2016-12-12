@@ -1,5 +1,8 @@
 import * as widgets from 'jupyter-js-widgets';
 import './widgets.css';
+import 'phosphor/styles/base.css';
+import * as PWidget from 'phosphor/lib/ui/widget';
+
 
 export
 class WidgetManager extends widgets.ManagerBase<HTMLElement> {
@@ -17,8 +20,7 @@ class WidgetManager extends widgets.ManagerBase<HTMLElement> {
 
     display_view(msg, view, options) {
         return Promise.resolve(view).then((view) => {
-            this.el.appendChild(view.el);
-            view.trigger('displayed');
+            PWidget.Widget.attach(view.pWidget, this.el);
             view.on('remove', function() {
                 console.log('view removed', view);
             });
