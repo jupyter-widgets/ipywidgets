@@ -845,6 +845,7 @@ ul.widget-dropdown-droplist.mod-active {
 
 .jupyter-widgets.widget-tab .p-TabBar.p-mod-horizontal > .p-TabBar-content {
     align-items: flex-end;
+    margin-bottom: 0;
 }
 
 .jupyter-widgets.widget-tab .widget-tab-contents {
