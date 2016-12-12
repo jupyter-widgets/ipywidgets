@@ -319,11 +319,10 @@ abstract class ManagerBase<T> {
     };
 
     /**
-
-    * Close all widgets and empty the widget state.
-    * @param commlessOnly should only commless widgets be removed
-    * @return promise that resolves when the widget state is cleared.
-    */
+     * Close all widgets and empty the widget state.
+     * @param commlessOnly should only commless widgets be removed
+     * @return promise that resolves when the widget state is cleared.
+     */
     clear_state(commlessOnly: boolean): Promise<void> {
         return utils.resolvePromisesDict(this._models).then((models) => {
             Object.keys(models).forEach((id) => {

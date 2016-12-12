@@ -376,12 +376,12 @@ class Widget(LoggingConfigurable):
 
     def notify_change(self, change):
         """Called when a property has changed."""
-        # Send the state before the user registered callbacks for trait changes
-        # have all fired.
+        # Send the state to the frontend before the user-registered callbacks
+        # are called.
         name = change['name']
-        if self.comm is not None and name in self.keys:
+        if self.comm is not None and self.comm.kernel is not None:
             # Make sure this isn't information that the front-end just sent us.
-            if self._should_send_property(name, change['new']):
+            if name in self.keys and self._should_send_property(name, change['new']):
                 # Send new state to front-end
                 self.send_state(key=name)
         LoggingConfigurable.notify_change(self, change)
@@ -521,7 +521,8 @@ class Widget(LoggingConfigurable):
 
     def _send(self, msg, buffers=None):
         """Sends a message to the model in the front-end."""
-        self.comm.send(data=msg, buffers=buffers)
+        if self.comm is not None and self.comm.kernel is not None:
+            self.comm.send(data=msg, buffers=buffers)
 
 
 Widget._version_validated = None
