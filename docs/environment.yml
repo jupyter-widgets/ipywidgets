@@ -3,6 +3,7 @@ channels:
 - conda-forge
 - defaults
 dependencies:
+- sphinx=1.4.8
 - python=3.5
 - sphinx_rtd_theme
 - jinja2
