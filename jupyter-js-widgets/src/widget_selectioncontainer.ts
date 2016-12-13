@@ -267,7 +267,6 @@ class TabView extends DOMWidgetView {
         );
         this.listenTo(this.model, 'change:children', () => this.updateTabs());
         this.listenTo(this.model, 'change:_titles', () => this.updateTitles());
-        this.tabBar = this.pWidget.tabBar;
     }
 
     /**
@@ -278,11 +277,11 @@ class TabView extends DOMWidgetView {
         tabs.addClass('jupyter-widgets');
         tabs.addClass('widget-container');
         tabs.addClass('widget-tab');
-        tabs.tabBar.insertBehavior = 'none';
-        tabs.tabBar.tabsMovable = true;
-        tabs.tabBar.addClass('widget-tab-bar');
+        tabs.tabBar.insertBehavior = 'none'; // needed for insert behavior, see below.
+        tabs.tabBar.tabsMovable = false; // moving a tab doesn't update the selected_index
         tabs.tabBar.currentChanged.connect(this._onTabChanged, this);
 
+        tabs.tabBar.addClass('widget-tab-bar');
         tabs.tabContents.addClass('widget-tab-contents');
 
         this.updateTabs();
@@ -294,21 +293,12 @@ class TabView extends DOMWidgetView {
      */
     updateTabs() {
         // While we are updating, the index may not be valid, so deselect the
-        // tabs before updating so we don't get spurious changes in the index.
+        // tabs before updating so we don't get spurious changes in the index,
+        // which would then set off another sync cycle.
         this.updatingTabs = true;
-        let oldTitle = this.tabBar.currentTitle;
-        this.tabBar.currentIndex = -1;
+        this.pWidget.currentIndex = -1;
         this.childrenViews.update(this.model.get('children'));
-        this.tabBar.currentIndex = this.model.get('selected_index');
-        let newTitle = this.tabBar.currentTitle;
-        if (oldTitle !== newTitle) {
-            if (oldTitle && oldTitle.owner) {
-                oldTitle.owner.hide();
-            }
-            if (newTitle && newTitle.owner) {
-                newTitle.owner.show();
-            }
-        }
+        this.pWidget.currentIndex = this.model.get('selected_index');
         this.updatingTabs = false;
     }
 
@@ -324,14 +314,10 @@ class TabView extends DOMWidgetView {
         tabs.addWidget(placeholder);
         return this.create_child_view(model).then((view: DOMWidgetView) => {
             let widget = view.pWidget;
-            widget.hide();
-            widget.addClass('widget-tab-child');
-
             widget.title.label = placeholder.title.label;
             widget.title.closable = true;
 
             let i = indexOf(tabs.widgets, placeholder);
-            let show = tabs.currentWidget === placeholder;
             // insert after placeholder so that if placholder is selected, the
             // real widget will be selected now (this depends on the tab bar
             // insert behavior)
@@ -360,8 +346,8 @@ class TabView extends DOMWidgetView {
      */
     updateTitles() {
         var titles = this.model.get('_titles') || {};
-        each(enumerate(this.pWidget.tabBar.titles), ([i, title]) => {
-            title.label = titles[i] || (i+1).toString();
+        each(enumerate(this.pWidget.widgets), ([i, widget]) => {
+            widget.title.label = titles[i] || (i+1).toString();
         });
     }
 
@@ -369,26 +355,7 @@ class TabView extends DOMWidgetView {
      * Updates the selected index.
      */
     updateSelectedIndex() {
-        let current = this.model.get('selected_index');
-        let previous = this.model.previous('selected_index');
-        if (current === void 0) {
-            current = 0;
-        }
-        let titles = this.tabBar.titles;
-        if (0 <= current && current < titles.length) {
-            if(previous !== void 0 && previous !== current) {
-                let previousTitle = titles.at(previous);
-                let previousWidget = previousTitle ? previousTitle.owner : null;
-                if (previousWidget) {
-                    previousWidget.hide();
-                }
-            }
-            this.tabBar.currentIndex = current;
-            let currentWidget = this.tabBar.currentTitle.owner;
-            if (currentWidget) {
-                currentWidget.show();
-            }
-        }
+        this.pWidget.currentIndex = this.model.get('selected_index');
     }
 
     remove() {
