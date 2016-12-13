@@ -136,7 +136,6 @@ class TabPanel extends Widget {
     this._tabBar.tabCloseRequested.connect(this._onTabCloseRequested, this);
 
     // Connect the stacked panel signal handlers.
-    // TODO: Should we use a panel that has a removed signal?
     this._tabContents.widgetRemoved.connect(this._onWidgetRemoved, this);
 
     // Get the data related to the placement.

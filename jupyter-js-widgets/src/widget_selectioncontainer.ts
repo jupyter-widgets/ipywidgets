@@ -34,6 +34,10 @@ import {
 } from 'phosphor/lib/algorithm/iteration';
 
 import {
+    move
+} from 'phosphor/lib/algorithm/mutation';
+
+import {
     indexOf
 } from 'phosphor/lib/algorithm/searching';
 
@@ -278,11 +282,15 @@ class TabView extends DOMWidgetView {
         tabs.addClass('widget-container');
         tabs.addClass('widget-tab');
         tabs.tabBar.insertBehavior = 'none'; // needed for insert behavior, see below.
-        tabs.tabBar.tabsMovable = false; // moving a tab doesn't update the selected_index
         tabs.tabBar.currentChanged.connect(this._onTabChanged, this);
+        tabs.tabBar.tabMoved.connect(this._onTabMoved, this);
 
         tabs.tabBar.addClass('widget-tab-bar');
         tabs.tabContents.addClass('widget-tab-contents');
+
+        // TODO: expose this option in python
+        tabs.tabBar.tabsMovable = false;
+
 
         this.updateTabs();
         this.update();
@@ -370,6 +378,16 @@ class TabView extends DOMWidgetView {
             this.model.set('selected_index', args.currentIndex);
             this.touch();
         }
+    }
+
+    /**
+     * Handle the `tabMoved` signal from the tab bar.
+     */
+    _onTabMoved(sender: TabBar, args: TabBar.ITabMovedArgs): void {
+        let children = this.model.get('children').slice();
+        move(children, args.fromIndex, args.toIndex);
+        this.model.set('children', children);
+        this.touch();
     }
 
     updatingTabs: boolean = false;
