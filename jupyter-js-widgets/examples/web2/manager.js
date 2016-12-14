@@ -1,8 +1,8 @@
 var widgets = require('jupyter-js-widgets');
 var PhosphorWidget = require('phosphor/lib/ui/widget').Widget;
 
-require('jupyter-js-widgets/css/widgets.built.css');
 require('phosphor/styles/base.css');
+require('jupyter-js-widgets/css/widgets.built.css');
 console.info('jupyter-js-widgets loaded successfully');
 
 var WidgetManager = exports.WidgetManager = function(el) {

@@ -172,4 +172,32 @@ and LaTeX output.
 
 In the case of the HTML output, Jupyter Interactive Widgets are also supported.
 However, it is a requirement that the notebook was correctly saved with the
-special "Save Notebook with Widgets" action in the widget menu.
+special "Save Notebook with Widgets" action in the widgets menu.
+
+## Rendering Interactive Widgets on [nbviewer](http://nbviewer.jupyter.org/)
+
+If your notebook was saved with the special "Save Notebook with Widgets" action
+in the Widgets menu, interative widgets displayed in your notebook should also
+be rendered on nbviewer.
+
+See e.g. the [Widget List](http://nbviewer.jupyter.org/github/ipython/ipywidgets/blob/master/docs/source/examples/Widget%20List.ipynb)
+example from the documentation.
+
+## The Case of Custom Widget Libraries
+
+Custom widgets can also be rendered on nbviewer, static HTML and RTD
+documentation. An illustration of this is the http://jupyter.org/widgets
+gallery.
+
+The widget embedder attempts to fetch the model and view implementation of the
+custom widget from the npmjs CDN, https://unpkg.com. The URL that is requested
+for e.g. the `bqplot` module name with the semver range `^2.0.0` is
+
+`https://unpkg.com/bqplot@^2.0.0/dist/index.js`
+
+which holds the webpack bundle for the bqplot library.
+
+The [widget-cookiecutter](https://github.com/jupyter/widget-cookiecutter)
+template project contains a template project for a custom widget library
+following the best practices for authoring widgets, which ensure that your
+custom widget library can render on nbviewer.
