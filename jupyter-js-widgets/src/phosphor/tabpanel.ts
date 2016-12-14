@@ -10,10 +10,6 @@ import {
 } from 'phosphor/lib/algorithm/sequence';
 
 import {
-  ArrayIterator
-} from 'phosphor/lib/algorithm/iteration';
-
-import {
   ISignal, defineSignal
 } from 'phosphor/lib/core/signaling';
 
@@ -32,14 +28,6 @@ import {
 import {
   ChildMessage, Widget
 } from 'phosphor/lib/ui/widget';
-
-import {
-  Title
-} from 'phosphor/lib/ui/title';
-
-import {
-    Message
-} from 'phosphor/lib/core/messaging';
 
 /**
  * The class name added to TabPanel instances.
@@ -348,7 +336,9 @@ class TabPanel extends Widget {
    * The widget's `title` is used to populate the tab.
    */
   insertWidget(index: number, widget: Widget): void {
-    if (widget !== this.currentWidget) widget.hide();
+    if (widget !== this.currentWidget) {
+      widget.hide();
+    }
     this._tabContents.insertWidget(index, widget);
     this._tabBar.insertTab(index, widget.title);
   }
