@@ -1,6 +1,6 @@
 import * as widgets from 'jupyter-js-widgets';
-import './widgets.css';
 import 'phosphor/styles/base.css';
+import './widgets.css';
 import * as PWidget from 'phosphor/lib/ui/widget';
 
 
