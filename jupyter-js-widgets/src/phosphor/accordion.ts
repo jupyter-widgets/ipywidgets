@@ -3,10 +3,6 @@ import {
 } from 'phosphor/lib/algorithm/sequence';
 
 import {
-  ArrayIterator
-} from 'phosphor/lib/algorithm/iteration';
-
-import {
   ISignal, defineSignal
 } from 'phosphor/lib/core/signaling';
 
@@ -15,20 +11,12 @@ import {
 } from 'phosphor/lib/ui/panel';
 
 import {
-  TabBar
-} from 'phosphor/lib/ui/tabbar';
-
-import {
-  ChildMessage, Widget
+  Widget
 } from 'phosphor/lib/ui/widget';
 
 import {
   Title
 } from 'phosphor/lib/ui/title';
-
-import {
-    Message
-} from 'phosphor/lib/core/messaging';
 
 import {
     Selection
@@ -41,9 +29,9 @@ import {
 export
 class Collapse extends Widget {
   constructor(options: Collapse.IOptions) {
-    super(options)
+    super(options);
     this._header = new Widget();
-    this._header.node.addEventListener('click', this)
+    this._header.node.addEventListener('click', this);
 
     let layout = new PanelLayout();
     layout.addWidget(this._header);
@@ -133,6 +121,8 @@ class Collapse extends Widget {
     case 'click':
       this._evtClick(event as MouseEvent);
       break;
+    default:
+      break;
     }
   }
 
@@ -190,9 +180,9 @@ class Accordion extends Panel {
    * The widget will be wrapped in a CollapsedWidget.
    */
   addWidget(widget: Widget): void {
-    let collapse = this._wrapWidget(widget)
+    let collapse = this._wrapWidget(widget);
     super.addWidget(collapse);
-    this._selection.adjustSelectionForInsert(this.widgets.length-1, collapse)
+    this._selection.adjustSelectionForInsert(this.widgets.length - 1, collapse);
   }
 
   /**
@@ -206,14 +196,14 @@ class Accordion extends Panel {
    * If the widget is already contained in the panel, it will be moved.
    */
   insertWidget(index: number, widget: Widget): void {
-    let collapse = this._wrapWidget(widget)
+    let collapse = this._wrapWidget(widget);
     super.insertWidget(index, collapse);
     this._selection.adjustSelectionForInsert(index, collapse);
   }
 
   private _wrapWidget(widget: Widget) {
     let collapse = new Collapse({ widget });
-    widget.disposed.connect(() => collapse.dispose())
+    widget.disposed.connect(() => collapse.dispose());
     return collapse;
   }
 

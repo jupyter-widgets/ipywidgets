@@ -5,21 +5,12 @@
  */
 
 import {
-  IterableOrArrayLike
-} from 'phosphor/lib/algorithm/iteration';
-
-import {
   indexOf
 } from 'phosphor/lib/algorithm/searching';
 
 import {
   ISequence
 } from 'phosphor/lib/algorithm/sequence';
-
-
-import {
-  Vector
-} from 'phosphor/lib/collections/vector';
 
 import {
   ISignal, defineSignal
@@ -46,7 +37,7 @@ class Selection<T> {
    * current item remains the same. It is only emitted when the actual current
    * item is changed.
    */
-  selectionChanged: ISignal<Selection<T>, Selection.ICurrentChangedArgs<T>>;
+  selectionChanged: ISignal<Selection<T>, Selection.ISelectionChangedArgs<T>>;
 
   /**
    * Adjust for setting an item.
@@ -213,7 +204,9 @@ class Selection<T> {
     }
 
     // Otherwise, silently adjust the current index if needed.
-    if (ci >= i) this._index++;
+    if (ci >= i) {
+      this._index++;
+    }
   }
 
   /**
@@ -279,7 +272,9 @@ class Selection<T> {
 
     // Silently adjust the index if the current item is not removed.
     if (ci !== i) {
-      if (ci > i) this._index--;
+      if (ci > i) {
+        this._index--;
+      }
       return;
     }
 
@@ -367,7 +362,7 @@ defineSignal(Selection.prototype, 'currentChanged');
 
 export
 namespace Selection {
-      /**
+  /**
    * An options object for creating a tab bar.
    */
   export
