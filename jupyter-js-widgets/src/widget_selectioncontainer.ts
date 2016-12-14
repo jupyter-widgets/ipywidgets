@@ -15,7 +15,11 @@ import {
 
 import {
     TabPanel
-} from './phosphor_widgets';
+} from './phosphor/tabpanel';
+
+import {
+    Accordion
+} from './phosphor/accordion';
 
 import {
     Panel
@@ -70,8 +74,67 @@ class AccordionModel extends SelectionContainerModel {
     }
 }
 
+// We implement our own tab widget since Phoshpor's TabPanel uses an absolute
+// positioning BoxLayout, but we want a more an html/css-based Panel layout.
+
+export
+class JupyterPhosphorAccordionWidget extends Accordion {
+    constructor(options: JupyterPhosphorWidget.IOptions & Accordion.IOptions) {
+        let view = options.view;
+        delete options.view;
+        super(options);
+        this._view = view;
+    }
+
+    /**
+     * Process the phosphor message.
+     *
+     * Any custom phosphor widget used inside a Jupyter widget should override
+     * the processMessage function like this.
+     */
+    processMessage(msg: Message) {
+        super.processMessage(msg);
+        this._view.processPhosphorMessage(msg);
+    }
+
+    /**
+     * Dispose the widget.
+     *
+     * This causes the view to be destroyed as well with 'remove'
+     */
+    dispose() {
+        if (this.isDisposed) {
+            return;
+        }
+        super.dispose();
+        if (this._view) {
+            this._view.remove();
+        }
+        this._view = null;
+    }
+
+    private _view: DOMWidgetView;
+}
+
+
 export
 class AccordionView extends DOMWidgetView {
+
+    _createElement(tagName: string) {
+        this.pWidget = new JupyterPhosphorAccordionWidget({ view: this });
+        return this.pWidget.node;
+    }
+
+    _setElement(el: HTMLElement) {
+        if (this.el || el !== this.pWidget.node) {
+            // Boxes don't allow setting the element beyond the initial creation.
+            throw new Error('Cannot reset the DOM element.');
+        }
+
+        this.el = this.pWidget.node;
+        this.$el = $(this.pWidget.node);
+     }
+
     initialize(parameters){
         super.initialize(parameters)
         this.children_views = new ViewList(this.add_child_view, this.remove_child_view, this);
@@ -95,16 +158,18 @@ class AccordionView extends DOMWidgetView {
         this.children_views.update(this.model.get('children'));
         this.update_titles();
         this.update_selected_index();
+        // TODO: listen to selection changes.
     }
 
     /**
      * Set header titles
      */
     update_titles() {
+        let widgets = this.pWidget.widgets;
         let titles = this.model.get('_titles');
-        for (let i = 0; i < this.pages.length; i++) {
+        for (let i = 0; i < widgets.length; i++) {
             if (titles[i] !== void 0) {
-                this.pages[i].firstChild.textContent = titles[i];
+                widgets.at(i).widget.title.label = titles[i];
             }
         }
     }
@@ -113,27 +178,14 @@ class AccordionView extends DOMWidgetView {
      * Make the rendering and selected index consistent.
      */
     update_selected_index(options?) {
-        let new_index = this.model.get('selected_index');
-        this.pages.forEach((page, index) => {
-            if (index === new_index) {
-                page.classList.add('accordion-active');
-                // TODO: use CSS transitions?
-                $(page.lastElementChild).slideDown('fast');
-            } else {
-                page.classList.remove('accordion-active');
-                $(page.lastElementChild).slideUp('fast');
-            }
-        })
+        this.pWidget.selection.index = this.model.get('selected_index');
     }
 
     /**
      * Called when a child is removed from children list.
      */
     remove_child_view(view) {
-        let page = this.view_pages[view.cid];
-        this.pages.splice(this.pages.indexOf(page), 1);
-        delete this.view_pages[view.cid];
-        page.parentNode.removeChild(page);
+        this.pWidget.removeWidget(view.pWidget);
         view.remove();
     }
 
@@ -141,7 +193,11 @@ class AccordionView extends DOMWidgetView {
      * Called when a child is added to children list.
      */
     add_child_view(model) {
-        let page = document.createElement('div');
+        return this.create_child_view(model).then((view) => {
+            this.pWidget.addWidget(view.pWidget);
+        }).catch(utils.reject('Could not add child view to box', true));
+
+/*        let page = document.createElement('div');
         page.classList.add('accordion-page');
         let header = document.createElement('div');
         header.classList.add('accordion-header');
@@ -169,6 +225,7 @@ class AccordionView extends DOMWidgetView {
             });
             return view;
         }).catch(utils.reject('Could not add child view to box', true));
+        */
     }
 
     /**
@@ -184,6 +241,7 @@ class AccordionView extends DOMWidgetView {
     children_views: ViewList;
     pages: HTMLDivElement[] = [];
     view_pages: {[key: string]: HTMLDivElement} = Object.create(null);
+    pWidget: Accordion;
 }
 
 export

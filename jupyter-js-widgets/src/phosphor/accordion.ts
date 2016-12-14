@@ -22,6 +22,10 @@ import {
     Selection
 } from './currentselection';
 
+import {
+  findIndex
+} from 'phosphor/lib/algorithm/searching';
+
 /**
  * A panel that supports a collapsible header, made from the widget's title.
  * Clicking on the title expands or contracts the widget.
@@ -167,6 +171,16 @@ class Accordion extends Panel {
     this._selection.selectionChanged.connect(this._onSelectionChanged, this);
   }
 
+  /**
+   * A read-only sequence of the widgets in the panel.
+   *
+   * #### Notes
+   * This is a read-only property.
+   */
+  get widgets(): ISequence<Collapse> {
+    return (this.layout as PanelLayout).widgets as ISequence<Collapse>;
+  }
+
   get selection(): Selection<Collapse> {
     return this._selection;
   }
@@ -201,6 +215,14 @@ class Accordion extends Panel {
     this._selection.adjustSelectionForInsert(index, collapse);
   }
 
+  removeWidget(widget: Widget): void {
+    let index = findIndex(this.widgets, (w) => w.widget === widget);
+    let collapse = this.widgets.at(index);
+    let layout = this.layout as PanelLayout;
+    layout.removeWidgetAt(index);
+    this._selection.adjustSelectionForRemove(index, collapse);
+  }
+
   private _wrapWidget(widget: Widget) {
     let collapse = new Collapse({ widget });
     widget.disposed.connect(() => collapse.dispose());
@@ -219,7 +241,7 @@ class Accordion extends Panel {
     }
   }
 
-  _selection: Selection<Collapse>;
+  private _selection: Selection<Collapse>;
 }
 
 export
