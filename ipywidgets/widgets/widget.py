@@ -309,9 +309,19 @@ class Widget(LoggingConfigurable):
             value = to_json(getattr(self, k), self)
             if not PY3 and isinstance(traits[k], Bytes) and isinstance(value, bytes):
                 value = memoryview(value)
-            if not drop_defaults or value != traits[k].default_value:
+            if not drop_defaults or not self._compare(value, traits[k].default_value):
                 state[k] = value
         return state
+
+    def _is_numpy(self, x):
+        return x.__class__.__name__ == 'ndarray' and x.__class__.__module__ == 'numpy'
+
+    def _compare(self, a, b):
+        if self._is_numpy(a) or self._is_numpy(b):
+            import numpy as np
+            return np.equal(a, b)
+        else:
+            return a == b
 
     def set_state(self, sync_data):
         """Called when a state is received from the front-end."""
