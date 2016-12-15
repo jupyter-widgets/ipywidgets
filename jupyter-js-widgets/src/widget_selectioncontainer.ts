@@ -147,7 +147,10 @@ class AccordionView extends DOMWidgetView {
      * Called when view is rendered.
      */
     render() {
-        this.el.className = 'jupyter-widgets widget-container widget-accordion';
+        super.render();
+        this.pWidget.addClass('jupyter-widgets');
+        this.pWidget.addClass('widget-accordion');
+        this.pWidget.addClass('widget-container');
 
         this.listenTo(this.model, 'change:selected_index', function(model, value, options) {
             this.update_selected_index(options);
@@ -169,7 +172,7 @@ class AccordionView extends DOMWidgetView {
         let titles = this.model.get('_titles');
         for (let i = 0; i < widgets.length; i++) {
             if (titles[i] !== void 0) {
-                widgets.at(i).widget.title.label = titles[i];
+                widgets.at(i).title.label = titles[i];
             }
         }
     }
@@ -192,10 +195,22 @@ class AccordionView extends DOMWidgetView {
     /**
      * Called when a child is added to children list.
      */
-    add_child_view(model) {
-        return this.create_child_view(model).then((view) => {
-            this.pWidget.addWidget(view.pWidget);
+    add_child_view(model, index) {
+        // Placeholder widget to keep our position in the tab panel while we create the view.
+        let label = this.model.get('_titles')[index] || (index+1).toString();
+        let accordion = this.pWidget;
+        let placeholder = new Widget();
+        placeholder.title.label = label;
+        accordion.addWidget(placeholder);
+        return this.create_child_view(model).then((view: DOMWidgetView) => {
+            let widget = view.pWidget;
+            widget.title.label = placeholder.title.label;
+            let collapse = accordion.collapseWidgets.at(accordion.indexOf(placeholder));
+            collapse.widget = widget;
+            placeholder.dispose();
+            return view;
         }).catch(utils.reject('Could not add child view to box', true));
+
 
 /*        let page = document.createElement('div');
         page.classList.add('accordion-page');
@@ -228,14 +243,10 @@ class AccordionView extends DOMWidgetView {
         */
     }
 
-    /**
-     * We remove this widget before removing the children as an optimization
-     * we want to remove the entire container from the DOM first before
-     * removing each individual child separately.
-     */
     remove() {
-        super.remove();
+        Widget.detach(this.pWidget);
         this.children_views.remove();
+        super.remove();
     }
 
     children_views: ViewList;
@@ -335,6 +346,7 @@ class TabView extends DOMWidgetView {
      * Called when view is rendered.
      */
     render() {
+        super.render();
         let tabs = this.pWidget;
         tabs.addClass('jupyter-widgets');
         tabs.addClass('widget-container');
@@ -425,10 +437,9 @@ class TabView extends DOMWidgetView {
     }
 
     remove() {
-        // Remove this widget before children so that the entire container
-        // leaves the DOM at once.
-        super.remove();
+        Widget.detach(this.pWidget);
         this.childrenViews.remove();
+        super.remove();
     }
 
     _onTabChanged(sender: TabBar, args: TabBar.ICurrentChangedArgs) {

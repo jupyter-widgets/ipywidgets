@@ -26,6 +26,14 @@ import {
   findIndex
 } from 'phosphor/lib/algorithm/searching';
 
+import {
+  toArray, map
+} from 'phosphor/lib/algorithm/iteration';
+
+import {
+  ArraySequence
+} from 'phosphor/lib/algorithm/sequence';
+
 /**
  * A panel that supports a collapsible header, made from the widget's title.
  * Clicking on the title expands or contracts the widget.
@@ -38,13 +46,11 @@ class Collapse extends Widget {
     this._header.node.addEventListener('click', this);
 
     let layout = new PanelLayout();
+    this.layout = layout;
     layout.addWidget(this._header);
-
     if (options.widget) {
       this.widget = options.widget;
     }
-
-    this.layout = layout;
   }
 
   dispose() {
@@ -63,6 +69,7 @@ class Collapse extends Widget {
   set widget(widget: Widget) {
     let layout = this.layout as PanelLayout;
     if (this._widget) {
+      this._widget.disposed.disconnect(this._onChildDisposed, this);
       this._widget.title.changed.disconnect(this._onTitleChanged, this);
       layout.removeWidget(this._widget);
     }
@@ -71,10 +78,11 @@ class Collapse extends Widget {
     } else {
       widget.show();
     }
+    this._widget = widget;
+    widget.disposed.connect(this._onChildDisposed, this);
     widget.title.changed.connect(this._onTitleChanged, this);
     this._onTitleChanged(widget.title);
     layout.addWidget(widget);
-    this._widget = widget;
   }
 
   get collapsed() {
@@ -101,12 +109,16 @@ class Collapse extends Widget {
 
   private _collapse() {
     this._collapsed = true;
-    this._widget.hide();
+    if (this._widget) {
+      this._widget.hide();
+    }
     this.collapseChanged.emit(void 0);
   }
   private _uncollapse() {
     this._collapsed = false;
-    this._widget.show();
+    if (this._widget) {
+      this._widget.show();
+    }
     this.collapseChanged.emit(void 0);
   }
 
@@ -139,6 +151,10 @@ class Collapse extends Widget {
    */
   private _onTitleChanged(sender: Title): void {
     this._header.node.textContent = this._widget.title.label;
+  }
+
+  private _onChildDisposed(sender: Widget): void {
+    this.dispose();
   }
 
   _collapsed: boolean;
@@ -177,12 +193,20 @@ class Accordion extends Panel {
    * #### Notes
    * This is a read-only property.
    */
-  get widgets(): ISequence<Collapse> {
+/*  get widgets(): ISequence<Widget> {
+    return new ArraySequence(toArray(map((this.layout as PanelLayout).widgets, (w: Collapse) => w.widget)));
+  }
+*/
+  get collapseWidgets(): ISequence<Collapse> {
     return (this.layout as PanelLayout).widgets as ISequence<Collapse>;
   }
 
   get selection(): Selection<Collapse> {
     return this._selection;
+  }
+
+  indexOf(widget: Widget): number {
+    return findIndex(this.collapseWidgets, (w: Collapse) => w.widget === widget);
   }
 
   /**
@@ -216,8 +240,8 @@ class Accordion extends Panel {
   }
 
   removeWidget(widget: Widget): void {
-    let index = findIndex(this.widgets, (w) => w.widget === widget);
-    let collapse = this.widgets.at(index);
+    let index = this.indexOf(widget);
+    let collapse = this.collapseWidgets.at(index) as Collapse;
     let layout = this.layout as PanelLayout;
     layout.removeWidgetAt(index);
     this._selection.adjustSelectionForRemove(index, collapse);
@@ -225,8 +249,14 @@ class Accordion extends Panel {
 
   private _wrapWidget(widget: Widget) {
     let collapse = new Collapse({ widget });
-    widget.disposed.connect(() => collapse.dispose());
+    collapse.collapseChanged.connect(this._onCollapseChange, this);
     return collapse;
+  }
+
+  private _onCollapseChange(sender: Collapse) {
+    if (!sender.collapsed) {
+      this._selection.value = sender;
+    }
   }
 
   private _onSelectionChanged(sender: Selection<Widget>, change: Selection.ISelectionChangedArgs<Collapse>) {
@@ -242,6 +272,7 @@ class Accordion extends Panel {
   }
 
   private _selection: Selection<Collapse>;
+
 }
 
 export

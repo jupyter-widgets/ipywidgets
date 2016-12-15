@@ -358,7 +358,7 @@ class Selection<T> {
 }
 
 // Define the signals for the `TabBar` class.
-defineSignal(Selection.prototype, 'currentChanged');
+defineSignal(Selection.prototype, 'selectionChanged');
 
 export
 namespace Selection {
