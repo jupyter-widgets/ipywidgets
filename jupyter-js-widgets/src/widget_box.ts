@@ -142,12 +142,13 @@ class ProxyView extends DOMWidgetView {
     }
 
     remove() {
-        super.remove();
+        Widget.detach(this.pWidget);
         this.child_promise.then(() => {
             if (this.child) {
                 this.child.remove();
             }
         });
+        super.remove();
     }
 
     set_child(value) {
@@ -236,7 +237,7 @@ class BoxView extends DOMWidgetView {
     initialize(parameters) {
         super.initialize(parameters);
         this.children_views = new ViewList(this.add_child_model, null, this);
-        this.listenTo(this.model, 'change:children', function(model, value) {
+        this.listenTo(this.model, 'change:children', (model, value) => {
             this.children_views.update(value);
         });
         this.listenTo(this.model, 'change:overflow_x', this.update_overflow_x);
@@ -303,11 +304,9 @@ class BoxView extends DOMWidgetView {
     }
 
     remove() {
-        // We remove this widget before removing the children as an optimization
-        // we want to remove the entire container from the DOM first before
-        // removing each individual child separately.
-        super.remove()
+        Widget.detach(this.pWidget);
         this.children_views.remove();
+        super.remove()
     }
     children_views: any;
     pWidget: JupyterPhosphorPanelWidget;
