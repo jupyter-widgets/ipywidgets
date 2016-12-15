@@ -127,7 +127,7 @@ class AccordionView extends DOMWidgetView {
 
     _setElement(el: HTMLElement) {
         if (this.el || el !== this.pWidget.node) {
-            // Boxes don't allow setting the element beyond the initial creation.
+            // Accordions don't allow setting the element beyond the initial creation.
             throw new Error('Cannot reset the DOM element.');
         }
 
@@ -138,9 +138,9 @@ class AccordionView extends DOMWidgetView {
     initialize(parameters){
         super.initialize(parameters)
         this.children_views = new ViewList(this.add_child_view, this.remove_child_view, this);
-        this.listenTo(this.model, 'change:children', (model, value, options) => {
-            this.children_views.update(value);
-        });
+        this.listenTo(this.model, 'change:children', (model, value) => this.children_views.update(value));
+        this.listenTo(this.model, 'change:selected_index', () => this.update_selected_index());
+        this.listenTo(this.model, 'change:_titles', () => this.update_titles());
     }
 
     /**
@@ -148,20 +148,18 @@ class AccordionView extends DOMWidgetView {
      */
     render() {
         super.render();
-        this.pWidget.addClass('jupyter-widgets');
-        this.pWidget.addClass('widget-accordion');
-        this.pWidget.addClass('widget-container');
+        let accordion = this.pWidget;
+        accordion.addClass('jupyter-widgets');
+        accordion.addClass('widget-accordion');
+        accordion.addClass('widget-container');
+        accordion.selection.selectionChanged.connect((sender) => {
+            this.model.set('selected_index', accordion.selection.index);
+            this.touch();
+        });
 
-        this.listenTo(this.model, 'change:selected_index', function(model, value, options) {
-            this.update_selected_index(options);
-        });
-        this.listenTo(this.model, 'change:_titles', function(model, value, options) {
-            this.update_titles(options);
-        });
         this.children_views.update(this.model.get('children'));
         this.update_titles();
         this.update_selected_index();
-        // TODO: listen to selection changes.
     }
 
     /**
@@ -197,10 +195,9 @@ class AccordionView extends DOMWidgetView {
      */
     add_child_view(model, index) {
         // Placeholder widget to keep our position in the tab panel while we create the view.
-        let label = this.model.get('_titles')[index] || (index+1).toString();
         let accordion = this.pWidget;
         let placeholder = new Widget();
-        placeholder.title.label = label;
+        placeholder.title.label = this.model.get('_titles')[index] || '';;
         accordion.addWidget(placeholder);
         return this.create_child_view(model).then((view: DOMWidgetView) => {
             let widget = view.pWidget;
@@ -210,37 +207,6 @@ class AccordionView extends DOMWidgetView {
             placeholder.dispose();
             return view;
         }).catch(utils.reject('Could not add child view to box', true));
-
-
-/*        let page = document.createElement('div');
-        page.classList.add('accordion-page');
-        let header = document.createElement('div');
-        header.classList.add('accordion-header');
-        header.textContent = `Page ${this.pages.length}`;
-        header.onclick = () => {
-            let index = this.pages.indexOf(page);
-            this.model.set('selected_index', index);
-            this.touch();
-        }
-        let content = document.createElement('div');
-        content.classList.add('accordion-content');
-        page.appendChild(header);
-        page.appendChild(content);
-        this.pages.push(page);
-        this.el.appendChild(page);
-        this.update_titles();
-        this.update_selected_index;
-        return this.create_child_view(model).then((view) => {
-            this.view_pages[view.cid] = page;
-            content.appendChild(view.el);
-
-            // Trigger the displayed event of the child view.
-            this.displayed.then(() => {
-                view.trigger('displayed', this);
-            });
-            return view;
-        }).catch(utils.reject('Could not add child view to box', true));
-        */
     }
 
     remove() {
@@ -250,8 +216,6 @@ class AccordionView extends DOMWidgetView {
     }
 
     children_views: ViewList;
-    pages: HTMLDivElement[] = [];
-    view_pages: {[key: string]: HTMLDivElement} = Object.create(null);
     pWidget: Accordion;
 }
 
