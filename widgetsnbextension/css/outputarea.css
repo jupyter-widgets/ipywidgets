@@ -29,6 +29,7 @@
 }
 
 .widget-area .widget-subarea {
+    min-width: 0px;
     padding: 0.4em 0 0.4em 0;
     display: flex;
     flex: 2;
