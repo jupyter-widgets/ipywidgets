@@ -11,8 +11,8 @@
     "url": "https://github.com/ipython/ipywidgets.git"
   },
   "files": [
-    "lib/*.d.ts",
-    "lib/*.js",
+    "lib/**/*.d.ts",
+    "lib/**/*.js",
     "css/*.css",
     "dist/"
   ],
