@@ -62,10 +62,14 @@ class Collapse extends Widget {
     this._header = new Widget();
     this._header.addClass(COLLAPSE_HEADER_CLASS);
     this._header.node.addEventListener('click', this);
+    this._content = new Panel();
+    this._content.addClass(COLLAPSE_CONTENTS_CLASS);
+
 
     let layout = new PanelLayout();
     this.layout = layout;
     layout.addWidget(this._header);
+    layout.addWidget(this._content);
     if (options.widget) {
       this.widget = options.widget;
     }
@@ -78,6 +82,7 @@ class Collapse extends Widget {
     super.dispose();
     this._header = null;
     this._widget = null;
+    this._content = null;
   }
 
   get widget() {
@@ -85,25 +90,18 @@ class Collapse extends Widget {
   }
 
   set widget(widget: Widget) {
-    let layout = this.layout as PanelLayout;
-    let oldwidget = this._widget;
-    if (oldwidget) {
-      oldwidget.disposed.disconnect(this._onChildDisposed, this);
-      oldwidget.title.changed.disconnect(this._onTitleChanged, this);
-      oldwidget.removeClass(COLLAPSE_CONTENTS_CLASS);
-      layout.removeWidget(oldwidget);
+    let oldWidget = this._widget;
+    if (oldWidget) {
+      oldWidget.disposed.disconnect(this._onChildDisposed, this);
+      oldWidget.title.changed.disconnect(this._onTitleChanged, this);
+      //oldwidget.removeClass(COLLAPSE_CONTENTS_CLASS);
+      this._content.layout.removeWidget(oldWidget);
     }
-    if (this.collapsed) {
-      widget.hide();
-    } else {
-      widget.show();
-    }
-    widget.addClass(COLLAPSE_CONTENTS_CLASS);
     this._widget = widget;
     widget.disposed.connect(this._onChildDisposed, this);
     widget.title.changed.connect(this._onTitleChanged, this);
     this._onTitleChanged(widget.title);
-    layout.addWidget(widget);
+    this._content.addWidget(widget);
   }
 
   get collapsed() {
@@ -130,15 +128,15 @@ class Collapse extends Widget {
 
   private _collapse() {
     this._collapsed = true;
-    if (this._widget) {
-      this._widget.hide();
+    if (this._content) {
+      this._content.hide();
     }
     this.collapseChanged.emit(void 0);
   }
   private _uncollapse() {
     this._collapsed = false;
-    if (this._widget) {
-      this._widget.show();
+    if (this._content) {
+      this._content.show();
     }
     this.collapseChanged.emit(void 0);
   }
@@ -179,6 +177,7 @@ class Collapse extends Widget {
   }
 
   _collapsed: boolean;
+  _content: Panel;
   _widget: Widget;
   _header: Widget;
 }

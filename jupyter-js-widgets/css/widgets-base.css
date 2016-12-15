@@ -924,6 +924,18 @@ ul.widget-dropdown-droplist.mod-active {
 
 /* Accordion Widget */
 
+.p-Accordion {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.p-Collapse {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
 .widget-accordion  .p-Collapse {
     margin-bottom: 0;
 }
