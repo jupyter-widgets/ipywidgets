@@ -34,6 +34,22 @@ import {
   ArraySequence
 } from 'phosphor/lib/algorithm/sequence';
 
+
+/**
+ * The class name added to Collapse instances.
+ */
+const COLLAPSE_CLASS = 'p-Collapse';
+
+/**
+ * The class name added to a Collapse's header.
+ */
+const COLLAPSE_HEADER_CLASS = 'p-Collapse-header';
+
+/**
+ * The class name added to a Collapse's contents.
+ */
+const COLLAPSE_CONTENTS_CLASS = 'p-Collapse-contents';
+
 /**
  * A panel that supports a collapsible header, made from the widget's title.
  * Clicking on the title expands or contracts the widget.
@@ -42,7 +58,9 @@ export
 class Collapse extends Widget {
   constructor(options: Collapse.IOptions) {
     super(options);
+    this.addClass(COLLAPSE_CLASS);
     this._header = new Widget();
+    this._header.addClass(COLLAPSE_HEADER_CLASS);
     this._header.node.addEventListener('click', this);
 
     let layout = new PanelLayout();
@@ -68,16 +86,19 @@ class Collapse extends Widget {
 
   set widget(widget: Widget) {
     let layout = this.layout as PanelLayout;
-    if (this._widget) {
-      this._widget.disposed.disconnect(this._onChildDisposed, this);
-      this._widget.title.changed.disconnect(this._onTitleChanged, this);
-      layout.removeWidget(this._widget);
+    let oldwidget = this._widget;
+    if (oldwidget) {
+      oldwidget.disposed.disconnect(this._onChildDisposed, this);
+      oldwidget.title.changed.disconnect(this._onTitleChanged, this);
+      oldwidget.removeClass(COLLAPSE_CONTENTS_CLASS);
+      layout.removeWidget(oldwidget);
     }
     if (this.collapsed) {
       widget.hide();
     } else {
       widget.show();
     }
+    widget.addClass(COLLAPSE_CONTENTS_CLASS);
     this._widget = widget;
     widget.disposed.connect(this._onChildDisposed, this);
     widget.title.changed.connect(this._onTitleChanged, this);
@@ -175,6 +196,18 @@ defineSignal(Collapse.prototype, 'collapseChanged');
 
 
 /**
+ * The class name added to Accordion instances.
+ */
+const ACCORDION_CLASS = 'p-Accordion';
+
+/**
+ * The class name added to an Accordion child.
+ */
+const ACCORDION_CHILD_CLASS = 'p-Accordion-child';
+
+const ACCORDION_CHILD_ACTIVE_CLASS = 'p-Accordion-child-active';
+
+/**
  * A panel that supports a collapsible header, made from the widget's title.
  * Clicking on the title expands or contracts the widget.
  */
@@ -185,6 +218,7 @@ class Accordion extends Panel {
     super(options);
     this._selection = new Selection(this.widgets as ISequence<Collapse>);
     this._selection.selectionChanged.connect(this._onSelectionChanged, this);
+    this.addClass(ACCORDION_CLASS);
   }
 
   /**
@@ -214,13 +248,16 @@ class Accordion extends Panel {
    *
    * @param widget - The widget to add to the accordion.
    *
+   * @returns The Collapse widget wrapping the added widget.
    * #### Notes
    * The widget will be wrapped in a CollapsedWidget.
    */
-  addWidget(widget: Widget): void {
+  addWidget(widget: Widget): Widget {
     let collapse = this._wrapWidget(widget);
+    collapse.collapsed = true;
     super.addWidget(collapse);
     this._selection.adjustSelectionForInsert(this.widgets.length - 1, collapse);
+    return collapse;
   }
 
   /**
@@ -235,6 +272,7 @@ class Accordion extends Panel {
    */
   insertWidget(index: number, widget: Widget): void {
     let collapse = this._wrapWidget(widget);
+    collapse.collapsed = true;
     super.insertWidget(index, collapse);
     this._selection.adjustSelectionForInsert(index, collapse);
   }
@@ -242,6 +280,7 @@ class Accordion extends Panel {
   removeWidget(widget: Widget): void {
     let index = this.indexOf(widget);
     let collapse = this.collapseWidgets.at(index) as Collapse;
+    collapse.removeClass(ACCORDION_CHILD_CLASS);
     let layout = this.layout as PanelLayout;
     layout.removeWidgetAt(index);
     this._selection.adjustSelectionForRemove(index, collapse);
@@ -249,6 +288,7 @@ class Accordion extends Panel {
 
   private _wrapWidget(widget: Widget) {
     let collapse = new Collapse({ widget });
+    collapse.addClass(ACCORDION_CHILD_CLASS);
     collapse.collapseChanged.connect(this._onCollapseChange, this);
     return collapse;
   }
@@ -265,9 +305,11 @@ class Accordion extends Panel {
     let cv = change.currentValue;
     if (pv) {
       pv.collapsed = true;
+      pv.removeClass(ACCORDION_CHILD_ACTIVE_CLASS);
     }
     if (cv) {
       cv.collapsed = false;
+      cv.addClass(ACCORDION_CHILD_ACTIVE_CLASS);
     }
   }
 

@@ -924,11 +924,11 @@ ul.widget-dropdown-droplist.mod-active {
 
 /* Accordion Widget */
 
-.widget-accordion > .accordion-page {
+.widget-accordion  .p-Collapse {
     margin-bottom: 0;
 }
 
-.widget-accordion > .accordion-page > .accordion-header {
+.widget-accordion .p-Collapse-header {
     padding: var(--jp-widgets-input-padding);
     cursor: pointer;
     color: var(--jp-ui-font-color2);
@@ -938,19 +938,19 @@ ul.widget-dropdown-droplist.mod-active {
     font-weight: bold;
 }
 
-.widget-accordion > .accordion-page > .accordion-header:hover {
+.widget-accordion .p-Collapse-header:hover {
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
 }
 
-.widget-accordion > .accordion-page.accordion-active > .accordion-header {
+.widget-accordion .p-Accordion-child-active .p-Collapse-header {
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color0);
     cursor: default;
     border-bottom: none;
 }
 
-.widget-accordion > .accordion-page > .accordion-content {
+.widget-accordion .p-Collapse-contents {
     padding: var(--jp-widgets-container-padding);
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
@@ -959,9 +959,11 @@ ul.widget-dropdown-droplist.mod-active {
     border-bottom: var(--jp-widgets-border-width) solid var(--jp-border-color1);
 }
 
-.widget-accordion > .accordion-page + .accordion-page {
+.widget-accordion .p-Collapse + .p-Collapse {
     margin-top: 4px;
 }
+
+/* HTML widget */
 
 .widget-html {
     font-size: var(--jp-widgets-font-size);
