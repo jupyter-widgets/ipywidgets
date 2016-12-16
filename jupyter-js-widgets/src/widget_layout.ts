@@ -5,14 +5,6 @@ import {
     DOMWidgetModel, DOMWidgetView
 } from './widget';
 
-import {
-    ResizeMessage
-} from 'phosphor/lib/ui/widget';
-
-import {
-    sendMessage
-} from 'phosphor/lib/core/messaging';
-
 import * as _ from 'underscore';
 
 /**
@@ -71,14 +63,6 @@ class LayoutView extends DOMWidgetView {
         for (let key of Object.keys(css_properties)) {
             this.registerTrait(key)
         }
-        let sendResize = () => {
-            this.displayed.then(() => {
-                // Let the widget know its size might have changed.
-                sendMessage(this.options.parent.pWidget, ResizeMessage.UnknownSize);
-            })
-        }
-        this.listenTo(this.model, 'change', sendResize);
-        sendResize();
     }
 
     /**
