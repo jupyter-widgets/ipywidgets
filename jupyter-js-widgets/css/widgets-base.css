@@ -924,23 +924,13 @@ ul.widget-dropdown-droplist.mod-active {
 
 /* Accordion Widget */
 
-.p-Accordion {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-}
-
 .p-Collapse {
     display: flex;
     flex-direction: column;
     align-items: stretch;
 }
 
-.widget-accordion  .p-Collapse {
-    margin-bottom: 0;
-}
-
-.widget-accordion .p-Collapse-header {
+.p-Collapse-header {
     padding: var(--jp-widgets-input-padding);
     cursor: pointer;
     color: var(--jp-ui-font-color2);
@@ -950,19 +940,33 @@ ul.widget-dropdown-droplist.mod-active {
     font-weight: bold;
 }
 
-.widget-accordion .p-Collapse-header:hover {
+.p-Collapse-header:hover {
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
 }
 
-.widget-accordion .p-Accordion-child-active .p-Collapse-header {
+.p-Collapse-open .p-Collapse-header {
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color0);
     cursor: default;
     border-bottom: none;
 }
 
-.widget-accordion .p-Collapse-contents {
+.p-Collapse .p-Collapse-header::before {
+    content: '\f0da\00A0';  /* caret-right, non-breaking space */
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.p-Collapse-open .p-Collapse-header::before {
+    content: '\f0d7\00A0'; /* caret-down, non-breaking space */
+}
+
+.p-Collapse-contents {
     padding: var(--jp-widgets-container-padding);
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
@@ -971,9 +975,21 @@ ul.widget-dropdown-droplist.mod-active {
     border-bottom: var(--jp-widgets-border-width) solid var(--jp-border-color1);
 }
 
-.widget-accordion .p-Collapse + .p-Collapse {
+.p-Accordion {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.p-Accordion .p-Collapse {
+    margin-bottom: 0;
+}
+
+.p-Accordion .p-Collapse + .p-Collapse {
     margin-top: 4px;
 }
+
+
 
 /* HTML widget */
 

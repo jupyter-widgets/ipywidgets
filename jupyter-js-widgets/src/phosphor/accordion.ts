@@ -51,6 +51,11 @@ const COLLAPSE_HEADER_CLASS = 'p-Collapse-header';
 const COLLAPSE_CONTENTS_CLASS = 'p-Collapse-contents';
 
 /**
+ * The class name added to a Collapse when it is opened
+ */
+const COLLAPSE_CLASS_OPEN = 'p-Collapse-open';
+
+/**
  * A panel that supports a collapsible header, made from the widget's title.
  * Clicking on the title expands or contracts the widget.
  */
@@ -94,7 +99,6 @@ class Collapse extends Widget {
     if (oldWidget) {
       oldWidget.disposed.disconnect(this._onChildDisposed, this);
       oldWidget.title.changed.disconnect(this._onTitleChanged, this);
-      //oldwidget.removeClass(COLLAPSE_CONTENTS_CLASS);
       this._content.layout.removeWidget(oldWidget);
     }
     this._widget = widget;
@@ -131,6 +135,7 @@ class Collapse extends Widget {
     if (this._content) {
       this._content.hide();
     }
+    this.removeClass(COLLAPSE_CLASS_OPEN);
     this.collapseChanged.emit(void 0);
   }
   private _uncollapse() {
@@ -138,6 +143,7 @@ class Collapse extends Widget {
     if (this._content) {
       this._content.show();
     }
+    this.addClass(COLLAPSE_CLASS_OPEN);
     this.collapseChanged.emit(void 0);
   }
 
