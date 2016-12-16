@@ -93,8 +93,11 @@ class Selection<T> {
    * `null`. This selects the first entry equal to the desired item.
    */
   set value(value: T) {
-    this.index = indexOf(this._sequence, value);
-    this._updateSelectedValue();
+    if (value === null) {
+      this.index = -1;
+    } else {
+      this.index = indexOf(this._sequence, value);
+    }
   }
 
   /**
