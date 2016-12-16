@@ -606,14 +606,24 @@ class ViewList {
      * returns a promise that resolves after this removal is done
      */
     remove(): any {
-        var that = this;
-        return Promise.all(this.views).then(function(views) {
-            for (var i = 0; i < that.views.length; i++) {
-                that._remove_view.call(that._handler_context, views[i]);
-            }
-            that.views = [];
-            that._models = [];
+        return Promise.all(this.views).then((views) => {
+            views.forEach((value) => this._remove_view.call(this._handler_context, value));
+            this.views = [];
+            this._models = [];
         });
+    }
+
+    /**
+     * Dispose this viewlist.
+     *
+     * A synchronous function which just deletes references to child views. This
+     * function does not call .remove() on child views because that is
+     * asynchronous. Use this in cases where child views will be removed in
+     * another way.
+     */
+    dispose(): any {
+        this.views = [];
+        this._models = [];
     }
 
     _handler_context: any;

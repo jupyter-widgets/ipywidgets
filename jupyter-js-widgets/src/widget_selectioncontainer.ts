@@ -211,7 +211,7 @@ class AccordionView extends DOMWidgetView {
 
     remove() {
         Widget.detach(this.pWidget);
-        this.children_views.remove();
+        this.children_views.dispose();
         super.remove();
     }
 
