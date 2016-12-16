@@ -138,7 +138,7 @@ class AccordionView extends DOMWidgetView {
     initialize(parameters){
         super.initialize(parameters)
         this.children_views = new ViewList(this.add_child_view, this.remove_child_view, this);
-        this.listenTo(this.model, 'change:children', (model, value) => this.children_views.update(value));
+        this.listenTo(this.model, 'change:children', () => this.updateChildren());
         this.listenTo(this.model, 'change:selected_index', () => this.update_selected_index());
         this.listenTo(this.model, 'change:_titles', () => this.update_titles());
     }
@@ -153,13 +153,29 @@ class AccordionView extends DOMWidgetView {
         accordion.addClass('widget-accordion');
         accordion.addClass('widget-container');
         accordion.selection.selectionChanged.connect((sender) => {
-            this.model.set('selected_index', accordion.selection.index);
-            this.touch();
+            if (!this.updatingChildren) {
+                this.model.set('selected_index', accordion.selection.index);
+                this.touch();
+            }
         });
 
         this.children_views.update(this.model.get('children'));
         this.update_titles();
         this.update_selected_index();
+    }
+
+    /**
+     * Update children
+     */
+    updateChildren() {
+        // While we are updating, the index may not be valid, so deselect the
+        // tabs before updating so we don't get spurious changes in the index,
+        // which would then set off another sync cycle.
+        this.updatingChildren = true;
+        this.pWidget.selection.index = -1;
+        this.children_views.update(this.model.get('children'));
+        this.update_selected_index();
+        this.updatingChildren = false;
     }
 
     /**
@@ -178,7 +194,7 @@ class AccordionView extends DOMWidgetView {
     /**
      * Make the rendering and selected index consistent.
      */
-    update_selected_index(options?) {
+    update_selected_index() {
         this.pWidget.selection.index = this.model.get('selected_index');
     }
 
@@ -219,6 +235,7 @@ class AccordionView extends DOMWidgetView {
 
     children_views: ViewList;
     pWidget: Accordion;
+    updatingChildren: boolean;
 }
 
 export
