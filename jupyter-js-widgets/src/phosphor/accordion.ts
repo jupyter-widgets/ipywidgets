@@ -70,7 +70,6 @@ class Collapse extends Widget {
     this._content = new Panel();
     this._content.addClass(COLLAPSE_CONTENTS_CLASS);
 
-
     let layout = new PanelLayout();
     this.layout = layout;
     layout.addWidget(this._header);
@@ -78,6 +77,7 @@ class Collapse extends Widget {
     if (options.widget) {
       this.widget = options.widget;
     }
+    this.collapsed = false;
   }
 
   dispose() {
