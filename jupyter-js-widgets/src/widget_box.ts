@@ -142,7 +142,9 @@ class ProxyView extends DOMWidgetView {
     }
 
     remove() {
-        Widget.detach(this.pWidget);
+        if (this.pWidget.isAttached) {
+            Widget.detach(this.pWidget);
+        }
         this.child_promise.then(() => {
             if (this.child) {
                 this.child.remove();
@@ -304,7 +306,9 @@ class BoxView extends DOMWidgetView {
     }
 
     remove() {
-        Widget.detach(this.pWidget);
+        if (this.pWidget.isAttached) {
+            Widget.detach(this.pWidget);
+        }
         this.children_views.dispose();
         super.remove()
     }
