@@ -301,6 +301,8 @@ class Accordion extends Panel {
   private _onCollapseChange(sender: Collapse) {
     if (!sender.collapsed) {
       this._selection.value = sender;
+    } else if (this._selection.value === sender && sender.collapsed) {
+      this._selection.value = null;
     }
   }
 
