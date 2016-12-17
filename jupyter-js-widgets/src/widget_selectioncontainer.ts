@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetModel, DOMWidgetView, ViewList
+    DOMWidgetModel, DOMWidgetView, ViewList, JupyterPhosphorWidget
 } from './widget';
 
 import {
@@ -12,6 +12,14 @@ import {
 import {
     TabBar
 } from 'phosphor/lib/ui/tabbar';
+
+import {
+    TabPanel
+} from './phosphor/tabpanel';
+
+import {
+    Accordion
+} from './phosphor/accordion';
 
 import {
     Panel
@@ -30,8 +38,16 @@ import {
 } from 'phosphor/lib/algorithm/iteration';
 
 import {
+    move
+} from 'phosphor/lib/algorithm/mutation';
+
+import {
     indexOf
 } from 'phosphor/lib/algorithm/searching';
+
+import {
+    Message, installMessageHook
+} from 'phosphor/lib/core/messaging';
 
 import * as _ from 'underscore';
 import * as utils from './utils';
@@ -58,41 +74,119 @@ class AccordionModel extends SelectionContainerModel {
     }
 }
 
+// We implement our own tab widget since Phoshpor's TabPanel uses an absolute
+// positioning BoxLayout, but we want a more an html/css-based Panel layout.
+
+export
+class JupyterPhosphorAccordionWidget extends Accordion {
+    constructor(options: JupyterPhosphorWidget.IOptions & Accordion.IOptions) {
+        let view = options.view;
+        delete options.view;
+        super(options);
+        this._view = view;
+    }
+
+    /**
+     * Process the phosphor message.
+     *
+     * Any custom phosphor widget used inside a Jupyter widget should override
+     * the processMessage function like this.
+     */
+    processMessage(msg: Message) {
+        super.processMessage(msg);
+        this._view.processPhosphorMessage(msg);
+    }
+
+    /**
+     * Dispose the widget.
+     *
+     * This causes the view to be destroyed as well with 'remove'
+     */
+    dispose() {
+        if (this.isDisposed) {
+            return;
+        }
+        super.dispose();
+        if (this._view) {
+            this._view.remove();
+        }
+        this._view = null;
+    }
+
+    private _view: DOMWidgetView;
+}
+
+
 export
 class AccordionView extends DOMWidgetView {
+
+    _createElement(tagName: string) {
+        this.pWidget = new JupyterPhosphorAccordionWidget({ view: this });
+        return this.pWidget.node;
+    }
+
+    _setElement(el: HTMLElement) {
+        if (this.el || el !== this.pWidget.node) {
+            // Accordions don't allow setting the element beyond the initial creation.
+            throw new Error('Cannot reset the DOM element.');
+        }
+
+        this.el = this.pWidget.node;
+        this.$el = $(this.pWidget.node);
+     }
+
     initialize(parameters){
         super.initialize(parameters)
         this.children_views = new ViewList(this.add_child_view, this.remove_child_view, this);
-        this.listenTo(this.model, 'change:children', (model, value, options) => {
-            this.children_views.update(value);
-        });
+        this.listenTo(this.model, 'change:children', () => this.updateChildren());
+        this.listenTo(this.model, 'change:selected_index', () => this.update_selected_index());
+        this.listenTo(this.model, 'change:_titles', () => this.update_titles());
     }
 
     /**
      * Called when view is rendered.
      */
     render() {
-        this.el.className = 'jupyter-widgets widget-container widget-accordion';
+        super.render();
+        let accordion = this.pWidget;
+        accordion.addClass('jupyter-widgets');
+        accordion.addClass('widget-accordion');
+        accordion.addClass('widget-container');
+        accordion.selection.selectionChanged.connect((sender) => {
+            if (!this.updatingChildren) {
+                this.model.set('selected_index', accordion.selection.index);
+                this.touch();
+            }
+        });
 
-        this.listenTo(this.model, 'change:selected_index', function(model, value, options) {
-            this.update_selected_index(options);
-        });
-        this.listenTo(this.model, 'change:_titles', function(model, value, options) {
-            this.update_titles(options);
-        });
         this.children_views.update(this.model.get('children'));
         this.update_titles();
         this.update_selected_index();
     }
 
     /**
+     * Update children
+     */
+    updateChildren() {
+        // While we are updating, the index may not be valid, so deselect the
+        // tabs before updating so we don't get spurious changes in the index,
+        // which would then set off another sync cycle.
+        this.updatingChildren = true;
+        this.pWidget.selection.index = -1;
+        this.children_views.update(this.model.get('children'));
+        this.update_selected_index();
+        this.updatingChildren = false;
+    }
+
+    /**
      * Set header titles
      */
     update_titles() {
+        let widgets = this.pWidget.widgets;
         let titles = this.model.get('_titles');
-        for (let i = 0; i < this.pages.length; i++) {
+        for (let i = 0; i < widgets.length; i++) {
             if (titles[i] !== void 0) {
-                this.pages[i].firstChild.textContent = titles[i];
+                widgets.at(i).title.label = titles[i];
             }
         }
     }
@@ -100,78 +194,48 @@ class AccordionView extends DOMWidgetView {
     /**
      * Make the rendering and selected index consistent.
      */
-    update_selected_index(options?) {
-        let new_index = this.model.get('selected_index');
-        this.pages.forEach((page, index) => {
-            if (index === new_index) {
-                page.classList.add('accordion-active');
-                // TODO: use CSS transitions?
-                $(page.lastElementChild).slideDown('fast');
-            } else {
-                page.classList.remove('accordion-active');
-                $(page.lastElementChild).slideUp('fast');
-            }
-        })
+    update_selected_index() {
+        this.pWidget.selection.index = this.model.get('selected_index');
     }
 
     /**
      * Called when a child is removed from children list.
      */
     remove_child_view(view) {
-        let page = this.view_pages[view.cid];
-        this.pages.splice(this.pages.indexOf(page), 1);
-        delete this.view_pages[view.cid];
-        page.parentNode.removeChild(page);
+        this.pWidget.removeWidget(view.pWidget);
         view.remove();
     }
 
     /**
      * Called when a child is added to children list.
      */
-    add_child_view(model) {
-        let page = document.createElement('div');
-        page.classList.add('accordion-page');
-        let header = document.createElement('div');
-        header.classList.add('accordion-header');
-        header.textContent = `Page ${this.pages.length}`;
-        header.onclick = () => {
-            let index = this.pages.indexOf(page);
-            this.model.set('selected_index', index);
-            this.touch();
-        }
-        let content = document.createElement('div');
-        content.classList.add('accordion-content');
-        page.appendChild(header);
-        page.appendChild(content);
-        this.pages.push(page);
-        this.el.appendChild(page);
-        this.update_titles();
-        this.update_selected_index;
-        return this.create_child_view(model).then((view) => {
-            this.view_pages[view.cid] = page;
-            content.appendChild(view.el);
-
-            // Trigger the displayed event of the child view.
-            this.displayed.then(() => {
-                view.trigger('displayed', this);
-            });
+    add_child_view(model, index) {
+        // Placeholder widget to keep our position in the tab panel while we create the view.
+        let accordion = this.pWidget;
+        let placeholder = new Widget();
+        placeholder.title.label = this.model.get('_titles')[index] || '';;
+        accordion.addWidget(placeholder);
+        return this.create_child_view(model).then((view: DOMWidgetView) => {
+            let widget = view.pWidget;
+            widget.title.label = placeholder.title.label;
+            let collapse = accordion.collapseWidgets.at(accordion.indexOf(placeholder));
+            collapse.widget = widget;
+            placeholder.dispose();
             return view;
         }).catch(utils.reject('Could not add child view to box', true));
     }
 
-    /**
-     * We remove this widget before removing the children as an optimization
-     * we want to remove the entire container from the DOM first before
-     * removing each individual child separately.
-     */
     remove() {
+        if (this.pWidget.isAttached) {
+            Widget.detach(this.pWidget);
+        }
+        this.children_views.dispose();
         super.remove();
-        this.children_views.remove();
     }
 
     children_views: ViewList;
-    pages: HTMLDivElement[] = [];
-    view_pages: {[key: string]: HTMLDivElement} = Object.create(null);
+    pWidget: Accordion;
+    updatingChildren: boolean;
 }
 
 export
@@ -188,10 +252,52 @@ class TabModel extends SelectionContainerModel {
 // positioning BoxLayout, but we want a more an html/css-based Panel layout.
 
 export
+class JupyterPhosphorTabPanelWidget extends TabPanel {
+    constructor(options: JupyterPhosphorWidget.IOptions & TabPanel.IOptions) {
+        let view = options.view;
+        delete options.view;
+        super(options);
+        this._view = view;
+        // We want the view's messages to be the messages the tabContents panel
+        // gets.
+        installMessageHook(this.tabContents, (handler, msg) => {
+            // There may be times when we want the view's handler to be called
+            // *after* the message has been processed by the widget, in which
+            // case we'll need to revisit using a message hook.
+            this._view.processPhosphorMessage(msg);
+            return true;
+        });
+    }
+
+    /**
+     * Dispose the widget.
+     *
+     * This causes the view to be destroyed as well with 'remove'
+     */
+    dispose() {
+        if (this.isDisposed) {
+            return;
+        }
+        super.dispose();
+        if (this._view) {
+            this._view.remove();
+        }
+        this._view = null;
+    }
+
+    private _view: DOMWidgetView;
+}
+
+
+
+
+export
 class TabView extends DOMWidgetView {
 
     _createElement(tagName: string) {
-        this.pWidget = new JupyterPhosphorPanelWidget({ view: this });
+        this.pWidget = new JupyterPhosphorTabPanelWidget({
+            view: this,
+        });
         return this.pWidget.node;
     }
 
@@ -223,20 +329,22 @@ class TabView extends DOMWidgetView {
      * Called when view is rendered.
      */
     render() {
-        this.pWidget.addClass('jupyter-widgets');
-        this.pWidget.addClass('widget-container');
-        this.pWidget.addClass('widget-tab');
+        super.render();
+        let tabs = this.pWidget;
+        tabs.addClass('jupyter-widgets');
+        tabs.addClass('widget-container');
+        tabs.addClass('widget-tab');
+        tabs.tabBar.insertBehavior = 'none'; // needed for insert behavior, see below.
+        tabs.tabBar.currentChanged.connect(this._onTabChanged, this);
+        tabs.tabBar.tabMoved.connect(this._onTabMoved, this);
 
-        this.tabBar = new TabBar({insertBehavior: 'none'});
-        this.tabBar.tabsMovable = false;
-        this.tabBar.addClass('widget-tab-bar');
-        this.tabBar.currentChanged.connect(this._onTabChanged, this);
+        tabs.tabBar.addClass('widget-tab-bar');
+        tabs.tabContents.addClass('widget-tab-contents');
 
-        this.tabContents = new Panel();
-        this.tabContents.addClass('widget-tab-contents');
+        // TODO: expose this option in python
+        tabs.tabBar.tabsMovable = false;
 
-        this.pWidget.addWidget(this.tabBar);
-        this.pWidget.addWidget(this.tabContents);
+
         this.updateTabs();
         this.update();
     }
@@ -246,21 +354,12 @@ class TabView extends DOMWidgetView {
      */
     updateTabs() {
         // While we are updating, the index may not be valid, so deselect the
-        // tabs before updating so we don't get spurious changes in the index.
+        // tabs before updating so we don't get spurious changes in the index,
+        // which would then set off another sync cycle.
         this.updatingTabs = true;
-        let oldTitle = this.tabBar.currentTitle;
-        this.tabBar.currentIndex = -1;
+        this.pWidget.currentIndex = -1;
         this.childrenViews.update(this.model.get('children'));
-        this.tabBar.currentIndex = this.model.get('selected_index');
-        let newTitle = this.tabBar.currentTitle;
-        if (oldTitle !== newTitle) {
-            if (oldTitle && oldTitle.owner) {
-                oldTitle.owner.hide();
-            }
-            if (newTitle && newTitle.owner) {
-                newTitle.owner.show();
-            }
-        }
+        this.pWidget.currentIndex = this.model.get('selected_index');
         this.updatingTabs = false;
     }
 
@@ -268,30 +367,23 @@ class TabView extends DOMWidgetView {
      * Called when a child is added to children list.
      */
     addChildView(model, index) {
-        // Placeholder title to keep our position in the tab bar while we create the view.
+        // Placeholder widget to keep our position in the tab panel while we create the view.
         let label = this.model.get('_titles')[index] || (index+1).toString();
-        let tempTitle = new Title({label});
-        this.tabBar.addTab(tempTitle);
+        let tabs = this.pWidget;
+        let placeholder = new Widget();
+        placeholder.title.label = label;
+        tabs.addWidget(placeholder);
         return this.create_child_view(model).then((view: DOMWidgetView) => {
             let widget = view.pWidget;
-            widget.hide();
-            widget.addClass('widget-tab-child');
-            this.tabContents.addWidget(widget);
+            widget.title.label = placeholder.title.label;
+            widget.title.closable = true;
 
-            let title = widget.title;
-            title.closable = false;
-            title.label = tempTitle.label;
-
-            let i = indexOf(this.tabBar.titles, tempTitle);
-            // insert after tempTitle so that if tempTitle is selected,
-            // after this the replacement title will be selected.
-            this.tabBar.insertTab(i+1, title);
-            this.tabBar.removeTab(tempTitle);
-            view.on('remove', () => this.tabBar.removeTab(title));
-
-            if (this.tabBar.currentTitle === title) {
-                widget.show();
-            }
+            let i = indexOf(tabs.widgets, placeholder);
+            // insert after placeholder so that if placholder is selected, the
+            // real widget will be selected now (this depends on the tab bar
+            // insert behavior)
+            tabs.insertWidget(i+1, widget);
+            placeholder.dispose();
             return view;
         }).catch(utils.reject('Could not add child view to box', true));
     }
@@ -315,8 +407,8 @@ class TabView extends DOMWidgetView {
      */
     updateTitles() {
         var titles = this.model.get('_titles') || {};
-        each(enumerate(this.tabBar.titles), ([i, title]) => {
-            title.label = titles[i] || (i+1).toString();
+        each(enumerate(this.pWidget.widgets), ([i, widget]) => {
+            widget.title.label = titles[i] || (i+1).toString();
         });
     }
 
@@ -324,36 +416,15 @@ class TabView extends DOMWidgetView {
      * Updates the selected index.
      */
     updateSelectedIndex() {
-        let current = this.model.get('selected_index');
-        let previous = this.model.previous('selected_index');
-        if (current === void 0) {
-            current = 0;
-        }
-        let titles = this.tabBar.titles;
-        if (0 <= current && current < titles.length) {
-            if(previous !== void 0 && previous !== current) {
-                let previousTitle = titles.at(previous);
-                let previousWidget = previousTitle ? previousTitle.owner : null;
-                if (previousWidget) {
-                    previousWidget.hide();
-                }
-            }
-            this.tabBar.currentIndex = current;
-            let currentWidget = this.tabBar.currentTitle.owner;
-            if (currentWidget) {
-                currentWidget.show();
-            }
-        }
+        this.pWidget.currentIndex = this.model.get('selected_index');
     }
 
     remove() {
-        this.tabBar = null;
-        this.tabContents = null;
-
-        // Remove this widget before children so that the entire container
-        // leaves the DOM at once.
+        if (this.pWidget.isAttached) {
+            Widget.detach(this.pWidget);
+        }
+        this.childrenViews.dispose();
         super.remove();
-        this.childrenViews.remove();
     }
 
     _onTabChanged(sender: TabBar, args: TabBar.ICurrentChangedArgs) {
@@ -363,9 +434,19 @@ class TabView extends DOMWidgetView {
         }
     }
 
+    /**
+     * Handle the `tabMoved` signal from the tab bar.
+     */
+    _onTabMoved(sender: TabBar, args: TabBar.ITabMovedArgs): void {
+        let children = this.model.get('children').slice();
+        move(children, args.fromIndex, args.toIndex);
+        this.model.set('children', children);
+        this.touch();
+    }
+
     updatingTabs: boolean = false;
     childrenViews: ViewList;
     tabBar: TabBar;
     tabContents: Panel;
-    pWidget: JupyterPhosphorPanelWidget;
+    pWidget: JupyterPhosphorTabPanelWidget;
 }
