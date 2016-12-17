@@ -791,6 +791,7 @@ class DOMWidgetView extends WidgetView {
                             // effect first.
                             postMessage(this.pWidget, ResizeMessage.UnknownSize);
                         });
+                        postMessage(this.pWidget, ResizeMessage.UnknownSize);
                         return view;
                     });
                 }).catch(utils.reject('Could not add LayoutView to DOMWidgetView', true));
