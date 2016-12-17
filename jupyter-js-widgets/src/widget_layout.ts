@@ -4,6 +4,7 @@
 import {
     DOMWidgetModel, DOMWidgetView
 } from './widget';
+
 import * as _ from 'underscore';
 
 /**
@@ -77,9 +78,7 @@ class LayoutView extends DOMWidgetView {
         });
 
         // Set the initial value on display.
-        this.displayed.then(() => {
-            this.handleChange(trait, this.model.get(trait));
-        });
+        this.handleChange(trait, this.model.get(trait));
     }
 
     /**
@@ -96,31 +95,30 @@ class LayoutView extends DOMWidgetView {
      * Handles when a trait value changes
      */
     handleChange(trait: string, value: any) {
-        this.displayed.then((parent) => {
-            if (parent) {
-                if (value === null) {
-                    parent.el.style.removeProperty(this.css_name(trait));
-                } else {
-                    parent.el.style[this.css_name(trait)] = value;
-                }
+        // should be synchronous so that we can measure later.
+        let parent = this.options.parent as DOMWidgetView;
+        if (parent) {
+            if (value === null) {
+                parent.el.style.removeProperty(this.css_name(trait));
             } else {
-                console.warn('Style not applied because a parent view doesn\'t exist');
+                parent.el.style[this.css_name(trait)] = value;
             }
-        });
+        } else {
+            console.warn('Style not applied because a parent view does not exist');
+        }
     }
 
     /**
      * Remove the styling from the parent view.
      */
     unlayout() {
+        let parent = this.options.parent as DOMWidgetView;
         this._traitNames.forEach((trait) => {
-            this.displayed.then((parent) => {
                 if (parent) {
                     parent.el.style.removeProperty(this.css_name(trait));
                 } else {
-                    console.warn('Style not removed because a parent view doesn\'t exist');
+                    console.warn('Style not removed because a parent view does not exist');
                 }
-            });
         }, this);
     }
 

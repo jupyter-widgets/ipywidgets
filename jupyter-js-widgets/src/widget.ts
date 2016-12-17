@@ -16,8 +16,13 @@ import {
 } from 'phosphor/lib/ui/widget';
 
 import {
-    Message
+    postMessage, Message
 } from 'phosphor/lib/core/messaging';
+
+import {
+    ResizeMessage
+} from 'phosphor/lib/ui/widget';
+
 
 /**
  * Replace model ids with models recursively.
@@ -763,13 +768,13 @@ class DOMWidgetView extends WidgetView {
         super.initialize(parameters);
         this.id = utils.uuid();
 
-        this.listenTo(this.model, 'change:_dom_classes', function(model, new_classes) {
+        this.listenTo(this.model, 'change:_dom_classes', (model, new_classes) => {
             var old_classes = model.previous('_dom_classes');
             this.update_classes(old_classes, new_classes);
         });
 
         this.layoutPromise = Promise.resolve();
-        this.listenTo(this.model, 'change:layout', function(model, value) {
+        this.listenTo(this.model, 'change:layout', (model, value) => {
             this.setLayout(value, model.previous('layout'));
         });
 
@@ -784,12 +789,20 @@ class DOMWidgetView extends WidgetView {
             this.layoutPromise = this.layoutPromise.then((oldLayoutView) => {
                 if (oldLayoutView) {
                     oldLayoutView.unlayout();
+                    this.stopListening(oldLayoutView.model);
+                    oldLayoutView.remove();
                 }
 
                 return this.create_child_view(layout).then((view) => {
                     // Trigger the displayed event of the child view.
                     return this.displayed.then(() => {
-                        view.trigger('displayed', this);
+                        view.trigger('displayed');
+                        this.listenTo(view.model, 'change', () => {
+                            // Post (asynchronous) so layout changes can take
+                            // effect first.
+                            postMessage(this.pWidget, ResizeMessage.UnknownSize);
+                        });
+                        postMessage(this.pWidget, ResizeMessage.UnknownSize);
                         return view;
                     });
                 }).catch(utils.reject('Could not add LayoutView to DOMWidgetView', true));
