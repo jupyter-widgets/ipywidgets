@@ -368,7 +368,7 @@ class TabView extends DOMWidgetView {
      */
     addChildView(model, index) {
         // Placeholder widget to keep our position in the tab panel while we create the view.
-        let label = this.model.get('_titles')[index] || (index+1).toString();
+        let label = this.model.get('_titles')[index] || '';
         let tabs = this.pWidget;
         let placeholder = new Widget();
         placeholder.title.label = label;
@@ -408,7 +408,7 @@ class TabView extends DOMWidgetView {
     updateTitles() {
         var titles = this.model.get('_titles') || {};
         each(enumerate(this.pWidget.widgets), ([i, widget]) => {
-            widget.title.label = titles[i] || (i+1).toString();
+            widget.title.label = titles[i] || '';
         });
     }
 
