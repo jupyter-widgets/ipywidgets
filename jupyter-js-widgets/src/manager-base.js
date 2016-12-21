@@ -168,7 +168,11 @@ ManagerBase.prototype.new_widget = function(options, serialized_state) {
     return commPromise.then(function(comm) {
         // Comm Promise Resolved.
         options_clone.comm = comm;
-        return that.new_model(options_clone, serialized_state);
+        var widget_model = that.new_model(options_clone, serialized_state);
+        return widget_model.then(function(model) {
+            model.sync('create', model);
+            return model;
+        });
     }, function() {
         // Comm Promise Rejected.
         if (!options_clone.model_id) {

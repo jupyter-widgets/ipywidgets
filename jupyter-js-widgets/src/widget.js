@@ -252,7 +252,9 @@ var WidgetModel = Backbone.Model.extend({
         // However, we don't buffer the initial state comming from the
         // backend or the default values specified in `defaults`.
         //
-        this._buffered_state_diff = _.extend(this._buffered_state_diff, this.changedAttributes() || {});
+        if(this._buffered_state_diff !== null && this._buffered_state_diff !== undefined) {
+            this._buffered_state_diff = _.extend(this._buffered_state_diff, this.changedAttributes() || {});
+        }
         return return_value;
     },
 
@@ -330,12 +332,13 @@ var WidgetModel = Backbone.Model.extend({
                 // normal.
                 this.send_sync_message(attrs, callbacks);
                 this.pending_msgs++;
+                // Since the comm is a one-way communication, assume the message
+                // arrived and was processed successfully.
+                // Don't call options.success since we don't have a model back from
+                // the server. Note that this means we don't have the Backbone
+                // 'sync' event.
             }
         }
-        // Since the comm is a one-way communication, assume the message
-        // arrived.  Don't call success since we don't have a model back from the server
-        // this means we miss out on the 'sync' event.
-        this._buffered_state_diff = {};
     },
 
     send_sync_message: function(attrs, callbacks) {
