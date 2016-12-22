@@ -1,0 +1,39 @@
+{
+  "name": "jupyter-js-widgets-test",
+  "version": "1.0.0",
+  "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rimraf lib && rimraf built",
+    "prepublish": "npm run build",
+    "build": "npm run clean && tsc --project src && node scripts/copyfiles.js && webpack",
+    "host": "http-server",
+    "test": "npm run test:default",
+    "test:default": "echo \"No test specified\""
+  },
+  "author": "IPython",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "@jupyterlab/services": "^0.24.0",
+    "@types/codemirror": "0.0.33",
+    "codemirror": "^5.9.0",
+    "font-awesome": "^4.5.0",
+    "http-server": "^0.8.5",
+    "jupyter-js-widgets": "file:../.."
+  },
+  "devDependencies": {
+    "css-loader": "^0.23.1",
+    "file-loader": "^0.8.5",
+    "fs-extra": "^0.30.0",
+    "json-loader": "^0.5.4",
+    "postcss": "^5.2.5",
+    "postcss-cssnext": "^2.8.0",
+    "postcss-import": "^8.1.2",
+    "postcss-loader": "^1.1.0",
+    "rimraf": "^2.5.4",
+    "style-loader": "^0.13.0",
+    "typescript": "^2.0.3",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.10"
+  }
+}
