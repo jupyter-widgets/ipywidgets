@@ -2,7 +2,7 @@ from .widget import Widget, CallbackDispatcher, register, widget_serialization, 
 from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
 
-from .trait_types import Color, EventfulDict, EventfulList
+from .trait_types import Color, Datetime
 
 from .widget_bool import Checkbox, ToggleButton, Valid
 from .widget_button import Button
@@ -11,6 +11,7 @@ from .widget_float import FloatText, BoundedFloatText, FloatSlider, FloatProgres
 from .widget_image import Image
 from .widget_int import IntText, BoundedIntText, IntSlider, IntProgress, IntRangeSlider, Play
 from .widget_color import ColorPicker
+from .widget_date import DatePicker
 from .widget_output import Output
 from .widget_selection import RadioButtons, ToggleButtons, Dropdown, Select, SelectionSlider, SelectMultiple
 from .widget_selectioncontainer import Tab, Accordion

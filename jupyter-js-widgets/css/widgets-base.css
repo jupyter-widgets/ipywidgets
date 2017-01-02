@@ -824,6 +824,22 @@ ul.widget-dropdown-droplist.mod-active {
     box-sizing: border-box;
 }
 
+/* Date Picker Styling */
+
+.widget-datepicker {
+    width: var(--jp-widgets-inline-width);
+    height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
+}
+
+.widget-datepicker input[type="date"] {
+    flex-grow: 1;
+    height: var(--jp-widgets-inline-height);
+    border: var(--jp-widgets-border-width) solid var(--jp-border-color1);
+    box-sizing: border-box;
+    align-self: stretch;
+}
+
 /* Play Widget */
 
 .widget-play {

@@ -11,6 +11,7 @@ export * from "./widget_button";
 export * from "./widget_box";
 export * from "./widget_image";
 export * from "./widget_color";
+export * from "./widget_date";
 export * from "./services-shim";
 export * from "./widget_int";
 export * from "./widget_float";
