@@ -48,7 +48,7 @@
   "devDependencies": {
     "@types/expect.js": "^0.3.29",
     "@types/mathjax": "0.0.31",
-    "@types/mocha": "^2.2.32",
+    "@types/mocha": "2.2.32",
     "@types/requirejs": "^2.1.28",
     "@types/sinon": "^1.16.31",
     "cpx": "^1.5.0",

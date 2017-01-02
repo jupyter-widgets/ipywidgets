@@ -18,7 +18,7 @@ describe("ManagerBase", function() {
 
     it('version_comm_target_name', function() {
         expect(this.managerBase.version_comm_target_name).to.equal('jupyter.widget.version');
-    });    
+    });
 
     it('get_state', function() {
         expect(this.managerBase.get_state).to.not.be(void 0);
