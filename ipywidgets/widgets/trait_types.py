@@ -47,27 +47,33 @@ def datetime_to_json(pydt, manager):
     Attributes of this dictionary are to be passed to the JavaScript Date
     constructor.
     """
-    return dict(
-        year=pydt.year,
-        month=pydt.month - 1,  # Months are 0-based indices in JS
-        date=pydt.day,
-        hours=pydt.hour,       # Hours, Minutes, Seconds and Milliseconds are
-        minutes=pydt.minute,   # plural in JS
-        seconds=pydt.second,
-        milliseconds=pydt.microsecond / 1000
-    )
+    if pydt is None:
+        return None
+    else:
+        return dict(
+            year=pydt.year,
+            month=pydt.month - 1,  # Months are 0-based indices in JS
+            date=pydt.day,
+            hours=pydt.hour,       # Hours, Minutes, Seconds and Milliseconds are
+            minutes=pydt.minute,   # plural in JS
+            seconds=pydt.second,
+            milliseconds=pydt.microsecond / 1000
+        )
 
 def datetime_from_json(js, manager):
     """Deserialize a Python datetime object from json"""
-    return dt.datetime(
-        js['year'],
-        js['month'] + 1,  # Months are 1-based in Python
-        js['date'],
-        js['hours'],
-        js['minutes'],
-        js['seconds'],
-        js['milliseconds'] * 1000
-    )
+    if js is None:
+        return None
+    else:
+        return dt.datetime(
+            js['year'],
+            js['month'] + 1,  # Months are 1-based in Python
+            js['date'],
+            js['hours'],
+            js['minutes'],
+            js['seconds'],
+            js['milliseconds'] * 1000
+        )
 
 datetime_serialization = {
     'from_json': datetime_from_json,

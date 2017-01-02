@@ -15,7 +15,7 @@ from traitlets import Unicode
 
 @register('Jupyter.DatePicker')
 class DatePicker(LabeledWidget, ValueWidget):
-    value = Datetime().tag(sync=True, **datetime_serialization)
+    value = Datetime(None, allow_none=True).tag(sync=True, **datetime_serialization)
 
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)

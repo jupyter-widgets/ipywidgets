@@ -9,53 +9,69 @@ import * as _ from 'underscore';
 
 export
 function serialize_datetime(value, manager) {
-    value = new Date(value);
-    return {
-        year: value.getFullYear(),
-        month: value.getMonth(),
-        date: value.getDate(),
-        hours: value.getHours(),
-        minutes: value.getMinutes(),
-        seconds: value.getSeconds(),
-        milliseconds: value.getMilliseconds()
-    };
+    if (value === null) {
+        return null;
+    } else {
+        value = new Date(value);
+        return {
+            year: value.getFullYear(),
+            month: value.getMonth(),
+            date: value.getDate(),
+            hours: value.getHours(),
+            minutes: value.getMinutes(),
+            seconds: value.getSeconds(),
+            milliseconds: value.getMilliseconds()
+        };
+    }
 };
 
 export
 function deserialize_datetime(value, manager) {
-    return new Date(
-        value.year,
-        value.month,
-        value.date,
-        value.hours,
-        value.minutes,
-        value.seconds,
-        value.milliseconds
-    );
+    if (value === null) {
+        return null;
+    } else {
+        return new Date(
+            value.year,
+            value.month,
+            value.date,
+            value.hours,
+            value.minutes,
+            value.seconds,
+            value.milliseconds
+        );
+    }
 };
 
 function createDateAsUTC(date) {
-    return new Date(
-        Date.UTC(
-            date.getFullYear(),
-            date.getMonth(),
-            date.getDate(),
-            date.getHours(),
-            date.getMinutes(),
-            date.getSeconds()
-        )
-    );
+    if (date === null) {
+        return null;
+    } else {
+        return new Date(
+            Date.UTC(
+                date.getFullYear(),
+                date.getMonth(),
+                date.getDate(),
+                date.getHours(),
+                date.getMinutes(),
+                date.getSeconds()
+            )
+        );
+    }
 }
 
 function convertDateToUTC(date) {
-    return new Date(
-        date.getUTCFullYear(),
-        date.getUTCMonth(),
-        date.getUTCDate(),
-        date.getUTCHours(),
-        date.getUTCMinutes(),
-        date.getUTCSeconds()
-    );
+    if (date === null) {
+        return null;
+    } else {
+        return new Date(
+            date.getUTCFullYear(),
+            date.getUTCMonth(),
+            date.getUTCDate(),
+            date.getUTCHours(),
+            date.getUTCMinutes(),
+            date.getUTCSeconds()
+        );
+    }
 }
 
 export
@@ -69,7 +85,7 @@ class DatePickerModel extends LabeledDOMWidgetModel {
 
     defaults() {
         return _.extend(super.defaults(), {
-            value: new Date(1900, 0, 1),
+            value: null,
             _model_name: 'DatePickerModel',
             _view_name: 'DatePickerView'
         });
