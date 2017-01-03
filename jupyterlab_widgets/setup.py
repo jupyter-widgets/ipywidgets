@@ -22,7 +22,9 @@ LONG_DESCRIPTION = """
 Interactive HTML Widgets
 ========================
 
-Interactive HTML widgets for JupyterLab notebooks.
+Interactive HTML widgets for JupyterLab notebooks. Since JupyterLab is in its
+pre-release stage, this package integrating widgets into JupyterLab should also
+be considered experimental.
 
 Usage
 =====

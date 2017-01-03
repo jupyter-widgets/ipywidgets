@@ -1,7 +1,9 @@
 Jupyter Widgets JupyterLab Extension
 ====================================
 
-A JupyterLab extension for Jupyter/IPython widgets.
+A JupyterLab extension for Jupyter/IPython widgets.  Since JupyterLab is in its
+pre-release stage, this package integrating widgets into JupyterLab should also
+be considered experimental.
 
 Package Install
 ---------------
