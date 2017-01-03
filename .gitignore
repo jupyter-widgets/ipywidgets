@@ -4,7 +4,6 @@ dist
 _build
 docs/man/*.gz
 docs/source/api/generated
-docs/gh-pages
 jupyter-js-widgets/src/components
 jupyter-js-widgets/lib/
 jupyter-js-widgets/docs/

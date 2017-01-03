@@ -836,8 +836,9 @@ ul.widget-dropdown-droplist.mod-active {
     flex-grow: 1;
     height: var(--jp-widgets-inline-height);
     border: var(--jp-widgets-border-width) solid var(--jp-border-color1);
+    font-size: var(--jp-widgets-font-size);
+    padding: var(--jp-widgets-input-padding);
     box-sizing: border-box;
-    align-self: stretch;
 }
 
 /* Play Widget */
