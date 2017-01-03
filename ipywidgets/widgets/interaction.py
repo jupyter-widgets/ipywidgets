@@ -20,7 +20,7 @@ except ImportError:
 from IPython.core.getipython import get_ipython
 from . import (ValueWidget, Text,
     FloatSlider, IntSlider, Checkbox, Dropdown,
-    Box, Button, DOMWidget, Output)
+    VBox, Button, DOMWidget, Output)
 from IPython.display import display, clear_output
 from ipython_genutils.py3compat import string_types, unicode_type
 from traitlets import HasTraits, Any, Unicode, observe
@@ -115,9 +115,9 @@ def _yield_abbreviations_for_parameter(param, kwargs):
             yield k, v, empty
 
 
-class interactive(Box):
+class interactive(VBox):
     """
-    A Box container containing a group of interactive widgets tied to a
+    A VBox container containing a group of interactive widgets tied to a
     function.
 
     Parameters
@@ -137,7 +137,7 @@ class interactive(Box):
     ``**kwargs``.
     """
     def __init__(self, __interact_f, __options={}, **kwargs):
-        Box.__init__(self, _dom_classes=['widget-interact'])
+        VBox.__init__(self, _dom_classes=['widget-interact'])
         self.result = None
         self.args = []
         self.kwargs = {}

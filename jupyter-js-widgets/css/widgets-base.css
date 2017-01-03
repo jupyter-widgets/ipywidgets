@@ -230,9 +230,8 @@
     font-size: var(--jp-widgets-font-size);
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
     line-height: var(--jp-widgets-inline-height);
-    max-width: var(--jp-widgets-inline-width);
+    /* white-space property unchanged to allow long captions in Label widget */
 }
 
 .widget-inline-hbox .widget-label {
@@ -241,12 +240,16 @@
     margin-right: var(--jp-widgets-inline-margin);
     max-width: var(--jp-widgets-inline-label-max-width);
     min-width: var(--jp-widgets-inline-label-min-width);
+    white-space: nowrap;
     flex-shrink: 0;
+    max-width: var(--jp-widgets-inline-width);
 }
 
 .widget-inline-vbox .widget-label {
     /* Vertical Widget Label */
+    white-space: nowrap;
     text-align: center;
+    max-width: var(--jp-widgets-inline-width);
 }
 
 /* Widget Readout Styling */
@@ -749,7 +752,6 @@ ul.widget-dropdown-droplist.mod-active {
 /* Toggle Buttons Styling */
 
 .widget-toggle-buttons {
-    height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
 }
 
