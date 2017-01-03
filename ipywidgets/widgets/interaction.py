@@ -267,38 +267,30 @@ class interactive(Box):
 
     def widget_from_abbrev(self, abbrev, default=empty):
         """Build a ValueWidget instance given an abbreviation or Widget."""
+        widget = None
         if isinstance(abbrev, ValueWidget) or isinstance(abbrev, fixed):
-            return abbrev
+            widget = abbrev
 
-        if isinstance(abbrev, tuple):
+        if widget is None and isinstance(abbrev, tuple):
             widget = self.widget_from_tuple(abbrev)
-            if default is not empty:
-                try:
-                    widget.value = default
-                except Exception:
-                    # ignore failure to set default
-                    pass
-            return widget
 
-        # Try single value
-        widget = self.widget_from_single_value(abbrev)
-        if widget is not None:
-            return widget
+        if widget is None:
+            # Try single value
+            widget = self.widget_from_single_value(abbrev)
 
-        # Something iterable (list, dict, generator, ...). Note that str and
-        # tuple should be handled before, that is why we check this case last.
-        if isinstance(abbrev, Iterable):
+        if widget is None and isinstance(abbrev, Iterable):
+            # Something iterable (list, dict, generator, ...). Note that str and
+            # tuple should be handled before, that is why we check this case last.
             widget = self.widget_from_iterable(abbrev)
-            if default is not empty:
-                try:
-                    widget.value = default
-                except Exception:
-                    # ignore failure to set default
-                    pass
-            return widget
 
-        # No idea...
-        return None
+        if isinstance(widget, ValueWidget) and default is not empty:
+            try:
+                widget.value = default
+            except Exception:
+                # ignore failure to set default
+                pass
+
+        return widget
 
     @staticmethod
     def widget_from_single_value(o):
