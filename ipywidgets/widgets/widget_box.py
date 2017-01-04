@@ -26,16 +26,6 @@ class Box(DOMWidget):
     # When a proper notifying-list trait exists, that is what should be used here.
     children = Tuple().tag(sync=True, **widget_serialization)
 
-    _overflow_values = ['visible', 'hidden', 'scroll', 'auto', 'initial', 'inherit', '']
-    overflow_x = CaselessStrEnum(
-        values=_overflow_values,
-        default_value='', help="""Specifies what happens to content that is too
-        large for the rendered region.""").tag(sync=True)
-    overflow_y = CaselessStrEnum(
-        values=_overflow_values,
-        default_value='', help="""Specifies what happens to content that is too
-        large for the rendered region.""").tag(sync=True)
-
     box_style = CaselessStrEnum(
         values=['success', 'info', 'warning', 'danger', ''], default_value='',
         help="""Use a predefined styling for the box.""").tag(sync=True)

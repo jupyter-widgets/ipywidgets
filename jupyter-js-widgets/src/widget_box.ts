@@ -75,9 +75,7 @@ class BoxModel extends DOMWidgetModel {
             _view_name: 'BoxView',
             _model_name: 'BoxModel',
             children: [],
-            box_style: '',
-            overflow_x: '',
-            overflow_y: ''
+            box_style: ''
         });
     }
 
@@ -242,8 +240,6 @@ class BoxView extends DOMWidgetView {
         this.listenTo(this.model, 'change:children', (model, value) => {
             this.children_views.update(value);
         });
-        this.listenTo(this.model, 'change:overflow_x', this.update_overflow_x);
-        this.listenTo(this.model, 'change:overflow_y', this.update_overflow_y);
         this.listenTo(this.model, 'change:box_style', this.update_box_style);
 
         this.pWidget.addClass('jupyter-widgets');
@@ -257,23 +253,7 @@ class BoxView extends DOMWidgetView {
     render() {
         super.render();
         this.children_views.update(this.model.get('children'));
-        this.update_overflow_x();
-        this.update_overflow_y();
         this.update_box_style();
-    }
-
-    /**
-     * Called when the x-axis overflow setting is changed.
-     */
-    update_overflow_x() {
-        this.pWidget.node.style.overflowX = this.model.get('overflow_x');
-    }
-
-    /**
-     * Called when the y-axis overflow setting is changed.
-     */
-    update_overflow_y() {
-        this.pWidget.node.style.overflowY = this.model.get('overflow_y');
     }
 
     update_box_style() {
@@ -286,11 +266,7 @@ class BoxView extends DOMWidgetView {
         this.update_mapped_classes(class_map, 'box_style');
     }
 
-    /**
-     * Called when a model is added to the children list.
-     */
     add_child_model(model) {
-
         // we insert a dummy element so the order is preserved when we add
         // the rendered content later.
         var dummy = new Widget();
@@ -312,6 +288,7 @@ class BoxView extends DOMWidgetView {
         this.children_views.dispose();
         super.remove()
     }
+
     children_views: any;
     pWidget: JupyterPhosphorPanelWidget;
 }
