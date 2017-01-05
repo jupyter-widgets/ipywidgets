@@ -123,6 +123,34 @@ class Widget(LoggingConfigurable):
     widgets = {}
     widget_types = {}
 
+    def __repr__(self):
+        """
+        Textual representation of this widget. This is meant for
+        testing and debugging.
+        """
+        # List of attributes to show with default values. The attribute
+        # is printed if it exists and its value is not equal to this
+        # default value.
+        attributes = [("value", None),
+                      ("min", None),
+                      ("max", None),
+                      ("step", None),
+                      ("options", None),
+                      ("description", ""),
+                      ("children", [])]
+        r = ""
+        for (attr, default) in attributes:
+            try:
+                v = getattr(self, attr)
+            except AttributeError:
+                continue
+            if default == v:
+                continue
+            if r:
+                r += ", "
+            r += attr + "=" + repr(v)
+        return "%s(%s)" % (type(self).__name__, r)
+
     @staticmethod
     def on_widget_constructed(callback):
         """Registers a callback to be called when a widget is constructed.
