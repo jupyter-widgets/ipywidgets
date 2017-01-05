@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
-set -e
-nbExtFlags="--sys-prefix $1"
 
+echo -n "Checking npm... "
 npm -v
-if [ $? -eq 0 ]; then
-    echo npm is installed
-else
+if [ $? -ne 0 ]; then
     echo "'npm -v' failed, therefore npm is not installed.  In order to perform a
     developer install of ipywidgets you must have both npm and pip installed on your
     machine! See http://blog.npmjs.org/post/85484771375/how-to-install-npm for
@@ -13,15 +10,27 @@ else
     exit 1
 fi
 
+echo -n "Checking pip... "
 pip --version
-if [ $? -eq 0 ]; then
-    echo pip is installed
-else
+if [ $? -ne 0 ]; then
     echo "'pip --version' failed, therefore pip is not installed. In order to perform
     a developer install of ipywidgets you must have both pip and npm installed on
     your machine! See https://packaging.python.org/installing/ for installation instructions."
     exit 1
 fi
+
+echo -n "Checking jupyter lab... "
+jupyter lab --version 2>/dev/null
+if [ $? -ne 0 ]; then
+    echo "no, skipping installation of jupyterlab_widgets"
+    skip_jupyter_lab=yes
+fi
+
+
+# All following commands must run successfully
+set -e
+
+nbExtFlags="--sys-prefix $1"
 
 cd jupyter-js-widgets
 npm install
@@ -38,26 +47,17 @@ fi
 jupyter nbextension enable --py $nbExtFlags widgetsnbextension
 cd ..
 
-jupyter lab --version
-if [ $? -eq 0 ]; then
-    echo jupyter lab is installed
-else
-    echo "'jupyter lab --version' failed, therefore jupyter lab is not installed. In order to
-    perform a developer install of jupyterlab_widgets you must have jupyter lab on
-    your machine! Install using 'pip install jupyterlab && jupyter labextension
-    install --py --sys-prefix jupyterlab && jupyter labextension
-    enable --py --sys-prefix jupyterlab' or follow instructions at https://github.com/jupyterlab/jupyterlab/blob/master/CONTRIBUTING.md#installing-jupyterlab for developer install."
-    exit 1
+if test "$skip_jupyter_lab" != yes; then
+    cd jupyterlab_widgets
+    npm install
+    pip install -v -e .
+    if [[ "$OSTYPE" == "msys" ]]; then
+        jupyter labextension install --overwrite --py $nbExtFlags jupyterlab_widgets
+    else
+        jupyter labextension install --overwrite --py --symlink $nbExtFlags jupyterlab_widgets
+    fi
+    jupyter labextension enable --py $nbExtFlags jupyterlab_widgets
+    cd ..
 fi
-cd jupyterlab_widgets
-npm install
-pip install -v -e .
-if [[ "$OSTYPE" == "msys" ]]; then
-    jupyter labextension install --overwrite --py $nbExtFlags jupyterlab_widgets
-else
-    jupyter labextension install --overwrite --py --symlink $nbExtFlags jupyterlab_widgets
-fi
-jupyter labextension enable --py $nbExtFlags jupyterlab_widgets
-cd ..
 
 pip install -v -e .
