@@ -201,3 +201,41 @@ The [widget-cookiecutter](https://github.com/jupyter/widget-cookiecutter)
 template project contains a template project for a custom widget library
 following the best practices for authoring widgets, which ensure that your
 custom widget library can render on nbviewer.
+
+## Using `jupyter-js-widgets` in web contexts
+
+The core `jupyter-js-widgets` library, the JavaScript package of ipywidgets is
+agnostic to the context in which it is used (Notebook, JupyterLab, static web
+page). For each context, we specialize the base widget manager implemented in
+`jupyter-js-widgets` to provide the logic for
+
+ - where widgets should be displayed,
+ - how to retrieve information about their state.
+
+Specifically:
+
+ - `widgetsnbextension` provides the implementation of a specialized widget
+   manager for the `Classic Notebook`, and the packaging logic as a notebook
+   extension.
+ - `jupyterlab_widgets` provides the implementation of a specialized widget
+   manager for the context of `JupyterLab`, and the packaging logic as a lab
+   extension.
+ - The embed manager implemented in `jupyter-js-widgets` is a specialization of
+   the base  widget manager used for the static embedding of widgets used by
+   the `Sphinx` extension, `nbviewer`, and the "Embed Widgets" command
+   discussed above.
+
+We provide additional examples of specializations of the base widget manager
+implementing other usages of `jupyter-js-widgets` in web contexts.
+
+1. The `web1` example is a simplistic example showcasing the use of
+   `jupyter-js-widgets` in a web context.
+2. The `web2` example is a simple example making use of the
+   `application/vnd.jupyter.widget-state+json` mime type.
+3. The `web3` example showcases how communication with a Jupyter kernel can
+   happen in a web context outside of the notebook or jupyterlab contexts.
+4. The `web4` example is a tests for the embed widget manager.
+5. The `web5` example makes use of the `tmpnb` service to spawn a Jupyter
+   server, request a kernel from this server and implement the same feature as
+   the `web3` example.
+
