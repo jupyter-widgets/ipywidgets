@@ -8,6 +8,7 @@ var widgets = require("jupyter-js-widgets");
 var saveState = require("./save_state");
 var embedWidgets = require("./embed_widgets");
 var version = require("../package.json").version;
+var output = require("./widget_output");
 
 //--------------------------------------------------------------------
 // WidgetManager class
@@ -124,6 +125,7 @@ WidgetManager._managers = []; /* List of widget managers */
 WidgetManager._load_callback = null;
 WidgetManager._save_callback = null;
 
+
 WidgetManager.register_widget_model = function (model_name, model_type) {
     /**
      * Registers a widget model by name.
@@ -178,6 +180,18 @@ WidgetManager.set_state_callbacks(function() {
         return Promise.resolve({});
     }
 });
+
+WidgetManager.prototype.loadClass = function(className, moduleName, moduleVersion, error) {
+    if (moduleName === "jupyter-js-widgets") {
+        if (className === "OutputModel" || className === "OutputView") {
+            return Promise.resolve(output[className]);
+        } else {
+            return Promise.resolve(widgets[className]);
+        }
+    } else {
+        return Object.getPrototypeOf(WidgetManager.prototype).loadClass.apply(this, arguments);
+    }
+}
 
 WidgetManager.prototype._handle_display_view = function (view) {
     /**
