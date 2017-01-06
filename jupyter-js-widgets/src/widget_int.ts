@@ -515,12 +515,17 @@ class ProgressModel extends BoundedIntModel {
 
 export
 class ProgressView extends LabeledDOMWidgetView {
+    initialize(parameters) {
+        super.initialize(parameters);
+        this.listenTo(this.model, 'change:bar_style', this.update_bar_style);
+        this.pWidget.addClass('jupyter-widgets');
+    }
+
     render() {
         super.render();
         var orientation = this.model.get('orientation');
-        var className = orientation === 'horizontal' ? 'widget-hprogress'
-            : 'widget-vprogress';
-        this.el.classList.add('jupyter-widgets');
+        var className = orientation === 'horizontal' ?
+            'widget-hprogress' : 'widget-vprogress';
         this.el.classList.add(className);
 
         this.progress = document.createElement('div');
@@ -537,9 +542,7 @@ class ProgressView extends LabeledDOMWidgetView {
 
         // Set defaults.
         this.update();
-
-        this.listenTo(this.model, 'change:bar_style', this.update_bar_style);
-        this.update_bar_style();
+        this.set_bar_style();
     }
 
     update() {
@@ -577,17 +580,22 @@ class ProgressView extends LabeledDOMWidgetView {
     }
 
     update_bar_style() {
-        var class_map = {
-            success: ['progress-bar-success'],
-            info: ['progress-bar-info'],
-            warning: ['progress-bar-warning'],
-            danger: ['progress-bar-danger']
-        };
-        this.update_mapped_classes(class_map, 'bar_style', this.bar);
+        this.update_mapped_classes(ProgressView.class_map, 'bar_style', this.bar);
+    }
+
+    set_bar_style() {
+        this.set_mapped_classes(ProgressView.class_map, 'bar_style', this.bar);
     }
 
     progress: HTMLDivElement;
     bar: HTMLDivElement;
+
+    static class_map = {
+        success: ['progress-bar-success'],
+        info: ['progress-bar-info'],
+        warning: ['progress-bar-warning'],
+        danger: ['progress-bar-danger']
+    };
 }
 
 export

@@ -45,10 +45,15 @@ class DropdownModel extends SelectionModel {
 export
 class DropdownView extends LabeledDOMWidgetView {
     initialize(options) {
+        super.initialize(options);
+
         this.onKeydown = this._handle_keydown.bind(this);
         this.onDismiss = this._handle_dismiss.bind(this);
         this.onHover = this._handle_hover.bind(this);
-        super.initialize(options);
+        this.listenTo(this.model, 'change:button_style', this.update_button_style);
+
+        this.pWidget.addClass('jupyter-widgets');
+        this.pWidget.addClass('widget-dropdown');
     }
 
     remove() {
@@ -58,10 +63,7 @@ class DropdownView extends LabeledDOMWidgetView {
 
     render() {
         super.render();
-
-        this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-inline-hbox');
-        this.el.classList.add('widget-dropdown');
 
         this.toggle = document.createElement('div');
         this.toggle.className = 'widget-dropdown-toggle';
@@ -84,14 +86,12 @@ class DropdownView extends LabeledDOMWidgetView {
         // container they were instantiated in.
         this.droplist = document.createElement('ul');
         this.droplist.className = 'widget-dropdown-droplist';
-        document.body.appendChild(this.droplist);
         this.droplist.addEventListener('click', this._handle_click.bind(this));
-
-        this.listenTo(this.model, 'change:button_style', this.update_button_style);
-        this.update_button_style();
+        document.body.appendChild(this.droplist);
 
         // Set defaults.
         this.update();
+        this.set_button_style();
     }
 
     /**
@@ -138,14 +138,11 @@ class DropdownView extends LabeledDOMWidgetView {
     }
 
     update_button_style() {
-        var class_map = {
-            primary: ['mod-primary'],
-            success: ['mod-success'],
-            info: ['mod-info'],
-            warning: ['mod-warning'],
-            danger: ['mod-danger']
-        };
-        this.update_mapped_classes(class_map, 'button_style', this.toggle);
+        this.update_mapped_classes(DropdownView.class_map, 'button_style', this.toggle);
+    }
+
+    set_button_style() {
+        this.set_mapped_classes(DropdownView.class_map, 'button_style', this.toggle);
     }
 
     events(): {[e: string]: string} {
@@ -430,6 +427,14 @@ class DropdownView extends LabeledDOMWidgetView {
     selected: HTMLDivElement;
     caret: HTMLSpanElement;
     check: HTMLSpanElement;
+
+    static class_map = {
+        primary: ['mod-primary'],
+        success: ['mod-success'],
+        info: ['mod-info'],
+        warning: ['mod-warning'],
+        danger: ['mod-danger']
+    };
 }
 
 export
@@ -552,6 +557,7 @@ class ToggleButtonsView extends LabeledDOMWidgetView {
     initialize(options) {
         this._css_state = {};
         super.initialize(options);
+        this.listenTo(this.model, 'change:button_style', this.update_button_style);
     }
 
     /**
@@ -567,9 +573,7 @@ class ToggleButtonsView extends LabeledDOMWidgetView {
         this.buttongroup = document.createElement('div');
         this.el.appendChild(this.buttongroup);
 
-        this.listenTo(this.model, 'change:button_style', this.update_button_style);
-        this.update_button_style();
-
+        this.set_button_style();
         this.update();
     }
 
@@ -669,10 +673,16 @@ class ToggleButtonsView extends LabeledDOMWidgetView {
     }
 
     update_button_style() {
-        var view = this;
         var buttons = this.buttongroup.querySelectorAll('button');
-        _.each(buttons, function(button) {
-            view.update_mapped_classes(ToggleButtonsView.classMap, 'button_style', button);
+        _.each(buttons, (button) => {
+            this.update_mapped_classes(ToggleButtonsView.classMap, 'button_style', button);
+        });
+    }
+
+    set_button_style() {
+        var buttons = this.buttongroup.querySelectorAll('button');
+        _.each(buttons, (button) => {
+            this.set_mapped_classes(ToggleButtonsView.classMap, 'button_style', button);
         });
     }
 

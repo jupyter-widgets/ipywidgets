@@ -866,6 +866,12 @@ class DOMWidgetView extends WidgetView {
         this.update_classes(old_classes, new_classes, el || this.el);
     }
 
+    set_mapped_classes(class_map, trait_name, el?) {
+        var key = this.model.get(trait_name);
+        var new_classes = class_map[key] ? class_map[key] : [];
+        this.update_classes([], new_classes, el || this.el);
+    }
+
     typeset(element, text){
         this.displayed.then(function() {utils.typeset(element, text);});
     }

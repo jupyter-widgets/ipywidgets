@@ -34,7 +34,7 @@ class ButtonView extends DOMWidgetView {
     render() {
         this.el.className = 'jupyter-widgets jupyter-button widget-button';
         this.listenTo(this.model, 'change:button_style', this.update_button_style);
-        this.update_button_style();
+        this.set_button_style();
         this.update(); // Set defaults.
     }
 
@@ -64,14 +64,11 @@ class ButtonView extends DOMWidgetView {
     }
 
     update_button_style() {
-        var class_map = {
-            primary: ['mod-primary'],
-            success: ['mod-success'],
-            info: ['mod-info'],
-            warning: ['mod-warning'],
-            danger: ['mod-danger']
-        };
-        this.update_mapped_classes(class_map, 'button_style');
+        this.update_mapped_classes(ButtonView.class_map, 'button_style');
+    }
+
+    set_button_style() {
+        this.set_mapped_classes(ButtonView.class_map, 'button_style');
     }
 
     /**
@@ -105,4 +102,12 @@ class ButtonView extends DOMWidgetView {
     }
 
     el: HTMLButtonElement;
+
+    static class_map = {
+        primary: ['mod-primary'],
+        success: ['mod-success'],
+        info: ['mod-info'],
+        warning: ['mod-warning'],
+        danger: ['mod-danger']
+    };
 }

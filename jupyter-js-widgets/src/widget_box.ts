@@ -253,17 +253,15 @@ class BoxView extends DOMWidgetView {
     render() {
         super.render();
         this.children_views.update(this.model.get('children'));
-        this.update_box_style();
+        this.set_box_style();
     }
 
     update_box_style() {
-        var class_map = {
-            success: ['alert', 'alert-success'],
-            info: ['alert', 'alert-info'],
-            warning: ['alert', 'alert-warning'],
-            danger: ['alert', 'alert-danger']
-        };
-        this.update_mapped_classes(class_map, 'box_style');
+        this.update_mapped_classes(BoxView.class_map, 'box_style');
+    }
+
+    set_box_style() {
+        this.set_mapped_classes(BoxView.class_map, 'box_style');
     }
 
     add_child_model(model) {
@@ -291,6 +289,13 @@ class BoxView extends DOMWidgetView {
 
     children_views: any;
     pWidget: JupyterPhosphorPanelWidget;
+
+    static class_map = {
+        success: ['alert', 'alert-success'],
+        info: ['alert', 'alert-info'],
+        warning: ['alert', 'alert-warning'],
+        danger: ['alert', 'alert-danger']
+    };
 }
 
 export
