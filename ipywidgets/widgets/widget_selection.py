@@ -13,6 +13,7 @@ except ImportError:  #python3.x
 
 from .domwidget import LabeledWidget
 from .valuewidget import ValueWidget
+from .widget_core import CoreWidget
 from .widget import register
 from traitlets import (Unicode, Bool, Any, Dict, TraitError, CaselessStrEnum,
                        Tuple, List, Union, observe, validate)
@@ -40,7 +41,7 @@ def _label_to_value(k, obj):
     return obj._options_dict[k]
 
 
-class _Selection(LabeledWidget, ValueWidget):
+class _Selection(LabeledWidget, ValueWidget, CoreWidget):
     """Base class for Selection widgets
 
     ``options`` can be specified as a list of values, list of (label, value)

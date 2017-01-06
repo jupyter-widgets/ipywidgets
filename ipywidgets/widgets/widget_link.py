@@ -7,6 +7,8 @@ Propagate changes between widgets on the javascript side.
 # Distributed under the terms of the Modified BSD License.
 
 from .widget import Widget, register, widget_serialization
+from .widget_core import CoreWidget
+
 from traitlets import Unicode, Tuple, List,Instance, TraitError
 
 
@@ -31,7 +33,7 @@ class WidgetTraitTuple(Tuple):
 
 
 @register('jupyter.Link')
-class Link(Widget):
+class Link(CoreWidget):
     """Link Widget
 
     source: a (Widget, 'trait_name') tuple for the source trait

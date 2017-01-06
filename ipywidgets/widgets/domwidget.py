@@ -40,6 +40,7 @@ class DOMWidget(Widget):
             self._dom_classes = [c for c in self._dom_classes if c != className]
         return self
 
+
 class LabeledWidget(DOMWidget):
     """Widget that has a description label to the side."""
 

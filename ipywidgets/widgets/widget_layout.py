@@ -3,11 +3,11 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from .widget import Widget, register
 from traitlets import Unicode, Instance
+from .widget_core import CoreWidget
 
 
-class Layout(Widget):
+class Layout(CoreWidget):
     """Layout specification
 
     Defines a layout that can be expressed using CSS.  Supports a subset of
@@ -53,6 +53,7 @@ class Layout(Widget):
     top = Unicode(None, allow_none=True).tag(sync=True)
     visibility = Unicode(None, allow_none=True).tag(sync=True)
     width = Unicode(None, allow_none=True).tag(sync=True)
+
 
 class LayoutTraitType(Instance):
 

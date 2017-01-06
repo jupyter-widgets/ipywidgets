@@ -7,13 +7,15 @@ Represents a widget that can be used to display output within the widget area.
 # Distributed under the terms of the Modified BSD License.
 
 from .domwidget import DOMWidget
+from .widget_core import CoreWidget
+
 import sys
 from traitlets import Unicode
 from IPython.display import clear_output
 from IPython import get_ipython
 
 
-class Output(DOMWidget):
+class Output(DOMWidget, CoreWidget):
     """Widget used as a context manager to display output.
 
     This widget can capture and display stdout, stderr, and rich output.  To use

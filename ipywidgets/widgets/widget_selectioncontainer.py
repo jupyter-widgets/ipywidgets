@@ -8,11 +8,12 @@ pages.
 # Distributed under the terms of the Modified BSD License.
 
 from .widget_box import Box, register
+from .widget_core import CoreWidget
 from traitlets import Unicode, Dict, CInt
 from ipython_genutils.py3compat import unicode_type
 
 
-class _SelectionContainer(Box):
+class _SelectionContainer(Box, CoreWidget):
     """Base class used to display multiple child widgets."""
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)

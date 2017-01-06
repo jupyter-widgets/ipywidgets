@@ -9,12 +9,14 @@ Represents an unbounded float using a widget.
 from .domwidget import LabeledWidget
 from .valuewidget import ValueWidget
 from .widget import register
+from .widget_core import CoreWidget
 from .trait_types import Color
-from traitlets import (Unicode, CFloat, Bool, Int, CaselessStrEnum,
-                       Tuple, TraitError, validate)
+from traitlets import (
+    Unicode, CFloat, Bool, Int, CaselessStrEnum, Tuple, TraitError, validate
+)
 
 
-class _Float(LabeledWidget, ValueWidget):
+class _Float(LabeledWidget, ValueWidget, CoreWidget):
     value = CFloat(0.0, help="Float value").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 

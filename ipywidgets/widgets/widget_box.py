@@ -8,13 +8,14 @@ Represents a container that can be used to group other widgets.
 
 from .widget import register, widget_serialization
 from .domwidget import DOMWidget
+from .widget_core import CoreWidget
 from .widget_layout import Layout
 from traitlets import Unicode, Tuple, Int, CaselessStrEnum, Instance, default
 from warnings import warn
 
 
 @register('Jupyter.Box')
-class Box(DOMWidget):
+class Box(DOMWidget, CoreWidget):
     """Displays multiple widgets in a group."""
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
@@ -55,7 +56,7 @@ class HBox(Box):
 
 
 @register('Jupyter.Proxy')
-class Proxy(DOMWidget):
+class Proxy(DOMWidget, CoreWidget):
     """A DOMWidget that holds another DOMWidget or nothing."""
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
