@@ -44,6 +44,14 @@ function loadInlineWidgets(event) {
             renderInlineWidgets(event);
         });
     } else {
+        // Define jupyter-js-widget requirejs module
+        //
+        // (This is needed for custom widget model to be able to AMD require jupyter-js-widgets.)
+        if (!(window as any).requirejs.defined('jupyter-js-widgets')) {
+            (window as any).define('jupyter-js-widgets', function () {
+                return widgets;
+            });
+        }
         // Render inline widgets
         renderInlineWidgets(event);
     }
