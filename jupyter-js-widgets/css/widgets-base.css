@@ -694,19 +694,25 @@ ul.widget-dropdown-droplist.mod-active {
     line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-select select {
+.widget-select .jp-Dialog-selectWrapper {
+    border: var(--jp-border-width) solid var(--jp-border-color1);
+    border-radius: 0;
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
-    border: var(--jp-border-width) solid var(--jp-border-color1);
-    -webkit-appearance: menulist;
-    border-radius: 0;
-    /*outline: none;*/
-    background-color: var(--jp-layout-color1);
-    color: var(--jp-ui-font-color1);
     min-width: var(--jp-widgets-inline-width-short);
     max-width: var(--jp-widgets-inline-width);
-    font-size: var(--jp-widgets-font-size);
     flex-grow: 1;
+    background-color: var(--jp-layout-color1);
+}
+
+.widget-select select {
+    border: none;
+    background-color: var(--jp-layout-color1);
+    color: var(--jp-ui-font-color1);
+    font-size: var(--jp-widgets-font-size);
+    width: 100%;
+    height: calc(var(--jp-widgets-inline-height) - 2 * var(--jp-border-width));
+    vertical-align: top;
 }
 
 .widget-select select option:checked {
