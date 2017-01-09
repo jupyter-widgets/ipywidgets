@@ -66,9 +66,8 @@ var OutputView = widgets.DOMWidgetView.extend({
     },
 
     render: function(){
-        requirejs(["notebook"], (function(notebookApp) {
-            var outputarea = notebookApp["notebook/js/outputarea"];
-            this.output_area = new outputarea.OutputArea({
+        let renderOutput = (outputArea) => {
+            this.output_area = new outputArea.OutputArea({
                 selector: this.el,
                 config: this.options.cell.config,
                 prompt_area: false,
@@ -89,8 +88,18 @@ var OutputView = widgets.DOMWidgetView.extend({
             this.model._outputs.forEach(function(msg) {
                 this.output_area.handle_output(msg);
             }, this)
+        }
 
-        }).bind(this));
+        if (requirejs.defined("notebook/js/outputarea")) {
+            // Notebook 4.x
+            requirejs(["notebook/js/outputarea"], renderOutput)
+        } else {
+            // Notebook 5.x
+            requirejs(["notebook"], (notebookApp) => {
+                var outputArea = notebookApp["notebook/js/outputarea"];
+                renderOutput(outputArea);
+            });
+        }
     },
 });
 
