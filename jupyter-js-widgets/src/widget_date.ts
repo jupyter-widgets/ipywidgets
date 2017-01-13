@@ -3,7 +3,7 @@
 
 import {
     LabeledDOMWidgetModel, LabeledDOMWidgetView
-} from './widget';
+} from './widget_core';
 
 import * as _ from 'underscore';
 

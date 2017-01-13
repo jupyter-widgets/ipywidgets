@@ -2,13 +2,19 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetModel, DOMWidgetView, unpack_models, ViewList
+    CoreDOMWidgetModel
+} from './widget_core';
+
+import {
+    DOMWidgetView, unpack_models, ViewList
 } from './widget';
+
 import * as _ from 'underscore';
+
 import * as utils from './utils';
 
 export
-class ControllerButtonModel extends DOMWidgetModel {
+class ControllerButtonModel extends CoreDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'ControllerButtonModel',
@@ -62,7 +68,7 @@ class ControllerButtonView extends DOMWidgetView {
 
 
 export
-class ControllerAxisModel extends DOMWidgetModel {
+class ControllerAxisModel extends CoreDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'ControllerAxisModel',
@@ -119,11 +125,11 @@ class ControllerAxisView extends DOMWidgetView {
 }
 
 export
-class ControllerModel extends DOMWidgetModel {
+class ControllerModel extends CoreDOMWidgetModel {
     static serializers = _.extend({
         buttons: {deserialize: unpack_models},
         axes: {deserialize: unpack_models}
-    }, DOMWidgetModel.serializers)
+    }, CoreDOMWidgetModel.serializers)
 
     defaults() {
         return _.extend(super.defaults(), {

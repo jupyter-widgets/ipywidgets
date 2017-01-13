@@ -2,8 +2,12 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetModel, DOMWidgetView, unpack_models, ViewList, JupyterPhosphorWidget
+    DOMWidgetView, unpack_models, ViewList, JupyterPhosphorWidget
 } from './widget';
+
+import {
+    CoreDOMWidgetModel
+} from './widget_core';
 
 import {
     reject
@@ -70,7 +74,7 @@ class JupyterPhosphorPanelWidget extends Panel {
 
 
 export
-class BoxModel extends DOMWidgetModel {
+class BoxModel extends CoreDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             _view_name: 'BoxView',
@@ -82,7 +86,7 @@ class BoxModel extends DOMWidgetModel {
 
     static serializers = _.extend({
         children: {deserialize: unpack_models}
-    }, DOMWidgetModel.serializers)
+    }, CoreDOMWidgetModel.serializers)
 }
 
 export
@@ -106,7 +110,7 @@ class VBoxModel extends BoxModel {
 }
 
 export
-class ProxyModel extends DOMWidgetModel {
+class ProxyModel extends CoreDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             _view_name: 'ProxyView',
@@ -117,7 +121,7 @@ class ProxyModel extends DOMWidgetModel {
 
     static serializers = _.extend({
         child: {deserialize: unpack_models}
-    }, DOMWidgetModel.serializers);
+    }, CoreDOMWidgetModel.serializers);
 }
 
 export
