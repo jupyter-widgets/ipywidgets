@@ -391,24 +391,24 @@ class DropdownView extends LabeledDOMWidgetView {
         // If the drop list fits below, render below.
         if (droplistRect.height <= availableHeightBelow) {
             top = buttongroupRect.bottom;
-            this.droplist.style.top = Math.ceil(top) + 'px';
+            this.droplist.style.top = top + 'px';
             this.droplist.classList.add('below');
             this.droplist.classList.remove('above');
         // If the drop list fits above, render above.
         } else if (droplistRect.height <= availableHeightAbove) {
             top = buttongroupRect.top - droplistRect.height;
-            this.droplist.style.top = Math.floor(top) + 'px';
+            this.droplist.style.top = top + 'px';
             this.droplist.classList.remove('below');
             this.droplist.classList.add('above');
         // Otherwise, render in whichever has more space, above or below.
         } else if (availableHeightBelow >= availableHeightAbove) {
             top = buttongroupRect.bottom;
-            this.droplist.style.top = Math.ceil(top) + 'px';
+            this.droplist.style.top = top + 'px';
             this.droplist.classList.add('below');
             this.droplist.classList.remove('above');
         } else {
             top = buttongroupRect.top - droplistRect.height;
-            this.droplist.style.top = Math.floor(top) + 'px';
+            this.droplist.style.top = top + 'px';
             this.droplist.classList.remove('below');
             this.droplist.classList.add('above');
         }
