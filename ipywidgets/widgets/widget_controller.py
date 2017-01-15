@@ -31,7 +31,7 @@ class Axis(ValueWidget):
 
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _view_name = Unicode('ControllerAxisView').tag(sync=True)
+    _view_name = Unicode('IntSliderView').tag(sync=True)
     _model_name = Unicode('ControllerAxisModel').tag(sync=True)
 
 

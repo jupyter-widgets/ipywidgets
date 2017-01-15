@@ -212,7 +212,7 @@ class IntSliderView extends LabeledDOMWidgetView {
      * @return {string}
      */
     valueToString(value) {
-        var format = this.model.readout_formatter;
+        var format = this.model.readout_formatter || ((v) => v.toString());
         if (this.model.get('_range')) {
             return value.map(function (v) {
                 return format(v);

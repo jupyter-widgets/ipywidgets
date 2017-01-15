@@ -66,7 +66,13 @@ class ControllerAxisModel extends DOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'ControllerAxisModel',
-            _view_name: 'ControllerAxisView',
+            _view_name: 'IntSliderView',
+            orientation: 'vertical',
+            min: -1.0,
+            max: 1.0,
+            description: '',
+            readout_format: '.2f',
+            disabled: true,
             value: 0.0
         });
     }
