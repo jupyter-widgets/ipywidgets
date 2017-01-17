@@ -29,6 +29,15 @@ var WidgetArea = function(cell) {
     cell.notebook.events.on('kernel_killed.Kernel', died);
     cell.notebook.events.on('kernel_restarting.Kernel', died);
     cell.notebook.events.on('kernel_dead.Kernel', died);
+
+    cell.events.on('resize.Cell', function(event, options) {
+        if (options.cell !== that._cell) {
+            return;
+        }
+        that.widget_views.forEach(function(view) {
+            messaging.sendMessage(view.pWidget, widgets.ResizeMessage.UnknownSize);
+        });
+    });
 };
 
 /**
