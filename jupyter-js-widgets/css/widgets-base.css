@@ -69,17 +69,14 @@
 .widget-box {
     box-sizing: border-box;
     display: flex;
+    margin: 0;
 }
 
 .widget-hbox {
-    box-sizing: border-box;
-    display: flex;
     flex-direction: row;
 }
 
 .widget-vbox {
-    box-sizing: border-box;
-    display: flex;
     flex-direction: column;
 }
 
