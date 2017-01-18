@@ -923,13 +923,14 @@ class LabeledDOMWidgetView extends DOMWidgetView {
     }
 
     updateDescription() {
-        var description = this.model.get('description');
+        let description = this.model.get('description');
         if (description.length === 0) {
             this.label.style.display = 'none';
         } else {
             this.typeset(this.label, description);
             this.label.style.display = '';
         }
+        this.label.title = description;
     }
 
     label: HTMLDivElement;
