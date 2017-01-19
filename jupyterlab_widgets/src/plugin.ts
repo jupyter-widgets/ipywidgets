@@ -47,7 +47,7 @@ class NBWidgetExtension implements INBWidgetExtension {
    * Create a new extension object.
    */
   createNew(nb: NotebookPanel, context: DocumentRegistry.IContext<INotebookModel>): IDisposable {
-    let wManager = new WidgetManager(context, nb.content.rendermime);
+    let wManager = new WidgetManager(context, nb.rendermime);
     wManager.register({
       name: 'jupyter-js-widgets',
       version: widgets.version,
@@ -57,7 +57,7 @@ class NBWidgetExtension implements INBWidgetExtension {
     this._registry.forEach(data => wManager.register(data));
     let wRenderer = new WidgetRenderer(wManager);
 
-    nb.content.rendermime.addRenderer(WIDGET_MIMETYPE, wRenderer, 0);
+    nb.rendermime.addRenderer(WIDGET_MIMETYPE, wRenderer, 0);
     return new DisposableDelegate(() => {
       if (nb.rendermime) {
         nb.rendermime.removeRenderer(WIDGET_MIMETYPE);
