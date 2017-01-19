@@ -125,7 +125,8 @@ class OutputView extends DOMWidgetView {
    */
   render() {
     this._outputView = new OutputAreaWidget({
-      rendermime: this.model.widget_manager.rendermime
+      rendermime: this.model.widget_manager.rendermime,
+      contentFactory: OutputAreaWidget.defaultContentFactory
     });
     this._outputView.model = this.model.outputs;
     this._outputView.trusted = true;
