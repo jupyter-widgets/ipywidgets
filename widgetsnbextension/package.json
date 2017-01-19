@@ -23,7 +23,7 @@
   "homepage": "https://github.com/ipython/ipywidgets#readme",
   "dependencies": {
     "backbone": "^1.2.3",
-    "jupyter-js-widgets": "^2.0.22",
+    "jupyter-js-widgets": "~2.0.23",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
