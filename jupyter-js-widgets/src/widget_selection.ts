@@ -32,6 +32,108 @@ class SelectionModel extends LabeledDOMWidgetModel {
 }
 
 export
+class SelectModel extends SelectionModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'SelectModel',
+            _view_name: 'SelectView'
+        });
+    }
+}
+
+export
+class SelectView extends LabeledDOMWidgetView {
+    /**
+     * Called when view is rendered.
+     */
+    render() {
+        super.render();
+
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-inline-hbox');
+        this.el.classList.add('widget-select');
+
+        var selectWrapper = document.createElement('div');
+        selectWrapper.className = 'jp-Dialog-selectWrapper';
+        this.listbox = document.createElement('select');
+        selectWrapper.appendChild(this.listbox)
+        this.el.appendChild(selectWrapper);
+        this.update();
+    }
+
+    /**
+     * Update the contents of this view
+     *
+     * Called when the model is changed.  The model may have been
+     * changed by another view or by a state update from the back-end.
+     */
+    update(options?) {
+        var view = this;
+        var items = this.model.get('_options_labels');
+        var selectoptions: any = _.pluck(this.listbox.options, 'value');
+        var stale = false;
+
+        for (var i = 0, len = items.length; i < len; ++i) {
+            if (selectoptions[i] !== items[i]) {
+                stale = true;
+                break;
+            }
+        }
+
+        if (stale && (options === undefined || options.updated_view !== this)) {
+            // Add items to the DOM.
+            this.listbox.textContent = '';
+
+            _.each(items, function(item: any, index) {
+                var item_query = 'option[data-value="' +
+                    encodeURIComponent(item) + '"]';
+                var item_exists = view.listbox
+                    .querySelectorAll(item_query).length !== 0;
+                var option;
+                if (!item_exists) {
+                    option = document.createElement('option');
+                    option.textContent = item.replace ?
+                        item.replace(/ /g, '\xa0') : item;
+                    option.setAttribute('data-value', encodeURIComponent(item));
+                    option.value = item;
+                    view.listbox.appendChild(option);
+                }
+            });
+
+            // Disable listbox if needed
+            this.listbox.disabled = this.model.get('disabled');
+
+            // Select the correct element
+            var value = view.model.get('value');
+            view.listbox.selectedIndex = items.indexOf(value);
+
+        }
+        return super.update(options);
+    }
+
+    events(): {[e: string]: string} {
+        return {
+            'change select': '_handle_change'
+        }
+    }
+
+    /**
+     * Handle when a new value is selected.
+     *
+     * Calling model.set will trigger all of the other views of the
+     * model to update.
+     */
+    _handle_change() {
+        let value = this.listbox.options[this.listbox.selectedIndex].value;
+        this.model.set('value', value, {updated_view: this});
+        this.touch();
+    }
+
+    listbox: HTMLSelectElement;
+}
+
+
+export
 class DropdownModel extends SelectionModel {
     defaults() {
         return _.extend(super.defaults(), {
@@ -42,8 +144,19 @@ class DropdownModel extends SelectionModel {
     }
 }
 
+// TODO: Make a phosphor dropdown control, wrapped in DropdownView. Also, fix
+// bugs in keyboard handling. See
+// https://github.com/ipython/ipywidgets/issues/1055 and
+// https://github.com/ipython/ipywidgets/issues/1049
+// For now, we subclass SelectView below to provide DropdownView
+
+
+// See the comment above DropdownViewNew
 export
-class DropdownView extends LabeledDOMWidgetView {
+class DropdownView extends SelectView {}
+
+
+class DropdownViewNew extends LabeledDOMWidgetView {
     initialize(options) {
         super.initialize(options);
 
@@ -138,11 +251,11 @@ class DropdownView extends LabeledDOMWidgetView {
     }
 
     update_button_style() {
-        this.update_mapped_classes(DropdownView.class_map, 'button_style', this.toggle);
+        this.update_mapped_classes(DropdownViewNew.class_map, 'button_style', this.toggle);
     }
 
     set_button_style() {
-        this.set_mapped_classes(DropdownView.class_map, 'button_style', this.toggle);
+        this.set_mapped_classes(DropdownViewNew.class_map, 'button_style', this.toggle);
     }
 
     events(): {[e: string]: string} {
@@ -720,107 +833,6 @@ namespace ToggleButtonsView {
     };
 }
 
-
-export
-class SelectModel extends SelectionModel {
-    defaults() {
-        return _.extend(super.defaults(), {
-            _model_name: 'SelectModel',
-            _view_name: 'SelectView'
-        });
-    }
-}
-
-export
-class SelectView extends LabeledDOMWidgetView {
-    /**
-     * Called when view is rendered.
-     */
-    render() {
-        super.render();
-
-        this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-inline-hbox');
-        this.el.classList.add('widget-select');
-
-        var selectWrapper = document.createElement('div');
-        selectWrapper.className = 'jp-Dialog-selectWrapper';
-        this.listbox = document.createElement('select');
-        selectWrapper.appendChild(this.listbox)
-        this.el.appendChild(selectWrapper);
-        this.update();
-    }
-
-    /**
-     * Update the contents of this view
-     *
-     * Called when the model is changed.  The model may have been
-     * changed by another view or by a state update from the back-end.
-     */
-    update(options?) {
-        var view = this;
-        var items = this.model.get('_options_labels');
-        var selectoptions: any = _.pluck(this.listbox.options, 'value');
-        var stale = false;
-
-        for (var i = 0, len = items.length; i < len; ++i) {
-            if (selectoptions[i] !== items[i]) {
-                stale = true;
-                break;
-            }
-        }
-
-        if (stale && (options === undefined || options.updated_view !== this)) {
-            // Add items to the DOM.
-            this.listbox.textContent = '';
-
-            _.each(items, function(item: any, index) {
-                var item_query = 'option[data-value="' +
-                    encodeURIComponent(item) + '"]';
-                var item_exists = view.listbox
-                    .querySelectorAll(item_query).length !== 0;
-                var option;
-                if (!item_exists) {
-                    option = document.createElement('option');
-                    option.textContent = item.replace ?
-                        item.replace(/ /g, '\xa0') : item;
-                    option.setAttribute('data-value', encodeURIComponent(item));
-                    option.value = item;
-                    view.listbox.appendChild(option);
-                }
-            });
-
-            // Disable listbox if needed
-            this.listbox.disabled = this.model.get('disabled');
-
-            // Select the correct element
-            var value = view.model.get('value');
-            view.listbox.selectedIndex = items.indexOf(value);
-
-        }
-        return super.update(options);
-    }
-
-    events(): {[e: string]: string} {
-        return {
-            'change select': '_handle_change'
-        }
-    }
-
-    /**
-     * Handle when a new value is selected.
-     *
-     * Calling model.set will trigger all of the other views of the
-     * model to update.
-     */
-    _handle_change() {
-        let value = this.listbox.options[this.listbox.selectedIndex].value;
-        this.model.set('value', value, {updated_view: this});
-        this.touch();
-    }
-
-    listbox: HTMLSelectElement;
-}
 
 export
 class SelectionSliderModel extends SelectionModel {
