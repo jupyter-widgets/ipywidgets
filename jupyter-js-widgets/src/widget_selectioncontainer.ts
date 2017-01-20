@@ -226,10 +226,7 @@ class AccordionView extends DOMWidgetView {
     }
 
     remove() {
-        if (this.pWidget.isAttached) {
-            Widget.detach(this.pWidget);
-        }
-        this.children_views.dispose();
+        this.children_views = null;
         super.remove();
     }
 
@@ -420,10 +417,7 @@ class TabView extends DOMWidgetView {
     }
 
     remove() {
-        if (this.pWidget.isAttached) {
-            Widget.detach(this.pWidget);
-        }
-        this.childrenViews.dispose();
+        this.childrenViews = null;
         super.remove();
     }
 
