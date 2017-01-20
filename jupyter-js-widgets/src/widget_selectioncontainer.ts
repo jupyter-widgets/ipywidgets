@@ -230,7 +230,7 @@ class AccordionView extends DOMWidgetView {
         super.remove();
     }
 
-    children_views: ViewList;
+    children_views: ViewList<DOMWidgetView>;
     pWidget: Accordion;
     updatingChildren: boolean;
 }
@@ -439,7 +439,7 @@ class TabView extends DOMWidgetView {
     }
 
     updatingTabs: boolean = false;
-    childrenViews: ViewList;
+    childrenViews: ViewList<DOMWidgetView>;
     tabBar: TabBar;
     tabContents: Panel;
     pWidget: JupyterPhosphorTabPanelWidget;

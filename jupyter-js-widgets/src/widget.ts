@@ -557,17 +557,17 @@ class LabeledDOMWidgetModel extends DOMWidgetModel {
  *   will be called in that context.
  */
 export
-class ViewList {
-    constructor(create_view, remove_view, context) {
+class ViewList<T> {
+    constructor(create_view: (model: any, index: any) => T | Promise<T>, remove_view: (view: T) => void, context) {
         this.initialize(create_view, remove_view, context);
     }
 
-    initialize(create_view, remove_view, context) {
+    initialize(create_view: (model: any, index: any) => T | Promise<T>, remove_view: (view: T) => void, context) {
         this._handler_context = context || this;
         this._models = [];
         this.views = []; // list of promises for views
         this._create_view = create_view;
-        this._remove_view = remove_view || function(view) {view.remove();};
+        this._remove_view = remove_view || function(view) {(view as any).remove();};
     }
 
     /**
@@ -577,21 +577,21 @@ class ViewList {
      * if you want to perform some action on the list of views, do something like
      * `Promise.all(myviewlist.views).then(function(views) {...});`
      */
-    update(new_models, create_view?, remove_view?, context?) {
-        var remove = remove_view || this._remove_view;
-        var create = create_view || this._create_view;
+    update(new_models, create_view?: (model: any, index: any) => T | Promise<T>, remove_view?: (view: T) => void, context?): Promise<T[]> {
+        let remove = remove_view || this._remove_view;
+        let create = create_view || this._create_view;
         context = context || this._handler_context;
-        var i = 0;
+        let i = 0;
         // first, skip past the beginning of the lists if they are identical
         for (; i < new_models.length; i++) {
             if (i >= this._models.length || new_models[i] !== this._models[i]) {
                 break;
             }
         }
-        var first_removed = i;
+        let first_removed = i;
         // Remove the non-matching items from the old list.
-        var removed = this.views.splice(first_removed, this.views.length-first_removed);
-        for (var j = 0; j < removed.length; j++) {
+        let removed = this.views.splice(first_removed, this.views.length-first_removed);
+        for (let j = 0; j < removed.length; j++) {
             removed[j].then(function(view) {
                 remove.call(context, view);
             });
@@ -603,6 +603,8 @@ class ViewList {
         }
         // make a copy of the input array
         this._models = new_models.slice();
+        // return a promise that resolves to all of the resolved views
+        return Promise.all(this.views);
     }
 
     /**
@@ -610,7 +612,7 @@ class ViewList {
      * that should be faster
      * returns a promise that resolves after this removal is done
      */
-    remove(): any {
+    remove(): Promise<void> {
         return Promise.all(this.views).then((views) => {
             views.forEach((value) => this._remove_view.call(this._handler_context, value));
             this.views = [];
@@ -626,16 +628,16 @@ class ViewList {
      * asynchronous. Use this in cases where child views will be removed in
      * another way.
      */
-    dispose(): any {
-        this.views = [];
-        this._models = [];
+    dispose(): void {
+        this.views = null;
+        this._models = null;
     }
 
     _handler_context: any;
     _models: any[];
-    views: any[];
-    _create_view: Function;
-    _remove_view: Function;
+    views: Promise<T>[];
+    _create_view: (model: any, index: any) => T | Promise<T>;
+    _remove_view: (view: T) => void;
 }
 
 
