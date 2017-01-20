@@ -814,10 +814,7 @@ class SelectView extends LabeledDOMWidgetView {
      * model to update.
      */
     _handle_change() {
-        // TODO: typecasting not needed in Typescript 2.0
-        // (see https://github.com/Microsoft/TypeScript/issues/9334 and
-        // https://github.com/Microsoft/TypeScript/issues/8220)
-        var value = (this.listbox.options[this.listbox.selectedIndex] as HTMLOptionElement).value;
+        let value = this.listbox.options[this.listbox.selectedIndex].value;
         this.model.set('value', value, {updated_view: this});
         this.touch();
     }
