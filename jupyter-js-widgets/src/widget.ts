@@ -577,21 +577,21 @@ class ViewList<T> {
      * if you want to perform some action on the list of views, do something like
      * `Promise.all(myviewlist.views).then(function(views) {...});`
      */
-    update(new_models, create_view?, remove_view?, context?) {
-        var remove = remove_view || this._remove_view;
-        var create = create_view || this._create_view;
+    update(new_models, create_view?: (model: any, index: any) => T | Promise<T>, remove_view?: (view: T) => void, context?): Promise<T[]> {
+        let remove = remove_view || this._remove_view;
+        let create = create_view || this._create_view;
         context = context || this._handler_context;
-        var i = 0;
+        let i = 0;
         // first, skip past the beginning of the lists if they are identical
         for (; i < new_models.length; i++) {
             if (i >= this._models.length || new_models[i] !== this._models[i]) {
                 break;
             }
         }
-        var first_removed = i;
+        let first_removed = i;
         // Remove the non-matching items from the old list.
-        var removed = this.views.splice(first_removed, this.views.length-first_removed);
-        for (var j = 0; j < removed.length; j++) {
+        let removed = this.views.splice(first_removed, this.views.length-first_removed);
+        for (let j = 0; j < removed.length; j++) {
             removed[j].then(function(view) {
                 remove.call(context, view);
             });
@@ -603,6 +603,8 @@ class ViewList<T> {
         }
         // make a copy of the input array
         this._models = new_models.slice();
+        // return a promise that resolves to all of the resolved views
+        return Promise.all(this.views);
     }
 
     /**

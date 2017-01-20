@@ -14,7 +14,7 @@ import {
 } from 'phosphor/lib/algorithm/searching';
 
 import {
-    Message
+    sendMessage, Message
 } from 'phosphor/lib/core/messaging';
 
 import {
@@ -22,8 +22,9 @@ import {
 } from 'phosphor/lib/ui/panel';
 
 import {
-    Widget
+    ResizeMessage, Widget
 } from 'phosphor/lib/ui/widget';
+
 
 import * as _ from 'underscore';
 import * as $ from 'jquery';
@@ -235,7 +236,12 @@ class BoxView extends DOMWidgetView {
         super.initialize(parameters);
         this.children_views = new ViewList(this.add_child_model, null, this);
         this.listenTo(this.model, 'change:children', (model, value) => {
-            this.children_views.update(value);
+            this.children_views.update(value).then((views: DOMWidgetView[]) => {
+                // Notify all children that their sizes may have changed.
+                views.forEach( (view) => {
+                    sendMessage(view.pWidget, ResizeMessage.UnknownSize);
+                })
+            });
         });
         this.listenTo(this.model, 'change:box_style', this.update_box_style);
 
