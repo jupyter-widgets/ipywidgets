@@ -281,7 +281,7 @@ class BoxView extends DOMWidgetView {
         super.remove();
     }
 
-    children_views: any;
+    children_views: ViewList<DOMWidgetView>;
     pWidget: JupyterPhosphorPanelWidget;
 
     static class_map = {

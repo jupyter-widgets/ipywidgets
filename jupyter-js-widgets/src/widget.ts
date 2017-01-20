@@ -557,17 +557,17 @@ class LabeledDOMWidgetModel extends DOMWidgetModel {
  *   will be called in that context.
  */
 export
-class ViewList {
-    constructor(create_view, remove_view, context) {
+class ViewList<T> {
+    constructor(create_view: (model: any, index: any) => T | Promise<T>, remove_view: (view: T) => void, context) {
         this.initialize(create_view, remove_view, context);
     }
 
-    initialize(create_view, remove_view, context) {
+    initialize(create_view: (model: any, index: any) => T | Promise<T>, remove_view: (view: T) => void, context) {
         this._handler_context = context || this;
         this._models = [];
         this.views = []; // list of promises for views
         this._create_view = create_view;
-        this._remove_view = remove_view || function(view) {view.remove();};
+        this._remove_view = remove_view || function(view) {(view as any).remove();};
     }
 
     /**
@@ -610,7 +610,7 @@ class ViewList {
      * that should be faster
      * returns a promise that resolves after this removal is done
      */
-    remove(): any {
+    remove(): Promise<void> {
         return Promise.all(this.views).then((views) => {
             views.forEach((value) => this._remove_view.call(this._handler_context, value));
             this.views = [];
@@ -626,16 +626,16 @@ class ViewList {
      * asynchronous. Use this in cases where child views will be removed in
      * another way.
      */
-    dispose(): any {
-        this.views = [];
-        this._models = [];
+    dispose(): void {
+        this.views = null;
+        this._models = null;
     }
 
     _handler_context: any;
     _models: any[];
-    views: any[];
-    _create_view: Function;
-    _remove_view: Function;
+    views: Promise<T>[];
+    _create_view: (model: any, index: any) => T | Promise<T>;
+    _remove_view: (view: T) => void;
 }
 
 
