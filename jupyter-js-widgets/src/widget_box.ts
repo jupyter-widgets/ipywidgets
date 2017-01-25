@@ -14,7 +14,7 @@ import {
 } from 'phosphor/lib/algorithm/searching';
 
 import {
-    sendMessage, Message
+    postMessage, Message
 } from 'phosphor/lib/core/messaging';
 
 import {
@@ -235,14 +235,7 @@ class BoxView extends DOMWidgetView {
     initialize(parameters) {
         super.initialize(parameters);
         this.children_views = new ViewList(this.add_child_model, null, this);
-        this.listenTo(this.model, 'change:children', (model, value) => {
-            this.children_views.update(value).then((views: DOMWidgetView[]) => {
-                // Notify all children that their sizes may have changed.
-                views.forEach( (view) => {
-                    sendMessage(view.pWidget, ResizeMessage.UnknownSize);
-                })
-            });
-        });
+        this.listenTo(this.model, 'change:children', this.update_children);
         this.listenTo(this.model, 'change:box_style', this.update_box_style);
 
         this.pWidget.addClass('jupyter-widgets');
@@ -255,10 +248,18 @@ class BoxView extends DOMWidgetView {
      */
     render() {
         super.render();
-        this.children_views.update(this.model.get('children'));
+        this.update_children();
         this.set_box_style();
     }
 
+    update_children() {
+        this.children_views.update(this.model.get('children')).then((views: DOMWidgetView[]) => {
+                // Notify all children that their sizes may have changed.
+                views.forEach( (view) => {
+                    postMessage(view.pWidget, ResizeMessage.UnknownSize);
+                });
+        });
+    }
     update_box_style() {
         this.update_mapped_classes(BoxView.class_map, 'box_style');
     }
