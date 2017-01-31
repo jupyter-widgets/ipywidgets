@@ -7,11 +7,11 @@ import {
 
 import {
   INotebookModel
-} from 'jupyterlab/lib/notebook/notebook/model';
+} from 'jupyterlab/lib/notebook/model';
 
 import {
   NotebookPanel
-} from 'jupyterlab/lib/notebook/notebook/panel';
+} from 'jupyterlab/lib/notebook/panel';
 
 import {
   JupyterLabPlugin, JupyterLab

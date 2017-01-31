@@ -19,7 +19,7 @@ import {
 
 import {
   OutputAreaModel, OutputAreaWidget
-} from 'jupyterlab/lib/notebook/output-area';
+} from 'jupyterlab/lib/outputarea';
 
 import {
   nbformat
