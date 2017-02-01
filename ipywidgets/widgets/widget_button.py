@@ -9,11 +9,13 @@ click events on the button and trigger backend code when the clicks are fired.
 
 from .domwidget import DOMWidget
 from .widget import CallbackDispatcher, register
+from .widget_core import CoreWidget
+
 from traitlets import Unicode, Bool, CaselessStrEnum, validate
 import warnings
 
 @register('Jupyter.Button')
-class Button(DOMWidget):
+class Button(DOMWidget, CoreWidget):
     """Button widget.
 
     This widget has an `on_click` method that allows you to listen for the

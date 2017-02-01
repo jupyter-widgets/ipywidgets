@@ -2,8 +2,12 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetModel, DOMWidgetView
+    WidgetView, DOMWidgetView
 } from './widget';
+
+import {
+    CoreWidgetModel
+} from './widget_core';
 
 import * as _ from 'underscore';
 
@@ -42,7 +46,7 @@ let css_properties = {
  * Represents a group of CSS style attributes
  */
 export
-class LayoutModel extends DOMWidgetModel {
+class LayoutModel extends CoreWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
         _model_name: 'LayoutModel',
@@ -52,7 +56,7 @@ class LayoutModel extends DOMWidgetModel {
 }
 
 export
-class LayoutView extends DOMWidgetView {
+class LayoutView extends WidgetView {
     /**
      * Public constructor
      */

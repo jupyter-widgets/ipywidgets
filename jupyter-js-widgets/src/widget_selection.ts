@@ -2,7 +2,11 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    LabeledDOMWidgetModel, LabeledDOMWidgetView, unpack_models, ViewList
+    LabeledDOMWidgetModel, LabeledDOMWidgetView
+} from './widget_core';
+
+import {
+    unpack_models, ViewList
 } from './widget';
 
 import * as _ from 'underscore';

@@ -9,12 +9,13 @@ Represents an HTML Color .
 from .domwidget import LabeledWidget
 from .valuewidget import ValueWidget
 from .widget import register
+from .widget_core import CoreWidget
 from .trait_types import Color
 from traitlets import Unicode, Bool
 
 
 @register('Jupyter.ColorPicker')
-class ColorPicker(LabeledWidget, ValueWidget):
+class ColorPicker(LabeledWidget, ValueWidget, CoreWidget):
     value = Color('black').tag(sync=True)
     concise = Bool().tag(sync=True)
 

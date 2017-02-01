@@ -4,6 +4,7 @@ from .valuewidget import ValueWidget
 
 from .trait_types import Color, Datetime
 
+from .widget_core import CoreWidget
 from .widget_bool import Checkbox, ToggleButton, Valid
 from .widget_button import Button
 from .widget_box import Box, Proxy, PlaceProxy, HBox, VBox

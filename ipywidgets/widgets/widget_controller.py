@@ -9,11 +9,12 @@ Represents a Gamepad or Joystick controller.
 from .valuewidget import ValueWidget
 from .widget import register, widget_serialization
 from .domwidget import DOMWidget
+from .widget_core import CoreWidget
 from traitlets import Bool, Int, Float, Unicode, List, Instance
 
 
 @register('Jupyter.ControllerButton')
-class Button(ValueWidget):
+class Button(ValueWidget, CoreWidget):
     """Represents a gamepad or joystick button."""
     value = Float(min=0.0, max=1.0, read_only=True).tag(sync=True)
     pressed = Bool(read_only=True).tag(sync=True)
@@ -25,7 +26,7 @@ class Button(ValueWidget):
 
 
 @register('Jupyter.ControllerAxis')
-class Axis(ValueWidget):
+class Axis(ValueWidget, CoreWidget):
     """Represents a gamepad or joystick axis."""
     value = Float(min=-1.0, max=1.0, read_only=True).tag(sync=True)
 
@@ -36,7 +37,7 @@ class Axis(ValueWidget):
 
 
 @register('Jupyter.Controller')
-class Controller(DOMWidget):
+class Controller(DOMWidget, CoreWidget):
     """Represents a game controller."""
     index = Int().tag(sync=True)
 

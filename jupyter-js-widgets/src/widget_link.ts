@@ -2,18 +2,22 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetModel, DOMWidgetView, WidgetModel, unpack_models
+    WidgetModel, unpack_models
 } from './widget';
+
+import {
+    CoreWidgetModel
+} from './widget_core';
 
 import * as _ from 'underscore';
 
 
 export
-class DirectionalLinkModel extends WidgetModel {
+class DirectionalLinkModel extends CoreWidgetModel {
     static serializers = _.extend({
         target: {deserialize: unpack_models},
         source: {deserialize: unpack_models}
-    }, WidgetModel.serializers)
+    }, CoreWidgetModel.serializers)
 
     defaults() {
         return _.extend(super.defaults(), {

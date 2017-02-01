@@ -2,8 +2,12 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetModel, DOMWidgetView
+    DOMWidgetView
 } from './widget';
+
+import {
+    CoreDOMWidgetModel
+} from './widget_core';
 
 import {
     Widget
@@ -12,7 +16,7 @@ import {
 import * as _ from 'underscore';
 
 export
-class ImageModel extends DOMWidgetModel {
+class ImageModel extends CoreDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'ImageModel',

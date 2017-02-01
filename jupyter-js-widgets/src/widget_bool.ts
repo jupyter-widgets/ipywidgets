@@ -2,7 +2,11 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    LabeledDOMWidgetModel, LabeledDOMWidgetView, DOMWidgetView
+    LabeledDOMWidgetModel, LabeledDOMWidgetView
+} from './widget_core';
+
+import {
+    DOMWidgetView
 } from './widget';
 
 import {

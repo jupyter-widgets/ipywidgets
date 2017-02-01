@@ -2,8 +2,12 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetModel, DOMWidgetView, JupyterPhosphorWidget
+    DOMWidgetView
 } from './widget';
+
+import {
+    CoreDOMWidgetModel
+} from './widget_core';
 
 import {
     Widget
@@ -12,7 +16,7 @@ import {
 import * as _ from 'underscore';
 
 export
-class ButtonModel extends DOMWidgetModel {
+class ButtonModel extends CoreDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             description: '',

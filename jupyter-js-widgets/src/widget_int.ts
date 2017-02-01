@@ -2,12 +2,17 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    LabeledDOMWidgetModel, LabeledDOMWidgetView,
-    DOMWidgetModel, DOMWidgetView
+    LabeledDOMWidgetModel, LabeledDOMWidgetView
+} from './widget_core';
+
+import {
+    DOMWidgetView
 } from './widget';
+
 import * as _ from 'underscore';
 import * as $ from 'jquery';
 import 'jquery-ui/ui/widgets/slider';
+
 var d3format: any = (require('d3-format') as any).format;
 
 export

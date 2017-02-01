@@ -8,6 +8,7 @@ Represents an image in the frontend using a widget.
 
 import base64
 
+from .widget_core import CoreWidget
 from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
 from .widget import register
@@ -15,7 +16,7 @@ from traitlets import Unicode, CUnicode, Bytes, observe
 
 
 @register('Jupyter.Image')
-class Image(DOMWidget, ValueWidget):
+class Image(DOMWidget, ValueWidget, CoreWidget):
     """Displays an image as a widget.
 
     The `value` of this widget accepts a byte string.  The byte string is the

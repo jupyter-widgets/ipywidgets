@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetModel, DOMWidgetView, ViewList, JupyterPhosphorWidget
+    DOMWidgetView, ViewList, JupyterPhosphorWidget
 } from './widget';
 
 import {
