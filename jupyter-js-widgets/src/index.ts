@@ -5,6 +5,7 @@ export * from "./manager-base";
 export * from "./utils";
 export * from "./widget";
 export * from "./widget_layout";
+export * from "./widget_style";
 export * from "./widget_link";
 export * from "./widget_bool";
 export * from "./widget_button";

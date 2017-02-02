@@ -14,7 +14,7 @@ from IPython.core.getipython import get_ipython
 from ipykernel.comm import Comm
 from traitlets.config import LoggingConfigurable
 from traitlets.utils.importstring import import_item
-from traitlets import Unicode, Dict, Instance, List, Int, Set, Bytes, observe
+from traitlets import Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default
 from ipython_genutils.py3compat import string_types, PY3
 from IPython.display import display
 
@@ -181,7 +181,9 @@ class Widget(LoggingConfigurable):
     msg_throttle = Int(1, help="""Maximum number of msgs the front-end can send before receiving an idle msg from the back-end.""").tag(sync=True)
 
     keys = List()
-    def _keys_default(self):
+
+    @default('keys')
+    def _default_keys(self):
         return [name for name in self.traits(sync=True)]
 
     _property_lock = Dict()

@@ -8,11 +8,21 @@ click events on the button and trigger backend code when the clicks are fired.
 # Distributed under the terms of the Modified BSD License.
 
 from .domwidget import DOMWidget
-from .widget import CallbackDispatcher, register
+from .widget import CallbackDispatcher, register, widget_serialization
 from .widget_core import CoreWidget
+from .widget_style import Style
+from .trait_types import Color
 
-from traitlets import Unicode, Bool, CaselessStrEnum, validate
+from traitlets import Unicode, Bool, CaselessStrEnum, Instance, validate, default
 import warnings
+
+
+@register('Jupyter.ButtonStyle')
+class ButtonStyle(Style):
+    """Button style widget."""
+    _model_name = Unicode('ButtonStyleModel').tag(sync=True)
+    button_color = Color(None, allow_none=True).tag(sync=True)
+
 
 @register('Jupyter.Button')
 class Button(DOMWidget, CoreWidget):
@@ -43,6 +53,12 @@ class Button(DOMWidget, CoreWidget):
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
         help="""Use a predefined styling for the button.""").tag(sync=True)
+
+    style = Instance(ButtonStyle).tag(sync=True, **widget_serialization)
+
+    @default('style')
+    def _default_style(self):
+        return ButtonStyle()
 
     def __init__(self, **kwargs):
         super(Button, self).__init__(**kwargs)

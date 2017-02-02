@@ -10,10 +10,31 @@ import {
 } from './widget_core';
 
 import {
+    StyleModel
+} from './widget_style';
+
+import {
     Widget
 } from 'phosphor/lib/ui/widget';
 
 import * as _ from 'underscore';
+
+export
+class ButtonStyleModel extends StyleModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'ButtonStyleModel',
+        });
+    }
+
+    public static style_properties = {
+        button_color: {
+            default_value: '',
+            selector: '',
+            attribute: 'background-color'
+        }
+    };
+}
 
 export
 class ButtonModel extends CoreDOMWidgetModel {
@@ -25,7 +46,8 @@ class ButtonModel extends CoreDOMWidgetModel {
             icon: '',
             button_style: '',
             _view_name: 'ButtonView',
-            _model_name: 'ButtonModel'
+            _model_name: 'ButtonModel',
+            style: void 0
         });
     }
 }

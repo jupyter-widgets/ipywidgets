@@ -11,49 +11,24 @@ import {
 
 import * as _ from 'underscore';
 
-/**
- * css properties exposed by the layout widget with their default values.
- */
-let css_properties = {
-    align_content: null,
-    align_items: null,
-    align_self: null,
-    border: null,
-    bottom: null,
-    display: null,
-    flex: null,
-    flex_flow: null,
-    height: null,
-    justify_content: null,
-    left: null,
-    margin: null,
-    max_height: null,
-    max_width: null,
-    min_height: null,
-    min_width: null,
-    overflow: null,
-    overflow_x: null,
-    overflow_y: null,
-    order: null,
-    padding: null,
-    right: null,
-    top: null,
-    visibility: null,
-    width: null
-};
-
 export
-class LayoutModel extends CoreWidgetModel {
+class StyleModel extends CoreWidgetModel {
     defaults() {
+        var Derived = <typeof StyleModel>this.constructor;
         return _.extend(super.defaults(), {
-        _model_name: 'LayoutModel',
-        _view_name: 'LayoutView'
-        }, css_properties);
+            _model_name: 'StyleModel',
+        }, _.reduce(Object.keys(Derived.style_properties), (obj: any, key) => {
+            obj[Derived.style_properties[key].attribute] = Derived.style_properties[key].default_value;
+            return obj;
+        }, {}));
     }
+
+    public static style_properties = {};
 }
 
 export
-class LayoutView extends WidgetView {
+class StyleView extends WidgetView {
+
     /**
      * Public constructor
      */
@@ -61,7 +36,8 @@ class LayoutView extends WidgetView {
         this._traitNames = [];
         super.initialize(parameters);
         // Register the traits that live on the Python side
-        for (let key of Object.keys(css_properties)) {
+        var ModelType = (<typeof StyleModel>this.model.constructor);
+        for (let key of Object.keys(ModelType.style_properties)) {
             this.registerTrait(key)
         }
     }
@@ -83,25 +59,25 @@ class LayoutView extends WidgetView {
     }
 
     /**
-     * Get the the name of the css property from the trait name
-     * @param  model attribute name
-     * @return css property name
-     */
-    css_name(trait: string): string {
-        return trait.replace('_', '-');
-    }
-
-    /**
      * Handles when a trait value changes
      */
     handleChange(trait: string, value: any) {
         // should be synchronous so that we can measure later.
         let parent = this.options.parent as DOMWidgetView;
         if (parent) {
+            let ModelType = (<typeof StyleModel>this.model.constructor);
+            let style_properties = ModelType.style_properties;
+            let attribute = style_properties[trait].attribute;
+            let selector  = style_properties[trait].selector;
+            let elements = selector ? parent.el.querySelectorAll(selector) : [ parent.el ];
             if (value === null) {
-                parent.el.style.removeProperty(this.css_name(trait));
+                for (var i = 0; i !== elements.length; ++i) {
+                    elements[i].style.removeProperty(attribute);
+                }
             } else {
-                parent.el.style[this.css_name(trait)] = value;
+                for (var i = 0; i !== elements.length; ++i) {
+                    elements[i].style[attribute] = value;
+                }
             }
         } else {
             console.warn('Style not applied because a parent view does not exist');
@@ -111,11 +87,18 @@ class LayoutView extends WidgetView {
     /**
      * Remove the styling from the parent view.
      */
-    unlayout() {
+    unstyle() {
         let parent = this.options.parent as DOMWidgetView;
+        let ModelType = (<typeof StyleModel>this.model.constructor);
+        let style_properties = ModelType.style_properties;
         this._traitNames.forEach((trait) => {
             if (parent) {
-                parent.el.style.removeProperty(this.css_name(trait));
+                let attribute = style_properties[trait].attribute;
+                let selector  = style_properties[trait].selector;
+                let elements = selector ? parent.el.querySelectorAll(selector) : [ parent.el ];
+                for (var i = 0; i !== elements.length; ++i) {
+                    elements[i].style.removeProperty(attribute);
+                }
             } else {
                 console.warn('Style not removed because a parent view does not exist');
             }
@@ -124,3 +107,4 @@ class LayoutView extends WidgetView {
 
     private _traitNames: string[];
 }
+

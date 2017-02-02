@@ -525,6 +525,7 @@ export
 class DOMWidgetModel extends WidgetModel {
     static serializers = _.extend({
         layout: {deserialize: unpack_models},
+        style: {deserialize: unpack_models},
     }, WidgetModel.serializers)
 
     defaults() {
@@ -771,9 +772,15 @@ class DOMWidgetView extends WidgetView {
             this.setLayout(value, model.previous('layout'));
         });
 
+        this.stylePromise = Promise.resolve();
+        this.listenTo(this.model, 'change:style', (model, value) => {
+            this.setStyle(value, model.previous('style'));
+        });
+
         this.displayed.then(() => {
             this.update_classes([], this.model.get('_dom_classes'));
             this.setLayout(this.model.get('layout'));
+            this.setStyle(this.model.get('style'));
         });
     }
 
@@ -799,6 +806,28 @@ class DOMWidgetView extends WidgetView {
                         return view;
                     });
                 }).catch(utils.reject('Could not add LayoutView to DOMWidgetView', true));
+            });
+        }
+    }
+
+    setStyle(style, oldStyle?) {
+        if (style) {
+            this.stylePromise = this.stylePromise.then((oldStyleView) => {
+                if (oldStyleView) {
+                    oldStyleView.unstyle();
+                    this.stopListening(oldStyleView.model);
+                    oldStyleView.remove();
+                }
+
+                return this.create_child_view(style).then((view) => {
+                    // Trigger the displayed event of the child view.
+                    return this.displayed.then(() => {
+                        view.trigger('displayed');
+                        // Unlike for the layout attribute, style changes don't
+                        // trigger phosphor resize messages.
+                        return view;
+                    });
+                }).catch(utils.reject('Could not add styleView to DOMWidgetView', true));
             });
         }
     }
@@ -900,5 +929,6 @@ class DOMWidgetView extends WidgetView {
     '$el': any;
     pWidget: Widget;
     layoutPromise: Promise<any>;
+    stylePromise: Promise<any>;
 }
 
