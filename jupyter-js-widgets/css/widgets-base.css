@@ -370,7 +370,7 @@
     font-size: var(--jp-widgets-font-size);
     padding: var(--jp-widgets-input-padding);
     flex-grow: 1;
-    min-width: var(--jp-widgets-inline-width-short); /* This makes it possible for the flexbox to shrink this input */
+    min-width: 0; /* This makes it possible for the flexbox to shrink this input */
     flex-shrink: 1;
 }
 
@@ -470,10 +470,10 @@
 
 .widget-hslider .slider-container {
     height: var(--jp-widgets-inline-height);
-    width: var(--jp-widgets-inline-width-short);
     margin-left: calc(var(--jp-widgets-slider-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
     margin-right: calc(var(--jp-widgets-slider-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
     align-self: stretch;
+    flex: 1 1 var(--jp-widgets-inline-width-short);
 }
 
 .widget-hslider .ui-slider {
@@ -497,7 +497,7 @@
 }
 
 .widget-vslider .slider-container {
-    height: 140px;
+    flex: 1 1 var(--jp-widgets-inline-width-short);
     margin-left: auto;
     margin-right: auto;
     margin-bottom: calc(var(--jp-widgets-slider-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
@@ -692,7 +692,7 @@ ul.widget-dropdown-droplist.mod-active {
 /* Select Widget Styling */
 
 .widget-select {
-    min-width: var(--jp-widgets-inline-width);
+    width: var(--jp-widgets-inline-width);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
 }
@@ -702,9 +702,7 @@ ul.widget-dropdown-droplist.mod-active {
     border-radius: 0;
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
-    min-width: var(--jp-widgets-inline-width-short);
-    max-width: var(--jp-widgets-inline-width);
-    flex-grow: 1;
+    flex: 1 1 var(--jp-widgets-inline-width-short);
     background-color: var(--jp-layout-color1);
 }
 
@@ -726,18 +724,16 @@ ul.widget-dropdown-droplist.mod-active {
 /* Select Multiple */
 
 .widget-select-multiple {
-    min-width: var(--jp-widgets-inline-width);
+    width: var(--jp-widgets-inline-width);
     line-height: var(--jp-widgets-inline-height);
 }
 
 .widget-select-multiple select {
-    min-width: var(--jp-widgets-inline-width-short);
-    max-width: var(--jp-widgets-inline-width);
     border: var(--jp-border-width) solid var(--jp-border-color1);
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
     font-size: var(--jp-widgets-font-size);
-    flex-grow: 1;
+    flex: 1 1 var(--jp-widgets-inline-width-short);
 }
 
 .widget-select-multiple select option:checked {
@@ -764,7 +760,6 @@ ul.widget-dropdown-droplist.mod-active {
 /* Radio Buttons Styling */
 
 .widget-radio {
-    min-width: var(--jp-widgets-inline-width);
     width: var(--jp-widgets-inline-width);
     line-height: var(--jp-widgets-inline-height);
 }
