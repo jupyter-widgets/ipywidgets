@@ -1014,6 +1014,6 @@ ul.widget-dropdown-droplist.mod-active {
 
 /* HTML widget */
 
-.widget-html {
+.widget-html, .widget-htmlmath {
     font-size: var(--jp-widgets-font-size);
 }

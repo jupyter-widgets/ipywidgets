@@ -150,7 +150,7 @@ function reject(message, log) {
  * text: optional string
  */
 export
-function typeset(element: HTMLElement, text: string): void {
+function typeset(element: HTMLElement, text?: string): void {
     if (text !== void 0) {
         element.textContent = text;
     }
