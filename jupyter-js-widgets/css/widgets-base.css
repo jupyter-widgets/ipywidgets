@@ -351,6 +351,10 @@
     color: red;
 }
 
+.widget-valid.mod-valid .widget-valid-readout {
+    display: none;
+}
+
 /* Widget Text and TextArea Stying */
 
 .widget-textarea, .widget-text {
