@@ -23,7 +23,7 @@
     --jp-widgets-inline-label-min-width: 80px;
     --jp-widgets-inline-label-max-width: calc(var(--jp-widgets-inline-width) - var(--jp-widgets-inline-margin) - var(--jp-widgets-inline-width-short));
     --jp-widgets-border-width: var(--jp-border-width);
-    --jp-widgets-tall-height: 200px;
+    --jp-widgets-vertical-height: 200px;
     --jp-widgets-horizontal-tab-height: 24px;
     --jp-widgets-horizontal-tab-width: 144px;
     --jp-widgets-horizontal-tab-top-border: 2px;
@@ -492,7 +492,7 @@
 
 .widget-vslider {
     /* Vertical Slider */
-    height: var(--jp-widgets-tall-height);
+    height: var(--jp-widgets-vertical-height);
     width: var(--jp-widgets-inline-width-tiny);
 }
 
@@ -569,7 +569,7 @@
 /* Vertical Progress */
 
 .widget-vprogress {
-    height: var(--jp-widgets-tall-height);
+    height: var(--jp-widgets-vertical-height);
     width: var(--jp-widgets-inline-width-tiny);
 }
 
