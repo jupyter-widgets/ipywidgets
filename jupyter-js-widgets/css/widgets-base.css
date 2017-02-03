@@ -10,6 +10,9 @@
 
 
 :root {
+    --jp-widgets-color: var(--jp-content-font-color1);
+    --jp-widgets-label-color: var(--jp-widgets-color);
+    --jp-widgets-readout-color: var(--jp-widgets-color);
     --jp-widgets-font-size: var(--jp-ui-font-size1);
     --jp-widgets-margin: 2px;
     --jp-widgets-inline-height: 28px;
@@ -39,7 +42,7 @@
 .jupyter-widgets {
     margin: var(--jp-widgets-margin);
     box-sizing: border-box;
-    color: var(--jp-content-font-color1);
+    color: var(--jp-widgets-color);
     overflow: visible;
 }
 
@@ -224,6 +227,7 @@
 
 .widget-label {
     /* Label */
+    color: var(--jp-widgets-label-color);
     font-size: var(--jp-widgets-font-size);
     overflow: hidden;
     text-overflow: ellipsis;
@@ -234,6 +238,7 @@
 
 .widget-inline-hbox .widget-label {
     /* Horizontal Widget Label */
+    color: var(--jp-widgets-label-color);
     text-align: right;
     margin-right: var(--jp-widgets-inline-margin);
     max-width: var(--jp-widgets-inline-label-max-width);
@@ -243,13 +248,14 @@
 
 .widget-inline-vbox .widget-label {
     /* Vertical Widget Label */
+    color: var(--jp-widgets-label-color);
     text-align: center;
 }
 
 /* Widget Readout Styling */
 
 .widget-readout {
-    /* Label */
+    color: var(--jp-widgets-readout-color);
     font-size: var(--jp-widgets-font-size);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
