@@ -23,7 +23,7 @@
     --jp-widgets-inline-label-min-width: 80px;
     --jp-widgets-inline-label-max-width: calc(var(--jp-widgets-inline-width) - var(--jp-widgets-inline-margin) - var(--jp-widgets-inline-width-short));
     --jp-widgets-border-width: var(--jp-border-width);
-    --jp-widgets-tall-height: 200px;
+    --jp-widgets-vertical-height: 200px;
     --jp-widgets-horizontal-tab-height: 24px;
     --jp-widgets-horizontal-tab-width: 144px;
     --jp-widgets-horizontal-tab-top-border: 2px;
@@ -370,7 +370,7 @@
     font-size: var(--jp-widgets-font-size);
     padding: var(--jp-widgets-input-padding);
     flex-grow: 1;
-    min-width: var(--jp-widgets-inline-width-short); /* This makes it possible for the flexbox to shrink this input */
+    min-width: 0; /* This makes it possible for the flexbox to shrink this input */
     flex-shrink: 1;
 }
 
@@ -470,10 +470,10 @@
 
 .widget-hslider .slider-container {
     height: var(--jp-widgets-inline-height);
-    width: var(--jp-widgets-inline-width-short);
     margin-left: calc(var(--jp-widgets-slider-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
     margin-right: calc(var(--jp-widgets-slider-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
     align-self: stretch;
+    flex: 1 1 var(--jp-widgets-inline-width-short);
 }
 
 .widget-hslider .ui-slider {
@@ -492,12 +492,12 @@
 
 .widget-vslider {
     /* Vertical Slider */
-    height: var(--jp-widgets-tall-height);
+    height: var(--jp-widgets-vertical-height);
     width: var(--jp-widgets-inline-width-tiny);
 }
 
 .widget-vslider .slider-container {
-    height: 140px;
+    flex: 1 1 var(--jp-widgets-inline-width-short);
     margin-left: auto;
     margin-right: auto;
     margin-bottom: calc(var(--jp-widgets-slider-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
@@ -569,7 +569,7 @@
 /* Vertical Progress */
 
 .widget-vprogress {
-    height: var(--jp-widgets-tall-height);
+    height: var(--jp-widgets-vertical-height);
     width: var(--jp-widgets-inline-width-tiny);
 }
 
@@ -692,7 +692,7 @@ ul.widget-dropdown-droplist.mod-active {
 /* Select Widget Styling */
 
 .widget-select {
-    min-width: var(--jp-widgets-inline-width);
+    width: var(--jp-widgets-inline-width);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
 }
@@ -702,9 +702,7 @@ ul.widget-dropdown-droplist.mod-active {
     border-radius: 0;
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
-    min-width: var(--jp-widgets-inline-width-short);
-    max-width: var(--jp-widgets-inline-width);
-    flex-grow: 1;
+    flex: 1 1 var(--jp-widgets-inline-width-short);
     background-color: var(--jp-layout-color1);
 }
 
@@ -726,18 +724,16 @@ ul.widget-dropdown-droplist.mod-active {
 /* Select Multiple */
 
 .widget-select-multiple {
-    min-width: var(--jp-widgets-inline-width);
+    width: var(--jp-widgets-inline-width);
     line-height: var(--jp-widgets-inline-height);
 }
 
 .widget-select-multiple select {
-    min-width: var(--jp-widgets-inline-width-short);
-    max-width: var(--jp-widgets-inline-width);
     border: var(--jp-border-width) solid var(--jp-border-color1);
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
     font-size: var(--jp-widgets-font-size);
-    flex-grow: 1;
+    flex: 1 1 var(--jp-widgets-inline-width-short);
 }
 
 .widget-select-multiple select option:checked {
@@ -764,7 +760,6 @@ ul.widget-dropdown-droplist.mod-active {
 /* Radio Buttons Styling */
 
 .widget-radio {
-    min-width: var(--jp-widgets-inline-width);
     width: var(--jp-widgets-inline-width);
     line-height: var(--jp-widgets-inline-height);
 }
