@@ -48,6 +48,14 @@ class SelectModel extends SelectionModel {
 export
 class SelectView extends LabeledDOMWidgetView {
     /**
+     * Public constructor.
+     */
+    initialize(parameters) {
+        super.initialize(parameters);
+        this.listenTo(this.model, 'change:_options_labels', () => this._updateOptions());
+    }
+
+    /**
      * Called when view is rendered.
      */
     render() {
@@ -57,62 +65,39 @@ class SelectView extends LabeledDOMWidgetView {
         this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-select');
 
-        var selectWrapper = document.createElement('div');
+        let selectWrapper = document.createElement('div');
         selectWrapper.className = 'jp-Dialog-selectWrapper';
         this.listbox = document.createElement('select');
         selectWrapper.appendChild(this.listbox)
         this.el.appendChild(selectWrapper);
+        this._updateOptions();
         this.update();
     }
 
     /**
      * Update the contents of this view
-     *
-     * Called when the model is changed.  The model may have been
-     * changed by another view or by a state update from the back-end.
      */
-    update(options?) {
-        var view = this;
-        var items = this.model.get('_options_labels');
-        var selectoptions: any = _.pluck(this.listbox.options, 'value');
-        var stale = false;
+    update() {
+        // Disable listbox if needed
+        this.listbox.disabled = this.model.get('disabled');
 
-        for (var i = 0, len = items.length; i < len; ++i) {
-            if (selectoptions[i] !== items[i]) {
-                stale = true;
-                break;
-            }
+        // Select the correct element
+        var value = this.model.get('value');
+        this.listbox.selectedIndex = this.model.get('_options_labels').indexOf(value);
+        return super.update();
+    }
+
+    _updateOptions() {
+        this.listbox.textContent = '';
+        let items = this.model.get('_options_labels');
+        for (let i = 0; i < items.length; i++) {
+            let item = items[i];
+            let option = document.createElement('option');
+            option.textContent = item.replace(/ /g, '\xa0'); // space -> &nbsp;
+            option.setAttribute('data-value', encodeURIComponent(item));
+            option.value = item;
+            this.listbox.appendChild(option);
         }
-
-        if (stale && (options === undefined || options.updated_view !== this)) {
-            // Add items to the DOM.
-            this.listbox.textContent = '';
-
-            _.each(items, function(item: any, index) {
-                var item_query = 'option[data-value="' +
-                    encodeURIComponent(item) + '"]';
-                var item_exists = view.listbox
-                    .querySelectorAll(item_query).length !== 0;
-                var option;
-                if (!item_exists) {
-                    option = document.createElement('option');
-                    option.textContent = item.replace ?
-                        item.replace(/ /g, '\xa0') : item;
-                    option.setAttribute('data-value', encodeURIComponent(item));
-                    option.value = item;
-                    view.listbox.appendChild(option);
-                }
-            });
-
-            // Disable listbox if needed
-            this.listbox.disabled = this.model.get('disabled');
-
-            // Select the correct element
-            var value = view.model.get('value');
-            view.listbox.selectedIndex = items.indexOf(value);
-
-        }
-        return super.update(options);
     }
 
     events(): {[e: string]: string} {
@@ -123,13 +108,10 @@ class SelectView extends LabeledDOMWidgetView {
 
     /**
      * Handle when a new value is selected.
-     *
-     * Calling model.set will trigger all of the other views of the
-     * model to update.
      */
     _handle_change() {
         let value = this.listbox.options[this.listbox.selectedIndex].value;
-        this.model.set('value', value, {updated_view: this});
+        this.model.set('value', value);
         this.touch();
     }
 
@@ -1020,32 +1002,58 @@ class SelectMultipleModel extends MultipleSelectionModel {
 }
 
 export
-class SelectMultipleView extends SelectView {
+class SelectMultipleView extends LabeledDOMWidgetView {
+    /**
+     * Public constructor.
+     */
+    initialize(parameters) {
+        super.initialize(parameters);
+        this.listenTo(this.model, 'change:_options_labels', () => this._updateOptions());
+    }
+
     /**
      * Called when view is rendered.
      */
     render() {
         super.render();
-        this.el.classList.remove('widget-select');
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-select-multiple');
+
+        this.listbox = document.createElement('select');
         this.listbox.multiple = true;
+        this.el.appendChild(this.listbox);
+        this._updateOptions();
         this.update();
     }
 
     /**
      * Update the contents of this view
-     *
-     * Called when the model is changed.  The model may have been
-     * changed by another view or by a state update from the back-end.
      */
     update() {
         super.update();
-        var selected = this.model.get('value') || [];
-        var values = _.map(selected, encodeURIComponent);
-        var options = this.listbox.options;
-        for (var i = 0, len = options.length; i < len; ++i) {
-            var value = options[i].getAttribute('data-value');
+        this.listbox.disabled = this.model.get('disabled');
+
+        // Set selected values
+        let selected = this.model.get('value') || [];
+        let values = _.map(selected, encodeURIComponent);
+        let options = this.listbox.options;
+        for (let i = 0, len = options.length; i < len; ++i) {
+            let value = options[i].getAttribute('data-value');
             options[i].selected = _.contains(values, value);
+        }
+    }
+
+    _updateOptions() {
+        this.listbox.textContent = '';
+        let items = this.model.get('_options_labels');
+        for (let i = 0; i < items.length; i++) {
+            let item = items[i];
+            let option = document.createElement('option');
+            option.textContent = item.replace(/ /g, '\xa0'); // space -> &nbsp;
+            option.setAttribute('data-value', encodeURIComponent(item));
+            option.value = item;
+            this.listbox.appendChild(option);
         }
     }
 
@@ -1057,19 +1065,18 @@ class SelectMultipleView extends SelectView {
 
     /**
      * Handle when a new value is selected.
-     *
-     * Calling model.set will trigger all of the other views of the
-     * model to update.
      */
     _handle_change() {
         // In order to preserve type information correctly, we need to map
         // the selected indices to the options list.
-        var items = this.model.get('_options_labels');
-        var values = Array.prototype.map
+        let items = this.model.get('_options_labels');
+        let values = Array.prototype.map
             .call(this.listbox.selectedOptions || [], function(option) {
                 return items[option.index];
             });
-        this.model.set('value', values, {updated_view: this});
+        this.model.set('value', values);
         this.touch();
     }
+
+    listbox: HTMLSelectElement;
 }
