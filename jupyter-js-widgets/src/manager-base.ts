@@ -131,10 +131,8 @@ abstract class ManagerBase<T> {
      * Takes a requirejs success handler and returns a requirejs error handler.
      * The default implementation just throws the original error.
      */
-    require_error (success_callback, version: string) {
-        return function(err) : any {
-            throw err;
-        };
+    require_error (success_callback, failure_callback, version: string) {
+        return failure_callback;
     };
 
     /**
