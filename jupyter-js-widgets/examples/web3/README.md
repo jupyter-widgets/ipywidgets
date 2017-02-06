@@ -23,7 +23,7 @@ requiring a notebook server to be running, they use the `tmpnb` and the
    (see the [README.md](../../../README.md) in the repo root for more details).
 2. Cd into this directory and run `npm install`.
 3. Run `npm run host`
-4. In a new terminal run `python -m notebook --no-browser --NotebookApp.allow_origin="*"`
+4. In a new terminal run `python -m notebook --no-browser --NotebookApp.allow_origin="*" --NotebookApp.disable_check_xsrf=True --NotebookApp.token=''`
 5. In a web browser, navigate to `http://localhost:8080/` (or the address specified by the `npm run host` command)
 
 ## Details

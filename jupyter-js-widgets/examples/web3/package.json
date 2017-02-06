@@ -14,7 +14,7 @@
   "author": "IPython",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "@jupyterlab/services": "^0.24.0",
+    "@jupyterlab/services": "^0.36.0",
     "@types/codemirror": "0.0.33",
     "codemirror": "^5.9.0",
     "font-awesome": "^4.5.0",
