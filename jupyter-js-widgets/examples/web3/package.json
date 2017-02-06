@@ -19,7 +19,9 @@
     "codemirror": "^5.9.0",
     "font-awesome": "^4.5.0",
     "http-server": "^0.8.5",
-    "jupyter-js-widgets": "file:../.."
+    "jupyter-js-widgets": "file:../..",
+    "requirejs": "^2.3.2",
+    "scriptjs": "^2.5.8"
   },
   "devDependencies": {
     "css-loader": "^0.23.1",
