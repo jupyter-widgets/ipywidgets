@@ -43,6 +43,6 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         // Run backend code to create the widgets.  You could also create the
         // widgets in the frontend, like the other widget examples demonstrate.
-        kernel.execute({ code: code });
+        kernel.requestExecute({ code: code });
     });
 });
