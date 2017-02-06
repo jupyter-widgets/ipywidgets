@@ -40,6 +40,7 @@ class HTMLView extends LabeledDOMWidgetView {
         this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-html');
         this.content = document.createElement('div');
+        this.content.classList.add('widget-html-content');
         this.el.appendChild(this.content);
         this.update(); // Set defaults.
     }
@@ -80,6 +81,7 @@ class HTMLMathView extends LabeledDOMWidgetView {
         this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-htmlmath');
         this.content = document.createElement('div');
+        this.content.classList.add('widget-htmlmath-content');
         this.el.appendChild(this.content);
         this.update(); // Set defaults.
     }

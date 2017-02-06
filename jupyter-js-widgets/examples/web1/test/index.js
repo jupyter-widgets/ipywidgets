@@ -28,7 +28,7 @@ describe('index.html', function() {
             expect(document.querySelector('div.widget-html')).to.be.ok;
         });
         it('correct value', () => {
-            expect(document.querySelector('div.widget-html').innerHTML).to.equal('test <b>text</b>');
+            expect(document.querySelector('div.widget-html-content').innerHTML).to.equal('test <b>text</b>');
         });
     });
 });
