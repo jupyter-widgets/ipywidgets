@@ -110,6 +110,7 @@ class ToggleButtonView extends DOMWidgetView {
      * Called when view is rendered.
      */
     render() {
+        super.render();
         this.el.className = 'jupyter-widgets jupyter-button widget-toggle-button';
         this.listenTo(this.model, 'change:button_style', this.update_button_style);
         this.set_button_style();
@@ -215,13 +216,21 @@ class ValidModel extends BoolModel {
 }
 
 export
-class ValidView extends DOMWidgetView {
+class ValidView extends LabeledDOMWidgetView {
     /**
      * Called when view is rendered.
      */
     render() {
+        super.render();
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-valid');
+        this.el.classList.add('widget-inline-hbox');
+        let icon = document.createElement('i');
+        this.el.appendChild(icon);
+        this.readout = document.createElement('span');
+        this.readout.classList.add('widget-valid-readout');
+        this.readout.classList.add('widget-readout');
+        this.el.appendChild(this.readout);
         this.update();
     }
 
@@ -232,19 +241,14 @@ class ValidView extends DOMWidgetView {
      * changed by another view or by a state update from the back-end.
      */
     update() {
-        this.el.textContent = '';
         this.el.classList.remove('mod-valid');
         this.el.classList.remove('mod-invalid');
-
-        var icon = document.createElement('i');
-        this.el.appendChild(icon);
-
+        this.readout.textContent = this.model.get('readout');
         if (this.model.get('value')) {
             this.el.classList.add('mod-valid');
         } else {
-            var readout = document.createTextNode(this.model.get('readout'));
             this.el.classList.add('mod-invalid');
-            this.el.appendChild(readout);
         }
     }
+    readout: HTMLSpanElement;
 }
