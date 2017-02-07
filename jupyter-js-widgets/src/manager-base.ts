@@ -12,13 +12,17 @@ import {
 } from './widget';
 
 import {
+    HTMLModel
+} from './widget_string';
+
+import {
     shims
 } from './services-shim';
 
 
 /**
  * The options for a model.
- * 
+ *
  * #### Notes
  * Either a comm or a model_id must be provided.
  */
@@ -59,19 +63,19 @@ export
 interface StateOptions {
     /**
      * Only return models with one or more displayed views.
-     * 
+     *
      * @default false
      */
     only_displayed?: boolean;
     /**
      * Include models that have comms with severed connections.
-     * 
+     *
      * @default false
      */
     not_live?: boolean;
     /**
      * Drop model attributes that are equal to their default value.
-     * 
+     *
      * @default false
      */
     drop_defaults?: boolean;
@@ -108,7 +112,7 @@ abstract class ManagerBase<T> {
 
     /**
      * Display a view.
-     * 
+     *
      * #### Notes
      * This must be implemented by a subclass. The implementation must trigger the view's displayed
      * event after the view is on the page: `view.trigger('displayed')`
@@ -127,10 +131,8 @@ abstract class ManagerBase<T> {
      * Takes a requirejs success handler and returns a requirejs error handler.
      * The default implementation just throws the original error.
      */
-    require_error (success_callback, version: string) {
-        return function(err) : any {
-            throw err;
-        };
+    require_error (success_callback, failure_callback, version: string) {
+        return failure_callback;
     };
 
     /**
@@ -269,7 +271,7 @@ abstract class ManagerBase<T> {
      *
      * @param options - the options for creating the model.
      * @param serialized_state - attribute values for the model.
-     * 
+     *
      * @example
      * widget_manager.new_model({
      *      model_name: 'WidgetModel',
@@ -290,12 +292,59 @@ abstract class ManagerBase<T> {
             throw new Error('Neither comm nor model_id provided in options object. At least one must exist.');
         }
 
+        var error_handler = function(error) {
+            let modelOptions = {
+                widget_manager: that,
+                model_id: model_id,
+                comm: options.comm,
+            }
+            var widget_model = new HTMLModel({}, modelOptions);
+            widget_model.once('comm:close', function () {
+                delete that._models[model_id];
+            });
+            let placeholder =
+                `<table style="width:100%">
+                <thead>
+                    <tr>
+                        <th colspan="2">
+                        Could not create model:
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Model name</td>
+                        <td> ${options.model_name} </td>
+                    </tr>
+                    <tr>
+                        <td>Model module</td>
+                        <td> ${options.model_module} </td>
+                    </tr>
+                    <tr>
+                        <td>Model module version</td>
+                        <td> ${options.model_module_version} </td>
+                    </tr>
+                <tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="2">
+                        ${error.message}
+                        </th>
+                    </tr>
+                </tfoot>
+                </table>`;
+            widget_model.set('value', placeholder);
+            return widget_model;
+        };
+
         var model_promise = this.loadClass(options.model_name,
                                            options.model_module,
                                            options.model_module_version,
                                            that.require_error)
-            .then(function(ModelType) {
-                return ModelType._deserialize_state(serialized_state || {}, that).then(function(attributes) {
+        .then(function(ModelType) {
+            try {
+                return ModelType._deserialize_state(serialized_state || {}, that)
+                .then(function(attributes) {
                     let modelOptions = {
                         widget_manager: that,
                         model_id: model_id,
@@ -309,11 +358,12 @@ abstract class ManagerBase<T> {
                     widget_model.module = options.model_module;
                     return widget_model;
                 });
-        }, function(error) {
-            delete that._models[model_id];
-            var wrapped_error = new utils.WrappedError('Could not create model', error);
-            return Promise.reject(wrapped_error);
-        });
+            }
+            catch (error) {
+                error_handler(error);  // error handler call if ModelType is undefined.
+            }
+        }, error_handler);             // error handler call if module cannot be loaded.
+
         this._models[model_id] = model_promise;
         return model_promise;
     };

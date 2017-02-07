@@ -70,7 +70,7 @@ function loadClass(class_name, module_name, module_version, registry, require_er
                         var success_callback = function(module) {
                             innerResolve(module);
                         };
-                        var failure_callback = require_error ? require_error(success_callback, module_version) : innerReject;
+                        var failure_callback = require_error ? require_error(success_callback, reject, module_version) : reject;
                         (window as any).require([module_name], success_callback, failure_callback);
                     });
                 } else if (module_name === 'jupyter-js-widgets') {
@@ -86,7 +86,7 @@ function loadClass(class_name, module_name, module_version, registry, require_er
 
             modulePromise.then(function(module) {
                 if (module[class_name] === undefined) {
-                    reject(new Error('Class '+class_name+' not found in module '+module_name));
+                    reject(new Error('Class ' + class_name + ' not found in module ' + module_name));
                 } else {
                     resolve(module[class_name]);
                 }
@@ -95,7 +95,7 @@ function loadClass(class_name, module_name, module_version, registry, require_er
             if (registry && registry[class_name]) {
                 resolve(registry[class_name]);
             } else {
-                reject(new Error('Class '+class_name+' not found in registry '));
+                reject(new Error('Class ' + class_name + ' not found in registry '));
             }
         }
     });
