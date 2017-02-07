@@ -173,6 +173,7 @@ class _MultipleSelection(_Selection):
     Despite its name, the ``value`` attribute is a tuple, even if only a single
     option is selected.
     """
+    _model_name = Unicode('MultipleSelectionModel').tag(sync=True)
 
     value = Tuple(help="Selected values").tag(sync=True,
                   to_json=_values_to_labels, from_json=_labels_to_values)
