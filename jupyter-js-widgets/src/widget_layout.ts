@@ -42,9 +42,6 @@ let css_properties = {
     width: null
 };
 
-/**
- * Represents a group of CSS style attributes
- */
 export
 class LayoutModel extends CoreWidgetModel {
     defaults() {
@@ -94,7 +91,6 @@ class LayoutView extends WidgetView {
         return trait.replace('_', '-');
     }
 
-
     /**
      * Handles when a trait value changes
      */
@@ -118,11 +114,11 @@ class LayoutView extends WidgetView {
     unlayout() {
         let parent = this.options.parent as DOMWidgetView;
         this._traitNames.forEach((trait) => {
-                if (parent) {
-                    parent.el.style.removeProperty(this.css_name(trait));
-                } else {
-                    console.warn('Style not removed because a parent view does not exist');
-                }
+            if (parent) {
+                parent.el.style.removeProperty(this.css_name(trait));
+            } else {
+                console.warn('Style not removed because a parent view does not exist');
+            }
         }, this);
     }
 

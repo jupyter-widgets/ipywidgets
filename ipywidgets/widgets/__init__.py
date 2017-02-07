@@ -6,7 +6,7 @@ from .trait_types import Color, Datetime
 
 from .widget_core import CoreWidget
 from .widget_bool import Checkbox, ToggleButton, Valid
-from .widget_button import Button
+from .widget_button import Button, ButtonStyle
 from .widget_box import Box, Proxy, PlaceProxy, HBox, VBox
 from .widget_float import FloatText, BoundedFloatText, FloatSlider, FloatProgress, FloatRangeSlider
 from .widget_image import Image
@@ -21,3 +21,4 @@ from .widget_controller import Controller
 from .interaction import interact, interactive, fixed, interact_manual, interactive_output
 from .widget_link import jslink, jsdlink
 from .widget_layout import Layout
+from .widget_style import Style
