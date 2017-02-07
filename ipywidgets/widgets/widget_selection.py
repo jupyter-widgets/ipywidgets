@@ -28,17 +28,21 @@ def _value_to_label(value, obj):
     # TODO: make a separate validation function so this doesn't have
     # to redo the work of parsing the options object.
     options = obj._make_options(obj.options)
-    if len(options) == 0:
-        raise TraitError("`options` must not be empty.")
-    try:
-        # return the first label whose value is equal to the desired value
-        return next(l for (l, v) in options if obj.equals(v, value))
-    except StopIteration:
-        raise KeyError(value)
+    if len(obj.options) == 0 and value is None:
+        return ''
+    else:
+        try:
+            # return the first label whose value is equal to the desired value
+            return next(l for (l, v) in options if obj.equals(v, value))
+        except StopIteration:
+            raise KeyError(value)
 
-def _label_to_value(k, obj):
+def _label_to_value(label, obj):
     """Convert a label to a value, given a _Selection object."""
-    return obj._options_dict[k]
+    if len(obj._options_dict) == 0 and label == '':
+        return None
+    else:
+        return obj._options_dict[label]
 
 
 class _Selection(LabeledWidget, ValueWidget, CoreWidget):
@@ -86,14 +90,24 @@ class _Selection(LabeledWidget, ValueWidget, CoreWidget):
         super(_Selection, self).__init__(*args, **kwargs)
 
     def _make_options(self, x):
+        """Standardize the options list format.
+
+        The returned list should be in the format [('label', value), ('label', value), ...].
+
+        The input can be
+        * a Mapping of labels to values
+        * an iterable of values (of which at least one is not a list or tuple of length 2)
+        * an iterable with entries that are lists or tuples of the form ('label', value)
+        """
         # Return a list of key-value pairs where the keys are strings
         # If x is a dict, convert it to list format.
         if isinstance(x, Mapping):
             return [(unicode_type(k), v) for k, v in x.items()]
 
-        # If x is an ordinary list, use the option values as names.
+        # If any entry of x is not a list or tuple of length 2, convert
+        # the entries to unicode for the labels.
         for y in x:
-            if not isinstance(y, (list, tuple)) or len(y) < 2:
+            if not (isinstance(y, (list, tuple)) and len(y) == 2):
                 return [(unicode_type(i), i) for i in x]
 
         # x is already in the correct format: a list of 2-tuples.
@@ -118,19 +132,28 @@ class _Selection(LabeledWidget, ValueWidget, CoreWidget):
     def _value_in_options(self, change):
         "Ensure the value is an option; if not, set to the first value"
         # ensure that the chosen value is still one of the options
-        try:
-            _value_to_label(self.value, self)
-        except KeyError:
-            self.value = self._options_values[0]
+        if len(self.options) == 0:
+            self.value = None
+        else:
+            try:
+                _value_to_label(self.value, self)
+            except KeyError:
+                self.value = self._options_values[0]
 
     @validate('value')
     def _validate_value(self, proposal):
         value = proposal['value']
-        try:
-            _value_to_label(value, self)
-            return value
-        except KeyError:
-            raise TraitError('Invalid selection')
+        if len(self.options) == 0:
+            if value is None:
+                return value
+            else:
+                raise TraitError('Invalid selection: empty options list')
+        else:
+            try:
+                _value_to_label(value, self)
+                return value
+            except KeyError:
+                raise TraitError('Invalid selection')
 
 
 def _values_to_labels(values, obj):
