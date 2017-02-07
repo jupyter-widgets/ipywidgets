@@ -43,6 +43,12 @@ class HTML(_String):
     _view_name = Unicode('HTMLView').tag(sync=True)
     _model_name = Unicode('HTMLModel').tag(sync=True)
 
+@register('Jupyter.HTMLMath')
+class HTMLMath(_String):
+    """Renders the string `value` as HTML, and render mathematics."""
+    _view_name = Unicode('HTMLMathView').tag(sync=True)
+    _model_name = Unicode('HTMLMathModel').tag(sync=True)
+
 
 @register('Jupyter.Label')
 class Label(_String):

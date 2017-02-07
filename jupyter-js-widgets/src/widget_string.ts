@@ -37,7 +37,11 @@ class HTMLView extends LabeledDOMWidgetView {
     render() {
         super.render();
         this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-html');
+        this.content = document.createElement('div');
+        this.content.classList.add('widget-html-content');
+        this.el.appendChild(this.content);
         this.update(); // Set defaults.
     }
 
@@ -48,11 +52,51 @@ class HTMLView extends LabeledDOMWidgetView {
      * changed by another view or by a state update from the back-end.
      */
     update() {
-        this.el.innerHTML = this.model.get('value');
+        this.content.innerHTML = this.model.get('value');
         return super.update();
+    }
+
+    content: HTMLDivElement;
+}
+
+
+export
+class HTMLMathModel extends StringModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _view_name: 'HTMLMathView',
+            _model_name: 'HTMLMathModel'
+        });
     }
 }
 
+export
+class HTMLMathView extends LabeledDOMWidgetView {
+    /**
+     * Called when view is rendered.
+     */
+    render() {
+        super.render();
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-inline-hbox');
+        this.el.classList.add('widget-htmlmath');
+        this.content = document.createElement('div');
+        this.content.classList.add('widget-htmlmath-content');
+        this.el.appendChild(this.content);
+        this.update(); // Set defaults.
+    }
+
+    /**
+     * Update the contents of this view
+     */
+    update() {
+        this.content.innerHTML = this.model.get('value');
+        this.typeset(this.content);
+        return super.update();
+    }
+
+    content: HTMLDivElement;
+}
 
 export
 class LabelModel extends StringModel {

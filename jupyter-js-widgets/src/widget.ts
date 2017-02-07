@@ -865,7 +865,7 @@ class DOMWidgetView extends WidgetView {
         this.update_classes([], new_classes, el || this.el);
     }
 
-    typeset(element, text){
+    typeset(element, text?){
         this.displayed.then(function() {utils.typeset(element, text);});
     }
 
