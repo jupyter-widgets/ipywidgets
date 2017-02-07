@@ -14,16 +14,16 @@ import * as _ from 'underscore';
 export
 class StyleModel extends CoreWidgetModel {
     defaults() {
-        var Derived = <typeof StyleModel>this.constructor;
+        let Derived = this.constructor as typeof StyleModel;
         return _.extend(super.defaults(), {
             _model_name: 'StyleModel',
-        }, _.reduce(Object.keys(Derived.style_properties), (obj: any, key) => {
-            obj[Derived.style_properties[key].attribute] = Derived.style_properties[key].default_value;
+        }, _.reduce(Object.keys(Derived.styleProperties), (obj: any, key: string) => {
+            obj[Derived.styleProperties[key].attribute] = Derived.styleProperties[key].default;
             return obj;
         }, {}));
     }
 
-    public static style_properties = {};
+    public static styleProperties = {};
 }
 
 export
@@ -36,8 +36,8 @@ class StyleView extends WidgetView {
         this._traitNames = [];
         super.initialize(parameters);
         // Register the traits that live on the Python side
-        var ModelType = (<typeof StyleModel>this.model.constructor);
-        for (let key of Object.keys(ModelType.style_properties)) {
+        let ModelType = this.model.constructor as typeof StyleModel;
+        for (let key of Object.keys(ModelType.styleProperties)) {
             this.registerTrait(key)
         }
     }
@@ -50,7 +50,7 @@ class StyleView extends WidgetView {
         this._traitNames.push(trait);
 
         // Listen to changes, and set the value on change.
-        this.listenTo(this.model, 'change:' + trait, (model, value) => {
+        this.listenTo(this.model, `change:${trait}`, (model, value) => {
             this.handleChange(trait, value);
         });
 
@@ -65,17 +65,17 @@ class StyleView extends WidgetView {
         // should be synchronous so that we can measure later.
         let parent = this.options.parent as DOMWidgetView;
         if (parent) {
-            let ModelType = (<typeof StyleModel>this.model.constructor);
-            let style_properties = ModelType.style_properties;
-            let attribute = style_properties[trait].attribute;
-            let selector  = style_properties[trait].selector;
+            let ModelType = this.model.constructor as typeof StyleModel;
+            let styleProperties = ModelType.styleProperties;
+            let attribute = styleProperties[trait].attribute;
+            let selector  = styleProperties[trait].selector;
             let elements = selector ? parent.el.querySelectorAll(selector) : [ parent.el ];
             if (value === null) {
-                for (var i = 0; i !== elements.length; ++i) {
+                for (let i = 0; i !== elements.length; ++i) {
                     elements[i].style.removeProperty(attribute);
                 }
             } else {
-                for (var i = 0; i !== elements.length; ++i) {
+                for (let i = 0; i !== elements.length; ++i) {
                     elements[i].style[attribute] = value;
                 }
             }
@@ -89,14 +89,14 @@ class StyleView extends WidgetView {
      */
     unstyle() {
         let parent = this.options.parent as DOMWidgetView;
-        let ModelType = (<typeof StyleModel>this.model.constructor);
-        let style_properties = ModelType.style_properties;
+        let ModelType = this.model.constructor as typeof StyleModel;
+        let styleProperties = ModelType.styleProperties;
         this._traitNames.forEach((trait) => {
             if (parent) {
-                let attribute = style_properties[trait].attribute;
-                let selector  = style_properties[trait].selector;
+                let attribute = styleProperties[trait].attribute;
+                let selector  = styleProperties[trait].selector;
                 let elements = selector ? parent.el.querySelectorAll(selector) : [ parent.el ];
-                for (var i = 0; i !== elements.length; ++i) {
+                for (let i = 0; i !== elements.length; ++i) {
                     elements[i].style.removeProperty(attribute);
                 }
             } else {

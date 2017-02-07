@@ -27,11 +27,11 @@ class ButtonStyleModel extends StyleModel {
         });
     }
 
-    public static style_properties = {
+    public static styleProperties = {
         button_color: {
-            default_value: '',
             selector: '',
-            attribute: 'background-color'
+            attribute: 'background-color',
+            default: ''
         }
     };
 }
