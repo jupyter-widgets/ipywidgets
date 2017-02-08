@@ -3,9 +3,10 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from traitlets import Unicode, Instance
+from traitlets import Unicode, Instance, CaselessStrEnum
 from .widget_core import CoreWidget
 
+CSS_PROPERTIES=['inherit', 'initial', 'unset']
 
 class Layout(CoreWidget):
     """Layout specification
@@ -28,30 +29,34 @@ class Layout(CoreWidget):
     _model_name = Unicode('LayoutModel').tag(sync=True)
 
     # Keys
-    align_content = Unicode(None, allow_none=True).tag(sync=True)
-    align_items = Unicode(None, allow_none=True).tag(sync=True)
-    align_self = Unicode(None, allow_none=True).tag(sync=True)
+    align_content = CaselessStrEnum(['flex-start', 'flex-end', 'center', 'space-between',
+        'space-around', 'space-evenly', 'stretch'] + CSS_PROPERTIES, allow_none=True).tag(sync=True)
+    align_items = CaselessStrEnum(['flex-start', 'flex-end', 'center',
+        'baseline', 'stretch'] + CSS_PROPERTIES, allow_none=True).tag(sync=True)
+    align_self = CaselessStrEnum(['auto', 'flex-start', 'flex-end',
+        'center', 'baseline', 'stretch'] + CSS_PROPERTIES, allow_none=True).tag(sync=True)
     bottom = Unicode(None, allow_none=True).tag(sync=True)
     border = Unicode(None, allow_none=True).tag(sync=True)
     display = Unicode(None, allow_none=True).tag(sync=True)
     flex = Unicode(None, allow_none=True).tag(sync=True)
     flex_flow = Unicode(None, allow_none=True).tag(sync=True)
     height = Unicode(None, allow_none=True).tag(sync=True)
-    justify_content = Unicode(None, allow_none=True).tag(sync=True)
+    justify_content = CaselessStrEnum(['flex-start', 'flex-end', 'center',
+        'space-between', 'space-around'] + CSS_PROPERTIES, allow_none=True).tag(sync=True)
     left = Unicode(None, allow_none=True).tag(sync=True)
     margin = Unicode(None, allow_none=True).tag(sync=True)
     max_height = Unicode(None, allow_none=True).tag(sync=True)
     max_width = Unicode(None, allow_none=True).tag(sync=True)
     min_height = Unicode(None, allow_none=True).tag(sync=True)
     min_width = Unicode(None, allow_none=True).tag(sync=True)
-    overflow = Unicode(None, allow_none=True).tag(sync=True)
-    overflow_x = Unicode(None, allow_none=True).tag(sync=True)
-    overflow_y = Unicode(None, allow_none=True).tag(sync=True)
+    overflow = CaselessStrEnum(['visible', 'hidden', 'scroll', 'auto'] + CSS_PROPERTIES, allow_none=True).tag(sync=True)
+    overflow_x = CaselessStrEnum(['visible', 'hidden', 'scroll', 'auto'] + CSS_PROPERTIES, allow_none=True).tag(sync=True)
+    overflow_y = CaselessStrEnum(['visible', 'hidden', 'scroll', 'auto'] + CSS_PROPERTIES, allow_none=True).tag(sync=True)
     order = Unicode(None, allow_none=True).tag(sync=True)
     padding = Unicode(None, allow_none=True).tag(sync=True)
     right = Unicode(None, allow_none=True).tag(sync=True)
     top = Unicode(None, allow_none=True).tag(sync=True)
-    visibility = Unicode(None, allow_none=True).tag(sync=True)
+    visibility = CaselessStrEnum(['visible', 'hidden']+CSS_PROPERTIES, allow_none=True).tag(sync=True)
     width = Unicode(None, allow_none=True).tag(sync=True)
 
 
