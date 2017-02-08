@@ -8,11 +8,14 @@ Represents an unbounded int using a widget.
 
 from .domwidget import LabeledWidget
 from .valuewidget import ValueWidget
-from .widget import register
+from .widget import register, widget_serialization
 from .widget_core import CoreWidget
+from .widget_style import Style
+from traitlets import Instance
 from .trait_types import Color
-from traitlets import (Unicode, CInt, Bool, CaselessStrEnum, Tuple, TraitError,
-                       validate)
+from traitlets import (
+    Unicode, CInt, Bool, CaselessStrEnum, Tuple, TraitError, default, validate
+)
 
 _int_doc_t = """
 Parameters
@@ -140,6 +143,13 @@ class BoundedIntText(_BoundedInt):
     _model_name = Unicode('IntTextModel').tag(sync=True)
 
 
+@register('Jupyter.SliderStyle')
+class SliderStyle(Style):
+    """Button style widget."""
+    _model_name = Unicode('SliderStyleModel').tag(sync=True)
+    handle_color = Color(None, allow_none=True).tag(sync=True)
+
+
 @register('Jupyter.IntSlider')
 @_bounded_int_doc
 class IntSlider(_BoundedInt):
@@ -152,8 +162,13 @@ class IntSlider(_BoundedInt):
     _range = Bool(False, help="Display a range selector").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
     readout_format = Unicode('d', help="Format for the readout").tag(sync=True)
-    slider_color = Color(None, allow_none=True).tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
+
+    style = Instance(SliderStyle).tag(sync=True, **widget_serialization)
+
+    @default('style')
+    def _default_style(self):
+        return SliderStyle()
 
 
 @register('Jupyter.IntProgress')

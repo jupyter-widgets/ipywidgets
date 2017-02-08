@@ -9,6 +9,10 @@ import {
     DOMWidgetView
 } from './widget';
 
+import {
+    StyleModel
+} from './widget_style';
+
 import * as _ from 'underscore';
 import * as $ from 'jquery';
 import 'jquery-ui/ui/widgets/slider';
@@ -39,6 +43,23 @@ class BoundedIntModel extends IntModel {
 }
 
 export
+class SliderStyleModel extends StyleModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'SliderStyleModel',
+        });
+    }
+
+    public static styleProperties = {
+        handle_color: {
+            selector: '.ui-slider-handle',
+            attribute: 'background-color',
+            default: ''
+        }
+    };
+}
+
+export
 class IntSliderModel extends BoundedIntModel {
     defaults() {
         return _.extend(super.defaults(), {
@@ -48,8 +69,8 @@ class IntSliderModel extends BoundedIntModel {
             _range: false,
             readout: true,
             readout_format: 'd',
-            slider_color: null,
-            continuous_update: true
+            continuous_update: true,
+            style: void 0
         });
     }
     initialize(attributes, options) {
@@ -89,12 +110,6 @@ class IntSliderView extends LabeledDOMWidgetView {
         this.readout.classList.add('widget-readout');
         this.readout.contentEditable = 'true';
         this.readout.style.display = 'none';
-
-        this.listenTo(this.model, 'change:slider_color', function(sender, value) {
-            this.$slider.find('a').css('background', value);
-        });
-
-        this.$slider.find('a').css('background', this.model.get('slider_color'));
 
         // Set defaults.
         this.update();
