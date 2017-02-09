@@ -220,7 +220,7 @@ if 'setuptools' in sys.modules:
 
 setuptools_args = {}
 install_requires = setuptools_args['install_requires'] = [
-    'notebook>=4.2.0',
+    'notebook>=4.4.0',
 ]
 
 extras_require = setuptools_args['extras_require'] = {

@@ -91,7 +91,7 @@ code, run ``dev-install.sh``. To only build the Python package enter ``pip insta
 
 | ipywidgets version  | Required notebook version |
 | ------------------- | ------------------------- |
-| master              | 4.2                       |
+| master              | 4.4                       |
 | 5.x                 | 4.2                       |
 | 4.1.x               | 4.1                       |
 | 4.0.x               | 4.0                       |
@@ -99,20 +99,24 @@ code, run ``dev-install.sh``. To only build the Python package enter ``pip insta
 [Change log](docs/source/changelog.md)
 
 ## Usage
+
 See the [examples](docs/source/examples.md) section of the documentation. The widgets are being used in a variety of ways; some uses can be seen in these notebooks:
 
 - [Demo notebook of interactive widgets](https://github.com/ipython/ipywidgets/blob/master/docs/source/examples/Index.ipynb)
 
 ## Contributing to ipywidgets
+
 - [Developer install](docs/source/dev_install.md)
 
 ## License
+
 We use a shared copyright model that enables all contributors to maintain the
 copyright on their contributions.
 
 See the [LICENSE](LICENSE) file in this repository for details.
 
 ## Project Jupyter resources
+
 - [Project Jupyter website](https://jupyter.org)
 - [Online Demo of Jupyter Notebook at try.jupyter.org](https://try.jupyter.org)
 - [Documentation for Project Jupyter](https://jupyter.readthedocs.io/en/latest/index.html) [[PDF](https://media.readthedocs.org/pdf/jupyter/latest/jupyter.pdf)]
