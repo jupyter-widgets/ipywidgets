@@ -41,7 +41,7 @@ var OutputModel = widgets.DOMWidgetModel.extend({
         }
     },
 
-    reset_msg_id() {
+    reset_msg_id: function() {
         var kernel = this.kernel;
         // Pop previous message id
         var prev_msg_id = this.previous('msg_id');
