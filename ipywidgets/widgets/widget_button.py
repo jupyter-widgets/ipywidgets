@@ -22,6 +22,7 @@ class ButtonStyle(Style):
     """Button style widget."""
     _model_name = Unicode('ButtonStyleModel').tag(sync=True)
     button_color = Color(None, allow_none=True).tag(sync=True)
+    font_weight = Unicode().tag(sync=True)
 
 
 @register('Jupyter.Button')
