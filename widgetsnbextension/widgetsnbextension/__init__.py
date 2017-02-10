@@ -24,8 +24,3 @@ def _jupyter_nbextension_paths():
         'dest': 'jupyter-js-widgets',
         'require': 'jupyter-js-widgets/extension'
     }]
-
-def find_static_assets():
-    warn("""To use the jupyter-js-widgets nbextension, you'll need to update
-    the Jupyter notebook to version 4.2 or later.""")
-    return []
