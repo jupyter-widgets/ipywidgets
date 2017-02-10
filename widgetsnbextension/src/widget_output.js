@@ -66,7 +66,7 @@ var OutputView = widgets.DOMWidgetView.extend({
     },
 
     render: function(){
-        let renderOutput = (outputArea) => {
+        var renderOutput = function(outputArea) {
             this.output_area = new outputArea.OutputArea({
                 selector: this.el,
                 config: this.options.cell.config,
@@ -95,7 +95,7 @@ var OutputView = widgets.DOMWidgetView.extend({
             requirejs(["notebook/js/outputarea"], renderOutput)
         } else {
             // Notebook 5.x
-            requirejs(["notebook"], (notebookApp) => {
+            requirejs(["notebook"], function(notebookApp) {
                 var outputArea = notebookApp["notebook/js/outputarea"];
                 renderOutput(outputArea);
             });
