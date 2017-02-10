@@ -66,28 +66,29 @@ var OutputView = widgets.DOMWidgetView.extend({
     },
 
     render: function(){
-        let renderOutput = (outputArea) => {
-            this.output_area = new outputArea.OutputArea({
-                selector: this.el,
-                config: this.options.cell.config,
+        var that = this;
+        var renderOutput = function(outputArea) {
+            that.output_area = new outputArea.OutputArea({
+                selector: that.el,
+                config: that.options.cell.config,
                 prompt_area: false,
-                events: this.model.widget_manager.notebook.events,
-                keyboard_manager: this.model.widget_manager.keyboard_manager });
-            this.listenTo(this.model, 'new_message', function(msg) {
+                events: that.model.widget_manager.notebook.events,
+                keyboard_manager: that.model.widget_manager.keyboard_manager });
+            that.listenTo(that.model, 'new_message', function(msg) {
                 console.log('View new output message');
                 console.log(msg);
-                this.output_area.handle_output(msg);
-            }, this);
-            this.listenTo(this.model, 'clear_output', function(msg) {
+                that.output_area.handle_output(msg);
+            }, that);
+            that.listenTo(that.model, 'clear_output', function(msg) {
                 console.log('View clear output');
                 console.log(msg);
-                this.output_area.handle_clear_output(msg);
+                that.output_area.handle_clear_output(msg);
             })
 
-            // Render initial contents from this.model._outputs
-            this.model._outputs.forEach(function(msg) {
-                this.output_area.handle_output(msg);
-            }, this)
+            // Render initial contents from that.model._outputs
+            that.model._outputs.forEach(function(msg) {
+                that.output_area.handle_output(msg);
+            }, that)
         }
 
         if (requirejs.defined("notebook/js/outputarea")) {
@@ -95,7 +96,7 @@ var OutputView = widgets.DOMWidgetView.extend({
             requirejs(["notebook/js/outputarea"], renderOutput)
         } else {
             // Notebook 5.x
-            requirejs(["notebook"], (notebookApp) => {
+            requirejs(["notebook"], function(notebookApp) {
                 var outputArea = notebookApp["notebook/js/outputarea"];
                 renderOutput(outputArea);
             });
