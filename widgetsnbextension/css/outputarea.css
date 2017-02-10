@@ -21,7 +21,7 @@
 }
 
 .widget-area.connection-problems .prompt:after {
-    content: @fa-var-chain-broken;
+    content: "\f127"; /* chain-broken */
     font-family: "FontAwesome";
     color: #d9534f;
     top: 3px;
