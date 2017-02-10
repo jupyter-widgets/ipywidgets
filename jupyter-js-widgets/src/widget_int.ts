@@ -2,11 +2,11 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    LabeledDOMWidgetModel, LabeledDOMWidgetView
+    CoreLabeledDOMWidgetModel
 } from './widget_core';
 
 import {
-    DOMWidgetView
+    DOMWidgetView, LabeledDOMWidgetView
 } from './widget';
 
 import {
@@ -20,7 +20,7 @@ import 'jquery-ui/ui/widgets/slider';
 var d3format: any = (require('d3-format') as any).format;
 
 export
-class IntModel extends LabeledDOMWidgetModel {
+class IntModel extends CoreLabeledDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'IntModel',

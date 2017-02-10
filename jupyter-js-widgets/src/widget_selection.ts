@@ -2,11 +2,11 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    LabeledDOMWidgetModel, LabeledDOMWidgetView
+    CoreLabeledDOMWidgetModel,
 } from './widget_core';
 
 import {
-    unpack_models, ViewList
+    LabeledDOMWidgetView, unpack_models, ViewList
 } from './widget';
 
 import * as _ from 'underscore';
@@ -24,7 +24,7 @@ function scrollIfNeeded(area, elem) {
 }
 
 export
-class SelectionModel extends LabeledDOMWidgetModel {
+class SelectionModel extends CoreLabeledDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'SelectionModel',

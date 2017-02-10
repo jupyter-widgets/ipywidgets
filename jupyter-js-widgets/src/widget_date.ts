@@ -2,7 +2,11 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    LabeledDOMWidgetModel, LabeledDOMWidgetView
+    LabeledDOMWidgetView
+} from './widget';
+
+import {
+    CoreLabeledDOMWidgetModel
 } from './widget_core';
 
 import * as _ from 'underscore';
@@ -75,13 +79,13 @@ function convertDateToUTC(date) {
 }
 
 export
-class DatePickerModel extends LabeledDOMWidgetModel {
+class DatePickerModel extends CoreLabeledDOMWidgetModel {
     static serializers = _.extend({
         value: {
             serialize: serialize_datetime,
             deserialize: deserialize_datetime
         }
-    }, LabeledDOMWidgetModel.serializers)
+    }, CoreLabeledDOMWidgetModel.serializers)
 
     defaults() {
         return _.extend(super.defaults(), {

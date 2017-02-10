@@ -2,11 +2,11 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    LabeledDOMWidgetModel, LabeledDOMWidgetView
+    CoreLabeledDOMWidgetModel
 } from './widget_core';
 
 import {
-    DOMWidgetView
+    DOMWidgetView, LabeledDOMWidgetView
 } from './widget';
 
 import {
@@ -17,7 +17,7 @@ import * as _ from 'underscore';
 
 
 export
-class BoolModel extends LabeledDOMWidgetModel {
+class BoolModel extends CoreLabeledDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             value: false,
@@ -28,7 +28,7 @@ class BoolModel extends LabeledDOMWidgetModel {
 }
 
 export
-class CheckboxModel extends LabeledDOMWidgetModel {
+class CheckboxModel extends CoreLabeledDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             _view_name: 'CheckboxView',

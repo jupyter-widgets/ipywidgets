@@ -2,14 +2,18 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    LabeledDOMWidgetModel, LabeledDOMWidgetView
+    LabeledDOMWidgetView
+} from './widget';
+
+import {
+    CoreLabeledDOMWidgetModel
 } from './widget_core';
 
 import * as _ from 'underscore';
 
 
 export
-class ColorPickerModel extends LabeledDOMWidgetModel {
+class ColorPickerModel extends CoreLabeledDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             value: 'black',
