@@ -72,8 +72,9 @@ var WidgetManager = function (comm_manager, notebook) {
                 if (cell.output_area) {
                     outputs = cell.output_area.outputs;
                     for (var j = 0; j < outputs.length; ++j) {
-                        if (outputs[j].data['application/vnd.jupyter.widget-view+json']) {
-                            var model_promise = that.get_model(outputs[j].data['application/vnd.jupyter.widget-view+json'].model_id);
+                        var out = outputs[j];
+                        if (out.output_type==="display_data" && out.data['application/vnd.jupyter.widget-view+json']) {
+                            var model_promise = that.get_model(out.data['application/vnd.jupyter.widget-view+json'].model_id);
                             if (model_promise !== undefined) {
                                 model_promise.then((function(cell_index) {
                                     return function (model) {
