@@ -5,7 +5,7 @@
 // that are not to be used directly by third-party widget authors.
 
 import {
-    DOMWidgetModel, WidgetModel, DOMWidgetView
+    DOMWidgetModel, WidgetModel, LabeledDOMWidgetModel
 } from './widget';
 
 import * as _ from 'underscore';
@@ -35,37 +35,12 @@ class CoreDOMWidgetModel extends DOMWidgetModel {
 }
 
 export
-class LabeledDOMWidgetModel extends CoreDOMWidgetModel {
+class CoreLabeledDOMWidgetModel extends LabeledDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
-            description: '',
+            _model_name: 'CoreLabeledDOMWidgetModel',
+            _model_module_version: semver_range,
+            _view_module_version: semver_range
         });
     }
-}
-
-export
-class LabeledDOMWidgetView extends DOMWidgetView {
-
-    render() {
-        this.label = document.createElement('div');
-        this.el.appendChild(this.label);
-        this.label.className = 'widget-label';
-        this.label.style.display = 'none';
-
-        this.listenTo(this.model, 'change:description', this.updateDescription);
-        this.updateDescription();
-    }
-
-    updateDescription() {
-        let description = this.model.get('description');
-        if (description.length === 0) {
-            this.label.style.display = 'none';
-        } else {
-            this.typeset(this.label, description);
-            this.label.style.display = '';
-        }
-        this.label.title = description;
-    }
-
-    label: HTMLDivElement;
 }
