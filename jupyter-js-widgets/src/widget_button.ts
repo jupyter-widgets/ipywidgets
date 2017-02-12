@@ -31,7 +31,7 @@ class ButtonStyleModel extends StyleModel {
         button_color: {
             selector: '',
             attribute: 'background-color',
-            default: ''
+            default: null
         },
         font_weight: {
             selector: '',

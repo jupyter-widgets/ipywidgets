@@ -144,7 +144,7 @@ class BoundedIntText(_BoundedInt):
 
 
 @register('Jupyter.SliderStyle')
-class SliderStyle(Style):
+class SliderStyle(Style, CoreWidget):
     """Button style widget."""
     _model_name = Unicode('SliderStyleModel').tag(sync=True)
     handle_color = Color(None, allow_none=True).tag(sync=True)

@@ -17,8 +17,9 @@ class StyleModel extends CoreWidgetModel {
         let Derived = this.constructor as typeof StyleModel;
         return _.extend(super.defaults(), {
             _model_name: 'StyleModel',
+            _view_name: 'StyleView',
         }, _.reduce(Object.keys(Derived.styleProperties), (obj: any, key: string) => {
-            obj[Derived.styleProperties[key].attribute] = Derived.styleProperties[key].default;
+            obj[key] = Derived.styleProperties[key].default;
             return obj;
         }, {}));
     }
