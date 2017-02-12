@@ -18,7 +18,7 @@ import warnings
 
 
 @register('Jupyter.ButtonStyle')
-class ButtonStyle(Style):
+class ButtonStyle(Style, CoreWidget):
     """Button style widget."""
     _model_name = Unicode('ButtonStyleModel').tag(sync=True)
     button_color = Color(None, allow_none=True).tag(sync=True)

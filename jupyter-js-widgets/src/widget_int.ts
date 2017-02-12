@@ -54,7 +54,7 @@ class SliderStyleModel extends StyleModel {
         handle_color: {
             selector: '.ui-slider-handle',
             attribute: 'background-color',
-            default: ''
+            default: null
         }
     };
 }
