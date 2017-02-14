@@ -960,7 +960,8 @@ class LabeledDOMWidgetView extends DOMWidgetView {
         if (description.length === 0) {
             this.label.style.display = 'none';
         } else {
-            this.typeset(this.label, description);
+            this.label.innerHTML = description;
+            this.typeset(this.label);
             this.label.style.display = '';
         }
         this.label.title = description;
