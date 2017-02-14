@@ -62,18 +62,32 @@ function register_events(Jupyter, events) {
         handle_cell(cells[i]);
     }
 
-    // Listen to cell creation and deletion events.  When a
-    // cell is created, create a widget area for that cell.
     events.on('create.Cell', function(event, data) {
         handle_cell(data.cell);
     });
-    // When a cell is deleted, delete the widget area if it
-    // exists.
-    events.on('delete.Cell', function(event, data) {
-        if (data.cell && data.cell.widgetarea) {
-            data.cell.widgetarea.dispose();
+
+    var clearWidgetArea = function(event, data) {
+        data.cell.widgetarea && data.cell.widgetarea.clear();
+    }
+    events.on('delete.Cell', clearWidgetArea);
+    events.on('execute.CodeCell', clearWidgetArea);
+    events.on('clear_output.CodeCell', clearWidgetArea);
+
+    events.on('resize.Cell', function(event, data) {
+        data.cell.widgetarea && data.cell.widgetarea.resize();
+    })
+
+    var disconnectWidgetAreas = function() {
+        var cells = Jupyter.notebook.get_cells();
+        for (var i = 0; i < cells.length; i++) {
+            var cell = cells[i];
+            cell.widgetarea && cell.widgetarea.disconnect();
         }
-    });
+    }
+    events.on('kernel_disconnected.Kernel', disconnectWidgetAreas);
+    events.on('kernel_killed.Kernel', disconnectWidgetAreas);
+    events.on('kernel_restarting.Kernel', disconnectWidgetAreas);
+    events.on('kernel_dead.Kernel', disconnectWidgetAreas);
 }
 
 function load_ipython_extension () {

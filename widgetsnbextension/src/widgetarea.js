@@ -5,7 +5,7 @@
 require('../css/outputarea.css');
 
 var messaging = require('phosphor/lib/core/messaging');
-var widgets = require('phosphor/lib/ui/widget');
+var pwidgets = require('phosphor/lib/ui/widget');
 
 /**
  * WidgetArea
@@ -15,29 +15,11 @@ var WidgetArea = function(cell) {
 
     this._cell = cell;
     this._widgets_live = true;
-    this.disposed = false;
 
     this._create_elements();
-    this._bind_events();
     requirejs(['base/js/events'], (function(events) {
         events.trigger('create.WidgetArea', {widgetarea: this, cell: cell});
     }).bind(this));
-
-    var that = this;
-    var died = function () { that._widget_dead(); };
-    cell.notebook.events.on('kernel_disconnected.Kernel', died);
-    cell.notebook.events.on('kernel_killed.Kernel', died);
-    cell.notebook.events.on('kernel_restarting.Kernel', died);
-    cell.notebook.events.on('kernel_dead.Kernel', died);
-
-    cell.events.on('resize.Cell', function(event, options) {
-        if (options.cell !== that._cell) {
-            return;
-        }
-        that.widget_views.forEach(function(view) {
-            messaging.sendMessage(view.pWidget, widgets.ResizeMessage.UnknownSize);
-        });
-    });
 };
 
 /**
@@ -57,7 +39,7 @@ WidgetArea.prototype.display_widget_view = function(view_promise) {
         // Do basically the same as Phosphor's Widget.attach, except we replace
         // a child rather than appending the view's Phosphor widget
         dummy.parentNode.replaceChild(view.pWidget.node, dummy);
-        messaging.sendMessage(view.pWidget, widgets.WidgetMessage.AfterAttach)
+        messaging.sendMessage(view.pWidget, pwidgets.WidgetMessage.AfterAttach)
 
         that.widget_views.push(view);
 
@@ -65,7 +47,7 @@ WidgetArea.prototype.display_widget_view = function(view_promise) {
         if (view.model.comm_live) {
             that._widget_live(view);
         } else {
-            that._widget_dead(view);
+            that.disconnect(view);
         }
 
         // If the view is removed, check to see if the widget area is empty.
@@ -75,24 +57,12 @@ WidgetArea.prototype.display_widget_view = function(view_promise) {
             if (index !== -1) that.widget_views.splice(index, 1);
 
             if (that.widget_views.length === 0) {
-                that._clear();
+                that.clear();
             }
         });
 
         return view;
     });
-};
-
-/**
- * Disposes of the widget area and its widgets.
- */
-WidgetArea.prototype.dispose = function() {
-    this._cell.notebook.events.off('kernel_disconnected.Kernel');
-    this._cell.notebook.events.off('kernel_killed.Kernel');
-    this._cell.notebook.events.off('kernel_restarting.Kernel');
-    this._cell.notebook.events.off('kernel_dead.Kernel');
-    this._clear();
-    this.disposed = true;
 };
 
 /**
@@ -140,29 +110,24 @@ WidgetArea.prototype._create_elements = function() {
 };
 
 /**
- * Listens to events of the cell.
- */
-WidgetArea.prototype._bind_events = function() {
-    requirejs(['base/js/events'], (function(events) {
-        events.on('execute.CodeCell', (function(event, data) {
-            if (data.cell===this._cell) {
-                this._clear();
-            }
-        }).bind(this));
-    }).bind(this));
-};
-
-/**
  * Handles when a widget loses it's comm connection.
  * @param {WidgetView} view
  */
-WidgetArea.prototype._widget_dead = function() {
+WidgetArea.prototype.disconnect = function() {
     if (this._widgets_live) {
         this._widgets_live = false;
         this.widget_area.classList.add('connection-problems');
     }
-
 };
+
+/**
+ * Sends resize message to all child views
+ */
+WidgetArea.prototype.resize = function() {
+    this.widget_views.forEach(function(view) {
+        messaging.sendMessage(view.pWidget, pwidgets.ResizeMessage.UnknownSize);
+    });
+}
 
 /**
  * Handles when a widget is connected to a live comm.
@@ -184,7 +149,7 @@ WidgetArea.prototype._widget_live = function() {
 /**
  * Clears the widgets in the widget area.
  */
-WidgetArea.prototype._clear = function() {
+WidgetArea.prototype.clear = function() {
     // Clear widget area
     for (var i = 0; i < this.widget_views.length; i++) {
         var view = this.widget_views[i];
