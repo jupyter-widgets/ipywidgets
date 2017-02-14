@@ -37,6 +37,13 @@
     --jp-widgets-slider-border-width: var(--jp-widgets-border-width);
     --jp-widgets-slider-active-handle-background: var(--jp-brand-color1);
     --jp-widgets-menu-item-height: 24px;
+
+    --jp-widgets-input-color: var(--jp-ui-font-color1);
+    --jp-widgets-input-backgroundColor: var(--jp-layout-color1);
+    --jp-widgets-input-border-color: var(--jp-border-color1);
+    --jp-widgets-input-border-width: var(--jp-widgets-border-width);
+
+
 }
 
 .jupyter-widgets {
@@ -368,9 +375,9 @@
 
 .widget-text input[type="text"], .widget-textarea textarea {
     box-sizing: border-box;
-    border: var(--jp-border-width) solid var(--jp-border-color1);
-    background-color: var(--jp-layout-color1);
-    color: var(--jp-ui-font-color1);
+    border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
+    background-color: var(--jp-widgets-input-backgroundColor);
+    color: var(--jp-widgets-input-color);
     font-size: var(--jp-widgets-font-size);
     padding: var(--jp-widgets-input-padding);
     flex-grow: 1;
@@ -615,9 +622,9 @@
 
     /* TODO: figure out why the outline isn't working... */
     box-shadow: none;
-    border: var(--jp-border-width) solid var(--jp-border-color1);
-    color: var(--jp-ui-font-color1);
-    background-color: var(--jp-layout-color1);
+    border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
+    color: var(--jp-widgets-input-color);
+    background-color: var(--jp-widgets-input-backgroundColor);
     font-size: var(--jp-widgets-font-size);
 }
 
@@ -636,9 +643,9 @@
 }
 
 ul.widget-dropdown-droplist {
-    background: var(--jp-layout-color1);
-    color: var(--jp-ui-font-color1);
-    border: var(--jp-border-width) solid var(--jp-border-color1);
+    background: var(--jp-widgets-input-backgroundColor);
+    color: var(--jp-widgets-input-color);
+    border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     box-sizing: border-box;
     list-style-type: none;
     position: absolute;
@@ -653,12 +660,12 @@ ul.widget-dropdown-droplist {
 
 ul.widget-dropdown-droplist.below {
     border-top: none;
-    transform: translateY(calc(-1 * var(--jp-border-width)));
+    transform: translateY(calc(-1 * var(--jp-widgets-input-border-width)));
 }
 
 ul.widget-dropdown-droplist.above {
     border-bottom: none;
-    transform: translateY(calc(2 * var(--jp-border-width)));
+    transform: translateY(calc(2 * var(--jp-widgets-input-border-width)));
 }
 
 ul.widget-dropdown-droplist a {
@@ -702,21 +709,21 @@ ul.widget-dropdown-droplist.mod-active {
 }
 
 .widget-select .jp-Dialog-selectWrapper {
-    border: var(--jp-border-width) solid var(--jp-border-color1);
+    border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     border-radius: 0;
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
     flex: 1 1 var(--jp-widgets-inline-width-short);
-    background-color: var(--jp-layout-color1);
+    background-color: var(--jp-widgets-input-backgroundColor);
 }
 
 .widget-select select {
     border: none;
-    background-color: var(--jp-layout-color1);
-    color: var(--jp-ui-font-color1);
+    background-color: var(--jp-widgets-input-backgroundColor);
+    color: var(--jp-widgets-input-color);
     font-size: var(--jp-widgets-font-size);
     width: 100%;
-    height: calc(var(--jp-widgets-inline-height) - 2 * var(--jp-border-width));
+    height: calc(var(--jp-widgets-inline-height) - 2 * var(--jp-widgets-input-border-width));
     vertical-align: top;
 }
 
@@ -733,9 +740,9 @@ ul.widget-dropdown-droplist.mod-active {
 }
 
 .widget-select-multiple select {
-    border: var(--jp-border-width) solid var(--jp-border-color1);
-    background-color: var(--jp-layout-color1);
-    color: var(--jp-ui-font-color1);
+    border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
+    background-color: var(--jp-widgets-input-backgroundColor);
+    color: var(--jp-widgets-input-color);
     font-size: var(--jp-widgets-font-size);
     flex: 1 1 var(--jp-widgets-inline-width-short);
 }
@@ -807,9 +814,9 @@ ul.widget-dropdown-droplist.mod-active {
     width: var(--jp-widgets-inline-height);
     height: var(--jp-widgets-inline-height);
     padding: 0 2px; /* make the color square actually square on Chrome on OS X */
-    background: var(--jp-layout-color1);
-    color: var(--jp-ui-font-color1);
-    border: var(--jp-widgets-border-width) solid var(--jp-border-color1);
+    background: var(--jp-widgets-input-backgroundColor);
+    color: var(--jp-widgets-input-color);
+    border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     border-left: none;
     flex-grow: 0;
     flex-shrink: 0;
@@ -821,9 +828,9 @@ ul.widget-dropdown-droplist.mod-active {
     flex-grow: 1;
     /*outline: none !important;*/
     height: var(--jp-widgets-inline-height);
-    background: var(--jp-layout-color1);
-    color: var(--jp-ui-font-color1);
-    border: var(--jp-widgets-border-width) solid var(--jp-border-color1);
+    background: var(--jp-widgets-input-backgroundColor);
+    color: var(--jp-widgets-input-color);
+    border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     font-size: var(--jp-widgets-font-size);
     padding: var(--jp-widgets-input-padding);
     min-width: 0; /* This makes it possible for the flexbox to shrink this input */
@@ -842,7 +849,7 @@ ul.widget-dropdown-droplist.mod-active {
 .widget-datepicker input[type="date"] {
     flex-grow: 1;
     height: var(--jp-widgets-inline-height);
-    border: var(--jp-widgets-border-width) solid var(--jp-border-color1);
+    border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     font-size: var(--jp-widgets-font-size);
     padding: var(--jp-widgets-input-padding);
     box-sizing: border-box;
