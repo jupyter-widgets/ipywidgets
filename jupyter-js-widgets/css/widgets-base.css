@@ -895,7 +895,7 @@ ul.widget-dropdown-droplist.mod-active {
 }
 
 .jupyter-widgets.widget-tab .widget-tab-bar.p-TabBar {
-    font: 12px Helvetica, Arial, sans-serif;
+    font: var(--jp-widgets-font-size) Helvetica, Arial, sans-serif;
 }
 
 .jupyter-widgets.widget-tab .p-TabBar-tab {
