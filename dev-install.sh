@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+# For a clean conda environment, do:
+
+# conda create -c conda-forge -n ipywidgets notebook=4.4.1
+# source activate ipywidgets
+# pip install jupyterlab==0.16.2
+# ipython kernel install --name ipywidgets --display-name "ipywidgets" --sys-prefix
+# git clone https://github.com/ipython/ipywidgets.git
+# cd ipywidgets
+# ./dev-install.sh
+
 echo -n "Checking npm... "
 npm -v
 if [ $? -ne 0 ]; then
@@ -38,6 +48,7 @@ cd ..
 
 cd widgetsnbextension
 npm install
+npm run update
 pip install -v -e .
 if [[ "$OSTYPE" == "msys" ]]; then
     jupyter nbextension install --overwrite --py $nbExtFlags widgetsnbextension
@@ -50,6 +61,7 @@ cd ..
 if test "$skip_jupyter_lab" != yes; then
     cd jupyterlab_widgets
     npm install
+    npm run update
     pip install -v -e .
     if [[ "$OSTYPE" == "msys" ]]; then
         jupyter labextension install --overwrite --py $nbExtFlags jupyterlab_widgets
