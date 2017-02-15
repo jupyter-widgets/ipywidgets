@@ -142,7 +142,8 @@ class TextareaModel extends StringModel {
     defaults() {
         return _.extend(super.defaults(), {
             _view_name: 'TextareaView',
-            _model_name: 'TextareaModel'
+            _model_name: 'TextareaModel',
+            rows: null
         });
     }
 }
@@ -164,12 +165,13 @@ class TextareaView extends LabeledDOMWidgetView {
 
         this.update(); // Set defaults.
         this.listenTo(this.model, 'msg:custom', (content) => {
-          this._handle_textarea_msg(content)
+            this._handle_textarea_msg(content)
         });
+
         this.listenTo(this.model, 'change:placeholder',
             function(model, value, options) {
                 this.update_placeholder(value);
-            });
+        });
 
         this.update_placeholder();
     }
@@ -204,7 +206,7 @@ class TextareaView extends LabeledDOMWidgetView {
     update(options?) {
         if (options === undefined || options.updated_view != this) {
             this.textbox.value = this.model.get('value');
-
+            this.textbox.rows = this.model.get('rows');
             var disabled = this.model.get('disabled');
             this.textbox.disabled = disabled;
         }

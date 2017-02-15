@@ -10,7 +10,7 @@ from .domwidget import LabeledWidget
 from .valuewidget import ValueWidget
 from .widget import CallbackDispatcher, register
 from .widget_core import CoreWidget
-from traitlets import Unicode, Bool
+from traitlets import Unicode, Bool, Int
 from warnings import warn
 
 
@@ -66,6 +66,7 @@ class Textarea(_String):
     """Multiline text area widget."""
     _view_name = Unicode('TextareaView').tag(sync=True)
     _model_name = Unicode('TextareaModel').tag(sync=True)
+    rows = Int(None, allow_none=True).tag(sync=True)
 
     def scroll_to_bottom(self):
         self.send({"method": "scroll_to_bottom"})
