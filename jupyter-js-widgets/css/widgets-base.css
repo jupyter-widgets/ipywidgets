@@ -880,6 +880,11 @@ ul.widget-dropdown-droplist.mod-active {
     overflow-y: visible;
 }
 
+.jupyter-widgets .p-TabPanel-tabContents {
+    overflow-x: visible;
+    overflow-y: visible;
+}
+
 .jupyter-widgets.widget-tab .p-TabBar.p-mod-horizontal > .p-TabBar-content {
     align-items: flex-end;
     margin-bottom: 0;
