@@ -315,6 +315,7 @@ class TabView extends DOMWidgetView {
         tabs.addClass('jupyter-widgets');
         tabs.addClass('widget-container');
         tabs.addClass('widget-tab');
+        tabs.tabsMovable = true;
         tabs.tabBar.insertBehavior = 'none'; // needed for insert behavior, see below.
         tabs.tabBar.currentChanged.connect(this._onTabChanged, this);
         tabs.tabBar.tabMoved.connect(this._onTabMoved, this);

@@ -51,7 +51,6 @@ class EventedPanel extends Panel {
 }
 
 
-
 /**
  * A widget which combines a `TabBar` and a `EventedPanel`.
  *
@@ -62,7 +61,7 @@ class EventedPanel extends Panel {
  *
  * For use cases which require more control than is provided by this
  * panel, the `TabBar` widget may be used independently.
- * 
+ *
  * TODO: Support setting the direction??
  */
 export
@@ -76,9 +75,8 @@ class TabPanel extends Widget {
     super();
     this.addClass('p-TabPanel');
 
-    // Create the tab bar and stacked panel.
+    // Create the tab bar and contents panel.
     this.tabBar = new TabBar<Widget>(options);
-    this.tabBar.tabsMovable = true;
     this.tabBar.addClass('p-TabPanel-tabBar');
     this.tabContents = new EventedPanel();
     this.tabContents.addClass('p-TabPanel-tabContents');
@@ -92,16 +90,7 @@ class TabPanel extends Widget {
     // Connect the evented panel signal handlers.
     this.tabContents.widgetRemoved.connect(this._onWidgetRemoved, this);
 
-    // Get the data related to the placement.
-    this._tabPlacement = options.tabPlacement || 'top';
-    let direction = Private.directionFromPlacement(this._tabPlacement);
-    let orientation = Private.orientationFromPlacement(this._tabPlacement);
-
-    // Configure the tab bar for the placement.
-    this.tabBar.orientation = orientation;
-    Private.togglePlacement(this.tabBar, this._tabPlacement);
-
-    // Create the box layout.
+    // Create the layout.
     let layout = new PanelLayout();
 
     // Add the child widgets to the layout.
@@ -186,43 +175,6 @@ class TabPanel extends Widget {
    */
   set tabsMovable(value: boolean) {
     this.tabBar.tabsMovable = value;
-  }
-
-  /**
-   * Get the tab placement for the tab panel.
-   *
-   * #### Notes
-   * This controls the position of the tab bar relative to the content.
-   */
-  get tabPlacement(): TabPanel.TabPlacement {
-    return this._tabPlacement;
-  }
-
-  /**
-   * Set the tab placement for the tab panel.
-   *
-   * #### Notes
-   * This controls the position of the tab bar relative to the content.
-   */
-  set tabPlacement(value: TabPanel.TabPlacement) {
-    // Bail if the placement does not change.
-    if (this._tabPlacement === value) {
-      return;
-    }
-
-    // Update the internal value.
-    this._tabPlacement = value;
-
-    // Get the values related to the placement.
-    let direction = Private.directionFromPlacement(value);
-    let orientation = Private.orientationFromPlacement(value);
-
-    // Configure the tab bar for the placement.
-    this.tabBar.orientation = orientation;
-    Private.togglePlacement(this.tabBar, value);
-
-    // Update the layout direction.
-    (this.layout as BoxLayout).direction = direction;
   }
 
   /**
@@ -342,7 +294,6 @@ class TabPanel extends Widget {
     this.tabBar.removeTab(widget.title);
   }
 
-  private _tabPlacement: TabPanel.TabPlacement;
   private _currentChanged = new Signal<this, TabPanel.ICurrentChangedArgs>(this);
 }
 
@@ -352,31 +303,6 @@ class TabPanel extends Widget {
  */
 export
 namespace TabPanel {
-  /**
-   * A type alias for tab placement in a tab bar.
-   */
-  export
-  type TabPlacement = (
-    /**
-     * The tabs are placed as a row above the content.
-     */
-    'top' |
-
-    /**
-     * The tabs are placed as a column to the left of the content.
-     */
-    'left' |
-
-    /**
-     * The tabs are placed as a column to the right of the content.
-     */
-    'right' |
-
-    /**
-     * The tabs are placed as a row below the content.
-     */
-    'bottom'
-  );
 
   /**
    * An options object for initializing a tab panel.
@@ -389,13 +315,6 @@ namespace TabPanel {
      * The default is `false`.
      */
     tabsMovable?: boolean;
-
-    /**
-     * The placement of the tab bar relative to the content.
-     *
-     * The default is `'top'`.
-     */
-    tabPlacement?: TabPlacement;
 
     /**
      * The renderer for the panel's tab bar.
@@ -430,59 +349,6 @@ namespace TabPanel {
      */
     currentWidget: Widget | null;
   }
-}
-
-
-/**
- * The namespace for the module implementation details.
- */
-namespace Private {
-  /**
-   * Toggle the CSS placement class for the given tab bar.
-   */
-  export
-  function togglePlacement(bar: TabBar<any>, plc: TabPanel.TabPlacement): void {
-    bar.toggleClass('p-mod-top', plc === 'top');
-    bar.toggleClass('p-mod-left', plc === 'left');
-    bar.toggleClass('p-mod-right', plc === 'right');
-    bar.toggleClass('p-mod-bottom', plc === 'bottom');
-  }
-
-  /**
-   * Convert a tab placement to tab bar orientation.
-   */
-  export
-  function orientationFromPlacement(plc: TabPanel.TabPlacement): TabBar.Orientation {
-    return placementToOrientationMap[plc];
-  }
-
-  /**
-   * Convert a tab placement to a box layout direction.
-   */
-  export
-  function directionFromPlacement(plc: TabPanel.TabPlacement): BoxLayout.Direction {
-    return placementToDirectionMap[plc];
-  }
-
-  /**
-   * A mapping of tab placement to tab bar orientation.
-   */
-  const placementToOrientationMap: { [key: string]: TabBar.Orientation } = {
-    'top': 'horizontal',
-    'left': 'vertical',
-    'right': 'vertical',
-    'bottom': 'horizontal'
-  };
-
-  /**
-   * A mapping of tab placement to box layout direction.
-   */
-  const placementToDirectionMap: { [key: string]: BoxLayout.Direction } = {
-    'top': 'top-to-bottom',
-    'left': 'left-to-right',
-    'right': 'right-to-left',
-    'bottom': 'bottom-to-top'
-  };
 }
 
 
