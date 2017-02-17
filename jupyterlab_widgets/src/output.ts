@@ -7,11 +7,11 @@ import {
 
 import {
   IDisposable
-} from 'phosphor/lib/core/disposable';
+} from '@phosphor/disposable';
 
 import {
-    Panel
-} from 'phosphor/lib/ui/panel';
+    Panel, Widget
+} from '@phosphor/widgets';
 
 import {
   WidgetManager
@@ -130,7 +130,7 @@ class OutputView extends DOMWidgetView {
     });
     this._outputView.model = this.model.outputs;
     this._outputView.trusted = true;
-    this.pWidget.insertWidget(0, this._outputView);
+    this.pWidget.insertWidget(0, this._outputView as Widget);
 
     this.pWidget.addClass('jupyter-widgets');
     this.pWidget.addClass('widget-output');
@@ -153,6 +153,6 @@ class OutputView extends DOMWidgetView {
   }
 
   model: OutputModel;
-  _outputView: OutputAreaWidget;
+  _outputView: any;
   pWidget: Panel
 }
