@@ -2,40 +2,20 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-  ISequence
-} from 'phosphor/lib/algorithm/sequence';
+  ArrayExt
+} from '@phosphor/algorithm';
 
 import {
-  ISignal, defineSignal
-} from 'phosphor/lib/core/signaling';
+  ISignal, Signal
+} from '@phosphor/signaling';
 
 import {
-  Panel, PanelLayout
-} from 'phosphor/lib/ui/panel';
-
-import {
-  Widget
-} from 'phosphor/lib/ui/widget';
-
-import {
-  Title
-} from 'phosphor/lib/ui/title';
+  Panel, PanelLayout, Widget, Title
+} from '@phosphor/widgets';
 
 import {
     Selection
 } from './currentselection';
-
-import {
-  findIndex
-} from 'phosphor/lib/algorithm/searching';
-
-import {
-  toArray, map
-} from 'phosphor/lib/algorithm/iteration';
-
-import {
-  ArraySequence
-} from 'phosphor/lib/algorithm/sequence';
 
 
 /**
@@ -131,7 +111,9 @@ class Collapse extends Widget {
     this.collapsed = !this.collapsed;
   }
 
-  collapseChanged: ISignal<Collapse, void>;
+  get collapseChanged(): ISignal<Collapse, void> {
+    return this._collapseChanged;
+  }
 
   private _collapse() {
     this._collapsed = true;
@@ -139,7 +121,7 @@ class Collapse extends Widget {
       this._content.hide();
     }
     this.removeClass(COLLAPSE_CLASS_OPEN);
-    this.collapseChanged.emit(void 0);
+    this._collapseChanged.emit(void 0);
   }
   private _uncollapse() {
     this._collapsed = false;
@@ -147,7 +129,7 @@ class Collapse extends Widget {
       this._content.show();
     }
     this.addClass(COLLAPSE_CLASS_OPEN);
-    this.collapseChanged.emit(void 0);
+    this._collapseChanged.emit(void 0);
   }
 
   /**
@@ -177,13 +159,15 @@ class Collapse extends Widget {
   /**
    * Handle the `changed` signal of a title object.
    */
-  private _onTitleChanged(sender: Title): void {
+  private _onTitleChanged(sender: Title<Widget>): void {
     this._header.node.textContent = this._widget.title.label;
   }
 
   private _onChildDisposed(sender: Widget): void {
     this.dispose();
   }
+
+  private _collapseChanged = new Signal<Collapse, void>(this);
 
   _collapsed: boolean;
   _content: Panel;
@@ -198,9 +182,6 @@ namespace Collapse {
     widget: Widget;
   }
 }
-
-// Define the signals for the `Widget` class.
-defineSignal(Collapse.prototype, 'collapseChanged');
 
 
 /**
@@ -224,7 +205,7 @@ class Accordion extends Panel {
 
   constructor(options?: Accordion.IOptions) {
     super(options);
-    this._selection = new Selection(this.widgets as ISequence<Collapse>);
+    this._selection = new Selection(this.widgets as ReadonlyArray<Collapse>);
     this._selection.selectionChanged.connect(this._onSelectionChanged, this);
     this.addClass(ACCORDION_CLASS);
   }
@@ -239,8 +220,8 @@ class Accordion extends Panel {
     return new ArraySequence(toArray(map((this.layout as PanelLayout).widgets, (w: Collapse) => w.widget)));
   }
 */
-  get collapseWidgets(): ISequence<Collapse> {
-    return (this.layout as PanelLayout).widgets as ISequence<Collapse>;
+  get collapseWidgets(): ReadonlyArray<Collapse> {
+    return (this.layout as PanelLayout).widgets as ReadonlyArray<Collapse>;
   }
 
   get selection(): Selection<Collapse> {
@@ -248,7 +229,7 @@ class Accordion extends Panel {
   }
 
   indexOf(widget: Widget): number {
-    return findIndex(this.collapseWidgets, (w: Collapse) => w.widget === widget);
+    return ArrayExt.findFirstIndex(this.collapseWidgets, (w: Collapse) => w.widget === widget);
   }
 
   /**
@@ -288,7 +269,7 @@ class Accordion extends Panel {
   removeWidget(widget: Widget): void {
     let index = this.indexOf(widget);
     if (index >= 0) {
-      let collapse = this.collapseWidgets.at(index) as Collapse;
+      let collapse = this.collapseWidgets[index] as Collapse;
       widget.parent = null;
       collapse.dispose();
       this._selection.adjustSelectionForRemove(index, null);

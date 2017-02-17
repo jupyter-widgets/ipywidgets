@@ -5,29 +5,16 @@
 |
 | The full license is in the file LICENSE, distributed with this software.
 |----------------------------------------------------------------------------*/
-import {
-  ISequence
-} from 'phosphor/lib/algorithm/sequence';
 
 import {
-  ISignal, defineSignal
-} from 'phosphor/lib/core/signaling';
+  ISignal, Signal
+} from '@phosphor/signaling';
 
 import {
-  BoxLayout
-} from 'phosphor/lib/ui/boxpanel';
-
-import {
-  Panel, PanelLayout
-} from 'phosphor/lib/ui/panel';
-
-import {
+  BoxLayout, Widget,
+  Panel, PanelLayout,
   TabBar
-} from 'phosphor/lib/ui/tabbar';
-
-import {
-  ChildMessage, Widget
-} from 'phosphor/lib/ui/widget';
+} from '@phosphor/widgets';
 
 /**
  * The class name added to TabPanel instances.
@@ -71,26 +58,27 @@ class EventedPanel extends Panel {
   /**
    * A signal emitted when a widget is removed from a stacked panel.
    */
-  widgetRemoved: ISignal<EventedPanel, Widget>;
+  get widgetRemoved(): ISignal<EventedPanel, Widget> {
+    return this._widgetRemoved;
+  }
 
   /**
    * A message handler invoked on a `'child-added'` message.
    */
-  protected onChildAdded(msg: ChildMessage): void {
+  protected onChildAdded(msg: Widget.ChildMessage): void {
     msg.child.addClass(CHILD_CLASS);
   }
 
   /**
    * A message handler invoked on a `'child-removed'` message.
    */
-  protected onChildRemoved(msg: ChildMessage): void {
+  protected onChildRemoved(msg: Widget.ChildMessage): void {
     msg.child.removeClass(CHILD_CLASS);
-    this.widgetRemoved.emit(msg.child);
+    this._widgetRemoved.emit(msg.child);
   }
-}
 
-// Define the signals for the `EventedPanel` class.
-defineSignal(EventedPanel.prototype, 'widgetRemoved');
+  private _widgetRemoved = new Signal<EventedPanel, Widget>(this);
+}
 
 
 
@@ -173,7 +161,9 @@ class TabPanel extends Widget {
    * tab changes due to tabs being inserted, removed, or moved. It is
    * only emitted when the actual current tab node is changed.
    */
-  currentChanged: ISignal<TabPanel, TabPanel.ICurrentChangedArgs>;
+  get currentChanged(): ISignal<TabPanel, TabPanel.ICurrentChangedArgs> {
+    return this._currentChanged;
+  }
 
   /**
    * Get the index of the currently selected tab.
@@ -283,7 +273,7 @@ class TabPanel extends Widget {
    *
    * This is a read-only property.
    */
-  get tabBar(): TabBar {
+  get tabBar(): TabBar<Widget> {
     return this._tabBar;
   }
 
@@ -305,7 +295,7 @@ class TabPanel extends Widget {
    * #### Notes
    * This is a read-only property.
    */
-  get widgets(): ISequence<Widget> {
+  get widgets(): ReadonlyArray<Widget> {
     return this._tabContents.widgets;
   }
 
@@ -346,7 +336,7 @@ class TabPanel extends Widget {
   /**
    * Handle the `currentChanged` signal from the tab bar.
    */
-  private _onCurrentChanged(sender: TabBar, args: TabBar.ICurrentChangedArgs): void {
+  private _onCurrentChanged(sender: TabBar<Widget>, args: TabBar.ICurrentChangedArgs<Widget>): void {
     // Extract the previous and current title from the args.
     let { previousIndex, previousTitle, currentIndex, currentTitle } = args;
 
@@ -365,7 +355,7 @@ class TabPanel extends Widget {
     }
 
     // Emit the `currentChanged` signal for the tab panel.
-    this.currentChanged.emit({
+    this._currentChanged.emit({
       previousIndex, previousWidget, currentIndex, currentWidget
     });
   }
@@ -373,21 +363,21 @@ class TabPanel extends Widget {
   /**
    * Handle the `tabActivateRequested` signal from the tab bar.
    */
-  private _onTabActivateRequested(sender: TabBar, args: TabBar.ITabActivateRequestedArgs): void {
+  private _onTabActivateRequested(sender: TabBar<Widget>, args: TabBar.ITabActivateRequestedArgs<Widget>): void {
     (args.title.owner as Widget).activate();
   }
 
   /**
    * Handle the `tabCloseRequested` signal from the tab bar.
    */
-  private _onTabCloseRequested(sender: TabBar, args: TabBar.ITabCloseRequestedArgs): void {
+  private _onTabCloseRequested(sender: TabBar<Widget>, args: TabBar.ITabCloseRequestedArgs<Widget>): void {
     (args.title.owner as Widget).close();
   }
 
   /**
    * Handle the `tabMoved` signal from the tab bar.
    */
-  private _onTabMoved(sender: TabBar, args: TabBar.ITabMovedArgs): void {
+  private _onTabMoved(sender: TabBar<Widget>, args: TabBar.ITabMovedArgs<Widget>): void {
     this._tabContents.insertWidget(args.toIndex, args.title.owner as Widget);
   }
 
@@ -398,14 +388,11 @@ class TabPanel extends Widget {
     this._tabBar.removeTab(widget.title);
   }
 
-  private _tabBar: TabBar;
+  private _currentChanged = new Signal<TabPanel, TabPanel.ICurrentChangedArgs>(this);
+  private _tabBar: TabBar<Widget>;
   private _tabContents: EventedPanel;
   private _tabPlacement: TabPanel.TabPlacement;
 }
-
-
-// Define the signals for the `TabPanel` class.
-defineSignal(TabPanel.prototype, 'currentChanged');
 
 
 /**
@@ -463,7 +450,7 @@ namespace TabPanel {
      *
      * The default is shared renderer instance.
      */
-    renderer?: TabBar.IRenderer;
+    renderer?: TabBar.IRenderer<Widget>;
   }
 
   /**

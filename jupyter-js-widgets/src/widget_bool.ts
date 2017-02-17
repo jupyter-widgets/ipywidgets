@@ -9,10 +9,6 @@ import {
     DOMWidgetView, LabeledDOMWidgetView
 } from './widget';
 
-import {
-    Widget
-} from 'phosphor/lib/ui/widget';
-
 import * as _ from 'underscore';
 
 

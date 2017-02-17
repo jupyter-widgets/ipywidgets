@@ -13,10 +13,6 @@ import {
     StyleModel
 } from './widget_style';
 
-import {
-    Widget
-} from 'phosphor/lib/ui/widget';
-
 import * as _ from 'underscore';
 
 export

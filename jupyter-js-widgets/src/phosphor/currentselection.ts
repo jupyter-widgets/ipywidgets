@@ -6,22 +6,18 @@
  */
 
 import {
-  indexOf
-} from 'phosphor/lib/algorithm/searching';
+  ArrayExt
+} from '@phosphor/algorithm';
 
 import {
-  ISequence
-} from 'phosphor/lib/algorithm/sequence';
-
-import {
-  ISignal, defineSignal
-} from 'phosphor/lib/core/signaling';
+  ISignal, Signal
+} from '@phosphor/signaling';
 
 export
 class Selection<T> {
 
-  constructor(sequence: ISequence<T>, options: Selection.IOptions = {}) {
-    this._sequence = sequence;
+  constructor(sequence: ReadonlyArray<T>, options: Selection.IOptions = {}) {
+    this._array = sequence;
     this._insertBehavior = options.insertBehavior || 'select-item-if-needed';
     this._removeBehavior = options.removeBehavior || 'select-item-after';
   }
@@ -38,7 +34,9 @@ class Selection<T> {
    * current item remains the same. It is only emitted when the actual current
    * item is changed.
    */
-  selectionChanged: ISignal<Selection<T>, Selection.ISelectionChangedArgs<T>>;
+  get selectionChanged(): ISignal<Selection<T>, Selection.ISelectionChangedArgs<T>> {
+    return this._selectionChanged;
+  }
 
   /**
    * Adjust for setting an item.
@@ -68,7 +66,7 @@ class Selection<T> {
     // Send signal if there was a change
     if (pv !== cv) {
         // Emit the current changed signal.
-        this.selectionChanged.emit({
+        this._selectionChanged.emit({
         previousIndex: pi, previousValue: pv,
         currentIndex: pi, currentValue: cv
         });
@@ -97,7 +95,7 @@ class Selection<T> {
     if (value === null) {
       this.index = -1;
     } else {
-      this.index = indexOf(this._sequence, value);
+      this.index = ArrayExt.firstIndexOf(this._array, value);
     }
   }
 
@@ -123,7 +121,7 @@ class Selection<T> {
   set index(index: number) {
     // Coerce the value to an index.
     let i = Math.floor(index);
-    if (i < 0 || i >= this._sequence.length) {
+    if (i < 0 || i >= this._array.length) {
       i = -1;
     }
 
@@ -142,7 +140,7 @@ class Selection<T> {
     this._previousValue = pv;
 
     // Emit the current changed signal.
-    this.selectionChanged.emit({
+    this._selectionChanged.emit({
       previousIndex: pi, previousValue: pv,
       currentIndex: i, currentValue: this._value
     });
@@ -200,7 +198,7 @@ class Selection<T> {
       this._index = i;
       this._value = item;
       this._previousValue = cv;
-      this.selectionChanged.emit({
+      this._selectionChanged.emit({
         previousIndex: ci, previousValue: cv,
         currentIndex: i, currentValue: item
       });
@@ -252,7 +250,7 @@ class Selection<T> {
     }
 
     // Emit the current changed signal.
-    this.selectionChanged.emit({
+    this._selectionChanged.emit({
       previousIndex: pi, previousValue: pv,
       currentIndex: -1, currentValue: null
     });
@@ -283,12 +281,12 @@ class Selection<T> {
     }
 
     // No item gets selected if the vector is empty.
-    if (this._sequence.length === 0) {
+    if (this._array.length === 0) {
       // Reset the current index and previous item.
       this._index = -1;
       this._value = null;
       this._previousValue = null;
-      this.selectionChanged.emit({
+      this._selectionChanged.emit({
         previousIndex: i, previousValue: item,
         currentIndex: -1, currentValue: null
       });
@@ -297,10 +295,10 @@ class Selection<T> {
 
     // Handle behavior where the next sibling item is selected.
     if (bh === 'select-item-after') {
-      this._index = Math.min(i, this._sequence.length - 1);
+      this._index = Math.min(i, this._array.length - 1);
       this._updateSelectedValue();
       this._previousValue = null;
-      this.selectionChanged.emit({
+      this._selectionChanged.emit({
         previousIndex: i, previousValue: item,
         currentIndex: this._index, currentValue: this._value
       });
@@ -312,7 +310,7 @@ class Selection<T> {
       this._index = Math.max(0, i - 1);
       this._updateSelectedValue();
       this._previousValue = null;
-      this.selectionChanged.emit({
+      this._selectionChanged.emit({
         previousIndex: i, previousValue: item,
         currentIndex: this._index, currentValue: this._value
       });
@@ -324,11 +322,11 @@ class Selection<T> {
       if (this._previousValue) {
         this.value = this._previousValue;
       } else {
-        this._index = Math.min(i, this._sequence.length - 1);
+        this._index = Math.min(i, this._array.length - 1);
         this._updateSelectedValue();
       }
       this._previousValue = null;
-      this.selectionChanged.emit({
+      this._selectionChanged.emit({
         previousIndex: i, previousValue: item,
         currentIndex: this._index, currentValue: this.value
       });
@@ -339,7 +337,7 @@ class Selection<T> {
     this._index = -1;
     this._value = null;
     this._previousValue = null;
-    this.selectionChanged.emit({
+    this._selectionChanged.emit({
       previousIndex: i, previousValue: item,
       currentIndex: -1, currentValue: null
     });
@@ -350,19 +348,17 @@ class Selection<T> {
    */
   private _updateSelectedValue() {
     let i = this._index;
-    this._value = i !== -1 ? this._sequence.at(i) : null;
+    this._value = i !== -1 ? this._array[i] : null;
   }
 
-  private _sequence: ISequence<T> = null;
+  private _array: ReadonlyArray<T> = null;
   private _index: number;
   private _value: T = null;
   private _previousValue: T = null;
   private _insertBehavior: Selection.InsertBehavior;
   private _removeBehavior: Selection.RemoveBehavior;
+  private _selectionChanged = new Signal<Selection<T>, Selection.ISelectionChangedArgs<T>>(this);
 }
-
-// Define the signals for the `TabBar` class.
-defineSignal(Selection.prototype, 'selectionChanged');
 
 export
 namespace Selection {

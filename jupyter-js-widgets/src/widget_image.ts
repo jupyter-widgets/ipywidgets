@@ -9,10 +9,6 @@ import {
     CoreDOMWidgetModel
 } from './widget_core';
 
-import {
-    Widget
-} from 'phosphor/lib/ui/widget';
-
 import * as _ from 'underscore';
 
 export
