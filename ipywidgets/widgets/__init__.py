@@ -7,7 +7,7 @@ from .trait_types import Color, Datetime
 from .widget_core import CoreWidget
 from .widget_bool import Checkbox, ToggleButton, Valid
 from .widget_button import Button, ButtonStyle
-from .widget_box import Box, Proxy, PlaceProxy, HBox, VBox
+from .widget_box import Box, HBox, VBox
 from .widget_float import FloatText, BoundedFloatText, FloatSlider, FloatProgress, FloatRangeSlider
 from .widget_image import Image
 from .widget_int import IntText, BoundedIntText, IntSlider, IntProgress, IntRangeSlider, Play, SliderStyle
