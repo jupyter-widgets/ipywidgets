@@ -53,33 +53,3 @@ class HBox(Box):
     """Displays multiple widgets horizontally using the flexible box model."""
     _model_name = Unicode('HBoxModel').tag(sync=True)
     _view_name = Unicode('HBoxView').tag(sync=True)
-
-
-@register('Jupyter.Proxy')
-class Proxy(DOMWidget, CoreWidget):
-    """A DOMWidget that holds another DOMWidget or nothing."""
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _model_name = Unicode('ProxyModel').tag(sync=True)
-    _view_name = Unicode('ProxyView').tag(sync=True)
-
-    # Child widget of the Proxy
-    child = Instance(DOMWidget, allow_none=True).tag(sync=True, **widget_serialization)
-
-    def __init__(self, child, **kwargs):
-        kwargs['child'] = child
-        super(Proxy, self).__init__(**kwargs)
-        self.on_displayed(Proxy._fire_child_displayed)
-
-    def _fire_child_displayed(self):
-        if self.child is not None:
-            self.child._handle_displayed()
-
-
-@register('Jupyter.PlaceProxy')
-class PlaceProxy(Proxy):
-    """Renders the child widget at the specified selector."""
-    _view_name = Unicode('PlaceProxyView').tag(sync=True)
-    _model_name = Unicode('PlaceProxyModel').tag(sync=True)
-    selector = Unicode().tag(sync=True)
-
