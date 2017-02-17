@@ -1,79 +1,49 @@
 /*-----------------------------------------------------------------------------
-| Copyright (c) 2014-2016, PhosphorJS Contributors
+| Copyright (c) 2014-2017, PhosphorJS Contributors
 |
 | Distributed under the terms of the BSD 3-Clause License.
 |
 | The full license is in the file LICENSE, distributed with this software.
 |----------------------------------------------------------------------------*/
+import {
+  MessageLoop
+} from '@phosphor/messaging';
 
 import {
   ISignal, Signal
 } from '@phosphor/signaling';
 
 import {
-  BoxLayout, Widget,
-  Panel, PanelLayout,
-  TabBar
+  Platform
+} from '@phosphor/utilities';
+
+import {
+  BoxLayout, Panel, PanelLayout, TabBar, Widget
 } from '@phosphor/widgets';
 
-/**
- * The class name added to TabPanel instances.
- */
-const TAB_PANEL_CLASS = 'p-TabPanel';
-
-/**
- * The class name added to a TabPanel's tab bar.
- */
-const TAB_BAR_CLASS = 'p-TabPanel-tabBar';
-
-/**
- * The class name added to a TabPanel's stacked panel.
- */
-const TAB_CONTENTS_CLASS = 'p-TabPanel-tabContents';
-
-/**
- * The class name added to a StackedPanel child.
- */
-const CHILD_CLASS = 'p-TabPanel-child';
 
 
 /**
  * A panel where visible widgets are stacked atop one another.
  *
  * #### Notes
- * This class provides a convenience wrapper around a [[StackedLayout]].
+ * This class provides a convenience wrapper around a [[PanelLayout]].
  */
 export
 class EventedPanel extends Panel {
-  /**
-   * Construct a new stacked panel.
-   *
-   * @param options - The options for initializing the panel.
-   */
-  constructor(options: Panel.IOptions = {}) {
-    super();
-    this.addClass(TAB_CONTENTS_CLASS);
-  }
 
   /**
-   * A signal emitted when a widget is removed from a stacked panel.
+   * A signal emitted when a widget is removed from the panel.
    */
   get widgetRemoved(): ISignal<EventedPanel, Widget> {
     return this._widgetRemoved;
   }
 
-  /**
-   * A message handler invoked on a `'child-added'` message.
-   */
-  protected onChildAdded(msg: Widget.ChildMessage): void {
-    msg.child.addClass(CHILD_CLASS);
-  }
 
   /**
    * A message handler invoked on a `'child-removed'` message.
    */
   protected onChildRemoved(msg: Widget.ChildMessage): void {
-    msg.child.removeClass(CHILD_CLASS);
     this._widgetRemoved.emit(msg.child);
   }
 
@@ -104,22 +74,23 @@ class TabPanel extends Widget {
    */
   constructor(options: TabPanel.IOptions = {}) {
     super();
-    this.addClass(TAB_PANEL_CLASS);
+    this.addClass('p-TabPanel');
 
     // Create the tab bar and stacked panel.
-    this._tabBar = new TabBar(options);
-    this._tabBar.tabsMovable = true;
-    this._tabBar.addClass(TAB_BAR_CLASS);
-    this._tabContents = new EventedPanel();
-    this._tabContents.addClass(TAB_CONTENTS_CLASS);
+    this.tabBar = new TabBar<Widget>(options);
+    this.tabBar.tabsMovable = true;
+    this.tabBar.addClass('p-TabPanel-tabBar');
+    this.tabContents = new EventedPanel();
+    this.tabContents.addClass('p-TabPanel-tabContents');
 
     // Connect the tab bar signal handlers.
-    this._tabBar.tabMoved.connect(this._onTabMoved, this);
-    this._tabBar.currentChanged.connect(this._onCurrentChanged, this);
-    this._tabBar.tabCloseRequested.connect(this._onTabCloseRequested, this);
+    this.tabBar.tabMoved.connect(this._onTabMoved, this);
+    this.tabBar.currentChanged.connect(this._onCurrentChanged, this);
+    this.tabBar.tabCloseRequested.connect(this._onTabCloseRequested, this);
+    this.tabBar.tabActivateRequested.connect(this._onTabActivateRequested, this);
 
-    // Connect the stacked panel signal handlers.
-    this._tabContents.widgetRemoved.connect(this._onWidgetRemoved, this);
+    // Connect the evented panel signal handlers.
+    this.tabContents.widgetRemoved.connect(this._onWidgetRemoved, this);
 
     // Get the data related to the placement.
     this._tabPlacement = options.tabPlacement || 'top';
@@ -127,27 +98,18 @@ class TabPanel extends Widget {
     let orientation = Private.orientationFromPlacement(this._tabPlacement);
 
     // Configure the tab bar for the placement.
-    this._tabBar.orientation = orientation;
-    this._tabBar.addClass(`p-mod-${this._tabPlacement}`);
+    this.tabBar.orientation = orientation;
+    Private.togglePlacement(this.tabBar, this._tabPlacement);
 
     // Create the box layout.
     let layout = new PanelLayout();
 
     // Add the child widgets to the layout.
-    layout.addWidget(this._tabBar);
-    layout.addWidget(this._tabContents);
+    layout.addWidget(this.tabBar);
+    layout.addWidget(this.tabContents);
 
     // Install the layout on the tab panel.
     this.layout = layout;
-  }
-
-  /**
-   * Dispose of the resources held by the widget.
-   */
-  dispose(): void {
-    this._tabBar = null;
-    this._tabContents = null;
-    super.dispose();
   }
 
   /**
@@ -161,7 +123,7 @@ class TabPanel extends Widget {
    * tab changes due to tabs being inserted, removed, or moved. It is
    * only emitted when the actual current tab node is changed.
    */
-  get currentChanged(): ISignal<TabPanel, TabPanel.ICurrentChangedArgs> {
+  get currentChanged(): ISignal<this, TabPanel.ICurrentChangedArgs> {
     return this._currentChanged;
   }
 
@@ -172,7 +134,7 @@ class TabPanel extends Widget {
    * This will be `-1` if no tab is selected.
    */
   get currentIndex(): number {
-    return this._tabBar.currentIndex;
+    return this.tabBar.currentIndex;
   }
 
   /**
@@ -182,7 +144,7 @@ class TabPanel extends Widget {
    * If the index is out of range, it will be set to `-1`.
    */
   set currentIndex(value: number) {
-    this._tabBar.currentIndex = value;
+    this.tabBar.currentIndex = value;
   }
 
   /**
@@ -191,9 +153,9 @@ class TabPanel extends Widget {
    * #### Notes
    * This will be `null` if there is no selected tab.
    */
-  get currentWidget(): Widget {
-    let title = this._tabBar.currentTitle;
-    return title ? title.owner as Widget : null;
+  get currentWidget(): Widget | null {
+    let title = this.tabBar.currentTitle;
+    return title ? title.owner : null;
   }
 
   /**
@@ -202,8 +164,8 @@ class TabPanel extends Widget {
    * #### Notes
    * If the widget is not in the panel, it will be set to `null`.
    */
-  set currentWidget(value: Widget) {
-    this._tabBar.currentTitle = value ? value.title : null;
+  set currentWidget(value: Widget | null) {
+    this.tabBar.currentTitle = value ? value.title : null;
   }
 
   /**
@@ -213,7 +175,7 @@ class TabPanel extends Widget {
    * Tabs can always be moved programmatically.
    */
   get tabsMovable(): boolean {
-    return this._tabBar.tabsMovable;
+    return this.tabBar.tabsMovable;
   }
 
   /**
@@ -223,7 +185,7 @@ class TabPanel extends Widget {
    * Tabs can always be moved programmatically.
    */
   set tabsMovable(value: boolean) {
-    this._tabBar.tabsMovable = value;
+    this.tabBar.tabsMovable = value;
   }
 
   /**
@@ -248,8 +210,7 @@ class TabPanel extends Widget {
       return;
     }
 
-    // Swap the internal values.
-    let old = this._tabPlacement;
+    // Update the internal value.
     this._tabPlacement = value;
 
     // Get the values related to the placement.
@@ -257,46 +218,34 @@ class TabPanel extends Widget {
     let orientation = Private.orientationFromPlacement(value);
 
     // Configure the tab bar for the placement.
-    this._tabBar.orientation = orientation;
-    this._tabBar.removeClass(`p-mod-${old}`);
-    this._tabBar.addClass(`p-mod-${value}`);
+    this.tabBar.orientation = orientation;
+    Private.togglePlacement(this.tabBar, value);
 
     // Update the layout direction.
     (this.layout as BoxLayout).direction = direction;
   }
 
   /**
-   * The tab bar associated with the tab panel.
+   * The tab bar used by the tab panel.
    *
    * #### Notes
    * Modifying the tab bar directly can lead to undefined behavior.
-   *
-   * This is a read-only property.
    */
-  get tabBar(): TabBar<Widget> {
-    return this._tabBar;
-  }
+  readonly tabBar: TabBar<Widget>;
 
   /**
-   * The stacked panel associated with the tab panel.
+   * The panel used by the tab panel.
    *
    * #### Notes
-   * Modifying the stack directly can lead to undefined behavior.
-   *
-   * This is a read-only property.
+   * Modifying the panel directly can lead to undefined behavior.
    */
-  get tabContents(): Panel {
-    return this._tabContents;
-  }
+  readonly tabContents: EventedPanel;
 
   /**
-   * A read-only sequence of the widgets in the panel.
-   *
-   * #### Notes
-   * This is a read-only property.
+   * A read-only array of the widgets in the panel.
    */
   get widgets(): ReadonlyArray<Widget> {
-    return this._tabContents.widgets;
+    return this.tabContents.widgets;
   }
 
   /**
@@ -329,8 +278,8 @@ class TabPanel extends Widget {
     if (widget !== this.currentWidget) {
       widget.hide();
     }
-    this._tabContents.insertWidget(index, widget);
-    this._tabBar.insertTab(index, widget.title);
+    this.tabContents.insertWidget(index, widget);
+    this.tabBar.insertTab(index, widget.title);
   }
 
   /**
@@ -341,8 +290,8 @@ class TabPanel extends Widget {
     let { previousIndex, previousTitle, currentIndex, currentTitle } = args;
 
     // Extract the widgets from the titles.
-    let previousWidget = previousTitle ? previousTitle.owner as Widget : null;
-    let currentWidget = currentTitle ? currentTitle.owner as Widget : null;
+    let previousWidget = previousTitle ? previousTitle.owner : null;
+    let currentWidget = currentTitle ? currentTitle.owner : null;
 
     // Hide the previous widget.
     if (previousWidget) {
@@ -358,40 +307,43 @@ class TabPanel extends Widget {
     this._currentChanged.emit({
       previousIndex, previousWidget, currentIndex, currentWidget
     });
+
+    // Flush the message loop on IE and Edge to prevent flicker.
+    if (Platform.IS_EDGE || Platform.IS_IE) {
+      MessageLoop.flush();
+    }
   }
 
   /**
    * Handle the `tabActivateRequested` signal from the tab bar.
    */
   private _onTabActivateRequested(sender: TabBar<Widget>, args: TabBar.ITabActivateRequestedArgs<Widget>): void {
-    (args.title.owner as Widget).activate();
+    args.title.owner.activate();
   }
 
   /**
    * Handle the `tabCloseRequested` signal from the tab bar.
    */
   private _onTabCloseRequested(sender: TabBar<Widget>, args: TabBar.ITabCloseRequestedArgs<Widget>): void {
-    (args.title.owner as Widget).close();
+    args.title.owner.close();
   }
 
   /**
    * Handle the `tabMoved` signal from the tab bar.
    */
   private _onTabMoved(sender: TabBar<Widget>, args: TabBar.ITabMovedArgs<Widget>): void {
-    this._tabContents.insertWidget(args.toIndex, args.title.owner as Widget);
+    this.tabContents.insertWidget(args.toIndex, args.title.owner);
   }
 
   /**
    * Handle the `widgetRemoved` signal from the stacked panel.
    */
-  private _onWidgetRemoved(sender: Panel, widget: Widget): void {
-    this._tabBar.removeTab(widget.title);
+  private _onWidgetRemoved(sender: EventedPanel, widget: Widget): void {
+    this.tabBar.removeTab(widget.title);
   }
 
-  private _currentChanged = new Signal<TabPanel, TabPanel.ICurrentChangedArgs>(this);
-  private _tabBar: TabBar<Widget>;
-  private _tabContents: EventedPanel;
   private _tabPlacement: TabPanel.TabPlacement;
+  private _currentChanged = new Signal<this, TabPanel.ICurrentChangedArgs>(this);
 }
 
 
@@ -448,7 +400,7 @@ namespace TabPanel {
     /**
      * The renderer for the panel's tab bar.
      *
-     * The default is shared renderer instance.
+     * The default is a shared renderer instance.
      */
     renderer?: TabBar.IRenderer<Widget>;
   }
@@ -466,7 +418,7 @@ namespace TabPanel {
     /**
      * The previously selected widget.
      */
-    previousWidget: Widget;
+    previousWidget: Widget | null;
 
     /**
      * The currently selected index.
@@ -476,15 +428,26 @@ namespace TabPanel {
     /**
      * The currently selected widget.
      */
-    currentWidget: Widget;
+    currentWidget: Widget | null;
   }
 }
 
 
 /**
- * The namespace for the private module data.
+ * The namespace for the module implementation details.
  */
 namespace Private {
+  /**
+   * Toggle the CSS placement class for the given tab bar.
+   */
+  export
+  function togglePlacement(bar: TabBar<any>, plc: TabPanel.TabPlacement): void {
+    bar.toggleClass('p-mod-top', plc === 'top');
+    bar.toggleClass('p-mod-left', plc === 'left');
+    bar.toggleClass('p-mod-right', plc === 'right');
+    bar.toggleClass('p-mod-bottom', plc === 'bottom');
+  }
+
   /**
    * Convert a tab placement to tab bar orientation.
    */
