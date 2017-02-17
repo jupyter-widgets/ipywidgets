@@ -116,7 +116,7 @@ class ProxyModel extends CoreDOMWidgetModel {
             _view_name: 'ProxyView',
             _model_name: 'ProxyModel',
             child: null
-        })
+        });
     }
 
     static serializers = _.extend({
@@ -133,7 +133,7 @@ class ProxyView extends DOMWidgetView {
 
     _setElement(el: HTMLElement) {
         if (this.el || el !== this.pWidget.node) {
-            // Boxes don't allow setting the element beyond the initial creation.
+            // Proxies don't allow setting the element beyond the initial creation.
             throw new Error('Cannot reset the DOM element.');
         }
 
@@ -151,7 +151,7 @@ class ProxyView extends DOMWidgetView {
     }
 
     render() {
-        var child_view = this.set_child(this.model.get('child'));
+        let child_view = this.set_child(this.model.get('child'));
         this.listenTo(this.model, 'change:child', (model, value) => {
             this.set_child(value);
         });
@@ -168,18 +168,15 @@ class ProxyView extends DOMWidgetView {
     }
 
     set_child(value) {
-        if (this.child) {
-            this.child.remove();
-        }
+        this.child_promise = this.child_promise.then(()=> {
+            if (this.child) {
+                this.child.remove();
+            }
+        });
         if (value) {
             this.child_promise = this.child_promise.then(() => {
                 return this.create_child_view(value).then((view: DOMWidgetView) => {
-                    if (!this.box) {
-                        console.error('Widget place holder does not exist');
-                        return;
-                    }
                     this.pWidget.addWidget(view.pWidget);
-
                     this.child = view;
                     this.trigger('child:created');
                 }).catch(reject('Could not add child view to proxy', true));
@@ -190,7 +187,7 @@ class ProxyView extends DOMWidgetView {
 
     pWidget: JupyterPhosphorPanelWidget;
     /**
-     * The element that contains
+     * The element that contains the child
      */
     box: HTMLElement;
     /**
