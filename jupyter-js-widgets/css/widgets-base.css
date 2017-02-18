@@ -828,12 +828,22 @@ ul.widget-dropdown-droplist.mod-active {
     flex-shrink: 0;
     box-sizing: border-box;
     align-self: stretch;
+    outline: none !important;
+}
+
+.widget-colorpicker.concise input[type="color"] {
+    border-left: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
+}
+
+.widget-colorpicker input[type="color"]:focus {
+    border-color: var(--jp-widgets-input-focus-border-color);
 }
 
 .widget-colorpicker input[type="text"] {
     flex-grow: 1;
     outline: none !important;
     height: var(--jp-widgets-inline-height);
+    line-height: var(--jp-widgets-inline-height);
     background: var(--jp-widgets-input-background-color);
     color: var(--jp-widgets-input-color);
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
@@ -854,11 +864,16 @@ ul.widget-dropdown-droplist.mod-active {
 
 .widget-datepicker input[type="date"] {
     flex-grow: 1;
+    outline: none !important;
     height: var(--jp-widgets-inline-height);
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     font-size: var(--jp-widgets-font-size);
     padding: var(--jp-widgets-input-padding) calc( var(--jp-widgets-input-padding) *  2 );
     box-sizing: border-box;
+}
+
+.widget-datepicker input[type="date"]:focus {
+    border-color: var(--jp-widgets-input-focus-border-color);
 }
 
 /* Play Widget */
