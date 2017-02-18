@@ -31,11 +31,10 @@
     --jp-widgets-progress-thickness: 20px;
     --jp-widgets-container-padding: 15px;
     --jp-widgets-input-padding: 4px;
-    --jp-widgets-slider-track-thickness: 6px;
-    --jp-widgets-slider-handle-thickness: 12px;
-    --jp-widgets-slider-handle-size: var(--jp-widgets-inline-height);
+    --jp-widgets-slider-track-thickness: 4px;
+    --jp-widgets-slider-handle-size: 16px;
     --jp-widgets-slider-border-width: var(--jp-widgets-border-width);
-    --jp-widgets-slider-active-handle-background: var(--jp-brand-color1);
+    --jp-widgets-slider-active-handle-color: var(--jp-brand-color1);
     --jp-widgets-menu-item-height: 24px;
 
     --jp-widgets-input-color: var(--jp-ui-font-color1);
@@ -408,18 +407,19 @@
 
 .widget-slider .ui-slider {
     /* Slider Track */
-    border: var(--jp-widgets-slider-border-width) solid var(--jp-border-color2);
-    background: var(--jp-layout-color1);
+    border: var(--jp-widgets-slider-border-width) solid var(--jp-layout-color3);
+    background: var(--jp-layout-color3);
     box-sizing: border-box;
     position: relative;
+    border-radius: 0px;
 }
 
 .widget-slider .ui-slider-handle {
     /* Slider Handle */
     outline: none !important; /* focused slider handles are colored - see below */
     position: absolute;
-    background-color: var(--jp-layout-color2);
-    border: var(--jp-widgets-slider-border-width) solid var(--jp-border-color2);
+    background-color: var(--jp-layout-color1);
+    border: var(--jp-widgets-slider-border-width) solid var(--jp-border-color1);
     box-sizing: border-box;
     z-index: 1;
     background-image: none; /* Override jquery-ui */
@@ -427,49 +427,52 @@
 
 /* Override jquery-ui */
 .widget-slider .ui-slider-handle:hover {
-    background-color: var(--jp-layout-color1);
-    border: var(--jp-widgets-slider-border-width) solid var(--jp-border-color1);
+    background-color: var(--jp-widgets-slider-active-handle-color);
+    border: var(--jp-widgets-slider-border-width) solid var(--jp-widgets-slider-active-handle-color);
 }
 
-.widget-slider .ui-slider-handle:focus {
-    background-color: var(--jp-widgets-slider-active-handle-background);
-    border-color: var(--jp-border-color1);
+.widget-slider .ui-slider-handle:active {
+    background-color: var(--jp-widgets-slider-active-handle-color);
+    border-color: var(--jp-widgets-slider-active-handle-color);
     z-index: 2;
+    transform: scale(1.2);
 }
 
 .widget-slider .ui-slider-range {
     /* Interval between the two specified value of a double slider */
     position: absolute;
-    background: var(--jp-layout-color3);
+    background: var(--jp-widgets-slider-active-handle-color);
     z-index: 0;
 }
 
 /* Shapes of Slider Handles */
 
 .widget-hslider .ui-slider-handle {
-    width: var(--jp-widgets-slider-handle-thickness);
+    width: var(--jp-widgets-slider-handle-size);
     height: var(--jp-widgets-slider-handle-size);
     margin-top: calc((var(--jp-widgets-slider-track-thickness) - var(--jp-widgets-slider-handle-size)) / 2 - var(--jp-widgets-slider-border-width));
-    margin-left: calc(var(--jp-widgets-slider-handle-thickness) / -2 + var(--jp-widgets-slider-border-width));
+    margin-left: calc(var(--jp-widgets-slider-handle-size) / -2 + var(--jp-widgets-slider-border-width));
+    border-radius: 50%;
     top: 0;
 }
 
 .widget-vslider .ui-slider-handle {
     width: var(--jp-widgets-slider-handle-size);
-    height: var(--jp-widgets-slider-handle-thickness);
-    margin-bottom: calc(var(--jp-widgets-slider-handle-thickness) / -2 + var(--jp-widgets-slider-border-width));
+    height: var(--jp-widgets-slider-handle-size);
+    margin-bottom: calc(var(--jp-widgets-slider-handle-size) / -2 + var(--jp-widgets-slider-border-width));
     margin-left: calc((var(--jp-widgets-slider-track-thickness) - var(--jp-widgets-slider-handle-size)) / 2 - var(--jp-widgets-slider-border-width));
+    border-radius: 50%;
     left: 0;
 }
 
 .widget-hslider .ui-slider-range {
-    height: calc(var(--jp-widgets-slider-track-thickness) * 2);
-    margin-top: calc((var(--jp-widgets-slider-track-thickness) - var(--jp-widgets-slider-track-thickness) * 2) / 2 - var(--jp-widgets-slider-border-width));
+    height: calc( var(--jp-widgets-slider-track-thickness) );
+    margin-top: calc((var(--jp-widgets-slider-track-thickness) - var(--jp-widgets-slider-track-thickness) ) / 2 - var(--jp-widgets-slider-border-width));
 }
 
 .widget-vslider .ui-slider-range {
-    width: calc(var(--jp-widgets-slider-track-thickness) * 2);
-    margin-left: calc((var(--jp-widgets-slider-track-thickness) - var(--jp-widgets-slider-track-thickness) * 2) / 2 - var(--jp-widgets-slider-border-width));
+    width: calc( var(--jp-widgets-slider-track-thickness) );
+    margin-left: calc((var(--jp-widgets-slider-track-thickness) - var(--jp-widgets-slider-track-thickness) ) / 2 - var(--jp-widgets-slider-border-width));
 }
 
 /* Horizontal Slider */
@@ -486,8 +489,8 @@
 
 .widget-hslider .slider-container {
     height: var(--jp-widgets-inline-height);
-    margin-left: calc(var(--jp-widgets-slider-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
-    margin-right: calc(var(--jp-widgets-slider-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
+    margin-left: calc(var(--jp-widgets-slider-handle-size) / 2 - 2 * var(--jp-widgets-slider-border-width));
+    margin-right: calc(var(--jp-widgets-slider-handle-size) / 2 - 2 * var(--jp-widgets-slider-border-width));
     align-self: stretch;
     flex: 1 1 var(--jp-widgets-inline-width-short);
 }
@@ -516,8 +519,8 @@
     flex: 1 1 var(--jp-widgets-inline-width-short);
     margin-left: auto;
     margin-right: auto;
-    margin-bottom: calc(var(--jp-widgets-slider-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
-    margin-top: calc(var(--jp-widgets-slider-handle-thickness) / 2 - 2 * var(--jp-widgets-slider-border-width));
+    margin-bottom: calc(var(--jp-widgets-slider-handle-size) / 2 - 2 * var(--jp-widgets-slider-border-width));
+    margin-top: calc(var(--jp-widgets-slider-handle-size) / 2 - 2 * var(--jp-widgets-slider-border-width));
 }
 
 .widget-vslider .ui-slider {
