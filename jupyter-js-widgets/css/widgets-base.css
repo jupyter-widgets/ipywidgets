@@ -96,7 +96,7 @@
 /* General Button Styling */
 
 .jupyter-button {
-    outline: none;
+    outline: none !important;
     padding: 0;
     display: inline-block;
     white-space: nowrap;
@@ -369,11 +369,12 @@
     background-color: var(--jp-widgets-input-background-color);
     color: var(--jp-widgets-input-color);
     font-size: var(--jp-widgets-font-size);
-    padding: var(--jp-widgets-input-padding);
+    padding: var(--jp-widgets-input-padding) calc( var(--jp-widgets-input-padding) *  2 );
     flex-grow: 1;
     min-width: 0; /* This makes it possible for the flexbox to shrink this input */
     flex-shrink: 1;
-    outline: none;
+    outline: none !important;
+    line-height: 1.5;
 }
 
 .widget-textarea textarea {
@@ -703,19 +704,33 @@ ul.widget-dropdown-droplist.mod-active {
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     border-radius: 0;
     height: var(--jp-widgets-inline-height);
-    line-height: var(--jp-widgets-inline-height);
     flex: 1 1 var(--jp-widgets-inline-width-short);
     background-color: var(--jp-widgets-input-background-color);
 }
 
 .widget-select select {
+    outline: none !important;
+    box-shadow: none;
     border: none;
     background-color: var(--jp-widgets-input-background-color);
     color: var(--jp-widgets-input-color);
     font-size: var(--jp-widgets-font-size);
     width: 100%;
     height: calc(var(--jp-widgets-inline-height) - 2 * var(--jp-widgets-input-border-width));
+    line-height: calc(var(--jp-widgets-inline-height) - 2 * var(--jp-widgets-input-border-width));
     vertical-align: top;
+    padding-left: 8px;
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+    background-repeat: no-repeat;
+	background-size: 20px;
+	background-position: right center;
+    background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE5LjIuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAxOCAxOCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTggMTg7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbDpub25lO30KPC9zdHlsZT4KPHBhdGggZD0iTTUuMiw1LjlMOSw5LjdsMy44LTMuOGwxLjIsMS4ybC00LjksNWwtNC45LTVMNS4yLDUuOXoiLz4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTAtMC42aDE4djE4SDBWLTAuNnoiLz4KPC9zdmc+Cg");
+}
+
+.widget-select select:focus {
+    border-color: var(--jp-widgets-input-focus-border-color);
 }
 
 .widget-select select option:checked {
@@ -817,13 +832,13 @@ ul.widget-dropdown-droplist.mod-active {
 
 .widget-colorpicker input[type="text"] {
     flex-grow: 1;
-    /*outline: none !important;*/
+    outline: none !important;
     height: var(--jp-widgets-inline-height);
     background: var(--jp-widgets-input-background-color);
     color: var(--jp-widgets-input-color);
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     font-size: var(--jp-widgets-font-size);
-    padding: var(--jp-widgets-input-padding);
+    padding: var(--jp-widgets-input-padding) calc( var(--jp-widgets-input-padding) *  2 );
     min-width: 0; /* This makes it possible for the flexbox to shrink this input */
     flex-shrink: 1;
     box-sizing: border-box;
@@ -842,7 +857,7 @@ ul.widget-dropdown-droplist.mod-active {
     height: var(--jp-widgets-inline-height);
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     font-size: var(--jp-widgets-font-size);
-    padding: var(--jp-widgets-input-padding);
+    padding: var(--jp-widgets-input-padding) calc( var(--jp-widgets-input-padding) *  2 );
     box-sizing: border-box;
 }
 
