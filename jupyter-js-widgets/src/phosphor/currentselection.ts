@@ -1,4 +1,5 @@
-
+// Copyright (c) Jupyter Development Team.
+// Distributed under the terms of the Modified BSD License.
 
 /**
  * A variety of convenience methods for maintaining a current selection
