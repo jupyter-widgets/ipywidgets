@@ -566,7 +566,8 @@
 
 .progress {
     background-color: var(--jp-layout-color2);
-    border: var(--jp-widgets-border-width) solid var(--jp-border-color2);
+    border: none;
+    box-shadow: none;
 }
 
 /* Horisontal Progress */
