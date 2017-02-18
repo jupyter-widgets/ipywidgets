@@ -38,8 +38,9 @@
     --jp-widgets-menu-item-height: 24px;
 
     --jp-widgets-input-color: var(--jp-ui-font-color1);
-    --jp-widgets-input-backgroundColor: var(--jp-layout-color1);
+    --jp-widgets-input-background-color: var(--jp-layout-color1);
     --jp-widgets-input-border-color: var(--jp-border-color1);
+    --jp-widgets-input-focus-border-color: var(--jp-brand-color2);
     --jp-widgets-input-border-width: var(--jp-widgets-border-width);
 
 
@@ -375,13 +376,14 @@
 .widget-text input[type="text"], .widget-textarea textarea {
     box-sizing: border-box;
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
-    background-color: var(--jp-widgets-input-backgroundColor);
+    background-color: var(--jp-widgets-input-background-color);
     color: var(--jp-widgets-input-color);
     font-size: var(--jp-widgets-font-size);
     padding: var(--jp-widgets-input-padding);
     flex-grow: 1;
     min-width: 0; /* This makes it possible for the flexbox to shrink this input */
     flex-shrink: 1;
+    outline: none;
 }
 
 .widget-textarea textarea {
@@ -390,17 +392,7 @@
 }
 
 .widget-text input:focus, .widget-textarea textarea:focus {
-    -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
-                        0 3px 1px -2px rgba(0, 0, 0, 0.14),
-                        0 1px 5px 0 rgba(0, 0, 0, 0.12);
-
-    -moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
-                     0 3px 1px -2px rgba(0, 0, 0, 0.14),
-                     0 1px 5px 0 rgba(0, 0, 0, 0.12);
-
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
-                0 3px 1px -2px rgba(0, 0, 0, 0.14),
-                0 1px 5px 0 rgba(0, 0, 0, 0.12);
+    border-color: var(--jp-widgets-input-focus-border-color);
 }
 
 /* Widget Slider */
@@ -633,7 +625,7 @@
     box-shadow: none;
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     color: var(--jp-widgets-input-color);
-    background-color: var(--jp-widgets-input-backgroundColor);
+    background-color: var(--jp-widgets-input-background-color);
     font-size: var(--jp-widgets-font-size);
 }
 
@@ -652,7 +644,7 @@
 }
 
 ul.widget-dropdown-droplist {
-    background: var(--jp-widgets-input-backgroundColor);
+    background: var(--jp-widgets-input-background-color);
     color: var(--jp-widgets-input-color);
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     box-sizing: border-box;
@@ -723,12 +715,12 @@ ul.widget-dropdown-droplist.mod-active {
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
     flex: 1 1 var(--jp-widgets-inline-width-short);
-    background-color: var(--jp-widgets-input-backgroundColor);
+    background-color: var(--jp-widgets-input-background-color);
 }
 
 .widget-select select {
     border: none;
-    background-color: var(--jp-widgets-input-backgroundColor);
+    background-color: var(--jp-widgets-input-background-color);
     color: var(--jp-widgets-input-color);
     font-size: var(--jp-widgets-font-size);
     width: 100%;
@@ -750,7 +742,7 @@ ul.widget-dropdown-droplist.mod-active {
 
 .widget-select-multiple select {
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
-    background-color: var(--jp-widgets-input-backgroundColor);
+    background-color: var(--jp-widgets-input-background-color);
     color: var(--jp-widgets-input-color);
     font-size: var(--jp-widgets-font-size);
     flex: 1 1 var(--jp-widgets-inline-width-short);
@@ -823,7 +815,7 @@ ul.widget-dropdown-droplist.mod-active {
     width: var(--jp-widgets-inline-height);
     height: var(--jp-widgets-inline-height);
     padding: 0 2px; /* make the color square actually square on Chrome on OS X */
-    background: var(--jp-widgets-input-backgroundColor);
+    background: var(--jp-widgets-input-background-color);
     color: var(--jp-widgets-input-color);
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     border-left: none;
@@ -837,7 +829,7 @@ ul.widget-dropdown-droplist.mod-active {
     flex-grow: 1;
     /*outline: none !important;*/
     height: var(--jp-widgets-inline-height);
-    background: var(--jp-widgets-input-backgroundColor);
+    background: var(--jp-widgets-input-background-color);
     color: var(--jp-widgets-input-color);
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     font-size: var(--jp-widgets-font-size);
