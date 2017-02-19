@@ -27,7 +27,6 @@
     --jp-widgets-horizontal-tab-height: 24px;
     --jp-widgets-horizontal-tab-width: 144px;
     --jp-widgets-horizontal-tab-top-border: 2px;
-    --jp-widgets-button-border-width: 0px;
     --jp-widgets-progress-thickness: 20px;
     --jp-widgets-container-padding: 15px;
     --jp-widgets-input-padding: 4px;
@@ -107,8 +106,8 @@
     cursor: pointer;
 
     height: var(--jp-widgets-inline-height);
-    border: var(--jp-widgets-button-border-width) solid;
-    line-height: calc(var(--jp-widgets-inline-height) - 2 * var(--jp-widgets-button-border-width));
+    border: 0px solid;
+    line-height: var(--jp-widgets-inline-height);
     box-shadow: none;
 
     color: var(--jp-ui-font-color1);
@@ -141,7 +140,6 @@
                 0 2px 4px -1px rgba(0, 0, 0, var(--md-shadow-key-umbra-opacity));
     color: var(--jp-ui-font-color1);
     background-color: var(--jp-layout-color3);
-    border-color: var(--jp-layout-color3);
 }
 
 /* Button "Primary" Styling */
@@ -149,13 +147,16 @@
 .jupyter-button.mod-primary {
     color: var(--jp-inverse-ui-font-color1);
     background-color: var(--jp-brand-color1);
-    border-color: var(--jp-brand-color1);
 }
 
 .jupyter-button.mod-primary.mod-active {
     color: var(--jp-inverse-ui-font-color0);
     background-color: var(--jp-brand-color0);
-    border-color: var(--jp-brand-color0);
+}
+
+.jupyter-button.mod-primary:active {
+    color: var(--jp-inverse-ui-font-color0);
+    background-color: var(--jp-brand-color0);
 }
 
 /* Button "Success" Styling */
@@ -163,13 +164,16 @@
 .jupyter-button.mod-success {
     color: var(--jp-inverse-ui-font-color1);
     background-color: var(--jp-success-color1);
-    border-color: var(--jp-success-color1);
 }
 
 .jupyter-button.mod-success.mod-active {
     color: var(--jp-inverse-ui-font-color0);
     background-color: var(--jp-success-color0);
-    border-color: var(--jp-success-color0);
+ }
+
+.jupyter-button.mod-success:active {
+    color: var(--jp-inverse-ui-font-color0);
+    background-color: var(--jp-success-color0);
  }
 
  /* Button "Info" Styling */
@@ -177,13 +181,16 @@
 .jupyter-button.mod-info {
     color: var(--jp-inverse-ui-font-color1);
     background-color: var(--jp-info-color1);
-    border-color: var(--jp-info-color1);
 }
 
 .jupyter-button.mod-info.mod-active {
     color: var(--jp-inverse-ui-font-color0);
     background-color: var(--jp-info-color0);
-    border-color: var(--jp-info-color0);
+}
+
+.jupyter-button.mod-info:active {
+    color: var(--jp-inverse-ui-font-color0);
+    background-color: var(--jp-info-color0);
 }
 
 /* Button "Warning" Styling */
@@ -191,13 +198,16 @@
 .jupyter-button.mod-warning {
     color: var(--jp-inverse-ui-font-color1);
     background-color: var(--jp-warn-color1);
-    border-color: var(--jp-warn-color1);
 }
 
 .jupyter-button.mod-warning.mod-active {
     color: var(--jp-inverse-ui-font-color0);
     background-color: var(--jp-warn-color0);
-    border-color: var(--jp-warn-color0);
+}
+
+.jupyter-button.mod-warning:active {
+    color: var(--jp-inverse-ui-font-color0);
+    background-color: var(--jp-warn-color0);
 }
 
 /* Button "Danger" Styling */
@@ -205,13 +215,16 @@
 .jupyter-button.mod-danger {
     color: var(--jp-inverse-ui-font-color1);
     background-color: var(--jp-error-color1);
-    border-color: var(--jp-error-color1);
 }
 
 .jupyter-button.mod-danger.mod-active {
     color: var(--jp-inverse-ui-font-color0);
     background-color: var(--jp-error-color0);
-    border-color: var(--jp-error-color0);
+}
+
+.jupyter-button.mod-danger:active {
+    color: var(--jp-inverse-ui-font-color0);
+    background-color: var(--jp-error-color0);
 }
 
 /* Widget Button*/
