@@ -145,6 +145,7 @@ class interactive(VBox):
         self.f = f = __interact_f
         self.clear_output = kwargs.pop('clear_output', True)
         self.manual = __options.get("manual", False)
+        self.auto_display = __options.get("auto_display", False)
 
         new_kwargs = self.find_abbreviations(kwargs)
         # Before we proceed, let's make sure that the user has passed a set of args+kwargs
@@ -167,7 +168,7 @@ class interactive(VBox):
 
         # If we are only to run the function on demand, add a button to request this.
         if self.manual:
-            self.manual_button = Button(description="Run %s" % f.__name__)
+            self.manual_button = Button(description="Run Interact")
             c.append(self.manual_button)
 
         self.out = Output()
@@ -214,7 +215,7 @@ class interactive(VBox):
                 if self.clear_output:
                     clear_output(wait=True)
                 self.result = self.f(**self.kwargs)
-                if self.result is not None:
+                if self.auto_display and self.result is not None:
                     display(self.result)
         except Exception as e:
             ip = get_ipython()
@@ -354,7 +355,7 @@ class interactive(VBox):
     # Return a factory for interactive functions
     @classmethod
     def factory(cls):
-        options = dict(manual=False)
+        options = dict(manual=False, auto_display=True)
         return _InteractFactory(cls, options)
 
 
