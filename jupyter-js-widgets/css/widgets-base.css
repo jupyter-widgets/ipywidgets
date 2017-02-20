@@ -765,6 +765,7 @@ ul.widget-dropdown-droplist.mod-active {
     font-size: var(--jp-widgets-font-size);
     flex: 1 1 var(--jp-widgets-inline-width-short);
     outline: none !important;
+    overflow: auto;
 }
 
 .widget-select-multiple select:focus {
