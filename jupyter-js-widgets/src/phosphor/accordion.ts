@@ -102,7 +102,7 @@ class Collapse extends Widget {
     if (oldWidget) {
       oldWidget.disposed.disconnect(this._onChildDisposed, this);
       oldWidget.title.changed.disconnect(this._onTitleChanged, this);
-      this._content.layout.removeWidget(oldWidget);
+      oldWidget.parent = null;
     }
     this._widget = widget;
     widget.disposed.connect(this._onChildDisposed, this);
@@ -287,11 +287,12 @@ class Accordion extends Panel {
 
   removeWidget(widget: Widget): void {
     let index = this.indexOf(widget);
-    let collapse = this.collapseWidgets.at(index) as Collapse;
-    collapse.removeClass(ACCORDION_CHILD_CLASS);
-    let layout = this.layout as PanelLayout;
-    layout.removeWidgetAt(index);
-    this._selection.adjustSelectionForRemove(index, collapse);
+    if (index >= 0) {
+      let collapse = this.collapseWidgets.at(index) as Collapse;
+      widget.parent = null;
+      collapse.dispose();
+      this._selection.adjustSelectionForRemove(index, null);
+    }
   }
 
   private _wrapWidget(widget: Widget) {
