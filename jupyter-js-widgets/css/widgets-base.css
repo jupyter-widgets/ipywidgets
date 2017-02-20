@@ -764,6 +764,11 @@ ul.widget-dropdown-droplist.mod-active {
     color: var(--jp-widgets-input-color);
     font-size: var(--jp-widgets-font-size);
     flex: 1 1 var(--jp-widgets-inline-width-short);
+    outline: none !important;
+}
+
+.widget-select-multiple select:focus {
+    border-color: var(--jp-widgets-input-focus-border-color);
 }
 
 .widget-select-multiple select option:checked {
