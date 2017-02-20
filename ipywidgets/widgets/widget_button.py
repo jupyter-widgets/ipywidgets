@@ -46,7 +46,7 @@ class Button(DOMWidget, CoreWidget):
     _view_name = Unicode('ButtonView').tag(sync=True)
     _model_name = Unicode('ButtonModel').tag(sync=True)
 
-    description = Unicode('', help="Button label.").tag(sync=True)
+    description = Unicode('Button', help="Button label.").tag(sync=True)
     tooltip = Unicode(help="Tooltip caption of the button.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes.").tag(sync=True)
     icon = Unicode('', help="Font-awesome icon name, without the 'fa-' prefix.").tag(sync=True)

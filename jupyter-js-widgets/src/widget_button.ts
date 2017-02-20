@@ -45,7 +45,7 @@ export
 class ButtonModel extends CoreDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
-            description: '',
+            description: 'Button',
             tooltip: '',
             disabled: false,
             icon: '',
