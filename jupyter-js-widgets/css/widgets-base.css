@@ -730,9 +730,8 @@ ul.widget-dropdown-droplist.mod-active {
     font-size: var(--jp-widgets-font-size);
     width: 100%;
     height: calc(var(--jp-widgets-inline-height) - 2 * var(--jp-widgets-input-border-width));
-    line-height: calc(var(--jp-widgets-inline-height) - 2 * var(--jp-widgets-input-border-width));
     vertical-align: top;
-    padding-left: 8px;
+    padding-left: calc( var(--jp-widgets-input-padding) * 2);
 	appearance: none;
 	-webkit-appearance: none;
 	-moz-appearance: none;
