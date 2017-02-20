@@ -850,7 +850,7 @@ ul.widget-dropdown-droplist.mod-active {
     border-left: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
 }
 
-.widget-colorpicker input[type="color"]:focus {
+.widget-colorpicker input[type="color"]:focus, .widget-colorpicker input[type="text"]:focus {
     border-color: var(--jp-widgets-input-focus-border-color);
 }
 
