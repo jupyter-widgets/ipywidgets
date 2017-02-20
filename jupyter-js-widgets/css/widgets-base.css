@@ -789,6 +789,11 @@ ul.widget-dropdown-droplist.mod-active {
     line-height: var(--jp-widgets-inline-height);
 }
 
+.widget-toggle-buttons .widget-toggle-button {
+    margin-left: var(--jp-widgets-margin);
+    margin-right: var(--jp-widgets-margin);
+}
+
 /* Radio Buttons Styling */
 
 .widget-radio {
