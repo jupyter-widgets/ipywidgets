@@ -604,7 +604,9 @@
     margin-bottom: 0;
 }
 
-/* Dropdown Widget Styling */
+/* Dropdown Widget Styling 
+   This is not used currently. See the note above the DropdownView
+   in widget_selection.ts */
 
 .widget-dropdown {
     height: var(--jp-widgets-inline-height);

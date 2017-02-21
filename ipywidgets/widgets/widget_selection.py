@@ -227,11 +227,6 @@ class Dropdown(_Selection):
     _view_name = Unicode('DropdownView').tag(sync=True)
     _model_name = Unicode('DropdownModel').tag(sync=True)
 
-    button_style = CaselessStrEnum(
-        values=['primary', 'success', 'info', 'warning', 'danger', ''],
-        default_value='', allow_none=True, help="""Use a predefined styling for
-        the buttons.""").tag(sync=True)
-
 
 @register('Jupyter.RadioButtons')
 class RadioButtons(_Selection):

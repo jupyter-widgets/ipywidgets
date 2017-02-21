@@ -131,15 +131,13 @@ class DropdownModel extends SelectionModel {
 // bugs in keyboard handling. See
 // https://github.com/ipython/ipywidgets/issues/1055 and
 // https://github.com/ipython/ipywidgets/issues/1049
-// For now, we subclass SelectView below to provide DropdownView
+// For now, we subclass SelectView to provide DropdownView
 
-
-// See the comment above DropdownViewNew
 export
 class DropdownView extends SelectView {}
 
-
-class DropdownViewNew extends LabeledDOMWidgetView {
+// This class is not used - we keep it around for when we write a phosphor dropdown
+class DropdownViewUnused extends LabeledDOMWidgetView {
     initialize(options) {
         super.initialize(options);
 
