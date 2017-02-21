@@ -1,11 +1,11 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """Button class.
 
 Represents a button in the frontend using a widget.  Allows user to listen for
 click events on the button and trigger backend code when the clicks are fired.
 """
-
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
 
 from .domwidget import DOMWidget
 from .widget import CallbackDispatcher, register, widget_serialization

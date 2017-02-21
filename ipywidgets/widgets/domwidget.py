@@ -1,7 +1,7 @@
-"""Contains the DOMWidget class"""
-
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+
+"""Contains the DOMWidget class"""
 
 from traitlets import Unicode, Bool, Tuple, default
 from .widget import Widget, widget_serialization

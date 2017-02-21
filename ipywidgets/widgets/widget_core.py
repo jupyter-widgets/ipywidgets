@@ -1,7 +1,7 @@
-"""Base widget class for widgets provided in Core"""
-
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+
+"""Base widget class for widgets provided in Core"""
 
 from .widget import Widget
 from .._version import __frontend_version__

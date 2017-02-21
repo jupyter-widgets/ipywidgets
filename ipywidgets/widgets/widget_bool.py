@@ -1,10 +1,10 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """Bool class.
 
 Represents a boolean using a widget.
 """
-
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
 
 from .domwidget import LabeledWidget
 from .widget_core import CoreWidget

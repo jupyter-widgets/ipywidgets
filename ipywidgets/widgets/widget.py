@@ -1,10 +1,9 @@
-"""Base Widget class.  Allows user to create widgets in the back-end that render
-in the IPython notebook front-end.
-"""
-
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
+"""Base Widget class.  Allows user to create widgets in the back-end that render
+in the IPython notebook front-end.
+"""
 
 from contextlib import contextmanager
 import collections

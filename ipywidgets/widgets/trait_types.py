@@ -1,10 +1,9 @@
-# encoding: utf-8
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """
 Trait types for html widgets.
 """
-
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
 
 import re
 import traitlets

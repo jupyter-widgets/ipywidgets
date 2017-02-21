@@ -1,10 +1,10 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """String class.
 
 Represents a unicode string using a widget.
 """
-
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
 
 from .domwidget import LabeledWidget
 from .valuewidget import ValueWidget

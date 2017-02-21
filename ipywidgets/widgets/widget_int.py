@@ -1,10 +1,10 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """Int class.
 
 Represents an unbounded int using a widget.
 """
-
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
 
 from .domwidget import LabeledWidget
 from .valuewidget import ValueWidget

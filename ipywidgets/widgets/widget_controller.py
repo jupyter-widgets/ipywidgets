@@ -1,10 +1,10 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """Controller class.
 
 Represents a Gamepad or Joystick controller.
 """
-
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
 
 from .valuewidget import ValueWidget
 from .widget import register, widget_serialization

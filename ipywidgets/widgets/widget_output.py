@@ -1,10 +1,10 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """Output class.
 
 Represents a widget that can be used to display output within the widget area.
 """
-
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
 
 from .domwidget import DOMWidget
 from .widget_core import CoreWidget
