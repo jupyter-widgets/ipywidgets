@@ -1,3 +1,6 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 from .widget import Widget, CallbackDispatcher, register, widget_serialization, handle_version_comm_opened
 from .domwidget import DOMWidget
 from .valuewidget import ValueWidget

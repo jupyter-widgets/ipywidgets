@@ -1,7 +1,7 @@
-"""Contains the ValueWidget class"""
-
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+
+"""Contains the ValueWidget class"""
 
 from .widget import Widget
 

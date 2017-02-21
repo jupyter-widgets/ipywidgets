@@ -1,7 +1,7 @@
-"""Contains the Layout class"""
-
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+
+"""Contains the Layout class"""
 
 from traitlets import Unicode, Instance, CaselessStrEnum
 from .widget_core import CoreWidget

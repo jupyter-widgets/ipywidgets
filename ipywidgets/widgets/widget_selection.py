@@ -1,10 +1,11 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """Selection classes.
 
 Represents an enumeration using a widget.
 """
 
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
 from collections import Mapping
 try:
     from itertools import izip
@@ -21,7 +22,7 @@ from ipython_genutils.py3compat import unicode_type
 
 def _value_to_label(value, obj):
     """Convert a value to a label, given a _Selection object.
-    
+
     Raises a KeyError if the value is not found."""
     # We can't rely on _options_labels and _options_values since we
     # might be called before the options are validated and those are filled.

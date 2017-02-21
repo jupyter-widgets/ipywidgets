@@ -1,11 +1,11 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """SelectionContainer class.
 
 Represents a multipage container that can be used to group other widgets into
 pages.
 """
-
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
 
 from .widget_box import Box, register
 from .widget_core import CoreWidget

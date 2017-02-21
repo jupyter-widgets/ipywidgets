@@ -1,10 +1,10 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """Link and DirectionalLink classes.
 
 Propagate changes between widgets on the javascript side.
 """
-
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
 
 from .widget import Widget, register, widget_serialization
 from .widget_core import CoreWidget

@@ -1,3 +1,6 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+
 """Interactive widgets for the Jupyter notebook.
 
 Provide simple interactive controls in the notebook.
