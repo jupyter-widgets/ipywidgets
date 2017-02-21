@@ -26,6 +26,8 @@ Major user-visible changes in ipywidgets 6.0 include:
 
 - Removal of the Proxy and PlaceProxy widgets.
 
+- Removed the button_style attribute of the Dropdown widget
+
  - Addition of an OutputWidget for capturing output and rich display objects. @interact has changed to use an OutputWidget for function output instead of overwriting the output area of a cell.
 
  - The jupyter-js-widgets Javascript implementation now relies on the PhosphorJS framework for the management of rich layout and a better integration of JupyterLab.
