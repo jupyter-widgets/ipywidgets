@@ -328,6 +328,7 @@
     line-height: var(--jp-widgets-inline-height);
     font-size: large;
     flex-grow: 1;
+    flex-shrink: 0;
     align-self: center;
 }
 
