@@ -65,11 +65,8 @@ class SelectView extends LabeledDOMWidgetView {
         this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-select');
 
-        let selectWrapper = document.createElement('div');
-        selectWrapper.className = 'jp-Dialog-selectWrapper';
         this.listbox = document.createElement('select');
-        selectWrapper.appendChild(this.listbox)
-        this.el.appendChild(selectWrapper);
+        this.el.appendChild(this.listbox);
         this._updateOptions();
         this.update();
     }

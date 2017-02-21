@@ -720,23 +720,17 @@ ul.widget-dropdown-droplist.mod-active {
     line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-select .jp-Dialog-selectWrapper {
+.widget-select select {
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     border-radius: 0;
     height: var(--jp-widgets-inline-height);
     flex: 1 1 var(--jp-widgets-inline-width-short);
-    background-color: var(--jp-widgets-input-background-color);
-}
-
-.widget-select select {
+    box-sizing: border-box;
     outline: none !important;
     box-shadow: none;
-    border: none;
     background-color: var(--jp-widgets-input-background-color);
     color: var(--jp-widgets-input-color);
     font-size: var(--jp-widgets-font-size);
-    width: 100%;
-    height: calc(var(--jp-widgets-inline-height) - 2 * var(--jp-widgets-input-border-width));
     vertical-align: top;
     padding-left: calc( var(--jp-widgets-input-padding) * 2);
 	appearance: none;
@@ -750,6 +744,13 @@ ul.widget-dropdown-droplist.mod-active {
 
 .widget-select select:focus {
     border-color: var(--jp-widgets-input-focus-border-color);
+}
+
+/* To disable the dotted border in Firefox around select controls.
+   See http://stackoverflow.com/a/18853002 */
+.widget-select select:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
 }
 
 .widget-select select option:checked {
@@ -770,6 +771,12 @@ ul.widget-dropdown-droplist.mod-active {
     color: var(--jp-widgets-input-color);
     font-size: var(--jp-widgets-font-size);
     flex: 1 1 var(--jp-widgets-inline-width-short);
+    outline: none !important;
+    overflow: auto;
+}
+
+.widget-select-multiple select:focus {
+    border-color: var(--jp-widgets-input-focus-border-color);
 }
 
 .widget-select-multiple select option:checked {
