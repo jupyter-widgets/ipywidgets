@@ -324,7 +324,6 @@
 
 .widget-checkbox input[type="checkbox"] {
     margin: 0px var(--jp-widgets-inline-margin) 0px var(--jp-widgets-inline-margin);
-    height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
     font-size: large;
     flex-grow: 1;
