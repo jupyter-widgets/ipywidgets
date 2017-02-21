@@ -669,8 +669,8 @@ class ToggleButtonsView extends LabeledDOMWidgetView {
         this.buttongroup = document.createElement('div');
         this.el.appendChild(this.buttongroup);
 
-        this.set_button_style();
         this.update();
+        this.set_button_style();
     }
 
     /**
