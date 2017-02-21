@@ -462,13 +462,13 @@
 }
 
 .widget-hslider .ui-slider-range {
-    height: calc( var(--jp-widgets-slider-track-thickness) );
-    margin-top: calc((var(--jp-widgets-slider-track-thickness) - var(--jp-widgets-slider-track-thickness) ) / 2 - var(--jp-widgets-slider-border-width));
+    height: calc( var(--jp-widgets-slider-track-thickness) * 2 );
+    margin-top: calc((var(--jp-widgets-slider-track-thickness) - var(--jp-widgets-slider-track-thickness) * 2 ) / 2 - var(--jp-widgets-slider-border-width));
 }
 
 .widget-vslider .ui-slider-range {
-    width: calc( var(--jp-widgets-slider-track-thickness) );
-    margin-left: calc((var(--jp-widgets-slider-track-thickness) - var(--jp-widgets-slider-track-thickness) ) / 2 - var(--jp-widgets-slider-border-width));
+    width: calc( var(--jp-widgets-slider-track-thickness) * 2 );
+    margin-left: calc((var(--jp-widgets-slider-track-thickness) - var(--jp-widgets-slider-track-thickness) * 2 ) / 2 - var(--jp-widgets-slider-border-width));
 }
 
 /* Horizontal Slider */
