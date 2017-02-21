@@ -95,7 +95,6 @@
 /* General Button Styling */
 
 .jupyter-button {
-    outline: none !important;
     padding: 0;
     display: inline-block;
     white-space: nowrap;
@@ -126,8 +125,8 @@
     content: "\200b"; /* zero-width space */
 }
 
-.jupyter-button:hover, .jupyter-button:hover {
-    /* MD Lite 2pd shadow */
+.jupyter-button:hover, .jupyter-button:focus {
+    /* MD Lite 2dp shadow */
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, var(--md-shadow-key-penumbra-opacity)),
                 0 3px 1px -2px rgba(0, 0, 0, var(--md-shadow-key-umbra-opacity)),
                 0 1px 5px 0 rgba(0, 0, 0, var(--md-shadow-ambient-shadow-opacity));
@@ -140,6 +139,10 @@
                 0 2px 4px -1px rgba(0, 0, 0, var(--md-shadow-key-umbra-opacity));
     color: var(--jp-ui-font-color1);
     background-color: var(--jp-layout-color3);
+}
+
+.jupyter-button:focus {
+    outline: 1px solid var(--jp-widgets-input-focus-border-color);
 }
 
 /* Button "Primary" Styling */
@@ -426,7 +429,7 @@
 }
 
 /* Override jquery-ui */
-.widget-slider .ui-slider-handle:hover {
+.widget-slider .ui-slider-handle:hover, .widget-slider .ui-slider-handle:focus {
     background-color: var(--jp-widgets-slider-active-handle-color);
     border: var(--jp-widgets-slider-border-width) solid var(--jp-widgets-slider-active-handle-color);
 }
@@ -790,6 +793,11 @@ ul.widget-dropdown-droplist.mod-active {
     line-height: var(--jp-widgets-inline-height);
 }
 
+.widget-toggle-buttons .widget-toggle-button {
+    margin-left: var(--jp-widgets-margin);
+    margin-right: var(--jp-widgets-margin);
+}
+
 /* Radio Buttons Styling */
 
 .widget-radio {
@@ -851,7 +859,7 @@ ul.widget-dropdown-droplist.mod-active {
     border-left: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
 }
 
-.widget-colorpicker input[type="color"]:focus {
+.widget-colorpicker input[type="color"]:focus, .widget-colorpicker input[type="text"]:focus {
     border-color: var(--jp-widgets-input-focus-border-color);
 }
 
