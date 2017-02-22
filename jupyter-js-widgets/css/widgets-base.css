@@ -119,6 +119,7 @@
 
 .jupyter-button i.fa {
     margin-right: var(--jp-widgets-inline-margin);
+    pointer-events: none;
 }
 
 .jupyter-button:empty:before {
