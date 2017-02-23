@@ -418,7 +418,7 @@
     border-radius: 0px;
 }
 
-.widget-slider .ui-slider-handle {
+.widget-slider .ui-slider .ui-slider-handle {
     /* Slider Handle */
     outline: none !important; /* focused slider handles are colored - see below */
     position: absolute;
@@ -430,19 +430,19 @@
 }
 
 /* Override jquery-ui */
-.widget-slider .ui-slider-handle:hover, .widget-slider .ui-slider-handle:focus {
+.widget-slider .ui-slider .ui-slider-handle:hover, .widget-slider .ui-slider .ui-slider-handle:focus {
     background-color: var(--jp-widgets-slider-active-handle-color);
     border: var(--jp-widgets-slider-border-width) solid var(--jp-widgets-slider-active-handle-color);
 }
 
-.widget-slider .ui-slider-handle:active {
+.widget-slider .ui-slider .ui-slider-handle:active {
     background-color: var(--jp-widgets-slider-active-handle-color);
     border-color: var(--jp-widgets-slider-active-handle-color);
     z-index: 2;
     transform: scale(1.2);
 }
 
-.widget-slider .ui-slider-range {
+.widget-slider  .ui-slider .ui-slider-range {
     /* Interval between the two specified value of a double slider */
     position: absolute;
     background: var(--jp-widgets-slider-active-handle-color);
@@ -451,7 +451,7 @@
 
 /* Shapes of Slider Handles */
 
-.widget-hslider .ui-slider-handle {
+.widget-hslider .ui-slider .ui-slider-handle {
     width: var(--jp-widgets-slider-handle-size);
     height: var(--jp-widgets-slider-handle-size);
     margin-top: calc((var(--jp-widgets-slider-track-thickness) - var(--jp-widgets-slider-handle-size)) / 2 - var(--jp-widgets-slider-border-width));
@@ -460,7 +460,7 @@
     top: 0;
 }
 
-.widget-vslider .ui-slider-handle {
+.widget-vslider .ui-slider .ui-slider-handle {
     width: var(--jp-widgets-slider-handle-size);
     height: var(--jp-widgets-slider-handle-size);
     margin-bottom: calc(var(--jp-widgets-slider-handle-size) / -2 + var(--jp-widgets-slider-border-width));
@@ -469,12 +469,12 @@
     left: 0;
 }
 
-.widget-hslider .ui-slider-range {
+.widget-hslider .ui-slider .ui-slider-range {
     height: calc( var(--jp-widgets-slider-track-thickness) * 2 );
     margin-top: calc((var(--jp-widgets-slider-track-thickness) - var(--jp-widgets-slider-track-thickness) * 2 ) / 2 - var(--jp-widgets-slider-border-width));
 }
 
-.widget-vslider .ui-slider-range {
+.widget-vslider .ui-slider .ui-slider-range {
     width: calc( var(--jp-widgets-slider-track-thickness) * 2 );
     margin-left: calc((var(--jp-widgets-slider-track-thickness) - var(--jp-widgets-slider-track-thickness) * 2 ) / 2 - var(--jp-widgets-slider-border-width));
 }
