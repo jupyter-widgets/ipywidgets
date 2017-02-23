@@ -31,8 +31,10 @@
     --jp-widgets-container-padding: 15px;
     --jp-widgets-input-padding: 4px;
     --jp-widgets-slider-track-thickness: 4px;
-    --jp-widgets-slider-handle-size: 16px;
     --jp-widgets-slider-border-width: var(--jp-widgets-border-width);
+    --jp-widgets-slider-handle-size: 16px;
+    --jp-widgets-slider-handle-border-color: var(--jp-border-color1);
+    --jp-widgets-slider-handle-background-color: var(--jp-layout-color1);
     --jp-widgets-slider-active-handle-color: var(--jp-brand-color1);
     --jp-widgets-menu-item-height: 24px;
 
@@ -422,8 +424,8 @@
     /* Slider Handle */
     outline: none !important; /* focused slider handles are colored - see below */
     position: absolute;
-    background-color: var(--jp-layout-color1);
-    border: var(--jp-widgets-slider-border-width) solid var(--jp-border-color1);
+    background-color: var(--jp-widgets-slider-handle-background-color);
+    border: var(--jp-widgets-slider-border-width) solid var(--jp-widgets-slider-handle-border-color);
     box-sizing: border-box;
     z-index: 1;
     background-image: none; /* Override jquery-ui */
