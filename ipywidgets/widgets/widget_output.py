@@ -58,6 +58,8 @@ class Output(DOMWidget, CoreWidget):
             ip.showtraceback((etype, evalue, tb), tb_offset=0)
         self._flush()
         self.msg_id = ''
+        # suppress exceptions, since they are shown above
+        return True
 
     def _flush(self):
         """Flush stdout and stderr buffers."""
