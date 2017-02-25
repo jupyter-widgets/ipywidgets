@@ -618,6 +618,7 @@
     border-radius: 0;
     height: var(--jp-widgets-inline-height);
     flex: 1 1 var(--jp-widgets-inline-width-short);
+    min-width: 0; /* This makes it possible for the flexbox to shrink this input */
     box-sizing: border-box;
     outline: none !important;
     box-shadow: none;
