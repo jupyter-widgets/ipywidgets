@@ -208,12 +208,12 @@ class interactive(VBox):
         if self.manual:
             self.manual_button.disabled = True
         try:
-            for widget in self.kwargs_widgets:
-                value = widget.get_interact_value()
-                self.kwargs[widget._kwarg] = value
             with self.out:
                 if self.clear_output:
                     clear_output(wait=True)
+                for widget in self.kwargs_widgets:
+                    value = widget.get_interact_value()
+                    self.kwargs[widget._kwarg] = value
                 self.result = self.f(**self.kwargs)
                 if self.auto_display and self.result is not None:
                     display(self.result)
