@@ -115,8 +115,6 @@
     background-color: var(--jp-layout-color2);
     border-color: var(--jp-border-color2);
     border: none;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
 }
 
 .jupyter-button i.fa {
