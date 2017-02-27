@@ -171,6 +171,13 @@ class IntSlider(_BoundedInt):
         return SliderStyle()
 
 
+@register('Jupyter.ProgressStyle')
+class ProgressStyle(Style, CoreWidget):
+    """Button style widget."""
+    _model_name = Unicode('ProgressStyleModel').tag(sync=True)
+    bar_color = Color(None, allow_none=True).tag(sync=True)
+
+
 @register('Jupyter.IntProgress')
 @_bounded_int_doc
 class IntProgress(_BoundedInt):
@@ -185,6 +192,12 @@ class IntProgress(_BoundedInt):
     bar_style = CaselessStrEnum(
         values=['success', 'info', 'warning', 'danger', ''], default_value='',
         help="""Use a predefined styling for the progess bar.""").tag(sync=True)
+
+    style = Instance(ProgressStyle).tag(sync=True, **widget_serialization)
+
+    @default('style')
+    def _default_style(self):
+        return ProgressStyle()
 
 
 class _IntRange(_Int):

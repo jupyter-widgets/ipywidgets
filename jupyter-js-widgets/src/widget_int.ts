@@ -520,6 +520,25 @@ class IntTextView extends LabeledDOMWidgetView {
     textbox: HTMLInputElement;
 }
 
+
+export
+class ProgressStyleModel extends StyleModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'ProgressStyleModel',
+        });
+    }
+
+    public static styleProperties = {
+        bar_color: {
+            selector: '.progress-bar',
+            attribute: 'background-color',
+            default: null
+        }
+    };
+}
+
+
 export
 class ProgressModel extends BoundedIntModel {
     defaults() {
@@ -527,7 +546,8 @@ class ProgressModel extends BoundedIntModel {
             _model_name: 'ProgressModel',
             _view_name: 'ProgressView',
             orientation: 'horizontal',
-            bar_style: ''
+            bar_style: '',
+            style: void 0
         });
     }
 }
