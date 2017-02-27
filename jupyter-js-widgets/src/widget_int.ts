@@ -236,7 +236,7 @@ class IntSliderView extends LabeledDOMWidgetView {
         if (this.model.get('_range')) {
             return value.map(function (v) {
                 return format(v);
-            }).join('-');
+            }).join(' – ');
         } else {
             return format(value);
         }
