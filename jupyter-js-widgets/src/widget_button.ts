@@ -87,6 +87,9 @@ class ButtonView extends DOMWidgetView {
                 var i = document.createElement('i');
                 i.classList.add('fa');
                 i.classList.add('fa-' + icon);
+                if (description.trim().length === 0) {
+                    i.classList.add('center');
+                }
                 this.el.appendChild(i);
             }
             this.el.appendChild(document.createTextNode(description));

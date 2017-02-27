@@ -128,6 +128,10 @@
     content: "\200b"; /* zero-width space */
 }
 
+.jupyter-button i.fa.center {
+    margin-right: 0;
+}
+
 .jupyter-button:hover, .jupyter-button:focus {
     /* MD Lite 2dp shadow */
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, var(--md-shadow-key-penumbra-opacity)),
