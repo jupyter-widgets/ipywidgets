@@ -303,19 +303,21 @@ WidgetManager.prototype.display_model = function(msg, model, options) {
 
 // In display view
 WidgetManager.prototype.display_view = function(msg, view, options) {
-    if (options.cell === null) {
-        view.remove();
-        return Promise.reject(new Error("Could not determine where the display" +
-            " message was from.  Widget will not be displayed"));
-    } else {
-        if (options.cell.widgetarea) {
-            var that = this;
-            return options.cell.widgetarea.display_widget_view(Promise.resolve(view)).then(function(view) {
-                that._handle_display_view(view);
-                return view;
-            }).catch(widgets.reject('Could not display view', true));
+    if (view instanceof widgets.DOMWidgetView) {
+        if (options.cell === null) {
+            view.remove();
+            return Promise.reject(new Error("Could not determine where the display" +
+                " message was from.  Widget will not be displayed"));
         } else {
-            return Promise.reject(new Error('Cell does not have a `widgetarea` defined'));
+            if (options.cell.widgetarea) {
+                var that = this;
+                return options.cell.widgetarea.display_widget_view(Promise.resolve(view)).then(function(view) {
+                    that._handle_display_view(view);
+                    return view;
+                }).catch(widgets.reject('Could not display view', true));
+            } else {
+                return Promise.reject(new Error('Cell does not have a `widgetarea` defined'));
+            }
         }
     }
 };
