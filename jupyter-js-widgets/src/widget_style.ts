@@ -51,7 +51,7 @@ class StyleView extends WidgetView {
         this._traitNames.push(trait);
 
         // Listen to changes, and set the value on change.
-        this.listenTo(this.model, `change:${trait}`, (model, value) => {
+        this.listenTo(this.model, 'change:' + trait, (model, value) => {
             this.handleChange(trait, value);
         });
 

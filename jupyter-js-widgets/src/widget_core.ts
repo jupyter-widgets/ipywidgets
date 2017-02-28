@@ -10,7 +10,7 @@ import {
 
 import * as _ from 'underscore';
 
-var semver_range = `^${require('../package.json').version}`
+var semver_range = '^' + require('../package.json').version;
 
 export
 class CoreWidgetModel extends WidgetModel {

@@ -58,7 +58,7 @@ class ControllerButtonView extends DOMWidgetView {
     }
 
     update() {
-        this.bar.style.height = `${100 * this.model.get('value')}%`;
+        this.bar.style.height = (100 * this.model.get('value')) + '%';
     }
 
     support: HTMLDivElement;
@@ -116,7 +116,7 @@ class ControllerAxisView extends DOMWidgetView {
     }
 
     update() {
-        this.bullet.style.top = `${50 * (this.model.get('value') + 1)}%`
+        this.bullet.style.top = (50 * (this.model.get('value') + 1)) + '%';
     }
 
     support: HTMLDivElement;
