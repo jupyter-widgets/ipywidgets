@@ -535,7 +535,8 @@
     /* Inner, invisible slide div */
     width: var(--jp-widgets-slider-track-thickness);
     height: 100%;
-    margin-left: calc((6px - var(--jp-widgets-slider-track-thickness)) / 2);
+    margin-left: auto;
+    margin-right: auto;
 }
 
 /* Widget Progress Styling */
