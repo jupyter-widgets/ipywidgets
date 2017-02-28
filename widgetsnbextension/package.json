@@ -1,6 +1,6 @@
 {
   "name": "widgetsnbextension",
-  "version": "2.0.17",
+  "version": "2.0.18",
   "description": "Jupyter Widgets nbextension",
   "main": "src/extension.js",
   "private": true,
@@ -23,7 +23,7 @@
   "homepage": "https://github.com/ipython/ipywidgets#readme",
   "dependencies": {
     "backbone": "^1.2.3",
-    "jupyter-js-widgets": "~2.1.3",
+    "jupyter-js-widgets": "~2.1.4",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
