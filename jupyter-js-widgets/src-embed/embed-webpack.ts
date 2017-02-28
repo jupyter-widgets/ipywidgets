@@ -25,6 +25,7 @@ var widget_view_schema = require('jupyter-widgets-schema').v1.view;
 // Magic global widget rendering function:
 import * as widgets from '../../jupyter-js-widgets/lib/index';
 import * as embed from './embed-manager';
+import * as _ from 'underscore';
 
 // `LoadInlineWidget` is the main function called on load of the web page.
 // All it does is inserting a <script> tag for requirejs in the case it is not
@@ -101,7 +102,7 @@ function renderManager(element, tag) {
                 console.log(view_validate.errors);
             }
             let model_id = widgetViewObject.model_id;
-            let model = models.find(function(item) {
+            let model = _.find(models, function(item : widgets.WidgetModel) {
                 return item.id == model_id;
             });
             if (model !== undefined) {
