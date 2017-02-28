@@ -36,7 +36,17 @@ Major user-visible changes in ipywidgets 6.0 include:
 
 *Note for custom widget authors:*
 
-ipywidgets 6.0 breaks backward compatibility with respect to the handling of default values of the JavaScript side. Now, the default values for core widget models are specified with a `default()` method returning a dictionary instead of a `default` dictionary attribute.
+ipywidgets 6.0 breaks backward compatibility with respect to the handling of default values of the JavaScript side. Now, the default values for core widget models are specified with a `default()` method returning a dictionary instead of a `default` dictionary attribute. If you want your library to be backwards compatible with ipywidgets 5.x, you could use  [_.result](http://underscorejs.org/#result) like this:
+```javascript
+...
+defaults: function() {
+        return _.extend(_.result(this, 'widgets.DOMWidgetModel.prototype.defaults'), {
+          ....
+        })
+},
+...
+```
+
 
 This should not have an impact when using your custom widgets in the classic notebook, but will be really important when deploying your interactive widgets in web contexts.
 
