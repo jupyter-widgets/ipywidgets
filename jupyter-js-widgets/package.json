@@ -82,7 +82,7 @@
     "webpack": "^1.12.11"
   },
   "dependencies": {
-    "@jupyterlab/services": "^0.35.0",
+    "@jupyterlab/services": "^0.39.1",
     "@phosphor/algorithm": "0.1.0",
     "@phosphor/widgets": "0.1.0",
     "@phosphor/messaging": "0.1.0",
