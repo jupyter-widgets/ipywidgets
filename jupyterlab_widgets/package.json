@@ -5,18 +5,18 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "dependencies": {
-    "@phosphor/disposable": "0.1.0",
-    "@phosphor/widgets": "0.1.0",
-    "jupyter-js-widgets": "~2.1.4",
-    "jupyterlab": "^0.16.2",
-    "phosphor": "^0.7.0"
+    "@phosphor/coreutils": "^0.1.0",
+    "@phosphor/disposable": "^0.1.0",
+    "@phosphor/widgets": "^0.1.0",
+    "jupyter-js-widgets": "~2.2.0",
+    "jupyterlab": "^0.17.2"
   },
   "devDependencies": {
     "@jupyterlab/extension-builder": "^0.10.0",
     "@types/lodash": "4.14.40",
     "rimraf": "^2.4.2",
     "typedoc": "^0.5.0",
-    "typescript": "~2.1.6"
+    "typescript": "~2.2.1"
   },
   "scripts": {
     "clean": "rimraf docs && rimraf lib && rimraf jupyterlab_widgets/static",

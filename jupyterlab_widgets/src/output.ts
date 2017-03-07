@@ -126,11 +126,14 @@ class OutputView extends DOMWidgetView {
   render() {
     this._outputView = new OutputAreaWidget({
       rendermime: this.model.widget_manager.rendermime,
-      contentFactory: OutputAreaWidget.defaultContentFactory
+      contentFactory: OutputAreaWidget.defaultContentFactory,
+      model: this.model.outputs
     });
-    this._outputView.model = this.model.outputs;
-    this._outputView.trusted = true;
-    this.pWidget.insertWidget(0, this._outputView as Widget);
+    // TODO: why is this a readonly property now?
+    //this._outputView.model = this.model.outputs;
+    // TODO: why is this on the model now?
+    //this._outputView.trusted = true;
+    this.pWidget.insertWidget(0, this._outputView);
 
     this.pWidget.addClass('jupyter-widgets');
     this.pWidget.addClass('widget-output');
@@ -153,6 +156,6 @@ class OutputView extends DOMWidgetView {
   }
 
   model: OutputModel;
-  _outputView: any;
+  _outputView: OutputAreaWidget;
   pWidget: Panel
 }
