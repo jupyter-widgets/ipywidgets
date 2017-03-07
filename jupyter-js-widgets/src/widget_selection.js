@@ -504,19 +504,18 @@ var SelectView = widget.DOMWidgetView.extend({
          * changed by another view or by a state update from the back-end.
          */
         if (options === undefined || options.updated_view != this) {
-            // Add missing items to the DOM.
+            // Remove all options from the DOM and re-insert, to preserve
+            // ordering with respect to 'model._options_labels'.
+            this.$listbox.text('');
             var items = this.model.get('_options_labels');
             var that = this;
             _.each(items, function(item, index) {
-               var item_query = 'option[data-value="' + encodeURIComponent(item) + '"]';
-                if (that.$listbox.find(item_query).length === 0) {
-                    $('<option />')
-                        .text(item.replace ? item.replace(/ /g, '\xa0') : item) // replace string spaces with &nbsp; for correct rendering
-                        .attr('data-value', encodeURIComponent(item))
-                        .val(item)
-                        .on("click", $.proxy(that.handle_click, that))
-                        .appendTo(that.$listbox);
-                }
+                $('<option />')
+                    .text(item.replace ? item.replace(/ /g, '\xa0') : item) // replace string spaces with &nbsp; for correct rendering
+                    .attr('data-value', encodeURIComponent(item))
+                    .val(item)
+                    .on("click", $.proxy(that.handle_click, that))
+                    .appendTo(that.$listbox);
             });
 
             // Select the correct element
@@ -525,22 +524,6 @@ var SelectView = widget.DOMWidgetView.extend({
             // Disable listbox if needed
             var disabled = this.model.get('disabled');
             this.$listbox.prop('disabled', disabled);
-
-            // Remove items that no longer exist.
-            this.$listbox.find('option').each(function(i, obj) {
-                var value = $(obj).val();
-                var found = false;
-                _.each(items, function(item, index) {
-                    if (item == value) {
-                        found = true;
-                        return false;
-                    }
-                });
-
-                if (!found) {
-                    $(obj).remove();
-                }
-            });
 
             var description = this.model.get('description');
             if (description.length === 0) {
