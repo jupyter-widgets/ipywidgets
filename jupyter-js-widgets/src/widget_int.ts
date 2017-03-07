@@ -725,6 +725,8 @@ class PlayModel extends BoundedIntModel {
             _playing: false,
             interval: 100,
             step: 1,
+            _repeat: false,
+            show_repeat: true,
         });
     }
     initialize(attributes, options) {
@@ -739,12 +741,16 @@ class PlayModel extends BoundedIntModel {
     loop() {
         if (this.get('_playing')) {
             var next_value = this.get('value') + this.get('step');
-            if (next_value < this.get('max')) {
+            if (next_value <= this.get('max')) {
                 this.set('value', next_value);
                 window.setTimeout(this.loop.bind(this), this.get('interval'));
             } else {
                 this.set('value', this.get('min'));
-                this.set('_playing', false);
+                if(this.get('_repeat')) {
+                    window.setTimeout(this.loop.bind(this), this.get('interval'));
+                } else {
+                    this.set('_playing', false);
+                }
             }
             this.save_changes();
         }
@@ -765,6 +771,11 @@ class PlayModel extends BoundedIntModel {
         this.set('_playing', true);
         this.save_changes();
     }
+
+    repeat() {
+        this.set('_repeat', !this.get('_repeat'));
+        this.save_changes();
+    }
 }
 
 export
@@ -778,14 +789,17 @@ class PlayView extends DOMWidgetView {
         this.playButton = document.createElement('button');
         this.pauseButton = document.createElement('button');
         this.stopButton = document.createElement('button');
+        this.repeatButton = document.createElement('button');
 
         this.playButton.className = 'jupyter-button';
         this.pauseButton.className = 'jupyter-button';
         this.stopButton.className = 'jupyter-button';
+        this.repeatButton.className = 'jupyter-button';
 
         this.el.appendChild(this.playButton);  // Toggle button with playing
         this.el.appendChild(this.pauseButton); // Disable if not playing
         this.el.appendChild(this.stopButton);  // Disable if not playing
+        this.el.appendChild(this.repeatButton);  // Always enabled, but may be hidden
 
         var playIcon = document.createElement('i');
         playIcon.className = 'fa fa-play';
@@ -796,13 +810,20 @@ class PlayView extends DOMWidgetView {
         var stopIcon = document.createElement('i');
         stopIcon.className = 'fa fa-stop';
         this.stopButton.appendChild(stopIcon);
+        var repeatIcon = document.createElement('i');
+        repeatIcon.className = 'fa fa-retweet';
+        this.repeatButton.appendChild(repeatIcon);
 
         this.playButton.onclick = this.model.play.bind(this.model);
         this.pauseButton.onclick = this.model.pause.bind(this.model);
         this.stopButton.onclick = this.model.stop.bind(this.model);
+        this.repeatButton.onclick = this.model.repeat.bind(this.model);
 
         this.listenTo(this.model, 'change:_playing', this.update_playing);
+        this.listenTo(this.model, 'change:_repeat', this.update_repeat);
+        this.listenTo(this.model, 'change:show_repeat', this.update_repeat);
         this.update_playing();
+        this.update_repeat();
     }
 
     update_playing() {
@@ -816,8 +837,19 @@ class PlayView extends DOMWidgetView {
         }
     }
 
+    update_repeat() {
+        var repeat = this.model.get('_repeat');
+        this.repeatButton.style.display = this.model.get('show_repeat') ? this.playButton.style.display : 'none';
+        if (repeat) {
+            this.repeatButton.classList.add('mod-active');
+        } else {
+            this.repeatButton.classList.remove('mod-active');
+        }
+    }
+
     playButton: HTMLButtonElement;
     pauseButton: HTMLButtonElement;
     stopButton: HTMLButtonElement;
+    repeatButton: HTMLButtonElement;
     model: PlayModel;
 }

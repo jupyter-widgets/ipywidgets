@@ -228,6 +228,8 @@ class Play(_BoundedInt):
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
 
     _playing = Bool().tag(sync=True)
+    _repeat = Bool().tag(sync=True)
+    show_repeat = Bool(True).tag(sync=True)
 
 class _BoundedIntRange(_IntRange):
     max = CInt(100, help="Max value").tag(sync=True)
