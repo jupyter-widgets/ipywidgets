@@ -246,9 +246,9 @@ class WidgetRenderer implements RenderMime.IRenderer, IDisposable {
    * @param options - The options that would be used to render the data.
    */
   canRender(options: RenderMime.IRenderOptions): boolean {
-    let model: any = (options.model.data as any)['application/vnd.jupyter.widget-view+json'];
-    let wmodel = this._manager.get_model(model.source.model_id);
-    return wmodel !== void 0;
+    let source: any = options.model.data.get(options.mimeType);
+    let model = this._manager.get_model(source.model_id);
+    return model !== void 0;
   }
 
   /**
@@ -273,7 +273,8 @@ class WidgetRenderer implements RenderMime.IRenderer, IDisposable {
   render(options: RenderMime.IRenderOptions): Widget {
     // data is a model id
     let w = new Panel();
-/*    let model = this._manager.get_model((options.source as any).model_id);
+    let source: any = options.model.data.get(options.mimeType);
+    let model = this._manager.get_model(source.model_id);
     if (model) {
       model.then((model: any) => {
         return this._manager.display_model(void 0, model, void 0);
@@ -286,7 +287,6 @@ class WidgetRenderer implements RenderMime.IRenderer, IDisposable {
       error.textContent = 'Widget not found.';
       w.addWidget(new Widget({node: error}));
     }
-    */
     return w;
   }
 
