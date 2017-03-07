@@ -228,50 +228,32 @@ var RadioButtonsView = widget.DOMWidgetView.extend({
          * changed by another view or by a state update from the back-end.
          */
         if (options === undefined || options.updated_view != this) {
-            // Add missing items to the DOM.
+            // Remove all options from the DOM and re-insert, to preserve
+            // ordering with respect to 'model._options_labels'.
+            this.$container.text('');
             var items = this.model.get('_options_labels');
             var disabled = this.model.get('disabled');
             var that = this;
             _.each(items, function(item, index) {
-                var item_query = ' :input[data-value="' + encodeURIComponent(item) + '"]';
-                if (that.$el.find(item_query).length === 0) {
-                    var $label = $('<label />')
-                        .addClass('radio')
-                        .text(item)
-                        .appendTo(that.$container);
+                var $label = $('<label />')
+                    .addClass('radio')
+                    .text(item)
+                    .appendTo(that.$container);
 
-                    $('<input />')
-                        .attr('type', 'radio')
-                        .addClass(that.model)
-                        .val(item)
-                        .attr('data-value', encodeURIComponent(item))
-                        .prependTo($label)
-                        .on('click', $.proxy(that.handle_click, that));
-                }
+                var $item_element = $('<input />')
+                    .attr('type', 'radio')
+                    .addClass(that.model)
+                    .val(item)
+                    .attr('data-value', encodeURIComponent(item))
+                    .prependTo($label)
+                    .on('click', $.proxy(that.handle_click, that));
 
-                var $item_element = that.$container.find(item_query);
                 if (that.model.get('value') == item) {
                     $item_element.prop('checked', true);
                 } else {
                     $item_element.prop('checked', false);
                 }
                 $item_element.prop('disabled', disabled);
-            });
-
-            // Remove items that no longer exist.
-            this.$container.find('input').each(function(i, obj) {
-                var value = $(obj).val();
-                var found = false;
-                _.each(items, function(item, index) {
-                    if (item == value) {
-                        found = true;
-                        return false;
-                    }
-                });
-
-                if (!found) {
-                    $(obj).parent().remove();
-                }
             });
 
             var description = this.model.get('description');
