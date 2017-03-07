@@ -331,7 +331,9 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
          * changed by another view or by a state update from the back-end.
          */
         if (options === undefined || options.updated_view != this) {
-            // Add missing items to the DOM.
+            // Remove all options from the DOM and re-insert, to preserve
+            // ordering with respect to 'model._options_labels'.
+            this.$buttongroup.text('')
             var items = this.model.get('_options_labels');
             var icons = this.model.get('icons');
             var previous_icons = this.model.previous('icons') || [];
@@ -345,22 +347,19 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
                 } else {
                     item_html = utils.escape_html(item);
                 }
-                var item_query = '[data-value="' + encodeURIComponent(item) + '"]';
-                var $item_element = that.$buttongroup.find(item_query);
-                var $icon_element = $item_element.find('.fa');
-                if (!$item_element.length) {
-                    $item_element = $('<button/>')
-                        .attr('type', 'button')
-                        .addClass('btn btn-default')
-                        .html(item_html)
-                        .appendTo(that.$buttongroup)
-                        .attr('data-value', encodeURIComponent(item))
-                        .attr('data-toggle', 'tooltip')
-                        .attr('value', item)
-                        .on('click', $.proxy(that.handle_click, that));
-                    that.update_style_traits($item_element);
-                    $icon_element = $('<i class="fa"></i>').prependTo($item_element);
-                }
+
+                var $item_element = $('<button/>')
+                    .attr('type', 'button')
+                    .addClass('btn btn-default')
+                    .html(item_html)
+                    .appendTo(that.$buttongroup)
+                    .attr('data-value', encodeURIComponent(item))
+                    .attr('data-toggle', 'tooltip')
+                    .attr('value', item)
+                    .on('click', $.proxy(that.handle_click, that));
+                that.update_style_traits($item_element);
+                var $icon_element = $('<i class="fa"></i>').prependTo($item_element);
+
                 if (that.model.get('value') == item) {
                     $item_element.addClass('active');
                 } else {
@@ -371,22 +370,6 @@ var ToggleButtonsView = widget.DOMWidgetView.extend({
                 $icon_element
                     .removeClass(previous_icons[index])
                     .addClass(icons[index]);
-            });
-
-            // Remove items that no longer exist.
-            this.$buttongroup.find('button').each(function(i, obj) {
-                var value = $(obj).attr('value');
-                var found = false;
-                _.each(items, function(item, index) {
-                    if (item == value) {
-                        found = true;
-                        return false;
-                    }
-                });
-
-                if (!found) {
-                    $(obj).remove();
-                }
             });
 
             var description = this.model.get('description');
