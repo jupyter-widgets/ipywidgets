@@ -723,6 +723,8 @@ class PlayModel extends BoundedIntModel {
             _model_name: 'PlayModel',
             _view_name: 'PlayView',
             _playing: false,
+            _repeat: false,
+            show_repeat: true,
             interval: 100,
             step: 1,
             _repeat: false,
