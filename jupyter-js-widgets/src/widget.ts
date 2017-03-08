@@ -172,18 +172,18 @@ class WidgetModel extends Backbone.Model {
             case 'update':
                 this.state_change = this.state_change
                     .then(() => {
+                        // see Widget.open/_split_state_buffers about why we need state_with_buffers
                         var state = _.extend({}, msg.content.data.state || {}, msg.content.data.state_with_buffers);
-                        var buffer_keys = msg.content.data.buffers || [];
+                        var buffer_paths = msg.content.data.buffers || [];
                         var buffers = msg.buffers || [];
-                        for (var i=0; i<buffer_keys.length; i++) {
-                            //state[buffer_keys[i]] = buffers[i];
+                        for (var i=0; i<buffer_paths.length; i++) {
                              // say we want to set state[x][y[z] = buffers[i]
                             var obj = state;
                             // we first get obj = state[x][y]
-                            for (var j = 0; j < buffer_keys[i].length-1; j++)
-                                obj = obj[buffer_keys[i][j]];
+                            for (var j = 0; j < buffer_paths[i].length-1; j++)
+                                obj = obj[buffer_paths[i][j]];
                             // and then set: obj[z] = buffers[i]
-                            obj[buffer_keys[i][buffer_keys[i].length-1]] = buffers[i];
+                            obj[buffer_paths[i][buffer_paths[i].length-1]] = buffers[i];
                         }
                         return (this.constructor as typeof WidgetModel)._deserialize_state(state, this.widget_manager);
                     }).then((state) => {
@@ -406,23 +406,45 @@ class WidgetModel extends Backbone.Model {
             // get binary values, then send
             var keys = Object.keys(state);
             var buffers = [];
-            var buffer_keys = [];
-            for (var i=0; i<keys.length; i++) {
-                var key = keys[i];
-                var value = state[key];
-                if (value) {
-                    if (value.buffer instanceof ArrayBuffer
-                        || value instanceof ArrayBuffer) {
-                        buffers.push(value);
-                        buffer_keys.push(key);
-                        delete state[key];
+            var buffer_paths = [];
+            // this function goes through lists and object and removes arraybuffers
+            // they will be transferred seperately, since they don't json'ify
+            // on the python side the inverse happens
+            function seperate_buffers(obj, path) {
+                if(_.isArray(obj)) {
+                    for(var i = 0; i < obj.length; i++) {
+                        var value = obj[i];
+                        if (value.buffer instanceof ArrayBuffer || value instanceof ArrayBuffer) {
+                            buffers.push(value);
+                            buffer_paths.push(path.concat([i]));
+                            // easier to just keep the array, but clear the entry, otherwise we have to think
+                            // about array length
+                            obj[i] = null;
+                        } else {
+                            seperate_buffers(value, path.concat([i]));
+                        }
+                    }
+                }
+                else if(_.isObject(obj)) {
+                    for (var key in obj) {
+                        if (obj.hasOwnProperty(key)) {
+                            var value = obj[key];
+                            if (value.buffer instanceof ArrayBuffer || value instanceof ArrayBuffer) {
+                                buffers.push(value);
+                                buffer_paths.push(path.concat([key]));
+                                delete obj[key]; // for objects/dicts we just delete them
+                            } else {
+                                seperate_buffers(value, path.concat([key]));
+                            }
+                        }
                     }
                 }
             }
+            seperate_buffers(state, [])
             this.comm.send({
                 method: 'backbone',
                 sync_data: state,
-                buffer_keys: buffer_keys
+                buffer_paths: buffer_paths
             }, callbacks, {}, buffers);
         }).catch((error) => {
             this.pending_msgs--;

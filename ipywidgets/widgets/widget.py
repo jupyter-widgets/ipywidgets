@@ -213,7 +213,7 @@ class Widget(LoggingConfigurable):
     def open(self):
         """Open a comm to the frontend if one isn't already open."""
         if self.comm is None:
-            state, state_with_buffers, buffer_keys, buffers = self._split_state_buffers(self.get_state())
+            state, state_with_buffers, buffer_paths, buffers = self._split_state_buffers(self.get_state())
 
             args = dict(target_name='jupyter.widget', data=state)
             if self._model_id is not None:
@@ -223,6 +223,10 @@ class Widget(LoggingConfigurable):
             if buffers:
                 # FIXME: workaround ipykernel missing binary message support in open-on-init
                 # send state with binary elements as second message
+                # TODO: if this gets fixed, _split_state_buffers does not need to have a seperate
+                # state_with_buffers, this is needed since first the object is created without sending
+                # the buffers, then on the js side, it tries to serialize, while the buffer have not been
+                # patched in yet, see also widget.ts:_handle_comm_msg
                 self.send_state()
 
     @observe('comm')
@@ -259,11 +263,11 @@ class Widget(LoggingConfigurable):
             self._ipython_display_ = None
 
     def _split_state_buffers(self, state):
-        """Return (state_without_buffers, state_with_buffers, buffer_keys, buffers) for binary message parts
+        """Return (state_without_buffers, state_with_buffers, buffer_paths, buffers) for binary message parts
 
         state_with_buffers is a dict where any of it's decendents is is a binary_type.
         """
-        def seperate_buffers(substate, path, buffer_keys, buffers):
+        def seperate_buffers(substate, path, buffer_paths, buffers):
             # remove binary types from dicts and lists, and keep there key, e.g. {'x': {'ar': ar}, 'y': [ar2, ar3]}
             # where are ar* are binary types
             # will result in {'x': {}, 'y': [None, None]}, [ar, ar2, ar3], [['x', 'ar'], ['y', 0], ['y', 1]]
@@ -271,29 +275,30 @@ class Widget(LoggingConfigurable):
             if isinstance(substate, (list, tuple)):
                 for i, v in enumerate(substate):
                     if isinstance(v, (dict, list, tuple)):
-                        seperate_buffers(v, path + [i], buffer_keys, buffers)
+                        seperate_buffers(v, path + [i], buffer_paths, buffers)
                     if isinstance(v, _binary_types):
                         substate[i] = None
                         buffers.append(v)
-                        buffer_keys.append(path + [i])
+                        buffer_paths.append(path + [i])
             elif isinstance(substate, dict):
                 for k, v in list(substate.items()): # we need to copy to a list since substate will be modified
                     if isinstance(v, (dict, list, tuple)):
-                        seperate_buffers(v, path + [k], buffer_keys, buffers)
+                        seperate_buffers(v, path + [k], buffer_paths, buffers)
                     if isinstance(v, _binary_types):
                         substate.pop(k)
                         buffers.append(v)
-                        buffer_keys.append(path + [k])
+                        buffer_paths.append(path + [k])
             else:
                 raise ValueError("expected state to be a list or dict, not %r" % substate)
-        buffer_keys, buffers = [], []
-        seperate_buffers(state, [], buffer_keys, buffers)
+        buffer_paths, buffers = [], []
+        seperate_buffers(state, [], buffer_paths, buffers)
         state_with_buffers = {}
         # any part of the state that has buffers needs to be treated seperately
-        for key in set([k[0] for k in buffer_keys]):
+        # since of a issue as indicated in .open(..)
+        for key in set([k[0] for k in buffer_paths]):
             state_with_buffers[key] = state[key]
             del state[key]
-        return state, state_with_buffers, buffer_keys, buffers
+        return state, state_with_buffers, buffer_paths, buffers
 
     def send_state(self, key=None):
         """Sends the widget state, or a piece of it, to the front-end.
@@ -304,8 +309,8 @@ class Widget(LoggingConfigurable):
             A single property's name or iterable of property names to sync with the front-end.
         """
         state = self.get_state(key=key)
-        state, state_with_buffers, buffer_keys, buffers = self._split_state_buffers(state)
-        msg = {'method': 'update', 'state': state, 'buffers': buffer_keys, 'state_with_buffers': state_with_buffers}
+        state, state_with_buffers, buffer_paths, buffers = self._split_state_buffers(state)
+        msg = {'method': 'update', 'state': state, 'buffers': buffer_paths, 'state_with_buffers': state_with_buffers}
         self._send(msg, buffers=buffers)
 
     def get_state(self, key=None, drop_defaults=False):
@@ -479,9 +484,16 @@ class Widget(LoggingConfigurable):
         if method == 'backbone':
             if 'sync_data' in data:
                 # get binary buffers too
+                print(data)
                 sync_data = data['sync_data']
-                for i,k in enumerate(data.get('buffer_keys', [])):
-                    sync_data[k] = msg['buffers'][i]
+                if 'buffer_paths' in data:
+                    for path, buffer in zip(data['buffer_paths'], msg['buffers']):
+                        # we'd like to set say sync_data['x'][0]['y'] = buffer
+                        # where path in this example would be ['x', 0, 'y']
+                        obj = sync_data
+                        for key in path[:-1]:
+                            obj = obj[key]
+                        obj[path[-1]] = buffer
                 self.set_state(sync_data) # handles all methods
 
         # Handle a state request.
