@@ -172,11 +172,18 @@ class WidgetModel extends Backbone.Model {
             case 'update':
                 this.state_change = this.state_change
                     .then(() => {
-                        var state = msg.content.data.state || {};
+                        var state = _.extend({}, msg.content.data.state || {}, msg.content.data.state_with_buffers);
                         var buffer_keys = msg.content.data.buffers || [];
                         var buffers = msg.buffers || [];
                         for (var i=0; i<buffer_keys.length; i++) {
-                            state[buffer_keys[i]] = buffers[i];
+                            //state[buffer_keys[i]] = buffers[i];
+                             // say we want to set state[x][y[z] = buffers[i]
+                            var obj = state;
+                            // we first get obj = state[x][y]
+                            for (var j = 0; j < buffer_keys[i].length-1; j++)
+                                obj = obj[buffer_keys[i][j]];
+                            // and then set: obj[z] = buffers[i]
+                            obj[buffer_keys[i][buffer_keys[i].length-1]] = buffers[i];
                         }
                         return (this.constructor as typeof WidgetModel)._deserialize_state(state, this.widget_manager);
                     }).then((state) => {
