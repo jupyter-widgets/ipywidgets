@@ -266,6 +266,12 @@ class Widget(LoggingConfigurable):
         """Return (state_without_buffers, state_with_buffers, buffer_paths, buffers) for binary message parts
 
         state_with_buffers is a dict where any of it's decendents is is a binary_type.
+
+        As an example:
+        >>> state = {'plain': [0, 'text'], 'x': {'ar': memoryview(ar1)}, 'y': {shape: (10,10), data: memoryview(ar2)}}
+        >>> widget._split_state_buffers(state)
+        ({'plain': [0, 'text']}, {'x': {}, 'y': {'shape': (10, 10)}}, [['x', 'ar'], ['y', 'data']],
+         [<memory at 0x107ffec48>, <memory at 0x107ffed08>])
         """
         def seperate_buffers(substate, path, buffer_paths, buffers):
             # remove binary types from dicts and lists, and keep there key, e.g. {'x': {'ar': ar}, 'y': [ar2, ar3]}
