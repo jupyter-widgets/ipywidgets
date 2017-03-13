@@ -107,7 +107,8 @@ class SelectView extends LabeledDOMWidgetView {
      * Handle when a new value is selected.
      */
     _handle_change() {
-        let value = this.listbox.options[this.listbox.selectedIndex].value;
+        // Don't use [] indexing to work around https://github.com/Microsoft/TypeScript/issues/14522
+        let value = this.listbox.options.item(this.listbox.selectedIndex).value;
         this.model.set('value', value);
         this.touch();
     }
@@ -639,8 +640,10 @@ class SelectMultipleView extends LabeledDOMWidgetView {
         let values = _.map(selected, encodeURIComponent);
         let options = this.listbox.options;
         for (let i = 0, len = options.length; i < len; ++i) {
-            let value = options[i].getAttribute('data-value');
-            options[i].selected = _.contains(values, value);
+            // Don't use [] indexing to work around https://github.com/Microsoft/TypeScript/issues/14522
+            let option = options.item(i);
+            let value = option.getAttribute('data-value');
+            option.selected = _.contains(values, value);
         }
     }
 
