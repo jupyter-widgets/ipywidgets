@@ -38,6 +38,7 @@ WidgetArea.prototype.display_widget_view = function(view_promise) {
 
         // Do basically the same as Phosphor's Widget.attach, except we replace
         // a child rather than appending the view's Phosphor widget
+        messaging.MessageLoop.sendMessage(view.pWidget, pwidgets.Widget.Msg.BeforeAttach)
         dummy.parentNode.replaceChild(view.pWidget.node, dummy);
         messaging.MessageLoop.sendMessage(view.pWidget, pwidgets.Widget.Msg.AfterAttach)
 
