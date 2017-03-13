@@ -4,8 +4,8 @@
 
 require('../css/outputarea.css');
 
-var messaging = require('phosphor/lib/core/messaging');
-var pwidgets = require('phosphor/lib/ui/widget');
+var messaging = require('@phosphor/messaging');
+var pwidgets = require('@phosphor/widgets');
 
 /**
  * WidgetArea
@@ -39,7 +39,7 @@ WidgetArea.prototype.display_widget_view = function(view_promise) {
         // Do basically the same as Phosphor's Widget.attach, except we replace
         // a child rather than appending the view's Phosphor widget
         dummy.parentNode.replaceChild(view.pWidget.node, dummy);
-        messaging.sendMessage(view.pWidget, pwidgets.WidgetMessage.AfterAttach)
+        messaging.MessageLoop.sendMessage(view.pWidget, pwidgets.Widget.Msg.AfterAttach)
 
         that.widget_views.push(view);
 
@@ -125,7 +125,7 @@ WidgetArea.prototype.disconnect = function() {
  */
 WidgetArea.prototype.resize = function() {
     this.widget_views.forEach(function(view) {
-        messaging.sendMessage(view.pWidget, pwidgets.ResizeMessage.UnknownSize);
+        messaging.MessageLoop.sendMessage(view.pWidget, pwidgets.Widget.Msg.ResizeMessage.UnknownSize);
     });
 }
 
