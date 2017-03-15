@@ -6,12 +6,12 @@ import {
 } from './widget';
 
 import {
-    BoxModel, JupyterPhosphorPanelWidget
+    BoxModel
 } from './widget_box';
 
 import {
     TabBar
-} from 'phosphor/lib/ui/tabbar';
+} from '@phosphor/widgets';
 
 import {
     TabPanel
@@ -22,32 +22,16 @@ import {
 } from './phosphor/accordion';
 
 import {
-    Panel
-} from 'phosphor/lib/ui/panel';
+    Panel, Widget
+} from '@phosphor/widgets';
 
 import {
-    Title
-} from 'phosphor/lib/ui/title';
+    each, ArrayExt
+} from '@phosphor/algorithm';
 
 import {
-    Widget
-} from 'phosphor/lib/ui/widget';
-
-import {
-    each, enumerate
-} from 'phosphor/lib/algorithm/iteration';
-
-import {
-    move
-} from 'phosphor/lib/algorithm/mutation';
-
-import {
-    indexOf
-} from 'phosphor/lib/algorithm/searching';
-
-import {
-    Message, installMessageHook
-} from 'phosphor/lib/core/messaging';
+    Message, MessageLoop
+} from '@phosphor/messaging';
 
 import * as _ from 'underscore';
 import * as utils from './utils';
@@ -186,7 +170,7 @@ class AccordionView extends DOMWidgetView {
         let titles = this.model.get('_titles');
         for (let i = 0; i < widgets.length; i++) {
             if (titles[i] !== void 0) {
-                widgets.at(i).title.label = titles[i];
+                widgets[i].title.label = titles[i];
             }
         }
     }
@@ -218,7 +202,7 @@ class AccordionView extends DOMWidgetView {
         return this.create_child_view(model).then((view: DOMWidgetView) => {
             let widget = view.pWidget;
             widget.title.label = placeholder.title.label;
-            let collapse = accordion.collapseWidgets.at(accordion.indexOf(placeholder));
+            let collapse = accordion.collapseWidgets[accordion.indexOf(placeholder)];
             collapse.widget = widget;
             placeholder.dispose();
             return view;
@@ -257,7 +241,7 @@ class JupyterPhosphorTabPanelWidget extends TabPanel {
         this._view = view;
         // We want the view's messages to be the messages the tabContents panel
         // gets.
-        installMessageHook(this.tabContents, (handler, msg) => {
+        MessageLoop.installMessageHook(this.tabContents, (handler, msg) => {
             // There may be times when we want the view's handler to be called
             // *after* the message has been processed by the widget, in which
             // case we'll need to revisit using a message hook.
@@ -331,6 +315,7 @@ class TabView extends DOMWidgetView {
         tabs.addClass('jupyter-widgets');
         tabs.addClass('widget-container');
         tabs.addClass('widget-tab');
+        tabs.tabsMovable = true;
         tabs.tabBar.insertBehavior = 'none'; // needed for insert behavior, see below.
         tabs.tabBar.currentChanged.connect(this._onTabChanged, this);
         tabs.tabBar.tabMoved.connect(this._onTabMoved, this);
@@ -375,7 +360,7 @@ class TabView extends DOMWidgetView {
             widget.title.label = placeholder.title.label;
             widget.title.closable = true;
 
-            let i = indexOf(tabs.widgets, placeholder);
+            let i = ArrayExt.firstIndexOf(tabs.widgets, placeholder);
             // insert after placeholder so that if placholder is selected, the
             // real widget will be selected now (this depends on the tab bar
             // insert behavior)
@@ -404,7 +389,7 @@ class TabView extends DOMWidgetView {
      */
     updateTitles() {
         var titles = this.model.get('_titles') || {};
-        each(enumerate(this.pWidget.widgets), ([i, widget]) => {
+        each(this.pWidget.widgets, (widget, i) => {
             widget.title.label = titles[i] || '';
         });
     }
@@ -421,7 +406,7 @@ class TabView extends DOMWidgetView {
         super.remove();
     }
 
-    _onTabChanged(sender: TabBar, args: TabBar.ICurrentChangedArgs) {
+    _onTabChanged(sender: TabBar<Widget>, args: TabBar.ICurrentChangedArgs<Widget>) {
         if (!this.updatingTabs) {
             this.model.set('selected_index', args.currentIndex);
             this.touch();
@@ -431,16 +416,14 @@ class TabView extends DOMWidgetView {
     /**
      * Handle the `tabMoved` signal from the tab bar.
      */
-    _onTabMoved(sender: TabBar, args: TabBar.ITabMovedArgs): void {
+    _onTabMoved(sender: TabBar<Widget>, args: TabBar.ITabMovedArgs<Widget>): void {
         let children = this.model.get('children').slice();
-        move(children, args.fromIndex, args.toIndex);
+        ArrayExt.move(children, args.fromIndex, args.toIndex);
         this.model.set('children', children);
         this.touch();
     }
 
     updatingTabs: boolean = false;
     childrenViews: ViewList<DOMWidgetView>;
-    tabBar: TabBar;
-    tabContents: Panel;
     pWidget: JupyterPhosphorTabPanelWidget;
 }

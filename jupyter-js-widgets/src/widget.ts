@@ -13,15 +13,11 @@ import {
 
 import {
     Widget
-} from 'phosphor/lib/ui/widget';
+} from '@phosphor/widgets';
 
 import {
-    postMessage, Message
-} from 'phosphor/lib/core/messaging';
-
-import {
-    ResizeMessage
-} from 'phosphor/lib/ui/widget';
+    Message, MessageLoop
+} from '@phosphor/messaging';
 
 
 /**
@@ -800,9 +796,9 @@ class DOMWidgetView extends WidgetView {
                         this.listenTo(view.model, 'change', () => {
                             // Post (asynchronous) so layout changes can take
                             // effect first.
-                            postMessage(this.pWidget, ResizeMessage.UnknownSize);
+                            MessageLoop.postMessage(this.pWidget, Widget.ResizeMessage.UnknownSize);
                         });
-                        postMessage(this.pWidget, ResizeMessage.UnknownSize);
+                        MessageLoop.postMessage(this.pWidget, Widget.ResizeMessage.UnknownSize);
                         return view;
                     });
                 }).catch(utils.reject('Could not add LayoutView to DOMWidgetView', true));

@@ -5,7 +5,7 @@ import {
     ManagerBase
 } from '../lib/manager-base';
 
-import * as PhosphorWidget from 'phosphor/lib/ui/widget';
+import * as PhosphorWidget from '@phosphor/widgets';
 
 export
 class EmbedManager extends ManagerBase<HTMLElement> {

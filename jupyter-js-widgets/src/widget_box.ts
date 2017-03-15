@@ -14,21 +14,16 @@ import {
 } from './utils';
 
 import {
-    indexOf
-} from 'phosphor/lib/algorithm/searching';
+    ArrayExt
+} from '@phosphor/algorithm';
 
 import {
-    postMessage, Message
-} from 'phosphor/lib/core/messaging';
+    MessageLoop, Message
+} from '@phosphor/messaging';
 
 import {
-    Panel
-} from 'phosphor/lib/ui/panel';
-
-import {
-    ResizeMessage, Widget
-} from 'phosphor/lib/ui/widget';
-
+    Widget, Panel
+} from '@phosphor/widgets';
 
 import * as _ from 'underscore';
 import * as $ from 'jquery';
@@ -154,7 +149,7 @@ class BoxView extends DOMWidgetView {
         this.children_views.update(this.model.get('children')).then((views: DOMWidgetView[]) => {
                 // Notify all children that their sizes may have changed.
                 views.forEach( (view) => {
-                    postMessage(view.pWidget, ResizeMessage.UnknownSize);
+                    MessageLoop.postMessage(view.pWidget, Widget.ResizeMessage.UnknownSize);
                 });
         });
     }
@@ -174,7 +169,7 @@ class BoxView extends DOMWidgetView {
 
         return this.create_child_view(model).then((view: DOMWidgetView) => {
             // replace the dummy widget with the new one.
-            let i = indexOf(this.pWidget.widgets, dummy);
+            let i = ArrayExt.firstIndexOf(this.pWidget.widgets, dummy);
             this.pWidget.insertWidget(i, view.pWidget);
             dummy.dispose();
             return view;

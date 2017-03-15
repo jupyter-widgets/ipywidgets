@@ -13,23 +13,19 @@ import {
 
 import {
   JSONObject
-} from 'phosphor/lib/algorithm/json';
+} from '@phosphor/coreutils';
 
 import {
   IDisposable
-} from 'phosphor/lib/core/disposable';
+} from '@phosphor/disposable';
 
 import {
-  Panel
-} from 'phosphor/lib/ui/panel';
+  Panel, Widget
+} from '@phosphor/widgets';
 
 import {
   Token
-} from 'phosphor/lib/core/token';
-
-import {
-  Widget
-} from 'phosphor/lib/ui/widget';
+} from '@phosphor/application';
 
 import {
   NotebookPanel
@@ -245,6 +241,17 @@ class WidgetRenderer implements RenderMime.IRenderer, IDisposable {
   }
 
   /**
+   * Whether the renderer can render given the render options.
+   *
+   * @param options - The options that would be used to render the data.
+   */
+  canRender(options: RenderMime.IRenderOptions): boolean {
+    let source: any = options.model.data.get(options.mimeType);
+    let model = this._manager.get_model(source.model_id);
+    return model !== void 0;
+  }
+
+  /**
    * Whether the input can safely sanitized for a given mimetype.
    */
   isSanitizable(mimetype: string): boolean {
@@ -259,12 +266,15 @@ class WidgetRenderer implements RenderMime.IRenderer, IDisposable {
   }
 
   /**
-   * Render a widget mimetype.
+   * Render the transformed mime data.
+   *
+   * @param options - The options used to render the data.
    */
-  render(options: RenderMime.IRendererOptions<string | JSONObject>): Widget {
+  render(options: RenderMime.IRenderOptions): Widget {
     // data is a model id
     let w = new Panel();
-    let model = this._manager.get_model((options.source as any).model_id);
+    let source: any = options.model.data.get(options.mimeType);
+    let model = this._manager.get_model(source.model_id);
     if (model) {
       model.then((model: any) => {
         return this._manager.display_model(void 0, model, void 0);
@@ -300,6 +310,6 @@ class WidgetRenderer implements RenderMime.IRenderer, IDisposable {
     this._manager = null;
   }
 
-  public mimetypes = ['application/vnd.jupyter.widget-view+json'];
+  public mimeTypes = ['application/vnd.jupyter.widget-view+json'];
   private _manager: WidgetManager;
 }

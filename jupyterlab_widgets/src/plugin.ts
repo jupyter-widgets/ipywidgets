@@ -19,7 +19,7 @@ import {
 
 import {
   IDisposable, DisposableDelegate
-} from 'phosphor/lib/core/disposable';
+} from '@phosphor/disposable';
 
 import {
   WidgetManager, WidgetRenderer, INBWidgetExtension
@@ -57,7 +57,7 @@ class NBWidgetExtension implements INBWidgetExtension {
     this._registry.forEach(data => wManager.register(data));
     let wRenderer = new WidgetRenderer(wManager);
 
-    nb.rendermime.addRenderer(WIDGET_MIMETYPE, wRenderer, 0);
+    nb.rendermime.addRenderer({mimeType: WIDGET_MIMETYPE, renderer: wRenderer}, 0);
     return new DisposableDelegate(() => {
       if (nb.rendermime) {
         nb.rendermime.removeRenderer(WIDGET_MIMETYPE);
