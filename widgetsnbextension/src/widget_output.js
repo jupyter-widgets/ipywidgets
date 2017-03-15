@@ -18,7 +18,6 @@ var OutputModel = widgets.DOMWidgetModel.extend({
         OutputModel.__super__.initialize.apply(this, arguments);
         this.kernel = this.comm.kernel;
         this.listenTo(this, 'change:msg_id', this.reset_msg_id);
-        console.log('initializing model');
         if (this.kernel) {
             this.kernel.set_callbacks_for_msg(this.id, this.callbacks(), false);
         }
@@ -75,13 +74,9 @@ var OutputView = widgets.DOMWidgetView.extend({
                 events: that.model.widget_manager.notebook.events,
                 keyboard_manager: that.model.widget_manager.keyboard_manager });
             that.listenTo(that.model, 'new_message', function(msg) {
-                console.log('View new output message');
-                console.log(msg);
                 that.output_area.handle_output(msg);
             }, that);
             that.listenTo(that.model, 'clear_output', function(msg) {
-                console.log('View clear output');
-                console.log(msg);
                 that.output_area.handle_clear_output(msg);
             })
 
