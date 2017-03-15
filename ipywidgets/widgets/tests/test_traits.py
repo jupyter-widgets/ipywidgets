@@ -24,10 +24,8 @@ class TestColor(TraitTestBase):
 
 class TestBuffers(TestCase):
     def test_state_with_buffers(self):
-        ar1 = array.array('d', [1.0, 2.0, 3.14])
-        ar2 = array.array('d', [1.0, 2.0, 3.14])
-        mv1 =  memoryview(ar1)
-        mv2 =  memoryview(ar2)
+        mv1 =  memoryview(b'test1')
+        mv2 =  memoryview(b'test2')
         state = {'plain': [0, 'text'], 'x': {'ar': mv1}, 'y': {'shape': (10, 10), 'data': mv1}, 'z': [mv1, mv2], 'top': mv1}
         state, state_with_buffers, buffer_paths, buffers = _split_state_buffers(state)
         print("executed", state, state_with_buffers, buffer_paths, buffers)
