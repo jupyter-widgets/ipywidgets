@@ -33,7 +33,7 @@ class TestBuffers(TestCase):
         self.assertNotIn('x', state)
         self.assertNotIn('y', state)
         self.assertNotIn('z', state)
-        for path, buffer in [(['x', 'ar'], mv1), (['y', 'data'], mv2), (['z', 0], mv1), (['z', 1], mv2), (['top'], mv1)]:
+        for path, buffer in [(['x', 'ar'], mv1), (['y', 'data'], mv1), (['z', 0], mv1), (['z', 1], mv2), (['top'], mv1)]:
             self.assertIn(path, buffer_paths, "%r not in path" % path)
             index = buffer_paths.index(path)
             self.assertEqual(buffer, buffers[index])
