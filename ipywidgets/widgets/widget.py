@@ -302,8 +302,9 @@ class Widget(LoggingConfigurable):
         # any part of the state that has buffers needs to be treated seperately
         # since of a issue as indicated in .open(..)
         for key in set([k[0] for k in buffer_paths]):
-            state_with_buffers[key] = state[key]
-            del state[key]
+            if key in state: # if we didn't remove it allready
+                state_with_buffers[key] = state[key]
+                del state[key]
         return state, state_with_buffers, buffer_paths, buffers
 
     def send_state(self, key=None):
@@ -490,7 +491,6 @@ class Widget(LoggingConfigurable):
         if method == 'backbone':
             if 'sync_data' in data:
                 # get binary buffers too
-                print(data)
                 sync_data = data['sync_data']
                 if 'buffer_paths' in data:
                     for path, buffer in zip(data['buffer_paths'], msg['buffers']):
