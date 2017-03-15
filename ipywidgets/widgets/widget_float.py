@@ -8,11 +8,12 @@ Represents an unbounded float using a widget.
 
 from .domwidget import LabeledWidget
 from .valuewidget import ValueWidget
-from .widget import register
+from .widget import register, widget_serialization
 from .widget_core import CoreWidget
 from .trait_types import Color
+from .widget_int import ProgressStyle
 from traitlets import (
-    Unicode, CFloat, Bool, Int, CaselessStrEnum, Tuple, TraitError, validate
+    Instance, Unicode, CFloat, Bool, Int, CaselessStrEnum, Tuple, TraitError, validate, default
 )
 
 
@@ -175,6 +176,12 @@ class FloatProgress(_BoundedFloat):
         values=['success', 'info', 'warning', 'danger', ''],
         default_value='', allow_none=True, help="""Use a predefined styling for
         the progess bar.""").tag(sync=True)
+
+    style = Instance(ProgressStyle).tag(sync=True, **widget_serialization)
+
+    @default('style')
+    def _default_style(self):
+        return ProgressStyle()
 
 
 class _FloatRange(_Float):
