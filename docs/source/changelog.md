@@ -18,13 +18,17 @@ Major user-visible changes in ipywidgets 6.0 include:
 
  - Changes to the automatic control generation syntax in @interact, inspired by the Sage interact syntax.
 
- - Removal of APIs which had been deprecated in 5.0
-
-   (top-level styling attributes of DOMWidgets, and some corner cases in the behavior of @interact).
+ - Removal of APIs which had been deprecated in 5.0, including top-level styling in attributes of DOMWidgets and some corner cases in the behavior of `@interact`.
 
  - A new API for custom styling of widgets is provided, through a top-level `style` attribute. For example, the color of a slider handler can be set by `slider.style.handle_color`.
 
 - Removal of the Proxy and PlaceProxy widgets.
+
+- Removal of the deprecated `FlexBox` widget. Use the `Box`, `HBox`, or `VBox` widgets instead.
+
+- Removal of the deprecated `Latex` widget. Use the new `HTMLMath` widget with Latex math inside `$` or `$$` delimiters instead.
+
+- The `Label` widget now has styling to make it consistent with labels on various widgets. To have freeform text with mathematics, use the new `HTMLMath` widget.
 
 - Removed the button_style attribute of the Dropdown widget
 
