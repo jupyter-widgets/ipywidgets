@@ -92,7 +92,8 @@ def _split_state_buffers(state):
     state_with_buffers = {}
     # any part of the state that has buffers needs to be treated seperately
     # since of a issue as indicated in .open(..)
-    for key in set([k[0] for k in buffer_paths]):
+    # also remove top level elements if they contain nested buffers (len(k) > 1)
+    for key in set([k[0] for k in buffer_paths if len(k) > 1]):
         state_with_buffers[key] = state[key]
         del state[key]
     return state, state_with_buffers, buffer_paths, buffers
