@@ -15,7 +15,7 @@ import {
 
 import {
   Platform
-} from '@phosphor/utilities';
+} from '@phosphor/domutils';
 
 import {
   BoxLayout, Panel, PanelLayout, TabBar, Widget
