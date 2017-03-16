@@ -64,8 +64,8 @@ def _split_state_buffers(state):
     """
 
     def seperate_buffers(substate, path, buffer_paths, buffers):
-        # remove binary types from dicts and lists, and keep there key, e.g. {'x': {'ar': ar}, 'y': [ar2, ar3]}
-        # where are ar* are binary types
+        # remove binary types from dicts and lists, but keep track of their paths
+        # e.g. {'x': {'ar': ar}, 'y': [ar2, ar3]}, where ar/ar2/ar3 are binary types
         # will result in {'x': {}, 'y': [None, None]}, [ar, ar2, ar3], [['x', 'ar'], ['y', 0], ['y', 1]]
         # instead of removing elements from the list, this will make replacing the buffers on the js side much easier
         if isinstance(substate, (list, tuple)):
