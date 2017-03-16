@@ -77,7 +77,6 @@ class BackboneViewWrapper extends Widget {
     this._view = view;
     view.on('remove', () => {
       this.dispose();
-      console.log('View removed', view);
     });
     this.addClass(BACKBONEVIEWWRAPPER_CLASS);
     this.node.appendChild(view.el);
