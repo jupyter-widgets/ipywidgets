@@ -1,6 +1,8 @@
 # Model State
 
-This is a description of the model state for each widget in the core. The model ID of a widget is the comm id the widget holds. A model reference is a string of the form `"IPY_MODEL_<MODEL_ID>"`, where `<MODEL_ID>` is the model ID of a previously created widget.
+This is a description of the model state for each widget in the core. The model ID of a widget is the id of the comm object the widget is using. A model reference (denoted `REFERENCE(SomeWidgetModel)`) is a string of the form `"IPY_MODEL_<MODEL_ID>"`, where `<MODEL_ID>` is the model ID of a previously created widget of the specified type.
+
+In the headings below, the notation `WidgetB(WidgetA)` indicates that WidgetB inherits all of the attributes from WidgetA.
 
 ## Widget
 
@@ -18,13 +20,13 @@ This is a description of the model state for each widget in the core. The model 
 ## DOMWidget(Widget)
 
 ```
-"_dom_classes": [],
+"_dom_classes": string[], # CSS classes applied to the widget
 "layout": REFERENCE(LayoutModel),
 ```
 
 ## LabeledDOMWidget(DOMWidget)
 ```
-"description": string
+"description": string # a label for the widget
 ```
 
 ## Accordion(LabeledDOMWidget)
