@@ -173,18 +173,10 @@ class WidgetModel extends Backbone.Model {
                 this.state_change = this.state_change
                     .then(() => {
                         // see Widget.open/_split_state_buffers about why we need state_with_buffers
-                        var state = _.extend({}, msg.content.data.state || {}, msg.content.data.state_with_buffers);
-                        var buffer_paths = msg.content.data.buffers || [];
+                        var state = msg.content.data.state;
+                        var buffer_paths = msg.content.data.buffer_paths || [];
                         var buffers = msg.buffers || [];
-                        for (var i=0; i<buffer_paths.length; i++) {
-                             // say we want to set state[x][y[z] = buffers[i]
-                            var obj = state;
-                            // we first get obj = state[x][y]
-                            for (var j = 0; j < buffer_paths[i].length-1; j++)
-                                obj = obj[buffer_paths[i][j]];
-                            // and then set: obj[z] = buffers[i]
-                            obj[buffer_paths[i][buffer_paths[i].length-1]] = buffers[i];
-                        }
+                        utils.put_buffers(state, buffer_paths, buffers);
                         return (this.constructor as typeof WidgetModel)._deserialize_state(state, this.widget_manager);
                     }).then((state) => {
                         this.set_state(state);
@@ -405,84 +397,15 @@ class WidgetModel extends Backbone.Model {
         utils.resolvePromisesDict(attrs).then((state) => {
             // get binary values, then send
             var keys = Object.keys(state);
-            var buffers = [];
-            var buffer_paths = [];
-            // keep track of what we visited, to avoid endless loops, when an object ancester
-            // refers to itself, we cannot use an object, since using objects for keys don't work
-            var visited_set = [];
             // this function goes through lists and object and removes arraybuffers
             // they will be transferred seperately, since they don't json'ify
             // on the python side the inverse happens
-            // if we need to remove an object from a list, we need to clone that list, otherwise we may modify
-            // the internal state of the widget model
-            // however, we do not want to clone everything, for performance
-            function seperate_buffers(obj, path) {
-                if(visited_set.indexOf(obj) != -1) { // we already visited this object
-                    return obj;
-                }
-                visited_set.push(obj);
-                if (_.isArray(obj)) {
-                    var is_cloned = false;
-                    for (var i = 0; i < obj.length; i++) {
-                        var value = obj[i];
-                        if(value) {
-                            if (value.buffer instanceof ArrayBuffer || value instanceof ArrayBuffer) {
-                                if(!is_cloned) {
-                                    obj = _.map(obj, _.identity);
-                                    is_cloned = true;
-                                }
-                                buffers.push(value);
-                                buffer_paths.push(path.concat([i]));
-                                // easier to just keep the array, but clear the entry, otherwise we have to think
-                                // about array length
-                                obj[i] = null;
-                            }
-                            else {
-                                var new_value  = seperate_buffers(value, path.concat([i]));
-                                if((new_value != value) && !is_cloned) { // only clone when we have to
-                                    obj = _.map(obj, _.identity);
-                                    is_cloned = true;
-                                    obj[i] = new_value;
-                                }
-                            }
-                        }
-                    }
-                }
-                else if(_.isObject(obj)) {
-                    for (var key in obj) {
-                        var is_cloned = false;
-                        if (!obj.hasOwnProperty || obj.hasOwnProperty(key)) {
-                            var value = obj[key];
-                            if(value) {
-                                if (value.buffer instanceof ArrayBuffer || value instanceof ArrayBuffer) {
-                                    if(!is_cloned) {
-                                        obj = _.mapObject(obj, _.identity); // clone only once for performance
-                                        is_cloned = true;
-                                    }
-                                    buffers.push(value);
-                                    buffer_paths.push(path.concat([key]));
-                                    delete obj[key]; // for objects/dicts we just delete them
-                                }
-                                else {
-                                    var new_value  = seperate_buffers(value, path.concat([key]));
-                                    if((new_value != value) && !is_cloned) { // only clone when we have to
-                                        obj = _.mapObject(obj, _.identity);
-                                        is_cloned = true;
-                                        obj[key] = new_value;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                return obj;
-            }
-            state = seperate_buffers(state, []); // could return a clone
+            var split = utils.remove_buffers(state);
             this.comm.send({
                 method: 'backbone',
-                sync_data: state,
-                buffer_paths: buffer_paths
-            }, callbacks, {}, buffers);
+                sync_data: split.state,
+                buffer_paths: split.buffer_paths
+            }, callbacks, {}, split.buffers);
         }).catch((error) => {
             this.pending_msgs--;
             return (utils.reject('Could not send widget sync message', true))(error);

@@ -1,6 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import * as _ from 'underscore';
+
 // TODO: ATTEMPT TO KILL THIS MODULE USING THIRD PARTY LIBRARIES WHEN IPYWIDGETS
 // IS CONVERTED TO NODE COMMONJS.
 
@@ -169,3 +171,108 @@ function escape_html(text: string): string {
     esc.textContent = text;
     return esc.innerHTML;
 };
+
+/**
+ * Takes an object 'state' and fills in buffer[i] at 'path' buffer_paths[i]
+ * where buffer_paths[i] is a list indicating where in the object buffer[i] should
+ * be placed
+ * Example: state = {a: 1, b: {}, c: [0, null]}
+ * buffers = [array1, array2]
+ * buffer_paths = [['b', 'data'], ['c', 1]]
+ * Will lead to {a: 1, b: array1, c: [0, array2]}
+ */
+export
+function put_buffers(state, buffer_paths, buffers) {
+    for (var i=0; i<buffer_paths.length; i++) {
+         // say we want to set state[x][y[z] = buffers[i]
+        var obj = state;
+        // we first get obj = state[x][y]
+        for (var j = 0; j < buffer_paths[i].length-1; j++)
+            obj = obj[buffer_paths[i][j]];
+        // and then set: obj[z] = buffers[i]
+        obj[buffer_paths[i][buffer_paths[i].length-1]] = buffers[i];
+    }
+}
+
+/**
+ * The inverse of put_buffers, return an objects with the new state where all buffers(ArrayBuffer)
+ * are removed. If a buffer is a member of an object, that object is cloned, and the key removed. If a buffer
+ * is an element of an array, that array is cloned, and the element is set to null.
+ * See put_buffers for the meaning of buffer_paths
+ * Returns an object with the new state (.state) an array with paths to the buffers (.buffer_paths),
+ * and the buffers associated to those paths (.buffers).
+ */
+export
+function remove_buffers(state) {
+    var buffers = [];
+    var buffer_paths = [];
+    // keep track of what we visited, to avoid endless loops, when an object ancester
+    // refers to itself, we cannot use an object, since using objects for keys don't work
+    var visited_set = [];
+    // if we need to remove an object from a list, we need to clone that list, otherwise we may modify
+    // the internal state of the widget model
+    // however, we do not want to clone everything, for performance
+    function remove(obj, path) {
+        if(visited_set.indexOf(obj) != -1) { // we already visited this object
+            return obj;
+        }
+        visited_set.push(obj);
+        if (Array.isArray(obj)) {
+            var is_cloned = false;
+            for (var i = 0; i < obj.length; i++) {
+                var value = obj[i];
+                if(value) {
+                    if (value.buffer instanceof ArrayBuffer || value instanceof ArrayBuffer) {
+                        if(!is_cloned) {
+                            obj = _.clone(obj);
+                            is_cloned = true;
+                        }
+                        buffers.push(value);
+                        buffer_paths.push(path.concat([i]));
+                        // easier to just keep the array, but clear the entry, otherwise we have to think
+                        // about array length, much easier this way
+                        obj[i] = null;
+                    }
+                    else {
+                        var new_value  = remove(value, path.concat([i]));
+                        if((new_value != value) && !is_cloned) {
+                            obj = _.clone(obj);
+                            is_cloned = true;
+                            obj[i] = new_value;
+                        }
+                    }
+                }
+            }
+        }
+        else if(_.isObject(obj)) {
+            for (var key in obj) {
+                var is_cloned = false;
+                if (!obj.hasOwnProperty || obj.hasOwnProperty(key)) {
+                    var value = obj[key];
+                    if(value) {
+                        if (value.buffer instanceof ArrayBuffer || value instanceof ArrayBuffer) {
+                            if(!is_cloned) {
+                                obj = _.clone(obj);
+                                is_cloned = true;
+                            }
+                            buffers.push(value);
+                            buffer_paths.push(path.concat([key]));
+                            delete obj[key]; // for objects/dicts we just delete them
+                        }
+                        else {
+                            var new_value  = remove(value, path.concat([key]));
+                            if((new_value != value) && !is_cloned) {
+                                obj = _.clone(obj);
+                                is_cloned = true;
+                                obj[key] = new_value;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return obj;
+    }
+    var new_state = remove(state, []);
+    return {state:new_state, buffers: buffers, buffer_paths: buffer_paths}
+}

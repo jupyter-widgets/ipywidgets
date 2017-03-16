@@ -52,9 +52,7 @@ else:
 
 
 def _split_state_buffers(state):
-    """Return (state_without_buffers, state_with_buffers, buffer_paths, buffers) for binary message parts
-
-    state_with_buffers is a dict where any of it's decendents is is a binary_type.
+    """Return (state_without_buffers, buffer_paths, buffers) for binary message parts
 
     As an example:
     >>> state = {'plain': [0, 'text'], 'x': {'ar': memoryview(ar1)}, 'y': {'shape': (10,10), 'data': memoryview(ar2)}}
@@ -90,13 +88,7 @@ def _split_state_buffers(state):
     buffer_paths, buffers = [], []
     seperate_buffers(state, [], buffer_paths, buffers)
     state_with_buffers = {}
-    # any part of the state that has buffers needs to be treated seperately
-    # since of a issue as indicated in .open(..)
-    # also remove top level elements if they contain nested buffers (len(k) > 1)
-    for key in set([k[0] for k in buffer_paths if len(k) > 1]):
-        state_with_buffers[key] = state[key]
-        del state[key]
-    return state, state_with_buffers, buffer_paths, buffers
+    return state, buffer_paths, buffers
 
 
 class CallbackDispatcher(LoggingConfigurable):
@@ -262,21 +254,14 @@ class Widget(LoggingConfigurable):
     def open(self):
         """Open a comm to the frontend if one isn't already open."""
         if self.comm is None:
-            state, state_with_buffers, buffer_paths, buffers = _split_state_buffers(self.get_state())
+            state, buffer_paths, buffers = _split_state_buffers(self.get_state())
 
-            args = dict(target_name='jupyter.widget', data=state)
+            args = dict(target_name='jupyter.widget', data={'state': state, 'buffer_paths': buffer_paths})
             if self._model_id is not None:
                 args['comm_id'] = self._model_id
+            args['buffers'] = buffers
 
             self.comm = Comm(**args)
-            if buffers:
-                # FIXME: workaround ipykernel missing binary message support in open-on-init
-                # send state with binary elements as second message
-                # TODO: if this gets fixed, _split_state_buffers does not need to have a seperate
-                # state_with_buffers, this is needed since first the object is created without sending
-                # the buffers, then on the js side, it tries to serialize, while the buffer have not been
-                # patched in yet, see also widget.ts:_handle_comm_msg
-                self.send_state()
 
     @observe('comm')
     def _comm_changed(self, change):
@@ -320,8 +305,8 @@ class Widget(LoggingConfigurable):
             A single property's name or iterable of property names to sync with the front-end.
         """
         state = self.get_state(key=key)
-        state, state_with_buffers, buffer_paths, buffers = _split_state_buffers(state)
-        msg = {'method': 'update', 'state': state, 'buffers': buffer_paths, 'state_with_buffers': state_with_buffers}
+        state, buffer_paths, buffers = _split_state_buffers(state)
+        msg = {'method': 'update', 'state': state, 'buffer_paths': buffer_paths}
         self._send(msg, buffers=buffers)
 
     def get_state(self, key=None, drop_defaults=False):

@@ -26,14 +26,26 @@ class TestBuffers(TestCase):
     def test_state_with_buffers(self):
         mv1 =  memoryview(b'test1')
         mv2 =  memoryview(b'test2')
-        state = {'plain': [0, 'text'], 'x': {'ar': mv1}, 'y': {'shape': (10, 10), 'data': mv1}, 'z': [mv1, mv2], 'top': mv1}
-        state, state_with_buffers, buffer_paths, buffers = _split_state_buffers(state)
-        print("executed", state, state_with_buffers, buffer_paths, buffers)
+        state = {'plain': [0, 'text'],
+                 'x': {'ar': mv1},
+                 'y': {'shape': (10, 10), 'data': mv1},
+                 'z': [mv1, mv2],
+                 'top': mv1,
+                 'deep': {'a': 1, 'b':[0,{'deeper':mv2}]}}
+        state, buffer_paths, buffers = _split_state_buffers(state)
+        print("executed", state, buffer_paths, buffers)
         self.assertIn('plain', state)
-        self.assertNotIn('x', state)
-        self.assertNotIn('y', state)
-        self.assertNotIn('z', state)
-        for path, buffer in [(['x', 'ar'], mv1), (['y', 'data'], mv1), (['z', 0], mv1), (['z', 1], mv2), (['top'], mv1)]:
+        self.assertIn('shape', state['y'])
+        self.assertNotIn('ar', state['x'])
+        self.assertNotIn('data', state['x'])
+        self.assertNotIn(mv1, state['z'])
+        self.assertNotIn(mv1, state['z'])
+        self.assertNotIn('top', state)
+        self.assertIn('deep', state)
+        self.assertIn('b', state['deep'])
+        self.assertNotIn('deeper', state['deep']['b'][1])
+        for path, buffer in [(['x', 'ar'], mv1), (['y', 'data'], mv1), (['z', 0], mv1), (['z', 1], mv2),\
+                             (['top'], mv1), (['deep', 'b', 1, 'deeper'], mv2)]:
             self.assertIn(path, buffer_paths, "%r not in path" % path)
             index = buffer_paths.index(path)
             self.assertEqual(buffer, buffers[index])
