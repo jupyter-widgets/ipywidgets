@@ -171,6 +171,27 @@ In the ipywidgets implementation, the `Widget.send(content, buffers=None)` metho
 
 ### Displaying widgets
 
-TODO: document the display_data message to send to display widgets
+To display a widget in the classic Jupyter notebook, the kernel sends a `display` comm message to the frontend on the widget's comm channel:
 
-(Note also the comm message to display messages in the old notebook)
+```
+{
+  'comm_id': 'u-u-i-d',
+  'data': {
+    'method': 'display'
+  }
+}
+```
+
+To display a widget in JupyterLab, the kernel sends a Jupyter [iopub `display_data` message](http://jupyter-client.readthedocs.io/en/latest/messaging.html#display-data) with a special mimetype (where the `model_id` is the comm channel id):
+
+```
+{
+  'data': {
+    'application/vnd.jupyter.widget-view+json': {
+      'model_id': 'u-u-i-d'
+    }
+  }
+}
+```
+
+In order to display widgets in both the classic notebook and JupyterLab, ipywidgets sends both the `display` comm message and the iopub `display_data` message, and omits the `text/plain` mimetype from the `display_data` message (so the classic notebook will not show any output from the iopub message).
