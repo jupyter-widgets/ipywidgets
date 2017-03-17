@@ -72,16 +72,16 @@ Once a widget comm channel is created for a widget instance, state synchronizati
 {
   'comm_id' : 'u-u-i-d',
   'data' : {
-      'method': 'state',
+      'method': 'update',
       'state': { <dictionary of widget state> },
-      'buffers': [ <list of state keys (strings) corresponding to binary buffers in the message> ]
+      'buffers': [ <optional list of state keys (strings) corresponding to binary buffers in the message> ]
   }
 }
 ```
 
 The `data.state` value is a dictionary of widget attributes and values. See the [Model state](modelstate.md) documentation for the attributes of core Jupyter widgets.
 
-Comm messages for state synchronization may contain binary buffers. The `data.buffers` attribute contains a list of keys corresponding to the binary buffers. For example, if `data.buffers` is `['x', 'y']`, then the first binary buffer is the value of the `'x'` state attribute and the second binary buffer is the value of the `'y'` state attribute.
+Comm messages for state synchronization may contain binary buffers. The `data.buffers` optional attribute contains a list of keys corresponding to the binary buffers. For example, if `data.buffers` is `['x', 'y']`, then the first binary buffer is the value of the `'x'` state attribute and the second binary buffer is the value of the `'y'` state attribute.
 
 ### Sending custom messages
 
@@ -98,7 +98,7 @@ In the Python implementation, the base widget class provides a means to send raw
 }
 ```
 
-#### Receiving data synchronization messages
+### Receiving data synchronization messages
 
 Upon updates of the JavaScript model state, the frontend emits widget state patches messages
 
@@ -108,16 +108,16 @@ Upon updates of the JavaScript model state, the frontend emits widget state patc
   'data' : {
       'method': 'backbone',
       'sync_data': 'the patch to the data',
-      'buffers': 'optional buffer names list'
+      'buffer_keys': 'optional buffer names list'
   }
 }
 ```
 
-The `sync_data` contains the serialized state of the changed model attributes in the form of a dictionnary.
+The `sync_data` contains the serialized state of the changed model attributes in the form of a dictionary.
 
-Optionally, the message may specify a list of buffer names. When provided, the corresponding binary buffers in the zmq message should be appended in the `sync_data` dictionary with the keys specified in the `buffers` list.
+Optionally, the message may specify a list of buffer names. When provided, the corresponding binary buffers in the zmq message should be appended in the `sync_data` dictionary with the keys specified in the `buffer_keys` list.
 
-#### State requests
+### State requests
 
 In the case of a frontend connecting to a running kernel where widgets have already been instantiated, it may send a request state message, of the form
 
@@ -130,4 +130,10 @@ In the case of a frontend connecting to a running kernel where widgets have alre
 }
 ```
 
-The expected response to that message is a regular `state` (TODO: check-is it an `update` message?) message as specified above containining the entirety of the widget model state.
+The expected response to that message is a regular `'update'` message as specified above containining the entirety of the widget model state.
+
+## Displaying widgets
+
+TODO: document the display_data message to send to display widgets
+
+(Note also the comm message to display messages in the old notebook)
