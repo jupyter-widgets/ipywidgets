@@ -1,37 +1,34 @@
 # Widget messaging protocol
 
-The protocol for
+A Jupyter widget has both a frontend and kernel object communicating with each other using the `comm` messages provided by the Jupyter kernel messaging protocol. The primary communication that happens is synchronizing widget state, represented in the messages by a dictionary of key-value pairs. The Jupyter widget messaging protocol covers `comm` messages for the following actions:
 
-- instantiating jupyter widgets
-- synchronizing widget state between the front-end and the back-end companion objects
+- creating a companion Jupyter widget object through opening a `comm`
+- synchronizing widget state between the frontend and the kernel companion objects
 - sending custom messages between these objects
 
-Is entirely based upon the `Comm` section of the Jupyter kernel protocol.
+For more details on the `comm` infrastructure, see the [Custom messages section](http://jupyter-client.readthedocs.io/en/latest/messaging.html#custom-messages) of the Jupyter kernel message specification.
 
-For more details on comms *per se*, we refer to the [relevant section of the specification for the Jupyter kernel protocol](http://jupyter-client.readthedocs.io/en/latest/messaging.html).
+Throughout this document, relevant parts of messages to the discussion are quoted, and fields irrelevant to the discussion are not displayed.
 
-## Implementation of a backend for the Jupyter widgets protocol.
+## Implementating the Jupyter widgets protocol in the kernel
 
-Jupyter widget libraries built upon ipywidgets tend to have a large part their code-base in JavaScript, since this is where the logic for drawing and rendering widgets resides. The Python side mostly consists in a declaration of the widget model attributes.
+Jupyter widget libraries built upon ipywidgets tend to have a large part their code-base in JavaScript, since this is where the logic for rendering widgets resides. The Python side is usually an observable object holding the widget model attributes.
 
-A byproduct of the *thin backend* of widget libraries is that once the widget protocol is implemented for another kernel, all the widgets and custom widget libraries can be reused in that language.
-
-Therefore, in this documentation, we concentrate on the viewpoint of a kernel author implementing a jupyter widget backend.
+In this section, we concentrate on implementing the Jupyter widget messaging protocol in the kernel.
 
 ### The `jupyter.widget` comm target
 
-Jupyter interactive widgets define two `comm` targets
+Jupyter interactive widgets create a widget comm channel by sending messages to the `jupyter.widget` comm target. State synchronization and custom messages for a particular widget instance are then sent over the created comm channel.
 
- - `jupyter.widget`
- - `jupyter.widget.version`
- 
-The first one is the target handling all the widget state synchronization as well as the custom messages. The other target is meant for a version check between the front-end and the backend, and can be ignored from now.
+Jupyter widgets also define a `jupyter.widget.version` comm target, which is for communicating version information between the frontend and the kernel, and can be ignored in an initial implementation. We will not address messages to this target here.
 
-### Instantiating widgets from the front-end and the backend
+### Instatiating a widget object
 
-#### Reception of a `comm_open` message
+When a widget is instantiated in either the kernel or the frontend, it creates a counterpart object on the other side by sending a `comm_open` message to the `jupyter.widget` comm target.
 
-Upon reception of the `comm_open` message for target `jupyter.widget`
+#### Reception of a `comm_open` message from the frontend
+
+When a frontend creates a Jupyter widget, it sends a `comm_open` message to the kernel:
 
 ```python
 {
@@ -43,63 +40,67 @@ Upon reception of the `comm_open` message for target `jupyter.widget`
 }
 ```
 
-The type of widget to be instantiated is determined with the `widget_class` string.
+The type of widget to be instantiated is given in the `widget_class` string.
 
 In the python implementation, this string is actually the key in a registry of widget types. In the case where the key is not found, it is parsed as a `module` `+` `class` string.
 
-In the Python implementation of the backend, widget types are registered in the dictionary with the `register` decorator. For example the integral progress bar is registered with `register('Jupyter.IntProgress')`.
+In the Python implementation of the kernel, widget types are registered in the dictionary with the `register` decorator. For example the integral progress bar is registered with `register('Jupyter.IntProgress')`.
 
-#### Emmission of the `comm_open` message upon instantiation of a widget
+TODO: give a list in another document of the core widgets and each widget_class string.
 
-Symmetrically, when instantiating a widget in the backend, a `comm_open` message is sent to the front-end.
+#### Sending a `comm_open` message upon instantiation of a widget
+
+Symmetrically, when instantiating a widget in the kernel, a `comm_open` message is sent to the frontend.
 
 ```python
 {
   'comm_id' : 'u-u-i-d',
   'target_name' : 'jupyter.widget',
   'data' : {
-      '[serialized widget state]'
+      <dictionary of widget state>
   }
 }
 ```
 
-The type of widget to be instantiated in the front-end is determined by the `_model_name`, `_model_module` and `_model_module_version` keys in the state, which respectively stand for the name of the class that must be instantiated in the frontend, the javascript module where this class is defined, and a semver range for that module.
+The type of widget to be instantiated in the frontend is determined by the `_model_name`, `_model_module` and `_model_module_version` keys in the state, which respectively stand for the name of the class that must be instantiated in the frontend, the JavaScript module where this class is defined, and a semver range for that module. See the [Model State](modelstate.md) documentation for the serialized state for core Jupyter widgets.
 
-#### Sending updates of the state for a widget model
+### Sending updates of the state for a widget model
 
-```python
+Once a widget comm channel is created for a widget instance, state synchronization and custom messages are sent over the comm channel. When a widget's state changes in the kernel, the new state (either the entire state or just the changed keys) is sent to the frontend using a `state` message:
+
+```
 {
   'comm_id' : 'u-u-i-d',
   'data' : {
       'method': 'state',
-      'state': '[serialized widget state or portion of the serialized widget sate]',
-      'buffers': '[optional list of keys for attributes sent in the form of binary buffers]'
+      'state': { <dictionary of widget state> },
+      'buffers': [ <list of state keys (strings) corresponding to binary buffers in the message> ]
   }
 }
 ```
 
-Comm messages for state synchonization optionally contain a list binary buffers. If this list is not empty, a corresponding list of strings must be provided in the `data` message providing the names for these buffers.
+The `data.state` value is a dictionary of widget attributes and values. See the [Model state](modelstate.md) documentation for the attributes of core Jupyter widgets.
 
-The front-end will unpack these buffer and insert them in the state for the specified keys.
+Comm messages for state synchronization may contain binary buffers. The `data.buffers` attribute contains a list of keys corresponding to the binary buffers. For example, if `data.buffers` is `['x', 'y']`, then the first binary buffer is the value of the `'x'` state attribute and the second binary buffer is the value of the `'y'` state attribute.
 
-#### Sending custom messages
+### Sending custom messages
 
 In the Python implementation, the base widget class provides a means to send raw comm messages directly. `Widget.send(content, buffers=None)` will produce a message of the form
 
-```python
+```
 {
   'comm_id' : 'u-u-i-d',
   'data' : {
       'method': 'custom',
-      'content': 'the specified content',
-      'buffers': 'the provided buffers'
+      'content': <the specified content>,
+      'buffers': <the provided buffers>
   }
 }
 ```
 
 #### Receiving data synchronization messages
 
-Upon updates of the JavaScript model state, the front-end emits widget state patches messages
+Upon updates of the JavaScript model state, the frontend emits widget state patches messages
 
 ```python
 {
@@ -118,7 +119,7 @@ Optionally, the message may specify a list of buffer names. When provided, the c
 
 #### State requests
 
-In the case of a front-end connecting to a running kernel where widgets have already been instantiated, it may send a request state message, of the form
+In the case of a frontend connecting to a running kernel where widgets have already been instantiated, it may send a request state message, of the form
 
 ```python
 {
@@ -129,4 +130,4 @@ In the case of a front-end connecting to a running kernel where widgets have alr
 }
 ```
 
-The expected response to that message is a regular `update` message as specified above containining the entirety of the widget model state.
+The expected response to that message is a regular `state` (TODO: check-is it an `update` message?) message as specified above containining the entirety of the widget model state.
