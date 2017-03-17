@@ -16,11 +16,43 @@ Jupyter widget libraries built upon ipywidgets tend to have a large part their c
 
 In this section, we concentrate on implementing the Jupyter widget messaging protocol in the kernel.
 
+### The `jupyter.widget.version` comm target
+
+Jupyter widgets define a `jupyter.widget.version` comm target, which is for communicating version information between the frontend and the kernel. When a frontend initializes a Jupyter widget extension (for example, when a notebook is opened), the frontend sends the kernel a `comm_open` message to the `jupyter.widget.version` comm target:
+
+```
+{
+  'comm_id': 'u-u-i-d',
+  'target_name': 'jupyter.widget.version'
+}
+```
+
+The kernel should immediately send a message on the opened comm channel containing the semver range for the frontend version of jupyter-js-widgets that it expects:
+
+```
+{
+  'comm_id': 'u-u-i-d',
+  'data': {
+    'version': '~2.1.0'
+  }
+}
+```
+
+The frontend then replies with a message on the comm channel giving the validation status and the frontend version:
+
+```
+{
+  'comm_id': 'u-u-i-d',
+  'data': {
+    'frontend_version: '2.1.4',
+    'validated': true
+  }
+}
+```
+
 ### The `jupyter.widget` comm target
 
 Jupyter interactive widgets create a widget comm channel by sending messages to the `jupyter.widget` comm target. State synchronization and custom messages for a particular widget instance are then sent over the created comm channel.
-
-Jupyter widgets also define a `jupyter.widget.version` comm target, which is for communicating version information between the frontend and the kernel, and can be ignored in an initial implementation. We will not address messages to this target here.
 
 ### Instatiating a widget object
 
