@@ -56,18 +56,18 @@ Jupyter interactive widgets create a widget comm channel by sending messages to 
 
 ### Instatiating a widget object
 
-When a widget is instantiated in either the kernel or the frontend, it creates a counterpart object on the other side by sending a `comm_open` message to the `jupyter.widget` comm target.
+When a widget is instantiated in either the kernel or the frontend, it creates a companion object on the other side by sending a `comm_open` message to the `jupyter.widget` comm target.
 
 #### Reception of a `comm_open` message from the frontend
 
 When a frontend creates a Jupyter widget, it sends a `comm_open` message to the kernel:
 
-```python
+```
 {
   'comm_id' : 'u-u-i-d',
   'target_name' : 'jupyter.widget',
   'data' : {
-      'widget_class': 'some.string'
+    'widget_class': 'some.string'
   }
 }
 ```
@@ -84,87 +84,96 @@ TODO: give a list in another document of the core widgets and each widget_class 
 
 Symmetrically, when instantiating a widget in the kernel, a `comm_open` message is sent to the frontend.
 
-```python
+```
 {
   'comm_id' : 'u-u-i-d',
   'target_name' : 'jupyter.widget',
   'data' : {
-      <dictionary of widget state>
+    <dictionary of widget state>
   }
 }
 ```
 
 The type of widget to be instantiated in the frontend is determined by the `_model_name`, `_model_module` and `_model_module_version` keys in the state, which respectively stand for the name of the class that must be instantiated in the frontend, the JavaScript module where this class is defined, and a semver range for that module. See the [Model State](modelstate.md) documentation for the serialized state for core Jupyter widgets.
 
-### Sending updates of the state for a widget model
+### State synchronization
 
-Once a widget comm channel is created for a widget instance, state synchronization and custom messages are sent over the comm channel. When a widget's state changes in the kernel, the new state (either the entire state or just the changed keys) is sent to the frontend using a `state` message:
+#### Synchronizing from kernel to frontend
 
-```
-{
-  'comm_id' : 'u-u-i-d',
-  'data' : {
-      'method': 'update',
-      'state': { <dictionary of widget state> },
-      'buffers': [ <optional list of state keys (strings) corresponding to binary buffers in the message> ]
-  }
-}
-```
-
-The `data.state` value is a dictionary of widget attributes and values. See the [Model state](modelstate.md) documentation for the attributes of core Jupyter widgets.
-
-Comm messages for state synchronization may contain binary buffers. The `data.buffers` optional attribute contains a list of keys corresponding to the binary buffers. For example, if `data.buffers` is `['x', 'y']`, then the first binary buffer is the value of the `'x'` state attribute and the second binary buffer is the value of the `'y'` state attribute.
-
-### Sending custom messages
-
-In the Python implementation, the base widget class provides a means to send raw comm messages directly. `Widget.send(content, buffers=None)` will produce a message of the form
+When a widget's state changes in the kernel, the new state (either the entire state or just the changed keys) is sent to the frontend over the widget's comm channel using an `update` message:
 
 ```
 {
   'comm_id' : 'u-u-i-d',
   'data' : {
-      'method': 'custom',
-      'content': <the specified content>,
-      'buffers': <the provided buffers>
+    'method': 'update',
+    'state': { <dictionary of widget state> },
+    'buffers': [ <optional list of state keys corresponding to binary buffers in the message> ]
   }
 }
 ```
 
-### Receiving data synchronization messages
+The state update is split between values that are serializable with JSON (in the `data.state` dictionary), and binary values (represented in `data.buffers`).
 
-Upon updates of the JavaScript model state, the frontend emits widget state patches messages
+The `data.state` value is a dictionary of widget state keys and values that can be serialized to JSON.
 
-```python
+Comm messages for state synchronization may contain binary buffers. The `data.buffers` optional value contains a list of keys corresponding to the binary buffers. For example, if `data.buffers` is `['x', 'y']`, then the first binary buffer is the value of the `'x'` state attribute and the second binary buffer is the value of the `'y'` state attribute.
+
+See the [Model state](modelstate.md) documentation for the attributes of core Jupyter widgets.
+
+#### Syncrhonizing from frontend to kernel
+
+When a widget's state changes in the frontend, the changed keys are sent to the frontend over the widget's comm channel using a `backbone` message:
+
+```
 {
   'comm_id' : 'u-u-i-d',
   'data' : {
-      'method': 'backbone',
-      'sync_data': 'the patch to the data',
-      'buffer_keys': 'optional buffer names list'
+    'method': 'backbone',
+    'sync_data': { <dictionary of widget state> }
+    'buffer_keys': [ <optional list of state keys corresponding to binary buffers in the message> ]
   }
 }
 ```
 
-The `sync_data` contains the serialized state of the changed model attributes in the form of a dictionary.
+The state update is split between values that are serializable with JSON (in the `data.sync_data` dictionary), and binary values (represented in `data.buffer_keys`).
 
-Optionally, the message may specify a list of buffer names. When provided, the corresponding binary buffers in the zmq message should be appended in the `sync_data` dictionary with the keys specified in the `buffer_keys` list.
+The `data.sync_data` value is a dictionary of widget state keys and values that can be serialized to JSON.
 
-### State requests
+Comm messages for state synchronization may contain binary buffers. The `data.buffer_keys` optional value contains a list of keys corresponding to the binary buffers. For example, if `data.buffer_keys` is `['x', 'y']`, then the first binary buffer is the value of the `'x'` state attribute and the second binary buffer is the value of the `'y'` state attribute.
 
-In the case of a frontend connecting to a running kernel where widgets have already been instantiated, it may send a request state message, of the form
+#### State requests
 
-```python
+When a frontend wants to request the full state of a widget, the frontend sends a `request_state` message:
+
+```
 {
   'comm_id' : 'u-u-i-d',
   'data' : {
-      'method': 'request_state'
+    'method': 'request_state'
   }
 }
 ```
 
-The expected response to that message is a regular `'update'` message as specified above containining the entirety of the widget model state.
+The kernel should immediately send an `update` message (as specified above) with the entire widget state.
 
-## Displaying widgets
+### Custom messages
+
+Widgets may also send custom comm messages to their counterpart.
+
+```
+{
+  'comm_id': 'u-u-i-d',
+  'data': {
+    'method': 'custom',
+    'content': <the specified content>,
+  }
+}
+```
+
+In the Python Jupyter widgets implementation, the `Widget.send(content, buffers=None)` method will produce a message of this form.
+
+### Displaying widgets
 
 TODO: document the display_data message to send to display widgets
 
