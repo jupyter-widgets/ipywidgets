@@ -18,7 +18,7 @@ In this section, we concentrate on implementing the Jupyter widget messaging pro
 
 ### The `jupyter.widget.version` comm target
 
-Jupyter widgets define a `jupyter.widget.version` comm target, which is for communicating version information between the frontend and the kernel. When a frontend initializes a Jupyter widget extension (for example, when a notebook is opened), the frontend sends the kernel a `comm_open` message to the `jupyter.widget.version` comm target:
+A kernel-side Jupyter widgets library defines a `jupyter.widget.version` comm target, which is for communicating version information between the frontend and the kernel. When a frontend initializes a Jupyter widget extension (for example, when a notebook is opened), the frontend sends the kernel a `comm_open` message to the `jupyter.widget.version` comm target:
 
 ```
 {
@@ -52,7 +52,7 @@ The frontend then replies with a message on the comm channel giving the validati
 
 ### The `jupyter.widget` comm target
 
-Jupyter interactive widgets create a widget comm channel by sending messages to the `jupyter.widget` comm target. State synchronization and custom messages for a particular widget instance are then sent over the created comm channel.
+A kernel-side Jupyter widgets library also defines a `jupyter.widget` comm target, by which widget comm channels are created (one per widget instance). State synchronization and custom messages for a particular widget instance are then sent over the created comm channel.
 
 ### Instatiating a widget object
 
@@ -74,15 +74,11 @@ When a frontend creates a Jupyter widget, it sends a `comm_open` message to the 
 
 The type of widget to be instantiated is given in the `widget_class` string.
 
-In the python implementation, this string is actually the key in a registry of widget types. In the case where the key is not found, it is parsed as a `module` `+` `class` string.
-
-In the Python implementation of the kernel, widget types are registered in the dictionary with the `register` decorator. For example the integral progress bar is registered with `register('Jupyter.IntProgress')`.
-
-TODO: give a list in another document of the core widgets and each widget_class string.
+In the ipywidgets implementation, this string is actually the key in a registry of widget types. In the ipywidgets implementation, widget types are registered in the dictionary with the `register` decorator. For example the integral progress bar class is registered with `@register('Jupyter.IntProgress')`. When the `widget_class` is not in the registry, it is parsed as a `module` `+` `class` string.
 
 #### Sending a `comm_open` message upon instantiation of a widget
 
-Symmetrically, when instantiating a widget in the kernel, a `comm_open` message is sent to the frontend.
+Symmetrically, when instantiating a widget in the kernel, a `comm_open` message is sent to the frontend:
 
 ```
 {
@@ -98,9 +94,9 @@ The type of widget to be instantiated in the frontend is determined by the `_mod
 
 ### State synchronization
 
-#### Synchronizing from kernel to frontend
+#### Synchronizing from kernel to frontend: `update`
 
-When a widget's state changes in the kernel, the new state (either the entire state or just the changed keys) is sent to the frontend over the widget's comm channel using an `update` message:
+When a widget's state changes in the kernel, the changed state keys and values are sent to the frontend over the widget's comm channel using an `update` message:
 
 ```
 {
@@ -121,7 +117,7 @@ Comm messages for state synchronization may contain binary buffers. The `data.bu
 
 See the [Model state](modelstate.md) documentation for the attributes of core Jupyter widgets.
 
-#### Syncrhonizing from frontend to kernel
+#### Synchronizing from frontend to kernel: `backbone`
 
 When a widget's state changes in the frontend, the changed keys are sent to the frontend over the widget's comm channel using a `backbone` message:
 
@@ -142,7 +138,7 @@ The `data.sync_data` value is a dictionary of widget state keys and values that 
 
 Comm messages for state synchronization may contain binary buffers. The `data.buffer_keys` optional value contains a list of keys corresponding to the binary buffers. For example, if `data.buffer_keys` is `['x', 'y']`, then the first binary buffer is the value of the `'x'` state attribute and the second binary buffer is the value of the `'y'` state attribute.
 
-#### State requests
+#### State requests: `request_state`
 
 When a frontend wants to request the full state of a widget, the frontend sends a `request_state` message:
 
@@ -155,9 +151,9 @@ When a frontend wants to request the full state of a widget, the frontend sends 
 }
 ```
 
-The kernel should immediately send an `update` message (as specified above) with the entire widget state.
+The kernel side of the widget should immediately send an `update` message with the entire widget state.
 
-### Custom messages
+### Custom messages: `custom`
 
 Widgets may also send custom comm messages to their counterpart.
 
