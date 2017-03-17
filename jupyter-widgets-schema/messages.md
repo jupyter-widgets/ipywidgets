@@ -167,7 +167,7 @@ Widgets may also send custom comm messages to their counterpart.
 }
 ```
 
-In the Python Jupyter widgets implementation, the `Widget.send(content, buffers=None)` method will produce a message of this form.
+In the ipywidgets implementation, the `Widget.send(content, buffers=None)` method will produce these messages.
 
 ### Displaying widgets
 
