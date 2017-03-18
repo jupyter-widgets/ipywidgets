@@ -179,18 +179,19 @@ function escape_html(text: string): string {
  * Example: state = {a: 1, b: {}, c: [0, null]}
  * buffers = [array1, array2]
  * buffer_paths = [['b', 'data'], ['c', 1]]
- * Will lead to {a: 1, b: array1, c: [0, array2]}
+ * Will lead to {a: 1, b: {data: array1}, c: [0, array2]}
  */
 export
 function put_buffers(state, buffer_paths, buffers) {
     for (var i=0; i<buffer_paths.length; i++) {
-         // say we want to set state[x][y[z] = buffers[i]
-        var obj = state;
+        let buffer_path = buffer_paths[i];
+         // say we want to set state[x][y][z] = buffers[i]
+        let obj = state;
         // we first get obj = state[x][y]
-        for (var j = 0; j < buffer_paths[i].length-1; j++)
-            obj = obj[buffer_paths[i][j]];
+        for (var j = 0; j < buffer_path.length-1; j++)
+            obj = obj[buffer_path[j]];
         // and then set: obj[z] = buffers[i]
-        obj[buffer_paths[i][buffer_paths[i].length-1]] = buffers[i];
+        obj[buffer_path[buffer_path.length-1]] = buffers[i];
     }
 }
 
@@ -235,9 +236,12 @@ function remove_buffers(state) {
                     }
                     else {
                         var new_value  = remove(value, path.concat([i]));
-                        if((new_value != value) && !is_cloned) {
-                            obj = _.clone(obj);
-                            is_cloned = true;
+                        // only assigned when the value changes, we may serialize objects that don't support assignment
+                        if(new_value != value) {
+                            if(!is_cloned) {
+                                obj = _.clone(obj);
+                                is_cloned = true;
+                            }
                             obj[i] = new_value;
                         }
                     }
@@ -261,9 +265,12 @@ function remove_buffers(state) {
                         }
                         else {
                             var new_value  = remove(value, path.concat([key]));
-                            if((new_value != value) && !is_cloned) {
-                                obj = _.clone(obj);
-                                is_cloned = true;
+                            // only assigned when the value changes, we may serialize objects that don't support assignment
+                            if(new_value != value) {
+                                if(!is_cloned) {
+                                    obj = _.clone(obj);
+                                    is_cloned = true;
+                                }
                                 obj[key] = new_value;
                             }
                         }

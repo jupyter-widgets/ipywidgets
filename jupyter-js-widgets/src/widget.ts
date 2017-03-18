@@ -398,7 +398,7 @@ class WidgetModel extends Backbone.Model {
             // get binary values, then send
             var keys = Object.keys(state);
             // this function goes through lists and object and removes arraybuffers
-            // they will be transferred seperately, since they don't json'ify
+            // they will be transferred separately, since they don't json'ify
             // on the python side the inverse happens
             var split = utils.remove_buffers(state);
             this.comm.send({
