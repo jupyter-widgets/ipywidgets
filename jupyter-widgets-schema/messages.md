@@ -1,4 +1,4 @@
-# Widget messaging protocol
+# Widget messaging protocol, version 1
 
 A Jupyter widget has both a frontend and kernel object communicating with each other using the `comm` messages provided by the Jupyter kernel messaging protocol. The primary communication that happens is synchronizing widget state, represented in the messages by a dictionary of key-value pairs. The Jupyter widget messaging protocol covers `comm` messages for the following actions:
 
