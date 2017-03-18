@@ -163,6 +163,14 @@ code prior to running the display code. For example:
 In the case of the `ipywidgets-display` code, the *last statement* of the
 code-block should contain the widget object you wish to be rendered.
 
+Quoting the `jupyter_sphinx` readme,
+
+> Widgets rendered on the same page use the same widget manager. As a
+> consequence, they can be linked with each other via JavaScript link widgets.
+> However, no kernel is connect and therefore, interaction with the backend
+> will not happen.
+
+
 ### Using the `nbsphinx` Project
 
 The [nbsphinx](https://github.com/spatialaudio/nbsphinx) sphinx extension
