@@ -86,7 +86,7 @@
     "@phosphor/algorithm": "^0.1.0",
     "@phosphor/widgets": "^0.1.0",
     "@phosphor/messaging": "^0.1.0",
-    "@phosphor/utilities": "^0.1.0",
+    "@phosphor/domutils": "^0.1.0",
     "@types/backbone": "^1.3.33",
     "@types/semver": "^5.3.30",
     "ajv": "^4.9.0",
