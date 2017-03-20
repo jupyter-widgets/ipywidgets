@@ -207,17 +207,15 @@ export
 function remove_buffers(state) {
     var buffers = [];
     var buffer_paths = [];
-    // keep track of what we visited, to avoid endless loops, when an object ancester
-    // refers to itself, we cannot use an object, since using objects for keys don't work
-    var visited_set = [];
     // if we need to remove an object from a list, we need to clone that list, otherwise we may modify
     // the internal state of the widget model
     // however, we do not want to clone everything, for performance
     function remove(obj, path) {
-        if(visited_set.indexOf(obj) != -1) { // we already visited this object
-            return obj;
+        if (obj.toJSON) {
+            // We need to get the JSON form of the object before recursing.
+            // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#toJSON()_behavior
+            obj = obj.toJSON();
         }
-        visited_set.push(obj);
         if (Array.isArray(obj)) {
             var is_cloned = false;
             for (var i = 0; i < obj.length; i++) {
