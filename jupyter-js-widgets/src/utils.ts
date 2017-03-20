@@ -249,7 +249,7 @@ function remove_buffers(state) {
         else if(_.isObject(obj)) {
             for (var key in obj) {
                 var is_cloned = false;
-                if (!obj.hasOwnProperty || obj.hasOwnProperty(key)) {
+                if (obj.hasOwnProperty(key)) {
                     var value = obj[key];
                     if(value) {
                         if (value.buffer instanceof ArrayBuffer || value instanceof ArrayBuffer) {
