@@ -183,12 +183,12 @@ function escape_html(text: string): string {
  */
 export
 function put_buffers(state, buffer_paths, buffers) {
-    for (var i=0; i<buffer_paths.length; i++) {
+    for (let i=0; i<buffer_paths.length; i++) {
         let buffer_path = buffer_paths[i];
          // say we want to set state[x][y][z] = buffers[i]
         let obj = state;
         // we first get obj = state[x][y]
-        for (var j = 0; j < buffer_path.length-1; j++)
+        for (let j = 0; j < buffer_path.length-1; j++)
             obj = obj[buffer_path[j]];
         // and then set: obj[z] = buffers[i]
         obj[buffer_path[buffer_path.length-1]] = buffers[i];
@@ -205,8 +205,8 @@ function put_buffers(state, buffer_paths, buffers) {
  */
 export
 function remove_buffers(state) {
-    var buffers = [];
-    var buffer_paths = [];
+    let buffers = [];
+    let buffer_paths = [];
     // if we need to remove an object from a list, we need to clone that list, otherwise we may modify
     // the internal state of the widget model
     // however, we do not want to clone everything, for performance
@@ -217,9 +217,9 @@ function remove_buffers(state) {
             obj = obj.toJSON();
         }
         if (Array.isArray(obj)) {
-            var is_cloned = false;
-            for (var i = 0; i < obj.length; i++) {
-                var value = obj[i];
+            let is_cloned = false;
+            for (let i = 0; i < obj.length; i++) {
+                let value = obj[i];
                 if(value) {
                     if (value.buffer instanceof ArrayBuffer || value instanceof ArrayBuffer) {
                         if(!is_cloned) {
@@ -232,7 +232,7 @@ function remove_buffers(state) {
                         // about array length, much easier this way
                         obj[i] = null;
                     } else {
-                        var new_value  = remove(value, path.concat([i]));
+                        let new_value  = remove(value, path.concat([i]));
                         // only assigned when the value changes, we may serialize objects that don't support assignment
                         if(new_value !== value) {
                             if(!is_cloned) {
@@ -245,10 +245,10 @@ function remove_buffers(state) {
                 }
             }
         } else if(_.isObject(obj)) {
-            for (var key in obj) {
-                var is_cloned = false;
+            for (let key in obj) {
+                let is_cloned = false;
                 if (obj.hasOwnProperty(key)) {
-                    var value = obj[key];
+                    let value = obj[key];
                     if(value) {
                         if (value.buffer instanceof ArrayBuffer || value instanceof ArrayBuffer) {
                             if(!is_cloned) {
@@ -260,7 +260,7 @@ function remove_buffers(state) {
                             delete obj[key]; // for objects/dicts we just delete them
                         }
                         else {
-                            var new_value  = remove(value, path.concat([key]));
+                            let new_value  = remove(value, path.concat([key]));
                             // only assigned when the value changes, we may serialize objects that don't support assignment
                             if(new_value !== value) {
                                 if(!is_cloned) {
@@ -276,6 +276,6 @@ function remove_buffers(state) {
         }
         return obj;
     }
-    var new_state = remove(state, []);
-    return {state:new_state, buffers: buffers, buffer_paths: buffer_paths}
+    let new_state = remove(state, []);
+    return {state: new_state, buffers: buffers, buffer_paths: buffer_paths}
 }
