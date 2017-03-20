@@ -235,7 +235,7 @@ function remove_buffers(state) {
                     else {
                         var new_value  = remove(value, path.concat([i]));
                         // only assigned when the value changes, we may serialize objects that don't support assignment
-                        if(new_value != value) {
+                        if(new_value !== value) {
                             if(!is_cloned) {
                                 obj = _.clone(obj);
                                 is_cloned = true;
@@ -264,7 +264,7 @@ function remove_buffers(state) {
                         else {
                             var new_value  = remove(value, path.concat([key]));
                             // only assigned when the value changes, we may serialize objects that don't support assignment
-                            if(new_value != value) {
+                            if(new_value !== value) {
                                 if(!is_cloned) {
                                     obj = _.clone(obj);
                                     is_cloned = true;
