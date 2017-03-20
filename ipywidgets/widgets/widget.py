@@ -62,7 +62,7 @@ def _put_buffers(state, buffer_paths, buffers):
             obj = obj[key]
         obj[buffer_path[-1]] = buffer
 
-def _seperate_buffers(substate, path, buffer_paths, buffers):
+def _separate_buffers(substate, path, buffer_paths, buffers):
     """For internal, see _remove_buffers"""
     # remove binary types from dicts and lists, but keep track of their paths
     # any part of the dict/list that needs modification will be cloned, so the original stays untouched
@@ -80,7 +80,7 @@ def _seperate_buffers(substate, path, buffer_paths, buffers):
                 buffers.append(v)
                 buffer_paths.append(path + [i])
             elif isinstance(v, (dict, list, tuple)):
-                vnew = _seperate_buffers(v, path + [i], buffer_paths, buffers)
+                vnew = _separate_buffers(v, path + [i], buffer_paths, buffers)
                 if v is not vnew: # only assign when value changed
                     if not is_cloned:
                         substate = list(substate) # clone list/tuple
@@ -97,7 +97,7 @@ def _seperate_buffers(substate, path, buffer_paths, buffers):
                 buffers.append(v)
                 buffer_paths.append(path + [k])
             elif isinstance(v, (dict, list, tuple)):
-                vnew = _seperate_buffers(v, path + [k], buffer_paths, buffers)
+                vnew = _separate_buffers(v, path + [k], buffer_paths, buffers)
                 if v is not vnew: # only assign when value changed
                     if not is_cloned:
                         substate = dict(substate) # clone list/tuple
@@ -118,7 +118,7 @@ def _remove_buffers(state):
      [<memory at 0x107ffec48>, <memory at 0x107ffed08>])
     """
     buffer_paths, buffers = [], []
-    state = _seperate_buffers(state, [], buffer_paths, buffers)
+    state = _separate_buffers(state, [], buffer_paths, buffers)
     return state, buffer_paths, buffers
 
 
