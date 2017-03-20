@@ -231,8 +231,7 @@ function remove_buffers(state) {
                         // easier to just keep the array, but clear the entry, otherwise we have to think
                         // about array length, much easier this way
                         obj[i] = null;
-                    }
-                    else {
+                    } else {
                         var new_value  = remove(value, path.concat([i]));
                         // only assigned when the value changes, we may serialize objects that don't support assignment
                         if(new_value !== value) {
@@ -245,8 +244,7 @@ function remove_buffers(state) {
                     }
                 }
             }
-        }
-        else if(_.isObject(obj)) {
+        } else if(_.isObject(obj)) {
             for (var key in obj) {
                 var is_cloned = false;
                 if (obj.hasOwnProperty(key)) {
