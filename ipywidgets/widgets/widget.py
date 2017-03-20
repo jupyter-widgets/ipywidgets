@@ -287,10 +287,11 @@ class Widget(LoggingConfigurable):
         if self.comm is None:
             state, buffer_paths, buffers = _remove_buffers(self.get_state())
 
-            args = dict(target_name='jupyter.widget', data={'state': state, 'buffer_paths': buffer_paths})
+            args = dict(target_name='jupyter.widget',
+                        data={'state': state, 'buffer_paths': buffer_paths},
+                        buffers=buffers)
             if self._model_id is not None:
                 args['comm_id'] = self._model_id
-            args['buffers'] = buffers
 
             self.comm = Comm(**args)
 
