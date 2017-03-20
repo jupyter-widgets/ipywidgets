@@ -43,8 +43,8 @@ class TestBuffers(TestCase):
         self.assertIn('plain', state)
         self.assertIn('shape', state['y'])
         self.assertNotIn('ar', state['x'])
-        self.assertFalse(state['x']) # should be empty
-        self.assertNotIn('data', state['x'])
+        self.assertEqual(state['x'], {})
+        self.assertNotIn('data', state['y'])
         self.assertNotIn(mv1, state['z'])
         self.assertNotIn(mv1, state['z'])
         self.assertNotIn('top', state)
@@ -59,7 +59,7 @@ class TestBuffers(TestCase):
         self.assertIsNot(state['y'], y)
         self.assertIs(state['y']['shape'], y_shape)
 
-        # check that the buffers paths really points to the right buffer
+        # check that the buffer paths really point to the right buffer
         for path, buffer in [(['x', 'ar'], mv1), (['y', 'data'], mv1), (['z', 0], mv1), (['z', 1], mv2),\
                              (['top'], mv1), (['deep', 'b', 1, 'deeper'], mv2)]:
             self.assertIn(path, buffer_paths, "%r not in path" % path)
