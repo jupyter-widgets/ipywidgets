@@ -105,14 +105,10 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     this._rendermime = rendermime;
 
     context.kernelChanged.connect((sender, kernel) => {
-      if (context.kernel) {
-        this.validateVersion();
-      }
       this.newKernel(kernel);
     });
 
     if (context.kernel) {
-      this.validateVersion();
       this.newKernel(context.kernel);
     }
   }

@@ -99,23 +99,6 @@ var WidgetManager = function (comm_manager, notebook) {
         }
     }).bind(this));
 
-    // Validate the version requested by the backend.
-    var validate = (function validate() {
-        this.validateVersion().then(function(valid) {
-            if (!valid) {
-                console.warn('Widget frontend version does not match the backend.');
-            }
-        }).catch(function(err) {
-            console.warn('Could not cross validate the widget frontend and backend versions.', err);
-        });
-    }).bind(this);
-    validate();
-
-    // Revalidate the version when a new kernel connects.
-    this.notebook.events.on('kernel_connected.Kernel', function(event, data) {
-        validate();
-    });
-
     // Create the actions and menu
     this._init_actions();
     this._init_menu();
