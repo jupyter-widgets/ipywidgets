@@ -185,12 +185,14 @@ abstract class ManagerBase<T> {
      * Handle when a comm is opened.
      */
     handle_comm_open(comm: shims.services.Comm, msg: services.KernelMessage.ICommOpenMsg): Promise<Backbone.Model> {
+        var data = (msg.content.data as any);
+        utils.put_buffers(data.state, data.buffer_paths, msg.buffers)
         return this.new_model({
-            model_name: msg.content.data['_model_name'],
-            model_module: msg.content.data['_model_module'],
-            model_module_version: msg.content.data['_model_module_version'],
+            model_name: data.state['_model_name'],
+            model_module: data.state['_model_module'],
+            model_module_version: data.state['_model_module_version'],
             comm: comm
-        }, msg.content.data).catch(utils.reject('Could not create a model.', true));
+        }, data.state).catch(utils.reject('Could not create a model.', true));
     };
 
     /**

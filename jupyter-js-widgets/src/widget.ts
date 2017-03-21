@@ -168,12 +168,11 @@ class WidgetModel extends Backbone.Model {
             case 'update':
                 this.state_change = this.state_change
                     .then(() => {
-                        var state = msg.content.data.state || {};
-                        var buffer_keys = msg.content.data.buffers || [];
+                        // see Widget.open/_split_state_buffers about why we need state_with_buffers
+                        var state = msg.content.data.state;
+                        var buffer_paths = msg.content.data.buffer_paths || [];
                         var buffers = msg.buffers || [];
-                        for (var i=0; i<buffer_keys.length; i++) {
-                            state[buffer_keys[i]] = buffers[i];
-                        }
+                        utils.put_buffers(state, buffer_paths, buffers);
                         return (this.constructor as typeof WidgetModel)._deserialize_state(state, this.widget_manager);
                     }).then((state) => {
                         this.set_state(state);
@@ -394,25 +393,15 @@ class WidgetModel extends Backbone.Model {
         utils.resolvePromisesDict(attrs).then((state) => {
             // get binary values, then send
             var keys = Object.keys(state);
-            var buffers = [];
-            var buffer_keys = [];
-            for (var i=0; i<keys.length; i++) {
-                var key = keys[i];
-                var value = state[key];
-                if (value) {
-                    if (value.buffer instanceof ArrayBuffer
-                        || value instanceof ArrayBuffer) {
-                        buffers.push(value);
-                        buffer_keys.push(key);
-                        delete state[key];
-                    }
-                }
-            }
+            // this function goes through lists and object and removes arraybuffers
+            // they will be transferred separately, since they don't json'ify
+            // on the python side the inverse happens
+            var split = utils.remove_buffers(state);
             this.comm.send({
                 method: 'backbone',
-                sync_data: state,
-                buffer_keys: buffer_keys
-            }, callbacks, {}, buffers);
+                sync_data: split.state,
+                buffer_paths: split.buffer_paths
+            }, callbacks, {}, split.buffers);
         }).catch((error) => {
             this.pending_msgs--;
             return (utils.reject('Could not send widget sync message', true))(error);

@@ -50,6 +50,78 @@ if PY3:
 else:
     _binary_types = (memoryview, buffer)
 
+def _put_buffers(state, buffer_paths, buffers):
+    """The inverse of _remove_buffers, except here we modify the existing dict/lists.
+    Modifying should be fine, since this is used when state comes from the wire.
+    """
+    for buffer_path, buffer in zip(buffer_paths, buffers):
+        # we'd like to set say sync_data['x'][0]['y'] = buffer
+        # where buffer_path in this example would be ['x', 0, 'y']
+        obj = state
+        for key in buffer_path[:-1]:
+            obj = obj[key]
+        obj[buffer_path[-1]] = buffer
+
+def _separate_buffers(substate, path, buffer_paths, buffers):
+    """For internal, see _remove_buffers"""
+    # remove binary types from dicts and lists, but keep track of their paths
+    # any part of the dict/list that needs modification will be cloned, so the original stays untouched
+    # e.g. {'x': {'ar': ar}, 'y': [ar2, ar3]}, where ar/ar2/ar3 are binary types
+    # will result in {'x': {}, 'y': [None, None]}, [ar, ar2, ar3], [['x', 'ar'], ['y', 0], ['y', 1]]
+    # instead of removing elements from the list, this will make replacing the buffers on the js side much easier
+    if isinstance(substate, (list, tuple)):
+        is_cloned = False
+        for i, v in enumerate(substate):
+            if isinstance(v, _binary_types):
+                if not is_cloned:
+                    substate = list(substate) # shallow clone list/tuple
+                    is_cloned = True
+                substate[i] = None
+                buffers.append(v)
+                buffer_paths.append(path + [i])
+            elif isinstance(v, (dict, list, tuple)):
+                vnew = _separate_buffers(v, path + [i], buffer_paths, buffers)
+                if v is not vnew: # only assign when value changed
+                    if not is_cloned:
+                        substate = list(substate) # clone list/tuple
+                        is_cloned = True
+                    substate[i] = vnew
+    elif isinstance(substate, dict):
+        is_cloned = False
+        for k, v in substate.items():
+            if isinstance(v, _binary_types):
+                if not is_cloned:
+                    substate = dict(substate) # shallow clone dict
+                    is_cloned = True
+                del substate[k]
+                buffers.append(v)
+                buffer_paths.append(path + [k])
+            elif isinstance(v, (dict, list, tuple)):
+                vnew = _separate_buffers(v, path + [k], buffer_paths, buffers)
+                if v is not vnew: # only assign when value changed
+                    if not is_cloned:
+                        substate = dict(substate) # clone list/tuple
+                        is_cloned = True
+                    substate[k] = vnew
+    else:
+        raise ValueError("expected state to be a list or dict, not %r" % substate)
+    return substate
+
+
+def _remove_buffers(state):
+    """Return (state_without_buffers, buffer_paths, buffers) for binary message parts
+
+    As an example:
+    >>> state = {'plain': [0, 'text'], 'x': {'ar': memoryview(ar1)}, 'y': {'shape': (10,10), 'data': memoryview(ar2)}}
+    >>> _remove_buffers(state)
+    ({'plain': [0, 'text']}, {'x': {}, 'y': {'shape': (10, 10)}}, [['x', 'ar'], ['y', 'data']],
+     [<memory at 0x107ffec48>, <memory at 0x107ffed08>])
+    """
+    buffer_paths, buffers = [], []
+    state = _separate_buffers(state, [], buffer_paths, buffers)
+    return state, buffer_paths, buffers
+
+
 class CallbackDispatcher(LoggingConfigurable):
     """A structure for registering and running callbacks"""
     callbacks = List()
@@ -213,17 +285,15 @@ class Widget(LoggingConfigurable):
     def open(self):
         """Open a comm to the frontend if one isn't already open."""
         if self.comm is None:
-            state, buffer_keys, buffers = self._split_state_buffers(self.get_state())
+            state, buffer_paths, buffers = _remove_buffers(self.get_state())
 
-            args = dict(target_name='jupyter.widget', data=state)
+            args = dict(target_name='jupyter.widget',
+                        data={'state': state, 'buffer_paths': buffer_paths},
+                        buffers=buffers)
             if self._model_id is not None:
                 args['comm_id'] = self._model_id
 
             self.comm = Comm(**args)
-            if buffers:
-                # FIXME: workaround ipykernel missing binary message support in open-on-init
-                # send state with binary elements as second message
-                self.send_state()
 
     @observe('comm')
     def _comm_changed(self, change):
@@ -258,16 +328,6 @@ class Widget(LoggingConfigurable):
             self.comm = None
             self._ipython_display_ = None
 
-    def _split_state_buffers(self, state):
-        """Return (state_without_buffers, buffer_keys, buffers) for binary message parts"""
-        buffer_keys, buffers = [], []
-        for k, v in list(state.items()):
-            if isinstance(v, _binary_types):
-                state.pop(k)
-                buffers.append(v)
-                buffer_keys.append(k)
-        return state, buffer_keys, buffers
-
     def send_state(self, key=None):
         """Sends the widget state, or a piece of it, to the front-end.
 
@@ -277,8 +337,8 @@ class Widget(LoggingConfigurable):
             A single property's name or iterable of property names to sync with the front-end.
         """
         state = self.get_state(key=key)
-        state, buffer_keys, buffers = self._split_state_buffers(state)
-        msg = {'method': 'update', 'state': state, 'buffers': buffer_keys}
+        state, buffer_paths, buffers = _remove_buffers(state)
+        msg = {'method': 'update', 'state': state, 'buffer_paths': buffer_paths}
         self._send(msg, buffers=buffers)
 
     def get_state(self, key=None, drop_defaults=False):
@@ -453,8 +513,8 @@ class Widget(LoggingConfigurable):
             if 'sync_data' in data:
                 # get binary buffers too
                 sync_data = data['sync_data']
-                for i,k in enumerate(data.get('buffer_keys', [])):
-                    sync_data[k] = msg['buffers'][i]
+                if 'buffer_paths' in data:
+                    _put_buffers(sync_data, data['buffer_paths'], msg['buffers'])
                 self.set_state(sync_data) # handles all methods
 
         # Handle a state request.
