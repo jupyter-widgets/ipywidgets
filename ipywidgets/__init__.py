@@ -21,7 +21,7 @@ accessible as a `value` attribute.
 import os
 
 from IPython import get_ipython
-from ._version import version_info, __version__, __protocol_version__
+from ._version import version_info, __version__, __protocol_version__, __jupyter_widget_version__
 from .widgets import *
 
 
