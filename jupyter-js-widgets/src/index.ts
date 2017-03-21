@@ -21,4 +21,8 @@ export * from "./widget_selection";
 export * from "./widget_selectioncontainer";
 export * from "./widget_string";
 
-export var version = (require('../package.json') as any).version;
+export
+const version = (require('../package.json') as any).version;
+
+export
+const PROTOCOL_VERSION = '2.0';

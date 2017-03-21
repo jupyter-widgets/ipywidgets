@@ -17,7 +17,7 @@ from traitlets import Unicode, Dict, Instance, List, Int, Set, Bytes, observe, d
 from ipython_genutils.py3compat import string_types, PY3
 from IPython.display import display
 
-from .._version import __frontend_version__
+from .._version import __protocol_version__
 
 
 def _widget_to_json(x, obj):
@@ -550,25 +550,7 @@ class Widget(LoggingConfigurable):
 
     def _ipython_display_(self, **kwargs):
         """Called when `IPython.display.display` is called on the widget."""
-        def loud_error(message):
-            self.log.warn(message)
-            sys.stderr.write('%s\n' % message)
-
-        # Show view.
         if self._view_name is not None:
-            validated = Widget._version_validated
-
-            # Before the user tries to display a widget, validate that the
-            # widget front-end is what is expected.
-            if validated is None:
-                loud_error('Widget Javascript not detected.  It may not be '
-                           'installed or enabled properly.')
-            elif not validated:
-                msg = ('The installed widget Javascript is the wrong version.'
-                      ' It must satisfy the semver range %s.'%__frontend_version__)
-                if (Widget._version_frontend):
-                    msg += ' The widget Javascript is version %s.'%Widget._version_frontend
-                loud_error(msg)
 
             # TODO: delete this sending of a comm message when the display statement
             # below works. Then add a 'text/plain' mimetype to the dictionary below.
@@ -594,15 +576,3 @@ class Widget(LoggingConfigurable):
         """Sends a message to the model in the front-end."""
         if self.comm is not None and self.comm.kernel is not None:
             self.comm.send(data=msg, buffers=buffers)
-
-
-Widget._version_validated = None
-Widget._version_frontend = None
-def handle_version_comm_opened(comm, msg):
-    """Called when version comm is opened, because the front-end wants to
-    validate the version."""
-    def handle_version_message(msg):
-        Widget._version_validated = msg['content']['data']['validated']
-        Widget._version_frontend = msg['content']['data'].get('frontend_version', '')
-    comm.on_msg(handle_version_message)
-    comm.send({'version': __frontend_version__})
