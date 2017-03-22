@@ -237,12 +237,13 @@ class WidgetModel extends Backbone.Model {
             if (msg.content.execution_state ==='idle') {
                 // Send buffer if this message caused another message to be
                 // throttled.
+                // TODO: make sure this is handled just like the original syncing.
+                // Right now, it doesn't take into account the new binary_paths key
                 if (this.msg_buffer !== null &&
                     (this.get('msg_throttle') || 1) === this.pending_msgs) {
                     var data = {
-                        method: 'backbone',
-                        sync_method: 'update',
-                        sync_data: this.msg_buffer
+                        method: 'update',
+                        state: this.msg_buffer
                     };
                     this.comm.send(data, callbacks);
                     this.msg_buffer = null;
@@ -398,8 +399,8 @@ class WidgetModel extends Backbone.Model {
             // on the python side the inverse happens
             var split = utils.remove_buffers(state);
             this.comm.send({
-                method: 'backbone',
-                sync_data: split.state,
+                method: 'update',
+                state: split.state,
                 buffer_paths: split.buffer_paths
             }, callbacks, {}, split.buffers);
         }).catch((error) => {

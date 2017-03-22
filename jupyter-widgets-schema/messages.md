@@ -210,7 +210,7 @@ In order to display widgets in both the classic notebook and JupyterLab, ipywidg
 
 
 
-# Widget messaging protocol, version 2
+# Widget messaging protocol, version 2 (not finalized)
 
 A Jupyter widget has both a frontend and kernel object communicating with each other using the `comm` messages provided by the Jupyter kernel messaging protocol. The primary communication that happens is synchronizing widget state, represented in the messages by a dictionary of key-value pairs. The Jupyter widget messaging protocol covers `comm` messages for the following actions:
 
@@ -228,6 +228,8 @@ Throughout this document, relevant parts of messages to the discussion are quote
 The `jupyter.widget.version` comm target and associated version validation messages are gone. Instead, it is up to the package maintainers to ensure that the versions of the packages speak the same widget message protocol. We encourage kernel and frontend package developers to clearly indicate which protocol version the package supports.
 
 While in version 1, binary buffers could only be top level attributes of the `state` object, now any item in the state can be a binary buffer. All binary buffers that are a descendant of the state object (in a nested object or list) will be removed from an object or replaced by null in a list. The 'path' of each binary buffer and its data are sent separately, so the state object can be reconstructed on the other side of the wire. This change was necessary to allow sending the data for a binary array plus its metadata (shape, type, masks) in one attribute.
+
+The sync update event from the frontend to the kernel was restructured to have the same field names as the event from the kernel to the frontend, namely the method field is `'update'` and the state data is in the `state` attribute.
 
 ## Implementating the Jupyter widgets protocol in the kernel
 
@@ -276,7 +278,7 @@ Symmetrically, when instantiating a widget in the kernel, the kernel widgets lib
 
 The type of widget to be instantiated in the frontend is determined by the `_model_name`, `_model_module` and `_model_module_version` keys in the state, which respectively stand for the name of the class that must be instantiated in the frontend, the JavaScript module where this class is defined, and a semver range for that module. See the [Model State](modelstate.md) documentation for the serialized state for core Jupyter widgets.
 
-The initial state is split between values that are serializable with JSON (in the `data.state` dictionary), and binary values (represented in `data.buffer_paths`).
+The state is split between values that are serializable with JSON (in the `data.state` dictionary), and binary values (represented in `data.buffer_paths`).
 
 The `data.state` value is a dictionary of widget state keys and values that can be serialized to JSON.
 
@@ -284,9 +286,9 @@ Comm messages for state synchronization may contain binary buffers. The `data.bu
 
 ### State synchronization
 
-#### Synchronizing from kernel to frontend: `update`
+#### Synchronizing widget state: `update`
 
-When a widget's state changes in the kernel, the changed state keys and values are sent to the frontend over the widget's comm channel using an `update` message:
+When a widget's state changes in either the kernel or the frontend, the changed state keys and values are sent to the other side over the widget's comm channel using an `update` message:
 
 ```
 {
@@ -299,31 +301,9 @@ When a widget's state changes in the kernel, the changed state keys and values a
 }
 ```
 
-The `state` and `buffer_paths` are the same as in the `comm_open` case.
+The `data.state` and `data.buffer_paths` values are the same as in the `comm_open` case.
 
 See the [Model state](modelstate.md) documentation for the attributes of core Jupyter widgets.
-
-#### Synchronizing from frontend to kernel: `backbone`
-
-When a widget's state changes in the frontend, the changed keys are sent to the kernel over the widget's comm channel using a `backbone` message:
-
-```
-{
-  'comm_id' : 'u-u-i-d',
-  'data' : {
-    'method': 'backbone',
-    'sync_data': { <dictionary of widget state> }
-    'buffer_paths': [ <list with paths corresponding to the binary buffers, that should be put in the state dict at the kernel> ]
-  }
-}
-```
-
-The state update is split between values that are serializable with JSON (in the `data.sync_data` dictionary), and binary values (represented in `data.buffer_keys`).
-
-The `data.sync_data` value is a dictionary of widget state keys and values that can be serialized to JSON.
-
-Comm messages for state synchronization may contain binary buffers. The `data.buffer_paths` value contains a list of 'paths' in the `data.sync_data` object corresponding to the binary buffers. For example, if `data.buffer_paths` is `[['x'], ['y', 'z', 0]]`, then the first binary buffer is the value of the `data.sync_data['x']` attribute and the second binary buffer is the value of the `data.sync_data['y']['z'][0]` state attribute. A path representing a list value (i.e., last index of the path is an integer) will be `null` in `data.sync_data`, and a path representing a dictionary key (i.e., last index of the path is a string) will not exist in `data.sync_data`.
-
 
 #### State requests: `request_state`
 
