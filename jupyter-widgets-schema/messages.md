@@ -227,6 +227,8 @@ Throughout this document, relevant parts of messages to the discussion are quote
 
 The `jupyter.widget.version` comm target and associated version validation messages are gone. Instead, it is up to the package maintainers to ensure that the versions of the packages speak the same widget message protocol. We encourage kernel and frontend package developers to clearly indicate which protocol version the package supports.
 
+While in version 1, binary buffers could only be top level attributes of the `state` object, now any item in the state can be a binary buffer. All binary buffers that are a descendant of the state object (in a nested object, or list) will be removed from that object or list. The 'path' of each binary buffer and it's data are send seperately, so the state object can be reconstructed on the other side of the wire. This change was necessary to allow sending for instance the data for an array/tensor, plus its metadata (shape, type, masks).
+
 ## Implementating the Jupyter widgets protocol in the kernel
 
 In this section, we concentrate on implementing the Jupyter widget messaging protocol in the kernel.
@@ -266,12 +268,19 @@ Symmetrically, when instantiating a widget in the kernel, the kernel widgets lib
   'comm_id' : 'u-u-i-d',
   'target_name' : 'jupyter.widget',
   'data' : {
-    <dictionary of widget state>
+    'state': { <dictionary of widget state> },
+    'buffer_paths': [ <list with paths corresponding to the binary buffers, that should be put in the state on the other side of the wire> ]
   }
 }
 ```
 
 The type of widget to be instantiated in the frontend is determined by the `_model_name`, `_model_module` and `_model_module_version` keys in the state, which respectively stand for the name of the class that must be instantiated in the frontend, the JavaScript module where this class is defined, and a semver range for that module. See the [Model State](modelstate.md) documentation for the serialized state for core Jupyter widgets.
+
+The initial state is split between values that are serializable with JSON (in the `data.state` dictionary), and binary values (represented in `data.buffers`).
+
+The `data.state` value is a dictionary of widget state keys and values that can be serialized to JSON.
+
+Comm messages for state synchronization may contain binary buffers. The `data.buffer_paths` value contains a list of 'paths' corresponding to the binary buffers. For example, if `data.buffer_paths` is `[['x'], ['y', 'z', 0]]`, then the first binary buffer is the value of the `state['x']` attribute and the second binary buffer is the value of the `state['y']['z'][0]` state attribute. Binary buffers that were in the state as part of a `dict` are removed from the object, while `list` items will be replaced by `None` before being send over the wire. State objects will never by modified by this process, and cloned when necessary. At the front end, before deserialization of the state, the buffer objects will be put in place in the `state` object.
 
 ### State synchronization
 
@@ -285,16 +294,12 @@ When a widget's state changes in the kernel, the changed state keys and values a
   'data' : {
     'method': 'update',
     'state': { <dictionary of widget state> },
-    'buffers': [ <optional list of state keys corresponding to binary buffers in the message> ]
+    'buffer_paths': [ <list with paths corresponding to the binary buffers, that should be put in the state object at the front end> ]
   }
 }
 ```
 
-The state update is split between values that are serializable with JSON (in the `data.state` dictionary), and binary values (represented in `data.buffers`).
-
-The `data.state` value is a dictionary of widget state keys and values that can be serialized to JSON.
-
-Comm messages for state synchronization may contain binary buffers. The optional `data.buffers` value contains a list of keys corresponding to the binary buffers. For example, if `data.buffers` is `['x', 'y']`, then the first binary buffer is the value of the `'x'` state attribute and the second binary buffer is the value of the `'y'` state attribute.
+The `state` and `buffer_paths` are the same as in the `comm_open` case.
 
 See the [Model state](modelstate.md) documentation for the attributes of core Jupyter widgets.
 
@@ -308,7 +313,7 @@ When a widget's state changes in the frontend, the changed keys are sent to the 
   'data' : {
     'method': 'backbone',
     'sync_data': { <dictionary of widget state> }
-    'buffer_keys': [ <optional list of state keys corresponding to binary buffers in the message> ]
+    'buffer_paths': [ <list with paths corresponding to the binary buffers, that should be put in the state dict at the kernel> ]
   }
 }
 ```
@@ -317,7 +322,7 @@ The state update is split between values that are serializable with JSON (in the
 
 The `data.sync_data` value is a dictionary of widget state keys and values that can be serialized to JSON.
 
-Comm messages for state synchronization may contain binary buffers. The `data.buffer_keys` optional value contains a list of keys corresponding to the binary buffers. For example, if `data.buffer_keys` is `['x', 'y']`, then the first binary buffer is the value of the `'x'` state attribute and the second binary buffer is the value of the `'y'` state attribute.
+Comm messages for state synchronization may contain binary buffers. The `data.buffer_paths` value contains a list of 'paths' corresponding to the binary buffers. For example, if `data.buffer_paths` is `[['x'], ['y', 'z', 0]]`, then the first binary buffer is the value of the `state['x']` attribute and the second binary buffer is the value of the `state['y']['z'][0]` state attribute. Binary buffers that were in the state as part of a `object` are removed from the object, while `list` items will be replaced by `null` before being send over the wire. State objects will never by modified by this process, and cloned when necessary. At the kernel, before deserialization of the state object, the buffer will be put in place in the state `dict`.
 
 #### State requests: `request_state`
 
