@@ -21,7 +21,7 @@ accessible as a `value` attribute.
 import os
 
 from IPython import get_ipython
-from ._version import version_info, __version__, __frontend_version__
+from ._version import version_info, __version__, __protocol_version__, __jupyter_widget_version__
 from .widgets import *
 
 
@@ -37,7 +37,6 @@ def register_comm_target(kernel=None):
     if kernel is None:
         kernel = get_ipython().kernel
     kernel.comm_manager.register_target('jupyter.widget', Widget.handle_comm_opened)
-    kernel.comm_manager.register_target('jupyter.widget.version', handle_version_comm_opened)
 
 # deprecated alias
 handle_kernel = register_comm_target

@@ -94,13 +94,6 @@ abstract class ManagerBase<T> {
     }
 
     /**
-     * The version comm target name to register.
-     */
-    get version_comm_target_name(): string {
-        return 'jupyter.widget.version';
-    }
-
-    /**
      * Display a view for a particular model.
      */
     display_model(msg: services.KernelMessage.IMessage, model: Backbone.Model, options: any): Promise<T> {
@@ -236,33 +229,6 @@ abstract class ManagerBase<T> {
             }
             return this.new_model(options_clone, serialized_state);
         });
-    };
-
-    /**
-     * Validate the version of the Javascript against the version requested by
-     * the backend.
-     * @return Whether or not the versions are okay
-     */
-    validateVersion(): Promise<boolean> {
-        return this._create_comm(this.version_comm_target_name, undefined, {}).then((function(comm) {
-            return new Promise((function(resolve, reject) {
-                comm.on_msg((function(msg) {
-                    var version = (require('../package.json') as any).version;
-                    var requirement = msg.content.data.version;
-                    var validated = semver.satisfies(version, requirement);
-                    comm.send({'validated': validated, 'frontend_version': version});
-                    if (validated) {
-                        console.info('Widget backend and frontend versions are compatible');
-                    } else {
-                        console.warn(`Widget backend and frontend versions are not compatible. The backend wants a version in the range ${requirement}, but the frontend is version ${version}.`)
-                    }
-                    resolve(validated);
-                }).bind(this));
-                setTimeout(function() {
-                    reject(new Error('Timeout while trying to cross validate the widget frontend and backend versions.'));
-                }, 3000);
-            }).bind(this));
-        }).bind(this));
     };
 
     /**
