@@ -496,9 +496,11 @@ TODO
 
 
 
-# Another try
+# Automated documentation
 
-```
+Here is code to automate pulling out the traits:
+
+```python
 import ipywidgets as widgets
 from ipywidgets import *
 widgets.Widget.widget_types
