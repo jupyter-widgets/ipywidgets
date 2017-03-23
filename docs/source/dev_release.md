@@ -72,5 +72,5 @@ git push [upstream] --tags
 ```
 
 On GitHub
-1. Go to https://github.com/ipython/ipywidgets/milestones and click "Close" for the released version.
+1. Go to https://github.com/jupyter-widgets/ipywidgets/milestones and click "Close" for the released version.
 2. Make sure patch, minor, and/or major milestones exist as appropriate.

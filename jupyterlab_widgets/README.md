@@ -30,7 +30,7 @@ Source Build
 - Jupyter Notebook 4.2+
 
 ```bash
-git clone https://github.com/ipython/ipywidgets.git
+git clone https://github.com/jupyter-widgets/ipywidgets.git
 cd ipywidgets/jupyterlab_widgets
 npm install
 npm run build

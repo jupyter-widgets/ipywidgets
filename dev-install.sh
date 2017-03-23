@@ -6,7 +6,7 @@
 # source activate ipywidgets
 # pip install jupyterlab==0.16.2
 # ipython kernel install --name ipywidgets --display-name "ipywidgets" --sys-prefix
-# git clone https://github.com/ipython/ipywidgets.git
+# git clone https://github.com/jupyter-widgets/ipywidgets.git
 # cd ipywidgets
 # ./dev-install.sh
 
