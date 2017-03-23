@@ -508,14 +508,12 @@ class Widget(LoggingConfigurable):
         data = msg['content']['data']
         method = data['method']
 
-        # Handle backbone sync methods CREATE, PATCH, and UPDATE all in one.
-        if method == 'backbone':
-            if 'sync_data' in data:
-                # get binary buffers too
-                sync_data = data['sync_data']
+        if method == 'update':
+            if 'state' in data:
+                state = data['state']
                 if 'buffer_paths' in data:
-                    _put_buffers(sync_data, data['buffer_paths'], msg['buffers'])
-                self.set_state(sync_data) # handles all methods
+                    _put_buffers(state, data['buffer_paths'], msg['buffers'])
+                self.set_state(state)
 
         # Handle a state request.
         elif method == 'request_state':

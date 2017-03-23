@@ -234,20 +234,16 @@ class WidgetModel extends Backbone.Model {
      */
     _handle_status(msg, callbacks) {
         if (this.comm !== undefined) {
-            if (msg.content.execution_state ==='idle') {
+            this.pending_msgs--;
+            if (msg.content.execution_state === 'idle') {
                 // Send buffer if this message caused another message to be
                 // throttled.
                 if (this.msg_buffer !== null &&
                     (this.get('msg_throttle') || 1) === this.pending_msgs) {
-                    var data = {
-                        method: 'backbone',
-                        sync_method: 'update',
-                        sync_data: this.msg_buffer
-                    };
-                    this.comm.send(data, callbacks);
+                    this.send_sync_message(this.msg_buffer, this.msg_buffer_callbacks);
                     this.msg_buffer = null;
-                } else {
-                    --this.pending_msgs;
+                    this.msg_buffer_callbacks = null;
+                    this.pending_msgs++;
                 }
             }
         }
@@ -398,8 +394,8 @@ class WidgetModel extends Backbone.Model {
             // on the python side the inverse happens
             var split = utils.remove_buffers(state);
             this.comm.send({
-                method: 'backbone',
-                sync_data: split.state,
+                method: 'update',
+                state: split.state,
                 buffer_paths: split.buffer_paths
             }, callbacks, {}, split.buffers);
         }).catch((error) => {
