@@ -1,7 +1,7 @@
 ipywidgets changelog
 ====================
 
-A summary of changes in ipywidgets. For more detailed information, see [GitHub](https://github.com/ipython/ipywidgets).
+A summary of changes in ipywidgets. For more detailed information, see [GitHub](https://github.com/jupyter-widgets/ipywidgets).
 
 6.0
 ---
@@ -11,7 +11,7 @@ Major user-visible changes in ipywidgets 6.0 include:
  - Rendering of Jupyter interactive widgets in various web contexts
 
      sphinx documentation: http://ipywidgets.readthedocs.io/en/latest/examples/Widget%20List.html
-     nbviewer: http://nbviewer.jupyter.org/github/ipython/ipywidgets/blob/master/docs/source/examples/Widget%20List.ipynb
+     nbviewer: http://nbviewer.jupyter.org/github/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Widget%20List.ipynb
      Static web pages: http://jupyter.org/widgets
 
  -  Addition of a DatePicker widget in the core widget collection.

@@ -18,14 +18,14 @@ To install ipywidgets from git, you will need:
   + If you want to have a copy of ipywidgets that works against a stable
     version of the notebook, checkout the appropriate tag.
   + See the
-    [Compatibility table](https://github.com/ipython/ipywidgets#compatibility).
+    [Compatibility table](https://github.com/jupyter-widgets/ipywidgets#compatibility).
 
 Steps
 -----
 
 0. Clone the repo:
 
-        git clone https://github.com/ipython/ipywidgets
+        git clone https://github.com/jupyter-widgets/ipywidgets
 
 1. Navigate into the cloned repo and install:
 

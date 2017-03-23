@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ipython/ipywidgets.git"
+    "url": "git+https://github.com/jupyter-widgets/ipywidgets.git"
   },
   "keywords": [
     "jupyter",
@@ -18,7 +18,7 @@
   "author": "Project Jupyter",
   "license": "BSD-3-Clause",
   "bugs": {
-    "url": "https://github.com/ipython/ipywidgets/issues"
+    "url": "https://github.com/jupyter-widgets/ipywidgets/issues"
   },
-  "homepage": "https://github.com/ipython/ipywidgets#readme"
+  "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme"
 }

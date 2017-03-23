@@ -7,7 +7,7 @@ This packages contains the implementation of the core Jupyter interactive
 widgets.
 
 The reference Python backend, `ipywidgets` is available
-[here](https://github.com/ipython/ipywidgets), with more examples.
+[here](https://github.com/jupyter-widgets/ipywidgets), with more examples.
 
 Package Install
 ---------------

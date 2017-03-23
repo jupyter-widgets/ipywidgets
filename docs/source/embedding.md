@@ -188,7 +188,7 @@ If your notebook was saved with the special "Save Notebook with Widgets" action
 in the Widgets menu, interative widgets displayed in your notebook should also
 be rendered on nbviewer.
 
-See e.g. the [Widget List](http://nbviewer.jupyter.org/github/ipython/ipywidgets/blob/master/docs/source/examples/Widget%20List.ipynb)
+See e.g. the [Widget List](http://nbviewer.jupyter.org/github/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Widget%20List.ipynb)
 example from the documentation.
 
 ## The Case of Custom Widget Libraries

@@ -1,4 +1,4 @@
-# http://travis-ci.org/#!/ipython/ipywidgets
+# http://travis-ci.org/#!/jupyter-widgets/ipywidgets
 language: python
 python:
     - 2.7

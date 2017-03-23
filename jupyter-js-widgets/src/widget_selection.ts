@@ -130,8 +130,8 @@ class DropdownModel extends SelectionModel {
 
 // TODO: Make a phosphor dropdown control, wrapped in DropdownView. Also, fix
 // bugs in keyboard handling. See
-// https://github.com/ipython/ipywidgets/issues/1055 and
-// https://github.com/ipython/ipywidgets/issues/1049
+// https://github.com/jupyter-widgets/ipywidgets/issues/1055 and
+// https://github.com/jupyter-widgets/ipywidgets/issues/1049
 // For now, we subclass SelectView to provide DropdownView
 // For the old code, see commit f68bfbc566f3a78a8f3350b438db8ed523ce3642
 export
