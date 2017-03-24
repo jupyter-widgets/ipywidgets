@@ -241,44 +241,28 @@ A kernel-side Jupyter widgets library also registers a `jupyter.widget` comm tar
 
 ### Instantiating a widget object
 
-When a widget is instantiated in either the kernel or the frontend, it creates a companion object on the other side by sending a `comm_open` message to the `jupyter.widget` comm target.
 
-#### Reception of a `comm_open` message from the frontend
+#### Instantiating a widget
 
-When a frontend creates a Jupyter widget, it sends a `comm_open` message to the kernel:
-
-```
-{
-  'comm_id' : 'u-u-i-d',
-  'target_name' : 'jupyter.widget',
-  'data' : {
-    'widget_class': 'some.string'
-  }
-}
-```
-
-The type of widget to be instantiated is given in the `widget_class` string.
-
-In the ipywidgets implementation, this string is actually the key in a registry of widget types. In the ipywidgets implementation, widget types are registered in the dictionary with the `register` decorator. For example the integral progress bar class is registered with `@register('Jupyter.IntProgress')`. When the `widget_class` is not in the registry, it is parsed as a `module` `+` `class` string.
-
-#### Sending a `comm_open` message upon instantiation of a widget
-
-Symmetrically, when instantiating a widget in the kernel, the kernel widgets library sends a `comm_open` message to the frontend:
+When a widget is instantiated in either the kernel or the frontend, it creates a companion model on the other side by sending a `comm_open` message to the `jupyter.widget` comm target.
 
 ```
 {
   'comm_id' : 'u-u-i-d',
   'target_name' : 'jupyter.widget',
   'data' : {
+    'model_name': string,
+    'model_module': string,
+    'model_version': string,
     'state': { <dictionary of widget state> },
     'buffer_paths': [ <list with paths corresponding to the binary buffers> ]
   }
 }
 ```
 
-The type of widget to be instantiated in the frontend is determined by the `_model_name`, `_model_module` and `_model_module_version` keys in the state, which respectively stand for the name of the class that must be instantiated in the frontend, the JavaScript module where this class is defined, and a semver range for that module. See the [Model State](modelstate.md) documentation for the serialized state for core Jupyter widgets.
+The model instantiated on the other side is determined by the `model_name`, `model_module`, and `model_version` keys in the state. These are shorthand for a model attribute specification. The version is a semver range, and the companion model will have a version in the semver range. Any unspecified keys will be take on the default values given in the relevant model specification.
 
-The state is split between values that are serializable with JSON (in the `data.state` dictionary), and binary values (represented in `data.buffer_paths`).
+See the [Model State](modelstate.md) documentation for the serialized state for core Jupyter widgets.
 
 The `data.state` value is a dictionary of widget state keys and values that can be serialized to JSON.
 
