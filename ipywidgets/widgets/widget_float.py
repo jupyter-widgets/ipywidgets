@@ -174,8 +174,8 @@ class FloatProgress(_BoundedFloat):
 
     bar_style = CaselessStrEnum(
         values=['success', 'info', 'warning', 'danger', ''],
-        default_value='', allow_none=True, help="""Use a predefined styling for
-        the progess bar.""").tag(sync=True)
+        default_value='', allow_none=True,
+        help="Use a predefined styling for the progess bar.").tag(sync=True)
 
     style = Instance(ProgressStyle).tag(sync=True, **widget_serialization)
 
