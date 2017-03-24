@@ -501,11 +501,7 @@ TODO
 Here is code to automate pulling out the traits:
 
 ```python
-import ipywidgets as widgets
-from ipywidgets import *
-widgets.Widget.widget_types
-
-from traitlets import CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat, Float, CInt
+from traitlets import CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat, Float, CInt, Instance
 from ipywidgets import Color
 def typing(x):
     if isinstance(x, CaselessStrEnum):
@@ -522,19 +518,23 @@ def typing(x):
         return 'number (integer)'
     elif isinstance(x, Color):
         return 'string (valid color)'
+    elif isinstance(x, Instance) and issubclass(x.klass, widgets.Widget):
+        return 'reference to %s widget'%(x.klass.__name__)
     else:
         return x.__class__.__name__
 
 def jsdefault(t):
     x = t.default_value
+    if isinstance(t, Instance):
+        return 'reference to new instance'
     if x is True:
-        return 'true'
+        return '`true`'
     elif x is False:
-        return 'false'
+        return '`false`'
     elif x is None:
-        return 'null'
+        return '`null`'
     else:
-        return t.default_value_repr()
+        return '`%s`'%t.default_value_repr()
 
 out = []
 for n,w in sorted(widgets.Widget.widget_types.items()):
@@ -546,11 +546,12 @@ for n,w in sorted(widgets.Widget.widget_types.items()):
                                                                              allownone='Nullable', default='Default', help='Help'))
     out.append('{0:-<16}-|-{0:-<16}-|-{0:-<8}-|-{0:-<16}-|----'.format('-'))
     for name, t in sorted(w().traits(sync=True).items()):
-        if name in ['_model_module', '_view_module', '_model_module_version', '_view_module_version', 'msg_throttle']:
+        if name in ['_model_module', '_view_module', '_model_module_version', '_view_module_version', 'msg_throttle', '_dom_classes', 'layout']:
+            # document these separately, since they apply to all classes
             continue
         s = '{name: <16} | {typing: <16} | {allownone: <8} | {default: <16} | {help}'.format(name='`%s`'%name, typing=typing(t), 
                                                             allownone='*' if t.allow_none else '', 
-                                                                                               default='`%s`'%jsdefault(t),
+                                                                                               default=jsdefault(t),
                                                                                               help=t.help if t.help else '')
         out.append(s)
     out.append('')
@@ -561,25 +562,21 @@ print('\n'.join(out))
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'AccordionModel'` | 
-`_titles`        | Dict             |          | `{}`             | Titles of the pages
+`_titles`        | Dict             |          | reference to new instance | Titles of the pages
 `_view_name`     | string           |          | `'AccordionView'` | 
 `box_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the box.
-`children`       | list             |          | `()`             | 
-`layout`         | LayoutTraitType  |          | `None`           | 
+`children`       | list             |          | reference to new instance | 
 `selected_index` | number (integer) |          | `0`              | 
 
 ### Jupyter.BoundedFloatText
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'FloatTextModel'` | 
 `_view_name`     | string           |          | `'FloatTextView'` | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
 `max`            | number (float)   |          | `100.0`          | Max value
 `min`            | number (float)   |          | `0.0`            | Min value
 `step`           | number (float)   |          | `0.1`            | Minimum step to increment the value (ignored by some views)
@@ -589,12 +586,10 @@ Attribute        | Type             | Nullable | Default          | Help
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'IntTextModel'` | 
 `_view_name`     | string           |          | `'IntTextView'`  | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
 `max`            | number (integer) |          | `100`            | Max value
 `min`            | number (integer) |          | `0`              | Min value
 `step`           | number (integer) |          | `1`              | Minimum step to increment the value (ignored by some views)
@@ -604,26 +599,22 @@ Attribute        | Type             | Nullable | Default          | Help
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'BoxModel'`     | 
 `_view_name`     | string           |          | `'BoxView'`      | 
 `box_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the box.
-`children`       | list             |          | `()`             | 
-`layout`         | LayoutTraitType  |          | `None`           | 
+`children`       | list             |          | reference to new instance | 
 
 ### Jupyter.Button
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'ButtonModel'`  | 
 `_view_name`     | string           |          | `'ButtonView'`   | 
 `button_style`   | string enum, one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the button.
 `description`    | string           |          | `''`             | Button label.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes.
 `icon`           | string           |          | `''`             | Font-awesome icon name, without the 'fa-' prefix.
-`layout`         | LayoutTraitType  |          | `None`           | 
-`style`          | Instance         |          | `None`           | 
+`style`          | reference to ButtonStyle widget |          | reference to new instance | 
 `tooltip`        | string           |          | `''`             | Tooltip caption of the button.
 
 ### Jupyter.ButtonStyle
@@ -639,38 +630,32 @@ Attribute        | Type             | Nullable | Default          | Help
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'CheckboxModel'` | 
 `_view_name`     | string           |          | `'CheckboxView'` | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes.
-`layout`         | LayoutTraitType  |          | `None`           | 
 `value`          | bool             |          | `false`          | Bool value
 
 ### Jupyter.ColorPicker
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'ColorPickerModel'` | 
 `_view_name`     | string           |          | `'ColorPickerView'` | 
 `concise`        | bool             |          | `false`          | 
 `description`    | string           |          | `''`             | Description of the control.
-`layout`         | LayoutTraitType  |          | `None`           | 
 `value`          | string           |          | `'black'`        | 
 
 ### Jupyter.Controller
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'ControllerModel'` | 
 `_view_name`     | string           |          | `'ControllerView'` | 
-`axes`           | list             |          | `[]`             | 
-`buttons`        | list             |          | `[]`             | 
+`axes`           | list             |          | reference to new instance | 
+`buttons`        | list             |          | reference to new instance | 
 `connected`      | bool             |          | `false`          | 
 `index`          | Int              |          | `0`              | 
-`layout`         | LayoutTraitType  |          | `None`           | 
 `mapping`        | string           |          | `''`             | 
 `name`           | string           |          | `''`             | 
 `timestamp`      | number (float)   |          | `0.0`            | 
@@ -696,76 +681,66 @@ Attribute        | Type             | Nullable | Default          | Help
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'DatePickerModel'` | 
 `_view_name`     | string           |          | `'DatePickerView'` | 
 `description`    | string           |          | `''`             | Description of the control.
-`layout`         | LayoutTraitType  |          | `None`           | 
 `value`          | Datetime         | *        | `null`           | 
 
 ### Jupyter.Dropdown
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'DropdownModel'` | 
-`_options_labels` | list             |          | `()`             | 
+`_options_labels` | list             |          | reference to new instance | 
 `_view_name`     | string           |          | `'DropdownView'` | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
 `value`          | Any              |          | `null`           | Selected value
 
 ### Jupyter.FloatProgress
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'ProgressModel'` | 
 `_view_name`     | string           |          | `'ProgressView'` | 
 `bar_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` | *        | `''`             | Use a predefined styling for the progess bar.
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
 `max`            | number (float)   |          | `100.0`          | Max value
 `min`            | number (float)   |          | `0.0`            | Min value
 `orientation`    | string enum, one of `'horizontal'`, `'vertical'` |          | `'horizontal'`   | Vertical or horizontal.
 `step`           | number (float)   |          | `0.1`            | Minimum step to increment the value (ignored by some views)
-`style`          | Instance         |          | `None`           | 
+`style`          | reference to ProgressStyle widget |          | reference to new instance | 
 `value`          | number (float)   |          | `0.0`            | Float value
 
 ### Jupyter.FloatRangeSlider
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'FloatSliderModel'` | 
 `_range`         | bool             |          | `true`           | Display a range selector
 `_view_name`     | string           |          | `'FloatSliderView'` | 
 `continuous_update` | bool             |          | `true`           | Update the value of the widget as the user is sliding the slider.
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
 `max`            | number (float)   |          | `100.0`          | Max value
 `min`            | number (float)   |          | `0.0`            | Min value
 `orientation`    | string enum, one of `'horizontal'`, `'vertical'` |          | `'horizontal'`   | Vertical or horizontal.
 `readout`        | bool             |          | `true`           | Display the current value of the slider next to it.
 `slider_color`   | string           | *        | `null`           | 
 `step`           | number (float)   |          | `1.0`            | Minimum step that the value can take (ignored by some views)
-`value`          | list             |          | `(0.0, 1.0)`     | Tuple of (lower, upper) bounds
+`value`          | list             |          | reference to new instance | Tuple of (lower, upper) bounds
 
 ### Jupyter.FloatSlider
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'FloatSliderModel'` | 
 `_range`         | bool             |          | `false`          | Display a range selector
 `_view_name`     | string           |          | `'FloatSliderView'` | 
 `continuous_update` | bool             |          | `true`           | Update the value of the widget as the user is holding the slider.
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
 `max`            | number (float)   |          | `100.0`          | Max value
 `min`            | number (float)   |          | `0.0`            | Min value
 `orientation`    | string enum, one of `'horizontal'`, `'vertical'` |          | `'horizontal'`   | Vertical or horizontal.
@@ -779,35 +754,29 @@ Attribute        | Type             | Nullable | Default          | Help
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'FloatTextModel'` | 
 `_view_name`     | string           |          | `'FloatTextView'` | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
 `value`          | number (float)   |          | `0.0`            | Float value
 
 ### Jupyter.HBox
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'HBoxModel'`    | 
 `_view_name`     | string           |          | `'HBoxView'`     | 
 `box_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the box.
-`children`       | list             |          | `()`             | 
-`layout`         | LayoutTraitType  |          | `None`           | 
+`children`       | list             |          | reference to new instance | 
 
 ### Jupyter.HTML
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'HTMLModel'`    | 
 `_view_name`     | string           |          | `'HTMLView'`     | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
 `placeholder`    | string           |          | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `value`          | string           |          | `''`             | String value
 
@@ -815,12 +784,10 @@ Attribute        | Type             | Nullable | Default          | Help
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'HTMLMathModel'` | 
 `_view_name`     | string           |          | `'HTMLMathView'` | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
 `placeholder`    | string           |          | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `value`          | string           |          | `''`             | String value
 
@@ -829,95 +796,83 @@ Attribute        | Type             | Nullable | Default          | Help
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
 `_b64value`      | string           |          | `''`             | 
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'ImageModel'`   | 
 `_view_name`     | string           |          | `'ImageView'`    | 
 `format`         | string           |          | `'png'`          | 
 `height`         | string           |          | `''`             | 
-`layout`         | LayoutTraitType  |          | `None`           | 
 `width`          | string           |          | `''`             | 
 
 ### Jupyter.IntProgress
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'ProgressModel'` | 
 `_view_name`     | string           |          | `'ProgressView'` | 
 `bar_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the progess bar.
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
 `max`            | number (integer) |          | `100`            | Max value
 `min`            | number (integer) |          | `0`              | Min value
 `orientation`    | string enum, one of `'horizontal'`, `'vertical'` |          | `'horizontal'`   | Vertical or horizontal.
 `step`           | number (integer) |          | `1`              | Minimum step to increment the value (ignored by some views)
-`style`          | Instance         |          | `None`           | 
+`style`          | reference to ProgressStyle widget |          | reference to new instance | 
 `value`          | number (integer) |          | `0`              | Int value
 
 ### Jupyter.IntRangeSlider
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'IntSliderModel'` | 
 `_range`         | bool             |          | `true`           | Display a range selector
 `_view_name`     | string           |          | `'IntSliderView'` | 
 `continuous_update` | bool             |          | `true`           | Update the value of the widget as the user is sliding the slider.
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
 `max`            | number (integer) |          | `100`            | Max value
 `min`            | number (integer) |          | `0`              | Min value
 `orientation`    | string enum, one of `'horizontal'`, `'vertical'` |          | `'horizontal'`   | Vertical or horizontal.
 `readout`        | bool             |          | `true`           | Display the current value of the slider next to it.
 `slider_color`   | string           | *        | `null`           | 
 `step`           | number (integer) |          | `1`              | Minimum step that the value can take (ignored by some views)
-`value`          | list             |          | `(0, 1)`         | Tuple of (lower, upper) bounds
+`value`          | list             |          | reference to new instance | Tuple of (lower, upper) bounds
 
 ### Jupyter.IntSlider
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'IntSliderModel'` | 
 `_range`         | bool             |          | `false`          | Display a range selector
 `_view_name`     | string           |          | `'IntSliderView'` | 
 `continuous_update` | bool             |          | `true`           | Update the value of the widget as the user is holding the slider.
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
 `max`            | number (integer) |          | `100`            | Max value
 `min`            | number (integer) |          | `0`              | Min value
 `orientation`    | string enum, one of `'horizontal'`, `'vertical'` |          | `'horizontal'`   | Vertical or horizontal.
 `readout`        | bool             |          | `true`           | Display the current value of the slider next to it.
 `readout_format` | string           |          | `'d'`            | Format for the readout
 `step`           | number (integer) |          | `1`              | Minimum step to increment the value (ignored by some views)
-`style`          | Instance         |          | `None`           | 
+`style`          | reference to SliderStyle widget |          | reference to new instance | 
 `value`          | number (integer) |          | `0`              | Int value
 
 ### Jupyter.IntText
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'IntTextModel'` | 
 `_view_name`     | string           |          | `'IntTextView'`  | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
 `value`          | number (integer) |          | `0`              | Int value
 
 ### Jupyter.Label
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'LabelModel'`   | 
 `_view_name`     | string           |          | `'LabelView'`    | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
 `placeholder`    | string           |          | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `value`          | string           |          | `''`             | String value
 
@@ -925,14 +880,12 @@ Attribute        | Type             | Nullable | Default          | Help
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'PlayModel'`    | 
 `_playing`       | bool             |          | `false`          | 
 `_view_name`     | string           |          | `'PlayView'`     | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
 `interval`       | number (integer) |          | `100`            | 
-`layout`         | LayoutTraitType  |          | `None`           | 
 `max`            | number (integer) |          | `100`            | Max value
 `min`            | number (integer) |          | `0`              | Min value
 `step`           | number (integer) |          | `1`              | Minimum step to increment the value (ignored by some views)
@@ -950,53 +903,45 @@ Attribute        | Type             | Nullable | Default          | Help
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'RadioButtonsModel'` | 
-`_options_labels` | list             |          | `()`             | 
+`_options_labels` | list             |          | reference to new instance | 
 `_view_name`     | string           |          | `'RadioButtonsView'` | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
 `value`          | Any              |          | `null`           | Selected value
 
 ### Jupyter.Select
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'SelectModel'`  | 
-`_options_labels` | list             |          | `()`             | 
+`_options_labels` | list             |          | reference to new instance | 
 `_view_name`     | string           |          | `'SelectView'`   | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
 `value`          | Any              |          | `null`           | Selected value
 
 ### Jupyter.SelectMultiple
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'SelectMultipleModel'` | 
-`_options_labels` | list             |          | `()`             | 
+`_options_labels` | list             |          | reference to new instance | 
 `_view_name`     | string           |          | `'SelectMultipleView'` | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
-`value`          | list             |          | `()`             | Selected values
+`value`          | list             |          | reference to new instance | Selected values
 
 ### Jupyter.SelectionSlider
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'SelectionSliderModel'` | 
-`_options_labels` | list             |          | `()`             | 
+`_options_labels` | list             |          | reference to new instance | 
 `_view_name`     | string           |          | `'SelectionSliderView'` | 
 `continuous_update` | bool             |          | `true`           | Update the value of the widget as the user is holding the slider.
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
 `orientation`    | string enum, one of `'horizontal'`, `'vertical'` |          | `'horizontal'`   | Vertical or horizontal.
 `readout`        | bool             |          | `true`           | Display the current selected label next to the slider
 `value`          | Any              |          | `null`           | Selected value
@@ -1013,25 +958,21 @@ Attribute        | Type             | Nullable | Default          | Help
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'TabModel'`     | 
-`_titles`        | Dict             |          | `{}`             | Titles of the pages
+`_titles`        | Dict             |          | reference to new instance | Titles of the pages
 `_view_name`     | string           |          | `'TabView'`      | 
 `box_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the box.
-`children`       | list             |          | `()`             | 
-`layout`         | LayoutTraitType  |          | `None`           | 
+`children`       | list             |          | reference to new instance | 
 `selected_index` | number (integer) |          | `0`              | 
 
 ### Jupyter.Text
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'TextModel'`    | 
 `_view_name`     | string           |          | `'TextView'`     | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
 `placeholder`    | string           |          | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `value`          | string           |          | `''`             | String value
 
@@ -1039,12 +980,10 @@ Attribute        | Type             | Nullable | Default          | Help
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'TextareaModel'` | 
 `_view_name`     | string           |          | `'TextareaView'` | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`layout`         | LayoutTraitType  |          | `None`           | 
 `placeholder`    | string           |          | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `rows`           | Int              | *        | `null`           | 
 `value`          | string           |          | `''`             | String value
@@ -1053,14 +992,12 @@ Attribute        | Type             | Nullable | Default          | Help
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'ToggleButtonModel'` | 
 `_view_name`     | string           |          | `'ToggleButtonView'` | 
 `button_style`   | string enum, one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the button.
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes.
 `icon`           | string           |          | `''`             | Font-awesome icon.
-`layout`         | LayoutTraitType  |          | `None`           | 
 `tooltip`        | string           |          | `''`             | Tooltip caption of the toggle button.
 `value`          | bool             |          | `false`          | Bool value
 
@@ -1068,38 +1005,32 @@ Attribute        | Type             | Nullable | Default          | Help
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'ToggleButtonsModel'` | 
-`_options_labels` | list             |          | `()`             | 
+`_options_labels` | list             |          | reference to new instance | 
 `_view_name`     | string           |          | `'ToggleButtonsView'` | 
 `button_style`   | string enum, one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''` | *        | `''`             | Use a predefined styling for the buttons.
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`icons`          | list             |          | `[]`             | 
-`layout`         | LayoutTraitType  |          | `None`           | 
-`tooltips`       | list             |          | `[]`             | 
+`icons`          | list             |          | reference to new instance | 
+`tooltips`       | list             |          | reference to new instance | 
 `value`          | Any              |          | `null`           | Selected value
 
 ### Jupyter.VBox
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'VBoxModel'`    | 
 `_view_name`     | string           |          | `'VBoxView'`     | 
 `box_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the box.
-`children`       | list             |          | `()`             | 
-`layout`         | LayoutTraitType  |          | `None`           | 
+`children`       | list             |          | reference to new instance | 
 
 ### Jupyter.Valid
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
-`_dom_classes`   | list             |          | `()`             | DOM classes applied to widget.$el.
 `_model_name`    | string           |          | `'ValidModel'`   | 
 `_view_name`     | string           |          | `'ValidView'`    | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes.
-`layout`         | LayoutTraitType  |          | `None`           | 
 `readout`        | string           |          | `'Invalid'`      | Message displayed when the value is False
 `value`          | bool             |          | `false`          | Bool value
