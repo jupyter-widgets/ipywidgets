@@ -63,6 +63,9 @@ from ipywidgets import *
 
 from traitlets import CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat, Float, CInt, Int, Instance, Undefined, Dict, Any
 from ipywidgets import Color
+
+widgets_to_document = sorted(widgets.Widget.widget_types.items()) + [('Layout', widgets.Layout)]
+
 def typing(x):
     s = ''
     if isinstance(x, CaselessStrEnum):
@@ -83,6 +86,10 @@ def typing(x):
         s = 'object'
     elif isinstance(x, Instance) and issubclass(x.klass, widgets.Widget):
         s = 'reference to %s widget'%(x.klass.__name__)
+        # ADD the widget to this documenting list
+        to_add = (x.klass.__name__, x.klass)
+        if to_add not in widgets_to_document:
+            widgets_to_document.append((x.klass.__name__, x.klass))
     elif isinstance(x, Any):
         # In our case, these all happen to be values that are converted to strings
         s = 'string (valid option label)'
@@ -109,10 +116,8 @@ def jsdefault(t):
     else:
         return '`%s`'%t.default_value_repr()
 
-out = []
-for n,w in sorted(widgets.Widget.widget_types.items()):
-    if n in ['jupyter.Link', 'jupyter.DirectionalLink']:
-        continue
+def format_widget(n, w):
+    out = []
     out.append('### %s'%n)
     out.append('')
     out.append('{name: <16} | {typing: <16} | {default: <16} | {help}'.format(name='Attribute', typing='Type', 
@@ -128,9 +133,18 @@ for n,w in sorted(widgets.Widget.widget_types.items()):
                                                                                               help=t.help if t.help else '')
         out.append(s)
     out.append('')
-print('\n'.join(out))
+    return '\n'.join(out)
+    
+out = ''
+for n,w in widgets_to_document:
+    if n in ['jupyter.Link', 'jupyter.DirectionalLink']:
+        continue
+    out += '\n\n'+format_widget(n,w)
+
+print(out)
 
 ```
+
 
 ### Jupyter.Accordion
 
@@ -608,3 +622,60 @@ Attribute        | Type             | Default          | Help
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `readout`        | string           | `'Invalid'`      | Message displayed when the value is False
 `value`          | boolean          | `false`          | Bool value
+
+### Layout
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'LayoutModel'`  | 
+`_view_name`     | string           | `'LayoutView'`   | 
+`align_content`  | `null` or string (one of `'flex-start'`, `'flex-end'`, `'center'`, `'space-between'`, `'space-around'`, `'space-evenly'`, `'stretch'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | 
+`align_items`    | `null` or string (one of `'flex-start'`, `'flex-end'`, `'center'`, `'baseline'`, `'stretch'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | 
+`align_self`     | `null` or string (one of `'auto'`, `'flex-start'`, `'flex-end'`, `'center'`, `'baseline'`, `'stretch'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | 
+`border`         | `null` or string | `null`           | 
+`bottom`         | `null` or string | `null`           | 
+`display`        | `null` or string | `null`           | 
+`flex`           | `null` or string | `null`           | 
+`flex_flow`      | `null` or string | `null`           | 
+`height`         | `null` or string | `null`           | 
+`justify_content` | `null` or string (one of `'flex-start'`, `'flex-end'`, `'center'`, `'space-between'`, `'space-around'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | 
+`left`           | `null` or string | `null`           | 
+`margin`         | `null` or string | `null`           | 
+`max_height`     | `null` or string | `null`           | 
+`max_width`      | `null` or string | `null`           | 
+`min_height`     | `null` or string | `null`           | 
+`min_width`      | `null` or string | `null`           | 
+`order`          | `null` or string | `null`           | 
+`overflow`       | `null` or string (one of `'visible'`, `'hidden'`, `'scroll'`, `'auto'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | 
+`overflow_x`     | `null` or string (one of `'visible'`, `'hidden'`, `'scroll'`, `'auto'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | 
+`overflow_y`     | `null` or string (one of `'visible'`, `'hidden'`, `'scroll'`, `'auto'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | 
+`padding`        | `null` or string | `null`           | 
+`right`          | `null` or string | `null`           | 
+`top`            | `null` or string | `null`           | 
+`visibility`     | `null` or string (one of `'visible'`, `'hidden'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | 
+`width`          | `null` or string | `null`           | 
+
+### ButtonStyle
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'ButtonStyleModel'` | 
+`_view_name`     | string           | `'StyleView'`    | 
+`button_color`   | `null` or string | `null`           | 
+`font_weight`    | string           | `''`             | 
+
+### ProgressStyle
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'ProgressStyleModel'` | 
+`_view_name`     | string           | `'StyleView'`    | 
+`bar_color`      | `null` or string | `null`           | 
+
+### SliderStyle
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'SliderStyleModel'` | 
+`_view_name`     | string           | `'StyleView'`    | 
+`handle_color`   | `null` or string | `null`           | 
