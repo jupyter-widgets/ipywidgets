@@ -504,7 +504,7 @@ Here is code to automate pulling out the traits:
 import ipywidgets as widgets
 from ipywidgets import *
 
-from traitlets import CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat, Float, CInt, Instance, Undefined
+from traitlets import CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat, Float, CInt, Int, Instance, Undefined, Dict
 from ipywidgets import Color
 def typing(x):
     if isinstance(x, CaselessStrEnum):
@@ -517,10 +517,12 @@ def typing(x):
         return 'bool'
     elif isinstance(x, (CFloat, Float)):
         return 'number (float)'
-    elif isinstance(x, CInt):
+    elif isinstance(x, (CInt, Int)):
         return 'number (integer)'
     elif isinstance(x, Color):
         return 'string (valid color)'
+    elif isinstance(x, Dict):
+        return 'object'
     elif isinstance(x, Instance) and issubclass(x.klass, widgets.Widget):
         return 'reference to %s widget'%(x.klass.__name__)
     else:
@@ -570,7 +572,7 @@ print('\n'.join(out))
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
 `_model_name`    | string           |          | `'AccordionModel'` | 
-`_titles`        | Dict             |          | `{}`             | Titles of the pages
+`_titles`        | object           |          | `{}`             | Titles of the pages
 `_view_name`     | string           |          | `'AccordionView'` | 
 `box_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the box.
 `children`       | list             |          | `[]`             | 
@@ -662,7 +664,7 @@ Attribute        | Type             | Nullable | Default          | Help
 `axes`           | list             |          | `[]`             | 
 `buttons`        | list             |          | `[]`             | 
 `connected`      | bool             |          | `false`          | 
-`index`          | Int              |          | `0`              | 
+`index`          | number (integer) |          | `0`              | 
 `mapping`        | string           |          | `''`             | 
 `name`           | string           |          | `''`             | 
 `timestamp`      | number (float)   |          | `0.0`            | 
@@ -966,7 +968,7 @@ Attribute        | Type             | Nullable | Default          | Help
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
 `_model_name`    | string           |          | `'TabModel'`     | 
-`_titles`        | Dict             |          | `{}`             | Titles of the pages
+`_titles`        | object           |          | `{}`             | Titles of the pages
 `_view_name`     | string           |          | `'TabView'`      | 
 `box_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the box.
 `children`       | list             |          | `[]`             | 
@@ -992,7 +994,7 @@ Attribute        | Type             | Nullable | Default          | Help
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
 `placeholder`    | string           |          | `'\u200b'`       | Placeholder text to display when nothing has been typed
-`rows`           | Int              | *        | `null`           | 
+`rows`           | number (integer) | *        | `null`           | 
 `value`          | string           |          | `''`             | String value
 
 ### Jupyter.ToggleButton
