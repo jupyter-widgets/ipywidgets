@@ -4,499 +4,56 @@ This is a description of the model state for each widget in the core Jupyter wid
 
 In the headings below, the notation `WidgetB(WidgetA)` indicates that WidgetB inherits all of the attributes from WidgetA.
 
-## CoreWidget - Abstract
-
-```
-"_model_module": "jupyter-js-widgets",
-"_model_module_version": "~2.2.0",
-"_model_name": string,
-"_view_module": "jupyter-js-widgets",
-"_view_module_version": "~2.2.0",
-"_view_name": string,
-"msg_throttle": number = 1,
-```
-
-## DOMWidget(Widget) - Abstract
-
-```
-"_dom_classes": string[], # CSS classes applied to the widget
-"layout": REFERENCE<LayoutModel>,
-```
-
-## LabeledDOMWidget(DOMWidget)
-```
-"description": string # a label for the widget
-```
-
-## Accordion(LabeledDOMWidget)
-
-```
-"_model_name":"AccordionModel"
-"_titles": {}
-"_view_name":"AccordionView"
-"box_style": string
-"children": REFERENCE<DOMWidget>[]
-"selected_index": number = 0
-```
-
-## BoundedFloatText(LabeledDOMWidget)
-```
-"_model_name":"FloatTextModel",
-"_view_name":"FloatTextView",
-"disabled": bool = false,
-"max": number = 10,
-"min": number = 0,
-"step": number = 0.1,
-"value": number = 0,
-```
-
-
-## BoundedIntText(LabeledDOMWidget)
-
-```
-"_model_name": "IntTextModel",
-"_view_name": "IntTextView",
-"disabled": bool = false,
-"max": number = 10,
-"min": number = 0,
-"step": number = 1,
-"value": number = 0,
-```
-
-## Box(DOMWIdget)
-
-```
-"_model_name": "BoxModel",
-"_view_name": "BoxView",
-"box_style": string,
-"children": REFERENCE<DOMWidget>[]
-```
-
-## HBox(Box)
-
-```
-"_model_name": "HBoxModel",
-"_view_name": "HBoxView",
-```
-
-## VBox(Box)
-
-```
-"_model_name": "VBoxModel",
-"_view_name": "VBoxView",
-```
-
-
-## Button(DOMWidget)
-
-```
-"_model_name": "ButtonModel",
-"_view_name": "ButtonView",
-"button_style": string,
-"description": string,
-"disabled": bool = false,
-"icon": string,
-"style": REFERENCE<ButtonStyle>,
-"tooltip": string
-```
-
-
-## ButtonStyle
-
-```
-"_model_name": "ButtonStyleModel",
-"_view_name": "StyleView",
-"button_color": string = null,
-"font_weight": string,
-```
-
-## Checkbox(LabeledDOMWidget)
-
-```
-"_model_name": "CheckboxModel",
-"_view_name": "CheckboxView",
-"disabled": bool = false,
-"value": bool = false,
-```
-
-## ColorPicker(LabeledDOMWidget)
-
-```
-"_model_name": "ColorPickerModel",
-"_view_name": "ColorPickerView",
-"concise": bool = false,
-"value": string,
-```
-## Controller
-
-TODO
-
-```
-"_model_name": "ControllerModel",
-"_view_name": "ControllerView",
-"axes":[]
-"buttons":[],
-"index":0,
-"mapping":"",
-"name":"",
-"timestamp":0,
-"connected":false,
-```
-
-## DatePicker(LabeledDOMWidget)
-
-```
-"_model_name": "DatePickerModel",
-"_view_name": "DatePickerView",
-"value": string = null,
-```
-
-## Dropdown(LabeledDOMWidget)
-
-```
-"_model_name": "DropdownModel",
-"_options_labels": string[],
-"_view_name": "DropdownView",
-"disabled": bool = false,
-"value": string,
-```
-## Progress(LabeledDOMWidget)
-
-
-```
-"_model_name": "ProgressModel",
-"_view_name": "ProgressView",
-"bar_style": string,
-"disabled": bool = false,
-"max":number = 10,
-"min": number = 0
-"orientation": string = "horizontal",
-"step":number = 0.1,
-"style": REFERENCE<ProgressStyle>,
-"value": number = 0,
-```
-
-## ProgressStyle
-
-```
-"_model_name": "ProgressStyleModel",
-"_view_name": "StyleView",
-"bar_color": string = null,
-```
-
-## FloatRangeSlider(LabeledDOMWidget)
-
-```
-"_model_name": "FloatSliderModel",
-"_range": bool = true,
-"_view_name": "FloatSliderView",
-"continuous_update": bool = false,
-"disabled": bool = false,
-"max": number = 10.0,
-"min": number = 0.0
-"orientation": string = "horizontal",
-"readout": bool = true,
-"slider_color": string = "white",
-"step": number = 0.1,
-"value": number[] # [min, max],
-```
-
-## FloatSlider(LabeledDOMWidget)
-
-```
-"_model_name": "FloatSliderModel",
-"_range": bool = false,
-"_view_name": "FloatSliderView",
-"continuous_update": bool = false,
-"disabled": bool = false,
-"max": number = 10.0,
-"min": number = 0.0
-"orientation": string = "horizontal",
-"readout": bool = true,
-"readout_format": string = ".1f",
-"slider_color": string = "white",
-"step": number = 0.1,
-"value": number = 0,
-```
-
-## FloatText(LabeledDOMWidget)
-
-```
-"_model_name": "FloatTextModel",
-"_view_name": "FloatTextView",
-"disabled": bool = false,
-"max": number = 10,
-"min": number = 0,
-"step": number = 0.1,
-"value": number = 0,
-```
-
-## HTML(LabeledDOMWidget)
-
-```
-"_model_name": "HTMLModel",
-"_view_name": "HTMLView",
-"disabled": bool = false,
-"placeholder": string,
-"value": string,
-```
-
-## HTMLMath(HTML)
-
-```
-"_model_name": "HTMLMathModel",
-"_view_name": "HTMLMathView",
-```
-
-## Image(DOMWidget)
-
-```
-"_b64value": string,
-"_model_name": "ImageModel",
-"_view_name": "ImageView",
-"format": string = "png",
-"height": string
-"width": string,
-```
-
-## IntRangeSlider(LabeledDOMWidget)
-
-```
-"_model_name":"IntSliderModel",
-"_range":true,
-"_view_name":"IntSliderView",
-"continuous_update":false,
-"disabled":false,
-"max":10,
-"min":0,
-"orientation":"horizontal",
-"readout":true,
-"slider_color":"white",
-"step":1,
-"value":[5,7],
-```
-
-## IntSlider(LabeledDOMWidget)
-
-
-```
-"_model_name": "IntSliderModel"
-"_range": false,
-"_view_name": "IntSliderView",
-"continuous_update": false,
-"disabled": false,
-"max": 10,
-"min": 0
-"orientation": "horizontal",
-"readout": true,
-"readout_format": "i",
-"step": 1,
-"style": REFERENCE(SliderStyle),
-"value": 7,
-```
-
-## IntText(LabeledDOMWidget)
-
-```
-"_model_name":"IntTextModel",
-"_view_name":"IntTextView",
-"disabled":false,
-"value":7,
-```
-
-## Label(LabeledDOMWidget)
-
-```
-"_model_name":"LabelModel",
-"_view_name":"LabelView",
-"disabled":false,
-"placeholder":"Some LaTeX",
-"value": string,
-```
-
-## Layout
-
-```
-"align_content": null,
-"align_items": null,
-"align_self": null,
-"border": null,
-"bottom": null,
-"display": null,
-"flex": null,
-"flex_flow": null,
-"height": null,
-"justify_content": null
-"left": null,
-"margin": null,
-"max_height": null,
-"max_width": null,
-"min_height": null,
-"min_width": null,
-"order": null,
-"overflow": null,
-"overflow_x": null,
-"overflow_y": null,
-"padding": null,
-"right": null,
-"top": null,
-"visibility": null,
-"width": null,
-```
-
-
-## Output
-
-```
-"_model_name":"OutputModel",
-"_view_name":"OutputView",
-"msg_id":"",
-```
-
-
-## Play(LabeledDOMWidget)
-
-```
-"_model_name":"PlayModel",
-"_playing":false,
-"_view_name":"PlayView",
-"disabled":false,
-"interval":100,
-"max":100,
-"min":0,
-"step":1,
-"value":50,
-```
-
-
-## RadioButtons(LabeledDOMWidget)
-
-```
-"_model_name":"RadioButtonsModel",
-"_options_labels": string[],
-"_view_name":"RadioButtonsView",
-"disabled":false,
-"value":"pepperoni",
-```
-
-
-## Select(LabeledDOMWidget)
-
-
-```
-"_model_name":"SelectModel",
-"_options_labels": string[],
-"_view_name":"SelectView",
-"disabled":false,
-"value":"Linux",
-```
-
-## SelectMultiple(LabeledDOMWidget)
-
-```
-"_model_name":"SelectMultipleModel",
-"_options_labels": string[],
-"_view_name":"SelectMultipleView",
-"disabled":false,
-"value": string[],
-```
-
-
-## SelectionSlider(LabeledDOMWidget)
-
-```
-"_model_name":"SelectionSliderModel",
-"_options_labels": string[],
-"_view_name":"SelectionSliderView",
-"continuous_update":false,
-"disabled":false,
-"orientation":"horizontal",
-"readout":true,
-"value":"sunny side up",
-```
-
-
-## Text(LabeledDOMWidget)
-
-```
-"_model_name":"TextModel",
-"_view_name":"TextView",
-"disabled":false,
-"placeholder":"Type something",
-"value":"Hello World",
-```
-
-## Textarea(LabeledDOMWidget)
-
-```
-"_model_name":"TextareaModel",
-"_view_name":"TextareaView",
-"disabled":false,
-"placeholder":"Type something",
-"rows":null,
-"value":"Hello World",
-```
-
-## ToggleButton(LabeledDOMWidget)
-
-```
-"_model_name":"ToggleButtonModel",
-"_view_name":"ToggleButtonView",
-"button_style":"",
-"disabled":false,
-"icon":"check",
-"tooltip":"Description",
-"value":false,
-```
-
-## ToggleButtons(LabeledDOMWidget)
-
-```
-"_model_name":"ToggleButtonsModel",
-"_options_labels": string[],
-"_view_name":"ToggleButtonsView",
-"button_style":"",
-"disabled":false,
-"icons":[],
-"tooltips":[],
-"value":"Slow",
-```
-
-## Valid(LabeledDOMWidget)
-
-```
-"_model_name":"ValidModel",
-"_view_name":"ValidView",
-"disabled":false,
-"readout":"",
-"value":false,
-```
-
-## Tab(DOMWidget)
-
-```
-"_model_name":"TabModel",
-"_titles":{},
-"_view_name":"TabView",
-"box_style":"",
-"children": REFERENCE(DOMWidget)[]
-"selected_index":0,
-```
-
-## Link(Widget)
-
-```
-"_model_name":"LinkModel",
-"_view_name":null,
-"source": [REFERENCE(Widget), string]
-"target": [REFERENCE(Widget), string]
-```
-
-
-
-
-
-# Automated documentation
+## Inheritance
+* CoreWidget - Abstract
+* DOMWidget(Widget) - Abstract
+* LabeledDOMWidget(DOMWidget)
+* Accordion(LabeledDOMWidget)
+* BoundedFloatText(LabeledDOMWidget)
+* BoundedIntText(LabeledDOMWidget)
+* Box(DOMWIdget)
+* HBox(Box)
+* VBox(Box)
+* Button(DOMWidget)
+* ButtonStyle
+* Checkbox(LabeledDOMWidget)
+* ColorPicker(LabeledDOMWidget)
+* Controller
+* DatePicker(LabeledDOMWidget)
+* Dropdown(LabeledDOMWidget)
+* Progress(LabeledDOMWidget)
+* ProgressStyle
+* FloatRangeSlider(LabeledDOMWidget)
+* FloatSlider(LabeledDOMWidget)
+* FloatText(LabeledDOMWidget)
+* HTML(LabeledDOMWidget)
+* HTMLMath(HTML)
+* Image(DOMWidget)
+* IntRangeSlider(LabeledDOMWidget)
+* IntSlider(LabeledDOMWidget)
+* IntText(LabeledDOMWidget)
+* Label(LabeledDOMWidget)
+* Layout
+* Output
+* Play(LabeledDOMWidget)
+* RadioButtons(LabeledDOMWidget)
+* Select(LabeledDOMWidget)
+* SelectMultiple(LabeledDOMWidget)
+* SelectionSlider(LabeledDOMWidget)
+* Text(LabeledDOMWidget)
+* Textarea(LabeledDOMWidget)
+* ToggleButton(LabeledDOMWidget)
+* ToggleButtons(LabeledDOMWidget)
+* Valid(LabeledDOMWidget)
+* Tab(DOMWidget)
+* Link(Widget)
+
+
+## Automated documentation
+
+TODO: Link, Layout, and Style widget models, as well as common attributes such as `['_model_module', '_view_module', '_model_module_version', '_view_module_version', 'msg_throttle', '_dom_classes', 'layout']`
+
+Also TODO: automate the subclass diagram to help people in implementing the model (so they can see where attributes are inherited and shared between models)
 
 Here is code to automate pulling out the traits:
 
@@ -572,7 +129,6 @@ for n,w in sorted(widgets.Widget.widget_types.items()):
         out.append(s)
     out.append('')
 print('\n'.join(out))
-
 
 ```
 
