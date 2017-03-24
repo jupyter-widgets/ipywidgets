@@ -504,11 +504,11 @@ Here is code to automate pulling out the traits:
 import ipywidgets as widgets
 from ipywidgets import *
 
-from traitlets import CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat, Float, CInt, Int, Instance, Undefined, Dict
+from traitlets import CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat, Float, CInt, Int, Instance, Undefined, Dict, Any
 from ipywidgets import Color
 def typing(x):
     if isinstance(x, CaselessStrEnum):
-        return 'string enum, one of %s'%(', '.join('`%r`'%i for i in x.values))
+        return 'string (one of %s)'%(', '.join('`%r`'%i for i in x.values))
     elif isinstance(x, Unicode):
         return 'string'
     elif isinstance(x, (Tuple, List)):
@@ -525,6 +525,9 @@ def typing(x):
         return 'object'
     elif isinstance(x, Instance) and issubclass(x.klass, widgets.Widget):
         return 'reference to %s widget'%(x.klass.__name__)
+    elif isinstance(x, Any):
+        # In our case, these all happen to be values that are converted to strings
+        return 'string (valid option label)'
     else:
         return x.__class__.__name__
 
@@ -565,6 +568,7 @@ for n,w in sorted(widgets.Widget.widget_types.items()):
         out.append(s)
     out.append('')
 print('\n'.join(out))
+
 ```
 
 ### Jupyter.Accordion
@@ -574,7 +578,7 @@ Attribute        | Type             | Nullable | Default          | Help
 `_model_name`    | string           |          | `'AccordionModel'` | 
 `_titles`        | object           |          | `{}`             | Titles of the pages
 `_view_name`     | string           |          | `'AccordionView'` | 
-`box_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the box.
+`box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) |          | `''`             | Use a predefined styling for the box.
 `children`       | list             |          | `[]`             | 
 `selected_index` | number (integer) |          | `0`              | 
 
@@ -610,7 +614,7 @@ Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
 `_model_name`    | string           |          | `'BoxModel'`     | 
 `_view_name`     | string           |          | `'BoxView'`      | 
-`box_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the box.
+`box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) |          | `''`             | Use a predefined styling for the box.
 `children`       | list             |          | `[]`             | 
 
 ### Jupyter.Button
@@ -619,7 +623,7 @@ Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
 `_model_name`    | string           |          | `'ButtonModel'`  | 
 `_view_name`     | string           |          | `'ButtonView'`   | 
-`button_style`   | string enum, one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the button.
+`button_style`   | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) |          | `''`             | Use a predefined styling for the button.
 `description`    | string           |          | `''`             | Button label.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes.
 `icon`           | string           |          | `''`             | Font-awesome icon name, without the 'fa-' prefix.
@@ -704,7 +708,7 @@ Attribute        | Type             | Nullable | Default          | Help
 `_view_name`     | string           |          | `'DropdownView'` | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`value`          | Any              |          | `null`           | Selected value
+`value`          | string (valid option label) |          | `null`           | Selected value
 
 ### Jupyter.FloatProgress
 
@@ -712,12 +716,12 @@ Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
 `_model_name`    | string           |          | `'ProgressModel'` | 
 `_view_name`     | string           |          | `'ProgressView'` | 
-`bar_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` | *        | `''`             | Use a predefined styling for the progess bar.
+`bar_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | *        | `''`             | Use a predefined styling for the progess bar.
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
 `max`            | number (float)   |          | `100.0`          | Max value
 `min`            | number (float)   |          | `0.0`            | Min value
-`orientation`    | string enum, one of `'horizontal'`, `'vertical'` |          | `'horizontal'`   | Vertical or horizontal.
+`orientation`    | string (one of `'horizontal'`, `'vertical'`) |          | `'horizontal'`   | Vertical or horizontal.
 `step`           | number (float)   |          | `0.1`            | Minimum step to increment the value (ignored by some views)
 `style`          | reference to ProgressStyle widget |          | reference to new instance | 
 `value`          | number (float)   |          | `0.0`            | Float value
@@ -734,7 +738,7 @@ Attribute        | Type             | Nullable | Default          | Help
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
 `max`            | number (float)   |          | `100.0`          | Max value
 `min`            | number (float)   |          | `0.0`            | Min value
-`orientation`    | string enum, one of `'horizontal'`, `'vertical'` |          | `'horizontal'`   | Vertical or horizontal.
+`orientation`    | string (one of `'horizontal'`, `'vertical'`) |          | `'horizontal'`   | Vertical or horizontal.
 `readout`        | bool             |          | `true`           | Display the current value of the slider next to it.
 `slider_color`   | string           | *        | `null`           | 
 `step`           | number (float)   |          | `1.0`            | Minimum step that the value can take (ignored by some views)
@@ -752,7 +756,7 @@ Attribute        | Type             | Nullable | Default          | Help
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
 `max`            | number (float)   |          | `100.0`          | Max value
 `min`            | number (float)   |          | `0.0`            | Min value
-`orientation`    | string enum, one of `'horizontal'`, `'vertical'` |          | `'horizontal'`   | Vertical or horizontal.
+`orientation`    | string (one of `'horizontal'`, `'vertical'`) |          | `'horizontal'`   | Vertical or horizontal.
 `readout`        | bool             |          | `true`           | Display the current value of the slider next to it.
 `readout_format` | string           |          | `'.2f'`          | Format for the readout
 `slider_color`   | string           | *        | `null`           | 
@@ -775,7 +779,7 @@ Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
 `_model_name`    | string           |          | `'HBoxModel'`    | 
 `_view_name`     | string           |          | `'HBoxView'`     | 
-`box_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the box.
+`box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) |          | `''`             | Use a predefined styling for the box.
 `children`       | list             |          | `[]`             | 
 
 ### Jupyter.HTML
@@ -817,12 +821,12 @@ Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
 `_model_name`    | string           |          | `'ProgressModel'` | 
 `_view_name`     | string           |          | `'ProgressView'` | 
-`bar_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the progess bar.
+`bar_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) |          | `''`             | Use a predefined styling for the progess bar.
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
 `max`            | number (integer) |          | `100`            | Max value
 `min`            | number (integer) |          | `0`              | Min value
-`orientation`    | string enum, one of `'horizontal'`, `'vertical'` |          | `'horizontal'`   | Vertical or horizontal.
+`orientation`    | string (one of `'horizontal'`, `'vertical'`) |          | `'horizontal'`   | Vertical or horizontal.
 `step`           | number (integer) |          | `1`              | Minimum step to increment the value (ignored by some views)
 `style`          | reference to ProgressStyle widget |          | reference to new instance | 
 `value`          | number (integer) |          | `0`              | Int value
@@ -839,7 +843,7 @@ Attribute        | Type             | Nullable | Default          | Help
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
 `max`            | number (integer) |          | `100`            | Max value
 `min`            | number (integer) |          | `0`              | Min value
-`orientation`    | string enum, one of `'horizontal'`, `'vertical'` |          | `'horizontal'`   | Vertical or horizontal.
+`orientation`    | string (one of `'horizontal'`, `'vertical'`) |          | `'horizontal'`   | Vertical or horizontal.
 `readout`        | bool             |          | `true`           | Display the current value of the slider next to it.
 `slider_color`   | string           | *        | `null`           | 
 `step`           | number (integer) |          | `1`              | Minimum step that the value can take (ignored by some views)
@@ -857,7 +861,7 @@ Attribute        | Type             | Nullable | Default          | Help
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
 `max`            | number (integer) |          | `100`            | Max value
 `min`            | number (integer) |          | `0`              | Min value
-`orientation`    | string enum, one of `'horizontal'`, `'vertical'` |          | `'horizontal'`   | Vertical or horizontal.
+`orientation`    | string (one of `'horizontal'`, `'vertical'`) |          | `'horizontal'`   | Vertical or horizontal.
 `readout`        | bool             |          | `true`           | Display the current value of the slider next to it.
 `readout_format` | string           |          | `'d'`            | Format for the readout
 `step`           | number (integer) |          | `1`              | Minimum step to increment the value (ignored by some views)
@@ -917,7 +921,7 @@ Attribute        | Type             | Nullable | Default          | Help
 `_view_name`     | string           |          | `'RadioButtonsView'` | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`value`          | Any              |          | `null`           | Selected value
+`value`          | string (valid option label) |          | `null`           | Selected value
 
 ### Jupyter.Select
 
@@ -928,7 +932,7 @@ Attribute        | Type             | Nullable | Default          | Help
 `_view_name`     | string           |          | `'SelectView'`   | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`value`          | Any              |          | `null`           | Selected value
+`value`          | string (valid option label) |          | `null`           | Selected value
 
 ### Jupyter.SelectMultiple
 
@@ -951,9 +955,9 @@ Attribute        | Type             | Nullable | Default          | Help
 `continuous_update` | bool             |          | `true`           | Update the value of the widget as the user is holding the slider.
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`orientation`    | string enum, one of `'horizontal'`, `'vertical'` |          | `'horizontal'`   | Vertical or horizontal.
+`orientation`    | string (one of `'horizontal'`, `'vertical'`) |          | `'horizontal'`   | Vertical or horizontal.
 `readout`        | bool             |          | `true`           | Display the current selected label next to the slider
-`value`          | Any              |          | `null`           | Selected value
+`value`          | string (valid option label) |          | `null`           | Selected value
 
 ### Jupyter.SliderStyle
 
@@ -970,7 +974,7 @@ Attribute        | Type             | Nullable | Default          | Help
 `_model_name`    | string           |          | `'TabModel'`     | 
 `_titles`        | object           |          | `{}`             | Titles of the pages
 `_view_name`     | string           |          | `'TabView'`      | 
-`box_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the box.
+`box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) |          | `''`             | Use a predefined styling for the box.
 `children`       | list             |          | `[]`             | 
 `selected_index` | number (integer) |          | `0`              | 
 
@@ -1003,7 +1007,7 @@ Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
 `_model_name`    | string           |          | `'ToggleButtonModel'` | 
 `_view_name`     | string           |          | `'ToggleButtonView'` | 
-`button_style`   | string enum, one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the button.
+`button_style`   | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) |          | `''`             | Use a predefined styling for the button.
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes.
 `icon`           | string           |          | `''`             | Font-awesome icon.
@@ -1017,12 +1021,12 @@ Attribute        | Type             | Nullable | Default          | Help
 `_model_name`    | string           |          | `'ToggleButtonsModel'` | 
 `_options_labels` | list             |          | `[]`             | 
 `_view_name`     | string           |          | `'ToggleButtonsView'` | 
-`button_style`   | string enum, one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''` | *        | `''`             | Use a predefined styling for the buttons.
+`button_style`   | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | *        | `''`             | Use a predefined styling for the buttons.
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
 `icons`          | list             |          | `[]`             | 
 `tooltips`       | list             |          | `[]`             | 
-`value`          | Any              |          | `null`           | Selected value
+`value`          | string (valid option label) |          | `null`           | Selected value
 
 ### Jupyter.VBox
 
@@ -1030,7 +1034,7 @@ Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
 `_model_name`    | string           |          | `'VBoxModel'`    | 
 `_view_name`     | string           |          | `'VBoxView'`     | 
-`box_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the box.
+`box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) |          | `''`             | Use a predefined styling for the box.
 `children`       | list             |          | `[]`             | 
 
 ### Jupyter.Valid
