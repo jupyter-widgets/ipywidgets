@@ -15,6 +15,8 @@ from traitlets import Unicode, Tuple, List,Instance, TraitError
 class WidgetTraitTuple(Tuple):
     """Traitlet for validating a single (Widget, 'trait_name') pair"""
 
+    info_text = "A (Widget, 'trait_name') pair"
+
     def __init__(self, **kwargs):
         super(WidgetTraitTuple, self).__init__(Instance(Widget), Unicode, **kwargs)
 
@@ -43,8 +45,8 @@ class Link(CoreWidget):
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_name = Unicode('LinkModel').tag(sync=True)
-    target = WidgetTraitTuple().tag(sync=True, **widget_serialization)
-    source = WidgetTraitTuple().tag(sync=True, **widget_serialization)
+    target = WidgetTraitTuple(help="The target (widget, 'trait_name') pair").tag(sync=True, **widget_serialization)
+    source = WidgetTraitTuple(help="The source (widget, 'trait_name') pair").tag(sync=True, **widget_serialization)
 
     def __init__(self, source, target, **kwargs):
         kwargs['source'] = source

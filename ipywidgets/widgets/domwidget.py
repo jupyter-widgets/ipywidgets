@@ -13,7 +13,7 @@ class DOMWidget(Widget):
     """Widget that can be inserted into the DOM"""
 
     _model_name = Unicode('DOMWidgetModel').tag(sync=True)
-    _dom_classes = Tuple(help="DOM classes applied to widget.$el.").tag(sync=True)
+    _dom_classes = Tuple(help="CSS classes applied to widget DOM element").tag(sync=True)
     layout = LayoutTraitType().tag(sync=True, **widget_serialization)
 
     @default('layout')

@@ -217,8 +217,7 @@ class ToggleButtons(_Selection):
 
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''],
-        default_value='', allow_none=True, help="""Use a predefined styling for
-        the buttons.""").tag(sync=True)
+        default_value='', allow_none=True, help="""Use a predefined styling for the buttons.""").tag(sync=True)
 
 
 @register('Jupyter.Dropdown')
