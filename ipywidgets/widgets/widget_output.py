@@ -38,7 +38,7 @@ class Output(DOMWidget, CoreWidget):
     _model_name = Unicode('OutputModel').tag(sync=True)
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    msg_id = Unicode('').tag(sync=True)
+    msg_id = Unicode('', help="Parent message id of messages to capture").tag(sync=True)
 
     def clear_output(self, *pargs, **kwargs):
         with self:
