@@ -1,151 +1,10 @@
 # Model State
 
-This is a description of the model state for each widget in the core Jupyter widgets library. The model ID of a widget is the id of the comm object the widget is using. A model reference (denoted `REFERENCE<SomeWidgetModel>`) is a string of the form `"IPY_MODEL_<MODEL_ID>"`, where `<MODEL_ID>` is the model ID of a previously created widget of the specified type.
+This is a description of the model state for each widget in the core Jupyter widgets library. The model ID of a widget is the id of the comm object the widget is using. A  reference to a widget is serialized to JSON as a string of the form `"IPY_MODEL_<MODEL_ID>"`, where `<MODEL_ID>` is the model ID of a previously created widget of the specified type.
 
-In the headings below, the notation `WidgetB(WidgetA)` indicates that WidgetB inherits all of the attributes from WidgetA.
+## Model attributes
 
-## Inheritance
-* CoreWidget - Abstract
-* DOMWidget(Widget) - Abstract
-* LabeledDOMWidget(DOMWidget)
-* Accordion(LabeledDOMWidget)
-* BoundedFloatText(LabeledDOMWidget)
-* BoundedIntText(LabeledDOMWidget)
-* Box(DOMWIdget)
-* HBox(Box)
-* VBox(Box)
-* Button(DOMWidget)
-* ButtonStyle
-* Checkbox(LabeledDOMWidget)
-* ColorPicker(LabeledDOMWidget)
-* Controller
-* DatePicker(LabeledDOMWidget)
-* Dropdown(LabeledDOMWidget)
-* Progress(LabeledDOMWidget)
-* ProgressStyle
-* FloatRangeSlider(LabeledDOMWidget)
-* FloatSlider(LabeledDOMWidget)
-* FloatText(LabeledDOMWidget)
-* HTML(LabeledDOMWidget)
-* HTMLMath(HTML)
-* Image(DOMWidget)
-* IntRangeSlider(LabeledDOMWidget)
-* IntSlider(LabeledDOMWidget)
-* IntText(LabeledDOMWidget)
-* Label(LabeledDOMWidget)
-* Layout
-* Output
-* Play(LabeledDOMWidget)
-* RadioButtons(LabeledDOMWidget)
-* Select(LabeledDOMWidget)
-* SelectMultiple(LabeledDOMWidget)
-* SelectionSlider(LabeledDOMWidget)
-* Text(LabeledDOMWidget)
-* Textarea(LabeledDOMWidget)
-* ToggleButton(LabeledDOMWidget)
-* ToggleButtons(LabeledDOMWidget)
-* Valid(LabeledDOMWidget)
-* Tab(DOMWidget)
-* Link(Widget)
-
-
-## Automated documentation
-
-TODO: Link, Layout, and Style widget models, as well as common attributes such as `['_model_module', '_view_module', '_model_module_version', '_view_module_version', 'msg_throttle', '_dom_classes', 'layout']`
-
-Also TODO: automate the subclass diagram to help people in implementing the model (so they can see where attributes are inherited and shared between models)
-
-Here is code to automate pulling out the traits:
-
-```python
-import ipywidgets as widgets
-from ipywidgets import *
-
-from traitlets import CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat, Float, CInt, Int, Instance, Undefined, Dict, Any
-from ipywidgets import Color
-
-widgets_to_document = sorted(widgets.Widget.widget_types.items()) + [('Layout', widgets.Layout), ('Output', widgets.Output)]
-
-def typing(x):
-    s = ''
-    if isinstance(x, CaselessStrEnum):
-        s = 'string (one of %s)'%(', '.join('`%r`'%i for i in x.values))
-    elif isinstance(x, Unicode):
-        s = 'string'
-    elif isinstance(x, (Tuple, List)):
-        s = 'array'
-    elif isinstance(x, Bool):
-        s = 'boolean'
-    elif isinstance(x, (CFloat, Float)):
-        s = 'number (float)'
-    elif isinstance(x, (CInt, Int)):
-        s = 'number (integer)'
-    elif isinstance(x, Color):
-        s = 'string (valid color)'
-    elif isinstance(x, Dict):
-        s = 'object'
-    elif isinstance(x, Instance) and issubclass(x.klass, widgets.Widget):
-        s = 'reference to %s widget'%(x.klass.__name__)
-        # ADD the widget to this documenting list
-        if x.klass not in [i[1] for i in widgets_to_document]:
-            widgets_to_document.append((x.klass.__name__, x.klass))
-    elif isinstance(x, Any):
-        # In our case, these all happen to be values that are converted to strings
-        s = 'string (valid option label)'
-    else:
-        s = x.__class__.__name__
-    if x.allow_none:
-        s = "`null` or "+s
-    return s
-
-def jsdefault(t):
-    x = t.default_value
-    if isinstance(t, Instance):
-        x = t.make_dynamic_default()
-        if issubclass(t.klass, widgets.Widget):
-            return 'reference to new instance'
-    if x is True:
-        return '`true`'
-    elif x is False:
-        return '`false`'
-    elif x is None:
-        return '`null`'
-    elif isinstance(x, tuple):
-        return '`{0}`'.format(list(x))
-    else:
-        return '`%s`'%t.default_value_repr()
-
-def format_widget(n, w):
-    out = []
-    out.append('### %s'%n)
-    out.append('')
-    out.append('{name: <16} | {typing: <16} | {default: <16} | {help}'.format(name='Attribute', typing='Type', 
-                                                                             allownone='Nullable', default='Default', help='Help'))
-    out.append('{0:-<16}-|-{0:-<16}-|-{0:-<16}-|----'.format('-'))
-    for name, t in sorted(w.traits(sync=True).items()):
-        if name in ['_model_module', '_view_module', '_model_module_version', '_view_module_version', 'msg_throttle', '_dom_classes', 'layout']:
-            # document these separately, since they apply to all classes
-            pass
-        s = '{name: <16} | {typing: <16} | {default: <16} | {help}'.format(name='`%s`'%name, typing=typing(t), 
-                                                            allownone='*' if t.allow_none else '', 
-                                                                                               default=jsdefault(t),
-                                                                                              help=t.help if t.help else '')
-        out.append(s)
-    out.append('')
-    return '\n'.join(out)
-    
-out = ''
-for n,w in widgets_to_document:
-    if n in ['jupyter.Link', 'jupyter.DirectionalLink']:
-        out += '\n'+format_widget(n, w((IntSlider(), 'value'), (IntSlider(), 'value')))
-    else:
-        out += '\n'+format_widget(n,w())
-print(out)
-
-
-```
-
-
+Each widget in the Jupyter core widgets is represented below. The heading represents the string the widget is registered with in the kernel.
 
 ### Jupyter.Accordion
 
@@ -973,3 +832,148 @@ Attribute        | Type             | Default          | Help
 `layout`         | reference to Layout widget | reference to new instance | 
 `msg_id`         | string           | `''`             | Parent message id of messages to capture
 `msg_throttle`   | number (integer) | `1`              | Maximum number of msgs the front-end can send before receiving an idle msg from the back-end.
+
+
+
+## Inheritance
+
+In the list below, the notation `WidgetB(WidgetA)` indicates that WidgetB inherits all of the attributes from WidgetA. This may help in implementing widgets to easily see the inheritance hierarcy.
+
+* CoreWidget - Abstract
+* DOMWidget(Widget) - Abstract
+* LabeledDOMWidget(DOMWidget)
+* Accordion(LabeledDOMWidget)
+* BoundedFloatText(LabeledDOMWidget)
+* BoundedIntText(LabeledDOMWidget)
+* Box(DOMWIdget)
+* HBox(Box)
+* VBox(Box)
+* Button(DOMWidget)
+* ButtonStyle
+* Checkbox(LabeledDOMWidget)
+* ColorPicker(LabeledDOMWidget)
+* Controller
+* DatePicker(LabeledDOMWidget)
+* Dropdown(LabeledDOMWidget)
+* Progress(LabeledDOMWidget)
+* ProgressStyle
+* FloatRangeSlider(LabeledDOMWidget)
+* FloatSlider(LabeledDOMWidget)
+* FloatText(LabeledDOMWidget)
+* HTML(LabeledDOMWidget)
+* HTMLMath(HTML)
+* Image(DOMWidget)
+* IntRangeSlider(LabeledDOMWidget)
+* IntSlider(LabeledDOMWidget)
+* IntText(LabeledDOMWidget)
+* Label(LabeledDOMWidget)
+* Layout
+* Output
+* Play(LabeledDOMWidget)
+* RadioButtons(LabeledDOMWidget)
+* Select(LabeledDOMWidget)
+* SelectMultiple(LabeledDOMWidget)
+* SelectionSlider(LabeledDOMWidget)
+* Text(LabeledDOMWidget)
+* Textarea(LabeledDOMWidget)
+* ToggleButton(LabeledDOMWidget)
+* ToggleButtons(LabeledDOMWidget)
+* Valid(LabeledDOMWidget)
+* Tab(DOMWidget)
+* Link(Widget)
+
+
+
+## Automated documentation
+
+The code to generate the model attribute listing is below.
+
+```python
+import ipywidgets as widgets
+from ipywidgets import *
+
+from traitlets import CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat, Float, CInt, Int, Instance, Undefined, Dict, Any
+from ipywidgets import Color
+
+widgets_to_document = sorted(widgets.Widget.widget_types.items()) + [('Layout', widgets.Layout), ('Output', widgets.Output)]
+
+def typing(x):
+    s = ''
+    if isinstance(x, CaselessStrEnum):
+        s = 'string (one of %s)'%(', '.join('`%r`'%i for i in x.values))
+    elif isinstance(x, Unicode):
+        s = 'string'
+    elif isinstance(x, (Tuple, List)):
+        s = 'array'
+    elif isinstance(x, Bool):
+        s = 'boolean'
+    elif isinstance(x, (CFloat, Float)):
+        s = 'number (float)'
+    elif isinstance(x, (CInt, Int)):
+        s = 'number (integer)'
+    elif isinstance(x, Color):
+        s = 'string (valid color)'
+    elif isinstance(x, Dict):
+        s = 'object'
+    elif isinstance(x, Instance) and issubclass(x.klass, widgets.Widget):
+        s = 'reference to %s widget'%(x.klass.__name__)
+        # ADD the widget to this documenting list
+        if x.klass not in [i[1] for i in widgets_to_document]:
+            widgets_to_document.append((x.klass.__name__, x.klass))
+    elif isinstance(x, Any):
+        # In our case, these all happen to be values that are converted to strings
+        s = 'string (valid option label)'
+    else:
+        s = x.__class__.__name__
+    if x.allow_none:
+        s = "`null` or "+s
+    return s
+
+def jsdefault(t):
+    x = t.default_value
+    if isinstance(t, Instance):
+        x = t.make_dynamic_default()
+        if issubclass(t.klass, widgets.Widget):
+            return 'reference to new instance'
+    if x is True:
+        return '`true`'
+    elif x is False:
+        return '`false`'
+    elif x is None:
+        return '`null`'
+    elif isinstance(x, tuple):
+        return '`{0}`'.format(list(x))
+    else:
+        return '`%s`'%t.default_value_repr()
+
+def format_widget(n, w):
+    out = []
+    out.append('### %s'%n)
+    out.append('')
+    out.append('{name: <16} | {typing: <16} | {default: <16} | {help}'.format(name='Attribute', typing='Type', 
+                                                                             allownone='Nullable', default='Default', help='Help'))
+    out.append('{0:-<16}-|-{0:-<16}-|-{0:-<16}-|----'.format('-'))
+    for name, t in sorted(w.traits(sync=True).items()):
+        if name in ['_model_module', '_view_module', '_model_module_version', '_view_module_version', 'msg_throttle', '_dom_classes', 'layout']:
+            # document these separately, since they apply to all classes
+            pass
+        s = '{name: <16} | {typing: <16} | {default: <16} | {help}'.format(name='`%s`'%name, typing=typing(t), 
+                                                            allownone='*' if t.allow_none else '', 
+                                                                                               default=jsdefault(t),
+                                                                                              help=t.help if t.help else '')
+        out.append(s)
+    out.append('')
+    return '\n'.join(out)
+    
+out = ''
+for n,w in widgets_to_document:
+    if n in ['jupyter.Link', 'jupyter.DirectionalLink']:
+        out += '\n'+format_widget(n, w((IntSlider(), 'value'), (IntSlider(), 'value')))
+    else:
+        out += '\n'+format_widget(n,w())
+print(out)
+
+
+```
+
+
