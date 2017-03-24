@@ -507,29 +507,33 @@ from ipywidgets import *
 from traitlets import CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat, Float, CInt, Int, Instance, Undefined, Dict, Any
 from ipywidgets import Color
 def typing(x):
+    s = ''
     if isinstance(x, CaselessStrEnum):
-        return 'string (one of %s)'%(', '.join('`%r`'%i for i in x.values))
+        s = 'string (one of %s)'%(', '.join('`%r`'%i for i in x.values))
     elif isinstance(x, Unicode):
-        return 'string'
+        s = 'string'
     elif isinstance(x, (Tuple, List)):
-        return 'array'
+        s = 'array'
     elif isinstance(x, Bool):
-        return 'boolean'
+        s = 'boolean'
     elif isinstance(x, (CFloat, Float)):
-        return 'number (float)'
+        s = 'number (float)'
     elif isinstance(x, (CInt, Int)):
-        return 'number (integer)'
+        s = 'number (integer)'
     elif isinstance(x, Color):
-        return 'string (valid color)'
+        s = 'string (valid color)'
     elif isinstance(x, Dict):
-        return 'object'
+        s = 'object'
     elif isinstance(x, Instance) and issubclass(x.klass, widgets.Widget):
-        return 'reference to %s widget'%(x.klass.__name__)
+        s = 'reference to %s widget'%(x.klass.__name__)
     elif isinstance(x, Any):
         # In our case, these all happen to be values that are converted to strings
-        return 'string (valid option label)'
+        s = 'string (valid option label)'
     else:
-        return x.__class__.__name__
+        s = x.__class__.__name__
+    if x.allow_none:
+        s = "`null` or "+s
+    return s
 
 def jsdefault(t):
     x = t.default_value
@@ -554,14 +558,14 @@ for n,w in sorted(widgets.Widget.widget_types.items()):
         continue
     out.append('### %s'%n)
     out.append('')
-    out.append('{name: <16} | {typing: <16} | {allownone: <8} | {default: <16} | {help}'.format(name='Attribute', typing='Type', 
+    out.append('{name: <16} | {typing: <16} | {default: <16} | {help}'.format(name='Attribute', typing='Type', 
                                                                              allownone='Nullable', default='Default', help='Help'))
-    out.append('{0:-<16}-|-{0:-<16}-|-{0:-<8}-|-{0:-<16}-|----'.format('-'))
+    out.append('{0:-<16}-|-{0:-<16}-|-{0:-<16}-|----'.format('-'))
     for name, t in sorted(w().traits(sync=True).items()):
         if name in ['_model_module', '_view_module', '_model_module_version', '_view_module_version', 'msg_throttle', '_dom_classes', 'layout']:
             # document these separately, since they apply to all classes
             continue
-        s = '{name: <16} | {typing: <16} | {allownone: <8} | {default: <16} | {help}'.format(name='`%s`'%name, typing=typing(t), 
+        s = '{name: <16} | {typing: <16} | {default: <16} | {help}'.format(name='`%s`'%name, typing=typing(t), 
                                                             allownone='*' if t.allow_none else '', 
                                                                                                default=jsdefault(t),
                                                                                               help=t.help if t.help else '')
@@ -569,481 +573,482 @@ for n,w in sorted(widgets.Widget.widget_types.items()):
     out.append('')
 print('\n'.join(out))
 
+
 ```
 
 ### Jupyter.Accordion
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'AccordionModel'` | 
-`_titles`        | object           |          | `{}`             | Titles of the pages
-`_view_name`     | string           |          | `'AccordionView'` | 
-`box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) |          | `''`             | Use a predefined styling for the box.
-`children`       | array            |          | `[]`             | 
-`selected_index` | number (integer) |          | `0`              | 
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'AccordionModel'` | 
+`_titles`        | object           | `{}`             | Titles of the pages
+`_view_name`     | string           | `'AccordionView'` | 
+`box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
+`children`       | array            | `[]`             | 
+`selected_index` | number (integer) | `0`              | 
 
 ### Jupyter.BoundedFloatText
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'FloatTextModel'` | 
-`_view_name`     | string           |          | `'FloatTextView'` | 
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`max`            | number (float)   |          | `100.0`          | Max value
-`min`            | number (float)   |          | `0.0`            | Min value
-`step`           | number (float)   |          | `0.1`            | Minimum step to increment the value (ignored by some views)
-`value`          | number (float)   |          | `0.0`            | Float value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'FloatTextModel'` | 
+`_view_name`     | string           | `'FloatTextView'` | 
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`max`            | number (float)   | `100.0`          | Max value
+`min`            | number (float)   | `0.0`            | Min value
+`step`           | number (float)   | `0.1`            | Minimum step to increment the value (ignored by some views)
+`value`          | number (float)   | `0.0`            | Float value
 
 ### Jupyter.BoundedIntText
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'IntTextModel'` | 
-`_view_name`     | string           |          | `'IntTextView'`  | 
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`max`            | number (integer) |          | `100`            | Max value
-`min`            | number (integer) |          | `0`              | Min value
-`step`           | number (integer) |          | `1`              | Minimum step to increment the value (ignored by some views)
-`value`          | number (integer) |          | `0`              | Int value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'IntTextModel'` | 
+`_view_name`     | string           | `'IntTextView'`  | 
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`max`            | number (integer) | `100`            | Max value
+`min`            | number (integer) | `0`              | Min value
+`step`           | number (integer) | `1`              | Minimum step to increment the value (ignored by some views)
+`value`          | number (integer) | `0`              | Int value
 
 ### Jupyter.Box
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'BoxModel'`     | 
-`_view_name`     | string           |          | `'BoxView'`      | 
-`box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) |          | `''`             | Use a predefined styling for the box.
-`children`       | array            |          | `[]`             | 
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'BoxModel'`     | 
+`_view_name`     | string           | `'BoxView'`      | 
+`box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
+`children`       | array            | `[]`             | 
 
 ### Jupyter.Button
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'ButtonModel'`  | 
-`_view_name`     | string           |          | `'ButtonView'`   | 
-`button_style`   | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) |          | `''`             | Use a predefined styling for the button.
-`description`    | string           |          | `''`             | Button label.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes.
-`icon`           | string           |          | `''`             | Font-awesome icon name, without the 'fa-' prefix.
-`style`          | reference to ButtonStyle widget |          | reference to new instance | 
-`tooltip`        | string           |          | `''`             | Tooltip caption of the button.
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'ButtonModel'`  | 
+`_view_name`     | string           | `'ButtonView'`   | 
+`button_style`   | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the button.
+`description`    | string           | `''`             | Button label.
+`disabled`       | boolean          | `false`          | Enable or disable user changes.
+`icon`           | string           | `''`             | Font-awesome icon name, without the 'fa-' prefix.
+`style`          | reference to ButtonStyle widget | reference to new instance | 
+`tooltip`        | string           | `''`             | Tooltip caption of the button.
 
 ### Jupyter.ButtonStyle
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'ButtonStyleModel'` | 
-`_view_name`     | string           |          | `'StyleView'`    | 
-`button_color`   | string           | *        | `null`           | 
-`font_weight`    | string           |          | `''`             | 
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'ButtonStyleModel'` | 
+`_view_name`     | string           | `'StyleView'`    | 
+`button_color`   | `null` or string | `null`           | 
+`font_weight`    | string           | `''`             | 
 
 ### Jupyter.Checkbox
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'CheckboxModel'` | 
-`_view_name`     | string           |          | `'CheckboxView'` | 
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes.
-`value`          | boolean          |          | `false`          | Bool value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'CheckboxModel'` | 
+`_view_name`     | string           | `'CheckboxView'` | 
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes.
+`value`          | boolean          | `false`          | Bool value
 
 ### Jupyter.ColorPicker
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'ColorPickerModel'` | 
-`_view_name`     | string           |          | `'ColorPickerView'` | 
-`concise`        | boolean          |          | `false`          | 
-`description`    | string           |          | `''`             | Description of the control.
-`value`          | string           |          | `'black'`        | 
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'ColorPickerModel'` | 
+`_view_name`     | string           | `'ColorPickerView'` | 
+`concise`        | boolean          | `false`          | 
+`description`    | string           | `''`             | Description of the control.
+`value`          | string           | `'black'`        | 
 
 ### Jupyter.Controller
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'ControllerModel'` | 
-`_view_name`     | string           |          | `'ControllerView'` | 
-`axes`           | array            |          | `[]`             | 
-`buttons`        | array            |          | `[]`             | 
-`connected`      | boolean          |          | `false`          | 
-`index`          | number (integer) |          | `0`              | 
-`mapping`        | string           |          | `''`             | 
-`name`           | string           |          | `''`             | 
-`timestamp`      | number (float)   |          | `0.0`            | 
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'ControllerModel'` | 
+`_view_name`     | string           | `'ControllerView'` | 
+`axes`           | array            | `[]`             | 
+`buttons`        | array            | `[]`             | 
+`connected`      | boolean          | `false`          | 
+`index`          | number (integer) | `0`              | 
+`mapping`        | string           | `''`             | 
+`name`           | string           | `''`             | 
+`timestamp`      | number (float)   | `0.0`            | 
 
 ### Jupyter.ControllerAxis
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'ControllerAxisModel'` | 
-`_view_name`     | string           |          | `'ControllerAxisView'` | 
-`value`          | number (float)   |          | `0.0`            | 
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'ControllerAxisModel'` | 
+`_view_name`     | string           | `'ControllerAxisView'` | 
+`value`          | number (float)   | `0.0`            | 
 
 ### Jupyter.ControllerButton
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'ControllerButtonModel'` | 
-`_view_name`     | string           |          | `'ControllerButtonView'` | 
-`pressed`        | boolean          |          | `false`          | 
-`value`          | number (float)   |          | `0.0`            | 
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'ControllerButtonModel'` | 
+`_view_name`     | string           | `'ControllerButtonView'` | 
+`pressed`        | boolean          | `false`          | 
+`value`          | number (float)   | `0.0`            | 
 
 ### Jupyter.DatePicker
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'DatePickerModel'` | 
-`_view_name`     | string           |          | `'DatePickerView'` | 
-`description`    | string           |          | `''`             | Description of the control.
-`value`          | Datetime         | *        | `null`           | 
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'DatePickerModel'` | 
+`_view_name`     | string           | `'DatePickerView'` | 
+`description`    | string           | `''`             | Description of the control.
+`value`          | `null` or Datetime | `null`           | 
 
 ### Jupyter.Dropdown
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'DropdownModel'` | 
-`_options_labels` | array            |          | `[]`             | 
-`_view_name`     | string           |          | `'DropdownView'` | 
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`value`          | string (valid option label) |          | `null`           | Selected value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'DropdownModel'` | 
+`_options_labels` | array            | `[]`             | 
+`_view_name`     | string           | `'DropdownView'` | 
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`value`          | string (valid option label) | `null`           | Selected value
 
 ### Jupyter.FloatProgress
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'ProgressModel'` | 
-`_view_name`     | string           |          | `'ProgressView'` | 
-`bar_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | *        | `''`             | Use a predefined styling for the progess bar.
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`max`            | number (float)   |          | `100.0`          | Max value
-`min`            | number (float)   |          | `0.0`            | Min value
-`orientation`    | string (one of `'horizontal'`, `'vertical'`) |          | `'horizontal'`   | Vertical or horizontal.
-`step`           | number (float)   |          | `0.1`            | Minimum step to increment the value (ignored by some views)
-`style`          | reference to ProgressStyle widget |          | reference to new instance | 
-`value`          | number (float)   |          | `0.0`            | Float value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'ProgressModel'` | 
+`_view_name`     | string           | `'ProgressView'` | 
+`bar_style`      | `null` or string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progess bar.
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`max`            | number (float)   | `100.0`          | Max value
+`min`            | number (float)   | `0.0`            | Min value
+`orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
+`step`           | number (float)   | `0.1`            | Minimum step to increment the value (ignored by some views)
+`style`          | reference to ProgressStyle widget | reference to new instance | 
+`value`          | number (float)   | `0.0`            | Float value
 
 ### Jupyter.FloatRangeSlider
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'FloatSliderModel'` | 
-`_range`         | boolean          |          | `true`           | Display a range selector
-`_view_name`     | string           |          | `'FloatSliderView'` | 
-`continuous_update` | boolean          |          | `true`           | Update the value of the widget as the user is sliding the slider.
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`max`            | number (float)   |          | `100.0`          | Max value
-`min`            | number (float)   |          | `0.0`            | Min value
-`orientation`    | string (one of `'horizontal'`, `'vertical'`) |          | `'horizontal'`   | Vertical or horizontal.
-`readout`        | boolean          |          | `true`           | Display the current value of the slider next to it.
-`slider_color`   | string           | *        | `null`           | 
-`step`           | number (float)   |          | `1.0`            | Minimum step that the value can take (ignored by some views)
-`value`          | array            |          | `[0.0, 1.0]`     | Tuple of (lower, upper) bounds
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'FloatSliderModel'` | 
+`_range`         | boolean          | `true`           | Display a range selector
+`_view_name`     | string           | `'FloatSliderView'` | 
+`continuous_update` | boolean          | `true`           | Update the value of the widget as the user is sliding the slider.
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`max`            | number (float)   | `100.0`          | Max value
+`min`            | number (float)   | `0.0`            | Min value
+`orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
+`readout`        | boolean          | `true`           | Display the current value of the slider next to it.
+`slider_color`   | `null` or string | `null`           | 
+`step`           | number (float)   | `1.0`            | Minimum step that the value can take (ignored by some views)
+`value`          | array            | `[0.0, 1.0]`     | Tuple of (lower, upper) bounds
 
 ### Jupyter.FloatSlider
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'FloatSliderModel'` | 
-`_range`         | boolean          |          | `false`          | Display a range selector
-`_view_name`     | string           |          | `'FloatSliderView'` | 
-`continuous_update` | boolean          |          | `true`           | Update the value of the widget as the user is holding the slider.
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`max`            | number (float)   |          | `100.0`          | Max value
-`min`            | number (float)   |          | `0.0`            | Min value
-`orientation`    | string (one of `'horizontal'`, `'vertical'`) |          | `'horizontal'`   | Vertical or horizontal.
-`readout`        | boolean          |          | `true`           | Display the current value of the slider next to it.
-`readout_format` | string           |          | `'.2f'`          | Format for the readout
-`slider_color`   | string           | *        | `null`           | 
-`step`           | number (float)   |          | `0.1`            | Minimum step to increment the value (ignored by some views)
-`value`          | number (float)   |          | `0.0`            | Float value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'FloatSliderModel'` | 
+`_range`         | boolean          | `false`          | Display a range selector
+`_view_name`     | string           | `'FloatSliderView'` | 
+`continuous_update` | boolean          | `true`           | Update the value of the widget as the user is holding the slider.
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`max`            | number (float)   | `100.0`          | Max value
+`min`            | number (float)   | `0.0`            | Min value
+`orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
+`readout`        | boolean          | `true`           | Display the current value of the slider next to it.
+`readout_format` | string           | `'.2f'`          | Format for the readout
+`slider_color`   | `null` or string | `null`           | 
+`step`           | number (float)   | `0.1`            | Minimum step to increment the value (ignored by some views)
+`value`          | number (float)   | `0.0`            | Float value
 
 ### Jupyter.FloatText
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'FloatTextModel'` | 
-`_view_name`     | string           |          | `'FloatTextView'` | 
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`value`          | number (float)   |          | `0.0`            | Float value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'FloatTextModel'` | 
+`_view_name`     | string           | `'FloatTextView'` | 
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`value`          | number (float)   | `0.0`            | Float value
 
 ### Jupyter.HBox
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'HBoxModel'`    | 
-`_view_name`     | string           |          | `'HBoxView'`     | 
-`box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) |          | `''`             | Use a predefined styling for the box.
-`children`       | array            |          | `[]`             | 
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'HBoxModel'`    | 
+`_view_name`     | string           | `'HBoxView'`     | 
+`box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
+`children`       | array            | `[]`             | 
 
 ### Jupyter.HTML
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'HTMLModel'`    | 
-`_view_name`     | string           |          | `'HTMLView'`     | 
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`placeholder`    | string           |          | `'\u200b'`       | Placeholder text to display when nothing has been typed
-`value`          | string           |          | `''`             | String value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'HTMLModel'`    | 
+`_view_name`     | string           | `'HTMLView'`     | 
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
+`value`          | string           | `''`             | String value
 
 ### Jupyter.HTMLMath
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'HTMLMathModel'` | 
-`_view_name`     | string           |          | `'HTMLMathView'` | 
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`placeholder`    | string           |          | `'\u200b'`       | Placeholder text to display when nothing has been typed
-`value`          | string           |          | `''`             | String value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'HTMLMathModel'` | 
+`_view_name`     | string           | `'HTMLMathView'` | 
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
+`value`          | string           | `''`             | String value
 
 ### Jupyter.Image
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_b64value`      | string           |          | `''`             | 
-`_model_name`    | string           |          | `'ImageModel'`   | 
-`_view_name`     | string           |          | `'ImageView'`    | 
-`format`         | string           |          | `'png'`          | 
-`height`         | string           |          | `''`             | 
-`width`          | string           |          | `''`             | 
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_b64value`      | string           | `''`             | 
+`_model_name`    | string           | `'ImageModel'`   | 
+`_view_name`     | string           | `'ImageView'`    | 
+`format`         | string           | `'png'`          | 
+`height`         | string           | `''`             | 
+`width`          | string           | `''`             | 
 
 ### Jupyter.IntProgress
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'ProgressModel'` | 
-`_view_name`     | string           |          | `'ProgressView'` | 
-`bar_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) |          | `''`             | Use a predefined styling for the progess bar.
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`max`            | number (integer) |          | `100`            | Max value
-`min`            | number (integer) |          | `0`              | Min value
-`orientation`    | string (one of `'horizontal'`, `'vertical'`) |          | `'horizontal'`   | Vertical or horizontal.
-`step`           | number (integer) |          | `1`              | Minimum step to increment the value (ignored by some views)
-`style`          | reference to ProgressStyle widget |          | reference to new instance | 
-`value`          | number (integer) |          | `0`              | Int value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'ProgressModel'` | 
+`_view_name`     | string           | `'ProgressView'` | 
+`bar_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progess bar.
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`max`            | number (integer) | `100`            | Max value
+`min`            | number (integer) | `0`              | Min value
+`orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
+`step`           | number (integer) | `1`              | Minimum step to increment the value (ignored by some views)
+`style`          | reference to ProgressStyle widget | reference to new instance | 
+`value`          | number (integer) | `0`              | Int value
 
 ### Jupyter.IntRangeSlider
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'IntSliderModel'` | 
-`_range`         | boolean          |          | `true`           | Display a range selector
-`_view_name`     | string           |          | `'IntSliderView'` | 
-`continuous_update` | boolean          |          | `true`           | Update the value of the widget as the user is sliding the slider.
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`max`            | number (integer) |          | `100`            | Max value
-`min`            | number (integer) |          | `0`              | Min value
-`orientation`    | string (one of `'horizontal'`, `'vertical'`) |          | `'horizontal'`   | Vertical or horizontal.
-`readout`        | boolean          |          | `true`           | Display the current value of the slider next to it.
-`slider_color`   | string           | *        | `null`           | 
-`step`           | number (integer) |          | `1`              | Minimum step that the value can take (ignored by some views)
-`value`          | array            |          | `[0, 1]`         | Tuple of (lower, upper) bounds
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'IntSliderModel'` | 
+`_range`         | boolean          | `true`           | Display a range selector
+`_view_name`     | string           | `'IntSliderView'` | 
+`continuous_update` | boolean          | `true`           | Update the value of the widget as the user is sliding the slider.
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`max`            | number (integer) | `100`            | Max value
+`min`            | number (integer) | `0`              | Min value
+`orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
+`readout`        | boolean          | `true`           | Display the current value of the slider next to it.
+`slider_color`   | `null` or string | `null`           | 
+`step`           | number (integer) | `1`              | Minimum step that the value can take (ignored by some views)
+`value`          | array            | `[0, 1]`         | Tuple of (lower, upper) bounds
 
 ### Jupyter.IntSlider
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'IntSliderModel'` | 
-`_range`         | boolean          |          | `false`          | Display a range selector
-`_view_name`     | string           |          | `'IntSliderView'` | 
-`continuous_update` | boolean          |          | `true`           | Update the value of the widget as the user is holding the slider.
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`max`            | number (integer) |          | `100`            | Max value
-`min`            | number (integer) |          | `0`              | Min value
-`orientation`    | string (one of `'horizontal'`, `'vertical'`) |          | `'horizontal'`   | Vertical or horizontal.
-`readout`        | boolean          |          | `true`           | Display the current value of the slider next to it.
-`readout_format` | string           |          | `'d'`            | Format for the readout
-`step`           | number (integer) |          | `1`              | Minimum step to increment the value (ignored by some views)
-`style`          | reference to SliderStyle widget |          | reference to new instance | 
-`value`          | number (integer) |          | `0`              | Int value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'IntSliderModel'` | 
+`_range`         | boolean          | `false`          | Display a range selector
+`_view_name`     | string           | `'IntSliderView'` | 
+`continuous_update` | boolean          | `true`           | Update the value of the widget as the user is holding the slider.
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`max`            | number (integer) | `100`            | Max value
+`min`            | number (integer) | `0`              | Min value
+`orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
+`readout`        | boolean          | `true`           | Display the current value of the slider next to it.
+`readout_format` | string           | `'d'`            | Format for the readout
+`step`           | number (integer) | `1`              | Minimum step to increment the value (ignored by some views)
+`style`          | reference to SliderStyle widget | reference to new instance | 
+`value`          | number (integer) | `0`              | Int value
 
 ### Jupyter.IntText
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'IntTextModel'` | 
-`_view_name`     | string           |          | `'IntTextView'`  | 
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`value`          | number (integer) |          | `0`              | Int value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'IntTextModel'` | 
+`_view_name`     | string           | `'IntTextView'`  | 
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`value`          | number (integer) | `0`              | Int value
 
 ### Jupyter.Label
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'LabelModel'`   | 
-`_view_name`     | string           |          | `'LabelView'`    | 
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`placeholder`    | string           |          | `'\u200b'`       | Placeholder text to display when nothing has been typed
-`value`          | string           |          | `''`             | String value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'LabelModel'`   | 
+`_view_name`     | string           | `'LabelView'`    | 
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
+`value`          | string           | `''`             | String value
 
 ### Jupyter.Play
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'PlayModel'`    | 
-`_playing`       | boolean          |          | `false`          | 
-`_view_name`     | string           |          | `'PlayView'`     | 
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`interval`       | number (integer) |          | `100`            | 
-`max`            | number (integer) |          | `100`            | Max value
-`min`            | number (integer) |          | `0`              | Min value
-`step`           | number (integer) |          | `1`              | Minimum step to increment the value (ignored by some views)
-`value`          | number (integer) |          | `0`              | Int value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'PlayModel'`    | 
+`_playing`       | boolean          | `false`          | 
+`_view_name`     | string           | `'PlayView'`     | 
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`interval`       | number (integer) | `100`            | 
+`max`            | number (integer) | `100`            | Max value
+`min`            | number (integer) | `0`              | Min value
+`step`           | number (integer) | `1`              | Minimum step to increment the value (ignored by some views)
+`value`          | number (integer) | `0`              | Int value
 
 ### Jupyter.ProgressStyle
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'ProgressStyleModel'` | 
-`_view_name`     | string           |          | `'StyleView'`    | 
-`bar_color`      | string           | *        | `null`           | 
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'ProgressStyleModel'` | 
+`_view_name`     | string           | `'StyleView'`    | 
+`bar_color`      | `null` or string | `null`           | 
 
 ### Jupyter.RadioButtons
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'RadioButtonsModel'` | 
-`_options_labels` | array            |          | `[]`             | 
-`_view_name`     | string           |          | `'RadioButtonsView'` | 
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`value`          | string (valid option label) |          | `null`           | Selected value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'RadioButtonsModel'` | 
+`_options_labels` | array            | `[]`             | 
+`_view_name`     | string           | `'RadioButtonsView'` | 
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`value`          | string (valid option label) | `null`           | Selected value
 
 ### Jupyter.Select
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'SelectModel'`  | 
-`_options_labels` | array            |          | `[]`             | 
-`_view_name`     | string           |          | `'SelectView'`   | 
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`value`          | string (valid option label) |          | `null`           | Selected value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'SelectModel'`  | 
+`_options_labels` | array            | `[]`             | 
+`_view_name`     | string           | `'SelectView'`   | 
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`value`          | string (valid option label) | `null`           | Selected value
 
 ### Jupyter.SelectMultiple
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'SelectMultipleModel'` | 
-`_options_labels` | array            |          | `[]`             | 
-`_view_name`     | string           |          | `'SelectMultipleView'` | 
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`value`          | array            |          | `[]`             | Selected values
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'SelectMultipleModel'` | 
+`_options_labels` | array            | `[]`             | 
+`_view_name`     | string           | `'SelectMultipleView'` | 
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`value`          | array            | `[]`             | Selected values
 
 ### Jupyter.SelectionSlider
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'SelectionSliderModel'` | 
-`_options_labels` | array            |          | `[]`             | 
-`_view_name`     | string           |          | `'SelectionSliderView'` | 
-`continuous_update` | boolean          |          | `true`           | Update the value of the widget as the user is holding the slider.
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`orientation`    | string (one of `'horizontal'`, `'vertical'`) |          | `'horizontal'`   | Vertical or horizontal.
-`readout`        | boolean          |          | `true`           | Display the current selected label next to the slider
-`value`          | string (valid option label) |          | `null`           | Selected value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'SelectionSliderModel'` | 
+`_options_labels` | array            | `[]`             | 
+`_view_name`     | string           | `'SelectionSliderView'` | 
+`continuous_update` | boolean          | `true`           | Update the value of the widget as the user is holding the slider.
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
+`readout`        | boolean          | `true`           | Display the current selected label next to the slider
+`value`          | string (valid option label) | `null`           | Selected value
 
 ### Jupyter.SliderStyle
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'SliderStyleModel'` | 
-`_view_name`     | string           |          | `'StyleView'`    | 
-`handle_color`   | string           | *        | `null`           | 
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'SliderStyleModel'` | 
+`_view_name`     | string           | `'StyleView'`    | 
+`handle_color`   | `null` or string | `null`           | 
 
 ### Jupyter.Tab
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'TabModel'`     | 
-`_titles`        | object           |          | `{}`             | Titles of the pages
-`_view_name`     | string           |          | `'TabView'`      | 
-`box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) |          | `''`             | Use a predefined styling for the box.
-`children`       | array            |          | `[]`             | 
-`selected_index` | number (integer) |          | `0`              | 
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'TabModel'`     | 
+`_titles`        | object           | `{}`             | Titles of the pages
+`_view_name`     | string           | `'TabView'`      | 
+`box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
+`children`       | array            | `[]`             | 
+`selected_index` | number (integer) | `0`              | 
 
 ### Jupyter.Text
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'TextModel'`    | 
-`_view_name`     | string           |          | `'TextView'`     | 
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`placeholder`    | string           |          | `'\u200b'`       | Placeholder text to display when nothing has been typed
-`value`          | string           |          | `''`             | String value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'TextModel'`    | 
+`_view_name`     | string           | `'TextView'`     | 
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
+`value`          | string           | `''`             | String value
 
 ### Jupyter.Textarea
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'TextareaModel'` | 
-`_view_name`     | string           |          | `'TextareaView'` | 
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`placeholder`    | string           |          | `'\u200b'`       | Placeholder text to display when nothing has been typed
-`rows`           | number (integer) | *        | `null`           | 
-`value`          | string           |          | `''`             | String value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'TextareaModel'` | 
+`_view_name`     | string           | `'TextareaView'` | 
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
+`rows`           | `null` or number (integer) | `null`           | 
+`value`          | string           | `''`             | String value
 
 ### Jupyter.ToggleButton
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'ToggleButtonModel'` | 
-`_view_name`     | string           |          | `'ToggleButtonView'` | 
-`button_style`   | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) |          | `''`             | Use a predefined styling for the button.
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes.
-`icon`           | string           |          | `''`             | Font-awesome icon.
-`tooltip`        | string           |          | `''`             | Tooltip caption of the toggle button.
-`value`          | boolean          |          | `false`          | Bool value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'ToggleButtonModel'` | 
+`_view_name`     | string           | `'ToggleButtonView'` | 
+`button_style`   | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the button.
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes.
+`icon`           | string           | `''`             | Font-awesome icon.
+`tooltip`        | string           | `''`             | Tooltip caption of the toggle button.
+`value`          | boolean          | `false`          | Bool value
 
 ### Jupyter.ToggleButtons
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'ToggleButtonsModel'` | 
-`_options_labels` | array            |          | `[]`             | 
-`_view_name`     | string           |          | `'ToggleButtonsView'` | 
-`button_style`   | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | *        | `''`             | Use a predefined styling for the buttons.
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes
-`icons`          | array            |          | `[]`             | 
-`tooltips`       | array            |          | `[]`             | 
-`value`          | string (valid option label) |          | `null`           | Selected value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'ToggleButtonsModel'` | 
+`_options_labels` | array            | `[]`             | 
+`_view_name`     | string           | `'ToggleButtonsView'` | 
+`button_style`   | `null` or string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the buttons.
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`icons`          | array            | `[]`             | 
+`tooltips`       | array            | `[]`             | 
+`value`          | string (valid option label) | `null`           | Selected value
 
 ### Jupyter.VBox
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'VBoxModel'`    | 
-`_view_name`     | string           |          | `'VBoxView'`     | 
-`box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) |          | `''`             | Use a predefined styling for the box.
-`children`       | array            |          | `[]`             | 
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'VBoxModel'`    | 
+`_view_name`     | string           | `'VBoxView'`     | 
+`box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
+`children`       | array            | `[]`             | 
 
 ### Jupyter.Valid
 
-Attribute        | Type             | Nullable | Default          | Help
------------------|------------------|----------|------------------|----
-`_model_name`    | string           |          | `'ValidModel'`   | 
-`_view_name`     | string           |          | `'ValidView'`    | 
-`description`    | string           |          | `''`             | Description of the control.
-`disabled`       | boolean          |          | `false`          | Enable or disable user changes.
-`readout`        | string           |          | `'Invalid'`      | Message displayed when the value is False
-`value`          | boolean          |          | `false`          | Bool value
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_name`    | string           | `'ValidModel'`   | 
+`_view_name`     | string           | `'ValidView'`    | 
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes.
+`readout`        | string           | `'Invalid'`      | Message displayed when the value is False
+`value`          | boolean          | `false`          | Bool value
