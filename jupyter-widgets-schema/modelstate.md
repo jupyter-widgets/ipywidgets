@@ -503,9 +503,8 @@ Here is code to automate pulling out the traits:
 ```python
 import ipywidgets as widgets
 from ipywidgets import *
-widgets.Widget.widget_types
 
-from traitlets import CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat, Float, CInt, Instance
+from traitlets import CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat, Float, CInt, Instance, Undefined
 from ipywidgets import Color
 def typing(x):
     if isinstance(x, CaselessStrEnum):
@@ -529,14 +528,18 @@ def typing(x):
 
 def jsdefault(t):
     x = t.default_value
-    if isinstance(t, Instance) and issubclass(t.klass, widgets.Widget):
-        return 'reference to new instance'
+    if isinstance(t, Instance):
+        x = t.make_dynamic_default()
+        if issubclass(t.klass, widgets.Widget):
+            return 'reference to new instance'
     if x is True:
         return '`true`'
     elif x is False:
         return '`false`'
     elif x is None:
         return '`null`'
+    elif isinstance(x, tuple):
+        return '`{0}`'.format(list(x))
     else:
         return '`%s`'%t.default_value_repr()
 
@@ -570,7 +573,7 @@ Attribute        | Type             | Nullable | Default          | Help
 `_titles`        | Dict             |          | `{}`             | Titles of the pages
 `_view_name`     | string           |          | `'AccordionView'` | 
 `box_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the box.
-`children`       | list             |          | `()`             | 
+`children`       | list             |          | `[]`             | 
 `selected_index` | number (integer) |          | `0`              | 
 
 ### Jupyter.BoundedFloatText
@@ -606,7 +609,7 @@ Attribute        | Type             | Nullable | Default          | Help
 `_model_name`    | string           |          | `'BoxModel'`     | 
 `_view_name`     | string           |          | `'BoxView'`      | 
 `box_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the box.
-`children`       | list             |          | `()`             | 
+`children`       | list             |          | `[]`             | 
 
 ### Jupyter.Button
 
@@ -695,7 +698,7 @@ Attribute        | Type             | Nullable | Default          | Help
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
 `_model_name`    | string           |          | `'DropdownModel'` | 
-`_options_labels` | list             |          | `()`             | 
+`_options_labels` | list             |          | `[]`             | 
 `_view_name`     | string           |          | `'DropdownView'` | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
@@ -733,7 +736,7 @@ Attribute        | Type             | Nullable | Default          | Help
 `readout`        | bool             |          | `true`           | Display the current value of the slider next to it.
 `slider_color`   | string           | *        | `null`           | 
 `step`           | number (float)   |          | `1.0`            | Minimum step that the value can take (ignored by some views)
-`value`          | list             |          | `(0.0, 1.0)`     | Tuple of (lower, upper) bounds
+`value`          | list             |          | `[0.0, 1.0]`     | Tuple of (lower, upper) bounds
 
 ### Jupyter.FloatSlider
 
@@ -771,7 +774,7 @@ Attribute        | Type             | Nullable | Default          | Help
 `_model_name`    | string           |          | `'HBoxModel'`    | 
 `_view_name`     | string           |          | `'HBoxView'`     | 
 `box_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the box.
-`children`       | list             |          | `()`             | 
+`children`       | list             |          | `[]`             | 
 
 ### Jupyter.HTML
 
@@ -838,7 +841,7 @@ Attribute        | Type             | Nullable | Default          | Help
 `readout`        | bool             |          | `true`           | Display the current value of the slider next to it.
 `slider_color`   | string           | *        | `null`           | 
 `step`           | number (integer) |          | `1`              | Minimum step that the value can take (ignored by some views)
-`value`          | list             |          | `(0, 1)`         | Tuple of (lower, upper) bounds
+`value`          | list             |          | `[0, 1]`         | Tuple of (lower, upper) bounds
 
 ### Jupyter.IntSlider
 
@@ -908,7 +911,7 @@ Attribute        | Type             | Nullable | Default          | Help
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
 `_model_name`    | string           |          | `'RadioButtonsModel'` | 
-`_options_labels` | list             |          | `()`             | 
+`_options_labels` | list             |          | `[]`             | 
 `_view_name`     | string           |          | `'RadioButtonsView'` | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
@@ -919,7 +922,7 @@ Attribute        | Type             | Nullable | Default          | Help
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
 `_model_name`    | string           |          | `'SelectModel'`  | 
-`_options_labels` | list             |          | `()`             | 
+`_options_labels` | list             |          | `[]`             | 
 `_view_name`     | string           |          | `'SelectView'`   | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
@@ -930,18 +933,18 @@ Attribute        | Type             | Nullable | Default          | Help
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
 `_model_name`    | string           |          | `'SelectMultipleModel'` | 
-`_options_labels` | list             |          | `()`             | 
+`_options_labels` | list             |          | `[]`             | 
 `_view_name`     | string           |          | `'SelectMultipleView'` | 
 `description`    | string           |          | `''`             | Description of the control.
 `disabled`       | bool             |          | `false`          | Enable or disable user changes
-`value`          | list             |          | `()`             | Selected values
+`value`          | list             |          | `[]`             | Selected values
 
 ### Jupyter.SelectionSlider
 
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
 `_model_name`    | string           |          | `'SelectionSliderModel'` | 
-`_options_labels` | list             |          | `()`             | 
+`_options_labels` | list             |          | `[]`             | 
 `_view_name`     | string           |          | `'SelectionSliderView'` | 
 `continuous_update` | bool             |          | `true`           | Update the value of the widget as the user is holding the slider.
 `description`    | string           |          | `''`             | Description of the control.
@@ -966,7 +969,7 @@ Attribute        | Type             | Nullable | Default          | Help
 `_titles`        | Dict             |          | `{}`             | Titles of the pages
 `_view_name`     | string           |          | `'TabView'`      | 
 `box_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the box.
-`children`       | list             |          | `()`             | 
+`children`       | list             |          | `[]`             | 
 `selected_index` | number (integer) |          | `0`              | 
 
 ### Jupyter.Text
@@ -1010,7 +1013,7 @@ Attribute        | Type             | Nullable | Default          | Help
 Attribute        | Type             | Nullable | Default          | Help
 -----------------|------------------|----------|------------------|----
 `_model_name`    | string           |          | `'ToggleButtonsModel'` | 
-`_options_labels` | list             |          | `()`             | 
+`_options_labels` | list             |          | `[]`             | 
 `_view_name`     | string           |          | `'ToggleButtonsView'` | 
 `button_style`   | string enum, one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''` | *        | `''`             | Use a predefined styling for the buttons.
 `description`    | string           |          | `''`             | Description of the control.
@@ -1026,7 +1029,7 @@ Attribute        | Type             | Nullable | Default          | Help
 `_model_name`    | string           |          | `'VBoxModel'`    | 
 `_view_name`     | string           |          | `'VBoxView'`     | 
 `box_style`      | string enum, one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''` |          | `''`             | Use a predefined styling for the box.
-`children`       | list             |          | `()`             | 
+`children`       | list             |          | `[]`             | 
 
 ### Jupyter.Valid
 
