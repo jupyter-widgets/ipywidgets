@@ -17,7 +17,7 @@ from .valuewidget import ValueWidget
 from .widget_core import CoreWidget
 from .widget import register
 from traitlets import (Unicode, Bool, Any, Dict, TraitError, CaselessStrEnum,
-                       Tuple, List, Union, observe, validate)
+                       Tuple, List, Union, observe, validate, default)
 from ipython_genutils.py3compat import unicode_type
 
 def _value_to_label(value, obj):
@@ -77,6 +77,10 @@ class _Selection(LabeledWidget, ValueWidget, CoreWidget):
 
     The keys are also available as _options_labels.
     """)
+    @default('options')
+    def _options_default(self):
+        return []
+
     _options_dict = Dict(read_only=True)
     _options_labels = Tuple(read_only=True).tag(sync=True)
     _options_values = Tuple(read_only=True)
