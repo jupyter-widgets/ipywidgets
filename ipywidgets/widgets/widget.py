@@ -180,8 +180,10 @@ def register(key=None):
     this key regardless of the language of the kernel.
     """
     def wrap(widget):
-        l = key if key is not None else widget.__module__ + widget.__name__
-        Widget.widget_types[l] = widget
+        class_traits = widget.class_traits()
+        module = Widget.widget_types.setdefault(class_traits['_model_module'], {})
+        version = module.setdefault(class_traits['_model_module_version'], {})
+        version[class_traits['_model_name']] = widget
         return widget
     return wrap
 
@@ -192,6 +194,7 @@ class Widget(LoggingConfigurable):
     #-------------------------------------------------------------------------
     _widget_construction_callback = None
     widgets = {}
+    # widget_types is a registry of widgets by model module, version, and name: widget_types[model_module][model_version][model_name] gives you a widget.
     widget_types = {}
 
     @staticmethod
@@ -235,12 +238,12 @@ class Widget(LoggingConfigurable):
     #-------------------------------------------------------------------------
     # Traits
     #-------------------------------------------------------------------------
-    _model_module = Unicode('jupyter-js-widgets',
-        help="A JavaScript module name in which to find _model_name.").tag(sync=True)
+    _model_module = Unicode('Jupyter',
+        help="The model module specification namespace.", read_only=True).tag(sync=True)
     _model_name = Unicode('WidgetModel',
-        help="Name of the model object in the front-end.").tag(sync=True)
-    _model_module_version = Unicode('*',
-        help="A semver requirement for the model module version.").tag(sync=True)
+        help="Name of the model.", read_only=True).tag(sync=True)
+    _model_module_version = Int(0,
+        help="The version number of the model specification.", read_only=True).tag(sync=True)
     _view_module = Unicode(None, allow_none=True,
         help="A JavaScript module in which to find _view_name.").tag(sync=True)
     _view_name = Unicode(None, allow_none=True,

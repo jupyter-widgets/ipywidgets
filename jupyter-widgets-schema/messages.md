@@ -260,7 +260,7 @@ When a widget is instantiated in either the kernel or the frontend, it creates a
 }
 ```
 
-The model instantiated on the other side is determined by the `model_name`, `model_module`, and `model_version` keys in the state. These are shorthand for a model attribute specification. The version is a semver range, and the companion model will have a version in the semver range. Any unspecified keys will be take on the default values given in the relevant model specification.
+The model instantiated on the other side is determined by the `model_name`, `model_module`, and `model_version` keys `data`. These are shorthand for a model attribute specification. The version is a semver range, and the companion model will have a version in the semver range. Any unspecified keys will be take on the default values given in the relevant model specification.
 
 See the [Model State](modelstate.md) documentation for the serialized state for core Jupyter widgets.
 
