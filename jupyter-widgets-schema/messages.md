@@ -231,6 +231,36 @@ While in version 1, binary buffers could only be top level attributes of the `st
 
 The sync update event from the frontend to the kernel was restructured to have the same field names as the event from the kernel to the frontend, namely the method field is `'update'` and the state data is in the `state` attribute.
 
+## Widget state
+
+The core idea of widgets is that some state object is automatically synced back and forth between a kernel object and a frontend object. Several fields are assumed to be in every state object:
+
+* `_model_module`: The namespace the model name lives in
+* `_model_module_version`: the version of the model specification as a semver range
+* `_model_name`: the name of the model in the specification
+* `_view_module`: The package the view lives in
+* `_view_module_version`: the valid versions of the view package as a semver range
+* `_view_name`: the name of the view to be used
+* `msg_throttle`: an integer - the number of messages allowed 'in flight' for throttling purposes
+
+The `_model_*` and `_view_*` fields are assumed immutable (set at initialization, and never changed). The `msg_throttle` field can be changed.
+
+### Rationale
+
+The model specification for a widget (i.e., the list of model traits) is implemented at least two places: the kernel and the frontend. Because we want different frontend and different kernel-side implementations to exist, it makes sense to separate out a model state specification from any specific package version. Views are a bit more complicated. Different frontends may implement views that function similarly and should be substituted. However, backends will not be implementing the views.
+
+For many third-party widget libraries, the model specification and version will be the implementation. Likewise for the views. So perhaps it is okay to say that the model and view "module" is just the frontend package name, and if someone implements another version of the jupyter core widgets, they would just register their version as `jupyter-js-widgets` or something.
+
+The model version should definitely be different than the `jupyter-js-widget` version number. We should be able to increment the `jupyter-js-widget` version number (based on the view changing) without incrementing the model version. Furthermore, there should be an automatic check, so that the highest available and allowed version that supports the given model specification is used. For that reason, I suppose that most of the time a `_view_model_version` will be `'*'` (i.e., pick the highest version that supports the given model version number).
+
+Also, I think the model version should only support the major part of the version number (and consequently be an integer). Any change in the actual attributes of the models (whether adding, deleting, or even changing intent of the attribute) should be a breaking change in the model specification.
+
+So...
+Model specifications should live independent of package versions (i.e., we should be able to upgrade a package implementation without changing the model spec the package implements). Also, the default view module version should be `'*'`, which means pick the latest version that implements that particular model specification. Each view implementation will have hardcoded the model module, name, and version it supports.
+
+If you want to load a specific view implementation, the module indicates a specific package, and the version indicates a specific semver range.
+
+
 ## Implementating the Jupyter widgets protocol in the kernel
 
 In this section, we concentrate on implementing the Jupyter widget messaging protocol in the kernel.
@@ -251,16 +281,15 @@ When a widget is instantiated in either the kernel or the frontend, it creates a
   'comm_id' : 'u-u-i-d',
   'target_name' : 'jupyter.widget',
   'data' : {
-    'model_name': string,
-    'model_module': string,
-    'model_version': string,
     'state': { <dictionary of widget state> },
     'buffer_paths': [ <list with paths corresponding to the binary buffers> ]
   }
 }
 ```
 
-The model instantiated on the other side is determined by the `model_name`, `model_module`, and `model_version` keys `data`. These are shorthand for a model attribute specification. The version is a semver range, and the companion model will have a version in the semver range. Any unspecified keys will be take on the default values given in the relevant model specification.
+The model instantiated on the other side is determined by the `_model_name`, `_model_module`, and `_model_version` keys in `state`. These are shorthand for a model attribute specification. The version is a semver range, and the companion model will have a version in the semver range. Any unspecified keys will be take on the default values given in the relevant model specification.
+
+Any view for the model will check to make sure that it understands the version of the model specification. The view fields can be set when the model is initialized.
 
 See the [Model State](modelstate.md) documentation for the serialized state for core Jupyter widgets.
 
