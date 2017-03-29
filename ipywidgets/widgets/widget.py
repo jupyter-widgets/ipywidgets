@@ -8,7 +8,6 @@ in the IPython notebook front-end.
 from contextlib import contextmanager
 import collections
 import sys
-import semver
 
 from IPython.core.getipython import get_ipython
 from ipykernel.comm import Comm

@@ -118,7 +118,6 @@ install_requires = setuptools_args['install_requires'] = [
     # interpreter, to allow ipywidgets to be
     # installed on bare kernels.
     'widgetsnbextension~=2.0.0',
-    'semver',
 ]
 
 extras_require = setuptools_args['extras_require'] = {
