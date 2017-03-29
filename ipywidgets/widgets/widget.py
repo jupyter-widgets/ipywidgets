@@ -8,6 +8,7 @@ in the IPython notebook front-end.
 from contextlib import contextmanager
 import collections
 import sys
+import semver
 
 from IPython.core.getipython import get_ipython
 from ipykernel.comm import Comm
@@ -175,26 +176,33 @@ def _show_traceback(method):
 def register(key=None):
     """Returns a decorator registering a widget class in the widget registry.
 
-    If no key is provided, the class name is used as a key.
-    A key is provided for each core Jupyter widget so that the frontend can use
-    this key regardless of the language of the kernel.
+    widget_types is a registry of widgets by model module, version, and name:
+    widget_types[model_module][model_module_version][model_name][view_module][view_module_versin][view_name]
+
+    The version numbers are semver ranges. The version number coming from the client will be the specific versions on the client side. We use the python semver module to filter out versions that don't match the specific version from the client, and then take the first version result.
     """
     def wrap(widget):
-        class_traits = widget.class_traits()
-        module = Widget.widget_types.setdefault(class_traits['_model_module'], {})
-        version = module.setdefault(class_traits['_model_module_version'], {})
-        version[class_traits['_model_name']] = widget
+        w = widget.class_traits()
+        model_module = Widget.widget_types.setdefault(w['_model_module'], {})
+        model_version = model_module.setdefault(w['_model_module_version'], {})
+        model_name = model_version.setdefault(w['_model_name'], {})
+        view_module = model_name.setdefault(w['_view_module'], {})
+        view_version = view_module.setdefault(w['_view_module_version'], {})
+        view_version[w['_view_name']] = widget
         return widget
     return wrap
-
 
 class Widget(LoggingConfigurable):
     #-------------------------------------------------------------------------
     # Class attributes
     #-------------------------------------------------------------------------
     _widget_construction_callback = None
+
+    # widgets is a dictionary of all active widget objects
     widgets = {}
-    # widget_types is a registry of widgets by model module, version, and name: widget_types[model_module][model_version][model_name] gives you a widget.
+
+    # widget_types is a registry of widgets by module, version, and name:
+    # widget_types[model_module][model_module_version][model_name][view_module][view_module_versin][view_name]
     widget_types = {}
 
     @staticmethod
@@ -214,12 +222,20 @@ class Widget(LoggingConfigurable):
     @staticmethod
     def handle_comm_opened(comm, msg):
         """Static method, called when a widget is constructed."""
-        class_name = str(msg['content']['data']['widget_class'])
-        if class_name in Widget.widget_types:
-            widget_class = Widget.widget_types[class_name]
-        else:
-            widget_class = import_item(class_name)
+        w = msg['content']['data']['state']
+
+        # Find the widget class to instantiate in the registered widgets
+        # Todo: wrap this in try or .get() to do error handling
+        module_versions = Widget.widget_types[w['_model_module']]
+        model_names = next(v for k,v in module_versions.items()
+                           if semver.match(w['_model_module_version'], k))
+        view_modules = model_names[w['_model_name']]
+        view_versions = view_modules[w['_view_module']]
+        view_names = next(v for k,v in view_versions.items()
+                          if semver.match(w['_view_module_version'], k))
+        widget_class = view_names[w['_view_name']]
         widget = widget_class(comm=comm)
+        widget.set_state(w)
 
     @staticmethod
     def get_manager_state(drop_defaults=False):
@@ -238,18 +254,18 @@ class Widget(LoggingConfigurable):
     #-------------------------------------------------------------------------
     # Traits
     #-------------------------------------------------------------------------
-    _model_module = Unicode('Jupyter',
+    _model_module = Unicode(None,
         help="The model module specification namespace.", read_only=True).tag(sync=True)
     _model_name = Unicode('WidgetModel',
         help="Name of the model.", read_only=True).tag(sync=True)
-    _model_module_version = Int(0,
+    _model_module_version = Unicode('*',
         help="The version number of the model specification.", read_only=True).tag(sync=True)
     _view_module = Unicode(None, allow_none=True,
         help="A JavaScript module in which to find _view_name.").tag(sync=True)
     _view_name = Unicode(None, allow_none=True,
         help="Name of the view object.").tag(sync=True)
     _view_module_version = Unicode('*',
-        help="A semver requirement for the view module version.").tag(sync=True)
+        help="A semver requirement for the view module.").tag(sync=True)
     comm = Instance('ipykernel.comm.Comm', allow_none=True)
 
     msg_throttle = Int(1, help="""Maximum number of msgs the front-end can send before receiving an idle msg from the back-end.""").tag(sync=True)
