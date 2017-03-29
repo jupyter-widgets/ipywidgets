@@ -260,6 +260,9 @@ class Widget(LoggingConfigurable):
                                                w['_view_module_version'],
                                                w['_view_name'])
         widget = widget_class(comm=comm)
+        # The view_module_version is the specific version in the frontend. We set it to the default semver
+        # range so that when it is saved, it is not tied to the specific version.
+        w['_view_module_version'] = widget_class.class_traits()['_view_module_version'].default_value
         widget.set_state(w)
 
     @staticmethod
