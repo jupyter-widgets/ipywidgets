@@ -14,7 +14,7 @@ from .trait_types import Color
 from traitlets import Unicode, Bool
 
 
-@register('Jupyter.ColorPicker')
+@register
 class ColorPicker(LabeledWidget, ValueWidget, CoreWidget):
     value = Color('black').tag(sync=True)
     concise = Bool().tag(sync=True)

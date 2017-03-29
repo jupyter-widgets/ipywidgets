@@ -41,14 +41,14 @@ class Box(DOMWidget, CoreWidget):
             child._handle_displayed()
 
 
-@register('Jupyter.VBox')
+@register
 class VBox(Box):
     """Displays multiple widgets vertically using the flexible box model."""
     _model_name = Unicode('VBoxModel').tag(sync=True)
     _view_name = Unicode('VBoxView').tag(sync=True)
 
 
-@register('Jupyter.HBox')
+@register
 class HBox(Box):
     """Displays multiple widgets horizontally using the flexible box model."""
     _model_name = Unicode('HBoxModel').tag(sync=True)

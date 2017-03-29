@@ -17,7 +17,7 @@ from traitlets import Unicode, Bool, CaselessStrEnum, Instance, validate, defaul
 import warnings
 
 
-@register('Jupyter.ButtonStyle')
+@register
 class ButtonStyle(Style, CoreWidget):
     """Button style widget."""
     _model_name = Unicode('ButtonStyleModel').tag(sync=True)
@@ -25,7 +25,7 @@ class ButtonStyle(Style, CoreWidget):
     font_weight = Unicode().tag(sync=True)
 
 
-@register('Jupyter.Button')
+@register
 class Button(DOMWidget, CoreWidget):
     """Button widget.
 

@@ -14,7 +14,7 @@ from .trait_types import Datetime, datetime_serialization
 from traitlets import Unicode
 
 
-@register('Jupyter.DatePicker')
+@register
 class DatePicker(LabeledWidget, ValueWidget, CoreWidget):
     value = Datetime(None, allow_none=True).tag(sync=True, **datetime_serialization)
 

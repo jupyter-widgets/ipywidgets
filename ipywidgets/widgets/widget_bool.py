@@ -28,7 +28,7 @@ class _Bool(LabeledWidget, ValueWidget, CoreWidget):
     _model_name = Unicode('BoolModel').tag(sync=True)
 
 
-@register('Jupyter.Checkbox')
+@register
 class Checkbox(_Bool):
     """Displays a boolean `value` in the form of a checkbox.
 
@@ -43,7 +43,7 @@ class Checkbox(_Bool):
     _model_name = Unicode('CheckboxModel').tag(sync=True)
 
 
-@register('Jupyter.ToggleButton')
+@register
 class ToggleButton(_Bool):
     """Displays a boolean `value` in the form of a toggle button.
 
@@ -69,7 +69,7 @@ class ToggleButton(_Bool):
         help="""Use a predefined styling for the button.""").tag(sync=True)
 
 
-@register('Jupyter.Valid')
+@register
 class Valid(_Bool):
     """Displays a boolean `value` in the form of a green check (True / valid)
     or a red cross (False / invalid).

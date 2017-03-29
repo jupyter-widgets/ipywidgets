@@ -53,14 +53,14 @@ class _SelectionContainer(Box, CoreWidget):
             return None
 
 
-@register('Jupyter.Accordion')
+@register
 class Accordion(_SelectionContainer):
     """Displays children each on a separate accordion page."""
     _view_name = Unicode('AccordionView').tag(sync=True)
     _model_name = Unicode('AccordionModel').tag(sync=True)
 
 
-@register('Jupyter.Tab')
+@register
 class Tab(_SelectionContainer):
     """Displays children each on a separate accordion tab."""
     _view_name = Unicode('TabView').tag(sync=True)

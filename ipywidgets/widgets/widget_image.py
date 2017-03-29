@@ -15,7 +15,7 @@ from .widget import register
 from traitlets import Unicode, CUnicode, Bytes, observe
 
 
-@register('Jupyter.Image')
+@register
 class Image(DOMWidget, ValueWidget, CoreWidget):
     """Displays an image as a widget.
 
