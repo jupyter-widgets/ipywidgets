@@ -247,19 +247,9 @@ The `_model_*` and `_view_*` fields are assumed immutable (set at initialization
 
 ### Rationale
 
-The model specification for a widget (i.e., the list of model traits) is implemented at least two places: the kernel and the frontend. Because we want different frontend and different kernel-side implementations to exist, it makes sense to separate out a model state specification from any specific package version. Views are a bit more complicated. Different frontends may implement views that function similarly and should be substituted. However, backends will not be implementing the views.
+The model specification for a widget (i.e., the list of model traits) is implemented at least two places: the kernel and the frontend. Because we want different frontend and kernel-side implementations to exist, the model state specification is not tied to any particular package name or version. Typically the default view module version will be '*', indicating that any view that understands the relevant model specification can be used.
 
-For many third-party widget libraries, the model specification and version will be the implementation. Likewise for the views. So perhaps it is okay to say that the model and view "module" is just the frontend package name, and if someone implements another version of the jupyter core widgets, they would just register their version as `jupyter-js-widgets` or something.
-
-The model version should definitely be different than the `jupyter-js-widget` version number. We should be able to increment the `jupyter-js-widget` version number (based on the view changing) without incrementing the model version. Furthermore, there should be an automatic check, so that the highest available and allowed version that supports the given model specification is used. For that reason, I suppose that most of the time a `_view_model_version` will be `'*'` (i.e., pick the highest version that supports the given model version number).
-
-Also, I think the model version should only support the major part of the version number (and consequently be an integer). Any change in the actual attributes of the models (whether adding, deleting, or even changing intent of the attribute) should be a breaking change in the model specification.
-
-So...
-Model specifications should live independent of package versions (i.e., we should be able to upgrade a package implementation without changing the model spec the package implements). Also, the default view module version should be `'*'`, which means pick the latest version that implements that particular model specification. Each view implementation will have hardcoded the model module, name, and version it supports.
-
-If you want to load a specific view implementation, the module indicates a specific package, and the version indicates a specific semver range.
-
+The model version should only support the major part of the version number (and consequently be an integer). Any change in the actual attributes of the models (whether adding, deleting, or even changing intent of the attribute) should be a breaking change in the model specification.
 
 ## Implementating the Jupyter widgets protocol in the kernel
 
@@ -287,7 +277,7 @@ When a widget is instantiated in either the kernel or the frontend, it creates a
 }
 ```
 
-The model instantiated on the other side is determined by the `_model_name`, `_model_module`, and `_model_version` keys in `state`. These are shorthand for a model attribute specification. The version is a semver range, and the companion model will have a version in the semver range. Any unspecified keys will be take on the default values given in the relevant model specification.
+The model instantiated on the other side is determined by the `_model_name`, `_model_module`, and `_model_version` keys in `state`. These are shorthand for a model attribute specification. Any unspecified keys will be take on the default values given in the relevant model specification.
 
 Any view for the model will check to make sure that it understands the version of the model specification. The view fields can be set when the model is initialized.
 
