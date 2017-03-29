@@ -276,7 +276,9 @@ class ControllerModel extends CoreDOMWidgetModel {
              model_name: 'ControllerButtonModel',
              model_module: 'jupyter-js-widgets',
              model_module_version: this.get('_model_module_version'),
-             widget_class: 'Jupyter.ControllerButton',
+             view_name: 'ControllerButtonView',
+             view_module: 'jupyter-js-widgets',
+             view_module_version: this.get('_view_module_version'),
         }).then(function(model) {
              model.set('description', index);
              return model;
@@ -291,7 +293,9 @@ class ControllerModel extends CoreDOMWidgetModel {
              model_name: 'ControllerAxisModel',
              model_module: 'jupyter-js-widgets',
              model_module_version: this.get('_model_module_version'),
-             widget_class: 'Jupyter.ControllerAxis',
+             view_name: 'ControllerAxisView',
+             view_module: 'jupyter-js-widgets',
+             view_module_version: this.get('_view_module_version'),
         }).then(function(model) {
              model.set('description', index);
              return model;

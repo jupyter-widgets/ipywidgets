@@ -190,14 +190,19 @@ class WidgetRegistry(object):
     def get(self, model_module, model_module_version, model_name, view_module, view_module_version, view_name):
         """Get a value"""
         module_versions = self._registry[model_module]
-        model_names = next(v for k, v in module_versions.items()
-                           if semver.match(model_module_version, k))
+        # The python semver module doesn't work well, for example, it can't do match('3', '*')
+        # so we just take the first model module version.
+        #model_names = next(v for k, v in module_versions.items()
+        #                   if semver.match(model_module_version, k))
+        model_names = list(module_versions.values())[0]
         view_modules = model_names[model_name]
         view_versions = view_modules[view_module]
-        view_names = next(v for k, v in view_versions.items()
-                          if semver.match(view_module_version, k))
+        # The python semver module doesn't work well, so we just take the first view module version
+        #view_names = next(v for k, v in view_versions.items()
+        #                  if semver.match(view_module_version, k))
+        view_names = list(view_versions.values())[0]
         widget_class = view_names[view_name]
-
+        return widget_class
 
 def register(widget):
     """A decorator registering a widget class in the widget registry.

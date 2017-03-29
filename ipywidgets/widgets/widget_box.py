@@ -17,7 +17,7 @@ from warnings import warn
 @register
 class Box(DOMWidget, CoreWidget):
     """Displays multiple widgets in a group."""
-    _model_module = Unicode('Jupyter').tag(sync=True)
+    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_name = Unicode('BoxModel').tag(sync=True)
     _view_name = Unicode('BoxView').tag(sync=True)
