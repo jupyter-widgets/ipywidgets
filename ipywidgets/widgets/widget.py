@@ -173,24 +173,49 @@ def _show_traceback(method):
     return m
 
 
-def register(key=None):
-    """Returns a decorator registering a widget class in the widget registry.
+class WidgetRegistry(object):
+
+    def __init__(self):
+        self._registry = {}
+
+    def register(self, model_module, model_module_version_range, model_name, view_module, view_module_version_range, view_name, klass):
+        """Register a value"""
+        model_module = self._registry.setdefault(model_module, {})
+        model_version = model_module.setdefault(model_module_version_range, {})
+        model_name = model_version.setdefault(model_name, {})
+        view_module = model_name.setdefault(view_module, {})
+        view_version = view_module.setdefault(view_module_version_range, {})
+        view_version[view_name] = klass
+
+    def get(self, model_module, model_module_version, model_name, view_module, view_module_version, view_name):
+        """Get a value"""
+        module_versions = self._registry[model_module]
+        model_names = next(v for k, v in module_versions.items()
+                           if semver.match(model_module_version, k))
+        view_modules = model_names[model_name]
+        view_versions = view_modules[view_module]
+        view_names = next(v for k, v in view_versions.items()
+                          if semver.match(view_module_version, k))
+        widget_class = view_names[view_name]
+
+
+def register(widget):
+    """A decorator registering a widget class in the widget registry.
 
     widget_types is a registry of widgets by model module, version, and name:
     widget_types[model_module][model_module_version][model_name][view_module][view_module_versin][view_name]
 
     The version numbers are semver ranges. The version number coming from the client will be the specific versions on the client side. We use the python semver module to filter out versions that don't match the specific version from the client, and then take the first version result.
     """
-    def wrap(widget):
-        w = widget.class_traits()
-        model_module = Widget.widget_types.setdefault(w['_model_module'], {})
-        model_version = model_module.setdefault(w['_model_module_version'], {})
-        model_name = model_version.setdefault(w['_model_name'], {})
-        view_module = model_name.setdefault(w['_view_module'], {})
-        view_version = view_module.setdefault(w['_view_module_version'], {})
-        view_version[w['_view_name']] = widget
-        return widget
-    return wrap
+    w = widget.class_traits()
+    Widget.widget_types.register(w['_model_module'].default_value,
+                                 w['_model_module_version'].default_value,
+                                 w['_model_name'].default_value,
+                                 w['_view_module'].default_value,
+                                 w['_view_module_version'].default_value,
+                                 w['_view_name'].default_value,
+                                 widget)
+    return widget
 
 class Widget(LoggingConfigurable):
     #-------------------------------------------------------------------------
@@ -202,8 +227,7 @@ class Widget(LoggingConfigurable):
     widgets = {}
 
     # widget_types is a registry of widgets by module, version, and name:
-    # widget_types[model_module][model_module_version][model_name][view_module][view_module_versin][view_name]
-    widget_types = {}
+    widget_types = WidgetRegistry()
 
     @staticmethod
     def on_widget_constructed(callback):
@@ -225,15 +249,12 @@ class Widget(LoggingConfigurable):
         w = msg['content']['data']['state']
 
         # Find the widget class to instantiate in the registered widgets
-        # Todo: wrap this in try or .get() to do error handling
-        module_versions = Widget.widget_types[w['_model_module']]
-        model_names = next(v for k,v in module_versions.items()
-                           if semver.match(w['_model_module_version'], k))
-        view_modules = model_names[w['_model_name']]
-        view_versions = view_modules[w['_view_module']]
-        view_names = next(v for k,v in view_versions.items()
-                          if semver.match(w['_view_module_version'], k))
-        widget_class = view_names[w['_view_name']]
+        widget_class = Widget.widget_types.get(w['_model_module'],
+                                               w['_model_module_version'],
+                                               w['_model_name'],
+                                               w['_view_module'],
+                                               w['_view_module_version'],
+                                               w['_view_name'])
         widget = widget_class(comm=comm)
         widget.set_state(w)
 
