@@ -250,20 +250,20 @@ class Widget(LoggingConfigurable):
     @staticmethod
     def handle_comm_opened(comm, msg):
         """Static method, called when a widget is constructed."""
-        w = msg['content']['data']['state']
+        data = msg['content']['data']
+        state = data['state']
 
         # Find the widget class to instantiate in the registered widgets
-        widget_class = Widget.widget_types.get(w['_model_module'],
-                                               w['_model_module_version'],
-                                               w['_model_name'],
-                                               w['_view_module'],
-                                               w['_view_module_version'],
-                                               w['_view_name'])
+        widget_class = Widget.widget_types.get(state['_model_module'],
+                                               state['_model_module_version'],
+                                               state['_model_name'],
+                                               state['_view_module'],
+                                               state['_view_module_version'],
+                                               state['_view_name'])
         widget = widget_class(comm=comm)
-        # The view_module_version is the specific version in the frontend. We set it to the default semver
-        # range so that when it is saved, it is not tied to the specific version.
-        w['_view_module_version'] = widget_class.class_traits()['_view_module_version'].default_value
-        widget.set_state(w)
+        if 'buffer_paths' in data:
+            _put_buffers(state, data['buffer_paths'], msg['buffers'])
+        widget.set_state(state)
 
     @staticmethod
     def get_manager_state(drop_defaults=False):
