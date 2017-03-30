@@ -233,23 +233,17 @@ The sync update event from the frontend to the kernel was restructured to have t
 
 ## Widget state
 
-The core idea of widgets is that some state object is automatically synced back and forth between a kernel object and a frontend object. Several fields are assumed to be in every state object:
+The core idea of widgets is that some state is automatically synced back and forth between a kernel object and a frontend object. Several fields are assumed to be in every state object:
 
-* `_model_module`: The namespace the model name lives in
-* `_model_module_version`: the version of the model specification as a semver range
-* `_model_name`: the name of the model in the specification
-* `_view_module`: The package the view lives in
-* `_view_module_version`: the valid versions of the view package as a semver range
-* `_view_name`: the name of the view to be used
+* `_model_module`: the model module
+* `_model_module_version`: the semver range of the model
+* `_model_name`: the name of the model
+* `_view_module`: the view module
+* `_view_module_version`: the semver range of the view
+* `_view_name`: the name of the view
 * `msg_throttle`: an integer - the number of messages allowed 'in flight' for throttling purposes
 
 The `_model_*` and `_view_*` fields are assumed immutable (set at initialization, and never changed). The `msg_throttle` field can be changed.
-
-### Rationale
-
-The model specification for a widget (i.e., the list of model traits) is implemented at least two places: the kernel and the frontend. Because we want different frontend and kernel-side implementations to exist, the model state specification is not tied to any particular package name or version. Typically the default view module version will be '*', indicating that any view that understands the relevant model specification can be used.
-
-The model version should only support the major part of the version number (and consequently be an integer). Any change in the actual attributes of the models (whether adding, deleting, or even changing intent of the attribute) should be a breaking change in the model specification.
 
 ## Implementating the Jupyter widgets protocol in the kernel
 
@@ -260,9 +254,6 @@ In this section, we concentrate on implementing the Jupyter widget messaging pro
 A kernel-side Jupyter widgets library also registers a `jupyter.widget` comm target for created creating widget comm channels (one per widget instance). State synchronization and custom messages for a particular widget instance are then sent over the created widget comm channel.
 
 ### Instantiating a widget object
-
-
-#### Instantiating a widget
 
 When a widget is instantiated in either the kernel or the frontend, it creates a companion model on the other side by sending a `comm_open` message to the `jupyter.widget` comm target.
 
@@ -277,15 +268,13 @@ When a widget is instantiated in either the kernel or the frontend, it creates a
 }
 ```
 
-The model instantiated on the other side is determined by the `_model_name`, `_model_module`, and `_model_version` keys in `state`. These are shorthand for a model attribute specification. Any unspecified keys will be take on the default values given in the relevant model specification.
-
-Any view for the model will check to make sure that it understands the version of the model specification. The view fields can be set when the model is initialized.
-
-See the [Model State](modelstate.md) documentation for the serialized state for core Jupyter widgets.
+The model instantiated on the other side is determined by the `_model_module`, and `_model_module_version`, `_model_name`, `_view_module`, `_view_module_version`, and `_view_name` keys in `data.state`. Any unspecified keys will be take on the default values given in the relevant model specification.
 
 The `data.state` value is a dictionary of widget state keys and values that can be serialized to JSON.
 
 Comm messages for state synchronization may contain binary buffers. The `data.buffer_paths` value contains a list of 'paths' in the `data.state` object corresponding to the binary buffers. For example, if `data.buffer_paths` is `[['x'], ['y', 'z', 0]]`, then the first binary buffer is the value of the `data.state['x']` attribute and the second binary buffer is the value of the `data.state['y']['z'][0]` state attribute. A path representing a list value (i.e., last index of the path is an integer) will be `null` in `data.state`, and a path representing a dictionary key (i.e., last index of the path is a string) will not exist in `data.state`.
+
+See the [Model State](modelstate.md) documentation for the serialized state for core Jupyter widgets.
 
 ### State synchronization
 
