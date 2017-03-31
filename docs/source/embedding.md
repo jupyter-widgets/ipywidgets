@@ -131,7 +131,7 @@ corresponding to the same JSON schema.
 
 As of ipywidgets 6.0, Jupyter interactive widgets can be rendered and
 interacted with in sphinx html documentation. Two means of achieving this are
-provided
+provided:
 
 ### Using the Jupyter Sphinx Extension
 
@@ -144,7 +144,7 @@ to list of enabled extensions.
 
 Two directives are provided: `ipywidgets-setup` and `ipywidgets-display`.
 
-`ipywidgets-setup` code is used run potential boilerplate and configuration
+`ipywidgets-setup` code is used to run potential boilerplate and configuration
 code prior to running the display code. For example:
 
 ```rst
@@ -199,7 +199,7 @@ gallery.
 
 The widget embedder attempts to fetch the model and view implementation of the
 custom widget from the npmjs CDN, https://unpkg.com. The URL that is requested
-for e.g. the `bqplot` module name with the semver range `^2.0.0` is
+for, e.g. the `bqplot` module name, with the semver range `^2.0.0` is
 
 `https://unpkg.com/bqplot@^2.0.0/dist/index.js`
 
@@ -212,7 +212,7 @@ custom widget library can render on nbviewer.
 
 ## Using `jupyter-js-widgets` in web contexts
 
-The core `jupyter-js-widgets` library, the JavaScript package of ipywidgets is
+The core `jupyter-js-widgets` library, the JavaScript package of ipywidgets, is
 agnostic to the context in which it is used (Notebook, JupyterLab, static web
 page). For each context, we specialize the base widget manager implemented in
 `jupyter-js-widgets` to provide the logic for
