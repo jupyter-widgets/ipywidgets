@@ -204,13 +204,7 @@ class WidgetRegistry(object):
         return widget_class
 
 def register(widget):
-    """A decorator registering a widget class in the widget registry.
-
-    widget_types is a registry of widgets by model module, version, and name:
-    widget_types[model_module][model_module_version][model_name][view_module][view_module_versin][view_name]
-
-    The version numbers are semver ranges. The version number coming from the client will be the specific versions on the client side. We use the python semver module to filter out versions that don't match the specific version from the client, and then take the first version result.
-    """
+    """A decorator registering a widget class in the widget registry."""
     w = widget.class_traits()
     Widget.widget_types.register(w['_model_module'].default_value,
                                  w['_model_module_version'].default_value,
@@ -283,11 +277,11 @@ class Widget(LoggingConfigurable):
     # Traits
     #-------------------------------------------------------------------------
     _model_module = Unicode(None,
-        help="The model module specification namespace.", read_only=True).tag(sync=True)
+        help="A JavaScript module name in which to find _model_name.", read_only=True).tag(sync=True)
     _model_name = Unicode('WidgetModel',
         help="Name of the model.", read_only=True).tag(sync=True)
     _model_module_version = Unicode('*',
-        help="The version number of the model specification.", read_only=True).tag(sync=True)
+        help="A semver requirement for the model module version.", read_only=True).tag(sync=True)
     _view_module = Unicode(None, allow_none=True,
         help="A JavaScript module in which to find _view_name.").tag(sync=True)
     _view_name = Unicode(None, allow_none=True,
