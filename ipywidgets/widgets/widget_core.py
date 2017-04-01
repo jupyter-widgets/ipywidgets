@@ -12,4 +12,3 @@ class CoreWidget(Widget):
 
     _model_module_version = Unicode(__jupyter_widget_version__).tag(sync=True)
     _view_module_version = Unicode(__jupyter_widget_version__).tag(sync=True)
-

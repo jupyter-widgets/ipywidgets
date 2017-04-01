@@ -44,9 +44,19 @@ interface ModelOptions {
     model_module_version: string;
 
     /**
-     * Target name of the widget in the back end.
+     * Target name of the widget view to create.
      */
-    widget_class?: string;
+    view_name?: string;
+
+    /**
+     * Module name of the widget view to create.
+     */
+    view_module?: string;
+
+    /**
+     * Semver version requirement for the view module.
+     */
+    view_module_version?: string;
 
     /**
      * Comm object associated with the widget.
@@ -205,8 +215,14 @@ abstract class ManagerBase<T> {
                 this.comm_target_name,
                 options.model_id,
                 {
-                    widget_class: options.widget_class,
-                    target_name: 'jupyter.widget'
+                    state: {
+                            _model_module: options.model_module,
+                            _model_module_version: options.model_module_version,
+                            _model_name: options.model_name,
+                            _view_module: options.view_module,
+                            _view_module_version: options.view_module_version,
+                            _view_name: options.view_name
+                        },
                 }
             );
         }

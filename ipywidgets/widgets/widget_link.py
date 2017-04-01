@@ -34,7 +34,7 @@ class WidgetTraitTuple(Tuple):
         return value
 
 
-@register('jupyter.Link')
+@register
 class Link(CoreWidget):
     """Link Widget
 
@@ -77,7 +77,7 @@ def jslink(attr1, attr2):
     return Link(attr1, attr2)
 
 
-@register('jupyter.DirectionalLink')
+@register
 class DirectionalLink(Link):
     """A directional link
 

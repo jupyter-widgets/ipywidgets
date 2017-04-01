@@ -126,7 +126,7 @@ class _BoundedInt(_Int):
             self.value = max
         return max
 
-@register('Jupyter.IntText')
+@register
 @_int_doc
 class IntText(_Int):
     """Textbox widget that represents an integer."""
@@ -134,7 +134,7 @@ class IntText(_Int):
     _model_name = Unicode('IntTextModel').tag(sync=True)
 
 
-@register('Jupyter.BoundedIntText')
+@register
 @_bounded_int_doc
 class BoundedIntText(_BoundedInt):
     """Textbox widget that represents an integer bounded from above and below.
@@ -143,14 +143,14 @@ class BoundedIntText(_BoundedInt):
     _model_name = Unicode('IntTextModel').tag(sync=True)
 
 
-@register('Jupyter.SliderStyle')
+@register
 class SliderStyle(Style, CoreWidget):
     """Button style widget."""
     _model_name = Unicode('SliderStyleModel').tag(sync=True)
     handle_color = Color(None, allow_none=True).tag(sync=True)
 
 
-@register('Jupyter.IntSlider')
+@register
 @_bounded_int_doc
 class IntSlider(_BoundedInt):
     """Slider widget that represents an integer bounded from above and below.
@@ -171,14 +171,14 @@ class IntSlider(_BoundedInt):
         return SliderStyle()
 
 
-@register('Jupyter.ProgressStyle')
+@register
 class ProgressStyle(Style, CoreWidget):
     """Button style widget."""
     _model_name = Unicode('ProgressStyleModel').tag(sync=True)
     bar_color = Color(None, allow_none=True).tag(sync=True)
 
 
-@register('Jupyter.IntProgress')
+@register
 @_bounded_int_doc
 class IntProgress(_BoundedInt):
     """Progress bar that represents an integer bounded from above and below.
@@ -261,7 +261,7 @@ class _BoundedIntRange(_IntRange):
         return lower, upper
 
 
-@register('Jupyter.IntRangeSlider')
+@register
 class IntRangeSlider(_BoundedIntRange):
     """Slider/trackbar that represents a pair of ints bounded by minimum and maximum value.
 
@@ -284,7 +284,7 @@ class IntRangeSlider(_BoundedIntRange):
     continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)
 
 
-@register('Jupyter.Play')
+@register
 class Play(_BoundedInt):
     interval = CInt(100).tag(sync=True)
 

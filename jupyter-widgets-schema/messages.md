@@ -231,6 +231,20 @@ While in version 1, binary buffers could only be top level attributes of the `st
 
 The sync update event from the frontend to the kernel was restructured to have the same field names as the event from the kernel to the frontend, namely the method field is `'update'` and the state data is in the `state` attribute.
 
+## Widget state
+
+The core idea of widgets is that some state is automatically synced back and forth between a kernel object and a frontend object. Several fields are assumed to be in every state object:
+
+* `_model_module`: the model module
+* `_model_module_version`: the semver range of the model
+* `_model_name`: the name of the model
+* `_view_module`: the view module
+* `_view_module_version`: the semver range of the view
+* `_view_name`: the name of the view
+* `msg_throttle`: an integer - the number of messages allowed 'in flight' for throttling purposes
+
+The `_model_*` and `_view_*` fields are assumed immutable (set at initialization, and never changed). The `msg_throttle` field can be changed.
+
 ## Implementating the Jupyter widgets protocol in the kernel
 
 In this section, we concentrate on implementing the Jupyter widget messaging protocol in the kernel.
@@ -241,29 +255,7 @@ A kernel-side Jupyter widgets library also registers a `jupyter.widget` comm tar
 
 ### Instantiating a widget object
 
-When a widget is instantiated in either the kernel or the frontend, it creates a companion object on the other side by sending a `comm_open` message to the `jupyter.widget` comm target.
-
-#### Reception of a `comm_open` message from the frontend
-
-When a frontend creates a Jupyter widget, it sends a `comm_open` message to the kernel:
-
-```
-{
-  'comm_id' : 'u-u-i-d',
-  'target_name' : 'jupyter.widget',
-  'data' : {
-    'widget_class': 'some.string'
-  }
-}
-```
-
-The type of widget to be instantiated is given in the `widget_class` string.
-
-In the ipywidgets implementation, this string is actually the key in a registry of widget types. In the ipywidgets implementation, widget types are registered in the dictionary with the `register` decorator. For example the integral progress bar class is registered with `@register('Jupyter.IntProgress')`. When the `widget_class` is not in the registry, it is parsed as a `module` `+` `class` string.
-
-#### Sending a `comm_open` message upon instantiation of a widget
-
-Symmetrically, when instantiating a widget in the kernel, the kernel widgets library sends a `comm_open` message to the frontend:
+When a widget is instantiated in either the kernel or the frontend, it creates a companion model on the other side by sending a `comm_open` message to the `jupyter.widget` comm target.
 
 ```
 {
@@ -276,13 +268,13 @@ Symmetrically, when instantiating a widget in the kernel, the kernel widgets lib
 }
 ```
 
-The type of widget to be instantiated in the frontend is determined by the `_model_name`, `_model_module` and `_model_module_version` keys in the state, which respectively stand for the name of the class that must be instantiated in the frontend, the JavaScript module where this class is defined, and a semver range for that module. See the [Model State](modelstate.md) documentation for the serialized state for core Jupyter widgets.
-
-The state is split between values that are serializable with JSON (in the `data.state` dictionary), and binary values (represented in `data.buffer_paths`).
+The model instantiated on the other side is determined by the `_model_module`, and `_model_module_version`, `_model_name`, `_view_module`, `_view_module_version`, and `_view_name` keys in `data.state`. Any unspecified keys will be take on the default values given in the relevant model specification.
 
 The `data.state` value is a dictionary of widget state keys and values that can be serialized to JSON.
 
 Comm messages for state synchronization may contain binary buffers. The `data.buffer_paths` value contains a list of 'paths' in the `data.state` object corresponding to the binary buffers. For example, if `data.buffer_paths` is `[['x'], ['y', 'z', 0]]`, then the first binary buffer is the value of the `data.state['x']` attribute and the second binary buffer is the value of the `data.state['y']['z'][0]` state attribute. A path representing a list value (i.e., last index of the path is an integer) will be `null` in `data.state`, and a path representing a dictionary key (i.e., last index of the path is a string) will not exist in `data.state`.
+
+See the [Model State](modelstate.md) documentation for the serialized state for core Jupyter widgets.
 
 ### State synchronization
 

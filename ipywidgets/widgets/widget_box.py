@@ -14,7 +14,7 @@ from traitlets import Unicode, Tuple, Int, CaselessStrEnum, Instance, default
 from warnings import warn
 
 
-@register('Jupyter.Box')
+@register
 class Box(DOMWidget, CoreWidget):
     """Displays multiple widgets in a group."""
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
@@ -25,7 +25,7 @@ class Box(DOMWidget, CoreWidget):
     # Child widgets in the container.
     # Using a tuple here to force reassignment to update the list.
     # When a proper notifying-list trait exists, that is what should be used here.
-    children = Tuple().tag(sync=True, help="List of widget children", **widget_serialization)
+    children = Tuple(help="List of widget children").tag(sync=True, **widget_serialization)
 
     box_style = CaselessStrEnum(
         values=['success', 'info', 'warning', 'danger', ''], default_value='',
@@ -41,14 +41,14 @@ class Box(DOMWidget, CoreWidget):
             child._handle_displayed()
 
 
-@register('Jupyter.VBox')
+@register
 class VBox(Box):
     """Displays multiple widgets vertically using the flexible box model."""
     _model_name = Unicode('VBoxModel').tag(sync=True)
     _view_name = Unicode('VBoxView').tag(sync=True)
 
 
-@register('Jupyter.HBox')
+@register
 class HBox(Box):
     """Displays multiple widgets horizontally using the flexible box model."""
     _model_name = Unicode('HBoxModel').tag(sync=True)
