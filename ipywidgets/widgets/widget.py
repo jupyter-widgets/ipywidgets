@@ -172,27 +172,60 @@ def _show_traceback(method):
     return m
 
 
-def register(key=None):
-    """Returns a decorator registering a widget class in the widget registry.
+class WidgetRegistry(object):
 
-    If no key is provided, the class name is used as a key.
-    A key is provided for each core Jupyter widget so that the frontend can use
-    this key regardless of the language of the kernel.
-    """
-    def wrap(widget):
-        l = key if key is not None else widget.__module__ + widget.__name__
-        Widget.widget_types[l] = widget
-        return widget
-    return wrap
+    def __init__(self):
+        self._registry = {}
 
+    def register(self, model_module, model_module_version_range, model_name, view_module, view_module_version_range, view_name, klass):
+        """Register a value"""
+        model_module = self._registry.setdefault(model_module, {})
+        model_version = model_module.setdefault(model_module_version_range, {})
+        model_name = model_version.setdefault(model_name, {})
+        view_module = model_name.setdefault(view_module, {})
+        view_version = view_module.setdefault(view_module_version_range, {})
+        view_version[view_name] = klass
+
+    def get(self, model_module, model_module_version, model_name, view_module, view_module_version, view_name):
+        """Get a value"""
+        module_versions = self._registry[model_module]
+        # The python semver module doesn't work well, for example, it can't do match('3', '*')
+        # so we just take the first model module version.
+        #model_names = next(v for k, v in module_versions.items()
+        #                   if semver.match(model_module_version, k))
+        model_names = list(module_versions.values())[0]
+        view_modules = model_names[model_name]
+        view_versions = view_modules[view_module]
+        # The python semver module doesn't work well, so we just take the first view module version
+        #view_names = next(v for k, v in view_versions.items()
+        #                  if semver.match(view_module_version, k))
+        view_names = list(view_versions.values())[0]
+        widget_class = view_names[view_name]
+        return widget_class
+
+def register(widget):
+    """A decorator registering a widget class in the widget registry."""
+    w = widget.class_traits()
+    Widget.widget_types.register(w['_model_module'].default_value,
+                                 w['_model_module_version'].default_value,
+                                 w['_model_name'].default_value,
+                                 w['_view_module'].default_value,
+                                 w['_view_module_version'].default_value,
+                                 w['_view_name'].default_value,
+                                 widget)
+    return widget
 
 class Widget(LoggingConfigurable):
     #-------------------------------------------------------------------------
     # Class attributes
     #-------------------------------------------------------------------------
     _widget_construction_callback = None
+
+    # widgets is a dictionary of all active widget objects
     widgets = {}
-    widget_types = {}
+
+    # widget_types is a registry of widgets by module, version, and name:
+    widget_types = WidgetRegistry()
 
     @staticmethod
     def on_widget_constructed(callback):
@@ -211,12 +244,20 @@ class Widget(LoggingConfigurable):
     @staticmethod
     def handle_comm_opened(comm, msg):
         """Static method, called when a widget is constructed."""
-        class_name = str(msg['content']['data']['widget_class'])
-        if class_name in Widget.widget_types:
-            widget_class = Widget.widget_types[class_name]
-        else:
-            widget_class = import_item(class_name)
+        data = msg['content']['data']
+        state = data['state']
+
+        # Find the widget class to instantiate in the registered widgets
+        widget_class = Widget.widget_types.get(state['_model_module'],
+                                               state['_model_module_version'],
+                                               state['_model_name'],
+                                               state['_view_module'],
+                                               state['_view_module_version'],
+                                               state['_view_name'])
         widget = widget_class(comm=comm)
+        if 'buffer_paths' in data:
+            _put_buffers(state, data['buffer_paths'], msg['buffers'])
+        widget.set_state(state)
 
     @staticmethod
     def get_manager_state(drop_defaults=False):
@@ -235,18 +276,18 @@ class Widget(LoggingConfigurable):
     #-------------------------------------------------------------------------
     # Traits
     #-------------------------------------------------------------------------
-    _model_module = Unicode('jupyter-js-widgets',
-        help="A JavaScript module name in which to find _model_name.").tag(sync=True)
+    _model_module = Unicode(None,
+        help="A JavaScript module name in which to find _model_name.", read_only=True).tag(sync=True)
     _model_name = Unicode('WidgetModel',
-        help="Name of the model object in the front-end.").tag(sync=True)
+        help="Name of the model.", read_only=True).tag(sync=True)
     _model_module_version = Unicode('*',
-        help="A semver requirement for the model module version.").tag(sync=True)
+        help="A semver requirement for the model module version.", read_only=True).tag(sync=True)
     _view_module = Unicode(None, allow_none=True,
         help="A JavaScript module in which to find _view_name.").tag(sync=True)
     _view_name = Unicode(None, allow_none=True,
         help="Name of the view object.").tag(sync=True)
     _view_module_version = Unicode('*',
-        help="A semver requirement for the view module version.").tag(sync=True)
+        help="A semver requirement for the view module.").tag(sync=True)
     _view_count = Int(read_only=True,
         help="EXPERIMENTAL: The number of views of the model displayed in the frontend. This attribute is experimental and may change or be removed in the future.").tag(sync=True)
     comm = Instance('ipykernel.comm.Comm', allow_none=True)

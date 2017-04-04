@@ -36,17 +36,25 @@ class SelectionModel extends CoreLabeledDOMWidgetModel {
 }
 
 export
-class SelectModel extends SelectionModel {
+class DropdownModel extends SelectionModel {
     defaults() {
         return _.extend(super.defaults(), {
-            _model_name: 'SelectModel',
-            _view_name: 'SelectView'
+            _model_name: 'DropdownModel',
+            _view_name: 'DropdownView',
+            button_style: ''
         });
     }
 }
 
+// TODO: Make a phosphor dropdown control, wrapped in DropdownView. Also, fix
+// bugs in keyboard handling. See
+// https://github.com/jupyter-widgets/ipywidgets/issues/1055 and
+// https://github.com/jupyter-widgets/ipywidgets/issues/1049
+// For now, we subclass SelectView to provide DropdownView
+// For the old code, see commit f68bfbc566f3a78a8f3350b438db8ed523ce3642
+
 export
-class SelectView extends LabeledDOMWidgetView {
+class DropdownView extends LabeledDOMWidgetView {
     /**
      * Public constructor.
      */
@@ -117,25 +125,27 @@ class SelectView extends LabeledDOMWidgetView {
 }
 
 
+
 export
-class DropdownModel extends SelectionModel {
+class SelectModel extends SelectionModel {
     defaults() {
         return _.extend(super.defaults(), {
-            _model_name: 'DropdownModel',
-            _view_name: 'DropdownView',
-            button_style: ''
+            _model_name: 'SelectModel',
+            _view_name: 'SelectView'
         });
     }
 }
 
-// TODO: Make a phosphor dropdown control, wrapped in DropdownView. Also, fix
-// bugs in keyboard handling. See
-// https://github.com/jupyter-widgets/ipywidgets/issues/1055 and
-// https://github.com/jupyter-widgets/ipywidgets/issues/1049
-// For now, we subclass SelectView to provide DropdownView
-// For the old code, see commit f68bfbc566f3a78a8f3350b438db8ed523ce3642
 export
-class DropdownView extends SelectView {}
+class SelectView extends DropdownView {
+    /**
+     * Called when view is rendered.
+     */
+    render() {
+        super.render();
+        this.listbox.setAttribute('size', '6');
+    }
+}
 
 export
 class RadioButtonsModel extends SelectionModel {

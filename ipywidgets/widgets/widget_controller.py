@@ -13,7 +13,7 @@ from .widget_core import CoreWidget
 from traitlets import Bool, Int, Float, Unicode, List, Instance
 
 
-@register('Jupyter.ControllerButton')
+@register
 class Button(ValueWidget, CoreWidget):
     """Represents a gamepad or joystick button."""
     value = Float(min=0.0, max=1.0, read_only=True).tag(sync=True)
@@ -25,7 +25,7 @@ class Button(ValueWidget, CoreWidget):
     _model_name = Unicode('ControllerButtonModel').tag(sync=True)
 
 
-@register('Jupyter.ControllerAxis')
+@register
 class Axis(ValueWidget, CoreWidget):
     """Represents a gamepad or joystick axis."""
     value = Float(min=-1.0, max=1.0, read_only=True).tag(sync=True)
@@ -36,7 +36,7 @@ class Axis(ValueWidget, CoreWidget):
     _model_name = Unicode('ControllerAxisModel').tag(sync=True)
 
 
-@register('Jupyter.Controller')
+@register
 class Controller(DOMWidget, CoreWidget):
     """Represents a game controller."""
     index = Int().tag(sync=True)

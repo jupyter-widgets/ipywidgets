@@ -37,20 +37,20 @@ class _String(LabeledWidget, ValueWidget, CoreWidget):
     _model_name = Unicode('StringModel').tag(sync=True)
 
 
-@register('Jupyter.HTML')
+@register
 class HTML(_String):
     """Renders the string `value` as HTML."""
     _view_name = Unicode('HTMLView').tag(sync=True)
     _model_name = Unicode('HTMLModel').tag(sync=True)
 
-@register('Jupyter.HTMLMath')
+@register
 class HTMLMath(_String):
     """Renders the string `value` as HTML, and render mathematics."""
     _view_name = Unicode('HTMLMathView').tag(sync=True)
     _model_name = Unicode('HTMLMathModel').tag(sync=True)
 
 
-@register('Jupyter.Label')
+@register
 class Label(_String):
     """Label widget.
 
@@ -61,7 +61,7 @@ class Label(_String):
     _model_name = Unicode('LabelModel').tag(sync=True)
 
 
-@register('Jupyter.Textarea')
+@register
 class Textarea(_String):
     """Multiline text area widget."""
     _view_name = Unicode('TextareaView').tag(sync=True)
@@ -72,7 +72,7 @@ class Textarea(_String):
         self.send({"method": "scroll_to_bottom"})
 
 
-@register('Jupyter.Text')
+@register
 class Text(_String):
     """Single line textbox widget."""
     _view_name = Unicode('TextView').tag(sync=True)

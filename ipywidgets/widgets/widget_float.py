@@ -64,7 +64,7 @@ class _BoundedFloat(_Float):
         return max
 
 
-@register('Jupyter.FloatText')
+@register
 class FloatText(_Float):
     """ Displays a float value within a textbox. For a textbox in
     which the value must be within a specific range, use BoundedFloatText.
@@ -82,7 +82,7 @@ class FloatText(_Float):
     _model_name = Unicode('FloatTextModel').tag(sync=True)
 
 
-@register('Jupyter.BoundedFloatText')
+@register
 class BoundedFloatText(_BoundedFloat):
     """ Displays a float value within a textbox. Value must be within the range specified.
 
@@ -105,7 +105,7 @@ class BoundedFloatText(_BoundedFloat):
     _model_name = Unicode('FloatTextModel').tag(sync=True)
 
 
-@register('Jupyter.FloatSlider')
+@register
 class FloatSlider(_BoundedFloat):
     """ Slider/trackbar of floating values with the specified range.
 
@@ -145,7 +145,7 @@ class FloatSlider(_BoundedFloat):
     continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
 
 
-@register('Jupyter.FloatProgress')
+@register
 class FloatProgress(_BoundedFloat):
     """ Displays a progress bar.
 
@@ -246,7 +246,7 @@ class _BoundedFloatRange(_FloatRange):
         return lower, upper
 
 
-@register('Jupyter.FloatRangeSlider')
+@register
 class FloatRangeSlider(_BoundedFloatRange):
     """ Slider/trackbar that represents a pair of floats bounded by minimum and maximum value.
 

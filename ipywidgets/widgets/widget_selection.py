@@ -203,7 +203,7 @@ class _MultipleSelection(_Selection):
             raise TraitError('Invalid selection: %r'%(k.args[0],))
 
 
-@register('Jupyter.ToggleButtons')
+@register
 class ToggleButtons(_Selection):
     """Group of toggle buttons that represent an enumeration.
 
@@ -220,14 +220,14 @@ class ToggleButtons(_Selection):
         default_value='', allow_none=True, help="""Use a predefined styling for the buttons.""").tag(sync=True)
 
 
-@register('Jupyter.Dropdown')
+@register
 class Dropdown(_Selection):
     """Allows you to select a single item from a dropdown."""
     _view_name = Unicode('DropdownView').tag(sync=True)
     _model_name = Unicode('DropdownModel').tag(sync=True)
 
 
-@register('Jupyter.RadioButtons')
+@register
 class RadioButtons(_Selection):
     """Group of radio buttons that represent an enumeration.
 
@@ -237,14 +237,14 @@ class RadioButtons(_Selection):
     _model_name = Unicode('RadioButtonsModel').tag(sync=True)
 
 
-@register('Jupyter.Select')
+@register
 class Select(_Selection):
     """Listbox that only allows one item to be selected at any given time."""
     _view_name = Unicode('SelectView').tag(sync=True)
     _model_name = Unicode('SelectModel').tag(sync=True)
 
 
-@register('Jupyter.SelectionSlider')
+@register
 class SelectionSlider(_Selection):
     """Slider to select a single item from a list or dictionary."""
     _view_name = Unicode('SelectionSliderView').tag(sync=True)
@@ -259,7 +259,7 @@ class SelectionSlider(_Selection):
         help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
 
 
-@register('Jupyter.SelectMultiple')
+@register
 class SelectMultiple(_MultipleSelection):
     """Listbox that allows many items to be selected at any given time.
 
