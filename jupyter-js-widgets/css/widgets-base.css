@@ -612,16 +612,16 @@
 
 /* Select Widget Styling */
 
-.widget-select {
-    width: var(--jp-widgets-inline-width);
+.widget-dropdown {
     height: var(--jp-widgets-inline-height);
+    width: var(--jp-widgets-inline-width);
     line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-select select {
+.widget-dropdown > select {
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     border-radius: 0;
-    height: var(--jp-widgets-inline-height);
+    height: inherit;
     flex: 1 1 var(--jp-widgets-inline-width-short);
     min-width: 0; /* This makes it possible for the flexbox to shrink this input */
     box-sizing: border-box;
@@ -640,31 +640,30 @@
 	background-position: right center;
     background-image: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE5LjIuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAxOCAxOCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTggMTg7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbDpub25lO30KPC9zdHlsZT4KPHBhdGggZD0iTTUuMiw1LjlMOSw5LjdsMy44LTMuOGwxLjIsMS4ybC00LjksNWwtNC45LTVMNS4yLDUuOXoiLz4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTAtMC42aDE4djE4SDBWLTAuNnoiLz4KPC9zdmc+Cg");
 }
-
-.widget-select select:focus {
+.widget-dropdown > select:focus {
     border-color: var(--jp-widgets-input-focus-border-color);
 }
 
 /* To disable the dotted border in Firefox around select controls.
    See http://stackoverflow.com/a/18853002 */
-.widget-select select:-moz-focusring {
+.widget-dropdown > select:-moz-focusring {
     color: transparent;
     text-shadow: 0 0 0 #000;
 }
 
-.widget-select select option:checked {
+.widget-dropdown > select > option:checked {
     color: var(--jp-ui-font-color0);
     background: var(--jp-layout-color0) repeat url("data:image/gif;base64,R0lGO...");
 }
 
-/* Select Multiple */
+/* Select and SelectMultiple */
 
-.widget-select-multiple {
+.widget-select {
     width: var(--jp-widgets-inline-width);
     line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-select-multiple select {
+.widget-select > select {
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     background-color: var(--jp-widgets-input-background-color);
     color: var(--jp-widgets-input-color);
@@ -672,18 +671,19 @@
     flex: 1 1 var(--jp-widgets-inline-width-short);
     outline: none !important;
     overflow: auto;
+    height: inherit;
 }
 
-.widget-select-multiple select:focus {
+.widget-select > select:focus {
     border-color: var(--jp-widgets-input-focus-border-color);
 }
 
-.widget-select-multiple select option:checked {
+.widget-select > select > option:checked {
     color: var(--jp-ui-font-color0);
     background: var(--jp-layout-color0) repeat url("data:image/gif;base64,R0lGO...");
 }
 
-.wiget-select-multiple select option {
+.wiget-select > select > option {
     padding-left: var(--jp-widgets-input-padding);
     line-height: var(--jp-widgets-inline-height);
     /* line-height doesn't work on some browsers for select options */

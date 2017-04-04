@@ -71,7 +71,7 @@ class DropdownView extends LabeledDOMWidgetView {
 
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-inline-hbox');
-        this.el.classList.add('widget-select');
+        this.el.classList.add('widget-dropdown');
 
         this.listbox = document.createElement('select');
         this.el.appendChild(this.listbox);
@@ -131,20 +131,85 @@ class SelectModel extends SelectionModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'SelectModel',
-            _view_name: 'SelectView'
+            _view_name: 'SelectView',
+            rows: 5
         });
     }
 }
 
 export
-class SelectView extends DropdownView {
+class SelectView extends LabeledDOMWidgetView {
+    /**
+     * Public constructor.
+     */
+    initialize(parameters) {
+        super.initialize(parameters);
+        this.listenTo(this.model, 'change:_options_labels', () => this._updateOptions());
+    }
+
     /**
      * Called when view is rendered.
      */
     render() {
         super.render();
-        this.listbox.setAttribute('size', '6');
+
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-inline-hbox');
+        this.el.classList.add('widget-select');
+
+        this.listbox = document.createElement('select');
+        this.el.appendChild(this.listbox);
+        this._updateOptions();
+        this.update();
     }
+
+    /**
+     * Update the contents of this view
+     */
+    update() {
+        super.update();
+        // Disable listbox if needed
+        this.listbox.disabled = this.model.get('disabled');
+        this.listbox.size = this.model.get('rows');
+        this.updateSelection();
+    }
+
+    updateSelection() {
+        // Select the correct element
+        let value = this.model.get('value');
+        this.listbox.selectedIndex = this.model.get('_options_labels').indexOf(value);
+    }
+
+    _updateOptions() {
+        this.listbox.textContent = '';
+        let items = this.model.get('_options_labels');
+        for (let i = 0; i < items.length; i++) {
+            let item = items[i];
+            let option = document.createElement('option');
+            option.textContent = item.replace(/ /g, '\xa0'); // space -> &nbsp;
+            option.setAttribute('data-value', encodeURIComponent(item));
+            option.value = item;
+            this.listbox.appendChild(option);
+        }
+    }
+
+    events(): {[e: string]: string} {
+        return {
+            'change select': '_handle_change'
+        }
+    }
+
+    /**
+     * Handle when a new value is selected.
+     */
+    _handle_change() {
+        // Don't use [] indexing to work around https://github.com/Microsoft/TypeScript/issues/14522
+        let value = this.listbox.options.item(this.listbox.selectedIndex).value;
+        this.model.set('value', value);
+        this.touch();
+    }
+
+    listbox: HTMLSelectElement;
 }
 
 export
@@ -607,44 +672,25 @@ class SelectMultipleModel extends MultipleSelectionModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'SelectMultipleModel',
-            _view_name: 'SelectMultipleView'
+            _view_name: 'SelectMultipleView',
+            rows: null
         });
     }
 }
 
 export
-class SelectMultipleView extends LabeledDOMWidgetView {
-    /**
-     * Public constructor.
-     */
-    initialize(parameters) {
-        super.initialize(parameters);
-        this.listenTo(this.model, 'change:_options_labels', () => this._updateOptions());
-    }
+class SelectMultipleView extends SelectView {
 
     /**
      * Called when view is rendered.
      */
     render() {
         super.render();
-        this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-select-multiple');
-
-        this.listbox = document.createElement('select');
         this.listbox.multiple = true;
-        this.el.appendChild(this.listbox);
-        this._updateOptions();
-        this.update();
     }
 
-    /**
-     * Update the contents of this view
-     */
-    update() {
-        super.update();
-        this.listbox.disabled = this.model.get('disabled');
-
+    updateSelection() {
         // Set selected values
         let selected = this.model.get('value') || [];
         let values = _.map(selected, encodeURIComponent);
@@ -655,25 +701,7 @@ class SelectMultipleView extends LabeledDOMWidgetView {
             let value = option.getAttribute('data-value');
             option.selected = _.contains(values, value);
         }
-    }
 
-    _updateOptions() {
-        this.listbox.textContent = '';
-        let items = this.model.get('_options_labels');
-        for (let i = 0; i < items.length; i++) {
-            let item = items[i];
-            let option = document.createElement('option');
-            option.textContent = item.replace(/ /g, '\xa0'); // space -> &nbsp;
-            option.setAttribute('data-value', encodeURIComponent(item));
-            option.value = item;
-            this.listbox.appendChild(option);
-        }
-    }
-
-    events(): {[e: string]: string} {
-        return {
-            'change select': '_handle_change'
-        }
     }
 
     /**
@@ -690,6 +718,4 @@ class SelectMultipleView extends LabeledDOMWidgetView {
         this.model.set('value', values);
         this.touch();
     }
-
-    listbox: HTMLSelectElement;
 }

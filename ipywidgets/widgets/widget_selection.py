@@ -16,7 +16,7 @@ from .domwidget import LabeledWidget
 from .valuewidget import ValueWidget
 from .widget_core import CoreWidget
 from .widget import register
-from traitlets import (Unicode, Bool, Any, Dict, TraitError, CaselessStrEnum,
+from traitlets import (Unicode, Bool, Int, Any, Dict, TraitError, CaselessStrEnum,
                        Tuple, List, Union, observe, validate)
 from ipython_genutils.py3compat import unicode_type
 
@@ -242,6 +242,7 @@ class Select(_Selection):
     """Listbox that only allows one item to be selected at any given time."""
     _view_name = Unicode('SelectView').tag(sync=True)
     _model_name = Unicode('SelectModel').tag(sync=True)
+    rows = Int(5).tag(sync=True)
 
 
 @register
@@ -269,3 +270,4 @@ class SelectMultiple(_MultipleSelection):
     """
     _view_name = Unicode('SelectMultipleView').tag(sync=True)
     _model_name = Unicode('SelectMultipleModel').tag(sync=True)
+    rows = Int(5).tag(sync=True)
