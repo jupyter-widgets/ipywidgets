@@ -835,7 +835,12 @@
     margin-bottom: 0;
 }
 
-.jupyter-widgets.widget-tab .widget-tab-contents {
+.jupyter-widgets.widget-tab {
+    display: flex;
+    flex-direction: column;
+}
+
+.jupyter-widgets.widget-tab > .widget-tab-contents {
     width: 100%;
     box-sizing: border-box;
     margin: 0;
@@ -843,6 +848,7 @@
     color: var(--jp-ui-font-color1);
     border: var(--jp-border-width) solid var(--jp-border-color1);
     padding: var(--jp-widgets-container-padding);
+    flex-grow: 1;
 }
 
 .jupyter-widgets.widget-tab .widget-tab-contents .widget-tab-child.p-mod-hidden {
