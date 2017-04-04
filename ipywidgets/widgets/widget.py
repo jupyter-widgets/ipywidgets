@@ -288,6 +288,8 @@ class Widget(LoggingConfigurable):
         help="Name of the view object.").tag(sync=True)
     _view_module_version = Unicode('*',
         help="A semver requirement for the view module.").tag(sync=True)
+    _view_count = Int(read_only=True,
+        help="EXPERIMENTAL: The number of views of the model displayed in the frontend. This attribute is experimental and may change or be removed in the future.").tag(sync=True)
     comm = Instance('ipykernel.comm.Comm', allow_none=True)
 
     msg_throttle = Int(1, help="""Maximum number of msgs the front-end can send before receiving an idle msg from the back-end.""").tag(sync=True)
