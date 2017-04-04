@@ -625,13 +625,11 @@ abstract class WidgetView extends NativeView<WidgetModel> {
         this.options = parameters.options;
 
         this.once('remove', () => {
-            console.log("remove view count", this.model.get('_view_count'), this.model.get('_view_count') -1)
             this.model.set('_view_count', this.model.get('_view_count') - 1);
             this.model.save_changes()
         });
 
         this.once('displayed', () => {
-            console.log("add view count", this.model.get('_view_count'), this.model.get('_view_count') +1)
             this.model.set('_view_count', this.model.get('_view_count') + 1);
             this.model.save_changes()
         });
