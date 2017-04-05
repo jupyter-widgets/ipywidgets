@@ -6,15 +6,15 @@ Represents an unbounded float using a widget.
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
+from traitlets import (
+    Instance, Unicode, CFloat, Bool, CaselessStrEnum, Tuple, TraitError, validate, default
+)
 from .domwidget import LabeledWidget
+from .trait_types import InstanceDict
 from .valuewidget import ValueWidget
 from .widget import register, widget_serialization
 from .widget_core import CoreWidget
-from .trait_types import Color
-from .widget_int import ProgressStyle
-from traitlets import (
-    Instance, Unicode, CFloat, Bool, Int, CaselessStrEnum, Tuple, TraitError, validate, default
-)
+from .widget_int import ProgressStyle, SliderStyle
 
 
 class _Float(LabeledWidget, ValueWidget, CoreWidget):
@@ -75,8 +75,6 @@ class FloatText(_Float):
         value displayed
     description : str
         description displayed next to the text box
-    color : str Unicode color code (eg. '#C13535')
-        color of the value displayed
     """
     _view_name = Unicode('FloatTextView').tag(sync=True)
     _model_name = Unicode('FloatTextModel').tag(sync=True)
@@ -98,8 +96,6 @@ class BoundedFloatText(_BoundedFloat):
         maximal value of the range of possible values displayed
     description : str
         description displayed next to the textbox
-    color : str Unicode color code (eg. '#C13535')
-        color of the value displayed
     """
     _view_name = Unicode('FloatTextView').tag(sync=True)
     _model_name = Unicode('FloatTextModel').tag(sync=True)
@@ -129,10 +125,6 @@ class FloatSlider(_BoundedFloat):
         default is '.2f', specifier for the format function used to represent
         slider value for human consumption, modeled after Python 3's format
         specification mini-language (PEP 3101).
-    slider_color : str Unicode color code (eg. '#C13535')
-        color of the slider
-    color : str Unicode color code (eg. '#C13535')
-        color of the value displayed (if readout == True)
     """
     _view_name = Unicode('FloatSliderView').tag(sync=True)
     _model_name = Unicode('FloatSliderModel').tag(sync=True)
@@ -141,8 +133,9 @@ class FloatSlider(_BoundedFloat):
     _range = Bool(False, help="Display a range selector").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
     readout_format = Unicode('.2f', help="Format for the readout").tag(sync=True)
-    slider_color = Color(None, allow_none=True).tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
+
+    style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
 
 
 @register
@@ -177,11 +170,7 @@ class FloatProgress(_BoundedFloat):
         default_value='', allow_none=True,
         help="Use a predefined styling for the progess bar.").tag(sync=True)
 
-    style = Instance(ProgressStyle).tag(sync=True, **widget_serialization)
-
-    @default('style')
-    def _default_style(self):
-        return ProgressStyle()
+    style = InstanceDict(ProgressStyle).tag(sync=True, **widget_serialization)
 
 
 class _FloatRange(_Float):
@@ -270,10 +259,6 @@ class FloatRangeSlider(_BoundedFloatRange):
         default is '.2f', specifier for the format function used to represent
         slider value for human consumption, modeled after Python 3's format
         specification mini-language (PEP 3101).
-    slider_color : str Unicode color code (eg. '#C13535')
-        color of the slider
-    color : str Unicode color code (eg. '#C13535')
-        color of the value displayed (if readout == True)
     """
     _view_name = Unicode('FloatSliderView').tag(sync=True)
     _model_name = Unicode('FloatSliderModel').tag(sync=True)
@@ -281,5 +266,6 @@ class FloatRangeSlider(_BoundedFloatRange):
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     _range = Bool(True, help="Display a range selector").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
-    slider_color = Color(None, allow_none=True).tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)
+
+    style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)

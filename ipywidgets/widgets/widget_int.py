@@ -12,7 +12,7 @@ from .widget import register, widget_serialization
 from .widget_core import CoreWidget
 from .widget_style import Style
 from traitlets import Instance
-from .trait_types import Color
+from .trait_types import Color, InstanceDict
 from traitlets import (
     Unicode, CInt, Bool, CaselessStrEnum, Tuple, TraitError, default, validate
 )
@@ -164,11 +164,7 @@ class IntSlider(_BoundedInt):
     readout_format = Unicode('d', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
 
-    style = Instance(SliderStyle).tag(sync=True, **widget_serialization)
-
-    @default('style')
-    def _default_style(self):
-        return SliderStyle()
+    style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
 
 
 @register
@@ -192,11 +188,7 @@ class IntProgress(_BoundedInt):
         values=['success', 'info', 'warning', 'danger', ''], default_value='',
         help="""Use a predefined styling for the progess bar.""").tag(sync=True)
 
-    style = Instance(ProgressStyle).tag(sync=True, **widget_serialization)
-
-    @default('style')
-    def _default_style(self):
-        return ProgressStyle()
+    style = InstanceDict(ProgressStyle).tag(sync=True, **widget_serialization)
 
 
 class _IntRange(_Int):
@@ -280,8 +272,8 @@ class IntRangeSlider(_BoundedIntRange):
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     _range = Bool(True, help="Display a range selector").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
-    slider_color = Color(None, allow_none=True).tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)
+    style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
 
 
 @register

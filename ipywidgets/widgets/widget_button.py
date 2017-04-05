@@ -11,7 +11,7 @@ from .domwidget import DOMWidget
 from .widget import CallbackDispatcher, register, widget_serialization
 from .widget_core import CoreWidget
 from .widget_style import Style
-from .trait_types import Color
+from .trait_types import Color, InstanceDict
 
 from traitlets import Unicode, Bool, CaselessStrEnum, Instance, validate, default
 import warnings
@@ -55,11 +55,7 @@ class Button(DOMWidget, CoreWidget):
         values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
         help="""Use a predefined styling for the button.""").tag(sync=True)
 
-    style = Instance(ButtonStyle).tag(sync=True, **widget_serialization)
-
-    @default('style')
-    def _default_style(self):
-        return ButtonStyle()
+    style = InstanceDict(ButtonStyle).tag(sync=True, **widget_serialization)
 
     def __init__(self, **kwargs):
         super(Button, self).__init__(**kwargs)
