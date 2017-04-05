@@ -266,6 +266,7 @@ class FloatRangeSlider(_BoundedFloatRange):
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     _range = Bool(True, help="Display a range selector").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
+    readout_format = Unicode('.2f', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)
 
     style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
