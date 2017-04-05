@@ -477,6 +477,9 @@ class ToggleButtonsView extends LabeledDOMWidgetView {
         var value = event.target.value;
         this.model.set('value', value, { updated_view: this });
         this.touch();
+        // We also send a clicked event, since the value is only set if it changed.
+        // See https://github.com/jupyter-widgets/ipywidgets/issues/763
+        this.send({event: 'click'});
     }
 
     private _css_state: any;
