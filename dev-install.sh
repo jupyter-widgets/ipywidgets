@@ -47,6 +47,10 @@ npm install
 cd ..
 
 cd widgetsnbextension
+
+# Needed since jupyter-js-widgets 3 hasn't been published yet
+npm install ../jupyter-js-widgets
+
 npm install
 npm run update
 pip install -v -e .
@@ -60,6 +64,10 @@ cd ..
 
 if test "$skip_jupyter_lab" != yes; then
     cd jupyterlab_widgets
+
+    # needed since jupyter-js-widgets 3 hasn't been published yet
+    npm install ../jupyter-js-widgets
+
     npm install
     npm run update
     pip install -v -e .
