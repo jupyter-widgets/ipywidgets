@@ -700,7 +700,7 @@ class SelectMultipleView extends SelectView {
             .call(this.listbox.selectedOptions || [], function(option) {
                 return option.index;
             });
-        this.model.set('value', index);
+        this.model.set('index', index);
         this.touch();
     }
 }
