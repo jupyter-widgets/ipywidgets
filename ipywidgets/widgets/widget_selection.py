@@ -27,24 +27,19 @@ def _make_options(x):
 
     The input can be
     * a Mapping of labels to values
-    * an iterable of values (of which at least one is not a list or tuple of length 2)
-    * an iterable with entries that are lists or tuples of the form ('label', value)
+    * an iterable of (label, value) pairs
+    * an iterable of values, and labels will be generated
     """
-    # Return a list of key-value pairs where the keys are strings
-    # If x is a dict, convert it to list format.
+    # Check if x is a mapping of labels to values
     if isinstance(x, Mapping):
-        return [(unicode_type(k), v) for k, v in x.items()]
+        return tuple((unicode_type(k), v) for k, v in x.items())
 
-    # If any entry of x is not a list or tuple of length 2, convert
-    # the entries to unicode for the labels.
-    for y in x:
-        if not (isinstance(y, (list, tuple)) and len(y) == 2):
-            return [(unicode_type(i), i) for i in x]
+    # Check if x is an iterable of (label, value) pairs
+    if all((isinstance(i, (list, tuple)) and len(i) == 2) for i in x):
+        return tuple((unicode_type(k), v) for k, v in x)
 
-    # x is already in the correct format: a list of 2-tuples.
-    # The first element of each tuple should be unicode, this might
-    # not yet be the case.
-    return [(unicode_type(k), v) for k, v in x]
+    # Otherwise, assume x is an iterable of values
+    return tuple((unicode_type(i), i) for i in x)
 
 def findvalue(array, value, compare = lambda x, y: x == y):
     "A function that uses the compare function to return a value from the list."
@@ -68,18 +63,17 @@ class _Selection(LabeledWidget, ValueWidget, CoreWidget):
     one may set equals=np.array_equal.
     """
 
-    value = Any(help="Selected value", allow_none=True)
-    label = Unicode(help="Selected label", allow_none=True)
+    value = Any(None, help="Selected value", allow_none=True)
+    label = Unicode(None, help="Selected label", allow_none=True)
     index = Int(None, help="Selected index", allow_none=True).tag(sync=True)
 
-    options = Tuple(
-    help="""List of values, or (label, value) tuples, or a dict of {label: value} pairs that the user can select.
+    options = Any((),
+    help="""Iterable of values, (label, value) pairs, or a mapping of {label: value} pairs that the user can select.
 
-    As a convenience, if a dict or a list of values is assigned, it will be converted to a list of (label, value) pairs.
+    Any assigned value is converted to a tuple of ('label', value) pairs.
 
     The labels are the strings that will be displayed in the UI, representing the
-    actual Python choices, and should be unique. If labels are not specified, they
-    are generated from the values.
+    actual Python choices, and should be unique.
     """)
     # This being read-only means that it cannot be changed from the frontend!
     _options_labels = Tuple(read_only=True).tag(sync=True)
@@ -91,8 +85,16 @@ class _Selection(LabeledWidget, ValueWidget, CoreWidget):
 
     def __init__(self, *args, **kwargs):
         self.equals = kwargs.pop('equals', lambda x, y: x == y)
-        self._options_values = ()
+
+        # We have to make the basic options bookkeeping consistent
+        # so we don't have errors the first time validators run
+        self._initializing_traits_ = True
+        options = _make_options(kwargs.get('options', ()))
+        self.set_trait('_options_labels', tuple(i[0] for i in options))
+        self._options_values = tuple(i[1] for i in options)
+
         super(_Selection, self).__init__(*args, **kwargs)
+        self._initializing_traits_ = False
 
     @validate('options')
     def _validate_options(self, proposal):
@@ -100,14 +102,15 @@ class _Selection(LabeledWidget, ValueWidget, CoreWidget):
 
     @observe('options')
     def _propagate_options(self, change):
-        "Unselect any option"
-        self.index = None
-        self.set_trait('_options_labels', tuple(i[0] for i in change.value))
-        self._options_values = tuple(i[1] for i in change.value)
+        "Unselect any option if we aren't initializing"
+        self.set_trait('_options_labels', tuple(i[0] for i in change.new))
+        self._options_values = tuple(i[1] for i in change.new)
+        if self._initializing_traits_ is not True:
+            self.index = None
 
     @validate('index')
     def _validate_index(self, proposal):
-        if proposal.value is None or 0 <= proposal.value < len(self.options):
+        if proposal.value is None or 0 <= proposal.value < len(self._options_labels):
             return proposal.value
         else:
             raise TraitError('Invalid selection: index out of bounds')
@@ -115,10 +118,11 @@ class _Selection(LabeledWidget, ValueWidget, CoreWidget):
     @observe('index')
     def _propagate_index(self, change):
         "Propagate changes in index to the value and label properties"
-        label, value = self.options[change.value] if change.value is not None else (None, None)
-        if self.label != label:
+        label = self._options_labels[change.new] if change.new is not None else None
+        value = self._options_values[change.new] if change.new is not None else None
+        if self.label is not label:
             self.label = label
-        if self.value != value:
+        if self.value is not value:
             self.value = value
 
     @validate('value')
@@ -131,7 +135,7 @@ class _Selection(LabeledWidget, ValueWidget, CoreWidget):
 
     @observe('value')
     def _propagate_value(self, change):
-        index = self._options_values.index(change.value) if change.value is not None else None
+        index = self._options_values.index(change.new) if change.new is not None else None
         if self.index != index:
             self.index = index
 
@@ -143,9 +147,10 @@ class _Selection(LabeledWidget, ValueWidget, CoreWidget):
 
     @observe('label')
     def _propagate_label(self, change):
-        index = self._options_labels.index(change.value) if change.value is not None else None
+        index = self._options_labels.index(change.new) if change.new is not None else None
         if self.index != index:
             self.index = index
+
 
 class _MultipleSelection(LabeledWidget, ValueWidget, CoreWidget):
     """Base class for multiple Selection widgets
@@ -166,14 +171,13 @@ class _MultipleSelection(LabeledWidget, ValueWidget, CoreWidget):
     label = Tuple(help="Selected labels")
     index = Tuple(help="Selected indices").tag(sync=True)
 
-    options = Tuple(
-    help="""List of values, or (label, value) tuples, or a dict of {label: value} pairs that the user can select.
+    options = Any(
+    help="""Iterable of values, (label, value) pairs, or a mapping of {label: value} pairs that the user can select.
 
-    As a convenience, if a dict or a list of values is assigned, it will be converted to a list of (label, value) pairs.
+    Any assigned value is converted to a tuple of ('label', value) pairs.
 
     The labels are the strings that will be displayed in the UI, representing the
-    actual Python choices, and should be unique. If labels are not specified, they
-    are generated from the values.
+    actual Python choices, and should be unique.
     """)
     # This being read-only means that it cannot be changed from the frontend!
     _options_labels = Tuple(read_only=True).tag(sync=True)
@@ -185,8 +189,16 @@ class _MultipleSelection(LabeledWidget, ValueWidget, CoreWidget):
 
     def __init__(self, *args, **kwargs):
         self.equals = kwargs.pop('equals', lambda x, y: x == y)
-        self._options_values = ()
+
+        # We have to make the basic options bookkeeping consistent
+        # so we don't have errors the first time validators run
+        self._initializing_traits_ = True
+        options = _make_options(kwargs.get('options', ()))
+        self.set_trait('_options_labels', tuple(i[0] for i in options))
+        self._options_values = tuple(i[1] for i in options)
+
         super(_MultipleSelection, self).__init__(*args, **kwargs)
+        self._initializing_traits_ = False
 
     @validate('options')
     def _validate_options(self, proposal):
@@ -195,14 +207,15 @@ class _MultipleSelection(LabeledWidget, ValueWidget, CoreWidget):
     @observe('options')
     def _propagate_options(self, change):
         "Unselect any option"
-        self.index = ()
-        self.set_trait('_options_labels', tuple(i[0] for i in change.value))
-        self._options_values = tuple(i[1] for i in change.value)
+        if self._initializing_traits_ is not True:
+            self.index = ()
+        self.set_trait('_options_labels', tuple(i[0] for i in change.new))
+        self._options_values = tuple(i[1] for i in change.new)
 
     @validate('index')
     def _validate_index(self, proposal):
         "Check the range of each proposed index."
-        if all(0 <= i < len(self.options) for i in proposal.value):
+        if all(0 <= i < len(self._options_labels) for i in proposal.value):
             return proposal.value
         else:
             raise TraitError('Invalid selection: index out of bounds')
@@ -210,8 +223,8 @@ class _MultipleSelection(LabeledWidget, ValueWidget, CoreWidget):
     @observe('index')
     def _propagate_index(self, change):
         "Propagate changes in index to the value and label properties"
-        label = tuple(self._options_labels[i] for i in change.value)
-        value = tuple(self._options_values[i] for i in change.value)
+        label = tuple(self._options_labels[i] for i in change.new)
+        value = tuple(self._options_values[i] for i in change.new)
         # we check equality so we can avoid validation if possible
         if self.label != label:
             self.label = label
@@ -228,7 +241,7 @@ class _MultipleSelection(LabeledWidget, ValueWidget, CoreWidget):
 
     @observe('value')
     def _propagate_value(self, change):
-        index = tuple(self._options_values.index(i) for i in change.value)
+        index = tuple(self._options_values.index(i) for i in change.new)
         if self.index != index:
             self.index = index
 
@@ -240,7 +253,7 @@ class _MultipleSelection(LabeledWidget, ValueWidget, CoreWidget):
 
     @observe('label')
     def _propagate_label(self, change):
-        index = tuple(self._options_labels.index(i) for i in change.value)
+        index = tuple(self._options_labels.index(i) for i in change.new)
         if self.index != index:
             self.index = index
 
@@ -286,9 +299,38 @@ class Select(_Selection):
     _model_name = Unicode('SelectModel').tag(sync=True)
     rows = Int(5).tag(sync=True)
 
+@register
+class _SelectionNonempty(_Selection):
+    """Slider to select a single item from a list or dictionary."""
+    _view_name = Unicode('SelectionSliderView').tag(sync=True)
+    _model_name = Unicode('SelectionSliderModel').tag(sync=True)
+
+    value = Any(help="Selected value")
+    label = Unicode(help="Selected label")
+    index = Int(help="Selected index").tag(sync=True)
+
+    def __init__(self, **kwargs):
+
+        # if a value is not selected, select the first one
+        if ('index' not in kwargs
+            and 'value' not in kwargs
+            and 'label' not in kwargs):
+            options = _make_options(kwargs['options'])
+            kwargs['index'] = 0
+            kwargs['label'], kwargs['value'] = options[0]
+
+        super(_SelectionNonempty, self).__init__(**kwargs)
+
+    @observe('options')
+    def _propagate_options(self, change):
+        "Unselect any option if we aren't initializing"
+        self.set_trait('_options_labels', tuple(i[0] for i in change.new))
+        self._options_values = tuple(i[1] for i in change.new)
+        if self._initializing_traits_ is not True:
+            self.index = 0
 
 @register
-class SelectionSlider(_Selection):
+class SelectionSlider(_SelectionNonempty):
     """Slider to select a single item from a list or dictionary."""
     _view_name = Unicode('SelectionSliderView').tag(sync=True)
     _model_name = Unicode('SelectionSliderModel').tag(sync=True)
@@ -300,7 +342,6 @@ class SelectionSlider(_Selection):
         help="Display the current selected label next to the slider").tag(sync=True)
     continuous_update = Bool(True,
         help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
-
 
 @register
 class SelectMultiple(_MultipleSelection):
