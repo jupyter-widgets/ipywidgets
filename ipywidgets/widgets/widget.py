@@ -11,9 +11,8 @@ import sys
 
 from IPython.core.getipython import get_ipython
 from ipykernel.comm import Comm
-from traitlets.config import LoggingConfigurable
 from traitlets.utils.importstring import import_item
-from traitlets import Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default
+from traitlets import HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default
 from ipython_genutils.py3compat import string_types, PY3
 from IPython.display import display
 
@@ -121,8 +120,19 @@ def _remove_buffers(state):
     state = _separate_buffers(state, [], buffer_paths, buffers)
     return state, buffer_paths, buffers
 
+class LoggingHasTraits(HasTraits):
+    """A parent class for HasTraits that log.
+    Subclasses have a log trait, and the default behavior
+    is to get the logger from the currently running Application.
+    """
+    log = Instance('logging.Logger')
+    @default('log')
+    def _log_default(self):
+        from traitlets import log
+        return log.get_logger()
 
-class CallbackDispatcher(LoggingConfigurable):
+
+class CallbackDispatcher(LoggingHasTraits):
     """A structure for registering and running callbacks"""
     callbacks = List()
 
@@ -215,7 +225,7 @@ def register(widget):
                                  widget)
     return widget
 
-class Widget(LoggingConfigurable):
+class Widget(LoggingHasTraits):
     #-------------------------------------------------------------------------
     # Class attributes
     #-------------------------------------------------------------------------
@@ -498,7 +508,7 @@ class Widget(LoggingConfigurable):
             if name in self.keys and self._should_send_property(name, change['new']):
                 # Send new state to front-end
                 self.send_state(key=name)
-        LoggingConfigurable.notify_change(self, change)
+        super(Widget, self).notify_change(change)
 
     #-------------------------------------------------------------------------
     # Support methods
