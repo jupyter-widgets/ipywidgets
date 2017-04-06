@@ -87,7 +87,8 @@ class DropdownView extends LabeledDOMWidgetView {
         this.listbox.disabled = this.model.get('disabled');
 
         // Select the correct element
-        this.listbox.selectedIndex = this.model.get('index');
+        let index = this.model.get('index');
+        this.listbox.selectedIndex = index === null ? -1 : index;
         return super.update();
     }
 
@@ -114,7 +115,7 @@ class DropdownView extends LabeledDOMWidgetView {
      * Handle when a new value is selected.
      */
     _handle_change() {
-        this.model.set('index', this.listbox.selectedIndex);
+        this.model.set('index', this.listbox.selectedIndex === -1 ? null : this.listbox.selectedIndex);
         this.touch();
     }
 
@@ -172,7 +173,8 @@ class SelectView extends LabeledDOMWidgetView {
     }
 
     updateSelection() {
-        this.listbox.selectedIndex = this.model.get('index');
+        let index = this.model.get('index');
+        this.listbox.selectedIndex = index === null ? -1 : index;
     }
 
     _updateOptions() {
