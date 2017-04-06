@@ -70,7 +70,7 @@ class _Selection(LabeledWidget, ValueWidget, CoreWidget):
 
     value = Any(help="Selected value", allow_none=True)
     label = Unicode(help="Selected label", allow_none=True)
-    index = Int(help="Selected index", allow_none=True).tag(sync=True)
+    index = Int(None, help="Selected index", allow_none=True).tag(sync=True)
 
     options = Tuple(
     help="""List of values, or (label, value) tuples, or a dict of {label: value} pairs that the user can select.
