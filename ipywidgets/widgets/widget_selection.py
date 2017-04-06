@@ -46,10 +46,10 @@ def _make_options(x):
     # not yet be the case.
     return [(unicode_type(k), v) for k, v in x]
 
-def findvalue(array, value, comparison = lambda x, y: x == y):
-    "A function that uses the comparison to return a value from the list."
+def findvalue(array, value, compare = lambda x, y: x == y):
+    "A function that uses the compare function to return a value from the list."
     try:
-        return next(x for i, x in enumerate(array) if comparison(x, value))
+        return next(x for x in array if compare(x, value))
     except StopIteration:
         raise ValueError('%r not in array'%value)
 
