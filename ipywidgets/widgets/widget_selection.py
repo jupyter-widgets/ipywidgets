@@ -20,32 +20,6 @@ from traitlets import (Unicode, Bool, Int, Any, Dict, TraitError, CaselessStrEnu
                        Tuple, List, Union, observe, validate)
 from ipython_genutils.py3compat import unicode_type
 
-def _value_to_label(value, obj):
-    """Convert a value to a label, given a _Selection object.
-
-    Raises a KeyError if the value is not found."""
-    # We can't rely on _options_labels and _options_values since we
-    # might be called before the options are validated and those are filled.
-    # TODO: make a separate validation function so this doesn't have
-    # to redo the work of parsing the options object.
-    options = obj._make_options(obj.options)
-    if len(obj.options) == 0 and value is None:
-        return ''
-    else:
-        try:
-            # return the first label whose value is equal to the desired value
-            return next(l for (l, v) in options if obj.equals(v, value))
-        except StopIteration:
-            raise KeyError(value)
-
-def _label_to_value(label, obj):
-    """Convert a label to a value, given a _Selection object."""
-    if len(obj._options_dict) == 0 and label == '':
-        return None
-    else:
-        return obj._options_dict[label]
-
-
 class _Selection(LabeledWidget, ValueWidget, CoreWidget):
     """Base class for Selection widgets
 
@@ -64,22 +38,21 @@ class _Selection(LabeledWidget, ValueWidget, CoreWidget):
     be unique.
     """
 
-    value = Any(help="Selected value").tag(sync=True,
-                                           to_json=_value_to_label,
-                                           from_json=_label_to_value)
+    value = Any(help="Selected value", allow_none=True)
+    label = Unicode(help="Selected label", allow_none=True)
+    index = Int(help="Selected index", allow_none=True).tag(sync=True)
 
-    options = Union([List(), Dict()],
+    options = Tuple(
     help="""List of values, or (label, value) tuples, or a dict of {label: value} pairs that the user can select.
+
+    As a convenience, if a dict or a list of values is assigned, it will be converted to a list of (label, value) pairs.
 
     The labels are the strings that will be displayed in the UI, representing the
     actual Python choices, and should be unique. If labels are not specified, they
     are generated from the values.
-
-    The keys are also available as _options_labels.
     """)
-    _options_dict = Dict(read_only=True)
+    # This being read-only means that it cannot be changed from the frontend!
     _options_labels = Tuple(read_only=True).tag(sync=True)
-    _options_values = Tuple(read_only=True)
 
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
@@ -87,7 +60,7 @@ class _Selection(LabeledWidget, ValueWidget, CoreWidget):
     disabled = Bool(help="Enable or disable user changes").tag(sync=True)
 
     def __init__(self, *args, **kwargs):
-        self.equals = kwargs.pop('equals', lambda x, y: x == y)
+        self.equals = kwargs.pop('equals', lambda x,y: x == y)
         super(_Selection, self).__init__(*args, **kwargs)
 
     def _make_options(self, x):
@@ -116,45 +89,101 @@ class _Selection(LabeledWidget, ValueWidget, CoreWidget):
         # not yet be the case.
         return [(unicode_type(k), v) for k, v in x]
 
-    @validate('options')
-    def _validate_options(self, proposal):
-        """Handles when the options tuple has been changed.
-
-        Setting options with a dict implies setting option labels from the keys of the dict.
-        """
-        new = proposal['value']
-        options = self._make_options(new)
-        self.set_trait('_options_dict', dict(options))
-        self.set_trait('_options_labels', [ i[0] for i in options ])
-        self.set_trait('_options_values', [ i[1] for i in options ])
-        return new
-
     @observe('options')
-    def _value_in_options(self, change):
-        "Ensure the value is an option; if not, set to the first value"
-        # ensure that the chosen value is still one of the options
+    def _propagate_options(self, change):
+        "Set index to the first value, or None if no values"
+        options = self._make_options(change.value)
+        self.set_trait('_options_labels', [i[0] for i in options])
         if len(self.options) == 0:
-            self.value = None
+            self.index = None
         else:
-            try:
-                _value_to_label(self.value, self)
-            except KeyError:
-                self.value = self._options_values[0]
+            if self.index != 0:
+                # label and value will be set automatically
+                self.index = 0
+            else:
+                # we must still reset the label and value
+                self.label, self.value = self.options[0]
+
+    @validate('index')
+    def _validate_index(self, proposal):
+        new = proposal.value
+        if new is None:
+            return new
+        elif 0 <= new < len(self.options):
+            return new
+        else:
+            raise TraitError('Invalid selection: index out of bounds')
+
+    @observe('index')
+    def _propagate_index(self, change):
+        "Propagate changes in index to the value and label properties"
+        if change.value is None:
+            if self.value is not None:
+                self.value = None
+            if self.label is not None:
+                self.label = None
+        else:
+            label, value = self.options[change.value]
+            if self.label != label:
+                self.label = label
+            if not self.equals(self.value, value):
+                self.value = value
 
     @validate('value')
     def _validate_value(self, proposal):
-        value = proposal['value']
+        value = proposal.value
+        if len(self.options) == 0:
+            if value is not None:
+                raise TraitError('Invalid selection: empty options')
+        else:
+            try:
+                next(i for i, x in enumerate(self.options) if self.equals(x[1], value))
+            except StopIteration:
+                raise TraitError('Invalid selection: value not found')
+        return value
+
+    @observe('value')
+    def _propagate_value(self, change):
+        value = change.value
+        if value is None:
+            if self.index is not None:
+                self.index = None
+        else:
+            try:
+                index = next(i for i, x in enumerate(self.options) if self.equals(x[1], value))
+                if self.index != index:
+                    self.index = index
+            except StopIteration:
+                raise TraitError('Invalid selection: value not found')
+
+    @validate('label')
+    def _validate_label(self, proposal):
+        value = proposal.value
         if len(self.options) == 0:
             if value is None:
                 return value
             else:
-                raise TraitError('Invalid selection: empty options list')
+                raise TraitError('Invalid selection: empty options')
         else:
             try:
-                _value_to_label(value, self)
-                return value
-            except KeyError:
-                raise TraitError('Invalid selection')
+                self._options_labels.index(value)
+            except ValueError:
+                raise TraitError('Invalid selection: label not found')
+            return value
+
+    @observe('label')
+    def _propagate_label(self, change):
+        value = change.value
+        if value is None:
+            if self.index is not None:
+                self.index = None
+        else:
+            try:
+                index = self._options_labels.index(value)
+                if self.index != index:
+                    self.index = index
+            except ValueError:
+                raise TraitError('Invalid selection: label not found')
 
 
 def _values_to_labels(values, obj):
