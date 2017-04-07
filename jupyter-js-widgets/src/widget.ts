@@ -307,37 +307,32 @@ class WidgetModel extends Backbone.Model {
      */
     sync(method, model, options: any = {}): any {
         // the typing is to return `any` since the super.sync method returns a JqXHR, but we just return false if there is an error.
-        var error = options.error || function() {
-            console.error('Backbone sync error:', arguments);
-        };
         if (this.comm === undefined) {
-            error();
-            return false;
+            throw 'Syncing error: no comm channel defined';
         }
 
-        var attrs = (method === 'patch') ? options.attrs : model.get_state(options.drop_defaults);
+        let attrs = (method === 'patch') ? options.attrs : model.get_state(options.drop_defaults);
 
         // The state_lock lists attributes that are currently being changed
-        // right now from a kernel message.
-        // We don't want to send these non-changes back to the kernel, so we
-        // delete them out of attrs, (but we only delete them if the value
-        // hasn't changed from the value stored in the state_lock).
+        // right now from a kernel message. We don't want to send these
+        // non-changes back to the kernel, so we delete them out of attrs if
+        // they haven't changed from their state_lock value
         if (this.state_lock !== null) {
-            var keys = Object.keys(this.state_lock);
-            for (var i=0; i<keys.length; i++) {
-                var key = keys[i];
+            for (const key of Object.keys(this.state_lock)) {
                 if (attrs[key] === this.state_lock[key]) {
                     delete attrs[key];
                 }
             }
         }
 
-        if (_.size(attrs) > 0) {
+        let msgState = this.serialize(attrs);
+
+        if (Object.keys(msgState).length > 0) {
 
             // If this message was sent via backbone itself, it will not
             // have any callbacks.  It's important that we create callbacks
             // so we can listen for status messages, etc...
-            var callbacks = options.callbacks || this.callbacks();
+            let callbacks = options.callbacks || this.callbacks();
 
             // Check throttle.
             if (this.pending_msgs >= (this.get('msg_throttle') || 1)) {
@@ -347,61 +342,71 @@ class WidgetModel extends Backbone.Model {
                 // Combine updates if it is a 'patch' sync, otherwise replace updates
                 switch (method) {
                     case 'patch':
-                        this.msg_buffer = _.extend(this.msg_buffer || {}, attrs);
+                        this.msg_buffer = _.extend(this.msg_buffer || {}, msgState);
                         break;
                     case 'update':
                     case 'create':
-                        this.msg_buffer = attrs;
+                        this.msg_buffer = msgState;
                         break;
                     default:
-                        error();
-                        return false;
+                        throw 'unrecognized syncing method';
                 }
                 this.msg_buffer_callbacks = callbacks;
-
             } else {
                 // We haven't exceeded the throttle, send the message like
                 // normal.
                 this.send_sync_message(attrs, callbacks);
-                this.pending_msgs++;
                 // Since the comm is a one-way communication, assume the message
                 // arrived and was processed successfully.
                 // Don't call options.success since we don't have a model back from
                 // the server. Note that this means we don't have the Backbone
                 // 'sync' event.
-
             }
         }
     }
 
-    send_sync_message(attrs, callbacks) {
-        // prepare and send a comm message syncing attrs
-        // first, build a state dictionary with key=the attribute and the value
-        // being the value or the promise of the serialized value
-        var serializers = (this.constructor as typeof WidgetModel).serializers;
-        if (serializers) {
-            for (var k in attrs) {
-                if (serializers[k] && serializers[k].serialize) {
-                    attrs[k] = (serializers[k].serialize)(attrs[k], this);
-                }
+    /**
+     * Serialize widget state.
+     *
+     * A serializer is a function which takes in a state attribute and a widget,
+     * and synchronously returns a JSONable object. The returned object will
+     * have toJSON called if possible, and the final result should be a
+     * primitive object that is a snapshot of the widget state that may have
+     * binary array buffers.
+     */
+    serialize(state) {
+        const serializers = (this.constructor as typeof WidgetModel).serializers || {};
+        for (const k of state) {
+            if (serializers[k] && serializers[k].serialize) {
+                state[k] = (serializers[k].serialize)(state[k], this);
+            } else {
+                // the default serializer just deep-copies the object
+                // TODO: this won't work if the object is a primitive object with binary buffers!
+                // How should we handle those? One way is to declare a serializer for fields
+                // that could have binary that copies what fields it can, and makes a decision
+                // about whether to copy the ArrayBuffer
+                state[k] = JSON.parse(JSON.stringify(state[k]));
+            }
+            if (state[k].toJSON) {
+                state[k] = state[k].toJSON();
             }
         }
-        utils.resolvePromisesDict(attrs).then((state) => {
-            // get binary values, then send
-            var keys = Object.keys(state);
-            // this function goes through lists and object and removes arraybuffers
-            // they will be transferred separately, since they don't json'ify
-            // on the python side the inverse happens
-            var split = utils.remove_buffers(state);
+        return state;
+    }
+
+    send_sync_message(state, callbacks) {
+        try {
+            // split out the binary buffers
+            let split = utils.remove_buffers(state);
             this.comm.send({
                 method: 'update',
                 state: split.state,
                 buffer_paths: split.buffer_paths
             }, callbacks, {}, split.buffers);
-        }).catch((error) => {
-            this.pending_msgs--;
-            return (utils.reject('Could not send widget sync message', true))(error);
-        });
+            this.pending_msgs++;
+        } catch (e) {
+            console.error('Could not send widget sync message', e);
+        }
     }
 
     /**
