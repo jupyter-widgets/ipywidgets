@@ -18,7 +18,7 @@ class WidgetTraitTuple(Tuple):
     info_text = "A (Widget, 'trait_name') pair"
 
     def __init__(self, **kwargs):
-        super(WidgetTraitTuple, self).__init__(Instance(Widget), Unicode, **kwargs)
+        super(WidgetTraitTuple, self).__init__(Instance(Widget), Unicode(), **kwargs)
 
     def validate_elements(self, obj, value):
         value = super(WidgetTraitTuple, self).validate_elements(obj, value)
