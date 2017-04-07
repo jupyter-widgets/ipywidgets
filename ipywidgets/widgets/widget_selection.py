@@ -93,6 +93,11 @@ class _Selection(LabeledWidget, ValueWidget, CoreWidget):
         self.set_trait('_options_labels', tuple(i[0] for i in options))
         self._options_values = tuple(i[1] for i in options)
 
+        # Select the first item by default, if we can
+        if 'index' not in kwargs and 'value' not in kwargs and 'label' not in kwargs:
+            kwargs['index'] = 0 if len(options) > 0 else None
+            kwargs['label'], kwargs['value'] = options[0] if len(options) > 0 else (None, None)
+
         super(_Selection, self).__init__(*args, **kwargs)
         self._initializing_traits_ = False
 
@@ -106,7 +111,7 @@ class _Selection(LabeledWidget, ValueWidget, CoreWidget):
         self.set_trait('_options_labels', tuple(i[0] for i in change.new))
         self._options_values = tuple(i[1] for i in change.new)
         if self._initializing_traits_ is not True:
-            self.index = None
+            self.index = 0 if len(change.new) > 0 else None
 
     @validate('index')
     def _validate_index(self, proposal):
@@ -309,25 +314,12 @@ class _SelectionNonempty(_Selection):
     label = Unicode(help="Selected label")
     index = Int(help="Selected index").tag(sync=True)
 
-    def __init__(self, **kwargs):
-
-        # if a value is not selected, select the first one
-        if ('index' not in kwargs
-            and 'value' not in kwargs
-            and 'label' not in kwargs):
-            options = _make_options(kwargs['options'])
-            kwargs['index'] = 0
-            kwargs['label'], kwargs['value'] = options[0]
-
-        super(_SelectionNonempty, self).__init__(**kwargs)
-
-    @observe('options')
-    def _propagate_options(self, change):
-        "Unselect any option if we aren't initializing"
-        self.set_trait('_options_labels', tuple(i[0] for i in change.new))
-        self._options_values = tuple(i[1] for i in change.new)
-        if self._initializing_traits_ is not True:
-            self.index = 0
+    @validate('options')
+    def _validate_options(self, proposal):
+        options = _make_options(proposal.value)
+        if len(options) == 0:
+            raise TraitError("Option list must be nonempty")
+        return options
 
 @register
 class SelectionSlider(_SelectionNonempty):
