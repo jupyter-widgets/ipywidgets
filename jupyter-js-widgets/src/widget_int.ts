@@ -123,7 +123,7 @@ class IntSliderView extends LabeledDOMWidgetView {
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        if (options === undefined || options.updated_view != this) {
+        if (options === undefined || options.updated_view !== this) {
             // JQuery slider option keys.  These keys happen to have a
             // one-to-one mapping with the corresponding keys of the model.
             var jquery_slider_keys = ['step', 'disabled'];
@@ -183,13 +183,13 @@ class IntSliderView extends LabeledDOMWidgetView {
                 this.readout.textContent = this.valueToString(value);
             }
 
-            if(this.model.get('value')!=value) {
+            if(this.model.get('value') !== value) {
                 this.model.set('value', value, {updated_view: this});
                 this.touch();
             }
 
             // Use the right CSS classes for vertical & horizontal sliders
-            if (orientation=='vertical') {
+            if (orientation==='vertical') {
                 this.el.classList.remove('widget-hslider');
                 this.el.classList.add('widget-vslider');
                 this.el.classList.remove('widget-inline-hbox');
@@ -274,7 +274,7 @@ class IntSliderView extends LabeledDOMWidgetView {
     }
 
     handleKeyDown(e) {
-        if (e.keyCode == 13) { /* keyboard keycodes `enter` */
+        if (e.keyCode === 13) { /* keyboard keycodes `enter` */
             e.preventDefault();
             this.handleTextChange();
         }
@@ -307,8 +307,8 @@ class IntSliderView extends LabeledDOMWidgetView {
                 value = [Math.max(Math.min(value[0], vmax), vmin),
                           Math.max(Math.min(value[1], vmax), vmin)];
 
-                if ((value[0] != this.model.get('value')[0]) ||
-                    (value[1] != this.model.get('value')[1])) {
+                if ((value[0] !== this.model.get('value')[0]) ||
+                    (value[1] !== this.model.get('value')[1])) {
                     this.readout.textContent = this.valueToString(value);
                     this.model.set('value', value, {updated_view: this});
                     this.touch();
@@ -324,7 +324,7 @@ class IntSliderView extends LabeledDOMWidgetView {
             } else {
                 value = Math.max(Math.min(value as number, vmax), vmin);
 
-                if (value != this.model.get('value')) {
+                if (value !== this.model.get('value')) {
                     this.readout.textContent = this.valueToString(value);
                     this.model.set('value', value, {updated_view: this});
                     this.touch();
@@ -420,7 +420,7 @@ class IntTextView extends LabeledDOMWidgetView {
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        if (options === undefined || options.updated_view != this) {
+        if (options === undefined || options.updated_view !== this) {
             var value: number = this.model.get('value');
 
             if (this._parse_value(this.textbox.value) !== value) {
@@ -497,7 +497,7 @@ class IntTextView extends LabeledDOMWidgetView {
             }
 
             // Apply the value if it has changed.
-            if (numericalValue != this.model.get('value')) {
+            if (numericalValue !== this.model.get('value')) {
 
                 // Calling model.set will trigger all of the other views of the
                 // model to update.
