@@ -17,6 +17,5 @@ dependencies:
   - docutils<0.13.1
   - jupyter_sphinx
   - git+https://github.com/spatialaudio/nbsphinx.git#egg=nbsphinx
-  - sphinx_rtd_theme==0.1.10-alpha
   - python-dateutil
   - recommonmark==0.4.0
