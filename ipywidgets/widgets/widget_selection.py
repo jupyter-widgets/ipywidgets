@@ -306,10 +306,8 @@ class Select(_Selection):
 
 @register
 class _SelectionNonempty(_Selection):
-    """Slider to select a single item from a list or dictionary."""
-    _view_name = Unicode('SelectionSliderView').tag(sync=True)
-    _model_name = Unicode('SelectionSliderModel').tag(sync=True)
-
+    """Selection that is guaranteed to have a value selected."""
+    # don't allow None to be an option.
     value = Any(help="Selected value")
     label = Unicode(help="Selected label")
     index = Int(help="Selected index").tag(sync=True)
