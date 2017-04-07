@@ -170,7 +170,7 @@ class IntSliderView extends LabeledDOMWidgetView {
             if (this.model.get('_range')) {
                 // values for the range case are validated python-side in
                 // _Bounded{Int,Float}RangeWidget._validate
-                this.$slider.slider('option', 'values', value);
+                this.$slider.slider('option', 'values', value.slice());
                 this.readout.textContent = this.valueToString(value);
             } else {
                 if(value > max) {
