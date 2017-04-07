@@ -3,6 +3,13 @@ ipywidgets changelog
 
 A summary of changes in ipywidgets. For more detailed information, see [GitHub](https://github.com/jupyter-widgets/ipywidgets).
 
+
+7.0
+---
+Major user-visible changes in ipywidgets 7.0 include:
+
+- The `Label` widget is now right-aligned and has no width restriction: [#1269](https://github.com/jupyter-widgets/ipywidgets/pull/1269)
+
 6.0
 ---
 
