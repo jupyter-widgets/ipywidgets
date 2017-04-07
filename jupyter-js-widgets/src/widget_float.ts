@@ -81,8 +81,8 @@ class FloatSliderView extends IntSliderView {
 
     _parse_value = parseFloat
 
-    // matches: whitespace?, float, whitespace?, [-:], whitespace?, float
-    _range_regex = /^\s*([+-]?(?:\d*\.?\d+|\d+\.)(?:[eE][+-]?\d+)?)\s*[-:]\s*([+-]?(?:\d*\.?\d+|\d+\.)(?:[eE][+-]?\d+)?)/
+    // matches: whitespace?, float, whitespace?, (hyphen, colon, or en-dash), whitespace?, float
+    _range_regex = /^\s*([+-]?(?:\d*\.?\d+|\d+\.)(?:[eE][-:]?\d+)?)\s*[-:–]\s*([+-]?(?:\d*\.?\d+|\d+\.)(?:[eE][+-]?\d+)?)/
 
 }
 

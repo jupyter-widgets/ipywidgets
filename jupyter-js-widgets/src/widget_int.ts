@@ -385,7 +385,8 @@ class IntSliderView extends LabeledDOMWidgetView {
     readout: HTMLDivElement;
     model: IntSliderModel;
     _parse_value = parseInt;
-    _range_regex = /^\s*([+-]?\d+)\s*[-:]\s*([+-]?\d+)/;
+    // range numbers can be separated by a hyphen, colon, or an en-dash
+    _range_regex = /^\s*([+-]?\d+)\s*[-:–]\s*([+-]?\d+)/;
 }
 
 export
