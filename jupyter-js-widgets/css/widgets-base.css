@@ -251,11 +251,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     line-height: var(--jp-widgets-inline-height);
-    max-width: var(--jp-widgets-inline-width);
-}
-
-.jupyter-widgets.widget-label {
-    width: var(--jp-widgets-inline-width-tiny);
+    text-align: right;
 }
 
 .widget-inline-hbox .widget-label {
