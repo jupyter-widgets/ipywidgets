@@ -69,7 +69,8 @@ var OutputView = widgets.DOMWidgetView.extend({
         var renderOutput = function(outputArea) {
             that.output_area = new outputArea.OutputArea({
                 selector: that.el,
-                config: that.options.cell.config,
+                // TODO: get cell config?
+                config: {OutputArea: {}},
                 prompt_area: false,
                 events: that.model.widget_manager.notebook.events,
                 keyboard_manager: that.model.widget_manager.keyboard_manager });
