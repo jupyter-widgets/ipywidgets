@@ -86,16 +86,7 @@ var OutputView = widgets.DOMWidgetView.extend({
             }, that)
         }
 
-        if (requirejs.defined("notebook/js/outputarea")) {
-            // Notebook 4.x
-            requirejs(["notebook/js/outputarea"], renderOutput)
-        } else {
-            // Notebook 5.x
-            requirejs(["notebook"], function(notebookApp) {
-                var outputArea = notebookApp["notebook/js/outputarea"];
-                renderOutput(outputArea);
-            });
-        }
+        requirejs(["notebook/js/outputarea"], renderOutput)
     },
 });
 
