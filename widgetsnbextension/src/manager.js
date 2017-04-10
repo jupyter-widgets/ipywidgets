@@ -65,27 +65,15 @@ var WidgetManager = function (comm_manager, notebook) {
                 }, widget_info.msg.content.data.state);
             }));
         }).then(function() {
-            var cells = that.notebook.get_cells();
-            var outputs, cell;
-            for (var i = 0; i < cells.length; ++i) {
-                cell = cells[i];
-                if (cell.output_area) {
-                    outputs = cell.output_area.outputs;
-                    for (var j = 0; j < outputs.length; ++j) {
-                        var out = outputs[j];
-                        if (out.output_type==="display_data" && out.data['application/vnd.jupyter.widget-view+json']) {
-                            var model_promise = that.get_model(out.data['application/vnd.jupyter.widget-view+json'].model_id);
-                            if (model_promise !== undefined) {
-                                model_promise.then((function(cell_index) {
-                                    return function (model) {
-                                        that.display_model(undefined, model, { cell_index: cell_index });
-                                    };
-                                })(i));
-                            }
-                        }
-                    }
+            // Rerender cells that have widget data
+            that.notebook.get_cells().forEach(function(cell) {
+                var rerender = cell.output_area && cell.output_area.outputs.find(function(output) {
+                    return output.data && output.data[MIME_TYPE];
+                });
+                if (rerender) {
+                    that.notebook.render_cell_output(cell);
                 }
-            }
+            });
         });
     });
 

@@ -104,33 +104,6 @@ function register_events(Jupyter, events, outputarea) {
     });
 
 
-    // Rerender cells with the appropriate mime types
-    Jupyter.notebook.get_cells().forEach(function(cell) {
-        var rerender = cell.output_area && cell.output_area.outputs.find(function(output) {
-            return output.data && output.data[MIME_TYPE];
-        });
-        if (rerender) {
-            Jupyter.notebook.render_cell_output(cell);
-        }
-    });
-
-/*    var cells = Jupyter.notebook.get_cells();
-    for (var i = 0; i < cells.length; i++) {
-        handle_cell(cells[i]);
-    }
-
-    events.on('create.Cell', function(event, data) {
-        handle_cell(data.cell);
-    });
-
-    var clearWidgetArea = function(event, data) {
-        data.cell.widgetarea && data.cell.widgetarea.clear();
-    }
-    events.on('delete.Cell', clearWidgetArea);
-    events.on('execute.CodeCell', clearWidgetArea);
-    events.on('clear_output.CodeCell', clearWidgetArea);
-*/
-
 /* Stuff to still do things with
 
     events.on('resize.Cell', function(event, data) {
