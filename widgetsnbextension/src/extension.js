@@ -10,10 +10,14 @@ window['requirejs'].config({
     }
 });
 
+var MIME_TYPE = 'application/vnd.jupyter.widget-view+json';
+var CLASS_NAME = 'jupyter-widgets-output';
+
 var mngr = require("./manager");
 var widgetarea = require("./widgetarea");
 require("./save_state");
 require("./embed_widgets");
+var PhosphorWidget = require("@phosphor/widgets");
 
 /**
  * Create a widget manager for a kernel instance.
@@ -46,7 +50,7 @@ var handle_cell = function(cell) {
     }
 };
 
-function register_events(Jupyter, events) {
+function register_events(Jupyter, events, outputarea) {
     // If a kernel already exists, create a widget manager.
     if (Jupyter.notebook && Jupyter.notebook.kernel) {
         handle_kernel(Jupyter, Jupyter.notebook.kernel);
@@ -56,8 +60,61 @@ function register_events(Jupyter, events) {
         handle_kernel(Jupyter, data.kernel);
     });
 
-    // Create widget areas for cells that already exist.
-    var cells = Jupyter.notebook.get_cells();
+    /**
+     * Render data to the output area
+     */
+    function render(data, node) {
+        // data is a model id
+        // TODO: Get a handle on the widget manager
+
+        var manager = Jupyter.notebook.kernel.widget_manager;
+        if (!manager) {
+            node.textContent = "Missing widget manager";
+            return;
+        }
+
+        var model = manager.get_model(data.model_id);
+        if (model) {
+            model.then(function(model) {
+                return manager.display_model(void 0, model, void 0);
+            }).then(function(pwidget) {
+                PhosphorWidget.Widget.attach(pwidget, node);
+                //node.textContent = "Rendered widget! "+JSON.stringify(data);
+            });
+        } else {
+            node.textContent = "Widget not found: "+JSON.stringify(data);
+        }
+    }
+
+
+    var append_mime = function(json, md, element) {
+        var type = MIME_TYPE;
+        var toinsert = this.create_output_subarea(md, CLASS_NAME, type);
+        this.keyboard_manager.register_events(toinsert);
+        render(json, toinsert[(0)]);
+        element.append(toinsert);
+        return toinsert;
+    };
+    // Register mime type with the output area
+    outputarea.OutputArea.prototype.register_mime_type(MIME_TYPE, append_mime, {
+        // Is output safe (no Javascript)?
+        safe: true,
+        // Index of renderer in `output_area.display_order`
+        index: 0
+    });
+
+
+    // Rerender cells with the appropriate mime types
+    Jupyter.notebook.get_cells().forEach(function(cell) {
+        var rerender = cell.output_area && cell.output_area.outputs.find(function(output) {
+            return output.data && output.data[MIME_TYPE];
+        });
+        if (rerender) {
+            Jupyter.notebook.render_cell_output(cell);
+        }
+    });
+
+/*    var cells = Jupyter.notebook.get_cells();
     for (var i = 0; i < cells.length; i++) {
         handle_cell(cells[i]);
     }
@@ -72,12 +129,19 @@ function register_events(Jupyter, events) {
     events.on('delete.Cell', clearWidgetArea);
     events.on('execute.CodeCell', clearWidgetArea);
     events.on('clear_output.CodeCell', clearWidgetArea);
+*/
+
+/* Stuff to still do things with
 
     events.on('resize.Cell', function(event, data) {
+        // TODO: get the resize event down to the widget area where phosphor can
+        // see it
         data.cell.widgetarea && data.cell.widgetarea.resize();
-    })
+    });
 
     var disconnectWidgetAreas = function() {
+        // TODO: notify the widget output that it has been disconnected so it
+        // can put up the broken link icon
         var cells = Jupyter.notebook.get_cells();
         for (var i = 0; i < cells.length; i++) {
             var cell = cells[i];
@@ -88,17 +152,19 @@ function register_events(Jupyter, events) {
     events.on('kernel_killed.Kernel', disconnectWidgetAreas);
     events.on('kernel_restarting.Kernel', disconnectWidgetAreas);
     events.on('kernel_dead.Kernel', disconnectWidgetAreas);
+    */
 }
 
 function load_ipython_extension () {
     return new Promise(function(resolve) {
         requirejs([
             "base/js/namespace",
-            "base/js/events"
-        ], function(Jupyter, events) {
+            "base/js/events",
+            "notebook/js/outputarea"
+        ], function(Jupyter, events, outputarea) {
             require("@phosphor/widgets/style/index.css")
             require('jupyter-js-widgets/css/widgets.css');
-            register_events(Jupyter, events);
+            register_events(Jupyter, events, outputarea);
             resolve();
         });
     });

@@ -269,6 +269,7 @@ WidgetManager.prototype._createMenuItem = function(title, action) {
     return item;
 };
 
+/*
 WidgetManager.prototype.display_model = function(msg, model, options) {
     options = options || {};
     if (msg) {
@@ -295,15 +296,21 @@ WidgetManager.prototype.display_view = function(msg, view, options) {
             if (options.cell.widgetarea) {
                 var that = this;
                 return options.cell.widgetarea.display_widget_view(Promise.resolve(view)).then(function(view) {
-                    that._handle_display_view(view);
+                    //that._handle_display_view(view);
                     return view;
                 }).catch(widgets.reject('Could not display view', true));
             } else {
-                return Promise.reject(new Error('Cell does not have a `widgetarea` defined'));
+                //return Promise.reject(new Error('Cell does not have a `widgetarea` defined'));
             }
         }
     }
 };
+*/
+WidgetManager.prototype.display_view = function(msg, view, options) {
+    // TODO: handle case when pWidget isn't defined:
+    // let widget = (view as any).pWidget ? (view as any).pWidget : new BackboneViewWrapper(view);
+    return Promise.resolve(view.pWidget);
+}
 
 WidgetManager.prototype.setViewOptions = function (options) {
     var options = options || {};
