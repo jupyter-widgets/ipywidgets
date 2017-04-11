@@ -14,7 +14,6 @@ var MIME_TYPE = 'application/vnd.jupyter.widget-view+json';
 var CLASS_NAME = 'jupyter-widgets-output';
 
 var mngr = require("./manager");
-var widgetarea = require("./widgetarea");
 require("./save_state");
 require("./embed_widgets");
 var PhosphorWidget = require("@phosphor/widgets");
