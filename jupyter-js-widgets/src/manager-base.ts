@@ -106,11 +106,9 @@ abstract class ManagerBase<T> {
     /**
      * Display a view for a particular model.
      */
-    display_model(msg: services.KernelMessage.IMessage, model: Backbone.Model, options: any): Promise<T> {
-        options = options || {};
-        return this.create_view(model, options).then(_.bind(function(view) {
-            return this.display_view(msg, view, options);
-        }, this)).catch(utils.reject('Could not create view', true));
+    display_model(msg: services.KernelMessage.IMessage, model: Backbone.Model, options: any = {}): Promise<T> {
+        return this.create_view(model, options).then(
+            view => this.display_view(msg, view, options)).catch(utils.reject('Could not create view', true));
     };
 
     /**
