@@ -73,17 +73,16 @@ function register_events(Jupyter, events, outputarea) {
 
 
     var append_mime = function(json, md, element) {
-        var type = MIME_TYPE;
-        var toinsert = this.create_output_subarea(md, CLASS_NAME, type);
+        var toinsert = this.create_output_subarea(md, CLASS_NAME, MIME_TYPE);
         this.keyboard_manager.register_events(toinsert);
-        render(json, toinsert[(0)]);
+        render(json, toinsert[0]);
         element.append(toinsert);
         return toinsert;
     };
     // Register mime type with the output area
     outputarea.OutputArea.prototype.register_mime_type(MIME_TYPE, append_mime, {
-        // Is output safe (no Javascript)?
-        safe: true,
+        // An output widget could contain arbitrary user javascript
+        safe: false,
         // Index of renderer in `output_area.display_order`
         index: 0
     });
