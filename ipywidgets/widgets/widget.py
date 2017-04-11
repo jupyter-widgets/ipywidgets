@@ -213,17 +213,25 @@ class WidgetRegistry(object):
         widget_class = view_names[view_name]
         return widget_class
 
-def register(widget):
-    """A decorator registering a widget class in the widget registry."""
-    w = widget.class_traits()
-    Widget.widget_types.register(w['_model_module'].default_value,
-                                 w['_model_module_version'].default_value,
-                                 w['_model_name'].default_value,
-                                 w['_view_module'].default_value,
-                                 w['_view_module_version'].default_value,
-                                 w['_view_name'].default_value,
-                                 widget)
-    return widget
+def register(name=''):
+    "For backwards compatibility, we support @register(name) syntax."
+    def reg(widget):
+        """A decorator registering a widget class in the widget registry."""
+        w = widget.class_traits()
+        Widget.widget_types.register(w['_model_module'].default_value,
+                                    w['_model_module_version'].default_value,
+                                    w['_model_name'].default_value,
+                                    w['_view_module'].default_value,
+                                    w['_view_module_version'].default_value,
+                                    w['_view_name'].default_value,
+                                    widget)
+        return widget
+    if isinstance(name, string_types):
+        import warnings
+        warnings.warn("Widget registration using a string name has been deprecated. Widget registration now uses a plain `@register` decorator.", DeprecationWarning)
+        return reg
+    else:
+        return reg(name)
 
 class Widget(LoggingHasTraits):
     #-------------------------------------------------------------------------
