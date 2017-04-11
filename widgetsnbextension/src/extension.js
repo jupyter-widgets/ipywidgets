@@ -88,24 +88,6 @@ function register_events(Jupyter, events, outputarea) {
         // Index of renderer in `output_area.display_order`
         index: 0
     });
-
-
-/* Stuff to still do things with
-
-    var disconnectWidgetAreas = function() {
-        // TODO: notify the widget output that it has been disconnected so it
-        // can put up the broken link icon
-        var cells = Jupyter.notebook.get_cells();
-        for (var i = 0; i < cells.length; i++) {
-            var cell = cells[i];
-            cell.widgetarea && cell.widgetarea.disconnect();
-        }
-    }
-    events.on('kernel_disconnected.Kernel', disconnectWidgetAreas);
-    events.on('kernel_killed.Kernel', disconnectWidgetAreas);
-    events.on('kernel_restarting.Kernel', disconnectWidgetAreas);
-    events.on('kernel_dead.Kernel', disconnectWidgetAreas);
-    */
 }
 
 function load_ipython_extension () {

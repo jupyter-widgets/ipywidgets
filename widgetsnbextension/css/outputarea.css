@@ -20,14 +20,6 @@
     align-items: stretch;
 }
 
-.widget-area.connection-problems .prompt:after {
-    content: "\f127"; /* chain-broken */
-    font-family: "FontAwesome";
-    color: #d9534f;
-    top: 3px;
-    padding: 3px;
-}
-
 .widget-area .widget-subarea {
     min-width: 0px;
     padding: 0.4em 0 0.4em 0;
