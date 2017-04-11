@@ -92,12 +92,6 @@ function register_events(Jupyter, events, outputarea) {
 
 /* Stuff to still do things with
 
-    events.on('resize.Cell', function(event, data) {
-        // TODO: get the resize event down to the widget area where phosphor can
-        // see it
-        data.cell.widgetarea && data.cell.widgetarea.resize();
-    });
-
     var disconnectWidgetAreas = function() {
         // TODO: notify the widget output that it has been disconnected so it
         // can put up the broken link icon
