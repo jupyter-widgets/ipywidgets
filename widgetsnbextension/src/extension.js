@@ -39,17 +39,6 @@ var handle_kernel = function(Jupyter, kernel) {
     }
 };
 
-/**
- * Creates a widgetarea for the cell if it is a CodeCell.
- * If the cell isn't a CodeCell, no action is taken.
- */
-var handle_cell = function(cell) {
-    if (cell.cell_type==='code') {
-        var area = new widgetarea.WidgetArea(cell);
-        cell.widgetarea = area;
-    }
-};
-
 function register_events(Jupyter, events, outputarea) {
     // If a kernel already exists, create a widget manager.
     if (Jupyter.notebook && Jupyter.notebook.kernel) {
