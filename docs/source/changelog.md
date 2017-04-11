@@ -10,6 +10,11 @@ Major user-visible changes in ipywidgets 7.0 include:
 
 - The `Label` widget is now right-aligned and has no width restriction: [#1269](https://github.com/jupyter-widgets/ipywidgets/pull/1269)
 
+
+Major changes developers should be aware of include:
+
+- The python `@register` decorator for widget classes no longer takes a string argument, but registers a widget class using the `_model_*` and `_view_*` traits in the class. Using the decorator as `@register('name')` is deprecated and should be changed to just `@register`. [#1228](https://github.com/jupyter-widgets/ipywidgets/pull/1228), [#1276](https://github.com/jupyter-widgets/ipywidgets/pull/1276)
+
 6.0
 ---
 
