@@ -69,7 +69,7 @@ var OutputView = widgets.DOMWidgetView.extend({
         var renderOutput = function(outputArea) {
             that.output_area = new outputArea.OutputArea({
                 selector: that.el,
-                // TODO: get cell config?
+                // use default values for the output area config
                 config: {OutputArea: {}},
                 prompt_area: false,
                 events: that.model.widget_manager.notebook.events,

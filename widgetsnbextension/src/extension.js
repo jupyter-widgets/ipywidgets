@@ -65,8 +65,6 @@ function register_events(Jupyter, events, outputarea) {
      */
     function render(data, node) {
         // data is a model id
-        // TODO: Get a handle on the widget manager
-
         var manager = Jupyter.notebook.kernel.widget_manager;
         if (!manager) {
             node.textContent = "Missing widget manager";
@@ -79,7 +77,6 @@ function register_events(Jupyter, events, outputarea) {
                 return manager.display_model(void 0, model, void 0);
             }).then(function(pwidget) {
                 PhosphorWidget.Widget.attach(pwidget, node);
-                //node.textContent = "Rendered widget! "+JSON.stringify(data);
             });
         } else {
             node.textContent = "Widget not found: "+JSON.stringify(data);
