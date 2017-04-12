@@ -66,7 +66,7 @@ var OutputView = widgets.DOMWidgetView.extend({
 
     render: function(){
         var that = this;
-        var renderOutput = function(outputArea) {
+        var renderOutput = function(outputArea, events) {
             that.output_area = new outputArea.OutputArea({
                 selector: that.el,
                 // use default values for the output area config
@@ -79,7 +79,8 @@ var OutputView = widgets.DOMWidgetView.extend({
             }, that);
             that.listenTo(that.model, 'clear_output', function(msg) {
                 that.output_area.handle_clear_output(msg);
-            })
+                events.trigger('clear_output.OutputArea', {cell: {output_area: that.output_area}})
+            });
 
             // Render initial contents from that.model._outputs
             that.model._outputs.forEach(function(msg) {
@@ -87,7 +88,7 @@ var OutputView = widgets.DOMWidgetView.extend({
             }, that)
         }
 
-        requirejs(["notebook/js/outputarea"], renderOutput)
+        requirejs(["notebook/js/outputarea", "base/js/events"], renderOutput)
     },
 });
 

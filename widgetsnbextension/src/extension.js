@@ -70,6 +70,7 @@ function register_events(Jupyter, events, outputarea) {
     events.on('delete.Cell', removeView);
     events.on('execute.CodeCell', removeView);
     events.on('clear_output.CodeCell', removeView);
+    events.on('clear_output.OutputArea', removeView);
 
     /**
      * Render data to the output area.
