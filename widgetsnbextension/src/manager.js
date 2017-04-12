@@ -225,10 +225,10 @@ WidgetManager.prototype._createMenuItem = function(title, action) {
     return item;
 };
 
+
+
 WidgetManager.prototype.display_view = function(msg, view, options) {
-    // TODO: handle case when pWidget isn't defined:
-    // let widget = (view as any).pWidget ? (view as any).pWidget : new BackboneViewWrapper(view);
-    return Promise.resolve(view.pWidget);
+    return Promise.resolve(view);
 }
 
 

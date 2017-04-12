@@ -11,7 +11,7 @@ window['requirejs'].config({
 });
 
 var MIME_TYPE = 'application/vnd.jupyter.widget-view+json';
-var CLASS_NAME = 'jupyter-widgets-output';
+var CLASS_NAME = 'jupyter-widgets-view';
 
 var mngr = require("./manager");
 require("./save_state");
@@ -48,10 +48,35 @@ function register_events(Jupyter, events, outputarea) {
         handle_kernel(Jupyter, data.kernel);
     });
 
+    var views = {};
+    var removeView = function(event, data) {
+        var output = data.cell.output_area;
+        var viewids = (output && output._jupyterWidgetViews) || void 0;
+        if (viewids) {
+            viewids.forEach(function(id) {
+                // this may be called after the widget is pulled off the page
+                // so we temporarily put it back on the page as a kludge
+                // so that phosphor can trigger the appropriate detach signals
+                var view = views[id];
+                view.el.style.display="none";
+                document.body.appendChild(view.el);
+                view.remove();
+                delete views[id];
+            });
+            output._jupyterWidgetViews = [];
+        }
+    }
+
+    events.on('delete.Cell', removeView);
+    events.on('execute.CodeCell', removeView);
+    events.on('clear_output.CodeCell', removeView);
+
     /**
-     * Render data to the output area
+     * Render data to the output area.
+     *
+     * `this` is the output area
      */
-    function render(data, node) {
+    function render(output, data, node) {
         // data is a model id
         var manager = Jupyter.notebook.kernel.widget_manager;
         if (!manager) {
@@ -63,19 +88,22 @@ function register_events(Jupyter, events, outputarea) {
         if (model) {
             model.then(function(model) {
                 return manager.display_model(void 0, model, void 0);
-            }).then(function(pwidget) {
-                PhosphorWidget.Widget.attach(pwidget, node);
+            }).then(function(view) {
+                output._jupyterWidgetViews = output._jupyterWidgetViews || [];
+                output._jupyterWidgetViews.push(view.id);
+                views[view.id] = view;
+                PhosphorWidget.Widget.attach(view.pWidget, node);
             });
         } else {
             node.textContent = "Widget not found: "+JSON.stringify(data);
         }
     }
 
-
+    // `this` is the output area we are appending to
     var append_mime = function(json, md, element) {
         var toinsert = this.create_output_subarea(md, CLASS_NAME, MIME_TYPE);
         this.keyboard_manager.register_events(toinsert);
-        render(json, toinsert[0]);
+        render(this, json, toinsert[0]);
         element.append(toinsert);
         return toinsert;
     };
