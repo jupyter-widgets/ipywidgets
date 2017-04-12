@@ -377,18 +377,19 @@ class WidgetModel extends Backbone.Model {
     serialize(state) {
         const serializers = (this.constructor as typeof WidgetModel).serializers || {};
         for (const k of state) {
-            if (serializers[k] && serializers[k].serialize) {
-                state[k] = (serializers[k].serialize)(state[k], this);
-            } else {
-                // the default serializer just deep-copies the object
-                // TODO: this won't work if the object is a primitive object with binary buffers!
-                // How should we handle those? One way is to declare a serializer for fields
-                // that could have binary that copies what fields it can, and makes a decision
-                // about whether to copy the ArrayBuffer
-                state[k] = JSON.parse(JSON.stringify(state[k]));
-            }
-            if (state[k].toJSON) {
-                state[k] = state[k].toJSON();
+            try {
+                if (serializers[k] && serializers[k].serialize) {
+                    state[k] = (serializers[k].serialize)(state[k], this);
+                } else {
+                    // the default serializer just deep-copies the object
+                    state[k] = JSON.parse(JSON.stringify(state[k]));
+                }
+                if (state[k].toJSON) {
+                    state[k] = state[k].toJSON();
+                }
+            } catch (e) {
+                console.error("Error serializing widget state attribute: ", k);
+                throw e;
             }
         }
         return state;
