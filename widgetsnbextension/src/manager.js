@@ -10,6 +10,8 @@ var embedWidgets = require("./embed_widgets");
 var version = require("../package.json").version;
 var output = require("./widget_output");
 
+var MIME_TYPE = 'application/vnd.jupyter.widget-view+json';
+
 //--------------------------------------------------------------------
 // WidgetManager class
 //--------------------------------------------------------------------
