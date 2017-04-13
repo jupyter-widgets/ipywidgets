@@ -120,6 +120,9 @@ class WidgetModel extends Backbone.Model {
 
     /**
      * Send a custom msg over the comm.
+     *
+     * Any custom callbacks must include calls to the model callbacks returned
+     * from model.callbacks()
      */
     send(content, callbacks, buffers?) {
         if (this.comm !== undefined) {
@@ -234,12 +237,11 @@ class WidgetModel extends Backbone.Model {
      */
     _handle_status(msg, callbacks) {
         if (this.comm !== undefined) {
-            this.pending_msgs--;
             if (msg.content.execution_state === 'idle') {
-                // Send buffer if this message caused another message to be
-                // throttled.
-                if (this.msg_buffer !== null &&
-                    (this.get('msg_throttle') || 1) === this.pending_msgs) {
+                this.pending_msgs--;
+                // Send buffer if one is waiting and we are below the throttle.
+                if (this.msg_buffer !== null
+                    && this.pending_msgs < (this.get('msg_throttle') || 1) ) {
                     this.send_sync_message(this.msg_buffer, this.msg_buffer_callbacks);
                     this.msg_buffer = null;
                     this.msg_buffer_callbacks = null;
