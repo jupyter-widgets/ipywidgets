@@ -26,18 +26,26 @@ var OutputModel = widgets.DOMWidgetModel.extend({
 
     // make callbacks
     callbacks: function() {
-        return {
-            iopub: {
-                output: function(msg) {
-                    this.trigger('new_message', msg);
-                    this._outputs.push(msg);
-                }.bind(this),
-                clear_output: function(msg) {
-                    this.trigger('clear_output', msg);
-                    this._outputs = [];
-                }.bind(this)
-            }
-        }
+        // Merge our callbacks with the base class callbacks.
+        var cb = OutputModel.__super__.callbacks.apply(this, arguments);
+        var iopub = cb.iopub || {};
+        var iopubCallbacks = _.extend({}, iopub, {
+            output: function(msg) {
+                this.trigger('new_message', msg);
+                this._outputs.push(msg);
+                if (iopub.output) {
+                    iopub.output.apply(this, arguments);
+                }
+            }.bind(this),
+            clear_output: function(msg) {
+                this.trigger('clear_output', msg);
+                this._outputs = [];
+                if (iopub.clear_output) {
+                    iopub.clear_output.apply(this, arguments);
+                }
+            }.bind(this)
+        });
+        return _.extend({}, cb, {iopub: iopubCallbacks});
     },
 
     reset_msg_id: function() {
@@ -59,11 +67,6 @@ var OutputModel = widgets.DOMWidgetModel.extend({
 });
 
 var OutputView = widgets.DOMWidgetView.extend({
-
-    initialize: function (parameters) {
-        OutputView.__super__.initialize.apply(this, arguments);
-    },
-
     render: function(){
         var that = this;
         var renderOutput = function(outputArea, events) {
@@ -89,6 +92,7 @@ var OutputView = widgets.DOMWidgetView.extend({
         }
 
         requirejs(["notebook/js/outputarea", "base/js/events"], renderOutput)
+        OutputView.__super__.render.apply(this, arguments);
     },
 });
 
