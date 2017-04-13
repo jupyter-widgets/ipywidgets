@@ -54,8 +54,8 @@ function register_events(Jupyter, events, outputarea) {
      */
     var views = {};
     var removeView = function(event, data) {
-        var output = data.cell.output_area;
-        var viewids = (output && output._jupyterWidgetViews) || void 0;
+        var output = data.cell ? data.cell.output_area : data.output_area;
+        var viewids = output ? output._jupyterWidgetViews : void 0;
         if (viewids) {
             viewids.forEach(function(id) {
                 // this may be called after the widget is pulled off the page
@@ -71,15 +71,20 @@ function register_events(Jupyter, events, outputarea) {
         }
     }
 
+    // Deleting a cell does *not* clear the outputs first.
     events.on('delete.Cell', removeView);
+    // add an event to the notebook element for *any* outputs that are cleared.
+    Jupyter.notebook.container.on('clearing', '.output', removeView);
+
+    // For before https://github.com/jupyter/notebook/pull/2411 is merged and
+    // released. This does not handle the case where an empty cell is executed
+    // to clear input.
     events.on('execute.CodeCell', removeView);
     events.on('clear_output.CodeCell', removeView);
     events.on('clear_output.OutputArea', removeView);
 
     /**
      * Render data to the output area.
-     *
-     * `this` is the output area
      */
     function render(output, data, node) {
         // data is a model id
