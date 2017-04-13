@@ -245,7 +245,6 @@ class WidgetModel extends Backbone.Model {
                     this.send_sync_message(this.msg_buffer, this.msg_buffer_callbacks);
                     this.msg_buffer = null;
                     this.msg_buffer_callbacks = null;
-                    this.pending_msgs++;
                 }
             }
         }
