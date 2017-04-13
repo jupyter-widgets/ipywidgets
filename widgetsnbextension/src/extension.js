@@ -48,6 +48,10 @@ function register_events(Jupyter, events, outputarea) {
         handle_kernel(Jupyter, data.kernel);
     });
 
+    /**
+     * The views on this page. We keep this list so that we can call the view.remove()
+     * method when a view is removed from the page.
+     */
     var views = {};
     var removeView = function(event, data) {
         var output = data.cell.output_area;
@@ -90,9 +94,10 @@ function register_events(Jupyter, events, outputarea) {
             model.then(function(model) {
                 return manager.display_model(void 0, model, void 0);
             }).then(function(view) {
+                var id = view.cid;
                 output._jupyterWidgetViews = output._jupyterWidgetViews || [];
-                output._jupyterWidgetViews.push(view.id);
-                views[view.id] = view;
+                output._jupyterWidgetViews.push(id);
+                views[id] = view;
                 PhosphorWidget.Widget.attach(view.pWidget, node);
             });
         } else {
