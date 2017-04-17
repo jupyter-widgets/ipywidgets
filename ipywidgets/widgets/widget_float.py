@@ -160,7 +160,7 @@ class FloatProgress(_BoundedFloat):
         colors are: 'success'-green, 'info'-light blue, 'warning'-orange, 'danger'-red
     """
     _view_name = Unicode('ProgressView').tag(sync=True)
-    _model_name = Unicode('ProgressModel').tag(sync=True)
+    _model_name = Unicode('FloatProgressModel').tag(sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
 

@@ -604,10 +604,10 @@ class ProgressStyleModel extends StyleModel {
 
 
 export
-class ProgressModel extends BoundedIntModel {
+class IntProgressModel extends BoundedIntModel {
     defaults() {
         return _.extend(super.defaults(), {
-            _model_name: 'ProgressModel',
+            _model_name: 'IntProgressModel',
             _view_name: 'ProgressView',
             orientation: 'horizontal',
             bar_style: '',

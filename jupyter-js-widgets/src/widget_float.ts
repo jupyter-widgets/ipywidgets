@@ -112,7 +112,7 @@ class FloatTextModel extends FloatModel {
 }
 
 export
-class BoundedFloatTextModel extends FloatTextModel {
+class BoundedFloatTextModel extends BoundedFloatModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: "BoundedFloatTextModel",
@@ -124,4 +124,17 @@ class BoundedFloatTextModel extends FloatTextModel {
 export
 class FloatTextView extends IntTextView {
     _parse_value = parseFloat;
+}
+
+export
+class FloatProgressModel extends BoundedFloatModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'FloatProgressModel',
+            _view_name: 'ProgressView',
+            orientation: 'horizontal',
+            bar_style: '',
+            style: void 0
+        });
+    }
 }
