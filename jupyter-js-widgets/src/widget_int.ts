@@ -220,6 +220,14 @@ abstract class BaseIntSliderView extends LabeledDOMWidgetView {
         }
     }
 
+    /**
+     * this handles the entry of text into the contentEditable label first, the
+     * value is checked if it contains a parseable value then it is clamped
+     * within the min-max range of the slider finally, the model is updated if
+     * the value is to be changed
+     *
+     * if any of these conditions are not met, the text is reset
+     */
     abstract handleTextChange();
 
     /**
@@ -235,11 +243,11 @@ abstract class BaseIntSliderView extends LabeledDOMWidgetView {
      */
     abstract handleSliderChanged(e, ui);
 
+    /**
+     * Validate the value of the slider before sending it to the back-end
+     * and applying it to the other views on the page.
+     */
     _validate_slide_value(x) {
-        /**
-         * Validate the value of the slider before sending it to the back-end
-         * and applying it to the other views on the page.
-         */
         return Math.floor(x);
     }
 
@@ -290,6 +298,14 @@ class IntRangeSliderView extends BaseIntSliderView {
         }
     }
 
+    /**
+     * this handles the entry of text into the contentEditable label first, the
+     * value is checked if it contains a parseable value then it is clamped
+     * within the min-max range of the slider finally, the model is updated if
+     * the value is to be changed
+     *
+     * if any of these conditions are not met, the text is reset
+     */
     handleTextChange() {
         let value = this.stringToValue(this.readout.textContent);
         let vmin = this.model.get('min');
@@ -390,8 +406,6 @@ class IntSliderView extends BaseIntSliderView {
      * the value is to be changed
      *
      * if any of these conditions are not met, the text is reset
-     *
-     * the step size is not enforced
      */
     handleTextChange() {
         let value = this.stringToValue(this.readout.textContent);
@@ -475,13 +489,13 @@ class IntTextView extends LabeledDOMWidgetView {
         this.update(); // Set defaults.
     }
 
+    /**
+     * Update the contents of this view
+     *
+     * Called when the model is changed.  The model may have been
+     * changed by another view or by a state update from the back-end.
+     */
     update(options?) {
-        /**
-         * Update the contents of this view
-         *
-         * Called when the model is changed.  The model may have been
-         * changed by another view or by a state update from the back-end.
-         */
         if (options === undefined || options.updated_view !== this) {
             var value: number = this.model.get('value');
 
@@ -531,12 +545,12 @@ class IntTextView extends LabeledDOMWidgetView {
         e.stopPropagation();
     }
 
+    /**
+     * Handles and validates user input.
+     *
+     * Try to parse value as an int.
+     */
     handleChanging(e) {
-        /**
-         * Handles and validates user input.
-         *
-         * Try to parse value as an int.
-         */
         var numericalValue = 0;
         var trimmed = e.target.value.trim();
         if (trimmed === '') {
@@ -571,10 +585,10 @@ class IntTextView extends LabeledDOMWidgetView {
         }
     }
 
+    /**
+     * Applies validated input.
+     */
     handleChanged(e) {
-        /**
-         * Applies validated input.
-         */
         if (e.target.value.trim() === '' || e.target.value !== this.model.get('value')) {
             e.target.value = this.model.get('value');
         }
@@ -649,13 +663,13 @@ class ProgressView extends LabeledDOMWidgetView {
         this.set_bar_style();
     }
 
+    /**
+     * Update the contents of this view
+     *
+     * Called when the model is changed.  The model may have been
+     * changed by another view or by a state update from the back-end.
+     */
     update() {
-        /**
-         * Update the contents of this view
-         *
-         * Called when the model is changed.  The model may have been
-         * changed by another view or by a state update from the back-end.
-         */
         var value = this.model.get('value');
         var max = this.model.get('max');
         var min = this.model.get('min');

@@ -29,7 +29,6 @@ class FloatModel extends CoreLabeledDOMWidgetModel {
     }
 }
 
-
 export
 class BoundedFloatModel extends FloatModel {
     defaults() {
