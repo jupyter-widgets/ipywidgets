@@ -709,7 +709,8 @@ class PlayModel extends BoundedIntModel {
             _model_name: 'PlayModel',
             _view_name: 'PlayView',
             _playing: false,
-            interval: 100
+            interval: 100,
+            step: 1,
         });
     }
     initialize(attributes, options) {

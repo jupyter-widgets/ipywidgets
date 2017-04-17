@@ -220,6 +220,7 @@ class _IntRange(_Int):
 @register
 class Play(_BoundedInt):
     interval = CInt(100).tag(sync=True)
+    step = CInt(1, help="Increment step").tag(sync=True)
 
     _view_name = Unicode('PlayView').tag(sync=True)
     _model_name = Unicode('PlayModel').tag(sync=True)
