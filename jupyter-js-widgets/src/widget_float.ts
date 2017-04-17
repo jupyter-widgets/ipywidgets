@@ -112,6 +112,16 @@ class FloatTextModel extends FloatModel {
 }
 
 export
+class BoundedFloatTextModel extends FloatTextModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: "BoundedFloatTextModel",
+            _view_name: "FloatTextView"
+        });
+    }
+}
+
+export
 class FloatTextView extends IntTextView {
     _parse_value = parseFloat;
 }

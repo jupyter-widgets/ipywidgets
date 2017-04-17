@@ -98,7 +98,7 @@ class BoundedFloatText(_BoundedFloat):
         description displayed next to the textbox
     """
     _view_name = Unicode('FloatTextView').tag(sync=True)
-    _model_name = Unicode('FloatTextModel').tag(sync=True)
+    _model_name = Unicode('BoundedFloatTextModel').tag(sync=True)
 
 
 @register
