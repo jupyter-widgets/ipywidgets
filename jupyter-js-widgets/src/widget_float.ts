@@ -12,7 +12,7 @@ import {
 import * as _ from 'underscore';
 
 import {
-    IntSliderView, IntTextView
+    IntSliderView, IntRangeSliderView, IntTextView
 } from './widget_int';
 
 
@@ -70,7 +70,23 @@ class FloatSliderModel extends BoundedFloatModel {
 }
 
 export
+class FloatRangeSliderModel extends FloatSliderModel {}
+
+export
 class FloatSliderView extends IntSliderView {
+    /**
+     * Validate the value of the slider before sending it to the back-end
+     * and applying it to the other views on the page.
+     */
+    _validate_slide_value(x) {
+        return x;
+    }
+
+    _parse_value = parseFloat
+}
+
+export
+class FloatRangeSliderView extends IntRangeSliderView {
     /**
      * Validate the value of the slider before sending it to the back-end
      * and applying it to the other views on the page.
@@ -83,7 +99,6 @@ class FloatSliderView extends IntSliderView {
 
     // matches: whitespace?, float, whitespace?, (hyphen, colon, or en-dash), whitespace?, float
     _range_regex = /^\s*([+-]?(?:\d*\.?\d+|\d+\.)(?:[eE][-:]?\d+)?)\s*[-:–]\s*([+-]?(?:\d*\.?\d+|\d+\.)(?:[eE][+-]?\d+)?)/
-
 }
 
 export
