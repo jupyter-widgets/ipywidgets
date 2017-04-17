@@ -377,21 +377,18 @@ abstract class ManagerBase<T> {
      * @returns Promise for a state dictionary
      */
     get_state(options: StateOptions): Promise<any> {
-        var that = this;
-        return utils.resolvePromisesDict(this._models).then(function(models) {
-            var state = {};
-            for (var model_id in models) {
-                if (models.hasOwnProperty(model_id)) {
-                    var model = models[model_id];
-                    state[model_id] = utils.resolvePromisesDict({
-                        model_name: model.name,
-                        model_module: model.module,
-                        model_module_version: model.get('_model_module_version'),
-                        state: model.constructor._serialize_state(model.get_state(options.drop_defaults), that)
-                    });
-                }
-            }
-            return utils.resolvePromisesDict(state);
+        return utils.resolvePromisesDict(this._models).then((models) => {
+            let state = {};
+            Object.keys(models).forEach(model_id => {
+                let model = models[model_id];
+                state[model_id] = {
+                    model_name: model.name,
+                    model_module: model.module,
+                    model_module_version: model.get('_model_module_version'),
+                    state: model.serialize(model.get_state(options.drop_defaults))
+                };
+            });
+            return state;
         }).catch(utils.reject('Could not get state of widget manager', true));
     };
 

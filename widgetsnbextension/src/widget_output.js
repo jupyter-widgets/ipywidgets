@@ -7,11 +7,16 @@
 var widgets = require("jupyter-js-widgets");
 var _ = require("underscore");
 
+var copyOutputs = function(value, options) {
+    return JSON.parse(JSON.stringify(options.model._outputs));
+}
+
 var OutputModel = widgets.DOMWidgetModel.extend({
     defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
         _model_name: "OutputModel",
         _view_name: "OutputView",
         msg_id: "",
+        outputs: [],
     }),
 
     initialize: function(attributes, options) {
@@ -21,7 +26,8 @@ var OutputModel = widgets.DOMWidgetModel.extend({
         if (this.kernel) {
             this.kernel.set_callbacks_for_msg(this.id, this.callbacks(), false);
         }
-        this._outputs = [];
+        this._outputs = this.get('outputs') || [];
+        this.set('outputs', []);
     },
 
     // make callbacks
@@ -55,7 +61,10 @@ var OutputModel = widgets.DOMWidgetModel.extend({
             kernel.output_callback_overrides_push(msg_id, this.id);
         }
     },
-
+}, {
+    serializers: _.extend({
+        outputs: {serialize: copyOutputs}
+    }, widgets.DOMWidgetModel.serializers),
 });
 
 var OutputView = widgets.DOMWidgetView.extend({
