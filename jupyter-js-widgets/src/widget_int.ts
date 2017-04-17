@@ -35,7 +35,6 @@ class BoundedIntModel extends IntModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'BoundedIntModel',
-            step: 1,
             max: 100,
             min: 0
         });
@@ -65,6 +64,7 @@ class IntSliderModel extends BoundedIntModel {
         return _.extend(super.defaults(), {
             _model_name: 'IntSliderModel',
             _view_name: 'IntSliderView',
+            step: 1,
             orientation: 'horizontal',
             readout: true,
             readout_format: 'd',

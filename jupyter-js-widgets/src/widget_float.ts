@@ -35,7 +35,6 @@ class BoundedFloatModel extends FloatModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: "BoundedFloatModel",
-            step: 1.0,
             max: 100.0,
             min: 0.0
         });
@@ -48,6 +47,7 @@ class FloatSliderModel extends BoundedFloatModel {
         return _.extend(super.defaults(), {
             _model_name: "FloatSliderModel",
             _view_name: "FloatSliderView",
+            step: 1.0,
             orientation: "horizontal",
             _range: false,
             readout: true,

@@ -83,7 +83,6 @@ class _Int(LabeledWidget, ValueWidget, CoreWidget):
 class _BoundedInt(_Int):
     """Base class for widgets that represent an integer bounded from above and below.
     """
-    step = CInt(1, help="Minimum step to increment the value (ignored by some views)").tag(sync=True)
     max = CInt(100, help="Max value").tag(sync=True)
     min = CInt(0, help="Min value").tag(sync=True)
 
@@ -157,6 +156,7 @@ class IntSlider(_BoundedInt):
     """
     _view_name = Unicode('IntSliderView').tag(sync=True)
     _model_name = Unicode('IntSliderModel').tag(sync=True)
+    step = CInt(1, help="Minimum step to increment the value").tag(sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
@@ -229,7 +229,6 @@ class Play(_BoundedInt):
     _playing = Bool().tag(sync=True)
 
 class _BoundedIntRange(_IntRange):
-    step = CInt(1, help="Minimum step that the value can take (ignored by some views)").tag(sync=True)
     max = CInt(100, help="Max value").tag(sync=True)
     min = CInt(0, help="Min value").tag(sync=True)
 
@@ -277,6 +276,7 @@ class IntRangeSlider(_BoundedIntRange):
     """
     _view_name = Unicode('IntRangeSliderView').tag(sync=True)
     _model_name = Unicode('IntRangeSliderModel').tag(sync=True)
+    step = CInt(1, help="Minimum step that the value can take").tag(sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
