@@ -400,6 +400,16 @@ class IntTextModel extends IntModel {
 }
 
 export
+class BoundedIntTextModel extends BoundedIntModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'BoundedIntTextModel',
+            _view_name: 'IntTextView'
+        });
+    }
+}
+
+export
 class IntTextView extends LabeledDOMWidgetView {
     render() {
         super.render();
@@ -490,6 +500,8 @@ class IntTextView extends LabeledDOMWidgetView {
         if (isNaN(numericalValue)) {
             e.target.value = this.model.get('value');
         } else if (!isNaN(numericalValue)) {
+            // Handle both the IntTextModel and the BoundedIntTextModel by
+            // checking to see if the max/min properties are defined
             if (this.model.get('max') !== undefined) {
                 numericalValue = Math.min(this.model.get('max'), numericalValue);
             }

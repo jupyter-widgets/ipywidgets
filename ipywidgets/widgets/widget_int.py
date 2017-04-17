@@ -140,7 +140,7 @@ class BoundedIntText(_BoundedInt):
     """Textbox widget that represents an integer bounded from above and below.
     """
     _view_name = Unicode('IntTextView').tag(sync=True)
-    _model_name = Unicode('IntTextModel').tag(sync=True)
+    _model_name = Unicode('BoundedIntTextModel').tag(sync=True)
 
 
 @register
