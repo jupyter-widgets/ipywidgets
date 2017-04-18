@@ -84,6 +84,7 @@
     box-sizing: border-box;
     display: flex;
     margin: 0;
+    overflow: auto;
 }
 
 .widget-hbox {
@@ -822,6 +823,7 @@
 /* Tab Widget */
 
 .jupyter-widgets .p-TabBar {
+    /* Necessary so that a tab can be shifted down to overlay the border of the box below. */
     overflow-x: visible;
     overflow-y: visible;
 }
@@ -845,6 +847,7 @@
     border: var(--jp-border-width) solid var(--jp-border-color1);
     padding: var(--jp-widgets-container-padding);
     flex-grow: 1;
+    overflow: auto;
 }
 
 .jupyter-widgets.widget-tab .widget-tab-contents .widget-tab-child.p-mod-hidden {
@@ -962,6 +965,7 @@
     border-left: var(--jp-widgets-border-width) solid var(--jp-border-color1);
     border-right: var(--jp-widgets-border-width) solid var(--jp-border-color1);
     border-bottom: var(--jp-widgets-border-width) solid var(--jp-border-color1);
+    overflow: auto;
 }
 
 .p-Accordion {
