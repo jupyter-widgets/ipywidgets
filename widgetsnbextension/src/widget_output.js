@@ -101,7 +101,6 @@ var OutputView = widgets.DOMWidgetView.extend({
                 events: that.model.widget_manager.notebook.events,
                 keyboard_manager: that.model.widget_manager.keyboard_manager });
             that.listenTo(that.model, 'new_message', function(msg) {
-                // this message has been preprocessed as handle_output would
                 that.output_area.handle_output(msg);
             }, that);
             that.listenTo(that.model, 'clear_output', function(msg) {
