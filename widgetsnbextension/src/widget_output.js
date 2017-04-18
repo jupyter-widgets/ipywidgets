@@ -26,18 +26,26 @@ var OutputModel = widgets.DOMWidgetModel.extend({
 
     // make callbacks
     callbacks: function() {
-        return {
-            iopub: {
-                output: function(msg) {
-                    this.trigger('new_message', msg);
-                    this._outputs.push(msg);
-                }.bind(this),
-                clear_output: function(msg) {
-                    this.trigger('clear_output', msg);
-                    this._outputs = [];
-                }.bind(this)
-            }
-        }
+        // Merge our callbacks with the base class callbacks.
+        var cb = OutputModel.__super__.callbacks.apply(this, arguments);
+        var iopub = cb.iopub || {};
+        var iopubCallbacks = _.extend({}, iopub, {
+            output: function(msg) {
+                this.trigger('new_message', msg);
+                this._outputs.push(msg);
+                if (iopub.output) {
+                    iopub.output.apply(this, arguments);
+                }
+            }.bind(this),
+            clear_output: function(msg) {
+                this.trigger('clear_output', msg);
+                this._outputs = [];
+                if (iopub.clear_output) {
+                    iopub.clear_output.apply(this, arguments);
+                }
+            }.bind(this)
+        });
+        return _.extend({}, cb, {iopub: iopubCallbacks});
     },
 
     reset_msg_id: function() {
@@ -59,17 +67,13 @@ var OutputModel = widgets.DOMWidgetModel.extend({
 });
 
 var OutputView = widgets.DOMWidgetView.extend({
-
-    initialize: function (parameters) {
-        OutputView.__super__.initialize.apply(this, arguments);
-    },
-
     render: function(){
         var that = this;
-        var renderOutput = function(outputArea) {
+        var renderOutput = function(outputArea, events) {
             that.output_area = new outputArea.OutputArea({
                 selector: that.el,
-                config: that.options.cell.config,
+                // use default values for the output area config
+                config: {OutputArea: {}},
                 prompt_area: false,
                 events: that.model.widget_manager.notebook.events,
                 keyboard_manager: that.model.widget_manager.keyboard_manager });
@@ -78,7 +82,8 @@ var OutputView = widgets.DOMWidgetView.extend({
             }, that);
             that.listenTo(that.model, 'clear_output', function(msg) {
                 that.output_area.handle_clear_output(msg);
-            })
+                events.trigger('clear_output.OutputArea', {cell: {output_area: that.output_area}})
+            });
 
             // Render initial contents from that.model._outputs
             that.model._outputs.forEach(function(msg) {
@@ -86,16 +91,8 @@ var OutputView = widgets.DOMWidgetView.extend({
             }, that)
         }
 
-        if (requirejs.defined("notebook/js/outputarea")) {
-            // Notebook 4.x
-            requirejs(["notebook/js/outputarea"], renderOutput)
-        } else {
-            // Notebook 5.x
-            requirejs(["notebook"], function(notebookApp) {
-                var outputArea = notebookApp["notebook/js/outputarea"];
-                renderOutput(outputArea);
-            });
-        }
+        requirejs(["notebook/js/outputarea", "base/js/events"], renderOutput)
+        OutputView.__super__.render.apply(this, arguments);
     },
 });
 

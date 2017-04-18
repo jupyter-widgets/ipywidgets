@@ -611,18 +611,13 @@ class Widget(LoggingHasTraits):
         """Called when `IPython.display.display` is called on the widget."""
         if self._view_name is not None:
 
-            # TODO: delete this sending of a comm message when the display statement
-            # below works. Then add a 'text/plain' mimetype to the dictionary below.
-            self._send({"method": "display"})
-
             # The 'application/vnd.jupyter.widget-view+json' mimetype has not been registered yet.
             # See the registration process and naming convention at
             # http://tools.ietf.org/html/rfc6838
             # and the currently registered mimetypes at
             # http://www.iana.org/assignments/media-types/media-types.xhtml.
-            # We don't have a 'text/plain' entry, so this display message will be
-            # will be invisible in the current notebook.
             data = {
+                'text/plain': "A Jupyter Widget",
                 'application/vnd.jupyter.widget-view+json': {
                     'model_id': self._model_id
                 }

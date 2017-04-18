@@ -10,10 +10,13 @@ window['requirejs'].config({
     }
 });
 
+var MIME_TYPE = 'application/vnd.jupyter.widget-view+json';
+var CLASS_NAME = 'jupyter-widgets-view';
+
 var mngr = require("./manager");
-var widgetarea = require("./widgetarea");
 require("./save_state");
 require("./embed_widgets");
+var PhosphorWidget = require("@phosphor/widgets");
 
 /**
  * Create a widget manager for a kernel instance.
@@ -35,18 +38,7 @@ var handle_kernel = function(Jupyter, kernel) {
     }
 };
 
-/**
- * Creates a widgetarea for the cell if it is a CodeCell.
- * If the cell isn't a CodeCell, no action is taken.
- */
-var handle_cell = function(cell) {
-    if (cell.cell_type==='code') {
-        var area = new widgetarea.WidgetArea(cell);
-        cell.widgetarea = area;
-    }
-};
-
-function register_events(Jupyter, events) {
+function register_events(Jupyter, events, outputarea) {
     // If a kernel already exists, create a widget manager.
     if (Jupyter.notebook && Jupyter.notebook.kernel) {
         handle_kernel(Jupyter, Jupyter.notebook.kernel);
@@ -56,49 +48,95 @@ function register_events(Jupyter, events) {
         handle_kernel(Jupyter, data.kernel);
     });
 
-    // Create widget areas for cells that already exist.
-    var cells = Jupyter.notebook.get_cells();
-    for (var i = 0; i < cells.length; i++) {
-        handle_cell(cells[i]);
-    }
-
-    events.on('create.Cell', function(event, data) {
-        handle_cell(data.cell);
-    });
-
-    var clearWidgetArea = function(event, data) {
-        data.cell.widgetarea && data.cell.widgetarea.clear();
-    }
-    events.on('delete.Cell', clearWidgetArea);
-    events.on('execute.CodeCell', clearWidgetArea);
-    events.on('clear_output.CodeCell', clearWidgetArea);
-
-    events.on('resize.Cell', function(event, data) {
-        data.cell.widgetarea && data.cell.widgetarea.resize();
-    })
-
-    var disconnectWidgetAreas = function() {
-        var cells = Jupyter.notebook.get_cells();
-        for (var i = 0; i < cells.length; i++) {
-            var cell = cells[i];
-            cell.widgetarea && cell.widgetarea.disconnect();
+    /**
+     * The views on this page. We keep this list so that we can call the view.remove()
+     * method when a view is removed from the page.
+     */
+    var views = {};
+    var removeView = function(event, data) {
+        var output = data.cell ? data.cell.output_area : data.output_area;
+        var viewids = output ? output._jupyterWidgetViews : void 0;
+        if (viewids) {
+            viewids.forEach(function(id) {
+                // this may be called after the widget is pulled off the page
+                // so we temporarily put it back on the page as a kludge
+                // so that phosphor can trigger the appropriate detach signals
+                var view = views[id];
+                view.el.style.display="none";
+                document.body.appendChild(view.el);
+                view.remove();
+                delete views[id];
+            });
+            output._jupyterWidgetViews = [];
         }
     }
-    events.on('kernel_disconnected.Kernel', disconnectWidgetAreas);
-    events.on('kernel_killed.Kernel', disconnectWidgetAreas);
-    events.on('kernel_restarting.Kernel', disconnectWidgetAreas);
-    events.on('kernel_dead.Kernel', disconnectWidgetAreas);
+
+    // Deleting a cell does *not* clear the outputs first.
+    events.on('delete.Cell', removeView);
+    // add an event to the notebook element for *any* outputs that are cleared.
+    Jupyter.notebook.container.on('clearing', '.output', removeView);
+
+    // For before https://github.com/jupyter/notebook/pull/2411 is merged and
+    // released. This does not handle the case where an empty cell is executed
+    // to clear input.
+    events.on('execute.CodeCell', removeView);
+    events.on('clear_output.CodeCell', removeView);
+    events.on('clear_output.OutputArea', removeView);
+
+    /**
+     * Render data to the output area.
+     */
+    function render(output, data, node) {
+        // data is a model id
+        var manager = Jupyter.notebook.kernel.widget_manager;
+        if (!manager) {
+            node.textContent = "Missing widget manager";
+            return;
+        }
+
+        var model = manager.get_model(data.model_id);
+        if (model) {
+            model.then(function(model) {
+                return manager.display_model(void 0, model, void 0);
+            }).then(function(view) {
+                var id = view.cid;
+                output._jupyterWidgetViews = output._jupyterWidgetViews || [];
+                output._jupyterWidgetViews.push(id);
+                views[id] = view;
+                PhosphorWidget.Widget.attach(view.pWidget, node);
+            });
+        } else {
+            node.textContent = "Widget not found: "+JSON.stringify(data);
+        }
+    }
+
+    // `this` is the output area we are appending to
+    var append_mime = function(json, md, element) {
+        var toinsert = this.create_output_subarea(md, CLASS_NAME, MIME_TYPE);
+        this.keyboard_manager.register_events(toinsert);
+        render(this, json, toinsert[0]);
+        element.append(toinsert);
+        return toinsert;
+    };
+    // Register mime type with the output area
+    outputarea.OutputArea.prototype.register_mime_type(MIME_TYPE, append_mime, {
+        // An output widget could contain arbitrary user javascript
+        safe: false,
+        // Index of renderer in `output_area.display_order`
+        index: 0
+    });
 }
 
 function load_ipython_extension () {
     return new Promise(function(resolve) {
         requirejs([
             "base/js/namespace",
-            "base/js/events"
-        ], function(Jupyter, events) {
+            "base/js/events",
+            "notebook/js/outputarea"
+        ], function(Jupyter, events, outputarea) {
             require("@phosphor/widgets/style/index.css")
             require('jupyter-js-widgets/css/widgets.css');
-            register_events(Jupyter, events);
+            register_events(Jupyter, events, outputarea);
             resolve();
         });
     });

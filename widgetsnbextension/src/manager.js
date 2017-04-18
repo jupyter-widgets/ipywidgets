@@ -10,6 +10,8 @@ var embedWidgets = require("./embed_widgets");
 var version = require("../package.json").version;
 var output = require("./widget_output");
 
+var MIME_TYPE = 'application/vnd.jupyter.widget-view+json';
+
 //--------------------------------------------------------------------
 // WidgetManager class
 //--------------------------------------------------------------------
@@ -65,27 +67,15 @@ var WidgetManager = function (comm_manager, notebook) {
                 }, widget_info.msg.content.data.state);
             }));
         }).then(function() {
-            var cells = that.notebook.get_cells();
-            var outputs, cell;
-            for (var i = 0; i < cells.length; ++i) {
-                cell = cells[i];
-                if (cell.output_area) {
-                    outputs = cell.output_area.outputs;
-                    for (var j = 0; j < outputs.length; ++j) {
-                        var out = outputs[j];
-                        if (out.output_type==="display_data" && out.data['application/vnd.jupyter.widget-view+json']) {
-                            var model_promise = that.get_model(out.data['application/vnd.jupyter.widget-view+json'].model_id);
-                            if (model_promise !== undefined) {
-                                model_promise.then((function(cell_index) {
-                                    return function (model) {
-                                        that.display_model(undefined, model, { cell_index: cell_index });
-                                    };
-                                })(i));
-                            }
-                        }
-                    }
+            // Rerender cells that have widget data
+            that.notebook.get_cells().forEach(function(cell) {
+                var rerender = cell.output_area && cell.output_area.outputs.find(function(output) {
+                    return output.data && output.data[MIME_TYPE];
+                });
+                if (rerender) {
+                    that.notebook.render_cell_output(cell);
                 }
-            }
+            });
         });
     });
 
@@ -108,21 +98,6 @@ WidgetManager.prototype = Object.create(widgets.ManagerBase.prototype);
 WidgetManager._managers = []; /* List of widget managers */
 WidgetManager._load_callback = null;
 WidgetManager._save_callback = null;
-
-
-WidgetManager.register_widget_model = function (model_name, model_type) {
-    /**
-     * Registers a widget model by name.
-     */
-    return widgets.ManagerBase.register_widget_model.apply(this, arguments);
-};
-
-WidgetManager.register_widget_view = function (view_name, view_type) {
-    /**
-     * Registers a widget view by name.
-     */
-    return widgets.ManagerBase.register_widget_view.apply(this, arguments);
-};
 
 WidgetManager.set_state_callbacks = function (load_callback, save_callback, options) {
     /**
@@ -176,23 +151,6 @@ WidgetManager.prototype.loadClass = function(className, moduleName, moduleVersio
         return Object.getPrototypeOf(WidgetManager.prototype).loadClass.apply(this, arguments);
     }
 }
-
-WidgetManager.prototype._handle_display_view = function (view) {
-    /**
-     * Have the IPython keyboard manager disable its event
-     * handling so the widget can capture keyboard input.
-     * Note, this is only done on the outer most widgets.
-     */
-    if (this.keyboard_manager) {
-        this.keyboard_manager.register_events(view.el);
-
-        if (view.additional_elements) {
-            for (var i = 0; i < view.additional_elements.length; i++) {
-                this.keyboard_manager.register_events(view.additional_elements[i]);
-            }
-        }
-    }
-};
 
 /**
  * Registers manager level actions with the notebook actions list
@@ -269,78 +227,12 @@ WidgetManager.prototype._createMenuItem = function(title, action) {
     return item;
 };
 
-WidgetManager.prototype.display_model = function(msg, model, options) {
-    options = options || {};
-    if (msg) {
-        options.cell = this.get_msg_cell(msg.parent_header.msg_id);
-        // Only set cell_index when view is displayed as directly.
-        options.cell_index = this.notebook.find_cell_index(options.cell);
-    } else if (options && options.cell_index !== undefined) {
-        options.cell = this.notebook.get_cell(options.cell_index);
-    } else {
-        options.cell = null;
-    }
-    return widgets.ManagerBase.prototype.display_model.call(this, msg, model, options)
-        .catch(widgets.reject('Could not display model', true));
-};
 
-// In display view
+
 WidgetManager.prototype.display_view = function(msg, view, options) {
-    if (view instanceof widgets.DOMWidgetView) {
-        if (options.cell === null) {
-            view.remove();
-            return Promise.reject(new Error("Could not determine where the display" +
-                " message was from.  Widget will not be displayed"));
-        } else {
-            if (options.cell.widgetarea) {
-                var that = this;
-                return options.cell.widgetarea.display_widget_view(Promise.resolve(view)).then(function(view) {
-                    that._handle_display_view(view);
-                    return view;
-                }).catch(widgets.reject('Could not display view', true));
-            } else {
-                return Promise.reject(new Error('Cell does not have a `widgetarea` defined'));
-            }
-        }
-    }
-};
+    return Promise.resolve(view);
+}
 
-WidgetManager.prototype.setViewOptions = function (options) {
-    var options = options || {};
-    // If a view is passed into the method, use that view's cell as
-    // the cell for the view that is created.
-    if (options.parent !== undefined) {
-        options.cell = options.parent.options.cell;
-    }
-    return options;
-};
-
-WidgetManager.prototype.get_msg_cell = function (msg_id) {
-    var cell = null;
-    // First, check to see if the msg was triggered by cell execution.
-    if (this.notebook) {
-        cell = this.notebook.get_msg_cell(msg_id);
-    }
-    if (cell !== null) {
-        return cell;
-    }
-    // Second, check to see if a get_cell callback was defined
-    // for the message.  get_cell callbacks are registered for
-    // widget messages, so this block is actually checking to see if the
-    // message was triggered by a widget.
-    var kernel = this.comm_manager.kernel;
-    if (kernel) {
-        var callbacks = kernel.get_callbacks_for_msg(msg_id);
-        if (callbacks && callbacks.iopub &&
-            callbacks.iopub.get_cell !== undefined) {
-            return callbacks.iopub.get_cell();
-        }
-    }
-
-    // Not triggered by a cell or widget (no get_cell callback
-    // exists).
-    return null;
-};
 
 WidgetManager.prototype._create_comm = function(comm_target_name, model_id, data) {
     var that = this;
@@ -358,41 +250,6 @@ WidgetManager.prototype._create_comm = function(comm_target_name, model_id, data
             });
         }
     });
-};
-
-WidgetManager.prototype.callbacks = function (view) {
-    /**
-     * callback handlers specific a view
-     */
-    var callbacks = {};
-    if (view && view.options.cell) {
-
-        // Try to get output handlers
-        var cell = view.options.cell;
-        var handle_output = null;
-        var handle_clear_output = null;
-        if (cell.output_area) {
-            handle_output = _.bind(cell.output_area.handle_output, cell.output_area);
-            handle_clear_output = _.bind(cell.output_area.handle_clear_output, cell.output_area);
-        }
-
-        // Create callback dictionary using what is known
-        var that = this;
-        callbacks = {
-            iopub : {
-                output : handle_output,
-                clear_output : handle_clear_output,
-
-                // Special function only registered by widget messages.
-                // Allows us to get the cell for a message so we know
-                // where to add widgets if the code requires it.
-                get_cell : function () {
-                    return cell;
-                },
-            },
-        };
-    }
-    return callbacks;
 };
 
 WidgetManager.prototype._get_comm_info = function() {
