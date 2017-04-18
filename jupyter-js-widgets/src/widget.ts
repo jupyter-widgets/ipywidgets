@@ -276,13 +276,27 @@ class WidgetModel extends Backbone.Model {
 
         // Backbone only remembers the diff of the most recent set()
         // operation.  Calling set multiple times in a row results in a
-        // loss of diff information.  Here we keep our own running diff.
+        // loss of change information.  Here we keep our own running diff.
         //
         // We don't buffer the state set in the constructor (including
         // defaults), so we first check to see if we've initialized _buffered_state_diff.
         // which happens after the constructor sets attributes at creation.
         if (this._buffered_state_diff !== void 0) {
-            this._buffered_state_diff = _.extend(this._buffered_state_diff, this.changedAttributes() || {});
+            let attrs = this.changedAttributes() || {};
+
+            // The state_lock lists attributes that are currently being changed
+            // right now from a kernel message. We don't want to send these
+            // non-changes back to the kernel, so we delete them out of attrs if
+            // they haven't changed from their state_lock value
+            if (this.state_lock !== null) {
+                for (const key of Object.keys(this.state_lock)) {
+                    if (attrs[key] === this.state_lock[key]) {
+                        delete attrs[key];
+                    }
+                }
+            }
+
+            this._buffered_state_diff = _.extend(this._buffered_state_diff, attrs);
         }
         return return_value;
     }
