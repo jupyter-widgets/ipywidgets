@@ -383,35 +383,31 @@ class WidgetModel extends Backbone.Model {
     /**
      * Serialize widget state.
      *
-     * @param state - a dictionary of state to be serialized
-     *
-     * A serializer is a function which takes in a state value and an options object
-     * {manager: widget manager instance, model: model instance, key: state key},
-     * and synchronously returns a JSONable object. The state values in the returned object will
+     * A serializer is a function which takes in a state attribute and a widget,
+     * and synchronously returns a JSONable object. The returned object will
      * have toJSON called if possible, and the final result should be a
      * primitive object that is a snapshot of the widget state that may have
      * binary array buffers.
      */
     serialize(state) {
         const serializers = (this.constructor as typeof WidgetModel).serializers || {};
-        let newState = {};
-        Object.keys(state).forEach(k => {
+        for (const k of state) {
             try {
                 if (serializers[k] && serializers[k].serialize) {
-                    newState[k] = (serializers[k].serialize)(state[k], {manager: this.widget_manager, model: this, key: k});
+                    state[k] = (serializers[k].serialize)(state[k], this);
                 } else {
-                    // the default serializer just deep-copies the value
-                    newState[k] = JSON.parse(JSON.stringify(state[k]));
+                    // the default serializer just deep-copies the object
+                    state[k] = JSON.parse(JSON.stringify(state[k]));
                 }
-                if (newState[k].toJSON) {
-                    newState[k] = newState[k].toJSON();
+                if (state[k].toJSON) {
+                    state[k] = state[k].toJSON();
                 }
             } catch (e) {
                 console.error("Error serializing widget state attribute: ", k);
                 throw e;
             }
-        });
-        return newState;
+        }
+        return state;
     }
 
     send_sync_message(state, callbacks) {
@@ -489,6 +485,28 @@ class WidgetModel extends Backbone.Model {
             deserialized = state;
         }
         return utils.resolvePromisesDict(deserialized);
+    }
+
+    /**
+     * Returns a promise for the serialized state. The second argument
+     * is an instance of widget manager.
+     */
+    static _serialize_state(state, manager) {
+        var serializers = this.serializers;
+        var serialized;
+        if (serializers) {
+            serialized = {};
+            for (var k in state) {
+                if (serializers[k] && serializers[k].serialize) {
+                     serialized[k] = (serializers[k].serialize)(state[k], manager);
+                } else {
+                     serialized[k] = state[k];
+                }
+            }
+        } else {
+            serialized = state;
+        }
+        return utils.resolvePromisesDict(serialized);
     }
 
     static serializers: any;
