@@ -35,8 +35,9 @@ var OutputModel = widgets.DOMWidgetModel.extend({
         return {
             iopub: {
                 output: function(msg) {
-                    this.trigger('new_message', msg);
-                    this._outputs.push(msg);
+                    var output = this.convert(msg);
+                    this.trigger('new_message', output);
+                    this._outputs.push(output);
                 }.bind(this),
                 clear_output: function(msg) {
                     this.trigger('clear_output', msg);
@@ -61,6 +62,38 @@ var OutputModel = widgets.DOMWidgetModel.extend({
             kernel.output_callback_overrides_push(msg_id, this.id);
         }
     },
+
+    convert: function(msg) {
+        // From the notebook OutputArea class
+        // https://github.com/jupyter/notebook/blob/691f101b7d652866831b667b9ff92916cf0b148f/notebook/static/notebook/js/outputarea.js#L218
+        var json = {};
+        var msg_type = json.output_type = msg.header.msg_type;
+        var content = msg.content;
+        switch(msg_type) {
+        case "stream" :
+            json.text = content.text;
+            json.name = content.name;
+            break;
+        case "execute_result":
+            json.execution_count = content.execution_count;
+        case "update_display_data":
+        case "display_data":
+            json.transient = content.transient;
+            json.data = content.data;
+            json.metadata = content.metadata;
+            break;
+        case "error":
+            json.ename = content.ename;
+            json.evalue = content.evalue;
+            json.traceback = content.traceback;
+            break;
+        default:
+            console.error("unhandled output message", msg);
+            return;
+        }
+        return json;
+}
+
 }, {
     serializers: _.extend({
         outputs: {serialize: copyOutputs}
@@ -83,15 +116,16 @@ var OutputView = widgets.DOMWidgetView.extend({
                 events: that.model.widget_manager.notebook.events,
                 keyboard_manager: that.model.widget_manager.keyboard_manager });
             that.listenTo(that.model, 'new_message', function(msg) {
-                that.output_area.handle_output(msg);
+                // this message has been preprocessed as handle_output would
+                that.output_area.append_output(msg);
             }, that);
             that.listenTo(that.model, 'clear_output', function(msg) {
                 that.output_area.handle_clear_output(msg);
             })
 
-            // Render initial contents from that.model._outputs
+            // Render initial contents from the current model
             that.model._outputs.forEach(function(msg) {
-                that.output_area.handle_output(msg);
+                that.output_area.append_output(msg);
             }, that)
         }
 
