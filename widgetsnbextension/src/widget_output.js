@@ -33,7 +33,7 @@ var OutputModel = widgets.DOMWidgetModel.extend({
         // Create an output area to handle the data model part
         outputArea.then(function(outputArea) {
             that.output_area = new outputArea.OutputArea({
-                selector: that.el,
+                selector: document.createElement('div'),
                 config: {OutputArea: {}},
                 prompt_area: false,
                 events: that.widget_manager.notebook.events,
@@ -54,16 +54,24 @@ var OutputModel = widgets.DOMWidgetModel.extend({
 
     // make callbacks
     callbacks: function() {
-        return {
-            iopub: {
-                output: function(msg) {
-                    this.trigger('new_message', msg);
-                }.bind(this),
-                clear_output: function(msg) {
-                    this.trigger('clear_output', msg);
-                }.bind(this)
-            }
-        }
+        // Merge our callbacks with the base class callbacks.
+        var cb = OutputModel.__super__.callbacks.apply(this, arguments);
+        var iopub = cb.iopub || {};
+        var iopubCallbacks = _.extend({}, iopub, {
+            output: function(msg) {
+                this.trigger('new_message', msg);
+                if (iopub.output) {
+                    iopub.output.apply(this, arguments);
+                }
+            }.bind(this),
+            clear_output: function(msg) {
+                this.trigger('clear_output', msg);
+                if (iopub.clear_output) {
+                    iopub.clear_output.apply(this, arguments);
+                }
+            }.bind(this)
+        });
+        return _.extend({}, cb, {iopub: iopubCallbacks});
     },
 
     reset_msg_id: function() {
@@ -84,16 +92,12 @@ var OutputModel = widgets.DOMWidgetModel.extend({
 });
 
 var OutputView = widgets.DOMWidgetView.extend({
-
-    initialize: function (parameters) {
-        OutputView.__super__.initialize.apply(this, arguments);
-    },
-
     render: function(){
         var that = this;
         outputArea.then(function(outputArea) {
             that.output_area = new outputArea.OutputArea({
                 selector: that.el,
+                // use default values for the output area config
                 config: {OutputArea: {}},
                 prompt_area: false,
                 events: that.model.widget_manager.notebook.events,
@@ -104,10 +108,16 @@ var OutputView = widgets.DOMWidgetView.extend({
             }, that);
             that.listenTo(that.model, 'clear_output', function(msg) {
                 that.output_area.handle_clear_output(msg);
+                // fake the event on the output area element. This can be
+                // deleted when we can rely on
+                // https://github.com/jupyter/notebook/pull/2411 being
+                // available.
+                that.output_area.element.trigger('clearing', {output_area: this});
             })
             // Render initial contents from the current model
             that.output_area.fromJSON(that.model.get('outputs'));
         });
+        OutputView.__super__.render.apply(this, arguments);
     },
 });
 

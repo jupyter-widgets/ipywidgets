@@ -33,7 +33,6 @@ class _Float(LabeledWidget, ValueWidget, CoreWidget):
 class _BoundedFloat(_Float):
     max = CFloat(100.0, help="Max value").tag(sync=True)
     min = CFloat(0.0, help="Min value").tag(sync=True)
-    step = CFloat(0.1, help="Minimum step to increment the value (ignored by some views)").tag(sync=True)
 
     @validate('value')
     def _validate_value(self, proposal):
@@ -98,7 +97,7 @@ class BoundedFloatText(_BoundedFloat):
         description displayed next to the textbox
     """
     _view_name = Unicode('FloatTextView').tag(sync=True)
-    _model_name = Unicode('FloatTextModel').tag(sync=True)
+    _model_name = Unicode('BoundedFloatTextModel').tag(sync=True)
 
 
 @register
@@ -128,9 +127,9 @@ class FloatSlider(_BoundedFloat):
     """
     _view_name = Unicode('FloatSliderView').tag(sync=True)
     _model_name = Unicode('FloatSliderModel').tag(sync=True)
+    step = CFloat(0.1, help="Minimum step to increment the value").tag(sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
-    _range = Bool(False, help="Display a range selector").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
     readout_format = Unicode('.2f', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
@@ -161,7 +160,7 @@ class FloatProgress(_BoundedFloat):
         colors are: 'success'-green, 'info'-light blue, 'warning'-orange, 'danger'-red
     """
     _view_name = Unicode('ProgressView').tag(sync=True)
-    _model_name = Unicode('ProgressModel').tag(sync=True)
+    _model_name = Unicode('FloatProgressModel').tag(sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
 
@@ -260,11 +259,11 @@ class FloatRangeSlider(_BoundedFloatRange):
         slider value for human consumption, modeled after Python 3's format
         specification mini-language (PEP 3101).
     """
-    _view_name = Unicode('FloatSliderView').tag(sync=True)
-    _model_name = Unicode('FloatSliderModel').tag(sync=True)
+    _view_name = Unicode('FloatRangeSliderView').tag(sync=True)
+    _model_name = Unicode('FloatRangeSliderModel').tag(sync=True)
+    step = CFloat(0.1, help="Minimum step to increment the value").tag(sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
-    _range = Bool(True, help="Display a range selector").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
     readout_format = Unicode('.2f', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)

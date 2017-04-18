@@ -3,6 +3,8 @@
 
 "use strict";
 
+var VIEW_MIME_TYPE = "application/vnd.jupyter.widget-view+json"
+
 var embed_widgets = function() {
     return new Promise(function(resolve) {
         requirejs(['base/js/namespace', 'base/js/dialog', 'jupyter-js-widgets'], function(Jupyter, dialog, widgets) {
@@ -18,17 +20,22 @@ var embed_widgets = function() {
                 var value = '<script src="https://unpkg.com/jupyter-js-widgets@~' + widgets.version + '/dist/embed.js"></script>\n' +
                             '<script type="application/vnd.jupyter.widget-state+json">\n' + data + '\n</script>';
 
+                var views = [];
                 var cells = Jupyter.notebook.get_cells();
-                for (var i = 0; i<cells.length; ++i) {
-                    var current_cell = cells[i];
-                    if (current_cell.widgetarea && current_cell.widgetarea.widget_views) {
-                        for (var j=0; j!=current_cell.widgetarea.widget_views.length; ++j) {
-                            value += '\n<script type="application/vnd.jupyter.widget-view+json">\n' +
-                            JSON.stringify({ model_id : current_cell.widgetarea.widget_views[j].model.id }, null, '    ') +
-                            '\n</script>';
-                        }
+                Jupyter.notebook.get_cells().forEach(function(cell) {
+                    if (cell.output_area) {
+                        cell.output_area.outputs.forEach(function (output) {
+                            if (output.data
+                                && output.data[VIEW_MIME_TYPE]
+                                && state[output.data[VIEW_MIME_TYPE].model_id]) {
+                                views.push(('\n<script type="'+VIEW_MIME_TYPE+'">\n'
+                                    + JSON.stringify(output.data[VIEW_MIME_TYPE], null, '    ')
+                                    + '\n</script>'));
+                            }
+                        });
                     }
-                }
+                })
+                value += views.join('\n');
 
                 var content = document.createElement('textarea');
                 content.setAttribute('readonly', 'true');
