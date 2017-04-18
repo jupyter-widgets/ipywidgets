@@ -32,7 +32,7 @@ var OutputModel = widgets.DOMWidgetModel.extend({
         outputArea.then(function(outputArea) {
             that.output_area = new outputArea.OutputArea({
                 selector: document.createElement('div'),
-                config: {OutputArea: {}},
+                config: {data: {OutputArea: {}}},
                 prompt_area: false,
                 events: that.widget_manager.notebook.events,
                 keyboard_manager: that.widget_manager.keyboard_manager });
@@ -96,7 +96,7 @@ var OutputView = widgets.DOMWidgetView.extend({
             that.output_area = new outputArea.OutputArea({
                 selector: that.el,
                 // use default values for the output area config
-                config: {OutputArea: {}},
+                config: {data: {OutputArea: {}}},
                 prompt_area: false,
                 events: that.model.widget_manager.notebook.events,
                 keyboard_manager: that.model.widget_manager.keyboard_manager });
