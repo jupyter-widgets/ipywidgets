@@ -7,9 +7,9 @@
 var widgets = require("jupyter-js-widgets");
 var _ = require("underscore");
 
-var copyOutputs = function(value, options) {
-    return JSON.parse(JSON.stringify(options.model._outputs));
-}
+var outputArea = new Promise(function(resolve, reject) {
+        requirejs(["notebook/js/outputarea"], resolve, reject)
+});
 
 var OutputModel = widgets.DOMWidgetModel.extend({
     defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
@@ -28,6 +28,28 @@ var OutputModel = widgets.DOMWidgetModel.extend({
         }
         this._outputs = this.get('outputs') || [];
         this.set('outputs', []);
+
+        var that = this;
+        // Create an output area to handle the data model part
+        outputArea.then(function(outputArea) {
+            that.output_area = new outputArea.OutputArea({
+                selector: that.el,
+                config: {OutputArea: {}},
+                prompt_area: false,
+                events: that.widget_manager.notebook.events,
+                keyboard_manager: that.widget_manager.keyboard_manager });
+            that.listenTo(that, 'new_message', function(msg) {
+                that.output_area.handle_output(msg);
+                that.set('outputs', that.output_area.toJSON());
+                that.save_changes();
+            }, that);
+            that.listenTo(that, 'clear_output', function(msg) {
+                that.output_area.handle_clear_output(msg);
+                that.set('outputs', []);
+                that.save_changes();
+            })
+            that.output_area.fromJSON(that.get('outputs'));
+        });
     },
 
     // make callbacks
@@ -35,13 +57,10 @@ var OutputModel = widgets.DOMWidgetModel.extend({
         return {
             iopub: {
                 output: function(msg) {
-                    var output = this.convert(msg);
-                    this.trigger('new_message', output);
-                    this._outputs.push(output);
+                    this.trigger('new_message', msg);
                 }.bind(this),
                 clear_output: function(msg) {
                     this.trigger('clear_output', msg);
-                    this._outputs = [];
                 }.bind(this)
             }
         }
@@ -62,42 +81,6 @@ var OutputModel = widgets.DOMWidgetModel.extend({
             kernel.output_callback_overrides_push(msg_id, this.id);
         }
     },
-
-    convert: function(msg) {
-        // From the notebook OutputArea class
-        // https://github.com/jupyter/notebook/blob/691f101b7d652866831b667b9ff92916cf0b148f/notebook/static/notebook/js/outputarea.js#L218
-        var json = {};
-        var msg_type = json.output_type = msg.header.msg_type;
-        var content = msg.content;
-        switch(msg_type) {
-        case "stream" :
-            json.text = content.text;
-            json.name = content.name;
-            break;
-        case "execute_result":
-            json.execution_count = content.execution_count;
-        case "update_display_data":
-        case "display_data":
-            json.transient = content.transient;
-            json.data = content.data;
-            json.metadata = content.metadata;
-            break;
-        case "error":
-            json.ename = content.ename;
-            json.evalue = content.evalue;
-            json.traceback = content.traceback;
-            break;
-        default:
-            console.error("unhandled output message", msg);
-            return;
-        }
-        return json;
-}
-
-}, {
-    serializers: _.extend({
-        outputs: {serialize: copyOutputs}
-    }, widgets.DOMWidgetModel.serializers),
 });
 
 var OutputView = widgets.DOMWidgetView.extend({
@@ -108,37 +91,23 @@ var OutputView = widgets.DOMWidgetView.extend({
 
     render: function(){
         var that = this;
-        var renderOutput = function(outputArea) {
+        outputArea.then(function(outputArea) {
             that.output_area = new outputArea.OutputArea({
                 selector: that.el,
-                config: that.options.cell.config,
+                config: {OutputArea: {}},
                 prompt_area: false,
                 events: that.model.widget_manager.notebook.events,
                 keyboard_manager: that.model.widget_manager.keyboard_manager });
             that.listenTo(that.model, 'new_message', function(msg) {
                 // this message has been preprocessed as handle_output would
-                that.output_area.append_output(msg);
+                that.output_area.handle_output(msg);
             }, that);
             that.listenTo(that.model, 'clear_output', function(msg) {
                 that.output_area.handle_clear_output(msg);
             })
-
             // Render initial contents from the current model
-            that.model._outputs.forEach(function(msg) {
-                that.output_area.append_output(msg);
-            }, that)
-        }
-
-        if (requirejs.defined("notebook/js/outputarea")) {
-            // Notebook 4.x
-            requirejs(["notebook/js/outputarea"], renderOutput)
-        } else {
-            // Notebook 5.x
-            requirejs(["notebook"], function(notebookApp) {
-                var outputArea = notebookApp["notebook/js/outputarea"];
-                renderOutput(outputArea);
-            });
-        }
+            that.output_area.fromJSON(that.model.get('outputs'));
+        });
     },
 });
 

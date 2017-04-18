@@ -10,7 +10,7 @@ from .domwidget import DOMWidget
 from .widget_core import CoreWidget
 
 import sys
-from traitlets import Unicode
+from traitlets import Unicode, Tuple
 from IPython.display import clear_output
 from IPython import get_ipython
 
@@ -39,6 +39,7 @@ class Output(DOMWidget, CoreWidget):
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     msg_id = Unicode('', help="Parent message id of messages to capture").tag(sync=True)
+    outputs = Tuple(help="The output messages synced from the frontend.").tag(sync=True)
 
     def clear_output(self, *pargs, **kwargs):
         with self:
