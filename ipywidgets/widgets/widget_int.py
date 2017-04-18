@@ -83,7 +83,6 @@ class _Int(LabeledWidget, ValueWidget, CoreWidget):
 class _BoundedInt(_Int):
     """Base class for widgets that represent an integer bounded from above and below.
     """
-    step = CInt(1, help="Minimum step to increment the value (ignored by some views)").tag(sync=True)
     max = CInt(100, help="Max value").tag(sync=True)
     min = CInt(0, help="Min value").tag(sync=True)
 
@@ -140,7 +139,7 @@ class BoundedIntText(_BoundedInt):
     """Textbox widget that represents an integer bounded from above and below.
     """
     _view_name = Unicode('IntTextView').tag(sync=True)
-    _model_name = Unicode('IntTextModel').tag(sync=True)
+    _model_name = Unicode('BoundedIntTextModel').tag(sync=True)
 
 
 @register
@@ -157,9 +156,9 @@ class IntSlider(_BoundedInt):
     """
     _view_name = Unicode('IntSliderView').tag(sync=True)
     _model_name = Unicode('IntSliderModel').tag(sync=True)
+    step = CInt(1, help="Minimum step to increment the value").tag(sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
-    _range = Bool(False, help="Display a range selector").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
     readout_format = Unicode('d', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
@@ -180,7 +179,7 @@ class IntProgress(_BoundedInt):
     """Progress bar that represents an integer bounded from above and below.
     """
     _view_name = Unicode('ProgressView').tag(sync=True)
-    _model_name = Unicode('ProgressModel').tag(sync=True)
+    _model_name = Unicode('IntProgressModel').tag(sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
 
@@ -218,9 +217,19 @@ class _IntRange(_Int):
             raise TraitError('setting lower > upper')
         return lower, upper
 
+@register
+class Play(_BoundedInt):
+    interval = CInt(100).tag(sync=True)
+    step = CInt(1, help="Increment step").tag(sync=True)
+
+    _view_name = Unicode('PlayView').tag(sync=True)
+    _model_name = Unicode('PlayModel').tag(sync=True)
+    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
+    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
+
+    _playing = Bool().tag(sync=True)
 
 class _BoundedIntRange(_IntRange):
-    step = CInt(1, help="Minimum step that the value can take (ignored by some views)").tag(sync=True)
     max = CInt(100, help="Max value").tag(sync=True)
     min = CInt(0, help="Min value").tag(sync=True)
 
@@ -266,23 +275,11 @@ class IntRangeSlider(_BoundedIntRange):
     max : int
         The highest allowed value for `upper`
     """
-    _view_name = Unicode('IntSliderView').tag(sync=True)
-    _model_name = Unicode('IntSliderModel').tag(sync=True)
+    _view_name = Unicode('IntRangeSliderView').tag(sync=True)
+    _model_name = Unicode('IntRangeSliderModel').tag(sync=True)
+    step = CInt(1, help="Minimum step that the value can take").tag(sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
-    _range = Bool(True, help="Display a range selector").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)
     style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
-
-
-@register
-class Play(_BoundedInt):
-    interval = CInt(100).tag(sync=True)
-
-    _view_name = Unicode('PlayView').tag(sync=True)
-    _model_name = Unicode('PlayModel').tag(sync=True)
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
-
-    _playing = Bool().tag(sync=True)

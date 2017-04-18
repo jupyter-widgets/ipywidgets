@@ -35,7 +35,6 @@ class BoundedIntModel extends IntModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'BoundedIntModel',
-            step: 1,
             max: 100,
             min: 0
         });
@@ -65,8 +64,8 @@ class IntSliderModel extends BoundedIntModel {
         return _.extend(super.defaults(), {
             _model_name: 'IntSliderModel',
             _view_name: 'IntSliderView',
+            step: 1,
             orientation: 'horizontal',
-            _range: false,
             readout: true,
             readout_format: 'd',
             continuous_update: true,
@@ -84,9 +83,11 @@ class IntSliderModel extends BoundedIntModel {
     readout_formatter: any;
 }
 
+export
+class IntRangeSliderModel extends IntSliderModel {}
 
 export
-class IntSliderView extends LabeledDOMWidgetView {
+abstract class BaseIntSliderView extends LabeledDOMWidgetView {
     render() {
         super.render();
         this.el.classList.add('jupyter-widgets');
@@ -115,7 +116,6 @@ class IntSliderView extends LabeledDOMWidgetView {
         this.update();
     }
 
-
     update(options?) {
         /**
          * Update the contents of this view
@@ -126,27 +126,22 @@ class IntSliderView extends LabeledDOMWidgetView {
         if (options === undefined || options.updated_view !== this) {
             // JQuery slider option keys.  These keys happen to have a
             // one-to-one mapping with the corresponding keys of the model.
-            var jquery_slider_keys = ['step', 'disabled'];
-            var that = this;
+            let jquery_slider_keys = ['step', 'disabled'];
+            let that = this;
             that.$slider.slider({});
 
             _.each(jquery_slider_keys, function(key, i) {
-                var model_value = that.model.get(key);
+                let model_value = that.model.get(key);
                 if (model_value !== undefined) {
                     that.$slider.slider('option', key, model_value);
                 }
             });
 
-            var max = this.model.get('max');
-            var min = this.model.get('min');
+            let max = this.model.get('max');
+            let min = this.model.get('min');
             if (min <= max) {
                 if (max !== undefined) this.$slider.slider('option', 'max', max);
                 if (min !== undefined) this.$slider.slider('option', 'min', min);
-            }
-
-            var range_value = this.model.get('_range');
-            if (range_value !== undefined) {
-                this.$slider.slider('option', 'range', range_value);
             }
 
             // WORKAROUND FOR JQUERY SLIDER BUG.
@@ -157,36 +152,8 @@ class IntSliderView extends LabeledDOMWidgetView {
             // make sure that the horizontal placement of the
             // handle in the vertical slider is always
             // consistent.
-            var orientation = this.model.get('orientation');
-            var min = this.model.get('min');
-            var max = this.model.get('max');
-            if (this.model.get('_range')) {
-                this.$slider.slider('option', 'values', [min, min]);
-            } else {
-                this.$slider.slider('option', 'value', min);
-            }
+            let orientation = this.model.get('orientation');
             this.$slider.slider('option', 'orientation', orientation);
-            var value = this.model.get('value');
-            if (this.model.get('_range')) {
-                // values for the range case are validated python-side in
-                // _Bounded{Int,Float}RangeWidget._validate
-                this.$slider.slider('option', 'values', value.slice());
-                this.readout.textContent = this.valueToString(value);
-            } else {
-                if(value > max) {
-                    value = max;
-                }
-                else if(value < min) {
-                    value = min;
-                }
-                this.$slider.slider('option', 'value', value);
-                this.readout.textContent = this.valueToString(value);
-            }
-
-            if(this.model.get('value') !== value) {
-                this.model.set('value', value, {updated_view: this});
-                this.touch();
-            }
 
             // Use the right CSS classes for vertical & horizontal sliders
             if (orientation==='vertical') {
@@ -201,7 +168,7 @@ class IntSliderView extends LabeledDOMWidgetView {
                 this.el.classList.add('widget-inline-hbox');
             }
 
-            var readout = this.model.get('readout');
+            let readout = this.model.get('readout');
             if (readout) {
                 this.readout.style.display = '';
                 this.displayed.then(function() {
@@ -228,40 +195,13 @@ class IntSliderView extends LabeledDOMWidgetView {
 
     /**
      * Write value to a string
-     * @param  {number|number[]} value
-     * @return {string}
      */
-    valueToString(value) {
-        var format = this.model.readout_formatter;
-        if (this.model.get('_range')) {
-            return value.map(function (v) {
-                return format(v);
-            }).join(' – ');
-        } else {
-            return format(value);
-        }
-    }
+    abstract valueToString(value): string;
 
     /**
      * Parse value from a string
-     * @param  {string} text
-     * @return {number|number[]} value
      */
-    stringToValue(text): number | number[] {
-        if (this.model.get('_range')) {
-            // range case
-            // ranges can be expressed either 'val-val' or 'val:val' (+spaces)
-            var match = this._range_regex.exec(text);
-            if (match) {
-                return [this._parse_value(match[1]), this._parse_value(match[2])];
-            } else {
-                return null;
-            }
-
-        } else {
-            return this._parse_value(text);
-        }
-    }
+    abstract stringToValue(text: string);
 
     events(): {[e: string]: string} {
         return {
@@ -280,73 +220,123 @@ class IntSliderView extends LabeledDOMWidgetView {
         }
     }
 
-    handleTextChange() {
-        /**
-         * this handles the entry of text into the contentEditable label
-         * first, the value is checked if it contains a parseable number
-         *      (or pair of numbers, for the _range case)
-         * then it is clamped within the min-max range of the slider
-         * finally, the model is updated if the value is to be changed
-         *
-         * if any of these conditions are not met, the text is reset
-         *
-         * the step size is not enforced
-         */
-        var value = this.stringToValue(this.readout.textContent);
-        var vmin = this.model.get('min');
-        var vmax = this.model.get('max');
-        if (this.model.get('_range')) {
-            // reject input where NaN or lower > upper
-            if (value === null ||
-                isNaN(value[0]) ||
-                isNaN(value[1]) ||
-                (value[0] > value[1])) {
-                this.readout.textContent = this.valueToString(this.model.get('value'));
-            } else {
-                // clamp to range
-                value = [Math.max(Math.min(value[0], vmax), vmin),
-                          Math.max(Math.min(value[1], vmax), vmin)];
-
-                if ((value[0] !== this.model.get('value')[0]) ||
-                    (value[1] !== this.model.get('value')[1])) {
-                    this.readout.textContent = this.valueToString(value);
-                    this.model.set('value', value, {updated_view: this});
-                    this.touch();
-                } else {
-                    this.readout.textContent = this.valueToString(this.model.get('value'));
-                }
-            }
-        } else {
-
-            // single value case
-            if (isNaN(value as number)) {
-                this.readout.textContent = this.valueToString(this.model.get('value'));
-            } else {
-                value = Math.max(Math.min(value as number, vmax), vmin);
-
-                if (value !== this.model.get('value')) {
-                    this.readout.textContent = this.valueToString(value);
-                    this.model.set('value', value, {updated_view: this});
-                    this.touch();
-                } else {
-                    this.readout.textContent = this.valueToString(this.model.get('value'));
-                }
-            }
-        }
-    }
+    /**
+     * this handles the entry of text into the contentEditable label first, the
+     * value is checked if it contains a parseable value then it is clamped
+     * within the min-max range of the slider finally, the model is updated if
+     * the value is to be changed
+     *
+     * if any of these conditions are not met, the text is reset
+     */
+    abstract handleTextChange();
 
     /**
      * Called when the slider value is changing.
      */
-    handleSliderChange(e, ui) {
-        var actual_value;
-        if (this.model.get('_range')) {
-            actual_value = ui.values.map(this._validate_slide_value);
-            this.readout.textContent = this.valueToString(actual_value);
-        } else {
-            actual_value = this._validate_slide_value(ui.value);
-            this.readout.textContent = this.valueToString(actual_value);
+    abstract handleSliderChange(e, ui);
+
+    /**
+     * Called when the slider value has changed.
+     *
+     * Calling model.set will trigger all of the other views of the
+     * model to update.
+     */
+    abstract handleSliderChanged(e, ui);
+
+    /**
+     * Validate the value of the slider before sending it to the back-end
+     * and applying it to the other views on the page.
+     */
+    _validate_slide_value(x) {
+        return Math.floor(x);
+    }
+
+    $slider: any;
+    slider_container: HTMLElement;
+    readout: HTMLDivElement;
+    model: IntSliderModel;
+    _parse_value = parseInt;
+}
+
+export
+class IntRangeSliderView extends BaseIntSliderView {
+
+    update(options?) {
+        super.update(options);
+        this.$slider.slider('option', 'range', true);
+        // values for the range case are validated python-side in
+        // _Bounded{Int,Float}RangeWidget._validate
+        let value = this.model.get('value');
+        this.$slider.slider('option', 'values', value.slice());
+        this.readout.textContent = this.valueToString(value);
+        if (this.model.get('value') !== value) {
+            this.model.set('value', value, {updated_view: this});
+            this.touch();
         }
+    }
+
+    /**
+     * Write value to a string
+     */
+    valueToString(value: number[]): string {
+        let format = this.model.readout_formatter;
+        return value.map(function (v) {
+                return format(v);
+            }).join(' – ');
+    }
+
+    /**
+     * Parse value from a string
+     */
+    stringToValue(text: string): number[] {
+        // ranges can be expressed either 'val-val' or 'val:val' (+spaces)
+        let match = this._range_regex.exec(text);
+        if (match) {
+            return [this._parse_value(match[1]), this._parse_value(match[2])];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * this handles the entry of text into the contentEditable label first, the
+     * value is checked if it contains a parseable value then it is clamped
+     * within the min-max range of the slider finally, the model is updated if
+     * the value is to be changed
+     *
+     * if any of these conditions are not met, the text is reset
+     */
+    handleTextChange() {
+        let value = this.stringToValue(this.readout.textContent);
+        let vmin = this.model.get('min');
+        let vmax = this.model.get('max');
+        // reject input where NaN or lower > upper
+        if (value === null ||
+            isNaN(value[0]) ||
+            isNaN(value[1]) ||
+            (value[0] > value[1])) {
+            this.readout.textContent = this.valueToString(this.model.get('value'));
+        } else {
+            // clamp to range
+            value = [Math.max(Math.min(value[0], vmax), vmin),
+                        Math.max(Math.min(value[1], vmax), vmin)];
+
+            if ((value[0] !== this.model.get('value')[0]) ||
+                (value[1] !== this.model.get('value')[1])) {
+                this.readout.textContent = this.valueToString(value);
+                this.model.set('value', value, {updated_view: this});
+                this.touch();
+            } else {
+                this.readout.textContent = this.valueToString(this.model.get('value'));
+            }
+        }
+    }
+    /**
+     * Called when the slider value is changing.
+     */
+    handleSliderChange(e, ui) {
+        let actual_value = ui.values.map(this._validate_slide_value);
+        this.readout.textContent = this.valueToString(actual_value);
 
         // Only persist the value while sliding if the continuous_update
         // trait is set to true.
@@ -362,38 +352,123 @@ class IntSliderView extends LabeledDOMWidgetView {
      * model to update.
      */
     handleSliderChanged(e, ui) {
-        var actual_value;
-        if (this.model.get('_range')) {
-            actual_value = ui.values.map(this._validate_slide_value);
-        } else {
-            actual_value = this._validate_slide_value(ui.value);
-        }
+        let actual_value = ui.values.map(this._validate_slide_value);
         this.model.set('value', actual_value, {updated_view: this});
         this.touch();
     }
 
-    _validate_slide_value(x) {
-        /**
-         * Validate the value of the slider before sending it to the back-end
-         * and applying it to the other views on the page.
-         */
-        return Math.floor(x);
-    }
-
-    $slider: any;
-    slider_container: HTMLElement;
-    readout: HTMLDivElement;
-    model: IntSliderModel;
-    _parse_value = parseInt;
     // range numbers can be separated by a hyphen, colon, or an en-dash
     _range_regex = /^\s*([+-]?\d+)\s*[-:–]\s*([+-]?\d+)/;
+
 }
+
+export
+class IntSliderView extends BaseIntSliderView {
+
+    update(options?) {
+        super.update(options);
+        let min = this.model.get('min');
+        let max = this.model.get('max');
+        let value = this.model.get('value');
+
+        if(value > max) {
+            value = max;
+        } else if(value < min) {
+            value = min;
+        }
+        this.$slider.slider('option', 'value', value);
+        this.readout.textContent = this.valueToString(value);
+        if(this.model.get('value') !== value) {
+            this.model.set('value', value, {updated_view: this});
+            this.touch();
+        }
+    }
+
+    /**
+     * Write value to a string
+     */
+    valueToString(value: number): string {
+        let format = this.model.readout_formatter;
+        return format(value);
+    }
+
+    /**
+     * Parse value from a string
+     */
+    stringToValue(text: string): number {
+            return this._parse_value(text);
+    }
+
+    /**
+     * this handles the entry of text into the contentEditable label first, the
+     * value is checked if it contains a parseable value then it is clamped
+     * within the min-max range of the slider finally, the model is updated if
+     * the value is to be changed
+     *
+     * if any of these conditions are not met, the text is reset
+     */
+    handleTextChange() {
+        let value = this.stringToValue(this.readout.textContent);
+        let vmin = this.model.get('min');
+        let vmax = this.model.get('max');
+
+        if (isNaN(value as number)) {
+            this.readout.textContent = this.valueToString(this.model.get('value'));
+        } else {
+            value = Math.max(Math.min(value as number, vmax), vmin);
+
+            if (value !== this.model.get('value')) {
+                this.readout.textContent = this.valueToString(value);
+                this.model.set('value', value, {updated_view: this});
+                this.touch();
+            } else {
+                this.readout.textContent = this.valueToString(this.model.get('value'));
+            }
+        }
+    }
+    /**
+     * Called when the slider value is changing.
+     */
+    handleSliderChange(e, ui) {
+        let actual_value = this._validate_slide_value(ui.value);
+        this.readout.textContent = this.valueToString(actual_value);
+
+        // Only persist the value while sliding if the continuous_update
+        // trait is set to true.
+        if (this.model.get('continuous_update')) {
+            this.handleSliderChanged(e, ui);
+        }
+    }
+
+    /**
+     * Called when the slider value has changed.
+     *
+     * Calling model.set will trigger all of the other views of the
+     * model to update.
+     */
+    handleSliderChanged(e, ui) {
+        let actual_value = this._validate_slide_value(ui.value);
+        this.model.set('value', actual_value, {updated_view: this});
+        this.touch();
+    }
+}
+
 
 export
 class IntTextModel extends IntModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'IntTextModel',
+            _view_name: 'IntTextView'
+        });
+    }
+}
+
+export
+class BoundedIntTextModel extends BoundedIntModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'BoundedIntTextModel',
             _view_name: 'IntTextView'
         });
     }
@@ -414,13 +489,13 @@ class IntTextView extends LabeledDOMWidgetView {
         this.update(); // Set defaults.
     }
 
+    /**
+     * Update the contents of this view
+     *
+     * Called when the model is changed.  The model may have been
+     * changed by another view or by a state update from the back-end.
+     */
     update(options?) {
-        /**
-         * Update the contents of this view
-         *
-         * Called when the model is changed.  The model may have been
-         * changed by another view or by a state update from the back-end.
-         */
         if (options === undefined || options.updated_view !== this) {
             var value: number = this.model.get('value');
 
@@ -470,12 +545,12 @@ class IntTextView extends LabeledDOMWidgetView {
         e.stopPropagation();
     }
 
+    /**
+     * Handles and validates user input.
+     *
+     * Try to parse value as an int.
+     */
     handleChanging(e) {
-        /**
-         * Handles and validates user input.
-         *
-         * Try to parse value as an int.
-         */
         var numericalValue = 0;
         var trimmed = e.target.value.trim();
         if (trimmed === '') {
@@ -490,6 +565,8 @@ class IntTextView extends LabeledDOMWidgetView {
         if (isNaN(numericalValue)) {
             e.target.value = this.model.get('value');
         } else if (!isNaN(numericalValue)) {
+            // Handle both the IntTextModel and the BoundedIntTextModel by
+            // checking to see if the max/min properties are defined
             if (this.model.get('max') !== undefined) {
                 numericalValue = Math.min(this.model.get('max'), numericalValue);
             }
@@ -508,10 +585,10 @@ class IntTextView extends LabeledDOMWidgetView {
         }
     }
 
+    /**
+     * Applies validated input.
+     */
     handleChanged(e) {
-        /**
-         * Applies validated input.
-         */
         if (e.target.value.trim() === '' || e.target.value !== this.model.get('value')) {
             e.target.value = this.model.get('value');
         }
@@ -541,10 +618,10 @@ class ProgressStyleModel extends StyleModel {
 
 
 export
-class ProgressModel extends BoundedIntModel {
+class IntProgressModel extends BoundedIntModel {
     defaults() {
         return _.extend(super.defaults(), {
-            _model_name: 'ProgressModel',
+            _model_name: 'IntProgressModel',
             _view_name: 'ProgressView',
             orientation: 'horizontal',
             bar_style: '',
@@ -586,13 +663,13 @@ class ProgressView extends LabeledDOMWidgetView {
         this.set_bar_style();
     }
 
+    /**
+     * Update the contents of this view
+     *
+     * Called when the model is changed.  The model may have been
+     * changed by another view or by a state update from the back-end.
+     */
     update() {
-        /**
-         * Update the contents of this view
-         *
-         * Called when the model is changed.  The model may have been
-         * changed by another view or by a state update from the back-end.
-         */
         var value = this.model.get('value');
         var max = this.model.get('max');
         var min = this.model.get('min');
@@ -646,7 +723,8 @@ class PlayModel extends BoundedIntModel {
             _model_name: 'PlayModel',
             _view_name: 'PlayView',
             _playing: false,
-            interval: 100
+            interval: 100,
+            step: 1,
         });
     }
     initialize(attributes, options) {

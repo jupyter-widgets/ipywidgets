@@ -12,7 +12,7 @@ import {
 import * as _ from 'underscore';
 
 import {
-    IntSliderView, IntTextView
+    IntSliderView, IntRangeSliderView, IntTextView
 } from './widget_int';
 
 
@@ -29,13 +29,11 @@ class FloatModel extends CoreLabeledDOMWidgetModel {
     }
 }
 
-
 export
 class BoundedFloatModel extends FloatModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: "BoundedFloatModel",
-            step: 1.0,
             max: 100.0,
             min: 0.0
         });
@@ -48,6 +46,7 @@ class FloatSliderModel extends BoundedFloatModel {
         return _.extend(super.defaults(), {
             _model_name: "FloatSliderModel",
             _view_name: "FloatSliderView",
+            step: 1.0,
             orientation: "horizontal",
             _range: false,
             readout: true,
@@ -70,7 +69,23 @@ class FloatSliderModel extends BoundedFloatModel {
 }
 
 export
+class FloatRangeSliderModel extends FloatSliderModel {}
+
+export
 class FloatSliderView extends IntSliderView {
+    /**
+     * Validate the value of the slider before sending it to the back-end
+     * and applying it to the other views on the page.
+     */
+    _validate_slide_value(x) {
+        return x;
+    }
+
+    _parse_value = parseFloat
+}
+
+export
+class FloatRangeSliderView extends IntRangeSliderView {
     /**
      * Validate the value of the slider before sending it to the back-end
      * and applying it to the other views on the page.
@@ -83,7 +98,6 @@ class FloatSliderView extends IntSliderView {
 
     // matches: whitespace?, float, whitespace?, (hyphen, colon, or en-dash), whitespace?, float
     _range_regex = /^\s*([+-]?(?:\d*\.?\d+|\d+\.)(?:[eE][-:]?\d+)?)\s*[-:–]\s*([+-]?(?:\d*\.?\d+|\d+\.)(?:[eE][+-]?\d+)?)/
-
 }
 
 export
@@ -97,6 +111,29 @@ class FloatTextModel extends FloatModel {
 }
 
 export
+class BoundedFloatTextModel extends BoundedFloatModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: "BoundedFloatTextModel",
+            _view_name: "FloatTextView"
+        });
+    }
+}
+
+export
 class FloatTextView extends IntTextView {
     _parse_value = parseFloat;
+}
+
+export
+class FloatProgressModel extends BoundedFloatModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'FloatProgressModel',
+            _view_name: 'ProgressView',
+            orientation: 'horizontal',
+            bar_style: '',
+            style: void 0
+        });
+    }
 }
