@@ -26,8 +26,6 @@ var OutputModel = widgets.DOMWidgetModel.extend({
         if (this.kernel) {
             this.kernel.set_callbacks_for_msg(this.id, this.callbacks(), false);
         }
-        this._outputs = this.get('outputs') || [];
-        this.set('outputs', []);
 
         var that = this;
         // Create an output area to handle the data model part
