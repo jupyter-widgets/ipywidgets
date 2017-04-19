@@ -38,15 +38,16 @@ var OutputModel = widgets.DOMWidgetModel.extend({
                 keyboard_manager: that.widget_manager.keyboard_manager });
             that.listenTo(that, 'new_message', function(msg) {
                 that.output_area.handle_output(msg);
-                that.set('outputs', that.output_area.toJSON());
+                that.set('outputs', that.output_area.toJSON(), {newMessage: true});
                 that.save_changes();
             }, that);
             that.listenTo(that, 'clear_output', function(msg) {
                 that.output_area.handle_clear_output(msg);
-                that.set('outputs', []);
+                that.set('outputs', [], {newMessage: true});
                 that.save_changes();
             })
-            that.output_area.fromJSON(that.get('outputs'));
+            that.listenTo(that, 'change:outputs', that.setOutputs);
+            that.setOutputs();
         });
     },
 
@@ -87,6 +88,15 @@ var OutputModel = widgets.DOMWidgetModel.extend({
             kernel.output_callback_overrides_push(msg_id, this.id);
         }
     },
+
+    setOutputs: function(model, value, options) {
+        if (!(options && options.newMessage)) {
+            // fromJSON does not clear the existing output
+            this.output_area.clear_output();
+            this.output_area.fromJSON(this.get('outputs'));
+        }
+    },
+
 });
 
 var OutputView = widgets.DOMWidgetView.extend({
@@ -112,10 +122,19 @@ var OutputView = widgets.DOMWidgetView.extend({
                 that.output_area.element.trigger('clearing', {output_area: this});
             })
             // Render initial contents from the current model
-            that.output_area.fromJSON(that.model.get('outputs'));
+            that.listenTo(that.model, 'change:outputs', that.setOutputs);
+            that.setOutputs();
         });
         OutputView.__super__.render.apply(this, arguments);
     },
+
+    setOutputs: function(model, value, options) {
+        if (!(options && options.newMessage)) {
+            // fromJSON does not clear the existing output
+            this.output_area.clear_output();
+            this.output_area.fromJSON(this.model.get('outputs'));
+        }
+    }
 });
 
 module.exports = {
