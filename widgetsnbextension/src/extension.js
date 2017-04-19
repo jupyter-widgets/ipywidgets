@@ -81,7 +81,6 @@ function register_events(Jupyter, events, outputarea) {
     // to clear input.
     events.on('execute.CodeCell', removeView);
     events.on('clear_output.CodeCell', removeView);
-    events.on('clear_output.OutputArea', removeView);
 
     /**
      * Render data to the output area.

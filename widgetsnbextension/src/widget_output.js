@@ -7,11 +7,16 @@
 var widgets = require("jupyter-js-widgets");
 var _ = require("underscore");
 
+var outputArea = new Promise(function(resolve, reject) {
+        requirejs(["notebook/js/outputarea"], resolve, reject)
+});
+
 var OutputModel = widgets.DOMWidgetModel.extend({
     defaults: _.extend({}, widgets.DOMWidgetModel.prototype.defaults, {
         _model_name: "OutputModel",
         _view_name: "OutputView",
         msg_id: "",
+        outputs: [],
     }),
 
     initialize: function(attributes, options) {
@@ -21,7 +26,28 @@ var OutputModel = widgets.DOMWidgetModel.extend({
         if (this.kernel) {
             this.kernel.set_callbacks_for_msg(this.id, this.callbacks(), false);
         }
-        this._outputs = [];
+
+        var that = this;
+        // Create an output area to handle the data model part
+        outputArea.then(function(outputArea) {
+            that.output_area = new outputArea.OutputArea({
+                selector: document.createElement('div'),
+                config: {data: {OutputArea: {}}},
+                prompt_area: false,
+                events: that.widget_manager.notebook.events,
+                keyboard_manager: that.widget_manager.keyboard_manager });
+            that.listenTo(that, 'new_message', function(msg) {
+                that.output_area.handle_output(msg);
+                that.set('outputs', that.output_area.toJSON());
+                that.save_changes();
+            }, that);
+            that.listenTo(that, 'clear_output', function(msg) {
+                that.output_area.handle_clear_output(msg);
+                that.set('outputs', []);
+                that.save_changes();
+            })
+            that.output_area.fromJSON(that.get('outputs'));
+        });
     },
 
     // make callbacks
@@ -32,14 +58,12 @@ var OutputModel = widgets.DOMWidgetModel.extend({
         var iopubCallbacks = _.extend({}, iopub, {
             output: function(msg) {
                 this.trigger('new_message', msg);
-                this._outputs.push(msg);
                 if (iopub.output) {
                     iopub.output.apply(this, arguments);
                 }
             }.bind(this),
             clear_output: function(msg) {
                 this.trigger('clear_output', msg);
-                this._outputs = [];
                 if (iopub.clear_output) {
                     iopub.clear_output.apply(this, arguments);
                 }
@@ -63,17 +87,16 @@ var OutputModel = widgets.DOMWidgetModel.extend({
             kernel.output_callback_overrides_push(msg_id, this.id);
         }
     },
-
 });
 
 var OutputView = widgets.DOMWidgetView.extend({
     render: function(){
         var that = this;
-        var renderOutput = function(outputArea, events) {
+        outputArea.then(function(outputArea) {
             that.output_area = new outputArea.OutputArea({
                 selector: that.el,
                 // use default values for the output area config
-                config: {OutputArea: {}},
+                config: {data: {OutputArea: {}}},
                 prompt_area: false,
                 events: that.model.widget_manager.notebook.events,
                 keyboard_manager: that.model.widget_manager.keyboard_manager });
@@ -82,16 +105,15 @@ var OutputView = widgets.DOMWidgetView.extend({
             }, that);
             that.listenTo(that.model, 'clear_output', function(msg) {
                 that.output_area.handle_clear_output(msg);
-                events.trigger('clear_output.OutputArea', {cell: {output_area: that.output_area}})
-            });
-
-            // Render initial contents from that.model._outputs
-            that.model._outputs.forEach(function(msg) {
-                that.output_area.handle_output(msg);
-            }, that)
-        }
-
-        requirejs(["notebook/js/outputarea", "base/js/events"], renderOutput)
+                // fake the event on the output area element. This can be
+                // deleted when we can rely on
+                // https://github.com/jupyter/notebook/pull/2411 being
+                // available.
+                that.output_area.element.trigger('clearing', {output_area: this});
+            })
+            // Render initial contents from the current model
+            that.output_area.fromJSON(that.model.get('outputs'));
+        });
         OutputView.__super__.render.apply(this, arguments);
     },
 });
