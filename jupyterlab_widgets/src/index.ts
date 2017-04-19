@@ -12,7 +12,7 @@ import {
 } from 'jupyter-js-widgets';
 
 import {
-  JSONObject
+  JSONObject, Token
 } from '@phosphor/coreutils';
 
 import {
@@ -24,29 +24,28 @@ import {
 } from '@phosphor/widgets';
 
 import {
-  Token
-} from '@phosphor/application';
-
-import {
   NotebookPanel
-} from 'jupyterlab/lib/notebook/panel';
+} from '@jupyterlab/notebook';
 
 import {
   INotebookModel
-} from 'jupyterlab/lib/notebook/model';
+} from '@jupyterlab/notebook';
 
 import {
   IRenderMime, RenderMime
-} from 'jupyterlab/lib/rendermime';
+} from '@jupyterlab/rendermime';
 
 import {
   DocumentRegistry
-} from 'jupyterlab/lib/docregistry';
+} from '@jupyterlab/docregistry';
 
 import {
   SemVerCache
 } from './semvercache';
 
+import WidgetManagerProvider from './plugin';
+
+export default WidgetManagerProvider;
 
 /**
  * The token identifying the JupyterLab plugin.
@@ -104,16 +103,16 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     this._context = context;
     this._rendermime = rendermime;
 
-    context.kernelChanged.connect((sender, kernel) => {
+    context.session.kernelChanged.connect((sender, kernel) => {
       this.newKernel(kernel);
     });
 
-    if (context.kernel) {
-      this.newKernel(context.kernel);
+    if (context.session.kernel) {
+      this.newKernel(context.session.kernel);
     }
   }
 
-  newKernel(kernel: Kernel.IKernel) {
+  newKernel(kernel: Kernel.IKernelConnection) {
     if (this._commRegistration) {
       this._commRegistration.dispose();
     }
@@ -139,7 +138,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * Create a comm.
    */
    _create_comm(target_name: string, model_id: string, data?: any): Promise<any> {
-    let comm = this._context.kernel.connectToComm(target_name, model_id);
+    let comm = this._context.session.kernel.connectToComm(target_name, model_id);
     comm.open(data);
     return Promise.resolve(new shims.services.Comm(comm));
   }
@@ -148,7 +147,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * Get the currently-registered comms.
    */
   _get_comm_info(): Promise<any> {
-    return this._context.kernel.requestCommInfo({target: 'jupyter.widget'}).then((reply) => {
+    return this._context.session.kernel.requestCommInfo({target: 'jupyter.widget'}).then((reply) => {
       return reply.content.comms;
     });
   }
@@ -247,16 +246,9 @@ class WidgetRenderer implements RenderMime.IRenderer, IDisposable {
   }
 
   /**
-   * Whether the input can safely sanitized for a given mimetype.
+   * Whether the renderer will sanitize the data given the render options.
    */
-  isSanitizable(mimetype: string): boolean {
-    return false;
-  }
-
-  /**
-   * Whether the input is safe without sanitization.
-   */
-  isSafe(mimetype: string): boolean {
+  wouldSanitize(options: RenderMime.IRenderOptions): boolean {
     return false;
   }
 
