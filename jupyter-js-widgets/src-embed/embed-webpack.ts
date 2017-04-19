@@ -19,8 +19,8 @@ require('../css/widgets.css');
 
 // Load json schema validator
 var Ajv = require('ajv');
-var widget_state_schema = require('jupyter-widgets-schema').v1.state;
-var widget_view_schema = require('jupyter-widgets-schema').v1.view;
+var widget_state_schema = require('jupyter-widgets-schema').v2.state;
+var widget_view_schema = require('jupyter-widgets-schema').v2.view;
 
 // Magic global widget rendering function:
 import * as widgets from '../../jupyter-js-widgets/lib/index';

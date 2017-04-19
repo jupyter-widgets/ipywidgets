@@ -13,7 +13,7 @@ var embed_widgets = function() {
                 'drop_defaults': true
             }).then(function(state) {
                 var data = JSON.stringify({
-                    version_major: 1,
+                    version_major: 2,
                     version_minor: 0,
                     state: state
                 }, null, '    ');

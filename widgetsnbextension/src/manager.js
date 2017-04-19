@@ -164,7 +164,7 @@ WidgetManager.prototype._init_actions = function() {
             }).then(function(state) {
                 Jupyter.notebook.metadata.widgets = {
                     'application/vnd.jupyter.widget-state+json' : {
-                        version_major: 1,
+                        version_major: 2,
                         version_minor: 0,
                         state: state
                     }
