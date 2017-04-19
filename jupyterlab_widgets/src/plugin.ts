@@ -3,19 +3,19 @@
 
 import {
   DocumentRegistry, IDocumentRegistry
-} from 'jupyterlab/lib/docregistry';
+} from '@jupyterlab/docregistry';
 
 import {
   INotebookModel
-} from 'jupyterlab/lib/notebook/model';
+} from '@jupyterlab/notebook';
 
 import {
   NotebookPanel
-} from 'jupyterlab/lib/notebook/panel';
+} from '@jupyterlab/notebook';
 
 import {
   JupyterLabPlugin, JupyterLab
-} from 'jupyterlab/lib/application';
+} from '@jupyterlab/application';
 
 import {
   IDisposable, DisposableDelegate

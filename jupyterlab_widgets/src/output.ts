@@ -19,11 +19,11 @@ import {
 
 import {
   OutputAreaModel, OutputAreaWidget
-} from 'jupyterlab/lib/outputarea';
+} from '@jupyterlab/outputarea';
 
 import {
   nbformat
-} from '@jupyterlab/services';
+} from '@jupyterlab/coreutils';
 
 import {
   KernelMessage
@@ -47,7 +47,7 @@ class OutputModel extends DOMWidgetModel {
     super.initialize(attributes, options)
     this._outputs = new OutputAreaModel();
     this.listenTo(this, 'change:msg_id', this.reset_msg_id);
-    this.widget_manager.context.kernelChanged.connect((sender, kernel) => {
+    this.widget_manager.context.session.kernelChanged.connect((sender, kernel) => {
       this._msgHook.dispose();
     });
     this.reset_msg_id();
@@ -59,7 +59,7 @@ class OutputModel extends DOMWidgetModel {
     }
     this._msgHook = null;
 
-    let kernel = this.widget_manager.context.kernel;
+    let kernel = this.widget_manager.context.session.kernel;
     let msgId = this.get('msg_id');
     if (msgId && kernel) {
       this._msgHook = kernel.registerMessageHook(this.get('msg_id'), msg => {

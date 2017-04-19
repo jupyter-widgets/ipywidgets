@@ -5,24 +5,35 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "dependencies": {
+    "@jupyterlab/application": "^0.2.0",
+    "@jupyterlab/docregistry": "^0.2.0",
+    "@jupyterlab/notebook": "^0.2.0",
+    "@jupyterlab/outputarea": "^0.2.0",
+    "@jupyterlab/rendermime": "^0.2.0",
     "@phosphor/coreutils": "^1.0.0",
     "@phosphor/disposable": "^1.0.0",
     "@phosphor/widgets": "^1.1.0",
-    "jupyter-js-widgets": "~3.0.0",
-    "jupyterlab": "^0.17.2"
+    "jupyter-js-widgets": "~3.0.0"
   },
   "devDependencies": {
-    "@jupyterlab/extension-builder": "^0.10.0",
     "@types/lodash": "4.14.40",
     "rimraf": "^2.4.2",
     "typedoc": "^0.5.0",
     "typescript": "~2.2.1"
   },
+  "keywords": [
+    "jupyter",
+    "jupyterlab",
+    "jupyterlab extension",
+    "jupyterlab notebook"
+  ],
+  "jupyterlab": {
+    "extension": true
+  },
   "scripts": {
     "clean": "rimraf docs && rimraf lib && rimraf jupyterlab_widgets/static",
     "build:src": "tsc --project src",
-    "build:extension": "node scripts/buildExtension.js",
-    "build": "npm run build:src && npm run build:extension",
+    "build": "npm run build:src",
     "update": "rimraf node_modules/jupyter-js-widgets; npm install file:../jupyter-js-widgets; npm run build",
     "docs": "typedoc --mode file --module commonjs --excludeNotExported --target es5 --moduleResolution node --out docs/ src",
     "prepublish": "npm run build"
@@ -31,12 +42,6 @@
     "type": "git",
     "url": "https://github.com/jupyter-widgets/ipywidgets"
   },
-  "keywords": [
-    "jupyter",
-    "jupyterlab",
-    "services",
-    "notebook"
-  ],
   "files": [
     "lib/*.js",
     "lib/*.d.ts",
