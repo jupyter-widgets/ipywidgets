@@ -8,6 +8,10 @@ import * as Backbone from 'backbone';
 import * as services from '@jupyterlab/services';
 
 import {
+    toByteArray, fromByteArray
+} from 'base64-js';
+
+import {
     WidgetModel
 } from './widget';
 
@@ -375,21 +379,22 @@ abstract class ManagerBase<T> {
      * @returns Promise for a state dictionary
      */
     get_state(options: StateOptions): Promise<any> {
-        var that = this;
-        return utils.resolvePromisesDict(this._models).then(function(models) {
-            var state = {};
-            for (var model_id in models) {
-                if (models.hasOwnProperty(model_id)) {
-                    var model = models[model_id];
-                    state[model_id] = utils.resolvePromisesDict({
-                        model_name: model.name,
-                        model_module: model.module,
-                        model_module_version: model.get('_model_module_version'),
-                        state: model.constructor._serialize_state(model.get_state(options.drop_defaults), that)
-                    });
-                }
-            }
-            return utils.resolvePromisesDict(state);
+        return utils.resolvePromisesDict(this._models).then((models) => {
+            let state = {};
+            Object.keys(models).forEach(model_id => {
+                let model = models[model_id];
+                let split = utils.remove_buffers(model.serialize(model.get_state(options.drop_defaults)));
+                let base64Buffers = split.buffers.map(fromByteArray);
+                state[model_id] = {
+                    model_name: model.name,
+                    model_module: model.module,
+                    model_module_version: model.get('_model_module_version'),
+                    state: split.state,
+                    buffer_paths: split.buffer_paths,
+                    buffers: base64Buffers
+                };
+            });
+            return state;
         }).catch(utils.reject('Could not get state of widget manager', true));
     };
 
@@ -401,17 +406,22 @@ abstract class ManagerBase<T> {
      * state.
      */
     set_state(state, displayOptions) {
-        var that = this;
-
         // Recreate all the widget models for the given widget manager state.
-        var all_models = that._get_comm_info().then(function(live_comms) {
-            return Promise.all(_.map(Object.keys(state), function (model_id) {
+        let all_models = this._get_comm_info().then(live_comms => {
+            return Promise.all(Object.keys(state).map(model_id => {
 
-                // If the model has already been created, set it's state and then
+                // First put back the binary buffers
+                let modelState = state[model_id].state;
+                let buffer_paths = modelState.buffer_paths || [];
+                let buffers = (modelState.buffers || []).map(toByteArray);
+                utils.put_buffers(modelState, buffer_paths, buffers);
+
+                // If the model has already been created, set its state and then
                 // return it.
-                if (that._models[model_id]) {
-                    return that._models[model_id].then(function(model) {
-                        return model.constructor._deserialize_state(state[model_id].state || {}, that).then(function(attributes) {
+                if (this._models[model_id]) {
+                    return this._models[model_id].then(model => {
+                        // deserialize state
+                        return model.constructor._deserialize_state(modelState || {}, this).then(attributes => {
                             model.set_state(attributes);
                             return model;
                         });
@@ -419,8 +429,8 @@ abstract class ManagerBase<T> {
                 }
 
                 if (live_comms.hasOwnProperty(model_id)) {  // live comm
-                    return that._create_comm(that.comm_target_name, model_id).then(function(new_comm) {
-                        return that.new_model({
+                    return this._create_comm(this.comm_target_name, model_id).then(new_comm => {
+                        return this.new_model({
                             comm: new_comm,
                             model_name: state[model_id].model_name,
                             model_module: state[model_id].model_module,
@@ -428,12 +438,12 @@ abstract class ManagerBase<T> {
                         });
                     });
                 } else {                                    // dead comm
-                    return that.new_model({
+                    return this.new_model({
                         model_id: model_id,
                         model_name: state[model_id].model_name,
                         model_module: state[model_id].model_module,
                         model_module_version: state[model_id].model_module_version
-                    }, state[model_id].state);
+                    }, modelState);
                 }
             }));
         });
