@@ -39,24 +39,29 @@
                         "description": "Binary buffers in the state",
                         "type": "object",
                         "properties": {
-                            "paths": {
-                                "description" : "Array of paths in the state for the corresponding buffers",
+                            "buffers": {
                                 "type": "array",
                                 "items": {
-                                    "description": "A path for a binary buffer value.",
-                                    "type": "array",
-                                    "items": {
-                                        "description": "An object key or array index",
-                                        "type": ["string", "number"]
-                                    }
+                                    "type": "object",
+                                    "properties": {
+                                        "path": {
+                                            "description": "A path for a binary buffer value.",
+                                            "type": "array",
+                                            "items": {
+                                                "description": "An object key or array index",
+                                                "type": ["string", "number"]
+                                            }
+                                        },
+                                        "data": {
+                                            "description" : "A binary buffer encoded as specified in the 'encoding' property",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": ["path", "data"]
                                 }
                             },
-                            "data": {
-                                "description" : "Array of encoded binary buffers, encoded as specified in the 'encoding' property",
-                                "type": "array"
-                            },
                             "encoding": {
-                                "description": "The encoding of each item in the data property",
+                                "description": "The encoding of each buffer data property",
                                 "type": "string",
                                 "oneOf": [
                                     {"enum": ["hex"], "description": "Base 16 encoding, as specified in RFC 4648, section 8 (https://tools.ietf.org/html/rfc4648#section-8)"},
@@ -65,7 +70,7 @@
                                 ]
                             }
                         },
-                        "required": ["paths", "data", "encoding"]
+                        "required": ["buffers", "encoding"]
                     }
                 },
                 "required": [ "model_name", "model_module", "state" ]
