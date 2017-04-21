@@ -73,9 +73,6 @@ setup_args = dict(
     version         = version_ns['__version__'],
     scripts         = [],
     packages        = packages,
-    package_data    = {
-        'ipywidgets': [ 'state.schema.json', 'view.schema.json' ]
-    },
     description     = "IPython HTML widgets for Jupyter",
     long_description = LONG_DESCRIPTION,
     author          = 'IPython Development Team',
@@ -114,6 +111,7 @@ install_requires = setuptools_args['install_requires'] = [
     # Requiring nbformat to specify bugfix version which is not required by
     # notebook.
     'nbformat>=4.2.0',
+    'ipywidgetschema>=1.0.0',
     # TODO: Dynamically add this dependency
     # only if notebook 4.x is installed in this
     # interpreter, to allow ipywidgets to be
