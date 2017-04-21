@@ -11,7 +11,9 @@
         },
         "version_minor" : {
             "description": "Format version (minor)",
-            "type": "number"
+            "type": "number",
+            "minimum": 0,
+            "maximum": 0
         },
         "state": {
             "description": "Model State for All Widget Models - keys are model ids, values are model state",
