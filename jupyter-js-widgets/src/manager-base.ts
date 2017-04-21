@@ -23,7 +23,6 @@ import {
     shims
 } from './services-shim';
 
-
 /**
  * The options for a model.
  *
@@ -386,7 +385,7 @@ abstract class ManagerBase<T> {
                 let model = models[model_id];
                 let split = utils.remove_buffers(model.serialize(model.get_state(options.drop_defaults)));
                 let buffers = split.buffers.map((buffer, index) => {
-                    return {data: fromByteArray(buffer), path: split.buffer_paths[index]};
+                    return {data: fromByteArray(buffer), path: split.buffer_paths[index], encoding: 'base64'};
                 });
                 state[model_id] = {
                     model_name: model.name,
@@ -396,10 +395,7 @@ abstract class ManagerBase<T> {
                 };
                 // To save space, only include the buffer key if we have buffers
                 if (buffers.length > 0) {
-                    state[model_id].buffers = {
-                        encoding: 'base64',
-                        buffers: buffers
-                    };
+                    state[model_id].buffers = buffers;
                 }
             });
             return {version_major: 2, version_minor: 0, state: state};
@@ -419,10 +415,13 @@ abstract class ManagerBase<T> {
             return Promise.all(Object.keys(state).map(model_id => {
 
                 // First put back the binary buffers
+                let decode = {'base64': toByteArray, 'hex': utils.hexToBuffer};
                 let modelState = state[model_id].state;
-                let buffer_paths = modelState.buffer_paths || [];
-                let buffers = (modelState.buffers || []).map(toByteArray);
-                utils.put_buffers(modelState, buffer_paths, buffers);
+                if (modelState.buffers) {
+                    let bufferPaths = modelState.buffers.map(b => b.path);
+                    let buffers = modelState.buffers.map(b => decode[b.encoding](b.data));
+                    utils.put_buffers(modelState, bufferPaths, buffers);
+                }
 
                 // If the model has already been created, set its state and then
                 // return it.
