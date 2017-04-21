@@ -39,40 +39,35 @@
                     },
                     "buffers": {
                         "description": "Binary buffers in the state",
-                        "type": "object",
-                        "properties": {
-                            "buffers": {
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "path": {
-                                            "description": "A path for a binary buffer value.",
-                                            "type": "array",
-                                            "items": {
-                                                "description": "An object key or array index",
-                                                "type": ["string", "number"]
-                                            }
-                                        },
-                                        "data": {
-                                            "description" : "A binary buffer encoded as specified in the 'encoding' property",
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": ["path", "data"]
-                                }
-                            },
-                            "encoding": {
-                                "description": "The encoding of each buffer data property",
-                                "type": "string",
-                                "oneOf": [
-                                    {"enum": ["hex"], "description": "Base 16 encoding, as specified in RFC 4648, section 8 (https://tools.ietf.org/html/rfc4648#section-8)"},
-                                    {"enum": ["base64"], "description": "Base 64 encoding, as specified in RFC 4648, section 4 (https://tools.ietf.org/html/rfc4648#section-4)"}
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "path": {
+                                    "description": "A path for a binary buffer value.",
+                                    "type": "array",
+                                    "items": {
+                                        "description": "An object key or array index",
+                                        "type": ["string", "number"]
+                                    }
+                                },
+                                "data": {
+                                    "description" : "A binary buffer encoded as specified in the 'encoding' property",
+                                    "type": "string"
+                                },
+                                "encoding": {
+                                    "description": "The encoding of the buffer data",
+                                    "type": "string",
+                                    "oneOf": [
+                                        {"enum": ["hex"], "description": "Base 16 encoding, as specified in RFC 4648, section 8 (https://tools.ietf.org/html/rfc4648#section-8)"},
+                                        {"enum": ["base64"], "description": "Base 64 encoding, as specified in RFC 4648, section 4 (https://tools.ietf.org/html/rfc4648#section-4)"}
 
-                                ]
-                            }
-                        },
-                        "required": ["buffers", "encoding"]
+                                    ]
+                                }
+
+                            },
+                            "required": ["path", "data", "encoding"]
+                        }
                     }
                 },
                 "required": [ "model_name", "model_module", "state" ]
