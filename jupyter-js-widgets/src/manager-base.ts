@@ -373,7 +373,8 @@ abstract class ManagerBase<T> {
     /**
      * Asynchronously get the state of the widget manager.
      *
-     * This includes all of the widget models.
+     * This includes all of the widget models, and follows the format given in
+     * the jupyter-widgets-schema package.
      *
      * @param options - The options for what state to return.
      * @returns Promise for a state dictionary
@@ -384,17 +385,24 @@ abstract class ManagerBase<T> {
             Object.keys(models).forEach(model_id => {
                 let model = models[model_id];
                 let split = utils.remove_buffers(model.serialize(model.get_state(options.drop_defaults)));
-                let base64Buffers = split.buffers.map(fromByteArray);
+                let buffers = split.buffers.map((buffer, index) => {
+                    return {data: fromByteArray(buffer), path: split.buffer_paths[index]};
+                });
                 state[model_id] = {
                     model_name: model.name,
                     model_module: model.module,
                     model_module_version: model.get('_model_module_version'),
-                    state: split.state,
-                    buffer_paths: split.buffer_paths,
-                    buffers: base64Buffers
+                    state: split.state
                 };
+                // To save space, only include the buffer key if we have buffers
+                if (buffers.length > 0) {
+                    state[model_id].buffers = {
+                        encoding: 'base64',
+                        buffers: buffers
+                    };
+                }
             });
-            return state;
+            return {version_major: 2, version_minor: 0, state: state};
         }).catch(utils.reject('Could not get state of widget manager', true));
     };
 

@@ -9,7 +9,7 @@ var save_state = function() {
             return Jupyter.WidgetManager._managers[0].get_state({
                 'drop_defaults': true
             }).then(function(state) {
-                var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, "    "));
+                var data = "text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state.state, null, "    "));
                 var a = document.createElement("a");
                 a.download = "widget_state.json";
                 a.href = "data:" + data;
