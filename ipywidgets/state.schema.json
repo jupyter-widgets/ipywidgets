@@ -6,17 +6,16 @@
         "version_major" : {
             "description": "Format version (major)",
             "type": "number",
-            "minimum": 1,
-            "maximum": 1
+            "minimum": 2,
+            "maximum": 2
         },
         "version_minor" : {
             "description": "Format version (minor)",
             "type": "number"
         },
         "state": {
-            "description": "Model State for All Widget Models",
+            "description": "Model State for All Widget Models - keys are model ids, values are model state",
             "type": "object",
-            "additionalProperties": true,
             "additionalProperties" : {
                 "type": "object",
                 "properties": {
@@ -34,15 +33,49 @@
                     },
                     "state": {
                         "description" : "Serialized state of the model",
+                        "type": "object"
+                    },
+                    "buffers": {
+                        "description": "Binary buffers in the state",
                         "type": "object",
-                        "additional_properties": true
+                        "properties": {
+                            "buffers": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "path": {
+                                            "description": "A path for a binary buffer value.",
+                                            "type": "array",
+                                            "items": {
+                                                "description": "An object key or array index",
+                                                "type": ["string", "number"]
+                                            }
+                                        },
+                                        "data": {
+                                            "description" : "A binary buffer encoded as specified in the 'encoding' property",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": ["path", "data"]
+                                }
+                            },
+                            "encoding": {
+                                "description": "The encoding of each buffer data property",
+                                "type": "string",
+                                "oneOf": [
+                                    {"enum": ["hex"], "description": "Base 16 encoding, as specified in RFC 4648, section 8 (https://tools.ietf.org/html/rfc4648#section-8)"},
+                                    {"enum": ["base64"], "description": "Base 64 encoding, as specified in RFC 4648, section 4 (https://tools.ietf.org/html/rfc4648#section-4)"}
+
+                                ]
+                            }
+                        },
+                        "required": ["buffers", "encoding"]
                     }
                 },
-                "required": [ "model_name", "model_module", "state" ],
-                "additionalProperties": false
+                "required": [ "model_name", "model_module", "state" ]
             }
         }
     },
-    "required": [ "version_major", "version_minor", "state" ],
-    "additionalProperties": false
+    "required": [ "version_major", "version_minor", "state" ]
 }
