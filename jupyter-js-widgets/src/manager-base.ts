@@ -405,22 +405,30 @@ abstract class ManagerBase<T> {
     /**
      * Set the widget manager state.
      *
+     * @param state - a Javascript object conforming to the application/vnd.jupyter.widget-state+json spec.
+     *
      * Reconstructs all of the widget models in the state, merges that with the
      * current manager state, and then attempts to redisplay the widgets in the
      * state.
      */
     set_state(state, displayOptions) {
+
+        // Check to make sure that it's the same version we are parsing.
+        if (!(state.version_major && state.version_major <= 2)) {
+            throw "Unsupported widget state format";
+        }
+        let models = state.state;
         // Recreate all the widget models for the given widget manager state.
         let all_models = this._get_comm_info().then(live_comms => {
-            return Promise.all(Object.keys(state).map(model_id => {
+            return Promise.all(Object.keys(models).map(model_id => {
 
                 // First put back the binary buffers
                 let decode = {'base64': toByteArray, 'hex': utils.hexToBuffer};
-                let modelState = state[model_id].state;
+                let modelState = models[model_id].state;
                 if (modelState.buffers) {
                     let bufferPaths = modelState.buffers.map(b => b.path);
                     let buffers = modelState.buffers.map(b => decode[b.encoding](b.data));
-                    utils.put_buffers(modelState, bufferPaths, buffers);
+                    utils.put_buffers(modelState.state, bufferPaths, buffers);
                 }
 
                 // If the model has already been created, set its state and then
@@ -439,17 +447,17 @@ abstract class ManagerBase<T> {
                     return this._create_comm(this.comm_target_name, model_id).then(new_comm => {
                         return this.new_model({
                             comm: new_comm,
-                            model_name: state[model_id].model_name,
-                            model_module: state[model_id].model_module,
-                            model_module_version: state[model_id].model_module_version
+                            model_name: models[model_id].model_name,
+                            model_module: models[model_id].model_module,
+                            model_module_version: models[model_id].model_module_version
                         });
                     });
                 } else {                                    // dead comm
                     return this.new_model({
                         model_id: model_id,
-                        model_name: state[model_id].model_name,
-                        model_module: state[model_id].model_module,
-                        model_module_version: state[model_id].model_module_version
+                        model_name: models[model_id].model_name,
+                        model_module: models[model_id].model_module,
+                        model_module_version: models[model_id].model_module_version
                     }, modelState);
                 }
             }));
