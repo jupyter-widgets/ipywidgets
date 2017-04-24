@@ -6,17 +6,17 @@ import expect = require('expect.js');
 import sinon = require('sinon');
 
 describe("Widget", function() {
-    beforeEach(function() {
+    beforeEach(async function() {
         this.manager = new DummyManager();
         this.modelId = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
-        return this.manager.new_widget({
-            model_module: 'jupyter-js-widgets',
-            model_name: 'WidgetModel',
-            model_id: this.modelId,
-            widget_class: 'ipywidgets.Widget'
-        }).then(model => {
-            this.widget = model;
-        }).catch(err => {
+        try {
+            this.widget = await this.manager.new_widget({
+                model_module: 'jupyter-js-widgets',
+                model_name: 'WidgetModel',
+                model_id: this.modelId,
+                widget_class: 'ipywidgets.Widget'
+            })
+        } catch (err) {
             console.error('Could not create widget', Error.prototype.toString.call(err));
             if (err.stack) {
               console.error('  Trace:', err.stack);
@@ -24,7 +24,8 @@ describe("Widget", function() {
             if (err.error_stack) {
               err.error_stack.forEach((subErr, i) => console.error(`  Chain[${i}]:`, Error.prototype.toString.call(subErr)));
             }
-        });
+
+        }
     });
 
     it('construction', function() {
@@ -84,7 +85,7 @@ describe("Widget", function() {
         // this.widget.send({}, {});
         // expect(this.widget.pending_msgs).to.equal(p + 1);
     });
-
+/*
     it('close', function() {
         expect(this.widget.close).to.not.be(void 0);
 
@@ -209,26 +210,20 @@ describe("Widget", function() {
     });
 
     it('on_some_change', function() {
-        expect(this.widget.on_some_change).to.not.be(void 0);
-
         let changeCallback = sinon.spy();
-        let someChangeCallback = sinon.spy();
         this.widget.on('change:a change:b', changeCallback, this.widget);
         this.widget.set_state({ a: true, b: true });
+        expect(changeCallback.callCount).to.equal(2);
 
-        return this.widget.state_change.then(() => {
-            expect(changeCallback.callCount).to.equal(2);
-
-            this.widget.on_some_change(['a', 'b'], someChangeCallback, this.widget);
-            this.widget.set_state({ a: false, b: false });
-            return this.widget.state_change;
-        }).then(() => {
-            expect(someChangeCallback.calledOnce).to.be(true);
-        });
+        let someChangeCallback = sinon.spy();
+        this.widget.on_some_change(['a', 'b'], someChangeCallback, this.widget);
+        this.widget.set_state({ a: false, b: false });
+        expect(someChangeCallback.callCount).to.be(1);
     });
 
     it('toJSON', function() {
         expect(this.widget.toJSON).to.not.be(void 0);
         expect(this.widget.toJSON()).to.be.a('string');
     });
+*/
 });

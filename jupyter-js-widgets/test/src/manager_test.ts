@@ -17,7 +17,16 @@ describe("ManagerBase", function() {
     });
 
     it('get_state', function() {
-        expect(this.managerBase.get_state).to.not.be(void 0);
+
+        // create some new widgets, including widgets with binary fields get the
+        // state, verify the state with the schema, then reconstitute the state
+        // and check that the widgets have the same attributes.
+/*        let wm = this.managerBase;
+        wm.new_model({
+            model_name: 'WigetModel',
+            widget_class: 'Jupyter.IntSlider'
+        })
+  */      expect(this.managerBase.get_state).to.not.be(void 0);
     });
 
     it('set_state', function() {
