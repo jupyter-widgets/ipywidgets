@@ -172,9 +172,17 @@ class WidgetModel extends Backbone.Model {
                 this.state_change = this.state_change
                     .then(() => {
                         // see Widget.open/_split_state_buffers about why we need state_with_buffers
-                        var state = msg.content.data.state;
-                        var buffer_paths = msg.content.data.buffer_paths || [];
-                        var buffers = msg.buffers || [];
+                        let state = msg.content.data.state;
+                        let buffer_paths = msg.content.data.buffer_paths || [];
+                        // Make sure the buffers are DataViews
+                        let buffers = (msg.buffers || []).map(b => {
+                            if (b instanceof DataView) {
+                                return b;
+                            } else {
+                                return new DataView(b instanceof ArrayBuffer ? b : b.buffer);
+                            }
+                        });
+
                         utils.put_buffers(state, buffer_paths, buffers);
                         return (this.constructor as typeof WidgetModel)._deserialize_state(state, this.widget_manager);
                     }).then((state) => {

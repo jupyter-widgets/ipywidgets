@@ -182,7 +182,7 @@ function escape_html(text: string): string {
  * Will lead to {a: 1, b: {data: array1}, c: [0, array2]}
  */
 export
-function put_buffers(state, buffer_paths, buffers) {
+function put_buffers(state, buffer_paths: (string | number)[][], buffers: DataView[]) {
     for (let i=0; i<buffer_paths.length; i++) {
         let buffer_path = buffer_paths[i];
          // say we want to set state[x][y][z] = buffers[i]
@@ -204,7 +204,7 @@ function put_buffers(state, buffer_paths, buffers) {
  * and the buffers associated to those paths (.buffers).
  */
 export
-function remove_buffers(state) {
+function remove_buffers(state): {state: any, buffers: (ArrayBuffer | ArrayBufferView)[], buffer_paths: (string | number)[][]} {
     let buffers = [];
     let buffer_paths = [];
     // if we need to remove an object from a list, we need to clone that list, otherwise we may modify

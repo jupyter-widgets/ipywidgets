@@ -189,8 +189,17 @@ abstract class ManagerBase<T> {
      * Handle when a comm is opened.
      */
     handle_comm_open(comm: shims.services.Comm, msg: services.KernelMessage.ICommOpenMsg): Promise<Backbone.Model> {
-        var data = (msg.content.data as any);
-        utils.put_buffers(data.state, data.buffer_paths, msg.buffers)
+        let data = (msg.content.data as any);
+        let buffer_paths = data.buffer_paths || [];
+        // Make sure the buffers are DataViews
+        let buffers = (msg.buffers || []).map(b => {
+            if (b instanceof DataView) {
+                return b;
+            } else {
+                return new DataView(b instanceof ArrayBuffer ? b : b.buffer);
+            }
+        });
+        utils.put_buffers(data.state, buffer_paths, buffers);
         return this.new_model({
             model_name: data.state['_model_name'],
             model_module: data.state['_model_module'],
