@@ -204,9 +204,9 @@ function put_buffers(state, buffer_paths: (string | number)[][], buffers: DataVi
  * and the buffers associated to those paths (.buffers).
  */
 export
-function remove_buffers(state): {state: any, buffers: (ArrayBuffer | ArrayBufferView)[], buffer_paths: (string | number)[][]} {
-    let buffers = [];
-    let buffer_paths = [];
+function remove_buffers(state): {state: any, buffers: ArrayBuffer[], buffer_paths: (string | number)[][]} {
+    let buffers: ArrayBuffer[] = [];
+    let buffer_paths: (string | number)[][] = [];
     // if we need to remove an object from a list, we need to clone that list, otherwise we may modify
     // the internal state of the widget model
     // however, we do not want to clone everything, for performance
@@ -226,7 +226,7 @@ function remove_buffers(state): {state: any, buffers: (ArrayBuffer | ArrayBuffer
                             obj = _.clone(obj);
                             is_cloned = true;
                         }
-                        buffers.push(value);
+                        buffers.push(value instanceof ArrayBuffer ? value : value.buffer);
                         buffer_paths.push(path.concat([i]));
                         // easier to just keep the array, but clear the entry, otherwise we have to think
                         // about array length, much easier this way
@@ -255,7 +255,7 @@ function remove_buffers(state): {state: any, buffers: (ArrayBuffer | ArrayBuffer
                                 obj = _.clone(obj);
                                 is_cloned = true;
                             }
-                            buffers.push(value);
+                            buffers.push(value instanceof ArrayBuffer ? value : value.buffer);
                             buffer_paths.push(path.concat([key]));
                             delete obj[key]; // for objects/dicts we just delete them
                         }

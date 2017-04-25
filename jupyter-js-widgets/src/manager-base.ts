@@ -394,8 +394,8 @@ abstract class ManagerBase<T> {
                 let model = models[model_id];
                 let split = utils.remove_buffers(model.serialize(model.get_state(options.drop_defaults)));
                 let buffers = split.buffers.map((buffer, index) => {
-                    // fromByteArray expects bytes, while our buffer may be a typed array (e.g. Float32Array)
-                    return {data: fromByteArray(new Uint8Array(buffer.buffer)), path: split.buffer_paths[index], encoding: 'base64'};
+                    // fromByteArray expects Uint8Array
+                    return {data: fromByteArray(new Uint8Array(buffer)), path: split.buffer_paths[index], encoding: 'base64'};
                 });
                 state[model_id] = {
                     model_name: model.name,
