@@ -23,7 +23,7 @@ var embed_widgets = function() {
                         cell.output_area.outputs.forEach(function (output) {
                             if (output.data
                                 && output.data[VIEW_MIME_TYPE]
-                                && state[output.data[VIEW_MIME_TYPE].model_id]) {
+                                && state.state[output.data[VIEW_MIME_TYPE].model_id]) {
                                 views.push(('\n<script type="'+VIEW_MIME_TYPE+'">\n'
                                     + JSON.stringify(output.data[VIEW_MIME_TYPE], null, '    ')
                                     + '\n</script>'));
