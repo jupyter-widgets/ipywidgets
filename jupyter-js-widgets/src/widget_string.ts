@@ -278,7 +278,9 @@ class TextView extends LabeledDOMWidgetView {
         this.el.classList.add('widget-text');
 
         this.textbox = document.createElement('input');
-        this.textbox.setAttribute('type', 'text');
+        var textType = this.model.get('type') ? this.model.get('type') : 'text';
+        this.textbox.setAttribute('type', textType);
+
         this.el.appendChild(this.textbox);
 
         this.update(); // Set defaults.
