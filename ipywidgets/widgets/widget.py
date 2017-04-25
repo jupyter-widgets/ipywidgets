@@ -630,6 +630,8 @@ class Widget(LoggingHasTraits):
             data = {
                 'text/plain': "A Jupyter Widget",
                 'application/vnd.jupyter.widget-view+json': {
+                    'version_major': '2',
+                    'version_minor': '0',
                     'model_id': self._model_id
                 }
             }
