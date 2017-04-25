@@ -8,10 +8,6 @@ import * as Backbone from 'backbone';
 import * as services from '@jupyterlab/services';
 
 import {
-    toByteArray, fromByteArray
-} from 'base64-js';
-
-import {
     WidgetModel
 } from './widget';
 
@@ -394,8 +390,7 @@ abstract class ManagerBase<T> {
                 let model = models[model_id];
                 let split = utils.remove_buffers(model.serialize(model.get_state(options.drop_defaults)));
                 let buffers = split.buffers.map((buffer, index) => {
-                    // fromByteArray expects Uint8Array
-                    return {data: fromByteArray(new Uint8Array(buffer)), path: split.buffer_paths[index], encoding: 'base64'};
+                    return {data: utils.bufferToBase64(buffer), path: split.buffer_paths[index], encoding: 'base64'};
                 });
                 state[model_id] = {
                     model_name: model.name,
@@ -433,13 +428,13 @@ abstract class ManagerBase<T> {
             return Promise.all(Object.keys(models).map(model_id => {
 
                 // First put back the binary buffers
-                let decode = {'base64': toByteArray, 'hex': utils.hexToBuffer};
+                let decode: { [s: string]: (s: string) => ArrayBuffer; } = {'base64': utils.base64ToBuffer, 'hex': utils.hexToBuffer};
                 let model = models[model_id];
                 let modelState = model.state;
                 if (model.buffers) {
                     let bufferPaths = model.buffers.map(b => b.path);
-                    // similas as what comes off the wire, we put the data into a DataView object
-                    let buffers = model.buffers.map(b => new DataView(decode[b.encoding](b.data).buffer));
+                    // put_buffers expects buffers to be DataViews
+                    let buffers = model.buffers.map(b => new DataView(decode[b.encoding](b.data)));
                     utils.put_buffers(model.state, bufferPaths, buffers);
                 }
 

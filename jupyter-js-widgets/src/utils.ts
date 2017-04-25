@@ -3,8 +3,9 @@
 
 import * as _ from 'underscore';
 
-// TODO: ATTEMPT TO KILL THIS MODULE USING THIRD PARTY LIBRARIES WHEN IPYWIDGETS
-// IS CONVERTED TO NODE COMMONJS.
+import {
+    toByteArray, fromByteArray
+} from 'base64-js';
 
 /**
  * http://www.ietf.org/rfc/rfc4122.txt
@@ -322,4 +323,20 @@ function hexToBuffer(hex: string): ArrayBuffer {
         x[i / 2] = parseInt(hex.slice(i, i + 2), 16);
     }
     return x.buffer;
+}
+
+/**
+ * Convert an ArrayBuffer to a base64 string.
+ */
+export
+function bufferToBase64(buffer: ArrayBuffer): string {
+    return fromByteArray(new Uint8Array(buffer));
+}
+
+/**
+ * Convert a base64 string to an ArrayBuffer.
+ */
+export
+function base64ToBuffer(base64: string): ArrayBuffer {
+    return toByteArray(base64).buffer;
 }
