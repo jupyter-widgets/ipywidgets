@@ -385,7 +385,8 @@ abstract class ManagerBase<T> {
                 let model = models[model_id];
                 let split = utils.remove_buffers(model.serialize(model.get_state(options.drop_defaults)));
                 let buffers = split.buffers.map((buffer, index) => {
-                    return {data: fromByteArray(buffer), path: split.buffer_paths[index], encoding: 'base64'};
+                    // fromByteArray expects bytes, while our buffer may be a typed array (e.g. Float32Array)
+                    return {data: fromByteArray(new Uint8Array(buffer.buffer)), path: split.buffer_paths[index], encoding: 'base64'};
                 });
                 state[model_id] = {
                     model_name: model.name,
@@ -424,11 +425,13 @@ abstract class ManagerBase<T> {
 
                 // First put back the binary buffers
                 let decode = {'base64': toByteArray, 'hex': utils.hexToBuffer};
-                let modelState = models[model_id].state;
-                if (modelState.buffers) {
-                    let bufferPaths = modelState.buffers.map(b => b.path);
-                    let buffers = modelState.buffers.map(b => decode[b.encoding](b.data));
-                    utils.put_buffers(modelState.state, bufferPaths, buffers);
+                let model = models[model_id];
+                let modelState = model.state;
+                if (model.buffers) {
+                    let bufferPaths = model.buffers.map(b => b.path);
+                    // similas as what comes off the wire, we put the data into a DataView object
+                    let buffers = model.buffers.map(b => new DataView(decode[b.encoding](b.data).buffer));
+                    utils.put_buffers(model.state, bufferPaths, buffers);
                 }
 
                 // If the model has already been created, set its state and then
