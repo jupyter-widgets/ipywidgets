@@ -89,17 +89,6 @@ def test_single_value_string():
         value=a,
     )
 
-def test_single_value_password_string():
-    a = u'hello'
-    c = interactive(f, a=a)
-    w = c.children[0]
-    check_widget(w,
-                 cls=widgets.Password,
-                 description='a',
-                 value=a,
-                 )
-
-
 def test_single_value_bool():
     for a in (True, False):
         c = interactive(f, a=a)
