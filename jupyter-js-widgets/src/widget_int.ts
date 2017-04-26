@@ -727,8 +727,6 @@ class PlayModel extends BoundedIntModel {
             show_repeat: true,
             interval: 100,
             step: 1,
-            _repeat: false,
-            show_repeat: true,
         });
     }
     initialize(attributes, options) {
