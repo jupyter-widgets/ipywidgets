@@ -7,6 +7,8 @@ import {
 
 import * as PhosphorWidget from '@phosphor/widgets';
 
+import * as widgets from '../../jupyter-js-widgets/lib/index';
+
 export
 class EmbedManager extends ManagerBase<HTMLElement> {
 
@@ -43,18 +45,25 @@ class EmbedManager extends ManagerBase<HTMLElement> {
     };
 
     /**
-     * Takes a requirejs success handler and returns a requirejs error handler
-     * that attempts loading the module from unpkg.
+     * Load a class and return a promise to the loaded object.
      */
-    require_error(success_callback, failure_callback, version : string) {
-        return function(err) : any {
-            var failedId = err.requireModules && err.requireModules[0];
-            if (failedId) {
-                // TODO: Get typing to work for requirejs
-                (window as any).require(['https://unpkg.com/' + failedId + '@' + version + '/dist/index.js'], success_callback);
+    protected loadClass(className: string, moduleName: string, moduleVersion: string) {
+        return new Promise(function(resolve, reject) {
+            if (moduleName === 'jupyter-js-widgets') {
+                // Shortcut resolving the standard widgets so we don't load two
+                // copies on the page. If we ever separate the embed manager
+                // from the main widget package, we should get rid of this special
+                // case.
+                resolve(widgets);
             } else {
-                failure_callback(err);
+                (window as any).require([`https://unpkg.com/${moduleName}@${moduleVersion}/dist/index.js`], resolve, reject);
             }
-        };
+        }).then(function(module) {
+            if (module[className]) {
+                return module[className];
+            } else {
+                return Promise.reject(`Class ${className} not found in module ${moduleName}@${moduleVersion}`);
+            }
+        });
     }
 };

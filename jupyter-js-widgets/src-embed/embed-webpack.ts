@@ -6,7 +6,7 @@
 
 // Element.prototype.matches polyfill
 if (Element && !Element.prototype.matches) {
-    var proto = Element.prototype as any;
+    let proto = Element.prototype as any;
     proto.matches = proto.matchesSelector ||
     proto.mozMatchesSelector || proto.msMatchesSelector ||
     proto.oMatchesSelector || proto.webkitMatchesSelector;
@@ -31,22 +31,19 @@ import * as _ from 'underscore';
 // All it does is inserting a <script> tag for requirejs in the case it is not
 // available and call `renderInlineWidgets`
 function loadInlineWidgets(event) {
-    // If requirejs is not on the page on page load, load it from cdn.
-    if (!(window as any).requirejs) {
-        var scriptjs = require('scriptjs') as any;
-        scriptjs('https://unpkg.com/requirejs/require.js', function() {
-            // Define jupyter-js-widget requirejs module
-            //
-            // (This is needed for custom widget model to be able to AMD require jupyter-js-widgets.)
-            (window as any).define('jupyter-js-widgets', function() {
-                return widgets;
+    let loadRequire = new Promise(function(resolve, reject) {
+        if ((window as any).requirejs) {
+            resolve();
+        } else {
+            // If requirejs is not on the page on page load, load it from cdn.
+            let scriptjs = require('scriptjs') as any;
+            scriptjs('https://unpkg.com/requirejs/require.js', function() {
+                resolve();
             });
-            // Render inline widgets
-            renderInlineWidgets(event);
-        });
-    } else {
+        }
+    });
+    loadRequire.then(function() {
         // Define jupyter-js-widget requirejs module
-        //
         // (This is needed for custom widget model to be able to AMD require jupyter-js-widgets.)
         if (!(window as any).requirejs.defined('jupyter-js-widgets')) {
             (window as any).define('jupyter-js-widgets', function () {
@@ -55,7 +52,7 @@ function loadInlineWidgets(event) {
         }
         // Render inline widgets
         renderInlineWidgets(event);
-    }
+    });
 }
 
 // `renderInlineWidget` will call `renderManager(element, tag)` on each <script>
@@ -63,9 +60,9 @@ function loadInlineWidgets(event) {
 //     "application/vnd.jupyter.widget-state+json"
 // contained in `event.element`.
 export function renderInlineWidgets(event) {
-    var element = event.target || document;
-    var tags = element.querySelectorAll('script[type="application/vnd.jupyter.widget-state+json"]');
-    for (var i=0; i!=tags.length; ++i) {
+    let element = event.target || document;
+    let tags = element.querySelectorAll('script[type="application/vnd.jupyter.widget-state+json"]');
+    for (let i=0; i!=tags.length; ++i) {
         renderManager(element, tags[i]);
     }
 }
@@ -76,28 +73,28 @@ export function renderInlineWidgets(event) {
 // Then it performs a look up of all script tags under the specified DOM
 // element with the mime type
 //     "application/vnd.jupyter.widget-view+json".
-// For each oone of these <script> tag, if the contained json specifies a model id
+// For each one of these <script> tags, if the contained json specifies a model id
 // known to the aforementioned manager, it is replaced with a view of the model.
 //
 // Besides, if the view script tag has an <img> sibling DOM node with class `jupyter-widget`,
 // the <img> tag is deleted.
 function renderManager(element, tag) {
-    var widgetStateObject = JSON.parse(tag.innerHTML);
-    var ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
-    var model_validate = ajv.compile(widget_state_schema);
-    var valid = model_validate(widgetStateObject);
+    let widgetStateObject = JSON.parse(tag.innerHTML);
+    let ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
+    let model_validate = ajv.compile(widget_state_schema);
+    let valid = model_validate(widgetStateObject);
     if (!valid) {
         console.log(model_validate.errors);
     }
-    var manager = new embed.EmbedManager();
+    let manager = new embed.EmbedManager();
     manager.set_state(widgetStateObject, {}).then(function(models) {
-        var tags = element.querySelectorAll('script[type="application/vnd.jupyter.widget-view+json"]');
-        for (var i=0; i!=tags.length; ++i) {
+        let tags = element.querySelectorAll('script[type="application/vnd.jupyter.widget-view+json"]');
+        for (let i=0; i!=tags.length; ++i) {
             // TODO: validate view schema
             let viewtag = tags[i];
             let widgetViewObject = JSON.parse(viewtag.innerHTML);
-            var view_validate = ajv.compile(widget_view_schema);
-            var valid = view_validate(widgetViewObject);
+            let view_validate = ajv.compile(widget_view_schema);
+            let valid = view_validate(widgetViewObject);
             if (!valid) {
                 console.log(view_validate.errors);
             }

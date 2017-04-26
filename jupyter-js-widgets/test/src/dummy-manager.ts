@@ -3,9 +3,7 @@
 
 import expect = require('expect.js');
 
-import {
-    ManagerBase
-} from '../../lib';
+import * as widgets from '../../lib';
 import * as services from '@jupyterlab/services';
 import * as Backbone from 'backbone';
 
@@ -17,7 +15,7 @@ class MockComm {
 }
 
 export
-class DummyManager extends ManagerBase<HTMLElement> {
+class DummyManager extends widgets.ManagerBase<HTMLElement> {
     constructor() {
         super();
         this.el = window.document.createElement('div');
@@ -30,7 +28,19 @@ class DummyManager extends ManagerBase<HTMLElement> {
             return view.el;
         });
     }
-    
+
+    protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<any> {
+        if (moduleName === 'jupyter-js-widgets') {
+            if (widgets[className]) {
+                return Promise.resolve(widgets[className]);
+            } else {
+                return Promise.reject(`Cannot find class ${className}`)
+            }
+        } else {
+            return Promise.reject(`Cannot find module ${moduleName}`);
+        }
+    }
+
     _get_comm_info() {
         return Promise.resolve({});
     }

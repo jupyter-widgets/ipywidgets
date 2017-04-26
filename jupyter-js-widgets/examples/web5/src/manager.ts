@@ -27,6 +27,18 @@ class WidgetManager extends widgets.ManagerBase<HTMLElement> {
         });
     }
 
+    protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<any> {
+        if (moduleName === 'jupyter-js-widgets') {
+            if (widgets[className]) {
+                return Promise.resolve(widgets[className]);
+            } else {
+                return Promise.reject(`Cannot find class ${className}`)
+            }
+        } else {
+            return Promise.reject(`Cannot find module ${moduleName}`);
+        }
+    }
+
     _create_comm(targetName, id, metadata) {
         return this.commManager.new_comm(targetName, metadata, id);
     }

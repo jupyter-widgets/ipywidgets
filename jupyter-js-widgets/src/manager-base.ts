@@ -144,11 +144,9 @@ abstract class ManagerBase<T> {
     create_view(model, options) {
         model.state_change = model.state_change.then(() => {
 
-            return this.loadClass(
-                model.get('_view_name'),
+            return this.loadClass(model.get('_view_name'),
                 model.get('_view_module'),
-                model.get('_view_module_version'),
-                this.require_error
+                model.get('_view_module_version')
             ).then((ViewType) => {
                 var view = new ViewType({
                     model: model,
@@ -206,7 +204,7 @@ abstract class ManagerBase<T> {
 
     /**
      * Create a comm and new widget model.
-     * @param  options - same options as new_model but, comm is not
+     * @param  options - same options as new_model but comm is not
      *                          required and additional options are available.
      * @param  serialized_state - serialized model attributes.
      */
@@ -327,11 +325,11 @@ abstract class ManagerBase<T> {
             return widget_model;
         };
 
-        var model_promise = this.loadClass(options.model_name,
-                                           options.model_module,
-                                           options.model_module_version,
-                                           that.require_error)
-        .then(function(ModelType) {
+        let model_promise = this.loadClass(
+            options.model_name,
+            options.model_module,
+            options.model_module_version
+        ).then(function(ModelType) {
             try {
                 return ModelType._deserialize_state(serialized_state || {}, that)
                 .then(function(attributes) {
@@ -450,22 +448,19 @@ abstract class ManagerBase<T> {
                     });
                 }
 
+                let modelCreate: ModelOptions = {
+                    model_id: model_id,
+                    model_name: model.model_name,
+                    model_module: model.model_module,
+                    model_module_version: model.model_module_version
+                };
                 if (live_comms.hasOwnProperty(model_id)) {  // live comm
-                    return this._create_comm(this.comm_target_name, model_id).then(new_comm => {
-                        return this.new_model({
-                            comm: new_comm,
-                            model_name: models[model_id].model_name,
-                            model_module: models[model_id].model_module,
-                            model_module_version: models[model_id].model_module_version
-                        });
+                    return this._create_comm(this.comm_target_name, model_id).then(comm => {
+                        modelCreate.comm = comm;
+                        return this.new_model(modelCreate);
                     });
-                } else {                                    // dead comm
-                    return this.new_model({
-                        model_id: model_id,
-                        model_name: models[model_id].model_name,
-                        model_module: models[model_id].model_module,
-                        model_module_version: models[model_id].model_module_version
-                    }, modelState);
+                } else {
+                    return this.new_model(modelCreate, modelState);
                 }
             }));
         });
@@ -476,13 +471,9 @@ abstract class ManagerBase<T> {
     /**
      * Load a class and return a promise to the loaded object.
      */
-    protected loadClass(className, moduleName, moduleVersion, error) {
-        return utils.loadClass(className, moduleName, moduleVersion, null, error);
-    }
-
-    abstract _create_comm(comm_target_name, model_id, data?): Promise<any>;
-
-    abstract _get_comm_info();
+    protected abstract loadClass(className: string, moduleName: string, moduleVersion: string): Promise<any>;
+    protected abstract _create_comm(comm_target_name, model_id, data?): Promise<any>;
+    protected abstract _get_comm_info();
 
     /**
      * Dictionary of model ids and model instance promises
