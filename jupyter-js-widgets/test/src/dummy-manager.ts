@@ -30,7 +30,7 @@ class DummyManager extends ManagerBase<HTMLElement> {
             return view.el;
         });
     }
-    
+
     _get_comm_info() {
         return Promise.resolve({});
     }
