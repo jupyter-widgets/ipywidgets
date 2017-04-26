@@ -20,7 +20,7 @@ Major user-visible changes in ipywidgets 7.0 include:
   IntSlider(layout={'width': '100%'}, style={'handle_color': 'lightgreen'})
   ```
 - Removed the version validation check since it was causing too many false warnings about the widget javascript not being installed or the wrong version number. It is now up to the user to ensure that the ipywidgets and widgetsnbextension packages are compatible. ([#1219](https://github.com/jupyter-widgets/ipywidgets/pull/1219))
-
+- Play range is now inclusive (max value is max, instead of max-1), to be consistent with Sliders
 
 Major changes developers should be aware of include:
 
