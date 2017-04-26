@@ -18,7 +18,7 @@ from IPython.display import display
 
 from base64 import standard_b64decode, standard_b64encode
 
-from .._version import __protocol_version__
+from .._version import __protocol_version__, __jupyter_widget_version__
 
 
 def _widget_to_json(x, obj):
@@ -316,18 +316,19 @@ class Widget(LoggingHasTraits):
     #-------------------------------------------------------------------------
     # Traits
     #-------------------------------------------------------------------------
-    _model_module = Unicode(None,
-        help="A JavaScript module name in which to find _model_name.", read_only=True).tag(sync=True)
     _model_name = Unicode('WidgetModel',
         help="Name of the model.", read_only=True).tag(sync=True)
-    _model_module_version = Unicode('*',
-        help="A semver requirement for the model module version.", read_only=True).tag(sync=True)
-    _view_module = Unicode(None, allow_none=True,
-        help="A JavaScript module in which to find _view_name.").tag(sync=True)
-    _view_name = Unicode(None, allow_none=True,
-        help="Name of the view object.").tag(sync=True)
-    _view_module_version = Unicode('*',
-        help="A semver requirement for the view module.").tag(sync=True)
+    _model_module = Unicode('jupyter-js-widgets',
+        help="The namespace for the model.", read_only=True).tag(sync=True)
+    _model_module_version = Unicode(__jupyter_widget_version__,
+        help="A semver requirement for namespace version containing the model.", read_only=True).tag(sync=True)
+    _view_name = Unicode('',
+        help="Name of the view.").tag(sync=True)
+    _view_module = Unicode('',
+        help="The namespace for the view.").tag(sync=True)
+    _view_module_version = Unicode('',
+        help="A semver requirement for the namespace version containing the view.").tag(sync=True)
+
     _view_count = Int(read_only=True,
         help="EXPERIMENTAL: The number of views of the model displayed in the frontend. This attribute is experimental and may change or be removed in the future.").tag(sync=True)
     comm = Instance('ipykernel.comm.Comm', allow_none=True)

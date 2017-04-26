@@ -728,7 +728,7 @@ def test_get_interact_value():
     from ipywidgets.widgets import ValueWidget
     from traitlets import Unicode
     class TheAnswer(ValueWidget):
-        _model_module = Unicode('jupyter-js-widgets')
+        _model_name = Unicode('TheAnswer')
         description = Unicode()
         def get_interact_value(self):
             return 42
