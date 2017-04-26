@@ -661,6 +661,23 @@ Attribute        | Type             | Default          | Help
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `value`          | string           | `''`             | String value
 
+### Jupyter.Password
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'jupyter-js-widgets'` |
+`_model_module_version` | string           | `'~2.1.0'`       |
+`_model_name`    | string           | `'PasswordModel'`    |
+`_view_module`   | string           | `'jupyter-js-widgets'` |
+`_view_module_version` | string           | `'~2.1.0'`       |
+`_view_name`     | string           | `'PasswordView'`     |
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`layout`         | reference to Layout widget | reference to new instance |
+`msg_throttle`   | number (integer) | `1`              | Maximum number of msgs the front-end can send before receiving an idle msg from the back-end.
+`value`          | string           | `''`             | String value
+
 ### Jupyter.Textarea
 
 Attribute        | Type             | Default          | Help

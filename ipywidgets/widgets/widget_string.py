@@ -107,3 +107,40 @@ class Text(_String):
             Whether to unregister the callback
         """
         self._submission_callbacks.register_callback(callback, remove=remove)
+
+
+@register
+class Password(_String):
+    """Single line textbox widget."""
+    _view_name = Unicode('PasswordView').tag(sync=True)
+    _model_name = Unicode('PasswordModel').tag(sync=True)
+
+    def __init__(self, *args, **kwargs):
+        super(Password, self).__init__(*args, **kwargs)
+        self._submission_callbacks = CallbackDispatcher()
+        self.on_msg(self._handle_string_msg)
+
+    def _handle_string_msg(self, _, content, buffers):
+        """Handle a msg from the front-end.
+
+        Parameters
+        ----------
+        content: dict
+            Content of the msg.
+        """
+        if content.get('event', '') == 'submit':
+            self._submission_callbacks(self)
+
+    def on_submit(self, callback, remove=False):
+        """(Un)Register a callback to handle text submission.
+
+        Triggered when the user clicks enter.
+
+        Parameters
+        ----------
+        callback: callable
+            Will be called with exactly one argument: the Widget instance
+        remove: bool (optional)
+            Whether to unregister the callback
+        """
+        self._submission_callbacks.register_callback(callback, remove=remove)
