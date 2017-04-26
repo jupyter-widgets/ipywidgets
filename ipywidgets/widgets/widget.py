@@ -280,24 +280,35 @@ class Widget(LoggingHasTraits):
         widget.set_state(state)
 
     @staticmethod
-    def get_manager_state(drop_defaults=False):
-        manager_state = {}
-        for model_id, model in Widget.widgets.items():
-            state = {
-                'model_name': model._model_name,
-                'model_module': model.model_module,
-                'model_module_version': model._model_module_version
-            }
-            model_state, buffer_paths, buffers = _remove_buffers(model.get_state(drop_defaults=drop_defaults))
-            state['state'] = model_state
-            if len(buffers) > 0:
-                state['buffers'] = {
-                    'buffers': [{'path': p, 'data': standard_b64encode(d).decode('ascii')}
-                                for p, d in zip(buffer_paths, buffers)],
-                    'encoding': 'base64'
-                }
-            manager_state[model_id] = state
-        return {'version_major': 2, 'version_minor': 0, 'state': manager_state}
+    def get_manager_state(drop_defaults=False, widgets=None):
+        """Returns the full state for a widget manager for embedding
+
+        :param drop_defaults: when True, it will not include default value
+        :param widgets: list with widgets to include in the state (or all widgets when None) 
+        :return:
+        """
+        state = {}
+        if widgets is None:
+            widgets = Widget.widgets.values()
+        for widget in widgets:
+            state[widget.model_id] = widget._get_embed_state(drop_defaults=drop_defaults)
+        return {'version_major': 2, 'version_minor': 0, 'state': state}
+
+
+    def _get_embed_state(self, drop_defaults=False):
+        state = {
+            'model_name': self._model_name,
+            'model_module': self._model_module,
+            'model_module_version': self._model_module_version
+        }
+        model_state, buffer_paths, buffers = _remove_buffers(self.get_state(drop_defaults=drop_defaults))
+        state['state'] = model_state
+        if len(buffers) > 0:
+            state['buffers'] = [{'encoding': 'base64',
+                                 'path': p,
+                                 'data': standard_b64encode(d).decode('ascii')}
+                                for p, d in zip(buffer_paths, buffers)]
+        return state
 
     def get_view_spec(self):
         return dict(version_major=2, version_minor=0, model_id=self._model_id)
