@@ -745,8 +745,8 @@ class PlayModel extends BoundedIntModel {
                 this.set('value', next_value);
                 window.setTimeout(this.loop.bind(this), this.get('interval'));
             } else {
-                this.set('value', this.get('min'));
                 if(this.get('_repeat')) {
+                    this.set('value', this.get('min'));
                     window.setTimeout(this.loop.bind(this), this.get('interval'));
                 } else {
                     this.set('_playing', false);
