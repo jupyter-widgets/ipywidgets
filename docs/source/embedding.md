@@ -30,58 +30,7 @@ This HTML snippet is composed of multiple `<script>` tags:
  - The second script tag contains the state of all the widget models currently
    in use. It has the mime type `application/vnd.jupyter.widget-state+json`.
 
-   The JSON schema for the content of that script tag is:
-
-    ```json
-    {
-        "$schema": "http://json-schema.org/draft-04/schema#",
-        "description": "Jupyter Interactive Widget State JSON schema.",
-        "type": "object",
-        "properties" : {
-            "version_major" : {
-                "description": "Format version (major)",
-                "type": "number",
-                "minimum": 1,
-                "maximum": 1
-            },
-            "version_minor" : {
-                "description": "Format version (minor)",
-                "type": "number"
-            },
-            "state": {
-                "description": "Model State for All Widget Models",
-                "type": "object",
-                "additionalProperties": true,
-                "additionalProperties" : {
-                    "type": "object",
-                    "properties": {
-                        "model_name": {
-                            "description" : "Name of the JavaScript class holding the model implementation",
-                            "type": "string"
-                        },
-                        "model_module": {
-                            "description" : "Name of the JavaScript module holding the model implementation",
-                            "type": "string"
-                        },
-                        "model_module_version": {
-                            "description" : "Semver range for the JavaScript module holding the model implementation",
-                            "type": "string"
-                        },
-                        "state": {
-                            "description" : "Serialized state of the model",
-                            "type": "object",
-                            "additional_properties": true
-                        }
-                    },
-                    "required": [ "model_name", "model_module", "state" ],
-                    "additionalProperties": false
-                }
-            }
-        },
-        "required": [ "version_major", "version_minor", "state" ],
-        "additionalProperties": false
-    }
-    ```
+   The JSON schema for the content of that script tag is found in the jupyter-widgets-schema npm package.
 
 - The following script tags correspond to the views which you want to display
   in the web page. They have the mime type `application/vnd.jupyter.widget-view+json`.
@@ -89,33 +38,7 @@ This HTML snippet is composed of multiple `<script>` tags:
   The *Embed Widgets* action currently creates such a tag for each view
   displayed in the notebook at this time.
 
-  The JSON schema for the content of that script tag is:
-
-    ```json
-    {
-        "$schema": "http://json-schema.org/draft-04/schema#",
-        "description": "Jupyter Interactive Widget View JSON schema.",
-        "type": "object",
-        "properties" : {
-            "version_major" : {
-                "description": "Format version (major)",
-                "type": "number",
-                "minimum": 1,
-                "maximum": 1
-            },
-            "version_minor" : {
-                "description": "Format version (minor)",
-                "type": "number"
-            },
-            "model_id": {
-                "description": "Unique identifier of the widget model to be displayed",
-                "type": "string"
-            },
-            "required": [ "model_id" ]
-        },
-        "additionalProperties": false
-    }
-    ```
+  The JSON schema for the content of that script tag is found in the jupyter-widgets-schema npm package.
 
   If you want to lay out these script tags in a custom fashion or only keep
   some of them, you can change their location in the DOM when including the

@@ -16,6 +16,8 @@ from traitlets import HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes,
 from ipython_genutils.py3compat import string_types, PY3
 from IPython.display import display
 
+from base64 import standard_b64decode, standard_b64encode
+
 from .._version import __protocol_version__
 
 
@@ -279,17 +281,26 @@ class Widget(LoggingHasTraits):
 
     @staticmethod
     def get_manager_state(drop_defaults=False):
-        return dict(version_major=1, version_minor=0, state={
-            k: {
-                'model_name': Widget.widgets[k]._model_name,
-                'model_module': Widget.widgets[k]._model_module,
-                'model_module_version': Widget.widgets[k]._model_module_version,
-                'state': Widget.widgets[k].get_state(drop_defaults=drop_defaults)
-            } for k in Widget.widgets
-        })
+        manager_state = {}
+        for model_id, model in Widget.widgets.items():
+            state = {
+                'model_name': model._model_name,
+                'model_module': model.model_module,
+                'model_module_version': model._model_module_version
+            }
+            model_state, buffer_paths, buffers = _remove_buffers(model.get_state(drop_defaults=drop_defaults))
+            state['state'] = model_state
+            if len(buffers) > 0:
+                state['buffers'] = {
+                    'buffers': [{'path': p, 'data': standard_b64encode(d).decode('ascii')}
+                                for p, d in zip(buffer_paths, buffers)],
+                    'encoding': 'base64'
+                }
+            manager_state[model_id] = state
+        return {'version_major': 2, 'version_minor': 0, 'state': manager_state}
 
     def get_view_spec(self):
-        return dict(version_major=1, version_minor=0, model_id=self._model_id)
+        return dict(version_major=2, version_minor=0, model_id=self._model_id)
 
     #-------------------------------------------------------------------------
     # Traits
@@ -619,6 +630,8 @@ class Widget(LoggingHasTraits):
             data = {
                 'text/plain': "A Jupyter Widget",
                 'application/vnd.jupyter.widget-view+json': {
+                    'version_major': '2',
+                    'version_minor': '0',
                     'model_id': self._model_id
                 }
             }

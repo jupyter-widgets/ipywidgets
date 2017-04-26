@@ -19,8 +19,8 @@ require('../css/widgets.css');
 
 // Load json schema validator
 var Ajv = require('ajv');
-var widget_state_schema = require('jupyter-widgets-schema').v1.state;
-var widget_view_schema = require('jupyter-widgets-schema').v1.view;
+var widget_state_schema = require('jupyter-widgets-schema').v2.state;
+var widget_view_schema = require('jupyter-widgets-schema').v2.view;
 
 // Magic global widget rendering function:
 import * as widgets from '../../jupyter-js-widgets/lib/index';
@@ -90,7 +90,7 @@ function renderManager(element, tag) {
         console.log(model_validate.errors);
     }
     var manager = new embed.EmbedManager();
-    manager.set_state(widgetStateObject.state, {}).then(function(models) {
+    manager.set_state(widgetStateObject, {}).then(function(models) {
         var tags = element.querySelectorAll('script[type="application/vnd.jupyter.widget-view+json"]');
         for (var i=0; i!=tags.length; ++i) {
             // TODO: validate view schema

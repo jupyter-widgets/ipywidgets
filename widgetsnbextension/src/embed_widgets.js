@@ -12,11 +12,7 @@ var embed_widgets = function() {
             Jupyter.WidgetManager._managers[0].get_state({
                 'drop_defaults': true
             }).then(function(state) {
-                var data = JSON.stringify({
-                    version_major: 1,
-                    version_minor: 0,
-                    state: state
-                }, null, '    ');
+                var data = JSON.stringify(state, null, '    ');
                 var value = '<script src="https://unpkg.com/jupyter-js-widgets@~' + widgets.version + '/dist/embed.js"></script>\n' +
                             '<script type="application/vnd.jupyter.widget-state+json">\n' + data + '\n</script>';
 
@@ -27,7 +23,7 @@ var embed_widgets = function() {
                         cell.output_area.outputs.forEach(function (output) {
                             if (output.data
                                 && output.data[VIEW_MIME_TYPE]
-                                && state[output.data[VIEW_MIME_TYPE].model_id]) {
+                                && state.state[output.data[VIEW_MIME_TYPE].model_id]) {
                                 views.push(('\n<script type="'+VIEW_MIME_TYPE+'">\n'
                                     + JSON.stringify(output.data[VIEW_MIME_TYPE], null, '    ')
                                     + '\n</script>'));
