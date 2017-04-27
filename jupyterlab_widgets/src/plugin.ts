@@ -50,7 +50,7 @@ class NBWidgetExtension implements INBWidgetExtension {
     let wManager = new WidgetManager(context, nb.rendermime);
     wManager.register({
       name: 'jupyter-js-widgets',
-      version: widgets.version,
+      version: widgets.JUPYTER_WIDGETS_VERSION,
       exports: widgets
     });
 
