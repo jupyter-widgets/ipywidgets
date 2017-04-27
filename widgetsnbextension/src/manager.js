@@ -140,7 +140,7 @@ WidgetManager.set_state_callbacks(function() {
     }
 });
 
-WidgetManager.prototype.loadClass = function(className, moduleName, moduleVersion, error) {
+WidgetManager.prototype.loadClass = function(className, moduleName, moduleVersion) {
     if (moduleName === "jupyter-js-widgets") {
         if (className === "OutputModel" || className === "OutputView") {
             return Promise.resolve(output[className]);
@@ -148,7 +148,15 @@ WidgetManager.prototype.loadClass = function(className, moduleName, moduleVersio
             return Promise.resolve(widgets[className]);
         }
     } else {
-        return Object.getPrototypeOf(WidgetManager.prototype).loadClass.apply(this, arguments);
+        return new Promise(function(resolve, reject) {
+            window.require([moduleName], resolve, reject);
+        }).then(function(mod) {
+            if (mod[className]) {
+                return mod[className];
+            } else {
+                return Promise.reject('Class ' + className + ' not found in module ' + moduleName);
+            }
+        });
     }
 }
 

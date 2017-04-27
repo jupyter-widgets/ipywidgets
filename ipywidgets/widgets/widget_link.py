@@ -42,8 +42,6 @@ class Link(CoreWidget):
     target: a (Widget, 'trait_name') tuple that should be updated
     """
 
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_name = Unicode('LinkModel').tag(sync=True)
     target = WidgetTraitTuple(help="The target (widget, 'trait_name') pair").tag(sync=True, **widget_serialization)
     source = WidgetTraitTuple(help="The source (widget, 'trait_name') pair").tag(sync=True, **widget_serialization)

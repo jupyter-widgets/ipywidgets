@@ -179,10 +179,10 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Load a class and return a promise to the loaded object.
    */
-  protected loadClass(className: string, moduleName: string, moduleVersion: string, error: any): any {
+  protected loadClass(className: string, moduleName: string, moduleVersion: string): any {
     let mod: any = this._registry.get(moduleName, moduleVersion);
     if (!mod) {
-    return Promise.reject(`Module ${moduleName}, semver range ${moduleVersion} is not registered as a widget module`);
+      return Promise.reject(`Module ${moduleName}, semver range ${moduleVersion} is not registered as a widget module`);
     }
     let cls: any = mod[className];
     if (!cls) {
