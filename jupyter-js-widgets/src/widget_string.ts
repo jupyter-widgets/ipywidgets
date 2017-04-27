@@ -268,6 +268,8 @@ class TextModel extends StringModel {
 
 export
 class TextView extends LabeledDOMWidgetView {
+
+    protected inputType = 'text';
     /**
      * Called when view is rendered.
      */
@@ -278,7 +280,7 @@ class TextView extends LabeledDOMWidgetView {
         this.el.classList.add('widget-text');
 
         this.textbox = document.createElement('input');
-        this.textbox.setAttribute('type', 'text');
+        this.textbox.setAttribute('type', this.inputType);
         this.el.appendChild(this.textbox);
 
         this.update(); // Set defaults.
@@ -387,7 +389,7 @@ class TextView extends LabeledDOMWidgetView {
 }
 
 export
-class PasswordModel extends StringModel {
+class PasswordModel extends TextModel {
     defaults() {
         return _.extend(super.defaults(), {
             _view_name: 'PasswordView',
@@ -397,109 +399,7 @@ class PasswordModel extends StringModel {
 }
 
 export
-class PasswordView extends LabeledDOMWidgetView {
-    /**
-     * Called when view is rendered.
-     */
-    render() {
-        super.render();
-        this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-inline-hbox');
-        this.el.classList.add('widget-text');
-
-        this.textbox = document.createElement('input');
-        this.textbox.setAttribute('type', 'password');
-        this.el.appendChild(this.textbox);
-
-        this.update(); // Set defaults.
-    }
-
-    update(options?) {
-        /**
-         * Update the contents of this view
-         *
-         * Called when the model is changed.  The model may have been
-         * changed by another view or by a state update from the back-end.
-         */
-        if (options === undefined || options.updated_view != this) {
-            if (this.textbox.value != this.model.get('value')) {
-                this.textbox.value = this.model.get('value');
-            }
-
-            var disabled = this.model.get('disabled');
-            this.textbox.disabled = disabled;
-        }
-        return super.update();
-    }
-
-    events(): {[e: string]: string} {
-        return {
-            // Dictionary of events and their handlers.
-            'keydown input'  : 'handleKeyDown',
-            'keypress input' : 'handleKeypress',
-            'keyup input'    : 'handleChanging',
-            'paste input'    : 'handleChanging',
-            'cut input'      : 'handleChanging',
-            'blur input'     : 'handleBlur',
-            'focusout input' : 'handleFocusOut'
-        }
-    }
-
-    /**
-     * Handle key down
-     *
-     * Stop propagation so the keypress isn't sent to the application.
-     */
-    handleKeyDown(e) {
-        e.stopPropagation();
-    }
-
-    /**
-     * Handles text submission
-     */
-    handleKeypress(e) {
-        e.stopPropagation();
-        if (e.keyCode == 13) { // Return key
-            this.send({event: 'submit'});
-            e.preventDefault();
-        }
-    }
-
-    /**
-     * Handles user input.
-     *
-     * Calling model.set will trigger all of the other views of the
-     * model to update.
-     */
-    handleChanging(e) {
-        e.stopPropagation();
-        this.model.set('value', e.target.value, {updated_view: this});
-        this.touch();
-    }
-
-    /**
-     * Prevent a blur from firing if the blur was not user intended.
-     * This is a workaround for the return-key focus loss bug.
-     * TODO: Is the original bug actually a fault of the keyboard
-     * manager?
-     */
-    handleBlur(e) {
-        if (e.relatedTarget === null) {
-            e.stopPropagation();
-            e.preventDefault();
-        }
-    }
-
-    /**
-     * Prevent a blur from firing if the blur was not user intended.
-     * This is a workaround for the return-key focus loss bug.
-     */
-    handleFocusOut(e) {
-        if (e.relatedTarget === null) {
-            e.stopPropagation();
-            e.preventDefault();
-        }
-    }
-
-    textbox: HTMLInputElement;
+class PasswordView extends TextView
+{
+    protected inputType = 'password';
 }
