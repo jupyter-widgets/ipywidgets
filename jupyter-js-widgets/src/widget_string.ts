@@ -383,7 +383,7 @@ class TextView extends LabeledDOMWidgetView {
         }
     }
 
-    protected readonly inputType = 'text';
+    protected readonly inputType: string = 'text';
     textbox: HTMLInputElement;
 }
 
@@ -400,5 +400,5 @@ class PasswordModel extends TextModel {
 export
 class PasswordView extends TextView
 {
-    protected readonly inputType = 'password';
+    protected readonly inputType: string = 'password';
 }
