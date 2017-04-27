@@ -278,7 +278,7 @@ class TextView extends LabeledDOMWidgetView {
         this.el.classList.add('widget-text');
 
         this.textbox = document.createElement('input');
-        this.textbox.setAttribute('type', 'text');
+        this.textbox.setAttribute('type', this.inputType);
         this.el.appendChild(this.textbox);
 
         this.update(); // Set defaults.
@@ -383,5 +383,22 @@ class TextView extends LabeledDOMWidgetView {
         }
     }
 
+    protected readonly inputType: string = 'text';
     textbox: HTMLInputElement;
+}
+
+export
+class PasswordModel extends TextModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _view_name: 'PasswordView',
+            _model_name: 'PasswordModel'
+        });
+    }
+}
+
+export
+class PasswordView extends TextView
+{
+    protected readonly inputType: string = 'password';
 }
