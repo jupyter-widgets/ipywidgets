@@ -25,9 +25,6 @@
     "build:src-embed": "tsc --project src-embed",
     "build:css": "postcss --use postcss-import --use postcss-cssnext -o css/widgets.built.css css/widgets.css",
     "build": "npm run build:src && npm run build:src-embed && npm run build:css && webpack",
-    "docs": "npm run docs:src && npm run docs:embed",
-    "docs:src": "typedoc --mode file --module commonjs --excludeNotExported --target es5 --moduleResolution node --out docs/ src",
-    "docs:embed": "typedoc --mode file --module commonjs --excludeNotExported --target es5 --moduleResolution node --out docs-embed/ src-embed",
     "postinstall": "npm dedupe",
     "prepublish": "npm run build",
     "test": "npm run test:unit && npm run test:examples",
@@ -75,7 +72,6 @@
     "sinon": "^2.1.0",
     "spawn-sync": "^1.0.14",
     "style-loader": "^0.13.1",
-    "typedoc": "^0.5.0",
     "typescript": "~2.3.1",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.11"
