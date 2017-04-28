@@ -7,9 +7,10 @@ import * as Backbone from 'backbone';
 
 export
 class MockComm {
-    on_close() {}
-    on_msg() {}
-    close() {}
+    on_close() {};
+    on_msg() {};
+    close() {};
+    send() {};
 }
 
 export

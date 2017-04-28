@@ -46,7 +46,8 @@ describe("Widget", () => {
 
     it('pending_msgs', () => {
         expect(this.widget.pending_msgs).to.not.be.undefined;
-        expect(this.widget.pending_msgs).to.equal(0);
+        // new widget automatically sends a sync message.
+        expect(this.widget.pending_msgs).to.equal(1);
     });
 
     it('msg_buffer', () => {
