@@ -1,3 +1,0 @@
-graft jupyterlab_widgets/static
-graft src
-include package.json

@@ -9,14 +9,11 @@ Package Install
 ---------------
 
 **Prerequisites**
-- [node](http://nodejs.org/)
-- [python](https://www.continuum.io/downloads)
-- Jupyter Notebook 4.2+
+* JupyterLab (see package.json for appropriate version)
+
 
 ```bash
-pip install jupyterlab_widgets
-jupyter labextension install --sys-prefix --py jupyterlab_widgets
-jupyter labextension enable --sys-prefix --py jupyterlab_widgets
+jupyter labextension install @jupyterlab/nbwidgets
 ```
 
 
@@ -26,21 +23,14 @@ Source Build
 **Prerequisites**
 - [git](http://git-scm.com/)
 - [node](http://nodejs.org/)
-- [python](https://www.continuum.io/downloads)
-- Jupyter Notebook 4.2+
 
 ```bash
 git clone https://github.com/jupyter-widgets/ipywidgets.git
 cd ipywidgets/jupyterlab_widgets
 npm install
 npm run build
-pip install -e .
-jupyter labextension install --sys-prefix --py jupyterlab_widgets
-jupyter labextension enable --sys-prefix --py jupyterlab_widgets
+jupyter labextension link .
 ```
-
-If you are not on Windows, use the `--symlink` option in the `labextension install`
-step so that you don't have to install during rebuilds.
 
 **Rebuild**
 
@@ -49,16 +39,4 @@ If you want to pull in changes to `jupyter-js-widgets`, first run `npm run updat
 ```bash
 npm run clean
 npm run build
-jupyter labextension install --sys-prefix --py jupyterlab_widgets # if you didn't use --symlink above
 ```
-
-Build Docs
-----------
-
-Follow the source build instructions first.
-
-```bash
-npm run docs
-```
-
-Navigate to `docs/index.html`.
