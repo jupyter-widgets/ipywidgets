@@ -23,9 +23,3 @@ export * from "./widget_string";
 
 export
 const version = (require('../package.json') as any).version;
-
-export
-const JUPYTER_WIDGETS_VERSION = '3';
-
-export
-const PROTOCOL_VERSION = '2.0';
