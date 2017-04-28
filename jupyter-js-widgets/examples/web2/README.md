@@ -33,12 +33,6 @@ such an example, check out the `web3` example.
 ## Details
 
 If you plan to reproduce this in your own project, pay careful attention to the
-`package.json` file. The dependency to `jupyter-js-widgets`, which reads
-`"jupyter-js-widgets": "file:../../../ipywidgets"`, **should not** point to
-`"file:../../../ipywidgets"`.
-
-Instead point it to the version you want to use on npm.
-
-(but really, you should let npm do this for you by running
-
-`npm install --save jupyter-js-widgets`.)
+dependency to `jupyter-js-widgets`, which in this example is a relative path.
+Instead point it to the version you want to use on npm by installing it using
+something like `npm install --save jupyter-js-widgets`.

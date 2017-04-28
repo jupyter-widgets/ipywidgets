@@ -1,17 +1,16 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import expect = require('expect.js');
-
 import * as widgets from '../../lib';
 import * as services from '@jupyterlab/services';
 import * as Backbone from 'backbone';
 
 export
 class MockComm {
-    on_close() {}
-    on_msg() {}
-    close() {}
+    on_close() {};
+    on_msg() {};
+    close() {};
+    send() {};
 }
 
 export

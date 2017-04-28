@@ -1,7 +1,7 @@
 var widgets = require('jupyter-js-widgets');
-var PhosphorWidget = require('phosphor/lib/ui/widget').Widget;
+var PhosphorWidget = require('@phosphor/widgets').Widget;
 
-require('phosphor/styles/base.css');
+require('@phosphor/widgets/style/index.css');
 require('jupyter-js-widgets/css/widgets.built.css');
 console.info('jupyter-js-widgets loaded successfully');
 
@@ -22,6 +22,18 @@ WidgetManager.prototype.display_view = function(msg, view, options) {
         return view;
     });
 };
+
+WidgetManager.prototype.loadClass = function(className, moduleName, moduleVersion) {
+    if (moduleName === 'jupyter-js-widgets') {
+        if (widgets[className]) {
+            return Promise.resolve(widgets[className]);
+        } else {
+            return Promise.reject('Cannot find class ' + className)
+        }
+    } else {
+        return Promise.reject('Cannot find module ' + moduleName);
+    }
+}
 
 WidgetManager.prototype._get_comm_info = function() {
     return Promise.resolve({});
