@@ -19,6 +19,8 @@ import {
     Message, MessageLoop
 } from '@phosphor/messaging';
 
+export
+const JUPYTER_WIDGETS_VERSION = '3.0.0';
 
 /**
  * Replace model ids with models recursively.
@@ -56,10 +58,10 @@ class WidgetModel extends Backbone.Model {
         return {
             _model_module: "jupyter-js-widgets",
             _model_name: "WidgetModel",
-            _model_module_version: "*",
+            _model_module_version: JUPYTER_WIDGETS_VERSION,
             _view_module: "jupyter-js-widgets",
             _view_name: null,
-            _view_module_version: "*",
+            _view_module_version: JUPYTER_WIDGETS_VERSION,
             _view_count: 0,
             msg_throttle: 1,
         };
