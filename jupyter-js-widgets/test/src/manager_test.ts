@@ -2,7 +2,9 @@ import {
     DummyManager
 } from './dummy-manager';
 
-import expect = require('expect.js');
+import {
+    expect
+} from 'chai';
 
 // test ManagerBase by creating a simple derived class
 // and testing it.
@@ -17,27 +19,27 @@ describe("ManagerBase", function() {
     });
 
     it('get_state', function() {
-        expect(this.managerBase.get_state).to.not.be(void 0);
+        expect(this.managerBase.get_state).to.not.be.undefined;
     });
 
     it('set_state', function() {
-        expect(this.managerBase.set_state).to.not.be(void 0);
+        expect(this.managerBase.set_state).to.not.be.undefined;
     });
 
     it('new_model', function() {
-        expect(this.managerBase.new_model).to.not.be(void 0);
+        expect(this.managerBase.new_model).to.not.be.undefined;
     });
 
     it('new_widget', function() {
-        expect(this.managerBase.new_widget).to.not.be(void 0);
+        expect(this.managerBase.new_widget).to.not.be.undefined;
     });
 
     it('handle_comm_open', function() {
-        expect(this.managerBase.handle_comm_open).to.not.be(void 0);
+        expect(this.managerBase.handle_comm_open).to.not.be.undefined;
     });
 
     it('get_model', function() {
-        expect(this.managerBase.get_model).to.not.be(void 0);
+        expect(this.managerBase.get_model).to.not.be.undefined;
     });
 
     it('callbacks', function() {
@@ -45,7 +47,7 @@ describe("ManagerBase", function() {
         // Cell-less call
         let c = this.managerBase.callbacks();
         expect(c).to.be.an('object');
-        expect(c.iopub).to.be(void 0);
+        expect(c.iopub).to.be.undefined;
 
         // Spoof a call with a cell
         c = this.managerBase.callbacks({ options: { cell: true } });
@@ -53,6 +55,6 @@ describe("ManagerBase", function() {
     });
 
     it('create_view', function() {
-        expect(this.managerBase.create_view).to.not.be(void 0);
+        expect(this.managerBase.create_view).to.not.be.undefined;
     });
 });

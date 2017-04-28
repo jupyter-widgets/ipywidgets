@@ -2,8 +2,11 @@ import {
     DummyManager
 } from './dummy-manager';
 
-import expect = require('expect.js');
-import sinon = require('sinon');
+import {
+    expect
+} from 'chai';
+
+import * as sinon from 'sinon';
 
 describe("Widget", function() {
     beforeEach(function() {
