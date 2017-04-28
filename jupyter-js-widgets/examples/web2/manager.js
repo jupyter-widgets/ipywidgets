@@ -23,6 +23,18 @@ WidgetManager.prototype.display_view = function(msg, view, options) {
     });
 };
 
+WidgetManager.prototype.loadClass = function(className, moduleName, moduleVersion) {
+    if (moduleName === 'jupyter-js-widgets') {
+        if (widgets[className]) {
+            return Promise.resolve(widgets[className]);
+        } else {
+            return Promise.reject('Cannot find class ' + className)
+        }
+    } else {
+        return Promise.reject('Cannot find module ' + moduleName);
+    }
+}
+
 WidgetManager.prototype._get_comm_info = function() {
     return Promise.resolve({});
 };
