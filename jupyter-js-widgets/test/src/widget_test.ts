@@ -8,8 +8,8 @@ import {
 
 import * as sinon from 'sinon';
 
-describe("Widget", function() {
-    beforeEach(function() {
+describe("Widget", () => {
+    beforeEach(() => {
         this.manager = new DummyManager();
         this.modelId = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
         return this.manager.new_widget({
@@ -30,56 +30,56 @@ describe("Widget", function() {
         });
     });
 
-    it('construction', function() {
+    it('construction', () => {
         expect(this.manager).to.not.be.undefined;
         expect(this.widget).to.not.be.undefined;
     });
 
-    it('widget_manager', function() {
+    it('widget_manager', () => {
         expect(this.widget.widget_manager).to.equal(this.manager);
     });
 
-    it('state_change', function() {
+    it('state_change', () => {
         expect(this.widget.state_change).to.not.be.undefined;
         expect(this.widget.state_change).to.be.an.instanceof(Promise);
     });
 
-    it('pending_msgs', function() {
+    it('pending_msgs', () => {
         expect(this.widget.pending_msgs).to.not.be.undefined;
         expect(this.widget.pending_msgs).to.equal(0);
     });
 
-    it('msg_buffer', function() {
+    it('msg_buffer', () => {
         expect(this.widget.msg_buffer).to.not.be.undefined;
         expect(this.widget.msg_buffer).to.be.null;
     });
 
-    it('state_lock', function() {
+    it('state_lock', () => {
         expect(this.widget.state_lock).to.not.be.undefined;
         expect(this.widget.state_lock).to.be.null;
     });
 
-    it('id', function() {
+    it('id', () => {
         expect(this.widget.id).to.not.be.undefined;
         expect(this.widget.id).to.be.a('string');
         expect(this.widget.id).to.equal(this.modelId);
     });
 
-    it('views', function() {
+    it('views', () => {
         expect(this.widget.views).to.not.be.undefined;
         expect(this.widget.views).to.be.an('object');
     });
 
-    it('comm', function() {
+    it('comm', () => {
         expect(this.widget.comm).to.not.be.undefined;
     });
 
-    it('comm_live', function() {
+    it('comm_live', () => {
         expect(this.widget.comm_live).to.not.be.undefined;
         expect(this.widget.comm_live).to.be.true;
     });
 
-    it('send', function() {
+    it('send', () => {
         expect(this.widget.send).to.not.be.undefined;
 
         // TODO: Test pending message buffer for comm-full widgets
@@ -88,7 +88,7 @@ describe("Widget", function() {
         // expect(this.widget.pending_msgs).to.equal(p + 1);
     });
 
-    it('close', function() {
+    it('close', () => {
         expect(this.widget.close).to.not.be.undefined;
 
         let destroyEventCallback = sinon.spy();
@@ -101,7 +101,7 @@ describe("Widget", function() {
         expect(Object.keys(this.widget.views).length).to.be.equal(0);
     });
 
-    it('_handle_comm_closed', function() {
+    it('_handle_comm_closed', () => {
         expect(this.widget._handle_comm_closed).to.not.be.undefined;
 
         let closeSpy = sinon.spy(this.widget, "close");
@@ -113,7 +113,7 @@ describe("Widget", function() {
         expect(closeSpy.calledOnce).to.be.true;
     });
 
-    it('_deserialize_state', function() {
+    it('_deserialize_state', () => {
         expect(this.widget.constructor._deserialize_state).to.not.be.undefined;
 
         // Create some dummy deserializers.  One returns synchronously, and the
@@ -140,7 +140,7 @@ describe("Widget", function() {
         });
     });
 
-    it('_handle_comm_msg', function() {
+    it('_handle_comm_msg', () => {
         expect(this.widget._handle_comm_msg).to.not.be.undefined;
 
         // Update message
@@ -166,23 +166,23 @@ describe("Widget", function() {
         return Promise.all([p1, p2]);
     });
 
-    it('set_state', function() {
+    it('set_state', () => {
         expect(this.widget.set_state).to.not.be.undefined;
         expect(this.widget.get('a')).to.be.undefined;
         this.widget.set_state({a: 2});
         expect(this.widget.get('a')).to.equal(2);
     });
 
-    it('get_state', function() {
+    it('get_state', () => {
         expect(this.widget.get_state).to.not.be.undefined;
         expect(this.widget.get_state.bind(this)).to.not.throw();
     });
 
-    it('_handle_status', function() {
+    it('_handle_status', () => {
         expect(this.widget._handle_status).to.not.be.undefined;
     });
 
-    it('callbacks', function() {
+    it('callbacks', () => {
         expect(this.widget.callbacks).to.not.be.undefined;
 
         let c = this.widget.callbacks();
@@ -195,23 +195,23 @@ describe("Widget", function() {
         expect(statusSpy.calledOnce).to.be.true;
     });
 
-    it('set', function() {
+    it('set', () => {
         expect(this.widget.set).to.not.be.undefined;
     });
 
-    it('sync', function() {
+    it('sync', () => {
         expect(this.widget.sync).to.not.be.undefined;
     });
 
-    it('send_sync_message', function() {
+    it('send_sync_message', () => {
         expect(this.widget.send_sync_message).to.not.be.undefined;
     });
 
-    it('save_changes', function() {
+    it('save_changes', () => {
         expect(this.widget.save_changes).to.not.be.undefined;
     });
 
-    it('on_some_change', function() {
+    it('on_some_change', () => {
         expect(this.widget.on_some_change).to.not.be.undefined;
 
         let changeCallback = sinon.spy();
@@ -230,7 +230,7 @@ describe("Widget", function() {
         });
     });
 
-    it('toJSON', function() {
+    it('toJSON', () => {
         expect(this.widget.toJSON).to.not.be.undefined;
         expect(this.widget.toJSON()).to.be.a('string');
     });
