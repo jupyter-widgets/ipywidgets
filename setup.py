@@ -103,7 +103,14 @@ setup_args = dict(
     },
 )
 
-if 'develop' in sys.argv or any(a.startswith('bdist') for a in sys.argv):
+# For some commands, use setuptools.  Note that we do NOT list install here!
+# If you want a setuptools-enhanced install, just run 'setup.py install'
+needs_setuptools = set(('develop', 'release', 'bdist_egg', 'bdist_rpm',
+           'bdist', 'bdist_dumb', 'bdist_wininst', 'bdist_wheel',
+           'egg_info', 'easy_install', 'upload', 'install_egg_info'
+            ))
+
+if len(needs_setuptools.intersection(sys.argv)) > 0:
     import setuptools
 
 setuptools_args = {}
