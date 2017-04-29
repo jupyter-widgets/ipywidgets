@@ -125,14 +125,6 @@ abstract class ManagerBase<T> {
     };
 
     /**
-     * Takes a requirejs success handler and returns a requirejs error handler.
-     * The default implementation just throws the original error.
-     */
-    require_error (success_callback, failure_callback, version: string) {
-        return failure_callback;
-    };
-
-    /**
      * Creates a promise for a view of a given model
      *
      * Make sure the view creation is not out of order with
