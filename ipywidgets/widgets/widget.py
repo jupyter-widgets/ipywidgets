@@ -5,6 +5,7 @@
 in the IPython notebook front-end.
 """
 
+
 from contextlib import contextmanager
 import collections
 import sys
