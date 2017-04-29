@@ -98,12 +98,6 @@ interface StateOptions {
  */
 export
 abstract class ManagerBase<T> {
-    /**
-     * The comm target name to register.
-     */
-    get comm_target_name(): string {
-        return 'jupyter.widget';
-    }
 
     /**
      * Display a view for a particular model.
@@ -470,6 +464,11 @@ abstract class ManagerBase<T> {
 
         return all_models;
     };
+
+    /**
+     * The comm target name to register
+     */
+    readonly comm_target_name = 'jupyter.widget';
 
     /**
      * Load a class and return a promise to the loaded object.
