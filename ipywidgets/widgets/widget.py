@@ -157,6 +157,9 @@ class CallbackDispatcher(LoggingHasTraits):
     def register_callback(self, callback, remove=False):
         """(Un)Register a callback
 
+        If remove is True, this will completely unregister the callback, even
+        if it was registered multiple times.
+
         Parameters
         ----------
         callback: method handle
@@ -166,7 +169,7 @@ class CallbackDispatcher(LoggingHasTraits):
 
         # (Un)Register the callback.
         if remove and callback in self.callbacks:
-            self.callbacks.remove(callback)
+            self.callbacks = [cb for cb in self.callbacks if cb!=callback]
         elif not remove and callback not in self.callbacks:
             self.callbacks.append(callback)
 
