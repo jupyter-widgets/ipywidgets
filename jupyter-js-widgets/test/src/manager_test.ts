@@ -51,18 +51,16 @@ describe("ManagerBase", function() {
       expect(this.managerBase.new_widget).to.not.be.undefined;
     });
 
-    it.only('new_model', function() {
-
-      // must provide either comm or model id, otherwise error
-
-
-
-      return this.managerBase.new_model({
+    it('new_model', async function() {
+      let model = await this.managerBase.new_model({
             model_name: 'IntSlider',
             model_module: 'jupyter-js-widgets',
             model_module_version: '3.0.0',
-            model_id: 'asdf'
-        })
+            model_id: 'u-u-i-d'
+        });
+      expect(model).to.have.property('get');
+      let storedModel = await this.managerBase._models[model.id];
+      expect(storedModel).to.equal(model);
     });
 
     it('clear_state', function() {
