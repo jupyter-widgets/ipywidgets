@@ -17,7 +17,7 @@ describe("ManagerBase", function() {
     });
 
     describe('comm_target_name', function() {
-        it('exists', function() {
+        it('is "jupyter.widget"', function() {
           expect(this.managerBase.comm_target_name).to.equal('jupyter.widget');
         });
     });
@@ -53,6 +53,7 @@ describe("ManagerBase", function() {
       it('exists', function() {
         expect(this.managerBase.get_model).to.not.be.undefined;
       });
+      it('returns a promise to the model');
     });
 
     describe('handle_comm_open', function() {
@@ -65,6 +66,7 @@ describe("ManagerBase", function() {
       it('exists', function() {
         expect(this.managerBase.new_widget).to.not.be.undefined;
       });
+      it('syncs once on creation');
     });
 
     describe('new_model', function() {
@@ -87,6 +89,7 @@ describe("ManagerBase", function() {
       let storedModel = await this.managerBase._models[model.id];
       expect(storedModel).to.equal(model);
     });
+    it('does not sync on creation');
 
   });
     describe('clear_state', function() {
