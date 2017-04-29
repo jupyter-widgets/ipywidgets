@@ -98,12 +98,6 @@ interface StateOptions {
  */
 export
 abstract class ManagerBase<T> {
-    /**
-     * The comm target name to register.
-     */
-    get comm_target_name(): string {
-        return 'jupyter.widget';
-    }
 
     /**
      * Display a view for a particular model.
@@ -128,14 +122,6 @@ abstract class ManagerBase<T> {
      */
     setViewOptions(options) {
         return options || {};
-    };
-
-    /**
-     * Takes a requirejs success handler and returns a requirejs error handler.
-     * The default implementation just throws the original error.
-     */
-    require_error (success_callback, failure_callback, version: string) {
-        return failure_callback;
     };
 
     /**
@@ -470,6 +456,11 @@ abstract class ManagerBase<T> {
 
         return all_models;
     };
+
+    /**
+     * The comm target name to register
+     */
+    readonly comm_target_name = 'jupyter.widget';
 
     /**
      * Load a class and return a promise to the loaded object.
