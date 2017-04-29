@@ -32,20 +32,22 @@ describe("ManagerBase", function() {
       it('exists', function() {
         expect(this.managerBase.setViewOptions).to.not.be.undefined;
       });
+      it('sets view options that are stored in the view');
     });
 
     describe('create_view', function() {
       it('exists', function() {
         expect(this.managerBase.create_view).to.not.be.undefined;
       });
+      it('returns a Promise');
+      it('triggers the view displayed event');
+
     });
 
     describe('callbacks', function() {
-      it('returns an object without an iopub', function() {
-        // Cell-less call
+      it('returns an object', function() {
         let c = this.managerBase.callbacks();
         expect(c).to.be.an('object');
-        expect(c.iopub).to.be.undefined;
       });
     });
 
@@ -60,6 +62,8 @@ describe("ManagerBase", function() {
       it('exists', function() {
         expect(this.managerBase.handle_comm_open).to.not.be.undefined;
       });
+      it('returns a promise to a model');
+      it('allows setting initial state, including binary state');
     });
 
     describe('new_widget', function() {
@@ -67,6 +71,8 @@ describe("ManagerBase", function() {
         expect(this.managerBase.new_widget).to.not.be.undefined;
       });
       it('syncs once on creation');
+      it('creates a comm if one is not passed in');
+      it('creates a model even if the comm creation has errors');
     });
 
     describe('new_model', function() {
@@ -96,18 +102,25 @@ describe("ManagerBase", function() {
       it('exists', function() {
         expect(this.managerBase.clear_state).to.not.be.undefined;
       });
+      it('clears the model dictionary');
     });
 
     describe('get_state', function() {
       it('exists', function() {
         expect(this.managerBase.get_state).to.not.be.undefined;
       });
+      it('returns a valid schema');
+      it('encodes binary buffers to base64');
+      it('handles custom serializers');
     });
 
     describe('set_state', function() {
       it('exists', function() {
         expect(this.managerBase.set_state).to.not.be.undefined;
       });
+      it('handles binary hex buffers');
+      it('handles binary base64 buffers');
+      it('handles custom deserializers');
     });
 });
 
