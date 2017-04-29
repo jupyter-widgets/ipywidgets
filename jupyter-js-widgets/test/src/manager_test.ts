@@ -12,6 +12,8 @@ import {
 describe("ManagerBase", function() {
     beforeEach(function() {
         this.managerBase = new DummyManager();
+        // add a model and a view
+
     });
 
     it('comm_target_name', function() {
@@ -49,8 +51,18 @@ describe("ManagerBase", function() {
       expect(this.managerBase.new_widget).to.not.be.undefined;
     });
 
-    it('new_model', function() {
-      expect(this.managerBase.new_model).to.not.be.undefined;
+    it.only('new_model', function() {
+
+      // must provide either comm or model id, otherwise error
+
+
+
+      return this.managerBase.new_model({
+            model_name: 'IntSlider',
+            model_module: 'jupyter-js-widgets',
+            model_module_version: '3.0.0',
+            model_id: 'asdf'
+        })
     });
 
     it('clear_state', function() {
