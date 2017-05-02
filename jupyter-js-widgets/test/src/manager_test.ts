@@ -1,10 +1,12 @@
 import {
-    DummyManager
+    DummyManager, MockComm
 } from './dummy-manager';
 
 import {
     expect
 } from 'chai';
+
+import * as sinon from 'sinon';
 
 // test ManagerBase by creating a simple derived class
 // and testing it.
@@ -12,8 +14,12 @@ import {
 describe("ManagerBase", function() {
     beforeEach(function() {
         this.managerBase = new DummyManager();
-        // add a model and a view
-
+        this.modelOptions = {
+            model_name: 'IntSlider',
+            model_module: 'jupyter-js-widgets',
+            model_module_version: '3.0.0',
+            model_id: 'u-u-i-d'
+        };
     });
 
     describe('comm_target_name', function() {
@@ -26,6 +32,9 @@ describe("ManagerBase", function() {
       it('exists', function() {
         expect(this.managerBase.display_model).to.not.be.undefined;
       });
+      it('returns a promise to rendering of a view');
+      it('catches errors');
+      it('creates view and calls the display_view function');
     });
 
     describe('setViewOptions', function() {
@@ -52,10 +61,15 @@ describe("ManagerBase", function() {
     });
 
     describe('get_model', function() {
-      it('exists', function() {
-        expect(this.managerBase.get_model).to.not.be.undefined;
+      it('returns a promise to the model', async function() {
+        let manager = this.managerBase
+        let model = await manager.new_model(this.modelOptions);
+        let model2 = await manager.get_model(model.id);
+        expect(model).to.be.equal(model2);
       });
-      it('returns a promise to the model');
+      it('returns undefined when model is not registered', function() {
+        expect(this.managerBase.get_model('not-defined')).to.be.undefined;
+      })
     });
 
     describe('handle_comm_open', function() {
@@ -76,28 +90,59 @@ describe("ManagerBase", function() {
     });
 
     describe('new_model', function() {
-      it('model has a get', async function() {
-      let model = await this.managerBase.new_model({
+      it('returns a promise to a model', async function() {
+        let manager = this.managerBase;
+        let model = await manager.new_model(this.modelOptions);
+        // we check that the model has a .get() method
+        expect(model).to.have.property('get');
+        expect(model).to.have.property('set');
+        expect(model.name).to.be.equal(this.modelOptions.name);
+        expect(model.module).to.be.equal(this.modelOptions.module);
+      });
+      it('model id defaults comm id if not specified', async function() {
+        let comm = new MockComm();
+        let spec = {
             model_name: 'IntSlider',
             model_module: 'jupyter-js-widgets',
             model_module_version: '3.0.0',
-            model_id: 'u-u-i-d'
-        });
-      expect(model).to.have.property('get');
-    });
-    it('model is stored in manager _models', async function() {
-      let model = await this.managerBase.new_model({
-            model_name: 'IntSlider',
-            model_module: 'jupyter-js-widgets',
-            model_module_version: '3.0.0',
-            model_id: 'u-u-i-d'
-        });
-      let storedModel = await this.managerBase._models[model.id];
-      expect(storedModel).to.equal(model);
-    });
-    it('does not sync on creation');
+            comm: comm
+        };
+        let manager = this.managerBase;
+        let model = await manager.new_model(spec);
+        expect(model.id).to.be.equal(comm.comm_id);
+      });
 
-  });
+      it('throws an error if model_id or comm not given', async function() {
+        let spec = {
+            model_name: 'IntSlider',
+            model_module: 'jupyter-js-widgets',
+            model_module_version: '3.0.0',
+        };
+        let manager = this.managerBase;
+        //expect(await manager.new_model(spec)).to.throw();
+      });
+      it('creates an html widget if there is an error loading the class');
+      it('does not sync on creation', function() {
+      });
+      it('calls loadClass to retrieve model class');
+      it('deserializes attributes using custom serializers');
+      it('handles binary state');
+      it('sets up a comm close handler to delete the model', async function() {
+        var callback = sinon.spy();
+        let comm = new MockComm();
+        let spec = {
+            model_name: 'IntSlider',
+            model_module: 'jupyter-js-widgets',
+            model_module_version: '3.0.0',
+            comm: comm
+        };
+        let manager = this.managerBase;
+        let model = await manager.new_model(spec);
+        comm.close();
+        expect(manager.get_model(model.id)).to.be.undefined;
+      });
+    });
+
     describe('clear_state', function() {
       it('exists', function() {
         expect(this.managerBase.clear_state).to.not.be.undefined;
