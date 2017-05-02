@@ -18,12 +18,20 @@ import {
 } from '@jupyterlab/application';
 
 import {
+  JSONObject, Token
+} from '@phosphor/coreutils';
+
+import {
   IDisposable, DisposableDelegate
 } from '@phosphor/disposable';
 
 import {
-  WidgetManager, WidgetRenderer, INBWidgetExtension
-} from './index';
+  WidgetRenderer
+} from './renderer';
+
+import {
+  WidgetManager
+} from './manager';
 
 import {
   OutputModel, OutputView
@@ -39,6 +47,18 @@ import 'jupyter-js-widgets/css/widgets-base.css';
 
 
 const WIDGET_MIMETYPE = 'application/vnd.jupyter.widget-view+json';
+
+/**
+ * The token identifying the JupyterLab plugin.
+ */
+export
+const INBWidgetExtension = new Token<INBWidgetExtension>('jupyter.extensions.nbWidgetManager');
+
+/**
+ * The type of the provided value of the plugin in JupyterLab.
+ */
+export
+type INBWidgetExtension = DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel>;
 
 
 export
