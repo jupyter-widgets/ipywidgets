@@ -15,7 +15,7 @@ import {
 
 import {
   WidgetManager
-} from './index';
+} from './manager';
 
 import {
   OutputAreaModel, OutputAreaWidget
