@@ -401,7 +401,7 @@ class WidgetModel extends Backbone.Model {
      */
     serialize(state) {
         const serializers = (this.constructor as typeof WidgetModel).serializers || {};
-        for (const k of state) {
+        for (const k in state) {
             try {
                 if (serializers[k] && serializers[k].serialize) {
                     state[k] = (serializers[k].serialize)(state[k], this);
