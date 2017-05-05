@@ -651,7 +651,14 @@ abstract class WidgetView extends NativeView<WidgetModel> {
      * Public constructor.
      */
     initialize(parameters) {
-        this.listenTo(this.model, 'change', this.update);
+        this.listenTo(this.model, 'change', () => {
+            let changed = Object.keys(this.model.changedAttributes() || {});
+            if (changed[0] === '_view_count' && changed.length === 1) {
+                // Just the view count was updated
+                return;
+            }
+            this.update();
+        });
 
         this.options = parameters.options;
 
