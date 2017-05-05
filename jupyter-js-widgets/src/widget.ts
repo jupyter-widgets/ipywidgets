@@ -62,7 +62,7 @@ class WidgetModel extends Backbone.Model {
             _view_module: "jupyter-js-widgets",
             _view_name: null,
             _view_module_version: JUPYTER_WIDGETS_VERSION,
-            _view_count: 0,
+            _view_count: null,
             msg_throttle: 1,
         };
     }
@@ -663,13 +663,17 @@ abstract class WidgetView extends NativeView<WidgetModel> {
         this.options = parameters.options;
 
         this.once('remove', () => {
-            this.model.set('_view_count', this.model.get('_view_count') - 1);
-            this.model.save_changes()
+            if (typeof(this.model.get('_view_count')) === "number") {
+                this.model.set('_view_count', this.model.get('_view_count') - 1);
+                this.model.save_changes();
+            }
         });
 
         this.once('displayed', () => {
-            this.model.set('_view_count', this.model.get('_view_count') + 1);
-            this.model.save_changes()
+            if (typeof(this.model.get('_view_count')) === "number") {
+                this.model.set('_view_count', this.model.get('_view_count') + 1);
+                this.model.save_changes();
+            }
         });
 
         this.displayed = new Promise((resolve, reject) => {
