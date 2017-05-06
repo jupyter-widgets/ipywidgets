@@ -56,7 +56,10 @@ class EmbedManager extends ManagerBase<HTMLElement> {
                 // case.
                 resolve(widgets);
             } else {
-                (window as any).require([`https://unpkg.com/${moduleName}@${moduleVersion}/dist/index.js`], resolve, reject);
+                var fallback = function(err) {
+                    (window as any).require([`https://unpkg.com/${moduleName}@${moduleVersion}/dist/index.js`], resolve, reject);
+                };
+                (window as any).require([`${moduleName}.js`], resolve, fallback);
             }
         }).then(function(module) {
             if (module[className]) {
