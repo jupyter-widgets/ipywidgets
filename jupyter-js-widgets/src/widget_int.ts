@@ -731,11 +731,6 @@ class PlayModel extends BoundedIntModel {
     }
     initialize(attributes, options) {
         super.initialize(attributes, options);
-        this.on('change:_playing', function () {
-            if (this.get('_playing')) {
-                this.loop();
-            }
-        }, this);
     }
 
     loop() {
@@ -743,17 +738,21 @@ class PlayModel extends BoundedIntModel {
             var next_value = this.get('value') + this.get('step');
             if (next_value <= this.get('max')) {
                 this.set('value', next_value);
-                window.setTimeout(this.loop.bind(this), this.get('interval'));
+                this.schedule_next()
             } else {
                 if(this.get('_repeat')) {
                     this.set('value', this.get('min'));
-                    window.setTimeout(this.loop.bind(this), this.get('interval'));
+                    this.schedule_next()
                 } else {
                     this.set('_playing', false);
                 }
             }
             this.save_changes();
         }
+    }
+
+    schedule_next() {
+        window.setTimeout(this.loop.bind(this), this.get('interval'));
     }
 
     stop() {
@@ -769,7 +768,16 @@ class PlayModel extends BoundedIntModel {
 
     play() {
         this.set('_playing', true);
-        this.save_changes();
+        if (this.get('value') == this.get('max')) {
+            // if the value is at the end, reset if first, and then schedule the next
+            this.set('value', this.get('min'));
+            this.schedule_next()
+            this.save_changes();
+        } else {
+            // otherwise directly start with the next value
+            // loop will call save_changes in this case
+           this.loop()
+        }
     }
 
     repeat() {
