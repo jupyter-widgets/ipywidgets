@@ -99,7 +99,7 @@ describe("ManagerBase", function() {
         expect(model.name).to.be.equal(this.modelOptions.name);
         expect(model.module).to.be.equal(this.modelOptions.module);
       });
-      it('model id defaults comm id if not specified', async function() {
+      it('model id defaults to comm id if not specified', async function() {
         let comm = new MockComm();
         let spec = {
             model_name: 'IntSlider',
