@@ -5,12 +5,24 @@ import * as widgets from '../../lib';
 import * as services from '@jupyterlab/services';
 import * as Backbone from 'backbone';
 
+import * as sinon from 'sinon';
+
 export
 class MockComm {
-    on_close() {};
+    // Somehow the mock comm should trigger a close event?
+    on_close(fn) {
+        this._on_close = fn;
+    };
     on_msg() {};
-    close() {};
+    close() {
+        if (this._on_close) {
+            this._on_close();
+        }
+        console.error(this._on_close);
+    };
     send() {};
+    comm_id = 'mock-comm-id';
+    _on_close: Function = null;
 }
 
 export
@@ -21,6 +33,8 @@ class DummyManager extends widgets.ManagerBase<HTMLElement> {
     }
     
     display_view(msg: services.KernelMessage.IMessage, view: Backbone.View<Backbone.Model>, options: any) {
+        // TODO: make this a spy
+        // TODO: return an html element
         return Promise.resolve(view).then(view => {
             this.el.appendChild(view.el);
             view.on('remove', () => console.log('view removed', view));

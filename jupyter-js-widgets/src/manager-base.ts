@@ -164,7 +164,9 @@ abstract class ManagerBase<T> {
      * Get a promise for a model by model id.
      */
     get_model(model_id: string): Promise<Backbone.Model> {
-        // Perhaps we should return a Promise.reject if the model is not found.
+        // TODO: Perhaps we should return a Promise.reject if the model is not
+        // found. Right now this isn't a true async function because it doesn't
+        // always return a promise.
         return this._models[model_id];
     };
 
@@ -243,18 +245,16 @@ abstract class ManagerBase<T> {
     /**
      * Create and return a promise for a new widget model
      *
-     * Minimally, one must provide the model_name and widget_class
-     * parameters to create a model from Javascript.
-     *
      * @param options - the options for creating the model.
      * @param serialized_state - attribute values for the model.
      *
      * @example
      * widget_manager.new_model({
-     *      model_name: 'WidgetModel',
-     *      widget_class: 'Jupyter.IntSlider'
-     *  })
-     *  .then((model) => { console.log('Create success!', model); },
+     *      model_name: 'IntSlider',
+     *      model_module: 'jupyter-js-widgets',
+     *      model_module_version: '3.0.0',
+     *      model_id: 'u-u-i-d'
+     * }).then((model) => { console.log('Create success!', model); },
      *  (err) => {console.error(err)});
      *
      */
