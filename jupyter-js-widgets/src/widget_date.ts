@@ -80,12 +80,13 @@ function convertDateToUTC(date) {
 
 export
 class DatePickerModel extends CoreLabeledDOMWidgetModel {
-    static serializers = _.extend({
+    static serializers = {
+        ...CoreLabeledDOMWidgetModel.serializers,
         value: {
             serialize: serialize_datetime,
             deserialize: deserialize_datetime
         }
-    }, CoreLabeledDOMWidgetModel.serializers)
+    }
 
     defaults() {
         return _.extend(super.defaults(), {

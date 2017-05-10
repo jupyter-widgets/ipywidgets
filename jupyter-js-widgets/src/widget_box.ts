@@ -79,9 +79,10 @@ class BoxModel extends CoreDOMWidgetModel {
         });
     }
 
-    static serializers = _.extend({
+    static serializers = {
+        ...CoreDOMWidgetModel.serializers,
         children: {deserialize: unpack_models}
-    }, CoreDOMWidgetModel.serializers)
+    }
 }
 
 export

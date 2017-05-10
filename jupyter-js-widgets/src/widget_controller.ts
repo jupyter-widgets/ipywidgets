@@ -126,10 +126,11 @@ class ControllerAxisView extends DOMWidgetView {
 
 export
 class ControllerModel extends CoreDOMWidgetModel {
-    static serializers = _.extend({
+    static serializers = {
+        ...CoreDOMWidgetModel.serializers,
         buttons: {deserialize: unpack_models},
         axes: {deserialize: unpack_models}
-    }, CoreDOMWidgetModel.serializers)
+    }
 
     defaults() {
         return _.extend(super.defaults(), {

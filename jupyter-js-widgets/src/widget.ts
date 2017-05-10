@@ -535,10 +535,11 @@ class WidgetModel extends Backbone.Model {
 
 export
 class DOMWidgetModel extends WidgetModel {
-    static serializers = _.extend({
+    static serializers = {
+        ...WidgetModel.serializers,
         layout: {deserialize: unpack_models},
         style: {deserialize: unpack_models},
-    }, WidgetModel.serializers)
+    }
 
     defaults() {
         return _.extend(super.defaults(), {
