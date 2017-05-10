@@ -18,7 +18,7 @@ import {
 } from './manager';
 
 import {
-  OutputAreaModel, OutputAreaWidget
+  OutputAreaModel, OutputArea
 } from '@jupyterlab/outputarea';
 
 import {
@@ -124,9 +124,9 @@ class OutputView extends DOMWidgetView {
    * Called when view is rendered.
    */
   render() {
-    this._outputView = new OutputAreaWidget({
+    this._outputView = new OutputArea({
       rendermime: this.model.widget_manager.rendermime,
-      contentFactory: OutputAreaWidget.defaultContentFactory,
+      contentFactory: OutputArea.defaultContentFactory,
       model: this.model.outputs
     });
     // TODO: why is this a readonly property now?
@@ -156,6 +156,6 @@ class OutputView extends DOMWidgetView {
   }
 
   model: OutputModel;
-  _outputView: OutputAreaWidget;
+  _outputView: OutputArea;
   pWidget: Panel
 }

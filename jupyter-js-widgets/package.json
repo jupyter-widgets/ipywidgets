@@ -78,7 +78,7 @@
     "webpack": "^1.12.11"
   },
   "dependencies": {
-    "@jupyterlab/services": "^0.41.0",
+    "@jupyterlab/services": "^0.43.0",
     "@phosphor/algorithm": "^1.0.0",
     "@phosphor/domutils": "^1.0.0",
     "@phosphor/messaging": "^1.1.0",
