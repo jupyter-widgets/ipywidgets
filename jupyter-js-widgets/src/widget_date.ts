@@ -110,7 +110,6 @@ class DatePickerView extends LabeledDOMWidgetView {
         this.el.appendChild(this._datepicker);
 
         this.listenTo(this.model, 'change:value', this._update_value);
-
         this._update_value();
     }
 
@@ -130,5 +129,5 @@ class DatePickerView extends LabeledDOMWidgetView {
         this.touch();
     }
 
-    private _datepicker: HTMLInputElement;
+    _datepicker: HTMLInputElement;
 }
