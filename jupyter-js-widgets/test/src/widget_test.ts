@@ -141,6 +141,27 @@ describe("Widget", function() {
         });
     });
 
+    it('serialize', function() {
+        expect(this.widget.serialize).to.not.be.undefined;
+        const state = {
+            a: 5,
+            b: 'some-string'
+        };
+        const serialized_state = this.widget.serialize(state);
+        expect(serialized_state).to.be.an('object');
+        expect(serialized_state).to.deep.equal(state);
+    });
+
+    it('serialize null values', function() {
+        const state_with_null = {
+            a: 5,
+            b: null
+        };
+        const serialized_state = this.widget.serialize(state_with_null);
+        expect(serialized_state).to.be.an('object');
+        expect(serialized_state).to.deep.equal(state_with_null);
+    });
+
     it('_handle_comm_msg', function() {
         expect(this.widget._handle_comm_msg).to.not.be.undefined;
 
