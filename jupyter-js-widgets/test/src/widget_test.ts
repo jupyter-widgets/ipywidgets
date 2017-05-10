@@ -169,19 +169,19 @@ describe("Widget", function() {
                 use_this: 6,
                 ignored: 'should not get serialized'
             }
-        }
+        };
         this.widget.constructor.serializers = {
             ...this.widget.constructor.serializers,
             need_custom_serializer: {
                 serialize: (value) => value.use_this
             }
-        }
+        };
         const serialized_state = this.widget.serialize(state);
         expect(serialized_state).to.deep.equal({
             a: 5,
             need_custom_serializer: 6
-        })
-    })
+        });
+    });
 
     it('_handle_comm_msg', function() {
         expect(this.widget._handle_comm_msg).to.not.be.undefined;
