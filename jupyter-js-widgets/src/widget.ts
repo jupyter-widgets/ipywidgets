@@ -399,9 +399,9 @@ class WidgetModel extends Backbone.Model {
      * primitive object that is a snapshot of the widget state that may have
      * binary array buffers.
      */
-    serialize(state) {
+    serialize(state: {[key: string]: any}) {
         const serializers = (this.constructor as typeof WidgetModel).serializers || {};
-        for (const k of state) {
+        for (const k of Object.keys(state)) {
             try {
                 if (serializers[k] && serializers[k].serialize) {
                     state[k] = (serializers[k].serialize)(state[k], this);
@@ -409,7 +409,7 @@ class WidgetModel extends Backbone.Model {
                     // the default serializer just deep-copies the object
                     state[k] = JSON.parse(JSON.stringify(state[k]));
                 }
-                if (state[k].toJSON) {
+                if (state[k] && state[k].toJSON) {
                     state[k] = state[k].toJSON();
                 }
             } catch (e) {

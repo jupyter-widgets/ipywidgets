@@ -141,6 +141,48 @@ describe("Widget", function() {
         });
     });
 
+    it('serialize', function() {
+        expect(this.widget.serialize).to.not.be.undefined;
+        const state = {
+            a: 5,
+            b: 'some-string'
+        };
+        const serialized_state = this.widget.serialize(state);
+        expect(serialized_state).to.be.an('object');
+        expect(serialized_state).to.deep.equal(state);
+    });
+
+    it('serialize null values', function() {
+        const state_with_null = {
+            a: 5,
+            b: null
+        };
+        const serialized_state = this.widget.serialize(state_with_null);
+        expect(serialized_state).to.be.an('object');
+        expect(serialized_state).to.deep.equal(state_with_null);
+    });
+
+    it('serialize with custom serializers', function() {
+        const state = {
+            a: 5,
+            need_custom_serializer: {
+                use_this: 6,
+                ignored: 'should not get serialized'
+            }
+        };
+        this.widget.constructor.serializers = {
+            ...this.widget.constructor.serializers,
+            need_custom_serializer: {
+                serialize: (value) => value.use_this
+            }
+        };
+        const serialized_state = this.widget.serialize(state);
+        expect(serialized_state).to.deep.equal({
+            a: 5,
+            need_custom_serializer: 6
+        });
+    });
+
     it('_handle_comm_msg', function() {
         expect(this.widget._handle_comm_msg).to.not.be.undefined;
 
