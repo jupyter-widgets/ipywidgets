@@ -81,7 +81,7 @@ class DatePickerView extends LabeledDOMWidgetView {
     }
 
     private _update_value() {
-        var value = this.model.get('value');
+        const value = this.model.get('value');
         this._datepicker.valueAsDate = value;
     }
 
