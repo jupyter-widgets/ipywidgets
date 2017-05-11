@@ -62,6 +62,9 @@ fi
 jupyter nbextension enable --py $nbExtFlags widgetsnbextension
 cd ..
 
+# Install Python ipywidgets before jLab part
+pip install -v -e .
+
 if test "$skip_jupyter_lab" != yes; then
     cd jupyterlab_widgets
 
@@ -79,5 +82,3 @@ if test "$skip_jupyter_lab" != yes; then
     jupyter labextension enable --py $nbExtFlags jupyterlab_widgets
     cd ..
 fi
-
-pip install -v -e .
