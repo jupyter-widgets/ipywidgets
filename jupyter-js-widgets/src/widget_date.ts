@@ -18,23 +18,24 @@ function serialize_date(value, manager) {
     } else {
         value = new Date(value);
         return {
-            year: value.getFullYear(),
-            month: value.getMonth(),
-            date: value.getDate()
+            year: value.getUTCFullYear(),
+            month: value.getUTCMonth(),
+            date: value.getUTCDate()
         };
     }
 };
 
 export
 function deserialize_date(value, manager) {
-    console.log(value)
     if (value === null) {
         return null;
     } else {
         return new Date(
-            value.year,
-            value.month,
-            value.date
+            Date.UTC(
+                value.year,
+                value.month,
+                value.date
+            )
         );
     }
 };
