@@ -125,6 +125,7 @@ date_serialization = {
     'to_json': date_to_json
 }
 
+
 class InstanceDict(traitlets.Instance):
     """An instance trait which coerces a dict to an instance.
     
