@@ -27,6 +27,7 @@ export
 class CheckboxModel extends CoreLabeledDOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
+            indent: true,
             _view_name: 'CheckboxView',
             _model_name: 'CheckboxModel'
         });
@@ -44,11 +45,57 @@ class CheckboxView extends LabeledDOMWidgetView {
         this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-checkbox');
 
+        // adding a zero-width space to the label to help 
+        // the browser set the baseline correctly
+        this.label.innerHTML = '&#8203;'
+
+        // label containing the checkbox and description span
+        this.checkboxLabel = document.createElement('label');
+        this.checkboxLabel.classList.add('widget-label-basic');
+        this.el.appendChild(this.checkboxLabel);
+
+        // checkbox
         this.checkbox = document.createElement('input');
         this.checkbox.setAttribute('type', 'checkbox');
-        this.el.appendChild(this.checkbox);
+        this.checkboxLabel.appendChild(this.checkbox);
+
+        // span to the right of the checkbox that will render the description
+        this.descriptionSpan = document.createElement('span');
+        this.checkboxLabel.appendChild(this.descriptionSpan);
+
+        this.listenTo(this.model, 'change:indent', this.updateIndent);
 
         this.update(); // Set defaults.
+        this.updateDescription();
+        this.updateIndent();
+    }
+
+    /**
+     * Overriden from super class
+     * 
+     * Update the description span (rather than the label) since 
+     * we want the description to the right of the checkbox.
+     */
+    updateDescription() {
+        // can be called before the view is fully initialized
+        if (this.checkboxLabel == null)
+            return;
+
+        let description = this.model.get('description');
+        this.descriptionSpan.innerHTML = description;
+        this.typeset(this.descriptionSpan);
+        this.descriptionSpan.title = description;
+        this.checkbox.title = description;
+    }
+
+    /**
+     * Update the visibility of the label in the super class
+     * to provide the optional indent.
+     */
+    updateIndent() {
+        console.log('updating indent');
+        let indent = this.model.get('indent');
+        this.label.style.display = indent ? '' : 'none';
     }
 
     events(): {[e: string]: string} {
@@ -83,7 +130,10 @@ class CheckboxView extends LabeledDOMWidgetView {
         }
         return super.update();
     }
+
     checkbox: HTMLInputElement;
+    checkboxLabel: HTMLLabelElement;
+    descriptionSpan: HTMLSpanElement;
 }
 
 
