@@ -384,6 +384,11 @@
     line-height: var(--jp-widgets-inline-height);
 }
 
+.widget-textarea textarea {
+    height: 100%;
+    line-height: normal;
+}
+
 .widget-text input[type="text"], .widget-textarea textarea {
     box-sizing: border-box;
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
