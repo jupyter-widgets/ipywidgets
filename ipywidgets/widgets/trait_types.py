@@ -97,13 +97,11 @@ def date_to_json(pydate, manager):
     if pydate is None:
         return None
     else:
-        r = dict(
+        return dict(
             year=pydate.year,
             month=pydate.month - 1,  # Months are 0-based indices in JS
             date=pydate.day
         )
-        print(r)
-        return r
 
 
 def date_from_json(js, manager):

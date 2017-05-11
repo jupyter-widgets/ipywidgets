@@ -12,7 +12,7 @@ import {
 import * as _ from 'underscore';
 
 export
-function serialize_datetime(value, manager) {
+function serialize_date(value, manager) {
     if (value === null) {
         return null;
     } else {
@@ -20,71 +20,32 @@ function serialize_datetime(value, manager) {
         return {
             year: value.getFullYear(),
             month: value.getMonth(),
-            date: value.getDate(),
-            hours: value.getHours(),
-            minutes: value.getMinutes(),
-            seconds: value.getSeconds(),
-            milliseconds: value.getMilliseconds()
+            date: value.getDate()
         };
     }
 };
 
 export
-function deserialize_datetime(value, manager) {
+function deserialize_date(value, manager) {
+    console.log(value)
     if (value === null) {
         return null;
     } else {
         return new Date(
             value.year,
             value.month,
-            value.date,
-            value.hours,
-            value.minutes,
-            value.seconds,
-            value.milliseconds
+            value.date
         );
     }
 };
-
-function createDateAsUTC(date) {
-    if (date === null) {
-        return null;
-    } else {
-        return new Date(
-            Date.UTC(
-                date.getFullYear(),
-                date.getMonth(),
-                date.getDate(),
-                date.getHours(),
-                date.getMinutes(),
-                date.getSeconds()
-            )
-        );
-    }
-}
-
-function convertDateToUTC(date) {
-    if (date === null) {
-        return null;
-    } else {
-        return new Date(
-            date.getUTCFullYear(),
-            date.getUTCMonth(),
-            date.getUTCDate(),
-            date.getUTCHours(),
-            date.getUTCMinutes(),
-            date.getUTCSeconds()
-        );
-    }
-}
 
 export
 class DatePickerModel extends CoreLabeledDOMWidgetModel {
     static serializers = {
         ...CoreLabeledDOMWidgetModel.serializers,
         value: {
-            serialize: serialize_datetime,
-            deserialize: deserialize_datetime
+            serialize: serialize_date,
+            deserialize: deserialize_date
         }
     }
 
@@ -121,13 +82,13 @@ class DatePickerView extends LabeledDOMWidgetView {
 
     private _update_value() {
         var value = this.model.get('value');
-        this._datepicker.valueAsDate = createDateAsUTC(value);
+        this._datepicker.valueAsDate = value;
     }
 
     private _picker_change() {
-        this.model.set('value', convertDateToUTC(this._datepicker.valueAsDate));
+        this.model.set('value', this._datepicker.valueAsDate);
         this.touch();
     }
 
-    _datepicker: HTMLInputElement;
+    private _datepicker: HTMLInputElement;
 }
