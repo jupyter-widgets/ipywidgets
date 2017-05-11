@@ -7,8 +7,14 @@ import * as Backbone from 'backbone';
 
 import * as sinon from 'sinon';
 
+let numComms = 0;
+
 export
 class MockComm {
+    constructor() {
+        this.comm_id = `mock-comm-id-${numComms}`;
+        numComms += 1;
+    }
     // Somehow the mock comm should trigger a close event?
     on_close(fn) {
         this._on_close = fn;
@@ -21,7 +27,7 @@ class MockComm {
         console.error(this._on_close);
     };
     send() {};
-    comm_id = 'mock-comm-id';
+    comm_id: string;
     _on_close: Function = null;
 }
 

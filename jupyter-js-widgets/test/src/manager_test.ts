@@ -15,7 +15,7 @@ describe("ManagerBase", function() {
     beforeEach(function() {
         this.managerBase = new DummyManager();
         this.modelOptions = {
-            model_name: 'IntSlider',
+            model_name: 'IntSliderModel',
             model_module: 'jupyter-js-widgets',
             model_module_version: '3.0.0',
             model_id: 'u-u-i-d'
@@ -64,8 +64,7 @@ describe("ManagerBase", function() {
       it('returns a promise to the model', async function() {
         let manager = this.managerBase
         let model = await manager.new_model(this.modelOptions);
-        let model2 = await manager.get_model(model.id);
-        expect(model).to.be.equal(model2);
+        expect(await manager.get_model(model.id)).to.be.equal(model);
       });
       it('returns undefined when model is not registered', function() {
         expect(this.managerBase.get_model('not-defined')).to.be.undefined;
@@ -96,13 +95,13 @@ describe("ManagerBase", function() {
         // we check that the model has a .get() method
         expect(model).to.have.property('get');
         expect(model).to.have.property('set');
-        expect(model.name).to.be.equal(this.modelOptions.name);
-        expect(model.module).to.be.equal(this.modelOptions.module);
+        expect(model.name).to.be.equal(this.modelOptions.model_name);
+        expect(model.module).to.be.equal(this.modelOptions.model_module);
       });
       it('model id defaults to comm id if not specified', async function() {
         let comm = new MockComm();
         let spec = {
-            model_name: 'IntSlider',
+            model_name: 'IntSliderModel',
             model_module: 'jupyter-js-widgets',
             model_module_version: '3.0.0',
             comm: comm
@@ -112,26 +111,32 @@ describe("ManagerBase", function() {
         expect(model.id).to.be.equal(comm.comm_id);
       });
 
-      it('throws an error if model_id or comm not given', async function() {
+      it.skip('throws an error if model_id or comm not given', async function() {
         let spec = {
-            model_name: 'IntSlider',
+            model_name: 'IntSliderModel',
             model_module: 'jupyter-js-widgets',
             model_module_version: '3.0.0',
         };
         let manager = this.managerBase;
-        //expect(await manager.new_model(spec)).to.throw();
+        expect(await manager.new_model(spec)).to.throw();
       });
       it('creates an html widget if there is an error loading the class');
       it('does not sync on creation', function() {
+
       });
-      it('calls loadClass to retrieve model class');
+      it('calls loadClass to retrieve model class', async function() {
+        let manager = this.managerBase;
+        var spy = sinon.spy(manager, "loadClass");
+        let model = await manager.new_model(this.modelOptions);
+        expect(manager.loadClass.calledOnce).to.be.true;
+      });
       it('deserializes attributes using custom serializers');
       it('handles binary state');
       it('sets up a comm close handler to delete the model', async function() {
         var callback = sinon.spy();
         let comm = new MockComm();
         let spec = {
-            model_name: 'IntSlider',
+            model_name: 'IntSliderModel',
             model_module: 'jupyter-js-widgets',
             model_module_version: '3.0.0',
             comm: comm
@@ -147,7 +152,26 @@ describe("ManagerBase", function() {
       it('exists', function() {
         expect(this.managerBase.clear_state).to.not.be.undefined;
       });
-      it('clears the model dictionary');
+      it('clears the model dictionary', async function() {
+        let spec = {
+            model_name: 'IntSliderModel',
+            model_module: 'jupyter-js-widgets',
+            model_module_version: '3.0.0',
+        };
+        let mSpec1 = { ...spec, comm: new MockComm()};
+        let mSpec2 = { ...spec, comm: new MockComm()};
+        let manager = this.managerBase;
+        let model1 = await manager.new_model(mSpec1);
+        let model2 = await manager.new_model(mSpec2);
+        let m1 = await manager.get_model(model1.id);
+        expect(await manager.get_model(model1.id)).to.be.equal(model1);
+        expect(await manager.get_model(model2.id)).to.be.equal(model2);
+        await manager.clear_state();
+        expect(manager.get_model(model1.id)).to.be.undefined;
+        expect(manager.get_model(model2.id)).to.be.undefined;
+      });
+      it('clears only commless widgets if comlessOnly is true');
+      it('closes the widgets');
     });
 
     describe('get_state', function() {
