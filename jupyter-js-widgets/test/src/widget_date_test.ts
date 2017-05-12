@@ -56,4 +56,20 @@ describe('DatePickerView', function() {
         expect(getDatepicker(view.el).valueAsDate.getTime())
             .to.equal(testDate.getTime());
     });
+
+    it('set the model date', function() {
+        this.model.set('value', new Date(2017, 2, 25));
+        const options = { model: this.model };
+        const view = new widgets.DatePickerView(options);
+        view.render()
+
+        // Simulate setting the date in the datepicker
+        const testDate = new Date(2015, 2, 22)
+        const datepicker = getDatepicker(view.el)
+        datepicker.valueAsDate = testDate
+        datepicker.dispatchEvent(new Event('change', {"bubbles":true}))
+
+        expect(this.model.get('value').getTime())
+            .to.equal(testDate.getTime());
+    })
 })
