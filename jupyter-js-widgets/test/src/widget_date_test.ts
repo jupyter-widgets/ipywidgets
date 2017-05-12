@@ -79,5 +79,19 @@ describe('DatePickerView', function() {
 
         expect(this.model.get('value').getTime())
             .to.equal(testDate.getTime());
-    })
+    });
+
+    it('update when the model changes', function() {
+        this.model.set('value', null);
+        const options = { model: this.model };
+        const view = new widgets.DatePickerView(options);
+        view.render();
+
+        const testDate = new Date(2015, 2, 22);
+        this.model.set('value', testDate);
+        const datepicker = getDatepicker(view.el)
+        expect(datepicker.valueAsDate.getTime())
+            .to.equal(testDate.getTime())
+    });
+
 })
