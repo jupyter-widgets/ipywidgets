@@ -268,7 +268,6 @@ class RadioButtonsView extends LabeledDOMWidgetView {
         if (stale && (options === undefined || options.updated_view !== this)) {
             // Add items to the DOM.
             this.container.textContent = '';
-            let itemHeight = null;
             _.each(items, function(item: any, index: number) {
                 var label = document.createElement('label');
                 label.textContent = item;
@@ -292,6 +291,8 @@ class RadioButtonsView extends LabeledDOMWidgetView {
             }
         });
 
+        // Schedule adjustPadding asynchronously to
+        // allow dom elements to be created properly
         setTimeout(this.adjustPadding, 0, this);
 
         return super.update(options);
