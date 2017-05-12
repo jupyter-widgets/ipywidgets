@@ -57,8 +57,16 @@ describe('DatePickerView', function() {
             .to.equal(testDate.getTime());
     });
 
+    it('no initial value', function() {
+        this.model.set('value', null);
+        const options = { model: this.model };
+        const view = new widgets.DatePickerView(options);
+        view.render();
+        expect(getDatepicker(view.el).valueAsDate).to.be.a('null');
+    });
+
     it('set the model date', function() {
-        this.model.set('value', new Date(2017, 2, 25));
+        this.model.set('value', null);
         const options = { model: this.model };
         const view = new widgets.DatePickerView(options);
         view.render()
