@@ -93,7 +93,6 @@ class CheckboxView extends LabeledDOMWidgetView {
      * to provide the optional indent.
      */
     updateIndent() {
-        console.log('updating indent');
         let indent = this.model.get('indent');
         this.label.style.display = indent ? '' : 'none';
     }
