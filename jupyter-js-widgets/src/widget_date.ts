@@ -9,14 +9,17 @@ import {
     CoreLabeledDOMWidgetModel
 } from './widget_core';
 
+import {
+    ManagerBase
+} from './manager-base'
+
 import * as _ from 'underscore';
 
 export
-function serialize_date(value, manager) {
+function serialize_date(value?: Date) {
     if (value === null) {
         return null;
     } else {
-        value = new Date(value);
         return {
             year: value.getUTCFullYear(),
             month: value.getUTCMonth(),
@@ -25,8 +28,14 @@ function serialize_date(value, manager) {
     }
 };
 
+export interface SerializedDate {
+    year: number,
+    month: number,
+    date: number
+};
+
 export
-function deserialize_date(value, manager) {
+function deserialize_date(value: SerializedDate) {
     if (value === null) {
         return null;
     } else {
