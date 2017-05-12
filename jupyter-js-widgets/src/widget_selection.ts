@@ -254,18 +254,21 @@ class RadioButtonsView extends LabeledDOMWidgetView {
             this.container.querySelectorAll('input[type="radio"]'),
             'value'
         );
-        var stale = false;
+        var stale = items.length != radios.length;
 
-        for (var i = 0, len = items.length; i < len; ++i) {
-            if (radios[i] !== items[i]) {
-                stale = true;
-                break;
+        if (!stale) {
+            for (var i = 0, len = items.length; i < len; ++i) {
+                if (radios[i] !== items[i]) {
+                    stale = true;
+                    break;
+                }
             }
         }
 
         if (stale && (options === undefined || options.updated_view !== this)) {
             // Add items to the DOM.
             this.container.textContent = '';
+            let itemHeight = null;
             _.each(items, function(item: any, index: number) {
                 var label = document.createElement('label');
                 label.textContent = item;
@@ -276,7 +279,7 @@ class RadioButtonsView extends LabeledDOMWidgetView {
                 radio.value = index.toString();
                 radio.setAttribute('data-value', encodeURIComponent(item));
                 label.appendChild(radio);
-            });
+           });
         }
         _.each(items, function(item: any, index: number) {
             var item_query = 'input[data-value="' +
@@ -288,7 +291,41 @@ class RadioButtonsView extends LabeledDOMWidgetView {
               radio_el.disabled = view.model.get('disabled');
             }
         });
+
+        setTimeout(this.adjustPadding, 0, this);
+
         return super.update(options);
+    }
+
+    /**
+     * Adjust Padding to Multiple of Line Height
+     *
+     * Adjust margins so that the overall height
+     * is a multiple of a single line height.
+     *
+     * This widget needs it because radio options
+     * are spaced tighter than individual widgets
+     * yet we would like the full widget line up properly
+     * when displayed side-by-side with other widgets.
+     */
+    adjustPadding(e) {
+        // Vertical margins on a widget
+        let elStyles = window.getComputedStyle(e.el);
+        let margins = parseInt(elStyles.marginTop) + parseInt(elStyles.marginBottom);
+
+        // Total spaces taken by a single-line widget
+        let lineHeight = e.label.offsetHeight + margins;
+
+        // Current adjustment value on this widget
+        let cStyles = window.getComputedStyle(e.container);
+        let containerMargin = parseInt(cStyles.marginBottom);
+
+        // How far we are off from a multiple of single windget lines
+        let diff = (e.el.offsetHeight + margins - containerMargin) % lineHeight;
+
+        // Apply the new adjustment
+        let extraMargin = diff == 0 ? 0 : (lineHeight - diff);
+        e.container.style.marginBottom = extraMargin + 'px';
     }
 
     events(): {[e: string]: string} {
