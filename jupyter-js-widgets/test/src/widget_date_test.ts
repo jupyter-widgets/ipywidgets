@@ -94,4 +94,32 @@ describe('DatePickerView', function() {
             .to.equal(testDate.getTime());
     });
 
-})
+});
+
+describe('serialize_date', function() {
+    it('null date', function() {
+        expect(widgets.serialize_date(null)).to.be.a('null')
+    });
+
+    it('UTC date', function() {
+        const date = new Date('Sat May 13 2017 00:00:00 UTC')
+        const expectedSerialization = {
+            year: 2017,
+            month: 4,
+            date: 13
+        }
+        expect(widgets.serialize_date(date))
+            .to.deep.equal(expectedSerialization)
+    });
+
+    it('date in other locale as UTC', function() {
+        const date = new Date('Sat May 13 2017 00:00:00 GMT+0100 (BST)')
+        const expectedSerialization = {
+            year: 2017,
+            month: 4,
+            date: 12 // still on 12th May in UTC
+        }
+        expect(widgets.serialize_date(date))
+            .to.deep.equal(expectedSerialization)
+    });
+});
