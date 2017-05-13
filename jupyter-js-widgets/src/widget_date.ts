@@ -35,7 +35,7 @@ export interface SerializedDate {
 };
 
 export
-function deserialize_date(value: SerializedDate) {
+function deserialize_date(value?: SerializedDate) {
     if (value === null) {
         return null;
     } else {
