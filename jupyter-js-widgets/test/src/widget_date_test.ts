@@ -123,3 +123,20 @@ describe('serialize_date', function() {
             .to.deep.equal(expectedSerialization)
     });
 });
+
+describe('deserialize_date', function() {
+    it('null date', function() {
+        expect(widgets.deserialize_date(null)).to.be.a('null')
+    });
+
+    it('valid date', function() {
+        const serialized = {
+            year: 2017,
+            month: 4,
+            date: 12
+        };
+        const expectedDate = new Date('2017-05-12');
+        expect(widgets.deserialize_date(serialized).getTime())
+            .to.equal(expectedDate.getTime())
+    });
+})
