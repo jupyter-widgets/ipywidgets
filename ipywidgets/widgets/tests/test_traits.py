@@ -27,21 +27,42 @@ class TestColor(TraitTestBase):
 class TestDateSerialization(TestCase):
 
     def setUp(self):
-        self.from_json = date_serialization['from_json']
         self.to_json = date_serialization['to_json']
         self.dummy_manager = None
 
     def test_serialize_none(self):
         self.assertIs(self.to_json(None, self.dummy_manager), None)
 
-    def serialize_date(self):
-        date = dt.date(1900, 2, 5)
+    def test_serialize_date(self):
+        date = dt.date(1900, 2, 18)
         expected = {
             'year': 1900,
             'month': 1,
-            'date': 4
+            'date': 18
         }
-        self.assertIs(self.to_json(date, self.dummy_manager), expected)
+        self.assertEqual(self.to_json(date, self.dummy_manager), expected)
+
+
+class TestDateDeserialization(TestCase):
+
+    def setUp(self):
+        self.from_json = date_serialization['from_json']
+        self.dummy_manager = None
+
+    def test_deserialize_none(self):
+        self.assertIs(self.from_json(None, self.dummy_manager), None)
+
+    def test_deserialize_date(self):
+        serialized_date = {
+            'year': 1900,
+            'month': 1,
+            'date': 18
+        }
+        expected = dt.date(1900, 2, 18)
+        self.assertEqual(
+            self.from_json(serialized_date, self.dummy_manager),
+            expected
+        )
 
 
 class TestBuffers(TestCase):
