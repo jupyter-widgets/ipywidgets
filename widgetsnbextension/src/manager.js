@@ -234,6 +234,8 @@ WidgetManager.prototype._createMenuItem = function(title, action) {
 
 
 WidgetManager.prototype.display_view = function(msg, view, options) {
+    console.log('displaying view')
+    console.log(msg);
     return Promise.resolve(view);
 }
 
@@ -288,6 +290,45 @@ WidgetManager.prototype._get_connected_kernel = function() {
         }
     });
 };
+
+WidgetManager.prototype.callbacks = function (view) {
+    /**
+     * callback handlers specific a view
+     */
+    console.log('callbacks for view:')
+    console.log(view)
+    var callbacks = {};
+    if (view && view.options.output) {
+        console.log(view.options.output);
+
+        // Try to get output handlers
+        var output = view.options.output;
+        var handle_output = null;
+        var handle_clear_output = null;
+        if (output) {
+            handle_output = _.bind(output.handle_output, output);
+            handle_clear_output = _.bind(output.handle_clear_output, output);
+        }
+
+        // Create callback dictionary using what is known
+        var that = this;
+        callbacks = {
+            iopub : {
+                output : handle_output,
+                clear_output : handle_clear_output,
+
+                // Special function only registered by widget messages.
+                // Allows us to get the cell for a message so we know
+                // where to add widgets if the code requires it.
+                get_cell : function () {
+                    return cell;
+                },
+            },
+        };
+    }
+    return callbacks;
+};
+
 
 module.exports = {
     WidgetManager: WidgetManager
