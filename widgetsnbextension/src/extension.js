@@ -93,25 +93,18 @@ function register_events(Jupyter, events, outputarea) {
             return;
         }
 
-        console.log(output);
-        console.log('rendering model:');
-
         var model = manager.get_model(data.model_id);
         if (model) {
             model.then(function(model) {
-                console.log(model);
                 return manager.display_model(void 0, model, void 0);
             }).then(function(view) {
-                console.log(view);
                 var id = view.cid;
                 output._jupyterWidgetViews = output._jupyterWidgetViews || [];
                 output._jupyterWidgetViews.push(id);
                 views[id] = view;
+                // inject the output area into the view
                 view.options = _.extend({}, view.options, {output: output});
-                console.log('-.->')
-                console.log(view.options);
-                console.log('-.->')
-                manager.callbacks(view)
+                manager.callbacks(view);
                 PhosphorWidget.Widget.attach(view.pWidget, node);
             });
         } else {
@@ -121,9 +114,6 @@ function register_events(Jupyter, events, outputarea) {
 
     // `this` is the output area we are appending to
     var append_mime = function(json, md, element) {
-        console.log(md);
-        console.log(element);
-        console.log(this);
         var toinsert = this.create_output_subarea(md, CLASS_NAME, MIME_TYPE);
         this.keyboard_manager.register_events(toinsert);
         render(this, json, toinsert[0]);

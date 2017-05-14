@@ -20,7 +20,6 @@ var OutputModel = widgets.DOMWidgetModel.extend({
     }),
 
     initialize: function(attributes, options) {
-        console.log('in initialize!!!');
         OutputModel.__super__.initialize.apply(this, arguments);
         this.kernel = this.comm.kernel;
         this.listenTo(this, 'change:msg_id', this.reset_msg_id);
@@ -71,10 +70,7 @@ var OutputModel = widgets.DOMWidgetModel.extend({
                 }
             }.bind(this)
         });
-        var result = _.extend({}, cb, {iopub: iopubCallbacks});
-        console.log('result:');
-        console.log(result)
-        return result;
+        return _.extend({}, cb, {iopub: iopubCallbacks});
     },
 
     reset_msg_id: function() {
@@ -105,7 +101,6 @@ var OutputModel = widgets.DOMWidgetModel.extend({
 
 var OutputView = widgets.DOMWidgetView.extend({
     render: function(){
-        console.log('rendering output view')
         var that = this;
         outputArea.then(function(outputArea) {
             that.output_area = new outputArea.OutputArea({

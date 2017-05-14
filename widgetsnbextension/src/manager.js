@@ -234,8 +234,6 @@ WidgetManager.prototype._createMenuItem = function(title, action) {
 
 
 WidgetManager.prototype.display_view = function(msg, view, options) {
-    console.log('displaying view')
-    console.log(msg);
     return Promise.resolve(view);
 }
 
@@ -295,12 +293,8 @@ WidgetManager.prototype.callbacks = function (view) {
     /**
      * callback handlers specific a view
      */
-    console.log('callbacks for view:')
-    console.log(view)
     var callbacks = {};
     if (view && view.options.output) {
-        console.log(view.options.output);
-
         // Try to get output handlers
         var output = view.options.output;
         var handle_output = null;
