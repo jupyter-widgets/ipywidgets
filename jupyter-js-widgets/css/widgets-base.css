@@ -30,6 +30,8 @@
     --jp-widgets-progress-thickness: 20px;
     --jp-widgets-container-padding: 15px;
     --jp-widgets-input-padding: 4px;
+    --jp-widgets-radio-item-height-adjustment: 8px;
+    --jp-widgets-radio-item-height: calc(var(--jp-widgets-inline-height) - var(--jp-widgets-radio-item-height-adjustment));
     --jp-widgets-slider-track-thickness: 4px;
     --jp-widgets-slider-border-width: var(--jp-widgets-border-width);
     --jp-widgets-slider-handle-size: 16px;
@@ -243,6 +245,16 @@
 
 /* Widget Label Styling */
 
+.widget-label-basic {
+    /* Basic Label */
+    color: var(--jp-widgets-label-color);
+    font-size: var(--jp-widgets-font-size);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: var(--jp-widgets-inline-height);
+}
+
 .widget-label {
     /* Label */
     color: var(--jp-widgets-label-color);
@@ -258,7 +270,7 @@
     /* Horizontal Widget Label */
     color: var(--jp-widgets-label-color);
     text-align: right;
-    margin-right: var(--jp-widgets-inline-margin);
+    margin-right: calc( var(--jp-widgets-inline-margin) * 2 );
     max-width: var(--jp-widgets-inline-label-max-width);
     min-width: var(--jp-widgets-inline-label-min-width);
     flex-shrink: 0;
@@ -320,14 +332,13 @@
 /* Widget Checkbox Styling */
 
 .widget-checkbox {
-    width: var(--jp-widgets-inline-width-short);
+    width: var(--jp-widgets-inline-width);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
-    justify-content: space-between;
 }
 
 .widget-checkbox input[type="checkbox"] {
-    margin: 0px var(--jp-widgets-inline-margin) 0px var(--jp-widgets-inline-margin);
+    margin: 0px calc( var(--jp-widgets-inline-margin) * 2 ) 0px 0px;
     line-height: var(--jp-widgets-inline-height);
     font-size: large;
     flex-grow: 1;
@@ -713,18 +724,19 @@
     align-items: stretch;
     box-sizing: border-box;
     flex-grow: 1;
+    margin-bottom: var(--jp-widgets-radio-item-height-adjustment);
 }
 
 .widget-radio-box label {
-    height: var(--jp-widgets-inline-height);
-    line-height: var(--jp-widgets-inline-height);
+    height: var(--jp-widgets-radio-item-height);
+    line-height: var(--jp-widgets-radio-item-height);
     font-size: var(--jp-widgets-font-size);
 }
 
 .widget-radio-box input {
-    height: var(--jp-widgets-inline-height);
-    line-height: var(--jp-widgets-inline-height);
-    margin: 0 var(--jp-widgets-input-padding) 0 var(--jp-widgets-input-padding);
+    height: var(--jp-widgets-radio-item-height);
+    line-height: var(--jp-widgets-radio-item-height);
+    margin: 0 calc( var(--jp-widgets-input-padding) * 2 ) 0 1px;
     float: left;
 }
 
