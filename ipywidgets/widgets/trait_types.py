@@ -40,7 +40,7 @@ class Date(traitlets.TraitType):
 
 
 def datetime_to_json(pydt, manager):
-    """Serializes a Python datetime object to json.
+    """Serialize a Python datetime object to json.
 
     Instantiating a JavaScript Date object with a string assumes that the
     string is a UTC string, while instantiating it with constructor arguments
@@ -69,7 +69,7 @@ def datetime_to_json(pydt, manager):
 
 
 def datetime_from_json(js, manager):
-    """Deserialize a Python datetime object from json"""
+    """Deserialize a Python datetime object from json."""
     if js is None:
         return None
     else:
@@ -83,13 +83,13 @@ def datetime_from_json(js, manager):
             js['milliseconds'] * 1000
         )
 
+datetime_serialization = {
+    'from_json': datetime_from_json,
+    'to_json': datetime_to_json
+}
 
 def date_to_json(pydate, manager):
-    """Serializes a Python datetime object to json.
-
-    Instantiating a JavaScript Date object with a string assumes that the
-    string is a UTC string, while instantiating it with constructor arguments
-    assumes that it's in local time:
+    """Serialize a Python date object.
 
     Attributes of this dictionary are to be passed to the JavaScript Date
     constructor.
@@ -105,7 +105,7 @@ def date_to_json(pydate, manager):
 
 
 def date_from_json(js, manager):
-    """Deserialize a Python datetime object from json"""
+    """Deserialize a Javascript date."""
     if js is None:
         return None
     else:
@@ -114,11 +114,6 @@ def date_from_json(js, manager):
             js['month'] + 1,  # Months are 1-based in Python
             js['date'],
         )
-
-datetime_serialization = {
-    'from_json': datetime_from_json,
-    'to_json': datetime_to_json
-}
 
 date_serialization = {
     'from_json': date_from_json,
