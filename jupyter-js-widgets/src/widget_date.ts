@@ -16,7 +16,7 @@ import {
 import * as _ from 'underscore';
 
 export
-function serialize_date(value?: Date) {
+function serialize_date(value: Date) {
     if (value === null) {
         return null;
     } else {
@@ -29,23 +29,31 @@ function serialize_date(value?: Date) {
 };
 
 export interface SerializedDate {
+    /**
+     * Full year
+     */
     year: number,
+
+    /**
+     * Zero-based month (0 means January, 11 means December)
+     */
     month: number,
+
+    /**
+     * Day of month
+     */
     date: number
 };
 
 export
-function deserialize_date(value?: SerializedDate) {
+function deserialize_date(value: SerializedDate) {
     if (value === null) {
         return null;
     } else {
-        return new Date(
-            Date.UTC(
-                value.year,
-                value.month,
-                value.date
-            )
-        );
+        let date = new Date();
+        date.setUTCFullYear(value.year, value.month, value.date);
+        date.setUTCHours(0, 0, 0, 0);
+        return date;
     }
 };
 
