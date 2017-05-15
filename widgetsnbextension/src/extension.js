@@ -96,15 +96,12 @@ function register_events(Jupyter, events, outputarea) {
         var model = manager.get_model(data.model_id);
         if (model) {
             model.then(function(model) {
-                return manager.display_model(void 0, model, void 0);
+                return manager.display_model(void 0, model, {output: output});
             }).then(function(view) {
                 var id = view.cid;
                 output._jupyterWidgetViews = output._jupyterWidgetViews || [];
                 output._jupyterWidgetViews.push(id);
                 views[id] = view;
-                // inject the output area into the view
-                view.options = _.extend({}, view.options, {output: output});
-                manager.callbacks(view);
                 PhosphorWidget.Widget.attach(view.pWidget, node);
             });
         } else {
