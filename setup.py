@@ -108,7 +108,6 @@ if 'develop' in sys.argv or any(a.startswith('bdist') for a in sys.argv):
 
 setuptools_args = {}
 install_requires = setuptools_args['install_requires'] = [
-    'ipython>=4.0.0',
     'ipykernel>=4.5.1',
     'traitlets>=4.3.1',
     # Requiring nbformat to specify bugfix version which is not required by
@@ -122,6 +121,8 @@ install_requires = setuptools_args['install_requires'] = [
 ]
 
 extras_require = setuptools_args['extras_require'] = {
+    ':python_version<"3.3"' : ['ipython>=4.0.0,<6.0.0'],
+    ':python_version>="3.3"': ['ipython>=4.0.0'],
     'test:python_version=="2.7"': ['mock'],
     'test': ['nose'],
 }
