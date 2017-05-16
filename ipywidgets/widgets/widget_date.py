@@ -10,13 +10,14 @@ from .domwidget import LabeledWidget
 from .valuewidget import ValueWidget
 from .widget import register
 from .widget_core import CoreWidget
-from .trait_types import Datetime, datetime_serialization
+from .trait_types import Date, date_serialization
 from traitlets import Unicode
 
 
 @register
 class DatePicker(LabeledWidget, ValueWidget, CoreWidget):
-    value = Datetime(None, allow_none=True).tag(sync=True, **datetime_serialization)
+    value = Date(None, allow_none=True).tag(
+        sync=True, **date_serialization)
 
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)

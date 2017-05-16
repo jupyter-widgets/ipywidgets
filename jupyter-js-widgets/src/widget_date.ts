@@ -9,82 +9,61 @@ import {
     CoreLabeledDOMWidgetModel
 } from './widget_core';
 
+import {
+    ManagerBase
+} from './manager-base'
+
 import * as _ from 'underscore';
 
 export
-function serialize_datetime(value, manager) {
+function serialize_date(value: Date) {
     if (value === null) {
         return null;
     } else {
-        value = new Date(value);
         return {
-            year: value.getFullYear(),
-            month: value.getMonth(),
-            date: value.getDate(),
-            hours: value.getHours(),
-            minutes: value.getMinutes(),
-            seconds: value.getSeconds(),
-            milliseconds: value.getMilliseconds()
+            year: value.getUTCFullYear(),
+            month: value.getUTCMonth(),
+            date: value.getUTCDate()
         };
     }
 };
 
+export interface SerializedDate {
+    /**
+     * Full year
+     */
+    year: number,
+
+    /**
+     * Zero-based month (0 means January, 11 means December)
+     */
+    month: number,
+
+    /**
+     * Day of month
+     */
+    date: number
+};
+
 export
-function deserialize_datetime(value, manager) {
+function deserialize_date(value: SerializedDate) {
     if (value === null) {
         return null;
     } else {
-        return new Date(
-            value.year,
-            value.month,
-            value.date,
-            value.hours,
-            value.minutes,
-            value.seconds,
-            value.milliseconds
-        );
+        let date = new Date();
+        date.setUTCFullYear(value.year, value.month, value.date);
+        date.setUTCHours(0, 0, 0, 0);
+        return date;
     }
 };
-
-function createDateAsUTC(date) {
-    if (date === null) {
-        return null;
-    } else {
-        return new Date(
-            Date.UTC(
-                date.getFullYear(),
-                date.getMonth(),
-                date.getDate(),
-                date.getHours(),
-                date.getMinutes(),
-                date.getSeconds()
-            )
-        );
-    }
-}
-
-function convertDateToUTC(date) {
-    if (date === null) {
-        return null;
-    } else {
-        return new Date(
-            date.getUTCFullYear(),
-            date.getUTCMonth(),
-            date.getUTCDate(),
-            date.getUTCHours(),
-            date.getUTCMinutes(),
-            date.getUTCSeconds()
-        );
-    }
-}
 
 export
 class DatePickerModel extends CoreLabeledDOMWidgetModel {
     static serializers = {
         ...CoreLabeledDOMWidgetModel.serializers,
         value: {
-            serialize: serialize_datetime,
-            deserialize: deserialize_datetime
+            serialize: serialize_date,
+            deserialize: deserialize_date
         }
     }
 
@@ -110,7 +89,6 @@ class DatePickerView extends LabeledDOMWidgetView {
         this.el.appendChild(this._datepicker);
 
         this.listenTo(this.model, 'change:value', this._update_value);
-
         this._update_value();
     }
 
@@ -121,12 +99,12 @@ class DatePickerView extends LabeledDOMWidgetView {
     }
 
     private _update_value() {
-        var value = this.model.get('value');
-        this._datepicker.valueAsDate = createDateAsUTC(value);
+        const value = this.model.get('value');
+        this._datepicker.valueAsDate = value;
     }
 
     private _picker_change() {
-        this.model.set('value', convertDateToUTC(this._datepicker.valueAsDate));
+        this.model.set('value', this._datepicker.valueAsDate);
         this.touch();
     }
 

@@ -3,3 +3,4 @@
 
 import './manager_test';
 import './widget_test';
+import './widget_date_test';

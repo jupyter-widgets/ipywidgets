@@ -3,12 +3,14 @@
 
 """Test trait types of the widget packages."""
 import array
+import datetime as dt
 
 from unittest import TestCase
 from traitlets import HasTraits
 from traitlets.tests.test_traitlets import TraitTestBase
 from ipywidgets import Color
 from ipywidgets.widgets.widget import _remove_buffers, _put_buffers
+from ipywidgets.widgets.trait_types import date_serialization
 
 
 class ColorTrait(HasTraits):
@@ -20,6 +22,47 @@ class TestColor(TraitTestBase):
 
     _good_values = ["blue", "#AA0", "#FFFFFF"]
     _bad_values = ["vanilla", "blues"]
+
+
+class TestDateSerialization(TestCase):
+
+    def setUp(self):
+        self.to_json = date_serialization['to_json']
+        self.dummy_manager = None
+
+    def test_serialize_none(self):
+        self.assertIs(self.to_json(None, self.dummy_manager), None)
+
+    def test_serialize_date(self):
+        date = dt.date(1900, 2, 18)
+        expected = {
+            'year': 1900,
+            'month': 1,
+            'date': 18
+        }
+        self.assertEqual(self.to_json(date, self.dummy_manager), expected)
+
+
+class TestDateDeserialization(TestCase):
+
+    def setUp(self):
+        self.from_json = date_serialization['from_json']
+        self.dummy_manager = None
+
+    def test_deserialize_none(self):
+        self.assertIs(self.from_json(None, self.dummy_manager), None)
+
+    def test_deserialize_date(self):
+        serialized_date = {
+            'year': 1900,
+            'month': 1,
+            'date': 18
+        }
+        expected = dt.date(1900, 2, 18)
+        self.assertEqual(
+            self.from_json(serialized_date, self.dummy_manager),
+            expected
+        )
 
 
 class TestBuffers(TestCase):
