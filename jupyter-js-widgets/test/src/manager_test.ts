@@ -149,29 +149,31 @@ describe("ManagerBase", function() {
     });
 
     describe('clear_state', function() {
-      it('exists', function() {
-        expect(this.managerBase.clear_state).to.not.be.undefined;
-      });
-      it('clears the model dictionary', async function() {
+      it('clears the model dictionary and closes widgets', async function() {
         let spec = {
             model_name: 'IntSliderModel',
             model_module: 'jupyter-js-widgets',
             model_module_version: '3.0.0',
         };
-        let mSpec1 = { ...spec, comm: new MockComm()};
-        let mSpec2 = { ...spec, comm: new MockComm()};
+        let comm1 = new MockComm();
+        let comm2 = new MockComm();
+        sinon.spy(comm1, 'close');
+        sinon.spy(comm2, 'close');
+        let mSpec1 = { ...spec, comm: comm1};
+        let mSpec2 = { ...spec, comm: comm2};
         let manager = this.managerBase;
         let model1 = await manager.new_model(mSpec1);
         let model2 = await manager.new_model(mSpec2);
-        let m1 = await manager.get_model(model1.id);
         expect(await manager.get_model(model1.id)).to.be.equal(model1);
         expect(await manager.get_model(model2.id)).to.be.equal(model2);
         await manager.clear_state();
         expect(manager.get_model(model1.id)).to.be.undefined;
         expect(manager.get_model(model2.id)).to.be.undefined;
+        expect((comm1.close as any).calledOnce).to.be.true;
+        expect((comm2.close as any).calledOnce).to.be.true;
+        expect(model1.comm).to.be.undefined;
+        expect(model2.comm).to.be.undefined;
       });
-      it('clears only commless widgets if comlessOnly is true');
-      it('closes the widgets');
     });
 
     describe('get_state', function() {
