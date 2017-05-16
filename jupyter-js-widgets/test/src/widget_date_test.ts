@@ -122,6 +122,17 @@ describe('serialize_date', function() {
         expect(widgets.serialize_date(date))
             .to.deep.equal(expectedSerialization)
     });
+
+    it('date before 100AD', function() {
+        const date = new Date("0005-04-28")
+        const expectedSerialization = {
+            year: 5,
+            month: 3,
+            date: 28
+        }
+        expect(widgets.serialize_date(date))
+            .to.deep.equal(expectedSerialization)
+    });
 });
 
 describe('deserialize_date', function() {
