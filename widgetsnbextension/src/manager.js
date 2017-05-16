@@ -291,9 +291,8 @@ WidgetManager.prototype._get_connected_kernel = function() {
 
 WidgetManager.prototype.setViewOptions = function (options) {
     var options = options || {};
-    // If a view is passed into the method, use that view's output as
-    // the cell for the view that is created.
-    if (!options.output && options.parent !== undefined) {
+    if (!options.output && options.parent) {
+        // use the parent output if we don't have one
         options.output = options.parent.options.output;
     }
     options.iopub_callbacks = {
