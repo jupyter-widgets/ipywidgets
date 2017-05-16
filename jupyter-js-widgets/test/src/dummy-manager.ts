@@ -15,7 +15,6 @@ class MockComm {
         this.comm_id = `mock-comm-id-${numComms}`;
         numComms += 1;
     }
-    // Somehow the mock comm should trigger a close event?
     on_close(fn) {
         this._on_close = fn;
     };
@@ -24,7 +23,6 @@ class MockComm {
         if (this._on_close) {
             this._on_close();
         }
-        console.error(this._on_close);
     };
     send() {};
     comm_id: string;
