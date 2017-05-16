@@ -289,6 +289,16 @@ WidgetManager.prototype._get_connected_kernel = function() {
     });
 };
 
+WidgetManager.prototype.setViewOptions = function (options) {
+    var options = options || {};
+    // If a view is passed into the method, use that view's output as
+    // the cell for the view that is created.
+    if (options.parent !== undefined) {
+        options.output = options.parent.options.output;
+    }
+    return options;
+};
+
 /**
  * Callback handlers for a specific view
  */
