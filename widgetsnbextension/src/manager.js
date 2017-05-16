@@ -289,6 +289,31 @@ WidgetManager.prototype._get_connected_kernel = function() {
     });
 };
 
+WidgetManager.prototype.setViewOptions = function (options) {
+    var options = options || {};
+    if (!options.output && options.parent) {
+        // use the parent output if we don't have one
+        options.output = options.parent.options.output;
+    }
+    options.iopub_callbacks = {
+        output: options.output.handle_output.bind(options.output),
+        clear_output: options.output.handle_clear_output.bind(options.output)
+    }
+    return options;
+};
+
+/**
+ * Callback handlers for a specific view
+ */
+WidgetManager.prototype.callbacks = function (view) {
+    var callbacks = widgets.ManagerBase.prototype.callbacks.call(this, view);
+    if (view && view.options.iopub_callbacks) {
+        callbacks.iopub = view.options.iopub_callbacks
+    }
+    return callbacks;
+};
+
+
 module.exports = {
     WidgetManager: WidgetManager
 };

@@ -96,7 +96,7 @@ function register_events(Jupyter, events, outputarea) {
         var model = manager.get_model(data.model_id);
         if (model) {
             model.then(function(model) {
-                return manager.display_model(void 0, model, void 0);
+                return manager.display_model(void 0, model, {output: output});
             }).then(function(view) {
                 var id = view.cid;
                 output._jupyterWidgetViews = output._jupyterWidgetViews || [];
