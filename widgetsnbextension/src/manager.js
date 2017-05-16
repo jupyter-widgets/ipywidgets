@@ -293,8 +293,12 @@ WidgetManager.prototype.setViewOptions = function (options) {
     var options = options || {};
     // If a view is passed into the method, use that view's output as
     // the cell for the view that is created.
-    if (options.parent !== undefined) {
+    if (!options.output && options.parent !== undefined) {
         options.output = options.parent.options.output;
+    }
+    options.iopub_callbacks = {
+        output: options.output.handle_output.bind(options.output),
+        clear_output: options.output.handle_clear_output.bind(options.output)
     }
     return options;
 };
@@ -304,12 +308,8 @@ WidgetManager.prototype.setViewOptions = function (options) {
  */
 WidgetManager.prototype.callbacks = function (view) {
     var callbacks = widgets.ManagerBase.prototype.callbacks.call(this, view);
-    if (view && view.options.output) {
-        var output = view.options.output;
-        callbacks.iopub = {
-            output: output.handle_output.bind(output),
-            clear_output: output.handle_clear_output.bind(output)
-        }
+    if (view && view.options.iopub_callbacks) {
+        callbacks.iopub = view.options.iopub_callbacks
     }
     return callbacks;
 };
