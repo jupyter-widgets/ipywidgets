@@ -187,7 +187,7 @@ abstract class ManagerBase<T> {
      *                          required and additional options are available.
      * @param  serialized_state - serialized model attributes.
      */
-    new_widget(options: ModelOptions, serialized_state: any): Promise<WidgetModel> {
+    new_widget(options: ModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
         var commPromise;
         // If no comm is provided, a new comm is opened for the jupyter.widget
         // target.
