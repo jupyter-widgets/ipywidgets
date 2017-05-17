@@ -80,12 +80,47 @@ describe("ManagerBase", function() {
     });
 
     describe('new_widget', function() {
-      it('exists', function() {
-        expect(this.managerBase.new_widget).to.not.be.undefined;
+      it('syncs once on creation', async function() {
+        let comm = new MockComm();
+        sinon.spy(comm, 'send');
+        let spec = {
+            model_name: 'IntSliderModel',
+            model_module: 'jupyter-js-widgets',
+            model_module_version: '3.0.0',
+            comm: comm
+        };
+        let manager = this.managerBase;
+        let model = await manager.new_widget(spec);
+        expect((comm.send as any).calledOnce).to.be.true;
       });
-      it('syncs once on creation');
-      it('creates a comm if one is not passed in');
-      it('creates a model even if the comm creation has errors');
+
+      it('creates a comm if one is not passed in', async function() {
+        let spec = {
+            model_name: 'IntSliderModel',
+            model_module: 'jupyter-js-widgets',
+            model_module_version: '3.0.0',
+        };
+        let manager = this.managerBase;
+        let model = await manager.new_widget(spec);
+        expect(model.comm).to.not.be.undefined;
+      });
+
+      it('creates a model even if the comm creation has errors', async function() {
+        let spec = {
+            model_name: 'IntSliderModel',
+            model_module: 'jupyter-js-widgets',
+            model_module_version: '3.0.0',
+        };
+        class NewWidgetManager extends DummyManager {
+          _create_comm() {
+            return Promise.reject('failed creation');
+          }
+        }
+        let manager = new NewWidgetManager();
+        let model = await manager.new_widget(spec);
+        expect(model.comm).to.be.undefined;
+        expect(model.id).to.not.be.undefined;
+      });
     });
 
     describe('new_model', function() {
@@ -98,6 +133,7 @@ describe("ManagerBase", function() {
         expect(model.name).to.be.equal(this.modelOptions.model_name);
         expect(model.module).to.be.equal(this.modelOptions.model_module);
       });
+
       it('model id defaults to comm id if not specified', async function() {
         let comm = new MockComm();
         let spec = {
@@ -111,27 +147,53 @@ describe("ManagerBase", function() {
         expect(model.id).to.be.equal(comm.comm_id);
       });
 
-      it.skip('throws an error if model_id or comm not given', async function() {
+      it('throws an error if model_id or comm not given', async function() {
         let spec = {
             model_name: 'IntSliderModel',
             model_module: 'jupyter-js-widgets',
             model_module_version: '3.0.0',
         };
         let manager = this.managerBase;
-        expect(await manager.new_model(spec)).to.throw();
+        expect(() => manager.new_model(spec)).to.throw('Neither comm nor model_id provided in options object. At least one must exist.');
       });
-      it('creates an html widget if there is an error loading the class');
-      it('does not sync on creation', function() {
 
+      it('creates an html widget if there is an error loading the class');
+
+      it('does not sync on creation', async function() {
+        let comm = new MockComm();
+        sinon.spy(comm, 'send');
+        let spec = {
+            model_name: 'IntSliderModel',
+            model_module: 'jupyter-js-widgets',
+            model_module_version: '3.0.0',
+            comm: comm
+        };
+        let manager = this.managerBase;
+        let model = await manager.new_model(spec);
+        expect((comm.send as any).notCalled).to.be.true;
       });
+
       it('calls loadClass to retrieve model class', async function() {
         let manager = this.managerBase;
         var spy = sinon.spy(manager, "loadClass");
         let model = await manager.new_model(this.modelOptions);
         expect(manager.loadClass.calledOnce).to.be.true;
       });
-      it('deserializes attributes using custom serializers');
-      it('handles binary state');
+
+      it('deserializes attributes using custom serializers and handles binary state', async function() {
+        let manager = this.managerBase;
+        let model = await manager.new_model({
+            model_name: 'BinaryWidget',
+            model_module: 'test-widgets',
+            model_module_version: '1.0.0',
+            model_id: 'u-u-i-d'
+        }, {array: {
+          dtype: 'uint8',
+          buffer: new DataView((new Uint8Array([1,2,3]).buffer))
+        }});
+        expect(model.get('array')).to.deep.equal(new Uint8Array([1,2,3]));
+      });
+
       it('sets up a comm close handler to delete the model', async function() {
         var callback = sinon.spy();
         let comm = new MockComm();
@@ -177,21 +239,144 @@ describe("ManagerBase", function() {
     });
 
     describe('get_state', function() {
-      it('exists', function() {
-        expect(this.managerBase.get_state).to.not.be.undefined;
+      it('returns a valid schema', async function() {
+        let manager = this.managerBase;
+        let model = await manager.new_model(this.modelOptions);
+        let state = await manager.get_state();
+        let expectedState = {
+          "version_major":2,
+          "version_minor":0,
+          "state":{
+            "u-u-i-d":{
+              "model_name":"IntSliderModel",
+              "model_module":"jupyter-js-widgets",
+              "model_module_version":"3.0.0",
+              "state":{
+                "_model_module":"jupyter-js-widgets",
+                "_model_name":"IntSliderModel",
+                "_model_module_version":"3.0.0",
+                "_view_module":"jupyter-js-widgets",
+                "_view_name":"IntSliderView",
+                "_view_module_version":"3.0.0",
+                "_view_count":null,
+                "msg_throttle":1,
+                "layout":null,
+                "style":null,
+                "_dom_classes":[],
+                "description":"",
+                "value":0,
+                "disabled":false,
+                "max":100,
+                "min":0,
+                "step":1,
+                "orientation":"horizontal",
+                "readout":true,
+                "readout_format":"d",
+                "continuous_update":true
+        }}}};
+        expect(state).to.deep.equal(expectedState);
       });
-      it('returns a valid schema');
-      it('encodes binary buffers to base64');
-      it('handles custom serializers');
+
+      it('handles the drop_defaults option', async function() {
+        let manager = this.managerBase;
+        let model = await manager.new_model(this.modelOptions,
+          {value: 50});
+        let state = await manager.get_state({drop_defaults: true});
+        let expectedState = {
+          "version_major":2,
+          "version_minor":0,
+          "state":{
+            "u-u-i-d":{
+              "model_name":"IntSliderModel",
+              "model_module":"jupyter-js-widgets",
+              "model_module_version":"3.0.0",
+              "state":{
+                "value":50
+        }}}};
+        expect(state).to.deep.equal(expectedState);
+      });
+
+      it('encodes binary buffers to base64 using custom serializers', async function() {
+        let manager = this.managerBase;
+        let model = await manager.new_model({
+            model_name: 'BinaryWidget',
+            model_module: 'test-widgets',
+            model_module_version: '1.0.0',
+            model_id: 'u-u-i-d'
+        }, {array: {
+          dtype: 'uint8',
+          buffer: new DataView((new Uint8Array([1,2,3]).buffer))
+        }});
+        let state = await manager.get_state({drop_defaults: true});
+        let expectedState = {
+          "version_major":2,
+          "version_minor":0,
+          "state":{
+            "u-u-i-d":{
+              "model_name":"BinaryWidget",
+              "model_module":"test-widgets",
+              "model_module_version":"1.0.0",
+              "state":{
+                "array":{"dtype":"uint8"}
+              },
+              "buffers":[{
+                "data":"AQID",
+                "path":["array","buffer"],
+                "encoding":"base64"
+              }]
+        }}}
+        expect(state).to.deep.equal(expectedState);
+      });
     });
 
     describe('set_state', function() {
-      it('exists', function() {
-        expect(this.managerBase.set_state).to.not.be.undefined;
+      it('handles binary base64 buffers', async function() {
+        let state = {
+          "version_major":2,
+          "version_minor":0,
+          "state":{
+            "u-u-i-d":{
+              "model_name":"BinaryWidget",
+              "model_module":"test-widgets",
+              "model_module_version":"1.0.0",
+              "state":{
+                "array":{"dtype":"uint8"}
+              },
+              "buffers":[{
+                "data":"AQID",
+                "path":["array","buffer"],
+                "encoding":"base64"
+              }]
+        }}};
+        let manager = this.managerBase;
+        await manager.set_state(state);
+        let model = await manager.get_model('u-u-i-d');
+        expect(model.get('array')).to.deep.equal(new Uint8Array([1,2,3]));
       });
-      it('handles binary hex buffers');
-      it('handles binary base64 buffers');
-      it('handles custom deserializers');
+
+      it('handles binary hex buffers', async function() {
+        let state = {
+          "version_major":2,
+          "version_minor":0,
+          "state":{
+            "u-u-i-d":{
+              "model_name":"BinaryWidget",
+              "model_module":"test-widgets",
+              "model_module_version":"1.0.0",
+              "state":{
+                "array":{"dtype":"uint8"}
+              },
+              "buffers":[{
+                "data":"010203",
+                "path":["array","buffer"],
+                "encoding":"hex"
+              }]
+        }}};
+        let manager = this.managerBase;
+        await manager.set_state(state);
+        let model = await manager.get_model('u-u-i-d');
+        expect(model.get('array')).to.deep.equal(new Uint8Array([1,2,3]));
+      });
     });
 });
 

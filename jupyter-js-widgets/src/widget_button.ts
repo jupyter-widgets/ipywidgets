@@ -48,7 +48,7 @@ class ButtonModel extends CoreDOMWidgetModel {
             button_style: '',
             _view_name: 'ButtonView',
             _model_name: 'ButtonModel',
-            style: void 0
+            style: null
         });
     }
 }

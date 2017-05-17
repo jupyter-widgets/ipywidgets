@@ -69,7 +69,7 @@ class IntSliderModel extends BoundedIntModel {
             readout: true,
             readout_format: 'd',
             continuous_update: true,
-            style: void 0
+            style: null
         });
     }
     initialize(attributes, options) {
@@ -625,7 +625,7 @@ class IntProgressModel extends BoundedIntModel {
             _view_name: 'ProgressView',
             orientation: 'horizontal',
             bar_style: '',
-            style: void 0
+            style: null
         });
     }
 }

@@ -87,7 +87,7 @@ function renderManager(element, tag) {
         console.log(model_validate.errors);
     }
     let manager = new embed.EmbedManager();
-    manager.set_state(widgetStateObject, {}).then(function(models) {
+    manager.set_state(widgetStateObject).then(function(models) {
         let tags = element.querySelectorAll('script[type="application/vnd.jupyter.widget-view+json"]');
         for (let i=0; i!=tags.length; ++i) {
             // TODO: validate view schema

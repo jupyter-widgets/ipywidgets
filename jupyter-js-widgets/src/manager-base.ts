@@ -74,18 +74,6 @@ interface ModelOptions {
 export
 interface StateOptions {
     /**
-     * Only return models with one or more displayed views.
-     *
-     * @default false
-     */
-    only_displayed?: boolean;
-    /**
-     * Include models that have comms with severed connections.
-     *
-     * @default false
-     */
-    not_live?: boolean;
-    /**
      * Drop model attributes that are equal to their default value.
      *
      * @default false
@@ -199,7 +187,7 @@ abstract class ManagerBase<T> {
      *                          required and additional options are available.
      * @param  serialized_state - serialized model attributes.
      */
-    new_widget(options: ModelOptions, serialized_state: any): Promise<WidgetModel> {
+    new_widget(options: ModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
         var commPromise;
         // If no comm is provided, a new comm is opened for the jupyter.widget
         // target.
@@ -365,7 +353,7 @@ abstract class ManagerBase<T> {
      * @param options - The options for what state to return.
      * @returns Promise for a state dictionary
      */
-    get_state(options: StateOptions): Promise<any> {
+    get_state(options: StateOptions = {}): Promise<any> {
         return utils.resolvePromisesDict(this._models).then((models) => {
             let state = {};
             Object.keys(models).forEach(model_id => {
@@ -386,7 +374,7 @@ abstract class ManagerBase<T> {
                 }
             });
             return {version_major: 2, version_minor: 0, state: state};
-        }).catch(utils.reject('Could not get state of widget manager', true));
+        });
     };
 
     /**
@@ -398,8 +386,7 @@ abstract class ManagerBase<T> {
      * current manager state, and then attempts to redisplay the widgets in the
      * state.
      */
-    set_state(state, displayOptions) {
-
+    set_state(state) {
         // Check to make sure that it's the same version we are parsing.
         if (!(state.version_major && state.version_major <= 2)) {
             throw "Unsupported widget state format";

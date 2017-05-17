@@ -133,7 +133,7 @@ class FloatProgressModel extends BoundedFloatModel {
             _view_name: 'ProgressView',
             orientation: 'horizontal',
             bar_style: '',
-            style: void 0
+            style: null
         });
     }
 }

@@ -53,6 +53,12 @@ class DummyManager extends widgets.ManagerBase<HTMLElement> {
             } else {
                 return Promise.reject(`Cannot find class ${className}`)
             }
+        } else if (moduleName === 'test-widgets') {
+            if (testWidgets[className]) {
+                return Promise.resolve(testWidgets[className]);
+            } else {
+                return Promise.reject(`Cannot find class ${className}`)
+            }
         } else {
             return Promise.reject(`Cannot find module ${moduleName}`);
         }
@@ -68,3 +74,60 @@ class DummyManager extends widgets.ManagerBase<HTMLElement> {
 
     el: HTMLElement;
 }
+
+// Dummy widget with custom serializer and binary field
+
+let typesToArray = {
+    int8: Int8Array,
+    int16: Int16Array,
+    int32: Int32Array,
+    uint8: Uint8Array,
+    uint16: Uint16Array,
+    uint32: Uint32Array,
+    float32: Float32Array,
+    float64: Float64Array
+}
+
+let JSONToArray = function(obj, manager) {
+    return new typesToArray[obj.dtype](obj.buffer.buffer);
+}
+
+let arrayToJSON = function(obj, manager) {
+    let dtype = Object.keys(typesToArray).filter(
+        i=>typesToArray[i]===obj.constructor)[0]
+    return {dtype, buffer: obj}
+}
+
+let array_serialization = {
+    deserialize: JSONToArray,
+    serialize: arrayToJSON
+};
+
+
+class TestWidget extends widgets.WidgetModel {
+    defaults() {
+        return {...super.defaults(),
+            _model_module: "test-widgets",
+            _model_name: "TestWidget",
+            _model_module_version: '1.0.0',
+            _view_module: "test-widgets",
+            _view_name: null,
+            _view_module_version: '1.0.0',
+            _view_count: null,
+        }
+    }
+}
+
+class BinaryWidget extends TestWidget {
+    static serializers = {
+        ...widgets.WidgetModel.serializers,
+        array: array_serialization
+    }
+    defaults() {
+        return {...super.defaults(),
+            _model_name: "BinaryWidget",
+            array: new Int8Array(0)};
+    }
+}
+
+let testWidgets = {BinaryWidget}
