@@ -80,12 +80,47 @@ describe("ManagerBase", function() {
     });
 
     describe('new_widget', function() {
-      it('exists', function() {
-        expect(this.managerBase.new_widget).to.not.be.undefined;
+      it('syncs once on creation', async function() {
+        let comm = new MockComm();
+        sinon.spy(comm, 'send');
+        let spec = {
+            model_name: 'IntSliderModel',
+            model_module: 'jupyter-js-widgets',
+            model_module_version: '3.0.0',
+            comm: comm
+        };
+        let manager = this.managerBase;
+        let model = await manager.new_widget(spec);
+        expect((comm.send as any).calledOnce).to.be.true;
       });
-      it('syncs once on creation');
-      it('creates a comm if one is not passed in');
-      it('creates a model even if the comm creation has errors');
+
+      it('creates a comm if one is not passed in', async function() {
+        let spec = {
+            model_name: 'IntSliderModel',
+            model_module: 'jupyter-js-widgets',
+            model_module_version: '3.0.0',
+        };
+        let manager = this.managerBase;
+        let model = await manager.new_widget(spec);
+        expect(model.comm).to.not.be.undefined;
+      });
+
+      it('creates a model even if the comm creation has errors', async function() {
+        let spec = {
+            model_name: 'IntSliderModel',
+            model_module: 'jupyter-js-widgets',
+            model_module_version: '3.0.0',
+        };
+        class NewWidgetManager extends DummyManager {
+          _create_comm() {
+            return Promise.reject('failed creation');
+          }
+        }
+        let manager = new NewWidgetManager();
+        let model = await manager.new_widget(spec);
+        expect(model.comm).to.be.undefined;
+        expect(model.id).to.not.be.undefined;
+      });
     });
 
     describe('new_model', function() {
@@ -112,19 +147,31 @@ describe("ManagerBase", function() {
         expect(model.id).to.be.equal(comm.comm_id);
       });
 
-      it.skip('throws an error if model_id or comm not given', async function() {
+      it('throws an error if model_id or comm not given', async function() {
         let spec = {
             model_name: 'IntSliderModel',
             model_module: 'jupyter-js-widgets',
             model_module_version: '3.0.0',
         };
         let manager = this.managerBase;
-        expect(await manager.new_model(spec)).to.throw();
+        expect(() => manager.new_model(spec)).to.throw('Neither comm nor model_id provided in options object. At least one must exist.');
       });
 
       it('creates an html widget if there is an error loading the class');
 
-      it('does not sync on creation');
+      it('does not sync on creation', async function() {
+        let comm = new MockComm();
+        sinon.spy(comm, 'send');
+        let spec = {
+            model_name: 'IntSliderModel',
+            model_module: 'jupyter-js-widgets',
+            model_module_version: '3.0.0',
+            comm: comm
+        };
+        let manager = this.managerBase;
+        let model = await manager.new_model(spec);
+        expect((comm.send as any).notCalled).to.be.true;
+      });
 
       it('calls loadClass to retrieve model class', async function() {
         let manager = this.managerBase;
