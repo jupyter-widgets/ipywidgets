@@ -160,7 +160,6 @@ class WidgetModel extends Backbone.Model {
      * Handle when a widget is closed.
      */
     _handle_comm_closed(msg) {
-        console.error('triggered');
         this.trigger('comm:close');
         this.close(true);
     }
