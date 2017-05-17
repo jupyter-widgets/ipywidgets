@@ -374,7 +374,7 @@ abstract class ManagerBase<T> {
                 }
             });
             return {version_major: 2, version_minor: 0, state: state};
-        }).catch(utils.reject('Could not get state of widget manager', true));
+        });
     };
 
     /**
