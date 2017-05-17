@@ -178,7 +178,7 @@ describe("ManagerBase", function() {
 
     describe('get_state', function() {
       it('returns a valid schema', async function() {
-        let manager = this.managerBase
+        let manager = this.managerBase;
         let model = await manager.new_model(this.modelOptions);
         let state = await manager.get_state();
         let expectedState = {
@@ -215,11 +215,12 @@ describe("ManagerBase", function() {
         expect(state).to.deep.equal(expectedState);
       });
       it('handles the drop_defaults option', async function() {
-        let manager = this.managerBase
+        let manager = this.managerBase;
         let model = await manager.new_model(this.modelOptions,
           {value: 50});
         let state = await manager.get_state({drop_defaults: true});
-        let expectedState = {"version_major":2,
+        let expectedState = {
+          "version_major":2,
           "version_minor":0,
           "state":{
             "u-u-i-d":{
@@ -231,8 +232,37 @@ describe("ManagerBase", function() {
         }}}};
         expect(state).to.deep.equal(expectedState);
       });
-      it('encodes binary buffers to base64');
-      it('handles custom serializers');
+      it('encodes binary buffers to base64 using custom serializers', async function() {
+        let manager = this.managerBase;
+        let model = await manager.new_model({
+            model_name: 'BinaryWidget',
+            model_module: 'test-widgets',
+            model_module_version: '1.0.0',
+            model_id: 'u-u-i-d'
+        }, {array: {
+          dtype: 'uint8',
+          buffer: new DataView((new Uint8Array([1,2,3]).buffer))
+        }});
+        let state = await manager.get_state({drop_defaults: true});
+        let expectedState = {
+          "version_major":2,
+          "version_minor":0,
+          "state":{
+            "u-u-i-d":{
+              "model_name":"BinaryWidget",
+              "model_module":"test-widgets",
+              "model_module_version":"1.0.0",
+              "state":{
+                "array":{"dtype":"uint8"}
+              },
+              "buffers":[{
+                "data":"AQID",
+                "path":["array","buffer"],
+                "encoding":"base64"
+              }]
+        }}}
+        expect(state).to.deep.equal(expectedState);
+      });
     });
 
     describe('set_state', function() {
