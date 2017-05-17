@@ -74,18 +74,6 @@ interface ModelOptions {
 export
 interface StateOptions {
     /**
-     * Only return models with one or more displayed views.
-     *
-     * @default false
-     */
-    only_displayed?: boolean;
-    /**
-     * Include models that have comms with severed connections.
-     *
-     * @default false
-     */
-    not_live?: boolean;
-    /**
      * Drop model attributes that are equal to their default value.
      *
      * @default false
