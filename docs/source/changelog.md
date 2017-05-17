@@ -26,11 +26,11 @@ Major changes developers should be aware of include:
 
 - The python `@register` decorator for widget classes no longer takes a string argument, but registers a widget class using the `_model_*` and `_view_*` traits in the class. Using the decorator as `@register('name')` is deprecated and should be changed to just `@register`. [#1228](https://github.com/jupyter-widgets/ipywidgets/pull/1228), [#1276](https://github.com/jupyter-widgets/ipywidgets/pull/1276)
 - Widgets will now need correct `_model_module` and `_view_module` Unicode traits defined.
-- Custom serializers in Javascript are now synchronous, and should return a snapshot of the widget state. The default serializer makes a copy of JSONable objects. ([#1270](https://github.com/jupyter-widgets/ipywidgets/pull/1270))
 - Selection widgets now sync the index of the selected item, rather than the label. ([#1262](https://github.com/jupyter-widgets/ipywidgets/pull/1262))
 - The widget protocol was significantly overhauled. The new widget messaging protocol (version 2) is specified in the [version 2 protocol documentation](https://github.com/jupyter-widgets/ipywidgets/blob/master/jupyter-widgets-schema/messages.md).
+- Custom serializers in Javascript are now synchronous, and should return a snapshot of the widget state. The default serializer makes a copy of JSONable objects. ([#1270](https://github.com/jupyter-widgets/ipywidgets/pull/1270))
 - Custom serializers in either Python or Javascript can now return a structure which contains binary buffers. If a binary buffer is in the serialized data structure, the message will be synced in binary, which is much more efficient. ([#1194](https://github.com/jupyter-widgets/ipywidgets/pull/1194))
-
+- A custom serializer is given the widget instance as its second argument, and a custom deserializer is given the widget manager as its second argument.
 
 6.0
 ---
