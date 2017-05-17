@@ -353,7 +353,7 @@ abstract class ManagerBase<T> {
      * @param options - The options for what state to return.
      * @returns Promise for a state dictionary
      */
-    get_state(options: StateOptions): Promise<any> {
+    get_state(options: StateOptions = {}): Promise<any> {
         return utils.resolvePromisesDict(this._models).then((models) => {
             let state = {};
             Object.keys(models).forEach(model_id => {
