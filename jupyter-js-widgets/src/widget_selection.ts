@@ -26,23 +26,23 @@ function scrollIfNeeded(area, elem) {
 export
 class SelectionModel extends CoreLabeledDOMWidgetModel {
     defaults() {
-        return _.extend(super.defaults(), {
+        return {...super.defaults(),
             _model_name: 'SelectionModel',
             index: '',
             _options_labels: [],
             disabled: false,
-        });
+        };
     }
 }
 
 export
 class DropdownModel extends SelectionModel {
     defaults() {
-        return _.extend(super.defaults(), {
+        return {...super.defaults(),
             _model_name: 'DropdownModel',
             _view_name: 'DropdownView',
             button_style: ''
-        });
+        };
     }
 }
 
@@ -127,11 +127,11 @@ class DropdownView extends LabeledDOMWidgetView {
 export
 class SelectModel extends SelectionModel {
     defaults() {
-        return _.extend(super.defaults(), {
+        return {...super.defaults(),
             _model_name: 'SelectModel',
             _view_name: 'SelectView',
             rows: 5
-        });
+        };
     }
 }
 
@@ -211,13 +211,13 @@ class SelectView extends LabeledDOMWidgetView {
 export
 class RadioButtonsModel extends SelectionModel {
     defaults() {
-        return _.extend(super.defaults(), {
+        return {...super.defaults(),
             _model_name: 'RadioButtonsModel',
             _view_name: 'RadioButtonsView',
             tooltips: [],
             icons: [],
             button_style: ''
-        });
+        };
     }
 }
 
@@ -352,10 +352,10 @@ class RadioButtonsView extends LabeledDOMWidgetView {
 export
 class ToggleButtonsModel extends SelectionModel {
     defaults() {
-        return _.extend(super.defaults(), {
+        return {...super.defaults(),
             _model_name: 'ToggleButtonsModel',
             _view_name: 'ToggleButtonsView'
-        });
+        };
     }
 }
 
@@ -534,13 +534,13 @@ namespace ToggleButtonsView {
 export
 class SelectionSliderModel extends SelectionModel {
     defaults() {
-        return _.extend(super.defaults(), {
+        return {...super.defaults(),
             _model_name: 'SelectionSliderModel',
             _view_name: 'SelectionSliderView',
             orientation: 'horizontal',
             readout: true,
             continuous_update: true
-        });
+        };
     }
 }
 
@@ -691,9 +691,9 @@ class SelectionSliderView extends LabeledDOMWidgetView {
 export
 class MultipleSelectionModel extends SelectionModel {
     defaults() {
-        return _.extend(super.defaults(), {
+        return { ...super.defaults(),
             _model_name: 'MultipleSelectionModel',
-        });
+        };
     }
 }
 
@@ -701,11 +701,11 @@ class MultipleSelectionModel extends SelectionModel {
 export
 class SelectMultipleModel extends MultipleSelectionModel {
     defaults() {
-        return _.extend(super.defaults(), {
+        return {...super.defaults(),
             _model_name: 'SelectMultipleModel',
             _view_name: 'SelectMultipleView',
             rows: null
-        });
+        };
     }
 }
 
