@@ -177,10 +177,60 @@ describe("ManagerBase", function() {
     });
 
     describe('get_state', function() {
-      it('exists', function() {
-        expect(this.managerBase.get_state).to.not.be.undefined;
+      it('returns a valid schema', async function() {
+        let manager = this.managerBase
+        let model = await manager.new_model(this.modelOptions);
+        let state = await manager.get_state();
+        let expectedState = {
+          "version_major":2,
+          "version_minor":0,
+          "state":{
+            "u-u-i-d":{
+              "model_name":"IntSliderModel",
+              "model_module":"jupyter-js-widgets",
+              "model_module_version":"3.0.0",
+              "state":{
+                "_model_module":"jupyter-js-widgets",
+                "_model_name":"IntSliderModel",
+                "_model_module_version":"3.0.0",
+                "_view_module":"jupyter-js-widgets",
+                "_view_name":"IntSliderView",
+                "_view_module_version":"3.0.0",
+                "_view_count":null,
+                "msg_throttle":1,
+                "layout":null,
+                "style":null,
+                "_dom_classes":[],
+                "description":"",
+                "value":0,
+                "disabled":false,
+                "max":100,
+                "min":0,
+                "step":1,
+                "orientation":"horizontal",
+                "readout":true,
+                "readout_format":"d",
+                "continuous_update":true
+        }}}};
+        expect(state).to.deep.equal(expectedState);
       });
-      it('returns a valid schema');
+      it('handles the drop_defaults option', async function() {
+        let manager = this.managerBase
+        let model = await manager.new_model(this.modelOptions,
+          {value: 50});
+        let state = await manager.get_state({drop_defaults: true});
+        let expectedState = {"version_major":2,
+          "version_minor":0,
+          "state":{
+            "u-u-i-d":{
+              "model_name":"IntSliderModel",
+              "model_module":"jupyter-js-widgets",
+              "model_module_version":"3.0.0",
+              "state":{
+                "value":50
+        }}}};
+        expect(state).to.deep.equal(expectedState);
+      });
       it('encodes binary buffers to base64');
       it('handles custom serializers');
     });
