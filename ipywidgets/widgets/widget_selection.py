@@ -351,6 +351,10 @@ class SelectionRangeSlider(_MultipleSelection):
     _view_name = Unicode('SelectionRangeSliderView').tag(sync=True)
     _model_name = Unicode('SelectionRangeSliderModel').tag(sync=True)
 
+    value = Tuple(help="Min and max selected values")
+    label = Tuple(help="Min and max selected labels")
+    index = Tuple((0,0), help="Min and max selected indices").tag(sync=True)
+
     @validate('options')
     def _validate_options(self, proposal):
         options = _make_options(proposal.value)
@@ -358,11 +362,19 @@ class SelectionRangeSlider(_MultipleSelection):
             raise TraitError("Option list must be nonempty")
         return options
 
+    @observe('options')
+    def _propagate_options(self, change):
+        "Unselect any option"
+        if self._initializing_traits_ is not True:
+            self.index = (0, 0)
+        self.set_trait('_options_labels', tuple(i[0] for i in change.new))
+        self._options_values = tuple(i[1] for i in change.new)
+
     @validate('index')
     def _validate_index(self, proposal):
         "Make sure we have two indices and check the range of each proposed index."
         if len(proposal.value) != 2:
-            raise TraitError('Invalid selection: index must have two values, the min and max of the selection.')
+            raise TraitError('Invalid selection: index must have two values, but is %r'%(proposal.value,))
         if all(0 <= i < len(self._options_labels) for i in proposal.value):
             return proposal.value
         else:
