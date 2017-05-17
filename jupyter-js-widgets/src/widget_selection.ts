@@ -26,23 +26,23 @@ function scrollIfNeeded(area, elem) {
 export
 class SelectionModel extends CoreLabeledDOMWidgetModel {
     defaults() {
-        return _.extend(super.defaults(), {
+        return {...super.defaults(),
             _model_name: 'SelectionModel',
             index: '',
             _options_labels: [],
             disabled: false,
-        });
+        };
     }
 }
 
 export
 class DropdownModel extends SelectionModel {
     defaults() {
-        return _.extend(super.defaults(), {
+        return {...super.defaults(),
             _model_name: 'DropdownModel',
             _view_name: 'DropdownView',
             button_style: ''
-        });
+        };
     }
 }
 
@@ -127,11 +127,11 @@ class DropdownView extends LabeledDOMWidgetView {
 export
 class SelectModel extends SelectionModel {
     defaults() {
-        return _.extend(super.defaults(), {
+        return {...super.defaults(),
             _model_name: 'SelectModel',
             _view_name: 'SelectView',
             rows: 5
-        });
+        };
     }
 }
 
@@ -211,13 +211,13 @@ class SelectView extends LabeledDOMWidgetView {
 export
 class RadioButtonsModel extends SelectionModel {
     defaults() {
-        return _.extend(super.defaults(), {
+        return {...super.defaults(),
             _model_name: 'RadioButtonsModel',
             _view_name: 'RadioButtonsView',
             tooltips: [],
             icons: [],
             button_style: ''
-        });
+        };
     }
 }
 
@@ -352,10 +352,10 @@ class RadioButtonsView extends LabeledDOMWidgetView {
 export
 class ToggleButtonsModel extends SelectionModel {
     defaults() {
-        return _.extend(super.defaults(), {
+        return {...super.defaults(),
             _model_name: 'ToggleButtonsModel',
             _view_name: 'ToggleButtonsView'
-        });
+        };
     }
 }
 
@@ -534,13 +534,13 @@ namespace ToggleButtonsView {
 export
 class SelectionSliderModel extends SelectionModel {
     defaults() {
-        return _.extend(super.defaults(), {
+        return {...super.defaults(),
             _model_name: 'SelectionSliderModel',
             _view_name: 'SelectionSliderView',
             orientation: 'horizontal',
             readout: true,
             continuous_update: true
-        });
+        };
     }
 }
 
@@ -613,11 +613,6 @@ class SelectionSliderView extends LabeledDOMWidgetView {
             this.$slider.slider('option', 'value', min);
             this.$slider.slider('option', 'orientation', orientation);
 
-            var index = this.model.get('index');
-            var value = labels[index];
-            this.$slider.slider('option', 'value', index);
-            this.readout.textContent = value;
-
             // Use the right CSS classes for vertical & horizontal sliders
             if (orientation === 'vertical') {
                 this.el.classList.remove('widget-hslider');
@@ -639,6 +634,8 @@ class SelectionSliderView extends LabeledDOMWidgetView {
                 // this.$readout.hide();
                 this.readout.style.display = 'none';
             }
+            this.updateSelection();
+
         }
         return super.update(options);
     }
@@ -650,13 +647,22 @@ class SelectionSliderView extends LabeledDOMWidgetView {
         }
     }
 
+    updateSelection() {
+        var index = this.model.get('index');
+        this.$slider.slider('option', 'value', index);
+        this.updateReadout(index);
+    }
+
+    updateReadout(index) {
+        var value = this.model.get('_options_labels')[index];
+        this.readout.textContent = value;
+    }
+
     /**
      * Called when the slider value is changing.
      */
     handleSliderChange(e, ui) {
-        var actual_value = this._validate_slide_value(ui.value);
-        var selected_label = this.model.get('_options_labels')[actual_value];
-        this.readout.textContent = selected_label;
+        this.updateReadout(ui.value);
 
         // Only persist the value while sliding if the continuous_update
         // trait is set to true.
@@ -672,18 +678,9 @@ class SelectionSliderView extends LabeledDOMWidgetView {
      * model to update.
      */
     handleSliderChanged(e, ui) {
-        var actual_value = this._validate_slide_value(ui.value);
-        this.readout.textContent = this.model.get('_options_labels')[actual_value];
-        this.model.set('index', actual_value, {updated_view: this});
+        this.updateReadout(ui.value);
+        this.model.set('index', ui.value, {updated_view: this});
         this.touch();
-    }
-
-    _validate_slide_value(x) {
-        /**
-         * Validate the value of the slider before sending it to the back-end
-         * and applying it to the other views on the page.
-         */
-        return Math.floor(x);
     }
 
     $slider: any;
@@ -694,9 +691,9 @@ class SelectionSliderView extends LabeledDOMWidgetView {
 export
 class MultipleSelectionModel extends SelectionModel {
     defaults() {
-        return _.extend(super.defaults(), {
+        return { ...super.defaults(),
             _model_name: 'MultipleSelectionModel',
-        });
+        };
     }
 }
 
@@ -704,11 +701,11 @@ class MultipleSelectionModel extends SelectionModel {
 export
 class SelectMultipleModel extends MultipleSelectionModel {
     defaults() {
-        return _.extend(super.defaults(), {
+        return {...super.defaults(),
             _model_name: 'SelectMultipleModel',
             _view_name: 'SelectMultipleView',
             rows: null
-        });
+        };
     }
 }
 
@@ -746,4 +743,73 @@ class SelectMultipleView extends SelectView {
         this.model.set('index', index);
         this.touch();
     }
+}
+
+export
+class SelectionRangeSliderModel extends MultipleSelectionModel {
+    defaults() {
+        return {...super.defaults(),
+            _model_name: 'SelectionSliderModel',
+            _view_name: 'SelectionSliderView',
+            orientation: 'horizontal',
+            readout: true,
+            continuous_update: true
+        };
+    }
+}
+
+
+export
+class SelectionRangeSliderView extends SelectionSliderView {
+    /**
+     * Called when view is rendered.
+     */
+    render () {
+        super.render();
+        this.$slider.slider('option', 'range', true);
+    }
+
+    updateSelection() {
+        let index = this.model.get('index');
+        this.$slider.slider('option', 'values', index);
+        this.updateReadout(index);
+    }
+
+    updateReadout(index) {
+        var labels = this.model.get('_options_labels');
+        var minValue = labels[index[0]];
+        var maxValue = labels[index[1]];
+        this.readout.textContent = `${minValue}-${maxValue}`;
+    }
+
+    /**
+     * Called when the slider value is changing.
+     */
+    handleSliderChange(e, ui) {
+        this.updateReadout(ui.values);
+
+        // Only persist the value while sliding if the continuous_update
+        // trait is set to true.
+        if (this.model.get('continuous_update')) {
+            this.handleSliderChanged(e, ui);
+        }
+    }
+
+    /**
+     * Called when the slider value has changed.
+     *
+     * Calling model.set will trigger all of the other views of the
+     * model to update.
+     */
+    handleSliderChanged(e, ui) {
+        // The jqueryui documentation indicates ui.values doesn't exist on the slidestop event,
+        // but it appears that it actually does: https://github.com/jquery/jquery-ui/blob/ae31f2b3b478975f70526bdf3299464b9afa8bb1/ui/widgets/slider.js#L313
+        this.updateReadout(ui.values);
+        this.model.set('index', ui.values, {updated_view: this});
+        this.touch();
+    }
+
+    $slider: any;
+    slider_container: HTMLDivElement;
+    readout: HTMLDivElement;
 }

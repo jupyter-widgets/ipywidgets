@@ -344,3 +344,46 @@ class SelectMultiple(_MultipleSelection):
     _view_name = Unicode('SelectMultipleView').tag(sync=True)
     _model_name = Unicode('SelectMultipleModel').tag(sync=True)
     rows = Int(5).tag(sync=True)
+
+@register
+class SelectionRangeSlider(_MultipleSelection):
+    """Slider to select a single item from a list or dictionary."""
+    _view_name = Unicode('SelectionRangeSliderView').tag(sync=True)
+    _model_name = Unicode('SelectionRangeSliderModel').tag(sync=True)
+
+    value = Tuple(help="Min and max selected values")
+    label = Tuple(help="Min and max selected labels")
+    index = Tuple((0,0), help="Min and max selected indices").tag(sync=True)
+
+    @validate('options')
+    def _validate_options(self, proposal):
+        options = _make_options(proposal.value)
+        if len(options) == 0:
+            raise TraitError("Option list must be nonempty")
+        return options
+
+    @observe('options')
+    def _propagate_options(self, change):
+        "Unselect any option"
+        if self._initializing_traits_ is not True:
+            self.index = (0, 0)
+        self.set_trait('_options_labels', tuple(i[0] for i in change.new))
+        self._options_values = tuple(i[1] for i in change.new)
+
+    @validate('index')
+    def _validate_index(self, proposal):
+        "Make sure we have two indices and check the range of each proposed index."
+        if len(proposal.value) != 2:
+            raise TraitError('Invalid selection: index must have two values, but is %r'%(proposal.value,))
+        if all(0 <= i < len(self._options_labels) for i in proposal.value):
+            return proposal.value
+        else:
+            raise TraitError('Invalid selection: index out of bounds')
+
+    orientation = CaselessStrEnum(
+        values=['horizontal', 'vertical'], default_value='horizontal',
+        allow_none=False, help="Vertical or horizontal.").tag(sync=True)
+    readout = Bool(True,
+        help="Display the current selected label next to the slider").tag(sync=True)
+    continuous_update = Bool(True,
+        help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
