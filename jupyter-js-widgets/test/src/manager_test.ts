@@ -98,6 +98,7 @@ describe("ManagerBase", function() {
         expect(model.name).to.be.equal(this.modelOptions.model_name);
         expect(model.module).to.be.equal(this.modelOptions.model_module);
       });
+
       it('model id defaults to comm id if not specified', async function() {
         let comm = new MockComm();
         let spec = {
@@ -120,18 +121,32 @@ describe("ManagerBase", function() {
         let manager = this.managerBase;
         expect(await manager.new_model(spec)).to.throw();
       });
-      it('creates an html widget if there is an error loading the class');
-      it('does not sync on creation', function() {
 
-      });
+      it('creates an html widget if there is an error loading the class');
+
+      it('does not sync on creation');
+
       it('calls loadClass to retrieve model class', async function() {
         let manager = this.managerBase;
         var spy = sinon.spy(manager, "loadClass");
         let model = await manager.new_model(this.modelOptions);
         expect(manager.loadClass.calledOnce).to.be.true;
       });
-      it('deserializes attributes using custom serializers');
-      it('handles binary state');
+
+      it('deserializes attributes using custom serializers and handles binary state', async function() {
+        let manager = this.managerBase;
+        let model = await manager.new_model({
+            model_name: 'BinaryWidget',
+            model_module: 'test-widgets',
+            model_module_version: '1.0.0',
+            model_id: 'u-u-i-d'
+        }, {array: {
+          dtype: 'uint8',
+          buffer: new DataView((new Uint8Array([1,2,3]).buffer))
+        }});
+        expect(model.get('array')).to.deep.equal(new Uint8Array([1,2,3]));
+      });
+
       it('sets up a comm close handler to delete the model', async function() {
         var callback = sinon.spy();
         let comm = new MockComm();
@@ -291,6 +306,7 @@ describe("ManagerBase", function() {
         let model = await manager.get_model('u-u-i-d');
         expect(model.get('array')).to.deep.equal(new Uint8Array([1,2,3]));
       });
+
       it('handles binary hex buffers', async function() {
         let state = {
           "version_major":2,
