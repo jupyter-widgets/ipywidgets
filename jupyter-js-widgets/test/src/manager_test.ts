@@ -214,6 +214,7 @@ describe("ManagerBase", function() {
         }}}};
         expect(state).to.deep.equal(expectedState);
       });
+
       it('handles the drop_defaults option', async function() {
         let manager = this.managerBase;
         let model = await manager.new_model(this.modelOptions,
@@ -232,6 +233,7 @@ describe("ManagerBase", function() {
         }}}};
         expect(state).to.deep.equal(expectedState);
       });
+
       it('encodes binary buffers to base64 using custom serializers', async function() {
         let manager = this.managerBase;
         let model = await manager.new_model({
@@ -266,12 +268,52 @@ describe("ManagerBase", function() {
     });
 
     describe('set_state', function() {
-      it('exists', function() {
-        expect(this.managerBase.set_state).to.not.be.undefined;
+      it('handles binary base64 buffers', async function() {
+        let state = {
+          "version_major":2,
+          "version_minor":0,
+          "state":{
+            "u-u-i-d":{
+              "model_name":"BinaryWidget",
+              "model_module":"test-widgets",
+              "model_module_version":"1.0.0",
+              "state":{
+                "array":{"dtype":"uint8"}
+              },
+              "buffers":[{
+                "data":"AQID",
+                "path":["array","buffer"],
+                "encoding":"base64"
+              }]
+        }}};
+        let manager = this.managerBase;
+        await manager.set_state(state);
+        let model = await manager.get_model('u-u-i-d');
+        expect(model.get('array')).to.deep.equal(new Uint8Array([1,2,3]));
       });
-      it('handles binary hex buffers');
-      it('handles binary base64 buffers');
-      it('handles custom deserializers');
+      it('handles binary hex buffers', async function() {
+        let state = {
+          "version_major":2,
+          "version_minor":0,
+          "state":{
+            "u-u-i-d":{
+              "model_name":"BinaryWidget",
+              "model_module":"test-widgets",
+              "model_module_version":"1.0.0",
+              "state":{
+                "array":{"dtype":"uint8"}
+              },
+              "buffers":[{
+                "data":"010203",
+                "path":["array","buffer"],
+                "encoding":"hex"
+              }]
+        }}};
+        let manager = this.managerBase;
+        await manager.set_state(state);
+        let model = await manager.get_model('u-u-i-d');
+        expect(model.get('array')).to.deep.equal(new Uint8Array([1,2,3]));
+      });
     });
 });
 
