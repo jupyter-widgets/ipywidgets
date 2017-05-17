@@ -26,7 +26,7 @@ const JUPYTER_WIDGETS_VERSION = '3.0.0';
  * Replace model ids with models recursively.
  */
 export
-function unpack_models(value, manager) {
+function unpack_models(value, manager): Promise<any> {
     var unpacked;
     if (_.isArray(value)) {
         unpacked = [];
@@ -472,7 +472,7 @@ class WidgetModel extends Backbone.Model {
      * and the kernel-side serializer/deserializer.
      */
     toJSON(options) {
-        return 'IPY_MODEL_' + this.id;
+        return `IPY_MODEL_${this.id}`;
     }
 
     /**
@@ -498,29 +498,10 @@ class WidgetModel extends Backbone.Model {
         return utils.resolvePromisesDict(deserialized);
     }
 
-    /**
-     * Returns a promise for the serialized state. The second argument
-     * is an instance of widget manager.
-     */
-    static _serialize_state(state, manager) {
-        var serializers = this.serializers;
-        var serialized;
-        if (serializers) {
-            serialized = {};
-            for (var k in state) {
-                if (serializers[k] && serializers[k].serialize) {
-                     serialized[k] = (serializers[k].serialize)(state[k], manager);
-                } else {
-                     serialized[k] = state[k];
-                }
-            }
-        } else {
-            serialized = state;
-        }
-        return utils.resolvePromisesDict(serialized);
-    }
-
-    static serializers: any;
+    static serializers: {[key: string]: {
+        deserialize?: (value?: any, manager?: any) => any,
+        serialize?: (value?: any, widget?: any) => any
+    }};
     widget_manager: any;
     state_change: any
     _buffered_state_diff: any;

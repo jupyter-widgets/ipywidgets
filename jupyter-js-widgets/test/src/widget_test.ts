@@ -121,12 +121,12 @@ describe("Widget", function() {
         // other asynchronously using a promise.
         this.widget.constructor.serializers = {
             a: {
-                deserialize: (value, widget) => {
+                deserialize: (value, manager) => {
                     return value*3.0;
                 }
             },
             b: {
-                deserialize: (value, widget) => {
+                deserialize: (value, manager) => {
                     return Promise.resolve(value/2.0);
                 }
             }
