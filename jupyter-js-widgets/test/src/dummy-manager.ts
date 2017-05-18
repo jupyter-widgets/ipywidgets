@@ -111,7 +111,7 @@ class TestWidget extends widgets.WidgetModel {
             _model_name: "TestWidget",
             _model_module_version: '1.0.0',
             _view_module: "test-widgets",
-            _view_name: null,
+            _view_name: "TestWidgetView",
             _view_module_version: '1.0.0',
             _view_count: null,
         }
@@ -126,8 +126,16 @@ class BinaryWidget extends TestWidget {
     defaults() {
         return {...super.defaults(),
             _model_name: "BinaryWidget",
+            _view_name: "BinaryWidgetView",
             array: new Int8Array(0)};
     }
 }
 
-let testWidgets = {BinaryWidget}
+class BinaryWidgetView extends widgets.WidgetView {
+    render() {
+        this._rendered += 1
+    }
+    _rendered = 0;
+}
+
+let testWidgets = {BinaryWidget, BinaryWidgetView}
