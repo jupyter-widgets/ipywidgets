@@ -108,8 +108,8 @@ abstract class ManagerBase<T> {
      * Modifies view options. Generally overloaded in custom widget manager
      * implementations.
      */
-    setViewOptions(options) {
-        return options || {};
+    setViewOptions(options = {}) {
+        return options;
     };
 
     /**
@@ -118,7 +118,7 @@ abstract class ManagerBase<T> {
      * Make sure the view creation is not out of order with
      * any state updates.
      */
-    create_view(model, options) {
+    create_view(model, options = {}) {
         model.state_change = model.state_change.then(() => {
 
             return this.loadClass(model.get('_view_name'),
