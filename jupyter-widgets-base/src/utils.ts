@@ -34,6 +34,7 @@ export
 class WrappedError extends Error {
     constructor(message, error) {
         super(message);
+        console.warn('WrappedError has been deprecated!');
         // Keep a stack of the original error messages.
         if (error instanceof WrappedError) {
             this.error_stack = error.error_stack;
@@ -68,16 +69,14 @@ function resolvePromisesDict(d): Promise<any> {
 /**
  * Creates a wrappable Promise rejection function.
  *
- * Creates a function that returns a Promise.reject with a new WrappedError
- * that has the provided message and wraps the original error that
- * caused the promise to reject.
+ * Creates a function that logs an error message before rethrowing
+ * the original error that caused the promise to reject.
  */
 export
 function reject(message, log) {
     return function promiseRejection(error) {
-        var wrapped_error = new WrappedError(message, error);
-        if (log) console.error(wrapped_error);
-        return Promise.reject(wrapped_error);
+        if (log) console.error(new Error(message));
+        throw error;
     };
 }
 
