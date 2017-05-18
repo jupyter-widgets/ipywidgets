@@ -3,19 +3,18 @@ channels:
 - conda-forge
 - defaults
 dependencies:
-- sphinx=1.4.8
-- python=3.5
-- sphinx_rtd_theme
+- python=3
+- sphinx
 - jinja2
 - tornado
 - nbformat
 - ipywidgets
-- notebook>=4.2
-- sphinx>=1.4.6
+- notebook
 - ipykernel
+- nbsphinx
+- jupyter_sphinx
+- python-dateutil
 - pip:
+  - jupyter-alabaster-theme
   - docutils<0.13.1
-  - jupyter_sphinx
-  - git+https://github.com/spatialaudio/nbsphinx.git#egg=nbsphinx
-  - python-dateutil
-  - recommonmark==0.4.0
+  - recommonmark

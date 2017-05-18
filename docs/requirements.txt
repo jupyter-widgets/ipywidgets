@@ -1,8 +1,7 @@
 jupyter_client
 sphinx>=1.4.6
-sphinx_rtd_theme==0.1.10-alpha
-git+https://github.com/spatialaudio/nbsphinx.git#egg=nbsphinx
+jupyter-alabaster-theme
+nbsphinx>=0.2.13
 jupyter_sphinx
 recommonmark==0.4.0
 ipykernel
-jupyter_sphinx
