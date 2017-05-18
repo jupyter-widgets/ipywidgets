@@ -66,17 +66,44 @@ describe("ManagerBase", function() {
         let model = await manager.new_model(this.modelOptions);
         expect(await manager.get_model(model.id)).to.be.equal(model);
       });
+
       it('returns undefined when model is not registered', function() {
         expect(this.managerBase.get_model('not-defined')).to.be.undefined;
       })
     });
 
     describe('handle_comm_open', function() {
-      it('exists', function() {
-        expect(this.managerBase.handle_comm_open).to.not.be.undefined;
+      it('returns a promise to a model', async function() {
+        let manager = this.managerBase;
+        let comm = new MockComm();
+        let model = await manager.handle_comm_open(comm, {content: {data: {
+          state: {
+            _model_name: 'IntSliderModel',
+            _model_module: 'jupyter-js-widgets',
+            _model_module_version: '3.0.0',
+            value: 50
+          }
+        }}})
+        expect(model.comm).to.equal(comm);
+        expect(model.get('value')).to.equal(50);
       });
-      it('returns a promise to a model');
-      it('allows setting initial state, including binary state');
+      it('allows setting initial state, including binary state', async function() {
+        let manager = this.managerBase;
+        let comm = new MockComm();
+        let model = await manager.handle_comm_open(comm, {content: {data: {
+              state: {
+                _model_name: 'BinaryWidget',
+                _model_module: 'test-widgets',
+                _model_module_version: '1.0.0',
+                array: {dtype: "uint8"}
+              },
+              buffer_paths: [["array", "buffer"]]
+            }},
+          buffers: [new DataView((new Uint8Array([1,2,3])).buffer)]
+        });
+        expect(model.comm).to.equal(comm);
+        expect(model.get('array')).to.deep.equal(new Uint8Array([1,2,3]));
+      });
     });
 
     describe('new_widget', function() {
