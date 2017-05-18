@@ -22,8 +22,8 @@
   },
   "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme",
   "dependencies": {
-    "@phosphor/messaging": "^1.1.0",
-    "@phosphor/widgets": "^1.1.0",
+    "@phosphor/messaging": "^1.2.0",
+    "@phosphor/widgets": "^1.2.0",
     "backbone": "^1.2.3",
     "jupyter-js-widgets": "3.0.0-alpha.5",
     "underscore": "^1.8.3"
