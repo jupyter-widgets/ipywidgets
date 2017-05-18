@@ -5,8 +5,9 @@ python:
     - 3.3
     - 3.4
     - 3.5
+    - 3.6
 env:
-    - GROUP=python TRAVIS_NODE_VERSION=5.1
+    - GROUP=python TRAVIS_NODE_VERSION=6.9
 sudo: false
 before_install:
     - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_before_install_py.sh ; fi'
@@ -18,7 +19,7 @@ script:
     - 'if [[ $GROUP == js ]] ; then bash ./jupyter-js-widgets/scripts/travis_script_js.sh ; fi'
 matrix:
     include:
-        - python: 3.5
+        - python: 3.6
           env: GROUP=js BROWSER=firefox TRAVIS_NODE_VERSION=6.9
 after_success:
     - coveralls
