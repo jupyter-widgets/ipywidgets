@@ -3,18 +3,13 @@ channels:
 - conda-forge
 - defaults
 dependencies:
+- ipykernel
+- jupyter_client
+- jupyter_sphinx
+- nbsphinx
 - python=3
 - sphinx
-- jinja2
-- tornado
-- nbformat
-- ipywidgets
-- notebook
-- ipykernel
-- nbsphinx
-- jupyter_sphinx
-- python-dateutil
 - pip:
+  - ipywidgets>=7.0.0a2
   - jupyter-alabaster-theme
-  - docutils<0.13.1
   - recommonmark
