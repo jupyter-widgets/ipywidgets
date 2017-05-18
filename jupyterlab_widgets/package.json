@@ -1,6 +1,6 @@
 {
   "name": "@jupyterlab/nbwidgets",
-  "version": "0.18.2",
+  "version": "0.19.0",
   "description": "The JupyterLab extension providing Jupyter widgets.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -13,7 +13,7 @@
     "@phosphor/coreutils": "^1.1.0",
     "@phosphor/disposable": "^1.1.0",
     "@phosphor/widgets": "^1.2.0",
-    "jupyter-js-widgets": "3.0.0-alpha.5"
+    "jupyter-js-widgets": "3.0.0-alpha.6"
   },
   "devDependencies": {
     "@types/lodash": "4.14.40",
