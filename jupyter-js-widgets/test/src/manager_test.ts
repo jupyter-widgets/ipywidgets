@@ -2,6 +2,8 @@ import {
     DummyManager, MockComm
 } from './dummy-manager';
 
+import * as widgets from '../../lib';
+
 import {
     expect
 } from 'chai';
@@ -32,25 +34,81 @@ describe("ManagerBase", function() {
       it('exists', function() {
         expect(this.managerBase.display_model).to.not.be.undefined;
       });
-      it('returns a promise to rendering of a view');
-      it('catches errors');
-      it('creates view and calls the display_view function');
+      it('calls create_view and display_view', async function() {
+        let manager = this.managerBase;
+        sinon.spy(manager, 'create_view');
+        sinon.spy(manager, 'display_view');
+        let msg = {msg:true}
+        let viewOptions = {viewOptions:true}
+        let model = await manager.new_model(this.modelOptions);
+        await manager.display_model(msg, model, viewOptions)
+        expect(manager.create_view.calledWith(model, viewOptions)).to.be.true;
+        expect(manager.display_view.calledWith(msg)).to.be.true;
+        expect(manager.display_view.getCall(0).args[2]).to.deep.equal(viewOptions);
+      });
     });
 
     describe('setViewOptions', function() {
-      it('exists', function() {
-        expect(this.managerBase.setViewOptions).to.not.be.undefined;
+      it('returns an object', function() {
+        expect(this.managerBase.setViewOptions()).to.deep.equal({});
       });
-      it('sets view options that are stored in the view');
+      it('returns the passed options', function() {
+        let options = {a: 1}
+        expect(this.managerBase.setViewOptions(options)).to.deep.equal(options);
+      })
     });
 
     describe('create_view', function() {
-      it('exists', function() {
-        expect(this.managerBase.create_view).to.not.be.undefined;
+      it('returns a Promise to a view', async function() {
+        let manager = this.managerBase;
+        let model = await manager.new_model(this.modelOptions);
+        let view = await manager.create_view(model);
+        expect(view).to.be.instanceof(widgets.IntSliderView);
+        expect(view.model).to.equal(model);
       });
-      it('returns a Promise');
-      it('triggers the view displayed event');
 
+      it('renders the view', async function() {
+        let manager = this.managerBase;
+        let model = await manager.new_model({
+            model_name: 'BinaryWidget',
+            model_module: 'test-widgets',
+            model_module_version: '1.0.0',
+            model_id: 'u-u-i-d'
+        });
+        let view = await manager.create_view(model);
+        expect(view._rendered).to.equal(1);
+      });
+
+      it('removes the view on model destroy', async function() {
+        let manager = this.managerBase;
+        let model = await manager.new_model(this.modelOptions);
+        let view = await manager.create_view(model);
+        sinon.spy(view, 'remove');
+        model.close();
+        expect(view.remove.calledOnce).to.be.true;
+      });
+
+      it('accepts optional view options, which it sends through setViewOptions', async function() {
+        let manager = this.managerBase;
+        sinon.spy(manager, 'setViewOptions');
+        let model = await manager.new_model(this.modelOptions);
+        let options = {a: 1}
+        let view = await manager.create_view(model, options);
+        expect(manager.setViewOptions.calledWith(options)).to.be.true;
+        expect(view.options).to.deep.equal(options);
+      });
+
+      it('registers itself with the model.views, deleted when removed', async function() {
+        let manager = this.managerBase;
+        let model = await manager.new_model(this.modelOptions);
+        let view = await manager.create_view(model);
+        // model.views contains some promise which resolves to the view
+        let modelViews = await Promise.all(Object.keys(model.views).map(i => model.views[i]));
+        expect(modelViews).to.contain(view);
+        view.remove();
+        let modelViews2 = await Promise.all(Object.keys(model.views).map(i => model.views[i]));
+        expect(modelViews2).to.not.contain(view);
+      });
     });
 
     describe('callbacks', function() {
@@ -184,7 +242,17 @@ describe("ManagerBase", function() {
         expect(() => manager.new_model(spec)).to.throw('Neither comm nor model_id provided in options object. At least one must exist.');
       });
 
-      it('creates an html widget if there is an error loading the class');
+      it('creates an html widget if there is an error loading the class', async function() {
+        let spec = {
+          model_name: 'InvalidModel',
+          model_module: 'test-widgets',
+          model_module_version: '1.0.0',
+          model_id: 'u-u-i-d'
+        };
+        let manager = this.managerBase;
+        let model = await manager.new_model(spec);
+        expect(model).to.be.instanceof(widgets.HTMLModel);
+      });
 
       it('does not sync on creation', async function() {
         let comm = new MockComm();
