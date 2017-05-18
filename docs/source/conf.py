@@ -5,7 +5,7 @@
 import os
 import subprocess
 import sys
-import sphinx_rtd_theme
+import jupyter_alabaster_theme
 import recommonmark.parser
 
 
@@ -42,6 +42,7 @@ extensions = [
     'nbsphinx',
     'jupyter_sphinx.embed_widgets',
     'IPython.sphinxext.ipython_console_highlighting',
+    'jupyter_alabaster_theme',
 ]
 
 intersphinx_mapping = {
@@ -75,6 +76,7 @@ todo_include_todos = False
 
 
 # -- html --------------------------
+html_theme = 'jupyter_alabaster_theme'
 
 # html_static_path = ['_static']
 htmlhelp_basename = 'ipywidgetsdoc'

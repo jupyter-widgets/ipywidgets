@@ -11,7 +11,7 @@ containing all the necessary packages (except pandoc), use:
 conda env create -f docs/environment.yml
 source activate ipywidget_docs  # Linux and OS X
 activate ipywidget_docs         # Windows
-```  
+```
 
 If you want to install the necessary packages with `pip` instead, use
 (omitting `--user` if working in a virtual environment):
