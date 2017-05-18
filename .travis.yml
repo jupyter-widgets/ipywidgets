@@ -6,6 +6,9 @@ python:
     - 3.4
     - 3.5
     - 3.6
+addons:
+  apt_packages:
+    - pandoc
 env:
     - GROUP=python TRAVIS_NODE_VERSION=6.9
 sudo: false
