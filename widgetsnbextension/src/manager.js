@@ -24,6 +24,11 @@ var WidgetManager = function (comm_manager, notebook) {
     this.keyboard_manager = notebook.keyboard_manager;
     this.comm_manager = comm_manager;
 
+    var widget_md = notebook.metadata.widgets
+    if (widget_md && widget_md['application/vnd.jupyter.widget-state+json']) {
+        this.set_state(notebook.metadata.widgets['application/vnd.jupyter.widget-state+json'])
+    }
+
     // Register with the comm manager.
     this.comm_manager.register_target(this.comm_target_name, _.bind(this.handle_comm_open,this));
 
@@ -79,16 +84,6 @@ var WidgetManager = function (comm_manager, notebook) {
         });
     });
 
-    // Setup state saving code.
-    this.notebook.events.on('before_save.Notebook', (function() {
-        var save_callback = WidgetManager._save_callback;
-        if (save_callback) {
-            this.get_state(WidgetManager._get_state_options).then((function(state) {
-                save_callback.call(this, state);
-            }).bind(this)).catch(widgets.reject('Could not call widget save state callback.', true));
-        }
-    }).bind(this));
-
     // Create the actions and menu
     this._init_actions();
     this._init_menu();
@@ -96,49 +91,6 @@ var WidgetManager = function (comm_manager, notebook) {
 
 WidgetManager.prototype = Object.create(widgets.ManagerBase.prototype);
 WidgetManager._managers = []; /* List of widget managers */
-WidgetManager._load_callback = null;
-WidgetManager._save_callback = null;
-
-WidgetManager.set_state_callbacks = function (load_callback, save_callback, options) {
-    /**
-     * Registers callbacks for widget state persistence.
-     *
-     * Parameters
-     * ----------
-     * load_callback: function()
-     *      function that is called when the widget manager state should be
-     *      loaded.  This function should return a promise for the widget
-     *      manager state.  An empty state is an empty dictionary `{}`.
-     * save_callback: function(state as dictionary)
-     *      function that is called when the notebook is saved or autosaved.
-     *      The current state of the widget manager is passed in as the first
-     *      argument.
-     */
-    WidgetManager._load_callback = load_callback;
-    WidgetManager._save_callback = save_callback;
-    WidgetManager._get_state_options = options || {};
-
-    // Use the load callback to immediately load widget states.
-    WidgetManager._managers.forEach(function(manager) {
-        if (load_callback) {
-            Promise.resolve().then(function () {
-                return load_callback.call(manager);
-            }).then(function(state) {
-                manager.set_state(state);
-            }).catch(widgets.reject('Error loading widget manager state', true));
-        }
-    });
-};
-
-var url = [window.location.protocol, '//', window.location.host, window.location.pathname].join('');
-var key = 'widgets:' + url;
-WidgetManager.set_state_callbacks(function() {
-    if (Jupyter.notebook.metadata.widgets) {
-        return Promise.resolve(Jupyter.notebook.metadata.widgets.state);
-    } else {
-        return Promise.resolve({});
-    }
-});
 
 WidgetManager.prototype.loadClass = function(className, moduleName, moduleVersion) {
     if (moduleName === "jupyter-js-widgets") {
