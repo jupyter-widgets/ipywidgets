@@ -800,6 +800,10 @@ class DOMWidgetView extends WidgetView {
             this.setLayout(this.model.get('layout'));
             this.setStyle(this.model.get('style'));
         });
+
+        if (!this.model.comm_live) {
+            this.pWidget.addClass('jupyter-widgets-disconnected');
+        }
     }
 
     setLayout(layout, oldLayout?) {
