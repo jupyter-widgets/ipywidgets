@@ -11,6 +11,7 @@
 
 :root {
     --jp-widgets-color: var(--jp-content-font-color1);
+    --jp-widgets-disconnected-color: #d9534f;
     --jp-widgets-label-color: var(--jp-widgets-color);
     --jp-widgets-readout-color: var(--jp-widgets-color);
     --jp-widgets-font-size: var(--jp-ui-font-size1);
@@ -57,6 +58,21 @@
     box-sizing: border-box;
     color: var(--jp-widgets-color);
     overflow: visible;
+}
+
+.jupyter-widgets-disconnected::before {
+    content: "\f127"; /* chain-broken */
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: var(--jp-widgets-disconnected-color);
+    padding: 3px;
+    align-self: flex-start;
+    line-height: var(--jp-widgets-inline-height);
+    height: var(--jp-widgets-inline-height);
 }
 
 .jp-Output-result > .jupyter-widgets {
