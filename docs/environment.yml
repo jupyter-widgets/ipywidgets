@@ -4,12 +4,20 @@ channels:
 - defaults
 dependencies:
 - ipykernel
-- jupyter_client
+- jinja2
 - jupyter_sphinx
+- nbformat
 - nbsphinx
-- python=3
-- sphinx
+- notebook>=4.2
+- python=3.5
+- sphinx=1.4.8
+- sphinx>=1.4.6
+- sphinx_rtd_theme
+- tornado
 - pip:
-  - ipywidgets>=7.0.0a2
+  - docutils<0.13.1
+  - ipywidgets >=7.0.0a3
   - jupyter-alabaster-theme
-  - recommonmark
+  - python-dateutil
+  - recommonmark==0.4.0
+  
