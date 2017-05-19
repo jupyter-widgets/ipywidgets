@@ -819,6 +819,10 @@
     border-color: var(--jp-widgets-input-focus-border-color);
 }
 
+.widget-datepicker input[type="date"]:invalid {
+    border-color: var(--jp-warn-color1);
+}
+
 /* Play Widget */
 
 .widget-play {
