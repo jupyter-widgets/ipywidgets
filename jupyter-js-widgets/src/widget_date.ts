@@ -104,8 +104,10 @@ class DatePickerView extends LabeledDOMWidgetView {
     }
 
     private _picker_change() {
-        this.model.set('value', this._datepicker.valueAsDate);
-        this.touch();
+        if (!this._datepicker.validity.badInput) {
+            this.model.set('value', this._datepicker.valueAsDate);
+            this.touch();
+        }
     }
 
     private _datepicker: HTMLInputElement;
