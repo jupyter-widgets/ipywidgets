@@ -277,9 +277,10 @@ class WidgetModel extends Backbone.Model {
     }
 
     /**
-     * Set a value.
+     * Set one or more values.
      *
-     * We just call the super method, in which val and options are optional
+     * We just call the super method, in which val and options are optional.
+     * Handles both "key", value and {key: value} -style arguments.
      */
     set(key, val?, options?) {
         var return_value = super.set(key, val, options);
