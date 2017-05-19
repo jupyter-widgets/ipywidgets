@@ -134,6 +134,17 @@ WidgetManager.prototype._init_actions = function() {
         help: 'Save the notebook with the widget state information for static rendering'
     };
     Jupyter.menubar.actions.register(this.saveWidgetsAction, 'save-with-widgets', 'widgets');
+
+    this.clearWidgetsAction = {
+        handler: (function() {
+            delete Jupyter.notebook.metadata.widgets;
+            Jupyter.menubar.actions.get('jupyter-notebook:save-notebook').handler({
+                notebook: Jupyter.notebook
+            });
+        }),
+        help: 'Clear the widget state information from the notebook'
+    };
+    Jupyter.menubar.actions.register(this.saveWidgetsAction, 'save-clear-widgets', 'widgets');
 };
 
 /**
@@ -159,7 +170,12 @@ WidgetManager.prototype._init_menu = function() {
     widgetsSubmenu.classList.add('dropdown-menu');
     widgetsMenu.appendChild(widgetsSubmenu);
 
-    widgetsSubmenu.appendChild(this._createMenuItem('Save Notebook with Widgets', this.saveWidgetsAction));
+    var divider = document.createElement('ul');
+    divider.classList.add('divider');
+
+    widgetsSubmenu.appendChild(this._createMenuItem('Save Notebook Widget State', this.saveWidgetsAction));
+    widgetsSubmenu.appendChild(this._createMenuItem('Clear Notebook Widget State', this.clearWidgetsAction));
+    widgetsSubmenu.appendChild(divider);
     widgetsSubmenu.appendChild(this._createMenuItem('Download Widget State', saveState.action));
     widgetsSubmenu.appendChild(this._createMenuItem('Embed Widgets', embedWidgets.action));
 };
