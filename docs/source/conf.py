@@ -5,7 +5,6 @@
 import os
 import subprocess
 import sys
-import jupyter_alabaster_theme
 import recommonmark.parser
 
 
@@ -66,7 +65,7 @@ release = _release['__version__']
 
 master_doc = 'index'
 project = 'ipywidgets and jupyter-js-widgets'
-copyright = '2016, Jupyter Team, https://jupyter.org'
+copyright = '2017 Project Jupyter'
 author = 'Jupyter Team'
 
 language = None
