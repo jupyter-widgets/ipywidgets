@@ -2,12 +2,12 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DescriptionView
-} from './widget_description';
-
-import {
     CoreDescriptionModel
 } from './widget_core';
+
+import {
+    DescriptionView
+} from './widget_description';
 
 import * as _ from 'underscore';
 

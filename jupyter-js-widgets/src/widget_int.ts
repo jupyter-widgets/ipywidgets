@@ -6,12 +6,12 @@ import {
 } from './widget_core';
 
 import {
-    DOMWidgetView
-} from './widget';
-
-import {
     DescriptionView, DescriptionStyleModel
 } from './widget_description';
+
+import {
+    DOMWidgetView
+} from './widget';
 
 import * as _ from 'underscore';
 import * as $ from 'jquery';

@@ -6,12 +6,12 @@ import {
 } from './widget_core';
 
 import {
-    unpack_models, ViewList
-} from './widget';
-
-import {
     DescriptionView
 } from './widget_description';
+
+import {
+    unpack_models, ViewList
+} from './widget';
 
 import * as _ from 'underscore';
 import * as utils from './utils';

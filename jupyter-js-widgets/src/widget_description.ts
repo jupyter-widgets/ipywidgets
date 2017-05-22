@@ -63,8 +63,18 @@ class DescriptionView extends DOMWidgetView {
     label: HTMLDivElement;
 }
 
+/**
+ * For backwards compatibility with jupyter-js-widgets 2.x.
+ *
+ * Use DescriptionModel instead.
+ */
 export
 class LabeledDOMWidgetModel extends DescriptionModel {};
 
+/**
+ * For backwards compatibility with jupyter-js-widgets 2.x.
+ *
+ * Use DescriptionView instead.
+ */
 export
 class LabeledDOMWidgetView extends DescriptionView {};
