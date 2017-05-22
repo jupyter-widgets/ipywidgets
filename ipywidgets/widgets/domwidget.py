@@ -40,7 +40,7 @@ class DOMWidget(Widget):
 
 class DescriptionStyle(Style, Widget):
     """Button style widget."""
-    _model_name = Unicode('SliderStyleModel').tag(sync=True)
+    _model_name = Unicode('DescriptionStyleModel').tag(sync=True)
     description_width = Unicode().tag(sync=True)
 
 
