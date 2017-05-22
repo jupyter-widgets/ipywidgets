@@ -2,12 +2,12 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    LabeledDOMWidgetView
-} from './widget';
+    CoreDescriptionModel
+} from './widget_core';
 
 import {
-    CoreLabeledDOMWidgetModel
-} from './widget_core';
+    DescriptionView
+} from './widget_description';
 
 import * as _ from 'underscore';
 
@@ -19,7 +19,7 @@ import {
 var d3format: any = (require('d3-format') as any).format;
 
 export
-class FloatModel extends CoreLabeledDOMWidgetModel {
+class FloatModel extends CoreDescriptionModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: "FloatModel",

@@ -2,16 +2,20 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    CoreLabeledDOMWidgetModel
+    CoreDescriptionModel
 } from './widget_core';
 
 import {
-    DOMWidgetView, LabeledDOMWidgetView
+    DescriptionView, DescriptionStyleModel
+} from './widget_description';
+
+import {
+    DOMWidgetView
 } from './widget';
 
 import {
-    StyleModel
-} from './widget_style';
+    uuid
+} from './utils';
 
 import * as _ from 'underscore';
 import * as $ from 'jquery';
@@ -20,7 +24,7 @@ import 'jquery-ui/ui/widgets/slider';
 var d3format: any = (require('d3-format') as any).format;
 
 export
-class IntModel extends CoreLabeledDOMWidgetModel {
+class IntModel extends CoreDescriptionModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'IntModel',
@@ -42,14 +46,15 @@ class BoundedIntModel extends IntModel {
 }
 
 export
-class SliderStyleModel extends StyleModel {
+class SliderStyleModel extends DescriptionStyleModel {
     defaults() {
-        return _.extend(super.defaults(), {
+        return {...super.defaults(),
             _model_name: 'SliderStyleModel',
-        });
+        };
     }
 
     public static styleProperties = {
+        ...DescriptionStyleModel.styleProperties,
         handle_color: {
             selector: '.ui-slider-handle',
             attribute: 'background-color',
@@ -87,7 +92,7 @@ export
 class IntRangeSliderModel extends IntSliderModel {}
 
 export
-abstract class BaseIntSliderView extends LabeledDOMWidgetView {
+abstract class BaseIntSliderView extends DescriptionView {
     render() {
         super.render();
         this.el.classList.add('jupyter-widgets');
@@ -475,7 +480,7 @@ class BoundedIntTextModel extends BoundedIntModel {
 }
 
 export
-class IntTextView extends LabeledDOMWidgetView {
+class IntTextView extends DescriptionView {
     render() {
         super.render();
         this.el.classList.add('jupyter-widgets');
@@ -484,6 +489,7 @@ class IntTextView extends LabeledDOMWidgetView {
 
         this.textbox = document.createElement('input');
         this.textbox.setAttribute('type', 'text');
+        this.textbox.id = this.label.htmlFor = uuid();
         this.el.appendChild(this.textbox);
 
         this.update(); // Set defaults.
@@ -600,14 +606,15 @@ class IntTextView extends LabeledDOMWidgetView {
 
 
 export
-class ProgressStyleModel extends StyleModel {
+class ProgressStyleModel extends DescriptionStyleModel {
     defaults() {
-        return _.extend(super.defaults(), {
+        return {...super.defaults(),
             _model_name: 'ProgressStyleModel',
-        });
+        };
     }
 
     public static styleProperties = {
+        ...DescriptionStyleModel.styleProperties,
         bar_color: {
             selector: '.progress-bar',
             attribute: 'background-color',
@@ -632,7 +639,7 @@ class IntProgressModel extends BoundedIntModel {
 
 
 export
-class ProgressView extends LabeledDOMWidgetView {
+class ProgressView extends DescriptionView {
     initialize(parameters) {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:bar_style', this.update_bar_style);

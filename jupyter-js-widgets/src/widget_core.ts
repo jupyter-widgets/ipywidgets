@@ -5,8 +5,12 @@
 // that are not to be used directly by third-party widget authors.
 
 import {
-    DOMWidgetModel, WidgetModel, LabeledDOMWidgetModel
+    DOMWidgetModel, WidgetModel
 } from './widget';
+
+import {
+    DescriptionModel
+} from './widget_description';
 
 import * as _ from 'underscore';
 
@@ -29,10 +33,10 @@ class CoreDOMWidgetModel extends DOMWidgetModel {
 }
 
 export
-class CoreLabeledDOMWidgetModel extends LabeledDOMWidgetModel {
+class CoreDescriptionModel extends DescriptionModel {
     defaults() {
         return _.extend(super.defaults(), {
-            _model_name: 'CoreLabeledDOMWidgetModel',
+            _model_name: 'CoreDescriptionModel',
         });
     }
 }

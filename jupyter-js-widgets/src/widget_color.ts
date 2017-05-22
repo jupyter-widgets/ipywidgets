@@ -2,18 +2,22 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    LabeledDOMWidgetView
-} from './widget';
+    CoreDescriptionModel
+} from './widget_core';
 
 import {
-    CoreLabeledDOMWidgetModel
-} from './widget_core';
+    DescriptionView
+} from './widget_description';
+
+import {
+    uuid
+} from './utils';
 
 import * as _ from 'underscore';
 
 
 export
-class ColorPickerModel extends CoreLabeledDOMWidgetModel {
+class ColorPickerModel extends CoreDescriptionModel {
     defaults() {
         return _.extend(super.defaults(), {
             value: 'black',
@@ -25,7 +29,7 @@ class ColorPickerModel extends CoreLabeledDOMWidgetModel {
 }
 
 export
-class ColorPickerView extends LabeledDOMWidgetView {
+class ColorPickerView extends DescriptionView {
     render() {
         super.render();
         this.el.classList.add('jupyter-widgets');
@@ -38,6 +42,7 @@ class ColorPickerView extends LabeledDOMWidgetView {
 
         this._textbox = document.createElement('input');
         this._textbox.setAttribute('type', 'text');
+        this._textbox.id = this.label.htmlFor = uuid();
 
         this._color_container.appendChild(this._textbox);
         this._textbox.value = this.model.get('value');

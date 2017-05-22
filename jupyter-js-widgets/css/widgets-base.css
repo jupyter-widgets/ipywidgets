@@ -21,8 +21,7 @@
     --jp-widgets-inline-width-short: calc(var(--jp-widgets-inline-width) / 2 - var(--jp-widgets-margin));
     --jp-widgets-inline-width-tiny: calc(var(--jp-widgets-inline-width-short) / 2 - var(--jp-widgets-margin));
     --jp-widgets-inline-margin: 4px; /* margin between inline elements */
-    --jp-widgets-inline-label-min-width: 80px;
-    --jp-widgets-inline-label-max-width: calc(var(--jp-widgets-inline-width) - var(--jp-widgets-inline-margin) - var(--jp-widgets-inline-width-short));
+    --jp-widgets-inline-label-width: 80px;
     --jp-widgets-border-width: var(--jp-border-width);
     --jp-widgets-vertical-height: 200px;
     --jp-widgets-horizontal-tab-height: 24px;
@@ -262,6 +261,11 @@
 
 /* Widget Label Styling */
 
+/* Override Bootstrap label css */
+.jupyter-widgets label.widget-label {
+    margin-bottom: initial;
+}
+
 .widget-label-basic {
     /* Basic Label */
     color: var(--jp-widgets-label-color);
@@ -288,8 +292,7 @@
     color: var(--jp-widgets-label-color);
     text-align: right;
     margin-right: calc( var(--jp-widgets-inline-margin) * 2 );
-    max-width: var(--jp-widgets-inline-label-max-width);
-    min-width: var(--jp-widgets-inline-label-min-width);
+    width: var(--jp-widgets-inline-label-width);
     flex-shrink: 0;
 }
 

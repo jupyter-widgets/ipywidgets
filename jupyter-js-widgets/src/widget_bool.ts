@@ -2,18 +2,22 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    CoreLabeledDOMWidgetModel
+    CoreDescriptionModel
 } from './widget_core';
 
 import {
-    DOMWidgetView, LabeledDOMWidgetView
+    DescriptionView
+} from './widget_description';
+
+import {
+    DOMWidgetView
 } from './widget';
 
 import * as _ from 'underscore';
 
 
 export
-class BoolModel extends CoreLabeledDOMWidgetModel {
+class BoolModel extends CoreDescriptionModel {
     defaults() {
         return _.extend(super.defaults(), {
             value: false,
@@ -24,7 +28,7 @@ class BoolModel extends CoreLabeledDOMWidgetModel {
 }
 
 export
-class CheckboxModel extends CoreLabeledDOMWidgetModel {
+class CheckboxModel extends CoreDescriptionModel {
     defaults() {
         return _.extend(super.defaults(), {
             indent: true,
@@ -35,7 +39,7 @@ class CheckboxModel extends CoreLabeledDOMWidgetModel {
 }
 
 export
-class CheckboxView extends LabeledDOMWidgetView {
+class CheckboxView extends DescriptionView {
     /**
      * Called when view is rendered.
      */
@@ -261,7 +265,7 @@ class ValidModel extends BoolModel {
 }
 
 export
-class ValidView extends LabeledDOMWidgetView {
+class ValidView extends DescriptionView {
     /**
      * Called when view is rendered.
      */

@@ -6,13 +6,13 @@ import {
 } from './widget';
 
 import {
-    CoreWidgetModel
-} from './widget_core';
+    WidgetModel
+} from './widget';
 
 import * as _ from 'underscore';
 
 export
-class StyleModel extends CoreWidgetModel {
+class StyleModel extends WidgetModel {
     defaults() {
         let Derived = this.constructor as typeof StyleModel;
         return _.extend(super.defaults(), {
