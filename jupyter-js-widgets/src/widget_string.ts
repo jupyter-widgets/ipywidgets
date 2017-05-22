@@ -2,18 +2,18 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    LabeledDOMWidgetView
-} from './widget';
+    DescriptionView
+} from './widget_description';
 
 import {
-    CoreLabeledDOMWidgetModel
+    CoreDescriptionModel
 } from './widget_core';
 
 
 import * as _ from 'underscore';
 
 export
-class StringModel extends CoreLabeledDOMWidgetModel {
+class StringModel extends CoreDescriptionModel {
     defaults() {
         return _.extend(super.defaults(), {
             value: '',
@@ -35,7 +35,7 @@ class HTMLModel extends StringModel {
 }
 
 export
-class HTMLView extends LabeledDOMWidgetView {
+class HTMLView extends DescriptionView {
     /**
      * Called when view is rendered.
      */
@@ -76,7 +76,7 @@ class HTMLMathModel extends StringModel {
 }
 
 export
-class HTMLMathView extends LabeledDOMWidgetView {
+class HTMLMathView extends DescriptionView {
     /**
      * Called when view is rendered.
      */
@@ -114,7 +114,7 @@ class LabelModel extends StringModel {
 }
 
 export
-class LabelView extends LabeledDOMWidgetView {
+class LabelView extends DescriptionView {
     /**
      * Called when view is rendered.
      */
@@ -149,7 +149,7 @@ class TextareaModel extends StringModel {
 }
 
 export
-class TextareaView extends LabeledDOMWidgetView {
+class TextareaView extends DescriptionView {
     /**
      * Called when view is rendered.
      */
@@ -267,7 +267,7 @@ class TextModel extends StringModel {
 }
 
 export
-class TextView extends LabeledDOMWidgetView {
+class TextView extends DescriptionView {
     /**
      * Called when view is rendered.
      */

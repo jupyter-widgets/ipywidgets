@@ -2,12 +2,16 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    CoreLabeledDOMWidgetModel,
+    CoreDescriptionModel,
 } from './widget_core';
 
 import {
-    LabeledDOMWidgetView, unpack_models, ViewList
+    unpack_models, ViewList
 } from './widget';
+
+import {
+    DescriptionView
+} from './widget_description';
 
 import * as _ from 'underscore';
 import * as utils from './utils';
@@ -24,7 +28,7 @@ function scrollIfNeeded(area, elem) {
 }
 
 export
-class SelectionModel extends CoreLabeledDOMWidgetModel {
+class SelectionModel extends CoreDescriptionModel {
     defaults() {
         return {...super.defaults(),
             _model_name: 'SelectionModel',
@@ -54,7 +58,7 @@ class DropdownModel extends SelectionModel {
 // For the old code, see commit f68bfbc566f3a78a8f3350b438db8ed523ce3642
 
 export
-class DropdownView extends LabeledDOMWidgetView {
+class DropdownView extends DescriptionView {
     /**
      * Public constructor.
      */
@@ -136,7 +140,7 @@ class SelectModel extends SelectionModel {
 }
 
 export
-class SelectView extends LabeledDOMWidgetView {
+class SelectView extends DescriptionView {
     /**
      * Public constructor.
      */
@@ -223,7 +227,7 @@ class RadioButtonsModel extends SelectionModel {
 
 
 export
-class RadioButtonsView extends LabeledDOMWidgetView {
+class RadioButtonsView extends DescriptionView {
     /**
      * Called when view is rendered.
      */
@@ -361,7 +365,7 @@ class ToggleButtonsModel extends SelectionModel {
 
 
 export
-class ToggleButtonsView extends LabeledDOMWidgetView {
+class ToggleButtonsView extends DescriptionView {
     initialize(options) {
         this._css_state = {};
         super.initialize(options);
@@ -546,7 +550,7 @@ class SelectionSliderModel extends SelectionModel {
 
 
 export
-class SelectionSliderView extends LabeledDOMWidgetView {
+class SelectionSliderView extends DescriptionView {
     /**
      * Called when view is rendered.
      */

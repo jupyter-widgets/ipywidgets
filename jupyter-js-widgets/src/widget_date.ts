@@ -2,11 +2,11 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    LabeledDOMWidgetView
-} from './widget';
+    DescriptionView
+} from './widget_description';
 
 import {
-    CoreLabeledDOMWidgetModel
+    CoreDescriptionModel
 } from './widget_core';
 
 import {
@@ -58,9 +58,9 @@ function deserialize_date(value: SerializedDate) {
 };
 
 export
-class DatePickerModel extends CoreLabeledDOMWidgetModel {
+class DatePickerModel extends CoreDescriptionModel {
     static serializers = {
-        ...CoreLabeledDOMWidgetModel.serializers,
+        ...CoreDescriptionModel.serializers,
         value: {
             serialize: serialize_date,
             deserialize: deserialize_date
@@ -77,7 +77,7 @@ class DatePickerModel extends CoreLabeledDOMWidgetModel {
 }
 
 export
-class DatePickerView extends LabeledDOMWidgetView {
+class DatePickerView extends DescriptionView {
     render() {
         super.render();
         this.el.classList.add('jupyter-widgets');

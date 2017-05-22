@@ -7,6 +7,7 @@ from traitlets import Unicode, Bool, Tuple, default
 from .widget import Widget, widget_serialization
 from .trait_types import Color, InstanceDict
 from .widget_layout import Layout
+from .widget_style import Style
 
 
 class DOMWidget(Widget):
@@ -37,8 +38,15 @@ class DOMWidget(Widget):
         return self
 
 
+class DescriptionStyle(Style, Widget):
+    """Button style widget."""
+    _model_name = Unicode('SliderStyleModel').tag(sync=True)
+    description_width = Unicode().tag(sync=True)
+
+
 class LabeledWidget(DOMWidget):
     """Widget that has a description label to the side."""
 
-    _model_name = Unicode('LabeledWidgetModel').tag(sync=True)
+    _model_name = Unicode('DescriptionModel').tag(sync=True)
     description = Unicode('', help="Description of the control.").tag(sync=True)
+    style = InstanceDict(DescriptionStyle).tag(sync=True, **widget_serialization)

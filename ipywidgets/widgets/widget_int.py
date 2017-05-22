@@ -6,11 +6,10 @@
 Represents an unbounded int using a widget.
 """
 
-from .domwidget import LabeledWidget
+from .domwidget import LabeledWidget, DescriptionStyle
 from .valuewidget import ValueWidget
 from .widget import register, widget_serialization
 from .widget_core import CoreWidget
-from .widget_style import Style
 from traitlets import Instance
 from .trait_types import Color, InstanceDict
 from traitlets import (
@@ -143,7 +142,7 @@ class BoundedIntText(_BoundedInt):
 
 
 @register
-class SliderStyle(Style, CoreWidget):
+class SliderStyle(DescriptionStyle, CoreWidget):
     """Button style widget."""
     _model_name = Unicode('SliderStyleModel').tag(sync=True)
     handle_color = Color(None, allow_none=True).tag(sync=True)
@@ -167,7 +166,7 @@ class IntSlider(_BoundedInt):
 
 
 @register
-class ProgressStyle(Style, CoreWidget):
+class ProgressStyle(DescriptionStyle, CoreWidget):
     """Button style widget."""
     _model_name = Unicode('ProgressStyleModel').tag(sync=True)
     bar_color = Color(None, allow_none=True).tag(sync=True)
