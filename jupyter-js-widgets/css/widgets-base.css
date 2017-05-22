@@ -261,6 +261,11 @@
 
 /* Widget Label Styling */
 
+/* Override Bootstrap label css */
+.jupyter-widgets label.widget-label {
+    margin-bottom: initial;
+}
+
 .widget-label-basic {
     /* Basic Label */
     color: var(--jp-widgets-label-color);

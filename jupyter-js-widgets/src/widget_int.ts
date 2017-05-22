@@ -13,6 +13,10 @@ import {
     DOMWidgetView
 } from './widget';
 
+import {
+    uuid
+} from './utils';
+
 import * as _ from 'underscore';
 import * as $ from 'jquery';
 import 'jquery-ui/ui/widgets/slider';
@@ -485,6 +489,7 @@ class IntTextView extends DescriptionView {
 
         this.textbox = document.createElement('input');
         this.textbox.setAttribute('type', 'text');
+        this.textbox.id = this.label.htmlFor = uuid();
         this.el.appendChild(this.textbox);
 
         this.update(); // Set defaults.

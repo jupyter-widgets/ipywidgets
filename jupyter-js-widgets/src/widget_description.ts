@@ -39,7 +39,7 @@ export
 class DescriptionView extends DOMWidgetView {
 
     render() {
-        this.label = document.createElement('div');
+        this.label = document.createElement('label');
         this.el.appendChild(this.label);
         this.label.className = 'widget-label';
         this.label.style.display = 'none';
@@ -60,7 +60,7 @@ class DescriptionView extends DOMWidgetView {
         this.label.title = description;
     }
 
-    label: HTMLDivElement;
+    label: HTMLLabelElement;
 }
 
 /**

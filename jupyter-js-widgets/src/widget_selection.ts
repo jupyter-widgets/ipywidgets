@@ -10,6 +10,10 @@ import {
 } from './widget_description';
 
 import {
+    uuid
+} from './utils';
+
+import {
     unpack_models, ViewList
 } from './widget';
 
@@ -78,6 +82,7 @@ class DropdownView extends DescriptionView {
         this.el.classList.add('widget-dropdown');
 
         this.listbox = document.createElement('select');
+        this.listbox.id = this.label.htmlFor = uuid();
         this.el.appendChild(this.listbox);
         this._updateOptions();
         this.update();
@@ -160,6 +165,7 @@ class SelectView extends DescriptionView {
         this.el.classList.add('widget-select');
 
         this.listbox = document.createElement('select');
+        this.listbox.id = this.label.htmlFor = uuid();
         this.el.appendChild(this.listbox);
         this._updateOptions();
         this.update();

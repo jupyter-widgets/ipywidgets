@@ -9,6 +9,10 @@ import {
     DescriptionView
 } from './widget_description';
 
+import {
+    uuid
+} from './utils';
+
 import * as _ from 'underscore';
 
 export
@@ -160,6 +164,7 @@ class TextareaView extends DescriptionView {
 
         this.textbox = document.createElement('textarea');
         this.textbox.setAttribute('rows', '5');
+        this.textbox.id = this.label.htmlFor = uuid();
         this.el.appendChild(this.textbox);
 
         this.update(); // Set defaults.
@@ -278,6 +283,7 @@ class TextView extends DescriptionView {
 
         this.textbox = document.createElement('input');
         this.textbox.setAttribute('type', this.inputType);
+        this.textbox.id = this.label.htmlFor = uuid();
         this.el.appendChild(this.textbox);
 
         this.update(); // Set defaults.

@@ -10,6 +10,10 @@ import {
 } from './widget_core';
 
 import {
+    uuid
+} from './utils';
+
+import {
     ManagerBase
 } from './manager-base'
 
@@ -86,6 +90,8 @@ class DatePickerView extends DescriptionView {
 
         this._datepicker = document.createElement('input');
         this._datepicker.setAttribute('type', 'date');
+        this._datepicker.id = this.label.htmlFor = uuid();
+
         this.el.appendChild(this._datepicker);
 
         this.listenTo(this.model, 'change:value', this._update_value);

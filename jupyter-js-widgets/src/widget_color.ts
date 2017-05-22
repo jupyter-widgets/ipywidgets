@@ -9,6 +9,10 @@ import {
     DescriptionView
 } from './widget_description';
 
+import {
+    uuid
+} from './utils';
+
 import * as _ from 'underscore';
 
 
@@ -38,6 +42,7 @@ class ColorPickerView extends DescriptionView {
 
         this._textbox = document.createElement('input');
         this._textbox.setAttribute('type', 'text');
+        this._textbox.id = this.label.htmlFor = uuid();
 
         this._color_container.appendChild(this._textbox);
         this._textbox.value = this.model.get('value');
