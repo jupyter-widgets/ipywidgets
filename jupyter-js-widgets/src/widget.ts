@@ -130,7 +130,6 @@ class WidgetModel extends Backbone.Model {
         if (this.comm !== undefined) {
             var data = {method: 'custom', content: content};
             this.comm.send(data, callbacks, {}, buffers);
-            this.pending_msgs++;
         }
     }
 
@@ -245,7 +244,7 @@ class WidgetModel extends Backbone.Model {
      *
      * execution_state : ('busy', 'idle', 'starting')
      */
-    _handle_status(msg, callbacks) {
+    _handle_status(msg) {
         if (this.comm !== undefined) {
             if (msg.content.execution_state === 'idle') {
                 this.pending_msgs--;
@@ -264,16 +263,7 @@ class WidgetModel extends Backbone.Model {
      * Create msg callbacks for a comm msg.
      */
     callbacks(view?) {
-        let callbacks = this.widget_manager.callbacks(view);
-
-        if (callbacks.iopub === undefined) {
-            callbacks.iopub = {};
-        }
-
-        callbacks.iopub.status = (msg) => {
-            this._handle_status(msg, callbacks);
-        };
-        return callbacks;
+        return this.widget_manager.callbacks(view);
     }
 
     /**
@@ -423,6 +413,15 @@ class WidgetModel extends Backbone.Model {
 
     send_sync_message(state, callbacks) {
         try {
+            callbacks.iopub = callbacks.iopub || {};
+            let statuscb = callbacks.iopub.status
+            callbacks.iopub.status = (msg) => {
+                this._handle_status(msg);
+                if (statuscb) {
+                    statuscb(msg);
+                }
+            };
+
             // split out the binary buffers
             let split = utils.remove_buffers(state);
             this.comm.send({
