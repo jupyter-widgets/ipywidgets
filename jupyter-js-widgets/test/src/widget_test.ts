@@ -226,16 +226,8 @@ describe("Widget", function() {
     });
 
     it('callbacks', function() {
-        expect(this.widget.callbacks).to.not.be.undefined;
-
         let c = this.widget.callbacks();
         expect(c).to.be.an('object');
-        expect(c.iopub).to.be.an('object');
-        expect(c.iopub.status).to.be.a('function');
-
-        let statusSpy = sinon.spy(this.widget, "_handle_status");
-        c.iopub.status({content: {data: {}}});
-        expect(statusSpy.calledOnce).to.be.true;
     });
 
     it('set', function() {
