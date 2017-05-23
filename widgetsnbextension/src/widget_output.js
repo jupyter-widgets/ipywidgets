@@ -6,6 +6,7 @@
 // dependency.
 var widgets = require("jupyter-js-widgets");
 var _ = require("underscore");
+require('./widget_output.css');
 
 var outputArea = new Promise(function(resolve, reject) {
         requirejs(["notebook/js/outputarea"], resolve, reject)
@@ -102,6 +103,7 @@ var OutputModel = widgets.DOMWidgetModel.extend({
 var OutputView = widgets.DOMWidgetView.extend({
     render: function(){
         var that = this;
+        this.el.classList.add('jupyter-widgets-output-area');
         outputArea.then(function(outputArea) {
             that.output_area = new outputArea.OutputArea({
                 selector: that.el,
