@@ -16,8 +16,8 @@ from traitlets import Bool, Int, Float, Unicode, List, Instance
 @register
 class Button(ValueWidget, CoreWidget):
     """Represents a gamepad or joystick button."""
-    value = Float(min=0.0, max=1.0, read_only=True).tag(sync=True)
-    pressed = Bool(read_only=True).tag(sync=True)
+    value = Float(min=0.0, max=1.0, read_only=True, help="The value of the button.").tag(sync=True)
+    pressed = Bool(read_only=True, help="Whether the button is pressed.").tag(sync=True)
 
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
@@ -28,7 +28,7 @@ class Button(ValueWidget, CoreWidget):
 @register
 class Axis(ValueWidget, CoreWidget):
     """Represents a gamepad or joystick axis."""
-    value = Float(min=-1.0, max=1.0, read_only=True).tag(sync=True)
+    value = Float(min=-1.0, max=1.0, read_only=True, help="The value of the axis.").tag(sync=True)
 
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
@@ -39,18 +39,18 @@ class Axis(ValueWidget, CoreWidget):
 @register
 class Controller(DOMWidget, CoreWidget):
     """Represents a game controller."""
-    index = Int().tag(sync=True)
+    index = Int(help="The id number of the controller.").tag(sync=True)
 
     # General information about the gamepad, button and axes mapping, name.
     # These values are all read-only and set by the JavaScript side.
-    name = Unicode(read_only=True).tag(sync=True)
-    mapping = Unicode(read_only=True).tag(sync=True)
-    connected = Bool(read_only=True).tag(sync=True)
-    timestamp = Float(read_only=True).tag(sync=True)
+    name = Unicode(read_only=True, help="The name of the controller.").tag(sync=True)
+    mapping = Unicode(read_only=True, help="The name of the control mapping.").tag(sync=True)
+    connected = Bool(read_only=True, help="Whether the gamepad is connected.").tag(sync=True)
+    timestamp = Float(read_only=True, help="The last time the data from this gamepad was updated.").tag(sync=True)
 
     # Buttons and axes - read-only
-    buttons = List(trait=Instance(Button), read_only=True).tag(sync=True, **widget_serialization)
-    axes = List(trait=Instance(Axis), read_only=True).tag(sync=True, **widget_serialization)
+    buttons = List(trait=Instance(Button), read_only=True, help="The buttons on the gamepad.").tag(sync=True, **widget_serialization)
+    axes = List(trait=Instance(Axis), read_only=True, help="The axes on the gamepad.").tag(sync=True, **widget_serialization)
 
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)

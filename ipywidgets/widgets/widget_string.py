@@ -66,7 +66,7 @@ class Textarea(_String):
     """Multiline text area widget."""
     _view_name = Unicode('TextareaView').tag(sync=True)
     _model_name = Unicode('TextareaModel').tag(sync=True)
-    rows = Int(None, allow_none=True).tag(sync=True)
+    rows = Int(None, allow_none=True, help="The number of rows to display.").tag(sync=True)
 
     def scroll_to_bottom(self):
         self.send({"method": "scroll_to_bottom"})

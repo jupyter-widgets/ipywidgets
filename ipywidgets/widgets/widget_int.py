@@ -145,7 +145,7 @@ class BoundedIntText(_BoundedInt):
 class SliderStyle(DescriptionStyle, CoreWidget):
     """Button style widget."""
     _model_name = Unicode('SliderStyleModel').tag(sync=True)
-    handle_color = Color(None, allow_none=True).tag(sync=True)
+    handle_color = Color(None, allow_none=True, help="Color of the slider handle.").tag(sync=True)
 
 
 @register
@@ -169,7 +169,7 @@ class IntSlider(_BoundedInt):
 class ProgressStyle(DescriptionStyle, CoreWidget):
     """Button style widget."""
     _model_name = Unicode('ProgressStyleModel').tag(sync=True)
-    bar_color = Color(None, allow_none=True).tag(sync=True)
+    bar_color = Color(None, allow_none=True, help="Color of the progress bar.").tag(sync=True)
 
 
 @register
@@ -218,7 +218,9 @@ class _IntRange(_Int):
 
 @register
 class Play(_BoundedInt):
-    interval = CInt(100).tag(sync=True)
+    """Play/repeat buttons to step through values automatically, and optionally loop.
+    """
+    interval = CInt(100, help="The maximum value for the play control.").tag(sync=True)
     step = CInt(1, help="Increment step").tag(sync=True)
 
     _view_name = Unicode('PlayView').tag(sync=True)
@@ -226,9 +228,9 @@ class Play(_BoundedInt):
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
 
-    _playing = Bool().tag(sync=True)
-    _repeat = Bool().tag(sync=True)
-    show_repeat = Bool(True).tag(sync=True)
+    _playing = Bool(help="Whether the control is currently playing.").tag(sync=True)
+    _repeat = Bool(help="Whether the control will repeat in a continous loop.").tag(sync=True)
+    show_repeat = Bool(True, help="Show the repeat toggle button in the widget.").tag(sync=True)
 
 class _BoundedIntRange(_IntRange):
     max = CInt(100, help="Max value").tag(sync=True)
@@ -283,4 +285,4 @@ class IntRangeSlider(_BoundedIntRange):
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)
-    style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
+    style = InstanceDict(SliderStyle, help="Slider style customizations.").tag(sync=True, **widget_serialization)

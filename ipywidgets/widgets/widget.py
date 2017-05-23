@@ -333,9 +333,9 @@ class Widget(LoggingHasTraits):
         help="EXPERIMENTAL: The number of views of the model displayed in the frontend. This attribute is experimental and may change or be removed in the future. None signifies that views will not be tracked. Set this to 0 to start tracking view creation/deletion.").tag(sync=True)
     comm = Instance('ipykernel.comm.Comm', allow_none=True)
 
-    msg_throttle = Int(1, help="""Maximum number of msgs the front-end can send before receiving an idle msg from the back-end.""").tag(sync=True)
+    msg_throttle = Int(1, help="""Maximum number of sync msgs the front-end can send before receiving an idle msg from the back-end.""").tag(sync=True)
 
-    keys = List()
+    keys = List(help="The traits which are synced.")
 
     @default('keys')
     def _default_keys(self):

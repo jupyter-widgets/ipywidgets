@@ -16,8 +16,8 @@ from traitlets import Unicode, Bool
 
 @register
 class ColorPicker(LabeledWidget, ValueWidget, CoreWidget):
-    value = Color('black').tag(sync=True)
-    concise = Bool().tag(sync=True)
+    value = Color('black', help="The color value.").tag(sync=True)
+    concise = Bool(help="Display short version with just a color selector.").tag(sync=True)
 
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
