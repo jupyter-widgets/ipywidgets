@@ -9,6 +9,10 @@ import * as PhosphorWidget from '@phosphor/widgets';
 
 import * as widgets from '../../jupyter-js-widgets/lib/index';
 
+import {
+    OutputModel, OutputView
+} from './output'
+
 export
 class EmbedManager extends ManagerBase<HTMLElement> {
 
@@ -54,7 +58,7 @@ class EmbedManager extends ManagerBase<HTMLElement> {
                 // copies on the page. If we ever separate the embed manager
                 // from the main widget package, we should get rid of this special
                 // case.
-                resolve(widgets);
+                resolve({ ...widgets, OutputModel, OutputView });
             } else {
                 var fallback = function(err) {
                     (window as any).require([`https://unpkg.com/${moduleName}@${moduleVersion}/dist/index.js`], resolve, reject);
