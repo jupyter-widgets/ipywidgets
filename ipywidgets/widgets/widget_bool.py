@@ -35,15 +35,15 @@ class Checkbox(_Bool):
     Parameters
     ----------
     value : {True,False}
-       value of the checkbox: True-checked, False-unchecked
+        value of the checkbox: True-checked, False-unchecked
     description : str
-	     description displayed next to the checkbox
+	    description displayed next to the checkbox
     indent : {True,False}
-        indent the control to align with other controls with a description
+        indent the control to align with other controls with a description. The style.description_width attribute controls this width for consistence with other controls.
     """
     _view_name = Unicode('CheckboxView').tag(sync=True)
     _model_name = Unicode('CheckboxModel').tag(sync=True)
-    indent = Bool(True, help="Indent the control to align with other controls with a description").tag(sync=True)
+    indent = Bool(True, help="Indent the control to align with other controls with a description.").tag(sync=True)
 
 
 @register

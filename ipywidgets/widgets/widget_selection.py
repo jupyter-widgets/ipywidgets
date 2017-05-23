@@ -76,7 +76,7 @@ class _Selection(LabeledWidget, ValueWidget, CoreWidget):
     actual Python choices, and should be unique.
     """)
     # This being read-only means that it cannot be changed from the frontend!
-    _options_labels = Tuple(read_only=True).tag(sync=True)
+    _options_labels = Tuple(read_only=True, help="The labels for the options.").tag(sync=True)
 
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
@@ -185,7 +185,7 @@ class _MultipleSelection(LabeledWidget, ValueWidget, CoreWidget):
     actual Python choices, and should be unique.
     """)
     # This being read-only means that it cannot be changed from the frontend!
-    _options_labels = Tuple(read_only=True).tag(sync=True)
+    _options_labels = Tuple(read_only=True, help="The labels for the options.").tag(sync=True)
 
     _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
@@ -272,8 +272,8 @@ class ToggleButtons(_Selection):
     _view_name = Unicode('ToggleButtonsView').tag(sync=True)
     _model_name = Unicode('ToggleButtonsModel').tag(sync=True)
 
-    tooltips = List(Unicode()).tag(sync=True)
-    icons = List(Unicode()).tag(sync=True)
+    tooltips = List(Unicode(), help="Tooltips for each button.").tag(sync=True)
+    icons = List(Unicode(), help="Icons names for each button (FontAwesome names without the fa- prefix).").tag(sync=True)
 
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''],
@@ -302,7 +302,7 @@ class Select(_Selection):
     """Listbox that only allows one item to be selected at any given time."""
     _view_name = Unicode('SelectView').tag(sync=True)
     _model_name = Unicode('SelectModel').tag(sync=True)
-    rows = Int(5).tag(sync=True)
+    rows = Int(5, help="The number of rows to display.").tag(sync=True)
 
 @register
 class _SelectionNonempty(_Selection):
@@ -343,7 +343,7 @@ class SelectMultiple(_MultipleSelection):
     """
     _view_name = Unicode('SelectMultipleView').tag(sync=True)
     _model_name = Unicode('SelectMultipleModel').tag(sync=True)
-    rows = Int(5).tag(sync=True)
+    rows = Int(5, help="The number of rows to display.").tag(sync=True)
 
 @register
 class SelectionRangeSlider(_MultipleSelection):

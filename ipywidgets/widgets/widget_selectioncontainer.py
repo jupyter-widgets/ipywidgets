@@ -19,7 +19,7 @@ class _SelectionContainer(Box, CoreWidget):
     _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
 
     _titles = Dict(help="Titles of the pages").tag(sync=True)
-    selected_index = CInt().tag(sync=True)
+    selected_index = CInt(help="The index of the selected page.").tag(sync=True)
 
     # Public methods
     def set_title(self, index, title):
