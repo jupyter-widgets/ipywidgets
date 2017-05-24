@@ -199,21 +199,22 @@ class WidgetModel extends Backbone.Model {
     /**
      * Get the serializable state of the model.
      *
-     * If drop_default is thruthy, attributes that are equal to their default
+     * If drop_default is truthy, attributes that are equal to their default
      * values are dropped.
      */
     get_state(drop_defaults) {
-        var state = this.attributes;
+        var fullState = this.attributes;
         if (drop_defaults) {
-            var defaults = _.result(this, 'defaults');
-            return Object.keys(state).reduce((obj, key) => {
-                if (!_.isEqual(state[key], defaults[key])) {
-                    obj[key] = state[key];
+            let defaults = _.result(this, 'defaults');
+            let state = {};
+            Object.keys(fullState).forEach(key => {
+                if (!_.isEqual(fullState[key], defaults[key])) {
+                    state[key] = fullState[key];
                 }
-                return obj;
-            }, {});
+            })
+            return state;
         } else {
-            return _.clone(state);
+            return {...fullState};
         }
     }
 
