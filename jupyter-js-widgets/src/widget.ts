@@ -115,9 +115,6 @@ class WidgetModel extends Backbone.Model {
 
     /**
      * Send a custom msg over the comm.
-     *
-     * Any custom callbacks must include calls to the model callbacks returned
-     * from model.callbacks()
      */
     send(content, callbacks, buffers?) {
         if (this.comm !== undefined) {
