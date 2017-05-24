@@ -251,7 +251,7 @@ class WidgetModel extends Backbone.Model {
      * We just call the super method, in which val and options are optional.
      * Handles both "key", value and {key: value} -style arguments.
      */
-    set(key: string, val?: any, options?: any) {
+    set(key: any, val?: any, options?: any) {
         let return_value = super.set(key, val, options);
 
         // Backbone only remembers the diff of the most recent set()
