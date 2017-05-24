@@ -60,54 +60,52 @@ widget_view_template = """<script type="application/vnd.jupyter.widget-view+json
 </script>"""
 
 
+def _find_widget_refs_by_state(widget, state):
+    """Find references to other widgets in a widget's state"""
+    # Copy keys to allow changes to state during iteration:
+    keys = tuple(state.keys())
+    for key in keys:
+        value = getattr(widget, key)
+        # Trivial case: Direct references to other widgets:
+        if isinstance(value, Widget):
+            yield value
+        # Also check for buried references in known, JSON-able structures
+        # Note: This might miss references buried in more esoteric structures
+        elif isinstance(value, (list, tuple)):
+            for item in value:
+                if isinstance(item, Widget):
+                    yield item
+        elif isinstance(value, dict):
+            for item in value.values():
+                if isinstance(item, Widget):
+                    yield item
+
+
 def get_recursive_state(widget, store=None, drop_defaults=False):
     """Gets the embed state of a widget, and all other widgets it refers to as well"""
     if store is None:
         store = dict()
     state = widget._get_embed_state(drop_defaults=drop_defaults)
     store[widget.model_id] = state
-    for key in state['state'].keys():
-        value = getattr(widget, key)
-        if isinstance(value, Widget):
-            get_recursive_state(value, store, drop_defaults=drop_defaults)
-        elif isinstance(value, (list, tuple)):
-            for item in value:
-                if isinstance(item, Widget):
-                    get_recursive_state(item, store, drop_defaults=drop_defaults)
-        elif isinstance(value, dict):
-            for item in value.values():
-                if isinstance(item, Widget):
-                    get_recursive_state(item, store, drop_defaults=drop_defaults)
+
+    # Loop over all values included in state (i.e. don't consider excluded values):
+    for ref in _find_widget_refs_by_state(widget, state['state']):
+        get_recursive_state(ref, store, drop_defaults=drop_defaults)
     return store
 
 
-def add_referring_widgets(states, drop_defaults=False):
+def add_referring_widgets(store, drop_defaults):
     """Add state of any widgets referring to widgets already in the store"""
     found_new = False
     for widget_id, widget in Widget.widgets.items(): # go over all widgets
-        #print("widget", widget, widget_id)
-        if widget_id not in states:
-            #print("check members")
+        if widget_id not in store:
             widget_state = widget.get_state(drop_defaults=drop_defaults)
             widget_state = _remove_buffers(widget_state)[0]
-            widgets_found = []
-            for key, value in widget_state.items():
-                value = getattr(widget, key)
-                if isinstance(value, Widget):
-                    widgets_found.append(value)
-                elif isinstance(value, (list, tuple)):
-                    for item in value:
-                        if isinstance(item, Widget):
-                            widgets_found.append(item)
-                elif isinstance(value, dict):
-                    for item in value.values():
-                        if isinstance(item, Widget):
-                            widgets_found.append(item)
-            #print("found", widgets_found)
-            for widgets_found in widgets_found:
-                if widgets_found.model_id in states:
-                    #print("we found that we needed to add ", widget_id, widget)
-                    states[widget.model_id] = widget._get_embed_state(drop_defaults=drop_defaults)
+            # Loop over all references in current widget state:
+            for ref in _find_widget_refs_by_state(widget, widget_state):
+                # If the found ref is already in state, include the found reference
+                if ref.model_id in store:
+                    store[widget.model_id] = widget._get_embed_state(drop_defaults=drop_defaults)
                     found_new = True
     return found_new
 
@@ -137,11 +135,11 @@ def dependency_state(widgets, drop_defaults, dependents=True):
     else:
         state = {}
         for widget in widgets:
-            get_recursive_state(widget, state, drop_defaults=drop_defaults)
+            get_recursive_state(widget, state, drop_defaults)
         if dependents:
             # it may be that other widgets refer to the collected widgets,
             # such as layouts, include those as well
-            while add_referring_widgets(state):
+            while add_referring_widgets(state, drop_defaults):
                 pass
     return state
 
@@ -208,7 +206,7 @@ def embed_snippet(widgets,
     return snippet_template.format(**values)
 
 
-def embed_minimal_html(widgets, fp, **kwargs):
+def embed_minimal_html(fp, widgets, **kwargs):
     """Write a minimal HTML file with widgets embedded.
 
     Accepts keyword args similar to `embed_snippet`.
