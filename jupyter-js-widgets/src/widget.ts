@@ -211,7 +211,7 @@ class WidgetModel extends Backbone.Model {
                 if (!_.isEqual(fullState[key], defaults[key])) {
                     state[key] = fullState[key];
                 }
-            })
+            });
             return state;
         } else {
             return {...fullState};
@@ -224,7 +224,7 @@ class WidgetModel extends Backbone.Model {
      * execution_state : ('busy', 'idle', 'starting')
      */
     _handle_status(msg) {
-        if (this.comm !== undefined) {
+        if (this.comm !== void 0) {
             if (msg.content.execution_state === 'idle') {
                 this._pending_msgs--;
                 // Send buffer if one is waiting and we are below the throttle.
@@ -491,7 +491,7 @@ class WidgetModel extends Backbone.Model {
     private _state_change: Promise<void> = Promise.resolve();
     private _buffered_state_diff: any;
     private _msg_buffer: any = null;
-    private _msg_buffer_callbacks: any;
+    private _msg_buffer_callbacks: any = null;
     private _pending_msgs = 0;
 }
 
