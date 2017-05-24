@@ -90,20 +90,12 @@ class WidgetModel extends Backbone.Model {
      *      An ID unique to this model.
      * comm : Comm instance (optional)
      */
-    initialize(attributes, options) {
+    initialize(attributes, options: {model_id: string, comm?: any, widget_manager: any}) {
         super.initialize(attributes, options);
 
         this.widget_manager = options.widget_manager;
         this.id = options.model_id;
         let comm = options.comm;
-
-        this.state_change = Promise.resolve();
-        this.pending_msgs = 0;
-        this.msg_buffer = null;
-        this.state_lock = null;
-        this._buffered_state_diff = {};
-
-        this.views = {};
 
         if (comm) {
             // Remember comm associated with the model.
@@ -115,8 +107,6 @@ class WidgetModel extends Backbone.Model {
             comm.on_msg(_.bind(this._handle_comm_msg, this));
 
             this.comm_live = true;
-        } else {
-            this.comm_live = false;
         }
     }
 
@@ -501,15 +491,15 @@ class WidgetModel extends Backbone.Model {
         deserialize?: (value?: any, manager?: any) => any,
         serialize?: (value?: any, widget?: any) => any
     }};
-    widget_manager: any;
-    state_change: any
-    _buffered_state_diff: any;
-    pending_msgs: any;
-    msg_buffer: any;
-    state_lock: any;
-    views: any;
-    comm: any;
-    comm_live: boolean;
+    widget_manager: managerBase.ManagerBase<any>;
+    state_change: Promise<void> = Promise.resolve();
+    _buffered_state_diff: any = {};
+    pending_msgs: number = 0;
+    msg_buffer: any = null;
+    state_lock: any = null;
+    views: any = {};
+    comm: any = null;
+    comm_live: boolean = false;
     model_id: string;
     msg_buffer_callbacks: any;
 }
