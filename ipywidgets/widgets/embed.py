@@ -32,6 +32,7 @@ Functions for generating embeddable HTML/javascript of a widget.
 
 import json
 from .widget import Widget, _remove_buffers
+from .domwidget import DOMWidget
 
 
 snippet_template = """<script src="{embed_url}"></script>
@@ -145,7 +146,7 @@ def dependency_state(widgets, drop_defaults, dependents=True):
     return state
 
 
-def embed_data(widgets=None, expand_dependencies='full', drop_defaults=True):
+def embed_data(widgets, expand_dependencies='full', drop_defaults=True):
     """Gets data for embedding.
 
     Use this to get the raw data for embedding if you have special
@@ -171,12 +172,15 @@ def embed_data(widgets=None, expand_dependencies='full', drop_defaults=True):
     # but plug in our own state
     json_data['state'] = state
 
-    view_specs = [w.get_view_spec() for w in widgets or Widget.widgets.values()]
+    if widgets is None:
+        widgets = [w for w in Widget.widgets.values() if isinstance(w, DOMWidget)]
+
+    view_specs = [w.get_view_spec() for w in widgets]
 
     return dict(manager_state=json_data, view_specs=view_specs)
 
 
-def embed_snippet(widgets=None,
+def embed_snippet(widgets,
                   expand_dependencies='full',
                   drop_defaults=True,
                   indent=2,
@@ -204,13 +208,13 @@ def embed_snippet(widgets=None,
     return snippet_template.format(**values)
 
 
-def embed_minimal_html(fp, **kwargs):
+def embed_minimal_html(widgets, fp, **kwargs):
     """Write a minimal HTML file with widgets embedded.
 
     Accepts keyword args similar to `embed_snippet`.
     """
 
-    snippet = embed_snippet(**kwargs)
+    snippet = embed_snippet(widgets, **kwargs)
 
     values = {
         'title': 'IPyWidget export',
