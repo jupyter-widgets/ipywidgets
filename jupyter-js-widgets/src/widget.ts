@@ -153,7 +153,7 @@ class WidgetModel extends Backbone.Model {
     /**
      * Handle incoming comm msg.
      */
-    _handle_comm_msg(msg) {
+    _handle_comm_msg(msg): Promise<void> {
         var method = msg.content.data.method;
         switch (method) {
             case 'update':
@@ -174,7 +174,7 @@ class WidgetModel extends Backbone.Model {
                         return (this.constructor as typeof WidgetModel)._deserialize_state(state, this.widget_manager);
                     }).then((state) => {
                         this.set_state(state);
-                    }).catch(utils.reject('Could not process update msg for model id: ' + String(this.id), true))
+                    }).catch(utils.reject(`Could not process update msg for model id: ${this.id}`, true))
                 return this._state_change;
             case 'custom':
                 this.trigger('msg:custom', msg.content.data.content, msg.buffers);
