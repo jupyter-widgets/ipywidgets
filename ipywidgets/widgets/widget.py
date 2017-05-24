@@ -528,8 +528,8 @@ class Widget(LoggingHasTraits):
         super(Widget, self).add_traits(**traits)
         for name, trait in traits.items():
             if trait.get_metadata('sync'):
-                 self.keys.append(name)
-                 self.send_state(name)
+                self.keys.append(name)
+                self.send_state(name)
 
     def notify_change(self, change):
         """Called when a property has changed."""
