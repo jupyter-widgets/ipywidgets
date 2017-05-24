@@ -55,9 +55,7 @@ html_template = """<!DOCTYPE html>
 """ % snippet_template
 
 widget_view_template = """<script type="application/vnd.jupyter.widget-view+json">
-{{
-    "model_id": "{model_id}"
-}}
+{view_spec}
 </script>"""
 
 
@@ -164,7 +162,7 @@ def embed_data(widgets=None, expand_dependencies='full', drop_defaults=True):
 
     Returns a dictionary with the following entries:
         manager_state: dict of the widget manager state data
-        model_ids: a list of widget model IDs
+        view_specs: a list of widget view specs
     """
     if expand_dependencies in ('full', 'partial'):
         dependents = expand_dependencies == 'full'
@@ -178,7 +176,7 @@ def embed_data(widgets=None, expand_dependencies='full', drop_defaults=True):
     # but plug in our own state
     json_data['state'] = state
 
-    return dict(manager_state=json_data, model_ids=[w.model_id for w in widgets])
+    return dict(manager_state=json_data, view_specs=[w.get_view_spec() for w in widgets])
 
 
 def embed_snippet(widgets=None,
@@ -191,7 +189,8 @@ def embed_snippet(widgets=None,
     data = embed_data(widgets, expand_dependencies, drop_defaults)
 
     widget_views = '\n'.join(
-        widget_view_template.format(**dict(model_id=model_id)) for model_id in data['model_ids']
+        widget_view_template.format(**dict(view_spec=json.dumps(view_spec)))
+        for view_spec in data['view_specs']
     )
 
     values = {
@@ -216,7 +215,8 @@ def embed_minimal_html(fp,
     data = embed_data(widgets, expand_dependencies, drop_defaults)
 
     widget_views = '\n'.join(
-        widget_view_template.format(**dict(model_id=model_id)) for model_id in data['model_ids']
+        widget_view_template.format(**dict(view_spec=json.dumps(view_spec)))
+        for view_spec in data['view_specs']
     )
 
     values = {
