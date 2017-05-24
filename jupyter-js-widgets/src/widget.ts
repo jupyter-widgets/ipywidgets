@@ -135,10 +135,10 @@ class WidgetModel extends Backbone.Model {
             delete this.comm;
         }
         // Delete all views of this model
-        this.views.forEach((v: Promise<WidgetView>) => {
-            v.then(view => view.remove());
+        Object.keys(this.views).forEach((id: string) => {
+            this.views[id].then(view => view.remove());
         });
-        this.views = [];
+        delete this.views;
     }
 
     /**
