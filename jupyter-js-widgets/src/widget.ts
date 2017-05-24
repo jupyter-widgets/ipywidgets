@@ -97,6 +97,10 @@ class WidgetModel extends Backbone.Model {
         this.id = options.model_id;
         let comm = options.comm;
 
+        // _buffered_state_diff must be created *after* the super.initialize
+        // call above. See the note in the set() method below.
+        this._buffered_state_diff = Object.create(null);
+
         if (comm) {
             // Remember comm associated with the model.
             this.comm = comm;
@@ -156,7 +160,7 @@ class WidgetModel extends Backbone.Model {
         var method = msg.content.data.method;
         switch (method) {
             case 'update':
-                this.state_change = this.state_change
+                this._state_change = this._state_change
                     .then(() => {
                         // see Widget.open/_split_state_buffers about why we need state_with_buffers
                         let state = msg.content.data.state;
@@ -175,7 +179,7 @@ class WidgetModel extends Backbone.Model {
                     }).then((state) => {
                         this.set_state(state);
                     }).catch(utils.reject('Could not process update msg for model id: ' + String(this.id), true))
-                return this.state_change;
+                return this._state_change;
             case 'custom':
                 this.trigger('msg:custom', msg.content.data.content, msg.buffers);
                 return Promise.resolve();
@@ -183,10 +187,10 @@ class WidgetModel extends Backbone.Model {
                 if (this.widget_manager.displayWithOutput) {
                     return;
                 }
-                this.state_change = this.state_change.then(() => {
+                this._state_change = this._state_change.then(() => {
                     this.widget_manager.display_model(msg, this);
                 }).catch(utils.reject('Could not process display view msg', true));
-                return this.state_change;
+                return this._state_change;
         }
     }
 
@@ -194,13 +198,13 @@ class WidgetModel extends Backbone.Model {
      * Handle when a widget is updated from the backend.
      */
     set_state(state: any) {
-        this.state_lock = state;
+        this._state_lock = state;
         try {
             this.set(state);
         } catch(e) {
             console.error('Error setting state:', e.message);
         } finally {
-            this.state_lock = null;
+            this._state_lock = null;
         }
     }
 
@@ -233,13 +237,13 @@ class WidgetModel extends Backbone.Model {
     _handle_status(msg) {
         if (this.comm !== undefined) {
             if (msg.content.execution_state === 'idle') {
-                this.pending_msgs--;
+                this._pending_msgs--;
                 // Send buffer if one is waiting and we are below the throttle.
-                if (this.msg_buffer !== null
-                    && this.pending_msgs < (this.get('msg_throttle') || 1) ) {
-                    this.send_sync_message(this.msg_buffer, this.msg_buffer_callbacks);
-                    this.msg_buffer = null;
-                    this.msg_buffer_callbacks = null;
+                if (this._msg_buffer !== null
+                    && this._pending_msgs < (this.get('msg_throttle') || 1) ) {
+                    this.send_sync_message(this._msg_buffer, this._msg_buffer_callbacks);
+                    this._msg_buffer = null;
+                    this._msg_buffer_callbacks = null;
                 }
             }
         }
@@ -275,9 +279,9 @@ class WidgetModel extends Backbone.Model {
             // right now from a kernel message. We don't want to send these
             // non-changes back to the kernel, so we delete them out of attrs if
             // they haven't changed from their state_lock value
-            if (this.state_lock !== null) {
-                for (const key of Object.keys(this.state_lock)) {
-                    if (attrs[key] === this.state_lock[key]) {
+            if (this._state_lock !== null) {
+                for (const key of Object.keys(this._state_lock)) {
+                    if (attrs[key] === this._state_lock[key]) {
                         delete attrs[key];
                     }
                 }
@@ -319,9 +323,9 @@ class WidgetModel extends Backbone.Model {
         // right now from a kernel message. We don't want to send these
         // non-changes back to the kernel, so we delete them out of attrs if
         // they haven't changed from their state_lock value
-        if (this.state_lock !== null) {
-            for (const key of Object.keys(this.state_lock)) {
-                if (attrs[key] === this.state_lock[key]) {
+        if (this._state_lock !== null) {
+            for (const key of Object.keys(this._state_lock)) {
+                if (attrs[key] === this._state_lock[key]) {
                     delete attrs[key];
                 }
             }
@@ -337,23 +341,23 @@ class WidgetModel extends Backbone.Model {
             let callbacks = options.callbacks || this.callbacks();
 
             // Check throttle.
-            if (this.pending_msgs >= (this.get('msg_throttle') || 1)) {
+            if (this._pending_msgs >= (this.get('msg_throttle') || 1)) {
                 // The throttle has been exceeded, buffer the current msg so
                 // it can be sent once the kernel has finished processing
                 // some of the existing messages.
                 // Combine updates if it is a 'patch' sync, otherwise replace updates
                 switch (method) {
                     case 'patch':
-                        this.msg_buffer = _.extend(this.msg_buffer || {}, msgState);
+                        this._msg_buffer = _.extend(this._msg_buffer || {}, msgState);
                         break;
                     case 'update':
                     case 'create':
-                        this.msg_buffer = msgState;
+                        this._msg_buffer = msgState;
                         break;
                     default:
                         throw 'unrecognized syncing method';
                 }
-                this.msg_buffer_callbacks = callbacks;
+                this._msg_buffer_callbacks = callbacks;
             } else {
                 // We haven't exceeded the throttle, send the message like
                 // normal.
@@ -415,7 +419,7 @@ class WidgetModel extends Backbone.Model {
                 state: split.state,
                 buffer_paths: split.buffer_paths
             }, callbacks, {}, split.buffers);
-            this.pending_msgs++;
+            this._pending_msgs++;
         } catch (e) {
             console.error('Could not send widget sync message', e);
         }
@@ -487,17 +491,19 @@ class WidgetModel extends Backbone.Model {
         deserialize?: (value?: any, manager?: any) => any,
         serialize?: (value?: any, widget?: any) => any
     }};
+
     widget_manager: managerBase.ManagerBase<any>;
-    state_change: Promise<void> = Promise.resolve();
-    _buffered_state_diff: any = {};
-    pending_msgs: number = 0;
-    msg_buffer: any = null;
-    state_lock: any = null;
-    views: any = {};
+    views: {[key: string]: Promise<WidgetView>} = Object.create(null);
     comm: any = null;
     comm_live: boolean = false;
     model_id: string;
-    msg_buffer_callbacks: any;
+
+    private _state_lock: any = null;
+    private _state_change: Promise<void> = Promise.resolve();
+    private _buffered_state_diff: any;
+    private _msg_buffer: any = null;
+    private _msg_buffer_callbacks: any;
+    private _pending_msgs = 0;
 }
 
 export
