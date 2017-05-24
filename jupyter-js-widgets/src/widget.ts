@@ -100,7 +100,6 @@ class WidgetModel extends Backbone.Model {
         if (comm) {
             // Remember comm associated with the model.
             this.comm = comm;
-            comm.model = this;
 
             // Hook comm messages up to model.
             comm.on_close(_.bind(this._handle_comm_closed, this));
@@ -133,16 +132,13 @@ class WidgetModel extends Backbone.Model {
         this.stopListening();
         this.trigger('destroy', this);
         if (this.comm) {
-            delete this.comm.model; // Delete ref so GC will collect widget model.
             delete this.comm;
         }
-        delete this.model_id; // Delete id from model so widget manager cleans up.
-        _.each(this.views, (v: Promise<any>, id, views) => {
-            v.then((view) => {
-                view.remove();
-                delete views[id];
-            });
+        // Delete all views of this model
+        this.views.forEach((v: Promise<WidgetView>) => {
+            v.then(view => view.remove());
         });
+        this.views = [];
     }
 
     /**
