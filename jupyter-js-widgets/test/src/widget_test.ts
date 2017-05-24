@@ -6,90 +6,114 @@ import {
     expect
 } from 'chai';
 
+import * as widgets from '../../lib/';
+
 import * as sinon from 'sinon';
 
-describe("Widget", function() {
-    beforeEach(function() {
+describe("unpack_models", function() {
+    it('recurses in arrays');
+    it('recurses in objects');
+});
+
+describe("WidgetModel", function() {
+    beforeEach(async function() {
         this.manager = new DummyManager();
-        this.modelId = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5);
-        return this.manager.new_widget({
+        this.modelId = 'test-widget';
+        this.widget = await this.manager.new_widget({
             model_module: 'jupyter-js-widgets',
             model_name: 'WidgetModel',
             model_id: this.modelId,
             widget_class: 'ipywidgets.Widget'
-        }).then(model => {
-            this.widget = model;
-        }).catch(err => {
-            console.error('Could not create widget', Error.prototype.toString.call(err));
-            if (err.stack) {
-              console.error('  Trace:', err.stack);
-            }
-            if (err.error_stack) {
-              err.error_stack.forEach((subErr, i) => console.error(`  Chain[${i}]:`, Error.prototype.toString.call(subErr)));
-            }
+        })
+    });
+
+    describe('construction', function() {
+        it('exists', function() {
+            expect(this.manager).to.not.be.undefined;
+            expect(this.widget).to.not.be.undefined;
+        });
+        it('attaches to the comm handlers');
+        it('sets comm_live appropriately');
+        it('uses the intialization options appropriately');
+        it('can take initial state');
+    });
+
+    describe('attributes', function() {
+        describe('_state_change', function() {
+            it('exists', function() {
+                expect(this.widget._state_change).to.not.be.undefined;
+                expect(this.widget._state_change).to.be.an.instanceof(Promise);
+            });
+        });
+
+        describe('_pending_msgs', function() {
+            it('exists', function() {
+                expect(this.widget._pending_msgs).to.not.be.undefined;
+                expect(this.widget._pending_msgs).to.equal(0);
+            });
+        });
+
+        describe('_msg_buffer', function() {
+            it('exists', function() {
+            expect(this.widget._msg_buffer).to.not.be.undefined;
+            expect(this.widget._msg_buffer).to.be.null;
+            });
+        });
+
+        describe('_state_lock', function() {
+            it('exists', function() {
+            expect(this.widget._state_lock).to.not.be.undefined;
+            expect(this.widget._state_lock).to.be.null;
+            });
+        });
+
+        describe('id', function() {
+            it('exists', function() {
+                expect(this.widget.id).to.not.be.undefined;
+                expect(this.widget.id).to.be.a('string');
+                expect(this.widget.id).to.equal(this.modelId);
+            });
+        });
+
+        describe('views', function() {
+            it('exists', function() {
+            expect(this.widget.views).to.not.be.undefined;
+            expect(this.widget.views).to.be.an('object');
+            });
+        });
+
+        describe('comm', function() {
+            it('exists', function() {
+            expect(this.widget.comm).to.not.be.undefined;
+        });
+        });
+
+        describe('comm_live', function() {
+            it('exists', function() {
+            expect(this.widget.comm_live).to.not.be.undefined;
+            expect(this.widget.comm_live).to.be.true;
+            });
         });
     });
 
-    it('construction', function() {
-        expect(this.manager).to.not.be.undefined;
-        expect(this.widget).to.not.be.undefined;
-    });
-
-    it('widget_manager', function() {
-        expect(this.widget.widget_manager).to.equal(this.manager);
-    });
-
-    it('state_change', function() {
-        expect(this.widget.state_change).to.not.be.undefined;
-        expect(this.widget.state_change).to.be.an.instanceof(Promise);
-    });
-
-    it('pending_msgs', function() {
-        expect(this.widget.pending_msgs).to.not.be.undefined;
-        // new widget automatically sends a sync message.
-        expect(this.widget.pending_msgs).to.equal(1);
-    });
-
-    it('msg_buffer', function() {
-        expect(this.widget.msg_buffer).to.not.be.undefined;
-        expect(this.widget.msg_buffer).to.be.null;
-    });
-
-    it('state_lock', function() {
-        expect(this.widget.state_lock).to.not.be.undefined;
-        expect(this.widget.state_lock).to.be.null;
-    });
-
-    it('id', function() {
-        expect(this.widget.id).to.not.be.undefined;
-        expect(this.widget.id).to.be.a('string');
-        expect(this.widget.id).to.equal(this.modelId);
-    });
-
-    it('views', function() {
-        expect(this.widget.views).to.not.be.undefined;
-        expect(this.widget.views).to.be.an('object');
-    });
-
-    it('comm', function() {
-        expect(this.widget.comm).to.not.be.undefined;
-    });
-
-    it('comm_live', function() {
-        expect(this.widget.comm_live).to.not.be.undefined;
-        expect(this.widget.comm_live).to.be.true;
-    });
-
-    it('send', function() {
+    describe('send', function() {
+        it('exists', function() {
         expect(this.widget.send).to.not.be.undefined;
-
+        it('sends the message with the right format');
         // TODO: Test pending message buffer for comm-full widgets
         // let p = this.widget.pending_msgs;
         // this.widget.send({}, {});
         // expect(this.widget.pending_msgs).to.equal(p + 1);
+        });
     });
 
-    it.skip('close', function() {
+    describe.skip('close', function() {
+        it('calls destroy');
+        it('deletes the reference to the comm');
+        it('removes views');
+        it('closes the comm');
+
+        it('exists', function() {
         expect(this.widget.close).to.not.be.undefined;
 
         let destroyEventCallback = sinon.spy();
@@ -100,9 +124,11 @@ describe("Widget", function() {
         expect(this.widget.comm).to.be.undefined;
         expect(this.widget.model_id).to.be.undefined;
         expect(Object.keys(this.widget.views).length).to.be.equal(0);
+        });
     });
 
-    it('_handle_comm_closed', function() {
+    describe('_handle_comm_closed', function() {
+        it('exists', function() {
         expect(this.widget._handle_comm_closed).to.not.be.undefined;
 
         let closeSpy = sinon.spy(this.widget, "close");
@@ -112,9 +138,11 @@ describe("Widget", function() {
         this.widget._handle_comm_closed({});
         expect(closeEventCallback.calledOnce).to.be.true;
         expect(closeSpy.calledOnce).to.be.true;
+        });
     });
 
-    it('_deserialize_state', function() {
+    describe('_deserialize_state', function() {
+        it('exists', function() {
         expect(this.widget.constructor._deserialize_state).to.not.be.undefined;
 
         // Create some dummy deserializers.  One returns synchronously, and the
@@ -139,9 +167,11 @@ describe("Widget", function() {
             expect(state.b).to.equal(1.0);
             expect(state.c).to.equal(2.0);
         });
+        });
     });
 
-    it('serialize', function() {
+    describe('serialize', function() {
+        it('exists', function() {
         expect(this.widget.serialize).to.not.be.undefined;
         const state = {
             a: 5,
@@ -150,9 +180,11 @@ describe("Widget", function() {
         const serialized_state = this.widget.serialize(state);
         expect(serialized_state).to.be.an('object');
         expect(serialized_state).to.deep.equal(state);
+        });
     });
 
-    it('serialize null values', function() {
+    describe('serialize null values', function() {
+        it('exists', function() {
         const state_with_null = {
             a: 5,
             b: null
@@ -160,9 +192,11 @@ describe("Widget", function() {
         const serialized_state = this.widget.serialize(state_with_null);
         expect(serialized_state).to.be.an('object');
         expect(serialized_state).to.deep.equal(state_with_null);
+        });
     });
 
-    it('serialize with custom serializers', function() {
+    describe('serialize with custom serializers', function() {
+        it('exists', function() {
         const state = {
             a: 5,
             need_custom_serializer: {
@@ -181,9 +215,11 @@ describe("Widget", function() {
             a: 5,
             need_custom_serializer: 6
         });
+        });
     });
 
-    it('_handle_comm_msg', function() {
+    describe('_handle_comm_msg', function() {
+        it('exists', function() {
         expect(this.widget._handle_comm_msg).to.not.be.undefined;
 
         // Update message
@@ -207,46 +243,69 @@ describe("Widget", function() {
         });
 
         return Promise.all([p1, p2]);
+        });
     });
 
-    it('set_state', function() {
-        expect(this.widget.set_state).to.not.be.undefined;
-        expect(this.widget.get('a')).to.be.undefined;
-        this.widget.set_state({a: 2});
-        expect(this.widget.get('a')).to.equal(2);
+    describe('set_state', function() {
+        it('sets the state of the widget', function() {
+            expect(this.widget.get('a')).to.be.undefined;
+            this.widget.set_state({a: 2});
+            expect(this.widget.get('a')).to.equal(2);
+        });
     });
 
-    it('get_state', function() {
+    describe('get_state', function() {
+        it('exists', function() {
         expect(this.widget.get_state).to.not.be.undefined;
         expect(this.widget.get_state.bind(this)).to.not.throw();
     });
-
-    it('_handle_status', function() {
-        expect(this.widget._handle_status).to.not.be.undefined;
+    it('gets all of the state');
+    it('drop_defaults is respected');
     });
 
-    it('callbacks', function() {
+    describe('_handle_status', function() {
+        it('exists', function() {
+        expect(this.widget._handle_status).to.not.be.undefined;
+        });
+    });
+
+    describe('callbacks', function() {
+        it('exists', function() {
         let c = this.widget.callbacks();
         expect(c).to.be.an('object');
+        });
     });
 
-    it('set', function() {
+    describe('set', function() {
+        it('exists', function() {
         expect(this.widget.set).to.not.be.undefined;
+        });
     });
 
-    it('sync', function() {
+    describe('sync', function() {
+        it('exists', function() {
         expect(this.widget.sync).to.not.be.undefined;
+        });
     });
 
-    it('send_sync_message', function() {
+    describe('serialize', function() {
+        it('exists');
+    })
+
+    describe('send_sync_message', function() {
+        it('exists', function() {
         expect(this.widget.send_sync_message).to.not.be.undefined;
+        });
     });
 
-    it('save_changes', function() {
+    describe('save_changes', function() {
+        it('exists', function() {
         expect(this.widget.save_changes).to.not.be.undefined;
+        });
     });
 
-    it('on_some_change', function() {
+    describe('on_some_change', function() {
+        it('exists', function() {
         expect(this.widget.on_some_change).to.not.be.undefined;
 
         let changeCallback = sinon.spy();
@@ -263,10 +322,16 @@ describe("Widget", function() {
         }).then(() => {
             expect(someChangeCallback.calledOnce).to.be.true;
         });
+        });
     });
 
-    it('toJSON', function() {
+    describe('toJSON', function() {
+        it('exists', function() {
         expect(this.widget.toJSON).to.not.be.undefined;
         expect(this.widget.toJSON()).to.be.a('string');
+        });
     });
+    describe('static _deserialize_state works', function() {
+        it('works');
+    })
 });
