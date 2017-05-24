@@ -241,7 +241,7 @@ class WidgetModel extends Backbone.Model {
     /**
      * Create msg callbacks for a comm msg.
      */
-    callbacks(view?) {
+    callbacks(view?: WidgetView) {
         return this.widget_manager.callbacks(view);
     }
 
@@ -251,7 +251,7 @@ class WidgetModel extends Backbone.Model {
      * We just call the super method, in which val and options are optional.
      * Handles both "key", value and {key: value} -style arguments.
      */
-    set(key, val?, options?) {
+    set(key: string, val?: any, options?: any) {
         let return_value = super.set(key, val, options);
 
         // Backbone only remembers the diff of the most recent set()
@@ -300,7 +300,7 @@ class WidgetModel extends Backbone.Model {
      *   should be synced, otherwise, sync all attributes.
      *
      */
-    sync(method, model, options: any = {}): any {
+    sync(method: string, model: WidgetModel, options: any = {}): any {
         // the typing is to return `any` since the super.sync method returns a JqXHR, but we just return false if there is an error.
         if (this.comm === undefined) {
             throw 'Syncing error: no comm channel defined';
@@ -390,6 +390,9 @@ class WidgetModel extends Backbone.Model {
         return state;
     }
 
+    /**
+     * Send a sync message to the kernel.
+     */
     send_sync_message(state, callbacks) {
         try {
             callbacks.iopub = callbacks.iopub || {};
@@ -477,8 +480,8 @@ class WidgetModel extends Backbone.Model {
     }
 
     static serializers: {[key: string]: {
-        deserialize?: (value?: any, manager?: any) => any,
-        serialize?: (value?: any, widget?: any) => any
+        deserialize?: (value?: any, manager?: managerBase.ManagerBase<any>) => any,
+        serialize?: (value?: any, widget?: WidgetModel) => any
     }};
 
     widget_manager: managerBase.ManagerBase<any>;
