@@ -183,6 +183,7 @@ def embed_snippet(widgets=None,
                   expand_dependencies='full',
                   drop_defaults=True,
                   indent=2,
+                  embed_url=None,
                  ):
     """Return a snippet that can be embedded in an HTML file. """
 
@@ -193,9 +194,12 @@ def embed_snippet(widgets=None,
         for view_spec in data['view_specs']
     )
 
-    values = {
+    if embed_url is None:
         # TODO: Get widgets npm version automatically:
-        'embed_url':'https://unpkg.com/jupyter-js-widgets@~3.0.0-alpha.0/dist/embed.js',
+        embed_url = 'https://unpkg.com/jupyter-js-widgets@~3.0.0-alpha.0/dist/embed.js'
+
+    values = {
+        'embed_url': embed_url,
         'json_data': json.dumps(data['manager_state'], indent=indent),
         'widget_views': widget_views,
     }
