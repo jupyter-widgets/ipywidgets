@@ -27,7 +27,7 @@ const JUPYTER_WIDGETS_VERSION = '3.0.0';
  */
 export
 function unpack_models(value, manager): Promise<any> {
-    var unpacked;
+    let unpacked;
     if (_.isArray(value)) {
         unpacked = [];
         _.each(value, (sub_value, key) => {
@@ -118,7 +118,7 @@ class WidgetModel extends Backbone.Model {
      */
     send(content, callbacks, buffers?) {
         if (this.comm !== undefined) {
-            var data = {method: 'custom', content: content};
+            let data = {method: 'custom', content: content};
             this.comm.send(data, callbacks, {}, buffers);
         }
     }
@@ -154,7 +154,7 @@ class WidgetModel extends Backbone.Model {
      * Handle incoming comm msg.
      */
     _handle_comm_msg(msg): Promise<void> {
-        var method = msg.content.data.method;
+        let method = msg.content.data.method;
         switch (method) {
             case 'update':
                 this._state_change = this._state_change
@@ -203,7 +203,7 @@ class WidgetModel extends Backbone.Model {
      * values are dropped.
      */
     get_state(drop_defaults) {
-        var fullState = this.attributes;
+        let fullState = this.attributes;
         if (drop_defaults) {
             let defaults = _.result(this, 'defaults');
             let state = {};
@@ -252,7 +252,7 @@ class WidgetModel extends Backbone.Model {
      * Handles both "key", value and {key: value} -style arguments.
      */
     set(key, val?, options?) {
-        var return_value = super.set(key, val, options);
+        let return_value = super.set(key, val, options);
 
         // Backbone only remembers the diff of the most recent set()
         // operation.  Calling set multiple times in a row results in a
@@ -459,11 +459,11 @@ class WidgetModel extends Backbone.Model {
      * deserialization of widget models.
      */
     static _deserialize_state(state, manager) {
-        var serializers = this.serializers;
-        var deserialized;
+        let serializers = this.serializers;
+        let deserialized;
         if (serializers) {
             deserialized = {};
-            for (var k in state) {
+            for (let k in state) {
                 if (serializers[k] && serializers[k].deserialize) {
                      deserialized[k] = (serializers[k].deserialize)(state[k], manager);
                 } else {
@@ -665,7 +665,7 @@ abstract class WidgetView extends NativeView<WidgetModel> {
      * Create and promise that resolves to a child view of a given model
      */
     create_child_view(child_model, options?) {
-        var that = this;
+        let that = this;
         options = _.extend({ parent: this }, options || {});
         return this.model.widget_manager.create_view(child_model, options)
             .catch(utils.reject('Could not create child view', true));
@@ -761,7 +761,7 @@ class DOMWidgetView extends WidgetView {
         this.id = utils.uuid();
 
         this.listenTo(this.model, 'change:_dom_classes', (model, new_classes) => {
-            var old_classes = model.previous('_dom_classes');
+            let old_classes = model.previous('_dom_classes');
             this.update_classes(old_classes, new_classes);
         });
 
@@ -882,17 +882,17 @@ class DOMWidgetView extends WidgetView {
      *  Element that the classes are applied to.
      */
     update_mapped_classes(class_map, trait_name, el?) {
-        var key = this.model.previous(trait_name);
-        var old_classes = class_map[key] ? class_map[key] : [];
+        let key = this.model.previous(trait_name);
+        let old_classes = class_map[key] ? class_map[key] : [];
         key = this.model.get(trait_name);
-        var new_classes = class_map[key] ? class_map[key] : [];
+        let new_classes = class_map[key] ? class_map[key] : [];
 
         this.update_classes(old_classes, new_classes, el || this.el);
     }
 
     set_mapped_classes(class_map, trait_name, el?) {
-        var key = this.model.get(trait_name);
-        var new_classes = class_map[key] ? class_map[key] : [];
+        let key = this.model.get(trait_name);
+        let new_classes = class_map[key] ? class_map[key] : [];
         this.update_classes([], new_classes, el || this.el);
     }
 
