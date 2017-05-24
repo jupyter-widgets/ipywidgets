@@ -159,7 +159,6 @@ class WidgetModel extends Backbone.Model {
             case 'update':
                 this._state_change = this._state_change
                     .then(() => {
-                        // see Widget.open/_split_state_buffers about why we need state_with_buffers
                         let state = msg.content.data.state;
                         let buffer_paths = msg.content.data.buffer_paths || [];
                         // Make sure the buffers are DataViews
