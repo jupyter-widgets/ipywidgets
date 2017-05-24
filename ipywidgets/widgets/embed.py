@@ -59,11 +59,6 @@ widget_view_template = """<script type="application/vnd.jupyter.widget-view+json
 </script>"""
 
 
-def _get_widgets_in_state(state):
-    for key in state.keys():
-        yield Widget.widgets[key]
-
-
 def get_recursive_state(widget, store=None, drop_defaults=False):
     """Gets the embed state of a widget, and all other widgets it refers to as well"""
     if store is None:
@@ -139,10 +134,6 @@ def dependency_state(widgets, drop_defaults, dependents=True):
         widgets = Widget.widgets.values()
         state = Widget.get_manager_state(drop_defaults=drop_defaults, widgets=widgets)['state']
     else:
-        try:
-            widgets[0]
-        except (IndexError, TypeError):
-            widgets = [widgets]
         state = {}
         for widget in widgets:
             get_recursive_state(widget, state, drop_defaults=drop_defaults)
@@ -164,10 +155,14 @@ def embed_data(widgets=None, expand_dependencies='full', drop_defaults=True):
         manager_state: dict of the widget manager state data
         view_specs: a list of widget view specs
     """
+    if widgets is not None:
+        try:
+            widgets[0]
+        except (IndexError, TypeError):
+            widgets = [widgets]
     if expand_dependencies in ('full', 'partial'):
         dependents = expand_dependencies == 'full'
         state = dependency_state(widgets, drop_defaults, dependents=dependents)
-        widgets = tuple(_get_widgets_in_state(state))
     else:
         state = Widget.get_manager_state(drop_defaults=drop_defaults, widgets=widgets)['state']
 
@@ -176,7 +171,9 @@ def embed_data(widgets=None, expand_dependencies='full', drop_defaults=True):
     # but plug in our own state
     json_data['state'] = state
 
-    return dict(manager_state=json_data, view_specs=[w.get_view_spec() for w in widgets])
+    view_specs = [w.get_view_spec() for w in widgets or Widget.widgets.values()]
+
+    return dict(manager_state=json_data, view_specs=view_specs)
 
 
 def embed_snippet(widgets=None,
