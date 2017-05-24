@@ -180,14 +180,6 @@ class WidgetModel extends Backbone.Model {
             case 'custom':
                 this.trigger('msg:custom', msg.content.data.content, msg.buffers);
                 return Promise.resolve();
-            case 'display':
-                if (this.widget_manager.displayWithOutput) {
-                    return;
-                }
-                this._state_change = this._state_change.then(() => {
-                    this.widget_manager.display_model(msg, this);
-                }).catch(utils.reject('Could not process display view msg', true));
-                return this._state_change;
         }
     }
 
