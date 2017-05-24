@@ -49,10 +49,10 @@ html_template = """<!DOCTYPE html>
     <title>{title}</title>
 </head>
 <body>
-%s
+{snippet}
 </body>
 </html>
-""" % snippet_template
+"""
 
 widget_view_template = """<script type="application/vnd.jupyter.widget-view+json">
 {view_spec}
@@ -203,28 +203,17 @@ def embed_snippet(widgets=None,
     return snippet_template.format(**values)
 
 
-def embed_minimal_html(fp,
-                       widgets=None,
-                       expand_dependencies='full',
-                       drop_defaults=False,
-                       indent=2,
-                       title='',
-                      ):
-    """Write a minimal HTML file with widgets embedded."""
+def embed_minimal_html(fp, **kwargs):
+    """Write a minimal HTML file with widgets embedded.
 
-    data = embed_data(widgets, expand_dependencies, drop_defaults)
+    Accepts keyword args similar to `embed_snippet`.
+    """
 
-    widget_views = '\n'.join(
-        widget_view_template.format(**dict(view_spec=json.dumps(view_spec)))
-        for view_spec in data['view_specs']
-    )
+    snippet = embed_snippet(**kwargs)
 
     values = {
-        # TODO: Get widgets npm version automatically:
-        "embed_url":"https://unpkg.com/jupyter-js-widgets@~3.0.0-alpha.0/dist/embed.js",
-        'json_data': json.dumps(data['manager_state'], indent=indent),
-        'widget_views': widget_views,
-        'title': title,
+        'title': 'IPyWidget export',
+        'snippet': snippet,
     }
 
     html_code = html_template.format(**values)
