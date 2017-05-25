@@ -11,8 +11,45 @@ import * as widgets from '../../lib/';
 import * as sinon from 'sinon';
 
 describe("unpack_models", function() {
-    it('recurses in arrays');
-    it('recurses in objects');
+    beforeEach(async function() {
+        this.manager = new DummyManager();
+        this.widgetA = await this.manager.new_widget({
+            model_name: 'WidgetModel',
+            model_module: 'jupyter-js-widgets',
+            model_module_version: '3.0.0',
+            model_id: 'widgetA',
+        })
+        this.widgetB = await this.manager.new_widget({
+            model_name: 'WidgetModel',
+            model_module: 'jupyter-js-widgets',
+            model_module_version: '3.0.0',
+            model_id: 'widgetB',
+        })
+    })
+    it('unpacks strings', async function() {
+        let serialized = 'IPY_MODEL_widgetA';
+        let deserialized = this.widgetA;
+        let value = await widgets.unpack_models(serialized, this.manager);
+        expect(value).to.deep.equal(deserialized);
+    })
+    it('recurses in arrays', async function() {
+        let serialized = ['IPY_MODEL_widgetA', 'IPY_MODEL_widgetB', 'IPY_MODEL_widgetA'];
+        let deserialized = [this.widgetA, this.widgetB, this.widgetA];
+        let value = await widgets.unpack_models(serialized, this.manager);
+        expect(value).to.deep.equal(deserialized);
+    });
+    it('recurses in objects', async function() {
+        let serialized = {a: 'IPY_MODEL_widgetA', b: 'IPY_MODEL_widgetB'};
+        let deserialized = {a: this.widgetA, b: this.widgetB};
+        let value = await widgets.unpack_models(serialized, this.manager);
+        expect(value).to.deep.equal(deserialized);
+    });
+    it('recurses in nested objects', async function() {
+        let serialized = {a: 'IPY_MODEL_widgetA', b: ['IPY_MODEL_widgetA', 'IPY_MODEL_widgetB', 'IPY_MODEL_widgetA'], c: {d: ['IPY_MODEL_widgetA'], e: 'IPY_MODEL_widgetB'}};
+        let deserialized = {a: this.widgetA, b: [this.widgetA, this.widgetB, this.widgetA], c: {d: [this.widgetA], e: this.widgetB}};
+        let value = await widgets.unpack_models(serialized, this.manager);
+        expect(value).to.deep.equal(deserialized);
+    })
 });
 
 describe("WidgetModel", function() {
@@ -39,17 +76,18 @@ describe("WidgetModel", function() {
     });
 
     describe('attributes', function() {
-        describe('_state_change', function() {
+        describe('state_change', function() {
             it('exists', function() {
-                expect(this.widget._state_change).to.not.be.undefined;
-                expect(this.widget._state_change).to.be.an.instanceof(Promise);
+                expect(this.widget.state_change).to.not.be.undefined;
+                expect(this.widget.state_change).to.be.an.instanceof(Promise);
             });
         });
 
         describe('_pending_msgs', function() {
             it('exists', function() {
                 expect(this.widget._pending_msgs).to.not.be.undefined;
-                expect(this.widget._pending_msgs).to.equal(0);
+                // One sync message is sent when a widget is created on the client
+                expect(this.widget._pending_msgs).to.equal(1);
             });
         });
 
@@ -235,14 +273,7 @@ describe("WidgetModel", function() {
         this.widget._handle_comm_msg({content: {data: {method: 'custom'}}});
         expect(customEventCallback.calledOnce).to.be.true; // Triggered synchronously
 
-        // Display message
-        let displaySpy = sinon.spy(this.manager, "display_model");
-        this.widget._handle_comm_msg({content: {data: {method: 'display'}}});
-        let p2 = this.widget.state_change = this.widget.state_change.then(() => {
-            expect(displaySpy.calledOnce).to.be.true;
-        });
-
-        return Promise.all([p1, p2]);
+        return p1;
         });
     });
 
