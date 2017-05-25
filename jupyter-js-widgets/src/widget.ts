@@ -81,7 +81,7 @@ class WidgetModel extends Backbone.Model {
     /**
      * Constructor
      *
-     * Creates a WidgetModel instance.
+     * Initializes a WidgetModel instance. Called by the Backbone constructor.
      *
      * Parameters
      * ----------
@@ -110,6 +110,9 @@ class WidgetModel extends Backbone.Model {
             comm.on_msg(_.bind(this._handle_comm_msg, this));
 
             this.comm_live = true;
+        } else {
+            this.comm = null
+            this.comm_live = false;
         }
     }
 
@@ -157,7 +160,7 @@ class WidgetModel extends Backbone.Model {
         let method = msg.content.data.method;
         switch (method) {
             case 'update':
-                this._state_change = this._state_change
+                this.state_change = this.state_change
                     .then(() => {
                         let state = msg.content.data.state;
                         let buffer_paths = msg.content.data.buffer_paths || [];
@@ -175,7 +178,7 @@ class WidgetModel extends Backbone.Model {
                     }).then((state) => {
                         this.set_state(state);
                     }).catch(utils.reject(`Could not process update msg for model id: ${this.id}`, true))
-                return this._state_change;
+                return this.state_change;
             case 'custom':
                 this.trigger('msg:custom', msg.content.data.content, msg.buffers);
                 return Promise.resolve();
@@ -486,12 +489,16 @@ class WidgetModel extends Backbone.Model {
 
     widget_manager: managerBase.ManagerBase<any>;
     views: {[key: string]: Promise<WidgetView>} = Object.create(null);
-    comm: any = null;
-    comm_live: boolean = false;
     model_id: string;
+    state_change: Promise<void> = Promise.resolve();
+
+    // Not initialized here so that we don't override the values set
+    // in the initialize function.
+    comm: any;
+    comm_live: boolean;
+
 
     private _state_lock: any = null;
-    private _state_change: Promise<void> = Promise.resolve();
     private _buffered_state_diff: any;
     private _msg_buffer: any = null;
     private _msg_buffer_callbacks: any = null;
