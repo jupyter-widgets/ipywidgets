@@ -111,7 +111,6 @@ class WidgetModel extends Backbone.Model {
 
             this.comm_live = true;
         } else {
-            this.comm = null
             this.comm_live = false;
         }
     }
