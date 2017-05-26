@@ -129,6 +129,11 @@ class WidgetModel extends Backbone.Model {
      * Close model
      */
     close(comm_closed) {
+        // can only be closed once.
+        if (this._closed) {
+            return;
+        }
+        this._closed = true;
         if (this.comm && !comm_closed) {
             this.comm.close();
         }
@@ -496,7 +501,7 @@ class WidgetModel extends Backbone.Model {
     comm: any;
     comm_live: boolean;
 
-
+    private _closed: boolean = false;
     private _state_lock: any = null;
     private _buffered_state_diff: any;
     private _msg_buffer: any = null;

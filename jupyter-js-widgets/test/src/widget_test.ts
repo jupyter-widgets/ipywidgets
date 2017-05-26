@@ -150,6 +150,7 @@ describe("WidgetModel", function() {
         it('deletes the reference to the comm');
         it('removes views');
         it('closes the comm');
+        it('only works once');
 
         it('exists', function() {
         expect(this.widget.close).to.not.be.undefined;
