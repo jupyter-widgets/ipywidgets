@@ -65,7 +65,7 @@ describe("WidgetModel", function() {
     });
 
     describe('construction', function() {
-        it('exists', function() {
+        it('constructs a widget', function() {
             expect(this.manager).to.not.be.undefined;
             expect(this.widget).to.not.be.undefined;
         });
@@ -73,6 +73,7 @@ describe("WidgetModel", function() {
         it('sets comm_live appropriately');
         it('uses the intialization options appropriately');
         it('can take initial state');
+        it('initial state is not synced? (_buffered_state_diff is not set)')
     });
 
 
@@ -84,20 +85,6 @@ describe("WidgetModel", function() {
                 // Do a set_state, check again
             })
         })
-
-        describe('_msg_buffer', function() {
-            it('exists', function() {
-                expect(this.widget._msg_buffer).to.not.be.undefined;
-                expect(this.widget._msg_buffer).to.be.null;
-            });
-        });
-
-        describe('_state_lock', function() {
-            it('exists', function() {
-                expect(this.widget._state_lock).to.not.be.undefined;
-                expect(this.widget._state_lock).to.be.null;
-            });
-        });
 
         describe('id', function() {
             it('exists', function() {
@@ -118,6 +105,7 @@ describe("WidgetModel", function() {
             it('exists', function() {
                 expect(this.widget.comm).to.not.be.undefined;
             });
+            it('is undefined if not passed in');
         });
 
         describe('comm_live', function() {
@@ -131,13 +119,9 @@ describe("WidgetModel", function() {
     describe('send', function() {
         it('exists', function() {
             expect(this.widget.send).to.not.be.undefined;
-            it('sends the message with the right format');
-            it('is not limited by the message throttle');
-            // TODO: Test pending message buffer for comm-full widgets
-            // let p = this.widget.pending_msgs;
-            // this.widget.send({}, {});
-            // expect(this.widget.pending_msgs).to.equal(p + 1);
         });
+        it('sends the message with the right format');
+        it('is not limited by the message throttle');
     });
 
     describe.skip('close', function() {
@@ -205,7 +189,7 @@ describe("WidgetModel", function() {
     });
 
     describe('serialize', function() {
-        it('exists', function() {
+        it('does simple serialization', function() {
             expect(this.widget.serialize).to.not.be.undefined;
             const state = {
                 a: 5,
@@ -215,10 +199,8 @@ describe("WidgetModel", function() {
             expect(serialized_state).to.be.an('object');
             expect(serialized_state).to.deep.equal(state);
         });
-    });
 
-    describe('serialize null values', function() {
-        it('exists', function() {
+        it('seralizes null values', function() {
             const state_with_null = {
                 a: 5,
                 b: null
@@ -227,10 +209,8 @@ describe("WidgetModel", function() {
             expect(serialized_state).to.be.an('object');
             expect(serialized_state).to.deep.equal(state_with_null);
         });
-    });
 
-    describe('serialize with custom serializers', function() {
-        it('exists', function() {
+        it('serializes with custom serializers', function() {
             const state = {
                 a: 5,
                 need_custom_serializer: {
@@ -281,6 +261,10 @@ describe("WidgetModel", function() {
         });
     });
 
+    describe('set', function() {
+        it('does not note as changed attributes that are currently being set in set_state (i.e., uses _state_lock');
+    })
+
     describe('get_state', function() {
         it('exists', function() {
             expect(this.widget.get_state).to.not.be.undefined;
@@ -314,6 +298,7 @@ describe("WidgetModel", function() {
             expect(this.widget.sync).to.not.be.undefined;
         });
         it('respects the message throttle');
+        it('updates messages that are throttled');
     });
 
     describe('serialize', function() {
