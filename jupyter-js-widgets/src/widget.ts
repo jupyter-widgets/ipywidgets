@@ -127,8 +127,10 @@ class WidgetModel extends Backbone.Model {
 
     /**
      * Close model
+     *
+     * @param comm_closed - true if the comm is already being closed. If false, the comm will be closed.
      */
-    close(comm_closed) {
+    close(comm_closed: boolean = false) {
         // can only be closed once.
         if (this._closed) {
             return;
@@ -150,7 +152,7 @@ class WidgetModel extends Backbone.Model {
     }
 
     /**
-     * Handle when a widget is closed.
+     * Handle when a widget comm is closed.
      */
     _handle_comm_closed(msg) {
         this.trigger('comm:close');

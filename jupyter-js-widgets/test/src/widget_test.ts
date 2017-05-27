@@ -1,5 +1,5 @@
 import {
-    DummyManager
+    DummyManager, MockComm
 } from './dummy-manager';
 
 import {
@@ -7,8 +7,12 @@ import {
 } from 'chai';
 
 import * as widgets from '../../lib/';
+let WidgetModel = widgets.WidgetModel;
 
+import * as chai from 'chai';
 import * as sinon from 'sinon';
+import * as sinonChai from 'sinon-chai';
+chai.use(sinonChai);
 
 describe("unpack_models", function() {
     beforeEach(async function() {
@@ -24,7 +28,7 @@ describe("unpack_models", function() {
             model_module: 'jupyter-js-widgets',
             model_module_version: '3.0.0',
             model_id: 'widgetB',
-        })
+        });
     })
     it('unpacks strings', async function() {
         let serialized = 'IPY_MODEL_widgetA';
@@ -55,109 +59,157 @@ describe("unpack_models", function() {
 describe("WidgetModel", function() {
     beforeEach(async function() {
         this.manager = new DummyManager();
-        this.modelId = 'test-widget';
-        this.widget = await this.manager.new_widget({
-            model_module: 'jupyter-js-widgets',
-            model_name: 'WidgetModel',
-            model_id: this.modelId,
-            widget_class: 'ipywidgets.Widget'
-        })
-    });
-
-    describe('construction', function() {
-        it('constructs a widget', function() {
-            expect(this.manager).to.not.be.undefined;
-            expect(this.widget).to.not.be.undefined;
+        let comm = new MockComm();
+        this.widget = new WidgetModel({}, {
+            model_id: 'widget',
+            widget_manager: this.manager,
+            comm: comm
         });
-        it('attaches to the comm handlers');
-        it('sets comm_live appropriately');
-        it('uses the intialization options appropriately');
-        it('can take initial state');
-        it('initial state is not synced? (_buffered_state_diff is not set)')
     });
 
-
-    describe('attributes', function() {
-        describe('state_change', function() {
-            it('is a Promise resolving to undefined', async function() {
-                let x = await this.widget.state_change;
-                expect(x).to.be.undefined;
-                // Do a set_state, check again
+    describe('constructor', function() {
+        it('can take initial state', function() {
+            let widget = new WidgetModel({a: 1, b: 'b state'}, {
+                model_id: 'widget',
+                widget_manager: this.manager,
             })
-        })
-
-        describe('id', function() {
-            it('exists', function() {
-                expect(this.widget.id).to.not.be.undefined;
-                expect(this.widget.id).to.be.a('string');
-                expect(this.widget.id).to.equal(this.modelId);
+            expect(widget.attributes).to.deep.equal({
+                ...widget.defaults(),
+                a: 1,
+                b: 'b state'
             });
         });
 
-        describe('views', function() {
-            it('exists', function() {
-                expect(this.widget.views).to.not.be.undefined;
-                expect(this.widget.views).to.be.an('object');
+        it('sets the widget_manager, id, comm, and comm_live properties', function() {
+            let widgetDead = new WidgetModel({}, {
+                model_id: 'widgetDead',
+                widget_manager: this.manager,
             });
+            expect(widgetDead.id).to.equal('widgetDead');
+            expect(widgetDead.widget_manager).to.equal(this.manager);
+            expect(widgetDead.comm).to.be.undefined;
+            expect(widgetDead.comm_live).to.be.false;
+
+            let comm = new MockComm();
+            let widgetLive = new WidgetModel({}, {
+                model_id: 'widgetLive',
+                widget_manager: this.manager,
+                comm: comm
+            });
+            expect(widgetLive.id).to.equal('widgetLive');
+            expect(widgetLive.widget_manager).to.equal(this.manager);
+            expect(widgetLive.comm).to.equal(comm);
+            expect(widgetLive.comm_live).to.be.true;
         });
 
-        describe('comm', function() {
-            it('exists', function() {
-                expect(this.widget.comm).to.not.be.undefined;
-            });
-            it('is undefined if not passed in');
-        });
-
-        describe('comm_live', function() {
-            it('exists', function() {
-                expect(this.widget.comm_live).to.not.be.undefined;
-                expect(this.widget.comm_live).to.be.true;
-            });
+        it('initializes state_change and views attributes', async function() {
+            let widget = new WidgetModel({a: 1, b: 'b state'}, {
+                model_id: 'widget',
+                widget_manager: this.manager,
+            })
+            let x = await widget.state_change;
+            expect(x).to.be.undefined;
+            expect(widget.views).to.deep.equal({});
         });
     });
 
     describe('send', function() {
-        it('exists', function() {
-            expect(this.widget.send).to.not.be.undefined;
+        it('sends custom messages with the right format', function() {
+            let comm = new MockComm();
+            let send = sinon.spy(comm, 'send');
+            let widget = new WidgetModel({}, {
+                model_id: 'widget',
+                widget_manager: this.manager,
+                comm: comm
+            });
+            let data1 = {a: 1, b: 'state'};
+            let data2 = {a: 2, b: 'state'};
+            let callbacks = {iopub: {}};
+            let buffers = [new Int8Array([1,2,3])]
+
+            // send two messages to make sure the throttle does not affect sending.
+            widget.send(data1, callbacks, buffers);
+            widget.send(data2, callbacks, buffers);
+            expect(send).to.be.calledTwice;
+            expect(send.getCall(0)).to.be.calledWithExactly(
+                {method: 'custom', content: data1},
+                callbacks,
+                {},
+                buffers
+            );
+            expect(send.getCall(1)).to.be.calledWithExactly(
+                {method: 'custom', content: data2},
+                callbacks,
+                {},
+                buffers
+            );
         });
-        it('sends the message with the right format');
-        it('is not limited by the message throttle');
     });
 
-    describe.skip('close', function() {
-        it('calls destroy');
-        it('deletes the reference to the comm');
-        it('removes views');
-        it('closes the comm');
-        it('only works once');
+    describe('close', function() {
+        beforeEach(function() {
+            this.comm = new MockComm();
+            this.widget = new WidgetModel({}, {
+                model_id: 'widget',
+                widget_manager: this.manager,
+                comm: this.comm
+            });
+        });
 
-        it('exists', function() {
-            expect(this.widget.close).to.not.be.undefined;
+        it('calls destroy', function() {
+            let destroyed = sinon.spy();
+            this.widget.on('destroy', destroyed);
+            this.widget.close();
+            expect(destroyed).to.be.calledOnce;
+        });
 
+        it('deletes the reference to the comm', function() {
+            this.widget.close();
+            expect(this.widget.comm).to.be.undefined;
+        });
+
+        it('removes views', function() {
+            this.widget.close();
+            expect(this.widget.views).to.be.undefined;
+        });
+
+        it('closes and deletes the comm', function() {
+            let close = sinon.spy(this.comm, 'close');
+            this.widget.close();
+            expect(close).to.be.calledOnce;
+            expect(this.widget.comm).to.be.undefined;
+        });
+
+        it('triggers a destroy event', function() {
             let destroyEventCallback = sinon.spy();
             this.widget.on('destroy', destroyEventCallback);
-
             this.widget.close();
-            expect(destroyEventCallback.calledOnce).to.be.true;
-            expect(this.widget.comm).to.be.undefined;
-            expect(this.widget.model_id).to.be.undefined;
-            expect(Object.keys(this.widget.views).length).to.be.equal(0);
+            expect(destroyEventCallback).to.be.calledOnce;
+        });
+
+        it('can be called twice', function() {
+            this.widget.close();
+            this.widget.close();
         });
     });
 
     describe('_handle_comm_closed', function() {
-        it('exists', function() {
-            expect(this.widget._handle_comm_closed).to.not.be.undefined;
-
+        it('closes model', function() {
             let closeSpy = sinon.spy(this.widget, "close");
+            this.widget._handle_comm_closed({});
+            expect(closeSpy).to.be.calledOnce;
+        });
+
+        it('triggers a comm:close model event', function() {
             let closeEventCallback = sinon.spy();
             this.widget.on('comm:close', closeEventCallback);
-
             this.widget._handle_comm_closed({});
-            expect(closeEventCallback.calledOnce).to.be.true;
-            expect(closeSpy.calledOnce).to.be.true;
-        });
+            expect(closeEventCallback).to.be.calledOnce;
+
+        })
     });
+
+// DONE ABOVE HERE
 
     describe('_deserialize_state', function() {
         it('exists', function() {
@@ -299,6 +351,7 @@ describe("WidgetModel", function() {
         });
         it('respects the message throttle');
         it('updates messages that are throttled');
+        it('sync right after creation does *not* send initial values')
     });
 
     describe('serialize', function() {
