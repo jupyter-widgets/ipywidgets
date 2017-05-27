@@ -286,20 +286,24 @@ describe("WidgetModel", function() {
 
     describe('_handle_comm_msg', function() {
         it('handles update messages', async function() {
-            // Update message
-            let setState = sinon.spy(this.widget, "set_state");
+            let deserialize = sinon.spy(this.widget.constructor, '_deserialize_state');
+            let setState = sinon.spy(this.widget, 'set_state');
             let state_change = this.widget._handle_comm_msg({
                 content: {
                     data: {
                         method: 'update',
-                        state: {a: 1}
+                        state: {a: 5}
                     }
                 }
             });
             expect(this.widget.state_change).to.equal(state_change);
             await state_change;
+            expect(deserialize).to.be.calledOnce;
             expect(setState).to.be.calledOnce;
+            expect(deserialize).to.be.calledBefore(setState);
+            expect(this.widget.get('a')).to.equal(5);
         });
+
         it('updates handle binary buffers (that are not DataViews)');
         it('calls the custom deserialization appropriately');
         it('calls the set_state with deserialized state');
