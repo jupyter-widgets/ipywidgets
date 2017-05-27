@@ -218,23 +218,23 @@ describe("WidgetModel", function() {
             // Create some dummy deserializers.  One returns synchronously, and the
             // other asynchronously using a promise.
             this.widget.constructor.serializers = {
-                a: {
+                times3: {
                     deserialize: (value, manager) => {
                         return value*3.0;
                     }
                 },
-                b: {
+                halve: {
                     deserialize: (value, manager) => {
                         return Promise.resolve(value/2.0);
                     }
                 }
             };
 
-            let deserialized = this.widget.constructor._deserialize_state({ a: 2.0, b: 2.0, c: 2.0 });
+            let deserialized = this.widget.constructor._deserialize_state({ times3: 2.0, halve: 2.0, c: 2.0 });
             expect(deserialized).to.be.an.instanceof(Promise);
             return deserialized.then(state => {
-                expect(state.a).to.equal(6.0);
-                expect(state.b).to.equal(1.0);
+                expect(state.times3).to.equal(6.0);
+                expect(state.halve).to.equal(1.0);
                 expect(state.c).to.equal(2.0);
             });
         });
