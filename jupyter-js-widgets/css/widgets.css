@@ -8,3 +8,4 @@ definitions when they are used. */
 
 @import "./labvariables.css";
 @import "./widgets-base.css";
+@import "@jupyterlab/rendermime/style/index.css";
