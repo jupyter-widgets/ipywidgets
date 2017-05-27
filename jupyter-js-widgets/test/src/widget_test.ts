@@ -57,17 +57,40 @@ describe("unpack_models", function() {
 });
 
 describe("WidgetModel", function() {
-    beforeEach(async function() {
-        this.manager = new DummyManager();
-        let comm = new MockComm();
-        this.widget = new WidgetModel({}, {
-            model_id: 'widget',
-            widget_manager: this.manager,
-            comm: comm
-        });
+    before(async function() {
+        this.setup = async function() {
+            this.manager = new DummyManager();
+            this.comm = new MockComm();
+            this.widget = new WidgetModel({}, {
+                model_id: 'widget',
+                widget_manager: this.manager,
+                comm: this.comm
+            });
+            // Create some dummy deserializers.  One returns synchronously, and the
+            // other asynchronously using a promise.
+            this.widget.constructor.serializers = {
+                times3: {
+                    deserialize: (value, manager) => {
+                        return value*3.0;
+                    }
+                },
+                halve: {
+                    deserialize: (value, manager) => {
+                        return Promise.resolve(value/2.0);
+                    }
+                }
+            };
+            this.widget.constructor._deserialize_state.reset();
+        }
+        sinon.spy(WidgetModel, '_deserialize_state');
+        await this.setup();
     });
 
     describe('constructor', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
         it('can take initial state', function() {
             let widget = new WidgetModel({a: 1, b: 'b state'}, {
                 model_id: 'widget',
@@ -111,9 +134,14 @@ describe("WidgetModel", function() {
             expect(x).to.be.undefined;
             expect(widget.views).to.deep.equal({});
         });
+        it('hooks up the comm close and message handlers');
     });
 
     describe('send', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
         it('sends custom messages with the right format', function() {
             let comm = new MockComm();
             let send = sinon.spy(comm, 'send');
@@ -147,13 +175,8 @@ describe("WidgetModel", function() {
     });
 
     describe('close', function() {
-        beforeEach(function() {
-            this.comm = new MockComm();
-            this.widget = new WidgetModel({}, {
-                model_id: 'widget',
-                widget_manager: this.manager,
-                comm: this.comm
-            });
+        beforeEach(async function() {
+            await this.setup();
         });
 
         it('calls destroy', function() {
@@ -194,6 +217,10 @@ describe("WidgetModel", function() {
     });
 
     describe('_handle_comm_closed', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
         it('closes model', function() {
             let closeSpy = sinon.spy(this.widget, "close");
             this.widget._handle_comm_closed({});
@@ -209,27 +236,82 @@ describe("WidgetModel", function() {
         })
     });
 
+    describe('_handle_comm_msg', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
+        it('handles update messages', async function() {
+            let deserialize = this.widget.constructor._deserialize_state;
+            let setState = sinon.spy(this.widget, 'set_state');
+            let state_change = this.widget._handle_comm_msg({
+                content: {
+                    data: {
+                        method: 'update',
+                        state: {a: 5}
+                    }
+                }
+            });
+            expect(this.widget.state_change).to.equal(state_change);
+            await state_change;
+            expect(deserialize).to.be.calledOnce;
+            expect(setState).to.be.calledOnce;
+            expect(deserialize).to.be.calledBefore(setState);
+            expect(this.widget.get('a')).to.equal(5);
+        });
+
+        it('updates handle various types of binary buffers', async function() {
+            let buffer1 = new Uint8Array([1,2,3]);
+            let buffer2 = new Float64Array([2.3, 6.4]);
+            let buffer3 = new Int16Array([10,20,30]);
+            await this.widget._handle_comm_msg({
+                content: {
+                    data: {
+                        method: 'update',
+                        state: {a: 5, c: ['start', null, {}],},
+                        buffer_paths: [['b'], ['c', 1], ['c', 2, 'd']]
+                    }
+                },
+                buffers: [buffer1, buffer2.buffer, new DataView(buffer3.buffer)]
+            });
+            expect(this.widget.get('a')).to.equal(5);
+            expect(this.widget.get('b')).to.deep.equal(new DataView(buffer1.buffer));
+            expect(this.widget.get('c')).to.deep.equal(['start', new DataView(buffer2.buffer), {d: new DataView(buffer3.buffer)}]);
+        });
+
+        it('handles custom deserialization', async function() {
+            await this.widget._handle_comm_msg({
+                content: {
+                    data: {
+                        method: 'update',
+                        state: {halve: 10, times3: 4},
+                    }
+                }
+            });
+            expect(this.widget.get('halve')).to.equal(5);
+            expect(this.widget.get('times3')).to.equal(12);
+        });
+
+        it('handles custom messages', function() {
+            let customEventCallback = sinon.spy();
+            this.widget.on('msg:custom', customEventCallback);
+            this.widget._handle_comm_msg({
+                content: {
+                    data: {method: 'custom'}
+                }
+            });
+            expect(customEventCallback).to.be.calledOnce;
+        });
+    });
+
 // DONE ABOVE HERE
 
     describe('_deserialize_state', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
         it('exists', function() {
-            expect(this.widget.constructor._deserialize_state).to.not.be.undefined;
-
-            // Create some dummy deserializers.  One returns synchronously, and the
-            // other asynchronously using a promise.
-            this.widget.constructor.serializers = {
-                times3: {
-                    deserialize: (value, manager) => {
-                        return value*3.0;
-                    }
-                },
-                halve: {
-                    deserialize: (value, manager) => {
-                        return Promise.resolve(value/2.0);
-                    }
-                }
-            };
-
             let deserialized = this.widget.constructor._deserialize_state({ times3: 2.0, halve: 2.0, c: 2.0 });
             expect(deserialized).to.be.an.instanceof(Promise);
             return deserialized.then(state => {
@@ -241,6 +323,10 @@ describe("WidgetModel", function() {
     });
 
     describe('serialize', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
         it('does simple serialization', function() {
             expect(this.widget.serialize).to.not.be.undefined;
             const state = {
@@ -285,8 +371,12 @@ describe("WidgetModel", function() {
     });
 
     describe('_handle_comm_msg', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
         it('handles update messages', async function() {
-            let deserialize = sinon.spy(this.widget.constructor, '_deserialize_state');
+            let deserialize = this.widget.constructor._deserialize_state;
             let setState = sinon.spy(this.widget, 'set_state');
             let state_change = this.widget._handle_comm_msg({
                 content: {
@@ -304,9 +394,38 @@ describe("WidgetModel", function() {
             expect(this.widget.get('a')).to.equal(5);
         });
 
-        it('updates handle binary buffers (that are not DataViews)');
-        it('calls the custom deserialization appropriately');
-        it('calls the set_state with deserialized state');
+        it('updates handle various types of binary buffers', async function() {
+            let buffer1 = new Uint8Array([1,2,3]);
+            let buffer2 = new Float64Array([2.3, 6.4]);
+            let buffer3 = new Int16Array([10,20,30]);
+            await this.widget._handle_comm_msg({
+                content: {
+                    data: {
+                        method: 'update',
+                        state: {a: 5, c: ['start', null, {}],},
+                        buffer_paths: [['b'], ['c', 1], ['c', 2, 'd']]
+                    }
+                },
+                buffers: [buffer1, buffer2.buffer, new DataView(buffer3.buffer)]
+            });
+            expect(this.widget.get('a')).to.equal(5);
+            expect(this.widget.get('b')).to.deep.equal(new DataView(buffer1.buffer));
+            expect(this.widget.get('c')).to.deep.equal(['start', new DataView(buffer2.buffer), {d: new DataView(buffer3.buffer)}]);
+        });
+
+        it('handles custom deserialization', async function() {
+            await this.widget._handle_comm_msg({
+                content: {
+                    data: {
+                        method: 'update',
+                        state: {halve: 10, times3: 4},
+                    }
+                }
+            });
+            expect(this.widget.get('halve')).to.equal(5);
+            expect(this.widget.get('times3')).to.equal(12);
+        });
+
         it('handles custom messages', function() {
             let customEventCallback = sinon.spy();
             this.widget.on('msg:custom', customEventCallback);
@@ -320,6 +439,10 @@ describe("WidgetModel", function() {
     });
 
     describe('set_state', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
         it('sets the state of the widget', function() {
             expect(this.widget.get('a')).to.be.undefined;
             this.widget.set_state({a: 2});
@@ -328,10 +451,18 @@ describe("WidgetModel", function() {
     });
 
     describe('set', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
         it('does not note as changed attributes that are currently being set in set_state (i.e., uses _state_lock');
     })
 
     describe('get_state', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
         it('exists', function() {
             expect(this.widget.get_state).to.not.be.undefined;
             expect(this.widget.get_state.bind(this)).to.not.throw();
@@ -341,12 +472,20 @@ describe("WidgetModel", function() {
     });
 
     describe('_handle_status', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
         it('exists', function() {
             expect(this.widget._handle_status).to.not.be.undefined;
         });
     });
 
     describe('callbacks', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
         it('exists', function() {
             let c = this.widget.callbacks();
             expect(c).to.be.an('object');
@@ -354,12 +493,20 @@ describe("WidgetModel", function() {
     });
 
     describe('set', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
         it('exists', function() {
             expect(this.widget.set).to.not.be.undefined;
         });
     });
 
     describe('sync', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
         it('exists', function() {
             expect(this.widget.sync).to.not.be.undefined;
         });
@@ -369,22 +516,38 @@ describe("WidgetModel", function() {
     });
 
     describe('serialize', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
         it('exists');
     })
 
     describe('send_sync_message', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
         it('exists', function() {
             expect(this.widget.send_sync_message).to.not.be.undefined;
         });
     });
 
     describe('save_changes', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
         it('exists', function() {
             expect(this.widget.save_changes).to.not.be.undefined;
         });
     });
 
     describe('on_some_change', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
         it('exists', function() {
             expect(this.widget.on_some_change).to.not.be.undefined;
 
@@ -406,12 +569,20 @@ describe("WidgetModel", function() {
     });
 
     describe('toJSON', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
         it('exists', function() {
             expect(this.widget.toJSON).to.not.be.undefined;
             expect(this.widget.toJSON()).to.be.a('string');
         });
     });
     describe('static _deserialize_state works', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
         it('works');
     })
 });
