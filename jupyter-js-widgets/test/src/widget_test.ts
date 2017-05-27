@@ -285,23 +285,33 @@ describe("WidgetModel", function() {
     });
 
     describe('_handle_comm_msg', function() {
-        it('exists', function() {
-            expect(this.widget._handle_comm_msg).to.not.be.undefined;
-
+        it('handles update messages', async function() {
             // Update message
-            let setStateSpy = sinon.spy(this.widget, "set_state");
-            this.widget._handle_comm_msg({content: {data: {method: 'update'}}});
-            let p1 = this.widget.state_change = this.widget.state_change.then(() => {
-                expect(setStateSpy.calledOnce).to.be.true;
+            let setState = sinon.spy(this.widget, "set_state");
+            let state_change = this.widget._handle_comm_msg({
+                content: {
+                    data: {
+                        method: 'update',
+                        state: {a: 1}
+                    }
+                }
             });
-
-            // Custom message
+            expect(this.widget.state_change).to.equal(state_change);
+            await state_change;
+            expect(setState).to.be.calledOnce;
+        });
+        it('updates handle binary buffers (that are not DataViews)');
+        it('calls the custom deserialization appropriately');
+        it('calls the set_state with deserialized state');
+        it('handles custom messages', function() {
             let customEventCallback = sinon.spy();
             this.widget.on('msg:custom', customEventCallback);
-            this.widget._handle_comm_msg({content: {data: {method: 'custom'}}});
-            expect(customEventCallback.calledOnce).to.be.true; // Triggered synchronously
-
-            return p1;
+            this.widget._handle_comm_msg({
+                content: {
+                    data: {method: 'custom'}
+                }
+            });
+            expect(customEventCallback).to.be.calledOnce;
         });
     });
 
