@@ -14,21 +14,6 @@ module.exports = {
     module: {
         loaders: [
             { test: /\.css$/, loader: "style-loader!css-loader!postcss-loader" },
-            // { test: /\.css$/,
-            //   loaders: [
-            //       "style-loader",
-            //       "css-loader",
-            //       {
-            //           loader: "postcss-loader",
-            //           options: {
-            //               plugins: (loader) => [
-            //                   require('postcss-import')({ root: loader.resourcePath }),
-            //                   require('postcss-cssnext')()
-            //               ]
-            //           }
-            //       }
-            //   ]
-            // },
             { test: /\.json$/, loader: "json-loader" },
             // jquery-ui loads some images
             { test: /\.(jpg|png|gif)$/, loader: "file" },
