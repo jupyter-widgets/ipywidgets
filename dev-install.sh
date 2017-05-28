@@ -65,6 +65,9 @@ cd ..
 # Install Python ipywidgets before jLab part
 pip install -v -e .
 
+# skip jupyter lab installation until we update the instructions below
+skip_jupyter_lab=yes
+
 if test "$skip_jupyter_lab" != yes; then
     cd jupyterlab_widgets
 
