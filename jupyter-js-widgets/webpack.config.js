@@ -4,7 +4,7 @@
 var version = require('./package.json').version;
 
 module.exports = {
-    entry: './lib-embed/embed-webpack.js',
+    entry: './lib/index.js',
     output: {
         filename: 'embed.js',
         path: './dist',

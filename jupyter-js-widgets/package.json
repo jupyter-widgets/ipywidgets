@@ -24,7 +24,7 @@
     "build:src": "tsc --project src",
     "build:src-embed": "tsc --project src-embed",
     "build:css": "postcss --use postcss-import --use postcss-cssnext -o css/widgets.built.css css/widgets.css",
-    "build": "npm run build:src && npm run build:src-embed && npm run build:css && webpack",
+    "build": "npm run build:src && npm run build:css && webpack",
     "postinstall": "npm dedupe",
     "prepublish": "npm run build",
     "test": "npm run test:unit && npm run test:examples",
