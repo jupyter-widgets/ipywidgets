@@ -7,8 +7,6 @@ import {
 
 import * as PhosphorWidget from '@phosphor/widgets';
 
-import * as widgets from 'jupyter-js-widgets';
-
 export
 class EmbedManager extends ManagerBase<HTMLElement> {
 
@@ -49,18 +47,11 @@ class EmbedManager extends ManagerBase<HTMLElement> {
      */
     protected loadClass(className: string, moduleName: string, moduleVersion: string) {
         return new Promise(function(resolve, reject) {
-            if (moduleName === 'jupyter-js-widgets') {
-                // Shortcut resolving the standard widgets so we don't load two
-                // copies on the page. If we ever separate the embed manager
-                // from the main widget package, we should get rid of this special
-                // case.
-                resolve(widgets);
-            } else {
-                var fallback = function(err) {
-                    (window as any).require([`https://unpkg.com/${moduleName}@${moduleVersion}/dist/index.js`], resolve, reject);
-                };
-                (window as any).require([`${moduleName}.js`], resolve, fallback);
-            }
+            var fallback = function(err) {
+                console.log(`in fallback for ${className}`);
+                (window as any).require([`https://unpkg.com/${moduleName}@${moduleVersion}/dist/index.js`], resolve, reject);
+            };
+            (window as any).require([`${moduleName}.js`], resolve, fallback);
         }).then(function(module) {
             if (module[className]) {
                 return module[className];

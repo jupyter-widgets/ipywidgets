@@ -22,10 +22,9 @@ var Ajv = require('ajv');
 var widget_state_schema = require('jupyter-widgets-schema').v2.state;
 var widget_view_schema = require('jupyter-widgets-schema').v2.view;
 
-// Magic global widget rendering function:
-import * as widgets from 'jupyter-js-widgets';
 import * as embed from './embed-manager';
 import * as _ from 'underscore';
+import { WidgetModel } from 'jupyter-js-widgets';
 
 // `LoadInlineWidget` is the main function called on load of the web page.
 // All it does is inserting a <script> tag for requirejs in the case it is not
@@ -43,13 +42,6 @@ function loadInlineWidgets(event) {
         }
     });
     loadRequire.then(function() {
-        // Define jupyter-js-widget requirejs module
-        // (This is needed for custom widget model to be able to AMD require jupyter-js-widgets.)
-        if (!(window as any).requirejs.defined('jupyter-js-widgets')) {
-            (window as any).define('jupyter-js-widgets', function () {
-                return widgets;
-            });
-        }
         // Render inline widgets
         renderInlineWidgets(event);
     });
@@ -99,7 +91,7 @@ function renderManager(element, tag) {
                 console.log(view_validate.errors);
             }
             let model_id = widgetViewObject.model_id;
-            let model = _.find(models, function(item : widgets.WidgetModel) {
+            let model = _.find(models, function(item : WidgetModel) {
                 return item.id == model_id;
             });
             if (model !== undefined) {
