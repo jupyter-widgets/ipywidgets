@@ -8,6 +8,7 @@ module.exports = {
     output: {
         filename: 'embed.js',
         path: './dist',
+        libraryTarget: 'amd',
         publicPath: 'https://unpkg.com/jupyter-js-widgets@' + version + '/dist/'
     },
     devtool: 'source-map',
