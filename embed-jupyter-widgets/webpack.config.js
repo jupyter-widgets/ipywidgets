@@ -6,7 +6,7 @@ var version = require('./package.json').version;
 module.exports = {
     entry: './lib/embed-webpack.js',
     output: {
-        filename : 'embed.js',
+        filename : 'index.js',
         path: './dist',
         publicPath: 'https://unpkg.com/embed-jupyter-widgets@' + version + '/dist/'
     },
