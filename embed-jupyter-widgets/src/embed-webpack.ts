@@ -12,11 +12,6 @@ if (Element && !Element.prototype.matches) {
     proto.oMatchesSelector || proto.webkitMatchesSelector;
 }
 
-// Load styling
-require('font-awesome/css/font-awesome.css');
-require('@phosphor/widgets/style/index.css');
-require('jupyter-js-widgets/css/widgets.css')
-
 // Load json schema validator
 var Ajv = require('ajv');
 var widget_state_schema = require('jupyter-widgets-schema').v2.state;
