@@ -525,12 +525,27 @@ describe("WidgetModel", function() {
             await this.setup();
         });
 
-        it('exists', function() {
-            expect(this.widget.get_state).to.not.be.undefined;
-            expect(this.widget.get_state.bind(this)).to.not.throw();
+        it('gets all of the state', function() {
+            this.widget.set('a', 'get_state test');
+            expect(this.widget.get_state()).to.deep.equal({
+                _model_module: 'jupyter-js-widgets',
+                _model_name: 'WidgetModel',
+                _model_module_version: '3.0.0',
+                _view_module: 'jupyter-js-widgets',
+                _view_name: null,
+                _view_module_version: '3.0.0',
+                _view_count: null,
+                msg_throttle: 1,
+                a: 'get_state test'
+            });
         });
-        it('gets all of the state');
-        it('drop_defaults is respected');
+
+        it('drop_defaults is respected', function() {
+            this.widget.set('a', 'get_state test');
+            expect(this.widget.get_state(true)).to.deep.equal({
+                a: 'get_state test'
+            });
+        });
     });
 
     describe('_handle_status', function() {
@@ -554,16 +569,6 @@ describe("WidgetModel", function() {
         });
     });
 
-    describe('set', function() {
-        beforeEach(async function() {
-            await this.setup();
-        });
-
-        it('exists', function() {
-            expect(this.widget.set).to.not.be.undefined;
-        });
-    });
-
     describe('sync', function() {
         beforeEach(async function() {
             await this.setup();
@@ -577,32 +582,12 @@ describe("WidgetModel", function() {
         it('sync right after creation does *not* send initial values')
     });
 
-    describe('serialize', function() {
-        beforeEach(async function() {
-            await this.setup();
-        });
-
-        it('exists');
-    })
-
     describe('send_sync_message', function() {
         beforeEach(async function() {
             await this.setup();
         });
 
-        it('exists', function() {
-            expect(this.widget.send_sync_message).to.not.be.undefined;
-        });
-    });
-
-    describe('save_changes', function() {
-        beforeEach(async function() {
-            await this.setup();
-        });
-
-        it('exists', function() {
-            expect(this.widget.save_changes).to.not.be.undefined;
-        });
+        it('exists');
     });
 
     describe('on_some_change', function() {
@@ -610,23 +595,14 @@ describe("WidgetModel", function() {
             await this.setup();
         });
 
-        it('exists', function() {
-            expect(this.widget.on_some_change).to.not.be.undefined;
-
+        it('is called once for multiple change notifications', async function() {
             let changeCallback = sinon.spy();
             let someChangeCallback = sinon.spy();
-            this.widget.on('change:a change:b', changeCallback, this.widget);
+            this.widget.on('change:a change:b', changeCallback);
+            this.widget.on_some_change(['a', 'b'], someChangeCallback);
             this.widget.set_state({ a: true, b: true });
-
-            return this.widget.state_change.then(() => {
-                expect(changeCallback.callCount).to.equal(2);
-
-                this.widget.on_some_change(['a', 'b'], someChangeCallback, this.widget);
-                this.widget.set_state({ a: false, b: false });
-                return this.widget.state_change;
-            }).then(() => {
-                expect(someChangeCallback.calledOnce).to.be.true;
-            });
+            expect(changeCallback.callCount).to.equal(2);
+            expect(someChangeCallback).to.be.calledOnce;
         });
     });
 
@@ -635,9 +611,8 @@ describe("WidgetModel", function() {
             await this.setup();
         });
 
-        it('exists', function() {
-            expect(this.widget.toJSON).to.not.be.undefined;
-            expect(this.widget.toJSON()).to.be.a('string');
+        it('encodes the widget', function() {
+            expect(this.widget.toJSON()).to.equal(`IPY_MODEL_${this.widget.id}`);
         });
     });
     describe('static _deserialize_state works', function() {
