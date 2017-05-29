@@ -193,6 +193,8 @@ class WidgetModel extends Backbone.Model {
 
     /**
      * Handle when a widget is updated from the backend.
+     *
+     * This function is meant for internal use only. Values set here will not be propagated on a sync.
      */
     set_state(state: any) {
         this._state_lock = state;

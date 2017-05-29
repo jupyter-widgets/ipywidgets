@@ -458,9 +458,11 @@ describe("WidgetModel", function() {
 
         it('sets the state of the widget', function() {
             expect(this.widget.get('a')).to.be.undefined;
-            this.widget.set_state({a: 2});
+            expect(this.widget.get('b')).to.be.undefined;
+            this.widget.set_state({a: 2, b: 3});
             expect(this.widget.get('a')).to.equal(2);
-        });
+            expect(this.widget.get('b')).to.equal(3);
+        })
     });
 
     describe('set', function() {
@@ -468,7 +470,54 @@ describe("WidgetModel", function() {
             await this.setup();
         });
 
-        it('does not note as changed attributes that are currently being set in set_state (i.e., uses _state_lock');
+        it('triggers change events', async function() {
+            let changeA = sinon.spy(function changeA(){});
+            let change = sinon.spy(function change(){});
+            this.widget.on('change:a', changeA);
+            this.widget.on('change', change);
+            this.widget.set('a', 100);
+            expect(changeA).to.be.calledOnce;
+            expect(changeA).to.be.calledWith(this.widget, 100);
+            expect(changeA).to.be.calledBefore(change);
+            expect(change).to.be.calledWith(this.widget);
+        });
+        it('handles multiple values to set', function() {
+            expect(this.widget.get('a')).to.be.undefined;
+            expect(this.widget.get('b')).to.be.undefined;
+            this.widget.set({a: 2, b: 3});
+            expect(this.widget.get('a')).to.equal(2);
+            expect(this.widget.get('b')).to.equal(3);
+        });
+    })
+
+    describe('save_changes', function() {
+        beforeEach(async function() {
+            await this.setup();
+        });
+
+        it('remembers changes across multiple set calls', function() {
+            sinon.spy(this.widget, 'save');
+            expect(this.widget.get('a')).to.be.undefined;
+            expect(this.widget.get('b')).to.be.undefined;
+            this.widget.set('a', 2);
+            this.widget.set('b', 5);
+            this.widget.save_changes();
+            expect(this.widget.save).to.be.calledWith({a: 2, b: 5});
+        });
+
+        it('will not sync changes done by set_state', function() {
+            sinon.spy(this.widget, 'save');
+            expect(this.widget.get('a')).to.be.undefined;
+            expect(this.widget.get('b')).to.be.undefined;
+            this.widget.on('change:a', ()=> {
+                this.widget.set('b', 15);
+            })
+            this.widget.set_state({a: 10});
+            expect(this.widget.get('a')).to.equal(10);
+            expect(this.widget.get('b')).to.equal(15);
+            this.widget.save_changes();
+            expect(this.widget.save).to.be.calledWith({b: 15});
+        });
     })
 
     describe('get_state', function() {
