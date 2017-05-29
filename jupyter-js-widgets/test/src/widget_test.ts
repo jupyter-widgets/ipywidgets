@@ -68,6 +68,9 @@ describe("WidgetModel", function() {
             });
             // Create some dummy deserializers.  One returns synchronously, and the
             // other asynchronously using a promise.
+            this.serializeToJSON = sinon.spy(() => {
+                return 'serialized'
+            });
             this.widget.constructor.serializers = {
                 times3: {
                     deserialize: (value, manager) => {
@@ -78,6 +81,16 @@ describe("WidgetModel", function() {
                     deserialize: (value, manager) => {
                         return Promise.resolve(value/2.0);
                     }
+                },
+                spy: {
+                    deserialize: sinon.spy((value, manager) => {
+                        return 'deserialized';
+                    }),
+                    serialize: sinon.spy((value, widget) => {
+                        return {
+                            toJSON: this.serializeToJSON
+                        }
+                    })
                 }
             };
             this.widget.constructor._deserialize_state.reset();
@@ -304,22 +317,30 @@ describe("WidgetModel", function() {
         });
     });
 
-// DONE ABOVE HERE
-
     describe('_deserialize_state', function() {
         beforeEach(async function() {
             await this.setup();
         });
 
-        it('exists', function() {
-            let deserialized = this.widget.constructor._deserialize_state({ times3: 2.0, halve: 2.0, c: 2.0 });
-            expect(deserialized).to.be.an.instanceof(Promise);
-            return deserialized.then(state => {
-                expect(state.times3).to.equal(6.0);
-                expect(state.halve).to.equal(1.0);
-                expect(state.c).to.equal(2.0);
-            });
+        it('deserializes simple JSON state', async function() {
+            let state = await this.widget.constructor._deserialize_state({ a: 10, b: [{c: 'test1', d: ['test2']}, 20]}, this.manager);
+            expect(state.a).to.equal(10);
+            expect(state.b).to.deep.equal([{c: 'test1', d: ['test2']}, 20]);
         });
+
+        it('respects custom serializers', async function() {
+            let state = await this.widget.constructor._deserialize_state({ times3: 2.0, halve: 2.0, c: 2.0 }, this.manager);
+            expect(state.times3).to.equal(6.0);
+            expect(state.halve).to.equal(1.0);
+            expect(state.c).to.equal(2.0);
+        });
+
+        it('calls the deserializer with appropriate arguments', async function() {
+            let state = await this.widget.constructor._deserialize_state({spy: 'value'}, this.manager);
+            let spy = this.widget.constructor.serializers.spy.deserialize;
+            expect(spy).to.be.calledOnce;
+            expect(spy).to.be.calledWithExactly('value', this.manager);
+        })
     });
 
     describe('serialize', function() {
@@ -327,46 +348,38 @@ describe("WidgetModel", function() {
             await this.setup();
         });
 
-        it('does simple serialization', function() {
-            expect(this.widget.serialize).to.not.be.undefined;
+        it('does simple serialization by copying values', function() {
+            const b = {c: 'start'};
             const state = {
                 a: 5,
-                b: 'some-string'
+                b: b
             };
             const serialized_state = this.widget.serialize(state);
-            expect(serialized_state).to.be.an('object');
-            expect(serialized_state).to.deep.equal(state);
+            // b state was copied
+            expect(serialized_state.b).to.not.equal(b);
+            expect(serialized_state).to.deep.equal({a: 5, b: b});
         });
 
-        it('seralizes null values', function() {
+        it('serializes null values', function() {
             const state_with_null = {
                 a: 5,
                 b: null
             };
             const serialized_state = this.widget.serialize(state_with_null);
-            expect(serialized_state).to.be.an('object');
-            expect(serialized_state).to.deep.equal(state_with_null);
+            expect(serialized_state.b).to.equal(null);
         });
 
-        it('serializes with custom serializers', function() {
-            const state = {
-                a: 5,
-                need_custom_serializer: {
-                    use_this: 6,
-                    ignored: 'should not get serialized'
-                }
-            };
-            this.widget.constructor.serializers = {
-                ...this.widget.constructor.serializers,
-                need_custom_serializer: {
-                    serialize: (value) => value.use_this
-                }
-            };
-            const serialized_state = this.widget.serialize(state);
-            expect(serialized_state).to.deep.equal({
-                a: 5,
-                need_custom_serializer: 6
-            });
+        it('calls custom serializers with appropriate arguments', function() {
+            let serialized_state = this.widget.serialize({spy: 'value'});
+            let spy = this.widget.constructor.serializers.spy.serialize;
+            expect(spy).to.be.calledWithExactly('value', this.widget);
+        });
+
+        it('calls toJSON method if possible', function() {
+            let serialized_state = this.widget.serialize({spy: 'value'});
+            let spy = this.serializeToJSON;
+            expect(spy).to.be.calledOnce;
+            expect(serialized_state).to.deep.equal({spy: 'serialized'});
         });
     });
 
