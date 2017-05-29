@@ -64,6 +64,41 @@ class TestEmbed:
         assert 'IntTextModel' in model_names
         assert 'IntSliderModel' in model_names
 
+    def test_embed_data_complex(self):
+        w1 = IntText(4)
+        w2 = IntSlider(min=0, max=100)
+        jslink((w1, 'value'), (w2, 'value'))
+
+        w3 = CaseWidget()
+        w3.a = w1
+
+        w4 = CaseWidget()
+        w4.a = w3
+        w4.other['test'] = w2
+
+        # Add a circular reference:
+        w3.b = w4
+
+        # Put it in an HBox
+        HBox(children=[w4])
+
+        data = embed_data(widgets=w4, drop_defaults=True)
+
+        state = data['manager_state']['state']
+        views = data['view_specs']
+
+        assert len(state) == 9
+        assert len(views) == 1
+
+        model_names = [s['model_name'] for s in state.values()]
+        assert 'IntTextModel' in model_names
+        assert 'IntSliderModel' in model_names
+        assert 'CaseWidgetModel' in model_names
+        assert 'LinkModel' in model_names
+
+        # Check that HBox is not collected
+        assert 'HBoxModel' not in model_names
+
     def test_snippet(self):
         w = IntText(4)
         snippet = embed_snippet(widgets=w, drop_defaults=True)
