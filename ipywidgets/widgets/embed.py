@@ -90,7 +90,8 @@ def get_recursive_state(widget, store=None, drop_defaults=False):
 
     # Loop over all values included in state (i.e. don't consider excluded values):
     for ref in _find_widget_refs_by_state(widget, state['state']):
-        get_recursive_state(ref, store, drop_defaults=drop_defaults)
+        if ref.model_id not in store:
+            get_recursive_state(ref, store, drop_defaults=drop_defaults)
     return store
 
 
