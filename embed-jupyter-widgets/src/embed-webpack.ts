@@ -4,6 +4,11 @@
 // ES6 Promise polyfill
 (require('es6-promise') as any).polyfill();
 
+import 'font-awesome/css/font-awesome.css';
+import '@phosphor/widgets/style/index.css';
+import 'jupyter-js-widgets/css/widgets.built.css';
+
+
 // Element.prototype.matches polyfill
 if (Element && !Element.prototype.matches) {
     let proto = Element.prototype as any;
