@@ -61,6 +61,7 @@ describe("WidgetModel", function() {
         this.setup = async function() {
             this.manager = new DummyManager();
             this.comm = new MockComm();
+            sinon.spy(this.comm, 'send');
             this.widget = new WidgetModel({}, {
                 model_id: 'widget',
                 widget_manager: this.manager,
@@ -147,7 +148,6 @@ describe("WidgetModel", function() {
             expect(x).to.be.undefined;
             expect(widget.views).to.deep.equal({});
         });
-        it('hooks up the comm close and message handlers');
     });
 
     describe('send', function() {
@@ -240,12 +240,17 @@ describe("WidgetModel", function() {
             expect(closeSpy).to.be.calledOnce;
         });
 
+        it('listens to the widget close event', function() {
+            let closeSpy = sinon.spy(this.widget, "close");
+            this.widget.comm.close();
+            expect(closeSpy).to.be.calledOnce;
+        });
+
         it('triggers a comm:close model event', function() {
             let closeEventCallback = sinon.spy();
             this.widget.on('comm:close', closeEventCallback);
             this.widget._handle_comm_closed({});
             expect(closeEventCallback).to.be.calledOnce;
-
         })
     });
 
@@ -253,6 +258,19 @@ describe("WidgetModel", function() {
         beforeEach(async function() {
             await this.setup();
         });
+
+        it('listens to widget messages', async function() {
+            await this.widget.comm._process_msg({
+                content: {
+                    data: {
+                        method: 'update',
+                        state: {a: 5}
+                    }
+                }
+            });
+            console.log(this.widget.get('a'));
+            expect(this.widget.get('a')).to.equal(5);
+        })
 
         it('handles update messages', async function() {
             let deserialize = this.widget.constructor._deserialize_state;
@@ -548,24 +566,13 @@ describe("WidgetModel", function() {
         });
     });
 
-    describe('_handle_status', function() {
-        beforeEach(async function() {
-            await this.setup();
-        });
-
-        it('exists', function() {
-            expect(this.widget._handle_status).to.not.be.undefined;
-        });
-    });
-
     describe('callbacks', function() {
         beforeEach(async function() {
             await this.setup();
         });
 
-        it('exists', function() {
-            let c = this.widget.callbacks();
-            expect(c).to.be.an('object');
+        it('returns a blank object', function() {
+            expect(this.widget.callbacks()).to.deep.equal({});
         });
     });
 
@@ -574,12 +581,69 @@ describe("WidgetModel", function() {
             await this.setup();
         });
 
-        it('exists', function() {
-            expect(this.widget.sync).to.not.be.undefined;
+        it('respects the message throttle', function() {
+            let send = sinon.spy(this.widget, 'send_sync_message');
+            this.widget.set('a', 'sync test');
+            this.widget.save_changes();
+            this.widget.set('a', 'another sync test');
+            this.widget.set('b', 'change b');
+            this.widget.save_changes();
+            this.widget.set('b', 'change b again');
+            this.widget.save_changes();
+
+            // check that one sync message went through
+            expect(send).to.be.calledOnce;
+            expect(send).to.be.calledWith({
+                a: 'sync test'
+            })
+            // have the comm send a status idle message
+            this.widget._handle_status({
+                content: {
+                    execution_state: 'idle'
+                }
+            });
+            // check that the other sync message went through with the updated values
+            expect(send.secondCall).to.be.calledWith({
+                a: 'another sync test',
+                b: 'change b again'
+            });
         });
-        it('respects the message throttle');
-        it('updates messages that are throttled');
-        it('sync right after creation does *not* send initial values')
+        it('works with message throttle 2', function() {
+            let send = sinon.spy(this.widget, 'send_sync_message');
+            this.widget.set('msg_throttle', 2);
+            this.widget.set('a', 'sync test');
+            this.widget.save_changes();
+            this.widget.set('a', 'another sync test');
+            this.widget.set('b', 'change b');
+            this.widget.save_changes();
+            this.widget.set('b', 'change b again');
+            this.widget.save_changes();
+
+            // check that one sync message went through
+            expect(send).to.be.calledTwice;
+            expect(send.firstCall).to.be.calledWith({
+                a: 'sync test',
+                msg_throttle: 2
+            })
+            expect(send.secondCall).to.be.calledWith({
+                a: 'another sync test',
+                b: 'change b'
+            })
+            // have the comm send a status idle message
+            this.widget._handle_status({
+                content: {
+                    execution_state: 'idle'
+                }
+            });
+            // check that the other sync message went through with the updated values
+            expect(send.thirdCall).to.be.calledWith({
+                b: 'change b again'
+            });
+        });
+
+        it('Initial values are *not* sent on creation', function() {
+            expect(this.comm.send.callCount).to.equal(0);
+        })
     });
 
     describe('send_sync_message', function() {
@@ -587,7 +651,33 @@ describe("WidgetModel", function() {
             await this.setup();
         });
 
-        it('exists');
+        it('sends a message', function() {
+            this.widget.send_sync_message({
+                a: 'send sync message',
+                b: 'b value'
+            }, {});
+            expect(this.comm.send).to.be.calledWith({
+                method: 'update',
+                state: {
+                    a: 'send sync message',
+                    b: 'b value'
+                },
+                buffer_paths: []
+            });
+        });
+
+        it('handles buffers in messages', function() {
+            let buffer = new Uint8Array([1,2,3]);
+            this.widget.send_sync_message({
+                a: buffer
+            });
+            expect(this.comm.send.args[0][0]).to.deep.equal({
+                method: 'update',
+                state: {},
+                buffer_paths: [['a']]
+            });
+            expect(this.comm.send.args[0][3]).to.deep.equal([buffer.buffer])
+        })
     });
 
     describe('on_some_change', function() {
@@ -615,11 +705,4 @@ describe("WidgetModel", function() {
             expect(this.widget.toJSON()).to.equal(`IPY_MODEL_${this.widget.id}`);
         });
     });
-    describe('static _deserialize_state works', function() {
-        beforeEach(async function() {
-            await this.setup();
-        });
-
-        it('works');
-    })
 });
