@@ -111,7 +111,7 @@ function renderManager(element, tag) {
             let widgetViewObject = JSON.parse(viewtag.innerHTML);
             let valid = view_validate(widgetViewObject);
             if (!valid) {
-                console.log(view_validate.errors);
+                console.error('View state has errors.', view_validate.errors);
             }
             let model_id = widgetViewObject.model_id;
             let model = _.find(models, function(item : WidgetModel) {
