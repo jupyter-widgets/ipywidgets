@@ -36,7 +36,7 @@ from .domwidget import DOMWidget
 from .widget_link import Link
 
 
-snippet_template = """<script src="{embed_url}"></script>
+snippet_template = u"""<script src="{embed_url}"></script>
 <script type="application/vnd.jupyter.widget-state+json">
 {json_data}
 </script>
@@ -44,7 +44,7 @@ snippet_template = """<script src="{embed_url}"></script>
 """
 
 
-html_template = """<!DOCTYPE html>
+html_template = u"""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -56,7 +56,7 @@ html_template = """<!DOCTYPE html>
 </html>
 """
 
-widget_view_template = """<script type="application/vnd.jupyter.widget-view+json">
+widget_view_template = u"""<script type="application/vnd.jupyter.widget-view+json">
 {view_spec}
 </script>"""
 
@@ -179,14 +179,14 @@ def embed_snippet(widgets,
 
     data = embed_data(widgets, include_dependencies, drop_defaults)
 
-    widget_views = '\n'.join(
+    widget_views = u'\n'.join(
         widget_view_template.format(**dict(view_spec=json.dumps(view_spec)))
         for view_spec in data['view_specs']
     )
 
     if embed_url is None:
         # TODO: Get widgets npm version automatically:
-        embed_url = 'https://unpkg.com/jupyter-js-widgets@~3.0.0-alpha.0/dist/embed.js'
+        embed_url = u'https://unpkg.com/jupyter-js-widgets@~3.0.0-alpha.0/dist/embed.js'
 
     values = {
         'embed_url': embed_url,
@@ -206,7 +206,7 @@ def embed_minimal_html(fp, widgets, **kwargs):
     snippet = embed_snippet(widgets, **kwargs)
 
     values = {
-        'title': 'IPyWidget export',
+        'title': u'IPyWidget export',
         'snippet': snippet,
     }
 
