@@ -1,6 +1,6 @@
 {
   "name": "embed-jupyter-widgets",
-  "version": "3.0.0-alpha.6",
+  "version": "0.1.0",
   "description": "Standalone package for rendering Jupyter widgets outside notebooks",
   "main": "lib/index.js",
   "typings": "lib/index.t.js",
