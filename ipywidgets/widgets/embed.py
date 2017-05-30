@@ -31,7 +31,7 @@ Functions for generating embeddable HTML/javascript of a widget.
 """
 
 import json
-from .widget import Widget, _remove_buffers
+from .widget import Widget
 from .domwidget import DOMWidget
 from .widget_link import Link
 
@@ -107,8 +107,9 @@ def add_resolved_links(store, drop_defaults):
 def dependency_state(widgets, drop_defaults):
     """Get the state of all widgets specified, and their dependencies.
 
-    In the below graph, D and E are depencies of C; C is a dependency of both A and B;
-    and E is a dependency of F. That means the state of C will include (C, D, E).
+    In the below graph, D and E are depencies of C; C is a dependency of
+    both A and B; and E is a dependency of F. That means the state of C
+    will include (C, D, E).
 
     A --           -- D
         | -- C -- |
@@ -118,8 +119,9 @@ def dependency_state(widgets, drop_defaults):
 
     ---- Dependecy ---->
 
-    Note: Any links between included widgets will also be added. Using the example
-    above, this means that any links between widgets (C, D, E) will also be included.
+    Note: Any links between included widgets will also be added. Using the
+    example above, this means that any links between widgets (C, D, E) will
+    also be included.
 
     """
     # collect the state of all relevant widgets
@@ -136,48 +138,87 @@ def dependency_state(widgets, drop_defaults):
     return state
 
 
-def embed_data(widgets, include_dependencies=True, drop_defaults=True):
+def embed_data(views, include_all=True, drop_defaults=True):
     """Gets data for embedding.
 
     Use this to get the raw data for embedding if you have special
     formatting needs.
 
-    Returns a dictionary with the following entries:
+    Parameters
+    ----------
+    views: widget or collection of widgets or None
+        The widgets to include views for. If None, all DOMWidgets are
+        included (not just the displayed ones).
+    include_all: boolean
+        Which other widgets' state to include. When set to True, the state
+        of all widgets know to the widget manager is included. When False,
+        the dependencies of the given views are (attempted) resolved
+        automatically, and only their state is included.
+    drop_defaults: boolean
+        Whether to drop default values from the widget states.
+
+    Returns
+    -------
+    A dictionary with the following entries:
         manager_state: dict of the widget manager state data
         view_specs: a list of widget view specs
     """
-    if widgets is not None:
+    if views is not None:
         try:
-            widgets[0]
+            views[0]
         except (IndexError, TypeError):
-            widgets = [widgets]
-    if include_dependencies:
-        state = dependency_state(widgets, drop_defaults)
+            views = [views]
+    if include_all:
+        state = Widget.get_manager_state(drop_defaults=drop_defaults, widgets=None)['state']
     else:
-        state = Widget.get_manager_state(drop_defaults=drop_defaults, widgets=widgets)['state']
+        state = dependency_state(views, drop_defaults)
 
     # Rely on ipywidget to get the default values
     json_data = Widget.get_manager_state(widgets=[])
     # but plug in our own state
     json_data['state'] = state
 
-    if widgets is None:
-        widgets = [w for w in Widget.widgets.values() if isinstance(w, DOMWidget)]
+    if views is None:
+        views = [w for w in Widget.widgets.values() if isinstance(w, DOMWidget)]
 
-    view_specs = [w.get_view_spec() for w in widgets]
+    view_specs = [w.get_view_spec() for w in views]
 
     return dict(manager_state=json_data, view_specs=view_specs)
 
 
-def embed_snippet(widgets,
-                  include_dependencies=True,
+def embed_snippet(views,
+                  include_all=True,
                   drop_defaults=True,
                   indent=2,
                   embed_url=None,
                  ):
-    """Return a snippet that can be embedded in an HTML file. """
+    """Return a snippet that can be embedded in an HTML file.
 
-    data = embed_data(widgets, include_dependencies, drop_defaults)
+    Parameters
+    ----------
+    views: widget or collection of widgets or None
+        The widgets to include views for. If None, all DOMWidgets are
+        included (not just the displayed ones).
+    include_all: boolean
+        Which other widgets' state to include. When set to True, the state
+        of all widgets know to the widget manager is included. When False,
+        the dependencies of the given views are (attempted) resolved
+        automatically, and only their state is included.
+    drop_defaults: boolean
+        Whether to drop default values from the widget states.
+    indent: integer, string or None
+        The indent to use for the JSON state dump. See `json.dumps` for
+        full description.
+    embed_url: string or None
+        Allows for overriding the URL used to fetch the widget manager
+        for the embedded code. This defaults (None) to an `unpkg` CDN url.
+
+    Returns
+    -------
+    A unicode string with an HTML snippet containing several `<script>` tags.
+    """
+
+    data = embed_data(views, include_all, drop_defaults)
 
     widget_views = u'\n'.join(
         widget_view_template.format(**dict(view_spec=json.dumps(view_spec)))
@@ -197,13 +238,13 @@ def embed_snippet(widgets,
     return snippet_template.format(**values)
 
 
-def embed_minimal_html(fp, widgets, **kwargs):
-    """Write a minimal HTML file with widgets embedded.
+def embed_minimal_html(fp, views, **kwargs):
+    """Write a minimal HTML file with widget views embedded.
 
     Accepts keyword args similar to `embed_snippet`.
     """
 
-    snippet = embed_snippet(widgets, **kwargs)
+    snippet = embed_snippet(views, **kwargs)
 
     values = {
         'title': u'IPyWidget export',

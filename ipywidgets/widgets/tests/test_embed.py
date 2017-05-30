@@ -37,7 +37,7 @@ class TestEmbed:
 
     def test_embed_data_simple(self):
         w = IntText(4)
-        data = embed_data(widgets=w, drop_defaults=True)
+        data = embed_data(views=w, include_all=False, drop_defaults=True)
 
         state = data['manager_state']['state']
         views = data['view_specs']
@@ -52,7 +52,7 @@ class TestEmbed:
         w1 = IntText(4)
         w2 = IntSlider(min=0, max=100)
         jslink((w1, 'value'), (w2, 'value'))
-        data = embed_data(widgets=[w1, w2], drop_defaults=True)
+        data = embed_data(views=[w1, w2], include_all=False, drop_defaults=True)
 
         state = data['manager_state']['state']
         views = data['view_specs']
@@ -82,7 +82,7 @@ class TestEmbed:
         # Put it in an HBox
         HBox(children=[w4])
 
-        data = embed_data(widgets=w4, drop_defaults=True)
+        data = embed_data(views=w4, include_all=False, drop_defaults=True)
 
         state = data['manager_state']['state']
         views = data['view_specs']
@@ -101,7 +101,7 @@ class TestEmbed:
 
     def test_snippet(self):
         w = IntText(4)
-        snippet = embed_snippet(widgets=w, drop_defaults=True)
+        snippet = embed_snippet(views=w, include_all=False, drop_defaults=True)
 
         lines = snippet.splitlines()
 
@@ -132,7 +132,7 @@ class TestEmbed:
 
         try:
             output = os.path.join(tmpd, 'test.html')
-            embed_minimal_html(output, widgets=w, drop_defaults=True)
+            embed_minimal_html(output, views=w, include_all=False, drop_defaults=True)
             # Check that the file is written to the intended destination:
             with open(output, 'r') as f:
                 content = f.read()
@@ -143,6 +143,6 @@ class TestEmbed:
     def test_minimal_html_filehandle(self):
         w = IntText(4)
         output = StringIO()
-        embed_minimal_html(output, widgets=w, drop_defaults=True)
+        embed_minimal_html(output, views=w, include_all=False, drop_defaults=True)
         content = output.getvalue()
         assert content.splitlines()[0] == '<!DOCTYPE html>'
