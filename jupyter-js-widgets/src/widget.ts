@@ -99,7 +99,7 @@ class WidgetModel extends Backbone.Model {
 
         // _buffered_state_diff must be created *after* the super.initialize
         // call above. See the note in the set() method below.
-        this._buffered_state_diff = Object.create(null);
+        this._buffered_state_diff = {};
 
         if (comm) {
             // Remember comm associated with the model.
