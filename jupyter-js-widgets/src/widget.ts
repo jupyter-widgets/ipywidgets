@@ -404,7 +404,7 @@ class WidgetModel extends Backbone.Model {
     /**
      * Send a sync message to the kernel.
      */
-    send_sync_message(state, callbacks) {
+    send_sync_message(state, callbacks: any = {}) {
         try {
             callbacks.iopub = callbacks.iopub || {};
             let statuscb = callbacks.iopub.status
