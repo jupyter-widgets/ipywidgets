@@ -27,7 +27,7 @@ const JUPYTER_WIDGETS_VERSION = '3.0.0';
  */
 export
 function unpack_models(value, manager): Promise<any> {
-    var unpacked;
+    let unpacked;
     if (_.isArray(value)) {
         unpacked = [];
         _.each(value, (sub_value, key) => {
@@ -81,7 +81,7 @@ class WidgetModel extends Backbone.Model {
     /**
      * Constructor
      *
-     * Creates a WidgetModel instance.
+     * Initializes a WidgetModel instance. Called by the Backbone constructor.
      *
      * Parameters
      * ----------
@@ -90,25 +90,20 @@ class WidgetModel extends Backbone.Model {
      *      An ID unique to this model.
      * comm : Comm instance (optional)
      */
-    initialize(attributes, options) {
+    initialize(attributes, options: {model_id: string, comm?: any, widget_manager: any}) {
         super.initialize(attributes, options);
 
         this.widget_manager = options.widget_manager;
         this.id = options.model_id;
         let comm = options.comm;
 
-        this.state_change = Promise.resolve();
-        this.pending_msgs = 0;
-        this.msg_buffer = null;
-        this.state_lock = null;
+        // _buffered_state_diff must be created *after* the super.initialize
+        // call above. See the note in the set() method below.
         this._buffered_state_diff = {};
-
-        this.views = {};
 
         if (comm) {
             // Remember comm associated with the model.
             this.comm = comm;
-            comm.model = this;
 
             // Hook comm messages up to model.
             comm.on_close(_.bind(this._handle_comm_closed, this));
@@ -122,41 +117,42 @@ class WidgetModel extends Backbone.Model {
 
     /**
      * Send a custom msg over the comm.
-     *
-     * Any custom callbacks must include calls to the model callbacks returned
-     * from model.callbacks()
      */
     send(content, callbacks, buffers?) {
         if (this.comm !== undefined) {
-            var data = {method: 'custom', content: content};
+            let data = {method: 'custom', content: content};
             this.comm.send(data, callbacks, {}, buffers);
         }
     }
 
     /**
      * Close model
+     *
+     * @param comm_closed - true if the comm is already being closed. If false, the comm will be closed.
      */
-    close(comm_closed) {
+    close(comm_closed: boolean = false) {
+        // can only be closed once.
+        if (this._closed) {
+            return;
+        }
+        this._closed = true;
         if (this.comm && !comm_closed) {
             this.comm.close();
         }
         this.stopListening();
         this.trigger('destroy', this);
         if (this.comm) {
-            delete this.comm.model; // Delete ref so GC will collect widget model.
             delete this.comm;
         }
-        delete this.model_id; // Delete id from model so widget manager cleans up.
-        _.each(this.views, (v: Promise<any>, id, views) => {
-            v.then((view) => {
-                view.remove();
-                delete views[id];
-            });
+        // Delete all views of this model
+        Object.keys(this.views).forEach((id: string) => {
+            this.views[id].then(view => view.remove());
         });
+        delete this.views;
     }
 
     /**
-     * Handle when a widget is closed.
+     * Handle when a widget comm is closed.
      */
     _handle_comm_closed(msg) {
         this.trigger('comm:close');
@@ -166,13 +162,12 @@ class WidgetModel extends Backbone.Model {
     /**
      * Handle incoming comm msg.
      */
-    _handle_comm_msg(msg) {
-        var method = msg.content.data.method;
+    _handle_comm_msg(msg): Promise<void> {
+        let method = msg.content.data.method;
         switch (method) {
             case 'update':
                 this.state_change = this.state_change
                     .then(() => {
-                        // see Widget.open/_split_state_buffers about why we need state_with_buffers
                         let state = msg.content.data.state;
                         let buffer_paths = msg.content.data.buffer_paths || [];
                         // Make sure the buffers are DataViews
@@ -188,54 +183,49 @@ class WidgetModel extends Backbone.Model {
                         return (this.constructor as typeof WidgetModel)._deserialize_state(state, this.widget_manager);
                     }).then((state) => {
                         this.set_state(state);
-                    }).catch(utils.reject('Could not process update msg for model id: ' + String(this.id), true))
+                    }).catch(utils.reject(`Could not process update msg for model id: ${this.id}`, true))
                 return this.state_change;
             case 'custom':
                 this.trigger('msg:custom', msg.content.data.content, msg.buffers);
                 return Promise.resolve();
-            case 'display':
-                if (this.widget_manager.displayWithOutput) {
-                    return;
-                }
-                this.state_change = this.state_change.then(() => {
-                    this.widget_manager.display_model(msg, this);
-                }).catch(utils.reject('Could not process display view msg', true));
-                return this.state_change;
         }
     }
 
     /**
      * Handle when a widget is updated from the backend.
+     *
+     * This function is meant for internal use only. Values set here will not be propagated on a sync.
      */
     set_state(state: any) {
-        this.state_lock = state;
+        this._state_lock = state;
         try {
             this.set(state);
         } catch(e) {
-            console.error('Error setting state:', e.message);
+            console.error(`Error setting state: ${e.message}`);
         } finally {
-            this.state_lock = null;
+            this._state_lock = null;
         }
     }
 
     /**
      * Get the serializable state of the model.
      *
-     * If drop_default is thruthy, attributes that are equal to their default
+     * If drop_default is truthy, attributes that are equal to their default
      * values are dropped.
      */
     get_state(drop_defaults) {
-        var state = this.attributes;
+        let fullState = this.attributes;
         if (drop_defaults) {
-            var defaults = _.result(this, 'defaults');
-            return Object.keys(state).reduce((obj, key) => {
-                if (!_.isEqual(state[key], defaults[key])) {
-                    obj[key] = state[key];
+            let defaults = _.result(this, 'defaults');
+            let state = {};
+            Object.keys(fullState).forEach(key => {
+                if (!_.isEqual(fullState[key], defaults[key])) {
+                    state[key] = fullState[key];
                 }
-                return obj;
-            }, {});
+            });
+            return state;
         } else {
-            return _.clone(state);
+            return {...fullState};
         }
     }
 
@@ -245,15 +235,15 @@ class WidgetModel extends Backbone.Model {
      * execution_state : ('busy', 'idle', 'starting')
      */
     _handle_status(msg) {
-        if (this.comm !== undefined) {
+        if (this.comm !== void 0) {
             if (msg.content.execution_state === 'idle') {
-                this.pending_msgs--;
+                this._pending_msgs--;
                 // Send buffer if one is waiting and we are below the throttle.
-                if (this.msg_buffer !== null
-                    && this.pending_msgs < (this.get('msg_throttle') || 1) ) {
-                    this.send_sync_message(this.msg_buffer, this.msg_buffer_callbacks);
-                    this.msg_buffer = null;
-                    this.msg_buffer_callbacks = null;
+                if (this._msg_buffer !== null
+                    && this._pending_msgs < (this.get('msg_throttle') || 1) ) {
+                    this.send_sync_message(this._msg_buffer, this._msg_buffer_callbacks);
+                    this._msg_buffer = null;
+                    this._msg_buffer_callbacks = null;
                 }
             }
         }
@@ -262,7 +252,7 @@ class WidgetModel extends Backbone.Model {
     /**
      * Create msg callbacks for a comm msg.
      */
-    callbacks(view?) {
+    callbacks(view?: WidgetView) {
         return this.widget_manager.callbacks(view);
     }
 
@@ -272,8 +262,8 @@ class WidgetModel extends Backbone.Model {
      * We just call the super method, in which val and options are optional.
      * Handles both "key", value and {key: value} -style arguments.
      */
-    set(key, val?, options?) {
-        var return_value = super.set(key, val, options);
+    set(key: any, val?: any, options?: any) {
+        let return_value = super.set(key, val, options);
 
         // Backbone only remembers the diff of the most recent set()
         // operation.  Calling set multiple times in a row results in a
@@ -289,9 +279,9 @@ class WidgetModel extends Backbone.Model {
             // right now from a kernel message. We don't want to send these
             // non-changes back to the kernel, so we delete them out of attrs if
             // they haven't changed from their state_lock value
-            if (this.state_lock !== null) {
-                for (const key of Object.keys(this.state_lock)) {
-                    if (attrs[key] === this.state_lock[key]) {
+            if (this._state_lock !== null) {
+                for (const key of Object.keys(this._state_lock)) {
+                    if (attrs[key] === this._state_lock[key]) {
                         delete attrs[key];
                     }
                 }
@@ -321,7 +311,7 @@ class WidgetModel extends Backbone.Model {
      *   should be synced, otherwise, sync all attributes.
      *
      */
-    sync(method, model, options: any = {}): any {
+    sync(method: string, model: WidgetModel, options: any = {}): any {
         // the typing is to return `any` since the super.sync method returns a JqXHR, but we just return false if there is an error.
         if (this.comm === undefined) {
             throw 'Syncing error: no comm channel defined';
@@ -333,9 +323,9 @@ class WidgetModel extends Backbone.Model {
         // right now from a kernel message. We don't want to send these
         // non-changes back to the kernel, so we delete them out of attrs if
         // they haven't changed from their state_lock value
-        if (this.state_lock !== null) {
-            for (const key of Object.keys(this.state_lock)) {
-                if (attrs[key] === this.state_lock[key]) {
+        if (this._state_lock !== null) {
+            for (const key of Object.keys(this._state_lock)) {
+                if (attrs[key] === this._state_lock[key]) {
                     delete attrs[key];
                 }
             }
@@ -351,23 +341,23 @@ class WidgetModel extends Backbone.Model {
             let callbacks = options.callbacks || this.callbacks();
 
             // Check throttle.
-            if (this.pending_msgs >= (this.get('msg_throttle') || 1)) {
+            if (this._pending_msgs >= (this.get('msg_throttle') || 1)) {
                 // The throttle has been exceeded, buffer the current msg so
                 // it can be sent once the kernel has finished processing
                 // some of the existing messages.
                 // Combine updates if it is a 'patch' sync, otherwise replace updates
                 switch (method) {
                     case 'patch':
-                        this.msg_buffer = _.extend(this.msg_buffer || {}, msgState);
+                        this._msg_buffer = _.extend(this._msg_buffer || {}, msgState);
                         break;
                     case 'update':
                     case 'create':
-                        this.msg_buffer = msgState;
+                        this._msg_buffer = msgState;
                         break;
                     default:
                         throw 'unrecognized syncing method';
                 }
-                this.msg_buffer_callbacks = callbacks;
+                this._msg_buffer_callbacks = callbacks;
             } else {
                 // We haven't exceeded the throttle, send the message like
                 // normal.
@@ -411,7 +401,10 @@ class WidgetModel extends Backbone.Model {
         return state;
     }
 
-    send_sync_message(state, callbacks) {
+    /**
+     * Send a sync message to the kernel.
+     */
+    send_sync_message(state, callbacks: any = {}) {
         try {
             callbacks.iopub = callbacks.iopub || {};
             let statuscb = callbacks.iopub.status
@@ -429,7 +422,7 @@ class WidgetModel extends Backbone.Model {
                 state: split.state,
                 buffer_paths: split.buffer_paths
             }, callbacks, {}, split.buffers);
-            this.pending_msgs++;
+            this._pending_msgs++;
         } catch (e) {
             console.error('Could not send widget sync message', e);
         }
@@ -480,11 +473,11 @@ class WidgetModel extends Backbone.Model {
      * deserialization of widget models.
      */
     static _deserialize_state(state, manager) {
-        var serializers = this.serializers;
-        var deserialized;
+        let serializers = this.serializers;
+        let deserialized;
         if (serializers) {
             deserialized = {};
-            for (var k in state) {
+            for (let k in state) {
                 if (serializers[k] && serializers[k].deserialize) {
                      deserialized[k] = (serializers[k].deserialize)(state[k], manager);
                 } else {
@@ -498,20 +491,26 @@ class WidgetModel extends Backbone.Model {
     }
 
     static serializers: {[key: string]: {
-        deserialize?: (value?: any, manager?: any) => any,
-        serialize?: (value?: any, widget?: any) => any
+        deserialize?: (value?: any, manager?: managerBase.ManagerBase<any>) => any,
+        serialize?: (value?: any, widget?: WidgetModel) => any
     }};
-    widget_manager: any;
-    state_change: any
-    _buffered_state_diff: any;
-    pending_msgs: any;
-    msg_buffer: any;
-    state_lock: any;
-    views: any;
+
+    widget_manager: managerBase.ManagerBase<any>;
+    views: {[key: string]: Promise<WidgetView>} = Object.create(null);
+    model_id: string;
+    state_change: Promise<void> = Promise.resolve();
+
+    // Not initialized here so that we don't override the values set
+    // in the initialize function.
     comm: any;
     comm_live: boolean;
-    model_id: string;
-    msg_buffer_callbacks: any;
+
+    private _closed: boolean = false;
+    private _state_lock: any = null;
+    private _buffered_state_diff: any;
+    private _msg_buffer: any = null;
+    private _msg_buffer_callbacks: any = null;
+    private _pending_msgs = 0;
 }
 
 export
@@ -684,7 +683,7 @@ abstract class WidgetView extends NativeView<WidgetModel> {
      * Create and promise that resolves to a child view of a given model
      */
     create_child_view(child_model, options?) {
-        var that = this;
+        let that = this;
         options = _.extend({ parent: this }, options || {});
         return this.model.widget_manager.create_view(child_model, options)
             .catch(utils.reject('Could not create child view', true));
@@ -780,7 +779,7 @@ class DOMWidgetView extends WidgetView {
         this.id = utils.uuid();
 
         this.listenTo(this.model, 'change:_dom_classes', (model, new_classes) => {
-            var old_classes = model.previous('_dom_classes');
+            let old_classes = model.previous('_dom_classes');
             this.update_classes(old_classes, new_classes);
         });
 
@@ -901,17 +900,17 @@ class DOMWidgetView extends WidgetView {
      *  Element that the classes are applied to.
      */
     update_mapped_classes(class_map, trait_name, el?) {
-        var key = this.model.previous(trait_name);
-        var old_classes = class_map[key] ? class_map[key] : [];
+        let key = this.model.previous(trait_name);
+        let old_classes = class_map[key] ? class_map[key] : [];
         key = this.model.get(trait_name);
-        var new_classes = class_map[key] ? class_map[key] : [];
+        let new_classes = class_map[key] ? class_map[key] : [];
 
         this.update_classes(old_classes, new_classes, el || this.el);
     }
 
     set_mapped_classes(class_map, trait_name, el?) {
-        var key = this.model.get(trait_name);
-        var new_classes = class_map[key] ? class_map[key] : [];
+        let key = this.model.get(trait_name);
+        let new_classes = class_map[key] ? class_map[key] : [];
         this.update_classes([], new_classes, el || this.el);
     }
 

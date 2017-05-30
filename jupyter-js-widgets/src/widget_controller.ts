@@ -272,7 +272,7 @@ class ControllerModel extends CoreDOMWidgetModel {
     /**
      * Creates a gamepad button widget.
      */
-    _create_button_model(index) {
+    _create_button_model(index): Promise<ControllerButtonModel> {
         return this.widget_manager.new_widget({
              model_name: 'ControllerButtonModel',
              model_module: 'jupyter-js-widgets',
@@ -289,7 +289,7 @@ class ControllerModel extends CoreDOMWidgetModel {
     /**
      * Creates a gamepad axis widget.
      */
-    _create_axis_model(index) {
+    _create_axis_model(index): Promise<ControllerAxisModel>  {
         return this.widget_manager.new_widget({
              model_name: 'ControllerAxisModel',
              model_module: 'jupyter-js-widgets',

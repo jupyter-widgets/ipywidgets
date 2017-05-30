@@ -172,10 +172,6 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     return this._rendermime;
   }
 
-  get displayWithOutput() {
-    return true;
-  }
-
   register(data: WidgetManager.IWidgetData) {
     this._registry.set(data.name, data.version, data.exports);
   }
