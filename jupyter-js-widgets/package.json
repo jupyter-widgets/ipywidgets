@@ -22,7 +22,7 @@
     "build:test": "tsc --project test/src && webpack --config test/webpack.conf.js",
     "build:src": "tsc --project src",
     "build:css": "postcss --use postcss-import --use postcss-cssnext -o css/widgets.built.css css/widgets.css",
-    "build": "npm run build:src && npm run build:css && webpack",
+    "build": "npm run build:src && npm run build:css",
     "postinstall": "npm dedupe",
     "prepublish": "npm run build",
     "test": "npm run test:unit && npm run test:examples",
