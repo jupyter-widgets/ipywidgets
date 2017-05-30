@@ -17,14 +17,40 @@ if (Element && !Element.prototype.matches) {
     proto.oMatchesSelector || proto.webkitMatchesSelector;
 }
 
+import * as embed from './embed-manager';
+import * as _ from 'underscore';
+import { WidgetModel } from 'jupyter-js-widgets';
+
 // Load json schema validator
 var Ajv = require('ajv');
 var widget_state_schema = require('jupyter-widgets-schema').v2.state;
 var widget_view_schema = require('jupyter-widgets-schema').v2.view;
 
-import * as embed from './embed-manager';
-import * as _ from 'underscore';
-import { WidgetModel } from 'jupyter-js-widgets';
+// BEGIN: Ajv config for json-schema draft 4, from https://github.com/epoberezkin/ajv/releases/tag/5.0.0
+// This can be deleted when the schema is moved to draft 6
+var ajv = new Ajv({
+  meta: false, // optional, to prevent adding draft-06 meta-schema
+  extendRefs: true, // optional, current default is to 'fail', spec behaviour is to 'ignore'
+  unknownFormats: 'ignore',  // optional, current default is true (fail)
+  // ...
+});
+
+var metaSchema = require('ajv/lib/refs/json-schema-draft-04.json');
+ajv.addMetaSchema(metaSchema);
+ajv._opts.defaultMeta = metaSchema.id;
+
+// optional, using unversioned URI is out of spec, see https://github.com/json-schema-org/json-schema-spec/issues/216
+ajv._refs['http://json-schema.org/schema'] = 'http://json-schema.org/draft-04/schema';
+
+// Optionally you can also disable keywords defined in draft-06
+ajv.removeKeyword('propertyNames');
+ajv.removeKeyword('contains');
+ajv.removeKeyword('const');
+// END: Ajv config for json-schema draft 4, from https://github.com/epoberezkin/ajv/releases/tag/5.0.0
+
+let model_validate = ajv.compile(widget_state_schema);
+let view_validate = ajv.compile(widget_view_schema);
+
 
 // `LoadInlineWidget` is the main function called on load of the web page.
 // All it does is inserting a <script> tag for requirejs in the case it is not
@@ -72,8 +98,6 @@ export function renderInlineWidgets(event) {
 // the <img> tag is deleted.
 function renderManager(element, tag) {
     let widgetStateObject = JSON.parse(tag.innerHTML);
-    let ajv = new Ajv(); // options can be passed, e.g. {allErrors: true}
-    let model_validate = ajv.compile(widget_state_schema);
     let valid = model_validate(widgetStateObject);
     if (!valid) {
         console.log(model_validate.errors);
@@ -85,7 +109,6 @@ function renderManager(element, tag) {
             // TODO: validate view schema
             let viewtag = tags[i];
             let widgetViewObject = JSON.parse(viewtag.innerHTML);
-            let view_validate = ajv.compile(widget_view_schema);
             let valid = view_validate(widgetViewObject);
             if (!valid) {
                 console.log(view_validate.errors);
