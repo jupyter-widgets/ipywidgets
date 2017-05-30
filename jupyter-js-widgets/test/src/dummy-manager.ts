@@ -17,15 +17,25 @@ class MockComm {
     }
     on_close(fn) {
         this._on_close = fn;
-    };
-    on_msg() {};
+    }
+    on_msg(fn) {
+        this._on_msg = fn;
+    }
+    _process_msg(msg) {
+        if (this._on_msg) {
+            return this._on_msg(msg);
+        } else {
+            return Promise.resolve();
+        }
+    }
     close() {
         if (this._on_close) {
             this._on_close();
         }
-    };
-    send() {};
+    }
+    send() {}
     comm_id: string;
+    _on_msg: Function = null;
     _on_close: Function = null;
 }
 
