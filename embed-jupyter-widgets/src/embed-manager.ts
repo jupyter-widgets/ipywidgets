@@ -52,7 +52,13 @@ class EmbedManager extends widgets.ManagerBase<HTMLElement> {
                 resolve(widgets);
             } else {
                 var fallback = function(err) {
-                    (window as any).require([`https://unpkg.com/${moduleName}@${moduleVersion}/dist/index.js`], resolve, reject);
+                    let failedId = err.requireModules && err.requireModules[0];
+                    if (failedId) {
+                        console.log(`Falling back to unpkg.com for ${moduleName}@${moduleVersion}`);
+                        (window as any).require([`https://unpkg.com/${moduleName}@${moduleVersion}/dist/index.js`], resolve, reject);
+                    } else {
+                        throw err;
+                    }
                 };
                 (window as any).require([`${moduleName}.js`], resolve, fallback);
             }
