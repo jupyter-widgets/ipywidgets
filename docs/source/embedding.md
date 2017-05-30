@@ -50,6 +50,44 @@ The second option, `Download Widget State`, triggers the downloading of a JSON
 file containing the serialized state of all the widget models currently in use,
 corresponding to the same JSON schema.
 
+## Python interface
+
+Embeddable code for the widgets can also be produced from the Python side.
+The following functions are available in the module `ipywidgets.widgets.embed`:
+
+```rst
+.. embed_snippet::
+
+    s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
+    print(ipywidgets.widgets.embed.embed_snippet(views=[s1, s2]))
+
+.. embed_data::
+
+    s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
+    data = ipywidgets.widgets.embed.embed_data(views=[s1, s2]))
+    print(data['manager_state'])
+    print(data['view_specs])
+
+.. embed_minimal_html::
+
+    s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
+    ipywidgets.widgets.embed.embed_minimal_html('my_export.html', views=[s1, s2]))
+
+```
+
+Here, `embed_snippet` will return an embeddable HTML snippet similar to the Notebook
+interface detailed above, while `embed_data` will return the widget state JSON as
+well as the view specs of the given views. `embed_minimal_html` is a utility
+function for saving a HTML file with minimal wrapping around the HTML snippet,
+allowing for easy validation of the saved state.
+
+In all functions, the state of all widgets known to the widget manager is
+included by default. To include only the state of the views and their
+dependencies, pass the parameter `include_all=False`. This can be
+particularly relevant if you have many independent widgets with a large state,
+but only want to include the relevant ones in your export.
+
+
 ## Embedding Widgets in the Sphinx HTML Documentation
 
 As of ipywidgets 6.0, Jupyter interactive widgets can be rendered and
