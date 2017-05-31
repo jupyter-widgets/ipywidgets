@@ -33,7 +33,7 @@ This HTML snippet is composed of multiple `<script>` tags:
    The JSON schema for the content of that script tag is found in the jupyter-widgets-schema npm package.
 
 - The following script tags correspond to the views which you want to display
-  in the web page. They have the mime type `application/vnd.jupyter.widget-view+json`.
+  in the web page. They have the mime type `application/vnd.jupyter.widget-view+json`. 
 
   The *Embed Widgets* action currently creates such a tag for each view
   displayed in the notebook at this time.
@@ -43,6 +43,66 @@ This HTML snippet is composed of multiple `<script>` tags:
   If you want to lay out these script tags in a custom fashion or only keep
   some of them, you can change their location in the DOM when including the
   snippet into a web page.
+  
+For example, a widget could be embedded in a minimal HTML web page like:
+
+```html
+<html>
+    <head>
+
+        <!-- First and second script tags can go into the head: -->
+        <script src="https://unpkg.com/???/dist/index.js"></script>
+        <script type="application/vnd.jupyter.widget-state+json">
+        {
+            "version_major": 2,
+            "version_minor": 0,
+            "state": {
+                "99c990c475034636a3965d43f8544ba1": {
+                    "model_name": "SliderStyleModel",
+                    "model_module": "jupyter-js-widgets",
+                    "model_module_version": "3.0.0",
+                    "state": {
+                        "description_width": ""
+                    }
+                },
+                "03dd845a3ac249eda8e961d67ef8d0b6": {
+                    "model_name": "LayoutModel",
+                    "model_module": "jupyter-js-widgets",
+                    "model_module_version": "3.0.0",
+                    "state": {}
+                },
+                "3cb7da100ef34383bddf1a92602b35da": {
+                    "model_name": "IntSliderModel",
+                    "model_module": "jupyter-js-widgets",
+                    "model_module_version": "3.0.0",
+                    "state": {
+                        "style": "IPY_MODEL_99c990c475034636a3965d43f8544ba1",
+                        "layout": "IPY_MODEL_03dd845a3ac249eda8e961d67ef8d0b6",
+                        "value": 45
+                    }
+                }
+            }
+        }
+        </script>
+
+    </head>
+
+    <body>
+        <h1>jupyter-js-widgets embedding example</h1>
+        <div id="widget-embedded-here">
+            <!-- View script tags should be embedded where you want widgets to go -->
+            <script type="application/vnd.jupyter.widget-view+json">
+            {
+                "model_id": "3cb7da100ef34383bddf1a92602b35da",
+                "version_minor": "0",
+                "version_major": "2"
+            }
+            </script>
+        </div>
+    </body>
+</html>
+```
+
 
 ### Widget State JSON
 
