@@ -13,10 +13,6 @@ import {
     uuid
 } from './utils';
 
-import {
-    unpack_models, ViewList
-} from './widget';
-
 import * as _ from 'underscore';
 import * as utils from './utils';
 import * as $ from 'jquery';
