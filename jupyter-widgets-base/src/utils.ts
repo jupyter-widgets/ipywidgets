@@ -81,38 +81,6 @@ function reject(message, log) {
     };
 }
 
-
-/**
- * Apply MathJax rendering to an element, and optionally set its text.
- *
- * If MathJax is not available, make no changes.
- *
- * Parameters
- * ----------
- * element: Node
- * text: optional string
- */
-export
-function typeset(element: HTMLElement, text?: string): void {
-    if (text !== void 0) {
-        element.textContent = text;
-    }
-    if ((window as any).MathJax !== void 0) {
-        MathJax.Hub.Queue(['Typeset', MathJax.Hub, element]);
-    }
-}
-
-
-/**
- * escape text to HTML
- */
-export
-function escape_html(text: string): string {
-    var esc  = document.createElement('div');
-    esc.textContent = text;
-    return esc.innerHTML;
-};
-
 /**
  * Takes an object 'state' and fills in buffer[i] at 'path' buffer_paths[i]
  * where buffer_paths[i] is a list indicating where in the object buffer[i] should
