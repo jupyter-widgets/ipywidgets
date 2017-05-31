@@ -205,16 +205,17 @@ page). For each context, we specialize the base widget manager implemented in
 
 Specifically:
 
+ - `jupyter-js-widgets` provides the core widget base classes that are
+   common in all contexts.
  - `widgetsnbextension` provides the implementation of a specialized widget
    manager for the `Classic Notebook`, and the packaging logic as a notebook
    extension.
  - `jupyterlab_widgets` provides the implementation of a specialized widget
    manager for the context of `JupyterLab`, and the packaging logic as a lab
    extension.
- - The embed manager implemented in `jupyter-js-widgets` is a specialization of
-   the base  widget manager used for the static embedding of widgets used by
-   the `Sphinx` extension, `nbviewer`, and the "Embed Widgets" command
-   discussed above.
+ - `embed-jupyter-widgets` is a specialization of the base widget manager for
+   the static embedding of widgets used by the `Sphinx` extension, `nbviewer`
+   and the *Embed Widgets* command discussed above.
 
 We provide additional examples of specializations of the base widget manager
 implementing other usages of `jupyter-js-widgets` in web contexts.
