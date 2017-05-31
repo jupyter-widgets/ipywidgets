@@ -17,15 +17,25 @@ class MockComm {
     }
     on_close(fn) {
         this._on_close = fn;
-    };
-    on_msg() {};
+    }
+    on_msg(fn) {
+        this._on_msg = fn;
+    }
+    _process_msg(msg) {
+        if (this._on_msg) {
+            return this._on_msg(msg);
+        } else {
+            return Promise.resolve();
+        }
+    }
     close() {
         if (this._on_close) {
             this._on_close();
         }
-    };
-    send() {};
+    }
+    send() {}
     comm_id: string;
+    _on_msg: Function = null;
     _on_close: Function = null;
 }
 
@@ -118,6 +128,19 @@ class TestWidget extends widgets.WidgetModel {
     }
 }
 
+class TestWidgetView extends widgets.WidgetView {
+    render() {
+        this._rendered += 1;
+        super.render();
+    }
+    remove() {
+        this._removed +=1;
+        super.remove();
+    }
+    _removed = 0
+    _rendered = 0;
+}
+
 class BinaryWidget extends TestWidget {
     static serializers = {
         ...widgets.WidgetModel.serializers,
@@ -131,11 +154,11 @@ class BinaryWidget extends TestWidget {
     }
 }
 
-class BinaryWidgetView extends widgets.WidgetView {
+class BinaryWidgetView extends TestWidgetView {
     render() {
         this._rendered += 1
     }
     _rendered = 0;
 }
 
-let testWidgets = {BinaryWidget, BinaryWidgetView}
+let testWidgets = {TestWidget, TestWidgetView, BinaryWidget, BinaryWidgetView}

@@ -17,9 +17,9 @@ describe("ManagerBase", function() {
     beforeEach(function() {
         this.managerBase = new DummyManager();
         this.modelOptions = {
-            model_name: 'IntSliderModel',
-            model_module: 'jupyter-js-widgets',
-            model_module_version: '3.0.0',
+            model_name: 'TestWidget',
+            model_module: 'test-widgets',
+            model_module_version: '1.0.0',
             model_id: 'u-u-i-d'
         };
     });
@@ -63,7 +63,7 @@ describe("ManagerBase", function() {
         let manager = this.managerBase;
         let model = await manager.new_model(this.modelOptions);
         let view = await manager.create_view(model);
-        expect(view).to.be.instanceof(widgets.IntSliderView);
+        expect(view).to.be.instanceof(widgets.WidgetView);
         expect(view.model).to.equal(model);
       });
 
@@ -83,9 +83,12 @@ describe("ManagerBase", function() {
         let manager = this.managerBase;
         let model = await manager.new_model(this.modelOptions);
         let view = await manager.create_view(model);
-        sinon.spy(view, 'remove');
-        model.close();
-        expect(view.remove.calledOnce).to.be.true;
+        //TODO: when we upgrade sinon-chai to handle chai 4.0,
+        // uncomment the following and the test statement
+        //sinon.spy(view, 'remove');
+        await model.close();
+        // expect(view.removed.calledOnce).to.be.true;
+        expect(view._removed).to.equal(1);
       });
 
       it('accepts optional view options, which it sends through setViewOptions', async function() {
@@ -136,9 +139,9 @@ describe("ManagerBase", function() {
         let comm = new MockComm();
         let model = await manager.handle_comm_open(comm, {content: {data: {
           state: {
-            _model_name: 'IntSliderModel',
-            _model_module: 'jupyter-js-widgets',
-            _model_module_version: '3.0.0',
+            _model_name: 'TestWidget',
+            _model_module: 'test-widgets',
+            _model_module_version: '1.0.0',
             value: 50
           }
         }}})
@@ -169,9 +172,9 @@ describe("ManagerBase", function() {
         let comm = new MockComm();
         sinon.spy(comm, 'send');
         let spec = {
-            model_name: 'IntSliderModel',
-            model_module: 'jupyter-js-widgets',
-            model_module_version: '3.0.0',
+            model_name: 'TestWidget',
+            model_module: 'test-widgets',
+            model_module_version: '1.0.0',
             comm: comm
         };
         let manager = this.managerBase;
@@ -181,9 +184,9 @@ describe("ManagerBase", function() {
 
       it('creates a comm if one is not passed in', async function() {
         let spec = {
-            model_name: 'IntSliderModel',
-            model_module: 'jupyter-js-widgets',
-            model_module_version: '3.0.0',
+            model_name: 'TestWidget',
+            model_module: 'test-widgets',
+            model_module_version: '1.0.0',
         };
         let manager = this.managerBase;
         let model = await manager.new_widget(spec);
@@ -192,9 +195,9 @@ describe("ManagerBase", function() {
 
       it('creates a model even if the comm creation has errors', async function() {
         let spec = {
-            model_name: 'IntSliderModel',
-            model_module: 'jupyter-js-widgets',
-            model_module_version: '3.0.0',
+            model_name: 'TestWidget',
+            model_module: 'test-widgets',
+            model_module_version: '1.0.0',
         };
         class NewWidgetManager extends DummyManager {
           _create_comm() {
@@ -222,9 +225,9 @@ describe("ManagerBase", function() {
       it('model id defaults to comm id if not specified', async function() {
         let comm = new MockComm();
         let spec = {
-            model_name: 'IntSliderModel',
-            model_module: 'jupyter-js-widgets',
-            model_module_version: '3.0.0',
+            model_name: 'TestWidget',
+            model_module: 'test-widgets',
+            model_module_version: '1.0.0',
             comm: comm
         };
         let manager = this.managerBase;
@@ -234,33 +237,23 @@ describe("ManagerBase", function() {
 
       it('throws an error if model_id or comm not given', async function() {
         let spec = {
-            model_name: 'IntSliderModel',
-            model_module: 'jupyter-js-widgets',
-            model_module_version: '3.0.0',
+            model_name: 'TestWidget',
+            model_module: 'test-widgets',
+            model_module_version: '1.0.0',
         };
         let manager = this.managerBase;
         expect(() => manager.new_model(spec)).to.throw('Neither comm nor model_id provided in options object. At least one must exist.');
       });
 
-      it('creates an html widget if there is an error loading the class', async function() {
-        let spec = {
-          model_name: 'InvalidModel',
-          model_module: 'test-widgets',
-          model_module_version: '1.0.0',
-          model_id: 'u-u-i-d'
-        };
-        let manager = this.managerBase;
-        let model = await manager.new_model(spec);
-        expect(model).to.be.instanceof(widgets.HTMLModel);
-      });
+      it('throws an error if there is an error loading the class');
 
       it('does not sync on creation', async function() {
         let comm = new MockComm();
         sinon.spy(comm, 'send');
         let spec = {
-            model_name: 'IntSliderModel',
-            model_module: 'jupyter-js-widgets',
-            model_module_version: '3.0.0',
+            model_name: 'TestWidget',
+            model_module: 'test-widgets',
+            model_module_version: '1.0.0',
             comm: comm
         };
         let manager = this.managerBase;
@@ -293,9 +286,9 @@ describe("ManagerBase", function() {
         var callback = sinon.spy();
         let comm = new MockComm();
         let spec = {
-            model_name: 'IntSliderModel',
-            model_module: 'jupyter-js-widgets',
-            model_module_version: '3.0.0',
+            model_name: 'TestWidget',
+            model_module: 'test-widgets',
+            model_module_version: '1.0.0',
             comm: comm
         };
         let manager = this.managerBase;
@@ -308,9 +301,9 @@ describe("ManagerBase", function() {
     describe('clear_state', function() {
       it('clears the model dictionary and closes widgets', async function() {
         let spec = {
-            model_name: 'IntSliderModel',
-            model_module: 'jupyter-js-widgets',
-            model_module_version: '3.0.0',
+            model_name: 'TestWidget',
+            model_module: 'test-widgets',
+            model_module_version: '1.0.0',
         };
         let comm1 = new MockComm();
         let comm2 = new MockComm();
@@ -338,36 +331,25 @@ describe("ManagerBase", function() {
         let manager = this.managerBase;
         let model = await manager.new_model(this.modelOptions);
         let state = await manager.get_state();
+        {
+      }
         let expectedState = {
           "version_major":2,
           "version_minor":0,
           "state":{
             "u-u-i-d":{
-              "model_name":"IntSliderModel",
-              "model_module":"jupyter-js-widgets",
-              "model_module_version":"3.0.0",
+              "model_name":"TestWidget",
+              "model_module":"test-widgets",
+              "model_module_version":"1.0.0",
               "state":{
-                "_model_module":"jupyter-js-widgets",
-                "_model_name":"IntSliderModel",
-                "_model_module_version":"3.0.0",
-                "_view_module":"jupyter-js-widgets",
-                "_view_name":"IntSliderView",
-                "_view_module_version":"3.0.0",
+                "_model_module":"test-widgets",
+                "_model_name":"TestWidget",
+                "_model_module_version":"1.0.0",
+                "_view_module":"test-widgets",
+                "_view_name":"TestWidgetView",
+                "_view_module_version":"1.0.0",
                 "_view_count":null,
-                "msg_throttle":1,
-                "layout":null,
-                "style":null,
-                "_dom_classes":[],
-                "description":"",
-                "value":0,
-                "disabled":false,
-                "max":100,
-                "min":0,
-                "step":1,
-                "orientation":"horizontal",
-                "readout":true,
-                "readout_format":"d",
-                "continuous_update":true
+                "msg_throttle":1
         }}}};
         expect(state).to.deep.equal(expectedState);
       });
@@ -382,9 +364,9 @@ describe("ManagerBase", function() {
           "version_minor":0,
           "state":{
             "u-u-i-d":{
-              "model_name":"IntSliderModel",
-              "model_module":"jupyter-js-widgets",
-              "model_module_version":"3.0.0",
+              "model_name":"TestWidget",
+              "model_module":"test-widgets",
+              "model_module_version":"1.0.0",
               "state":{
                 "value":50
         }}}};

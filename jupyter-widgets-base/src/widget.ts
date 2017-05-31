@@ -129,8 +129,10 @@ class WidgetModel extends Backbone.Model {
      * Close model
      *
      * @param comm_closed - true if the comm is already being closed. If false, the comm will be closed.
+     *
+     * @returns - a promise that is fulfilled when all the associated views have been removed.
      */
-    close(comm_closed: boolean = false) {
+    close(comm_closed: boolean = false): Promise<void> {
         // can only be closed once.
         if (this._closed) {
             return;
@@ -145,10 +147,11 @@ class WidgetModel extends Backbone.Model {
             delete this.comm;
         }
         // Delete all views of this model
-        Object.keys(this.views).forEach((id: string) => {
-            this.views[id].then(view => view.remove());
+        let views = Object.keys(this.views).map((id: string) => {
+            return this.views[id].then(view => view.remove());
         });
         delete this.views;
+        return Promise.all(views).then(()=>{});
     }
 
     /**
