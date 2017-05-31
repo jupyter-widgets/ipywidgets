@@ -39,6 +39,7 @@ class DOMWidget(Widget):
 
     def _repr_keys(self):
         # We also need to include _dom_classes in repr for reproducibility
-        yield from super(DOMWidget, self)._repr_keys()
+        for key in super(DOMWidget, self)._repr_keys():
+            yield key
         if self._dom_classes:
             yield '_dom_classes'

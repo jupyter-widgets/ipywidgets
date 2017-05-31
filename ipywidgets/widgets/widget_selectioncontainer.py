@@ -51,7 +51,8 @@ class _SelectionContainer(Box, CoreWidget):
 
     def _repr_keys(self):
         # We also need to include _titles in repr for reproducibility
-        yield from super(_SelectionContainer, self)._repr_keys()
+        for key in super(_SelectionContainer, self)._repr_keys():
+            yield key
         if self._titles:
             yield '_titles'
 

@@ -115,4 +115,6 @@ class Password(Text):
     def _repr_keys(self):
         # Don't include password value in repr!
         super_keys = super(Password, self)._repr_keys()
-        yield from (key for key in super_keys if key != 'value')
+        for key in super_keys:
+            if key != 'value':
+                yield key
