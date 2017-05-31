@@ -542,16 +542,7 @@ class Widget(LoggingHasTraits):
         super(Widget, self).notify_change(change)
 
     def __repr__(self):
-        class_name = self.__class__.__name__
-        traits = self.traits()
-        signature_entires = []
-        for key in self.keys():
-            value = getattr(self, key)
-            if key[0] == '_' or self._compare(value, traits[key].default_value):
-                continue
-            signature_entires.append('%s=%r' % (key, value))
-        signature = ', '.join(signature_entires)
-        return '%s(%s)' % (class_name, signature)
+        return self._gen_repr_from_keys(self._repr_keys())
 
     #-------------------------------------------------------------------------
     # Support methods
@@ -667,3 +658,18 @@ class Widget(LoggingHasTraits):
         """Sends a message to the model in the front-end."""
         if self.comm is not None and self.comm.kernel is not None:
             self.comm.send(data=msg, buffers=buffers)
+
+    def _repr_keys(self):
+        traits = self.traits()
+        for key in sorted(self.keys):
+            if key[0] == '_' or self._compare(getattr(self, key), traits[key].default_value):
+                continue
+            yield key
+
+    def _gen_repr_from_keys(self, keys):
+        class_name = self.__class__.__name__
+        signature = ', '.join(
+            '%s=%r' % (key, getattr(self, key))
+            for key in keys
+        )
+        return '%s(%s)' % (class_name, signature)
