@@ -1,5 +1,2 @@
-css/widgets.built.css
-lib-embed/
-docs-embed/
-dist/
+lib/
 test/coverage/
