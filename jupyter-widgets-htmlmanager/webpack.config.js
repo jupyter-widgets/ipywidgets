@@ -4,11 +4,11 @@
 var version = require('./package.json').version;
 
 module.exports = {
-    entry: './lib-embed/embed-webpack.js',
+    entry: './lib/embed-webpack.js',
     output: {
-        filename: 'embed.js',
+        filename : 'index.js',
         path: './dist',
-        publicPath: 'https://unpkg.com/jupyter-js-widgets@' + version + '/dist/'
+        publicPath: 'https://unpkg.com/embed-jupyter-widgets@' + version + '/dist/'
     },
     devtool: 'source-map',
     module: {
@@ -29,6 +29,6 @@ module.exports = {
         return [
             require('postcss-import'),
             require('postcss-cssnext')
-        ]
+        ];
     }
 };

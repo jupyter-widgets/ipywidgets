@@ -8,7 +8,6 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "target": "ES5",
-    "outDir": "../lib-embed"
-  },
-  "exclude": ["typedoc.d.ts"]
+    "outDir": "../lib"
+  }
 }

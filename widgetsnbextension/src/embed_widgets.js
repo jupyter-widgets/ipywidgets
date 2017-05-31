@@ -13,7 +13,10 @@ var embed_widgets = function() {
                 'drop_defaults': true
             }).then(function(state) {
                 var data = JSON.stringify(state, null, '    ');
-                var value = '<script src="https://unpkg.com/jupyter-js-widgets@~' + widgets.version + '/dist/embed.js"></script>\n' +
+                // TODO: This does not work right now - we don't know what
+                // version of jupyter-js-widgets is included in what version of
+                // embed-jupyter-widgets.
+                var value = '<script src="https://unpkg.com/embed-jupyter-widgets@~' + widgets.version + '/dist/embed.js"></script>\n' +
                             '<script type="application/vnd.jupyter.widget-state+json">\n' + data + '\n</script>';
 
                 var views = [];

@@ -165,8 +165,7 @@ implementing other usages of `jupyter-js-widgets` in web contexts.
    `application/vnd.jupyter.widget-state+json` mime type.
 3. The `web3` example showcases how communication with a Jupyter kernel can
    happen in a web context outside of the notebook or jupyterlab contexts.
-4. The `web4` example is a tests for the embed widget manager.
-5. The `web5` example makes use of the `tmpnb` service to spawn a Jupyter
+4. The `web-tmpnb` example makes use of the `tmpnb` service to spawn a Jupyter
    server, request a kernel from this server and implement the same feature as
    the `web3` example.
 

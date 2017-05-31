@@ -1,16 +1,12 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import {
-    ManagerBase
-} from '../lib/manager-base';
+import * as widgets from 'jupyter-js-widgets';
 
 import * as PhosphorWidget from '@phosphor/widgets';
 
-import * as widgets from '../../jupyter-js-widgets/lib/index';
-
 export
-class EmbedManager extends ManagerBase<HTMLElement> {
+class EmbedManager extends widgets.ManagerBase<HTMLElement> {
 
     /**
      * Display the specified view. Element where the view is displayed
@@ -51,13 +47,18 @@ class EmbedManager extends ManagerBase<HTMLElement> {
         return new Promise(function(resolve, reject) {
             if (moduleName === 'jupyter-js-widgets') {
                 // Shortcut resolving the standard widgets so we don't load two
-                // copies on the page. If we ever separate the embed manager
-                // from the main widget package, we should get rid of this special
-                // case.
+                // copies on the page. If we ever separate the widgets from the
+                // base manager, we should get rid of this special case.
                 resolve(widgets);
             } else {
                 var fallback = function(err) {
-                    (window as any).require([`https://unpkg.com/${moduleName}@${moduleVersion}/dist/index.js`], resolve, reject);
+                    let failedId = err.requireModules && err.requireModules[0];
+                    if (failedId) {
+                        console.log(`Falling back to unpkg.com for ${moduleName}@${moduleVersion}`);
+                        (window as any).require([`https://unpkg.com/${moduleName}@${moduleVersion}/dist/index.js`], resolve, reject);
+                    } else {
+                        throw err;
+                    }
                 };
                 (window as any).require([`${moduleName}.js`], resolve, fallback);
             }
