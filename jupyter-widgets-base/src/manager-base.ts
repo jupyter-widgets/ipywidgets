@@ -12,10 +12,6 @@ import {
 } from './widget';
 
 import {
-    HTMLModel
-} from './widget_string';
-
-import {
     shims
 } from './services-shim';
 
@@ -258,11 +254,16 @@ abstract class ManagerBase<T> {
         }
 
         var error_handler = function(error) {
+            console.error('Could not instantiate widget');
+            throw error;
+            /*
+
             let modelOptions = {
                 widget_manager: that,
                 model_id: model_id,
                 comm: options.comm,
             }
+
             var widget_model = new HTMLModel({}, modelOptions);
             widget_model.once('comm:close', function () {
                 delete that._models[model_id];
@@ -300,6 +301,7 @@ abstract class ManagerBase<T> {
                 </table>`;
             widget_model.set('value', placeholder);
             return widget_model;
+            */
         };
 
         let model_promise = this.loadClass(
