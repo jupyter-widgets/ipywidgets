@@ -10,10 +10,16 @@ import {
     Kernel
 } from '@jupyterlab/services';
 
+import * as widgets from 'jupyter-js-widgets';
+
 let BASEURL = prompt('Notebook BASEURL', 'http://localhost:8888');
 let WSURL = 'ws:' + BASEURL.split(':').slice(1).join(':');
 
-document.addEventListener("DOMContentLoaded", function(event) {
+var scriptjs = require('scriptjs') as any;
+scriptjs('https://unpkg.com/requirejs/require.js', function(rjs) {
+    (window as any).define('jupyter-js-widgets', function() {
+        return widgets;
+    });
 
     // Connect to the notebook webserver.
     let connectionInfo = {
