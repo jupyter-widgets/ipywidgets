@@ -59,19 +59,19 @@ The following functions are available in the module `ipywidgets.widgets.embed`:
 .. embed_snippet::
 
     s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
-    print(ipywidgets.widgets.embed.embed_snippet(views=[s1, s2]))
+    print(embed_snippet(views=[s1, s2]))
 
 .. embed_data::
 
     s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
-    data = ipywidgets.widgets.embed.embed_data(views=[s1, s2]))
+    data = embed_data(views=[s1, s2]))
     print(data['manager_state'])
     print(data['view_specs])
 
 .. embed_minimal_html::
 
     s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
-    ipywidgets.widgets.embed.embed_minimal_html('my_export.html', views=[s1, s2]))
+    embed_minimal_html('my_export.html', views=[s1, s2]))
 
 ```
 
@@ -91,9 +91,9 @@ include only the state of the views and their dependencies, use the function:
 .. dependency_state::
 
     s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
-    print(ipywidgets.widgets.embed.embed_snippet(
+    print(embed_snippet(
         views=[s1, s2],
-        state=ipywidgets.widgets.embed.dependency_state([s1, s2]),
+        state=dependency_state([s1, s2]),
         ))
 
 ```
