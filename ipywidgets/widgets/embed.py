@@ -116,9 +116,9 @@ def dependency_state(widgets, drop_defaults=True):
      - Find widget references in nested list/dict structures
      - Find widget references in other types of attributes
 
-    Note that this searches the state of the widget for references, so if
-    the a widget reference is not included in the serialized state, it won't
-    be counted as a dependency.
+    Note that this searches the state of the widgets for references, so if
+    a widget reference is not included in the serialized state, it won't
+    be considered as a dependency.
     """
     # collect the state of all relevant widgets
     if widgets is None:
