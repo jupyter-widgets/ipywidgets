@@ -284,7 +284,7 @@ class Widget(LoggingHasTraits):
         """Returns the full state for a widget manager for embedding
 
         :param drop_defaults: when True, it will not include default value
-        :param widgets: list with widgets to include in the state (or all widgets when None) 
+        :param widgets: list with widgets to include in the state (or all widgets when None)
         :return:
         """
         state = {}
@@ -540,6 +540,18 @@ class Widget(LoggingHasTraits):
                 # Send new state to front-end
                 self.send_state(key=name)
         super(Widget, self).notify_change(change)
+
+    def __repr__(self):
+        class_name = self.__class__.__name__
+        traits = self.traits()
+        signature_entires = []
+        for key in self.keys():
+            value = getattr(self, key)
+            if key[0] == '_' or self._compare(value, traits[key].default_value):
+                continue
+            signature_entires.append('%s=%r' % (key, value))
+        signature = ', '.join(signature_entires)
+        return '%s(%s)' % (class_name, signature)
 
     #-------------------------------------------------------------------------
     # Support methods
