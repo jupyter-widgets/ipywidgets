@@ -37,8 +37,7 @@
     "test:examples:firefox": "npm-run-all \"test:example:* -- -- --browsers Firefox\"",
     "test:example:web2": "cd examples/web2 && npm install && npm run test:default",
     "test:example:web3": "cd examples/web3 && npm install && npm run test:default",
-    "test:example:web4": "cd examples/web4 && npm install && npm run test:default",
-    "test:example:web5": "cd examples/web5 && npm install && npm run test:default"
+    "test:example:web-tmpnb": "cd examples/web-tmpnb && npm install && npm run test:default"
   },
   "devDependencies": {
     "@types/expect.js": "^0.3.29",
