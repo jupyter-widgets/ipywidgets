@@ -1,5 +1,5 @@
 {
-  "name": "embed-jupyter-widgets",
+  "name": "jupyter-widgets-htmlmanager",
   "version": "0.1.0",
   "description": "Standalone package for rendering Jupyter widgets outside notebooks",
   "main": "lib/index.js",

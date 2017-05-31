@@ -17,9 +17,15 @@ if (Element && !Element.prototype.matches) {
     proto.oMatchesSelector || proto.webkitMatchesSelector;
 }
 
-import * as embed from './embed-manager';
+import {
+    HTMLManager
+} from './htmlmanager';
+
+import {
+    WidgetModel
+} from 'jupyter-js-widgets';
+
 import * as _ from 'underscore';
-import { WidgetModel } from 'jupyter-js-widgets';
 
 // Load json schema validator
 var Ajv = require('ajv');
@@ -102,7 +108,7 @@ function renderManager(element, tag) {
     if (!valid) {
         console.log(model_validate.errors);
     }
-    let manager = new embed.EmbedManager();
+    let manager = new HTMLManager();
     manager.set_state(widgetStateObject).then(function(models) {
         let tags = element.querySelectorAll('script[type="application/vnd.jupyter.widget-view+json"]');
         for (let i=0; i!=tags.length; ++i) {
