@@ -14,7 +14,8 @@
   "author": "IPython",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "jupyter-js-widgets": "file:../.."
+    "jupyter-js-widgets": "file:../..",
+    "jupyter-widgets-base": "file:../../../jupyter-widgets-base"
   },
   "devDependencies": {
     "chai": "^3.5.0",

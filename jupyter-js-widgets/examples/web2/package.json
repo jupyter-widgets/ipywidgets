@@ -13,7 +13,8 @@
   "dependencies": {
     "codemirror": "^5.9.0",
     "font-awesome": "^4.5.0",
-    "jupyter-js-widgets": "file:../.."
+    "jupyter-js-widgets": "file:../..",
+    "jupyter-widgets-base": "file:../../../jupyter-widgets-base"
   },
   "devDependencies": {
     "css-loader": "^0.23.1",

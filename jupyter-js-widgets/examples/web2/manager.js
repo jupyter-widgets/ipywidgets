@@ -1,4 +1,5 @@
 var widgets = require('jupyter-js-widgets');
+var base = require('jupyter-widgets-base');
 var PhosphorWidget = require('@phosphor/widgets').Widget;
 
 require('@phosphor/widgets/style/index.css');
@@ -10,7 +11,7 @@ var WidgetManager = exports.WidgetManager = function(el) {
     widgets.ManagerBase.call(this);
     this.el = el;
 };
-WidgetManager.prototype = Object.create(widgets.ManagerBase.prototype);
+WidgetManager.prototype = Object.create(base.ManagerBase.prototype);
 
 WidgetManager.prototype.display_view = function(msg, view, options) {
     var that = this;

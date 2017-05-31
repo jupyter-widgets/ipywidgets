@@ -1,18 +1,19 @@
 import * as widgets from 'jupyter-js-widgets';
+import * as base from 'jupyter-widgets-base';
 import 'phosphor/styles/base.css';
 import './widgets.css';
-import * as PWidget from 'phosphor/lib/ui/widget';
+import * as PWidget from '@phosphor/widgets';
 
 
 export
-class WidgetManager extends widgets.ManagerBase<HTMLElement> {
+class WidgetManager extends base.ManagerBase<HTMLElement> {
     constructor(kernel, el) {
         super();
         this.kernel = kernel;
         this.el = el;
 
         // Create a comm manager shim
-        this.commManager = new widgets.shims.services.CommManager(kernel);
+        this.commManager = new base.shims.services.CommManager(kernel);
 
         // Register the comm target
         this.commManager.register_target(this.comm_target_name, this.handle_comm_open.bind(this));
