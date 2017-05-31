@@ -24,19 +24,13 @@
     "build": "npm run build:src",
     "postinstall": "npm dedupe",
     "prepublish": "npm run build",
-    "test": "npm run test:unit && npm run test:examples",
+    "test": "npm run test:unit",
     "test:coverage": "npm run build:test && webpack --config test/webpack-cov.conf.js && karma start test/karma-cov.conf.js",
     "test:unit": "npm run test:unit:firefox && npm run test:unit:chrome",
     "test:unit:default": "npm run build:test && karma start test/karma.conf.js --log-level debug",
     "test:unit:firefox": "npm run test:unit:default -- --browsers=Firefox",
     "test:unit:chrome": "npm run test:unit:default -- --browsers=Chrome",
-    "test:unit:ie": "npm run test:unit:default -- --browsers=IE",
-    "test:examples": "npm run test:examples:chrome && npm run test:examples:firefox",
-    "test:examples:chrome": "npm-run-all \"test:example:*\"",
-    "test:examples:firefox": "npm-run-all \"test:example:* -- -- --browsers Firefox\"",
-    "test:example:web2": "cd examples/web2 && npm install && npm run test:default",
-    "test:example:web3": "cd examples/web3 && npm install && npm run test:default",
-    "test:example:web-tmpnb": "cd examples/web-tmpnb && npm install && npm run test:default"
+    "test:unit:ie": "npm run test:unit:default -- --browsers=IE"
   },
   "devDependencies": {
     "@types/expect.js": "^0.3.29",
