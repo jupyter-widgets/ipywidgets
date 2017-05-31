@@ -501,7 +501,7 @@ class WidgetModel extends Backbone.Model {
     widget_manager: managerBase.ManagerBase<any>;
     views: {[key: string]: Promise<WidgetView>} = Object.create(null);
     model_id: string;
-    state_change: Promise<void> = Promise.resolve();
+    state_change: Promise<any> = Promise.resolve();
 
     // Not initialized here so that we don't override the values set
     // in the initialize function.

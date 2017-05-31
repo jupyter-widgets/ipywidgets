@@ -8,7 +8,7 @@ import * as Backbone from 'backbone';
 import * as services from '@jupyterlab/services';
 
 import {
-    WidgetModel
+    WidgetModel, WidgetView
 } from './widget';
 
 import {
@@ -86,7 +86,7 @@ abstract class ManagerBase<T> {
     /**
      * Display a view for a particular model.
      */
-    display_model(msg: services.KernelMessage.IMessage, model: Backbone.Model, options: any = {}): Promise<T> {
+    display_model(msg: services.KernelMessage.IMessage, model: WidgetModel, options: any = {}): Promise<T> {
         return this.create_view(model, options).then(
             view => this.display_view(msg, view, options)).catch(utils.reject('Could not create view', true));
     };
@@ -98,13 +98,13 @@ abstract class ManagerBase<T> {
      * This must be implemented by a subclass. The implementation must trigger the view's displayed
      * event after the view is on the page: `view.trigger('displayed')`
      */
-    abstract display_view(msg: services.KernelMessage.IMessage, view: Backbone.View<Backbone.Model>, options: any): Promise<T>;
+    abstract display_view(msg: services.KernelMessage.IMessage, view: WidgetView, options: any): Promise<T>;
 
     /**
      * Modifies view options. Generally overloaded in custom widget manager
      * implementations.
      */
-    setViewOptions(options = {}) {
+    setViewOptions(options: any = {}): any {
         return options;
     };
 
@@ -114,14 +114,13 @@ abstract class ManagerBase<T> {
      * Make sure the view creation is not out of order with
      * any state updates.
      */
-    create_view(model, options = {}) {
-        model.state_change = model.state_change.then(() => {
-
+    create_view(model: WidgetModel, options = {}): Promise<WidgetView> {
+        let viewPromise = model.state_change = model.state_change.then(() => {
             return this.loadClass(model.get('_view_name'),
                 model.get('_view_module'),
                 model.get('_view_module_version')
             ).then((ViewType) => {
-                var view = new ViewType({
+                let view: WidgetView = new ViewType({
                     model: model,
                     options: this.setViewOptions(options)
                 });
@@ -129,9 +128,9 @@ abstract class ManagerBase<T> {
                 return Promise.resolve(view.render()).then(() => {return view;});
             }).catch(utils.reject('Could not create a view for model id ' + model.id, true));
         });
-        var id = utils.uuid();
-        model.views[id] = model.state_change;
-        model.state_change.then((view) => {
+        let id = utils.uuid();
+        model.views[id] = viewPromise;
+        viewPromise.then((view) => {
             view.once('remove', () => { delete view.model.views[id]; }, this);
         });
         return model.state_change;
@@ -140,7 +139,7 @@ abstract class ManagerBase<T> {
     /**
      * callback handlers specific to a view
      */
-    callbacks (view) {
+    callbacks (view: WidgetView) {
         return {};
     };
 
@@ -184,7 +183,7 @@ abstract class ManagerBase<T> {
      * @param  serialized_state - serialized model attributes.
      */
     new_widget(options: ModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
-        var commPromise;
+        let commPromise;
         // If no comm is provided, a new comm is opened for the jupyter.widget
         // target.
         if (options.comm) {
@@ -206,7 +205,7 @@ abstract class ManagerBase<T> {
             );
         }
         // The options dictionary is copied since data will be added to it.
-        var options_clone = _.clone(options);
+        let options_clone = _.clone(options);
         // Create the model. In the case where the comm promise is rejected a
         // comm-less model is still created with the required model id.
         return commPromise.then((comm) => {
@@ -243,8 +242,7 @@ abstract class ManagerBase<T> {
      *
      */
     new_model(options: ModelOptions, serialized_state: any = {}) {
-        var that = this;
-        var model_id;
+        let model_id;
         if (options.model_id) {
             model_id = options.model_id;
         } else if (options.comm) {
@@ -253,7 +251,7 @@ abstract class ManagerBase<T> {
             throw new Error('Neither comm nor model_id provided in options object. At least one must exist.');
         }
 
-        var error_handler = function(error) {
+        let error_handler = (error) => {
             console.error('Could not instantiate widget');
             throw error;
             /*
@@ -264,7 +262,7 @@ abstract class ManagerBase<T> {
                 comm: options.comm,
             }
 
-            var widget_model = new HTMLModel({}, modelOptions);
+            let widget_model = new HTMLModel({}, modelOptions);
             widget_model.once('comm:close', function () {
                 delete that._models[model_id];
             });
@@ -308,18 +306,18 @@ abstract class ManagerBase<T> {
             options.model_name,
             options.model_module,
             options.model_module_version
-        ).then(function(ModelType) {
+        ).then((ModelType) => {
             try {
-                return ModelType._deserialize_state(serialized_state || {}, that)
-                .then(function(attributes) {
+                return ModelType._deserialize_state(serialized_state || {}, this)
+                .then((attributes) => {
                     let modelOptions = {
-                        widget_manager: that,
+                        widget_manager: this,
                         model_id: model_id,
                         comm: options.comm,
                     }
-                    var widget_model = new ModelType(attributes, modelOptions);
-                    widget_model.once('comm:close', function () {
-                        delete that._models[model_id];
+                    let widget_model = new ModelType(attributes, modelOptions);
+                    widget_model.once('comm:close', () => {
+                        delete this._models[model_id];
                     });
                     widget_model.name = options.model_name;
                     widget_model.module = options.model_module;
