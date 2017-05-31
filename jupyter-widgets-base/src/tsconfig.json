@@ -3,12 +3,10 @@
     "declaration": true,
     //"noImplicitAny": true,
     "lib": ["dom", "es5", "es2015.promise"],
-    "types": ["mathjax", "requirejs"],
     "noEmitOnError": true,
     "module": "commonjs",
     "moduleResolution": "node",
     "target": "ES5",
     "outDir": "../lib"
-  },
-  "exclude": ["typedoc.d.ts"]
+  }
 }
