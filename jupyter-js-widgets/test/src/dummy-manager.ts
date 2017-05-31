@@ -4,7 +4,7 @@
 import * as widgets from '../../lib';
 import * as services from '@jupyterlab/services';
 import * as Backbone from 'backbone';
-
+import * as base from 'jupyter-widgets-base';
 import * as sinon from 'sinon';
 
 let numComms = 0;
@@ -40,7 +40,7 @@ class MockComm {
 }
 
 export
-class DummyManager extends widgets.ManagerBase<HTMLElement> {
+class DummyManager extends base.ManagerBase<HTMLElement> {
     constructor() {
         super();
         this.el = window.document.createElement('div');
@@ -114,7 +114,7 @@ let array_serialization = {
 };
 
 
-class TestWidget extends widgets.WidgetModel {
+class TestWidget extends base.WidgetModel {
     defaults() {
         return {...super.defaults(),
             _model_module: "test-widgets",
@@ -128,24 +128,17 @@ class TestWidget extends widgets.WidgetModel {
     }
 }
 
-class BinaryWidget extends TestWidget {
-    static serializers = {
-        ...widgets.WidgetModel.serializers,
-        array: array_serialization
-    }
-    defaults() {
-        return {...super.defaults(),
-            _model_name: "BinaryWidget",
-            _view_name: "BinaryWidgetView",
-            array: new Int8Array(0)};
-    }
-}
-
-class BinaryWidgetView extends widgets.WidgetView {
+class TestWidgetView extends base.WidgetView {
     render() {
-        this._rendered += 1
+        this._rendered += 1;
+        super.render();
     }
+    remove() {
+        this._removed +=1;
+        super.remove();
+    }
+    _removed = 0
     _rendered = 0;
 }
 
-let testWidgets = {BinaryWidget, BinaryWidgetView}
+let testWidgets = {TestWidget, TestWidgetView};

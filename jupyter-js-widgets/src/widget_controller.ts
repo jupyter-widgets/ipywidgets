@@ -7,7 +7,7 @@ import {
 
 import {
     DOMWidgetView, unpack_models, ViewList
-} from './widget';
+} from 'jupyter-widgets-base';
 
 import * as _ from 'underscore';
 

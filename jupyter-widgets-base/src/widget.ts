@@ -821,13 +821,6 @@ class DOMWidgetView extends WidgetView {
         this.update_classes([], new_classes, el || this.el);
     }
 
-    // TODO: move to classes that use this in jupyter-js-widgets
-    /*
-    typeset(element, text?){
-        this.displayed.then(function() {utils.typeset(element, text);});
-    }
-    */
-
     _setElement(el: HTMLElement) {
         if (this.pWidget) {
             this.pWidget.dispose();

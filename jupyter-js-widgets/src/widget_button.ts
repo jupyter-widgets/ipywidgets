@@ -2,16 +2,12 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetView
-} from './widget';
+    DOMWidgetView, StyleModel
+} from 'jupyter-widgets-base';
 
 import {
     CoreDOMWidgetModel
 } from './widget_core';
-
-import {
-    StyleModel
-} from './widget_style';
 
 import * as _ from 'underscore';
 

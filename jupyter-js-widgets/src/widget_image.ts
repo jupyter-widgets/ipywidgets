@@ -3,7 +3,7 @@
 
 import {
     DOMWidgetView
-} from './widget';
+} from 'jupyter-widgets-base';
 
 import {
     CoreDOMWidgetModel

@@ -3,7 +3,7 @@
 
 import {
     DOMWidgetView, ViewList, JupyterPhosphorWidget
-} from './widget';
+} from 'jupyter-widgets-base';
 
 import {
     BoxModel

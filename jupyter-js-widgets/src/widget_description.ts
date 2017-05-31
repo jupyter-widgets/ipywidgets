@@ -2,12 +2,12 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetModel, DOMWidgetView
-} from './widget';
+    DOMWidgetModel, DOMWidgetView, StyleModel
+} from 'jupyter-widgets-base';
 
 import {
-    StyleModel
-} from './widget_style';
+    typeset
+} from './utils';
 
 export
 class DescriptionStyleModel extends StyleModel {
@@ -46,6 +46,10 @@ class DescriptionView extends DOMWidgetView {
 
         this.listenTo(this.model, 'change:description', this.updateDescription);
         this.updateDescription();
+    }
+
+    typeset(element, text?){
+        this.displayed.then(() => typeset(element, text));
     }
 
     updateDescription() {

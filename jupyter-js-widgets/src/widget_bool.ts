@@ -11,7 +11,7 @@ import {
 
 import {
     DOMWidgetView
-} from './widget';
+} from 'jupyter-widgets-base';
 
 import * as _ from 'underscore';
 

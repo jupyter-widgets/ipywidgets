@@ -3,7 +3,7 @@
 
 import {
     DOMWidgetView, unpack_models, ViewList, JupyterPhosphorWidget
-} from './widget';
+} from 'jupyter-widgets-base';
 
 import {
     CoreDOMWidgetModel

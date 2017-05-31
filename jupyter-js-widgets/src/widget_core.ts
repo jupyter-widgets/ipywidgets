@@ -6,7 +6,7 @@
 
 import {
     DOMWidgetModel, WidgetModel
-} from './widget';
+} from 'jupyter-widgets-base';
 
 import {
     DescriptionModel
