@@ -6,11 +6,11 @@ import * as widgets from 'jupyter-js-widgets';
 import * as PhosphorWidget from '@phosphor/widgets';
 
 export
-class EmbedManager extends widgets.ManagerBase<HTMLElement> {
+class HTMLManager extends widgets.ManagerBase<HTMLElement> {
 
     /**
      * Display the specified view. Element where the view is displayed
-     * is specified in the `options` argument.
+     * is specified in the `options.el` argument.
      */
     display_view(msg, view, options) {
         return Promise.resolve(view).then(function(view) {
