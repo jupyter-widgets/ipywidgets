@@ -36,3 +36,9 @@ class DOMWidget(Widget):
         if className in self._dom_classes:
             self._dom_classes = [c for c in self._dom_classes if c != className]
         return self
+
+    def _repr_keys(self):
+        # We also need to include _dom_classes in repr for reproducibility
+        yield from super(DOMWidget, self)._repr_keys()
+        if self._dom_classes:
+            yield '_dom_classes'
