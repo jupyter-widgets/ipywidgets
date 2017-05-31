@@ -5,5 +5,5 @@ source ~/.nvm/nvm.sh
 nvm use "v$TRAVIS_NODE_VERSION"
 nvm alias default "v$TRAVIS_NODE_VERSION"
 sh -e /etc/init.d/xvfb start
-cd jupyter-js-widgets
-npm run test:unit:$BROWSER && npm run test:examples:$BROWSER
+cd jupyter-widgets-base
+npm run test:unit:$BROWSER
