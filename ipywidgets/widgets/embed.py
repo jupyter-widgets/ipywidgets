@@ -82,7 +82,7 @@ def _find_widget_refs_by_state(widget, state):
                     yield item
 
 
-def get_recursive_state(widget, store=None, drop_defaults=False):
+def _get_recursive_state(widget, store=None, drop_defaults=False):
     """Gets the embed state of a widget, and all other widgets it refers to as well"""
     if store is None:
         store = dict()
@@ -92,37 +92,33 @@ def get_recursive_state(widget, store=None, drop_defaults=False):
     # Loop over all values included in state (i.e. don't consider excluded values):
     for ref in _find_widget_refs_by_state(widget, state['state']):
         if ref.model_id not in store:
-            get_recursive_state(ref, store, drop_defaults=drop_defaults)
+            _get_recursive_state(ref, store, drop_defaults=drop_defaults)
     return store
 
 
 def add_resolved_links(store, drop_defaults):
-    """Checks if any link models exists between models in store"""
+    """Adds the state of any link models between two models in store"""
     for widget_id, widget in Widget.widgets.items(): # go over all widgets
         if isinstance(widget, Link) and widget_id not in store:
             if widget.source[0].model_id in store and widget.target[0].model_id in store:
                 store[widget.model_id] = widget._get_embed_state(drop_defaults=drop_defaults)
 
 
-def dependency_state(widgets, drop_defaults):
+def dependency_state(widgets, drop_defaults=True):
     """Get the state of all widgets specified, and their dependencies.
 
-    In the below graph, D and E are depencies of C; C is a dependency of
-    both A and B; and E is a dependency of F. That means the state of C
-    will include (C, D, E).
+    This uses a simple dependency finder, including:
+     - any widget directly referenced in the state of an included widget
+     - any widget in a list/tuple attribute in the state of on an included widget
+     - any widget in a dict attribute in the state of on an included widget
+     - any jslink/jsdlink between two included widgets
+    What this alogrithm does not do:
+     - Find widget references in nested list/dict structures
+     - Find widget references in other types of attributes
 
-    A --           -- D
-        | -- C -- |
-    B --           --
-                     | -- E
-                 F --
-
-    ---- Dependecy ---->
-
-    Note: Any links between included widgets will also be added. Using the
-    example above, this means that any links between widgets (C, D, E) will
-    also be included.
-
+    Note that this searches the state of the widget for references, so if
+    the a widget reference is not included in the serialized state, it won't
+    be counted as a dependency.
     """
     # collect the state of all relevant widgets
     if widgets is None:
@@ -132,13 +128,13 @@ def dependency_state(widgets, drop_defaults):
     else:
         state = {}
         for widget in widgets:
-            get_recursive_state(widget, state, drop_defaults)
+            _get_recursive_state(widget, state, drop_defaults)
         # Add any links between included widgets:
         add_resolved_links(state, drop_defaults)
     return state
 
 
-def embed_data(views, include_all=True, drop_defaults=True):
+def embed_data(views, drop_defaults=True, state=None):
     """Gets data for embedding.
 
     Use this to get the raw data for embedding if you have special
@@ -149,13 +145,14 @@ def embed_data(views, include_all=True, drop_defaults=True):
     views: widget or collection of widgets or None
         The widgets to include views for. If None, all DOMWidgets are
         included (not just the displayed ones).
-    include_all: boolean
-        Which other widgets' state to include. When set to True, the state
-        of all widgets know to the widget manager is included. When False,
-        the dependencies of the given views are (attempted) resolved
-        automatically, and only their state is included.
     drop_defaults: boolean
         Whether to drop default values from the widget states.
+    state: dict or None (default)
+        The state to include. When set to None, the state of all widgets
+        know to the widget manager is included. Otherwise it uses the
+        passed state directly. This allows for end users to include a
+        smaller state, under the responsibility that this state is
+        sufficient to reconstruct the embedded views.
 
     Returns
     -------
@@ -187,8 +184,8 @@ def embed_data(views, include_all=True, drop_defaults=True):
 
 
 def embed_snippet(views,
-                  include_all=True,
                   drop_defaults=True,
+                  state=None,
                   indent=2,
                   embed_url=None,
                  ):
@@ -199,13 +196,14 @@ def embed_snippet(views,
     views: widget or collection of widgets or None
         The widgets to include views for. If None, all DOMWidgets are
         included (not just the displayed ones).
-    include_all: boolean
-        Which other widgets' state to include. When set to True, the state
-        of all widgets know to the widget manager is included. When False,
-        the dependencies of the given views are (attempted) resolved
-        automatically, and only their state is included.
     drop_defaults: boolean
         Whether to drop default values from the widget states.
+    state: dict or None (default)
+        The state to include. When set to None, the state of all widgets
+        know to the widget manager is included. Otherwise it uses the
+        passed state directly. This allows for end users to include a
+        smaller state, under the responsibility that this state is
+        sufficient to reconstruct the embedded views.
     indent: integer, string or None
         The indent to use for the JSON state dump. See `json.dumps` for
         full description.
@@ -218,7 +216,7 @@ def embed_snippet(views,
     A unicode string with an HTML snippet containing several `<script>` tags.
     """
 
-    data = embed_data(views, include_all, drop_defaults)
+    data = embed_data(views, drop_defaults=drop_defaults, state=state)
 
     widget_views = u'\n'.join(
         widget_view_template.format(**dict(view_spec=json.dumps(view_spec)))

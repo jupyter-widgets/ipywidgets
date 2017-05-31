@@ -82,10 +82,23 @@ function for saving a HTML file with minimal wrapping around the HTML snippet,
 allowing for easy validation of the saved state.
 
 In all functions, the state of all widgets known to the widget manager is
-included by default. To include only the state of the views and their
-dependencies, pass the parameter `include_all=False`. This can be
-particularly relevant if you have many independent widgets with a large state,
-but only want to include the relevant ones in your export.
+included by default. You can alternatively pass a reduced state to use instead.
+This can be particularly relevant if you have many independent widgets with a
+large state, but only want to include the relevant ones in your export. To
+include only the state of the views and their dependencies, use the function:
+
+```rst
+.. dependency_state::
+
+    s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
+    print(ipywidgets.widgets.embed.embed_snippet(
+        views=[s1, s2],
+        state=ipywidgets.widgets.embed.dependency_state([s1, s2]),
+        ))
+
+```
+
+
 
 
 ## Embedding Widgets in the Sphinx HTML Documentation
