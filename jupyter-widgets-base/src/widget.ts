@@ -508,6 +508,9 @@ class WidgetModel extends Backbone.Model {
     comm: any;
     comm_live: boolean;
 
+    name: string;
+    module: string;
+
     private _closed: boolean = false;
     private _state_lock: any = null;
     private _buffered_state_diff: any;

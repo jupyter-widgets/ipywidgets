@@ -8,7 +8,17 @@ import {
     expect
 } from 'chai';
 
+import * as chai from 'chai';
+
+import * as chaiAsPromised from 'chai-as-promised';
+chai.use(chaiAsPromised);
+
 import * as sinon from 'sinon';
+import * as sinonChai from 'sinon-chai';
+chai.use(sinonChai);
+
+
+
 
 // test ManagerBase by creating a simple derived class
 // and testing it.
@@ -235,14 +245,14 @@ describe("ManagerBase", function() {
         expect(model.id).to.be.equal(comm.comm_id);
       });
 
-      it('throws an error if model_id or comm not given', async function() {
+      it('rejects if model_id or comm not given', async function() {
         let spec = {
             model_name: 'TestWidget',
             model_module: 'test-widgets',
             model_module_version: '1.0.0',
         };
         let manager = this.managerBase;
-        expect(() => manager.new_model(spec)).to.throw('Neither comm nor model_id provided in options object. At least one must exist.');
+        expect(manager.new_model(spec)).to.be.rejectedWith('Neither comm nor model_id provided in options object. At least one must exist.');
       });
 
       it('throws an error if there is an error loading the class');

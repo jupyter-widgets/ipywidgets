@@ -241,97 +241,55 @@ abstract class ManagerBase<T> {
      *  (err) => {console.error(err)});
      *
      */
-    new_model(options: ModelOptions, serialized_state: any = {}) {
+    async new_model(options: ModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
         let model_id;
         if (options.model_id) {
             model_id = options.model_id;
         } else if (options.comm) {
-            model_id = options.comm.comm_id;
+            model_id = options.model_id = options.comm.comm_id;
         } else {
             throw new Error('Neither comm nor model_id provided in options object. At least one must exist.');
         }
 
-        let error_handler = (error) => {
-            console.error('Could not instantiate widget');
-            throw error;
-            /*
+        let modelPromise = this._make_model(options, serialized_state);
+        this._models[model_id] = modelPromise;
+        return await modelPromise;
+    };
 
-            let modelOptions = {
-                widget_manager: that,
-                model_id: model_id,
-                comm: options.comm,
-            }
-
-            let widget_model = new HTMLModel({}, modelOptions);
-            widget_model.once('comm:close', function () {
-                delete that._models[model_id];
-            });
-            let placeholder =
-                `<table style="width:100%">
-                <thead>
-                    <tr>
-                        <th colspan="2">
-                        Could not create model:
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Model name</td>
-                        <td> ${options.model_name} </td>
-                    </tr>
-                    <tr>
-                        <td>Model module</td>
-                        <td> ${options.model_module} </td>
-                    </tr>
-                    <tr>
-                        <td>Model module version</td>
-                        <td> ${options.model_module_version} </td>
-                    </tr>
-                <tbody>
-                <tfoot>
-                    <tr>
-                        <th colspan="2">
-                        ${error.message}
-                        </th>
-                    </tr>
-                </tfoot>
-                </table>`;
-            widget_model.set('value', placeholder);
-            return widget_model;
-            */
-        };
-
+    async _make_model(options: ModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
+        let model_id = options.model_id;
         let model_promise = this.loadClass(
             options.model_name,
             options.model_module,
             options.model_module_version
-        ).then((ModelType) => {
-            try {
-                return ModelType._deserialize_state(serialized_state || {}, this)
-                .then((attributes) => {
-                    let modelOptions = {
-                        widget_manager: this,
-                        model_id: model_id,
-                        comm: options.comm,
-                    }
-                    let widget_model = new ModelType(attributes, modelOptions);
-                    widget_model.once('comm:close', () => {
-                        delete this._models[model_id];
-                    });
-                    widget_model.name = options.model_name;
-                    widget_model.module = options.model_module;
-                    return widget_model;
-                });
-            }
-            catch (error) {
-                error_handler(error);  // error handler call if ModelType is undefined.
-            }
-        }, error_handler);             // error handler call if module cannot be loaded.
+        ) as Promise<typeof WidgetModel>;
+        let ModelType: typeof WidgetModel;
+        try {
+            ModelType = await model_promise;
+        } catch (error) {
+            console.error('Could not instantiate widget');
+            throw error;
+        }
 
-        this._models[model_id] = model_promise;
-        return model_promise;
-    };
+        if (!ModelType) {
+            throw new Error(`Cannot find model module ${options.model_module}@${options.model_module_version}, ${options.model_name}`);
+        }
+
+        let attributes = await ModelType._deserialize_state(serialized_state, this);
+        let modelOptions = {
+            widget_manager: this,
+            model_id: model_id,
+            comm: options.comm,
+        }
+        let widget_model = new ModelType(attributes, modelOptions);
+        widget_model.once('comm:close', () => {
+            delete this._models[model_id];
+        });
+        widget_model.name = options.model_name;
+        widget_model.module = options.model_module;
+        return widget_model;
+
+    }
 
     /**
      * Close all widgets and empty the widget state.
