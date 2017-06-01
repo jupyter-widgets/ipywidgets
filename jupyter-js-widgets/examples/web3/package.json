@@ -20,7 +20,7 @@
     "font-awesome": "^4.5.0",
     "http-server": "^0.8.5",
     "jupyter-js-widgets": "file:../..",
-    "jupyter-widgets-base": "file:../../../jupyter-widgets-base"
+    "jupyter-widgets-base": "^0.1.0"
   },
   "devDependencies": {
     "css-loader": "^0.23.1",

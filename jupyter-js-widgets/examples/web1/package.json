@@ -15,7 +15,7 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "jupyter-js-widgets": "file:../..",
-    "jupyter-widgets-base": "file:../../../jupyter-widgets-base"
+    "jupyter-widgets-base": "^0.1.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",

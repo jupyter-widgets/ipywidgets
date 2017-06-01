@@ -14,7 +14,7 @@
     "codemirror": "^5.9.0",
     "font-awesome": "^4.5.0",
     "jupyter-js-widgets": "file:../..",
-    "jupyter-widgets-base": "file:../../../jupyter-widgets-base"
+    "jupyter-widgets-base": "^0.1.0"
   },
   "devDependencies": {
     "css-loader": "^0.23.1",
