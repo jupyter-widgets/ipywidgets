@@ -6,8 +6,8 @@ import {
 } from './widget';
 
 import {
-    CoreWidgetModel
-} from './widget_core';
+    WidgetModel
+} from './widget';
 
 import * as _ from 'underscore';
 
@@ -43,7 +43,7 @@ let css_properties = {
 };
 
 export
-class LayoutModel extends CoreWidgetModel {
+class LayoutModel extends WidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
         _model_name: 'LayoutModel',

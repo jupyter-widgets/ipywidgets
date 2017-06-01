@@ -6,8 +6,8 @@ import {
 } from './widget_core';
 
 import {
-    DOMWidgetView, unpack_models, ViewList
-} from './widget';
+    DOMWidgetView, unpack_models, ViewList, WidgetView
+} from '@jupyter-widgets/base';
 
 import * as _ from 'underscore';
 

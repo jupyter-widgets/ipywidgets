@@ -13,10 +13,6 @@ import {
     uuid
 } from './utils';
 
-import {
-    ManagerBase
-} from './manager-base'
-
 import * as _ from 'underscore';
 
 export

@@ -16,29 +16,14 @@ function getDatepicker(parent: Element): HTMLInputElement {
 }
 
 describe('DatePickerView', function() {
-    beforeEach(function() {
+    beforeEach(async function() {
         this.manager = new DummyManager();
-        const modelId = Math.random()
-            .toString(36)
-            .replace(/[^a-z]+/g, '')
-            .substr(0, 5);
-
-        return this.manager.new_widget({
-            model_module: 'jupyter-js-widgets',
-            model_name: 'WidgetModel',
+        const modelId = 'u-u-i-d';
+        this.model = await this.manager.new_widget({
+            model_module: 'test-widgets',
+            model_name: 'TestWidget',
             model_id: modelId,
-            widget_class: 'ipywidgets.Widget'
-        }, { description: 'test-date-model'} ).then(model => {
-            this.model = model;
-        }).catch(err => {
-            console.error('Could not create widget', Error.prototype.toString.call(err));
-            if (err.stack) {
-              console.error('  Trace:', err.stack);
-            }
-            if (err.error_stack) {
-              err.error_stack.forEach((subErr, i) => console.error(`  Chain[${i}]:`, Error.prototype.toString.call(subErr)));
-            }
-        });
+        }, { description: 'test-date-model'} );
     });
 
     it('construction', function() {

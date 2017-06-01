@@ -129,8 +129,10 @@ class WidgetModel extends Backbone.Model {
      * Close model
      *
      * @param comm_closed - true if the comm is already being closed. If false, the comm will be closed.
+     *
+     * @returns - a promise that is fulfilled when all the associated views have been removed.
      */
-    close(comm_closed: boolean = false) {
+    close(comm_closed: boolean = false): Promise<void> {
         // can only be closed once.
         if (this._closed) {
             return;
@@ -145,10 +147,11 @@ class WidgetModel extends Backbone.Model {
             delete this.comm;
         }
         // Delete all views of this model
-        Object.keys(this.views).forEach((id: string) => {
-            this.views[id].then(view => view.remove());
+        let views = Object.keys(this.views).map((id: string) => {
+            return this.views[id].then(view => view.remove());
         });
         delete this.views;
+        return Promise.all(views).then(()=>{});
     }
 
     /**
@@ -498,12 +501,15 @@ class WidgetModel extends Backbone.Model {
     widget_manager: managerBase.ManagerBase<any>;
     views: {[key: string]: Promise<WidgetView>} = Object.create(null);
     model_id: string;
-    state_change: Promise<void> = Promise.resolve();
+    state_change: Promise<any> = Promise.resolve();
 
     // Not initialized here so that we don't override the values set
     // in the initialize function.
     comm: any;
     comm_live: boolean;
+
+    name: string;
+    module: string;
 
     private _closed: boolean = false;
     private _state_lock: any = null;
@@ -528,102 +534,6 @@ class DOMWidgetModel extends WidgetModel {
             _dom_classes: []
         });
     }
-}
-
-/**
- * - create_view and remove_view are default functions called when adding or removing views
- * - create_view takes a model and an index and returns a view or a promise for a view for that model
- * - remove_view takes a view and destroys it (including calling `view.remove()`)
- * - each time the update() function is called with a new list, the create and remove
- *   callbacks will be called in an order so that if you append the views created in the
- *   create callback and remove the views in the remove callback, you will duplicate
- *   the order of the list.
- * - the remove callback defaults to just removing the view (e.g., pass in null for the second parameter)
- * - the context defaults to the created ViewList.  If you pass another context, the create and remove
- *   will be called in that context.
- */
-export
-class ViewList<T> {
-    constructor(create_view: (model: any, index: any) => T | Promise<T>, remove_view: (view: T) => void, context) {
-        this.initialize(create_view, remove_view, context);
-    }
-
-    initialize(create_view: (model: any, index: any) => T | Promise<T>, remove_view: (view: T) => void, context) {
-        this._handler_context = context || this;
-        this._models = [];
-        this.views = []; // list of promises for views
-        this._create_view = create_view;
-        this._remove_view = remove_view || function(view) {(view as any).remove();};
-    }
-
-    /**
-     * the create_view, remove_view, and context arguments override the defaults
-     * specified when the list is created.
-     * after this function, the .views attribute is a list of promises for views
-     * if you want to perform some action on the list of views, do something like
-     * `Promise.all(myviewlist.views).then(function(views) {...});`
-     */
-    update(new_models, create_view?: (model: any, index: any) => T | Promise<T>, remove_view?: (view: T) => void, context?): Promise<T[]> {
-        let remove = remove_view || this._remove_view;
-        let create = create_view || this._create_view;
-        context = context || this._handler_context;
-        let i = 0;
-        // first, skip past the beginning of the lists if they are identical
-        for (; i < new_models.length; i++) {
-            if (i >= this._models.length || new_models[i] !== this._models[i]) {
-                break;
-            }
-        }
-        let first_removed = i;
-        // Remove the non-matching items from the old list.
-        let removed = this.views.splice(first_removed, this.views.length-first_removed);
-        for (let j = 0; j < removed.length; j++) {
-            removed[j].then(function(view) {
-                remove.call(context, view);
-            });
-        }
-
-        // Add the rest of the new list items.
-        for (; i < new_models.length; i++) {
-            this.views.push(Promise.resolve(create.call(context, new_models[i], i)));
-        }
-        // make a copy of the input array
-        this._models = new_models.slice();
-        // return a promise that resolves to all of the resolved views
-        return Promise.all(this.views);
-    }
-
-    /**
-     * removes every view in the list; convenience function for `.update([])`
-     * that should be faster
-     * returns a promise that resolves after this removal is done
-     */
-    remove(): Promise<void> {
-        return Promise.all(this.views).then((views) => {
-            views.forEach((value) => this._remove_view.call(this._handler_context, value));
-            this.views = [];
-            this._models = [];
-        });
-    }
-
-    /**
-     * Dispose this viewlist.
-     *
-     * A synchronous function which just deletes references to child views. This
-     * function does not call .remove() on child views because that is
-     * asynchronous. Use this in cases where child views will be removed in
-     * another way.
-     */
-    dispose(): void {
-        this.views = null;
-        this._models = null;
-    }
-
-    _handler_context: any;
-    _models: any[];
-    views: Promise<T>[];
-    _create_view: (model: any, index: any) => T | Promise<T>;
-    _remove_view: (view: T) => void;
 }
 
 
@@ -912,10 +822,6 @@ class DOMWidgetView extends WidgetView {
         let key = this.model.get(trait_name);
         let new_classes = class_map[key] ? class_map[key] : [];
         this.update_classes([], new_classes, el || this.el);
-    }
-
-    typeset(element, text?){
-        this.displayed.then(function() {utils.typeset(element, text);});
     }
 
     _setElement(el: HTMLElement) {

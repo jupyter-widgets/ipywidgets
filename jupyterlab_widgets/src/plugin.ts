@@ -42,7 +42,7 @@ import * as widgets from 'jupyter-js-widgets';
 (widgets as any)['OutputModel'] = OutputModel;
 (widgets as any)['OutputView'] = OutputView;
 
-
+import 'jupyter-widgets-base/css/index.css';
 import 'jupyter-js-widgets/css/widgets-base.css';
 
 
