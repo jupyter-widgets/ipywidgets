@@ -3,7 +3,7 @@
 
 import {
     WidgetModel, unpack_models
-} from 'jupyter-widgets-base';
+} from '@jupyter-widgets/base';
 
 import {
     CoreWidgetModel

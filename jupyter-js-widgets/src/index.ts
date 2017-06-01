@@ -19,3 +19,6 @@ export * from "./widget_description";
 
 export
 const version = (require('../package.json') as any).version;
+
+// for backwards compatibility
+export * from "@jupyter-widgets/base";

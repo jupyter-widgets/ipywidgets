@@ -1,5 +1,5 @@
 import * as widgets from 'jupyter-js-widgets';
-import * as base from 'jupyter-widgets-base';
+import * as base from '@jupyter-widgets/base';
 import 'jupyter-js-widgets/css/widgets.css';
 import * as PWidget from '@phosphor/widgets';
 

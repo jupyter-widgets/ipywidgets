@@ -3,7 +3,7 @@
 
 import {
     DOMWidgetModel, DOMWidgetView, StyleModel
-} from 'jupyter-widgets-base';
+} from '@jupyter-widgets/base';
 
 import {
     typeset

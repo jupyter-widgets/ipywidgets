@@ -1,5 +1,5 @@
 var widgets = require('jupyter-js-widgets');
-var base = require('jupyter-widgets-base');
+var base = require('@jupyter-widgets/base');
 var PhosphorWidget = require('@phosphor/widgets').Widget;
 
 require('@phosphor/widgets/style/index.css');
