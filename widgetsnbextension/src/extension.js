@@ -134,6 +134,7 @@ function load_ipython_extension () {
             "notebook/js/outputarea"
         ], function(Jupyter, events, outputarea) {
             require("@phosphor/widgets/style/index.css")
+            require("jupyter-widgets-base/css/index.css");
             require('jupyter-js-widgets/css/widgets.css');
             register_events(Jupyter, events, outputarea);
             resolve();

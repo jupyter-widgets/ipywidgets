@@ -13,8 +13,7 @@
   "files": [
     "lib/**/*.d.ts",
     "lib/**/*.js",
-    "css/*.css",
-    "dist/"
+    "css/*.css"
   ],
   "scripts": {
     "clean:src": "rimraf lib",
