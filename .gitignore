@@ -4,9 +4,9 @@ dist
 _build
 docs/man/*.gz
 docs/source/api/generated
-jupyter-js-widgets/src/components
-jupyter-js-widgets/lib/
-jupyter-js-widgets/docs/
+jupyter-widgets-controls/src/components
+jupyter-widgets-controls/lib/
+jupyter-widgets-controls/docs/
 node_modules
 *.py[co]
 __pycache__

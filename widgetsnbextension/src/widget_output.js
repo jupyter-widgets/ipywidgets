@@ -4,7 +4,7 @@
 
 // This widget is strongly coupled to the notebook because of the outputarea
 // dependency.
-var widgets = require("jupyter-js-widgets");
+var widgets = require("@jupyter-widgets/controls");
 var _ = require("underscore");
 require('./widget_output.css');
 

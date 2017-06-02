@@ -275,10 +275,10 @@ class ControllerModel extends CoreDOMWidgetModel {
     _create_button_model(index): Promise<ControllerButtonModel> {
         return this.widget_manager.new_widget({
              model_name: 'ControllerButtonModel',
-             model_module: 'jupyter-js-widgets',
+             model_module: '@jupyter-widgets/controls',
              model_module_version: this.get('_model_module_version'),
              view_name: 'ControllerButtonView',
-             view_module: 'jupyter-js-widgets',
+             view_module: '@jupyter-widgets/controls',
              view_module_version: this.get('_view_module_version'),
         }).then(function(model) {
              model.set('description', index);
@@ -292,10 +292,10 @@ class ControllerModel extends CoreDOMWidgetModel {
     _create_axis_model(index): Promise<ControllerAxisModel>  {
         return this.widget_manager.new_widget({
              model_name: 'ControllerAxisModel',
-             model_module: 'jupyter-js-widgets',
+             model_module: '@jupyter-widgets/controls',
              model_module_version: this.get('_model_module_version'),
              view_name: 'ControllerAxisView',
-             view_module: 'jupyter-js-widgets',
+             view_module: '@jupyter-widgets/controls',
              view_module_version: this.get('_view_module_version'),
         }).then(function(model) {
              model.set('description', index);

@@ -21,9 +21,6 @@ class _Float(LabeledWidget, ValueWidget, CoreWidget):
     value = CFloat(0.0, help="Float value").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
-
     def __init__(self, value=None, **kwargs):
         if value is not None:
             kwargs['value'] = value

@@ -318,7 +318,7 @@ class Widget(LoggingHasTraits):
     #-------------------------------------------------------------------------
     _model_name = Unicode('WidgetModel',
         help="Name of the model.", read_only=True).tag(sync=True)
-    _model_module = Unicode('jupyter-js-widgets',
+    _model_module = Unicode('@jupyter-widgets/base',
         help="The namespace for the model.", read_only=True).tag(sync=True)
     _model_module_version = Unicode(__jupyter_widget_version__,
         help="A semver requirement for namespace version containing the model.", read_only=True).tag(sync=True)

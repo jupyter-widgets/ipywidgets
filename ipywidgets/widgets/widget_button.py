@@ -41,8 +41,6 @@ class Button(DOMWidget, CoreWidget):
     icon: str
        font-awesome icon name
     """
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_name = Unicode('ButtonView').tag(sync=True)
     _model_name = Unicode('ButtonModel').tag(sync=True)
 

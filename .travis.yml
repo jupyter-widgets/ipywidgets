@@ -18,12 +18,12 @@ before_install:
 install:
     - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_install_py.sh ; fi'
     - 'if [[ $GROUP == doc ]] ; then bash ./scripts/travis_install_py.sh ; fi'
-    - 'if [[ $GROUP == js ]] ; then bash ./jupyter-js-widgets/scripts/travis_install_js.sh ; fi'
+    - 'if [[ $GROUP == js ]] ; then bash ./jupyter-widgets-controls/scripts/travis_install_js.sh ; fi'
     - 'if [[ $GROUP == jsbase ]] ; then bash ./jupyter-widgets-base/scripts/travis_install_js.sh ; fi'
 script:
     - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_script_py.sh ; fi'
     - 'if [[ $GROUP == doc ]] ; then bash ./scripts/travis_script_doc.sh ; fi'
-    - 'if [[ $GROUP == js ]] ; then bash ./jupyter-js-widgets/scripts/travis_script_js.sh ; fi'
+    - 'if [[ $GROUP == js ]] ; then bash ./jupyter-widgets-controls/scripts/travis_script_js.sh ; fi'
     - 'if [[ $GROUP == jsbase ]] ; then bash ./jupyter-widgets-base/scripts/travis_script_js.sh ; fi'
 
 matrix:

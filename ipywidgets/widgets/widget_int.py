@@ -70,9 +70,6 @@ class _Int(LabeledWidget, ValueWidget, CoreWidget):
     value = CInt(0, help="Int value").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
-
     def __init__(self, value=None, **kwargs):
         if value is not None:
             kwargs['value'] = value
@@ -225,8 +222,6 @@ class Play(_BoundedInt):
 
     _view_name = Unicode('PlayView').tag(sync=True)
     _model_name = Unicode('PlayModel').tag(sync=True)
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
 
     _playing = Bool(help="Whether the control is currently playing.").tag(sync=True)
     _repeat = Bool(help="Whether the control will repeat in a continous loop.").tag(sync=True)

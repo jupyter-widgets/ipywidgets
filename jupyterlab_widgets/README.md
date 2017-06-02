@@ -34,7 +34,7 @@ jupyter labextension link .
 
 **Rebuild**
 
-If you want to pull in changes to `jupyter-js-widgets`, first run `npm run update` to update the version of `jupyter-js-widgets` in the node_modules directory.
+If you want to pull in changes to Jupyter widgets, first run `npm run update` to update the version of Jupyter widgets in the node_modules directory.
 
 ```bash
 npm run clean

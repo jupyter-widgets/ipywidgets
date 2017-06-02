@@ -37,13 +37,13 @@ import {
   OutputModel, OutputView
 } from './output';
 
-import * as widgets from 'jupyter-js-widgets';
+import * as widgets from '@jupyter-widgets/controls';
 
 (widgets as any)['OutputModel'] = OutputModel;
 (widgets as any)['OutputView'] = OutputView;
 
 import 'jupyter-widgets-base/css/index.css';
-import 'jupyter-js-widgets/css/widgets-base.css';
+import '@jupyter-widgets/controls/css/widgets-base.css';
 
 
 const WIDGET_MIMETYPE = 'application/vnd.jupyter.widget-view+json';
@@ -69,7 +69,7 @@ class NBWidgetExtension implements INBWidgetExtension {
   createNew(nb: NotebookPanel, context: DocumentRegistry.IContext<INotebookModel>): IDisposable {
     let wManager = new WidgetManager(context, nb.rendermime);
     wManager.register({
-      name: 'jupyter-js-widgets',
+      name: '@jupyter-widgets/controls',
       version: widgets.JUPYTER_WIDGETS_VERSION,
       exports: widgets
     });

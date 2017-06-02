@@ -78,9 +78,6 @@ class _Selection(LabeledWidget, ValueWidget, CoreWidget):
     # This being read-only means that it cannot be changed from the frontend!
     _options_labels = Tuple(read_only=True, help="The labels for the options.").tag(sync=True)
 
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
-
     disabled = Bool(help="Enable or disable user changes").tag(sync=True)
 
     def __init__(self, *args, **kwargs):
@@ -186,9 +183,6 @@ class _MultipleSelection(LabeledWidget, ValueWidget, CoreWidget):
     """)
     # This being read-only means that it cannot be changed from the frontend!
     _options_labels = Tuple(read_only=True, help="The labels for the options.").tag(sync=True)
-
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
 
     disabled = Bool(help="Enable or disable user changes").tag(sync=True)
 

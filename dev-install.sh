@@ -42,14 +42,14 @@ set -e
 
 nbExtFlags="--sys-prefix $1"
 
-cd jupyter-js-widgets
+cd jupyter-widgets-controls
 npm install
 cd ..
 
 cd widgetsnbextension
 
-# Needed since jupyter-js-widgets 3 hasn't been published yet
-npm install ../jupyter-js-widgets
+# Needed since jupyter-widgets-controls 3 hasn't been published yet
+npm install ../jupyter-widgets-controls
 
 npm install
 npm run update
@@ -71,8 +71,8 @@ skip_jupyter_lab=yes
 if test "$skip_jupyter_lab" != yes; then
     cd jupyterlab_widgets
 
-    # needed since jupyter-js-widgets 3 hasn't been published yet
-    npm install ../jupyter-js-widgets
+    # needed since jupyter-widgets-controls 3 hasn't been published yet
+    npm install ../jupyter-widgets-controls
 
     npm install
     npm run update

@@ -133,12 +133,12 @@ template project contains a template project for a custom widget library
 following the best practices for authoring widgets, which ensure that your
 custom widget library can render on nbviewer.
 
-## Using `jupyter-js-widgets` in web contexts
+## Using `jupyter-widgets-controls` in web contexts
 
-The core `jupyter-js-widgets` library, the JavaScript package of ipywidgets, is
+The core `jupyter-widgets-controls` library, the JavaScript package of ipywidgets, is
 agnostic to the context in which it is used (Notebook, JupyterLab, static web
 page). For each context, we specialize the base widget manager implemented in
-`jupyter-js-widgets` to provide the logic for
+`@jupyter-widgets/base` to provide the logic for
 
  - where widgets should be displayed,
  - how to retrieve information about their state.
@@ -151,16 +151,16 @@ Specifically:
  - `jupyterlab_widgets` provides the implementation of a specialized widget
    manager for the context of `JupyterLab`, and the packaging logic as a lab
    extension.
- - The embed manager implemented in `jupyter-js-widgets` is a specialization of
+ - The embed manager implemented in `@jupyter-widgets/htmlmanager` is a specialization of
    the base  widget manager used for the static embedding of widgets used by
    the `Sphinx` extension, `nbviewer`, and the "Embed Widgets" command
    discussed above.
 
 We provide additional examples of specializations of the base widget manager
-implementing other usages of `jupyter-js-widgets` in web contexts.
+implementing other usages of Jupyter widgets in web contexts.
 
 1. The `web1` example is a simplistic example showcasing the use of
-   `jupyter-js-widgets` in a web context.
+   Jupyter widgets in a web context.
 2. The `web2` example is a simple example making use of the
    `application/vnd.jupyter.widget-state+json` mime type.
 3. The `web3` example showcases how communication with a Jupyter kernel can

@@ -64,7 +64,7 @@ release = _release['__version__']
 # templates_path = ['_templates']
 
 master_doc = 'index'
-project = 'ipywidgets and jupyter-js-widgets'
+project = 'Jupyter Widgets'
 copyright = '2017 Project Jupyter'
 author = 'Jupyter Team'
 

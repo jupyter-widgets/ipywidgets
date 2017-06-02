@@ -35,7 +35,7 @@ Steps
 Rebuild after making changes
 ----------------------------
 
-After you've made changes to `jupyter-js-widgets` if you want to test those
+After you've made changes to `jupyter-widgets-controls` if you want to test those
 changes, run the following commands, empty your browser's cache, and refresh
 the page:
 
@@ -74,7 +74,7 @@ permissions on npm and pip related install directories are correct.
 Releasing new versions
 ----------------------
 
-See [dev_release.md](dev_release.md) for a details on how to release new versions of ipywidgets to PyPI and jupyter-js-widgets on npm. 
+See [dev_release.md](dev_release.md) for a details on how to release new versions of ipywidgets to PyPI and jupyter-widgets-controls on npm. 
 
 Testing
 -------

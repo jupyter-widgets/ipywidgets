@@ -234,7 +234,7 @@ abstract class ManagerBase<T> {
      * @example
      * widget_manager.new_model({
      *      model_name: 'IntSlider',
-     *      model_module: 'jupyter-js-widgets',
+     *      model_module: '@jupyter-widgets/controls',
      *      model_module_version: '3.0.0',
      *      model_id: 'u-u-i-d'
      * }).then((model) => { console.log('Create success!', model); },

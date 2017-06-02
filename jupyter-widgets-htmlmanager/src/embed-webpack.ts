@@ -6,7 +6,7 @@
 
 import 'font-awesome/css/font-awesome.css';
 import '@phosphor/widgets/style/index.css';
-import 'jupyter-js-widgets/css/widgets.built.css';
+import '@jupyter-widgets/controls/css/widgets.built.css';
 
 
 // Element.prototype.matches polyfill
@@ -23,7 +23,7 @@ import {
 
 import {
     WidgetModel
-} from 'jupyter-js-widgets';
+} from '@jupyter-widgets/base';
 
 import * as _ from 'underscore';
 

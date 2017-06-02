@@ -21,6 +21,6 @@ def _jupyter_nbextension_paths():
     return [{
         'section': 'notebook',
         'src': 'static',
-        'dest': 'jupyter-js-widgets',
-        'require': 'jupyter-js-widgets/extension'
+        'dest': 'jupyter-widgets',
+        'require': 'jupyter-widgets/extension'
     }]

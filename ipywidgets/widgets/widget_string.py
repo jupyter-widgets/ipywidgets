@@ -17,9 +17,6 @@ from warnings import warn
 class _String(LabeledWidget, ValueWidget, CoreWidget):
     """Base class used to create widgets that represent a string."""
 
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
-
     value = Unicode(help="String value").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
