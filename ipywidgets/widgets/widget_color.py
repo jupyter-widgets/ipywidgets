@@ -19,7 +19,5 @@ class ColorPicker(LabeledWidget, ValueWidget, CoreWidget):
     value = Color('black', help="The color value.").tag(sync=True)
     concise = Bool(help="Display short version with just a color selector.").tag(sync=True)
 
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_name = Unicode('ColorPickerView').tag(sync=True)
     _model_name = Unicode('ColorPickerModel').tag(sync=True)

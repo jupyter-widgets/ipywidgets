@@ -19,8 +19,6 @@ class Button(ValueWidget, CoreWidget):
     value = Float(min=0.0, max=1.0, read_only=True, help="The value of the button.").tag(sync=True)
     pressed = Bool(read_only=True, help="Whether the button is pressed.").tag(sync=True)
 
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_name = Unicode('ControllerButtonView').tag(sync=True)
     _model_name = Unicode('ControllerButtonModel').tag(sync=True)
 
@@ -30,8 +28,6 @@ class Axis(ValueWidget, CoreWidget):
     """Represents a gamepad or joystick axis."""
     value = Float(min=-1.0, max=1.0, read_only=True, help="The value of the axis.").tag(sync=True)
 
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_name = Unicode('ControllerAxisView').tag(sync=True)
     _model_name = Unicode('ControllerAxisModel').tag(sync=True)
 
@@ -52,7 +48,5 @@ class Controller(DOMWidget, CoreWidget):
     buttons = List(trait=Instance(Button), read_only=True, help="The buttons on the gamepad.").tag(sync=True, **widget_serialization)
     axes = List(trait=Instance(Axis), read_only=True, help="The axes on the gamepad.").tag(sync=True, **widget_serialization)
 
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_name = Unicode('ControllerView').tag(sync=True)
     _model_name = Unicode('ControllerModel').tag(sync=True)

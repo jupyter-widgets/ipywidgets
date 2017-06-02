@@ -19,7 +19,5 @@ class DatePicker(LabeledWidget, ValueWidget, CoreWidget):
     value = Date(None, allow_none=True).tag(
         sync=True, **date_serialization)
 
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_name = Unicode('DatePickerView').tag(sync=True)
     _model_name = Unicode('DatePickerModel').tag(sync=True)

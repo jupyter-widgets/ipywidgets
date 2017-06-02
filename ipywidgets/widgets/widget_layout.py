@@ -4,11 +4,11 @@
 """Contains the Layout class"""
 
 from traitlets import Unicode, Instance, CaselessStrEnum
-from .widget_core import CoreWidget
+from .widget import Widget
 
 CSS_PROPERTIES=['inherit', 'initial', 'unset']
 
-class Layout(CoreWidget):
+class Layout(Widget):
     """Layout specification
 
     Defines a layout that can be expressed using CSS.  Supports a subset of
@@ -23,8 +23,6 @@ class Layout(CoreWidget):
     - ``margin-[top/bottom/left/right]`` values are bound to ``margin``, etc.
     """
 
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _view_name = Unicode('LayoutView').tag(sync=True)
     _model_name = Unicode('LayoutModel').tag(sync=True)
 

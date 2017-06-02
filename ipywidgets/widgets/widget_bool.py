@@ -23,8 +23,6 @@ class _Bool(LabeledWidget, ValueWidget, CoreWidget):
             kwargs['value'] = value
         super(_Bool, self).__init__(**kwargs)
 
-    _model_module = Unicode('jupyter-js-widgets').tag(sync=True)
-    _view_module = Unicode('jupyter-js-widgets').tag(sync=True)
     _model_name = Unicode('BoolModel').tag(sync=True)
 
 
