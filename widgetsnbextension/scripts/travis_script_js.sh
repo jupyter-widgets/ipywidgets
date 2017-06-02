@@ -6,4 +6,3 @@ nvm use "v$TRAVIS_NODE_VERSION"
 nvm alias default "v$TRAVIS_NODE_VERSION"
 sh -e /etc/init.d/xvfb start
 cd widgetsnbextension
-npm run test
