@@ -2,4 +2,4 @@
 // Distributed under the terms of the Modified BSD License.
 
 export * from "./embed-helper";
-export * from "./embed-manager";
+export * from "./htmlmanager";
