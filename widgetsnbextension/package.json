@@ -26,6 +26,7 @@
     "@phosphor/widgets": "^1.2.0",
     "backbone": "^1.2.3",
     "jupyter-js-widgets": "3.0.0-alpha.6",
+    "@jupyter-widgets/base": "^0.1.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
