@@ -57,7 +57,7 @@ class DummyManager extends widgets.ManagerBase<HTMLElement> {
     }
 
     protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<any> {
-        if (moduleName === '@jupyter-widgets/controls') {
+        if (moduleName === '@jupyter-widgets/base') {
             if (widgets[className]) {
                 return Promise.resolve(widgets[className]);
             } else {
