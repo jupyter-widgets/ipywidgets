@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import * as widgets from 'jupyter-js-widgets';
+import * as widgets from '@jupyter-widgets/controls';
 
 import * as PhosphorWidget from '@phosphor/widgets';
 
@@ -45,7 +45,7 @@ class EmbedManager extends widgets.ManagerBase<HTMLElement> {
      */
     protected loadClass(className: string, moduleName: string, moduleVersion: string) {
         return new Promise(function(resolve, reject) {
-            if (moduleName === 'jupyter-js-widgets') {
+            if (moduleName === '@jupyter-widgets/controls') {
                 // Shortcut resolving the standard widgets so we don't load two
                 // copies on the page. If we ever separate the widgets from the
                 // base manager, we should get rid of this special case.

@@ -5,7 +5,7 @@
 window['requirejs'].config({
     map: {
         '*': {
-            'jupyter-js-widgets': 'nbextensions/jupyter-js-widgets/extension',
+            '@jupyter-widgets/controls': 'nbextensions/jupyter-widgets/extension',
         },
     }
 });
@@ -135,7 +135,7 @@ function load_ipython_extension () {
         ], function(Jupyter, events, outputarea) {
             require("@phosphor/widgets/style/index.css")
             require("jupyter-widgets-base/css/index.css");
-            require('jupyter-js-widgets/css/widgets.css');
+            require('@jupyter-widgets/controls/css/widgets.css');
             register_events(Jupyter, events, outputarea);
             resolve();
         });
@@ -145,4 +145,4 @@ function load_ipython_extension () {
 var _ = require('underscore');
 module.exports = _.extend({
   load_ipython_extension: load_ipython_extension,
-}, require('jupyter-js-widgets'), require('./widget_output'));
+}, require('@jupyter-widgets/controls'), require('./widget_output'));

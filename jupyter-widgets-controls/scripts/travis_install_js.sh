@@ -5,5 +5,5 @@ nvm alias default "v$TRAVIS_NODE_VERSION"
 npm update -g npm
 echo `npm -v`
 echo `node -v`
-cd jupyter-js-widgets
+cd jupyter-widgets-controls
 npm install

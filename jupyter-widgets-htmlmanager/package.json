@@ -1,5 +1,5 @@
 {
-  "name": "jupyter-widgets-htmlmanager",
+  "name": "@jupyter-widgets/htmlmanager",
   "version": "0.1.0",
   "description": "Standalone package for rendering Jupyter widgets outside notebooks",
   "main": "lib/index.js",
@@ -30,7 +30,7 @@
   "dependencies": {
     "@phosphor/widgets": "^1.2.0",
     "font-awesome": "^4.7.0",
-    "jupyter-js-widgets": "file:../jupyter-js-widgets",
+    "@jupyter-widgets/controls": "file:../jupyter-widgets-controls",
     "scriptjs": "^2.5.8"
   },
   "devDependencies": {

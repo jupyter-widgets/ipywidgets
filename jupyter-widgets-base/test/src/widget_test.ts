@@ -19,13 +19,13 @@ describe("unpack_models", function() {
         this.manager = new DummyManager();
         this.widgetA = await this.manager.new_widget({
             model_name: 'WidgetModel',
-            model_module: 'jupyter-js-widgets',
+            model_module: '@jupyter-widgets/base',
             model_module_version: '3.0.0',
             model_id: 'widgetA',
         })
         this.widgetB = await this.manager.new_widget({
             model_name: 'WidgetModel',
-            model_module: 'jupyter-js-widgets',
+            model_module: '@jupyter-widgets/base',
             model_module_version: '3.0.0',
             model_id: 'widgetB',
         });
@@ -546,10 +546,10 @@ describe("WidgetModel", function() {
         it('gets all of the state', function() {
             this.widget.set('a', 'get_state test');
             expect(this.widget.get_state()).to.deep.equal({
-                _model_module: 'jupyter-js-widgets',
+                _model_module: '@jupyter-widgets/base',
                 _model_name: 'WidgetModel',
                 _model_module_version: '3.0.0',
-                _view_module: 'jupyter-js-widgets',
+                _view_module: '@jupyter-widgets/base',
                 _view_name: null,
                 _view_module_version: '3.0.0',
                 _view_count: null,

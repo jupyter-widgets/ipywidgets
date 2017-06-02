@@ -5,7 +5,7 @@ import * as Backbone from 'backbone';
 
 import {
     ManagerBase, shims
-} from 'jupyter-js-widgets';
+} from '@jupyter-widgets/base';
 
 import {
   IDisposable

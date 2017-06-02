@@ -56,10 +56,10 @@ class WidgetModel extends Backbone.Model {
      */
     defaults() {
         return {
-            _model_module: "jupyter-js-widgets",
+            _model_module: "@jupyter-widgets/base",
             _model_name: "WidgetModel",
             _model_module_version: JUPYTER_WIDGETS_VERSION,
-            _view_module: "jupyter-js-widgets",
+            _view_module: "@jupyter-widgets/base",
             _view_name: null,
             _view_module_version: JUPYTER_WIDGETS_VERSION,
             _view_count: null,

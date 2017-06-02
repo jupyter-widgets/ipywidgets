@@ -1,4 +1,4 @@
-import * as widgets from 'jupyter-js-widgets';
+import * as widgets from '@jupyter-widgets/controls';
 import * as base from '@jupyter-widgets/base';
 import 'phosphor/styles/base.css';
 import './widgets.css';

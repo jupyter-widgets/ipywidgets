@@ -18,5 +18,5 @@ Package Install
 Run the following command **at the root of this repository**.
 
 ```bash
-npm install --save jupyter-js-widgets
+npm install --save @jupyter-widgets/controls
 ```

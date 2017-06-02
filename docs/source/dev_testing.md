@@ -7,6 +7,6 @@ To run the Python tests:
 
 To run the Javascript tests:
 
-    cd jupyter-js-widgets; npm run test
+    cd jupyter-widgets-controls; npm run test
 
 This will run the test suite using `karma` with 'debug' level logging.

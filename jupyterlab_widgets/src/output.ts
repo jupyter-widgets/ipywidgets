@@ -3,7 +3,7 @@
 
 import {
   DOMWidgetModel, DOMWidgetView
-} from 'jupyter-js-widgets';
+} from '@jupyter-widgets/base';
 
 import {
   IDisposable

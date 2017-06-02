@@ -7,14 +7,14 @@ var VIEW_MIME_TYPE = "application/vnd.jupyter.widget-view+json"
 
 var embed_widgets = function() {
     return new Promise(function(resolve) {
-        requirejs(['base/js/namespace', 'base/js/dialog', 'jupyter-js-widgets'], function(Jupyter, dialog, widgets) {
+        requirejs(['base/js/namespace', 'base/js/dialog', '@jupyter-widgets/controls'], function(Jupyter, dialog, widgets) {
 
             Jupyter.WidgetManager._managers[0].get_state({
                 'drop_defaults': true
             }).then(function(state) {
                 var data = JSON.stringify(state, null, '    ');
                 // TODO: This does not work right now - we don't know what
-                // version of jupyter-js-widgets is included in what version of
+                // version of @jupyter-widgets/controls is included in what version of
                 // embed-jupyter-widgets.
                 var value = '<script src="https://unpkg.com/embed-jupyter-widgets@~' + widgets.version + '/dist/embed.js"></script>\n' +
                             '<script type="application/vnd.jupyter.widget-state+json">\n' + data + '\n</script>';

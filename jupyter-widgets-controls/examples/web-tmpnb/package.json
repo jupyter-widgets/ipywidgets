@@ -1,7 +1,7 @@
 {
-  "name": "jupyter-js-widgets-test",
+  "name": "@jupyter-widgets/controls-test",
   "version": "1.0.0",
-  "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
+  "description": "Project that tests the ability to npm install @jupyter-widgets/controls within an npm project.",
   "main": "index.js",
   "scripts": {
     "clean": "rimraf lib && rimraf built",
@@ -19,7 +19,7 @@
     "codemirror": "^5.9.0",
     "font-awesome": "^4.5.0",
     "http-server": "^0.8.5",
-    "jupyter-js-widgets": "file:../..",
+    "@jupyter-widgets/controls": "file:../..",
     "@jupyter-widgets/base": "^0.1.0"
   },
   "devDependencies": {

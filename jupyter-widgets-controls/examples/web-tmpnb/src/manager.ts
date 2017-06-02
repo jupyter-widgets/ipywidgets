@@ -1,6 +1,6 @@
-import * as widgets from 'jupyter-js-widgets';
+import * as widgets from '@jupyter-widgets/controls';
 import * as base from '@jupyter-widgets/base';
-import 'jupyter-js-widgets/css/widgets.css';
+import '@jupyter-widgets/controls/css/widgets.css';
 import * as PWidget from '@phosphor/widgets';
 
 export
@@ -28,7 +28,7 @@ class WidgetManager extends base.ManagerBase<HTMLElement> {
     }
 
     protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<any> {
-        if (moduleName === 'jupyter-js-widgets') {
+        if (moduleName === '@jupyter-widgets/controls') {
             if (widgets[className]) {
                 return Promise.resolve(widgets[className]);
             } else {
