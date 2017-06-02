@@ -20,11 +20,14 @@ install:
     - 'if [[ $GROUP == doc ]] ; then bash ./scripts/travis_install_py.sh ; fi'
     - 'if [[ $GROUP == js ]] ; then bash ./jupyter-widgets-controls/scripts/travis_install_js.sh ; fi'
     - 'if [[ $GROUP == jsbase ]] ; then bash ./jupyter-widgets-base/scripts/travis_install_js.sh ; fi'
+    - 'if [[ $GROUP == js_nbextension ]] ; then bash ./widgetsnbextension/scripts/travis_install_js.sh ; fi'
+    - 'if [[ $GROUP == js_jlab ]] ; then bash ./jupyterlab_widgets/scripts/travis_install_js.sh ; fi'
 script:
     - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_script_py.sh ; fi'
     - 'if [[ $GROUP == doc ]] ; then bash ./scripts/travis_script_doc.sh ; fi'
     - 'if [[ $GROUP == js ]] ; then bash ./jupyter-widgets-controls/scripts/travis_script_js.sh ; fi'
     - 'if [[ $GROUP == jsbase ]] ; then bash ./jupyter-widgets-base/scripts/travis_script_js.sh ; fi'
+    - 'if [[ $GROUP == js_jlab ]] ; then bash ./jupyterlab_widgets/scripts/travis_script_js.sh ; fi'
 
 matrix:
     include:
@@ -32,6 +35,10 @@ matrix:
           env: GROUP=js BROWSER=firefox TRAVIS_NODE_VERSION=6.9
         - python: 3.6
           env: GROUP=jsbase BROWSER=firefox TRAVIS_NODE_VERSION=6.9
+        - python: 3.6
+          env: GROUP=js_nbextension BROWSER=firefox TRAVIS_NODE_VERSION=6.9
+        - python: 3.6
+          env: GROUP=js_jlab BROWSER=firefox TRAVIS_NODE_VERSION=6.9
         - python: 3.6
           env: GROUP=doc
 after_success:
