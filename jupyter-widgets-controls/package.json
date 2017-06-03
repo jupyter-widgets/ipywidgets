@@ -25,6 +25,7 @@
     "build": "npm run build:src && npm run build:css",
     "postinstall": "npm dedupe",
     "prepublish": "npm run build",
+    "update": "rimraf node_modules/@jupyter-widgets && npm install file:../jupyter-widgets-base && npm run build",
     "test": "npm run test:unit && npm run test:examples",
     "test:coverage": "npm run build:test && webpack --config test/webpack-cov.conf.js && karma start test/karma-cov.conf.js",
     "test:unit": "npm run test:unit:firefox && npm run test:unit:chrome",
@@ -73,7 +74,7 @@
     "webpack": "^1.12.11"
   },
   "dependencies": {
-    "@jupyterlab/services": "^0.44.0",
+    "@jupyterlab/services": "^0.45.0",
     "@phosphor/algorithm": "^1.1.0",
     "@phosphor/domutils": "^1.1.0",
     "@phosphor/messaging": "^1.2.0",
