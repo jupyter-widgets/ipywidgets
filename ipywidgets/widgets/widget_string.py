@@ -6,7 +6,7 @@
 Represents a unicode string using a widget.
 """
 
-from .domwidget import LabeledWidget
+from .widget_description import DescriptionWidget
 from .valuewidget import ValueWidget
 from .widget import CallbackDispatcher, register
 from .widget_core import CoreWidget
@@ -14,7 +14,7 @@ from traitlets import Unicode, Bool, Int
 from warnings import warn
 
 
-class _String(LabeledWidget, ValueWidget, CoreWidget):
+class _String(DescriptionWidget, ValueWidget, CoreWidget):
     """Base class used to create widgets that represent a string."""
 
     value = Unicode(help="String value").tag(sync=True)

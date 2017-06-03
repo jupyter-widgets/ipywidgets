@@ -12,7 +12,7 @@ try:
 except ImportError:  #python3.x
     izip = zip
 
-from .domwidget import LabeledWidget
+from .widget_description import DescriptionWidget
 from .valuewidget import ValueWidget
 from .widget_core import CoreWidget
 from .widget import register
@@ -48,7 +48,7 @@ def findvalue(array, value, compare = lambda x, y: x == y):
     except StopIteration:
         raise ValueError('%r not in array'%value)
 
-class _Selection(LabeledWidget, ValueWidget, CoreWidget):
+class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
     """Base class for Selection widgets
 
     ``options`` can be specified as a list of values, list of (label, value)
@@ -154,7 +154,7 @@ class _Selection(LabeledWidget, ValueWidget, CoreWidget):
             self.index = index
 
 
-class _MultipleSelection(LabeledWidget, ValueWidget, CoreWidget):
+class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
     """Base class for multiple Selection widgets
 
     ``options`` can be specified as a list of values, list of (label, value)

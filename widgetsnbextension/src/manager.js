@@ -4,6 +4,7 @@
 
 var _ = require("underscore");
 var Backbone = require("backbone");
+var base = require("@jupyter-widgets/base");
 var widgets = require("@jupyter-widgets/controls");
 var saveState = require("./save_state");
 var embedWidgets = require("./embed_widgets");
@@ -16,7 +17,7 @@ var MIME_TYPE = 'application/vnd.jupyter.widget-view+json';
 // WidgetManager class
 //--------------------------------------------------------------------
 var WidgetManager = function (comm_manager, notebook) {
-    widgets.ManagerBase.apply(this);
+    base.ManagerBase.apply(this);
     WidgetManager._managers.push(this);
 
     // Attach a comm manager
@@ -89,7 +90,7 @@ var WidgetManager = function (comm_manager, notebook) {
     this._init_menu();
 };
 
-WidgetManager.prototype = Object.create(widgets.ManagerBase.prototype);
+WidgetManager.prototype = Object.create(base.ManagerBase.prototype);
 WidgetManager._managers = []; /* List of widget managers */
 
 WidgetManager.prototype.loadClass = function(className, moduleName, moduleVersion) {
@@ -99,6 +100,8 @@ WidgetManager.prototype.loadClass = function(className, moduleName, moduleVersio
         } else {
             return Promise.resolve(widgets[className]);
         }
+    } else if (moduleName === "@jupyter-widgets/base") {
+        return Promise.resolve(base[className]);
     } else {
         return new Promise(function(resolve, reject) {
             window.require([moduleName], resolve, reject);
@@ -274,7 +277,7 @@ WidgetManager.prototype.setViewOptions = function (options) {
  * Callback handlers for a specific view
  */
 WidgetManager.prototype.callbacks = function (view) {
-    var callbacks = widgets.ManagerBase.prototype.callbacks.call(this, view);
+    var callbacks = base.ManagerBase.prototype.callbacks.call(this, view);
     if (view && view.options.iopub_callbacks) {
         callbacks.iopub = view.options.iopub_callbacks
     }

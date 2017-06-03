@@ -38,7 +38,7 @@ Major changes developers should be aware of include:
 - Custom serializers in either Python or Javascript can now return a structure which contains binary buffers. If a binary buffer is in the serialized data structure, the message will be synced in binary, which is much more efficient. ([#1194](https://github.com/jupyter-widgets/ipywidgets/pull/1194))
 - A custom serializer is given the widget instance as its second argument, and a custom deserializer is given the widget manager as its second argument.
 - The widget manager `clear_state` method no longer has a `commlessOnly` argument. All models in the widget manager will be closed and cleared when `clear_state` is called. ([#1354](https://github.com/jupyter-widgets/ipywidgets/pull/1354))
-
+- The python `ipywidget.domwidget.LabeledWidget` is now `ipywidget.widget_description.DescriptionWidget`, and there is a new `ipywidget.widget_description.DescriptionStyle` that lets the user set the CSS width of the description.
 
 6.0
 ---
