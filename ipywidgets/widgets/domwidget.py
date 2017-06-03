@@ -36,19 +36,3 @@ class DOMWidget(Widget):
         if className in self._dom_classes:
             self._dom_classes = [c for c in self._dom_classes if c != className]
         return self
-
-
-class DescriptionStyle(Style, Widget):
-    """Description style widget."""
-    _model_name = Unicode('DescriptionStyleModel').tag(sync=True)
-    description_width = Unicode(help="Width of the description to the side of the control.").tag(sync=True)
-
-
-class DescriptionWidget(DOMWidget):
-    """Widget that has a description label to the side."""
-    _model_name = Unicode('DescriptionModel').tag(sync=True)
-    description = Unicode('', help="Description of the control.").tag(sync=True)
-    style = InstanceDict(DescriptionStyle, help="Styling customizations").tag(sync=True, **widget_serialization)
-
-# For backwards compatibility to ipywidgets 6.0
-LabeledWidget = DescriptionWidget

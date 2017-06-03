@@ -6,7 +6,7 @@
 Represents an HTML Color .
 """
 
-from .domwidget import LabeledWidget
+from .widget_description import DescriptionWidget
 from .valuewidget import ValueWidget
 from .widget import register
 from .widget_core import CoreWidget
@@ -15,7 +15,7 @@ from traitlets import Unicode
 
 
 @register
-class DatePicker(LabeledWidget, ValueWidget, CoreWidget):
+class DatePicker(DescriptionWidget, ValueWidget, CoreWidget):
     value = Date(None, allow_none=True).tag(
         sync=True, **date_serialization)
 

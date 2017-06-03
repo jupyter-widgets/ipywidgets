@@ -6,14 +6,14 @@
 Represents a boolean using a widget.
 """
 
-from .domwidget import LabeledWidget
+from .widget_description import DescriptionWidget
 from .widget_core import CoreWidget
 from .valuewidget import ValueWidget
 from .widget import register
 from traitlets import Unicode, Bool, CaselessStrEnum
 
 
-class _Bool(LabeledWidget, ValueWidget, CoreWidget):
+class _Bool(DescriptionWidget, ValueWidget, CoreWidget):
     """A base class for creating widgets that represent booleans."""
     value = Bool(False, help="Bool value").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes.").tag(sync=True)
