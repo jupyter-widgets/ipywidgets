@@ -8,19 +8,20 @@ Trait types for html widgets.
 """
 
 import re
-import traitlets
 import datetime as dt
+
 from . import eventful
+import traitlets as trts
 
 _color_names = ['aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanchedalmond', 'blue', 'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse', 'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'cyan', 'darkblue', 'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgreen', 'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue', 'darkslategray', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dodgerblue', 'firebrick', 'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'greenyellow', 'honeydew', 'hotpink', 'indianred ', 'indigo ', 'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgreen', 'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray', 'lightsteelblue', 'lightyellow', 'lime', 'limegreen', 'linen', 'magenta', 'maroon', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise', 'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'navy', 'oldlace', 'olive', 'olivedrab', 'orange', 'orangered', 'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'purple', 'rebeccapurple', 'red', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon', 'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver', 'skyblue', 'slateblue', 'slategray', 'snow', 'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'whitesmoke', 'yellow', 'yellowgreen'] 
 _color_re = re.compile(r'#[a-fA-F0-9]{3}(?:[a-fA-F0-9]{3})?$')
 
 
-class Color(traitlets.Unicode):
+class Color(trts.Unicode):
     """A string holding a valid HTML color such as 'blue', '#060482', '#A80'"""
 
     info_text = 'a valid HTML color'
-    default_value = traitlets.Undefined
+    default_value = trts.Undefined
 
     def validate(self, obj, value):
         if value.lower() in _color_names or _color_re.match(value):
@@ -28,7 +29,7 @@ class Color(traitlets.Unicode):
         self.error(obj, value)
 
 
-class Datetime(traitlets.TraitType):
+class Datetime(trts.TraitType):
     """A trait type holding a Python datetime object"""
 
     klass = dt.datetime
@@ -82,7 +83,7 @@ datetime_serialization = {
     'to_json': datetime_to_json
 }
 
-class InstanceDict(traitlets.Instance):
+class InstanceDict(trts.Instance):
     """An instance trait which coerces a dict to an instance.
     
     This lets the instance be specified as a dict, which is used to initialize the instance.
@@ -100,7 +101,7 @@ class InstanceDict(traitlets.Instance):
                           **(self.default_kwargs or {}))
 
 
-class EDict(eventful.Eventful, traitlets.Dict):
+class EDict(eventful.Eventful, trts.Dict):
 
     event_map = {
         'setitem': ('__setitem__', 'setdefault'),
@@ -113,73 +114,77 @@ class EDict(eventful.Eventful, traitlets.Dict):
     def _before_update(self, inst, call):
         new = call.args[0]
         new.update(call.kwargs)
-        call_list = []
-        return self.redirect(
-            None, 'setitem', inst,
-            args=new.items())
+        return self.redirect(None, 'setitem', inst, args=new.items())
 
     def _before_clear(self, inst, call):
-        return self.redirect(
-            None, 'delitem', inst,
-            args=inst.keys())
+        return self.redirect(None, 'delitem', inst, args=inst.keys())
 
     @staticmethod
     def before_setitem(inst, call):
         """Expect call.args[0] = key"""
-        key, old = call.args[0], inst.get(call.args[0], traitlets.Undefined)
-        def after_setitem(returned):
-            new = inst.get(key, traitlets.Undefined)
-            if not equivalent(old, new):
-                return traitlets.Bunch(key=key, old=old, new=new)
-        return after_setitem
+        key = call.args[0]
+        new = call.args[1]
+        old = inst.get(call.args[0], trts.Undefined)
+        if not equivalent(old, new):
+            return trts.Bunch(key=key, old=old, new=new)
 
     _before_setitem = before_setitem
     _before_delitem = before_setitem
 
 
-class EList(eventful.Eventful, traitlets.List):
+class EList(eventful.Eventful, trts.List):
 
     event_map = {
         'append': 'append',
         'extend': 'extend',
         'setitem': '__setitem__',
+        'remove': "remove",
+        'delitem': '__delitem__',
         'reverse': 'reverse',
         'sort': 'sort',
     }
     type_name = 'elist'
 
-    def before_setitem(self, inst, index):
+    def _before_reverse(self, instance, call):
+        return self.rearrangement(inst)
+
+    def _before_sort(self, instance, call):
+        return self.rearrangement(inst)
+
+    @staticmethod
+    def rearrangement(new):
+        old=instance[:]
+        def after_rearangement(value):
+            return trts.Bunch(old=old, new=new)
+        return after_rearangement
+
+    def _before_append(instance, call):
+        with self.abstracted("setitem") as setitem:
+            setitem(len(instance), call.args[0])
+        return setitem
+
+    def _before_extend(instance, call):
+        with self.redirect(instance, "setitem") as setitem:
+            for i, v in enumerate(call.args[0]):
+                setitem(instance, i, v)
+        return setitem
+
+    def _before_remove(self, instance, call):
+        with self.abstracted("delitem") as detitem:
+            delitem(instance, instance.index(call.args[0]))
+        return delitem
+
+    def _before_delitem(instance, call, setitem):
+        with self.abstracted("setitem") as setitem:
+            setitem(instance, call.args[0], trts.Undefined)
+        return setitem
+
+    @staticmethod
+    def _before_setitem(instance, call):
+        index = call.args[0]
         try:
             old = inst[index]
         except:
-            old = traitlets.Undefined
-        def after_setitem(returned):
-            try:
-                new = inst[index]
-            except:
-                new = traitlets.Undefined
-            if not equivalent(old, new):
-                return traitlets.Bunch(index=index, old=old, new=new)
-        return after_setitem
-
-    def _before_setitem(self, inst, call):
-        return self.before_setitem(inst, call.args[0])
-
-    def rearrangement(self, origin, inst):
-        return self.redirect(origin, 'setitem', inst,
-            args=[(i,) for i in range(len(inst))])
-
-    def _before_reverse(self, inst, call):
-        return self.rearrangement(inst, 'reverse')
-
-    def _before_sort(self, inst, call):
-        return self.rearrangement(inst, 'sort')
-
-    def _before_extend(self, inst, call):
-        size = len(call.args[0])
-        return self.redirect('append', 'setitem', inst,
-            args=[(i+len(inst),) for i in range(size)])
-
-    def _before_append(self, inst, call):
-        return self.redirect_once('append',
-            'setitem', inst, (len(inst),))
+            old = trts.Undefined
+        new = call.args[1]
+        return trts.Bunch(index=index, old=old, new=new)

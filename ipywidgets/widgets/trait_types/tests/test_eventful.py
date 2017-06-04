@@ -1,11 +1,12 @@
 import copy
 from unittest import TestCase
 from traitlets import HasTraits, observe
-from ..eventful import Eventful, Bunch, Beforeback, Afterback, Redirect
+from ..eventful import Eventful, Bunch, Beforeback, Afterback, redirect, abstracted
 from .. import spectate
 
 
 class CopyClass(object):
+    """Creates a new instance with attributes of an old one"""
     def __new__(cls, old=None):
         new = super(CopyClass, cls).__new__(cls)
         if old is not None:
@@ -118,63 +119,6 @@ class TestAfterback(TestCase):
             assert logged == change
         map(check, log)
 
-def test_redirect():
-    class Test(CopyClass):
-        target_method_called = False
-        target_beforeback_called = False
-        target_afterback_called = False
-        origin_method_called = False
-        origin_beforeback_called = False
-        origin_afterback_called = False
-        def origin(self, a):
-            self.origin_method_called = True
-            return a
-        def target(self, b):
-            self.target_method_called = True
-            return b + 1
-
-    WatchableTest = spectate.expose_as('WatchableTest', Test, 'origin', 'target')
-    test, spectator = spectate.watch(WatchableTest)
-
-    def before_target(inst, call):
-        inst.target_beforeback_called = True
-        return call
-    def after_target(inst, answer):
-        inst.target_afterback_called = True
-        return (inst, answer.before, answer.value)
-
-    spectator.callback('target', before_target, after_target)
-
-    def is_not_target(inst, call):
-        # redirect should not trigger this
-        assert False
-
-    spectator.callback('target', is_not_target)
-
-    def before_origin(inst, call):
-        inst.origin_beforeback_called = True
-        r = Redirect('origin', 'target', inst, call.args, call.kwargs)
-        assert inst.target_beforeback_called
-        return call, r
-    def after_origin(inst, answer):
-        assert inst.origin_method_called
-        assert not test.target_method_called
-
-        call, redirect = answer.before
-        out = redirect(answer.value)
-
-        call.update(name='target')
-        assert inst.target_afterback_called
-        assert out == (inst, call, answer.value)
-        inst.origin_afterback_called = True
-
-    spectator.callback('origin', before_origin, after_origin)    
-
-    test.origin(0)
-
-    assert test.origin_beforeback_called
-    assert test.origin_afterback_called
-
 
 class TestEvenftul(TestCase):
 
@@ -269,3 +213,184 @@ class TestEvenftul(TestCase):
         # no longer get called through
         # the old value
         old.long_method_name()
+
+
+class TestAbstraction(TestCase):
+
+    def test_redirect(self):
+
+        name = "test"
+
+        index = 0
+
+        def beforeback(instance, call):
+            assert call.name == name
+            args, kwargs = calls[index]
+            assert instance == args[0]
+            assert call.args == args[1:]
+            assert call.kwargs == kwargs
+            return call
+
+        def afterback(instance, answer):
+            assert answer.name == name
+            args, kwargs = calls[index]
+            assert answer.value == values[index]
+            # check that the returned value
+            # came from the associated beforback
+            assert instance == args[0]
+            assert answer.before.args == args[1:]
+            assert answer.before.kwargs == kwargs
+
+        re = redirect(name, beforeback, afterback)
+
+        calls = []
+        values = []
+        def trigger(value, *args, **kwargs):
+            calls.append((args, kwargs))
+            values.append(value)
+            re(*args, **kwargs)(value)
+
+        placeholder_instance = "x"
+
+        trigger(1, placeholder_instance, 10)
+        index += 1
+        trigger(2, placeholder_instance, 10, 11)
+        index += 1
+        trigger(3, placeholder_instance, 10, b=11)
+        index += 1
+        trigger(4, placeholder_instance, a=10, b=11)
+
+        index = 0
+        calls = []
+        values = []
+        def callback(instance, call):
+            args, kwargs = calls[index]
+            assert instance == args[0]
+            assert call.args == args[1:]
+            assert call.kwargs == kwargs
+            def after(value):
+                assert value == values[index]
+            return after
+
+        re = redirect("test", callback)
+
+        trigger(1, placeholder_instance, 10)
+        index += 1
+        trigger(2, placeholder_instance, 10, 11)
+        index += 1
+        trigger(3, placeholder_instance, 10, b=11)
+        index += 1
+        trigger(4, placeholder_instance, a=10, b=11)
+
+    def test_abstracted(self):
+
+        # placehold method name
+        method = "x"
+        calls = []
+        answers = []
+        placeholder_instance = "y"
+
+        def before(inst, call):
+            calls.append(call)
+            return call
+
+        def after(inst, answer, index=[0]):
+            assert calls[index[0]] == answer.before
+            answers.append(answer)
+            index[0] += 1
+            return answer
+
+        with abstracted(method, before, after) as test:
+            test(placeholder_instance, 1)
+            test(placeholder_instance, 1, 2)
+            test(placeholder_instance, 1, a=2)
+            test(placeholder_instance, a=1, b=2)
+        
+        assert len(calls) == 4
+
+        test_answers = test(None)
+
+        assert test_answers == answers
+
+    def test_abstracted_method(self):
+
+        class Test(CopyClass):
+            target_method_called = False
+            target_beforeback_called = False
+            target_afterback_called = False
+            origin_method_called = False
+            origin_beforeback_called = False
+            origin_afterback_called = False
+            def origin_method(self, a):
+                self.origin_method_called = True
+                return a
+            def target_method(self, b):
+                self.target_method_called = True
+                return b + 1
+
+        WatchableTest = spectate.expose_as('WatchableTest',
+            Test, 'origin_method', 'target_method')
+
+        class TestTrait(Eventful):
+
+            klass = Test
+            type_name = "Test"
+            event_map = dict(origin='origin_method', target='target_method')
+
+            def _before_origin(self, value, call):
+                value.origin_beforeback_called = True
+                with self.abstracted(value, "target") as target:
+                    target(*call.args, **call.kwargs)
+                    target(*call.args, **call.kwargs)
+                assert value.target_beforeback_called
+                return call, target
+
+            def _after_origin(self, value, answer):
+                value.origin_afterback_called = True
+
+                assert value.origin_method_called
+                assert not value.target_method_called
+
+                call, target = answer.before
+                result = target(answer.value)
+
+                assert value.target_afterback_called
+
+                answer = answer.copy()
+                call = call.copy()
+                call.update(type="target", name="target_method")
+                answer.update(name="target_method", before=call)
+
+
+
+                assert len(result) == 2
+                for r in result:
+                    assert r == answer
+
+            def _before_target(self, value, call):
+                value.target_beforeback_called = True
+                return call
+
+            def _after_target(self, value, answer):
+                value.target_afterback_called = True
+                return answer
+
+        class HasTestTrait(HasTraits):
+            test = TestTrait()
+
+        htt = HasTestTrait()
+        htt.test = Test()
+        test = htt.test
+
+        spectator = spectate.watcher(test)
+
+        def is_not_target(inst, call):
+            # the abstraction should not trigger this
+            assert False
+
+        spectator.callback('target_method', is_not_target) 
+
+        test.origin_method(0)
+
+        assert test.origin_beforeback_called
+        assert test.origin_afterback_called

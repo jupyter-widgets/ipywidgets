@@ -79,7 +79,7 @@ class Spectator(object):
                 # cleanup if all callbacks are gone
                 del self._callback_registry[name]
 
-    def wrapper(self, name, args, kwargs):
+    def __call__(self, name, args, kwargs):
         """A callback made prior to calling the given base method
 
         Parameters
@@ -125,7 +125,7 @@ class MethodSpectator(object):
     _compile_count = 0
     _src_str = """def {name}({signature}):
     args, vargs, kwargs = {args}, {varargs}, {keywords};
-    return globals()["spectator"].wrapper('{name}', (args + vargs), kwargs)"""
+    return globals()["spectator"]('{name}', (args + vargs), kwargs)"""
 
     def __init__(self, base, name):
         self.name = name
@@ -215,7 +215,7 @@ def watch(value, *args, **kwargs):
         raise TypeError("Expected a WatchableType, not %r." % value)
     spectator = getattr(value, "_instance_spectator", None)
     if not isinstance(spectator, Spectator):
-        spectator = Spectator(wtype)
+        spectator = (kwargs.get("spectator") or Spectator(wtype))
         value._instance_spectator = spectator
     return spectator
 
