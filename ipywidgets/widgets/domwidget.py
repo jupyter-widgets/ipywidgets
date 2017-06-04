@@ -38,8 +38,13 @@ class DOMWidget(Widget):
         return self
 
     def _repr_keys(self):
-        # We also need to include _dom_classes in repr for reproducibility
         for key in super(DOMWidget, self)._repr_keys():
+            # Exclude layout if it had the default value
+            if key == 'layout':
+                value = getattr(self, key)
+                if repr(value) == '%s()' % value.__class__.__name__:
+                    continue
             yield key
+        # We also need to include _dom_classes in repr for reproducibility
         if self._dom_classes:
             yield '_dom_classes'
