@@ -46,9 +46,9 @@ class _BoundedFloat(_Float):
     def _validate_min(self, proposal):
         """Enforce min <= value <= max"""
         min = proposal['value']
-        if min > self.max:
+        if self.has_trait_value("max") and min > self.max:
             raise TraitError('Setting min > max')
-        if min > self.value:
+        if self.has_trait_value("value") and min > self.value:
             self.value = min
         return min
 
@@ -56,9 +56,9 @@ class _BoundedFloat(_Float):
     def _validate_max(self, proposal):
         """Enforce min <= value <= max"""
         max = proposal['value']
-        if max < self.min:
+        if self.has_trait_value("min") and max < self.min:
             raise TraitError('setting max < min')
-        if max < self.value:
+        if self.has_trait_value("value") and max < self.value:
             self.value = max
         return max
 
