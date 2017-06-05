@@ -13,6 +13,8 @@ import { HTMLManager } from './htmlmanager';
 
 import * as $ from 'jquery';
 
+import '../css/output.css';
+
 export class OutputModel extends DOMWidgetModel {
     defaults() {
         return {
