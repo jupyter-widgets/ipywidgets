@@ -110,7 +110,7 @@ setuptools_args = {}
 install_requires = setuptools_args['install_requires'] = [
     'ipython>=4.0.0',
     'ipykernel>=4.5.1',
-    'traitlets>=4.3.1',
+    'traitlets>=5.0.0',
     # Requiring nbformat to specify bugfix version which is not required by
     # notebook.
     'nbformat>=4.2.0',
