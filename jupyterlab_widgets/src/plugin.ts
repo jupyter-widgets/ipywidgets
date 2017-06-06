@@ -37,12 +37,13 @@ import {
   OutputModel, OutputView
 } from './output';
 
+import * as base from '@jupyter-widgets/base';
 import * as widgets from '@jupyter-widgets/controls';
 
 (widgets as any)['OutputModel'] = OutputModel;
 (widgets as any)['OutputView'] = OutputView;
 
-import 'jupyter-widgets-base/css/index.css';
+import '@jupyter-widgets/base/css/index.css';
 import '@jupyter-widgets/controls/css/widgets-base.css';
 
 
@@ -69,11 +70,22 @@ class NBWidgetExtension implements INBWidgetExtension {
   createNew(nb: NotebookPanel, context: DocumentRegistry.IContext<INotebookModel>): IDisposable {
     let wManager = new WidgetManager(context, nb.rendermime);
     wManager.register({
+      name: '@jupyter-widgets/base',
+      version: base.JUPYTER_WIDGETS_VERSION,
+      exports: {
+        WidgetModel: base.WidgetModel,
+        WidgetView: base.WidgetView,
+        DOMWidgetView: base.DOMWidgetView,
+        DOMWidgetModel: base.DOMWidgetModel,
+        LayoutModel: base.LayoutModel,
+        LayoutView: base.LayoutView,
+      }
+    });
+    wManager.register({
       name: '@jupyter-widgets/controls',
       version: widgets.JUPYTER_WIDGETS_VERSION,
       exports: widgets
     });
-
     this._registry.forEach(data => wManager.register(data));
     let wRenderer = new WidgetRenderer(wManager);
 

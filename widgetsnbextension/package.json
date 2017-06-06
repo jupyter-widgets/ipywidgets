@@ -22,11 +22,11 @@
   },
   "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme",
   "dependencies": {
+    "@jupyter-widgets/base": "^0.2.0",
+    "@jupyter-widgets/controls": "^0.2.0",
     "@phosphor/messaging": "^1.2.0",
     "@phosphor/widgets": "^1.2.0",
     "backbone": "^1.2.3",
-    "@jupyter-widgets/controls": "0.1.0",
-    "@jupyter-widgets/base": "^0.1.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
