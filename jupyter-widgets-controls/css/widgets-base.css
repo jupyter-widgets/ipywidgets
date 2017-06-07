@@ -961,7 +961,7 @@
     color: var(--jp-ui-font-color1);
 }
 
-.p-Collapse-open .p-Collapse-header {
+.p-Collapse-open > .p-Collapse-header {
     background-color: var(--jp-layout-color1);
     color: var(--jp-ui-font-color0);
     cursor: default;
@@ -978,7 +978,7 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
-.p-Collapse-open .p-Collapse-header::before {
+.p-Collapse-open > .p-Collapse-header::before {
     content: '\f0d7\00A0'; /* caret-down, non-breaking space */
 }
 
