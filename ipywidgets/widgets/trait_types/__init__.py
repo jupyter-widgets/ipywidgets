@@ -10,7 +10,7 @@ Trait types for html widgets.
 import re
 import datetime as dt
 
-from . import eventful
+from .eventful import Eventful
 import traitlets as trts
 
 _color_names = ['aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanchedalmond', 'blue', 'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse', 'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'cyan', 'darkblue', 'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgreen', 'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue', 'darkslategray', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dodgerblue', 'firebrick', 'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'greenyellow', 'honeydew', 'hotpink', 'indianred ', 'indigo ', 'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgreen', 'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray', 'lightsteelblue', 'lightyellow', 'lime', 'limegreen', 'linen', 'magenta', 'maroon', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise', 'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'navy', 'oldlace', 'olive', 'olivedrab', 'orange', 'orangered', 'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'purple', 'rebeccapurple', 'red', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon', 'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver', 'skyblue', 'slateblue', 'slategray', 'snow', 'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'whitesmoke', 'yellow', 'yellowgreen'] 
@@ -35,8 +35,16 @@ class Datetime(trts.TraitType):
     klass = dt.datetime
     default_value = dt.datetime(1900, 1, 1)
 
+
+class Date(trts.TraitType):
+    """A trait type holding a Python date object"""
+
+    klass = dt.date
+    default_value = dt.date(1900, 1, 1)
+
+
 def datetime_to_json(pydt, manager):
-    """Serializes a Python datetime object to json.
+    """Serialize a Python datetime object to json.
 
     Instantiating a JavaScript Date object with a string assumes that the
     string is a UTC string, while instantiating it with constructor arguments
@@ -63,8 +71,9 @@ def datetime_to_json(pydt, manager):
             milliseconds=pydt.microsecond / 1000
         )
 
+
 def datetime_from_json(js, manager):
-    """Deserialize a Python datetime object from json"""
+    """Deserialize a Python datetime object from json."""
     if js is None:
         return None
     else:
@@ -82,6 +91,39 @@ datetime_serialization = {
     'from_json': datetime_from_json,
     'to_json': datetime_to_json
 }
+
+def date_to_json(pydate, manager):
+    """Serialize a Python date object.
+
+    Attributes of this dictionary are to be passed to the JavaScript Date
+    constructor.
+    """
+    if pydate is None:
+        return None
+    else:
+        return dict(
+            year=pydate.year,
+            month=pydate.month - 1,  # Months are 0-based indices in JS
+            date=pydate.day
+        )
+
+
+def date_from_json(js, manager):
+    """Deserialize a Javascript date."""
+    if js is None:
+        return None
+    else:
+        return dt.date(
+            js['year'],
+            js['month'] + 1,  # Months are 1-based in Python
+            js['date'],
+        )
+
+date_serialization = {
+    'from_json': date_from_json,
+    'to_json': date_to_json
+}
+
 
 class InstanceDict(trts.Instance):
     """An instance trait which coerces a dict to an instance.
@@ -101,38 +143,64 @@ class InstanceDict(trts.Instance):
                           **(self.default_kwargs or {}))
 
 
-class EDict(eventful.Eventful, trts.Dict):
 
+class EventfulElements(Eventful):
+
+    event_map = {
+        "setitem": "__setitem__",
+        "delitem": "__delitem__",
+    }
+
+    @staticmethod
+    def _before_setitem(value, call):
+        key = call.args[0]
+        new = call.args[1]
+        try:
+            old = value[key]
+        except KeyError:
+            old = trts.Undefined
+        if new != old:
+            return trts.Bunch(key=key, old=old, new=new)
+
+    @staticmethod
+    def _before_delitem(value, call):
+        key = call.args[0]
+        try:
+            old = value[key]
+        except KeyError:
+            pass
+        else:
+            return trts.Bunch(key=key, old=old)
+
+
+class EDict(EventfulElements):
+
+    klass = dict
+    type_name = 'edict'
     event_map = {
         'setitem': ('__setitem__', 'setdefault'),
         'delitem': ('__delitem__', 'pop'),
         'update': 'update',
         'clear': 'clear',
     }
-    type_name = 'edict'
 
-    def _before_update(self, inst, call):
+    def _before_update(self, value, call):
         new = call.args[0]
         new.update(call.kwargs)
-        return self.redirect(None, 'setitem', inst, args=new.items())
+        with self.abstracted(valye, "setitem") as setitem:
+            for k, v in value.items():
+                setitem(k, v)
+        return setitem
 
-    def _before_clear(self, inst, call):
-        return self.redirect(None, 'delitem', inst, args=inst.keys())
-
-    @staticmethod
-    def before_setitem(inst, call):
-        """Expect call.args[0] = key"""
-        key = call.args[0]
-        new = call.args[1]
-        old = inst.get(call.args[0], trts.Undefined)
-        if not equivalent(old, new):
-            return trts.Bunch(key=key, old=old, new=new)
-
-    _before_setitem = before_setitem
-    _before_delitem = before_setitem
+    def _before_clear(self, value, call):
+        with self.abstracted(value, "delitem") as delitem:
+            for k in value.keys():
+                delitem(k)
+        return delitem
 
 
-class EList(eventful.Eventful, trts.List):
+
+class EList(EventfulElements):
 
     event_map = {
         'append': 'append',
@@ -145,46 +213,31 @@ class EList(eventful.Eventful, trts.List):
     }
     type_name = 'elist'
 
-    def _before_reverse(self, instance, call):
-        return self.rearrangement(inst)
+    def _before_append(value, call):
+        with self.abstracted("setitem") as setitem:
+            setitem(len(value), call.args[0])
+        return setitem
 
-    def _before_sort(self, instance, call):
-        return self.rearrangement(inst)
+    def _before_extend(value, call):
+        with self.abstracted(value, "setitem") as setitem:
+            for i, v in enumerate(call.args[0]):
+                setitem(i, v)
+        return setitem
+
+    def _before_remove(self, value, call):
+        with self.abstracted(value, "delitem") as detitem:
+            delitem(value.index(call.args[0]))
+        return delitem
+
+    def _before_reverse(self, value, call):
+        return self.rearrangement(value)
+
+    def _before_sort(self, value, call):
+        return self.rearrangement(value)
 
     @staticmethod
     def rearrangement(new):
-        old=instance[:]
+        old = new[:]
         def after_rearangement(value):
             return trts.Bunch(old=old, new=new)
         return after_rearangement
-
-    def _before_append(instance, call):
-        with self.abstracted("setitem") as setitem:
-            setitem(len(instance), call.args[0])
-        return setitem
-
-    def _before_extend(instance, call):
-        with self.redirect(instance, "setitem") as setitem:
-            for i, v in enumerate(call.args[0]):
-                setitem(instance, i, v)
-        return setitem
-
-    def _before_remove(self, instance, call):
-        with self.abstracted("delitem") as detitem:
-            delitem(instance, instance.index(call.args[0]))
-        return delitem
-
-    def _before_delitem(instance, call, setitem):
-        with self.abstracted("setitem") as setitem:
-            setitem(instance, call.args[0], trts.Undefined)
-        return setitem
-
-    @staticmethod
-    def _before_setitem(instance, call):
-        index = call.args[0]
-        try:
-            old = inst[index]
-        except:
-            old = trts.Undefined
-        new = call.args[1]
-        return trts.Bunch(index=index, old=old, new=new)

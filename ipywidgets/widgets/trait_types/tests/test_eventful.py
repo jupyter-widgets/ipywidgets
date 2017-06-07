@@ -361,8 +361,6 @@ class TestAbstraction(TestCase):
                 call.update(type="target", name="target_method")
                 answer.update(name="target_method", before=call)
 
-
-
                 assert len(result) == 2
                 for r in result:
                     assert r == answer
