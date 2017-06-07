@@ -9,7 +9,7 @@ class Callback(object):
     notify = True
 
     def __init__(self, owner, trait, etype, callback, notify=None):
-        """A base class defining the fundamental attributes of an eventful callback
+        """Define the attributes of a callback.
 
         Parameters
         ----------
@@ -130,7 +130,7 @@ class Eventful(TraitType):
 
         To accomplish this, whenever a new value is set to the trait:
 
-        1. If the trait had a previous value, its :class:`Spectator` is unregistered.
+        1. If the trait had a previous value, all event callbacks this trait registered to its :class:`Spectator` are removed.
         2. The new value is validated and wrapped in a :class:`WatchableType` subclass.
         3. Callbacks are then registered to the watchable instance.
         4. The watchable instance (not the value it wrapped) is set as the new value.
@@ -169,6 +169,10 @@ class Eventful(TraitType):
         self._active_events = []
         self.setup_events()
 
+    @property
+    def active_events(self):
+        return self._active_events[:]
+
     def event(self, type, methods, before=None, after=None):
         """Define an active event.
 
@@ -179,21 +183,42 @@ class Eventful(TraitType):
         methods : str or list of str
             The method(s) this event should be triggered on.
         before : callable
-            A callback that will be called before the base method. Its 
+            A beforeback that will be called before the base method. Its 
             signature should be ``(value, call)`` where ``value`` is the
             value whose methods are being watched, and ``call`` is data
             about a call which was made to one of them.
         after : callable
-            A callback that will be called after the base method. Its
+            An afterback that will be called after the base method. Its
             signature should be ``(value, answer)`` where ``value`` is
             the value whose methods are being watched, and ``answer``
             is data about the **result** of a call which was made to one
             of them.
 
-        Callback Details
-        ----------------
+        Beforebacks and Afterbacks
+        --------------------------
+        While the functions registered here are callbacks in the strictest
+        sense, they are more like "event reporters" - they are responsible
+        for capturing the data trail of a trait value's event, and passing
+        that data on to trait owners so it can be distributed to event
+        observers. To report an event, there are two different callbacks:
 
-        + **Beforebacks**: a callback triggered before the base method.
+        + Beforebacks - a callback triggered before a given method.
+        + Afterbacks - a callback triggered after a given method.
+        
+        Beforebacks and afterbacks are stored in pairs which intercommunicate
+        so that the state of an object before a mutative method is called, can
+        be compared to its state afterwards. These pairs can be defined in one
+        of two ways:
+
+        + `Type I` : Create two functions, and pass them to this method's ``'before'`` and ``'after'`` arguments.
+        + `Type II` : Create one function which defines, and then returns a closure. The function itself is the
+        beforeback, and the closure it returns is an afterback, thus the function should be passed to this method's
+        ``'before'`` argument.
+
+        Callback Definitions
+        --------------------
+
+        + **Beforebacks**
 
             + Signature: ``(new, call)``
 
@@ -211,11 +236,11 @@ class Eventful(TraitType):
                 is defined, it is passed directly to ``@observer`` handlers under ``change['event']``.
                 2. The afterback is a callable with a signature ``(returned)``
 
-                    + ``returned`` is the output of the called method.
-                    + The afterback can return `None` to prevent notifications, or a value which
-                    is distributed to ``@observer`` handlers under ``change['event']``.
+                    + ``returned`` is the direct output of the called method.
+                    + Just like a distinct afterback, it can return ``None`` to prevent notifications,
+                    or a value which gets distributed to event observers under ``report['event']``.
         
-        + **Afterbacks**: a callback triggered after the base method.
+        + **Afterbacks**
 
             + Signature: ``(new, answer)``
 
@@ -227,15 +252,29 @@ class Eventful(TraitType):
                     + ``before:`` if a beforeback was defined, this is the value it returned.
 
             + Return: ``None`` or a value
-                1. ``None`` prevents notifications
-                2. Any other value gets distributed to ``@observer`` handlers under ``change['event']``.
+
+                1. ``None`` to prevents notifications.
+                2. Any other value gets distributed to event observers under ``report['event']``.
+
+        Event Notifications
+        -------------------
+        Notifications from events can be captured by trait owners with :func:`traitlets.observe` or
+        the method :meth:`traitlets.HasTraits.observe`, by specifying that ``type=<event>`` where
+        ``<event>`` is the string that was passed to the ``'type'`` argument of this method.
         """
         for method in (methods if isinstance(methods, (list, tuple)) else (methods,)):
             self._active_events.append((type, method, before, after))
         return self
 
     def setup_events(self):
-        """Store events from the event map as active events."""
+        """Store events from the event map as active events.
+
+        Here methods with the naming scheme ``_before_<event>`` and ``_after_<event>``
+        where ``<event>`` is a key in the :attr:`Eventful.event_map`` are gathered in pairs
+        and then passed to :meth:`Eventful.event` as seperate before and afterbacks. If one
+        the named methods is absent a placeholder :class:`Beforeback` or :class:`Afterback`
+        is used instead.
+        """
         for name, on in self.event_map.items():
             for method in (on if isinstance(on, (tuple, list)) else (on,)):
                 before = getattr(self, "_before_" + name, None)
@@ -245,6 +284,20 @@ class Eventful(TraitType):
                         before=before, after=after)
 
     def _validate(self, owner, value):
+        """Registers a spectator and event callbacks to a validated value.
+
+        1. If this trait had a previous value, all event callbacks this trait registered to its :class:`Spectator` are removed.
+        2. The new value is validated and wrapped in a :class:`WatchableType` subclass.
+        3. Callbacks are then registered to the watchable instance.
+        4. The watchable instance (not the value it wrapped) is set as the new value.
+
+        Parameters
+        ----------
+        owner : :class:`traitlets.HasTraits`
+            The owner of the trait.
+        value : any
+            The the owner's proposed value for this trait.
+        """
         try:
             old = getattr(owner, self.name)
         except:
@@ -267,19 +320,33 @@ class Eventful(TraitType):
         return (self.watchable_type or self.expose(type(value)))(value)
 
     def expose(self, klass):
-        """Creates a watchable type subclass based on ``self.klass``"""
+        """Creates a watchable type subclass based on ``self.klass``
+
+        The methods that are exposed to spectation are taken from this trait's list of active
+        events. To see more details about how these methods are exposed, see :mod:`spectate`.
+        """
         methods = (e[1] for e in self._active_events)
         return expose_as(self.type_name, klass, *methods)
 
     def watch(self, owner, value):
-        """Register a spectator to the value and active events to the spectator"""
+        """Register a spectator to the value and active events to the spectator
+        """
         self._register_defined_events(owner, watch(value))
 
     @contextmanager
     def abstracted(self, value, event, notify=False):
         """A context manager for capturing multiple calls to an event and repackaging them.
 
-        Return the value yielded by this manager to notify with those repackaged events.
+        Say you defined an 
+        
+        Events are repackaged using an "abstracted" event, which is a closure designed to
+        redirect each call to the specified event reporter
+        that stores and executes 
+
+        Upon exiting the context, each call to the abstracted event which was yielded,
+        will be executed. The result of each event call is repackaged inside the abstraction.
+        To trigger those repackaged events simply return the abstraction - it is a closure
+        which, when called, will notify the owner of this trait.
         
         Parameters
         ----------
@@ -368,12 +435,29 @@ class Eventful(TraitType):
 
 @contextmanager
 def abstracted(method, beforeback=None, afterback=None):
+    """Create a closure that captures and repackages an event.
+    
+    Yields a closure which captures event calls. Upon exiting the
+    context the given beforeback is called with those arguments,
+    and it's result is captured. If the closure is returned as
+    an afterback, then a subsiquent call will trigger the given
+    afterback based on each call, and return the captured results.
+
+    Parameters
+    ----------
+    method : str
+        The name of the method the before/afterback are associated with.
+    beforeback : callable
+        The beforeback associated with defining an event's data for the given method.
+    afterback : callable
+        The afterback associate with defining an event's data for the given method. 
+    """
     before = redirect(method, beforeback, afterback)
 
     hold = []
     done = False
 
-    def abstraction(*args, **kwargs):
+    def abstraction(value, *args, **kwargs):
         if done:
             return [after(*args, **kwargs) for after in hold]
         else:
@@ -386,6 +470,20 @@ def abstracted(method, beforeback=None, afterback=None):
 
 
 def redirect(method, before=None, after=None):
+    """Creates a Type II event definition from a Type I definition.
+    
+    + `Type I` : A seperate beforeback and afterback pair.
+    + `Type II` : An afterback closure defined in and returned by a beforeback.
+
+    Parameters
+    ----------
+    method : str
+        The name of the method the before/afterback are associated with.
+    beforeback : callable
+        The beforeback associated with defining an event's data for the given method.
+    afterback : callable
+        The afterback associate with defining an event's data for the given method.
+    """
     _before, _after = before, after
 
     def before(instance, *args, **kwargs):
