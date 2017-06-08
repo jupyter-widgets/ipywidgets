@@ -42,6 +42,10 @@ set -e
 
 nbExtFlags="--sys-prefix $1"
 
+cd jupyter-widgets-base
+npm install
+cd ..
+
 cd jupyter-widgets-controls
 npm install
 cd ..
