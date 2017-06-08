@@ -12,7 +12,9 @@ import sys
 from IPython.core.getipython import get_ipython
 from ipykernel.comm import Comm
 from traitlets.utils.importstring import import_item
-from traitlets import HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default
+from traitlets import (
+    HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default, Container,
+    Undefined)
 from ipython_genutils.py3compat import string_types, PY3
 from IPython.display import display
 
@@ -662,7 +664,18 @@ class Widget(LoggingHasTraits):
     def _repr_keys(self):
         traits = self.traits()
         for key in sorted(self.keys):
-            if key[0] == '_' or self._compare(getattr(self, key), traits[key].default_value):
+            # Exculde traits that start with an underscore
+            if key[0] == '_':
+                continue
+            # Exclude traits who are equal to their default value
+            value = getattr(self, key)
+            trait = traits[key]
+            if self._compare(value, trait.default_value):
+                continue
+            elif (isinstance(trait, (Container, Dict)) and
+                  trait.default_value == Undefined and
+                  len(value) == 0):
+                # Empty container, and dynamic default will be empty
                 continue
             yield key
 
