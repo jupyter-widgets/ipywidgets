@@ -18,3 +18,10 @@ class ValueWidget(Widget):
         to process the raw value ``self.value``.
         """
         return self.value
+
+    def _repr_keys(self):
+        # Ensure value key comes first, and is always present
+        yield 'value'
+        for key in super(ValueWidget, self)._repr_keys():
+            if key != 'value':
+                yield key
