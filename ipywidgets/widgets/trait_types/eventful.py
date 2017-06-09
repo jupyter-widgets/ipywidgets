@@ -1,6 +1,6 @@
 from .spectate import watch, unwatch, has_watcher, watcher, expose_as, watchable, Spectator
 from traitlets import TraitType, Undefined
-from traitlets.utils.bunch import Bunch
+from traitlets.utils.bunch import FrozenBunch as Bunch
 from contextlib import contextmanager
 
 
@@ -71,13 +71,26 @@ class Beforeback(Callback):
         a notification, or is otherwise passed to a corresponding afterback
         in its answer data under the key 'before'.
 
+        Notifications
+        -------------
+        If/when this callback notifies its owner, it passes a :class:`Bunch` containing:
+
+        + ``name``: The name of the trait that changed.
+        + ``owner``: The owner of the trait that changed.
+        + ``type``: The name of the event that occured in the trait's value.
+        + ``event``: The raw event data returned by this beforeback.
+
         See :mod:`spectate` for more info on beforebacks and afterbacks.
         """
-        call.update(trait=self.trait, type=self.etype, owner=self.owner)
-        result = self.func(value, call)
-        if self.notify and result is not None:
-            self.owner.notify_change(result)
-        return result
+        call = call.copy(trait=self.trait, type=self.etype, owner=self.owner)
+        if self.func is not None:
+            event = self.func(value, call)
+            if self.notify and event is not None:
+                self.owner.notify_change(
+                    Bunch(name=self.trait.name, event=event,
+                        type=self.etype, owner=self.owner))
+            return event
+            
 
 
 class Afterback(Callback):
@@ -89,7 +102,7 @@ class Afterback(Callback):
         ----------
         value : any
             The value of the trait, whose method was called.
-        call: Bunch
+        answer: Bunch
             Data created by :class:`Specatator` about what
             method was called, and with what arguments.
 
@@ -98,6 +111,15 @@ class Afterback(Callback):
         The output of the callback's handler function. This should be data
         that, if notify equals ``True``, is sent immediately to the owner as
         a notification.
+
+        Notifications
+        -------------
+        If/when this callback notifies its owner, it passes a :class:`Bunch` containing:
+
+        + ``name``: The name of the trait that changed.
+        + ``owner``: The owner of the trait that changed.
+        + ``type``: The name of the event that occured in the trait's value.
+        + ``event``: The raw event data returned by this afterback.
 
         See :mod:`spectate` for more info on beforebacks and afterbacks.
         """
@@ -222,7 +244,7 @@ class Eventful(TraitType):
 
             + Signature: ``(new, call)``
 
-                1. ``new:`` the value to be set on the trait.
+                1. ``new``: the value to be set on the trait.
                 2. ``call``: a bunch with the keys:
 
                     + ``name``: name of the method called.
@@ -305,7 +327,7 @@ class Eventful(TraitType):
         else:
             if watchable(old) and has_watcher(old):
                 spectator = watcher(old)
-                for etype, method, before, after in self._active_events:
+                for etype, method, before, after in self.active_events:
                     if before is not None or after is not None:
                         spectator.remove_callback(method, before, after)
         value = super(Eventful, self)._validate(owner, value)
@@ -325,7 +347,7 @@ class Eventful(TraitType):
         The methods that are exposed to spectation are taken from this trait's list of active
         events. To see more details about how these methods are exposed, see :mod:`spectate`.
         """
-        methods = (e[1] for e in self._active_events)
+        methods = (e[1] for e in self.active_events)
         return expose_as(self.type_name, klass, *methods)
 
     def watch(self, owner, value):
@@ -334,19 +356,35 @@ class Eventful(TraitType):
         self._register_defined_events(owner, watch(value))
 
     @contextmanager
+    def abstracted_once(self, value, event, notify=False):
+        hold = []
+        _abstraction = None
+
+        def abstraction(*args, **kwargs):
+            if len(hold) == 0:
+                hold.append((args, kwargs))
+            else:
+                if _abstraction is not None:
+                    return _abstraction(*args, **kwargs)[0]
+                else:
+                    raise TypeError("This abstraction can only be called once.")
+
+        yield abstraction
+
+        if len(hold):
+            args, kwargs = hold[0]
+            with self.abstracted(value, event, notify) as _abstraction:
+                _abstraction(*args, **kwargs)
+
+    @contextmanager
     def abstracted(self, value, event, notify=False):
-        """A context manager for capturing multiple calls to an event and repackaging them.
+        """A context manager for creating a superset of events.
 
-        Say you defined an 
-        
-        Events are repackaged using an "abstracted" event, which is a closure designed to
-        redirect each call to the specified event reporter
-        that stores and executes 
-
-        Upon exiting the context, each call to the abstracted event which was yielded,
-        will be executed. The result of each event call is repackaged inside the abstraction.
-        To trigger those repackaged events simply return the abstraction - it is a closure
-        which, when called, will notify the owner of this trait.
+        The manager captures multiple calls to a yielded "abstracted" event
+        (a closure) and redirects them to the event as if they had been made
+        by a user of the given value. However, instead of notifying each time
+        a call is made, the events therin are captured and repackaged as one
+        list of events which is sent to the trait's owner.
         
         Parameters
         ----------
@@ -360,6 +398,8 @@ class Eventful(TraitType):
             If ``True`` then calls will create the repackaged event in addition
             to the the event being "abstracted". This means there will be many
             small notifications plus the larger repackaged one.
+        single : bool
+            If ``True`` then 
 
         Examples
         --------
@@ -420,8 +460,7 @@ class Eventful(TraitType):
             done = True
 
     def _register_defined_events(self, owner, spectator):
-        for e in self._active_events:
-            etype, method, before, after = e
+        for etype, method, before, after in self.active_events:
             if before is not None or after is not None:
                 spectator.callback(method,
                     before=Beforeback(owner, self, etype, before),
@@ -439,9 +478,10 @@ def abstracted(method, beforeback=None, afterback=None):
     
     Yields a closure which captures event calls. Upon exiting the
     context the given beforeback is called with those arguments,
-    and it's result is captured. If the closure is returned as
-    an afterback, then a subsiquent call will trigger the given
-    afterback based on each call, and return the captured results.
+    and it's results are captured. If the closure is returned as
+    an afterback in a Type I callback pair then then given afterback
+    is called with the results captured earlier. The output of this
+    last call is then repackaged as a list of events.
 
     Parameters
     ----------
@@ -457,7 +497,7 @@ def abstracted(method, beforeback=None, afterback=None):
     hold = []
     done = False
 
-    def abstraction(value, *args, **kwargs):
+    def abstraction(*args, **kwargs):
         if done:
             return [after(*args, **kwargs) for after in hold]
         else:

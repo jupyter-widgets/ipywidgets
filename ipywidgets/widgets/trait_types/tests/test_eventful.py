@@ -1,6 +1,6 @@
 import copy
 from unittest import TestCase
-from traitlets import HasTraits, observe
+from traitlets import HasTraits, observe, Bunch, TraitType
 from ..eventful import Eventful, Bunch, Beforeback, Afterback, redirect, abstracted
 from .. import spectate
 
@@ -15,18 +15,47 @@ class CopyClass(object):
         return new
 
 
-def test_beforeback():
-    trait = 'trait' # would be an Eventful trait
-    owner = 'owner' # would be a HasTraits instance
-    before = lambda inst, call: (inst, call)
-    bb = Beforeback(owner, trait, 'type', before)
-
-    inst, call = bb(owner, Bunch())
-    assert call == Bunch(owner=owner,
-        type='type', trait=trait)
+def event_form(*args, **data):
+    if len(args) == 3:
+        args += (None,)
+    owner, name, etype, event = args
+    return Bunch(name=name, type=etype, owner=owner,
+        event=(Bunch(**data) if data else event))
 
 
-class TestAfterback(TestCase):
+class TestCallbacks(TestCase):
+
+    def test_beforeback(self):
+        trait = 'trait' # would be an Eventful trait
+        owner = 'owner' # would be a HasTraits instance
+        before = lambda inst, call: (inst, call)
+        bb = Beforeback(owner, trait, 'type', before)
+
+        value, call = bb(1, Bunch())
+
+        assert value == 1
+        assert call == Bunch(owner=owner,
+            type='type', trait=trait)
+
+    def test_beforeback_notify(self):
+        owner = HasTraits()
+        trait = TraitType()
+        trait.name = "name"
+
+        log = []
+        # store notifications in the log
+        owner.notify_change = lambda change: log.append(change)
+
+        before = lambda value, call: (value, call)
+
+        bb_notify_false = Beforeback(owner, trait, 'type', before, notify=False)
+        bb_notify_true = Beforeback(owner, trait, 'type', before, notify=True)
+
+        _, false_bunch = bb_notify_false(False, Bunch())
+        _, true_bunch = bb_notify_true(True, Bunch())
+
+        assert len(log) == 1
+        assert log[0] == event_form(owner, "name", "type", (True, true_bunch))
 
     def test_afterback_value(self):
         owner = HasTraits()
@@ -124,37 +153,37 @@ class TestEvenftul(TestCase):
 
     def test_builtin_event_registration(self):
         class Test(CopyClass):
-            def long_method_name(self):
+            def my_method(self):
                 pass
         class MyEventful(Eventful):
             klass = Test
-            event_map = {'method': 'long_method_name'}
+            event_map = {'method': 'full_method_name'}
             def _before_method(self, inst, call): pass
             def _after_method(self, inst, answer): pass
 
         e = MyEventful(Test())
         assert len(e._active_events) == 1
         assert e._active_events[0] == (
-            'method', 'long_method_name',
+            'method', 'full_method_name',
             e._before_method, e._after_method)
 
     def test_user_event_registration(self):
         class Test(CopyClass):
-            def long_method_name(self):
+            def full_method_name(self):
                 pass
 
         e = Eventful(default_value=Test())
         before = lambda inst, call: None
         after = lambda inst, answer: None
-        e.event('method', 'long_method_name', before, after)
+        e.event('method', 'full_method_name', before, after)
         assert len(e._active_events) == 1
         assert e._active_events[0] == (
-            'method', 'long_method_name',
+            'method', 'full_method_name',
             before, after)
 
     def test_watchable_type_creation(self):
         class Test(CopyClass):
-            def long_method_name(self):
+            def full_method_name(self):
                 pass
 
         before = lambda inst, call: None
@@ -162,15 +191,15 @@ class TestEvenftul(TestCase):
 
         class MyHasTraits(HasTraits):
             e = Eventful(default_value=Test()).event(
-                'method', 'long_method_name',
+                'method', 'full_method_name',
                 before, after)
 
-        method = MyHasTraits.e.watchable_type.long_method_name
+        method = MyHasTraits.e.watchable_type.full_method_name
         assert isinstance(method, spectate.MethodSpectator)
 
     def test_watchable_type_wrapping(self):
         class Test(CopyClass):
-            def long_method_name(self):
+            def full_method_name(self):
                 pass
 
         before = lambda inst, call: None
@@ -178,19 +207,19 @@ class TestEvenftul(TestCase):
 
         class MyHasTraits(HasTraits):
             e = Eventful(default_value=Test()).event(
-                'method', 'long_method_name',
+                'method', 'full_method_name',
                 before, after)
 
         mht = MyHasTraits()
         value = mht.e
         assert isinstance(value, spectate.WatchableType)
         reg = mht.e._instance_spectator._callback_registry
-        callbacks = tuple(c.func for c in reg['long_method_name'][0])
+        callbacks = tuple(c.func for c in reg['full_method_name'][0])
         assert callbacks == (before, after)
 
     def test_unwatch_old_values(self):
         class Test(CopyClass):
-            def long_method_name(self):
+            def full_method_name(self):
                 pass
 
         def callback(value, call):
@@ -198,7 +227,7 @@ class TestEvenftul(TestCase):
 
         class MyHasTraits(HasTraits):
             e = Eventful(default_value=Test()).event(
-                "method", "long_method_name", callback)
+                "method", "full_method_name", callback)
 
         mht = MyHasTraits()
 
@@ -212,7 +241,7 @@ class TestEvenftul(TestCase):
         # the registered callback should
         # no longer get called through
         # the old value
-        old.long_method_name()
+        old.full_method_name()
 
 
 class TestAbstraction(TestCase):
@@ -283,7 +312,6 @@ class TestAbstraction(TestCase):
         trigger(4, placeholder_instance, a=10, b=11)
 
     def test_abstracted(self):
-
         # placehold method name
         method = "x"
         calls = []
@@ -291,10 +319,12 @@ class TestAbstraction(TestCase):
         placeholder_instance = "y"
 
         def before(inst, call):
+            assert inst is placeholder_instance
             calls.append(call)
             return call
 
         def after(inst, answer, index=[0]):
+            assert inst is placeholder_instance
             assert calls[index[0]] == answer.before
             answers.append(answer)
             index[0] += 1
@@ -356,10 +386,9 @@ class TestAbstraction(TestCase):
 
                 assert value.target_afterback_called
 
-                answer = answer.copy()
-                call = call.copy()
-                call.update(type="target", name="target_method")
-                answer.update(name="target_method", before=call)
+                before = call.copy(type="target", name="target_method")
+                answer = answer.copy(name="target_method", before=before)
+                call = call.copy(type="target", name="target_method")
 
                 assert len(result) == 2
                 for r in result:

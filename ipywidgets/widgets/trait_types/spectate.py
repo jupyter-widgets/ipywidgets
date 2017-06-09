@@ -1,6 +1,4 @@
 """
-Sourced from https://github.com/rmorshea/spectate/
-
 ========
 Spectate
 ========
@@ -117,6 +115,10 @@ descriptors in the place of specified methods. Then, a user will create a ``Spec
 which is stored on the instance under the attribute ``_instance_spectator``. When a ``MethodSpectator``
 is accessed through an instance, the descriptor will return a wrapper that will redirect to
 ``Spectator.wrapper``, which triggers the beforebacks and afterbacks registered to the instance.
+
+In Depth Examples
+-----------------
+https://github.com/rmorshea/spectate/examples
 """
 
 
@@ -124,7 +126,7 @@ import re
 import six
 import types
 import inspect
-from traitlets.utils.bunch import Bunch
+from traitlets.utils.bunch import FrozenBunch as Bunch
 
 
 def getargspec(func):
