@@ -83,3 +83,85 @@ describe('data output', () => {
         expect(el.querySelectorAll('table').length).to.equal(1);
     });
 })
+
+
+describe('widget output', () => {
+    let view;
+    const modelState = {
+        "outputs": [
+            {
+                "output_type": "display_data",
+                "data": {
+                    "application/vnd.jupyter.widget-view+json": {
+                        "model_id": "adffc4580a0944f6929c381463b0059b",
+                        "version_minor": "0",
+                        "version_major": "2"
+                    },
+                    "text/plain": "A Jupyter Widget"
+                },
+                "metadata": {}
+            }
+        ]
+    };
+
+    beforeEach(async function() {
+        const widgetTag = document.createElement('div');
+        widgetTag.className = 'widget-subarea';
+        document.body.appendChild(widgetTag);
+        const manager = new HTMLManager()
+
+        // We need to seed the manager with the state of the widgets
+        const managerState = {
+            "adffc4580a0944f6929c381463b0059b": {
+                "model_name": "IntSliderModel",
+                "model_module": "@jupyter-widgets/controls",
+                "model_module_version": "3.0.0",
+                "state": {
+                    "style": "IPY_MODEL_3b8780f457254737a83be48bc32b0613",
+                    "_view_module": "@jupyter-widgets/controls",
+                    "layout": "IPY_MODEL_33cb011834fd4c9d9af512e5e98c9904",
+                    "value": 45,
+                    "_model_module": "@jupyter-widgets/controls"
+                }
+            },
+            "3b8780f457254737a83be48bc32b0613": {
+                "model_name": "SliderStyleModel",
+                "model_module": "@jupyter-widgets/controls",
+                "model_module_version": "3.0.0",
+                "state": {
+                    "description_width": "",
+                    "_view_module": "@jupyter-widgets/controls",
+                    "_model_module": "@jupyter-widgets/controls"
+                }
+            },
+            "33cb011834fd4c9d9af512e5e98c9904": {
+                "model_name": "LayoutModel",
+                "model_module": "@jupyter-widgets/base",
+                "model_module_version": "3.0.0",
+                "state": {}
+            },
+        }
+        manager.set_state({
+            state: managerState,
+            version_major: 2,
+            version_minor: 0
+        });
+        const modelId = 'u-u-i-d';
+        const modelCreate: widgets.ModelOptions = {
+            model_name: 'OutputModel',
+            model_id: modelId,
+            model_module: '@jupyter-widgets/controls',
+            model_module_version: '*'
+        }
+        const model = await manager.new_model(modelCreate, modelState);
+        view = await manager.display_model(
+            undefined, model, { el: widgetTag }
+        );
+    });
+
+    it('show a slider widget', () => {
+        const outputView = (view as OutputView);
+        const el = view.el;
+        expect(el.querySelectorAll('.slider').length).to.equal(1);
+    });
+});
