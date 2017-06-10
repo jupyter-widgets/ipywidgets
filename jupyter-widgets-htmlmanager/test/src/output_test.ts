@@ -4,6 +4,8 @@ import * as chai from 'chai';
 import { HTMLManager } from '../../lib/';
 import { OutputModel, OutputView } from '../../lib/output';
 
+import * as widgets from '@jupyter-widgets/controls'
+
 describe('output', () => {
 
     let model;
@@ -16,20 +18,22 @@ describe('output', () => {
         document.body.appendChild(widgetTag);
         manager = new HTMLManager()
         const modelId = 'u-u-i-d';
-        model = await manager.new_model({
+        const modelCreate: widgets.ModelOptions = {
             model_name: 'OutputModel',
             model_id: modelId,
             model_module: '@jupyter-widgets/controls',
-            state: {
-                outputs: [
-                    {
-                        "output_type": "stream",
-                        "name": "stdout",
-                        "text": "hi\n"
-                    }
-                ],
-            }
-        });
+            model_module_version: '*'
+        }
+        const modelState = {
+            outputs: [
+                {
+                    "output_type": "stream",
+                    "name": "stdout",
+                    "text": "hi\n"
+                }
+            ],
+        }
+        model = await manager.new_model(modelCreate, modelState);
         view = await manager.display_model(
             undefined, model, { el: widgetTag }
         );
