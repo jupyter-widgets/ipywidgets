@@ -1,5 +1,5 @@
 
-import * as chai from 'chai';
+import { expect } from 'chai';
 
 import { HTMLManager } from '../../lib/';
 import { OutputModel, OutputView } from '../../lib/output';
@@ -9,7 +9,7 @@ import * as widgets from '@jupyter-widgets/controls'
 describe('output', () => {
 
     let model: widgets.WidgetModel;
-    let view: HTMLElement;
+    let view;
     let manager: HTMLManager;
 
     beforeEach(async function() {
@@ -29,7 +29,7 @@ describe('output', () => {
                 {
                     "output_type": "stream",
                     "name": "stdout",
-                    "text": "hi\n"
+                    "text": "this-is-a-test\n"
                 }
             ],
         }
@@ -39,7 +39,13 @@ describe('output', () => {
         );
     })
 
-    it('show the view', () => {
-        console.error(view);
+    it('create the view', () => {
+        expect(view).to.not.be.undefined
+    });
+
+    it('display the view', () => {
+        const outputView = (view as OutputView);
+        const el = view.el;
+        expect(el.textContent).to.equal('this-is-a-test\n')
     });
 })
