@@ -6,7 +6,7 @@ import { OutputModel, OutputView } from '../../lib/output';
 
 import * as widgets from '@jupyter-widgets/controls'
 
-describe('output', () => {
+describe('text output', () => {
 
     let model: widgets.WidgetModel;
     let view;
