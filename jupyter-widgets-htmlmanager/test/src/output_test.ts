@@ -8,9 +8,9 @@ import * as widgets from '@jupyter-widgets/controls'
 
 describe('output', () => {
 
-    let model;
-    let view;
-    let manager;
+    let model: widgets.WidgetModel;
+    let view: HTMLElement;
+    let manager: HTMLManager;
 
     beforeEach(async function() {
         const widgetTag = document.createElement('div');
