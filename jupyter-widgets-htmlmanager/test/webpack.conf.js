@@ -10,11 +10,17 @@ module.exports = {
     bail: true,
     module: {
         loaders: [
-            { test: /\.css$/, loader: 'style-loader!css-loader' },
+            { test: /\.css$/, loader: 'style-loader!css-loader!postcss-loader' },
             { test: /\.md$/, loader: 'raw-loader'},
             { test: /\.html$/, loader: "file?name=[name].[ext]" },
             { test: /\.ipynb$/, loader: 'json-loader' },
             { test: /\.json$/, loader: 'json-loader' },
         ],
+    },
+    postcss: function () {
+        return [
+            require('postcss-import'),
+            require('postcss-cssnext')
+        ];
     }
 }
