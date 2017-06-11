@@ -81,9 +81,9 @@ class HTMLManager extends widgets.ManagerBase<HTMLElement> {
 
     renderMime: RenderMime =
         new RenderMime({
-            items: [... RenderMime.getDefaultItems(), {
-                mimeType: WIDGET_MIMETYPE,
-                renderer: new WidgetRenderer(this)
-            }]
+            items: [
+                ... RenderMime.getDefaultItems(),
+                { mimeType: WIDGET_MIMETYPE, renderer: new WidgetRenderer(this) }
+            ]
         });
 };
