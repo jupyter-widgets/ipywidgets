@@ -8,7 +8,7 @@ module.exports = {
     output: {
         filename : 'index.js',
         path: './dist',
-        publicPath: 'https://unpkg.com/embed-jupyter-widgets@' + version + '/dist/'
+        publicPath: 'https://unpkg.com/@jupyter-widgets/htmlmanager@' + version + '/dist/'
     },
     devtool: 'source-map',
     module: {
