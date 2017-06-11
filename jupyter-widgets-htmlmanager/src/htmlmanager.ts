@@ -6,7 +6,10 @@ import * as base from '@jupyter-widgets/base';
 
 import * as PhosphorWidget from '@phosphor/widgets';
 
+import { RenderMime } from '@jupyterlab/rendermime';
+
 import { OutputModel, OutputView } from './output'
+import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers'
 
 export
 class HTMLManager extends widgets.ManagerBase<HTMLElement> {
@@ -75,4 +78,12 @@ class HTMLManager extends widgets.ManagerBase<HTMLElement> {
             }
         });
     }
+
+    renderMime: RenderMime =
+        new RenderMime({
+            items: [... RenderMime.getDefaultItems(), {
+                mimeType: WIDGET_MIMETYPE,
+                renderer: new WidgetRenderer(this)
+            }]
+        });
 };
