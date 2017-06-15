@@ -5,6 +5,10 @@ import * as widgets from '@jupyter-widgets/controls';
 
 import * as PhosphorWidget from '@phosphor/widgets';
 
+const coreWidgetModules: Array<string> = [
+    '@jupyter-widgets/controls', '@jupyter-widgets/base'
+];
+
 export
 class HTMLManager extends widgets.ManagerBase<HTMLElement> {
 
@@ -45,7 +49,7 @@ class HTMLManager extends widgets.ManagerBase<HTMLElement> {
      */
     protected loadClass(className: string, moduleName: string, moduleVersion: string) {
         return new Promise(function(resolve, reject) {
-            if (moduleName === '@jupyter-widgets/controls') {
+            if (coreWidgetModules.indexOf(moduleName) >= 0) {
                 // Shortcut resolving the standard widgets so we don't load two
                 // copies on the page. If we ever separate the widgets from the
                 // base manager, we should get rid of this special case.
