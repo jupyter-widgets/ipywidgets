@@ -13,9 +13,11 @@ var embed_widgets = function() {
                 'drop_defaults': true
             }).then(function(state) {
                 var data = JSON.stringify(state, null, '    ');
-                // TODO: This does not work right now - we don't know what
-                // version of @jupyter-widgets/controls is included in what version of
-                // embed-jupyter-widgets.
+                // TODO: This always points to the latest version of
+                // the htmlmanager.
+                // A better strategy would be to point to a version
+                // of the htmlmanager that has been tested with this
+                // release of jupyter-widgets/controls.
                 var value = '<script src="https://unpkg.com/@jupyter-widgets/htmlmanager@*/dist/index.js"></script>\n' +
                             '<script type="application/vnd.jupyter.widget-state+json">\n' + data + '\n</script>';
 
