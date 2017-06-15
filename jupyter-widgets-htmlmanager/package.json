@@ -30,7 +30,7 @@
   "dependencies": {
     "@phosphor/widgets": "^1.2.0",
     "font-awesome": "^4.7.0",
-    "@jupyter-widgets/controls": "^0.1.0",
+    "@jupyter-widgets/controls": "file:../jupyter-widgets-controls",
     "scriptjs": "^2.5.8"
   },
   "devDependencies": {
