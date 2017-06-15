@@ -16,7 +16,7 @@ var embed_widgets = function() {
                 // TODO: This does not work right now - we don't know what
                 // version of @jupyter-widgets/controls is included in what version of
                 // embed-jupyter-widgets.
-                var value = '<script src="https://unpkg.com/embed-jupyter-widgets@~' + widgets.version + '/dist/embed.js"></script>\n' +
+                var value = '<script src="https://unpkg.com/@jupyter-widgets/htmlmanager@*/dist/index.js"></script>\n' +
                             '<script type="application/vnd.jupyter.widget-state+json">\n' + data + '\n</script>';
 
                 var views = [];
