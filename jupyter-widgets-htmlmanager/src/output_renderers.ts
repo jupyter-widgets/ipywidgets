@@ -29,7 +29,6 @@ export class WidgetRenderer implements RenderMime.IRenderer {
         const widget = new Panel();
         const source: any = options.model.data.get(options.mimeType);
         const model = this._manager.get_model(source.model_id);
-        console.log(model);
         if (model) {
             model.then((model: any) => {
                 return this._manager.display_model(null, model, {
