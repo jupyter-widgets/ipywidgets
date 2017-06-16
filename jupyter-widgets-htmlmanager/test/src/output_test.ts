@@ -39,7 +39,7 @@ describe('text output', () => {
         ],
     }
 
-    beforeEach(async function() {
+    beforeEach(async () => {
         view = await newWidget(modelState)
     })
 
@@ -73,7 +73,7 @@ describe('data output', () => {
         ],
     }
 
-    beforeEach(async function() {
+    beforeEach(async () => {
         view = await newWidget(modelState)
     })
 
@@ -104,7 +104,7 @@ describe('widget output', () => {
         ]
     };
 
-    beforeEach(async function() {
+    beforeEach(async () => {
         const widgetTag = document.createElement('div');
         widgetTag.className = 'widget-subarea';
         document.body.appendChild(widgetTag);
