@@ -79,6 +79,11 @@ class HTMLManager extends widgets.ManagerBase<HTMLElement> {
         });
     }
 
+    /**
+     * Renderers for contents of the output widgets
+     *
+     * Defines how outputs in the output widget should be rendered.
+     */
     renderMime: RenderMime =
         new RenderMime({
             items: [
