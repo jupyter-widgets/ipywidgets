@@ -1,6 +1,10 @@
 
 import { expect } from 'chai';
 
+import { TextRenderer, RenderMime } from '@jupyterlab/rendermime';
+
+import { Widget, Panel } from '@phosphor/widgets';
+
 import { HTMLManager } from '../../lib/';
 import { OutputModel, OutputView } from '../../lib/output';
 
@@ -57,7 +61,6 @@ describe('text output', () => {
 
 describe('data output', () => {
     let view;
-    const textValue = 'this-is-a-test\n'
 
     // Pandas dataframe
     const modelState = {
@@ -164,4 +167,65 @@ describe('widget output', () => {
         const el = view.el;
         expect(el.querySelectorAll('.slider').length).to.equal(1);
     });
+});
+
+describe('custom mimetypes', () => {
+
+    const t = 'hello';
+    let view;
+
+    // Text renderer that always renders <pre>something different</pre>
+    class MockTextRenderer extends TextRenderer {
+        render(options: RenderMime.IRenderOptions): Widget {
+            expect(options.model.data.get('text/plain')).to.equal(t);
+            const panel = new Panel();
+            const pre = document.createElement('pre');
+            pre.innerHTML = 'something different';
+            panel.node.appendChild(pre);
+            return panel
+        }
+    }
+
+    beforeEach(async () => {
+        const widgetTag = document.createElement('div');
+        widgetTag.className = 'widget-subarea';
+        document.body.appendChild(widgetTag);
+        const manager = new HTMLManager()
+
+        manager.renderMime.addRenderer({
+            mimeType: 'text/plain',
+            renderer: new MockTextRenderer()
+        }, 0)
+
+        const modelId = 'u-u-i-d';
+        const modelCreate: widgets.ModelOptions = {
+            model_name: 'OutputModel',
+            model_id: modelId,
+            model_module: '@jupyter-widgets/controls',
+            model_module_version: '*'
+        };
+
+        const modelState = {
+            outputs: [
+                {
+                    output_type: 'display_data',
+                    data: {
+                        'text/plain': t,
+                    },
+                    metadata: {}
+                }
+            ]
+        }
+        const model = await manager.new_model(modelCreate, modelState);
+        view = await manager.display_model(
+            undefined, model, { el: widgetTag }
+        )
+    });
+
+    it('display the output of the renderer', () => {
+        const outputView = (view as OutputView);
+        const el = view.el;
+        expect(el.innerText).to.equal('something different')
+    });
+
 });
