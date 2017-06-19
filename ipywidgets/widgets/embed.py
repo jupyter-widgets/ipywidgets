@@ -123,9 +123,12 @@ def dependency_state(widgets, drop_defaults=True):
     # collect the state of all relevant widgets
     if widgets is None:
         # Get state of all widgets, no smart resolution needed.
-        widgets = Widget.widgets.values()
-        state = Widget.get_manager_state(drop_defaults=drop_defaults, widgets=widgets)['state']
+        state = Widget.get_manager_state(drop_defaults=drop_defaults, widgets=None)['state']
     else:
+        try:
+            widgets[0]
+        except (IndexError, TypeError):
+            widgets = [widgets]
         state = {}
         for widget in widgets:
             _get_recursive_state(widget, state, drop_defaults)
@@ -160,23 +163,22 @@ def embed_data(views, drop_defaults=True, state=None):
         manager_state: dict of the widget manager state data
         view_specs: a list of widget view specs
     """
-    if views is not None:
+    if views is None:
+        views = [w for w in Widget.widgets.values() if isinstance(w, DOMWidget)]
+    else:
         try:
             views[0]
         except (IndexError, TypeError):
             views = [views]
-    if include_all:
-        state = Widget.get_manager_state(drop_defaults=drop_defaults, widgets=None)['state']
-    else:
-        state = dependency_state(views, drop_defaults)
+
+    if state is None:
+        # Get state of all known widgets
+        state = state = Widget.get_manager_state(drop_defaults=drop_defaults, widgets=None)['state']
 
     # Rely on ipywidget to get the default values
     json_data = Widget.get_manager_state(widgets=[])
     # but plug in our own state
     json_data['state'] = state
-
-    if views is None:
-        views = [w for w in Widget.widgets.values() if isinstance(w, DOMWidget)]
 
     view_specs = [w.get_view_spec() for w in views]
 
