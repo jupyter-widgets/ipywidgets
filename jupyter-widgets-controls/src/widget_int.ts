@@ -18,7 +18,7 @@ import {
 } from './utils';
 
 import * as _ from 'underscore';
-import 'jquery';
+import * as $ from 'jquery';
 import 'jquery-ui/ui/widgets/slider';
 
 var d3format: any = (require('d3-format') as any).format;

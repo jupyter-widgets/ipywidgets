@@ -26,7 +26,7 @@ import {
 } from '@phosphor/widgets';
 
 import * as _ from 'underscore';
-import 'jquery';
+import * as $ from 'jquery';
 
 export
 class JupyterPhosphorPanelWidget extends Panel {

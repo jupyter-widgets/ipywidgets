@@ -35,7 +35,7 @@ import {
 
 import * as _ from 'underscore';
 import * as utils from './utils';
-import 'jquery';
+import * as $ from 'jquery';
 
 export
 class SelectionContainerModel extends BoxModel {
