@@ -664,7 +664,7 @@ class Widget(LoggingHasTraits):
     def _repr_keys(self):
         traits = self.traits()
         for key in sorted(self.keys):
-            # Exculde traits that start with an underscore
+            # Exclude traits that start with an underscore
             if key[0] == '_':
                 continue
             # Exclude traits who are equal to their default value
