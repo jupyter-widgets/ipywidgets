@@ -12,7 +12,9 @@ import sys
 from IPython.core.getipython import get_ipython
 from ipykernel.comm import Comm
 from traitlets.utils.importstring import import_item
-from traitlets import HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default
+from traitlets import (
+    HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default, Container,
+    Undefined)
 from ipython_genutils.py3compat import string_types, PY3
 from IPython.display import display
 
@@ -284,7 +286,7 @@ class Widget(LoggingHasTraits):
         """Returns the full state for a widget manager for embedding
 
         :param drop_defaults: when True, it will not include default value
-        :param widgets: list with widgets to include in the state (or all widgets when None) 
+        :param widgets: list with widgets to include in the state (or all widgets when None)
         :return:
         """
         state = {}
@@ -541,6 +543,9 @@ class Widget(LoggingHasTraits):
                 self.send_state(key=name)
         super(Widget, self).notify_change(change)
 
+    def __repr__(self):
+        return self._gen_repr_from_keys(self._repr_keys())
+
     #-------------------------------------------------------------------------
     # Support methods
     #-------------------------------------------------------------------------
@@ -655,3 +660,29 @@ class Widget(LoggingHasTraits):
         """Sends a message to the model in the front-end."""
         if self.comm is not None and self.comm.kernel is not None:
             self.comm.send(data=msg, buffers=buffers)
+
+    def _repr_keys(self):
+        traits = self.traits()
+        for key in sorted(self.keys):
+            # Exclude traits that start with an underscore
+            if key[0] == '_':
+                continue
+            # Exclude traits who are equal to their default value
+            value = getattr(self, key)
+            trait = traits[key]
+            if self._compare(value, trait.default_value):
+                continue
+            elif (isinstance(trait, (Container, Dict)) and
+                  trait.default_value == Undefined and
+                  len(value) == 0):
+                # Empty container, and dynamic default will be empty
+                continue
+            yield key
+
+    def _gen_repr_from_keys(self, keys):
+        class_name = self.__class__.__name__
+        signature = ', '.join(
+            '%s=%r' % (key, getattr(self, key))
+            for key in keys
+        )
+        return '%s(%s)' % (class_name, signature)

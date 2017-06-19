@@ -111,3 +111,10 @@ class Password(Text):
     """Single line textbox widget."""
     _view_name = Unicode('PasswordView').tag(sync=True)
     _model_name = Unicode('PasswordModel').tag(sync=True)
+
+    def _repr_keys(self):
+        # Don't include password value in repr!
+        super_keys = super(Password, self)._repr_keys()
+        for key in super_keys:
+            if key != 'value':
+                yield key

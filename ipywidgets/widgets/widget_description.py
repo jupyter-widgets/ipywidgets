@@ -21,3 +21,12 @@ class DescriptionWidget(DOMWidget, CoreWidget):
     _model_name = Unicode('DescriptionModel').tag(sync=True)
     description = Unicode('', help="Description of the control.").tag(sync=True)
     style = InstanceDict(DescriptionStyle, help="Styling customizations").tag(sync=True, **widget_serialization)
+
+    def _repr_keys(self):
+        for key in super(DescriptionWidget, self)._repr_keys():
+            # Exclude style if it had the default value
+            if key == 'style':
+                value = getattr(self, key)
+                if repr(value) == '%s()' % value.__class__.__name__:
+                    continue
+            yield key

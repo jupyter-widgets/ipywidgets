@@ -11,6 +11,7 @@ try:
     from itertools import izip
 except ImportError:  #python3.x
     izip = zip
+from itertools import chain
 
 from .widget_description import DescriptionWidget
 from .valuewidget import ValueWidget
@@ -153,6 +154,15 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
         if self.index != index:
             self.index = index
 
+    def _repr_keys(self):
+        keys = super(_Selection, self)._repr_keys()
+        # Include options manually, as it isn't marked as synced:
+        for key in sorted(chain(keys, ('options',))):
+            if key == 'index' and self.index == 0:
+                # Index 0 is default when there are options
+                continue
+            yield key
+
 
 class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
     """Base class for multiple Selection widgets
@@ -255,6 +265,12 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
         index = tuple(self._options_labels.index(i) for i in change.new)
         if self.index != index:
             self.index = index
+
+    def _repr_keys(self):
+        keys = super(_MultipleSelection, self)._repr_keys()
+        # Include options manually, as it isn't marked as synced:
+        for key in sorted(chain(keys, ('options',))):
+            yield key
 
 
 @register
