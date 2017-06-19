@@ -4,7 +4,7 @@
 import nose.tools as nt
 
 from .. import jslink, jsdlink, ToggleButton
-from .test_interaction import setup, teardown
+from .utils import setup, teardown
 
 def test_jslink_args():
     with nt.assert_raises(TypeError):
@@ -12,7 +12,7 @@ def test_jslink_args():
     w1 = ToggleButton()
     with nt.assert_raises(TypeError):
         jslink((w1, 'value'))
-    
+
     w2 = ToggleButton()
     jslink((w1, 'value'), (w2, 'value'))
 
@@ -28,7 +28,7 @@ def test_jsdlink_args():
     w1 = ToggleButton()
     with nt.assert_raises(TypeError):
         jsdlink((w1, 'value'))
-    
+
     w2 = ToggleButton()
     jsdlink((w1, 'value'), (w2, 'value'))
 

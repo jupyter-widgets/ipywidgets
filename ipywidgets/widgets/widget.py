@@ -322,9 +322,9 @@ class Widget(LoggingHasTraits):
         help="The namespace for the model.", read_only=True).tag(sync=True)
     _model_module_version = Unicode(__jupyter_widget_version__,
         help="A semver requirement for namespace version containing the model.", read_only=True).tag(sync=True)
-    _view_name = Unicode('',
+    _view_name = Unicode(None, allow_none=True,
         help="Name of the view.").tag(sync=True)
-    _view_module = Unicode('',
+    _view_module = Unicode(None, allow_none=True,
         help="The namespace for the view.").tag(sync=True)
     _view_module_version = Unicode('',
         help="A semver requirement for the namespace version containing the view.").tag(sync=True)
