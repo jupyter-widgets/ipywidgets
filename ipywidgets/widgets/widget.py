@@ -149,7 +149,7 @@ class CallbackDispatcher(LoggingHasTraits):
             except Exception as e:
                 ip = get_ipython()
                 if ip is None:
-                    self.log.warn("Exception in callback %s: %s", callback, e, exc_info=True)
+                    self.log.warning("Exception in callback %s: %s", callback, e, exc_info=True)
                 else:
                     ip.showtraceback()
             else:
@@ -180,7 +180,7 @@ def _show_traceback(method):
         except Exception as e:
             ip = get_ipython()
             if ip is None:
-                self.log.warn("Exception in widget method %s: %s", method, e, exc_info=True)
+                self.log.warning("Exception in widget method %s: %s", method, e, exc_info=True)
             else:
                 ip.showtraceback()
     return m
