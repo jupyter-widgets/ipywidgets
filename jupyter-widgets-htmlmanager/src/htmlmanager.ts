@@ -2,6 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import * as widgets from '@jupyter-widgets/controls';
+import * as base from '@jupyter-widgets/base';
 
 import * as PhosphorWidget from '@phosphor/widgets';
 
@@ -45,11 +46,13 @@ class HTMLManager extends widgets.ManagerBase<HTMLElement> {
      */
     protected loadClass(className: string, moduleName: string, moduleVersion: string) {
         return new Promise(function(resolve, reject) {
+            // Shortcuts resolving the standard widgets so we don't load two
+            // copies on the page. If we ever separate the widgets from the
+            // base manager, we should get rid of this special case.
             if (moduleName === '@jupyter-widgets/controls') {
-                // Shortcut resolving the standard widgets so we don't load two
-                // copies on the page. If we ever separate the widgets from the
-                // base manager, we should get rid of this special case.
                 resolve(widgets);
+            } else if (moduleName === '@jupyter-widgets/base') {
+                resolve(base)
             } else {
                 var fallback = function(err) {
                     let failedId = err.requireModules && err.requireModules[0];
