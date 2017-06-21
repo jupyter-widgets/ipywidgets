@@ -147,7 +147,7 @@ describe('widget output', () => {
                 "state": {}
             },
         }
-        manager.set_state({
+        await manager.set_state({
             state: managerState,
             version_major: 2,
             version_minor: 0
