@@ -42,21 +42,12 @@ set -e
 
 nbExtFlags="--sys-prefix $1"
 
-cd jupyter-widgets-base
+echo -n "Installing and building all npm packages"
 npm install
-cd ..
+npm run build
 
-cd jupyter-widgets-controls
-npm install
-cd ..
-
+echo -n "widgetsnbextension"
 cd widgetsnbextension
-
-# Needed since jupyter-widgets-controls 3 hasn't been published yet
-npm install ../jupyter-widgets-controls
-
-npm install
-npm run update
 pip install -v -e .
 if [[ "$OSTYPE" == "msys" ]]; then
     jupyter nbextension install --overwrite --py $nbExtFlags widgetsnbextension
@@ -66,26 +57,9 @@ fi
 jupyter nbextension enable --py $nbExtFlags widgetsnbextension
 cd ..
 
-# Install Python ipywidgets before jLab part
+echo -n "ipywidgets"
 pip install -v -e .
 
-# skip jupyter lab installation until we update the instructions below
-skip_jupyter_lab=yes
-
 if test "$skip_jupyter_lab" != yes; then
-    cd jupyterlab_widgets
-
-    # needed since jupyter-widgets-controls 3 hasn't been published yet
-    npm install ../jupyter-widgets-controls
-
-    npm install
-    npm run update
-    pip install -v -e .
-    if [[ "$OSTYPE" == "msys" ]]; then
-        jupyter labextension install --overwrite --py $nbExtFlags jupyterlab_widgets
-    else
-        jupyter labextension install --overwrite --py --symlink $nbExtFlags jupyterlab_widgets
-    fi
-    jupyter labextension enable --py $nbExtFlags jupyterlab_widgets
-    cd ..
+    jupyter labextension install jupyterlab_widgets
 fi

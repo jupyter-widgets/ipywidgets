@@ -17,8 +17,7 @@
     "@phosphor/widgets": "^1.2.0"
   },
   "devDependencies": {
-    "@types/lodash": "4.14.40",
-    "rimraf": "^2.4.2",
+    "rimraf": "^2.6.1",
     "typedoc": "^0.6.0",
     "typescript": "~2.3.1"
   },
@@ -35,7 +34,6 @@
     "clean": "rimraf docs && rimraf lib && rimraf jupyterlab_widgets/static",
     "build:src": "tsc --project src",
     "build": "npm run build:src",
-    "update": "rimraf node_modules/@jupyter-widgets/controls; npm install file:../jupyter-widgets-controls; npm run build",
     "docs": "typedoc --mode file --module commonjs --excludeNotExported --target es5 --moduleResolution node --out docs/ src",
     "prepublish": "npm run build"
   },
