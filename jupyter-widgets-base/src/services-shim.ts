@@ -70,9 +70,8 @@ namespace shims {
                         return f(comm, msg);
                     } catch (e) {
                         comm.close();
-                        var wrapped_error = new utils.WrappedError('Exception opening new comm', e);
-                        console.error(wrapped_error);
-                        return;
+                        console.error(e);
+                        console.error(new Error('Exception opening new comm'));
                     }
                 });
                 this.targets[target_name] = handle;
