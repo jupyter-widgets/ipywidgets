@@ -34,6 +34,7 @@ describe('text output', () => {
     let view;
     const textValue = 'this-is-a-test\n'
     const modelState = {
+        _view_module: '@jupyter-widgets/controls',
         outputs: [
             {
                 "output_type": "stream",
@@ -64,6 +65,7 @@ describe('data output', () => {
 
     // Pandas dataframe
     const modelState = {
+        _view_module: '@jupyter-widgets/controls',
         outputs: [
             {
                 "output_type": "display_data",
@@ -91,7 +93,8 @@ describe('data output', () => {
 describe('widget output', () => {
     let view;
     const modelState = {
-        "outputs": [
+        _view_module: "@jupyter-widgets/controls",
+        outputs: [
             {
                 "output_type": "display_data",
                 "data": {
@@ -206,6 +209,7 @@ describe('custom mimetypes', () => {
         };
 
         const modelState = {
+            _view_module: '@jupyter-widgets/controls',
             outputs: [
                 {
                     output_type: 'display_data',
