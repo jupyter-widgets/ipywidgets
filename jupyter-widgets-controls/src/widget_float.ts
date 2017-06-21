@@ -15,8 +15,9 @@ import {
     IntSliderView, IntRangeSliderView, IntTextView
 } from './widget_int';
 
-
-var d3format: any = (require('d3-format') as any).format;
+import {
+    format
+} from 'd3-format';
 
 export
 class FloatModel extends CoreDescriptionModel {
@@ -62,7 +63,7 @@ class FloatSliderModel extends BoundedFloatModel {
     }
 
     update_readout_format() {
-        this.readout_formatter = d3format(this.get('readout_format'));
+        this.readout_formatter = format(this.get('readout_format'));
     }
 
     readout_formatter: any;

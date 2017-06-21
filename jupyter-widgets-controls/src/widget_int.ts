@@ -17,11 +17,14 @@ import {
     uuid
 } from './utils';
 
+import {
+    format
+} from 'd3-format';
+
 import * as _ from 'underscore';
 import * as $ from 'jquery';
 import 'jquery-ui/ui/widgets/slider';
 
-var d3format: any = (require('d3-format') as any).format;
 
 export
 class IntModel extends CoreDescriptionModel {
@@ -83,7 +86,7 @@ class IntSliderModel extends BoundedIntModel {
         this.update_readout_format();
     }
     update_readout_format() {
-        this.readout_formatter = d3format(this.get('readout_format'));
+        this.readout_formatter = format(this.get('readout_format'));
     }
     readout_formatter: any;
 }

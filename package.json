@@ -1,7 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "install": "lerna bootstrap --hoist"
+    "install": "lerna bootstrap --hoist",
+    "build": "lerna run build"
   },
   "devDependencies": {
     "lerna": "^2.0.0-rc.5"

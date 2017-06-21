@@ -28,26 +28,27 @@
   },
   "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme",
   "dependencies": {
+    "@jupyter-widgets/base": "^0.3.0",
+    "@jupyter-widgets/controls": "^0.3.0",
     "@phosphor/widgets": "^1.2.0",
     "font-awesome": "^4.7.0",
-    "@jupyter-widgets/controls": "^0.3.0",
-    "@jupyter-widgets/base": "^0.3.0",
+    "jupyter-widgets-schema": "^0.3.0-beta.2",
     "scriptjs": "^2.5.8"
   },
   "devDependencies": {
     "@types/requirejs": "^2.1.28",
-    "css-loader": "^0.28.3",
+    "css-loader": "^0.28.4",
     "es6-promise": "^4.1.0",
-    "file-loader": "^0.11.1",
+    "file-loader": "^0.11.2",
     "json-loader": "^0.5.4",
     "postcss": "^6.0.1",
     "postcss-cssnext": "^2.11.0",
     "postcss-import": "^10.0.0",
     "postcss-loader": "^1.3.2",
-    "rimraf": "^2.5.1",
+    "rimraf": "^2.6.1",
     "style-loader": "^0.18.1",
     "typescript": "~2.3.1",
-    "url-loader": "^0.5.8",
+    "url-loader": "^0.5.9",
     "webpack": "^1.12.12"
   }
 }
