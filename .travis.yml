@@ -10,7 +10,7 @@ addons:
   apt_packages:
     - pandoc
 env:
-    - GROUP=python TRAVIS_NODE_VERSION=6.9
+    - GROUP=python
 sudo: false
 before_install:
     - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_before_install_py.sh ; fi'
@@ -28,6 +28,6 @@ matrix:
         - python: 3.6
           env: GROUP=doc
         - python: 3.6
-          env: GROUP=js BROWSER=firefox TRAVIS_NODE_VERSION=6.9
+          env: GROUP=js BROWSER=firefox TRAVIS_NODE_VERSION=6.11.0
 after_success:
     - coveralls
