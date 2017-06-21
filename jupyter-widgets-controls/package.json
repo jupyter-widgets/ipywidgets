@@ -43,7 +43,7 @@
     "@types/expect.js": "^0.3.29",
     "@types/mathjax": "0.0.31",
     "@types/mocha": "^2.2.41",
-    "@types/requirejs": "^2.1.28",
+    "@types/node": "^8.0.1",
     "chai": "^4.0.0",
     "css-loader": "^0.28.4",
     "es6-promise": "^4.1.0",
