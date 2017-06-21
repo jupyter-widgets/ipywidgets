@@ -1,0 +1,9 @@
+{
+  "lerna": "2.0.0-rc.5",
+  "packages": [
+    "jupyter-widgets-base",
+    "jupyter-widgets-controls",
+    "jupyterlab_widgets"
+  ],
+  "version": "independent"
+}
