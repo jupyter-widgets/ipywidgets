@@ -31,9 +31,8 @@ Functions for generating embeddable HTML/javascript of a widget.
 """
 
 import json
-from .widget import Widget
-from .domwidget import DOMWidget
-from .widget_link import Link
+from .widgets import Widget, DOMWidget
+from .widgets.widget_link import Link
 
 
 snippet_template = u"""<script src="{embed_url}"></script>

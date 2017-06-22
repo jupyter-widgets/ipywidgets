@@ -53,7 +53,7 @@ corresponding to the same JSON schema.
 ## Python interface
 
 Embeddable code for the widgets can also be produced from the Python side.
-The following functions are available in the module `ipywidgets.widgets.embed`:
+The following functions are available in the module `ipywidgets.embed`:
 
 ```rst
 .. embed_snippet::
