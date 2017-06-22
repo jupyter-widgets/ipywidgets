@@ -109,8 +109,8 @@ def dependency_state(widgets, drop_defaults=True):
 
     This uses a simple dependency finder, including:
      - any widget directly referenced in the state of an included widget
-     - any widget in a list/tuple attribute in the state of on an included widget
-     - any widget in a dict attribute in the state of on an included widget
+     - any widget in a list/tuple attribute in the state of an included widget
+     - any widget in a dict attribute in the state of an included widget
      - any jslink/jsdlink between two included widgets
     What this alogrithm does not do:
      - Find widget references in nested list/dict structures
@@ -173,7 +173,7 @@ def embed_data(views, drop_defaults=True, state=None):
 
     if state is None:
         # Get state of all known widgets
-        state = state = Widget.get_manager_state(drop_defaults=drop_defaults, widgets=None)['state']
+        state = Widget.get_manager_state(drop_defaults=drop_defaults, widgets=None)['state']
 
     # Rely on ipywidget to get the default values
     json_data = Widget.get_manager_state(widgets=[])
@@ -241,7 +241,15 @@ def embed_snippet(views,
 def embed_minimal_html(fp, views, **kwargs):
     """Write a minimal HTML file with widget views embedded.
 
-    Accepts keyword args similar to `embed_snippet`.
+    Parameters
+    ----------
+    fp: filename or file-like object
+        The file to write the HTML output to.
+    views: widget or collection of widgets or None
+        The widgets to include views for. If None, all DOMWidgets are
+        included (not just the displayed ones).
+
+    Further it accepts keyword args similar to `embed_snippet`.
     """
 
     snippet = embed_snippet(views, **kwargs)

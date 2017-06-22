@@ -64,14 +64,14 @@ The following functions are available in the module `ipywidgets.widgets.embed`:
 .. embed_data::
 
     s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
-    data = embed_data(views=[s1, s2]))
+    data = embed_data(views=[s1, s2])
     print(data['manager_state'])
-    print(data['view_specs])
+    print(data['view_specs'])
 
 .. embed_minimal_html::
 
     s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
-    embed_minimal_html('my_export.html', views=[s1, s2]))
+    embed_minimal_html('my_export.html', views=[s1, s2])
 
 ```
 
