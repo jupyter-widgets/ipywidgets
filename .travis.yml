@@ -9,7 +9,7 @@ python:
 addons:
   apt_packages:
     - pandoc
-  firefox: "latest"
+  firefox: latest
 env:
     - GROUP=python
 sudo: false
