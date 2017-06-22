@@ -279,5 +279,6 @@ class IntRangeSlider(_BoundedIntRange):
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
+    readout_format = Unicode('d', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)
     style = InstanceDict(SliderStyle, help="Slider style customizations.").tag(sync=True, **widget_serialization)
