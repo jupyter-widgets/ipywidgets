@@ -2,7 +2,7 @@ ipywidgets
 ==========
 
 Full Table of Contents
---------
+----------------------
 
 .. toctree::
     :maxdepth: 2

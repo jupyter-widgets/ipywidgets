@@ -55,25 +55,25 @@ corresponding to the same JSON schema.
 Embeddable code for the widgets can also be produced from the Python side.
 The following functions are available in the module `ipywidgets.embed`:
 
-```rst
-.. embed_snippet::
-
+- `embed_snippet`:
+    ```py
     s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
     print(embed_snippet(views=[s1, s2]))
+    ```
 
-.. embed_data::
-
+- `embed_data`:
+    ```py
     s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
     data = embed_data(views=[s1, s2])
     print(data['manager_state'])
     print(data['view_specs'])
+    ```
 
-.. embed_minimal_html::
-
+- `embed_minimal_html`:
+    ```py
     s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
     embed_minimal_html('my_export.html', views=[s1, s2])
-
-```
+    ```
 
 Here, `embed_snippet` will return an embeddable HTML snippet similar to the Notebook
 interface detailed above, while `embed_data` will return the widget state JSON as
@@ -85,17 +85,15 @@ In all functions, the state of all widgets known to the widget manager is
 included by default. You can alternatively pass a reduced state to use instead.
 This can be particularly relevant if you have many independent widgets with a
 large state, but only want to include the relevant ones in your export. To
-include only the state of the views and their dependencies, use the function:
+include only the state of the views and their dependencies, use the function
+`dependency_state`:
 
-```rst
-.. dependency_state::
-
-    s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
-    print(embed_snippet(
-        views=[s1, s2],
-        state=dependency_state([s1, s2]),
-        ))
-
+```py
+s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
+print(embed_snippet(
+    views=[s1, s2],
+    state=dependency_state([s1, s2]),
+    ))
 ```
 
 
@@ -121,18 +119,18 @@ Two directives are provided: `ipywidgets-setup` and `ipywidgets-display`.
 `ipywidgets-setup` code is used to run potential boilerplate and configuration
 code prior to running the display code. For example:
 
-```rst
-.. ipywidgets-setup::
-
+- `ipywidgets-setup`:
+    ```py
     from ipywidgets import VBox, jsdlink, IntSlider, Button
+    ```
 
-.. ipywidgets-display::
-
+- `ipywidgets-display`:
+    ```py
     s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
     b = Button(icon='legal')
     jsdlink((s1, 'value'), (s2, 'max'))
     VBox([s1, s2, b])
-```
+    ```
 
 In the case of the `ipywidgets-display` code, the *last statement* of the
 code-block should contain the widget object you wish to be rendered.
