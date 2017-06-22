@@ -7,7 +7,7 @@ import shutil
 
 import traitlets
 
-from .. import IntSlider, IntText, Widget, jslink, HBox, widget_serialization
+from ..widgets import IntSlider, IntText, Widget, jslink, HBox, widget_serialization
 from ..embed import embed_data, embed_snippet, embed_minimal_html, dependency_state
 
 try:
