@@ -57,6 +57,8 @@ The following functions are available in the module `ipywidgets.embed`:
 
 - `embed_snippet`:
     ```py
+    from ipywidgets.embed import embed_snippet
+
     s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
     print(embed_snippet(views=[s1, s2]))
     ```
