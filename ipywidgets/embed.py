@@ -2,8 +2,9 @@
 # Distributed under the terms of the Modified BSD License.
 #
 #
-# Parts of this code is originally copied from IPyVolume (24.05.2017),
-# relicensed under the BSD license.
+# Parts of this code is from IPyVolume (24.05.2017), used here under
+# this copyright and license with permission from the author
+# (see https://github.com/jupyter-widgets/ipywidgets/pull/1387)
 
 """
 Functions for generating embeddable HTML/javascript of a widget.
