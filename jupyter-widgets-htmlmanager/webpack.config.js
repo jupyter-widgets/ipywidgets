@@ -26,11 +26,11 @@ module.exports = {
             { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" }
         ]
     },
-    postcss: function () {
+    postcss: () => {
         return [
-            postcss.plugin('delete-tilde', function () {
+            postcss.plugin('delete-tilde', () => {
                 return function (css) {
-                    css.walkAtRules('import', function (rule) {
+                    css.walkAtRules('import', (rule) => {
                         rule.params = rule.params.replace('~', '');
                     });
                 };
