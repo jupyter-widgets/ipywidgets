@@ -1,7 +1,3 @@
-
-@import "@jupyter-widgets/controls/css/labvariables.css";
-@import "@jupyterlab/rendermime/style/index.css";
-
 .jp-OutputArea-child {
     margin-top: 1em;
     margin-bottom: 1em;
