@@ -12,3 +12,8 @@ cd ..
 
 cd jupyter-widgets-controls
 npm run test:unit:$BROWSER && npm run test:examples:$BROWSER
+cd ..
+
+cd jupyter-widgets-htmlmanager
+npm run test:unit:$BROWSER
+cd ..
