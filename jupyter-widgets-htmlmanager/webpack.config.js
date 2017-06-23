@@ -3,6 +3,7 @@
 
 var version = require('./package.json').version;
 
+var postcss = require('postcss');
 module.exports = {
     entry: './lib/embed-webpack.js',
     output: {
@@ -27,8 +28,20 @@ module.exports = {
     },
     postcss: function () {
         return [
-            require('postcss-import'),
-            require('postcss-cssnext')
+            postcss.plugin('delete-tilde', function () {
+                return function (css) {
+                    css.walkAtRules('import', function (rule) {
+                        rule.params = rule.params.replace('~', '');
+                    });
+                };
+            }),
+            postcss.plugin('prepend', () => {
+                return (css) => {
+                    css.prepend(`@import '@jupyter-widgets/controls/css/labvariables.css';`)
+                }
+            }),
+            require('postcss-import')(),
+            require('postcss-cssnext')()
         ];
     }
 };
