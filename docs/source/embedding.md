@@ -151,7 +151,7 @@ Specifically:
  - `jupyterlab_widgets` provides the implementation of a specialized widget
    manager for the context of `JupyterLab`, and the packaging logic as a lab
    extension.
- - The embed manager implemented in `@jupyter-widgets/htmlmanager` is a specialization of
+ - The embed manager implemented in `@jupyter-widgets/html-manager` is a specialization of
    the base  widget manager used for the static embedding of widgets used by
    the `Sphinx` extension, `nbviewer`, and the "Embed Widgets" command
    discussed above.

@@ -14,11 +14,11 @@ var embed_widgets = function() {
             }).then(function(state) {
                 var data = JSON.stringify(state, null, '    ');
                 // TODO: This always points to the latest version of
-                // the htmlmanager.
+                // the html-manager.
                 // A better strategy would be to point to a version
-                // of the htmlmanager that has been tested with this
+                // of the html-manager that has been tested with this
                 // release of jupyter-widgets/controls.
-                var value = '<script src="https://unpkg.com/@jupyter-widgets/htmlmanager@*/dist/index.js"></script>\n' +
+                var value = '<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/index.js"></script>\n' +
                             '<script type="application/vnd.jupyter.widget-state+json">\n' + data + '\n</script>';
 
                 var views = [];

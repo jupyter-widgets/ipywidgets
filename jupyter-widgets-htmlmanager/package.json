@@ -1,5 +1,5 @@
 {
-  "name": "@jupyter-widgets/htmlmanager",
+  "name": "@jupyter-widgets/html-manager",
   "version": "0.1.0",
   "description": "Standalone package for rendering Jupyter widgets outside notebooks",
   "main": "lib/index.js",
