@@ -1,5 +1,9 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
+#
+#
+# Parts of this code is originally copied from IPyVolume (24.05.2017),
+# relicensed under the BSD license.
 
 """
 Functions for generating embeddable HTML/javascript of a widget.
