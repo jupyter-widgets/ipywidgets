@@ -30,7 +30,7 @@ This HTML snippet is composed of multiple `<script>` tags:
  - The second script tag contains the state of all the widget models currently
    in use. It has the mime type `application/vnd.jupyter.widget-state+json`.
 
-   The JSON schema for the content of that script tag is found in the jupyter-widgets-schema npm package.
+   The JSON schema for the content of that script tag is found in the @jupyter-widgets/schema npm package.
 
 - The following script tags correspond to the views which you want to display
   in the web page. They have the mime type `application/vnd.jupyter.widget-view+json`.
@@ -38,7 +38,7 @@ This HTML snippet is composed of multiple `<script>` tags:
   The *Embed Widgets* action currently creates such a tag for each view
   displayed in the notebook at this time.
 
-  The JSON schema for the content of that script tag is found in the jupyter-widgets-schema npm package.
+  The JSON schema for the content of that script tag is found in the @jupyter-widgets/schema npm package.
 
   If you want to lay out these script tags in a custom fashion or only keep
   some of them, you can change their location in the DOM when including the

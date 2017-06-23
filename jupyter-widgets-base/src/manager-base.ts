@@ -306,7 +306,7 @@ abstract class ManagerBase<T> {
      * Asynchronously get the state of the widget manager.
      *
      * This includes all of the widget models, and follows the format given in
-     * the jupyter-widgets-schema package.
+     * the @jupyter-widgets/schema package.
      *
      * @param options - The options for what state to return.
      * @returns Promise for a state dictionary

@@ -29,8 +29,8 @@ import * as _ from 'underscore';
 
 // Load json schema validator
 var Ajv = require('ajv');
-var widget_state_schema = require('jupyter-widgets-schema').v2.state;
-var widget_view_schema = require('jupyter-widgets-schema').v2.view;
+var widget_state_schema = require('@jupyter-widgets/schema').v2.state;
+var widget_view_schema = require('@jupyter-widgets/schema').v2.view;
 
 // BEGIN: Ajv config for json-schema draft 4, from https://github.com/epoberezkin/ajv/releases/tag/5.0.0
 // This can be deleted when the schema is moved to draft 6
