@@ -8,7 +8,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run clean && webpack",
     "clean": "rimraf widgetsnbextension/static",
-    "update": "rimraf node_modules/@jupyter-widgets && npm install file:../jupyter-widgets-base && npm install file:../jupyter-widgets-controls && npm run build",
     "prepublish": "npm run build"
   },
   "repository": {
@@ -22,21 +21,21 @@
   },
   "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme",
   "dependencies": {
-    "@jupyter-widgets/base": "^0.2.0",
-    "@jupyter-widgets/controls": "^0.2.0",
+    "@jupyter-widgets/base": "^0.3.0",
+    "@jupyter-widgets/controls": "^0.3.0",
     "@phosphor/messaging": "^1.2.0",
     "@phosphor/widgets": "^1.2.0",
-    "backbone": "^1.2.3",
+    "backbone": "1.2.3",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "css-loader": "^0.23.1",
+    "css-loader": "^0.28.4",
     "json-loader": "^0.5.4",
-    "postcss-cssnext": "^2.8.0",
-    "postcss-import": "^8.1.2",
-    "postcss-loader": "^1.1.0",
-    "rimraf": "^2.5.1",
-    "style-loader": "^0.13.0",
+    "postcss-cssnext": "^2.11.0",
+    "postcss-import": "^10.0.0",
+    "postcss-loader": "^1.3.2",
+    "rimraf": "^2.6.1",
+    "style-loader": "^0.18.1",
     "webpack": "^1.12.12"
   }
 }

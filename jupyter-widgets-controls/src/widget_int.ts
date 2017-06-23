@@ -17,11 +17,14 @@ import {
     uuid
 } from './utils';
 
+import {
+    format
+} from 'd3-format';
+
 import * as _ from 'underscore';
 import * as $ from 'jquery';
 import 'jquery-ui/ui/widgets/slider';
 
-var d3format: any = (require('d3-format') as any).format;
 
 export
 class IntModel extends CoreDescriptionModel {
@@ -83,7 +86,7 @@ class IntSliderModel extends BoundedIntModel {
         this.update_readout_format();
     }
     update_readout_format() {
-        this.readout_formatter = d3format(this.get('readout_format'));
+        this.readout_formatter = format(this.get('readout_format'));
     }
     readout_formatter: any;
 }
@@ -557,26 +560,23 @@ class IntTextView extends DescriptionView {
      * Try to parse value as an int.
      */
     handleChanging(e) {
-        var numericalValue = 0;
-        var trimmed = e.target.value.trim();
-        if (trimmed === '') {
+        let trimmed = e.target.value.trim();
+        if (trimmed === '' || (['-', '-.', '.', '+.', '+'].indexOf(trimmed) >= 0)) {
+            // incomplete number
             return;
-        } else {
-            if (!(['-', '-.', '.', '+.', '+'].indexOf(trimmed) >= 0)) {
-                numericalValue = this._parse_value(e.target.value);
-            }
         }
+        let numericalValue = this._parse_value(e.target.value);
 
         // If parse failed, reset value to value stored in model.
         if (isNaN(numericalValue)) {
             e.target.value = this.model.get('value');
-        } else if (!isNaN(numericalValue)) {
+        } else {
             // Handle both the IntTextModel and the BoundedIntTextModel by
             // checking to see if the max/min properties are defined
-            if (this.model.get('max') !== undefined) {
+            if (this.model.get('max') !== void 0) {
                 numericalValue = Math.min(this.model.get('max'), numericalValue);
             }
-            if (this.model.get('min') !== undefined) {
+            if (this.model.get('min') !== void 0) {
                 numericalValue = Math.max(this.model.get('min'), numericalValue);
             }
 

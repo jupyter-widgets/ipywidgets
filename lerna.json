@@ -1,0 +1,12 @@
+{
+  "lerna": "2.0.0-rc.5",
+  "packages": [
+    "jupyter-widgets-schema",
+    "jupyter-widgets-base",
+    "jupyter-widgets-controls",
+    "jupyter-widgets-htmlmanager",
+    "widgetsnbextension",
+    "jupyterlab_widgets"
+  ],
+  "version": "independent"
+}

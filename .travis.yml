@@ -9,8 +9,9 @@ python:
 addons:
   apt_packages:
     - pandoc
+  firefox: latest
 env:
-    - GROUP=python TRAVIS_NODE_VERSION=6.9
+    - GROUP=python
 sudo: false
 before_install:
     - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_before_install_py.sh ; fi'
@@ -18,32 +19,16 @@ before_install:
 install:
     - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_install_py.sh ; fi'
     - 'if [[ $GROUP == doc ]] ; then bash ./scripts/travis_install_py.sh ; fi'
-    - 'if [[ $GROUP == js ]] ; then bash ./jupyter-widgets-controls/scripts/travis_install_js.sh ; fi'
-    - 'if [[ $GROUP == jsbase ]] ; then bash ./jupyter-widgets-base/scripts/travis_install_js.sh ; fi'
-    - 'if [[ $GROUP == js_nbextension ]] ; then bash ./widgetsnbextension/scripts/travis_install_js.sh ; fi'
-    - 'if [[ $GROUP == js_jlab ]] ; then bash ./jupyterlab_widgets/scripts/travis_install_js.sh ; fi'
-    - 'if [[ $GROUP == js_htmlmanager ]] ; then bash ./jupyter-widgets-htmlmanager/scripts/travis_install_js.sh ; fi'
+    - 'if [[ $GROUP == js ]] ; then bash ./scripts/travis_install_js.sh ; fi'
 script:
     - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_script_py.sh ; fi'
     - 'if [[ $GROUP == doc ]] ; then bash ./scripts/travis_script_doc.sh ; fi'
-    - 'if [[ $GROUP == js ]] ; then bash ./jupyter-widgets-controls/scripts/travis_script_js.sh ; fi'
-    - 'if [[ $GROUP == jsbase ]] ; then bash ./jupyter-widgets-base/scripts/travis_script_js.sh ; fi'
-    - 'if [[ $GROUP == js_jlab ]] ; then bash ./jupyterlab_widgets/scripts/travis_script_js.sh ; fi'
-    - 'if [[ $GROUP == js_htmlmanager ]] ; then bash ./jupyter-widgets-htmlmanager/scripts/travis_script_js.sh ; fi'
-
+    - 'if [[ $GROUP == js ]] ; then bash ./scripts/travis_script_js.sh ; fi'
 matrix:
     include:
         - python: 3.6
-          env: GROUP=js BROWSER=firefox TRAVIS_NODE_VERSION=6.9
-        - python: 3.6
-          env: GROUP=jsbase BROWSER=firefox TRAVIS_NODE_VERSION=6.9
-        - python: 3.6
-          env: GROUP=js_nbextension BROWSER=firefox TRAVIS_NODE_VERSION=6.9
-        - python: 3.6
-          env: GROUP=js_jlab BROWSER=firefox TRAVIS_NODE_VERSION=6.9
-        - python: 3.6
-          env: GROUP=js_htmlmanager BROWSER=firefox TRAVIS_NODE_VERSION=6.9
-        - python: 3.6
           env: GROUP=doc
+        - python: 3.6
+          env: GROUP=js BROWSER=firefox TRAVIS_NODE_VERSION=6.11.0
 after_success:
     - coveralls

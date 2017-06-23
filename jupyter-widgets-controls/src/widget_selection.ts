@@ -148,6 +148,8 @@ class SelectView extends DescriptionView {
     initialize(parameters) {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:_options_labels', () => this._updateOptions());
+        // Create listbox here so that subclasses can modify it before it is populated in render()
+        this.listbox = document.createElement('select');
     }
 
     /**
@@ -160,7 +162,6 @@ class SelectView extends DescriptionView {
         this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-select');
 
-        this.listbox = document.createElement('select');
         this.listbox.id = this.label.htmlFor = uuid();
         this.el.appendChild(this.listbox);
         this._updateOptions();
@@ -717,6 +718,13 @@ class SelectMultipleModel extends MultipleSelectionModel {
 
 export
 class SelectMultipleView extends SelectView {
+    /**
+     * Public constructor.
+     */
+    initialize(parameters) {
+        super.initialize(parameters);
+        this.listbox.multiple = true;
+    }
 
     /**
      * Called when view is rendered.
@@ -724,7 +732,6 @@ class SelectMultipleView extends SelectView {
     render() {
         super.render();
         this.el.classList.add('widget-select-multiple');
-        this.listbox.multiple = true;
     }
 
     updateSelection() {
