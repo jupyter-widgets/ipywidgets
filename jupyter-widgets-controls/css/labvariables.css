@@ -22,26 +22,40 @@ be used with `--jp-layout-color1`. The numbers have the following meanings:
 * 3: tertiary, next most important under normal situations
 
 Throughout JupyterLab, we are mostly following principles from Google's
-Material Design when selecting colors. We are not, however, following 
+Material Design when selecting colors. We are not, however, following
 all of MD as it is not optimized for dense, information rich UIs.
 */
+
+
+/*
+ * Optional monospace font for input/output prompt.
+ */
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
+
+/*
+ * Added for compabitility with output area
+ */
+:root {
+  --jp-icon-search: none;
+  --jp-ui-select-caret: none;
+}
 
 
 :root {
 
   /* Borders
-  
+
   The following variables, specify the visual styling of borders in JupyterLab.
    */
 
   --jp-border-width: 1px;
-  --jp-border-color0: var(--md-grey-700);  
+  --jp-border-color0: var(--md-grey-700);
   --jp-border-color1: var(--md-grey-500);
   --jp-border-color2: var(--md-grey-300);
   --jp-border-color3: var(--md-grey-100);
 
   /* UI Fonts
-  
+
   The UI font CSS variables are used for the typography all of the JupyterLab
   user interface elements that are not directly user generated content.
   */
@@ -52,16 +66,17 @@ all of MD as it is not optimized for dense, information rich UIs.
   --jp-ui-font-size2: calc(var(--jp-ui-font-size1)*var(--jp-ui-font-scale-factor));
   --jp-ui-font-size3: calc(var(--jp-ui-font-size2)*var(--jp-ui-font-scale-factor));
   --jp-ui-icon-font-size: 14px; /* Ensures px perfect FontAwesome icons */
+  --jp-ui-font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
   /* Use these font colors against the corresponding main layout colors.
      In a light theme, these go from dark to light.
   */
 
   --jp-ui-font-color0: rgba(0,0,0,1.0);
-  --jp-ui-font-color1: rgba(0,0,0,0.87);
-  --jp-ui-font-color2: rgba(0,0,0,0.54);
-  --jp-ui-font-color3: rgba(0,0,0,0.38);
-  
+  --jp-ui-font-color1: rgba(0,0,0,0.8);
+  --jp-ui-font-color2: rgba(0,0,0,0.5);
+  --jp-ui-font-color3: rgba(0,0,0,0.3);
+
   /* Use these against the brand/accent/warn/error colors.
      These will typically go from light to darker, in both a dark and light theme
    */
@@ -72,10 +87,10 @@ all of MD as it is not optimized for dense, information rich UIs.
   --jp-inverse-ui-font-color3: rgba(255,255,255,0.5);
 
   /* Content Fonts
-  
+
   Content font variables are used for typography of user generated content.
   */
-  
+
   --jp-content-font-size: 13px;
   --jp-content-line-height: 1.5;
   --jp-content-font-color0: black;
@@ -90,16 +105,18 @@ all of MD as it is not optimized for dense, information rich UIs.
   --jp-ui-font-size3: calc(var(--jp-ui-font-size2)*var(--jp-ui-font-scale-factor));
 
   --jp-code-font-size: 13px;
-  --jp-code-line-height: 17px;
+  --jp-code-line-height: 1.307;
   --jp-code-padding: 5px;
+  --jp-code-font-family: monospace;
+
 
   /* Layout
-  
+
   The following are the main layout colors use in JupyterLab. In a light
   theme these would go from light to dark.
   */
 
-  --jp-layout-color0: white;  
+  --jp-layout-color0: white;
   --jp-layout-color1: white;
   --jp-layout-color2: var(--md-grey-200);
   --jp-layout-color3: var(--md-grey-400);
@@ -138,4 +155,41 @@ all of MD as it is not optimized for dense, information rich UIs.
   --jp-info-color2: var(--md-cyan-300);
   --jp-info-color3: var(--md-cyan-100);
 
+  /* Cell specific styles */
+
+  --jp-cell-padding: 5px;
+  --jp-cell-editor-background: #f7f7f7;
+  --jp-cell-editor-border-color: #cfcfcf;
+  --jp-cell-editor-background-edit: var(--jp-ui-layout-color1);
+  --jp-cell-editor-border-color-edit: var(--jp-brand-color1);
+  --jp-cell-prompt-width: 100px;
+  --jp-cell-prompt-font-family: 'Roboto Mono', monospace;
+  --jp-cell-prompt-letter-spacing: 0px;
+  --jp-cell-prompt-opacity: 1.0;
+  --jp-cell-prompt-opacity-not-active: 0.4;
+  --jp-cell-prompt-font-color-not-active: var(--md-grey-700);
+  /* A custom blend of MD grey and blue 600
+   * See https://meyerweb.com/eric/tools/color-blend/#546E7A:1E88E5:5:hex */
+  --jp-cell-inprompt-font-color: #307FC1;
+  /* A custom blend of MD grey and orange 600
+   * https://meyerweb.com/eric/tools/color-blend/#546E7A:F4511E:5:hex */
+  --jp-cell-outprompt-font-color: #BF5B3D;
+
+  /* Notebook specific styles */
+
+  --jp-notebook-padding: 10px;
+  --jp-notebook-scroll-padding: 100px;
+
+  /* Console specific styles */
+
+  --jp-console-background: var(--md-grey-100);
+
+  /* Toolbar specific styles */
+
+  --jp-toolbar-border-color: var(--md-grey-400);
+  --jp-toolbar-micro-height: 8px;
+  --jp-toolbar-background: var(--jp-layout-color0);
+  --jp-toolbar-box-shadow: 0px 0px 2px 0px rgba(0,0,0,0.24);
+  --jp-toolbar-header-margin: 4px 4px 0px 4px;
+  --jp-toolbar-active-background: var(--md-grey-300);
 }

@@ -4,8 +4,7 @@
   "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
   "main": "index.js",
   "scripts": {
-      "//": "The cp in the pre-publish step is a hack until the current release of jupyter-js-widgets on NPM supports the separate embed bundle",
-    "prepublish": "cp ../../dist/embed.js ./jupyter-js-widgets.js && webpack",
+    "prepublish": "webpack",
     "test": "npm run test:default",
     "test:default": "echo \"No test specified\""
   },
@@ -13,8 +12,7 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "font-awesome": "^4.5.0",
-    "jupyter-js-widgets": "file:../..",
-    "embed-jupyter-widgets": "file:../../../embed-jupyter-widgets"
+    "@jupyter-widgets/htmlmanager": "file:../.."
   },
   "devDependencies": {
     "css-loader": "^0.23.1",

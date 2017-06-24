@@ -16,10 +16,15 @@
   "scripts": {
     "clean": "rimraf lib",
     "build:src": "tsc --project src",
+    "build:test": "tsc --project test/src && webpack --config test/webpack.conf.js",
     "build": "npm run build:src && webpack",
     "postinstall": "npm dedupe",
     "prepublish": "npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run test:unit",
+    "test:unit": "npm run test:unit:firefox && npm run test:unit:chrome",
+    "test:unit:default": "npm run build:test && karma start test/karma.conf.js --log-level debug --browsers=Firefox",
+    "test:unit:firefox": "npm run test:unit:default -- --browsers=Firefox",
+    "test:unit:chrome": "npm run test:unit:default -- --browsers=Chrome"
   },
   "author": "Jupyter Project",
   "license": "BSD-3-Clause",
@@ -28,6 +33,8 @@
   },
   "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme",
   "dependencies": {
+    "@jupyterlab/outputarea": "^0.7.0",
+    "@jupyterlab/rendermime": "^0.7.0",
     "@jupyter-widgets/base": "^0.3.0",
     "@jupyter-widgets/controls": "^0.3.0",
     "@phosphor/widgets": "^1.2.0",
@@ -36,12 +43,21 @@
     "scriptjs": "^2.5.8"
   },
   "devDependencies": {
+    "@types/mocha": "^2.2.41",
     "@types/requirejs": "^2.1.28",
+    "chai": "^4.0.0",
     "css-loader": "^0.28.4",
     "es6-promise": "^4.1.0",
     "file-loader": "^0.11.2",
     "json-loader": "^0.5.4",
-    "postcss": "^6.0.1",
+    "karma": "^1.6.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-firefox-launcher": "^1.0.1",
+    "karma-ie-launcher": "^1.0.0",
+    "karma-mocha": "^1.3.0",
+    "karma-mocha-reporter": "^2.2.3",
+    "mocha": "^3.3.0",
+    "postcss": "^6.0.2",
     "postcss-cssnext": "^2.11.0",
     "postcss-import": "^10.0.0",
     "postcss-loader": "^1.3.2",

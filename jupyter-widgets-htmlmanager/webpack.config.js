@@ -3,12 +3,13 @@
 
 var version = require('./package.json').version;
 
+var postcss = require('postcss');
 module.exports = {
     entry: './lib/embed-webpack.js',
     output: {
         filename : 'index.js',
         path: './dist',
-        publicPath: 'https://unpkg.com/embed-jupyter-widgets@' + version + '/dist/'
+        publicPath: 'https://unpkg.com/@jupyter-widgets/htmlmanager@' + version + '/dist/'
     },
     devtool: 'source-map',
     module: {
@@ -25,10 +26,22 @@ module.exports = {
             { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" }
         ]
     },
-    postcss: function () {
+    postcss: () => {
         return [
-            require('postcss-import'),
-            require('postcss-cssnext')
+            postcss.plugin('delete-tilde', () => {
+                return function (css) {
+                    css.walkAtRules('import', (rule) => {
+                        rule.params = rule.params.replace('~', '');
+                    });
+                };
+            }),
+            postcss.plugin('prepend', () => {
+                return (css) => {
+                    css.prepend(`@import '@jupyter-widgets/controls/css/labvariables.css';`)
+                }
+            }),
+            require('postcss-import')(),
+            require('postcss-cssnext')()
         ];
     }
 };

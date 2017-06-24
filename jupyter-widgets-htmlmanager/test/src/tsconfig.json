@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    //"noImplicitAny": true,
+    "noEmitOnError": true,
+    "module": "commonjs",
+    "lib": ["dom", "es5", "es2015.promise", "es2015.iterable"],
+    "types": ["mocha"],
+    "moduleResolution": "node",
+    "target": "ES5",
+    "outDir": "../build"
+  }
+}

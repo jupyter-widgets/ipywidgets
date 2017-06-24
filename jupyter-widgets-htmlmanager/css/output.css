@@ -1,0 +1,15 @@
+/*-----------------------------------------------------------------------------
+| Copyright (c) Jupyter Development Team.
+| Distributed under the terms of the Modified BSD License.
+|----------------------------------------------------------------------------*/
+
+.jp-OutputArea-child {
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+.jp-RenderedText pre {
+    padding-left: 1em;
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+}

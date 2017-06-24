@@ -6,6 +6,11 @@ import * as base from '@jupyter-widgets/base';
 
 import * as PhosphorWidget from '@phosphor/widgets';
 
+import { RenderMime } from '@jupyterlab/rendermime';
+
+import { OutputModel, OutputView } from './output'
+import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers'
+
 export
 class HTMLManager extends widgets.ManagerBase<HTMLElement> {
 
@@ -50,7 +55,7 @@ class HTMLManager extends widgets.ManagerBase<HTMLElement> {
             // copies on the page. If we ever separate the widgets from the
             // base manager, we should get rid of this special case.
             if (moduleName === '@jupyter-widgets/controls') {
-                resolve(widgets);
+                resolve({ ...widgets, OutputModel, OutputView });
             } else if (moduleName === '@jupyter-widgets/base') {
                 resolve(base)
             } else {
@@ -73,4 +78,17 @@ class HTMLManager extends widgets.ManagerBase<HTMLElement> {
             }
         });
     }
+
+    /**
+     * Renderers for contents of the output widgets
+     *
+     * Defines how outputs in the output widget should be rendered.
+     */
+    renderMime: RenderMime =
+        new RenderMime({
+            items: [
+                { mimeType: WIDGET_MIMETYPE, renderer: new WidgetRenderer(this) },
+                ...RenderMime.getDefaultItems()
+            ]
+        });
 };
