@@ -1,7 +1,8 @@
 {
-  "name": "@jupyter-widgets/controls-test",
+  "private": true,
+  "name": "@jupyter-widgets/example-web3",
   "version": "1.0.0",
-  "description": "Project that tests the ability to npm install @jupyter-widgets/controls within an npm project.",
+  "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
   "main": "index.js",
   "scripts": {
     "clean": "rimraf lib && rimraf built",
@@ -14,13 +15,13 @@
   "author": "IPython",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "@jupyterlab/services": "^0.24.0",
+    "@jupyterlab/services": "^0.36.0",
     "@types/codemirror": "0.0.33",
     "codemirror": "^5.9.0",
     "font-awesome": "^4.5.0",
     "http-server": "^0.8.5",
-    "@jupyter-widgets/controls": "file:../..",
-    "@jupyter-widgets/base": "^0.1.0"
+    "@jupyter-widgets/base": "^0.1.0",
+    "@jupyter-widgets/controls": "^0.1.0"
   },
   "devDependencies": {
     "css-loader": "^0.23.1",

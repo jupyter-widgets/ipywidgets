@@ -1,5 +1,6 @@
 {
-  "name": "jupyter-js-widgets-test",
+  "private": true,
+  "name": "@jupyter-widgets/example-web1",
   "version": "1.0.0",
   "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
   "main": "index.js",

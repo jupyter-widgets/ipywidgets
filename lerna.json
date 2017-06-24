@@ -6,7 +6,8 @@
     "jupyter-widgets-controls",
     "jupyter-widgets-htmlmanager",
     "widgetsnbextension",
-    "jupyterlab_widgets"
+    "jupyterlab_widgets",
+    "examples/*"
   ],
   "version": "independent"
 }
