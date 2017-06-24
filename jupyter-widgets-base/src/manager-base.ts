@@ -126,7 +126,7 @@ abstract class ManagerBase<T> {
                 });
                 view.listenTo(model, 'destroy', view.remove);
                 return Promise.resolve(view.render()).then(() => {return view;});
-            }).catch(utils.reject('Could not create a view for model id ' + model.id, true));
+            }).catch(utils.reject('Could not create a view for model id ' + model.model_id, true));
         });
         let id = utils.uuid();
         model.views[id] = viewPromise;

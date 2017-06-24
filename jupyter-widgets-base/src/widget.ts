@@ -94,7 +94,7 @@ class WidgetModel extends Backbone.Model {
         super.initialize(attributes, options);
 
         this.widget_manager = options.widget_manager;
-        this.id = options.model_id;
+        this.model_id = options.model_id;
         let comm = options.comm;
 
         // _buffered_state_diff must be created *after* the super.initialize
@@ -186,7 +186,7 @@ class WidgetModel extends Backbone.Model {
                         return (this.constructor as typeof WidgetModel)._deserialize_state(state, this.widget_manager);
                     }).then((state) => {
                         this.set_state(state);
-                    }).catch(utils.reject(`Could not process update msg for model id: ${this.id}`, true))
+                    }).catch(utils.reject(`Could not process update msg for model id: ${this.model_id}`, true))
                 return this.state_change;
             case 'custom':
                 this.trigger('msg:custom', msg.content.data.content, msg.buffers);
@@ -467,7 +467,7 @@ class WidgetModel extends Backbone.Model {
      * and the kernel-side serializer/deserializer.
      */
     toJSON(options) {
-        return `IPY_MODEL_${this.id}`;
+        return `IPY_MODEL_${this.model_id}`;
     }
 
     /**
@@ -686,7 +686,6 @@ class DOMWidgetView extends WidgetView {
      */
     initialize(parameters) {
         super.initialize(parameters);
-        this.id = utils.uuid();
 
         this.listenTo(this.model, 'change:_dom_classes', (model, new_classes) => {
             let old_classes = model.previous('_dom_classes');

@@ -121,7 +121,7 @@ function renderManager(element, tag) {
             }
             let model_id = widgetViewObject.model_id;
             let model = _.find(models, function(item : WidgetModel) {
-                return item.id == model_id;
+                return item.model_id == model_id;
             });
             if (model !== undefined) {
                 if (viewtag.previousElementSibling &&
