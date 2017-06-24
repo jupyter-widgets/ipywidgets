@@ -13,17 +13,16 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "codemirror": "^5.9.0",
-    "font-awesome": "^4.5.0",
-    "jupyter-js-widgets": "file:../..",
-    "@jupyter-widgets/base": "^0.1.0",
-    "@jupyter-widgets/controls": "^0.1.0"
+    "font-awesome": "^4.7.0",
+    "@jupyter-widgets/base": "^0.3.0",
+    "@jupyter-widgets/controls": "^0.3.0"
   },
   "devDependencies": {
-    "css-loader": "^0.23.1",
-    "file-loader": "^0.8.5",
+    "css-loader": "^0.28.4",
+    "file-loader": "^0.11.2",
     "json-loader": "^0.5.4",
-    "style-loader": "^0.13.0",
-    "url-loader": "^0.5.7",
-    "webpack": "^1.12.10"
+    "style-loader": "^0.18.1",
+    "url-loader": "^0.5.9",
+    "webpack": "^1.12.12"
   }
 }
