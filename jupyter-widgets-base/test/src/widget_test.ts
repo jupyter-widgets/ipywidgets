@@ -122,7 +122,7 @@ describe("WidgetModel", function() {
                 model_id: 'widgetDead',
                 widget_manager: this.manager,
             });
-            expect(widgetDead.id).to.equal('widgetDead');
+            expect(widgetDead.model_id).to.equal('widgetDead');
             expect(widgetDead.widget_manager).to.equal(this.manager);
             expect(widgetDead.comm).to.be.undefined;
             expect(widgetDead.comm_live).to.be.false;
@@ -133,7 +133,7 @@ describe("WidgetModel", function() {
                 widget_manager: this.manager,
                 comm: comm
             });
-            expect(widgetLive.id).to.equal('widgetLive');
+            expect(widgetLive.model_id).to.equal('widgetLive');
             expect(widgetLive.widget_manager).to.equal(this.manager);
             expect(widgetLive.comm).to.equal(comm);
             expect(widgetLive.comm_live).to.be.true;
@@ -702,7 +702,7 @@ describe("WidgetModel", function() {
         });
 
         it('encodes the widget', function() {
-            expect(this.widget.toJSON()).to.equal(`IPY_MODEL_${this.widget.id}`);
+            expect(this.widget.toJSON()).to.equal(`IPY_MODEL_${this.widget.model_id}`);
         });
     });
 });

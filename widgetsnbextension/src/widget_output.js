@@ -25,7 +25,7 @@ var OutputModel = widgets.DOMWidgetModel.extend({
         this.kernel = this.comm.kernel;
         this.listenTo(this, 'change:msg_id', this.reset_msg_id);
         if (this.kernel) {
-            this.kernel.set_callbacks_for_msg(this.id, this.callbacks(), false);
+            this.kernel.set_callbacks_for_msg(this.model_id, this.callbacks(), false);
         }
 
         var that = this;
@@ -80,13 +80,13 @@ var OutputModel = widgets.DOMWidgetModel.extend({
         var prev_msg_id = this.previous('msg_id');
         if (prev_msg_id && kernel) {
             var previous_callback = kernel.output_callback_overrides_pop(prev_msg_id);
-            if (previous_callback !== this.id) {
-                console.error('Popped wrong message ('+previous_callback+' instead of '+this.id+') - likely the stack was not maintained in kernel.');
+            if (previous_callback !== this.model_id) {
+                console.error('Popped wrong message ('+previous_callback+' instead of '+this.model_id+') - likely the stack was not maintained in kernel.');
             }
         }
         var msg_id = this.get('msg_id');
         if (msg_id && kernel) {
-            kernel.output_callback_overrides_push(msg_id, this.id);
+            kernel.output_callback_overrides_push(msg_id, this.model_id);
         }
     },
 

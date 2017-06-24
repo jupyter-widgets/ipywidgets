@@ -135,7 +135,7 @@ describe("ManagerBase", function() {
       it('returns a promise to the model', async function() {
         let manager = this.managerBase
         let model = await manager.new_model(this.modelOptions);
-        expect(await manager.get_model(model.id)).to.be.equal(model);
+        expect(await manager.get_model(model.model_id)).to.be.equal(model);
       });
 
       it('returns undefined when model is not registered', function() {
@@ -217,7 +217,7 @@ describe("ManagerBase", function() {
         let manager = new NewWidgetManager();
         let model = await manager.new_widget(spec);
         expect(model.comm).to.be.undefined;
-        expect(model.id).to.not.be.undefined;
+        expect(model.model_id).to.not.be.undefined;
       });
     });
 
@@ -242,7 +242,7 @@ describe("ManagerBase", function() {
         };
         let manager = this.managerBase;
         let model = await manager.new_model(spec);
-        expect(model.id).to.be.equal(comm.comm_id);
+        expect(model.model_id).to.be.equal(comm.comm_id);
       });
 
       it('rejects if model_id or comm not given', async function() {
@@ -304,7 +304,7 @@ describe("ManagerBase", function() {
         let manager = this.managerBase;
         let model = await manager.new_model(spec);
         comm.close();
-        expect(manager.get_model(model.id)).to.be.undefined;
+        expect(manager.get_model(model.model_id)).to.be.undefined;
       });
     });
 
@@ -324,11 +324,11 @@ describe("ManagerBase", function() {
         let manager = this.managerBase;
         let model1 = await manager.new_model(mSpec1);
         let model2 = await manager.new_model(mSpec2);
-        expect(await manager.get_model(model1.id)).to.be.equal(model1);
-        expect(await manager.get_model(model2.id)).to.be.equal(model2);
+        expect(await manager.get_model(model1.model_id)).to.be.equal(model1);
+        expect(await manager.get_model(model2.model_id)).to.be.equal(model2);
         await manager.clear_state();
-        expect(manager.get_model(model1.id)).to.be.undefined;
-        expect(manager.get_model(model2.id)).to.be.undefined;
+        expect(manager.get_model(model1.model_id)).to.be.undefined;
+        expect(manager.get_model(model2.model_id)).to.be.undefined;
         expect((comm1.close as any).calledOnce).to.be.true;
         expect((comm2.close as any).calledOnce).to.be.true;
         expect(model1.comm).to.be.undefined;
