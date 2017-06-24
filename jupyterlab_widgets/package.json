@@ -1,5 +1,5 @@
 {
-  "name": "@jupyterlab/nbwidgets",
+  "name": "@jupyter-widgets/jupyterlab-manager",
   "version": "0.21.0",
   "description": "The JupyterLab extension providing Jupyter widgets.",
   "main": "lib/index.js",
