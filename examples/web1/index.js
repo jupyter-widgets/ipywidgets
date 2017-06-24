@@ -1,10 +1,10 @@
 
 // Create a widget manager instance.
 var WidgetManager = require('./manager').WidgetManager;
-var uuid = require("jupyter-js-widgets").uuid;
 
-require('phosphor/styles/base.css');
-require('jupyter-js-widgets/css/widgets.built.css');
+var uuid = require("@jupyter-widgets/base").uuid;
+
+require('@jupyter-widgets/controls/css/widgets.built.css');
 
 document.addEventListener("DOMContentLoaded", function(event) {
     var manager = new WidgetManager(document.body);

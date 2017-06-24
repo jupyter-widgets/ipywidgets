@@ -1,7 +1,6 @@
-var widgets = require('jupyter-js-widgets');
+var widgets = require('@jupyter-widgets/base');
 var PhosphorWidget = require('@phosphor/widgets').Widget;
 var ManagerBase = widgets.ManagerBase;
-console.info('jupyter-js-widgets loaded successfully');
 
 var WidgetManager = exports.WidgetManager = function(el) {
     //  Call the base class.

@@ -16,7 +16,7 @@ let WSURL = 'ws:' + BASEURL.split(':').slice(1).join(':');
 document.addEventListener("DOMContentLoaded", function(event) {
 
     // Connect to the notebook webserver.
-    let connectionInfo = {
+    let connectionInfo: any = {
         baseUrl: BASEURL,
         wsUrl: WSURL
     };
