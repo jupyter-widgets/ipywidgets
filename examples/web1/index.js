@@ -1,8 +1,5 @@
-
 // Create a widget manager instance.
 var WidgetManager = require('./manager').WidgetManager;
-
-var uuid = require("@jupyter-widgets/base").uuid;
 
 require('@jupyter-widgets/controls/css/widgets.built.css');
 
@@ -17,10 +14,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         // Create the widget model.
         return manager.new_widget({
-            model_module: 'jupyter-js-widgets',
+            model_module: '@jupyter-widgets/controls',
             model_name: widgetType + 'Model',
-            widget_class: 'jupyter.' + widgetType,
-            model_id: uuid()
+            model_id: 'widget-1'
         // Create a view for the model.
         }).then(function(model) {
             console.log(widgetType + ' model created');
@@ -45,11 +41,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     // Create a link model.
     manager.new_widget({
-        model_module: 'jupyter-js-widgets',
+        model_module: '@jupyter-widgets/controls',
         model_name: 'LinkModel',
-        widget_class: 'jupyter.JSLink',
-        model_id: uuid()
-
+        model_id: 'widget-2',
+        state: {
+            'source': null,
+            'target': null
+        }
     // Set the link model state.
     }).then(function(link) {
         console.log('link created');
