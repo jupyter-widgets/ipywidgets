@@ -14,6 +14,8 @@ class DescriptionStyleModel extends StyleModel {
     defaults() {
         return {...super.defaults(),
             _model_name: 'DescriptionStyleModel',
+            _view_module: '@jupyter-widgets/controls',
+            _model_module: '@jupyter-widgets/controls',
         };
     }
 
@@ -30,6 +32,8 @@ export
 class DescriptionModel extends DOMWidgetModel {
     defaults() {
         return {...super.defaults(),
+            _view_module: '@jupyter-widgets/controls',
+            _model_module: '@jupyter-widgets/controls',
             description: '',
         };
     }
@@ -37,7 +41,6 @@ class DescriptionModel extends DOMWidgetModel {
 
 export
 class DescriptionView extends DOMWidgetView {
-
     render() {
         this.label = document.createElement('label');
         this.el.appendChild(this.label);

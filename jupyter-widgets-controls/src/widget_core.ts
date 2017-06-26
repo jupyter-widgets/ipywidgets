@@ -19,6 +19,8 @@ class CoreWidgetModel extends WidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'CoreWidgetModel',
+            _view_module: '@jupyter-widgets/controls',
+            _model_module: '@jupyter-widgets/controls',
         });
     }
 }
@@ -28,6 +30,8 @@ class CoreDOMWidgetModel extends DOMWidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'CoreDOMWidgetModel',
+            _view_module: '@jupyter-widgets/controls',
+            _model_module: '@jupyter-widgets/controls',
         });
     }
 }
@@ -37,6 +41,8 @@ class CoreDescriptionModel extends DescriptionModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'CoreDescriptionModel',
+            _view_module: '@jupyter-widgets/controls',
+            _model_module: '@jupyter-widgets/controls',
         });
     }
 }
