@@ -1,17 +1,40 @@
-var widgets = require('@jupyter-widgets/controls');
 var base = require('@jupyter-widgets/base');
+var controls = require('@jupyter-widgets/controls');
 var PhosphorWidget = require('@phosphor/widgets').Widget;
-
-require('@phosphor/widgets/style/index.css');
-require('@jupyter-widgets/controls/css/widgets.built.css');
-console.info('jupyter-js-widgets loaded successfully');
 
 var WidgetManager = exports.WidgetManager = function(el) {
     //  Call the base class.
-    widgets.ManagerBase.call(this);
+    controls.ManagerBase.call(this);
     this.el = el;
 };
 WidgetManager.prototype = Object.create(base.ManagerBase.prototype);
+
+WidgetManager.prototype.loadClass = function(className, moduleName, moduleVersion) {
+    return new Promise(function(resolve, reject) {
+        if (moduleName === '@jupyter-widgets/controls') {
+            resolve(controls);
+        } else if (moduleName === '@jupyter-widgets/base') {
+            resolve(base)
+        } else {
+            var fallback = function(err) {
+                let failedId = err.requireModules && err.requireModules[0];
+                if (failedId) {
+                    console.log(`Falling back to unpkg.com for ${moduleName}@${moduleVersion}`);
+                    window.require([`https://unpkg.com/${moduleName}@${moduleVersion}/dist/index.js`], resolve, reject);
+                } else {
+                    throw err;
+                }
+            };
+            window.require([`${moduleName}.js`], resolve, fallback);
+        }
+    }).then(function(module) {
+        if (module[className]) {
+            return module[className];
+        } else {
+            return Promise.reject(`Class ${className} not found in module ${moduleName}@${moduleVersion}`);
+        }
+    });
+}
 
 WidgetManager.prototype.display_view = function(msg, view, options) {
     var that = this;
@@ -24,27 +47,10 @@ WidgetManager.prototype.display_view = function(msg, view, options) {
     });
 };
 
-WidgetManager.prototype.loadClass = function(className, moduleName, moduleVersion) {
-    if (moduleName === 'jupyter-js-widgets') {
-        if (widgets[className]) {
-            return Promise.resolve(widgets[className]);
-        } else {
-            return Promise.reject('Cannot find class ' + className)
-        }
-    } else {
-        return Promise.reject('Cannot find module ' + moduleName);
-    }
-}
-
 WidgetManager.prototype._get_comm_info = function() {
     return Promise.resolve({});
 };
 
 WidgetManager.prototype._create_comm = function() {
-    return Promise.resolve({
-        on_close: () => {},
-        on_msg: () => {},
-        close: () => {},
-        send: () => {}
-    });
+    return Promise.reject('no comms available');
 }

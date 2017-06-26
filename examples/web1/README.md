@@ -1,17 +1,12 @@
-# Ad hoc widget manager for using `jupyter-js-widgets` in non-notebook, web context
+# Ad hoc widget manager for using Jupyter widgets in a plain web page
 
 ## Description
 
 This directory is an example project that shows how to use the
 Jupyter widgets library in a pure JavaScript context.
 
-This example implements a custom specialization of the base widget manager
-provided by the `@jupyter-widgets/base` library (just like the notebook extension
-provides a specialization for the notebook context).
-
-This example is meant to demonstrate how to create an ad-hoc widget manager.
-For more sophisticated examples including communication with a Python kernel,
-see other examples.
+This example implements a simple widget manager
+by extending the base widget manager from the `@jupyter-widgets/base` library.
 
 ## Try it
 

@@ -3,6 +3,9 @@ require("codemirror/lib/codemirror.css");
 require("codemirror/mode/python/python");
 var WidgetManager = require("./manager").WidgetManager;
 
+require('@jupyter-widgets/controls/css/widgets.built.css');
+require('font-awesome/css/font-awesome.css');
+
 document.addEventListener("DOMContentLoaded", function(event) {
 
     var code = require("./widget_code.json").join("\n");
@@ -21,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     var manager = new WidgetManager(widgetarea);
     manager.set_state(state).then(function (models) {
         manager.display_model(undefined, models.find(function(element) {
-            return element.id == "8621699ecc804983a612f09b7dfe806b";
+            return element.model_id == "8621699ecc804983a612f09b7dfe806b";
         }));
     });
 });
