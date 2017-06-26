@@ -36,6 +36,8 @@ class Output(DOMWidget, CoreWidget):
     """
     _view_name = Unicode('OutputView').tag(sync=True)
     _model_name = Unicode('OutputModel').tag(sync=True)
+    _view_module = Unicode('@jupyter-widgets/output').tag(sync=True)
+    _model_module = Unicode('@jupyter-widgets/output').tag(sync=True)
     msg_id = Unicode('', help="Parent message id of messages to capture").tag(sync=True)
     outputs = Tuple(help="The output messages synced from the frontend.").tag(sync=True)
 
