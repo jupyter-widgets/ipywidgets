@@ -1,8 +1,8 @@
-import * as widgets from '@jupyter-widgets/controls';
 import * as base from '@jupyter-widgets/base';
+import * as controls from '@jupyter-widgets/controls';
+
 import './widgets.css';
 import * as PWidget from '@phosphor/widgets';
-
 
 export
 class WidgetManager extends base.ManagerBase<HTMLElement> {
@@ -28,16 +28,37 @@ class WidgetManager extends base.ManagerBase<HTMLElement> {
         });
     }
 
-    protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<any> {
-        if (moduleName === 'jupyter-js-widgets') {
-            if (widgets[className]) {
-                return Promise.resolve(widgets[className]);
+    /**
+     * Load a class and return a promise to the loaded object.
+     */
+    protected loadClass(className: string, moduleName: string, moduleVersion: string) {
+        return new Promise(function(resolve, reject) {
+            // Shortcuts resolving the standard widgets so we don't load two
+            // copies on the page. If we ever separate the widgets from the
+            // base manager, we should get rid of this special case.
+            if (moduleName === '@jupyter-widgets/controls') {
+                resolve(controls);
+            } else if (moduleName === '@jupyter-widgets/base') {
+                resolve(base)
             } else {
-                return Promise.reject(`Cannot find class ${className}`)
+                var fallback = function(err) {
+                    let failedId = err.requireModules && err.requireModules[0];
+                    if (failedId) {
+                        console.log(`Falling back to unpkg.com for ${moduleName}@${moduleVersion}`);
+                        (window as any).require([`https://unpkg.com/${moduleName}@${moduleVersion}/dist/index.js`], resolve, reject);
+                    } else {
+                        throw err;
+                    }
+                };
+                (window as any).require([`${moduleName}.js`], resolve, fallback);
             }
-        } else {
-            return Promise.reject(`Cannot find module ${moduleName}`);
-        }
+        }).then(function(module) {
+            if (module[className]) {
+                return module[className];
+            } else {
+                return Promise.reject(`Class ${className} not found in module ${moduleName}@${moduleVersion}`);
+            }
+        });
     }
 
     _create_comm(targetName, id, metadata) {
