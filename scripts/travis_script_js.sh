@@ -6,18 +6,21 @@ nvm use "v$TRAVIS_NODE_VERSION"
 nvm alias default "v$TRAVIS_NODE_VERSION"
 sh -e /etc/init.d/xvfb start
 
-cd packages/base
+cd packages
+
+cd base
 npm run test:unit:$BROWSER
 cd ..
 
-cd packages/controls
+cd controls
 npm run test:unit:$BROWSER
 cd ..
 
-cd packages/html-manager
+cd html-manager
 npm run test:unit:$BROWSER
+cd ..
 cd ..
 
 cd examples/web1
 npm run test:firefox
-cd ../../
+cd ../..
