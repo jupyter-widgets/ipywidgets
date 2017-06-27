@@ -6,15 +6,15 @@ nvm use "v$TRAVIS_NODE_VERSION"
 nvm alias default "v$TRAVIS_NODE_VERSION"
 sh -e /etc/init.d/xvfb start
 
-cd jupyter-widgets-base
+cd packages/base
 npm run test:unit:$BROWSER
 cd ..
 
-cd jupyter-widgets-controls
+cd packages/controls
 npm run test:unit:$BROWSER
 cd ..
 
-cd jupyter-widgets-htmlmanager
+cd packages/html-manager
 npm run test:unit:$BROWSER
 cd ..
 
