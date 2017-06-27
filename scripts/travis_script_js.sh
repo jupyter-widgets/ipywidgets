@@ -11,9 +11,13 @@ npm run test:unit:$BROWSER
 cd ..
 
 cd jupyter-widgets-controls
-npm run test:unit:$BROWSER && npm run test:examples:$BROWSER
+npm run test:unit:$BROWSER
 cd ..
 
 cd jupyter-widgets-htmlmanager
 npm run test:unit:$BROWSER
 cd ..
+
+cd examples/web1
+npm run test:firefox
+cd ../../
