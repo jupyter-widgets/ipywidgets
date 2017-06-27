@@ -1,5 +1,5 @@
 {
-  "name": "widgetsnbextension",
+  "name": "@jupyter-widgets/notebook-manager",
   "version": "3.0.0-alpha.0",
   "description": "Jupyter Widgets nbextension",
   "main": "src/extension.js",

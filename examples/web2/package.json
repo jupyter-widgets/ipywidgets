@@ -1,0 +1,28 @@
+{
+  "private": true,
+  "name": "@jupyter-widgets/example-web2",
+  "version": "1.0.0",
+  "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "test": "npm run test:default",
+    "test:default": "echo \"No test specified\""
+  },
+  "author": "IPython",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "codemirror": "^5.9.0",
+    "font-awesome": "^4.7.0",
+    "@jupyter-widgets/base": "^0.3.0",
+    "@jupyter-widgets/controls": "^0.3.0"
+  },
+  "devDependencies": {
+    "css-loader": "^0.28.4",
+    "file-loader": "^0.11.2",
+    "json-loader": "^0.5.4",
+    "style-loader": "^0.18.1",
+    "url-loader": "^0.5.9",
+    "webpack": "^1.12.12"
+  }
+}
