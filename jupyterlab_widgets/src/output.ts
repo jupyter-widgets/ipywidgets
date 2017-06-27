@@ -1,9 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import {
-  DOMWidgetModel, DOMWidgetView
-} from '@jupyter-widgets/base';
+import * as outputWidget from '@jupyter-widgets/output';
 
 import {
   IDisposable
@@ -34,11 +32,9 @@ import * as $ from 'jquery';
 
 
 export
-class OutputModel extends DOMWidgetModel {
+class OutputModel extends outputWidget.OutputModel {
   defaults() {
     return _.extend(super.defaults(), {
-      _model_name: 'OutputModel',
-      _view_name: 'OutputView',
       msg_id: ''
     });
   }
@@ -103,7 +99,7 @@ class OutputModel extends DOMWidgetModel {
 
 
 export
-class OutputView extends DOMWidgetView {
+class OutputView extends outputWidget.OutputView {
 
     _createElement(tagName: string) {
         this.pWidget = new Panel();
