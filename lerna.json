@@ -4,6 +4,7 @@
     "jupyter-widgets-schema",
     "jupyter-widgets-base",
     "jupyter-widgets-controls",
+    "jupyter-widgets-output",
     "jupyter-widgets-htmlmanager",
     "widgetsnbextension",
     "jupyterlab_widgets"
