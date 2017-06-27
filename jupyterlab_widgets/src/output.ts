@@ -10,7 +10,7 @@ import {
 } from '@phosphor/disposable';
 
 import {
-    Panel, Widget
+  Panel, Widget
 } from '@phosphor/widgets';
 
 import {
