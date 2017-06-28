@@ -5,7 +5,6 @@
   "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
   "main": "index.js",
   "scripts": {
-    "prepublish": "npm run build",
     "build": "webpack",
     "test": "npm run test:firefox && npm run test:chrome",
     "test:default": "karma start karma.config.js --log-level debug",
