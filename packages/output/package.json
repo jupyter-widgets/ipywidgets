@@ -20,7 +20,7 @@
     "url": "https://github.com/jupyter-widgets/ipywidgets/issues"
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^0.3.0"
+    "@jupyter-widgets/base": "^0.4.0"
   },
   "devDependencies": {
     "rimraf": "^2.6.1",
