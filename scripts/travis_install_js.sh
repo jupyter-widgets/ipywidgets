@@ -6,3 +6,4 @@ echo `npm -v`
 echo `node -v`
 npm install
 npm run build
+npm run build:examples

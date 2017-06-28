@@ -18,7 +18,6 @@
     "build:src": "tsc --project src",
     "build:test": "tsc --project test/src && webpack --config test/webpack.conf.js",
     "build": "npm run build:src && webpack",
-    "postinstall": "npm dedupe",
     "test": "npm run test:unit",
     "test:unit": "npm run test:unit:firefox && npm run test:unit:chrome",
     "test:unit:default": "npm run build:test && karma start test/karma.conf.js --log-level debug --browsers=Firefox",

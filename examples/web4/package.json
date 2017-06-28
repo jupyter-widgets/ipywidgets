@@ -1,9 +1,11 @@
 {
-  "name": "jupyter-js-widgets-test",
+  "name": "@jupyter-widgets/example-web4",
   "version": "1.0.0",
   "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
   "main": "index.js",
   "scripts": {
+    "clean": "rimraf built",
+    "build": "webpack",
     "test": "npm run test:default",
     "test:default": "echo \"No test specified\""
   },
@@ -11,7 +13,7 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "font-awesome": "^4.5.0",
-    "@jupyter-widgets/htmlmanager": "file:../.."
+    "@jupyter-widgets/html-manager": "^0.1.0"
   },
   "devDependencies": {
     "css-loader": "^0.23.1",
