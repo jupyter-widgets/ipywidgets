@@ -1,4 +1,5 @@
 {
+  "private": true,
   "name": "@jupyter-widgets/example-web4",
   "version": "1.0.0",
   "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
