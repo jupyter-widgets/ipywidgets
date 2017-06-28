@@ -6,6 +6,7 @@ var _ = require("underscore");
 var Backbone = require("backbone");
 var base = require("@jupyter-widgets/base");
 var widgets = require("@jupyter-widgets/controls");
+var outputWidgets = require("@jupyter-widgets/output");
 var saveState = require("./save_state");
 var embedWidgets = require("./embed_widgets");
 var version = require("../package.json").version;
@@ -95,13 +96,11 @@ WidgetManager._managers = []; /* List of widget managers */
 
 WidgetManager.prototype.loadClass = function(className, moduleName, moduleVersion) {
     if (moduleName === "@jupyter-widgets/controls") {
-        if (className === "OutputModel" || className === "OutputView") {
-            return Promise.resolve(output[className]);
-        } else {
-            return Promise.resolve(widgets[className]);
-        }
+        return Promise.resolve(widgets[className]);
     } else if (moduleName === "@jupyter-widgets/base") {
         return Promise.resolve(base[className]);
+    } else if (moduleName == "@jupyter-widgets/output") {
+        return Promise.resolve(outputWidgets[className]);
     } else {
         return new Promise(function(resolve, reject) {
             window.require([moduleName], resolve, reject);
