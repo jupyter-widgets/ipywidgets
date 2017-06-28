@@ -21,5 +21,9 @@
   },
   "dependencies": {
     "@jupyter-widgets/base": "^0.3.0"
+  },
+  "devDependencies": {
+    "rimraf": "^2.6.1",
+    "typescript": "~2.3.1"
   }
 }
