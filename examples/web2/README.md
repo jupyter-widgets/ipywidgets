@@ -20,4 +20,5 @@ such an example, check out the `web-kernel` example.
 ## Try it
 
 1. Start with a repository checkout, and run `npm install` in the root directory.
-2. Open the `index.html` file in this directory.
+2. Run `npm run build` in the root repo directory.
+3. Open the `index.html` file in this directory.
