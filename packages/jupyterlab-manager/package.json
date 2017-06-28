@@ -32,7 +32,7 @@
     "extension": true
   },
   "scripts": {
-    "clean": "rimraf docs && rimraf lib && rimraf jupyterlab_widgets/static",
+    "clean": "rimraf docs && rimraf lib",
     "build:src": "tsc --project src",
     "build": "npm run build:src",
     "docs": "typedoc --mode file --module commonjs --excludeNotExported --target es5 --moduleResolution node --out docs/ src"

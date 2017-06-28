@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {
+    "clean": "rimraf lib",
     "build:src": "tsc --project src",
     "build": "npm run build:src",
     "test": "echo \"Error: no test specified\" && exit 1"
