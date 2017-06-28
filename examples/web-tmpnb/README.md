@@ -13,7 +13,7 @@ provided in the `widget_code.json`, which we used to generate the widget state.
 ## Try it
 
 1. Start with a repository checkout, and run `npm install` in the root directory.
-2. Run `npm run build` in the root directory.
+2. Run `npm run build:examples` in the root directory.
 3. Change to this directory
 4. Run `npm run host`
 5. In a new terminal run `python -m notebook --no-browser --NotebookApp.allow_origin="*"`

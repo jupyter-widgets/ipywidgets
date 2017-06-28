@@ -2,7 +2,8 @@
   "private": true,
   "scripts": {
     "install": "lerna bootstrap --hoist",
-    "build": "lerna run build",
+    "build:examples": "lerna run build --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
+    "build": "lerna run build --ignore \"@jupyter-widgets/example-*\"",
     "update:dependency": "node scripts/update-dependency.js"
   },
   "devDependencies": {
