@@ -11,7 +11,6 @@ graft docs
 exclude docs/\#*
 
 # Examples
-graft examples
 graft ipywidgets/tests
 graft ipywidgets/static
 
