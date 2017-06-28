@@ -21,8 +21,6 @@
     "build:test": "tsc --project test/src && webpack --config test/webpack.conf.js",
     "build:src": "tsc --project src",
     "build": "npm run build:src",
-    "postinstall": "npm dedupe",
-    "prepublish": "npm run build",
     "test": "npm run test:unit",
     "test:coverage": "npm run build:test && webpack --config test/webpack-cov.conf.js && karma start test/karma-cov.conf.js",
     "test:unit": "npm run test:unit:firefox && npm run test:unit:chrome",

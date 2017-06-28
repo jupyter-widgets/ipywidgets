@@ -35,8 +35,7 @@
     "clean": "rimraf docs && rimraf lib && rimraf jupyterlab_widgets/static",
     "build:src": "tsc --project src",
     "build": "npm run build:src",
-    "docs": "typedoc --mode file --module commonjs --excludeNotExported --target es5 --moduleResolution node --out docs/ src",
-    "prepublish": "npm run build"
+    "docs": "typedoc --mode file --module commonjs --excludeNotExported --target es5 --moduleResolution node --out docs/ src"
   },
   "repository": {
     "type": "git",

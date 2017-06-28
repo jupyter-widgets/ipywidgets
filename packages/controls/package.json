@@ -23,8 +23,6 @@
     "build:src": "tsc --project src",
     "build:css": "postcss --use postcss-import --use postcss-cssnext -o css/widgets.built.css css/widgets.css",
     "build": "npm run build:src && npm run build:css",
-    "postinstall": "npm dedupe",
-    "prepublish": "npm run build",
     "test": "npm run test:unit && npm run test:examples",
     "test:coverage": "npm run build:test && webpack --config test/webpack-cov.conf.js && karma start test/karma-cov.conf.js",
     "test:unit": "npm run test:unit:firefox && npm run test:unit:chrome",

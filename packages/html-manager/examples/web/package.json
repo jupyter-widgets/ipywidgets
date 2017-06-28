@@ -4,7 +4,6 @@
   "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
   "main": "index.js",
   "scripts": {
-    "prepublish": "webpack",
     "test": "npm run test:default",
     "test:default": "echo \"No test specified\""
   },
