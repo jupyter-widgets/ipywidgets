@@ -9,7 +9,7 @@ A summary of changes in ipywidgets. For more detailed information, see [GitHub](
 
 Major user-visible changes in ipywidgets 7.0 include:
 
-- The `Label` widget is now right-aligned and has no width restriction: ([#1269](https://github.com/jupyter-widgets/ipywidgets/pull/1269))
+- The `Label` widget has no width restriction: ([#1269](https://github.com/jupyter-widgets/ipywidgets/pull/1269))
 - Using function annotations to specify interact controls for a function is now deprecated and will be removed in a future version of ipywidgets. ([#1292](https://github.com/jupyter-widgets/ipywidgets/pull/1292))
 - Widgets are now displayed in the output area in the classic notebook and are treated as any other output. This allows the widgets to work more naturally with other cell output. To delete a widget, clear the output from the cell. Output from functions triggered by a widget view is appended to the output area that contains the widget view. This means that printed text will be appended to the output, and calling `clear_output()` will delete the entire output, including the widget view. ([#1274](https://github.com/jupyter-widgets/ipywidgets/pull/1274), [#1353](https://github.com/jupyter-widgets/ipywidgets/pull/1353))
 - The Select widget now is a listbox instead of a dropdown, reverting back to the pre-6.0 behavior. ([#1238](https://github.com/jupyter-widgets/ipywidgets/pull/1238))
