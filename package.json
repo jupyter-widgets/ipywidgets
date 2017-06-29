@@ -6,6 +6,7 @@
     "build:examples": "lerna run build --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
     "build": "lerna run build --ignore \"@jupyter-widgets/example-*\"",
     "update:dependency": "node scripts/update-dependency.js",
+    "updated": "lerna updated",
     "publish": "npm run clean && npm run build && lerna publish -m \"Publish npm packages\""
   },
   "devDependencies": {
