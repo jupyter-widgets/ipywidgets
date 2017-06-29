@@ -39,6 +39,11 @@ widget_view_template = u"""<script type="application/vnd.jupyter.widget-view+jso
 {view_spec}
 </script>"""
 
+# TODO: This always points to the latest version of the html-manager. A better strategy
+# would be to point to a version of the html-manager that has been tested with this
+# release of jupyter-widgets/controls.
+DEFAULT_EMBED_SCRIPT_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@*/dist/index.js'
+
 
 def _find_widget_refs_by_state(widget, state):
     """Find references to other widgets in a widget's state"""
@@ -205,8 +210,7 @@ def embed_snippet(views,
     )
 
     if embed_url is None:
-        # TODO: Get widgets npm version automatically:
-        embed_url = u'https://unpkg.com/jupyter-js-widgets@~3.0.0-alpha.0/dist/embed.js'
+        embed_url = DEFAULT_EMBED_SCRIPT_URL
 
     values = {
         'embed_url': embed_url,
