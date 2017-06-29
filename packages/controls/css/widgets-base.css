@@ -834,13 +834,12 @@
 /* Play Widget */
 
 .widget-play {
-    min-width: var(--jp-widgets-inline-width-short);
+    width: var(--jp-widgets-inline-width-short);
     display: flex;
-    justify-content: space-between;
 }
 
 .widget-play .jupyter-button {
-    min-width: calc(var(--jp-widgets-inline-width-short) / 3 - 2 * var(--jp-widgets-margin));
+    flex-grow: 1;
     text-align: center;
 }
 
