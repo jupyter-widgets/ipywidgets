@@ -58,7 +58,7 @@ class HTMLManager extends widgets.ManagerBase<HTMLElement> {
             if (moduleName === '@jupyter-widgets/controls') {
                 resolve(widgets);
             } else if (moduleName === '@jupyter-widgets/base') {
-                resolve(base)
+                resolve(base);
             } else if (moduleName === '@jupyter-widgets/output') {
                 resolve(outputWidgets);
             } else {
