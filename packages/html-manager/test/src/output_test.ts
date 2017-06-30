@@ -19,7 +19,7 @@ const newWidget = async (modelState) => {
     const modelCreate: widgets.ModelOptions = {
         model_name: 'OutputModel',
         model_id: modelId,
-        model_module: '@jupyter-widgets/controls',
+        model_module: '@jupyter-widgets/output',
         model_module_version: '*'
     }
     const model = await manager.new_model(modelCreate, modelState);
@@ -34,7 +34,7 @@ describe('text output', () => {
     let view;
     const textValue = 'this-is-a-test\n'
     const modelState = {
-        _view_module: '@jupyter-widgets/controls',
+        _view_module: '@jupyter-widgets/output',
         outputs: [
             {
                 "output_type": "stream",
@@ -65,7 +65,7 @@ describe('data output', () => {
 
     // Pandas dataframe
     const modelState = {
-        _view_module: '@jupyter-widgets/controls',
+        _view_module: '@jupyter-widgets/output',
         outputs: [
             {
                 "output_type": "display_data",
@@ -93,7 +93,7 @@ describe('data output', () => {
 describe('widget output', () => {
     let view;
     const modelState = {
-        _view_module: "@jupyter-widgets/controls",
+        _view_module: "@jupyter-widgets/output",
         outputs: [
             {
                 "output_type": "display_data",
@@ -156,7 +156,7 @@ describe('widget output', () => {
         const modelCreate: widgets.ModelOptions = {
             model_name: 'OutputModel',
             model_id: modelId,
-            model_module: '@jupyter-widgets/controls',
+            model_module: '@jupyter-widgets/output',
             model_module_version: '*'
         }
         const model = await manager.new_model(modelCreate, modelState);
@@ -204,12 +204,12 @@ describe('custom mimetypes', () => {
         const modelCreate: widgets.ModelOptions = {
             model_name: 'OutputModel',
             model_id: modelId,
-            model_module: '@jupyter-widgets/controls',
+            model_module: '@jupyter-widgets/output',
             model_module_version: '*'
         };
 
         const modelState = {
-            _view_module: '@jupyter-widgets/controls',
+            _view_module: '@jupyter-widgets/output',
             outputs: [
                 {
                     output_type: 'display_data',

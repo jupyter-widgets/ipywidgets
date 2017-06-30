@@ -5,7 +5,7 @@
 // This widget is strongly coupled to the notebook because of the outputarea
 // dependency.
 var widgets = require("@jupyter-widgets/controls");
-var outputWidgets = require("@jupyter-widgets/output");
+var outputBase = require("@jupyter-widgets/output");
 var _ = require("underscore");
 require('./widget_output.css');
 
@@ -13,8 +13,8 @@ var outputArea = new Promise(function(resolve, reject) {
         requirejs(["notebook/js/outputarea"], resolve, reject)
 });
 
-var OutputModel = outputWidgets.OutputModel.extend({
-    defaults: _.extend({}, outputWidgets.OutputModel.prototype.defaults(), {
+var OutputModel = outputBase.OutputModel.extend({
+    defaults: _.extend({}, outputBase.OutputModel.prototype.defaults(), {
         msg_id: "",
         outputs: []
     }),
@@ -99,7 +99,7 @@ var OutputModel = outputWidgets.OutputModel.extend({
 
 });
 
-var OutputView = outputWidgets.OutputView.extend({
+var OutputView = outputBase.OutputView.extend({
     render: function(){
         var that = this;
         this.el.classList.add('jupyter-widgets-output-area');
