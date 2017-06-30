@@ -147,21 +147,70 @@ describe("ManagerBase", function() {
       it('returns a promise to a model', async function() {
         let manager = this.managerBase;
         let comm = new MockComm();
-        let model = await manager.handle_comm_open(comm, {content: {data: {
-          state: {
-            _model_name: 'TestWidget',
-            _model_module: 'test-widgets',
-            _model_module_version: '1.0.0',
-            value: 50
+        let model = await manager.handle_comm_open(comm, {
+          content: {
+            data: {
+              state: {
+                _model_name: 'TestWidget',
+                _model_module: 'test-widgets',
+                _model_module_version: '1.0.0',
+                value: 50
+              }
+            }
+          },
+          metadata: {
+            version: '2.0.0'
           }
-        }}})
+        })
         expect(model.comm).to.equal(comm);
         expect(model.get('value')).to.equal(50);
       });
+
+      it('throws if widget protocol version is not specified', async function() {
+        let manager = this.managerBase;
+        let comm = new MockComm();
+        let model = manager.handle_comm_open(comm, {
+          content: {
+            data: {
+              state: {
+                _model_name: 'TestWidget',
+                _model_module: 'test-widgets',
+                _model_module_version: '1.0.0',
+                value: 50
+              }
+            }
+          },
+        })
+        expect(model).to.be.rejected;
+      });
+
+      it('throws if widget protocol version is not compatible', async function() {
+        let manager = this.managerBase;
+        let comm = new MockComm();
+        let model = manager.handle_comm_open(comm, {
+          content: {
+            data: {
+              state: {
+                _model_name: 'TestWidget',
+                _model_module: 'test-widgets',
+                _model_module_version: '1.0.0',
+                value: 50
+              }
+            }
+          },
+          metadata: {
+            version: '1.0'
+          }
+        })
+        expect(model).to.be.rejected;
+      });
+
       it('allows setting initial state, including binary state', async function() {
         let manager = this.managerBase;
         let comm = new MockComm();
-        let model = await manager.handle_comm_open(comm, {content: {data: {
+        let model = await manager.handle_comm_open(comm, {
+          content: {
+            data: {
               state: {
                 _model_name: 'BinaryWidget',
                 _model_module: 'test-widgets',
@@ -169,8 +218,12 @@ describe("ManagerBase", function() {
                 array: {dtype: "uint8"}
               },
               buffer_paths: [["array", "buffer"]]
-            }},
-          buffers: [new DataView((new Uint8Array([1,2,3])).buffer)]
+            }
+          },
+          buffers: [new DataView((new Uint8Array([1,2,3])).buffer)],
+          metadata: {
+            version: '2.0.0'
+          }
         });
         expect(model.comm).to.equal(comm);
         expect(model.get('array')).to.deep.equal(new Uint8Array([1,2,3]));

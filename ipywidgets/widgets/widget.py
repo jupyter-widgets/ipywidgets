@@ -21,7 +21,7 @@ from IPython.display import display
 from base64 import standard_b64decode, standard_b64encode
 
 from .._version import __protocol_version__, __jupyter_widget_version__
-
+PROTOCOL_VERSION_MAJOR = __protocol_version__.split('.')[0]
 
 def _widget_to_json(x, obj):
     if isinstance(x, dict):
@@ -266,6 +266,9 @@ class Widget(LoggingHasTraits):
     @staticmethod
     def handle_comm_opened(comm, msg):
         """Static method, called when a widget is constructed."""
+        version = msg.get('metadata', {}).get('version', '')
+        if version.split('.')[0] != PROTOCOL_VERSION_MAJOR:
+            raise ValueError("Incompatible widget protocol versions: received version %r, expected version %r"%(version, __protocol_version__))
         data = msg['content']['data']
         state = data['state']
 
@@ -375,7 +378,9 @@ class Widget(LoggingHasTraits):
 
             args = dict(target_name='jupyter.widget',
                         data={'state': state, 'buffer_paths': buffer_paths},
-                        buffers=buffers)
+                        buffers=buffers,
+                        metadata={'version': __protocol_version__}
+                        )
             if self._model_id is not None:
                 args['comm_id'] = self._model_id
 

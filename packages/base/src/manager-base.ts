@@ -18,6 +18,9 @@ import {
 export
 const PROTOCOL_VERSION = '2.0.0';
 
+export
+const PROTOCOL_MAJOR_VERSION = PROTOCOL_VERSION.split('.', 1)[0]
+
 /**
  * The options for a model.
  *
@@ -157,6 +160,12 @@ abstract class ManagerBase<T> {
      * Handle when a comm is opened.
      */
     handle_comm_open(comm: shims.services.Comm, msg: services.KernelMessage.ICommOpenMsg): Promise<Backbone.Model> {
+        let protocolVersion = ((msg.metadata || {}).version as string) || '';
+        if (protocolVersion.split('.', 1)[0] !== PROTOCOL_MAJOR_VERSION) {
+            let error = `Wrong widget protocol version: received protocol version '${protocolVersion}', but was expecting major version '${PROTOCOL_MAJOR_VERSION}'`;
+            console.error(error)
+            return Promise.reject(error);
+        }
         let data = (msg.content.data as any);
         let buffer_paths = data.buffer_paths || [];
         // Make sure the buffers are DataViews
@@ -406,7 +415,15 @@ abstract class ManagerBase<T> {
      * Load a class and return a promise to the loaded object.
      */
     protected abstract loadClass(className: string, moduleName: string, moduleVersion: string): Promise<any>;
-    protected abstract _create_comm(comm_target_name, model_id, data?): Promise<any>;
+
+    /**
+     * Create a comm which can be used for communication for a widget.
+     * @param comm_target_name Comm target name
+     * @param model_id The comm id
+     * @param data The initial data for the comm
+     * @param metadata The metadata in the open message
+     */
+    protected abstract _create_comm(comm_target_name: string, model_id: string, data?: any, metadata?: any): Promise<any>;
     protected abstract _get_comm_info();
 
     /**
