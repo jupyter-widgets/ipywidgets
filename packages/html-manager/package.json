@@ -33,6 +33,7 @@
   "dependencies": {
     "@jupyter-widgets/base": "^0.4.0",
     "@jupyter-widgets/controls": "^0.4.0",
+    "@jupyter-widgets/output": "^0.1.1",
     "@jupyter-widgets/schema": "^0.3.0-beta.3",
     "@jupyterlab/outputarea": "^0.7.0",
     "@jupyterlab/rendermime": "^0.7.0",

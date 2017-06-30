@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { DOMWidgetModel, DOMWidgetView } from '@jupyter-widgets/controls';
+import * as outputBase from '@jupyter-widgets/output';
 
 import { Panel, Widget } from '@phosphor/widgets';
 
@@ -13,12 +13,10 @@ import * as $ from 'jquery';
 
 import '../css/output.css';
 
-export class OutputModel extends DOMWidgetModel {
+export class OutputModel extends outputBase.OutputModel {
     defaults() {
         return {
             ...super.defaults(),
-            _model_name: 'OutputModel',
-            _view_name: 'OutputView',
             msg_id: ''
         }
     }
@@ -38,7 +36,7 @@ export class OutputModel extends DOMWidgetModel {
     widget_manager: HTMLManager;
 }
 
-export class OutputView extends DOMWidgetView {
+export class OutputView extends outputBase.OutputView {
     _createElement(tagName: string) {
         this.pWidget = new Panel();
         return this.pWidget.node;

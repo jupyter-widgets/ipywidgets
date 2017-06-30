@@ -3,6 +3,7 @@
 
 import * as widgets from '@jupyter-widgets/controls';
 import * as base from '@jupyter-widgets/base';
+import * as outputWidgets from './output';
 
 import * as PhosphorWidget from '@phosphor/widgets';
 
@@ -55,9 +56,11 @@ class HTMLManager extends widgets.ManagerBase<HTMLElement> {
             // copies on the page. If we ever separate the widgets from the
             // base manager, we should get rid of this special case.
             if (moduleName === '@jupyter-widgets/controls') {
-                resolve({ ...widgets, OutputModel, OutputView });
+                resolve(widgets);
             } else if (moduleName === '@jupyter-widgets/base') {
                 resolve(base)
+            } else if (moduleName === '@jupyter-widgets/output') {
+                resolve(outputWidgets);
             } else {
                 var fallback = function(err) {
                     let failedId = err.requireModules && err.requireModules[0];
