@@ -68,6 +68,7 @@ def interactive_output(f, controls):
             show_inline_matplotlib_plots()
     for k,w in controls.items():
         w.observe(observer, 'value')
+    show_inline_matplotlib_plots()
     observer(None)
     return out
 
@@ -517,6 +518,7 @@ class _InteractFactory(object):
             # so wrap in a lambda
             f = lambda *args, **kwargs: __interact_f(*args, **kwargs)
             f.widget = w
+        show_inline_matplotlib_plots()
         display(w)
         return f
 
