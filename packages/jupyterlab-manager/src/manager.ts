@@ -85,6 +85,10 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     }
   }
 
+/**
+ * Register a new kernel
+ * @param kernel The new kernel.
+ */
   newKernel(kernel: Kernel.IKernelConnection) {
     if (this._commRegistration) {
       this._commRegistration.dispose();
@@ -110,9 +114,11 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Create a comm.
    */
-   _create_comm(target_name: string, model_id: string, data?: any, metadata?: any): Promise<any> {
+   _create_comm(target_name: string, model_id: string, data?: any, metadata?: any): Promise<shims.services.Comm> {
     let comm = this._context.session.kernel.connectToComm(target_name, model_id);
-    comm.open(data);
+    if (data || metadata) {
+      comm.open(data, metadata);
+    }
     return Promise.resolve(new shims.services.Comm(comm));
   }
 

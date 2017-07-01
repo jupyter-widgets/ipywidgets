@@ -215,6 +215,10 @@ WidgetManager.prototype._create_comm = function(comm_target_name, comm_id, data,
             return kernel.comm_manager.new_comm(comm_target_name, data,
                                                 that.callbacks(), metadata, comm_id);
         } else {
+            // Construct a comm that already is open on the kernel side. We
+            // don't want to send an open message, which would supersede the
+            // kernel comm object, so we instead do by hand the necessary parts
+            // of the new_comm call above.
             return new Promise(function(resolve) {
                 requirejs(["services/kernels/comm"], function(comm) {
                     var new_comm = new comm.Comm(comm_target_name, comm_id);

@@ -394,6 +394,8 @@ abstract class ManagerBase<T> {
                     model_module_version: model.model_module_version
                 };
                 if (live_comms.hasOwnProperty(model_id)) {  // live comm
+                    // This connects to an existing comm if it exists, and
+                    // should *not* send a comm open message.
                     return this._create_comm(this.comm_target_name, model_id).then(comm => {
                         modelCreate.comm = comm;
                         return this.new_model(modelCreate);
@@ -419,6 +421,12 @@ abstract class ManagerBase<T> {
 
     /**
      * Create a comm which can be used for communication for a widget.
+     *
+     * If the data/metadata is passed in, open the comm before returning (i.e.,
+     * send the comm_open message). If the data and metadata is undefined, we
+     * want to reconstruct a comm that already exists in the kernel, so do not
+     * open the comm by sending the comm_open message.
+     *
      * @param comm_target_name Comm target name
      * @param model_id The comm id
      * @param data The initial data for the comm
