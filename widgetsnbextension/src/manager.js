@@ -208,16 +208,16 @@ WidgetManager.prototype.display_view = function(msg, view, options) {
 }
 
 
-WidgetManager.prototype._create_comm = function(comm_target_name, model_id, data) {
+WidgetManager.prototype._create_comm = function(comm_target_name, comm_id, data, metadata) {
     var that = this;
     return this._get_connected_kernel().then(function(kernel) {
-        if (data) {
+        if (data || metadata) {
             return kernel.comm_manager.new_comm(comm_target_name, data,
-                                                that.callbacks(), {}, model_id);
+                                                that.callbacks(), metadata, comm_id);
         } else {
             return new Promise(function(resolve) {
                 requirejs(["services/kernels/comm"], function(comm) {
-                    var new_comm = new comm.Comm(comm_target_name, model_id);
+                    var new_comm = new comm.Comm(comm_target_name, comm_id);
                     kernel.comm_manager.register_comm(new_comm);
                     resolve(new_comm);
                 });

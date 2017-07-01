@@ -210,7 +210,8 @@ abstract class ManagerBase<T> {
                             _view_module_version: options.view_module_version,
                             _view_name: options.view_name
                         },
-                }
+                },
+                {version: PROTOCOL_VERSION}
             );
         }
         // The options dictionary is copied since data will be added to it.
