@@ -201,7 +201,7 @@ setup_args = dict(
         'jsdeps': NPM,
     },
     data_files      = [(
-            'share/jupyter/nbextensions/jupyter-widgets', [
+            'share/jupyter/nbextensions/jupyter-js-widgets', [
                 'widgetsnbextension/static/extension.js',
                 'widgetsnbextension/static/extension.js.map'
         ]),
