@@ -5,7 +5,7 @@
 window['requirejs'].config({
     map: {
         '*': {
-            '@jupyter-widgets/controls': 'nbextensions/jupyter-widgets/extension',
+            '@jupyter-widgets/controls': 'nbextensions/jupyter-js-widgets/extension',
         },
     }
 });
