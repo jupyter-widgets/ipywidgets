@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         });
 
         // Create the widget area and widget manager
-        let widgetarea = document.getElementsByClassName("widgetarea")[0];
+        let widgetarea = document.getElementsByClassName("widgetarea")[0] as HTMLElement;
         let manager = new WidgetManager(kernel, widgetarea);
 
         // Run backend code to create the widgets.  You could also create the

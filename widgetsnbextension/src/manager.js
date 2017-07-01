@@ -208,16 +208,20 @@ WidgetManager.prototype.display_view = function(msg, view, options) {
 }
 
 
-WidgetManager.prototype._create_comm = function(comm_target_name, model_id, data) {
+WidgetManager.prototype._create_comm = function(comm_target_name, comm_id, data, metadata) {
     var that = this;
     return this._get_connected_kernel().then(function(kernel) {
-        if (data) {
+        if (data || metadata) {
             return kernel.comm_manager.new_comm(comm_target_name, data,
-                                                that.callbacks(), {}, model_id);
+                                                that.callbacks(), metadata, comm_id);
         } else {
+            // Construct a comm that already is open on the kernel side. We
+            // don't want to send an open message, which would supersede the
+            // kernel comm object, so we instead do by hand the necessary parts
+            // of the new_comm call above.
             return new Promise(function(resolve) {
                 requirejs(["services/kernels/comm"], function(comm) {
-                    var new_comm = new comm.Comm(comm_target_name, model_id);
+                    var new_comm = new comm.Comm(comm_target_name, comm_id);
                     kernel.comm_manager.register_comm(new_comm);
                     resolve(new_comm);
                 });

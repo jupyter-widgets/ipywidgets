@@ -18,6 +18,9 @@ import {
 export
 const PROTOCOL_VERSION = '2.0.0';
 
+export
+const PROTOCOL_MAJOR_VERSION = PROTOCOL_VERSION.split('.', 1)[0]
+
 /**
  * The options for a model.
  *
@@ -157,6 +160,12 @@ abstract class ManagerBase<T> {
      * Handle when a comm is opened.
      */
     handle_comm_open(comm: shims.services.Comm, msg: services.KernelMessage.ICommOpenMsg): Promise<Backbone.Model> {
+        let protocolVersion = ((msg.metadata || {}).version as string) || '';
+        if (protocolVersion.split('.', 1)[0] !== PROTOCOL_MAJOR_VERSION) {
+            let error = `Wrong widget protocol version: received protocol version '${protocolVersion}', but was expecting major version '${PROTOCOL_MAJOR_VERSION}'`;
+            console.error(error)
+            return Promise.reject(error);
+        }
         let data = (msg.content.data as any);
         let buffer_paths = data.buffer_paths || [];
         // Make sure the buffers are DataViews
@@ -201,7 +210,8 @@ abstract class ManagerBase<T> {
                             _view_module_version: options.view_module_version,
                             _view_name: options.view_name
                         },
-                }
+                },
+                {version: PROTOCOL_VERSION}
             );
         }
         // The options dictionary is copied since data will be added to it.
@@ -384,6 +394,8 @@ abstract class ManagerBase<T> {
                     model_module_version: model.model_module_version
                 };
                 if (live_comms.hasOwnProperty(model_id)) {  // live comm
+                    // This connects to an existing comm if it exists, and
+                    // should *not* send a comm open message.
                     return this._create_comm(this.comm_target_name, model_id).then(comm => {
                         modelCreate.comm = comm;
                         return this.new_model(modelCreate);
@@ -406,7 +418,21 @@ abstract class ManagerBase<T> {
      * Load a class and return a promise to the loaded object.
      */
     protected abstract loadClass(className: string, moduleName: string, moduleVersion: string): Promise<any>;
-    protected abstract _create_comm(comm_target_name, model_id, data?): Promise<any>;
+
+    /**
+     * Create a comm which can be used for communication for a widget.
+     *
+     * If the data/metadata is passed in, open the comm before returning (i.e.,
+     * send the comm_open message). If the data and metadata is undefined, we
+     * want to reconstruct a comm that already exists in the kernel, so do not
+     * open the comm by sending the comm_open message.
+     *
+     * @param comm_target_name Comm target name
+     * @param model_id The comm id
+     * @param data The initial data for the comm
+     * @param metadata The metadata in the open message
+     */
+    protected abstract _create_comm(comm_target_name: string, model_id: string, data?: any, metadata?: any): Promise<any>;
     protected abstract _get_comm_info();
 
     /**
