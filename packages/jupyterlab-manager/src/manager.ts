@@ -126,9 +126,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * Get the currently-registered comms.
    */
   _get_comm_info(): Promise<any> {
-    return this._context.session.kernel.requestCommInfo({target: 'jupyter.widget'}).then((reply) => {
-      return reply.content.comms;
-    });
+    return this._context.session.kernel.requestCommInfo({target: this.comm_target_name}).then(reply => reply.content.comms);
   }
 
   /**
