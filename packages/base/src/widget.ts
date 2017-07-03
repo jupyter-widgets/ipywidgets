@@ -281,8 +281,10 @@ class WidgetModel extends Backbone.Model {
             // The state_lock lists attributes that are currently being changed
             // right now from a kernel message. We don't want to send these
             // non-changes back to the kernel, so we delete them out of attrs if
-            // they haven't changed from their state_lock value
-            if (this._state_lock !== null) {
+            // they haven't changed from their state_lock value.
+            // The state lock could be null or undefined (if set is being called from
+            // the initializer).
+            if (this._state_lock) {
                 for (const key of Object.keys(this._state_lock)) {
                     if (attrs[key] === this._state_lock[key]) {
                         delete attrs[key];
@@ -325,8 +327,10 @@ class WidgetModel extends Backbone.Model {
         // The state_lock lists attributes that are currently being changed
         // right now from a kernel message. We don't want to send these
         // non-changes back to the kernel, so we delete them out of attrs if
-        // they haven't changed from their state_lock value
-        if (this._state_lock !== null) {
+        // they haven't changed from their state_lock value.
+        // The state lock could be null or undefined (if this is triggered
+        // from the initializer).
+        if (this._state_lock) {
             for (const key of Object.keys(this._state_lock)) {
                 if (attrs[key] === this._state_lock[key]) {
                     delete attrs[key];
