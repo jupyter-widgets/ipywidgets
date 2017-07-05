@@ -13,7 +13,7 @@ import { OutputModel, OutputView } from './output'
 import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers'
 
 export
-class HTMLManager extends widgets.ManagerBase<HTMLElement> {
+class HTMLManager extends base.ManagerBase<HTMLElement> {
 
     /**
      * Display the specified view. Element where the view is displayed
