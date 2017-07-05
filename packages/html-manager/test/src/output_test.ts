@@ -8,7 +8,7 @@ import { Widget, Panel } from '@phosphor/widgets';
 import { HTMLManager } from '../../lib/';
 import { OutputModel, OutputView } from '../../lib/output';
 
-import * as widgets from '@jupyter-widgets/controls'
+import * as base from '@jupyter-widgets/base'
 
 const newWidget = async (modelState) => {
     const widgetTag = document.createElement('div');
@@ -16,7 +16,7 @@ const newWidget = async (modelState) => {
     document.body.appendChild(widgetTag);
     const manager = new HTMLManager()
     const modelId = 'u-u-i-d';
-    const modelCreate: widgets.ModelOptions = {
+    const modelCreate: base.ModelOptions = {
         model_name: 'OutputModel',
         model_id: modelId,
         model_module: '@jupyter-widgets/output',
@@ -28,7 +28,6 @@ const newWidget = async (modelState) => {
     );
     return view;
 }
-
 
 describe('text output', () => {
     let view;
@@ -153,7 +152,7 @@ describe('widget output', () => {
             version_minor: 0
         });
         const modelId = 'u-u-i-d';
-        const modelCreate: widgets.ModelOptions = {
+        const modelCreate: base.ModelOptions = {
             model_name: 'OutputModel',
             model_id: modelId,
             model_module: '@jupyter-widgets/output',
@@ -201,7 +200,7 @@ describe('custom mimetypes', () => {
         }, 0)
 
         const modelId = 'u-u-i-d';
-        const modelCreate: widgets.ModelOptions = {
+        const modelCreate: base.ModelOptions = {
             model_name: 'OutputModel',
             model_id: modelId,
             model_module: '@jupyter-widgets/output',

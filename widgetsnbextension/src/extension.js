@@ -6,6 +6,8 @@ window['requirejs'].config({
     map: {
         '*': {
             '@jupyter-widgets/controls': 'nbextensions/jupyter-js-widgets/extension',
+            '@jupyter-widgets/base': 'nbextensions/jupyter-js-widgets/extension',
+            '@jupyter-widgets/output': 'nbextensions/jupyter-js-widgets/extension',
         },
     }
 });
@@ -145,4 +147,4 @@ function load_ipython_extension () {
 var _ = require('underscore');
 module.exports = _.extend({
   load_ipython_extension: load_ipython_extension,
-}, require('@jupyter-widgets/controls'), require('./widget_output'));
+}, require('@jupyter-widgets/controls'), require('@jupyter-widgets/base'), require('./widget_output'));
