@@ -68,7 +68,6 @@ def _bounded_int_doc(cls):
 class _Int(DescriptionWidget, ValueWidget, CoreWidget):
     """Base class for widgets that represent an integer."""
     value = CInt(0, help="Int value").tag(sync=True)
-    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
     def __init__(self, value=None, **kwargs):
         if value is not None:
@@ -127,6 +126,7 @@ class IntText(_Int):
     """Textbox widget that represents an integer."""
     _view_name = Unicode('IntTextView').tag(sync=True)
     _model_name = Unicode('IntTextModel').tag(sync=True)
+    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
 
 @register
@@ -136,6 +136,7 @@ class BoundedIntText(_BoundedInt):
     """
     _view_name = Unicode('IntTextView').tag(sync=True)
     _model_name = Unicode('BoundedIntTextModel').tag(sync=True)
+    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
 
 @register
@@ -158,6 +159,7 @@ class IntSlider(_BoundedInt):
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
     readout_format = Unicode('d', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
+    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
     style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
 
@@ -219,6 +221,7 @@ class Play(_BoundedInt):
     """
     interval = CInt(100, help="The maximum value for the play control.").tag(sync=True)
     step = CInt(1, help="Increment step").tag(sync=True)
+    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
     _view_name = Unicode('PlayView').tag(sync=True)
     _model_name = Unicode('PlayModel').tag(sync=True)
@@ -282,3 +285,4 @@ class IntRangeSlider(_BoundedIntRange):
     readout_format = Unicode('d', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)
     style = InstanceDict(SliderStyle, help="Slider style customizations.").tag(sync=True, **widget_serialization)
+    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)

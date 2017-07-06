@@ -19,7 +19,6 @@ from .widget_int import ProgressStyle, SliderStyle
 
 class _Float(DescriptionWidget, ValueWidget, CoreWidget):
     value = CFloat(0.0, help="Float value").tag(sync=True)
-    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
     def __init__(self, value=None, **kwargs):
         if value is not None:
@@ -74,6 +73,7 @@ class FloatText(_Float):
     """
     _view_name = Unicode('FloatTextView').tag(sync=True)
     _model_name = Unicode('FloatTextModel').tag(sync=True)
+    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
 
 @register
@@ -95,6 +95,7 @@ class BoundedFloatText(_BoundedFloat):
     """
     _view_name = Unicode('FloatTextView').tag(sync=True)
     _model_name = Unicode('BoundedFloatTextModel').tag(sync=True)
+    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
 
 @register
@@ -130,6 +131,8 @@ class FloatSlider(_BoundedFloat):
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
     readout_format = Unicode('.2f', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
+    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
+
 
     style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
 
@@ -264,5 +267,6 @@ class FloatRangeSlider(_BoundedFloatRange):
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
     readout_format = Unicode('.2f', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)
+    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
     style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)

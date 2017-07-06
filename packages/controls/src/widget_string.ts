@@ -211,8 +211,7 @@ class TextareaView extends DescriptionView {
         if (options === undefined || options.updated_view != this) {
             this.textbox.value = this.model.get('value');
             this.textbox.rows = this.model.get('rows');
-            var disabled = this.model.get('disabled');
-            this.textbox.disabled = disabled;
+            this.textbox.disabled = this.model.get('disabled');
         }
         return super.update();
     }
@@ -313,8 +312,7 @@ class TextView extends DescriptionView {
               this.textbox.value = this.model.get('value');
             }
 
-            var disabled = this.model.get('disabled');
-            this.textbox.disabled = disabled;
+            this.textbox.disabled = this.model.get('disabled');
         }
         return super.update();
     }

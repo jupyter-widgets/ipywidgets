@@ -40,6 +40,8 @@ class Button(DOMWidget, CoreWidget):
        tooltip caption of the toggle button
     icon: str
        font-awesome icon name
+    disabled: bool
+       whether user interaction is enabled
     """
     _view_name = Unicode('ButtonView').tag(sync=True)
     _model_name = Unicode('ButtonModel').tag(sync=True)

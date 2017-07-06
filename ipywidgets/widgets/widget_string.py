@@ -18,7 +18,6 @@ class _String(DescriptionWidget, ValueWidget, CoreWidget):
     """Base class used to create widgets that represent a string."""
 
     value = Unicode(help="String value").tag(sync=True)
-    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
     # We set a zero-width space as a default placeholder to make sure the baseline matches
     # the text, not the bottom margin. See the last paragraph of
@@ -64,6 +63,7 @@ class Textarea(_String):
     _view_name = Unicode('TextareaView').tag(sync=True)
     _model_name = Unicode('TextareaModel').tag(sync=True)
     rows = Int(None, allow_none=True, help="The number of rows to display.").tag(sync=True)
+    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
     def scroll_to_bottom(self):
         self.send({"method": "scroll_to_bottom"})
@@ -74,6 +74,7 @@ class Text(_String):
     """Single line textbox widget."""
     _view_name = Unicode('TextView').tag(sync=True)
     _model_name = Unicode('TextModel').tag(sync=True)
+    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
     def __init__(self, *args, **kwargs):
         super(Text, self).__init__(*args, **kwargs)
@@ -111,6 +112,7 @@ class Password(Text):
     """Single line textbox widget."""
     _view_name = Unicode('PasswordView').tag(sync=True)
     _model_name = Unicode('PasswordModel').tag(sync=True)
+    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
     def _repr_keys(self):
         # Don't include password value in repr!

@@ -49,7 +49,7 @@ class CheckboxView extends DescriptionView {
         this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-checkbox');
 
-        // adding a zero-width space to the label to help 
+        // adding a zero-width space to the label to help
         // the browser set the baseline correctly
         this.label.innerHTML = '&#8203;'
 
