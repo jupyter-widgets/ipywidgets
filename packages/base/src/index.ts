@@ -7,3 +7,4 @@ export * from "./widget_layout";
 export * from "./widget_style";
 export * from "./services-shim";
 export * from "./viewlist";
+export * from "./utils";
