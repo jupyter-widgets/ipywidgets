@@ -221,7 +221,7 @@ def embed_snippet(views,
     return snippet_template.format(**values)
 
 
-def embed_minimal_html(fp, views, **kwargs):
+def embed_minimal_html(fp, views, title=u'IPyWidget export', template=None, **kwargs):
     """Write a minimal HTML file with widget views embedded.
 
     Parameters
@@ -231,6 +231,8 @@ def embed_minimal_html(fp, views, **kwargs):
     views: widget or collection of widgets or None
         The widgets to include views for. If None, all DOMWidgets are
         included (not just the displayed ones).
+	title: title for the html page
+	template: template string for the html,
 
     Further it accepts keyword args similar to `embed_snippet`.
     """
@@ -238,11 +240,13 @@ def embed_minimal_html(fp, views, **kwargs):
     snippet = embed_snippet(views, **kwargs)
 
     values = {
-        'title': u'IPyWidget export',
+        'title': title,
         'snippet': snippet,
     }
+    if template is None:
+        template = html_template
 
-    html_code = html_template.format(**values)
+    html_code = template.format(**values)
 
     # Check if fp is writable:
     if hasattr(fp, 'write'):
