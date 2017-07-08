@@ -14,7 +14,6 @@ class DescriptionStyleModel extends StyleModel {
     defaults() {
         return {...super.defaults(),
             _model_name: 'DescriptionStyleModel',
-            _view_module: '@jupyter-widgets/controls',
             _model_module: '@jupyter-widgets/controls',
         };
     }
