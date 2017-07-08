@@ -25,7 +25,6 @@ class FloatModel extends CoreDescriptionModel {
         return _.extend(super.defaults(), {
             _model_name: "FloatModel",
             value: 0,
-            disabled: false,
         });
     }
 }
@@ -53,7 +52,8 @@ class FloatSliderModel extends BoundedFloatModel {
             readout: true,
             readout_format: '.2f',
             slider_color: null,
-            continuous_update: true
+            continuous_update: true,
+            disabled: false,
         });
     }
     initialize(attributes, options) {
@@ -106,7 +106,8 @@ class FloatTextModel extends FloatModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: "FloatTextModel",
-            _view_name: "FloatTextView"
+            _view_name: "FloatTextView",
+            disabled: false,
         });
     }
 }
@@ -116,7 +117,8 @@ class BoundedFloatTextModel extends BoundedFloatModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: "BoundedFloatTextModel",
-            _view_name: "FloatTextView"
+            _view_name: "FloatTextView",
+            disabled: false,
         });
     }
 }

@@ -44,6 +44,7 @@
     --jp-widgets-input-border-color: var(--jp-border-color1);
     --jp-widgets-input-focus-border-color: var(--jp-brand-color2);
     --jp-widgets-input-border-width: var(--jp-widgets-border-width);
+    --jp-widgets-disabled-opacity: 0.6;
 
     /* From Material Design Lite */
     --md-shadow-key-umbra-opacity: 0.2;
@@ -133,11 +134,15 @@
     content: "\200b"; /* zero-width space */
 }
 
+.jupyter-widgets.jupyter-button:disabled {
+    opacity: var(--jp-widgets-disabled-opacity);
+}
+
 .jupyter-button i.fa.center {
     margin-right: 0;
 }
 
-.jupyter-button:hover, .jupyter-button:focus {
+.jupyter-button:hover:enabled, .jupyter-button:focus:enabled {
     /* MD Lite 2dp shadow */
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, var(--md-shadow-key-penumbra-opacity)),
                 0 3px 1px -2px rgba(0, 0, 0, var(--md-shadow-key-umbra-opacity)),
@@ -153,7 +158,7 @@
     background-color: var(--jp-layout-color3);
 }
 
-.jupyter-button:focus {
+.jupyter-button:focus:enabled {
     outline: 1px solid var(--jp-widgets-input-focus-border-color);
 }
 
@@ -401,6 +406,10 @@
 .widget-text input[type="text"] {
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
+}
+
+.widget-text input[type="text"]:disabled, .widget-textarea textarea:disabled {
+    opacity: var(--jp-widgets-disabled-opacity);
 }
 
 .widget-text input[type="text"], .widget-textarea textarea {
@@ -659,6 +668,10 @@
     border-color: var(--jp-widgets-input-focus-border-color);
 }
 
+.widget-dropdown > select:disabled {
+    opacity: var(--jp-widgets-disabled-opacity);
+}
+
 /* To disable the dotted border in Firefox around select controls.
    See http://stackoverflow.com/a/18853002 */
 .widget-dropdown > select:-moz-focusring {
@@ -717,6 +730,10 @@
 .widget-toggle-buttons .widget-toggle-button {
     margin-left: var(--jp-widgets-margin);
     margin-right: var(--jp-widgets-margin);
+}
+
+.widget-toggle-buttons .jupyter-button:disabled {
+    opacity: var(--jp-widgets-disabled-opacity);
 }
 
 /* Radio Buttons Styling */
@@ -800,6 +817,10 @@
     box-sizing: border-box;
 }
 
+.widget-colorpicker input[type="text"]:disabled {
+    opacity: var(--jp-widgets-disabled-opacity);
+}
+
 /* Date Picker Styling */
 
 .widget-datepicker {
@@ -830,6 +851,10 @@
     border-color: var(--jp-warn-color1);
 }
 
+.widget-datepicker input[type="date"]:disabled {
+    opacity: var(--jp-widgets-disabled-opacity);
+}
+
 /* Play Widget */
 
 .widget-play {
@@ -840,6 +865,10 @@
 .widget-play .jupyter-button {
     flex-grow: 1;
     text-align: center;
+}
+
+.widget-play .jupyter-button:disabled {
+    opacity: var(--jp-widgets-disabled-opacity);
 }
 
 /* Tab Widget */

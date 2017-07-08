@@ -173,7 +173,6 @@ class SelectView extends DescriptionView {
      */
     update() {
         super.update();
-        // Disable listbox if needed
         this.listbox.disabled = this.model.get('disabled');
         this.listbox.size = this.model.get('rows');
         this.updateSelection();
@@ -619,6 +618,14 @@ class SelectionSliderView extends DescriptionView {
             var orientation = this.model.get('orientation');
             this.$slider.slider('option', 'value', min);
             this.$slider.slider('option', 'orientation', orientation);
+
+            let disabled = this.model.get('disabled');
+            this.$slider.slider('option', 'disabled', disabled);
+            if (disabled) {
+                this.readout.contentEditable = 'false';
+            } else {
+                this.readout.contentEditable = 'true';
+            }
 
             // Use the right CSS classes for vertical & horizontal sliders
             if (orientation === 'vertical') {

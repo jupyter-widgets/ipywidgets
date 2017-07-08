@@ -92,6 +92,20 @@ class DatePickerView extends DescriptionView {
 
         this.listenTo(this.model, 'change:value', this._update_value);
         this._update_value();
+        this.update();
+    }
+
+    /**
+     * Update the contents of this view
+     *
+     * Called when the model is changed. The model may have been
+     * changed by another view or by a state update from the back-end.
+     */
+    update(options?) {
+        if (options === undefined || options.updated_view != this) {
+            this._datepicker.disabled = this.model.get('disabled');
+        }
+        return super.update();
     }
 
     events(): {[e: string]: string} {

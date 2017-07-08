@@ -32,7 +32,6 @@ class IntModel extends CoreDescriptionModel {
         return _.extend(super.defaults(), {
             _model_name: 'IntModel',
             value: 0,
-            disabled: false,
         });
     }
 }
@@ -77,7 +76,8 @@ class IntSliderModel extends BoundedIntModel {
             readout: true,
             readout_format: 'd',
             continuous_update: true,
-            style: null
+            style: null,
+            disabled: false,
         });
     }
     initialize(attributes, options) {
@@ -144,6 +144,12 @@ abstract class BaseIntSliderView extends DescriptionView {
                     that.$slider.slider('option', key, model_value);
                 }
             });
+
+            if (this.model.get('disabled')) {
+                this.readout.contentEditable = 'false';
+            } else {
+                this.readout.contentEditable = 'true';
+            }
 
             let max = this.model.get('max');
             let min = this.model.get('min');
@@ -467,7 +473,8 @@ class IntTextModel extends IntModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'IntTextModel',
-            _view_name: 'IntTextView'
+            _view_name: 'IntTextView',
+            disabled: false
         });
     }
 }
@@ -477,7 +484,8 @@ class BoundedIntTextModel extends BoundedIntModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'BoundedIntTextModel',
-            _view_name: 'IntTextView'
+            _view_name: 'IntTextView',
+            disabled: false
         });
     }
 }
@@ -511,13 +519,7 @@ class IntTextView extends DescriptionView {
             if (this._parse_value(this.textbox.value) !== value) {
                 this.textbox.value = value.toString();
             }
-
-            var disabled = this.model.get('disabled');
-            if (disabled) {
-                this.textbox.setAttribute('disabled', disabled);
-            } else {
-                this.textbox.removeAttribute('disabled');
-            }
+            this.textbox.disabled = this.model.get('disabled');
         }
         return super.update();
     }
@@ -734,6 +736,7 @@ class PlayModel extends BoundedIntModel {
             show_repeat: true,
             interval: 100,
             step: 1,
+            disabled: false,
         });
     }
     initialize(attributes, options) {
@@ -839,15 +842,30 @@ class PlayView extends DOMWidgetView {
         this.listenTo(this.model, 'change:show_repeat', this.update_repeat);
         this.update_playing();
         this.update_repeat();
+        this.update();
+    }
+
+    update() {
+        let disabled = this.model.get('disabled');
+        this.playButton.disabled = disabled;
+        this.pauseButton.disabled = disabled;
+        this.stopButton.disabled = disabled;
+        this.repeatButton.disabled = disabled;
+        this.update_playing();
     }
 
     update_playing() {
         var playing = this.model.get('_playing');
+        let disabled = this.model.get('disabled');
         if (playing) {
-            this.pauseButton.disabled = false;
+            if (!disabled) {
+                this.pauseButton.disabled = false;
+            }
             this.playButton.classList.add('mod-active');
         } else {
-            this.pauseButton.disabled = true;
+            if (!disabled) {
+                this.pauseButton.disabled = true;
+            }
             this.playButton.classList.remove('mod-active');
         }
     }
