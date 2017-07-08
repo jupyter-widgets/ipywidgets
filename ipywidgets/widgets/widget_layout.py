@@ -24,8 +24,8 @@ class Layout(Widget):
     """
 
     _view_name = Unicode('LayoutView').tag(sync=True)
-    _view_module = Unicode('@jupyter-widgets/base')
-    _view_module_version = Unicode('3.0.0')
+    _view_module = Unicode('@jupyter-widgets/base').tag(sync=True)
+    _view_module_version = Unicode('3.0.0').tag(sync=True)
     _model_name = Unicode('LayoutModel').tag(sync=True)
 
     # Keys
