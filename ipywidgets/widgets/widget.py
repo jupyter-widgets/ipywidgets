@@ -471,7 +471,7 @@ class Widget(LoggingHasTraits):
     def _compare(self, a, b):
         if self._is_numpy(a) or self._is_numpy(b):
             import numpy as np
-            return np.equal(a, b)
+            return np.array_equal(a, b)
         else:
             return a == b
 
