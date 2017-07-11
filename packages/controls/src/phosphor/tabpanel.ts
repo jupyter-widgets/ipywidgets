@@ -120,7 +120,7 @@ class TabPanel extends Widget {
    * Get the index of the currently selected tab.
    *
    * #### Notes
-   * This will be `-1` if no tab is selected.
+   * This will be `null` if no tab is selected.
    */
   get currentIndex(): number {
     return this.tabBar.currentIndex;
@@ -130,7 +130,7 @@ class TabPanel extends Widget {
    * Set the index of the currently selected tab.
    *
    * #### Notes
-   * If the index is out of range, it will be set to `-1`.
+   * If the index is out of range, it will be set to `null`.
    */
   set currentIndex(value: number) {
     this.tabBar.currentIndex = value;

@@ -339,7 +339,7 @@ class TabView extends DOMWidgetView {
         // tabs before updating so we don't get spurious changes in the index,
         // which would then set off another sync cycle.
         this.updatingTabs = true;
-        this.pWidget.currentIndex = -1;
+        this.pWidget.currentIndex = null;
         this.childrenViews.update(this.model.get('children'));
         this.pWidget.currentIndex = this.model.get('selected_index');
         this.updatingTabs = false;
