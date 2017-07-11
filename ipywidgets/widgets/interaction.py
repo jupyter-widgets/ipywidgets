@@ -16,6 +16,7 @@ try:
     from inspect import getfullargspec as check_argspec
 except ImportError:
     from inspect import getargspec as check_argspec # py2
+import sys
 
 from IPython.core.getipython import get_ipython
 from . import (ValueWidget, Text,
@@ -30,11 +31,6 @@ from collections import Iterable, Mapping
 
 empty = Parameter.empty
 
-try:
-    import matplotlib as mpl
-    from ipykernel.pylab.backend_inline import flush_figures
-except ImportError:
-    mpl = None
 
 def show_inline_matplotlib_plots():
     """Show matplotlib plots immediately if using the inline backend.
@@ -47,8 +43,19 @@ def show_inline_matplotlib_plots():
     https://github.com/ipython/ipython/issues/10376 for more details. This
     function displays any matplotlib plots if the backend is the inline backend.
     """
-    if mpl is not None and mpl.get_backend() == 'module://ipykernel.pylab.backend_inline':
+    if 'matplotlib' not in sys.modules:
+        # matplotlib hasn't been imported, nothing to do.
+        return
+
+    try:
+        import matplotlib as mpl
+        from ipykernel.pylab.backend_inline import flush_figures
+    except ImportError:
+        return
+
+    if mpl.get_backend() == 'module://ipykernel.pylab.backend_inline':
         flush_figures()
+
 
 def interactive_output(f, controls):
     """Connect widget controls to a function.
@@ -71,6 +78,7 @@ def interactive_output(f, controls):
     show_inline_matplotlib_plots()
     observer(None)
     return out
+
 
 def _matches(o, pattern):
     """Match a pattern of types in a sequence."""
