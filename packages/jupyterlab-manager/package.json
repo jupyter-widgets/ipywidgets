@@ -9,7 +9,6 @@
     "@jupyter-widgets/controls": "^0.5.4",
     "@jupyter-widgets/output": "^0.2.2",
     "@jupyterlab/application": "^0.8.3",
-    "@jupyterlab/docmanager": "^0.8.2",
     "@jupyterlab/docregistry": "^0.8.2",
     "@jupyterlab/notebook": "^0.8.3",
     "@jupyterlab/outputarea": "^0.8.2",

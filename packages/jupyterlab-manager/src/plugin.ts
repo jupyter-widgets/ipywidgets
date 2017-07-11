@@ -2,10 +2,6 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-  IDocumentManager
-} from '@jupyterlab/docmanager';
-
-import {
   DocumentRegistry
 } from '@jupyterlab/docregistry';
 
@@ -121,7 +117,6 @@ class NBWidgetExtension implements INBWidgetExtension {
 const widgetManagerProvider: JupyterLabPlugin<INBWidgetExtension> = {
   id: 'jupyter.extensions.nbWidgetManager',
   provides: INBWidgetExtension,
-  requires: [IDocumentManager],
   activate: activateWidgetExtension,
   autoStart: true
 };
@@ -132,9 +127,8 @@ export default widgetManagerProvider;
 /**
  * Activate the widget extension.
  */
-function activateWidgetExtension(app: JupyterLab, docManager: IDocumentManager): INBWidgetExtension {
-  const { registry } = docManager;
+function activateWidgetExtension(app: JupyterLab): INBWidgetExtension {
   let extension = new NBWidgetExtension();
-  registry.addWidgetExtension('Notebook', extension);
+  app.docRegistry.addWidgetExtension('Notebook', extension);
   return extension;
 }
