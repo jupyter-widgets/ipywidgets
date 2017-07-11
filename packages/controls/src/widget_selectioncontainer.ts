@@ -156,7 +156,7 @@ class AccordionView extends DOMWidgetView {
         // tabs before updating so we don't get spurious changes in the index,
         // which would then set off another sync cycle.
         this.updatingChildren = true;
-        this.pWidget.selection.index = -1;
+        this.pWidget.selection.index = null;
         this.children_views.update(this.model.get('children'));
         this.update_selected_index();
         this.updatingChildren = false;
