@@ -8,11 +8,12 @@
     "@jupyter-widgets/base": "^0.5.2",
     "@jupyter-widgets/controls": "^0.5.4",
     "@jupyter-widgets/output": "^0.2.2",
-    "@jupyterlab/application": "^0.7.0",
-    "@jupyterlab/docregistry": "^0.7.0",
-    "@jupyterlab/notebook": "^0.7.0",
-    "@jupyterlab/outputarea": "^0.7.0",
-    "@jupyterlab/rendermime": "^0.7.0",
+    "@jupyterlab/application": "^0.8.3",
+    "@jupyterlab/docregistry": "^0.8.2",
+    "@jupyterlab/notebook": "^0.8.3",
+    "@jupyterlab/outputarea": "^0.8.2",
+    "@jupyterlab/rendermime": "^0.8.2",
+    "@jupyterlab/rendermime-interfaces": "^0.2.1",
     "@phosphor/coreutils": "^1.1.0",
     "@phosphor/disposable": "^1.1.0",
     "@phosphor/widgets": "^1.2.0"
@@ -20,7 +21,7 @@
   "devDependencies": {
     "rimraf": "^2.6.1",
     "typedoc": "^0.6.0",
-    "typescript": "~2.3.1"
+    "typescript": "~2.4.1"
   },
   "keywords": [
     "jupyter",

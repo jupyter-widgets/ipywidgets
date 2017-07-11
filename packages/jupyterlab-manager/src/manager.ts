@@ -17,6 +17,10 @@ import {
 
 import {
   IRenderMime
+} from '@jupyterlab/rendermime-interfaces';
+
+import {
+  RenderMime
 } from '@jupyterlab/rendermime';
 
 import {
@@ -71,7 +75,7 @@ class BackboneViewWrapper extends Widget {
  */
 export
 class WidgetManager extends ManagerBase<Widget> implements IDisposable {
-  constructor(context: DocumentRegistry.IContext<DocumentRegistry.IModel>, rendermime: IRenderMime) {
+  constructor(context: DocumentRegistry.IContext<DocumentRegistry.IModel>, rendermime: RenderMime) {
     super();
     this._context = context;
     this._rendermime = rendermime;
@@ -182,7 +186,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
 
   private _context: DocumentRegistry.IContext<DocumentRegistry.IModel>;
   private _registry = new SemVerCache<Promise<any>>();
-  private _rendermime: IRenderMime;
+  private _rendermime: RenderMime;
 
   _commRegistration: IDisposable;
 }

@@ -10,8 +10,8 @@ import {
 } from '@phosphor/widgets';
 
 import {
-  RenderMime
-} from '@jupyterlab/rendermime';
+  IRenderMime
+} from '@jupyterlab/rendermime-interfaces';
 
 import {
     WidgetManager
@@ -21,52 +21,30 @@ import {
  * A renderer for widgets.
  */
 export
-class WidgetRenderer implements RenderMime.IRenderer, IDisposable {
-  constructor(widgetManager: WidgetManager) {
-    this._manager = widgetManager;
-  }
-
-  /**
-   * Whether the renderer can render given the render options.
-   *
-   * @param options - The options that would be used to render the data.
-   */
-  canRender(options: RenderMime.IRenderOptions): boolean {
-    let source: any = options.model.data.get(options.mimeType);
-    let model = this._manager.get_model(source.model_id);
-    return model !== void 0;
-  }
-
-  /**
-   * Whether the renderer will sanitize the data given the render options.
-   */
-  wouldSanitize(options: RenderMime.IRenderOptions): boolean {
-    return false;
-  }
-
-  /**
-   * Render the transformed mime data.
-   *
-   * @param options - The options used to render the data.
-   */
-  render(options: RenderMime.IRenderOptions): Widget {
-    // data is a model id
-    let w = new Panel();
-    let source: any = options.model.data.get(options.mimeType);
-    let model = this._manager.get_model(source.model_id);
-    if (model) {
-      model.then((model: any) => {
-        return this._manager.display_model(void 0, model, void 0);
-      }).then((view: Widget) => {
-        w.addWidget(view);
-      });
-    } else {
-      // Model doesn't exist
-      let error = document.createElement('p');
-      error.textContent = 'Widget not found.';
-      w.addWidget(new Widget({node: error}));
+class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable {
+    constructor(options: IRenderMime.IRendererOptions, manager: WidgetManager) {
+        super();
+        this.mimeType = options.mimeType;
+        this._manager = manager;
     }
-    return w;
+
+  async renderModel(model: IRenderMime.IMimeModel) {
+    const source: any = model.data[this.mimeType];
+    const modelPromise = this._manager.get_model(source.model_id);
+    if (modelPromise) {
+      try {
+        let wModel = await modelPromise;
+        let widget = await this._manager.display_model(void 0, wModel, void 0);
+        this.addWidget(widget);
+      } catch(err) {
+        console.log('Error displaying widget');
+        console.log(err);
+        this.node.textContent = 'Error displaying widget';
+      }
+    } else {
+      this.node.textContent = 'Error creating widget: could not find model';
+      return Promise.resolve();
+    }
   }
 
   /**
@@ -89,6 +67,9 @@ class WidgetRenderer implements RenderMime.IRenderer, IDisposable {
     this._manager = null;
   }
 
-  public mimeTypes = ['application/vnd.jupyter.widget-view+json'];
+  /**
+   * The mimetype being rendered.
+   */
+  readonly mimeType: string;
   private _manager: WidgetManager;
 }

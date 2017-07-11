@@ -14,13 +14,13 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "@jupyter-widgets/html-manager": "^0.3.4",
-    "font-awesome": "^4.5.0"
+    "font-awesome": "^4.7.0"
   },
   "devDependencies": {
-    "css-loader": "^0.23.1",
-    "file-loader": "^0.8.5",
-    "style-loader": "^0.13.0",
-    "url-loader": "^0.5.7",
-    "webpack": "^1.12.10"
+    "css-loader": "^0.28.4",
+    "file-loader": "^0.11.2",
+    "style-loader": "^0.18.1",
+    "url-loader": "^0.5.9",
+    "webpack": "^1.12.12"
   }
 }

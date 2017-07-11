@@ -149,7 +149,7 @@ abstract class ManagerBase<T> {
     /**
      * Get a promise for a model by model id.
      */
-    get_model(model_id: string): Promise<Backbone.Model> {
+    get_model(model_id: string): Promise<WidgetModel> {
         // TODO: Perhaps we should return a Promise.reject if the model is not
         // found. Right now this isn't a true async function because it doesn't
         // always return a promise.
@@ -380,7 +380,7 @@ abstract class ManagerBase<T> {
                 if (this._models[model_id]) {
                     return this._models[model_id].then(model => {
                         // deserialize state
-                        return model.constructor._deserialize_state(modelState || {}, this).then(attributes => {
+                        return (model.constructor as typeof WidgetModel)._deserialize_state(modelState || {}, this).then(attributes => {
                             model.set_state(attributes);
                             return model;
                         });
@@ -438,5 +438,5 @@ abstract class ManagerBase<T> {
     /**
      * Dictionary of model ids and model instance promises
      */
-    private _models: any = Object.create(null);
+    private _models: {[key: string]: Promise<WidgetModel>} = Object.create(null);
 }

@@ -24,7 +24,10 @@ export class OutputModel extends outputBase.OutputModel {
     initialize(attributes: any, options: any) {
         super.initialize(attributes, options);
         this._outputs = new OutputAreaModel({
-            values: attributes.outputs
+            values: attributes.outputs,
+            // Widgets (including this output widget) are only rendered in
+            // trusted contexts
+            trusted: true,
         });
     }
 
@@ -56,7 +59,6 @@ export class OutputView extends outputBase.OutputView {
         const rendermime = manager.renderMime;
         this._outputView = new OutputArea({
             rendermime: rendermime,
-            contentFactory: OutputArea.defaultContentFactory,
             model: this.model.outputs
         })
         this.pWidget.insertWidget(0, this._outputView);
