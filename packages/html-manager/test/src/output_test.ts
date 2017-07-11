@@ -1,7 +1,8 @@
 
 import { expect } from 'chai';
 
-import { TextRenderer, RenderMime } from '@jupyterlab/rendermime';
+import { RenderedText, RenderMime } from '@jupyterlab/rendermime';
+import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 
 import { Widget, Panel } from '@phosphor/widgets';
 
@@ -10,109 +11,90 @@ import { OutputModel, OutputView } from '../../lib/output';
 
 import * as base from '@jupyter-widgets/base'
 
-const newWidget = async (modelState) => {
+const newWidget = async (modelState): Promise<HTMLElement> => {
     const widgetTag = document.createElement('div');
     widgetTag.className = 'widget-subarea';
     document.body.appendChild(widgetTag);
-    const manager = new HTMLManager()
+    const manager = new HTMLManager();
     const modelId = 'u-u-i-d';
     const modelCreate: base.ModelOptions = {
         model_name: 'OutputModel',
         model_id: modelId,
         model_module: '@jupyter-widgets/output',
         model_module_version: '*'
-    }
+    };
     const model = await manager.new_model(modelCreate, modelState);
     const view = await manager.display_model(
         undefined, model, { el: widgetTag }
     );
-    return view;
+    return widgetTag;
 }
 
-describe('text output', () => {
-    let view;
-    const textValue = 'this-is-a-test\n'
-    const modelState = {
-        _view_module: '@jupyter-widgets/output',
-        outputs: [
-            {
-                "output_type": "stream",
-                "name": "stdout",
-                "text": textValue
-            }
-        ],
-    }
 
-    beforeEach(async () => {
-        view = await newWidget(modelState)
+describe('Output widget', function() {
+    it('renders text output', async () => {
+        let elt: HTMLElement;
+        const textValue = 'this-is-a-test\n'
+        const modelState = {
+            _view_module: '@jupyter-widgets/output',
+            outputs: [
+                {
+                    "output_type": "stream",
+                    "name": "stdout",
+                    "text": textValue
+                }
+            ],
+        }
+
+        elt = await newWidget(modelState)
+        expect(elt.textContent).to.equal(textValue)
     })
 
-    it('create the view', () => {
-        expect(view).to.not.be.undefined
-    });
 
-    it('display the view', () => {
-        const outputView = (view as OutputView);
-        const el = view.el;
-        expect(el.textContent).to.equal(textValue)
-    });
-})
-
-
-describe('data output', () => {
-    let view;
-
-    // Pandas dataframe
-    const modelState = {
-        _view_module: '@jupyter-widgets/output',
-        outputs: [
-            {
-                "output_type": "display_data",
-                "data": {
-                    "text/plain": "   a  b\n0  1  4\n1  2  5\n2  3  6",
-                    "text/html": "<div>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>a</th>\n      <th>b</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>0</th>\n      <td>1</td>\n      <td>4</td>\n    </tr>\n    <tr>\n      <th>1</th>\n      <td>2</td>\n      <td>5</td>\n    </tr>\n    <tr>\n      <th>2</th>\n      <td>3</td>\n      <td>6</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
-                },
-                "metadata": {}
-            }
-        ],
-    }
-
-    beforeEach(async () => {
-        view = await newWidget(modelState)
-    })
-
-    it('display the dataframe', () => {
-        const outputView = (view as OutputView);
-        const el = view.el;
-        expect(el.querySelectorAll('table').length).to.equal(1);
-    });
-})
-
-
-describe('widget output', () => {
-    let view;
-    const modelState = {
-        _view_module: "@jupyter-widgets/output",
-        outputs: [
-            {
-                "output_type": "display_data",
-                "data": {
-                    "application/vnd.jupyter.widget-view+json": {
-                        "model_id": "adffc4580a0944f6929c381463b0059b",
-                        "version_minor": "0",
-                        "version_major": "2"
+    it('renders data output', async function() {
+        // Pandas dataframe
+        const modelState = {
+            _view_module: '@jupyter-widgets/output',
+            outputs: [
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "text/plain": "   a  b\n0  1  4\n1  2  5\n2  3  6",
+                        "text/html": "<div>\n<table border=\"1\" class=\"dataframe\">\n  <thead>\n    <tr style=\"text-align: right;\">\n      <th></th>\n      <th>a</th>\n      <th>b</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <th>0</th>\n      <td>1</td>\n      <td>4</td>\n    </tr>\n    <tr>\n      <th>1</th>\n      <td>2</td>\n      <td>5</td>\n    </tr>\n    <tr>\n      <th>2</th>\n      <td>3</td>\n      <td>6</td>\n    </tr>\n  </tbody>\n</table>\n</div>"
                     },
-                    "text/plain": "A Jupyter Widget"
-                },
-                "metadata": {}
-            }
-        ]
-    };
+                    "metadata": {}
+                }
+            ],
+        }
 
-    beforeEach(async () => {
-        const widgetTag = document.createElement('div');
-        widgetTag.className = 'widget-subarea';
-        document.body.appendChild(widgetTag);
+        let elt = await newWidget(modelState)
+        expect(elt.querySelectorAll('table').length).to.equal(1);
+    })
+
+
+    it('renders widgets', async function() {
+        let elt;
+        const modelState = {
+            _view_module: "@jupyter-widgets/output",
+            outputs: [
+                {
+                    "output_type": "display_data",
+                    "data": {
+                        "application/vnd.jupyter.widget-view+json": {
+                            "model_id": "adffc4580a0944f6929c381463b0059b",
+                            "version_minor": "0",
+                            "version_major": "2"
+                        },
+                        "text/plain": "A Jupyter Widget"
+                    },
+                    "metadata": {}
+                }
+            ]
+        };
+
+        elt = document.createElement('div');
+        elt.className = 'widget-subarea';
+        document.body.appendChild(elt);
         const manager = new HTMLManager()
 
         // We need to seed the manager with the state of the widgets
@@ -135,7 +117,6 @@ describe('widget output', () => {
                 "model_module_version": "3.0.0",
                 "state": {
                     "description_width": "",
-                    "_view_module": "@jupyter-widgets/controls",
                     "_model_module": "@jupyter-widgets/controls"
                 }
             },
@@ -159,44 +140,47 @@ describe('widget output', () => {
             model_module_version: '*'
         }
         const model = await manager.new_model(modelCreate, modelState);
-        view = await manager.display_model(
-            undefined, model, { el: widgetTag }
+        await manager.display_model(
+            undefined, model, { el: elt }
         );
+        // Pause one more time to give the asynchronous output renderer time
+        // to render the widgets.
+        await Promise.resolve();
+
+        expect(elt.querySelectorAll('.slider').length).to.equal(1);
+
     });
 
-    it('show a slider widget', () => {
-        const outputView = (view as OutputView);
-        const el = view.el;
-        expect(el.querySelectorAll('.slider').length).to.equal(1);
-    });
-});
+    it('renders custom mimetypes', async function() {
 
-describe('custom mimetypes', () => {
+        const t = 'hello';
+        let view;
 
-    const t = 'hello';
-    let view;
-
-    // Text renderer that always renders <pre>something different</pre>
-    class MockTextRenderer extends TextRenderer {
-        render(options: RenderMime.IRenderOptions): Widget {
-            expect(options.model.data.get('text/plain')).to.equal(t);
-            const panel = new Panel();
-            const pre = document.createElement('pre');
-            pre.innerHTML = 'something different';
-            panel.node.appendChild(pre);
-            return panel
+        // Text renderer that always renders 'something different'
+        class MockTextRenderer extends RenderedText {
+            /**
+             * Render a mime model.
+             *
+             * @param model - The mime model to render.
+             *
+             * @returns A promise which resolves when rendering is complete.
+             */
+            render(model: IRenderMime.IMimeModel): Promise<void> {
+                expect(model.data['text/plain']).to.equal(t);
+                this.node.textContent = 'something different';
+                return Promise.resolve();
+            }
         }
-    }
 
-    beforeEach(async () => {
         const widgetTag = document.createElement('div');
         widgetTag.className = 'widget-subarea';
         document.body.appendChild(widgetTag);
         const manager = new HTMLManager()
 
-        manager.renderMime.addRenderer({
-            mimeType: 'text/plain',
-            renderer: new MockTextRenderer()
+        manager.renderMime.addFactory({
+            safe: true,
+            mimeTypes: ['text/plain'],
+            createRenderer: options => new MockTextRenderer(options)
         }, 0)
 
         const modelId = 'u-u-i-d';
@@ -220,15 +204,9 @@ describe('custom mimetypes', () => {
             ]
         }
         const model = await manager.new_model(modelCreate, modelState);
-        view = await manager.display_model(
+        await manager.display_model(
             undefined, model, { el: widgetTag }
         )
+        expect(widgetTag.innerText).to.equal('something different')
     });
-
-    it('display the output of the renderer', () => {
-        const outputView = (view as OutputView);
-        const el = view.el;
-        expect(el.innerText).to.equal('something different')
-    });
-
 });
