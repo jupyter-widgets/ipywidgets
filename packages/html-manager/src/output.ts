@@ -56,7 +56,6 @@ export class OutputView extends outputBase.OutputView {
         const rendermime = manager.renderMime;
         this._outputView = new OutputArea({
             rendermime: rendermime,
-            contentFactory: OutputArea.defaultContentFactory,
             model: this.model.outputs
         })
         this.pWidget.insertWidget(0, this._outputView);
