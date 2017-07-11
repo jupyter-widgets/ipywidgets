@@ -2,7 +2,11 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-  DocumentRegistry, IDocumentRegistry
+  IDocumentManager
+} from '@jupyterlab/docmanager';
+
+import {
+  DocumentRegistry
 } from '@jupyterlab/docregistry';
 
 import {
@@ -87,14 +91,15 @@ class NBWidgetExtension implements INBWidgetExtension {
       exports: widgets
     });
     this._registry.forEach(data => wManager.register(data));
-    let wRenderer = new WidgetRenderer(wManager);
-
-    nb.rendermime.addRenderer({mimeType: WIDGET_MIMETYPE, renderer: wRenderer}, 0);
+    nb.rendermime.addFactory({
+      safe: false,
+      mimeTypes: [WIDGET_MIMETYPE],
+      createRenderer: (options) => new WidgetRenderer(options, wManager)
+    }, 0);
     return new DisposableDelegate(() => {
       if (nb.rendermime) {
-        nb.rendermime.removeRenderer(WIDGET_MIMETYPE);
+        nb.rendermime.removeFactory(WIDGET_MIMETYPE);
       }
-      wRenderer.dispose();
       wManager.dispose();
     });
   }
@@ -116,7 +121,7 @@ class NBWidgetExtension implements INBWidgetExtension {
 const widgetManagerProvider: JupyterLabPlugin<INBWidgetExtension> = {
   id: 'jupyter.extensions.nbWidgetManager',
   provides: INBWidgetExtension,
-  requires: [IDocumentRegistry],
+  requires: [IDocumentManager],
   activate: activateWidgetExtension,
   autoStart: true
 };
@@ -127,7 +132,8 @@ export default widgetManagerProvider;
 /**
  * Activate the widget extension.
  */
-function activateWidgetExtension(app: JupyterLab, registry: IDocumentRegistry): INBWidgetExtension {
+function activateWidgetExtension(app: JupyterLab, docManager: IDocumentManager): INBWidgetExtension {
+  const { registry } = docManager;
   let extension = new NBWidgetExtension();
   registry.addWidgetExtension('Notebook', extension);
   return extension;

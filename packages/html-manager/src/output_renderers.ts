@@ -3,52 +3,41 @@
 
 import { Widget, Panel } from '@phosphor/widgets';
 
-import { IRenderMime, RenderMime } from '@jupyterlab/rendermime';
+import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 
 import { HTMLManager } from './htmlmanager';
 
 export const WIDGET_MIMETYPE = 'application/vnd.jupyter.widget-view+json';
 
 // Renderer to allow the output widget to render sub-widgets
-export class WidgetRenderer implements RenderMime.IRenderer {
-    constructor(widget_manager: HTMLManager) {
-        this._manager = widget_manager;
+export class WidgetRenderer extends Widget implements IRenderMime.IRenderer {
+    constructor(options: IRenderMime.IRendererOptions, manager: HTMLManager) {
+        super();
+        this.mimeType = options.mimeType;
+        this._manager = manager;
     }
 
-    canRender(options: RenderMime.IRenderOptions): boolean {
-        const source: any = options.model.data.get(options.mimeType);
-        const model = this._manager.get_model(source.model_id);
-        return model !== void 0;
-    }
-
-    wouldSanitize(options: RenderMime.IRenderOptions): boolean {
-        return false;
-    }
-
-    render(options: RenderMime.IRenderOptions) {
-        const widget = new Panel();
-        const source: any = options.model.data.get(options.mimeType);
-        const model = this._manager.get_model(source.model_id);
-        if (model) {
-            model.then((model: any) => {
-                return this._manager.display_model(null, model, {
-                    el: widget.node
-                })
-            }).catch((error) => {
-                console.log('Error creating widget.')
-                console.log(error);
-                const node = document.createElement('p')
-                node.textContent = 'Error creating widget.'
-                widget.addWidget(new Widget({node}))
-            })
+    async renderModel(model: IRenderMime.IMimeModel) {
+        const source: any = model.data[this.mimeType];
+        const modelPromise = this._manager.get_model(source.model_id);
+        if (modelPromise) {
+            try {
+                let wModel = await modelPromise;
+                await this._manager.display_model(null, wModel, {el: this.node});
+            } catch(err) {
+                console.log('Error displaying widget');
+                console.log(err);
+                this.node.textContent = 'Error displaying widget';
+            }
         } else {
-            const node = document.createElement('p')
-            node.textContent = 'Error creating widget.'
-            widget.addWidget(new Widget({node}))
+            this.node.textContent = 'Error creating widget: could not find model';
+            return Promise.resolve();
         }
-        return widget;
     }
 
+    /**
+     * The mimetype being rendered.
+     */
+    readonly mimeType: string;
     private _manager: HTMLManager;
-    public mimeTypes = [WIDGET_MIMETYPE];
 }

@@ -15,6 +15,16 @@ import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers'
 export
 class HTMLManager extends base.ManagerBase<HTMLElement> {
 
+    constructor() {
+        super();
+        this.renderMime = new RenderMime();
+        // TODO: add default renderers
+        this.renderMime.addFactory({
+            safe: false,
+            mimeTypes: [WIDGET_MIMETYPE],
+            createRenderer: (options) => new WidgetRenderer(options, this)
+        });
+    }
     /**
      * Display the specified view. Element where the view is displayed
      * is specified in the `options.el` argument.
@@ -87,11 +97,5 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
      *
      * Defines how outputs in the output widget should be rendered.
      */
-    renderMime: RenderMime =
-        new RenderMime({
-            items: [
-                { mimeType: WIDGET_MIMETYPE, renderer: new WidgetRenderer(this) },
-                ...RenderMime.getDefaultItems()
-            ]
-        });
+    renderMime: RenderMime
 };
