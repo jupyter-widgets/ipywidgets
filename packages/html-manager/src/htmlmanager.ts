@@ -6,8 +6,7 @@ import * as base from '@jupyter-widgets/base';
 import * as outputWidgets from './output';
 
 import * as PhosphorWidget from '@phosphor/widgets';
-
-import { RenderMime } from '@jupyterlab/rendermime';
+import { RenderMime, defaultRendererFactories } from '@jupyterlab/rendermime';
 
 import { OutputModel, OutputView } from './output'
 import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers'
@@ -17,13 +16,14 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
 
     constructor() {
         super();
-        this.renderMime = new RenderMime();
-        // TODO: add default renderers
+        this.renderMime = new RenderMime({
+            initialFactories: defaultRendererFactories
+        });
         this.renderMime.addFactory({
             safe: false,
             mimeTypes: [WIDGET_MIMETYPE],
             createRenderer: (options) => new WidgetRenderer(options, this)
-        });
+        }, 0);
     }
     /**
      * Display the specified view. Element where the view is displayed
