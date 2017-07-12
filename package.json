@@ -10,6 +10,6 @@
     "publish": "npm run clean && npm run build && lerna publish -m \"Publish npm packages\""
   },
   "devDependencies": {
-    "lerna": "^2.0.0-rc.5"
+    "lerna": "^2.0.0"
   }
 }
