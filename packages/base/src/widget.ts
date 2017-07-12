@@ -93,9 +93,20 @@ class WidgetModel extends Backbone.Model {
     initialize(attributes, options: {model_id: string, comm?: any, widget_manager: any}) {
         super.initialize(attributes, options);
 
+        // Attributes should be initialized here, since user initialization may depend on it
         this.widget_manager = options.widget_manager;
         this.model_id = options.model_id;
         let comm = options.comm;
+
+        this.views = Object.create(null);
+        this.state_change = Promise.resolve();
+
+        this._closed = false;
+        this._state_lock = null;
+        this._msg_buffer = null;
+        this._msg_buffer_callbacks = null;
+        this._pending_msgs = 0;
+
 
         // _buffered_state_diff must be created *after* the super.initialize
         // call above. See the note in the set() method below.
@@ -502,25 +513,26 @@ class WidgetModel extends Backbone.Model {
         serialize?: (value?: any, widget?: WidgetModel) => any
     }};
 
-    widget_manager: managerBase.ManagerBase<any>;
-    views: {[key: string]: Promise<WidgetView>} = Object.create(null);
-    model_id: string;
-    state_change: Promise<any> = Promise.resolve();
 
-    // Not initialized here so that we don't override the values set
-    // in the initialize function.
+    // Backbone calls the overridden initialization function from the
+    // constructor. We initialize the default values above in the initialization
+    // function so that they are ready for the user code, and to not override
+    // values subclasses may set in their initialization functions.
+    widget_manager: managerBase.ManagerBase<any>;
+    model_id: string;
+    views: {[key: string]: Promise<WidgetView>};
+    state_change: Promise<any>;
     comm: any;
     comm_live: boolean;
-
     name: string;
     module: string;
 
-    private _closed: boolean = false;
-    private _state_lock: any = null;
+    private _closed: boolean;
+    private _state_lock: any;
     private _buffered_state_diff: any;
-    private _msg_buffer: any = null;
-    private _msg_buffer_callbacks: any = null;
-    private _pending_msgs = 0;
+    private _msg_buffer: any;
+    private _msg_buffer_callbacks: any;
+    private _pending_msgs: number;
 }
 
 export
