@@ -37,4 +37,22 @@ describe('Selection with items', function() {
             currentValue: 'value-1'
         })
     })
+
+    it('set a value', function() {
+        selection.value = 'value-0';
+        expect(selection.value).to.equal('value-0');
+        expect(selection.index).to.equal(0)
+    })
+
+    it('dispatch a signal when setting a value', function() {
+        selection.value = 'value-0';
+        expect(subscriber.calledOnce).to.be.true;
+        const [_, message] = subscriber.getCall(0).args
+        expect(message).to.deep.equal({
+            previousIndex: null,
+            previousValue: null,
+            currentIndex: 0,
+            currentValue: 'value-0'
+        })
+    })
 });
