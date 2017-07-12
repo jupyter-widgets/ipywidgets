@@ -55,4 +55,16 @@ describe('Selection with items', function() {
             currentValue: 'value-0'
         })
     })
+
+    it('set to null if the index is out of bounds', function() {
+        selection.index = 22;
+        expect(selection.index).to.be.null;
+        expect(selection.value).to.be.null;
+    })
+
+    it('set to null if the value is not present', function() {
+        selection.value = 'not-a-value';
+        expect(selection.index).to.be.null;
+        expect(selection.value).to.be.null;
+    })
 });
