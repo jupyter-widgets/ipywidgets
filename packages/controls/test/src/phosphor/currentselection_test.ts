@@ -4,7 +4,7 @@ import { spy } from 'sinon';
 
 import { ArrayExt } from '@phosphor/algorithm';
 
-import { Selection } from '../../../lib/phosphor/currentselection'
+import { Selection } from '../../../lib/phosphor/currentselection';
 
 function getLastMessage(subscriber) {
     const [_, message] = subscriber.getCall(0).args
@@ -79,7 +79,7 @@ describe('Selection with items', function() {
 
     it('adjust after inserting an item', function() {
         const insertedValue = 'value-before-1';
-        sequence.splice(1, 0, insertedValue);
+        ArrayExt.insert(sequence, 1, insertedValue);
         // sequence is now [value-0, value-before-1, value-1]
         selection.adjustSelectionForInsert(1, insertedValue);
         expect(selection.index).to.equal(1);
