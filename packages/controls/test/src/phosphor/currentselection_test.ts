@@ -2,7 +2,14 @@
 import { expect } from 'chai';
 import { spy } from 'sinon';
 
+import { ArrayExt } from '@phosphor/algorithm';
+
 import { Selection } from '../../../lib/phosphor/currentselection'
+
+function getLastMessage(subscriber) {
+    const [_, message] = subscriber.getCall(0).args
+    return message;
+};
 
 describe('Selection with items', function() {
     let selection;
@@ -31,7 +38,7 @@ describe('Selection with items', function() {
     it('dispatch a signal when setting an item', function() {
         selection.index = 1;
         expect(subscriber.calledOnce).to.be.true;
-        const [_, message] = subscriber.getCall(0).args
+        const message = getLastMessage(subscriber);
         expect(message).to.deep.equal({
             previousIndex: null,
             previousValue: null,
@@ -97,5 +104,41 @@ describe('Selection with items', function() {
         selection.clearSelection();
         expect(selection.index).to.be.null;
         expect(selection.value).to.be.null;
+    });
+});
+
+
+describe('Selection with items with an item selected', function() {
+    let selection;
+    let subscriber; // subscribe to signals from selection
+    let sequence;
+
+    beforeEach(function() {
+        sequence = ['value-0', 'value-1']
+        selection = new Selection(sequence)
+        selection.index = 1;
+        subscriber = spy()
+        selection.selectionChanged.connect(subscriber);
+    });
+
+    it('set another item', function() {
+        selection.index = 0;
+        expect(selection.index).to.equal(0);
+        expect(selection.value).to.equal('value-0')
+        const message = getLastMessage(subscriber);
+        expect(message).to.deep.equal({
+            previousIndex: 1,
+            previousValue: 'value-1',
+            currentIndex: 0,
+            currentValue: 'value-0'
+        })
+    });
+
+    it('adjust after inserting an item', function () {
+        const insertedValue = 'value-before-1';
+        ArrayExt.insert(sequence, 1, insertedValue);
+        selection.adjustSelectionForInsert(1, insertedValue);
+        expect(selection.index).to.equal(2);
+        expect(selection.value).to.equal('value-1');
     });
 });
