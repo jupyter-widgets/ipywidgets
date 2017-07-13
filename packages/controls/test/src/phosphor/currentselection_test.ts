@@ -92,4 +92,10 @@ describe('Selection with items', function() {
         expect(selection.index).to.be.null;
         expect(selection.value).to.be.null;
     });
+
+    it('clear the selection', function() {
+        selection.clearSelection();
+        expect(selection.index).to.be.null;
+        expect(selection.value).to.be.null;
+    });
 });
