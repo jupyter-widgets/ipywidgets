@@ -141,4 +141,25 @@ describe('Selection with items with an item selected', function() {
         expect(selection.index).to.equal(2);
         expect(selection.value).to.equal('value-1');
     });
+
+    it('adjust after removing an item', function() {
+        ArrayExt.removeAt(sequence, 0)
+        selection.adjustSelectionForRemove(0, 'value-0')
+        expect(selection.index).to.equal(0);
+        expect(selection.value).to.equal('value-1');
+    });
+
+    it('adjust after removing the selected item', function() {
+        ArrayExt.removeAt(sequence, 1)
+        selection.adjustSelectionForRemove(1, 'value-1')
+        expect(selection.index).to.equal(0);
+        expect(selection.value).to.equal('value-0');
+        const message = getLastMessage(subscriber);
+        expect(message).to.deep.equal({
+            previousIndex: 1,
+            previousValue: 'value-1',
+            currentIndex: 0,
+            currentValue: 'value-0'
+        });
+    })
 });
