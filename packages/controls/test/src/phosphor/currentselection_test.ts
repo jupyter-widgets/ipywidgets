@@ -7,9 +7,10 @@ import { Selection } from '../../../lib/phosphor/currentselection'
 describe('Selection with items', function() {
     let selection;
     let subscriber; // subscribe to signals from selection
+    const sequence = ['value-0', 'value-1'];
 
     beforeEach(function() {
-        selection = new Selection(['value-0', 'value-1'])
+        selection = new Selection(sequence)
         selection.index = null;
         subscriber = spy()
         selection.selectionChanged.connect(subscriber);
@@ -67,4 +68,13 @@ describe('Selection with items', function() {
         expect(selection.index).to.be.null;
         expect(selection.value).to.be.null;
     })
+
+    it('adjust after inserting an item', function() {
+        const insertedValue = 'value-before-1';
+        sequence.splice(1, 0, insertedValue);
+        // sequence is now [value-0, value-before-1, value-1]
+        selection.adjustSelectionForInsert(1, insertedValue);
+        expect(selection.index).to.equal(1);
+        expect(selection.value).to.equal(insertedValue);
+    });
 });
