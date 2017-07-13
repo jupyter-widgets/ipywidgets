@@ -17,7 +17,11 @@ class _SelectionContainer(Box, CoreWidget):
     """Base class used to display multiple child widgets."""
     _titles = Dict(help="Titles of the pages").tag(sync=True)
     selected_index = CInt(
-        help="The index of the selected page.", allow_none=True
+        help="""The index of the selected page.
+
+        This is either an integer selecting a particular sub-widget,
+        or None to to have no widgets selected.""",
+        allow_none=True
     ).tag(sync=True)
 
     @validate('selected_index')
