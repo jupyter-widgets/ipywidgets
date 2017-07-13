@@ -87,14 +87,14 @@ describe('Selection with items', function() {
     });
 
     it('adjust after an item move', function() {
-        sequence = [sequence[1], sequence[0]]
+        ArrayExt.reverse(sequence)
         selection.adjustSelectionForMove(0, 1)
         expect(selection.index).to.be.null
         expect(selection.value).to.be.null
     });
 
     it('adjust after removing an item', function() {
-        sequence = [sequence[1]];
+        ArrayExt.removeAt(sequence, 0)
         selection.adjustSelectionForRemove(0, 'value-0');
         expect(selection.index).to.be.null;
         expect(selection.value).to.be.null;
