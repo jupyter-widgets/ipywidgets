@@ -76,6 +76,8 @@ class NBWidgetExtension implements INBWidgetExtension {
         DOMWidgetModel: base.DOMWidgetModel,
         LayoutModel: base.LayoutModel,
         LayoutView: base.LayoutView,
+        StyleModel: base.StyleModel,
+        StyleView: base.StyleView
       }
     });
     wManager.register({
