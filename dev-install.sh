@@ -32,7 +32,7 @@ fi
 echo -n "Checking jupyter lab... "
 jupyter lab --version 2>/dev/null
 if [ $? -ne 0 ]; then
-    echo "no, skipping installation of jupyterlab_widgets"
+    echo "no, skipping installation of widgets for jupyterlab"
     skip_jupyter_lab=yes
 fi
 
@@ -61,5 +61,5 @@ echo -n "ipywidgets"
 pip install -v -e .
 
 if test "$skip_jupyter_lab" != yes; then
-    jupyter labextension install jupyterlab_widgets
+    jupyter labextension install @jupyter-widgets/jupyterlab-manager
 fi

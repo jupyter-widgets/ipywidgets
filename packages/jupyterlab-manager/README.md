@@ -13,7 +13,7 @@ Package Install
 
 
 ```bash
-jupyter labextension install @jupyterlab/nbwidgets
+jupyter labextension install @jupyter-widgets/jupyterlab-manager
 ```
 
 
@@ -26,7 +26,7 @@ Source Build
 
 ```bash
 git clone https://github.com/jupyter-widgets/ipywidgets.git
-cd ipywidgets/jupyterlab_widgets
+cd packages/jupyterlab-manager
 npm install
 npm run build
 jupyter labextension link .

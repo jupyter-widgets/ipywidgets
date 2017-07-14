@@ -11,4 +11,3 @@ dist
 build
 docs
 example/*.js
-jupyterlab_widgets/static
