@@ -238,6 +238,9 @@ describe("ManagerBase", function() {
             model_name: 'TestWidget',
             model_module: 'test-widgets',
             model_module_version: '1.0.0',
+            view_name: 'TestView',
+            view_module: 'test-widgets',
+            view_module_version: '1.0.0',
             comm: comm
         };
         let manager = this.managerBase;
@@ -245,11 +248,27 @@ describe("ManagerBase", function() {
         expect((comm.send as any).calledOnce).to.be.true;
       });
 
+      it('rejects if view information is not passed in', async function() {
+        let comm = new MockComm();
+        sinon.spy(comm, 'send');
+        let spec = {
+            model_name: 'TestWidget',
+            model_module: 'test-widgets',
+            model_module_version: '1.0.0',
+            comm: comm
+        };
+        let manager = this.managerBase;
+        expect(manager.new_widget(spec)).to.be.rejectedWith('new_widget(...) must be given view information in the options.');
+      });
+
       it('creates a comm if one is not passed in', async function() {
         let spec = {
             model_name: 'TestWidget',
             model_module: 'test-widgets',
             model_module_version: '1.0.0',
+            view_name: 'TestView',
+            view_module: 'test-widgets',
+            view_module_version: '1.0.0',
         };
         let manager = this.managerBase;
         let model = await manager.new_widget(spec);
@@ -261,6 +280,9 @@ describe("ManagerBase", function() {
             model_name: 'TestWidget',
             model_module: 'test-widgets',
             model_module_version: '1.0.0',
+            view_name: 'TestView',
+            view_module: 'test-widgets',
+            view_module_version: '1.0.0',
         };
         class NewWidgetManager extends DummyManager {
           _create_comm() {

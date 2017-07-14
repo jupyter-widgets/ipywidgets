@@ -21,12 +21,18 @@ describe("unpack_models", function() {
             model_name: 'WidgetModel',
             model_module: '@jupyter-widgets/base',
             model_module_version: '3.0.0',
+            view_name: 'WidgetView',
+            view_module: '@jupyter-widgets/base',
+            view_module_version: '3.0.0',
             model_id: 'widgetA',
         })
         this.widgetB = await this.manager.new_widget({
             model_name: 'WidgetModel',
             model_module: '@jupyter-widgets/base',
             model_module_version: '3.0.0',
+            view_name: 'WidgetView',
+            view_module: '@jupyter-widgets/base',
+            view_module_version: '3.0.0',
             model_id: 'widgetB',
         });
     })
