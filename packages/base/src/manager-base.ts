@@ -71,13 +71,16 @@ interface ModelOptions {
 }
 
 /**
- * The options for a model.
+ * The options for a connected model.
+ *
+ * This gives all of the information needed to instantiate a comm to a new
+ * widget on the kernel side (so view information is mandatory).
  *
  * #### Notes
  * Either a comm or a model_id must be provided.
  */
 export
-interface NewModelOptions {
+interface WidgetOptions {
     /**
      * Target name of the widget model to create.
      */
@@ -241,12 +244,12 @@ abstract class ManagerBase<T> {
      *                          required and additional options are available.
      * @param  serialized_state - serialized model attributes.
      */
-    new_widget(options: NewModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
+    new_widget(options: WidgetOptions, serialized_state: any = {}): Promise<WidgetModel> {
         let commPromise;
         // we check to make sure the view information is provided, to help catch
         // backwards incompatibility errors.
         if (!options.view_name || !options.view_module || !options.view_module_version) {
-            return Promise.reject("new_widget call must be given view information in the options.");
+            return Promise.reject("new_widget(...) must be given view information in the options.");
         }
         // If no comm is provided, a new comm is opened for the jupyter.widget
         // target.
