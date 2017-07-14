@@ -34,14 +34,11 @@ import {
 } from './manager';
 
 import {
-  OutputModel, OutputView
+  OutputModel, OutputView, OUTPUT_WIDGET_VERSION
 } from './output';
 
 import * as base from '@jupyter-widgets/base';
 import * as widgets from '@jupyter-widgets/controls';
-
-(widgets as any)['OutputModel'] = OutputModel;
-(widgets as any)['OutputView'] = OutputView;
 
 import '@jupyter-widgets/base/css/index.css';
 import '@jupyter-widgets/controls/css/widgets-base.css';
@@ -86,6 +83,11 @@ class NBWidgetExtension implements INBWidgetExtension {
       version: widgets.JUPYTER_WIDGETS_VERSION,
       exports: widgets
     });
+    wManager.register({
+      name: '@jupyter-widgets/output',
+      version: OUTPUT_WIDGET_VERSION,
+      exports: {OutputModel, OutputView}
+    })
     this._registry.forEach(data => wManager.register(data));
     nb.rendermime.addFactory({
       safe: false,
