@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     function createWidget(widgetType, value, description) {
 
         // Create the widget model.
-        return manager.new_widget({
+        return manager.new_model({
             model_module: '@jupyter-widgets/controls',
             model_name: widgetType + 'Model',
             model_id: 'widget-1'
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     var html = createWidget('HTML', defaultHTML);
 
     // Create a link model.
-    manager.new_widget({
+    manager.new_model({
         model_module: '@jupyter-widgets/controls',
         model_name: 'LinkModel',
         model_id: 'widget-2',

@@ -70,6 +70,59 @@ interface ModelOptions {
     model_id?: string;
 }
 
+/**
+ * The options for a connected model.
+ *
+ * This gives all of the information needed to instantiate a comm to a new
+ * widget on the kernel side (so view information is mandatory).
+ *
+ * #### Notes
+ * Either a comm or a model_id must be provided.
+ */
+export
+interface WidgetOptions {
+    /**
+     * Target name of the widget model to create.
+     */
+    model_name: string;
+
+    /**
+     * Module name of the widget model to create.
+     */
+    model_module: string;
+
+    /**
+     * Semver version requirement for the model module.
+     */
+    model_module_version: string;
+
+    /**
+     * Target name of the widget view to create.
+     */
+    view_name: string;
+
+    /**
+     * Module name of the widget view to create.
+     */
+    view_module: string;
+
+    /**
+     * Semver version requirement for the view module.
+     */
+    view_module_version: string;
+
+    /**
+     * Comm object associated with the widget.
+     */
+    comm?: any;
+
+    /**
+     * The model id to use. If not provided, the comm id of the comm is used.
+     */
+    model_id?: string;
+}
+
+
 export
 interface StateOptions {
     /**
@@ -191,8 +244,13 @@ abstract class ManagerBase<T> {
      *                          required and additional options are available.
      * @param  serialized_state - serialized model attributes.
      */
-    new_widget(options: ModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
+    new_widget(options: WidgetOptions, serialized_state: any = {}): Promise<WidgetModel> {
         let commPromise;
+        // we check to make sure the view information is provided, to help catch
+        // backwards incompatibility errors.
+        if (!options.view_name || !options.view_module || !options.view_module_version) {
+            return Promise.reject("new_widget(...) must be given view information in the options.");
+        }
         // If no comm is provided, a new comm is opened for the jupyter.widget
         // target.
         if (options.comm) {
