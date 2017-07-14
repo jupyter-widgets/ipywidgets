@@ -20,7 +20,7 @@ class _SelectionContainer(Box, CoreWidget):
         help="""The index of the selected page.
 
         This is either an integer selecting a particular sub-widget,
-        or None to to have no widgets selected.""",
+        or None to have no widgets selected.""",
         allow_none=True
     ).tag(sync=True)
 
