@@ -126,8 +126,7 @@ class Selection<T> {
         if (i < 0 || i >= this._array.length) {
             i = null;
         }
-    }
-    else {
+    } else {
       i = null;
     }
 
