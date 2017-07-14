@@ -30,6 +30,8 @@ import {
 import * as _ from 'underscore';
 import * as $ from 'jquery';
 
+export
+const OUTPUT_WIDGET_VERSION = outputBase.OUTPUT_WIDGET_VERSION;
 
 export
 class OutputModel extends outputBase.OutputModel {
