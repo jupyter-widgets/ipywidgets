@@ -16,7 +16,9 @@ from itertools import chain
 from .widget_description import DescriptionWidget
 from .valuewidget import ValueWidget
 from .widget_core import CoreWidget
-from .widget import register
+from .widget_style import Style
+from .trait_types import InstanceDict
+from .widget import register, widget_serialization
 from traitlets import (Unicode, Bool, Int, Any, Dict, TraitError, CaselessStrEnum,
                        Tuple, List, Union, observe, validate)
 from ipython_genutils.py3compat import unicode_type
@@ -272,6 +274,11 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
         for key in sorted(chain(keys, ('options',))):
             yield key
 
+@register
+class ToggleButtonsStyle(Style, CoreWidget):
+    """Button style widget."""
+    _model_name = Unicode('ToggleButtonsStyleModel').tag(sync=True)
+    button_width = Unicode(help="The width of each button.").tag(sync=True)
 
 @register
 class ToggleButtons(_Selection):
@@ -284,6 +291,7 @@ class ToggleButtons(_Selection):
 
     tooltips = List(Unicode(), help="Tooltips for each button.").tag(sync=True)
     icons = List(Unicode(), help="Icons names for each button (FontAwesome names without the fa- prefix).").tag(sync=True)
+    style = InstanceDict(ToggleButtonsStyle).tag(sync=True, **widget_serialization)
 
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''],
