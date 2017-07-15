@@ -41,6 +41,9 @@ class StyleView extends WidgetView {
         for (let key of Object.keys(ModelType.styleProperties)) {
             this.registerTrait(key)
         }
+
+        // Set the initial styles
+        this.style();
     }
 
     /**
@@ -54,9 +57,6 @@ class StyleView extends WidgetView {
         this.listenTo(this.model, 'change:' + trait, (model, value) => {
             this.handleChange(trait, value);
         });
-
-        // Set the initial value on display.
-        this.handleChange(trait, this.model.get(trait));
     }
 
     /**
@@ -84,6 +84,15 @@ class StyleView extends WidgetView {
             console.warn('Style not applied because a parent view does not exist');
         }
     }
+
+    /**
+     * Apply styles for all registered traits
+     */
+    style() {
+        for (let trait of this._traitNames) {
+            this.handleChange(trait, this.model.get(trait));
+        }
+     }
 
     /**
      * Remove the styling from the parent view.
