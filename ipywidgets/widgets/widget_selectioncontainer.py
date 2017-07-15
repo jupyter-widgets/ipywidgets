@@ -9,14 +9,27 @@ pages.
 
 from .widget_box import Box, register
 from .widget_core import CoreWidget
-from traitlets import Unicode, Dict, CInt
+from traitlets import Unicode, Dict, CInt, TraitError, validate
 from ipython_genutils.py3compat import unicode_type
 
 
 class _SelectionContainer(Box, CoreWidget):
     """Base class used to display multiple child widgets."""
     _titles = Dict(help="Titles of the pages").tag(sync=True)
-    selected_index = CInt(help="The index of the selected page.").tag(sync=True)
+    selected_index = CInt(
+        help="""The index of the selected page.
+
+        This is either an integer selecting a particular sub-widget,
+        or None to have no widgets selected.""",
+        allow_none=True
+    ).tag(sync=True)
+
+    @validate('selected_index')
+    def _validated_index(self, proposal):
+        if proposal.value is None or 0 <= proposal.value < len(self.children):
+            return proposal.value
+        else:
+            raise TraitError('Invalid selection: index out of bounds')
 
     # Public methods
     def set_title(self, index, title):

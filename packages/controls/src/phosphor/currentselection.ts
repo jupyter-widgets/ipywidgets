@@ -93,7 +93,7 @@ class Selection<T> {
    */
   set value(value: T) {
     if (value === null) {
-      this.index = -1;
+      this.index = null;
     } else {
       this.index = ArrayExt.firstIndexOf(this._array, value);
     }
@@ -103,9 +103,9 @@ class Selection<T> {
    * Get the index of the currently selected item.
    *
    * #### Notes
-   * This will be `-1` if no item is selected.
+   * This will be `null` if no item is selected.
    */
-  get index(): number {
+  get index(): number | null {
     return this._index;
   }
 
@@ -115,14 +115,19 @@ class Selection<T> {
    * @param index - The index to select.
    *
    * #### Notes
-   * If the value is out of range, the index will be set to `-1`, which
+   * If the value is out of range, the index will be set to `null`, which
    * indicates no item is selected.
    */
-  set index(index: number) {
+  set index(index: number | null) {
     // Coerce the value to an index.
-    let i = Math.floor(index);
-    if (i < 0 || i >= this._array.length) {
-      i = -1;
+    let i;
+    if (index !== null) {
+        i = Math.floor(index);
+        if (i < 0 || i >= this._array.length) {
+            i = null;
+        }
+    } else {
+      i = null;
     }
 
     // Bail early if the index will not change.
@@ -194,7 +199,7 @@ class Selection<T> {
 
     // Handle the behavior where the new item is always selected,
     // or the behavior where the new item is selected if needed.
-    if (bh === 'select-item' || (bh === 'select-item-if-needed' && ci === -1)) {
+    if (bh === 'select-item' || (bh === 'select-item-if-needed' && ci === null)) {
       this._index = i;
       this._value = item;
       this._previousValue = cv;
@@ -240,19 +245,19 @@ class Selection<T> {
     let pv = this._value;
 
     // Reset the current index and previous item.
-    this._index = -1;
+    this._index = null;
     this._value = null;
     this._previousValue = null;
 
     // If no item was selected, there's nothing else to do.
-    if (pi === -1) {
+    if (pi === null) {
       return;
     }
 
     // Emit the current changed signal.
     this._selectionChanged.emit({
       previousIndex: pi, previousValue: pv,
-      currentIndex: -1, currentValue: null
+      currentIndex: this._index, currentValue: this._value
     });
   }
 
@@ -283,12 +288,12 @@ class Selection<T> {
     // No item gets selected if the vector is empty.
     if (this._array.length === 0) {
       // Reset the current index and previous item.
-      this._index = -1;
+      this._index = null;
       this._value = null;
       this._previousValue = null;
       this._selectionChanged.emit({
         previousIndex: i, previousValue: item,
-        currentIndex: -1, currentValue: null
+        currentIndex: this._index, currentValue: this._value
       });
       return;
     }
@@ -334,12 +339,12 @@ class Selection<T> {
     }
 
     // Otherwise, no item gets selected.
-    this._index = -1;
+    this._index = null;
     this._value = null;
     this._previousValue = null;
     this._selectionChanged.emit({
       previousIndex: i, previousValue: item,
-      currentIndex: -1, currentValue: null
+      currentIndex: this._index, currentValue: this._value
     });
   }
 
@@ -348,7 +353,7 @@ class Selection<T> {
    */
   private _updateSelectedValue() {
     let i = this._index;
-    this._value = i !== -1 ? this._array[i] : null;
+    this._value = i !== null ? this._array[i] : null;
   }
 
   private _array: ReadonlyArray<T> = null;

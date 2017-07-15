@@ -120,20 +120,22 @@ class TabPanel extends Widget {
    * Get the index of the currently selected tab.
    *
    * #### Notes
-   * This will be `-1` if no tab is selected.
+   * This will be `null` if no tab is selected.
    */
-  get currentIndex(): number {
-    return this.tabBar.currentIndex;
+  get currentIndex(): number | null {
+    const currentIndex = this.tabBar.currentIndex;
+    // Phosphor tab bars have an index of -1 if no tab is selected
+    return (currentIndex === -1 ? null : currentIndex);
   }
 
   /**
    * Set the index of the currently selected tab.
    *
    * #### Notes
-   * If the index is out of range, it will be set to `-1`.
+   * If the index is out of range, it will be set to `null`.
    */
-  set currentIndex(value: number) {
-    this.tabBar.currentIndex = value;
+  set currentIndex(value: number | null) {
+    this.tabBar.currentIndex = (value === null ? -1 : value);
   }
 
   /**
