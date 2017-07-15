@@ -408,7 +408,8 @@ class TabView extends DOMWidgetView {
 
     _onTabChanged(sender: TabBar<Widget>, args: TabBar.ICurrentChangedArgs<Widget>) {
         if (!this.updatingTabs) {
-            this.model.set('selected_index', args.currentIndex);
+            let i = args.currentIndex;
+            this.model.set('selected_index', i === -1 ? null : i);
             this.touch();
         }
     }
