@@ -2,6 +2,10 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
+   StyleModel
+} from '@jupyter-widgets/base';
+
+import {
     CoreDescriptionModel,
 } from './widget_core';
 
@@ -356,7 +360,24 @@ class RadioButtonsView extends DescriptionView {
 }
 
 export
-class ToggleButtonsModel extends SelectionModel {
+class ToggleButtonsStyleModel extends StyleModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'ToggleButtonsStyleModel',
+        });
+    }
+
+    public static styleProperties = {
+        button_width: {
+            selector: '.widget-toggle-button',
+            attribute: 'width',
+            default: null
+        }
+    };
+}
+
+export
+ class ToggleButtonsModel extends SelectionModel {
     defaults() {
         return {...super.defaults(),
             _model_name: 'ToggleButtonsModel',
@@ -463,6 +484,11 @@ class ToggleButtonsView extends DescriptionView {
             }
         });
 
+        this.stylePromise.then(function(style) {
+            if (style) {
+                style.style();
+            }
+        });
         return super.update(options);
     }
 
