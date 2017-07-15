@@ -124,7 +124,7 @@ class TabPanel extends Widget {
    */
   get currentIndex(): number | null {
     const currentIndex = this.tabBar.currentIndex;
-    # Phosphor tab bars have an index of -1 if no tab is selected
+    // Phosphor tab bars have an index of -1 if no tab is selected
     return (currentIndex === -1 ? null : currentIndex);
   }
 
