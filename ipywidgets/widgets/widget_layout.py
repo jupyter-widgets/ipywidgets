@@ -4,10 +4,11 @@
 """Contains the Layout class"""
 
 from traitlets import Unicode, Instance, CaselessStrEnum
-from .widget import Widget
+from .widget import Widget, register
 
 CSS_PROPERTIES=['inherit', 'initial', 'unset']
 
+@register
 class Layout(Widget):
     """Layout specification
 

@@ -217,6 +217,15 @@ class WidgetRegistry(object):
         widget_class = view_names[view_name]
         return widget_class
 
+    def items(self):
+        for model_module, mm in sorted(self._registry.items()):
+            for model_version, mv in sorted(mm.items()):
+                for model_name, vm in sorted(mv.items()):
+                    for view_module, vv in sorted(vm.items()):
+                        for view_version, vn in sorted(vv.items()):
+                            for view_name, widget in sorted(vn.items()):
+                                    yield (model_module, model_version, model_name, view_module, view_version, view_name), widget
+
 def register(name=''):
     "For backwards compatibility, we support @register(name) syntax."
     def reg(widget):
