@@ -4,12 +4,13 @@
 """Contains the DOMWidget class"""
 
 from traitlets import Unicode
-from .widget import Widget, widget_serialization
+from .widget import Widget, widget_serialization, register
 from .trait_types import InstanceDict
 from .widget_style import Style
 from .widget_core import CoreWidget
 from .domwidget import DOMWidget
 
+@register
 class DescriptionStyle(Style, CoreWidget, Widget):
     """Description style widget."""
     _model_name = Unicode('DescriptionStyleModel').tag(sync=True)

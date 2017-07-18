@@ -7,6 +7,7 @@ Represents a widget that can be used to display output within the widget area.
 """
 
 from .domwidget import DOMWidget
+from .widget import register
 from .widget_core import CoreWidget
 
 import sys
@@ -15,6 +16,7 @@ from IPython.display import clear_output
 from IPython import get_ipython
 
 
+@register
 class Output(DOMWidget, CoreWidget):
     """Widget used as a context manager to display output.
 
