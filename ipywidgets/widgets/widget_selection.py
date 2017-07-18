@@ -73,7 +73,7 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
     label = Unicode(None, help="Selected label", allow_none=True)
     index = Int(None, help="Selected index", allow_none=True).tag(sync=True)
 
-    options = Union([Tuple(), Dict()],
+    options = Any((),
     help="""Iterable of values, (label, value) pairs, or a mapping of {label: value} pairs that the user can select.
 
     The labels are the strings that will be displayed in the UI, representing the
@@ -196,7 +196,7 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
     label = Tuple(help="Selected labels")
     index = Tuple(help="Selected indices").tag(sync=True)
 
-    options = Union([Tuple(), Dict()],
+    options = Any((),
     help="""Iterable of values, (label, value) pairs, or a mapping of {label: value} pairs that the user can select.
 
     The labels are the strings that will be displayed in the UI, representing the
