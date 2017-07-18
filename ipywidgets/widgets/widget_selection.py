@@ -117,7 +117,7 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
 
     @observe('options')
     def _propagate_options(self, change):
-        "Set the values and labels, and unselect any option if we aren't initializing"
+        "Set the values and labels, and select the first option if we aren't initializing"
         options = self._options_full
         self.set_trait('_options_labels', tuple(i[0] for i in options))
         self._options_values = tuple(i[1] for i in options)
@@ -374,7 +374,7 @@ class _SelectionNonempty(_Selection):
         return proposal.value
 
 class _MultipleSelectionNonempty(_MultipleSelection):
-    """Selection that is guaranteed to have a value selected."""
+    """Selection that is guaranteed to have an option available."""
 
     def __init__(self, *args, **kwargs):
         if len(kwargs.get('options', ())) == 0:
@@ -417,11 +417,12 @@ class SelectionRangeSlider(_MultipleSelectionNonempty):
 
     @observe('options')
     def _propagate_options(self, change):
-        "Unselect any option"
+        "Select the first range"
+        options = self._options_full
+        self.set_trait('_options_labels', tuple(i[0] for i in options))
+        self._options_values = tuple(i[1] for i in options)
         if self._initializing_traits_ is not True:
             self.index = (0, 0)
-        self.set_trait('_options_labels', tuple(i[0] for i in change.new))
-        self._options_values = tuple(i[1] for i in change.new)
 
     @validate('index')
     def _validate_index(self, proposal):
