@@ -290,7 +290,8 @@
     color: var(--jp-widgets-label-color);
     text-align: right;
     margin-right: calc( var(--jp-widgets-inline-margin) * 2 );
-    min-width: var(--jp-widgets-inline-label-width);
+    width: var(--jp-widgets-inline-label-width);
+    flex-shrink: 0;
 }
 
 .widget-inline-vbox .widget-label {
