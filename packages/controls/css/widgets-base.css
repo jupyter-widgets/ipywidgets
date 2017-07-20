@@ -556,12 +556,14 @@
     margin-right: auto;
     margin-bottom: calc(var(--jp-widgets-slider-handle-size) / 2 - 2 * var(--jp-widgets-slider-border-width));
     margin-top: calc(var(--jp-widgets-slider-handle-size) / 2 - 2 * var(--jp-widgets-slider-border-width));
+    display: flex;
+    flex-direction: column;
 }
 
-.widget-vslider .ui-slider {
+.widget-vslider .ui-slider-vertical {
     /* Inner, invisible slide div */
     width: var(--jp-widgets-slider-track-thickness);
-    height: 100%;
+    flex-grow: 1;
     margin-left: auto;
     margin-right: auto;
 }
