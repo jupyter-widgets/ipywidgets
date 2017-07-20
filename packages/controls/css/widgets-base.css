@@ -76,7 +76,7 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: baseline;
 }
 
 .widget-inline-vbox {
@@ -428,7 +428,6 @@
     min-width: 0; /* This makes it possible for the flexbox to shrink this input */
     flex-shrink: 1;
     outline: none !important;
-    line-height: 1.5;
 }
 
 .widget-textarea textarea {
