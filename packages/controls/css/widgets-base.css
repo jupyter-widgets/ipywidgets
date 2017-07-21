@@ -862,6 +862,7 @@
 /* Play Widget */
 
 .widget-play {
+    width: var(--jp-widgets-inline-width-short);
     display: flex;
     align-items: stretch;
 }
