@@ -84,12 +84,14 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
 }
 
 .widget-box {
     box-sizing: border-box;
     display: flex;
+    align-items: center;
+    justify-content: space-around;
     margin: 0;
     overflow: auto;
 }
@@ -296,6 +298,7 @@
     /* Vertical Widget Label */
     color: var(--jp-widgets-label-color);
     text-align: center;
+    line-height: var(--jp-widgets-inline-height);
 }
 
 /* Widget Readout Styling */
@@ -426,7 +429,6 @@
     min-width: 0; /* This makes it possible for the flexbox to shrink this input */
     flex-shrink: 1;
     outline: none !important;
-    line-height: 1.5;
 }
 
 .widget-textarea textarea {
@@ -526,7 +528,6 @@
     height: var(--jp-widgets-inline-height);
     margin-left: calc(var(--jp-widgets-slider-handle-size) / 2 - 2 * var(--jp-widgets-slider-border-width));
     margin-right: calc(var(--jp-widgets-slider-handle-size) / 2 - 2 * var(--jp-widgets-slider-border-width));
-    align-self: stretch;
     flex: 1 1 var(--jp-widgets-inline-width-short);
 }
 
@@ -865,11 +866,12 @@
 .widget-play {
     width: var(--jp-widgets-inline-width-short);
     display: flex;
+    align-items: stretch;
 }
 
 .widget-play .jupyter-button {
     flex-grow: 1;
-    text-align: center;
+    height: auto;
 }
 
 .widget-play .jupyter-button:disabled {
