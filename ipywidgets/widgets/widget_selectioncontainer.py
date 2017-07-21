@@ -7,7 +7,8 @@ Represents a multipage container that can be used to group other widgets into
 pages.
 """
 
-from .widget_box import Box, register
+from .widget_box import Box
+from .widget import register
 from .widget_core import CoreWidget
 from traitlets import Unicode, Dict, CInt, TraitError, validate
 from ipython_genutils.py3compat import unicode_type
@@ -17,10 +18,7 @@ class _SelectionContainer(Box, CoreWidget):
     """Base class used to display multiple child widgets."""
     _titles = Dict(help="Titles of the pages").tag(sync=True)
     selected_index = CInt(
-        help="""The index of the selected page.
-
-        This is either an integer selecting a particular sub-widget,
-        or None to have no widgets selected.""",
+        help="""The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.""",
         allow_none=True
     ).tag(sync=True)
 

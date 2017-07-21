@@ -6,7 +6,7 @@
 Represents an enumeration using a widget.
 """
 
-from collections import Mapping
+from collections import Mapping, Iterable
 try:
     from itertools import izip
 except ImportError:  #python3.x
@@ -24,9 +24,9 @@ from traitlets import (Unicode, Bool, Int, Any, Dict, TraitError, CaselessStrEnu
 from ipython_genutils.py3compat import unicode_type
 
 def _make_options(x):
-    """Standardize the options list format.
+    """Standardize the options tuple format.
 
-    The returned list should be in the format [('label', value), ('label', value), ...].
+    The returned tuple should be in the format (('label', value), ('label', value), ...).
 
     The input can be
     * a Mapping of labels to values
@@ -37,12 +37,15 @@ def _make_options(x):
     if isinstance(x, Mapping):
         return tuple((unicode_type(k), v) for k, v in x.items())
 
+    # only iterate once through the options.
+    xlist = tuple(x)
+
     # Check if x is an iterable of (label, value) pairs
-    if all((isinstance(i, (list, tuple)) and len(i) == 2) for i in x):
-        return tuple((unicode_type(k), v) for k, v in x)
+    if all((isinstance(i, (list, tuple)) and len(i) == 2) for i in xlist):
+        return tuple((unicode_type(k), v) for k, v in xlist)
 
     # Otherwise, assume x is an iterable of values
-    return tuple((unicode_type(i), i) for i in x)
+    return tuple((unicode_type(i), i) for i in xlist)
 
 def findvalue(array, value, compare = lambda x, y: x == y):
     "A function that uses the compare function to return a value from the list."
@@ -73,11 +76,12 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
     options = Any((),
     help="""Iterable of values, (label, value) pairs, or a mapping of {label: value} pairs that the user can select.
 
-    Any assigned value is converted to a tuple of ('label', value) pairs.
-
     The labels are the strings that will be displayed in the UI, representing the
     actual Python choices, and should be unique.
     """)
+
+    _options_full = None
+
     # This being read-only means that it cannot be changed from the frontend!
     _options_labels = Tuple(read_only=True, help="The labels for the options.").tag(sync=True)
 
@@ -85,33 +89,40 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
 
     def __init__(self, *args, **kwargs):
         self.equals = kwargs.pop('equals', lambda x, y: x == y)
-
         # We have to make the basic options bookkeeping consistent
         # so we don't have errors the first time validators run
         self._initializing_traits_ = True
         options = _make_options(kwargs.get('options', ()))
+        self._options_full = options
         self.set_trait('_options_labels', tuple(i[0] for i in options))
         self._options_values = tuple(i[1] for i in options)
 
         # Select the first item by default, if we can
         if 'index' not in kwargs and 'value' not in kwargs and 'label' not in kwargs:
-            kwargs['index'] = 0 if len(options) > 0 else None
-            kwargs['label'], kwargs['value'] = options[0] if len(options) > 0 else (None, None)
+            nonempty = (len(options) > 0)
+            kwargs['index'] = 0 if nonempty else None
+            kwargs['label'], kwargs['value'] = options[0] if nonempty else (None, None)
 
         super(_Selection, self).__init__(*args, **kwargs)
         self._initializing_traits_ = False
 
     @validate('options')
     def _validate_options(self, proposal):
-        return _make_options(proposal.value)
+        # if an iterator is provided, exhaust it
+        if isinstance(proposal.value, Iterable) and not isinstance(proposal.value, Mapping):
+            proposal.value = tuple(proposal.value)
+        # throws an error if there is a problem converting to full form
+        self._options_full = _make_options(proposal.value)
+        return proposal.value
 
     @observe('options')
     def _propagate_options(self, change):
-        "Unselect any option if we aren't initializing"
-        self.set_trait('_options_labels', tuple(i[0] for i in change.new))
-        self._options_values = tuple(i[1] for i in change.new)
+        "Set the values and labels, and select the first option if we aren't initializing"
+        options = self._options_full
+        self.set_trait('_options_labels', tuple(i[0] for i in options))
+        self._options_values = tuple(i[1] for i in options)
         if self._initializing_traits_ is not True:
-            self.index = 0 if len(change.new) > 0 else None
+            self.index = 0 if len(options) > 0 else None
 
     @validate('index')
     def _validate_index(self, proposal):
@@ -185,14 +196,14 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
     label = Tuple(help="Selected labels")
     index = Tuple(help="Selected indices").tag(sync=True)
 
-    options = Any(
+    options = Any((),
     help="""Iterable of values, (label, value) pairs, or a mapping of {label: value} pairs that the user can select.
-
-    Any assigned value is converted to a tuple of ('label', value) pairs.
 
     The labels are the strings that will be displayed in the UI, representing the
     actual Python choices, and should be unique.
     """)
+    _options_full = None
+
     # This being read-only means that it cannot be changed from the frontend!
     _options_labels = Tuple(read_only=True, help="The labels for the options.").tag(sync=True)
 
@@ -205,6 +216,7 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
         # so we don't have errors the first time validators run
         self._initializing_traits_ = True
         options = _make_options(kwargs.get('options', ()))
+        self._full_options = options
         self.set_trait('_options_labels', tuple(i[0] for i in options))
         self._options_values = tuple(i[1] for i in options)
 
@@ -213,15 +225,20 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
 
     @validate('options')
     def _validate_options(self, proposal):
-        return _make_options(proposal.value)
+        if isinstance(proposal.value, Iterable) and not isinstance(proposal.value, Mapping):
+            proposal.value = tuple(proposal.value)
+        # throws an error if there is a problem converting to full form
+        self._options_full = _make_options(proposal.value)
+        return proposal.value
 
     @observe('options')
     def _propagate_options(self, change):
         "Unselect any option"
+        options = self._options_full
+        self.set_trait('_options_labels', tuple(i[0] for i in options))
+        self._options_values = tuple(i[1] for i in options)
         if self._initializing_traits_ is not True:
             self.index = ()
-        self.set_trait('_options_labels', tuple(i[0] for i in change.new))
-        self._options_values = tuple(i[1] for i in change.new)
 
     @validate('index')
     def _validate_index(self, proposal):
@@ -323,6 +340,18 @@ class Select(_Selection):
     rows = Int(5, help="The number of rows to display.").tag(sync=True)
 
 @register
+class SelectMultiple(_MultipleSelection):
+    """Listbox that allows many items to be selected at any given time.
+
+    Despite their names, inherited from ``_Selection``, the currently chosen
+    option values, ``value``, or their labels, ``selected_labels`` must both be
+    updated with a list-like object.
+    """
+    _view_name = Unicode('SelectMultipleView').tag(sync=True)
+    _model_name = Unicode('SelectMultipleModel').tag(sync=True)
+    rows = Int(5, help="The number of rows to display.").tag(sync=True)
+
+
 class _SelectionNonempty(_Selection):
     """Selection that is guaranteed to have a value selected."""
     # don't allow None to be an option.
@@ -330,12 +359,37 @@ class _SelectionNonempty(_Selection):
     label = Unicode(help="Selected label")
     index = Int(help="Selected index").tag(sync=True)
 
+    def __init__(self, *args, **kwargs):
+        if len(kwargs.get('options', ())) == 0:
+            raise TraitError('options must be nonempty')
+        super(_SelectionNonempty, self).__init__(*args, **kwargs)
+
     @validate('options')
     def _validate_options(self, proposal):
-        options = _make_options(proposal.value)
-        if len(options) == 0:
+        if isinstance(proposal.value, Iterable) and not isinstance(proposal.value, Mapping):
+            proposal.value = tuple(proposal.value)
+        self._options_full = _make_options(proposal.value)
+        if len(self._options_full) == 0:
             raise TraitError("Option list must be nonempty")
-        return options
+        return proposal.value
+
+class _MultipleSelectionNonempty(_MultipleSelection):
+    """Selection that is guaranteed to have an option available."""
+
+    def __init__(self, *args, **kwargs):
+        if len(kwargs.get('options', ())) == 0:
+            raise TraitError('options must be nonempty')
+        super(_MultipleSelectionNonempty, self).__init__(*args, **kwargs)
+
+    @validate('options')
+    def _validate_options(self, proposal):
+        if isinstance(proposal.value, Iterable) and not isinstance(proposal.value, Mapping):
+            proposal.value = tuple(proposal.value)
+        # throws an error if there is a problem converting to full form
+        self._options_full = _make_options(proposal.value)
+        if len(self._options_full) == 0:
+            raise TraitError("Option list must be nonempty")
+        return proposal.value
 
 @register
 class SelectionSlider(_SelectionNonempty):
@@ -352,19 +406,7 @@ class SelectionSlider(_SelectionNonempty):
         help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
 
 @register
-class SelectMultiple(_MultipleSelection):
-    """Listbox that allows many items to be selected at any given time.
-
-    Despite their names, inherited from ``_Selection``, the currently chosen
-    option values, ``value``, or their labels, ``selected_labels`` must both be
-    updated with a list-like object.
-    """
-    _view_name = Unicode('SelectMultipleView').tag(sync=True)
-    _model_name = Unicode('SelectMultipleModel').tag(sync=True)
-    rows = Int(5, help="The number of rows to display.").tag(sync=True)
-
-@register
-class SelectionRangeSlider(_MultipleSelection):
+class SelectionRangeSlider(_MultipleSelectionNonempty):
     """Slider to select a single item from a list or dictionary."""
     _view_name = Unicode('SelectionRangeSliderView').tag(sync=True)
     _model_name = Unicode('SelectionRangeSliderModel').tag(sync=True)
@@ -373,20 +415,14 @@ class SelectionRangeSlider(_MultipleSelection):
     label = Tuple(help="Min and max selected labels")
     index = Tuple((0,0), help="Min and max selected indices").tag(sync=True)
 
-    @validate('options')
-    def _validate_options(self, proposal):
-        options = _make_options(proposal.value)
-        if len(options) == 0:
-            raise TraitError("Option list must be nonempty")
-        return options
-
     @observe('options')
     def _propagate_options(self, change):
-        "Unselect any option"
+        "Select the first range"
+        options = self._options_full
+        self.set_trait('_options_labels', tuple(i[0] for i in options))
+        self._options_values = tuple(i[1] for i in options)
         if self._initializing_traits_ is not True:
             self.index = (0, 0)
-        self.set_trait('_options_labels', tuple(i[0] for i in change.new))
-        self._options_values = tuple(i[1] for i in change.new)
 
     @validate('index')
     def _validate_index(self, proposal):
@@ -396,7 +432,7 @@ class SelectionRangeSlider(_MultipleSelection):
         if all(0 <= i < len(self._options_labels) for i in proposal.value):
             return proposal.value
         else:
-            raise TraitError('Invalid selection: index out of bounds')
+            raise TraitError('Invalid selection: index out of bounds: %s'%(proposal.value,))
 
     orientation = CaselessStrEnum(
         values=['horizontal', 'vertical'], default_value='horizontal',

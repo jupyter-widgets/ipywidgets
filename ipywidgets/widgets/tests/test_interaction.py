@@ -148,10 +148,10 @@ def test_list_str():
     d = dict(
         cls=widgets.Dropdown,
         value=first,
+        options=tuple(values),
         _options_labels=tuple(values),
         _options_values=tuple(values),
     )
-    d['options'] = tuple(zip(d['_options_labels'], d['_options_values']))
     check_widgets(c, lis=d)
 
 def test_list_int():
@@ -162,10 +162,10 @@ def test_list_int():
     d = dict(
         cls=widgets.Dropdown,
         value=first,
+        options=tuple(values),
         _options_labels=tuple(str(v) for v in values),
         _options_values=tuple(values),
     )
-    d['options'] = tuple(zip(d['_options_labels'], d['_options_values']))
     check_widgets(c, lis=d)
 
 def test_list_tuple():
@@ -176,10 +176,10 @@ def test_list_tuple():
     d = dict(
         cls=widgets.Dropdown,
         value=first,
+        options=tuple(values),
         _options_labels=("3", "1", "2"),
         _options_values=(300, 100, 200),
     )
-    d['options'] = tuple(zip(d['_options_labels'], d['_options_values']))
     check_widgets(c, lis=d)
 
 def test_list_tuple_invalid():
@@ -201,10 +201,10 @@ def test_dict():
             cls=widgets.Dropdown,
             description='d',
             value=next(iter(d.values())),
+            options=d,
             _options_labels=tuple(d.keys()),
             _options_values=tuple(d.values()),
         )
-        check['options'] = tuple(zip(check['_options_labels'], check['_options_values']))
         check_widget(w, **check)
 
 
@@ -222,7 +222,6 @@ def test_ordereddict():
         _options_labels=("3", "1", "2"),
         _options_values=(300, 100, 200),
     )
-    d['options'] = tuple(zip(d['_options_labels'], d['_options_values']))
     check_widgets(c, lis=d)
 
 def test_iterable():
@@ -236,10 +235,10 @@ def test_iterable():
     d = dict(
         cls=widgets.Dropdown,
         value=first,
+        options=(3, 1, 2),
         _options_labels=("3", "1", "2"),
         _options_values=(3, 1, 2),
     )
-    d['options'] = tuple(zip(d['_options_labels'], d['_options_values']))
     check_widgets(c, lis=d)
 
 def test_iterable_tuple():
@@ -250,10 +249,10 @@ def test_iterable_tuple():
     d = dict(
         cls=widgets.Dropdown,
         value=first,
+        options=tuple(values),
         _options_labels=("3", "1", "2"),
         _options_values=(300, 100, 200),
     )
-    d['options'] = tuple(zip(d['_options_labels'], d['_options_values']))
     check_widgets(c, lis=d)
 
 def test_mapping():
@@ -278,10 +277,10 @@ def test_mapping():
     d = dict(
         cls=widgets.Dropdown,
         value=first,
+        options=tuple(items),
         _options_labels=("3", "1", "2"),
         _options_values=(300, 100, 200),
     )
-    d['options'] = tuple(zip(d['_options_labels'], d['_options_values']))
     check_widgets(c, lis=d)
 
 
@@ -327,12 +326,12 @@ def test_default_values():
         ),
         h=dict(
             cls=widgets.Dropdown,
-            options=(('a', 1), ('b', 2)),
+            options=OrderedDict([('a',1), ('b',2)]),
             value=2
         ),
         j=dict(
             cls=widgets.Dropdown,
-            options=(('hi', 'hi'), ('there', 'there')),
+            options=('hi', 'there'),
             value='there'
         ),
     )
@@ -350,12 +349,12 @@ def test_default_out_of_bounds():
         ),
         h=dict(
             cls=widgets.Dropdown,
-            options=(('a', 1),),
+            options={'a': 1},
             value=1,
         ),
         j=dict(
             cls=widgets.Dropdown,
-            options=(('hi', 'hi'), ('there', 'there')),
+            options=('hi', 'there'),
             value='hi',
         ),
     )
@@ -682,7 +681,7 @@ def test_multiple_selection():
 
     # basic multiple select
     w = smw(options=[(1, 1)], value=[1])
-    check_widget(w, cls=smw, value=(1,), options=(('1', 1),))
+    check_widget(w, cls=smw, value=(1,), options=((1, 1),))
 
     # don't accept random other value
     with nt.assert_raises(TraitError):
@@ -691,7 +690,7 @@ def test_multiple_selection():
 
     # change options, which resets value
     w.options = w.options + ((2, 2),)
-    check_widget(w, options=(('1', 1), ('2',2)), value=())
+    check_widget(w, options=((1, 1), (2,2)), value=())
 
     # change value
     w.value = (1,2)
@@ -699,12 +698,12 @@ def test_multiple_selection():
 
     # dict style
     w.options = {1: 1}
-    check_widget(w, options=(('1', 1),))
+    check_widget(w, options={1:1})
 
     # updating
     with nt.assert_raises(TraitError):
         w.value = (2,)
-    check_widget(w, options=(('1', 1),))
+    check_widget(w, options={1:1})
 
 
 def test_interact_noinspect():
