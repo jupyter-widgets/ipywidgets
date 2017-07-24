@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/notebook-manager",
-  "version": "3.0.0-beta.3",
+  "version": "3.0.0-beta.4",
   "description": "Jupyter Widgets nbextension",
   "main": "src/extension.js",
   "private": true,
@@ -21,7 +21,7 @@
   "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme",
   "dependencies": {
     "@jupyter-widgets/base": "^0.6.5",
-    "@jupyter-widgets/controls": "^0.6.7",
+    "@jupyter-widgets/controls": "^0.6.8",
     "@jupyter-widgets/output": "^0.3.5",
     "@phosphor/messaging": "^1.2.0",
     "@phosphor/widgets": "^1.2.0",
