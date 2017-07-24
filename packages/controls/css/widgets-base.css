@@ -91,7 +91,6 @@
     box-sizing: border-box;
     display: flex;
     align-items: center;
-    justify-content: space-around;
     margin: 0;
     overflow: auto;
 }
@@ -518,6 +517,11 @@
     width: var(--jp-widgets-inline-width);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
+
+    /* Override the align-items baseline. This way, the description and readout
+    still seem to align their baseline properly, and we don't have to have
+    align-self: stretch in the .slider-container. */
+    align-items: center;
 }
 
 .widgets-slider .slider-container {
