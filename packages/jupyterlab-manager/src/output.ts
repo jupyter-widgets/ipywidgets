@@ -43,7 +43,8 @@ class OutputModel extends outputBase.OutputModel {
 
   initialize(attributes: any, options: any) {
     super.initialize(attributes, options)
-    this._outputs = new OutputAreaModel();
+    // The output area model is trusted since widgets are only rendered in trusted contexts.
+    this._outputs = new OutputAreaModel({trusted: true});
     this.listenTo(this, 'change:msg_id', this.reset_msg_id);
     this.widget_manager.context.session.kernelChanged.connect((sender, kernel) => {
       this._msgHook.dispose();
