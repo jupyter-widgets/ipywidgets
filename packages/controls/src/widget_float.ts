@@ -121,6 +121,7 @@ class BoundedFloatTextModel extends BoundedFloatModel {
             _view_name: "FloatTextView",
             disabled: false,
             continuous_update: false,
+            step: 0.1
         });
     }
 }
@@ -128,6 +129,7 @@ class BoundedFloatTextModel extends BoundedFloatModel {
 export
 class FloatTextView extends IntTextView {
     _parse_value = parseFloat;
+    _default_step = 0.1;
 }
 
 export

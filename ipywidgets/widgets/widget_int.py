@@ -139,6 +139,7 @@ class BoundedIntText(_BoundedInt):
     _model_name = Unicode('BoundedIntTextModel').tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
     continuous_update = Bool(False, help="Update the value as the user types.").tag(sync=True)
+    step = CInt(1, help="Minimum step to increment the value").tag(sync=True)
 
 
 @register

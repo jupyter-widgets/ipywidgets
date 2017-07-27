@@ -488,6 +488,7 @@ class BoundedIntTextModel extends BoundedIntModel {
             _view_name: 'IntTextView',
             disabled: false,
             continuous_update: false,
+            step: 1,
         });
     }
 }
@@ -524,6 +525,7 @@ class IntTextView extends DescriptionView {
             }
             this.textbox.min = this.model.get('min');
             this.textbox.max = this.model.get('max');
+            this.textbox.step = this.model.get('step') || this._default_step;
             this.textbox.disabled = this.model.get('disabled');
         }
         return super.update();
@@ -601,6 +603,7 @@ class IntTextView extends DescriptionView {
     }
 
     _parse_value = parseInt
+    _default_step = 1;
     textbox: HTMLInputElement;
 }
 

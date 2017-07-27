@@ -91,6 +91,8 @@ class BoundedFloatText(_BoundedFloat):
         minimal value of the range of possible values displayed
     max : float
         maximal value of the range of possible values displayed
+    step : float
+        step of the increment
     description : str
         description displayed next to the textbox
     """
@@ -98,6 +100,7 @@ class BoundedFloatText(_BoundedFloat):
     _model_name = Unicode('BoundedFloatTextModel').tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
     continuous_update = Bool(False, help="Update the value as the user types.").tag(sync=True)
+    step = CFloat(0.1, help="Minimum step to increment the value").tag(sync=True)
 
 
 @register
@@ -151,8 +154,6 @@ class FloatProgress(_BoundedFloat):
         minimal position of the slider
     max : float
         maximal position of the slider
-    step : float
-        step of the progress bar
     description : str
         name of the progress bar
     orientation : {'horizontal', 'vertical'}
