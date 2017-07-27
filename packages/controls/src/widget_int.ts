@@ -529,7 +529,8 @@ class IntTextView extends DescriptionView {
             if (this.model.get('max') !== undefined) {
                 this.textbox.max = this.model.get('max');
             }
-            if (this.model.get('step') !== undefined) {
+            if (this.model.get('step') !== undefined
+                && this.model.get('step') !== null) {
                 this.textbox.step = this.model.get('step');
             } else {
                 this.textbox.step = this._default_step;

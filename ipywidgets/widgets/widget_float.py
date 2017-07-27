@@ -68,6 +68,8 @@ class FloatText(_Float):
     ----------
     value : float
         value displayed
+    step : float
+        step of the increment (if None, any step is allowed)
     description : str
         description displayed next to the text box
     """
@@ -75,6 +77,7 @@ class FloatText(_Float):
     _model_name = Unicode('FloatTextModel').tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
     continuous_update = Bool(False, help="Update the value as the user types.").tag(sync=True)
+    step = CFloat(None, allow_none=True, help="Minimum step to increment the value").tag(sync=True)
 
 
 @register
@@ -92,7 +95,7 @@ class BoundedFloatText(_BoundedFloat):
     max : float
         maximal value of the range of possible values displayed
     step : float
-        step of the increment
+        step of the increment (if None, any step is allowed)
     description : str
         description displayed next to the textbox
     """
@@ -100,8 +103,7 @@ class BoundedFloatText(_BoundedFloat):
     _model_name = Unicode('BoundedFloatTextModel').tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
     continuous_update = Bool(False, help="Update the value as the user types.").tag(sync=True)
-    step = CFloat(0.1, help="Minimum step to increment the value").tag(sync=True)
-
+    step = CFloat(None, allow_none=True, help="Minimum step to increment the value").tag(sync=True)
 
 @register
 class FloatSlider(_BoundedFloat):
