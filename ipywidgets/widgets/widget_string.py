@@ -64,7 +64,7 @@ class Textarea(_String):
     _model_name = Unicode('TextareaModel').tag(sync=True)
     rows = Int(None, allow_none=True, help="The number of rows to display.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
-    continuous_update = Bool(True, help="Update the value of the widget as the user types.").tag(sync=True)
+    continuous_update = Bool(True, help="Update the value as the user types.").tag(sync=True)
 
     def scroll_to_bottom(self):
         self.send({"method": "scroll_to_bottom"})
@@ -76,7 +76,7 @@ class Text(_String):
     _view_name = Unicode('TextView').tag(sync=True)
     _model_name = Unicode('TextModel').tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
-    continuous_update = Bool(True, help="Update the value of the widget as the user types.").tag(sync=True)
+    continuous_update = Bool(True, help="Update the value as the user types.").tag(sync=True)
 
     def __init__(self, *args, **kwargs):
         super(Text, self).__init__(*args, **kwargs)
@@ -106,6 +106,8 @@ class Text(_String):
         remove: bool (optional)
             Whether to unregister the callback
         """
+        import warnings
+        warnings.warn("on_submit is deprecated. Instead, set the .continuous_update attribute to False and observe the value changing with: mywidget.observe(callback, 'value').", DeprecationWarning)
         self._submission_callbacks.register_callback(callback, remove=remove)
 
 
