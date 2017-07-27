@@ -66,10 +66,6 @@ class Textarea(_String):
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
     continuous_update = Bool(True, help="Update the value as the user types.").tag(sync=True)
 
-    def scroll_to_bottom(self):
-        self.send({"method": "scroll_to_bottom"})
-
-
 @register
 class Text(_String):
     """Single line textbox widget."""

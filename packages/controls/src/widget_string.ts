@@ -169,9 +169,6 @@ class TextareaView extends DescriptionView {
         this.el.appendChild(this.textbox);
 
         this.update(); // Set defaults.
-        this.listenTo(this.model, 'msg:custom', (content) => {
-            this._handle_textarea_msg(content)
-        });
 
         this.listenTo(this.model, 'change:placeholder',
             function(model, value, options) {
@@ -181,25 +178,9 @@ class TextareaView extends DescriptionView {
         this.update_placeholder();
     }
 
-    /**
-     * Handle when a custom msg is recieved from the back-end.
-     */
-    _handle_textarea_msg (content) {
-        if (content.method == 'scroll_to_bottom') {
-            this.scroll_to_bottom();
-        }
-    }
-
     update_placeholder(value?) {
         value = value || this.model.get('placeholder');
         this.textbox.setAttribute('placeholder', value.toString());
-    }
-
-    /**
-     * Scroll the text-area view to the bottom.
-     */
-    scroll_to_bottom () {
-        //this.$textbox.scrollTop(this.$textbox[0].scrollHeight); // DW TODO
     }
 
     /**
