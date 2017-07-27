@@ -64,7 +64,7 @@ class Textarea(_String):
     _model_name = Unicode('TextareaModel').tag(sync=True)
     rows = Int(None, allow_none=True, help="The number of rows to display.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
-    continuous_update = Bool(True, help="Update the value as the user types.").tag(sync=True)
+    continuous_update = Bool(True, help="Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.").tag(sync=True)
 
 @register
 class Text(_String):
@@ -72,7 +72,7 @@ class Text(_String):
     _view_name = Unicode('TextView').tag(sync=True)
     _model_name = Unicode('TextModel').tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
-    continuous_update = Bool(True, help="Update the value as the user types.").tag(sync=True)
+    continuous_update = Bool(True, help="Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.").tag(sync=True)
 
     def __init__(self, *args, **kwargs):
         super(Text, self).__init__(*args, **kwargs)

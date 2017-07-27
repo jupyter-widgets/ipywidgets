@@ -76,7 +76,7 @@ class FloatText(_Float):
     _view_name = Unicode('FloatTextView').tag(sync=True)
     _model_name = Unicode('FloatTextModel').tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
-    continuous_update = Bool(False, help="Update the value as the user types.").tag(sync=True)
+    continuous_update = Bool(False, help="Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.").tag(sync=True)
     step = CFloat(None, allow_none=True, help="Minimum step to increment the value").tag(sync=True)
 
 
@@ -102,7 +102,7 @@ class BoundedFloatText(_BoundedFloat):
     _view_name = Unicode('FloatTextView').tag(sync=True)
     _model_name = Unicode('BoundedFloatTextModel').tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
-    continuous_update = Bool(False, help="Update the value as the user types.").tag(sync=True)
+    continuous_update = Bool(False, help="Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.").tag(sync=True)
     step = CFloat(None, allow_none=True, help="Minimum step to increment the value").tag(sync=True)
 
 @register
