@@ -129,7 +129,7 @@ class BoundedFloatTextModel extends BoundedFloatModel {
 export
 class FloatTextView extends IntTextView {
     _parse_value = parseFloat;
-    _default_step = 0.1;
+    _default_step = 'any';
 }
 
 export

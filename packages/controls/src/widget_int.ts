@@ -523,9 +523,17 @@ class IntTextView extends DescriptionView {
             if (this._parse_value(this.textbox.value) !== value) {
                 this.textbox.value = value.toString();
             }
-            this.textbox.min = this.model.get('min');
-            this.textbox.max = this.model.get('max');
-            this.textbox.step = this.model.get('step') || this._default_step;
+            if (this.model.get('min') !== undefined) {
+                this.textbox.min = this.model.get('min');
+            }
+            if (this.model.get('max') !== undefined) {
+                this.textbox.max = this.model.get('max');
+            }
+            if (this.model.get('step') !== undefined) {
+                this.textbox.step = this.model.get('step');
+            } else {
+                this.textbox.step = this._default_step;
+            }
             this.textbox.disabled = this.model.get('disabled');
         }
         return super.update();
@@ -586,14 +594,18 @@ class IntTextView extends DescriptionView {
         } else {
             // Handle both the unbounded and bounded case by
             // checking to see if the max/min properties are defined
+            let boundedValue = numericalValue;
             if (this.model.get('max') !== undefined) {
-                numericalValue = Math.min(this.model.get('max'), numericalValue);
+                boundedValue = Math.min(this.model.get('max'), boundedValue);
             }
             if (this.model.get('min') !== undefined) {
-                numericalValue = Math.max(this.model.get('min'), numericalValue);
+                boundedValue = Math.max(this.model.get('min'), boundedValue);
+            }
+            if (boundedValue !== numericalValue) {
+                e.target.value = boundedValue;
+                numericalValue = boundedValue;
             }
 
-            e.target.value = numericalValue;
             // Apply the value if it has changed.
             if (numericalValue !== this.model.get('value')) {
                 this.model.set('value', numericalValue, {updated_view: this});
@@ -603,7 +615,7 @@ class IntTextView extends DescriptionView {
     }
 
     _parse_value = parseInt
-    _default_step = 1;
+    _default_step = '1';
     textbox: HTMLInputElement;
 }
 
