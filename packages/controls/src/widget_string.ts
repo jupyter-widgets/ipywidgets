@@ -146,7 +146,8 @@ class TextareaModel extends StringModel {
         return _.extend(super.defaults(), {
             _view_name: 'TextareaView',
             _model_name: 'TextareaModel',
-            rows: null
+            rows: null,
+            continuous_update: true,
         });
     }
 }
@@ -264,7 +265,8 @@ class TextModel extends StringModel {
     defaults() {
         return _.extend(super.defaults(), {
             _view_name: 'TextView',
-            _model_name: 'TextModel'
+            _model_name: 'TextModel',
+            continuous_update: true,
         });
     }
 }

@@ -108,6 +108,7 @@ class FloatTextModel extends FloatModel {
             _model_name: "FloatTextModel",
             _view_name: "FloatTextView",
             disabled: false,
+            continuous_update: false,
         });
     }
 }
@@ -119,6 +120,7 @@ class BoundedFloatTextModel extends BoundedFloatModel {
             _model_name: "BoundedFloatTextModel",
             _view_name: "FloatTextView",
             disabled: false,
+            continuous_update: false,
         });
     }
 }

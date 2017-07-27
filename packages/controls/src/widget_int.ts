@@ -474,7 +474,8 @@ class IntTextModel extends IntModel {
         return _.extend(super.defaults(), {
             _model_name: 'IntTextModel',
             _view_name: 'IntTextView',
-            disabled: false
+            disabled: false,
+            continuous_update: false,
         });
     }
 }
@@ -485,7 +486,8 @@ class BoundedIntTextModel extends BoundedIntModel {
         return _.extend(super.defaults(), {
             _model_name: 'BoundedIntTextModel',
             _view_name: 'IntTextView',
-            disabled: false
+            disabled: false,
+            continuous_update: false,
         });
     }
 }
@@ -499,7 +501,8 @@ class IntTextView extends DescriptionView {
         this.el.classList.add('widget-text');
 
         this.textbox = document.createElement('input');
-        this.textbox.setAttribute('type', 'text');
+        this.textbox.type = 'number';
+        this.textbox.required = true;
         this.textbox.id = this.label.htmlFor = uuid();
         this.el.appendChild(this.textbox);
 
@@ -519,21 +522,18 @@ class IntTextView extends DescriptionView {
             if (this._parse_value(this.textbox.value) !== value) {
                 this.textbox.value = value.toString();
             }
+            this.textbox.min = this.model.get('min');
+            this.textbox.max = this.model.get('max');
             this.textbox.disabled = this.model.get('disabled');
         }
         return super.update();
     }
 
-    events(): {[e: string]: string} {
+    events() {
         return {
-            // Dictionary of events and their handlers.
             'keydown input'  : 'handleKeyDown',
             'keypress input' : 'handleKeypress',
-            'keyup input'  : 'handleChanging',
-            'paste input'  : 'handleChanging',
-            'cut input'    : 'handleChanging',
-
-            // Fires only when control is validated or looses focus.
+            'input input'  : 'handleChanging',
             'change input' : 'handleChanged'
         };
     }
@@ -557,9 +557,8 @@ class IntTextView extends DescriptionView {
     }
 
     /**
-     * Handles and validates user input.
-     *
-     * Try to parse value as an int.
+     * Call the submit handler if continuous update is true and we are not
+     * obviously incomplete.
      */
     handleChanging(e) {
         let trimmed = e.target.value.trim();
@@ -567,29 +566,9 @@ class IntTextView extends DescriptionView {
             // incomplete number
             return;
         }
-        let numericalValue = this._parse_value(e.target.value);
 
-        // If parse failed, reset value to value stored in model.
-        if (isNaN(numericalValue)) {
-            e.target.value = this.model.get('value');
-        } else {
-            // Handle both the IntTextModel and the BoundedIntTextModel by
-            // checking to see if the max/min properties are defined
-            if (this.model.get('max') !== void 0) {
-                numericalValue = Math.min(this.model.get('max'), numericalValue);
-            }
-            if (this.model.get('min') !== void 0) {
-                numericalValue = Math.max(this.model.get('min'), numericalValue);
-            }
-
-            // Apply the value if it has changed.
-            if (numericalValue !== this.model.get('value')) {
-
-                // Calling model.set will trigger all of the other views of the
-                // model to update.
-                this.model.set('value', numericalValue, {updated_view: this});
-                this.touch();
-            }
+        if (this.model.get('continuous_update')) {
+            this.handleChanged(e);
         }
     }
 
@@ -597,8 +576,27 @@ class IntTextView extends DescriptionView {
      * Applies validated input.
      */
     handleChanged(e) {
-        if (e.target.value.trim() === '' || e.target.value !== this.model.get('value')) {
+        let numericalValue = this._parse_value(e.target.value);
+
+        // If parse failed, reset value to value stored in model.
+        if (isNaN(numericalValue)) {
             e.target.value = this.model.get('value');
+        } else {
+            // Handle both the unbounded and bounded case by
+            // checking to see if the max/min properties are defined
+            if (this.model.get('max') !== undefined) {
+                numericalValue = Math.min(this.model.get('max'), numericalValue);
+            }
+            if (this.model.get('min') !== undefined) {
+                numericalValue = Math.max(this.model.get('min'), numericalValue);
+            }
+
+            e.target.value = numericalValue;
+            // Apply the value if it has changed.
+            if (numericalValue !== this.model.get('value')) {
+                this.model.set('value', numericalValue, {updated_view: this});
+                this.touch();
+            }
         }
     }
 
