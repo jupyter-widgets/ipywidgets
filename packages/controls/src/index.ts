@@ -2,6 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 export * from "./utils";
+export * from "./version";
 export * from "./widget_link";
 export * from "./widget_bool";
 export * from "./widget_button";
@@ -19,6 +20,3 @@ export * from "./widget_description";
 
 export
 const version = (require('../package.json') as any).version;
-
-export
-const JUPYTER_WIDGETS_VERSION = '3.0.0';

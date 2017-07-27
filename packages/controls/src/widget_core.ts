@@ -12,6 +12,10 @@ import {
     DescriptionModel
 } from './widget_description';
 
+import {
+    JUPYTER_CONTROLS_VERSION
+} from './version';
+
 import * as _ from 'underscore';
 
 export
@@ -21,6 +25,8 @@ class CoreWidgetModel extends WidgetModel {
             _model_name: 'CoreWidgetModel',
             _view_module: '@jupyter-widgets/controls',
             _model_module: '@jupyter-widgets/controls',
+            _view_module_version: JUPYTER_CONTROLS_VERSION,
+            _model_module_version: JUPYTER_CONTROLS_VERSION,
         });
     }
 }
@@ -32,6 +38,8 @@ class CoreDOMWidgetModel extends DOMWidgetModel {
             _model_name: 'CoreDOMWidgetModel',
             _view_module: '@jupyter-widgets/controls',
             _model_module: '@jupyter-widgets/controls',
+            _view_module_version: JUPYTER_CONTROLS_VERSION,
+            _model_module_version: JUPYTER_CONTROLS_VERSION,
         });
     }
 }
@@ -43,6 +51,8 @@ class CoreDescriptionModel extends DescriptionModel {
             _model_name: 'CoreDescriptionModel',
             _view_module: '@jupyter-widgets/controls',
             _model_module: '@jupyter-widgets/controls',
+            _view_module_version: JUPYTER_CONTROLS_VERSION,
+            _model_module_version: JUPYTER_CONTROLS_VERSION,
         });
     }
 }
