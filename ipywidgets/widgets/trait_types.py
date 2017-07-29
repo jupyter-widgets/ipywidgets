@@ -142,9 +142,19 @@ class InstanceDict(traitlets.Instance):
                           **(self.default_kwargs or {}))
 
 
+_number_format_re = re.compile('^(?:(.)?([<>=^]))?([+\-\( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?([a-z%])?$', re.I)
+
+
 class NumberFormat(traitlets.Unicode):
     """
     TODO
     """
+
+    info_text = 'A valid number format'
+    default_value = traitlets.Undefined
+
     def validate(self, obj, value):
-        return super(NumberFormat, self).validate(obj, value)
+        value = super(NumberFormat, self).validate(obj, value)
+        if _number_format_re.match(value) is None:
+            self.error(obj, value)
+        return value

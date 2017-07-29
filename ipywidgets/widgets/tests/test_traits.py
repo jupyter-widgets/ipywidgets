@@ -23,9 +23,9 @@ class TestNumberFormat(TraitTestBase):
 
     _good_values = [
         '.2f', '.0%', '($.2f', '+20', '.^20', '.2s', '#x', ',.2r', ',.2R',
-        ' .2f', '.2'
+        ' .2f', '.2', ''
     ]
-    _bad_values = [52]
+    _bad_values = [52, 'broken']
 
 
 class ColorTrait(HasTraits):
