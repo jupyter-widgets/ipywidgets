@@ -22,10 +22,10 @@ class TestNumberFormat(TraitTestBase):
     obj = NumberFormatTrait()
 
     _good_values = [
-        '.2f', '.0%', '($.2f', '+20', '.^20', '.2s', '#x', ',.2r', ',.2R',
+        '.2f', '.0%', '($.2f', '+20', '.^20', '.2s', '#x', ',.2r',
         ' .2f', '.2', ''
     ]
-    _bad_values = [52, 'broken']
+    _bad_values = [52, False, 'broken', '..2f', '.2a']
 
 
 class ColorTrait(HasTraits):

@@ -143,6 +143,10 @@ class InstanceDict(traitlets.Instance):
 
 
 _number_format_re = re.compile('^(?:(.)?([<>=^]))?([+\-\( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?([a-z%])?$', re.I)
+_number_format_types = {
+    'e', 'f', 'g', 'r', 's', '%', 'p', 'b', 'o', 'd', 'x',
+    'X', 'c', ''
+}
 
 
 class NumberFormat(traitlets.Unicode):
@@ -155,6 +159,16 @@ class NumberFormat(traitlets.Unicode):
 
     def validate(self, obj, value):
         value = super(NumberFormat, self).validate(obj, value)
-        if _number_format_re.match(value) is None:
+        re_match = _number_format_re.match(value)
+        if re_match is None:
             self.error(obj, value)
+        else:
+            format_type = re_match.group(9)
+            print format_type
+            if format_type is None:
+                return value
+            elif format_type in _number_format_types:
+                return value
+            else:
+                self.error(obj, value)
         return value
