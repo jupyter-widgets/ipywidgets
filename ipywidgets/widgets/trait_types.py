@@ -143,7 +143,12 @@ class InstanceDict(traitlets.Instance):
                           **(self.default_kwargs or {}))
 
 
+# The regexp is taken
+# from https://github.com/d3/d3-format/blob/master/src/formatSpecifier.js
 _number_format_re = re.compile('^(?:(.)?([<>=^]))?([+\-\( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?([a-z%])?$', re.I)
+
+# The valid types are taken from
+# https://github.com/d3/d3-format/blob/master/src/formatTypes.js
 _number_format_types = {
     'e', 'f', 'g', 'r', 's', '%', 'p', 'b', 'o', 'd', 'x',
     'X', 'c', ''
