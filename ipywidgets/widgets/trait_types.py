@@ -151,10 +151,12 @@ _number_format_types = {
 
 
 class NumberFormat(traitlets.Unicode):
-    """
-    TODO
-    """
+    """A string holding a number format specifier, e.g. '.3f'
 
+    This traitlet holds a string that can be passed to the
+    `d3-format <https://github.com/d3/d3-format>`_ JavaScript library.
+    The format allowed is similar to the Python format specifier.
+    """
     info_text = 'a valid number format'
     default_value = traitlets.Undefined
 
