@@ -155,7 +155,7 @@ class NumberFormat(traitlets.Unicode):
 
     This traitlet holds a string that can be passed to the
     `d3-format <https://github.com/d3/d3-format>`_ JavaScript library.
-    The format allowed is similar to the Python format specifier.
+    The format allowed is similar to the Python format specifier (PEP 3101).
     """
     info_text = 'a valid number format'
     default_value = traitlets.Undefined
