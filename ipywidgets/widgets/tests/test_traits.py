@@ -8,9 +8,21 @@ import datetime as dt
 from unittest import TestCase
 from traitlets import HasTraits
 from traitlets.tests.test_traitlets import TraitTestBase
-from ipywidgets import Color
+
+from ipywidgets import Color, NumberFormat
 from ipywidgets.widgets.widget import _remove_buffers, _put_buffers
 from ipywidgets.widgets.trait_types import date_serialization
+
+
+class NumberFormatTrait(HasTraits):
+    value = NumberFormat(".3f")
+
+
+class TestNumberFormat(TraitTestBase):
+    obj = NumberFormatTrait()
+
+    _good_values = ['.2f']
+    _bad_values = [52]
 
 
 class ColorTrait(HasTraits):

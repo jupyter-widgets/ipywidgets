@@ -140,3 +140,11 @@ class InstanceDict(traitlets.Instance):
     def make_dynamic_default(self):
         return self.klass(*(self.default_args or ()),
                           **(self.default_kwargs or {}))
+
+
+class NumberFormat(traitlets.Unicode):
+    """
+    TODO
+    """
+    def validate(self, obj, value):
+        return super(NumberFormat, self).validate(obj, value)
