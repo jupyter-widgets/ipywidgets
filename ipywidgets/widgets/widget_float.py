@@ -10,7 +10,7 @@ from traitlets import (
     Instance, Unicode, CFloat, Bool, CaselessStrEnum, Tuple, TraitError, validate, default
 )
 from .widget_description import DescriptionWidget
-from .trait_types import InstanceDict
+from .trait_types import InstanceDict, NumberFormat
 from .valuewidget import ValueWidget
 from .widget import register, widget_serialization
 from .widget_core import CoreWidget
@@ -129,7 +129,8 @@ class FloatSlider(_BoundedFloat):
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
-    readout_format = Unicode('.2f', help="Format for the readout").tag(sync=True)
+    readout_format = NumberFormat(
+        '.2f', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
@@ -265,7 +266,8 @@ class FloatRangeSlider(_BoundedFloatRange):
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
-    readout_format = Unicode('.2f', help="Format for the readout").tag(sync=True)
+    readout_format = NumberFormat(
+        '.2f', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 

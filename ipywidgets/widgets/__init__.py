@@ -5,7 +5,7 @@ from .widget import Widget, CallbackDispatcher, register, widget_serialization
 from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
 
-from .trait_types import Color, Datetime
+from .trait_types import Color, Datetime, NumberFormat
 
 from .widget_core import CoreWidget
 from .widget_bool import Checkbox, ToggleButton, Valid
