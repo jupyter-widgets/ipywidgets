@@ -127,6 +127,8 @@ class IntText(_Int):
     _view_name = Unicode('IntTextView').tag(sync=True)
     _model_name = Unicode('IntTextModel').tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
+    continuous_update = Bool(False, help="Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.").tag(sync=True)
+    step = CInt(1, help="Minimum step to increment the value").tag(sync=True)
 
 
 @register
@@ -137,6 +139,8 @@ class BoundedIntText(_BoundedInt):
     _view_name = Unicode('IntTextView').tag(sync=True)
     _model_name = Unicode('BoundedIntTextModel').tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
+    continuous_update = Bool(False, help="Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.").tag(sync=True)
+    step = CInt(1, help="Minimum step to increment the value").tag(sync=True)
 
 
 @register
