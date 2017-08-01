@@ -18,7 +18,7 @@ with
 If you need a specific version of the HTML widget manager, you can include a
 semver range. For example:
 
-`<script src="https://unpkg.com/@jupyter-widgets/html-manager@^2.0.0/dist/embed.js"></script>`
+`<script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.6.0/dist/embed.js"></script>`
 
 ## Try it
 
