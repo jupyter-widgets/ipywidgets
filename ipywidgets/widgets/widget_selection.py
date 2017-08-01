@@ -23,7 +23,7 @@ from traitlets import (Unicode, Bool, Int, Any, Dict, TraitError, CaselessStrEnu
                        Tuple, List, Union, observe, validate)
 from ipython_genutils.py3compat import unicode_type
 
-_selection_parameters_docs = """\
+_selection_parameters_docs = """
     options: dict or list
         The options for the dropdown. This can either be a
         list of values, e.g. ``['Galileo', 'Brahe', 'Hubble']``,
@@ -339,7 +339,6 @@ class ToggleButtons(_Selection):
 
     Parameters
     ----------
-
     {selection}
 
     tooltips: list
@@ -373,7 +372,6 @@ class Dropdown(_Selection):
 
     Parameters
     ----------
-
     {selection}
     """.format(selection=_selection_parameters_docs)
     _view_name = Unicode('DropdownView').tag(sync=True)
@@ -382,17 +380,27 @@ class Dropdown(_Selection):
 
 @register
 class RadioButtons(_Selection):
-    """Group of radio buttons that represent an enumeration.
+    __doc__ = """Group of radio buttons that represent an enumeration.
 
     Only one radio button can be toggled at any point in time.
-    """
+
+    Parameters
+    ----------
+    {selection}
+    """.format(selection=_selection_parameters_docs)
     _view_name = Unicode('RadioButtonsView').tag(sync=True)
     _model_name = Unicode('RadioButtonsModel').tag(sync=True)
 
 
 @register
 class Select(_Selection):
-    """Listbox that only allows one item to be selected at any given time."""
+    __doc__ = """
+    Listbox that only allows one item to be selected at any given time.
+
+    Parameters
+    ----------
+    {selection}
+    """.format(selection=_selection_parameters_docs)
     _view_name = Unicode('SelectView').tag(sync=True)
     _model_name = Unicode('SelectModel').tag(sync=True)
     rows = Int(5, help="The number of rows to display.").tag(sync=True)
