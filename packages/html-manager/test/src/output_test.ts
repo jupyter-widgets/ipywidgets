@@ -82,8 +82,8 @@ describe('Output widget', function() {
                     "data": {
                         "application/vnd.jupyter.widget-view+json": {
                             "model_id": "adffc4580a0944f6929c381463b0059b",
-                            "version_minor": "0",
-                            "version_major": "2"
+                            "version_minor": 0,
+                            "version_major": 2
                         },
                         "text/plain": "A Jupyter Widget"
                     },
