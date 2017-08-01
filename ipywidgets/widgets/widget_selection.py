@@ -302,6 +302,46 @@ class ToggleButtons(_Selection):
     """Group of toggle buttons that represent an enumeration.
 
     Only one toggle button can be toggled at any point in time.
+
+    Parameters
+    ----------
+
+    options: dict or list
+        The options for the dropdown. This can either be a
+        list of values, e.g. ``['Galileo', 'Brahe', 'Hubble']``,
+        a dictionary mapping the labels to the values,
+        e.g. `{'Galileo': 0, 'Brahe': 1, 'Hubble': 2}`,
+        or a list of (label, value) pairs, e.g.
+        `[('Galileo', 0), ('Brahe', 1), ('Hubble', 2)]`.
+
+    index: int
+        The index of the button that is selected.
+
+    value: any
+        The value of the current selection.
+
+    label: any
+        The label corresponding to the selected value.
+
+    tooltips: list
+        Tooltip for each button. If specified, must be the
+        same length as `options`.
+
+    icons: list
+        Icons to show on the buttons. This must be the name
+        of a font-awesome icon. See `http://fontawesome.io/icons/`
+        for a list of icons.
+
+    button_style: str
+        One of 'primary', 'success', 'info', 'warning' or
+        'danger'. Applies a predefined style to every button
+
+    disabled: bool
+        Whether to disable user changes.
+
+    description: str
+        Label for this input group. This should be a string
+        describing the widget.
     """
     _view_name = Unicode('ToggleButtonsView').tag(sync=True)
     _model_name = Unicode('ToggleButtonsModel').tag(sync=True)
