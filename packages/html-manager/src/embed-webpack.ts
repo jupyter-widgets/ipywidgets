@@ -8,6 +8,13 @@ import 'font-awesome/css/font-awesome.css';
 import '@phosphor/widgets/style/index.css';
 import '@jupyter-widgets/controls/css/widgets.built.css';
 
+let scriptPromise = function(pkg: string | string[]) {
+    return new Promise((resolve, reject) => {
+        // If requirejs is not on the page on page load, load it from cdn.
+        let scriptjs = require('scriptjs') as any;
+        scriptjs(pkg, resolve, reject);
+    });
+}
 
 // Element.prototype.matches polyfill
 if (Element && !Element.prototype.matches) {
@@ -17,15 +24,10 @@ if (Element && !Element.prototype.matches) {
     proto.oMatchesSelector || proto.webkitMatchesSelector;
 }
 
-import {
-    HTMLManager
-} from './htmlmanager';
-
+// WidgetModel is *just* used as a typing below
 import {
     WidgetModel
 } from '@jupyter-widgets/base';
-
-import * as _ from 'underscore';
 
 // Load json schema validator
 var Ajv = require('ajv');
@@ -57,24 +59,24 @@ ajv.removeKeyword('const');
 let model_validate = ajv.compile(widget_state_schema);
 let view_validate = ajv.compile(widget_view_schema);
 
+export
+let loadRequire = new Promise((resolve, reject) => {
+    if ((window as any).requirejs) {
+        resolve();
+    } else {
+        // If requirejs is not on the page on page load, load it from cdn.
+        resolve(scriptPromise('https://unpkg.com/requirejs/require.js'));
+    }
+}).then(() => {
+    // Load the base, controls, and html manager amd modules
+    let toLoad = ['base.js', 'controls.js', 'index.js'];
+    return scriptPromise(toLoad.map(f => `https://unpkg.com/@jupyter-widgets/html-manager/dist/${f}`));
+});
 
-// `LoadInlineWidget` is the main function called on load of the web page.
-// All it does is inserting a <script> tag for requirejs in the case it is not
-// available and call `renderInlineWidgets`
+// `LoadInlineWidget` is the main function called on load of the web page. All
+// it does is ensure requirejs is on the page and call `renderInlineWidgets`
 function loadInlineWidgets(event) {
-    let loadRequire = new Promise(function(resolve, reject) {
-        if ((window as any).requirejs) {
-            resolve();
-        } else {
-            // If requirejs is not on the page on page load, load it from cdn.
-            let scriptjs = require('scriptjs') as any;
-            scriptjs('https://unpkg.com/requirejs/require.js', function() {
-                resolve();
-            });
-        }
-    });
-    loadRequire.then(function() {
-        // Render inline widgets
+    loadRequire.then(() => {
         renderInlineWidgets(event);
     });
 }
@@ -103,37 +105,40 @@ export function renderInlineWidgets(event) {
 // Besides, if the view script tag has an <img> sibling DOM node with class `jupyter-widget`,
 // the <img> tag is deleted.
 function renderManager(element, tag) {
-    let widgetStateObject = JSON.parse(tag.innerHTML);
-    let valid = model_validate(widgetStateObject);
-    if (!valid) {
-        console.log(model_validate.errors);
-    }
-    let manager = new HTMLManager();
-    manager.set_state(widgetStateObject).then(function(models) {
-        let tags = element.querySelectorAll('script[type="application/vnd.jupyter.widget-view+json"]');
-        for (let i=0; i!=tags.length; ++i) {
-            // TODO: validate view schema
-            let viewtag = tags[i];
-            let widgetViewObject = JSON.parse(viewtag.innerHTML);
-            let valid = view_validate(widgetViewObject);
-            if (!valid) {
-                console.error('View state has errors.', view_validate.errors);
-            }
-            let model_id = widgetViewObject.model_id;
-            let model = _.find(models, function(item : WidgetModel) {
-                return item.model_id == model_id;
-            });
-            if (model !== undefined) {
-                if (viewtag.previousElementSibling &&
-                    viewtag.previousElementSibling.matches('img.jupyter-widget')) {
-                    viewtag.parentElement.removeChild(viewtag.previousElementSibling);
-                }
-                let widgetTag = document.createElement('div');
-                widgetTag.className = 'widget-subarea';
-                viewtag.parentElement.insertBefore(widgetTag, viewtag);
-                manager.display_model(undefined, model, { el : widgetTag });
-            }
+    (window as any).require(['@jupyter-widgets/html-manager'], (htmlmanager) => {
+        let widgetStateObject = JSON.parse(tag.innerHTML);
+        let valid = model_validate(widgetStateObject);
+        if (!valid) {
+            console.log(model_validate.errors);
         }
+        let manager = new htmlmanager.HTMLManager();
+        manager.set_state(widgetStateObject).then(function(models) {
+            let tags = element.querySelectorAll('script[type="application/vnd.jupyter.widget-view+json"]');
+            for (let i=0; i!=tags.length; ++i) {
+                // TODO: validate view schema
+                let viewtag = tags[i];
+                let widgetViewObject = JSON.parse(viewtag.innerHTML);
+                let valid = view_validate(widgetViewObject);
+                if (!valid) {
+                    console.error('View state has errors.', view_validate.errors);
+                }
+                let model_id = widgetViewObject.model_id;
+                // should use .find, but IE doesn't support .find
+                let model = models.filter( (item : WidgetModel) => {
+                    return item.model_id == model_id;
+                })[0];
+                if (model !== undefined) {
+                    if (viewtag.previousElementSibling &&
+                        viewtag.previousElementSibling.matches('img.jupyter-widget')) {
+                        viewtag.parentElement.removeChild(viewtag.previousElementSibling);
+                    }
+                    let widgetTag = document.createElement('div');
+                    widgetTag.className = 'widget-subarea';
+                    viewtag.parentElement.insertBefore(widgetTag, viewtag);
+                    manager.display_model(undefined, model, { el : widgetTag });
+                }
+            }
+        });
     });
 }
 

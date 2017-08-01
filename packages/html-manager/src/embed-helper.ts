@@ -8,3 +8,4 @@ function generateEmbedScript(widgetState, imageDataUrl) {
       '<script type="application/vnd.jupyter.widgets-state+json">' + JSON.stringify(widgetState) + '</script>'
   ].join('\n');
 }
+
