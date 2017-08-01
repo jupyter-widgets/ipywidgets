@@ -559,7 +559,6 @@ describe("WidgetModel", function() {
                 _view_name: null,
                 _view_module_version: '3.0.0',
                 _view_count: null,
-                msg_throttle: 1,
                 a: 'get_state test'
             });
         });
@@ -611,38 +610,6 @@ describe("WidgetModel", function() {
             // check that the other sync message went through with the updated values
             expect(send.secondCall).to.be.calledWith({
                 a: 'another sync test',
-                b: 'change b again'
-            });
-        });
-        it('works with message throttle 2', function() {
-            let send = sinon.spy(this.widget, 'send_sync_message');
-            this.widget.set('msg_throttle', 2);
-            this.widget.set('a', 'sync test');
-            this.widget.save_changes();
-            this.widget.set('a', 'another sync test');
-            this.widget.set('b', 'change b');
-            this.widget.save_changes();
-            this.widget.set('b', 'change b again');
-            this.widget.save_changes();
-
-            // check that one sync message went through
-            expect(send).to.be.calledTwice;
-            expect(send.firstCall).to.be.calledWith({
-                a: 'sync test',
-                msg_throttle: 2
-            })
-            expect(send.secondCall).to.be.calledWith({
-                a: 'another sync test',
-                b: 'change b'
-            })
-            // have the comm send a status idle message
-            this.widget._handle_status({
-                content: {
-                    execution_state: 'idle'
-                }
-            });
-            // check that the other sync message went through with the updated values
-            expect(send.thirdCall).to.be.calledWith({
                 b: 'change b again'
             });
         });

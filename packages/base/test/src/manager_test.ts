@@ -434,7 +434,6 @@ describe("ManagerBase", function() {
                 "_view_name":"TestWidgetView",
                 "_view_module_version":"1.0.0",
                 "_view_count":null,
-                "msg_throttle":1
         }}}};
         expect(state).to.deep.equal(expectedState);
       });
