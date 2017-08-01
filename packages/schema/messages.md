@@ -231,6 +231,10 @@ While in version 1, binary buffers could only be top level attributes of the `st
 
 The sync update event from the frontend to the kernel was restructured to have the same field names as the event from the kernel to the frontend, namely the method field is `'update'` and the state data is in the `state` attribute.
 
+Widgets are displayed via `display_data` messages, which now include the version of the schema.
+
+The `msg_throttle` attribute of models is removed.
+
 ## Widget state
 
 The core idea of widgets is that some state is automatically synced back and forth between a kernel object and a frontend object. Several fields are assumed to be in every state object:
@@ -242,7 +246,7 @@ The core idea of widgets is that some state is automatically synced back and for
 * `_view_module_version`: the semver range of the view
 * `_view_name`: the name of the view
 
-The `_model_*` and `_view_*` fields are assumed immutable (set at initialization, and never changed).
+These fields are assumed immutable (set at initialization, and never changed).
 
 ## Implementating the Jupyter widgets protocol in the kernel
 
@@ -250,11 +254,11 @@ In this section, we concentrate on implementing the Jupyter widget messaging pro
 
 ### The `jupyter.widget` comm target
 
-A kernel-side Jupyter widgets library also registers a `jupyter.widget` comm target for created creating widget comm channels (one per widget instance). State synchronization and custom messages for a particular widget instance are then sent over the created widget comm channel.
+A kernel-side Jupyter widgets library registers a `jupyter.widget` comm target for creating widget comm channels (one per widget instance). State synchronization and custom messages for a particular widget instance are then sent over the created widget comm channel.
 
 ### Instantiating a widget object
 
-When a widget is instantiated in either the kernel or the frontend, it creates a companion model on the other side by sending a `comm_open` message to the `jupyter.widget` comm target.
+When a widget is instantiated in either the kernel or the frontend, it creates a companion model on the other side by sending a `comm_open` message to the `jupyter.widget` comm target. The `comm_open` message's metadata gives the version of the widget messaging protocol, i.e., `{'version': '2.0.0'}`.
 
 ```
 {
@@ -329,27 +333,16 @@ In the ipywidgets implementation, the `Widget.send(content, buffers=None)` metho
 
 ### Displaying widgets
 
-To display a widget in the classic Jupyter notebook, the kernel sends a `display` comm message to the frontend on the widget's comm channel:
-
-```
-{
-  'comm_id': 'u-u-i-d',
-  'data': {
-    'method': 'display'
-  }
-}
-```
-
-To display a widget in JupyterLab, the kernel sends a Jupyter [iopub `display_data` message](http://jupyter-client.readthedocs.io/en/latest/messaging.html#display-data) with a special mimetype (where the `model_id` is the widget's comm channel id):
+To display a widget, the kernel sends a Jupyter [iopub `display_data` message](http://jupyter-client.readthedocs.io/en/latest/messaging.html#display-data) with the `application/vnd.jupyter.widget-view+json` mimetype. In this message, the `model_id` is the comm channel id of the widget to display.
 
 ```
 {
   'data': {
     'application/vnd.jupyter.widget-view+json': {
       'model_id': 'u-u-i-d'
+      'version_major': 2
+      'version_minor': 0
     }
   }
 }
 ```
-
-In order to display widgets in both the classic notebook and JupyterLab, ipywidgets sends both the `display` comm message and the iopub `display_data` message, and omits the `text/plain` mimetype from the `display_data` message (so the classic notebook will not show any output from the iopub message).
