@@ -38,13 +38,27 @@ var loaders = [
         ]
 
 module.exports = [
-{// base manager
+{// shim
     entry: './lib/embed-webpack.js',
     output: {
+        filename : 'embed.js',
+        path: './dist',
+        publicPath: 'https://unpkg.com/@jupyter-widgets/htmlmanager@' + version + '/dist/',
+        //libraryTarget: 'umd'
+    },
+    devtool: 'source-map',
+    module: { loaders: loaders },
+    postcss: postcssHandler,
+    //externals: ['@jupyter-widgets/base', '@jupyter-widgets/controls']
+},
+{// html manager
+    entry: './lib/index.js',
+    output: {
+        library: '@jupyter-widgets/html-manager',
         filename : 'index.js',
         path: './dist',
         publicPath: 'https://unpkg.com/@jupyter-widgets/htmlmanager@' + version + '/dist/',
-        libraryTarget: 'amd'
+        libraryTarget: 'amd',
     },
     devtool: 'source-map',
     module: { loaders: loaders },
@@ -54,10 +68,10 @@ module.exports = [
 {// @jupyter-widgets/base
     entry: '@jupyter-widgets/base/lib/index',
     output: {
-        //library: '@jupyter-widgets/base',
+        library: '@jupyter-widgets/base',
         filename : 'base.js',
         path: './dist',
-        publicPath: 'https://unpkg.com/@jupyter-widgets/base@' + version + '/dist/',
+        publicPath: 'https://unpkg.com/@jupyter-widgets/htmlmanager@' + version + '/dist/',
         libraryTarget: 'amd',
     },
     devtool: 'source-map',
@@ -67,10 +81,10 @@ module.exports = [
 {// @jupyter-widgets/controls
     entry: '@jupyter-widgets/controls/lib/index',
     output: {
-        //library: '@jupyter-widgets/controls',
+        library: '@jupyter-widgets/controls',
         filename : 'controls.js',
         path: './dist',
-        publicPath: 'https://unpkg.com/@jupyter-widgets/controls@' + version + '/dist/',
+        publicPath: 'https://unpkg.com/@jupyter-widgets/htmlmanager@' + version + '/dist/',
         libraryTarget: 'amd'
     },
     devtool: 'source-map',
