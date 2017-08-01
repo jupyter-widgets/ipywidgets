@@ -1,11 +1,11 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-var version = require('./package.json').version;
+let version = require('./package.json').version;
 
-var postcss = require('postcss');
+let postcss = require('postcss');
 
-var postcssHandler = () => {
+let postcssHandler = () => {
     return [
         postcss.plugin('delete-tilde', () => {
             return function (css) {
@@ -24,7 +24,7 @@ var postcssHandler = () => {
     ];
 }
 
-var loaders = [
+let loaders = [
             { test: /\.css$/, loader: "style-loader!css-loader!postcss-loader" },
             { test: /\.json$/, loader: "json-loader" },
             // jquery-ui loads some images
@@ -37,27 +37,27 @@ var loaders = [
             { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" }
         ]
 
+let publicPath = 'https://unpkg.com/@jupyter-widgets/htmlmanager@' + version + '/dist/';
+
 module.exports = [
 {// shim
     entry: './lib/embed-webpack.js',
     output: {
         filename : 'embed.js',
         path: './dist',
-        publicPath: 'https://unpkg.com/@jupyter-widgets/htmlmanager@' + version + '/dist/',
-        //libraryTarget: 'umd'
+        publicPath: publicPath,
     },
     devtool: 'source-map',
     module: { loaders: loaders },
     postcss: postcssHandler,
-    //externals: ['@jupyter-widgets/base', '@jupyter-widgets/controls']
 },
-{// html manager
+{// @jupyter-widgets/html-manager
     entry: './lib/index.js',
     output: {
         library: '@jupyter-widgets/html-manager',
         filename : 'index.js',
         path: './dist',
-        publicPath: 'https://unpkg.com/@jupyter-widgets/htmlmanager@' + version + '/dist/',
+        publicPath: publicPath,
         libraryTarget: 'amd',
     },
     devtool: 'source-map',
@@ -71,7 +71,7 @@ module.exports = [
         library: '@jupyter-widgets/base',
         filename : 'base.js',
         path: './dist',
-        publicPath: 'https://unpkg.com/@jupyter-widgets/htmlmanager@' + version + '/dist/',
+        publicPath: publicPath,
         libraryTarget: 'amd',
     },
     devtool: 'source-map',
@@ -84,7 +84,7 @@ module.exports = [
         library: '@jupyter-widgets/controls',
         filename : 'controls.js',
         path: './dist',
-        publicPath: 'https://unpkg.com/@jupyter-widgets/htmlmanager@' + version + '/dist/',
+        publicPath: publicPath,
         libraryTarget: 'amd'
     },
     devtool: 'source-map',
