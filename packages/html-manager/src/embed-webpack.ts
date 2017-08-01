@@ -22,6 +22,10 @@ import {
 } from './htmlmanager';
 
 import {
+    loadRequire
+} from './embed-helper';
+
+import {
     WidgetModel
 } from '@jupyter-widgets/base';
 
@@ -58,23 +62,10 @@ let model_validate = ajv.compile(widget_state_schema);
 let view_validate = ajv.compile(widget_view_schema);
 
 
-// `LoadInlineWidget` is the main function called on load of the web page.
-// All it does is inserting a <script> tag for requirejs in the case it is not
-// available and call `renderInlineWidgets`
+// `LoadInlineWidget` is the main function called on load of the web page. All
+// it does is ensure requirejs is on the page and call `renderInlineWidgets`
 function loadInlineWidgets(event) {
-    let loadRequire = new Promise(function(resolve, reject) {
-        if ((window as any).requirejs) {
-            resolve();
-        } else {
-            // If requirejs is not on the page on page load, load it from cdn.
-            let scriptjs = require('scriptjs') as any;
-            scriptjs('https://unpkg.com/requirejs/require.js', function() {
-                resolve();
-            });
-        }
-    });
-    loadRequire.then(function() {
-        // Render inline widgets
+    loadRequire.then(() => {
         renderInlineWidgets(event);
     });
 }
