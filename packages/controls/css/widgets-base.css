@@ -306,7 +306,6 @@
     font-size: var(--jp-widgets-font-size);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
-    margin-left: var(--jp-widgets-inline-margin);
     overflow: hidden;
     white-space: nowrap;
     text-align: center;
@@ -344,6 +343,8 @@
 .widget-inline-vbox .widget-readout {
     /* Vertical Readout */
     margin-top: var(--jp-widgets-inline-margin);
+    /* as wide as the widget */
+    width: inherit;
 }
 
 /* Widget Checkbox Styling */
