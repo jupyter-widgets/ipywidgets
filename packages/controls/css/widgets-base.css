@@ -620,13 +620,17 @@
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
     width: var(--jp-widgets-inline-width);
+    align-items: center;
+
 }
 
 .widget-hprogress .progress {
     flex-grow: 1;
-    height: var(--jp-widgets-progress-thickness);
-    margin-top: auto;
-    margin-bottom: auto;
+    margin-top: var(--jp-widgets-input-padding);
+    margin-bottom: var(--jp-widgets-input-padding);
+    align-self: stretch;
+    /* Override bootstrap style */
+    height: initial;
 }
 
 /* Vertical Progress */
