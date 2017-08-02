@@ -435,6 +435,9 @@ class Select(_Selection):
     Parameters
     ----------
     {selection}
+
+    rows: int
+        The number of rows to display in the widget.
     """.format(selection=_selection_parameters_docs)
     _view_name = Unicode('SelectView').tag(sync=True)
     _model_name = Unicode('SelectModel').tag(sync=True)
@@ -451,6 +454,9 @@ class SelectMultiple(_MultipleSelection):
     Parameters
     ----------
     {selection_multiple}
+
+    rows: int
+        The number of rows to display in the widget.
     """.format(selection_multiple=_multiple_selection_parameters_docs)
     _view_name = Unicode('SelectMultipleView').tag(sync=True)
     _model_name = Unicode('SelectMultipleModel').tag(sync=True)
