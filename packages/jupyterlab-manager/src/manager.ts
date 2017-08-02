@@ -118,7 +118,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Create a comm.
    */
-   _create_comm(target_name: string, model_id: string, data?: any, metadata?: any): Promise<shims.services.Comm> {
+   _create_comm(target_name: string, model_id?: string, data?: any, metadata?: any): Promise<shims.services.Comm> {
     let comm = this._context.session.kernel.connectToComm(target_name, model_id);
     if (data || metadata) {
       comm.open(data, metadata);
