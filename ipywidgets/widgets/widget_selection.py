@@ -498,7 +498,14 @@ class _MultipleSelectionNonempty(_MultipleSelection):
 
 @register
 class SelectionSlider(_SelectionNonempty):
-    """Slider to select a single item from a list or dictionary."""
+    __doc__ = """
+    Slider to select a single item from a list or dictionary.
+
+
+    Parameters
+    ----------
+    {selection}
+    """.format(selection=_selection_parameters_docs)
     _view_name = Unicode('SelectionSliderView').tag(sync=True)
     _model_name = Unicode('SelectionSliderModel').tag(sync=True)
 
@@ -512,7 +519,13 @@ class SelectionSlider(_SelectionNonempty):
 
 @register
 class SelectionRangeSlider(_MultipleSelectionNonempty):
-    """Slider to select a single item from a list or dictionary."""
+    __doc__ = """
+    Slider to select multiple contiguous items from a list.
+
+    Parameters
+    ----------
+    {selection_multiple}
+    """.format(selection_multiple=_multiple_selection_parameters_docs)
     _view_name = Unicode('SelectionRangeSliderView').tag(sync=True)
     _model_name = Unicode('SelectionRangeSliderModel').tag(sync=True)
 
