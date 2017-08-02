@@ -505,6 +505,17 @@ class SelectionSlider(_SelectionNonempty):
     Parameters
     ----------
     {selection}
+
+    orientation: str
+        Either ``'horizontal'`` or ``'vertical'``. Defaults to ``horizontal``.
+
+    readout: bool
+        Display the current label next to the slider. Defaults to ``True``.
+
+    continuous_update: bool
+        If ``True``, update the value of the widget continuously as the user
+        holds the slider. Otherwise, the model is only updated after the
+        user has released the slider. Defaults to ``True``.
     """.format(selection=_selection_parameters_docs)
     _view_name = Unicode('SelectionSliderView').tag(sync=True)
     _model_name = Unicode('SelectionSliderModel').tag(sync=True)
@@ -525,6 +536,17 @@ class SelectionRangeSlider(_MultipleSelectionNonempty):
     Parameters
     ----------
     {selection_multiple}
+
+    orientation: str
+        Either ``'horizontal'`` or ``'vertical'``. Defaults to ``horizontal``.
+
+    readout: bool
+        Display the current label next to the slider. Defaults to ``True``.
+
+    continuous_update: bool
+        If ``True``, update the value of the widget continuously as the user
+        holds the slider. Otherwise, the model is only updated after the
+        user has released the slider. Defaults to ``True``.
     """.format(selection_multiple=_multiple_selection_parameters_docs)
     _view_name = Unicode('SelectionRangeSliderView').tag(sync=True)
     _model_name = Unicode('SelectionRangeSliderModel').tag(sync=True)
