@@ -46,7 +46,7 @@ _selection_parameters_docs = """
         keyword argument. For example, when dealing with numpy arrays, one may
         set ``equals=np.array_equal``.
 
-    label: any
+    label: str
         The label corresponding to the selected value.
 
     disabled: bool
@@ -57,6 +57,40 @@ _selection_parameters_docs = """
         describing the widget.
 """
 
+
+_multiple_selection_parameters_docs = """
+    options: dict or list
+        The options for the dropdown. This can either be a list of values, e.g.
+        ``['Galileo', 'Brahe', 'Hubble']`` or ``[0, 1, 2]``, a list of
+        (label, value) pairs, e.g.
+        ``[('Galileo', 0), ('Brahe', 1), ('Hubble', 2)]``,
+        or a dictionary mapping the labels to the values, e.g. ``{'Galileo': 0,
+        'Brahe': 1, 'Hubble': 2}``. The labels are the strings that will be
+        displayed in the UI, representing the actual Python choices, and should
+        be unique. If this is a dictionary, the order in which they are
+        displayed is not guaranteed.
+
+    index: iterable of int
+        The indices of the options that are selected.
+
+    value: iterable
+        The values that are selected. When programmatically setting the
+        value, a reverse lookup is performed among the options to check that
+        the value is valid. The reverse lookup uses the equality operator by
+        default, but another predicate may be provided via the ``equals``
+        keyword argument. For example, when dealing with numpy arrays, one may
+        set ``equals=np.array_equal``.
+
+    label: iterable of str
+        The labels corresponding to the selected value.
+
+    disabled: bool
+        Whether to disable user changes.
+
+    description: str
+        Label for this input group. This should be a string
+        describing the widget.
+"""
 
 def _make_options(x):
     """Standardize the options tuple format.
@@ -408,12 +442,16 @@ class Select(_Selection):
 
 @register
 class SelectMultiple(_MultipleSelection):
-    """Listbox that allows many items to be selected at any given time.
+    __doc__ = """
+    Listbox that allows many items to be selected at any given time.
 
-    Despite their names, inherited from ``_Selection``, the currently chosen
-    option values, ``value``, or their labels, ``selected_labels`` must both be
-    updated with a list-like object.
-    """
+    The ``value`` and ``index`` attributes are both list-like
+    objects.
+
+    Parameters
+    ----------
+    {selection_multiple}
+    """.format(selection_multiple=_multiple_selection_parameters_docs)
     _view_name = Unicode('SelectMultipleView').tag(sync=True)
     _model_name = Unicode('SelectMultipleModel').tag(sync=True)
     rows = Int(5, help="The number of rows to display.").tag(sync=True)
