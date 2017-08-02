@@ -490,7 +490,7 @@ abstract class ManagerBase<T> {
      * @param data The initial data for the comm
      * @param metadata The metadata in the open message
      */
-    protected abstract _create_comm(comm_target_name: string, model_id: string, data?: any, metadata?: any): Promise<any>;
+    protected abstract _create_comm(comm_target_name: string, model_id?: string, data?: any, metadata?: any): Promise<any>;
     protected abstract _get_comm_info();
 
     /**
