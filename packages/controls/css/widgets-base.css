@@ -703,6 +703,11 @@
 .widget-select {
     width: var(--jp-widgets-inline-width);
     line-height: var(--jp-widgets-inline-height);
+
+    /* Because Firefox defines the baseline of a select as the bottom of the
+    control, we align the entire control to the top and add padding to the
+    select to get an approximate first line baseline alignment. */
+    align-items: flex-start;
 }
 
 .widget-select > select {
@@ -714,6 +719,11 @@
     outline: none !important;
     overflow: auto;
     height: inherit;
+
+    /* Because Firefox defines the baseline of a select as the bottom of the
+    control, we align the entire control to the top and add padding to the
+    select to get an approximate first line baseline alignment. */
+    padding-top: 5px;
 }
 
 .widget-select > select:focus {
