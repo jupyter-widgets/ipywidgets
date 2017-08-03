@@ -404,6 +404,9 @@ class ToggleButtons(_Selection):
     button_style: str
         One of 'primary', 'success', 'info', 'warning' or
         'danger'. Applies a predefined style to every button
+
+    style: ToggleButtonsStyle
+        Style parameters for the buttons.
     """
     _view_name = Unicode('ToggleButtonsView').tag(sync=True)
     _model_name = Unicode('ToggleButtonsModel').tag(sync=True)
