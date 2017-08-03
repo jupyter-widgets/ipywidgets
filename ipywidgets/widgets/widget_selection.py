@@ -56,7 +56,7 @@ _doc_snippets['selection_params'] = """
     description: str
         Label for this input group. This should be a string
         describing the widget.
-"""
+""".strip()
 
 _doc_snippets['multiple_selection_params'] = """
     options: dict or list
@@ -90,7 +90,7 @@ _doc_snippets['multiple_selection_params'] = """
     description: str
         Label for this input group. This should be a string
         describing the widget.
-"""
+""".strip()
 
 _doc_snippets['slider_params'] = """
     orientation: str
@@ -103,7 +103,7 @@ _doc_snippets['slider_params'] = """
         If ``True``, update the value of the widget continuously as the user
         holds the slider. Otherwise, the model is only updated after the
         user has released the slider. Defaults to ``True``.
-"""
+""".strip()
 
 
 def _doc_subst(cls):
@@ -386,7 +386,6 @@ class ToggleButtonsStyle(Style, CoreWidget):
 
     Parameters
     ----------
-
     button_width: str
         The width of each button. This should be a valid CSS
         width, e.g. '10px' or '5em'.
@@ -404,6 +403,7 @@ class ToggleButtons(_Selection):
     Parameters
     ----------
     {selection_params}
+
     tooltips: list
         Tooltip for each button. If specified, must be the
         same length as `options`.
@@ -469,6 +469,7 @@ class Select(_Selection):
     Parameters
     ----------
     {selection_params}
+
     rows: int
         The number of rows to display in the widget.
     """
@@ -487,6 +488,7 @@ class SelectMultiple(_MultipleSelection):
     Parameters
     ----------
     {multiple_selection_params}
+
     rows: int
         The number of rows to display in the widget.
     """
@@ -540,10 +542,10 @@ class SelectionSlider(_SelectionNonempty):
     """
     Slider to select a single item from a list or dictionary.
 
-
     Parameters
     ----------
     {selection_params}
+
     {slider_params}
     """
     _view_name = Unicode('SelectionSliderView').tag(sync=True)
@@ -566,6 +568,7 @@ class SelectionRangeSlider(_MultipleSelectionNonempty):
     Parameters
     ----------
     {multiple_selection_params}
+
     {slider_params}
     """
     _view_name = Unicode('SelectionRangeSliderView').tag(sync=True)
