@@ -370,7 +370,15 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
 
 @register
 class ToggleButtonsStyle(Style, CoreWidget):
-    """Button style widget."""
+    """Button style widget.
+
+    Parameters
+    ----------
+
+    button_width: str
+        The width of each button. This should be a valid CSS
+        width, e.g. '10px' or '5em'.
+    """
     _model_name = Unicode('ToggleButtonsStyleModel').tag(sync=True)
     button_width = Unicode(help="The width of each button.").tag(sync=True)
 
