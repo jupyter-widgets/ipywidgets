@@ -23,6 +23,99 @@ from traitlets import (Unicode, Bool, Int, Any, Dict, TraitError, CaselessStrEnu
                        Tuple, List, Union, observe, validate)
 from ipython_genutils.py3compat import unicode_type
 
+_doc_snippets = {}
+_doc_snippets['selection_params'] = """
+    options: list or dict
+        The options for the dropdown. This can either be a list of values, e.g.
+        ``['Galileo', 'Brahe', 'Hubble']`` or ``[0, 1, 2]``, a list of
+        (label, value) pairs, e.g.
+        ``[('Galileo', 0), ('Brahe', 1), ('Hubble', 2)]``,
+        or a dictionary mapping the labels to the values, e.g. ``{'Galileo': 0,
+        'Brahe': 1, 'Hubble': 2}``. The labels are the strings that will be
+        displayed in the UI, representing the actual Python choices, and should
+        be unique. If this is a dictionary, the order in which they are
+        displayed is not guaranteed.
+
+    index: int
+        The index of the current selection.
+
+    value: any
+        The value of the current selection. When programmatically setting the
+        value, a reverse lookup is performed among the options to check that
+        the value is valid. The reverse lookup uses the equality operator by
+        default, but another predicate may be provided via the ``equals``
+        keyword argument. For example, when dealing with numpy arrays, one may
+        set ``equals=np.array_equal``.
+
+    label: str
+        The label corresponding to the selected value.
+
+    disabled: bool
+        Whether to disable user changes.
+
+    description: str
+        Label for this input group. This should be a string
+        describing the widget.
+"""
+
+_doc_snippets['multiple_selection_params'] = """
+    options: dict or list
+        The options for the dropdown. This can either be a list of values, e.g.
+        ``['Galileo', 'Brahe', 'Hubble']`` or ``[0, 1, 2]``, a list of
+        (label, value) pairs, e.g.
+        ``[('Galileo', 0), ('Brahe', 1), ('Hubble', 2)]``,
+        or a dictionary mapping the labels to the values, e.g. ``{'Galileo': 0,
+        'Brahe': 1, 'Hubble': 2}``. The labels are the strings that will be
+        displayed in the UI, representing the actual Python choices, and should
+        be unique. If this is a dictionary, the order in which they are
+        displayed is not guaranteed.
+
+    index: iterable of int
+        The indices of the options that are selected.
+
+    value: iterable
+        The values that are selected. When programmatically setting the
+        value, a reverse lookup is performed among the options to check that
+        the value is valid. The reverse lookup uses the equality operator by
+        default, but another predicate may be provided via the ``equals``
+        keyword argument. For example, when dealing with numpy arrays, one may
+        set ``equals=np.array_equal``.
+
+    label: iterable of str
+        The labels corresponding to the selected value.
+
+    disabled: bool
+        Whether to disable user changes.
+
+    description: str
+        Label for this input group. This should be a string
+        describing the widget.
+"""
+
+_doc_snippets['slider_params'] = """
+    orientation: str
+        Either ``'horizontal'`` or ``'vertical'``. Defaults to ``horizontal``.
+
+    readout: bool
+        Display the current label next to the slider. Defaults to ``True``.
+
+    continuous_update: bool
+        If ``True``, update the value of the widget continuously as the user
+        holds the slider. Otherwise, the model is only updated after the
+        user has released the slider. Defaults to ``True``.
+"""
+
+
+def _doc_subst(cls):
+    """ Substitute format strings in class docstring """
+    # Strip the snippets to avoid trailing new lines and whitespace
+    stripped_snippets = {
+        key: snippet.strip() for (key, snippet) in _doc_snippets.items()
+    }
+    cls.__doc__ = cls.__doc__.format(**stripped_snippets)
+    return cls
+
+
 def _make_options(x):
     """Standardize the options tuple format.
 
@@ -293,15 +386,43 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
 
 @register
 class ToggleButtonsStyle(Style, CoreWidget):
-    """Button style widget."""
+    """Button style widget.
+
+    Parameters
+    ----------
+    button_width: str
+        The width of each button. This should be a valid CSS
+        width, e.g. '10px' or '5em'.
+    """
     _model_name = Unicode('ToggleButtonsStyleModel').tag(sync=True)
     button_width = Unicode(help="The width of each button.").tag(sync=True)
 
 @register
+@_doc_subst
 class ToggleButtons(_Selection):
     """Group of toggle buttons that represent an enumeration.
 
     Only one toggle button can be toggled at any point in time.
+
+    Parameters
+    ----------
+    {selection_params}
+
+    tooltips: list
+        Tooltip for each button. If specified, must be the
+        same length as `options`.
+
+    icons: list
+        Icons to show on the buttons. This must be the name
+        of a font-awesome icon. See `http://fontawesome.io/icons/`
+        for a list of icons.
+
+    button_style: str
+        One of 'primary', 'success', 'info', 'warning' or
+        'danger'. Applies a predefined style to every button.
+
+    style: ToggleButtonsStyle
+        Style parameters for the buttons.
     """
     _view_name = Unicode('ToggleButtonsView').tag(sync=True)
     _model_name = Unicode('ToggleButtonsModel').tag(sync=True)
@@ -316,36 +437,64 @@ class ToggleButtons(_Selection):
 
 
 @register
+@_doc_subst
 class Dropdown(_Selection):
-    """Allows you to select a single item from a dropdown."""
+    """Allows you to select a single item from a dropdown.
+
+    Parameters
+    ----------
+    {selection_params}
+    """
     _view_name = Unicode('DropdownView').tag(sync=True)
     _model_name = Unicode('DropdownModel').tag(sync=True)
 
 
 @register
+@_doc_subst
 class RadioButtons(_Selection):
     """Group of radio buttons that represent an enumeration.
 
     Only one radio button can be toggled at any point in time.
+
+    Parameters
+    ----------
+    {selection_params}
     """
     _view_name = Unicode('RadioButtonsView').tag(sync=True)
     _model_name = Unicode('RadioButtonsModel').tag(sync=True)
 
 
 @register
+@_doc_subst
 class Select(_Selection):
-    """Listbox that only allows one item to be selected at any given time."""
+    """
+    Listbox that only allows one item to be selected at any given time.
+
+    Parameters
+    ----------
+    {selection_params}
+
+    rows: int
+        The number of rows to display in the widget.
+    """
     _view_name = Unicode('SelectView').tag(sync=True)
     _model_name = Unicode('SelectModel').tag(sync=True)
     rows = Int(5, help="The number of rows to display.").tag(sync=True)
 
 @register
+@_doc_subst
 class SelectMultiple(_MultipleSelection):
-    """Listbox that allows many items to be selected at any given time.
+    """
+    Listbox that allows many items to be selected at any given time.
 
-    Despite their names, inherited from ``_Selection``, the currently chosen
-    option values, ``value``, or their labels, ``selected_labels`` must both be
-    updated with a list-like object.
+    The ``value``, ``label`` and ``index`` attributes are all iterables.
+
+    Parameters
+    ----------
+    {multiple_selection_params}
+
+    rows: int
+        The number of rows to display in the widget.
     """
     _view_name = Unicode('SelectMultipleView').tag(sync=True)
     _model_name = Unicode('SelectMultipleModel').tag(sync=True)
@@ -392,8 +541,17 @@ class _MultipleSelectionNonempty(_MultipleSelection):
         return proposal.value
 
 @register
+@_doc_subst
 class SelectionSlider(_SelectionNonempty):
-    """Slider to select a single item from a list or dictionary."""
+    """
+    Slider to select a single item from a list or dictionary.
+
+    Parameters
+    ----------
+    {selection_params}
+
+    {slider_params}
+    """
     _view_name = Unicode('SelectionSliderView').tag(sync=True)
     _model_name = Unicode('SelectionSliderModel').tag(sync=True)
 
@@ -406,8 +564,20 @@ class SelectionSlider(_SelectionNonempty):
         help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
 
 @register
+@_doc_subst
 class SelectionRangeSlider(_MultipleSelectionNonempty):
-    """Slider to select a single item from a list or dictionary."""
+    """
+    Slider to select multiple contiguous items from a list.
+    
+    The index, value, and label attributes contain the start and end of
+    the selection range, not all items in the range.
+
+    Parameters
+    ----------
+    {multiple_selection_params}
+
+    {slider_params}
+    """
     _view_name = Unicode('SelectionRangeSliderView').tag(sync=True)
     _model_name = Unicode('SelectionRangeSliderModel').tag(sync=True)
 
