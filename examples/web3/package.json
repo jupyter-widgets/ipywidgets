@@ -3,7 +3,7 @@
   "name": "@jupyter-widgets/example-web3",
   "version": "2.0.0-16",
   "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
     "clean": "rimraf lib && rimraf built",
     "build": "npm run clean && tsc --project src && node scripts/copyfiles.js && webpack",
@@ -16,6 +16,7 @@
   "dependencies": {
     "@jupyter-widgets/base": "^0.6.6",
     "@jupyter-widgets/controls": "^0.6.10",
+    "@jupyter-widgets/html-manager": "^0.6.0",
     "@jupyterlab/services": "^0.48.0",
     "@types/codemirror": "0.0.33",
     "codemirror": "^5.9.0",

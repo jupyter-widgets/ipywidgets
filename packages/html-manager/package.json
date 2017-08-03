@@ -3,7 +3,7 @@
   "version": "0.6.0",
   "description": "Standalone package for rendering Jupyter widgets outside notebooks",
   "main": "lib/index.js",
-  "typings": "lib/index.t.js",
+  "typings": "lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/jupyter-widgets/ipywidgets.git"
