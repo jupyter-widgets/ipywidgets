@@ -58,7 +58,6 @@ _doc_snippets['selection_params'] = """
         describing the widget.
 """
 
-
 _doc_snippets['multiple_selection_params'] = """
     options: dict or list
         The options for the dropdown. This can either be a list of values, e.g.
@@ -91,6 +90,19 @@ _doc_snippets['multiple_selection_params'] = """
     description: str
         Label for this input group. This should be a string
         describing the widget.
+"""
+
+_doc_snippets['slider_params'] = """
+    orientation: str
+        Either ``'horizontal'`` or ``'vertical'``. Defaults to ``horizontal``.
+
+    readout: bool
+        Display the current label next to the slider. Defaults to ``True``.
+
+    continuous_update: bool
+        If ``True``, update the value of the widget continuously as the user
+        holds the slider. Otherwise, the model is only updated after the
+        user has released the slider. Defaults to ``True``.
 """
 
 
@@ -532,16 +544,7 @@ class SelectionSlider(_SelectionNonempty):
     Parameters
     ----------
     {selection_params}
-    orientation: str
-        Either ``'horizontal'`` or ``'vertical'``. Defaults to ``horizontal``.
-
-    readout: bool
-        Display the current label next to the slider. Defaults to ``True``.
-
-    continuous_update: bool
-        If ``True``, update the value of the widget continuously as the user
-        holds the slider. Otherwise, the model is only updated after the
-        user has released the slider. Defaults to ``True``.
+    {slider_params}
     """
     _view_name = Unicode('SelectionSliderView').tag(sync=True)
     _model_name = Unicode('SelectionSliderModel').tag(sync=True)
@@ -563,16 +566,7 @@ class SelectionRangeSlider(_MultipleSelectionNonempty):
     Parameters
     ----------
     {multiple_selection_params}
-    orientation: str
-        Either ``'horizontal'`` or ``'vertical'``. Defaults to ``horizontal``.
-
-    readout: bool
-        Display the current label next to the slider. Defaults to ``True``.
-
-    continuous_update: bool
-        If ``True``, update the value of the widget continuously as the user
-        holds the slider. Otherwise, the model is only updated after the
-        user has released the slider. Defaults to ``True``.
+    {slider_params}
     """
     _view_name = Unicode('SelectionRangeSliderView').tag(sync=True)
     _model_name = Unicode('SelectionRangeSliderModel').tag(sync=True)
