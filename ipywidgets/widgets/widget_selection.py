@@ -25,7 +25,7 @@ from ipython_genutils.py3compat import unicode_type
 
 _doc_snippets = {}
 _doc_snippets['selection_params'] = """
-    options: dict or list
+    options: list or dict
         The options for the dropdown. This can either be a list of values, e.g.
         ``['Galileo', 'Brahe', 'Hubble']`` or ``[0, 1, 2]``, a list of
         (label, value) pairs, e.g.
@@ -568,6 +568,9 @@ class SelectionSlider(_SelectionNonempty):
 class SelectionRangeSlider(_MultipleSelectionNonempty):
     """
     Slider to select multiple contiguous items from a list.
+    
+    The index, value, and label attributes contain the start and end of
+    the selection range, not all items in the range.
 
     Parameters
     ----------
