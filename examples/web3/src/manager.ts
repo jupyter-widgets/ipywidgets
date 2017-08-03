@@ -10,6 +10,10 @@ import {
   Kernel
 } from '@jupyterlab/services';
 
+import {
+    HTMLManager
+} from '@jupyter-widgets/html-manager';
+
 import './widgets.css';
 
 let requirePromise = function(module: string): Promise<any> {
@@ -22,7 +26,7 @@ let requirePromise = function(module: string): Promise<any> {
 }
 
 export
-class WidgetManager extends base.ManagerBase<HTMLElement> {
+class WidgetManager extends HTMLManager {
     constructor(kernel: Kernel.IKernelConnection, el: HTMLElement) {
         super();
         this.kernel = kernel;
@@ -51,35 +55,6 @@ class WidgetManager extends base.ManagerBase<HTMLElement> {
             });
             return view;
         });
-    }
-
-    /**
-     * Load a class and return a promise to the loaded object.
-     */
-    protected async loadClass(className: string, moduleName: string, moduleVersion: string): Promise<any> {
-        let module: any;
-        if (moduleName === '@jupyter-widgets/controls') {
-            module = controls;
-        } else if (moduleName === '@jupyter-widgets/base') {
-            module = base;
-        } else {
-            try {
-                module = await requirePromise(`${moduleName}.js`);
-            } catch(err) {
-                let failedId = err.requireModules && err.requireModules[0];
-                if (failedId) {
-                    console.log(`Falling back to unpkg.com for ${moduleName}@${moduleVersion}`);
-                    module = await requirePromise(`https://unpkg.com/${moduleName}@${moduleVersion}/dist/index.js`);
-                } else {
-                    throw err;
-                }
-            }
-        }
-
-        if (module[className] === void 0) {
-            throw new Error(`Class ${className} not found in module ${moduleName}@${moduleVersion}`);
-        }
-        return module[className];
     }
 
     /**
