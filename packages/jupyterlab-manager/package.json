@@ -1,12 +1,12 @@
 {
   "name": "@jupyter-widgets/jupyterlab-manager",
-  "version": "0.25.3",
+  "version": "0.25.4",
   "description": "The JupyterLab extension providing Jupyter widgets.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "dependencies": {
     "@jupyter-widgets/base": "^0.6.6",
-    "@jupyter-widgets/controls": "^0.6.10",
+    "@jupyter-widgets/controls": "^0.6.11",
     "@jupyter-widgets/output": "^0.3.6",
     "@jupyterlab/application": "^0.9.0",
     "@jupyterlab/docregistry": "^0.9.0",
