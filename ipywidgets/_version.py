@@ -10,3 +10,6 @@ __version__ = '%s.%s.%s%s'%(version_info[0], version_info[1], version_info[2],
 
 __protocol_version__ = '2.0.0'
 __jupyter_widget_version__ = '3.0.0'
+
+# A compatible @jupyter-widgets/html-manager npm package semver range
+__html_manager_version__ = '^0.6.0'
