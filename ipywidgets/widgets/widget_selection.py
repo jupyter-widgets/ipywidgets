@@ -56,7 +56,7 @@ _doc_snippets['selection_params'] = """
     description: str
         Label for this input group. This should be a string
         describing the widget.
-""".strip()
+"""
 
 _doc_snippets['multiple_selection_params'] = """
     options: dict or list
@@ -90,7 +90,7 @@ _doc_snippets['multiple_selection_params'] = """
     description: str
         Label for this input group. This should be a string
         describing the widget.
-""".strip()
+"""
 
 _doc_snippets['slider_params'] = """
     orientation: str
@@ -103,12 +103,16 @@ _doc_snippets['slider_params'] = """
         If ``True``, update the value of the widget continuously as the user
         holds the slider. Otherwise, the model is only updated after the
         user has released the slider. Defaults to ``True``.
-""".strip()
+"""
 
 
 def _doc_subst(cls):
     """ Substitute format strings in class docstring """
-    cls.__doc__ = cls.__doc__.format(**_doc_snippets)
+    # Strip the snippets to avoid trailing new lines and whitespace
+    stripped_snippets = {
+        key: snippet.strip() for (key, snippet) in _doc_snippets.items()
+    }
+    cls.__doc__ = cls.__doc__.format(**stripped_snippets)
     return cls
 
 
