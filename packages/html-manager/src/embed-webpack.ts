@@ -4,6 +4,8 @@
 // ES6 Promise polyfill
 (require('es6-promise') as any).polyfill();
 
+const version = (require('../package.json') as any).version;
+
 import 'font-awesome/css/font-awesome.css';
 import '@phosphor/widgets/style/index.css';
 import '@jupyter-widgets/controls/css/widgets.built.css';
@@ -70,7 +72,7 @@ let loadRequire = new Promise((resolve, reject) => {
 }).then(() => {
     // Load the base, controls, and html manager amd modules
     let toLoad = ['base.js', 'controls.js', 'index.js'];
-    return scriptPromise(toLoad.map(f => `https://unpkg.com/@jupyter-widgets/html-manager/dist/${f}`));
+    return scriptPromise(toLoad.map(f => `https://unpkg.com/@jupyter-widgets/html-manager@${version}/dist/${f}`));
 });
 
 // `LoadInlineWidget` is the main function called on load of the web page. All

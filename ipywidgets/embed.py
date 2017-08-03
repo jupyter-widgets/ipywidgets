@@ -13,7 +13,7 @@ Functions for generating embeddable HTML/javascript of a widget.
 import json
 from .widgets import Widget, DOMWidget
 from .widgets.widget_link import Link
-
+from ._version import __html_manager_version__
 
 snippet_template = u"""<script src="{embed_url}"></script>
 <script type="application/vnd.jupyter.widget-state+json">
@@ -39,10 +39,7 @@ widget_view_template = u"""<script type="application/vnd.jupyter.widget-view+jso
 {view_spec}
 </script>"""
 
-# TODO: This always points to the latest version of the html-manager. A better strategy
-# would be to point to a version of the html-manager that has been tested with this
-# release of jupyter-widgets/controls.
-DEFAULT_EMBED_SCRIPT_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed.js'
+DEFAULT_EMBED_SCRIPT_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed.js'%__html_manager_version__
 
 
 def _find_widget_refs_by_state(widget, state):
