@@ -37,7 +37,7 @@ _doc_snippets['selection_params'] = """
         displayed is not guaranteed.
 
     index: int
-        The index of the button that is selected.
+        The index of the current selection.
 
     value: any
         The value of the current selection. When programmatically setting the
@@ -403,7 +403,7 @@ class ToggleButtons(_Selection):
 
     button_style: str
         One of 'primary', 'success', 'info', 'warning' or
-        'danger'. Applies a predefined style to every button
+        'danger'. Applies a predefined style to every button.
 
     style: ToggleButtonsStyle
         Style parameters for the buttons.
@@ -470,8 +470,7 @@ class SelectMultiple(_MultipleSelection):
     """
     Listbox that allows many items to be selected at any given time.
 
-    The ``value`` and ``index`` attributes are both list-like
-    objects.
+    The ``value``, ``label`` and ``index`` attributes are all iterables.
 
     Parameters
     ----------
