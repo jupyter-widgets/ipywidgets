@@ -23,7 +23,8 @@ from traitlets import (Unicode, Bool, Int, Any, Dict, TraitError, CaselessStrEnu
                        Tuple, List, Union, observe, validate)
 from ipython_genutils.py3compat import unicode_type
 
-_selection_parameters_docs = """
+_doc_snippets = {}
+_doc_snippets['selection_params'] = """
     options: dict or list
         The options for the dropdown. This can either be a list of values, e.g.
         ``['Galileo', 'Brahe', 'Hubble']`` or ``[0, 1, 2]``, a list of
@@ -58,7 +59,7 @@ _selection_parameters_docs = """
 """
 
 
-_multiple_selection_parameters_docs = """
+_doc_snippets['multiple_selection_params'] = """
     options: dict or list
         The options for the dropdown. This can either be a list of values, e.g.
         ``['Galileo', 'Brahe', 'Hubble']`` or ``[0, 1, 2]``, a list of
@@ -91,6 +92,13 @@ _multiple_selection_parameters_docs = """
         Label for this input group. This should be a string
         describing the widget.
 """
+
+
+def _doc_subst(cls):
+    """ Substitute format strings in class docstring """
+    cls.__doc__ = cls.__doc__.format(**_doc_snippets)
+    return cls
+
 
 def _make_options(x):
     """Standardize the options tuple format.
@@ -367,15 +375,15 @@ class ToggleButtonsStyle(Style, CoreWidget):
     button_width = Unicode(help="The width of each button.").tag(sync=True)
 
 @register
+@_doc_subst
 class ToggleButtons(_Selection):
-    __doc__ = """Group of toggle buttons that represent an enumeration.
+    """Group of toggle buttons that represent an enumeration.
 
     Only one toggle button can be toggled at any point in time.
 
     Parameters
     ----------
-    {selection}
-
+    {selection_params}
     tooltips: list
         Tooltip for each button. If specified, must be the
         same length as `options`.
@@ -388,7 +396,7 @@ class ToggleButtons(_Selection):
     button_style: str
         One of 'primary', 'success', 'info', 'warning' or
         'danger'. Applies a predefined style to every button
-    """.format(selection=_selection_parameters_docs)
+    """
     _view_name = Unicode('ToggleButtonsView').tag(sync=True)
     _model_name = Unicode('ToggleButtonsModel').tag(sync=True)
 
@@ -402,50 +410,53 @@ class ToggleButtons(_Selection):
 
 
 @register
+@_doc_subst
 class Dropdown(_Selection):
-    __doc__ = """Allows you to select a single item from a dropdown.
+    """Allows you to select a single item from a dropdown.
 
     Parameters
     ----------
-    {selection}
-    """.format(selection=_selection_parameters_docs)
+    {selection_params}
+    """
     _view_name = Unicode('DropdownView').tag(sync=True)
     _model_name = Unicode('DropdownModel').tag(sync=True)
 
 
 @register
+@_doc_subst
 class RadioButtons(_Selection):
-    __doc__ = """Group of radio buttons that represent an enumeration.
+    """Group of radio buttons that represent an enumeration.
 
     Only one radio button can be toggled at any point in time.
 
     Parameters
     ----------
-    {selection}
-    """.format(selection=_selection_parameters_docs)
+    {selection_params}
+    """
     _view_name = Unicode('RadioButtonsView').tag(sync=True)
     _model_name = Unicode('RadioButtonsModel').tag(sync=True)
 
 
 @register
+@_doc_subst
 class Select(_Selection):
-    __doc__ = """
+    """
     Listbox that only allows one item to be selected at any given time.
 
     Parameters
     ----------
-    {selection}
-
+    {selection_params}
     rows: int
         The number of rows to display in the widget.
-    """.format(selection=_selection_parameters_docs)
+    """
     _view_name = Unicode('SelectView').tag(sync=True)
     _model_name = Unicode('SelectModel').tag(sync=True)
     rows = Int(5, help="The number of rows to display.").tag(sync=True)
 
 @register
+@_doc_subst
 class SelectMultiple(_MultipleSelection):
-    __doc__ = """
+    """
     Listbox that allows many items to be selected at any given time.
 
     The ``value`` and ``index`` attributes are both list-like
@@ -453,11 +464,10 @@ class SelectMultiple(_MultipleSelection):
 
     Parameters
     ----------
-    {selection_multiple}
-
+    {multiple_selection_params}
     rows: int
         The number of rows to display in the widget.
-    """.format(selection_multiple=_multiple_selection_parameters_docs)
+    """
     _view_name = Unicode('SelectMultipleView').tag(sync=True)
     _model_name = Unicode('SelectMultipleModel').tag(sync=True)
     rows = Int(5, help="The number of rows to display.").tag(sync=True)
@@ -503,15 +513,15 @@ class _MultipleSelectionNonempty(_MultipleSelection):
         return proposal.value
 
 @register
+@_doc_subst
 class SelectionSlider(_SelectionNonempty):
-    __doc__ = """
+    """
     Slider to select a single item from a list or dictionary.
 
 
     Parameters
     ----------
-    {selection}
-
+    {selection_params}
     orientation: str
         Either ``'horizontal'`` or ``'vertical'``. Defaults to ``horizontal``.
 
@@ -522,7 +532,7 @@ class SelectionSlider(_SelectionNonempty):
         If ``True``, update the value of the widget continuously as the user
         holds the slider. Otherwise, the model is only updated after the
         user has released the slider. Defaults to ``True``.
-    """.format(selection=_selection_parameters_docs)
+    """
     _view_name = Unicode('SelectionSliderView').tag(sync=True)
     _model_name = Unicode('SelectionSliderModel').tag(sync=True)
 
@@ -535,14 +545,14 @@ class SelectionSlider(_SelectionNonempty):
         help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
 
 @register
+@_doc_subst
 class SelectionRangeSlider(_MultipleSelectionNonempty):
-    __doc__ = """
+    """
     Slider to select multiple contiguous items from a list.
 
     Parameters
     ----------
-    {selection_multiple}
-
+    {multiple_selection_params}
     orientation: str
         Either ``'horizontal'`` or ``'vertical'``. Defaults to ``horizontal``.
 
@@ -553,7 +563,7 @@ class SelectionRangeSlider(_MultipleSelectionNonempty):
         If ``True``, update the value of the widget continuously as the user
         holds the slider. Otherwise, the model is only updated after the
         user has released the slider. Defaults to ``True``.
-    """.format(selection_multiple=_multiple_selection_parameters_docs)
+    """
     _view_name = Unicode('SelectionRangeSliderView').tag(sync=True)
     _model_name = Unicode('SelectionRangeSliderModel').tag(sync=True)
 
