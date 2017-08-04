@@ -27,7 +27,8 @@
     "test:unit:default": "npm run build:test && karma start test/karma.conf.js --log-level debug",
     "test:unit:firefox": "npm run test:unit:default -- --browsers=Firefox",
     "test:unit:chrome": "npm run test:unit:default -- --browsers=Chrome",
-    "test:unit:ie": "npm run test:unit:default -- --browsers=IE"
+    "test:unit:ie": "npm run test:unit:default -- --browsers=IE",
+    "prepublish": "npm run clean && npm run build"
   },
   "devDependencies": {
     "@types/expect.js": "^0.3.29",
