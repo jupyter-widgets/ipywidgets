@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@jupyter-widgets/example-web3",
-  "version": "2.0.0-18",
+  "version": "2.0.0-19",
   "description": "Project that tests the ability to npm install jupyter-js-widgets within an npm project.",
   "main": "lib/index.js",
   "scripts": {
@@ -14,9 +14,9 @@
   "author": "IPython",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "@jupyter-widgets/base": "^0.6.7",
-    "@jupyter-widgets/controls": "^0.6.12",
-    "@jupyter-widgets/html-manager": "^0.6.2",
+    "@jupyter-widgets/base": "^0.6.8",
+    "@jupyter-widgets/controls": "^0.6.13",
+    "@jupyter-widgets/html-manager": "^0.6.3",
     "@jupyterlab/services": "^0.48.0",
     "@types/codemirror": "0.0.33",
     "codemirror": "^5.9.0",
