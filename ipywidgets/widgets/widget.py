@@ -21,7 +21,7 @@ from json import loads as jsonloads, dumps as jsondumps
 
 from base64 import standard_b64decode, standard_b64encode
 
-from .._version import __protocol_version__, __jupyter_widget_version__
+from .._version import __protocol_version__, __jupyter_widgets_base_version__
 PROTOCOL_VERSION_MAJOR = __protocol_version__.split('.')[0]
 
 def _widget_to_json(x, obj):
@@ -335,7 +335,7 @@ class Widget(LoggingHasTraits):
         help="Name of the model.", read_only=True).tag(sync=True)
     _model_module = Unicode('@jupyter-widgets/base',
         help="The namespace for the model.", read_only=True).tag(sync=True)
-    _model_module_version = Unicode(__jupyter_widget_version__,
+    _model_module_version = Unicode(__jupyter_widgets_base_version__,
         help="A semver requirement for namespace version containing the model.", read_only=True).tag(sync=True)
     _view_name = Unicode(None, allow_none=True,
         help="Name of the view.").tag(sync=True)

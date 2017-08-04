@@ -22,7 +22,7 @@ describe('DatePickerView', function() {
         this.model = await this.manager.new_model({
             model_name: 'DatePickerModel',
             model_module: '@jupyter-widgets/controls',
-            model_module_version: '3.0.0',
+            model_module_version: '1.0.0',
             model_id: modelId,
         }, { description: 'test-date-model'} );
     });
