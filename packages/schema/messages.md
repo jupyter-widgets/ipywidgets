@@ -1,5 +1,7 @@
 # Widget messaging protocol, version 1
 
+This is implemented in ipywidgets 6.0.
+
 A Jupyter widget has both a frontend and kernel object communicating with each other using the `comm` messages provided by the Jupyter kernel messaging protocol. The primary communication that happens is synchronizing widget state, represented in the messages by a dictionary of key-value pairs. The Jupyter widget messaging protocol covers `comm` messages for the following actions:
 
 - creating a companion Jupyter widget object through opening a `comm`
@@ -198,19 +200,9 @@ In order to display widgets in both the classic notebook and JupyterLab, ipywidg
 
 
 
+# Widget messaging protocol, version 2
 
-
-
-
-
-
-
-
-
-
-
-
-# Widget messaging protocol, version 2 (not finalized)
+This is implemented in ipywidgets 7.0.
 
 A Jupyter widget has both a frontend and kernel object communicating with each other using the `comm` messages provided by the Jupyter kernel messaging protocol. The primary communication that happens is synchronizing widget state, represented in the messages by a dictionary of key-value pairs. The Jupyter widget messaging protocol covers `comm` messages for the following actions:
 

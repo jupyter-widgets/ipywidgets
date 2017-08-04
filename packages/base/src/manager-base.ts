@@ -303,7 +303,7 @@ abstract class ManagerBase<T> {
      * widget_manager.new_model({
      *      model_name: 'IntSlider',
      *      model_module: '@jupyter-widgets/controls',
-     *      model_module_version: '3.0.0',
+     *      model_module_version: '1.0.0',
      *      model_id: 'u-u-i-d'
      * }).then((model) => { console.log('Create success!', model); },
      *  (err) => {console.error(err)});
