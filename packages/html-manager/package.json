@@ -22,7 +22,8 @@
     "test:unit": "npm run test:unit:firefox && npm run test:unit:chrome",
     "test:unit:default": "npm run build:test && karma start test/karma.conf.js --log-level debug --browsers=Firefox",
     "test:unit:firefox": "npm run test:unit:default -- --browsers=Firefox",
-    "test:unit:chrome": "npm run test:unit:default -- --browsers=Chrome"
+    "test:unit:chrome": "npm run test:unit:default -- --browsers=Chrome",
+    "prepublish": "npm run clean && npm run build"
   },
   "author": "Jupyter Project",
   "license": "BSD-3-Clause",
