@@ -248,7 +248,7 @@ abstract class ManagerBase<T> {
         let commPromise;
         // we check to make sure the view information is provided, to help catch
         // backwards incompatibility errors.
-        if (!options.view_name || !options.view_module || !options.view_module_version) {
+        if (_.contains([options.view_name, options.view_module, options.view_module_version], undefined)) {
             return Promise.reject("new_widget(...) must be given view information in the options.");
         }
         // If no comm is provided, a new comm is opened for the jupyter.widget
