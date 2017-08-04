@@ -39,7 +39,6 @@
     "@types/node": "^8.0.1",
     "chai": "^4.0.0",
     "css-loader": "^0.28.4",
-    "es6-promise": "^4.1.0",
     "expect.js": "^0.3.1",
     "file-loader": "^0.11.2",
     "istanbul-instrumenter-loader": "^2.0.0",

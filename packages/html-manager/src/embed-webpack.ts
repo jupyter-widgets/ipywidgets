@@ -1,9 +1,6 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-// ES6 Promise polyfill
-(require('es6-promise') as any).polyfill();
-
 const version = (require('../package.json') as any).version;
 
 import 'font-awesome/css/font-awesome.css';
