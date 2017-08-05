@@ -37,7 +37,7 @@ let loaders = [
             { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" }
         ]
 
-let publicPath = 'https://unpkg.com/@jupyter-widgets/htmlmanager@' + version + '/dist/';
+let publicPath = 'https://unpkg.com/@jupyter-widgets/html-manager@' + version + '/dist/';
 
 module.exports = [
 {// shim
