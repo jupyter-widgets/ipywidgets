@@ -1,10 +1,11 @@
 Migrating custom widget libraries
----------------------------------
+=================================
 
 These are migration guides aimed specifically at developers of third-party
 widgets.
 
-### Migrating from 6.0 to 7.0
+Migrating from 6.0 to 7.0
+-------------------------
 
 For example migrations, see these PRs:
  - [ipyleaflet](https://github.com/ellisonbg/ipyleaflet/pull/66)
@@ -15,14 +16,14 @@ the migration on a branch and keeping that branch open until ipywidgets 7.0
 is released. We also recommend testing the migration in a new notebook, rather
 than one that contains widgets that you instantiated with ipywidgets 6.0.
 
-1. Updating setup.py
+### Updating setup.py
 
 Start by updating the dependency in your `setup.py` to the latest beta. To
 find out the version number, go to the [releases
 page](https://github.com/jupyter-widgets/ipywidgets/releases) on Github and
 cycle through the tags until you see a tag called `7.0.0bx` or `7.0.0rcx`.
 
-2. Updating package.json
+### Updating package.json
 
 Next, we should update the JavaScript dependencies. The most important change
 for widget developers is that the JavaScript package for jupyter-widgets has
@@ -40,7 +41,7 @@ cycle through the tags until you see a tag called
 `@jupyter-widgets/controls` if you think you have a dependency on it (e.g. if
 you create widgets that inherit from `VBox` or `HBox` or another user-facing widget).
 
-3. Updating Webpack configuration
+### Updating Webpack configuration
 
 If you use Webpack to build the client-side library, your Webpack
 configuration file (probably at `js/webpack.config.json`) declares
@@ -57,7 +58,7 @@ both packages in the array.
 
 The [cookiecutter template](https://github.com/jupyter-widgets/widget-cookiecutter/blob/master/%7B%7Bcookiecutter.github_project_name%7D%7D/js/webpack.config.js) provides a sample configuration.
 
-4. Updating the client-side code
+### Updating the client-side code
 
 If you now build the client-side code of your library, you will get many
 errors about missing `jupyter-js-widgets` dependencies. You need to replace
@@ -79,7 +80,7 @@ require(['@jupyter-widgets/base'], function(widgets) {
 import * as widgets from '@jupyter-widgets/base'
 ```
 
-5. Updating the Python code
+### Updating the Python code
 
 All widgets need to declare the following six traitlets:
 
@@ -105,7 +106,7 @@ JavaScript bundle when embedding widgets. The embed manager will look for the
 bundle at `https://unpkg.com/<module-name>@<module-version>/dist/index.js`
 when it finds a widget.
 
-6. Updating links
+### Updating links
 
 If your code or your documentation references the link for the jupyter-widgets script
 that loads widgets embedded outside the notebook, 
