@@ -52,7 +52,7 @@ class DataWidget(SimpleWidget):
 
 
 
-# A widget that has a buffer that might be chnaged on reception:
+# A widget that has a buffer that might be changed on reception:
 def truncate_deserializer(json_data, widget):
     return DataInstance( json_data['data'][:20].tobytes() if json_data else None )
 

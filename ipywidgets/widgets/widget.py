@@ -497,7 +497,7 @@ class Widget(LoggingHasTraits):
             return True
         for ia, ib in zip(a, b):
             # Check byte equality:
-            # NOTE: Simple ia != ib does not always work as inteded, as
+            # NOTE: Simple ia != ib does not always work as intended, as
             # e.g. memoryview(np.frombuffer(ia, dtype='float32')) !=
             # memoryview(np.frombuffer(b)), since the format info differs.
             # However, since we only transfer bytes, we use `tobytes()`.
