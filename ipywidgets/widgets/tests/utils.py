@@ -6,12 +6,17 @@ from ipywidgets import Widget
 
 class DummyComm(Comm):
     comm_id = 'a-b-c-d'
+    kernel = 'Truthy'
+
+    def __init__(self, *args, **kwargs):
+        super(DummyComm, self).__init__(*args, **kwargs)
+        self.messages = []
 
     def open(self, *args, **kwargs):
         pass
 
     def send(self, *args, **kwargs):
-        pass
+        self.messages.append((args, kwargs))
 
     def close(self, *args, **kwargs):
         pass
@@ -33,6 +38,7 @@ def teardown_test_comm():
             delattr(Widget, attr)
         else:
             setattr(Widget, attr, value)
+    _widget_attrs.clear()
 
 def setup():
     setup_test_comm()
