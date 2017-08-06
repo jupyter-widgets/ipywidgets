@@ -13,13 +13,15 @@ For example migrations, see these PRs:
 
 To avoid tying your development cycle to ipywidgets, we recommend starting
 the migration on a branch and keeping that branch open until ipywidgets 7.0
-is released. We also recommend testing the migration in a new notebook, rather
+is released. 
+
+We also recommend testing the migration in a completely new notebook, rather
 than one that contains widgets that you instantiated with ipywidgets 6.0.
 
 ### Updating setup.py
 
 Start by updating the dependency in your `setup.py` to the latest beta. To
-find out the version number, go to the [releases
+find the correct version number, go to the [releases
 page](https://github.com/jupyter-widgets/ipywidgets/releases) on Github and
 cycle through the tags until you see a tag called `7.0.0bx` or `7.0.0rcx`.
 
@@ -65,7 +67,7 @@ errors about missing `jupyter-js-widgets` dependencies. You need to replace
 every import of `jupyter-js-widgets` with an import of
 `@jupyter-widgets/base` (or, possibly, an import of `@jupyter-widgets/controls`).
 
-Your imports should now look like one of the following:
+Your imports should now look like one of the following (depending on how you normally import other modules):
 
 ```javascript
 widgets = require('@jupyter-widgets/base')
