@@ -483,6 +483,28 @@ class Widget(LoggingHasTraits):
         else:
             return a == b
 
+    def _compare_buffers(self, a, b, key):
+        """Compare two lists of buffers for equality.
+
+        Used to decide whether two sequences of buffers (memoryviews) differ,
+        such that a sync is needed.
+
+        Returns True if equal, False if unequal
+        """
+        if len(a) != len(b):
+            return False
+        if a == b:
+            return True
+        for ia, ib in zip(a, b):
+            # Check byte equality:
+            # NOTE: Simple ia != ib does not always work as inteded, as
+            # e.g. memoryview(np.frombuffer(ia, dtype='float32')) !=
+            # memoryview(np.frombuffer(b)), since the format info differs.
+            # However, since we only transfer bytes, we use `tobytes()`.
+            if ia.tobytes() != ib.tobytes():
+                return False
+        return True
+
     def set_state(self, sync_data):
         """Called when a state is received from the front-end."""
         # The order of these context managers is important. Properties must
@@ -597,10 +619,15 @@ class Widget(LoggingHasTraits):
         # A roundtrip conversion through json in the comparison takes care of
         # idiosyncracies of how python data structures map to json, for example
         # tuples get converted to lists.
-        if (key in self._property_lock
-            and jsonloads(jsondumps(to_json(value, self))) == self._property_lock[key]):
-            return False
-        elif self._holding_sync:
+        if key in self._property_lock:
+            split_value = _remove_buffers({ key: to_json(value, self)})
+            split_lock = _remove_buffers({ key: self._property_lock[key]})
+            # Compare state and buffer_paths
+            if jsondumps(split_value[:2]) == jsondumps(split_lock[:2]):
+                # Compare buffers
+                if self._compare_buffers(split_value[2], split_lock[2], key):
+                    return False
+        if self._holding_sync:
             self._states_to_send.add(key)
             return False
         else:
