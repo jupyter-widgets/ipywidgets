@@ -24,6 +24,7 @@
     "http-server": "^0.10.0"
   },
   "devDependencies": {
+    "@types/requirejs": "^2.1.28",
     "css-loader": "^0.28.4",
     "file-loader": "^0.11.2",
     "fs-extra": "^0.30.0",
