@@ -19,7 +19,7 @@ is released.
 We also recommend testing the migration in a completely new notebook, rather
 than one that contains widgets that you instantiated with ipywidgets 6.0.
 
-### Updating setup.py
+### Updating setup.py
 
 Start by updating the dependency in your `setup.py` to the latest beta. To
 find the correct version number, go to the [releases
@@ -83,7 +83,7 @@ require(['@jupyter-widgets/base'], function(widgets) {
 import * as widgets from '@jupyter-widgets/base'
 ```
 
-### Updating the notebook extension
+### Updating the notebook extension
 
 Previously, the notebook extension (normally `js/src/extension.js`) required
 defining `jupyter-js-widgets` in the configuration for `requirejs`. This is
