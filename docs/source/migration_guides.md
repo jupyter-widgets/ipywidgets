@@ -10,6 +10,7 @@ Migrating from 6.0 to 7.0
 For example migrations, see these PRs:
  - [ipyleaflet](https://github.com/ellisonbg/ipyleaflet/pull/66)
  - [jupyter-gmaps](https://github.com/pbugnion/gmaps/pull/166)
+ - bqplot: [PR #458](https://github.com/bloomberg/bqplot/pull/458), [PR #497](https://github.com/bloomberg/bqplot/pull/497) and [PR #501](https://github.com/bloomberg/bqplot/pull/501)
 
 To avoid tying your development cycle to ipywidgets, we recommend starting
 the migration on a branch and keeping that branch open until ipywidgets 7.0
