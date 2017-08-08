@@ -16,4 +16,5 @@ User Guide
   examples/Widget Asynchronous.ipynb
   embedding.md
   contributing.md
+  migration_guides.md
   changelog.md

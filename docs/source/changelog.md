@@ -35,7 +35,7 @@ Major user-visible changes in ipywidgets 7.0 include:
 - Using function annotations to specify interact controls for a function is now deprecated and will be removed in a future version of ipywidgets. ([#1292](https://github.com/jupyter-widgets/ipywidgets/pull/1292))
 
 
-Major changes developers should be aware of include:
+If you are developing a custom widget or widget manager, here are some major changes that may affect you. The [migration guide](./migration_guides.html) also walks through how to upgrade a custom widget.
 
 - Custom serializers in either Python or Javascript can now return a structure which contains binary buffers. If a binary buffer is in the serialized data structure, the message will be synced in binary, which is much more efficient. ([#1194](https://github.com/jupyter-widgets/ipywidgets/pull/1194))
 - On the python/kernel side:
