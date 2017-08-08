@@ -84,10 +84,11 @@ import * as widgets from '@jupyter-widgets/base'
 
 ### Updating the notebook extension
 
-The notebook extension (normally called `js/src/extension.js`) required
-defining `jupyter-js-widgets` in the configuration for `requirejs`. This is 
-now no longer needed. See the [cookiecutter template](https://github.com/jupyter-widgets/widget-cookiecutter/blob/master/%7B%7Bcookiecutter.github_project_name%7D%7D/js/src/extension.js)
-for an example of what the new `requirejs` configuration looks like.
+Previously, the notebook extension (normally `js/src/extension.js`) required
+defining `jupyter-js-widgets` in the configuration for `requirejs`. This is
+no longer needed. See the [cookiecutter
+template](https://github.com/jupyter-widgets/widget-cookiecutter/blob/master/%7B%7Bcookiecutter.github_project_name%7D%7D/js/src/extension.js)
+for an example of the correct `requirejs` configuration.
 
 ### Updating the Python code
 
