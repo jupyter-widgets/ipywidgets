@@ -29,7 +29,7 @@ cycle through the tags until you see a tag called `7.0.0bx` or `7.0.0rcx`.
 
 Next, we should update the JavaScript dependencies. The most important change
 for widget developers is that the JavaScript package for jupyter-widgets has
-been split between `@jupyter-widgets/base` and `@jupyter-widgets/control`: 
+been split between `@jupyter-widgets/base` and `@jupyter-widgets/controls`: 
  - `@jupyter-widgets/base` contains the base widget classes and the layout
 classes 
  - `@jupyter-widgets/controls` contains the widget classes for the
@@ -81,6 +81,13 @@ require(['@jupyter-widgets/base'], function(widgets) {
 ```javascript
 import * as widgets from '@jupyter-widgets/base'
 ```
+
+### Updating the notebook extension
+
+The notebook extension (normally called `js/src/extension.js`) required
+defining `jupyter-js-widgets` in the configuration for `requirejs`. This is 
+now no longer needed. See the [cookiecutter template](https://github.com/jupyter-widgets/widget-cookiecutter/blob/master/%7B%7Bcookiecutter.github_project_name%7D%7D/js/src/extension.js)
+for an example of what the new `requirejs` configuration looks like.
 
 ### Updating the Python code
 
