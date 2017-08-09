@@ -15,7 +15,11 @@ from .widgets import Widget, DOMWidget
 from .widgets.widget_link import Link
 from ._version import __html_manager_version__
 
-snippet_template = u"""<script src="{embed_url}"></script>
+snippet_template = u"""
+<!-- Require.js is required for the embedding. Remove this if require.js is already on the page -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" crossorigin="anonymous"></script>
+
+<script src="{embed_url}"></script>
 <script type="application/vnd.jupyter.widget-state+json">
 {json_data}
 </script>
