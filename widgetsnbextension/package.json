@@ -5,9 +5,10 @@
   "main": "src/extension.js",
   "private": true,
   "scripts": {
+    "clean": "rimraf widgetsnbextension/static",
+    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run clean && webpack",
-    "clean": "rimraf widgetsnbextension/static"
+    "prepublish": "npm run clean && npm run build"
   },
   "repository": {
     "type": "git",
