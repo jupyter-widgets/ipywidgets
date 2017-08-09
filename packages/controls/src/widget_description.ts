@@ -9,12 +9,17 @@ import {
     typeset
 } from './utils';
 
+import {
+    JUPYTER_CONTROLS_VERSION
+} from './version';
+
 export
 class DescriptionStyleModel extends StyleModel {
     defaults() {
         return {...super.defaults(),
             _model_name: 'DescriptionStyleModel',
             _model_module: '@jupyter-widgets/controls',
+            _model_module_version: JUPYTER_CONTROLS_VERSION,
         };
     }
 
@@ -31,8 +36,12 @@ export
 class DescriptionModel extends DOMWidgetModel {
     defaults() {
         return {...super.defaults(),
+            _model_name: 'DescriptionModel',
+            _view_name: 'DescriptionView',
             _view_module: '@jupyter-widgets/controls',
             _model_module: '@jupyter-widgets/controls',
+            _view_module_version: JUPYTER_CONTROLS_VERSION,
+            _model_module_version: JUPYTER_CONTROLS_VERSION,
             description: '',
         };
     }

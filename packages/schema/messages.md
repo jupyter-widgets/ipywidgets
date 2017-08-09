@@ -241,9 +241,8 @@ The core idea of widgets is that some state is automatically synced back and for
 * `_view_module`: the view module
 * `_view_module_version`: the semver range of the view
 * `_view_name`: the name of the view
-* `msg_throttle`: an integer - the number of messages allowed 'in flight' for throttling purposes
 
-The `_model_*` and `_view_*` fields are assumed immutable (set at initialization, and never changed). The `msg_throttle` field can be changed.
+The `_model_*` and `_view_*` fields are assumed immutable (set at initialization, and never changed).
 
 ## Implementating the Jupyter widgets protocol in the kernel
 

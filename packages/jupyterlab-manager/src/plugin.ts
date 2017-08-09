@@ -82,7 +82,7 @@ class NBWidgetExtension implements INBWidgetExtension {
     });
     wManager.register({
       name: '@jupyter-widgets/controls',
-      version: widgets.JUPYTER_WIDGETS_VERSION,
+      version: widgets.JUPYTER_CONTROLS_VERSION,
       exports: widgets
     });
     wManager.register({

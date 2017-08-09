@@ -9,7 +9,8 @@ import re
 import traitlets
 import datetime as dt
 
-_color_names = ['aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanchedalmond', 'blue', 'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse', 'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'cyan', 'darkblue', 'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgreen', 'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue', 'darkslategray', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dodgerblue', 'firebrick', 'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'greenyellow', 'honeydew', 'hotpink', 'indianred ', 'indigo ', 'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgreen', 'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray', 'lightsteelblue', 'lightyellow', 'lime', 'limegreen', 'linen', 'magenta', 'maroon', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise', 'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'navy', 'oldlace', 'olive', 'olivedrab', 'orange', 'orangered', 'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'purple', 'rebeccapurple', 'red', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon', 'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver', 'skyblue', 'slateblue', 'slategray', 'snow', 'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'whitesmoke', 'yellow', 'yellowgreen'] 
+
+_color_names = ['aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanchedalmond', 'blue', 'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse', 'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'cyan', 'darkblue', 'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgreen', 'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue', 'darkslategray', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dodgerblue', 'firebrick', 'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'greenyellow', 'honeydew', 'hotpink', 'indianred ', 'indigo ', 'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgreen', 'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray', 'lightsteelblue', 'lightyellow', 'lime', 'limegreen', 'linen', 'magenta', 'maroon', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise', 'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'navy', 'oldlace', 'olive', 'olivedrab', 'orange', 'orangered', 'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'purple', 'rebeccapurple', 'red', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon', 'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver', 'skyblue', 'slateblue', 'slategray', 'snow', 'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 'tomato', 'turquoise', 'violet', 'wheat', 'white', 'whitesmoke', 'yellow', 'yellowgreen']
 _color_re = re.compile(r'#[a-fA-F0-9]{3}(?:[a-fA-F0-9]{3})?$')
 
 
@@ -61,8 +62,8 @@ def datetime_to_json(pydt, manager):
             year=pydt.year,
             month=pydt.month - 1,  # Months are 0-based indices in JS
             date=pydt.day,
-            hours=pydt.hour,       # Hours, Minutes, Seconds and Milliseconds are
-            minutes=pydt.minute,   # plural in JS
+            hours=pydt.hour,       # Hours, Minutes, Seconds and Milliseconds
+            minutes=pydt.minute,   # are plural in JS
             seconds=pydt.second,
             milliseconds=pydt.microsecond / 1000
         )
@@ -87,6 +88,7 @@ datetime_serialization = {
     'from_json': datetime_from_json,
     'to_json': datetime_to_json
 }
+
 
 def date_to_json(pydate, manager):
     """Serialize a Python date object.
@@ -123,10 +125,12 @@ date_serialization = {
 
 class InstanceDict(traitlets.Instance):
     """An instance trait which coerces a dict to an instance.
-    
-    This lets the instance be specified as a dict, which is used to initialize the instance.
-    
-    Also, we default to a trivial instance, even if args and kwargs is not specified."""
+
+    This lets the instance be specified as a dict, which is used
+    to initialize the instance.
+
+    Also, we default to a trivial instance, even if args and kwargs
+    is not specified."""
 
     def validate(self, obj, value):
         if isinstance(value, dict):
@@ -137,3 +141,45 @@ class InstanceDict(traitlets.Instance):
     def make_dynamic_default(self):
         return self.klass(*(self.default_args or ()),
                           **(self.default_kwargs or {}))
+
+
+# The regexp is taken
+# from https://github.com/d3/d3-format/blob/master/src/formatSpecifier.js
+_number_format_re = re.compile('^(?:(.)?([<>=^]))?([+\-\( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?([a-z%])?$', re.I)
+
+# The valid types are taken from
+# https://github.com/d3/d3-format/blob/master/src/formatTypes.js
+_number_format_types = {
+    'e', 'f', 'g', 'r', 's', '%', 'p', 'b', 'o', 'd', 'x',
+    'X', 'c', ''
+}
+
+
+class NumberFormat(traitlets.Unicode):
+    """A string holding a number format specifier, e.g. '.3f'
+
+    This traitlet holds a string that can be passed to the
+    `d3-format <https://github.com/d3/d3-format>`_ JavaScript library.
+    The format allowed is similar to the Python format specifier (PEP 3101).
+    """
+    info_text = 'a valid number format'
+    default_value = traitlets.Undefined
+
+    def validate(self, obj, value):
+        value = super(NumberFormat, self).validate(obj, value)
+        re_match = _number_format_re.match(value)
+        if re_match is None:
+            self.error(obj, value)
+        else:
+            format_type = re_match.group(9)
+            if format_type is None:
+                return value
+            elif format_type in _number_format_types:
+                return value
+            else:
+                raise traitlets.TraitError(
+                    'The type specifier of a NumberFormat trait must '
+                    'be one of {}, but a value of \'{}\' was '
+                    'specified.'.format(
+                        list(_number_format_types), format_type)
+                )

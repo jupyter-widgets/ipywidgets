@@ -11,7 +11,7 @@ from .valuewidget import ValueWidget
 from .widget import register, widget_serialization
 from .widget_core import CoreWidget
 from traitlets import Instance
-from .trait_types import Color, InstanceDict
+from .trait_types import Color, InstanceDict, NumberFormat
 from traitlets import (
     Unicode, CInt, Bool, CaselessStrEnum, Tuple, TraitError, default, validate
 )
@@ -127,6 +127,8 @@ class IntText(_Int):
     _view_name = Unicode('IntTextView').tag(sync=True)
     _model_name = Unicode('IntTextModel').tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
+    continuous_update = Bool(False, help="Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.").tag(sync=True)
+    step = CInt(1, help="Minimum step to increment the value").tag(sync=True)
 
 
 @register
@@ -137,6 +139,8 @@ class BoundedIntText(_BoundedInt):
     _view_name = Unicode('IntTextView').tag(sync=True)
     _model_name = Unicode('BoundedIntTextModel').tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
+    continuous_update = Bool(False, help="Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.").tag(sync=True)
+    step = CInt(1, help="Minimum step to increment the value").tag(sync=True)
 
 
 @register
@@ -157,7 +161,8 @@ class IntSlider(_BoundedInt):
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
-    readout_format = Unicode('d', help="Format for the readout").tag(sync=True)
+    readout_format = NumberFormat(
+        'd', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
@@ -282,7 +287,8 @@ class IntRangeSlider(_BoundedIntRange):
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
-    readout_format = Unicode('d', help="Format for the readout").tag(sync=True)
+    readout_format = NumberFormat(
+        'd', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)
     style = InstanceDict(SliderStyle, help="Slider style customizations.").tag(sync=True, **widget_serialization)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)

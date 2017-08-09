@@ -10,7 +10,7 @@ from traitlets import (
     Instance, Unicode, CFloat, Bool, CaselessStrEnum, Tuple, TraitError, validate, default
 )
 from .widget_description import DescriptionWidget
-from .trait_types import InstanceDict
+from .trait_types import InstanceDict, NumberFormat
 from .valuewidget import ValueWidget
 from .widget import register, widget_serialization
 from .widget_core import CoreWidget
@@ -68,12 +68,16 @@ class FloatText(_Float):
     ----------
     value : float
         value displayed
+    step : float
+        step of the increment (if None, any step is allowed)
     description : str
         description displayed next to the text box
     """
     _view_name = Unicode('FloatTextView').tag(sync=True)
     _model_name = Unicode('FloatTextModel').tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
+    continuous_update = Bool(False, help="Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.").tag(sync=True)
+    step = CFloat(None, allow_none=True, help="Minimum step to increment the value").tag(sync=True)
 
 
 @register
@@ -90,13 +94,16 @@ class BoundedFloatText(_BoundedFloat):
         minimal value of the range of possible values displayed
     max : float
         maximal value of the range of possible values displayed
+    step : float
+        step of the increment (if None, any step is allowed)
     description : str
         description displayed next to the textbox
     """
     _view_name = Unicode('FloatTextView').tag(sync=True)
     _model_name = Unicode('BoundedFloatTextModel').tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
-
+    continuous_update = Bool(False, help="Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.").tag(sync=True)
+    step = CFloat(None, allow_none=True, help="Minimum step to increment the value").tag(sync=True)
 
 @register
 class FloatSlider(_BoundedFloat):
@@ -129,7 +136,8 @@ class FloatSlider(_BoundedFloat):
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
-    readout_format = Unicode('.2f', help="Format for the readout").tag(sync=True)
+    readout_format = NumberFormat(
+        '.2f', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
@@ -149,8 +157,6 @@ class FloatProgress(_BoundedFloat):
         minimal position of the slider
     max : float
         maximal position of the slider
-    step : float
-        step of the progress bar
     description : str
         name of the progress bar
     orientation : {'horizontal', 'vertical'}
@@ -265,7 +271,8 @@ class FloatRangeSlider(_BoundedFloatRange):
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
-    readout_format = Unicode('.2f', help="Format for the readout").tag(sync=True)
+    readout_format = NumberFormat(
+        '.2f', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 

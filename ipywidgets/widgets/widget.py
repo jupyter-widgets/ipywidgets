@@ -17,6 +17,7 @@ from traitlets import (
     Undefined)
 from ipython_genutils.py3compat import string_types, PY3
 from IPython.display import display
+from json import loads as jsonloads, dumps as jsondumps
 
 from base64 import standard_b64decode, standard_b64encode
 
@@ -347,8 +348,6 @@ class Widget(LoggingHasTraits):
         help="EXPERIMENTAL: The number of views of the model displayed in the frontend. This attribute is experimental and may change or be removed in the future. None signifies that views will not be tracked. Set this to 0 to start tracking view creation/deletion.").tag(sync=True)
     comm = Instance('ipykernel.comm.Comm', allow_none=True)
 
-    msg_throttle = Int(1, help="""Maximum number of sync msgs the front-end can send before receiving an idle msg from the back-end.""").tag(sync=True)
-
     keys = List(help="The traits which are synced.")
 
     @default('keys')
@@ -595,8 +594,11 @@ class Widget(LoggingHasTraits):
     def _should_send_property(self, key, value):
         """Check the property lock (property_lock)"""
         to_json = self.trait_metadata(key, 'to_json', self._trait_to_json)
+        # A roundtrip conversion through json in the comparison takes care of
+        # idiosyncracies of how python data structures map to json, for example
+        # tuples get converted to lists.
         if (key in self._property_lock
-            and to_json(value, self) == self._property_lock[key]):
+            and jsonloads(jsondumps(to_json(value, self))) == self._property_lock[key]):
             return False
         elif self._holding_sync:
             self._states_to_send.add(key)
