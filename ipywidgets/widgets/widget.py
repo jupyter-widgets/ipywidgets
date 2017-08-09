@@ -140,15 +140,22 @@ def _buffer_list_equal(a, b):
     if a == b:
         return True
     for ia, ib in zip(a, b):
-        # Check byte equality:
+        # Check byte equality, since bytes are what is actually synced
         # NOTE: Simple ia != ib does not always work as intended, as
         # e.g. memoryview(np.frombuffer(ia, dtype='float32')) !=
         # memoryview(np.frombuffer(b)), since the format info differs.
-        # However, since we only transfer bytes, we use `tobytes()`.
-        ia_bytes = ia.tobytes() if isinstance(ia, memoryview) else ia
-        ib_bytes = ib.tobytes() if isinstance(ib, memoryview) else ib
-        if ia_bytes != ib_bytes:
-            return False
+        if PY3:
+            # compare without copying
+            if memoryview(ia).cast('B') != memoryview(ib).cast('B'):
+                return False
+        else:
+            # python 2 doesn't have memoryview.cast, so we may have to copy
+            if isinstance(ia, memoryview) and ia.format != 'B':
+                ia = ia.tobytes()
+            if isinstance(ib, memoryview) and ib.format != 'B':
+                ib = ib.tobytes()
+            if ia != ib:
+                return False
     return True
 
 def _json_equal(a, b):
