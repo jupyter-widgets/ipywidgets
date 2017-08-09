@@ -15,12 +15,12 @@ let scriptPromise = function(pkg: string | string[]) {
     });
 }
 
-// Element.prototype.matches polyfill
-if (Element && !Element.prototype.matches) {
-    let proto = Element.prototype as any;
-    proto.matches = proto.matchesSelector ||
-    proto.mozMatchesSelector || proto.msMatchesSelector ||
-    proto.oMatchesSelector || proto.webkitMatchesSelector;
+// Element.prototype.matches polyfill for IE
+// See https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
+if (!Element.prototype.matches) {
+    Element.prototype.matches =
+        Element.prototype.msMatchesSelector ||
+        Element.prototype.webkitMatchesSelector;
 }
 
 // WidgetModel is *just* used as a typing below
