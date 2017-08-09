@@ -59,7 +59,7 @@ class _SelectionContainer(Box, CoreWidget):
             return self._titles[index]
         else:
             return None
-    
+
     @property
     def as_dict(self):
         """Access the children of the selection container like a dictionary."""
@@ -67,12 +67,12 @@ class _SelectionContainer(Box, CoreWidget):
         if len(self.children) is len(self._titles):
             # Test for repeated titles
             if len(set(self._titles.values())) is len(self._titles):
-                return dict((v, self.children[int(k)]) for k,v in self._titles.items())
+                return dict((v, self.children[int(k)]) for k, v in self._titles.items())
             else:
                 # FIXME: Add warning
                 result = dict()
-                repeats = dict() 
-                for k,v  in self._titles.items():
+                repeats = dict()
+                for k, v in self._titles.items():
                     if v not in result:
                         result[v] = self.children[int(k)]
                     else:
@@ -83,7 +83,7 @@ class _SelectionContainer(Box, CoreWidget):
                             repeats[v] += 1
                             result[v+str(repeats[v])] = self.children[int(k)]
                 return result
-                
+
         else:
             print("Must have same number of children and titles.")
             # FIXME: Add warning
