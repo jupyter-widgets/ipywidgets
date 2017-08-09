@@ -117,7 +117,7 @@ install_requires = setuptools_args['install_requires'] = [
     # only if notebook 4.x is installed in this
     # interpreter, to allow ipywidgets to be
     # installed on bare kernels.
-    'widgetsnbextension~=3.0.0b7',
+    'widgetsnbextension~=3.0.0b8',
 ]
 
 extras_require = setuptools_args['extras_require'] = {
