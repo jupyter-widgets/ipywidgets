@@ -3,3 +3,6 @@
 
 export * from "./embed-helper";
 export * from "./htmlmanager";
+
+export
+const version = (require('../package.json') as any).version;

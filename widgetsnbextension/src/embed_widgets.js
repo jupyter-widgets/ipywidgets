@@ -5,6 +5,10 @@
 
 var VIEW_MIME_TYPE = "application/vnd.jupyter.widget-view+json"
 
+import {
+    version
+} from '@jupyter-widgets/html-manager';
+
 var embed_widgets = function() {
     return new Promise(function(resolve) {
         requirejs(['base/js/namespace', 'base/js/dialog', '@jupyter-widgets/controls'], function(Jupyter, dialog, widgets) {
@@ -13,12 +17,7 @@ var embed_widgets = function() {
                 'drop_defaults': true
             }).then(function(state) {
                 var data = JSON.stringify(state, null, '    ');
-                // TODO: This always points to the latest version of
-                // the html-manager.
-                // A better strategy would be to point to a version
-                // of the html-manager that has been tested with this
-                // release of jupyter-widgets/controls.
-                var value = '<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed.js"></script>\n' +
+                var value = '<script src="https://unpkg.com/@jupyter-widgets/html-manager@^${version}/dist/embed.js"></script>\n' +
                             '<script type="application/vnd.jupyter.widget-state+json">\n' + data + '\n</script>';
 
                 var views = [];
