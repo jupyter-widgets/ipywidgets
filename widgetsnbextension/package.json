@@ -22,6 +22,7 @@
   "dependencies": {
     "@jupyter-widgets/base": "^0.6.8",
     "@jupyter-widgets/controls": "^0.6.14",
+    "@jupyter-widgets/html-manager": "^0.6.6",
     "@jupyter-widgets/output": "^0.3.8",
     "@phosphor/messaging": "^1.2.0",
     "@phosphor/widgets": "^1.2.0",

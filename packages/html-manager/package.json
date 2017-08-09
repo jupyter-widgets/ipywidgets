@@ -41,8 +41,7 @@
     "@jupyterlab/rendermime-interfaces": "^0.3.0",
     "@phosphor/widgets": "^1.2.0",
     "ajv": "^5.2.2",
-    "font-awesome": "^4.7.0",
-    "scriptjs": "^2.5.8"
+    "font-awesome": "^4.7.0"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.41",

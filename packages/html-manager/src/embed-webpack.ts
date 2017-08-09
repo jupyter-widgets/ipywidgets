@@ -7,26 +7,34 @@ import 'font-awesome/css/font-awesome.css';
 import '@phosphor/widgets/style/index.css';
 import '@jupyter-widgets/controls/css/widgets.built.css';
 
-let scriptPromise = function(pkg: string | string[]) {
-    return new Promise((resolve, reject) => {
-        // If requirejs is not on the page on page load, load it from cdn.
-        let scriptjs = require('scriptjs') as any;
-        scriptjs(pkg, resolve, reject);
-    });
-}
-
-// Element.prototype.matches polyfill
-if (Element && !Element.prototype.matches) {
-    let proto = Element.prototype as any;
-    proto.matches = proto.matchesSelector ||
-    proto.mozMatchesSelector || proto.msMatchesSelector ||
-    proto.oMatchesSelector || proto.webkitMatchesSelector;
-}
-
 // WidgetModel is *just* used as a typing below
 import {
     WidgetModel
 } from '@jupyter-widgets/base';
+
+/**
+ * Load a package using requirejs and return a promise
+ *
+ * @param pkg Package name or names to load
+ */
+let requirePromise = function(pkg: string | string[]) {
+    return new Promise((resolve, reject) => {
+        let require = (window as any).require;
+        if (require === undefined) {
+            reject("Requirejs is needed to run the Jupyter Widgets html manager");
+        } else {
+            require(pkg, resolve, reject);
+        }
+    });
+}
+
+// Element.prototype.matches polyfill for IE
+// See https://developer.mozilla.org/en-US/docs/Web/API/Element/matches
+if (!Element.prototype.matches) {
+    Element.prototype.matches =
+        Element.prototype.msMatchesSelector ||
+        Element.prototype.webkitMatchesSelector;
+}
 
 // Load json schema validator
 var Ajv = require('ajv');
@@ -38,23 +46,15 @@ let model_validate = ajv.compile(widget_state_schema);
 let view_validate = ajv.compile(widget_view_schema);
 
 export
-let loadRequire = new Promise((resolve, reject) => {
-    if ((window as any).requirejs) {
-        resolve();
-    } else {
-        // If requirejs is not on the page on page load, load it from cdn.
-        resolve(scriptPromise('https://unpkg.com/requirejs/require.js'));
-    }
-}).then(() => {
-    // Load the base, controls, and html manager amd modules
+function loadManager() {
     let toLoad = ['base.js', 'controls.js', 'index.js'];
-    return scriptPromise(toLoad.map(f => `https://unpkg.com/@jupyter-widgets/html-manager@${version}/dist/${f}`));
-});
+    return requirePromise(toLoad.map(f => `https://unpkg.com/@jupyter-widgets/html-manager@${version}/dist/${f}`));
+};
 
 // `LoadInlineWidget` is the main function called on load of the web page. All
 // it does is ensure requirejs is on the page and call `renderInlineWidgets`
 function loadInlineWidgets(event) {
-    loadRequire.then(() => {
+    loadManager().then(() => {
         renderInlineWidgets(event);
     });
 }
