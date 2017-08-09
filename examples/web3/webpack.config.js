@@ -1,3 +1,25 @@
+let postcss = require('postcss');
+
+let postcssHandler = () => {
+    return [
+        postcss.plugin('delete-tilde', () => {
+            return function (css) {
+                css.walkAtRules('import', (rule) => {
+                    rule.params = rule.params.replace('~', '');
+                });
+            };
+        }),
+        postcss.plugin('prepend', () => {
+            return (css) => {
+                css.prepend(`@import '@jupyter-widgets/controls/css/labvariables.css';`)
+            }
+        }),
+        require('postcss-import')(),
+        require('postcss-cssnext')()
+    ];
+}
+
+
 module.exports = {
     entry: './lib/index.js',
     output: {
@@ -19,10 +41,5 @@ module.exports = {
             { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" }
         ]
     },
-    postcss: function () {
-        return [
-            require('postcss-import'),
-            require('postcss-cssnext')
-        ];
-    }
+    postcss: postcssHandler,
 };

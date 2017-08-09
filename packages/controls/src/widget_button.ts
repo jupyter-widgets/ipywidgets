@@ -9,6 +9,10 @@ import {
     CoreDOMWidgetModel
 } from './widget_core';
 
+import {
+    JUPYTER_CONTROLS_VERSION
+} from './version';
+
 import * as _ from 'underscore';
 
 export
@@ -16,6 +20,9 @@ class ButtonStyleModel extends StyleModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'ButtonStyleModel',
+            _model_module: '@jupyter-widgets/controls',
+            _model_module_version: JUPYTER_CONTROLS_VERSION,
+
         });
     }
 

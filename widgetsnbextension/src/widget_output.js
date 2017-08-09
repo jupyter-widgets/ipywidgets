@@ -93,7 +93,8 @@ var OutputModel = outputBase.OutputModel.extend({
         if (!(options && options.newMessage)) {
             // fromJSON does not clear the existing output
             this.output_area.clear_output();
-            this.output_area.fromJSON(this.get('outputs'));
+            // fromJSON does not copy the message, so we make a deep copy
+            this.output_area.fromJSON(JSON.parse(JSON.stringify(this.get('outputs'))));
         }
     },
 
@@ -133,7 +134,8 @@ var OutputView = outputBase.OutputView.extend({
         if (!(options && options.newMessage)) {
             // fromJSON does not clear the existing output
             this.output_area.clear_output();
-            this.output_area.fromJSON(this.model.get('outputs'));
+            // fromJSON does not copy the message, so we make a deep copy
+            this.output_area.fromJSON(JSON.parse(JSON.stringify(this.model.get('outputs'))));
         }
     }
 });

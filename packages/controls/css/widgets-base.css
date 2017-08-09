@@ -84,7 +84,7 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
 }
 
 .widget-box {
@@ -296,6 +296,7 @@
     /* Vertical Widget Label */
     color: var(--jp-widgets-label-color);
     text-align: center;
+    line-height: var(--jp-widgets-inline-height);
 }
 
 /* Widget Readout Styling */
@@ -305,7 +306,6 @@
     font-size: var(--jp-widgets-font-size);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
-    margin-left: var(--jp-widgets-inline-margin);
     overflow: hidden;
     white-space: nowrap;
     text-align: center;
@@ -343,6 +343,8 @@
 .widget-inline-vbox .widget-readout {
     /* Vertical Readout */
     margin-top: var(--jp-widgets-inline-margin);
+    /* as wide as the widget */
+    width: inherit;
 }
 
 /* Widget Checkbox Styling */
@@ -406,16 +408,16 @@
     width: var(--jp-widgets-inline-width);
 }
 
-.widget-text input[type="text"] {
+.widget-text input[type="text"], .widget-text input[type="number"]{
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-text input[type="text"]:disabled, .widget-textarea textarea:disabled {
+.widget-text input[type="text"]:disabled, .widget-text input[type="number"]:disabled, .widget-textarea textarea:disabled {
     opacity: var(--jp-widgets-disabled-opacity);
 }
 
-.widget-text input[type="text"], .widget-textarea textarea {
+.widget-text input[type="text"], .widget-text input[type="number"], .widget-textarea textarea {
     box-sizing: border-box;
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     background-color: var(--jp-widgets-input-background-color);
@@ -426,7 +428,6 @@
     min-width: 0; /* This makes it possible for the flexbox to shrink this input */
     flex-shrink: 1;
     outline: none !important;
-    line-height: 1.5;
 }
 
 .widget-textarea textarea {
@@ -516,6 +517,11 @@
     width: var(--jp-widgets-inline-width);
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
+
+    /* Override the align-items baseline. This way, the description and readout
+    still seem to align their baseline properly, and we don't have to have
+    align-self: stretch in the .slider-container. */
+    align-items: center;
 }
 
 .widgets-slider .slider-container {
@@ -526,7 +532,6 @@
     height: var(--jp-widgets-inline-height);
     margin-left: calc(var(--jp-widgets-slider-handle-size) / 2 - 2 * var(--jp-widgets-slider-border-width));
     margin-right: calc(var(--jp-widgets-slider-handle-size) / 2 - 2 * var(--jp-widgets-slider-border-width));
-    align-self: stretch;
     flex: 1 1 var(--jp-widgets-inline-width-short);
 }
 
@@ -556,12 +561,14 @@
     margin-right: auto;
     margin-bottom: calc(var(--jp-widgets-slider-handle-size) / 2 - 2 * var(--jp-widgets-slider-border-width));
     margin-top: calc(var(--jp-widgets-slider-handle-size) / 2 - 2 * var(--jp-widgets-slider-border-width));
+    display: flex;
+    flex-direction: column;
 }
 
-.widget-vslider .ui-slider {
+.widget-vslider .ui-slider-vertical {
     /* Inner, invisible slide div */
     width: var(--jp-widgets-slider-track-thickness);
-    height: 100%;
+    flex-grow: 1;
     margin-left: auto;
     margin-right: auto;
 }
@@ -613,13 +620,17 @@
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
     width: var(--jp-widgets-inline-width);
+    align-items: center;
+
 }
 
 .widget-hprogress .progress {
     flex-grow: 1;
-    height: var(--jp-widgets-progress-thickness);
-    margin-top: auto;
-    margin-bottom: auto;
+    margin-top: var(--jp-widgets-input-padding);
+    margin-bottom: var(--jp-widgets-input-padding);
+    align-self: stretch;
+    /* Override bootstrap style */
+    height: initial;
 }
 
 /* Vertical Progress */
@@ -692,6 +703,11 @@
 .widget-select {
     width: var(--jp-widgets-inline-width);
     line-height: var(--jp-widgets-inline-height);
+
+    /* Because Firefox defines the baseline of a select as the bottom of the
+    control, we align the entire control to the top and add padding to the
+    select to get an approximate first line baseline alignment. */
+    align-items: flex-start;
 }
 
 .widget-select > select {
@@ -703,6 +719,11 @@
     outline: none !important;
     overflow: auto;
     height: inherit;
+
+    /* Because Firefox defines the baseline of a select as the bottom of the
+    control, we align the entire control to the top and add padding to the
+    select to get an approximate first line baseline alignment. */
+    padding-top: 5px;
 }
 
 .widget-select > select:focus {
@@ -863,11 +884,12 @@
 .widget-play {
     width: var(--jp-widgets-inline-width-short);
     display: flex;
+    align-items: stretch;
 }
 
 .widget-play .jupyter-button {
     flex-grow: 1;
-    text-align: center;
+    height: auto;
 }
 
 .widget-play .jupyter-button:disabled {

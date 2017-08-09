@@ -1,19 +1,19 @@
 {
   "name": "@jupyter-widgets/jupyterlab-manager",
-  "version": "0.24.5",
+  "version": "0.25.7",
   "description": "The JupyterLab extension providing Jupyter widgets.",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "dependencies": {
-    "@jupyter-widgets/base": "^0.6.3",
-    "@jupyter-widgets/controls": "^0.6.4",
-    "@jupyter-widgets/output": "^0.3.3",
-    "@jupyterlab/application": "^0.8.3",
-    "@jupyterlab/docregistry": "^0.8.2",
-    "@jupyterlab/notebook": "^0.8.3",
-    "@jupyterlab/outputarea": "^0.8.2",
-    "@jupyterlab/rendermime": "^0.8.2",
-    "@jupyterlab/rendermime-interfaces": "^0.2.1",
+    "@jupyter-widgets/base": "^0.6.8",
+    "@jupyter-widgets/controls": "^0.6.14",
+    "@jupyter-widgets/output": "^0.3.8",
+    "@jupyterlab/application": "^0.9.0",
+    "@jupyterlab/docregistry": "^0.9.0",
+    "@jupyterlab/notebook": "^0.9.0",
+    "@jupyterlab/outputarea": "^0.9.0",
+    "@jupyterlab/rendermime": "^0.9.0",
+    "@jupyterlab/rendermime-interfaces": "^0.3.0",
     "@phosphor/coreutils": "^1.1.0",
     "@phosphor/disposable": "^1.1.0",
     "@phosphor/widgets": "^1.2.0"
@@ -36,7 +36,8 @@
     "clean": "rimraf docs && rimraf lib",
     "build:src": "tsc --project src",
     "build": "npm run build:src",
-    "docs": "typedoc --mode file --module commonjs --excludeNotExported --target es5 --moduleResolution node --out docs/ src"
+    "docs": "typedoc --mode file --module commonjs --excludeNotExported --target es5 --moduleResolution node --out docs/ src",
+    "prepublish": "npm run clean && npm run build"
   },
   "repository": {
     "type": "git",

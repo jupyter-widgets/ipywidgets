@@ -146,7 +146,8 @@ class TextareaModel extends StringModel {
         return _.extend(super.defaults(), {
             _view_name: 'TextareaView',
             _model_name: 'TextareaModel',
-            rows: null
+            rows: null,
+            continuous_update: true,
         });
     }
 }
@@ -168,9 +169,6 @@ class TextareaView extends DescriptionView {
         this.el.appendChild(this.textbox);
 
         this.update(); // Set defaults.
-        this.listenTo(this.model, 'msg:custom', (content) => {
-            this._handle_textarea_msg(content)
-        });
 
         this.listenTo(this.model, 'change:placeholder',
             function(model, value, options) {
@@ -180,25 +178,9 @@ class TextareaView extends DescriptionView {
         this.update_placeholder();
     }
 
-    /**
-     * Handle when a custom msg is recieved from the back-end.
-     */
-    _handle_textarea_msg (content) {
-        if (content.method == 'scroll_to_bottom') {
-            this.scroll_to_bottom();
-        }
-    }
-
     update_placeholder(value?) {
         value = value || this.model.get('placeholder');
         this.textbox.setAttribute('placeholder', value.toString());
-    }
-
-    /**
-     * Scroll the text-area view to the bottom.
-     */
-    scroll_to_bottom () {
-        //this.$textbox.scrollTop(this.$textbox[0].scrollHeight); // DW TODO
     }
 
     /**
@@ -216,15 +198,13 @@ class TextareaView extends DescriptionView {
         return super.update();
     }
 
-    events(): {[e: string]: string} {
+    events() {
         return {
-            // Dictionary of events and their handlers.
-            'keydown textarea'  : 'handleKeyDown',
-            'keypress textarea' : 'handleKeypress',
-            'keyup textarea' : 'handleChanging',
-            'paste textarea' : 'handleChanging',
-            'cut textarea'   : 'handleChanging'
-        }
+            'keydown input'  : 'handleKeyDown',
+            'keypress input' : 'handleKeypress',
+            'input textarea'  : 'handleChanging',
+            'change textarea' : 'handleChanged'
+        };
     }
 
     /**
@@ -246,16 +226,23 @@ class TextareaView extends DescriptionView {
     }
 
     /**
-     * Handles and validates user input.
-     *
-     * Calling model.set will trigger all of the other views of the
-     * model to update.
+     * Triggered on input change
      */
     handleChanging(e) {
+        if (this.model.get('continuous_update')) {
+            this.handleChanged(e);
+        }
+    }
+
+    /**
+     * Sync the value with the kernel.
+     *
+     * @param e Event
+     */
+    handleChanged(e) {
         this.model.set('value', e.target.value, {updated_view: this});
         this.touch();
     }
-
     textbox: HTMLTextAreaElement;
 }
 
@@ -264,7 +251,8 @@ class TextModel extends StringModel {
     defaults() {
         return _.extend(super.defaults(), {
             _view_name: 'TextView',
-            _model_name: 'TextModel'
+            _model_name: 'TextModel',
+            continuous_update: true,
         });
     }
 }
@@ -317,17 +305,13 @@ class TextView extends DescriptionView {
         return super.update();
     }
 
-    events(): {[e: string]: string} {
+    events() {
         return {
-            // Dictionary of events and their handlers.
             'keydown input'  : 'handleKeyDown',
             'keypress input' : 'handleKeypress',
-            'keyup input'    : 'handleChanging',
-            'paste input'    : 'handleChanging',
-            'cut input'      : 'handleChanging',
-            'blur input'     : 'handleBlur',
-            'focusout input' : 'handleFocusOut'
-        }
+            'input input'  : 'handleChanging',
+            'change input' : 'handleChanged'
+        };
     }
 
     /**
@@ -344,9 +328,9 @@ class TextView extends DescriptionView {
      */
     handleKeypress(e) {
         e.stopPropagation();
+        // The submit message is deprecated in widgets 7
         if (e.keyCode == 13) { // Return key
             this.send({event: 'submit'});
-            e.preventDefault();
         }
     }
 
@@ -357,34 +341,22 @@ class TextView extends DescriptionView {
      * model to update.
      */
     handleChanging(e) {
-        e.stopPropagation();
+        if (this.model.get('continuous_update')) {
+            this.handleChanged(e);
+        }
+    }
+
+    /**
+     * Handles user input.
+     *
+     * Calling model.set will trigger all of the other views of the
+     * model to update.
+     */
+    handleChanged(e) {
         this.model.set('value', e.target.value, {updated_view: this});
         this.touch();
     }
 
-    /**
-     * Prevent a blur from firing if the blur was not user intended.
-     * This is a workaround for the return-key focus loss bug.
-     * TODO: Is the original bug actually a fault of the keyboard
-     * manager?
-     */
-    handleBlur(e) {
-        if (e.relatedTarget === null) {
-            e.stopPropagation();
-            e.preventDefault();
-        }
-    }
-
-    /**
-     * Prevent a blur from firing if the blur was not user intended.
-     * This is a workaround for the return-key focus loss bug.
-     */
-    handleFocusOut(e) {
-        if (e.relatedTarget === null) {
-            e.stopPropagation();
-            e.preventDefault();
-        }
-    }
 
     protected readonly inputType: string = 'text';
     textbox: HTMLInputElement;

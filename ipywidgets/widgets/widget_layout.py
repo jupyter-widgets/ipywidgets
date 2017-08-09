@@ -5,6 +5,7 @@
 
 from traitlets import Unicode, Instance, CaselessStrEnum
 from .widget import Widget, register
+from .._version import __jupyter_widgets_base_version__
 
 CSS_PROPERTIES=['inherit', 'initial', 'unset']
 
@@ -26,7 +27,7 @@ class Layout(Widget):
 
     _view_name = Unicode('LayoutView').tag(sync=True)
     _view_module = Unicode('@jupyter-widgets/base').tag(sync=True)
-    _view_module_version = Unicode('3.0.0').tag(sync=True)
+    _view_module_version = Unicode(__jupyter_widgets_base_version__).tag(sync=True)
     _model_name = Unicode('LayoutModel').tag(sync=True)
 
     # Keys

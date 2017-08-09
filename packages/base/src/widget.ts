@@ -20,7 +20,7 @@ import {
 } from '@phosphor/messaging';
 
 export
-const JUPYTER_WIDGETS_VERSION = '3.0.0';
+const JUPYTER_WIDGETS_VERSION = '1.0.0';
 
 /**
  * Replace model ids with models recursively.
@@ -63,7 +63,6 @@ class WidgetModel extends Backbone.Model {
             _view_name: null,
             _view_module_version: JUPYTER_WIDGETS_VERSION,
             _view_count: null,
-            msg_throttle: 1,
         };
     }
 
@@ -254,7 +253,7 @@ class WidgetModel extends Backbone.Model {
                 this._pending_msgs--;
                 // Send buffer if one is waiting and we are below the throttle.
                 if (this._msg_buffer !== null
-                    && this._pending_msgs < (this.get('msg_throttle') || 1) ) {
+                    && this._pending_msgs < 1 ) {
                     this.send_sync_message(this._msg_buffer, this._msg_buffer_callbacks);
                     this._msg_buffer = null;
                     this._msg_buffer_callbacks = null;
@@ -359,7 +358,7 @@ class WidgetModel extends Backbone.Model {
             let callbacks = options.callbacks || this.callbacks();
 
             // Check throttle.
-            if (this._pending_msgs >= (this.get('msg_throttle') || 1)) {
+            if (this._pending_msgs >= 1) {
                 // The throttle has been exceeded, buffer the current msg so
                 // it can be sent once the kernel has finished processing
                 // some of the existing messages.

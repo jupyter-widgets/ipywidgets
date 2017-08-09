@@ -166,11 +166,11 @@ class AccordionView extends DOMWidgetView {
      * Set header titles
      */
     update_titles() {
-        let widgets = this.pWidget.widgets;
+        let collapsed = this.pWidget.collapseWidgets;
         let titles = this.model.get('_titles');
-        for (let i = 0; i < widgets.length; i++) {
+        for (let i = 0; i < collapsed.length; i++) {
             if (titles[i] !== void 0) {
-                widgets[i].title.label = titles[i];
+                collapsed[i].widget.title.label = titles[i];
             }
         }
     }

@@ -82,8 +82,8 @@ describe('Output widget', function() {
                     "data": {
                         "application/vnd.jupyter.widget-view+json": {
                             "model_id": "adffc4580a0944f6929c381463b0059b",
-                            "version_minor": "0",
-                            "version_major": "2"
+                            "version_minor": 0,
+                            "version_major": 2
                         },
                         "text/plain": "A Jupyter Widget"
                     },
@@ -102,7 +102,7 @@ describe('Output widget', function() {
             "adffc4580a0944f6929c381463b0059b": {
                 "model_name": "IntSliderModel",
                 "model_module": "@jupyter-widgets/controls",
-                "model_module_version": "3.0.0",
+                "model_module_version": "1.0.0",
                 "state": {
                     "style": "IPY_MODEL_3b8780f457254737a83be48bc32b0613",
                     "_view_module": "@jupyter-widgets/controls",
@@ -114,7 +114,7 @@ describe('Output widget', function() {
             "3b8780f457254737a83be48bc32b0613": {
                 "model_name": "SliderStyleModel",
                 "model_module": "@jupyter-widgets/controls",
-                "model_module_version": "3.0.0",
+                "model_module_version": "1.0.0",
                 "state": {
                     "description_width": "",
                     "_model_module": "@jupyter-widgets/controls"
@@ -123,7 +123,7 @@ describe('Output widget', function() {
             "33cb011834fd4c9d9af512e5e98c9904": {
                 "model_name": "LayoutModel",
                 "model_module": "@jupyter-widgets/base",
-                "model_module_version": "3.0.0",
+                "model_module_version": "1.0.0",
                 "state": {}
             },
         }

@@ -238,6 +238,7 @@ class Accordion extends Panel {
    * @param widget - The widget to add to the accordion.
    *
    * @returns The Collapse widget wrapping the added widget.
+   *
    * #### Notes
    * The widget will be wrapped in a CollapsedWidget.
    */

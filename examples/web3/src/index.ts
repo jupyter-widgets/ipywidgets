@@ -7,7 +7,7 @@ import {
 } from './manager';
 
 import {
-    Kernel, ServerConnection
+    Kernel, ServerConnection, KernelMessage
 } from '@jupyterlab/services';
 
 let BASEURL = prompt('Notebook BASEURL', 'http://localhost:8888');
@@ -16,17 +16,15 @@ let WSURL = 'ws:' + BASEURL.split(':').slice(1).join(':');
 document.addEventListener("DOMContentLoaded", function(event) {
 
     // Connect to the notebook webserver.
-    let connectionInfo: any = {
+    let connectionInfo = ServerConnection.makeSettings({
         baseUrl: BASEURL,
         wsUrl: WSURL
-    };
-    let connectionSettings = ServerConnection.makeSettings(connectionInfo)
-    Kernel.getSpecs(connectionSettings).then(kernelSpecs => {
-        let kernelOptions = {
+    });
+    Kernel.getSpecs(connectionInfo).then(kernelSpecs => {
+        return Kernel.startNew({
             name: kernelSpecs.default,
-            serverSettings: connectionSettings
-        }
-        return Kernel.startNew(kernelOptions);
+            serverSettings: connectionInfo
+        });
     }).then(kernel => {
 
         // Create a codemirror instance
@@ -48,8 +46,20 @@ document.addEventListener("DOMContentLoaded", function(event) {
         // Run backend code to create the widgets.  You could also create the
         // widgets in the frontend, like the other widget examples demonstrate.
         let execution = kernel.requestExecute({ code: code });
-
-        // TODO: register for displaying execution messages on the future.
-        // TODO: use the html manager? That has a more comprehensive implementation.
+        execution.onIOPub = (msg) => {
+            // If we have a display message, display the widget.
+            if (KernelMessage.isDisplayDataMsg(msg)) {
+                let widgetData: any = msg.content.data['application/vnd.jupyter.widget-view+json'];
+                if (widgetData !== undefined && widgetData.version_major === 2) {
+                    let model = manager.get_model(widgetData.model_id);
+                    if (model !== undefined) {
+                        model.then(model => {
+                            manager.display_model(msg, model);
+                        });
+                    }
+                }
+            }
+        }
     });
 });
+
