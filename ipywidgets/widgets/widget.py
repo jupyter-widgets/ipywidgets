@@ -50,9 +50,9 @@ widget_serialization = {
 }
 
 if PY3:
-    _binary_types = (memoryview, bytes)
+    _binary_types = (memoryview, bytearray, bytes)
 else:
-    _binary_types = (memoryview, buffer)
+    _binary_types = (memoryview, bytearray)
 
 def _put_buffers(state, buffer_paths, buffers):
     """The inverse of _remove_buffers, except here we modify the existing dict/lists.
@@ -114,6 +114,8 @@ def _separate_buffers(substate, path, buffer_paths, buffers):
 
 def _remove_buffers(state):
     """Return (state_without_buffers, buffer_paths, buffers) for binary message parts
+
+    A binary message part is a memoryview, bytearray, or python 3 bytes object.
 
     As an example:
     >>> state = {'plain': [0, 'text'], 'x': {'ar': memoryview(ar1)}, 'y': {'shape': (10,10), 'data': memoryview(ar2)}}
@@ -486,8 +488,8 @@ class Widget(LoggingHasTraits):
     def _buffer_list_equal(self, a, b):
         """Compare two lists of buffers for equality.
 
-        Used to decide whether two sequences of buffers (memoryviews) differ,
-        such that a sync is needed.
+        Used to decide whether two sequences of buffers (memoryviews,
+        bytearrays, or python 3 bytes) differ, such that a sync is needed.
 
         Returns True if equal, False if unequal
         """
@@ -501,9 +503,9 @@ class Widget(LoggingHasTraits):
             # e.g. memoryview(np.frombuffer(ia, dtype='float32')) !=
             # memoryview(np.frombuffer(b)), since the format info differs.
             # However, since we only transfer bytes, we use `tobytes()`.
-            iabytes = ia.tobytes() if isinstance(ia, memoryview) else ia
-            ibbytes = ib.tobytes() if isinstance(ib, memoryview) else ib
-            if ia != ib:
+            ia_bytes = ia.tobytes() if isinstance(ia, memoryview) else ia
+            ib_bytes = ib.tobytes() if isinstance(ib, memoryview) else ib
+            if ia_bytes != ib_bytes:
                 return False
         return True
 

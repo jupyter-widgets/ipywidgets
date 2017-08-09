@@ -11,9 +11,6 @@ from .utils import setup, teardown
 
 from ..widget import Widget
 
-
-byte_type = bytes if PY3 else buffer
-
 #
 # First some widgets to test on:
 #
@@ -48,7 +45,7 @@ def mview_serializer(instance, widget):
     return { 'data': memoryview(instance.data) if instance.data else None }
 
 def bytes_serializer(instance, widget):
-    return { 'data': byte_type(memoryview(instance.data).tobytes()) if instance.data else None }
+    return { 'data': bytearray(memoryview(instance.data).tobytes()) if instance.data else None }
 
 def deserializer(json_data, widget):
     return DataInstance( memoryview(json_data['data']).tobytes() if json_data else None )
@@ -125,4 +122,4 @@ def test_set_state_data_truncate():
 
     # Sanity:
     nt.assert_equal(len(buffers), 1)
-    nt.assert_equal(buffers[0], byte_type(data[:20].tobytes()))
+    nt.assert_equal(buffers[0], data[:20].tobytes())
