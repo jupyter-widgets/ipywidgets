@@ -1,15 +1,15 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-06/schema#",
     "description": "Jupyter Interactive Widget View JSON schema.",
     "type": "object",
-    "properties" : {
-        "version_major" : {
+    "properties": {
+        "version_major": {
             "description": "Format version (major)",
             "type": "number",
             "minimum": 2,
             "maximum": 2
         },
-        "version_minor" : {
+        "version_minor": {
             "description": "Format version (minor)",
             "type": "number"
         },
@@ -18,5 +18,7 @@
             "type": "string"
         }
     },
-    "required": [ "model_id" ]
+    "required": [
+        "model_id"
+    ]
 }

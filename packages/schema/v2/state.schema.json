@@ -1,15 +1,15 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$schema": "http://json-schema.org/draft-06/schema#",
     "description": "Jupyter Interactive Widget State JSON schema.",
     "type": "object",
-    "properties" : {
-        "version_major" : {
+    "properties": {
+        "version_major": {
             "description": "Format version (major)",
             "type": "number",
             "minimum": 2,
             "maximum": 2
         },
-        "version_minor" : {
+        "version_minor": {
             "description": "Format version (minor)",
             "type": "number",
             "minimum": 0,
@@ -18,23 +18,23 @@
         "state": {
             "description": "Model State for All Widget Models - keys are model ids, values are model state",
             "type": "object",
-            "additionalProperties" : {
+            "additionalProperties": {
                 "type": "object",
                 "properties": {
                     "model_name": {
-                        "description" : "Name of the JavaScript class holding the model implementation",
+                        "description": "Name of the JavaScript class holding the model implementation",
                         "type": "string"
                     },
                     "model_module": {
-                        "description" : "Name of the JavaScript module holding the model implementation",
+                        "description": "Name of the JavaScript module holding the model implementation",
                         "type": "string"
                     },
                     "model_module_version": {
-                        "description" : "Semver range for the JavaScript module holding the model implementation",
+                        "description": "Semver range for the JavaScript module holding the model implementation",
                         "type": "string"
                     },
                     "state": {
-                        "description" : "Serialized state of the model",
+                        "description": "Serialized state of the model",
                         "type": "object"
                     },
                     "buffers": {
@@ -48,31 +48,50 @@
                                     "type": "array",
                                     "items": {
                                         "description": "An object key or array index",
-                                        "type": ["string", "number"]
+                                        "type": [
+                                            "string",
+                                            "number"
+                                        ]
                                     }
                                 },
                                 "data": {
-                                    "description" : "A binary buffer encoded as specified in the 'encoding' property",
+                                    "description": "A binary buffer encoded as specified in the 'encoding' property",
                                     "type": "string"
                                 },
                                 "encoding": {
                                     "description": "The encoding of the buffer data",
                                     "type": "string",
                                     "oneOf": [
-                                        {"enum": ["hex"], "description": "Base 16 encoding, as specified in RFC 4648, section 8 (https://tools.ietf.org/html/rfc4648#section-8)"},
-                                        {"enum": ["base64"], "description": "Base 64 encoding, as specified in RFC 4648, section 4 (https://tools.ietf.org/html/rfc4648#section-4)"}
-
+                                        {
+                                            "const": "hex",
+                                            "description": "Base 16 encoding, as specified in RFC 4648, section 8 (https://tools.ietf.org/html/rfc4648#section-8)"
+                                        },
+                                        {
+                                            "const": "base64",
+                                            "description": "Base 64 encoding, as specified in RFC 4648, section 4 (https://tools.ietf.org/html/rfc4648#section-4)"
+                                        }
                                     ]
                                 }
-
                             },
-                            "required": ["path", "data", "encoding"]
+                            "required": [
+                                "path",
+                                "data",
+                                "encoding"
+                            ]
                         }
                     }
                 },
-                "required": [ "model_name", "model_module", "state" ]
+                "required": [
+                    "model_name",
+                    "model_module",
+                    "state"
+                ]
             }
         }
     },
-    "required": [ "version_major", "version_minor", "state" ]
+    "required": [
+        "version_major",
+        "version_minor",
+        "state"
+    ]
 }
