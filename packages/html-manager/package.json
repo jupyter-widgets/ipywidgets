@@ -1,9 +1,9 @@
 {
   "name": "@jupyter-widgets/html-manager",
-  "version": "0.5.2",
+  "version": "0.6.6",
   "description": "Standalone package for rendering Jupyter widgets outside notebooks",
   "main": "lib/index.js",
-  "typings": "lib/index.t.js",
+  "typings": "lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/jupyter-widgets/ipywidgets.git"
@@ -11,10 +11,11 @@
   "files": [
     "lib/**/*.d.ts",
     "lib/**/*.js",
-    "dist/"
+    "dist/",
+    "css/*.css"
   ],
   "scripts": {
-    "clean": "rimraf lib",
+    "clean": "rimraf lib && rimraf dist",
     "build:src": "tsc --project src",
     "build:test": "tsc --project test/src && webpack --config test/webpack.conf.js",
     "build": "npm run build:src && webpack",
@@ -22,7 +23,8 @@
     "test:unit": "npm run test:unit:firefox && npm run test:unit:chrome",
     "test:unit:default": "npm run build:test && karma start test/karma.conf.js --log-level debug --browsers=Firefox",
     "test:unit:firefox": "npm run test:unit:default -- --browsers=Firefox",
-    "test:unit:chrome": "npm run test:unit:default -- --browsers=Chrome"
+    "test:unit:chrome": "npm run test:unit:default -- --browsers=Chrome",
+    "prepublish": "npm run clean && npm run build"
   },
   "author": "Jupyter Project",
   "license": "BSD-3-Clause",
@@ -31,10 +33,10 @@
   },
   "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme",
   "dependencies": {
-    "@jupyter-widgets/base": "^0.6.5",
-    "@jupyter-widgets/controls": "^0.6.9",
-    "@jupyter-widgets/output": "^0.3.5",
-    "@jupyter-widgets/schema": "^0.3.0-beta.4",
+    "@jupyter-widgets/base": "^0.6.8",
+    "@jupyter-widgets/controls": "^0.6.14",
+    "@jupyter-widgets/output": "^0.3.8",
+    "@jupyter-widgets/schema": "^0.3.0-beta.6",
     "@jupyterlab/outputarea": "^0.9.0",
     "@jupyterlab/rendermime-interfaces": "^0.3.0",
     "@phosphor/widgets": "^1.2.0",
@@ -46,7 +48,6 @@
     "@types/requirejs": "^2.1.28",
     "chai": "^4.0.0",
     "css-loader": "^0.28.4",
-    "es6-promise": "^4.1.0",
     "file-loader": "^0.11.2",
     "json-loader": "^0.5.4",
     "karma": "^1.6.0",

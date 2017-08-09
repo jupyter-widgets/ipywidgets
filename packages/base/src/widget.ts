@@ -20,7 +20,7 @@ import {
 } from '@phosphor/messaging';
 
 export
-const JUPYTER_WIDGETS_VERSION = '3.0.0';
+const JUPYTER_WIDGETS_VERSION = '1.0.0';
 
 /**
  * Replace model ids with models recursively.

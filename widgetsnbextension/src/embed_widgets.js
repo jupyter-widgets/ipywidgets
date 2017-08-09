@@ -18,7 +18,7 @@ var embed_widgets = function() {
                 // A better strategy would be to point to a version
                 // of the html-manager that has been tested with this
                 // release of jupyter-widgets/controls.
-                var value = '<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/index.js"></script>\n' +
+                var value = '<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed.js"></script>\n' +
                             '<script type="application/vnd.jupyter.widget-state+json">\n' + data + '\n</script>';
 
                 var views = [];

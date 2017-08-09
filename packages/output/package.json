@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/output",
-  "version": "0.3.5",
+  "version": "0.3.8",
   "description": "Jupyter widget wrapping cell output",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -8,7 +8,8 @@
     "clean": "rimraf lib",
     "build:src": "tsc --project src",
     "build": "npm run build:src",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublish": "npm run clean && npm run build"
   },
   "files": [
     "lib/**/*.d.ts",
@@ -24,7 +25,7 @@
     "url": "https://github.com/jupyter-widgets/ipywidgets/issues"
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^0.6.5"
+    "@jupyter-widgets/base": "^0.6.8"
   },
   "devDependencies": {
     "rimraf": "^2.6.1",

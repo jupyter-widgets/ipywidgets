@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/base",
-  "version": "0.6.5",
+  "version": "0.6.8",
   "description": "Jupyter interactive widgets",
   "author": "Project Jupyter",
   "license": "BSD-3-Clause",
@@ -27,7 +27,8 @@
     "test:unit:default": "npm run build:test && karma start test/karma.conf.js --log-level debug",
     "test:unit:firefox": "npm run test:unit:default -- --browsers=Firefox",
     "test:unit:chrome": "npm run test:unit:default -- --browsers=Chrome",
-    "test:unit:ie": "npm run test:unit:default -- --browsers=IE"
+    "test:unit:ie": "npm run test:unit:default -- --browsers=IE",
+    "prepublish": "npm run clean && npm run build"
   },
   "devDependencies": {
     "@types/expect.js": "^0.3.29",
@@ -53,7 +54,7 @@
     "webpack": "^1.12.12"
   },
   "dependencies": {
-    "@jupyter-widgets/schema": "^0.3.0-beta.4",
+    "@jupyter-widgets/schema": "^0.3.0-beta.6",
     "@jupyterlab/services": "^0.48.0",
     "@phosphor/algorithm": "^1.1.0",
     "@phosphor/domutils": "^1.1.0",

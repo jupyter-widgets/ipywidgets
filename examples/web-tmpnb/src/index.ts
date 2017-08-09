@@ -7,11 +7,14 @@ import {
 } from './manager';
 
 import {
-    Kernel
+    Kernel, ServerConnection
 } from '@jupyterlab/services';
 
 document.addEventListener("DOMContentLoaded", function(event) {
-    var baseUrl = "https://tmp60.tmpnb.org/";
+    // TODO: change to https://tmpnb.org when the CORS bug fix makes it way to
+    // all tmpnb servers. See
+    // https://gitter.im/jupyterhub/jupyterhub?at=59833e36c101bc4e3ae61104
+    var baseUrl = "https://tmp61.tmpnb.org/";
     var apiUrl = baseUrl.concat("api/spawn");
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("POST", apiUrl, true);
@@ -20,17 +23,24 @@ document.addEventListener("DOMContentLoaded", function(event) {
     xmlhttp.onreadystatechange = function () {
         //Call a function when the state changes.
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+            let response = JSON.parse(xmlhttp.responseText);
+            // TODO: this will need to be changed to check the status code 429
+            // when https://github.com/jupyter/tmpnb/pull/283 is implemented.
+            if (response.status === 'full') {
+                let widgetarea = document.getElementsByClassName("widgetarea")[0] as HTMLElement;
+                widgetarea.innerText = "The tmpnb server does not have any available kernels.";
+                throw new Error('Tmpnb does not have any available kernels');
+            }
             let serverUrl = baseUrl.concat(JSON.parse(xmlhttp.responseText).url);
             let wsUrl = 'ws:' + serverUrl.split(':').slice(1).join(':');
 
             // Connect to the notebook webserver.
-            let connectionInfo: any = {
+            let connectionInfo: any = ServerConnection.makeSettings({
                 baseUrl: serverUrl,
                 wsUrl: wsUrl
-            };
+            });
             Kernel.getSpecs(connectionInfo).then(kernelSpecs => {
-                (connectionInfo as any).name = kernelSpecs.default;
-                return Kernel.startNew(connectionInfo);
+                return Kernel.startNew({name: kernelSpecs.default, serverSettings: connectionInfo});
             }).then(kernel => {
 
                 // Create a codemirror instance
@@ -51,7 +61,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
                 // Run backend code to create the widgets.  You could also create the
                 // widgets in the frontend, like the other widget examples demonstrate.
-                kernel.requestExecute({ code: code });
+                let request = kernel.requestExecute({ code: code });
+                request.onIOPub = (msg) => {
+                    // If we have a display message, display the widget.
+                    console.log(msg);
+                }
             });
         }
     }

@@ -248,7 +248,7 @@ abstract class ManagerBase<T> {
         let commPromise;
         // we check to make sure the view information is provided, to help catch
         // backwards incompatibility errors.
-        if (!options.view_name || !options.view_module || !options.view_module_version) {
+        if (_.contains([options.view_name, options.view_module, options.view_module_version], undefined)) {
             return Promise.reject("new_widget(...) must be given view information in the options.");
         }
         // If no comm is provided, a new comm is opened for the jupyter.widget
@@ -303,7 +303,7 @@ abstract class ManagerBase<T> {
      * widget_manager.new_model({
      *      model_name: 'IntSlider',
      *      model_module: '@jupyter-widgets/controls',
-     *      model_module_version: '3.0.0',
+     *      model_module_version: '1.0.0',
      *      model_id: 'u-u-i-d'
      * }).then((model) => { console.log('Create success!', model); },
      *  (err) => {console.error(err)});
