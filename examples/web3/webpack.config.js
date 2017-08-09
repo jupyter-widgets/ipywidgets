@@ -1,17 +1,17 @@
-let postcss = require('postcss');
+var postcss = require('postcss');
 
-let postcssHandler = () => {
+var postcssHandler = function() {
     return [
-        postcss.plugin('delete-tilde', () => {
+        postcss.plugin('delete-tilde', function() {
             return function (css) {
-                css.walkAtRules('import', (rule) => {
+                css.walkAtRules('import', function(rule) {
                     rule.params = rule.params.replace('~', '');
                 });
             };
         }),
-        postcss.plugin('prepend', () => {
-            return (css) => {
-                css.prepend(`@import '@jupyter-widgets/controls/css/labvariables.css';`)
+        postcss.plugin('prepend', function() {
+            return function(css) {
+                css.prepend("@import '@jupyter-widgets/controls/css/labvariables.css';")
             }
         }),
         require('postcss-import')(),
