@@ -483,7 +483,7 @@ class Widget(LoggingHasTraits):
         else:
             return a == b
 
-    def _compare_buffers(self, a, b, key):
+    def _buffer_list_equal(self, a, b):
         """Compare two lists of buffers for equality.
 
         Used to decide whether two sequences of buffers (memoryviews) differ,
@@ -501,7 +501,9 @@ class Widget(LoggingHasTraits):
             # e.g. memoryview(np.frombuffer(ia, dtype='float32')) !=
             # memoryview(np.frombuffer(b)), since the format info differs.
             # However, since we only transfer bytes, we use `tobytes()`.
-            if ia.tobytes() != ib.tobytes():
+            iabytes = ia.tobytes() if isinstance(ia, memoryview) else ia
+            ibbytes = ib.tobytes() if isinstance(ib, memoryview) else ib
+            if ia != ib:
                 return False
         return True
 
@@ -620,13 +622,14 @@ class Widget(LoggingHasTraits):
         # idiosyncracies of how python data structures map to json, for example
         # tuples get converted to lists.
         if key in self._property_lock:
+            # model_state, buffer_paths, buffers
             split_value = _remove_buffers({ key: to_json(value, self)})
             split_lock = _remove_buffers({ key: self._property_lock[key]})
             # Compare state and buffer_paths
-            if jsondumps(split_value[:2]) == jsondumps(split_lock[:2]):
-                # Compare buffers
-                if self._compare_buffers(split_value[2], split_lock[2], key):
-                    return False
+            if (jsonloads(jsondumps(split_value[0])) == jsonloads(jsondumps(split_lock[0]))
+                and split_value[1] == split_lock[1]
+                and self._buffer_list_equal(split_value[2], split_lock[2])):
+                return False
         if self._holding_sync:
             self._states_to_send.add(key)
             return False

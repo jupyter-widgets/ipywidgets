@@ -122,4 +122,4 @@ def test_set_state_data_truncate():
 
     # Sanity:
     assert len(buffers) == 1
-    assert buffers[0].tobytes() == data[:20].tobytes()
+    assert buffers[0] == data[:20].tobytes()
