@@ -5,9 +5,7 @@
 
 var VIEW_MIME_TYPE = "application/vnd.jupyter.widget-view+json"
 
-import {
-    version
-} from '@jupyter-widgets/html-manager';
+var htmlManagerVersion = require("@jupyter-widgets/html-manager/package.json").version;
 
 var embed_widgets = function() {
     return new Promise(function(resolve) {
@@ -17,8 +15,11 @@ var embed_widgets = function() {
                 'drop_defaults': true
             }).then(function(state) {
                 var data = JSON.stringify(state, null, '    ');
-                var value = '<script src="https://unpkg.com/@jupyter-widgets/html-manager@^${version}/dist/embed.js"></script>\n' +
-                            '<script type="application/vnd.jupyter.widget-state+json">\n' + data + '\n</script>';
+                var value = ('<html><head>\n\n'+
+                '<!-- Load require.js. Delete this if your page already loads require.js -->\n' +
+                    '<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" crossorigin="anonymous"></script>\n\n' +
+                '<script src="https://unpkg.com/@jupyter-widgets/html-manager@^'+htmlManagerVersion+'/dist/embed.js"></script>\n' +
+                            '<script type="application/vnd.jupyter.widget-state+json">\n' + data + '\n</script>\n</head>\n<body>\n');
 
                 var views = [];
                 var cells = Jupyter.notebook.get_cells();
@@ -36,7 +37,7 @@ var embed_widgets = function() {
                     }
                 })
                 value += views.join('\n');
-
+                value += '\n\n</body>\n</html>\n';
                 var content = document.createElement('textarea');
                 content.setAttribute('readonly', 'true');
                 content.style.width = '100%';
