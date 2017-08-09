@@ -1,22 +1,22 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-let version = require('./package.json').version;
+var version = require('./package.json').version;
 
-let postcss = require('postcss');
+var postcss = require('postcss');
 
-let postcssHandler = () => {
+var postcssHandler = function() {
     return [
-        postcss.plugin('delete-tilde', () => {
+        postcss.plugin('delete-tilde', function() {
             return function (css) {
-                css.walkAtRules('import', (rule) => {
+                css.walkAtRules('import', function(rule) {
                     rule.params = rule.params.replace('~', '');
                 });
             };
         }),
-        postcss.plugin('prepend', () => {
-            return (css) => {
-                css.prepend(`@import '@jupyter-widgets/controls/css/labvariables.css';`)
+        postcss.plugin('prepend', function() {
+            return function(css) {
+                css.prepend("@import '@jupyter-widgets/controls/css/labvariables.css';")
             }
         }),
         require('postcss-import')(),
@@ -24,7 +24,7 @@ let postcssHandler = () => {
     ];
 }
 
-let loaders = [
+var loaders = [
             { test: /\.css$/, loader: "style-loader!css-loader!postcss-loader" },
             { test: /\.json$/, loader: "json-loader" },
             // jquery-ui loads some images
@@ -35,9 +35,9 @@ let loaders = [
             { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/octet-stream" },
             { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
             { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" }
-        ]
+        ];
 
-let publicPath = 'https://unpkg.com/@jupyter-widgets/html-manager@' + version + '/dist/';
+var publicPath = 'https://unpkg.com/@jupyter-widgets/html-manager@' + version + '/dist/';
 
 module.exports = [
 {// shim
