@@ -1,6 +1,9 @@
-
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
 
 from ipython_genutils.py3compat import PY3
+
+import nose.tools as nt
 
 from traitlets import Bool, Tuple, List, Instance
 
@@ -45,7 +48,7 @@ def mview_serializer(instance, widget):
     return { 'data': memoryview(instance.data) if instance.data else None }
 
 def bytes_serializer(instance, widget):
-    return { 'data': memoryview(instance.data).tobytes() if instance.data else None }
+    return { 'data': byte_type(memoryview(instance.data).tobytes()) if instance.data else None }
 
 def deserializer(json_data, widget):
     return DataInstance( memoryview(json_data['data']).tobytes() if json_data else None )
@@ -73,7 +76,7 @@ def test_set_state_simple():
         c=[False, True, False],
     ))
 
-    assert w.comm.messages == []
+    nt.assert_equal(w.comm.messages, [])
 
 
 def test_set_state_transformer():
@@ -82,13 +85,13 @@ def test_set_state_transformer():
         d=[True, False, True]
     ))
     # Since the deserialize step changes the state, this should send an update
-    assert w.comm.messages == [((), dict(
+    nt.assert_equal(w.comm.messages, [((), dict(
         buffers=[],
         data=dict(
             buffer_paths=[],
             method='update',
             state=dict(d=[False, True, False])
-        )))]
+        )))])
 
 
 def test_set_state_data():
@@ -98,7 +101,7 @@ def test_set_state_data():
         a=True,
         d={'data': data},
     ))
-    assert w.comm.messages == []
+    nt.assert_equal(w.comm.messages, [])
 
 
 def test_set_state_data_truncate():
@@ -109,17 +112,17 @@ def test_set_state_data_truncate():
         d={'data': data},
     ))
     # Get message for checking
-    assert len(w.comm.messages) == 1   # ensure we didn't get more than expected
+    nt.assert_equal(len(w.comm.messages), 1)   # ensure we didn't get more than expected
     msg = w.comm.messages[0]
     # Assert that the data update (truncation) sends an update
     buffers = msg[1].pop('buffers')
-    assert msg == ((), dict(
+    nt.assert_equal(msg, ((), dict(
         data=dict(
             buffer_paths=[['d', 'data']],
             method='update',
             state=dict(d={})
-        )))
+        ))))
 
     # Sanity:
-    assert len(buffers) == 1
-    assert buffers[0] == data[:20].tobytes()
+    nt.assert_equal(len(buffers), 1)
+    nt.assert_equal(buffers[0], byte_type(data[:20].tobytes()))
