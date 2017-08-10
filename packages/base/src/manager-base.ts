@@ -412,7 +412,7 @@ abstract class ManagerBase<T> {
      * current manager state, and then attempts to redisplay the widgets in the
      * state.
      */
-    set_state(state) {
+    set_state(state): Promise<WidgetModel[]> {
         // Check to make sure that it's the same version we are parsing.
         if (!(state.version_major && state.version_major <= 2)) {
             throw "Unsupported widget state format";

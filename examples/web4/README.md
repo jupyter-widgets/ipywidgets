@@ -13,6 +13,8 @@ replace
 
 with
 
+`window.require(['https://unpkg.com/@jupyter-widgets/html-manager/dist/embed'], `
+
 `<script src="https://unpkg.com/@jupyter-widgets/html-manager/dist/embed-cdn.js"></script>`
 
 If you need a specific version of the HTML widget manager, you can include a

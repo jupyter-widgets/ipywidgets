@@ -22,9 +22,9 @@ snippet_template = u"""
 <script>
     window.require(['{embed_url}'], function(embed) {
         if (document.readyState === "complete") {
-            embed.renderInlineWidgets();
+            embed.renderWidgets();
         } else {
-            window.addEventListener('load', embed.renderInlineWidgets);
+            window.addEventListener('load', function() {embed.renderWidgets();});
         }
     });
 </script>
@@ -52,7 +52,7 @@ widget_view_template = u"""<script type="application/vnd.jupyter.widget-view+jso
 {view_spec}
 </script>"""
 
-DEFAULT_EMBED_SCRIPT_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed.js'%__html_manager_version__
+DEFAULT_EMBED_SCRIPT_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed-requirejs'%__html_manager_version__
 
 
 def _find_widget_refs_by_state(widget, state):

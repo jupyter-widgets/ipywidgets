@@ -42,10 +42,21 @@ var loaders = [
 var publicPath = 'https://unpkg.com/@jupyter-widgets/html-manager@' + version + '/dist/';
 
 module.exports = [
-{// embed library to use externally
+{// embed library, only supports built-in controls
     entry: './lib/embed.js',
     output: {
         filename : 'embed.js',
+        path: './dist',
+        publicPath: publicPath,
+    },
+    devtool: 'source-map',
+    module: { loaders: loaders },
+    postcss: postcssHandler
+},
+{// embed library that depends on requirejs, and can load third-party widgets dynamically
+    entry: './lib/embed-requirejs.js',
+    output: {
+        filename : 'embed-requirejs.js',
         path: './dist',
         publicPath: publicPath,
         libraryTarget: 'amd'
