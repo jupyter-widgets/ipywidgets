@@ -43,7 +43,7 @@ widget_view_template = u"""<script type="application/vnd.jupyter.widget-view+jso
 {view_spec}
 </script>"""
 
-DEFAULT_EMBED_SCRIPT_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed.js'%__html_manager_version__
+DEFAULT_EMBED_SCRIPT_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed-cdn.js'%__html_manager_version__
 
 
 def _find_widget_refs_by_state(widget, state):

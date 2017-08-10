@@ -1,1 +1,1 @@
-require('@jupyter-widgets/html-manager/dist/embed.js');
+require('@jupyter-widgets/html-manager/dist/embed-cdn.js');

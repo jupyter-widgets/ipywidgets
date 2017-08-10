@@ -1,6 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+// Here we generate the /dist files that allow widget embedding
+
 var version = require('./package.json').version;
 
 var postcss = require('postcss');
@@ -40,8 +42,30 @@ var loaders = [
 var publicPath = 'https://unpkg.com/@jupyter-widgets/html-manager@' + version + '/dist/';
 
 module.exports = [
-{// shim
-    entry: './lib/embed-webpack.js',
+{// embed using unpkg
+    entry: './lib/embed-cdn.js',
+    output: {
+        filename : 'embed-cdn.js',
+        path: './dist',
+        publicPath: publicPath,
+    },
+    devtool: 'source-map',
+    module: { loaders: loaders },
+    postcss: postcssHandler,
+},
+{// embed using local manager
+    entry: './lib/embed-local.js',
+    output: {
+        filename : 'embed-local.js',
+        path: './dist',
+        publicPath: publicPath,
+    },
+    devtool: 'source-map',
+    module: { loaders: loaders },
+    postcss: postcssHandler,
+},
+{// embed library to use externally
+    entry: './lib/embed.js',
     output: {
         filename : 'embed.js',
         path: './dist',

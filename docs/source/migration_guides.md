@@ -119,6 +119,6 @@ when it finds a widget.
 
 ### Updating links
 
-If your code or your documentation references the link for the jupyter-widgets script
-that loads widgets embedded outside the notebook, 
-this has changed to `https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed.js`.
+If your code or your documentation references the link for the jupyter-widgets
+script that loads widgets embedded outside the notebook, this has changed to
+`https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-cdn.js`.
