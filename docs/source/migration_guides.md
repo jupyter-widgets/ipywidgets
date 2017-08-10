@@ -121,4 +121,19 @@ when it finds a widget.
 
 If your code or your documentation references the link for the jupyter-widgets
 script that loads widgets embedded outside the notebook, this has changed to
-`https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-cdn.js`.
+something similar to the following code:
+
+```html
+<!-- Load require.js. Delete this if your page already loads require.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" crossorigin="anonymous"></script>
+
+<script>
+    window.require(['https://unpkg.com/@jupyter-widgets/html-manager/dist/embed'], function(embed) {
+        if (document.readyState === "complete") {
+            embed.renderInlineWidgets();
+        } else {
+            window.addEventListener('load', embed.renderInlineWidgets);
+        }
+    });
+</script>
+```

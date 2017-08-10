@@ -19,7 +19,16 @@ snippet_template = u"""
 <!-- Require.js is required for the embedding. Remove this if require.js is already on the page -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" crossorigin="anonymous"></script>
 
-<script src="{embed_url}"></script>
+<script>
+    window.require(['{embed_url}'], function(embed) {
+        if (document.readyState === "complete") {
+            embed.renderInlineWidgets();
+        } else {
+            window.addEventListener('load', embed.renderInlineWidgets);
+        }
+    });
+</script>
+
 <script type="application/vnd.jupyter.widget-state+json">
 {json_data}
 </script>
@@ -43,7 +52,7 @@ widget_view_template = u"""<script type="application/vnd.jupyter.widget-view+jso
 {view_spec}
 </script>"""
 
-DEFAULT_EMBED_SCRIPT_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed-cdn.js'%__html_manager_version__
+DEFAULT_EMBED_SCRIPT_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed.js'%__html_manager_version__
 
 
 def _find_widget_refs_by_state(widget, state):

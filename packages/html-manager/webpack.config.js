@@ -42,38 +42,18 @@ var loaders = [
 var publicPath = 'https://unpkg.com/@jupyter-widgets/html-manager@' + version + '/dist/';
 
 module.exports = [
-{// embed using unpkg
-    entry: './lib/embed-cdn.js',
-    output: {
-        filename : 'embed-cdn.js',
-        path: './dist',
-        publicPath: publicPath,
-    },
-    devtool: 'source-map',
-    module: { loaders: loaders },
-    postcss: postcssHandler,
-},
-{// embed using local manager
-    entry: './lib/embed-local.js',
-    output: {
-        filename : 'embed-local.js',
-        path: './dist',
-        publicPath: publicPath,
-    },
-    devtool: 'source-map',
-    module: { loaders: loaders },
-    postcss: postcssHandler,
-},
 {// embed library to use externally
     entry: './lib/embed.js',
     output: {
         filename : 'embed.js',
         path: './dist',
         publicPath: publicPath,
+        libraryTarget: 'amd'
     },
     devtool: 'source-map',
     module: { loaders: loaders },
     postcss: postcssHandler,
+    externals: ['./base', './controls', './index']
 },
 {// @jupyter-widgets/html-manager
     entry: './lib/index.js',
