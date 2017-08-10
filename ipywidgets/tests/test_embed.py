@@ -15,6 +15,12 @@ try:
 except ImportError:
     from StringIO import StringIO
 
+try:
+    # Python 3
+    from html.parser import HTMLParser
+except ImportError:
+    # Python 2
+    from HTMLParser import HTMLParser
 
 class CaseWidget(Widget):
     """Widget to test dependency traversal"""
@@ -106,31 +112,40 @@ class TestEmbed:
 
 
     def test_snippet(self):
+
+        class Parser(HTMLParser):
+            state = 'initial'
+            states = []
+
+            def handle_starttag(self, tag, attrs):
+                attrs = dict(attrs)
+                if tag == 'script' and attrs.get('type', '') == "application/vnd.jupyter.widget-state+json":
+                    self.state = 'widget-state'
+                    self.states.append(self.state)
+                elif tag == 'script' and attrs.get('type', '') == "application/vnd.jupyter.widget-view+json":
+                    self.state = 'widget-view'
+                    self.states.append(self.state)
+
+            def handle_endtag(self, tag):
+                self.state = 'initial'
+
+            def handle_data(self, data):
+                if self.state == 'widget-state':
+                    manager_state = json.loads(data)['state']
+                    assert len(manager_state) == 3
+                    self.states.append('check-widget-state')
+                elif self.state == 'widget-view':
+                    view = json.loads(data)
+                    assert isinstance(view, dict)
+                    self.states.append('check-widget-view')
+
         w = IntText(4)
         state = dependency_state(w, drop_defaults=True)
         snippet = embed_snippet(views=w, drop_defaults=True, state=state)
-
-        lines = snippet.splitlines()
-
-        # Check first line with regex
-        re.match('<script src=".*?"></script>', lines[0])
-
-        # Check simple equality on intermediate lines
-        assert (
-            lines[1] == '<script type="application/vnd.jupyter.widget-state+json">' and
-            lines[-4] == '</script>' and
-            lines[-3] == '<script type="application/vnd.jupyter.widget-view+json">' and
-            lines[-1] == '</script>'
-            )
-
-        # Check state and view pass simple sanity checks:
-        manager_state = json.loads('\n'.join(lines[2:-4]))
-        state = manager_state['state']
-        view = json.loads(lines[-2])
-
-        assert isinstance(state, dict)
-        assert len(state) == 3
-        assert isinstance(view, dict)
+        parser = Parser()
+        parser.feed(snippet)
+        print(parser.states)
+        assert parser.states == ['widget-state', 'check-widget-state', 'widget-view', 'check-widget-view']
 
     def test_minimal_html_filename(self):
         w = IntText(4)
