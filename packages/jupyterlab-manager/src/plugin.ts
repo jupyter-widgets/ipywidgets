@@ -56,7 +56,12 @@ const INBWidgetExtension = new Token<INBWidgetExtension>('jupyter.extensions.nbW
  * The type of the provided value of the plugin in JupyterLab.
  */
 export
-type INBWidgetExtension = DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel>;
+interface INBWidgetExtension extends DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel> {
+  /**
+   * Register a widget module.
+   */
+  registerWidget(data: WidgetManager.IWidgetData): void;
+}
 
 
 export
