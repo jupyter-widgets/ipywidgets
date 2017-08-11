@@ -14,7 +14,7 @@ from traitlets import Bool, Int, Float, Unicode, List, Instance
 
 
 @register
-class Button(ValueWidget, CoreWidget):
+class Button(DOMWidget, ValueWidget, CoreWidget):
     """Represents a gamepad or joystick button."""
     value = Float(min=0.0, max=1.0, read_only=True, help="The value of the button.").tag(sync=True)
     pressed = Bool(read_only=True, help="Whether the button is pressed.").tag(sync=True)
@@ -24,7 +24,7 @@ class Button(ValueWidget, CoreWidget):
 
 
 @register
-class Axis(ValueWidget, CoreWidget):
+class Axis(DOMWidget, ValueWidget, CoreWidget):
     """Represents a gamepad or joystick axis."""
     value = Float(min=-1.0, max=1.0, read_only=True, help="The value of the axis.").tag(sync=True)
 
