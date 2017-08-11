@@ -1,1 +1,2 @@
-require('@jupyter-widgets/html-manager/dist/embed.js');
+var embed = require('@jupyter-widgets/html-manager/dist/embed');
+embed.renderInlineWidgets();

@@ -14,8 +14,9 @@ import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers'
 export
 class HTMLManager extends base.ManagerBase<HTMLElement> {
 
-    constructor() {
+    constructor(options?: {loader?: (moduleName: string, moduleVersion: string) => Promise<any>}) {
         super();
+        this.loader = options && options.loader;
         this.renderMime = new RenderMime({
             initialFactories: defaultRendererFactories
         });
@@ -62,26 +63,16 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
      */
     protected loadClass(className: string, moduleName: string, moduleVersion: string) {
         return new Promise(function(resolve, reject) {
-            // Shortcuts resolving the standard widgets so we don't load two
-            // copies on the page. If we ever separate the widgets from the
-            // base manager, we should get rid of this special case.
-            if (moduleName === '@jupyter-widgets/controls') {
-                resolve(widgets);
-            } else if (moduleName === '@jupyter-widgets/base') {
+            if (moduleName === '@jupyter-widgets/base') {
                 resolve(base);
+            } else if (moduleName === '@jupyter-widgets/controls') {
+                resolve(widgets);
             } else if (moduleName === '@jupyter-widgets/output') {
                 resolve(outputWidgets);
+            } else if (this.loader !== undefined) {
+                return this.loader(moduleName, moduleVersion);
             } else {
-                var fallback = function(err) {
-                    let failedId = err.requireModules && err.requireModules[0];
-                    if (failedId) {
-                        console.log(`Falling back to unpkg.com for ${moduleName}@${moduleVersion}`);
-                        (window as any).require([`https://unpkg.com/${moduleName}@${moduleVersion}/dist/index.js`], resolve, reject);
-                    } else {
-                        throw err;
-                    }
-                };
-                (window as any).require([`${moduleName}.js`], resolve, fallback);
+                return Promise.reject(`Could not load module ${moduleName}@${moduleVersion}`)
             }
         }).then(function(module) {
             if (module[className]) {
@@ -98,4 +89,9 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
      * Defines how outputs in the output widget should be rendered.
      */
     renderMime: RenderMime
+
+    /**
+     * A loader for a given module name and module version, and returns a promise to a module
+     */
+    loader: (moduleName: string, moduleVersion: string) => Promise<any>;
 };

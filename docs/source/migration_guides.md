@@ -117,8 +117,39 @@ JavaScript bundle when embedding widgets. The embed manager will look for the
 bundle at `https://unpkg.com/<module-name>@<module-version>/dist/index.js`
 when it finds a widget.
 
-### Updating links
+### Updating embedded widgets
 
-If your code or your documentation references the link for the jupyter-widgets script
-that loads widgets embedded outside the notebook, 
-this has changed to `https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed.js`.
+There are now two options for embedding widgets in an HTML page outside of the notebook.
+
+#### Embedding the standard widgets
+
+If you are just embedding the standard widgets that come with ipywidgets, then you can simply include the following script tag:
+
+```html
+<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed.js"></script>
+```
+
+If you want to use a specific version of the embedder, you replace the `@*` with a semver range, such as `@^0.7.0`
+
+#### Embedding with require.js and third-party widgets
+
+In order to embed third-party widgets, you can use the require.js-based embedding. First, make sure that require.js is loaded on the page, for example:
+
+```html
+<!-- Load require.js. Delete this if your page already loads require.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" crossorigin="anonymous"></script>
+```
+
+Then require the embedder and run the `renderWidgets` function:
+```html
+<script>
+    window.require(['https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-requirejs'], function(embed) {
+        if (document.readyState === "complete") {
+            embed.renderWidgets();
+        } else {
+            window.addEventListener('load', function() {embed.renderWidgets();});
+        }
+    });
+</script>
+```
+If you want to use a specific version of the embedder, you replace the `@*` with a semver range, such as `@^0.7.0`

@@ -16,15 +16,38 @@ from .widgets.widget_link import Link
 from ._version import __html_manager_version__
 
 snippet_template = u"""
-<!-- Require.js is required for the embedding. Remove this if require.js is already on the page -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" crossorigin="anonymous"></script>
-
-<script src="{embed_url}"></script>
+{load}
 <script type="application/vnd.jupyter.widget-state+json">
 {json_data}
 </script>
 {widget_views}
 """
+
+load_template = u"""<script src="{embed_url}"></script>"""
+
+load_requirejs_template = u"""
+<!-- Load require.js. Delete this if your page already loads require.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" crossorigin="anonymous"></script>
+
+<script>
+    window.require(["{embed_url}"], function(embed) {{
+        if (document.readyState === "complete") {{
+            embed.renderWidgets();
+        }} else {{
+            window.addEventListener('load', function() {{embed.renderWidgets();}});
+        }}
+    }});
+</script>
+
+"""
+
+requirejs_snippet_template = u"""
+<script type="application/vnd.jupyter.widget-state+json">
+{json_data}
+</script>
+{widget_views}
+"""
+
 
 
 html_template = u"""<!DOCTYPE html>
@@ -44,7 +67,7 @@ widget_view_template = u"""<script type="application/vnd.jupyter.widget-view+jso
 </script>"""
 
 DEFAULT_EMBED_SCRIPT_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed.js'%__html_manager_version__
-
+DEFAULT_EMBED_REQUIREJS_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed-requirejs'%__html_manager_version__
 
 def _find_widget_refs_by_state(widget, state):
     """Find references to other widgets in a widget's state"""
@@ -175,6 +198,7 @@ def embed_snippet(views,
                   state=None,
                   indent=2,
                   embed_url=None,
+                  requirejs=False
                  ):
     """Return a snippet that can be embedded in an HTML file.
 
@@ -197,6 +221,9 @@ def embed_snippet(views,
     embed_url: string or None
         Allows for overriding the URL used to fetch the widget manager
         for the embedded code. This defaults (None) to an `unpkg` CDN url.
+    requirejs: boolean (False)
+        Enables the requirejs-based embedding, which allows for custom widgets.
+        If True, the embed_url should be a requirejs module.
 
     Returns
     -------
@@ -211,10 +238,12 @@ def embed_snippet(views,
     )
 
     if embed_url is None:
-        embed_url = DEFAULT_EMBED_SCRIPT_URL
+        embed_url = DEFAULT_EMBED_REQUIREJS_URL if requirejs else DEFAULT_EMBED_SCRIPT_URL
+
+    load = load_requirejs_template if requirejs else load_template
 
     values = {
-        'embed_url': embed_url,
+        'load': load.format(embed_url=embed_url),
         'json_data': json.dumps(data['manager_state'], indent=indent),
         'widget_views': widget_views,
     }

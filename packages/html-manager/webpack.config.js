@@ -1,6 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+// Here we generate the /dist files that allow widget embedding
+
 var version = require('./package.json').version;
 
 var postcss = require('postcss');
@@ -40,8 +42,8 @@ var loaders = [
 var publicPath = 'https://unpkg.com/@jupyter-widgets/html-manager@' + version + '/dist/';
 
 module.exports = [
-{// shim
-    entry: './lib/embed-webpack.js',
+{// embed library, only supports built-in controls
+    entry: './lib/embed.js',
     output: {
         filename : 'embed.js',
         path: './dist',
@@ -49,7 +51,20 @@ module.exports = [
     },
     devtool: 'source-map',
     module: { loaders: loaders },
+    postcss: postcssHandler
+},
+{// embed library that depends on requirejs, and can load third-party widgets dynamically
+    entry: './lib/embed-requirejs.js',
+    output: {
+        filename : 'embed-requirejs.js',
+        path: './dist',
+        publicPath: publicPath,
+        libraryTarget: 'amd'
+    },
+    devtool: 'source-map',
+    module: { loaders: loaders },
     postcss: postcssHandler,
+    externals: ['./base', './controls', './index']
 },
 {// @jupyter-widgets/html-manager
     entry: './lib/index.js',
