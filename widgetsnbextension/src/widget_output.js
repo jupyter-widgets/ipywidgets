@@ -21,9 +21,10 @@ var OutputModel = outputBase.OutputModel.extend({
 
     initialize: function(attributes, options) {
         OutputModel.__super__.initialize.apply(this, arguments);
-        this.kernel = this.comm.kernel;
         this.listenTo(this, 'change:msg_id', this.reset_msg_id);
-        if (this.kernel) {
+
+        if (this.comm && this.comm.kernel) {
+            this.kernel = this.comm.kernel;
             this.kernel.set_callbacks_for_msg(this.model_id, this.callbacks(), false);
         }
 
