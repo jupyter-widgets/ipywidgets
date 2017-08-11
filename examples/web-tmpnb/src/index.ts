@@ -11,10 +11,7 @@ import {
 } from '@jupyterlab/services';
 
 document.addEventListener("DOMContentLoaded", function(event) {
-    // TODO: change to https://tmpnb.org when the CORS bug fix makes it way to
-    // all tmpnb servers. See
-    // https://gitter.im/jupyterhub/jupyterhub?at=59833e36c101bc4e3ae61104
-    var baseUrl = "https://tmp61.tmpnb.org/";
+    var baseUrl = "https://tmpnb.org/";
     var apiUrl = baseUrl.concat("api/spawn");
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("POST", apiUrl, true);
