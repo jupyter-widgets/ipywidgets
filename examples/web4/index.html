@@ -11,17 +11,7 @@
         </style>
     </head>
     <body>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" crossorigin="anonymous"></script>
-
-        <script>
-            window.require(['https://unpkg.com/@jupyter-widgets/html-manager/dist/embed-requirejs'], function(embed) {
-                if (document.readyState === "complete") {
-                    embed.renderWidgets();
-                } else {
-                    window.addEventListener('load', function() {embed.renderWidgets();});
-                }
-            });
-        </script>
+        <script src="./built/index.built.js"></script>
         <script type="application/vnd.jupyter.widget-state+json">
         {
             "version_major": 1,
