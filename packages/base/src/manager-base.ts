@@ -281,7 +281,7 @@ abstract class ManagerBase<T> {
             options_clone.comm = comm;
             let widget_model = this.new_model(options_clone, serialized_state);
             return widget_model.then(model => {
-                model.sync('create', model, {drop_defaults: true});
+                model.sync('create', model);
                 return model;
             });
         }, () => {

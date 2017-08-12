@@ -544,8 +544,6 @@ class DOMWidgetModel extends WidgetModel {
 
     defaults() {
         return _.extend(super.defaults(), {
-            layout: {},
-            style: null,
             _dom_classes: []
         });
     }
