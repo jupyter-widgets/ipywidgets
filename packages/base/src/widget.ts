@@ -545,6 +545,12 @@ class DOMWidgetModel extends WidgetModel {
     defaults() {
         return _.extend(super.defaults(), {
             _dom_classes: []
+            // We do not declare defaults for the layout and style attributes.
+            // Those defaults are constructed on the kernel side and synced here
+            // as needed, and our code here copes with those attributes being
+            // undefined. See
+            // https://github.com/jupyter-widgets/ipywidgets/issues/1620 and
+            // https://github.com/jupyter-widgets/ipywidgets/pull/1621
         });
     }
 }
