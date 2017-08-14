@@ -53,10 +53,22 @@ module.exports = [
     module: { loaders: loaders },
     postcss: postcssHandler
 },
-{// embed library that depends on requirejs, and can load third-party widgets dynamically
-    entry: './lib/embed-requirejs.js',
+{
+    entry: './lib/embed-amd.js',
     output: {
-        filename : 'embed-requirejs.js',
+        filename : 'embed-amd.js',
+        path: './dist',
+        publicPath: publicPath,
+    },
+    devtool: 'source-map',
+    module: { loaders: loaders },
+    postcss: postcssHandler
+},
+{// embed library that depends on requirejs, and can load third-party widgets dynamically
+    entry: './lib/embedlib-amd.js',
+    output: {
+        library: '@jupyter-widgets/html-manager/dist/embedlib-amd',
+        filename : 'embedlib-amd.js',
         path: './dist',
         publicPath: publicPath,
         libraryTarget: 'amd'
