@@ -31,9 +31,9 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
      * is specified in the `options.el` argument.
      */
     display_view(msg, view, options) {
-        return Promise.resolve(view).then(function(view) {
+        return Promise.resolve(view).then((view) => {
             PhosphorWidget.Widget.attach(view.pWidget, options.el);
-            view.on('remove', function() {
+            view.on('remove', () => {
                 console.log('View removed', view);
             });
             return view;
@@ -62,7 +62,7 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
      * Load a class and return a promise to the loaded object.
      */
     protected loadClass(className: string, moduleName: string, moduleVersion: string) {
-        return new Promise(function(resolve, reject) {
+        return new Promise((resolve, reject) => {
             if (moduleName === '@jupyter-widgets/base') {
                 resolve(base);
             } else if (moduleName === '@jupyter-widgets/controls') {
@@ -74,7 +74,7 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
             } else {
                 return Promise.reject(`Could not load module ${moduleName}@${moduleVersion}`)
             }
-        }).then(function(module) {
+        }).then((module) => {
             if (module[className]) {
                 return module[className];
             } else {
