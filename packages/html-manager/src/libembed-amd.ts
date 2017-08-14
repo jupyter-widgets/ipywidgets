@@ -1,10 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import {
-    renderInlineWidgets
-} from './embedlib';
-
+import * as libembed from './libembed';
 
 // Populate the requirejs cache with local versions of @jupyter-widgets/base,
 // @jupyter-widgets/controls, @jupyter-widgets/html-manager. These are externals
@@ -50,6 +47,6 @@ function renderWidgets(element = document.documentElement) {
         let managerFactory = () => {
             return new htmlmanager.HTMLManager({loader: requireLoader});
         }
-        renderInlineWidgets(managerFactory, element);
+        libembed.renderWidgets(managerFactory, element);
     });
 }

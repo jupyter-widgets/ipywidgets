@@ -42,7 +42,7 @@ var loaders = [
 var publicPath = 'https://unpkg.com/@jupyter-widgets/html-manager@' + version + '/dist/';
 
 module.exports = [
-{// embed library, only supports built-in controls
+{// script that renders widgets using the standard embedding and can only render standard controls
     entry: './lib/embed.js',
     output: {
         filename : 'embed.js',
@@ -53,7 +53,7 @@ module.exports = [
     module: { loaders: loaders },
     postcss: postcssHandler
 },
-{
+{// script that renders widgets using the amd embedding and can render third-party custom widgets
     entry: './lib/embed-amd.js',
     output: {
         filename : 'embed-amd.js',
@@ -65,10 +65,10 @@ module.exports = [
     postcss: postcssHandler
 },
 {// embed library that depends on requirejs, and can load third-party widgets dynamically
-    entry: './lib/embedlib-amd.js',
+    entry: './lib/libembed-amd.js',
     output: {
-        library: '@jupyter-widgets/html-manager/dist/embedlib-amd',
-        filename : 'embedlib-amd.js',
+        library: '@jupyter-widgets/html-manager/dist/libembed-amd',
+        filename : 'libembed-amd.js',
         path: './dist',
         publicPath: publicPath,
         libraryTarget: 'amd'

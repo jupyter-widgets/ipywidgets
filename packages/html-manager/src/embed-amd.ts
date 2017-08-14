@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-(window as any).require(['@jupyter-widgets/html-manager/dist/embedlib-amd'], function(embed) {
+(window as any).require(['@jupyter-widgets/html-manager/dist/libembed-amd'], function(embed) {
     if (document.readyState === "complete") {
         embed.renderWidgets();
     } else {

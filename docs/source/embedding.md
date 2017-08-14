@@ -6,6 +6,12 @@ Jupyter interactive widgets can be serialized and embedded into
  - sphinx documentation
  - html-converted notebooks on nbviewer
 
+## RequireJS
+
+This page talks about embedding widgets using the custom widget manager in the `@jupyter-widgets/html-manager` npm package. This can be done in two basic ways:
+
+1. 
+
 ## Embedding Widgets in HTML Web Pages
 
 The notebook interface provides a context menu for generating an HTML snippet
@@ -21,34 +27,35 @@ The context menu provides three actions
 
 ### Embeddable HTML Snippet
 
-The last option, `Embed widgets`, provides a dialog containing an HTML snippet
-which can be used to embed Jupyter interactive widgets into any web page.
+The last option, `Embed widgets`, provides a dialog containing an HTML page
+which embeds Jupyter interactive widgets.
 
-This HTML snippet is composed of multiple `<script>` tags:
+This HTML snippet is composed of multiple sections containing `<script>` tags:
 
- - The first script tag loads a custom widget manager from the `unpkg` cdn.
- - The second script tag contains the state of all the widget models currently
-   in use. It has the mime type `application/vnd.jupyter.widget-state+json`.
+ - The first section loads a custom widget manager from the `unpkg` CDN. In order to accommodate custom widgets, RequireJS is first loaded on the page, and then a small bit of Javascript requires the appropriate Jupyter widgets module and renders the widgets on the page.
 
-   The JSON schema for the content of that script tag is found in the @jupyter-widgets/schema npm package.
+ - The second section is a script tag with mime type
+   `application/vnd.jupyter.widget-state+json` that contains the state of all
+   the widget models currently in use. The JSON schema for the content of that
+   script tag is found in the `@jupyter-widgets/schema` npm package.
 
-- The following script tags correspond to the views which you want to display
-  in the web page. They have the mime type `application/vnd.jupyter.widget-view+json`.
+- The next section has a number of script tags, each with mime type
+  `application/vnd.jupyter.widget-view+json`, corresponding to the views which
+  you want to display in the web page. These script tags must be in the body of
+  the page, and are replaced with the rendered widgets. The JSON schema for the
+  content of these script tags is found in the `@jupyter-widgets/schema` npm
+  package. The *Embed Widgets* action currently creates one of these script tags
+  for each view displayed in the notebook.
 
-  The *Embed Widgets* action currently creates such a tag for each view
-  displayed in the notebook at this time.
-
-  The JSON schema for the content of that script tag is found in the @jupyter-widgets/schema npm package.
-
-  If you want to lay out these script tags in a custom fashion or only keep
-  some of them, you can change their location in the DOM when including the
-  snippet into a web page.
+  If you want to lay out these script tags in a custom fashion or only keep some
+  of them, you can delete or include these view script tags as you wish.
 
 ### Widget State JSON
 
-The second option, `Download Widget State`, triggers the downloading of a JSON
-file containing the serialized state of all the widget models currently in use,
-corresponding to the same JSON schema.
+The `Download Widget State` option triggers the downloading of a JSON file
+containing the serialized state of all the widget models currently in use, using
+the `application/vnd.jupyter.widget-state+json` format specified in the
+`@jupyter-widgets/schema` npm package.
 
 ## Python interface
 
@@ -57,31 +64,37 @@ The following functions are available in the module `ipywidgets.embed`:
 
 - `embed_snippet`:
     ```py
+    from ipywidgets import IntSlider
     from ipywidgets.embed import embed_snippet
 
     s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
-    print(embed_snippet(views=[s1, s2]))
+    print(embed_snippet(views=[s1, s2], requirejs=True))
+    ```
+
+- `embed_minimal_html`:
+    ```py
+    from ipywidgets import IntSlider
+    from ipywidgets.embed import embed_minimal_html
+
+    s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
+    embed_minimal_html('my_export.html', views=[s1, s2], requirejs=True)
     ```
 
 - `embed_data`:
     ```py
+    from ipywidgets import IntSlider
+    from ipywidgets.embed import embed_data
+
     s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
     data = embed_data(views=[s1, s2])
     print(data['manager_state'])
     print(data['view_specs'])
     ```
 
-- `embed_minimal_html`:
-    ```py
-    s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
-    embed_minimal_html('my_export.html', views=[s1, s2])
-    ```
-
-Here, `embed_snippet` will return an embeddable HTML snippet similar to the Notebook
-interface detailed above, while `embed_data` will return the widget state JSON as
-well as the view specs of the given views. `embed_minimal_html` is a utility
-function for saving a HTML file with minimal wrapping around the HTML snippet,
-allowing for easy validation of the saved state.
+Here, `embed_snippet` will return an embeddable HTML snippet similar to the
+Notebook interface detailed above, while `embed_minimal_html` saves an HTML file
+with the snippet. The `embed_data` function will return the widget state JSON as
+well as the view specs of the given views.
 
 In all functions, the state of all widgets known to the widget manager is
 included by default. You can alternatively pass a reduced state to use instead.
@@ -98,7 +111,8 @@ print(embed_snippet(
     ))
 ```
 
-
+In `embed_snippet` and `embed_minimal_html` examples above, the `requirejs=True`
+argument was given.
 
 
 ## Embedding Widgets in the Sphinx HTML Documentation
