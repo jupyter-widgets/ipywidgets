@@ -15,7 +15,7 @@ jupyter nbextension enable --py widgetsnbextension
 
 When using [virtualenv](https://virtualenv.pypa.io/en/stable/) and working in
 an activated virtual environment, the ``--sys-prefix`` option may be required
-to enable the extension and keep the environment isolated (i.e. 
+to enable the extension and keep the environment isolated (i.e.
 ``jupyter nbextension enable --py widgetsnbextension --sys-prefix``).
 
 With conda
@@ -31,7 +31,7 @@ Installing **ipywidgets** with conda will also enable the extension for you.
 Installing the JupyterLab Extension
 -----------------------------------
 
-To install the JupyterLab extension you also need to run the below command in
+To install the JupyterLab extension you also need to run the command below in
 a terminal which requires that you have [nodejs](https://nodejs.org/en/)
 installed.
 ```bash
