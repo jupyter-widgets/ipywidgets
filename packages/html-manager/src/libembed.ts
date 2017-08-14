@@ -5,7 +5,8 @@ import 'font-awesome/css/font-awesome.css';
 import '@phosphor/widgets/style/index.css';
 import '@jupyter-widgets/controls/css/widgets.built.css';
 
-/* Used just for the typing */
+// Used just for the typing. We must not import the javascript because we don't
+// want to include it in the require embedding.
 import {
     HTMLManager
 } from './index';
@@ -26,7 +27,7 @@ let view_validate = ajv.compile(widget_view_schema);
  * @param element (default document.documentElement) The document element in which to process for widget state.
  */
 export
-function renderInlineWidgets(managerFactory: () => HTMLManager, element: HTMLElement = document.documentElement) {
+function renderWidgets(managerFactory: () => HTMLManager, element: HTMLElement = document.documentElement) {
     let tags = element.querySelectorAll('script[type="application/vnd.jupyter.widget-state+json"]');
     for (let i=0; i!=tags.length; ++i) {
         renderManager(element, JSON.parse(tags[i].innerHTML), managerFactory);

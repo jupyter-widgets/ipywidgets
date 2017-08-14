@@ -6,13 +6,13 @@ import {
 } from './index';
 
 import {
-    renderInlineWidgets
-} from './embedlib';
+    renderWidgets
+} from './libembed';
 
 // Render the widgets that we can
 if (!(window as any)._jupyter_widget_embedder) {
    (window as any)._jupyter_widget_embedder = true;
     window.addEventListener('load', () => {
-        renderInlineWidgets(() => new HTMLManager())
+        renderWidgets(() => new HTMLManager())
     });
 }
