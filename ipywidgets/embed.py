@@ -23,12 +23,12 @@ snippet_template = u"""
 {widget_views}
 """
 
-load_template = u"""<script src="{embed_url}"></script>"""
+load_template = u"""<script src="{embed_url}" crossorigin="anonymous"></script>"""
 
 load_requirejs_template = u"""
 <!-- Load require.js. Delete this if your page already loads require.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" crossorigin="anonymous"></script>
-<script src="{embed_url}"></script>
+<script src="{embed_url}" crossorigin="anonymous"></script>
 """
 
 requirejs_snippet_template = u"""
