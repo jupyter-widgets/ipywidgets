@@ -9,7 +9,7 @@ Jupyter interactive widgets can be serialized and embedded into
 Here, we discuss embedding widgets using the custom widget manager in the `@jupyter-widgets/html-manager` npm package. Two embedders are provided:
 
 1. A basic embedder that only embeds standard controls, but can be used on any web page
-2. An embedder that uses RequireJS, and can embed standard and custom widgets.
+2. An embedder that uses RequireJS, and can embed standard and custom widgets
 
 
 ## Embedding Widgets in HTML Web Pages
@@ -28,9 +28,9 @@ The context menu provides three actions
 ### Embeddable HTML Snippet
 
 The last option, `Embed widgets`, provides a dialog containing an HTML page
-which embeds Jupyter interactive widgets. In order to support custom widgets, this exposes the RequireJS embedder.
+which embeds Jupyter interactive widgets. In order to support custom widgets, it uses the RequireJS embedder.
 
-This HTML snippet is composed of multiple `<script>` tags embedded into an HTML context:
+This HTML snippet is composed of multiple `<script>` tags embedded into an HTML document:
 
  - The first script tag loads RequireJS from a CDN. If you already have RequireJS on the page, you can delete this script tag.
 
@@ -93,7 +93,7 @@ The following functions are available in the module `ipywidgets.embed`:
     print(data['view_specs'])
     ```
 
-Here, `embed_snippet` will return an embeddable HTML snippet similar to the
+The `embed_snippet` function will return an embeddable HTML snippet similar to the
 Notebook interface detailed above, while `embed_minimal_html` saves an HTML file
 with the snippet. The `embed_data` function will return the widget state JSON as
 well as the view specs of the given views.
@@ -113,7 +113,7 @@ print(embed_snippet(
     ))
 ```
 
-In `embed_snippet` and `embed_minimal_html` examples above, the `requirejs=True` gives the RequireJS embedder. To get the standard embedder, omit this option or give `requirejs=False`.
+In the `embed_snippet` and `embed_minimal_html` examples above, the `requirejs=True` gives the RequireJS embedder. To get the standard embedder, omit this option or give `requirejs=False`.
 
 ## Embedding Widgets in the Sphinx HTML Documentation
 
@@ -127,7 +127,7 @@ enables jupyter-specific features in sphinx. It can be install with `pip` and
 `conda`.
 
 In the `conf.py` sphinx configuration file, add `jupyter_sphinx.embed_widgets`
-to list of enabled extensions.
+to the list of enabled extensions.
 
 Two directives are provided: `ipywidgets-setup` and `ipywidgets-display`.
 
@@ -154,7 +154,7 @@ Quoting the `jupyter_sphinx` readme,
 
 > Widgets rendered on the same page use the same widget manager. As a
 > consequence, they can be linked with each other via JavaScript link widgets.
-> However, no kernel is connect and therefore, interaction with the backend
+> However, no kernel is connected and therefore, interaction with the backend
 > will not happen.
 
 
@@ -172,7 +172,7 @@ special "Save Notebook with Widgets" action in the widgets menu.
 ## Rendering Interactive Widgets on [nbviewer](http://nbviewer.jupyter.org/)
 
 If your notebook was saved with the special "Save Notebook with Widgets" action
-in the Widgets menu, interative widgets displayed in your notebook should also
+in the Widgets menu, interactive widgets displayed in your notebook should also
 be rendered on nbviewer.
 
 See e.g. the [Widget List](http://nbviewer.jupyter.org/github/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Widget%20List.ipynb)
@@ -185,7 +185,7 @@ documentation. An illustration of this is the http://jupyter.org/widgets
 gallery.
 
 The widget embedder attempts to fetch the model and view implementation of the
-custom widget from the npmjs CDN, https://unpkg.com. The URL that is requested
+custom widget from the npm CDN https://unpkg.com. The URL that is requested
 for, e.g. the `bqplot` module name, with the semver range `^2.0.0` is
 
 `https://unpkg.com/bqplot@^2.0.0/dist/index.js`
@@ -209,13 +209,13 @@ page). For each context, we specialize the base widget manager implemented in
 
 Specifically:
 
- - `widgetsnbextension` provides the implementation of a specialized widget
-   manager for the `Classic Notebook`, and the packaging logic as a notebook
+ - The `widgetsnbextension` Python package provides the implementation of a specialized widget
+   manager for the classic Jupyter notebook, and the packaging logic as a notebook
    extension.
- - `jupyterlab_widgets` provides the implementation of a specialized widget
+ - The `@jupyter-widgets/jupyterlab-manager` npm package provides the implementation of a specialized widget
    manager for the context of `JupyterLab`, and the packaging logic as a lab
    extension.
- - The embed manager implemented in `@jupyter-widgets/html-manager` is a specialization of
+ - The embed manager implemented in the `@jupyter-widgets/html-manager` npm package is a specialization of
    the base  widget manager used for the static embedding of widgets used by
    the `Sphinx` extension, `nbviewer`, and the "Embed Widgets" command
    discussed above.
