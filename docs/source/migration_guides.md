@@ -126,7 +126,7 @@ There are now two options for embedding widgets in an HTML page outside of the n
 If you are just embedding the standard widgets that come with ipywidgets, then you can simply include the following script tag:
 
 ```html
-<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed.js"></script>
+<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed.js" crossorigin="anonymous"></script>
 ```
 
 If you want to use a specific version of the embedder, you replace the `@*` with a semver range, such as `@^0.9.0`
@@ -142,7 +142,7 @@ In order to embed third-party widgets, you can use the RequireJS-based embedding
 
 Then define the embedding libraries and run the rendering function by including the following scripts
 ```html
-<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js"></script>
+<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
 ```
 If you want to use a specific version of the embedder, you replace the `@*` with a semver range, such as `@^0.9.0`
 
