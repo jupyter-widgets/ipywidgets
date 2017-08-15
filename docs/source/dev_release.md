@@ -20,8 +20,7 @@ Lerna will prompt you for version numbers for each of the changed npm packages. 
 
 ### widgetsnbextension
 
-Go into the `widgetsnbextension` directory. Change `widgetsnbextension/_version.py` to reflect the new version number
-
+Go into the `widgetsnbextension` directory. Change `widgetsnbextension/_version.py` to reflect the new version number.
 ```
 python setup.py sdist
 python setup.py bdist_wheel --universal
@@ -30,7 +29,7 @@ twine upload dist/*
 
 ### ipywidgets
 
-Change `ipywidgets/_version.py` to reflect the new version number. Change the `install_requires` parameter in `setup.py` reference the new widgetsnbextension version.
+Change `ipywidgets/_version.py` to reflect the new version number, and if necessary, a new `__html_manager_version__`. Change the `install_requires` parameter in `setup.py` reference the new widgetsnbextension version.
 
 ```
 python setup.py sdist
