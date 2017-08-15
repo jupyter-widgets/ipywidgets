@@ -70,9 +70,9 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
             } else if (moduleName === '@jupyter-widgets/output') {
                 resolve(outputWidgets);
             } else if (this.loader !== undefined) {
-                return this.loader(moduleName, moduleVersion);
+                resolve(this.loader(moduleName, moduleVersion))
             } else {
-                return Promise.reject(`Could not load module ${moduleName}@${moduleVersion}`)
+                reject(`Could not load module ${moduleName}@${moduleVersion}`);
             }
         }).then((module) => {
             if (module[className]) {
