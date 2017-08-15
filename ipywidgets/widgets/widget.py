@@ -470,7 +470,7 @@ class Widget(LoggingHasTraits):
             self._ipython_display_ = None
 
     def send_state(self, key=None):
-        """Sends the widget state, or a piece of it, to the front-end.
+        """Sends the widget state, or a piece of it, to the front-end, if it exists.
 
         Parameters
         ----------
@@ -478,9 +478,10 @@ class Widget(LoggingHasTraits):
             A single property's name or iterable of property names to sync with the front-end.
         """
         state = self.get_state(key=key)
-        state, buffer_paths, buffers = _remove_buffers(state)
-        msg = {'method': 'update', 'state': state, 'buffer_paths': buffer_paths}
-        self._send(msg, buffers=buffers)
+        if len(state) > 0:
+            state, buffer_paths, buffers = _remove_buffers(state)
+            msg = {'method': 'update', 'state': state, 'buffer_paths': buffer_paths}
+            self._send(msg, buffers=buffers)
 
     def get_state(self, key=None, drop_defaults=False):
         """Gets the widget state, or a piece of it.
