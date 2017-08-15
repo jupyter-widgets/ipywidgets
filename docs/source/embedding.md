@@ -6,11 +6,11 @@ Jupyter interactive widgets can be serialized and embedded into
  - sphinx documentation
  - html-converted notebooks on nbviewer
 
-## RequireJS
+Here, we discuss embedding widgets using the custom widget manager in the `@jupyter-widgets/html-manager` npm package. Two embedders are provided:
 
-This page talks about embedding widgets using the custom widget manager in the `@jupyter-widgets/html-manager` npm package. This can be done in two basic ways:
+1. A basic embedder that only embeds standard controls, but can be used on any web page
+2. An embedder that uses RequireJS, and can embed standard and custom widgets.
 
-1. 
 
 ## Embedding Widgets in HTML Web Pages
 
@@ -28,27 +28,29 @@ The context menu provides three actions
 ### Embeddable HTML Snippet
 
 The last option, `Embed widgets`, provides a dialog containing an HTML page
-which embeds Jupyter interactive widgets.
+which embeds Jupyter interactive widgets. In order to support custom widgets, this exposes the RequireJS embedder.
 
-This HTML snippet is composed of multiple sections containing `<script>` tags:
+This HTML snippet is composed of multiple `<script>` tags embedded into an HTML context:
 
- - The first section loads a custom widget manager from the `unpkg` CDN. In order to accommodate custom widgets, RequireJS is first loaded on the page, and then a small bit of Javascript requires the appropriate Jupyter widgets module and renders the widgets on the page.
+ - The first script tag loads RequireJS from a CDN. If you already have RequireJS on the page, you can delete this script tag.
 
- - The second section is a script tag with mime type
+ - The second script tag loads the RequireJS widget embedder. This defines appropriate modules and then sets up a function to render all of the widget views included on the page. If you are only embedding standard widgets and do not want to use RequireJS, you can replace these first two script tags with a script tag loading the standard embedder.
+
+ - The next script tag is a script tag with mime type
    `application/vnd.jupyter.widget-state+json` that contains the state of all
-   the widget models currently in use. The JSON schema for the content of that
+   the widget models currently in use. The JSON schema for the content of this
    script tag is found in the `@jupyter-widgets/schema` npm package.
 
-- The next section has a number of script tags, each with mime type
+- Then there are a number of script tags, each with mime type
   `application/vnd.jupyter.widget-view+json`, corresponding to the views which
   you want to display in the web page. These script tags must be in the body of
   the page, and are replaced with the rendered widgets. The JSON schema for the
   content of these script tags is found in the `@jupyter-widgets/schema` npm
-  package. The *Embed Widgets* action currently creates one of these script tags
-  for each view displayed in the notebook.
+  package.
 
-  If you want to lay out these script tags in a custom fashion or only keep some
-  of them, you can delete or include these view script tags as you wish.
+  The *Embed Widgets* action currently creates one of these script tags for each
+  view displayed in the notebook. If you'd like to lay out the views, or include
+  only some of them, you can delete or include these script tags as you wish.
 
 ### Widget State JSON
 
@@ -111,15 +113,12 @@ print(embed_snippet(
     ))
 ```
 
-In `embed_snippet` and `embed_minimal_html` examples above, the `requirejs=True`
-argument was given.
-
+In `embed_snippet` and `embed_minimal_html` examples above, the `requirejs=True` gives the RequireJS embedder. To get the standard embedder, omit this option or give `requirejs=False`.
 
 ## Embedding Widgets in the Sphinx HTML Documentation
 
-As of ipywidgets 6.0, Jupyter interactive widgets can be rendered and
-interacted with in sphinx html documentation. Two means of achieving this are
-provided:
+As of ipywidgets 6.0, Jupyter interactive widgets can be rendered in Sphinx html
+documentation. Two means of achieving this are provided:
 
 ### Using the Jupyter Sphinx Extension
 
