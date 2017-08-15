@@ -17,8 +17,9 @@
   "scripts": {
     "clean": "rimraf lib && rimraf dist",
     "build:src": "tsc --project src",
+    "build:embed-amd": "node scripts/concat-amd-build.js && rimraf dist/amd",
     "build:test": "tsc --project test/src && webpack --config test/webpack.conf.js",
-    "build": "npm run build:src && webpack",
+    "build": "npm run build:src && webpack && npm run build:embed-amd",
     "test": "npm run test:unit",
     "test:unit": "npm run test:unit:firefox && npm run test:unit:chrome",
     "test:unit:default": "npm run build:test && karma start test/karma.conf.js --log-level debug --browsers=Firefox",

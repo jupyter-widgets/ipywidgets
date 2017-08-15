@@ -28,17 +28,7 @@ load_template = u"""<script src="{embed_url}"></script>"""
 load_requirejs_template = u"""
 <!-- Load require.js. Delete this if your page already loads require.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" crossorigin="anonymous"></script>
-
-<script>
-    window.require(["{embed_url}"], function(embed) {{
-        if (document.readyState === "complete") {{
-            embed.renderWidgets();
-        }} else {{
-            window.addEventListener('load', function() {{embed.renderWidgets();}});
-        }}
-    }});
-</script>
-
+<script src="{embed_url}"></script>
 """
 
 requirejs_snippet_template = u"""
@@ -67,7 +57,7 @@ widget_view_template = u"""<script type="application/vnd.jupyter.widget-view+jso
 </script>"""
 
 DEFAULT_EMBED_SCRIPT_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed.js'%__html_manager_version__
-DEFAULT_EMBED_REQUIREJS_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed-requirejs'%__html_manager_version__
+DEFAULT_EMBED_REQUIREJS_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed-amd'%__html_manager_version__
 
 def _find_widget_refs_by_state(widget, state):
     """Find references to other widgets in a widget's state"""

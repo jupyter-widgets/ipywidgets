@@ -3,13 +3,6 @@
 
 import * as libembed from './libembed';
 
-// Populate the requirejs cache with local versions of @jupyter-widgets/base,
-// @jupyter-widgets/controls, @jupyter-widgets/html-manager. These are externals
-// when compiled with webpack.
-require('./base');
-require('./controls');
-require('./index');
-
 /**
  * Load a package using requirejs and return a promise
  *
