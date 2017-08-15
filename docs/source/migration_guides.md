@@ -21,10 +21,10 @@ than one that contains widgets that you instantiated with ipywidgets 6.0.
 
 ### Updating setup.py
 
-Start by updating the dependency in your `setup.py` to the latest beta. To
+Start by updating the dependency in your `setup.py` to the latest release. To
 find the correct version number, go to the [releases
 page](https://github.com/jupyter-widgets/ipywidgets/releases) on Github and
-cycle through the tags until you see a tag called `7.0.0bx` or `7.0.0rcx`.
+cycle through the tags until you see the latest 7.0.0 tag.
 
 ### Updating package.json
 
@@ -140,7 +140,7 @@ In order to embed third-party widgets, you can use the RequireJS-based embedding
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" crossorigin="anonymous"></script>
 ```
 
-Then define the embedding libraries and run the rendering function by including the following scripts
+Then include the following script, which defines the embedding libraries and runs the function to render widgets:
 ```html
 <script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
 ```
