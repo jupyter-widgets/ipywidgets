@@ -54,13 +54,12 @@ module.exports = [
     postcss: postcssHandler
 },
 {// script that renders widgets using the amd embedding and can render third-party custom widgets
-    entry: './lib/embed-amd.js',
+    entry: './lib/embed-amd-render.js',
     output: {
-        filename : 'embed-amd.js',
-        path: './dist',
+        filename : 'embed-amd-render.js',
+        path: './dist/amd',
         publicPath: publicPath,
     },
-    devtool: 'source-map',
     module: { loaders: loaders },
     postcss: postcssHandler
 },
@@ -69,25 +68,22 @@ module.exports = [
     output: {
         library: '@jupyter-widgets/html-manager/dist/libembed-amd',
         filename : 'libembed-amd.js',
-        path: './dist',
+        path: './dist/amd',
         publicPath: publicPath,
         libraryTarget: 'amd'
     },
-    devtool: 'source-map',
     module: { loaders: loaders },
-    postcss: postcssHandler,
-    externals: ['./base', './controls', './index']
+    postcss: postcssHandler
 },
 {// @jupyter-widgets/html-manager
     entry: './lib/index.js',
     output: {
         library: '@jupyter-widgets/html-manager',
         filename : 'index.js',
-        path: './dist',
+        path: './dist/amd',
         publicPath: publicPath,
         libraryTarget: 'amd',
     },
-    devtool: 'source-map',
     module: { loaders: loaders },
     postcss: postcssHandler,
     externals: ['@jupyter-widgets/base', '@jupyter-widgets/controls']
@@ -97,11 +93,10 @@ module.exports = [
     output: {
         library: '@jupyter-widgets/base',
         filename : 'base.js',
-        path: './dist',
+        path: './dist/amd',
         publicPath: publicPath,
         libraryTarget: 'amd',
     },
-    devtool: 'source-map',
     module: { loaders: loaders },
     postcss: postcssHandler
 },
@@ -110,11 +105,10 @@ module.exports = [
     output: {
         library: '@jupyter-widgets/controls',
         filename : 'controls.js',
-        path: './dist',
+        path: './dist/amd',
         publicPath: publicPath,
         libraryTarget: 'amd'
     },
-    devtool: 'source-map',
     module: { loaders: loaders },
     postcss: postcssHandler,
     externals: ['@jupyter-widgets/base']
