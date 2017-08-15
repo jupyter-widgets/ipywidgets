@@ -72,7 +72,7 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
             } else if (this.loader !== undefined) {
                 resolve(this.loader(moduleName, moduleVersion))
             } else {
-                resolve(Promise.reject(`Could not load module ${moduleName}@${moduleVersion}`))
+                reject(`Could not load module ${moduleName}@${moduleVersion}`);
             }
         }).then((module) => {
             if (module[className]) {
