@@ -30,7 +30,8 @@ all of MD as it is not optimized for dense, information rich UIs.
 /*
  * Optional monospace font for input/output prompt.
  */
-@import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
+ /* Commented out in ipywidgets since we don't need it. */
+/* @import url('https://fonts.googleapis.com/css?family=Roboto+Mono'); */
 
 /*
  * Added for compabitility with output area
