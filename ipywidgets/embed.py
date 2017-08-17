@@ -57,7 +57,7 @@ widget_view_template = u"""<script type="application/vnd.jupyter.widget-view+jso
 </script>"""
 
 DEFAULT_EMBED_SCRIPT_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed.js'%__html_manager_version__
-DEFAULT_EMBED_REQUIREJS_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed-amd'%__html_manager_version__
+DEFAULT_EMBED_REQUIREJS_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed-amd.js'%__html_manager_version__
 
 def _find_widget_refs_by_state(widget, state):
     """Find references to other widgets in a widget's state"""
