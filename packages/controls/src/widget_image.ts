@@ -20,7 +20,7 @@ class ImageModel extends CoreDOMWidgetModel {
             format: 'png',
             width: '',
             height: '',
-            _b64value: ''
+            value: new Uint8Array(0)
         });
     }
 }
@@ -31,6 +31,7 @@ class ImageView extends DOMWidgetView {
         /**
          * Called when view is rendered.
          */
+        super.render();
         this.pWidget.addClass('jupyter-widgets');
         this.pWidget.addClass('widget-image');
         this.update(); // Set defaults.
@@ -43,9 +44,13 @@ class ImageView extends DOMWidgetView {
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        var image_src = 'data:image/' + this.model.get('format') + ';base64,' + this.model.get('_b64value');
-        this.el.setAttribute('src', image_src);
-
+        var blob = new Blob([this.model.get('value')], {type: `image/${this.model.get('format')}`});
+        var url = URL.createObjectURL(blob);
+        var oldurl = this.el.src;
+        this.el.src = url;
+        if (oldurl) {
+            URL.revokeObjectURL(oldurl);
+        }
         var width = this.model.get('width');
         if (width !== undefined && width.length > 0) {
             this.el.setAttribute('width', width);
@@ -61,7 +66,14 @@ class ImageView extends DOMWidgetView {
         }
         return super.update();
     }
-    
+
+    remove() {
+        if (this.el.src) {
+            URL.revokeObjectURL(this.el.src);
+        }
+        super.remove()
+    }
+
     /**
      * The default tag name.
      *

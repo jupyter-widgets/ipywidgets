@@ -1,7 +1,6 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import * as _ from 'underscore';
 import * as utils from './utils';
 import * as semver from 'semver';
 import * as Backbone from 'backbone';
@@ -248,7 +247,9 @@ abstract class ManagerBase<T> {
         let commPromise;
         // we check to make sure the view information is provided, to help catch
         // backwards incompatibility errors.
-        if (_.contains([options.view_name, options.view_module, options.view_module_version], undefined)) {
+        if (options.view_name === undefined
+            || options.view_module === undefined
+            || options.view_module_version === undefined) {
             return Promise.reject("new_widget(...) must be given view information in the options.");
         }
         // If no comm is provided, a new comm is opened for the jupyter.widget
@@ -273,7 +274,7 @@ abstract class ManagerBase<T> {
             );
         }
         // The options dictionary is copied since data will be added to it.
-        let options_clone = _.clone(options);
+        let options_clone = {...options};
         // Create the model. In the case where the comm promise is rejected a
         // comm-less model is still created with the required model id.
         return commPromise.then((comm) => {

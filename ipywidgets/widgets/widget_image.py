@@ -31,10 +31,4 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
     format = Unicode('png', help="The format of the image.").tag(sync=True)
     width = CUnicode(help="Width of the image in pixels.").tag(sync=True)
     height = CUnicode(help="Height of the image in pixels.").tag(sync=True)
-    _b64value = Unicode(help="The base64 encoded image data.").tag(sync=True)
-
-    value = Bytes(help="The image data as a byte string.")
-
-    @observe('value')
-    def _value_changed(self, change):
-        self._b64value = base64.b64encode(change['new'])
+    value = Bytes(help="The image data as a byte string.").tag(sync=True)

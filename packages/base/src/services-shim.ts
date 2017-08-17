@@ -7,7 +7,6 @@
  * embed live widgets in a context outside of the notebook.
  */
 
-import * as _ from 'underscore';
 import * as utils from './utils';
 import {
     Kernel

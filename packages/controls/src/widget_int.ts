@@ -138,7 +138,7 @@ abstract class BaseIntSliderView extends DescriptionView {
             let that = this;
             that.$slider.slider({});
 
-            _.each(jquery_slider_keys, function(key, i) {
+            jquery_slider_keys.forEach(function(key) {
                 let model_value = that.model.get(key);
                 if (model_value !== undefined) {
                     that.$slider.slider('option', key, model_value);

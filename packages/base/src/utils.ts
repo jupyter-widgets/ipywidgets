@@ -1,11 +1,32 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import * as _ from 'underscore';
+export {
+    isEqual, difference
+} from 'lodash';
+
+import {
+    isPlainObject
+} from 'lodash';
 
 import {
     toByteArray, fromByteArray
 } from 'base64-js';
+
+/**
+ * A polyfill for Object.assign
+ *
+ * This is from code that Typescript 2.4 generates for a polyfill.
+ */
+export
+let assign = (Object as any).assign || function(t) {
+    for (var s, i = 1, n = arguments.length; i < n; i++) {
+        s = arguments[i];
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+            t[p] = s[p];
+    }
+    return t;
+};
 
 /**
  * http://www.ietf.org/rfc/rfc4122.txt
@@ -103,6 +124,8 @@ function put_buffers(state, buffer_paths: (string | number)[][], buffers: DataVi
     }
 }
 
+
+
 /**
  * The inverse of put_buffers, return an objects with the new state where all buffers(ArrayBuffer)
  * are removed. If a buffer is a member of an object, that object is cloned, and the key removed. If a buffer
@@ -131,7 +154,7 @@ function remove_buffers(state): {state: any, buffers: ArrayBuffer[], buffer_path
                 if(value) {
                     if (value.buffer instanceof ArrayBuffer || value instanceof ArrayBuffer) {
                         if(!is_cloned) {
-                            obj = _.clone(obj);
+                            obj = obj.slice();
                             is_cloned = true;
                         }
                         buffers.push(value instanceof ArrayBuffer ? value : value.buffer);
@@ -144,7 +167,7 @@ function remove_buffers(state): {state: any, buffers: ArrayBuffer[], buffer_path
                         // only assigned when the value changes, we may serialize objects that don't support assignment
                         if(new_value !== value) {
                             if(!is_cloned) {
-                                obj = _.clone(obj);
+                                obj = obj.slice();
                                 is_cloned = true;
                             }
                             obj[i] = new_value;
@@ -152,7 +175,7 @@ function remove_buffers(state): {state: any, buffers: ArrayBuffer[], buffer_path
                     }
                 }
             }
-        } else if(_.isObject(obj)) {
+        } else if(isPlainObject(obj)) {
             for (let key in obj) {
                 let is_cloned = false;
                 if (obj.hasOwnProperty(key)) {
@@ -160,19 +183,18 @@ function remove_buffers(state): {state: any, buffers: ArrayBuffer[], buffer_path
                     if(value) {
                         if (value.buffer instanceof ArrayBuffer || value instanceof ArrayBuffer) {
                             if(!is_cloned) {
-                                obj = _.clone(obj);
+                                obj = {...obj};
                                 is_cloned = true;
                             }
                             buffers.push(value instanceof ArrayBuffer ? value : value.buffer);
                             buffer_paths.push(path.concat([key]));
                             delete obj[key]; // for objects/dicts we just delete them
-                        }
-                        else {
+                        } else {
                             let new_value  = remove(value, path.concat([key]));
                             // only assigned when the value changes, we may serialize objects that don't support assignment
                             if(new_value !== value) {
                                 if(!is_cloned) {
-                                    obj = _.clone(obj);
+                                    obj = {...obj};
                                     is_cloned = true;
                                 }
                                 obj[key] = new_value;
