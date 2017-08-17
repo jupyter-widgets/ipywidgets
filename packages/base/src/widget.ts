@@ -3,6 +3,8 @@
 
 import * as managerBase from './manager-base';
 import * as utils from './utils';
+import * as backbonePatch from './backbone-patch'
+
 import * as Backbone from 'backbone';
 import * as $ from 'jquery';
 
@@ -277,7 +279,8 @@ class WidgetModel extends Backbone.Model {
      * Handles both "key", value and {key: value} -style arguments.
      */
     set(key: any, val?: any, options?: any) {
-        let return_value = super.set(key, val, options);
+        // Call our patched backbone set. See #1642 and #1643.
+        let return_value = backbonePatch.set.call(this, key, val, options);
 
         // Backbone only remembers the diff of the most recent set()
         // operation.  Calling set multiple times in a row results in a
