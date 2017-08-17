@@ -2,23 +2,22 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    WidgetView, DOMWidgetView
-} from './widget';
+    assign
+} from './utils';
 
 import {
-    WidgetModel
+    WidgetModel, WidgetView, DOMWidgetView
 } from './widget';
 
-import * as _ from 'underscore';
 
 export
 class StyleModel extends WidgetModel {
     defaults() {
         let Derived = this.constructor as typeof StyleModel;
-        return _.extend(super.defaults(), {
+        return assign(super.defaults(), {
             _model_name: 'StyleModel',
             _view_name: 'StyleView',
-        }, _.reduce(Object.keys(Derived.styleProperties), (obj: any, key: string) => {
+        }, Object.keys(Derived.styleProperties).reduce((obj: any, key: string) => {
             obj[key] = Derived.styleProperties[key].default;
             return obj;
         }, {}));

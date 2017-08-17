@@ -2,9 +2,8 @@
 // Distributed under the terms of the Modified BSD License.
 
 import * as managerBase from './manager-base';
-import * as Backbone from 'backbone';
-import * as _ from 'underscore';
 import * as utils from './utils';
+import * as Backbone from 'backbone';
 import * as $ from 'jquery';
 
 import {
@@ -28,17 +27,17 @@ const JUPYTER_WIDGETS_VERSION = '1.0.0';
 export
 function unpack_models(value, manager): Promise<any> {
     let unpacked;
-    if (_.isArray(value)) {
+    if (Array.isArray(value)) {
         unpacked = [];
-        _.each(value, (sub_value, key) => {
+        value.forEach((sub_value, key) => {
             unpacked.push(unpack_models(sub_value, manager));
         });
         return Promise.all(unpacked);
     } else if (value instanceof Object) {
         unpacked = {};
-        _.each(value, (sub_value, key) => {
-            unpacked[key] = unpack_models(sub_value, manager);
-        });
+        Object.keys(value).forEach((key) => {
+            unpacked[key] = unpack_models(value[key], manager);
+        })
         return utils.resolvePromisesDict(unpacked);
     } else if (typeof value === 'string' && value.slice(0,10) === 'IPY_MODEL_') {
         // get_model returns a promise already
@@ -116,8 +115,8 @@ class WidgetModel extends Backbone.Model {
             this.comm = comm;
 
             // Hook comm messages up to model.
-            comm.on_close(_.bind(this._handle_comm_closed, this));
-            comm.on_msg(_.bind(this._handle_comm_msg, this));
+            comm.on_close(this._handle_comm_closed.bind(this));
+            comm.on_msg(this._handle_comm_msg.bind(this));
 
             this.comm_live = true;
         } else {
@@ -229,10 +228,12 @@ class WidgetModel extends Backbone.Model {
     get_state(drop_defaults) {
         let fullState = this.attributes;
         if (drop_defaults) {
-            let defaults = _.result(this, 'defaults');
+            // if defaults is a function, call it
+            let d = this.defaults;
+            let defaults = (typeof d === "function") ? d.call(this) : d;
             let state = {};
             Object.keys(fullState).forEach(key => {
-                if (!_.isEqual(fullState[key], defaults[key])) {
+                if (!(utils.isEqual(fullState[key], defaults[key]))) {
                     state[key] = fullState[key];
                 }
             });
@@ -302,7 +303,7 @@ class WidgetModel extends Backbone.Model {
                 }
             }
 
-            this._buffered_state_diff = _.extend(this._buffered_state_diff, attrs);
+            this._buffered_state_diff = utils.assign(this._buffered_state_diff, attrs);
         }
         return return_value;
     }
@@ -365,7 +366,7 @@ class WidgetModel extends Backbone.Model {
                 // Combine updates if it is a 'patch' sync, otherwise replace updates
                 switch (method) {
                     case 'patch':
-                        this._msg_buffer = _.extend(this._msg_buffer || {}, msgState);
+                        this._msg_buffer = utils.assign(this._msg_buffer || {}, msgState);
                         break;
                     case 'update':
                     case 'create':
@@ -543,7 +544,7 @@ class DOMWidgetModel extends WidgetModel {
     }
 
     defaults() {
-        return _.extend(super.defaults(), {
+        return utils.assign(super.defaults(), {
             _dom_classes: []
             // We do not declare defaults for the layout and style attributes.
             // Those defaults are constructed on the kernel side and synced here
@@ -611,9 +612,9 @@ abstract class WidgetView extends NativeView<WidgetModel> {
     /**
      * Create and promise that resolves to a child view of a given model
      */
-    create_child_view(child_model, options?) {
+    create_child_view(child_model, options = {}) {
         let that = this;
-        options = _.extend({ parent: this }, options || {});
+        options = { parent: this, ...options};
         return this.model.widget_manager.create_view(child_model, options)
             .catch(utils.reject('Could not create child view', true));
     }
@@ -787,14 +788,14 @@ class DOMWidgetView extends WidgetView {
         if (el===undefined) {
             el = this.el;
         }
-        _.difference(old_classes, new_classes).map(function(c) {
+        utils.difference(old_classes, new_classes).map(function(c) {
             if (el.classList) { // classList is not supported by IE for svg elements
                 el.classList.remove(c);
             } else {
                 el.setAttribute('class', el.getAttribute('class').replace(c, ''));
             }
         });
-        _.difference(new_classes, old_classes).map(function(c) {
+        utils.difference(new_classes, old_classes).map(function(c) {
             if (el.classList) { // classList is not supported by IE for svg elements
                 el.classList.add(c);
             } else {

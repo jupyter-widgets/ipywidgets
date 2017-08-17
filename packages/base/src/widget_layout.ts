@@ -2,14 +2,13 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    WidgetView, DOMWidgetView
-} from './widget';
+    assign
+} from './utils';
 
 import {
-    WidgetModel
+    WidgetModel, WidgetView, DOMWidgetView
 } from './widget';
 
-import * as _ from 'underscore';
 
 /**
  * css properties exposed by the layout widget with their default values.
@@ -45,7 +44,7 @@ let css_properties = {
 export
 class LayoutModel extends WidgetModel {
     defaults() {
-        return _.extend(super.defaults(), {
+        return assign(super.defaults(), {
         _model_name: 'LayoutModel',
         _view_name: 'LayoutView'
         }, css_properties);

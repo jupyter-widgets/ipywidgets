@@ -259,7 +259,7 @@ class RadioButtonsView extends DescriptionView {
      */
     update(options?) {
         var view = this;
-        var items = this.model.get('_options_labels');
+        var items: string[] = this.model.get('_options_labels');
         var radios = _.pluck(
             this.container.querySelectorAll('input[type="radio"]'),
             'value'
@@ -278,7 +278,7 @@ class RadioButtonsView extends DescriptionView {
         if (stale && (options === undefined || options.updated_view !== this)) {
             // Add items to the DOM.
             this.container.textContent = '';
-            _.each(items, function(item: any, index: number) {
+            items.forEach(function(item: any, index: number) {
                 var label = document.createElement('label');
                 label.textContent = item;
                 view.container.appendChild(label);
@@ -290,7 +290,7 @@ class RadioButtonsView extends DescriptionView {
                 label.appendChild(radio);
            });
         }
-        _.each(items, function(item: any, index: number) {
+        items.forEach(function(item: any, index: number) {
             var item_query = 'input[data-value="' +
                 encodeURIComponent(item) + '"]';
             var radio = view.container.querySelectorAll(item_query);
@@ -420,7 +420,7 @@ class ToggleButtonsView extends DescriptionView {
      */
     update(options?) {
         var view = this;
-        var items = this.model.get('_options_labels');
+        var items: string[] = this.model.get('_options_labels');
         var icons = this.model.get('icons') || [];
         var previous_icons = this.model.previous('icons') || [];
         var previous_bstyle = ToggleButtonsView.classMap[this.model.previous('button_style')] || '';
@@ -440,7 +440,7 @@ class ToggleButtonsView extends DescriptionView {
         if (stale && options === undefined || options.updated_view !== this) {
             // Add items to the DOM.
             this.buttongroup.textContent = '';
-            _.each(items, (item: any, index: number) => {
+            items.forEach((item: any, index: number) => {
                 var item_html;
                 var empty = item.trim().length === 0 &&
                     (!icons[index] || icons[index].trim().length === 0);
@@ -474,7 +474,7 @@ class ToggleButtonsView extends DescriptionView {
         }
 
         // Select active button.
-        _.each(items, function(item: any, index: number) {
+        items.forEach(function(item: any, index: number) {
             var item_query = '[data-value="' + encodeURIComponent(item) + '"]';
             var button = view.buttongroup.querySelector(item_query);
             if (view.model.get('index') === index) {
@@ -514,16 +514,16 @@ class ToggleButtonsView extends DescriptionView {
 
     update_button_style() {
         var buttons = this.buttongroup.querySelectorAll('button');
-        _.each(buttons, (button) => {
-            this.update_mapped_classes(ToggleButtonsView.classMap, 'button_style', button);
-        });
+        for (let i = 0; i < buttons.length; i++) {
+            this.update_mapped_classes(ToggleButtonsView.classMap, 'button_style', buttons[i]);
+        }
     }
 
     set_button_style() {
         var buttons = this.buttongroup.querySelectorAll('button');
-        _.each(buttons, (button) => {
-            this.set_mapped_classes(ToggleButtonsView.classMap, 'button_style', button);
-        });
+        for (let i = 0; i < buttons.length; i++) {
+            this.set_mapped_classes(ToggleButtonsView.classMap, 'button_style', buttons[i]);
+        }
     }
 
     events(): {[e: string]: string} {
