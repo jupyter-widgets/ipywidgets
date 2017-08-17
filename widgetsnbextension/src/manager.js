@@ -49,6 +49,7 @@ var WidgetManager = function (comm_manager, notebook) {
             return Promise.all(comms.map(function(comm) {
                 var update_promise = new Promise(function(resolve, reject) {
                     comm.on_msg(function (msg) {
+                        base.put_buffers(msg.content.data.state, msg.content.data.buffer_paths, msg.buffers);
                         // A suspected response was received, check to see if
                         // it's a state update. If so, resolve.
                         if (msg.content.data.method === 'update') {
