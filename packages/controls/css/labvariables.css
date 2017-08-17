@@ -3,6 +3,12 @@
 | Distributed under the terms of the Modified BSD License.
 |----------------------------------------------------------------------------*/
 
+/*
+This file is copied from the JupyterLab project to define default styling for
+when the widget styling is compiled down to eliminate CSS variables. We make one
+change - we comment out the font import below.
+*/
+
 @import "./materialcolors.css";
 
 /*
@@ -30,7 +36,8 @@ all of MD as it is not optimized for dense, information rich UIs.
 /*
  * Optional monospace font for input/output prompt.
  */
-@import url('https://fonts.googleapis.com/css?family=Roboto+Mono');
+ /* Commented out in ipywidgets since we don't need it. */
+/* @import url('https://fonts.googleapis.com/css?family=Roboto+Mono'); */
 
 /*
  * Added for compabitility with output area
