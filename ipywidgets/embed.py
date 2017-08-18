@@ -188,7 +188,7 @@ def embed_snippet(views,
                   state=None,
                   indent=2,
                   embed_url=None,
-                  requirejs=False
+                  requirejs=True
                  ):
     """Return a snippet that can be embedded in an HTML file.
 
@@ -211,9 +211,9 @@ def embed_snippet(views,
     embed_url: string or None
         Allows for overriding the URL used to fetch the widget manager
         for the embedded code. This defaults (None) to an `unpkg` CDN url.
-    requirejs: boolean (False)
+    requirejs: boolean (True)
         Enables the requirejs-based embedding, which allows for custom widgets.
-        If True, the embed_url should be a requirejs module.
+        If True, the embed_url should point to an AMD module.
 
     Returns
     -------
