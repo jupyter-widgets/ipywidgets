@@ -14,21 +14,29 @@ Here, we discuss embedding widgets using the custom widget manager in the `@jupy
 
 ## Embedding Widgets in HTML Web Pages
 
-The notebook interface provides a context menu for generating an HTML snippet
+The classic notebook interface provides a `Widgets` menu for generating an HTML snippet
 that can be embedded into any static web page:
 
-![embedding](./embed.gif)
+The menu provides three sets of actions
 
-The context menu provides three actions
-
- - Save Notebook with Widgets
+ - Save Notebook Widget State and Clear Notebook Widget State
  - Download Widget State
  - Embed Widgets
 
+### Save Notebook Widget State
+
+A notebook file may be saved with the current widget state as metadata. This allows the notebook file to be rendered with rendered widgets (see the section about Sphinx below, for example). To save a notebook with the current widget state, use the `Save Notebook Widget State` menu item.
+
+In order to delete old saved state and save new state to the notebook, do the following in order:
+
+1. Use the `Clear Notebook Widget State` menu and save the notebook. This clears the metadata from the notebook file.
+2. Restart the kernel and refresh the page. This clears the old widget state from the widget manager on the page.
+3. Create whatever widgets you'd like, and use `Save Notebook Widget State` and save the notebook. This saves the new widget state to the notebook file.
+
 ### Embeddable HTML Snippet
 
-The last option, `Embed widgets`, provides a dialog containing an HTML page
-which embeds Jupyter interactive widgets. In order to support custom widgets, it uses the RequireJS embedder.
+The `Embed widgets` menu item provides a dialog containing an HTML page
+which embeds the current widgets. In order to support custom widgets, it uses the RequireJS embedder.
 
 This HTML snippet is composed of multiple `<script>` tags embedded into an HTML document:
 
@@ -51,6 +59,8 @@ This HTML snippet is composed of multiple `<script>` tags embedded into an HTML 
   The *Embed Widgets* action currently creates one of these script tags for each
   view displayed in the notebook. If you'd like to lay out the views, or include
   only some of them, you can delete or include these script tags as you wish.
+
+In order to clear widget state from the frontend so that it does not show up in the embedding, restart the kernel and then refresh the page, in that order.
 
 ### Widget State JSON
 
@@ -167,7 +177,7 @@ and LaTeX output.
 
 In the case of the HTML output, Jupyter Interactive Widgets are also supported.
 However, it is a requirement that the notebook was correctly saved with the
-special "Save Notebook with Widgets" action in the widgets menu.
+special "Save Notebook Widget State" action in the widgets menu.
 
 ## Rendering Interactive Widgets on [nbviewer](http://nbviewer.jupyter.org/)
 

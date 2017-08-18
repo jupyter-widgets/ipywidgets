@@ -126,6 +126,14 @@ class WidgetModel extends Backbone.Model {
         }
     }
 
+    get comm_live(): boolean {
+        return this._comm_live;
+    }
+    set comm_live(x) {
+        this._comm_live = x;
+        this.trigger('comm_live_update');
+    }
+
     /**
      * Send a custom msg over the comm.
      */
@@ -526,10 +534,10 @@ class WidgetModel extends Backbone.Model {
     views: {[key: string]: Promise<WidgetView>};
     state_change: Promise<any>;
     comm: any;
-    comm_live: boolean;
     name: string;
     module: string;
 
+    private _comm_live: boolean;
     private _closed: boolean;
     private _state_lock: any;
     private _buffered_state_diff: any;
@@ -731,9 +739,10 @@ class DOMWidgetView extends WidgetView {
             this.setStyle(this.model.get('style'));
         });
 
-        if (!this.model.comm_live) {
-            this.pWidget.addClass('jupyter-widgets-disconnected');
-        }
+        this._comm_live_update();
+        this.listenTo(this.model, 'comm_live_update', () => {
+            this._comm_live_update();
+        })
     }
 
     setLayout(layout, oldLayout?) {
@@ -872,6 +881,10 @@ class DOMWidgetView extends WidgetView {
             this.trigger('displayed');
             break;
         }
+    }
+
+    private _comm_live_update() {
+        this.pWidget.node.classList.toggle('jupyter-widgets-disconnected', !this.model.comm_live);
     }
 
     '$el': any;

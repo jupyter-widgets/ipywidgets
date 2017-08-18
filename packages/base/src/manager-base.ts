@@ -469,6 +469,15 @@ abstract class ManagerBase<T> {
     };
 
     /**
+     * Disconnect the widget manager from the kernel, setting each model's comm
+     * as dead.
+     */
+    disconnect() {
+        Object.keys(this._models).forEach((i) => {
+            this._models[i].then(model => {model.comm_live = false;});
+        })
+    }
+    /**
      * The comm target name to register
      */
     readonly comm_target_name = 'jupyter.widget';
