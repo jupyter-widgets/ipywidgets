@@ -4,7 +4,7 @@ var PhosphorWidget = require('@phosphor/widgets').Widget;
 
 var WidgetManager = exports.WidgetManager = function(el) {
     //  Call the base class.
-    controls.ManagerBase.call(this);
+    base.ManagerBase.call(this);
     this.el = el;
 };
 WidgetManager.prototype = Object.create(base.ManagerBase.prototype);
