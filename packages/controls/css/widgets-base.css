@@ -259,7 +259,7 @@
 /* Widget Label Styling */
 
 /* Override Bootstrap label css */
-.jupyter-widgets label.widget-label {
+.jupyter-widgets label {
     margin-bottom: initial;
 }
 
@@ -374,7 +374,6 @@
 }
 
 .widget-valid i:before {
-    height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
     margin-right: var(--jp-widgets-inline-margin);
     margin-left: var(--jp-widgets-inline-margin);
