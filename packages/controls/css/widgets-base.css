@@ -259,7 +259,7 @@
 /* Widget Label Styling */
 
 /* Override Bootstrap label css */
-.jupyter-widgets label.widget-label {
+.jupyter-widgets label {
     margin-bottom: initial;
 }
 
