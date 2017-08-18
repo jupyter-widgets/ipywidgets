@@ -14,12 +14,10 @@ Here, we discuss embedding widgets using the custom widget manager in the `@jupy
 
 ## Embedding Widgets in HTML Web Pages
 
-The notebook interface provides a context menu for generating an HTML snippet
+The classic notebook interface provides a `Widgets` menu for generating an HTML snippet
 that can be embedded into any static web page:
 
-![embedding](./embed.gif)
-
-The context menu provides three sets of actions
+The menu provides three sets of actions
 
  - Save Notebook Widget State and Clear Notebook Widget State
  - Download Widget State
@@ -27,17 +25,18 @@ The context menu provides three sets of actions
 
 ### Save Notebook Widget State
 
-A notebook may be saved with the current widget state, so that it can be rendered with widgets displayed (see the section about sphinx below, for example). In order to delete old saved state and save new state to the notebook, do the following in order:
+A notebook file may be saved with the current widget state as metadata. This allows the notebook file to be rendered with rendered widgets (see the section about Sphinx below, for example). To save a notebook with the current widget state, use the `Save Notebook Widget State` menu item.
 
-1. Use the `Clear Notebook Widget State` menu and save the notebook. This clears the data from the notebook file.
-2. Restart the kernel and refresh the page. This clears the old widget data from the widget manager on the page.
+In order to delete old saved state and save new state to the notebook, do the following in order:
+
+1. Use the `Clear Notebook Widget State` menu and save the notebook. This clears the metadata from the notebook file.
+2. Restart the kernel and refresh the page. This clears the old widget state from the widget manager on the page.
 3. Create whatever widgets you'd like, and use `Save Notebook Widget State` and save the notebook. This saves the new widget state to the notebook file.
-
 
 ### Embeddable HTML Snippet
 
-The last option, `Embed widgets`, provides a dialog containing an HTML page
-which embeds Jupyter interactive widgets. In order to support custom widgets, it uses the RequireJS embedder.
+The `Embed widgets` menu item provides a dialog containing an HTML page
+which embeds the current widgets. In order to support custom widgets, it uses the RequireJS embedder.
 
 This HTML snippet is composed of multiple `<script>` tags embedded into an HTML document:
 
