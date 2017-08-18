@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/controls",
-  "version": "0.6.18",
+  "version": "1.0.0",
   "description": "Jupyter interactive widgets",
   "author": "Project Jupyter",
   "license": "BSD-3-Clause",
@@ -66,8 +66,8 @@
     "webpack": "^3.5.5"
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^0.6.12",
-    "@jupyter-widgets/schema": "^0.3.0-beta.7",
+    "@jupyter-widgets/base": "^1.0.0",
+    "@jupyter-widgets/schema": "^0.3.0",
     "@jupyterlab/services": "^0.48.0",
     "@phosphor/algorithm": "^1.1.0",
     "@phosphor/domutils": "^1.1.0",
