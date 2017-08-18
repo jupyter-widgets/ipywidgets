@@ -7,7 +7,7 @@
     "build": "lerna run build --ignore \"@jupyter-widgets/example-*\"",
     "update:dependency": "node scripts/update-dependency.js",
     "updated": "lerna updated",
-    "publish": "npm run clean && npm run build && lerna publish -m \"Publish npm packages\""
+    "publish": "npm run clean && npm run build && lerna publish -m \"Publish npm packages\" --force-publish=*"
   },
   "devDependencies": {
     "lerna": "^2.0.0"
