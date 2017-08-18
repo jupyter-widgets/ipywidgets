@@ -19,11 +19,20 @@ that can be embedded into any static web page:
 
 ![embedding](./embed.gif)
 
-The context menu provides three actions
+The context menu provides three sets of actions
 
- - Save Notebook with Widgets
+ - Save Notebook Widget State and Clear Notebook Widget State
  - Download Widget State
  - Embed Widgets
+
+### Save Notebook Widget State
+
+A notebook may be saved with the current widget state, so that it can be rendered with widgets displayed (see the section about sphinx below, for example). In order to delete old saved state and save new state to the notebook, do the following in order:
+
+1. Use the `Clear Notebook Widget State` menu and save the notebook. This clears the data from the notebook file.
+2. Restart the kernel and refresh the page. This clears the old widget data from the widget manager on the page.
+3. Create whatever widgets you'd like, and use `Save Notebook Widget State` and save the notebook. This saves the new widget state to the notebook file.
+
 
 ### Embeddable HTML Snippet
 
@@ -51,6 +60,8 @@ This HTML snippet is composed of multiple `<script>` tags embedded into an HTML 
   The *Embed Widgets* action currently creates one of these script tags for each
   view displayed in the notebook. If you'd like to lay out the views, or include
   only some of them, you can delete or include these script tags as you wish.
+
+In order to clear widget state from the frontend so that it does not show up in the embedding, restart the kernel and then refresh the page, in that order.
 
 ### Widget State JSON
 
@@ -167,7 +178,7 @@ and LaTeX output.
 
 In the case of the HTML output, Jupyter Interactive Widgets are also supported.
 However, it is a requirement that the notebook was correctly saved with the
-special "Save Notebook with Widgets" action in the widgets menu.
+special "Save Notebook Widget State" action in the widgets menu.
 
 ## Rendering Interactive Widgets on [nbviewer](http://nbviewer.jupyter.org/)
 
