@@ -21,6 +21,6 @@
     "file-loader": "^0.11.2",
     "style-loader": "^0.18.1",
     "url-loader": "^0.5.9",
-    "webpack": "^1.12.12"
+    "webpack": "^3.5.5"
   }
 }

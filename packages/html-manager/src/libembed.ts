@@ -1,6 +1,9 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+declare var  __webpack_public_path__:string;
+__webpack_public_path__ = (window as any).__jupyter_widgets_assets_path__ || __webpack_public_path__;
+
 import 'font-awesome/css/font-awesome.css';
 import '@phosphor/widgets/style/index.css';
 import '@jupyter-widgets/controls/css/widgets.built.css';

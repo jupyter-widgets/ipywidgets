@@ -32,6 +32,6 @@
     "karma-webpack": "^2.0.3",
     "mocha": "^3.3.0",
     "style-loader": "^0.18.1",
-    "webpack": "^1.12.12"
+    "webpack": "^3.5.5"
   }
 }

@@ -4,36 +4,46 @@ var postcss = require('postcss');
 module.exports = {
     entry: './test/build/index.js',
     output: {
-        path: __dirname + "/build",
+        path: path.resolve(__dirname, "build"),
         filename: "bundle.js",
         publicPath: "./build/"
     },
     bail: true,
     module: {
-        loaders: [
-            { test: /\.css$/, loader: 'style-loader!css-loader!postcss-loader' },
-            { test: /\.md$/, loader: 'raw-loader'},
-            { test: /\.html$/, loader: "file?name=[name].[ext]" },
-            { test: /\.ipynb$/, loader: 'json-loader' },
-            { test: /\.json$/, loader: 'json-loader' },
-        ],
-    },
-    postcss: () => {
-        return [
-            postcss.plugin('delete-tilde', () => {
-                return function (css) {
-                    css.walkAtRules('import', (rule) => {
-                        rule.params = rule.params.replace('~', '');
-                    });
-                };
-            }),
-            postcss.plugin('prepend', () => {
-                return (css) => {
-                    css.prepend(`@import '@jupyter-widgets/controls/css/labvariables.css';`)
+        rules: [
+            { test: /\.css$/, use: [
+                'style-loader',
+                'css-loader',
+                {
+                    loader: 'postcss-loader',
+                    options: {
+                        plugins: [
+                            postcss.plugin('delete-tilde', function() {
+                                return function (css) {
+                                    css.walkAtRules('import', function(rule) {
+                                        rule.params = rule.params.replace('~', '');
+                                    });
+                                };
+                            }),
+                            postcss.plugin('prepend', function() {
+                                return function(css) {
+                                    css.prepend("@import '@jupyter-widgets/controls/css/labvariables.css';")
+                                }
+                            }),
+                            require('postcss-import')(),
+                            require('postcss-cssnext')()
+                        ]
+                    }
                 }
-            }),
-            require('postcss-import')(),
-            require('postcss-cssnext')()
-        ];
-    }
+            ]},
+            // jquery-ui loads some images
+            { test: /\.(jpg|png|gif)$/, use: 'file-loader' },
+            // required to load font-awesome
+            { test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/, use: 'url-loader?limit=10000&mimetype=application/font-woff' },
+            { test: /\.woff(\?v=\d+\.\d+\.\d+)?$/, use: 'url-loader?limit=10000&mimetype=application/font-woff' },
+            { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, use: 'url-loader?limit=10000&mimetype=application/octet-stream' },
+            { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, use: 'file-loader' },
+            { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, use: 'url-loader?limit=10000&mimetype=image/svg+xml' }
+        ]
+    },
 }

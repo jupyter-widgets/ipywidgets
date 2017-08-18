@@ -20,7 +20,7 @@ let requirePromise = function(pkg: string | string[]): Promise<any> {
 }
 
 function requireLoader(moduleName: string, moduleVersion: string) {
-    return requirePromise([`${moduleName}.js`]).catch((err) => {
+    return requirePromise([`${moduleName}`]).catch((err) => {
         let failedId = err.requireModules && err.requireModules[0];
         if (failedId) {
             console.log(`Falling back to unpkg.com for ${moduleName}@${moduleVersion}`);

@@ -24,6 +24,6 @@
     "json-loader": "^0.5.4",
     "style-loader": "^0.18.1",
     "url-loader": "^0.5.9",
-    "webpack": "^1.12.12"
+    "webpack": "^3.5.5"
   }
 }
