@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/output",
-  "version": "0.3.11",
+  "version": "0.3.12",
   "description": "Jupyter widget wrapping cell output",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -25,7 +25,7 @@
     "url": "https://github.com/jupyter-widgets/ipywidgets/issues"
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^0.6.11"
+    "@jupyter-widgets/base": "^0.6.12"
   },
   "devDependencies": {
     "rimraf": "^2.6.1",
