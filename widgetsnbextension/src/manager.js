@@ -19,7 +19,8 @@ var MIME_TYPE = 'application/vnd.jupyter.widget-view+json';
 //--------------------------------------------------------------------
 var WidgetManager = function (comm_manager, notebook) {
     base.ManagerBase.apply(this);
-    WidgetManager._managers.push(this);
+    // Managers are stored in *reverse* order, so that _managers[0] is the most recent.
+    WidgetManager._managers.unshift(this);
 
     // Attach a comm manager
     this.notebook = notebook;
@@ -93,7 +94,7 @@ var WidgetManager = function (comm_manager, notebook) {
 };
 
 WidgetManager.prototype = Object.create(base.ManagerBase.prototype);
-WidgetManager._managers = []; /* List of widget managers */
+WidgetManager._managers = []; /* List of widget managers in *reverse* order (_managers[0] is the most recent) */
 
 WidgetManager.prototype.loadClass = function(className, moduleName, moduleVersion) {
     if (moduleName === "@jupyter-widgets/controls") {

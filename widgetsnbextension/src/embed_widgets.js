@@ -8,10 +8,13 @@ var VIEW_MIME_TYPE = "application/vnd.jupyter.widget-view+json"
 var htmlManagerVersion = require("@jupyter-widgets/html-manager/package.json").version;
 
 var embed_widgets = function() {
-    return new Promise(function(resolve) {
+    return new Promise(function(resolve, reject) {
         requirejs(['base/js/namespace', 'base/js/dialog', '@jupyter-widgets/controls'], function(Jupyter, dialog, widgets) {
-
-            Jupyter.WidgetManager._managers[0].get_state({
+            var wm = Jupyter.WidgetManager._managers[0];
+            if (!wm) {
+                reject('No widget manager');
+            }
+            wm.get_state({
                 'drop_defaults': true
             }).then(function(state) {
                 var data = JSON.stringify(state, null, '    ');
