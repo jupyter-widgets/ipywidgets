@@ -103,7 +103,7 @@ function register_events(Jupyter, events, outputarea) {
     function render(output, data, node) {
         // data is a model id
         var manager = Jupyter.notebook && Jupyter.notebook.kernel && Jupyter.notebook.kernel.widget_manager;
-        if (manager === undefined) {
+        if (!manager) {
             node.textContent = "Error rendering Jupyter widget: missing widget manager";
             return;
         }
