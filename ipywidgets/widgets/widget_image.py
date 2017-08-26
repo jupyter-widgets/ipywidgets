@@ -6,13 +6,11 @@
 Represents an image in the frontend using a widget.
 """
 
-import base64
-
 from .widget_core import CoreWidget
 from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
 from .widget import register
-from traitlets import Unicode, CUnicode, Bytes, observe
+from traitlets import Unicode, CUnicode, Bytes
 
 
 @register
@@ -32,3 +30,40 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
     width = CUnicode(help="Width of the image in pixels.").tag(sync=True)
     height = CUnicode(help="Height of the image in pixels.").tag(sync=True)
     value = Bytes(help="The image data as a byte string.").tag(sync=True)
+
+    @classmethod
+    def from_filename(cls, filename, **kwargs):
+        """
+        Create an `Image` from a local filename.
+
+        Parameters
+        ----------
+        filename: str
+            The location of a file to read into the value from disk.
+
+        **kwargs:
+            The keyword arguments for `Image`
+
+        Returns an `Image` with the value set from the filename.
+        """
+        value = cls._load_file_value(filename)
+
+        return cls(value=value, **kwargs)
+
+    def value_from_filename(self, filename):
+        """
+        Convenience method for reading a file into `value`.
+
+        Parameters
+        ----------
+        filename: str
+            The location of a file to read into value from disk.
+        """
+        value = self._load_file_value(filename)
+
+        self.value = value
+
+    @classmethod
+    def _load_file_value(cls, filename):
+        with open(filename, 'rb') as f:
+            return f.read()
