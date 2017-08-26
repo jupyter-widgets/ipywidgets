@@ -10,7 +10,7 @@ from .widget_core import CoreWidget
 from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
 from .widget import register
-from traitlets import Unicode, CUnicode, Bytes
+from traitlets import Unicode, CUnicode, Bytes, validate
 
 
 @register
@@ -21,6 +21,9 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
     raw image data that you want the browser to display.  You can explicitly
     define the format of the byte string using the `format` trait (which
     defaults to "png").
+
+    If you pass `"url"` to the `"format"` trait, `value` will be interpreted
+    as a URL as bytes encoded in UTF-8.
     """
     _view_name = Unicode('ImageView').tag(sync=True)
     _model_name = Unicode('ImageModel').tag(sync=True)
