@@ -71,44 +71,92 @@ the `application/vnd.jupyter.widget-state+json` format specified in the
 
 ## Python interface
 
-Embeddable code for the widgets can also be produced from the Python side.
-The following functions are available in the module `ipywidgets.embed`:
+Embeddable code for the widgets can also be produced from Python.
 
-- `embed_snippet`:
-    ```py
-    from ipywidgets import IntSlider
-    from ipywidgets.embed import embed_snippet
+The `ipywidgets.embed` module provides several functions for embedding widgets into HTML documents programatically.
 
-    s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
-    print(embed_snippet(views=[s1, s2], requirejs=True))
-    ```
+Use `embed_minimal_html` to create a simple, stand-alone HTML page:
 
-- `embed_minimal_html`:
-    ```py
-    from ipywidgets import IntSlider
-    from ipywidgets.embed import embed_minimal_html
+```python
+from ipywidgets import IntSlider
+from ipywidgets.embed import embed_minimal_html
 
-    s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
-    embed_minimal_html('my_export.html', views=[s1, s2], requirejs=True)
-    ```
+slider = IntSlider(value=40)
+embed_minimal_html('export.html', views=[slider], title='Widgets export')
+```
 
-- `embed_data`:
-    ```py
-    from ipywidgets import IntSlider
-    from ipywidgets.embed import embed_data
+This creates the stand-alone file `'export.html'`. To view the file, either
+start an HTTP server (such as the HTTP server in the Python standard library)
+or just open it in your web browser (by double-clicking on the file, or by
+writing `file:///path/to/file` in your browser search bar).
 
-    s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
-    data = embed_data(views=[s1, s2])
-    print(data['manager_state'])
-    print(data['view_specs'])
-    ```
+You will sometimes want greater granularity than that afforded by
+`embed_minimal_html`. Often, you want to control the structure of the HTML
+document in which the widgets are embedded. For this, use `embed_data` to get
+JSON exports of specific parts of the widget state:
 
-The `embed_snippet` function will return an embeddable HTML snippet similar to the
-Notebook interface detailed above, while `embed_minimal_html` saves an HTML file
-with the snippet. The `embed_data` function will return the widget state JSON as
-well as the view specs of the given views.
+```py
+import json
 
-In all functions, the state of all widgets known to the widget manager is
+from ipywidgets import IntSlider
+from ipywidgets.embed import embed_data
+
+s1 = IntSlider(max=200, value=100)
+s2 = IntSlider(value=40)
+data = embed_data(views=[s1, s2])
+
+html_template = """
+<html>
+  <head>
+
+    <title>Widget export</title>
+
+    <!-- Load require.js. Delete this if your page already loads require.js -->
+    <script 
+      src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js" 
+      integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" 
+      crossorigin="anonymous">
+    </script>
+    <script 
+      src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" 
+      crossorigin="anonymous"
+    ></script>
+
+    <script type="application/vnd.jupyter.widget-state+json">
+      {manager_state}
+    </script>
+  </head>
+
+  <body>
+    <div id="first-slider-widget">
+      <script type="application/vnd.jupyter.widget-view+json">
+        {widget_views[0]}
+      </script>
+    </div>
+    <hrule />
+    <div id="second-slider-widget">
+      <script type="application/vnd.jupyter.widget-view+json">
+        {widget_views[1]}
+      </script>
+    </div>
+  </body>
+</html>
+"""
+
+manager_state = json.dumps(data['manager_state'])
+widget_views = [json.dumps(view) for view in data['widget_views']]
+rendered_template = html_template.format(manager_state=manager_state, widget_views=widget_views)
+with open('export.html', 'w') as fp:
+    fp.write(rendered_template)
+```
+
+The manager state needs to go inside a `<script>` tag of type
+`application/vnd.jupyter.widget-state+json`. For each view, place a
+`<script>` tag of type `application/vnd.juptyer.widget-view.json` in the DOM
+element that should contain the widget. The widget manager will replace each
+`<script>` tag with the DOM tree corresponding to the widget.
+
+In all embedding functions, the state of all widgets known to the widget manager is
 included by default. You can alternatively pass a reduced state to use instead.
 This can be particularly relevant if you have many independent widgets with a
 large state, but only want to include the relevant ones in your export. To
