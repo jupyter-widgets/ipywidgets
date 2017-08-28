@@ -34,3 +34,5 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
     value = Bytes(help="The image data as a byte string.").tag(sync=True)
     x_click = Float(help="x position of most recent mouse click in pixels").tag(sync=True)
     y_click = Float(help="y position of most recent mouse click in pixels").tag(sync=True)
+    x_mouse = Float(help="x position of pointer in pixels").tag(sync=True)
+    y_mouse = Float(help="y position of pointer in pixels").tag(sync=True)

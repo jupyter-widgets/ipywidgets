@@ -23,6 +23,8 @@ class ImageModel extends CoreDOMWidgetModel {
             value: new Uint8Array(0),
             x_click: 0,
             y_click: 0,
+            x_mouse: 0,
+            y_mouse: 0
         });
     }
 }
@@ -80,6 +82,7 @@ class ImageView extends DOMWidgetView {
         return {
             // Dictionary of events and their handlers.
             'click': '_handle_click',
+            'mousemove': '_handle_mousemove'
         }
     }
 
@@ -105,6 +108,12 @@ class ImageView extends DOMWidgetView {
         this.touch();
     }
 
+    _handle_mousemove(event) {
+        var mouse_position = this._get_position(event);
+        this.model.set('x_mouse', mouse_position.x, {updated_view: this});
+        this.model.set('y_mouse', mouse_position.y, {updated_view: this});
+        this.touch();
+    }
     /**
      * The default tag name.
      *
