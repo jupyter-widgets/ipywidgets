@@ -279,10 +279,8 @@ def embed_minimal_html(fp, views, title=u'IPyWidget export', template=None, **kw
         This should be a Python string with placeholders
         `{{title}}` and `{{snippet}}`. The `{{snippet}}` placeholder
         will be replaced by all the widgets.
-
-    This method also accepts keyword arguments accepted by `embed_snippet`.
+    {embed_kwargs}
     """
-
     snippet = embed_snippet(views, **kwargs)
 
     values = {
