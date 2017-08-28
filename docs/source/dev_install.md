@@ -35,13 +35,12 @@ Steps
 Rebuild after making changes
 ----------------------------
 
-After you've made changes to `jupyter-widgets-controls` if you want to test those
-changes, run the following commands, empty your browser's cache, and refresh
-the page:
+To build and test changes, run the following commands in the ipywidgets repository root directory, empty your browser's cache, and refresh the page.
 
-        cd widgetsnbextension
-        npm run update
-        cd ..
+        npm run clean
+        npm run build
+
+If your changes are confined to one package (for example, just in the widgetsnbextension package), then it may be sufficient to just run `npm run build` in that specific directory.
 
 Tips and troubleshooting
 ------------------------
