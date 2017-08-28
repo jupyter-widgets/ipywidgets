@@ -174,6 +174,7 @@ def dependency_state(widgets, drop_defaults=True):
     return state
 
 
+@_doc_subst
 def embed_data(views, drop_defaults=True, state=None):
     """Gets data for embedding.
 
@@ -182,9 +183,7 @@ def embed_data(views, drop_defaults=True, state=None):
 
     Parameters
     ----------
-    views: widget or collection of widgets or None
-        The widgets to include views for. If None, all DOMWidgets are
-        included (not just the displayed ones).
+    {views_attribute}
     drop_defaults: boolean
         Whether to drop default values from the widget states.
     state: dict or None (default)
