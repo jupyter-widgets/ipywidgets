@@ -759,7 +759,7 @@ _FALLBACK_HTML_TEMPLATE = """\
 <p>
   If you're reading this message in Jupyter Notebook or JupyterLab, it probably means that
   the widgets Javascript library is either not installed or not enabled. See
-  the <a href=http://ipywidgets.readthedocs.io/en/latest/user_install.html>Jupyter Widgets Documentation</a>
+  the <a href=https://ipywidgets.readthedocs.io/en/latest/user_install.html>Jupyter Widgets Documentation</a>
   for setup instructions.
 </p>
 <p>
