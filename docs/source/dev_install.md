@@ -35,7 +35,7 @@ Steps
 Rebuild after making changes
 ----------------------------
 
-To build changes to `packages/controls`, run the following commands in the ipywidgets repo root, empty your browser's cache, and refresh the page.
+To build and test changes, run the following commands in the ipywidgets repository root directory, empty your browser's cache, and refresh the page.
 
         npm run clean
         npm run build
