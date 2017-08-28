@@ -83,6 +83,39 @@ require(['@jupyter-widgets/base'], function(widgets) {
 import * as widgets from '@jupyter-widgets/base'
 ```
 
+All your widget models should also declare the attributes
+`_view_module_version` and `_model_module_version`. A minimal model now looks like:
+
+```javascript
+var HelloModel = widgets.DOMWidgetModel.extend({
+    defaults: _.extend(widgets.DOMWidgetModel.prototype.defaults(), {
+        _model_name : 'HelloModel',
+        _view_name : 'HelloView',
+        _model_module : 'example_module',
+        _view_module : 'example_module',
+        _model_module_version : '~1.0.0',
+        _view_module_version : '~1.0.0'
+    })
+});
+```
+
+For embedding to work correctly, the module version needs to be a [semantic
+version range](https://docs.npmjs.com/getting-started/semantic-versioning)
+that matches a release on NPM. The most common pattern is to request a
+version compatible with the version currently in your `package.json` by using,
+`~{{ version number }}` for `_model_module_version` and `_view_module_version`. See the [cookiecutter
+template](https://github.com/jupyter-widgets/widget-cookiecutter/blob/master/%7B%7Bcookiecutter.github_project_name%7D%7D/js/lib/example.js#L24)
+for details. 
+
+Since you probably want to avoid repeating the module version in every
+widget, a common pattern is to import the version from `package.json` and
+prepend a `~`. See
+[ipyvolume](https://github.com/maartenbreddels/ipyvolume/blob/master/js/src/figure.js#L1245)
+for an example. If you do this, make sure that your webpack configuration
+includes a JSON loader. See the Webpack configuration for
+[ipyvolume](https://github.com/maartenbreddels/ipyvolume/blob/master/js/webpack.config.js#L7)
+for an example.
+
 ### Updating the notebook extension
 
 Previously, the notebook extension (normally `js/src/extension.js`) required
