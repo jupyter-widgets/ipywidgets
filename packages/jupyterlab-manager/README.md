@@ -34,9 +34,4 @@ jupyter labextension link .
 
 **Rebuild**
 
-If you want to pull in changes to Jupyter widgets, first run `npm run update` to update the version of Jupyter widgets in the node_modules directory.
-
-```bash
-npm run clean
-npm run build
-```
+If you want to pull in changes to Jupyter widgets, run `npm run build` at the ipywidgets repo root to update the version of Jupyter widgets in the node_modules directory and rebuild the JupyterLab extension.

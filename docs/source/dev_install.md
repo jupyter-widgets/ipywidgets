@@ -40,7 +40,7 @@ changes, run the following commands, empty your browser's cache, and refresh
 the page:
 
         cd widgetsnbextension
-        npm run update
+        npm run build
         cd ..
 
 Tips and troubleshooting
