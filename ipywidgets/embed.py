@@ -258,9 +258,12 @@ def embed_minimal_html(fp, views, title=u'IPyWidget export', template=None, **kw
         The widgets to include views for. If None, all DOMWidgets are
         included (not just the displayed ones).
     title: title of the html page.
-    template: template string for the html.
+    template: Template in which to embed the widget state.abs
+        This should be a Python string with placeholders
+        `{title}` and `{snippet}`. The `{snippet}` placeholder
+        will be replaced by all the widgets.
 
-    Further it accepts keyword args similar to `embed_snippet`.
+    This method also accepts keyword arguments accepted by `embed_snippet`.
     """
 
     snippet = embed_snippet(views, **kwargs)
