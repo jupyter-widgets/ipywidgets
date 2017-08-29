@@ -71,9 +71,9 @@ the `application/vnd.jupyter.widget-state+json` format specified in the
 
 ## Python interface
 
-Embeddable code for the widgets can also be produced from Python.
-
-The `ipywidgets.embed` module provides several functions for embedding widgets into HTML documents programatically.
+Embeddable code for the widgets can also be produced from Python. The
+`ipywidgets.embed` module provides several functions for embedding widgets
+into HTML documents programatically.
 
 Use `embed_minimal_html` to create a simple, stand-alone HTML page:
 
@@ -85,15 +85,18 @@ slider = IntSlider(value=40)
 embed_minimal_html('export.html', views=[slider], title='Widgets export')
 ```
 
-This creates the stand-alone file `'export.html'`. To view the file, either
-start an HTTP server (such as the HTTP server in the Python standard library)
-or just open it in your web browser (by double-clicking on the file, or by
-writing `file:///path/to/file` in your browser search bar).
+This creates the stand-alone file `export.html`. To view the file, either
+start an HTTP server, such as the [HTTP
+server](https://docs.python.org/3.6/library/http.server.html#module-http.server)
+in the Python standard library. or just open it in your web browser (by
+double-clicking on the file, or by writing `file:///path/to/file` in your
+browser search bar).
 
 You will sometimes want greater granularity than that afforded by
 `embed_minimal_html`. Often, you want to control the structure of the HTML
 document in which the widgets are embedded. For this, use `embed_data` to get
-JSON exports of specific parts of the widget state:
+JSON exports of specific parts of the widget state, and embed these in an
+HTML template:
 
 ```py
 import json
@@ -111,7 +114,6 @@ html_template = """
 
     <title>Widget export</title>
 
-    <!-- Load require.js. Delete this if your page already loads require.js -->
     <script 
       src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js" 
       integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" 
@@ -119,8 +121,8 @@ html_template = """
     </script>
     <script 
       src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" 
-      crossorigin="anonymous"
-    ></script>
+      crossorigin="anonymous">
+    </script>
 
     <script type="application/vnd.jupyter.widget-state+json">
       {manager_state}
@@ -150,11 +152,13 @@ with open('export.html', 'w') as fp:
     fp.write(rendered_template)
 ```
 
-The manager state needs to go inside a `<script>` tag of type
-`application/vnd.jupyter.widget-state+json`. For each view, place a
-`<script>` tag of type `application/vnd.juptyer.widget-view.json` in the DOM
-element that should contain the widget. The widget manager will replace each
-`<script>` tag with the DOM tree corresponding to the widget.
+The web page needs to load RequireJS and the Jupyter widgets HTML manager.
+You then need to include the manager state in a `<script>` tag of type
+`application/vnd.jupyter.widget-state+json`, which can go in the head of the
+document. For each widget view, place a `<script>` tag of type
+`application/vnd.juptyer.widget-view.json` in the DOM element that should
+contain the view. The widget manager will replace each `<script>` tag with
+the DOM tree corresponding to the widget.
 
 In all embedding functions, the state of all widgets known to the widget manager is
 included by default. You can alternatively pass a reduced state to use instead.
@@ -164,14 +168,19 @@ include only the state of the views and their dependencies, use the function
 `dependency_state`:
 
 ```py
-s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
+from ipywidgets.embed import embed_snippet, dependency_state
+
+s1 = IntSlider(max=200, value=100)
+s2 = IntSlider(value=40)
 print(embed_snippet(
     views=[s1, s2],
     state=dependency_state([s1, s2]),
     ))
 ```
 
-In the `embed_snippet` and `embed_minimal_html` examples above, the `requirejs=True` gives the RequireJS embedder. To get the standard embedder, omit this option or give `requirejs=False`.
+In the `embed_snippet` and `embed_minimal_html` examples above, the
+`requirejs=True` gives the RequireJS embedder. To get the standard embedder,
+omit this option or give `requirejs=False`.
 
 ## Embedding Widgets in the Sphinx HTML Documentation
 
