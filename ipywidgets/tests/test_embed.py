@@ -55,6 +55,26 @@ class TestEmbed:
         model_names = [s['model_name'] for s in state.values()]
         assert 'IntTextModel' in model_names
 
+    def test_cors(self):
+        w = IntText(4)
+        code = embed_snippet(w)
+        assert 'crossorigin' in code
+        f = StringIO()
+        embed_minimal_html(f, w)
+        assert 'crossorigin' in f.getvalue()
+
+        code = embed_snippet(w, cors=False, requirejs=False)
+        assert 'crossorigin' not in code
+        f = StringIO()
+        embed_minimal_html(f, w, cors=False, requirejs=False)
+        assert 'crossorigin' not in f.getvalue()
+
+        code = embed_snippet(w, cors=False, requirejs=True)
+        assert len(re.findall('crossorigin', code)) == 1 # 1 is from the require, which is ok
+        f = StringIO()
+        embed_minimal_html(f, w, cors=False, requirejs=True)
+        assert len(re.findall('crossorigin', f.getvalue())) == 1 # 1 is from the require, which is ok
+
     def test_embed_data_two_widgets(self):
         w1 = IntText(4)
         w2 = IntSlider(min=0, max=100)
