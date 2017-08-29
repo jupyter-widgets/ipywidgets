@@ -6,7 +6,7 @@ import {
     CoreDOMWidgetModel
 } from './widget_core';
 
-import adapter;
+import * as webrtc_adapter from 'webrtc-adapter';
 
 import * as _ from 'underscore';
 
