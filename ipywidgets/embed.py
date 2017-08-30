@@ -237,7 +237,7 @@ def embed_snippet(views,
 
     load = load_requirejs_template if requirejs else load_template
 
-    use_cors = 'crossorigin="anonymous"' if cors else ' '
+    use_cors = ' crossorigin="anonymous"' if cors else ''
     values = {
         'load': load.format(embed_url=embed_url, use_cors=use_cors),
         'json_data': json.dumps(data['manager_state'], indent=indent),
