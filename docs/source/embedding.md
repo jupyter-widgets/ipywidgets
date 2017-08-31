@@ -95,7 +95,7 @@ browser search bar).
 You will sometimes want greater granularity than that afforded by
 `embed_minimal_html`. Often, you want to control the structure of the HTML
 document in which the widgets are embedded. For this, use `embed_data` to get
-JSON exports of specific parts of the widget state, and embed these in an
+JSON exports of specific parts of the widget state. You can embed these in an
 HTML template:
 
 ```py
@@ -159,6 +159,10 @@ document. For each widget view, place a `<script>` tag of type
 `application/vnd.juptyer.widget-view.json` in the DOM element that should
 contain the view. The widget manager will replace each `<script>` tag with
 the DOM tree corresponding to the widget.
+
+In this example, we used Python's string format. For embedding in more
+complex documents, you may want to use a templating engine like
+[Jinja2](http://jinja.pocoo.org/).
 
 In all embedding functions, the state of all widgets known to the widget manager is
 included by default. You can alternatively pass a reduced state to use instead.
