@@ -274,7 +274,7 @@ def embed_minimal_html(fp, views, title=u'IPyWidget export', template=None, **kw
         The file to write the HTML output to.
     {views_attribute}
     title: title of the html page.
-    template: Template in which to embed the widget state.abs
+    template: Template in which to embed the widget state.
         This should be a Python string with placeholders
         `{{title}}` and `{{snippet}}`. The `{{snippet}}` placeholder
         will be replaced by all the widgets.
