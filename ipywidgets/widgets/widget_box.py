@@ -23,13 +23,14 @@ class Box(DOMWidget, CoreWidget):
     # Child widgets in the container.
     # Using a tuple here to force reassignment to update the list.
     # When a proper notifying-list trait exists, that is what should be used here.
-    children = Tuple(help="List of widget children").tag(sync=True, **widget_serialization)
+    children = Tuple(help="List of widget children").tag(
+        sync=True, **widget_serialization)
 
     box_style = CaselessStrEnum(
         values=['success', 'info', 'warning', 'danger', ''], default_value='',
         help="""Use a predefined styling for the box.""").tag(sync=True)
 
-    def __init__(self, children = (), **kwargs):
+    def __init__(self, children=(), **kwargs):
         kwargs['children'] = children
         super(Box, self).__init__(**kwargs)
         self.on_displayed(Box._fire_children_displayed)
