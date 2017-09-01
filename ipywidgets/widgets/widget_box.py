@@ -78,14 +78,40 @@ class Box(DOMWidget, CoreWidget):
 
 
 @register
+@_doc_subst
 class VBox(Box):
-    """Displays multiple widgets vertically using the flexible box model."""
+    """ Displays multiple widgets vertically using the flexible box model.
+
+    Parameters
+    ----------
+    {box_params}
+
+    Examples
+    --------
+    >>> import ipywidgets as widgets
+    >>> title_widget = widgets.HTML('<em>Vertical Box Example</em>')
+    >>> slider = widgets.IntSlider()
+    >>> widgets.VBox([title_widget, slider])
+    """
     _model_name = Unicode('VBoxModel').tag(sync=True)
     _view_name = Unicode('VBoxView').tag(sync=True)
 
 
 @register
+@_doc_subst
 class HBox(Box):
-    """Displays multiple widgets horizontally using the flexible box model."""
+    """ Displays multiple widgets horizontally using the flexible box model.
+
+    Parameters
+    ----------
+    {box_params}
+
+    Examples
+    --------
+    >>> import ipywidgets as widgets
+    >>> title_widget = widgets.HTML('<em>Horizontal Box Example</em>')
+    >>> slider = widgets.IntSlider()
+    >>> widgets.HBox([title_widget, slider])
+    """
     _model_name = Unicode('HBoxModel').tag(sync=True)
     _view_name = Unicode('HBoxView').tag(sync=True)
