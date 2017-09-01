@@ -59,7 +59,7 @@ class Box(DOMWidget, CoreWidget):
 
     # Child widgets in the container.
     # Using a tuple here to force reassignment to update the list.
-    # When a proper notifying-list trait exists, that is what should be used here.
+    # When a proper notifying-list trait exists, use that instead.
     children = Tuple(help="List of widget children").tag(
         sync=True, **widget_serialization)
 
