@@ -14,14 +14,8 @@ from .widget_core import CoreWidget
 from traitlets import Unicode, Tuple, CaselessStrEnum
 
 
-@register
-class Box(DOMWidget, CoreWidget):
-    """ Displays multiple widgets in a group.
-
-    The widgets are laid out horizontally.
-
-    Parameters
-    ----------
+_doc_snippets = {}
+_doc_snippets['box_params'] = """
     children: iterable of Widget instances
         list of widgets to display
 
@@ -29,6 +23,29 @@ class Box(DOMWidget, CoreWidget):
         one of 'success', 'info', 'warning' or 'danger', or ''.
         Applies a predefined style to the box. Defaults to '',
         which applies no pre-defined style.
+"""
+
+
+def _doc_subst(cls):
+    """ Substitute format strings in class docstring """
+    # Strip the snippets to avoid trailing new lines and whitespace
+    stripped_snippets = {
+        key: snippet.strip() for (key, snippet) in _doc_snippets.items()
+    }
+    cls.__doc__ = cls.__doc__.format(**stripped_snippets)
+    return cls
+
+
+@register
+@_doc_subst
+class Box(DOMWidget, CoreWidget):
+    """ Displays multiple widgets in a group.
+
+    The widgets are laid out horizontally.
+
+    Parameters
+    ----------
+    {box_params}
 
     Examples
     --------
