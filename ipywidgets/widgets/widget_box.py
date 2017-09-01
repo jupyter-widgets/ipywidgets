@@ -18,6 +18,8 @@ from traitlets import Unicode, Tuple, CaselessStrEnum
 class Box(DOMWidget, CoreWidget):
     """ Displays multiple widgets in a group.
 
+    The widgets are laid out horizontally.
+
     Parameters
     ----------
     children: iterable of Widget instances
@@ -30,7 +32,6 @@ class Box(DOMWidget, CoreWidget):
 
     Examples
     --------
-
     >>> import ipywidgets as widgets
     >>> title_widget = widgets.HTML('<em>Box Example</em>')
     >>> slider = widgets.IntSlider()
