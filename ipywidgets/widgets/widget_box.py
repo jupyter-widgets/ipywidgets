@@ -1,9 +1,11 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-"""Box class.
+"""Box widgets.
 
-Represents a container that can be used to group other widgets.
+These widgets are containers that can be used to
+group other widgets together and control their
+relative layouts.
 """
 
 from .widget import register, widget_serialization
@@ -14,7 +16,26 @@ from traitlets import Unicode, Tuple, CaselessStrEnum
 
 @register
 class Box(DOMWidget, CoreWidget):
-    """Displays multiple widgets in a group."""
+    """ Displays multiple widgets in a group.
+
+    Parameters
+    ----------
+    children: iterable of Widget instances
+        list of widgets to display
+
+    box_style: str
+        one of 'success', 'info', 'warning' or 'danger', or ''.
+        Applies a predefined style to the box. Defaults to '',
+        which applies no pre-defined style.
+
+    Examples
+    --------
+
+    >>> import ipywidgets as widgets
+    >>> title_widget = widgets.HTML('<em>Box Example</em>')
+    >>> slider = widgets.IntSlider()
+    >>> widgets.Box([title_widget, slider])
+    """
     _model_name = Unicode('BoxModel').tag(sync=True)
     _view_name = Unicode('BoxView').tag(sync=True)
 
