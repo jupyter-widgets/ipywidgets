@@ -16,6 +16,7 @@ try:
     from inspect import getfullargspec as check_argspec
 except ImportError:
     from inspect import getargspec as check_argspec # py2
+import sys
 
 from IPython.core.getipython import get_ipython
 from . import (ValueWidget, Text,
@@ -30,6 +31,32 @@ from collections import Iterable, Mapping
 
 empty = Parameter.empty
 
+
+def show_inline_matplotlib_plots():
+    """Show matplotlib plots immediately if using the inline backend.
+
+    With ipywidgets 6.0, matplotlib plots don't work well with interact when
+    using the inline backend that comes with ipykernel. Basically, the inline
+    backend only shows the plot after the entire cell executes, which does not
+    play well with drawing plots inside of an interact function. See
+    https://github.com/jupyter-widgets/ipywidgets/issues/1181/ and
+    https://github.com/ipython/ipython/issues/10376 for more details. This
+    function displays any matplotlib plots if the backend is the inline backend.
+    """
+    if 'matplotlib' not in sys.modules:
+        # matplotlib hasn't been imported, nothing to do.
+        return
+
+    try:
+        import matplotlib as mpl
+        from ipykernel.pylab.backend_inline import flush_figures
+    except ImportError:
+        return
+
+    if mpl.get_backend() == 'module://ipykernel.pylab.backend_inline':
+        flush_figures()
+
+
 def interactive_output(f, controls):
     """Connect widget controls to a function.
 
@@ -40,14 +67,18 @@ def interactive_output(f, controls):
 
     out = Output()
     def observer(change):
-        out.clear_output()
         kwargs = {k:v.value for k,v in controls.items()}
+        show_inline_matplotlib_plots()
         with out:
+            clear_output(wait=True)
             f(**kwargs)
+            show_inline_matplotlib_plots()
     for k,w in controls.items():
         w.observe(observer, 'value')
+    show_inline_matplotlib_plots()
     observer(None)
     return out
+
 
 def _matches(o, pattern):
     """Match a pattern of types in a sequence."""
@@ -208,6 +239,7 @@ class interactive(VBox):
         if self.manual:
             self.manual_button.disabled = True
         try:
+            show_inline_matplotlib_plots()
             with self.out:
                 if self.clear_output:
                     clear_output(wait=True)
@@ -215,6 +247,7 @@ class interactive(VBox):
                     value = widget.get_interact_value()
                     self.kwargs[widget._kwarg] = value
                 self.result = self.f(**self.kwargs)
+                show_inline_matplotlib_plots()
                 if self.auto_display and self.result is not None:
                     display(self.result)
         except Exception as e:
@@ -493,6 +526,7 @@ class _InteractFactory(object):
             # so wrap in a lambda
             f = lambda *args, **kwargs: __interact_f(*args, **kwargs)
             f.widget = w
+        show_inline_matplotlib_plots()
         display(w)
         return f
 
