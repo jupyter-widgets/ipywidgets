@@ -88,7 +88,7 @@ embed_minimal_html('export.html', views=[slider], title='Widgets export')
 This creates the stand-alone file `export.html`. To view the file, either
 start an HTTP server, such as the [HTTP
 server](https://docs.python.org/3.6/library/http.server.html#module-http.server)
-in the Python standard library. or just open it in your web browser (by
+in the Python standard library, or just open it in your web browser (by
 double-clicking on the file, or by writing `file:///path/to/file` in your
 browser search bar).
 
@@ -135,6 +135,8 @@ html_template = """
 
   <body>
 
+    <h1>Widget export</h1>
+
     <div id="first-slider-widget">
       <!-- This script tag will be replaced by the view's DOM tree -->
       <script type="application/vnd.jupyter.widget-view+json">
@@ -166,20 +168,21 @@ The web page needs to load RequireJS and the Jupyter widgets HTML manager.
 You then need to include the manager state in a `<script>` tag of type
 `application/vnd.jupyter.widget-state+json`, which can go in the head of the
 document. For each widget view, place a `<script>` tag of type
-`application/vnd.juptyer.widget-view.json` in the DOM element that should
+`application/vnd.jupyter.widget-view+json` in the DOM element that should
 contain the view. The widget manager will replace each `<script>` tag with
 the DOM tree corresponding to the widget.
 
-In this example, we used Python's string format. For embedding in more
-complex documents, you may want to use a templating engine like
+In this example, we used a Python string for the template, and used the
+`format` method to interpolate the state. For embedding in more complex
+documents, you may want to use a templating engine like
 [Jinja2](http://jinja.pocoo.org/).
 
-In all embedding functions, the state of all widgets known to the widget manager is
-included by default. You can alternatively pass a reduced state to use instead.
-This can be particularly relevant if you have many independent widgets with a
-large state, but only want to include the relevant ones in your export. To
-include only the state of the views and their dependencies, use the function
-`dependency_state`:
+In all embedding functions in `ipywidgets.embed`, the state of all widgets
+known to the widget manager is included by default. You can alternatively
+pass a reduced state to use instead. This can be particularly relevant if you
+have many independent widgets with a large state, but only want to include
+the relevant ones in your export. To include only the state of specific views
+and their dependencies, use the function `dependency_state`:
 
 ```py
 from ipywidgets.embed import embed_snippet, dependency_state
