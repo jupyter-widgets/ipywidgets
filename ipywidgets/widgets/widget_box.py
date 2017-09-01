@@ -9,9 +9,7 @@ Represents a container that can be used to group other widgets.
 from .widget import register, widget_serialization
 from .domwidget import DOMWidget
 from .widget_core import CoreWidget
-from .widget_layout import Layout
-from traitlets import Unicode, Tuple, Int, CaselessStrEnum, Instance, default
-from warnings import warn
+from traitlets import Unicode, Tuple, CaselessStrEnum
 
 
 @register
