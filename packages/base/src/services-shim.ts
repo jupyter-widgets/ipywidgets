@@ -9,7 +9,7 @@
 
 import * as utils from './utils';
 import {
-    Kernel
+    Kernel, KernelMessage
 } from '@jupyterlab/services';
 
 export
@@ -30,7 +30,7 @@ namespace shims {
              * Hookup kernel events.
              * @param  {Kernel.IKernel} jsServicesKernel - @jupyterlab/services Kernel.IKernel instance
              */
-            init_kernel(jsServicesKernel) {
+            init_kernel(jsServicesKernel: Kernel.IKernel) {
                 this.kernel = jsServicesKernel; // These aren't really the same.
                 this.jsServicesKernel = jsServicesKernel;
             };
@@ -57,7 +57,7 @@ namespace shims {
              * @param  {(Comm, object) => void} f - callback that is called when the
              *                         comm is made.  Signature of f(comm, msg).
              */
-            register_target (target_name, f) {
+            register_target (target_name: string, f: (comm: Comm, object: KernelMessage.IMessage) => void): void {
                 var handle = this.jsServicesKernel.registerCommTarget(target_name,
                 (jsServicesComm, msg) => {
                     // Create the comm.
@@ -80,7 +80,7 @@ namespace shims {
              * Unregisters a comm target
              * @param  {string} target_name
              */
-            unregister_target (target_name, f) {
+            unregister_target (target_name: string, f: (comm: Comm, object: KernelMessage.IMessage) => void): void {
                 var handle = this.targets[target_name];
                 handle.dispose();
                 delete this.targets[target_name];
@@ -97,8 +97,8 @@ namespace shims {
 
             targets = Object.create(null);
             comms = Object.create(null);
-            kernel: Kernel.IKernel = null;
-            jsServicesKernel: Kernel.IKernel = null;
+            kernel: Kernel.IKernel;
+            jsServicesKernel: Kernel.IKernel;
         }
 
         /**
@@ -218,7 +218,7 @@ namespace shims {
                 }
             };
 
-            jsServicesComm: Kernel.IComm = null;
+            jsServicesComm: Kernel.IComm;
         }
     }
 }

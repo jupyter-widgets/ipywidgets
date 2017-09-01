@@ -31,6 +31,7 @@
     "prepublish": "npm run clean && npm run build"
   },
   "devDependencies": {
+    "@types/base64-js": "^1.2.5",
     "@types/expect.js": "^0.3.29",
     "@types/mocha": "^2.2.41",
     "chai": "^4.0.0",
@@ -50,7 +51,7 @@
     "rimraf": "^2.6.1",
     "sinon": "^2.1.0",
     "sinon-chai": "^2.11.0",
-    "typescript": "~2.4.1",
+    "typescript": "^2.4.2",
     "webpack": "^3.5.5"
   },
   "dependencies": {

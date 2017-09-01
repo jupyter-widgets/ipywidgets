@@ -98,12 +98,12 @@ interface WidgetOptions {
     /**
      * Target name of the widget view to create.
      */
-    view_name: string;
+    view_name: string | null;
 
     /**
      * Module name of the widget view to create.
      */
-    view_module: string;
+    view_module: string | null;
 
     /**
      * Semver version requirement for the view module.
@@ -194,7 +194,7 @@ abstract class ManagerBase<T> {
     /**
      * callback handlers specific to a view
      */
-    callbacks (view: WidgetView) {
+    callbacks (view?: WidgetView) {
         return {};
     };
 

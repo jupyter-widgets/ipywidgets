@@ -13,6 +13,14 @@ import {
 } from './nativeview';
 
 import {
+    ManagerBase
+} from './manager-base';
+
+import {
+    Kernel, KernelMessage
+} from '@jupyterlab/services';
+
+import {
     Widget
 } from '@phosphor/widgets';
 
@@ -20,25 +28,35 @@ import {
     Message, MessageLoop
 } from '@phosphor/messaging';
 
+import {
+    JSONObject, JSONValue
+} from '@phosphor/coreutils';
+
 export
 const JUPYTER_WIDGETS_VERSION = '1.0.0';
+
+export
+type ModelDict = { [key: string]: WidgetModel };
+
+export
+type ModelPromiseDict = { [key: string]: Promise<WidgetModel> }
 
 /**
  * Replace model ids with models recursively.
  */
 export
-function unpack_models(value, manager): Promise<any> {
-    let unpacked;
+function unpack_models(value: any | Backbone.ObjectHash | string | (Backbone.ObjectHash | string)[], manager: ManagerBase<any>): Promise<WidgetModel | ModelDict | WidgetModel[] | any> {
+    let unpacked: Promise<WidgetModel> | Promise<WidgetModel>[];
     if (Array.isArray(value)) {
-        unpacked = [];
+        let unpacked: Promise<WidgetModel>[] = [];
         value.forEach((sub_value, key) => {
             unpacked.push(unpack_models(sub_value, manager));
         });
         return Promise.all(unpacked);
-    } else if (value instanceof Object) {
-        unpacked = {};
+    } else if (value instanceof Object && typeof value !== 'string') {
+        let unpacked: ModelPromiseDict = {};
         Object.keys(value).forEach((key) => {
-            unpacked[key] = unpack_models(value[key], manager);
+            unpacked[key] = unpack_models((value as Backbone.ObjectHash)[key], manager);
         })
         return utils.resolvePromisesDict(unpacked);
     } else if (typeof value === 'string' && value.slice(0,10) === 'IPY_MODEL_') {
@@ -90,7 +108,7 @@ class WidgetModel extends Backbone.Model {
      *      An ID unique to this model.
      * comm : Comm instance (optional)
      */
-    initialize(attributes, options: {model_id: string, comm?: any, widget_manager: any}) {
+    initialize(attributes: Backbone.ObjectHash, options: {model_id: string, comm?: any, widget_manager: any}) {
         super.initialize(attributes, options);
 
         // Attributes should be initialized here, since user initialization may depend on it
@@ -154,7 +172,7 @@ class WidgetModel extends Backbone.Model {
     close(comm_closed: boolean = false): Promise<void> {
         // can only be closed once.
         if (this._closed) {
-            return;
+            return Promise.resolve();
         }
         this._closed = true;
         if (this.comm && !comm_closed) {
@@ -176,7 +194,7 @@ class WidgetModel extends Backbone.Model {
     /**
      * Handle when a widget comm is closed.
      */
-    _handle_comm_closed(msg) {
+    _handle_comm_closed(msg: KernelMessage.ICommCloseMsg) {
         this.trigger('comm:close');
         this.close(true);
     }
@@ -184,14 +202,17 @@ class WidgetModel extends Backbone.Model {
     /**
      * Handle incoming comm msg.
      */
-    _handle_comm_msg(msg): Promise<void> {
-        let method = msg.content.data.method;
-        switch (method) {
+    _handle_comm_msg(msg: KernelMessage.ICommOpenMsg): Promise<void> {
+        let data = msg.content.data as JSONObject | null;
+        if (data === null) {
+            return Promise.resolve();
+        }
+        switch (data['method']) {
             case 'update':
                 this.state_change = this.state_change
                     .then(() => {
-                        let state = msg.content.data.state;
-                        let buffer_paths = msg.content.data.buffer_paths || [];
+                        let state = data['state'] as JSONObject;
+                        let buffer_paths = (data['buffer_paths'] || []) as (string | number)[][];
                         // Make sure the buffers are DataViews
                         let buffers = (msg.buffers || []).map(b => {
                             if (b instanceof DataView) {
@@ -208,9 +229,10 @@ class WidgetModel extends Backbone.Model {
                     }).catch(utils.reject(`Could not process update msg for model id: ${this.model_id}`, true))
                 return this.state_change;
             case 'custom':
-                this.trigger('msg:custom', msg.content.data.content, msg.buffers);
+                this.trigger('msg:custom', data['content'], msg.buffers);
                 return Promise.resolve();
         }
+        return Promise.resolve();
     }
 
     /**
@@ -235,13 +257,13 @@ class WidgetModel extends Backbone.Model {
      * If drop_default is truthy, attributes that are equal to their default
      * values are dropped.
      */
-    get_state(drop_defaults) {
+    get_state(drop_defaults: boolean) {
         let fullState = this.attributes;
         if (drop_defaults) {
             // if defaults is a function, call it
             let d = this.defaults;
             let defaults = (typeof d === "function") ? d.call(this) : d;
-            let state = {};
+            let state: JSONObject = {};
             Object.keys(fullState).forEach(key => {
                 if (!(utils.isEqual(fullState[key], defaults[key]))) {
                     state[key] = fullState[key];
@@ -258,7 +280,7 @@ class WidgetModel extends Backbone.Model {
      *
      * execution_state : ('busy', 'idle', 'starting')
      */
-    _handle_status(msg) {
+    _handle_status(msg: KernelMessage.IStatusMsg) {
         if (this.comm !== void 0) {
             if (msg.content.execution_state === 'idle') {
                 this._pending_msgs--;
@@ -414,7 +436,7 @@ class WidgetModel extends Backbone.Model {
         for (const k of Object.keys(state)) {
             try {
                 if (serializers[k] && serializers[k].serialize) {
-                    state[k] = (serializers[k].serialize)(state[k], this);
+                    state[k] = (serializers[k].serialize!)(state[k], this);
                 } else {
                     // the default serializer just deep-copies the object
                     state[k] = JSON.parse(JSON.stringify(state[k]));
@@ -433,11 +455,11 @@ class WidgetModel extends Backbone.Model {
     /**
      * Send a sync message to the kernel.
      */
-    send_sync_message(state, callbacks: any = {}) {
+    send_sync_message(state: JSONObject, callbacks: any = {}) {
         try {
             callbacks.iopub = callbacks.iopub || {};
             let statuscb = callbacks.iopub.status
-            callbacks.iopub.status = (msg) => {
+            callbacks.iopub.status = (msg: KernelMessage.IStatusMsg) => {
                 this._handle_status(msg);
                 if (statuscb) {
                     statuscb(msg);
@@ -501,14 +523,14 @@ class WidgetModel extends Backbone.Model {
      * is an instance of widget manager, which is required for the
      * deserialization of widget models.
      */
-    static _deserialize_state(state, manager) {
+    static _deserialize_state(state: JSONObject, manager: ManagerBase<any>) {
         let serializers = this.serializers;
         let deserialized;
         if (serializers) {
-            deserialized = {};
+            deserialized = {} as JSONObject;
             for (let k in state) {
                 if (serializers[k] && serializers[k].deserialize) {
-                     deserialized[k] = (serializers[k].deserialize)(state[k], manager);
+                     deserialized[k] = (serializers[k].deserialize!)(state[k], manager);
                 } else {
                      deserialized[k] = state[k];
                 }
@@ -801,17 +823,17 @@ class DOMWidgetView extends WidgetView {
             el = this.el;
         }
         utils.difference(old_classes, new_classes).map(function(c) {
-            if (el.classList) { // classList is not supported by IE for svg elements
-                el.classList.remove(c);
+            if (el!.classList) { // classList is not supported by IE for svg elements
+                el!.classList.remove(c);
             } else {
                 el.setAttribute('class', el.getAttribute('class').replace(c, ''));
             }
         });
         utils.difference(new_classes, old_classes).map(function(c) {
-            if (el.classList) { // classList is not supported by IE for svg elements
-                el.classList.add(c);
+            if (el!.classList) { // classList is not supported by IE for svg elements
+                el!.classList.add(c);
             } else {
-                el.setAttribute('class', el.getAttribute('class').concat(' ', c));
+                el!.setAttribute('class', el!.getAttribute('class').concat(' ', c));
             }
         });
     }

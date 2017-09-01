@@ -73,7 +73,7 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
 
     // Set a hash of attributes to the view's `el`. We use the "prop" version
     // if available, falling back to `setAttribute` for the catch-all.
-    _setAttributes(attrs) {
+    _setAttributes(attrs: Backbone.ObjectHash) {
       for (var attr in attrs) {
         attr in this.el ? this.el[attr] = attrs[attr] : this.el.setAttribute(attr, attrs[attr]);
       }
@@ -88,8 +88,8 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
      * the event's `delegateTarget` property is set to it and the return the
      * result of calling bound `listener` with the parameters given to the
      * handler.
-     * 
-     * This does not properly handle selectors for things like focus and blur (see 
+     *
+     * This does not properly handle selectors for things like focus and blur (see
      * https://github.com/jquery/jquery/blob/7d21f02b9ec9f655583e898350badf89165ed4d5/src/event.js#L442
      * for some similar exceptional cases).
      */

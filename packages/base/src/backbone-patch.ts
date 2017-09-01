@@ -38,12 +38,16 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 import * as utils from './utils';
 
+import {
+    ModelSetOptions, ObjectHash
+} from 'backbone';
+
 // Set a hash of model attributes on the object, firing `"change"`. This is
 // the core primitive operation of a model, updating the data and notifying
 // anyone who needs to know about the change in state. The heart of the beast.
 // This *MUST* be called with the model as the `this` context.
 export
-function set(key, val, options) {
+function set(key: string, val: any, options: ModelSetOptions) {
     if (key == null) return this;
 
     // Handle both `"key", value` and `{key: value}` -style arguments.
@@ -52,7 +56,7 @@ function set(key, val, options) {
         attrs = key;
         options = val;
     } else {
-        (attrs = {})[key] = val;
+        (attrs = {} as ObjectHash)[key] = val;
     }
 
     options || (options = {});
@@ -61,7 +65,7 @@ function set(key, val, options) {
     if (!this._validate(attrs, options)) return false;
 
     // Extract attributes and options.
-    var unset      = options.unset;
+    var unset      = (options as any).unset;
     var silent     = options.silent;
     var changes    = [];
     var changing   = this._changing;

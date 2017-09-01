@@ -33,13 +33,13 @@ let assign = (Object as any).assign || function(t) {
  */
 export
 function uuid(): string {
-    var s = [];
+    var s: string[] = [];
     var hexDigits = '0123456789ABCDEF';
     for (var i = 0; i < 32; i++) {
         s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
     }
     s[12] = '4';  // bits 12-15 of the time_hi_and_version field to 0010
-    s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+    s[16] = hexDigits.substr(((s[16] as any) & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
 
     return s.join('');
 }
@@ -53,7 +53,7 @@ function uuid(): string {
  */
 export
 class WrappedError extends Error {
-    constructor(message, error) {
+    constructor(message: string, error: Error) {
         super(message);
         console.warn('WrappedError has been deprecated!');
         // Keep a stack of the original error messages.
@@ -72,9 +72,9 @@ class WrappedError extends Error {
  * Returns a single Promise.
  */
 export
-function resolvePromisesDict(d): Promise<any> {
+function resolvePromisesDict<T>(d: {[key: string]: Promise<T> | T}): Promise<{[key: string]: T}> {
     var keys = Object.keys(d);
-    var values = [];
+    var values: (Promise<T> | T)[] = [];
     keys.forEach(function(key) {
         values.push(d[key]);
     });
@@ -94,8 +94,8 @@ function resolvePromisesDict(d): Promise<any> {
  * the original error that caused the promise to reject.
  */
 export
-function reject(message, log) {
-    return function promiseRejection(error) {
+function reject(message: string, log: boolean) {
+    return function promiseRejection(error: Error) {
         if (log) console.error(new Error(message));
         throw error;
     };
@@ -141,7 +141,7 @@ function remove_buffers(state): {state: any, buffers: ArrayBuffer[], buffer_path
     // if we need to remove an object from a list, we need to clone that list, otherwise we may modify
     // the internal state of the widget model
     // however, we do not want to clone everything, for performance
-    function remove(obj, path) {
+    function remove(obj, path: (string | number)[]) {
         if (obj.toJSON) {
             // We need to get the JSON form of the object before recursing.
             // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#toJSON()_behavior
