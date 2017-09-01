@@ -144,6 +144,15 @@ def add_resolved_links(store, drop_defaults):
 def dependency_state(widgets, drop_defaults=True):
     """Get the state of all widgets specified, and their dependencies.
 
+    Parameters
+    ----------
+
+    widgets: single widget or list of widgets.
+       This function will return the state of every widget mentioned
+       and of all their dependencies.
+    drop_defaults: boolean
+        Whether to drop default values from the widget states.
+
     This uses a simple dependency finder, including:
      - any widget directly referenced in the state of an included widget
      - any widget in a list/tuple attribute in the state of an included widget
