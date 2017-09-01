@@ -63,7 +63,10 @@ class ButtonView extends DOMWidgetView {
      * Called when view is rendered.
      */
     render() {
-        this.el.className = 'jupyter-widgets jupyter-button widget-button';
+        super.render();
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('jupyter-button');
+        this.el.classList.add('widget-button');
         this.listenTo(this.model, 'change:button_style', this.update_button_style);
         this.set_button_style();
         this.update(); // Set defaults.

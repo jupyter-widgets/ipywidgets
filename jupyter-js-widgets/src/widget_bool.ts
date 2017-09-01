@@ -111,7 +111,9 @@ class ToggleButtonView extends DOMWidgetView {
      */
     render() {
         super.render();
-        this.el.className = 'jupyter-widgets jupyter-button widget-toggle-button';
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('jupyter-button');
+        this.el.classList.add('widget-toggle-button');
         this.listenTo(this.model, 'change:button_style', this.update_button_style);
         this.set_button_style();
         this.update(); // Set defaults.
