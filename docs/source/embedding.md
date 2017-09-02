@@ -192,10 +192,6 @@ s2 = IntSlider(value=40)
 embed_minimal_html(views=[s1, s2], state=dependency_state([s1, s2]))
 ```
 
-In the `embed_snippet` and `embed_minimal_html` examples above, the
-`requirejs=True` gives the RequireJS embedder. To get the standard embedder,
-omit this option or give `requirejs=False`.
-
 ## Embedding Widgets in the Sphinx HTML Documentation
 
 As of ipywidgets 6.0, Jupyter interactive widgets can be rendered in Sphinx html
