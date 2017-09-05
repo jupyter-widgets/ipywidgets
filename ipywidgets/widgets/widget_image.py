@@ -12,7 +12,7 @@ from .widget_core import CoreWidget
 from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
 from .widget import register
-from traitlets import Unicode, CUnicode, Bytes, observe
+from traitlets import Unicode, CUnicode, Bytes, observe, Int
 
 
 @register
@@ -32,3 +32,5 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
     width = CUnicode(help="Width of the image in pixels.").tag(sync=True)
     height = CUnicode(help="Height of the image in pixels.").tag(sync=True)
     value = Bytes(help="The image data as a byte string.").tag(sync=True)
+    natural_height = Int(help="Displayed height of image in pixels").tag(sync=True)
+    natural_width = Int(help="Displayed width of image in pixels").tag(sync=True)
