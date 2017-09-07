@@ -760,11 +760,11 @@ _FALLBACK_HTML_TEMPLATE = """\
   If you're reading this message in Jupyter Notebook or JupyterLab, it may mean
   that the widgets JavaScript is still loading. If this message persists, it
   likely means that the widgets JavaScript library is either not installed or
-  not enabled. See the <a href=https://ipywidgets.readthedocs.io/en/latest/user_install.html>Jupyter
+  not enabled. See the <a href="https://ipywidgets.readthedocs.io/en/stable/user_install.html">Jupyter
   Widgets Documentation</a> for setup instructions.
 </p>
 <p>
-  If you're reading this message in another notebook frontend (e.g. a static
+  If you're reading this message in another notebook frontend (for example, a static
   rendering on GitHub or <a href="https://nbviewer.jupyter.org/">NBViewer</a>),
   it may mean that your frontend doesn't currently support widgets.
 </p>
