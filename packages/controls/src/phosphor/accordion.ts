@@ -68,9 +68,9 @@ class Collapse extends Widget {
       return;
     }
     super.dispose();
-    this._header = null;
-    this._widget = null;
-    this._content = null;
+    this._header = null!;
+    this._widget = null!;
+    this._content = null!;
   }
 
   get widget() {

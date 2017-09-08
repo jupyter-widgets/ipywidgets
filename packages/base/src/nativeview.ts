@@ -39,10 +39,10 @@ var ElementProto: Element = Element.prototype;//: typeof Element = (typeof Eleme
 
 // Find the right `Element#matches` for IE>=9 and modern browsers.
 var matchesSelector = ElementProto.matches ||
-    ElementProto['webkitMatchesSelector'] ||
-    ElementProto['mozMatchesSelector'] ||
-    ElementProto['msMatchesSelector'] ||
-    ElementProto['oMatchesSelector'] ||
+    (ElementProto as any)['webkitMatchesSelector'] ||
+    (ElementProto as any)['mozMatchesSelector'] ||
+    (ElementProto as any)['msMatchesSelector'] ||
+    (ElementProto as any)['oMatchesSelector'] ||
     function matches(selector) {
         var matches = (this.document || this.ownerDocument).querySelectorAll(selector),
         i = matches.length;
@@ -93,10 +93,12 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
      * https://github.com/jquery/jquery/blob/7d21f02b9ec9f655583e898350badf89165ed4d5/src/event.js#L442
      * for some similar exceptional cases).
      */
-    delegate(eventName, selector, listener) {
+    delegate(eventName: string, listener: Function): Backbone.View<T>;
+    delegate(eventName: string, selector: string, listener: Function): Backbone.View<T>;
+    delegate(eventName: string, selector: string | Function, listener?: any): Backbone.View<T> {
       if (typeof selector !== 'string') {
         listener = selector;
-        selector = null;
+        selector = null!;
       }
 
       // We have to initialize this here, instead of in the constructor, because the
@@ -107,9 +109,9 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
       }
 
       var root = this.el;
-      var handler = selector ? function (e) {
-        var node = e.target || e.srcElement;
-        for (; node && node != root; node = node.parentNode) {
+      var handler = selector ? function (e: any) {
+        var node: any = e.target || e.srcElement;
+        for (; node && node != root; node = (node as any).parentNode) {
           if (matchesSelector.call(node, selector)) {
             e.delegateTarget = node;
             if (listener.handleEvent) {
@@ -128,10 +130,12 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
 
     // Remove a single delegated event. Either `eventName` or `selector` must
     // be included, `selector` and `listener` are optional.
-    undelegate(eventName, selector, listener) {
+    undelegate(eventName: string, selector?: string, listener?: Function): NativeView<T>;
+    undelegate(selector: string, listener?: Function): NativeView<T>;
+    undelegate(eventName: string, selector?: string | Function, listener?: Function): NativeView<T> {
       if (typeof selector === 'function') {
         listener = selector;
-        selector = null;
+        selector = null!;
       }
 
       if (this.el && this._domEvents) {

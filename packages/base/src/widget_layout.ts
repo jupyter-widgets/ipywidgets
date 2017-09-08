@@ -56,12 +56,12 @@ class LayoutView extends WidgetView {
     /**
      * Public constructor
      */
-    initialize(parameters) {
+    initialize(parameters: any) {
         this._traitNames = [];
         super.initialize(parameters);
         // Register the traits that live on the Python side
         for (let key of Object.keys(css_properties)) {
-            this.registerTrait(key)
+            this.registerTrait(key);
         }
     }
 
@@ -73,7 +73,7 @@ class LayoutView extends WidgetView {
         this._traitNames.push(trait);
 
         // Listen to changes, and set the value on change.
-        this.listenTo(this.model, 'change:' + trait, (model, value) => {
+        this.listenTo(this.model, 'change:' + trait, (model: LayoutModel, value: any) => {
             this.handleChange(trait, value);
         });
 
@@ -100,7 +100,7 @@ class LayoutView extends WidgetView {
             if (value === null) {
                 parent.el.style.removeProperty(this.css_name(trait));
             } else {
-                parent.el.style[this.css_name(trait)] = value;
+                parent.el.style[this.css_name(trait) as any] = value;
             }
         } else {
             console.warn('Style not applied because a parent view does not exist');

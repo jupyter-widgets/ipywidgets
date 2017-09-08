@@ -2,12 +2,12 @@
 // Distributed under the terms of the Modified BSD License.
 
 export {
-    isEqual, difference
+    isEqual, difference, isPlainObject
 } from 'lodash';
 
 import {
-    isPlainObject
-} from 'lodash';
+    JSONObject, JSONArray, JSONValue
+} from '@phosphor/coreutils';
 
 import {
     toByteArray, fromByteArray
@@ -19,7 +19,7 @@ import {
  * This is from code that Typescript 2.4 generates for a polyfill.
  */
 export
-let assign = (Object as any).assign || function(t) {
+let assign = (Object as any).assign || function(t: any) {
     for (var s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
         for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
@@ -111,17 +111,36 @@ function reject(message: string, log: boolean) {
  * Will lead to {a: 1, b: {data: array1}, c: [0, array2]}
  */
 export
-function put_buffers(state, buffer_paths: (string | number)[][], buffers: DataView[]) {
+function put_buffers(state: JSONObject | JSONArray, buffer_paths: (string | number)[][], buffers: DataView[]) {
     for (let i=0; i<buffer_paths.length; i++) {
         let buffer_path = buffer_paths[i];
          // say we want to set state[x][y][z] = buffers[i]
-        let obj = state;
+        let obj = state as any;
         // we first get obj = state[x][y]
         for (let j = 0; j < buffer_path.length-1; j++)
             obj = obj[buffer_path[j]];
         // and then set: obj[z] = buffers[i]
         obj[buffer_path[buffer_path.length-1]] = buffers[i];
     }
+}
+
+
+export
+interface ISerializedState {
+    state: JSONValue;
+    buffers: ArrayBuffer[];
+    buffer_paths: (string | number)[][];
+}
+
+
+export
+interface Serializeable {
+    toJSON(options?: {}): JSONObject | JSONArray;
+}
+
+export
+function isSerializable(object: any): object is Serializeable{
+    return object.toJSON;
 }
 
 
@@ -135,14 +154,14 @@ function put_buffers(state, buffer_paths: (string | number)[][], buffers: DataVi
  * and the buffers associated to those paths (.buffers).
  */
 export
-function remove_buffers(state): {state: any, buffers: ArrayBuffer[], buffer_paths: (string | number)[][]} {
+function remove_buffers(state: JSONObject | JSONArray | Serializeable): ISerializedState {
     let buffers: ArrayBuffer[] = [];
     let buffer_paths: (string | number)[][] = [];
     // if we need to remove an object from a list, we need to clone that list, otherwise we may modify
     // the internal state of the widget model
     // however, we do not want to clone everything, for performance
-    function remove(obj, path: (string | number)[]) {
-        if (obj.toJSON) {
+    function remove(obj: JSONObject | JSONArray | Serializeable, path: (string | number)[]) {
+        if (isSerializable(obj)) {
             // We need to get the JSON form of the object before recursing.
             // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#toJSON()_behavior
             obj = obj.toJSON();
@@ -152,7 +171,7 @@ function remove_buffers(state): {state: any, buffers: ArrayBuffer[], buffer_path
             for (let i = 0; i < obj.length; i++) {
                 let value = obj[i];
                 if(value) {
-                    if (value.buffer instanceof ArrayBuffer || value instanceof ArrayBuffer) {
+                    if (value['buffer'] instanceof ArrayBuffer || value instanceof ArrayBuffer) {
                         if(!is_cloned) {
                             obj = obj.slice();
                             is_cloned = true;

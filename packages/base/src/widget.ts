@@ -32,6 +32,14 @@ import {
     JSONObject, JSONValue
 } from '@phosphor/coreutils';
 
+import {
+    LayoutModel
+} from './widget_layout';
+
+import {
+    StyleModel
+} from './widget_style';
+
 export
 const JUPYTER_WIDGETS_VERSION = '1.0.0';
 
@@ -40,6 +48,11 @@ type ModelDict = { [key: string]: WidgetModel };
 
 export
 type ModelPromiseDict = { [key: string]: Promise<WidgetModel> }
+
+export
+interface IClassMap {
+    [key: string]: string[]
+}
 
 /**
  * Replace model ids with models recursively.
@@ -63,7 +76,7 @@ function unpack_models(value: any | Backbone.ObjectHash | string | (Backbone.Obj
         // get_model returns a promise already
         return manager.get_model(value.slice(10, value.length));
     } else {
-        return Promise.resolve(value);
+        return Promise.resolve(value as any);
     }
 };
 
@@ -155,7 +168,7 @@ class WidgetModel extends Backbone.Model {
     /**
      * Send a custom msg over the comm.
      */
-    send(content, callbacks, buffers?) {
+    send(content: any, callbacks, buffers?: ArrayBuffer[] | ArrayBufferView[]) {
         if (this.comm !== undefined) {
             let data = {method: 'custom', content: content};
             this.comm.send(data, callbacks, {}, buffers);
@@ -211,8 +224,8 @@ class WidgetModel extends Backbone.Model {
             case 'update':
                 this.state_change = this.state_change
                     .then(() => {
-                        let state = data['state'] as JSONObject;
-                        let buffer_paths = (data['buffer_paths'] || []) as (string | number)[][];
+                        let state = data!['state'] as JSONObject;
+                        let buffer_paths = (data!['buffer_paths'] || []) as (string | number)[][];
                         // Make sure the buffers are DataViews
                         let buffers = (msg.buffers || []).map(b => {
                             if (b instanceof DataView) {
@@ -502,7 +515,7 @@ class WidgetModel extends Backbone.Model {
      * the second form will result in foo being called twice
      * while the first will call foo only once.
      */
-    on_some_change(keys, callback, context) {
+    on_some_change(keys: string[], callback, context: any) {
         this.on('change', function() {
             if (keys.some(this.hasChanged, this)) {
                 callback.apply(context, arguments);
@@ -514,7 +527,7 @@ class WidgetModel extends Backbone.Model {
      * Serialize the model.  See the deserialization function at the top of this file
      * and the kernel-side serializer/deserializer.
      */
-    toJSON(options) {
+    toJSON(options?: {}) {
         return `IPY_MODEL_${this.model_id}`;
     }
 
@@ -555,7 +568,7 @@ class WidgetModel extends Backbone.Model {
     model_id: string;
     views: {[key: string]: Promise<WidgetView>};
     state_change: Promise<any>;
-    comm: any;
+    comm: COMMTYPEHERE;
     name: string;
     module: string;
 
@@ -595,7 +608,7 @@ abstract class WidgetView extends NativeView<WidgetModel> {
     /**
      * Public constructor.
      */
-    initialize(parameters) {
+    initialize(parameters: { options: any} ) {
         this.listenTo(this.model, 'change', () => {
             let changed = Object.keys(this.model.changedAttributes() || {});
             if (changed[0] === '_view_count' && changed.length === 1) {
@@ -631,7 +644,7 @@ abstract class WidgetView extends NativeView<WidgetModel> {
      *
      * Update view to be consistent with this.model
      */
-    update(options?) {
+    update(options?: {}) {
     };
 
     /**
@@ -645,7 +658,7 @@ abstract class WidgetView extends NativeView<WidgetModel> {
     /**
      * Create and promise that resolves to a child view of a given model
      */
-    create_child_view(child_model, options = {}) {
+    create_child_view(child_model: WidgetModel, options = {}) {
         let that = this;
         options = { parent: this, ...options};
         return this.model.widget_manager.create_view(child_model, options)
@@ -662,7 +675,7 @@ abstract class WidgetView extends NativeView<WidgetModel> {
     /**
      * Send a custom msg associated with this view.
      */
-    send(content, buffers?) {
+    send(content: JSONObject, buffers?: ArrayBuffer[] | ArrayBufferView[]) {
         this.model.send(content, this.callbacks(), buffers);
     }
 
@@ -715,7 +728,7 @@ class JupyterPhosphorWidget extends Widget {
         if (this._view) {
             this._view.remove();
         }
-        this._view = null;
+        this._view = null!;
     }
 
     /**
@@ -737,21 +750,21 @@ class DOMWidgetView extends WidgetView {
     /**
      * Public constructor
      */
-    initialize(parameters) {
+    initialize(parameters: { options: any }) {
         super.initialize(parameters);
 
-        this.listenTo(this.model, 'change:_dom_classes', (model, new_classes) => {
+        this.listenTo(this.model, 'change:_dom_classes', (model: DOMWidgetModel, new_classes: string[]) => {
             let old_classes = model.previous('_dom_classes');
             this.update_classes(old_classes, new_classes);
         });
 
         this.layoutPromise = Promise.resolve();
-        this.listenTo(this.model, 'change:layout', (model, value) => {
+        this.listenTo(this.model, 'change:layout', (model: DOMWidgetModel, value: LayoutModel) => {
             this.setLayout(value, model.previous('layout'));
         });
 
         this.stylePromise = Promise.resolve();
-        this.listenTo(this.model, 'change:style', (model, value) => {
+        this.listenTo(this.model, 'change:style', (model: DOMWidgetModel, value: StyleModel) => {
             this.setStyle(value, model.previous('style'));
         });
 
@@ -767,7 +780,7 @@ class DOMWidgetView extends WidgetView {
         })
     }
 
-    setLayout(layout, oldLayout?) {
+    setLayout(layout: LayoutModel, oldLayout?: LayoutModel) {
         if (layout) {
             this.layoutPromise = this.layoutPromise.then((oldLayoutView) => {
                 if (oldLayoutView) {
@@ -793,7 +806,7 @@ class DOMWidgetView extends WidgetView {
         }
     }
 
-    setStyle(style, oldStyle?) {
+    setStyle(style: StyleModel, oldStyle?: StyleModel) {
         if (style) {
             this.stylePromise = this.stylePromise.then((oldStyleView) => {
                 if (oldStyleView) {
@@ -818,22 +831,22 @@ class DOMWidgetView extends WidgetView {
     /**
      * Update the DOM classes applied to an element, default to this.el.
      */
-    update_classes(old_classes, new_classes, el?) {
-        if (el===undefined) {
+    update_classes(old_classes: string[], new_classes: string[], el?: HTMLElement) {
+        if (el === undefined) {
             el = this.el;
         }
         utils.difference(old_classes, new_classes).map(function(c) {
             if (el!.classList) { // classList is not supported by IE for svg elements
                 el!.classList.remove(c);
             } else {
-                el.setAttribute('class', el.getAttribute('class').replace(c, ''));
+                el!.setAttribute('class', el!.getAttribute('class')!.replace(c, ''));
             }
         });
         utils.difference(new_classes, old_classes).map(function(c) {
             if (el!.classList) { // classList is not supported by IE for svg elements
                 el!.classList.add(c);
             } else {
-                el!.setAttribute('class', el!.getAttribute('class').concat(' ', c));
+                el!.setAttribute('class', el!.getAttribute('class')!.concat(' ', c));
             }
         });
     }
@@ -862,8 +875,8 @@ class DOMWidgetView extends WidgetView {
      * el: optional DOM element handle, defaults to this.el
      *  Element that the classes are applied to.
      */
-    update_mapped_classes(class_map, trait_name, el?) {
-        let key = this.model.previous(trait_name);
+    update_mapped_classes(class_map: IClassMap, trait_name: string, el?: HTMLElement) {
+        let key = this.model.previous(trait_name) as string;
         let old_classes = class_map[key] ? class_map[key] : [];
         key = this.model.get(trait_name);
         let new_classes = class_map[key] ? class_map[key] : [];
@@ -871,7 +884,7 @@ class DOMWidgetView extends WidgetView {
         this.update_classes(old_classes, new_classes, el || this.el);
     }
 
-    set_mapped_classes(class_map, trait_name, el?) {
+    set_mapped_classes(class_map: IClassMap, trait_name: string, el?: HTMLElement) {
         let key = this.model.get(trait_name);
         let new_classes = class_map[key] ? class_map[key] : [];
         this.update_classes([], new_classes, el || this.el);
@@ -909,6 +922,7 @@ class DOMWidgetView extends WidgetView {
         this.pWidget.node.classList.toggle('jupyter-widgets-disconnected', !this.model.comm_live);
     }
 
+    el: HTMLElement;  // Override typing
     '$el': any;
     pWidget: Widget;
     layoutPromise: Promise<any>;

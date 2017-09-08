@@ -7,6 +7,10 @@ import * as Backbone from 'backbone';
 import * as services from '@jupyterlab/services';
 
 import {
+    JSONObject, JSONValue
+} from '@phosphor/coreutils';
+
+import {
     WidgetModel, WidgetView
 } from './widget';
 
@@ -132,6 +136,28 @@ interface StateOptions {
     drop_defaults?: boolean;
 }
 
+export
+interface IState {
+    buffers?: Base64Buffers;
+    model_name: string | null;
+    model_module: string | null;
+    model_module_version: string;
+    state: JSONObject;
+}
+
+
+export
+interface IStateMap {
+    [key: string]: IState;
+}
+
+export
+interface Base64Buffers {
+    data: string;
+    path: (string | number)[];
+    encoding: 'base64';
+}
+
 /**
  * Manager abstract base class
  */
@@ -212,7 +238,7 @@ abstract class ManagerBase<T> {
      * Handle when a comm is opened.
      */
     handle_comm_open(comm: shims.services.Comm, msg: services.KernelMessage.ICommOpenMsg): Promise<Backbone.Model> {
-        let protocolVersion = ((msg.metadata || {}).version as string) || '';
+        let protocolVersion = ((msg.metadata || {})['version'] as string) || '';
         if (protocolVersion.split('.', 1)[0] !== PROTOCOL_MAJOR_VERSION) {
             let error = `Wrong widget protocol version: received protocol version '${protocolVersion}', but was expecting major version '${PROTOCOL_MAJOR_VERSION}'`;
             console.error(error)
@@ -243,7 +269,7 @@ abstract class ManagerBase<T> {
      *                          required and additional options are available.
      * @param  serialized_state - serialized model attributes.
      */
-    new_widget(options: WidgetOptions, serialized_state: any = {}): Promise<WidgetModel> {
+    new_widget(options: ModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
         let commPromise;
         // we check to make sure the view information is provided, to help catch
         // backwards incompatibility errors.
@@ -352,7 +378,7 @@ abstract class ManagerBase<T> {
         }
         let widget_model = new ModelType(attributes, modelOptions);
         widget_model.once('comm:close', () => {
-            delete this._models[model_id];
+            delete this._models[widget_model.model_id];
         });
         widget_model.name = options.model_name;
         widget_model.module = options.model_module;
@@ -382,10 +408,10 @@ abstract class ManagerBase<T> {
      */
     get_state(options: StateOptions = {}): Promise<any> {
         return utils.resolvePromisesDict(this._models).then((models) => {
-            let state = {};
+            let state = {} as IStateMap;
             Object.keys(models).forEach(model_id => {
                 let model = models[model_id];
-                let split = utils.remove_buffers(model.serialize(model.get_state(options.drop_defaults)));
+                let split = utils.remove_buffers(model.serialize(model.get_state(!!options.drop_defaults)));
                 let buffers = split.buffers.map((buffer, index) => {
                     return {data: utils.bufferToBase64(buffer), path: split.buffer_paths[index], encoding: 'base64'};
                 });
@@ -500,8 +526,8 @@ abstract class ManagerBase<T> {
      * @param data The initial data for the comm
      * @param metadata The metadata in the open message
      */
-    protected abstract _create_comm(comm_target_name: string, model_id: string, data?: any, metadata?: any): Promise<any>;
-    protected abstract _get_comm_info();
+    protected abstract _create_comm(comm_target_name: string, model_id?: string, data?: any, metadata?: any): Promise<any>;
+    protected abstract _get_comm_info(): void;
 
     /**
      * Dictionary of model ids and model instance promises

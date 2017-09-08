@@ -7,7 +7,6 @@
  * embed live widgets in a context outside of the notebook.
  */
 
-import * as utils from './utils';
 import {
     Kernel, KernelMessage
 } from '@jupyterlab/services';
@@ -89,7 +88,7 @@ namespace shims {
             /**
              * Register a comm in the mapping
              */
-            register_comm = function (comm) {
+            register_comm = function (comm: USEACOMMTYPEHERE) {
               this.comms[comm.comm_id] = Promise.resolve(comm);
               comm.kernel = this.kernel;
               return comm.comm_id;

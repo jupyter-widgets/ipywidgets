@@ -6,6 +6,10 @@ import {
 } from './utils';
 
 import {
+    ObjectHash
+} from 'Backbone';
+
+import {
     WidgetModel, WidgetView, DOMWidgetView
 } from './widget';
 
@@ -23,7 +27,7 @@ class StyleModel extends WidgetModel {
         }, {}));
     }
 
-    public static styleProperties = {};
+    public static styleProperties: ObjectHash = {};
 }
 
 export
@@ -32,7 +36,7 @@ class StyleView extends WidgetView {
     /**
      * Public constructor
      */
-    initialize(parameters) {
+    initialize(parameters: any) {
         this._traitNames = [];
         super.initialize(parameters);
         // Register the traits that live on the Python side
@@ -53,7 +57,7 @@ class StyleView extends WidgetView {
         this._traitNames.push(trait);
 
         // Listen to changes, and set the value on change.
-        this.listenTo(this.model, 'change:' + trait, (model, value) => {
+        this.listenTo(this.model, 'change:' + trait, (model: StyleModel, value: any) => {
             this.handleChange(trait, value);
         });
     }
