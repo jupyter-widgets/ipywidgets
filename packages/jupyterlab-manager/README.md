@@ -5,11 +5,13 @@ A JupyterLab extension for Jupyter/IPython widgets.  Since JupyterLab is in its
 pre-release stage, this package integrating widgets into JupyterLab should also
 be considered experimental.
 
+
+
 Package Install
 ---------------
 
 **Prerequisites**
-* JupyterLab (see package.json for appropriate version)
+* JupyterLab (see package.json for appropriate version, currently [JupyterLab 0.27.0](https://github.com/jupyterlab/jupyterlab/releases/tag/v0.27.0))
 
 
 ```bash
