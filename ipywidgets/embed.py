@@ -23,12 +23,12 @@ snippet_template = u"""
 {widget_views}
 """
 
-load_template = u"""<script src="{embed_url}" crossorigin="anonymous"></script>"""
+load_template = u"""<script src="{embed_url}"{use_cors}></script>"""
 
 load_requirejs_template = u"""
 <!-- Load require.js. Delete this if your page already loads require.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" crossorigin="anonymous"></script>
-<script src="{embed_url}" crossorigin="anonymous"></script>
+<script src="{embed_url}"{use_cors}></script>
 """
 
 requirejs_snippet_template = u"""
@@ -188,7 +188,8 @@ def embed_snippet(views,
                   state=None,
                   indent=2,
                   embed_url=None,
-                  requirejs=True
+                  requirejs=True,
+                  cors=True
                  ):
     """Return a snippet that can be embedded in an HTML file.
 
@@ -214,6 +215,10 @@ def embed_snippet(views,
     requirejs: boolean (True)
         Enables the requirejs-based embedding, which allows for custom widgets.
         If True, the embed_url should point to an AMD module.
+    cors: boolean (True)
+        If True avoids sending user credentials while requesting the scripts.
+        When opening an HTML file from disk, some browsers may refuse to load
+        the scripts.
 
     Returns
     -------
@@ -232,8 +237,9 @@ def embed_snippet(views,
 
     load = load_requirejs_template if requirejs else load_template
 
+    use_cors = ' crossorigin="anonymous"' if cors else ''
     values = {
-        'load': load.format(embed_url=embed_url),
+        'load': load.format(embed_url=embed_url, use_cors=use_cors),
         'json_data': json.dumps(data['manager_state'], indent=indent),
         'widget_views': widget_views,
     }
