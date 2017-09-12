@@ -152,6 +152,7 @@ class SelectView extends DescriptionView {
     initialize(parameters) {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:_options_labels', () => this._updateOptions());
+        this.listenTo(this.model, 'change:index', (model, value, options) => this.updateSelection(options));
         // Create listbox here so that subclasses can modify it before it is populated in render()
         this.listbox = document.createElement('select');
     }
@@ -170,6 +171,7 @@ class SelectView extends DescriptionView {
         this.el.appendChild(this.listbox);
         this._updateOptions();
         this.update();
+        this.updateSelection();
     }
 
     /**
@@ -183,10 +185,12 @@ class SelectView extends DescriptionView {
             rows = '';
         }
         this.listbox.setAttribute('size', rows);
-        this.updateSelection();
     }
 
-    updateSelection() {
+    updateSelection(options: any = {}) {
+        if (options.updated_view === this) {
+            return;
+        }
         let index = this.model.get('index');
         this.listbox.selectedIndex = index === null ? -1 : index;
     }
@@ -214,8 +218,7 @@ class SelectView extends DescriptionView {
      * Handle when a new value is selected.
      */
     _handle_change() {
-        // Don't use [] indexing to work around https://github.com/Microsoft/TypeScript/issues/14522
-        this.model.set('index', this.listbox.selectedIndex);
+        this.model.set('index', this.listbox.selectedIndex, {updated_view: this});
         this.touch();
     }
 
@@ -771,14 +774,17 @@ class SelectMultipleView extends SelectView {
         this.el.classList.add('widget-select-multiple');
     }
 
-    updateSelection() {
-        // Set selected values
+    updateSelection(options: any = {}) {
+        if (options.updated_view === this) {
+            return;
+        }
         let selected = this.model.get('index') || [];
-        let options = this.listbox.options;
+        let listboxOptions = this.listbox.options;
+        // Clear the selection
         this.listbox.selectedIndex = -1;
+        // Select the appropriate options
         selected.forEach((i) => {
-            // Don't use [] indexing to work around https://github.com/Microsoft/TypeScript/issues/14522
-            options.item(i).selected = true;
+            listboxOptions[i].selected = true;
         });
     }
 
@@ -790,7 +796,7 @@ class SelectMultipleView extends SelectView {
             .call(this.listbox.selectedOptions || [], function(option) {
                 return option.index;
             });
-        this.model.set('index', index);
+        this.model.set('index', index, {updated_view: this});
         this.touch();
     }
 }
