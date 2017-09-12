@@ -884,7 +884,11 @@ class DOMWidgetView extends WidgetView {
     }
 
     private _comm_live_update() {
-        this.pWidget.node.classList.toggle('jupyter-widgets-disconnected', !this.model.comm_live);
+        if (this.model.comm_live) {
+            this.pWidget.removeClass('jupyter-widgets-disconnected');
+        } else {
+            this.pWidget.addClass('jupyter-widgets-disconnected');
+        }
     }
 
     '$el': any;
