@@ -178,7 +178,11 @@ class SelectView extends DescriptionView {
     update() {
         super.update();
         this.listbox.disabled = this.model.get('disabled');
-        this.listbox.size = this.model.get('rows');
+        let rows = this.model.get('rows');
+        if (rows === null) {
+            rows = '';
+        }
+        this.listbox.setAttribute('size', rows);
         this.updateSelection();
     }
 

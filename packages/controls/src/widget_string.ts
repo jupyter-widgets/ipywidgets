@@ -192,7 +192,11 @@ class TextareaView extends DescriptionView {
     update(options?) {
         if (options === undefined || options.updated_view != this) {
             this.textbox.value = this.model.get('value');
-            this.textbox.rows = this.model.get('rows');
+            let rows = this.model.get('rows');
+            if (rows === null) {
+                rows = '';
+            }
+            this.textbox.setAttribute('rows', rows);
             this.textbox.disabled = this.model.get('disabled');
         }
         return super.update();
