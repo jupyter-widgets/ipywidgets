@@ -301,6 +301,12 @@ class Widget(LoggingHasTraits):
     # widget_types is a registry of widgets by module, version, and name:
     widget_types = WidgetRegistry()
 
+    @classmethod
+    def close_all(cls):
+        for widget in list(cls.widgets.values()):
+            widget.close()
+
+
     @staticmethod
     def on_widget_constructed(callback):
         """Registers a callback to be called when a widget is constructed.
