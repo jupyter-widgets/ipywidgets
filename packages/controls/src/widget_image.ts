@@ -37,6 +37,7 @@ class ImageView extends DOMWidgetView {
         this.pWidget.addClass('jupyter-widgets');
         this.pWidget.addClass('widget-image');
         this.update(); // Set defaults.
+        console.log('layout is', this.model)
     }
 
     update() {
@@ -116,6 +117,7 @@ class ImageView extends DOMWidgetView {
     _handle_click(event) {
         event.preventDefault();
         this._click_location_original_image(event);
+        this.send({'event': 'click'})
     }
 
     _handle_load(event) {;
@@ -126,11 +128,15 @@ class ImageView extends DOMWidgetView {
         //this.update();
     }
 
+    _handle_key_down(event){
+        console.log("Key pressed", event)
+    }
     events(): {[e: string]: string} {
         return {
             // Dictionary of events and their handlers.
             'click': '_handle_click',
-            'load': '_handle_load'
+            'load': '_handle_load',
+            'keydown': '_handle_key_down'
         }
     }
 }

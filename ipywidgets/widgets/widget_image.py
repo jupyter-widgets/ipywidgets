@@ -11,7 +11,7 @@ import base64
 from .widget_core import CoreWidget
 from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
-from .widget import register
+from .widget import register, CallbackDispatcher
 from traitlets import Unicode, CUnicode, Bytes, observe, Int
 
 
@@ -34,3 +34,15 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
     value = Bytes(help="The image data as a byte string.").tag(sync=True)
     natural_height = Int(help="Displayed height of image in pixels").tag(sync=True)
     natural_width = Int(help="Displayed width of image in pixels").tag(sync=True)
+
+    def __init__(self, **kwargs):
+        super(Image, self).__init__(**kwargs)
+        self._click_handlers = CallbackDispatcher()
+        self.on_msg(self._handle_mouse_msg)
+
+    def _handle_mouse_msg(self, foo, content, buffers):
+        print('foo: ', foo)
+        print('content: ', content)
+        print('buffers: ', buffers)
+        if content.get('event', '') == 'click':
+            print('Damn, I clicked!')
