@@ -59,6 +59,45 @@ widget_view_template = u"""<script type="application/vnd.jupyter.widget-view+jso
 DEFAULT_EMBED_SCRIPT_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed.js'%__html_manager_version__
 DEFAULT_EMBED_REQUIREJS_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed-amd.js'%__html_manager_version__
 
+_doc_snippets = {}
+_doc_snippets['views_attribute'] = """
+    views: widget or collection of widgets or None
+        The widgets to include views for. If None, all DOMWidgets are
+        included (not just the displayed ones).
+"""
+_doc_snippets['embed_kwargs'] = """
+    drop_defaults: boolean
+        Whether to drop default values from the widget states.
+    state: dict or None (default)
+        The state to include. When set to None, the state of all widgets
+        know to the widget manager is included. Otherwise it uses the
+        passed state directly. This allows for end users to include a
+        smaller state, under the responsibility that this state is
+        sufficient to reconstruct the embedded views.
+    indent: integer, string or None
+        The indent to use for the JSON state dump. See `json.dumps` for
+        full description.
+    embed_url: string or None
+        Allows for overriding the URL used to fetch the widget manager
+        for the embedded code. This defaults (None) to an `unpkg` CDN url.
+    requirejs: boolean (True)
+        Enables the requirejs-based embedding, which allows for custom widgets.
+        If True, the embed_url should point to an AMD module.
+    cors: boolean (True)
+        If True avoids sending user credentials while requesting the scripts.
+        When opening an HTML file from disk, some browsers may refuse to load
+        the scripts.
+"""
+
+def _doc_subst(func):
+    """ Substitute format strings in class docstring """
+    # Strip the snippets to avoid trailing new lines and whitespace
+    stripped_snippets = {
+        key: snippet.strip() for (key, snippet) in _doc_snippets.items()
+    }
+    func.__doc__ = func.__doc__.format(**stripped_snippets)
+    return func
+
 def _find_widget_refs_by_state(widget, state):
     """Find references to other widgets in a widget's state"""
     # Copy keys to allow changes to state during iteration:
@@ -117,6 +156,19 @@ def dependency_state(widgets, drop_defaults=True):
     Note that this searches the state of the widgets for references, so if
     a widget reference is not included in the serialized state, it won't
     be considered as a dependency.
+
+    Parameters
+    ----------
+    widgets: single widget or list of widgets.
+       This function will return the state of every widget mentioned
+       and of all their dependencies.
+    drop_defaults: boolean
+        Whether to drop default values from the widget states.
+
+    Returns
+    -------
+    A dictionary with the state of the widgets and any widget they
+    depend on.
     """
     # collect the state of all relevant widgets
     if widgets is None:
@@ -135,6 +187,7 @@ def dependency_state(widgets, drop_defaults=True):
     return state
 
 
+@_doc_subst
 def embed_data(views, drop_defaults=True, state=None):
     """Gets data for embedding.
 
@@ -143,9 +196,7 @@ def embed_data(views, drop_defaults=True, state=None):
 
     Parameters
     ----------
-    views: widget or collection of widgets or None
-        The widgets to include views for. If None, all DOMWidgets are
-        included (not just the displayed ones).
+    {views_attribute}
     drop_defaults: boolean
         Whether to drop default values from the widget states.
     state: dict or None (default)
@@ -183,6 +234,7 @@ def embed_data(views, drop_defaults=True, state=None):
     return dict(manager_state=json_data, view_specs=view_specs)
 
 
+@_doc_subst
 def embed_snippet(views,
                   drop_defaults=True,
                   state=None,
@@ -195,30 +247,8 @@ def embed_snippet(views,
 
     Parameters
     ----------
-    views: widget or collection of widgets or None
-        The widgets to include views for. If None, all DOMWidgets are
-        included (not just the displayed ones).
-    drop_defaults: boolean
-        Whether to drop default values from the widget states.
-    state: dict or None (default)
-        The state to include. When set to None, the state of all widgets
-        know to the widget manager is included. Otherwise it uses the
-        passed state directly. This allows for end users to include a
-        smaller state, under the responsibility that this state is
-        sufficient to reconstruct the embedded views.
-    indent: integer, string or None
-        The indent to use for the JSON state dump. See `json.dumps` for
-        full description.
-    embed_url: string or None
-        Allows for overriding the URL used to fetch the widget manager
-        for the embedded code. This defaults (None) to an `unpkg` CDN url.
-    requirejs: boolean (True)
-        Enables the requirejs-based embedding, which allows for custom widgets.
-        If True, the embed_url should point to an AMD module.
-    cors: boolean (True)
-        If True avoids sending user credentials while requesting the scripts.
-        When opening an HTML file from disk, some browsers may refuse to load
-        the scripts.
+    {views_attribute}
+    {embed_kwargs}
 
     Returns
     -------
@@ -247,6 +277,7 @@ def embed_snippet(views,
     return snippet_template.format(**values)
 
 
+@_doc_subst
 def embed_minimal_html(fp, views, title=u'IPyWidget export', template=None, **kwargs):
     """Write a minimal HTML file with widget views embedded.
 
@@ -254,15 +285,14 @@ def embed_minimal_html(fp, views, title=u'IPyWidget export', template=None, **kw
     ----------
     fp: filename or file-like object
         The file to write the HTML output to.
-    views: widget or collection of widgets or None
-        The widgets to include views for. If None, all DOMWidgets are
-        included (not just the displayed ones).
-	title: title for the html page
-	template: template string for the html,
-
-    Further it accepts keyword args similar to `embed_snippet`.
+    {views_attribute}
+    title: title of the html page.
+    template: Template in which to embed the widget state.
+        This should be a Python string with placeholders
+        `{{title}}` and `{{snippet}}`. The `{{snippet}}` placeholder
+        will be replaced by all the widgets.
+    {embed_kwargs}
     """
-
     snippet = embed_snippet(views, **kwargs)
 
     values = {
