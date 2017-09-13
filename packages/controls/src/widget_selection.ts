@@ -10,7 +10,7 @@ import {
 } from './widget_core';
 
 import {
-    DescriptionView
+    DescriptionView, DescriptionStyleModel
 } from './widget_description';
 
 import {
@@ -367,7 +367,7 @@ class RadioButtonsView extends DescriptionView {
 }
 
 export
-class ToggleButtonsStyleModel extends StyleModel {
+class ToggleButtonsStyleModel extends DescriptionStyleModel {
     defaults() {
         return _.extend(super.defaults(), {
             _model_name: 'ToggleButtonsStyleModel',

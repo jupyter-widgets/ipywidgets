@@ -13,7 +13,7 @@ except ImportError:  #python3.x
     izip = zip
 from itertools import chain
 
-from .widget_description import DescriptionWidget
+from .widget_description import DescriptionWidget, DescriptionStyle
 from .valuewidget import ValueWidget
 from .widget_core import CoreWidget
 from .widget_style import Style
@@ -385,7 +385,7 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
             yield key
 
 @register
-class ToggleButtonsStyle(Style, CoreWidget):
+class ToggleButtonsStyle(DescriptionStyle, CoreWidget):
     """Button style widget.
 
     Parameters
