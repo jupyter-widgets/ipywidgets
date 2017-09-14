@@ -375,6 +375,7 @@ class ToggleButtonsStyleModel extends DescriptionStyleModel {
     }
 
     public static styleProperties = {
+        ...DescriptionStyleModel.styleProperties,
         button_width: {
             selector: '.widget-toggle-button',
             attribute: 'width',
