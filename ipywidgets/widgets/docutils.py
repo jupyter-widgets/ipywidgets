@@ -1,3 +1,5 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
 
 def doc_subst(snippets):
     """ Substitute format strings in class or function docstring """
