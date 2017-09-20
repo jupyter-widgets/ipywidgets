@@ -41,8 +41,5 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
         self.on_msg(self._handle_mouse_msg)
 
     def _handle_mouse_msg(self, foo, content, buffers):
-        print('foo: ', foo)
-        print('content: ', content)
-        print('buffers: ', buffers)
         if content.get('event', '') == 'click':
             print('Damn, I clicked!')

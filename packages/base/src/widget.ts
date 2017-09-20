@@ -138,9 +138,7 @@ class WidgetModel extends Backbone.Model {
      * Send a custom msg over the comm.
      */
     send(content, callbacks, buffers?) {
-        console.log('About to send!')
         if (this.comm !== undefined) {
-            console.log('Sending...')
             let data = {method: 'custom', content: content};
             this.comm.send(data, callbacks, {}, buffers);
         }

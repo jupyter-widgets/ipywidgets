@@ -3,13 +3,14 @@ from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
 from .trait_types import InstanceDict
 from .widget import register, widget_serialization, CallbackDispatcher
-from traitlets import Unicode, CUnicode, Bytes, observe, Int
+from traitlets import Unicode, CUnicode, Bytes, observe, Int, List
 
 
 @register
 class MouseListener(CoreWidget):
     _model_name = Unicode('MouseListenerModel').tag(sync=True)
     source = InstanceDict(DOMWidget).tag(sync=True, **widget_serialization)
+    watched_events = List().tag(sync=True)
 
     def __init__(self, **kwargs):
         super(MouseListener, self).__init__(**kwargs)
@@ -30,9 +31,8 @@ class MouseListener(CoreWidget):
         self._click_handlers.register_callback(callback, remove=remove)
 
     def _handle_mouse_msg(self, foo, content, buffers):
-        raise RuntimeError
-        print('foo: ', foo)
-        print('content: ', content)
-        print('buffers: ', buffers)
-        if content.get('event', '') == 'click':
-            self._click_handlers(self)
+        # print('foo: ', foo)
+        # print('content: ', content)
+        # print('buffers: ', buffers)
+        # if content.get('event', '') == 'click':
+        self._click_handlers(content)
