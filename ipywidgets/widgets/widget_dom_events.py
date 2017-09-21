@@ -13,25 +13,21 @@ class MouseListener(CoreWidget):
 
     def __init__(self, **kwargs):
         super(MouseListener, self).__init__(**kwargs)
-        self._click_handlers = CallbackDispatcher()
+        self._dom_handlers = CallbackDispatcher()
         self.on_msg(self._handle_mouse_msg)
 
-    def on_click(self, callback, remove=False):
-        """Register a callback to execute when the button is clicked.
+    def on_dom_event(self, callback, remove=False):
+        """Register a callback to execute when a DOM event occurs.
 
-        The callback will be called with one argument, the clicked button
-        widget instance.
+        The callback will be called with one argument, an dict whose keys
+        depend on the type of event.
 
         Parameters
         ----------
         remove: bool (optional)
             Set to true to remove the callback from the list of callbacks.
         """
-        self._click_handlers.register_callback(callback, remove=remove)
+        self._dom_handlers.register_callback(callback, remove=remove)
 
     def _handle_mouse_msg(self, foo, content, buffers):
-        # print('foo: ', foo)
-        # print('content: ', content)
-        # print('buffers: ', buffers)
-        # if content.get('event', '') == 'click':
-        self._click_handlers(content)
+        self._dom_handlers(content)
