@@ -59,7 +59,7 @@ function dom_click(generating_view, event) {
     if (generating_view.model.get('_view_name') == 'ImageView') {
         console.log("Hey, nice Image!")
     }
-    this._handle_click(event)
+    this._send_dom_event(event)
 }
 
 
@@ -96,6 +96,8 @@ class MouseListenerModel extends WidgetModel {
     }
 
     _cache_listeners(event_type, view, handler) {
+        // Build up a cache of listeners so they can be removed if the
+        // listener changes source or watched events.
         this.get('_attached_listeners').push({
             event: event_type,
             view: view,
@@ -109,6 +111,7 @@ class MouseListenerModel extends WidgetModel {
     }
 
     remove_listeners() {
+        // Remove all of the event listeners stored in the cache.
         for (let listener of this.get('_attached_listeners')) {
             console.log('Removing ', listener.event, ' from ', listener.view, 'function', listener.func)
             listener.view.el.removeEventListener(listener.event, listener.func)
@@ -144,9 +147,17 @@ class MouseListenerModel extends WidgetModel {
     }
 
     add_key_listener(event_type, view) {
+        // Key listeners should:
+        //     + Only fire when the mouse is over the element.
+        //     + Not propagate up to notebook (because imagine you
+        //       press 'x' on your widget and cut the cell...not what
+        //       you probably want the user to experience)
+        //
+        // The approach here is to add a key listener on mouseenter and remove
+        // it on mouseleave.
         let key_handler = (event) => {
             // console.log('Key presses FTW!', event)
-            this._handle_click(event)
+            this._send_dom_event(event)
             // Need this (and useCapture in the listener) to prevent the keypress
             // from propagating to the notebook.
             event.stopPropagation()
@@ -163,7 +174,11 @@ class MouseListenerModel extends WidgetModel {
         this._cache_listeners('mouseleave', view, disable_key_listen)
     }
 
-    _handle_click(event) {
+    _send_dom_event(event) {
+        // Construct the event message. All keys are determined by the
+        // type event and the lists of event names above.
+        //
+        // Values are drawn from the DOM event object.
         let event_message = {}
         let message_names = []
         console.log(event.type, event)
