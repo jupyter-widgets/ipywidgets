@@ -1,9 +1,8 @@
 from .widget_core import CoreWidget
 from .domwidget import DOMWidget
-from .valuewidget import ValueWidget
 from .trait_types import InstanceDict
 from .widget import register, widget_serialization, CallbackDispatcher
-from traitlets import Unicode, CUnicode, Bytes, observe, Int, List
+from traitlets import Unicode, List
 
 
 @register
