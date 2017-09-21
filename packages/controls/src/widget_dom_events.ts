@@ -103,14 +103,6 @@ class MouseListenerModel extends WidgetModel {
         })
     }
 
-    keyboard_fake(event) {
-        // console.log('Key presses FTW!', event)
-        this._handle_click(event)
-        // Need this (and capture in the listener) to prevent the keypress
-        // from propagating to the notebook.
-        event.stopPropagation()
-    }
-
     update_listeners() {
         this.remove_listeners()
         this.attach_listeners()
