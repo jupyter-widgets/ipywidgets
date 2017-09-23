@@ -194,9 +194,6 @@ class MouseListenerModel extends WidgetModel {
 
         for (let i of message_names) {
             event_message[i] = event[i]
-            if (event[i] == undefined) {
-                //console.log('    No ', i)
-            }
         }
         event_message['event'] = event['type']
         this.send(event_message, {})
