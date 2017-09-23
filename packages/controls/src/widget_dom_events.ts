@@ -97,20 +97,13 @@ class DOMListenerModel extends WidgetModel {
     }
 
     prepare_source() {
-        // Watch for changes in the models _view_count, and add DOM listeners
-        // to new views when they are created.
-        let current_model = this.get('source')
-        if (current_model != undefined) {
-            // Remove some listeners and otherwise clean up from having had a
-            // model.
-            console.log('Dropping stuffs from current source')
-            //let watching_count = this.get('_watching_view_count')
+        // Watch for changes in the models _view_count, and update
+        // DOM listeners when views are created or destroyed.
+        let previous_model = this.previous('source')
+        console.log(previous_model)
+        this.stopListening(previous_model)
 
-            //if (watching_count) {
-                this.stopListening(current_model)
-                //this.set('_watching_view_count', false)
-            //}
-        }
+        let current_model = this.get('source')
         console.log('view_count is ', current_model.get('_view_count'))
         if (! (typeof(current_model.get('_view_count')) === "number")) {
             // Sorry, but we need the view count...
