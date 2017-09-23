@@ -6,8 +6,8 @@ from traitlets import Unicode, List
 
 
 @register
-class MouseListener(CoreWidget):
-    _model_name = Unicode('MouseListenerModel').tag(sync=True)
+class DOMListener(CoreWidget):
+    _model_name = Unicode('DOMListenerModel').tag(sync=True)
     source = InstanceDict(DOMWidget).tag(sync=True, **widget_serialization)
     watched_events = List().tag(sync=True)
     _supported_mouse_events = List([
@@ -25,7 +25,7 @@ class MouseListener(CoreWidget):
     ]).tag(sync=True)
 
     def __init__(self, **kwargs):
-        super(MouseListener, self).__init__(**kwargs)
+        super(DOMListener, self).__init__(**kwargs)
         self._dom_handlers = CallbackDispatcher()
         self.on_msg(self._handle_mouse_msg)
 

@@ -25,4 +25,4 @@ from .interaction import interact, interactive, fixed, interact_manual, interact
 from .widget_link import jslink, jsdlink
 from .widget_layout import Layout
 from .widget_style import Style
-from .widget_dom_events import MouseListener
+from .widget_dom_events import DOMListener

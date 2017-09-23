@@ -54,7 +54,7 @@ function dom_click(generating_view, event) {
 
 
 export
-class MouseListenerModel extends WidgetModel {
+class DOMListenerModel extends WidgetModel {
     static serializers = {
         ...WidgetModel.serializers,
         source: {deserialize: unpack_models}
