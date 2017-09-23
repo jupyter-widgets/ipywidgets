@@ -55,7 +55,6 @@ function dom_click(generating_view, event) {
 
 export
 class MouseListenerModel extends WidgetModel {
-
     static serializers = {
         ...WidgetModel.serializers,
         source: {deserialize: unpack_models}
@@ -114,29 +113,33 @@ class MouseListenerModel extends WidgetModel {
         this.set('_attached_listeners', [])
     }
 
+    _add_listener_to_view(view) {
+        for (let event of this.get('watched_events')) {
+            switch (this.key_or_mouse(event)) {
+                case "keyboard":
+                    this.add_key_listener(event, view)
+                    break
+                case "mouse":
+                    let handler = dom_click.bind(this, view)
+                    view.el.addEventListener(event, handler)
+                    // Keep track of the listeners we are attaching so that we can
+                    // remove them if needed.
+                    this._cache_listeners(event, view, handler)
+                    break
+                default:
+                    console.log('Not familiar with that message source')
+                    break
+            }
+        }
+    }
+
     attach_listeners() {
         // console.log("Attaching listeners")
         let current_source = this.get('source')
         _.each(current_source.views, (view_promise) => {
-            Promise.resolve(view_promise).then((view: DOMWidgetView) => {
-                for (let event of this.get('watched_events')) {
-                    switch (this.key_or_mouse(event)) {
-                        case "keyboard":
-                            this.add_key_listener(event, view)
-                            break
-                        case "mouse":
-                            let handler = dom_click.bind(this, view)
-                            view.el.addEventListener(event, handler)
-                            // Keep track of the listeners we are attaching so that we can
-                            // remove them if needed.
-                            this._cache_listeners(event, view, handler)
-                            break
-                        default:
-                            console.log('Not familiar with that message source')
-                            break
-                    }
-
-                }
+            Promise.resolve(view_promise).then((view) => {
+                this._add_listener_to_view(view)
+                this.get('_known_views').push(view)
             })
         })
     }
@@ -144,7 +147,7 @@ class MouseListenerModel extends WidgetModel {
     add_key_listener(event_type, view) {
         // Key listeners should:
         //     + Only fire when the mouse is over the element.
-        //     + Not propagate up to notebook (because imagine you
+        //     + Not propagate up to the notebook (because imagine you
         //       press 'x' on your widget and cut the cell...not what
         //       you probably want the user to experience)
         //
@@ -170,8 +173,8 @@ class MouseListenerModel extends WidgetModel {
     }
 
     _send_dom_event(event) {
-        // Construct the event message. All keys are determined by the
-        // type event and the lists of event names above.
+        // Construct the event message. The message is a dictionary, with keys
+        // determined by the type of event from the list of event names above.
         //
         // Values are drawn from the DOM event object.
         let event_message = {}
