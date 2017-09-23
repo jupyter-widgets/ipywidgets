@@ -66,15 +66,14 @@ class MouseListenerModel extends WidgetModel {
             source: null,
             watched_events: [],
             _attached_listeners: [],
-            _known_views: [],
             _supported_mouse_events: [],
-            _supported_key_events: []
+            _supported_key_events: [],
             });
     }
 
     initialize(attributes, options: {model_id: string, comm?: any, widget_manager: any}) {
         super.initialize(attributes, options);
-        this.on('change:source', this.update_listeners, this)
+        this.on('change:source', this.prepare_source, this)
         this.on('change:watched_events', this.update_listeners, this)
     }
 
@@ -95,6 +94,32 @@ class MouseListenerModel extends WidgetModel {
             view: view,
             func: handler,
         })
+    }
+
+    prepare_source() {
+        // Watch for changes in the models _view_count, and add DOM listeners
+        // to new views when they are created.
+        let current_model = this.get('source')
+        if (current_model != undefined) {
+            // Remove some listeners and otherwise clean up from having had a
+            // model.
+            console.log('Dropping stuffs from current source')
+            //let watching_count = this.get('_watching_view_count')
+
+            //if (watching_count) {
+                this.stopListening(current_model)
+                //this.set('_watching_view_count', false)
+            //}
+        }
+        console.log('view_count is ', current_model.get('_view_count'))
+        if (! (typeof(current_model.get('_view_count')) === "number")) {
+            // Sorry, but we need the view count...
+            console.log('Setting _view_count to a number')
+            current_model.set('_view_count', 0)
+        }
+        console.log('Adding backbone listener for changes in view count')
+        this.listenTo(current_model, 'change:_view_count', this.update_listeners)
+        this.update_listeners()
     }
 
     update_listeners() {
@@ -139,7 +164,6 @@ class MouseListenerModel extends WidgetModel {
         _.each(current_source.views, (view_promise) => {
             Promise.resolve(view_promise).then((view) => {
                 this._add_listener_to_view(view)
-                this.get('_known_views').push(view)
             })
         })
     }
