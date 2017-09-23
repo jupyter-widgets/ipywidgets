@@ -30,8 +30,8 @@ let mouse_standard_event_message_names = [
     'screenY',
     'x',
     'y',
-    'imageX',
-    'imageY'
+    'arrayX',
+    'arrayY'
 ]
 
 let key_standard_event_names = [
@@ -42,8 +42,12 @@ let key_standard_event_names = [
 ]
 
 function dom_click(generating_view, event) {
-    if (generating_view.model.get('_view_name') == 'ImageView') {
+    //     if (generating_view.model.get('_view_name') == 'ImageView') {
+    if ('_foo' in generating_view) {
         console.log("Hey, nice Image!")
+        let array_coords = generating_view['_foo'](event)
+        event['arrayX'] = array_coords.x
+        event['arrayY'] = array_coords.y
     }
     this._send_dom_event(event)
 }

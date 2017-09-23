@@ -112,6 +112,7 @@ class ImageView extends DOMWidgetView {
         var image_x = relative_click_x / this.el.width * this.el.naturalWidth;
         var image_y = relative_click_y / this.el.height * this.el.naturalHeight;
         console.log(image_x, image_y)
+        return {x: image_x, y: image_y}
     }
 
     _handle_click(event) {
@@ -131,10 +132,15 @@ class ImageView extends DOMWidgetView {
     _handle_key_down(event){
         console.log("Key pressed", event)
     }
+
+    _foo(event) {
+        return this._click_location_original_image(event)
+    }
+
     events(): {[e: string]: string} {
         return {
             // Dictionary of events and their handlers.
-            'click': '_handle_click',
+            // 'click': '_handle_click',
             'load': '_handle_load',
             'keydown': '_handle_key_down'
         }
