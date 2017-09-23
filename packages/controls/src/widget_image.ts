@@ -133,7 +133,7 @@ class ImageView extends DOMWidgetView {
         console.log("Key pressed", event)
     }
 
-    _foo(event) {
+    _array_xy(event) {
         return this._click_location_original_image(event)
     }
 

@@ -43,9 +43,9 @@ let key_standard_event_names = [
 
 function dom_click(generating_view, event) {
     //     if (generating_view.model.get('_view_name') == 'ImageView') {
-    if ('_foo' in generating_view) {
+    if ('_array_xy' in generating_view) {
         console.log("Hey, nice Image!")
-        let array_coords = generating_view['_foo'](event)
+        let array_coords = generating_view['_array_xy'](event)
         event['arrayX'] = array_coords.x
         event['arrayY'] = array_coords.y
     }
