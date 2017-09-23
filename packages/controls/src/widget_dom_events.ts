@@ -4,27 +4,13 @@ import {
 
 import * as _ from 'underscore';
 
-let watchable_mouse_events = [
-    'click',
-    'auxclick',
-    'dblclick',
-    'mouseenter',
-    'mouseleave',
-    'mousedown',
-    'mouseup'
-]
-
-let watchable_key_events = [
-    'keydown',
-    'keyup'
-]
-
 let common_event_message_names = [
     'altKey',
     'ctrlKey',
     'metaKey',
     'shiftKey',
-    'type'
+    'type',
+    'timeStamp'
 ]
 
 let mouse_standard_event_message_names = [
@@ -76,7 +62,10 @@ class MouseListenerModel extends WidgetModel {
             _model_name: 'MouseListenerModel',
             source: null,
             watched_events: [],
-            _attached_listeners: []
+            _attached_listeners: [],
+            _known_views: [],
+            _supported_mouse_events: [],
+            _supported_key_events: []
             });
     }
 
@@ -87,10 +76,10 @@ class MouseListenerModel extends WidgetModel {
     }
 
     key_or_mouse(event_type) {
-        if (_.contains(watchable_mouse_events, event_type)) {
+        if (_.contains(this.get('_supported_mouse_events'), event_type)) {
             return 'mouse'
         }
-        if (_.contains(watchable_key_events, event_type)) {
+        if (_.contains(this.get('_supported_key_events'), event_type)) {
             return 'keyboard'
         }
     }
@@ -106,7 +95,9 @@ class MouseListenerModel extends WidgetModel {
     }
 
     update_listeners() {
+        // Remove all existing DOM event listeners
         this.remove_listeners()
+        // Add watchers to any existing views of the model
         this.attach_listeners()
     }
 
