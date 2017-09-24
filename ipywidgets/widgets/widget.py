@@ -743,7 +743,7 @@ class Widget(LoggingHasTraits):
                 continue
             elif (isinstance(trait, (Container, Dict)) and
                   trait.default_value == Undefined and
-                  len(value) == 0):
+                  (value is None or len(value) == 0)):
                 # Empty container, and dynamic default will be empty
                 continue
             yield key
