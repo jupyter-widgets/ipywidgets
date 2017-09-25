@@ -41,8 +41,26 @@ let key_standard_event_names = [
     'repeat'
 ]
 
+function _get_position(view, event) {
+    // Return something like the position relative to the element to which
+    // the listener is attached. This is essentially what layerX and layerY
+    // are supposed to be (and are in chrome) but those event properties have
+    // red box warnings in the MDN documentation that they are not part of any
+    // standard and are not on any standards tracks, so get what we need here.
+    var bounding_rect = view.el.getBoundingClientRect();
+    var y_offset = bounding_rect.top;
+    var x_offset = bounding_rect.left;
+    return {
+        'x': Math.round(event.clientX - x_offset),
+        'y': Math.round(event.clientY - y_offset)
+    }
+}
+
 function dom_click(generating_view, event) {
-    //     if (generating_view.model.get('_view_name') == 'ImageView') {
+    let relative_xy = _get_position(generating_view, event)
+    event['relativeX'] = relative_xy.x
+    event['relativeY'] = relative_xy.y
+    console.log(event)
     if ('_array_xy' in generating_view) {
         console.log("Hey, nice Image!")
         let array_coords = generating_view['_array_xy'](event)
@@ -184,7 +202,6 @@ class DOMListenerModel extends WidgetModel {
             // Need this (and useCapture in the listener) to prevent the keypress
             // from propagating to the notebook.
             event.stopPropagation()
-            //_.bind(this.keyboard_fake, this)
         }
         // Last argument useCapture needs to be true to prevent the event from
         // passing through to the notebook; also need to stopPropagation in key_handler.

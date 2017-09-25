@@ -106,9 +106,9 @@ class ImageView extends DOMWidgetView {
         var pad_top = parseInt(this.el.style.paddingTop) || 0;
         var border_top = parseInt(this.el.style.borderTop) || 0;
 
-        var relative_click_x = parseInt(event.layerX) - border_left - pad_left;
-        var relative_click_y = parseInt(event.layerY) - border_top - pad_top;
-        console.log(relative_click_x, parseInt(event.layerX), parseInt(this.el.style.paddingLeft), parseInt(this.el.style.borderLeft))
+        var relative_click_x = parseInt(event.relativeX) - border_left - pad_left;
+        var relative_click_y = parseInt(event.relativeY) - border_top - pad_top;
+        console.log(relative_click_x, parseInt(event.relativeX), parseInt(this.el.style.paddingLeft), parseInt(this.el.style.borderLeft))
         var image_x = Math.round(relative_click_x / this.el.width * this.el.naturalWidth);
         var image_y = Math.round(relative_click_y / this.el.height * this.el.naturalHeight);
         console.log(image_x, image_y)
