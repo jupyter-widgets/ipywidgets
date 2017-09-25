@@ -57,10 +57,10 @@ function _get_position(view, event) {
 }
 
 function dom_click(generating_view, event) {
+    // Get coordinates relative to the
     let relative_xy = _get_position(generating_view, event)
     event['relativeX'] = relative_xy.x
     event['relativeY'] = relative_xy.y
-    console.log(event)
     if ('_array_xy' in generating_view) {
         console.log("Hey, nice Image!")
         let array_coords = generating_view['_array_xy'](event)
@@ -83,10 +83,12 @@ class DOMListenerModel extends WidgetModel {
             _model_name: 'DOMListenerModel',
             source: null,
             watched_events: [],
+            ignore_modifier_key_events: false,
             _attached_listeners: [],
             _supported_mouse_events: [],
             _supported_key_events: [],
-            });
+            _modifier_keys: ['Shift', 'Control', 'Alt', 'Meta']
+        });
     }
 
     initialize(attributes, options: {model_id: string, comm?: any, widget_manager: any}) {
@@ -157,7 +159,7 @@ class DOMListenerModel extends WidgetModel {
         this.set('_attached_listeners', [])
     }
 
-    _add_listener_to_view(view) {
+    _add_listeners_to_view(view) {
         for (let event of this.get('watched_events')) {
             switch (this.key_or_mouse(event)) {
                 case "keyboard":
@@ -182,7 +184,7 @@ class DOMListenerModel extends WidgetModel {
         let current_source = this.get('source')
         _.each(current_source.views, (view_promise) => {
             Promise.resolve(view_promise).then((view) => {
-                this._add_listener_to_view(view)
+                this._add_listeners_to_view(view)
             })
         })
     }
@@ -198,6 +200,11 @@ class DOMListenerModel extends WidgetModel {
         // it on mouseleave.
         let key_handler = (event) => {
             // console.log('Key presses FTW!', event)
+            if (this.get('ignore_modifier_key_events') &&
+               _.contains(this.get('_modifier_keys'), event.key)) {
+                // If the key event is supposed to be ignored, then skip it.
+                return
+            }
             this._send_dom_event(event)
             // Need this (and useCapture in the listener) to prevent the keypress
             // from propagating to the notebook.

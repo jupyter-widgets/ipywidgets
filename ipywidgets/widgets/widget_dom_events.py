@@ -2,7 +2,7 @@ from .widget_core import CoreWidget
 from .domwidget import DOMWidget
 from .trait_types import InstanceDict
 from .widget import register, widget_serialization, CallbackDispatcher
-from traitlets import Unicode, List
+from traitlets import Unicode, List, Bool
 
 
 @register
@@ -10,6 +10,7 @@ class DOMListener(CoreWidget):
     _model_name = Unicode('DOMListenerModel').tag(sync=True)
     source = InstanceDict(DOMWidget).tag(sync=True, **widget_serialization)
     watched_events = List().tag(sync=True)
+    ignore_modifier_key_events = Bool(False).tag(sync=True)
     _supported_mouse_events = List([
         'click',
         'auxclick',
@@ -17,7 +18,7 @@ class DOMListener(CoreWidget):
         'mouseenter',
         'mouseleave',
         'mousedown',
-        'mouseup'
+        'mouseup',
         'mousemove'
     ]).tag(sync=True)
     _supported_key_events = List([
@@ -51,5 +52,5 @@ class DOMListener(CoreWidget):
         """
         self._dom_handlers.register_callback(callback, remove=remove)
 
-    def _handle_mouse_msg(self, foo, content, buffers):
+    def _handle_mouse_msg(self, _, content, buffers):
         self._dom_handlers(content)
