@@ -62,7 +62,7 @@ class DOMListenerModel extends WidgetModel {
 
     defaults() {
         return _.extend(super.defaults(), {
-            _model_name: 'MouseListenerModel',
+            _model_name: 'DOMListenerModel',
             source: null,
             watched_events: [],
             _attached_listeners: [],
@@ -75,6 +75,7 @@ class DOMListenerModel extends WidgetModel {
         super.initialize(attributes, options);
         this.on('change:source', this.prepare_source, this)
         this.on('change:watched_events', this.update_listeners, this)
+        this.prepare_source()
     }
 
     key_or_mouse(event_type) {
@@ -100,10 +101,17 @@ class DOMListenerModel extends WidgetModel {
         // Watch for changes in the models _view_count, and update
         // DOM listeners when views are created or destroyed.
         let previous_model = this.previous('source')
-        console.log(previous_model)
         this.stopListening(previous_model)
 
         let current_model = this.get('source')
+        if (current_model.name ==  "DOMWidgetModel") {
+            // We never actually listen to a bare DOMWidgetModel. However,
+            // the InstanceDict trait type initializes to a basic version
+            // of the required class...so effectively, we should treat
+            // this model as undefined.
+            return
+        }
+        console.log('current model is ', current_model, 'previous is ', previous_model)
         console.log('view_count is ', current_model.get('_view_count'))
         if (! (typeof(current_model.get('_view_count')) === "number")) {
             // Sorry, but we need the view count...
