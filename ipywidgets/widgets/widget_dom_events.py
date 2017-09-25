@@ -18,6 +18,7 @@ class DOMListener(CoreWidget):
         'mouseleave',
         'mousedown',
         'mouseup'
+        'mousemove'
     ]).tag(sync=True)
     _supported_key_events = List([
         'keydown',
