@@ -4,6 +4,10 @@ import {
 
 import * as _ from 'underscore';
 
+// The names in the lists below are what will be sent as part of the
+// event message to the backend.
+// The actual list is constructed in _send_dom_message
+
 let common_event_message_names = [
     'altKey',
     'ctrlKey',
@@ -29,9 +33,21 @@ let mouse_standard_event_message_names = [
     'screenX',
     'screenY',
     'x',
-    'y',
+    'y'
+]
+
+let mouse_added_event_message_names = [
     'arrayX',
-    'arrayY'
+    'arrayY',
+    'relativeX',
+    'relativeY'
+]
+
+let wheel_standard_event_names = [
+    'deltaX',
+    'deltaY',
+    'deltaZ',
+    'deltaMode'
 ]
 
 let key_standard_event_names = [
@@ -55,21 +71,6 @@ function _get_position(view, event) {
         'y': Math.round(event.clientY - y_offset)
     }
 }
-
-function dom_click(generating_view, event) {
-    // Get coordinates relative to the
-    let relative_xy = _get_position(generating_view, event)
-    event['relativeX'] = relative_xy.x
-    event['relativeY'] = relative_xy.y
-    if ('_array_xy' in generating_view) {
-        console.log("Hey, nice Image!")
-        let array_coords = generating_view['_array_xy'](event)
-        event['arrayX'] = array_coords.x
-        event['arrayY'] = array_coords.y
-    }
-    this._send_dom_event(event)
-}
-
 
 export
 class DOMListenerModel extends WidgetModel {
@@ -163,10 +164,10 @@ class DOMListenerModel extends WidgetModel {
         for (let event of this.get('watched_events')) {
             switch (this.key_or_mouse(event)) {
                 case "keyboard":
-                    this.add_key_listener(event, view)
+                    this._add_key_listener(event, view)
                     break
                 case "mouse":
-                    let handler = dom_click.bind(this, view)
+                    let handler = this._dom_click.bind(this, view)
                     view.el.addEventListener(event, handler)
                     // Keep track of the listeners we are attaching so that we can
                     // remove them if needed.
@@ -189,7 +190,7 @@ class DOMListenerModel extends WidgetModel {
         })
     }
 
-    add_key_listener(event_type, view) {
+    _add_key_listener(event_type, view) {
         // Key listeners should:
         //     + Only fire when the mouse is over the element.
         //     + Not propagate up to the notebook (because imagine you
@@ -221,6 +222,25 @@ class DOMListenerModel extends WidgetModel {
         this._cache_listeners('mouseleave', view, disable_key_listen)
     }
 
+
+    _dom_click(generating_view, event) {
+        // Get coordinates relative to the
+        let relative_xy = _get_position(generating_view, event)
+        event['relativeX'] = relative_xy.x
+        event['relativeY'] = relative_xy.y
+        if ('_array_xy' in generating_view) {
+            console.log("Hey, nice Image!")
+            let array_coords = generating_view['_array_xy'](event)
+            event['arrayX'] = array_coords.x
+            event['arrayY'] = array_coords.y
+        }
+        if (event.type == 'wheel') {
+            event.preventDefault()
+        }
+        this._send_dom_event(event)
+    }
+
+
     _send_dom_event(event) {
         // Construct the event message. The message is a dictionary, with keys
         // determined by the type of event from the list of event names above.
@@ -232,6 +252,10 @@ class DOMListenerModel extends WidgetModel {
         switch (this.key_or_mouse(event.type)) {
             case "mouse":
                 message_names = common_event_message_names.concat(mouse_standard_event_message_names)
+                message_names = message_names.concat(mouse_added_event_message_names)
+                if (event.type == 'wheel') {
+                    message_names = message_names.concat(wheel_standard_event_names)
+                }
                 break;
             case "keyboard":
                 message_names = common_event_message_names.concat(key_standard_event_names)
