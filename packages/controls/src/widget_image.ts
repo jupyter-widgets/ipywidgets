@@ -20,7 +20,11 @@ class ImageModel extends CoreDOMWidgetModel {
             format: 'png',
             width: '',
             height: '',
-            value: new Uint8Array(0)
+            value: new Uint8Array(0),
+            x_click: 0,
+            y_click: 0,
+            x_mouse: 0,
+            y_mouse: 0
         });
     }
 }
@@ -74,6 +78,42 @@ class ImageView extends DOMWidgetView {
         super.remove()
     }
 
+    events(): {[e: string]: string} {
+        return {
+            // Dictionary of events and their handlers.
+            'click': '_handle_click',
+            'mousemove': '_handle_mousemove'
+        }
+    }
+
+    _get_position(event) {
+        var bounding_rect = this.el.getBoundingClientRect();
+        var y_offset = bounding_rect.top;
+        var x_offset = bounding_rect.left;
+        return {
+            'x': event.clientX - x_offset,
+            'y': event.clientY - y_offset
+        }
+    }
+    /**
+     * Handles and validates user input.
+     *
+     * Calling model.set will trigger all of the other views of the
+     * model to update.
+     */
+    _handle_click(event) {
+        var mouse_position = this._get_position(event);
+        this.model.set('x_click', mouse_position.x, {updated_view: this});
+        this.model.set('y_click', mouse_position.y, {updated_view: this});
+        this.touch();
+    }
+
+    _handle_mousemove(event) {
+        var mouse_position = this._get_position(event);
+        this.model.set('x_mouse', mouse_position.x, {updated_view: this});
+        this.model.set('y_mouse', mouse_position.y, {updated_view: this});
+        this.touch();
+    }
     /**
      * The default tag name.
      *
