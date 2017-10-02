@@ -49,13 +49,16 @@ document.addEventListener("DOMContentLoaded", function(event) {
         execution.onIOPub = (msg) => {
             // If we have a display message, display the widget.
             if (KernelMessage.isDisplayDataMsg(msg)) {
-                let widgetData: any = msg.content.data['application/vnd.jupyter.widget-view+json'];
-                if (widgetData !== undefined && widgetData.version_major === 2) {
-                    let model = manager.get_model(widgetData.model_id);
-                    if (model !== undefined) {
-                        model.then(model => {
-                            manager.display_model(msg, model);
-                        });
+                let widgetData = msg.content.data['application/vnd.jupyter.widget-view+json'];
+                if (widgetData !== undefined && !(typeof widgetData == "string") &&
+                        !(widgetData instanceof Array)) {
+                    if (widgetData.version_major === 2) {
+                        let model = manager.get_model(widgetData.model_id as string);
+                        if (model !== undefined) {
+                            model.then(model => {
+                                manager.display_model(msg, model);
+                            });
+                        }
                     }
                 }
             }

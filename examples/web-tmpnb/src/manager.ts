@@ -7,17 +7,22 @@ import {
 } from '@phosphor/disposable';
 
 import {
-  Kernel
+  Kernel, KernelMessage
 } from '@jupyterlab/services';
 
 import '@jupyter-widgets/controls/css/widgets.css';
 
+interface CustomWindow extends Window {
+    // TODO(cnishina): Need help to return type of require.
+    require: (modules: string[], resolve: Function, reject: Function) => any;
+}
+
 let requirePromise = function(module: string): Promise<any> {
     return new Promise((resolve, reject) => {
-        if ((window as any).require === void 0) {
+        if ((window as CustomWindow).require === void 0) {
             reject('requirejs not loaded');
         }
-        (window as any).require([module], resolve, reject);
+        (window as CustomWindow).require([module], resolve, reject);
     });
 }
 
@@ -43,13 +48,15 @@ class WidgetManager extends base.ManagerBase<HTMLElement> {
         });
     };
 
-    display_view(msg, view, options) {
+    display_view(msg: KernelMessage.IMessage, view: base.WidgetView, options: any): Promise<HTMLElement> {
         return Promise.resolve(view).then((view) => {
-            pWidget.Widget.attach(view.pWidget, this.el);
+            pWidget.Widget.attach((view as base.DOMWidgetView).pWidget, this.el);
             view.on('remove', function() {
                 console.log('view removed', view);
             });
-            return view;
+            // TODO(cnishina): the return type is HTMLElement based on the ManagerBase.display_view;
+            // however, view type cannot extend HTMLElement. Need to verify
+            return <HTMLElement>(view as any);
         });
     }
 

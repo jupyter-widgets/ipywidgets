@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             let wsUrl = 'ws:' + serverUrl.split(':').slice(1).join(':');
 
             // Connect to the notebook webserver.
-            let connectionInfo: any = ServerConnection.makeSettings({
+            let connectionInfo = ServerConnection.makeSettings({
                 baseUrl: serverUrl,
                 wsUrl: wsUrl
             });
