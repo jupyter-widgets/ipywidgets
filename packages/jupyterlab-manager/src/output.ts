@@ -169,6 +169,7 @@ class OutputView extends outputBase.OutputView {
    * Called when view is rendered.
    */
   render() {
+    super.render();
     this._outputView = new OutputArea({
       rendermime: this.model.widget_manager.rendermime,
       contentFactory: OutputArea.defaultContentFactory,
@@ -183,16 +184,6 @@ class OutputView extends outputBase.OutputView {
     this.pWidget.addClass('jupyter-widgets');
     this.pWidget.addClass('widget-output');
     this.update(); // Set defaults.
-  }
-
-  /**
-   * Update the contents of this view
-   *
-   * Called when the model is changed.  The model may have been
-   * changed by another view or by a state update from the back-end.
-   */
-  update() {
-    return super.update();
   }
 
   remove() {
