@@ -4,8 +4,16 @@
 import * as outputBase from '@jupyter-widgets/output';
 
 import {
+  DOMWidgetView, JupyterPhosphorWidget
+} from '@jupyter-widgets/base';
+
+import {
   IDisposable
 } from '@phosphor/disposable';
+
+import {
+  Message
+} from '@phosphor/messaging';
 
 import {
   Panel, Widget
@@ -100,13 +108,51 @@ class OutputModel extends outputBase.OutputModel {
   private _outputs: OutputAreaModel;
 }
 
+export
+class JupyterPhosphorPanelWidget extends Panel {
+    constructor(options: JupyterPhosphorWidget.IOptions & Panel.IOptions) {
+        let view = options.view;
+        delete options.view;
+        super(options);
+        this._view = view;
+    }
+
+    /**
+     * Process the phosphor message.
+     *
+     * Any custom phosphor widget used inside a Jupyter widget should override
+     * the processMessage function like this.
+     */
+    processMessage(msg: Message) {
+        super.processMessage(msg);
+        this._view.processPhosphorMessage(msg);
+    }
+
+    /**
+     * Dispose the widget.
+     *
+     * This causes the view to be destroyed as well with 'remove'
+     */
+    dispose() {
+        if (this.isDisposed) {
+            return;
+        }
+        super.dispose();
+        if (this._view) {
+            this._view.remove();
+        }
+        this._view = null;
+    }
+
+    private _view: DOMWidgetView;
+}
 
 export
 class OutputView extends outputBase.OutputView {
 
     _createElement(tagName: string) {
-        this.pWidget = new Panel();
-        return this.pWidget.node;
+      this.pWidget = new JupyterPhosphorPanelWidget({ view: this });
+      return this.pWidget.node;
     }
 
     _setElement(el: HTMLElement) {
@@ -123,6 +169,7 @@ class OutputView extends outputBase.OutputView {
    * Called when view is rendered.
    */
   render() {
+    super.render();
     this._outputView = new OutputArea({
       rendermime: this.model.widget_manager.rendermime,
       contentFactory: OutputArea.defaultContentFactory,
@@ -137,16 +184,6 @@ class OutputView extends outputBase.OutputView {
     this.pWidget.addClass('jupyter-widgets');
     this.pWidget.addClass('widget-output');
     this.update(); // Set defaults.
-  }
-
-  /**
-   * Update the contents of this view
-   *
-   * Called when the model is changed.  The model may have been
-   * changed by another view or by a state update from the back-end.
-   */
-  update() {
-    return super.update();
   }
 
   remove() {
