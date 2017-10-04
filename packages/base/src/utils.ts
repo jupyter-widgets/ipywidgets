@@ -72,15 +72,15 @@ class WrappedError extends Error {
  * Returns a single Promise.
  */
 export
-function resolvePromisesDict(d): Promise<any> {
+function resolvePromisesDict<T>(d: {[key:string]: Promise<T>}): Promise<{[key:string]: T}> {
     var keys = Object.keys(d);
-    var values = [];
-    keys.forEach(function(key) {
+    var values: Promise<T>[] = [];
+    keys.forEach((key) => {
         values.push(d[key]);
     });
-    return Promise.all(values).then(function(v) {
-        d = {};
-        for(var i=0; i<keys.length; i++) {
+    return Promise.all(values).then((v: T[]) => {
+        let d: {[key:string]: T} = {};
+        for(let i=0; i<keys.length; i++) {
             d[keys[i]] = v[i];
         }
         return d;
