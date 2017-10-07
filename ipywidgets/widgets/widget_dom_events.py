@@ -2,7 +2,7 @@ from .widget_core import CoreWidget
 from .domwidget import DOMWidget
 from .trait_types import InstanceDict
 from .widget import register, widget_serialization, CallbackDispatcher
-from traitlets import Unicode, List, Bool
+from traitlets import Unicode, List, Bool, validate
 
 
 @register
@@ -39,6 +39,17 @@ class DOMListener(CoreWidget):
     @property
     def supported_mouse_events(self):
         return self._supported_mouse_events
+
+    @validate('watched_events')
+    def _validate_watched_events(self, proposal):
+        value = proposal['value']
+        bad_events = [v for v in value if v not in
+                      self._supported_mouse_events
+                      + self._supported_key_events]
+        if bad_events:
+            raise ValueError('The event(s) {} are not '
+                             'supported.'.format(bad_events))
+        return value
 
     def on_dom_event(self, callback, remove=False):
         """Register a callback to execute when a DOM event occurs.
