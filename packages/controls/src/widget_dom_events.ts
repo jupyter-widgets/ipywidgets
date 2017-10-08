@@ -216,6 +216,7 @@ class DOMListenerModel extends WidgetModel {
             // Need this (and useCapture in the listener) to prevent the keypress
             // from propagating to the notebook.
             event.stopPropagation()
+            event.preventDefault()
         }
         // Last argument useCapture needs to be true to prevent the event from
         // passing through to the notebook; also need to stopPropagation in key_handler.
