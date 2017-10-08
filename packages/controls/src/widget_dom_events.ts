@@ -174,9 +174,7 @@ class DOMListenerModel extends WidgetModel {
                 case "mouse":
                     let prevent_default = this.get('prevent_default_action')
                     let handler = this._dom_click.bind(this, view)
-                    // Last argument sets useCapture which allows capturing of
-                    // event to prevent its propagation up the DOM tree.
-                    view.el.addEventListener(event, handler, prevent_default)
+                    view.el.addEventListener(event, handler)
                     // Keep track of the listeners we are attaching so that we can
                     // remove them if needed.
                     this._cache_listeners(event, view, handler)
