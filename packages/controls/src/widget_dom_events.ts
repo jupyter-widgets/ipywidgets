@@ -85,6 +85,7 @@ class DOMListenerModel extends WidgetModel {
             source: null,
             watched_events: [],
             ignore_modifier_key_events: false,
+            prevent_default_action: false,
             _attached_listeners: [],
             _supported_mouse_events: [],
             _supported_key_events: [],
@@ -167,8 +168,11 @@ class DOMListenerModel extends WidgetModel {
                     this._add_key_listener(event, view)
                     break
                 case "mouse":
+                    let prevent_default = this.get('prevent_default_action')
                     let handler = this._dom_click.bind(this, view)
-                    view.el.addEventListener(event, handler)
+                    // Last argument sets useCapture which allows capturing of
+                    // event to prevent its propagation up the DOM tree.
+                    view.el.addEventListener(event, handler, prevent_default)
                     // Keep track of the listeners we are attaching so that we can
                     // remove them if needed.
                     this._cache_listeners(event, view, handler)
@@ -234,7 +238,7 @@ class DOMListenerModel extends WidgetModel {
             event['arrayX'] = array_coords.x
             event['arrayY'] = array_coords.y
         }
-        if (event.type == 'wheel') {
+        if ((event.type == 'wheel') || this.get('prevent_default_action')) {
             event.preventDefault()
         }
         this._send_dom_event(event)

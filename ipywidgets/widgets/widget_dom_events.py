@@ -11,6 +11,7 @@ class DOMListener(CoreWidget):
     source = InstanceDict(DOMWidget).tag(sync=True, **widget_serialization)
     watched_events = List().tag(sync=True)
     ignore_modifier_key_events = Bool(False).tag(sync=True)
+    prevent_default_action = Bool(False).tag(sync=True)
     _supported_mouse_events = List([
         'click',
         'auxclick',
