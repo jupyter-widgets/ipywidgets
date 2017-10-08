@@ -15,13 +15,13 @@ class MockComm {
         this.comm_id = `mock-comm-id-${numComms}`;
         numComms += 1;
     }
-    on_close(fn) {
+    on_close(fn: Function) {
         this._on_close = fn;
     }
-    on_msg(fn) {
+    on_msg(fn: Function) {
         this._on_msg = fn;
     }
-    _process_msg(msg) {
+    _process_msg(msg: any) {
         if (this._on_msg) {
             return this._on_msg(msg);
         } else {
@@ -58,14 +58,14 @@ class DummyManager extends widgets.ManagerBase<HTMLElement> {
 
     protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<any> {
         if (moduleName === '@jupyter-widgets/base') {
-            if (widgets[className]) {
-                return Promise.resolve(widgets[className]);
+            if ((widgets as any)[className]) {
+                return Promise.resolve((widgets as any)[className]);
             } else {
                 return Promise.reject(`Cannot find class ${className}`)
             }
         } else if (moduleName === 'test-widgets') {
-            if (testWidgets[className]) {
-                return Promise.resolve(testWidgets[className]);
+            if ((testWidgets as any)[className]) {
+                return Promise.resolve((testWidgets as any)[className]);
             } else {
                 return Promise.reject(`Cannot find class ${className}`)
             }
@@ -98,13 +98,13 @@ let typesToArray = {
     float64: Float64Array
 }
 
-let JSONToArray = function(obj, manager) {
-    return new typesToArray[obj.dtype](obj.buffer.buffer);
+let JSONToArray = (obj: any, manager: any) => {
+    return new (typesToArray as any)[obj.dtype](obj.buffer.buffer);
 }
 
-let arrayToJSON = function(obj, manager) {
+let arrayToJSON = (obj: any, manager: any) => {
     let dtype = Object.keys(typesToArray).filter(
-        i=>typesToArray[i]===obj.constructor)[0]
+        i=>(typesToArray as any)[i]===obj.constructor)[0]
     return {dtype, buffer: obj}
 }
 
@@ -117,13 +117,13 @@ let array_serialization = {
 class TestWidget extends widgets.WidgetModel {
     defaults() {
         return {...super.defaults(),
-            _model_module: "test-widgets",
-            _model_name: "TestWidget",
+            _model_module: 'test-widgets',
+            _model_name: 'TestWidget',
             _model_module_version: '1.0.0',
-            _view_module: "test-widgets",
-            _view_name: "TestWidgetView",
+            _view_module: 'test-widgets',
+            _view_name: 'TestWidgetView',
             _view_module_version: '1.0.0',
-            _view_count: null,
+            _view_count: <any>null,
         }
     }
 }
@@ -148,8 +148,8 @@ class BinaryWidget extends TestWidget {
     }
     defaults() {
         return {...super.defaults(),
-            _model_name: "BinaryWidget",
-            _view_name: "BinaryWidgetView",
+            _model_name: 'BinaryWidget',
+            _view_name: 'BinaryWidgetView',
             array: new Int8Array(0)};
     }
 }
