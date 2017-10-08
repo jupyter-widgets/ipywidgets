@@ -115,22 +115,12 @@ class ImageView extends DOMWidgetView {
         return {x: image_x, y: image_y}
     }
 
-    _handle_click(event) {
-        event.preventDefault();
-        this._click_location_original_image(event);
-        this.send({'event': 'click'})
-    }
-
     _handle_load(event) {;
         console.log('I have loaded', this.el.naturalHeight);
         this.model.set('natural_height', this.el.naturalHeight, {updated_view: this});
         this.model.set('natural_width', this.el.naturalWidth, {updated_view: this});
         this.touch();
         //this.update();
-    }
-
-    _handle_key_down(event){
-        console.log("Key pressed", event)
     }
 
     _array_xy(event) {
@@ -140,9 +130,7 @@ class ImageView extends DOMWidgetView {
     events(): {[e: string]: string} {
         return {
             // Dictionary of events and their handlers.
-            // 'click': '_handle_click',
             'load': '_handle_load',
-            'keydown': '_handle_key_down'
         }
     }
 }
