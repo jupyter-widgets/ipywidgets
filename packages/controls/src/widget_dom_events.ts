@@ -137,14 +137,10 @@ class DOMListenerModel extends WidgetModel {
             // this model as undefined.
             return
         }
-        console.log('current model is ', current_model, 'previous is ', previous_model)
-        console.log('view_count is ', current_model.get('_view_count'))
         if (! (typeof(current_model.get('_view_count')) === "number")) {
             // Sorry, but we need the view count...
-            console.log('Setting _view_count to a number')
             current_model.set('_view_count', 0)
         }
-        console.log('Adding backbone listener for changes in view count')
         this.listenTo(current_model, 'change:_view_count', this.update_listeners)
         this.update_listeners()
     }
@@ -159,7 +155,6 @@ class DOMListenerModel extends WidgetModel {
     remove_listeners() {
         // Remove all of the event listeners stored in the cache.
         for (let listener of this.get('_attached_listeners')) {
-            console.log('Removing ', listener.event, ' from ', listener.view, 'function', listener.func)
             listener.view.el.removeEventListener(listener.event, listener.func)
         }
         this.set('_attached_listeners', [])
@@ -187,7 +182,6 @@ class DOMListenerModel extends WidgetModel {
     }
 
     attach_listeners() {
-        // console.log("Attaching listeners")
         let current_source = this.get('source')
         _.each(current_source.views, (view_promise) => {
             Promise.resolve(view_promise).then((view) => {
@@ -236,7 +230,6 @@ class DOMListenerModel extends WidgetModel {
         event['relativeX'] = relative_xy.x
         event['relativeY'] = relative_xy.y
         if ('_array_xy' in generating_view) {
-            console.log("Hey, nice Image!")
             let array_coords = generating_view['_array_xy'](event)
             event['arrayX'] = array_coords.x
             event['arrayY'] = array_coords.y
@@ -255,7 +248,6 @@ class DOMListenerModel extends WidgetModel {
         // Values are drawn from the DOM event object.
         let event_message = {}
         let message_names = []
-        console.log(event.type, event)
         switch (this.key_or_mouse(event.type)) {
             case "mouse":
                 message_names = common_event_message_names.concat(mouse_standard_event_message_names)

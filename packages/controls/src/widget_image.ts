@@ -37,7 +37,6 @@ class ImageView extends DOMWidgetView {
         this.pWidget.addClass('jupyter-widgets');
         this.pWidget.addClass('widget-image');
         this.update(); // Set defaults.
-        console.log('layout is', this.model)
     }
 
     update() {
@@ -108,19 +107,15 @@ class ImageView extends DOMWidgetView {
 
         var relative_click_x = parseInt(event.relativeX) - border_left - pad_left;
         var relative_click_y = parseInt(event.relativeY) - border_top - pad_top;
-        console.log(relative_click_x, parseInt(event.relativeX), parseInt(this.el.style.paddingLeft), parseInt(this.el.style.borderLeft))
         var image_x = Math.round(relative_click_x / this.el.width * this.el.naturalWidth);
         var image_y = Math.round(relative_click_y / this.el.height * this.el.naturalHeight);
-        console.log(image_x, image_y)
         return {x: image_x, y: image_y}
     }
 
     _handle_load(event) {;
-        console.log('I have loaded', this.el.naturalHeight);
         this.model.set('natural_height', this.el.naturalHeight, {updated_view: this});
         this.model.set('natural_width', this.el.naturalWidth, {updated_view: this});
         this.touch();
-        //this.update();
     }
 
     _array_xy(event) {
