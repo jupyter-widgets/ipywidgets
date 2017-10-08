@@ -23,7 +23,13 @@ class DOMListener(CoreWidget):
         'mousemove',
         'wheel',
         'contextmenu',
-        'dragstart'
+        'dragstart',
+        'drag',
+        'dragend',
+        'dragenter',
+        'dragover',
+        'dragleave',
+        'drop'
     ]).tag(sync=True)
     _supported_key_events = List([
         'keydown',

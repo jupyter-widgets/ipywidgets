@@ -50,6 +50,10 @@ let wheel_standard_event_names = [
     'deltaMode'
 ]
 
+let drag_standard_event_names = [
+    'dataTransfer'
+]
+
 let key_standard_event_names = [
     'code',
     'key',
@@ -259,6 +263,8 @@ class DOMListenerModel extends WidgetModel {
                 message_names = message_names.concat(mouse_added_event_message_names)
                 if (event.type == 'wheel') {
                     message_names = message_names.concat(wheel_standard_event_names)
+                } else if (event.type == 'drop' || event.type.startsWith('drag')) {
+                    message_names = message_names.concat(drag_standard_event_names)
                 }
                 break;
             case "keyboard":
