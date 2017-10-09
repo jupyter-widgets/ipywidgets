@@ -22,6 +22,7 @@
     "jupyter-js-widgets": "file:../.."
   },
   "devDependencies": {
+    "@types/jquery": "2.0.48",
     "css-loader": "^0.23.1",
     "file-loader": "^0.8.5",
     "fs-extra": "^0.30.0",
