@@ -18,7 +18,9 @@
   "scripts": {
     "clean:src": "rimraf lib",
     "clean": "npm run clean:src",
+    "prebuild:test": "clang-format -i test/**/*.ts",
     "build:test": "tsc --project test/src && webpack --config test/webpack.conf.js",
+    "prebuild:src": "clang-format -i --glob=src/**/*.ts",
     "build:src": "tsc --project src",
     "build": "npm run build:src",
     "test": "npm run test:unit",
@@ -35,6 +37,7 @@
     "@types/mocha": "^2.2.41",
     "chai": "^4.0.0",
     "chai-as-promised": "^7.0.0",
+    "clang-format": "^1.0.55",
     "expect.js": "^0.3.1",
     "istanbul-instrumenter-loader": "^2.0.0",
     "karma": "^1.6.0",
