@@ -8,7 +8,8 @@
 //     For all details and documentation:
 //     http://backbonejs.org
 
-// Backbone's full license is below (from https://github.com/jashkenas/backbone/blob/05fde9e201f7e2137796663081105cd6dad12a98/LICENSE)
+// Backbone's full license is below (from
+// https://github.com/jashkenas/backbone/blob/05fde9e201f7e2137796663081105cd6dad12a98/LICENSE)
 
 /*
 Copyright (c) 2010-2015 Jeremy Ashkenas, DocumentCloud
@@ -42,76 +43,75 @@ import * as utils from './utils';
 // the core primitive operation of a model, updating the data and notifying
 // anyone who needs to know about the change in state. The heart of the beast.
 // This *MUST* be called with the model as the `this` context.
-export
-function set(key, val, options) {
-    if (key == null) return this;
+export function set(key, val, options) {
+  if (key == null) return this;
 
-    // Handle both `"key", value` and `{key: value}` -style arguments.
-    var attrs;
-    if (typeof key === 'object') {
-        attrs = key;
-        options = val;
+  // Handle both `"key", value` and `{key: value}` -style arguments.
+  var attrs;
+  if (typeof key === 'object') {
+    attrs = key;
+    options = val;
+  } else {
+    (attrs = {})[key] = val;
+  }
+
+  options || (options = {});
+
+  // Run validation.
+  if (!this._validate(attrs, options)) return false;
+
+  // Extract attributes and options.
+  var unset = options.unset;
+  var silent = options.silent;
+  var changes = [];
+  var changing = this._changing;
+  this._changing = true;
+
+  if (!changing) {
+    // EDIT: changed to use object spread instead of _.clone
+    this._previousAttributes = {...this.attributes};
+    this.changed = {};
+  }
+
+  var current = this.attributes;
+  var changed = this.changed;
+  var prev = this._previousAttributes;
+
+  // For each `set` attribute, update or delete the current value.
+  for (var attr in attrs) {
+    val = attrs[attr];
+    // EDIT: the following two lines use our isEqual instead of _.isEqual
+    if (!utils.isEqual(current[attr], val)) changes.push(attr);
+    if (!utils.isEqual(prev[attr], val)) {
+      changed[attr] = val;
     } else {
-        (attrs = {})[key] = val;
+      delete changed[attr];
     }
+    unset ? delete current[attr] : current[attr] = val;
+  }
 
-    options || (options = {});
+  // Update the `id`.
+  this.id = this.get(this.idAttribute);
 
-    // Run validation.
-    if (!this._validate(attrs, options)) return false;
-
-    // Extract attributes and options.
-    var unset      = options.unset;
-    var silent     = options.silent;
-    var changes    = [];
-    var changing   = this._changing;
-    this._changing = true;
-
-    if (!changing) {
-        // EDIT: changed to use object spread instead of _.clone
-        this._previousAttributes = {...this.attributes};
-        this.changed = {};
+  // Trigger all relevant attribute changes.
+  if (!silent) {
+    if (changes.length) this._pending = options;
+    for (var i = 0; i < changes.length; i++) {
+      this.trigger('change:' + changes[i], this, current[changes[i]], options);
     }
+  }
 
-    var current = this.attributes;
-    var changed = this.changed;
-    var prev    = this._previousAttributes;
-
-    // For each `set` attribute, update or delete the current value.
-    for (var attr in attrs) {
-        val = attrs[attr];
-        // EDIT: the following two lines use our isEqual instead of _.isEqual
-        if (!utils.isEqual(current[attr], val)) changes.push(attr);
-        if (!utils.isEqual(prev[attr], val)) {
-        changed[attr] = val;
-        } else {
-        delete changed[attr];
-        }
-        unset ? delete current[attr] : current[attr] = val;
+  // You might be wondering why there's a `while` loop here. Changes can
+  // be recursively nested within `"change"` events.
+  if (changing) return this;
+  if (!silent) {
+    while (this._pending) {
+      options = this._pending;
+      this._pending = false;
+      this.trigger('change', this, options);
     }
-
-    // Update the `id`.
-    this.id = this.get(this.idAttribute);
-
-    // Trigger all relevant attribute changes.
-    if (!silent) {
-        if (changes.length) this._pending = options;
-        for (var i = 0; i < changes.length; i++) {
-        this.trigger('change:' + changes[i], this, current[changes[i]], options);
-        }
-    }
-
-    // You might be wondering why there's a `while` loop here. Changes can
-    // be recursively nested within `"change"` events.
-    if (changing) return this;
-    if (!silent) {
-        while (this._pending) {
-        options = this._pending;
-        this._pending = false;
-        this.trigger('change', this, options);
-        }
-    }
-    this._pending = false;
-    this._changing = false;
-    return this;
+  }
+  this._pending = false;
+  this._changing = false;
+  return this;
 }
