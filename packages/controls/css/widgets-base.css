@@ -931,6 +931,7 @@
 
 .jupyter-widgets.widget-tab .widget-tab-bar.p-TabBar {
     font: var(--jp-widgets-font-size) Helvetica, Arial, sans-serif;
+    display: block;
 }
 
 .jupyter-widgets.widget-tab .p-TabBar-tab {
