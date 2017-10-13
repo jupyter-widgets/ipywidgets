@@ -71,7 +71,7 @@
     "no-string-literal": false,
     "no-switch-case-fall-through": true,
     "no-trailing-whitespace": true,
-    "no-unused-expression": true,
+    // "no-unused-expression": true,
     "no-unused-variable": true,
     "no-use-before-declare": false,
     "no-var-keyword": true,
@@ -134,7 +134,7 @@
     ],
     "variable-name": [
       true,
-      "check-format",
+      // "check-format",
       "allow-leading-underscore",
       "ban-keywords"
     ],

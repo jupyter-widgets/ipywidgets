@@ -54,8 +54,8 @@ document.addEventListener('DOMContentLoaded', function(event) {
           readOnly: true,
         });
 
-        // Create the widget area and widget manager		
-        let widgetarea = document.getElementsByClassName('widgetarea')[0] as HTMLElement;		
+        // Create the widget area and widget manager
+        let widgetarea = document.getElementsByClassName('widgetarea')[0] as HTMLElement;
         let manager = new WidgetManager(kernel, widgetarea);
         /* tslint:enable */
 

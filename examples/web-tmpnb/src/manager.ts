@@ -88,9 +88,9 @@ class WidgetManager extends base.ManagerBase<HTMLElement> {
   /**
    * Create a comm.
    */
-  _create_comm(targetName: string, modelId: string, data?: any, metadata?: any):
+  _create_comm(target_name: string, model_id: string, data?: any, metadata?: any):
       Promise<base.shims.services.Comm> {
-    let comm = this.kernel.connectToComm(targetName, modelId);
+    let comm = this.kernel.connectToComm(target_name, model_id);
     if (data || metadata) {
       comm.open(data, metadata);
     }

@@ -21,6 +21,7 @@
     "build:test": "tsc --project test/src && webpack --config test/webpack.conf.js",
     "build:src": "tsc --project src",
     "build": "npm run build:src",
+    "prepublish": "npm run clean && npm run build",
     "test": "npm run test:unit",
     "test:coverage": "npm run build:test && webpack --config test/webpack-cov.conf.js && karma start test/karma-cov.conf.js",
     "test:unit": "npm run test:unit:firefox && npm run test:unit:chrome",
@@ -28,13 +29,17 @@
     "test:unit:firefox": "npm run test:unit:default -- --browsers=Firefox",
     "test:unit:chrome": "npm run test:unit:default -- --browsers=Chrome",
     "test:unit:ie": "npm run test:unit:default -- --browsers=IE",
-    "prepublish": "npm run clean && npm run build"
+    "tslint": "tslint --project tslint.json --format stylish"
   },
   "devDependencies": {
+    "@types/chai": "^4.0.4",
+    "@types/chai-as-promised": "^7.1.0",
     "@types/expect.js": "^0.3.29",
-    "@types/mocha": "^2.2.41",
+    "@types/mocha": "^2.2.43",
+    "@types/sinon": "^2.3.6",
+    "@types/sinon-chai": "^2.7.29",
     "chai": "^4.0.0",
-    "chai-as-promised": "^7.0.0",
+    "chai-as-promised": "^7.1.1",
     "expect.js": "^0.3.1",
     "istanbul-instrumenter-loader": "^2.0.0",
     "karma": "^1.6.0",
@@ -50,6 +55,7 @@
     "rimraf": "^2.6.1",
     "sinon": "^2.1.0",
     "sinon-chai": "^2.11.0",
+    "tslint": "^5.7.0",
     "typescript": "~2.4.1",
     "webpack": "^3.5.5"
   },
