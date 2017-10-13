@@ -1,5 +1,4 @@
 {
-  "rulesDirectory": ["node_modules/vrsource-tslint-rules/rules"],
   "rules": {
     "class-name": true,
     "comment-format": [true, "check-space"],
@@ -10,7 +9,6 @@
     "label-position": true,
     "max-line-length": [true, 100],
     "no-duplicate-imports": true,
-    "no-param-reassign": true,
     "no-trailing-whitespace": true,
     "semicolon": [true, "always"],
     "trailing-comma": [true, {
@@ -32,6 +30,5 @@
       "check-separator",
       "check-type"
     ]
-
   }
 }
