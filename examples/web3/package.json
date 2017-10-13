@@ -9,7 +9,8 @@
     "build": "npm run clean && tsc --project src && node scripts/copyfiles.js && webpack",
     "host": "http-server",
     "test": "npm run test:default",
-    "test:default": "echo \"No test specified\""
+    "test:default": "echo \"No test specified\"",
+    "tslint": "tslint --project tslint.json --format stylish"
   },
   "author": "IPython",
   "license": "BSD-3-Clause",
@@ -36,6 +37,7 @@
     "postcss-loader": "^2.0.6",
     "rimraf": "^2.6.1",
     "style-loader": "^0.18.1",
+    "tslint": "^5.7.0",
     "typescript": "~2.4.1",
     "url-loader": "^0.5.9",
     "webpack": "^3.5.5"

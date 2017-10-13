@@ -3,23 +3,23 @@ import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/python/python';
 
 import {
-  WidgetManager,
-} from './manager';
-
-import {
-  Kernel, ServerConnection,
+  Kernel, ServerConnection
 } from '@jupyterlab/services';
 
+import {
+  WidgetManager
+} from './manager';
+
 document.addEventListener('DOMContentLoaded', function(event) {
-  var baseUrl = 'https://tmpnb.org/';
-  var apiUrl = baseUrl.concat('api/spawn');
-  var xmlhttp = new XMLHttpRequest();
+  let baseUrl = 'https://tmpnb.org/';
+  let apiUrl = baseUrl.concat('api/spawn');
+  let xmlhttp = new XMLHttpRequest();
   xmlhttp.open('POST', apiUrl, true);
   xmlhttp.setRequestHeader('Content-type', 'application/json');
 
   xmlhttp.onreadystatechange = function () {
     // Call a function when the state changes.
-    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+    if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
       let response = JSON.parse(xmlhttp.responseText);
       // TODO: this will need to be changed to check the status code 429
       // when https://github.com/jupyter/tmpnb/pull/283 is implemented.
@@ -42,6 +42,8 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
         // Create a codemirror instance
         let code = require('../widget_code.json').join('\n');
+
+        /* tslint:disable */
         let inputarea = document.getElementsByClassName('inputarea')[0] as HTMLElement;
         let editor = CodeMirror(inputarea, {
           value: code,
@@ -52,9 +54,10 @@ document.addEventListener('DOMContentLoaded', function(event) {
           readOnly: true,
         });
 
-        // Create the widget area and widget manager
-        let widgetarea = document.getElementsByClassName('widgetarea')[0] as HTMLElement;
+        // Create the widget area and widget manager		
+        let widgetarea = document.getElementsByClassName('widgetarea')[0] as HTMLElement;		
         let manager = new WidgetManager(kernel, widgetarea);
+        /* tslint:enable */
 
         // Run backend code to create the widgets.  You could also create the
         // widgets in the frontend, like the other widget examples demonstrate.
