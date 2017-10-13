@@ -3,11 +3,11 @@ import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/python/python';
 
 import {
-    WidgetManager
+    WidgetManager,
 } from './manager';
 
 import {
-    Kernel, ServerConnection
+    Kernel, ServerConnection,
 } from '@jupyterlab/services';
 
 document.addEventListener("DOMContentLoaded", function(event) {
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     xmlhttp.setRequestHeader("Content-type", "application/json");
 
     xmlhttp.onreadystatechange = function () {
-        //Call a function when the state changes.
+        // Call a function when the state changes.
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             let response = JSON.parse(xmlhttp.responseText);
             // TODO: this will need to be changed to check the status code 429
@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             // Connect to the notebook webserver.
             let connectionInfo: any = ServerConnection.makeSettings({
                 baseUrl: serverUrl,
-                wsUrl: wsUrl
+                wsUrl: wsUrl,
             });
             Kernel.getSpecs(connectionInfo).then(kernelSpecs => {
                 return Kernel.startNew({name: kernelSpecs.default, serverSettings: connectionInfo});
@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                     tabSize: 4,
                     showCursorWhenSelecting: true,
                     viewportMargin: Infinity,
-                    readOnly: true
+                    readOnly: true,
                 });
 
                 // Create the widget area and widget manager
@@ -62,9 +62,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 request.onIOPub = (msg) => {
                     // If we have a display message, display the widget.
                     console.log(msg);
-                }
+                };
             });
         }
-    }
+    };
     xmlhttp.send();
 });

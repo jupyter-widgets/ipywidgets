@@ -3,11 +3,11 @@ import * as base from '@jupyter-widgets/base';
 import * as pWidget from '@phosphor/widgets';
 
 import {
-  IDisposable
+  IDisposable,
 } from '@phosphor/disposable';
 
 import {
-  Kernel
+  Kernel,
 } from '@jupyterlab/services';
 
 import '@jupyter-widgets/controls/css/widgets.css';
@@ -19,7 +19,7 @@ let requirePromise = function(module: string): Promise<any> {
         }
         (window as any).require([module], resolve, reject);
     });
-}
+};
 
 export
 class WidgetManager extends base.ManagerBase<HTMLElement> {
@@ -41,7 +41,7 @@ class WidgetManager extends base.ManagerBase<HTMLElement> {
         (comm, msg) => {
             this.handle_comm_open(new base.shims.services.Comm(comm), msg);
         });
-    };
+    }
 
     display_view(msg, view, options) {
         return Promise.resolve(view).then((view) => {
@@ -56,7 +56,8 @@ class WidgetManager extends base.ManagerBase<HTMLElement> {
     /**
      * Load a class and return a promise to the loaded object.
      */
-    protected async loadClass(className: string, moduleName: string, moduleVersion: string): Promise<any> {
+    protected async loadClass(className: string, moduleName: string, moduleVersion: string):
+            Promise<any> {
         let module: any;
         if (moduleName === '@jupyter-widgets/controls') {
             module = controls;
@@ -65,11 +66,12 @@ class WidgetManager extends base.ManagerBase<HTMLElement> {
         } else {
             try {
                 module = await requirePromise(`${moduleName}.js`);
-            } catch(err) {
+            } catch (err) {
                 let failedId = err.requireModules && err.requireModules[0];
                 if (failedId) {
                     console.log(`Falling back to unpkg.com for ${moduleName}@${moduleVersion}`);
-                    module = await requirePromise(`https://unpkg.com/${moduleName}@${moduleVersion}/dist/index.js`);
+                    module = await requirePromise(
+                        `https://unpkg.com/${moduleName}@${moduleVersion}/dist/index.js`);
                 } else {
                     throw err;
                 }
@@ -77,7 +79,8 @@ class WidgetManager extends base.ManagerBase<HTMLElement> {
         }
 
         if (module[className] === void 0) {
-            throw new Error(`Class ${className} not found in module ${moduleName}@${moduleVersion}`);
+            throw new Error(
+                `Class ${className} not found in module ${moduleName}@${moduleVersion}`);
         }
         return module[className];
     }
@@ -85,19 +88,21 @@ class WidgetManager extends base.ManagerBase<HTMLElement> {
     /**
      * Create a comm.
      */
-    _create_comm(target_name: string, model_id: string, data?: any, metadata?: any): Promise<base.shims.services.Comm> {
-            let comm = this.kernel.connectToComm(target_name, model_id);
-            if (data || metadata) {
-                comm.open(data, metadata);
-            }
-            return Promise.resolve(new base.shims.services.Comm(comm));
+    _create_comm(target_name: string, model_id: string, data?: any, metadata?: any):
+            Promise<base.shims.services.Comm> {
+        let comm = this.kernel.connectToComm(target_name, model_id);
+        if (data || metadata) {
+            comm.open(data, metadata);
         }
+        return Promise.resolve(new base.shims.services.Comm(comm));
+    }
 
     /**
      * Get the currently-registered comms.
      */
     _get_comm_info(): Promise<any> {
-        return this.kernel.requestCommInfo({target: this.comm_target_name}).then(reply => reply.content.comms);
+        return this.kernel.requestCommInfo({target: this.comm_target_name})
+            .then(reply => reply.content.comms);
     }
 
     kernel: Kernel.IKernelConnection;

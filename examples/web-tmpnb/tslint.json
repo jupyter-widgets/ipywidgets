@@ -1,0 +1,37 @@
+{
+  "rulesDirectory": ["node_modules/vrsource-tslint-rules/rules"],
+  "rules": {
+    "class-name": true,
+    "comment-format": [true, "check-space"],
+    "curly": true,
+    "eofline": true,
+    "forin": true,
+    "indent": [true, "spaces", 2],
+    "label-position": true,
+    "max-line-length": [true, 100],
+    "no-duplicate-imports": true,
+    "no-param-reassign": true,
+    "no-trailing-whitespace": true,
+    "semicolon": [true, "always"],
+    "trailing-comma": [true, {
+      "singleline": "never",
+      "multiline": "always"
+    }],
+    "typedef-whitespace": [true, {
+      "call-signature": "nospace",
+      "index-signature": "nospace",
+      "parameter": "nospace",
+      "property-declaration": "nospace",
+      "variable-declaration": "nospace"
+    }],
+    "variable-name": false,
+    "whitespace": [true,
+      "check-branch",
+      "check-decl",
+      "check-operator",
+      "check-separator",
+      "check-type"
+    ]
+
+  }
+}
