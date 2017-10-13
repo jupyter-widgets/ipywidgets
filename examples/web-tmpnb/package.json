@@ -10,7 +10,7 @@
     "host": "http-server",
     "test": "npm run test:default",
     "test:default": "echo \"No test specified\"",
-    "lint": "tslint --project tslint.json"
+    "tslint": "tslint --project tslint.json --format stylish"
   },
   "author": "IPython",
   "license": "BSD-3-Clause",
