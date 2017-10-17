@@ -8,9 +8,9 @@
     "clean": "rimraf lib && rimraf built",
     "build": "npm run clean && tsc --project src && node scripts/copyfiles.js && webpack",
     "host": "http-server",
+    "lint": "tslint --project tslint.json --format stylish",
     "test": "npm run test:default",
-    "test:default": "echo \"No test specified\"",
-    "tslint": "tslint --project tslint.json --format stylish"
+    "test:default": "echo \"No test specified\""
   },
   "author": "IPython",
   "license": "BSD-3-Clause",

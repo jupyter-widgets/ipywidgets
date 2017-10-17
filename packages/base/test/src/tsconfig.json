@@ -4,9 +4,9 @@
     "noEmitOnError": true,
     "module": "commonjs",
     "lib": ["dom", "es5", "es2015.promise", "es2015.iterable"],
-    "types": ["mocha", "sinon"],
+    "types": ["mocha"],
     "moduleResolution": "node",
-    "target": "es5",
+    "target": "ES5",
     "outDir": "../build"
   }
 }
