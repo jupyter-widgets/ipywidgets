@@ -2,8 +2,6 @@
 // Distributed under the terms of the Modified BSD License.
 
 import * as utils from './utils';
-import * as semver from 'semver';
-import * as Backbone from 'backbone';
 import * as services from '@jupyterlab/services';
 
 import {
@@ -211,7 +209,7 @@ abstract class ManagerBase<T> {
     /**
      * Handle when a comm is opened.
      */
-    handle_comm_open(comm: shims.services.Comm, msg: services.KernelMessage.ICommOpenMsg): Promise<Backbone.Model> {
+    handle_comm_open(comm: shims.services.Comm, msg: services.KernelMessage.ICommOpenMsg): Promise<WidgetModel> {
         let protocolVersion = ((msg.metadata || {}).version as string) || '';
         if (protocolVersion.split('.', 1)[0] !== PROTOCOL_MAJOR_VERSION) {
             let error = `Wrong widget protocol version: received protocol version '${protocolVersion}', but was expecting major version '${PROTOCOL_MAJOR_VERSION}'`;
