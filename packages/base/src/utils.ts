@@ -19,10 +19,10 @@ import {
  * This is from code that Typescript 2.4 generates for a polyfill.
  */
 export
-let assign = (Object as any).assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
+let assign = (Object as any).assign || function(t: any) {
+    for (let s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+        for (let p in s) if (Object.prototype.hasOwnProperty.call(s, p))
             t[p] = s[p];
     }
     return t;
@@ -33,13 +33,13 @@ let assign = (Object as any).assign || function(t) {
  */
 export
 function uuid(): string {
-    var s = [];
-    var hexDigits = '0123456789ABCDEF';
-    for (var i = 0; i < 32; i++) {
+    let s: (string|number)[] = [];
+    let hexDigits = '0123456789ABCDEF';
+    for (let i = 0; i < 32; i++) {
         s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
     }
     s[12] = '4';  // bits 12-15 of the time_hi_and_version field to 0010
-    s[16] = hexDigits.substr((s[16] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
+    s[16] = hexDigits.substr((<number>s[16] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
 
     return s.join('');
 }
@@ -53,7 +53,7 @@ function uuid(): string {
  */
 export
 class WrappedError extends Error {
-    constructor(message, error) {
+    constructor(message: string, error: Error) {
         super(message);
         console.warn('WrappedError has been deprecated!');
         // Keep a stack of the original error messages.
@@ -72,15 +72,15 @@ class WrappedError extends Error {
  * Returns a single Promise.
  */
 export
-function resolvePromisesDict(d): Promise<any> {
-    var keys = Object.keys(d);
-    var values = [];
-    keys.forEach(function(key) {
+function resolvePromisesDict<T>(d: {[key:string]: Promise<T>}): Promise<{[key:string]: T}> {
+    let keys = Object.keys(d);
+    let values: Promise<T>[] = [];
+    keys.forEach((key) => {
         values.push(d[key]);
     });
-    return Promise.all(values).then(function(v) {
-        d = {};
-        for(var i=0; i<keys.length; i++) {
+    return Promise.all(values).then((v: T[]) => {
+        let d: {[key:string]: T} = {};
+        for(let i=0; i<keys.length; i++) {
             d[keys[i]] = v[i];
         }
         return d;
@@ -94,8 +94,8 @@ function resolvePromisesDict(d): Promise<any> {
  * the original error that caused the promise to reject.
  */
 export
-function reject(message, log) {
-    return function promiseRejection(error) {
+function reject(message: string, log: any) {
+    return function promiseRejection(error: any) {
         if (log) console.error(new Error(message));
         throw error;
     };
@@ -111,7 +111,7 @@ function reject(message, log) {
  * Will lead to {a: 1, b: {data: array1}, c: [0, array2]}
  */
 export
-function put_buffers(state, buffer_paths: (string | number)[][], buffers: DataView[]) {
+function put_buffers(state: any, buffer_paths: (string | number)[][], buffers: DataView[]) {
     for (let i=0; i<buffer_paths.length; i++) {
         let buffer_path = buffer_paths[i];
          // say we want to set state[x][y][z] = buffers[i]
@@ -135,13 +135,13 @@ function put_buffers(state, buffer_paths: (string | number)[][], buffers: DataVi
  * and the buffers associated to those paths (.buffers).
  */
 export
-function remove_buffers(state): {state: any, buffers: ArrayBuffer[], buffer_paths: (string | number)[][]} {
+function remove_buffers(state: any): {state: any, buffers: ArrayBuffer[], buffer_paths: (string | number)[][]} {
     let buffers: ArrayBuffer[] = [];
     let buffer_paths: (string | number)[][] = [];
     // if we need to remove an object from a list, we need to clone that list, otherwise we may modify
     // the internal state of the widget model
     // however, we do not want to clone everything, for performance
-    function remove(obj, path) {
+    function remove(obj: any, path: any) {
         if (obj.toJSON) {
             // We need to get the JSON form of the object before recursing.
             // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#toJSON()_behavior

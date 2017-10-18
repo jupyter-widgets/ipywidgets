@@ -18,7 +18,7 @@ class StyleModel extends WidgetModel {
             _model_name: 'StyleModel',
             _view_name: 'StyleView',
         }, Object.keys(Derived.styleProperties).reduce((obj: any, key: string) => {
-            obj[key] = Derived.styleProperties[key].default;
+            obj[key] = (Derived.styleProperties as any)[key].default;
             return obj;
         }, {}));
     }
@@ -32,7 +32,7 @@ class StyleView extends WidgetView {
     /**
      * Public constructor
      */
-    initialize(parameters) {
+    initialize(parameters: any) {
         this._traitNames = [];
         super.initialize(parameters);
         // Register the traits that live on the Python side
@@ -53,7 +53,7 @@ class StyleView extends WidgetView {
         this._traitNames.push(trait);
 
         // Listen to changes, and set the value on change.
-        this.listenTo(this.model, 'change:' + trait, (model, value) => {
+        this.listenTo(this.model, 'change:' + trait, (model: any, value: any) => {
             this.handleChange(trait, value);
         });
     }
@@ -66,7 +66,7 @@ class StyleView extends WidgetView {
         let parent = this.options.parent as DOMWidgetView;
         if (parent) {
             let ModelType = this.model.constructor as typeof StyleModel;
-            let styleProperties = ModelType.styleProperties;
+            let styleProperties: {[key: string]: any} = ModelType.styleProperties;
             let attribute = styleProperties[trait].attribute;
             let selector  = styleProperties[trait].selector;
             let elements = selector ? parent.el.querySelectorAll(selector) : [ parent.el ];
@@ -99,7 +99,7 @@ class StyleView extends WidgetView {
     unstyle() {
         let parent = this.options.parent as DOMWidgetView;
         let ModelType = this.model.constructor as typeof StyleModel;
-        let styleProperties = ModelType.styleProperties;
+        let styleProperties: {[key: string]: any} = ModelType.styleProperties;
         this._traitNames.forEach((trait) => {
             if (parent) {
                 let attribute = styleProperties[trait].attribute;

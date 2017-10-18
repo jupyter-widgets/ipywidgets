@@ -31,8 +31,12 @@
     "prepublish": "npm run clean && npm run build"
   },
   "devDependencies": {
+    "@types/chai": "^4.0.4",
+    "@types/chai-as-promised": "^7.1.0",
     "@types/expect.js": "^0.3.29",
     "@types/mocha": "^2.2.41",
+    "@types/sinon": "^2.3.5",
+    "@types/sinon-chai": "^2.7.29",
     "chai": "^4.0.0",
     "chai-as-promised": "^7.0.0",
     "expect.js": "^0.3.1",

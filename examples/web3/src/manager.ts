@@ -7,7 +7,7 @@ import {
 } from '@phosphor/disposable';
 
 import {
-  Kernel
+  Kernel, KernelMessage
 } from '@jupyterlab/services';
 
 import {
@@ -16,12 +16,17 @@ import {
 
 import './widgets.css';
 
+export interface CustomWindow extends Window {
+    // TODO(cnishina): Need help to return type of require.
+    require: (modluleArray: string[], resolve: Function, reject: Function) => any;
+}
+
 let requirePromise = function(module: string): Promise<any> {
     return new Promise((resolve, reject) => {
-        if ((window as any).require === void 0) {
+        if ((window as CustomWindow).require === void 0) {
             reject('requirejs not loaded');
         }
-        (window as any).require([module], resolve, reject);
+        (window as CustomWindow).require([module], resolve, reject);
     });
 }
 
@@ -47,10 +52,11 @@ class WidgetManager extends HTMLManager {
         });
     };
 
-    display_view(msg, view, options) {
+    // TODO(cnishina): what is options? It is not used in this method.
+    display_view(msg: KernelMessage.IMessage, view: base.DOMWidgetView, options: any): Promise<base.DOMWidgetView> {
         return Promise.resolve(view).then((view) => {
             pWidget.Widget.attach(view.pWidget, this.el);
-            view.on('remove', function() {
+            view.on('remove', () => {
                 console.log('view removed', view);
             });
             return view;
@@ -71,7 +77,7 @@ class WidgetManager extends HTMLManager {
     /**
      * Get the currently-registered comms.
      */
-    _get_comm_info(): Promise<any> {
+    _get_comm_info(): Promise<{[key: string]: string}> {
         return this.kernel.requestCommInfo({target: this.comm_target_name}).then(reply => reply.content.comms);
     }
 

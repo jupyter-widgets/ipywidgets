@@ -19,6 +19,7 @@
     "@phosphor/widgets": "^1.2.0"
   },
   "devDependencies": {
+    "@jupyterlab/coreutils": "^0.10.0",
     "rimraf": "^2.6.1",
     "typedoc": "^0.6.0",
     "typescript": "~2.4.1"

@@ -30,7 +30,7 @@ namespace shims {
              * Hookup kernel events.
              * @param  {Kernel.IKernel} jsServicesKernel - @jupyterlab/services Kernel.IKernel instance
              */
-            init_kernel(jsServicesKernel) {
+            init_kernel(jsServicesKernel: Kernel.IKernel) {
                 this.kernel = jsServicesKernel; // These aren't really the same.
                 this.jsServicesKernel = jsServicesKernel;
             };
@@ -45,7 +45,7 @@ namespace shims {
              * @return {Comm}
              */
             new_comm(target_name: string, data: any, callbacks: any, metadata: any, comm_id: string): Comm {
-                var comm = new Comm(this.jsServicesKernel.connectToComm(target_name, comm_id));
+                let comm = new Comm(this.jsServicesKernel.connectToComm(target_name, comm_id));
                 this.register_comm(comm);
                 comm.open(data, callbacks, metadata);
                 return comm;
@@ -57,11 +57,11 @@ namespace shims {
              * @param  {(Comm, object) => void} f - callback that is called when the
              *                         comm is made.  Signature of f(comm, msg).
              */
-            register_target (target_name, f) {
-                var handle = this.jsServicesKernel.registerCommTarget(target_name,
+            register_target (target_name: string, f: (comm: Comm, param: any) => void) {
+                let handle = this.jsServicesKernel.registerCommTarget(target_name,
                 (jsServicesComm, msg) => {
                     // Create the comm.
-                    var comm = new Comm(jsServicesComm);
+                    let comm = new Comm(jsServicesComm);
                     this.register_comm(comm);
 
                     // Call the callback for the comm.
@@ -80,8 +80,8 @@ namespace shims {
              * Unregisters a comm target
              * @param  {string} target_name
              */
-            unregister_target (target_name, f) {
-                var handle = this.targets[target_name];
+            unregister_target (target_name: string, f: any) {
+                let handle = this.targets[target_name];
                 handle.dispose();
                 delete this.targets[target_name];
             };
@@ -89,7 +89,7 @@ namespace shims {
             /**
              * Register a comm in the mapping
              */
-            register_comm = function (comm) {
+            register_comm = (comm: any) => {
               this.comms[comm.comm_id] = Promise.resolve(comm);
               comm.kernel = this.kernel;
               return comm.comm_id;
@@ -135,7 +135,7 @@ namespace shims {
              * @return msg id
              */
             open(data: any, callbacks: any, metadata: any): string {
-                var future = this.jsServicesComm.open(data, metadata);
+                let future = this.jsServicesComm.open(data, metadata);
                 this._hookupCallbacks(future, callbacks);
                 return future.msg.header.msg_id;
             };
@@ -149,7 +149,7 @@ namespace shims {
              * @return message id
              */
             send(data: any, callbacks: any, metadata: any, buffers: ArrayBuffer[] | ArrayBufferView[]): string {
-                var future = this.jsServicesComm.send(data, metadata, buffers);
+                let future = this.jsServicesComm.send(data, metadata, buffers);
                 this._hookupCallbacks(future, callbacks);
                 return future.msg.header.msg_id;
             };
@@ -162,7 +162,7 @@ namespace shims {
              * @return msg id
              */
             close(data?: any, callbacks?: any, metadata?: any): string {
-                var future = this.jsServicesComm.close(data, metadata);
+                let future = this.jsServicesComm.close(data, metadata);
                 this._hookupCallbacks(future, callbacks);
                 return future.msg.header.msg_id;
             };
@@ -190,16 +190,16 @@ namespace shims {
              */
             _hookupCallbacks(future: Kernel.IFuture, callbacks: any) {
                 if (callbacks) {
-                    future.onReply = function(msg) {
+                    future.onReply = (msg: any) => {
                         if (callbacks.shell && callbacks.shell.reply) callbacks.shell.reply(msg);
                         // TODO: Handle payloads.  See https://github.com/jupyter/notebook/blob/master/notebook/static/services/kernels/kernel.js#L923-L947
                     };
 
-                    future.onStdin = function(msg) {
+                    future.onStdin = (msg: any) => {
                         if (callbacks.input) callbacks.input(msg);
                     };
 
-                    future.onIOPub = function(msg) {
+                    future.onIOPub = (msg: any) => {
                         if(callbacks.iopub) {
                             if (callbacks.iopub.status && msg.header.msg_type === 'status') {
                                 callbacks.iopub.status(msg);

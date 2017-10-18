@@ -33,6 +33,7 @@
     "prepublish": "npm run clean && npm run build"
   },
   "devDependencies": {
+    "@types/base64-js": "^1.2.5",
     "@types/expect.js": "^0.3.29",
     "@types/mathjax": "0.0.31",
     "@types/mocha": "^2.2.41",

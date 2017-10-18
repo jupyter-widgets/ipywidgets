@@ -37,22 +37,28 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 import * as utils from './utils';
+import {
+    ModelSetOptions, ObjectHash
+} from 'backbone';
 
 // Set a hash of model attributes on the object, firing `"change"`. This is
 // the core primitive operation of a model, updating the data and notifying
 // anyone who needs to know about the change in state. The heart of the beast.
 // This *MUST* be called with the model as the `this` context.
 export
-function set(key, val, options) {
+function set(key: string|object, val: any, options: any) {
     if (key == null) return this;
 
     // Handle both `"key", value` and `{key: value}` -style arguments.
-    var attrs;
+    let attrs: ObjectHash;
     if (typeof key === 'object') {
         attrs = key;
         options = val;
     } else {
-        (attrs = {})[key] = val;
+        if (!attrs) {
+            attrs = {};
+        }
+        attrs[key as string] = val;
     }
 
     options || (options = {});
@@ -61,10 +67,10 @@ function set(key, val, options) {
     if (!this._validate(attrs, options)) return false;
 
     // Extract attributes and options.
-    var unset      = options.unset;
-    var silent     = options.silent;
-    var changes    = [];
-    var changing   = this._changing;
+    let unset      = options.unset;
+    let silent     = options.silent;
+    let changes    = [];
+    let changing   = this._changing;
     this._changing = true;
 
     if (!changing) {
@@ -73,12 +79,12 @@ function set(key, val, options) {
         this.changed = {};
     }
 
-    var current = this.attributes;
-    var changed = this.changed;
-    var prev    = this._previousAttributes;
+    let current = this.attributes;
+    let changed = this.changed;
+    let prev    = this._previousAttributes;
 
     // For each `set` attribute, update or delete the current value.
-    for (var attr in attrs) {
+    for (let attr in attrs) {
         val = attrs[attr];
         // EDIT: the following two lines use our isEqual instead of _.isEqual
         if (!utils.isEqual(current[attr], val)) changes.push(attr);
@@ -96,7 +102,7 @@ function set(key, val, options) {
     // Trigger all relevant attribute changes.
     if (!silent) {
         if (changes.length) this._pending = options;
-        for (var i = 0; i < changes.length; i++) {
+        for (let i = 0; i < changes.length; i++) {
         this.trigger('change:' + changes[i], this, current[changes[i]], options);
         }
     }

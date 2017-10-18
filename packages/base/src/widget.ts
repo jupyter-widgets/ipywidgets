@@ -27,16 +27,15 @@ const JUPYTER_WIDGETS_VERSION = '1.0.0';
  * Replace model ids with models recursively.
  */
 export
-function unpack_models(value, manager): Promise<any> {
-    let unpacked;
+function unpack_models(value: any, manager: any): Promise<any> {
     if (Array.isArray(value)) {
-        unpacked = [];
+        let unpacked: any[] = [];
         value.forEach((sub_value, key) => {
             unpacked.push(unpack_models(sub_value, manager));
         });
         return Promise.all(unpacked);
     } else if (value instanceof Object) {
-        unpacked = {};
+        let unpacked: {[key: string]: any} = {};
         Object.keys(value).forEach((key) => {
             unpacked[key] = unpack_models(value[key], manager);
         })
@@ -61,9 +60,9 @@ class WidgetModel extends Backbone.Model {
             _model_name: "WidgetModel",
             _model_module_version: JUPYTER_WIDGETS_VERSION,
             _view_module: "@jupyter-widgets/base",
-            _view_name: null,
+            _view_name: <any>null,
             _view_module_version: JUPYTER_WIDGETS_VERSION,
-            _view_count: null,
+            _view_count: <any>null,
         };
     }
 
@@ -90,7 +89,7 @@ class WidgetModel extends Backbone.Model {
      *      An ID unique to this model.
      * comm : Comm instance (optional)
      */
-    initialize(attributes, options: {model_id: string, comm?: any, widget_manager: any}) {
+    initialize(attributes: any, options: {model_id: string, comm?: any, widget_manager: any}) {
         super.initialize(attributes, options);
 
         // Attributes should be initialized here, since user initialization may depend on it
@@ -137,7 +136,7 @@ class WidgetModel extends Backbone.Model {
     /**
      * Send a custom msg over the comm.
      */
-    send(content, callbacks, buffers?) {
+    send(content: any, callbacks: any, buffers?: any) {
         if (this.comm !== undefined) {
             let data = {method: 'custom', content: content};
             this.comm.send(data, callbacks, {}, buffers);
@@ -176,7 +175,7 @@ class WidgetModel extends Backbone.Model {
     /**
      * Handle when a widget comm is closed.
      */
-    _handle_comm_closed(msg) {
+    _handle_comm_closed(msg: any) {
         this.trigger('comm:close');
         this.close(true);
     }
@@ -184,7 +183,7 @@ class WidgetModel extends Backbone.Model {
     /**
      * Handle incoming comm msg.
      */
-    _handle_comm_msg(msg): Promise<void> {
+    _handle_comm_msg(msg: any): Promise<void> {
         let method = msg.content.data.method;
         switch (method) {
             case 'update':
@@ -193,11 +192,11 @@ class WidgetModel extends Backbone.Model {
                         let state = msg.content.data.state;
                         let buffer_paths = msg.content.data.buffer_paths || [];
                         // Make sure the buffers are DataViews
-                        let buffers = (msg.buffers || []).map(b => {
+                        let buffers = (msg.buffers || []).map((b: DataView | ArrayBuffer) => {
                             if (b instanceof DataView) {
                                 return b;
                             } else {
-                                return new DataView(b instanceof ArrayBuffer ? b : b.buffer);
+                                return new DataView(b instanceof ArrayBuffer ? b : (b as any).buffer);
                             }
                         });
 
@@ -235,7 +234,7 @@ class WidgetModel extends Backbone.Model {
      * If drop_default is truthy, attributes that are equal to their default
      * values are dropped.
      */
-    get_state(drop_defaults) {
+    get_state(drop_defaults: any) {
         let fullState = this.attributes;
         if (drop_defaults) {
             // if defaults is a function, call it
@@ -244,7 +243,7 @@ class WidgetModel extends Backbone.Model {
             let state = {};
             Object.keys(fullState).forEach(key => {
                 if (!(utils.isEqual(fullState[key], defaults[key]))) {
-                    state[key] = fullState[key];
+                    (state as any)[key] = fullState[key];
                 }
             });
             return state;
@@ -258,7 +257,7 @@ class WidgetModel extends Backbone.Model {
      *
      * execution_state : ('busy', 'idle', 'starting')
      */
-    _handle_status(msg) {
+    _handle_status(msg: any) {
         if (this.comm !== void 0) {
             if (msg.content.execution_state === 'idle') {
                 this._pending_msgs--;
@@ -433,11 +432,11 @@ class WidgetModel extends Backbone.Model {
     /**
      * Send a sync message to the kernel.
      */
-    send_sync_message(state, callbacks: any = {}) {
+    send_sync_message(state: any, callbacks: any = {}) {
         try {
             callbacks.iopub = callbacks.iopub || {};
             let statuscb = callbacks.iopub.status
-            callbacks.iopub.status = (msg) => {
+            callbacks.iopub.status = (msg: any) => {
                 this._handle_status(msg);
                 if (statuscb) {
                     statuscb(msg);
@@ -462,7 +461,7 @@ class WidgetModel extends Backbone.Model {
      *
      * This invokes a Backbone.Sync.
      */
-    save_changes(callbacks?) {
+    save_changes(callbacks?: any) {
         if (this.comm_live) {
             let options: any = {patch: true}
             if (callbacks) {
@@ -480,7 +479,7 @@ class WidgetModel extends Backbone.Model {
      * the second form will result in foo being called twice
      * while the first will call foo only once.
      */
-    on_some_change(keys, callback, context) {
+    on_some_change(keys: string[], callback: Function, context: any) {
         this.on('change', function() {
             if (keys.some(this.hasChanged, this)) {
                 callback.apply(context, arguments);
@@ -492,7 +491,7 @@ class WidgetModel extends Backbone.Model {
      * Serialize the model.  See the deserialization function at the top of this file
      * and the kernel-side serializer/deserializer.
      */
-    toJSON(options) {
+    toJSON(options: any) {
         return `IPY_MODEL_${this.model_id}`;
     }
 
@@ -501,9 +500,9 @@ class WidgetModel extends Backbone.Model {
      * is an instance of widget manager, which is required for the
      * deserialization of widget models.
      */
-    static _deserialize_state(state, manager) {
+    static _deserialize_state(state: any, manager: any) {
         let serializers = this.serializers;
-        let deserialized;
+        let deserialized: any;
         if (serializers) {
             deserialized = {};
             for (let k in state) {
@@ -573,7 +572,7 @@ abstract class WidgetView extends NativeView<WidgetModel> {
     /**
      * Public constructor.
      */
-    initialize(parameters) {
+    initialize(parameters: any) {
         this.listenTo(this.model, 'change', () => {
             let changed = Object.keys(this.model.changedAttributes() || {});
             if (changed[0] === '_view_count' && changed.length === 1) {
@@ -609,8 +608,8 @@ abstract class WidgetView extends NativeView<WidgetModel> {
      *
      * Update view to be consistent with this.model
      */
-    update(options?) {
-    };
+    update(options?: any) {
+    }
 
     /**
      * Render a view
@@ -623,7 +622,7 @@ abstract class WidgetView extends NativeView<WidgetModel> {
     /**
      * Create and promise that resolves to a child view of a given model
      */
-    create_child_view(child_model, options = {}) {
+    create_child_view(child_model: any, options = {}) {
         let that = this;
         options = { parent: this, ...options};
         return this.model.widget_manager.create_view(child_model, options)
@@ -640,7 +639,7 @@ abstract class WidgetView extends NativeView<WidgetModel> {
     /**
      * Send a custom msg associated with this view.
      */
-    send(content, buffers?) {
+    send(content: any, buffers?: any) {
         this.model.send(content, this.callbacks(), buffers);
     }
 
@@ -715,21 +714,21 @@ class DOMWidgetView extends WidgetView {
     /**
      * Public constructor
      */
-    initialize(parameters) {
+    initialize(parameters: any) {
         super.initialize(parameters);
 
-        this.listenTo(this.model, 'change:_dom_classes', (model, new_classes) => {
+        this.listenTo(this.model, 'change:_dom_classes', (model: any, new_classes: any) => {
             let old_classes = model.previous('_dom_classes');
             this.update_classes(old_classes, new_classes);
         });
 
         this.layoutPromise = Promise.resolve();
-        this.listenTo(this.model, 'change:layout', (model, value) => {
+        this.listenTo(this.model, 'change:layout', (model: any, value: any) => {
             this.setLayout(value, model.previous('layout'));
         });
 
         this.stylePromise = Promise.resolve();
-        this.listenTo(this.model, 'change:style', (model, value) => {
+        this.listenTo(this.model, 'change:style', (model: any, value: any) => {
             this.setStyle(value, model.previous('style'));
         });
 
@@ -745,7 +744,7 @@ class DOMWidgetView extends WidgetView {
         })
     }
 
-    setLayout(layout, oldLayout?) {
+    setLayout(layout: any, oldLayout?: any) {
         if (layout) {
             this.layoutPromise = this.layoutPromise.then((oldLayoutView) => {
                 if (oldLayoutView) {
@@ -771,7 +770,7 @@ class DOMWidgetView extends WidgetView {
         }
     }
 
-    setStyle(style, oldStyle?) {
+    setStyle(style: any, oldStyle?: any) {
         if (style) {
             this.stylePromise = this.stylePromise.then((oldStyleView) => {
                 if (oldStyleView) {
@@ -796,7 +795,7 @@ class DOMWidgetView extends WidgetView {
     /**
      * Update the DOM classes applied to an element, default to this.el.
      */
-    update_classes(old_classes, new_classes, el?) {
+    update_classes(old_classes: any, new_classes: any, el?: any) {
         if (el===undefined) {
             el = this.el;
         }
@@ -840,7 +839,7 @@ class DOMWidgetView extends WidgetView {
      * el: optional DOM element handle, defaults to this.el
      *  Element that the classes are applied to.
      */
-    update_mapped_classes(class_map, trait_name, el?) {
+    update_mapped_classes(class_map: {[key: string]: string[]}, trait_name: string, el?: any) {
         let key = this.model.previous(trait_name);
         let old_classes = class_map[key] ? class_map[key] : [];
         key = this.model.get(trait_name);
@@ -849,7 +848,7 @@ class DOMWidgetView extends WidgetView {
         this.update_classes(old_classes, new_classes, el || this.el);
     }
 
-    set_mapped_classes(class_map, trait_name, el?) {
+    set_mapped_classes(class_map: {[key: string]: string[]}, trait_name: string, el?: any) {
         let key = this.model.get(trait_name);
         let new_classes = class_map[key] ? class_map[key] : [];
         this.update_classes([], new_classes, el || this.el);

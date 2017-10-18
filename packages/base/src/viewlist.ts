@@ -15,11 +15,11 @@
  */
 export
 class ViewList<T> {
-    constructor(create_view: (model: any, index: any) => T | Promise<T>, remove_view: (view: T) => void, context) {
+    constructor(create_view: (model: any, index: any) => T | Promise<T>, remove_view: (view: T) => void, context: any) {
         this.initialize(create_view, remove_view, context);
     }
 
-    initialize(create_view: (model: any, index: any) => T | Promise<T>, remove_view: (view: T) => void, context) {
+    initialize(create_view: (model: any, index: any) => T | Promise<T>, remove_view: (view: T) => void, context: any) {
         this._handler_context = context || this;
         this._models = [];
         this.views = []; // list of promises for views
@@ -34,7 +34,7 @@ class ViewList<T> {
      * if you want to perform some action on the list of views, do something like
      * `Promise.all(myviewlist.views).then(function(views) {...});`
      */
-    update(new_models, create_view?: (model: any, index: any) => T | Promise<T>, remove_view?: (view: T) => void, context?): Promise<T[]> {
+    update(new_models: any, create_view?: (model: any, index: any) => T | Promise<T>, remove_view?: (view: T) => void, context?: any): Promise<T[]> {
         let remove = remove_view || this._remove_view;
         let create = create_view || this._create_view;
         context = context || this._handler_context;
