@@ -82,6 +82,7 @@
     "jquery": "^3.1.1",
     "jquery-ui": "^1.12.1",
     "semver": "^5.1.0",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "webrtc-adapter": "^4.2.2"
   }
 }
