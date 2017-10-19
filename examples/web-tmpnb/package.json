@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "@jupyter-widgets/example-web-tmpnb",
-  "version": "2.0.3",
+  "version": "2.0.4-0",
   "description": "Project that tests the ability to npm install @jupyter-widgets/controls within an npm project.",
   "main": "index.js",
   "scripts": {
@@ -14,8 +14,8 @@
   "author": "IPython",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "@jupyter-widgets/base": "^1.0.3",
-    "@jupyter-widgets/controls": "^1.0.3",
+    "@jupyter-widgets/base": "^1.0.4-0",
+    "@jupyter-widgets/controls": "^1.0.4-0",
     "@jupyterlab/services": "^0.50.2",
     "@phosphor/disposable": "^1.1.0",
     "@phosphor/widgets": "^1.2.0",
