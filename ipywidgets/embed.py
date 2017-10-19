@@ -13,6 +13,7 @@ Functions for generating embeddable HTML/javascript of a widget.
 import json
 from .widgets import Widget, DOMWidget
 from .widgets.widget_link import Link
+from .widgets.docutils import doc_subst
 from ._version import __html_manager_version__
 
 snippet_template = u"""
@@ -89,14 +90,6 @@ _doc_snippets['embed_kwargs'] = """
         the scripts.
 """
 
-def _doc_subst(func):
-    """ Substitute format strings in class docstring """
-    # Strip the snippets to avoid trailing new lines and whitespace
-    stripped_snippets = {
-        key: snippet.strip() for (key, snippet) in _doc_snippets.items()
-    }
-    func.__doc__ = func.__doc__.format(**stripped_snippets)
-    return func
 
 def _find_widget_refs_by_state(widget, state):
     """Find references to other widgets in a widget's state"""
@@ -187,7 +180,7 @@ def dependency_state(widgets, drop_defaults=True):
     return state
 
 
-@_doc_subst
+@doc_subst(_doc_snippets)
 def embed_data(views, drop_defaults=True, state=None):
     """Gets data for embedding.
 
@@ -234,7 +227,7 @@ def embed_data(views, drop_defaults=True, state=None):
     return dict(manager_state=json_data, view_specs=view_specs)
 
 
-@_doc_subst
+@doc_subst(_doc_snippets)
 def embed_snippet(views,
                   drop_defaults=True,
                   state=None,
@@ -277,7 +270,7 @@ def embed_snippet(views,
     return snippet_template.format(**values)
 
 
-@_doc_subst
+@doc_subst(_doc_snippets)
 def embed_minimal_html(fp, views, title=u'IPyWidget export', template=None, **kwargs):
     """Write a minimal HTML file with widget views embedded.
 

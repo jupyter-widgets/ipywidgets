@@ -11,6 +11,7 @@ relative layouts.
 from .widget import register, widget_serialization
 from .domwidget import DOMWidget
 from .widget_core import CoreWidget
+from .docutils import doc_subst
 from traitlets import Unicode, Tuple, CaselessStrEnum
 
 
@@ -26,18 +27,8 @@ _doc_snippets['box_params'] = """
 """
 
 
-def _doc_subst(cls):
-    """ Substitute format strings in class docstring """
-    # Strip the snippets to avoid trailing new lines and whitespace
-    stripped_snippets = {
-        key: snippet.strip() for (key, snippet) in _doc_snippets.items()
-    }
-    cls.__doc__ = cls.__doc__.format(**stripped_snippets)
-    return cls
-
-
 @register
-@_doc_subst
+@doc_subst(_doc_snippets)
 class Box(DOMWidget, CoreWidget):
     """ Displays multiple widgets in a group.
 
@@ -78,7 +69,7 @@ class Box(DOMWidget, CoreWidget):
 
 
 @register
-@_doc_subst
+@doc_subst(_doc_snippets)
 class VBox(Box):
     """ Displays multiple widgets vertically using the flexible box model.
 
@@ -98,7 +89,7 @@ class VBox(Box):
 
 
 @register
-@_doc_subst
+@doc_subst(_doc_snippets)
 class HBox(Box):
     """ Displays multiple widgets horizontally using the flexible box model.
 
