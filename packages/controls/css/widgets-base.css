@@ -8,6 +8,7 @@
  * have been defined.
  */
 
+@import "./phosphor.css";
 
 :root {
     --jp-widgets-color: var(--jp-content-font-color1);
@@ -897,20 +898,24 @@
 
 /* Tab Widget */
 
-.jupyter-widgets .p-TabBar {
+.jupyter-widgets.widget-tab {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Tab widget */
+
+.jupyter-widgets.widget-tab > .p-TabBar {
     /* Necessary so that a tab can be shifted down to overlay the border of the box below. */
     overflow-x: visible;
     overflow-y: visible;
 }
 
-.jupyter-widgets.widget-tab .p-TabBar.p-mod-horizontal > .p-TabBar-content {
+.jupyter-widgets.widget-tab > .p-TabBar > .p-TabBar-content {
+    /* Make sure that the tab grows from bottom up */
     align-items: flex-end;
-    margin-bottom: 0;
-}
-
-.jupyter-widgets.widget-tab {
-    display: flex;
-    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
 }
 
 .jupyter-widgets.widget-tab > .widget-tab-contents {
@@ -925,16 +930,12 @@
     overflow: auto;
 }
 
-.jupyter-widgets.widget-tab .widget-tab-contents .widget-tab-child.p-mod-hidden {
-    display: none !important;
-}
-
-.jupyter-widgets.widget-tab .widget-tab-bar.p-TabBar {
+.jupyter-widgets.widget-tab > .p-TabBar {
     font: var(--jp-widgets-font-size) Helvetica, Arial, sans-serif;
-    display: block;
+    min-height: calc(var(--jp-widgets-horizontal-tab-height) + var(--jp-border-width));
 }
 
-.jupyter-widgets.widget-tab .p-TabBar-tab {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab {
     flex: 0 1 var(--jp-widgets-horizontal-tab-width);
     min-width: 35px;
     min-height: calc(var(--jp-widgets-horizontal-tab-height) + var(--jp-border-width));
@@ -948,15 +949,16 @@
     position: relative;
 }
 
-.jupyter-widgets.widget-tab .p-TabBar-tab.p-mod-current {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current {
     color: var(--jp-ui-font-color0);
     /* We want the background to match the tab content background */
     background: var(--jp-layout-color1);
     min-height: calc(var(--jp-widgets-horizontal-tab-height) + 2 * var(--jp-border-width));
     transform: translateY(var(--jp-border-width));
+    overflow: visible;
 }
 
-.jupyter-widgets.widget-tab .p-TabBar-tab.p-mod-current:before {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current:before {
     position: absolute;
     top: calc(-1 * var(--jp-border-width));
     left: calc(-1 * var(--jp-border-width));
@@ -966,27 +968,27 @@
     background: var(--jp-brand-color1);
 }
 
-.jupyter-widgets.widget-tab .p-TabBar-tab:first-child {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab:first-child {
     margin-left: 0;
 }
 
-.jupyter-widgets.widget-tab .p-TabBar-tab:hover:not(.p-mod-current) {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab:hover:not(.p-mod-current) {
     background: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
 }
 
-.jupyter-widgets.widget-tab.p-mod-closable > .p-TabBar-tabCloseIcon {
+.jupyter-widgets.widget-tab > .p-TabBar .p-mod-closable > .p-TabBar-tabCloseIcon {
     margin-left: 4px;
 }
 
-.jupyter-widgets.widget-tab.p-mod-closable > .p-TabBar-tabCloseIcon:before {
+.jupyter-widgets.widget-tab > .p-TabBar .p-mod-closable > .p-TabBar-tabCloseIcon:before {
     font-family: FontAwesome;
     content: '\f00d'; /* close */
 }
 
-.jupyter-widgets.widget-tab .p-TabBar-tabIcon,
-.jupyter-widgets.widget-tab .p-TabBar-tabLabel,
-.jupyter-widgets.widget-tab .p-TabBar-tabCloseIcon {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabIcon,
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabLabel,
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabCloseIcon {
     line-height: var(--jp-widgets-horizontal-tab-height);
 }
 
