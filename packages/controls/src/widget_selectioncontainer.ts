@@ -358,7 +358,7 @@ class TabView extends DOMWidgetView {
         return this.create_child_view(model).then((view: DOMWidgetView) => {
             let widget = view.pWidget;
             widget.title.label = placeholder.title.label;
-            widget.title.closable = true;
+            widget.title.closable = false;
 
             let i = ArrayExt.firstIndexOf(tabs.widgets, placeholder);
             // insert after placeholder so that if placholder is selected, the
