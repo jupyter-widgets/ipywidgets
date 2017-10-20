@@ -903,8 +903,6 @@
     flex-direction: column;
 }
 
-/* Tab widget */
-
 .jupyter-widgets.widget-tab > .p-TabBar {
     /* Necessary so that a tab can be shifted down to overlay the border of the box below. */
     overflow-x: visible;
