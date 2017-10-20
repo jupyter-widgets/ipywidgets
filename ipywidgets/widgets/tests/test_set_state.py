@@ -187,7 +187,9 @@ def test_set_state_cint_to_float():
     assert data['state'] == {'ci': 5}
 
 
-def test_set_state_int_to_int_like():
+# This test is disabled, meaning ipywidgets REQUIRES
+# any JSON received to format int-like numbers as ints
+def _x_test_set_state_int_to_int_like():
     # Note: Setting i to an int-like float will produce an
     # error, so if JSON producer were to always create
     # float formatted numbers, this would fail!
