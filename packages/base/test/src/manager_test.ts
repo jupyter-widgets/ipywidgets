@@ -348,7 +348,7 @@ describe('ManagerBase', function() {
 
       it('calls loadClass to retrieve model class', async function() {
         let manager = this.managerBase;
-        var spy = sinon.spy(manager, 'loadClass');
+        let spy = sinon.spy(manager, 'loadClass');
         let model = await manager.new_model(this.modelOptions);
         expect(manager.loadClass.calledOnce).to.be.true;
       });
@@ -368,7 +368,7 @@ describe('ManagerBase', function() {
       });
 
       it('sets up a comm close handler to delete the model', async function() {
-        var callback = sinon.spy();
+        let callback = sinon.spy();
         let comm = new MockComm();
         let spec = {
             model_name: 'TestWidget',
