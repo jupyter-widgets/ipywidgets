@@ -19,7 +19,7 @@ let requirePromise = function(module: string): Promise<any> {
         }
         (window as any).require([module], resolve, reject);
     });
-}
+};
 
 export
 class WidgetManager extends base.ManagerBase<HTMLElement> {
@@ -41,7 +41,7 @@ class WidgetManager extends base.ManagerBase<HTMLElement> {
         (comm, msg) => {
             this.handle_comm_open(new base.shims.services.Comm(comm), msg);
         });
-    };
+    }
 
     display_view(msg, view, options) {
         return Promise.resolve(view).then((view) => {
@@ -65,7 +65,7 @@ class WidgetManager extends base.ManagerBase<HTMLElement> {
         } else {
             try {
                 module = await requirePromise(`${moduleName}.js`);
-            } catch(err) {
+            } catch (err) {
                 let failedId = err.requireModules && err.requireModules[0];
                 if (failedId) {
                     console.log(`Falling back to unpkg.com for ${moduleName}@${moduleVersion}`);

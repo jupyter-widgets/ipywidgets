@@ -1,4 +1,3 @@
-import * as controls from '@jupyter-widgets/controls';
 import * as base from '@jupyter-widgets/base';
 import * as pWidget from '@phosphor/widgets';
 
@@ -23,7 +22,7 @@ let requirePromise = function(module: string): Promise<any> {
         }
         (window as any).require([module], resolve, reject);
     });
-}
+};
 
 export
 class WidgetManager extends HTMLManager {
@@ -45,7 +44,7 @@ class WidgetManager extends HTMLManager {
         (comm, msg) => {
             this.handle_comm_open(new base.shims.services.Comm(comm), msg);
         });
-    };
+    }
 
     display_view(msg, view, options) {
         return Promise.resolve(view).then((view) => {
