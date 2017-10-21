@@ -518,7 +518,7 @@ class IntTextView extends DescriptionView {
      */
     update(options?) {
         if (options === undefined || options.updated_view !== this) {
-            var value: number = this.model.get('value');
+            let value: number = this.model.get('value');
 
             if (this._parse_value(this.textbox.value) !== value) {
                 this.textbox.value = value.toString();
@@ -664,8 +664,8 @@ class ProgressView extends DescriptionView {
 
     render() {
         super.render();
-        var orientation = this.model.get('orientation');
-        var className = orientation === 'horizontal' ?
+        let orientation = this.model.get('orientation');
+        let className = orientation === 'horizontal' ?
             'widget-hprogress' : 'widget-vprogress';
         this.el.classList.add(className);
 
@@ -693,11 +693,11 @@ class ProgressView extends DescriptionView {
      * changed by another view or by a state update from the back-end.
      */
     update() {
-        var value = this.model.get('value');
-        var max = this.model.get('max');
-        var min = this.model.get('min');
-        var orientation = this.model.get('orientation');
-        var percent = 100.0 * (value - min) / (max - min);
+        let value = this.model.get('value');
+        let max = this.model.get('max');
+        let min = this.model.get('min');
+        let orientation = this.model.get('orientation');
+        let percent = 100.0 * (value - min) / (max - min);
         if (orientation === 'horizontal') {
             this.el.classList.remove('widget-inline-vbox');
             this.el.classList.remove('widget-vprogress');
@@ -759,7 +759,7 @@ class PlayModel extends BoundedIntModel {
 
     loop() {
         if (this.get('_playing')) {
-            var next_value = this.get('value') + this.get('step');
+            let next_value = this.get('value') + this.get('step');
             if (next_value <= this.get('max')) {
                 this.set('value', next_value);
                 this.schedule_next();
@@ -833,16 +833,16 @@ class PlayView extends DOMWidgetView {
         this.el.appendChild(this.stopButton);  // Disable if not playing
         this.el.appendChild(this.repeatButton);  // Always enabled, but may be hidden
 
-        var playIcon = document.createElement('i');
+        let playIcon = document.createElement('i');
         playIcon.className = 'fa fa-play';
         this.playButton.appendChild(playIcon);
-        var pauseIcon = document.createElement('i');
+        let pauseIcon = document.createElement('i');
         pauseIcon.className = 'fa fa-pause';
         this.pauseButton.appendChild(pauseIcon);
-        var stopIcon = document.createElement('i');
+        let stopIcon = document.createElement('i');
         stopIcon.className = 'fa fa-stop';
         this.stopButton.appendChild(stopIcon);
-        var repeatIcon = document.createElement('i');
+        let repeatIcon = document.createElement('i');
         repeatIcon.className = 'fa fa-retweet';
         this.repeatButton.appendChild(repeatIcon);
 
@@ -869,7 +869,7 @@ class PlayView extends DOMWidgetView {
     }
 
     update_playing() {
-        var playing = this.model.get('_playing');
+        let playing = this.model.get('_playing');
         let disabled = this.model.get('disabled');
         if (playing) {
             if (!disabled) {
@@ -885,7 +885,7 @@ class PlayView extends DOMWidgetView {
     }
 
     update_repeat() {
-        var repeat = this.model.get('_repeat');
+        let repeat = this.model.get('_repeat');
         this.repeatButton.style.display = this.model.get('show_repeat') ? this.playButton.style.display : 'none';
         if (repeat) {
             this.repeatButton.classList.add('mod-active');

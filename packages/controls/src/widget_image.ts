@@ -44,21 +44,21 @@ class ImageView extends DOMWidgetView {
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        var blob = new Blob([this.model.get('value')], {type: `image/${this.model.get('format')}`});
-        var url = URL.createObjectURL(blob);
-        var oldurl = this.el.src;
+        let blob = new Blob([this.model.get('value')], {type: `image/${this.model.get('format')}`});
+        let url = URL.createObjectURL(blob);
+        let oldurl = this.el.src;
         this.el.src = url;
         if (oldurl) {
             URL.revokeObjectURL(oldurl);
         }
-        var width = this.model.get('width');
+        let width = this.model.get('width');
         if (width !== undefined && width.length > 0) {
             this.el.setAttribute('width', width);
         } else {
             this.el.removeAttribute('width');
         }
 
-        var height = this.model.get('height');
+        let height = this.model.get('height');
         if (height !== undefined && height.length > 0) {
             this.el.setAttribute('height', height);
         } else {

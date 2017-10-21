@@ -22,8 +22,8 @@ import * as utils from './utils';
 import * as $ from 'jquery';
 
 function scrollIfNeeded(area, elem) {
-    var ar = area.getBoundingClientRect();
-    var er = elem.getBoundingClientRect();
+    let ar = area.getBoundingClientRect();
+    let er = elem.getBoundingClientRect();
     if (er.top < ar.top) {
         area.scrollTop -= ar.top - er.top;
     } else if (er.bottom > ar.bottom) {
@@ -265,16 +265,16 @@ class RadioButtonsView extends DescriptionView {
      * changed by another view or by a state update from the back-end.
      */
     update(options?) {
-        var view = this;
-        var items: string[] = this.model.get('_options_labels');
-        var radios = _.pluck(
+        let view = this;
+        let items: string[] = this.model.get('_options_labels');
+        let radios = _.pluck(
             this.container.querySelectorAll('input[type="radio"]'),
             'value'
         );
-        var stale = items.length != radios.length;
+        let stale = items.length != radios.length;
 
         if (!stale) {
-            for (var i = 0, len = items.length; i < len; ++i) {
+            for (let i = 0, len = items.length; i < len; ++i) {
                 if (radios[i] !== items[i]) {
                     stale = true;
                     break;
@@ -286,11 +286,11 @@ class RadioButtonsView extends DescriptionView {
             // Add items to the DOM.
             this.container.textContent = '';
             items.forEach(function(item: any, index: number) {
-                var label = document.createElement('label');
+                let label = document.createElement('label');
                 label.textContent = item;
                 view.container.appendChild(label);
 
-                var radio = document.createElement('input');
+                let radio = document.createElement('input');
                 radio.setAttribute('type', 'radio');
                 radio.value = index.toString();
                 radio.setAttribute('data-value', encodeURIComponent(item));
@@ -298,11 +298,11 @@ class RadioButtonsView extends DescriptionView {
            });
         }
         items.forEach(function(item: any, index: number) {
-            var item_query = 'input[data-value="' +
+            let item_query = 'input[data-value="' +
                 encodeURIComponent(item) + '"]';
-            var radio = view.container.querySelectorAll(item_query);
+                let radio = view.container.querySelectorAll(item_query);
             if (radio.length > 0) {
-              var radio_el = radio[0] as HTMLInputElement;
+              let radio_el = radio[0] as HTMLInputElement;
               radio_el.checked = view.model.get('index') === index;
               radio_el.disabled = view.model.get('disabled');
             }
@@ -427,18 +427,18 @@ class ToggleButtonsView extends DescriptionView {
      * changed by another view or by a state update from the back-end.
      */
     update(options?) {
-        var view = this;
-        var items: string[] = this.model.get('_options_labels');
-        var icons = this.model.get('icons') || [];
-        var previous_icons = this.model.previous('icons') || [];
-        var previous_bstyle = ToggleButtonsView.classMap[this.model.previous('button_style')] || '';
-        var tooltips = view.model.get('tooltips') || [];
-        var disabled = this.model.get('disabled');
-        var buttons = this.buttongroup.querySelectorAll('button');
-        var values = _.pluck(buttons, 'value');
-        var stale = false;
+        let view = this;
+        let items: string[] = this.model.get('_options_labels');
+        let icons = this.model.get('icons') || [];
+        let previous_icons = this.model.previous('icons') || [];
+        let previous_bstyle = ToggleButtonsView.classMap[this.model.previous('button_style')] || '';
+        let tooltips = view.model.get('tooltips') || [];
+        let disabled = this.model.get('disabled');
+        let buttons = this.buttongroup.querySelectorAll('button');
+        let values = _.pluck(buttons, 'value');
+        let stale = false;
 
-        for (var i = 0, len = items.length; i < len; ++i) {
+        for (let i = 0, len = items.length; i < len; ++i) {
             if (values[i] !== items[i] || icons[i] !== previous_icons[i]) {
                 stale = true;
                 break;
@@ -449,8 +449,8 @@ class ToggleButtonsView extends DescriptionView {
             // Add items to the DOM.
             this.buttongroup.textContent = '';
             items.forEach((item: any, index: number) => {
-                var item_html;
-                var empty = item.trim().length === 0 &&
+                let item_html;
+                let empty = item.trim().length === 0 &&
                     (!icons[index] || icons[index].trim().length === 0);
                 if (empty) {
                     item_html = '&nbsp;';
@@ -458,8 +458,8 @@ class ToggleButtonsView extends DescriptionView {
                     item_html = utils.escape_html(item);
                 }
 
-                var icon = document.createElement('i');
-                var button = document.createElement('button');
+                let icon = document.createElement('i');
+                let button = document.createElement('button');
                 if (icons[index]) {
                     icon.className = 'fa fa-' + icons[index];
                 }
@@ -483,8 +483,8 @@ class ToggleButtonsView extends DescriptionView {
 
         // Select active button.
         items.forEach(function(item: any, index: number) {
-            var item_query = '[data-value="' + encodeURIComponent(item) + '"]';
-            var button = view.buttongroup.querySelector(item_query);
+            let item_query = '[data-value="' + encodeURIComponent(item) + '"]';
+            let button = view.buttongroup.querySelector(item_query);
             if (view.model.get('index') === index) {
                 button.classList.add('mod-active');
             } else {
@@ -501,7 +501,7 @@ class ToggleButtonsView extends DescriptionView {
     }
 
     update_style_traits(button?) {
-        for (var name in this._css_state) {
+        for (let name in this._css_state) {
             if (this._css_state.hasOwnProperty(name)) {
                 if (name === 'margin') {
                     this.buttongroup.style[name] = this._css_state[name];
@@ -509,7 +509,7 @@ class ToggleButtonsView extends DescriptionView {
                     if (button) {
                         button.style[name] = this._css_state[name];
                     } else {
-                        var buttons = this.buttongroup
+                        let buttons = this.buttongroup
                             .querySelectorAll('button');
                         if (buttons.length) {
                             (buttons[0] as HTMLInputElement).style[name] = this._css_state[name];
@@ -521,14 +521,14 @@ class ToggleButtonsView extends DescriptionView {
     }
 
     update_button_style() {
-        var buttons = this.buttongroup.querySelectorAll('button');
+        let buttons = this.buttongroup.querySelectorAll('button');
         for (let i = 0; i < buttons.length; i++) {
             this.update_mapped_classes(ToggleButtonsView.classMap, 'button_style', buttons[i]);
         }
     }
 
     set_button_style() {
-        var buttons = this.buttongroup.querySelectorAll('button');
+        let buttons = this.buttongroup.querySelectorAll('button');
         for (let i = 0; i < buttons.length; i++) {
             this.set_mapped_classes(ToggleButtonsView.classMap, 'button_style', buttons[i]);
         }
@@ -634,9 +634,9 @@ class SelectionSliderView extends DescriptionView {
      */
     update(options?) {
         if (options === undefined || options.updated_view != this) {
-            var labels = this.model.get('_options_labels');
-            var max = labels.length - 1;
-            var min = 0;
+            let labels = this.model.get('_options_labels');
+            let max = labels.length - 1;
+            let min = 0;
             this.$slider.slider('option', 'step', 1);
             this.$slider.slider('option', 'max', max);
             this.$slider.slider('option', 'min', min);
@@ -649,7 +649,7 @@ class SelectionSliderView extends DescriptionView {
             // make sure that the horizontal placement of the
             // handle in the vertical slider is always
             // consistent.
-            var orientation = this.model.get('orientation');
+            let orientation = this.model.get('orientation');
             this.$slider.slider('option', 'value', min);
             this.$slider.slider('option', 'orientation', orientation);
 
@@ -674,7 +674,7 @@ class SelectionSliderView extends DescriptionView {
                 this.el.classList.add('widget-inline-hbox');
             }
 
-            var readout = this.model.get('readout');
+            let readout = this.model.get('readout');
             if (readout) {
                 // this.$readout.show();
                 this.readout.style.display = '';
@@ -696,13 +696,13 @@ class SelectionSliderView extends DescriptionView {
     }
 
     updateSelection() {
-        var index = this.model.get('index');
+        let index = this.model.get('index');
         this.$slider.slider('option', 'value', index);
         this.updateReadout(index);
     }
 
     updateReadout(index) {
-        var value = this.model.get('_options_labels')[index];
+        let value = this.model.get('_options_labels')[index];
         this.readout.textContent = value;
     }
 
@@ -833,9 +833,9 @@ class SelectionRangeSliderView extends SelectionSliderView {
     }
 
     updateReadout(index) {
-        var labels = this.model.get('_options_labels');
-        var minValue = labels[index[0]];
-        var maxValue = labels[index[1]];
+        let labels = this.model.get('_options_labels');
+        let minValue = labels[index[0]];
+        let maxValue = labels[index[1]];
         this.readout.textContent = `${minValue}-${maxValue}`;
     }
 

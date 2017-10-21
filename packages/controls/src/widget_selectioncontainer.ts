@@ -388,7 +388,7 @@ class TabView extends DOMWidgetView {
      * Updates the tab page titles.
      */
     updateTitles() {
-        var titles = this.model.get('_titles') || {};
+        let titles = this.model.get('_titles') || {};
         each(this.pWidget.widgets, (widget, i) => {
             widget.title.label = titles[i] || '';
         });
