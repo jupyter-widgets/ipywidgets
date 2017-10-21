@@ -34,7 +34,7 @@ describe('DatePickerView', function() {
     });
 
     it('initial date value', function() {
-        const testDate = new Date("2017-02-25");
+        const testDate = new Date('2017-02-25');
         this.model.set('value', testDate);
         const options = { model: this.model };
         const view = new widgets.DatePickerView(options);
@@ -58,10 +58,10 @@ describe('DatePickerView', function() {
         view.render();
 
         // Simulate setting the date in the datepicker
-        const testDate = new Date("2015-02-22");
+        const testDate = new Date('2015-02-22');
         const datepicker = getDatepicker(view.el);
         datepicker.valueAsDate = testDate;
-        datepicker.dispatchEvent(new Event('change', {"bubbles":true}));
+        datepicker.dispatchEvent(new Event('change', {'bubbles':true}));
 
         expect(this.model.get('value').getTime())
             .to.equal(testDate.getTime());
@@ -73,7 +73,7 @@ describe('DatePickerView', function() {
         const view = new widgets.DatePickerView(options);
         view.render();
 
-        const testDate = new Date("2015-02-22");
+        const testDate = new Date('2015-02-22');
         this.model.set('value', testDate);
         const datepicker = getDatepicker(view.el);
         expect(datepicker.valueAsDate.getTime())
@@ -110,7 +110,7 @@ describe('serialize_date', function() {
     });
 
     it('date before 100AD', function() {
-        const date = new Date("0005-04-28")
+        const date = new Date('0005-04-28')
         const expectedSerialization = {
             year: 5,
             month: 3,
