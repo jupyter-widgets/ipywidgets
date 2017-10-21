@@ -78,7 +78,7 @@ class ColorPickerView extends DescriptionView {
         return {
             'change [type="color"]': '_picker_change',
             'change [type="text"]': '_text_change'
-        }
+        };
     }
 
     private _update_value() {

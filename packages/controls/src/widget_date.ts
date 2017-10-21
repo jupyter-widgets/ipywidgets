@@ -26,24 +26,24 @@ function serialize_date(value: Date) {
             date: value.getUTCDate()
         };
     }
-};
+}
 
 export interface SerializedDate {
     /**
      * Full year
      */
-    year: number,
+    year: number;
 
     /**
      * Zero-based month (0 means January, 11 means December)
      */
-    month: number,
+    month: number;
 
     /**
      * Day of month
      */
-    date: number
-};
+    date: number;
+}
 
 export
 function deserialize_date(value: SerializedDate) {
@@ -55,7 +55,7 @@ function deserialize_date(value: SerializedDate) {
         date.setUTCHours(0, 0, 0, 0);
         return date;
     }
-};
+}
 
 export
 class DatePickerModel extends CoreDescriptionModel {
@@ -65,7 +65,7 @@ class DatePickerModel extends CoreDescriptionModel {
             serialize: serialize_date,
             deserialize: deserialize_date
         }
-    }
+    };
 
     defaults() {
         return _.extend(super.defaults(), {
@@ -111,7 +111,7 @@ class DatePickerView extends DescriptionView {
     events(): {[e: string]: string} {
         return {
             'change [type="date"]': '_picker_change',
-        }
+        };
     }
 
     private _update_value() {

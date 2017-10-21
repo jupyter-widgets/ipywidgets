@@ -82,7 +82,7 @@ class FloatSliderView extends IntSliderView {
         return x;
     }
 
-    _parse_value = parseFloat
+    _parse_value = parseFloat;
 }
 
 export
@@ -95,10 +95,10 @@ class FloatRangeSliderView extends IntRangeSliderView {
         return x;
     }
 
-    _parse_value = parseFloat
+    _parse_value = parseFloat;
 
     // matches: whitespace?, float, whitespace?, (hyphen, colon, or en-dash), whitespace?, float
-    _range_regex = /^\s*([+-]?(?:\d*\.?\d+|\d+\.)(?:[eE][-:]?\d+)?)\s*[-:–]\s*([+-]?(?:\d*\.?\d+|\d+\.)(?:[eE][+-]?\d+)?)/
+    _range_regex = /^\s*([+-]?(?:\d*\.?\d+|\d+\.)(?:[eE][-:]?\d+)?)\s*[-:–]\s*([+-]?(?:\d*\.?\d+|\d+\.)(?:[eE][+-]?\d+)?)/;
 }
 
 export

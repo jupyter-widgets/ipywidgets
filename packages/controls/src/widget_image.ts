@@ -71,7 +71,7 @@ class ImageView extends DOMWidgetView {
         if (this.el.src) {
             URL.revokeObjectURL(this.el.src);
         }
-        super.remove()
+        super.remove();
     }
 
     /**
