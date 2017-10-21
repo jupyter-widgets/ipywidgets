@@ -207,7 +207,7 @@ function remove_buffers(state): {state: any, buffers: ArrayBuffer[], buffer_path
         return obj;
     }
     let new_state = remove(state, []);
-    return {state: new_state, buffers: buffers, buffer_paths: buffer_paths}
+    return {state: new_state, buffers: buffers, buffer_paths: buffer_paths};
 }
 
 let hexTable = [

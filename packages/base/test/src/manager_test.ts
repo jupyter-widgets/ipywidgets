@@ -48,10 +48,10 @@ describe("ManagerBase", function() {
         let manager = this.managerBase;
         sinon.spy(manager, 'create_view');
         sinon.spy(manager, 'display_view');
-        let msg = {msg:true}
-        let viewOptions = {viewOptions:true}
+        let msg = {msg:true};
+        let viewOptions = {viewOptions:true};
         let model = await manager.new_model(this.modelOptions);
-        await manager.display_model(msg, model, viewOptions)
+        await manager.display_model(msg, model, viewOptions);
         expect(manager.create_view.calledWith(model, viewOptions)).to.be.true;
         expect(manager.display_view.calledWith(msg)).to.be.true;
         expect(manager.display_view.getCall(0).args[2]).to.deep.equal(viewOptions);
@@ -63,9 +63,9 @@ describe("ManagerBase", function() {
         expect(this.managerBase.setViewOptions()).to.deep.equal({});
       });
       it('returns the passed options', function() {
-        let options = {a: 1}
+        let options = {a: 1};
         expect(this.managerBase.setViewOptions(options)).to.deep.equal(options);
-      })
+      });
     });
 
     describe('create_view', function() {
@@ -105,7 +105,7 @@ describe("ManagerBase", function() {
         let manager = this.managerBase;
         sinon.spy(manager, 'setViewOptions');
         let model = await manager.new_model(this.modelOptions);
-        let options = {a: 1}
+        let options = {a: 1};
         let view = await manager.create_view(model, options);
         expect(manager.setViewOptions.calledWith(options)).to.be.true;
         expect(view.options).to.deep.equal(options);
@@ -133,14 +133,14 @@ describe("ManagerBase", function() {
 
     describe('get_model', function() {
       it('returns a promise to the model', async function() {
-        let manager = this.managerBase
+        let manager = this.managerBase;
         let model = await manager.new_model(this.modelOptions);
         expect(await manager.get_model(model.model_id)).to.be.equal(model);
       });
 
       it('returns undefined when model is not registered', function() {
         expect(this.managerBase.get_model('not-defined')).to.be.undefined;
-      })
+      });
     });
 
     describe('handle_comm_open', function() {
@@ -161,7 +161,7 @@ describe("ManagerBase", function() {
           metadata: {
             version: '2.0.0'
           }
-        })
+        });
         expect(model.comm).to.equal(comm);
         expect(model.get('value')).to.equal(50);
       });
@@ -180,7 +180,7 @@ describe("ManagerBase", function() {
               }
             }
           },
-        })
+        });
         expect(model).to.be.rejected;
       });
 
@@ -201,7 +201,7 @@ describe("ManagerBase", function() {
           metadata: {
             version: '1.0'
           }
-        })
+        });
         expect(model).to.be.rejected;
       });
 
@@ -485,7 +485,7 @@ describe("ManagerBase", function() {
                 "path":["array","buffer"],
                 "encoding":"base64"
               }]
-        }}}
+        }}};
         expect(state).to.deep.equal(expectedState);
       });
     });
