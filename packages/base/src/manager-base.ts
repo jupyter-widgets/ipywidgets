@@ -248,7 +248,7 @@ abstract class ManagerBase<T> {
         if (options.view_name === undefined
             || options.view_module === undefined
             || options.view_module_version === undefined) {
-            return Promise.reject("new_widget(...) must be given view information in the options.");
+            return Promise.reject('new_widget(...) must be given view information in the options.');
         }
         // If no comm is provided, a new comm is opened for the jupyter.widget
         // target.
@@ -414,7 +414,7 @@ abstract class ManagerBase<T> {
     set_state(state): Promise<WidgetModel[]> {
         // Check to make sure that it's the same version we are parsing.
         if (!(state.version_major && state.version_major <= 2)) {
-            throw "Unsupported widget state format";
+            throw 'Unsupported widget state format';
         }
         let models = state.state;
         // Recreate all the widget models for the given widget manager state.

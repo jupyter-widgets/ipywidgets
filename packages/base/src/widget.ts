@@ -57,10 +57,10 @@ class WidgetModel extends Backbone.Model {
      */
     defaults() {
         return {
-            _model_module: "@jupyter-widgets/base",
-            _model_name: "WidgetModel",
+            _model_module: '@jupyter-widgets/base',
+            _model_name: 'WidgetModel',
             _model_module_version: JUPYTER_WIDGETS_VERSION,
-            _view_module: "@jupyter-widgets/base",
+            _view_module: '@jupyter-widgets/base',
             _view_name: null,
             _view_module_version: JUPYTER_WIDGETS_VERSION,
             _view_count: null,
@@ -240,7 +240,7 @@ class WidgetModel extends Backbone.Model {
         if (drop_defaults) {
             // if defaults is a function, call it
             let d = this.defaults;
-            let defaults = (typeof d === "function") ? d.call(this) : d;
+            let defaults = (typeof d === 'function') ? d.call(this) : d;
             let state = {};
             Object.keys(fullState).forEach(key => {
                 if (!(utils.isEqual(fullState[key], defaults[key]))) {
@@ -423,7 +423,7 @@ class WidgetModel extends Backbone.Model {
                     state[k] = state[k].toJSON();
                 }
             } catch (e) {
-                console.error("Error serializing widget state attribute: ", k);
+                console.error('Error serializing widget state attribute: ', k);
                 throw e;
             }
         }
@@ -586,14 +586,14 @@ abstract class WidgetView extends NativeView<WidgetModel> {
         this.options = parameters.options;
 
         this.once('remove', () => {
-            if (typeof(this.model.get('_view_count')) === "number") {
+            if (typeof(this.model.get('_view_count')) === 'number') {
                 this.model.set('_view_count', this.model.get('_view_count') - 1);
                 this.model.save_changes();
             }
         });
 
         this.once('displayed', () => {
-            if (typeof(this.model.get('_view_count')) === "number") {
+            if (typeof(this.model.get('_view_count')) === 'number') {
                 this.model.set('_view_count', this.model.get('_view_count') + 1);
                 this.model.save_changes();
             }
