@@ -27,6 +27,7 @@
   "devDependencies": {
     "@types/semver": "^5.4.0",
     "rimraf": "^2.6.1",
+    "tslint": "^5.8.0",
     "typedoc": "^0.6.0",
     "typescript": "~2.4.1"
   },
@@ -44,6 +45,7 @@
     "build:src": "tsc --project src",
     "build": "npm run build:src",
     "docs": "typedoc --mode file --module commonjs --excludeNotExported --target es5 --moduleResolution node --out docs/ src",
+    "lint": "tslint --project tslint.json --format stylish",
     "prepublish": "npm run clean && npm run build"
   },
   "repository": {

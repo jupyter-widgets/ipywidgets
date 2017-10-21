@@ -23,6 +23,7 @@
     "build:src": "tsc --project src",
     "build:css": "postcss --use postcss-import --use postcss-cssnext -o css/widgets.built.css css/widgets.css",
     "build": "npm run build:src && npm run build:css",
+    "lint": "tslint --project tslint.json --format stylish",
     "test": "npm run test:unit",
     "test:coverage": "npm run build:test && webpack --config test/webpack-cov.conf.js && karma start test/karma-cov.conf.js",
     "test:unit": "npm run test:unit:firefox && npm run test:unit:chrome",
@@ -62,6 +63,7 @@
     "sinon": "^2.1.0",
     "sinon-chai": "^2.11.0",
     "style-loader": "^0.18.1",
+    "tslint": "^5.8.0",
     "typescript": "~2.4.1",
     "url-loader": "^0.5.9",
     "webpack": "^3.5.5"

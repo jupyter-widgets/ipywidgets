@@ -20,6 +20,7 @@
     "build:embed-amd": "node scripts/concat-amd-build.js && rimraf dist/amd",
     "build:test": "tsc --project test/src && webpack --config test/webpack.conf.js",
     "build": "npm run build:src && webpack && npm run build:embed-amd",
+    "lint": "tslint --project tslint.json --format stylish",
     "test": "npm run test:unit",
     "test:unit": "npm run test:unit:firefox && npm run test:unit:chrome",
     "test:unit:default": "npm run build:test && karma start test/karma.conf.js --log-level debug --browsers=Firefox",
@@ -66,6 +67,7 @@
     "postcss-loader": "^2.0.6",
     "rimraf": "^2.6.1",
     "style-loader": "^0.18.1",
+    "tslint": "^5.8.0",
     "typescript": "~2.4.1",
     "url-loader": "^0.5.9",
     "webpack": "^3.5.5"
