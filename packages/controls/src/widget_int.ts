@@ -224,7 +224,7 @@ abstract class BaseIntSliderView extends DescriptionView {
             'slidestop': 'handleSliderChanged',
             'blur [contentEditable=true]': 'handleTextChange',
             'keydown [contentEditable=true]': 'handleKeyDown'
-        }
+        };
     }
 
     handleKeyDown(e) {
@@ -615,7 +615,7 @@ class IntTextView extends DescriptionView {
         }
     }
 
-    _parse_value = parseInt
+    _parse_value = parseInt;
     _default_step = '1';
     textbox: HTMLInputElement;
 }
@@ -762,11 +762,11 @@ class PlayModel extends BoundedIntModel {
             var next_value = this.get('value') + this.get('step');
             if (next_value <= this.get('max')) {
                 this.set('value', next_value);
-                this.schedule_next()
+                this.schedule_next();
             } else {
                 if(this.get('_repeat')) {
                     this.set('value', this.get('min'));
-                    this.schedule_next()
+                    this.schedule_next();
                 } else {
                     this.set('_playing', false);
                 }
@@ -795,12 +795,12 @@ class PlayModel extends BoundedIntModel {
         if (this.get('value') == this.get('max')) {
             // if the value is at the end, reset if first, and then schedule the next
             this.set('value', this.get('min'));
-            this.schedule_next()
+            this.schedule_next();
             this.save_changes();
         } else {
             // otherwise directly start with the next value
             // loop will call save_changes in this case
-           this.loop()
+           this.loop();
         }
     }
 

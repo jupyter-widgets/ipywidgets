@@ -130,7 +130,7 @@ class ControllerModel extends CoreDOMWidgetModel {
         ...CoreDOMWidgetModel.serializers,
         buttons: {deserialize: unpack_models},
         axes: {deserialize: unpack_models}
-    }
+    };
 
     defaults() {
         return _.extend(super.defaults(), {

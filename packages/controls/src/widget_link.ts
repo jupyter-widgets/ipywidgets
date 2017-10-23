@@ -18,7 +18,7 @@ class DirectionalLinkModel extends CoreWidgetModel {
         ...CoreWidgetModel.serializers,
         target: {deserialize: unpack_models},
         source: {deserialize: unpack_models}
-    }
+    };
 
     defaults() {
         return _.extend(super.defaults(), {
@@ -29,7 +29,7 @@ class DirectionalLinkModel extends CoreWidgetModel {
     }
 
     initialize(attributes, options) {
-        super.initialize(attributes, options)
+        super.initialize(attributes, options);
         this.on('change', this.updateBindings, this);
         this.updateBindings();
     }

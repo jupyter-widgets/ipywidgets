@@ -107,4 +107,4 @@ function escape_html(text: string): string {
     var esc  = document.createElement('div');
     esc.textContent = text;
     return esc.innerHTML;
-};
+}
