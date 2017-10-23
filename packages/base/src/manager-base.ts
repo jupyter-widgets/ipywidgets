@@ -16,7 +16,7 @@ export
 const PROTOCOL_VERSION = '2.0.0';
 
 export
-const PROTOCOL_MAJOR_VERSION = PROTOCOL_VERSION.split('.', 1)[0]
+const PROTOCOL_MAJOR_VERSION = PROTOCOL_VERSION.split('.', 1)[0];
 
 /**
  * The options for a model.
@@ -142,7 +142,7 @@ abstract class ManagerBase<T> {
     display_model(msg: services.KernelMessage.IMessage, model: WidgetModel, options: any = {}): Promise<T> {
         return this.create_view(model, options).then(
             view => this.display_view(msg, view, options)).catch(utils.reject('Could not create view', true));
-    };
+    }
 
     /**
      * Display a view.
@@ -159,7 +159,7 @@ abstract class ManagerBase<T> {
      */
     setViewOptions(options: any = {}): any {
         return options;
-    };
+    }
 
     /**
      * Creates a promise for a view of a given model
@@ -187,14 +187,14 @@ abstract class ManagerBase<T> {
             view.once('remove', () => { delete view.model.views[id]; }, this);
         });
         return model.state_change;
-    };
+    }
 
     /**
      * callback handlers specific to a view
      */
     callbacks (view: WidgetView) {
         return {};
-    };
+    }
 
     /**
      * Get a promise for a model by model id.
@@ -204,7 +204,7 @@ abstract class ManagerBase<T> {
         // found. Right now this isn't a true async function because it doesn't
         // always return a promise.
         return this._models[model_id];
-    };
+    }
 
     /**
      * Handle when a comm is opened.
@@ -213,7 +213,7 @@ abstract class ManagerBase<T> {
         let protocolVersion = ((msg.metadata || {}).version as string) || '';
         if (protocolVersion.split('.', 1)[0] !== PROTOCOL_MAJOR_VERSION) {
             let error = `Wrong widget protocol version: received protocol version '${protocolVersion}', but was expecting major version '${PROTOCOL_MAJOR_VERSION}'`;
-            console.error(error)
+            console.error(error);
             return Promise.reject(error);
         }
         let data = (msg.content.data as any);
@@ -233,7 +233,7 @@ abstract class ManagerBase<T> {
             model_module_version: data.state['_model_module_version'],
             comm: comm
         }, data.state).catch(utils.reject('Could not create a model.', true));
-    };
+    }
 
     /**
      * Create a comm and new widget model.
@@ -248,7 +248,7 @@ abstract class ManagerBase<T> {
         if (options.view_name === undefined
             || options.view_module === undefined
             || options.view_module_version === undefined) {
-            return Promise.reject("new_widget(...) must be given view information in the options.");
+            return Promise.reject('new_widget(...) must be given view information in the options.');
         }
         // If no comm is provided, a new comm is opened for the jupyter.widget
         // target.
@@ -290,7 +290,7 @@ abstract class ManagerBase<T> {
             }
             return this.new_model(options_clone, serialized_state);
         });
-    };
+    }
 
     /**
      * Create and return a promise for a new widget model
@@ -321,7 +321,7 @@ abstract class ManagerBase<T> {
         let modelPromise = this._make_model(options, serialized_state);
         this._models[model_id] = modelPromise;
         return await modelPromise;
-    };
+    }
 
     async _make_model(options: ModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
         let model_id = options.model_id;
@@ -347,7 +347,7 @@ abstract class ManagerBase<T> {
             widget_manager: this,
             model_id: model_id,
             comm: options.comm,
-        }
+        };
         let widget_model = new ModelType(attributes, modelOptions);
         widget_model.once('comm:close', () => {
             delete this._models[model_id];
@@ -367,7 +367,7 @@ abstract class ManagerBase<T> {
             Object.keys(models).forEach(id => models[id].close());
             this._models = {};
         });
-    };
+    }
 
     /**
      * Asynchronously get the state of the widget manager.
@@ -400,7 +400,7 @@ abstract class ManagerBase<T> {
             });
             return {version_major: 2, version_minor: 0, state: state};
         });
-    };
+    }
 
     /**
      * Set the widget manager state.
@@ -414,7 +414,7 @@ abstract class ManagerBase<T> {
     set_state(state): Promise<WidgetModel[]> {
         // Check to make sure that it's the same version we are parsing.
         if (!(state.version_major && state.version_major <= 2)) {
-            throw "Unsupported widget state format";
+            throw 'Unsupported widget state format';
         }
         let models = state.state;
         // Recreate all the widget models for the given widget manager state.
@@ -464,7 +464,7 @@ abstract class ManagerBase<T> {
         });
 
         return all_models;
-    };
+    }
 
     /**
      * Disconnect the widget manager from the kernel, setting each model's comm
@@ -473,7 +473,7 @@ abstract class ManagerBase<T> {
     disconnect() {
         Object.keys(this._models).forEach((i) => {
             this._models[i].then(model => {model.comm_live = false;});
-        })
+        });
     }
     /**
      * The comm target name to register

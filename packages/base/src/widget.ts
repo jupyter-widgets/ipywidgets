@@ -3,7 +3,7 @@
 
 import * as managerBase from './manager-base';
 import * as utils from './utils';
-import * as backbonePatch from './backbone-patch'
+import * as backbonePatch from './backbone-patch';
 
 import * as Backbone from 'backbone';
 import * as $ from 'jquery';
@@ -39,7 +39,7 @@ function unpack_models(value, manager): Promise<any> {
         unpacked = {};
         Object.keys(value).forEach((key) => {
             unpacked[key] = unpack_models(value[key], manager);
-        })
+        });
         return utils.resolvePromisesDict(unpacked);
     } else if (typeof value === 'string' && value.slice(0,10) === 'IPY_MODEL_') {
         // get_model returns a promise already
@@ -47,7 +47,7 @@ function unpack_models(value, manager): Promise<any> {
     } else {
         return Promise.resolve(value);
     }
-};
+}
 
 export
 class WidgetModel extends Backbone.Model {
@@ -57,10 +57,10 @@ class WidgetModel extends Backbone.Model {
      */
     defaults() {
         return {
-            _model_module: "@jupyter-widgets/base",
-            _model_name: "WidgetModel",
+            _model_module: '@jupyter-widgets/base',
+            _model_name: 'WidgetModel',
             _model_module_version: JUPYTER_WIDGETS_VERSION,
-            _view_module: "@jupyter-widgets/base",
+            _view_module: '@jupyter-widgets/base',
             _view_name: null,
             _view_module_version: JUPYTER_WIDGETS_VERSION,
             _view_count: null,
@@ -205,7 +205,7 @@ class WidgetModel extends Backbone.Model {
                         return (this.constructor as typeof WidgetModel)._deserialize_state(state, this.widget_manager);
                     }).then((state) => {
                         this.set_state(state);
-                    }).catch(utils.reject(`Could not process update msg for model id: ${this.model_id}`, true))
+                    }).catch(utils.reject(`Could not process update msg for model id: ${this.model_id}`, true));
                 return this.state_change;
             case 'custom':
                 this.trigger('msg:custom', msg.content.data.content, msg.buffers);
@@ -240,7 +240,7 @@ class WidgetModel extends Backbone.Model {
         if (drop_defaults) {
             // if defaults is a function, call it
             let d = this.defaults;
-            let defaults = (typeof d === "function") ? d.call(this) : d;
+            let defaults = (typeof d === 'function') ? d.call(this) : d;
             let state = {};
             Object.keys(fullState).forEach(key => {
                 if (!(utils.isEqual(fullState[key], defaults[key]))) {
@@ -423,7 +423,7 @@ class WidgetModel extends Backbone.Model {
                     state[k] = state[k].toJSON();
                 }
             } catch (e) {
-                console.error("Error serializing widget state attribute: ", k);
+                console.error('Error serializing widget state attribute: ', k);
                 throw e;
             }
         }
@@ -436,7 +436,7 @@ class WidgetModel extends Backbone.Model {
     send_sync_message(state, callbacks: any = {}) {
         try {
             callbacks.iopub = callbacks.iopub || {};
-            let statuscb = callbacks.iopub.status
+            let statuscb = callbacks.iopub.status;
             callbacks.iopub.status = (msg) => {
                 this._handle_status(msg);
                 if (statuscb) {
@@ -464,7 +464,7 @@ class WidgetModel extends Backbone.Model {
      */
     save_changes(callbacks?) {
         if (this.comm_live) {
-            let options: any = {patch: true}
+            let options: any = {patch: true};
             if (callbacks) {
                 options.callbacks = callbacks;
             }
@@ -552,7 +552,7 @@ class DOMWidgetModel extends WidgetModel {
         ...WidgetModel.serializers,
         layout: {deserialize: unpack_models},
         style: {deserialize: unpack_models},
-    }
+    };
 
     defaults() {
         return utils.assign(super.defaults(), {
@@ -586,14 +586,14 @@ abstract class WidgetView extends NativeView<WidgetModel> {
         this.options = parameters.options;
 
         this.once('remove', () => {
-            if (typeof(this.model.get('_view_count')) === "number") {
+            if (typeof(this.model.get('_view_count')) === 'number') {
                 this.model.set('_view_count', this.model.get('_view_count') - 1);
                 this.model.save_changes();
             }
         });
 
         this.once('displayed', () => {
-            if (typeof(this.model.get('_view_count')) === "number") {
+            if (typeof(this.model.get('_view_count')) === 'number') {
                 this.model.set('_view_count', this.model.get('_view_count') + 1);
                 this.model.save_changes();
             }
@@ -610,7 +610,7 @@ abstract class WidgetView extends NativeView<WidgetModel> {
      * Update view to be consistent with this.model
      */
     update(options?) {
-    };
+    }
 
     /**
      * Render a view
@@ -742,7 +742,7 @@ class DOMWidgetView extends WidgetView {
         this._comm_live_update();
         this.listenTo(this.model, 'comm_live_update', () => {
             this._comm_live_update();
-        })
+        });
     }
 
     setLayout(layout, oldLayout?) {

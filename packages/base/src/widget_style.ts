@@ -38,7 +38,7 @@ class StyleView extends WidgetView {
         // Register the traits that live on the Python side
         let ModelType = this.model.constructor as typeof StyleModel;
         for (let key of Object.keys(ModelType.styleProperties)) {
-            this.registerTrait(key)
+            this.registerTrait(key);
         }
 
         // Set the initial styles

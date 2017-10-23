@@ -61,7 +61,7 @@ class LayoutView extends WidgetView {
         super.initialize(parameters);
         // Register the traits that live on the Python side
         for (let key of Object.keys(css_properties)) {
-            this.registerTrait(key)
+            this.registerTrait(key);
         }
     }
 

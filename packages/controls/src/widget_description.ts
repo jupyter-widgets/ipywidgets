@@ -84,7 +84,7 @@ class DescriptionView extends DOMWidgetView {
  * Use DescriptionModel instead.
  */
 export
-class LabeledDOMWidgetModel extends DescriptionModel {};
+class LabeledDOMWidgetModel extends DescriptionModel {}
 
 /**
  * For backwards compatibility with jupyter-js-widgets 2.x.
@@ -92,4 +92,4 @@ class LabeledDOMWidgetModel extends DescriptionModel {};
  * Use DescriptionView instead.
  */
 export
-class LabeledDOMWidgetView extends DescriptionView {};
+class LabeledDOMWidgetView extends DescriptionView {}
