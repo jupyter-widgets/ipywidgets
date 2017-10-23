@@ -14,7 +14,7 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 chai.use(sinonChai);
 
-describe("unpack_models", function() {
+describe('unpack_models', function() {
     beforeEach(async function() {
         this.manager = new DummyManager();
         this.widgetA = await this.manager.new_widget({
@@ -62,7 +62,7 @@ describe("unpack_models", function() {
     });
 });
 
-describe("WidgetModel", function() {
+describe('WidgetModel', function() {
     before(async function() {
         this.setup = async function() {
             this.manager = new DummyManager();
@@ -241,13 +241,13 @@ describe("WidgetModel", function() {
         });
 
         it('closes model', function() {
-            let closeSpy = sinon.spy(this.widget, "close");
+            let closeSpy = sinon.spy(this.widget, 'close');
             this.widget._handle_comm_closed({});
             expect(closeSpy).to.be.calledOnce;
         });
 
         it('listens to the widget close event', function() {
-            let closeSpy = sinon.spy(this.widget, "close");
+            let closeSpy = sinon.spy(this.widget, 'close');
             this.widget.comm.close();
             expect(closeSpy).to.be.calledOnce;
         });

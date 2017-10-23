@@ -23,7 +23,7 @@ chai.use(sinonChai);
 // test ManagerBase by creating a simple derived class
 // and testing it.
 
-describe("ManagerBase", function() {
+describe('ManagerBase', function() {
     beforeEach(function() {
         this.managerBase = new DummyManager();
         this.modelOptions = {
@@ -215,9 +215,9 @@ describe("ManagerBase", function() {
                 _model_name: 'BinaryWidget',
                 _model_module: 'test-widgets',
                 _model_module_version: '1.0.0',
-                array: {dtype: "uint8"}
+                array: {dtype: 'uint8'}
               },
-              buffer_paths: [["array", "buffer"]]
+              buffer_paths: [['array', 'buffer']]
             }
           },
           buffers: [new DataView((new Uint8Array([1,2,3])).buffer)],
@@ -348,7 +348,7 @@ describe("ManagerBase", function() {
 
       it('calls loadClass to retrieve model class', async function() {
         let manager = this.managerBase;
-        var spy = sinon.spy(manager, "loadClass");
+        var spy = sinon.spy(manager, 'loadClass');
         let model = await manager.new_model(this.modelOptions);
         expect(manager.loadClass.calledOnce).to.be.true;
       });
@@ -419,21 +419,21 @@ describe("ManagerBase", function() {
         {
       }
         let expectedState = {
-          "version_major":2,
-          "version_minor":0,
-          "state":{
-            "u-u-i-d":{
-              "model_name":"TestWidget",
-              "model_module":"test-widgets",
-              "model_module_version":"1.0.0",
-              "state":{
-                "_model_module":"test-widgets",
-                "_model_name":"TestWidget",
-                "_model_module_version":"1.0.0",
-                "_view_module":"test-widgets",
-                "_view_name":"TestWidgetView",
-                "_view_module_version":"1.0.0",
-                "_view_count":null,
+          'version_major':2,
+          'version_minor':0,
+          'state':{
+            'u-u-i-d':{
+              'model_name':'TestWidget',
+              'model_module':'test-widgets',
+              'model_module_version':'1.0.0',
+              'state':{
+                '_model_module':'test-widgets',
+                '_model_name':'TestWidget',
+                '_model_module_version':'1.0.0',
+                '_view_module':'test-widgets',
+                '_view_name':'TestWidgetView',
+                '_view_module_version':'1.0.0',
+                '_view_count':null,
         }}}};
         expect(state).to.deep.equal(expectedState);
       });
@@ -444,15 +444,15 @@ describe("ManagerBase", function() {
           {value: 50});
         let state = await manager.get_state({drop_defaults: true});
         let expectedState = {
-          "version_major":2,
-          "version_minor":0,
-          "state":{
-            "u-u-i-d":{
-              "model_name":"TestWidget",
-              "model_module":"test-widgets",
-              "model_module_version":"1.0.0",
-              "state":{
-                "value":50
+          'version_major':2,
+          'version_minor':0,
+          'state':{
+            'u-u-i-d':{
+              'model_name':'TestWidget',
+              'model_module':'test-widgets',
+              'model_module_version':'1.0.0',
+              'state':{
+                'value':50
         }}}};
         expect(state).to.deep.equal(expectedState);
       });
@@ -470,20 +470,20 @@ describe("ManagerBase", function() {
         }});
         let state = await manager.get_state({drop_defaults: true});
         let expectedState = {
-          "version_major":2,
-          "version_minor":0,
-          "state":{
-            "u-u-i-d":{
-              "model_name":"BinaryWidget",
-              "model_module":"test-widgets",
-              "model_module_version":"1.0.0",
-              "state":{
-                "array":{"dtype":"uint8"}
+          'version_major':2,
+          'version_minor':0,
+          'state':{
+            'u-u-i-d':{
+              'model_name':'BinaryWidget',
+              'model_module':'test-widgets',
+              'model_module_version':'1.0.0',
+              'state':{
+                'array':{'dtype':'uint8'}
               },
-              "buffers":[{
-                "data":"AQID",
-                "path":["array","buffer"],
-                "encoding":"base64"
+              'buffers':[{
+                'data':'AQID',
+                'path':['array','buffer'],
+                'encoding':'base64'
               }]
         }}};
         expect(state).to.deep.equal(expectedState);
@@ -493,20 +493,20 @@ describe("ManagerBase", function() {
     describe('set_state', function() {
       it('handles binary base64 buffers', async function() {
         let state = {
-          "version_major":2,
-          "version_minor":0,
-          "state":{
-            "u-u-i-d":{
-              "model_name":"BinaryWidget",
-              "model_module":"test-widgets",
-              "model_module_version":"1.0.0",
-              "state":{
-                "array":{"dtype":"uint8"}
+          'version_major':2,
+          'version_minor':0,
+          'state':{
+            'u-u-i-d':{
+              'model_name':'BinaryWidget',
+              'model_module':'test-widgets',
+              'model_module_version':'1.0.0',
+              'state':{
+                'array':{'dtype':'uint8'}
               },
-              "buffers":[{
-                "data":"AQID",
-                "path":["array","buffer"],
-                "encoding":"base64"
+              'buffers':[{
+                'data':'AQID',
+                'path':['array','buffer'],
+                'encoding':'base64'
               }]
         }}};
         let manager = this.managerBase;
@@ -517,20 +517,20 @@ describe("ManagerBase", function() {
 
       it('handles binary hex buffers', async function() {
         let state = {
-          "version_major":2,
-          "version_minor":0,
-          "state":{
-            "u-u-i-d":{
-              "model_name":"BinaryWidget",
-              "model_module":"test-widgets",
-              "model_module_version":"1.0.0",
-              "state":{
-                "array":{"dtype":"uint8"}
+          'version_major':2,
+          'version_minor':0,
+          'state':{
+            'u-u-i-d':{
+              'model_name':'BinaryWidget',
+              'model_module':'test-widgets',
+              'model_module_version':'1.0.0',
+              'state':{
+                'array':{'dtype':'uint8'}
               },
-              "buffers":[{
-                "data":"010203",
-                "path":["array","buffer"],
-                "encoding":"hex"
+              'buffers':[{
+                'data':'010203',
+                'path':['array','buffer'],
+                'encoding':'hex'
               }]
         }}};
         let manager = this.managerBase;
