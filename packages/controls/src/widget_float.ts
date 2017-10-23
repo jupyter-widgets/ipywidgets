@@ -23,7 +23,7 @@ export
 class FloatModel extends CoreDescriptionModel {
     defaults() {
         return _.extend(super.defaults(), {
-            _model_name: "FloatModel",
+            _model_name: 'FloatModel',
             value: 0,
         });
     }
@@ -33,7 +33,7 @@ export
 class BoundedFloatModel extends FloatModel {
     defaults() {
         return _.extend(super.defaults(), {
-            _model_name: "BoundedFloatModel",
+            _model_name: 'BoundedFloatModel',
             max: 100.0,
             min: 0.0
         });
@@ -44,10 +44,10 @@ export
 class FloatSliderModel extends BoundedFloatModel {
     defaults() {
         return _.extend(super.defaults(), {
-            _model_name: "FloatSliderModel",
-            _view_name: "FloatSliderView",
+            _model_name: 'FloatSliderModel',
+            _view_name: 'FloatSliderView',
             step: 1.0,
-            orientation: "horizontal",
+            orientation: 'horizontal',
             _range: false,
             readout: true,
             readout_format: '.2f',
@@ -105,8 +105,8 @@ export
 class FloatTextModel extends FloatModel {
     defaults() {
         return _.extend(super.defaults(), {
-            _model_name: "FloatTextModel",
-            _view_name: "FloatTextView",
+            _model_name: 'FloatTextModel',
+            _view_name: 'FloatTextView',
             disabled: false,
             continuous_update: false,
         });
@@ -117,8 +117,8 @@ export
 class BoundedFloatTextModel extends BoundedFloatModel {
     defaults() {
         return _.extend(super.defaults(), {
-            _model_name: "BoundedFloatTextModel",
-            _view_name: "FloatTextView",
+            _model_name: 'BoundedFloatTextModel',
+            _view_name: 'FloatTextView',
             disabled: false,
             continuous_update: false,
             step: 0.1
