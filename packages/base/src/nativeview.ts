@@ -159,7 +159,7 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
         for (var i = 0, len = this._domEvents.length; i < len; i++) {
           var item = this._domEvents[i];
           this.el.removeEventListener(item.eventName, item.handler, false);
-        };
+        }
         this._domEvents.length = 0;
       }
       return this;
