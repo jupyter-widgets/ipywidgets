@@ -130,7 +130,7 @@ class ControllerModel extends CoreDOMWidgetModel {
         ...CoreDOMWidgetModel.serializers,
         buttons: {deserialize: unpack_models},
         axes: {deserialize: unpack_models}
-    }
+    };
 
     defaults() {
         return _.extend(super.defaults(), {
@@ -174,10 +174,10 @@ class ControllerModel extends CoreDOMWidgetModel {
      * populates the update of axes and button values.
      */
     wait_loop() {
-        var index = this.get('index');
-        var pad = navigator.getGamepads()[index];
+        let index = this.get('index');
+        let pad = navigator.getGamepads()[index];
         if (pad) {
-            var that = this;
+            let that = this;
             this.setup(pad).then(function(controls) {
                 that.set(controls);
                 that.save_changes();
@@ -205,7 +205,7 @@ class ControllerModel extends CoreDOMWidgetModel {
             timestamp: pad.timestamp
         });
         // Create buttons and axes. When done, start the update loop
-        var that = this;
+        let that = this;
         return utils.resolvePromisesDict({
             buttons: Promise.all(pad.buttons.map(function(btn, index) {
                 return that._create_button_model(index);
@@ -221,9 +221,9 @@ class ControllerModel extends CoreDOMWidgetModel {
      * When the gamepad is disconnected, this.reset_gamepad is called.
      */
     update_loop() {
-        var index = this.get('index');
-        var id = this.get('name');
-        var pad = navigator.getGamepads()[index];
+        let index = this.get('index');
+        let id = this.get('name');
+        let pad = navigator.getGamepads()[index];
         if (pad && index === pad.index && id === pad.id) {
             this.set({
                 timestamp: pad.timestamp,
@@ -352,8 +352,8 @@ class ControllerView extends DOMWidgetView {
     }
 
     add_button(model) {
-        var that = this;
-        var dummy = document.createElement('div');
+        let that = this;
+        let dummy = document.createElement('div');
 
         that.button_box.appendChild(dummy);
         return this.create_child_view(model).then(function(view) {
@@ -366,8 +366,8 @@ class ControllerView extends DOMWidgetView {
     }
 
     add_axis(model) {
-        var that = this;
-        var dummy = document.createElement('div');
+        let that = this;
+        let dummy = document.createElement('div');
 
         that.axis_box.appendChild(dummy);
         return this.create_child_view(model).then(function(view) {

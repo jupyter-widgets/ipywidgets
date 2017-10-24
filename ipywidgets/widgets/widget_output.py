@@ -12,6 +12,7 @@ from .widget_core import CoreWidget
 
 import sys
 from traitlets import Unicode, Tuple
+from IPython.core.interactiveshell import InteractiveShell
 from IPython.display import clear_output
 from IPython import get_ipython
 
@@ -68,3 +69,36 @@ class Output(DOMWidget, CoreWidget):
         """Flush stdout and stderr buffers."""
         sys.stdout.flush()
         sys.stderr.flush()
+
+    def _append_stream_output(self, text, stream_name):
+        """Append a stream output."""
+        self.outputs += (
+            {'output_type': 'stream', 'name': stream_name, 'text': text},
+        )
+
+    def append_stdout(self, text):
+        """Append text to the stdout stream."""
+        self._append_stream_output(text, stream_name='stdout')
+
+    def append_stderr(self, text):
+        """Append text to the stderr stream."""
+        self._append_stream_output(text, stream_name='stderr')
+
+    def append_display_data(self, display_object):
+        """Append a display object as an output.
+
+        Parameters
+        ----------
+        display_object : IPython.core.display.DisplayObject
+            The object to display (e.g., an instance of
+            `IPython.display.Markdown` or `IPython.display.Image`).
+        """
+        fmt = InteractiveShell.instance().display_formatter.format
+        data, metadata = fmt(display_object)
+        self.outputs += (
+            {
+                'output_type': 'display_data',
+                'data': data,
+                'metadata': metadata
+            },
+        )

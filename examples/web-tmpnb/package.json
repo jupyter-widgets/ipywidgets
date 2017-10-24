@@ -1,23 +1,25 @@
 {
   "private": true,
   "name": "@jupyter-widgets/example-web-tmpnb",
-  "version": "2.0.1",
+  "version": "2.0.5",
   "description": "Project that tests the ability to npm install @jupyter-widgets/controls within an npm project.",
   "main": "index.js",
   "scripts": {
     "clean": "rimraf lib && rimraf built",
     "build": "npm run clean && tsc --project src && node scripts/copyfiles.js && webpack",
     "host": "http-server",
+    "lint": "tslint --project tslint.json --format stylish",
     "test": "npm run test:default",
     "test:default": "echo \"No test specified\""
   },
   "author": "IPython",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "@jupyter-widgets/base": "^1.0.1",
-    "@jupyter-widgets/controls": "^1.0.1",
-    "@jupyterlab/services": "^0.49.0",
-    "@types/codemirror": "0.0.33",
+    "@jupyter-widgets/base": "^1.0.4",
+    "@jupyter-widgets/controls": "^1.0.5",
+    "@jupyterlab/services": "^0.50.2",
+    "@phosphor/disposable": "^1.1.0",
+    "@phosphor/widgets": "^1.2.0",
     "codemirror": "^5.9.0",
     "font-awesome": "^4.7.0",
     "http-server": "^0.10.0"
@@ -33,6 +35,7 @@
     "postcss-loader": "^2.0.6",
     "rimraf": "^2.6.1",
     "style-loader": "^0.18.1",
+    "tslint": "^5.8.0",
     "typescript": "~2.4.1",
     "url-loader": "^0.5.9",
     "webpack": "^3.5.5"

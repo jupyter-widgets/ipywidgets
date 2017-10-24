@@ -1,6 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+// Just need typings
 import * as Backbone from 'backbone';
 
 import {

@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/html-manager",
-  "version": "0.10.1",
+  "version": "0.10.5",
   "description": "Standalone package for rendering Jupyter widgets outside notebooks",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -20,6 +20,7 @@
     "build:embed-amd": "node scripts/concat-amd-build.js && rimraf dist/amd",
     "build:test": "tsc --project test/src && webpack --config test/webpack.conf.js",
     "build": "npm run build:src && webpack && npm run build:embed-amd",
+    "lint": "tslint --project tslint.json --format stylish",
     "test": "npm run test:unit",
     "test:unit": "npm run test:unit:firefox && npm run test:unit:chrome",
     "test:unit:default": "npm run build:test && karma start test/karma.conf.js --log-level debug --browsers=Firefox",
@@ -34,15 +35,17 @@
   },
   "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme",
   "dependencies": {
-    "@jupyter-widgets/base": "^1.0.1",
-    "@jupyter-widgets/controls": "^1.0.1",
-    "@jupyter-widgets/output": "^1.0.1",
+    "@jupyter-widgets/base": "^1.0.4",
+    "@jupyter-widgets/controls": "^1.0.5",
+    "@jupyter-widgets/output": "^1.0.4",
     "@jupyter-widgets/schema": "^0.3.0",
-    "@jupyterlab/outputarea": "^0.10.0",
-    "@jupyterlab/rendermime-interfaces": "^0.3.1",
+    "@jupyterlab/outputarea": "^0.11.1",
+    "@jupyterlab/rendermime": "^0.11.0",
+    "@jupyterlab/rendermime-interfaces": "^0.4.1",
     "@phosphor/widgets": "^1.2.0",
     "ajv": "^5.2.2",
-    "font-awesome": "^4.7.0"
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.1.1"
   },
   "devDependencies": {
     "@types/mocha": "^2.2.41",
@@ -64,6 +67,7 @@
     "postcss-loader": "^2.0.6",
     "rimraf": "^2.6.1",
     "style-loader": "^0.18.1",
+    "tslint": "^5.8.0",
     "typescript": "~2.4.1",
     "url-loader": "^0.5.9",
     "webpack": "^3.5.5"

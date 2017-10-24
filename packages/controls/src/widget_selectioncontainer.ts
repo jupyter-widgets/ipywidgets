@@ -120,7 +120,7 @@ class AccordionView extends DOMWidgetView {
      }
 
     initialize(parameters){
-        super.initialize(parameters)
+        super.initialize(parameters);
         this.children_views = new ViewList(this.add_child_view, this.remove_child_view, this);
         this.listenTo(this.model, 'change:children', () => this.updateChildren());
         this.listenTo(this.model, 'change:selected_index', () => this.update_selected_index());
@@ -197,7 +197,7 @@ class AccordionView extends DOMWidgetView {
         // Placeholder widget to keep our position in the tab panel while we create the view.
         let accordion = this.pWidget;
         let placeholder = new Widget();
-        placeholder.title.label = this.model.get('_titles')[index] || '';;
+        placeholder.title.label = this.model.get('_titles')[index] || '';
         accordion.addWidget(placeholder);
         return this.create_child_view(model).then((view: DOMWidgetView) => {
             let widget = view.pWidget;
@@ -299,7 +299,7 @@ class TabView extends DOMWidgetView {
         super.initialize(parameters);
         this.childrenViews = new ViewList(
             this.addChildView,
-            (view) => {view.remove()},
+            (view) => {view.remove();},
             this
         );
         this.listenTo(this.model, 'change:children', () => this.updateTabs());
@@ -358,7 +358,7 @@ class TabView extends DOMWidgetView {
         return this.create_child_view(model).then((view: DOMWidgetView) => {
             let widget = view.pWidget;
             widget.title.label = placeholder.title.label;
-            widget.title.closable = true;
+            widget.title.closable = false;
 
             let i = ArrayExt.firstIndexOf(tabs.widgets, placeholder);
             // insert after placeholder so that if placholder is selected, the
@@ -388,7 +388,7 @@ class TabView extends DOMWidgetView {
      * Updates the tab page titles.
      */
     updateTitles() {
-        var titles = this.model.get('_titles') || {};
+        let titles = this.model.get('_titles') || {};
         each(this.pWidget.widgets, (widget, i) => {
             widget.title.label = titles[i] || '';
         });

@@ -24,7 +24,7 @@ namespace shims {
         class CommManager {
             constructor(jsServicesKernel: Kernel.IKernel) {
                 this.init_kernel(jsServicesKernel);
-            };
+            }
 
             /**
              * Hookup kernel events.
@@ -33,7 +33,7 @@ namespace shims {
             init_kernel(jsServicesKernel) {
                 this.kernel = jsServicesKernel; // These aren't really the same.
                 this.jsServicesKernel = jsServicesKernel;
-            };
+            }
 
             /**
              * Creates a new connected comm
@@ -45,11 +45,11 @@ namespace shims {
              * @return {Comm}
              */
             new_comm(target_name: string, data: any, callbacks: any, metadata: any, comm_id: string): Comm {
-                var comm = new Comm(this.jsServicesKernel.connectToComm(target_name, comm_id));
+                let comm = new Comm(this.jsServicesKernel.connectToComm(target_name, comm_id));
                 this.register_comm(comm);
                 comm.open(data, callbacks, metadata);
                 return comm;
-            };
+            }
 
             /**
              * Register a comm target
@@ -58,10 +58,10 @@ namespace shims {
              *                         comm is made.  Signature of f(comm, msg).
              */
             register_target (target_name, f) {
-                var handle = this.jsServicesKernel.registerCommTarget(target_name,
+                let handle = this.jsServicesKernel.registerCommTarget(target_name,
                 (jsServicesComm, msg) => {
                     // Create the comm.
-                    var comm = new Comm(jsServicesComm);
+                    let comm = new Comm(jsServicesComm);
                     this.register_comm(comm);
 
                     // Call the callback for the comm.
@@ -74,17 +74,17 @@ namespace shims {
                     }
                 });
                 this.targets[target_name] = handle;
-            };
+            }
 
             /**
              * Unregisters a comm target
              * @param  {string} target_name
              */
             unregister_target (target_name, f) {
-                var handle = this.targets[target_name];
+                let handle = this.targets[target_name];
                 handle.dispose();
                 delete this.targets[target_name];
-            };
+            }
 
             /**
              * Register a comm in the mapping
@@ -135,10 +135,10 @@ namespace shims {
              * @return msg id
              */
             open(data: any, callbacks: any, metadata: any): string {
-                var future = this.jsServicesComm.open(data, metadata);
+                let future = this.jsServicesComm.open(data, metadata);
                 this._hookupCallbacks(future, callbacks);
                 return future.msg.header.msg_id;
-            };
+            }
 
             /**
              * Sends a message to the sibling comm in the backend
@@ -149,10 +149,10 @@ namespace shims {
              * @return message id
              */
             send(data: any, callbacks: any, metadata: any, buffers: ArrayBuffer[] | ArrayBufferView[]): string {
-                var future = this.jsServicesComm.send(data, metadata, buffers);
+                let future = this.jsServicesComm.send(data, metadata, buffers);
                 this._hookupCallbacks(future, callbacks);
                 return future.msg.header.msg_id;
-            };
+            }
 
             /**
              * Closes the sibling comm in the backend
@@ -162,10 +162,10 @@ namespace shims {
              * @return msg id
              */
             close(data?: any, callbacks?: any, metadata?: any): string {
-                var future = this.jsServicesComm.close(data, metadata);
+                let future = this.jsServicesComm.close(data, metadata);
                 this._hookupCallbacks(future, callbacks);
                 return future.msg.header.msg_id;
-            };
+            }
 
             /**
              * Register a message handler
@@ -173,7 +173,7 @@ namespace shims {
              */
             on_msg(callback: (x: any) => void): void {
                 this.jsServicesComm.onMsg = callback.bind(this);
-            };
+            }
 
             /**
              * Register a handler for when the comm is closed by the backend
@@ -181,7 +181,7 @@ namespace shims {
              */
             on_close(callback: (x: any) => void): void {
                 this.jsServicesComm.onClose = callback.bind(this);
-            };
+            }
 
             /**
              * Hooks callback object up with @jupyterlab/services IKernelFuture
@@ -211,12 +211,12 @@ namespace shims {
                                     case 'execute_result':
                                         callbacks.iopub.output(msg);
                                         break;
-                                };
+                                }
                             }
                         }
                     };
                 }
-            };
+            }
 
             jsServicesComm: Kernel.IComm = null;
         }

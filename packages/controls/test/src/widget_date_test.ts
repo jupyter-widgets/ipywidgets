@@ -11,7 +11,7 @@ import * as sinon from 'sinon';
 import * as widgets from '../../lib';
 
 function getDatepicker(parent: Element): HTMLInputElement {
-    const elem = parent.querySelector('input[type="date"]')
+    const elem = parent.querySelector('input[type="date"]');
     return <HTMLInputElement>elem;
 }
 
@@ -34,7 +34,7 @@ describe('DatePickerView', function() {
     });
 
     it('initial date value', function() {
-        const testDate = new Date("2017-02-25");
+        const testDate = new Date('2017-02-25');
         this.model.set('value', testDate);
         const options = { model: this.model };
         const view = new widgets.DatePickerView(options);
@@ -58,10 +58,10 @@ describe('DatePickerView', function() {
         view.render();
 
         // Simulate setting the date in the datepicker
-        const testDate = new Date("2015-02-22");
+        const testDate = new Date('2015-02-22');
         const datepicker = getDatepicker(view.el);
         datepicker.valueAsDate = testDate;
-        datepicker.dispatchEvent(new Event('change', {"bubbles":true}));
+        datepicker.dispatchEvent(new Event('change', {'bubbles':true}));
 
         expect(this.model.get('value').getTime())
             .to.equal(testDate.getTime());
@@ -73,7 +73,7 @@ describe('DatePickerView', function() {
         const view = new widgets.DatePickerView(options);
         view.render();
 
-        const testDate = new Date("2015-02-22");
+        const testDate = new Date('2015-02-22');
         this.model.set('value', testDate);
         const datepicker = getDatepicker(view.el);
         expect(datepicker.valueAsDate.getTime())
@@ -84,46 +84,46 @@ describe('DatePickerView', function() {
 
 describe('serialize_date', function() {
     it('null date', function() {
-        expect(widgets.serialize_date(null)).to.be.a('null')
+        expect(widgets.serialize_date(null)).to.be.a('null');
     });
 
     it('UTC date', function() {
-        const date = new Date('Sat May 13 2017 00:00:00 UTC')
+        const date = new Date('Sat May 13 2017 00:00:00 UTC');
         const expectedSerialization = {
             year: 2017,
             month: 4,
             date: 13
-        }
+        };
         expect(widgets.serialize_date(date))
-            .to.deep.equal(expectedSerialization)
+            .to.deep.equal(expectedSerialization);
     });
 
     it('date in other locale as UTC', function() {
-        const date = new Date('Sat May 13 2017 00:00:00 GMT+0100 (BST)')
+        const date = new Date('Sat May 13 2017 00:00:00 GMT+0100 (BST)');
         const expectedSerialization = {
             year: 2017,
             month: 4,
             date: 12 // still on 12th May in UTC
-        }
+        };
         expect(widgets.serialize_date(date))
-            .to.deep.equal(expectedSerialization)
+            .to.deep.equal(expectedSerialization);
     });
 
     it('date before 100AD', function() {
-        const date = new Date("0005-04-28")
+        const date = new Date('0005-04-28');
         const expectedSerialization = {
             year: 5,
             month: 3,
             date: 28
-        }
+        };
         expect(widgets.serialize_date(date))
-            .to.deep.equal(expectedSerialization)
+            .to.deep.equal(expectedSerialization);
     });
 });
 
 describe('deserialize_date', function() {
     it('null date', function() {
-        expect(widgets.deserialize_date(null)).to.be.a('null')
+        expect(widgets.deserialize_date(null)).to.be.a('null');
     });
 
     it('valid date', function() {
@@ -134,6 +134,6 @@ describe('deserialize_date', function() {
         };
         const expectedDate = new Date('2017-05-12');
         expect(widgets.deserialize_date(serialized).getTime())
-            .to.equal(expectedDate.getTime())
+            .to.equal(expectedDate.getTime());
     });
-})
+});

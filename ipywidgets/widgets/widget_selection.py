@@ -13,12 +13,13 @@ except ImportError:  #python3.x
     izip = zip
 from itertools import chain
 
-from .widget_description import DescriptionWidget
+from .widget_description import DescriptionWidget, DescriptionStyle
 from .valuewidget import ValueWidget
 from .widget_core import CoreWidget
 from .widget_style import Style
 from .trait_types import InstanceDict
 from .widget import register, widget_serialization
+from .docutils import doc_subst
 from traitlets import (Unicode, Bool, Int, Any, Dict, TraitError, CaselessStrEnum,
                        Tuple, List, Union, observe, validate)
 from ipython_genutils.py3compat import unicode_type
@@ -104,16 +105,6 @@ _doc_snippets['slider_params'] = """
         holds the slider. Otherwise, the model is only updated after the
         user has released the slider. Defaults to ``True``.
 """
-
-
-def _doc_subst(cls):
-    """ Substitute format strings in class docstring """
-    # Strip the snippets to avoid trailing new lines and whitespace
-    stripped_snippets = {
-        key: snippet.strip() for (key, snippet) in _doc_snippets.items()
-    }
-    cls.__doc__ = cls.__doc__.format(**stripped_snippets)
-    return cls
 
 
 def _make_options(x):
@@ -385,7 +376,7 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
             yield key
 
 @register
-class ToggleButtonsStyle(Style, CoreWidget):
+class ToggleButtonsStyle(DescriptionStyle, CoreWidget):
     """Button style widget.
 
     Parameters
@@ -398,7 +389,7 @@ class ToggleButtonsStyle(Style, CoreWidget):
     button_width = Unicode(help="The width of each button.").tag(sync=True)
 
 @register
-@_doc_subst
+@doc_subst(_doc_snippets)
 class ToggleButtons(_Selection):
     """Group of toggle buttons that represent an enumeration.
 
@@ -437,7 +428,7 @@ class ToggleButtons(_Selection):
 
 
 @register
-@_doc_subst
+@doc_subst(_doc_snippets)
 class Dropdown(_Selection):
     """Allows you to select a single item from a dropdown.
 
@@ -450,7 +441,7 @@ class Dropdown(_Selection):
 
 
 @register
-@_doc_subst
+@doc_subst(_doc_snippets)
 class RadioButtons(_Selection):
     """Group of radio buttons that represent an enumeration.
 
@@ -465,7 +456,7 @@ class RadioButtons(_Selection):
 
 
 @register
-@_doc_subst
+@doc_subst(_doc_snippets)
 class Select(_Selection):
     """
     Listbox that only allows one item to be selected at any given time.
@@ -482,7 +473,7 @@ class Select(_Selection):
     rows = Int(5, help="The number of rows to display.").tag(sync=True)
 
 @register
-@_doc_subst
+@doc_subst(_doc_snippets)
 class SelectMultiple(_MultipleSelection):
     """
     Listbox that allows many items to be selected at any given time.
@@ -541,7 +532,7 @@ class _MultipleSelectionNonempty(_MultipleSelection):
         return proposal.value
 
 @register
-@_doc_subst
+@doc_subst(_doc_snippets)
 class SelectionSlider(_SelectionNonempty):
     """
     Slider to select a single item from a list or dictionary.
@@ -564,7 +555,7 @@ class SelectionSlider(_SelectionNonempty):
         help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
 
 @register
-@_doc_subst
+@doc_subst(_doc_snippets)
 class SelectionRangeSlider(_MultipleSelectionNonempty):
     """
     Slider to select multiple contiguous items from a list.

@@ -7,3 +7,8 @@
 .jupyter-widgets-output-area div.output_subarea {
     max-width: 100%;
 }
+
+/* Work-around for the bug fixed in https://github.com/jupyter/notebook/pull/2961 */
+.jupyter-widgets-output-area > .out_prompt_overlay {
+    display: none;
+}

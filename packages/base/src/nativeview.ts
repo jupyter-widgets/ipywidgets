@@ -35,16 +35,16 @@ OTHER DEALINGS IN THE SOFTWARE.
 import * as Backbone from 'backbone';
 
 // Caches a local reference to `Element.prototype` for faster access.
-var ElementProto: Element = Element.prototype;//: typeof Element = (typeof Element !== 'undefined' && Element.prototype) || {};
+const ElementProto: Element = Element.prototype;//: typeof Element = (typeof Element !== 'undefined' && Element.prototype) || {};
 
 // Find the right `Element#matches` for IE>=9 and modern browsers.
-var matchesSelector = ElementProto.matches ||
+let matchesSelector = ElementProto.matches ||
     ElementProto['webkitMatchesSelector'] ||
     ElementProto['mozMatchesSelector'] ||
     ElementProto['msMatchesSelector'] ||
     ElementProto['oMatchesSelector'] ||
     function matches(selector) {
-        var matches = (this.document || this.ownerDocument).querySelectorAll(selector),
+        let matches = (this.document || this.ownerDocument).querySelectorAll(selector),
         i = matches.length;
         while (--i >= 0 && matches.item(i) !== this) {}
         return i > -1;
@@ -74,7 +74,7 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
     // Set a hash of attributes to the view's `el`. We use the "prop" version
     // if available, falling back to `setAttribute` for the catch-all.
     _setAttributes(attrs) {
-      for (var attr in attrs) {
+      for (let attr in attrs) {
         attr in this.el ? this.el[attr] = attrs[attr] : this.el.setAttribute(attr, attrs[attr]);
       }
     }
@@ -106,9 +106,9 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
           this._domEvents = [];
       }
 
-      var root = this.el;
-      var handler = selector ? function (e) {
-        var node = e.target || e.srcElement;
+      let root = this.el;
+      let handler = selector ? function (e) {
+        let node = e.target || e.srcElement;
         for (; node && node != root; node = node.parentNode) {
           if (matchesSelector.call(node, selector)) {
             e.delegateTarget = node;
@@ -135,12 +135,12 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
       }
 
       if (this.el && this._domEvents) {
-        var handlers = this._domEvents.slice();
-        var i = handlers.length;
+        let handlers = this._domEvents.slice();
+        let i = handlers.length;
         while (i--) {
-          var item = handlers[i];
+          let item = handlers[i];
 
-          var match = item.eventName === eventName &&
+          let match = item.eventName === eventName &&
               (listener ? item.listener === listener : true) &&
               (selector ? item.selector === selector : true);
 
@@ -156,10 +156,10 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
     // Remove all events created with `delegate` from `el`
     undelegateEvents() {
       if (this.el && this._domEvents) {
-        for (var i = 0, len = this._domEvents.length; i < len; i++) {
-          var item = this._domEvents[i];
+        for (let i = 0, len = this._domEvents.length; i < len; i++) {
+          let item = this._domEvents[i];
           this.el.removeEventListener(item.eventName, item.handler, false);
-        };
+        }
         this._domEvents.length = 0;
       }
       return this;

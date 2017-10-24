@@ -51,7 +51,7 @@ class CheckboxView extends DescriptionView {
 
         // adding a zero-width space to the label to help
         // the browser set the baseline correctly
-        this.label.innerHTML = '&#8203;'
+        this.label.innerHTML = '&#8203;';
 
         // label containing the checkbox and description span
         this.checkboxLabel = document.createElement('label');
@@ -104,7 +104,7 @@ class CheckboxView extends DescriptionView {
     events(): {[e: string]: string} {
         return {
             'click input[type="checkbox"]': '_handle_click'
-        }
+        };
     }
 
     /**
@@ -114,7 +114,7 @@ class CheckboxView extends DescriptionView {
      * model to update.
      */
     _handle_click() {
-        var value = this.model.get('value');
+        let value = this.model.get('value');
         this.model.set('value', !value, {updated_view: this});
         this.touch();
     }
@@ -193,14 +193,14 @@ class ToggleButtonView extends DOMWidgetView {
             this.el.disabled = this.model.get('disabled');
             this.el.setAttribute('title', this.model.get('tooltip'));
 
-            var description = this.model.get('description');
-            var icon = this.model.get('icon');
+            let description = this.model.get('description');
+            let icon = this.model.get('icon');
             if (description.trim().length === 0 && icon.trim().length === 0) {
                 this.el.innerHTML = '&nbsp;'; // Preserve button height
             } else {
                 this.el.textContent = '';
                 if (icon.trim().length) {
-                    var i = document.createElement('i');
+                    let i = document.createElement('i');
                     this.el.appendChild(i);
                     i.classList.add('fa');
                     i.classList.add('fa-' + icon);
@@ -215,7 +215,7 @@ class ToggleButtonView extends DOMWidgetView {
         return {
             // Dictionary of events and their handlers.
             'click': '_handle_click'
-        }
+        };
     }
 
     /**
@@ -226,7 +226,7 @@ class ToggleButtonView extends DOMWidgetView {
      */
     _handle_click(event) {
         event.preventDefault();
-        var value = this.model.get('value');
+        let value = this.model.get('value');
         this.model.set('value', !value, {updated_view: this});
         this.touch();
     }

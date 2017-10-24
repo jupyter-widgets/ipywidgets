@@ -61,13 +61,13 @@ class DummyManager extends widgets.ManagerBase<HTMLElement> {
             if (widgets[className]) {
                 return Promise.resolve(widgets[className]);
             } else {
-                return Promise.reject(`Cannot find class ${className}`)
+                return Promise.reject(`Cannot find class ${className}`);
             }
         } else if (moduleName === 'test-widgets') {
             if (testWidgets[className]) {
                 return Promise.resolve(testWidgets[className]);
             } else {
-                return Promise.reject(`Cannot find class ${className}`)
+                return Promise.reject(`Cannot find class ${className}`);
             }
         } else {
             return Promise.reject(`Cannot find module ${moduleName}`);
@@ -96,17 +96,17 @@ let typesToArray = {
     uint32: Uint32Array,
     float32: Float32Array,
     float64: Float64Array
-}
+};
 
 let JSONToArray = function(obj, manager) {
     return new typesToArray[obj.dtype](obj.buffer.buffer);
-}
+};
 
 let arrayToJSON = function(obj, manager) {
     let dtype = Object.keys(typesToArray).filter(
-        i=>typesToArray[i]===obj.constructor)[0]
-    return {dtype, buffer: obj}
-}
+        i=>typesToArray[i]===obj.constructor)[0];
+    return {dtype, buffer: obj};
+};
 
 let array_serialization = {
     deserialize: JSONToArray,
@@ -117,14 +117,14 @@ let array_serialization = {
 class TestWidget extends widgets.WidgetModel {
     defaults() {
         return {...super.defaults(),
-            _model_module: "test-widgets",
-            _model_name: "TestWidget",
+            _model_module: 'test-widgets',
+            _model_name: 'TestWidget',
             _model_module_version: '1.0.0',
-            _view_module: "test-widgets",
-            _view_name: "TestWidgetView",
+            _view_module: 'test-widgets',
+            _view_name: 'TestWidgetView',
             _view_module_version: '1.0.0',
             _view_count: null,
-        }
+        };
     }
 }
 
@@ -137,7 +137,7 @@ class TestWidgetView extends widgets.WidgetView {
         this._removed +=1;
         super.remove();
     }
-    _removed = 0
+    _removed = 0;
     _rendered = 0;
 }
 
@@ -145,20 +145,20 @@ class BinaryWidget extends TestWidget {
     static serializers = {
         ...widgets.WidgetModel.serializers,
         array: array_serialization
-    }
+    };
     defaults() {
         return {...super.defaults(),
-            _model_name: "BinaryWidget",
-            _view_name: "BinaryWidgetView",
+            _model_name: 'BinaryWidget',
+            _view_name: 'BinaryWidgetView',
             array: new Int8Array(0)};
     }
 }
 
 class BinaryWidgetView extends TestWidgetView {
     render() {
-        this._rendered += 1
+        this._rendered += 1;
     }
     _rendered = 0;
 }
 
-let testWidgets = {TestWidget, TestWidgetView, BinaryWidget, BinaryWidgetView}
+let testWidgets = {TestWidget, TestWidgetView, BinaryWidget, BinaryWidgetView};
