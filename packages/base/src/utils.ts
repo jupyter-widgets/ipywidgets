@@ -20,9 +20,9 @@ import {
  */
 export
 let assign = (Object as any).assign || function(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
+    for (let s, i = 1, n = arguments.length; i < n; i++) {
         s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+        for (let p in s) if (Object.prototype.hasOwnProperty.call(s, p))
             t[p] = s[p];
     }
     return t;
@@ -33,9 +33,9 @@ let assign = (Object as any).assign || function(t) {
  */
 export
 function uuid(): string {
-    var s = [];
-    var hexDigits = '0123456789ABCDEF';
-    for (var i = 0; i < 32; i++) {
+    let s = [];
+    const hexDigits = '0123456789ABCDEF';
+    for (let i = 0; i < 32; i++) {
         s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
     }
     s[12] = '4';  // bits 12-15 of the time_hi_and_version field to 0010
@@ -73,14 +73,14 @@ class WrappedError extends Error {
  */
 export
 function resolvePromisesDict(d): Promise<any> {
-    var keys = Object.keys(d);
-    var values = [];
+    let keys = Object.keys(d);
+    let values = [];
     keys.forEach(function(key) {
         values.push(d[key]);
     });
     return Promise.all(values).then(function(v) {
         d = {};
-        for(var i=0; i<keys.length; i++) {
+        for(let i=0; i<keys.length; i++) {
             d[keys[i]] = v[i];
         }
         return d;
