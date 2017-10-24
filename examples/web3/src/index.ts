@@ -13,7 +13,7 @@ import {
 let BASEURL = prompt('Notebook BASEURL', 'http://localhost:8888');
 let WSURL = 'ws:' + BASEURL.split(':').slice(1).join(':');
 
-document.addEventListener("DOMContentLoaded", function(event) {
+document.addEventListener('DOMContentLoaded', function(event) {
 
     // Connect to the notebook webserver.
     let connectionInfo = ServerConnection.makeSettings({
@@ -28,11 +28,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }).then(kernel => {
 
         // Create a codemirror instance
-        let code = require('../widget_code.json').join("\n");
-        let inputarea = document.getElementsByClassName("inputarea")[0] as HTMLElement;
+        let code = require('../widget_code.json').join('\n');
+        let inputarea = document.getElementsByClassName('inputarea')[0] as HTMLElement;
         let editor = CodeMirror(inputarea, {
             value: code,
-            mode: "python",
+            mode: 'python',
             tabSize: 4,
             showCursorWhenSelecting: true,
             viewportMargin: Infinity,
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         });
 
         // Create the widget area and widget manager
-        let widgetarea = document.getElementsByClassName("widgetarea")[0] as HTMLElement;
+        let widgetarea = document.getElementsByClassName('widgetarea')[0] as HTMLElement;
         let manager = new WidgetManager(kernel, widgetarea);
 
         // Run backend code to create the widgets.  You could also create the
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                     }
                 }
             }
-        }
+        };
     });
 });
 

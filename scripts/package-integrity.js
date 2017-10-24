@@ -20,7 +20,7 @@ var IGNORE = {
     '@jupyter-widgets/jupyterlab-manager': ['backbone', '@types/backbone'],
     '@jupyter-widgets/html-manager': ['ajv', '@jupyter-widgets/schema'],
     '@jupyter-widgets/example-web-tmpnb': ['http-server', 'font-awesome'],
-    '@jupyter-widgets/example-web3': ['http-server']
+    '@jupyter-widgets/example-web3': ['http-server', '@jupyter-widgets/controls']
 }
 
 /**
