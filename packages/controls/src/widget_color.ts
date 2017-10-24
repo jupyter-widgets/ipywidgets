@@ -82,13 +82,13 @@ class ColorPickerView extends DescriptionView {
     }
 
     private _update_value() {
-        var value = this.model.get('value');
+        let value = this.model.get('value');
         this._colorpicker.value = color2hex(value);
         this._textbox.value = value;
     }
 
     private _update_concise() {
-        var concise = this.model.get('concise');
+        let concise = this.model.get('concise');
         if (concise) {
             this.el.classList.add('concise');
             this._textbox.style.display = 'none';
@@ -104,7 +104,7 @@ class ColorPickerView extends DescriptionView {
     }
 
     private _text_change() {
-        var value = this._validate_color(
+        let value = this._validate_color(
             this._textbox.value,
             this.model.get('value')
         );

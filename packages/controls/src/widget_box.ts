@@ -165,7 +165,7 @@ class BoxView extends DOMWidgetView {
     add_child_model(model) {
         // we insert a dummy element so the order is preserved when we add
         // the rendered content later.
-        var dummy = new Widget();
+        let dummy = new Widget();
         this.pWidget.addWidget(dummy);
 
         return this.create_child_view(model).then((view: DOMWidgetView) => {
