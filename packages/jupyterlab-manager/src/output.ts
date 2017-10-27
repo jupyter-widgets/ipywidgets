@@ -16,7 +16,7 @@ import {
 } from '@phosphor/messaging';
 
 import {
-  Panel, Widget
+  Panel
 } from '@phosphor/widgets';
 
 import {

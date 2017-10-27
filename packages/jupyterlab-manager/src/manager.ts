@@ -17,10 +17,6 @@ import {
 } from '@phosphor/widgets';
 
 import {
-  IRenderMime
-} from '@jupyterlab/rendermime-interfaces';
-
-import {
   RenderMime
 } from '@jupyterlab/rendermime';
 

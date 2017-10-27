@@ -18,7 +18,7 @@ import {
 } from '@jupyterlab/application';
 
 import {
-  JSONObject, Token
+  Token
 } from '@phosphor/coreutils';
 
 import {
