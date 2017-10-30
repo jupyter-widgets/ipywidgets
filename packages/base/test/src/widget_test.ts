@@ -495,8 +495,8 @@ describe('WidgetModel', function() {
         });
 
         it('triggers change events', async function() {
-            let changeA = sinon.spy(function changeA(){});
-            let change = sinon.spy(function change(){});
+            let changeA = sinon.spy(function changeA(){ return; });
+            let change = sinon.spy(function change(){ return; });
             this.widget.on('change:a', changeA);
             this.widget.on('change', change);
             this.widget.set('a', 100);

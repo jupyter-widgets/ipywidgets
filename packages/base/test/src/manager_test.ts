@@ -93,9 +93,9 @@ describe('ManagerBase', function() {
         let manager = this.managerBase;
         let model = await manager.new_model(this.modelOptions);
         let view = await manager.create_view(model);
-        //TODO: when we upgrade sinon-chai to handle chai 4.0,
+        // TODO: when we upgrade sinon-chai to handle chai 4.0,
         // uncomment the following and the test statement
-        //sinon.spy(view, 'remove');
+        // sinon.spy(view, 'remove');
         await model.close();
         // expect(view.removed.calledOnce).to.be.true;
         expect(view._removed).to.equal(1);
@@ -416,8 +416,7 @@ describe('ManagerBase', function() {
         let manager = this.managerBase;
         let model = await manager.new_model(this.modelOptions);
         let state = await manager.get_state();
-        {
-      }
+
         let expectedState = {
           'version_major':2,
           'version_minor':0,
