@@ -72,7 +72,9 @@ export
 function reject(message, log) {
     return function promiseRejection(error) {
         let wrapped_error = new WrappedError(message, error);
-        if (log) console.error(wrapped_error);
+        if (log) {
+            console.error(wrapped_error);
+        }
         return Promise.reject(wrapped_error);
     };
 }
