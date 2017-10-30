@@ -18,8 +18,8 @@ document.addEventListener('DOMContentLoaded', function(event) {
     xmlhttp.setRequestHeader('Content-type', 'application/json');
 
     xmlhttp.onreadystatechange = function () {
-        //Call a function when the state changes.
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        // Call a function when the state changes.
+        if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
             let response = JSON.parse(xmlhttp.responseText);
             // TODO: this will need to be changed to check the status code 429
             // when https://github.com/jupyter/tmpnb/pull/283 is implemented.
