@@ -5,7 +5,7 @@
 import * as Backbone from 'backbone';
 
 import {
-    ManagerBase, shims
+    ManagerBase, shims, IWidgetRegistryData
 } from '@jupyter-widgets/base';
 
 import {
@@ -177,7 +177,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     return this._rendermime;
   }
 
-  register(data: WidgetManager.IWidgetData) {
+  register(data: IWidgetRegistryData) {
     this._registry.set(data.name, data.version, data.exports);
   }
 
@@ -188,13 +188,4 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   _commRegistration: IDisposable;
 }
 
-export
-namespace WidgetManager {
-  export
-  interface IWidgetData {
-    name: string,
-    version: string,
-    exports: any
-  }
-}
 

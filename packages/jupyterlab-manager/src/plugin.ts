@@ -18,10 +18,6 @@ import {
 } from '@jupyterlab/application';
 
 import {
-  Token
-} from '@phosphor/coreutils';
-
-import {
   IDisposable, DisposableDelegate
 } from '@phosphor/disposable';
 
@@ -46,22 +42,8 @@ import '@jupyter-widgets/controls/css/widgets-base.css';
 
 const WIDGET_MIMETYPE = 'application/vnd.jupyter.widget-view+json';
 
-/**
- * The token identifying the JupyterLab plugin.
- */
 export
-const INBWidgetExtension = new Token<INBWidgetExtension>('jupyter.extensions.nbWidgetManager');
-
-/**
- * The type of the provided value of the plugin in JupyterLab.
- */
-export
-interface INBWidgetExtension extends DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel> {
-  /**
-   * Register a widget module.
-   */
-  registerWidget(data: WidgetManager.IWidgetData): void;
-}
+type INBWidgetExtension = DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel>
 
 
 export
@@ -112,10 +94,10 @@ class NBWidgetExtension implements INBWidgetExtension {
   /**
    * Register a widget module.
    */
-  registerWidget(data: WidgetManager.IWidgetData) {
+  registerWidget(data: base.IWidgetRegistryData) {
     this._registry.push(data);
   }
-  private _registry: WidgetManager.IWidgetData[] = [];
+  private _registry: base.IWidgetRegistryData[] = [];
 }
 
 
@@ -123,9 +105,9 @@ class NBWidgetExtension implements INBWidgetExtension {
 /**
  * The widget manager provider.
  */
-const widgetManagerProvider: JupyterLabPlugin<INBWidgetExtension> = {
+const widgetManagerProvider: JupyterLabPlugin<base.IJupyterWidgetRegistry> = {
   id: 'jupyter.extensions.nbWidgetManager',
-  provides: INBWidgetExtension,
+  provides: base.IJupyterWidgetRegistry,
   activate: activateWidgetExtension,
   autoStart: true
 };
@@ -136,8 +118,12 @@ export default widgetManagerProvider;
 /**
  * Activate the widget extension.
  */
-function activateWidgetExtension(app: JupyterLab): INBWidgetExtension {
+function activateWidgetExtension(app: JupyterLab): base.IJupyterWidgetRegistry {
   let extension = new NBWidgetExtension();
   app.docRegistry.addWidgetExtension('Notebook', extension);
-  return extension;
+  return {
+    registerWidget(data: base.IWidgetRegistryData): void {
+      extension.registerWidget(data);
+    }
+  }
 }
