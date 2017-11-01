@@ -33,7 +33,9 @@ class MockComm {
             this._on_close();
         }
     }
-    send() {}
+    send() {
+        return;
+    }
     comm_id: string;
     _on_msg: Function = null;
     _on_close: Function = null;
@@ -45,7 +47,7 @@ class DummyManager extends base.ManagerBase<HTMLElement> {
         super();
         this.el = window.document.createElement('div');
     }
-    
+
     display_view(msg: services.KernelMessage.IMessage, view: Backbone.View<Backbone.Model>, options: any) {
         // TODO: make this a spy
         // TODO: return an html element

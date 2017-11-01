@@ -154,8 +154,12 @@ abstract class BaseIntSliderView extends DescriptionView {
             let max = this.model.get('max');
             let min = this.model.get('min');
             if (min <= max) {
-                if (max !== undefined) this.$slider.slider('option', 'max', max);
-                if (min !== undefined) this.$slider.slider('option', 'min', min);
+                if (max !== undefined) {
+                    this.$slider.slider('option', 'max', max);
+                }
+                if (min !== undefined) {
+                    this.$slider.slider('option', 'min', min);
+                }
             }
 
             // WORKAROUND FOR JQUERY SLIDER BUG.

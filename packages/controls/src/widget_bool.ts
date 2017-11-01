@@ -76,15 +76,15 @@ class CheckboxView extends DescriptionView {
 
     /**
      * Overriden from super class
-     * 
-     * Update the description span (rather than the label) since 
+     *
+     * Update the description span (rather than the label) since
      * we want the description to the right of the checkbox.
      */
     updateDescription() {
         // can be called before the view is fully initialized
-        if (this.checkboxLabel == null)
+        if (this.checkboxLabel == null) {
             return;
-
+        }
         let description = this.model.get('description');
         this.descriptionSpan.innerHTML = description;
         this.typeset(this.descriptionSpan);
