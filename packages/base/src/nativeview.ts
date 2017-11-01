@@ -35,7 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 import * as Backbone from 'backbone';
 
 // Caches a local reference to `Element.prototype` for faster access.
-const ElementProto: Element = Element.prototype;//: typeof Element = (typeof Element !== 'undefined' && Element.prototype) || {};
+const ElementProto: Element = Element.prototype; // : typeof Element = (typeof Element !== 'undefined' && Element.prototype) || {};
 
 // Find the right `Element#matches` for IE>=9 and modern browsers.
 let matchesSelector = ElementProto.matches ||
@@ -46,7 +46,9 @@ let matchesSelector = ElementProto.matches ||
     function matches(selector) {
         let matches = (this.document || this.ownerDocument).querySelectorAll(selector),
         i = matches.length;
-        while (--i >= 0 && matches.item(i) !== this) {}
+        while (--i >= 0 && matches.item(i) !== this) {
+          continue;
+        }
         return i > -1;
     };
 

@@ -170,7 +170,7 @@ class WidgetModel extends Backbone.Model {
             return this.views[id].then(view => view.remove());
         });
         delete this.views;
-        return Promise.all(views).then(()=>{});
+        return Promise.all(views).then(()=>{ return; });
     }
 
     /**
@@ -610,6 +610,7 @@ abstract class WidgetView extends NativeView<WidgetModel> {
      * Update view to be consistent with this.model
      */
     update(options?) {
+        return;
     }
 
     /**
@@ -618,6 +619,7 @@ abstract class WidgetView extends NativeView<WidgetModel> {
      * @returns the view or a promise to the view.
      */
     render(): any {
+        return;
     }
 
     /**

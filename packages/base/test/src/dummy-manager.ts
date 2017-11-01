@@ -33,7 +33,9 @@ class MockComm {
             this._on_close();
         }
     }
-    send() {}
+    send() {
+        return;
+    }
     comm_id: string;
     _on_msg: Function = null;
     _on_close: Function = null;
