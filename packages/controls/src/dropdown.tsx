@@ -25,24 +25,69 @@ class DropdownView extends DescriptionView {
         this.el.classList.add('widget-dropdown');
 
         this.listbox = document.createElement('div');
-
-        this.listbox.id = this.label.htmlFor = uuid();
+        this.label.htmlFor = uuid();
         this.el.appendChild(this.listbox);
         this.update();
     }
 
     update() {
-        let id = this.label.htmlFor = uuid();
-        let items = this.model.get('_options_labels');
-        let options = items.map(i => {
-            return <option data-value={encodeURIComponent(i)} value={i}>{i.replace(/ /g, '\xa0')}</option>;
+        let labels = this.model.get('_options_labels');
+        let options = labels.map((label, index) => {
+            return (
+            <option value={index}>
+                {label.replace(/ /g, '\xa0')}
+            </option>);
         });
+        let selectedIndex = this.model.get('index');
+        let value = selectedIndex === null ? '' : selectedIndex;
         reactDOM.render(
-            <select id={id} disabled={this.model.get('disabled')}>
+            <select id={this.label.htmlFor}
+              value={value}
+              disabled={this.model.get('disabled')}
+              onChange={(event) => {
+                  this.model.set('index', parseInt(event.target.value));
+                  this.touch();
+              }}>
+              <option value='' disabled></option>
             {options}
             </select>
             , this.listbox);
     }
 
     listbox: HTMLDivElement;
+}
+
+
+interface IProps {
+    disabled: boolean;
+    labels: string[];
+    selectedIndex: number;
+    handleChange: (event: Event) => void;
+  }
+
+class DropDown extends React.Component<IProps, {}> {
+    render() {
+        this.setState();
+        let options = labels.map((label, index) => {
+            return (
+            <option value={index}>
+                {label.replace(/ /g, '\xa0')}
+            </option>);
+        });
+        let selectedIndex = this.model.get('index');
+        let value = selectedIndex === null ? '' : selectedIndex;
+        reactDOM.render(
+            <select id={this.label.htmlFor}
+              value={value}
+              disabled={this.model.get('disabled')}
+              onChange={(event) => {
+                  this.model.set('index', parseInt(event.target.value));
+                  this.touch();
+              }}>
+              <option value='' disabled></option>
+            {options}
+            </select>
+            , this.listbox);
+    }
+    props: IProps;
 }
