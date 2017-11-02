@@ -8,3 +8,4 @@ export * from './widget_style';
 export * from './services-shim';
 export * from './viewlist';
 export * from './utils';
+export * from './registry';
