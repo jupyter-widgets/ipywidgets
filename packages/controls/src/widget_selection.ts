@@ -62,7 +62,7 @@ class DropdownModel extends SelectionModel {
 // For the old code, see commit f68bfbc566f3a78a8f3350b438db8ed523ce3642
 
 export
-class DropdownView extends DescriptionView {
+class DropdownViewOld extends DescriptionView {
     /**
      * Public constructor.
      */

@@ -18,5 +18,7 @@ export * from './widget_selectioncontainer';
 export * from './widget_string';
 export * from './widget_description';
 
+export * from './dropdown';
+
 export
 const version = (require('../package.json') as any).version;
