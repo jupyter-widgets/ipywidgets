@@ -32,7 +32,16 @@ class DropdownView extends DescriptionView {
     }
 
     update() {
-        reactDOM.render(<b>hi!</b>, this.listbox);
+        let id = this.label.htmlFor = uuid();
+        let items = this.model.get('_options_labels');
+        let options = items.map(i => {
+            return <option data-value={encodeURIComponent(i)} value={i}>{i.replace(/ /g, '\xa0')}</option>;
+        });
+        reactDOM.render(
+            <select id={id} disabled={this.model.get('disabled')}>
+            {options}
+            </select>
+            , this.listbox);
     }
 
     listbox: HTMLDivElement;
