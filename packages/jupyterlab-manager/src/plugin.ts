@@ -43,7 +43,7 @@ import '@jupyter-widgets/controls/css/widgets-base.css';
 const WIDGET_MIMETYPE = 'application/vnd.jupyter.widget-view+json';
 
 export
-type INBWidgetExtension = DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel>
+type INBWidgetExtension = DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel>;
 
 
 export
@@ -53,30 +53,6 @@ class NBWidgetExtension implements INBWidgetExtension {
    */
   createNew(nb: NotebookPanel, context: DocumentRegistry.IContext<INotebookModel>): IDisposable {
     let wManager = new WidgetManager(context, nb.rendermime);
-    wManager.register({
-      name: '@jupyter-widgets/base',
-      version: base.JUPYTER_WIDGETS_VERSION,
-      exports: {
-        WidgetModel: base.WidgetModel,
-        WidgetView: base.WidgetView,
-        DOMWidgetView: base.DOMWidgetView,
-        DOMWidgetModel: base.DOMWidgetModel,
-        LayoutModel: base.LayoutModel,
-        LayoutView: base.LayoutView,
-        StyleModel: base.StyleModel,
-        StyleView: base.StyleView
-      }
-    });
-    wManager.register({
-      name: '@jupyter-widgets/controls',
-      version: widgets.JUPYTER_CONTROLS_VERSION,
-      exports: widgets
-    });
-    wManager.register({
-      name: '@jupyter-widgets/output',
-      version: OUTPUT_WIDGET_VERSION,
-      exports: {OutputModel, OutputView}
-    })
     this._registry.forEach(data => wManager.register(data));
     nb.rendermime.addFactory({
       safe: false,
@@ -101,7 +77,6 @@ class NBWidgetExtension implements INBWidgetExtension {
 }
 
 
-
 /**
  * The widget manager provider.
  */
@@ -120,10 +95,35 @@ export default widgetManagerProvider;
  */
 function activateWidgetExtension(app: JupyterLab): base.IJupyterWidgetRegistry {
   let extension = new NBWidgetExtension();
+  extension.registerWidget({
+    name: '@jupyter-widgets/base',
+    version: base.JUPYTER_WIDGETS_VERSION,
+    exports: {
+      WidgetModel: base.WidgetModel,
+      WidgetView: base.WidgetView,
+      DOMWidgetView: base.DOMWidgetView,
+      DOMWidgetModel: base.DOMWidgetModel,
+      LayoutModel: base.LayoutModel,
+      LayoutView: base.LayoutView,
+      StyleModel: base.StyleModel,
+      StyleView: base.StyleView
+    }
+  });
+  extension.registerWidget({
+    name: '@jupyter-widgets/controls',
+    version: widgets.JUPYTER_CONTROLS_VERSION,
+    exports: widgets
+  });
+  extension.registerWidget({
+    name: '@jupyter-widgets/output',
+    version: OUTPUT_WIDGET_VERSION,
+    exports: {OutputModel, OutputView}
+  });
+
   app.docRegistry.addWidgetExtension('Notebook', extension);
   return {
     registerWidget(data: base.IWidgetRegistryData): void {
       extension.registerWidget(data);
     }
-  }
+  };
 }

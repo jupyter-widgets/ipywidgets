@@ -102,7 +102,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
       let oldComm = new shims.services.Comm(comm);
       this.handle_comm_open(oldComm, msg);
     });
-  };
+  }
 
   /**
    * Return a phosphor widget representing the view
@@ -158,15 +158,17 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * Load a class and return a promise to the loaded object.
    */
   protected loadClass(className: string, moduleName: string, moduleVersion: string): any {
-    let mod: any = this._registry.get(moduleName, moduleVersion);
-    if (!mod) {
+    let modPromise: any = this._registry.get(moduleName, moduleVersion);
+    if (!modPromise) {
       return Promise.reject(`Module ${moduleName}, semver range ${moduleVersion} is not registered as a widget module`);
     }
-    let cls: any = mod[className];
-    if (!cls) {
-      return Promise.reject(`Class ${className} not found in module ${moduleName}`);
-    }
-    return Promise.resolve(cls);
+    return modPromise.then((mod: any) => {
+      let cls: any = mod[className];
+      if (!cls) {
+        return Promise.reject(`Class ${className} not found in module ${moduleName}`);
+      }
+      return cls;
+    });
   }
 
   get context() {
@@ -178,14 +180,12 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   }
 
   register(data: IWidgetRegistryData) {
-    this._registry.set(data.name, data.version, data.exports);
+    this._registry.set(data.name, data.version, Promise.resolve(data.exports));
   }
 
   private _context: DocumentRegistry.IContext<DocumentRegistry.IModel>;
-  private _registry = new SemVerCache<Promise<any>>();
+  private _registry = new SemVerCache<Promise<{[key: string]: any}>>();
   private _rendermime: RenderMime;
 
   _commRegistration: IDisposable;
 }
-
-

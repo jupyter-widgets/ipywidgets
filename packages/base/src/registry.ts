@@ -37,7 +37,8 @@ interface IWidgetRegistryData {
   version: string;
 
   /**
-   * A map of object names to widget classes provided by the module.
+   * A map of object names to widget classes provided by the module, or a
+   * Promise to such a structure.
    */
-  exports: any;
+  exports: {[key: string]: any} | Promise<{[key: string]: any}>;
 }
