@@ -1,17 +1,28 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-export {
-    isEqual, difference
-} from 'lodash';
-
-import {
-    isPlainObject
-} from 'lodash';
-
 import {
     toByteArray, fromByteArray
 } from 'base64-js';
+
+import _isEqual = require('lodash/isEqual');
+import isPlainObject = require('lodash/isPlainObject');
+
+/**
+ * Find all strings in the first argument that are not in the second.
+ */
+export
+function difference(a: string[], b: string[]): string[] {
+    return a.filter(v => b.indexOf(v) === -1);
+}
+
+/**
+ * Compare two objects deeply to see if they are equal.
+ */
+export
+function isEqual(a, b) {
+    return _isEqual(a, b);
+}
 
 /**
  * A polyfill for Object.assign
