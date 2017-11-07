@@ -89,31 +89,6 @@ const widgetManagerProvider: JupyterLabPlugin<base.IJupyterWidgetRegistry> = {
 
 export default widgetManagerProvider;
 
-
-class LazyPromise<T> implements Promise<T> {
-  constructor(fn: () => Promise<T>) {
-    this._fn = fn;
-  }
-
-  then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2> {
-    if (this._promise === null) {
-      this._promise = this._fn();
-    }
-    return this._promise.then.apply(this, arguments);
-  }
-
-  catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult> {
-    if (this._promise === null) {
-        this._promise = this._fn();
-      }
-    return this._promise.catch.apply(this, arguments);
-  }
-
-
-  private _fn: () => Promise<T>;
-  private _promise: Promise<T> = null;
-}
-
 /**
  * Activate the widget extension.
  */
@@ -136,7 +111,7 @@ function activateWidgetExtension(app: JupyterLab): base.IJupyterWidgetRegistry {
   extension.registerWidget({
     name: '@jupyter-widgets/controls',
     version: widgets.JUPYTER_CONTROLS_VERSION,
-    exports: new LazyPromise(() => import('@jupyter-widgets/controls'))
+    exports: () => import('@jupyter-widgets/controls')
   });
   extension.registerWidget({
     name: '@jupyter-widgets/output',

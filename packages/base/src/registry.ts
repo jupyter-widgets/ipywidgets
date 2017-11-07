@@ -25,6 +25,9 @@ interface IJupyterWidgetRegistry {
 }
 
 export
+type ExportMap = {[key: string]: any};
+
+export
 interface IWidgetRegistryData {
   /**
    * The widget module name.
@@ -38,7 +41,7 @@ interface IWidgetRegistryData {
 
   /**
    * A map of object names to widget classes provided by the module, or a
-   * Promise to such a structure.
+   * promise to such a map, or a function returning the same.
    */
-  exports: {[key: string]: any} | Promise<{[key: string]: any}>;
+  exports:  ExportMap | Promise<ExportMap> | (() => ExportMap) | (() => Promise<ExportMap>);
 }

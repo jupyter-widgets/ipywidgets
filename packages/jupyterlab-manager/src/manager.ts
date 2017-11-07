@@ -5,7 +5,7 @@
 import * as Backbone from 'backbone';
 
 import {
-    ManagerBase, shims, IWidgetRegistryData
+    ManagerBase, shims, IWidgetRegistryData, ExportMap
 } from '@jupyter-widgets/base';
 
 import {
@@ -66,6 +66,7 @@ class BackboneViewWrapper extends Widget {
 
   private _view: Backbone.View<any> = null;
 }
+
 
 /**
  * A widget manager that returns phosphor widgets.
@@ -158,9 +159,15 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * Load a class and return a promise to the loaded object.
    */
   protected loadClass(className: string, moduleName: string, moduleVersion: string): any {
-    let modPromise: any = this._registry.get(moduleName, moduleVersion);
-    if (!modPromise) {
+    let mod = this._registry.get(moduleName, moduleVersion);
+    if (!mod) {
       return Promise.reject(`Module ${moduleName}, semver range ${moduleVersion} is not registered as a widget module`);
+    }
+    let modPromise: Promise<ExportMap>;
+    if (typeof mod === 'function') {
+      modPromise = Promise.resolve(mod());
+    } else {
+      modPromise = Promise.resolve(mod);
     }
     return modPromise.then((mod: any) => {
       let cls: any = mod[className];
@@ -180,11 +187,11 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   }
 
   register(data: IWidgetRegistryData) {
-    this._registry.set(data.name, data.version, Promise.resolve(data.exports));
+    this._registry.set(data.name, data.version, data.exports);
   }
 
   private _context: DocumentRegistry.IContext<DocumentRegistry.IModel>;
-  private _registry = new SemVerCache<Promise<{[key: string]: any}>>();
+  private _registry = new SemVerCache<ExportMap | Promise<ExportMap> | (() => ExportMap) | (() => Promise<ExportMap>)>();
   private _rendermime: RenderMime;
 
   _commRegistration: IDisposable;
