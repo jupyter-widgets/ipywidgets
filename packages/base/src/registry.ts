@@ -5,6 +5,10 @@ import {
   Token
 } from '@phosphor/coreutils';
 
+import {
+  WidgetModel, WidgetView
+} from './widget';
+
 /**
  * A runtime interface token for a widget registry.
  */
@@ -25,7 +29,7 @@ interface IJupyterWidgetRegistry {
 }
 
 export
-type ExportMap = {[key: string]: any};
+type ExportMap = {[key: string]: typeof WidgetModel | typeof WidgetView};
 
 export
 type ExportData = ExportMap | Promise<ExportMap> | (() => ExportMap) | (() => Promise<ExportMap>);

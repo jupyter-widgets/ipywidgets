@@ -5,7 +5,7 @@
 import * as Backbone from 'backbone';
 
 import {
-    ManagerBase, shims, IWidgetRegistryData, ExportMap, ExportData
+    ManagerBase, shims, IWidgetRegistryData, ExportMap, ExportData, WidgetModel, WidgetView
 } from '@jupyter-widgets/base';
 
 import {
@@ -158,7 +158,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Load a class and return a promise to the loaded object.
    */
-  protected loadClass(className: string, moduleName: string, moduleVersion: string): any {
+  protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<typeof WidgetModel | typeof WidgetView> {
     let mod = this._registry.get(moduleName, moduleVersion);
     if (!mod) {
       return Promise.reject(`Module ${moduleName}, semver range ${moduleVersion} is not registered as a widget module`);
