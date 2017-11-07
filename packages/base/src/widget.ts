@@ -573,7 +573,7 @@ class WidgetView extends NativeView<WidgetModel> {
     /**
      * Public constructor.
      */
-    constructor(options?: Backbone.ViewOptions<WidgetModel> & {options: any}) {
+    constructor(options?: Backbone.ViewOptions<WidgetModel> & {options?: any}) {
         super(options);
     }
 
