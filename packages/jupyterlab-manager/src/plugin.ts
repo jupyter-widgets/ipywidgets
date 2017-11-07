@@ -34,10 +34,11 @@ import {
 } from './output';
 
 import * as base from '@jupyter-widgets/base';
-import * as widgets from '@jupyter-widgets/controls';
+import {
+  JUPYTER_CONTROLS_VERSION
+} from '@jupyter-widgets/controls/lib/version';
 
 import '@jupyter-widgets/base/css/index.css';
-import '@jupyter-widgets/controls/css/widgets-base.css';
 
 
 const WIDGET_MIMETYPE = 'application/vnd.jupyter.widget-view+json';
@@ -110,8 +111,19 @@ function activateWidgetExtension(app: JupyterLab): base.IJupyterWidgetRegistry {
   });
   extension.registerWidget({
     name: '@jupyter-widgets/controls',
-    version: widgets.JUPYTER_CONTROLS_VERSION,
-    exports: () => import('@jupyter-widgets/controls')
+    version: JUPYTER_CONTROLS_VERSION,
+    exports: () => {
+      return new Promise((resolve, reject) => {
+        (require as any).ensure(['@jupyter-widgets/controls', '@jupyter-widgets/controls/css/widgets-base.css'], (require: NodeRequire) => {
+          resolve(require('@jupyter-widgets/controls'));
+        },
+        (err: any) => {
+          reject(err);
+        },
+        '@jupyter-widgets/controls'
+        );
+      });
+    }
   });
   extension.registerWidget({
     name: '@jupyter-widgets/output',
