@@ -12,10 +12,10 @@ import {
     shims
 } from './services-shim';
 
-export
-const PROTOCOL_VERSION = '2.0.0';
+import {
+    PROTOCOL_VERSION
+} from './version';
 
-export
 const PROTOCOL_MAJOR_VERSION = PROTOCOL_VERSION.split('.', 1)[0];
 
 /**
