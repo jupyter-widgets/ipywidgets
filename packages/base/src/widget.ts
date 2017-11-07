@@ -20,8 +20,9 @@ import {
     Message, MessageLoop
 } from '@phosphor/messaging';
 
-export
-const JUPYTER_WIDGETS_VERSION = '1.0.0';
+import {
+    JUPYTER_WIDGETS_VERSION
+} from './version';
 
 /**
  * Replace model ids with models recursively.
