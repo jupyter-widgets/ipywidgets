@@ -44,8 +44,8 @@ let matchesSelector = ElementProto.matches ||
     ElementProto['msMatchesSelector'] ||
     ElementProto['oMatchesSelector'] ||
     function matches(selector) {
-        let matches = (this.document || this.ownerDocument).querySelectorAll(selector),
-        i = matches.length;
+        let matches = (this.document || this.ownerDocument).querySelectorAll(selector);
+        let i = matches.length;
         while (--i >= 0 && matches.item(i) !== this) {
           continue;
         }
@@ -111,7 +111,7 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
       let root = this.el;
       let handler = selector ? function (e) {
         let node = e.target || e.srcElement;
-        for (; node && node != root; node = node.parentNode) {
+        for (; node && node !== root; node = node.parentNode) {
           if (matchesSelector.call(node, selector)) {
             e.delegateTarget = node;
             if (listener.handleEvent) {
@@ -146,7 +146,9 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
               (listener ? item.listener === listener : true) &&
               (selector ? item.selector === selector : true);
 
-          if (!match) continue;
+          if (!match) {
+            continue;
+          }
 
           this.el.removeEventListener(item.eventName, item.handler, false);
           this._domEvents.splice(i, 1);
@@ -158,7 +160,8 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
     // Remove all events created with `delegate` from `el`
     undelegateEvents() {
       if (this.el && this._domEvents) {
-        for (let i = 0, len = this._domEvents.length; i < len; i++) {
+        let len = this._domEvents.length;
+        for (let i = 0; i < len; i++) {
           let item = this._domEvents[i];
           this.el.removeEventListener(item.eventName, item.handler, false);
         }

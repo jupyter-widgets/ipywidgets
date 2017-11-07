@@ -20,10 +20,13 @@ import {
  */
 export
 let assign = (Object as any).assign || function(t) {
-    for (let s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (let p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
+    for (let i = 1; i < arguments.length; i++) {
+        let s = arguments[i];
+        for (let p in s) {
+            if (Object.prototype.hasOwnProperty.call(s, p)) {
+                t[p] = s[p];
+            }
+        }
     }
     return t;
 };
@@ -96,7 +99,9 @@ function resolvePromisesDict(d): Promise<any> {
 export
 function reject(message, log) {
     return function promiseRejection(error) {
-        if (log) console.error(new Error(message));
+        if (log) {
+            console.error(new Error(message));
+        }
         throw error;
     };
 }
@@ -117,8 +122,9 @@ function put_buffers(state, buffer_paths: (string | number)[][], buffers: DataVi
          // say we want to set state[x][y][z] = buffers[i]
         let obj = state;
         // we first get obj = state[x][y]
-        for (let j = 0; j < buffer_path.length-1; j++)
+        for (let j = 0; j < buffer_path.length-1; j++) {
             obj = obj[buffer_path[j]];
+        }
         // and then set: obj[z] = buffers[i]
         obj[buffer_path[buffer_path.length-1]] = buffers[i];
     }
