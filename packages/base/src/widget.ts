@@ -569,9 +569,16 @@ class DOMWidgetModel extends WidgetModel {
 
 
 export
-abstract class WidgetView extends NativeView<WidgetModel> {
+class WidgetView extends NativeView<WidgetModel> {
     /**
      * Public constructor.
+     */
+    constructor(options?: Backbone.ViewOptions<WidgetModel> & {options?: any}) {
+        super(options);
+    }
+
+    /**
+     * Initializer, called at the end of the constructor.
      */
     initialize(parameters) {
         this.listenTo(this.model, 'change', () => {

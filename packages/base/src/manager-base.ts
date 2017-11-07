@@ -172,7 +172,7 @@ abstract class ManagerBase<T> {
             return this.loadClass(model.get('_view_name'),
                 model.get('_view_module'),
                 model.get('_view_module_version')
-            ).then((ViewType) => {
+            ).then((ViewType: typeof WidgetView) => {
                 let view: WidgetView = new ViewType({
                     model: model,
                     options: this.setViewOptions(options)
@@ -483,7 +483,7 @@ abstract class ManagerBase<T> {
     /**
      * Load a class and return a promise to the loaded object.
      */
-    protected abstract loadClass(className: string, moduleName: string, moduleVersion: string): Promise<any>;
+    protected abstract loadClass(className: string, moduleName: string, moduleVersion: string): Promise<typeof WidgetModel | typeof WidgetView>;
 
     /**
      * Create a comm which can be used for communication for a widget.

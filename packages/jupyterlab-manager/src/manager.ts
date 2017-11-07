@@ -5,7 +5,7 @@
 import * as Backbone from 'backbone';
 
 import {
-    ManagerBase, shims, IWidgetRegistryData
+    ManagerBase, shims, IWidgetRegistryData, ExportMap, ExportData, WidgetModel, WidgetView
 } from '@jupyter-widgets/base';
 
 import {
@@ -67,6 +67,7 @@ class BackboneViewWrapper extends Widget {
   private _view: Backbone.View<any> = null;
 }
 
+
 /**
  * A widget manager that returns phosphor widgets.
  */
@@ -102,7 +103,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
       let oldComm = new shims.services.Comm(comm);
       this.handle_comm_open(oldComm, msg);
     });
-  };
+  }
 
   /**
    * Return a phosphor widget representing the view
@@ -157,16 +158,24 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Load a class and return a promise to the loaded object.
    */
-  protected loadClass(className: string, moduleName: string, moduleVersion: string): any {
-    let mod: any = this._registry.get(moduleName, moduleVersion);
+  protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<typeof WidgetModel | typeof WidgetView> {
+    let mod = this._registry.get(moduleName, moduleVersion);
     if (!mod) {
       return Promise.reject(`Module ${moduleName}, semver range ${moduleVersion} is not registered as a widget module`);
     }
-    let cls: any = mod[className];
-    if (!cls) {
-      return Promise.reject(`Class ${className} not found in module ${moduleName}`);
+    let modPromise: Promise<ExportMap>;
+    if (typeof mod === 'function') {
+      modPromise = Promise.resolve(mod());
+    } else {
+      modPromise = Promise.resolve(mod);
     }
-    return Promise.resolve(cls);
+    return modPromise.then((mod: any) => {
+      let cls: any = mod[className];
+      if (!cls) {
+        return Promise.reject(`Class ${className} not found in module ${moduleName}`);
+      }
+      return cls;
+    });
   }
 
   get context() {
@@ -182,10 +191,8 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   }
 
   private _context: DocumentRegistry.IContext<DocumentRegistry.IModel>;
-  private _registry = new SemVerCache<Promise<any>>();
+  private _registry: SemVerCache<ExportData> = new SemVerCache<ExportData>();
   private _rendermime: RenderMime;
 
   _commRegistration: IDisposable;
 }
-
-
