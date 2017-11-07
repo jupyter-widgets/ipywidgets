@@ -28,6 +28,9 @@ export
 type ExportMap = {[key: string]: any};
 
 export
+type ExportData = ExportMap | Promise<ExportMap> | (() => ExportMap) | (() => Promise<ExportMap>);
+
+export
 interface IWidgetRegistryData {
   /**
    * The widget module name.
@@ -43,5 +46,5 @@ interface IWidgetRegistryData {
    * A map of object names to widget classes provided by the module, or a
    * promise to such a map, or a function returning the same.
    */
-  exports:  ExportMap | Promise<ExportMap> | (() => ExportMap) | (() => Promise<ExportMap>);
+  exports: ExportData;
 }

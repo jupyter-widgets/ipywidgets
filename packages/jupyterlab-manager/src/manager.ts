@@ -5,7 +5,7 @@
 import * as Backbone from 'backbone';
 
 import {
-    ManagerBase, shims, IWidgetRegistryData, ExportMap
+    ManagerBase, shims, IWidgetRegistryData, ExportMap, ExportData
 } from '@jupyter-widgets/base';
 
 import {
@@ -191,7 +191,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   }
 
   private _context: DocumentRegistry.IContext<DocumentRegistry.IModel>;
-  private _registry = new SemVerCache<ExportMap | Promise<ExportMap> | (() => ExportMap) | (() => Promise<ExportMap>)>();
+  private _registry: SemVerCache<ExportData> = new SemVerCache<ExportData>();
   private _rendermime: RenderMime;
 
   _commRegistration: IDisposable;
