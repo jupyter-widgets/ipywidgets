@@ -5,10 +5,6 @@ export {
     uuid, WrappedError, resolvePromisesDict
 } from '@jupyter-widgets/base';
 
-import {
-    WrappedError
-} from '@jupyter-widgets/base';
-
 import * as _ from 'underscore';
 
 /**
