@@ -34,7 +34,7 @@
     "prepublish": "npm run clean && npm run build"
   },
   "devDependencies": {
-    "@jupyterlab/services": "^0.50.2",
+    "@jupyterlab/services": "^0.51.0",
     "@types/expect.js": "^0.3.29",
     "@types/mathjax": "0.0.31",
     "@types/mocha": "^2.2.41",
