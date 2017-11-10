@@ -292,6 +292,15 @@ abstract class ManagerBase<T> {
         });
     }
 
+    register_model(model_id: string, modelPromise: Promise<WidgetModel>): void {
+        this._models[model_id] = modelPromise;
+        modelPromise.then(model => {
+            model.once('comm:close', () => {
+                delete this._models[model_id];
+            });
+        });
+    }
+
     /**
      * Create and return a promise for a new widget model
      *
@@ -319,7 +328,7 @@ abstract class ManagerBase<T> {
         }
 
         let modelPromise = this._make_model(options, serialized_state);
-        this._models[model_id] = modelPromise;
+        this.register_model(model_id, modelPromise);
         return await modelPromise;
     }
 
@@ -349,9 +358,6 @@ abstract class ManagerBase<T> {
             comm: options.comm,
         };
         let widget_model = new ModelType(attributes, modelOptions);
-        widget_model.once('comm:close', () => {
-            delete this._models[model_id];
-        });
         widget_model.name = options.model_name;
         widget_model.module = options.model_module;
         return widget_model;
