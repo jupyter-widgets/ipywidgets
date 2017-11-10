@@ -210,12 +210,13 @@ WidgetManager.prototype.display_view = function(msg, view, options) {
 }
 
 
-WidgetManager.prototype._create_comm = function(comm_target_name, comm_id, data, metadata) {
+WidgetManager.prototype._create_comm = function(comm_target_name, comm_id, data, metadata, buffers) {
     var that = this;
     return this._get_connected_kernel().then(function(kernel) {
         if (data || metadata) {
             return kernel.comm_manager.new_comm(comm_target_name, data,
-                                                that.callbacks(), metadata, comm_id);
+                                                that.callbacks(), metadata,
+                                                comm_id, buffers);
         } else {
             // Construct a comm that already is open on the kernel side. We
             // don't want to send an open message, which would supersede the

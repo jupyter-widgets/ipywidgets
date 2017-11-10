@@ -50,7 +50,7 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
     /**
      * Placeholder implementation for _create_comm.
      */
-    _create_comm(comm_target_name: string, model_id: string, data?: any, metadata?: any): Promise<any> {
+    _create_comm(comm_target_name: string, model_id: string, data?: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): Promise<any> {
         return Promise.resolve({
             on_close: () => {},
             on_msg: () => {},
