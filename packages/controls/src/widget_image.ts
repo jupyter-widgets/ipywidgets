@@ -20,7 +20,9 @@ class ImageModel extends CoreDOMWidgetModel {
             format: 'png',
             width: '',
             height: '',
-            value: new Uint8Array(0)
+            value: new Uint8Array(0),
+            natural_height: 0,
+            natural_width: 0
         });
     }
 }
@@ -64,7 +66,10 @@ class ImageView extends DOMWidgetView {
         } else {
             this.el.removeAttribute('height');
         }
-        return super.update();
+
+        super.update();
+
+
     }
 
     remove() {
@@ -89,4 +94,38 @@ class ImageView extends DOMWidgetView {
 
 
     el: HTMLImageElement;
+
+    /**
+     * Given the location of a click event relative to the upper left corner
+     * of the image area, calculate location in original image.
+     */
+    _click_location_original_image(event) {
+        var pad_left = parseInt(this.el.style.paddingLeft) || 0;
+        var border_left = parseInt(this.el.style.borderLeft) || 0;
+        var pad_top = parseInt(this.el.style.paddingTop) || 0;
+        var border_top = parseInt(this.el.style.borderTop) || 0;
+
+        var relative_click_x = parseInt(event.relativeX) - border_left - pad_left;
+        var relative_click_y = parseInt(event.relativeY) - border_top - pad_top;
+        var image_x = Math.round(relative_click_x / this.el.width * this.el.naturalWidth);
+        var image_y = Math.round(relative_click_y / this.el.height * this.el.naturalHeight);
+        return {x: image_x, y: image_y}
+    }
+
+    _handle_load(event) {;
+        this.model.set('natural_height', this.el.naturalHeight, {updated_view: this});
+        this.model.set('natural_width', this.el.naturalWidth, {updated_view: this});
+        this.touch();
+    }
+
+    _array_xy(event) {
+        return this._click_location_original_image(event)
+    }
+
+    events(): {[e: string]: string} {
+        return {
+            // Dictionary of events and their handlers.
+            'load': '_handle_load',
+        }
+    }
 }
