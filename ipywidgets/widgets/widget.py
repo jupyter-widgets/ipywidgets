@@ -757,14 +757,14 @@ class Widget(LoggingHasTraits):
 _FALLBACK_HTML_TEMPLATE = """\
 <p>Failed to display Jupyter Widget of type <code>{widget_type}</code>.</p>
 <p>
-  If you're reading this message in Jupyter Notebook or JupyterLab, it may mean
+  If you're reading this message in Jupyter or JupyterLab Notebook, it may mean
   that the widgets JavaScript is still loading. If this message persists, it
   likely means that the widgets JavaScript library is either not installed or
   not enabled. See the <a href="https://ipywidgets.readthedocs.io/en/stable/user_install.html">Jupyter
   Widgets Documentation</a> for setup instructions.
 </p>
 <p>
-  If you're reading this message in another notebook frontend (for example, a static
+  If you're reading this message in another frontend (for example, a static
   rendering on GitHub or <a href="https://nbviewer.jupyter.org/">NBViewer</a>),
   it may mean that your frontend doesn't currently support widgets.
 </p>
