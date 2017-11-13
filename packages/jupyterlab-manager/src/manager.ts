@@ -5,7 +5,8 @@
 import * as Backbone from 'backbone';
 
 import {
-    ManagerBase, shims, IWidgetRegistryData, ExportMap, ExportData, WidgetModel, WidgetView
+    ManagerBase, shims, IComm, IWidgetRegistryData, ExportMap,
+    ExportData, WidgetModel, WidgetView
 } from '@jupyter-widgets/base';
 
 import {
@@ -116,7 +117,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Create a comm.
    */
-   _create_comm(target_name: string, model_id: string, data?: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): Promise<shims.services.Comm> {
+   _create_comm(target_name: string, model_id: string, data?: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): Promise<IComm> {
     let comm = this._context.session.kernel.connectToComm(target_name, model_id);
     if (data || metadata) {
       comm.open(data, metadata, buffers);

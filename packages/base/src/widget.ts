@@ -21,6 +21,10 @@ import {
 } from '@phosphor/messaging';
 
 import {
+    IComm
+} from './services-shim';
+
+import {
     JUPYTER_WIDGETS_VERSION
 } from './version';
 
@@ -534,7 +538,7 @@ class WidgetModel extends Backbone.Model {
     model_id: string;
     views: {[key: string]: Promise<WidgetView>};
     state_change: Promise<any>;
-    comm: any;
+    comm: IComm;
     name: string;
     module: string;
 

@@ -12,6 +12,64 @@ import {
     Kernel
 } from '@jupyterlab/services';
 
+
+export
+interface IComm {
+    /**
+     * Comm id
+     * @return {string}
+     */
+    comm_id: string;
+
+    /**
+     * Target name
+     * @return {string}
+     */
+    target_name: string;
+
+    /**
+     * Opens a sibling comm in the backend
+     * @param  data
+     * @param  callbacks
+     * @param  metadata
+     * @param  buffers
+     * @return msg id
+     */
+    open(data: any, callbacks: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): string;
+
+    /**
+     * Sends a message to the sibling comm in the backend
+     * @param  data
+     * @param  callbacks
+     * @param  metadata
+     * @param  buffers
+     * @return message id
+     */
+    send(data: any, callbacks: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): string;
+
+    /**
+     * Closes the sibling comm in the backend
+     * @param  data
+     * @param  callbacks
+     * @param  metadata
+     * @param  buffers
+     * @return msg id
+     */
+    close(data?: any, callbacks?: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): string;
+
+    /**
+     * Register a message handler
+     * @param  callback, which is given a message
+     */
+    on_msg(callback: (x: any) => void): void;
+
+    /**
+     * Register a handler for when the comm is closed by the backend
+     * @param  callback, which is given a message
+     */
+    on_close(callback: (x: any) => void): void;
+}
+
 export
 namespace shims {
     export
@@ -106,7 +164,7 @@ namespace shims {
          * @param  {IComm} jsServicesComm - @jupyterlab/services IComm instance
          */
         export
-        class Comm {
+        class Comm implements IComm {
             constructor(jsServicesComm: Kernel.IComm) {
                 this.jsServicesComm = jsServicesComm;
             }
