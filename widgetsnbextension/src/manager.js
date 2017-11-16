@@ -40,6 +40,8 @@ function polyfill_new_comm_buffers(manager, target_name, data, callbacks, metada
 
 function new_comm(manager, target_name, data, callbacks, metadata, comm_id, buffers) {
     // Checks whether new_comm needs a polyfill, and calls the correct version
+    // Polyfill needed for notebook <5.1, in which the new_comm method does not support a buffers argument.
+    // See https://github.com/jupyter-widgets/ipywidgets/pull/1817
     var need_polyfill = manager.new_comm.length < 6;
     if (need_polyfill) {
         return polyfill_new_comm_buffers.apply(null, arguments);
