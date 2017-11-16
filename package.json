@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "install": "lerna bootstrap --hoist",
+    "install": "lerna bootstrap",
     "clean": "lerna run clean",
     "build:examples": "lerna run build --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
     "build": "lerna run build --ignore \"@jupyter-widgets/example-*\"",
@@ -12,6 +12,11 @@
     "publish": "npm run clean && npm run build && lerna publish -m \"Publish npm packages\""
   },
   "devDependencies": {
-    "lerna": "^2.0.0"
-  }
+    "lerna": "^2.5.0"
+  },
+  "workspaces": [
+    "packages/*",
+    "widgetsnbextension",
+    "examples/*"
+  ],
 }
