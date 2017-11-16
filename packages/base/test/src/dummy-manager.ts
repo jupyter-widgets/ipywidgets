@@ -10,7 +10,7 @@ import * as sinon from 'sinon';
 let numComms = 0;
 
 export
-class MockComm implements widgets.IComm {
+class MockComm implements widgets.IClassicComm {
     constructor() {
         this.comm_id = `mock-comm-id-${numComms}`;
         numComms += 1;
