@@ -10,10 +10,13 @@ import * as sinon from 'sinon';
 let numComms = 0;
 
 export
-class MockComm {
+class MockComm implements widgets.IClassicComm {
     constructor() {
         this.comm_id = `mock-comm-id-${numComms}`;
         numComms += 1;
+    }
+    on_open(fn) {
+        this._on_open = fn;
     }
     on_close(fn) {
         this._on_close = fn;
@@ -28,16 +31,25 @@ class MockComm {
             return Promise.resolve();
         }
     }
+    open() {
+        if (this._on_open) {
+            this._on_open();
+        }
+        return '';
+    }
     close() {
         if (this._on_close) {
             this._on_close();
         }
+        return '';
     }
     send() {
-        return;
+        return '';
     }
     comm_id: string;
+    target_name: string;
     _on_msg: Function = null;
+    _on_open: Function = null;
     _on_close: Function = null;
 }
 
@@ -47,7 +59,7 @@ class DummyManager extends widgets.ManagerBase<HTMLElement> {
         super();
         this.el = window.document.createElement('div');
     }
-    
+
     display_view(msg: services.KernelMessage.IMessage, view: Backbone.View<Backbone.Model>, options: any) {
         // TODO: make this a spy
         // TODO: return an html element

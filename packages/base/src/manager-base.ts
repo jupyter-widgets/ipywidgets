@@ -9,7 +9,7 @@ import {
 } from './widget';
 
 import {
-    shims
+    IClassicComm
 } from './services-shim';
 
 import {
@@ -111,7 +111,7 @@ interface WidgetOptions {
     /**
      * Comm object associated with the widget.
      */
-    comm?: any;
+    comm?: IClassicComm;
 
     /**
      * The model id to use. If not provided, the comm id of the comm is used.
@@ -209,7 +209,7 @@ abstract class ManagerBase<T> {
     /**
      * Handle when a comm is opened.
      */
-    handle_comm_open(comm: shims.services.Comm, msg: services.KernelMessage.ICommOpenMsg): Promise<WidgetModel> {
+    handle_comm_open(comm: IClassicComm, msg: services.KernelMessage.ICommOpenMsg): Promise<WidgetModel> {
         let protocolVersion = ((msg.metadata || {}).version as string) || '';
         if (protocolVersion.split('.', 1)[0] !== PROTOCOL_MAJOR_VERSION) {
             let error = `Wrong widget protocol version: received protocol version '${protocolVersion}', but was expecting major version '${PROTOCOL_MAJOR_VERSION}'`;
@@ -292,6 +292,15 @@ abstract class ManagerBase<T> {
         });
     }
 
+    register_model(model_id: string, modelPromise: Promise<WidgetModel>): void {
+        this._models[model_id] = modelPromise;
+        modelPromise.then(model => {
+            model.once('comm:close', () => {
+                delete this._models[model_id];
+            });
+        });
+    }
+
     /**
      * Create and return a promise for a new widget model
      *
@@ -319,7 +328,7 @@ abstract class ManagerBase<T> {
         }
 
         let modelPromise = this._make_model(options, serialized_state);
-        this._models[model_id] = modelPromise;
+        this.register_model(model_id, modelPromise);
         return await modelPromise;
     }
 
@@ -349,9 +358,6 @@ abstract class ManagerBase<T> {
             comm: options.comm,
         };
         let widget_model = new ModelType(attributes, modelOptions);
-        widget_model.once('comm:close', () => {
-            delete this._models[model_id];
-        });
         widget_model.name = options.model_name;
         widget_model.module = options.model_module;
         return widget_model;
@@ -498,7 +504,13 @@ abstract class ManagerBase<T> {
      * @param data The initial data for the comm
      * @param metadata The metadata in the open message
      */
-    protected abstract _create_comm(comm_target_name: string, model_id: string, data?: any, metadata?: any): Promise<any>;
+    protected abstract _create_comm(
+        comm_target_name: string,
+        model_id: string,
+        data?: any,
+        metadata?: any,
+        buffers?: ArrayBuffer[] | ArrayBufferView[]):
+        Promise<IClassicComm>;
     protected abstract _get_comm_info();
 
     /**

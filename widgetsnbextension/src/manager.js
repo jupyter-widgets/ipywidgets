@@ -14,6 +14,41 @@ var output = require("./widget_output");
 
 var MIME_TYPE = 'application/vnd.jupyter.widget-view+json';
 
+
+function polyfill_new_comm_buffers(manager, target_name, data, callbacks, metadata, comm_id, buffers) {
+    /**
+     * This polyfills services/kernel/comm/CommManager.new_comm to
+     * accept the buffers argument.
+     *
+     * argument comm_id is optional
+     */
+    return new Promise(function(resolve) {
+        requirejs(["services/kernels/comm"], function(comm) {
+            var comm = new comm.Comm(target_name, comm_id);
+            manager.register_comm(comm);
+            // inline Comm.open(), but with buffers
+            var content = {
+                comm_id : comm_id,
+                target_name : target_name,
+                data : data || {},
+            };
+            comm.kernel.send_shell_message("comm_open", content, callbacks, metadata, buffers);
+            resolve(comm);
+        });
+    });
+}
+
+function new_comm(manager, target_name, data, callbacks, metadata, comm_id, buffers) {
+    // Checks whether new_comm needs a polyfill, and calls the correct version
+    // Polyfill needed for notebook <5.1, in which the new_comm method does not support a buffers argument.
+    // See https://github.com/jupyter-widgets/ipywidgets/pull/1817
+    var need_polyfill = manager.new_comm.length < 6;
+    if (need_polyfill) {
+        return polyfill_new_comm_buffers.apply(null, arguments);
+    }
+    return manager.new_comm.apply(manager, Array.prototype.slice.call(arguments, 1));
+}
+
 //--------------------------------------------------------------------
 // WidgetManager class
 //--------------------------------------------------------------------
@@ -210,12 +245,12 @@ WidgetManager.prototype.display_view = function(msg, view, options) {
 }
 
 
-WidgetManager.prototype._create_comm = function(comm_target_name, comm_id, data, metadata) {
+WidgetManager.prototype._create_comm = function(comm_target_name, comm_id, data, metadata, buffers) {
     var that = this;
     return this._get_connected_kernel().then(function(kernel) {
         if (data || metadata) {
-            return kernel.comm_manager.new_comm(comm_target_name, data,
-                                                that.callbacks(), metadata, comm_id);
+            return new_comm(kernel.comm_manager, comm_target_name, data,
+                            that.callbacks(), metadata, comm_id, buffers);
         } else {
             // Construct a comm that already is open on the kernel side. We
             // don't want to send an open message, which would supersede the
