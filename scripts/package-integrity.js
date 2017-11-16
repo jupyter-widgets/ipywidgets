@@ -108,11 +108,11 @@ function validate(dname) {
 
 // Find all of the packages.
 var basePath = path.resolve('.');
-var lernaConfig = require(path.join(basePath, 'lerna.json'));
+var baseConfig = require(path.join(basePath, 'package.json'));
 
 // Gather the versions of each package.
 var versions = {};
-lernaConfig.packages.forEach(function(spec) {
+baseConfig.workspaces.forEach(function(spec) {
     var dirs = glob.sync(path.join(basePath, spec));
     dirs.forEach(function(dname) {
         try {
@@ -127,7 +127,7 @@ lernaConfig.packages.forEach(function(spec) {
 var errors = {};
 
 // Validate each package.
-lernaConfig.packages.forEach(function(spec) {
+baseConfig.workspaces.forEach(function(spec) {
     var dirs = glob.sync(path.join(basePath, spec));
     dirs.forEach(function(dname) {
         var name = path.relative('.', dname);
