@@ -5,7 +5,7 @@ To run the Python tests:
 
     nosetests --with-coverage --cover-package=ipywidgets ipywidgets
 
-To run the Javascript tests:
+To run the Javascript tests in each package directory:
 
     yarn test
 
