@@ -44,7 +44,7 @@ import * as utils from './utils';
 // This *MUST* be called with the model as the `this` context.
 export
 function set(key, val, options) {
-    if (key === null) {
+    if (key == null) {
         return this;
     }
 
