@@ -6,11 +6,7 @@ Prerequisites
 
 To install ipywidgets from git, you will need:
 
-- [npm](https://www.npmjs.com/) **version 3.x or later**
-  + Check your version by running `npm -v` from a terminal.
-  + *Note: If you install using sudo, you need to make sure that npm is also
-    available in the PATH used with sudo.*
-
+- [yarn](https://yarnpkg.com/) package manager
 
 - the latest [Jupyter notebook development release](https://github.com/jupyter/notebook)
   + Everything in the ipywidgets repository is developed using Jupyter 
@@ -37,10 +33,10 @@ Rebuild after making changes
 
 To build and test changes, run the following commands in the ipywidgets repository root directory, empty your browser's cache, and refresh the page.
 
-        npm run clean
-        npm run build
+        yarn run clean
+        yarn run build
 
-If your changes are confined to one package (for example, just in the widgetsnbextension package), then it may be sufficient to just run `npm run build` in that specific directory.
+If your changes are confined to one package (for example, just in the widgetsnbextension package), then it may be sufficient to just run `yarn run build` in that specific directory.
 
 Tips and troubleshooting
 ------------------------

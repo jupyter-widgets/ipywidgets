@@ -7,6 +7,6 @@ To run the Python tests:
 
 To run the Javascript tests:
 
-    npm run test
+    yarn test
 
 This will run the test suite using `karma` with 'debug' level logging.
