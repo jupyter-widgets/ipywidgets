@@ -44,7 +44,9 @@ import * as utils from './utils';
 // This *MUST* be called with the model as the `this` context.
 export
 function set(key, val, options) {
-    if (key == null) return this;
+    if (key == null) {
+        return this;
+    }
 
     // Handle both `"key", value` and `{key: value}` -style arguments.
     let attrs;
@@ -58,7 +60,9 @@ function set(key, val, options) {
     options || (options = {});
 
     // Run validation.
-    if (!this._validate(attrs, options)) return false;
+    if (!this._validate(attrs, options)) {
+        return false;
+    }
 
     // Extract attributes and options.
     let unset      = options.unset;
@@ -81,11 +85,13 @@ function set(key, val, options) {
     for (let attr in attrs) {
         val = attrs[attr];
         // EDIT: the following two lines use our isEqual instead of _.isEqual
-        if (!utils.isEqual(current[attr], val)) changes.push(attr);
+        if (!utils.isEqual(current[attr], val)) {
+            changes.push(attr);
+        }
         if (!utils.isEqual(prev[attr], val)) {
-        changed[attr] = val;
+            changed[attr] = val;
         } else {
-        delete changed[attr];
+            delete changed[attr];
         }
         unset ? delete current[attr] : current[attr] = val;
     }
@@ -95,20 +101,24 @@ function set(key, val, options) {
 
     // Trigger all relevant attribute changes.
     if (!silent) {
-        if (changes.length) this._pending = options;
+        if (changes.length) {
+            this._pending = options;
+        }
         for (let i = 0; i < changes.length; i++) {
-        this.trigger('change:' + changes[i], this, current[changes[i]], options);
+            this.trigger('change:' + changes[i], this, current[changes[i]], options);
         }
     }
 
     // You might be wondering why there's a `while` loop here. Changes can
     // be recursively nested within `"change"` events.
-    if (changing) return this;
+    if (changing) {
+        return this;
+    }
     if (!silent) {
         while (this._pending) {
-        options = this._pending;
-        this._pending = false;
-        this.trigger('change', this, options);
+            options = this._pending;
+            this._pending = false;
+            this.trigger('change', this, options);
         }
     }
     this._pending = false;
