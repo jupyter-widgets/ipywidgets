@@ -83,7 +83,7 @@ See the [Installation](docs/source/user_install.md) section of the documentation
 ### Installing from git
 
 If you want to install ipywidgets from git, **you will need the 
-[yarn](https://yarnpkg.com/) package manager**.  
+[yarn](https://yarnpkg.com/) package manager version 1.2.1 or later**.  
 Installing from git is more complicated and requires a developer install, see the [developer install](docs/source/dev_install.md) instructions.
 
 To install the latest master version from the root directory of the source
