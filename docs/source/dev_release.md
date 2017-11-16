@@ -13,7 +13,7 @@ git pull origin master
 git reset --hard origin/master
 git clean -fdx
 yarn
-yarn publish
+yarn run publish
 ```
 
 Lerna will prompt you for version numbers for each of the changed npm packages. Lerna will then change the versions appropriately (including the interdependency versions), commit, tag, and publish the new packages to npm.
