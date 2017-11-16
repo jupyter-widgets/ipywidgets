@@ -9,7 +9,7 @@ import {
 } from './widget';
 
 import {
-    IComm
+    IClassicComm
 } from './services-shim';
 
 import {
@@ -111,7 +111,7 @@ interface WidgetOptions {
     /**
      * Comm object associated with the widget.
      */
-    comm?: IComm;
+    comm?: IClassicComm;
 
     /**
      * The model id to use. If not provided, the comm id of the comm is used.
@@ -209,7 +209,7 @@ abstract class ManagerBase<T> {
     /**
      * Handle when a comm is opened.
      */
-    handle_comm_open(comm: IComm, msg: services.KernelMessage.ICommOpenMsg): Promise<WidgetModel> {
+    handle_comm_open(comm: IClassicComm, msg: services.KernelMessage.ICommOpenMsg): Promise<WidgetModel> {
         let protocolVersion = ((msg.metadata || {}).version as string) || '';
         if (protocolVersion.split('.', 1)[0] !== PROTOCOL_MAJOR_VERSION) {
             let error = `Wrong widget protocol version: received protocol version '${protocolVersion}', but was expecting major version '${PROTOCOL_MAJOR_VERSION}'`;
@@ -510,7 +510,7 @@ abstract class ManagerBase<T> {
         data?: any,
         metadata?: any,
         buffers?: ArrayBuffer[] | ArrayBufferView[]):
-        Promise<IComm>;
+        Promise<IClassicComm>;
     protected abstract _get_comm_info();
 
     /**

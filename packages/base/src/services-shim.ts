@@ -14,7 +14,7 @@ import {
 
 
 export
-interface IComm {
+interface IClassicComm {
     /**
      * Comm id
      * @return {string}
@@ -164,7 +164,7 @@ namespace shims {
          * @param  {IComm} jsServicesComm - @jupyterlab/services IComm instance
          */
         export
-        class Comm implements IComm {
+        class Comm implements IClassicComm {
             constructor(jsServicesComm: Kernel.IComm) {
                 this.jsServicesComm = jsServicesComm;
             }

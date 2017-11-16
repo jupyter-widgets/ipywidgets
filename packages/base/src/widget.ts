@@ -21,7 +21,7 @@ import {
 } from '@phosphor/messaging';
 
 import {
-    IComm
+    IClassicComm
 } from './services-shim';
 
 import {
@@ -538,7 +538,7 @@ class WidgetModel extends Backbone.Model {
     model_id: string;
     views: {[key: string]: Promise<WidgetView>};
     state_change: Promise<any>;
-    comm: IComm;
+    comm: IClassicComm;
     name: string;
     module: string;
 
