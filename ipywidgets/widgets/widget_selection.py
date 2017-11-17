@@ -166,7 +166,7 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
 
     _options_full = None
 
-    # This being read-only means that it cannot be changed from the frontend!
+    # This being read-only means that it cannot be changed by the user.
     _options_labels = Tuple(read_only=True, help="The labels for the options.").tag(sync=True)
 
     disabled = Bool(help="Enable or disable user changes").tag(sync=True)
@@ -388,6 +388,7 @@ class ToggleButtonsStyle(DescriptionStyle, CoreWidget):
     _model_name = Unicode('ToggleButtonsStyleModel').tag(sync=True)
     button_width = Unicode(help="The width of each button.").tag(sync=True)
 
+
 @register
 @doc_subst(_doc_snippets)
 class ToggleButtons(_Selection):
@@ -424,7 +425,7 @@ class ToggleButtons(_Selection):
 
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''],
-        default_value='', allow_none=True, help="""Use a predefined styling for the buttons.""").tag(sync=True)
+        default_value='', help="""Use a predefined styling for the buttons.""").tag(sync=True)
 
 
 @register
@@ -548,7 +549,7 @@ class SelectionSlider(_SelectionNonempty):
 
     orientation = CaselessStrEnum(
         values=['horizontal', 'vertical'], default_value='horizontal',
-        allow_none=False, help="Vertical or horizontal.").tag(sync=True)
+        help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True,
         help="Display the current selected label next to the slider").tag(sync=True)
     continuous_update = Bool(True,
@@ -597,7 +598,7 @@ class SelectionRangeSlider(_MultipleSelectionNonempty):
 
     orientation = CaselessStrEnum(
         values=['horizontal', 'vertical'], default_value='horizontal',
-        allow_none=False, help="Vertical or horizontal.").tag(sync=True)
+        help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True,
         help="Display the current selected label next to the slider").tag(sync=True)
     continuous_update = Bool(True,
