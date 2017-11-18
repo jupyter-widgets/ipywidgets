@@ -31,7 +31,7 @@ export class SelectionContainerModel extends BoxModel {
     return {
       ...super.defaults(),
       _model_name: 'SelectionContainerModel',
-      selected_index: 0,
+      selected_index: null,
       _titles: {}
     };
   }
