@@ -2,9 +2,9 @@
 
 We appreciate contributions from the community. (See [Guidelines](docs/source/contributing.md) here).
 
-All developer information can be found [here](https://ipywidgets.readthedocs.io/en/latest/developer_docs.html)
+Current developer information can be found in the latest docs [here](https://ipywidgets.readthedocs.io/en/latest/developer_docs.html).
 
-or for a quick start:
+For a quick start:
 
 [Developer install information](docs/source/dev_install.md) for installation steps.
 
