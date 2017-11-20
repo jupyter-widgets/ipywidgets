@@ -1,9 +1,6 @@
 # Contributing
 
-We appreciate contributions from the community.
-
-
-See [Guidelines](docs/source/contributing.md)
+We appreciate contributions from the community. (See [Guidelines](docs/source/contributing.md) here).
 
 All developer information can be found [here](https://ipywidgets.readthedocs.io/en/stable/developer_docs.html)
 
