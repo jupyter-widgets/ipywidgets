@@ -108,7 +108,7 @@ See the [examples](docs/source/examples.md) section of the documentation. The wi
 
 ## Contributing to ipywidgets
 
-- [Developer install](CONTRIBUTING.md)
+- [Developer information](CONTRIBUTING.md)
 
 ## License
 
