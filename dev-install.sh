@@ -1,14 +1,6 @@
 #!/usr/bin/env bash
 
-# For a clean conda environment, do:
-
-# conda create -c conda-forge -n ipywidgets notebook=4.4.1
-# source activate ipywidgets
-# pip install jupyterlab==0.16.2
-# ipython kernel install --name ipywidgets --display-name "ipywidgets" --sys-prefix
-# git clone https://github.com/jupyter-widgets/ipywidgets.git
-# cd ipywidgets
-# ./dev-install.sh
+# For a clean conda environment please read docs/source/dev_install.md
 
 echo -n "Checking npm... "
 npm -v
