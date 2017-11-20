@@ -1,46 +1,36 @@
-Developer Install
-=================
+# Developer Install
 
-Prerequisites
+## Prerequisites
 -------------
-
-For a clean conda environment, do:
-
-- conda create -c conda-forge -n ipywidgets notebook=4.4.1
-- source activate ipywidgets
-- pip install jupyterlab==0.16.2
-- ipython kernel install --name ipywidgets --display-name "ipywidgets" --sys-prefix
-- git clone https://github.com/jupyter-widgets/ipywidgets.git
-- cd ipywidgets
-- ./dev-install.sh
 
 To install ipywidgets from git, you will need:
 
 - [yarn](https://yarnpkg.com/) package manager ** version 1.2.1 or later **
 
-- the latest [Jupyter notebook development release](https://github.com/jupyter/notebook)
+- the latest [Jupyter Notebook development release](https://github.com/jupyter/notebook/releases)
   + Everything in the ipywidgets repository is developed using Jupyter
     notebook's master branch.
   + If you want to have a copy of ipywidgets that works against a stable
     version of the notebook, checkout the appropriate tag.
   + See the
-    [Compatibility table](https://github.com/jupyter-widgets/ipywidgets#compatibility).
+    [Compatibility table](https://github.com/jupyter-widgets/ipywidgets#compatibility)
+    
+- the latest [JupyterLab release](https://github.com/jupyter/notebook/releases)
 
 
 
-Steps
------
+### Installing With Conda 
 
-0. Clone the repo:
+```bash
+conda create -c conda-forge -n ipywidgets yarn notebook jupyterlab
+source activate ipywidgets
+ipython kernel install --name ipywidgets --display-name "ipywidgets" --sys-prefix
+git clone https://github.com/jupyter-widgets/ipywidgets.git
+cd ipywidgets
+./dev-install.sh
+```
 
-        git clone https://github.com/jupyter-widgets/ipywidgets
-
-1. Navigate into the cloned repo and install:
-
-        cd ipywidgets
-        bash dev-install.sh --sys-prefix
-
-Rebuild after making changes
+Rebuilding after making changes
 ----------------------------
 
 To build and test changes, run the following commands in the ipywidgets repository root directory, empty your browser's cache, and refresh the page.
