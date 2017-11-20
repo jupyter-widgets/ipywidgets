@@ -12,6 +12,7 @@ addons:
   firefox: latest
 cache: yarn
 env:
+    - GROUP=docs
     - GROUP=python
 sudo: false
 before_install:
