@@ -28,9 +28,7 @@ script:
     - 'if [[ $GROUP == js ]] ; then bash ./scripts/travis_script_js.sh ; fi'
 matrix:
     include:
-        - python: 3.6
-          env: GROUP=doc
-        - python: 3.6
-          env: GROUP=js BROWSER=firefox TRAVIS_NODE_VERSION=6.11.0
+        - python: GROUP="$GROUP"
+          env: GROUP="$GROUP"
 after_success:
     - coveralls
