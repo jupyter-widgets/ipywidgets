@@ -2,7 +2,7 @@
 
 We appreciate contributions from the community. (See [Guidelines](docs/source/contributing.md) here).
 
-All developer information can be found [here](https://ipywidgets.readthedocs.io/en/stable/developer_docs.html)
+All developer information can be found [here](https://ipywidgets.readthedocs.io/en/latest/developer_docs.html)
 
 or for a quick start:
 
