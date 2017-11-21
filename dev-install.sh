@@ -10,13 +10,12 @@
 # cd ipywidgets
 # ./dev-install.sh
 
-echo -n "Checking npm... "
-npm -v
+echo -n "Checking yarn... "
+yarn -v
 if [ $? -ne 0 ]; then
-    echo "'npm -v' failed, therefore npm is not installed.  In order to perform a
-    developer install of ipywidgets you must have both npm and pip installed on your
-    machine! See http://blog.npmjs.org/post/85484771375/how-to-install-npm for
-    installation instructions."
+    echo "'yarn -v' failed, therefore yarn is not installed.  In order to perform a
+    developer install of ipywidgets you must have both yarn and pip installed on your
+    machine! See https://yarnpkg.com/lang/en/docs/install/ for installation instructions."
     exit 1
 fi
 
@@ -24,7 +23,7 @@ echo -n "Checking pip... "
 pip --version
 if [ $? -ne 0 ]; then
     echo "'pip --version' failed, therefore pip is not installed. In order to perform
-    a developer install of ipywidgets you must have both pip and npm installed on
+    a developer install of ipywidgets you must have both pip and yarn installed on
     your machine! See https://packaging.python.org/installing/ for installation instructions."
     exit 1
 fi
@@ -42,9 +41,9 @@ set -e
 
 nbExtFlags="--sys-prefix $1"
 
-echo -n "Installing and building all npm packages"
-npm install
-npm run build
+echo -n "Installing and building all yarn packages"
+yarn install
+yarn run build
 
 echo -n "widgetsnbextension"
 cd widgetsnbextension
