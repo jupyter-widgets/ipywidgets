@@ -27,19 +27,11 @@ script:
     - 'if [[ $GROUP == doc ]] ; then bash ./scripts/travis_script_doc.sh ; fi'
     - 'if [[ $GROUP == js ]] ; then bash ./scripts/travis_script_js.sh ; fi'
 matrix:
-    include:
-        - python: 3.4
-          env: GROUP="$GROUP"
-        - python: 3.5
-          env: GROUP="$GROUP"
         - python: 3.6
-          env: GROUP="$GROUP"
+          env: GROUP=doc
+        - python: 3.6
+          env: GROUP=js BROWSER=firefox TRAVIS_NODE_VERSION=6.11.0
         - python: 2.7
-          env: GROUP="$GROUP"
-    exclude:
-        - python: 3.4
-          env: GROUP="docs"
-        - python: 3.5
-          env: GROUP="docs"
+          env: GROUP=doc
 after_success:
     - coveralls
