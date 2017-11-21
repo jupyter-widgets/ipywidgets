@@ -1,34 +1,36 @@
-Developer Install
-=================
+# Developer Install
 
-Prerequisites
+## Prerequisites
 -------------
 
 To install ipywidgets from git, you will need:
 
 - [yarn](https://yarnpkg.com/) package manager ** version 1.2.1 or later **
 
-- the latest [Jupyter notebook development release](https://github.com/jupyter/notebook)
-  + Everything in the ipywidgets repository is developed using Jupyter 
-    notebook's master branch. 
+- the latest [Jupyter Notebook development release](https://github.com/jupyter/notebook/releases)
+  + Everything in the ipywidgets repository is developed using Jupyter
+    notebook's master branch.
   + If you want to have a copy of ipywidgets that works against a stable
     version of the notebook, checkout the appropriate tag.
   + See the
-    [Compatibility table](https://github.com/jupyter-widgets/ipywidgets#compatibility).
+    [Compatibility table](https://github.com/jupyter-widgets/ipywidgets#compatibility)
+    
+- the latest [JupyterLab release](https://github.com/jupyter/notebook/releases)
 
-Steps
------
 
-0. Clone the repo:
 
-        git clone https://github.com/jupyter-widgets/ipywidgets
+### Installing With Conda 
 
-1. Navigate into the cloned repo and install:
+```bash
+conda create -c conda-forge -n ipywidgets yarn notebook jupyterlab
+source activate ipywidgets
+ipython kernel install --name ipywidgets --display-name "ipywidgets" --sys-prefix
+git clone https://github.com/jupyter-widgets/ipywidgets.git
+cd ipywidgets
+./dev-install.sh
+```
 
-        cd ipywidgets
-        bash dev-install.sh --sys-prefix
-
-Rebuild after making changes
+Rebuilding after making changes
 ----------------------------
 
 To build and test changes, run the following commands in the ipywidgets repository root directory, empty your browser's cache, and refresh the page.
@@ -54,9 +56,9 @@ permissions on npm and pip related install directories are correct.
 
 - If troubleshooting an upgrade and its build, you may need to do the
   following process:
-  
+
     - Deep clean of the cloned repository:
-    
+
       ```
       git clean -dfx .
       ```
@@ -65,18 +67,18 @@ permissions on npm and pip related install directories are correct.
         the `conda` directory
 
     - Try reinstalling ipywidgets
-    
+
 Releasing new versions
 ----------------------
 
-See [dev_release.md](dev_release.md) for a details on how to release new versions of ipywidgets to PyPI and jupyter-widgets-controls on npm. 
+See [dev_release.md](dev_release.md) for a details on how to release new versions of ipywidgets to PyPI and jupyter-widgets-controls on npm.
 
 Testing
 -------
 
-See [dev_testing.md](dev_testing.md) for a details on how to run Python and Javascript tests. 
+See [dev_testing.md](dev_testing.md) for a details on how to run Python and Javascript tests.
 
 Building documentation
 ----------------------
 
-See [dev_docs.md](dev_docs.md) for a details on how to build the docs. 
+See [dev_docs.md](dev_docs.md) for a details on how to build the docs.
