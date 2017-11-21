@@ -837,6 +837,8 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.0.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
 `button_width`   | string           | `''`             | The width of each button.
+`button_color`   | `null` or string | `null`           | The color of each button
+`font_weight`    | string           | `''`             | The button text font weight of each button.
 
 ### VBoxModel (@jupyter-widgets/controls, 1.0.0); VBoxView (@jupyter-widgets/controls, 1.0.0)
 
