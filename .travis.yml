@@ -26,6 +26,7 @@ script:
     - 'if [[ $GROUP == doc ]] ; then bash ./scripts/travis_script_doc.sh ; fi'
     - 'if [[ $GROUP == js ]] ; then bash ./scripts/travis_script_js.sh ; fi'
 matrix:
+    include:
         - python: 3.6
           env: GROUP=doc
         - python: 3.6
