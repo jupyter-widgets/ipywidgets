@@ -388,11 +388,11 @@ class ToggleButtonsStyle(DescriptionStyle, CoreWidget):
 
     button_color: str or None
         The color of each button. This should be a valid CSS color unit,
-        e.g. 'yellow', '#FFFF00', rgb(255,255,0).
+        for example 'yellow' or '#FFFF00'.
 
     font_weight: str
         The text font weight of each button, This should be a valid CSS font
-        weight unit, e.g. 'bold', '600'
+        weight unit, for example 'bold' or '600'
     """
     _model_name = Unicode('ToggleButtonsStyleModel').tag(sync=True)
     button_width = Unicode(help="The width of each button.").tag(sync=True)
