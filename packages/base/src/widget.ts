@@ -46,7 +46,7 @@ function unpack_models(value, manager): Promise<any> {
             unpacked[key] = unpack_models(value[key], manager);
         });
         return utils.resolvePromisesDict(unpacked);
-    } else if (typeof value === 'string' && value.slice(0,10) === 'IPY_MODEL_') {
+    } else if (typeof value === 'string' && value.slice(0, 10) === 'IPY_MODEL_') {
         // get_model returns a promise already
         return manager.get_model(value.slice(10, value.length));
     } else {
@@ -175,7 +175,7 @@ class WidgetModel extends Backbone.Model {
             return this.views[id].then(view => view.remove());
         });
         delete this.views;
-        return Promise.all(views).then(()=>{ return; });
+        return Promise.all(views).then(() => { return; });
     }
 
     /**
@@ -227,7 +227,7 @@ class WidgetModel extends Backbone.Model {
         this._state_lock = state;
         try {
             this.set(state);
-        } catch(e) {
+        } catch (e) {
             console.error(`Error setting state: ${e.message}`);
         } finally {
             this._state_lock = null;
@@ -811,7 +811,7 @@ class DOMWidgetView extends WidgetView {
      * Update the DOM classes applied to an element, default to this.el.
      */
     update_classes(old_classes, new_classes, el?) {
-        if (el===undefined) {
+        if (el === undefined) {
             el = this.el;
         }
         utils.difference(old_classes, new_classes).map(function(c) {

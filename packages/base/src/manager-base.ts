@@ -178,7 +178,7 @@ abstract class ManagerBase<T> {
                     options: this.setViewOptions(options)
                 });
                 view.listenTo(model, 'destroy', view.remove);
-                return Promise.resolve(view.render()).then(() => {return view;});
+                return Promise.resolve(view.render()).then(() => { return view; });
             }).catch(utils.reject('Could not create a view for model id ' + model.model_id, true));
         });
         let id = utils.uuid();
@@ -478,7 +478,7 @@ abstract class ManagerBase<T> {
      */
     disconnect() {
         Object.keys(this._models).forEach((i) => {
-            this._models[i].then(model => {model.comm_live = false;});
+            this._models[i].then(model => { model.comm_live = false; });
         });
     }
     /**

@@ -118,7 +118,7 @@ let JSONToArray = function(obj, manager) {
 
 let arrayToJSON = function(obj, manager) {
     let dtype = Object.keys(typesToArray).filter(
-        i=>typesToArray[i]===obj.constructor)[0];
+        i => typesToArray[i] === obj.constructor)[0];
     return {dtype, buffer: obj};
 };
 
@@ -148,7 +148,7 @@ class TestWidgetView extends widgets.WidgetView {
         super.render();
     }
     remove() {
-        this._removed +=1;
+        this._removed += 1;
         super.remove();
     }
     _removed = 0;

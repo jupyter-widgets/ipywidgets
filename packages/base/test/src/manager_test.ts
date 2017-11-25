@@ -48,8 +48,8 @@ describe('ManagerBase', function() {
         let manager = this.managerBase;
         sinon.spy(manager, 'create_view');
         sinon.spy(manager, 'display_view');
-        let msg = {msg:true};
-        let viewOptions = {viewOptions:true};
+        let msg = {msg: true};
+        let viewOptions = {viewOptions: true};
         let model = await manager.new_model(this.modelOptions);
         await manager.display_model(msg, model, viewOptions);
         expect(manager.create_view.calledWith(model, viewOptions)).to.be.true;
@@ -220,13 +220,13 @@ describe('ManagerBase', function() {
               buffer_paths: [['array', 'buffer']]
             }
           },
-          buffers: [new DataView((new Uint8Array([1,2,3])).buffer)],
+          buffers: [new DataView((new Uint8Array([1, 2, 3])).buffer)],
           metadata: {
             version: '2.0.0'
           }
         });
         expect(model.comm).to.equal(comm);
-        expect(model.get('array')).to.deep.equal(new Uint8Array([1,2,3]));
+        expect(model.get('array')).to.deep.equal(new Uint8Array([1, 2, 3]));
       });
     });
 
@@ -362,9 +362,9 @@ describe('ManagerBase', function() {
             model_id: 'u-u-i-d'
         }, {array: {
           dtype: 'uint8',
-          buffer: new DataView((new Uint8Array([1,2,3]).buffer))
+          buffer: new DataView((new Uint8Array([1, 2, 3]).buffer))
         }});
-        expect(model.get('array')).to.deep.equal(new Uint8Array([1,2,3]));
+        expect(model.get('array')).to.deep.equal(new Uint8Array([1, 2, 3]));
       });
 
       it('sets up a comm close handler to delete the model', async function() {
@@ -418,21 +418,21 @@ describe('ManagerBase', function() {
         let state = await manager.get_state();
 
         let expectedState = {
-          'version_major':2,
-          'version_minor':0,
-          'state':{
-            'u-u-i-d':{
-              'model_name':'TestWidget',
-              'model_module':'test-widgets',
-              'model_module_version':'1.0.0',
-              'state':{
-                '_model_module':'test-widgets',
-                '_model_name':'TestWidget',
-                '_model_module_version':'1.0.0',
-                '_view_module':'test-widgets',
-                '_view_name':'TestWidgetView',
-                '_view_module_version':'1.0.0',
-                '_view_count':null,
+          'version_major': 2,
+          'version_minor': 0,
+          'state': {
+            'u-u-i-d': {
+              'model_name': 'TestWidget',
+              'model_module': 'test-widgets',
+              'model_module_version': '1.0.0',
+              'state': {
+                '_model_module': 'test-widgets',
+                '_model_name': 'TestWidget',
+                '_model_module_version': '1.0.0',
+                '_view_module': 'test-widgets',
+                '_view_name': 'TestWidgetView',
+                '_view_module_version': '1.0.0',
+                '_view_count': null,
         }}}};
         expect(state).to.deep.equal(expectedState);
       });
@@ -443,15 +443,15 @@ describe('ManagerBase', function() {
           {value: 50});
         let state = await manager.get_state({drop_defaults: true});
         let expectedState = {
-          'version_major':2,
-          'version_minor':0,
-          'state':{
-            'u-u-i-d':{
-              'model_name':'TestWidget',
-              'model_module':'test-widgets',
-              'model_module_version':'1.0.0',
-              'state':{
-                'value':50
+          'version_major': 2,
+          'version_minor': 0,
+          'state': {
+            'u-u-i-d': {
+              'model_name': 'TestWidget',
+              'model_module': 'test-widgets',
+              'model_module_version': '1.0.0',
+              'state': {
+                'value': 50
         }}}};
         expect(state).to.deep.equal(expectedState);
       });
@@ -465,24 +465,24 @@ describe('ManagerBase', function() {
             model_id: 'u-u-i-d'
         }, {array: {
           dtype: 'uint8',
-          buffer: new DataView((new Uint8Array([1,2,3]).buffer))
+          buffer: new DataView((new Uint8Array([1, 2, 3]).buffer))
         }});
         let state = await manager.get_state({drop_defaults: true});
         let expectedState = {
-          'version_major':2,
-          'version_minor':0,
-          'state':{
-            'u-u-i-d':{
-              'model_name':'BinaryWidget',
-              'model_module':'test-widgets',
-              'model_module_version':'1.0.0',
-              'state':{
-                'array':{'dtype':'uint8'}
+          'version_major': 2,
+          'version_minor': 0,
+          'state': {
+            'u-u-i-d': {
+              'model_name': 'BinaryWidget',
+              'model_module': 'test-widgets',
+              'model_module_version': '1.0.0',
+              'state': {
+                'array': {'dtype': 'uint8'}
               },
-              'buffers':[{
-                'data':'AQID',
-                'path':['array','buffer'],
-                'encoding':'base64'
+              'buffers': [{
+                'data': 'AQID',
+                'path': ['array', 'buffer'],
+                'encoding': 'base64'
               }]
         }}};
         expect(state).to.deep.equal(expectedState);
@@ -492,50 +492,50 @@ describe('ManagerBase', function() {
     describe('set_state', function() {
       it('handles binary base64 buffers', async function() {
         let state = {
-          'version_major':2,
-          'version_minor':0,
-          'state':{
-            'u-u-i-d':{
-              'model_name':'BinaryWidget',
-              'model_module':'test-widgets',
-              'model_module_version':'1.0.0',
-              'state':{
-                'array':{'dtype':'uint8'}
+          'version_major': 2,
+          'version_minor': 0,
+          'state': {
+            'u-u-i-d': {
+              'model_name': 'BinaryWidget',
+              'model_module': 'test-widgets',
+              'model_module_version': '1.0.0',
+              'state': {
+                'array': {'dtype': 'uint8'}
               },
-              'buffers':[{
-                'data':'AQID',
-                'path':['array','buffer'],
-                'encoding':'base64'
+              'buffers': [{
+                'data': 'AQID',
+                'path': ['array', 'buffer'],
+                'encoding': 'base64'
               }]
         }}};
         let manager = this.managerBase;
         await manager.set_state(state);
         let model = await manager.get_model('u-u-i-d');
-        expect(model.get('array')).to.deep.equal(new Uint8Array([1,2,3]));
+        expect(model.get('array')).to.deep.equal(new Uint8Array([1, 2, 3]));
       });
 
       it('handles binary hex buffers', async function() {
         let state = {
-          'version_major':2,
-          'version_minor':0,
-          'state':{
-            'u-u-i-d':{
-              'model_name':'BinaryWidget',
-              'model_module':'test-widgets',
-              'model_module_version':'1.0.0',
-              'state':{
-                'array':{'dtype':'uint8'}
+          'version_major': 2,
+          'version_minor': 0,
+          'state': {
+            'u-u-i-d': {
+              'model_name': 'BinaryWidget',
+              'model_module': 'test-widgets',
+              'model_module_version': '1.0.0',
+              'state': {
+                'array': {'dtype': 'uint8'}
               },
-              'buffers':[{
-                'data':'010203',
-                'path':['array','buffer'],
-                'encoding':'hex'
+              'buffers': [{
+                'data': '010203',
+                'path': ['array', 'buffer'],
+                'encoding': 'hex'
               }]
         }}};
         let manager = this.managerBase;
         await manager.set_state(state);
         let model = await manager.get_model('u-u-i-d');
-        expect(model.get('array')).to.deep.equal(new Uint8Array([1,2,3]));
+        expect(model.get('array')).to.deep.equal(new Uint8Array([1, 2, 3]));
       });
     });
 });

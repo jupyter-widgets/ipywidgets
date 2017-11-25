@@ -81,12 +81,12 @@ describe('WidgetModel', function() {
             this.widget.constructor.serializers = {
                 times3: {
                     deserialize: (value, manager) => {
-                        return value*3.0;
+                        return value * 3.0;
                     }
                 },
                 halve: {
                     deserialize: (value, manager) => {
-                        return Promise.resolve(value/2.0);
+                        return Promise.resolve(value / 2.0);
                     }
                 },
                 spy: {
@@ -172,7 +172,7 @@ describe('WidgetModel', function() {
             let data1 = {a: 1, b: 'state'};
             let data2 = {a: 2, b: 'state'};
             let callbacks = {iopub: {}};
-            let buffers = [new Int8Array([1,2,3])];
+            let buffers = [new Int8Array([1, 2, 3])];
 
             // send two messages to make sure the throttle does not affect sending.
             widget.send(data1, callbacks, buffers);
@@ -298,14 +298,14 @@ describe('WidgetModel', function() {
         });
 
         it('updates handle various types of binary buffers', async function() {
-            let buffer1 = new Uint8Array([1,2,3]);
+            let buffer1 = new Uint8Array([1, 2, 3]);
             let buffer2 = new Float64Array([2.3, 6.4]);
-            let buffer3 = new Int16Array([10,20,30]);
+            let buffer3 = new Int16Array([10, 20, 30]);
             await this.widget._handle_comm_msg({
                 content: {
                     data: {
                         method: 'update',
-                        state: {a: 5, c: ['start', null, {}],},
+                        state: {a: 5, c: ['start', null, {}], },
                         buffer_paths: [['b'], ['c', 1], ['c', 2, 'd']]
                     }
                 },
@@ -432,14 +432,14 @@ describe('WidgetModel', function() {
         });
 
         it('updates handle various types of binary buffers', async function() {
-            let buffer1 = new Uint8Array([1,2,3]);
+            let buffer1 = new Uint8Array([1, 2, 3]);
             let buffer2 = new Float64Array([2.3, 6.4]);
-            let buffer3 = new Int16Array([10,20,30]);
+            let buffer3 = new Int16Array([10, 20, 30]);
             await this.widget._handle_comm_msg({
                 content: {
                     data: {
                         method: 'update',
-                        state: {a: 5, c: ['start', null, {}],},
+                        state: {a: 5, c: ['start', null, {}], },
                         buffer_paths: [['b'], ['c', 1], ['c', 2, 'd']]
                     }
                 },
@@ -533,7 +533,7 @@ describe('WidgetModel', function() {
             sinon.spy(this.widget, 'save');
             expect(this.widget.get('a')).to.be.undefined;
             expect(this.widget.get('b')).to.be.undefined;
-            this.widget.on('change:a', ()=> {
+            this.widget.on('change:a', () => {
                 this.widget.set('b', 15);
             });
             this.widget.set_state({a: 10});
@@ -640,7 +640,7 @@ describe('WidgetModel', function() {
         });
 
         it('handles buffers in messages', function() {
-            let buffer = new Uint8Array([1,2,3]);
+            let buffer = new Uint8Array([1, 2, 3]);
             this.widget.send_sync_message({
                 a: buffer
             });
