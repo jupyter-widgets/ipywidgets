@@ -92,7 +92,7 @@ function resolvePromisesDict(d): Promise<any> {
     });
     return Promise.all(values).then(function(v) {
         d = {};
-        for(let i=0; i<keys.length; i++) {
+        for (let i=0; i < keys.length; i++) {
             d[keys[i]] = v[i];
         }
         return d;
@@ -126,16 +126,16 @@ function reject(message, log) {
  */
 export
 function put_buffers(state, buffer_paths: (string | number)[][], buffers: DataView[]) {
-    for (let i=0; i<buffer_paths.length; i++) {
+    for (let i=0; i < buffer_paths.length; i++) {
         let buffer_path = buffer_paths[i];
          // say we want to set state[x][y][z] = buffers[i]
         let obj = state;
         // we first get obj = state[x][y]
-        for (let j = 0; j < buffer_path.length-1; j++) {
+        for (let j = 0; j < buffer_path.length - 1; j++) {
             obj = obj[buffer_path[j]];
         }
         // and then set: obj[z] = buffers[i]
-        obj[buffer_path[buffer_path.length-1]] = buffers[i];
+        obj[buffer_path[buffer_path.length - 1]] = buffers[i];
     }
 }
 
@@ -166,9 +166,9 @@ function remove_buffers(state): {state: any, buffers: ArrayBuffer[], buffer_path
             let is_cloned = false;
             for (let i = 0; i < obj.length; i++) {
                 let value = obj[i];
-                if(value) {
+                if (value) {
                     if (value.buffer instanceof ArrayBuffer || value instanceof ArrayBuffer) {
-                        if(!is_cloned) {
+                        if (!is_cloned) {
                             obj = obj.slice();
                             is_cloned = true;
                         }
@@ -180,8 +180,8 @@ function remove_buffers(state): {state: any, buffers: ArrayBuffer[], buffer_path
                     } else {
                         let new_value  = remove(value, path.concat([i]));
                         // only assigned when the value changes, we may serialize objects that don't support assignment
-                        if(new_value !== value) {
-                            if(!is_cloned) {
+                        if (new_value !== value) {
+                            if (!is_cloned) {
                                 obj = obj.slice();
                                 is_cloned = true;
                             }
@@ -190,14 +190,14 @@ function remove_buffers(state): {state: any, buffers: ArrayBuffer[], buffer_path
                     }
                 }
             }
-        } else if(isPlainObject(obj)) {
+        } else if (isPlainObject(obj)) {
             for (let key in obj) {
                 let is_cloned = false;
                 if (obj.hasOwnProperty(key)) {
                     let value = obj[key];
-                    if(value) {
+                    if (value) {
                         if (value.buffer instanceof ArrayBuffer || value instanceof ArrayBuffer) {
-                            if(!is_cloned) {
+                            if (!is_cloned) {
                                 obj = {...obj};
                                 is_cloned = true;
                             }
@@ -207,8 +207,8 @@ function remove_buffers(state): {state: any, buffers: ArrayBuffer[], buffer_path
                         } else {
                             let new_value  = remove(value, path.concat([key]));
                             // only assigned when the value changes, we may serialize objects that don't support assignment
-                            if(new_value !== value) {
-                                if(!is_cloned) {
+                            if (new_value !== value) {
+                                if (!is_cloned) {
                                     obj = {...obj};
                                     is_cloned = true;
                                 }

@@ -262,13 +262,13 @@ namespace shims {
                     };
 
                     future.onIOPub = function(msg) {
-                        if(callbacks.iopub) {
+                        if (callbacks.iopub) {
                             if (callbacks.iopub.status && msg.header.msg_type === 'status') {
                                 callbacks.iopub.status(msg);
                             } else if (callbacks.iopub.clear_output && msg.header.msg_type === 'clear_output') {
                                 callbacks.iopub.clear_output(msg);
                             } else if (callbacks.iopub.output) {
-                                switch(msg.header.msg_type) {
+                                switch (msg.header.msg_type) {
                                     case 'display_data':
                                     case 'execute_result':
                                         callbacks.iopub.output(msg);
