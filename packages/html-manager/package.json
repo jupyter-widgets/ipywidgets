@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/html-manager",
-  "version": "0.10.10",
+  "version": "0.11.0",
   "description": "Standalone package for rendering Jupyter widgets outside notebooks",
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
@@ -35,10 +35,10 @@
   },
   "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme",
   "dependencies": {
-    "@jupyter-widgets/base": "^1.1.4",
-    "@jupyter-widgets/controls": "^1.0.10",
-    "@jupyter-widgets/output": "^1.0.9",
-    "@jupyter-widgets/schema": "^0.3.0",
+    "@jupyter-widgets/base": "^1.1.5",
+    "@jupyter-widgets/controls": "^1.1.0",
+    "@jupyter-widgets/output": "^1.0.10",
+    "@jupyter-widgets/schema": "^0.3.1",
     "@jupyterlab/outputarea": "^0.13.1",
     "@jupyterlab/rendermime": "^0.13.0",
     "@jupyterlab/rendermime-interfaces": "^0.4.2",
