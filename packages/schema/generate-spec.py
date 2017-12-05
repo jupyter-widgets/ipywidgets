@@ -11,7 +11,7 @@ header = '''# Model State
 
 This is a description of the model state for each widget in the core Jupyter widgets library. The model ID of a widget is the id of the comm object the widget is using. A reference to a widget is serialized to JSON as a string of the form `"IPY_MODEL_<MODEL_ID>"`, where `<MODEL_ID>` is the model ID of a previously created widget of the specified type.
 
-This model specification is for ipywidgets 7.0, @jupyter-widgets/base 1.0.0, and @jupyter-widgets/controls 1.0.0.
+This model specification is for ipywidgets 7.1.*, @jupyter-widgets/base 1.0.*, and @jupyter-widgets/controls 1.1.*.
 
 ## Model attributes
 
