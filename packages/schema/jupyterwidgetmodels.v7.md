@@ -191,24 +191,28 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
+`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.0.0'`        | 
 `_model_name`    | string           | `'ControllerAxisModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.0.0'`        | 
 `_view_name`     | string           | `'ControllerAxisView'` | 
+`layout`         | reference to Layout widget | reference to new instance | 
 `value`          | number (float)   | `0.0`            | The value of the axis.
 
 ### ControllerButtonModel (@jupyter-widgets/controls, 1.0.0); ControllerButtonView (@jupyter-widgets/controls, 1.0.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
+`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.0.0'`        | 
 `_model_name`    | string           | `'ControllerButtonModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.0.0'`        | 
 `_view_name`     | string           | `'ControllerButtonView'` | 
+`layout`         | reference to Layout widget | reference to new instance | 
 `pressed`        | boolean          | `false`          | Whether the button is pressed.
 `value`          | number (float)   | `0.0`            | The value of the button.
 
@@ -432,7 +436,6 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_b64value`      | string           | `''`             | The base64 encoded image data.
 `_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.0.0'`        | 
@@ -443,6 +446,7 @@ Attribute        | Type             | Default          | Help
 `format`         | string           | `'png'`          | The format of the image.
 `height`         | string           | `''`             | Height of the image in pixels.
 `layout`         | reference to Layout widget | reference to new instance | 
+`value`          | Bytes            | `b''`            | The image data as a byte string.
 `width`          | string           | `''`             | Width of the image in pixels.
 
 ### IntProgressModel (@jupyter-widgets/controls, 1.0.0); ProgressView (@jupyter-widgets/controls, 1.0.0)
@@ -837,8 +841,6 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.0.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
 `button_width`   | string           | `''`             | The width of each button.
-`button_color`   | `null` or string | `null`           | The color of each button
-`font_weight`    | string           | `''`             | The button text font weight of each button.
 
 ### VBoxModel (@jupyter-widgets/controls, 1.0.0); VBoxView (@jupyter-widgets/controls, 1.0.0)
 
