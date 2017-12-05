@@ -381,11 +381,6 @@ class ToggleButtonsStyleModel extends DescriptionStyleModel {
             attribute: 'width',
             default: null
         },
-        button_color: {
-            selector: '.widget-toggle-button',
-            attribute: 'background-color',
-            default: null
-        },
         font_weight: {
             selector: '.widget-toggle-button',
             attribute: 'font-weight',
