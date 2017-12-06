@@ -2,8 +2,6 @@
  * Distributed under the terms of the Modified BSD License.
  */
 
-@import "@phosphor/widgets/style/widget.css";
-
  /* We import all of these together in a single css file because the Webpack
 loader sees only one file at a time. This allows postcss to see the variable
 definitions when they are used. */
