@@ -30,24 +30,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
- /* The following section is derived from https://github.com/phosphorjs/phosphor/blob/23b9d075ebc5b73ab148b6ebfc20af97f85714c4/packages/widgets/style/widget.css */
-
- /* The basic widget css is not namespaced so that it isn't more specific than widget classes. */
-.p-Widget {
-  box-sizing: border-box;
-  position: relative;
-  overflow: hidden;
-  cursor: default;
-}
-
-
-.jupyter-widgets .p-Widget.p-mod-hidden {
-  display: none !important;
-}
-
-/* End widget.css */
-
-/* The following section is derived from https://github.com/phosphorjs/phosphor/blob/23b9d075ebc5b73ab148b6ebfc20af97f85714c4/packages/widgets/style/tabbar.css */
+/*
+ * The following section is derived from https://github.com/phosphorjs/phosphor/blob/23b9d075ebc5b73ab148b6ebfc20af97f85714c4/packages/widgets/style/tabbar.css 
+ * We've scoped the rules so that they are consistent with exactly our code.
+ */
 
 .jupyter-widgets.widget-tab > .p-TabBar {
   display: flex;
