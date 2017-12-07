@@ -125,6 +125,27 @@ function activateWidgetExtension(app: JupyterLab): base.IJupyterWidgetRegistry {
       });
     }
   });
+
+  // Until we do automatic semver matching (for example, converting a request
+  // for 1.0.0 to ^1.0.0), we register the controls under both the current
+  // version (above) and older versions it can handle.
+  extension.registerWidget({
+    name: '@jupyter-widgets/controls',
+    version: '1.0.0',
+    exports: () => {
+      return new Promise((resolve, reject) => {
+        (require as any).ensure(['@jupyter-widgets/controls'], (require: NodeRequire) => {
+          resolve(require('@jupyter-widgets/controls'));
+        },
+        (err: any) => {
+          reject(err);
+        },
+        '@jupyter-widgets/controls'
+        );
+      });
+    }
+  });
+
   extension.registerWidget({
     name: '@jupyter-widgets/output',
     version: OUTPUT_WIDGET_VERSION,
