@@ -6,7 +6,7 @@ import {
 } from '@phosphor/disposable';
 
 import {
-  Panel
+  Widget, PanelLayout
 } from '@phosphor/widgets';
 
 import {
@@ -21,11 +21,12 @@ import {
  * A renderer for widgets.
  */
 export
-class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable {
+class WidgetRenderer extends Widget implements IRenderMime.IRenderer, IDisposable {
     constructor(options: IRenderMime.IRendererOptions, manager: WidgetManager) {
         super();
         this.mimeType = options.mimeType;
         this._manager = manager;
+        this.layout = new PanelLayout();
     }
 
   async renderModel(model: IRenderMime.IMimeModel) {
@@ -35,7 +36,8 @@ class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable
       try {
         let wModel = await modelPromise;
         let widget = await this._manager.display_model(void 0, wModel, void 0);
-        this.addWidget(widget);
+        let layout = this.layout as PanelLayout;
+        layout.addWidget(widget);
       } catch(err) {
         console.log('Error displaying widget');
         console.log(err);
