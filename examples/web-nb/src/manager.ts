@@ -13,6 +13,10 @@ import {
     HTMLManager
 } from '@jupyter-widgets/html-manager';
 
+import {
+    RenderMime
+  } from '@jupyterlab/rendermime';
+
 import './widgets.css';
 
 let requirePromise = function(module: string): Promise<any> {
@@ -24,13 +28,17 @@ let requirePromise = function(module: string): Promise<any> {
     });
 };
 
+// TODO: don't use html manager - instead use the jupyterlab manager, which
+// returns a phosphor widget, since we will be rendering things using the
+// rendermime.
+
 export
 class WidgetManager extends HTMLManager {
-    constructor(kernel: Kernel.IKernelConnection, el: HTMLElement) {
-        super();
-        this.kernel = kernel;
-        this.newKernel(kernel);
-        this.el = el;
+    constructor(options: WidgetManager.IOptions) {
+        super({ loader: options.loader });
+        this.kernel = options.kernel;
+        this.rendermime = options.rendermime;
+        this.newKernel(this.kernel);
     }
 
     newKernel(kernel: Kernel.IKernelConnection) {
@@ -46,12 +54,9 @@ class WidgetManager extends HTMLManager {
         });
     }
 
-    display_view(msg, view, options) {
+    display_view(msg, view: base.DOMWidgetView, options) {
         return Promise.resolve(view).then((view) => {
             pWidget.Widget.attach(view.pWidget, this.el);
-            view.on('remove', function() {
-                console.log('view removed', view);
-            });
             return view;
         });
     }
@@ -75,6 +80,25 @@ class WidgetManager extends HTMLManager {
     }
 
     kernel: Kernel.IKernelConnection;
-    el: HTMLElement;
+    rendermime: RenderMime;
     _commRegistration: IDisposable;
+}
+
+/**
+ * The namespace for the `HTMLManager` class statics.
+ */
+export
+namespace WidgetManager {
+    /**
+     * The options for the constructor.
+     */
+    export
+    interface IOptions extends HTMLManager.IOptions {
+        /**
+         * The kernel connection.
+         */
+        kernel: Kernel.IKernelConnection;
+
+        rendermime: RenderMime;
+    }
 }

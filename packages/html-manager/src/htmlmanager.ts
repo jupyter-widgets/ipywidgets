@@ -14,9 +14,9 @@ import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers';
 export
 class HTMLManager extends base.ManagerBase<HTMLElement> {
 
-    constructor(options?: WidgetManager.IOptions) {
+    constructor(options: HTMLManager.IOptions = {}) {
         super();
-        this._loader = options && options.loader;
+        this._loader = options.loader;
         this.renderMime = new RenderMime({
             initialFactories: defaultRendererFactories
         });
@@ -31,11 +31,9 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
      * Display the specified view. Element where the view is displayed
      * is specified in the `options.el` argument.
      */
-    display_view(msg, view, options) {
-        return Promise.resolve(view).then((view) => {
-            PhosphorWidget.Widget.attach(view.pWidget, options.el);
-            return view;
-        });
+    display_view(msg, view: base.DOMWidgetView, options) {
+        PhosphorWidget.Widget.attach(view.pWidget, options.el);
+        return Promise.resolve(options.el);
     }
 
     /**
@@ -86,7 +84,7 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
      *
      * Defines how outputs in the output widget should be rendered.
      */
-    renderMime: RenderMime;
+    readonly renderMime: RenderMime;
 
     /**
      * A loader for a given module name and module version, and returns a promise to a module
@@ -95,10 +93,13 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
 }
 
 /**
- * The namespace for the `WidgetManager` class statics.
+ * The namespace for the `HTMLManager` class statics.
  */
 export
-namespace WidgetManager {
+namespace HTMLManager {
+    /**
+     * Options for the constructor.
+     */
     export
     interface IOptions {
         /**

@@ -2,6 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 export * from "./htmlmanager";
+export * from "./output_renderers";
 
 export
 const version = (require('../package.json') as any).version;

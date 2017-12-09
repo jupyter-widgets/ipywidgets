@@ -4,6 +4,10 @@ import {
 } from './manager';
 
 import {
+    WidgetRenderer
+} from '@jupyter-widgets/html-manager';
+
+import {
     Kernel, ServerConnection, KernelMessage, ContentsManager, Drive
 } from '@jupyterlab/services';
 
@@ -26,6 +30,7 @@ import {
 let BASEURL = prompt('Notebook BASEURL', 'http://localhost:8888');
 let WSURL = 'ws:' + BASEURL.split(':').slice(1).join(':');
 let NOTEBOOK = 'TestNotebook.ipynb';
+const WIDGET_MIMETYPE = 'application/vnd.jupyter.widget-view+json';
 
 document.addEventListener('DOMContentLoaded', async function(event) {
 
@@ -60,11 +65,26 @@ document.addEventListener('DOMContentLoaded', async function(event) {
     const kernel = await Kernel.startNew({
         name: kernelName,
         serverSettings: connectionInfo
-    })
+    });
 
+    // Set up a rendermime
     const rendermime = new RenderMime({
         initialFactories: defaultRendererFactories
     });
+
+    // Register the widget manager with the kernel
+    let wManager = new WidgetManager({kernel, rendermime})
+
+    rendermime.addFactory({
+        safe: false,
+        mimeTypes: [WIDGET_MIMETYPE],
+        createRenderer: (options) => new WidgetRenderer(options, wManager)
+      }, 0)
+
+    // Register the widget renderer with the rendermime
+
+
+
 
     let execute_code = (code: string, output: OutputArea, kernel: Kernel.IKernel): Promise<KernelMessage.IExecuteReplyMsg> => {
         // based on https://github.com/jupyterlab/jupyterlab/blob/09884af82886c630d0f2fa662d6f8a1525613100/packages/outputarea/src/widget.ts#L466

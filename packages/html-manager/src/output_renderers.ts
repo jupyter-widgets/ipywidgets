@@ -7,6 +7,8 @@ import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 
 import { HTMLManager } from './htmlmanager';
 
+import { DOMWidgetView } from '@jupyter-widgets/base';
+
 export const WIDGET_MIMETYPE = 'application/vnd.jupyter.widget-view+json';
 
 // Renderer to allow the output widget to render sub-widgets
@@ -30,7 +32,7 @@ export class WidgetRenderer extends Widget implements IRenderMime.IRenderer {
                 let wModel = await modelPromise;
                 let view = await this._manager.create_view(wModel);
                 let layout = this.layout as PanelLayout;
-                layout.addWidget(view.pWidget);
+                layout.addWidget((view as DOMWidgetView).pWidget);
             } catch (err) {
                 console.log('Error displaying widget');
                 console.log(err);
