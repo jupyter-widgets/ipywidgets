@@ -154,6 +154,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
       this._commRegistration.dispose();
     }
     this._context = null;
+    super.dispose();
   }
 
   /**
