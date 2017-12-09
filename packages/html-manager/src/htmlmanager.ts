@@ -34,9 +34,6 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
     display_view(msg, view, options) {
         return Promise.resolve(view).then((view) => {
             PhosphorWidget.Widget.attach(view.pWidget, options.el);
-            view.on('remove', () => {
-                console.log('View removed', view);
-            });
             return view;
         });
     }
