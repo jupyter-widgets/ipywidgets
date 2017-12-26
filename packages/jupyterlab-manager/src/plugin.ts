@@ -62,7 +62,7 @@ class NBWidgetExtension implements INBWidgetExtension {
     }, 0);
     return new DisposableDelegate(() => {
       if (nb.rendermime) {
-        nb.rendermime.removeFactory(WIDGET_MIMETYPE);
+        nb.rendermime.removeMimeType(WIDGET_MIMETYPE);
       }
       wManager.dispose();
     });
