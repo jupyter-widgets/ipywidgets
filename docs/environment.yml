@@ -13,9 +13,8 @@ dependencies:
 - sphinx>=1.4.6
 - sphinx_rtd_theme
 - tornado
+- recommonmark
+- python-dateutil
 - pip:
-  - docutils<0.13.1
   - ipywidgets >=7.1.0rc1
   - jupyter-alabaster-theme
-  - python-dateutil
-  - recommonmark==0.4.0

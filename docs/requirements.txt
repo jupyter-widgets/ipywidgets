@@ -4,5 +4,5 @@ jupyter-alabaster-theme
 jupyter_client
 jupyter_sphinx
 nbsphinx>=0.2.13
-recommonmark==0.4.0
+recommonmark>=0.4.0
 sphinx>=1.4.6
