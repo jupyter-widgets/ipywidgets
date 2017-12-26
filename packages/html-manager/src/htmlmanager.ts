@@ -8,8 +8,8 @@ import * as outputWidgets from './output';
 import * as PhosphorWidget from '@phosphor/widgets';
 import { RenderMimeRegistry, standardRendererFactories } from '@jupyterlab/rendermime';
 
-import { OutputModel, OutputView } from './output'
-import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers'
+import { OutputModel, OutputView } from './output';
+import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers';
 
 export
 class HTMLManager extends base.ManagerBase<HTMLElement> {
@@ -38,25 +38,25 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
             });
             return view;
         });
-    };
+    }
 
     /**
      * Placeholder implementation for _get_comm_info.
      */
     _get_comm_info() {
         return Promise.resolve({});
-    };
+    }
 
     /**
      * Placeholder implementation for _create_comm.
      */
     _create_comm(comm_target_name: string, model_id: string, data?: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): Promise<any> {
         return Promise.resolve({
-            on_close: () => {},
-            on_msg: () => {},
-            close: () => {}
+            on_close: () => { return; },
+            on_msg: () => { return; },
+            close: () => { return; }
         });
-    };
+    }
 
     /**
      * Load a class and return a promise to the loaded object.
@@ -70,7 +70,7 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
             } else if (moduleName === '@jupyter-widgets/output') {
                 resolve(outputWidgets);
             } else if (this.loader !== undefined) {
-                resolve(this.loader(moduleName, moduleVersion))
+                resolve(this.loader(moduleName, moduleVersion));
             } else {
                 reject(`Could not load module ${moduleName}@${moduleVersion}`);
             }
@@ -94,4 +94,4 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
      * A loader for a given module name and module version, and returns a promise to a module
      */
     loader: (moduleName: string, moduleVersion: string) => Promise<any>;
-};
+}
