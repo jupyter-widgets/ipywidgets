@@ -833,7 +833,7 @@ class SelectionRangeSliderView extends SelectionSliderView {
 
     updateSelection() {
         let index = this.model.get('index');
-        this.$slider.slider('option', 'values', index);
+        this.$slider.slider('option', 'values', index.slice());
         this.updateReadout(index);
     }
 
@@ -867,7 +867,7 @@ class SelectionRangeSliderView extends SelectionSliderView {
         // The jqueryui documentation indicates ui.values doesn't exist on the slidestop event,
         // but it appears that it actually does: https://github.com/jquery/jquery-ui/blob/ae31f2b3b478975f70526bdf3299464b9afa8bb1/ui/widgets/slider.js#L313
         this.updateReadout(ui.values);
-        this.model.set('index', ui.values, {updated_view: this});
+        this.model.set('index', ui.values.slice(), {updated_view: this});
         this.touch();
     }
 
