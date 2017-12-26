@@ -1,5 +1,5 @@
 ipykernel
-ipywidgets>=7.0.0a2
+ipywidgets>=7.1.0rc1
 jupyter-alabaster-theme
 jupyter_client
 jupyter_sphinx
