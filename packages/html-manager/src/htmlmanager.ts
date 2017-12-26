@@ -6,7 +6,7 @@ import * as base from '@jupyter-widgets/base';
 import * as outputWidgets from './output';
 
 import * as PhosphorWidget from '@phosphor/widgets';
-import { RenderMime, defaultRendererFactories } from '@jupyterlab/rendermime';
+import { RenderMimeRegistry, standardRendererFactories } from '@jupyterlab/rendermime';
 
 import { OutputModel, OutputView } from './output'
 import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers'
@@ -17,8 +17,8 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
     constructor(options?: {loader?: (moduleName: string, moduleVersion: string) => Promise<any>}) {
         super();
         this.loader = options && options.loader;
-        this.renderMime = new RenderMime({
-            initialFactories: defaultRendererFactories
+        this.renderMime = new RenderMimeRegistry({
+            initialFactories: standardRendererFactories
         });
         this.renderMime.addFactory({
             safe: false,
@@ -88,7 +88,7 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
      *
      * Defines how outputs in the output widget should be rendered.
      */
-    renderMime: RenderMime
+    renderMime: RenderMimeRegistry;
 
     /**
      * A loader for a given module name and module version, and returns a promise to a module

@@ -1,7 +1,7 @@
 
 import { expect } from 'chai';
 
-import { RenderedText, RenderMime } from '@jupyterlab/rendermime';
+import { RenderedText } from '@jupyterlab/rendermime';
 import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 
 import { Widget, Panel } from '@phosphor/widgets';

@@ -18,7 +18,7 @@ import {
 } from '@phosphor/widgets';
 
 import {
-  RenderMime
+  RenderMimeRegistry
 } from '@jupyterlab/rendermime';
 
 import {
@@ -74,7 +74,7 @@ class BackboneViewWrapper extends Widget {
  */
 export
 class WidgetManager extends ManagerBase<Widget> implements IDisposable {
-  constructor(context: DocumentRegistry.IContext<DocumentRegistry.IModel>, rendermime: RenderMime) {
+  constructor(context: DocumentRegistry.IContext<DocumentRegistry.IModel>, rendermime: RenderMimeRegistry) {
     super();
     this._context = context;
     this._rendermime = rendermime;
@@ -193,7 +193,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
 
   private _context: DocumentRegistry.IContext<DocumentRegistry.IModel>;
   private _registry: SemVerCache<ExportData> = new SemVerCache<ExportData>();
-  private _rendermime: RenderMime;
+  private _rendermime: RenderMimeRegistry;
 
   _commRegistration: IDisposable;
 }
