@@ -10,7 +10,6 @@ dependencies:
 - nbsphinx
 - notebook>=4.2
 - python=3.6
-- sphinx=1.4.8
 - sphinx>=1.4.6
 - sphinx_rtd_theme
 - tornado
