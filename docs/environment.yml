@@ -6,6 +6,7 @@ dependencies:
 - ipykernel
 - jinja2
 - jupyter_sphinx
+- ipywidgets
 - nbformat
 - nbsphinx
 - notebook>=4.2
@@ -13,8 +14,7 @@ dependencies:
 - sphinx>=1.4.6
 - sphinx_rtd_theme
 - tornado
-- recommonmark
 - python-dateutil
 - pip:
-  - ipywidgets >=7.1.0rc1
+  - recommonmark==0.4 # See https://github.com/rtfd/recommonmark/issues/78
   - jupyter-alabaster-theme
