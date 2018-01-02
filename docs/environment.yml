@@ -15,6 +15,6 @@ dependencies:
 - sphinx_rtd_theme
 - tornado
 - python-dateutil
+- recommonmark
 - pip:
-  - recommonmark==0.4 # See https://github.com/rtfd/recommonmark/issues/78
   - jupyter-alabaster-theme
