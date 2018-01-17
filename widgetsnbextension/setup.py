@@ -205,6 +205,7 @@ setup_args = dict(
                 'widgetsnbextension/static/extension.js',
                 'widgetsnbextension/static/extension.js.map'
         ]),
+        ('etc/jupyter/nbconfig/notebook.d/' , ['widgetsnbextension.json'])
     ],
     zip_safe=False,
     include_package_data = True,
