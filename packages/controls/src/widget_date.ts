@@ -122,10 +122,8 @@ class DatePickerView extends DescriptionView {
     private _picker_change() {
         if (!this._datepicker.validity.badInput) {
             this.model.set('value', this._datepicker.valueAsDate);
-        } else {
-            this.model.set('value', null);
+            this.touch();
         }
-        this.touch();
     }
 
     private _datepicker: HTMLInputElement;
