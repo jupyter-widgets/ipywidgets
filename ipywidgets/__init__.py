@@ -23,6 +23,7 @@ import os
 from IPython import get_ipython
 from ._version import version_info, __version__, __protocol_version__, __jupyter_widgets_controls_version__, __jupyter_widgets_base_version__
 from .widgets import *
+from traitlets import link, dlink
 
 
 def load_ipython_extension(ip):
