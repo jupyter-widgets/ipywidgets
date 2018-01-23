@@ -158,8 +158,8 @@ class interactive(VBox):
         The function to which the interactive widgets are tied. The `**kwargs`
         should match the function signature.
     __options : dict
-        A dict of options. Currently, the only supported key is
-        ``"manual"``.
+        A dict of options. Currently, the only supported keys are
+        ``"manual"`` and ``"manual_name"``.
     **kwargs : various, optional
         An interactive widget is created for each keyword argument that is a
         valid widget abbreviation.
@@ -177,6 +177,7 @@ class interactive(VBox):
         self.f = f = __interact_f
         self.clear_output = kwargs.pop('clear_output', True)
         self.manual = __options.get("manual", False)
+        self.button_name = __options.get("button_name", "Run Interact")
         self.auto_display = __options.get("auto_display", False)
 
         new_kwargs = self.find_abbreviations(kwargs)
@@ -200,7 +201,7 @@ class interactive(VBox):
 
         # If we are only to run the function on demand, add a button to request this.
         if self.manual:
-            self.manual_button = Button(description="Run Interact")
+            self.manual_button = Button(description=self.button_name)
             c.append(self.manual_button)
 
         self.out = Output()
@@ -389,7 +390,7 @@ class interactive(VBox):
     # Return a factory for interactive functions
     @classmethod
     def factory(cls):
-        options = dict(manual=False, auto_display=True)
+        options = dict(manual=False, auto_display=True, button_name="Run Interact")
         return _InteractFactory(cls, options)
 
 
@@ -553,7 +554,7 @@ class _InteractFactory(object):
 
 
 interact = interactive.factory()
-interact_manual = interact.options(manual=True)
+interact_manual = interact.options(manual=True, button_name="Run Interact")
 
 
 class fixed(HasTraits):
