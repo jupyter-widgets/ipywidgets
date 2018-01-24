@@ -2,4 +2,4 @@ graft widgetsnbextension/static
 graft src
 include package.json
 include webpack.config.js
-
+include widgetsnbextension.json
