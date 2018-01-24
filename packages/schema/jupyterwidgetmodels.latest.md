@@ -877,16 +877,16 @@ Attribute        | Type             | Default          | Help
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `value`          | boolean          | `false`          | Bool value
 
-### OutputModel (@jupyter-widgets/output, 1.1.0); OutputView (@jupyter-widgets/output, 1.1.0)
+### OutputModel (@jupyter-widgets/output, 1.0.0); OutputView (@jupyter-widgets/output, 1.0.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/output'` | 
-`_model_module_version` | string           | `'1.1.0'`        | 
+`_model_module_version` | string           | `'1.0.0'`        | 
 `_model_name`    | string           | `'OutputModel'`  | 
 `_view_module`   | string           | `'@jupyter-widgets/output'` | 
-`_view_module_version` | string           | `'1.1.0'`        | 
+`_view_module_version` | string           | `'1.0.0'`        | 
 `_view_name`     | string           | `'OutputView'`   | 
 `layout`         | reference to Layout widget | reference to new instance | 
 `msg_id`         | string           | `''`             | Parent message id of messages to capture
