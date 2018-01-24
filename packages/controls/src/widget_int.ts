@@ -439,7 +439,7 @@ class IntSliderView extends BaseIntSliderView {
         }
         this.$slider.slider('option', 'value', value);
         this.readout.textContent = this.valueToString(value);
-        if(this.model.get('value')) {
+        if(this.model.get('value') !== value) {
             this.model.set('value', value, {updated_view: this});
             this.touch();
         }
