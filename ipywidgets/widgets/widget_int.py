@@ -281,12 +281,13 @@ class _BoundedIntRange(_IntRange):
         @validate('min_gap')
         def _validate_min_gap(self, proposal):
             new_gap = proposal['value']
-            value_gap = self.value[1] - self.value[0]
-            range_gap = self.max - self.min
-            if range_gap < new_gap:
-                raise TraitError('new min_gap violates min/max range')
-            if value_gap < range_gap:
-                raise TraitError('new min_gap violates gap between values')
+            if new_gap > 0:
+                value_gap = self.value[1] - self.value[0]
+                range_gap = self.max - self.min
+                if range_gap < new_gap:
+                    raise TraitError('new min_gap violates min/max range')
+                if value_gap < range_gap:
+                    raise TraitError('new min_gap violates gap between values')
             return new_gap
 
 
