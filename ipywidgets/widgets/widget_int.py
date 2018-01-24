@@ -15,7 +15,6 @@ from .trait_types import Color, InstanceDict, NumberFormat
 from traitlets import (
     Unicode, CInt, Bool, CaselessStrEnum, Tuple, TraitError, default, validate
 )
-from warnings import warn
 
 _int_doc_t = """
 Parameters
