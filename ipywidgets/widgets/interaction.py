@@ -177,7 +177,7 @@ class interactive(VBox):
         self.f = f = __interact_f
         self.clear_output = kwargs.pop('clear_output', True)
         self.manual = __options.get("manual", False)
-        self.button_name = __options.get("button_name", "Run Interact")
+        self.manual_name = __options.get("manual_name", "Run Interact")
         self.auto_display = __options.get("auto_display", False)
 
         new_kwargs = self.find_abbreviations(kwargs)
@@ -201,7 +201,7 @@ class interactive(VBox):
 
         # If we are only to run the function on demand, add a button to request this.
         if self.manual:
-            self.manual_button = Button(description=self.button_name)
+            self.manual_button = Button(description=self.manual_name)
             c.append(self.manual_button)
 
         self.out = Output()
@@ -390,7 +390,7 @@ class interactive(VBox):
     # Return a factory for interactive functions
     @classmethod
     def factory(cls):
-        options = dict(manual=False, auto_display=True, button_name="Run Interact")
+        options = dict(manual=False, auto_display=True, manual_name="Run Interact")
         return _InteractFactory(cls, options)
 
 
@@ -554,7 +554,7 @@ class _InteractFactory(object):
 
 
 interact = interactive.factory()
-interact_manual = interact.options(manual=True, button_name="Run Interact")
+interact_manual = interact.options(manual=True, manual_name="Run Interact")
 
 
 class fixed(HasTraits):
