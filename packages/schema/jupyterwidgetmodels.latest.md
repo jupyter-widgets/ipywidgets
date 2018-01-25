@@ -100,6 +100,7 @@ Attribute        | Type             | Default          | Help
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (integer) | `100`            | Max value
 `min`            | number (integer) | `0`              | Min value
+`min_gap`        | number (integer) | `0`              | Min gap between integer pair
 `step`           | number (integer) | `1`              | Minimum step to increment the value
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `value`          | number (integer) | `0`              | Int value
