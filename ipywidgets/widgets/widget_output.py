@@ -11,7 +11,6 @@ from functools import wraps
 
 from .domwidget import DOMWidget
 from .widget import register
-from .widget_core import CoreWidget
 from .._version import __jupyter_widgets_output_version__
 
 from traitlets import Unicode, Tuple
