@@ -52,6 +52,12 @@ class Output(DOMWidget):
         with self:
             clear_output(*pargs, **kwargs)
 
+    def capture(self, func):
+        def inner(*args, **kwargs):
+            with self:
+                return func(*args, **kwargs)
+        return inner
+
     def __enter__(self):
         """Called upon entering output widget context manager."""
         self._flush()
