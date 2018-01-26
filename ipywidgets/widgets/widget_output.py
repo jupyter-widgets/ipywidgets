@@ -23,9 +23,15 @@ class Output(DOMWidget):
     """Widget used as a context manager to display output.
 
     This widget can capture and display stdout, stderr, and rich output.  To use
-    it, create an instance of it and display it.  Then use it as a context
-    manager.  Any output produced while in it's context will be captured and
-    displayed in it instead of the standard output area.
+    it, create an instance of it and display it.
+
+    You can then use it as a context manager: any output produced while in it's
+    context will be captured and displayed in it instead of the standard output
+    area.
+
+    You can also use it to decorate a function or a method. Any output produced
+    by the function will then go to the output widget. This is useful for
+    debugging widget callbacks, for instance.
 
     Example::
         import ipywidgets as widgets
@@ -36,6 +42,10 @@ class Output(DOMWidget):
         print('prints to output area')
 
         with out:
+            print('prints to output widget')
+
+        @out.decorate
+        def func():
             print('prints to output widget')
     """
     _view_name = Unicode('OutputView').tag(sync=True)
