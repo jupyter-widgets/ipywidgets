@@ -6,12 +6,14 @@
 Represents a widget that can be used to display output within the widget area.
 """
 
+import sys
+from functools import wraps
+
 from .domwidget import DOMWidget
 from .widget import register
 from .widget_core import CoreWidget
 from .._version import __jupyter_widgets_output_version__
 
-import sys
 from traitlets import Unicode, Tuple
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.display import clear_output
@@ -64,6 +66,7 @@ class Output(DOMWidget):
 
     def capture(self, func):
         """Decorator to capture the stdout and stderr of a function"""
+        @wraps(func)
         def inner(*args, **kwargs):
             with self:
                 return func(*args, **kwargs)
