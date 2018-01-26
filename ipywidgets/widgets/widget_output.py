@@ -53,6 +53,7 @@ class Output(DOMWidget):
             clear_output(*pargs, **kwargs)
 
     def capture(self, func):
+        """Decorator to capture the stdout and stderr of a function"""
         def inner(*args, **kwargs):
             with self:
                 return func(*args, **kwargs)
