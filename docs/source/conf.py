@@ -41,7 +41,6 @@ extensions = [
     'nbsphinx',
     'jupyter_sphinx.embed_widgets',
     'IPython.sphinxext.ipython_console_highlighting',
-    'jupyter_alabaster_theme',
 ]
 
 intersphinx_mapping = {
@@ -75,7 +74,7 @@ todo_include_todos = False
 
 
 # -- html --------------------------
-html_theme = 'jupyter_alabaster_theme'
+html_theme = 'sphinx_rtd_theme'
 
 # html_static_path = ['_static']
 htmlhelp_basename = 'ipywidgetsdoc'
