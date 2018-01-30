@@ -16,5 +16,3 @@ dependencies:
 - tornado
 - python-dateutil
 - recommonmark
-- pip:
-  - jupyter-alabaster-theme
