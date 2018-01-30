@@ -10,7 +10,7 @@ import * as libembed from './libembed';
  */
 let requirePromise = function(pkg: string | string[]): Promise<any> {
     return new Promise((resolve, reject) => {
-        let require = (window as any).require;
+        let require = (window as any).requirejs;
         if (require === undefined) {
             reject("Requirejs is needed, please ensure it is loaded on the page.");
         } else {
