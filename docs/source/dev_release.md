@@ -37,7 +37,6 @@ python setup.py bdist_wheel --universal
 twine upload dist/*
 ```
 
-
 ### Push changes back
 
 commit and tag (ipywidgets) release
