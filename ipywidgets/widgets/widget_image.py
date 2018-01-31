@@ -32,3 +32,4 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
     width = CUnicode(help="Width of the image in pixels.").tag(sync=True)
     height = CUnicode(help="Height of the image in pixels.").tag(sync=True)
     value = Bytes(help="The image data as a byte string.").tag(sync=True)
+    url = Unicode(help="A URL to an image, an alternative to a literal value.").tag(sync=True)

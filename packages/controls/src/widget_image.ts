@@ -20,7 +20,8 @@ class ImageModel extends CoreDOMWidgetModel {
             format: 'png',
             width: '',
             height: '',
-            value: new Uint8Array(0)
+            value: new Uint8Array(0),
+            url: null
         });
     }
 }
@@ -44,8 +45,13 @@ class ImageView extends DOMWidgetView {
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        let blob = new Blob([this.model.get('value')], {type: `image/${this.model.get('format')}`});
-        let url = URL.createObjectURL(blob);
+        let url;
+        if (this.model.get('url')) {
+            url = this.model.get('url');
+        } else {
+            let blob = new Blob([this.model.get('value')], {type: `image/${this.model.get('format')}`});
+            url = URL.createObjectURL(blob);
+        }
         let oldurl = this.el.src;
         this.el.src = url;
         if (oldurl) {
