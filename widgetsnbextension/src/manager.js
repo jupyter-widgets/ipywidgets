@@ -49,16 +49,25 @@ function new_comm(manager, target_name, data, callbacks, metadata, comm_id, buff
     return manager.new_comm.apply(manager, Array.prototype.slice.call(arguments, 1));
 }
 
+/**
+ * Filter serialized widget state to remove any ID's already present in manager.
+ *
+ * @param {*} manager WidgetManager instance
+ * @param {*} state Serialized state to filter
+ *
+ * @returns {*} A copy of the state, with its 'state' attribute filtered
+ */
 function filter_existing_model_state(manager, state) {
     var models = state.state;
     models = Object.keys(models)
-          .filter(function(model_id) {
-              return !manager._models[model_id];
-          })
-          .reduce(function(res, model_id) {
-              return Object.assign(res, { [model_id]: models[model_id] });
-          }, {});
-    return Object.assign({}, state, {state: models});
+        .filter(function(model_id) {
+            return !manager._models[model_id];
+        })
+        .reduce(function(res, model_id) {
+            res[model_id] = models[model_id];
+            return res;
+        }, {});
+    return _.extend({}, state, {state: models});
 }
 
 //--------------------------------------------------------------------
@@ -87,9 +96,7 @@ var WidgetManager = function (comm_manager, notebook) {
 
     // Attempt to reconstruct any live comms by requesting them from the back-end (2).
     var that = this;
-    var backed_widgets_loaded = Promise.resolve().then(function() {
-        return that._get_comm_info();
-    }).then(function(comm_ids) {
+    this._get_comm_info().then(function(comm_ids) {
 
         // Create comm class instances from comm ids (2).
         var comm_promises = Object.keys(comm_ids).map(function(comm_id) {
