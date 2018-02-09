@@ -33,7 +33,7 @@
   "keywords": [
     "jupyter",
     "jupyterlab",
-    "jupyterlab extension",
+    "jupyterlab-extension",
     "jupyterlab notebook"
   ],
   "jupyterlab": {
