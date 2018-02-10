@@ -20,9 +20,16 @@ class ImageModel extends CoreDOMWidgetModel {
             format: 'png',
             width: '',
             height: '',
-            value: new Uint8Array(0)
+            value: new DataView(new ArrayBuffer(0))
         });
     }
+
+    static serializers = {
+        ...CoreDOMWidgetModel.serializers,
+        value: {serialize: (value, manager) => {
+            return new DataView(value.buffer.slice(0));
+        }}
+    };
 }
 
 export
