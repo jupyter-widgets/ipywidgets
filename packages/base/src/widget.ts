@@ -420,9 +420,6 @@ class WidgetModel extends Backbone.Model {
             try {
                 if (serializers[k] && serializers[k].serialize) {
                     state[k] = (serializers[k].serialize)(state[k], this);
-                } else {
-                    // the default serializer just deep-copies the object
-                    state[k] = JSON.parse(JSON.stringify(state[k]));
                 }
                 if (state[k] && state[k].toJSON) {
                     state[k] = state[k].toJSON();
