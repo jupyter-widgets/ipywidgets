@@ -158,7 +158,7 @@ html_template = """
 """
 
 manager_state = json.dumps(data['manager_state'])
-widget_views = [json.dumps(view) for view in data['widget_views']]
+widget_views = [json.dumps(view) for view in data['view_specs']]
 rendered_template = html_template.format(manager_state=manager_state, widget_views=widget_views)
 with open('export.html', 'w') as fp:
     fp.write(rendered_template)
@@ -189,7 +189,7 @@ from ipywidgets.embed import embed_snippet, dependency_state
 
 s1 = IntSlider(max=200, value=100)
 s2 = IntSlider(value=40)
-embed_minimal_html(views=[s1, s2], state=dependency_state([s1, s2]))
+embed_minimal_html('export.html', views=[s1, s2], state=dependency_state([s1, s2]))
 ```
 
 ## Embedding Widgets in the Sphinx HTML Documentation
