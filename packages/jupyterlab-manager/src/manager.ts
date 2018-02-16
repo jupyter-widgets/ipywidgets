@@ -102,7 +102,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     this._commRegistration = kernel.registerCommTarget(this.comm_target_name,
     (comm, msg) => {
       let oldComm = new shims.services.Comm(comm);
-      this.handle_comm_open(oldComm, msg);
+      return this.handle_comm_open(oldComm, msg);
     });
   }
 
