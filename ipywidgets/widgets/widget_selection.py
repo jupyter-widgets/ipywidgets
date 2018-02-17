@@ -206,7 +206,14 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
         self.set_trait('_options_labels', tuple(i[0] for i in options))
         self._options_values = tuple(i[1] for i in options)
         if self._initializing_traits_ is not True:
-            self.index = 0 if len(options) > 0 else None
+            if len(options) > 0:
+                # if the index is already 0, we set it to None so that setting it to 0
+                # will be recognized as a change (and pick up the new option value and label).
+                if self.index == 0:
+                    self.index = None
+                self.index = 0
+            else:
+                self.index = None
 
     @validate('index')
     def _validate_index(self, proposal):
