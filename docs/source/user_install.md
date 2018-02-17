@@ -27,6 +27,27 @@ conda install -c conda-forge ipywidgets
 
 Installing **ipywidgets** with conda will also enable the extension for you.
 
+Installing with multiple environments
+-------------------------------------
+
+Sometimes the Jupyter Notebook and the IPython kernel are installed in different
+environments (either virtualenv or conda environments).
+This happens when environments are used to
+provide different IPython kernels. In this case, the installation requires two steps.
+
+First, you need to install the `widgetsnbextension` package in the environment
+containing the Jupyter Notebook server. Next, you need to install 
+`ipywidgets` in each kernel's environment that will use ipywidgets.
+
+For example, if using conda environments, with the notebook installed on the 
+`base` environment and the kernel installed in an environment called `py36`,
+the commands are:
+
+```bash
+conda install -n base -c conda-forge widgetsnbextension
+conda install -n py36 -c conda-forge ipywidgets
+
+```
 
 Installing the JupyterLab Extension
 -----------------------------------
