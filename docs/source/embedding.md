@@ -185,7 +185,7 @@ the relevant ones in your export. To include only the state of specific views
 and their dependencies, use the function `dependency_state`:
 
 ```py
-from ipywidgets.embed import embed_snippet, dependency_state
+from ipywidgets.embed import embed_minimal_html, dependency_state
 
 s1 = IntSlider(max=200, value=100)
 s2 = IntSlider(value=40)
