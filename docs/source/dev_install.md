@@ -15,7 +15,7 @@ To install ipywidgets from git, you will need:
   + See the
     [Compatibility table](https://github.com/jupyter-widgets/ipywidgets#compatibility)
     
-- the latest [JupyterLab release](https://github.com/jupyter/notebook/releases)
+- the latest [JupyterLab release](https://github.com/jupyterlab/jupyterlab/releases)
 
 
 
