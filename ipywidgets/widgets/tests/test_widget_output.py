@@ -103,6 +103,27 @@ class TestOutputWidget(TestCase):
         )
         assert captee_calls[1] == ((), {})
 
+    def test_capture_decorator_clear_output(self):
+        msg_id = 'msg-id'
+        get_ipython = self._mock_get_ipython(msg_id)
+        clear_output = self._mock_clear_output()
+
+        with self._mocked_ipython(get_ipython, clear_output):
+            widget = widget_output.Output()
+            assert widget.msg_id == ''
+
+            @widget.capture(clear_output=True, wait=True)
+            def captee(*args, **kwargs):
+                # Check that we are capturing output
+                assert widget.msg_id == msg_id
+
+            captee()
+            captee()
+
+        assert len(clear_output.calls) == 2
+        assert clear_output.calls[0] == clear_output.calls[1] == \
+            ((), {'wait': True})
+
 
 
 def _make_stream_output(text, name):
