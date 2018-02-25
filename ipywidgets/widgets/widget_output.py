@@ -73,7 +73,7 @@ class Output(DOMWidget):
         with self:
             clear_output(*pargs, **kwargs)
 
-    def capture(self, clear_output=True, *outer_args, **outer_kwargs):
+    def capture(self, clear_output=True, *clear_args, **clear_kwargs):
         """
         Decorator to capture the stdout and stderr of a function.
 
@@ -94,7 +94,7 @@ class Output(DOMWidget):
             @wraps(func)
             def inner(*args, **kwargs):
                 if clear_output:
-                    self.clear_output(*outer_args, **outer_kwargs)
+                    self.clear_output(*clear_args, **clear_kwargs)
                 with self:
                     return func(*args, **kwargs)
             return inner
