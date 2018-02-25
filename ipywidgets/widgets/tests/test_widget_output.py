@@ -110,7 +110,6 @@ class TestOutputWidget(TestCase):
 
         with self._mocked_ipython(get_ipython, clear_output):
             widget = widget_output.Output()
-            assert widget.msg_id == ''
 
             @widget.capture(clear_output=True, wait=True)
             def captee(*args, **kwargs):
@@ -131,7 +130,6 @@ class TestOutputWidget(TestCase):
 
         with self._mocked_ipython(get_ipython, clear_output):
             widget = widget_output.Output()
-            assert widget.msg_id == ''
 
             @widget.capture(clear_output=False)
             def captee(*args, **kwargs):
@@ -142,7 +140,6 @@ class TestOutputWidget(TestCase):
             captee()
 
         assert len(clear_output.calls) == 0
-
 
 
 def _make_stream_output(text, name):
