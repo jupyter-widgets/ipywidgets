@@ -45,7 +45,7 @@ class Output(DOMWidget):
         with out:
             print('prints to output widget')
 
-        @out.decorate
+        @out.capture()
         def func():
             print('prints to output widget')
     """
@@ -60,11 +60,36 @@ class Output(DOMWidget):
     outputs = Tuple(help="The output messages synced from the frontend.").tag(sync=True)
 
     def clear_output(self, *pargs, **kwargs):
+        """
+        Clear the content of the output widget.
+
+        Parameters
+        ----------
+
+        wait: bool
+            If True, wait to clear the output until new output is
+            available to replace it. Default: False
+        """
         with self:
             clear_output(*pargs, **kwargs)
 
     def capture(self, clear_output=True, *outer_args, **outer_kwargs):
-        """Decorator to capture the stdout and stderr of a function"""
+        """
+        Decorator to capture the stdout and stderr of a function.
+
+        Parameters
+        ----------
+
+        clear_output: bool
+            If True, clear the content of the output widget at every
+            new function call. Default: True
+
+        wait: bool
+            If True, wait to clear the output until new output is
+            available to replace it. This is only used if clear_output
+            is also True.
+            Default: False
+        """
         def capture_decorator(func):
             @wraps(func)
             def inner(*args, **kwargs):
