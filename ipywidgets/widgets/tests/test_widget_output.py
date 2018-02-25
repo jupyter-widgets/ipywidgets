@@ -1,7 +1,63 @@
 import sys
+from unittest import TestCase
+from contextlib import contextmanager
 
 from IPython.display import Markdown, Image
 from ipywidgets import widget_output
+
+
+class TestOutputWidget(TestCase):
+
+    @contextmanager
+    def _mocked_ipython(self, get_ipython, clear_output):
+        original_clear_output = widget_output.clear_output
+        original_get_ipython = widget_output.get_ipython
+        widget_output.get_ipython = get_ipython
+        widget_output.clear_output = clear_output
+        try:
+            yield
+        finally:
+            widget_output.clear_output = original_clear_output
+            widget_output.get_ipython = original_get_ipython
+
+    def _mock_get_ipython(self, msg_id):
+        # Specifically override this so the traceback
+        # is still printed to screen
+        def showtraceback(self_, exc_tuple, *args, **kwargs):
+            etype, evalue, tb = exc_tuple
+            raise etype(evalue)
+        kernel = type(
+            'mock_kernel',
+            (object, ),
+            {'_parent_header': {'header': {'msg_id': msg_id}}}
+        )
+        ipython = type(
+            'mock_ipython',
+            (object, ),
+            {'kernel': kernel, 'showtraceback': showtraceback}
+        )
+        return ipython
+
+    def _mock_clear_output(self):
+        calls = []
+
+        def clear_output(*args, **kwargs):
+            calls.append((args, kwargs))
+        clear_output.calls = calls
+
+        return clear_output
+
+    def test_set_msg_id_when_capturing(self):
+        msg_id = 'msg-id'
+        get_ipython = self._mock_get_ipython(msg_id)
+        clear_output = self._mock_clear_output()
+
+        with self._mocked_ipython(get_ipython, clear_output):
+            widget = widget_output.Output()
+            assert widget.msg_id == ''
+            with widget:
+                assert widget.msg_id == msg_id
+            assert widget.msg_id == ''
 
 
 def _make_stream_output(text, name):
