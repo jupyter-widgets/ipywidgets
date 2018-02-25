@@ -74,7 +74,7 @@ class Output(DOMWidget):
             clear_output(*pargs, **kwargs)
 
     # PY3: Force passing clear_output and clear_kwargs as kwargs
-    def capture(self, clear_output=True, *clear_args, **clear_kwargs):
+    def capture(self, clear_output=False, *clear_args, **clear_kwargs):
         """
         Decorator to capture the stdout and stderr of a function.
 
@@ -83,7 +83,7 @@ class Output(DOMWidget):
 
         clear_output: bool
             If True, clear the content of the output widget at every
-            new function call. Default: True
+            new function call. Default: False
 
         wait: bool
             If True, wait to clear the output until new output is
