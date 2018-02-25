@@ -73,6 +73,7 @@ class Output(DOMWidget):
         with self:
             clear_output(*pargs, **kwargs)
 
+    # PY3: Force passing clear_output and clear_kwargs as kwargs
     def capture(self, clear_output=True, *clear_args, **clear_kwargs):
         """
         Decorator to capture the stdout and stderr of a function.
