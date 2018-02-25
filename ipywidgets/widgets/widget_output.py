@@ -63,13 +63,17 @@ class Output(DOMWidget):
         with self:
             clear_output(*pargs, **kwargs)
 
-    def capture(self, func):
+    def capture(self, clear_output=True, *outer_args, **outer_kwargs):
         """Decorator to capture the stdout and stderr of a function"""
-        @wraps(func)
-        def inner(*args, **kwargs):
-            with self:
-                return func(*args, **kwargs)
-        return inner
+        def capture_decorator(func):
+            @wraps(func)
+            def inner(*args, **kwargs):
+                if clear_output:
+                    self.clear_output(*outer_args, **outer_kwargs)
+                with self:
+                    return func(*args, **kwargs)
+            return inner
+        return capture_decorator
 
     def __enter__(self):
         """Called upon entering output widget context manager."""
