@@ -10,6 +10,7 @@ class TestOutputWidget(TestCase):
 
     @contextmanager
     def _mocked_ipython(self, get_ipython, clear_output):
+        """ Context manager that monkeypatches get_ipython and clear_output """
         original_clear_output = widget_output.clear_output
         original_get_ipython = widget_output.get_ipython
         widget_output.get_ipython = get_ipython
@@ -21,16 +22,19 @@ class TestOutputWidget(TestCase):
             widget_output.get_ipython = original_get_ipython
 
     def _mock_get_ipython(self, msg_id):
-        # Specifically override this so the traceback
-        # is still printed to screen
-        def showtraceback(self_, exc_tuple, *args, **kwargs):
-            etype, evalue, tb = exc_tuple
-            raise etype(evalue)
+        """ Returns a mock IPython application with a mocked kernel """
         kernel = type(
             'mock_kernel',
             (object, ),
             {'_parent_header': {'header': {'msg_id': msg_id}}}
         )
+
+        # Specifically override this so the traceback
+        # is still printed to screen
+        def showtraceback(self_, exc_tuple, *args, **kwargs):
+            etype, evalue, tb = exc_tuple
+            raise etype(evalue)
+
         ipython = type(
             'mock_ipython',
             (object, ),
@@ -39,6 +43,7 @@ class TestOutputWidget(TestCase):
         return ipython
 
     def _mock_clear_output(self):
+        """ Mock function that records calls to it """
         calls = []
 
         def clear_output(*args, **kwargs):
