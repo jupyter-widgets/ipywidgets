@@ -1,7 +1,7 @@
 import sys
 
 from IPython.display import Markdown, Image
-from ipywidgets import Output
+from ipywidgets import widget_output
 
 
 def _make_stream_output(text, name):
@@ -13,38 +13,38 @@ def _make_stream_output(text, name):
 
 
 def test_append_stdout():
-    output = Output()
+    widget = widget_output.Output()
 
     # Try appending a message to stdout.
-    output.append_stdout("snakes!")
+    widget.append_stdout("snakes!")
     expected = (_make_stream_output("snakes!", "stdout"),)
-    assert output.outputs == expected, repr(output.outputs)
+    assert widget.outputs == expected, repr(widget.outputs)
 
     # Try appending a second message.
-    output.append_stdout("more snakes!")
+    widget.append_stdout("more snakes!")
     expected += (_make_stream_output("more snakes!", "stdout"),)
-    assert output.outputs == expected, repr(output.outputs)
+    assert widget.outputs == expected, repr(widget.outputs)
 
 
 def test_append_stderr():
-    output = Output()
+    widget = widget_output.Output()
 
     # Try appending a message to stderr.
-    output.append_stderr("snakes!")
+    widget.append_stderr("snakes!")
     expected = (_make_stream_output("snakes!", "stderr"),)
-    assert output.outputs == expected, repr(output.outputs)
+    assert widget.outputs == expected, repr(widget.outputs)
 
     # Try appending a second message.
-    output.append_stderr("more snakes!")
+    widget.append_stderr("more snakes!")
     expected += (_make_stream_output("more snakes!", "stderr"),)
-    assert output.outputs == expected, repr(output.outputs)
+    assert widget.outputs == expected, repr(widget.outputs)
 
 
 def test_append_display_data():
-    output = Output()
+    widget = widget_output.Output()
 
     # Try appending a Markdown object.
-    output.append_display_data(Markdown("# snakes!"))
+    widget.append_display_data(Markdown("# snakes!"))
     expected = (
         {
             'output_type': 'display_data',
@@ -55,13 +55,13 @@ def test_append_display_data():
             'metadata': {}
         },
     )
-    assert output.outputs == expected, repr(output.outputs)
+    assert widget.outputs == expected, repr(widget.outputs)
 
     # Now try appending an Image.
     image_data = b"foobar"
     image_data_b64 = image_data if sys.version_info[0] < 3 else 'Zm9vYmFy\n'
 
-    output.append_display_data(Image(image_data, width=123, height=456))
+    widget.append_display_data(Image(image_data, width=123, height=456))
     expected += (
         {
             'output_type': 'display_data',
@@ -77,4 +77,4 @@ def test_append_display_data():
             }
         },
     )
-    assert output.outputs == expected, repr(output.outputs)
+    assert widget.outputs == expected, repr(widget.outputs)
