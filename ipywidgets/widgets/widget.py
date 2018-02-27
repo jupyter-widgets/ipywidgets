@@ -697,7 +697,7 @@ class Widget(LoggingHasTraits):
         """Convert json values to objects."""
         return x
 
-    def _ipython_display_(self, **kwargs):
+    def _repr_mimebundle_(self, **kwargs):
         """Called when `IPython.display.display` is called on the widget."""
         if self._view_name is not None:
 
@@ -715,9 +715,8 @@ class Widget(LoggingHasTraits):
                     'model_id': self._model_id
                 }
             }
-            display(data, raw=True)
-
             self._handle_displayed(**kwargs)
+            return data
 
     def _send(self, msg, buffers=None):
         """Sends a message to the model in the front-end."""
