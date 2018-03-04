@@ -450,7 +450,7 @@ class ToggleButtonsView extends DescriptionView {
             }
         }
 
-        if (stale && options === undefined || options.updated_view !== this) {
+        if (stale && (options === undefined || options.updated_view !== this)) {
             // Add items to the DOM.
             this.buttongroup.textContent = '';
             items.forEach((item: any, index: number) => {
@@ -638,7 +638,7 @@ class SelectionSliderView extends DescriptionView {
      * changed by another view or by a state update from the back-end.
      */
     update(options?) {
-        if (options === undefined || options.updated_view != this) {
+        if (options === undefined || options.updated_view !== this) {
             let labels = this.model.get('_options_labels');
             let max = labels.length - 1;
             let min = 0;
