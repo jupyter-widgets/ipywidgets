@@ -328,6 +328,7 @@ abstract class ManagerBase<T> {
         }
 
         let modelPromise = this._make_model(options, serialized_state);
+        // this call needs to happen before the first `await`, see note in `set_state`:
         this.register_model(model_id, modelPromise);
         return await modelPromise;
     }
@@ -425,6 +426,16 @@ abstract class ManagerBase<T> {
         let models = state.state;
         // Recreate all the widget models for the given widget manager state.
         let all_models = this._get_comm_info().then(live_comms => {
+            /* Note: It is currently safe to just loop over the models in any order,
+               given that the following holds (does at the time of writing):
+               1: any call to `new_model` with state registers the model promise (e.g. with `register_model`)
+                  synchronously (before it's first `await` statement).
+               2: any calls to a model constructor or the `set_state` method on a model,
+                  happens asynchronously (in a `then` clause, or after an `await` statement).
+
+              Without these assumptions, one risks trying to set model state with a reference
+              to another model that doesn't exist yet!
+            */
             return Promise.all(Object.keys(models).map(model_id => {
 
                 // First put back the binary buffers
@@ -444,7 +455,7 @@ abstract class ManagerBase<T> {
                     return this._models[model_id].then(model => {
                         // deserialize state
                         return (model.constructor as typeof WidgetModel)._deserialize_state(modelState || {}, this).then(attributes => {
-                            model.set_state(attributes);
+                            model.set_state(attributes);  // case 2
                             return model;
                         });
                     });
@@ -461,10 +472,10 @@ abstract class ManagerBase<T> {
                     // should *not* send a comm open message.
                     return this._create_comm(this.comm_target_name, model_id).then(comm => {
                         modelCreate.comm = comm;
-                        return this.new_model(modelCreate);
+                        return this.new_model(modelCreate);  // No state, so safe wrt. case 1
                     });
                 } else {
-                    return this.new_model(modelCreate, modelState);
+                    return this.new_model(modelCreate, modelState);  // case 1
                 }
             }));
         });
