@@ -19,20 +19,31 @@ let requirePromise = function(pkg: string | string[]): Promise<any> {
     });
 }
 
+function moduleNameToCDNUrl(moduleName: string, moduleVersion: string) {
+    let packageName = moduleName;
+    let fileName = 'index'; // default filename
+    // if a '/' is present, like 'foo/bar', packageName is changed to 'foo', and path to 'bar'
+    // We first find the first '/'
+    let index = moduleName.indexOf('/');
+    if ((index != -1) && (moduleName[0] == '@')) {
+        // if we have a namespace, it's a different story
+        // @foo/bar/baz should translate to @foo/bar and baz
+        // so we find the 2nd '/'
+        index = moduleName.indexOf('/', index+1);
+    }
+    if (index != -1) {
+        fileName = moduleName.substr(index+1);
+        packageName = moduleName.substr(0, index);
+    }
+    return `https://unpkg.com/${packageName}@${moduleVersion}/dist/${fileName}.js`;
+}
+
 function requireLoader(moduleName: string, moduleVersion: string) {
     return requirePromise([`${moduleName}`]).catch((err) => {
         let failedId = err.requireModules && err.requireModules[0];
         if (failedId) {
             console.log(`Falling back to unpkg.com for ${moduleName}@${moduleVersion}`);
-            // default path
-            let path = 'index'
-            let index = moduleName.indexOf('/');
-            if(index != -1) {
-                // if a '/'' is present, like 'foo/bar', moduleName is changed to 'foo', and path to 'bar'
-                path = moduleName.substr(index+1)
-                moduleName = moduleName.substr(0, index)
-            }
-           return requirePromise([`https://unpkg.com/${moduleName}@${moduleVersion}/dist/${path}.js`]);
+            return requirePromise([moduleNameToCDNUrl(moduleName, moduleVersion)]);
        }
     });
 }
