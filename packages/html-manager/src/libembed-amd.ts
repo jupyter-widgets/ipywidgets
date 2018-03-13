@@ -24,8 +24,16 @@ function requireLoader(moduleName: string, moduleVersion: string) {
         let failedId = err.requireModules && err.requireModules[0];
         if (failedId) {
             console.log(`Falling back to unpkg.com for ${moduleName}@${moduleVersion}`);
-            return requirePromise([`https://unpkg.com/${moduleName}@${moduleVersion}/dist/index.js`]);
-        }
+            // default path
+            let path = 'index'
+            let index = moduleName.indexOf('/');
+            if(index != -1) {
+                // if a '/'' is present, like 'foo/bar', moduleName is changed to 'foo', and path to 'bar'
+                path = moduleName.substr(index+1)
+                moduleName = moduleName.substr(0, index)
+            }
+           return requirePromise([`https://unpkg.com/${moduleName}@${moduleVersion}/dist/${path}.js`]);
+       }
     });
 }
 
