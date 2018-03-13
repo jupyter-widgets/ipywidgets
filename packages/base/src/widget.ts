@@ -54,6 +54,19 @@ function unpack_models(value, manager): Promise<any> {
     }
 }
 
+
+/**
+ * Type declaration for general widget serializers.
+ */
+export
+interface ISerializers {
+    [key: string]: {
+        deserialize?: (value?: any, manager?: managerBase.ManagerBase<any>) => any;
+        serialize?: (value?: any, widget?: WidgetModel) => any;
+    };
+}
+
+
 export
 class WidgetModel extends Backbone.Model {
 
@@ -524,10 +537,7 @@ class WidgetModel extends Backbone.Model {
         return utils.resolvePromisesDict(deserialized);
     }
 
-    static serializers: {[key: string]: {
-        deserialize?: (value?: any, manager?: managerBase.ManagerBase<any>) => any,
-        serialize?: (value?: any, widget?: WidgetModel) => any
-    }};
+    static serializers: ISerializers;
 
 
     // Backbone calls the overridden initialization function from the
@@ -553,7 +563,7 @@ class WidgetModel extends Backbone.Model {
 
 export
 class DOMWidgetModel extends WidgetModel {
-    static serializers = {
+    static serializers: ISerializers = {
         ...WidgetModel.serializers,
         layout: {deserialize: unpack_models},
         style: {deserialize: unpack_models},
