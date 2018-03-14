@@ -26,13 +26,13 @@ class Output(DOMWidget):
     This widget can capture and display stdout, stderr, and rich output.  To use
     it, create an instance of it and display it.
 
-    You can then use it as a context manager: any output produced while in it's
-    context will be captured and displayed in it instead of the standard output
+    You can then use the widget as a context manager: any output produced while in the
+    context will be captured and displayed in the widget instead of the standard output
     area.
 
-    You can also use it to decorate a function or a method. Any output produced
-    by the function will then go to the output widget. This is useful for
-    debugging widget callbacks, for instance.
+    You can also use the .capture() method to decorate a function or a method. Any output 
+    produced by the function will then go to the output widget. This is useful for
+    debugging widget callbacks, for example.
 
     Example::
         import ipywidgets as widgets
