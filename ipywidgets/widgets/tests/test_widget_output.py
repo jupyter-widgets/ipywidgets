@@ -5,11 +5,11 @@ from ipywidgets import Output
 
 
 def _make_stream_output(text, name):
-        return {
-            'output_type': 'stream',
-            'name': name,
-            'text': text
-        }
+    return {
+        'output_type': 'stream',
+        'name': name,
+        'text': text
+    }
 
 
 def test_append_stdout():

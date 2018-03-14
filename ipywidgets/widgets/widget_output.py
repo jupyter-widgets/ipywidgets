@@ -6,12 +6,13 @@
 Represents a widget that can be used to display output within the widget area.
 """
 
+import sys
+from functools import wraps
+
 from .domwidget import DOMWidget
 from .widget import register
-from .widget_core import CoreWidget
 from .._version import __jupyter_widgets_output_version__
 
-import sys
 from traitlets import Unicode, Tuple
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.display import clear_output
@@ -23,9 +24,15 @@ class Output(DOMWidget):
     """Widget used as a context manager to display output.
 
     This widget can capture and display stdout, stderr, and rich output.  To use
-    it, create an instance of it and display it.  Then use it as a context
-    manager.  Any output produced while in it's context will be captured and
-    displayed in it instead of the standard output area.
+    it, create an instance of it and display it.
+
+    You can then use the widget as a context manager: any output produced while in the
+    context will be captured and displayed in the widget instead of the standard output
+    area.
+
+    You can also use the .capture() method to decorate a function or a method. Any output 
+    produced by the function will then go to the output widget. This is useful for
+    debugging widget callbacks, for example.
 
     Example::
         import ipywidgets as widgets
@@ -36,6 +43,10 @@ class Output(DOMWidget):
         print('prints to output area')
 
         with out:
+            print('prints to output widget')
+
+        @out.capture()
+        def func():
             print('prints to output widget')
     """
     _view_name = Unicode('OutputView').tag(sync=True)
@@ -49,8 +60,46 @@ class Output(DOMWidget):
     outputs = Tuple(help="The output messages synced from the frontend.").tag(sync=True)
 
     def clear_output(self, *pargs, **kwargs):
+        """
+        Clear the content of the output widget.
+
+        Parameters
+        ----------
+
+        wait: bool
+            If True, wait to clear the output until new output is
+            available to replace it. Default: False
+        """
         with self:
             clear_output(*pargs, **kwargs)
+
+    # PY3: Force passing clear_output and clear_kwargs as kwargs
+    def capture(self, clear_output=False, *clear_args, **clear_kwargs):
+        """
+        Decorator to capture the stdout and stderr of a function.
+
+        Parameters
+        ----------
+
+        clear_output: bool
+            If True, clear the content of the output widget at every
+            new function call. Default: False
+
+        wait: bool
+            If True, wait to clear the output until new output is
+            available to replace it. This is only used if clear_output
+            is also True.
+            Default: False
+        """
+        def capture_decorator(func):
+            @wraps(func)
+            def inner(*args, **kwargs):
+                if clear_output:
+                    self.clear_output(*clear_args, **clear_kwargs)
+                with self:
+                    return func(*args, **kwargs)
+            return inner
+        return capture_decorator
 
     def __enter__(self):
         """Called upon entering output widget context manager."""
