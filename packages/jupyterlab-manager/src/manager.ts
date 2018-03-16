@@ -157,6 +157,13 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   }
 
   /**
+   * Resolve a URL relative to the current notebook location.
+   */
+  resolveUrl(url: string): Promise<string> {
+    return this.context.resolveUrl(url);
+  }
+
+  /**
    * Load a class and return a promise to the loaded object.
    */
   protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<typeof WidgetModel | typeof WidgetView> {

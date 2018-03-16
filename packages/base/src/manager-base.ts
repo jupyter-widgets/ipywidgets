@@ -492,6 +492,16 @@ abstract class ManagerBase<T> {
             this._models[i].then(model => { model.comm_live = false; });
         });
     }
+
+    /**
+     * Resolve a URL relative to the current notebook location.
+     *
+     * The default implementation just returns the original url.
+     */
+    resolveUrl(url: string): Promise<string> {
+        return Promise.resolve(url);
+    }
+
     /**
      * The comm target name to register
      */
