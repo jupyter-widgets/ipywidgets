@@ -8,11 +8,12 @@ group other widgets together and control their
 relative layouts.
 """
 
-from .widget import register, widget_serialization
+from .widget import register, widget_serialization, Widget
 from .domwidget import DOMWidget
 from .widget_core import CoreWidget
 from .docutils import doc_subst
-from traitlets import Unicode, Tuple, CaselessStrEnum
+from .trait_types import TypedTuple
+from traitlets import Unicode, CaselessStrEnum, Instance
 
 
 _doc_snippets = {}
@@ -51,7 +52,7 @@ class Box(DOMWidget, CoreWidget):
     # Child widgets in the container.
     # Using a tuple here to force reassignment to update the list.
     # When a proper notifying-list trait exists, use that instead.
-    children = Tuple(help="List of widget children").tag(
+    children = TypedTuple(trait=Instance(Widget), help="List of widget children").tag(
         sync=True, **widget_serialization)
 
     box_style = CaselessStrEnum(

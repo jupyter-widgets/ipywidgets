@@ -10,10 +10,11 @@ import sys
 from functools import wraps
 
 from .domwidget import DOMWidget
+from .trait_types import TypedTuple
 from .widget import register
 from .._version import __jupyter_widgets_output_version__
 
-from traitlets import Unicode, Tuple
+from traitlets import Unicode, Dict
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.display import clear_output
 from IPython import get_ipython
@@ -57,7 +58,7 @@ class Output(DOMWidget):
     _model_module_version = Unicode(__jupyter_widgets_output_version__).tag(sync=True)
 
     msg_id = Unicode('', help="Parent message id of messages to capture").tag(sync=True)
-    outputs = Tuple(help="The output messages synced from the frontend.").tag(sync=True)
+    outputs = TypedTuple(trait=Dict(), help="The output messages synced from the frontend.").tag(sync=True)
 
     def clear_output(self, *pargs, **kwargs):
         """

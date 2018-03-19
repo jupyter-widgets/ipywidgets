@@ -183,3 +183,7 @@ class NumberFormat(traitlets.Unicode):
                     'specified.'.format(
                         list(_number_format_types), format_type)
                 )
+
+class TypedTuple(traitlets.Container):
+    klass = tuple
+    _cast_types = (list,)

@@ -6,6 +6,7 @@ from ipywidgets.widgets.widget_link import Link
 
 from traitlets import CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat, Float, CInt, Int, Instance, Undefined, Dict, Any
 from ipywidgets import Color
+from ipywidgets.widgets.trait_types import TypedTuple
 
 header = '''# Model State
 
@@ -27,7 +28,7 @@ def typing(x):
         s = 'string (one of %s)'%(', '.join('`%r`'%i for i in x.values))
     elif isinstance(x, Unicode):
         s = 'string'
-    elif isinstance(x, (Tuple, List)):
+    elif isinstance(x, (Tuple, TypedTuple, List)):
         s = 'array'
     elif isinstance(x, Bool):
         s = 'boolean'
