@@ -730,11 +730,6 @@
     border-color: var(--jp-widgets-input-focus-border-color);
 }
 
-.widget-select > select > option:checked {
-    color: var(--jp-ui-font-color0);
-    background: var(--jp-layout-color0) repeat url("data:image/gif;base64,R0lGO...");
-}
-
 .wiget-select > select > option {
     padding-left: var(--jp-widgets-input-padding);
     line-height: var(--jp-widgets-inline-height);
