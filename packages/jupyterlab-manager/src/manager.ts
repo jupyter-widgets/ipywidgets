@@ -160,7 +160,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * Resolve a URL relative to the current notebook location.
    */
   resolveUrl(url: string): Promise<string> {
-    return this.context.resolveUrl(url);
+    return this.context.urlResolver.resolveUrl(url);
   }
 
   /**
