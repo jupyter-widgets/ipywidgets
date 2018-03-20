@@ -9,7 +9,7 @@ Propagate changes between widgets on the javascript side.
 from .widget import Widget, register, widget_serialization
 from .widget_core import CoreWidget
 
-from traitlets import Unicode, Tuple, List,Instance, TraitError
+from traitlets import Unicode, Tuple, Instance, TraitError
 
 
 class WidgetTraitTuple(Tuple):

@@ -21,7 +21,7 @@ from .trait_types import InstanceDict, TypedTuple
 from .widget import register, widget_serialization
 from .docutils import doc_subst
 from traitlets import (Unicode, Bool, Int, Any, Dict, TraitError, CaselessStrEnum,
-                       Tuple, List, Union, observe, validate)
+                       Tuple, Union, observe, validate)
 from ipython_genutils.py3compat import unicode_type
 
 _doc_snippets = {}
@@ -432,8 +432,8 @@ class ToggleButtons(_Selection):
     _view_name = Unicode('ToggleButtonsView').tag(sync=True)
     _model_name = Unicode('ToggleButtonsModel').tag(sync=True)
 
-    tooltips = List(Unicode(), help="Tooltips for each button.").tag(sync=True)
-    icons = List(Unicode(), help="Icons names for each button (FontAwesome names without the fa- prefix).").tag(sync=True)
+    tooltips = TypedTuple(Unicode(), help="Tooltips for each button.").tag(sync=True)
+    icons = TypedTuple(Unicode(), help="Icons names for each button (FontAwesome names without the fa- prefix).").tag(sync=True)
     style = InstanceDict(ToggleButtonsStyle).tag(sync=True, **widget_serialization)
 
     button_style = CaselessStrEnum(

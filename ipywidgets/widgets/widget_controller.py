@@ -10,7 +10,8 @@ from .valuewidget import ValueWidget
 from .widget import register, widget_serialization
 from .domwidget import DOMWidget
 from .widget_core import CoreWidget
-from traitlets import Bool, Int, Float, Unicode, List, Instance
+from .trait_types import TypedTuple
+from traitlets import Bool, Int, Float, Unicode, Instance
 
 
 @register
@@ -45,8 +46,8 @@ class Controller(DOMWidget, CoreWidget):
     timestamp = Float(read_only=True, help="The last time the data from this gamepad was updated.").tag(sync=True)
 
     # Buttons and axes - read-only
-    buttons = List(trait=Instance(Button), read_only=True, help="The buttons on the gamepad.").tag(sync=True, **widget_serialization)
-    axes = List(trait=Instance(Axis), read_only=True, help="The axes on the gamepad.").tag(sync=True, **widget_serialization)
+    buttons = TypedTuple(trait=Instance(Button), read_only=True, help="The buttons on the gamepad.").tag(sync=True, **widget_serialization)
+    axes = TypedTuple(trait=Instance(Axis), read_only=True, help="The axes on the gamepad.").tag(sync=True, **widget_serialization)
 
     _view_name = Unicode('ControllerView').tag(sync=True)
     _model_name = Unicode('ControllerModel').tag(sync=True)
