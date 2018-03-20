@@ -3,9 +3,9 @@
 
 """Contains the DOMWidget class"""
 
-from traitlets import Unicode, Tuple
+from traitlets import Unicode
 from .widget import Widget, widget_serialization
-from .trait_types import InstanceDict
+from .trait_types import InstanceDict, TypedTuple
 from .widget_layout import Layout
 from .widget_style import Style
 
@@ -14,7 +14,7 @@ class DOMWidget(Widget):
     """Widget that can be inserted into the DOM"""
 
     _model_name = Unicode('DOMWidgetModel').tag(sync=True)
-    _dom_classes = Tuple(help="CSS classes applied to widget DOM element").tag(sync=True)
+    _dom_classes = TypedTuple(trait=Unicode(), help="CSS classes applied to widget DOM element").tag(sync=True)
     layout = InstanceDict(Layout).tag(sync=True, **widget_serialization)
 
     def add_class(self, className):

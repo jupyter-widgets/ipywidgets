@@ -17,11 +17,11 @@ from .widget_description import DescriptionWidget, DescriptionStyle
 from .valuewidget import ValueWidget
 from .widget_core import CoreWidget
 from .widget_style import Style
-from .trait_types import InstanceDict
+from .trait_types import InstanceDict, TypedTuple
 from .widget import register, widget_serialization
 from .docutils import doc_subst
 from traitlets import (Unicode, Bool, Int, Any, Dict, TraitError, CaselessStrEnum,
-                       Tuple, List, Union, observe, validate)
+                       Tuple, Union, observe, validate)
 from ipython_genutils.py3compat import unicode_type
 
 _doc_snippets = {}
@@ -167,7 +167,7 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
     _options_full = None
 
     # This being read-only means that it cannot be changed by the user.
-    _options_labels = Tuple(read_only=True, help="The labels for the options.").tag(sync=True)
+    _options_labels = TypedTuple(trait=Unicode(), read_only=True, help="The labels for the options.").tag(sync=True)
 
     disabled = Bool(help="Enable or disable user changes").tag(sync=True)
 
@@ -283,9 +283,9 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
     one may set equals=np.array_equal.
     """
 
-    value = Tuple(help="Selected values")
-    label = Tuple(help="Selected labels")
-    index = Tuple(help="Selected indices").tag(sync=True)
+    value = TypedTuple(trait=Any(), help="Selected values")
+    label = TypedTuple(trait=Unicode(), help="Selected labels")
+    index = TypedTuple(trait=Int(), help="Selected indices").tag(sync=True)
 
     options = Any((),
     help="""Iterable of values, (label, value) pairs, or a mapping of {label: value} pairs that the user can select.
@@ -296,7 +296,7 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
     _options_full = None
 
     # This being read-only means that it cannot be changed from the frontend!
-    _options_labels = Tuple(read_only=True, help="The labels for the options.").tag(sync=True)
+    _options_labels = TypedTuple(trait=Unicode(), read_only=True, help="The labels for the options.").tag(sync=True)
 
     disabled = Bool(help="Enable or disable user changes").tag(sync=True)
 
@@ -432,8 +432,8 @@ class ToggleButtons(_Selection):
     _view_name = Unicode('ToggleButtonsView').tag(sync=True)
     _model_name = Unicode('ToggleButtonsModel').tag(sync=True)
 
-    tooltips = List(Unicode(), help="Tooltips for each button.").tag(sync=True)
-    icons = List(Unicode(), help="Icons names for each button (FontAwesome names without the fa- prefix).").tag(sync=True)
+    tooltips = TypedTuple(Unicode(), help="Tooltips for each button.").tag(sync=True)
+    icons = TypedTuple(Unicode(), help="Icons names for each button (FontAwesome names without the fa- prefix).").tag(sync=True)
     style = InstanceDict(ToggleButtonsStyle).tag(sync=True, **widget_serialization)
 
     button_style = CaselessStrEnum(

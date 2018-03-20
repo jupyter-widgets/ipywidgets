@@ -183,3 +183,8 @@ class NumberFormat(traitlets.Unicode):
                     'specified.'.format(
                         list(_number_format_types), format_type)
                 )
+
+class TypedTuple(traitlets.Container):
+    """A trait for a tuple of any length with type-checked elements."""
+    klass = tuple
+    _cast_types = (list,)
