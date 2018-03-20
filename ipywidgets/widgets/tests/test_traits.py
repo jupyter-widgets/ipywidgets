@@ -5,13 +5,15 @@
 import array
 import datetime as dt
 
+import nose.tools as nt
+
 from unittest import TestCase
-from traitlets import HasTraits
+from traitlets import HasTraits, Int, TraitError
 from traitlets.tests.test_traitlets import TraitTestBase
 
 from ipywidgets import Color, NumberFormat
 from ipywidgets.widgets.widget import _remove_buffers, _put_buffers
-from ipywidgets.widgets.trait_types import date_serialization
+from ipywidgets.widgets.trait_types import date_serialization, TypedTuple
 
 
 class NumberFormatTrait(HasTraits):
@@ -129,3 +131,80 @@ class TestBuffers(TestCase):
         # we know that tuples get converted to list, so help the comparison by changing the tuple to a list
         state_before['z'] = list(state_before['z'])
         self.assertEqual(state_before, state)
+
+
+
+def test_typed_tuple_uninitialized_ints():
+    class TestCase(HasTraits):
+        value = TypedTuple(trait=Int())
+
+    obj = TestCase()
+    assert obj.value == ()
+
+
+def test_typed_tuple_init_ints():
+    class TestCase(HasTraits):
+        value = TypedTuple(trait=Int())
+
+    obj = TestCase(value=(1, 2, 3))
+    assert obj.value == (1, 2, 3)
+
+
+def test_typed_tuple_set_ints():
+    class TestCase(HasTraits):
+        value = TypedTuple(trait=Int())
+
+    obj = TestCase()
+    obj.value = (1, 2, 3)
+    assert obj.value == (1, 2, 3)
+
+
+def test_typed_tuple_default():
+    class TestCase(HasTraits):
+        value = TypedTuple(default_value=(1, 2, 3))
+
+    obj = TestCase()
+    assert obj.value == (1, 2, 3)
+
+
+def test_typed_tuple_mixed_default():
+    class TestCase(HasTraits):
+        value = TypedTuple(default_value=(1, 2, 'foobar'))
+
+    obj = TestCase()
+    assert obj.value == (1, 2, 'foobar')
+
+
+def test_typed_tuple_bad_default():
+    class TestCase(HasTraits):
+        value = TypedTuple(trait=Int(), default_value=(1, 2, 'foobar'))
+
+
+    with nt.assert_raises(TraitError):
+        obj = TestCase()
+        a = obj.value   # a read might be needed to trigger default validation
+
+
+def test_typed_tuple_bad_set():
+    class TestCase(HasTraits):
+        value = TypedTuple(trait=Int())
+
+    obj = TestCase()
+    with nt.assert_raises(TraitError):
+        obj.value = (1, 2, 'foobar')
+
+
+def test_typed_tuple_positional_trait():
+    class TestCase(HasTraits):
+        value = TypedTuple(Int())
+
+    obj = TestCase(value=(1, 2, 3))
+    assert obj.value == (1, 2, 3)
+
+
+def test_typed_tuple_positional_default():
+    class TestCase(HasTraits):
+        value = TypedTuple((1, 2, 3))
+
+    obj = TestCase()
+    assert obj.value == (1, 2, 3)
