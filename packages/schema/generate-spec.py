@@ -28,8 +28,10 @@ def typing(x):
         s = 'string (one of %s)'%(', '.join('`%r`'%i for i in x.values))
     elif isinstance(x, Unicode):
         s = 'string'
-    elif isinstance(x, (Tuple, TypedTuple, List)):
+    elif isinstance(x, (Tuple, List)):
         s = 'array'
+    elif isinstance(x, TypedTuple):
+        s = 'array of ' + typing(x._trait)
     elif isinstance(x, Bool):
         s = 'boolean'
     elif isinstance(x, (CFloat, Float)):
