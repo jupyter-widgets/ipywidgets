@@ -56,7 +56,7 @@ data,
 
                 var mod = dialog.modal({
                     show: true,
-                    title: 'Embed widgets',
+                    title: 'Export Widgets to HTML',
                     body: content,
                     keyboard_manager: Jupyter.notebook.keyboard_manager,
                     notebook: Jupyter.notebook,

@@ -206,16 +206,13 @@ WidgetManager.prototype._init_actions = function() {
     };
     Jupyter.menubar.actions.register(this.saveWidgetsAction, 'save-with-widgets', 'widgets');
 
-    this.clearWidgetsAction = {
+    this.closeAllWidgetsAction = {
         handler: (function() {
-            delete Jupyter.notebook.metadata.widgets;
-            Jupyter.menubar.actions.get('jupyter-notebook:save-notebook').handler({
-                notebook: Jupyter.notebook
-            });
-        }),
-        help: 'Clear the widget state information from the notebook'
+            this.clear_state();
+        }).bind(this),
+        help: 'Close all widgets'
     };
-    Jupyter.menubar.actions.register(this.saveWidgetsAction, 'save-clear-widgets', 'widgets');
+    Jupyter.menubar.actions.register(this.closeAllWidgetsAction, 'close-all-widgets', 'widgets');
 };
 
 /**
@@ -244,11 +241,12 @@ WidgetManager.prototype._init_menu = function() {
     var divider = document.createElement('ul');
     divider.classList.add('divider');
 
-    widgetsSubmenu.appendChild(this._createMenuItem('Save Notebook Widget State', this.saveWidgetsAction));
-    widgetsSubmenu.appendChild(this._createMenuItem('Clear Notebook Widget State', this.clearWidgetsAction));
-    widgetsSubmenu.appendChild(divider);
+    widgetsSubmenu.appendChild(this._createMenuItem('Close All Widgets', this.closeAllWidgetsAction));
+    widgetsSubmenu.appendChild(divider.cloneNode());
+    widgetsSubmenu.appendChild(this._createMenuItem('Save Widgets to Notebook', this.saveWidgetsAction));
+    widgetsSubmenu.appendChild(divider.cloneNode());
     widgetsSubmenu.appendChild(this._createMenuItem('Download Widget State', saveState.action));
-    widgetsSubmenu.appendChild(this._createMenuItem('Embed Widgets', embedWidgets.action));
+    widgetsSubmenu.appendChild(this._createMenuItem('Export Widgets to HTML', embedWidgets.action));
 };
 
 /**
