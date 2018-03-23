@@ -86,6 +86,8 @@ class FloatLogSliderModel extends BoundedFloatModel {
             disabled: false,
             base: 10.,
             value: 1.0,
+            min: 0,
+            max: 4
         });
     }
     initialize(attributes, options) {
