@@ -145,6 +145,22 @@ function activateWidgetExtension(app: JupyterLab): base.IJupyterWidgetRegistry {
       });
     }
   });
+  extension.registerWidget({
+    name: '@jupyter-widgets/controls',
+    version: '1.1.0',
+    exports: () => {
+      return new Promise((resolve, reject) => {
+        (require as any).ensure(['@jupyter-widgets/controls'], (require: NodeRequire) => {
+          resolve(require('@jupyter-widgets/controls'));
+        },
+        (err: any) => {
+          reject(err);
+        },
+        '@jupyter-widgets/controls'
+        );
+      });
+    }
+  });
 
   extension.registerWidget({
     name: '@jupyter-widgets/output',
