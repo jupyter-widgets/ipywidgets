@@ -701,13 +701,16 @@ class Widget(LoggingHasTraits):
         """Called when `IPython.display.display` is called on the widget."""
         if self._view_name is not None:
 
+            plaintext = repr(self)
+            if len(plaintext) > 110:
+                plaintext = plaintext[:110] + '…'
             # The 'application/vnd.jupyter.widget-view+json' mimetype has not been registered yet.
             # See the registration process and naming convention at
             # http://tools.ietf.org/html/rfc6838
             # and the currently registered mimetypes at
             # http://www.iana.org/assignments/media-types/media-types.xhtml.
             data = {
-                'text/plain': repr(self),
+                'text/plain': plaintext,
                 'application/vnd.jupyter.widget-view+json': {
                     'version_major': 2,
                     'version_minor': 0,
