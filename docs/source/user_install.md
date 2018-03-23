@@ -64,3 +64,17 @@ running the `jupyter lab clean` command which will remove the staging and
 static directories from the lab directory. The location of the lab directory
 can be queried by executing the command `jupyter lab path` in your terminal.
 
+Frequently Asked Questions
+--------------------------
+
+**Question**: When I display a widget or interact, I just see some text, such as `IntSlider(value=0)` or `interactive(children=(IntSlider(value=0, description='x', max=1), Output()), _dom_classes=('widget-interact',))`. What is wrong?
+
+**Answer**: A text representation of the widget is printed if the widget control
+is not available. It may mean the widget JavaScript is still loading. If the
+message persists in the Jupyter Notebook or JupyterLab, it likely means that the
+widgets JavaScript library is either not installed or not enabled. See the
+installation instructions above for setup instructions.
+
+If you see this message in another frontend (for example, a static rendering on
+GitHub or <a href="https://nbviewer.jupyter.org/">NBViewer</a>), it may mean
+that your frontend doesn't currently support widgets.
