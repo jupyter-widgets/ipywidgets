@@ -17,6 +17,8 @@ class SemVerCache<T> {
     }
     if (!(version in this._cache[key])) {
       this._cache[key][version] = object;
+    } else {
+      throw `Version ${version} of key ${key} already registered.`;
     }
   }
 
