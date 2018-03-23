@@ -316,7 +316,7 @@ Attribute        | Type             | Default          | Help
 `min`            | number (float)   | `0.0`            | Min value for the exponent
 `orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
 `readout`        | boolean          | `true`           | Display the current value of the slider next to it.
-`readout_format` | string           | `'.2f'`          | Format for the readout
+`readout_format` | string           | `'.3g'`          | Format for the readout
 `step`           | number (float)   | `0.1`            | Minimum step in the exponent to increment the value
 `style`          | reference to SliderStyle widget | reference to new instance | 
 `value`          | number (float)   | `1.0`            | Float value

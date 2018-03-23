@@ -201,7 +201,7 @@ class FloatLogSlider(_BoundedLogFloat):
     readout : {True, False}
         default is True, display the current value of the slider next to it
     readout_format : str
-        default is '.2f', specifier for the format function used to represent
+        default is '.3g', specifier for the format function used to represent
         slider value for human consumption, modeled after Python 3's format
         specification mini-language (PEP 3101).
     """
@@ -212,11 +212,10 @@ class FloatLogSlider(_BoundedLogFloat):
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
     readout_format = NumberFormat(
-        '.2f', help="Format for the readout").tag(sync=True)
+        '.3g', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
     base = CFloat(10., help="Base for the logarithm").tag(sync=True)
-
 
     style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
 

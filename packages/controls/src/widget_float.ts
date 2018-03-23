@@ -80,7 +80,7 @@ class FloatLogSliderModel extends BoundedFloatModel {
             orientation: 'horizontal',
             _range: false,
             readout: true,
-            readout_format: '.2f',
+            readout_format: '.3g',
             slider_color: null,
             continuous_update: true,
             disabled: false,
