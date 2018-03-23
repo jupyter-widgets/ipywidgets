@@ -49,7 +49,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'AccordionModel'` | 
@@ -58,7 +58,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.1.0'`        | 
 `_view_name`     | string           | `'AccordionView'` | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
-`children`       | array            | `[]`             | List of widget children
+`children`       | array of reference to Widget widget | `[]`             | List of widget children
 `layout`         | reference to Layout widget | reference to new instance | 
 `selected_index` | `null` or number (integer) | `0`              | The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.
 
@@ -66,7 +66,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'BoundedFloatTextModel'` | 
@@ -87,7 +87,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'BoundedIntTextModel'` | 
@@ -108,7 +108,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'BoxModel'`     | 
@@ -116,14 +116,14 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.1.0'`        | 
 `_view_name`     | string           | `'BoxView'`      | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
-`children`       | array            | `[]`             | List of widget children
+`children`       | array of reference to Widget widget | `[]`             | List of widget children
 `layout`         | reference to Layout widget | reference to new instance | 
 
 ### ButtonModel (@jupyter-widgets/controls, 1.1.0); ButtonView (@jupyter-widgets/controls, 1.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'ButtonModel'`  | 
@@ -155,7 +155,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'CheckboxModel'` | 
@@ -173,7 +173,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'ColorPickerModel'` | 
@@ -191,7 +191,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'ControllerAxisModel'` | 
@@ -205,7 +205,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'ControllerButtonModel'` | 
@@ -220,15 +220,15 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'ControllerModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.1.0'`        | 
 `_view_name`     | string           | `'ControllerView'` | 
-`axes`           | array            | `[]`             | The axes on the gamepad.
-`buttons`        | array            | `[]`             | The buttons on the gamepad.
+`axes`           | array of reference to Axis widget | `[]`             | The axes on the gamepad.
+`buttons`        | array of reference to Button widget | `[]`             | The buttons on the gamepad.
 `connected`      | boolean          | `false`          | Whether the gamepad is connected.
 `index`          | number (integer) | `0`              | The id number of the controller.
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -240,7 +240,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'DatePickerModel'` | 
@@ -282,11 +282,11 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'DropdownModel'` | 
-`_options_labels` | array            | `[]`             | The labels for the options.
+`_options_labels` | array of string  | `[]`             | The labels for the options.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.1.0'`        | 
 `_view_name`     | string           | `'DropdownView'` | 
@@ -300,7 +300,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'FloatLogSliderModel'` | 
@@ -325,7 +325,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'FloatProgressModel'` | 
@@ -345,7 +345,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'FloatRangeSliderModel'` | 
@@ -369,7 +369,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'FloatSliderModel'` | 
@@ -393,7 +393,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'FloatTextModel'` | 
@@ -412,7 +412,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'HBoxModel'`    | 
@@ -420,14 +420,14 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.1.0'`        | 
 `_view_name`     | string           | `'HBoxView'`     | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
-`children`       | array            | `[]`             | List of widget children
+`children`       | array of reference to Widget widget | `[]`             | List of widget children
 `layout`         | reference to Layout widget | reference to new instance | 
 
 ### HTMLMathModel (@jupyter-widgets/controls, 1.1.0); HTMLMathView (@jupyter-widgets/controls, 1.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'HTMLMathModel'` | 
@@ -444,7 +444,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'HTMLModel'`    | 
@@ -461,7 +461,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'ImageModel'`   | 
@@ -478,7 +478,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'IntProgressModel'` | 
@@ -498,7 +498,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'IntRangeSliderModel'` | 
@@ -522,7 +522,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'IntSliderModel'` | 
@@ -546,7 +546,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'IntTextModel'` | 
@@ -565,7 +565,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'LabelModel'`   | 
@@ -595,7 +595,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'PasswordModel'` | 
@@ -614,7 +614,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'PlayModel'`    | 
@@ -651,11 +651,11 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'RadioButtonsModel'` | 
-`_options_labels` | array            | `[]`             | The labels for the options.
+`_options_labels` | array of string  | `[]`             | The labels for the options.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.1.0'`        | 
 `_view_name`     | string           | `'RadioButtonsView'` | 
@@ -669,11 +669,11 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'SelectModel'`  | 
-`_options_labels` | array            | `[]`             | The labels for the options.
+`_options_labels` | array of string  | `[]`             | The labels for the options.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.1.0'`        | 
 `_view_name`     | string           | `'SelectView'`   | 
@@ -688,17 +688,17 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'SelectMultipleModel'` | 
-`_options_labels` | array            | `[]`             | The labels for the options.
+`_options_labels` | array of string  | `[]`             | The labels for the options.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.1.0'`        | 
 `_view_name`     | string           | `'SelectMultipleView'` | 
 `description`    | string           | `''`             | Description of the control.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
-`index`          | array            | `[]`             | Selected indices
+`index`          | array of number (integer) | `[]`             | Selected indices
 `layout`         | reference to Layout widget | reference to new instance | 
 `rows`           | number (integer) | `5`              | The number of rows to display.
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
@@ -707,11 +707,11 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'SelectionRangeSliderModel'` | 
-`_options_labels` | array            | `[]`             | The labels for the options.
+`_options_labels` | array of string  | `[]`             | The labels for the options.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.1.0'`        | 
 `_view_name`     | string           | `'SelectionRangeSliderView'` | 
@@ -728,11 +728,11 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'SelectionSliderModel'` | 
-`_options_labels` | array            | `[]`             | The labels for the options.
+`_options_labels` | array of string  | `[]`             | The labels for the options.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.1.0'`        | 
 `_view_name`     | string           | `'SelectionSliderView'` | 
@@ -762,7 +762,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'TabModel'`     | 
@@ -771,7 +771,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.1.0'`        | 
 `_view_name`     | string           | `'TabView'`      | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
-`children`       | array            | `[]`             | List of widget children
+`children`       | array of reference to Widget widget | `[]`             | List of widget children
 `layout`         | reference to Layout widget | reference to new instance | 
 `selected_index` | `null` or number (integer) | `0`              | The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.
 
@@ -779,7 +779,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'TextModel'`    | 
@@ -798,7 +798,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'TextareaModel'` | 
@@ -818,7 +818,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'ToggleButtonModel'` | 
@@ -838,22 +838,22 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'ToggleButtonsModel'` | 
-`_options_labels` | array            | `[]`             | The labels for the options.
+`_options_labels` | array of string  | `[]`             | The labels for the options.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.1.0'`        | 
 `_view_name`     | string           | `'ToggleButtonsView'` | 
 `button_style`   | `null` or string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the buttons.
 `description`    | string           | `''`             | Description of the control.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
-`icons`          | array            | `[]`             | Icons names for each button (FontAwesome names without the fa- prefix).
+`icons`          | array of string  | `[]`             | Icons names for each button (FontAwesome names without the fa- prefix).
 `index`          | `null` or number (integer) | `null`           | Selected index
 `layout`         | reference to Layout widget | reference to new instance | 
 `style`          | reference to ToggleButtonsStyle widget | reference to new instance | 
-`tooltips`       | array            | `[]`             | Tooltips for each button.
+`tooltips`       | array of string  | `[]`             | Tooltips for each button.
 
 ### ToggleButtonsStyleModel (@jupyter-widgets/controls, 1.1.0); StyleView (@jupyter-widgets/base, 1.0.0)
 
@@ -873,7 +873,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'VBoxModel'`    | 
@@ -881,14 +881,14 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.1.0'`        | 
 `_view_name`     | string           | `'VBoxView'`     | 
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
-`children`       | array            | `[]`             | List of widget children
+`children`       | array of reference to Widget widget | `[]`             | List of widget children
 `layout`         | reference to Layout widget | reference to new instance | 
 
 ### ValidModel (@jupyter-widgets/controls, 1.1.0); ValidView (@jupyter-widgets/controls, 1.1.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.1.0'`        | 
 `_model_name`    | string           | `'ValidModel'`   | 
@@ -906,7 +906,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/output'` | 
 `_model_module_version` | string           | `'1.0.0'`        | 
 `_model_name`    | string           | `'OutputModel'`  | 
@@ -915,5 +915,5 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'OutputView'`   | 
 `layout`         | reference to Layout widget | reference to new instance | 
 `msg_id`         | string           | `''`             | Parent message id of messages to capture
-`outputs`        | array            | `[]`             | The output messages synced from the frontend.
+`outputs`        | array of object  | `[]`             | The output messages synced from the frontend.
 

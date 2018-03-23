@@ -28,8 +28,10 @@ def typing(x):
         s = 'string (one of %s)'%(', '.join('`%r`'%i for i in x.values))
     elif isinstance(x, Unicode):
         s = 'string'
-    elif isinstance(x, (Tuple, TypedTuple, List)):
+    elif isinstance(x, (Tuple, List)):
         s = 'array'
+    elif isinstance(x, TypedTuple):
+        s = 'array of ' + typing(x._trait)
     elif isinstance(x, Bool):
         s = 'boolean'
     elif isinstance(x, (CFloat, Float)):
@@ -43,7 +45,7 @@ def typing(x):
     elif isinstance(x, Instance) and issubclass(x.klass, widgets.Widget):
         s = 'reference to %s widget'%(x.klass.__name__)
         # ADD the widget to this documenting list
-        if x.klass not in [i[1] for i in widgets_to_document]:
+        if x.klass not in [i[1] for i in widgets_to_document] and x.klass != widgets.Widget:
             widgets_to_document.append((x.klass.__name__, x.klass))
     elif isinstance(x, Any):
         # In our case, these all happen to be values that are converted to strings
