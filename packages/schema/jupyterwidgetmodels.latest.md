@@ -296,6 +296,31 @@ Attribute        | Type             | Default          | Help
 `layout`         | reference to Layout widget | reference to new instance | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 
+### FloatLogSliderModel (@jupyter-widgets/controls, 1.1.0); FloatLogSliderView (@jupyter-widgets/controls, 1.1.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'1.1.0'`        | 
+`_model_name`    | string           | `'FloatLogSliderModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'1.1.0'`        | 
+`_view_name`     | string           | `'FloatLogSliderView'` | 
+`base`           | number (float)   | `10.0`           | Base for the logarithm
+`continuous_update` | boolean          | `true`           | Update the value of the widget as the user is holding the slider.
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`layout`         | reference to Layout widget | reference to new instance | 
+`max`            | number (float)   | `4.0`            | Max value for the exponent
+`min`            | number (float)   | `0.0`            | Min value for the exponent
+`orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
+`readout`        | boolean          | `true`           | Display the current value of the slider next to it.
+`readout_format` | string           | `'.2f'`          | Format for the readout
+`step`           | number (float)   | `0.1`            | Minimum step in the exponent to increment the value
+`style`          | reference to SliderStyle widget | reference to new instance | 
+`value`          | number (float)   | `1.0`            | Float value
+
 ### FloatProgressModel (@jupyter-widgets/controls, 1.1.0); ProgressView (@jupyter-widgets/controls, 1.1.0)
 
 Attribute        | Type             | Default          | Help
