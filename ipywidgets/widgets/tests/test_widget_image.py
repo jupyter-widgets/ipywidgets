@@ -11,9 +11,27 @@ import hashlib
 
 import nose.tools as nt
 
+import pkgutil
+
+import tempfile
+from contextlib import contextmanager
 
 # Data
-LOGO_PNG = os.path.join(os.path.split(__file__)[0], 'data/jupyter-logo-transparent.png')
+@contextmanager
+def get_logo_png():
+    # Once the tests are not in the package, this context manager can be
+    # replaced with the location of the actual file
+    LOGO_DATA = pkgutil.get_data('ipywidgets.widgets.tests',
+                                 'data/jupyter-logo-transparent.png')
+    handle, fname = tempfile.mkstemp()
+    os.close(handle)
+    with open(fname, 'wb') as f:
+        f.write(LOGO_DATA)
+
+    yield fname
+
+    os.remove(fname)
+
 LOGO_PNG_DIGEST = '3ff9eafd7197083153e83339a72e7a335539bae189c33554c680e4382c98af02'
 
 
@@ -29,6 +47,7 @@ def test_image_value():
 
 
 def test_image_format():
+    # Test that these format names don't throw an error
     Image(format='png')
 
     Image(format='jpeg')
@@ -37,16 +56,18 @@ def test_image_format():
 
 
 def test_from_filename():
-    img = Image.from_filename(LOGO_PNG)
+    with get_logo_png() as LOGO_PNG:
+        img = Image.from_filename(LOGO_PNG)
 
-    assert_equal_hash(img.value, LOGO_PNG_DIGEST)
+        assert_equal_hash(img.value, LOGO_PNG_DIGEST)
 
 
 def test_set_from_filename():
     img = Image()
-    img.value_from_filename(LOGO_PNG)
+    with get_logo_png() as LOGO_PNG:
+        img.value_from_filename(LOGO_PNG)
 
-    assert_equal_hash(img.value, LOGO_PNG_DIGEST)
+        assert_equal_hash(img.value, LOGO_PNG_DIGEST)
 
 
 # Helper functions
