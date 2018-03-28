@@ -3,6 +3,10 @@
 
 import * as libembed from './libembed';
 
+import {
+    valid
+} from 'semver';
+
 /**
  * Load a package using requirejs and return a promise
  *
@@ -35,6 +39,13 @@ function moduleNameToCDNUrl(moduleName: string, moduleVersion: string) {
         fileName = moduleName.substr(index+1);
         packageName = moduleName.substr(0, index);
     }
+
+    // If we have just a plain version, with no indication of the compatible
+    // range, prepend a ^ to get all compatible versions.
+    if (valid(moduleVersion)) {
+        moduleVersion = `^${moduleVersion}`;
+    }
+
     return `https://unpkg.com/${packageName}@${moduleVersion}/dist/${fileName}.js`;
 }
 
