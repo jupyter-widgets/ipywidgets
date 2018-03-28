@@ -74,7 +74,9 @@ setup_args = dict(
     scripts         = [],
     packages        = packages,
     package_data    = {
-        'ipywidgets': [ 'state.schema.json', 'view.schema.json' ]
+        'ipywidgets': [ 'state.schema.json', 'view.schema.json' ],
+        # Test data needs to be packaged until tests are moved out of module
+        'ipywidgets.widgets.tests': ['data/jupyter-logo-transparent.png']
     },
     description     = "IPython HTML widgets for Jupyter",
     long_description = LONG_DESCRIPTION,
