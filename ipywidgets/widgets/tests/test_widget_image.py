@@ -3,6 +3,7 @@
 
 """Test Image widget"""
 
+import io
 import os
 
 from ipywidgets import Image
@@ -94,6 +95,39 @@ def test_from_url_bytes():
     img = Image.from_url(b'https://jupyter.org/assets/main-logo.svg')
 
     assert img.value == b'https://jupyter.org/assets/main-logo.svg'
+
+
+def test_format_inference_filename():
+    with tempfile.NamedTemporaryFile(suffix='.svg', delete=False) as f:
+        name = f.name
+        f.close()           # Allow tests to run on Windows
+        img = Image.from_file(name)
+
+    assert img.format == 'svg+xml'
+
+
+def test_format_inference_file():
+    with tempfile.NamedTemporaryFile(suffix='.gif', delete=False) as f:
+        img = Image.from_file(f)
+
+        assert img.format == 'gif'
+
+
+def test_format_inference_stream():
+    # There's no way to infer the format, so it should default to png
+    fstream = io.BytesIO(b'')
+    img = Image.from_file(fstream)
+
+    assert img.format == 'png'
+
+
+def test_format_inference_overridable():
+    with tempfile.NamedTemporaryFile(suffix='.svg', delete=False) as f:
+        name = f.name
+        f.close()           # Allow tests to run on Windows
+        img = Image.from_file(name, format='gif')
+
+    assert img.format == 'gif'
 
 
 # Helper functions

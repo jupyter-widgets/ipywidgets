@@ -5,6 +5,7 @@
 
 Represents an image in the frontend using a widget.
 """
+import mimetypes
 
 from .widget_core import CoreWidget
 from .domwidget import DOMWidget
@@ -61,6 +62,11 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
         """
         value = cls._load_file_value(filename)
 
+        if 'format' not in kwargs:
+            img_format = cls._guess_format(filename)
+            if img_format is not None:
+                kwargs['format'] = img_format
+
         return cls(value=value, **kwargs)
 
     @classmethod
@@ -82,6 +88,7 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
             The location of a URL to load.
         """
         if isinstance(url, _text_type):
+            # If unicode (str in Python 3), it needs to be encoded to bytes
             url = url.encode('utf-8')
 
         return cls(value=url, format='url')
@@ -106,3 +113,18 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
         else:
             with open(filename, 'rb') as f:
                 return f.read()
+
+    @classmethod
+    def _guess_format(cls, filename):
+        # file objects may have a .name parameter
+        name = getattr(filename, 'name', None)
+        name = name or filename
+
+        try:
+            mtype, _ = mimetypes.guess_type(name)
+            if not mtype.startswith('image/'):
+                return None
+
+            return mtype[len('image/'):]
+        except Exception:
+            return None
