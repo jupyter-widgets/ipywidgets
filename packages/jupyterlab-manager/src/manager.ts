@@ -172,9 +172,13 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    */
   protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<typeof WidgetModel | typeof WidgetView> {
 
-    // If we have just a plain version, with no indication of the compatible
-    // range, prepend a ^ to get all compatible versions.
-    if (valid(moduleVersion)) {
+    // Special-case the Jupyter base and controls packages. If we have just a
+    // plain version, with no indication of the compatible range, prepend a ^ to
+    // get all compatible versions. We may eventually apply this logic to all
+    // widget modules. See issues #2006 and #2017 for more discussion.
+    if ((moduleName === "@jupyter-widgets/base"
+         || moduleName === "@jupyter-widgets/controls")
+        && valid(moduleVersion)) {
       moduleVersion = `^${moduleVersion}`;
     }
 
