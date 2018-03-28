@@ -39,6 +39,7 @@
     "@types/mathjax": "0.0.31",
     "@types/mocha": "^2.2.41",
     "@types/node": "^8.0.1",
+    "@types/text-encoding": "^0.0.32",
     "chai": "^4.0.0",
     "css-loader": "^0.28.4",
     "expect.js": "^0.3.1",
