@@ -57,7 +57,7 @@ def test_image_format():
 
 def test_from_filename():
     with get_logo_png() as LOGO_PNG:
-        img = Image.from_filename(LOGO_PNG)
+        img = Image.from_file(LOGO_PNG)
 
         assert_equal_hash(img.value, LOGO_PNG_DIGEST)
 
@@ -65,9 +65,24 @@ def test_from_filename():
 def test_set_from_filename():
     img = Image()
     with get_logo_png() as LOGO_PNG:
-        img.value_from_filename(LOGO_PNG)
+        img.set_value_from_file(LOGO_PNG)
 
         assert_equal_hash(img.value, LOGO_PNG_DIGEST)
+
+
+def test_from_file():
+    with get_logo_png() as LOGO_PNG:
+        with open(LOGO_PNG, 'rb') as f:
+            img = Image.from_file(f)
+            assert_equal_hash(img.value, LOGO_PNG_DIGEST)
+
+
+def test_set_value_from_file():
+    img = Image()
+    with get_logo_png() as LOGO_PNG:
+        with open(LOGO_PNG, 'rb') as f:
+            img.set_value_from_file(f)
+            assert_equal_hash(img.value, LOGO_PNG_DIGEST)
 
 
 # Helper functions

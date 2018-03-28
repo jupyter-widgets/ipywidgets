@@ -35,9 +35,9 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
     value = Bytes(help="The image data as a byte string.").tag(sync=True)
 
     @classmethod
-    def from_filename(cls, filename, **kwargs):
+    def from_file(cls, filename, **kwargs):
         """
-        Create an `Image` from a local filename.
+        Create an `Image` from a local file.
 
         Parameters
         ----------
@@ -53,7 +53,7 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
 
         return cls(value=value, **kwargs)
 
-    def value_from_filename(self, filename):
+    def set_value_from_file(self, filename):
         """
         Convenience method for reading a file into `value`.
 
@@ -68,5 +68,8 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
 
     @classmethod
     def _load_file_value(cls, filename):
-        with open(filename, 'rb') as f:
-            return f.read()
+        if getattr(filename, 'read', None) is not None:
+            return filename.read()
+        else:
+            with open(filename, 'rb') as f:
+                return f.read()
