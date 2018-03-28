@@ -13,6 +13,16 @@ from .widget import register
 from traitlets import Unicode, CUnicode, Bytes, validate
 
 
+def _text_type():
+    # six is not a direct dependency of this module
+    # This replicates six.text_type
+    try:
+        return unicode
+    except NameError:
+        return str
+_text_type = _text_type()
+
+
 @register
 class Image(DOMWidget, ValueWidget, CoreWidget):
     """Displays an image as a widget.
@@ -37,7 +47,7 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
     @classmethod
     def from_file(cls, filename, **kwargs):
         """
-        Create an `Image` from a local file.
+        Create an :class:`Image` from a local file.
 
         Parameters
         ----------
@@ -52,6 +62,29 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
         value = cls._load_file_value(filename)
 
         return cls(value=value, **kwargs)
+
+    @classmethod
+    def from_url(cls, url, **kwargs):
+        """
+        Create an :class:`Image` from a URL.
+
+        :code:`Image.from_url(url)` is equivalent to:
+
+        .. code-block: python
+
+            img = Image(value=url, format='url')
+
+        But both unicode and bytes arguments are allowed for ``url``.
+
+        Parameters
+        ----------
+        url: [str, bytes]
+            The location of a URL to load.
+        """
+        if isinstance(url, _text_type):
+            url = url.encode('utf-8')
+
+        return cls(value=url, format='url')
 
     def set_value_from_file(self, filename):
         """

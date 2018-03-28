@@ -85,6 +85,17 @@ def test_set_value_from_file():
             assert_equal_hash(img.value, LOGO_PNG_DIGEST)
 
 
+def test_from_url_unicode():
+    img = Image.from_url(u'https://jupyter.org/assets/main-logo.svg')
+    assert img.value == b'https://jupyter.org/assets/main-logo.svg'
+
+
+def test_from_url_bytes():
+    img = Image.from_url(b'https://jupyter.org/assets/main-logo.svg')
+
+    assert img.value == b'https://jupyter.org/assets/main-logo.svg'
+
+
 # Helper functions
 def get_hash_hex(byte_str):
     m = hashlib.new('sha256')
