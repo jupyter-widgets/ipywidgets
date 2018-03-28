@@ -55,11 +55,11 @@ class ImageView extends DOMWidgetView {
         let url;
         let format = this.model.get('format');
         let value = this.model.get('value');
-        if (format != 'url') {
+        if (format !== 'url') {
             let blob = new Blob([value], {type: `image/${this.model.get('format')}`});
             url = URL.createObjectURL(blob);
         } else {
-            url = String.fromCharCode.apply(null, new Uint8Array(value.buffer));
+            url = (new TextDecoder('utf-8')).decode(value.buffer);
         }
 
         // Clean up the old objectURL
