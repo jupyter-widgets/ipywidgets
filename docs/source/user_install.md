@@ -67,6 +67,9 @@ can be queried by executing the command `jupyter lab path` in your terminal.
 Frequently Asked Questions
 --------------------------
 
+The issues in the [Reference milestone](https://github.com/jupyter-widgets/ipywidgets/issues?q=is%3Aopen+is%3Aissue+milestone%3AReference) on GitHub include many questions, discussions,
+and answers about ipywidgets.
+
 **Question**: When I display a widget or interact, I just see some text, such as `IntSlider(value=0)` or `interactive(children=(IntSlider(value=0, description='x', max=1), Output()), _dom_classes=('widget-interact',))`. What is wrong?
 
 **Answer**: A text representation of the widget is printed if the widget control
