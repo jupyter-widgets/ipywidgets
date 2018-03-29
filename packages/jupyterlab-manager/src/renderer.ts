@@ -30,13 +30,27 @@ class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable
 
   async renderModel(model: IRenderMime.IMimeModel) {
     const source: any = model.data[this.mimeType];
+
+    // If there is no model id, the view was removed, so hide the node.
+    if (source.model_id === '') {
+      this.hide();
+      return Promise.resolve();
+    }
+
     const modelPromise = this._manager.get_model(source.model_id);
     if (modelPromise) {
       try {
         let wModel = await modelPromise;
         let widget = await this._manager.display_model(void 0, wModel, void 0);
         this.addWidget(widget);
-      } catch(err) {
+
+        // If the widget is disposed, hide this container and make sure we
+        // change the output model to reflect the view was closed.
+        widget.disposed.connect(() => {
+          this.hide();
+          source.model_id = '';
+        });
+      } catch (err) {
         console.log('Error displaying widget');
         console.log(err);
         this.node.textContent = 'Error displaying widget';

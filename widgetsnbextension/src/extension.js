@@ -108,6 +108,12 @@ function register_events(Jupyter, events, outputarea) {
             return;
         }
 
+        // Missing model id means the view was removed. Hide this element.
+        if (data.model_id === '') {
+            node.style.display = 'none';
+            return;
+        }
+
         var model = manager.get_model(data.model_id);
         if (model) {
             model.then(function(model) {
@@ -118,6 +124,14 @@ function register_events(Jupyter, events, outputarea) {
                 output._jupyterWidgetViews.push(id);
                 views[id] = view;
                 PhosphorWidget.Widget.attach(view.pWidget, node);
+
+                // Make the node completely disappear if the view is removed.
+                view.once('remove', () => {
+                    // Since we have a mutable reference to the data, delete the
+                    // model id to indicate the view is removed.
+                    data.model_id = '';
+                    node.style.display = 'none';
+                })
             });
         } else {
             node.textContent = 'A Jupyter widget could not be displayed because the widget state could not be found. This could happen if the kernel storing the widget is no longer available, or if the widget state was not saved in the notebook. You may be able to create the widget by running the appropriate cells.';
