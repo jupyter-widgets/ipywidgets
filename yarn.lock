@@ -439,6 +439,10 @@
     "@types/glob" "*"
     "@types/node" "*"
 
+"@types/text-encoding@^0.0.32":
+  version "0.0.32"
+  resolved "https://registry.npmjs.org/@types/text-encoding/-/text-encoding-0.0.32.tgz#52289b320a406850b14f08f48b475ca021218048"
+
 "@types/underscore@*":
   version "1.8.5"
   resolved "https://registry.npmjs.org/@types/underscore/-/underscore-1.8.5.tgz#1275b584bfbd74ae53b69d5301206ba63f7f1a79"
@@ -4970,6 +4974,10 @@ raw-body@2.3.2:
     http-errors "1.6.2"
     iconv-lite "0.4.19"
     unpipe "1.0.0"
+
+raw-loader@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.npmjs.org/raw-loader/-/raw-loader-0.5.1.tgz#0c3d0beaed8a01c966d9787bf778281252a979aa"
 
 rc@^1.0.1, rc@^1.1.6, rc@^1.1.7:
   version "1.2.2"
