@@ -8,7 +8,7 @@ require('font-awesome/css/font-awesome.css');
 
 document.addEventListener("DOMContentLoaded", function(event) {
 
-    var code = require("./widget_code.json").join("\n");
+    var code = require("./widget_code.py");
     var inputarea = document.getElementsByClassName("inputarea")[0];
     var editor = CodeMirror(inputarea, {
         value: code,
