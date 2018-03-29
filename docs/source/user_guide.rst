@@ -8,6 +8,7 @@ User Guide
   examples/Using Interact.ipynb
   examples/Widget Basics.ipynb
   examples/Widget List.ipynb
+  examples/Output Widget.ipynb
   examples/Widget Events.ipynb
   examples/Widget Styling.ipynb
   examples/Widget Custom.ipynb
