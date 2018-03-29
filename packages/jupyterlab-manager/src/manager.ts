@@ -30,6 +30,10 @@ import {
 } from '@jupyterlab/docregistry';
 
 import {
+  valid
+} from 'semver';
+
+import {
   SemVerCache
 } from './semvercache';
 
@@ -167,6 +171,17 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * Load a class and return a promise to the loaded object.
    */
   protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<typeof WidgetModel | typeof WidgetView> {
+
+    // Special-case the Jupyter base and controls packages. If we have just a
+    // plain version, with no indication of the compatible range, prepend a ^ to
+    // get all compatible versions. We may eventually apply this logic to all
+    // widget modules. See issues #2006 and #2017 for more discussion.
+    if ((moduleName === "@jupyter-widgets/base"
+         || moduleName === "@jupyter-widgets/controls")
+        && valid(moduleVersion)) {
+      moduleVersion = `^${moduleVersion}`;
+    }
+
     let mod = this._registry.get(moduleName, moduleVersion);
     if (!mod) {
       return Promise.reject(`Module ${moduleName}, semver range ${moduleVersion} is not registered as a widget module`);
