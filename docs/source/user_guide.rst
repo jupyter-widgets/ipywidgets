@@ -12,7 +12,6 @@ User Guide
   examples/Widget Events.ipynb
   examples/Widget Styling.ipynb
   examples/Widget Custom.ipynb
-  examples/Widget Alignment.ipynb
   examples/Widget Low Level.ipynb
   examples/Widget Asynchronous.ipynb
   embedding.md
