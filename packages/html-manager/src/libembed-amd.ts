@@ -47,11 +47,10 @@ function requireLoader(moduleName: string, moduleVersion: string) {
             if (require === undefined) {
                 throw new Error("Requirejs is needed, please ensure it is loaded on the page.");
             }
-            require.config({
-                paths: {
-                    moduleName: moduleNameToCDNUrl(moduleName, moduleVersion)
-                }
-            });
+            const conf = {paths: {}};
+            conf.paths[moduleName] = moduleNameToCDNUrl(moduleName, moduleVersion);
+            require.undef(failedId);
+            require.config(conf);
             
             return requirePromise([`${moduleName}`]);
        }
