@@ -35,7 +35,7 @@ function moduleNameToCDNUrl(moduleName: string, moduleVersion: string) {
         fileName = moduleName.substr(index+1);
         packageName = moduleName.substr(0, index);
     }
-    return `https://unpkg.com/${packageName}@${moduleVersion}/dist/${fileName}.js`;
+    return `https://unpkg.com/${packageName}@${moduleVersion}/dist/${fileName}`;
 }
 
 function requireLoader(moduleName: string, moduleVersion: string) {
