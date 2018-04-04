@@ -35,7 +35,7 @@ function moduleNameToCDNUrl(moduleName: string, moduleVersion: string) {
         fileName = moduleName.substr(index+1);
         packageName = moduleName.substr(0, index);
     }
-    return `https://unpkg.com/${packageName}@${moduleVersion}/dist/${fileName}.js`;
+    return `https://unpkg.com/${packageName}@${moduleVersion}/dist/${fileName}`;
 }
 
 function requireLoader(moduleName: string, moduleVersion: string) {
@@ -43,7 +43,16 @@ function requireLoader(moduleName: string, moduleVersion: string) {
         let failedId = err.requireModules && err.requireModules[0];
         if (failedId) {
             console.log(`Falling back to unpkg.com for ${moduleName}@${moduleVersion}`);
-            return requirePromise([moduleNameToCDNUrl(moduleName, moduleVersion)]);
+            let require = (window as any).requirejs;
+            if (require === undefined) {
+                throw new Error("Requirejs is needed, please ensure it is loaded on the page.");
+            }
+            const conf = {paths: {}};
+            conf.paths[moduleName] = moduleNameToCDNUrl(moduleName, moduleVersion);
+            require.undef(failedId);
+            require.config(conf);
+            
+            return requirePromise([`${moduleName}`]);
        }
     });
 }
