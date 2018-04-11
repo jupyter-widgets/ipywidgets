@@ -95,15 +95,10 @@ namespace shims {
 
             /**
              * Creates a new connected comm
-             * @param  {string} target_name
-             * @param  {object} data
-             * @param  {object} callbacks
-             * @param  {object} metadata
-             * @param  {string} comm_id
-             * @return {Comm}
              */
-            new_comm(target_name: string, data: any, callbacks: any, metadata: any, comm_id: string, buffers?: ArrayBuffer[] | ArrayBufferView[]): Comm {
-                let comm = new Comm(this.jsServicesKernel.connectToComm(target_name, comm_id));
+            async new_comm(target_name: string, data: any, callbacks: any, metadata: any, comm_id: string, buffers?: ArrayBuffer[] | ArrayBufferView[]): Promise<Comm> {
+                let c = await this.jsServicesKernel.connectToComm(target_name, comm_id)
+                let comm = new Comm(c);
                 this.register_comm(comm);
                 comm.open(data, callbacks, metadata, buffers);
                 return comm;
@@ -151,7 +146,7 @@ namespace shims {
               this.comms[comm.comm_id] = Promise.resolve(comm);
               comm.kernel = this.kernel;
               return comm.comm_id;
-            };
+            }
 
             targets = Object.create(null);
             comms = Object.create(null);
