@@ -97,7 +97,7 @@ namespace shims {
              * Creates a new connected comm
              */
             async new_comm(target_name: string, data: any, callbacks: any, metadata: any, comm_id: string, buffers?: ArrayBuffer[] | ArrayBufferView[]): Promise<Comm> {
-                let c = await this.jsServicesKernel.connectToComm(target_name, comm_id)
+                let c = await this.jsServicesKernel.connectToComm(target_name, comm_id);
                 let comm = new Comm(c);
                 this.register_comm(comm);
                 comm.open(data, callbacks, metadata, buffers);
