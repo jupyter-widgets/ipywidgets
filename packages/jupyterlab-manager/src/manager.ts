@@ -121,8 +121,8 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Create a comm.
    */
-   _create_comm(target_name: string, model_id: string, data?: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): Promise<IClassicComm> {
-    let comm = this._context.session.kernel.connectToComm(target_name, model_id);
+  async _create_comm(target_name: string, model_id: string, data?: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): Promise<IClassicComm> {
+    let comm = await this._context.session.kernel.connectToComm(target_name, model_id);
     if (data || metadata) {
       comm.open(data, metadata, buffers);
     }
