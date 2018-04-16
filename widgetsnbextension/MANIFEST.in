@@ -1,5 +1,5 @@
-include ../COPYING.md
-include ../LICENSE
+include COPYING.md
+include LICENSE
 
 graft widgetsnbextension/static
 graft src
