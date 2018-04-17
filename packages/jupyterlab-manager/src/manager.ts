@@ -43,6 +43,18 @@ import {
 
 
 /**
+ * The mime type for a widget view.
+ */
+export
+const WIDGET_VIEW_MIMETYPE = 'application/vnd.jupyter.widget-view+json';
+
+/**
+ * The mime type for widget state data.
+ */
+export
+const WIDGET_STATE_MIMETYPE = 'application/vnd.jupyter.widget-state+json';
+
+/**
  * The class name added to an BackboneViewWrapper widget.
  */
 const BACKBONEVIEWWRAPPER_CLASS = 'jp-BackboneViewWrapper';
@@ -102,9 +114,9 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     }
   }
 
-/**
- * Register a new kernel
- */
+  /**
+   * Register a new kernel
+   */
   _handleKernelChanged({oldValue, newValue}: Session.IKernelChangedArgs) {
     if (oldValue) {
       oldValue.removeCommTarget(this.comm_target_name, this._handleCommOpen);
@@ -184,8 +196,8 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     // plain version, with no indication of the compatible range, prepend a ^ to
     // get all compatible versions. We may eventually apply this logic to all
     // widget modules. See issues #2006 and #2017 for more discussion.
-    if ((moduleName === "@jupyter-widgets/base"
-         || moduleName === "@jupyter-widgets/controls")
+    if ((moduleName === '@jupyter-widgets/base'
+         || moduleName === '@jupyter-widgets/controls')
         && valid(moduleVersion)) {
       moduleVersion = `^${moduleVersion}`;
     }

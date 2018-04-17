@@ -26,7 +26,7 @@ import {
 } from './renderer';
 
 import {
-  WidgetManager
+  WidgetManager, WIDGET_VIEW_MIMETYPE
 } from './manager';
 
 import {
@@ -40,8 +40,6 @@ import {
 
 import '@jupyter-widgets/base/css/index.css';
 import '@jupyter-widgets/controls/css/widgets-base.css';
-
-const WIDGET_MIMETYPE = 'application/vnd.jupyter.widget-view+json';
 
 export
 type INBWidgetExtension = DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel>;
@@ -57,12 +55,12 @@ class NBWidgetExtension implements INBWidgetExtension {
     this._registry.forEach(data => wManager.register(data));
     nb.rendermime.addFactory({
       safe: false,
-      mimeTypes: [WIDGET_MIMETYPE],
+      mimeTypes: [WIDGET_VIEW_MIMETYPE],
       createRenderer: (options) => new WidgetRenderer(options, wManager)
     }, 0);
     return new DisposableDelegate(() => {
       if (nb.rendermime) {
-        nb.rendermime.removeMimeType(WIDGET_MIMETYPE);
+        nb.rendermime.removeMimeType(WIDGET_VIEW_MIMETYPE);
       }
       wManager.dispose();
     });
