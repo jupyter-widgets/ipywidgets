@@ -61,7 +61,7 @@ function filter_existing_model_state(manager, state) {
     var models = state.state;
     models = Object.keys(models)
         .filter(function(model_id) {
-            return !manager._models[model_id];
+            return !manager.get_model(model_id);
         })
         .reduce(function(res, model_id) {
             res[model_id] = models[model_id];
