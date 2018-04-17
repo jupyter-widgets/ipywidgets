@@ -6,8 +6,12 @@ import * as Backbone from 'backbone';
 
 import {
     ManagerBase, shims, IClassicComm, IWidgetRegistryData, ExportMap,
-    ExportData, WidgetModel, WidgetView
+    ExportData, WidgetModel, WidgetView, put_buffers, ICallbacks
 } from '@jupyter-widgets/base';
+
+import {
+  each
+} from '@phosphor/algorithm';
 
 import {
   IDisposable
@@ -16,6 +20,10 @@ import {
 import {
   Widget
 } from '@phosphor/widgets';
+
+import {
+  ICodeCellModel
+} from '@jupyterlab/cells';
 
 import {
   INotebookModel
@@ -124,8 +132,87 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
 
     if (newValue) {
       newValue.registerCommTarget(this.comm_target_name, this._handleCommOpen);
+      this.restoreWidgets(this._context.model);
     }
   }
+
+  /**
+   * Restore widgets from kernel and saved state.
+   */
+  restoreWidgets(notebook: INotebookModel) {
+
+    // Steps that needs to be done:
+    // 1. Get any widget state from the kernel and open comms with existing state
+    // 2. Check saved state for widgets, and restore any that would not overwrite
+    //    any live widgets.
+    // Attempt to reconstruct any live comms by requesting them from the back-end (1).
+    this._get_comm_info().then((comm_ids) => {
+
+      // Create comm class instances from comm ids (2).
+      const comm_promises = Object.keys(comm_ids).map((comm_id) => {
+        return this._create_comm(this.comm_target_name, comm_id);
+      });
+
+      // Send a state request message out for each widget comm and wait
+      // for the responses (1).
+      return Promise.all(comm_promises).then((comms) => {
+        return Promise.all(comms.map((comm) => {
+          const update_promise = new Promise<Private.ICommUpdateData>((resolve, reject) => {
+            comm.on_msg((msg) => {
+              put_buffers(msg.content.data.state, msg.content.data.buffer_paths, msg.buffers);
+              // A suspected response was received, check to see if
+              // it's a state update. If so, resolve.
+              if (msg.content.data.method === 'update') {
+                resolve({
+                  comm: comm,
+                  msg: msg
+                });
+              }
+            });
+          });
+          comm.send({
+            method: 'request_state'
+          }, this.callbacks());
+          return update_promise;
+        }));
+      }).then((widgets_info) => {
+        return Promise.all(widgets_info.map((widget_info) => {
+          const content = widget_info.msg.content as any;
+          return this.new_model({
+            model_name: content.data.state._model_name,
+            model_module: content.data.state._model_module,
+            model_module_version: content.data.state._model_module_version,
+            comm: widget_info.comm,
+          }, content.data.state);
+        }));
+      }).then(() => {
+        const widget_md = notebook.metadata.get('widgets') as any;
+        // Now that we have mirrored any widgets from the kernel...
+        // Restore any widgets from saved state that are not live (2)
+        if (widget_md && widget_md[WIDGET_STATE_MIMETYPE]) {
+          let state = widget_md[WIDGET_STATE_MIMETYPE];
+          state = this.filterExistingModelState(state);
+          return this.set_state(state);
+        }
+      }).then((models) => {
+        // Find any views in notebook model that need to be re-rendered
+        each(notebook.cells, (cell) => {
+          if (cell.type !== 'code') {
+            return;
+          }
+          const outputs = (cell as ICodeCellModel).outputs;
+          for (let i=0; i < outputs.length; ++i) {
+            let output = outputs.get(i);
+            if (output.data[WIDGET_VIEW_MIMETYPE]) {
+              // Trigger a re-render
+              outputs.set(i, output.toJSON());
+            }
+          }
+        });
+      });
+    });
+  }
+
 
   /**
    * Return a phosphor widget representing the view
@@ -239,4 +326,17 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   private _rendermime: RenderMimeRegistry;
 
   _commRegistration: IDisposable;
+}
+
+
+namespace Private {
+
+  /**
+   * Data promised when a comm info request resolves.
+   */
+  export
+  interface ICommUpdateData {
+    comm: IClassicComm;
+    msg: KernelMessage.ICommMsg;
+  }
 }

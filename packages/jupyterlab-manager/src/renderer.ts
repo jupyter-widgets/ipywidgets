@@ -40,6 +40,7 @@ class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable
     const modelPromise = this._manager.get_model(source.model_id);
     if (modelPromise) {
       try {
+        this.node.textContent = '';
         let wModel = await modelPromise;
         let widget = await this._manager.display_model(void 0, wModel, void 0);
         this.addWidget(widget);
