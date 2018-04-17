@@ -535,6 +535,26 @@ abstract class ManagerBase<T> {
     protected abstract _get_comm_info();
 
     /**
+     * Filter serialized widget state to remove any ID's already present in manager.
+     *
+     * @param {*} state Serialized state to filter
+     *
+     * @returns {*} A copy of the state, with its 'state' attribute filtered
+     */
+    protected filterExistingModelState(serialized_state: any) {
+      let models = serialized_state.state as {[key: string]: WidgetModel};
+      models = Object.keys(models)
+          .filter((model_id) => {
+              return !this.get_model(model_id);
+          })
+          .reduce((res, model_id) => {
+              res[model_id] = models[model_id];
+              return res;
+          }, {} as {[key: string]: WidgetModel});
+      return {...serialized_state, state: models};
+    }
+
+    /**
      * Dictionary of model ids and model instance promises
      */
     private _models: {[key: string]: Promise<WidgetModel>} = Object.create(null);
