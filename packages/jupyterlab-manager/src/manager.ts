@@ -6,12 +6,8 @@ import * as Backbone from 'backbone';
 
 import {
     ManagerBase, shims, IClassicComm, IWidgetRegistryData, ExportMap,
-    ExportData, WidgetModel, WidgetView, put_buffers, ICallbacks
+    ExportData, WidgetModel, WidgetView, put_buffers
 } from '@jupyter-widgets/base';
-
-import {
-  each
-} from '@phosphor/algorithm';
 
 import {
   IDisposable
@@ -20,10 +16,6 @@ import {
 import {
   Widget
 } from '@phosphor/widgets';
-
-import {
-  ICodeCellModel
-} from '@jupyterlab/cells';
 
 import {
   INotebookModel
@@ -117,6 +109,8 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
       this._handleKernelChanged(args);
     });
 
+    this._setupRestorePromise();
+
     if (context.session.kernel) {
       this._handleKernelChanged({oldValue: null, newValue: context.session.kernel});
     }
@@ -132,21 +126,21 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
 
     if (newValue) {
       newValue.registerCommTarget(this.comm_target_name, this._handleCommOpen);
-      this.restoreWidgets(this._context.model);
+      this._restored = this.restoreWidgets(this._context.model);
     }
   }
 
   /**
    * Restore widgets from kernel and saved state.
    */
-  restoreWidgets(notebook: INotebookModel) {
+  restoreWidgets(notebook: INotebookModel): Promise<void> {
 
     // Steps that needs to be done:
     // 1. Get any widget state from the kernel and open comms with existing state
     // 2. Check saved state for widgets, and restore any that would not overwrite
     //    any live widgets.
     // Attempt to reconstruct any live comms by requesting them from the back-end (1).
-    this._get_comm_info().then((comm_ids) => {
+    return this._get_comm_info().then((comm_ids) => {
 
       // Create comm class instances from comm ids (2).
       const comm_promises = Object.keys(comm_ids).map((comm_id) => {
@@ -195,20 +189,10 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
           return this.set_state(state);
         }
       }).then((models) => {
-        // Find any views in notebook model that need to be re-rendered
-        each(notebook.cells, (cell) => {
-          if (cell.type !== 'code') {
-            return;
-          }
-          const outputs = (cell as ICodeCellModel).outputs;
-          for (let i=0; i < outputs.length; ++i) {
-            let output = outputs.get(i);
-            if (output.data[WIDGET_VIEW_MIMETYPE]) {
-              // Trigger a re-render
-              outputs.set(i, output.toJSON());
-            }
-          }
-        });
+        if (this._resolveRestored) {
+          this._resolveRestored();
+          this._resolveRestored = null;
+        }
       });
     });
   }
@@ -320,12 +304,36 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     this._registry.set(data.name, data.version, data.exports);
   }
 
+  async get_model(model_id: string): Promise<WidgetModel> {
+    try {
+      // First try to get it directly
+      // Needed to do this first to avoid dead-lock:
+      // - get_model
+      // - restoreWidgets
+      // - unpack
+      return await super.get_model(model_id);
+    } catch (err) {
+      // If not directly available, try to wait for restoration
+      return this._restored.then(() => {
+        return super.get_model(model_id);
+      });
+    }
+  }
+
+  private _setupRestorePromise() {
+    this._restored = new Promise((resolve) => {
+      this._resolveRestored = resolve;
+    });
+  }
+
   private _handleCommOpen: (comm: Kernel.IComm, msg: KernelMessage.ICommOpenMsg) => Promise<void>;
   private _context: DocumentRegistry.IContext<INotebookModel>;
   private _registry: SemVerCache<ExportData> = new SemVerCache<ExportData>();
   private _rendermime: RenderMimeRegistry;
 
   _commRegistration: IDisposable;
+  private _restored: Promise<void>;
+  private _resolveRestored: (() => void) | null = null;
 }
 
 
