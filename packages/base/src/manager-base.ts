@@ -9,7 +9,7 @@ import {
 } from './widget';
 
 import {
-    IClassicComm
+    IClassicComm, ICallbacks
 } from './services-shim';
 
 import {
@@ -192,7 +192,7 @@ abstract class ManagerBase<T> {
     /**
      * callback handlers specific to a view
      */
-    callbacks (view: WidgetView) {
+    callbacks (view?: WidgetView): ICallbacks {
         return {};
     }
 
