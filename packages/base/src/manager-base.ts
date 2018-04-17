@@ -200,10 +200,7 @@ abstract class ManagerBase<T> {
      * Get a promise for a model by model id.
      */
     get_model(model_id: string): Promise<WidgetModel> {
-        // TODO: Perhaps we should return a Promise.reject if the model is not
-        // found. Right now this isn't a true async function because it doesn't
-        // always return a promise.
-        return this._models[model_id];
+        return this._models[model_id] || Promise.reject(`Model not found: ${model_id}`);
     }
 
     /**
@@ -545,7 +542,7 @@ abstract class ManagerBase<T> {
       let models = serialized_state.state as {[key: string]: WidgetModel};
       models = Object.keys(models)
           .filter((model_id) => {
-              return !this.get_model(model_id);
+              return !this._models[model_id];
           })
           .reduce((res, model_id) => {
               res[model_id] = models[model_id];
