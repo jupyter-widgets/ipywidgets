@@ -214,3 +214,26 @@ class VBoxView extends BoxView {
         this.pWidget.addClass('widget-vbox');
     }
 }
+
+export
+class GridBoxView extends BoxView {
+    /**
+     * Public constructor
+     */
+    initialize(parameters) {
+        super.initialize(parameters);
+        this.pWidget.addClass('widget-gridbox');
+        // display needn't be set to flex and grid 
+        this.pWidget.removeClass('widget-box');
+    }
+}
+
+export
+class GridBoxModel extends BoxModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _view_name: 'GridBoxView',
+            _model_name: 'GridBoxModel',
+        });
+    }
+}
