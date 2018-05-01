@@ -95,6 +95,13 @@
     overflow: auto;
 }
 
+.widget-gridbox {
+    box-sizing: border-box;
+    display: grid;
+    margin: 0;
+    overflow: auto;
+}
+
 .widget-hbox {
     flex-direction: row;
 }
