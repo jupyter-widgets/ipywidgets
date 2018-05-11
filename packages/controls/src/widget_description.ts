@@ -43,7 +43,7 @@ class DescriptionModel extends DOMWidgetModel {
             _view_module_version: JUPYTER_CONTROLS_VERSION,
             _model_module_version: JUPYTER_CONTROLS_VERSION,
             description: '',
-            tooltip: '',
+            description_tooltip: null,
         };
     }
 }
@@ -57,7 +57,7 @@ class DescriptionView extends DOMWidgetView {
         this.label.style.display = 'none';
 
         this.listenTo(this.model, 'change:description', this.updateDescription);
-        this.listenTo(this.model, 'change:tooltip', this.updateDescription);
+        this.listenTo(this.model, 'change:description_tooltip', this.updateDescription);
         this.updateDescription();
     }
 
@@ -67,9 +67,9 @@ class DescriptionView extends DOMWidgetView {
 
     updateDescription() {
         let description = this.model.get('description');
-        let tooltip = this.model.get('tooltip');
-        if (tooltip.length === 0) {
-            tooltip = description;
+        let description_tooltip = this.model.get('description_tooltip');
+        if (description_tooltip === null) {
+            description_tooltip = description;
         }
 
         if (description.length === 0) {
@@ -79,7 +79,7 @@ class DescriptionView extends DOMWidgetView {
             this.typeset(this.label);
             this.label.style.display = '';
         }
-        this.label.title = tooltip;
+        this.label.title = description_tooltip;
     }
 
     label: HTMLLabelElement;
