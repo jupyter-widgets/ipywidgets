@@ -15,12 +15,12 @@ class TestAccordion(TestCase):
 
     def test_selected_index_none(self):
         accordion = Accordion(self.children, selected_index=None)
-        state = accordion.get_state()
+        state = accordion.get_state()[0]
         assert state['selected_index'] is None
 
     def test_selected_index(self):
         accordion = Accordion(self.children, selected_index=1)
-        state = accordion.get_state()
+        state = accordion.get_state()[0]
         assert state['selected_index'] == 1
 
     def test_selected_index_out_of_bounds(self):

@@ -11,6 +11,7 @@ from contextlib import contextmanager
 import collections
 import sys
 import numbers
+import inspect
 
 from IPython.core.getipython import get_ipython
 from ipykernel.comm import Comm
@@ -285,9 +286,7 @@ class Widget(LoggingHasTraits):
                                                state['_view_module_version'],
                                                state['_view_name'])
         widget = widget_class(comm=comm)
-        if 'buffer_paths' in data:
-            _put_buffers(state, data['buffer_paths'], msg['buffers'])
-        widget.set_state(state)
+        widget.set_state(state, msg['buffers'])
 
     @staticmethod
     def get_manager_state(drop_defaults=False, widgets=None):
@@ -311,13 +310,8 @@ class Widget(LoggingHasTraits):
             'model_module': self._model_module,
             'model_module_version': self._model_module_version
         }
-        model_state, buffer_paths, buffers = _remove_buffers(self.get_state(drop_defaults=drop_defaults))
+        model_state, buffers = self.get_state(drop_defaults=drop_defaults)
         state['state'] = model_state
-        if len(buffers) > 0:
-            state['buffers'] = [{'encoding': 'base64',
-                                 'path': p,
-                                 'data': standard_b64encode(d).decode('ascii')}
-                                for p, d in zip(buffer_paths, buffers)]
         return state
 
     def get_view_spec(self):
@@ -350,6 +344,7 @@ class Widget(LoggingHasTraits):
         return [name for name in self.traits(sync=True)]
 
     _property_lock = Dict()
+    _buffer_lock = List()
     _holding_sync = False
     _states_to_send = Set()
     _display_callbacks = Instance(CallbackDispatcher, ())
@@ -377,10 +372,10 @@ class Widget(LoggingHasTraits):
     def open(self):
         """Open a comm to the frontend if one isn't already open."""
         if self.comm is None:
-            state, buffer_paths, buffers = _remove_buffers(self.get_state())
+            state, buffers = self.get_state()
 
             args = dict(target_name='jupyter.widget',
-                        data={'state': state, 'buffer_paths': buffer_paths},
+                        data={'state': state},
                         buffers=buffers,
                         metadata={'version': __protocol_version__}
                         )
@@ -430,10 +425,9 @@ class Widget(LoggingHasTraits):
         key : unicode, or iterable (optional)
             A single property's name or iterable of property names to sync with the front-end.
         """
-        state = self.get_state(key=key)
+        state, buffers = self.get_state(key=key)
         if len(state) > 0:
-            state, buffer_paths, buffers = _remove_buffers(state)
-            msg = {'method': 'update', 'state': state, 'buffer_paths': buffer_paths}
+            msg = {'method': 'update', 'state': state}
             self._send(msg, buffers=buffers)
 
     def get_state(self, key=None, drop_defaults=False):
@@ -460,14 +454,18 @@ class Widget(LoggingHasTraits):
             raise ValueError("key must be a string, an iterable of keys, or None")
         state = {}
         traits = self.traits()
+        buffers = []
         for k in keys:
             to_json = self.trait_metadata(k, 'to_json', self._trait_to_json)
-            value = to_json(getattr(self, k), self)
+            if len(inspect.signature(to_json).parameters) > 2:
+                value = to_json(getattr(self, k), self, buffers)
+            else:
+                value = to_json(getattr(self, k), self)
             if not PY3 and isinstance(traits[k], Bytes) and isinstance(value, bytes):
                 value = memoryview(value)
             if not drop_defaults or not self._compare(value, traits[k].default_value):
                 state[k] = value
-        return state
+        return state, buffers
 
     def _is_numpy(self, x):
         return x.__class__.__name__ == 'ndarray' and x.__class__.__module__ == 'numpy'
@@ -479,17 +477,22 @@ class Widget(LoggingHasTraits):
         else:
             return a == b
 
-    def set_state(self, sync_data):
+    def set_state(self, sync_data, buffers=None):
         """Called when a state is received from the front-end."""
+        if buffers is None:
+            buffers = []
         # The order of these context managers is important. Properties must
         # be locked when the hold_trait_notification context manager is
         # released and notifications are fired.
-        with self._lock_property(**sync_data), self.hold_trait_notifications():
+        with self._lock_property(**sync_data, buffers), self.hold_trait_notifications():
             for name in sync_data:
                 if name in self.keys:
                     from_json = self.trait_metadata(name, 'from_json',
                                                     self._trait_from_json)
-                    self.set_trait(name, from_json(sync_data[name], self))
+                    if len(inspect.signature(from_json).parameters) > 2:
+                        self.set_trait(name, from_json(sync_data[name], self, buffers))
+                    else:
+                        self.set_trait(name, from_json(sync_data[name], self))
 
     def send(self, content, buffers=None):
         """Sends a custom msg to the widget model in the front-end.
@@ -559,7 +562,7 @@ class Widget(LoggingHasTraits):
     # Support methods
     #-------------------------------------------------------------------------
     @contextmanager
-    def _lock_property(self, **properties):
+    def _lock_property(self, **properties, buffers):
         """Lock a property-value pair.
 
         The value should be the JSON state of the property.
@@ -568,10 +571,12 @@ class Widget(LoggingHasTraits):
         flawed.  In the future we may want to look into buffering state changes
         back to the front-end."""
         self._property_lock = properties
+        self._buffer_lock = buffers
         try:
             yield
         finally:
             self._property_lock = {}
+            self._buffer_lock = []
 
     @contextmanager
     def hold_sync(self):
@@ -591,15 +596,17 @@ class Widget(LoggingHasTraits):
         """Check the property lock (property_lock)"""
         to_json = self.trait_metadata(key, 'to_json', self._trait_to_json)
         if key in self._property_lock:
-            # model_state, buffer_paths, buffers
-            split_value = _remove_buffers({ key: to_json(value, self)})
-            split_lock = _remove_buffers({ key: self._property_lock[key]})
+            buffers = []
+            if len(inspect.signature(to_json).parameters) > 2:
+                serializer_value = { key: to_json(value, self, buffers)}
+            else:
+                serializer_value = { key: to_json(value, self)}
+            split_lock = { key: self._property_lock[key]}
             # A roundtrip conversion through json in the comparison takes care of
             # idiosyncracies of how python data structures map to json, for example
             # tuples get converted to lists.
-            if (jsonloads(jsondumps(split_value[0])) == split_lock[0]
-                and split_value[1] == split_lock[1]
-                and _buffer_list_equal(split_value[2], split_lock[2])):
+            if (jsonloads(jsondumps(serializer_value)) == split_lock
+                and _buffer_list_equal(buffers, self._buffer_lock)):
                 return False
         if self._holding_sync:
             self._states_to_send.add(key)
@@ -617,9 +624,7 @@ class Widget(LoggingHasTraits):
         if method == 'update':
             if 'state' in data:
                 state = data['state']
-                if 'buffer_paths' in data:
-                    _put_buffers(state, data['buffer_paths'], msg['buffers'])
-                self.set_state(state)
+                self.set_state(state, msg['buffers'])
 
         # Handle a state request.
         elif method == 'request_state':

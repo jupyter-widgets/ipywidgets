@@ -15,7 +15,7 @@ class TestFloatSlider(TestCase):
 
     def test_construction_readout_format(self):
         slider = FloatSlider(readout_format='$.1f')
-        assert slider.get_state()['readout_format'] == '$.1f'
+        assert slider.get_state()[0]['readout_format'] == '$.1f'
 
     def test_construction_invalid_readout_format(self):
         with self.assertRaises(TraitError):

@@ -49,14 +49,21 @@ class DataInstance():
     def __init__(self, data=None):
         self.data = data
 
-def mview_serializer(instance, widget):
-    return { 'data': memoryview(instance.data) if instance.data else None }
+def mview_serializer(instance, widget, buffers):
+    if instance.data:
+        buffers.append(memoryview(instance.data))
+    return { 'data': len(buffers) if instance.data else None }
 
-def bytes_serializer(instance, widget):
-    return { 'data': bytearray(memoryview(instance.data).tobytes()) if instance.data else None }
+def bytes_serializer(instance, widget, buffers):
+    if instance.data:
+        buffers.append(bytearray(memoryview(instance.data).tobytes()))
+    return { 'data': len(buffers) if instance.data else None }
 
-def deserializer(json_data, widget):
-    return DataInstance( memoryview(json_data['data']).tobytes() if json_data else None )
+def deserializer(json_data, widget, buffers):
+    data = None
+    if json_data and json_data['data'] is not None:
+        data = memoryview(buffers[json_data['data']].tobytes())
+    return DataInstance(data)
 
 class DataWidget(SimpleWidget):
     d = Instance(DataInstance).tag(sync=True, to_json=mview_serializer, from_json=deserializer)
