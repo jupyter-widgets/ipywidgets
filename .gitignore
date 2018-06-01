@@ -7,6 +7,7 @@ docs/source/api/generated
 node_modules
 *.py[co]
 __pycache__
+.pytest_cache
 *.egg-info
 *~
 *.bak
