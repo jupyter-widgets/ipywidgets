@@ -484,7 +484,7 @@ class Widget(LoggingHasTraits):
         # The order of these context managers is important. Properties must
         # be locked when the hold_trait_notification context manager is
         # released and notifications are fired.
-        with self._lock_property(**sync_data, buffers), self.hold_trait_notifications():
+        with self._lock_property(buffers, **sync_data), self.hold_trait_notifications():
             for name in sync_data:
                 if name in self.keys:
                     from_json = self.trait_metadata(name, 'from_json',
@@ -562,7 +562,7 @@ class Widget(LoggingHasTraits):
     # Support methods
     #-------------------------------------------------------------------------
     @contextmanager
-    def _lock_property(self, **properties, buffers):
+    def _lock_property(self, buffer, **properties):
         """Lock a property-value pair.
 
         The value should be the JSON state of the property.
