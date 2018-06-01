@@ -52,12 +52,12 @@ class DataInstance():
 def mview_serializer(instance, widget, buffers):
     if instance.data:
         buffers.append(memoryview(instance.data))
-    return { 'data': len(buffers) if instance.data else None }
+    return { 'data': len(buffers) - 1 if instance.data else None }
 
 def bytes_serializer(instance, widget, buffers):
     if instance.data:
         buffers.append(bytearray(memoryview(instance.data).tobytes()))
-    return { 'data': len(buffers) if instance.data else None }
+    return { 'data': len(buffers) - 1 if instance.data else None }
 
 def deserializer(json_data, widget, buffers):
     data = None
@@ -69,8 +69,10 @@ class DataWidget(SimpleWidget):
     d = Instance(DataInstance).tag(sync=True, to_json=mview_serializer, from_json=deserializer)
 
 # A widget that has a buffer that might be changed on reception:
-def truncate_deserializer(json_data, widget):
-    return DataInstance( json_data['data'][:20].tobytes() if json_data else None )
+def truncate_deserializer(json_data, widget, buffers):
+    if json_data and json_data['data']:
+        return DataInstance( buffers[json_data['data']][:20].tobytes())
+    return DataInstance(None)
 
 class TruncateDataWidget(SimpleWidget):
     d = Instance(DataInstance).tag(sync=True, to_json=bytes_serializer, from_json=truncate_deserializer)
@@ -100,7 +102,6 @@ def test_set_state_transformer():
     nt.assert_equal(w.comm.messages, [((), dict(
         buffers=[],
         data=dict(
-            buffer_paths=[],
             method='update',
             state=dict(d=[False, True, False])
         )))])
@@ -108,12 +109,13 @@ def test_set_state_transformer():
 
 def test_set_state_data():
     w = DataWidget()
-    data = memoryview(b'x'*30)
+    buffers = [memoryview(b'x'*30)]
+    data = 0
     w.set_state(dict(
         a=True,
         d={'data': data},
-    ))
-    nt.assert_equal(w.comm.messages, [])
+    ), buffers)
+    nt.assert_equal(w.comm.messages, [((), dict(buffers=buffers, data=dict(method='update', state=dict(d=dict(data=data)))))])
 
 
 def test_set_state_data_truncate():
@@ -121,16 +123,16 @@ def test_set_state_data_truncate():
     data = memoryview(b'x'*30)
     w.set_state(dict(
         a=True,
-        d={'data': data},
-    ))
+        d={'data': 0},
+    ), [data])
     # Get message for checking
+    print(w.comm.messages)
     nt.assert_equal(len(w.comm.messages), 1)   # ensure we didn't get more than expected
     msg = w.comm.messages[0]
     # Assert that the data update (truncation) sends an update
     buffers = msg[1].pop('buffers')
     nt.assert_equal(msg, ((), dict(
         data=dict(
-            buffer_paths=[['d', 'data']],
             method='update',
             state=dict(d={})
         ))))

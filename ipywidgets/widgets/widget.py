@@ -62,7 +62,7 @@ def _binary_to_json(x, obj, buffers):
     # TODO: Serialize lists/dicts of buffers
     if isinstance(x, _binary_types):
         buffers.append(x)
-        return len(buffers)
+        return len(buffers) - 1
     elif isinstance(x, numbers.Number):
         # Avoid passing numbers through, as they will mess up deserialization
         raise TypeError('Cannot serialize a number as a binary type!')
@@ -562,7 +562,7 @@ class Widget(LoggingHasTraits):
     # Support methods
     #-------------------------------------------------------------------------
     @contextmanager
-    def _lock_property(self, buffer, **properties):
+    def _lock_property(self, buffers, **properties):
         """Lock a property-value pair.
 
         The value should be the JSON state of the property.
