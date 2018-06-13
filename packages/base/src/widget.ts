@@ -209,7 +209,6 @@ class WidgetModel extends Backbone.Model {
                 this.state_change = this.state_change
                     .then(() => {
                         let state = msg.content.data.state;
-                        let buffer_paths = msg.content.data.buffer_paths || [];
                         // Make sure the buffers are DataViews
                         let buffers = (msg.buffers || []).map(b => {
                             if (b instanceof DataView) {
@@ -218,8 +217,6 @@ class WidgetModel extends Backbone.Model {
                                 return new DataView(b instanceof ArrayBuffer ? b : b.buffer);
                             }
                         });
-
-                        utils.put_buffers(state, buffer_paths, buffers);
                         return (this.constructor as typeof WidgetModel)._deserialize_state(state, this.widget_manager);
                     }).then((state) => {
                         this.set_state(state);
