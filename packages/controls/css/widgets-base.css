@@ -657,6 +657,7 @@
 }
 
 .widget-dropdown > select {
+    padding-right: 20px;
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     border-radius: 0;
     height: inherit;
