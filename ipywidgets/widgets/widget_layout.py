@@ -42,6 +42,10 @@ class Layout(Widget):
     display = Unicode(None, allow_none=True, help="The display CSS attribute.").tag(sync=True)
     flex = Unicode(None, allow_none=True, help="The flex CSS attribute.").tag(sync=True)
     flex_flow = Unicode(None, allow_none=True, help="The flex-flow CSS attribute.").tag(sync=True)
+    grid_template_columns = Unicode(None, allow_none=True, help="The grid-template-columns CSS attribute.").tag(sync=True)
+    grid_template_rows = Unicode(None, allow_none=True, help="The grid-template-rows CSS attribute.").tag(sync=True)
+    grid_row = Unicode(None, allow_none=True, help="The grid-row CSS attribute.").tag(sync=True)
+    grid_column = Unicode(None, allow_none=True, help="The grid-column CSS attribute.").tag(sync=True)
     height = Unicode(None, allow_none=True, help="The height CSS attribute.").tag(sync=True)
     justify_content = CaselessStrEnum(['flex-start', 'flex-end', 'center',
         'space-between', 'space-around'] + CSS_PROPERTIES, allow_none=True, help="The justify-content CSS attribute.").tag(sync=True)
