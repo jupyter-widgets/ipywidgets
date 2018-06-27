@@ -37,7 +37,7 @@ Source Build
 
 ```bash
 git clone https://github.com/jupyter-widgets/ipywidgets.git
-cd packages/jupyterlab-manager
+cd ipywidgets/packages/jupyterlab-manager
 npm install
 npm run build
 jupyter labextension link .
