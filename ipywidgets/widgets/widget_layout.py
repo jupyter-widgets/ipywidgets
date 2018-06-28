@@ -61,6 +61,17 @@ class Layout(Widget):
     visibility = CaselessStrEnum(['visible', 'hidden']+CSS_PROPERTIES, allow_none=True, help="The visibility CSS attribute.").tag(sync=True)
     width = Unicode(None, allow_none=True, help="The width CSS attribute.").tag(sync=True)
 
+    grid_auto_columns = Unicode(None, allow_none=True, help="The grid-auto-columns CSS attribute.").tag(sync=True)
+    grid_auto_flow = CaselessStrEnum(['column','row','row dense','column dense']+ CSS_PROPERTIES, allow_none=True, help="The grid-auto-flow CSS attribute.").tag(sync=True)
+    grid_auto_rows = Unicode(None, allow_none=True, help="The grid-auto-rows CSS attribute.").tag(sync=True)
+    grid_gap = Unicode(None, allow_none=True, help="The grid-gap CSS attribute.").tag(sync=True)
+    grid_template_rows = Unicode(None, allow_none=True, help="The grid-template-rows CSS attribute.").tag(sync=True)
+    grid_template_columns = Unicode(None, allow_none=True, help="The grid-template-columns CSS attribute.").tag(sync=True)
+    grid_template_areas = Unicode(None, allow_none=True, help="The grid-template-areas CSS attribute.").tag(sync=True)
+    grid_row = Unicode(None, allow_none=True, help="The grid-row CSS attribute.").tag(sync=True)
+    grid_column = Unicode(None, allow_none=True, help="The grid-column CSS attribute.").tag(sync=True)
+    grid_area = Unicode(None, allow_none=True, help="The grid-area CSS attribute.").tag(sync=True)
+
 
 class LayoutTraitType(Instance):
 
@@ -71,34 +82,3 @@ class LayoutTraitType(Instance):
             return super(LayoutTraitType, self).validate(obj, self.klass(**value))
         else:
             return super(LayoutTraitType, self).validate(obj, value)
-
-@register
-class GridLayout(Widget):
-
-    _view_name = Unicode('GridLayoutView').tag(sync=True)
-    _view_module = Unicode('@jupyter-widgets/base').tag(sync=True)
-    _view_module_version = Unicode(__jupyter_widgets_base_version__).tag(sync=True)
-    _model_name = Unicode('GridLayoutModel').tag(sync=True)
-
-    # Keys
-    auto_columns = Unicode(None, allow_none=True, help="The grid-auto-columns CSS attribute.").tag(sync=True)
-    auto_flow = CaselessStrEnum(['column','row','row dense','column dense']+ CSS_PROPERTIES, allow_none=True, help="The grid-auto-flow CSS attribute.").tag(sync=True)
-    auto_rows = Unicode(None, allow_none=True, help="The grid-auto-rows CSS attribute.").tag(sync=True)
-    row_gap = Unicode(None, allow_none=True, help="The grid-row-gap CSS attribute.").tag(sync=True)
-    column_gap = Unicode(None, allow_none=True, help="The grid-column-gap CSS attribute.").tag(sync=True)
-    template_areas = Unicode(None, allow_none=True, help="The grid-template-areas CSS attribute.").tag(sync=True)
-    template_columns = Unicode(None, allow_none=True, help="The grid-template-columns CSS attribute.").tag(sync=True)
-    template_rows = Unicode(None, allow_none=True, help="The grid-template-rows CSS attribute.").tag(sync=True)
-
-
-@register
-class GridItemLayout(Widget):
-    _view_name = Unicode('GridItemLayoutView').tag(sync=True)
-    _view_module = Unicode('@jupyter-widgets/base').tag(sync=True)
-    _view_module_version = Unicode(__jupyter_widgets_base_version__).tag(sync=True)
-    _model_name = Unicode('GridItemLayoutModel').tag(sync=True)
-
-    row_start = Unicode(None, allow_none=True, help="The row-start CSS attribute.").tag(sync=True)
-    column_start = Unicode(None, allow_none=True, help="The grid-column-start CSS attribute.").tag(sync=True)
-    row_end = Unicode(None, allow_none=True, help="The grid-row-end CSS attribute.").tag(sync=True)
-    column_end = Unicode(None, allow_none=True, help="The grid-column-end CSS attribute.").tag(sync=True)

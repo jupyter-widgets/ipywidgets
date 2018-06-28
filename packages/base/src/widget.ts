@@ -566,8 +566,6 @@ class DOMWidgetModel extends WidgetModel {
     static serializers: ISerializers = {
         ...WidgetModel.serializers,
         layout: {deserialize: unpack_models},
-        grid_layout: {deserialize: unpack_models},
-        grid_item_layout: {deserialize: unpack_models},
         style: {deserialize: unpack_models},
     };
 
@@ -751,17 +749,7 @@ class DOMWidgetView extends WidgetView {
 
         this.layoutPromise = Promise.resolve();
         this.listenTo(this.model, 'change:layout', (model, value) => {
-            this.setLayout('layoutPromise', value, model.previous('layout'));
-        });
-
-        this.gridLayoutPromise = Promise.resolve();
-        this.listenTo(this.model, 'change:grid_layout', (model, value) => {
-            this.setLayout('gridLayoutPromise', value, model.previous('grid_layout'));
-        });
-
-        this.gridItemLayoutPromise = Promise.resolve();
-        this.listenTo(this.model, 'change:grid_item_layout', (model, value) => {
-            this.setLayout('gridItemLayoutPromise', value, model.previous('grid_item_layout'));
+            this.setLayout(value, model.previous('layout'));
         });
 
         this.stylePromise = Promise.resolve();
@@ -771,9 +759,7 @@ class DOMWidgetView extends WidgetView {
 
         this.displayed.then(() => {
             this.update_classes([], this.model.get('_dom_classes'));
-            this.setLayout('layoutPromise', this.model.get('layout'));
-            this.setLayout('gridLayoutPromise', this.model.get('grid_layout'));
-            this.setLayout('gridItemLayoutPromise', this.model.get('grid_item_layout'));
+            this.setLayout(this.model.get('layout'));
             this.setStyle(this.model.get('style'));
         });
 
@@ -783,9 +769,9 @@ class DOMWidgetView extends WidgetView {
         });
     }
 
-    setLayout(layoutAttrName, layout, oldLayout?) {
+    setLayout(layout, oldLayout?) {
         if (layout) {
-            this[layoutAttrName] = this[layoutAttrName].then((oldLayoutView) => {
+            this.layoutPromise = this.layoutPromise.then((oldLayoutView) => {
                 if (oldLayoutView) {
                     oldLayoutView.unlayout();
                     this.stopListening(oldLayoutView.model);
@@ -932,7 +918,5 @@ class DOMWidgetView extends WidgetView {
     '$el': any;
     pWidget: Widget;
     layoutPromise: Promise<any>;
-    gridLayoutPromise: Promise<any>;
-    gridItemLayoutPromise: Promise<any>;
     stylePromise: Promise<any>;
 }

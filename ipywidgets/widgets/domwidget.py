@@ -6,7 +6,7 @@
 from traitlets import Unicode
 from .widget import Widget, widget_serialization
 from .trait_types import InstanceDict, TypedTuple
-from .widget_layout import Layout, GridLayout, GridItemLayout
+from .widget_layout import Layout
 from .widget_style import Style
 
 
@@ -16,8 +16,6 @@ class DOMWidget(Widget):
     _model_name = Unicode('DOMWidgetModel').tag(sync=True)
     _dom_classes = TypedTuple(trait=Unicode(), help="CSS classes applied to widget DOM element").tag(sync=True)
     layout = InstanceDict(Layout).tag(sync=True, **widget_serialization)
-    grid_layout = InstanceDict(GridLayout).tag(sync=True, **widget_serialization)
-    grid_item_layout = InstanceDict(GridItemLayout).tag(sync=True, **widget_serialization)
 
     def add_class(self, className):
         """

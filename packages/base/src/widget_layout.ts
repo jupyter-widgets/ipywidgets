@@ -38,27 +38,22 @@ let css_properties = {
     right: null,
     top: null,
     visibility: null,
-    width: null
+    width: null,
+
+    // container
+    grid_auto_columns: null,
+    grid_auto_flow: null,
+    grid_auto_rows: null,
+    grid_gap: null,
+    grid_template_rows: null,
+    grid_template_columns: null,
+    grid_template_areas: null,
+
+    // items
+    grid_row: null,
+    grid_column: null,
+    grid_area: null
 };
-
-let grid_css_properties = {
-    auto_columns: null,
-    auto_flow: null,
-    auto_rows: null,
-    row_gap: null,
-    column_gap: null,
-    template_areas: null,
-    template_columns: null,
-    template_rows: null
-};
-
-let grid_item_css_properties = {
-    row_start: null,
-    column_start: null,
-    row_end: null,
-    column_end: null
-}
-
 
 export
 class LayoutModel extends WidgetModel {
@@ -72,19 +67,14 @@ class LayoutModel extends WidgetModel {
 
 export
 class LayoutView extends WidgetView {
-  constructor(options?: Backbone.ViewOptions<LayoutModel> & {options?: any}) {
-      super(options);
-  }
     /**
      * Public constructor
      */
     initialize(parameters) {
         this._traitNames = [];
         super.initialize(parameters);
-        // Allowing override of default css_properties
-        const {options: {css_props = css_properties}} = parameters;
         // Register the traits that live on the Python side
-        for (let key of Object.keys(css_props)) {
+        for (let key of Object.keys(css_properties)) {
             this.registerTrait(key);
         }
     }
@@ -111,7 +101,7 @@ class LayoutView extends WidgetView {
      * @return css property name
      */
     css_name(trait: string): string {
-        return trait.replace(new RegExp('_', 'g'), '-');
+        return trait.replace(/_/g, '-');
     }
 
     /**
@@ -145,61 +135,5 @@ class LayoutView extends WidgetView {
         }, this);
     }
 
-    protected _traitNames: string[];
-}
-
-export
-class GridLayoutModel extends WidgetModel {
-    defaults() {
-        return assign(super.defaults(), {
-        _model_name: 'GridLayoutModel',
-        _view_name: 'GridLayoutView'
-        }, grid_css_properties);
-    }
-}
-
-export
-class GridLayoutView extends LayoutView {
-    /**
-     * Public constructor
-     */
-     initialize(parameters) {
-         const options = {...parameters.options, css_props: grid_css_properties};
-         super.initialize({...parameters, options});
-     }
-
-     /**
-      * Get the the name of the css property from the trait name
-      * @param  model attribute name
-      * @return css property name
-      */
-     css_name(trait: string): string {
-         return `grid-${trait.replace(new RegExp('_', 'g'), '-')}`;
-     }
-}
-
-
-export
-class GridItemLayoutModel extends WidgetModel {
-    defaults() {
-        return assign(super.defaults(), {
-        _model_name: 'GridItemLayoutModel',
-        _view_name: 'GridItemLayoutView'
-      }, grid_item_css_properties);
-    }
-}
-
-export
-class GridItemLayoutView extends LayoutView {
-  /**
-   * Public constructor
-   */
-   initialize(parameters) {
-     const options = {...parameters.options, css_props: grid_item_css_properties};
-     super.initialize({...parameters, options});
-   }
-
-   css_name(trait: string): string {
-       return `grid-${trait.replace(new RegExp('_', 'g'), '-')}`;
-   }
+    private _traitNames: string[];
 }
