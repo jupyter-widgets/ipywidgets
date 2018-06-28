@@ -91,7 +91,7 @@ Symmetrically, when instantiating a widget in the kernel, the kernel widgets lib
 }
 ```
 
-The type of widget to be instantiated in the frontend is determined by the `_model_name`, `_model_module` and `_model_module_version` keys in the state, which respectively stand for the name of the class that must be instantiated in the frontend, the JavaScript module where this class is defined, and a semver range for that module. See the [Model State](modelstate.md) documentation for the serialized state for core Jupyter widgets.
+The type of widget to be instantiated in the frontend is determined by the `_model_name`, `_model_module` and `_model_module_version` keys in the state, which respectively stand for the name of the class that must be instantiated in the frontend, the JavaScript module where this class is defined, and a semver range for that module. See the [Model State](jupyterwidgetmodels.v6.md) documentation for the serialized state for core Jupyter widgets.
 
 ### State synchronization
 
@@ -116,7 +116,7 @@ The `data.state` value is a dictionary of widget state keys and values that can 
 
 Comm messages for state synchronization may contain binary buffers. The optional `data.buffers` value contains a list of keys corresponding to the binary buffers. For example, if `data.buffers` is `['x', 'y']`, then the first binary buffer is the value of the `'x'` state attribute and the second binary buffer is the value of the `'y'` state attribute.
 
-See the [Model state](modelstate.md) documentation for the attributes of core Jupyter widgets.
+See the [Model state](jupyterwidgetmodels.v6.md) documentation for the attributes of core Jupyter widgets.
 
 #### Synchronizing from frontend to kernel: `backbone`
 
@@ -269,7 +269,7 @@ The `data.state` value is a dictionary of widget state keys and values that can 
 
 Comm messages for state synchronization may contain binary buffers. The `data.buffer_paths` value contains a list of 'paths' in the `data.state` object corresponding to the binary buffers. For example, if `data.buffer_paths` is `[['x'], ['y', 'z', 0]]`, then the first binary buffer is the value of the `data.state['x']` attribute and the second binary buffer is the value of the `data.state['y']['z'][0]` state attribute. A path representing a list value (i.e., last index of the path is an integer) will be `null` in `data.state`, and a path representing a dictionary key (i.e., last index of the path is a string) will not exist in `data.state`.
 
-See the [Model State](modelstate.md) documentation for the serialized state for core Jupyter widgets.
+See the [Model State](jupyterwidgetmodels.latest.md) documentation for the serialized state for core Jupyter widgets.
 
 ### State synchronization
 
@@ -290,7 +290,7 @@ When a widget's state changes in either the kernel or the frontend, the changed 
 
 The `data.state` and `data.buffer_paths` values are the same as in the `comm_open` case.
 
-See the [Model state](modelstate.md) documentation for the attributes of core Jupyter widgets.
+See the [Model state](jupyterwidgetmodels.latest.md) documentation for the attributes of core Jupyter widgets.
 
 #### State requests: `request_state`
 
