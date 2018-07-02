@@ -128,3 +128,10 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
             return mtype[len('image/'):]
         except Exception:
             return None
+
+    def _repr_keys(self):
+        # Do not include value in the repr, since it will
+        # typically be very, very large.
+        for key in super(Image, self)._repr_keys():
+            if key != 'value':
+                yield key
