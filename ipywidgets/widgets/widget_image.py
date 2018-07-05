@@ -131,18 +131,25 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
             return None
 
     def __repr__(self):
+        # Truncate the value in the repr, since it will
+        # typically be very, very large.
+
         def hash_string(s):
             return hashlib.md5(s.encode("utf8")).hexdigest()
 
-        # Truncate the value in the repr, since it will
-        # typically be very, very large.
         class_name = self.__class__.__name__
 
+        # Return value first like a ValueWidget
         signature = []
+        sig_value = str(self.value)
+        if len(str(self.value)) > 100:
+            sig_value = '<base64, hash={}...>'.format(hash_string(sig_value)[:16])
+        signature.append('%s=%r' % ('value', sig_value))
+
         for key in super(Image, self)._repr_keys():
+            if key == 'value':
+                continue
             value = str(getattr(self, key))
-            if len(value) > 100:
-                value = '<base64, hash={}...>'.format(hash_string(value)[:16])
             signature.append('%s=%r' % (key, value))
         signature = ', '.join(signature)
         return '%s(%s)' % (class_name, signature)
