@@ -3,10 +3,10 @@
     //"noImplicitAny": true,
     "noEmitOnError": true,
     "module": "commonjs",
-    "lib": ["dom", "es5", "es2015.promise", "es2015.iterable"],
+    "lib": ["dom", "es2015"],
     "types": ["mocha"],
     "moduleResolution": "node",
-    "target": "ES5",
+    "target": "ES2015",
     "outDir": "../build"
   }
 }

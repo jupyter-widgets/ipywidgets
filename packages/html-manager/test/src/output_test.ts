@@ -175,13 +175,13 @@ describe('Output widget', function() {
         const widgetTag = document.createElement('div');
         widgetTag.className = 'widget-subarea';
         document.body.appendChild(widgetTag);
-        const manager = new HTMLManager()
+        const manager = new HTMLManager();
 
         manager.renderMime.addFactory({
             safe: true,
             mimeTypes: ['text/plain'],
             createRenderer: options => new MockTextRenderer(options)
-        }, 0)
+        }, 0);
 
         const modelId = 'u-u-i-d';
         const modelCreate: base.ModelOptions = {
@@ -206,7 +206,7 @@ describe('Output widget', function() {
         const model = await manager.new_model(modelCreate, modelState);
         await manager.display_model(
             undefined, model, { el: widgetTag }
-        )
-        expect(widgetTag.innerText).to.equal('something different')
+        );
+        expect(widgetTag.innerText).to.equal('something different');
     });
 });
