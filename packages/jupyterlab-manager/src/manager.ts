@@ -10,7 +10,7 @@ import {
 } from '@jupyter-widgets/base';
 
 import {
-  IDisposable, DisposableDelegate
+  IDisposable
 } from '@phosphor/disposable';
 
 import {
@@ -22,7 +22,7 @@ import {
 } from '@jupyterlab/rendermime';
 
 import {
-  Kernel, KernelMessage
+  Kernel, KernelMessage, Session
 } from '@jupyterlab/services';
 
 import {
@@ -83,58 +83,32 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     this._context = context;
     this._rendermime = rendermime;
 
-    context.session.kernelChanged.connect((sender, kernel) => {
-      this.newKernel(kernel);
+    // Set _handleCommOpen so `this` is captured.
+    this._handleCommOpen = async (comm, msg) => {
+      let oldComm = new shims.services.Comm(comm);
+      await this.handle_comm_open(oldComm, msg);
+    };
+
+    context.session.kernelChanged.connect((sender, args) => {
+      this._handleKernelChanged(args);
     });
 
     if (context.session.kernel) {
-      this.newKernel(context.session.kernel);
+      this._handleKernelChanged({oldValue: null, newValue: context.session.kernel});
     }
   }
 
 /**
  * Register a new kernel
- * @param kernel The new kernel.
  */
-  newKernel(kernel: Kernel.IKernelConnection) {
-    if (this._commRegistration) {
-      this._commRegistration.dispose();
-    }
-    if (!kernel) {
-      return;
+  _handleKernelChanged({oldValue, newValue}: Session.IKernelChangedArgs) {
+    if (oldValue) {
+      oldValue.removeCommTarget(this.comm_target_name, this._handleCommOpen);
     }
 
-    const handler = async (comm: Kernel.IComm, msg: KernelMessage.ICommOpenMsg) => {
-      let oldComm = new shims.services.Comm(comm);
-      await this.handle_comm_open(oldComm, msg);
-    };
-    kernel.registerCommTarget(this.comm_target_name, handler);
-    this._commRegistration = new DisposableDelegate(() => {
-      kernel.removeCommTarget(this.comm_target_name, handler);
-    });
-  }
-
-
-  _handleKernelChange(session: ISession, {old: Kernel.IKernelConnection, new: Kernel.IKernelConnection}) {
-    if (this._commRegistration) {
-      this._commRegistration.dispose();
+    if (newValue) {
+      newValue.registerCommTarget(this.comm_target_name, this._handleCommOpen);
     }
-
-    if (!kernel) {
-      return;
-    }
-
-    this._commRegistration = kernel.registerCommTarget(this.comm_target_name, async (comm, msg) => {
-      await this._handleCommOpen(comm, msg);
-    });
-  }
-
-  /**
-   * 
-   */
-  async _comm_open(comm: Kernel.IComm, msg: KernelMessage.ICommOpenMsg): Promise<void> {
-    let oldComm = new shims.services.Comm(comm);
-    await this.handle_comm_open(oldComm, msg);
   }
 
   /**
@@ -242,6 +216,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     this._registry.set(data.name, data.version, data.exports);
   }
 
+  private _handleCommOpen: (comm: Kernel.IComm, msg: KernelMessage.ICommOpenMsg) => Promise<void>;
   private _context: DocumentRegistry.IContext<DocumentRegistry.IModel>;
   private _registry: SemVerCache<ExportData> = new SemVerCache<ExportData>();
   private _rendermime: RenderMimeRegistry;
