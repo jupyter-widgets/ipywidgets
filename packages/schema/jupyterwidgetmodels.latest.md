@@ -27,6 +27,16 @@ Attribute        | Type             | Default          | Help
 `display`        | `null` or string | `null`           | The display CSS attribute.
 `flex`           | `null` or string | `null`           | The flex CSS attribute.
 `flex_flow`      | `null` or string | `null`           | The flex-flow CSS attribute.
+`grid_area`      | `null` or string | `null`           | The grid-area CSS attribute.
+`grid_auto_columns` | `null` or string | `null`           | The grid-auto-columns CSS attribute.
+`grid_auto_flow` | `null` or string (one of `'column'`, `'row'`, `'row dense'`, `'column dense'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The grid-auto-flow CSS attribute.
+`grid_auto_rows` | `null` or string | `null`           | The grid-auto-rows CSS attribute.
+`grid_column`    | `null` or string | `null`           | The grid-column CSS attribute.
+`grid_gap`       | `null` or string | `null`           | The grid-gap CSS attribute.
+`grid_row`       | `null` or string | `null`           | The grid-row CSS attribute.
+`grid_template_areas` | `null` or string | `null`           | The grid-template-areas CSS attribute.
+`grid_template_columns` | `null` or string | `null`           | The grid-template-columns CSS attribute.
+`grid_template_rows` | `null` or string | `null`           | The grid-template-rows CSS attribute.
 `height`         | `null` or string | `null`           | The height CSS attribute.
 `justify_content` | `null` or string (one of `'flex-start'`, `'flex-end'`, `'center'`, `'space-between'`, `'space-around'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The justify-content CSS attribute.
 `left`           | `null` or string | `null`           | The left CSS attribute.
@@ -407,6 +417,21 @@ Attribute        | Type             | Default          | Help
 `step`           | `null` or number (float) | `null`           | Minimum step to increment the value
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `value`          | number (float)   | `0.0`            | Float value
+
+### GridBoxModel (@jupyter-widgets/controls, 1.2.0); GridBoxView (@jupyter-widgets/controls, 1.2.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'1.2.0'`        | 
+`_model_name`    | string           | `'GridBoxModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'1.2.0'`        | 
+`_view_name`     | string           | `'GridBoxView'`  | 
+`box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
+`children`       | array of reference to Widget widget | `[]`             | List of widget children
+`layout`         | reference to Layout widget | reference to new instance | 
 
 ### HBoxModel (@jupyter-widgets/controls, 1.2.0); HBoxView (@jupyter-widgets/controls, 1.2.0)
 

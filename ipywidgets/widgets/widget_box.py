@@ -107,3 +107,10 @@ class HBox(Box):
     """
     _model_name = Unicode('HBoxModel').tag(sync=True)
     _view_name = Unicode('HBoxView').tag(sync=True)
+
+
+@register
+class GridBox(Box):
+    _model_name = Unicode('GridBoxModel').tag(sync=True)
+    _view_name = Unicode('GridBoxView').tag(sync=True)
+ 

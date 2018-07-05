@@ -61,6 +61,17 @@ class Layout(Widget):
     visibility = CaselessStrEnum(['visible', 'hidden']+CSS_PROPERTIES, allow_none=True, help="The visibility CSS attribute.").tag(sync=True)
     width = Unicode(None, allow_none=True, help="The width CSS attribute.").tag(sync=True)
 
+    grid_auto_columns = Unicode(None, allow_none=True, help="The grid-auto-columns CSS attribute.").tag(sync=True)
+    grid_auto_flow = CaselessStrEnum(['column','row','row dense','column dense']+ CSS_PROPERTIES, allow_none=True, help="The grid-auto-flow CSS attribute.").tag(sync=True)
+    grid_auto_rows = Unicode(None, allow_none=True, help="The grid-auto-rows CSS attribute.").tag(sync=True)
+    grid_gap = Unicode(None, allow_none=True, help="The grid-gap CSS attribute.").tag(sync=True)
+    grid_template_rows = Unicode(None, allow_none=True, help="The grid-template-rows CSS attribute.").tag(sync=True)
+    grid_template_columns = Unicode(None, allow_none=True, help="The grid-template-columns CSS attribute.").tag(sync=True)
+    grid_template_areas = Unicode(None, allow_none=True, help="The grid-template-areas CSS attribute.").tag(sync=True)
+    grid_row = Unicode(None, allow_none=True, help="The grid-row CSS attribute.").tag(sync=True)
+    grid_column = Unicode(None, allow_none=True, help="The grid-column CSS attribute.").tag(sync=True)
+    grid_area = Unicode(None, allow_none=True, help="The grid-area CSS attribute.").tag(sync=True)
+
 
 class LayoutTraitType(Instance):
 

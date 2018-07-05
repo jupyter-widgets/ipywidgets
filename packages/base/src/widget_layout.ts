@@ -38,7 +38,21 @@ let css_properties = {
     right: null,
     top: null,
     visibility: null,
-    width: null
+    width: null,
+
+    // container
+    grid_auto_columns: null,
+    grid_auto_flow: null,
+    grid_auto_rows: null,
+    grid_gap: null,
+    grid_template_rows: null,
+    grid_template_columns: null,
+    grid_template_areas: null,
+
+    // items
+    grid_row: null,
+    grid_column: null,
+    grid_area: null
 };
 
 export
@@ -87,7 +101,7 @@ class LayoutView extends WidgetView {
      * @return css property name
      */
     css_name(trait: string): string {
-        return trait.replace('_', '-');
+        return trait.replace(/_/g, '-');
     }
 
     /**
