@@ -49,7 +49,7 @@ class OutputModel extends outputBase.OutputModel {
   }
 
   initialize(attributes: any, options: any) {
-    super.initialize(attributes, options)
+    super.initialize(attributes, options);
     // The output area model is trusted since widgets are only rendered in trusted contexts.
     this._outputs = new OutputAreaModel({trusted: true});
     this.listenTo(this, 'change:msg_id', this.reset_msg_id);
@@ -175,9 +175,9 @@ class OutputView extends outputBase.OutputView {
       model: this.model.outputs
     });
     // TODO: why is this a readonly property now?
-    //this._outputView.model = this.model.outputs;
+    // this._outputView.model = this.model.outputs;
     // TODO: why is this on the model now?
-    //this._outputView.trusted = true;
+    // this._outputView.trusted = true;
     this.pWidget.insertWidget(0, this._outputView);
 
     this.pWidget.addClass('jupyter-widgets');

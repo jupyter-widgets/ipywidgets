@@ -10,7 +10,7 @@ import {
 } from '@jupyter-widgets/base';
 
 import {
-  IDisposable
+  IDisposable, DisposableDelegate
 } from '@phosphor/disposable';
 
 import {
@@ -22,7 +22,7 @@ import {
 } from '@jupyterlab/rendermime';
 
 import {
-  Kernel
+  Kernel, KernelMessage
 } from '@jupyterlab/services';
 
 import {
@@ -103,11 +103,38 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     if (!kernel) {
       return;
     }
-    this._commRegistration = kernel.registerCommTarget(this.comm_target_name,
-    (comm, msg) => {
+
+    const handler = async (comm: Kernel.IComm, msg: KernelMessage.ICommOpenMsg) => {
       let oldComm = new shims.services.Comm(comm);
-      return this.handle_comm_open(oldComm, msg);
+      await this.handle_comm_open(oldComm, msg);
+    };
+    kernel.registerCommTarget(this.comm_target_name, handler);
+    this._commRegistration = new DisposableDelegate(() => {
+      kernel.removeCommTarget(this.comm_target_name, handler);
     });
+  }
+
+
+  _handleKernelChange(session: ISession, {old: Kernel.IKernelConnection, new: Kernel.IKernelConnection}) {
+    if (this._commRegistration) {
+      this._commRegistration.dispose();
+    }
+
+    if (!kernel) {
+      return;
+    }
+
+    this._commRegistration = kernel.registerCommTarget(this.comm_target_name, async (comm, msg) => {
+      await this._handleCommOpen(comm, msg);
+    });
+  }
+
+  /**
+   * 
+   */
+  async _comm_open(comm: Kernel.IComm, msg: KernelMessage.ICommOpenMsg): Promise<void> {
+    let oldComm = new shims.services.Comm(comm);
+    await this.handle_comm_open(oldComm, msg);
   }
 
   /**
