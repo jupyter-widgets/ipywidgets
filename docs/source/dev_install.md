@@ -68,6 +68,14 @@ permissions on npm and pip related install directories are correct.
 
     - Try reinstalling ipywidgets
 
+Updating widget model specification
+-----------------------------------
+
+To update the widget model specification with changes, do something like this in the repo root:
+```
+python ./packages/schema/generate-spec.py > packages/schema/jupyterwidgetmodels.latest.md
+```
+
 Releasing new versions
 ----------------------
 

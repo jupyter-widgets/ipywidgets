@@ -4,6 +4,26 @@ Developer Release Procedure
 To release a new version of the widgets on PyPI and npm, first checkout master
 and cd into the repo root.
 
+### Fix the widget spec
+
+If there were changes in the widget model specification (i.e., any change made
+to any widget attributes), we need to update the model specification version and
+record the documented attributes.
+
+First, update the relevant model specification versions. For example, the commit https://github.com/jupyter-widgets/ipywidgets/commit/fca6f355605dc9e04062ce0eec4a7acbb5632ae2 updated the controls model version. We follow the semver spec for model version numbers, so model changes that are backwards-incompatible should be major version bumps, while backwards-compatible additions should be minor version bumps.
+
+Next, regenerate the model spec with the new version numbers by doing something like this in the repository root directory:
+```
+python ./packages/schema/generate-spec.py > packages/schema/jupyterwidgetmodels.latest.md
+```
+
+Copy `packages/schema/jupyterwidgetmodels.latest.md` to an appropriately-named
+markdown file (see the existing model spec files in that directory for the
+naming convention). This documents the widget model specification for a specific ipywidget
+release.
+
+Commit the changes (don't forget to `git add` the new model spec file).
+
 ### Publish the npm modules
 
 ```
