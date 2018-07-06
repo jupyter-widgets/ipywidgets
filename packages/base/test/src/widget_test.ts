@@ -554,10 +554,10 @@ describe('WidgetModel', function() {
             expect(this.widget.get_state()).to.deep.equal({
                 _model_module: '@jupyter-widgets/base',
                 _model_name: 'WidgetModel',
-                _model_module_version: '1.0.0',
+                _model_module_version: '1.1.0',
                 _view_module: '@jupyter-widgets/base',
                 _view_name: null,
-                _view_module_version: '1.0.0',
+                _view_module_version: '1.1.0',
                 _view_count: null,
                 a: 'get_state test'
             });
