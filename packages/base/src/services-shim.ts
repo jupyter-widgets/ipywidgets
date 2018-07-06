@@ -268,6 +268,7 @@ namespace shims {
                                     case 'execute_result':
                                         callbacks.iopub.output(msg);
                                         break;
+                                    default: break;
                                 }
                             }
                         }

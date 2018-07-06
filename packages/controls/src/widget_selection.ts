@@ -517,7 +517,7 @@ class ToggleButtonsView extends DescriptionView {
                         let buttons = this.buttongroup
                             .querySelectorAll('button');
                         if (buttons.length) {
-                            (buttons[0] as HTMLInputElement).style[name] = this._css_state[name];
+                            (buttons[0]).style[name] = this._css_state[name];
                         }
                     }
                 }

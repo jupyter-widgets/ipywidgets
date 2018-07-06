@@ -8,10 +8,6 @@ import {
 } from '@jupyter-widgets/base';
 
 import {
-  IDisposable
-} from '@phosphor/disposable';
-
-import {
   Message
 } from '@phosphor/messaging';
 
@@ -32,7 +28,7 @@ import {
 } from '@jupyterlab/coreutils';
 
 import {
-  KernelMessage
+  KernelMessage, Session
 } from '@jupyterlab/services';
 
 import * as $ from 'jquery';
@@ -49,29 +45,47 @@ class OutputModel extends outputBase.OutputModel {
   }
 
   initialize(attributes: any, options: any) {
-    super.initialize(attributes, options)
+    super.initialize(attributes, options);
     // The output area model is trusted since widgets are only rendered in trusted contexts.
     this._outputs = new OutputAreaModel({trusted: true});
-    this.listenTo(this, 'change:msg_id', this.reset_msg_id);
-    this.widget_manager.context.session.kernelChanged.connect((sender, kernel) => {
-      this._msgHook.dispose();
+    this._msgHook = (msg) => {
+      this.add(msg);
+      return false;
+    };
+
+    this.widget_manager.context.session.kernelChanged.connect((sender, args) => {
+      this._handleKernelChanged(args);
     });
-    this.reset_msg_id();
+    this.listenTo(this, 'change:msg_id', this.reset_msg_id);
   }
 
-  reset_msg_id() {
-    if (this._msgHook) {
-      this._msgHook.dispose();
+  /**
+   * Register a new kernel
+   */
+  _handleKernelChanged({oldValue}: Session.IKernelChangedArgs) {
+    const msgId = this.get('msg_id');
+    if (msgId && oldValue) {
+      oldValue.removeMessageHook(msgId, this._msgHook);
+      this.set('msg_id', null);
     }
-    this._msgHook = null;
+  }
 
-    let kernel = this.widget_manager.context.session.kernel;
-    let msgId = this.get('msg_id');
+  /**
+   * Reset the message id.
+   */
+  reset_msg_id() {
+    const kernel = this.widget_manager.context.session.kernel;
+    const msgId = this.get('msg_id');
+    const oldMsgId = this.previous('msg_id');
+
+    // Clear any old handler.
+    if (oldMsgId && kernel) {
+      kernel.removeMessageHook(oldMsgId, this._msgHook);
+    }
+
+    // Register any new handler.
     if (msgId && kernel) {
-      this._msgHook = kernel.registerMessageHook(this.get('msg_id'), msg => {
-        this.add(msg);
-        return false;
-      });
+      kernel.registerMessageHook(msgId, this._msgHook);
     }
   }
 
@@ -103,7 +117,7 @@ class OutputModel extends outputBase.OutputModel {
   }
   widget_manager: WidgetManager;
 
-  private _msgHook: IDisposable = null;
+  private _msgHook: (msg: KernelMessage.IIOPubMessage) => boolean;
   private _outputs: OutputAreaModel;
 }
 
@@ -175,9 +189,9 @@ class OutputView extends outputBase.OutputView {
       model: this.model.outputs
     });
     // TODO: why is this a readonly property now?
-    //this._outputView.model = this.model.outputs;
+    // this._outputView.model = this.model.outputs;
     // TODO: why is this on the model now?
-    //this._outputView.trusted = true;
+    // this._outputView.trusted = true;
     this.pWidget.insertWidget(0, this._outputView);
 
     this.pWidget.addClass('jupyter-widgets');

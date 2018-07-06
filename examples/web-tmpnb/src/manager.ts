@@ -3,10 +3,6 @@ import * as base from '@jupyter-widgets/base';
 import * as pWidget from '@phosphor/widgets';
 
 import {
-  IDisposable
-} from '@phosphor/disposable';
-
-import {
   Kernel
 } from '@jupyterlab/services';
 
@@ -26,20 +22,11 @@ class WidgetManager extends base.ManagerBase<HTMLElement> {
     constructor(kernel: Kernel.IKernelConnection, el: HTMLElement) {
         super();
         this.kernel = kernel;
-        this.newKernel(kernel);
         this.el = el;
-    }
 
-    newKernel(kernel: Kernel.IKernelConnection) {
-        if (this._commRegistration) {
-            this._commRegistration.dispose();
-        }
-        if (!kernel) {
-            return;
-        }
-        this._commRegistration = kernel.registerCommTarget(this.comm_target_name,
-        (comm, msg) => {
-            this.handle_comm_open(new base.shims.services.Comm(comm), msg);
+        kernel.registerCommTarget(this.comm_target_name, async (comm, msg) => {
+            let oldComm = new base.shims.services.Comm(comm);
+            await this.handle_comm_open(oldComm, msg);
         });
     }
 
@@ -102,5 +89,4 @@ class WidgetManager extends base.ManagerBase<HTMLElement> {
 
     kernel: Kernel.IKernelConnection;
     el: HTMLElement;
-    _commRegistration: IDisposable;
 }
