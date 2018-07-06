@@ -113,11 +113,13 @@ class Output(DOMWidget):
         """Called upon exiting output widget context manager."""
         ip = get_ipython()
         if etype is not None:
-            ip.showtraceback((etype, evalue, tb), tb_offset=0)
+            if ip:
+                ip.showtraceback((etype, evalue, tb), tb_offset=0)
         self._flush()
         self.msg_id = ''
-        # suppress exceptions, since they are shown above
-        return True
+        # suppress exceptions when in IPython, since they are shown above,
+        # otherwise let someone else handle it
+        return True if ip else None
 
     def _flush(self):
         """Flush stdout and stderr buffers."""
