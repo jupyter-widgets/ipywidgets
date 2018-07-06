@@ -3,10 +3,6 @@ import * as base from '@jupyter-widgets/base';
 import * as pWidget from '@phosphor/widgets';
 
 import {
-  IDisposable
-} from '@phosphor/disposable';
-
-import {
   Kernel
 } from '@jupyterlab/services';
 
@@ -93,5 +89,4 @@ class WidgetManager extends base.ManagerBase<HTMLElement> {
 
     kernel: Kernel.IKernelConnection;
     el: HTMLElement;
-    _commRegistration: IDisposable;
 }
