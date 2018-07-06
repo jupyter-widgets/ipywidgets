@@ -75,6 +75,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'FloatTextView'` | 
 `continuous_update` | boolean          | `false`          | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (float)   | `100.0`          | Max value
@@ -96,6 +97,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'IntTextView'`  | 
 `continuous_update` | boolean          | `false`          | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (integer) | `100`            | Max value
@@ -163,6 +165,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.2.0'`        | 
 `_view_name`     | string           | `'CheckboxView'` | 
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `indent`         | boolean          | `true`           | Indent the control to align with other controls with a description.
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -182,6 +185,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'ColorPickerView'` | 
 `concise`        | boolean          | `false`          | Display short version with just a color selector.
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `layout`         | reference to Layout widget | reference to new instance | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
@@ -248,6 +252,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.2.0'`        | 
 `_view_name`     | string           | `'DatePickerView'` | 
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `layout`         | reference to Layout widget | reference to new instance | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
@@ -291,6 +296,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.2.0'`        | 
 `_view_name`     | string           | `'DropdownView'` | 
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `index`          | `null` or number (integer) | `null`           | Selected index
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -310,6 +316,7 @@ Attribute        | Type             | Default          | Help
 `base`           | number (float)   | `10.0`           | Base for the logarithm
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is holding the slider.
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (float)   | `4.0`            | Max value for the exponent
@@ -334,6 +341,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'ProgressView'` | 
 `bar_style`      | `null` or string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progess bar.
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (float)   | `100.0`          | Max value
 `min`            | number (float)   | `0.0`            | Min value
@@ -354,6 +362,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'FloatRangeSliderView'` | 
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is sliding the slider.
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (float)   | `100.0`          | Max value
@@ -378,6 +387,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'FloatSliderView'` | 
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is holding the slider.
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (float)   | `100.0`          | Max value
@@ -402,6 +412,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'FloatTextView'` | 
 `continuous_update` | boolean          | `false`          | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `step`           | `null` or number (float) | `null`           | Minimum step to increment the value
@@ -435,6 +446,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.2.0'`        | 
 `_view_name`     | string           | `'HTMLMathView'` | 
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `layout`         | reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
@@ -452,6 +464,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.2.0'`        | 
 `_view_name`     | string           | `'HTMLView'`     | 
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `layout`         | reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
@@ -487,6 +500,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'ProgressView'` | 
 `bar_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progess bar.
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (integer) | `100`            | Max value
 `min`            | number (integer) | `0`              | Min value
@@ -507,6 +521,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'IntRangeSliderView'` | 
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is sliding the slider.
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (integer) | `100`            | Max value
@@ -531,6 +546,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'IntSliderView'` | 
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is holding the slider.
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (integer) | `100`            | Max value
@@ -555,6 +571,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'IntTextView'`  | 
 `continuous_update` | boolean          | `false`          | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `step`           | number (integer) | `1`              | Minimum step to increment the value
@@ -573,6 +590,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.2.0'`        | 
 `_view_name`     | string           | `'LabelView'`    | 
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `layout`         | reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
@@ -604,6 +622,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'PasswordView'` | 
 `continuous_update` | boolean          | `true`           | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
@@ -624,6 +643,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.2.0'`        | 
 `_view_name`     | string           | `'PlayView'`     | 
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `interval`       | number (integer) | `100`            | The maximum value for the play control.
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -660,6 +680,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.2.0'`        | 
 `_view_name`     | string           | `'RadioButtonsView'` | 
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `index`          | `null` or number (integer) | `null`           | Selected index
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -678,6 +699,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.2.0'`        | 
 `_view_name`     | string           | `'SelectView'`   | 
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `index`          | `null` or number (integer) | `null`           | Selected index
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -697,6 +719,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.2.0'`        | 
 `_view_name`     | string           | `'SelectMultipleView'` | 
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `index`          | array of number (integer) | `[]`             | Selected indices
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -717,6 +740,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'SelectionRangeSliderView'` | 
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is holding the slider.
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `index`          | array            | `[0, 0]`         | Min and max selected indices
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -738,6 +762,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'SelectionSliderView'` | 
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is holding the slider.
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `index`          | number (integer) | `0`              | Selected index
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -788,6 +813,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'TextView'`     | 
 `continuous_update` | boolean          | `true`           | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
@@ -807,6 +833,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'TextareaView'` | 
 `continuous_update` | boolean          | `true`           | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
@@ -827,6 +854,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'ToggleButtonView'` | 
 `button_style`   | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the button.
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `icon`           | string           | `''`             | Font-awesome icon.
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -848,6 +876,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'ToggleButtonsView'` | 
 `button_style`   | `null` or string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the buttons.
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `icons`          | array of string  | `[]`             | Icons names for each button (FontAwesome names without the fa- prefix).
 `index`          | `null` or number (integer) | `null`           | Selected index
@@ -896,6 +925,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.2.0'`        | 
 `_view_name`     | string           | `'ValidView'`    | 
 `description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `layout`         | reference to Layout widget | reference to new instance | 
 `readout`        | string           | `'Invalid'`      | Message displayed when the value is False
