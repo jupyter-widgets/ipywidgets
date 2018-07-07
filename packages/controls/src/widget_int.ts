@@ -382,7 +382,7 @@ class IntRangeSliderView extends BaseIntSliderView {
 
 export
 class IntSliderView extends BaseIntSliderView {
-
+    
     update(options?) {
         super.update(options);
         let min = this.model.get('min');
@@ -812,6 +812,31 @@ class PlayModel extends BoundedIntModel {
         this.set('_repeat', !this.get('_repeat'));
         this.save_changes();
     }
+
+    goFirst(){
+        this.set('value', this.get('min'));
+        this.save_changes();
+    }
+    goLast(){
+        this.set('value', this.get('max'));
+        this.save_changes();
+    }
+    goPrevious(){
+        if(this.get('value') > this.get('min')) {
+            this.set('value', this.get('value') - this.get('step'));
+        } else{
+            this.set('value', this.get('min'));
+        }
+        this.save_changes();
+    }
+    goNext(){
+        if(this.get('value') < this.get('max') - this.get('step')) {
+            this.set('value', this.get('value') + this.get('step'));
+        } else{
+            this.set('value', this.get('max'));
+        }
+        this.save_changes();
+    }
 }
 
 export
@@ -824,17 +849,29 @@ class PlayView extends DOMWidgetView {
 
         this.playButton = document.createElement('button');
         this.pauseButton = document.createElement('button');
+        this.goFirstButton = document.createElement('button');
+        this.goPreviousButton = document.createElement('button');
         this.stopButton = document.createElement('button');
+        this.goNextButton = document.createElement('button');
+        this.goLastButton = document.createElement('button');
         this.repeatButton = document.createElement('button');
 
         this.playButton.className = 'jupyter-button';
         this.pauseButton.className = 'jupyter-button';
+        this.goFirstButton.className = 'jupyter-button';
+        this.goPreviousButton.className = 'jupyter-button';
         this.stopButton.className = 'jupyter-button';
+        this.goNextButton.className = 'jupyter-button';
+        this.goLastButton.className = 'jupyter-button';
         this.repeatButton.className = 'jupyter-button';
 
         this.el.appendChild(this.playButton);  // Toggle button with playing
         this.el.appendChild(this.pauseButton); // Disable if not playing
+        this.el.appendChild(this.goFirstButton);
+        this.el.appendChild(this.goPreviousButton);
         this.el.appendChild(this.stopButton);  // Disable if not playing
+        this.el.appendChild(this.goNextButton);
+        this.el.appendChild(this.goLastButton);
         this.el.appendChild(this.repeatButton);  // Always enabled, but may be hidden
 
         let playIcon = document.createElement('i');
@@ -843,9 +880,21 @@ class PlayView extends DOMWidgetView {
         let pauseIcon = document.createElement('i');
         pauseIcon.className = 'fa fa-pause';
         this.pauseButton.appendChild(pauseIcon);
+        let goFirstIcon = document.createElement('i');
+        goFirstIcon.className = 'fa fa-chevron-circle-left';
+        this.goFirstButton.appendChild(goFirstIcon);
+        let goPreviousIcon = document.createElement('i');
+        goPreviousIcon.className = 'fa fa-step-backward';
+        this.goPreviousButton.appendChild(goPreviousIcon);
         let stopIcon = document.createElement('i');
         stopIcon.className = 'fa fa-stop';
         this.stopButton.appendChild(stopIcon);
+        let goNextIcon = document.createElement('i');
+        goNextIcon.className = 'fa fa-step-forward';
+        this.goNextButton.appendChild(goNextIcon);
+        let goLastIcon = document.createElement('i');
+        goLastIcon.className = 'fa fa-chevron-circle-right';
+        this.goLastButton.appendChild(goLastIcon);
         let repeatIcon = document.createElement('i');
         repeatIcon.className = 'fa fa-retweet';
         this.repeatButton.appendChild(repeatIcon);
@@ -854,6 +903,11 @@ class PlayView extends DOMWidgetView {
         this.pauseButton.onclick = this.model.pause.bind(this.model);
         this.stopButton.onclick = this.model.stop.bind(this.model);
         this.repeatButton.onclick = this.model.repeat.bind(this.model);
+        this.goFirstButton.onclick = this.model.goFirst.bind(this.model);
+        this.goPreviousButton.onclick = this.model.goPrevious.bind(this.model);
+        this.goNextButton.onclick = this.model.goNext.bind(this.model);
+        this.goLastButton.onclick = this.model.goLast.bind(this.model);
+
 
         this.listenTo(this.model, 'change:_playing', this.update_playing);
         this.listenTo(this.model, 'change:_repeat', this.update_repeat);
@@ -902,5 +956,9 @@ class PlayView extends DOMWidgetView {
     pauseButton: HTMLButtonElement;
     stopButton: HTMLButtonElement;
     repeatButton: HTMLButtonElement;
+    goFirstButton: HTMLButtonElement;
+    goNextButton: HTMLButtonElement;
+    goLastButton: HTMLButtonElement;
+    goPreviousButton: HTMLButtonElement;
     model: PlayModel;
 }
