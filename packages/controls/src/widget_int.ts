@@ -812,6 +812,20 @@ class PlayModel extends BoundedIntModel {
         this.set('_repeat', !this.get('_repeat'));
         this.save_changes();
     }
+
+    speedUp() {
+        this.set('step', this.get('step') + 0.2);
+        this.save_changes();
+    }
+
+    slowDown() {
+        let newStep = this.get('step') - 0.2;
+        if (!(newStep < 0)) {
+            this.set('step', newStep);
+            this.save_changes();
+        }
+    }
+    
 }
 
 export
@@ -826,14 +840,20 @@ class PlayView extends DOMWidgetView {
         this.pauseButton = document.createElement('button');
         this.stopButton = document.createElement('button');
         this.repeatButton = document.createElement('button');
+        this.speedUpButton = document.createElement('button');
+        this.slowDownButton = document.createElement('button');
 
         this.playButton.className = 'jupyter-button';
         this.pauseButton.className = 'jupyter-button';
+        this.speedUpButton.className = 'jupyter-button';
+        this.slowDownButton.className = 'jupyter-button';        
         this.stopButton.className = 'jupyter-button';
         this.repeatButton.className = 'jupyter-button';
 
         this.el.appendChild(this.playButton);  // Toggle button with playing
         this.el.appendChild(this.pauseButton); // Disable if not playing
+        this.el.appendChild(this.slowDownButton);  // Always enabled        
+        this.el.appendChild(this.speedUpButton);  // Always enabled          
         this.el.appendChild(this.stopButton);  // Disable if not playing
         this.el.appendChild(this.repeatButton);  // Always enabled, but may be hidden
 
@@ -849,9 +869,17 @@ class PlayView extends DOMWidgetView {
         let repeatIcon = document.createElement('i');
         repeatIcon.className = 'fa fa-retweet';
         this.repeatButton.appendChild(repeatIcon);
-
+        let speedUpButtonIcon = document.createElement('i');
+        speedUpButtonIcon.className = 'fa fa-fast-forward';
+        this.speedUpButton.appendChild(speedUpButtonIcon);
+        let slowDownButtonIcon = document.createElement('i');
+        slowDownButtonIcon.className = 'fa fa-fast-backward';
+        this.slowDownButton.appendChild(slowDownButtonIcon);
+        
         this.playButton.onclick = this.model.play.bind(this.model);
         this.pauseButton.onclick = this.model.pause.bind(this.model);
+        this.speedUpButton.onclick = this.model.speedUp.bind(this.model);
+        this.slowDownButton.onclick = this.model.slowDown.bind(this.model);        
         this.stopButton.onclick = this.model.stop.bind(this.model);
         this.repeatButton.onclick = this.model.repeat.bind(this.model);
 
@@ -867,6 +895,8 @@ class PlayView extends DOMWidgetView {
         let disabled = this.model.get('disabled');
         this.playButton.disabled = disabled;
         this.pauseButton.disabled = disabled;
+        this.speedUpButton.disabled = disabled;
+        this.slowDownButton.disabled = disabled;        
         this.stopButton.disabled = disabled;
         this.repeatButton.disabled = disabled;
         this.update_playing();
@@ -878,11 +908,15 @@ class PlayView extends DOMWidgetView {
         if (playing) {
             if (!disabled) {
                 this.pauseButton.disabled = false;
+                this.speedUpButton.disabled = false;
+                this.slowDownButton.disabled = false;                
             }
             this.playButton.classList.add('mod-active');
         } else {
             if (!disabled) {
                 this.pauseButton.disabled = true;
+                this.speedUpButton.disabled = true;
+                this.slowDownButton.disabled = true;                 
             }
             this.playButton.classList.remove('mod-active');
         }
@@ -900,7 +934,9 @@ class PlayView extends DOMWidgetView {
 
     playButton: HTMLButtonElement;
     pauseButton: HTMLButtonElement;
+    slowDownButton: HTMLButtonElement;
+    speedUpButton: HTMLButtonElement;    
     stopButton: HTMLButtonElement;
-    repeatButton: HTMLButtonElement;
+    repeatButton: HTMLButtonElement;    
     model: PlayModel;
 }
