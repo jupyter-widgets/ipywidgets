@@ -37,7 +37,7 @@ class ColorTrait(HasTraits):
 class TestColor(TraitTestBase):
     obj = ColorTrait()
 
-    _good_values = ["blue", "#AA0", "#FFFFFF"]
+    _good_values = ["blue", "#AA0", "#FFFFFF", "transparent"]
     _bad_values = ["vanilla", "blues"]
 
 
