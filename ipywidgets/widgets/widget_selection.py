@@ -113,12 +113,13 @@ def _make_options(x):
     The returned tuple should be in the format (('label', value), ('label', value), ...).
 
     The input can be
-    * a Mapping of labels to values
     * an iterable of (label, value) pairs
     * an iterable of values, and labels will be generated
     """
     # Check if x is a mapping of labels to values
     if isinstance(x, Mapping):
+        import warnings
+        warnings.warn("Support for mapping types has been deprecated and will be dropped in a future release.", DeprecationWarning)
         return tuple((unicode_type(k), v) for k, v in x.items())
 
     # only iterate once through the options.
