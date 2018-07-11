@@ -15,10 +15,10 @@ class TestDropdown(TestCase):
 
     def test_deprecation_warning_mapping_options(self):
         with warnings.catch_warnings(record=True) as w:
-            warnings.simplefilter("module")
+            warnings.simplefilter("always")
             Dropdown(options={'One': 1, 'Two': 2, 'Three': 3})
-            assert len(w) == 1
+            assert len(w) > 0
             assert issubclass(w[-1].category, DeprecationWarning)
-            assert "deprecated" in str(w[-1].message)
+            assert "Support for mapping types has been deprecated" in str(w[-1].message)
 
 
