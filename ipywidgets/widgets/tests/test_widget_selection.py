@@ -5,8 +5,6 @@ import warnings
 
 from unittest import TestCase
 
-from traitlets import TraitError
-
 from ipywidgets import Dropdown
 
 
