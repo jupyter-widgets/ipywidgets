@@ -26,16 +26,11 @@ from ipython_genutils.py3compat import unicode_type
 
 _doc_snippets = {}
 _doc_snippets['selection_params'] = """
-    options: list or dict
+    options: list
         The options for the dropdown. This can either be a list of values, e.g.
-        ``['Galileo', 'Brahe', 'Hubble']`` or ``[0, 1, 2]``, a list of
+        ``['Galileo', 'Brahe', 'Hubble']`` or ``[0, 1, 2]``, or a list of
         (label, value) pairs, e.g.
-        ``[('Galileo', 0), ('Brahe', 1), ('Hubble', 2)]``,
-        or a dictionary mapping the labels to the values, e.g. ``{'Galileo': 0,
-        'Brahe': 1, 'Hubble': 2}``. The labels are the strings that will be
-        displayed in the UI, representing the actual Python choices, and should
-        be unique. If this is a dictionary, the order in which they are
-        displayed is not guaranteed.
+        ``[('Galileo', 0), ('Brahe', 1), ('Hubble', 2)]``.
 
     index: int
         The index of the current selection.
