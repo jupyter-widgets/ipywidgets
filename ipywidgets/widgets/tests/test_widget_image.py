@@ -130,6 +130,20 @@ def test_format_inference_overridable():
     assert img.format == 'gif'
 
 
+def test_value_repr_length():
+    with get_logo_png() as LOGO_PNG:
+        with open(LOGO_PNG, 'rb') as f:
+            img = Image.from_file(f)
+            assert len(img.__repr__()) < 120
+            assert img.__repr__().endswith("...')")
+
+
+def test_value_repr_url():
+    img = Image.from_url(b'https://jupyter.org/assets/main-logo.svg')
+
+    assert 'https://jupyter.org/assets/main-logo.svg' in img.__repr__()
+
+
 # Helper functions
 def get_hash_hex(byte_str):
     m = hashlib.new('sha256')

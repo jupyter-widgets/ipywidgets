@@ -6,6 +6,7 @@
 Represents an image in the frontend using a widget.
 """
 import mimetypes
+import hashlib
 
 from .widget_core import CoreWidget
 from .domwidget import DOMWidget
@@ -128,3 +129,25 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
             return mtype[len('image/'):]
         except Exception:
             return None
+
+    def __repr__(self):
+        # Truncate the value in the repr, since it will
+        # typically be very, very large.
+        class_name = self.__class__.__name__
+
+        # Return value first like a ValueWidget
+        signature = []
+        sig_value = repr(self.value)
+        prefix, rest = sig_value.split("'", 1)
+        content = rest[:-1]
+        if len(content) > 100:
+            sig_value = "{}'{}...'".format(prefix, content[0:100])
+        signature.append('%s=%s' % ('value', sig_value))
+
+        for key in super(Image, self)._repr_keys():
+            if key == 'value':
+                continue
+            value = str(getattr(self, key))
+            signature.append('%s=%r' % (key, value))
+        signature = ', '.join(signature)
+        return '%s(%s)' % (class_name, signature)
