@@ -1,3 +1,6 @@
+include COPYING.md
+include LICENSE
+
 graft widgetsnbextension/static
 graft src
 include package.json
