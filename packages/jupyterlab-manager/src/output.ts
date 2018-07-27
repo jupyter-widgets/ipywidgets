@@ -31,7 +31,7 @@ import {
   KernelMessage, Session
 } from '@jupyterlab/services';
 
-import * as $ from 'jquery';
+import $ from 'jquery';
 
 export
 const OUTPUT_WIDGET_VERSION = outputBase.OUTPUT_WIDGET_VERSION;
