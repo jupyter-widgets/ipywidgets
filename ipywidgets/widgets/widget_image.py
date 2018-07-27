@@ -13,7 +13,7 @@ from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
 from .widget import register
 from traitlets import Unicode, CUnicode, Bytes, validate
-
+from .trait_types import bytes_serialization
 
 def _text_type():
     # six is not a direct dependency of this module
@@ -44,7 +44,7 @@ class Image(DOMWidget, ValueWidget, CoreWidget):
     format = Unicode('png', help="The format of the image.").tag(sync=True)
     width = CUnicode(help="Width of the image in pixels.").tag(sync=True)
     height = CUnicode(help="Height of the image in pixels.").tag(sync=True)
-    value = Bytes(help="The image data as a byte string.").tag(sync=True)
+    value = Bytes(help="The image data as a byte string.").tag(sync=True, **bytes_serialization)
 
     @classmethod
     def from_file(cls, filename, **kwargs):
