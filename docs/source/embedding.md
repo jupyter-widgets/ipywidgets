@@ -297,16 +297,16 @@ Specifically:
    the `Sphinx` extension, `nbviewer`, and the "Embed Widgets" command
    discussed above.
 
-We provide additional examples of specializations of the base widget manager
+We provide [additional examples](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples) of specializations of the base widget manager
 implementing other usages of Jupyter widgets in web contexts.
 
-1. The `web1` example is a simplistic example showcasing the use of
+1. The [`web1`](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples/web1) example is a simplistic example showcasing the use of
    Jupyter widgets in a web context.
-2. The `web2` example is a simple example making use of the
+2. The [`web2`](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples/web2) example is a simple example making use of the
    `application/vnd.jupyter.widget-state+json` mime type.
-3. The `web3` example showcases how communication with a Jupyter kernel can
+3. The [`web3`](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples/web3) example showcases how communication with a Jupyter kernel can
    happen in a web context outside of the notebook or jupyterlab contexts.
-4. The `web-tmpnb` example makes use of the `tmpnb` service to spawn a Jupyter
+4. The [`web-tmpnb`](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples/web-tmpnb) example makes use of the `tmpnb` service to spawn a Jupyter
    server, request a kernel from this server and implement the same feature as
    the `web3` example.
 
