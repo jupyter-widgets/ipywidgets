@@ -16,6 +16,7 @@ export * from './widget_controller';
 export * from './widget_selection';
 export * from './widget_selectioncontainer';
 export * from './widget_string';
+export * from './widget_video';
 export * from './widget_description';
 
 export

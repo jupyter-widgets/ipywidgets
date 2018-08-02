@@ -957,6 +957,26 @@ Attribute        | Type             | Default          | Help
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `value`          | boolean          | `false`          | Bool value
 
+### VideoModel (@jupyter-widgets/controls, 1.3.0); VideoView (@jupyter-widgets/controls, 1.3.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'1.3.0'`        | 
+`_model_name`    | string           | `'VideoModel'`   | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'1.3.0'`        | 
+`_view_name`     | string           | `'VideoView'`    | 
+`autoplay`       | boolean          | `true`           | When true, the video starts when it's displayed
+`controls`       | boolean          | `true`           | Specifies that video controls should be displayed (such as a play/pause button etc)
+`format`         | string           | `'mp4'`          | The format of the video.
+`height`         | string           | `''`             | Height of the video in pixels.
+`layout`         | reference to Layout widget | reference to new instance | 
+`loop`           | boolean          | `true`           | When true, the video will start from the beginning after finishing
+`value`          | Bytes            | `b''`            | The video data as a byte string.
+`width`          | string           | `''`             | Width of the video in pixels.
+
 ### OutputModel (@jupyter-widgets/output, 1.0.0); OutputView (@jupyter-widgets/output, 1.0.0)
 
 Attribute        | Type             | Default          | Help
