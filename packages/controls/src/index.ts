@@ -8,6 +8,8 @@ export * from './widget_bool';
 export * from './widget_button';
 export * from './widget_box';
 export * from './widget_image';
+export * from './widget_video';
+export * from './widget_audio';
 export * from './widget_color';
 export * from './widget_date';
 export * from './widget_int';
