@@ -188,3 +188,11 @@ class TypedTuple(traitlets.Container):
     """A trait for a tuple of any length with type-checked elements."""
     klass = tuple
     _cast_types = (list,)
+
+
+def bytes_from_json(js, obj):
+    return None if js is None else js.tobytes()
+
+bytes_serialization = {
+    'from_json': bytes_from_json,
+}

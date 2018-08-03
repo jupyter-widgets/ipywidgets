@@ -5,7 +5,9 @@ import inspect
 import warnings
 from unittest import TestCase
 
-from ipywidgets import Dropdown
+from traitlets import TraitError
+
+from ipywidgets import Dropdown, SelectionSlider, Select
 
 
 class TestDropdown(TestCase):
@@ -26,3 +28,40 @@ class TestDropdown(TestCase):
             assert len(w) > 0
             assert issubclass(w[-1].category, DeprecationWarning)
             assert "Support for mapping types has been deprecated" in str(w[-1].message)
+
+
+class TestSelectionSlider(TestCase):
+
+    def test_construction(self):
+        SelectionSlider(options=['a', 'b', 'c'])
+
+    def test_index_trigger(self):
+        slider = SelectionSlider(options=['a', 'b', 'c'])
+        observations = []
+        def f(change):
+            observations.append(change.new)
+        slider.observe(f, 'index')
+        assert slider.index == 0
+        slider.options = [4, 5, 6]
+        assert slider.index == 0
+        assert slider.value == 4
+        assert slider.label == '4'
+        assert observations == [0]
+
+class TestSelection(TestCase):
+
+    def test_construction(self):
+        select = Select(options=['a', 'b', 'c'])
+
+    def test_index_trigger(self):
+        select = Select(options=[1, 2, 3])
+        observations = []
+        def f(change):
+            observations.append(change.new)
+        select.observe(f, 'index')
+        assert select.index == 0
+        select.options = [4, 5, 6]
+        assert select.index == 0
+        assert select.value == 4
+        assert select.label == '4'
+        assert observations == [0]

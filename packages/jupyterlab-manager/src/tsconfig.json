@@ -4,11 +4,12 @@
     "noImplicitAny": true,
     "noEmitOnError": true,
     "noUnusedLocals": true,
-    "lib": ["dom", "es5", "es2015.promise"],
+    "esModuleInterop": true,
+    "lib": ["dom", "es2015"],
     "types": ["node"],
     "module": "commonjs",
     "moduleResolution": "node",
-    "target": "ES5",
+    "target": "es2015",
     "outDir": "../lib"
   },
   "exclude": ["typedoc.d.ts"]

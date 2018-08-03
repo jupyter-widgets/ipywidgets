@@ -203,11 +203,13 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
         self._options_values = tuple(i[1] for i in options)
         if self._initializing_traits_ is not True:
             if len(options) > 0:
-                # if the index is already 0, we set it to None so that setting it to 0
-                # will be recognized as a change (and pick up the new option value and label).
                 if self.index == 0:
-                    self.index = None
-                self.index = 0
+                    # Explicitly trigger the observers to pick up the new value and
+                    # label. Just setting the value would not trigger the observers
+                    # since traitlets thinks the value hasn't changed.
+                    self._notify_trait('index', 0, 0)
+                else:
+                    self.index = 0
             else:
                 self.index = None
 
@@ -522,6 +524,13 @@ class _SelectionNonempty(_Selection):
         if len(self._options_full) == 0:
             raise TraitError("Option list must be nonempty")
         return proposal.value
+
+    @validate('index')
+    def _validate_index(self, proposal):
+        if 0 <= proposal.value < len(self._options_labels):
+            return proposal.value
+        else:
+            raise TraitError('Invalid selection: index out of bounds')
 
 class _MultipleSelectionNonempty(_MultipleSelection):
     """Selection that is guaranteed to have an option available."""

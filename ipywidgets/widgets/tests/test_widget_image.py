@@ -121,6 +121,23 @@ def test_format_inference_stream():
     assert img.format == 'png'
 
 
+def test_serialize():
+    fstream = io.BytesIO(b'123')
+    img = Image.from_file(fstream)
+
+    img_state = img.get_state()
+
+    # for python27 it is a memoryview
+    assert isinstance(img_state['value'], (bytes, memoryview))
+    # make sure it is (for python 3), since that is what it will be once it comes off the wire
+    img_state['value'] = memoryview(img_state['value'])
+
+    # check that we can deserialize it and get back the original value
+    img_copy = Image()
+    img_copy.set_state(img_state)
+    assert img.value == img_copy.value
+
+
 def test_format_inference_overridable():
     with tempfile.NamedTemporaryFile(suffix='.svg', delete=False) as f:
         name = f.name
@@ -128,6 +145,20 @@ def test_format_inference_overridable():
         img = Image.from_file(name, format='gif')
 
     assert img.format == 'gif'
+
+
+def test_value_repr_length():
+    with get_logo_png() as LOGO_PNG:
+        with open(LOGO_PNG, 'rb') as f:
+            img = Image.from_file(f)
+            assert len(img.__repr__()) < 120
+            assert img.__repr__().endswith("...')")
+
+
+def test_value_repr_url():
+    img = Image.from_url(b'https://jupyter.org/assets/main-logo.svg')
+
+    assert 'https://jupyter.org/assets/main-logo.svg' in img.__repr__()
 
 
 # Helper functions

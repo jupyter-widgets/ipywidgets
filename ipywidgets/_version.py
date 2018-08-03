@@ -1,7 +1,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-version_info = (7, 3, 0, 'beta', 0)
+version_info = (7, 3, 2, 'final', 0)
 
 _specifier_ = {'alpha': 'a', 'beta': 'b', 'candidate': 'rc', 'final': ''}
 
@@ -14,4 +14,4 @@ __jupyter_widgets_output_version__ = '1.0.0'
 __jupyter_widgets_controls_version__ = '1.3.0'
 
 # A compatible @jupyter-widgets/html-manager npm package semver range
-__html_manager_version__ = '^0.14.0-0'
+__html_manager_version__ = '^0.14.0'
