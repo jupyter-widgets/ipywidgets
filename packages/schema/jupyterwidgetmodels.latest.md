@@ -72,6 +72,24 @@ Attribute        | Type             | Default          | Help
 `layout`         | reference to Layout widget | reference to new instance | 
 `selected_index` | `null` or number (integer) | `0`              | The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.
 
+### AudioModel (@jupyter-widgets/controls, 1.3.0); AudioView (@jupyter-widgets/controls, 1.3.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'1.3.0'`        | 
+`_model_name`    | string           | `'AudioModel'`   | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'1.3.0'`        | 
+`_view_name`     | string           | `'AudioView'`    | 
+`autoplay`       | boolean          | `true`           | When true, the audio starts when it's displayed
+`controls`       | boolean          | `true`           | Specifies that audio controls should be displayed (such as a play/pause button etc)
+`format`         | string           | `'mp3'`          | The format of the audio.
+`layout`         | reference to Layout widget | reference to new instance | 
+`loop`           | boolean          | `true`           | When true, the audio will start from the beginning after finishing
+`value`          | Bytes            | `b''`            | The media data as a byte string.
+
 ### BoundedFloatTextModel (@jupyter-widgets/controls, 1.3.0); FloatTextView (@jupyter-widgets/controls, 1.3.0)
 
 Attribute        | Type             | Default          | Help
@@ -249,6 +267,20 @@ Attribute        | Type             | Default          | Help
 `mapping`        | string           | `''`             | The name of the control mapping.
 `name`           | string           | `''`             | The name of the controller.
 `timestamp`      | number (float)   | `0.0`            | The last time the data from this gamepad was updated.
+
+### DOMWidgetModel (@jupyter-widgets/controls, 1.3.0); None (@jupyter-widgets/controls, 1.3.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'1.3.0'`        | 
+`_model_name`    | string           | `'DOMWidgetModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'1.3.0'`        | 
+`_view_name`     | `null` or string | `null`           | Name of the view.
+`layout`         | reference to Layout widget | reference to new instance | 
+`value`          | Bytes            | `b''`            | The media data as a byte string.
 
 ### DatePickerModel (@jupyter-widgets/controls, 1.3.0); DatePickerView (@jupyter-widgets/controls, 1.3.0)
 
@@ -509,7 +541,7 @@ Attribute        | Type             | Default          | Help
 `format`         | string           | `'png'`          | The format of the image.
 `height`         | string           | `''`             | Height of the image in pixels.
 `layout`         | reference to Layout widget | reference to new instance | 
-`value`          | Bytes            | `b''`            | The image data as a byte string.
+`value`          | Bytes            | `b''`            | The media data as a byte string.
 `width`          | string           | `''`             | Width of the image in pixels.
 
 ### IntProgressModel (@jupyter-widgets/controls, 1.3.0); ProgressView (@jupyter-widgets/controls, 1.3.0)
@@ -974,7 +1006,7 @@ Attribute        | Type             | Default          | Help
 `height`         | string           | `''`             | Height of the video in pixels.
 `layout`         | reference to Layout widget | reference to new instance | 
 `loop`           | boolean          | `true`           | When true, the video will start from the beginning after finishing
-`value`          | Bytes            | `b''`            | The video data as a byte string.
+`value`          | Bytes            | `b''`            | The media data as a byte string.
 `width`          | string           | `''`             | Width of the video in pixels.
 
 ### OutputModel (@jupyter-widgets/output, 1.0.0); OutputView (@jupyter-widgets/output, 1.0.0)
