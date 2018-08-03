@@ -12,7 +12,6 @@ from .widget_bool import Checkbox, ToggleButton, Valid
 from .widget_button import Button, ButtonStyle
 from .widget_box import Box, HBox, VBox, GridBox
 from .widget_float import FloatText, BoundedFloatText, FloatSlider, FloatProgress, FloatRangeSlider, FloatLogSlider
-from .widget_image import Image
 from .widget_int import IntText, BoundedIntText, IntSlider, IntProgress, IntRangeSlider, Play, SliderStyle
 from .widget_color import ColorPicker
 from .widget_date import DatePicker
@@ -24,5 +23,5 @@ from .widget_controller import Controller
 from .interaction import interact, interactive, fixed, interact_manual, interactive_output
 from .widget_link import jslink, jsdlink
 from .widget_layout import Layout
+from .widget_media import Image, Video
 from .widget_style import Style
-from .widget_video import Video
