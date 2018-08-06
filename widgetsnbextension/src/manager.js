@@ -338,9 +338,11 @@ WidgetManager.prototype.setViewOptions = function (options) {
         // use the parent output if we don't have one
         options.output = options.parent.options.output;
     }
-    options.iopub_callbacks = {
-        output: options.output.handle_output.bind(options.output),
-        clear_output: options.output.handle_clear_output.bind(options.output)
+    if (options.output) {
+        options.iopub_callbacks = {
+            output: options.output.handle_output.bind(options.output),
+            clear_output: options.output.handle_clear_output.bind(options.output)
+        }
     }
     return options;
 };
