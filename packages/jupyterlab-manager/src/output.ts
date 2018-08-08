@@ -40,7 +40,8 @@ export
 class OutputModel extends outputBase.OutputModel {
   defaults() {
     return {...super.defaults(),
-      msg_id: ''
+      msg_id: '',
+      outputs: []
     };
   }
 
@@ -57,6 +58,8 @@ class OutputModel extends outputBase.OutputModel {
       this._handleKernelChanged(args);
     });
     this.listenTo(this, 'change:msg_id', this.reset_msg_id);
+    this.listenTo(this, 'change:outputs', this.setOutputs);
+    this.setOutputs();
   }
 
   /**
@@ -99,10 +102,12 @@ class OutputModel extends outputBase.OutputModel {
       let model = msg.content as nbformat.IOutput;
       model.output_type = msgType as nbformat.OutputType;
       this._outputs.add(model);
+      this.save_changes();
       break;
     case 'clear_output':
-        this.clear_output((msg as KernelMessage.IClearOutputMsg).content.wait);
-        break;
+      this.clear_output((msg as KernelMessage.IClearOutputMsg).content.wait);
+      this.save_changes();
+      break;
     default:
       break;
     }
@@ -115,6 +120,16 @@ class OutputModel extends outputBase.OutputModel {
   get outputs() {
     return this._outputs;
   }
+
+  setOutputs(model?: any, value?: any, options?: any) {
+    if (!(options && options.newMessage)) {
+        // fromJSON does not clear the existing output
+        this.clear_output();
+        // fromJSON does not copy the message, so we make a deep copy
+        this._outputs.fromJSON(JSON.parse(JSON.stringify(this.get('outputs'))));
+    }
+  }
+
   widget_manager: WidgetManager;
 
   private _msgHook: (msg: KernelMessage.IIOPubMessage) => boolean;
