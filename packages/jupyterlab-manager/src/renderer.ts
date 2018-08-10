@@ -78,6 +78,7 @@ class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable
     if (this.isDisposed) {
       return;
     }
+    super.dispose();
     this._manager = null;
   }
 
