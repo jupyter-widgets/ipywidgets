@@ -28,9 +28,11 @@ export class WidgetRenderer extends Widget implements IRenderMime.IRenderer {
                 console.log('Error displaying widget');
                 console.log(err);
                 this.node.textContent = 'Error displaying widget';
+                this.addClass('jupyter-widgets');
             }
         } else {
             this.node.textContent = 'Error creating widget: could not find model';
+            this.addClass('jupyter-widgets');
             return Promise.resolve();
         }
     }
