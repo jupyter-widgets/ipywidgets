@@ -463,11 +463,22 @@ class ToggleButtonsView extends DescriptionView {
                     item_html = utils.escape_html(item);
                 }
 
-                let icon = document.createElement('i');
-                let button = document.createElement('button');
+                let icon
                 if (icons[index]) {
+                  if (icons[index].startsWith('data:')) {
+                    icon = document.createElement('img');
+                    icon.width = '16';
+                    icon.height = '16';
+                    icon.src = icons[index];
+                  } else {
+                    icon = document.createElement('i');
                     icon.className = 'fa fa-' + icons[index];
+                  }
+                } else {
+                  icon = document.createElement('i');
                 }
+
+                let button = document.createElement('button');
                 button.setAttribute('type', 'button');
                 button.className = 'widget-toggle-button jupyter-button';
                 if (previous_bstyle) {
