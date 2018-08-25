@@ -416,9 +416,9 @@ class ToggleButtons(_Selection):
         same length as `options`.
 
     icons: list
-        Icons to show on the buttons. This must be the name
-        of a font-awesome icon. See `http://fontawesome.io/icons/`
-        for a list of icons.
+        Icons to show on the buttons. This should either be the name
+        of a font-awesome icon or a string following the data URI scheme. See
+        `http://fontawesome.io/icons/` for a list of font-awesome icons.
 
     button_style: str
         One of 'primary', 'success', 'info', 'warning' or
@@ -578,7 +578,7 @@ class SelectionSlider(_SelectionNonempty):
 class SelectionRangeSlider(_MultipleSelectionNonempty):
     """
     Slider to select multiple contiguous items from a list.
-    
+
     The index, value, and label attributes contain the start and end of
     the selection range, not all items in the range.
 
