@@ -1,8 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-declare var __widgets_cdn__:string;
-__widgets_cdn__ = (window as any).__widgets_cdn__ || 'https://unpkg.com';
+const __widgets_cdn__ = (window as any).__widgets_cdn__ || 'https://unpkg.com';
 
 import * as libembed from './libembed';
 
