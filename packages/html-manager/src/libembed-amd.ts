@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-const __widgets_cdn__ = (window as any).__widgets_cdn__ || 'https://unpkg.com';
+const __jupyter_widgets_cdn__ = (window as any).__jupyter_widgets_cdn__ || 'https://unpkg.com';
 
 import * as libembed from './libembed';
 
@@ -37,14 +37,15 @@ function moduleNameToCDNUrl(moduleName: string, moduleVersion: string) {
         fileName = moduleName.substr(index+1);
         packageName = moduleName.substr(0, index);
     }
-    return `${__widgets_cdn__}/${packageName}@${moduleVersion}/dist/${fileName}`;
+    return `${__jupyter_widgets_cdn__}/${packageName}@${moduleVersion}/dist/${fileName}`;
 }
 
 function requireLoader(moduleName: string, moduleVersion: string) {
     return requirePromise([`${moduleName}`]).catch((err) => {
         let failedId = err.requireModules && err.requireModules[0];
         if (failedId) {
-            console.log(`Falling back to ${__widgets_cdn__} for ${moduleName}@${moduleVersion}`);
+            console.log(`Falling back to ${__jupyter_widgets_cdn__} for ` +
+                        `${moduleName}@${moduleVersion}`);
             let require = (window as any).requirejs;
             if (require === undefined) {
                 throw new Error("Requirejs is needed, please ensure it is loaded on the page.");
@@ -53,7 +54,7 @@ function requireLoader(moduleName: string, moduleVersion: string) {
             conf.paths[moduleName] = moduleNameToCDNUrl(moduleName, moduleVersion);
             require.undef(failedId);
             require.config(conf);
-            
+
             return requirePromise([`${moduleName}`]);
        }
     });
@@ -64,7 +65,7 @@ function requireLoader(moduleName: string, moduleVersion: string) {
  *
  * @param element (default document.documentElement) The element containing widget state and views.
  * @param loader (default requireLoader) The function used to look up the modules containing
- * the widgets' models and views classes. (The default loader looks them up on unpkg.com) 
+ * the widgets' models and views classes. (The default loader looks them up on unpkg.com)
  */
 export
 function renderWidgets(element = document.documentElement, loader: (moduleName: string, moduleVersion: string) => Promise<any>  = requireLoader) {
