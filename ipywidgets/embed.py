@@ -11,6 +11,7 @@ Functions for generating embeddable HTML/javascript of a widget.
 """
 
 import json
+import re
 from .widgets import Widget, DOMWidget
 from .widgets.widget_link import Link
 from .widgets.docutils import doc_subst
@@ -226,6 +227,18 @@ def embed_data(views, drop_defaults=True, state=None):
 
     return dict(manager_state=json_data, view_specs=view_specs)
 
+script_escape_re = re.compile(r'<(script|/script|!--)', re.IGNORECASE)
+def escape_script(s):
+    """Escape a string that will be the content of an HTML script tag.
+
+    We replace the opening bracket of <script, </script, and <!-- with the unicode
+    equivalent. This is inspired by the documentation for the script tag at
+    https://html.spec.whatwg.org/multipage/scripting.html#restrictions-for-contents-of-script-elements
+
+    We only replace these three cases so that most html or other content
+    involving `<` is readable.
+    """
+    return script_escape_re.sub(r'\u003c\1', s)
 
 @doc_subst(_doc_snippets)
 def embed_snippet(views,
@@ -251,7 +264,7 @@ def embed_snippet(views,
     data = embed_data(views, drop_defaults=drop_defaults, state=state)
 
     widget_views = u'\n'.join(
-        widget_view_template.format(**dict(view_spec=json.dumps(view_spec)))
+        widget_view_template.format(view_spec=escape_script(json.dumps(view_spec)))
         for view_spec in data['view_specs']
     )
 
@@ -263,7 +276,7 @@ def embed_snippet(views,
     use_cors = ' crossorigin="anonymous"' if cors else ''
     values = {
         'load': load.format(embed_url=embed_url, use_cors=use_cors),
-        'json_data': json.dumps(data['manager_state'], indent=indent),
+        'json_data': escape_script(json.dumps(data['manager_state'], indent=indent)),
         'widget_views': widget_views,
     }
 
