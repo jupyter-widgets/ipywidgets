@@ -8,6 +8,22 @@ var VIEW_MIME_TYPE = "application/vnd.jupyter.widget-view+json"
 var htmlManagerVersion = require("@jupyter-widgets/html-manager/package.json").version;
 
 var embed_widgets = function() {
+
+    /**
+     * Escape a string that will be the content of an HTML script tag.
+     *
+     * We replace the opening bracket of <script, </script, and <!-- with the
+     * unicode equivalent. This is inspired by the documentation for the script
+     * tag at
+     * https://html.spec.whatwg.org/multipage/scripting.html#restrictions-for-contents-of-script-elements
+     *
+     * We only replace these three cases so that most html or other content
+     * involving `<` is readable.
+     */
+    function escapeScript(s) {
+        return s.replace(/<(script|\/script|!--)/gi, '\\u003c$1');
+    }
+
     return new Promise(function(resolve, reject) {
         requirejs(['base/js/namespace', 'base/js/dialog', '@jupyter-widgets/controls'], function(Jupyter, dialog, widgets) {
             var wm = Jupyter.WidgetManager._managers[0];
@@ -17,7 +33,7 @@ var embed_widgets = function() {
             wm.get_state({
                 'drop_defaults': true
             }).then(function(state) {
-                var data = JSON.stringify(state, null, '    ');
+                var data = escapeScript(JSON.stringify(state, null, '    '));
                 var value = [
 '<html><head>',
 '',
@@ -40,7 +56,7 @@ data,
                                 && output.data[VIEW_MIME_TYPE]
                                 && state.state[output.data[VIEW_MIME_TYPE].model_id]) {
                                 views.push(('\n<script type="'+VIEW_MIME_TYPE+'">\n'
-                                    + JSON.stringify(output.data[VIEW_MIME_TYPE], null, '    ')
+                                    + escapeScript(JSON.stringify(output.data[VIEW_MIME_TYPE], null, '    '))
                                     + '\n</script>'));
                             }
                         });
