@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/controls",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "Jupyter interactive widgets",
   "author": "Project Jupyter",
   "license": "BSD-3-Clause",
