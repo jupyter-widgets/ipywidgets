@@ -102,10 +102,12 @@ class OutputModel extends outputBase.OutputModel {
       let model = msg.content as nbformat.IOutput;
       model.output_type = msgType as nbformat.OutputType;
       this._outputs.add(model);
+      this.set('outputs', this._outputs.toJSON(), {newMessage: true});
       this.save_changes();
       break;
     case 'clear_output':
       this.clear_output((msg as KernelMessage.IClearOutputMsg).content.wait);
+      this.set('outputs', [], {newMessage: true});
       this.save_changes();
       break;
     default:
