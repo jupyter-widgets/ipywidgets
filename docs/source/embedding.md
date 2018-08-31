@@ -122,7 +122,8 @@ html_template = """
     </script>
 
     <!-- Load IPywidgets bundle for embedding. -->
-    <script 
+    <script
+      data-jupyter-widgets-cdn="https://cdn.jsdelivr.net/npm/"
       src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" 
       crossorigin="anonymous">
     </script>
@@ -176,6 +177,9 @@ In this example, we used a Python string for the template, and used the
 `format` method to interpolate the state. For embedding in more complex
 documents, you may want to use a templating engine like
 [Jinja2](http://jinja.pocoo.org/).
+
+We also change the CDN from its default of unpkg to use jsdelivr by setting the
+`data-jupyter-widgets-cdn` attribute.
 
 In all embedding functions in `ipywidgets.embed`, the state of all widgets
 known to the widget manager is included by default. You can alternatively
@@ -262,12 +266,16 @@ documentation. An illustration of this is the http://jupyter.org/widgets
 gallery.
 
 The widget embedder attempts to fetch the model and view implementation of the
-custom widget from the npm CDN https://unpkg.com. The URL that is requested
+custom widget from the npm CDN https://unpkg.com by default. The URL that is requested
 for, e.g. the `bqplot` module name, with the semver range `^2.0.0` is
 
 `https://unpkg.com/bqplot@^2.0.0/dist/index.js`
 
 which holds the webpack bundle for the bqplot library.
+
+While the default CDN is using https://unpkg.com it can be configured by
+setting the optional `data-jupyter-widgets-cdn` attribute for script tag which loads `embed-amd.js`,
+as shown in the example above.
 
 The [widget-cookiecutter](https://github.com/jupyter/widget-cookiecutter)
 template project contains a template project for a custom widget library
