@@ -167,12 +167,12 @@ function remove_buffers(state): {state: any, buffers: ArrayBuffer[], buffer_path
             for (let i = 0; i < obj.length; i++) {
                 let value = obj[i];
                 if (value) {
-                    if (value.buffer instanceof ArrayBuffer || value instanceof ArrayBuffer) {
+                    if (value instanceof ArrayBuffer || ArrayBuffer.isView(value)) {
                         if (!is_cloned) {
                             obj = obj.slice();
                             is_cloned = true;
                         }
-                        buffers.push(value instanceof ArrayBuffer ? value : value.buffer);
+                        buffers.push(ArrayBuffer.isView(value) ? value.buffer : value);
                         buffer_paths.push(path.concat([i]));
                         // easier to just keep the array, but clear the entry, otherwise we have to think
                         // about array length, much easier this way
@@ -196,16 +196,16 @@ function remove_buffers(state): {state: any, buffers: ArrayBuffer[], buffer_path
                 if (obj.hasOwnProperty(key)) {
                     let value = obj[key];
                     if (value) {
-                        if (value.buffer instanceof ArrayBuffer || value instanceof ArrayBuffer) {
+                        if (value instanceof ArrayBuffer || ArrayBuffer.isView(value)) {
                             if (!is_cloned) {
                                 obj = {...obj};
                                 is_cloned = true;
                             }
-                            buffers.push(value instanceof ArrayBuffer ? value : value.buffer);
+                            buffers.push(ArrayBuffer.isView(value) ? value.buffer : value);
                             buffer_paths.push(path.concat([key]));
                             delete obj[key]; // for objects/dicts we just delete them
                         } else {
-                            let new_value  = remove(value, path.concat([key]));
+                            let new_value = remove(value, path.concat([key]));
                             // only assigned when the value changes, we may serialize objects that don't support assignment
                             if (new_value !== value) {
                                 if (!is_cloned) {
