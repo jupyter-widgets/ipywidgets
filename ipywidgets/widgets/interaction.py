@@ -27,9 +27,58 @@ from ipython_genutils.py3compat import string_types, unicode_type
 from traitlets import HasTraits, Any, Unicode, observe
 from numbers import Real, Integral
 from warnings import warn
-from collections import Iterable, Mapping
+from collections import Iterable, Mapping, defaultdict
+import functools
+import time
+import IPython
+import zmq
+
 
 empty = Parameter.empty
+
+
+def _get_ioloop():
+    ipython = IPython.get_ipython()
+    if ipython and hasattr(ipython, 'kernel'):
+        return zmq.eventloop.ioloop.IOLoop.instance()
+
+
+def debounced(delay_seconds=0.5, method=False):
+    """Returns a decorator, that (in IPython) will create a debounced function or method.
+
+    A debounced function/method will only be executed once it has not been invoked for at least
+    the delay time.
+
+    Parameters
+    ----------
+    delay_seconds : float
+        Delay in seconds before the function will be executed.
+    method : bool
+        If the argument of the returned decorator expects a method (True) of function (False).
+
+    """
+    def wrapped(f):
+        counters = defaultdict(int)
+
+        @functools.wraps(f)
+        def execute(*args, **kwargs):
+            if method:  # if it is a method, we want to have a counter per instance
+                key = args[0]
+            else:
+                key = None
+            counters[key] += 1
+
+            def debounced_execute(counter=counters[key]):
+                if counter == counters[key]:  # only execute if the counter wasn't changed in the meantime
+                    f(*args, **kwargs)
+            ioloop = _get_ioloop()
+
+            def thread_safe():
+                ioloop.add_timeout(time.time() + delay_seconds, debounced_execute)
+
+            ioloop.add_callback(thread_safe)
+        return execute
+    return wrapped
 
 
 def show_inline_matplotlib_plots():
@@ -179,6 +228,10 @@ class interactive(VBox):
         self.manual = __options.get("manual", False)
         self.manual_name = __options.get("manual_name", "Run Interact")
         self.auto_display = __options.get("auto_display", False)
+        self.debounce = kwargs.get("debounce", None)
+
+        if self.debounce is not None:
+            self.update = debounced(delay_seconds=self.debounce)(self.update)
 
         new_kwargs = self.find_abbreviations(kwargs)
         # Before we proceed, let's make sure that the user has passed a set of args+kwargs
