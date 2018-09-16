@@ -1074,3 +1074,11 @@
     /* Make it possible to have absolutely-positioned elements in the html */
     position: relative;
 }
+
+
+/* Image widget  */
+
+.widget-image {
+    max-width: 100%;
+    height: auto;
+}
