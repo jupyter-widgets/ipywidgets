@@ -41,6 +41,9 @@ let css_properties: {[key: string]: string} = {
     visibility: null,
     width: null,
 
+    // image-specific
+    object_fit: null,
+
     // container
     grid_auto_columns: null,
     grid_auto_flow: null,
