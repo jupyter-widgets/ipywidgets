@@ -155,6 +155,15 @@ class Image(_Media):
     height = CUnicode(help="Height of the image in pixels. Use layout.height "
                            "for styling the widget.").tag(sync=True)
 
+    def __init__(self, *args, **kwargs):
+        super(Image, self).__init__(*args, **kwargs)
+        # This is done to make explicit a CSS rule that was applied
+        # to all img tags, including the Image widget, in the
+        # classic notebook. Removing it in the future would not
+        # be unreasonable.
+        self.layout.max_width = '100%'
+        self.layout.height = 'auto'
+
     @classmethod
     def from_file(cls, filename, **kwargs):
         return cls._from_file('image', filename, **kwargs)
