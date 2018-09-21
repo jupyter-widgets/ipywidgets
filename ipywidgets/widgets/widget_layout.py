@@ -63,7 +63,7 @@ class Layout(Widget):
     visibility = CaselessStrEnum(['visible', 'hidden']+CSS_PROPERTIES, allow_none=True, help="The visibility CSS attribute.").tag(sync=True)
     width = Unicode(None, allow_none=True, help="The width CSS attribute.").tag(sync=True)
 
-    object_fit = CaselessStrEnum(['contain', 'cover', 'fill', 'scale-down', 'none'], allow_none=True, help="Determines how replaced content (like an image) should be resized to fit their container").tag(sync=True)
+    object_fit = CaselessStrEnum(['contain', 'cover', 'fill', 'scale-down', 'none'], allow_none=True, help="The object-fit CSS attribute.").tag(sync=True)
 
     grid_auto_columns = Unicode(None, allow_none=True, help="The grid-auto-columns CSS attribute.").tag(sync=True)
     grid_auto_flow = CaselessStrEnum(['column','row','row dense','column dense']+ CSS_PROPERTIES, allow_none=True, help="The grid-auto-flow CSS attribute.").tag(sync=True)
