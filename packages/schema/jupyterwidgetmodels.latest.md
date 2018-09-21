@@ -542,7 +542,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'ImageView'`    | 
 `format`         | string           | `'png'`          | The format of the image.
 `height`         | string           | `''`             | Height of the image in pixels. Use layout.height for styling the widget.
-`layout`         | reference to Layout widget | reference to new instance |
+`layout`         | reference to Layout widget | reference to new instance | 
 `value`          | Bytes            | `b''`            | The media data as a byte string.
 `width`          | string           | `''`             | Width of the image in pixels. Use layout.width for styling the widget.
 
