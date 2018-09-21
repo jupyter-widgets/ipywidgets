@@ -126,7 +126,7 @@ extras_require = setuptools_args['extras_require'] = {
     ':python_version<"3.3"' : ['ipython>=4.0.0,<6.0.0'],
     ':python_version>="3.3"': ['ipython>=4.0.0'],
     'test:python_version=="2.7"': ['mock'],
-    'test': ['nose'],
+    'test': ['pytest'],
 }
 
 if 'setuptools' in sys.modules:

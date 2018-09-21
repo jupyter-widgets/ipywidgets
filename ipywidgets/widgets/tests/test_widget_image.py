@@ -175,4 +175,4 @@ def assert_equal_hash(byte_str, digest, msg=None):
     if msg is not None:
         kwargs['msg'] = msg
 
-    nt.eq_(get_hash_hex(byte_str), digest, **kwargs)
+    assert get_hash_hex(byte_str) == digest

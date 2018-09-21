@@ -1,8 +1,6 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-import nose.tools as nt
-
 from traitlets import Bool, Tuple, List
 
 from .utils import setup, teardown
@@ -18,10 +16,10 @@ class SimpleWidget(Widget):
 def test_empty_send_state():
     w = SimpleWidget()
     w.send_state([])
-    nt.assert_equal(w.comm.messages, [])
+    assert w.comm.messages == []
 
 def test_empty_hold_sync():
     w = SimpleWidget()
     with w.hold_sync():
         pass
-    nt.assert_equal(w.comm.messages, [])
+    assert w.comm.messages == []
