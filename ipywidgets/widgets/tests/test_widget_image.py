@@ -170,9 +170,5 @@ def get_hash_hex(byte_str):
     return m.hexdigest()
 
 
-def assert_equal_hash(byte_str, digest, msg=None):
-    kwargs = {}
-    if msg is not None:
-        kwargs['msg'] = msg
-
+def assert_equal_hash(byte_str, digest):
     assert get_hash_hex(byte_str) == digest
