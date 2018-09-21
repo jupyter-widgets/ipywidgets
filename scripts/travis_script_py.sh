@@ -1,3 +1,3 @@
 set -ex
 
-pytest --cov=ipywidgets jupyter-widgets/ipywidgets
+pytest --cov=ipywidgets ipywidgets
