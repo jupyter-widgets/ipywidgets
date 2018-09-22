@@ -1,6 +1,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
+import argparse
 import json
 from operator import itemgetter
 
@@ -168,7 +169,7 @@ def jsonify(identifier, widget, widget_list):
     return dict(model=model, view=view, attributes=attributes)
 
 
-def create_json(widget_list):
+def create_spec(widget_list):
     widget_data = []
     for widget_name, widget_cls in widget_list:
         if issubclass(widget_cls, Link):
@@ -181,16 +182,30 @@ def create_json(widget_list):
             widget = widget_cls()
 
         widget_data.append(jsonify(widget_name, widget, widget_list))
-    return json.dumps(widget_data)
+    return widget_data
 
 
-def create_markdown(widget_json):
+def create_markdown(spec):
     output = [HEADER]
-    for widget in json.loads(widget_json):
+    for widget in spec:
         output.append(format_widget(widget))
     return '\n'.join(output)
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Description of your program')
+    parser.add_argument('-f', '--format', choices=['json', 'json-pretty', 'markdown'], 
+        help='Format to generate', default='json')
+    args = parser.parse_args()
+    format = args.format
+
     widgets_to_document = sorted(widgets.Widget.widget_types.items())
-    print(create_markdown(create_json(widgets_to_document)))
+    spec = create_spec(widgets_to_document)
+    if format == 'json':
+        print(json.dumps(spec, sort_keys=True))
+    elif format == 'json-pretty':
+        print(json.dumps(spec, sort_keys=True,
+              indent=2, separators=(',', ': ')))
+    elif format == 'markdown':
+        # We go through the json engine to convert tuples to lists, etc.
+        print(create_markdown(json.loads(json.dumps(spec))))
