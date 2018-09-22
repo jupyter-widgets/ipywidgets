@@ -224,11 +224,6 @@ install_requires = setuptools_args['install_requires'] = [
     'notebook>=4.4.1',
 ]
 
-extras_require = setuptools_args['extras_require'] = {
-    'test:python_version=="2.7"': ['mock'],
-    'test': ['nose'],
-}
-
 if 'setuptools' in sys.modules:
     setup_args.update(setuptools_args)
 
