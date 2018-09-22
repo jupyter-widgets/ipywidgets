@@ -4,6 +4,11 @@ Developer Release Procedure
 To release a new version of the widgets on PyPI and npm, first checkout master
 and cd into the repo root.
 
+```
+git clone git@github.com:jupyter-widgets/ipywidgets.git
+```
+
+
 ### Fix the widget spec
 
 If there were changes in the widget model specification (i.e., any change made
@@ -62,10 +67,35 @@ python setup.py bdist_wheel --universal
 twine upload dist/*
 ```
 
+Verify that the package is uploaded:
+```
+curl -s https://pypi.org/pypi/ipywidgets/json | jq  -r '[.releases[][] | [.upload_time, .digests.sha256, .filename] | join(" ")] | sort '
+```
+
 ### Push changes back
 
-commit and tag (ipywidgets) release
+Calculate the hashes of the uploaded files. You could use a small shell script, for example, like this on macOS:
+```sh
+#!/bin/sh
+for f in $@
+do
+  echo "$f"
+  echo md5: `md5 -q "$f"`
+  echo sha1: `shasum -a 1 "$f" | awk '{print $1}'`
+  echo sha256: `shasum -a 256 "$f" | awk '{print $1}'`
+  echo
+done
+```
 
+Using the above script, you can do:
+```
+hashes dist/*
+hashes widgetsnbextension/dist/*
+```
+
+Commit the changes you've made above, and include the uploaded files hashes in the commit message. Tag the release if ipywidgets was released. Push to origin master (and include the tag in the push).
+
+Update conda-forge packages (if the requirements changed to ipywidgets, make sure to update widgetsnbextension first).
 
 Release Notes
 =============
