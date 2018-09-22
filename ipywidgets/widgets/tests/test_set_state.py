@@ -3,7 +3,7 @@
 
 from ipython_genutils.py3compat import PY3
 
-import nose.tools as nt
+import pytest
 
 from traitlets import Bool, Tuple, List, Instance, CFloat, CInt, Float, Int, TraitError
 
@@ -81,7 +81,7 @@ def test_set_state_simple():
         c=[False, True, False],
     ))
 
-    nt.assert_equal(w.comm.messages, [])
+    assert w.comm.messages == []
 
 
 def test_set_state_transformer():
@@ -90,13 +90,13 @@ def test_set_state_transformer():
         d=[True, False, True]
     ))
     # Since the deserialize step changes the state, this should send an update
-    nt.assert_equal(w.comm.messages, [((), dict(
+    assert w.comm.messages == [((), dict(
         buffers=[],
         data=dict(
             buffer_paths=[],
             method='update',
             state=dict(d=[False, True, False])
-        )))])
+        )))]
 
 
 def test_set_state_data():
@@ -106,7 +106,7 @@ def test_set_state_data():
         a=True,
         d={'data': data},
     ))
-    nt.assert_equal(w.comm.messages, [])
+    assert w.comm.messages == []
 
 
 def test_set_state_data_truncate():
@@ -117,20 +117,20 @@ def test_set_state_data_truncate():
         d={'data': data},
     ))
     # Get message for checking
-    nt.assert_equal(len(w.comm.messages), 1)   # ensure we didn't get more than expected
+    assert len(w.comm.messages) == 1   # ensure we didn't get more than expected
     msg = w.comm.messages[0]
     # Assert that the data update (truncation) sends an update
     buffers = msg[1].pop('buffers')
-    nt.assert_equal(msg, ((), dict(
+    assert msg == ((), dict(
         data=dict(
             buffer_paths=[['d', 'data']],
             method='update',
             state=dict(d={})
-        ))))
+        )))
 
     # Sanity:
-    nt.assert_equal(len(buffers), 1)
-    nt.assert_equal(buffers[0], data[:20].tobytes())
+    assert len(buffers) == 1
+    assert buffers[0] == data[:20].tobytes()
 
 
 def test_set_state_numbers_int():
@@ -146,7 +146,7 @@ def test_set_state_numbers_int():
         ci = 4,
     ))
     # Ensure no update message gets produced
-    nt.assert_equal(len(w.comm.messages), 0)
+    assert len(w.comm.messages) == 0
 
 
 def test_set_state_numbers_float():
@@ -158,7 +158,7 @@ def test_set_state_numbers_float():
         ci = 4.0
     ))
     # Ensure no update message gets produced
-    nt.assert_equal(len(w.comm.messages), 0)
+    assert len(w.comm.messages) == 0
 
 
 def test_set_state_float_to_float():
@@ -169,7 +169,7 @@ def test_set_state_float_to_float():
         cf = 2.6,
     ))
     # Ensure no update message gets produced
-    nt.assert_equal(len(w.comm.messages), 0)
+    assert len(w.comm.messages) == 0
 
 
 def test_set_state_cint_to_float():
@@ -180,7 +180,7 @@ def test_set_state_cint_to_float():
         ci = 5.6
     ))
     # Ensure an update message gets produced
-    nt.assert_equal(len(w.comm.messages), 1)
+    assert len(w.comm.messages) == 1
     msg = w.comm.messages[0]
     data = msg[1]['data']
     assert data['method'] == 'update'
@@ -200,14 +200,14 @@ def _x_test_set_state_int_to_int_like():
         i = 3.0
     ))
     # Ensure no update message gets produced
-    nt.assert_equal(len(w.comm.messages), 0)
+    assert len(w.comm.messages) == 0
 
 
 def test_set_state_int_to_float():
     w = NumberWidget()
 
     # Set Int to float
-    with nt.assert_raises(TraitError):
+    with pytest.raises(TraitError):
         w.set_state(dict(
             i = 3.5
         ))

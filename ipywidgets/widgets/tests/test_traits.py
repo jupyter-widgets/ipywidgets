@@ -5,7 +5,7 @@
 import array
 import datetime as dt
 
-import nose.tools as nt
+import pytest
 
 from unittest import TestCase
 from traitlets import HasTraits, Int, TraitError
@@ -180,7 +180,7 @@ def test_typed_tuple_bad_default():
         value = TypedTuple(trait=Int(), default_value=(1, 2, 'foobar'))
 
 
-    with nt.assert_raises(TraitError):
+    with pytest.raises(TraitError):
         obj = TestCase()
         a = obj.value   # a read might be needed to trigger default validation
 
@@ -190,7 +190,7 @@ def test_typed_tuple_bad_set():
         value = TypedTuple(trait=Int())
 
     obj = TestCase()
-    with nt.assert_raises(TraitError):
+    with pytest.raises(TraitError):
         obj.value = (1, 2, 'foobar')
 
 
