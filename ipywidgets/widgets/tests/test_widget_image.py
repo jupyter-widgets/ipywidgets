@@ -10,8 +10,6 @@ from ipywidgets import Image
 
 import hashlib
 
-import nose.tools as nt
-
 import pkgutil
 
 import tempfile
