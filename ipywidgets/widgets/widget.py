@@ -668,6 +668,8 @@ class Widget(LoggingHasTraits):
                     _put_buffers(state, data['buffer_paths'], msg['buffers'])
                 self.set_state(state)
                 # we send back the state to all other sessions, but only when there are multiple
+                # this allows all front-ends to sync up to the front-end that caused the state change
+                # for discussion, see: https://github.com/jupyter/jupyter_client/issues/263
                 if msg['metadata'].get('session_count', 1) > 1:
                     kernel = self.comm.kernel
                     kernel.session.send(kernel.iopub_socket, 'reflect:comm_msg', content=msg['content'], parent=kernel._parent_header, ident=self.comm.topic)
