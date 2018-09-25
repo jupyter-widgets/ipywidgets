@@ -2,8 +2,12 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-   StyleModel
+   StyleModel, unpack_models
 } from '@jupyter-widgets/base';
+
+import {
+    IconModel, IconView
+} from './widget_icon';
 
 import {
     CoreDescriptionModel,
@@ -397,6 +401,10 @@ export
             _view_name: 'ToggleButtonsView'
         };
     }
+    static serializers = {
+        ...SelectionModel.serializers,
+        icons: {deserialize: unpack_models},
+    };
 }
 
 
@@ -451,31 +459,19 @@ class ToggleButtonsView extends DescriptionView {
         }
 
         if (stale && (options === undefined || options.updated_view !== this)) {
+            if(this.iconViews) {
+                this.iconViews.forEach((i) => i.remove())
+            }
+            this.iconViews = new Array(items.length)
             // Add items to the DOM.
             this.buttongroup.textContent = '';
-            items.forEach((item: any, index: number) => {
+            items.forEach(async (item: any, index: number) => {
                 let item_html;
-                let empty = item.trim().length === 0 &&
-                    (!icons[index] || icons[index].trim().length === 0);
+                let empty = item.trim().length === 0 && !icons[index];
                 if (empty) {
                     item_html = '&nbsp;';
                 } else {
                     item_html = utils.escape_html(item);
-                }
-
-                let icon
-                if (icons[index]) {
-                  if (icons[index].startsWith('data:')) {
-                    icon = document.createElement('img');
-                    icon.width = '16';
-                    icon.height = '16';
-                    icon.src = icons[index];
-                  } else {
-                    icon = document.createElement('i');
-                    icon.className = 'fa fa-' + icons[index];
-                  }
-                } else {
-                  icon = document.createElement('i');
                 }
 
                 let button = document.createElement('button');
@@ -487,13 +483,17 @@ class ToggleButtonsView extends DescriptionView {
                 button.innerHTML = item_html;
                 button.setAttribute('data-value', encodeURIComponent(item));
                 button.setAttribute('value', index.toString());
-                button.appendChild(icon);
+                // let icon = icons[index];
                 button.disabled = disabled;
                 if (tooltips[index]) {
                     button.setAttribute('title', tooltips[index]);
                 }
                 view.update_style_traits(button);
                 view.buttongroup.appendChild(button);
+                if(icons[index]) {
+                    this.iconViews[index] = <IconView> await this.create_child_view(icons[index]);
+                    button.appendChild(this.iconViews[index].el);
+                }
             });
         }
 
@@ -572,6 +572,7 @@ class ToggleButtonsView extends DescriptionView {
 
     private _css_state: any;
     buttongroup: HTMLDivElement;
+    iconViews: Array<IconView>;
 }
 
 export

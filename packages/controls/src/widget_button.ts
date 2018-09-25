@@ -2,12 +2,16 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetView, StyleModel
+    DOMWidgetView, StyleModel, unpack_models
 } from '@jupyter-widgets/base';
 
 import {
     CoreDOMWidgetModel
 } from './widget_core';
+
+import {
+    IconModel, IconView
+} from './widget_icon';
 
 import {
     JUPYTER_CONTROLS_VERSION
@@ -47,13 +51,17 @@ class ButtonModel extends CoreDOMWidgetModel {
             description: '',
             tooltip: '',
             disabled: false,
-            icon: '',
+            icon: null,
             button_style: '',
             _view_name: 'ButtonView',
             _model_name: 'ButtonModel',
             style: null
         });
     }
+    static serializers = {
+        ...CoreDOMWidgetModel.serializers,
+        icon: {deserialize: unpack_models},
+    };
 }
 
 export
@@ -77,22 +85,25 @@ class ButtonView extends DOMWidgetView {
      * Called when the model is changed. The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update() {
+    async update() {
         this.el.disabled = this.model.get('disabled');
         this.el.setAttribute('title', this.model.get('tooltip'));
 
         let description = this.model.get('description');
-        let icon = this.model.get('icon');
-        if (description.length || icon.length) {
+        let icon : IconModel = this.model.get('icon');
+        if (description.length || icon) {
+            if(this.iconView) {
+                this.iconView.remove()
+                this.iconView = null;
+            }
             this.el.textContent = '';
-            if (icon.length) {
-                let i = document.createElement('i');
-                i.classList.add('fa');
-                i.classList.add('fa-' + icon);
-                if (description.length === 0) {
-                    i.classList.add('center');
+            if (icon) {
+                this.iconView = <IconView> await this.create_child_view(icon)
+                if (description.length === 0 && this.iconView) {
+                    this.iconView.el.classList.add('center');
                 }
-                this.el.appendChild(i);
+                this.el.appendChild(this.iconView.el);
+                this.iconView.listenTo(icon, 'change', () => this.update())
             }
             this.el.appendChild(document.createTextNode(description));
         }
@@ -138,6 +149,7 @@ class ButtonView extends DOMWidgetView {
     }
 
     el: HTMLButtonElement;
+    iconView: IconView;
 
     static class_map = {
         primary: ['mod-primary'],

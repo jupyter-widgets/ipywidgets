@@ -141,10 +141,39 @@ class _Media(DOMWidget, ValueWidget, CoreWidget):
         signature = ', '.join(signature)
         return '%s(%s)' % (class_name, signature)
 
+class Icon(_Media):
+    _view_name = Unicode('IconView').tag(sync=True)
+    _model_name = Unicode('IconModel').tag(sync=True)
+
+    # Define the custom state properties to sync with the front-end
+    format = Unicode('png', help="The format of the icon.").tag(sync=True)
+    width = CUnicode(help="Width of the icon in pixels.").tag(sync=True)
+    height = CUnicode(help="Height of the icon in pixels.").tag(sync=True)
+
+    @classmethod
+    def from_file(cls, filename, **kwargs):
+        return cls._from_file('image', filename, **kwargs)
+
+    @classmethod
+    def fontawesome(cls, name, **kwargs):
+        """Creates an fontawasome icon (without the fa-prefix)
+
+        Example:
+
+        >>> icon = Icon.fontawesome('home')
+        >>> button = Button(icon=icon, description='Home')
+
+        """
+        return cls(value=name.encode('utf-8'), format='fontawesome', **kwargs)
+
+    def __repr__(self):
+        return self._get_repr(Icon)
 
 @register
 class Image(_Media):
     """Displays an image as a widget.
+
+    '', help="Font-awesome icon name, without the 'fa-' prefix."
 
     The `value` of this widget accepts a byte string.  The byte string is the
     raw image data that you want the browser to display.  You can explicitly
