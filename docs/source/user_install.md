@@ -63,6 +63,9 @@ This command defaults to installing the latest version of the **ipywidgets**
 JupyterLab extension. Depending on the version of JupyterLab you have installed, you 
 may need to install [an older version](https://github.com/jupyter-widgets/ipywidgets/tree/master/packages/jupyterlab-manager#version-compatibility).
 
+If you install this extension while JupyterLab is running, you will need to
+refresh the page or restart JupyterLab before the changes take effect.
+
 **Note:** A clean reinstall of the JupyterLab extension can be done by first
 running the `jupyter lab clean` command which will remove the staging and
 static directories from the lab directory. The location of the lab directory
