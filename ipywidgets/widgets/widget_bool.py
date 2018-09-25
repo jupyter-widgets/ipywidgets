@@ -9,8 +9,10 @@ Represents a boolean using a widget.
 from .widget_description import DescriptionWidget
 from .widget_core import CoreWidget
 from .valuewidget import ValueWidget
-from .widget import register
-from traitlets import Unicode, Bool, CaselessStrEnum
+from .widget_media import Icon
+from .widget import register, widget_serialization
+from .trait_types import InstanceString
+from traitlets import Unicode, Bool, CaselessStrEnum, Instance
 
 
 class _Bool(DescriptionWidget, ValueWidget, CoreWidget):
@@ -63,7 +65,7 @@ class ToggleButton(_Bool):
     _model_name = Unicode('ToggleButtonModel').tag(sync=True)
 
     tooltip = Unicode(help="Tooltip caption of the toggle button.").tag(sync=True)
-    icon = Unicode('', help= "Font-awesome icon.").tag(sync=True)
+    icon = InstanceString(Icon, Icon.fontawesome, default_value=None, allow_none=True, help= "Optional button icon.").tag(sync=True, **widget_serialization)
 
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',

@@ -23,5 +23,5 @@ from .widget_controller import Controller
 from .interaction import interact, interactive, fixed, interact_manual, interactive_output
 from .widget_link import jslink, jsdlink
 from .widget_layout import Layout
-from .widget_media import Image, Video, Audio
+from .widget_media import Image, Icon, Video, Audio
 from .widget_style import Style

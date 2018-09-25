@@ -17,10 +17,11 @@ from .widget_description import DescriptionWidget, DescriptionStyle
 from .valuewidget import ValueWidget
 from .widget_core import CoreWidget
 from .widget_style import Style
-from .trait_types import InstanceDict, TypedTuple
+from .widget_media import Icon
+from .trait_types import InstanceDict, TypedTuple, InstanceString
 from .widget import register, widget_serialization
 from .docutils import doc_subst
-from traitlets import (Unicode, Bool, Int, Any, Dict, TraitError, CaselessStrEnum,
+from traitlets import (Unicode, Bool, Int, Any, Dict, List, TraitError, CaselessStrEnum,
                        Tuple, Union, observe, validate)
 from ipython_genutils.py3compat import unicode_type
 
@@ -431,7 +432,7 @@ class ToggleButtons(_Selection):
     _model_name = Unicode('ToggleButtonsModel').tag(sync=True)
 
     tooltips = TypedTuple(Unicode(), help="Tooltips for each button.").tag(sync=True)
-    icons = TypedTuple(Unicode(), help="Icons names for each button (FontAwesome names without the fa- prefix).").tag(sync=True)
+    icons = TypedTuple(trait=InstanceString(Icon, Icon.fontawesome), help="Icons names for each button (FontAwesome names without the fa- prefix).").tag(sync=True, **widget_serialization)
     style = InstanceDict(ToggleButtonsStyle).tag(sync=True, **widget_serialization)
 
     button_style = CaselessStrEnum(

@@ -11,7 +11,8 @@ from .domwidget import DOMWidget
 from .widget import CallbackDispatcher, register, widget_serialization
 from .widget_core import CoreWidget
 from .widget_style import Style
-from .trait_types import Color, InstanceDict
+from .widget_media import Icon
+from .trait_types import Color, InstanceDict, InstanceString
 
 from traitlets import Unicode, Bool, CaselessStrEnum, Instance, validate, default
 import warnings
@@ -49,7 +50,7 @@ class Button(DOMWidget, CoreWidget):
     description = Unicode(help="Button label.").tag(sync=True)
     tooltip = Unicode(help="Tooltip caption of the button.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes.").tag(sync=True)
-    icon = Unicode('', help="Font-awesome icon name, without the 'fa-' prefix.").tag(sync=True)
+    icon = InstanceString(Icon, Icon.fontawesome, default_value=None, allow_none=True, help= "Optional button icon.").tag(sync=True, **widget_serialization)
 
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
@@ -62,15 +63,15 @@ class Button(DOMWidget, CoreWidget):
         self._click_handlers = CallbackDispatcher()
         self.on_msg(self._handle_button_msg)
 
-    @validate('icon')
-    def _validate_icon(self, proposal):
-        """Strip 'fa-' if necessary'"""
-        value = proposal['value']
-        if value.startswith('fa-'):
-            warnings.warn("icons names no longer start with 'fa-', "
-            "just use the class name itself (for example, 'check' instead of 'fa-check')", DeprecationWarning)
-            value = value[3:]
-        return value
+    # @validate('icon')
+    # def _validate_icon(self, proposal):
+    #     """Strip 'fa-' if necessary'"""
+    #     value = proposal['value']
+    #     if value.startswith('fa-'):
+    #         warnings.warn("icons names no longer start with 'fa-', "
+    #         "just use the class name itself (for example, 'check' instead of 'fa-check')", DeprecationWarning)
+    #         value = value[3:]
+    #     return value
 
     def on_click(self, callback, remove=False):
         """Register a callback to execute when the button is clicked.

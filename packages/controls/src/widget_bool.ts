@@ -6,11 +6,15 @@ import {
 } from './widget_core';
 
 import {
+    IconModel, IconView
+} from './widget_icon';
+
+import {
     DescriptionView
 } from './widget_description';
 
 import {
-    DOMWidgetView
+    DOMWidgetView, unpack_models
 } from '@jupyter-widgets/base';
 
 import * as _ from 'underscore';
@@ -147,10 +151,14 @@ class ToggleButtonModel extends BoolModel {
             _view_name: 'ToggleButtonView',
             _model_name: 'ToggleButtonModel',
             tooltip: '',
-            icon: '',
+            icon: null,
             button_style: ''
         });
     }
+    static serializers = {
+        ...BoolModel.serializers,
+        icon: {deserialize: unpack_models},
+    };
 }
 
 export
@@ -182,7 +190,7 @@ class ToggleButtonView extends DOMWidgetView {
      * Called when the model is changed. The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update(options?){
+    async update(options?){
         if (this.model.get('value')) {
             this.el.classList.add('mod-active');
         } else {
@@ -194,16 +202,22 @@ class ToggleButtonView extends DOMWidgetView {
             this.el.setAttribute('title', this.model.get('tooltip'));
 
             let description = this.model.get('description');
-            let icon = this.model.get('icon');
-            if (description.trim().length === 0 && icon.trim().length === 0) {
+            let icon : IconModel = this.model.get('icon');
+            if(this.iconView) {
+                this.iconView.remove()
+                this.iconView = null;
+            }
+            if (description.trim().length === 0 && !icon) {
                 this.el.innerHTML = '&nbsp;'; // Preserve button height
             } else {
                 this.el.textContent = '';
-                if (icon.trim().length) {
-                    let i = document.createElement('i');
-                    this.el.appendChild(i);
-                    i.classList.add('fa');
-                    i.classList.add('fa-' + icon);
+                if (icon) {
+                    this.iconView = <IconView> await this.create_child_view(icon)
+                    if (description.length === 0) {
+                        this.iconView.el.classList.add('center');
+                    }
+                    this.el.appendChild(this.iconView.el);
+                    this.iconView.listenTo(icon, 'change', () => this.update())
                 }
                 this.el.appendChild(document.createTextNode(description));
             }
@@ -245,6 +259,7 @@ class ToggleButtonView extends DOMWidgetView {
     }
 
     el: HTMLButtonElement;
+    iconView: IconView;
 
     static class_map = {
         primary: ['mod-primary'],
