@@ -141,7 +141,46 @@ class _Media(DOMWidget, ValueWidget, CoreWidget):
         signature = ', '.join(signature)
         return '%s(%s)' % (class_name, signature)
 
+
+@register
+class Image(_Media):
+    """Displays an image as a widget.
+
+    The `value` of this widget accepts a byte string.  The byte string is the
+    raw image data that you want the browser to display.  You can explicitly
+    define the format of the byte string using the `format` trait (which
+    defaults to "png").
+
+    If you pass `"url"` to the `"format"` trait, `value` will be interpreted
+    as a URL as bytes encoded in UTF-8.
+    """
+    _view_name = Unicode('ImageView').tag(sync=True)
+    _model_name = Unicode('ImageModel').tag(sync=True)
+
+    # Define the custom state properties to sync with the front-end
+    format = Unicode('png', help="The format of the image.").tag(sync=True)
+    width = CUnicode(help="Width of the image in pixels.").tag(sync=True)
+    height = CUnicode(help="Height of the image in pixels.").tag(sync=True)
+
+    @classmethod
+    def from_file(cls, filename, **kwargs):
+        return cls._from_file('image', filename, **kwargs)
+
+    def __repr__(self):
+        return self._get_repr(Image)
+
+
+@register
 class Icon(_Media):
+    """Display a fontawesome icon or image.
+
+    Icon is a superset of Image from the user perspective, but provides a
+    different API on the front-end. Icon is used for buttons etc.
+
+    The most common way to use Icon is to call the `Icon.fontawesome` factory
+    method.
+
+    """
     _view_name = Unicode('IconView').tag(sync=True)
     _model_name = Unicode('IconModel').tag(sync=True)
 
@@ -168,35 +207,6 @@ class Icon(_Media):
 
     def __repr__(self):
         return self._get_repr(Icon)
-
-@register
-class Image(_Media):
-    """Displays an image as a widget.
-
-    '', help="Font-awesome icon name, without the 'fa-' prefix."
-
-    The `value` of this widget accepts a byte string.  The byte string is the
-    raw image data that you want the browser to display.  You can explicitly
-    define the format of the byte string using the `format` trait (which
-    defaults to "png").
-
-    If you pass `"url"` to the `"format"` trait, `value` will be interpreted
-    as a URL as bytes encoded in UTF-8.
-    """
-    _view_name = Unicode('ImageView').tag(sync=True)
-    _model_name = Unicode('ImageModel').tag(sync=True)
-
-    # Define the custom state properties to sync with the front-end
-    format = Unicode('png', help="The format of the image.").tag(sync=True)
-    width = CUnicode(help="Width of the image in pixels.").tag(sync=True)
-    height = CUnicode(help="Height of the image in pixels.").tag(sync=True)
-
-    @classmethod
-    def from_file(cls, filename, **kwargs):
-        return cls._from_file('image', filename, **kwargs)
-
-    def __repr__(self):
-        return self._get_repr(Image)
 
 
 @register

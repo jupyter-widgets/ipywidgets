@@ -39,8 +39,8 @@ class Button(DOMWidget, CoreWidget):
        description displayed next to the button
     tooltip: str
        tooltip caption of the toggle button
-    icon: str
-       font-awesome icon name
+    icon: Icon
+       button icon
     disabled: bool
        whether user interaction is enabled
     """
@@ -50,7 +50,7 @@ class Button(DOMWidget, CoreWidget):
     description = Unicode(help="Button label.").tag(sync=True)
     tooltip = Unicode(help="Tooltip caption of the button.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes.").tag(sync=True)
-    icon = InstanceString(Icon, Icon.fontawesome, default_value=None, allow_none=True, help= "Optional button icon.").tag(sync=True, **widget_serialization)
+    icon = InstanceString(Icon, Icon.fontawesome, default_value=None, allow_none=True, help= "Button icon.").tag(sync=True, **widget_serialization)
 
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
