@@ -58,14 +58,14 @@ class ToggleButton(_Bool):
 	      description displayed next to the button
     tooltip: str
         tooltip caption of the toggle button
-    icon: str
-        font-awesome icon name
+    icon: Icon
+        button icon
     """
     _view_name = Unicode('ToggleButtonView').tag(sync=True)
     _model_name = Unicode('ToggleButtonModel').tag(sync=True)
 
     tooltip = Unicode(help="Tooltip caption of the toggle button.").tag(sync=True)
-    icon = InstanceString(Icon, Icon.fontawesome, default_value=None, allow_none=True, help= "Optional button icon.").tag(sync=True, **widget_serialization)
+    icon = InstanceString(Icon, Icon.fontawesome, default_value=None, allow_none=True, help= "Button icon.").tag(sync=True, **widget_serialization)
 
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',

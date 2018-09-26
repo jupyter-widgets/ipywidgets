@@ -164,7 +164,7 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
     _options_full = None
 
     # This being read-only means that it cannot be changed by the user.
-    _options_labels = TypedTuple(trait=Unicode(), read_only=True, help="The labels for the options.").tag(sync=True)
+    _options_labels = TypedTuple(trait=Unicode, read_only=True, help="The labels for the options.").tag(sync=True)
 
     disabled = Bool(help="Enable or disable user changes").tag(sync=True)
 
@@ -432,7 +432,7 @@ class ToggleButtons(_Selection):
     _model_name = Unicode('ToggleButtonsModel').tag(sync=True)
 
     tooltips = TypedTuple(Unicode(), help="Tooltips for each button.").tag(sync=True)
-    icons = TypedTuple(trait=InstanceString(Icon, Icon.fontawesome), help="Icons names for each button (FontAwesome names without the fa- prefix).").tag(sync=True, **widget_serialization)
+    icons = TypedTuple(trait=InstanceString(Icon, Icon.fontawesome), help="Icons for each button.").tag(sync=True, **widget_serialization)
     style = InstanceDict(ToggleButtonsStyle).tag(sync=True, **widget_serialization)
 
     button_style = CaselessStrEnum(
