@@ -264,6 +264,10 @@
     width: var(--jp-widgets-inline-width-short);
 }
 
+.widget-button-icon {
+    cursor: pointer;
+}
+
 /* Widget Label Styling */
 
 /* Override Bootstrap label css */

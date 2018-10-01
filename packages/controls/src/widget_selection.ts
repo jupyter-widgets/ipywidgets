@@ -490,6 +490,7 @@ class ToggleButtonsView extends DescriptionView {
                 this.buttongroup.appendChild(button);
                 if(icons[index]) {
                     this.iconViews[index] = <IconView> await this.create_child_view(icons[index]);
+                    this.iconViews[index].el.classList.add('widget-button-icon')
                     button.appendChild(this.iconViews[index].el);
                 }
             });
