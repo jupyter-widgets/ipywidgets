@@ -497,10 +497,12 @@ class ToggleButtonsView extends DescriptionView {
             });
         }
 
+        buttons = this.buttongroup.querySelectorAll('button');
         // Select active button.
         items.forEach(function(item: any, index: number) {
-            let item_query = '[data-value="' + encodeURIComponent(item) + '"]';
-            let button = view.buttongroup.querySelector(item_query);
+            // let item_query = '[data-value="' + encodeURIComponent(item) + '"]';
+            // let button = view.buttongroup.querySelector(item_query);
+            let button = buttons[index];
             if (view.model.get('index') === index) {
                 button.classList.add('mod-active');
             } else {
@@ -563,7 +565,12 @@ class ToggleButtonsView extends DescriptionView {
      * model to update.
      */
     _handle_click (event) {
-        this.model.set('index', parseInt(event.target.value), {updated_view: this});
+        let clickedButton = event.target;
+        while(clickedButton.nodeName !== 'BUTTON')
+            clickedButton = clickedButton.parentElement;
+        let buttons = Array.prototype.slice.call(this.buttongroup.querySelectorAll('button'));
+        let index = buttons.indexOf(clickedButton);
+        this.model.set('index', index, {updated_view: this});
         this.touch();
         // We also send a clicked event, since the value is only set if it changed.
         // See https://github.com/jupyter-widgets/ipywidgets/issues/763
