@@ -47,7 +47,7 @@ class TestColor(TraitTestBase):
         '#ffffffff',  # double digit hex with alpha
         'rgb(0, 0, 0)', # rgb
         'rgb( 20,70,50 )', # rgb with spaces
-        'rgba(10,10,10, 0.5)', #r gba with float alpha
+        'rgba(10,10,10, 0.5)', # rgba with float alpha
         'rgba(255, 255, 255, 255)', # out of bounds alpha (spec says clamp to 1)
     ]
     _bad_values = [
@@ -66,7 +66,7 @@ class TestColorWithNone(TraitTestBase):
     obj = ColorTraitWithNone()
 
     _good_values = TestColor._good_values + [None]
-    _bad_values = TestColor._bad_values[:-1]
+    _bad_values = list(filter(lambda v: v is not None, TestColor._bad_values))
 
 
 class TestDateSerialization(TestCase):
