@@ -37,8 +37,25 @@ class ColorTrait(HasTraits):
 class TestColor(TraitTestBase):
     obj = ColorTrait()
 
-    _good_values = ["blue", "#AA0", "#FFFFFF", "transparent"]
-    _bad_values = ["vanilla", "blues", None]
+
+    _good_values = [
+        "blue", # valid color name
+        "#AA0", # single digit hex
+        "#FFFFFF", # double digit hex
+        "transparent", # special color name
+        '#aaaa', # single digit hex with alpha
+        '#ffffffff',  # double digit hex with alpha
+        'rgb(0, 0, 0)', # rgb
+        'rgb( 20,70,50 )', # rgb with spaces
+        'rgba(10,10,10, 0.5)', #r gba with float alpha
+        'rgba(255, 255, 255, 255)', # out of bounds alpha (spec says clamp to 1)
+    ]
+    _bad_values = [
+        "vanilla", "blues",  # Invald color names
+        1.2, 0.0,  # Should fail with float input
+        0, 1, 2,  # Should fail with int input
+        None,
+    ]
 
 
 class ColorTraitWithNone(HasTraits):
