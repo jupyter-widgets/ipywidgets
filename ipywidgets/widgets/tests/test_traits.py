@@ -38,7 +38,18 @@ class TestColor(TraitTestBase):
     obj = ColorTrait()
 
     _good_values = ["blue", "#AA0", "#FFFFFF", "transparent"]
-    _bad_values = ["vanilla", "blues"]
+    _bad_values = ["vanilla", "blues", None]
+
+
+class ColorTraitWithNone(HasTraits):
+    value = Color("black", allow_none=True)
+
+
+class TestColorWithNone(TraitTestBase):
+    obj = ColorTraitWithNone()
+
+    _good_values = TestColor._good_values + [None]
+    _bad_values = TestColor._bad_values[:-1]
 
 
 class TestDateSerialization(TestCase):
