@@ -161,8 +161,10 @@ class Image(_Media):
         # to all img tags, including the Image widget, in the
         # classic notebook. Removing it in the future would not
         # be unreasonable.
-        self.layout.max_width = '100%'
-        self.layout.height = 'auto'
+        if self.layout.max_width is None:
+            self.layout.max_width = '100%'
+        if self.layout.height is None:
+            self.layout.height = 'auto'
 
     @classmethod
     def from_file(cls, filename, **kwargs):
