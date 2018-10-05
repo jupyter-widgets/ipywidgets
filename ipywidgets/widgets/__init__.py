@@ -8,7 +8,7 @@ from .valuewidget import ValueWidget
 from .trait_types import Color, Datetime, NumberFormat
 
 from .widget_core import CoreWidget
-from .widget_bool import Checkbox, ToggleButton, Valid
+from .widget_bool import Checkbox, ToggleButton, Valid, BooleanGroup
 from .widget_button import Button, ButtonStyle
 from .widget_box import Box, HBox, VBox, GridBox
 from .widget_float import FloatText, BoundedFloatText, FloatSlider, FloatProgress, FloatRangeSlider, FloatLogSlider
@@ -24,4 +24,5 @@ from .interaction import interact, interactive, fixed, interact_manual, interact
 from .widget_link import jslink, jsdlink
 from .widget_layout import Layout
 from .widget_media import Image, Icon, Video, Audio
+from .widget_menu import MenuItem, Menu
 from .widget_style import Style

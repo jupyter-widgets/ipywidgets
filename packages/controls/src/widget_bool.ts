@@ -14,7 +14,7 @@ import {
 } from './widget_description';
 
 import {
-    DOMWidgetView, unpack_models
+    WidgetModel, DOMWidgetView, unpack_models
 } from '@jupyter-widgets/base';
 
 import * as _ from 'underscore';
@@ -29,6 +29,102 @@ class BoolModel extends CoreDescriptionModel {
             _model_name: 'BoolModel'
         });
     }
+}
+
+export
+class BooleanGroupModel extends WidgetModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            value: false,
+            disabled: false,
+            _model_name: 'BooleanGroupModel',
+            group: null,
+            selected: null,
+            index: null,
+            widgets: null,
+            selected_widget: null
+        });
+    }
+    initialize(attributes, options) {
+        super.initialize(attributes, options);
+        this.listenToGroup()
+        this.on('change:index', this.sync_index)
+        this.on('change:widget', () => this.find_index(this.get('widgets'), this.get('selected_widget')))
+        this.on('change:selected', () => this.find_index(this.get('group'), this.get('selected')))
+        this._updating = false;
+    }
+    listenToGroup() {
+        let group = this.get('group');
+        if(group) {
+            group.forEach((boolWidget, widget_index) => {
+                boolWidget.on('change:value', () => {
+                    if(this._updating)
+                        return;
+                    if(boolWidget.get('value')) {
+                        this.set('index', widget_index)
+                    } else {
+                        // if the user unselects a widget, we might just
+                        // enable it again
+                        this.sync_index()
+                    }
+                })
+            })
+        }
+    }
+    sync_index() {
+        console.log('sync_index', this.cid)
+        if(this._updating)
+            return;
+        let index = this.get('index');
+        let group = this.get('group');
+        let widgets = this.get('widgets');
+        if(group && group.length > index) {
+            if(index !== null) {
+                this.set('selected', group[index]);
+                this.set('last_selected', group[index]);
+            } else {
+                this.set('selected', null);
+            }
+            this._updating = true;
+            try {
+                group.forEach((boolWidget, widget_index) => {
+                    boolWidget.set('value', index == widget_index)
+                    boolWidget.save_changes()
+                })
+            } finally {
+                this._updating = false;
+            }
+        }
+        if(widgets && widgets.length > index) {
+            if(index !== null) {
+                this.set('selected_widget', widgets[index]);
+                this.set('last_selected_widget', widgets[index]);
+            } else {
+                this.set('selected_widget', null);
+            }
+        }
+
+        this.save_changes()
+
+    }
+    find_index(widget_list, widget_to_find) {
+        if(!widget_list)
+            return;
+        let index = widget_list.indexOf(widget_to_find);
+        if(index == -1)
+            this.set('index', null);
+        else
+            this.set('index', index);
+
+    }
+    static serializers = {
+        ...WidgetModel.serializers,
+        group: {deserialize: unpack_models},
+        selected: {deserialize: unpack_models},
+        widgets: {deserialize: unpack_models},
+        selected_widget: {deserialize: unpack_models}
+    };
+    _updating : Boolean;
 }
 
 export

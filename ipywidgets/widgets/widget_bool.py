@@ -10,9 +10,9 @@ from .widget_description import DescriptionWidget
 from .widget_core import CoreWidget
 from .valuewidget import ValueWidget
 from .widget_media import Icon
-from .widget import register, widget_serialization
-from .trait_types import InstanceString
-from traitlets import Unicode, Bool, CaselessStrEnum, Instance
+from .widget import Widget, register, widget_serialization
+from .trait_types import InstanceString, TypedTuple
+from traitlets import Unicode, Bool, CaselessStrEnum, Instance, Int
 
 
 class _Bool(DescriptionWidget, ValueWidget, CoreWidget):
@@ -70,6 +70,21 @@ class ToggleButton(_Bool):
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
         help="""Use a predefined styling for the button.""").tag(sync=True)
+
+
+@register
+class BooleanGroup(CoreWidget):
+    _model_name = Unicode('BooleanGroupModel').tag(sync=True)
+    group = TypedTuple(trait=Instance(_Bool), help="Boolean widgets").tag(sync=True, **widget_serialization).tag(sync=True)
+    selected = Instance(_Bool, allow_none=True, default_value=None).tag(sync=True, **widget_serialization)
+    last_selected = Instance(_Bool, allow_none=True, default_value=None).tag(sync=True, **widget_serialization)
+
+    widgets = TypedTuple(trait=Instance(Widget), help="Set of auxilary widgets to choose from").tag(sync=True, **widget_serialization).tag(sync=True)
+    selected_widget = Instance(Widget, allow_none=True, help="The selected widget").tag(sync=True, readonly=True, **widget_serialization)
+    last_selected_widget = Instance(Widget, allow_none=True, help="The selected widget").tag(sync=True, readonly=True, **widget_serialization)
+
+    index = Int(None, help="Selected index", allow_none=True).tag(sync=True)
+
 
 
 @register
