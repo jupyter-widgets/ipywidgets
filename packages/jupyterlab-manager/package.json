@@ -2,19 +2,48 @@
   "name": "@jupyter-widgets/jupyterlab-manager",
   "version": "0.37.4",
   "description": "The JupyterLab extension providing Jupyter widgets.",
+  "keywords": [
+    "jupyter",
+    "jupyterlab",
+    "jupyterlab notebook",
+    "jupyterlab-extension"
+  ],
+  "homepage": "https://github.com/jupyter-widgets/ipywidgets",
+  "bugs": {
+    "url": "https://github.com/jupyter-widgets/ipywidgets/issues"
+  },
+  "license": "BSD-3-Clause",
+  "author": "Project Jupyter",
+  "files": [
+    "lib/*.js",
+    "lib/*.d.ts",
+    "dist/*.js"
+  ],
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jupyter-widgets/ipywidgets"
+  },
+  "scripts": {
+    "build": "npm run build:src",
+    "build:src": "tsc --project src",
+    "clean": "rimraf docs && rimraf lib",
+    "docs": "typedoc --mode file --module commonjs --excludeNotExported --target es5 --moduleResolution node --out docs/ src",
+    "lint": "tslint --project tslint.json --format stylish",
+    "prepublish": "npm run clean && npm run build"
+  },
   "dependencies": {
     "@jupyter-widgets/base": "^1.2.2",
     "@jupyter-widgets/controls": "^1.4.2",
     "@jupyter-widgets/output": "^1.1.2",
-    "@jupyterlab/application": "^0.18.0",
-    "@jupyterlab/coreutils": "^2.0.0",
-    "@jupyterlab/docregistry": "^0.18.0",
-    "@jupyterlab/notebook": "^0.18.0",
-    "@jupyterlab/outputarea": "^0.18.0",
-    "@jupyterlab/rendermime": "^0.18.0",
-    "@jupyterlab/rendermime-interfaces": "^1.1.0",
+    "@jupyterlab/application": "^0.19.1",
+    "@jupyterlab/coreutils": "^2.2.1",
+    "@jupyterlab/docregistry": "^0.19.1",
+    "@jupyterlab/notebook": "^0.19.1",
+    "@jupyterlab/outputarea": "^0.19.1",
+    "@jupyterlab/rendermime": "^0.19.1",
+    "@jupyterlab/rendermime-interfaces": "^1.2.1",
     "@jupyterlab/services": "^3.0.0",
     "@phosphor/disposable": "^1.1.1",
     "@phosphor/messaging": "^1.2.1",
@@ -30,36 +59,7 @@
     "typedoc": "^0.6.0",
     "typescript": "~2.9.2"
   },
-  "keywords": [
-    "jupyter",
-    "jupyterlab",
-    "jupyterlab-extension",
-    "jupyterlab notebook"
-  ],
   "jupyterlab": {
     "extension": true
-  },
-  "scripts": {
-    "clean": "rimraf docs && rimraf lib",
-    "build:src": "tsc --project src",
-    "build": "npm run build:src",
-    "docs": "typedoc --mode file --module commonjs --excludeNotExported --target es5 --moduleResolution node --out docs/ src",
-    "lint": "tslint --project tslint.json --format stylish",
-    "prepublish": "npm run clean && npm run build"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jupyter-widgets/ipywidgets"
-  },
-  "files": [
-    "lib/*.js",
-    "lib/*.d.ts",
-    "dist/*.js"
-  ],
-  "author": "Project Jupyter",
-  "license": "BSD-3-Clause",
-  "bugs": {
-    "url": "https://github.com/jupyter-widgets/ipywidgets/issues"
-  },
-  "homepage": "https://github.com/jupyter-widgets/ipywidgets"
+  }
 }
