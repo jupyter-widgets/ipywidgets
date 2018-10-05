@@ -2,46 +2,46 @@
   "name": "@jupyter-widgets/html-manager",
   "version": "0.14.4",
   "description": "Standalone package for rendering Jupyter widgets outside notebooks",
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jupyter-widgets/ipywidgets.git"
+  "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme",
+  "bugs": {
+    "url": "https://github.com/jupyter-widgets/ipywidgets/issues"
   },
+  "license": "BSD-3-Clause",
+  "author": "Jupyter Project",
   "files": [
     "lib/**/*.d.ts",
     "lib/**/*.js",
     "dist/",
     "css/*.css"
   ],
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jupyter-widgets/ipywidgets.git"
+  },
   "scripts": {
-    "clean": "rimraf lib && rimraf dist",
-    "build:src": "tsc --project src",
-    "build:embed-amd": "node scripts/concat-amd-build.js && rimraf dist/amd",
-    "build:test": "tsc --project test/src && webpack --config test/webpack.conf.js",
     "build": "npm run build:src && webpack && npm run build:embed-amd",
+    "build:embed-amd": "node scripts/concat-amd-build.js && rimraf dist/amd",
+    "build:src": "tsc --project src",
+    "build:test": "tsc --project test/src && webpack --config test/webpack.conf.js",
+    "clean": "rimraf lib && rimraf dist",
     "lint": "tslint --project tslint.json --format stylish",
+    "prepublish": "npm run clean && npm run build",
     "test": "npm run test:unit",
     "test:unit": "npm run test:unit:firefox && npm run test:unit:chrome",
-    "test:unit:default": "npm run build:test && karma start test/karma.conf.js --log-level debug --browsers=Firefox",
-    "test:unit:firefox": "npm run test:unit:default -- --browsers=Firefox",
     "test:unit:chrome": "npm run test:unit:default -- --browsers=Chrome",
-    "prepublish": "npm run clean && npm run build"
+    "test:unit:default": "npm run build:test && karma start test/karma.conf.js --log-level debug --browsers=Firefox",
+    "test:unit:firefox": "npm run test:unit:default -- --browsers=Firefox"
   },
-  "author": "Jupyter Project",
-  "license": "BSD-3-Clause",
-  "bugs": {
-    "url": "https://github.com/jupyter-widgets/ipywidgets/issues"
-  },
-  "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme",
   "dependencies": {
     "@jupyter-widgets/base": "^1.2.2",
     "@jupyter-widgets/controls": "^1.4.2",
     "@jupyter-widgets/output": "^1.1.2",
     "@jupyter-widgets/schema": "^0.3.6",
-    "@jupyterlab/outputarea": "^0.17.0",
-    "@jupyterlab/rendermime": "^0.17.0",
-    "@jupyterlab/rendermime-interfaces": "^1.1.0",
+    "@jupyterlab/outputarea": "^0.19.1",
+    "@jupyterlab/rendermime": "^0.19.1",
+    "@jupyterlab/rendermime-interfaces": "^1.2.1",
     "@phosphor/widgets": "^1.3.0",
     "ajv": "^5.2.2",
     "font-awesome": "^4.7.0",
