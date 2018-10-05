@@ -2,17 +2,31 @@ from .widget_description import DescriptionWidget
 from .widget import Widget, CallbackDispatcher, register, widget_serialization
 from .domwidget import DOMWidget
 from .widget_core import CoreWidget
-from .trait_types import TypedTuple
-from traitlets import (Unicode, Instance)
+from .widget_bool import _Bool
+from .widget_media import Icon
+from .trait_types import TypedTuple, InstanceString
+from traitlets import Unicode, Instance, CBool
 
-@register
-class MenuItem(DescriptionWidget):
-    _view_name = Unicode('MenuItemView').tag(sync=True)
-    # _model_name = Unicode('MenuItemModel').tag(sync=True)
-    # submenu = Instance('ipywidgets.Menu').tag(sync=True)
+class Action(_Bool):
+    _view_name = Unicode('MenuView').tag(sync=True)
+    _model_name = Unicode('MenuModel').tag(sync=True)
+    icon = InstanceString(Icon, Icon.fontawesome, default_value=None, allow_none=True, help= "Button icon.").tag(sync=True, **widget_serialization)
+    checkable = CBool(None, allow_none=True, help="When True, will toggle the value property when clicked.").tag(sync=True)
+    disabled = CBool(False, help="Enable or disable user changes.").tag(sync=True)
+    command = Unicode(None, allow_none=True).tag(sync=True)
+
+class Menu(Action):
+    _view_name = Unicode('MenuView').tag(sync=True)
+    _model_name = Unicode('MenuModel').tag(sync=True)
+    items = TypedTuple(trait=Instance('ipywidgets.Action'), help="Menu items", default=None, allow_none=True).tag(sync=True, **widget_serialization).tag(sync=True)
+    command = Unicode(None, allow_none=True).tag(sync=True)
+    # icon = InstanceString(Icon, Icon.fontawesome, default_value=None, allow_none=True, help= "Button icon.").tag(sync=True, **widget_serialization)
+    # checkable = CBool(None, allow_none=True, help="When True, will toggle the value property when clicked.").tag(sync=True)
+    # disabled = CBool(False, help="Enable or disable user changes.").tag(sync=True)
+
 
     def __init__(self, **kwargs):
-        super(MenuItem, self).__init__(**kwargs)
+        super(Menu, self).__init__(**kwargs)
         self._click_handlers = CallbackDispatcher()
         self.on_msg(self._handle_button_msg)
 
@@ -48,7 +62,5 @@ class MenuItem(DescriptionWidget):
         if content.get('event', '') == 'click':
             self.click()
 
-class Menu(DOMWidget, CoreWidget):
-    _view_name = Unicode('MenuView').tag(sync=True)
-    _model_name = Unicode('MenuModel').tag(sync=True)
-    items = TypedTuple(trait=Instance(MenuItem), help="Menu items").tag(sync=True, **widget_serialization).tag(sync=True)
+# this is needed to allow items to be None
+Menu.items.default_args = None

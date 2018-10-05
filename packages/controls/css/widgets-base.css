@@ -268,6 +268,43 @@
     cursor: pointer;
 }
 
+.widget-button-menu-sub-button {
+    cursor: pointer;
+    width: 32px;
+    padding: 0;
+    margin: 0;
+    display: inline;
+}
+
+
+.widget-button-menu-sub-button {
+    margin-left: 4px;
+    margin-right: 4px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    display: inline;
+    background-color: transparent;
+}
+
+.widget-button-menu-sub-button i {
+    cursor: pointer;
+    width: 32px;
+    padding: 0;
+    margin: 0;
+    display: inline;
+}
+.widget-button-menu-sub-button {
+    vertical-align: sub;
+  
+}
+
+.widget-button-menu-sub-button i.fa {
+    margin-right: 0;
+    pointer-events: none;
+    vertical-align: sub;
+}
+
+
 /* Widget Label Styling */
 
 /* Override Bootstrap label css */
