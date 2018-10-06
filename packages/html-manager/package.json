@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/html-manager",
-  "version": "0.14.4",
+  "version": "0.15.0",
   "description": "Standalone package for rendering Jupyter widgets outside notebooks",
   "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme",
   "bugs": {
