@@ -24,5 +24,5 @@ from .interaction import interact, interactive, fixed, interact_manual, interact
 from .widget_link import jslink, jsdlink
 from .widget_layout import Layout
 from .widget_media import Image, Icon, Video, Audio
-from .widget_menu import Action, Menu
+from .widget_menu import Application, Action, Menu
 from .widget_style import Style

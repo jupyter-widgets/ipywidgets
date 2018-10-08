@@ -149,6 +149,8 @@ class ButtonView extends DOMWidgetView {
             }
             if (menu) {
                 this.menuView = <MenuView> await this.create_child_view(menu);
+                // forward events from the menu, since it is not DOM attached
+                this.menuView.menu.node.addEventListener('jupyter-widgets-action', (e: CustomEvent) => this.el.dispatchEvent(new CustomEvent('jupyter-widgets-action', {bubbles: true, detail: e.detail})));
                 // this.listenToMenu(this.menu);
                 // menu.on('click', (menu : MenuModel) => {
                 //     console.log('clicked', menu)
@@ -201,6 +203,10 @@ class ButtonView extends DOMWidgetView {
             }
         }
         return super.update();
+    }
+    onChildCommandEvent(e) {
+        console.log('forwarding event');
+        this.el.dispatchEvent(e);
     }
 
     /*listenToMenu(menu : Menu) {

@@ -21,6 +21,7 @@ export * from './widget_selectioncontainer';
 export * from './widget_string';
 export * from './widget_description';
 export * from './widget_menu';
+export * from './widget_application';
 
 export
 const version = (require('../package.json') as any).version;

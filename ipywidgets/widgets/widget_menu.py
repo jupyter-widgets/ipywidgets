@@ -19,7 +19,6 @@ class Menu(Action):
     _view_name = Unicode('MenuView').tag(sync=True)
     _model_name = Unicode('MenuModel').tag(sync=True)
     items = TypedTuple(trait=Instance('ipywidgets.Action'), help="Menu items", default=None, allow_none=True).tag(sync=True, **widget_serialization).tag(sync=True)
-    command = Unicode(None, allow_none=True).tag(sync=True)
     # icon = InstanceString(Icon, Icon.fontawesome, default_value=None, allow_none=True, help= "Button icon.").tag(sync=True, **widget_serialization)
     # checkable = CBool(None, allow_none=True, help="When True, will toggle the value property when clicked.").tag(sync=True)
     # disabled = CBool(False, help="Enable or disable user changes.").tag(sync=True)
@@ -64,3 +63,11 @@ class Menu(Action):
 
 # this is needed to allow items to be None
 Menu.items.default_args = None
+
+
+class Application(DescriptionWidget):
+    _view_name = Unicode('ApplicationView').tag(sync=True)
+    _model_name = Unicode('ApplicationModel').tag(sync=True)
+    menubar = Instance('ipywidgets.Menu', allow_none=True).tag(sync=True, **widget_serialization)
+    toolbar = TypedTuple(trait=Instance('ipywidgets.DOMWidget'), help="List of widgets to be shown between the menu bar and central widget", default=None, allow_none=True).tag(sync=True, **widget_serialization).tag(sync=True)
+    central_widget = Instance('ipywidgets.DOMWidget', help='The main widget shown in the center').tag(sync=True, **widget_serialization)

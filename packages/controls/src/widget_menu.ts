@@ -102,12 +102,20 @@ class MenuView extends DOMWidgetView {
                     }
                     item.send({event: 'click'}, {})
                     this.model.trigger('click', item)
+                    // TODO: are we gonna use view in the detail, since it is the root view., e.g. this.model != item always
+                    var event = new CustomEvent('jupyter-widgets-action', {bubbles: true, detail: {view: this, action: item}});
+                    // this.el.dispatchEvent(event);
+                    menuWidget.node.dispatchEvent(event);
+
                 },
             });
             // make sure the dom elements are created
             // menuWidget.onUpdateRequest(Msg.UpdateRequest)
             MessageLoop.sendMessage(menuWidget, Widget.Msg.UpdateRequest);
             let iconDiv = menuWidget.contentNode.querySelector(`.p-Menu-item[data-command="${cmd}"] .p-Menu-itemIcon`)
+            if(iconDiv === null && subitems !== null)
+                iconDiv = menuWidget.contentNode.querySelector(`.p-Menu-item:last-child .p-Menu-itemIcon`)
+
             let icon = item.get('icon');
             if(icon) {
                 let iconView = <IconView> await this.create_child_view(icon)
