@@ -24,6 +24,9 @@ import {
 import * as _ from 'underscore';
 import * as $ from 'jquery';
 import 'jquery-ui/ui/widgets/slider';
+import {
+    floor
+} from 'lodash';
 
 
 export
@@ -547,6 +550,7 @@ class IntTextView extends DescriptionView {
     events() {
         return {
             'keydown input'  : 'handleKeyDown',
+            'keyup input'  : 'handleKeyUp',
             'keypress input' : 'handleKeypress',
             'input input'  : 'handleChanging',
             'change input' : 'handleChanged'
@@ -560,6 +564,16 @@ class IntTextView extends DescriptionView {
      */
     handleKeyDown(e) {
         e.stopPropagation();
+    }
+
+    /**
+     * Handle key up
+     *
+     * Strip the decimal portion of the number with the . as well.
+     */
+    handleKeyUp(e) {
+        let numericalValue = this._parse_value(e.target.value);
+        e.target.value = floor(numericalValue);
     }
 
     /**
