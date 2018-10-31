@@ -479,9 +479,14 @@ class Widget(LoggingHasTraits):
         """
         state = self.get_state(key=key)
         if len(state) > 0:
+            if self._property_lock:  # we need to keep this dict up to date with the front-end values
+                for name, value in state.items():
+                    if name in self._property_lock:
+                        self._property_lock[name] = value
             state, buffer_paths, buffers = _remove_buffers(state)
             msg = {'method': 'update', 'state': state, 'buffer_paths': buffer_paths}
             self._send(msg, buffers=buffers)
+
 
     def get_state(self, key=None, drop_defaults=False):
         """Gets the widget state, or a piece of it.
@@ -597,8 +602,6 @@ class Widget(LoggingHasTraits):
             if name in self.keys and self._should_send_property(name, getattr(self, name)):
                 # Send new state to front-end
                 self.send_state(key=name)
-            if name in self._property_lock:
-                self._property_lock[name] = getattr(self, name)
         super(Widget, self).notify_change(change)
 
     def __repr__(self):
