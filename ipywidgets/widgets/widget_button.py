@@ -63,16 +63,6 @@ class Button(DOMWidget, CoreWidget):
         self._click_handlers = CallbackDispatcher()
         self.on_msg(self._handle_button_msg)
 
-    # @validate('icon')
-    # def _validate_icon(self, proposal):
-    #     """Strip 'fa-' if necessary'"""
-    #     value = proposal['value']
-    #     if value.startswith('fa-'):
-    #         warnings.warn("icons names no longer start with 'fa-', "
-    #         "just use the class name itself (for example, 'check' instead of 'fa-check')", DeprecationWarning)
-    #         value = value[3:]
-    #     return value
-
     def on_click(self, callback, remove=False):
         """Register a callback to execute when the button is clicked.
 

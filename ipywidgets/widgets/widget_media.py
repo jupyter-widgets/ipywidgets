@@ -2,12 +2,13 @@
 # Distributed under the terms of the Modified BSD License.
 
 import mimetypes
+import warnings
 
 from .widget_core import CoreWidget
 from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
 from .widget import register
-from traitlets import Unicode, CUnicode, Bytes, Bool
+from traitlets import Unicode, CUnicode, Bytes, Bool, validate
 from .trait_types import bytes_serialization
 
 
@@ -207,6 +208,18 @@ class Icon(_Media):
 
     def __repr__(self):
         return self._get_repr(Icon)
+
+    @validate('value')
+    def _validate_value(self, proposal):
+        """Strip 'fa-' if necessary'"""
+        format = self.format
+        value = proposal['value']
+        if format == 'fontawesome':
+            if value.decode('utf-8').startswith('fa-'):
+                warnings.warn("icons names no longer start with 'fa-', "
+                "just use the class name itself (for example, 'check' instead of 'fa-check')", DeprecationWarning)
+                value = value[3:]
+        return value
 
 
 @register
