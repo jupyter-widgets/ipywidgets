@@ -98,12 +98,21 @@ class ButtonView extends DOMWidgetView {
             }
             this.el.textContent = '';
             if (icon) {
+                let icon_placeholder = document.createElement('div');
+                this.el.appendChild(icon_placeholder);
                 this.iconView = <IconView> await this.create_child_view(icon)
                 if (description.length === 0 && this.iconView) {
                     this.iconView.el.classList.add('center');
                 }
-                this.el.appendChild(this.iconView.el);
-                this.iconView.listenTo(icon, 'change', () => this.update())
+                /*
+                since the await above is async, in the mean time there could
+                have been another update executed. This could have removed
+                the icon, which means that the placeholders parent is not this.el
+                */
+                if(icon_placeholder.parentNode == this.el) {
+                    this.el.replaceChild(this.iconView.el, icon_placeholder);
+                    this.iconView.listenTo(icon, 'change', () => this.update())
+                }
             }
             this.el.appendChild(document.createTextNode(description));
         }
