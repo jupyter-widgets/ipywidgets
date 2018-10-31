@@ -597,6 +597,8 @@ class Widget(LoggingHasTraits):
             if name in self.keys and self._should_send_property(name, getattr(self, name)):
                 # Send new state to front-end
                 self.send_state(key=name)
+            if name in self._property_lock:
+                self._property_lock[name] = getattr(self, name)
         super(Widget, self).notify_change(change)
 
     def __repr__(self):
