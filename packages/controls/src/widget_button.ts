@@ -101,6 +101,7 @@ class ButtonView extends DOMWidgetView {
                 let icon_placeholder = document.createElement('div');
                 this.el.appendChild(icon_placeholder);
                 this.iconView = <IconView> await this.create_child_view(icon)
+                this.iconView.el.classList.add('widget-button-icon')
                 if (description.length === 0 && this.iconView) {
                     this.iconView.el.classList.add('center');
                 }
