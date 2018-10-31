@@ -489,9 +489,19 @@ class ToggleButtonsView extends DescriptionView {
                 this.update_style_traits(button);
                 this.buttongroup.appendChild(button);
                 if(icons[index]) {
+                    let icon_placeholder = document.createElement('div');
+                    button.appendChild(icon_placeholder);
                     this.iconViews[index] = <IconView> await this.create_child_view(icons[index]);
                     this.iconViews[index].el.classList.add('widget-button-icon')
-                    button.appendChild(this.iconViews[index].el);
+                    /*
+                    since the await above is async, in the mean time there could
+                    have been another update executed. This could have removed
+                    the icon, which means that the placeholders parent is not this.el
+                    */
+                    if(icon_placeholder.parentNode == button) {
+                        button.replaceChild(this.iconViews[index].el, icon_placeholder);
+                        this.iconViews[index].listenTo(icons[index], 'change', () => this.update())
+                    }
                 }
             });
         }
