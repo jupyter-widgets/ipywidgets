@@ -539,7 +539,7 @@ abstract class ManagerBase<T> {
      * @returns {*} A copy of the state, with its 'state' attribute filtered
      */
     protected filterExistingModelState(serialized_state: any) {
-      let models = serialized_state.state as {[key: string]: WidgetModel};
+      let models = serialized_state.state as {[key: string]: any};
       models = Object.keys(models)
           .filter((model_id) => {
               return !this._models[model_id];
@@ -547,7 +547,7 @@ abstract class ManagerBase<T> {
           .reduce((res, model_id) => {
               res[model_id] = models[model_id];
               return res;
-          }, {} as {[key: string]: WidgetModel});
+          }, {} as {[key: string]: any});
       return {...serialized_state, state: models};
     }
 
