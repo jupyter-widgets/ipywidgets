@@ -109,7 +109,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
       this._handleKernelChanged(args);
     });
 
-    this._setupRestorePromise();
+    this._setupInitialRestorePromise();
 
     if (context.session.kernel) {
       this._handleKernelChanged({oldValue: null, newValue: context.session.kernel});
@@ -189,9 +189,9 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
           return this.set_state(state);
         }
       }).then((models) => {
-        if (this._resolveRestored) {
-          this._resolveRestored();
-          this._resolveRestored = null;
+        if (this._resolveInitalRestore) {
+          this._resolveInitalRestore();
+          this._resolveInitalRestore = null;
         }
       });
     });
@@ -320,9 +320,9 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     }
   }
 
-  private _setupRestorePromise() {
+  private _setupInitialRestorePromise() {
     this._restored = new Promise((resolve) => {
-      this._resolveRestored = resolve;
+      this._resolveInitalRestore = resolve;
     });
   }
 
@@ -333,7 +333,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
 
   _commRegistration: IDisposable;
   private _restored: Promise<void>;
-  private _resolveRestored: (() => void) | null = null;
+  private _resolveInitalRestore: (() => void) | null = null;
 }
 
 
