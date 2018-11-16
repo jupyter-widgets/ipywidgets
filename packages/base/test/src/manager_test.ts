@@ -19,6 +19,16 @@ chai.use(sinonChai);
 
 
 
+async function assertRejects(promise) {
+  try {
+    await promise;
+  } catch {
+    return;
+  }
+  throw new Error('Expected promise to be rejected');
+}
+
+
 
 // test ManagerBase by creating a simple derived class
 // and testing it.
@@ -138,8 +148,8 @@ describe('ManagerBase', function() {
         expect(await manager.get_model(model.model_id)).to.be.equal(model);
       });
 
-      it('returns undefined when model is not registered', function() {
-        expect(this.managerBase.get_model('not-defined')).to.be.undefined;
+      it('returns a rejected promise when model is not registered', async function() {
+        await assertRejects(this.managerBase.get_model('not-defined'));
       });
     });
 
@@ -368,7 +378,6 @@ describe('ManagerBase', function() {
       });
 
       it('sets up a comm close handler to delete the model', async function() {
-        let callback = sinon.spy();
         let comm = new MockComm();
         let spec = {
             model_name: 'TestWidget',
@@ -379,7 +388,7 @@ describe('ManagerBase', function() {
         let manager = this.managerBase;
         let model = await manager.new_model(spec);
         comm.close();
-        expect(manager.get_model(model.model_id)).to.be.undefined;
+        await assertRejects(manager.get_model(model.model_id));
       });
     });
 
@@ -402,8 +411,8 @@ describe('ManagerBase', function() {
         expect(await manager.get_model(model1.model_id)).to.be.equal(model1);
         expect(await manager.get_model(model2.model_id)).to.be.equal(model2);
         await manager.clear_state();
-        expect(manager.get_model(model1.model_id)).to.be.undefined;
-        expect(manager.get_model(model2.model_id)).to.be.undefined;
+        await assertRejects(manager.get_model(model1.model_id));
+        await assertRejects(manager.get_model(model2.model_id));
         expect((comm1.close as any).calledOnce).to.be.true;
         expect((comm2.close as any).calledOnce).to.be.true;
         expect(model1.comm).to.be.undefined;
