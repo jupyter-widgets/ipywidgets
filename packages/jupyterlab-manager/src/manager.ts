@@ -109,6 +109,10 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
       this._handleKernelChanged(args);
     });
 
+    context.session.statusChanged.connect((sender, args) => {
+      this._handleKernelStatusChange(args);
+    });
+
     this._setupInitialRestorePromise();
 
     if (context.session.kernel) {
@@ -126,7 +130,19 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
 
     if (newValue) {
       newValue.registerCommTarget(this.comm_target_name, this._handleCommOpen);
+    }
+  }
+
+  _handleKernelStatusChange(args: Kernel.Status) {
+    switch (args) {
+    case 'connected':
+      // Clear away any old widgets
       this._restored = this.restoreWidgets(this._context.model);
+      break;
+    case 'restarting':
+      this.disconnect();
+      break;
+    default:
     }
   }
 
