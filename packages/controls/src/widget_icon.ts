@@ -82,12 +82,6 @@ class IconView extends DOMWidgetView {
 
             this.img = document.createElement('img');
             this.img.src = url;
-            // Clean up the old objectURL
-            // let oldurl = this.el.src;
-            // this.el.src = url;
-            // if (oldurl && typeof oldurl !== 'string') {
-            //     URL.revokeObjectURL(oldurl);
-            // }
             let width = this.model.get('width');
             if (width !== undefined && width.length > 0) {
                 this.img.setAttribute('width', width);
