@@ -573,6 +573,8 @@ class ToggleButtonsView extends DescriptionView {
      */
     _handle_click (event) {
         let clickedButton = event.target;
+        // The target may actually be a child node of the button, to find it
+        // we find the first button ancestor.
         while(clickedButton.nodeName !== 'BUTTON')
             clickedButton = clickedButton.parentElement;
         let buttons = Array.prototype.slice.call(this.buttongroup.querySelectorAll('button'));
