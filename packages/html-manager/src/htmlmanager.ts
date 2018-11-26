@@ -21,9 +21,9 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
             initialFactories: standardRendererFactories
         });
         this.renderMime.addFactory({
-                safe: false,
-                mimeTypes: [WIDGET_MIMETYPE],
-                createRenderer: (options) => new WidgetRenderer(options, this)
+            safe: false,
+            mimeTypes: [WIDGET_MIMETYPE],
+             createRenderer: (options) => new WidgetRenderer(options, this)
         }, 0);
     }
     /**
