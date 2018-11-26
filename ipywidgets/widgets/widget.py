@@ -11,14 +11,12 @@ from contextlib import contextmanager
 import collections
 import sys
 
-from IPython.core.getipython import get_ipython
-from ipykernel.comm import Comm
+from .kernel import get_kernel, Comm, display
 from traitlets.utils.importstring import import_item
 from traitlets import (
     HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default, Container,
     Undefined)
 from ipython_genutils.py3compat import string_types, PY3
-from IPython.display import display
 from json import loads as jsonloads, dumps as jsondumps
 
 from base64 import standard_b64decode, standard_b64encode
@@ -184,7 +182,7 @@ class CallbackDispatcher(LoggingHasTraits):
             try:
                 local_value = callback(*args, **kwargs)
             except Exception as e:
-                ip = get_ipython()
+                ip = get_kernel()
                 if ip is None:
                     self.log.warning("Exception in callback %s: %s", callback, e, exc_info=True)
                 else:
@@ -215,7 +213,7 @@ def _show_traceback(method):
         try:
             return(method(self, *args, **kwargs))
         except Exception as e:
-            ip = get_ipython()
+            ip = get_kernel()
             if ip is None:
                 self.log.warning("Exception in widget method %s: %s", method, e, exc_info=True)
             else:
@@ -388,7 +386,7 @@ class Widget(LoggingHasTraits):
 
     _view_count = Int(None, allow_none=True,
         help="EXPERIMENTAL: The number of views of the model displayed in the frontend. This attribute is experimental and may change or be removed in the future. None signifies that views will not be tracked. Set this to 0 to start tracking view creation/deletion.").tag(sync=True)
-    comm = Instance('ipykernel.comm.Comm', allow_none=True)
+    comm = Instance(Comm, allow_none=True)
 
     keys = List(help="The traits which are synced.")
 

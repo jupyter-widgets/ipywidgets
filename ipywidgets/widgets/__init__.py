@@ -7,6 +7,8 @@ from .valuewidget import ValueWidget
 
 from .trait_types import Color, Datetime, NumberFormat
 
+from .kernel import register_target, get_kernel, Comm, display, clear_output
+
 from .widget_core import CoreWidget
 from .widget_bool import Checkbox, ToggleButton, Valid
 from .widget_button import Button, ButtonStyle

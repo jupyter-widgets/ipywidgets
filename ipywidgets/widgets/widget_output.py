@@ -12,12 +12,12 @@ from functools import wraps
 from .domwidget import DOMWidget
 from .trait_types import TypedTuple
 from .widget import register
+from .kernel import get_kernel
 from .._version import __jupyter_widgets_output_version__
 
 from traitlets import Unicode, Dict
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.display import clear_output
-from IPython import get_ipython
 
 
 @register
@@ -31,7 +31,7 @@ class Output(DOMWidget):
     context will be captured and displayed in the widget instead of the standard output
     area.
 
-    You can also use the .capture() method to decorate a function or a method. Any output 
+    You can also use the .capture() method to decorate a function or a method. Any output
     produced by the function will then go to the output widget. This is useful for
     debugging widget callbacks, for example.
 
@@ -105,13 +105,13 @@ class Output(DOMWidget):
     def __enter__(self):
         """Called upon entering output widget context manager."""
         self._flush()
-        ip = get_ipython()
+        ip = get_kernel()
         if ip and hasattr(ip, 'kernel') and hasattr(ip.kernel, '_parent_header'):
             self.msg_id = ip.kernel._parent_header['header']['msg_id']
 
     def __exit__(self, etype, evalue, tb):
         """Called upon exiting output widget context manager."""
-        ip = get_ipython()
+        ip = get_kernel()
         if etype is not None:
             if ip:
                 ip.showtraceback((etype, evalue, tb), tb_offset=0)

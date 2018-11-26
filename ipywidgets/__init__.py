@@ -20,33 +20,20 @@ accessible as a `value` attribute.
 
 import os
 
-from IPython import get_ipython
 from ._version import version_info, __version__, __protocol_version__, __jupyter_widgets_controls_version__, __jupyter_widgets_base_version__
 from .widgets import *
 from traitlets import link, dlink
 
 
-def load_ipython_extension(ip):
-    """Set up IPython to work with widgets"""
-    if not hasattr(ip, 'kernel'):
-        return
-    register_comm_target(ip.kernel)
-
-
-def register_comm_target(kernel=None):
+def register_comm_target():
     """Register the jupyter.widget comm target"""
-    if kernel is None:
-        kernel = get_ipython().kernel
-    kernel.comm_manager.register_target('jupyter.widget', Widget.handle_comm_opened)
+    register_target('jupyter.widget', Widget.handle_comm_opened)
 
 # deprecated alias
 handle_kernel = register_comm_target
 
 def _handle_ipython():
     """Register with the comm target at import if running in IPython"""
-    ip = get_ipython()
-    if ip is None:
-        return
-    load_ipython_extension(ip)
+    register_comm_target()
 
 _handle_ipython()
