@@ -13,7 +13,7 @@
   "author": "IPython",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "@jupyter-widgets/html-manager": "^0.15.0",
+    "@jupyter-widgets/html-manager": "^0.15.2",
     "font-awesome": "^4.7.0"
   },
   "devDependencies": {
