@@ -1,7 +1,12 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-"""Utils functions for retrieving IPython kernel and display logic."""
+"""
+Utils functions for retrieving IPython kernel and display logic.
+This is helpful for other Python kernels like xeus-python, so that they can
+mock `ipywidgets.kernel` module functions instead of mocking IPython and
+ipykernel
+"""
 
 from ipykernel.comm import Comm
 from IPython import get_ipython

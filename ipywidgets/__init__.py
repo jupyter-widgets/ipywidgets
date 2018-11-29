@@ -31,9 +31,6 @@ def register_comm_target():
 
 # deprecated alias
 handle_kernel = register_comm_target
+_handle_ipython = register_comm_target
 
-def _handle_ipython():
-    """Register with the comm target at import if running in IPython"""
-    register_comm_target()
-
-_handle_ipython()
+register_comm_target()
