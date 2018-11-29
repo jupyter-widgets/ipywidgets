@@ -9,19 +9,19 @@ from ipywidgets import widget_output
 class TestOutputWidget(TestCase):
 
     @contextmanager
-    def _mocked_kernel(self, get_kernel, clear_output):
-        """ Context manager that monkeypatches get_kernel and clear_output """
+    def _mocked_ipython(self, get_ipython, clear_output):
+        """ Context manager that monkeypatches get_ipython and clear_output """
         original_clear_output = widget_output.clear_output
-        original_get_kernel = widget_output.get_kernel
-        widget_output.get_kernel = get_kernel
+        original_get_ipython = widget_output.get_ipython
+        widget_output.get_ipython = get_ipython
         widget_output.clear_output = clear_output
         try:
             yield
         finally:
             widget_output.clear_output = original_clear_output
-            widget_output.get_kernel = original_get_kernel
+            widget_output.get_ipython = original_get_ipython
 
-    def _mock_get_kernel(self, msg_id):
+    def _mock_get_ipython(self, msg_id):
         """ Returns a mock IPython application with a mocked kernel """
         kernel = type(
             'mock_kernel',
@@ -35,12 +35,12 @@ class TestOutputWidget(TestCase):
             etype, evalue, tb = exc_tuple
             raise etype(evalue)
 
-        kernel = type(
-            'mock_kernel',
+        ipython = type(
+            'mock_ipython',
             (object, ),
             {'kernel': kernel, 'showtraceback': showtraceback}
         )
-        return kernel
+        return ipython
 
     def _mock_clear_output(self):
         """ Mock function that records calls to it """
@@ -54,10 +54,10 @@ class TestOutputWidget(TestCase):
 
     def test_set_msg_id_when_capturing(self):
         msg_id = 'msg-id'
-        get_kernel = self._mock_get_kernel(msg_id)
+        get_ipython = self._mock_get_ipython(msg_id)
         clear_output = self._mock_clear_output()
 
-        with self._mocked_kernel(get_kernel, clear_output):
+        with self._mocked_ipython(get_ipython, clear_output):
             widget = widget_output.Output()
             assert widget.msg_id == ''
             with widget:
@@ -66,10 +66,10 @@ class TestOutputWidget(TestCase):
 
     def test_clear_output(self):
         msg_id = 'msg-id'
-        get_kernel = self._mock_get_kernel(msg_id)
+        get_ipython = self._mock_get_ipython(msg_id)
         clear_output = self._mock_clear_output()
 
-        with self._mocked_kernel(get_kernel, clear_output):
+        with self._mocked_ipython(get_ipython, clear_output):
             widget = widget_output.Output()
             widget.clear_output(wait=True)
 
@@ -78,13 +78,13 @@ class TestOutputWidget(TestCase):
 
     def test_capture_decorator(self):
         msg_id = 'msg-id'
-        get_kernel = self._mock_get_kernel(msg_id)
+        get_ipython = self._mock_get_ipython(msg_id)
         clear_output = self._mock_clear_output()
         expected_argument = 'arg'
         expected_keyword_argument = True
         captee_calls = []
 
-        with self._mocked_kernel(get_kernel, clear_output):
+        with self._mocked_ipython(get_ipython, clear_output):
             widget = widget_output.Output()
             assert widget.msg_id == ''
 
@@ -110,10 +110,10 @@ class TestOutputWidget(TestCase):
 
     def test_capture_decorator_clear_output(self):
         msg_id = 'msg-id'
-        get_kernel = self._mock_get_kernel(msg_id)
+        get_ipython = self._mock_get_ipython(msg_id)
         clear_output = self._mock_clear_output()
 
-        with self._mocked_kernel(get_kernel, clear_output):
+        with self._mocked_ipython(get_ipython, clear_output):
             widget = widget_output.Output()
 
             @widget.capture(clear_output=True, wait=True)
@@ -130,10 +130,10 @@ class TestOutputWidget(TestCase):
 
     def test_capture_decorator_no_clear_output(self):
         msg_id = 'msg-id'
-        get_kernel = self._mock_get_kernel(msg_id)
+        get_ipython = self._mock_get_ipython(msg_id)
         clear_output = self._mock_clear_output()
 
-        with self._mocked_kernel(get_kernel, clear_output):
+        with self._mocked_ipython(get_ipython, clear_output):
             widget = widget_output.Output()
 
             @widget.capture(clear_output=False)

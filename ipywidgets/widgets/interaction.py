@@ -20,7 +20,7 @@ import sys
 
 from . import (ValueWidget, Text,
     FloatSlider, IntSlider, Checkbox, Dropdown,
-    VBox, Button, DOMWidget, Output, get_kernel, display, clear_output)
+    VBox, Button, DOMWidget, Output, get_ipython, display, clear_output)
 from ipython_genutils.py3compat import string_types, unicode_type
 from traitlets import HasTraits, Any, Unicode, observe
 from numbers import Real, Integral
@@ -251,7 +251,7 @@ class interactive(VBox):
                 if self.auto_display and self.result is not None:
                     display(self.result)
         except Exception as e:
-            ip = get_kernel()
+            ip = get_ipython()
             if ip is None:
                 self.log.warn("Exception in interact callback: %s", e, exc_info=True)
             else:

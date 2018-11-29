@@ -21,4 +21,4 @@ if (ipython is not None and hasattr(ipython, "kernel")):
 else:
     register_target = mock_register
 
-get_kernel = get_ipython
+get_ipython = get_ipython

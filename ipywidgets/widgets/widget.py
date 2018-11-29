@@ -11,7 +11,7 @@ from contextlib import contextmanager
 import collections
 import sys
 
-from .kernel import get_kernel, Comm, display
+from .kernel import get_ipython, Comm, display
 from traitlets.utils.importstring import import_item
 from traitlets import (
     HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default, Container,
@@ -182,7 +182,7 @@ class CallbackDispatcher(LoggingHasTraits):
             try:
                 local_value = callback(*args, **kwargs)
             except Exception as e:
-                ip = get_kernel()
+                ip = get_ipython()
                 if ip is None:
                     self.log.warning("Exception in callback %s: %s", callback, e, exc_info=True)
                 else:
@@ -213,7 +213,7 @@ def _show_traceback(method):
         try:
             return(method(self, *args, **kwargs))
         except Exception as e:
-            ip = get_kernel()
+            ip = get_ipython()
             if ip is None:
                 self.log.warning("Exception in widget method %s: %s", method, e, exc_info=True)
             else:
