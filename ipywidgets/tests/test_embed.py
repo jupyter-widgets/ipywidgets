@@ -79,14 +79,14 @@ class TestEmbed:
     def test_escape(self):
         w = Text('<script A> <ScRipt> </Script> <!-- --> <b>hi</b>')
         code = embed_snippet(w)
-        assert code.find(r'<script A>') == -1
-        assert code.find(r'\u003cscript A> \u003cScRipt> \u003c/Script> \u003c!-- --> <b>hi</b>') >= 0
+        assert code.find(u'<script A>') == -1
+        assert code.find(u'\u003cscript A> \u003cScRipt> \u003c/Script> \u003c!-- --> <b>hi</b>') >= 0
 
         f = StringIO()
         embed_minimal_html(f, w)
         content = f.getvalue()
-        assert content.find(r'<script A>') == -1
-        assert content.find(r'\u003cscript A> \u003cScRipt> \u003c/Script> \u003c!-- --> <b>hi</b>') >= 0
+        assert content.find(u'<script A>') == -1
+        assert content.find(u'\u003cscript A> \u003cScRipt> \u003c/Script> \u003c!-- --> <b>hi</b>') >= 0
 
     def test_embed_data_two_widgets(self):
         w1 = IntText(4)
