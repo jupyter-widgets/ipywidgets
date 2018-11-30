@@ -1,5 +1,6 @@
 # http://travis-ci.org/#!/jupyter-widgets/ipywidgets
 language: python
+dist: xenial
 python:
     - 2.7
     - 3.4
