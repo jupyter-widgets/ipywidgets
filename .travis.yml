@@ -6,7 +6,6 @@ python:
     - 3.4
     - 3.5
     - 3.6
-    - 3.7
 addons:
   apt_packages:
     - pandoc
@@ -37,5 +36,8 @@ matrix:
           env: GROUP=doc
         - python: 3.6
           env: GROUP=js BROWSER=firefox TRAVIS_NODE_VERSION=6.11.0
+        - python: 3.7
+          dist: xenial
+          sudo: true
 after_success:
     - coveralls
