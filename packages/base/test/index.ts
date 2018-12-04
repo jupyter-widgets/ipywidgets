@@ -3,4 +3,5 @@
 
 import './manager_test';
 import './widget_test';
+import './domwidget_test';
 import './utils_test';

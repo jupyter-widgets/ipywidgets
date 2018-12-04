@@ -58,6 +58,7 @@ class DummyManager extends widgets.ManagerBase<HTMLElement> {
     constructor() {
         super();
         this.el = window.document.createElement('div');
+        document.body.appendChild(this.el)
     }
 
     display_view(msg: services.KernelMessage.IMessage, view: Backbone.View<Backbone.Model>, options: any) {
@@ -65,6 +66,7 @@ class DummyManager extends widgets.ManagerBase<HTMLElement> {
         // TODO: return an html element
         return Promise.resolve(view).then(view => {
             this.el.appendChild(view.el);
+            view.trigger('displayed')
             view.on('remove', () => console.log('view removed', view));
             return view.el;
         });
@@ -175,4 +177,27 @@ class BinaryWidgetView extends TestWidgetView {
     _rendered = 0;
 }
 
-let testWidgets = {TestWidget, TestWidgetView, BinaryWidget, BinaryWidgetView};
+class TestDOMWidget extends widgets.DOMWidgetModel {
+    defaults() {
+        return {...super.defaults(),
+            _model_module: 'test-widgets',
+            _model_name: 'TestDOMWidget',
+            _model_module_version: '1.0.0',
+            _view_module: 'test-widgets',
+            _view_name: 'TestDOMWidgetView',
+            _view_module_version: '1.0.0',
+            _view_count: null,
+        };
+    }
+}
+
+class TestDOMWidgetView extends widgets.DOMWidgetView {
+    render() {
+        this.img = document.createElement('img')
+        this.img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNIOfHrPwAG4AMmv//laQAAAABJRU5ErkJggg=='
+        this.el.appendChild(this.img)
+    }
+    img = null;
+}
+
+let testWidgets = {TestWidget, TestWidgetView, BinaryWidget, BinaryWidgetView, TestDOMWidget, TestDOMWidgetView};
