@@ -6,13 +6,14 @@ import {
     expect
 } from 'chai';
 
-import * as widgets from '../../lib/';
+import * as widgets from '../src';
 let WidgetModel = widgets.WidgetModel;
 
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 chai.use(sinonChai);
+import {} from "mocha";
 
 describe('unpack_models', function() {
     beforeEach(async function() {

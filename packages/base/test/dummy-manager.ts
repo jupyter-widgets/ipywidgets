@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import * as widgets from '../../lib';
+import * as widgets from '../src';
 import * as services from '@jupyterlab/services';
 import * as Backbone from 'backbone';
 
