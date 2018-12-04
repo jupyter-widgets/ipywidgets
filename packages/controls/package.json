@@ -31,7 +31,8 @@
     "test:unit:firefox": "npm run test:unit:default -- --browsers=Firefox",
     "test:unit:chrome": "npm run test:unit:default -- --browsers=Chrome",
     "test:unit:ie": "npm run test:unit:default -- --browsers=IE",
-    "prepublish": "npm run clean && npm run build"
+    "prepublish": "npm run clean && npm run build",
+    "watch": "tsc -w --project src"
   },
   "devDependencies": {
     "@jupyterlab/services": "^2.0.0 || ^3.0.0",
