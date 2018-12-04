@@ -8,7 +8,8 @@
     "clean": "rimraf widgetsnbextension/static",
     "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublish": "npm run clean && npm run build"
+    "prepublish": "npm run clean && npm run build",
+    "watch": "webpack --watch"
   },
   "repository": {
     "type": "git",

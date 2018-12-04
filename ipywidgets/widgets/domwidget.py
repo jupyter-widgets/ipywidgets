@@ -48,3 +48,14 @@ class DOMWidget(Widget):
         # We also need to include _dom_classes in repr for reproducibility
         if self._dom_classes:
             yield '_dom_classes'
+
+    def download_png(self, filename='jupyter-widgets.png', scale=None):
+        '''Download a PNG version of the widget via the Browser.
+
+        Parameters
+        ----------
+        filename: str (default: 'jupyter-widgets.png') name of the saved file
+        scale: float (default: None)
+            Scale up the png resolution when scale > 1, when not given base this on the screen pixel ratio.
+        '''
+        self.send({'type': 'download_image', 'mime_type': 'image/png', 'filename': filename, 'scale': scale})

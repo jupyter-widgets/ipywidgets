@@ -7,6 +7,8 @@ import * as backbonePatch from './backbone-patch';
 
 import * as Backbone from 'backbone';
 import * as $ from 'jquery';
+import * as html2canvas from 'html2canvas'
+
 
 import {
     NativeView
@@ -569,6 +571,47 @@ class DOMWidgetModel extends WidgetModel {
         style: {deserialize: unpack_models},
     };
 
+    initialize() {
+        super.initialize.apply(this, arguments);
+        this.on("msg:custom", this._handle_custom_messages, this);
+    }
+
+    async _captureImage(mimeType) {
+        const viewIds = Object.keys(this.views);
+        if(viewIds.length > 0) {
+            const view = <DOMWidgetView> await this.views[viewIds[0]];
+            try {
+                return view.captureImage(mimeType);
+            } catch(e) {
+                console.log('Error capturing image from view')
+            }
+
+        } else {
+            throw Error('no views exist for this widgets');
+        }
+    }
+    async _handle_custom_messages(msg) {
+        if (msg.type === 'capture_image') {
+            let data = null;
+            try {
+                data = await this._captureImage(msg.mime_type);
+            } catch(e) {
+                console.log('Error capturing image')
+            }
+            this.send({event: 'capured_imaged', data: data, mime_type: msg.mime_type}, this.callbacks());
+        }
+        else if (msg.type === 'download_image') {
+            let data = await this._captureImage(msg.mime_type);
+            var a = document.createElement("a");
+            a.download = msg.filename || "jupyter-widgets.png";
+            a.download = msg.filename || "image.png";
+            a.href = data;
+            document.body.appendChild(a);
+            a.click();
+        }
+    }
+
+
     defaults() {
         return utils.assign(super.defaults(), {
             _dom_classes: []
@@ -767,6 +810,20 @@ class DOMWidgetView extends WidgetView {
         this.listenTo(this.model, 'comm_live_update', () => {
             this._comm_live_update();
         });
+    }
+
+    async captureImage(mimeType) {
+        console.log('test')
+        let el = await this.captureDOM()
+        console.log('captured dom')
+        let canvas = await html2canvas(el, {useCORS: true})
+        let imageData = canvas.toDataURL(mimeType);
+        return imageData;
+    }
+
+    async captureDOM() {
+        await this.displayed;
+        return this.el;
     }
 
     setLayout(layout, oldLayout?) {
