@@ -10,7 +10,8 @@
     "build": "npm run build:src",
     "lint": "tslint --project tslint.json --format stylish",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublish": "npm run clean && npm run build"
+    "prepublish": "npm run clean && npm run build",
+    "watch": "tsc -w --project src"
   },
   "files": [
     "lib/**/*.d.ts",
