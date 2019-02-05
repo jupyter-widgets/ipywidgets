@@ -46,7 +46,7 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "@jupyterlab/services": "^2.0.0 || ^3.0.0 || ^4.0.0-alpha.2",
+    "@jupyterlab/services": "^2.0.0 || ^3.0.0 || ^4.0.0-alpha.3",
     "@types/expect.js": "^0.3.29",
     "@types/mathjax": "0.0.31",
     "@types/mocha": "^2.2.41",

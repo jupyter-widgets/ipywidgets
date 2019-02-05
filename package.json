@@ -11,7 +11,7 @@
     "updated": "lerna updated"
   },
   "devDependencies": {
-    "@jupyterlab/buildutils": "^1.0.0-alpha.2",
+    "@jupyterlab/buildutils": "^1.0.0-alpha.3",
     "lerna": "^3.2.1"
   },
   "workspaces": [
