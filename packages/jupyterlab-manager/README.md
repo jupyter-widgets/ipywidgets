@@ -9,7 +9,7 @@ Package Install
 ---------------
 
 **Prerequisites**
-* JupyterLab (see package.json for appropriate version, currently [JupyterLab 0.27.0](https://github.com/jupyterlab/jupyterlab/releases/tag/v0.27.0))
+* JupyterLab (see package.json for appropriate version, currently [JupyterLab 0.35.0](https://github.com/jupyterlab/jupyterlab/releases/tag/v0.35.0))
 
 
 ```bash
@@ -28,6 +28,7 @@ JupyterLab extension.
 * For JupyterLab 0.32.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@0.35`
 * For JupyterLab 0.33.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@0.36`
 * For JupyterLab 0.34.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@0.37`
+* For JupyterLab 0.35.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@0.38`
 
 
 Source Build
