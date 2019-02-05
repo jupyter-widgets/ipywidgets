@@ -2,28 +2,28 @@
   "name": "@jupyter-widgets/output",
   "version": "1.1.2",
   "description": "Jupyter widget wrapping cell output",
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
-  "scripts": {
-    "clean": "rimraf lib",
-    "build:src": "tsc --project src",
-    "build": "npm run build:src",
-    "lint": "tslint --project tslint.json --format stylish",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublish": "npm run clean && npm run build"
+  "bugs": {
+    "url": "https://github.com/jupyter-widgets/ipywidgets/issues"
   },
+  "license": "BSD-3-Clause",
+  "author": "Project Jupyter",
   "files": [
     "lib/**/*.d.ts",
     "lib/**/*.js"
   ],
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/jupyter-widgets/ipywidgets.git"
   },
-  "author": "Project Jupyter",
-  "license": "BSD-3-Clause",
-  "bugs": {
-    "url": "https://github.com/jupyter-widgets/ipywidgets/issues"
+  "scripts": {
+    "build": "npm run build:src",
+    "build:src": "tsc --project src",
+    "clean": "rimraf lib",
+    "lint": "tslint --project tslint.json --format stylish",
+    "prepublish": "npm run clean && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "@jupyter-widgets/base": "^1.2.2"
@@ -31,6 +31,6 @@
   "devDependencies": {
     "rimraf": "^2.6.1",
     "tslint": "^5.8.0",
-    "typescript": "~2.9.2"
+    "typescript": "~3.3.1"
   }
 }
