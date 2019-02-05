@@ -46,6 +46,19 @@ function moduleNameToCDNUrl(moduleName: string, moduleVersion: string) {
     return `${cdn}${packageName}@${moduleVersion}/dist/${fileName}`;
 }
 
+/**
+ * Load an amd module locally and fall back to specified CDN if unavailable.
+ *
+ * @param moduleName The name of the module to load..
+ * @param version The semver range for the module, if loaded from a CDN.
+ *
+ * By default, the CDN service used is unpkg.com. However, this default can be
+ * overriden by specifying another URL via the HTML attribute
+ * "data-jupyter-widgets-cdn" on a script tag of the page.
+ *
+ * The semver range is only used with the CDN.
+ */
+export
 function requireLoader(moduleName: string, moduleVersion: string) {
     return requirePromise([`${moduleName}`]).catch((err) => {
         let failedId = err.requireModules && err.requireModules[0];

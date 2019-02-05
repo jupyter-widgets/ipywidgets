@@ -9,7 +9,7 @@ Package Install
 ---------------
 
 **Prerequisites**
-* JupyterLab (see package.json for appropriate version, currently [JupyterLab 0.35.0](https://github.com/jupyterlab/jupyterlab/releases/tag/v0.35.0))
+* JupyterLab (see package.json for appropriate version, currently [JupyterLab 0.35](https://github.com/jupyterlab/jupyterlab/releases/tag/v0.35.0))
 
 
 ```bash
