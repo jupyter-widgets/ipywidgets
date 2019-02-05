@@ -14,7 +14,7 @@ import {
 } from '@jupyterlab/notebook';
 
 import {
-  JupyterLabPlugin, JupyterLab
+  JupyterFrontEndPlugin, JupyterFrontEnd
 } from '@jupyterlab/application';
 
 import {
@@ -81,7 +81,7 @@ class NBWidgetExtension implements INBWidgetExtension {
 /**
  * The widget manager provider.
  */
-const widgetManagerProvider: JupyterLabPlugin<base.IJupyterWidgetRegistry> = {
+const widgetManagerProvider: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> = {
   id: 'jupyter.extensions.nbWidgetManager',
   provides: base.IJupyterWidgetRegistry,
   activate: activateWidgetExtension,
@@ -93,7 +93,7 @@ export default widgetManagerProvider;
 /**
  * Activate the widget extension.
  */
-function activateWidgetExtension(app: JupyterLab): base.IJupyterWidgetRegistry {
+function activateWidgetExtension(app: JupyterFrontEnd): base.IJupyterWidgetRegistry {
   let extension = new NBWidgetExtension();
   extension.registerWidget({
     name: '@jupyter-widgets/base',

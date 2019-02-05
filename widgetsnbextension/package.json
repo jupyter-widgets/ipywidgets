@@ -1,25 +1,25 @@
 {
   "name": "@jupyter-widgets/notebook-manager",
   "version": "3.3.5",
-  "description": "Jupyter Widgets nbextension",
-  "main": "src/extension.js",
   "private": true,
-  "scripts": {
-    "clean": "rimraf widgetsnbextension/static",
-    "build": "webpack",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublish": "npm run clean && npm run build"
+  "description": "Jupyter Widgets nbextension",
+  "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme",
+  "bugs": {
+    "url": "https://github.com/jupyter-widgets/ipywidgets/issues"
   },
+  "license": "BSD-3-Clause",
+  "author": "Jupyter Project",
+  "main": "src/extension.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jupyter-widgets/ipywidgets.git"
   },
-  "author": "Jupyter Project",
-  "license": "BSD-3-Clause",
-  "bugs": {
-    "url": "https://github.com/jupyter-widgets/ipywidgets/issues"
+  "scripts": {
+    "build": "webpack",
+    "clean": "rimraf widgetsnbextension/static",
+    "prepublish": "npm run clean && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "homepage": "https://github.com/jupyter-widgets/ipywidgets#readme",
   "dependencies": {
     "@jupyter-widgets/base": "^1.2.2",
     "@jupyter-widgets/controls": "^1.4.2",
