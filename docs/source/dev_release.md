@@ -5,6 +5,14 @@ To release a new version of the widgets on PyPI and npm, first checkout master
 and cd into the repo root.
 
 ```
+cd release
+conda deactivate
+conda remove --all -y -n releasewidgets
+rm -rf ipywidgets
+
+conda create -c conda-forge --override-channels -y -n releasewidgets notebook nodejs twine
+conda activate releasewidgets
+
 git clone git@github.com:jupyter-widgets/ipywidgets.git
 ```
 
