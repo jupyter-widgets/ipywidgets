@@ -32,7 +32,7 @@ A [demonstration notebook](https://github.com/jupyter-widgets/ipywidgets/blob/ma
 Besides the widgets already provided with the library, the framework can be
 extended with custom widget libraries.
 
-A template project is available in the form of a cookie cutter [here](https://github.com/jupyter/widget-cookiecutter).
+A template project is available in the form of a cookie cutter [here](https://github.com/jupyter-widgets/widget-ts-cookiecutter).
 
 This project is meant to help custom widget authors get started with the
 packaging and the distribution of Jupyter interactive widgets.
