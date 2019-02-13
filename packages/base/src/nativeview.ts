@@ -35,7 +35,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 import * as Backbone from 'backbone';
 
 // Caches a local reference to `Element.prototype` for faster access.
-const ElementProto: Element = Element.prototype; // : typeof Element = (typeof Element !== 'undefined' && Element.prototype) || {};
+const ElementProto: any = Element.prototype; // : typeof Element = (typeof Element !== 'undefined' && Element.prototype) || {};
 
 // Find the right `Element#matches` for IE>=9 and modern browsers.
 let matchesSelector = ElementProto.matches ||
@@ -43,13 +43,15 @@ let matchesSelector = ElementProto.matches ||
     ElementProto['mozMatchesSelector'] ||
     ElementProto['msMatchesSelector'] ||
     ElementProto['oMatchesSelector'] ||
-    function matches(selector) {
+    function matches(selector: string) {
+        /* tslint:disable:no-invalid-this */
         let matches = (this.document || this.ownerDocument).querySelectorAll(selector);
         let i = matches.length;
         while (--i >= 0 && matches.item(i) !== this) {
           continue;
         }
         return i > -1;
+        /* tslint:enable:no-invalid-this */
     };
 
 interface IDOMEvent {
@@ -75,7 +77,7 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
 
     // Set a hash of attributes to the view's `el`. We use the "prop" version
     // if available, falling back to `setAttribute` for the catch-all.
-    _setAttributes(attrs) {
+    _setAttributes(attrs: {[key: string]: string}) {
       for (let attr in attrs) {
         attr in this.el ? this.el[attr] = attrs[attr] : this.el.setAttribute(attr, attrs[attr]);
       }
@@ -90,12 +92,12 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
      * the event's `delegateTarget` property is set to it and the return the
      * result of calling bound `listener` with the parameters given to the
      * handler.
-     * 
-     * This does not properly handle selectors for things like focus and blur (see 
+     *
+     * This does not properly handle selectors for things like focus and blur (see
      * https://github.com/jquery/jquery/blob/7d21f02b9ec9f655583e898350badf89165ed4d5/src/event.js#L442
      * for some similar exceptional cases).
      */
-    delegate(eventName, selector, listener) {
+    delegate(eventName: string, selector: any, listener: any) {
       if (typeof selector !== 'string') {
         listener = selector;
         selector = null;
@@ -109,11 +111,11 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
       }
 
       let root = this.el;
-      let handler = selector ? function (e) {
-        let node = e.target || e.srcElement;
+      let handler = selector ? function (e: Event) {
+        let node = (e.target as Node) || e.srcElement;
         for (; node && node !== root; node = node.parentNode) {
           if (matchesSelector.call(node, selector)) {
-            e.delegateTarget = node;
+            (e as any).delegateTarget = node;
             if (listener.handleEvent) {
                 return listener.handleEvent(e);
             } else {
@@ -130,7 +132,7 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
 
     // Remove a single delegated event. Either `eventName` or `selector` must
     // be included, `selector` and `listener` are optional.
-    undelegate(eventName, selector, listener) {
+    undelegate(eventName: string, selector?: any, listener?: any) {
       if (typeof selector === 'function') {
         listener = selector;
         selector = null;
