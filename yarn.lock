@@ -1004,6 +1004,10 @@
     "@types/jquery" "*"
     "@types/underscore" "*"
 
+"@types/base64-js@^1.2.5":
+  version "1.2.5"
+  resolved "https://registry.npmjs.org/@types/base64-js/-/base64-js-1.2.5.tgz#582b2476169a6cba460a214d476c744441d873d5"
+
 "@types/dom4@^2.0.0":
   version "2.0.1"
   resolved "https://registry.npmjs.org/@types/dom4/-/dom4-2.0.1.tgz#506d5781b9bcab81bd9a878b198aec7dee2a6033"
