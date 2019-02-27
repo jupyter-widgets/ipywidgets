@@ -18,6 +18,10 @@ import {
 } from '@phosphor/disposable';
 
 import {
+  AttachedProperty
+} from '@phosphor/properties';
+
+import {
   WidgetRenderer
 } from './renderer';
 
@@ -43,8 +47,12 @@ const WIDGET_REGISTRY: base.IWidgetRegistryData[] = [];
 
 export
 function registerWidgetManager(context: DocumentRegistry.IContext<INotebookModel>, rendermime: RenderMimeRegistry) {
-  const wManager = new WidgetManager(context, rendermime);
-  WIDGET_REGISTRY.forEach(data => wManager.register(data));
+  let wManager = Private.widgetManagerProperty.get(context);
+  if (!wManager) {
+    wManager = new WidgetManager(context, rendermime);
+    WIDGET_REGISTRY.forEach(data => wManager.register(data));
+    Private.widgetManagerProperty.set(context, wManager);
+  }
   rendermime.addFactory({
     safe: false,
     mimeTypes: [WIDGET_MIMETYPE],
@@ -125,4 +133,17 @@ function activateWidgetExtension(app: JupyterFrontEnd, tracker: INotebookTracker
       WIDGET_REGISTRY.push(data);
     }
   };
+}
+
+namespace Private {
+  /**
+   * A private attached property for a widget manager.
+   */
+  export const widgetManagerProperty = new AttachedProperty<
+    DocumentRegistry.Context,
+    WidgetManager | undefined
+  >({
+    name: 'widgetManager',
+    create: () => undefined
+  });
 }
