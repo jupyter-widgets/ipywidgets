@@ -6,11 +6,7 @@ import {
 } from '@jupyterlab/docregistry';
 
 import {
-  INotebookModel
-} from '@jupyterlab/notebook';
-
-import {
-  NotebookPanel
+  INotebookModel, INotebookTracker
 } from '@jupyterlab/notebook';
 
 import {
@@ -18,7 +14,7 @@ import {
 } from '@jupyterlab/application';
 
 import {
-  IDisposable, DisposableDelegate
+  DisposableDelegate
 } from '@phosphor/disposable';
 
 import {
@@ -40,49 +36,34 @@ import {
 
 import '@jupyter-widgets/base/css/index.css';
 import '@jupyter-widgets/controls/css/widgets-base.css';
+import { RenderMimeRegistry } from '@jupyterlab/rendermime';
 
 const WIDGET_MIMETYPE = 'application/vnd.jupyter.widget-view+json';
+const WIDGET_REGISTRY: base.IWidgetRegistryData[] = [];
 
 export
-type INBWidgetExtension = DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel>;
-
-
-export
-class NBWidgetExtension implements INBWidgetExtension {
-  /**
-   * Create a new extension object.
-   */
-  createNew(nb: NotebookPanel, context: DocumentRegistry.IContext<INotebookModel>): IDisposable {
-    let wManager = new WidgetManager(context, nb.rendermime);
-    this._registry.forEach(data => wManager.register(data));
-    nb.rendermime.addFactory({
-      safe: false,
-      mimeTypes: [WIDGET_MIMETYPE],
-      createRenderer: (options) => new WidgetRenderer(options, wManager)
-    }, 0);
-    return new DisposableDelegate(() => {
-      if (nb.rendermime) {
-        nb.rendermime.removeMimeType(WIDGET_MIMETYPE);
-      }
-      wManager.dispose();
-    });
-  }
-
-  /**
-   * Register a widget module.
-   */
-  registerWidget(data: base.IWidgetRegistryData) {
-    this._registry.push(data);
-  }
-  private _registry: base.IWidgetRegistryData[] = [];
+function registerWidgetManager(context: DocumentRegistry.IContext<INotebookModel>, rendermime: RenderMimeRegistry) {
+  const wManager = new WidgetManager(context, rendermime);
+  WIDGET_REGISTRY.forEach(data => wManager.register(data));
+  rendermime.addFactory({
+    safe: false,
+    mimeTypes: [WIDGET_MIMETYPE],
+    createRenderer: (options) => new WidgetRenderer(options, wManager)
+  }, 0);
+  return new DisposableDelegate(() => {
+    if (rendermime) {
+      rendermime.removeMimeType(WIDGET_MIMETYPE);
+    }
+    wManager.dispose();
+  });
 }
-
 
 /**
  * The widget manager provider.
  */
 const widgetManagerProvider: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> = {
   id: 'jupyter.extensions.nbWidgetManager',
+  requires: [INotebookTracker],
   provides: base.IJupyterWidgetRegistry,
   activate: activateWidgetExtension,
   autoStart: true
@@ -93,9 +74,15 @@ export default widgetManagerProvider;
 /**
  * Activate the widget extension.
  */
-function activateWidgetExtension(app: JupyterFrontEnd): base.IJupyterWidgetRegistry {
-  let extension = new NBWidgetExtension();
-  extension.registerWidget({
+function activateWidgetExtension(app: JupyterFrontEnd, tracker: INotebookTracker): base.IJupyterWidgetRegistry {
+  tracker.forEach(panel => {
+    registerWidgetManager(panel.context, panel.content.rendermime);
+  });
+  tracker.widgetAdded.connect((sender, panel) => {
+    registerWidgetManager(panel.context, panel.content.rendermime);
+  });
+
+  WIDGET_REGISTRY.push({
     name: '@jupyter-widgets/base',
     version: base.JUPYTER_WIDGETS_VERSION,
     exports: {
@@ -110,7 +97,7 @@ function activateWidgetExtension(app: JupyterFrontEnd): base.IJupyterWidgetRegis
     }
   });
 
-  extension.registerWidget({
+  WIDGET_REGISTRY.push({
     name: '@jupyter-widgets/controls',
     version: JUPYTER_CONTROLS_VERSION,
     exports: () => {
@@ -127,16 +114,15 @@ function activateWidgetExtension(app: JupyterFrontEnd): base.IJupyterWidgetRegis
     }
   });
 
-  extension.registerWidget({
+  WIDGET_REGISTRY.push({
     name: '@jupyter-widgets/output',
     version: OUTPUT_WIDGET_VERSION,
     exports: {OutputModel, OutputView}
   });
 
-  app.docRegistry.addWidgetExtension('Notebook', extension);
   return {
     registerWidget(data: base.IWidgetRegistryData): void {
-      extension.registerWidget(data);
+      WIDGET_REGISTRY.push(data);
     }
   };
 }

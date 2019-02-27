@@ -7,7 +7,7 @@ import * as output from './output';
 export default WidgetManagerProvider;
 
 export {
-  INBWidgetExtension
+  registerWidgetManager
 } from './plugin';
 
 export {
