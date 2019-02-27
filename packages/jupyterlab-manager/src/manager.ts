@@ -123,12 +123,11 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * Create a comm.
    */
   async _create_comm(target_name: string, model_id: string, data?: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): Promise<IClassicComm> {
-    // We await connectToComm because we still support using @jupyterlab/services<4
-    let comm = await this._context.session.kernel.connectToComm(target_name, model_id);
+    let comm = this._context.session.kernel.connectToComm(target_name, model_id);
     if (data || metadata) {
       comm.open(data, metadata, buffers);
     }
-    return Promise.resolve(new shims.services.Comm(comm));
+    return new shims.services.Comm(comm);
   }
 
   /**
