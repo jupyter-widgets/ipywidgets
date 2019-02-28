@@ -145,7 +145,7 @@ class InstanceDict(traitlets.Instance):
 
 # The regexp is taken
 # from https://github.com/d3/d3-format/blob/master/src/formatSpecifier.js
-_number_format_re = re.compile('^(?:(.)?([<>=^]))?([+\-\( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?([a-z%])?$', re.I)
+_number_format_re = re.compile(r'^(?:(.)?([<>=^]))?([+\-\( ])?([$#])?(0)?(\d+)?(,)?(\.\d+)?([a-z%])?$', re.I)
 
 # The valid types are taken from
 # https://github.com/d3/d3-format/blob/master/src/formatTypes.js
