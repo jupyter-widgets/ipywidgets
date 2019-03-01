@@ -1,10 +1,12 @@
 # http://travis-ci.org/#!/jupyter-widgets/ipywidgets
 language: python
+dist: xenial
 python:
     - 2.7
     - 3.4
     - 3.5
     - 3.6
+    - 3.7
 addons:
   apt_packages:
     - pandoc
