@@ -48,7 +48,7 @@ function getImports(sourceFile) {
  * Validate the integrity of a package in a directory.
  */
 function validate(dname) {
-    filenames = glob.sync(dname + '/src/*.ts*');
+    var filenames = glob.sync(dname + '/src/*.ts*');
     filenames = filenames.concat(glob.sync(dname + '/src/**/*.ts*'));
 
     if (filenames.length == 0) {
