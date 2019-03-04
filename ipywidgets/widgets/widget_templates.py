@@ -5,6 +5,7 @@ from .widget_button import Button, ButtonStyle
 from .widget_layout import Layout
 
 from traitlets import Instance
+from traitlets import observe
 
 class AppLayout(GridBox):
 
@@ -13,6 +14,10 @@ class AppLayout(GridBox):
 
     def __init__(self, **kwargs):
         super(AppLayout, self).__init__(**kwargs)
+
+        self._update_layout()
+
+    def _update_layout(self):
 
         children = []
 
@@ -44,4 +49,9 @@ class AppLayout(GridBox):
                              grid_template_columns='1fr 1fr',
                              grid_template_rows='1fr 1fr',
                              grid_template_areas=grid_template_areas_css)
-        self.children = children
+        self.children = tuple(children)
+
+
+    @observe("top_left", "bottom_left")
+    def _child_changed(self, change):
+        self._update_layout()
