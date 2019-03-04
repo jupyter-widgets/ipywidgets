@@ -41,8 +41,6 @@ class AppLayout(GridBox):
             self.bottom_left.layout.grid_area = "bottom-left"
             children.append(self.bottom_left)
 
-        print(grid_template_areas)
-
         grid_template_areas_css = "\n".join('"{}"'.format(" ".join(line))
                                             for line in grid_template_areas)
         self.layout = Layout(width='auto',
