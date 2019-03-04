@@ -6,7 +6,7 @@ from .widget_layout import Layout
 
 from traitlets import Instance
 
-class AppLayout(Widget):
+class AppLayout(GridBox):
 
     top_left = Instance(Widget, allow_none=True)
     bottom_left = Instance(Widget, allow_none=True)
@@ -44,12 +44,4 @@ class AppLayout(Widget):
                              grid_template_columns='1fr 1fr',
                              grid_template_rows='1fr 1fr',
                              grid_template_areas=grid_template_areas_css)
-
-        self._box = GridBox(
-                            children=children,
-                            layout=self.layout)
-
-    def _ipython_display_(self, **kwargs):
-
-        # delegate to GridBox class
-        self._box._ipython_display_(**kwargs)
+        self.children = children
