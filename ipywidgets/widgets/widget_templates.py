@@ -8,24 +8,46 @@ from traitlets import Instance
 
 class AppLayout(Widget):
 
-    left_top = Instance(Widget)
+    top_left = Instance(Widget, allow_none=True)
+    bottom_left = Instance(Widget, allow_none=True)
 
     def __init__(self, **kwargs):
         super(AppLayout, self).__init__(**kwargs)
 
-        left_top = self.left_top
-        left_bottom = Button(layout=Layout(width='auto', height='auto'))
-        right_top = Button(layout=Layout(width='auto', height='auto'))
-        right_bottom = Button(layout=Layout(width='auto', height='auto'))
+        children = []
 
-        grid_layout = Layout(grid_template_columns='50% 50%',
-                             grid_template_rows='50% 50%')
+        self.top_right = Button(layout=Layout(width='auto', height='auto'))
+        self.bottom_right = Button(layout=Layout(width='auto', height='auto'))
 
-        self._box = GridBox(children=[left_top,
-                                      right_top,
-                                      left_bottom,
-                                      right_bottom],
-                            layout=grid_layout)
+        grid_template_areas = [["top-left", "top-right"],
+                               ["bottom-left", "bottom-right"]]
+
+        self.top_left.layout.grid_area = "top-left"
+        self.top_right.layout.grid_area = "top-right"
+        self.bottom_right.layout.grid_area = "bottom-right"
+
+        children.append(self.top_left)
+        children.append(self.bottom_right)
+        children.append(self.top_right)
+
+        if self.bottom_left is None:
+            grid_template_areas[1][0] = "top-left"
+        else:
+            self.bottom_left.layout.grid_area = "bottom-left"
+            children.append(self.bottom_left)
+
+        print(grid_template_areas)
+
+        grid_template_areas_css = "\n".join('"{}"'.format(" ".join(line))
+                                            for line in grid_template_areas)
+        self.layout = Layout(width='auto',
+                             grid_template_columns='1fr 1fr',
+                             grid_template_rows='1fr 1fr',
+                             grid_template_areas=grid_template_areas_css)
+
+        self._box = GridBox(
+                            children=children,
+                            layout=self.layout)
 
     def _ipython_display_(self, **kwargs):
 
