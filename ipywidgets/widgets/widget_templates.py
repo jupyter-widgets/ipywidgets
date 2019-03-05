@@ -10,7 +10,9 @@ from traitlets import observe
 class AppLayout(GridBox):
 
     top_left = Instance(Widget, allow_none=True)
+    top_right = Instance(Widget, allow_none=True)
     bottom_left = Instance(Widget, allow_none=True)
+    bottom_right = Instance(Widget, allow_none=True)
 
     def __init__(self, **kwargs):
         super(AppLayout, self).__init__(**kwargs)
@@ -19,27 +21,32 @@ class AppLayout(GridBox):
 
     def _update_layout(self):
 
-        children = []
-
-        self.top_right = Button(layout=Layout(width='auto', height='auto'))
-        self.bottom_right = Button(layout=Layout(width='auto', height='auto'))
 
         grid_template_areas = [["top-left", "top-right"],
                                ["bottom-left", "bottom-right"]]
 
-        self.top_left.layout.grid_area = "top-left"
-        self.top_right.layout.grid_area = "top-right"
-        self.bottom_right.layout.grid_area = "bottom-right"
+        all_children = {'top-left' : self.top_left,
+                        'top-right' : self.top_right,
+                        'bottom-left' : self.bottom_left,
+                        'bottom-right' : self.bottom_right}
 
-        children.append(self.top_left)
-        children.append(self.bottom_right)
-        children.append(self.top_right)
+        children = {position : child for position, child in all_children.items()
+                                     if child is not None}
 
-        if self.bottom_left is None:
-            grid_template_areas[1][0] = "top-left"
-        else:
-            self.bottom_left.layout.grid_area = "bottom-left"
-            children.append(self.bottom_left)
+        for position, child in children.items():
+            child.layout.grid_area = position
+
+        left = [self.top_left is None, self.bottom_left is None]
+        right = [self.top_right is None, self.bottom_right is None]
+
+        if all(left):
+            grid_template_areas[0][0] = 'top-right'
+            grid_template_areas[1][0] = 'bottom-right'
+        elif any(left):
+            if left[0] is None:
+                grid_template_areas[0][0] = 'bottom-left'
+            else:
+                grid_template_areas[1][0] = 'top-left'
 
         grid_template_areas_css = "\n".join('"{}"'.format(" ".join(line))
                                             for line in grid_template_areas)
@@ -47,7 +54,7 @@ class AppLayout(GridBox):
                              grid_template_columns='1fr 1fr',
                              grid_template_rows='1fr 1fr',
                              grid_template_areas=grid_template_areas_css)
-        self.children = tuple(children)
+        self.children = tuple(children.values())
 
 
     @observe("top_left", "bottom_left")
