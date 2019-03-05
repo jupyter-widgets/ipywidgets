@@ -2,6 +2,10 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
+  PromiseDelegate
+} from '@phosphor/coreutils';
+
+import {
   IDisposable
 } from '@phosphor/disposable';
 
@@ -22,26 +26,35 @@ import {
  */
 export
 class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable {
-    constructor(options: IRenderMime.IRendererOptions, manager: WidgetManager) {
+    constructor(options: IRenderMime.IRendererOptions, manager?: WidgetManager) {
         super();
         this.mimeType = options.mimeType;
-        this._manager = manager;
+        if (manager) {
+          this._manager.resolve(manager);
+        }
     }
+
+  /**
+   * The widget manager.
+   */
+  set manager(value: WidgetManager) {
+    this._manager.resolve(value);
+  }
 
   async renderModel(model: IRenderMime.IMimeModel) {
     const source: any = model.data[this.mimeType];
-
+    const manager = await this._manager.promise;
     // If there is no model id, the view was removed, so hide the node.
     if (source.model_id === '') {
       this.hide();
       return Promise.resolve();
     }
 
-    const modelPromise = this._manager.get_model(source.model_id);
+    const modelPromise = manager.get_model(source.model_id);
     if (modelPromise) {
       try {
         let wModel = await modelPromise;
-        let widget = await this._manager.display_model(void 0, wModel, void 0);
+        let widget = await manager.display_model(void 0, wModel, void 0);
         this.addWidget(widget);
 
         // If the widget is disposed, hide this container and make sure we
@@ -88,5 +101,5 @@ class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable
    * The mimetype being rendered.
    */
   readonly mimeType: string;
-  private _manager: WidgetManager;
+  private _manager = new PromiseDelegate<WidgetManager>();
 }

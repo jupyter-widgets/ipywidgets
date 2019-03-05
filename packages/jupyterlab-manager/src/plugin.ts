@@ -6,11 +6,7 @@ import {
 } from '@jupyterlab/docregistry';
 
 import {
-  INotebookModel
-} from '@jupyterlab/notebook';
-
-import {
-  NotebookPanel
+  INotebookModel, INotebookTracker, Notebook
 } from '@jupyterlab/notebook';
 
 import {
@@ -18,8 +14,24 @@ import {
 } from '@jupyterlab/application';
 
 import {
-  IDisposable, DisposableDelegate
+  RenderMimeRegistry, IRenderMimeRegistry
+} from '@jupyterlab/rendermime';
+
+import {
+  CodeCell
+} from '@jupyterlab/cells';
+
+import {
+  each
+} from '@phosphor/algorithm';
+
+import {
+  DisposableDelegate
 } from '@phosphor/disposable';
+
+import {
+  AttachedProperty
+} from '@phosphor/properties';
 
 import {
   WidgetRenderer
@@ -34,6 +46,9 @@ import {
 } from './output';
 
 import * as base from '@jupyter-widgets/base';
+
+// We import only the version from the specific module in controls so that the
+// controls code can be split and dynamically loaded in webpack.
 import {
   JUPYTER_CONTROLS_VERSION
 } from '@jupyter-widgets/controls/lib/version';
@@ -41,46 +56,57 @@ import {
 import '@jupyter-widgets/base/css/index.css';
 import '@jupyter-widgets/controls/css/widgets-base.css';
 
-export
-type INBWidgetExtension = DocumentRegistry.IWidgetExtension<NotebookPanel, INotebookModel>;
-
+const WIDGET_REGISTRY: base.IWidgetRegistryData[] = [];
 
 export
-class NBWidgetExtension implements INBWidgetExtension {
-  /**
-   * Create a new extension object.
-   */
-  createNew(nb: NotebookPanel, context: DocumentRegistry.IContext<INotebookModel>): IDisposable {
-    let wManager = new WidgetManager(context, nb.rendermime);
-    this._registry.forEach(data => wManager.register(data));
-    nb.rendermime.addFactory({
-      safe: false,
-      mimeTypes: [WIDGET_VIEW_MIMETYPE],
+function registerWidgetManager(nb: Notebook, context: DocumentRegistry.IContext<INotebookModel>, rendermime: RenderMimeRegistry) {
+  let wManager = Private.widgetManagerProperty.get(context);
+  if (!wManager) {
+    wManager = new WidgetManager(context, rendermime);
+    WIDGET_REGISTRY.forEach(data => wManager.register(data));
+    Private.widgetManagerProperty.set(context, wManager);
+  }
+
+  // For any widgets that have already been rendered with the placeholder, set
+  // the renderer. This iteration structure is closely tied to the structure of
+  // the notebook widget.
+  nb.widgets.forEach(cell => {
+    if (cell.model.type === 'code') {
+      (cell as CodeCell).outputArea.widgets.forEach(w => {
+        // Need to use phosphor iteration functions for .children()
+        each(w.children(), r => {
+          if (r instanceof WidgetRenderer) {
+            r.manager = wManager;
+          }
+        });
+      });
+    }
+  });
+
+  // Replace the placeholder widget renderer with one bound to this widget
+  // manager.
+  rendermime.removeMimeType(WIDGET_VIEW_MIMETYPE);
+  rendermime.addFactory(
+    {
+    safe: false,
+    mimeTypes: [WIDGET_VIEW_MIMETYPE],
       createRenderer: (options) => new WidgetRenderer(options, wManager)
     }, 0);
-    return new DisposableDelegate(() => {
-      if (nb.rendermime) {
-        nb.rendermime.removeMimeType(WIDGET_VIEW_MIMETYPE);
-      }
-      wManager.dispose();
-    });
-  }
 
-  /**
-   * Register a widget module.
-   */
-  registerWidget(data: base.IWidgetRegistryData) {
-    this._registry.push(data);
-  }
-  private _registry: base.IWidgetRegistryData[] = [];
+  return new DisposableDelegate(() => {
+    if (rendermime) {
+      rendermime.removeMimeType(WIDGET_VIEW_MIMETYPE);
+    }
+    wManager.dispose();
+  });
 }
-
 
 /**
  * The widget manager provider.
  */
 const widgetManagerProvider: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> = {
   id: 'jupyter.extensions.nbWidgetManager',
+  requires: [INotebookTracker, IRenderMimeRegistry],
   provides: base.IJupyterWidgetRegistry,
   activate: activateWidgetExtension,
   autoStart: true
@@ -91,9 +117,25 @@ export default widgetManagerProvider;
 /**
  * Activate the widget extension.
  */
-function activateWidgetExtension(app: JupyterFrontEnd): base.IJupyterWidgetRegistry {
-  let extension = new NBWidgetExtension();
-  extension.registerWidget({
+function activateWidgetExtension(app: JupyterFrontEnd, tracker: INotebookTracker, rendermime: IRenderMimeRegistry): base.IJupyterWidgetRegistry {
+  // Add a placeholder widget renderer.
+  rendermime.addFactory(
+    {
+      safe: false,
+      mimeTypes: [WIDGET_VIEW_MIMETYPE],
+      createRenderer: options => new WidgetRenderer(options)
+    },
+    0
+  );
+
+  tracker.forEach(panel => {
+    registerWidgetManager(panel.content, panel.context, panel.content.rendermime);
+  });
+  tracker.widgetAdded.connect((sender, panel) => {
+    registerWidgetManager(panel.content, panel.context, panel.content.rendermime);
+  });
+
+  WIDGET_REGISTRY.push({
     name: '@jupyter-widgets/base',
     version: base.JUPYTER_WIDGETS_VERSION,
     exports: {
@@ -108,7 +150,7 @@ function activateWidgetExtension(app: JupyterFrontEnd): base.IJupyterWidgetRegis
     }
   });
 
-  extension.registerWidget({
+  WIDGET_REGISTRY.push({
     name: '@jupyter-widgets/controls',
     version: JUPYTER_CONTROLS_VERSION,
     exports: () => {
@@ -125,16 +167,28 @@ function activateWidgetExtension(app: JupyterFrontEnd): base.IJupyterWidgetRegis
     }
   });
 
-  extension.registerWidget({
+  WIDGET_REGISTRY.push({
     name: '@jupyter-widgets/output',
     version: OUTPUT_WIDGET_VERSION,
     exports: {OutputModel, OutputView}
   });
 
-  app.docRegistry.addWidgetExtension('Notebook', extension);
   return {
     registerWidget(data: base.IWidgetRegistryData): void {
-      extension.registerWidget(data);
+      WIDGET_REGISTRY.push(data);
     }
   };
+}
+
+namespace Private {
+  /**
+   * A private attached property for a widget manager.
+   */
+  export const widgetManagerProperty = new AttachedProperty<
+    DocumentRegistry.Context,
+    WidgetManager | undefined
+  >({
+    name: 'widgetManager',
+    create: () => undefined
+  });
 }
