@@ -5,7 +5,7 @@ from .widget import Widget
 from .widget_box import GridBox
 from .widget_layout import Layout
 
-class AppLayout(GridBox):
+class TwoByTwoLayout(GridBox):
     """Define a layout with 2x2 regular grid"""
 
     top_left = Instance(Widget, allow_none=True)
@@ -14,7 +14,7 @@ class AppLayout(GridBox):
     bottom_right = Instance(Widget, allow_none=True)
 
     def __init__(self, **kwargs):
-        super(AppLayout, self).__init__(**kwargs)
+        super(TwoByTwoLayout, self).__init__(**kwargs)
 
         self._update_layout()
 

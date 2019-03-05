@@ -15,7 +15,7 @@ class TestTemplates(TestCase):
         button3 = widgets.Button()
         button4 = widgets.Button()
 
-        box = widgets.AppLayout(top_left=button1,
+        box = widgets.TwoByTwoLayout(top_left=button1,
                                 top_right=button2,
                                 bottom_left=button3,
                                 bottom_right=button4)
@@ -28,7 +28,7 @@ class TestTemplates(TestCase):
         assert box.bottom_right.layout.grid_area == 'bottom-right'
         assert len(box.get_state()['children']) == 4
 
-        box = widgets.AppLayout(top_left=button1,
+        box = widgets.TwoByTwoLayout(top_left=button1,
                                 top_right=button2,
                                 bottom_left=None,
                                 bottom_right=button4)
@@ -41,7 +41,7 @@ class TestTemplates(TestCase):
         assert box.bottom_right.layout.grid_area == 'bottom-right'
         assert len(box.get_state()['children']) == 3
 
-        box = widgets.AppLayout(top_left=None,
+        box = widgets.TwoByTwoLayout(top_left=None,
                                 top_right=button2,
                                 bottom_left=button3,
                                 bottom_right=button4)
@@ -54,7 +54,7 @@ class TestTemplates(TestCase):
         assert box.bottom_right.layout.grid_area == 'bottom-right'
         assert len(box.get_state()['children']) == 3
 
-        box = widgets.AppLayout(top_left=None,
+        box = widgets.TwoByTwoLayout(top_left=None,
                                 top_right=button2,
                                 bottom_left=None,
                                 bottom_right=button4)
@@ -67,7 +67,7 @@ class TestTemplates(TestCase):
         assert box.bottom_right.layout.grid_area == 'bottom-right'
         assert len(box.get_state()['children']) == 2
 
-        box = widgets.AppLayout(top_left=button1,
+        box = widgets.TwoByTwoLayout(top_left=button1,
                                 top_right=None,
                                 bottom_left=button3,
                                 bottom_right=button4)
@@ -81,7 +81,7 @@ class TestTemplates(TestCase):
         assert len(box.get_state()['children']) == 3
 
 
-        box = widgets.AppLayout(top_left=button1,
+        box = widgets.TwoByTwoLayout(top_left=button1,
                                 top_right=None,
                                 bottom_left=None,
                                 bottom_right=None)
@@ -96,7 +96,7 @@ class TestTemplates(TestCase):
         assert box.bottom_right is None
         assert len(box.get_state()['children']) == 1
 
-        box = widgets.AppLayout(top_left=None,
+        box = widgets.TwoByTwoLayout(top_left=None,
                                 top_right=button1,
                                 bottom_left=None,
                                 bottom_right=None)
@@ -111,7 +111,7 @@ class TestTemplates(TestCase):
         assert box.bottom_right is None
         assert len(box.get_state()['children']) == 1
 
-        box = widgets.AppLayout(top_left=None,
+        box = widgets.TwoByTwoLayout(top_left=None,
                                 top_right=None,
                                 bottom_left=None,
                                 bottom_right=None)
@@ -133,7 +133,7 @@ class TestTemplates(TestCase):
         button3 = widgets.Button()
         button4 = widgets.Button()
 
-        box = widgets.AppLayout(top_left=button1, top_right=button3,
+        box = widgets.TwoByTwoLayout(top_left=button1, top_right=button3,
                                 bottom_left=None, bottom_right=button4)
 
         state = box.get_state()
