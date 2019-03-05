@@ -1,4 +1,4 @@
-from traitlets import Instance
+from traitlets import Instance, Bool
 from traitlets import observe
 
 from .widget import Widget
@@ -12,6 +12,8 @@ class TwoByTwoLayout(GridBox):
     top_right = Instance(Widget, allow_none=True)
     bottom_left = Instance(Widget, allow_none=True)
     bottom_right = Instance(Widget, allow_none=True)
+    merge = Bool(default_value=True)
+
 
     def __init__(self, **kwargs):
         super(TwoByTwoLayout, self).__init__(**kwargs)
@@ -41,25 +43,27 @@ class TwoByTwoLayout(GridBox):
         for position, child in children.items():
             child.layout.grid_area = position
 
-        if len(children) == 1:
-            position = list(children.keys())[0]
-            grid_template_areas = [[position, position],
-                                   [position, position]]
-        else:
-            columns = ['left', 'right']
-            for i, column in enumerate(columns):
-                top, bottom = children.get('top-' + column), children.get('bottom-' + column)
-                i_neighbour = (i + 1) % 2
-                if top is None and bottom is None:
-                    # merge each cell in this column with the neighbour on the same row
-                    grid_template_areas[0][i] = grid_template_areas[0][i_neighbour]
-                    grid_template_areas[1][i] = grid_template_areas[1][i_neighbour]
-                elif top is None:
-                    # merge with the cell below
-                    grid_template_areas[0][i] = grid_template_areas[1][i]
-                elif bottom is None:
-                    # merge with the cell above
-                    grid_template_areas[1][i] = grid_template_areas[0][i]
+        if self.merge:
+
+            if len(children) == 1:
+                position = list(children.keys())[0]
+                grid_template_areas = [[position, position],
+                                       [position, position]]
+            else:
+                columns = ['left', 'right']
+                for i, column in enumerate(columns):
+                    top, bottom = children.get('top-' + column), children.get('bottom-' + column)
+                    i_neighbour = (i + 1) % 2
+                    if top is None and bottom is None:
+                        # merge each cell in this column with the neighbour on the same row
+                        grid_template_areas[0][i] = grid_template_areas[0][i_neighbour]
+                        grid_template_areas[1][i] = grid_template_areas[1][i_neighbour]
+                    elif top is None:
+                        # merge with the cell below
+                        grid_template_areas[0][i] = grid_template_areas[1][i]
+                    elif bottom is None:
+                        # merge with the cell above
+                        grid_template_areas[1][i] = grid_template_areas[0][i]
 
         grid_template_areas_css = "\n".join('"{}"'.format(" ".join(line))
                                             for line in grid_template_areas)
@@ -70,6 +74,6 @@ class TwoByTwoLayout(GridBox):
         self.children = tuple(children.values())
 
 
-    @observe("top_left", "bottom_left")
+    @observe("top_left", "bottom_left", "top_right", "bottom_right")
     def _child_changed(self, change):
         self._update_layout()

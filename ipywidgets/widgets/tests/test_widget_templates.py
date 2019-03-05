@@ -112,9 +112,9 @@ class TestTemplates(TestCase):
         assert len(box.get_state()['children']) == 1
 
         box = widgets.TwoByTwoLayout(top_left=None,
-                                top_right=None,
-                                bottom_left=None,
-                                bottom_right=None)
+                                     top_right=None,
+                                     bottom_left=None,
+                                     bottom_right=None)
 
         assert box.layout.grid_template_areas is None
         assert box.top_left is None
@@ -123,6 +123,21 @@ class TestTemplates(TestCase):
         assert box.bottom_right is None
         assert not box.get_state()['children']
 
+        box = widgets.TwoByTwoLayout(top_left=None,
+                                     top_right=button1,
+                                     bottom_left=None,
+                                     bottom_right=None,
+                                     merge=False)
+
+        assert box.layout.grid_template_areas == ('"top-left top-right"\n' +
+                                                  '"bottom-left bottom-right"')
+
+        assert box.top_right is button1
+        assert box.top_right.layout.grid_area == 'top-right'
+        assert box.top_left is None
+        assert box.bottom_left is None
+        assert box.bottom_right is None
+        assert len(box.get_state()['children']) == 1
 
 
     def test_update_dynamically(self): #pylint: disable=no-self-use
