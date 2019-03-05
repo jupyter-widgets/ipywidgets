@@ -321,15 +321,19 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   }
 
   async get_model(model_id: string): Promise<WidgetModel> {
+    const modelPromise = super.get_model(model_id);
     try {
-      // First try to get it directly
-      // Needed to do this first to avoid dead-lock:
-      // - get_model
-      // - restoreWidgets
-      // - unpack
-      return await super.get_model(model_id);
+      if (modelPromise) {
+        // First try to get it directly
+        // Needed to do this first to avoid dead-lock:
+        // - get_model
+        // - restoreWidgets
+        // - unpack
+        return await super.get_model(model_id);
+      } else {
+        throw new Error('not found');
+      }
     } catch (err) {
-      // If not directly available, try to wait for restoration
       return this._restored.then(() => {
         return super.get_model(model_id);
       });

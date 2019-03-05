@@ -19,23 +19,21 @@ export class WidgetRenderer extends Widget implements IRenderMime.IRenderer {
 
     async renderModel(model: IRenderMime.IMimeModel) {
         const source: any = model.data[this.mimeType];
-        this.node.textContent = 'Loading Jupyter Widget...';
-        let wModel;
-        try {
-            wModel = await this._manager.get_model(source.model_id);
-        } catch (err) {
+        const modelPromise = this._manager.get_model(source.model_id);
+        if (modelPromise) {
+            try {
+                let wModel = await modelPromise;
+                await this._manager.display_model(null, wModel, {el: this.node});
+            } catch(err) {
+                console.log('Error displaying widget');
+                console.log(err);
+                this.node.textContent = 'Error displaying widget';
+                this.addClass('jupyter-widgets');
+            }
+        } else {
             this.node.textContent = 'Error creating widget: could not find model';
             this.addClass('jupyter-widgets');
-            return;
-        }
-
-        try {
-            await this._manager.display_model(null, wModel, {el: this.node});
-        } catch (err) {
-            console.log('Error displaying widget');
-            console.log(err);
-            this.node.textContent = 'Error displaying widget';
-            this.addClass('jupyter-widgets');
+            return Promise.resolve();
         }
     }
 

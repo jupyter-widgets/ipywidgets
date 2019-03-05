@@ -198,9 +198,17 @@ abstract class ManagerBase<T> {
 
     /**
      * Get a promise for a model by model id.
+     *
+     * #### Notes
+     * If a model is not found, undefined is returned (NOT a promise). However,
+     * the calling code should also deal with the case where a rejected promise
+     * is returned, and should treat that also as a model not found.
      */
-    get_model(model_id: string): Promise<WidgetModel> {
-        return this._models[model_id] || Promise.reject(`Model not found: ${model_id}`);
+    get_model(model_id: string): Promise<WidgetModel> | undefined {
+        // TODO: Perhaps we should return a Promise.reject if the model is not
+        // found. Right now this isn't a true async function because it doesn't
+        // always return a promise.
+        return this._models[model_id];
     }
 
     /**
