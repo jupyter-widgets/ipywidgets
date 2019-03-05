@@ -113,11 +113,10 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
       this._handleKernelStatusChange(args);
     });
 
-    this._setupInitialRestorePromise();
-
     if (context.session.kernel) {
       this._handleKernelChanged({oldValue: null, newValue: context.session.kernel});
     }
+    this._restored = this.restoreWidgets(this._context.model);
   }
 
   /**
@@ -136,7 +135,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   _handleKernelStatusChange(args: Kernel.Status) {
     switch (args) {
     case 'connected':
-      // Clear away any old widgets
+      // TODO: should we clear away any old widgets before restoring?
       this._restored = this.restoreWidgets(this._context.model);
       break;
     case 'restarting':
@@ -149,77 +148,74 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Restore widgets from kernel and saved state.
    */
-  restoreWidgets(notebook: INotebookModel): Promise<void> {
+  async restoreWidgets(notebook: INotebookModel): Promise<void> {
+    this._restoring = true;
+    try {
 
-    // Steps that needs to be done:
-    // 1. Get any widget state from the kernel and open comms with existing state
-    // 2. Check saved state for widgets, and restore any that would not overwrite
-    //    any live widgets.
-    // Attempt to reconstruct any live comms by requesting them from the back-end (1).
-    return this._get_comm_info().then((comm_ids) => {
+      // Steps that needs to be done:
+      // 1. Get any widget state from the kernel and open comms with existing state
+      // 2. Check saved state for widgets, and restore any that would not overwrite
+      //    any live widgets.
+      // Attempt to reconstruct any live comms by requesting them from the back-end (1).
+      const comm_ids = await this._get_comm_info();
 
-      // Create comm class instances from comm ids (2).
-      const comm_promises = Object.keys(comm_ids).map((comm_id) => {
-        return this._create_comm(this.comm_target_name, comm_id);
-      });
-
-      // Send a state request message out for each widget comm and wait
-      // for the responses (1).
-      return Promise.all(comm_promises).then((comms) => {
-        return Promise.all(comms.map((comm) => {
-          const update_promise = new Promise<Private.ICommUpdateData>((resolve, reject) => {
-            comm.on_msg((msg) => {
-              put_buffers(msg.content.data.state, msg.content.data.buffer_paths, msg.buffers);
-              // A suspected response was received, check to see if
-              // it's a state update. If so, resolve.
-              if (msg.content.data.method === 'update') {
-                resolve({
-                  comm: comm,
-                  msg: msg
-                });
-              }
-            });
+      // For each comm id, create the comm, get the state, and create a widget.
+      const widgets_info = await Promise.all(Object.keys(comm_ids).map(async (comm_id) => {
+        const comm = await this._create_comm(this.comm_target_name, comm_id);
+        const update_promise = new Promise<Private.ICommUpdateData>((resolve, reject) => {
+          comm.on_msg((msg) => {
+            put_buffers(msg.content.data.state, msg.content.data.buffer_paths, msg.buffers);
+            // A suspected response was received, check to see if
+            // it's a state update. If so, resolve.
+            if (msg.content.data.method === 'update') {
+              resolve({
+                comm: comm,
+                msg: msg
+              });
+            }
           });
-          comm.send({
-            method: 'request_state'
-          }, this.callbacks());
-          return update_promise;
-        }));
-      }).then((widgets_info) => {
-        return Promise.all(widgets_info.map((widget_info) => {
-          const content = widget_info.msg.content as any;
-          return this.new_model({
-            model_name: content.data.state._model_name,
-            model_module: content.data.state._model_module,
-            model_module_version: content.data.state._model_module_version,
-            comm: widget_info.comm,
-          }, content.data.state);
-        }));
-      }).then(() => {
-        const widget_md = notebook.metadata.get('widgets') as any;
-        // Now that we have mirrored any widgets from the kernel...
-        // Restore any widgets from saved state that are not live (2)
-        if (widget_md && widget_md[WIDGET_STATE_MIMETYPE]) {
-          let state = widget_md[WIDGET_STATE_MIMETYPE];
-          state = this.filterExistingModelState(state);
-          return this.set_state(state);
-        }
-      }).then((models) => {
-        if (this._resolveInitalRestore) {
-          this._resolveInitalRestore();
-          this._resolveInitalRestore = null;
-        }
-      });
-    });
+        });
+        comm.send({
+          method: 'request_state'
+        }, this.callbacks(undefined));
+
+        return await update_promise;
+      }));
+
+      // We put in a synchronization barrier here so that we don't have to
+      // topologically sort the restored widgets. `new_model` synchronously
+      // registers the widget ids before reconstructing their state
+      // asynchronously, so promises to every widget reference should be available
+      // by the time they are used.
+      await Promise.all(widgets_info.map(async widget_info => {
+        const content = widget_info.msg.content as any;
+        await this.new_model({
+          model_name: content.data.state._model_name,
+          model_module: content.data.state._model_module,
+          model_module_version: content.data.state._model_module_version,
+          comm: widget_info.comm,
+        }, content.data.state);
+      }));
+
+      const widget_md = notebook.metadata.get('widgets') as any;
+      // Now that we have mirrored any widgets from the kernel...
+      // Restore any widgets from saved state that are not live
+      if (widget_md && widget_md[WIDGET_STATE_MIMETYPE]) {
+        let state = widget_md[WIDGET_STATE_MIMETYPE];
+        state = this.filterExistingModelState(state);
+        await this.set_state(state);
+      }
+    } finally {
+      this._restoring = false;
+    }
   }
 
 
   /**
    * Return a phosphor widget representing the view
    */
-  display_view(msg: any, view: Backbone.View<Backbone.Model>, options: any): Promise<Widget> {
-    let widget = (view as any).pWidget ? (view as any).pWidget : new BackboneViewWrapper(view);
-    return Promise.resolve(widget);
+  async display_view(msg: any, view: Backbone.View<Backbone.Model>, options: any): Promise<Widget> {
+    return (view as any).pWidget || new BackboneViewWrapper(view);
   }
 
   /**
@@ -231,14 +227,15 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     if (data || metadata) {
       comm.open(data, metadata, buffers);
     }
-    return Promise.resolve(new shims.services.Comm(comm));
+    return new shims.services.Comm(comm);
   }
 
   /**
    * Get the currently-registered comms.
    */
-  _get_comm_info(): Promise<any> {
-    return this._context.session.kernel.requestCommInfo({target: this.comm_target_name}).then(reply => reply.content.comms);
+  async _get_comm_info(): Promise<any> {
+    const reply = await this._context.session.kernel.requestCommInfo({target: this.comm_target_name});
+    return reply.content.comms;
   }
 
   /**
@@ -268,16 +265,15 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Resolve a URL relative to the current notebook location.
    */
-  resolveUrl(url: string): Promise<string> {
-    return this.context.urlResolver.resolveUrl(url).then((partial) => {
-      return this.context.urlResolver.getDownloadUrl(partial);
-    });
+  async resolveUrl(url: string): Promise<string> {
+    const partial = await this.context.urlResolver.resolveUrl(url);
+    return this.context.urlResolver.getDownloadUrl(partial);
   }
 
   /**
    * Load a class and return a promise to the loaded object.
    */
-  protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<typeof WidgetModel | typeof WidgetView> {
+  protected async loadClass(className: string, moduleName: string, moduleVersion: string): Promise<typeof WidgetModel | typeof WidgetView> {
 
     // Special-case the Jupyter base and controls packages. If we have just a
     // plain version, with no indication of the compatible range, prepend a ^ to
@@ -289,23 +285,21 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
       moduleVersion = `^${moduleVersion}`;
     }
 
-    let mod = this._registry.get(moduleName, moduleVersion);
+    const mod = this._registry.get(moduleName, moduleVersion);
     if (!mod) {
-      return Promise.reject(`Module ${moduleName}, semver range ${moduleVersion} is not registered as a widget module`);
+      throw new Error(`Module ${moduleName}, semver range ${moduleVersion} is not registered as a widget module`);
     }
-    let modPromise: Promise<ExportMap>;
+    let module: ExportMap;
     if (typeof mod === 'function') {
-      modPromise = Promise.resolve(mod());
+      module = await mod();
     } else {
-      modPromise = Promise.resolve(mod);
+      module = await mod;
     }
-    return modPromise.then((mod: any) => {
-      let cls: any = mod[className];
-      if (!cls) {
-        return Promise.reject(`Class ${className} not found in module ${moduleName}`);
-      }
-      return cls;
-    });
+    const cls: any = module[className];
+    if (!cls) {
+      throw new Error(`Class ${className} not found in module ${moduleName}`);
+    }
+    return cls;
   }
 
   get context() {
@@ -320,30 +314,36 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     this._registry.set(data.name, data.version, data.exports);
   }
 
+  /**
+   * Get a model
+   *
+   * #### Notes
+   * Unlike super.get_model(), this implementation always returns a promise and
+   * never returns undefined. The promise will reject if the model is not found.
+   */
   async get_model(model_id: string): Promise<WidgetModel> {
-    const modelPromise = super.get_model(model_id);
     try {
-      if (modelPromise) {
-        // First try to get it directly
-        // Needed to do this first to avoid dead-lock:
-        // - get_model
-        // - restoreWidgets
-        // - unpack
-        return await super.get_model(model_id);
-      } else {
-        throw new Error('not found');
+      // Resolving the restored promise may call get_model to unpack widget
+      // references, so we must first see if we can return right away.
+      const modelPromise = super.get_model(model_id);
+      if (modelPromise === undefined) {
+        throw new Error('widget model not found');
       }
+      return await modelPromise;
     } catch (err) {
-      return this._restored.then(() => {
-        return super.get_model(model_id);
-      });
-    }
-  }
+      // If we are currently restoring, then don't block on the restored promise.
+      if (this._restoring) {
+        throw err;
+      }
 
-  private _setupInitialRestorePromise() {
-    this._restored = new Promise((resolve) => {
-      this._resolveInitalRestore = resolve;
-    });
+      // Wait until the widget state is restored, then try one more time.
+      await this._restored;
+      const modelPromise = super.get_model(model_id);
+      if (modelPromise === undefined) {
+        throw new Error('widget model not found');
+      }
+      return await modelPromise;
+    }
   }
 
   private _handleCommOpen: (comm: Kernel.IComm, msg: KernelMessage.ICommOpenMsg) => Promise<void>;
@@ -353,7 +353,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
 
   _commRegistration: IDisposable;
   private _restored: Promise<void>;
-  private _resolveInitalRestore: (() => void) | null = null;
+  private _restoring: boolean;
 }
 
 
