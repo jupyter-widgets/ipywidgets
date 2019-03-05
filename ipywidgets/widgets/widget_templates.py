@@ -1,13 +1,12 @@
-from .widget import Widget
-from .widget_box import GridBox
-from .widget import register
-from .widget_button import Button, ButtonStyle
-from .widget_layout import Layout
-
 from traitlets import Instance
 from traitlets import observe
 
+from .widget import Widget
+from .widget_box import GridBox
+from .widget_layout import Layout
+
 class AppLayout(GridBox):
+    """Define a layout with 2x2 regular grid"""
 
     top_left = Instance(Widget, allow_none=True)
     top_right = Instance(Widget, allow_none=True)
@@ -30,23 +29,27 @@ class AppLayout(GridBox):
                         'bottom-left' : self.bottom_left,
                         'bottom-right' : self.bottom_right}
 
-        children = {position : child for position, child in all_children.items()
-                                     if child is not None}
+        children = {position : child
+                    for position, child in all_children.items()
+                    if child is not None}
 
         for position, child in children.items():
             child.layout.grid_area = position
 
-        left = [self.top_left is None, self.bottom_left is None]
-        right = [self.top_right is None, self.bottom_right is None]
-
-        if all(left):
-            grid_template_areas[0][0] = 'top-right'
-            grid_template_areas[1][0] = 'bottom-right'
-        elif any(left):
-            if left[0] is None:
-                grid_template_areas[0][0] = 'bottom-left'
-            else:
-                grid_template_areas[1][0] = 'top-left'
+        columns = ['left', 'right']
+        for i, column in enumerate(columns):
+            top, bottom = children.get('top-' + column), children.get('bottom-' + column)
+            neighbour_column = columns[(i + 1) % 2]
+            if top is None and bottom is None:
+                # merge each cell in this column with the neighbour on the same row
+                grid_template_areas[0][i] = 'top-' + neighbour_column
+                grid_template_areas[1][i] = 'bottom-' + neighbour_column
+            elif top is None:
+                # merge with the cell below
+                grid_template_areas[0][i] = 'bottom-' + column
+            elif bottom is None:
+                # merge with the cell above
+                grid_template_areas[1][i] = 'top-' + column
 
         grid_template_areas_css = "\n".join('"{}"'.format(" ".join(line))
                                             for line in grid_template_areas)
