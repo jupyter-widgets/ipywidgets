@@ -80,6 +80,51 @@ class TestTemplates(TestCase):
         assert box.bottom_right.layout.grid_area == 'bottom-right'
         assert len(box.get_state()['children']) == 3
 
+
+        box = widgets.AppLayout(top_left=button1,
+                                top_right=None,
+                                bottom_left=None,
+                                bottom_right=None)
+
+        assert box.layout.grid_template_areas == ('"top-left top-left"\n' +
+                                                  '"top-left top-left"')
+
+        assert box.top_left is button1
+        assert box.top_left.layout.grid_area == 'top-left'
+        assert box.top_right is None
+        assert box.bottom_left is None
+        assert box.bottom_right is None
+        assert len(box.get_state()['children']) == 1
+
+        box = widgets.AppLayout(top_left=None,
+                                top_right=button1,
+                                bottom_left=None,
+                                bottom_right=None)
+
+        assert box.layout.grid_template_areas == ('"top-right top-right"\n' +
+                                                  '"top-right top-right"')
+
+        assert box.top_right is button1
+        assert box.top_right.layout.grid_area == 'top-right'
+        assert box.top_left is None
+        assert box.bottom_left is None
+        assert box.bottom_right is None
+        assert len(box.get_state()['children']) == 1
+
+        box = widgets.AppLayout(top_left=None,
+                                top_right=None,
+                                bottom_left=None,
+                                bottom_right=None)
+
+        assert box.layout.grid_template_areas is None
+        assert box.top_left is None
+        assert box.top_right is None
+        assert box.bottom_left is None
+        assert box.bottom_right is None
+        assert not box.get_state()['children']
+
+
+
     def test_update_dynamically(self): #pylint: disable=no-self-use
         """test whether it's possible to add widget outside __init__"""
 

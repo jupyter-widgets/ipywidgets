@@ -33,23 +33,33 @@ class AppLayout(GridBox):
                     for position, child in all_children.items()
                     if child is not None}
 
+        if not children:
+            return
+
+
+
         for position, child in children.items():
             child.layout.grid_area = position
 
-        columns = ['left', 'right']
-        for i, column in enumerate(columns):
-            top, bottom = children.get('top-' + column), children.get('bottom-' + column)
-            neighbour_column = columns[(i + 1) % 2]
-            if top is None and bottom is None:
-                # merge each cell in this column with the neighbour on the same row
-                grid_template_areas[0][i] = 'top-' + neighbour_column
-                grid_template_areas[1][i] = 'bottom-' + neighbour_column
-            elif top is None:
-                # merge with the cell below
-                grid_template_areas[0][i] = 'bottom-' + column
-            elif bottom is None:
-                # merge with the cell above
-                grid_template_areas[1][i] = 'top-' + column
+        if len(children) == 1:
+            position = list(children.keys())[0]
+            grid_template_areas = [[position, position],
+                                   [position, position]]
+        else:
+            columns = ['left', 'right']
+            for i, column in enumerate(columns):
+                top, bottom = children.get('top-' + column), children.get('bottom-' + column)
+                i_neighbour = (i + 1) % 2
+                if top is None and bottom is None:
+                    # merge each cell in this column with the neighbour on the same row
+                    grid_template_areas[0][i] = grid_template_areas[0][i_neighbour]
+                    grid_template_areas[1][i] = grid_template_areas[1][i_neighbour]
+                elif top is None:
+                    # merge with the cell below
+                    grid_template_areas[0][i] = grid_template_areas[1][i]
+                elif bottom is None:
+                    # merge with the cell above
+                    grid_template_areas[1][i] = grid_template_areas[0][i]
 
         grid_template_areas_css = "\n".join('"{}"'.format(" ".join(line))
                                             for line in grid_template_areas)
