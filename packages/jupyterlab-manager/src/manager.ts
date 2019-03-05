@@ -40,6 +40,7 @@ import {
 import {
   SemVerCache
 } from './semvercache';
+import { ISignal, Signal } from '@phosphor/signaling';
 
 
 /**
@@ -116,7 +117,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     if (context.session.kernel) {
       this._handleKernelChanged({oldValue: null, newValue: context.session.kernel});
     }
-    this._restored = this.restoreWidgets(this._context.model);
+    this.restoreWidgets(this._context.model);
   }
 
   /**
@@ -136,7 +137,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     switch (args) {
     case 'connected':
       // TODO: should we clear away any old widgets before restoring?
-      this._restored = this.restoreWidgets(this._context.model);
+      this.restoreWidgets(this._context.model);
       break;
     case 'restarting':
       this.disconnect();
@@ -149,19 +150,9 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * Restore widgets from kernel and saved state.
    */
   async restoreWidgets(notebook: INotebookModel): Promise<void> {
-    this._restoring = true;
-    try {
-
-      // Steps that needs to be done:
-      // 1. Get any widget state from the kernel and open comms with existing state
-      // 2. Check saved state for widgets, and restore any that would not overwrite
-      //    any live widgets.
-      // Attempt to reconstruct any live comms by requesting them from the back-end (1).
-      await this._loadFromKernel();
-      await this._loadFromNotebook(notebook);
-    } finally {
-      this._restoring = false;
-    }
+    await this._loadFromKernel();
+    await this._loadFromNotebook(notebook);
+    this._restored.emit();
   }
 
   /**
@@ -323,6 +314,16 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     return this._rendermime;
   }
 
+  /**
+   * A signal emitted when state is restored to the widget manager.
+   *
+   * #### Notes
+   * This indicates that previously-unavailable widget models might be available now.
+   */
+  get restored(): ISignal<this, void> {
+    return this._restored;
+  }
+
   register(data: IWidgetRegistryData) {
     this._registry.set(data.name, data.version, data.exports);
   }
@@ -335,28 +336,11 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * never returns undefined. The promise will reject if the model is not found.
    */
   async get_model(model_id: string): Promise<WidgetModel> {
-    try {
-      // Resolving the restored promise may call get_model to unpack widget
-      // references, so we must first see if we can return right away.
-      const modelPromise = super.get_model(model_id);
-      if (modelPromise === undefined) {
-        throw new Error('widget model not found');
-      }
-      return await modelPromise;
-    } catch (err) {
-      // If we are currently restoring, then don't block on the restored promise.
-      if (this._restoring) {
-        throw err;
-      }
-
-      // Wait until the widget state is restored, then try one more time.
-      await this._restored;
-      const modelPromise = super.get_model(model_id);
-      if (modelPromise === undefined) {
-        throw new Error('widget model not found');
-      }
-      return await modelPromise;
+    const modelPromise = super.get_model(model_id);
+    if (modelPromise === undefined) {
+      throw new Error('widget model not found');
     }
+    return modelPromise;
   }
 
   private _handleCommOpen: (comm: Kernel.IComm, msg: KernelMessage.ICommOpenMsg) => Promise<void>;
@@ -365,8 +349,9 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   private _rendermime: RenderMimeRegistry;
 
   _commRegistration: IDisposable;
-  private _restored: Promise<void>;
-  private _restoring: boolean;
+  private _restored = new Signal<this, void>(this);
+
+
 }
 
 
