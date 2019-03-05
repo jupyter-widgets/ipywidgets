@@ -157,58 +157,72 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
       // 2. Check saved state for widgets, and restore any that would not overwrite
       //    any live widgets.
       // Attempt to reconstruct any live comms by requesting them from the back-end (1).
-      const comm_ids = await this._get_comm_info();
-
-      // For each comm id, create the comm, get the state, and create a widget.
-      const widgets_info = await Promise.all(Object.keys(comm_ids).map(async (comm_id) => {
-        const comm = await this._create_comm(this.comm_target_name, comm_id);
-        const update_promise = new Promise<Private.ICommUpdateData>((resolve, reject) => {
-          comm.on_msg((msg) => {
-            put_buffers(msg.content.data.state, msg.content.data.buffer_paths, msg.buffers);
-            // A suspected response was received, check to see if
-            // it's a state update. If so, resolve.
-            if (msg.content.data.method === 'update') {
-              resolve({
-                comm: comm,
-                msg: msg
-              });
-            }
-          });
-        });
-        comm.send({
-          method: 'request_state'
-        }, this.callbacks(undefined));
-
-        return await update_promise;
-      }));
-
-      // We put in a synchronization barrier here so that we don't have to
-      // topologically sort the restored widgets. `new_model` synchronously
-      // registers the widget ids before reconstructing their state
-      // asynchronously, so promises to every widget reference should be available
-      // by the time they are used.
-      await Promise.all(widgets_info.map(async widget_info => {
-        const content = widget_info.msg.content as any;
-        await this.new_model({
-          model_name: content.data.state._model_name,
-          model_module: content.data.state._model_module,
-          model_module_version: content.data.state._model_module_version,
-          comm: widget_info.comm,
-        }, content.data.state);
-      }));
-
-      const widget_md = notebook.metadata.get('widgets') as any;
-      // Now that we have mirrored any widgets from the kernel...
-      // Restore any widgets from saved state that are not live
-      if (widget_md && widget_md[WIDGET_STATE_MIMETYPE]) {
-        let state = widget_md[WIDGET_STATE_MIMETYPE];
-        state = this.filterExistingModelState(state);
-        await this.set_state(state);
-      }
+      await this._loadFromKernel();
+      await this._loadFromNotebook(notebook);
     } finally {
       this._restoring = false;
     }
   }
+
+  /**
+   * Load widget state from notebook metadata
+   */
+  async _loadFromNotebook(notebook: INotebookModel): Promise<void> {
+    const widget_md = notebook.metadata.get('widgets') as any;
+    // Now that we have mirrored any widgets from the kernel...
+    // Restore any widgets from saved state that are not live
+    if (widget_md && widget_md[WIDGET_STATE_MIMETYPE]) {
+      let state = widget_md[WIDGET_STATE_MIMETYPE];
+      state = this.filterExistingModelState(state);
+      await this.set_state(state);
+    }
+  }
+
+  async _loadFromKernel(): Promise<void> {
+    if (!this.context.session.kernel) {
+      return;
+    }
+    const comm_ids = await this._get_comm_info();
+
+    // For each comm id, create the comm, get the state, and create a widget.
+    const widgets_info = await Promise.all(Object.keys(comm_ids).map(async (comm_id) => {
+      const comm = await this._create_comm(this.comm_target_name, comm_id);
+      const update_promise = new Promise<Private.ICommUpdateData>((resolve, reject) => {
+        comm.on_msg((msg) => {
+          put_buffers(msg.content.data.state, msg.content.data.buffer_paths, msg.buffers);
+          // A suspected response was received, check to see if
+          // it's a state update. If so, resolve.
+          if (msg.content.data.method === 'update') {
+            resolve({
+              comm: comm,
+              msg: msg
+            });
+          }
+        });
+      });
+      comm.send({
+        method: 'request_state'
+      }, this.callbacks(undefined));
+
+      return await update_promise;
+    }));
+
+    // We put in a synchronization barrier here so that we don't have to
+    // topologically sort the restored widgets. `new_model` synchronously
+    // registers the widget ids before reconstructing their state
+    // asynchronously, so promises to every widget reference should be available
+    // by the time they are used.
+    await Promise.all(widgets_info.map(async widget_info => {
+      const content = widget_info.msg.content as any;
+      await this.new_model({
+        model_name: content.data.state._model_name,
+        model_module: content.data.state._model_module,
+        model_module_version: content.data.state._model_module_version,
+        comm: widget_info.comm,
+      }, content.data.state);
+    }));
+  }
+
 
 
   /**
