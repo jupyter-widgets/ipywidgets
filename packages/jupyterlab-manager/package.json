@@ -41,6 +41,7 @@
     "@jupyterlab/application": "^1.0.0-alpha.3",
     "@jupyterlab/coreutils": "^3.0.0-alpha.3",
     "@jupyterlab/docregistry": "^1.0.0-alpha.3",
+    "@jupyterlab/mainmenu": "^1.0.0-alpha.3",
     "@jupyterlab/notebook": "^1.0.0-alpha.4",
     "@jupyterlab/outputarea": "^1.0.0-alpha.3",
     "@jupyterlab/rendermime": "^1.0.0-alpha.3",

@@ -17,6 +17,10 @@ import {
 } from '@jupyterlab/application';
 
 import {
+  IMainMenu,
+} from '@jupyterlab/mainmenu';
+
+import {
   RenderMimeRegistry, IRenderMimeRegistry
 } from '@jupyterlab/rendermime';
 
@@ -115,6 +119,7 @@ function registerWidgetManager(nb: Notebook, context: DocumentRegistry.IContext<
 const plugin: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> = {
   id: '@jupyter-widgets/jupyterlab-manager:plugin',
   requires: [INotebookTracker, IRenderMimeRegistry, ISettingRegistry],
+  optional: [IMainMenu],
   provides: base.IJupyterWidgetRegistry,
   activate: activateWidgetExtension,
   autoStart: true
@@ -130,7 +135,11 @@ function updateSettings(settings: ISettingRegistry.ISettings) {
 /**
  * Activate the widget extension.
  */
-function activateWidgetExtension(app: JupyterFrontEnd, tracker: INotebookTracker, rendermime: IRenderMimeRegistry, settingRegistry: ISettingRegistry): base.IJupyterWidgetRegistry {
+function activateWidgetExtension(app: JupyterFrontEnd, tracker: INotebookTracker, rendermime: IRenderMimeRegistry, settingRegistry: ISettingRegistry, menu: IMainMenu | null): base.IJupyterWidgetRegistry {
+
+  const {commands} = app;
+
+
   settingRegistry.load(plugin.id).then((settings: ISettingRegistry.ISettings) => {
     settings.changed.connect(updateSettings);
     updateSettings(settings);
@@ -154,6 +163,25 @@ function activateWidgetExtension(app: JupyterFrontEnd, tracker: INotebookTracker
   tracker.widgetAdded.connect((sender, panel) => {
     registerWidgetManager(panel.content, panel.context, panel.content.rendermime);
   });
+
+  // Add a command for creating a new Markdown file.
+  commands.addCommand('@jupyter-widgets/jupyterlab-manager:saveWidgetState', {
+    label: 'Save Widget State Automatically',
+    execute: args => {
+      return settingRegistry
+        .set(plugin.id, 'saveState', !SETTINGS.saveState)
+        .catch((reason: Error) => {
+          console.error(`Failed to set ${plugin.id}: ${reason.message}`);
+        });
+    },
+    isToggled: () => SETTINGS.saveState
+  });
+
+  if (menu) {
+    menu.settingsMenu.addGroup([
+      {command: '@jupyter-widgets/jupyterlab-manager:saveWidgetState'}
+    ]);
+  }
 
   WIDGET_REGISTRY.push({
     name: '@jupyter-widgets/base',

@@ -122,10 +122,9 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     }
     this.restoreWidgets(this._context.model);
 
+    this._settings = settings;
     context.saveState.connect((sender, saveState) => {
       if (saveState === 'started' && settings.saveState) {
-        // TODO: this is an asynchronous function, called from a synchronous
-        // callback. It may not save in time.
         this._saveState();
       }
     });
@@ -375,6 +374,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
             this._modelsSync.delete(model_id);
         });
     });
+    this.setDirty();
   }
 
 
@@ -385,7 +385,9 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   async clear_state(): Promise<void> {
     await super.clear_state();
     this._modelsSync = new Map();
+    this.setDirty();
   }
+
   /**
    * Synchronously get the state of the live widgets in the widget manager.
    *
@@ -405,6 +407,18 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
       return serialize_state(models, options);
   }
 
+  /**
+   * Set the dirty state of the notebook model if applicable.
+   *
+   * TODO: should also set dirty when auto-save state is turned on (easy), and when any
+   * model changes any data (likely hard right now).
+   */
+  setDirty() {
+    if (this._settings.saveState) {
+      this._context.model.dirty = true;
+    }
+  }
+
   private _handleCommOpen: (comm: Kernel.IComm, msg: KernelMessage.ICommOpenMsg) => Promise<void>;
   private _context: DocumentRegistry.IContext<INotebookModel>;
   private _registry: SemVerCache<ExportData> = new SemVerCache<ExportData>();
@@ -414,6 +428,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   private _restored = new Signal<this, void>(this);
 
   private _modelsSync = new Map<string, WidgetModel>();
+  private _settings: {saveState: boolean};
 }
 
 

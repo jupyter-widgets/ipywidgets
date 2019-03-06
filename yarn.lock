@@ -226,6 +226,19 @@
     "@phosphor/signaling" "^1.2.2"
     "@phosphor/widgets" "^1.6.0"
 
+"@jupyterlab/mainmenu@^1.0.0-alpha.3":
+  version "1.0.0-alpha.3"
+  resolved "https://registry.npmjs.org/@jupyterlab/mainmenu/-/mainmenu-1.0.0-alpha.3.tgz#00ec5f3833f803f6d7c0b34ef3d0186a730adbd7"
+  integrity sha512-ODT7rMecjcN1Q61yBR3fHFei36Wx2gjxfj5Jc6gvh356Wyk9SPvVMXsLyetnQYMoYQOt5OvKd9DBxCzH5XBBqA==
+  dependencies:
+    "@jupyterlab/apputils" "^1.0.0-alpha.3"
+    "@jupyterlab/services" "^4.0.0-alpha.3"
+    "@phosphor/algorithm" "^1.1.2"
+    "@phosphor/commands" "^1.6.1"
+    "@phosphor/coreutils" "^1.3.0"
+    "@phosphor/disposable" "^1.1.2"
+    "@phosphor/widgets" "^1.6.0"
+
 "@jupyterlab/notebook@^1.0.0-alpha.4":
   version "1.0.0-alpha.4"
   resolved "https://registry.npmjs.org/@jupyterlab/notebook/-/notebook-1.0.0-alpha.4.tgz#62bd27c0aa409ea1eeb9d2dc3506d8874f74f0bb"
@@ -967,7 +980,7 @@
     "@phosphor/algorithm" "^1.1.2"
     "@phosphor/collections" "^1.1.2"
 
-"@phosphor/properties@^1.1.2":
+"@phosphor/properties@^1.1.0", "@phosphor/properties@^1.1.2":
   version "1.1.2"
   resolved "https://registry.npmjs.org/@phosphor/properties/-/properties-1.1.2.tgz#78cc77eff452839da02255de48e814946cc09a28"
 
