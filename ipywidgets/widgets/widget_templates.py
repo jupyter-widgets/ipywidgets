@@ -139,11 +139,23 @@ class AppLayout(LayoutTemplate):
                                        [position, position, position]]
 
             else:
+                if self.center is None:
+                    for row in grid_template_areas:
+                        del row[1]
+                    del grid_template_columns[1]
+
                 if self.left_sidebar is None:
-                    grid_template_areas[1][0] = 'center'
+                    grid_template_areas[1][0] = grid_template_areas[1][1]
 
                 if self.right_sidebar is None:
-                    grid_template_areas[1][2] = 'center'
+                    grid_template_areas[1][-1] = grid_template_areas[1][-2]
+
+                if (self.left_sidebar is None and
+                        self.right_sidebar is None and
+                        self.center is None):
+                    grid_template_areas = [['header'], ['footer']]
+                    grid_template_columns = ['1fr']
+                    grid_template_rows = ['1fr', '1fr']
 
                 if self.header is None:
                     del grid_template_areas[0]
