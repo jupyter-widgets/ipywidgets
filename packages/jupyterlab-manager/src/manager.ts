@@ -6,7 +6,7 @@ import * as Backbone from 'backbone';
 
 import {
     ManagerBase, shims, IClassicComm, IWidgetRegistryData, ExportMap,
-    ExportData, WidgetModel, WidgetView, put_buffers
+    ExportData, WidgetModel, WidgetView, put_buffers, serialize_state, IStateOptions
 } from '@jupyter-widgets/base';
 
 import {
@@ -34,13 +34,16 @@ import {
 } from '@jupyterlab/docregistry';
 
 import {
+  ISignal, Signal
+} from '@phosphor/signaling';
+
+import {
   valid
 } from 'semver';
 
 import {
   SemVerCache
 } from './semvercache';
-import { ISignal, Signal } from '@phosphor/signaling';
 
 
 /**
@@ -95,7 +98,7 @@ class BackboneViewWrapper extends Widget {
  */
 export
 class WidgetManager extends ManagerBase<Widget> implements IDisposable {
-  constructor(context: DocumentRegistry.IContext<INotebookModel>, rendermime: RenderMimeRegistry) {
+  constructor(context: DocumentRegistry.IContext<INotebookModel>, rendermime: RenderMimeRegistry, settings: {saveState: boolean}) {
     super();
     this._context = context;
     this._rendermime = rendermime;
@@ -118,6 +121,24 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
       this._handleKernelChanged({oldValue: null, newValue: context.session.kernel});
     }
     this.restoreWidgets(this._context.model);
+
+    context.saveState.connect((sender, saveState) => {
+      if (saveState === 'started' && settings.saveState) {
+        // TODO: this is an asynchronous function, called from a synchronous
+        // callback. It may not save in time.
+        this._saveState();
+      }
+    });
+  }
+
+  /**
+   * Save the widget state to the context model.
+   */
+  private _saveState() {
+    const state = this.get_state_sync({ drop_defaults: true });
+    this._context.model.metadata.set('widgets', {
+      'application/vnd.jupyter.widget-state+json' : state
+    });
   }
 
   /**
@@ -153,20 +174,6 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     await this._loadFromKernel();
     await this._loadFromNotebook(notebook);
     this._restored.emit();
-  }
-
-  /**
-   * Load widget state from notebook metadata
-   */
-  async _loadFromNotebook(notebook: INotebookModel): Promise<void> {
-    const widget_md = notebook.metadata.get('widgets') as any;
-    // Now that we have mirrored any widgets from the kernel...
-    // Restore any widgets from saved state that are not live
-    if (widget_md && widget_md[WIDGET_STATE_MIMETYPE]) {
-      let state = widget_md[WIDGET_STATE_MIMETYPE];
-      state = this.filterExistingModelState(state);
-      await this.set_state(state);
-    }
   }
 
   async _loadFromKernel(): Promise<void> {
@@ -215,6 +222,18 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   }
 
 
+  /**
+   * Load widget state from notebook metadata
+   */
+  async _loadFromNotebook(notebook: INotebookModel): Promise<void> {
+    const widget_md = notebook.metadata.get('widgets') as any;
+    // Restore any widgets from saved state that are not live
+    if (widget_md && widget_md[WIDGET_STATE_MIMETYPE]) {
+      let state = widget_md[WIDGET_STATE_MIMETYPE];
+      state = this.filterExistingModelState(state);
+      await this.set_state(state);
+    }
+  }
 
   /**
    * Return a phosphor widget representing the view
@@ -343,6 +362,49 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     return modelPromise;
   }
 
+  /**
+   * Register a widget model.
+   */
+  register_model(model_id: string, modelPromise: Promise<WidgetModel>): void {
+    super.register_model(model_id, modelPromise);
+
+    // Update the synchronous model map
+    modelPromise.then(model => {
+        this._modelsSync.set(model_id, model);
+        model.once('comm:close', () => {
+            this._modelsSync.delete(model_id);
+        });
+    });
+  }
+
+
+  /**
+   * Close all widgets and empty the widget state.
+   * @return Promise that resolves when the widget state is cleared.
+   */
+  async clear_state(): Promise<void> {
+    await super.clear_state();
+    this._modelsSync = new Map();
+  }
+  /**
+   * Synchronously get the state of the live widgets in the widget manager.
+   *
+   * This includes all of the live widget models, and follows the format given in
+   * the @jupyter-widgets/schema package.
+   *
+   * @param options - The options for what state to return.
+   * @returns Promise for a state dictionary
+   */
+  get_state_sync(options: IStateOptions = {}) {
+      const models = [];
+      for (let model of this._modelsSync.values()) {
+        if (model.comm_live) {
+          models.push(model);
+        }
+      }
+      return serialize_state(models, options);
+  }
+
   private _handleCommOpen: (comm: Kernel.IComm, msg: KernelMessage.ICommOpenMsg) => Promise<void>;
   private _context: DocumentRegistry.IContext<INotebookModel>;
   private _registry: SemVerCache<ExportData> = new SemVerCache<ExportData>();
@@ -351,7 +413,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   _commRegistration: IDisposable;
   private _restored = new Signal<this, void>(this);
 
-
+  private _modelsSync = new Map<string, WidgetModel>();
 }
 
 

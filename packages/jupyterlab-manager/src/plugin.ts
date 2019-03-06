@@ -1,6 +1,9 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+
+import { ISettingRegistry } from '@jupyterlab/coreutils';
+
 import {
   DocumentRegistry
 } from '@jupyterlab/docregistry';
@@ -58,11 +61,16 @@ import '@jupyter-widgets/controls/css/widgets-base.css';
 
 const WIDGET_REGISTRY: base.IWidgetRegistryData[] = [];
 
+/**
+ * The cached settings.
+ */
+const SETTINGS: {saveState: boolean} = {saveState: false};
+
 export
 function registerWidgetManager(nb: Notebook, context: DocumentRegistry.IContext<INotebookModel>, rendermime: RenderMimeRegistry) {
   let wManager = Private.widgetManagerProperty.get(context);
   if (!wManager) {
-    wManager = new WidgetManager(context, rendermime);
+    wManager = new WidgetManager(context, rendermime, SETTINGS);
     WIDGET_REGISTRY.forEach(data => wManager.register(data));
     Private.widgetManagerProperty.set(context, wManager);
   }
@@ -104,20 +112,32 @@ function registerWidgetManager(nb: Notebook, context: DocumentRegistry.IContext<
 /**
  * The widget manager provider.
  */
-const widgetManagerProvider: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> = {
-  id: 'jupyter.extensions.nbWidgetManager',
-  requires: [INotebookTracker, IRenderMimeRegistry],
+const plugin: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> = {
+  id: '@jupyter-widgets/jupyterlab-manager:plugin',
+  requires: [INotebookTracker, IRenderMimeRegistry, ISettingRegistry],
   provides: base.IJupyterWidgetRegistry,
   activate: activateWidgetExtension,
   autoStart: true
 };
 
-export default widgetManagerProvider;
+export default plugin;
+
+
+function updateSettings(settings: ISettingRegistry.ISettings) {
+  SETTINGS.saveState = settings.get('saveState').composite as boolean;
+}
 
 /**
  * Activate the widget extension.
  */
-function activateWidgetExtension(app: JupyterFrontEnd, tracker: INotebookTracker, rendermime: IRenderMimeRegistry): base.IJupyterWidgetRegistry {
+function activateWidgetExtension(app: JupyterFrontEnd, tracker: INotebookTracker, rendermime: IRenderMimeRegistry, settingRegistry: ISettingRegistry): base.IJupyterWidgetRegistry {
+  settingRegistry.load(plugin.id).then((settings: ISettingRegistry.ISettings) => {
+    settings.changed.connect(updateSettings);
+    updateSettings(settings);
+  }).catch((reason: Error) => {
+    console.error(reason.message);
+  });
+
   // Add a placeholder widget renderer.
   rendermime.addFactory(
     {
