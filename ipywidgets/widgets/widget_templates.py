@@ -1,9 +1,12 @@
-from traitlets import Instance, Bool
+"""Implement common widgets layouts as reusable components"""
+
+from traitlets import Instance, Bool, Unicode, CaselessStrEnum
 from traitlets import observe
 
 from .widget import Widget
+from .widget_layout import CSS_PROPERTIES
 from .widget_box import GridBox
-from .widget_layout import Layout
+
 
 class TwoByTwoLayout(GridBox):
     """ Define a layout with 2x2 regular grid.
@@ -20,12 +23,52 @@ class TwoByTwoLayout(GridBox):
     merge: bool
         flag to say whether the empty positions should be automatically merged
 
+    grid_gap : str
+        CSS attribute used to set the gap between the grid cells
+
+    justify_content : str, in ['flex-start', 'flex-end', 'center', 'space-between', 'space-around']
+        CSS attribute used to align widgets vertically
+
+    align_items : str, in ['flex-start', 'flex-end', 'center', 'baseline', 'stretch']
+        CSS attribute used to align widgets horizontally
+
+    Examples
+    --------
+
+    >>> from ipywidgets import TwoByTwoLayout, Button
+    >>> TwoByTwoLayout(top_left=Button(description="Top left"),
+    ...                top_right=Button(description="Top right"),
+    ...                bottom_left=Button(description="Bottom left"),
+    ...                bottom_right=Button(description="Bottom right"))
+
     """
 
+    # widget positions
     top_left = Instance(Widget, allow_none=True)
     top_right = Instance(Widget, allow_none=True)
     bottom_left = Instance(Widget, allow_none=True)
     bottom_right = Instance(Widget, allow_none=True)
+
+    # style attributes (passed to Layout)
+    grid_gap = Unicode(None, allow_none=True,
+                       help="The grid-gap CSS attribute.").tag(style=True)
+    justify_content = CaselessStrEnum(
+        ['flex-start', 'flex-end', 'center',
+         'space-between', 'space-around'],
+        allow_none=True,
+        help="The justify-content CSS attribute.").tag(style=True)
+    align_items = CaselessStrEnum(
+        ['flex-start', 'flex-end', 'center',
+         'baseline', 'stretch'],
+        allow_none=True, help="The align-items CSS attribute.").tag(style=True)
+    width = Unicode(None,
+                    allow_none=True,
+                    help="The width CSS attribute.").tag(style=True)
+    height = Unicode(None,
+                     allow_none=True,
+                     help="The width CSS attribute.").tag(style=True)
+
+    # extra args
     merge = Bool(default_value=True)
 
 
@@ -33,6 +76,7 @@ class TwoByTwoLayout(GridBox):
         super(TwoByTwoLayout, self).__init__(**kwargs)
 
         self._update_layout()
+        self._copy_layout_props()
 
     def _update_layout(self):
 
@@ -51,8 +95,6 @@ class TwoByTwoLayout(GridBox):
 
         if not children:
             return
-
-
 
         for position, child in children.items():
             child.layout.grid_area = position
@@ -88,6 +130,15 @@ class TwoByTwoLayout(GridBox):
 
         self.children = tuple(children.values())
 
+
+    def _copy_layout_props(self):
+
+        _props = self.trait_names(style=True)
+
+        for prop in _props:
+            value = getattr(self, prop)
+            if value:
+                setattr(self.layout, prop, value)
 
     @observe("top_left", "bottom_left", "top_right", "bottom_right")
     def _child_changed(self, change):
