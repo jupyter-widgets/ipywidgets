@@ -63,6 +63,14 @@ class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable
       this.node.textContent = 'Loading widget...';
       this.addClass('jupyter-widgets');
 
+      // If we haven't rerendered in 5 seconds with the right model, display an
+      // error message to the user.
+      setTimeout(() => {
+        if (this._rerenderMimeModel) {
+          this.node.textContent = 'Error displaying widget: model not found';
+        }
+      }, 5000);
+
       // Store the model for a possible rerender
       this._rerenderMimeModel = model;
       return;
