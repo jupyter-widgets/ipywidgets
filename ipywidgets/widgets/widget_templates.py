@@ -6,7 +6,21 @@ from .widget_box import GridBox
 from .widget_layout import Layout
 
 class TwoByTwoLayout(GridBox):
-    """Define a layout with 2x2 regular grid"""
+    """ Define a layout with 2x2 regular grid.
+
+    Parameters
+    ----------
+
+    top_left: instance of Widget
+    top_right: instance of Widget
+    bottom_left: instance of Widget
+    bottom_right: instance of Widget
+        widgets to fill the positions in the layout
+
+    merge: bool
+        flag to say whether the empty positions should be automatically merged
+
+    """
 
     top_left = Instance(Widget, allow_none=True)
     top_right = Instance(Widget, allow_none=True)
@@ -67,10 +81,11 @@ class TwoByTwoLayout(GridBox):
 
         grid_template_areas_css = "\n".join('"{}"'.format(" ".join(line))
                                             for line in grid_template_areas)
-        self.layout = Layout(width='auto',
-                             grid_template_columns='1fr 1fr',
-                             grid_template_rows='1fr 1fr',
-                             grid_template_areas=grid_template_areas_css)
+
+        self.layout.grid_template_columns = '1fr 1fr'
+        self.layout.grid_template_rows = '1fr 1fr'
+        self.layout.grid_template_areas = grid_template_areas_css
+
         self.children = tuple(children.values())
 
 

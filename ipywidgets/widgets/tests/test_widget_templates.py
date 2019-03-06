@@ -16,9 +16,9 @@ class TestTemplates(TestCase):
         button4 = widgets.Button()
 
         box = widgets.TwoByTwoLayout(top_left=button1,
-                                top_right=button2,
-                                bottom_left=button3,
-                                bottom_right=button4)
+                                     top_right=button2,
+                                     bottom_left=button3,
+                                     bottom_right=button4)
 
         assert box.layout.grid_template_areas == ('"top-left top-right"\n' +
                                                   '"bottom-left bottom-right"')
@@ -29,9 +29,9 @@ class TestTemplates(TestCase):
         assert len(box.get_state()['children']) == 4
 
         box = widgets.TwoByTwoLayout(top_left=button1,
-                                top_right=button2,
-                                bottom_left=None,
-                                bottom_right=button4)
+                                     top_right=button2,
+                                     bottom_left=None,
+                                     bottom_right=button4)
 
         assert box.layout.grid_template_areas == ('"top-left top-right"\n' +
                                                   '"top-left bottom-right"')
@@ -42,9 +42,9 @@ class TestTemplates(TestCase):
         assert len(box.get_state()['children']) == 3
 
         box = widgets.TwoByTwoLayout(top_left=None,
-                                top_right=button2,
-                                bottom_left=button3,
-                                bottom_right=button4)
+                                     top_right=button2,
+                                     bottom_left=button3,
+                                     bottom_right=button4)
 
         assert box.layout.grid_template_areas == ('"bottom-left top-right"\n' +
                                                   '"bottom-left bottom-right"')
@@ -55,9 +55,9 @@ class TestTemplates(TestCase):
         assert len(box.get_state()['children']) == 3
 
         box = widgets.TwoByTwoLayout(top_left=None,
-                                top_right=button2,
-                                bottom_left=None,
-                                bottom_right=button4)
+                                     top_right=button2,
+                                     bottom_left=None,
+                                     bottom_right=button4)
 
         assert box.layout.grid_template_areas == ('"top-right top-right"\n' +
                                                   '"bottom-right bottom-right"')
@@ -68,9 +68,9 @@ class TestTemplates(TestCase):
         assert len(box.get_state()['children']) == 2
 
         box = widgets.TwoByTwoLayout(top_left=button1,
-                                top_right=None,
-                                bottom_left=button3,
-                                bottom_right=button4)
+                                     top_right=None,
+                                     bottom_left=button3,
+                                     bottom_right=button4)
 
         assert box.layout.grid_template_areas == ('"top-left bottom-right"\n' +
                                                   '"bottom-left bottom-right"')
@@ -82,9 +82,9 @@ class TestTemplates(TestCase):
 
 
         box = widgets.TwoByTwoLayout(top_left=button1,
-                                top_right=None,
-                                bottom_left=None,
-                                bottom_right=None)
+                                     top_right=None,
+                                     bottom_left=None,
+                                     bottom_right=None)
 
         assert box.layout.grid_template_areas == ('"top-left top-left"\n' +
                                                   '"top-left top-left"')
@@ -97,9 +97,9 @@ class TestTemplates(TestCase):
         assert len(box.get_state()['children']) == 1
 
         box = widgets.TwoByTwoLayout(top_left=None,
-                                top_right=button1,
-                                bottom_left=None,
-                                bottom_right=None)
+                                     top_right=button1,
+                                     bottom_left=None,
+                                     bottom_right=None)
 
         assert box.layout.grid_template_areas == ('"top-right top-right"\n' +
                                                   '"top-right top-right"')
@@ -139,6 +139,23 @@ class TestTemplates(TestCase):
         assert box.bottom_right is None
         assert len(box.get_state()['children']) == 1
 
+    def test_keep_layout_options(self): #pylint: disable=no-self-use
+        """test whether layout options are passed down to GridBox"""
+
+        layout = widgets.Layout(align_items="center")
+        button1 = widgets.Button()
+        button2 = widgets.Button()
+        button3 = widgets.Button()
+        button4 = widgets.Button()
+
+        box = widgets.TwoByTwoLayout(top_left=button1, top_right=button3,
+                                     bottom_left=None, bottom_right=button4,
+                                     layout=layout)
+
+        assert box.layout.align_items == 'center'
+
+
+
 
     def test_update_dynamically(self): #pylint: disable=no-self-use
         """test whether it's possible to add widget outside __init__"""
@@ -149,17 +166,15 @@ class TestTemplates(TestCase):
         button4 = widgets.Button()
 
         box = widgets.TwoByTwoLayout(top_left=button1, top_right=button3,
-                                bottom_left=None, bottom_right=button4)
+                                     bottom_left=None, bottom_right=button4)
 
         state = box.get_state()
         assert len(state['children']) == 3
         assert box.layout.grid_template_areas == ('"top-left top-right"\n' +
                                                   '"top-left bottom-right"')
-        layout_old = state['layout']
         box.bottom_left = button2
 
         state = box.get_state()
         assert len(state['children']) == 4
         assert box.layout.grid_template_areas == ('"top-left top-right"\n' +
                                                   '"bottom-left bottom-right"')
-        assert layout_old != state['layout']
