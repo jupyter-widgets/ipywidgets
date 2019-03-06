@@ -250,6 +250,14 @@ class TestAppLayout(TestCase):
 
         assert len(box.get_state()['children']) == 5
 
+        # empty layout should produce no effects
+
+        box = widgets.AppLayout()
+        assert box.layout.grid_template_areas is None
+        assert box.layout.grid_template_columns is None
+        assert box.layout.grid_template_rows is None
+        assert len(box.get_state()['children']) == 0
+
 
     def test_merge_empty_cells(self):
         "test if cells are correctly merged"
