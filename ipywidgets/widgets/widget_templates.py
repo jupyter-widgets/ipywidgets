@@ -111,6 +111,8 @@ class AppLayout(LayoutTemplate):
         grid_template_areas = [["header", "header", "header"],
                                ["left-sidebar", "center", "right-sidebar"],
                                ["footer", "footer", "footer"]]
+        grid_template_columns = ['1fr', '2fr', '1fr']
+        grid_template_rows = ['1fr', '3fr', '1fr']
 
         all_children = {'header': self.header,
                         'footer': self.footer,
@@ -143,11 +145,20 @@ class AppLayout(LayoutTemplate):
                 if self.right_sidebar is None:
                     grid_template_areas[1][2] = 'center'
 
+                if self.header is None:
+                    del grid_template_areas[0]
+                    del grid_template_rows[0]
+
+                if self.footer is None:
+                    del grid_template_areas[-1]
+                    del grid_template_rows[-1]
+
+
         grid_template_areas_css = "\n".join('"{}"'.format(" ".join(line))
                                             for line in grid_template_areas)
 
-        self.layout.grid_template_columns = '1fr 2fr 1fr'
-        self.layout.grid_template_rows = '1fr 3fr 1fr'
+        self.layout.grid_template_columns = " ".join(grid_template_columns)
+        self.layout.grid_template_rows = " ".join(grid_template_rows)
         self.layout.grid_template_areas = grid_template_areas_css
 
         self.children = tuple(children.values())

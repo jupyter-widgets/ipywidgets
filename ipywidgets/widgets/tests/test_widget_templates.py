@@ -349,3 +349,63 @@ class TestAppLayout(TestCase):
         assert box.left_sidebar is None
         assert box.right_sidebar is None
         assert len(box.get_state()['children']) == 3
+
+        # merge header and footer simply removes it from view
+        box = widgets.AppLayout(
+            footer=footer,
+            center=center,
+            left_sidebar=left_sidebar,
+            right_sidebar=right_sidebar
+        )
+
+        assert box.layout.grid_template_areas == ('"left-sidebar center right-sidebar"\n' +
+                                                  '"footer footer footer"')
+        assert box.center.layout.grid_area == 'center'
+        assert box.left_sidebar.layout.grid_area == 'left-sidebar'
+        assert box.right_sidebar.layout.grid_area == 'right-sidebar'
+        assert box.footer.layout.grid_area == 'footer'
+        assert box.header is None
+        assert len(box.get_state()['children']) == 4
+
+        # merge header and footer simply removes it from view
+        box = widgets.AppLayout(
+            header=header,
+            center=center,
+            left_sidebar=left_sidebar,
+            right_sidebar=right_sidebar
+        )
+
+        assert box.layout.grid_template_areas == ('"header header header"\n' +
+                                                  '"left-sidebar center right-sidebar"')
+        assert box.center.layout.grid_area == 'center'
+        assert box.left_sidebar.layout.grid_area == 'left-sidebar'
+        assert box.right_sidebar.layout.grid_area == 'right-sidebar'
+        assert box.header.layout.grid_area == 'header'
+        assert box.footer is None
+        assert len(box.get_state()['children']) == 4
+
+        box = widgets.AppLayout(
+            center=center,
+            left_sidebar=left_sidebar,
+            right_sidebar=right_sidebar
+        )
+
+        assert box.layout.grid_template_areas == '"left-sidebar center right-sidebar"'
+        assert box.center.layout.grid_area == 'center'
+        assert box.left_sidebar.layout.grid_area == 'left-sidebar'
+        assert box.right_sidebar.layout.grid_area == 'right-sidebar'
+        assert box.footer is None
+        assert box.header is None
+        assert len(box.get_state()['children']) == 3
+
+        # merge all if only one widget
+        box = widgets.AppLayout(
+            center=center
+        )
+
+        assert box.layout.grid_template_areas == ('"center center center"\n' +
+                                                  '"center center center"\n' +
+                                                  '"center center center"')
+        assert box.center.layout.grid_area == 'center'
+
+        assert len(box.get_state()['children']) == 1
