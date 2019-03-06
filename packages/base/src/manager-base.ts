@@ -120,15 +120,6 @@ interface WidgetOptions {
 }
 
 
-export
-interface StateOptions {
-    /**
-     * Drop model attributes that are equal to their default value.
-     *
-     * @default false
-     */
-    drop_defaults?: boolean;
-}
 
 /**
  * Manager abstract base class
@@ -377,7 +368,7 @@ abstract class ManagerBase<T> {
     clear_state(): Promise<void> {
         return utils.resolvePromisesDict(this._models).then((models) => {
             Object.keys(models).forEach(id => models[id].close());
-            this._models = {};
+            this._models = Object.create(null);
         });
     }
 
@@ -390,27 +381,10 @@ abstract class ManagerBase<T> {
      * @param options - The options for what state to return.
      * @returns Promise for a state dictionary
      */
-    get_state(options: StateOptions = {}): Promise<any> {
-        return utils.resolvePromisesDict(this._models).then((models) => {
-            let state = {};
-            Object.keys(models).forEach(model_id => {
-                let model = models[model_id];
-                let split = utils.remove_buffers(model.serialize(model.get_state(options.drop_defaults)));
-                let buffers = split.buffers.map((buffer, index) => {
-                    return {data: utils.bufferToBase64(buffer), path: split.buffer_paths[index], encoding: 'base64'};
-                });
-                state[model_id] = {
-                    model_name: model.name,
-                    model_module: model.module,
-                    model_module_version: model.get('_model_module_version'),
-                    state: split.state
-                };
-                // To save space, only include the buffer key if we have buffers
-                if (buffers.length > 0) {
-                    state[model_id].buffers = buffers;
-                }
-            });
-            return {version_major: 2, version_minor: 0, state: state};
+    get_state(options: IStateOptions = {}): Promise<any> {
+        const modelPromises = Object.keys(this._models).map(id => this._models[id]);
+        return Promise.all(modelPromises).then(models => {
+            return serialize_state(models, options);
         });
     }
 
@@ -563,4 +537,49 @@ abstract class ManagerBase<T> {
      * Dictionary of model ids and model instance promises
      */
     private _models: {[key: string]: Promise<WidgetModel>} = Object.create(null);
+}
+
+
+export
+interface IStateOptions {
+    /**
+     * Drop model attributes that are equal to their default value.
+     *
+     * @default false
+     */
+    drop_defaults?: boolean;
+}
+
+/**
+ * Serialize an array of widget models
+ *
+ * #### Notes
+ * The return value follows the format given in the
+ * @jupyter-widgets/schema package.
+ */
+export
+function serialize_state(models: WidgetModel[], options: IStateOptions = {}) {
+    const state = {};
+    models.forEach(model => {
+        const model_id = model.model_id;
+        const split = utils.remove_buffers(model.serialize(model.get_state(options.drop_defaults)));
+        const buffers = split.buffers.map((buffer, index) => {
+            return {
+                data: utils.bufferToBase64(buffer),
+                path: split.buffer_paths[index],
+                encoding: 'base64'
+            };
+        });
+        state[model_id] = {
+            model_name: model.name,
+            model_module: model.module,
+            model_module_version: model.get('_model_module_version'),
+            state: split.state
+        };
+        // To save space, only include the buffers key if we have buffers
+        if (buffers.length > 0) {
+            state[model_id].buffers = buffers;
+        }
+    });
+    return {version_major: 2, version_minor: 0, state: state};
 }
