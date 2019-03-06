@@ -4,18 +4,47 @@ from traitlets import Instance, Bool, Unicode, CaselessStrEnum
 from traitlets import observe
 
 from .widget import Widget
-from .widget_layout import CSS_PROPERTIES
 from .widget_box import GridBox
 
+from .docutils import doc_subst
+
+_doc_snippets = {
+    'style_params' : """
+    merge: bool
+        flag to say whether the empty positions should be automatically merged
+
+    grid_gap : str
+        CSS attribute used to set the gap between the grid cells
+
+    justify_content : str, in ['flex-start', 'flex-end', 'center', 'space-between', 'space-around']
+        CSS attribute used to align widgets vertically
+
+    align_items : str, in ['flex-start', 'flex-end', 'center', 'baseline', 'stretch']
+        CSS attribute used to align widgets horizontally
+
+    width : str
+    height : str
+        width and height"""
+    }
+
+@doc_subst(_doc_snippets)
 class LayoutTemplate(GridBox):
     """Base class for layout templates
 
     This class handles mainly style attributes (height, grid_gap etc.)
+
+    Parameters
+    ----------
+
+    {style_params}
+
     """
 
     # style attributes (passed to Layout)
-    grid_gap = Unicode(None, allow_none=True,
-                       help="The grid-gap CSS attribute.").tag(style=True)
+    grid_gap = Unicode(
+        None,
+        allow_none=True,
+        help="The grid-gap CSS attribute.").tag(style=True)
     justify_content = CaselessStrEnum(
         ['flex-start', 'flex-end', 'center',
          'space-between', 'space-around'],
@@ -25,10 +54,12 @@ class LayoutTemplate(GridBox):
         ['flex-start', 'flex-end', 'center',
          'baseline', 'stretch'],
         allow_none=True, help="The align-items CSS attribute.").tag(style=True)
-    width = Unicode(None,
+    width = Unicode(
+        None,
         allow_none=True,
         help="The width CSS attribute.").tag(style=True)
-    height = Unicode(None,
+    height = Unicode(
+        None,
         allow_none=True,
         help="The width CSS attribute.").tag(style=True)
 
@@ -50,7 +81,82 @@ class LayoutTemplate(GridBox):
                 setattr(self.layout, prop, value)
 
 
+@doc_subst(_doc_snippets)
+class AppLayout(LayoutTemplate):
+    """ Define an application like layout of widgets.
 
+    Parameters
+    ----------
+
+    {style_params}
+
+    Examples
+    --------
+
+    """
+
+    # widget positions
+    header = Instance(Widget, allow_none=True)
+    footer = Instance(Widget, allow_none=True)
+    left_sidebar = Instance(Widget, allow_none=True)
+    right_sidebar = Instance(Widget, allow_none=True)
+    center = Instance(Widget, allow_none=True)
+
+    def __init__(self, **kwargs):
+        super(AppLayout, self).__init__(**kwargs)
+        self._update_layout()
+
+    def _update_layout(self):
+
+        grid_template_areas = [["header", "header", "header"],
+                               ["left-sidebar", "center", "right-sidebar"],
+                               ["footer", "footer", "footer"]]
+
+        all_children = {'header': self.header,
+                        'footer': self.footer,
+                        'left-sidebar': self.left_sidebar,
+                        'right-sidebar': self.right_sidebar,
+                        'center': self.center}
+
+        children = {position : child
+                    for position, child in all_children.items()
+                    if child is not None}
+
+        if not children:
+            return
+
+        for position, child in children.items():
+            child.layout.grid_area = position
+
+        if self.merge:
+
+            if len(children) == 1:
+                position = list(children.keys())[0]
+                grid_template_areas = [[position, position, position],
+                                       [position, position, position],
+                                       [position, position, position]]
+
+            else:
+                if self.left_sidebar is None:
+                    grid_template_areas[1][0] = 'center'
+
+                if self.right_sidebar is None:
+                    grid_template_areas[1][2] = 'center'
+
+        grid_template_areas_css = "\n".join('"{}"'.format(" ".join(line))
+                                            for line in grid_template_areas)
+
+        self.layout.grid_template_columns = '1fr 2fr 1fr'
+        self.layout.grid_template_rows = '1fr 3fr 1fr'
+        self.layout.grid_template_areas = grid_template_areas_css
+
+        self.children = tuple(children.values())
+
+    @observe("footer", "header", "center", "left_sidebar", "right_sidebar")
+    def _child_changed(self, change): #pylint: disable=unused-argument
+        self._update_layout()
+
+@doc_subst(_doc_snippets)
 class TwoByTwoLayout(LayoutTemplate):
     """ Define a layout with 2x2 regular grid.
 
@@ -63,17 +169,7 @@ class TwoByTwoLayout(LayoutTemplate):
     bottom_right: instance of Widget
         widgets to fill the positions in the layout
 
-    merge: bool
-        flag to say whether the empty positions should be automatically merged
-
-    grid_gap : str
-        CSS attribute used to set the gap between the grid cells
-
-    justify_content : str, in ['flex-start', 'flex-end', 'center', 'space-between', 'space-around']
-        CSS attribute used to align widgets vertically
-
-    align_items : str, in ['flex-start', 'flex-end', 'center', 'baseline', 'stretch']
-        CSS attribute used to align widgets horizontally
+    {style_params}
 
     Examples
     --------
@@ -95,7 +191,6 @@ class TwoByTwoLayout(LayoutTemplate):
 
     def __init__(self, **kwargs):
         super(TwoByTwoLayout, self).__init__(**kwargs)
-
         self._update_layout()
 
     def _update_layout(self):
@@ -152,5 +247,5 @@ class TwoByTwoLayout(LayoutTemplate):
 
 
     @observe("top_left", "bottom_left", "top_right", "bottom_right")
-    def _child_changed(self, change):
+    def _child_changed(self, change): #pylint: disable=unused-argument
         self._update_layout()

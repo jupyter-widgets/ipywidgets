@@ -25,4 +25,4 @@ from .widget_link import jslink, jsdlink
 from .widget_layout import Layout
 from .widget_media import Image, Video, Audio
 from .widget_style import Style
-from .widget_templates import TwoByTwoLayout
+from .widget_templates import TwoByTwoLayout, AppLayout
