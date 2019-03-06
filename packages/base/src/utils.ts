@@ -84,14 +84,14 @@ class WrappedError extends Error {
  * Returns a single Promise.
  */
 export
-function resolvePromisesDict(d): Promise<any> {
+function resolvePromisesDict<V>(d: {[keys: string]: PromiseLike<V>}): Promise<{[keys: string]: V}> {
     let keys = Object.keys(d);
-    let values = [];
+    let values: PromiseLike<V>[] = [];
     keys.forEach(function(key) {
         values.push(d[key]);
     });
-    return Promise.all(values).then(function(v) {
-        d = {};
+    return Promise.all(values).then((v) => {
+        let d: {[keys: string]: V} = {};
         for (let i=0; i < keys.length; i++) {
             d[keys[i]] = v[i];
         }
