@@ -3,6 +3,7 @@
 from unittest import TestCase
 
 import ipywidgets as widgets
+from ipywidgets.widgets.widget_templates import LayoutTemplate
 
 class TestTwoByTwoLayout(TestCase):
     """test layout templates"""
@@ -474,3 +475,20 @@ class TestAppLayout(TestCase):
         assert box.center.layout.grid_area == 'center'
 
         assert len(box.get_state()['children']) == 1
+
+class TestLayoutTemplate(TestCase):
+    """test mixin with layout properties"""
+    
+    class DummyTemplate(LayoutTemplate):
+        layout = widgets.Layout()
+
+    def test_layout_updated_on_trait_change(self):
+        "test whether respective layout traits are updated when traits change"
+
+        template = self.DummyTemplate(width="100%")
+        assert template.width == '100%'
+        assert template.layout.width == '100%'
+
+        template.width = 'auto'
+        assert template.width == 'auto'
+        assert template.layout.width == 'auto'

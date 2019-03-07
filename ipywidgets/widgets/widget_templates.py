@@ -1,6 +1,8 @@
 """Implement common widgets layouts as reusable components"""
 
 from traitlets import Instance, Bool, Unicode, CaselessStrEnum
+from traitlets import HasTraits
+from traitlets import All
 from traitlets import observe
 
 from .widget import Widget
@@ -28,8 +30,8 @@ _doc_snippets = {
     }
 
 @doc_subst(_doc_snippets)
-class LayoutTemplate(GridBox):
-    """Base class for layout templates
+class LayoutTemplate(HasTraits):
+    """Mixin class for layout templates
 
     This class handles mainly style attributes (height, grid_gap etc.)
 
@@ -37,6 +39,12 @@ class LayoutTemplate(GridBox):
     ----------
 
     {style_params}
+
+    Note
+    ----
+
+    This class is only meant to be used in inheritance as mixin with other
+    classes. It will not work, unless `self.layout` attribute is defined.
 
     """
 
@@ -70,6 +78,11 @@ class LayoutTemplate(GridBox):
         super(LayoutTemplate, self).__init__(**kwargs)
         self._copy_layout_props()
 
+    @observe(All)
+    def _delegate_to_layout(self, change):
+        "delegate the trait types to their counterparts in self.layout"
+        setattr(self.layout, change['name'], change['new']) # pylint: disable=no-member
+        pass
 
     def _copy_layout_props(self):
 
@@ -78,11 +91,11 @@ class LayoutTemplate(GridBox):
         for prop in _props:
             value = getattr(self, prop)
             if value:
-                setattr(self.layout, prop, value)
+                setattr(self.layout, prop, value) #pylint: disable=no-member
 
 
 @doc_subst(_doc_snippets)
-class AppLayout(LayoutTemplate):
+class AppLayout(GridBox, LayoutTemplate):
     """ Define an application like layout of widgets.
 
     Parameters
@@ -180,7 +193,7 @@ class AppLayout(LayoutTemplate):
         self._update_layout()
 
 @doc_subst(_doc_snippets)
-class TwoByTwoLayout(LayoutTemplate):
+class TwoByTwoLayout(GridBox, LayoutTemplate):
     """ Define a layout with 2x2 regular grid.
 
     Parameters
