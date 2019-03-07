@@ -1,14 +1,15 @@
 """Implement common widgets layouts as reusable components"""
 
 from traitlets import Instance, Bool, Unicode, CaselessStrEnum
-from traitlets import HasTraits
-from traitlets import All
-from traitlets import observe
+from traitlets import HasTraits, TraitError
+from traitlets import observe, validate
 
 from .widget import Widget
 from .widget_box import GridBox
 
 from .docutils import doc_subst
+
+from collections import defaultdict
 
 _doc_snippets = {
     'style_params' : """
@@ -21,7 +22,7 @@ _doc_snippets = {
     justify_content : str, in ['flex-start', 'flex-end', 'center', 'space-between', 'space-around']
         CSS attribute used to align widgets vertically
 
-    align_items : str, in ['flex-start', 'flex-end', 'center', 'baseline', 'stretch']
+    align_items : str, in ['top', 'bottom', 'center', 'flex-start', 'flex-end', 'baseline', 'stretch']
         CSS attribute used to align widgets horizontally
 
     width : str
@@ -59,7 +60,8 @@ class LayoutProperties(HasTraits):
         allow_none=True,
         help="The justify-content CSS attribute.")
     align_items = CaselessStrEnum(
-        ['flex-start', 'flex-end', 'center',
+        ['top', 'bottom',
+         'flex-start', 'flex-end', 'center',
          'baseline', 'stretch'],
         allow_none=True, help="The align-items CSS attribute.")
     width = Unicode(
@@ -74,14 +76,20 @@ class LayoutProperties(HasTraits):
     # extra args
     merge = Bool(default_value=True)
 
+
     def __init__(self, **kwargs):
         super(LayoutProperties, self).__init__(**kwargs)
+        self._property_rewrite = defaultdict(dict)
+        self._property_rewrite['align_items'] = {'top': 'flex-start',
+                                                 'bottom': 'flex-end'}
         self._copy_layout_props()
         self._set_observers()
 
     def _delegate_to_layout(self, change):
         "delegate the trait types to their counterparts in self.layout"
-        setattr(self.layout, change['name'], change['new']) # pylint: disable=no-member
+        value, name = change['new'], change['name']
+        value = self._property_rewrite[name].get(value, value)
+        setattr(self.layout, name, value) # pylint: disable=no-member
 
     def _set_observers(self):
         "set observers on all layout properties defined in this class"
@@ -95,6 +103,7 @@ class LayoutProperties(HasTraits):
         for prop in _props:
             value = getattr(self, prop)
             if value:
+                value = self._property_rewrite[prop].get(value, value)
                 setattr(self.layout, prop, value) #pylint: disable=no-member
 
 
