@@ -52,24 +52,24 @@ class LayoutProperties(HasTraits):
     grid_gap = Unicode(
         None,
         allow_none=True,
-        help="The grid-gap CSS attribute.").tag(style=True)
+        help="The grid-gap CSS attribute.")
     justify_content = CaselessStrEnum(
         ['flex-start', 'flex-end', 'center',
          'space-between', 'space-around'],
         allow_none=True,
-        help="The justify-content CSS attribute.").tag(style=True)
+        help="The justify-content CSS attribute.")
     align_items = CaselessStrEnum(
         ['flex-start', 'flex-end', 'center',
          'baseline', 'stretch'],
-        allow_none=True, help="The align-items CSS attribute.").tag(style=True)
+        allow_none=True, help="The align-items CSS attribute.")
     width = Unicode(
         None,
         allow_none=True,
-        help="The width CSS attribute.").tag(style=True)
+        help="The width CSS attribute.")
     height = Unicode(
         None,
         allow_none=True,
-        help="The width CSS attribute.").tag(style=True)
+        help="The width CSS attribute.")
 
     # extra args
     merge = Bool(default_value=True)
@@ -90,7 +90,7 @@ class LayoutProperties(HasTraits):
 
     def _copy_layout_props(self):
 
-        _props = self.trait_names(style=True)
+        _props = LayoutProperties.class_trait_names()
 
         for prop in _props:
             value = getattr(self, prop)
