@@ -503,6 +503,52 @@ class TestAppLayout(TestCase):
 
         assert len(box.get_state()['children']) == 1
 
+    def test_size_to_css(self):
+
+        box = widgets.AppLayout()
+        assert box._size_to_css("100px") == '100px'
+        assert box._size_to_css("1fr") == '1fr'
+        assert box._size_to_css("2.5fr") == '2.5fr'
+        assert box._size_to_css('2.5') == '2.5fr'
+
+    def test_set_pane_widths_heights(self):
+
+        footer = widgets.Button()
+        header = widgets.Button()
+        center = widgets.Button()
+        left_sidebar = widgets.Button()
+        right_sidebar = widgets.Button()
+
+        box = widgets.AppLayout(
+            header=header,
+            footer=footer,
+            left_sidebar=left_sidebar,
+            right_sidebar=left_sidebar,
+            center=center
+        )
+
+        with pytest.raises(traitlets.TraitError):
+            box.pane_widths = ['1fx', '1fx', '1fx', '1fx']
+        with pytest.raises(traitlets.TraitError):
+            box.pane_widths = ['1fx', '1fx']
+
+        with pytest.raises(traitlets.TraitError):
+            box.pane_heights = ['1fx', '1fx', '1fx', '1fx']
+        with pytest.raises(traitlets.TraitError):
+            box.pane_heights = ['1fx', '1fx']
+
+        assert box.layout.grid_template_rows == "1fr 3fr 1fr"
+        assert box.layout.grid_template_columns == "1fr 2fr 1fr"
+
+        box.pane_heights = ['3fr', '100px', 20]
+        assert box.layout.grid_template_rows == "3fr 100px 20fr"
+        assert box.layout.grid_template_columns == "1fr 2fr 1fr"
+
+        box.pane_widths = [3, 3, 1]
+        assert box.layout.grid_template_rows == "3fr 100px 20fr"
+        assert box.layout.grid_template_columns == "3fr 3fr 1fr"
+
+
 class TestLayoutProperties(TestCase):
     """test mixin with layout properties"""
 

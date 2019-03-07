@@ -1,8 +1,8 @@
 """Implement common widgets layouts as reusable components"""
 
-from traitlets import Instance, Bool, Unicode, CaselessStrEnum
-from traitlets import HasTraits, TraitError
-from traitlets import observe, validate
+from traitlets import Instance, Bool, Unicode, CUnicode, CaselessStrEnum, Tuple
+from traitlets import HasTraits
+from traitlets import observe
 
 from .widget import Widget
 from .widget_box import GridBox
@@ -11,10 +11,10 @@ from .docutils import doc_subst
 
 from collections import defaultdict
 
+import re
+
 _doc_snippets = {
     'style_params' : """
-    merge: bool
-        flag to say whether the empty positions should be automatically merged
 
     grid_gap : str
         CSS attribute used to set the gap between the grid cells
@@ -40,6 +40,7 @@ class LayoutProperties(HasTraits):
     ----------
 
     {style_params}
+
 
     Note
     ----
@@ -74,7 +75,6 @@ class LayoutProperties(HasTraits):
         help="The width CSS attribute.")
 
 
-
     def __init__(self, **kwargs):
         super(LayoutProperties, self).__init__(**kwargs)
         self._property_rewrite = defaultdict(dict)
@@ -104,13 +104,31 @@ class LayoutProperties(HasTraits):
                 value = self._property_rewrite[prop].get(value, value)
                 setattr(self.layout, prop, value) #pylint: disable=no-member
 
-
 @doc_subst(_doc_snippets)
 class AppLayout(GridBox, LayoutProperties):
     """ Define an application like layout of widgets.
 
     Parameters
     ----------
+
+    header: instance of Widget
+    left_sidebar: instance of Widget
+    center: instance of Widget
+    right_sidebar: instance of Widget
+    footer: instance of Widget
+        widgets to fill the positions in the layout
+
+    merge: bool
+        flag to say whether the empty positions should be automatically merged
+
+    pane_widths: list of numbers/strings
+        the fraction of the total layout width each of the central panes should occupy
+        (left_sidebar,
+        center, right_sidebar)
+
+    pane_heights: list of numbers/strings
+        the fraction of the width the vertical space that the panes should occupy
+         (left_sidebar, center, right_sidebar)
 
     {style_params}
 
@@ -127,19 +145,45 @@ class AppLayout(GridBox, LayoutProperties):
     center = Instance(Widget, allow_none=True)
 
     # extra args
+    pane_widths = Tuple(CUnicode(), CUnicode(), CUnicode(),
+                        default_value=['1fr', '2fr', '1fr'])
+    pane_heights = Tuple(CUnicode(), CUnicode(), CUnicode(),
+                         default_value=['1fr', '3fr', '1fr'])
+
     merge = Bool(default_value=True)
 
     def __init__(self, **kwargs):
         super(AppLayout, self).__init__(**kwargs)
         self._update_layout()
 
+    @staticmethod
+    def _size_to_css(size):
+        if re.match(r'\d+\.?\d*(px|fr)$', size):
+            return size
+        if re.match(r'\d+\.?\d*$', size):
+            return size + 'fr'
+
+        raise TypeError("the pane sizes must be in one of the following formats: "
+                        "'10px', '10fr', 10 (will be converted to '10fr')")
+
+    def _convert_sizes(self, size_list):
+        return list(map(self._size_to_css, size_list))
+
     def _update_layout(self):
 
         grid_template_areas = [["header", "header", "header"],
                                ["left-sidebar", "center", "right-sidebar"],
                                ["footer", "footer", "footer"]]
-        grid_template_columns = ['1fr', '2fr', '1fr']
-        grid_template_rows = ['1fr', '3fr', '1fr']
+
+        if self.pane_widths is None:
+            grid_template_columns = ['1fr', '2fr', '1fr']
+        else:
+            grid_template_columns = self._convert_sizes(self.pane_widths)
+
+        if self.pane_heights is None:
+            grid_template_rows = ['1fr', '3fr', '1fr']
+        else:
+            grid_template_rows = self._convert_sizes(self.pane_heights)
 
         all_children = {'header': self.header,
                         'footer': self.footer,
@@ -202,7 +246,8 @@ class AppLayout(GridBox, LayoutProperties):
 
         self.children = tuple(children.values())
 
-    @observe("footer", "header", "center", "left_sidebar", "right_sidebar", "merge")
+    @observe("footer", "header", "center", "left_sidebar", "right_sidebar", "merge",
+             "pane_widths", "pane_heights")
     def _child_changed(self, change): #pylint: disable=unused-argument
         self._update_layout()
 
@@ -218,6 +263,9 @@ class TwoByTwoLayout(GridBox, LayoutProperties):
     bottom_left: instance of Widget
     bottom_right: instance of Widget
         widgets to fill the positions in the layout
+
+    merge: bool
+        flag to say whether the empty positions should be automatically merged
 
     {style_params}
 
