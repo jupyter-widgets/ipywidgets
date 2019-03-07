@@ -235,6 +235,18 @@ class TestTwoByTwoLayout(TestCase):
         # check whether frontend was informed
         send_state.assert_called_once_with(key="grid_template_areas")
 
+        box = widgets.TwoByTwoLayout(top_left=button1, top_right=button3,
+                                     bottom_left=None, bottom_right=button4)
+        assert box.layout.grid_template_areas == ('"top-left top-right"\n' +
+                                                  '"top-left bottom-right"')
+        box.layout.comm.kernel = mock.MagicMock(spec=Kernel) #for mocking purposes
+        send_state.reset_mock()
+        box.merge = False
+        assert box.layout.grid_template_areas == ('"top-left top-right"\n' +
+                                                  '"bottom-left bottom-right"')
+        send_state.assert_called_once_with(key="grid_template_areas")
+
+
 class TestAppLayout(TestCase):
     """test layout templates"""
 

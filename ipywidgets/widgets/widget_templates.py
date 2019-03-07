@@ -73,8 +73,6 @@ class LayoutProperties(HasTraits):
         allow_none=True,
         help="The width CSS attribute.")
 
-    # extra args
-    merge = Bool(default_value=True)
 
 
     def __init__(self, **kwargs):
@@ -127,6 +125,9 @@ class AppLayout(GridBox, LayoutProperties):
     left_sidebar = Instance(Widget, allow_none=True)
     right_sidebar = Instance(Widget, allow_none=True)
     center = Instance(Widget, allow_none=True)
+
+    # extra args
+    merge = Bool(default_value=True)
 
     def __init__(self, **kwargs):
         super(AppLayout, self).__init__(**kwargs)
@@ -201,7 +202,7 @@ class AppLayout(GridBox, LayoutProperties):
 
         self.children = tuple(children.values())
 
-    @observe("footer", "header", "center", "left_sidebar", "right_sidebar")
+    @observe("footer", "header", "center", "left_sidebar", "right_sidebar", "merge")
     def _child_changed(self, change): #pylint: disable=unused-argument
         self._update_layout()
 
@@ -237,6 +238,8 @@ class TwoByTwoLayout(GridBox, LayoutProperties):
     bottom_left = Instance(Widget, allow_none=True)
     bottom_right = Instance(Widget, allow_none=True)
 
+    # extra args
+    merge = Bool(default_value=True)
 
     def __init__(self, **kwargs):
         super(TwoByTwoLayout, self).__init__(**kwargs)
@@ -295,6 +298,6 @@ class TwoByTwoLayout(GridBox, LayoutProperties):
         self.children = tuple(children.values())
 
 
-    @observe("top_left", "bottom_left", "top_right", "bottom_right")
+    @observe("top_left", "bottom_left", "top_right", "bottom_right", "merge")
     def _child_changed(self, change): #pylint: disable=unused-argument
         self._update_layout()
