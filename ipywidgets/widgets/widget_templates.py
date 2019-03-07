@@ -30,7 +30,7 @@ _doc_snippets = {
     }
 
 @doc_subst(_doc_snippets)
-class LayoutTemplate(HasTraits):
+class LayoutProperties(HasTraits):
     """Mixin class for layout templates
 
     This class handles mainly style attributes (height, grid_gap etc.)
@@ -75,14 +75,18 @@ class LayoutTemplate(HasTraits):
     merge = Bool(default_value=True)
 
     def __init__(self, **kwargs):
-        super(LayoutTemplate, self).__init__(**kwargs)
+        super(LayoutProperties, self).__init__(**kwargs)
         self._copy_layout_props()
+        self._set_observers()
 
-    @observe(All)
     def _delegate_to_layout(self, change):
         "delegate the trait types to their counterparts in self.layout"
         setattr(self.layout, change['name'], change['new']) # pylint: disable=no-member
-        pass
+
+    def _set_observers(self):
+        "set observers on all layout properties defined in this class"
+        _props = LayoutProperties.class_trait_names()
+        self.observe(self._delegate_to_layout, _props)
 
     def _copy_layout_props(self):
 
@@ -95,7 +99,7 @@ class LayoutTemplate(HasTraits):
 
 
 @doc_subst(_doc_snippets)
-class AppLayout(GridBox, LayoutTemplate):
+class AppLayout(GridBox, LayoutProperties):
     """ Define an application like layout of widgets.
 
     Parameters
@@ -193,7 +197,7 @@ class AppLayout(GridBox, LayoutTemplate):
         self._update_layout()
 
 @doc_subst(_doc_snippets)
-class TwoByTwoLayout(GridBox, LayoutTemplate):
+class TwoByTwoLayout(GridBox, LayoutProperties):
     """ Define a layout with 2x2 regular grid.
 
     Parameters
