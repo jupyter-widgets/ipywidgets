@@ -2,8 +2,14 @@
 
 from unittest import TestCase
 
+try:
+    from unittest import mock
+except ImportError:
+    import mock
+
+import traitlets
 import ipywidgets as widgets
-from ipywidgets.widgets.widget_templates import LayoutTemplate
+from ipywidgets.widgets.widget_templates import LayoutProperties
 
 class TestTwoByTwoLayout(TestCase):
     """test layout templates"""
@@ -198,7 +204,8 @@ class TestTwoByTwoLayout(TestCase):
         assert box.layout.align_items == "center"
 
 
-    def test_update_dynamically(self): #pylint: disable=no-self-use
+    @mock.patch("ipywidgets.Layout.send_state")
+    def test_update_dynamically(self, send_state): #pylint: disable=no-self-use
         """test whether it's possible to add widget outside __init__"""
 
         button1 = widgets.Button()
@@ -208,17 +215,23 @@ class TestTwoByTwoLayout(TestCase):
 
         box = widgets.TwoByTwoLayout(top_left=button1, top_right=button3,
                                      bottom_left=None, bottom_right=button4)
+        from ipykernel.kernelbase import Kernel
 
         state = box.get_state()
         assert len(state['children']) == 3
         assert box.layout.grid_template_areas == ('"top-left top-right"\n' +
                                                   '"top-left bottom-right"')
+
+        box.layout.comm.kernel = mock.MagicMock(spec=Kernel) #for mocking purposes
+        send_state.reset_mock()
         box.bottom_left = button2
 
         state = box.get_state()
         assert len(state['children']) == 4
         assert box.layout.grid_template_areas == ('"top-left top-right"\n' +
                                                   '"bottom-left bottom-right"')
+        # check whether frontend was informed
+        send_state.assert_called_once_with(key="grid_template_areas")
 
 class TestAppLayout(TestCase):
     """test layout templates"""
@@ -476,11 +489,11 @@ class TestAppLayout(TestCase):
 
         assert len(box.get_state()['children']) == 1
 
-class TestLayoutTemplate(TestCase):
+class TestLayoutProperties(TestCase):
     """test mixin with layout properties"""
-    
-    class DummyTemplate(LayoutTemplate):
-        layout = widgets.Layout()
+
+    class DummyTemplate(widgets.GridBox, LayoutProperties):
+        location = traitlets.Instance(widgets.Widget, allow_none=True)
 
     def test_layout_updated_on_trait_change(self):
         "test whether respective layout traits are updated when traits change"
