@@ -281,8 +281,11 @@ class TextView extends DescriptionView {
         this.listenTo(this.model, 'change:placeholder', function(model, value, options) {
             this.update_placeholder(value);
         });
+        this.listenTo(this.model, 'change:description_tooltip', this.update_title);
+        this.listenTo(this.model, 'change:description', this.update_title);
 
         this.update_placeholder();
+        this.update_title();
     }
 
     update_placeholder(value?) {
@@ -290,6 +293,15 @@ class TextView extends DescriptionView {
             value = this.model.get('placeholder');
         }
         this.textbox.setAttribute('placeholder', value);
+    }
+
+    update_title() {
+        if (this.model.get('description').length === 0) {
+            let title = this.model.get('description_tooltip');
+            if (title.length > 0) {
+                this.textbox.setAttribute('title', title);
+            }
+	}
     }
 
     update(options?) {
