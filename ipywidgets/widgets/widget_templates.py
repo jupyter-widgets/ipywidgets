@@ -159,13 +159,14 @@ class AppLayout(GridBox, LayoutProperties):
 
     @staticmethod
     def _size_to_css(size):
-        if re.match(r'\d+\.?\d*(px|fr)$', size):
+        if re.match(r'\d+\.?\d*(px|fr|%)$', size):
             return size
         if re.match(r'\d+\.?\d*$', size):
             return size + 'fr'
 
         raise TypeError("the pane sizes must be in one of the following formats: "
-                        "'10px', '10fr', 10 (will be converted to '10fr')")
+                        "'10px', '10fr', 10 (will be converted to '10fr')."
+                        "Got '{}'".format(size))
 
     def _convert_sizes(self, size_list):
         return list(map(self._size_to_css, size_list))
@@ -176,15 +177,8 @@ class AppLayout(GridBox, LayoutProperties):
                                ["left-sidebar", "center", "right-sidebar"],
                                ["footer", "footer", "footer"]]
 
-        if self.pane_widths is None:
-            grid_template_columns = ['1fr', '2fr', '1fr']
-        else:
-            grid_template_columns = self._convert_sizes(self.pane_widths)
-
-        if self.pane_heights is None:
-            grid_template_rows = ['1fr', '3fr', '1fr']
-        else:
-            grid_template_rows = self._convert_sizes(self.pane_heights)
+        grid_template_columns = self._convert_sizes(self.pane_widths)
+        grid_template_rows = self._convert_sizes(self.pane_heights)
 
         all_children = {'header': self.header,
                         'footer': self.footer,
@@ -260,13 +254,24 @@ class GridspecLayout(GridBox, LayoutProperties):
     Parameters
     ----------
 
+    n_rows : int
+        number of rows in the grid
 
+    n_columns : int
+        number of columns in the grid
 
     {style_params}
 
     Examples
     --------
 
+    >>> from ipywidgets import GridspecLayout, Button, Layout
+    >>> layout = GridspecLayout(n_rows=4, n_columns=2, height='200px')
+    >>> layout[:3, 0] = Button(layout=Layout(height='auto', width='auto'))
+    >>> layout[1:, 1] = Button(layout=Layout(height='auto', width='auto'))
+    >>> layout[-1, 0] = Button(layout=Layout(height='auto', width='auto'))
+    >>> layout[0, 1] = Button(layout=Layout(height='auto', width='auto'))
+    >>> layout
     """
 
     n_rows = Integer()
@@ -335,9 +340,6 @@ class GridspecLayout(GridBox, LayoutProperties):
         self.layout.grid_template_areas = grid_template_areas_css
         self.children = tuple(self._children.values())
 
-
-    def _child_changed(self, change): #pylint: disable=unused-argument
-        self._update_layout()
 
 @doc_subst(_doc_snippets)
 class TwoByTwoLayout(GridBox, LayoutProperties):

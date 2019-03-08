@@ -510,6 +510,11 @@ class TestAppLayout(TestCase):
         assert box._size_to_css("1fr") == '1fr'
         assert box._size_to_css("2.5fr") == '2.5fr'
         assert box._size_to_css('2.5') == '2.5fr'
+        assert box._size_to_css('25%') == '25%'
+
+        with pytest.raises(TypeError):
+            box._size_to_css('this is not correct size')
+
 
     def test_set_pane_widths_heights(self):
 
