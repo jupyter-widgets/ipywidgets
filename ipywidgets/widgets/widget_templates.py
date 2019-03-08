@@ -279,8 +279,8 @@ class GridspecLayout(GridBox, LayoutProperties):
         self.n_columns = n_columns
         self._grid_template_areas = [['.'] * self.n_columns for i in range(self.n_rows)]
 
-        self._grid_template_rows = 'repeat(%d, %.1f%%)' % (self.n_rows, 100./self.n_rows)
-        self._grid_template_columns = 'repeat(%d, %.1f%%)' % (self.n_columns, 100./self.n_columns)
+        self._grid_template_rows = 'repeat(%d, 1fr)' % (self.n_rows,)
+        self._grid_template_columns = 'repeat(%d, 1fr)' % (self.n_columns,)
         self._children = {}
         self._id_count = 0
 
@@ -296,10 +296,26 @@ class GridspecLayout(GridBox, LayoutProperties):
         self._id_count += 1
         obj_id = 'widget%03d' % self._id_count
         value.layout.grid_area = obj_id
-        current_value = self._grid_template_areas[row][column]
-        if current_value != '.':
-            del self._children[current_value]
-        self._grid_template_areas[row][column] = obj_id
+
+        if isinstance(row, slice):
+            start, stop, stride = row.indices(self.n_rows)
+            rows = range(start, stop, stride)
+        else:
+            rows = [row]
+
+        if isinstance(column, slice):
+            start, stop, stride = column.indices(self.n_columns)
+            columns = range(start, stop, stride)
+        else:
+            columns = [column]
+
+        for row in rows:
+            for column in columns:
+                current_value = self._grid_template_areas[row][column]
+                if current_value != '.' and current_value in self._children:
+                    del self._children[current_value]
+                self._grid_template_areas[row][column] = obj_id
+
         self._children[obj_id] = value
         self._update_layout()
 
