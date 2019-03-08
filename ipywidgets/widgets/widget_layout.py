@@ -45,6 +45,8 @@ class Layout(Widget):
     height = Unicode(None, allow_none=True, help="The height CSS attribute.").tag(sync=True)
     justify_content = CaselessStrEnum(['flex-start', 'flex-end', 'center',
         'space-between', 'space-around'] + CSS_PROPERTIES, allow_none=True, help="The justify-content CSS attribute.").tag(sync=True)
+    justify_items = CaselessStrEnum(['flex-start', 'flex-end', 'center'] + CSS_PROPERTIES,
+        allow_none=True, help="The justify-items CSS attribute.").tag(sync=True)
     left = Unicode(None, allow_none=True, help="The left CSS attribute.").tag(sync=True)
     margin = Unicode(None, allow_none=True, help="The margin CSS attribute.").tag(sync=True)
     max_height = Unicode(None, allow_none=True, help="The max-height CSS attribute.").tag(sync=True)
