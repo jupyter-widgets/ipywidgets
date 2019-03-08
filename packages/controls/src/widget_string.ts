@@ -296,12 +296,13 @@ class TextView extends DescriptionView {
     }
 
     update_title() {
-        if (this.model.get('description').length === 0) {
-            let title = this.model.get('description_tooltip');
-            if (title.length > 0) {
-                this.textbox.setAttribute('title', title);
-            }
-	}
+        let title = this.model.get('description_tooltip');
+        if (title.length === 0) {
+           this.textbox.removeAttribute('title');
+        }
+        else if (this.model.get('description').length === 0) {
+            this.textbox.setAttribute('title', title);
+        }
     }
 
     update(options?) {
