@@ -1,5 +1,8 @@
 """Implement common widgets layouts as reusable components"""
 
+import re
+from collections import defaultdict
+
 from traitlets import Instance, Bool, Unicode, CUnicode, CaselessStrEnum, Tuple
 from traitlets import Integer
 from traitlets import HasTraits, TraitError
@@ -10,9 +13,6 @@ from .widget_box import GridBox
 
 from .docutils import doc_subst
 
-from collections import defaultdict
-
-import re
 
 _doc_snippets = {
     'style_params' : """
@@ -276,7 +276,6 @@ class GridspecLayout(GridBox, LayoutProperties):
 
     n_rows = Integer()
     n_columns = Integer()
-    # extra args
 
     def __init__(self, n_rows=None, n_columns=None, **kwargs):
         super(GridspecLayout, self).__init__(**kwargs)
@@ -294,7 +293,6 @@ class GridspecLayout(GridBox, LayoutProperties):
         if proposal['value'] > 0:
             return proposal['value']
         raise TraitError('n_rows and n_columns must be positive integer')
-
 
     def __setitem__(self, key, value):
         row, column = key
@@ -328,7 +326,6 @@ class GridspecLayout(GridBox, LayoutProperties):
         row, column = key
         obj_id = self._grid_template_areas[row][column]
         return self._children[obj_id]
-
 
     def _update_layout(self):
 
@@ -434,7 +431,6 @@ class TwoByTwoLayout(GridBox, LayoutProperties):
         self.layout.grid_template_areas = grid_template_areas_css
 
         self.children = tuple(children.values())
-
 
     @observe("top_left", "bottom_left", "top_right", "bottom_right", "merge")
     def _child_changed(self, change): #pylint: disable=unused-argument

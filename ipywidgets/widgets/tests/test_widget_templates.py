@@ -653,18 +653,10 @@ class TestGridspecLayout(TestCase):
 
         box = widgets.GridspecLayout(2, 3)
         button1 = widgets.Button()
-        button2 = widgets.Button()
-        button3 = widgets.Button()
-        button4 = widgets.Button()
 
         box[0, 0] = button1
 
         assert box[0, 0] is button1
-
-
-
-
-
 
 
 class TestLayoutProperties(TestCase):
