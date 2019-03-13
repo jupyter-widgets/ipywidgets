@@ -7,6 +7,7 @@ Represents a widget that can be used to display output within the widget area.
 """
 
 import sys
+from contextlib import contextmanager
 from functools import wraps
 
 from .domwidget import DOMWidget
@@ -31,7 +32,7 @@ class Output(DOMWidget):
     context will be captured and displayed in the widget instead of the standard output
     area.
 
-    You can also use the .capture() method to decorate a function or a method. Any output 
+    You can also use the .capture() method to decorate a function or a method. Any output
     produced by the function will then go to the output widget. This is useful for
     debugging widget callbacks, for example.
 
@@ -43,7 +44,7 @@ class Output(DOMWidget):
 
         print('prints to output area')
 
-        with out:
+        with out.context():
             print('prints to output widget')
 
         @out.capture()
@@ -97,7 +98,7 @@ class Output(DOMWidget):
             def inner(*args, **kwargs):
                 if clear_output:
                     self.clear_output(*clear_args, **clear_kwargs)
-                with self:
+                with self.context():
                     return func(*args, **kwargs)
             return inner
         return capture_decorator
@@ -158,3 +159,12 @@ class Output(DOMWidget):
                 'metadata': metadata
             },
         )
+
+    @contextmanager
+    def context(self):
+        if self.msg_id == '':
+            with self:
+                yield
+        else:
+            yield
+
