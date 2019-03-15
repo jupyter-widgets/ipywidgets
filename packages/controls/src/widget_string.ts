@@ -297,7 +297,7 @@ class TextView extends DescriptionView {
 
     update_title() {
         let title = this.model.get('description_tooltip');
-        if (title.length === 0) {
+        if (!title) {
            this.textbox.removeAttribute('title');
         }
         else if (this.model.get('description').length === 0) {
