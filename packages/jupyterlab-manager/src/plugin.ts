@@ -29,7 +29,7 @@ import {
 } from '@jupyterlab/cells';
 
 import {
-  each
+  toArray, filter
 } from '@phosphor/algorithm';
 
 import {
@@ -70,8 +70,53 @@ const WIDGET_REGISTRY: base.IWidgetRegistryData[] = [];
  */
 const SETTINGS: {saveState: boolean} = {saveState: false};
 
-export
-function registerWidgetManager(nb: Notebook, context: DocumentRegistry.IContext<INotebookModel>, rendermime: RenderMimeRegistry) {
+/**
+ * Iterate through all widget renderers in a notebook panel.
+ */
+function* widgetRenderers(nb: Notebook) {
+  for (let cell of nb.widgets) {
+    if (cell.model.type === 'code') {
+      for (let codecell of (cell as CodeCell).outputArea.widgets) {
+        for (let output of toArray(codecell.children())) {
+          if (output instanceof WidgetRenderer) {
+            yield output;
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Iterate through all matching linked output views
+ */
+function* outputViews(app: JupyterFrontEnd, path: string) {
+  let linkedViews = filter(
+    app.shell.widgets(),
+    w => w.id.startsWith('LinkedOutputView-') && (w as any).path === path
+  );
+  for (let view of toArray(linkedViews)) {
+    for (let outputs of toArray(view.children())) {
+      for (let output of toArray(outputs.children())) {
+        if (output instanceof WidgetRenderer) {
+          yield output;
+        }
+      }
+    }
+  }
+}
+
+function* chain<T>(...args: IterableIterator<T>[]) {
+  for (let it of args) {
+    yield* it;
+  }
+}
+
+export function registerWidgetManager(
+  context: DocumentRegistry.IContext<INotebookModel>,
+  rendermime: RenderMimeRegistry,
+  renderers: IterableIterator<WidgetRenderer>
+) {
   let wManager = Private.widgetManagerProperty.get(context);
   if (!wManager) {
     wManager = new WidgetManager(context, rendermime, SETTINGS);
@@ -79,21 +124,9 @@ function registerWidgetManager(nb: Notebook, context: DocumentRegistry.IContext<
     Private.widgetManagerProperty.set(context, wManager);
   }
 
-  // For any widgets that have already been rendered with the placeholder, set
-  // the renderer. This iteration structure is closely tied to the structure of
-  // the notebook widget.
-  nb.widgets.forEach(cell => {
-    if (cell.model.type === 'code') {
-      (cell as CodeCell).outputArea.widgets.forEach(w => {
-        // Need to use phosphor iteration functions for .children()
-        each(w.children(), r => {
-          if (r instanceof WidgetRenderer) {
-            r.manager = wManager;
-          }
-        });
-      });
-    }
-  });
+  for (let r of renderers) {
+    r.manager = wManager;
+  }
 
   // Replace the placeholder widget renderer with one bound to this widget
   // manager.
@@ -158,10 +191,24 @@ function activateWidgetExtension(app: JupyterFrontEnd, tracker: INotebookTracker
   );
 
   tracker.forEach(panel => {
-    registerWidgetManager(panel.content, panel.context, panel.content.rendermime);
+    registerWidgetManager(
+      panel.context,
+      panel.content.rendermime,
+      chain(
+        widgetRenderers(panel.content),
+        outputViews(app, panel.context.path)
+      )
+    );
   });
   tracker.widgetAdded.connect((sender, panel) => {
-    registerWidgetManager(panel.content, panel.context, panel.content.rendermime);
+    registerWidgetManager(
+      panel.context,
+      panel.content.rendermime,
+      chain(
+        widgetRenderers(panel.content),
+        outputViews(app, panel.context.path)
+      )
+    );
   });
 
   // Add a command for creating a new Markdown file.
