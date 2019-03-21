@@ -71,7 +71,7 @@ const WIDGET_REGISTRY: base.IWidgetRegistryData[] = [];
 const SETTINGS: {saveState: boolean} = {saveState: false};
 
 /**
- * Iterate through all widget renderers in a notebook panel.
+ * Iterate through all widget renderers in a notebook.
  */
 function* widgetRenderers(nb: Notebook) {
   for (let cell of nb.widgets) {

@@ -172,6 +172,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   async restoreWidgets(notebook: INotebookModel): Promise<void> {
     await this._loadFromKernel();
     await this._loadFromNotebook(notebook);
+    this._restoredStatus = true;
     this._restored.emit();
   }
 
@@ -181,7 +182,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     }
     const comm_ids = await this._get_comm_info();
 
-    // For each comm id, create the comm, get the state, and create a widget.
+    // For each comm id, create the comm, and request the state.
     const widgets_info = await Promise.all(Object.keys(comm_ids).map(async (comm_id) => {
       const comm = await this._create_comm(this.comm_target_name, comm_id);
       const update_promise = new Promise<Private.ICommUpdateData>((resolve, reject) => {
@@ -342,6 +343,13 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     return this._restored;
   }
 
+  /**
+   * Whether the state has been restored yet or not.
+   */
+  get restoredStatus(): boolean {
+    return this._restoredStatus;
+  }
+
   register(data: IWidgetRegistryData) {
     this._registry.set(data.name, data.version, data.exports);
   }
@@ -426,6 +434,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
 
   _commRegistration: IDisposable;
   private _restored = new Signal<this, void>(this);
+  private _restoredStatus = false;
 
   private _modelsSync = new Map<string, WidgetModel>();
   private _settings: {saveState: boolean};

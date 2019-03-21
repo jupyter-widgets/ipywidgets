@@ -45,6 +45,11 @@ class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable
 
   async renderModel(model: IRenderMime.IMimeModel) {
     const source: any = model.data[this.mimeType];
+
+    // Let's be optimistic, and hope the widget state will come later.
+    this.node.textContent = 'Loading widget...';
+    this.addClass('jupyter-widgets');
+
     const manager = await this._manager.promise;
     // If there is no model id, the view was removed, so hide the node.
     if (source.model_id === '') {
@@ -56,20 +61,13 @@ class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable
     try {
       wModel = await manager.get_model(source.model_id);
     } catch (err) {
-      console.log('Error getting widget state');
-      console.log(err);
-
-      // Let's be optimistic, and hope the widget state will come later.
-      this.node.textContent = 'Loading widget...';
-      this.addClass('jupyter-widgets');
-
-      // If we haven't rerendered in 5 seconds with the right model, display an
-      // error message to the user.
-      setTimeout(() => {
-        if (this._rerenderMimeModel) {
-          this.node.textContent = 'Error displaying widget: model not found';
-        }
-      }, 5000);
+      if (manager.restoredStatus) {
+        // The manager has been restored, so this error won't be going away.
+        this.node.textContent = 'Error displaying widget: model not found';
+        this.addClass('jupyter-widgets');
+        console.error(err);
+        return;
+      }
 
       // Store the model for a possible rerender
       this._rerenderMimeModel = model;
@@ -83,10 +81,10 @@ class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable
     try {
       widget = await manager.display_model(undefined, wModel, undefined);
     } catch (err) {
-      console.log('Error displaying widget');
-      console.log(err);
       this.node.textContent = 'Error displaying widget';
       this.addClass('jupyter-widgets');
+      console.error(err);
+      return;
     }
 
     this.addWidget(widget);
