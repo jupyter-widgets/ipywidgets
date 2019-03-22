@@ -107,7 +107,7 @@ class OutputModel extends outputBase.OutputModel {
       break;
     case 'clear_output':
       this.clear_output((msg as KernelMessage.IClearOutputMsg).content.wait);
-      this.set('outputs', [], {newMessage: true});
+      this.set('outputs', this._outputs.toJSON(), {newMessage: true});
       this.save_changes();
       break;
     default:
