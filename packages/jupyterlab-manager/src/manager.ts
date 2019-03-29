@@ -98,7 +98,7 @@ class BackboneViewWrapper extends Widget {
  */
 export
 class WidgetManager extends ManagerBase<Widget> implements IDisposable {
-  constructor(context: DocumentRegistry.IContext<INotebookModel>, rendermime: RenderMimeRegistry, settings: {saveState: boolean}) {
+  constructor(context: DocumentRegistry.IContext<INotebookModel>, rendermime: RenderMimeRegistry, settings: WidgetManager.Settings) {
     super();
     this._context = context;
     this._rendermime = rendermime;
@@ -437,7 +437,16 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   private _restoredStatus = false;
 
   private _modelsSync = new Map<string, WidgetModel>();
-  private _settings: {saveState: boolean};
+  private _settings: WidgetManager.Settings;
+}
+
+
+export
+namespace WidgetManager {
+  export
+  type Settings = {
+    saveState: boolean
+  };
 }
 
 
