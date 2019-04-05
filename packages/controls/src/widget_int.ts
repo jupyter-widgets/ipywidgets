@@ -565,17 +565,20 @@ class IntTextView extends DescriptionView {
 
     /**
      * Handles key press
-     *
-     * Stop propagation so the event isn't sent to the application.
      */
     handleKeypress(e) {
-        e.stopPropagation();
+        if (/[e,.\s]/.test(String.fromCharCode(e.keyCode))) {
+            e.preventDefault();
+        }
     }
 
     /**
      * Handle key up
      */
     handleKeyUp(e) {
+        if (e.altKey || e.ctrlKey) {
+            return;
+        }
         /* remove invalid characters */
         let value = e.target.value;
 
