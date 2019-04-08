@@ -294,11 +294,8 @@ class GridspecLayout(GridBox, LayoutProperties):
             return proposal['value']
         raise TraitError('n_rows and n_columns must be positive integer')
 
-    def __setitem__(self, key, value):
-        row, column = key
-        self._id_count += 1
-        obj_id = 'widget%03d' % self._id_count
-        value.layout.grid_area = obj_id
+    def _get_indices_from_slice(self, row, column):
+        "convert a two-dimensional slice to a list of rows and column indices"
 
         if isinstance(row, slice):
             start, stop, stride = row.indices(self.n_rows)
@@ -312,6 +309,16 @@ class GridspecLayout(GridBox, LayoutProperties):
         else:
             columns = [column]
 
+        return rows, columns
+
+    def __setitem__(self, key, value):
+        row, column = key
+        self._id_count += 1
+        obj_id = 'widget%03d' % self._id_count
+        value.layout.grid_area = obj_id
+
+        rows, columns = self._get_indices_from_slice(row, column)
+
         for row in rows:
             for column in columns:
                 current_value = self._grid_template_areas[row][column]
@@ -323,8 +330,18 @@ class GridspecLayout(GridBox, LayoutProperties):
         self._update_layout()
 
     def __getitem__(self, key):
-        row, column = key
-        obj_id = self._grid_template_areas[row][column]
+        rows, columns = self._get_indices_from_slice(*key)
+
+        obj_id = None
+        for row in rows:
+            for column in columns:
+                new_obj_id = self._grid_template_areas[row][column]
+                obj_id = obj_id or new_obj_id
+                if obj_id != new_obj_id:
+                    raise TypeError('The slice spans several widgets, but '
+                                    'only a single widget can be retrieved '
+                                    'at a time')
+
         return self._children[obj_id]
 
     def _update_layout(self):
