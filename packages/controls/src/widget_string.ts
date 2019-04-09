@@ -111,7 +111,8 @@ class LabelModel extends StringModel {
     defaults() {
         return _.extend(super.defaults(), {
             _view_name: 'LabelView',
-            _model_name: 'LabelModel'
+            _model_name: 'LabelModel',
+            draggable : false
         });
     }
 }
@@ -125,9 +126,17 @@ class LabelView extends DescriptionView {
         super.render();
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-label');
+        this.model.on("change:draggable", this.dragSetup, this)
         this.update(); // Set defaults.
     }
 
+    dragSetup() {
+      this.el.draggable = true;
+      this.el.addEventListener('dragstart', (event) => {
+        event.dataTransfer.setData("text/plain", this.model.model_id);
+        console.log("Drag me to heaven.")
+      })
+    }
     /**
      * Update the contents of this view
      *

@@ -55,6 +55,7 @@ class Label(_String):
     """
     _view_name = Unicode('LabelView').tag(sync=True)
     _model_name = Unicode('LabelModel').tag(sync=True)
+    draggable = Bool(default=False).tag(sync=True)
 
 
 @register
