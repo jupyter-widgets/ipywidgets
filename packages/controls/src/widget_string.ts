@@ -140,8 +140,9 @@ class LabelView extends DescriptionView {
     dragSetup() {
       this.el.draggable = true;
       this.el.addEventListener('dragstart', (event) => {
-        event.dataTransfer.setData("text/plain", this.model.model_id);
-        console.log("Drag me to heaven.")
+        event.dataTransfer.setData("text/plain", this.model.get("value"));
+        event.dataTransfer.setData("application/x-widget", this.model.model_id);
+        event.dataTransfer.dropEffect = 'copy';
       })
     }
     /**

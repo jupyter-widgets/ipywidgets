@@ -103,7 +103,9 @@ class BoxView extends DOMWidgetView {
           event.dataTransfer.dropEffect = "copy";
         });
         this.el.addEventListener("drop", (event) => {
-          var model_id = event.dataTransfer.getData("text/plain");
+          event.preventDefault();
+          event.dataTransfer.dropEffect = "copy";
+          var model_id = event.dataTransfer.getData("application/x-widget");
           console.log("received model_id " + model_id)
           let promise = this.model.widget_manager.get_model(model_id);
           promise.then((model) => {
