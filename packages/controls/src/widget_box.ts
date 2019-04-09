@@ -98,6 +98,21 @@ class BoxView extends DOMWidgetView {
         super.render();
         this.update_children();
         this.set_box_style();
+        this.el.addEventListener("dragover", (event) => {
+          event.preventDefault();
+          event.dataTransfer.dropEffect = "copy";
+        });
+        this.el.addEventListener("drop", (event) => {
+          var model_id = event.dataTransfer.getData("text/plain");
+          console.log("received model_id " + model_id)
+          let promise = this.model.widget_manager.get_model(model_id);
+          promise.then((model) => {
+            let childs = this.model.get("children");
+            childs.push(model);
+            this.update_children();
+            //this.model.set("children", childs)
+          });
+        });
     }
 
     update_children() {
@@ -178,7 +193,7 @@ class GridBoxView extends BoxView {
     initialize(parameters: any) {
         super.initialize(parameters);
         this.pWidget.addClass('widget-gridbox');
-        // display needn't be set to flex and grid 
+        // display needn't be set to flex and grid
         this.pWidget.removeClass('widget-box');
     }
 }
