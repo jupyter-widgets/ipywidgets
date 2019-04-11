@@ -144,15 +144,15 @@ class LabelView extends DescriptionView {
     }
 
     dragSetup() {
-      if (this.model.get("draggable")) {
-          this.el.draggable = true;
-          this.el.addEventListener('dragstart', (event) => {
-            event.dataTransfer.setData("text/plain", this.model.get("value"));
-            event.dataTransfer.setData("application/x-widget", this.model.model_id);
-            event.dataTransfer.dropEffect = 'copy';
-          })
+      this.el.draggable = this.model.get("draggable");
     }
+
+    on_dragstart(event) {
+        event.dataTransfer.setData("text/plain", this.model.get("value"));
+        event.dataTransfer.setData("application/x-widget", this.model.model_id);
+        event.dataTransfer.dropEffect = 'copy';
     }
+
     /**
      * Update the contents of this view
      *
@@ -184,7 +184,8 @@ class LabelView extends DescriptionView {
      */
     events(): {[e:string] : string;}
     {
-        return {'drop': '_handle_drop'};
+        return {'drop': '_handle_drop',
+                'dragstart' : 'on_dragstart' };
     }
 
 
