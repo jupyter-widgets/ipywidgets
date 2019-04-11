@@ -3,9 +3,15 @@
 
 """Contains the DropWidget class"""
 from .widget import Widget
+from .widget import CallbackDispatcher
 
 class DropWidget(Widget):
     """Widget that has the ondrop handler"""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._click_handlers = CallbackDispatcher()
+        self.on_msg(self._handle_drop_msg)
 
     def on_drop(self, callback, remove=False):
         """Register a callback to execute when an element is dropped.

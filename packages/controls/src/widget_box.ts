@@ -259,3 +259,57 @@ class GridBoxModel extends BoxModel {
         });
     }
 }
+
+export
+class DropBoxModel extends BoxModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _view_name: 'DropBoxView',
+            _model_name: 'DropBoxModel',
+        });
+    }
+}
+
+export
+class DropBoxView extends BoxView {
+    /**
+     * Public constructor
+     */
+    initialize(parameters) {
+        super.initialize(parameters);
+        this.pWidget.addClass('widget-dropbox');
+    }
+
+    render() {
+      super.render();
+    
+      this.el.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        event.dataTransfer.dropEffect = "copy";
+      });
+    }
+
+    _handle_drop(event) {
+        event.preventDefault();
+        // var data = Array.from(event.dataTransfer.items, item => item.getAsString())
+
+        var datamap = new Object();
+
+        for (var i=0; i < event.dataTransfer.types.length; i++) {
+          var t = event.dataTransfer.types[i];
+          datamap[t] = event.dataTransfer.getData(t);
+        }
+
+        console.log(event.dataTransfer);
+        this.send({event: 'drop', data: datamap});
+    }
+
+    /**
+     * Dictionary of events and handlers
+     */
+    events(): {[e:string] : string;}
+    {
+        return {'drop': '_handle_drop'};
+    }
+}
