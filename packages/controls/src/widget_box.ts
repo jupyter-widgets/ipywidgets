@@ -98,15 +98,20 @@ class BoxView extends DOMWidgetView {
         super.render();
         this.update_children();
         this.set_box_style();
+        this.model.on("change:dropzone", this.dropSetup, this)
+    }
+
+    dropSetup() {
         this.el.addEventListener("dragover", (event) => {
           event.preventDefault();
+          event.stopPropagation();
           event.dataTransfer.dropEffect = "copy";
         });
         this.el.addEventListener("drop", (event) => {
           event.preventDefault();
+          event.stopPropagation();
           event.dataTransfer.dropEffect = "copy";
           var model_id = event.dataTransfer.getData("application/x-widget");
-          console.log("received model_id " + model_id)
           let promise = this.model.widget_manager.get_model(model_id);
           promise.then((model) => {
             let childs = this.model.get("children");
