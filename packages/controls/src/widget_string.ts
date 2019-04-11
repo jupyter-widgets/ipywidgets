@@ -134,7 +134,15 @@ class LabelView extends DescriptionView {
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-label');
         this.model.on("change:draggable", this.dragSetup, this)
+
+        this.el.addEventListener("dragover", (event) => {
+          event.preventDefault();
+          event.stopPropagation();
+          event.dataTransfer.dropEffect = "copy";
+        });
+
         this.update(); // Set defaults.
+
     }
 
     dragSetup() {
@@ -154,6 +162,39 @@ class LabelView extends DescriptionView {
     update() {
         this.typeset(this.el, this.model.get('value'));
         return super.update();
+    }
+
+    /**
+     * Dictionary of events and handlers
+     */
+    events() {
+        // TODO: return typing not needed in Typescript later than 1.8.x
+        // See http://stackoverflow.com/questions/22077023/why-cant-i-indirectly-return-an-object-literal-to-satisfy-an-index-signature-re and https://github.com/Microsoft/TypeScript/pull/7029
+        return {'drop': '_handle_drop'};
+    }
+
+    /**
+     * Handles when the button is clicked.
+     */
+    _handle_drop(event) {
+        event.preventDefault();
+        // var data = Array.from(event.dataTransfer.items, item => item.getAsString())
+        var data = [];
+
+        for (var i=0; i < event.dataTransfer.types.length; i++) {
+          var t = event.dataTransfer.types[i];
+          data.push({type: t, value: event.dataTransfer.getData(t)})
+        }
+
+        var datamap = new Object();
+
+        for (var i=0; i < event.dataTransfer.types.length; i++) {
+          var t = event.dataTransfer.types[i];
+          datamap[t] = event.dataTransfer.getData(t);
+        }
+
+        console.log(event.dataTransfer);
+        this.send({event: 'drop', data: datamap});
     }
 }
 
