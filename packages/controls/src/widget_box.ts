@@ -75,7 +75,8 @@ class BoxModel extends CoreDOMWidgetModel {
             _view_name: 'BoxView',
             _model_name: 'BoxModel',
             children: [],
-            box_style: ''
+            box_style: '',
+            dropzone: false
         });
     }
 
@@ -282,7 +283,7 @@ class DropBoxView extends BoxView {
 
     render() {
       super.render();
-    
+
       this.el.addEventListener("dragover", (event) => {
         event.preventDefault();
         event.stopPropagation();
