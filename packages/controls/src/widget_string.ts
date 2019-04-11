@@ -173,7 +173,7 @@ class LabelModel extends StringModel {
 }
 
 export
-class LabelView extends DescriptionView implements Droppable {
+class LabelView extends DescriptionView {
     /**
      * Called when view is rendered.
      */
@@ -212,13 +212,32 @@ class LabelView extends DescriptionView implements Droppable {
         return super.update();
     }
 
-    _handle_drop: () => void
-    events: () => {[e:string] : string;}
+    _handle_drop(event) {
+        event.preventDefault();
+        // var data = Array.from(event.dataTransfer.items, item => item.getAsString())
+
+        var datamap = new Object();
+
+        for (var i=0; i < event.dataTransfer.types.length; i++) {
+          var t = event.dataTransfer.types[i];
+          datamap[t] = event.dataTransfer.getData(t);
+        }
+
+        console.log(event.dataTransfer);
+        this.send({event: 'drop', data: datamap});
+    }
+
+    /**
+     * Dictionary of events and handlers
+     */
+    events(): {[e:string] : string;}
+    {
+        return {'drop': '_handle_drop'};
+    }
 
 
 }
 
-applyMixins(LabelView, [Droppable])
 
 export
 class TextareaModel extends StringModel {

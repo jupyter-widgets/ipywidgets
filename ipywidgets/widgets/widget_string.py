@@ -61,8 +61,6 @@ class Label(DropWidget, _String):
 
     def __init__(self, *args, **kwargs):
         super(Label, self).__init__(*args, **kwargs)
-        self._click_handlers = CallbackDispatcher()
-        self.on_msg(self._handle_drop_msg)
 
 
 @register

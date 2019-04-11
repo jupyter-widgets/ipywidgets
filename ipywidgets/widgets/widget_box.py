@@ -11,6 +11,7 @@ relative layouts.
 from .widget import register, widget_serialization, Widget
 from .domwidget import DOMWidget
 from .widget_core import CoreWidget
+from .widget_drop import DropWidget
 from .docutils import doc_subst
 from .trait_types import TypedTuple
 from traitlets import Unicode, CaselessStrEnum, Instance
@@ -127,3 +128,8 @@ class GridBox(Box):
     """
     _model_name = Unicode('GridBoxModel').tag(sync=True)
     _view_name = Unicode('GridBoxView').tag(sync=True)
+
+@register
+class DropBox(DropWidget, Box):
+    _model_name = Unicode('DropBoxModel').tag(sync=True)
+    _view_name = Unicode('DropBoxView').tag(sync=True)
