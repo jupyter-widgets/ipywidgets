@@ -8,6 +8,7 @@ Represents a unicode string using a widget.
 
 from .widget_description import DescriptionWidget
 from .valuewidget import ValueWidget
+from .widget_drop import DropWidget
 from .widget import CallbackDispatcher, register
 from .widget_core import CoreWidget
 from traitlets import Unicode, Bool, Int
@@ -47,7 +48,7 @@ class HTMLMath(_String):
 
 
 @register
-class Label(_String):
+class Label(DropWidget, _String):
     """Label widget.
 
     It also renders math inside the string `value` as Latex (requires $ $ or
@@ -61,38 +62,6 @@ class Label(_String):
         super(Label, self).__init__(*args, **kwargs)
         self._click_handlers = CallbackDispatcher()
         self.on_msg(self._handle_drop_msg)
-
-    def on_drop(self, callback, remove=False):
-        """Register a callback to execute when an element is dropped.
-
-        The callback will be called with two arguments, the clicked button
-        widget instance, and the dropped element data.
-
-        Parameters
-        ----------
-        remove: bool (optional)
-            Set to true to remove the callback from the list of callbacks.
-        """
-        self._click_handlers.register_callback(callback, remove=remove)
-
-    def drop(self, data):
-        """Programmatically trigger a drop event.
-
-        This will call the callbacks registered to the  drop event.
-        """
-
-        self._click_handlers(self, data)
-
-    def _handle_drop_msg(self, _, content, buffers):
-        """Handle a msg from the front-end.
-
-        Parameters
-        ----------
-        content: dict
-            Content of the msg.
-        """
-        if content.get('event', '') == 'drop':
-            self.drop(content.get('data', {}))
 
 
 @register
