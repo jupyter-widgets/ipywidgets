@@ -116,7 +116,8 @@ class LabelModel extends StringModel {
         return _.extend(super.defaults(), {
             _view_name: 'LabelView',
             _model_name: 'LabelModel',
-            draggable : false
+            draggable : false,
+            drag_data: {}
         });
     }
 }
@@ -149,6 +150,10 @@ class LabelView extends DescriptionView {
 
     on_dragstart(event) {
         event.dataTransfer.setData("text/plain", this.model.get("value"));
+        let drag_data = this.model.get("drag_data");
+        for (let datatype in drag_data) {
+          event.dataTransfer.setData(datatype, drag_data[datatype]);
+        };
         event.dataTransfer.setData("application/x-widget", this.model.model_id);
         event.dataTransfer.dropEffect = 'copy';
     }
@@ -168,10 +173,10 @@ class LabelView extends DescriptionView {
         event.preventDefault();
         // var data = Array.from(event.dataTransfer.items, item => item.getAsString())
 
-        var datamap = new Object();
+        let datamap = {};
 
-        for (var i=0; i < event.dataTransfer.types.length; i++) {
-          var t = event.dataTransfer.types[i];
+        for (let i=0; i < event.dataTransfer.types.length; i++) {
+          let t = event.dataTransfer.types[i];
           datamap[t] = event.dataTransfer.getData(t);
         }
 

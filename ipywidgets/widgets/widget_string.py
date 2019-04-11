@@ -11,7 +11,7 @@ from .valuewidget import ValueWidget
 from .widget_drop import DropWidget
 from .widget import CallbackDispatcher, register
 from .widget_core import CoreWidget
-from traitlets import Unicode, Bool, Int
+from traitlets import Unicode, Bool, Int, Dict
 from warnings import warn
 
 
@@ -57,6 +57,7 @@ class Label(DropWidget, _String):
     _view_name = Unicode('LabelView').tag(sync=True)
     _model_name = Unicode('LabelModel').tag(sync=True)
     draggable = Bool(default=False).tag(sync=True)
+    drag_data = Dict().tag(sync=True)
 
     def __init__(self, *args, **kwargs):
         super(Label, self).__init__(*args, **kwargs)

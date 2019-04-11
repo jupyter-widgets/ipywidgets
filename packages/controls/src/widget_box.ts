@@ -295,22 +295,20 @@ class DropBoxView extends BoxView {
         event.preventDefault();
         // var data = Array.from(event.dataTransfer.items, item => item.getAsString())
 
-        var datamap = new Object();
+        let datamap = {};
 
-        for (var i=0; i < event.dataTransfer.types.length; i++) {
-          var t = event.dataTransfer.types[i];
+        for (let i=0; i < event.dataTransfer.types.length; i++) {
+          let t = event.dataTransfer.types[i];
           datamap[t] = event.dataTransfer.getData(t);
         }
 
-        console.log(event.dataTransfer);
         this.send({event: 'drop', data: datamap});
     }
 
     /**
      * Dictionary of events and handlers
      */
-    events(): {[e:string] : string;}
-    {
+    events(): {[e:string] : string;} {
         return {'drop': '_handle_drop'};
     }
 }
