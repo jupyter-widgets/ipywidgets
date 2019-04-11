@@ -14,6 +14,7 @@ from .widget_core import CoreWidget
 from .docutils import doc_subst
 from .trait_types import TypedTuple
 from traitlets import Unicode, CaselessStrEnum, Instance
+from traitlets import Bool
 
 
 _doc_snippets = {}
@@ -58,6 +59,8 @@ class Box(DOMWidget, CoreWidget):
     box_style = CaselessStrEnum(
         values=['success', 'info', 'warning', 'danger', ''], default_value='',
         help="""Use a predefined styling for the box.""").tag(sync=True)
+
+    dropzone = Bool(default=False).tag(sync=True)
 
     def __init__(self, children=(), **kwargs):
         kwargs['children'] = children
@@ -113,4 +116,3 @@ class HBox(Box):
 class GridBox(Box):
     _model_name = Unicode('GridBoxModel').tag(sync=True)
     _view_name = Unicode('GridBoxView').tag(sync=True)
- 
