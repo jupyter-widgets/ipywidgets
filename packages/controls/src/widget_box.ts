@@ -103,29 +103,33 @@ class BoxView extends DOMWidgetView {
         super.render();
         this.update_children();
         this.set_box_style();
-        this.model.on("change:dropzone", this.dropSetup, this)
     }
 
-    dropSetup() {
-        this.el.addEventListener("dragover", (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          event.dataTransfer.dropEffect = "copy";
-        });
-        this.el.addEventListener("drop", (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          event.dataTransfer.dropEffect = "copy";
-          var model_id = event.dataTransfer.getData("application/x-widget");
-          let promise = this.model.widget_manager.get_model(model_id);
-          promise.then((model) => {
-            let childs = this.model.get("children");
-            childs.push(model);
-            this.update_children();
-            //this.model.set("children", childs)
-          });
-        });
-    }
+   events(): {[e: string] : string; } {
+       return {'drop' : 'on_drop',
+               'dragover' : 'on_dragover'};
+     }
+
+   on_dragover(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      event.dataTransfer.dropEffect = 'copy';
+   }
+
+   on_drop(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.dataTransfer.dropEffect = 'copy';
+        if (this.model.get('dropzone')) {
+            let model_id = event.dataTransfer.getData('application/x-widget');
+            var promise = this.model.widget_manager.get_model(model_id);
+            promise.then((model) => {
+              let childs = this.model.get('children');
+              childs.push(model);
+              this.update_children();
+            });
+        }
+   }
 
     update_children() {
         this.children_views.update(this.model.get('children')).then((views: DOMWidgetView[]) => {
