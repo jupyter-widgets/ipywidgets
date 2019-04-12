@@ -132,12 +132,12 @@ class LabelView extends DescriptionView {
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-label');
         this.dragSetup();
-        this.model.on("change:draggable", this.dragSetup, this)
+        this.model.on('change:draggable', this.dragSetup, this);
 
-        this.el.addEventListener("dragover", (event) => {
+        this.el.addEventListener('dragover', (event) => {
           event.preventDefault();
           event.stopPropagation();
-          event.dataTransfer.dropEffect = "copy";
+          event.dataTransfer.dropEffect = 'copy';
         });
 
         this.update(); // Set defaults.
@@ -145,16 +145,16 @@ class LabelView extends DescriptionView {
     }
 
     dragSetup() {
-      this.el.draggable = this.model.get("draggable");
+      this.el.draggable = this.model.get('draggable');
     }
 
     on_dragstart(event) {
-        event.dataTransfer.setData("text/plain", this.model.get("value"));
-        let drag_data = this.model.get("drag_data");
+        event.dataTransfer.setData('text/plain', this.model.get('value'));
+        let drag_data = this.model.get('drag_data');
         for (let datatype in drag_data) {
           event.dataTransfer.setData(datatype, drag_data[datatype]);
-        };
-        event.dataTransfer.setData("application/x-widget", this.model.model_id);
+        }
+        event.dataTransfer.setData('application/x-widget', this.model.model_id);
         event.dataTransfer.dropEffect = 'copy';
     }
 

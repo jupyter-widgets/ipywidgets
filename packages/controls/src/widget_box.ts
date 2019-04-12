@@ -284,10 +284,10 @@ class DropBoxView extends BoxView {
     render() {
       super.render();
 
-      this.el.addEventListener("dragover", (event) => {
+      this.el.addEventListener('dragover', (event) => {
         event.preventDefault();
         event.stopPropagation();
-        event.dataTransfer.dropEffect = "copy";
+        event.dataTransfer.dropEffect = 'copy';
       });
     }
 
@@ -308,7 +308,7 @@ class DropBoxView extends BoxView {
     /**
      * Dictionary of events and handlers
      */
-    events(): {[e:string] : string;} {
+    events(): {[e: string] : string; } {
         return {'drop': '_handle_drop'};
     }
 }
