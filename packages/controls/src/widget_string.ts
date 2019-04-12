@@ -128,13 +128,15 @@ class Droppable {
     /** Droppbable mixin
      * Implements handler for drop events.
      * The view class implementing this interface needs to
-     * listen to 'drop' event with '_handle_drop'
+     * listen to 'drop' event with '_handle_drop', and to
+     * 'dragover' event with 'on_dragover'
      *
      * In order to use this mixin, the view class needs to
      * implement the Droppable interface, define the following
      * placeholders:
      *
      *  _handle_drop : (event: Object) => void;
+     * on_dragover : (event : Object) => void;
      *
      * and you need to call applyMixin on class definition.
      *
@@ -159,6 +161,12 @@ class Droppable {
         this.send({event: 'drop', data: datamap});
     }
 
+    on_dragover(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.dataTransfer.dropEffect = 'copy';
+    }
+
 }
 
 export
@@ -177,7 +185,7 @@ class Draggable {
      * Allows the widget to be draggable
      *
      * Note: In order to use it, you will need to add
-     * handlers for dragstart, dragover event in the view class
+     * handlers for dragstartevent in the view class
      * also need to call dragSetup at initialization time
      *
      * The view class must implement Draggable interface and
@@ -185,7 +193,6 @@ class Draggable {
      * For example:
      *
      * on_dragstart : (event: Object) => void;
-     * on_dragover : (event : Object) => void;
      * on_change_draggable : () => void;
      * dragSetup : () => void;
      *
@@ -199,11 +206,6 @@ class Draggable {
     model : StringModel;
     el : any;
 
-    on_dragover(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        event.dataTransfer.dropEffect = 'copy';
-    }
 
     on_dragstart(event) {
         event.dataTransfer.setData('text/plain', this.model.get('value'));
@@ -239,7 +241,6 @@ class LabelView extends DescriptionView {
         this.el.classList.add('widget-label');
         this.update(); // Set defaults.
     }
-
 
     /**
      * Update the contents of this view
