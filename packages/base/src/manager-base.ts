@@ -9,7 +9,7 @@ import {
 } from './widget';
 
 import {
-    IClassicComm
+    IClassicComm, ICallbacks
 } from './services-shim';
 
 import {
@@ -120,15 +120,6 @@ interface WidgetOptions {
 }
 
 
-export
-interface StateOptions {
-    /**
-     * Drop model attributes that are equal to their default value.
-     *
-     * @default false
-     */
-    drop_defaults?: boolean;
-}
 
 /**
  * Manager abstract base class
@@ -192,14 +183,19 @@ abstract class ManagerBase<T> {
     /**
      * callback handlers specific to a view
      */
-    callbacks (view: WidgetView) {
+    callbacks (view?: WidgetView): ICallbacks {
         return {};
     }
 
     /**
      * Get a promise for a model by model id.
+     *
+     * #### Notes
+     * If a model is not found, undefined is returned (NOT a promise). However,
+     * the calling code should also deal with the case where a rejected promise
+     * is returned, and should treat that also as a model not found.
      */
-    get_model(model_id: string): Promise<WidgetModel> {
+    get_model(model_id: string): Promise<WidgetModel> | undefined {
         // TODO: Perhaps we should return a Promise.reject if the model is not
         // found. Right now this isn't a true async function because it doesn't
         // always return a promise.
@@ -372,7 +368,7 @@ abstract class ManagerBase<T> {
     clear_state(): Promise<void> {
         return utils.resolvePromisesDict(this._models).then((models) => {
             Object.keys(models).forEach(id => models[id].close());
-            this._models = {};
+            this._models = Object.create(null);
         });
     }
 
@@ -385,27 +381,10 @@ abstract class ManagerBase<T> {
      * @param options - The options for what state to return.
      * @returns Promise for a state dictionary
      */
-    get_state(options: StateOptions = {}): Promise<any> {
-        return utils.resolvePromisesDict(this._models).then((models) => {
-            let state = {};
-            Object.keys(models).forEach(model_id => {
-                let model = models[model_id];
-                let split = utils.remove_buffers(model.serialize(model.get_state(options.drop_defaults)));
-                let buffers = split.buffers.map((buffer, index) => {
-                    return {data: utils.bufferToBase64(buffer), path: split.buffer_paths[index], encoding: 'base64'};
-                });
-                state[model_id] = {
-                    model_name: model.name,
-                    model_module: model.module,
-                    model_module_version: model.get('_model_module_version'),
-                    state: split.state
-                };
-                // To save space, only include the buffer key if we have buffers
-                if (buffers.length > 0) {
-                    state[model_id].buffers = buffers;
-                }
-            });
-            return {version_major: 2, version_minor: 0, state: state};
+    get_state(options: IStateOptions = {}): Promise<any> {
+        const modelPromises = Object.keys(this._models).map(id => this._models[id]);
+        return Promise.all(modelPromises).then(models => {
+            return serialize_state(models, options);
         });
     }
 
@@ -535,7 +514,72 @@ abstract class ManagerBase<T> {
     protected abstract _get_comm_info();
 
     /**
+     * Filter serialized widget state to remove any ID's already present in manager.
+     *
+     * @param {*} state Serialized state to filter
+     *
+     * @returns {*} A copy of the state, with its 'state' attribute filtered
+     */
+    protected filterExistingModelState(serialized_state: any) {
+      let models = serialized_state.state as {[key: string]: any};
+      models = Object.keys(models)
+          .filter((model_id) => {
+              return !this._models[model_id];
+          })
+          .reduce((res, model_id) => {
+              res[model_id] = models[model_id];
+              return res;
+          }, {} as {[key: string]: any});
+      return {...serialized_state, state: models};
+    }
+
+    /**
      * Dictionary of model ids and model instance promises
      */
     private _models: {[key: string]: Promise<WidgetModel>} = Object.create(null);
+}
+
+
+export
+interface IStateOptions {
+    /**
+     * Drop model attributes that are equal to their default value.
+     *
+     * @default false
+     */
+    drop_defaults?: boolean;
+}
+
+/**
+ * Serialize an array of widget models
+ *
+ * #### Notes
+ * The return value follows the format given in the
+ * @jupyter-widgets/schema package.
+ */
+export
+function serialize_state(models: WidgetModel[], options: IStateOptions = {}) {
+    const state = {};
+    models.forEach(model => {
+        const model_id = model.model_id;
+        const split = utils.remove_buffers(model.serialize(model.get_state(options.drop_defaults)));
+        const buffers = split.buffers.map((buffer, index) => {
+            return {
+                data: utils.bufferToBase64(buffer),
+                path: split.buffer_paths[index],
+                encoding: 'base64'
+            };
+        });
+        state[model_id] = {
+            model_name: model.name,
+            model_module: model.module,
+            model_module_version: model.get('_model_module_version'),
+            state: split.state
+        };
+        // To save space, only include the buffers key if we have buffers
+        if (buffers.length > 0) {
+            state[model_id].buffers = buffers;
+        }
+    });
+    return {version_major: 2, version_minor: 0, state: state};
 }

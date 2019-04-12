@@ -49,27 +49,6 @@ function new_comm(manager, target_name, data, callbacks, metadata, comm_id, buff
     return manager.new_comm.apply(manager, Array.prototype.slice.call(arguments, 1));
 }
 
-/**
- * Filter serialized widget state to remove any ID's already present in manager.
- *
- * @param {*} manager WidgetManager instance
- * @param {*} state Serialized state to filter
- *
- * @returns {*} A copy of the state, with its 'state' attribute filtered
- */
-function filter_existing_model_state(manager, state) {
-    var models = state.state;
-    models = Object.keys(models)
-        .filter(function(model_id) {
-            return !manager._models[model_id];
-        })
-        .reduce(function(res, model_id) {
-            res[model_id] = models[model_id];
-            return res;
-        }, {});
-    return _.extend({}, state, {state: models});
-}
-
 //--------------------------------------------------------------------
 // WidgetManager class
 //--------------------------------------------------------------------
@@ -139,7 +118,7 @@ var WidgetManager = function (comm_manager, notebook) {
             // Restore any widgets from saved state that are not live (3)
             if (widget_md && widget_md['application/vnd.jupyter.widget-state+json']) {
                 var state = notebook.metadata.widgets['application/vnd.jupyter.widget-state+json'];
-                state = filter_existing_model_state(that, state);
+                state = that.filterExistingModelState(state);
                 return that.set_state(state);
             }
         }).then(function() {

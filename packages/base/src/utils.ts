@@ -80,18 +80,24 @@ class WrappedError extends Error {
 }
 
 /**
+ * A simple dictionary type.
+ */
+export
+type Dict<T> = { [keys: string]: T; };
+
+/**
  * Resolve a promiseful dictionary.
  * Returns a single Promise.
  */
 export
-function resolvePromisesDict(d): Promise<any> {
+function resolvePromisesDict<V>(d: Dict<PromiseLike<V>>): Promise<Dict<V>> {
     let keys = Object.keys(d);
-    let values = [];
+    let values: PromiseLike<V>[] = [];
     keys.forEach(function(key) {
         values.push(d[key]);
     });
-    return Promise.all(values).then(function(v) {
-        d = {};
+    return Promise.all(values).then((v) => {
+        let d: Dict<V> = {};
         for (let i=0; i < keys.length; i++) {
             d[keys[i]] = v[i];
         }

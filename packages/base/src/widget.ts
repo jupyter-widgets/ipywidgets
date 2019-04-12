@@ -21,7 +21,7 @@ import {
 } from '@phosphor/messaging';
 
 import {
-    IClassicComm
+    IClassicComm, ICallbacks
 } from './services-shim';
 
 import {
@@ -294,7 +294,7 @@ class WidgetModel extends Backbone.Model {
     /**
      * Create msg callbacks for a comm msg.
      */
-    callbacks(view?: WidgetView) {
+    callbacks(view?: WidgetView): ICallbacks {
         return this.widget_manager.callbacks(view);
     }
 
@@ -657,7 +657,7 @@ class WidgetView extends NativeView<WidgetModel> {
     /**
      * Create msg callbacks for a comm msg.
      */
-    callbacks() {
+    callbacks(): ICallbacks {
         return this.model.callbacks(this);
     }
 
