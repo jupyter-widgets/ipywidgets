@@ -124,6 +124,23 @@ class LabelModel extends StringModel {
 
 class Droppable {
 
+    /** Droppbable mixin
+     * Implements handler for drop events.
+     * The view class implementing this interface needs to
+     * listen to 'drop' event with '_handle_drop'
+     *
+     * In order to use this mixin, the view class needs to
+     * implement the Droppable interface, define the following
+     * placeholders:
+     *
+     *  _handle_drop : (event: Object) => void;
+     *
+     * and you need to call applyMixin on class definition.
+     *
+     * follows the example from typescript docs
+     * https://www.typescriptlang.org/docs/handbook/mixins.html
+     */
+
     send : (content : any, buffers? : any) => void;
 
     _handle_drop(event) {
@@ -151,31 +168,38 @@ function applyMixins(derivedCtor: any, baseCtors: any[]) {
     });
 }
 
-export
-class LabelView extends DescriptionView implements Droppable {
-    /**
-     * Called when view is rendered.
+class Draggable {
+
+    /** Draggable mixin.
+     * Allows the widget to be draggable
+     *
+     * Note: In order to use it, you will need to add
+     * handlers for dragstart, dragover event in the view class
+     * also need to call dragSetup at initialization time
+     *
+     * The view class must implement Draggable interface and
+     * declare the methods (no definition).
+     * For example:
+     *
+     * on_dragstart : (event: Object) => void;
+     * on_dragover : (event : Object) => void;
+     * on_change_draggable : () => void;
+     * dragSetup : () => void;
+     *
+     * Also need to call applyMixin on the view class
+     * The model class needs to have drag_data attribute
+     *
+     * follows the example from typescript docs
+     * https://www.typescriptlang.org/docs/handbook/mixins.html
      */
 
-    render() {
-        super.render();
-        this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-label');
-        this.dragSetup();
-        this.model.on('change:draggable', this.dragSetup, this);
+    model : StringModel;
+    el : any;
 
-        this.el.addEventListener('dragover', (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          event.dataTransfer.dropEffect = 'copy';
-        });
-
-        this.update(); // Set defaults.
-
-    }
-
-    dragSetup() {
-      this.el.draggable = this.model.get('draggable');
+    on_dragover(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.dataTransfer.dropEffect = 'copy';
     }
 
     on_dragstart(event) {
@@ -187,6 +211,34 @@ class LabelView extends DescriptionView implements Droppable {
         event.dataTransfer.setData('application/x-widget', this.model.model_id);
         event.dataTransfer.dropEffect = 'copy';
     }
+
+    dragSetup() {
+        this.model.on('change:draggable', this.on_change_draggable, this);
+    }
+
+    on_change_draggable() {
+      this.el.draggable = this.model.get('draggable');
+    }
+
+
+}
+
+export
+class LabelView extends DescriptionView implements Droppable, Draggable {
+    /**
+     * Called when view is rendered.
+     */
+
+    render() {
+        super.render();
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-label');
+        this.dragSetup();
+        this.update(); // Set defaults.
+
+    }
+
+
 
     /**
      * Update the contents of this view
@@ -206,14 +258,19 @@ class LabelView extends DescriptionView implements Droppable {
     events(): {[e:string] : string;}
     {
         return {'drop': '_handle_drop',
-                'dragstart' : 'on_dragstart' };
+                'dragstart' : 'on_dragstart',
+                'dragover' : 'on_dragover' };
     }
 
     _handle_drop : (event: Object) => void;
+    on_dragstart : (event: Object) => void;
+    on_dragover : (event : Object) => void;
+    on_change_draggable : () => void;
+    dragSetup : () => void;
 
 }
 
-applyMixins(LabelView, [Droppable]);
+applyMixins(LabelView, [Droppable, Draggable]);
 
 export
 class TextareaModel extends StringModel {
