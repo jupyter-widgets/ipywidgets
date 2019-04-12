@@ -173,11 +173,41 @@ class LabelModel extends StringModel {
     }
 }
 
+class Droppable {
+
+    send : (content : any, buffers? : any) => void;
+
+    _handle_drop(event) {
+        event.preventDefault();
+        // var data = Array.from(event.dataTransfer.items, item => item.getAsString())
+
+        let datamap = {};
+
+        for (let i=0; i < event.dataTransfer.types.length; i++) {
+          let t = event.dataTransfer.types[i];
+          datamap[t] = event.dataTransfer.getData(t);
+        }
+
+        console.log(event.dataTransfer);
+        this.send({event: 'drop', data: datamap});
+    }
+
+}
+
+function applyMixins(derivedCtor: any, baseCtors: any[]) {
+    baseCtors.forEach(baseCtor => {
+        Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
+            Object.defineProperty(derivedCtor.prototype, name, Object.getOwnPropertyDescriptor(baseCtor.prototype, name));
+        });
+    });
+}
+
 export
-class LabelView extends DescriptionView {
+class LabelView extends DescriptionView implements Droppable {
     /**
      * Called when view is rendered.
      */
+
     render() {
         super.render();
         this.el.classList.add('jupyter-widgets');
@@ -220,20 +250,6 @@ class LabelView extends DescriptionView {
         return super.update();
     }
 
-    _handle_drop(event) {
-        event.preventDefault();
-        // var data = Array.from(event.dataTransfer.items, item => item.getAsString())
-
-        let datamap = {};
-
-        for (let i=0; i < event.dataTransfer.types.length; i++) {
-          let t = event.dataTransfer.types[i];
-          datamap[t] = event.dataTransfer.getData(t);
-        }
-
-        console.log(event.dataTransfer);
-        this.send({event: 'drop', data: datamap});
-    }
 
     /**
      * Dictionary of events and handlers
@@ -244,9 +260,11 @@ class LabelView extends DescriptionView {
                 'dragstart' : 'on_dragstart' };
     }
 
+    _handle_drop : (event: Object) => void;
 
 }
 
+applyMixins(LabelView, [Droppable]);
 
 export
 class TextareaModel extends StringModel {

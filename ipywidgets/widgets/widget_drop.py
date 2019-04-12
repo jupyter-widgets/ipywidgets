@@ -6,7 +6,7 @@ from .widget import Widget
 from .widget import CallbackDispatcher
 
 class DropWidget(Widget):
-    """Widget that has the ondrop handler"""
+    """Widget that has the ondrop handler. Used as a mixin"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
