@@ -4,9 +4,13 @@
 """Contains the DropWidget class"""
 from .widget import Widget
 from .widget import CallbackDispatcher
+from traitlets import Bool, Dict
 
 class DropWidget(Widget):
     """Widget that has the ondrop handler. Used as a mixin"""
+
+    draggable = Bool(default=False).tag(sync=True)
+    drag_data = Dict().tag(sync=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
