@@ -49,7 +49,7 @@ class HTMLMath(_String):
 
 
 @register
-class Label(DropWidget, _String):
+class Label(_String):
     """Label widget.
 
     It also renders math inside the string `value` as Latex (requires $ $ or
@@ -57,11 +57,30 @@ class Label(DropWidget, _String):
     """
     _view_name = Unicode('LabelView').tag(sync=True)
     _model_name = Unicode('LabelModel').tag(sync=True)
-    draggable = Bool(default=False).tag(sync=True)
-    drag_data = Dict().tag(sync=True)
 
     def __init__(self, *args, **kwargs):
         super(Label, self).__init__(*args, **kwargs)
+
+@register
+class DraggableLabel(DropWidget, Label):
+    """ Draggable Label.
+
+    A label that can be dragged and responds to drop events.
+
+    Properties:
+
+    draggable : bool
+       activate or deactivate drag behaviour    
+
+    Methods:
+
+    on_drop :
+        function that adds a drop event handler
+
+    """
+    _view_name = Unicode('DraggableLabelView').tag(sync=True)
+    _model_name = Unicode('DraggableLabelModel').tag(sync=True)
+
 
 
 @register

@@ -275,7 +275,7 @@ class Draggable {
 }
 
 export
-class LabelView extends DescriptionView implements Droppable, Draggable {
+class LabelView extends DescriptionView {
     /**
      * Called when view is rendered.
      */
@@ -284,11 +284,8 @@ class LabelView extends DescriptionView implements Droppable, Draggable {
         super.render();
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-label');
-        this.dragSetup();
         this.update(); // Set defaults.
-
     }
-
 
 
     /**
@@ -303,25 +300,49 @@ class LabelView extends DescriptionView implements Droppable, Draggable {
     }
 
 
+
+}
+
+export
+class DraggableLabelView extends LabelView implements Droppable, Draggable {
+    render() {
+      super.render();
+      this.dragSetup();
+    }
+
     /**
      * Dictionary of events and handlers
      */
-    events(): {[e:string] : string;}
-    {
-        return {'drop': '_handle_drop',
-                'dragstart' : 'on_dragstart',
-                'dragover' : 'on_dragover' };
+    events(): {[e:string] : string;} {
+          return {'drop': '_handle_drop',
+                  'dragstart' : 'on_dragstart',
+                  'dragover' : 'on_dragover' };
     }
+
+    // placeholders for the mixin methods
 
     _handle_drop : (event: Object) => void;
     on_dragstart : (event: Object) => void;
     on_dragover : (event : Object) => void;
     on_change_draggable : () => void;
     dragSetup : () => void;
+}
+
+applyMixins(DraggableLabelView, [Droppable, Draggable]);
+
+export
+class DraggableLabelModel extends LabelModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _view_name: 'DraggableLabelView',
+            _model_name: 'DraggableLabelModel',
+            draggable : false,
+            drag_data: {}
+        });
+    }
 
 }
 
-applyMixins(LabelView, [Droppable, Draggable]);
 
 export
 class TextareaModel extends StringModel {
