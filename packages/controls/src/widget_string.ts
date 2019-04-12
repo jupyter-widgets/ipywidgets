@@ -122,6 +122,7 @@ class LabelModel extends StringModel {
     }
 }
 
+export
 class Droppable {
 
     /** Droppbable mixin
@@ -160,6 +161,7 @@ class Droppable {
 
 }
 
+export
 function applyMixins(derivedCtor: any, baseCtors: any[]) {
     baseCtors.forEach(baseCtor => {
         Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
@@ -168,6 +170,7 @@ function applyMixins(derivedCtor: any, baseCtors: any[]) {
     });
 }
 
+export
 class Draggable {
 
     /** Draggable mixin.
@@ -213,6 +216,7 @@ class Draggable {
     }
 
     dragSetup() {
+        this.el.draggable = this.model.get('draggable');
         this.model.on('change:draggable', this.on_change_draggable, this);
     }
 
