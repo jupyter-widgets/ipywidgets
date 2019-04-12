@@ -25,6 +25,10 @@ import {
     Widget, Panel
 } from '@phosphor/widgets';
 
+import {
+  Droppable, applyMixins
+} from './widget_string';
+
 import * as _ from 'underscore';
 import * as $ from 'jquery';
 
@@ -272,7 +276,7 @@ class DropBoxModel extends BoxModel {
 }
 
 export
-class DropBoxView extends BoxView {
+class DropBoxView extends BoxView implements Droppable {
     /**
      * Public constructor
      */
@@ -281,34 +285,16 @@ class DropBoxView extends BoxView {
         this.pWidget.addClass('widget-dropbox');
     }
 
-    render() {
-      super.render();
-
-      this.el.addEventListener('dragover', (event) => {
-        event.preventDefault();
-        event.stopPropagation();
-        event.dataTransfer.dropEffect = 'copy';
-      });
-    }
-
-    _handle_drop(event) {
-        event.preventDefault();
-        // var data = Array.from(event.dataTransfer.items, item => item.getAsString())
-
-        let datamap = {};
-
-        for (let i=0; i < event.dataTransfer.types.length; i++) {
-          let t = event.dataTransfer.types[i];
-          datamap[t] = event.dataTransfer.getData(t);
-        }
-
-        this.send({event: 'drop', data: datamap});
-    }
-
     /**
      * Dictionary of events and handlers
      */
     events(): {[e: string] : string; } {
-        return {'drop': '_handle_drop'};
+        return {'drop': '_handle_drop',
+                'dragover' : 'on_dragover'};
     }
+
+    _handle_drop : (event: Object) => void;
+    on_dragover : (event : Object) => void;
 }
+
+applyMixins(DropBoxView, [Droppable]);
