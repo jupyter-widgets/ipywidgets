@@ -26,7 +26,7 @@ import {
 } from '@phosphor/widgets';
 
 import {
-  Droppable, applyMixins
+  Droppable, Draggable, applyMixins
 } from './widget_string';
 
 import * as _ from 'underscore';
@@ -302,3 +302,40 @@ class DropBoxView extends BoxView implements Droppable {
 }
 
 applyMixins(DropBoxView, [Droppable]);
+
+export
+class DraggableBoxModel extends BoxModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _view_name: 'DraggableBoxView',
+            _model_name: 'DraggableBoxModel',
+            draggable : false,
+            drag_data: {}
+        });
+    }
+}
+
+export
+class DraggableBoxView extends BoxView implements Draggable {
+    /**
+     * Public constructor
+     */
+    initialize(parameters) {
+        super.initialize(parameters);
+        this.pWidget.addClass('widget-draggablebox');
+        this.dragSetup();
+    }
+
+    /**
+     * Dictionary of events and handlers
+     */
+    events(): {[e: string] : string; } {
+        return {'dragstart' : 'on_dragstart'};
+    }
+
+    on_dragstart : (event : Object) => void;
+    on_change_draggable : () => void;
+    dragSetup : () => void;
+}
+
+applyMixins(DraggableBoxView, [Draggable]);

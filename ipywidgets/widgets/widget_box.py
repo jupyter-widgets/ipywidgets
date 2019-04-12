@@ -122,3 +122,8 @@ class GridBox(Box):
 class DropBox(DropWidget, Box):
     _model_name = Unicode('DropBoxModel').tag(sync=True)
     _view_name = Unicode('DropBoxView').tag(sync=True)
+
+@register
+class DraggableBox(DropWidget, Box):
+    _model_name = Unicode('DraggableBoxModel').tag(sync=True)
+    _view_name = Unicode('DraggableBoxView').tag(sync=True)
