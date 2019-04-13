@@ -156,7 +156,6 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   _handleKernelStatusChange(args: Kernel.Status) {
     switch (args) {
     case 'connected':
-      // TODO: should we clear away any old widgets before restoring?
       this.restoreWidgets(this._context.model);
       break;
     case 'restarting':
@@ -427,8 +426,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Set the dirty state of the notebook model if applicable.
    *
-   * TODO: should also set dirty when auto-save state is turned on (easy), and when any
-   * model changes any data (likely hard right now).
+   * TODO: perhaps should also set dirty when any model changes any data
    */
   setDirty() {
     if (this._settings.saveState) {
