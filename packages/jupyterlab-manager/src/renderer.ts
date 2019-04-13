@@ -87,6 +87,8 @@ class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable
       return;
     }
 
+    // Clear any previous loading message.
+    this.node.textContent = '';
     this.addWidget(widget);
 
     // When the widget is disposed, hide this container and make sure we
