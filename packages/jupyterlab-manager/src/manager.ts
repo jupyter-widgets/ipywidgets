@@ -176,6 +176,15 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     this._restored.emit();
   }
 
+  /**
+   * Disconnect the widget manager from the kernel, setting each model's comm
+   * as dead.
+   */
+  disconnect() {
+    super.disconnect();
+    this._restoredStatus = false;
+  }
+
   async _loadFromKernel(): Promise<void> {
     if (!this.context.session.kernel) {
       return;
