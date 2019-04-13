@@ -185,9 +185,10 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   }
 
   async _loadFromKernel(): Promise<void> {
-    if (!this.context.session.kernel) {
+    if (!this.context.session) {
       return;
     }
+    await this.context.session.ready;
     const comm_ids = await this._get_comm_info();
 
     // For each comm id, create the comm, and request the state.
