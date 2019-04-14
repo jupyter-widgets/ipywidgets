@@ -17,7 +17,7 @@ from .widget_color import ColorPicker
 from .widget_date import DatePicker
 from .widget_output import Output
 from .widget_selection import RadioButtons, ToggleButtons, ToggleButtonsStyle, Dropdown, Select, SelectionSlider, SelectMultiple, SelectionRangeSlider
-from .widget_selectioncontainer import Tab, Accordion
+from .widget_selectioncontainer import Tab, Accordion, Stacked
 from .widget_string import HTML, HTMLMath, Label, Text, Textarea, Password, Combobox
 from .widget_controller import Controller
 from .interaction import interact, interactive, fixed, interact_manual, interactive_output

@@ -78,3 +78,10 @@ class Tab(_SelectionContainer):
     """Displays children each on a separate accordion tab."""
     _view_name = Unicode('TabView').tag(sync=True)
     _model_name = Unicode('TabModel').tag(sync=True)
+
+
+@register
+class Stacked(_SelectionContainer):
+    """Displays only the selected child."""
+    _view_name = Unicode('StackedView').tag(sync=True)
+    _model_name = Unicode('StackedModel').tag(sync=True)
