@@ -14,6 +14,7 @@ conda create -c conda-forge --override-channels -y -n releasewidgets notebook no
 conda activate releasewidgets
 
 git clone git@github.com:jupyter-widgets/ipywidgets.git
+cd ipywidgets
 ```
 
 
