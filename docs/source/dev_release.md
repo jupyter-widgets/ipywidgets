@@ -46,7 +46,7 @@ git checkout master
 git pull origin master
 git reset --hard origin/master
 git clean -fdx
-yarn
+yarn install
 yarn run publish
 ```
 
