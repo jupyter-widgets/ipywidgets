@@ -252,7 +252,7 @@ special "Save Notebook Widget State" action in the widgets menu.
 
 ## Rendering Interactive Widgets on [nbviewer](http://nbviewer.jupyter.org/)
 
-If your notebook was saved with the special "Save Notebook with Widgets" action
+If your notebook was saved with the special "Save Notebook Widget State" action
 in the Widgets menu, interactive widgets displayed in your notebook should also
 be rendered on nbviewer.
 
