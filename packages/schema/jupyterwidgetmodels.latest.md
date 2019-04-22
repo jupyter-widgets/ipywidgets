@@ -39,6 +39,7 @@ Attribute        | Type             | Default          | Help
 `grid_template_rows` | `null` or string | `null`           | The grid-template-rows CSS attribute.
 `height`         | `null` or string | `null`           | The height CSS attribute.
 `justify_content` | `null` or string (one of `'flex-start'`, `'flex-end'`, `'center'`, `'space-between'`, `'space-around'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The justify-content CSS attribute.
+`justify_items`  | `null` or string (one of `'flex-start'`, `'flex-end'`, `'center'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The justify-items CSS attribute.
 `left`           | `null` or string | `null`           | The left CSS attribute.
 `margin`         | `null` or string | `null`           | The margin CSS attribute.
 `max_height`     | `null` or string | `null`           | The max-height CSS attribute.
