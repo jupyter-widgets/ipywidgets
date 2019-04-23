@@ -44,7 +44,7 @@ var OutputModel = outputBase.OutputModel.extend({
             }, that);
             that.listenTo(that, 'clear_output', function(msg) {
                 that.output_area.handle_clear_output(msg);
-                that.set('outputs', [], {newMessage: true});
+                that.set('outputs', that.output_area.toJSON(), {newMessage: true});
                 that.save_changes();
             })
             that.listenTo(that, 'change:outputs', that.setOutputs);
