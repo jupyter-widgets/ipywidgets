@@ -706,26 +706,27 @@ class Widget(LoggingHasTraits):
 
     def _ipython_display_(self, **kwargs):
         """Called when `IPython.display.display` is called on the widget."""
-        if self._view_name is not None:
 
-            plaintext = repr(self)
-            if len(plaintext) > 110:
-                plaintext = plaintext[:110] + '…'
+        plaintext = repr(self)
+        if len(plaintext) > 110:
+            plaintext = plaintext[:110] + '…'
+        data = {
+            'text/plain': plaintext,
+        }
+        if self._view_name is not None:
             # The 'application/vnd.jupyter.widget-view+json' mimetype has not been registered yet.
             # See the registration process and naming convention at
             # http://tools.ietf.org/html/rfc6838
             # and the currently registered mimetypes at
             # http://www.iana.org/assignments/media-types/media-types.xhtml.
-            data = {
-                'text/plain': plaintext,
-                'application/vnd.jupyter.widget-view+json': {
-                    'version_major': 2,
-                    'version_minor': 0,
-                    'model_id': self._model_id
-                }
+            data['application/vnd.jupyter.widget-view+json'] = {
+                'version_major': 2,
+                'version_minor': 0,
+                'model_id': self._model_id
             }
-            display(data, raw=True)
+        display(data, raw=True)
 
+        if self._view_name is not None:
             self._handle_displayed(**kwargs)
 
     def _send(self, msg, buffers=None):
