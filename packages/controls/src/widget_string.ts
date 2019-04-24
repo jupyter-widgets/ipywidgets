@@ -15,6 +15,13 @@ import {
 
 import * as _ from 'underscore';
 
+
+/**
+ * Class name for a combobox with an invlid value.
+ */
+const INVALID_VALUE_CLASS = 'jpwidgets-invalidComboValue';
+
+
 export
 class StringModel extends CoreDescriptionModel {
     defaults() {
@@ -388,7 +395,98 @@ class PasswordModel extends TextModel {
 }
 
 export
-class PasswordView extends TextView
-{
+class PasswordView extends TextView {
     protected readonly inputType: string = 'password';
+}
+
+
+/**
+ * Combobox widget model class.
+ */
+export
+class ComboboxModel extends TextModel {
+    defaults() {
+        return {...super.defaults(),
+            _model_name: 'ComboboxModel',
+            _view_name: 'ComboboxView',
+            options: [],
+            ensure_options: false,
+        };
+    }
+}
+
+
+/**
+ * Combobox widget view class.
+ */
+export
+class ComboboxView extends TextView {
+    render() {
+        this.datalist = document.createElement('datalist');
+        this.datalist.id = uuid();
+
+        super.render();
+
+        this.textbox.setAttribute('list', this.datalist.id);
+        this.el.appendChild(this.datalist);
+    }
+
+    update(options?: any) {
+        super.update(options);
+        if (!this.datalist) {
+        return;
+        }
+
+        const valid = this.isValid(this.model.get('value'));
+        this.highlightValidState(valid);
+
+        // Check if we need to update options
+        if (options !== undefined && options.updated_view) {
+        // Value update only, keep current options
+        return;
+        }
+
+        this.datalist.innerHTML = '';
+        for (let opt of this.model.get('options') as string[]) {
+        let el = document.createElement('option');
+        el.value = opt;
+        this.datalist.appendChild(el);
+        }
+    }
+
+    isValid(value: string): boolean {
+        if (true === this.model.get('ensure_option')) {
+        const options = this.model.get('options') as string[];
+        if (options.indexOf(value) === -1) {
+            return false;
+        }
+        }
+        return true;
+    }
+
+    handleChanging(e: KeyboardEvent) {
+        // Override to validate value
+        const target = e.target as HTMLInputElement;
+        const valid = this.isValid(target.value);
+        this.highlightValidState(valid);
+        if (valid) {
+        super.handleChanging(e);
+        }
+    }
+
+    handleChanged(e: KeyboardEvent) {
+        // Override to validate value
+        const target = e.target as HTMLInputElement;
+        const valid = this.isValid(target.value);
+        this.highlightValidState(valid);
+        if (valid) {
+        super.handleChanged(e);
+        }
+    }
+
+    highlightValidState(valid: boolean): void {
+        this.textbox.classList.toggle(INVALID_VALUE_CLASS, !valid);
+    }
+
+    datalist: HTMLDataListElement | undefined;
 }
