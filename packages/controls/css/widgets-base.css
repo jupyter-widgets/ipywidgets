@@ -430,11 +430,18 @@
     background-color: var(--jp-widgets-input-background-color);
     color: var(--jp-widgets-input-color);
     font-size: var(--jp-widgets-font-size);
-    padding: var(--jp-widgets-input-padding) calc( var(--jp-widgets-input-padding) *  2 );
     flex-grow: 1;
     min-width: 0; /* This makes it possible for the flexbox to shrink this input */
     flex-shrink: 1;
     outline: none !important;
+}
+    
+.widget-text input[type="text"], .widget-textarea textarea {
+    padding: var(--jp-widgets-input-padding) calc( var(--jp-widgets-input-padding) *  2);
+}
+
+.widget-text input[type="number"] {
+    padding: var(--jp-widgets-input-padding) 0 var(--jp-widgets-input-padding) calc(var(--jp-widgets-input-padding) *  2);
 }
 
 .widget-textarea textarea {
