@@ -19,6 +19,7 @@ __pycache__
 .xunit.xml
 .tern-project
 npm-debug.log
+.pytest_cache
 
 widgetsnbextension/widgetsnbextension/static
 

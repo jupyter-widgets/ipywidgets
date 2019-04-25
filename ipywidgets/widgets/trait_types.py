@@ -9,9 +9,30 @@ import re
 import traitlets
 import datetime as dt
 
+from .util import string_types
+
 
 _color_names = ['aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanchedalmond', 'blue', 'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse', 'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'cyan', 'darkblue', 'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgreen', 'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue', 'darkslategray', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dodgerblue', 'firebrick', 'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'greenyellow', 'honeydew', 'hotpink', 'indianred ', 'indigo ', 'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgreen', 'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray', 'lightsteelblue', 'lightyellow', 'lime', 'limegreen', 'linen', 'magenta', 'maroon', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise', 'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'navy', 'oldlace', 'olive', 'olivedrab', 'orange', 'orangered', 'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'purple', 'rebeccapurple', 'red', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon', 'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver', 'skyblue', 'slateblue', 'slategray', 'snow', 'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 'tomato', 'transparent', 'turquoise', 'violet', 'wheat', 'white', 'whitesmoke', 'yellow', 'yellowgreen']
-_color_re = re.compile(r'#[a-fA-F0-9]{3}(?:[a-fA-F0-9]{3})?$')
+
+# Regex colors #fff and #ffffff
+_color_hex_re = re.compile(r'#[a-fA-F0-9]{3}(?:[a-fA-F0-9]{3})?$')
+# Regex colors #ffff and #ffffffff (includes alpha value)
+_color_hexa_re = re.compile(r'^#[a-fA-F0-9]{4}(?:[a-fA-F0-9]{4})?$')
+
+# Helpers (float percent, int percent with optional surrounding whitespace)
+_color_frac_percent = r'\s*(\d+(\.\d*)?|\.\d+)?%?\s*'
+_color_int_percent = r'\s*\d+%?\s*'
+
+# rgb(), rgba(), hsl() and hsla() format strings
+_color_rgb = r'rgb\({ip},{ip},{ip}\)'
+_color_rgba = r'rgba\({ip},{ip},{ip},{fp}\)'
+_color_hsl = r'hsl\({fp},{fp},{fp}\)'
+_color_hsla = r'hsla\({fp},{fp},{fp},{fp}\)'
+
+# Regex colors rgb/rgba/hsl/hsla
+_color_rgbhsl_re = re.compile('({0})|({1})|({2})|({3})'.format(
+    _color_rgb, _color_rgba, _color_hsl, _color_hsla
+).format(ip=_color_int_percent, fp=_color_frac_percent))
 
 
 class Color(traitlets.Unicode):
@@ -21,8 +42,13 @@ class Color(traitlets.Unicode):
     default_value = traitlets.Undefined
 
     def validate(self, obj, value):
-        if value.lower() in _color_names or _color_re.match(value):
+        if value is None and self.allow_none:
             return value
+        if isinstance(value, string_types):
+            if (value.lower() in _color_names or _color_hex_re.match(value) or
+                _color_hexa_re.match(value) or _color_rgbhsl_re.match(value)):
+                return value
+
         self.error(obj, value)
 
 
