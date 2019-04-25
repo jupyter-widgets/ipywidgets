@@ -567,6 +567,7 @@ class DOMWidgetModel extends WidgetModel {
         ...WidgetModel.serializers,
         layout: {deserialize: unpack_models},
         style: {deserialize: unpack_models},
+        context_menu: {deserialize: unpack_models},
     };
 
     defaults() {
@@ -767,6 +768,17 @@ class DOMWidgetView extends WidgetView {
         this.listenTo(this.model, 'comm_live_update', () => {
             this._comm_live_update();
         });
+        this.el.addEventListener('contextmenu', async (event) => {
+            let menu = this.model.get('context_menu');
+            if(menu) {
+                // BAD: here base kind of depends on controls, we do not want that i guess
+                let menuView = <any> await this.create_child_view(menu);
+                let x = event.clientX;
+                let y = event.clientY;
+                menuView.menu.open(x, y);
+                event.preventDefault();
+            }
+        })
     }
 
     setLayout(layout, oldLayout?) {

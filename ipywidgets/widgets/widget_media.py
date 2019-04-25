@@ -162,6 +162,45 @@ class Image(_Media):
 
 
 @register
+class Icon(_Media):
+    """Display a fontawesome icon or image.
+
+    Icon is a superset of Image from the user perspective, but provides a
+    different API on the front-end. Icon is used for buttons etc.
+
+    The most common way to use Icon is to call the `Icon.fontawesome` factory
+    method.
+
+    """
+    _view_name = Unicode('IconView').tag(sync=True)
+    _model_name = Unicode('IconModel').tag(sync=True)
+
+    # Define the custom state properties to sync with the front-end
+    format = Unicode('png', help="The format of the icon.").tag(sync=True)
+    width = CUnicode(help="Width of the icon in pixels.").tag(sync=True)
+    height = CUnicode(help="Height of the icon in pixels.").tag(sync=True)
+
+    @classmethod
+    def from_file(cls, filename, **kwargs):
+        return cls._from_file('image', filename, **kwargs)
+
+    @classmethod
+    def fontawesome(cls, name, **kwargs):
+        """Creates an fontawasome icon (without the fa-prefix)
+
+        Example:
+
+        >>> icon = Icon.fontawesome('home')
+        >>> button = Button(icon=icon, description='Home')
+
+        """
+        return cls(value=name.encode('utf-8'), format='fontawesome', **kwargs)
+
+    def __repr__(self):
+        return self._get_repr(Icon)
+
+
+@register
 class Video(_Media):
     """Displays a video as a widget.
 

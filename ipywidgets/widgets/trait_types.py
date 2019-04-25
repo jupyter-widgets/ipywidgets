@@ -8,6 +8,7 @@ Trait types for html widgets.
 import re
 import traitlets
 import datetime as dt
+from ipython_genutils.py3compat import string_types, PY3
 
 from .util import string_types
 
@@ -167,6 +168,29 @@ class InstanceDict(traitlets.Instance):
     def make_dynamic_default(self):
         return self.klass(*(self.default_args or ()),
                           **(self.default_kwargs or {}))
+
+class InstanceString(traitlets.Instance):
+    """An instance trait which coerces a string to a instance.
+
+    The instance is created by the class constructor or the optional
+    factory.
+    """
+
+    def __init__(self, klass, factory=None, **kwargs):
+        super(InstanceString, self).__init__(klass, **kwargs)
+        self.factory = factory or klass
+
+    def validate(self, obj, value):
+        if isinstance(value, string_types):
+            return super(InstanceString, self).validate(obj, self.factory(value))
+        else:
+            return super(InstanceString, self).validate(obj, value)
+
+    def make_dynamic_default(self):
+        if not self.default_args:
+            return None
+        else:
+            return self.factory(*self.default_args, **(self.default_kwargs or {}))
 
 
 # The regexp is taken

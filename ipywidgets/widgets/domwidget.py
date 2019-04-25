@@ -8,6 +8,7 @@ from .widget import Widget, widget_serialization
 from .trait_types import InstanceDict, TypedTuple
 from .widget_layout import Layout
 from .widget_style import Style
+from traitlets import Instance
 
 
 class DOMWidget(Widget):
@@ -16,6 +17,8 @@ class DOMWidget(Widget):
     _model_name = Unicode('DOMWidgetModel').tag(sync=True)
     _dom_classes = TypedTuple(trait=Unicode(), help="CSS classes applied to widget DOM element").tag(sync=True)
     layout = InstanceDict(Layout).tag(sync=True, **widget_serialization)
+    # BAD: we cannot import ipywidgets.Menu, cicular import, and also see issue in packages/base/src/widget.ts
+    context_menu = Instance('ipywidgets.Menu', help="Context menu (open by default on right click)", default=None, allow_none=True).tag(sync=True, **widget_serialization).tag(sync=True)
 
     def add_class(self, className):
         """

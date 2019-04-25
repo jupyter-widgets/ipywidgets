@@ -2,8 +2,12 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-   StyleModel
+   StyleModel, unpack_models
 } from '@jupyter-widgets/base';
+
+import {
+    IconModel, IconView
+} from './widget_icon';
 
 import {
     CoreDescriptionModel,
@@ -397,6 +401,10 @@ export
             _view_name: 'ToggleButtonsView'
         };
     }
+    static serializers = {
+        ...SelectionModel.serializers,
+        icons: {deserialize: unpack_models},
+    };
 }
 
 
@@ -432,65 +440,67 @@ class ToggleButtonsView extends DescriptionView {
      * changed by another view or by a state update from the back-end.
      */
     update(options?) {
-        let view = this;
-        let items: string[] = this.model.get('_options_labels');
+        let labels: string[] = this.model.get('_options_labels');
         let icons = this.model.get('icons') || [];
         let previous_icons = this.model.previous('icons') || [];
         let previous_bstyle = ToggleButtonsView.classMap[this.model.previous('button_style')] || '';
-        let tooltips = view.model.get('tooltips') || [];
+        let tooltips = this.model.get('tooltips') || [];
         let disabled = this.model.get('disabled');
         let buttons = this.buttongroup.querySelectorAll('button');
         let values = _.pluck(buttons, 'value');
         let stale = false;
 
-        for (let i = 0, len = items.length; i < len; ++i) {
-            if (values[i] !== items[i] || icons[i] !== previous_icons[i]) {
+        for (let i = 0, len = labels.length; i < len; ++i) {
+            if (values[i] !== labels[i] || icons[i] !== previous_icons[i]) {
                 stale = true;
                 break;
             }
         }
 
         if (stale && (options === undefined || options.updated_view !== this)) {
-            // Add items to the DOM.
+            if(this.iconViews) {
+                this.iconViews.forEach((i) => i.remove())
+            }
+            this.iconViews = new Array(labels.length)
+            // Add labels to the DOM.
             this.buttongroup.textContent = '';
-            items.forEach((item: any, index: number) => {
-                let item_html;
-                let empty = item.trim().length === 0 &&
-                    (!icons[index] || icons[index].trim().length === 0);
+            labels.forEach(async (label: any, index: number) => {
+                let label_html;
+                let empty = label.trim().length === 0 && !icons[index];
                 if (empty) {
-                    item_html = '&nbsp;';
+                    label_html = '&nbsp;';
                 } else {
-                    item_html = utils.escape_html(item);
+                    label_html = utils.escape_html(label);
                 }
 
-                let icon = document.createElement('i');
                 let button = document.createElement('button');
-                if (icons[index]) {
-                    icon.className = 'fa fa-' + icons[index];
-                }
                 button.setAttribute('type', 'button');
                 button.className = 'widget-toggle-button jupyter-button';
                 if (previous_bstyle) {
                     button.classList.add(previous_bstyle);
                 }
-                button.innerHTML = item_html;
-                button.setAttribute('data-value', encodeURIComponent(item));
+                button.innerHTML = label_html;
+                // button.setAttribute('data-value', encodeURIComponent(label));
                 button.setAttribute('value', index.toString());
-                button.appendChild(icon);
                 button.disabled = disabled;
                 if (tooltips[index]) {
                     button.setAttribute('title', tooltips[index]);
                 }
-                view.update_style_traits(button);
-                view.buttongroup.appendChild(button);
+                this.update_style_traits(button);
+                this.buttongroup.appendChild(button);
+                if(icons[index]) {
+                    this.iconViews[index] = <IconView> await this.create_child_view(icons[index]);
+                    this.iconViews[index].el.classList.add('widget-button-icon')
+                    button.appendChild(this.iconViews[index].el);
+                }
             });
         }
 
+        buttons = this.buttongroup.querySelectorAll('button');
         // Select active button.
-        items.forEach(function(item: any, index: number) {
-            let item_query = '[data-value="' + encodeURIComponent(item) + '"]';
-            let button = view.buttongroup.querySelector(item_query);
-            if (view.model.get('index') === index) {
+        labels.forEach((label: any, index: number) => {
+            let button = buttons[index];
+            if (this.model.get('index') === index) {
                 button.classList.add('mod-active');
             } else {
                 button.classList.remove('mod-active');
@@ -552,7 +562,12 @@ class ToggleButtonsView extends DescriptionView {
      * model to update.
      */
     _handle_click (event) {
-        this.model.set('index', parseInt(event.target.value), {updated_view: this});
+        let clickedButton = event.target;
+        while(clickedButton.nodeName !== 'BUTTON')
+            clickedButton = clickedButton.parentElement;
+        let buttons = Array.prototype.slice.call(this.buttongroup.querySelectorAll('button'));
+        let index = buttons.indexOf(clickedButton);
+        this.model.set('index', index, {updated_view: this});
         this.touch();
         // We also send a clicked event, since the value is only set if it changed.
         // See https://github.com/jupyter-widgets/ipywidgets/issues/763
@@ -561,6 +576,7 @@ class ToggleButtonsView extends DescriptionView {
 
     private _css_state: any;
     buttongroup: HTMLDivElement;
+    iconViews: Array<IconView>;
 }
 
 export

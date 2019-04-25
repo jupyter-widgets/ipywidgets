@@ -164,7 +164,7 @@ Attribute        | Type             | Default          | Help
 `button_style`   | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the button.
 `description`    | string           | `''`             | Button label.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
-`icon`           | string           | `''`             | Font-awesome icon name, without the 'fa-' prefix.
+`icon`           | `null` or reference to Icon widget | reference to new instance | Button icon.
 `layout`         | reference to Layout widget | reference to new instance | 
 `style`          | reference to ButtonStyle widget | reference to new instance | 
 `tooltip`        | string           | `''`             | Tooltip caption of the button.
@@ -527,6 +527,23 @@ Attribute        | Type             | Default          | Help
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `value`          | string           | `''`             | String value
+
+### IconModel (@jupyter-widgets/controls, 1.4.0); IconView (@jupyter-widgets/controls, 1.4.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'1.4.0'`        | 
+`_model_name`    | string           | `'IconModel'`    | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'1.4.0'`        | 
+`_view_name`     | string           | `'IconView'`     | 
+`format`         | string           | `'png'`          | The format of the icon.
+`height`         | string           | `''`             | Height of the icon in pixels.
+`layout`         | reference to Layout widget | reference to new instance | 
+`value`          | Bytes            | `b''`            | The media data as a byte string.
+`width`          | string           | `''`             | Width of the icon in pixels.
 
 ### ImageModel (@jupyter-widgets/controls, 1.4.0); ImageView (@jupyter-widgets/controls, 1.4.0)
 
@@ -914,7 +931,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
-`icon`           | string           | `''`             | Font-awesome icon.
+`icon`           | `null` or reference to Icon widget | reference to new instance | Button icon.
 `layout`         | reference to Layout widget | reference to new instance | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tooltip`        | string           | `''`             | Tooltip caption of the toggle button.
@@ -936,7 +953,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
-`icons`          | array of string  | `[]`             | Icons names for each button (FontAwesome names without the fa- prefix).
+`icons`          | array of reference to Icon widget | `[]`             | Icons for each button.
 `index`          | `null` or number (integer) | `null`           | Selected index
 `layout`         | reference to Layout widget | reference to new instance | 
 `style`          | reference to ToggleButtonsStyle widget | reference to new instance | 

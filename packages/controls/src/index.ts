@@ -8,6 +8,7 @@ export * from './widget_bool';
 export * from './widget_button';
 export * from './widget_box';
 export * from './widget_image';
+export * from './widget_icon';
 export * from './widget_video';
 export * from './widget_audio';
 export * from './widget_color';
@@ -19,6 +20,8 @@ export * from './widget_selection';
 export * from './widget_selectioncontainer';
 export * from './widget_string';
 export * from './widget_description';
+export * from './widget_menu';
+export * from './widget_application';
 
 export
 const version = (require('../package.json') as any).version;

@@ -6,11 +6,15 @@ import {
 } from './widget_core';
 
 import {
+    IconModel, IconView
+} from './widget_icon';
+
+import {
     DescriptionView
 } from './widget_description';
 
 import {
-    DOMWidgetView
+    WidgetModel, DOMWidgetView, unpack_models
 } from '@jupyter-widgets/base';
 
 import * as _ from 'underscore';
@@ -25,6 +29,102 @@ class BoolModel extends CoreDescriptionModel {
             _model_name: 'BoolModel'
         });
     }
+}
+
+export
+class BooleanGroupModel extends WidgetModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            value: false,
+            disabled: false,
+            _model_name: 'BooleanGroupModel',
+            group: null,
+            selected: null,
+            index: null,
+            widgets: null,
+            selected_widget: null
+        });
+    }
+    initialize(attributes, options) {
+        super.initialize(attributes, options);
+        this.listenToGroup()
+        this.on('change:index', this.sync_index)
+        this.on('change:widget', () => this.find_index(this.get('widgets'), this.get('selected_widget')))
+        this.on('change:selected', () => this.find_index(this.get('group'), this.get('selected')))
+        this._updating = false;
+    }
+    listenToGroup() {
+        let group = this.get('group');
+        if(group) {
+            group.forEach((boolWidget, widget_index) => {
+                boolWidget.on('change:value', () => {
+                    if(this._updating)
+                        return;
+                    if(boolWidget.get('value')) {
+                        this.set('index', widget_index)
+                    } else {
+                        // if the user unselects a widget, we might just
+                        // enable it again
+                        this.sync_index()
+                    }
+                })
+            })
+        }
+    }
+    sync_index() {
+        console.log('sync_index', this.cid)
+        if(this._updating)
+            return;
+        let index = this.get('index');
+        let group = this.get('group');
+        let widgets = this.get('widgets');
+        if(group && group.length > index) {
+            if(index !== null) {
+                this.set('selected', group[index]);
+                this.set('last_selected', group[index]);
+            } else {
+                this.set('selected', null);
+            }
+            this._updating = true;
+            try {
+                group.forEach((boolWidget, widget_index) => {
+                    boolWidget.set('value', index == widget_index)
+                    boolWidget.save_changes()
+                })
+            } finally {
+                this._updating = false;
+            }
+        }
+        if(widgets && widgets.length > index) {
+            if(index !== null) {
+                this.set('selected_widget', widgets[index]);
+                this.set('last_selected_widget', widgets[index]);
+            } else {
+                this.set('selected_widget', null);
+            }
+        }
+
+        this.save_changes()
+
+    }
+    find_index(widget_list, widget_to_find) {
+        if(!widget_list)
+            return;
+        let index = widget_list.indexOf(widget_to_find);
+        if(index == -1)
+            this.set('index', null);
+        else
+            this.set('index', index);
+
+    }
+    static serializers = {
+        ...WidgetModel.serializers,
+        group: {deserialize: unpack_models},
+        selected: {deserialize: unpack_models},
+        widgets: {deserialize: unpack_models},
+        selected_widget: {deserialize: unpack_models}
+    };
+    _updating : Boolean;
 }
 
 export
@@ -147,10 +247,14 @@ class ToggleButtonModel extends BoolModel {
             _view_name: 'ToggleButtonView',
             _model_name: 'ToggleButtonModel',
             tooltip: '',
-            icon: '',
+            icon: null,
             button_style: ''
         });
     }
+    static serializers = {
+        ...BoolModel.serializers,
+        icon: {deserialize: unpack_models},
+    };
 }
 
 export
@@ -182,7 +286,7 @@ class ToggleButtonView extends DOMWidgetView {
      * Called when the model is changed. The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update(options?){
+    async update(options?){
         if (this.model.get('value')) {
             this.el.classList.add('mod-active');
         } else {
@@ -194,16 +298,22 @@ class ToggleButtonView extends DOMWidgetView {
             this.el.setAttribute('title', this.model.get('tooltip'));
 
             let description = this.model.get('description');
-            let icon = this.model.get('icon');
-            if (description.trim().length === 0 && icon.trim().length === 0) {
+            let icon : IconModel = this.model.get('icon');
+            if(this.iconView) {
+                this.iconView.remove()
+                this.iconView = null;
+            }
+            if (description.trim().length === 0 && !icon) {
                 this.el.innerHTML = '&nbsp;'; // Preserve button height
             } else {
                 this.el.textContent = '';
-                if (icon.trim().length) {
-                    let i = document.createElement('i');
-                    this.el.appendChild(i);
-                    i.classList.add('fa');
-                    i.classList.add('fa-' + icon);
+                if (icon) {
+                    this.iconView = <IconView> await this.create_child_view(icon)
+                    if (description.length === 0) {
+                        this.iconView.el.classList.add('center');
+                    }
+                    this.el.appendChild(this.iconView.el);
+                    this.iconView.listenTo(icon, 'change', () => this.update())
                 }
                 this.el.appendChild(document.createTextNode(description));
             }
@@ -245,6 +355,7 @@ class ToggleButtonView extends DOMWidgetView {
     }
 
     el: HTMLButtonElement;
+    iconView: IconView;
 
     static class_map = {
         primary: ['mod-primary'],

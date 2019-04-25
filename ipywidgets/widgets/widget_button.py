@@ -11,9 +11,11 @@ from .domwidget import DOMWidget
 from .widget import CallbackDispatcher, register, widget_serialization
 from .widget_core import CoreWidget
 from .widget_style import Style
-from .trait_types import Color, InstanceDict
+from .widget_media import Icon
+from .widget_menu import Action, Menu
+from .trait_types import Color, InstanceDict, InstanceString
 
-from traitlets import Unicode, Bool, CaselessStrEnum, Instance, validate, default
+from traitlets import Unicode, Bool, CFloat, CaselessStrEnum, Instance, validate, default
 import warnings
 
 
@@ -38,8 +40,8 @@ class Button(DOMWidget, CoreWidget):
        description displayed next to the button
     tooltip: str
        tooltip caption of the toggle button
-    icon: str
-       font-awesome icon name
+    icon: Icon
+       button icon
     disabled: bool
        whether user interaction is enabled
     """
@@ -49,7 +51,11 @@ class Button(DOMWidget, CoreWidget):
     description = Unicode(help="Button label.").tag(sync=True)
     tooltip = Unicode(help="Tooltip caption of the button.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes.").tag(sync=True)
-    icon = Unicode('', help="Font-awesome icon name, without the 'fa-' prefix.").tag(sync=True)
+    icon = InstanceString(Icon, Icon.fontawesome, default_value=None, allow_none=True, help= "Button icon.").tag(sync=True, **widget_serialization)
+    menu = Instance(Menu, default_value=None, allow_none=True, help="Button menu.").tag(sync=True, **widget_serialization)
+    menu_delay = CFloat(None, allow_none=True, help="Delay in seconds before the menu pops up (or only on arrow push when None)").tag(sync=True)
+    default_action = Instance(Action, default_value=None, allow_none=True,\
+        help="If set, it will set the buttons description and icon, and will trigger the menu click event when the button is pressed.").tag(sync=True, **widget_serialization)
 
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
@@ -62,15 +68,15 @@ class Button(DOMWidget, CoreWidget):
         self._click_handlers = CallbackDispatcher()
         self.on_msg(self._handle_button_msg)
 
-    @validate('icon')
-    def _validate_icon(self, proposal):
-        """Strip 'fa-' if necessary'"""
-        value = proposal['value']
-        if value.startswith('fa-'):
-            warnings.warn("icons names no longer start with 'fa-', "
-            "just use the class name itself (for example, 'check' instead of 'fa-check')", DeprecationWarning)
-            value = value[3:]
-        return value
+    # @validate('icon')
+    # def _validate_icon(self, proposal):
+    #     """Strip 'fa-' if necessary'"""
+    #     value = proposal['value']
+    #     if value.startswith('fa-'):
+    #         warnings.warn("icons names no longer start with 'fa-', "
+    #         "just use the class name itself (for example, 'check' instead of 'fa-check')", DeprecationWarning)
+    #         value = value[3:]
+    #     return value
 
     def on_click(self, callback, remove=False):
         """Register a callback to execute when the button is clicked.

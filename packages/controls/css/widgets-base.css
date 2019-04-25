@@ -112,6 +112,8 @@
 
 /* General Button Styling */
 
+
+
 .jupyter-button {
     padding-left: 10px;
     padding-right: 10px;
@@ -263,6 +265,47 @@
 .widget-button, .widget-toggle-button {
     width: var(--jp-widgets-inline-width-short);
 }
+
+.widget-button-icon {
+    cursor: pointer;
+}
+
+.widget-button-menu-sub-button {
+    cursor: pointer;
+    width: 32px;
+    padding: 0;
+    margin: 0;
+    display: inline;
+}
+
+
+.widget-button-menu-sub-button {
+    margin-left: 4px;
+    margin-right: 4px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    display: inline;
+    background-color: transparent;
+}
+
+.widget-button-menu-sub-button i {
+    cursor: pointer;
+    width: 32px;
+    padding: 0;
+    margin: 0;
+    display: inline;
+}
+.widget-button-menu-sub-button {
+    vertical-align: sub;
+  
+}
+
+.widget-button-menu-sub-button i.fa {
+    margin-right: 0;
+    pointer-events: none;
+    vertical-align: sub;
+}
+
 
 /* Widget Label Styling */
 
@@ -1073,4 +1116,18 @@
     line-height: var(--jp-widgets-inline-height);
     /* Make it possible to have absolutely-positioned elements in the html */
     position: relative;
+}
+
+/* Application widget */
+
+.widget-application {
+    border: 1px solid black;
+}
+
+/* Specific css for when widgets are used as a toolbar */
+
+.widget-toolbar .jupyter-button {
+    background-color: transparent;
+    padding-left: 0;
+    padding-right: 0;
 }

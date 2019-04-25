@@ -17,10 +17,11 @@ from .widget_description import DescriptionWidget, DescriptionStyle
 from .valuewidget import ValueWidget
 from .widget_core import CoreWidget
 from .widget_style import Style
-from .trait_types import InstanceDict, TypedTuple
+from .widget_media import Icon
+from .trait_types import InstanceDict, TypedTuple, InstanceString
 from .widget import register, widget_serialization
 from .docutils import doc_subst
-from traitlets import (Unicode, Bool, Int, Any, Dict, TraitError, CaselessStrEnum,
+from traitlets import (Unicode, Bool, Int, Any, Dict, List, TraitError, CaselessStrEnum,
                        Tuple, Union, observe, validate)
 from ipython_genutils.py3compat import unicode_type
 
@@ -163,7 +164,7 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
     _options_full = None
 
     # This being read-only means that it cannot be changed by the user.
-    _options_labels = TypedTuple(trait=Unicode(), read_only=True, help="The labels for the options.").tag(sync=True)
+    _options_labels = TypedTuple(trait=Unicode, read_only=True, help="The labels for the options.").tag(sync=True)
 
     disabled = Bool(help="Enable or disable user changes").tag(sync=True)
 
@@ -416,9 +417,9 @@ class ToggleButtons(_Selection):
         same length as `options`.
 
     icons: list
-        Icons to show on the buttons. This must be the name
-        of a font-awesome icon. See `http://fontawesome.io/icons/`
-        for a list of icons.
+        Icons to show on the buttons. This should either be the name
+        of a font-awesome icon or a string following the data URI scheme. See
+        `http://fontawesome.io/icons/` for a list of font-awesome icons.
 
     button_style: str
         One of 'primary', 'success', 'info', 'warning' or
@@ -431,7 +432,7 @@ class ToggleButtons(_Selection):
     _model_name = Unicode('ToggleButtonsModel').tag(sync=True)
 
     tooltips = TypedTuple(Unicode(), help="Tooltips for each button.").tag(sync=True)
-    icons = TypedTuple(Unicode(), help="Icons names for each button (FontAwesome names without the fa- prefix).").tag(sync=True)
+    icons = TypedTuple(trait=InstanceString(Icon, Icon.fontawesome), help="Icons for each button.").tag(sync=True, **widget_serialization)
     style = InstanceDict(ToggleButtonsStyle).tag(sync=True, **widget_serialization)
 
     button_style = CaselessStrEnum(
@@ -578,7 +579,7 @@ class SelectionSlider(_SelectionNonempty):
 class SelectionRangeSlider(_MultipleSelectionNonempty):
     """
     Slider to select multiple contiguous items from a list.
-    
+
     The index, value, and label attributes contain the start and end of
     the selection range, not all items in the range.
 
