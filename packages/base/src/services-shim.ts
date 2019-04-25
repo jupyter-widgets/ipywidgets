@@ -9,8 +9,19 @@
 
 import * as utils from './utils';
 import {
-    Kernel
+    Kernel, KernelMessage
 } from '@jupyterlab/services';
+
+
+/**
+ * Callbacks for services shim comms.
+ */
+export
+interface ICallbacks {
+    shell?: { [key: string]: (msg: KernelMessage.IMessage) => void };
+    iopub?: { [key: string]: (msg: KernelMessage.IMessage) => void };
+    input?: (msg: KernelMessage.IMessage) => void;
+}
 
 
 export
@@ -241,7 +252,7 @@ namespace shims {
              * @param  @jupyterlab/services IKernelFuture instance
              * @param  callbacks
              */
-            _hookupCallbacks(future: Kernel.IFuture, callbacks: any) {
+            _hookupCallbacks(future: Kernel.IFuture, callbacks: ICallbacks) {
                 if (callbacks) {
                     future.onReply = function(msg) {
                         if (callbacks.shell && callbacks.shell.reply) {

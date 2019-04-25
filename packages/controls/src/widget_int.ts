@@ -548,6 +548,7 @@ class IntTextView extends DescriptionView {
         return {
             'keydown input'  : 'handleKeyDown',
             'keypress input' : 'handleKeypress',
+            'keyup input': 'handleKeyUp',
             'input input'  : 'handleChanging',
             'change input' : 'handleChanged'
         };
@@ -564,11 +565,34 @@ class IntTextView extends DescriptionView {
 
     /**
      * Handles key press
-     *
-     * Stop propagation so the event isn't sent to the application.
      */
     handleKeypress(e) {
-        e.stopPropagation();
+        if (/[e,.\s]/.test(String.fromCharCode(e.keyCode))) {
+            e.preventDefault();
+        }
+    }
+
+    /**
+     * Handle key up
+     */
+    handleKeyUp(e) {
+        if (e.altKey || e.ctrlKey) {
+            return;
+        }
+        /* remove invalid characters */
+        let value = e.target.value;
+
+        value = value.replace(/[e,.\s]/g, "");
+
+        if (value.length >= 1) {
+            var subvalue = value.substr(1);
+            value = value[0] + subvalue.replace(/[+-]/g, "");
+        }
+
+        if (e.target.value != value) {
+            e.preventDefault();
+            e.target.value = value;
+        }
     }
 
     /**

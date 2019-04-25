@@ -24,6 +24,7 @@ let css_properties = {
     flex_flow: null,
     height: null,
     justify_content: null,
+    justify_items: null,
     left: null,
     margin: null,
     max_height: null,

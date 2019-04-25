@@ -4,6 +4,7 @@
 [![Build Status](https://travis-ci.org/jupyter-widgets/ipywidgets.svg?branch=master)](https://travis-ci.org/jupyter-widgets/ipywidgets)
 [![Documentation Status](http://readthedocs.org/projects/ipywidgets/badge/?version=latest)](https://ipywidgets.readthedocs.io/en/latest/?badge=latest)
 [![Join the chat at https://gitter.im/ipython/ipywidgets](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jupyter-widgets/Lobby)
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/jupyter-widgets/ipywidgets/master?filepath=docs%2Fsource%2Fexamples)
 
 ipywidgets are [interactive HTML widgets](https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb)
 for Jupyter notebooks and the IPython kernel.
@@ -31,7 +32,7 @@ A [demonstration notebook](https://github.com/jupyter-widgets/ipywidgets/blob/ma
 Besides the widgets already provided with the library, the framework can be
 extended with custom widget libraries.
 
-A template project is available in the form of a cookie cutter [here](https://github.com/jupyter/widget-cookiecutter).
+A template project is available in the form of a cookie cutter [here](https://github.com/jupyter-widgets/widget-ts-cookiecutter).
 
 This project is meant to help custom widget authors get started with the
 packaging and the distribution of Jupyter interactive widgets.

@@ -4,8 +4,13 @@
 from ipython_genutils.py3compat import PY3
 
 import pytest
+try:
+    from unittest import mock
+except ImportError:
+    import mock
 
-from traitlets import Bool, Tuple, List, Instance, CFloat, CInt, Float, Int, TraitError
+
+from traitlets import Bool, Tuple, List, Instance, CFloat, CInt, Float, Int, TraitError, observe
 
 from .utils import setup, teardown
 
@@ -211,3 +216,38 @@ def test_set_state_int_to_float():
         w.set_state(dict(
             i = 3.5
         ))
+
+def test_property_lock():
+    # when this widget's value is set to 42, it sets itself to 2, and then back to 42 again (and then stops)
+    class AnnoyingWidget(Widget):
+        value = Float().tag(sync=True)
+        stop = Bool(False)
+
+        @observe('value')
+        def _propagate_value(self, change):
+            print('_propagate_value', change.new)
+            if self.stop:
+                return
+            if change.new == 42:
+                self.value = 2
+            if change.new == 2:
+                self.stop = True
+                self.value = 42
+
+    widget = AnnoyingWidget(value=1)
+    assert widget.value == 1
+
+    widget._send = mock.MagicMock()
+    # this mimics a value coming from the front end
+    widget.set_state({'value': 42})
+    assert widget.value == 42
+
+    # we expect first the {'value': 2.0} state to be send, followed by the {'value': 42.0} state
+    msg = {'method': 'update', 'state': {'value': 2.0}, 'buffer_paths': []}
+    call2 = mock.call(msg, buffers=[])
+
+    msg = {'method': 'update', 'state': {'value': 42.0}, 'buffer_paths': []}
+    call42 = mock.call(msg, buffers=[])
+
+    calls = [call2, call42]
+    widget._send.assert_has_calls(calls)

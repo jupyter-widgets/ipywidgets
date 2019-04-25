@@ -1,16 +1,17 @@
 {
   "private": true,
   "scripts": {
-    "clean": "lerna run clean",
-    "build:examples": "lerna run build --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
     "build": "lerna run build --ignore \"@jupyter-widgets/example-*\"",
-    "lint": "lerna run lint",
-    "update:dependency": "node scripts/update-dependency.js",
+    "build:examples": "lerna run build --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
+    "clean": "lerna run clean",
     "integrity": "node scripts/package-integrity.js",
-    "updated": "lerna updated",
-    "publish": "yarn run clean && yarn run build && lerna publish -m \"Publish npm packages\""
+    "lint": "lerna run lint",
+    "publish": "yarn run clean && yarn run build && lerna publish -m \"Publish npm packages\"",
+    "update-dependency": "update-dependency --lerna",
+    "updated": "lerna updated"
   },
   "devDependencies": {
+    "@jupyterlab/buildutils": "1.0.0-alpha.6",
     "lerna": "^3.2.1"
   },
   "workspaces": [

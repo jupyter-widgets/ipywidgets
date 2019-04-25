@@ -4,7 +4,7 @@
 import ipywidgets as widgets
 from ipywidgets.widgets.widget_link import Link
 
-from traitlets import CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat, Float, CInt, Int, Instance, Undefined, Dict, Any
+from traitlets import CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat, Float, CInt, Int, Instance, Dict, Any
 from ipywidgets import Color
 from ipywidgets.widgets.trait_types import TypedTuple
 
@@ -80,7 +80,7 @@ def format_widget(n, w):
     out.append('### %(model)s (%(m_module)s, %(m_version)s); %(view)s (%(v_module)s, %(v_version)s)'%name)
     out.append('')
     out.append('{name: <16} | {typing: <16} | {default: <16} | {help}'.format(name='Attribute', typing='Type', 
-                                                                             allownone='Nullable', default='Default', help='Help'))
+                                                                              default='Default', help='Help'))
     out.append('{0:-<16}-|-{0:-<16}-|-{0:-<16}-|----'.format('-'))
     for name, t in sorted(w.traits(sync=True).items()):
         if name in ('_model_module', '_view_module', '_model_module_version', '_view_module_version', 
