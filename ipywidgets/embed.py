@@ -238,7 +238,7 @@ def escape_script(s):
     We only replace these three cases so that most html or other content
     involving `<` is readable.
     """
-    return script_escape_re.sub(r'\u003c\1', s)
+    return script_escape_re.sub(r'\\u003c\1', s)
 
 @doc_subst(_doc_snippets)
 def embed_snippet(views,
