@@ -49,11 +49,18 @@ class TestColor(TraitTestBase):
         'rgb( 20,70,50 )', # rgb with spaces
         'rgba(10,10,10, 0.5)', # rgba with float alpha
         'rgba(255, 255, 255, 255)', # out of bounds alpha (spec says clamp to 1)
+        'hsl(0.0, .0, 0)', # hsl
+        'hsl( 0.5,0.3,0 )', # hsl with spaces
+        'hsla(10,10,10, 0.5)', # rgba with float alpha
     ]
     _bad_values = [
         "vanilla", "blues",  # Invald color names
         1.2, 0.0,  # Should fail with float input
         0, 1, 2,  # Should fail with int input
+        'rgb(0.4, 512, -40)',
+        'hsl(0.4, 512, -40)',
+        'rgba(0, 0, 0)',
+        'hsla(0, 0, 0)',
         None,
     ]
 
