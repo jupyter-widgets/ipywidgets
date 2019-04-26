@@ -6,7 +6,10 @@
 Represents an enumeration using a widget.
 """
 
-from collections import Mapping, Iterable
+try:
+    from collections.abc import Mapping, Iterable
+except ImportError:  #python 2
+    from collections import Mapping, Iterable
 try:
     from itertools import izip
 except ImportError:  #python3.x
