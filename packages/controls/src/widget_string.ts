@@ -434,32 +434,36 @@ class ComboboxView extends TextView {
     update(options?: any) {
         super.update(options);
         if (!this.datalist) {
-        return;
+            return;
         }
 
         const valid = this.isValid(this.model.get('value'));
         this.highlightValidState(valid);
 
         // Check if we need to update options
-        if (options !== undefined && options.updated_view) {
-        // Value update only, keep current options
-        return;
+        if ((options !== undefined && options.updated_view) || (
+            !this.model.hasChanged('options') &&
+            !this.isInitialRender
+        )) {
+            // Value update only, keep current options
+            return;
         }
 
-        this.datalist.innerHTML = '';
-        for (let opt of this.model.get('options') as string[]) {
-        let el = document.createElement('option');
-        el.value = opt;
-        this.datalist.appendChild(el);
-        }
+        this.isInitialRender = false;
+
+        const opts = this.model.get('options') as string[];
+        const optLines = opts.map(o => {
+            return `<option value="${o}"></option>`;
+        });
+        this.datalist.innerHTML = optLines.join('\n');
     }
 
     isValid(value: string): boolean {
         if (true === this.model.get('ensure_option')) {
-        const options = this.model.get('options') as string[];
-        if (options.indexOf(value) === -1) {
-            return false;
-        }
+            const options = this.model.get('options') as string[];
+            if (options.indexOf(value) === -1) {
+                return false;
+            }
         }
         return true;
     }
@@ -470,7 +474,7 @@ class ComboboxView extends TextView {
         const valid = this.isValid(target.value);
         this.highlightValidState(valid);
         if (valid) {
-        super.handleChanging(e);
+            super.handleChanging(e);
         }
     }
 
@@ -480,7 +484,7 @@ class ComboboxView extends TextView {
         const valid = this.isValid(target.value);
         this.highlightValidState(valid);
         if (valid) {
-        super.handleChanged(e);
+            super.handleChanged(e);
         }
     }
 
@@ -489,4 +493,6 @@ class ComboboxView extends TextView {
     }
 
     datalist: HTMLDataListElement | undefined;
+
+    isInitialRender = true;
 }
