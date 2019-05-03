@@ -211,10 +211,10 @@ class TextareaView extends DescriptionView {
 
     events() {
         return {
-            'keydown input'  : 'handleKeyDown',
-            'keypress input' : 'handleKeypress',
-            'input textarea'  : 'handleChanging',
-            'change textarea' : 'handleChanged'
+            'keydown input': 'handleKeyDown',
+            'keypress input': 'handleKeypress',
+            'input textarea': 'handleChanging',
+            'change textarea': 'handleChanged'
         };
     }
 
@@ -286,7 +286,7 @@ class TextView extends DescriptionView {
         this.el.appendChild(this.textbox);
 
         this.update(); // Set defaults.
-        this.listenTo(this.model, 'change:placeholder', function(model, value, options) {
+        this.listenTo(this.model, 'change:placeholder', (model, value, options) => {
             this.update_placeholder(value);
         });
         this.listenTo(this.model, 'change:description_tooltip', this.update_title);
@@ -303,7 +303,7 @@ class TextView extends DescriptionView {
     update_title() {
         let title = this.model.get('description_tooltip');
         if (!title) {
-           this.textbox.removeAttribute('title');
+            this.textbox.removeAttribute('title');
         } else if (this.model.get('description').length === 0) {
             this.textbox.setAttribute('title', title);
         }
@@ -316,9 +316,9 @@ class TextView extends DescriptionView {
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        if (options === undefined || options.updated_view != this) {
-            if (this.textbox.value != this.model.get('value')) {
-              this.textbox.value = this.model.get('value');
+        if (options === undefined || options.updated_view !== this) {
+            if (this.textbox.value !== this.model.get('value')) {
+                this.textbox.value = this.model.get('value');
             }
 
             this.textbox.disabled = this.model.get('disabled');
@@ -328,10 +328,10 @@ class TextView extends DescriptionView {
 
     events() {
         return {
-            'keydown input'  : 'handleKeyDown',
-            'keypress input' : 'handleKeypress',
-            'input input'  : 'handleChanging',
-            'change input' : 'handleChanged'
+            'keydown input': 'handleKeyDown',
+            'keypress input': 'handleKeypress',
+            'input input': 'handleChanging',
+            'change input': 'handleChanged'
         };
     }
 
@@ -350,8 +350,8 @@ class TextView extends DescriptionView {
     handleKeypress(e: KeyboardEvent) {
         e.stopPropagation();
         // The submit message is deprecated in widgets 7
-        if (e.keyCode == 13) { // Return key
             this.send({event: 'submit'});
+        if (e.keyCode === 13) { // Return key
         }
     }
 
