@@ -82,9 +82,9 @@ class WidgetModel extends Backbone.Model {
             _model_name: 'WidgetModel',
             _model_module_version: JUPYTER_WIDGETS_VERSION,
             _view_module: '@jupyter-widgets/base',
-            _view_name: null as string,
+            _view_name: null as string | null,
             _view_module_version: JUPYTER_WIDGETS_VERSION,
-            _view_count: null as number,
+            _view_count: null as number | null,
         };
     }
 

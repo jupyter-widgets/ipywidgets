@@ -561,7 +561,7 @@ interface IStateOptions {
  */
 export
 function serialize_state(models: WidgetModel[], options: IStateOptions = {}) {
-    const state = {};
+    const state: {[key: string]: any} = {};
     models.forEach(model => {
         const model_id = model.model_id;
         const split = utils.remove_buffers(model.serialize(model.get_state(options.drop_defaults)));
