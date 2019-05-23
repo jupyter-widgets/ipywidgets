@@ -34,9 +34,6 @@
   "devDependencies": {
     "css-loader": "^0.28.4",
     "json-loader": "^0.5.4",
-    "postcss-cssnext": "^3.0.2",
-    "postcss-import": "^10.0.0",
-    "postcss-loader": "^2.0.6",
     "rimraf": "^2.6.1",
     "style-loader": "^0.18.1",
     "webpack": "^3.5.5"
