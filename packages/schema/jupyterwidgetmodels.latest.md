@@ -47,9 +47,9 @@ Attribute        | Type             | Default          | Help
 `min_height`     | `null` or string | `null`           | The min-height CSS attribute.
 `min_width`      | `null` or string | `null`           | The min-width CSS attribute.
 `order`          | `null` or string | `null`           | The order CSS attribute.
-`overflow`       | `null` or string (one of `'visible'`, `'hidden'`, `'scroll'`, `'auto'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The overflow CSS attribute.
-`overflow_x`     | `null` or string (one of `'visible'`, `'hidden'`, `'scroll'`, `'auto'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The overflow-x CSS attribute.
-`overflow_y`     | `null` or string (one of `'visible'`, `'hidden'`, `'scroll'`, `'auto'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The overflow-y CSS attribute.
+`overflow`       | `null` or string | `null`           | The overflow CSS attribute.
+`overflow_x`     | `null` or string (one of `'visible'`, `'hidden'`, `'scroll'`, `'auto'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The overflow-x CSS attribute (deprecated).
+`overflow_y`     | `null` or string (one of `'visible'`, `'hidden'`, `'scroll'`, `'auto'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The overflow-y CSS attribute (deprecated).
 `padding`        | `null` or string | `null`           | The padding CSS attribute.
 `right`          | `null` or string | `null`           | The right CSS attribute.
 `top`            | `null` or string | `null`           | The top CSS attribute.
