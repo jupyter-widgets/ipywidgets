@@ -1,7 +1,7 @@
 // Create a widget manager instance.
 var WidgetManager = require('./manager').WidgetManager;
 
-require('@jupyter-widgets/controls/css/widgets.built.css');
+require('@jupyter-widgets/controls/css/widgets.css');
 
 document.addEventListener("DOMContentLoaded", function(event) {
     var manager = new WidgetManager(document.body);
