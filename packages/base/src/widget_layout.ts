@@ -32,8 +32,8 @@ let css_properties = {
     min_height: null,
     min_width: null,
     overflow: null,
-    overflow_x: null,
-    overflow_y: null,
+    overflow_x: null,  // deprecated
+    overflow_y: null,  // deprecated
     order: null,
     padding: null,
     right: null,
@@ -87,6 +87,19 @@ class LayoutView extends WidgetView {
     registerTrait(trait: string) {
         this._traitNames.push(trait);
 
+        // Treat overflow_x and overflow_y as a special case since they are deprecated
+        // and interact in special ways with the overflow attribute.
+        if (trait === 'overflow_x' || trait === 'overflow_y') {
+            // Listen to changes, and set the value on change.
+            this.listenTo(this.model, 'change:' + trait, (model, value) => {
+                this.handleOverflowChange(trait, value);
+            });
+
+            // Set the initial value on display.
+            this.handleOverflowChange(trait, this.model.get(trait));
+            return;
+        }
+        
         // Listen to changes, and set the value on change.
         this.listenTo(this.model, 'change:' + trait, (model, value) => {
             this.handleChange(trait, value);
@@ -114,6 +127,27 @@ class LayoutView extends WidgetView {
         if (parent) {
             if (value === null) {
                 parent.el.style.removeProperty(this.css_name(trait));
+            } else {
+                parent.el.style[this.css_name(trait)] = value;
+            }
+        } else {
+            console.warn('Style not applied because a parent view does not exist');
+        }
+    }
+
+    /**
+     * Handles when the value of overflow_x or overflow_y changes
+     */
+    handleOverflowChange(trait: string, value: any) {
+        // This differs from the default handleChange method
+        // in that setting `overflow_x` or `overflow_y` to null
+        // when `overflow` is null removes the attribute.
+        let parent = this.options.parent as DOMWidgetView;
+        if (parent) {
+            if (value === null) {
+                if (this.model.get("overflow") === null) {
+                    parent.el.style.removeProperty(this.css_name(trait));
+                }
             } else {
                 parent.el.style[this.css_name(trait)] = value;
             }
