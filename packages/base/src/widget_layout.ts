@@ -87,15 +87,9 @@ class LayoutView extends WidgetView {
     registerTrait(trait: string) {
         this._traitNames.push(trait);
 
-        if (trait !== 'overflow_x' && trait !== 'overflow_y') {
-            // Listen to changes, and set the value on change.
-            this.listenTo(this.model, 'change:' + trait, (model, value) => {
-                this.handleChange(trait, value);
-            });
-
-            // Set the initial value on display.
-            this.handleChange(trait, this.model.get(trait));
-        } else {
+        // Treat overflow_x and overflow_y as a special case since they are deprecated
+        // and interact in special ways with the overflow attribute.
+        if (trait === 'overflow_x' || trait === 'overflow_y') {
             // Listen to changes, and set the value on change.
             this.listenTo(this.model, 'change:' + trait, (model, value) => {
                 this.handleOverflowChange(trait, value);
@@ -103,7 +97,16 @@ class LayoutView extends WidgetView {
 
             // Set the initial value on display.
             this.handleOverflowChange(trait, this.model.get(trait));
+            return;
         }
+        
+        // Listen to changes, and set the value on change.
+        this.listenTo(this.model, 'change:' + trait, (model, value) => {
+            this.handleChange(trait, value);
+        });
+
+        // Set the initial value on display.
+        this.handleChange(trait, this.model.get(trait));
     }
 
     /**
@@ -138,7 +141,7 @@ class LayoutView extends WidgetView {
     handleOverflowChange(trait: string, value: any) {
         // This differs from the default handleChange method
         // in that setting `overflow_x` or `overflow_y` to null
-        // if a no-op if `overflow is not null`
+        // when `overflow` is null removes the attribute.
         let parent = this.options.parent as DOMWidgetView;
         if (parent) {
             if (value === null) {
