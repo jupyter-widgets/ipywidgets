@@ -13,7 +13,7 @@ import {
 /**
  * css properties exposed by the layout widget with their default values.
  */
-let css_properties = {
+let css_properties: {[key: string]: string} = {
     align_content: null,
     align_items: null,
     align_self: null,
@@ -71,7 +71,7 @@ class LayoutView extends WidgetView {
     /**
      * Public constructor
      */
-    initialize(parameters) {
+    initialize(parameters: WidgetView.InitializeParameters) {
         this._traitNames = [];
         super.initialize(parameters);
         // Register the traits that live on the Python side
@@ -101,7 +101,7 @@ class LayoutView extends WidgetView {
         }
         
         // Listen to changes, and set the value on change.
-        this.listenTo(this.model, 'change:' + trait, (model, value) => {
+        this.listenTo(this.model, 'change:' + trait, (model: LayoutModel, value: any) => {
             this.handleChange(trait, value);
         });
 

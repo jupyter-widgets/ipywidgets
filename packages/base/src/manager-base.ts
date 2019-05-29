@@ -25,6 +25,7 @@ const PROTOCOL_MAJOR_VERSION = PROTOCOL_VERSION.split('.', 1)[0];
  * Either a comm or a model_id must be provided.
  */
 export
+// tslint:disable-next-line:interface-name
 interface ModelOptions {
     /**
      * Target name of the widget model to create.
@@ -77,6 +78,7 @@ interface ModelOptions {
  * Either a comm or a model_id must be provided.
  */
 export
+// tslint:disable-next-line:interface-name
 interface WidgetOptions {
     /**
      * Target name of the widget model to create.
@@ -397,12 +399,12 @@ abstract class ManagerBase<T> {
      * current manager state, and then attempts to redisplay the widgets in the
      * state.
      */
-    set_state(state): Promise<WidgetModel[]> {
+    set_state(state: any): Promise<WidgetModel[]> {
         // Check to make sure that it's the same version we are parsing.
         if (!(state.version_major && state.version_major <= 2)) {
             throw 'Unsupported widget state format';
         }
-        let models = state.state;
+        let models = state.state as any;
         // Recreate all the widget models for the given widget manager state.
         let all_models = this._get_comm_info().then(live_comms => {
             /* Note: It is currently safe to just loop over the models in any order,
@@ -422,9 +424,9 @@ abstract class ManagerBase<T> {
                 let model = models[model_id];
                 let modelState = model.state;
                 if (model.buffers) {
-                    let bufferPaths = model.buffers.map(b => b.path);
+                    let bufferPaths = model.buffers.map((b: any) => b.path);
                     // put_buffers expects buffers to be DataViews
-                    let buffers = model.buffers.map(b => new DataView(decode[b.encoding](b.data)));
+                    let buffers = model.buffers.map((b: any) => new DataView(decode[b.encoding](b.data)));
                     utils.put_buffers(model.state, bufferPaths, buffers);
                 }
 
@@ -511,7 +513,7 @@ abstract class ManagerBase<T> {
         metadata?: any,
         buffers?: ArrayBuffer[] | ArrayBufferView[]):
         Promise<IClassicComm>;
-    protected abstract _get_comm_info();
+    protected abstract _get_comm_info(): Promise<{}>;
 
     /**
      * Filter serialized widget state to remove any ID's already present in manager.
@@ -559,7 +561,7 @@ interface IStateOptions {
  */
 export
 function serialize_state(models: WidgetModel[], options: IStateOptions = {}) {
-    const state = {};
+    const state: {[key: string]: any} = {};
     models.forEach(model => {
         const model_id = model.model_id;
         const split = utils.remove_buffers(model.serialize(model.get_state(options.drop_defaults)));
