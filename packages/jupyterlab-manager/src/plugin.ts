@@ -21,7 +21,7 @@ import {
 } from '@jupyterlab/mainmenu';
 
 import {
-  RenderMimeRegistry, IRenderMimeRegistry
+  IRenderMimeRegistry
 } from '@jupyterlab/rendermime';
 
 import {
@@ -114,7 +114,7 @@ function* chain<T>(...args: IterableIterator<T>[]) {
 
 export function registerWidgetManager(
   context: DocumentRegistry.IContext<INotebookModel>,
-  rendermime: RenderMimeRegistry,
+  rendermime: IRenderMimeRegistry,
   renderers: IterableIterator<WidgetRenderer>
 ) {
   let wManager = Private.widgetManagerProperty.get(context);

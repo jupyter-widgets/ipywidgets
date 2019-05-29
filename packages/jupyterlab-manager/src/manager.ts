@@ -22,7 +22,7 @@ import {
 } from '@jupyterlab/notebook';
 
 import {
-  RenderMimeRegistry
+  IRenderMimeRegistry
 } from '@jupyterlab/rendermime';
 
 import {
@@ -98,15 +98,17 @@ class BackboneViewWrapper extends Widget {
  */
 export
 class WidgetManager extends ManagerBase<Widget> implements IDisposable {
-  constructor(context: DocumentRegistry.IContext<INotebookModel>, rendermime: RenderMimeRegistry, settings: WidgetManager.Settings) {
+  constructor(context: DocumentRegistry.IContext<INotebookModel>, rendermime: IRenderMimeRegistry, settings: WidgetManager.Settings) {
     super();
     this._context = context;
     this._rendermime = rendermime;
 
     // Set _handleCommOpen so `this` is captured.
     this._handleCommOpen = async (comm, msg) => {
-      let oldComm = new shims.services.Comm(comm);
-      await this.handle_comm_open(oldComm, msg);
+      // TODO: the two "any" casts below get around type incompatibilities with
+      // older versions of @jupyterlab/services used by@jupyter-widgets/base.
+      let oldComm = new shims.services.Comm(comm as any);
+      await this.handle_comm_open(oldComm, msg as any);
     };
 
     context.session.kernelChanged.connect((sender, args) => {
@@ -220,7 +222,8 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     // asynchronously, so promises to every widget reference should be available
     // by the time they are used.
     await Promise.all(widgets_info.map(async widget_info => {
-      const content = widget_info.msg.content as any;
+      // TODO: fix the typing complaints when we remove the first any cast.
+      const content = (widget_info.msg as any).content as any;
       await this.new_model({
         model_name: content.data.state._model_name,
         model_module: content.data.state._model_module,
@@ -259,7 +262,9 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     if (data || metadata) {
       comm.open(data, metadata, buffers);
     }
-    return new shims.services.Comm(comm);
+    // TODO: the "any" cast below gets around type incompatibilities with
+    // older versions of @jupyterlab/services used by@jupyter-widgets/base.
+    return new shims.services.Comm(comm as any);
   }
 
   /**
@@ -438,7 +443,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   private _handleCommOpen: (comm: Kernel.IComm, msg: KernelMessage.ICommOpenMsg) => Promise<void>;
   private _context: DocumentRegistry.IContext<INotebookModel>;
   private _registry: SemVerCache<ExportData> = new SemVerCache<ExportData>();
-  private _rendermime: RenderMimeRegistry;
+  private _rendermime: IRenderMimeRegistry;
 
   _commRegistration: IDisposable;
   private _restored = new Signal<this, void>(this);
