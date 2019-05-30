@@ -2,10 +2,6 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-   StyleModel
-} from '@jupyter-widgets/base';
-
-import {
     CoreDescriptionModel,
 } from './widget_core';
 
@@ -20,16 +16,6 @@ import {
 import * as _ from 'underscore';
 import * as utils from './utils';
 import * as $ from 'jquery';
-
-function scrollIfNeeded(area, elem) {
-    let ar = area.getBoundingClientRect();
-    let er = elem.getBoundingClientRect();
-    if (er.top < ar.top) {
-        area.scrollTop -= ar.top - er.top;
-    } else if (er.bottom > ar.bottom) {
-        area.scrollTop += er.bottom - ar.bottom;
-    }
-}
 
 export
 class SelectionModel extends CoreDescriptionModel {
