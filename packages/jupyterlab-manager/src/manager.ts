@@ -259,9 +259,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     if (data || metadata) {
       comm.open(data, metadata, buffers);
     }
-    // TODO: the "any" cast below gets around type incompatibilities with
-    // older versions of @jupyterlab/services used by@jupyter-widgets/base.
-    return new shims.services.Comm(comm as any);
+    return new shims.services.Comm(comm);
   }
 
   /**
