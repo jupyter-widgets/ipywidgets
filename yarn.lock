@@ -188,6 +188,7 @@
 "@jupyterlab/coreutils@^1.1.3":
   version "1.1.3"
   resolved "https://registry.npmjs.org/@jupyterlab/coreutils/-/coreutils-1.1.3.tgz#079ff19faeaffcb6cb243c3fb0c737f6ea661b5a"
+  integrity sha512-H6NgjZKHlDelN1tRsQn6mfO8lC04gcNe3e0ZWD9BTtI7/H4G+8oeEify1NJ9DkS6vl1fo5opsrtxwESnfZXqyw==
   dependencies:
     "@phosphor/algorithm" "^1.1.2"
     "@phosphor/coreutils" "^1.3.0"
@@ -199,22 +200,6 @@
     moment "~2.21.0"
     path-posix "~1.0.0"
     url-parse "~1.1.9"
-
-"@jupyterlab/coreutils@^2.2.1":
-  version "2.2.1"
-  resolved "https://registry.npmjs.org/@jupyterlab/coreutils/-/coreutils-2.2.1.tgz#c271eaf2f6e468757ba9660f24bd3c3e5d6fe583"
-  integrity sha512-XkGMBXqEAnENC4fK/L3uEqqxyNUtf4TI/1XNDln7d5VOPHQJSBTbYlBAZ0AQotn2qbs4WqmV6icxje2ITVedqQ==
-  dependencies:
-    "@phosphor/algorithm" "^1.1.2"
-    "@phosphor/coreutils" "^1.3.0"
-    "@phosphor/disposable" "^1.1.2"
-    "@phosphor/signaling" "^1.2.2"
-    ajv "~5.1.6"
-    comment-json "^1.1.3"
-    minimist "~1.2.0"
-    moment "~2.21.0"
-    path-posix "~1.0.0"
-    url-parse "~1.4.3"
 
 "@jupyterlab/docregistry@1.0.0-alpha.8", "@jupyterlab/docregistry@^1.0.0-alpha.8":
   version "1.0.0-alpha.8"
@@ -278,17 +263,7 @@
 "@jupyterlab/observables@^1.0.10":
   version "1.0.10"
   resolved "https://registry.npmjs.org/@jupyterlab/observables/-/observables-1.0.10.tgz#dbc9da5988ebf3acc35effd24a1c598b13592fb5"
-  dependencies:
-    "@phosphor/algorithm" "^1.1.2"
-    "@phosphor/coreutils" "^1.3.0"
-    "@phosphor/disposable" "^1.1.2"
-    "@phosphor/messaging" "^1.2.2"
-    "@phosphor/signaling" "^1.2.2"
-
-"@jupyterlab/observables@^2.1.1":
-  version "2.1.1"
-  resolved "https://registry.npmjs.org/@jupyterlab/observables/-/observables-2.1.1.tgz#c5d8ad295c5b0bce914a607a342b0af4550b2187"
-  integrity sha512-PzmJ/jF5fWzHCvjPAWBi3YjtHRAF0bwyjpd8W8aJt64TzhEZh0se8xCNGOURzD+8TxOsTF9JpQ9wIDBr4V226Q==
+  integrity sha512-HsWchDHXarPHwF/msP7DyLJmfTsmPc+1lL1sLgYzMvU1ARXKalzA3P5LLEyrgrCssemv+pO2IkUviJ0XQKg8eQ==
   dependencies:
     "@phosphor/algorithm" "^1.1.2"
     "@phosphor/coreutils" "^1.3.0"
@@ -352,7 +327,7 @@
     lodash.escape "^4.0.1"
     marked "0.6.2"
 
-"@jupyterlab/services@4.0.0-alpha.8", "@jupyterlab/services@^4.0.0-alpha.8":
+"@jupyterlab/services@4.0.0-alpha.8", "@jupyterlab/services@^1.0.1 || ^2.0.0", "@jupyterlab/services@^1.0.1 || ^2.0.0 || ^3.0.0 || 4.0.0-alpha.3 || 4.0.0-alpha.6 || 4.0.0-alpha.8", "@jupyterlab/services@^2.0.0 || ^3.0.0 || 4.0.0-alpha.3 || 4.0.0-alpha.6 || 4.0.0-alpha.8", "@jupyterlab/services@^4.0.0-alpha.8":
   version "4.0.0-alpha.8"
   resolved "https://registry.npmjs.org/@jupyterlab/services/-/services-4.0.0-alpha.8.tgz#8124d66a40c5fc22a8978628dc9874f53babf418"
   integrity sha512-rt3xABRMxIMsffkgqeHto2202P5xY52FndHqqQnfSMILPOZ1gMq80vvNsePf3R2RS5KnK2hk6N5YSlKZPeXx/g==
@@ -366,9 +341,10 @@
     node-fetch "^2.6.0"
     ws "^7.0.0"
 
-"@jupyterlab/services@^1.0.1 || ^2.0.0":
+"@jupyterlab/services@^2.0.0":
   version "2.0.3"
   resolved "https://registry.npmjs.org/@jupyterlab/services/-/services-2.0.3.tgz#376f06093b693e7d1037d01b5a542ec27a84a052"
+  integrity sha512-613PALJSc16ce/W5butOnqOTUFspYACB0DQKydIuDVwFefxrdMIBNAk8pqVXih6D2NHQTwC0DZKGViYD8Hj6hg==
   dependencies:
     "@jupyterlab/coreutils" "^1.1.3"
     "@jupyterlab/observables" "^1.0.10"
@@ -378,18 +354,6 @@
     "@phosphor/signaling" "^1.2.2"
     node-fetch "~1.7.3"
     ws "~1.1.4"
-
-"@jupyterlab/services@^1.0.1 || ^2.0.0 || ^3.0.0 || 4.0.0-alpha.3 || 4.0.0-alpha.6 || 4.0.0-alpha8", "@jupyterlab/services@^2.0.0 || ^3.0.0 || 4.0.0-alpha.3 || 4.0.0-alpha.6 || 4.0.0-alpha.8":
-  version "3.2.1"
-  resolved "https://registry.npmjs.org/@jupyterlab/services/-/services-3.2.1.tgz#e8d9329ed73f794909f786d22c5e94b07beb041b"
-  integrity sha512-zCMruGGYxTe427ESK4YUO1V/liFOFYpebYPRsJ+j9CFdV+Hm760+nx4pFX6N6Z9TbS+5cs8BgZ+ebm8unRZrJg==
-  dependencies:
-    "@jupyterlab/coreutils" "^2.2.1"
-    "@jupyterlab/observables" "^2.1.1"
-    "@phosphor/algorithm" "^1.1.2"
-    "@phosphor/coreutils" "^1.3.0"
-    "@phosphor/disposable" "^1.1.2"
-    "@phosphor/signaling" "^1.2.2"
 
 "@jupyterlab/statusbar@^1.0.0-alpha.8":
   version "1.0.0-alpha.8"
@@ -1407,6 +1371,7 @@ ajv@^6.1.0, ajv@^6.5.5:
 ajv@~5.1.6:
   version "5.1.6"
   resolved "https://registry.npmjs.org/ajv/-/ajv-5.1.6.tgz#4b2f1a19dece93d57ac216037e3e9791c7dd1564"
+  integrity sha1-Sy8aGd7Ok9V6whYDfj6XkcfdFWQ=
   dependencies:
     co "^4.6.0"
     json-schema-traverse "^0.3.0"
@@ -2417,6 +2382,7 @@ commander@^2.12.1, commander@^2.19.0, commander@~2.20.0:
 comment-json@^1.1.3:
   version "1.1.3"
   resolved "https://registry.npmjs.org/comment-json/-/comment-json-1.1.3.tgz#6986c3330fee0c4c9e00c2398cd61afa5d8f239e"
+  integrity sha1-aYbDMw/uDEyeAMI5jNYa+l2PI54=
   dependencies:
     json-parser "^1.0.0"
 
@@ -3385,6 +3351,7 @@ eslint-scope@^4.0.0:
 esprima@2.7.x, esprima@^2.6.0, esprima@^2.7.0, esprima@^2.7.1:
   version "2.7.3"
   resolved "https://registry.npmjs.org/esprima/-/esprima-2.7.3.tgz#96e3b70d5779f6ad49cd032673d1c312767ba581"
+  integrity sha1-luO3DVd59q1JzQMmc9HDEnZ7pYE=
 
 esprima@^4.0.0:
   version "4.0.0"
@@ -4812,6 +4779,7 @@ json-parse-better-errors@^1.0.0, json-parse-better-errors@^1.0.1, json-parse-bet
 json-parser@^1.0.0:
   version "1.1.5"
   resolved "https://registry.npmjs.org/json-parser/-/json-parser-1.1.5.tgz#e62ec5261d1a6a5fc20e812a320740c6d9005677"
+  integrity sha1-5i7FJh0aal/CDoEqMgdAxtkAVnc=
   dependencies:
     esprima "^2.7.0"
 
@@ -4830,6 +4798,7 @@ json-schema@0.2.3:
 json-stable-stringify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/json-stable-stringify/-/json-stable-stringify-1.0.1.tgz#9a759d39c5f2ff503fd5300646ed445f88c4f9af"
+  integrity sha1-mnWdOcXy/1A/1TAGRu1EX4jE+a8=
   dependencies:
     jsonify "~0.0.0"
 
@@ -5592,6 +5561,7 @@ moment@^2.6.0:
 moment@~2.21.0:
   version "2.21.0"
   resolved "https://registry.npmjs.org/moment/-/moment-2.21.0.tgz#2a114b51d2a6ec9e6d83cf803f838a878d8a023a"
+  integrity sha512-TCZ36BjURTeFTM/CwRcViQlfkMvL1/vFISuNLO5GkcVm1+QHfbSiNqZuWeMFjj1/3+uAjXswgRk30j1kkLYJBQ==
 
 move-concurrently@^1.0.1:
   version "1.0.1"
@@ -5692,6 +5662,7 @@ node-fetch-npm@^2.0.2:
 node-fetch@^1.0.1, node-fetch@~1.7.3:
   version "1.7.3"
   resolved "https://registry.npmjs.org/node-fetch/-/node-fetch-1.7.3.tgz#980f6f72d85211a5347c6b2bc18c5b84c3eb47ef"
+  integrity sha512-NhZ4CsKx7cYm2vSrBAr2PvFOe6sWDf0UYLRqA6svUYg7+/TSfVAu49jYC4BvQ4Sms9SZgdqGBgroqfDhJdTyKQ==
   dependencies:
     encoding "^0.1.11"
     is-stream "^1.0.1"
@@ -7111,6 +7082,7 @@ querystringify@^2.0.0:
 querystringify@~1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/querystringify/-/querystringify-1.0.0.tgz#6286242112c5b712fa654e526652bf6a13ff05cb"
+  integrity sha1-YoYkIRLFtxL6ZU5SZlK/ahP/Bcs=
 
 quick-lru@^1.0.0:
   version "1.1.0"
@@ -7500,6 +7472,7 @@ require-main-filename@^1.0.1:
 requires-port@1.0.x, requires-port@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
+  integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
 
 resize-observer-polyfill@^1.5.0:
   version "1.5.1"
@@ -8665,6 +8638,7 @@ url-parse-lax@^3.0.0:
 url-parse@~1.1.9:
   version "1.1.9"
   resolved "https://registry.npmjs.org/url-parse/-/url-parse-1.1.9.tgz#c67f1d775d51f0a18911dd7b3ffad27bb9e5bd19"
+  integrity sha1-xn8dd11R8KGJEd17P/rSe7nlvRk=
   dependencies:
     querystringify "~1.0.0"
     requires-port "1.0.x"
@@ -8965,6 +8939,7 @@ ws@^7.0.0:
 ws@~1.1.4:
   version "1.1.5"
   resolved "https://registry.npmjs.org/ws/-/ws-1.1.5.tgz#cbd9e6e75e09fc5d2c90015f21f0c40875e0dd51"
+  integrity sha512-o3KqipXNUdS7wpQzBHSe180lBGO60SoK0yVo3CYJgb2MkobuWuBX6dhkYP5ORCLd55y+SaflMOV5fqAB53ux4w==
   dependencies:
     options ">=0.0.5"
     ultron "1.0.x"

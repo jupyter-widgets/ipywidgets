@@ -18,5 +18,10 @@
     "packages/*",
     "widgetsnbextension",
     "examples/*"
-  ]
+  ],
+  "resolutions": {
+    "@jupyter-widgets/notebook-manager/**/@jupyterlab/services": "^2.0.0",
+    "@jupyter-widgets/jupyterlab-manager/**/@jupyterlab/services": "4.0.0-alpha.8",
+    "**/@jupyterlab/services": "4.0.0-alpha.8"
+  }
 }

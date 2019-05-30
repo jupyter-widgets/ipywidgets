@@ -105,10 +105,8 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
 
     // Set _handleCommOpen so `this` is captured.
     this._handleCommOpen = async (comm, msg) => {
-      // TODO: the two "any" casts below get around type incompatibilities with
-      // older versions of @jupyterlab/services used by@jupyter-widgets/base.
-      let oldComm = new shims.services.Comm(comm as any);
-      await this.handle_comm_open(oldComm, msg as any);
+      let oldComm = new shims.services.Comm(comm);
+      await this.handle_comm_open(oldComm, msg);
     };
 
     context.session.kernelChanged.connect((sender, args) => {
@@ -222,8 +220,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     // asynchronously, so promises to every widget reference should be available
     // by the time they are used.
     await Promise.all(widgets_info.map(async widget_info => {
-      // TODO: fix the typing complaints when we remove the first any cast.
-      const content = (widget_info.msg as any).content as any;
+      const content = widget_info.msg.content as any;
       await this.new_model({
         model_name: content.data.state._model_name,
         model_module: content.data.state._model_module,
@@ -471,6 +468,6 @@ namespace Private {
   export
   interface ICommUpdateData {
     comm: IClassicComm;
-    msg: KernelMessage.ICommMsg;
+    msg: KernelMessage.ICommMsgMsg;
   }
 }
