@@ -91,7 +91,7 @@ class LayoutView extends WidgetView {
         // and interact in special ways with the overflow attribute.
         if (trait === 'overflow_x' || trait === 'overflow_y') {
             // Listen to changes, and set the value on change.
-            this.listenTo(this.model, 'change:' + trait, (model, value) => {
+            this.listenTo(this.model, 'change:' + trait, (model: any, value: any) => {
                 this.handleOverflowChange(trait, value);
             });
 
