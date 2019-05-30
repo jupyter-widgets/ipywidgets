@@ -22,7 +22,7 @@ import {
 } from '@jupyterlab/notebook';
 
 import {
-  RenderMimeRegistry
+  IRenderMimeRegistry
 } from '@jupyterlab/rendermime';
 
 import {
@@ -98,7 +98,7 @@ class BackboneViewWrapper extends Widget {
  */
 export
 class WidgetManager extends ManagerBase<Widget> implements IDisposable {
-  constructor(context: DocumentRegistry.IContext<INotebookModel>, rendermime: RenderMimeRegistry, settings: WidgetManager.Settings) {
+  constructor(context: DocumentRegistry.IContext<INotebookModel>, rendermime: IRenderMimeRegistry, settings: WidgetManager.Settings) {
     super();
     this._context = context;
     this._rendermime = rendermime;
@@ -438,7 +438,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   private _handleCommOpen: (comm: Kernel.IComm, msg: KernelMessage.ICommOpenMsg) => Promise<void>;
   private _context: DocumentRegistry.IContext<INotebookModel>;
   private _registry: SemVerCache<ExportData> = new SemVerCache<ExportData>();
-  private _rendermime: RenderMimeRegistry;
+  private _rendermime: IRenderMimeRegistry;
 
   _commRegistration: IDisposable;
   private _restored = new Signal<this, void>(this);
@@ -466,6 +466,6 @@ namespace Private {
   export
   interface ICommUpdateData {
     comm: IClassicComm;
-    msg: KernelMessage.ICommMsg;
+    msg: KernelMessage.ICommMsgMsg;
   }
 }
