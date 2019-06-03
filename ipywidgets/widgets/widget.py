@@ -388,6 +388,8 @@ class Widget(LoggingHasTraits):
 
     _view_count = Int(None, allow_none=True,
         help="EXPERIMENTAL: The number of views of the model displayed in the frontend. This attribute is experimental and may change or be removed in the future. None signifies that views will not be tracked. Set this to 0 to start tracking view creation/deletion.").tag(sync=True)
+    _user_data = Dict({}, help="User defined data.").tag(sync=True)
+
     comm = Instance('ipykernel.comm.Comm', allow_none=True)
 
     keys = List(help="The traits which are synced.")
