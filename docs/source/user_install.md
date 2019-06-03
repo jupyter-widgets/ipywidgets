@@ -55,6 +55,15 @@ Installing the JupyterLab Extension
 To install the JupyterLab extension you also need to run the command below in
 a terminal which requires that you have [nodejs](https://nodejs.org/en/)
 installed.
+
+For example, if using conda environments, you can install nodejs with:
+
+```bash
+conda install -c conda-forge nodejs
+```
+
+Then you can install the labextension:
+
 ```bash
 jupyter labextension install @jupyter-widgets/jupyterlab-manager
 ```
