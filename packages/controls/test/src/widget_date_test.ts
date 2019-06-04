@@ -61,7 +61,7 @@ describe('DatePickerView', function() {
         const testDate = new Date('2015-02-22');
         const datepicker = getDatepicker(view.el);
         datepicker.valueAsDate = testDate;
-        datepicker.dispatchEvent(new Event('change', {'bubbles':true}));
+        datepicker.dispatchEvent(new Event('focusout', {'bubbles':true}));
 
         expect(this.model.get('value').getTime())
             .to.equal(testDate.getTime());
