@@ -110,7 +110,6 @@ class DatePickerView extends DescriptionView {
 
     events(): {[e: string]: string} {
         return {
-            //'change [type="date"]': '_picker_change',
             'keypress input' : '_handle_keypress',
             'focusout [type="date"]': '_picker_update'
         };
@@ -126,13 +125,6 @@ class DatePickerView extends DescriptionView {
         const value = this.model.get('value');
         this._datepicker.valueAsDate = value;
     }
-
-    // private _picker_change() {
-    //     if (!this._datepicker.validity.badInput) {
-    //         this.model.set('value', this._datepicker.valueAsDate);
-    //         this.touch();
-    //     }
-    // }
 
     private _picker_update() {
         if (this._datepicker.validity.badInput) {
