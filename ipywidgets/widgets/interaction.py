@@ -27,7 +27,12 @@ from ipython_genutils.py3compat import string_types, unicode_type
 from traitlets import HasTraits, Any, Unicode, observe
 from numbers import Real, Integral
 from warnings import warn
-from collections.abc import Iterable, Mapping
+
+try:
+    from collections.abc import Iterable, Mapping
+except ImportError:
+    from collections import Iterable, Mapping # py2
+
 
 empty = Parameter.empty
 
