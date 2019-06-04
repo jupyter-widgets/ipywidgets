@@ -9,16 +9,7 @@ from .valuewidget import ValueWidget
 from .widget import register
 from traitlets import Unicode, CUnicode, Bytes, Bool
 from .trait_types import bytes_serialization
-
-
-def _text_type():
-    # six is not a direct dependency of this module
-    # This replicates six.text_type
-    try:
-        return unicode
-    except NameError:
-        return str
-_text_type = _text_type()
+from .util import text_type
 
 
 @register
@@ -77,7 +68,7 @@ class _Media(DOMWidget, ValueWidget, CoreWidget):
         url: [str, bytes]
             The location of a URL to load.
         """
-        if isinstance(url, _text_type):
+        if isinstance(url, text_type):
             # If unicode (str in Python 3), it needs to be encoded to bytes
             url = url.encode('utf-8')
 

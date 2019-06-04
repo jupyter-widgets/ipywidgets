@@ -43,18 +43,19 @@ import * as utils from './utils';
 // anyone who needs to know about the change in state. The heart of the beast.
 // This *MUST* be called with the model as the `this` context.
 export
-function set(key, val, options) {
+function set(key: string|{}, val: any, options: any) {
+    /* tslint:disable:no-invalid-this */
     if (key == null) {
         return this;
     }
 
     // Handle both `"key", value` and `{key: value}` -style arguments.
-    let attrs;
+    let attrs: any;
     if (typeof key === 'object') {
         attrs = key;
         options = val;
     } else {
-        (attrs = {})[key] = val;
+        (attrs = {} as {[key: string]: any})[key as string] = val;
     }
 
     options || (options = {});
@@ -124,4 +125,5 @@ function set(key, val, options) {
     this._pending = false;
     this._changing = false;
     return this;
+    /* tslint:enable:no-invalid-this */
 }

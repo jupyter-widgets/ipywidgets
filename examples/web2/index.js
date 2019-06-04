@@ -3,7 +3,7 @@ require("codemirror/lib/codemirror.css");
 require("codemirror/mode/python/python");
 var WidgetManager = require("./manager").WidgetManager;
 
-require('@jupyter-widgets/controls/css/widgets.built.css');
+require('@jupyter-widgets/controls/css/widgets.css');
 require('font-awesome/css/font-awesome.css');
 
 document.addEventListener("DOMContentLoaded", function(event) {

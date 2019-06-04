@@ -11,16 +11,7 @@ module.exports = {
         rules: [
             { test: /\.css$/, use: [
                 'style-loader',
-                'css-loader',
-                {
-                    loader: 'postcss-loader',
-                    options: {
-                        plugins: [
-                            require('postcss-import'),
-                            require('postcss-cssnext')
-                        ]
-                    }
-                }
+                'css-loader'
             ]},
             // jquery-ui loads some images
             { test: /\.(jpg|png|gif)$/, use: 'file-loader' },
@@ -30,6 +21,6 @@ module.exports = {
             { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, use: 'url-loader?limit=10000&mimetype=application/octet-stream' },
             { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, use: 'file-loader' },
             { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, use: 'url-loader?limit=10000&mimetype=image/svg+xml' }
-              ]
+        ]
     },
 };

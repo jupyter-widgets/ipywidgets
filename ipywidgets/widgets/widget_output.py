@@ -60,6 +60,8 @@ class Output(DOMWidget):
     msg_id = Unicode('', help="Parent message id of messages to capture").tag(sync=True)
     outputs = TypedTuple(trait=Dict(), help="The output messages synced from the frontend.").tag(sync=True)
 
+    __counter = 0
+
     def clear_output(self, *pargs, **kwargs):
         """
         Clear the content of the output widget.
@@ -108,6 +110,7 @@ class Output(DOMWidget):
         ip = get_ipython()
         if ip and hasattr(ip, 'kernel') and hasattr(ip.kernel, '_parent_header'):
             self.msg_id = ip.kernel._parent_header['header']['msg_id']
+            self.__counter += 1
 
     def __exit__(self, etype, evalue, tb):
         """Called upon exiting output widget context manager."""
@@ -116,7 +119,9 @@ class Output(DOMWidget):
             if ip:
                 ip.showtraceback((etype, evalue, tb), tb_offset=0)
         self._flush()
-        self.msg_id = ''
+        self.__counter -= 1
+        if self.__counter == 0:
+            self.msg_id = ''
         # suppress exceptions when in IPython, since they are shown above,
         # otherwise let someone else handle it
         return True if ip else None

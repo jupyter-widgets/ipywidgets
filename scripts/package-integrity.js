@@ -17,7 +17,7 @@ var path = require('path');
 // Packages to ignore
 var IGNORE = {
     '@jupyter-widgets/base': ['@types/backbone', '@types/lodash'],
-    '@jupyter-widgets/jupyterlab-manager': ['backbone', '@types/backbone'],
+    '@jupyter-widgets/jupyterlab-manager': ['backbone', '@types/backbone', '@jupyterlab/cells'],
     '@jupyter-widgets/html-manager': ['ajv', '@jupyter-widgets/schema'],
     '@jupyter-widgets/example-web-tmpnb': ['http-server', 'font-awesome'],
     '@jupyter-widgets/example-web3': ['http-server', '@jupyter-widgets/controls']
@@ -48,7 +48,7 @@ function getImports(sourceFile) {
  * Validate the integrity of a package in a directory.
  */
 function validate(dname) {
-    filenames = glob.sync(dname + '/src/*.ts*');
+    var filenames = glob.sync(dname + '/src/*.ts*');
     filenames = filenames.concat(glob.sync(dname + '/src/**/*.ts*'));
 
     if (filenames.length == 0) {
