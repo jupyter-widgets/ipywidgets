@@ -100,3 +100,27 @@ class Button(DOMWidget, CoreWidget):
         """
         if content.get('event', '') == 'click':
             self.click()
+
+        def __copy__(self):
+
+            cls = self.__class__
+            result = cls.__new__(cls)
+            result.__init__()
+
+            new_state = {key: value for key, value in self.get_state().items() if
+                         not key.startswith('_') and
+                         not key == 'layout' and
+                         not key == 'style'}
+            for key, value in new_state.items():
+                setattr(result, key, value)
+
+            result.layout = self.layout
+            result.style = self.style
+
+            for callback in self._click_handlers.callbacks:
+                result.on_click(callback, remove=False)
+
+            return result
+
+
+

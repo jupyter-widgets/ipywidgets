@@ -63,6 +63,30 @@ class Box(DOMWidget, CoreWidget):
         kwargs['children'] = children
         super().__init__(**kwargs)
 
+    def __copy__(self):
+        cls = self.__class__
+        result = cls.__new__(cls)
+
+        result.__init__(children=tuple([*self.children]))
+
+        # Deep Copy
+        # from copy import copy
+        # result.__init__(children=tuple(copy(child) for child in self.children))
+
+        new_state = {key: value for key, value in self.get_state().items() if
+                     not key.startswith('_') and
+                     not key == 'layout' and
+                     not key == 'style' and
+                     not key == 'children'}
+
+        for key, value in new_state.items():
+            setattr(result, key, value)
+
+        result.layout = self.layout
+
+        return result
+
+
 @register
 @doc_subst(_doc_snippets)
 class VBox(Box):
