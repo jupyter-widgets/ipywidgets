@@ -288,7 +288,7 @@ class _BoundedFloatRange(_FloatRange):
 
     def __init__(self, *args, **kwargs):
         min, max = kwargs.get('min', 0.0), kwargs.get('max', 100.0)
-        if not kwargs.get('value', None):
+        if kwargs.get('value', None) is None:
             kwargs['value'] = (0.75 * min + 0.25 * max,
                                0.25 * min + 0.75 * max)
         super(_BoundedFloatRange, self).__init__(*args, **kwargs)
