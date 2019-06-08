@@ -11,7 +11,7 @@
     "updated": "lerna updated"
   },
   "devDependencies": {
-    "@jupyterlab/buildutils": "1.0.0-alpha.8",
+    "@jupyterlab/buildutils": "1.0.0-alpha.11",
     "lerna": "^3.2.1"
   },
   "workspaces": [
@@ -21,7 +21,7 @@
   ],
   "resolutions": {
     "@jupyter-widgets/notebook-manager/**/@jupyterlab/services": "^2.0.0",
-    "@jupyter-widgets/jupyterlab-manager/**/@jupyterlab/services": "4.0.0-alpha.8",
-    "**/@jupyterlab/services": "4.0.0-alpha.8"
+    "@jupyter-widgets/jupyterlab-manager/**/@jupyterlab/services": "4.0.0-alpha.11",
+    "**/@jupyterlab/services": "4.0.0-alpha.11"
   }
 }
