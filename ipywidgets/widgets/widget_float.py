@@ -291,6 +291,14 @@ class _BoundedFloatRange(_FloatRange):
         if kwargs.get('value', None) is None:
             kwargs['value'] = (0.75 * min + 0.25 * max,
                                0.25 * min + 0.75 * max)
+        else:
+            try:
+                kwargs['value'] = tuple(kwargs['value'])
+            except:
+                raise TypeError(
+                    "A 'range' must be able to be cast to a tuple. The input of type"
+                    " {} could not be cast to a tuple".format(type(proposal))
+                )
         super(_BoundedFloatRange, self).__init__(*args, **kwargs)
 
     @validate('min', 'max')
