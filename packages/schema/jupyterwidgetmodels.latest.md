@@ -47,6 +47,7 @@ Attribute        | Type             | Default          | Help
 `min_height`     | `null` or string | `null`           | The min-height CSS attribute.
 `min_width`      | `null` or string | `null`           | The min-width CSS attribute.
 `object_fit`     | `null` or string (one of `'contain'`, `'cover'`, `'fill'`, `'scale-down'`, `'none'`) | `null`           | The object-fit CSS attribute.
+`object_position` | `null` or string | `null`           | The object-position CSS attribute.
 `order`          | `null` or string | `null`           | The order CSS attribute.
 `overflow`       | `null` or string | `null`           | The overflow CSS attribute.
 `overflow_x`     | `null` or string (one of `'visible'`, `'hidden'`, `'scroll'`, `'auto'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The overflow-x CSS attribute (deprecated).
