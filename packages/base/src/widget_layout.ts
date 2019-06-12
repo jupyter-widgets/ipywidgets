@@ -43,6 +43,7 @@ let css_properties: {[key: string]: string} = {
 
     // image-specific
     object_fit: null,
+    object_position: null,
 
     // container
     grid_auto_columns: null,

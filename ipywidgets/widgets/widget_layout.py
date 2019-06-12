@@ -64,6 +64,7 @@ class Layout(Widget):
     width = Unicode(None, allow_none=True, help="The width CSS attribute.").tag(sync=True)
 
     object_fit = CaselessStrEnum(['contain', 'cover', 'fill', 'scale-down', 'none'], allow_none=True, help="The object-fit CSS attribute.").tag(sync=True)
+    object_position = Unicode(None, allow_none=True, help="The object-position CSS attribute.").tag(sync=True)
 
     grid_auto_columns = Unicode(None, allow_none=True, help="The grid-auto-columns CSS attribute.").tag(sync=True)
     grid_auto_flow = CaselessStrEnum(['column','row','row dense','column dense']+ CSS_PROPERTIES, allow_none=True, help="The grid-auto-flow CSS attribute.").tag(sync=True)
