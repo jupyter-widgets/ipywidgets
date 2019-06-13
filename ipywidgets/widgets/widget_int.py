@@ -244,6 +244,14 @@ class _BoundedIntRange(_IntRange):
         if not kwargs.get('value', None):
             kwargs['value'] = (0.75 * min + 0.25 * max,
                                0.25 * min + 0.75 * max)
+        else:
+            try:
+                kwargs['value'] = tuple(kwargs['value'])
+            except:
+                raise TypeError(
+                    "A 'range' must be able to be cast to a tuple. The input of type"
+                    " {} could not be cast to a tuple".format(type(kwargs['value']))
+                )
         super(_BoundedIntRange, self).__init__(*args, **kwargs)
 
     @validate('min', 'max')

@@ -297,7 +297,7 @@ class _BoundedFloatRange(_FloatRange):
             except:
                 raise TypeError(
                     "A 'range' must be able to be cast to a tuple. The input of type"
-                    " {} could not be cast to a tuple".format(type(proposal))
+                    " {} could not be cast to a tuple".format(type(kwargs['value']))
                 )
         super(_BoundedFloatRange, self).__init__(*args, **kwargs)
 
