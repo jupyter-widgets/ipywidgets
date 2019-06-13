@@ -291,7 +291,7 @@ class _BoundedFloatRange(_FloatRange):
         if kwargs.get('value', None) is None:
             kwargs['value'] = (0.75 * min + 0.25 * max,
                                0.25 * min + 0.75 * max)
-        else:
+        elif not isinstance(kwargs['value'], tuple):
             try:
                 kwargs['value'] = tuple(kwargs['value'])
             except:

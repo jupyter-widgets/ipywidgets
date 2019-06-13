@@ -241,10 +241,10 @@ class _BoundedIntRange(_IntRange):
 
     def __init__(self, *args, **kwargs):
         min, max = kwargs.get('min', 0), kwargs.get('max', 100)
-        if not kwargs.get('value', None):
+        if kwargs.get('value', None) is None:
             kwargs['value'] = (0.75 * min + 0.25 * max,
                                0.25 * min + 0.75 * max)
-        else:
+        elif not isinstance(kwargs['value'], tuple):
             try:
                 kwargs['value'] = tuple(kwargs['value'])
             except:
