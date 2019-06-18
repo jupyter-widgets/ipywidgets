@@ -90,7 +90,7 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
         self.compress_level = compress_level
         self.value = {}
 
-        super().__init__()
+        super(FileUpload, self).__init__()
 
     @validate('compress_level')
     def _valid_compress_level(self, proposal):
