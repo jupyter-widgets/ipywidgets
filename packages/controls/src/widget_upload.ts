@@ -4,27 +4,10 @@
 import * as pako from 'pako';
 
 import { CoreDOMWidgetModel } from './widget_core';
+import { ButtonStyleModel } from './widget_button';
 import { DOMWidgetView } from '@jupyter-widgets/base';
 
 import * as _ from 'underscore';
-
-function serialize_content(listBuffer) {
-    return listBuffer.map(e => new DataView(e.slice(0)));
-}
-
-function build_btn_inner_html(n) {
-    const icon = `<i class="fa fa-upload"></i>`;
-    const text = `Upload`;
-    let html = `${icon}  ${text}`;
-    if (n === 1) {
-        html += ` (${n} file)`;
-    }
-
-    if (n > 1) {
-        html += ` (${n} files)`;
-    }
-    return html;
-}
 
 export class FileUploadModel extends CoreDOMWidgetModel {
     defaults() {
@@ -34,65 +17,60 @@ export class FileUploadModel extends CoreDOMWidgetModel {
 
             _counter: 0,
             accept: '',
+            description: 'Upload',
+            tooltip: '',
             disabled: false,
+            icon: 'upload',
+            button_style: '',
             multiple: false,
-            style: '',
-            compress_level: 0,
             li_metadata: [],
             li_content: [],
             error: '',
+            style: null
         });
     }
 
     static serializers = {
         ...CoreDOMWidgetModel.serializers,
-        li_content: { serialize: serialize_content },
+        li_content: { serialize: buffers => { return [...buffers]; } },
     };
 }
 
 export class FileUploadView extends DOMWidgetView {
-    fileInput: any;
-    fileReader: any;
-    btn: any;
+
+    el: HTMLDivElement;
+    btn: HTMLButtonElement;
+    fileInput: HTMLInputElement;
+    fileReader: FileReader;
 
     render() {
         super.render();
-        this.pWidget.addClass('jupyter-widgets');
-        this.pWidget.addClass('widget-upload');
 
-        const that = this;
-        let counter;
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-upload');
 
-        const divLoader = document.createElement('div');
-        this.el.appendChild(divLoader);
+        this.fileInput = document.createElement('input');
+        this.fileInput.type = 'file';
+        this.fileInput.style.display = 'none';
+        this.el.appendChild(this.fileInput);
 
-        const fileInput = document.createElement('input');
-        fileInput.type = 'file';
-        fileInput.multiple = this.model.get('multiple');
-        fileInput.setAttribute('style', 'display: none');
-        divLoader.appendChild(fileInput);
-        this.fileInput = fileInput;
+        this.btn = document.createElement('button');
+        this.btn.classList.add('jupyter-button');
+        this.el.appendChild(this.btn);
 
-        const btn = document.createElement('button');
-        btn.innerHTML = build_btn_inner_html(null);
-        btn.className = 'p-Widget jupyter-widgets jupyter-button widget-button';
-        btn.disabled = this.model.get('disabled');
-        btn.setAttribute('style', this.model.get('style_button'));
-        divLoader.appendChild(btn);
-        this.btn = btn;
-
-        btn.addEventListener('click', () => {
-            fileInput.click();
+        this.btn.addEventListener('click', () => {
+            this.fileInput.click();
         });
 
-        fileInput.addEventListener('click', () => {
-            fileInput.value = '';
+        this.fileInput.addEventListener('click', () => {
+            this.fileInput.value = '';
         });
 
-        fileInput.addEventListener('change', () => {
-            // console.log(`new input: nb files = ${fileInput.files.length}`);
+        this.fileInput.addEventListener('change', () => {
+
             const promisesFile = [];
-            Array.from(fileInput.files).forEach(file => {
+
+            Array.from(this.fileInput.files).forEach(file => {
                 promisesFile.push(
                     new Promise((resolve, reject) => {
                         const metadata = {
@@ -103,7 +81,7 @@ export class FileUploadView extends DOMWidgetView {
                         };
                         this.fileReader = new FileReader();
                         this.fileReader.onload = event => {
-                            const buffer = event.target.result;
+                            const buffer = (event as any).target.result;
                             resolve({
                                 buffer,
                                 metadata,
@@ -118,62 +96,78 @@ export class FileUploadView extends DOMWidgetView {
                     })
                 );
             });
+
             Promise.all(promisesFile)
                 .then(contents => {
                     const li_metadata = [];
                     const li_buffer = [];
                     contents.forEach(c => {
                         li_metadata.push(c.metadata);
-                        const compress_level = this.model.get('compress_level');
-                        if (compress_level > 0) {
-                            const compressed = pako.deflate(c.buffer, {
-                                level: compress_level,
-                            });
-                            li_buffer.push(compressed.buffer);
-                        } else {
-                            li_buffer.push(c.buffer);
-                        }
+                        li_buffer.push(c.buffer);
                     });
-                    counter = this.model.get('_counter');
-                    that.model.set({
-                        _counter: counter + 1,
+                    let counter = this.model.get('_counter');
+                    this.model.set({
+                        _counter: counter + contents.length,
                         li_metadata,
                         li_content: li_buffer,
                         error: '',
                     });
-                    that.touch();
-                    btn.innerHTML = build_btn_inner_html(li_metadata.length);
+                    this.touch();
                 })
                 .catch(err => {
                     console.error('error in file upload: %o', err);
-                    counter = this.model.get('_counter');
-                    that.model.set({
-                        _counter: counter + 1,
+                    this.model.set({
                         error: err,
                     });
-                    that.touch();
-                    btn.innerHTML = build_btn_inner_html(null);
+                    this.touch();
                 });
         });
 
-        that.model.on('change:accept', that.update_accept, that);
-        that.model.on('change:disabled', that.toggle_disabled, that);
-        that.model.on('change:multiple', that.update_multiple, that);
-        that.model.on('change:style_button', that.update_style_button, that);
+        this.listenTo(this.model, 'change:button_style', this.update_button_style);
+        this.set_button_style();
+        this.update(); // Set defaults.
     }
 
-    update_accept() {
-        this.fileInput.accept = this.model.get('accept');
-    }
-    toggle_disabled() {
+    update() {
         this.btn.disabled = this.model.get('disabled');
-    }
-    update_multiple() {
+        this.btn.setAttribute('title', this.model.get('tooltip'));
+
+        let model_description = this.model.get('description');
+        let description = `${this.model.get('description')} (${this.model.get('_counter')})`
+        let icon = this.model.get('icon');
+        if (description.length || icon.length) {
+            this.btn.textContent = '';
+            if (icon.length) {
+                let i = document.createElement('i');
+                i.classList.add('fa');
+                i.classList.add('fa-' + icon);
+                if (description.length === 0) {
+                    i.classList.add('center');
+                }
+                this.btn.appendChild(i);
+            }
+            this.btn.appendChild(document.createTextNode(description));
+        }
+
+        this.fileInput.accept = this.model.get('accept');
         this.fileInput.multiple = this.model.get('multiple');
-    }
-    update_style_button() {
-        this.btn.setAttribute('style', this.model.get('style_button'));
+
+        return super.update();
     }
 
-    el: HTMLImageElement;
+    update_button_style() {
+        this.update_mapped_classes(FileUploadView.class_map, 'button_style', this.btn);
+    }
+
+    set_button_style() {
+        this.set_mapped_classes(FileUploadView.class_map, 'button_style', this.btn);
+    }
+
+    static class_map = {
+        primary: ['mod-primary'],
+        success: ['mod-success'],
+        info: ['mod-info'],
+        warning: ['mod-warning'],
+        danger: ['mod-danger']
+    };
 }

@@ -7,14 +7,14 @@ Represents a file upload button.
 """
 
 import zlib
-from traitlets import observe, validate, Unicode, Dict, List, Int, Bool, Bytes, TraitError
+from traitlets import observe, validate, default, Unicode, Dict, List, Int, Bool, Bytes, TraitError, CaselessStrEnum
 
 from .widget_description import DescriptionWidget
 from .valuewidget import ValueWidget
 from .widget_core import CoreWidget
-from .widget import register
-from .trait_types import bytes_serialization
-
+from .widget_button import ButtonStyle
+from .widget import register, widget_serialization
+from .trait_types import bytes_serialization, InstanceDict
 
 def content_from_json(value, widget):
     """
@@ -22,10 +22,6 @@ def content_from_json(value, widget):
     """
     from_json = bytes_serialization['from_json']
     output = [from_json(e, None) for e in value]
-
-    if widget.compress_level > 0:
-        output = [zlib.decompress(e) for e in output]
-
     return output
 
 
@@ -36,67 +32,20 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
     """
     _model_name = Unicode('FileUploadModel').tag(sync=True)
     _view_name = Unicode('FileUploadView').tag(sync=True)
+    _counter = Int().tag(sync=True)
 
-    _counter = Int(0).tag(sync=True)
-
-    help = 'Type of files the input accepts. None for all. See https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-accept'
-    accept = Unicode(help=help).tag(sync=True)
-
-    help = 'If true, allow for multiple files upload, else only accept one'
-    multiple = Bool(False, help=help).tag(sync=True)
-
-    help = 'Enable or disable button'
-    disabled = Bool(False, help=help).tag(sync=True)
-
-    help = 'Optional style for button (label element)'
-    style_button = Unicode('', help=help).tag(sync=True)
-
-    help = 'Compress level: from 1 to 9 - 0 for no compression'
-    compress_level = Int(0, help=help).tag(sync=True)
-
-    help = 'List of file metadata'
-    li_metadata = List(Dict, help=help).tag(sync=True)
-
-    help = 'List of file content (bytes)'
-    li_content = List(Bytes, help=help).tag(sync=True, from_json=content_from_json)
-
-    help = 'Error message'
-    error = Unicode('', help=help).tag(sync=True)
-
-    value = Dict({}).tag(sync=False)
-
-    def __init__(self,
-                 accept='',
-                 multiple=False,
-                 disabled=False,
-                 style_button='',
-                 compress_level=0,
-                 ):
-        """
-        Instantiate widget
-        """
-
-        if accept is None:
-            accept = ''
-
-        if style_button is None:
-            style_button = ''
-
-        self._counter = 0
-        self.accept = accept
-        self.disabled = disabled
-        self.multiple = multiple
-        self.style_button = style_button
-        self.compress_level = compress_level
-        self.value = {}
-
-        super(FileUpload, self).__init__()
-
-    @validate('compress_level')
-    def _valid_compress_level(self, proposal):
-        if proposal['value'] not in range(10):
-            raise TraitError('compress_level must be an int from 0 to 9 incl.')
-        return proposal['value']
+    accept = Unicode(help='File types to accept, empty string for all').tag(sync=True)
+    multiple = Bool(help='If True, allow for multiple files upload').tag(sync=True)
+    disabled = Bool(help='Enable or disable button').tag(sync=True)
+    icon = Unicode('upload', help="Font-awesome icon name, without the 'fa-' prefix.").tag(sync=True)
+    button_style = CaselessStrEnum(
+        values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
+        help="""Use a predefined styling for the button.""").tag(sync=True)
+    style = InstanceDict(ButtonStyle).tag(sync=True, **widget_serialization)
+    li_metadata = List(Dict, help='List of file metadata').tag(sync=True)
+    li_content = List(Bytes, help='List of file content (bytes)').tag(sync=True, from_json=content_from_json)
+    error = Unicode(help='Error message').tag(sync=True)
+    value = Dict(read_only=True)
 
     @observe('_counter')
     def on_incr_counter(self, change):
@@ -104,13 +53,13 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
         counter increment triggers the update of trait value
         """
         res = {}
-
         msg = 'Error: length of li_metadata and li_content must be equal'
         assert len(self.li_metadata) == len(self.li_content), msg
-
-        for metadata, content in zip(self.li_metadata,
-                                     self.li_content):
+        for metadata, content in zip(self.li_metadata, self.li_content):
             name = metadata['name']
             res[name] = {'metadata': metadata, 'content': content}
+        self.set_trait('value', res)
 
-        self.value = res
+    @default('description')
+    def _default_description(self):
+        return 'Upload'
