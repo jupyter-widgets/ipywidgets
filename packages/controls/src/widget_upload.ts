@@ -38,27 +38,27 @@ export class FileUploadModel extends CoreDOMWidgetModel {
 
 export class FileUploadView extends DOMWidgetView {
 
-    el: HTMLDivElement;
-    btn: HTMLButtonElement;
+    el: HTMLButtonElement;
     fileInput: HTMLInputElement;
     fileReader: FileReader;
+
+    get tagName() {
+        return 'button';
+    }
 
     render() {
         super.render();
 
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-upload');
+        this.el.classList.add('jupyter-button');
 
         this.fileInput = document.createElement('input');
         this.fileInput.type = 'file';
         this.fileInput.style.display = 'none';
         this.el.appendChild(this.fileInput);
 
-        this.btn = document.createElement('button');
-        this.btn.classList.add('jupyter-button');
-        this.el.appendChild(this.btn);
-
-        this.btn.addEventListener('click', () => {
+        this.el.addEventListener('click', () => {
             this.fileInput.click();
         });
 
@@ -129,14 +129,14 @@ export class FileUploadView extends DOMWidgetView {
     }
 
     update() {
-        this.btn.disabled = this.model.get('disabled');
-        this.btn.setAttribute('title', this.model.get('tooltip'));
+        this.el.disabled = this.model.get('disabled');
+        this.el.setAttribute('title', this.model.get('tooltip'));
 
         let model_description = this.model.get('description');
         let description = `${this.model.get('description')} (${this.model.get('_counter')})`
         let icon = this.model.get('icon');
         if (description.length || icon.length) {
-            this.btn.textContent = '';
+            this.el.textContent = '';
             if (icon.length) {
                 let i = document.createElement('i');
                 i.classList.add('fa');
@@ -144,9 +144,9 @@ export class FileUploadView extends DOMWidgetView {
                 if (description.length === 0) {
                     i.classList.add('center');
                 }
-                this.btn.appendChild(i);
+                this.el.appendChild(i);
             }
-            this.btn.appendChild(document.createTextNode(description));
+            this.el.appendChild(document.createTextNode(description));
         }
 
         this.fileInput.accept = this.model.get('accept');
@@ -156,11 +156,11 @@ export class FileUploadView extends DOMWidgetView {
     }
 
     update_button_style() {
-        this.update_mapped_classes(FileUploadView.class_map, 'button_style', this.btn);
+        this.update_mapped_classes(FileUploadView.class_map, 'button_style', this.el);
     }
 
     set_button_style() {
-        this.set_mapped_classes(FileUploadView.class_map, 'button_style', this.btn);
+        this.set_mapped_classes(FileUploadView.class_map, 'button_style', this.el);
     }
 
     static class_map = {

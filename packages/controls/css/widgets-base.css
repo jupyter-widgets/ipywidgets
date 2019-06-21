@@ -258,21 +258,10 @@
     background-color: var(--jp-error-color0);
 }
 
-/* Widget Button, Widget Toggle Button */
+/* Widget Button, Widget Toggle Button, Widget Upload */
 
-.widget-button, .widget-toggle-button {
+.widget-button, .widget-toggle-button, .widget-upload {
     width: var(--jp-widgets-inline-width-short);
-}
-
-/* Widget Upload */
-
-.widget-upload {
-    width: var(--jp-widgets-inline-width-short);
-}
-
-.widget-upload button {
-    width: 100%;
-    height: 100%;
 }
 
 /* Widget Label Styling */
