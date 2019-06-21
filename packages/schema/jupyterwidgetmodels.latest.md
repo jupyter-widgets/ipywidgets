@@ -345,6 +345,31 @@ Attribute        | Type             | Default          | Help
 `layout`         | reference to Layout widget | reference to new instance | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 
+### FileUploadModel (@jupyter-widgets/controls, 1.4.0); FileUploadView (@jupyter-widgets/controls, 1.4.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_counter`       | number (integer) | `0`              | 
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'1.4.0'`        | 
+`_model_name`    | string           | `'FileUploadModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'1.4.0'`        | 
+`_view_name`     | string           | `'FileUploadView'` | 
+`accept`         | string           | `''`             | File types to accept, empty string for all
+`button_style`   | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the button.
+`data`           | array            | `[]`             | List of file content (bytes)
+`description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
+`disabled`       | boolean          | `false`          | Enable or disable button
+`error`          | string           | `''`             | Error message
+`icon`           | string           | `'upload'`       | Font-awesome icon name, without the 'fa-' prefix.
+`layout`         | reference to Layout widget | reference to new instance | 
+`metadata`       | array            | `[]`             | List of file metadata
+`multiple`       | boolean          | `false`          | If True, allow for multiple files upload
+`style`          | reference to ButtonStyle widget | reference to new instance | 
+
 ### FloatLogSliderModel (@jupyter-widgets/controls, 1.4.0); FloatLogSliderView (@jupyter-widgets/controls, 1.4.0)
 
 Attribute        | Type             | Default          | Help

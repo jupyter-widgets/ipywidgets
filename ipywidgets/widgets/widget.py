@@ -113,7 +113,6 @@ def _separate_buffers(substate, path, buffer_paths, buffers):
         raise ValueError("expected state to be a list or dict, not %r" % substate)
     return substate
 
-
 def _remove_buffers(state):
     """Return (state_without_buffers, buffer_paths, buffers) for binary message parts
 
@@ -283,6 +282,7 @@ def register(name=''):
     else:
         return reg(name)
 
+
 class Widget(LoggingHasTraits):
     #-------------------------------------------------------------------------
     # Class attributes
@@ -350,7 +350,6 @@ class Widget(LoggingHasTraits):
         for widget in widgets:
             state[widget.model_id] = widget._get_embed_state(drop_defaults=drop_defaults)
         return {'version_major': 2, 'version_minor': 0, 'state': state}
-
 
     def _get_embed_state(self, drop_defaults=False):
         state = {
@@ -610,6 +609,7 @@ class Widget(LoggingHasTraits):
     #-------------------------------------------------------------------------
     # Support methods
     #-------------------------------------------------------------------------
+
     @contextmanager
     def _lock_property(self, **properties):
         """Lock a property-value pair.

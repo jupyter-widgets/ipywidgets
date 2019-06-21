@@ -258,9 +258,9 @@
     background-color: var(--jp-error-color0);
 }
 
-/* Widget Button*/
+/* Widget Button, Widget Toggle Button, Widget Upload */
 
-.widget-button, .widget-toggle-button {
+.widget-button, .widget-toggle-button, .widget-upload {
     width: var(--jp-widgets-inline-width-short);
 }
 
