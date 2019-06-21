@@ -359,14 +359,14 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'FileUploadView'` | 
 `accept`         | string           | `''`             | File types to accept, empty string for all
 `button_style`   | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the button.
+`data`           | array            | `[]`             | List of file content (bytes)
 `description`    | string           | `''`             | Description of the control.
 `description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable button
 `error`          | string           | `''`             | Error message
 `icon`           | string           | `'upload'`       | Font-awesome icon name, without the 'fa-' prefix.
 `layout`         | reference to Layout widget | reference to new instance | 
-`li_content`     | array            | `[]`             | List of file content (bytes)
-`li_metadata`    | array            | `[]`             | List of file metadata
+`metadata`       | array            | `[]`             | List of file metadata
 `multiple`       | boolean          | `false`          | If True, allow for multiple files upload
 `style`          | reference to ButtonStyle widget | reference to new instance | 
 

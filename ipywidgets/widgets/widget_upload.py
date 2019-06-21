@@ -42,8 +42,8 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
         values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
         help="""Use a predefined styling for the button.""").tag(sync=True)
     style = InstanceDict(ButtonStyle).tag(sync=True, **widget_serialization)
-    li_metadata = List(Dict, help='List of file metadata').tag(sync=True)
-    li_content = List(Bytes, help='List of file content (bytes)').tag(sync=True, from_json=content_from_json)
+    metadata = List(Dict, help='List of file metadata').tag(sync=True)
+    data = List(Bytes, help='List of file content (bytes)').tag(sync=True, from_json=content_from_json)
     error = Unicode(help='Error message').tag(sync=True)
     value = Dict(read_only=True)
 
@@ -53,9 +53,9 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
         counter increment triggers the update of trait value
         """
         res = {}
-        msg = 'Error: length of li_metadata and li_content must be equal'
-        assert len(self.li_metadata) == len(self.li_content), msg
-        for metadata, content in zip(self.li_metadata, self.li_content):
+        msg = 'Error: length of metadata and data must be equal'
+        assert len(self.metadata) == len(self.data), msg
+        for metadata, content in zip(self.metadata, self.data):
             name = metadata['name']
             res[name] = {'metadata': metadata, 'content': content}
         self.set_trait('value', res)
