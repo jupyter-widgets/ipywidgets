@@ -157,14 +157,6 @@ class Image(_Media):
 
     def __init__(self, *args, **kwargs):
         super(Image, self).__init__(*args, **kwargs)
-        # This is done to make explicit a CSS rule that was applied
-        # to all img tags, including the Image widget, in the
-        # classic notebook. Removing it in the future would not
-        # be unreasonable.
-        if self.layout.max_width is None:
-            self.layout.max_width = '100%'
-        if self.layout.height is None:
-            self.layout.height = 'auto'
 
     @classmethod
     def from_file(cls, filename, **kwargs):
