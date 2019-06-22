@@ -7,7 +7,7 @@
   "author": "IPython",
   "main": "index.js",
   "scripts": {
-    "build": "npm run clean && tsc --project src && node scripts/copyfiles.js && webpack",
+    "build": "npm run clean && tsc --project src && webpack",
     "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo && rimraf built",
     "host": "http-server",
     "lint": "tslint --project tslint.json --format stylish",
