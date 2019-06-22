@@ -80,20 +80,20 @@ describe('WidgetModel', function() {
             });
             this.widget.constructor.serializers = {
                 times3: {
-                    deserialize: (value, manager) => {
+                    deserialize: (value: number, manager: any) => {
                         return value * 3.0;
                     }
                 },
                 halve: {
-                    deserialize: (value, manager) => {
+                    deserialize: (value: number, manager: any) => {
                         return Promise.resolve(value / 2.0);
                     }
                 },
                 spy: {
-                    deserialize: sinon.spy((value, manager) => {
+                    deserialize: sinon.spy((value: any, manager: any) => {
                         return 'deserialized';
                     }),
-                    serialize: sinon.spy((value, widget) => {
+                    serialize: sinon.spy((value: any, widget: any) => {
                         return {
                             toJSON: this.serializeToJSON
                         };
@@ -387,7 +387,7 @@ describe('WidgetModel', function() {
         it('serializes null values', function() {
             const state_with_null = {
                 a: 5,
-                b: null
+                b: null as any
             };
             const serialized_state = this.widget.serialize(state_with_null);
             expect(serialized_state.b).to.equal(null);
