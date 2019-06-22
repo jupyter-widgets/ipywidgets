@@ -46,6 +46,8 @@ Attribute        | Type             | Default          | Help
 `max_width`      | `null` or string | `null`           | The max-width CSS attribute.
 `min_height`     | `null` or string | `null`           | The min-height CSS attribute.
 `min_width`      | `null` or string | `null`           | The min-width CSS attribute.
+`object_fit`     | `null` or string (one of `'contain'`, `'cover'`, `'fill'`, `'scale-down'`, `'none'`) | `null`           | The object-fit CSS attribute.
+`object_position` | `null` or string | `null`           | The object-position CSS attribute.
 `order`          | `null` or string | `null`           | The order CSS attribute.
 `overflow`       | `null` or string | `null`           | The overflow CSS attribute.
 `overflow_x`     | `null` or string (one of `'visible'`, `'hidden'`, `'scroll'`, `'auto'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The overflow-x CSS attribute (deprecated).
@@ -565,10 +567,10 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.4.0'`        | 
 `_view_name`     | string           | `'ImageView'`    | 
 `format`         | string           | `'png'`          | The format of the image.
-`height`         | string           | `''`             | Height of the image in pixels.
+`height`         | string           | `''`             | Height of the image in pixels. Use layout.height for styling the widget.
 `layout`         | reference to Layout widget | reference to new instance | 
 `value`          | Bytes            | `b''`            | The media data as a byte string.
-`width`          | string           | `''`             | Width of the image in pixels.
+`width`          | string           | `''`             | Width of the image in pixels. Use layout.width for styling the widget.
 
 ### IntProgressModel (@jupyter-widgets/controls, 1.4.0); ProgressView (@jupyter-widgets/controls, 1.4.0)
 

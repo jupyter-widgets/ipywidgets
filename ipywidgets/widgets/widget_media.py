@@ -150,8 +150,13 @@ class Image(_Media):
 
     # Define the custom state properties to sync with the front-end
     format = Unicode('png', help="The format of the image.").tag(sync=True)
-    width = CUnicode(help="Width of the image in pixels.").tag(sync=True)
-    height = CUnicode(help="Height of the image in pixels.").tag(sync=True)
+    width = CUnicode(help="Width of the image in pixels. Use layout.width "
+                          "for styling the widget.").tag(sync=True)
+    height = CUnicode(help="Height of the image in pixels. Use layout.height "
+                           "for styling the widget.").tag(sync=True)
+
+    def __init__(self, *args, **kwargs):
+        super(Image, self).__init__(*args, **kwargs)
 
     @classmethod
     def from_file(cls, filename, **kwargs):
