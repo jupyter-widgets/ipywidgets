@@ -7,13 +7,13 @@
   "bugs": {
     "url": "https://github.com/jupyter-widgets/ipywidgets/issues"
   },
-  "license": "BSD-3-Clause",
-  "author": "Jupyter Project",
-  "main": "src/extension.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jupyter-widgets/ipywidgets.git"
   },
+  "license": "BSD-3-Clause",
+  "author": "Jupyter Project",
+  "main": "src/extension.js",
   "scripts": {
     "build": "webpack",
     "clean": "rimraf widgetsnbextension/static",

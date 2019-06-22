@@ -2,6 +2,10 @@
   "name": "@jupyter-widgets/controls",
   "version": "1.4.5",
   "description": "Jupyter interactive widgets",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jupyter-widgets/ipywidgets.git"
+  },
   "license": "BSD-3-Clause",
   "author": "Project Jupyter",
   "files": [
@@ -12,10 +16,6 @@
   ],
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jupyter-widgets/ipywidgets.git"
-  },
   "scripts": {
     "build": "npm run build:src && npm run build:css",
     "build:css": "postcss --use postcss-import --use postcss-cssnext -o css/widgets.built.css css/widgets.css",
@@ -47,7 +47,7 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "@jupyterlab/services": "^2.0.0 || ^3.0.0 || 4.0.0-alpha.3 || 4.0.0-alpha.6 || 4.0.0-alpha.8 || 4.0.0-alpha.9 || 4.0.0-alpha.10 || 4.0.0-alpha.11",
+    "@jupyterlab/services": "^2.0.0 || ^3.0.0 || 4.0.0-alpha.3 || 4.0.0-alpha.6 || 4.0.0-alpha.8 || 4.0.0-alpha.9 || 4.0.0-alpha.10 || 4.0.0-alpha.11 || ^4.0.0-rc.0",
     "@types/expect.js": "^0.3.29",
     "@types/mathjax": "0.0.31",
     "@types/mocha": "^2.2.41",

@@ -251,7 +251,7 @@ namespace shims {
              * @param  @jupyterlab/services IKernelFuture instance
              * @param  callbacks
              */
-            _hookupCallbacks(future: Kernel.IFuture, callbacks: ICallbacks) {
+            _hookupCallbacks(future: Kernel.IShellFuture, callbacks: ICallbacks) {
                 if (callbacks) {
                     future.onReply = function(msg) {
                         if (callbacks.shell && callbacks.shell.reply) {

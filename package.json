@@ -1,5 +1,10 @@
 {
   "private": true,
+  "workspaces": [
+    "packages/*",
+    "widgetsnbextension",
+    "examples/*"
+  ],
   "scripts": {
     "build": "lerna run build --ignore \"@jupyter-widgets/example-*\"",
     "build:examples": "lerna run build --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
@@ -11,17 +16,12 @@
     "updated": "lerna updated"
   },
   "devDependencies": {
-    "@jupyterlab/buildutils": "1.0.0-alpha.11",
+    "@jupyterlab/buildutils": "^1.0.0-rc.0",
     "lerna": "^3.2.1"
   },
-  "workspaces": [
-    "packages/*",
-    "widgetsnbextension",
-    "examples/*"
-  ],
   "resolutions": {
-    "@jupyter-widgets/notebook-manager/**/@jupyterlab/services": "^2.0.0",
-    "@jupyter-widgets/jupyterlab-manager/**/@jupyterlab/services": "4.0.0-alpha.11",
-    "**/@jupyterlab/services": "4.0.0-alpha.11"
+    "**/@jupyterlab/services": "4.0.0-rc.0",
+    "@jupyter-widgets/jupyterlab-manager/**/@jupyterlab/services": "4.0.0-rc.0",
+    "@jupyter-widgets/notebook-manager/**/@jupyterlab/services": "^2.0.0"
   }
 }
