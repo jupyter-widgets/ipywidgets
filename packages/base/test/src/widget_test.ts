@@ -11,7 +11,7 @@ let WidgetModel = widgets.WidgetModel;
 
 import * as chai from 'chai';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
+import sinonChai from 'sinon-chai';
 chai.use(sinonChai);
 
 describe('unpack_models', function() {
@@ -100,10 +100,10 @@ describe('WidgetModel', function() {
                     })
                 }
             };
-            this.widget.constructor._deserialize_state.reset();
+            sinon.reset();
         };
-        sinon.spy(WidgetModel, '_deserialize_state');
         await this.setup();
+        sinon.spy(this.widget.constructor, '_deserialize_state');
     });
 
     describe('constructor', function() {
@@ -280,6 +280,7 @@ describe('WidgetModel', function() {
 
         it('handles update messages', async function() {
             let deserialize = this.widget.constructor._deserialize_state;
+
             let setState = sinon.spy(this.widget, 'set_state');
             let state_change = this.widget._handle_comm_msg({
                 content: {
@@ -360,7 +361,7 @@ describe('WidgetModel', function() {
         });
 
         it('calls the deserializer with appropriate arguments', async function() {
-            let state = await this.widget.constructor._deserialize_state({spy: 'value'}, this.manager);
+            await this.widget.constructor._deserialize_state({spy: 'value'}, this.manager);
             let spy = this.widget.constructor.serializers.spy.deserialize;
             expect(spy).to.be.calledOnce;
             expect(spy).to.be.calledWithExactly('value', this.manager);
@@ -394,7 +395,7 @@ describe('WidgetModel', function() {
         });
 
         it('calls custom serializers with appropriate arguments', function() {
-            let serialized_state = this.widget.serialize({spy: 'value'});
+            this.widget.serialize({spy: 'value'});
             let spy = this.widget.constructor.serializers.spy.serialize;
             expect(spy).to.be.calledWithExactly('value', this.widget);
         });

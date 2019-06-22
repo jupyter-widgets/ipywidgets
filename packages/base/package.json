@@ -50,6 +50,7 @@
     "@types/expect.js": "^0.3.29",
     "@types/mocha": "^5.2.7",
     "@types/sinon": "^7.0.13",
+    "@types/sinon-chai": "^3.2.2",
     "chai": "^4.0.0",
     "chai-as-promised": "^7.0.0",
     "expect.js": "^0.3.1",

@@ -5,9 +5,9 @@ import {
 import * as utils from '../../lib/utils';
 
 import * as chai from 'chai';
-import * as sinon from 'sinon';
+import sinon from 'sinon';
 void sinon;
-import * as sinonChai from 'sinon-chai';
+import sinonChai from 'sinon-chai';
 chai.use(sinonChai);
 
 describe('remove_buffers', function() {

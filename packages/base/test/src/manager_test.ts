@@ -10,11 +10,11 @@ import {
 
 import * as chai from 'chai';
 
-import * as chaiAsPromised from 'chai-as-promised';
+import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
 
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
+import sinonChai from 'sinon-chai';
 chai.use(sinonChai);
 
 
@@ -244,7 +244,7 @@ describe('ManagerBase', function() {
             comm: comm
         };
         let manager = this.managerBase;
-        let model = await manager.new_widget(spec);
+        await manager.new_widget(spec);
         expect((comm.send as any).calledOnce).to.be.true;
       });
 
@@ -342,14 +342,14 @@ describe('ManagerBase', function() {
             comm: comm
         };
         let manager = this.managerBase;
-        let model = await manager.new_model(spec);
+        await manager.new_model(spec);
         expect((comm.send as any).notCalled).to.be.true;
       });
 
       it('calls loadClass to retrieve model class', async function() {
         let manager = this.managerBase;
-        let spy = sinon.spy(manager, 'loadClass');
-        let model = await manager.new_model(this.modelOptions);
+        sinon.spy(manager, 'loadClass');
+        await manager.new_model(this.modelOptions);
         expect(manager.loadClass.calledOnce).to.be.true;
       });
 
@@ -368,7 +368,6 @@ describe('ManagerBase', function() {
       });
 
       it('sets up a comm close handler to delete the model', async function() {
-        let callback = sinon.spy();
         let comm = new MockComm();
         let spec = {
             model_name: 'TestWidget',
@@ -414,7 +413,7 @@ describe('ManagerBase', function() {
     describe('get_state', function() {
       it('returns a valid schema', async function() {
         let manager = this.managerBase;
-        let model = await manager.new_model(this.modelOptions);
+        await manager.new_model(this.modelOptions);
         let state = await manager.get_state();
 
         let expectedState = {
@@ -432,14 +431,14 @@ describe('ManagerBase', function() {
                 '_view_module': 'test-widgets',
                 '_view_name': 'TestWidgetView',
                 '_view_module_version': '1.0.0',
-                '_view_count': null,
+                '_view_count': null as any,
         }}}};
         expect(state).to.deep.equal(expectedState);
       });
 
       it('handles the drop_defaults option', async function() {
         let manager = this.managerBase;
-        let model = await manager.new_model(this.modelOptions,
+        await manager.new_model(this.modelOptions,
           {value: 50});
         let state = await manager.get_state({drop_defaults: true});
         let expectedState = {
@@ -458,7 +457,7 @@ describe('ManagerBase', function() {
 
       it('encodes binary buffers to base64 using custom serializers', async function() {
         let manager = this.managerBase;
-        let model = await manager.new_model({
+        await manager.new_model({
             model_name: 'BinaryWidget',
             model_module: 'test-widgets',
             model_module_version: '1.0.0',
