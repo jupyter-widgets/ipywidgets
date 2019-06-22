@@ -18,10 +18,5 @@
   "devDependencies": {
     "@jupyterlab/buildutils": "^1.0.0-rc.0",
     "lerna": "^3.2.1"
-  },
-  "resolutions": {
-    "**/@jupyterlab/services": "4.0.0-rc.0",
-    "@jupyter-widgets/jupyterlab-manager/**/@jupyterlab/services": "4.0.0-rc.0",
-    "@jupyter-widgets/notebook-manager/**/@jupyterlab/services": "^2.0.0"
   }
 }
