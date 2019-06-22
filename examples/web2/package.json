@@ -19,12 +19,12 @@
     "font-awesome": "^4.7.0"
   },
   "devDependencies": {
-    "css-loader": "^0.28.4",
-    "file-loader": "^0.11.2",
-    "json-loader": "^0.5.4",
-    "raw-loader": "^0.5.1",
-    "style-loader": "^0.18.1",
-    "url-loader": "^0.5.9",
-    "webpack": "^3.5.5"
+    "css-loader": "^3.0.0",
+    "file-loader": "^4.0.0",
+    "json-loader": "^0.5.7",
+    "raw-loader": "^3.0.0",
+    "style-loader": "^0.23.1",
+    "url-loader": "^2.0.0",
+    "webpack": "^4.35.0"
   }
 }

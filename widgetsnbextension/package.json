@@ -32,10 +32,10 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "css-loader": "^0.28.4",
-    "json-loader": "^0.5.4",
+    "css-loader": "^3.0.0",
+    "json-loader": "^0.5.7",
     "rimraf": "^2.6.1",
-    "style-loader": "^0.18.1",
-    "webpack": "^3.5.5"
+    "style-loader": "^0.23.1",
+    "webpack": "^4.35.0"
   }
 }
