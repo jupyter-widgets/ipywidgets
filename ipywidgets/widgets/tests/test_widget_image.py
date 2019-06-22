@@ -149,8 +149,8 @@ def test_value_repr_length():
     with get_logo_png() as LOGO_PNG:
         with open(LOGO_PNG, 'rb') as f:
             img = Image.from_file(f)
-            assert len(img.__repr__()) < 180
-            assert "...', layout=" in img.__repr__()
+            assert len(img.__repr__()) < 120
+            assert img.__repr__().endswith("...')")
 
 
 def test_value_repr_url():
