@@ -1,14 +1,14 @@
 {
+  "extends": "../../tsconfigbase",
   "compilerOptions": {
-    "declaration": true,
-    "noImplicitAny": true,
-    "noEmitOnError": true,
-    "lib": ["dom", "es5", "es2015.promise", "es2015.iterable"],
-    "types": ["node"],
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "target": "ES5",
-    "outDir": "../lib"
+    "outDir": "lib",
+    "rootDir": "src",
   },
-  "exclude": ["typedoc.d.ts"]
+  "include": ["src/**/*"],
+  "exclude": ["src/typedoc.d.ts"],
+  "references": [
+    {
+      "path": "../base"
+    }
+  ]
 }
