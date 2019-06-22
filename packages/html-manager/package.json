@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@types/mocha": "^5.2.7",
-    "@types/requirejs": "^2.1.28",
+    "@types/requirejs": "^2.1.31",
     "chai": "^4.0.0",
     "css-loader": "^3.0.0",
     "file-loader": "^4.0.0",
