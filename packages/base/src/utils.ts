@@ -9,8 +9,8 @@ import {
     UUID
 } from '@phosphor/coreutils';
 
-import _isEqual = require('lodash/isEqual');
-import isPlainObject = require('lodash/isPlainObject');
+import _isEqual from 'lodash/isEqual';
+import isPlainObject from 'lodash/isPlainObject';
 
 /**
  * Find all strings in the first argument that are not in the second.

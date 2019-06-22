@@ -6,7 +6,7 @@ import * as utils from './utils';
 import * as backbonePatch from './backbone-patch';
 
 import * as Backbone from 'backbone';
-import * as $ from 'jquery';
+import $ from 'jquery';
 
 import {
     NativeView

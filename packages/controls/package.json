@@ -19,8 +19,8 @@
   "scripts": {
     "build": "npm run build:src && npm run build:css",
     "build:css": "postcss --use postcss-import --use postcss-cssnext -o css/widgets.built.css css/widgets.css",
-    "build:src": "tsc --project src",
-    "build:test": "tsc --project test/src && webpack --config test/webpack.conf.js",
+    "build:src": "tsc",
+    "build:test": "tsc --project test && webpack --config test/webpack.conf.js",
     "clean": "npm run clean:src",
     "clean:src": "rimraf lib",
     "lint": "tslint --project tslint.json --format stylish",

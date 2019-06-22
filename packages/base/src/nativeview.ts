@@ -112,8 +112,8 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
 
       let root = this.el;
       let handler = selector ? function (e: Event) {
-        let node = (e.target as Node) || e.srcElement;
-        for (; node && node !== root; node = node.parentNode) {
+        let node = (e.target as HTMLElement) || (e.srcElement as HTMLElement);
+        for (; node && node !== root; node = node.parentNode as HTMLElement) {
           if (matchesSelector.call(node, selector)) {
             (e as any).delegateTarget = node;
             if (listener.handleEvent) {
