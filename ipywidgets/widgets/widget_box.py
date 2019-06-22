@@ -111,6 +111,22 @@ class HBox(Box):
 
 @register
 class GridBox(Box):
+    """ Displays multiple widgets in rows and columns using the grid box model.
+
+    Parameters
+    ----------
+    {box_params}
+
+    Examples
+    --------
+    >>> import ipywidgets as widgets
+    >>> title_widget = widgets.HTML('<em>Grid Box Example</em>')
+    >>> slider = widgets.IntSlider()
+    >>> button1 = widgets.Button(description='1')
+    >>> button2 = widgets.Button(description='2')
+    >>> # Create a grid with two columns, splitting space equally
+    >>> layout = widgets.Layout(grid_template_columns='1fr 1fr')
+    >>> widgets.GridBox([title_widget, slider, button1, button2], layout=layout)
+    """
     _model_name = Unicode('GridBoxModel').tag(sync=True)
     _view_name = Unicode('GridBoxView').tag(sync=True)
- 
