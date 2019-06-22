@@ -3,13 +3,15 @@
   "compilerOptions": {
     "outDir": "lib",
     "rootDir": "src",
-    "types": ["mathjax", "node"]
+    "types": ["requirejs"]
   },
-  "include": ["src/**/*"],
-  "exclude": ["src/typedoc.d.ts"],
+  "include": ["src/*"],
   "references": [
     {
       "path": "../base"
+    },
+    {
+      "path": "../controls"
     }
   ]
 }
