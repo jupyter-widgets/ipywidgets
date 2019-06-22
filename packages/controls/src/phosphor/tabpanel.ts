@@ -43,7 +43,7 @@ import {
 } from '@phosphor/domutils';
 
 import {
-  BoxLayout, Panel, PanelLayout, TabBar, Widget
+  Panel, PanelLayout, TabBar, Widget
 } from '@phosphor/widgets';
 
 

@@ -171,14 +171,14 @@ class TextareaView extends DescriptionView {
         this.update(); // Set defaults.
 
         this.listenTo(this.model, 'change:placeholder',
-            function(model, value, options) {
+            (model, value, options) => {
                 this.update_placeholder(value);
         });
 
         this.update_placeholder();
     }
 
-    update_placeholder(value?) {
+    update_placeholder(value?: string) {
         value = value || this.model.get('placeholder');
         this.textbox.setAttribute('placeholder', value.toString());
     }
@@ -189,7 +189,7 @@ class TextareaView extends DescriptionView {
      * Called when the model is changed.  The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update(options?) {
+    update(options?: any) {
         if (options === undefined || options.updated_view != this) {
             this.textbox.value = this.model.get('value');
             let rows = this.model.get('rows');
@@ -216,7 +216,7 @@ class TextareaView extends DescriptionView {
      *
      * Stop propagation so the event isn't sent to the application.
      */
-    handleKeyDown(e) {
+    handleKeyDown(e: Event) {
         e.stopPropagation();
     }
 
@@ -225,14 +225,14 @@ class TextareaView extends DescriptionView {
      *
      * Stop propagation so the keypress isn't sent to the application.
      */
-    handleKeypress(e) {
+    handleKeypress(e: Event) {
         e.stopPropagation();
     }
 
     /**
      * Triggered on input change
      */
-    handleChanging(e) {
+    handleChanging(e: Event) {
         if (this.model.get('continuous_update')) {
             this.handleChanged(e);
         }
@@ -243,8 +243,9 @@ class TextareaView extends DescriptionView {
      *
      * @param e Event
      */
-    handleChanged(e) {
-        this.model.set('value', e.target.value, {updated_view: this});
+    handleChanged(e: Event) {
+        let target = e.target as HTMLTextAreaElement;
+        this.model.set('value', target.value, {updated_view: this});
         this.touch();
     }
     textbox: HTMLTextAreaElement;
@@ -288,24 +289,20 @@ class TextView extends DescriptionView {
         this.update_title();
     }
 
-    update_placeholder(value?) {
-        if (!value) {
-            value = this.model.get('placeholder');
-        }
-        this.textbox.setAttribute('placeholder', value);
+    update_placeholder(value?: string) {
+        this.textbox.setAttribute('placeholder', value || this.model.get('placeholder'));
     }
 
     update_title() {
         let title = this.model.get('description_tooltip');
         if (!title) {
            this.textbox.removeAttribute('title');
-        }
-        else if (this.model.get('description').length === 0) {
+        } else if (this.model.get('description').length === 0) {
             this.textbox.setAttribute('title', title);
         }
     }
 
-    update(options?) {
+    update(options?: any) {
         /**
          * Update the contents of this view
          *
@@ -336,14 +333,14 @@ class TextView extends DescriptionView {
      *
      * Stop propagation so the keypress isn't sent to the application.
      */
-    handleKeyDown(e) {
+    handleKeyDown(e: Event) {
         e.stopPropagation();
     }
 
     /**
      * Handles text submission
      */
-    handleKeypress(e) {
+    handleKeypress(e: KeyboardEvent) {
         e.stopPropagation();
         // The submit message is deprecated in widgets 7
         if (e.keyCode == 13) { // Return key
@@ -357,7 +354,7 @@ class TextView extends DescriptionView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    handleChanging(e) {
+    handleChanging(e: Event) {
         if (this.model.get('continuous_update')) {
             this.handleChanged(e);
         }
@@ -369,8 +366,9 @@ class TextView extends DescriptionView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    handleChanged(e) {
-        this.model.set('value', e.target.value, {updated_view: this});
+    handleChanged(e: Event) {
+        let target = e.target as HTMLInputElement;
+        this.model.set('value', target.value, {updated_view: this});
         this.touch();
     }
 

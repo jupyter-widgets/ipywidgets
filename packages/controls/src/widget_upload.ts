@@ -1,10 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import * as pako from 'pako';
-
 import { CoreDOMWidgetModel } from './widget_core';
-import { ButtonStyleModel } from './widget_button';
 import { DOMWidgetView } from '@jupyter-widgets/base';
 
 import * as _ from 'underscore';
@@ -32,7 +29,7 @@ export class FileUploadModel extends CoreDOMWidgetModel {
 
     static serializers = {
         ...CoreDOMWidgetModel.serializers,
-        data: { serialize: buffers => { return [...buffers]; } },
+        data: { serialize: (buffers: any) => { return [...buffers]; } },
     };
 }
 
@@ -68,7 +65,7 @@ export class FileUploadView extends DOMWidgetView {
 
         this.fileInput.addEventListener('change', () => {
 
-            const promisesFile = [];
+            const promisesFile: Promise<{buffer: any, metadata: any, error: string}>[] = [];
 
             Array.from(this.fileInput.files).forEach(file => {
                 promisesFile.push(
@@ -99,8 +96,8 @@ export class FileUploadView extends DOMWidgetView {
 
             Promise.all(promisesFile)
                 .then(contents => {
-                    const metadata = [];
-                    const li_buffer = [];
+                    const metadata: any[] = [];
+                    const li_buffer: any[] = [];
                     contents.forEach(c => {
                         metadata.push(c.metadata);
                         li_buffer.push(c.buffer);
@@ -132,7 +129,6 @@ export class FileUploadView extends DOMWidgetView {
         this.el.disabled = this.model.get('disabled');
         this.el.setAttribute('title', this.model.get('tooltip'));
 
-        let model_description = this.model.get('description');
         let description = `${this.model.get('description')} (${this.model.get('_counter')})`
         let icon = this.model.get('icon');
         if (description.length || icon.length) {

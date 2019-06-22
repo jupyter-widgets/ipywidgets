@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetView, unpack_models, ViewList, JupyterPhosphorWidget
+    DOMWidgetView, unpack_models, ViewList, JupyterPhosphorWidget, WidgetModel
 } from '@jupyter-widgets/base';
 
 import {
@@ -26,7 +26,7 @@ import {
 } from '@phosphor/widgets';
 
 import * as _ from 'underscore';
-import * as $ from 'jquery';
+import $ from 'jquery';
 
 export
 class JupyterPhosphorPanelWidget extends Panel {
@@ -126,7 +126,7 @@ class BoxView extends DOMWidgetView {
     /**
      * Public constructor
      */
-    initialize(parameters) {
+    initialize(parameters: any) {
         super.initialize(parameters);
         this.children_views = new ViewList(this.add_child_model, null, this);
         this.listenTo(this.model, 'change:children', this.update_children);
@@ -162,7 +162,7 @@ class BoxView extends DOMWidgetView {
         this.set_mapped_classes(BoxView.class_map, 'box_style');
     }
 
-    add_child_model(model) {
+    add_child_model(model: WidgetModel) {
         // we insert a dummy element so the order is preserved when we add
         // the rendered content later.
         let dummy = new Widget();
@@ -198,7 +198,7 @@ class HBoxView extends BoxView {
     /**
      * Public constructor
      */
-    initialize(parameters) {
+    initialize(parameters: any) {
         super.initialize(parameters);
         this.pWidget.addClass('widget-hbox');
     }
@@ -209,7 +209,7 @@ class VBoxView extends BoxView {
     /**
      * Public constructor
      */
-    initialize(parameters) {
+    initialize(parameters: any) {
         super.initialize(parameters);
         this.pWidget.addClass('widget-vbox');
     }
@@ -220,7 +220,7 @@ class GridBoxView extends BoxView {
     /**
      * Public constructor
      */
-    initialize(parameters) {
+    initialize(parameters: any) {
         super.initialize(parameters);
         this.pWidget.addClass('widget-gridbox');
         // display needn't be set to flex and grid 

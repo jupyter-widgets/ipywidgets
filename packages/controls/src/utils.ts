@@ -19,8 +19,8 @@ import * as _ from 'underscore';
  * caused the promise to reject.
  */
 export
-function reject(message, log) {
-    return function promiseRejection(error) {
+function reject(message: any, log: any) {
+    return function promiseRejection(error: any) {
         let wrapped_error = new WrappedError(message, error);
         if (log) {
             console.error(wrapped_error);

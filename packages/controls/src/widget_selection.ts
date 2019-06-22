@@ -15,7 +15,7 @@ import {
 
 import * as _ from 'underscore';
 import * as utils from './utils';
-import * as $ from 'jquery';
+import $ from 'jquery';
 
 export
 class SelectionModel extends CoreDescriptionModel {
@@ -52,7 +52,7 @@ class DropdownView extends DescriptionView {
     /**
      * Public constructor.
      */
-    initialize(parameters) {
+    initialize(parameters: any) {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:_options_labels', () => this._updateOptions());
     }
@@ -135,7 +135,7 @@ class SelectView extends DescriptionView {
     /**
      * Public constructor.
      */
-    initialize(parameters) {
+    initialize(parameters: any) {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:_options_labels', () => this._updateOptions());
         this.listenTo(this.model, 'change:index', (model, value, options) => this.updateSelection(options));
@@ -250,7 +250,7 @@ class RadioButtonsView extends DescriptionView {
      * Called when the model is changed.  The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update(options?) {
+    update(options?: any) {
         let view = this;
         let items: string[] = this.model.get('_options_labels');
         let radios = _.pluck(
@@ -312,10 +312,10 @@ class RadioButtonsView extends DescriptionView {
      * yet we would like the full widget line up properly
      * when displayed side-by-side with other widgets.
      */
-    adjustPadding(e) {
+    adjustPadding(e: this) {
         // Vertical margins on a widget
         let elStyles = window.getComputedStyle(e.el);
-        let margins = parseInt(elStyles.marginTop) + parseInt(elStyles.marginBottom);
+        let margins = parseInt(elStyles.marginTop, 10) + parseInt(elStyles.marginBottom, 10);
 
         // Total spaces taken by a single-line widget
         let lineHeight = e.label.offsetHeight + margins;
@@ -344,8 +344,9 @@ class RadioButtonsView extends DescriptionView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    _handle_click (event) {
-        this.model.set('index', parseInt(event.target.value), {updated_view: this});
+    _handle_click (event: Event) {
+        let target = event.target as HTMLInputElement;
+        this.model.set('index', parseInt(target.value), {updated_view: this});
         this.touch();
     }
 
@@ -365,7 +366,7 @@ class ToggleButtonsStyleModel extends DescriptionStyleModel {
         button_width: {
             selector: '.widget-toggle-button',
             attribute: 'width',
-            default: null
+            default: null as any
         },
         font_weight: {
             selector: '.widget-toggle-button',
@@ -388,7 +389,7 @@ export
 
 export
 class ToggleButtonsView extends DescriptionView {
-    initialize(options) {
+    initialize(options: any) {
         this._css_state = {};
         super.initialize(options);
         this.listenTo(this.model, 'change:button_style', this.update_button_style);
@@ -417,12 +418,12 @@ class ToggleButtonsView extends DescriptionView {
      * Called when the model is changed.  The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update(options?) {
+    update(options?: any) {
         let view = this;
         let items: string[] = this.model.get('_options_labels');
         let icons = this.model.get('icons') || [];
         let previous_icons = this.model.previous('icons') || [];
-        let previous_bstyle = ToggleButtonsView.classMap[this.model.previous('button_style')] || '';
+        let previous_bstyle = (ToggleButtonsView.classMap as any)[this.model.previous('button_style')] || '';
         let tooltips = view.model.get('tooltips') || [];
         let disabled = this.model.get('disabled');
         let buttons = this.buttongroup.querySelectorAll('button');
@@ -491,8 +492,8 @@ class ToggleButtonsView extends DescriptionView {
         return super.update(options);
     }
 
-    update_style_traits(button?) {
-        for (let name in this._css_state) {
+    update_style_traits(button?: HTMLButtonElement) {
+        for (let name in this._css_state as string[]) {
             if (this._css_state.hasOwnProperty(name)) {
                 if (name === 'margin') {
                     this.buttongroup.style[name] = this._css_state[name];
@@ -537,8 +538,9 @@ class ToggleButtonsView extends DescriptionView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    _handle_click (event) {
-        this.model.set('index', parseInt(event.target.value), {updated_view: this});
+    _handle_click (event: Event) {
+        let target = event.target as HTMLButtonElement;
+        this.model.set('index', parseInt(target.value, 10), {updated_view: this});
         this.touch();
         // We also send a clicked event, since the value is only set if it changed.
         // See https://github.com/jupyter-widgets/ipywidgets/issues/763
@@ -623,7 +625,7 @@ class SelectionSliderView extends DescriptionView {
      * Called when the model is changed.  The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update(options?) {
+    update(options?: any) {
         if (options === undefined || options.updated_view !== this) {
             let labels = this.model.get('_options_labels');
             let max = labels.length - 1;
@@ -692,7 +694,7 @@ class SelectionSliderView extends DescriptionView {
         this.updateReadout(index);
     }
 
-    updateReadout(index) {
+    updateReadout(index: any) {
         let value = this.model.get('_options_labels')[index];
         this.readout.textContent = value;
     }
@@ -700,7 +702,7 @@ class SelectionSliderView extends DescriptionView {
     /**
      * Called when the slider value is changing.
      */
-    handleSliderChange(e, ui) {
+    handleSliderChange(e: Event, ui: { value?: number; values?: number[] }) {
         this.updateReadout(ui.value);
 
         // Only persist the value while sliding if the continuous_update
@@ -716,7 +718,7 @@ class SelectionSliderView extends DescriptionView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    handleSliderChanged(e, ui) {
+    handleSliderChanged(e: Event, ui: { value?: number; values?: number[] }) {
         this.updateReadout(ui.value);
         this.model.set('index', ui.value, {updated_view: this});
         this.touch();
@@ -753,7 +755,7 @@ class SelectMultipleView extends SelectView {
     /**
      * Public constructor.
      */
-    initialize(parameters) {
+    initialize(parameters: any) {
         super.initialize(parameters);
         this.listbox.multiple = true;
     }
@@ -775,7 +777,7 @@ class SelectMultipleView extends SelectView {
         // Clear the selection
         this.listbox.selectedIndex = -1;
         // Select the appropriate options
-        selected.forEach((i) => {
+        selected.forEach((i: number) => {
             listboxOptions[i].selected = true;
         });
     }
@@ -785,7 +787,7 @@ class SelectMultipleView extends SelectView {
      */
     _handle_change() {
         let index = Array.prototype.map
-            .call(this.listbox.selectedOptions || [], function(option) {
+            .call(this.listbox.selectedOptions || [], function(option: HTMLOptionElement) {
                 return option.index;
             });
         this.model.set('index', index, {updated_view: this});
@@ -823,7 +825,7 @@ class SelectionRangeSliderView extends SelectionSliderView {
         this.updateReadout(index);
     }
 
-    updateReadout(index) {
+    updateReadout(index: number[]) {
         let labels = this.model.get('_options_labels');
         let minValue = labels[index[0]];
         let maxValue = labels[index[1]];
@@ -833,7 +835,7 @@ class SelectionRangeSliderView extends SelectionSliderView {
     /**
      * Called when the slider value is changing.
      */
-    handleSliderChange(e, ui) {
+    handleSliderChange(e: Event, ui: { values: number[]; }) {
         this.updateReadout(ui.values);
 
         // Only persist the value while sliding if the continuous_update
@@ -849,7 +851,7 @@ class SelectionRangeSliderView extends SelectionSliderView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    handleSliderChanged(e, ui) {
+    handleSliderChanged(e: Event, ui: { values: number[]; }) {
         // The jqueryui documentation indicates ui.values doesn't exist on the slidestop event,
         // but it appears that it actually does: https://github.com/jquery/jquery-ui/blob/ae31f2b3b478975f70526bdf3299464b9afa8bb1/ui/widgets/slider.js#L313
         this.updateReadout(ui.values);

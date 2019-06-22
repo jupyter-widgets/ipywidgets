@@ -27,7 +27,7 @@ class DescriptionStyleModel extends StyleModel {
         description_width: {
             selector: '.widget-label',
             attribute: 'width',
-            default: null
+            default: null as any
         },
     };
 }
@@ -61,7 +61,7 @@ class DescriptionView extends DOMWidgetView {
         this.updateDescription();
     }
 
-    typeset(element, text?){
+    typeset(element: HTMLElement, text?: string){
         this.displayed.then(() => typeset(element, text));
     }
 
