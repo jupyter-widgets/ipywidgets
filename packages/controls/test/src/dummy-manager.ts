@@ -5,7 +5,6 @@ import * as widgets from '../../lib';
 import * as services from '@jupyterlab/services';
 import * as Backbone from 'backbone';
 import * as base from '@jupyter-widgets/base';
-import * as sinon from 'sinon';
 
 let numComms = 0;
 
@@ -15,16 +14,16 @@ class MockComm {
         this.comm_id = `mock-comm-id-${numComms}`;
         numComms += 1;
     }
-    on_open(fn) {
+    on_open(fn: Function) {
         this._on_open = fn;
     }
-    on_close(fn) {
+    on_close(fn: Function) {
         this._on_close = fn;
     }
-    on_msg(fn) {
+    on_msg(fn: Function) {
         this._on_msg = fn;
     }
-    _process_msg(msg) {
+    _process_msg(msg: any) {
         if (this._on_msg) {
             return this._on_msg(msg);
         } else {
@@ -72,14 +71,14 @@ class DummyManager extends base.ManagerBase<HTMLElement> {
 
     protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<any> {
         if (moduleName === '@jupyter-widgets/controls') {
-            if (widgets[className]) {
-                return Promise.resolve(widgets[className]);
+            if ((widgets as any)[className]) {
+                return Promise.resolve((widgets as any)[className]);
             } else {
                 return Promise.reject(`Cannot find class ${className}`);
             }
         } else if (moduleName === 'test-widgets') {
-            if (testWidgets[className]) {
-                return Promise.resolve(testWidgets[className]);
+            if ((testWidgets as any)[className]) {
+                return Promise.resolve((testWidgets as any)[className]);
             } else {
                 return Promise.reject(`Cannot find class ${className}`);
             }
@@ -99,35 +98,6 @@ class DummyManager extends base.ManagerBase<HTMLElement> {
     el: HTMLElement;
 }
 
-// Dummy widget with custom serializer and binary field
-
-let typesToArray = {
-    int8: Int8Array,
-    int16: Int16Array,
-    int32: Int32Array,
-    uint8: Uint8Array,
-    uint16: Uint16Array,
-    uint32: Uint32Array,
-    float32: Float32Array,
-    float64: Float64Array
-};
-
-let JSONToArray = function(obj, manager) {
-    return new typesToArray[obj.dtype](obj.buffer.buffer);
-};
-
-let arrayToJSON = function(obj, manager) {
-    let dtype = Object.keys(typesToArray).filter(
-        i=>typesToArray[i]===obj.constructor)[0];
-    return {dtype, buffer: obj};
-};
-
-let array_serialization = {
-    deserialize: JSONToArray,
-    serialize: arrayToJSON
-};
-
-
 class TestWidget extends base.WidgetModel {
     defaults() {
         return {...super.defaults(),
@@ -137,7 +107,7 @@ class TestWidget extends base.WidgetModel {
             _view_module: 'test-widgets',
             _view_name: 'TestWidgetView',
             _view_module_version: '1.0.0',
-            _view_count: null,
+            _view_count: null as any,
         };
     }
 }
