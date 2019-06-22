@@ -19,7 +19,7 @@
   "typings": "lib/index.d.ts",
   "scripts": {
     "build": "npm run build:src",
-    "build:src": "tsc --project src",
+    "build:src": "tsc",
     "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo",
     "lint": "tslint --project tslint.json --format stylish",
     "prepublish": "npm run clean && npm run build",
