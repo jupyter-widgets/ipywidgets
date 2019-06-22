@@ -62,8 +62,8 @@
     "@jupyterlab/cells": "^1.0.0-rc.0",
     "@types/semver": "^5.4.0",
     "rimraf": "^2.6.1",
-    "tslint": "^5.8.0",
-    "typedoc": "^0.6.0",
+    "tslint": "^5.18.0",
+    "typedoc": "^0.14.2",
     "typescript": "~3.5.2"
   },
   "jupyterlab": {
