@@ -20,7 +20,7 @@
   "scripts": {
     "build": "npm run build:src",
     "build:src": "tsc --project src",
-    "clean": "rimraf lib",
+    "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo",
     "lint": "tslint --project tslint.json --format stylish",
     "prepublish": "npm run clean && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"

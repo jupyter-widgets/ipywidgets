@@ -20,7 +20,7 @@
     "build:src": "tsc",
     "build:test": "tsc --project test && webpack --config test/webpack.conf.js",
     "clean": "npm run clean:src",
-    "clean:src": "rimraf lib",
+    "clean:src": "rimraf lib && rimraf tsconfig.tsbuildinfo",
     "lint": "tslint --project tslint.json --format stylish",
     "prepublish": "npm run clean && npm run build",
     "test": "npm run test:unit",

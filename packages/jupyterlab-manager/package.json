@@ -29,7 +29,7 @@
   "scripts": {
     "build": "npm run build:src",
     "build:src": "tsc --project src",
-    "clean": "rimraf docs && rimraf lib",
+    "clean": "rimraf docs && rimraf lib && rimraf tsconfig.tsbuildinfo",
     "docs": "typedoc --mode file --module commonjs --excludeNotExported --target es5 --moduleResolution node --out docs/ src",
     "lint": "tslint --project tslint.json --format stylish",
     "prepublish": "npm run clean && npm run build"
