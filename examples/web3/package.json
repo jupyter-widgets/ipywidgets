@@ -30,7 +30,7 @@
     "file-loader": "^4.0.0",
     "fs-extra": "^0.30.0",
     "json-loader": "^0.5.7",
-    "postcss": "^6.0.2",
+    "postcss": "^7.0.17",
     "postcss-cssnext": "^3.1.0",
     "postcss-import": "^12.0.1",
     "postcss-loader": "^3.0.0",
