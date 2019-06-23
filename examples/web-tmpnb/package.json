@@ -7,7 +7,7 @@
   "author": "IPython",
   "main": "index.js",
   "scripts": {
-    "build": "npm run clean && tsc --project src && webpack",
+    "build": "npm run clean && tsc && webpack",
     "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo && rimraf built",
     "host": "http-server",
     "lint": "tslint --project tslint.json --format stylish",
@@ -24,6 +24,7 @@
     "http-server": "^0.11.1"
   },
   "devDependencies": {
+    "@types/codemirror": "^0.0.74",
     "css-loader": "^3.0.0",
     "file-loader": "^4.0.0",
     "fs-extra": "^8.0.1",

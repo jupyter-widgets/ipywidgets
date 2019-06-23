@@ -7,6 +7,7 @@ import {
 } from '@jupyterlab/services';
 
 import '@jupyter-widgets/controls/css/widgets.css';
+import { DOMWidgetView } from '@jupyter-widgets/base';
 
 let requirePromise = function(module: string): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -30,13 +31,13 @@ class WidgetManager extends base.ManagerBase<HTMLElement> {
         });
     }
 
-    display_view(msg, view, options) {
+    display_view(msg: any, view: DOMWidgetView, options: any) {
         return Promise.resolve(view).then((view) => {
             pWidget.Widget.attach(view.pWidget, this.el);
             view.on('remove', function() {
                 console.log('view removed', view);
             });
-            return view;
+            return view.pWidget.node;
         });
     }
 

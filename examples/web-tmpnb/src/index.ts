@@ -1,4 +1,4 @@
-import * as CodeMirror from 'codemirror';
+import CodeMirror from 'codemirror';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/python/python';
 
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     xmlhttp.setRequestHeader('Content-type', 'application/json');
 
     xmlhttp.onreadystatechange = function () {
-        //Call a function when the state changes.
+        // Call a function when the state changes.
         if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
             let response = JSON.parse(xmlhttp.responseText);
             // TODO: this will need to be changed to check the status code 429
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
                 // Create a codemirror instance
                 let code = require('../widget_code.json').join('\n');
                 let inputarea = document.getElementsByClassName('inputarea')[0] as HTMLElement;
-                let editor = CodeMirror(inputarea, {
+                CodeMirror(inputarea, {
                     value: code,
                     mode: 'python',
                     tabSize: 4,
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
                 // Create the widget area and widget manager
                 let widgetarea = document.getElementsByClassName('widgetarea')[0] as HTMLElement;
-                let manager = new WidgetManager(kernel, widgetarea);
+                new WidgetManager(kernel, widgetarea);
 
                 // Run backend code to create the widgets.  You could also create the
                 // widgets in the frontend, like the other widget examples demonstrate.
