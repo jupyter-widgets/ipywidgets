@@ -1,9 +1,0 @@
-{
-  "extends": "../../tsconfigbase",
-  "compilerOptions": {
-    "types": ["requirejs"],
-    "outDir": "lib",
-    "rootDir": "src"
-  },
-  "include": ["src/*"]
-}
