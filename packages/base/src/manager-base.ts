@@ -5,7 +5,7 @@ import * as utils from './utils';
 import * as services from '@jupyterlab/services';
 
 import {
-    WidgetModel, WidgetView
+    DOMWidgetView, WidgetModel, WidgetView, DOMWidgetModel
 } from './widget';
 
 import {
@@ -130,21 +130,21 @@ export
 abstract class ManagerBase<T> {
 
     /**
-     * Display a view for a particular model.
+     * Display a DOMWidgetView for a particular model.
      */
-    display_model(msg: services.KernelMessage.IMessage, model: WidgetModel, options: any = {}): Promise<T> {
+    display_model(msg: services.KernelMessage.IMessage, model: DOMWidgetModel, options: any = {}): Promise<T> {
         return this.create_view(model, options).then(
             view => this.display_view(msg, view, options)).catch(utils.reject('Could not create view', true));
     }
 
     /**
-     * Display a view.
+     * Display a DOMWidget view.
      *
      * #### Notes
      * This must be implemented by a subclass. The implementation must trigger the view's displayed
      * event after the view is on the page: `view.trigger('displayed')`
      */
-    abstract display_view(msg: services.KernelMessage.IMessage, view: WidgetView, options: any): Promise<T>;
+    abstract display_view(msg: services.KernelMessage.IMessage, view: DOMWidgetView, options: any): Promise<T>;
 
     /**
      * Modifies view options. Generally overloaded in custom widget manager
@@ -160,6 +160,7 @@ abstract class ManagerBase<T> {
      * Make sure the view creation is not out of order with
      * any state updates.
      */
+    create_view(model: DOMWidgetModel, options: any): Promise<DOMWidgetView>;
     create_view(model: WidgetModel, options = {}): Promise<WidgetView> {
         let viewPromise = model.state_change = model.state_change.then(() => {
             return this.loadClass(model.get('_view_name'),
