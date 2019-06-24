@@ -8,7 +8,6 @@ import * as outputWidgets from './output';
 import * as PhosphorWidget from '@phosphor/widgets';
 import { RenderMimeRegistry, standardRendererFactories } from '@jupyterlab/rendermime';
 
-import { OutputModel, OutputView } from './output';
 import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers';
 
 export
@@ -30,7 +29,7 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
      * Display the specified view. Element where the view is displayed
      * is specified in the `options.el` argument.
      */
-    display_view(msg, view, options) {
+    display_view(msg: any, view: any, options: { el: HTMLElement; }) {
         return Promise.resolve(view).then((view) => {
             PhosphorWidget.Widget.attach(view.pWidget, options.el);
             view.on('remove', () => {
@@ -75,8 +74,8 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
                 reject(`Could not load module ${moduleName}@${moduleVersion}`);
             }
         }).then((module) => {
-            if (module[className]) {
-                return module[className];
+            if ((module as any)[className]) {
+                return (module as any)[className];
             } else {
                 return Promise.reject(`Class ${className} not found in module ${moduleName}@${moduleVersion}`);
             }

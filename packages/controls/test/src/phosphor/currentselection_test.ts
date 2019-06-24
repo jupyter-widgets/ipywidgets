@@ -8,19 +8,19 @@ import { ArrayExt } from '@phosphor/algorithm';
 
 import { Selection } from '../../../lib/phosphor/currentselection';
 
-function getLastMessage(subscriber) {
-    const [_, message] = subscriber.getCall(0).args;
+function getLastMessage(subscriber: { getCall: (arg0: number) => { args: [any, any]; }; }) {
+    const [, message] = subscriber.getCall(0).args;
     return message;
 }
 
 describe('Selection with items', function() {
-    let selection;
-    let subscriber; // subscribe to signals from selection
-    let sequence;
+    let selection: Selection<string>;
+    let subscriber: any; // subscribe to signals from selection
+    let sequence: string[];
 
     beforeEach(function() {
         sequence = ['value-0', 'value-1'];
-        selection = new Selection(sequence);
+        selection = new Selection(sequence) as Selection<string>;
         selection.index = null;
         subscriber = spy();
         selection.selectionChanged.connect(subscriber);
@@ -58,7 +58,7 @@ describe('Selection with items', function() {
     it('dispatch a signal when setting a value', function() {
         selection.value = 'value-0';
         expect(subscriber.calledOnce).to.be.true;
-        const [_, message] = subscriber.getCall(0).args;
+        const [, message] = subscriber.getCall(0).args;
         expect(message).to.deep.equal({
             previousIndex: null,
             previousValue: null,
@@ -111,9 +111,9 @@ describe('Selection with items', function() {
 
 
 describe('Selection with items with an item selected', function() {
-    let selection;
-    let subscriber; // subscribe to signals from selection
-    let sequence;
+    let selection: Selection<string>;
+    let subscriber: any; // subscribe to signals from selection
+    let sequence: string[];
 
     beforeEach(function() {
         sequence = ['value-0', 'value-1'];

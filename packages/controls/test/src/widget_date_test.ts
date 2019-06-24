@@ -6,13 +6,11 @@ import {
     expect
 } from 'chai';
 
-import * as sinon from 'sinon';
-
 import * as widgets from '../../lib';
 
 function getDatepicker(parent: Element): HTMLInputElement {
     const elem = parent.querySelector('input[type="date"]');
-    return <HTMLInputElement>elem;
+    return elem as HTMLInputElement;
 }
 
 describe('DatePickerView', function() {

@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfigbase",
+  "compilerOptions": {
+    "outDir": "lib",
+    "rootDir": "src",
+    "types": ["requirejs"]
+  },
+  "include": ["src/*"],
+  "references": [
+    {
+      "path": "../base"
+    },
+    {
+      "path": "../controls"
+    }
+  ]
+}

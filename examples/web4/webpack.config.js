@@ -1,6 +1,7 @@
 var path = require('path');
 
 module.exports = {
+    mode: 'development',
     entry: './index.js',
     output: {
         filename: 'index.built.js',

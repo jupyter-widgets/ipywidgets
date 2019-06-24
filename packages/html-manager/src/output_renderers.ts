@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { Widget, Panel } from '@phosphor/widgets';
+import { Widget } from '@phosphor/widgets';
 
 import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 

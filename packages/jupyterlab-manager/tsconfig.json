@@ -1,0 +1,21 @@
+{
+  "extends": "../../tsconfigbase",
+  "compilerOptions": {
+    "outDir": "lib",
+    "rootDir": "src",
+    "types": ["node"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["src/typedoc.d.ts"],
+  "references": [
+    {
+      "path": "../base"
+    },
+    {
+      "path": "../controls"
+    },
+    {
+      "path": "../output"
+    }
+  ]
+}

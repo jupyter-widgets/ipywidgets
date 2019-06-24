@@ -10,6 +10,7 @@ import {
 } from '@jupyter-widgets/html-manager';
 
 import './widgets.css';
+import { DOMWidgetView } from '@jupyter-widgets/base';
 
 export
 class WidgetManager extends HTMLManager {
@@ -24,7 +25,7 @@ class WidgetManager extends HTMLManager {
         });
     }
 
-    display_view(msg, view, options) {
+    display_view(msg: any, view: DOMWidgetView, options: any) {
         return Promise.resolve(view).then((view) => {
             pWidget.Widget.attach(view.pWidget, this.el);
             view.on('remove', function() {

@@ -22,7 +22,7 @@ import {
 } from 'd3-format';
 
 import * as _ from 'underscore';
-import * as $ from 'jquery';
+import $ from 'jquery';
 import 'jquery-ui/ui/widgets/slider';
 
 
@@ -60,7 +60,7 @@ class SliderStyleModel extends DescriptionStyleModel {
         handle_color: {
             selector: '.ui-slider-handle',
             attribute: 'background-color',
-            default: null
+            default: null as any
         }
     };
 }
@@ -80,7 +80,7 @@ class IntSliderModel extends BoundedIntModel {
             disabled: false,
         });
     }
-    initialize(attributes, options) {
+    initialize(attributes: any, options: { model_id: string; comm: any; widget_manager: any; }) {
         super.initialize(attributes, options);
         this.on('change:readout_format', this.update_readout_format, this);
         this.update_readout_format();
@@ -124,7 +124,7 @@ abstract class BaseIntSliderView extends DescriptionView {
         this.update();
     }
 
-    update(options?) {
+    update(options?: any) {
         /**
          * Update the contents of this view
          *
@@ -214,12 +214,12 @@ abstract class BaseIntSliderView extends DescriptionView {
     /**
      * Write value to a string
      */
-    abstract valueToString(value): string;
+    abstract valueToString(value: number | number[]): string;
 
     /**
      * Parse value from a string
      */
-    abstract stringToValue(text: string);
+    abstract stringToValue(text: string): number | number[];
 
     events(): {[e: string]: string} {
         return {
@@ -231,7 +231,7 @@ abstract class BaseIntSliderView extends DescriptionView {
         };
     }
 
-    handleKeyDown(e) {
+    handleKeyDown(e: KeyboardEvent) {
         if (e.keyCode === 13) { /* keyboard keycodes `enter` */
             e.preventDefault();
             this.handleTextChange();
@@ -246,12 +246,12 @@ abstract class BaseIntSliderView extends DescriptionView {
      *
      * if any of these conditions are not met, the text is reset
      */
-    abstract handleTextChange();
+    abstract handleTextChange(): void;
 
     /**
      * Called when the slider value is changing.
      */
-    abstract handleSliderChange(e, ui);
+    abstract handleSliderChange(e: any, ui: {value?: number; values?: number[]}): void;
 
     /**
      * Called when the slider value has changed.
@@ -259,13 +259,13 @@ abstract class BaseIntSliderView extends DescriptionView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    abstract handleSliderChanged(e, ui);
+    abstract handleSliderChanged(e: Event, ui: {value?: number; values?: number[]}): void;
 
     /**
      * Validate the value of the slider before sending it to the back-end
      * and applying it to the other views on the page.
      */
-    _validate_slide_value(x) {
+    _validate_slide_value(x: number) {
         return Math.floor(x);
     }
 
@@ -279,7 +279,7 @@ abstract class BaseIntSliderView extends DescriptionView {
 export
 class IntRangeSliderView extends BaseIntSliderView {
 
-    update(options?) {
+    update(options?: any) {
         super.update(options);
         this.$slider.slider('option', 'range', true);
         // values for the range case are validated python-side in
@@ -352,7 +352,7 @@ class IntRangeSliderView extends BaseIntSliderView {
     /**
      * Called when the slider value is changing.
      */
-    handleSliderChange(e, ui) {
+    handleSliderChange(e: any, ui: { values: number[]}) {
         let actual_value = ui.values.map(this._validate_slide_value);
         this.readout.textContent = this.valueToString(actual_value);
 
@@ -369,7 +369,7 @@ class IntRangeSliderView extends BaseIntSliderView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    handleSliderChanged(e, ui) {
+    handleSliderChanged(e: Event, ui: { values: number[]}) {
         let actual_value = ui.values.map(this._validate_slide_value);
         this.model.set('value', actual_value, {updated_view: this});
         this.touch();
@@ -383,7 +383,7 @@ class IntRangeSliderView extends BaseIntSliderView {
 export
 class IntSliderView extends BaseIntSliderView {
 
-    update(options?) {
+    update(options?: any) {
         super.update(options);
         let min = this.model.get('min');
         let max = this.model.get('max');
@@ -447,7 +447,7 @@ class IntSliderView extends BaseIntSliderView {
     /**
      * Called when the slider value is changing.
      */
-    handleSliderChange(e, ui) {
+    handleSliderChange(e: any, ui: { value: number; }) {
         let actual_value = this._validate_slide_value(ui.value);
         this.readout.textContent = this.valueToString(actual_value);
 
@@ -464,7 +464,7 @@ class IntSliderView extends BaseIntSliderView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    handleSliderChanged(e, ui) {
+    handleSliderChanged(e: Event, ui: { value?: any; }) {
         let actual_value = this._validate_slide_value(ui.value);
         this.model.set('value', actual_value, {updated_view: this});
         this.touch();
@@ -520,7 +520,7 @@ class IntTextView extends DescriptionView {
      * Called when the model is changed.  The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update(options?) {
+    update(options?: any) {
         if (options === undefined || options.updated_view !== this) {
             let value: number = this.model.get('value');
 
@@ -559,14 +559,14 @@ class IntTextView extends DescriptionView {
      *
      * Stop propagation so the event isn't sent to the application.
      */
-    handleKeyDown(e) {
+    handleKeyDown(e: KeyboardEvent) {
         e.stopPropagation();
     }
 
     /**
      * Handles key press
      */
-    handleKeypress(e) {
+    handleKeypress(e: KeyboardEvent) {
         if (/[e,.\s]/.test(String.fromCharCode(e.keyCode))) {
             e.preventDefault();
         }
@@ -575,12 +575,13 @@ class IntTextView extends DescriptionView {
     /**
      * Handle key up
      */
-    handleKeyUp(e) {
+    handleKeyUp(e: KeyboardEvent) {
         if (e.altKey || e.ctrlKey) {
             return;
         }
+        let target = e.target as HTMLInputElement;
         /* remove invalid characters */
-        let value = e.target.value;
+        let value = target.value;
 
         value = value.replace(/[e,.\s]/g, "");
 
@@ -589,9 +590,9 @@ class IntTextView extends DescriptionView {
             value = value[0] + subvalue.replace(/[+-]/g, "");
         }
 
-        if (e.target.value != value) {
+        if (target.value != value) {
             e.preventDefault();
-            e.target.value = value;
+            target.value = value;
         }
     }
 
@@ -599,8 +600,10 @@ class IntTextView extends DescriptionView {
      * Call the submit handler if continuous update is true and we are not
      * obviously incomplete.
      */
-    handleChanging(e) {
-        let trimmed = e.target.value.trim();
+    handleChanging(e: Event) {
+        let target = e.target as HTMLInputElement;
+
+        let trimmed = target.value.trim();
         if (trimmed === '' || (['-', '-.', '.', '+.', '+'].indexOf(trimmed) >= 0)) {
             // incomplete number
             return;
@@ -614,12 +617,13 @@ class IntTextView extends DescriptionView {
     /**
      * Applies validated input.
      */
-    handleChanged(e) {
-        let numericalValue = this._parse_value(e.target.value);
+    handleChanged(e: Event) {
+        let target = e.target as HTMLInputElement;
+        let numericalValue = this._parse_value(target.value);
 
         // If parse failed, reset value to value stored in model.
         if (isNaN(numericalValue)) {
-            e.target.value = this.model.get('value');
+            target.value = this.model.get('value');
         } else {
             // Handle both the unbounded and bounded case by
             // checking to see if the max/min properties are defined
@@ -631,7 +635,7 @@ class IntTextView extends DescriptionView {
                 boundedValue = Math.max(this.model.get('min'), boundedValue);
             }
             if (boundedValue !== numericalValue) {
-                e.target.value = boundedValue;
+                target.value = boundedValue as any;
                 numericalValue = boundedValue;
             }
 
@@ -662,7 +666,7 @@ class ProgressStyleModel extends DescriptionStyleModel {
         bar_color: {
             selector: '.progress-bar',
             attribute: 'background-color',
-            default: null
+            default: null as any
         }
     };
 }
@@ -684,7 +688,7 @@ class IntProgressModel extends BoundedIntModel {
 
 export
 class ProgressView extends DescriptionView {
-    initialize(parameters) {
+    initialize(parameters: any) {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:bar_style', this.update_bar_style);
         this.pWidget.addClass('jupyter-widgets');
@@ -781,7 +785,7 @@ class PlayModel extends BoundedIntModel {
             disabled: false,
         });
     }
-    initialize(attributes, options) {
+    initialize(attributes: any, options: { model_id: string; comm: any; widget_manager: any; }) {
         super.initialize(attributes, options);
     }
 

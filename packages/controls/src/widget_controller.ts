@@ -6,7 +6,7 @@ import {
 } from './widget_core';
 
 import {
-    DOMWidgetView, unpack_models, ViewList, WidgetView
+    DOMWidgetView, unpack_models, ViewList
 } from '@jupyter-widgets/base';
 
 import * as _ from 'underscore';
@@ -146,7 +146,7 @@ class ControllerModel extends CoreDOMWidgetModel {
         });
     }
 
-    initialize(attributes, options) {
+    initialize(attributes: any, options: any) {
         super.initialize(attributes, options);
         if (navigator.getGamepads === void 0) {
             // Checks if the browser supports the gamepad API
@@ -196,7 +196,7 @@ class ControllerModel extends CoreDOMWidgetModel {
      *     axes: list of Axis models,
      * }
      */
-    setup(pad) {
+    setup(pad: Gamepad) {
         // Set up the main gamepad attributes
         this.set({
             name: pad.id,
@@ -230,14 +230,14 @@ class ControllerModel extends CoreDOMWidgetModel {
                 connected: pad.connected
             });
             this.save_changes();
-            this.get('buttons').forEach(function(model, index) {
+            this.get('buttons').forEach(function(model: ControllerButtonModel, index: number) {
                 model.set({
                     value: pad.buttons[index].value,
                     pressed: pad.buttons[index].pressed
                 });
                 model.save_changes();
             });
-            this.get('axes').forEach(function(model, index) {
+            this.get('axes').forEach(function(model: ControllerAxisModel, index: number) {
                 model.set('value', pad.axes[index]);
                 model.save_changes();
             });
@@ -251,10 +251,10 @@ class ControllerModel extends CoreDOMWidgetModel {
      * Resets the gamepad attributes, and start the wait_loop.
      */
     reset_gamepad() {
-        this.get('buttons').forEach(function(button) {
+        this.get('buttons').forEach(function(button: ControllerButtonModel) {
             button.close();
         });
-        this.get('axes').forEach(function(axis) {
+        this.get('axes').forEach(function(axis: ControllerAxisModel) {
             axis.close();
         });
         this.set({
@@ -272,7 +272,7 @@ class ControllerModel extends CoreDOMWidgetModel {
     /**
      * Creates a gamepad button widget.
      */
-    _create_button_model(index): Promise<ControllerButtonModel> {
+    _create_button_model(index: number): Promise<ControllerButtonModel> {
         return this.widget_manager.new_widget({
              model_name: 'ControllerButtonModel',
              model_module: '@jupyter-widgets/controls',
@@ -289,7 +289,7 @@ class ControllerModel extends CoreDOMWidgetModel {
     /**
      * Creates a gamepad axis widget.
      */
-    _create_axis_model(index): Promise<ControllerAxisModel>  {
+    _create_axis_model(index: number): Promise<ControllerAxisModel>  {
         return this.widget_manager.new_widget({
              model_name: 'ControllerAxisModel',
              model_module: '@jupyter-widgets/controls',
@@ -311,7 +311,7 @@ class ControllerModel extends CoreDOMWidgetModel {
  */
 export
 class ControllerView extends DOMWidgetView {
-    initialize(parameters) {
+    initialize(parameters: any) {
         super.initialize(parameters);
 
         this.button_views = new ViewList(this.add_button, null, this);
@@ -351,7 +351,7 @@ class ControllerView extends DOMWidgetView {
         this.label.textContent = this.model.get('name') || this.model.readout;
     }
 
-    add_button(model) {
+    add_button(model: ControllerButtonModel) {
         let that = this;
         let dummy = document.createElement('div');
 
@@ -365,7 +365,7 @@ class ControllerView extends DOMWidgetView {
         }).catch(utils.reject('Could not add button view', true));
     }
 
-    add_axis(model) {
+    add_axis(model: ControllerAxisModel) {
         let that = this;
         let dummy = document.createElement('div');
 

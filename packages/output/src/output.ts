@@ -1,6 +1,6 @@
 
 import {
-    DOMWidgetModel, DOMWidgetView, JUPYTER_WIDGETS_VERSION
+    DOMWidgetModel, DOMWidgetView
 } from '@jupyter-widgets/base';
 
 export

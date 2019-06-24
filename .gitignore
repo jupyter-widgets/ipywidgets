@@ -32,3 +32,5 @@ index.built.js.map
 **/lib/
 
 temp/*
+
+tsconfig.tsbuildinfo

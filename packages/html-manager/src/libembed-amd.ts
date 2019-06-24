@@ -7,7 +7,7 @@ let cdn = 'https://unpkg.com/';
 
 // find the data-cdn for any script tag, assuming it is only used for embed-amd.js
 const scripts = document.getElementsByTagName('script');
-Array.prototype.forEach.call(scripts, (script) => {
+Array.prototype.forEach.call(scripts, (script: HTMLScriptElement) => {
     cdn = script.getAttribute('data-jupyter-widgets-cdn') || cdn;
 });
 
@@ -68,7 +68,7 @@ function requireLoader(moduleName: string, moduleVersion: string) {
             if (require === undefined) {
                 throw new Error("Requirejs is needed, please ensure it is loaded on the page.");
             }
-            const conf = {paths: {}};
+            const conf: {paths: {[key: string]: string}} = {paths: {}};
             conf.paths[moduleName] = moduleNameToCDNUrl(moduleName, moduleVersion);
             require.undef(failedId);
             require.config(conf);

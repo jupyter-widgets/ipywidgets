@@ -7,13 +7,13 @@
   "bugs": {
     "url": "https://github.com/jupyter-widgets/ipywidgets/issues"
   },
-  "license": "BSD-3-Clause",
-  "author": "Jupyter Project",
-  "main": "src/extension.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jupyter-widgets/ipywidgets.git"
   },
+  "license": "BSD-3-Clause",
+  "author": "Jupyter Project",
+  "main": "src/extension.js",
   "scripts": {
     "build": "webpack",
     "clean": "rimraf widgetsnbextension/static",
@@ -25,17 +25,19 @@
     "@jupyter-widgets/controls": "^1.4.5",
     "@jupyter-widgets/html-manager": "^0.17.0",
     "@jupyter-widgets/output": "^1.1.5",
-    "@jupyterlab/services": "^1.0.1 || ^2.0.0",
+    "@jupyterlab/services": "^4.0.0-rc.0",
     "@phosphor/messaging": "^1.2.1",
     "@phosphor/widgets": "^1.3.0",
     "backbone": "1.2.3",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "css-loader": "^0.28.4",
-    "json-loader": "^0.5.4",
+    "css-loader": "^3.0.0",
+    "json-loader": "^0.5.7",
     "rimraf": "^2.6.1",
-    "style-loader": "^0.18.1",
-    "webpack": "^3.5.5"
+    "style-loader": "^0.23.1",
+    "url-loader": "^2.0.0",
+    "webpack": "^4.35.0",
+    "webpack-cli": "^3.3.4"
   }
 }

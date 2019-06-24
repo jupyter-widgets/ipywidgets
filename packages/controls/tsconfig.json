@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfigbase",
+  "compilerOptions": {
+    "outDir": "lib",
+    "rootDir": "src",
+    "types": ["mathjax", "node"]
+  },
+  "include": ["src/**/*"],
+  "exclude": ["src/typedoc.d.ts"],
+  "references": [
+    {
+      "path": "../base"
+    }
+  ]
+}

@@ -27,7 +27,7 @@ class AudioModel extends CoreDOMWidgetModel {
 
     static serializers = {
         ...CoreDOMWidgetModel.serializers,
-        value: {serialize: (value, manager) => {
+        value: {serialize: (value: any) => {
             return new DataView(value.buffer.slice(0));
         }}
     };

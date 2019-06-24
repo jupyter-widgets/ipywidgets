@@ -1,4 +1,4 @@
-import * as CodeMirror from 'codemirror';
+import CodeMirror from 'codemirror';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/python/python';
 import 'font-awesome/css/font-awesome.css';
@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
         // Create a codemirror instance
         let code = require('../widget_code.json').join('\n');
         let inputarea = document.getElementsByClassName('inputarea')[0] as HTMLElement;
-        let editor = CodeMirror(inputarea, {
+        CodeMirror(inputarea, {
             value: code,
             mode: 'python',
             tabSize: 4,

@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfigbase",
+  "compilerOptions": {
+    "outDir": "lib",
+    "rootDir": "src",
+  },
+  "include": ["src/**/*"],
+  "exclude": ["src/typedoc.d.ts"],
+  "references": [
+    {
+      "path": "../base"
+    }
+  ]
+}
