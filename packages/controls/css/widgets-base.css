@@ -887,7 +887,7 @@
 /* Play Widget */
 
 .widget-play {
-    width: var(--jp-widgets-inline-width-short);
+    width: var(--jp-widgets-inline-width);
     display: flex;
     align-items: stretch;
 }
