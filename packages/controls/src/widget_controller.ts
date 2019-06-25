@@ -6,8 +6,16 @@ import {
 } from './widget_core';
 
 import {
-    DOMWidgetView, unpack_models, ViewList
+    DOMWidgetView, unpack_models, ViewList, JupyterPhosphorPanelWidget
 } from '@jupyter-widgets/base';
+
+import {
+    Widget, Panel
+} from '@phosphor/widgets';
+
+import {
+    ArrayExt
+} from '@phosphor/algorithm';
 
 import * as _ from 'underscore';
 
@@ -33,6 +41,7 @@ class ControllerButtonView extends DOMWidgetView {
     render() {
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-controller-button');
+        this.el.style.width = 'fit-content';
 
         this.support = document.createElement('div');
         this.support.style.position = 'relative';
@@ -99,7 +108,8 @@ class ControllerAxisView extends DOMWidgetView {
 
         this.bullet = document.createElement('div');
         this.bullet.style.position = 'absolute';
-        this.bullet.style.margin = '-4px';
+        this.bullet.style.margin = '-3px';
+        this.bullet.style.boxSizing = 'unset';
         this.bullet.style.width = '10px';
         this.bullet.style.height = '10px';
         this.bullet.style.background = 'gray';
@@ -126,6 +136,7 @@ class ControllerAxisView extends DOMWidgetView {
 
 export
 class ControllerModel extends CoreDOMWidgetModel {
+
     static serializers = {
         ...CoreDOMWidgetModel.serializers,
         buttons: {deserialize: unpack_models},
@@ -311,6 +322,21 @@ class ControllerModel extends CoreDOMWidgetModel {
  */
 export
 class ControllerView extends DOMWidgetView {
+
+    _createElement(tagName: string) {
+        this.pWidget = new JupyterPhosphorPanelWidget({ view: this });
+        return this.pWidget.node;
+    }
+
+    _setElement(el: HTMLElement) {
+        if (this.el || el !== this.pWidget.node) {
+            // Boxes don't allow setting the element beyond the initial creation.
+            throw new Error('Cannot reset the DOM element.');
+        }
+
+        this.el = this.pWidget.node;
+    }
+
     initialize(parameters: any) {
         super.initialize(parameters);
 
@@ -327,19 +353,19 @@ class ControllerView extends DOMWidgetView {
         this.listenTo(this.model, 'change:name', this.update_label);
     }
 
-    render(){
+    render() {
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-controller');
-        this.box = this.el;
         this.label = document.createElement('div');
-        this.box.appendChild(this.label);
-        this.axis_box = document.createElement('div');
-        this.axis_box.style.display = 'flex';
-        this.box.appendChild(this.axis_box);
+        this.el.appendChild(this.label);
 
-        this.button_box = document.createElement('div');
-        this.button_box.style.display = 'flex';
-        this.box.appendChild(this.button_box);
+        this.axis_box = new Panel();
+        this.axis_box.node.style.display = 'flex';
+        this.pWidget.addWidget(this.axis_box);
+
+        this.button_box = new Panel();
+        this.button_box.node.style.display = 'flex';
+        this.pWidget.addWidget(this.button_box);
 
         this.button_views.update(this.model.get('buttons'));
         this.axis_views.update(this.model.get('axes'));
@@ -352,31 +378,33 @@ class ControllerView extends DOMWidgetView {
     }
 
     add_button(model: ControllerButtonModel) {
-        let that = this;
-        let dummy = document.createElement('div');
+        // we insert a dummy element so the order is preserved when we add
+        // the rendered content later.
+        let dummy = new Widget();
+        this.button_box.addWidget(dummy);
 
-        that.button_box.appendChild(dummy);
-        return this.create_child_view(model).then(function(view) {
-            that.button_box.replaceChild(view.el, dummy);
-            that.displayed.then(function() {
-                view.trigger('displayed', that);
-            });
+        return this.create_child_view(model).then((view: ControllerButtonView) => {
+            // replace the dummy widget with the new one.
+            let i = ArrayExt.firstIndexOf(this.button_box.widgets, dummy);
+            this.button_box.insertWidget(i, view.pWidget);
+            dummy.dispose();
             return view;
-        }).catch(utils.reject('Could not add button view', true));
+        }).catch(utils.reject('Could not add child button view to controller', true));
     }
 
     add_axis(model: ControllerAxisModel) {
-        let that = this;
-        let dummy = document.createElement('div');
+        // we insert a dummy element so the order is preserved when we add
+        // the rendered content later.
+        let dummy = new Widget();
+        this.axis_box.addWidget(dummy);
 
-        that.axis_box.appendChild(dummy);
-        return this.create_child_view(model).then(function(view) {
-            that.axis_box.replaceChild(view.el, dummy);
-            that.displayed.then(function() {
-                view.trigger('displayed', that);
-            });
+        return this.create_child_view(model).then((view: ControllerAxisView) => {
+            // replace the dummy widget with the new one.
+            let i = ArrayExt.firstIndexOf(this.axis_box.widgets, dummy);
+            this.axis_box.insertWidget(i, view.pWidget);
+            dummy.dispose();
             return view;
-        }).catch(utils.reject('Could not add axis view', true));
+        }).catch(utils.reject('Could not add child axis view to controller', true));
     }
 
     remove() {
@@ -385,11 +413,11 @@ class ControllerView extends DOMWidgetView {
         this.axis_views.remove();
     }
 
-    button_views: any;
-    axis_views: any;
-    box: HTMLElement;
+    button_views: ViewList<ControllerButtonView>;
+    axis_views: ViewList<ControllerAxisView>;
     label: HTMLDivElement;
-    axis_box: HTMLDivElement;
-    button_box: HTMLDivElement;
+    axis_box: Panel;
+    button_box: Panel;
     model: ControllerModel;
+    pWidget: JupyterPhosphorPanelWidget;
 }
