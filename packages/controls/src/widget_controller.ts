@@ -41,6 +41,7 @@ class ControllerButtonView extends DOMWidgetView {
     render() {
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-controller-button');
+        this.el.style.width = 'fit-content';
 
         this.support = document.createElement('div');
         this.support.style.position = 'relative';
@@ -107,7 +108,8 @@ class ControllerAxisView extends DOMWidgetView {
 
         this.bullet = document.createElement('div');
         this.bullet.style.position = 'absolute';
-        this.bullet.style.margin = '-4px';
+        this.bullet.style.margin = '-3px';
+        this.bullet.style.boxSizing = 'unset';
         this.bullet.style.width = '10px';
         this.bullet.style.height = '10px';
         this.bullet.style.background = 'gray';
