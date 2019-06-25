@@ -13,7 +13,7 @@ import {
 } from './nativeview';
 
 import {
-    Widget
+    Widget, Panel
 } from '@phosphor/widgets';
 
 import {
@@ -740,6 +740,45 @@ class JupyterPhosphorWidget extends Widget {
     processMessage(msg: Message) {
         super.processMessage(msg);
         this._view.processPhosphorMessage(msg);
+    }
+
+    private _view: DOMWidgetView;
+}
+
+export
+class JupyterPhosphorPanelWidget extends Panel {
+    constructor(options: JupyterPhosphorWidget.IOptions & Panel.IOptions) {
+        let view = options.view;
+        delete options.view;
+        super(options);
+        this._view = view;
+    }
+
+    /**
+     * Process the phosphor message.
+     *
+     * Any custom phosphor widget used inside a Jupyter widget should override
+     * the processMessage function like this.
+     */
+    processMessage(msg: Message) {
+        super.processMessage(msg);
+        this._view.processPhosphorMessage(msg);
+    }
+
+    /**
+     * Dispose the widget.
+     *
+     * This causes the view to be destroyed as well with 'remove'
+     */
+    dispose() {
+        if (this.isDisposed) {
+            return;
+        }
+        super.dispose();
+        if (this._view) {
+            this._view.remove();
+        }
+        this._view = null;
     }
 
     private _view: DOMWidgetView;
