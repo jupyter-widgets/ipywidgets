@@ -6,4 +6,4 @@
  * implements.
  */
 export
-const JUPYTER_CONTROLS_VERSION = '1.4.0';
+const JUPYTER_CONTROLS_VERSION = require('../package.json').version;

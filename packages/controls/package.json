@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/controls",
-  "version": "1.4.5",
+  "version": "2.0.0-rc.0",
   "description": "Jupyter interactive widgets",
   "repository": {
     "type": "git",
@@ -34,7 +34,7 @@
     "test:unit:ie": "npm run test:unit:default -- --browsers=IE"
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^1.2.5",
+    "@jupyter-widgets/base": "^2.0.0-rc.0",
     "@phosphor/algorithm": "^1.1.0",
     "@phosphor/domutils": "^1.1.0",
     "@phosphor/messaging": "^1.2.1",
