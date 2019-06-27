@@ -266,6 +266,23 @@ export
 class FloatTextView extends IntTextView {
     _parse_value = parseFloat;
     _default_step = 'any';
+
+    /**
+     * Handle key press
+     */
+    handleKeypress(e: KeyboardEvent) {
+        // Overwrite IntTextView's handleKeypress
+        // which prevents decimal points.
+        e.stopPropagation();
+    }
+
+    /**
+     * Handle key up
+     */
+    handleKeyUp(e: KeyboardEvent) {
+        // Overwrite IntTextView's handleKeyUp
+        // which prevents decimal points.
+    }
 }
 
 export
