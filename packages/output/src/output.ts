@@ -4,7 +4,7 @@ import {
 } from '@jupyter-widgets/base';
 
 export
-const OUTPUT_WIDGET_VERSION = '2.0.0';
+const OUTPUT_WIDGET_VERSION = '1.0.0';
 
 export class OutputModel extends DOMWidgetModel {
     defaults() {
