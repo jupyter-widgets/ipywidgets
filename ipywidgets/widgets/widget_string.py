@@ -10,6 +10,7 @@ from .widget_description import DescriptionWidget
 from .valuewidget import ValueWidget
 from .widget import CallbackDispatcher, register
 from .widget_core import CoreWidget
+from .trait_types import TypedTuple
 from traitlets import Unicode, Bool, Int
 from warnings import warn
 
@@ -120,3 +121,21 @@ class Password(Text):
         for key in super_keys:
             if key != 'value':
                 yield key
+
+
+@register
+class Combobox(Text):
+    """Single line textbox widget with a dropdown and autocompletion.
+    """
+    _model_name = Unicode('ComboboxModel').tag(sync=True)
+    _view_name = Unicode('ComboboxView').tag(sync=True)
+
+    options = TypedTuple(
+        trait=Unicode(),
+        help="Dropdown options for the combobox"
+    ).tag(sync=True)
+
+    ensure_option = Bool(
+        False,
+        help='If set, ensure value is in options. Implies continuous_update=False.'
+    ).tag(sync=True)
