@@ -125,7 +125,7 @@ class Password(Text):
 
 @register
 class Combobox(Text):
-    """TODO: Add docstring here
+    """Single line textbox widget with a dropdown and autocompletion.
     """
     _model_name = Unicode('ComboboxModel').tag(sync=True)
     _view_name = Unicode('ComboboxView').tag(sync=True)
