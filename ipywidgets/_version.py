@@ -1,7 +1,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-version_info = (7, 5, 0, 'candidate', 0)
+version_info = (7, 5, 0, 'candidate', 1)
 
 _specifier_ = {'alpha': 'a', 'beta': 'b', 'candidate': 'rc', 'final': ''}
 

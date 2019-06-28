@@ -222,6 +222,28 @@ Attribute        | Type             | Default          | Help
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `value`          | string           | `'black'`        | The color value.
 
+### ComboboxModel (@jupyter-widgets/controls, 1.5.0); ComboboxView (@jupyter-widgets/controls, 1.5.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'1.5.0'`        | 
+`_model_name`    | string           | `'ComboboxModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'1.5.0'`        | 
+`_view_name`     | string           | `'ComboboxView'` | 
+`continuous_update` | boolean          | `true`           | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
+`description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
+`disabled`       | boolean          | `false`          | Enable or disable user changes
+`ensure_option`  | boolean          | `false`          | If set, ensure value is in options. Implies continuous_update=False.
+`layout`         | reference to Layout widget | reference to new instance | 
+`options`        | array of string  | `[]`             | Dropdown options for the combobox
+`placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
+`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`value`          | string           | `''`             | String value
+
 ### ControllerAxisModel (@jupyter-widgets/controls, 1.5.0); ControllerAxisView (@jupyter-widgets/controls, 1.5.0)
 
 Attribute        | Type             | Default          | Help
