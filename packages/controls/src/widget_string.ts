@@ -350,8 +350,8 @@ class TextView extends DescriptionView {
     handleKeypress(e: KeyboardEvent) {
         e.stopPropagation();
         // The submit message is deprecated in widgets 7
-            this.send({event: 'submit'});
         if (e.keyCode === 13) { // Return key
+            this.send({event: 'submit'});
         }
     }
 
