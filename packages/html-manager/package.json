@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "@jupyter-widgets/base": "^2.0.0-rc.2",
-    "@jupyter-widgets/controls": "^2.0.0-rc.2",
+    "@jupyter-widgets/controls": "^1.4.5",
     "@jupyter-widgets/output": "^2.0.0-rc.2",
     "@jupyter-widgets/schema": "^0.4.0-rc.1",
     "@jupyterlab/outputarea": "^1.0.0",
