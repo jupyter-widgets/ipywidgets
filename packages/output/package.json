@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/output",
-  "version": "2.0.0-rc.2",
+  "version": "2.0.0",
   "description": "Jupyter widget wrapping cell output",
   "bugs": {
     "url": "https://github.com/jupyter-widgets/ipywidgets/issues"
