@@ -3,6 +3,8 @@
   "compilerOptions": {
     "outDir": "lib",
     "rootDir": "src",
+    "lib": ["dom", "es5", "es2015.promise", "es2015.iterable"],
+    "target": "es5"
   },
   "include": ["src/**/*"],
   "exclude": ["src/typedoc.d.ts"],
