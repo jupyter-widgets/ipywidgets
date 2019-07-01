@@ -423,7 +423,7 @@
     lodash.escape "^4.0.1"
     marked "0.6.2"
 
-"@jupyterlab/services@^4.0.0":
+"@jupyterlab/services@^2.0.0 || ^3.0.0 || ^4.0.0", "@jupyterlab/services@^4.0.0":
   version "4.0.0"
   resolved "https://registry.npmjs.org/@jupyterlab/services/-/services-4.0.0.tgz#f21bc36223023fa750b0e31d142eb6464357db5b"
   integrity sha512-yCchogfzZqGWXagDJDRxsEMbKwsmf+EFVJRzf5H5OKZs7c/0yNemhG2qjRSmcErD87nUezB3NHkJSVPqz11D3g==

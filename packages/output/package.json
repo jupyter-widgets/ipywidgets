@@ -26,7 +26,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^2.0.0-rc.2"
+    "@jupyter-widgets/base": "^2.0.0"
   },
   "devDependencies": {
     "rimraf": "^2.6.1",

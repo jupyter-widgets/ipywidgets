@@ -15,7 +15,7 @@
     "test:default": "echo \"No test specified\""
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^2.0.0-rc.2",
+    "@jupyter-widgets/base": "^2.0.0",
     "@jupyter-widgets/controls": "^1.5.0-rc.0",
     "@jupyter-widgets/html-manager": "^0.18.0-rc.3",
     "@jupyterlab/services": "^4.0.0",
