@@ -134,6 +134,7 @@
     background-color: var(--jp-layout-color2);
     border-color: var(--jp-border-color2);
     border: none;
+    user-select: none;
 }
 
 .jupyter-button i.fa {
