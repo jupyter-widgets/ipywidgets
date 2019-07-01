@@ -17,6 +17,7 @@ var path = require('path');
 // Packages to ignore
 var IGNORE = {
     '@jupyter-widgets/base': ['@types/backbone', '@types/lodash'],
+    '@jupyter-widgets/controls': ['@jupyter-widgets/base'],
     '@jupyter-widgets/jupyterlab-manager': ['backbone', '@types/backbone', '@jupyterlab/cells'],
     '@jupyter-widgets/html-manager': ['ajv', '@jupyter-widgets/schema'],
     '@jupyter-widgets/example-web-tmpnb': ['http-server', 'font-awesome'],
@@ -90,14 +91,14 @@ function validate(dname) {
         }
     });
     Object.keys(deps).forEach(function(name) {
+        if (ignore.indexOf(name) !== -1) {
+            return;
+        }
         if (versions[name]) {
             var desired = '^' + versions[name];
             if (deps[name] !== desired) {
                 problems.push('Bad core version: ' + name + ' should be ' + desired);
             }
-        }
-        if (ignore.indexOf(name) !== -1) {
-            return;
         }
         if (names.indexOf(name) === -1) {
             problems.push('Unused package: ' + name);
