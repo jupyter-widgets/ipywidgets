@@ -13,7 +13,7 @@
     "test:default": "echo \"No test specified\""
   },
   "dependencies": {
-    "@jupyter-widgets/html-manager": "^0.18.0",
+    "@jupyter-widgets/html-manager": "^0.18.1",
     "font-awesome": "^4.7.0"
   },
   "devDependencies": {
