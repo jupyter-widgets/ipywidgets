@@ -6,8 +6,9 @@
 Represents a file upload button.
 """
 
-import zlib
-from traitlets import observe, validate, default, Unicode, Dict, List, Int, Bool, Bytes, TraitError, CaselessStrEnum
+from traitlets import (
+    observe, default, Unicode, Dict, List, Int, Bool, Bytes, CaselessStrEnum
+)
 
 from .widget_description import DescriptionWidget
 from .valuewidget import ValueWidget
@@ -25,7 +26,7 @@ def content_from_json(value, widget):
     return output
 
 
-@register()
+@register
 class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
     """
     Upload file(s) from browser to Python kernel as bytes
@@ -42,8 +43,10 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
         values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
         help="""Use a predefined styling for the button.""").tag(sync=True)
     style = InstanceDict(ButtonStyle).tag(sync=True, **widget_serialization)
-    metadata = List(Dict, help='List of file metadata').tag(sync=True)
-    data = List(Bytes, help='List of file content (bytes)').tag(sync=True, from_json=content_from_json)
+    metadata = List(Dict(), help='List of file metadata').tag(sync=True)
+    data = List(Bytes(), help='List of file content (bytes)').tag(
+        sync=True, from_json=content_from_json
+    )
     error = Unicode(help='Error message').tag(sync=True)
     value = Dict(read_only=True)
 
