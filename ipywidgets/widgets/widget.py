@@ -8,12 +8,14 @@ in the IPython notebook front-end.
 """
 
 from contextlib import contextmanager
-import collections
-import sys
+try:
+    from collections.abc import Iterable
+except ImportError:
+    # Python 2.7
+    from collections import Iterable
 
 from IPython.core.getipython import get_ipython
 from ipykernel.comm import Comm
-from traitlets.utils.importstring import import_item
 from traitlets import (
     HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default, Container,
     Undefined)
@@ -21,7 +23,7 @@ from ipython_genutils.py3compat import string_types, PY3
 from IPython.display import display
 from json import loads as jsonloads, dumps as jsondumps
 
-from base64 import standard_b64decode, standard_b64encode
+from base64 import standard_b64encode
 
 from .._version import __protocol_version__, __jupyter_widgets_base_version__
 PROTOCOL_VERSION_MAJOR = __protocol_version__.split('.')[0]
@@ -505,7 +507,7 @@ class Widget(LoggingHasTraits):
             keys = self.keys
         elif isinstance(key, string_types):
             keys = [key]
-        elif isinstance(key, collections.Iterable):
+        elif isinstance(key, Iterable):
             keys = key
         else:
             raise ValueError("key must be a string, an iterable of keys, or None")
