@@ -39,7 +39,7 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
     'nbsphinx',
-    'jupyter_sphinx.embed_widgets',
+    'jupyter_sphinx.execute',
     'IPython.sphinxext.ipython_console_highlighting',
 ]
 
