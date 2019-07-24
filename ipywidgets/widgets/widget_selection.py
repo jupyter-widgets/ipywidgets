@@ -244,7 +244,12 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
 
     @observe('value')
     def _propagate_value(self, change):
-        index = self._options_values.index(change.new) if change.new is not None else None
+        if change.new is None:
+            index = None
+        elif self.index is not None and self._options_values[self.index] == change.new:
+            index = self.index
+        else:
+            index = self._options_values.index(change.new)
         if self.index != index:
             self.index = index
 
@@ -256,7 +261,12 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
 
     @observe('label')
     def _propagate_label(self, change):
-        index = self._options_labels.index(change.new) if change.new is not None else None
+        if change.new is None:
+            index = None
+        elif self.index is not None and self._options_labels[self.index] == change.new:
+            index = self.index
+        else:
+            index = self._options_labels.index(change.new)
         if self.index != index:
             self.index = index
 
