@@ -20,6 +20,7 @@ import {
 import * as _ from 'underscore';
 
 import * as utils from './utils';
+import $ from 'jquery';
 
 export
 class ControllerButtonModel extends CoreDOMWidgetModel {
@@ -335,6 +336,7 @@ class ControllerView extends DOMWidgetView {
         }
 
         this.el = this.pWidget.node;
+        this.$el = $(this.pWidget.node);
     }
 
     initialize(parameters: any) {
