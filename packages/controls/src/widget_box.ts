@@ -26,6 +26,7 @@ import {
 } from '@phosphor/widgets';
 
 import * as _ from 'underscore';
+import $ from 'jquery';
 
 export
 class BoxModel extends CoreDOMWidgetModel {
@@ -79,6 +80,7 @@ class BoxView extends DOMWidgetView {
         }
 
         this.el = this.pWidget.node;
+        this.$el = $(this.pWidget.node);
     }
 
     initialize(parameters: any) {
