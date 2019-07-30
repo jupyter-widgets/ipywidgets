@@ -51,6 +51,7 @@ intersphinx_mapping = {
 }
 
 nbsphinx_allow_errors = True   # exception ipstruct.py ipython_genutils
+nbsphinx_execute = 'always'
 
 # -- General information -------
 

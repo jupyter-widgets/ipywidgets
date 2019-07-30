@@ -1,5 +1,7 @@
 ipykernel
-ipywidgets>=7.1.0rc1
+ipywidgets>=7.5.0
+bqplot
+numpy
 jupyter_client
 jupyter_sphinx
 nbsphinx>=0.2.13
