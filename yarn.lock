@@ -1609,6 +1609,11 @@
   resolved "https://registry.npmjs.org/@types/node/-/node-12.12.22.tgz#b8d9eae3328b96910a373cf06ac8d3c5abe9c200"
   integrity sha512-r5i93jqbPWGXYXxianGATOxTelkp6ih/U0WVnvaqAvTqM+0U6J3kw6Xk6uq/dWNRkEVw/0SLcO5ORXbVNz4FMQ==
 
+"@types/node@^12.7.0":
+  version "12.7.0"
+  resolved "https://registry.npmjs.org/@types/node/-/node-12.7.0.tgz#545dde2a1a5c27d281cfb8308d6736e0708f5d6c"
+  integrity sha512-vqcj1MVm2Sla4PpMfYKh1MyDN4D2f/mPIZD7RdAGqEsbE+JxfeqQHHVbRDQ0Nqn8i73gJa1HQ1Pu3+nH4Q0Yiw==
+
 "@types/prop-types@*":
   version "15.7.3"
   resolved "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
@@ -1621,11 +1626,6 @@
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
-
-"@types/requirejs@^2.1.31":
-  version "2.1.31"
-  resolved "https://registry.npmjs.org/@types/requirejs/-/requirejs-2.1.31.tgz#a24eaa0ee4f6b84feb8f521ca6550d48490b2bc6"
-  integrity sha512-b2soeyuU76rMbcRJ4e0hEl0tbMhFwZeTC0VZnfuWlfGlk6BwWNsev6kFu/twKABPX29wkX84wU2o+cEJoXsiTw==
 
 "@types/semver@^6.0.1":
   version "6.2.0"

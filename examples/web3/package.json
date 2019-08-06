@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@types/codemirror": "^0.0.74",
-    "@types/requirejs": "^2.1.31",
+    "@types/node": "^12.7.0",
     "css-loader": "^3.4.0",
     "file-loader": "^5.0.2",
     "fs-extra": "^8.0.1",
