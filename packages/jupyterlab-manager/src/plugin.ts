@@ -248,7 +248,7 @@ function activateWidgetExtension(
   }
 
   if (settingRegistry !== null) {
-    // Add a command for creating a new Markdown file.
+    // Add a command for automatically saving (jupyter-)widget state.
     commands.addCommand('@jupyter-widgets/jupyterlab-manager:saveWidgetState', {
       label: 'Save Widget State Automatically',
       execute: args => {
