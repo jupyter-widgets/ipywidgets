@@ -6,7 +6,7 @@ import {
     expect
 } from 'chai';
 
-import * as widgets from '../../lib/';
+import * as widgets from '../../src/';
 let WidgetModel = widgets.WidgetModel;
 
 import * as chai from 'chai';
