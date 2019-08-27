@@ -10,7 +10,7 @@ from inspect import getfullargspec as check_argspec
 import sys
 
 from IPython import get_ipython
-from . import (ValueWidget, Text,
+from . import (Widget, ValueWidget, Text,
     FloatSlider, IntSlider, Checkbox, Dropdown,
     VBox, Button, DOMWidget, Output)
 from IPython.display import display, clear_output
@@ -275,13 +275,12 @@ class interactive(VBox):
         """Given a sequence of (name, abbrev, default) tuples, return a sequence of Widgets."""
         result = []
         for name, abbrev, default in seq:
+            if isinstance(abbrev, Widget) and (not isinstance(abbrev, ValueWidget)):
+                raise TypeError("{!r} is not a ValueWidget".format(abbrev))
             widget = self.widget_from_abbrev(abbrev, default)
-            if not (isinstance(widget, ValueWidget) or isinstance(widget, fixed)):
-                if widget is None:
-                    raise ValueError("{!r} cannot be transformed to a widget".format(abbrev))
-                else:
-                    raise TypeError("{!r} is not a ValueWidget".format(widget))
-            if not widget.description:
+            if widget is None:
+                raise ValueError("{!r} cannot be transformed to a widget".format(abbrev))
+            if not hasattr(widget,"description") or not widget.description:
                 widget.description = name
             widget._kwarg = name
             result.append(widget)
