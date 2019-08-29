@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetView, unpack_models, ViewList, JupyterPhosphorWidget
+    DOMWidgetView, unpack_models, ViewList, JupyterPhosphorPanelWidget, WidgetModel
 } from '@jupyter-widgets/base';
 
 import {
@@ -18,55 +18,15 @@ import {
 } from '@phosphor/algorithm';
 
 import {
-    MessageLoop, Message
+    MessageLoop
 } from '@phosphor/messaging';
 
 import {
-    Widget, Panel
+    Widget
 } from '@phosphor/widgets';
 
 import * as _ from 'underscore';
-import * as $ from 'jquery';
-
-export
-class JupyterPhosphorPanelWidget extends Panel {
-    constructor(options: JupyterPhosphorWidget.IOptions & Panel.IOptions) {
-        let view = options.view;
-        delete options.view;
-        super(options);
-        this._view = view;
-    }
-
-    /**
-     * Process the phosphor message.
-     *
-     * Any custom phosphor widget used inside a Jupyter widget should override
-     * the processMessage function like this.
-     */
-    processMessage(msg: Message) {
-        super.processMessage(msg);
-        this._view.processPhosphorMessage(msg);
-    }
-
-    /**
-     * Dispose the widget.
-     *
-     * This causes the view to be destroyed as well with 'remove'
-     */
-    dispose() {
-        if (this.isDisposed) {
-            return;
-        }
-        super.dispose();
-        if (this._view) {
-            this._view.remove();
-        }
-        this._view = null;
-    }
-
-    private _view: DOMWidgetView;
-}
-
+import $ from 'jquery';
 
 export
 class BoxModel extends CoreDOMWidgetModel {
@@ -121,12 +81,9 @@ class BoxView extends DOMWidgetView {
 
         this.el = this.pWidget.node;
         this.$el = $(this.pWidget.node);
-     }
+    }
 
-    /**
-     * Public constructor
-     */
-    initialize(parameters) {
+    initialize(parameters: any) {
         super.initialize(parameters);
         this.children_views = new ViewList(this.add_child_model, null, this);
         this.listenTo(this.model, 'change:children', this.update_children);
@@ -137,9 +94,6 @@ class BoxView extends DOMWidgetView {
         this.pWidget.addClass('widget-box');
     }
 
-    /**
-     * Called when view is rendered.
-     */
     render() {
         super.render();
         this.update_children();
@@ -148,12 +102,13 @@ class BoxView extends DOMWidgetView {
 
     update_children() {
         this.children_views.update(this.model.get('children')).then((views: DOMWidgetView[]) => {
-                // Notify all children that their sizes may have changed.
-                views.forEach( (view) => {
-                    MessageLoop.postMessage(view.pWidget, Widget.ResizeMessage.UnknownSize);
-                });
+            // Notify all children that their sizes may have changed.
+            views.forEach( (view) => {
+                MessageLoop.postMessage(view.pWidget, Widget.ResizeMessage.UnknownSize);
+            });
         });
     }
+
     update_box_style() {
         this.update_mapped_classes(BoxView.class_map, 'box_style');
     }
@@ -162,7 +117,7 @@ class BoxView extends DOMWidgetView {
         this.set_mapped_classes(BoxView.class_map, 'box_style');
     }
 
-    add_child_model(model) {
+    add_child_model(model: WidgetModel) {
         // we insert a dummy element so the order is preserved when we add
         // the rendered content later.
         let dummy = new Widget();
@@ -198,7 +153,7 @@ class HBoxView extends BoxView {
     /**
      * Public constructor
      */
-    initialize(parameters) {
+    initialize(parameters: any) {
         super.initialize(parameters);
         this.pWidget.addClass('widget-hbox');
     }
@@ -209,7 +164,7 @@ class VBoxView extends BoxView {
     /**
      * Public constructor
      */
-    initialize(parameters) {
+    initialize(parameters: any) {
         super.initialize(parameters);
         this.pWidget.addClass('widget-vbox');
     }
@@ -220,7 +175,7 @@ class GridBoxView extends BoxView {
     /**
      * Public constructor
      */
-    initialize(parameters) {
+    initialize(parameters: any) {
         super.initialize(parameters);
         this.pWidget.addClass('widget-gridbox');
         // display needn't be set to flex and grid 

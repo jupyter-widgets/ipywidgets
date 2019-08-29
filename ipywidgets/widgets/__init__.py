@@ -18,10 +18,12 @@ from .widget_date import DatePicker
 from .widget_output import Output
 from .widget_selection import RadioButtons, ToggleButtons, ToggleButtonsStyle, Dropdown, Select, SelectionSlider, SelectMultiple, SelectionRangeSlider
 from .widget_selectioncontainer import Tab, Accordion
-from .widget_string import HTML, HTMLMath, Label, Text, Textarea, Password
+from .widget_string import HTML, HTMLMath, Label, Text, Textarea, Password, Combobox
 from .widget_controller import Controller
 from .interaction import interact, interactive, fixed, interact_manual, interactive_output
 from .widget_link import jslink, jsdlink
 from .widget_layout import Layout
 from .widget_media import Image, Video, Audio
 from .widget_style import Style
+from .widget_templates import TwoByTwoLayout, AppLayout, GridspecLayout
+from .widget_upload import FileUpload

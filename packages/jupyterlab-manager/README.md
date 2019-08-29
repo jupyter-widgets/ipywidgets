@@ -1,15 +1,14 @@
 Jupyter Widgets JupyterLab Extension
 ====================================
 
-A JupyterLab extension for Jupyter/IPython widgets.  Since JupyterLab is in its
-pre-release stage, this package integrating widgets into JupyterLab should also
-be considered experimental.
+A JupyterLab extension for Jupyter/IPython widgets.
 
 Package Install
 ---------------
 
 **Prerequisites**
-* JupyterLab (see package.json for appropriate version, currently [JupyterLab 0.35](https://github.com/jupyterlab/jupyterlab/releases/tag/v0.35.0))
+
+* JupyterLab (see package.json for appropriate version, currently [JupyterLab 1.0](https://github.com/jupyterlab/jupyterlab/releases/tag/v1.0.2))
 
 
 ```bash
@@ -29,6 +28,7 @@ JupyterLab extension.
 * For JupyterLab 0.33.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@0.36`
 * For JupyterLab 0.34.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@0.37`
 * For JupyterLab 0.35.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@0.38`
+* For JupyterLab 1.0.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@1.0`
 
 
 Source Build

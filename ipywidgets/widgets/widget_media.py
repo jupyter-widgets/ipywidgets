@@ -9,16 +9,7 @@ from .valuewidget import ValueWidget
 from .widget import register
 from traitlets import Unicode, CUnicode, Bytes, Bool
 from .trait_types import bytes_serialization
-
-
-def _text_type():
-    # six is not a direct dependency of this module
-    # This replicates six.text_type
-    try:
-        return unicode
-    except NameError:
-        return str
-_text_type = _text_type()
+from .util import text_type
 
 
 @register
@@ -77,7 +68,7 @@ class _Media(DOMWidget, ValueWidget, CoreWidget):
         url: [str, bytes]
             The location of a URL to load.
         """
-        if isinstance(url, _text_type):
+        if isinstance(url, text_type):
             # If unicode (str in Python 3), it needs to be encoded to bytes
             url = url.encode('utf-8')
 
@@ -159,8 +150,13 @@ class Image(_Media):
 
     # Define the custom state properties to sync with the front-end
     format = Unicode('png', help="The format of the image.").tag(sync=True)
-    width = CUnicode(help="Width of the image in pixels.").tag(sync=True)
-    height = CUnicode(help="Height of the image in pixels.").tag(sync=True)
+    width = CUnicode(help="Width of the image in pixels. Use layout.width "
+                          "for styling the widget.").tag(sync=True)
+    height = CUnicode(help="Height of the image in pixels. Use layout.height "
+                           "for styling the widget.").tag(sync=True)
+
+    def __init__(self, *args, **kwargs):
+        super(Image, self).__init__(*args, **kwargs)
 
     @classmethod
     def from_file(cls, filename, **kwargs):

@@ -203,41 +203,25 @@ documentation. Two means of achieving this are provided:
 
 ### Using the Jupyter Sphinx Extension
 
-The [jupyter_sphinx](https://github.com/jupyter/jupyter-sphinx) extension
-enables jupyter-specific features in sphinx. It can be install with `pip` and
+The [jupyter_sphinx](https://jupyter-sphinx.readthedocs.io) extension
+enables jupyter-specific features in sphinx. It can be installed with `pip` and
 `conda`.
 
-In the `conf.py` sphinx configuration file, add `jupyter_sphinx.embed_widgets`
+In the `conf.py` sphinx configuration file, add `jupyter_sphinx.execute`
 to the list of enabled extensions.
 
-Two directives are provided: `ipywidgets-setup` and `ipywidgets-display`.
+Then use the `jupyter-execute` directive to embed the output of code execution
+in your documentation
 
-`ipywidgets-setup` code is used to run potential boilerplate and configuration
-code prior to running the display code. For example:
+```rst
+.. jupyter-execute::
 
-- `ipywidgets-setup`:
-    ```py
-    from ipywidgets import VBox, jsdlink, IntSlider, Button
-    ```
-
-- `ipywidgets-display`:
-    ```py
-    s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
-    b = Button(icon='legal')
-    jsdlink((s1, 'value'), (s2, 'max'))
-    VBox([s1, s2, b])
-    ```
-
-In the case of the `ipywidgets-display` code, the *last statement* of the
-code-block should contain the widget object you wish to be rendered.
-
-Quoting the `jupyter_sphinx` readme,
-
-> Widgets rendered on the same page use the same widget manager. As a
-> consequence, they can be linked with each other via JavaScript link widgets.
-> However, no kernel is connected and therefore, interaction with the backend
-> will not happen.
-
+  from ipywidgets import VBox, jsdlink, IntSlider, Button
+  s1, s2 = IntSlider(max=200, value=100), IntSlider(value=40)
+  b = Button(icon='legal')
+  jsdlink((s1, 'value'), (s2, 'max'))
+  VBox([s1, s2, b])
+```
 
 ### Using the `nbsphinx` Project
 
@@ -252,7 +236,7 @@ special "Save Notebook Widget State" action in the widgets menu.
 
 ## Rendering Interactive Widgets on [nbviewer](http://nbviewer.jupyter.org/)
 
-If your notebook was saved with the special "Save Notebook with Widgets" action
+If your notebook was saved with the special "Save Notebook Widget State" action
 in the Widgets menu, interactive widgets displayed in your notebook should also
 be rendered on nbviewer.
 

@@ -11,6 +11,7 @@ User Guide
   examples/Output Widget.ipynb
   examples/Widget Events.ipynb
   examples/Widget Styling.ipynb
+  examples/Layout Templates.ipynb
   examples/Widget Custom.ipynb
   examples/Widget Low Level.ipynb
   examples/Widget Asynchronous.ipynb

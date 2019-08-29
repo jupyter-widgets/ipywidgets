@@ -52,5 +52,8 @@ echo -n "ipywidgets"
 pip install -v -e .
 
 if test "$skip_jupyter_lab" != yes; then
+    jupyter labextension link ./packages/base
+    jupyter labextension link ./packages/controls
+    jupyter labextension link ./packages/output
     jupyter labextension install ./packages/jupyterlab-manager
 fi

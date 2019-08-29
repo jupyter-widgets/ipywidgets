@@ -30,7 +30,7 @@ class ButtonStyleModel extends StyleModel {
         button_color: {
             selector: '',
             attribute: 'background-color',
-            default: null
+            default: null as any
         },
         font_weight: {
             selector: '',
@@ -119,7 +119,7 @@ class ButtonView extends DOMWidgetView {
     /**
      * Handles when the button is clicked.
      */
-    _handle_click(event) {
+    _handle_click(event: MouseEvent) {
         event.preventDefault();
         this.send({event: 'click'});
     }

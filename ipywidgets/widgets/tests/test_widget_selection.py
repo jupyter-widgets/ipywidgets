@@ -65,3 +65,32 @@ class TestSelection(TestCase):
         assert select.value == 4
         assert select.label == '4'
         assert observations == [0]
+
+    def test_duplicate(self):
+        select = Select(options=['first', 1, 'dup', 'dup'])
+        observations = []
+        def f(change):
+            observations.append(change.new)
+        select.observe(f, 'index')
+        select.index = 3
+        assert select.index == 3
+        assert select.value == 'dup'
+        assert select.label == 'dup'
+        assert observations == [3]
+        select.index = 2
+        assert select.index == 2
+        assert select.value == 'dup'
+        assert select.label == 'dup'
+        assert observations == [3, 2]
+        select.index = 0
+        assert select.index == 0
+        assert select.value == 'first'
+        assert select.label == 'first'
+        assert observations == [3, 2, 0]
+
+        # picks the first matching value
+        select.value = 'dup'
+        assert select.index == 2
+        assert select.value == 'dup'
+        assert select.label == 'dup'
+        assert observations == [3, 2, 0, 2]

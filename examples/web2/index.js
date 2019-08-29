@@ -3,14 +3,14 @@ require("codemirror/lib/codemirror.css");
 require("codemirror/mode/python/python");
 var WidgetManager = require("./manager").WidgetManager;
 
-require('@jupyter-widgets/controls/css/widgets.built.css');
+require('@jupyter-widgets/controls/css/widgets.css');
 require('font-awesome/css/font-awesome.css');
 
 document.addEventListener("DOMContentLoaded", function(event) {
 
-    var code = require("./widget_code.py");
+    var code = require("./widget_code.py").default;
     var inputarea = document.getElementsByClassName("inputarea")[0];
-    var editor = CodeMirror(inputarea, {
+    new CodeMirror(inputarea, {
         value: code,
         mode: "python",
         tabSize: 4,

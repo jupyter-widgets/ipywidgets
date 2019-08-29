@@ -5,10 +5,6 @@ import {
     CoreDescriptionModel
 } from './widget_core';
 
-import {
-    DescriptionView
-} from './widget_description';
-
 import * as _ from 'underscore';
 
 import {
@@ -57,7 +53,7 @@ class FloatSliderModel extends BoundedFloatModel {
             disabled: false,
         });
     }
-    initialize(attributes, options) {
+    initialize(attributes: any, options: { model_id: string; comm?: any; widget_manager: any; }) {
         super.initialize(attributes, options);
         this.on('change:readout_format', this.update_readout_format, this);
         this.update_readout_format();
@@ -90,7 +86,7 @@ class FloatLogSliderModel extends BoundedFloatModel {
             max: 4
         });
     }
-    initialize(attributes, options) {
+    initialize(attributes: any, options: { model_id: string; comm: any; widget_manager: any; }) {
         super.initialize(attributes, options);
         this.on('change:readout_format', this.update_readout_format, this);
         this.update_readout_format();
@@ -112,7 +108,7 @@ class FloatSliderView extends IntSliderView {
      * Validate the value of the slider before sending it to the back-end
      * and applying it to the other views on the page.
      */
-    _validate_slide_value(x) {
+    _validate_slide_value(x: any) {
         return x;
     }
 
@@ -123,7 +119,7 @@ class FloatSliderView extends IntSliderView {
 export
 class FloatLogSliderView extends BaseIntSliderView {
 
-    update(options?) {
+    update(options?: any) {
         super.update(options);
         let min = this.model.get('min');
         let max = this.model.get('max');
@@ -191,9 +187,9 @@ class FloatLogSliderView extends BaseIntSliderView {
     /**
      * Called when the slider value is changing.
      */
-    handleSliderChange(e, ui) {
+    handleSliderChange(e: Event, ui: { value: any; }) {
         let base = this.model.get('base');
-        let actual_value = Math.pow(base,this._validate_slide_value(ui.value));
+        let actual_value = Math.pow(base, this._validate_slide_value(ui.value));
         this.readout.textContent = this.valueToString(actual_value);
 
         // Only persist the value while sliding if the continuous_update
@@ -209,14 +205,14 @@ class FloatLogSliderView extends BaseIntSliderView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    handleSliderChanged(e, ui) {
+    handleSliderChanged(e: Event, ui: { value: any; }) {
         let base = this.model.get('base');
         let actual_value = Math.pow(base,this._validate_slide_value(ui.value));
         this.model.set('value', actual_value, {updated_view: this});
         this.touch();
     }
 
-    _validate_slide_value(x) {
+    _validate_slide_value(x: any) {
         return x;
     }
 
@@ -231,7 +227,7 @@ class FloatRangeSliderView extends IntRangeSliderView {
      * Validate the value of the slider before sending it to the back-end
      * and applying it to the other views on the page.
      */
-    _validate_slide_value(x) {
+    _validate_slide_value(x: any) {
         return x;
     }
 
@@ -270,6 +266,23 @@ export
 class FloatTextView extends IntTextView {
     _parse_value = parseFloat;
     _default_step = 'any';
+
+    /**
+     * Handle key press
+     */
+    handleKeypress(e: KeyboardEvent) {
+        // Overwrite IntTextView's handleKeypress
+        // which prevents decimal points.
+        e.stopPropagation();
+    }
+
+    /**
+     * Handle key up
+     */
+    handleKeyUp(e: KeyboardEvent) {
+        // Overwrite IntTextView's handleKeyUp
+        // which prevents decimal points.
+    }
 }
 
 export

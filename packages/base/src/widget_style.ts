@@ -23,7 +23,13 @@ class StyleModel extends WidgetModel {
         }, {}));
     }
 
-    public static styleProperties = {};
+    public static styleProperties: {[s: string]: IStyleProperty} = {};
+}
+
+interface IStyleProperty {
+    attribute: string;
+    selector: string;
+    default: string;
 }
 
 export
@@ -32,7 +38,7 @@ class StyleView extends WidgetView {
     /**
      * Public constructor
      */
-    initialize(parameters) {
+    initialize(parameters: WidgetView.InitializeParameters) {
         this._traitNames = [];
         super.initialize(parameters);
         // Register the traits that live on the Python side
@@ -53,7 +59,7 @@ class StyleView extends WidgetView {
         this._traitNames.push(trait);
 
         // Listen to changes, and set the value on change.
-        this.listenTo(this.model, 'change:' + trait, (model, value) => {
+        this.listenTo(this.model, 'change:' + trait, (model: StyleModel, value: string) => {
             this.handleChange(trait, value);
         });
     }

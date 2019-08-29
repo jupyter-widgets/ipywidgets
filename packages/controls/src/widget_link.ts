@@ -28,13 +28,13 @@ class DirectionalLinkModel extends CoreWidgetModel {
         });
     }
 
-    initialize(attributes, options) {
+    initialize(attributes: any, options: { model_id: string; comm: any; widget_manager: any; }) {
         super.initialize(attributes, options);
         this.on('change', this.updateBindings, this);
         this.updateBindings();
     }
 
-    updateValue(sourceModel, sourceAttr, targetModel, targetAttr) {
+    updateValue(sourceModel: WidgetModel, sourceAttr: string, targetModel: WidgetModel, targetAttr: string) {
         if (this._updating) {
             return;
         }

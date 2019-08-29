@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetView, ViewList, JupyterPhosphorWidget
+    DOMWidgetView, ViewList, JupyterPhosphorWidget, WidgetModel
 } from '@jupyter-widgets/base';
 
 import {
@@ -22,7 +22,7 @@ import {
 } from './phosphor/accordion';
 
 import {
-    Panel, Widget
+    Widget
 } from '@phosphor/widgets';
 
 import {
@@ -35,7 +35,7 @@ import {
 
 import * as _ from 'underscore';
 import * as utils from './utils';
-import * as $ from 'jquery';
+import $ from 'jquery';
 
 export
 class SelectionContainerModel extends BoxModel {
@@ -119,7 +119,7 @@ class AccordionView extends DOMWidgetView {
         this.$el = $(this.pWidget.node);
      }
 
-    initialize(parameters){
+    initialize(parameters: any) {
         super.initialize(parameters);
         this.children_views = new ViewList(this.add_child_view, this.remove_child_view, this);
         this.listenTo(this.model, 'change:children', () => this.updateChildren());
@@ -185,7 +185,7 @@ class AccordionView extends DOMWidgetView {
     /**
      * Called when a child is removed from children list.
      */
-    remove_child_view(view) {
+    remove_child_view(view: DOMWidgetView) {
         this.pWidget.removeWidget(view.pWidget);
         view.remove();
     }
@@ -193,7 +193,7 @@ class AccordionView extends DOMWidgetView {
     /**
      * Called when a child is added to children list.
      */
-    add_child_view(model, index) {
+    add_child_view(model: WidgetModel, index: number) {
         // Placeholder widget to keep our position in the tab panel while we create the view.
         let accordion = this.pWidget;
         let placeholder = new Widget();
@@ -295,7 +295,7 @@ class TabView extends DOMWidgetView {
     /**
      * Public constructor.
      */
-    initialize(parameters) {
+    initialize(parameters: any) {
         super.initialize(parameters);
         this.childrenViews = new ViewList(
             this.addChildView,
@@ -348,7 +348,7 @@ class TabView extends DOMWidgetView {
     /**
      * Called when a child is added to children list.
      */
-    addChildView(model, index) {
+    addChildView(model: WidgetModel, index: number) {
         // Placeholder widget to keep our position in the tab panel while we create the view.
         let label = this.model.get('_titles')[index] || '';
         let tabs = this.pWidget;

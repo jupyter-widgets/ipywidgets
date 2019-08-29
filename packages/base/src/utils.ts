@@ -9,8 +9,8 @@ import {
     UUID
 } from '@phosphor/coreutils';
 
-import _isEqual = require('lodash/isEqual');
-import isPlainObject = require('lodash/isPlainObject');
+import _isEqual from 'lodash/isEqual';
+import isPlainObject from 'lodash/isPlainObject';
 
 /**
  * Find all strings in the first argument that are not in the second.
@@ -24,7 +24,7 @@ function difference(a: string[], b: string[]): string[] {
  * Compare two objects deeply to see if they are equal.
  */
 export
-function isEqual(a, b) {
+function isEqual(a: any, b: any) {
     return _isEqual(a, b);
 }
 
@@ -34,7 +34,7 @@ function isEqual(a, b) {
  * This is from code that Typescript 2.4 generates for a polyfill.
  */
 export
-let assign = (Object as any).assign || function(t) {
+let assign = (Object as any).assign || function(t: any) {
     for (let i = 1; i < arguments.length; i++) {
         let s = arguments[i];
         for (let p in s) {
@@ -65,7 +65,7 @@ function uuid(): string {
  */
 export
 class WrappedError extends Error {
-    constructor(message, error) {
+    constructor(message: string, error: any) {
         super(message);
         console.warn('WrappedError has been deprecated!');
         // Keep a stack of the original error messages.
@@ -80,18 +80,24 @@ class WrappedError extends Error {
 }
 
 /**
+ * A simple dictionary type.
+ */
+export
+type Dict<T> = { [keys: string]: T; };
+
+/**
  * Resolve a promiseful dictionary.
  * Returns a single Promise.
  */
 export
-function resolvePromisesDict(d): Promise<any> {
+function resolvePromisesDict<V>(d: Dict<PromiseLike<V>>): Promise<Dict<V>> {
     let keys = Object.keys(d);
-    let values = [];
+    let values: PromiseLike<V>[] = [];
     keys.forEach(function(key) {
         values.push(d[key]);
     });
-    return Promise.all(values).then(function(v) {
-        d = {};
+    return Promise.all(values).then((v) => {
+        let d: Dict<V> = {};
         for (let i=0; i < keys.length; i++) {
             d[keys[i]] = v[i];
         }
@@ -106,8 +112,8 @@ function resolvePromisesDict(d): Promise<any> {
  * the original error that caused the promise to reject.
  */
 export
-function reject(message, log) {
-    return function promiseRejection(error) {
+function reject(message: string, log: boolean) {
+    return function promiseRejection(error: any) {
         if (log) {
             console.error(new Error(message));
         }
@@ -125,7 +131,7 @@ function reject(message, log) {
  * Will lead to {a: 1, b: {data: array1}, c: [0, array2]}
  */
 export
-function put_buffers(state, buffer_paths: (string | number)[][], buffers: DataView[]) {
+function put_buffers(state: any, buffer_paths: (string | number)[][], buffers: DataView[]) {
     for (let i=0; i < buffer_paths.length; i++) {
         let buffer_path = buffer_paths[i];
          // say we want to set state[x][y][z] = buffers[i]
@@ -150,13 +156,13 @@ function put_buffers(state, buffer_paths: (string | number)[][], buffers: DataVi
  * and the buffers associated to those paths (.buffers).
  */
 export
-function remove_buffers(state): {state: any, buffers: ArrayBuffer[], buffer_paths: (string | number)[][]} {
+function remove_buffers(state: any): {state: any, buffers: ArrayBuffer[], buffer_paths: (string | number)[][]} {
     let buffers: ArrayBuffer[] = [];
     let buffer_paths: (string | number)[][] = [];
     // if we need to remove an object from a list, we need to clone that list, otherwise we may modify
     // the internal state of the widget model
     // however, we do not want to clone everything, for performance
-    function remove(obj, path) {
+    function remove(obj: any, path: (string | number)[]) {
         if (obj.toJSON) {
             // We need to get the JSON form of the object before recursing.
             // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#toJSON()_behavior

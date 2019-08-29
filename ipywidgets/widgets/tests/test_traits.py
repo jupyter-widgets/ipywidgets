@@ -37,8 +37,43 @@ class ColorTrait(HasTraits):
 class TestColor(TraitTestBase):
     obj = ColorTrait()
 
-    _good_values = ["blue", "#AA0", "#FFFFFF", "transparent"]
-    _bad_values = ["vanilla", "blues"]
+
+    _good_values = [
+        "blue", # valid color name
+        "#AA0", # single digit hex
+        "#FFFFFF", # double digit hex
+        "transparent", # special color name
+        '#aaaa', # single digit hex with alpha
+        '#ffffffff',  # double digit hex with alpha
+        'rgb(0, 0, 0)', # rgb
+        'rgb( 20,70,50 )', # rgb with spaces
+        'rgba(10,10,10, 0.5)', # rgba with float alpha
+        'rgba(255, 255, 255, 255)', # out of bounds alpha (spec says clamp to 1)
+        'hsl(0.0, .0, 0)', # hsl
+        'hsl( 0.5,0.3,0 )', # hsl with spaces
+        'hsla(10,10,10, 0.5)', # rgba with float alpha
+    ]
+    _bad_values = [
+        "vanilla", "blues",  # Invald color names
+        1.2, 0.0,  # Should fail with float input
+        0, 1, 2,  # Should fail with int input
+        'rgb(0.4, 512, -40)',
+        'hsl(0.4, 512, -40)',
+        'rgba(0, 0, 0)',
+        'hsla(0, 0, 0)',
+        None,
+    ]
+
+
+class ColorTraitWithNone(HasTraits):
+    value = Color("black", allow_none=True)
+
+
+class TestColorWithNone(TraitTestBase):
+    obj = ColorTraitWithNone()
+
+    _good_values = TestColor._good_values + [None]
+    _bad_values = list(filter(lambda v: v is not None, TestColor._bad_values))
 
 
 class TestDateSerialization(TestCase):

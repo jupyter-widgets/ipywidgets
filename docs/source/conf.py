@@ -39,7 +39,7 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
     'nbsphinx',
-    'jupyter_sphinx.embed_widgets',
+    'jupyter_sphinx.execute',
     'IPython.sphinxext.ipython_console_highlighting',
 ]
 
@@ -51,6 +51,7 @@ intersphinx_mapping = {
 }
 
 nbsphinx_allow_errors = True   # exception ipstruct.py ipython_genutils
+nbsphinx_execute = 'always'
 
 # -- General information -------
 

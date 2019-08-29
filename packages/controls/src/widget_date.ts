@@ -101,16 +101,21 @@ class DatePickerView extends DescriptionView {
      * Called when the model is changed. The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update(options?) {
-        if (options === undefined || options.updated_view != this) {
+    update(options?: any) {
+        if (options === undefined || options.updated_view !== this) {
             this._datepicker.disabled = this.model.get('disabled');
         }
         return super.update();
     }
 
     events(): {[e: string]: string} {
+        // Typescript doesn't understand that these functions are called, so we
+        // specifically use them here so it knows they are being used.
+        void this._picker_change;
+        void this._picker_focusout;
         return {
             'change [type="date"]': '_picker_change',
+            'focusout [type="date"]': '_picker_focusout'
         };
     }
 
@@ -122,6 +127,13 @@ class DatePickerView extends DescriptionView {
     private _picker_change() {
         if (!this._datepicker.validity.badInput) {
             this.model.set('value', this._datepicker.valueAsDate);
+            this.touch();
+        }
+    }
+
+    private _picker_focusout() {
+        if (this._datepicker.validity.badInput) {
+            this.model.set('value', null);
             this.touch();
         }
     }
