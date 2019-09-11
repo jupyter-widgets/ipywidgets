@@ -28,7 +28,7 @@ _color_hsl = r'hsl\({fp},{fp},{fp}\)'
 _color_hsla = r'hsla\({fp},{fp},{fp},{fp}\)'
 
 # Regex colors rgb/rgba/hsl/hsla
-_color_rgbhsl_re = re.compile('({0})|({1})|({2})|({3})'.format(
+_color_rgbhsl_re = re.compile('({})|({})|({})|({})'.format(
     _color_rgb, _color_rgba, _color_hsl, _color_hsla
 ).format(ip=_color_int_percent, fp=_color_frac_percent))
 
@@ -158,9 +158,9 @@ class InstanceDict(traitlets.Instance):
 
     def validate(self, obj, value):
         if isinstance(value, dict):
-            return super(InstanceDict, self).validate(obj, self.klass(**value))
+            return super().validate(obj, self.klass(**value))
         else:
-            return super(InstanceDict, self).validate(obj, value)
+            return super().validate(obj, value)
 
     def make_dynamic_default(self):
         return self.klass(*(self.default_args or ()),
@@ -190,7 +190,7 @@ class NumberFormat(traitlets.Unicode):
     default_value = traitlets.Undefined
 
     def validate(self, obj, value):
-        value = super(NumberFormat, self).validate(obj, value)
+        value = super().validate(obj, value)
         re_match = _number_format_re.match(value)
         if re_match is None:
             self.error(obj, value)

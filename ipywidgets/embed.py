@@ -17,7 +17,7 @@ from .widgets.widget_link import Link
 from .widgets.docutils import doc_subst
 from ._version import __html_manager_version__
 
-snippet_template = u"""
+snippet_template = """
 {load}
 <script type="application/vnd.jupyter.widget-state+json">
 {json_data}
@@ -25,15 +25,15 @@ snippet_template = u"""
 {widget_views}
 """
 
-load_template = u"""<script src="{embed_url}"{use_cors}></script>"""
+load_template = """<script src="{embed_url}"{use_cors}></script>"""
 
-load_requirejs_template = u"""
+load_requirejs_template = """
 <!-- Load require.js. Delete this if your page already loads require.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" crossorigin="anonymous"></script>
 <script src="{embed_url}"{use_cors}></script>
 """
 
-requirejs_snippet_template = u"""
+requirejs_snippet_template = """
 <script type="application/vnd.jupyter.widget-state+json">
 {json_data}
 </script>
@@ -42,7 +42,7 @@ requirejs_snippet_template = u"""
 
 
 
-html_template = u"""<!DOCTYPE html>
+html_template = """<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -54,12 +54,12 @@ html_template = u"""<!DOCTYPE html>
 </html>
 """
 
-widget_view_template = u"""<script type="application/vnd.jupyter.widget-view+json">
+widget_view_template = """<script type="application/vnd.jupyter.widget-view+json">
 {view_spec}
 </script>"""
 
-DEFAULT_EMBED_SCRIPT_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed.js'%__html_manager_version__
-DEFAULT_EMBED_REQUIREJS_URL = u'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed-amd.js'%__html_manager_version__
+DEFAULT_EMBED_SCRIPT_URL = 'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed.js'%__html_manager_version__
+DEFAULT_EMBED_REQUIREJS_URL = 'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed-amd.js'%__html_manager_version__
 
 _doc_snippets = {}
 _doc_snippets['views_attribute'] = """
@@ -263,7 +263,7 @@ def embed_snippet(views,
 
     data = embed_data(views, drop_defaults=drop_defaults, state=state)
 
-    widget_views = u'\n'.join(
+    widget_views = '\n'.join(
         widget_view_template.format(view_spec=escape_script(json.dumps(view_spec)))
         for view_spec in data['view_specs']
     )
@@ -284,7 +284,7 @@ def embed_snippet(views,
 
 
 @doc_subst(_doc_snippets)
-def embed_minimal_html(fp, views, title=u'IPyWidget export', template=None, **kwargs):
+def embed_minimal_html(fp, views, title='IPyWidget export', template=None, **kwargs):
     """Write a minimal HTML file with widget views embedded.
 
     Parameters

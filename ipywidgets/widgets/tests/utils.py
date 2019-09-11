@@ -9,7 +9,7 @@ class DummyComm(Comm):
     kernel = 'Truthy'
 
     def __init__(self, *args, **kwargs):
-        super(DummyComm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.messages = []
 
     def open(self, *args, **kwargs):

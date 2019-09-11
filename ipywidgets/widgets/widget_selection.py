@@ -178,7 +178,7 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
             kwargs['index'] = 0 if nonempty else None
             kwargs['label'], kwargs['value'] = options[0] if nonempty else (None, None)
 
-        super(_Selection, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._initializing_traits_ = False
 
     @validate('options')
@@ -262,7 +262,7 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
             self.index = index
 
     def _repr_keys(self):
-        keys = super(_Selection, self)._repr_keys()
+        keys = super()._repr_keys()
         # Include options manually, as it isn't marked as synced:
         for key in sorted(chain(keys, ('options',))):
             if key == 'index' and self.index == 0:
@@ -314,7 +314,7 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
         self.set_trait('_options_labels', tuple(i[0] for i in options))
         self._options_values = tuple(i[1] for i in options)
 
-        super(_MultipleSelection, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._initializing_traits_ = False
 
     @validate('options')
@@ -380,10 +380,9 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
             self.index = index
 
     def _repr_keys(self):
-        keys = super(_MultipleSelection, self)._repr_keys()
+        keys = super()._repr_keys()
         # Include options manually, as it isn't marked as synced:
-        for key in sorted(chain(keys, ('options',))):
-            yield key
+        yield from sorted(chain(keys, ('options',)))
 
 
 @register
@@ -519,7 +518,7 @@ class _SelectionNonempty(_Selection):
     def __init__(self, *args, **kwargs):
         if len(kwargs.get('options', ())) == 0:
             raise TraitError('options must be nonempty')
-        super(_SelectionNonempty, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @validate('options')
     def _validate_options(self, proposal):
@@ -543,7 +542,7 @@ class _MultipleSelectionNonempty(_MultipleSelection):
     def __init__(self, *args, **kwargs):
         if len(kwargs.get('options', ())) == 0:
             raise TraitError('options must be nonempty')
-        super(_MultipleSelectionNonempty, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @validate('options')
     def _validate_options(self, proposal):

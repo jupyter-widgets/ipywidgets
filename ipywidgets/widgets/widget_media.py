@@ -121,15 +121,15 @@ class _Media(DOMWidget, ValueWidget, CoreWidget):
         content = rest[:-1]
         if len(content) > 100:
             sig_value = "{}'{}...'".format(prefix, content[0:100])
-        signature.append('%s=%s' % ('value', sig_value))
+        signature.append('{}={}'.format('value', sig_value))
 
         for key in super(cls, self)._repr_keys():
             if key == 'value':
                 continue
             value = str(getattr(self, key))
-            signature.append('%s=%r' % (key, value))
+            signature.append('{}={!r}'.format(key, value))
         signature = ', '.join(signature)
-        return '%s(%s)' % (class_name, signature)
+        return '{}({})'.format(class_name, signature)
 
 
 @register
@@ -155,7 +155,7 @@ class Image(_Media):
                            "for styling the widget.").tag(sync=True)
 
     def __init__(self, *args, **kwargs):
-        super(Image, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_file(cls, filename, **kwargs):

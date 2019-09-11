@@ -72,7 +72,7 @@ class _Int(DescriptionWidget, ValueWidget, CoreWidget):
     def __init__(self, value=None, **kwargs):
         if value is not None:
             kwargs['value'] = value
-        super(_Int, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
 
 class _BoundedInt(_Int):
@@ -90,7 +90,7 @@ class _BoundedInt(_Int):
             kwargs['max'] = max
         if step is not None:
             kwargs['step'] = step
-        super(_BoundedInt, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     @validate('value')
     def _validate_value(self, proposal):
@@ -244,7 +244,7 @@ class _BoundedIntRange(_IntRange):
         if not kwargs.get('value', None):
             kwargs['value'] = (0.75 * min + 0.25 * max,
                                0.25 * min + 0.75 * max)
-        super(_BoundedIntRange, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @validate('min', 'max')
     def _validate_bounds(self, proposal):
@@ -262,7 +262,7 @@ class _BoundedIntRange(_IntRange):
 
     @validate('value')
     def _validate_value(self, proposal):
-        lower, upper = super(_BoundedIntRange, self)._validate_value(proposal)
+        lower, upper = super()._validate_value(proposal)
         lower, upper = min(lower, self.max), min(upper, self.max)
         lower, upper = max(lower, self.min), max(upper, self.min)
         return lower, upper

@@ -1,4 +1,3 @@
-# coding: utf-8
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
@@ -206,7 +205,7 @@ def _show_traceback(method):
     return m
 
 
-class WidgetRegistry(object):
+class WidgetRegistry:
 
     def __init__(self):
         self._registry = {}
@@ -391,7 +390,7 @@ class Widget(LoggingHasTraits):
     def __init__(self, **kwargs):
         """Public constructor"""
         self._model_id = kwargs.pop('model_id', None)
-        super(Widget, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         Widget._call_widget_constructed(self)
         self.open()
@@ -567,7 +566,7 @@ class Widget(LoggingHasTraits):
 
     def add_traits(self, **traits):
         """Dynamically add trait attributes to the Widget."""
-        super(Widget, self).add_traits(**traits)
+        super().add_traits(**traits)
         for name, trait in traits.items():
             if trait.get_metadata('sync'):
                 self.keys.append(name)
@@ -583,7 +582,7 @@ class Widget(LoggingHasTraits):
             if name in self.keys and self._should_send_property(name, getattr(self, name)):
                 # Send new state to front-end
                 self.send_state(key=name)
-        super(Widget, self).notify_change(change)
+        super().notify_change(change)
 
     def __repr__(self):
         return self._gen_repr_from_keys(self._repr_keys())
@@ -737,7 +736,7 @@ class Widget(LoggingHasTraits):
     def _gen_repr_from_keys(self, keys):
         class_name = self.__class__.__name__
         signature = ', '.join(
-            '%s=%r' % (key, getattr(self, key))
+            '{}={!r}'.format(key, getattr(self, key))
             for key in keys
         )
-        return '%s(%s)' % (class_name, signature)
+        return '{}({})'.format(class_name, signature)

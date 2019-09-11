@@ -23,13 +23,13 @@ class _String(DescriptionWidget, ValueWidget, CoreWidget):
     # We set a zero-width space as a default placeholder to make sure the baseline matches
     # the text, not the bottom margin. See the last paragraph of
     # https://www.w3.org/TR/CSS2/visudet.html#leading
-    placeholder = Unicode(u'\u200b', help="Placeholder text to display when nothing has been typed").tag(sync=True)
+    placeholder = Unicode('\u200b', help="Placeholder text to display when nothing has been typed").tag(sync=True)
 
 
     def __init__(self, value=None, **kwargs):
         if value is not None:
             kwargs['value'] = value
-        super(_String, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     _model_name = Unicode('StringModel').tag(sync=True)
 
@@ -76,7 +76,7 @@ class Text(_String):
     continuous_update = Bool(True, help="Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.").tag(sync=True)
 
     def __init__(self, *args, **kwargs):
-        super(Text, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._submission_callbacks = CallbackDispatcher()
         self.on_msg(self._handle_string_msg)
 
@@ -117,7 +117,7 @@ class Password(Text):
 
     def _repr_keys(self):
         # Don't include password value in repr!
-        super_keys = super(Password, self)._repr_keys()
+        super_keys = super()._repr_keys()
         for key in super_keys:
             if key != 'value':
                 yield key
