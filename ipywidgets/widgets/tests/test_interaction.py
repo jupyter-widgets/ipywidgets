@@ -3,8 +3,6 @@
 
 """Test interact and interactive."""
 
-from __future__ import print_function
-
 from unittest.mock import patch
 
 import os

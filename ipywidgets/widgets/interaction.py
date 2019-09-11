@@ -3,9 +3,6 @@
 
 """Interact with functions using widgets."""
 
-from __future__ import print_function
-from __future__ import division
-
 from collections.abc import Iterable, Mapping
 from inspect import signature, Parameter
 from inspect import getcallargs
