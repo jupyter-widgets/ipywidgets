@@ -9,7 +9,6 @@ from .valuewidget import ValueWidget
 from .widget import register
 from traitlets import Unicode, CUnicode, Bytes, Bool
 from .trait_types import bytes_serialization
-from .util import text_type
 
 
 @register
@@ -68,8 +67,8 @@ class _Media(DOMWidget, ValueWidget, CoreWidget):
         url: [str, bytes]
             The location of a URL to load.
         """
-        if isinstance(url, text_type):
-            # If unicode (str in Python 3), it needs to be encoded to bytes
+        if isinstance(url, str):
+            # If str, it needs to be encoded to bytes
             url = url.encode('utf-8')
 
         return cls(value=url, format='url')

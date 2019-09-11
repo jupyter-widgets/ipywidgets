@@ -8,18 +8,12 @@ in the IPython notebook front-end.
 """
 
 from contextlib import contextmanager
-try:
-    from collections.abc import Iterable
-except ImportError:
-    # Python 2.7
-    from collections import Iterable
-
+from collections.abc import Iterable
 from IPython.core.getipython import get_ipython
 from ipykernel.comm import Comm
 from traitlets import (
     HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default, Container,
     Undefined)
-from ipython_genutils.py3compat import string_types, PY3
 from IPython.display import display
 from json import loads as jsonloads, dumps as jsondumps
 
@@ -43,7 +37,7 @@ def _json_to_widget(x, obj):
         return {k: _json_to_widget(v, obj) for k, v in x.items()}
     elif isinstance(x, (list, tuple)):
         return [_json_to_widget(v, obj) for v in x]
-    elif isinstance(x, string_types) and x.startswith('IPY_MODEL_') and x[10:] in Widget.widgets:
+    elif isinstance(x, str) and x.startswith('IPY_MODEL_') and x[10:] in Widget.widgets:
         return Widget.widgets[x[10:]]
     else:
         return x
@@ -53,10 +47,7 @@ widget_serialization = {
     'to_json': _widget_to_json
 }
 
-if PY3:
-    _binary_types = (memoryview, bytearray, bytes)
-else:
-    _binary_types = (memoryview, bytearray)
+_binary_types = (memoryview, bytearray, bytes)
 
 def _put_buffers(state, buffer_paths, buffers):
     """The inverse of _remove_buffers, except here we modify the existing dict/lists.
@@ -147,18 +138,9 @@ def _buffer_list_equal(a, b):
         # NOTE: Simple ia != ib does not always work as intended, as
         # e.g. memoryview(np.frombuffer(ia, dtype='float32')) !=
         # memoryview(np.frombuffer(b)), since the format info differs.
-        if PY3:
-            # compare without copying
-            if memoryview(ia).cast('B') != memoryview(ib).cast('B'):
-                return False
-        else:
-            # python 2 doesn't have memoryview.cast, so we may have to copy
-            if isinstance(ia, memoryview) and ia.format != 'B':
-                ia = ia.tobytes()
-            if isinstance(ib, memoryview) and ib.format != 'B':
-                ib = ib.tobytes()
-            if ia != ib:
-                return False
+        # Compare without copying.
+        if memoryview(ia).cast('B') != memoryview(ib).cast('B'):
+            return False
     return True
 
 
@@ -277,7 +259,7 @@ def register(name=''):
                                     w['_view_name'].default_value,
                                     widget)
         return widget
-    if isinstance(name, string_types):
+    if isinstance(name, str):
         import warnings
         warnings.warn("Widget registration using a string name has been deprecated. Widget registration now uses a plain `@register` decorator.", DeprecationWarning)
         return reg
@@ -505,7 +487,7 @@ class Widget(LoggingHasTraits):
         """
         if key is None:
             keys = self.keys
-        elif isinstance(key, string_types):
+        elif isinstance(key, str):
             keys = [key]
         elif isinstance(key, Iterable):
             keys = key
@@ -516,8 +498,6 @@ class Widget(LoggingHasTraits):
         for k in keys:
             to_json = self.trait_metadata(k, 'to_json', self._trait_to_json)
             value = to_json(getattr(self, k), self)
-            if not PY3 and isinstance(traits[k], Bytes) and isinstance(value, bytes):
-                value = memoryview(value)
             if not drop_defaults or not self._compare(value, traits[k].default_value):
                 state[k] = value
         return state

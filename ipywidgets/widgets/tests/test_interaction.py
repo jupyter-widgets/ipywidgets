@@ -5,10 +5,7 @@
 
 from __future__ import print_function
 
-try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch
+from unittest.mock import patch
 
 import os
 from collections import OrderedDict

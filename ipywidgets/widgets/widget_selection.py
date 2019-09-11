@@ -6,15 +6,7 @@
 Represents an enumeration using a widget.
 """
 
-try:
-    from collections.abc import Iterable, Mapping
-except ImportError:
-    from collections import Iterable, Mapping # py2
-
-try:
-    from itertools import izip
-except ImportError:  #python3.x
-    izip = zip
+from collections.abc import Iterable, Mapping
 from itertools import chain
 
 from .widget_description import DescriptionWidget, DescriptionStyle
@@ -26,7 +18,6 @@ from .widget import register, widget_serialization
 from .docutils import doc_subst
 from traitlets import (Unicode, Bool, Int, Any, Dict, TraitError, CaselessStrEnum,
                        Tuple, Union, observe, validate)
-from ipython_genutils.py3compat import unicode_type
 
 _doc_snippets = {}
 _doc_snippets['selection_params'] = """
@@ -119,17 +110,17 @@ def _make_options(x):
     if isinstance(x, Mapping):
         import warnings
         warnings.warn("Support for mapping types has been deprecated and will be dropped in a future release.", DeprecationWarning)
-        return tuple((unicode_type(k), v) for k, v in x.items())
+        return tuple((str(k), v) for k, v in x.items())
 
     # only iterate once through the options.
     xlist = tuple(x)
 
     # Check if x is an iterable of (label, value) pairs
     if all((isinstance(i, (list, tuple)) and len(i) == 2) for i in xlist):
-        return tuple((unicode_type(k), v) for k, v in xlist)
+        return tuple((str(k), v) for k, v in xlist)
 
     # Otherwise, assume x is an iterable of values
-    return tuple((unicode_type(i), i) for i in xlist)
+    return tuple((str(i), i) for i in xlist)
 
 def findvalue(array, value, compare = lambda x, y: x == y):
     "A function that uses the compare function to return a value from the list."
@@ -592,7 +583,7 @@ class SelectionSlider(_SelectionNonempty):
 class SelectionRangeSlider(_MultipleSelectionNonempty):
     """
     Slider to select multiple contiguous items from a list.
-    
+
     The index, value, and label attributes contain the start and end of
     the selection range, not all items in the range.
 

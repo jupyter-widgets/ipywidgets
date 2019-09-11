@@ -6,16 +6,10 @@
 from __future__ import print_function
 from __future__ import division
 
-try:  # Python >= 3.3
-    from inspect import signature, Parameter
-except ImportError:
-    from IPython.utils.signatures import signature, Parameter
+from collections.abc import Iterable, Mapping
+from inspect import signature, Parameter
 from inspect import getcallargs
-
-try:
-    from inspect import getfullargspec as check_argspec
-except ImportError:
-    from inspect import getargspec as check_argspec # py2
+from inspect import getfullargspec as check_argspec
 import sys
 
 from IPython.core.getipython import get_ipython
@@ -23,15 +17,10 @@ from . import (ValueWidget, Text,
     FloatSlider, IntSlider, Checkbox, Dropdown,
     VBox, Button, DOMWidget, Output)
 from IPython.display import display, clear_output
-from ipython_genutils.py3compat import string_types, unicode_type
 from traitlets import HasTraits, Any, Unicode, observe
 from numbers import Real, Integral
 from warnings import warn
 
-try:
-    from collections.abc import Iterable, Mapping
-except ImportError:
-    from collections import Iterable, Mapping # py2
 
 
 empty = Parameter.empty
@@ -345,8 +334,8 @@ class interactive(VBox):
     @staticmethod
     def widget_from_single_value(o):
         """Make widgets from single values, which can be used as parameter defaults."""
-        if isinstance(o, string_types):
-            return Text(value=unicode_type(o))
+        if isinstance(o, str):
+            return Text(value=str(o))
         elif isinstance(o, bool):
             return Checkbox(value=o)
         elif isinstance(o, Integral):

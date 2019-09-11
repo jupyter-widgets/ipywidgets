@@ -11,7 +11,6 @@ from .widget_box import Box
 from .widget import register
 from .widget_core import CoreWidget
 from traitlets import Unicode, Dict, CInt, TraitError, validate
-from ipython_genutils.py3compat import unicode_type
 
 
 class _SelectionContainer(Box, CoreWidget):
@@ -41,7 +40,7 @@ class _SelectionContainer(Box, CoreWidget):
             New title
         """
         # JSON dictionaries have string keys, so we convert index to a string
-        index = unicode_type(int(index))
+        index = str(int(index))
         self._titles[index] = title
         self.send_state('_titles')
 
@@ -54,7 +53,7 @@ class _SelectionContainer(Box, CoreWidget):
             Index of the container page
         """
         # JSON dictionaries have string keys, so we convert index to a string
-        index = unicode_type(int(index))
+        index = str(int(index))
         if index in self._titles:
             return self._titles[index]
         else:
