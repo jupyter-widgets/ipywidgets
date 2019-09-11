@@ -36,7 +36,7 @@ import {
  * Replace model ids with models recursively.
  */
 export
-function unpack_models(value: any, manager: managerBase.ManagerBase<any>): Promise<any> {
+function unpack_models(value?: any, manager?: managerBase.ManagerBase<any>): Promise<any> {
     if (Array.isArray(value)) {
         const unpacked: any[] = [];
         value.forEach((sub_value, key) => {
