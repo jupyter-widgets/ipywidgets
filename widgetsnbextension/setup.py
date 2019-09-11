@@ -35,8 +35,8 @@ instructions.
 import sys
 
 v = sys.version_info
-if v[:2] < (3, 4):
-    error = "ERROR: %s requires Python version 3.4 or above." % name
+if v[:2] < (3, 5):
+    error = "ERROR: %s requires Python version 3.5 or above." % name
     print(error, file=sys.stderr)
     sys.exit(1)
 
