@@ -267,7 +267,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    */
   async _get_comm_info(): Promise<any> {
     const reply = await this._context.session.kernel.requestCommInfo({target: this.comm_target_name});
-    if (reply.content.status = 'ok') {
+    if (reply.content.status === 'ok') {
         return (reply.content as any).comms;
     } else {
         return {};
