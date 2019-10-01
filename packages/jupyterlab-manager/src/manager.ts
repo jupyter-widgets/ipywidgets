@@ -198,6 +198,9 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
       return;
     }
     await this.context.session.ready;
+    if ((this.context.session.kernel as any).handleComms === false) {
+      return;
+    }
     const comm_ids = await this._get_comm_info();
 
     // For each comm id that we do not know about, create the comm, and request the state.
