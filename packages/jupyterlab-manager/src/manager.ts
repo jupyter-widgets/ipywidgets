@@ -220,7 +220,9 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
         let msgId: string;
         let p = new PromiseDelegate<Private.ICommUpdateData>();
         comm.on_msg((msg: KernelMessage.ICommMsgMsg) => {
-          if ((msg.parent_header as any).msg_id === msgId) {
+          if ((msg.parent_header as any).msg_id === msgId
+            && msg.header.msg_type === 'comm_msg'
+            && msg.content.data.method === 'update') {
             let data = (msg.content.data as any);
             let buffer_paths = data.buffer_paths || [];
             // Make sure the buffers are DataViews
