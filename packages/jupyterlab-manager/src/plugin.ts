@@ -192,7 +192,7 @@ function activateWidgetExtension(
     if (wManager) {
       wManager.onUnhandledIOPubMessage.connect(
         (sender: WidgetManager, msg: KernelMessage.IIOPubMessage) => {
-        const logger = loggerRegistry.getLogger(nb.context.path);
+          const logger = loggerRegistry.getLogger(nb.context.path);
           // @ts-ignore
           logger.rendermime = nb.content.rendermime;
           const output: nbformat.IOutput = {
