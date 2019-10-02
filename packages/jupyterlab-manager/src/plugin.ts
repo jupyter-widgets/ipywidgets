@@ -66,6 +66,7 @@ import {
 
 import '@jupyter-widgets/base/css/index.css';
 import '@jupyter-widgets/controls/css/widgets-base.css';
+import { KernelMessage } from '@jupyterlab/services';
 
 const WIDGET_REGISTRY: base.IWidgetRegistryData[] = [];
 
@@ -183,11 +184,11 @@ function activateWidgetExtension(
   const {commands} = app;
 
   const registerUnhandledMessageHandler = (nb: NotebookPanel) => {
-    let wManager = Private.widgetManagerProperty.get(nb.context);
+    const wManager = Private.widgetManagerProperty.get(nb.context);
     if (wManager) {
-      wManager.registerUnhandledCommMessageListener({
-        onMessage(msg: any) {
-          const logger = loggerRegistry.getLogger(nb.context.path);
+      wManager.onUnhandledIOPubMessage.connect(
+        (sender: WidgetManager, msg: KernelMessage.IIOPubMessage) => {
+        const logger = loggerRegistry.getLogger(nb.context.path);
           // @ts-ignore
           logger.rendermime = nb.content.rendermime;
           const output: nbformat.IOutput = {
@@ -195,7 +196,6 @@ function activateWidgetExtension(
             output_type: msg.header.msg_type
           };
           logger.log(output);
-        }
       });
     }
   };

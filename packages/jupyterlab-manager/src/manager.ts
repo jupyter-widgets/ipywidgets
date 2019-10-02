@@ -143,14 +143,15 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     });
   }
 
-  callbacks (view?: WidgetView) {
-    const unhandledOutput = (msg: any) => {
-      this._broadcastUnhandledCommMessage(msg);
-    };
-
+  /**
+   * Default callback handler to emit unhandled kernel messages.
+   */
+  callbacks(view?: WidgetView) {
     return {
         iopub: {
-            output: unhandledOutput
+            output: (msg: KernelMessage.IIOPubMessage) => {
+              this._onUnhandledIOPubMessage.emit(msg);
+            }
         }
     };
   }
@@ -378,6 +379,14 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     return this._restoredStatus;
   }
 
+  /**
+   * A signal emitted for unhandled iopub kernel messages.
+   *
+   */
+  get onUnhandledIOPubMessage(): ISignal<this, KernelMessage.IIOPubMessage> {
+    return this._onUnhandledIOPubMessage;
+  }
+
   register(data: IWidgetRegistryData) {
     this._registry.set(data.name, data.version, data.exports);
   }
@@ -454,22 +463,6 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     }
   }
 
-  registerUnhandledCommMessageListener(handler: IUnhandledCommMessageListener) {
-    this._unhandledCommMessageListeners.add(handler);
-  }
-
-  unregisterUnhandledCommMessageListener(handler: IUnhandledCommMessageListener) {
-    this._unhandledCommMessageListeners.delete(handler);
-  }
-
-  private _broadcastUnhandledCommMessage(msg: any) {
-    this._unhandledCommMessageListeners.forEach((handler: IUnhandledCommMessageListener) => {
-      handler.onMessage(msg);
-    });
-  }
-
-  private _unhandledCommMessageListeners: Set<IUnhandledCommMessageListener> = new Set();
-
   private _handleCommOpen: (comm: Kernel.IComm, msg: KernelMessage.ICommOpenMsg) => Promise<void>;
   private _context: DocumentRegistry.IContext<INotebookModel>;
   private _registry: SemVerCache<ExportData> = new SemVerCache<ExportData>();
@@ -481,6 +474,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
 
   private _modelsSync = new Map<string, WidgetModel>();
   private _settings: WidgetManager.Settings;
+  private _onUnhandledIOPubMessage = new Signal<this, KernelMessage.IIOPubMessage>(this);
 }
 
 
