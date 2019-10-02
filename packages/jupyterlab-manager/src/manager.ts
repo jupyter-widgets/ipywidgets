@@ -92,9 +92,6 @@ class BackboneViewWrapper extends Widget {
   private _view: Backbone.View<any> = null;
 }
 
-export interface IUnhandledCommMessageListener {
-  onMessage(msg: any): void;
-};
 
 /**
  * A widget manager that returns phosphor widgets.

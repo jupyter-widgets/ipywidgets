@@ -183,7 +183,11 @@ function activateWidgetExtension(
 
   const {commands} = app;
 
-  const registerUnhandledMessageHandler = (nb: NotebookPanel) => {
+  const bindUnhandledIOPubMessageSignal = (nb: NotebookPanel) => {
+    if (!loggerRegistry) {
+      return;
+    }
+
     const wManager = Private.widgetManagerProperty.get(nb.context);
     if (wManager) {
       wManager.onUnhandledIOPubMessage.connect(
@@ -227,7 +231,7 @@ function activateWidgetExtension(
       )
     );
 
-    registerUnhandledMessageHandler(panel);
+    bindUnhandledIOPubMessageSignal(panel);
   });
   tracker.widgetAdded.connect((sender, panel) => {
     registerWidgetManager(
@@ -239,7 +243,7 @@ function activateWidgetExtension(
       )
     );
 
-    registerUnhandledMessageHandler(panel);
+    bindUnhandledIOPubMessageSignal(panel);
   });
 
   // Add a command for creating a new Markdown file.
