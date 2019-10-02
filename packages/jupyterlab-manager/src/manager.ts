@@ -92,6 +92,9 @@ class BackboneViewWrapper extends Widget {
   private _view: Backbone.View<any> = null;
 }
 
+export interface IUnhandledCommMessageListener {
+  onMessage(msg: any): void;
+};
 
 /**
  * A widget manager that returns phosphor widgets.
@@ -138,6 +141,18 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     this._context.model.metadata.set('widgets', {
       'application/vnd.jupyter.widget-state+json' : state
     });
+  }
+
+  callbacks (view?: WidgetView) {
+    const unhandledOutput = (msg: any) => {
+      this._broadcastUnhandledCommMessage(msg);
+    };
+
+    return {
+        iopub: {
+            output: unhandledOutput
+        }
+    };
   }
 
   /**
@@ -438,6 +453,22 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
       this._context.model.dirty = true;
     }
   }
+
+  registerUnhandledCommMessageListener(handler: IUnhandledCommMessageListener) {
+    this._unhandledCommMessageListeners.add(handler);
+  }
+
+  unregisterUnhandledCommMessageListener(handler: IUnhandledCommMessageListener) {
+    this._unhandledCommMessageListeners.delete(handler);
+  }
+
+  private _broadcastUnhandledCommMessage(msg: any) {
+    this._unhandledCommMessageListeners.forEach((handler: IUnhandledCommMessageListener) => {
+      handler.onMessage(msg);
+    });
+  }
+
+  private _unhandledCommMessageListeners: Set<IUnhandledCommMessageListener> = new Set();
 
   private _handleCommOpen: (comm: Kernel.IComm, msg: KernelMessage.ICommOpenMsg) => Promise<void>;
   private _context: DocumentRegistry.IContext<INotebookModel>;

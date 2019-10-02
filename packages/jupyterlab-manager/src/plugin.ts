@@ -2,14 +2,14 @@
 // Distributed under the terms of the Modified BSD License.
 
 
-import { ISettingRegistry } from '@jupyterlab/coreutils';
+import { ISettingRegistry, nbformat } from '@jupyterlab/coreutils';
 
 import {
   DocumentRegistry
 } from '@jupyterlab/docregistry';
 
 import {
-  INotebookModel, INotebookTracker, Notebook
+  INotebookModel, INotebookTracker, Notebook, NotebookPanel
 } from '@jupyterlab/notebook';
 
 import {
@@ -23,6 +23,10 @@ import {
 import {
   IRenderMimeRegistry
 } from '@jupyterlab/rendermime';
+
+import {
+  ILoggerRegistry
+} from '@jupyterlab/logconsole';
 
 import {
   CodeCell
@@ -152,7 +156,7 @@ export function registerWidgetManager(
 const plugin: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> = {
   id: '@jupyter-widgets/jupyterlab-manager:plugin',
   requires: [INotebookTracker, IRenderMimeRegistry, ISettingRegistry],
-  optional: [IMainMenu],
+  optional: [IMainMenu, ILoggerRegistry],
   provides: base.IJupyterWidgetRegistry,
   activate: activateWidgetExtension,
   autoStart: true
@@ -168,10 +172,33 @@ function updateSettings(settings: ISettingRegistry.ISettings) {
 /**
  * Activate the widget extension.
  */
-function activateWidgetExtension(app: JupyterFrontEnd, tracker: INotebookTracker, rendermime: IRenderMimeRegistry, settingRegistry: ISettingRegistry, menu: IMainMenu | null): base.IJupyterWidgetRegistry {
+function activateWidgetExtension(
+  app: JupyterFrontEnd,
+  tracker: INotebookTracker,
+  rendermime: IRenderMimeRegistry,
+  settingRegistry: ISettingRegistry,
+  menu: IMainMenu | null,
+  loggerRegistry: ILoggerRegistry | null): base.IJupyterWidgetRegistry {
 
   const {commands} = app;
 
+  const registerUnhandledMessageHandler = (nb: NotebookPanel) => {
+    let wManager = Private.widgetManagerProperty.get(nb.context);
+    if (wManager) {
+      wManager.registerUnhandledCommMessageListener({
+        onMessage(msg: any) {
+          const logger = loggerRegistry.getLogger(nb.context.path);
+          // @ts-ignore
+          logger.rendermime = nb.content.rendermime;
+          const output: nbformat.IOutput = {
+            ...msg.content,
+            output_type: msg.header.msg_type
+          };
+          logger.log(output);
+        }
+      });
+    }
+  };
 
   settingRegistry.load(plugin.id).then((settings: ISettingRegistry.ISettings) => {
     settings.changed.connect(updateSettings);
@@ -199,6 +226,8 @@ function activateWidgetExtension(app: JupyterFrontEnd, tracker: INotebookTracker
         outputViews(app, panel.context.path)
       )
     );
+
+    registerUnhandledMessageHandler(panel);
   });
   tracker.widgetAdded.connect((sender, panel) => {
     registerWidgetManager(
@@ -209,6 +238,8 @@ function activateWidgetExtension(app: JupyterFrontEnd, tracker: INotebookTracker
         outputViews(app, panel.context.path)
       )
     );
+
+    registerUnhandledMessageHandler(panel);
   });
 
   // Add a command for creating a new Markdown file.

@@ -276,6 +276,8 @@ namespace shims {
                                 switch (msg.header.msg_type) {
                                     case 'display_data':
                                     case 'execute_result':
+                                    case 'stream':
+                                    case 'error':
                                         callbacks.iopub.output(msg);
                                         break;
                                     default: break;
