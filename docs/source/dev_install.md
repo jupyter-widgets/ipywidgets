@@ -1,7 +1,6 @@
 # Developer Install
 
 ## Prerequisites
--------------
 
 To install ipywidgets from git, you will need:
 

@@ -52,7 +52,7 @@ configuration file (probably at `js/webpack.config.json`) declares
 in both the bundle for the notebook and the embeddable bundle. If you just
 need `@jupyter-widgets/base`, your external dependencies would be:
 
-```json
+```
 externals: ['@jupyter-widgets/base']
 ```
 

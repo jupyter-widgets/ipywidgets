@@ -69,7 +69,21 @@ copyright = '2017 Project Jupyter'
 author = 'Jupyter Team'
 
 language = None
-exclude_patterns = ['_build', '**.ipynb_checkpoints', 'examples/Imag*', 'examples/Index.ipynb']
+exclude_patterns = [
+    '**.ipynb_checkpoints',
+    'examples.md',
+    'examples/Beat Frequencies.ipynb',
+    'examples/Controller.ipynb',
+    'examples/Exploring Graphs.ipynb',
+    'examples/Export As (nbconvert).ipynb',
+    'examples/Factoring.ipynb',
+    'examples/Imag*',
+    'examples/Index.ipynb',
+    'examples/Lorenz Differential Equations.ipynb',
+    'examples/Media widgets.ipynb',
+    'examples/Variable Inspector.ipynb',
+    'examples/Widget Alignment.ipynb',
+]
 pygments_style = 'sphinx'
 todo_include_todos = False
 
