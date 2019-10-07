@@ -5,7 +5,6 @@
 import os
 import subprocess
 import sys
-import recommonmark.parser
 
 
 # -- path -------------------------------------------------------
@@ -25,9 +24,9 @@ def bash(filename):
 
 # -- source files and parsers -----------------------------------
 
-source_suffix = ['.rst', '.md', '.ipynb']
-source_parsers = {
-    '.md': recommonmark.parser.CommonMarkParser,
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
 }
 
 
@@ -41,6 +40,7 @@ extensions = [
     'nbsphinx',
     'jupyter_sphinx.execute',
     'IPython.sphinxext.ipython_console_highlighting',
+    'recommonmark',
 ]
 
 intersphinx_mapping = {
