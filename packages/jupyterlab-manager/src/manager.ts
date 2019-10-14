@@ -211,7 +211,9 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
         return;
       } catch (e) {
         // If we have the widget model not found error, then we can create the
-        // widget. Otherwise, rethrow the error.
+        // widget. Otherwise, rethrow the error. We have to check the error
+        // message text explicitly because the get_model function in this
+        // class throws a generic error with this specific text.
         if (e.message !== 'widget model not found') {
           throw e;
         }
