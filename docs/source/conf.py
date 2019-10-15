@@ -52,6 +52,8 @@ intersphinx_mapping = {
 
 nbsphinx_allow_errors = True   # exception ipstruct.py ipython_genutils
 nbsphinx_execute = 'always'
+# Disable including require.js because it is also included by jupyter_sphinx:
+nbsphinx_requirejs_path = ''
 
 # -- General information -------
 
