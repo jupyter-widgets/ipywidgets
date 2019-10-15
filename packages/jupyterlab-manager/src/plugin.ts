@@ -195,11 +195,11 @@ function activateWidgetExtension(
           const logger = loggerRegistry.getLogger(nb.context.path);
           // @ts-ignore
           logger.rendermime = nb.content.rendermime;
-          const output: nbformat.IOutput = {
+          const data: nbformat.IOutput = {
             ...msg.content,
             output_type: msg.header.msg_type
           };
-          logger.log(output);
+          logger.log({type: 'output', data});
       });
     }
   };
