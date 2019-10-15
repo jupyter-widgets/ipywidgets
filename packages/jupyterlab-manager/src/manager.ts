@@ -173,7 +173,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Restore widgets from kernel and saved state.
    */
-  async restoreWidgets(notebook: INotebookModel, {loadKernel, loadNotebook}: {loadKernel: boolean, loadNotebook: boolean} = {loadKernel: true, loadNotebook: true}): Promise<void> {
+  async restoreWidgets(notebook: INotebookModel, {loadKernel, loadNotebook} = {loadKernel: true, loadNotebook: true}): Promise<void> {
     if (loadKernel) {
       await this._loadFromKernel();
     }
