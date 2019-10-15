@@ -160,8 +160,11 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   _handleKernelStatusChange(args: Kernel.Status) {
     switch (args) {
     case 'connected':
-      // We only want to restore widgets from the kernel, not ones saved in the notebook.
-      this.restoreWidgets(this._context.model, {loadKernel: true, loadNotebook: false});
+      // Only restore if our initial restore at construction is finished
+      if (this._restoredStatus) {
+        // We only want to restore widgets from the kernel, not ones saved in the notebook.
+        this.restoreWidgets(this._context.model, {loadKernel: true, loadNotebook: false});
+      }
       break;
     case 'restarting':
       this.disconnect();
