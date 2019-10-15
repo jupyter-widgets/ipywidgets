@@ -5,7 +5,7 @@ numpy
 jupyter_client
 jupyter_sphinx
 nbsphinx>=0.2.13
-recommonmark==0.4.0
+recommonmark
 sphinx>=1.4.6
 sphinx_rtd_theme
 matplotlib
