@@ -202,6 +202,8 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
       return;
     }
     await this.context.session.ready;
+    // TODO: when we upgrade to @jupyterlab/services 4.1 or later, we can
+    // remove this 'any' cast.
     if ((this.context.session.kernel as any).handleComms === false) {
       return;
     }
