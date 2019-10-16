@@ -226,7 +226,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
         const comm = await this._create_comm(this.comm_target_name, comm_id);
 
         let msg_id: string;
-        const widget_info = new PromiseDelegate<Private.ICommUpdateData>();
+        const info = new PromiseDelegate<Private.ICommUpdateData>();
         comm.on_msg((msg: KernelMessage.ICommMsgMsg) => {
           if ((msg.parent_header as any).msg_id === msg_id
             && msg.header.msg_type === 'comm_msg'
@@ -242,14 +242,14 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
                 }
             });
             put_buffers(data.state, buffer_paths, buffers);
-            widget_info.resolve({comm, msg});
+            info.resolve({comm, msg});
           }
         });
         msg_id = comm.send({
           method: 'request_state'
         }, this.callbacks(undefined));
 
-        return widget_info.promise;
+        return info.promise;
       }
     }));
 
