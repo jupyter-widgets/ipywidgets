@@ -161,7 +161,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     switch (args) {
     case 'connected':
       // Only restore if our initial restore at construction is finished
-      if (this._restoredStatus) {
+      if (this._initialRestoredStatus) {
         // We only want to restore widgets from the kernel, not ones saved in the notebook.
         this.restoreWidgets(this._context.model, {loadKernel: true, loadNotebook: false});
       }
@@ -184,6 +184,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
       await this._loadFromNotebook(notebook);
     }
     this._restoredStatus = true;
+    this._initialRestoredStatus = true;
     this._restored.emit();
   }
 
@@ -486,6 +487,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   _commRegistration: IDisposable;
   private _restored = new Signal<this, void>(this);
   private _restoredStatus = false;
+  private _initialRestoredStatus = false;
 
   private _modelsSync = new Map<string, WidgetModel>();
   private _settings: WidgetManager.Settings;
