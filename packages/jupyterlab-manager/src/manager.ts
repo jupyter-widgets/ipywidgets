@@ -14,6 +14,10 @@ import {
 } from '@phosphor/disposable';
 
 import {
+  PromiseDelegate
+} from '@phosphor/coreutils';
+
+import {
   Widget
 } from '@phosphor/widgets';
 
@@ -156,7 +160,11 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   _handleKernelStatusChange(args: Kernel.Status) {
     switch (args) {
     case 'connected':
-      this.restoreWidgets(this._context.model);
+      // Only restore if our initial restore at construction is finished
+      if (this._initialRestoredStatus) {
+        // We only want to restore widgets from the kernel, not ones saved in the notebook.
+        this.restoreWidgets(this._context.model, {loadKernel: true, loadNotebook: false});
+      }
       break;
     case 'restarting':
       this.disconnect();
@@ -168,10 +176,15 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Restore widgets from kernel and saved state.
    */
-  async restoreWidgets(notebook: INotebookModel): Promise<void> {
-    await this._loadFromKernel();
-    await this._loadFromNotebook(notebook);
+  async restoreWidgets(notebook: INotebookModel, {loadKernel, loadNotebook} = {loadKernel: true, loadNotebook: true}): Promise<void> {
+    if (loadKernel) {
+      await this._loadFromKernel();
+    }
+    if (loadNotebook) {
+      await this._loadFromNotebook(notebook);
+    }
     this._restoredStatus = true;
+    this._initialRestoredStatus = true;
     this._restored.emit();
   }
 
@@ -189,29 +202,55 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
       return;
     }
     await this.context.session.ready;
+    // TODO: when we upgrade to @jupyterlab/services 4.1 or later, we can
+    // remove this 'any' cast.
+    if ((this.context.session.kernel as any).handleComms === false) {
+      return;
+    }
     const comm_ids = await this._get_comm_info();
 
-    // For each comm id, create the comm, and request the state.
+    // For each comm id that we do not know about, create the comm, and request the state.
     const widgets_info = await Promise.all(Object.keys(comm_ids).map(async (comm_id) => {
-      const comm = await this._create_comm(this.comm_target_name, comm_id);
-      const update_promise = new Promise<Private.ICommUpdateData>((resolve, reject) => {
-        comm.on_msg((msg) => {
-          put_buffers(msg.content.data.state, msg.content.data.buffer_paths, msg.buffers);
-          // A suspected response was received, check to see if
-          // it's a state update. If so, resolve.
-          if (msg.content.data.method === 'update') {
-            resolve({
-              comm: comm,
-              msg: msg
+      try {
+        await this.get_model(comm_id);
+        // If we successfully get the model, do no more.
+        return;
+      } catch (e) {
+        // If we have the widget model not found error, then we can create the
+        // widget. Otherwise, rethrow the error. We have to check the error
+        // message text explicitly because the get_model function in this
+        // class throws a generic error with this specific text.
+        if (e.message !== 'widget model not found') {
+          throw e;
+        }
+        const comm = await this._create_comm(this.comm_target_name, comm_id);
+
+        let msg_id: string;
+        const info = new PromiseDelegate<Private.ICommUpdateData>();
+        comm.on_msg((msg: KernelMessage.ICommMsgMsg) => {
+          if ((msg.parent_header as any).msg_id === msg_id
+            && msg.header.msg_type === 'comm_msg'
+            && msg.content.data.method === 'update') {
+            let data = (msg.content.data as any);
+            let buffer_paths = data.buffer_paths || [];
+            // Make sure the buffers are DataViews
+            let buffers = (msg.buffers || []).map(b => {
+                if (b instanceof DataView) {
+                    return b;
+                } else {
+                    return new DataView(b instanceof ArrayBuffer ? b : b.buffer);
+                }
             });
+            put_buffers(data.state, buffer_paths, buffers);
+            info.resolve({comm, msg});
           }
         });
-      });
-      comm.send({
-        method: 'request_state'
-      }, this.callbacks(undefined));
+        msg_id = comm.send({
+          method: 'request_state'
+        }, this.callbacks(undefined));
 
-      return await update_promise;
+        return info.promise;
+      }
     }));
 
     // We put in a synchronization barrier here so that we don't have to
@@ -220,6 +259,9 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     // asynchronously, so promises to every widget reference should be available
     // by the time they are used.
     await Promise.all(widgets_info.map(async widget_info => {
+      if (!widget_info) {
+        return;
+      }
       const content = widget_info.msg.content as any;
       await this.new_model({
         model_name: content.data.state._model_name,
@@ -267,7 +309,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    */
   async _get_comm_info(): Promise<any> {
     const reply = await this._context.session.kernel.requestCommInfo({target: this.comm_target_name});
-    if (reply.content.status = 'ok') {
+    if (reply.content.status === 'ok') {
         return (reply.content as any).comms;
     } else {
         return {};
@@ -447,6 +489,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   _commRegistration: IDisposable;
   private _restored = new Signal<this, void>(this);
   private _restoredStatus = false;
+  private _initialRestoredStatus = false;
 
   private _modelsSync = new Map<string, WidgetModel>();
   private _settings: WidgetManager.Settings;
