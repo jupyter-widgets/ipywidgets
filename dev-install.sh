@@ -55,5 +55,5 @@ if test "$skip_jupyter_lab" != yes; then
     jupyter labextension link ./packages/base --no-build
     jupyter labextension link ./packages/controls --no-build
     jupyter labextension link ./packages/output --no-build
-    jupyter labextension install ./packages/jupyterlab-manager
+    jupyter labextension install ./packages/jupyterlab-manager --minimize=False
 fi
