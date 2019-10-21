@@ -118,6 +118,144 @@
   flex-direction: column;
 }
 
+/* General Tags Styling */
+
+.jupyter-widget-tagsinput {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  overflow: auto;
+
+  cursor: text;
+}
+
+.jupyter-widget-tag {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  font-size: var(--jp-widgets-font-size);
+
+  height: calc(var(--jp-widgets-inline-height) - 2px);
+  border: 0px solid;
+  line-height: calc(var(--jp-widgets-inline-height) - 2px);
+  box-shadow: none;
+
+  color: var(--jp-ui-font-color1);
+  background-color: var(--jp-layout-color2);
+  border-color: var(--jp-border-color2);
+  border: none;
+  user-select: none;
+
+  cursor: grab;
+  transition: margin-left 200ms;
+  margin: 1px 1px 1px 1px;
+}
+
+.jupyter-widget-tag.mod-active {
+  /* MD Lite 4dp shadow */
+  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, var(--md-shadow-key-penumbra-opacity)),
+    0 1px 10px 0 rgba(0, 0, 0, var(--md-shadow-ambient-shadow-opacity)),
+    0 2px 4px -1px rgba(0, 0, 0, var(--md-shadow-key-umbra-opacity));
+  color: var(--jp-ui-font-color1);
+  background-color: var(--jp-layout-color3);
+}
+
+.jupyter-widget-colortag {
+  color: var(--jp-inverse-ui-font-color1);
+}
+
+.jupyter-widget-colortag.mod-active {
+  color: var(--jp-inverse-ui-font-color0);
+}
+
+.jupyter-widget-taginput {
+  color: var(--jp-ui-font-color0);
+  background-color: var(--jp-layout-color0);
+
+  cursor: text;
+  text-align: left;
+}
+
+.jupyter-widget-taginput:focus {
+  outline: none;
+}
+
+.jupyter-widget-tag-close {
+  margin-left: var(--jp-widgets-inline-margin);
+  padding: 2px 0px 2px 2px;
+}
+
+.jupyter-widget-tag-close:hover {
+  cursor: pointer;
+}
+
+/* Tag "Primary" Styling */
+
+.jupyter-widget-tag.mod-primary {
+  color: var(--jp-inverse-ui-font-color1);
+  background-color: var(--jp-brand-color1);
+}
+
+.jupyter-widget-tag.mod-primary.mod-active {
+  color: var(--jp-inverse-ui-font-color0);
+  background-color: var(--jp-brand-color0);
+}
+
+/* Tag "Success" Styling */
+
+.jupyter-widget-tag.mod-success {
+  color: var(--jp-inverse-ui-font-color1);
+  background-color: var(--jp-success-color1);
+}
+
+.jupyter-widget-tag.mod-success.mod-active {
+  color: var(--jp-inverse-ui-font-color0);
+  background-color: var(--jp-success-color0);
+}
+
+/* Tag "Info" Styling */
+
+.jupyter-widget-tag.mod-info {
+  color: var(--jp-inverse-ui-font-color1);
+  background-color: var(--jp-info-color1);
+}
+
+.jupyter-widget-tag.mod-info.mod-active {
+  color: var(--jp-inverse-ui-font-color0);
+  background-color: var(--jp-info-color0);
+}
+
+/* Tag "Warning" Styling */
+
+.jupyter-widget-tag.mod-warning {
+  color: var(--jp-inverse-ui-font-color1);
+  background-color: var(--jp-warn-color1);
+}
+
+.jupyter-widget-tag.mod-warning.mod-active {
+  color: var(--jp-inverse-ui-font-color0);
+  background-color: var(--jp-warn-color0);
+}
+
+/* Tag "Danger" Styling */
+
+.jupyter-widget-tag.mod-danger {
+  color: var(--jp-inverse-ui-font-color1);
+  background-color: var(--jp-error-color1);
+}
+
+.jupyter-widget-tag.mod-danger.mod-active {
+  color: var(--jp-inverse-ui-font-color0);
+  background-color: var(--jp-error-color0);
+}
+
 /* General Button Styling */
 
 .jupyter-button {
