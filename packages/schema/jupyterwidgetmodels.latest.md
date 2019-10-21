@@ -238,6 +238,26 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | string           | `'black'`        | The color value.
 
+### ColorsInputModel (@jupyter-widgets/controls, 1.5.0); ColorsInputView (@jupyter-widgets/controls, 1.5.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'1.5.0'`        | 
+`_model_name`    | string           | `'ColorsInputModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'1.5.0'`        | 
+`_view_name`     | string           | `'ColorsInputView'` | 
+`allow_duplicates` | boolean          | `true`           | 
+`allowed_tags`   | array            | `[]`             | 
+`description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
+`layout`         | reference to Layout widget | reference to new instance | 
+`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`value`          | array            | `[]`             | List of string tags
+
 ### ComboboxModel (@jupyter-widgets/controls, 2.0.0); ComboboxView (@jupyter-widgets/controls, 2.0.0)
 
 Attribute        | Type             | Default          | Help
@@ -542,6 +562,30 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | number (float)   | `0.0`            | Float value
 
+### FloatsInputModel (@jupyter-widgets/controls, 1.5.0); FloatsInputView (@jupyter-widgets/controls, 1.5.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'1.5.0'`        | 
+`_model_name`    | string           | `'FloatsInputModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'1.5.0'`        | 
+`_view_name`     | string           | `'FloatsInputView'` | 
+`allow_duplicates` | boolean          | `true`           | 
+`allowed_tags`   | array            | `[]`             | 
+`description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
+`format`         | string           | `'.1f'`          | 
+`layout`         | reference to Layout widget | reference to new instance | 
+`max`            | `null` or number (float) | `null`           | 
+`min`            | `null` or number (float) | `null`           | 
+`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`tag_style`      | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the tags.
+`value`          | array            | `[]`             | List of float tags
+
 ### GridBoxModel (@jupyter-widgets/controls, 2.0.0); GridBoxView (@jupyter-widgets/controls, 2.0.0)
 
 Attribute        | Type             | Default          | Help
@@ -727,6 +771,30 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | number (integer) | `0`              | Int value
+
+### IntsInputModel (@jupyter-widgets/controls, 1.5.0); IntsInputView (@jupyter-widgets/controls, 1.5.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'1.5.0'`        | 
+`_model_name`    | string           | `'IntsInputModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'1.5.0'`        | 
+`_view_name`     | string           | `'IntsInputView'` | 
+`allow_duplicates` | boolean          | `true`           | 
+`allowed_tags`   | array            | `[]`             | 
+`description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
+`format`         | string           | `'.3g'`          | 
+`layout`         | reference to Layout widget | reference to new instance | 
+`max`            | `null` or number (integer) | `null`           | 
+`min`            | `null` or number (integer) | `null`           | 
+`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`tag_style`      | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the tags.
+`value`          | array            | `[]`             | List of int tags
 
 ### LabelModel (@jupyter-widgets/controls, 2.0.0); LabelView (@jupyter-widgets/controls, 2.0.0)
 
@@ -978,6 +1046,28 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `titles`         | array of string  | `[]`             | Titles of the pages
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
+
+
+### TagsInputModel (@jupyter-widgets/controls, 1.5.0); TagsInputView (@jupyter-widgets/controls, 1.5.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'1.5.0'`        | 
+`_model_name`    | string           | `'TagsInputModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'1.5.0'`        | 
+`_view_name`     | string           | `'TagsInputView'` | 
+`allow_duplicates` | boolean          | `true`           | 
+`allowed_tags`   | array            | `[]`             | 
+`description`    | string           | `''`             | Description of the control.
+`description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
+`layout`         | reference to Layout widget | reference to new instance | 
+`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`tag_style`      | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the tags.
+`value`          | array            | `[]`             | List of string tags
 
 ### TextModel (@jupyter-widgets/controls, 2.0.0); TextView (@jupyter-widgets/controls, 2.0.0)
 
