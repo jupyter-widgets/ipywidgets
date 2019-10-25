@@ -2,7 +2,7 @@ import {
     expect
 } from 'chai';
 
-import * as utils from '../../lib/utils';
+import * as utils from '../../src/utils';
 
 import * as chai from 'chai';
 import sinon from 'sinon';
