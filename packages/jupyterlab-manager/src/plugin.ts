@@ -25,7 +25,7 @@ import {
 } from '@jupyterlab/rendermime';
 
 import {
-  ILoggerRegistry
+  ILoggerRegistry, LogLevel
 } from '@jupyterlab/logconsole';
 
 import {
@@ -193,13 +193,21 @@ function activateWidgetExtension(
       wManager.onUnhandledIOPubMessage.connect(
         (sender: WidgetManager, msg: KernelMessage.IIOPubMessage) => {
           const logger = loggerRegistry.getLogger(nb.context.path);
-          // @ts-ignore
-          logger.rendermime = nb.content.rendermime;
+          let level: LogLevel = 'warning';
+          if (
+            KernelMessage.isErrorMsg(msg) ||
+            (KernelMessage.isStreamMsg(msg) && msg.content.name === 'stderr')
+          ) {
+            level = 'error';
+          }
           const data: nbformat.IOutput = {
             ...msg.content,
             output_type: msg.header.msg_type
           };
-          logger.log({type: 'output', data});
+          // TODO: remove ignore when we use jlab 1.2
+          // @ts-ignore
+          logger.rendermime = nb.content.rendermime;
+          logger.log({type: 'output', data, level});
       });
     }
   };
