@@ -153,7 +153,7 @@ class FloatLogSliderView extends BaseIntSliderView {
      * Parse value from a string
      */
     stringToValue(text: string): number {
-            return this._parse_value(text);
+        return this._parse_value(text);
     }
 
     /**
