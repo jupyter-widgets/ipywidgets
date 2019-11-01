@@ -204,8 +204,6 @@ function activateWidgetExtension(
             ...msg.content,
             output_type: msg.header.msg_type
           };
-          // TODO: remove ignore when we use jlab 1.2
-          // @ts-ignore
           logger.rendermime = nb.content.rendermime;
           logger.log({type: 'output', data, level});
       });
