@@ -145,6 +145,19 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   }
 
   /**
+   * Default callback handler to emit unhandled kernel messages.
+   */
+  callbacks(view?: WidgetView) {
+    return {
+        iopub: {
+            output: (msg: KernelMessage.IIOPubMessage) => {
+              this._onUnhandledIOPubMessage.emit(msg);
+            }
+        }
+    };
+  }
+
+  /**
    * Register a new kernel
    */
   _handleKernelChanged({oldValue, newValue}: Session.IKernelChangedArgs) {
@@ -405,6 +418,14 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     return this._restoredStatus;
   }
 
+  /**
+   * A signal emitted for unhandled iopub kernel messages.
+   *
+   */
+  get onUnhandledIOPubMessage(): ISignal<this, KernelMessage.IIOPubMessage> {
+    return this._onUnhandledIOPubMessage;
+  }
+
   register(data: IWidgetRegistryData) {
     this._registry.set(data.name, data.version, data.exports);
   }
@@ -493,6 +514,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
 
   private _modelsSync = new Map<string, WidgetModel>();
   private _settings: WidgetManager.Settings;
+  private _onUnhandledIOPubMessage = new Signal<this, KernelMessage.IIOPubMessage>(this);
 }
 
 
