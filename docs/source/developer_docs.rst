@@ -4,15 +4,15 @@ Developer Docs
 The Jupyter widgets packages are developed in the `https://github.com/jupyter-widgets/ipywidgets <https://github.com/jupyter-widgets/ipywidgets>`_ git repository. See the issue tracker, README, and other Github documents for the most recent information.
 
 
-Scope of Ipywidgets
+Scope of ipywidgets
 -------------------
 
-``ipywidgets`` is a framework to provide eventful python objects that have a representation in the browser (see :doc:`examples/Widget Basics.ipynb`for more on the definition of widgets). This requires two components:
+``ipywidgets`` is a framework to provide eventful python objects that have a representation in the browser (see :doc:`examples/Widget Basics.ipynb` for more on the definition of widgets). This requires two components:
 
 1. The framework for widget interactions between the widgets represented in the Python kernel and the (javascript) representation of the widgets in the browser.
-2. A set of implemented widgets that *use* this framework.
+2. A basic, lightweight set of form controls that *use* this framework, based on standard HTML form controls. These included controls include a text area, text box, select and multiselect controls, checkbox, etc., plus a few more advanced controls that are very popular, such as a slider and basic tab panels.
 
-The framework is the foremost purpose of ipywidgets. ``ipywidgets`` does also provides a set of reference widgets for those objects (and supports them), but these are intentionally relatively lightweight.  Hence ``ipywidgets`` intentionally encourages other browser-level javascript frameworks, as this allows exploration of UI idioms while keeping a shared kernel/Python-level API.
+The framework for building rich interactive objects is the foremost purpose of the ipywidgets project, and the set of included reference form controls is purposefully kept small and self-contained. We encourage and support a robust ecosystem of packages built on top of the ipywidgets framework to provide more complicated interactive objects, such as maps or 2d and 3d visualizations, or form control systems built on a variety of popular Javascript frameworks such as Material or Vue.
 
 
 Additional Developer Docs
