@@ -28,7 +28,8 @@ JupyterLab extension.
 * For JupyterLab 0.33.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@0.36`
 * For JupyterLab 0.34.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@0.37`
 * For JupyterLab 0.35.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@0.38`
-* For JupyterLab 1.0.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@1.0`
+* For JupyterLab 1.0.x and 1.1.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@1.0`
+* For JupyterLab 1.2.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@1.1`
 
 
 Source Build
