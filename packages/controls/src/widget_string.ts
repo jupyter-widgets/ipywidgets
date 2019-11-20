@@ -209,6 +209,13 @@ class TextareaView extends DescriptionView {
         return super.update();
     }
 
+    updateTabindex() {
+        if (!this.textbox) return; // we might be constructing the parent
+        let tabindex = this.model.get('tabindex');
+        if (tabindex) this.textbox.setAttribute('tabIndex', tabindex);
+        else this.textbox.removeAttribute('tabIndex');
+    }
+
     events() {
         return {
             'keydown input': 'handleKeyDown',
@@ -294,6 +301,7 @@ class TextView extends DescriptionView {
 
         this.update_placeholder();
         this.update_title();
+        this.updateTabindex();
     }
 
     update_placeholder(value?: string) {
@@ -307,6 +315,13 @@ class TextView extends DescriptionView {
         } else if (this.model.get('description').length === 0) {
             this.textbox.setAttribute('title', title);
         }
+    }
+
+    updateTabindex() {
+        if (!this.textbox) return; // we might be constructing the parent
+        let tabindex = this.model.get('tabindex');
+        if (tabindex === null) this.textbox.removeAttribute('tabIndex');
+        else this.textbox.setAttribute('tabIndex', tabindex);
     }
 
     update(options?: any) {

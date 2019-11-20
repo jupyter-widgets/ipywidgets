@@ -3,7 +3,7 @@
 
 """Contains the DOMWidget class"""
 
-from traitlets import Unicode
+from traitlets import Int, Unicode
 from .widget import Widget, widget_serialization
 from .trait_types import InstanceDict, TypedTuple
 from .widget_layout import Layout
@@ -15,6 +15,7 @@ class DOMWidget(Widget):
 
     _model_name = Unicode('DOMWidgetModel').tag(sync=True)
     _dom_classes = TypedTuple(trait=Unicode(), help="CSS classes applied to widget DOM element").tag(sync=True)
+    tabindex = Int(help="Tabulation index.").tag(sync=True)
     layout = InstanceDict(Layout).tag(sync=True, **widget_serialization)
 
     def add_class(self, className):
@@ -48,3 +49,16 @@ class DOMWidget(Widget):
         # We also need to include _dom_classes in repr for reproducibility
         if self._dom_classes:
             yield '_dom_classes'
+
+    def set_tabindex(self, i=0):
+        """Set tabindex for this DOM element.
+        NB: this method is here for completeness
+        but should be avoided for i>0.
+        (see https://developer.paciellogroup.com/blog/2014/08/using-the-tabindex-attribute/)
+
+        Parameters
+        ----------
+        i: integer
+            Order in the keyboard tabulation.
+        """
+        self.tabindex = i
