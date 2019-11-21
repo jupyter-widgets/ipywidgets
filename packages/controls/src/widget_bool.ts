@@ -164,6 +164,7 @@ class ToggleButtonView extends DOMWidgetView {
         this.el.classList.add('jupyter-button');
         this.el.classList.add('widget-toggle-button');
         this.listenTo(this.model, 'change:button_style', this.update_button_style);
+        this.listenTo(this.model, 'change:tooltip', this.updateTooltip);
         this.set_button_style();
         this.update(); // Set defaults.
     }
@@ -174,6 +175,11 @@ class ToggleButtonView extends DOMWidgetView {
 
     set_button_style() {
         this.set_mapped_classes(ToggleButtonView.class_map, 'button_style');
+    }
+
+    updateTooltip() {
+        this.model.set('_tooltip', this.model.get('tooltip'));
+        return super.updateTooltip();
     }
 
     /**
@@ -208,6 +214,7 @@ class ToggleButtonView extends DOMWidgetView {
                 this.el.appendChild(document.createTextNode(description));
             }
         }
+        this.updateTooltip();
         return super.update();
     }
 

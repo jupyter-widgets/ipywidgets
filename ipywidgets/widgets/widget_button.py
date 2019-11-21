@@ -13,7 +13,7 @@ from .widget_core import CoreWidget
 from .widget_style import Style
 from .trait_types import Color, InstanceDict
 
-from traitlets import Unicode, Bool, CaselessStrEnum, Instance, validate, default
+from traitlets import Unicode, Bool, CaselessStrEnum, Instance, validate, default, link
 import warnings
 
 
@@ -61,6 +61,7 @@ class Button(DOMWidget, CoreWidget):
         super(Button, self).__init__(**kwargs)
         self._click_handlers = CallbackDispatcher()
         self.on_msg(self._handle_button_msg)
+        link((self, 'tooltip'), (self, '_tooltip'))
 
     @validate('icon')
     def _validate_icon(self, proposal):

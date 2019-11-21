@@ -87,6 +87,15 @@ class DropdownView extends DescriptionView {
         return super.update();
     }
 
+    updateTooltip() {
+        let title = this.model.get('description_tooltip');
+        if (!title) {
+            this.listbox.removeAttribute('title');
+        } else if (this.model.get('description').length === 0) {
+            this.listbox.setAttribute('title', title);
+        }
+    }
+
     _updateOptions() {
         this.listbox.textContent = '';
         let items = this.model.get('_options_labels');

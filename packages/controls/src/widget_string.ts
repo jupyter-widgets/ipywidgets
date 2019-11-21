@@ -301,18 +301,18 @@ class TextView extends StringView {
         this.listenTo(this.model, 'change:placeholder', (model, value, options) => {
             this.update_placeholder(value);
         });
-        this.listenTo(this.model, 'change:description_tooltip', this.update_title);
-        this.listenTo(this.model, 'change:description', this.update_title);
+        this.listenTo(this.model, 'change:description_tooltip', this.updateTooltip);
+        this.listenTo(this.model, 'change:description', this.updateTooltip);
 
         this.update_placeholder();
-        this.update_title();
+        this.updateTooltip();
     }
 
     update_placeholder(value?: string) {
         this.textbox.setAttribute('placeholder', value || this.model.get('placeholder'));
     }
 
-    update_title() {
+    updateTooltip() {
         let title = this.model.get('description_tooltip');
         if (!title) {
             this.textbox.removeAttribute('title');

@@ -15,6 +15,7 @@ class DOMWidget(Widget):
 
     _model_name = Unicode('DOMWidgetModel').tag(sync=True)
     _dom_classes = TypedTuple(trait=Unicode(), help="CSS classes applied to widget DOM element").tag(sync=True)
+    _tooltip = Unicode(None, allow_none=True, help="Any tooltip.").tag(sync=True)
     layout = InstanceDict(Layout).tag(sync=True, **widget_serialization)
 
     def add_class(self, className):
@@ -48,3 +49,14 @@ class DOMWidget(Widget):
         # We also need to include _dom_classes in repr for reproducibility
         if self._dom_classes:
             yield '_dom_classes'
+
+    def set_tooltip(self, s):
+        """Set _tooltip text, which is
+        actually the `title` HTML attribute.
+
+        Parameters
+        ----------
+        s: string
+            Tooltip text
+        """
+        self._tooltip = s

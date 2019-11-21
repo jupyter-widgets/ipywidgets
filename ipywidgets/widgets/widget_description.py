@@ -3,7 +3,7 @@
 
 """Contains the DOMWidget class"""
 
-from traitlets import Unicode
+from traitlets import Unicode, link
 from .widget import Widget, widget_serialization, register
 from .trait_types import InstanceDict
 from .widget_style import Style
@@ -23,6 +23,11 @@ class DescriptionWidget(DOMWidget, CoreWidget):
     description = Unicode('', help="Description of the control.").tag(sync=True)
     description_tooltip = Unicode(None, allow_none=True, help="Tooltip for the description (defaults to description).").tag(sync=True)
     style = InstanceDict(DescriptionStyle, help="Styling customizations").tag(sync=True, **widget_serialization)
+
+    def __init__(self, **kwargs):
+        """Public constructor"""
+        super(DescriptionWidget, self).__init__(**kwargs)
+        link((self, 'description_tooltip'), (self, '_tooltip'))
 
     def _repr_keys(self):
         for key in super(DescriptionWidget, self)._repr_keys():
