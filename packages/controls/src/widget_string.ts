@@ -313,6 +313,7 @@ class TextView extends StringView {
     }
 
     updateTooltip() {
+        if (!this.textbox) return; // we might be constructing the parent
         let title = this.model.get('description_tooltip');
         if (!title) {
             this.textbox.removeAttribute('title');
