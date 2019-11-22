@@ -195,13 +195,26 @@ class TextareaView extends StringView {
             (model, value, options) => {
                 this.update_placeholder(value);
         });
+        this.listenTo(this.model, 'change:description_tooltip', this.updateTooltip);
+        this.listenTo(this.model, 'change:description', this.updateTooltip);
 
         this.update_placeholder();
+        this.updateTooltip();
     }
 
     update_placeholder(value?: string) {
         value = value || this.model.get('placeholder');
         this.textbox.setAttribute('placeholder', value.toString());
+    }
+
+    updateTooltip() {
+        if (!this.textbox) return; // we might be constructing the parent
+        let title = this.model.get('description_tooltip');
+        if (!title) {
+            this.textbox.removeAttribute('title');
+        } else if (this.model.get('description').length === 0) {
+            this.textbox.setAttribute('title', title);
+        }
     }
 
     /**
