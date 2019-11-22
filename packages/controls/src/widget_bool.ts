@@ -68,10 +68,12 @@ class CheckboxView extends DescriptionView {
         this.checkboxLabel.appendChild(this.descriptionSpan);
 
         this.listenTo(this.model, 'change:indent', this.updateIndent);
+        this.listenTo(this.model, 'change:tooltip', this.updateTooltip);
 
         this.update(); // Set defaults.
         this.updateDescription();
         this.updateIndent();
+        this.updateTooltip();
     }
 
     /**
@@ -99,6 +101,16 @@ class CheckboxView extends DescriptionView {
     updateIndent() {
         let indent = this.model.get('indent');
         this.label.style.display = indent ? '' : 'none';
+    }
+
+    updateTooltip() {
+        if (!this.checkbox) return; // we might be constructing the parent
+        let title = this.model.get('tooltip');
+        if (!title) {
+            this.checkbox.removeAttribute('title');
+        } else if (this.model.get('description').length === 0) {
+            this.checkbox.setAttribute('title', title);
+        }
     }
 
     events(): {[e: string]: string} {
@@ -175,11 +187,6 @@ class ToggleButtonView extends DOMWidgetView {
 
     set_button_style() {
         this.set_mapped_classes(ToggleButtonView.class_map, 'button_style');
-    }
-
-    updateTooltip() {
-        this.model.set('_tooltip', this.model.get('tooltip'));
-        return super.updateTooltip();
     }
 
     /**
