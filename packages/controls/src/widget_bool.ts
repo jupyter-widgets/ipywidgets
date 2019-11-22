@@ -68,10 +68,12 @@ class CheckboxView extends DescriptionView {
         this.checkboxLabel.appendChild(this.descriptionSpan);
 
         this.listenTo(this.model, 'change:indent', this.updateIndent);
+        this.listenTo(this.model, 'change:tabindex', this.updateTabindex);
 
         this.update(); // Set defaults.
         this.updateDescription();
         this.updateIndent();
+        this.updateTabindex();
     }
 
     /**
@@ -99,6 +101,13 @@ class CheckboxView extends DescriptionView {
     updateIndent() {
         let indent = this.model.get('indent');
         this.label.style.display = indent ? '' : 'none';
+    }
+
+    updateTabindex() {
+        if (!this.checkbox) return; // we might be constructing the parent
+        let tabindex = this.model.get('tabindex');
+        if (tabindex) this.checkbox.setAttribute('tabIndex', tabindex);
+        else this.checkbox.removeAttribute('tabIndex');
     }
 
     events(): {[e: string]: string} {
