@@ -88,6 +88,7 @@ class DropdownView extends DescriptionView {
     }
 
     updateTooltip() {
+        if (!this.listbox) return; // we might be constructing the parent
         let title = this.model.get('description_tooltip');
         if (!title) {
             this.listbox.removeAttribute('title');
