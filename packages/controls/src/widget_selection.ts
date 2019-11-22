@@ -30,6 +30,45 @@ class SelectionModel extends CoreDescriptionModel {
 }
 
 export
+class SelectionView extends DescriptionView {
+    /**
+     * Called when view is rendered.
+     */
+    render() {
+        super.render(); // Incl. setting some defaults.
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-inline-hbox');
+    }
+
+    /**
+     * Update the contents of this view
+     *
+     * Called when the model is changed.  The model may have been
+     * changed by another view or by a state update from the back-end.
+     */
+    update() {
+        super.update();
+        // Disable listbox if needed
+        this.listbox.disabled = this.model.get('disabled');
+
+        // Set the tooltip
+        this.updateTooltip();
+    }
+
+    updateTooltip() {
+        if (!this.listbox) return; // we might be constructing the parent
+        let title = this.model.get('_tooltip');
+        if (!title) {
+            this.listbox.removeAttribute('title');
+        } else if (this.model.get('description').length === 0) {
+            this.listbox.setAttribute('title', title);
+        }
+    }
+
+    listbox: HTMLSelectElement;
+}
+
+export
 class DropdownModel extends SelectionModel {
     defaults() {
         return {...super.defaults(),
@@ -48,7 +87,7 @@ class DropdownModel extends SelectionModel {
 // For the old code, see commit f68bfbc566f3a78a8f3350b438db8ed523ce3642
 
 export
-class DropdownView extends DescriptionView {
+class DropdownView extends SelectionView {
     /**
      * Public constructor.
      */
@@ -63,8 +102,6 @@ class DropdownView extends DescriptionView {
     render() {
         super.render();
 
-        this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-dropdown');
 
         this.listbox = document.createElement('select');
@@ -78,23 +115,10 @@ class DropdownView extends DescriptionView {
      * Update the contents of this view
      */
     update() {
-        // Disable listbox if needed
-        this.listbox.disabled = this.model.get('disabled');
-
         // Select the correct element
         let index = this.model.get('index');
         this.listbox.selectedIndex = index === null ? -1 : index;
         return super.update();
-    }
-
-    updateTooltip() {
-        if (!this.listbox) return; // we might be constructing the parent
-        let title = this.model.get('description_tooltip');
-        if (!title) {
-            this.listbox.removeAttribute('title');
-        } else if (this.model.get('description').length === 0) {
-            this.listbox.setAttribute('title', title);
-        }
     }
 
     _updateOptions() {
@@ -123,8 +147,6 @@ class DropdownView extends DescriptionView {
         this.model.set('index', this.listbox.selectedIndex === -1 ? null : this.listbox.selectedIndex);
         this.touch();
     }
-
-    listbox: HTMLSelectElement;
 }
 
 
@@ -141,7 +163,7 @@ class SelectModel extends SelectionModel {
 }
 
 export
-class SelectView extends DescriptionView {
+class SelectView extends SelectionView {
     /**
      * Public constructor.
      */
@@ -158,9 +180,6 @@ class SelectView extends DescriptionView {
      */
     render() {
         super.render();
-
-        this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-select');
 
         this.listbox.id = this.label.htmlFor = uuid();
@@ -175,7 +194,6 @@ class SelectView extends DescriptionView {
      */
     update() {
         super.update();
-        this.listbox.disabled = this.model.get('disabled');
         let rows = this.model.get('rows');
         if (rows === null) {
             rows = '';
@@ -217,8 +235,6 @@ class SelectView extends DescriptionView {
         this.model.set('index', this.listbox.selectedIndex, {updated_view: this});
         this.touch();
     }
-
-    listbox: HTMLSelectElement;
 }
 
 export
