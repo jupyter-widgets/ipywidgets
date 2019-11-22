@@ -10,18 +10,20 @@ from .widget_description import DescriptionWidget
 from .widget_core import CoreWidget
 from .valuewidget import ValueWidget
 from .widget import register
-from traitlets import Unicode, Bool, CaselessStrEnum
+from traitlets import Unicode, Bool, CaselessStrEnum, link
 
 
 class _Bool(DescriptionWidget, ValueWidget, CoreWidget):
     """A base class for creating widgets that represent booleans."""
     value = Bool(False, help="Bool value").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes.").tag(sync=True)
+    tooltip = Unicode(help="Tooltip caption of the toggle button.").tag(sync=True)
 
     def __init__(self, value=None, **kwargs):
         if value is not None:
             kwargs['value'] = value
         super(_Bool, self).__init__(**kwargs)
+        link((self, 'tooltip'), (self, '_tooltip')) # for overall names compatibility
 
     _model_name = Unicode('BoolModel').tag(sync=True)
 
@@ -62,7 +64,6 @@ class ToggleButton(_Bool):
     _view_name = Unicode('ToggleButtonView').tag(sync=True)
     _model_name = Unicode('ToggleButtonModel').tag(sync=True)
 
-    tooltip = Unicode(help="Tooltip caption of the toggle button.").tag(sync=True)
     icon = Unicode('', help= "Font-awesome icon.").tag(sync=True)
 
     button_style = CaselessStrEnum(
