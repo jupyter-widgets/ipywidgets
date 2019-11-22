@@ -416,16 +416,16 @@
     width: var(--jp-widgets-inline-width);
 }
 
-.widget-text input[type="text"], .widget-text input[type="number"]{
+.widget-text input[type="text"], .widget-text input[type="number"], .widget-text input[type="password"] {
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-text input[type="text"]:disabled, .widget-text input[type="number"]:disabled, .widget-textarea textarea:disabled {
+.widget-text input[type="text"]:disabled, .widget-text input[type="number"]:disabled, .widget-text input[type="password"]:disabled, .widget-textarea textarea:disabled {
     opacity: var(--jp-widgets-disabled-opacity);
 }
 
-.widget-text input[type="text"], .widget-text input[type="number"], .widget-textarea textarea {
+.widget-text input[type="text"], .widget-text input[type="number"], .widget-text input[type="password"], .widget-textarea textarea {
     box-sizing: border-box;
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     background-color: var(--jp-widgets-input-background-color);
@@ -437,7 +437,7 @@
     outline: none !important;
 }
     
-.widget-text input[type="text"], .widget-textarea textarea {
+.widget-text input[type="text"], .widget-text input[type="password"], .widget-textarea textarea {
     padding: var(--jp-widgets-input-padding) calc( var(--jp-widgets-input-padding) *  2);
 }
 
