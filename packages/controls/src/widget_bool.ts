@@ -69,11 +69,13 @@ class CheckboxView extends DescriptionView {
 
         this.listenTo(this.model, 'change:indent', this.updateIndent);
         this.listenTo(this.model, 'change:tabindex', this.updateTabindex);
+        this.listenTo(this.model, 'change:_focus', this.updateFocus);
 
         this.update(); // Set defaults.
         this.updateDescription();
         this.updateIndent();
         this.updateTabindex();
+        this.updateFocus();
     }
 
     /**
@@ -108,6 +110,13 @@ class CheckboxView extends DescriptionView {
         let tabindex = this.model.get('tabindex');
         if (tabindex) this.checkbox.setAttribute('tabIndex', tabindex);
         else this.checkbox.removeAttribute('tabIndex');
+    }
+
+    updateFocus() {
+        let focus = this.model.get('_focus');
+	if (!focus) return;
+	if (focus == 'on') { this.checkbox.focus(); }
+	else if (focus == 'off') { this.checkbox.blur(); }
     }
 
     events(): {[e: string]: string} {
@@ -174,6 +183,7 @@ class ToggleButtonView extends DOMWidgetView {
         this.el.classList.add('widget-toggle-button');
         this.listenTo(this.model, 'change:button_style', this.update_button_style);
         this.listenTo(this.model, 'change:tabindex', this.updateTabindex);
+        this.listenTo(this.model, 'change:_focus', this.updateFocus);
         this.set_button_style();
         this.update(); // Set defaults.
     }
@@ -220,6 +230,7 @@ class ToggleButtonView extends DOMWidgetView {
             }
         }
         this.updateTabindex();
+        this.updateFocus();
         return super.update();
     }
 

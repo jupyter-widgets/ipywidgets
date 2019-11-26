@@ -15,6 +15,7 @@ class DOMWidget(Widget):
 
     _model_name = Unicode('DOMWidgetModel').tag(sync=True)
     _dom_classes = TypedTuple(trait=Unicode(), help="CSS classes applied to widget DOM element").tag(sync=True)
+    _focus = Unicode(help="Attribute representing HTML focus.").tag(sync=True)
     tabindex = Int(help="Tabulation index.").tag(sync=True)
     layout = InstanceDict(Layout).tag(sync=True, **widget_serialization)
 
@@ -74,3 +75,15 @@ class DOMWidget(Widget):
         to keyboard tabulation navigation.
         """
         self.set_tabindex(-1)
+
+    def focus(self):
+         """Give focus to this DOM element.
+         """
+         self._focus = ''
+         self._focus = 'on'
+
+    def blur(self):
+         """Remove focus from this DOM element.
+         """
+         self._focus = ''
+         self._focus = 'off'

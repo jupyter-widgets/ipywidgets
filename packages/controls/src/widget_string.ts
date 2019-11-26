@@ -216,6 +216,13 @@ class TextareaView extends DescriptionView {
         else this.textbox.removeAttribute('tabIndex');
     }
 
+    updateFocus() {
+        let focus = this.model.get('_focus');
+	if (!focus) return;
+	if (focus == 'on') { this.textbox.focus(); }
+	else if (focus == 'off') { this.textbox.blur(); }
+    }
+
     events() {
         return {
             'keydown input': 'handleKeyDown',
@@ -302,6 +309,7 @@ class TextView extends DescriptionView {
         this.update_placeholder();
         this.update_title();
         this.updateTabindex();
+        this.updateFocus();
     }
 
     update_placeholder(value?: string) {
@@ -322,6 +330,13 @@ class TextView extends DescriptionView {
         let tabindex = this.model.get('tabindex');
         if (tabindex === null) this.textbox.removeAttribute('tabIndex');
         else this.textbox.setAttribute('tabIndex', tabindex);
+    }
+
+    updateFocus() {
+        let focus = this.model.get('_focus');
+	if (!focus) return;
+	if (focus == 'on') { this.textbox.focus(); }
+	else if (focus == 'off') { this.textbox.blur(); }
     }
 
     update(options?: any) {

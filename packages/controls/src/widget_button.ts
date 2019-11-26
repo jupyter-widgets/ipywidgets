@@ -68,6 +68,7 @@ class ButtonView extends DOMWidgetView {
         this.el.classList.add('widget-button');
         this.listenTo(this.model, 'change:button_style', this.update_button_style);
         this.listenTo(this.model, 'change:tabindex', this.updateTabindex);
+        this.listenTo(this.model, 'change:_focus', this.updateFocus);
         this.set_button_style();
         this.update(); // Set defaults.
     }

@@ -56,6 +56,9 @@ class SelectionView extends DescriptionView {
 
         // Set tabindex
         this.updateTabindex();
+
+        // Set focus if relevant
+        this.updateFocus();
     }
 
     updateTabindex() {
@@ -66,6 +69,13 @@ class SelectionView extends DescriptionView {
         } else {
         this.listbox.setAttribute('tabindex', tabindex);
         }
+    }
+
+    updateFocus() {
+        let focus = this.model.get('_focus');
+	if (!focus) return;
+	if (focus == 'on') { this.listbox.focus(); }
+	else if (focus == 'off') { this.listbox.blur(); }
     }
 
     listbox: HTMLSelectElement;

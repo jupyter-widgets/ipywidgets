@@ -59,8 +59,10 @@ class DescriptionView extends DOMWidgetView {
         this.listenTo(this.model, 'change:description', this.updateDescription);
         this.listenTo(this.model, 'change:description_tooltip', this.updateDescription);
         this.listenTo(this.model, 'change:tabindex', this.updateTabindex);
+        this.listenTo(this.model, 'change:_focus', this.updateFocus);
         this.updateDescription();
         this.updateTabindex();
+        this.updateFocus();
     }
 
     typeset(element: HTMLElement, text?: string){

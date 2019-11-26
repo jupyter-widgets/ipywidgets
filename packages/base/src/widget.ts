@@ -578,6 +578,7 @@ class DOMWidgetModel extends WidgetModel {
     defaults() {
         return utils.assign(super.defaults(), {
             _dom_classes: [],
+            _focus: null,
             tabindex: null
             // We do not declare defaults for the layout and style attributes.
             // Those defaults are constructed on the kernel side and synced here
@@ -971,6 +972,13 @@ class DOMWidgetView extends WidgetView {
         let tabindex = this.model.get('tabindex');
         if (tabindex) this.el.setAttribute('tabIndex', tabindex);
         else this.el.removeAttribute('tabIndex');
+    }
+
+    updateFocus() {
+        let focus = this.model.get('_focus');
+	if (!focus) return;
+	if (focus == 'on') { this.el.focus(); }
+	else if (focus == 'off') { this.el.blur(); }
     }
 
     '$el': any;
