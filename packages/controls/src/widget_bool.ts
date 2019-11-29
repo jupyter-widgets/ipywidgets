@@ -106,8 +106,8 @@ class CheckboxView extends DescriptionView {
     updateTabindex() {
         if (!this.checkbox) return; // we might be constructing the parent
         let tabindex = this.model.get('tabindex');
-        if (tabindex) this.checkbox.setAttribute('tabIndex', tabindex);
-        else this.checkbox.removeAttribute('tabIndex');
+        if (tabindex === null) this.checkbox.removeAttribute('tabIndex');
+        else this.checkbox.setAttribute('tabIndex', tabindex);
     }
 
     events(): {[e: string]: string} {

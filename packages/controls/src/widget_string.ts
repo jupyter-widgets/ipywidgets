@@ -212,8 +212,8 @@ class TextareaView extends DescriptionView {
     updateTabindex() {
         if (!this.textbox) return; // we might be constructing the parent
         let tabindex = this.model.get('tabindex');
-        if (tabindex) this.textbox.setAttribute('tabIndex', tabindex);
-        else this.textbox.removeAttribute('tabIndex');
+        if (tabindex === null) this.textbox.removeAttribute('tabIndex');
+        else this.textbox.setAttribute('tabIndex', tabindex);
     }
 
     events() {
