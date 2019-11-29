@@ -63,13 +63,13 @@ class DOMWidget(Widget):
         """
         self.tabindex = i
 
-    def set_tabbable(self):
+    def make_tabbable(self):
         """Make this DOM element reachable
         to keyboard tabulation navigation.
         """
         self.set_tabindex(0)
 
-    def set_untabbable(self):
+    def make_untabbable(self):
         """Make this DOM element unreachable
         to keyboard tabulation navigation.
         """
