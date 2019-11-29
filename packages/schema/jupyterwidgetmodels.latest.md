@@ -67,6 +67,7 @@ Attribute        | Type             | Default          | Help
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'AccordionModel'` | 
 `_titles`        | object           | `{}`             | Titles of the pages
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'AccordionView'` | 
@@ -83,6 +84,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'AudioModel'`   | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'AudioView'`    | 
@@ -101,6 +103,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'BoundedFloatTextModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'FloatTextView'` | 
@@ -123,6 +126,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'BoundedIntTextModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'IntTextView'`  | 
@@ -145,6 +149,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'BoxModel'`     | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'BoxView'`      | 
@@ -160,6 +165,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'ButtonModel'`  | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'ButtonView'`   | 
@@ -192,6 +198,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'CheckboxModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'CheckboxView'` | 
@@ -201,6 +208,7 @@ Attribute        | Type             | Default          | Help
 `indent`         | boolean          | `true`           | Indent the control to align with other controls with a description.
 `layout`         | reference to Layout widget | reference to new instance | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`tooltip`        | string           | `''`             | Tooltip caption of the toggle button.
 `value`          | boolean          | `false`          | Bool value
 
 ### ColorPickerModel (@jupyter-widgets/controls, 1.5.0); ColorPickerView (@jupyter-widgets/controls, 1.5.0)
@@ -211,6 +219,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'ColorPickerModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'ColorPickerView'` | 
@@ -230,6 +239,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'ComboboxModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'ComboboxView'` | 
@@ -252,6 +262,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'ControllerAxisModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'ControllerAxisView'` | 
@@ -266,6 +277,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'ControllerButtonModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'ControllerButtonView'` | 
@@ -281,6 +293,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'ControllerModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'ControllerView'` | 
@@ -301,6 +314,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'DOMWidgetModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | `null` or string | `null`           | Name of the view.
@@ -315,6 +329,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'DatePickerModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'DatePickerView'` | 
@@ -359,6 +374,7 @@ Attribute        | Type             | Default          | Help
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'DropdownModel'` | 
 `_options_labels` | array of string  | `[]`             | The labels for the options.
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'DropdownView'` | 
@@ -378,6 +394,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'FileUploadModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'FileUploadView'` | 
@@ -402,6 +419,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'FloatLogSliderModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'FloatLogSliderView'` | 
@@ -428,6 +446,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'FloatProgressModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'ProgressView'` | 
@@ -449,6 +468,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'FloatRangeSliderModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'FloatRangeSliderView'` | 
@@ -474,6 +494,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'FloatSliderModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'FloatSliderView'` | 
@@ -499,6 +520,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'FloatTextModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'FloatTextView'` | 
@@ -519,6 +541,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'GridBoxModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'GridBoxView'`  | 
@@ -534,6 +557,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'HBoxModel'`    | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'HBoxView'`     | 
@@ -549,6 +573,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'HTMLMathModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'HTMLMathView'` | 
@@ -567,6 +592,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'HTMLModel'`    | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'HTMLView'`     | 
@@ -585,6 +611,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'ImageModel'`   | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'ImageView'`    | 
@@ -602,6 +629,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'IntProgressModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'ProgressView'` | 
@@ -623,6 +651,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'IntRangeSliderModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'IntRangeSliderView'` | 
@@ -648,6 +677,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'IntSliderModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'IntSliderView'` | 
@@ -673,6 +703,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'IntTextModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'IntTextView'`  | 
@@ -693,6 +724,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'LabelModel'`   | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'LabelView'`    | 
@@ -724,6 +756,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'PasswordModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'PasswordView'` | 
@@ -746,6 +779,7 @@ Attribute        | Type             | Default          | Help
 `_model_name`    | string           | `'PlayModel'`    | 
 `_playing`       | boolean          | `false`          | Whether the control is currently playing.
 `_repeat`        | boolean          | `false`          | Whether the control will repeat in a continous loop.
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'PlayView'`     | 
@@ -783,6 +817,7 @@ Attribute        | Type             | Default          | Help
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'RadioButtonsModel'` | 
 `_options_labels` | array of string  | `[]`             | The labels for the options.
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'RadioButtonsView'` | 
@@ -802,6 +837,7 @@ Attribute        | Type             | Default          | Help
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'SelectModel'`  | 
 `_options_labels` | array of string  | `[]`             | The labels for the options.
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'SelectView'`   | 
@@ -822,6 +858,7 @@ Attribute        | Type             | Default          | Help
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'SelectMultipleModel'` | 
 `_options_labels` | array of string  | `[]`             | The labels for the options.
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'SelectMultipleView'` | 
@@ -842,6 +879,7 @@ Attribute        | Type             | Default          | Help
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'SelectionRangeSliderModel'` | 
 `_options_labels` | array of string  | `[]`             | The labels for the options.
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'SelectionRangeSliderView'` | 
@@ -864,6 +902,7 @@ Attribute        | Type             | Default          | Help
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'SelectionSliderModel'` | 
 `_options_labels` | array of string  | `[]`             | The labels for the options.
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'SelectionSliderView'` | 
@@ -899,6 +938,7 @@ Attribute        | Type             | Default          | Help
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'TabModel'`     | 
 `_titles`        | object           | `{}`             | Titles of the pages
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'TabView'`      | 
@@ -915,6 +955,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'TextModel'`    | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'TextView'`     | 
@@ -935,6 +976,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'TextareaModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'TextareaView'` | 
@@ -956,6 +998,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'ToggleButtonModel'` | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'ToggleButtonView'` | 
@@ -978,6 +1021,7 @@ Attribute        | Type             | Default          | Help
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'ToggleButtonsModel'` | 
 `_options_labels` | array of string  | `[]`             | The labels for the options.
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'ToggleButtonsView'` | 
@@ -1013,6 +1057,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'VBoxModel'`    | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'VBoxView'`     | 
@@ -1028,6 +1073,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'ValidModel'`   | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'ValidView'`    | 
@@ -1037,6 +1083,7 @@ Attribute        | Type             | Default          | Help
 `layout`         | reference to Layout widget | reference to new instance | 
 `readout`        | string           | `'Invalid'`      | Message displayed when the value is False
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`tooltip`        | string           | `''`             | Tooltip caption of the toggle button.
 `value`          | boolean          | `false`          | Bool value
 
 ### VideoModel (@jupyter-widgets/controls, 1.5.0); VideoView (@jupyter-widgets/controls, 1.5.0)
@@ -1047,6 +1094,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'VideoModel'`   | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'VideoView'`    | 
@@ -1067,6 +1115,7 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/output'` | 
 `_model_module_version` | string           | `'1.0.0'`        | 
 `_model_name`    | string           | `'OutputModel'`  | 
+`_tooltip`       | `null` or string | `null`           | Any tooltip.
 `_view_module`   | string           | `'@jupyter-widgets/output'` | 
 `_view_module_version` | string           | `'1.0.0'`        | 
 `_view_name`     | string           | `'OutputView'`   | 
