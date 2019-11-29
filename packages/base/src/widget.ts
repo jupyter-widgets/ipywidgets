@@ -578,7 +578,8 @@ class DOMWidgetModel extends WidgetModel {
     defaults() {
         return utils.assign(super.defaults(), {
             _dom_classes: [],
-            tabindex: null
+            _tabindex: null,
+	    tabbable: null
             // We do not declare defaults for the layout and style attributes.
             // Those defaults are constructed on the kernel side and synced here
             // as needed, and our code here copes with those attributes being
@@ -968,9 +969,9 @@ class DOMWidgetView extends WidgetView {
     }
 
     updateTabindex() {
-        let tabindex = this.model.get('tabindex');
-        if (tabindex) this.el.setAttribute('tabIndex', tabindex);
-        else this.el.removeAttribute('tabIndex');
+        let tabindex = this.model.get('_tabindex');
+        if (tabindex === null) this.el.removeAttribute('tabIndex');
+        else this.el.setAttribute('tabIndex', tabindex);
     }
 
     '$el': any;

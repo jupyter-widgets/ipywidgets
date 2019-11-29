@@ -68,7 +68,7 @@ class CheckboxView extends DescriptionView {
         this.checkboxLabel.appendChild(this.descriptionSpan);
 
         this.listenTo(this.model, 'change:indent', this.updateIndent);
-        this.listenTo(this.model, 'change:tabindex', this.updateTabindex);
+        this.listenTo(this.model, 'change:_tabindex', this.updateTabindex);
 
         this.update(); // Set defaults.
         this.updateDescription();
@@ -105,7 +105,7 @@ class CheckboxView extends DescriptionView {
 
     updateTabindex() {
         if (!this.checkbox) return; // we might be constructing the parent
-        let tabindex = this.model.get('tabindex');
+        let tabindex = this.model.get('_tabindex');
         if (tabindex === null) this.checkbox.removeAttribute('tabIndex');
         else this.checkbox.setAttribute('tabIndex', tabindex);
     }
@@ -173,7 +173,7 @@ class ToggleButtonView extends DOMWidgetView {
         this.el.classList.add('jupyter-button');
         this.el.classList.add('widget-toggle-button');
         this.listenTo(this.model, 'change:button_style', this.update_button_style);
-        this.listenTo(this.model, 'change:tabindex', this.updateTabindex);
+        this.listenTo(this.model, 'change:_tabindex', this.updateTabindex);
         this.set_button_style();
         this.update(); // Set defaults.
     }
@@ -201,7 +201,7 @@ class ToggleButtonView extends DOMWidgetView {
 
         if (options === undefined || options.updated_view !== this) {
             this.el.disabled = this.model.get('disabled');
-            this.el.setAttribute('tabIndex', this.model.get('tabindex'));
+            this.el.setAttribute('tabIndex', this.model.get('_tabindex'));
             this.el.setAttribute('title', this.model.get('tooltip'));
 
             let description = this.model.get('description');

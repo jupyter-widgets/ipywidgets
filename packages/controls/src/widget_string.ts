@@ -211,7 +211,7 @@ class TextareaView extends DescriptionView {
 
     updateTabindex() {
         if (!this.textbox) return; // we might be constructing the parent
-        let tabindex = this.model.get('tabindex');
+        let tabindex = this.model.get('_tabindex');
         if (tabindex === null) this.textbox.removeAttribute('tabIndex');
         else this.textbox.setAttribute('tabIndex', tabindex);
     }
@@ -319,7 +319,7 @@ class TextView extends DescriptionView {
 
     updateTabindex() {
         if (!this.textbox) return; // we might be constructing the parent
-        let tabindex = this.model.get('tabindex');
+        let tabindex = this.model.get('_tabindex');
         if (tabindex === null) this.textbox.removeAttribute('tabIndex');
         else this.textbox.setAttribute('tabIndex', tabindex);
     }

@@ -60,7 +60,7 @@ class SelectionView extends DescriptionView {
 
     updateTabindex() {
         if (!this.listbox) return; // we might be constructing the parent
-        let tabindex = this.model.get('tabindex');
+        let tabindex = this.model.get('_tabindex');
         if (tabindex === null) {
             this.listbox.removeAttribute('tabindex');
         } else {

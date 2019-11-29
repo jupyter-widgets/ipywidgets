@@ -3,7 +3,7 @@
 
 """Contains the DOMWidget class"""
 
-from traitlets import Int, Unicode
+from traitlets import Bool, Int, Unicode
 from .widget import Widget, widget_serialization
 from .trait_types import InstanceDict, TypedTuple
 from .widget_layout import Layout
@@ -15,7 +15,8 @@ class DOMWidget(Widget):
 
     _model_name = Unicode('DOMWidgetModel').tag(sync=True)
     _dom_classes = TypedTuple(trait=Unicode(), help="CSS classes applied to widget DOM element").tag(sync=True)
-    tabindex = Int(help="Tabulation index.").tag(sync=True)
+    _tabindex = Int(help="Tabindex attribute for widget DOM element.").tag(sync=True)
+    tabbable = Bool(help="Is widget tabbable?").tag(sync=True)
     layout = InstanceDict(Layout).tag(sync=True, **widget_serialization)
 
     def add_class(self, className):
@@ -61,8 +62,19 @@ class DOMWidget(Widget):
         i: integer
             Order in the keyboard tabulation.
         """
-        self.tabindex = i
+        self._tabindex = i
 
+    def set_tabbable(self, tabbable):
+        """Make this DOM element (un)reachable
+        to keyboard tabulation navigation.
+        """
+        if tabbable == False:
+            self.set_tabindex(-1)
+        elif tabbable == True:
+            self.set_tabindex(0)
+        else:
+            self.set_tabindex(None)
+        
     def make_tabbable(self):
         """Make this DOM element reachable
         to keyboard tabulation navigation.
