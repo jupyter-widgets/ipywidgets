@@ -206,14 +206,15 @@ class TextareaView extends DescriptionView {
             this.textbox.setAttribute('rows', rows);
             this.textbox.disabled = this.model.get('disabled');
         }
+        this.updateTabindex();
         return super.update();
     }
 
     updateTabindex() {
         if (!this.textbox) return; // we might be constructing the parent
-        let tabindex = this.model.get('_tabindex');
-        if (tabindex === null) this.textbox.removeAttribute('tabIndex');
-        else this.textbox.setAttribute('tabIndex', tabindex);
+        let tabbable = this.model.get('tabbable');
+        if (tabbable == true) this.textbox.setAttribute('tabIndex', "0");
+        else if (tabbable == false) this.textbox.setAttribute('tabIndex', "-1");
     }
 
     events() {
@@ -319,9 +320,9 @@ class TextView extends DescriptionView {
 
     updateTabindex() {
         if (!this.textbox) return; // we might be constructing the parent
-        let tabindex = this.model.get('_tabindex');
-        if (tabindex === null) this.textbox.removeAttribute('tabIndex');
-        else this.textbox.setAttribute('tabIndex', tabindex);
+        let tabbable = this.model.get('tabbable');
+        if (tabbable == true) this.textbox.setAttribute('tabIndex', "0");
+        else if (tabbable == false) this.textbox.setAttribute('tabIndex', "-1");
     }
 
     update(options?: any) {

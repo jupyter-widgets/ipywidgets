@@ -67,7 +67,7 @@ class ButtonView extends DOMWidgetView {
         this.el.classList.add('jupyter-button');
         this.el.classList.add('widget-button');
         this.listenTo(this.model, 'change:button_style', this.update_button_style);
-        this.listenTo(this.model, 'change:tabindex', this.updateTabindex);
+        this.listenTo(this.model, 'change:tabbable', this.updateTabindex);
         this.set_button_style();
         this.update(); // Set defaults.
     }
@@ -80,7 +80,7 @@ class ButtonView extends DOMWidgetView {
      */
     update() {
         this.el.disabled = this.model.get('disabled');
-        this.el.setAttribute('tabIndex', this.model.get('tabindex'));
+        this.updateTabindex();
         this.el.setAttribute('title', this.model.get('tooltip'));
 
         let description = this.model.get('description');

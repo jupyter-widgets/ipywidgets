@@ -15,8 +15,7 @@ class DOMWidget(Widget):
 
     _model_name = Unicode('DOMWidgetModel').tag(sync=True)
     _dom_classes = TypedTuple(trait=Unicode(), help="CSS classes applied to widget DOM element").tag(sync=True)
-    _tabindex = Int(help="Tabindex attribute for widget DOM element.").tag(sync=True)
-    tabbable = Bool(help="Is widget tabbable?").tag(sync=True)
+    tabbable = Bool(help="Is widget tabbable?", allow_none=True, default_value=None).tag(sync=True)
     layout = InstanceDict(Layout).tag(sync=True, **widget_serialization)
 
     def add_class(self, className):
@@ -51,38 +50,20 @@ class DOMWidget(Widget):
         if self._dom_classes:
             yield '_dom_classes'
 
-    def set_tabindex(self, i=0):
-        """Set tabindex for this DOM element.
-        NB: this method is here for completeness
-        but should be avoided for i>0.
-        (see https://developer.paciellogroup.com/blog/2014/08/using-the-tabindex-attribute/)
-
-        Parameters
-        ----------
-        i: integer
-            Order in the keyboard tabulation.
-        """
-        self._tabindex = i
-
     def set_tabbable(self, tabbable):
         """Make this DOM element (un)reachable
         to keyboard tabulation navigation.
         """
-        if tabbable == False:
-            self.set_tabindex(-1)
-        elif tabbable == True:
-            self.set_tabindex(0)
-        else:
-            self.set_tabindex(None)
+        self.tabbable = tabbable
         
     def make_tabbable(self):
         """Make this DOM element reachable
         to keyboard tabulation navigation.
         """
-        self.set_tabindex(0)
+        self.set_tabbable(True)
 
     def make_untabbable(self):
         """Make this DOM element unreachable
         to keyboard tabulation navigation.
         """
-        self.set_tabindex(-1)
+        self.set_tabbable(False)

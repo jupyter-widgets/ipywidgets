@@ -60,12 +60,9 @@ class SelectionView extends DescriptionView {
 
     updateTabindex() {
         if (!this.listbox) return; // we might be constructing the parent
-        let tabindex = this.model.get('_tabindex');
-        if (tabindex === null) {
-            this.listbox.removeAttribute('tabindex');
-        } else {
-        this.listbox.setAttribute('tabindex', tabindex);
-        }
+        let tabbable = this.model.get('tabbable');
+        if (tabbable == true) this.listbox.setAttribute('tabIndex', "0");
+        else if (tabbable == false) this.listbox.setAttribute('tabIndex', "-1");
     }
 
     listbox: HTMLSelectElement;
