@@ -3,7 +3,7 @@
 
 """Contains the DOMWidget class"""
 
-from traitlets import Bool, Int, Unicode
+from traitlets import Bool, Unicode
 from .widget import Widget, widget_serialization
 from .trait_types import InstanceDict, TypedTuple
 from .widget_layout import Layout
@@ -55,7 +55,7 @@ class DOMWidget(Widget):
         to keyboard tabulation navigation.
         """
         self.tabbable = tabbable
-        
+
     def make_tabbable(self):
         """Make this DOM element reachable
         to keyboard tabulation navigation.
