@@ -69,7 +69,7 @@
     "sinon": "^7.3.2",
     "sinon-chai": "^3.3.0",
     "tslint": "^5.18.0",
-    "typescript": "~3.5.2",
+    "typescript": "~3.7.4",
     "webpack": "^4.35.0"
   }
 }

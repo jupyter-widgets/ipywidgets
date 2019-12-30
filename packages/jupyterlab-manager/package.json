@@ -65,7 +65,7 @@
     "rimraf": "^2.6.1",
     "tslint": "^5.18.0",
     "typedoc": "^0.14.2",
-    "typescript": "~3.5.2"
+    "typescript": "~3.7.4"
   },
   "jupyterlab": {
     "extension": true,
