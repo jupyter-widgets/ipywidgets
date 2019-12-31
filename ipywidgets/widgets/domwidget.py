@@ -38,7 +38,7 @@ class DOMWidget(Widget):
         return self
 
     def _repr_keys(self):
-        for key in super(DOMWidget, self)._repr_keys():
+        for key in super()._repr_keys():
             # Exclude layout if it had the default value
             if key == 'layout':
                 value = getattr(self, key)

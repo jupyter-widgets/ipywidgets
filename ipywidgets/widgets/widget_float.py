@@ -23,7 +23,7 @@ class _Float(DescriptionWidget, ValueWidget, CoreWidget):
     def __init__(self, value=None, **kwargs):
         if value is not None:
             kwargs['value'] = value
-        super(_Float, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
 
 class _BoundedFloat(_Float):
@@ -291,7 +291,7 @@ class _BoundedFloatRange(_FloatRange):
         if kwargs.get('value', None) is None:
             kwargs['value'] = (0.75 * min + 0.25 * max,
                                0.25 * min + 0.75 * max)
-        super(_BoundedFloatRange, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @validate('min', 'max')
     def _validate_bounds(self, proposal):
@@ -309,7 +309,7 @@ class _BoundedFloatRange(_FloatRange):
 
     @validate('value')
     def _validate_value(self, proposal):
-        lower, upper = super(_BoundedFloatRange, self)._validate_value(proposal)
+        lower, upper = super()._validate_value(proposal)
         lower, upper = min(lower, self.max), min(upper, self.max)
         lower, upper = max(lower, self.min), max(upper, self.min)
         return lower, upper

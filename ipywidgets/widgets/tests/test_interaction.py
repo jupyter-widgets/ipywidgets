@@ -3,12 +3,7 @@
 
 """Test interact and interactive."""
 
-from __future__ import print_function
-
-try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch
+from unittest.mock import patch
 
 import os
 from collections import OrderedDict
@@ -50,13 +45,13 @@ def check_widget(w, **d):
             assert w.__class__ is expected
         else:
             value = getattr(w, attr)
-            assert value == expected, "%s.%s = %r != %r" % (w.__class__.__name__, attr, value, expected)
+            assert value == expected, "{}.{} = {!r} != {!r}".format(w.__class__.__name__, attr, value, expected)
 
             # For numeric values, the types should match too
             if isinstance(value, (int, float)):
                 tv = type(value)
                 te = type(expected)
-                assert tv is te, "type(%s.%s) = %r != %r" % (w.__class__.__name__, attr, tv, te)
+                assert tv is te, "type({}.{}) = {!r} != {!r}".format(w.__class__.__name__, attr, tv, te)
 
 def check_widgets(container, **to_check):
     """Check that widgets are created as expected"""
@@ -72,7 +67,7 @@ def check_widgets(container, **to_check):
 
 
 def test_single_value_string():
-    a = u'hello'
+    a = 'hello'
     c = interactive(f, a=a)
     w = c.children[0]
     check_widget(w,
@@ -403,7 +398,7 @@ def test_decorator_kwarg(clear_display):
     )
 
 def test_interact_instancemethod(clear_display):
-    class Foo(object):
+    class Foo:
         def show(self, x):
             print(x)
 
@@ -697,7 +692,7 @@ def test_multiple_selection():
 
 
 def test_interact_noinspect():
-    a = u'hello'
+    a = 'hello'
     c = interactive(print, a=a)
     w = c.children[0]
     check_widget(w,

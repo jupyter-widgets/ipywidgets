@@ -21,7 +21,7 @@ class _Bool(DescriptionWidget, ValueWidget, CoreWidget):
     def __init__(self, value=None, **kwargs):
         if value is not None:
             kwargs['value'] = value
-        super(_Bool, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     _model_name = Unicode('BoolModel').tag(sync=True)
 

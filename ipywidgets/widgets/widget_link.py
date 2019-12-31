@@ -18,13 +18,13 @@ class WidgetTraitTuple(Tuple):
     info_text = "A (Widget, 'trait_name') pair"
 
     def __init__(self, **kwargs):
-        super(WidgetTraitTuple, self).__init__(Instance(Widget), Unicode(), **kwargs)
+        super().__init__(Instance(Widget), Unicode(), **kwargs)
 
     def validate_elements(self, obj, value):
-        value = super(WidgetTraitTuple, self).validate_elements(obj, value)
+        value = super().validate_elements(obj, value)
         widget, trait_name = value
         trait = widget.traits().get(trait_name)
-        trait_repr = "%s.%s" % (widget.__class__.__name__, trait_name)
+        trait_repr = "{}.{}".format(widget.__class__.__name__, trait_name)
         # Can't raise TraitError because the parent will swallow the message
         # and throw it away in a new, less informative TraitError
         if trait is None:
@@ -49,7 +49,7 @@ class Link(CoreWidget):
     def __init__(self, source, target, **kwargs):
         kwargs['source'] = source
         kwargs['target'] = target
-        super(Link, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     # for compatibility with traitlet links
     def unlink(self):

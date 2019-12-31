@@ -58,7 +58,7 @@ class Button(DOMWidget, CoreWidget):
     style = InstanceDict(ButtonStyle).tag(sync=True, **widget_serialization)
 
     def __init__(self, **kwargs):
-        super(Button, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self._click_handlers = CallbackDispatcher()
         self.on_msg(self._handle_button_msg)
 

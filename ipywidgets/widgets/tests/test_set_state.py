@@ -1,14 +1,8 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-from ipython_genutils.py3compat import PY3
-
 import pytest
-try:
-    from unittest import mock
-except ImportError:
-    import mock
-
+from unittest import mock
 
 from traitlets import Bool, Tuple, List, Instance, CFloat, CInt, Float, Int, TraitError, observe
 

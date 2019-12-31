@@ -6,15 +6,7 @@
 Represents an enumeration using a widget.
 """
 
-try:
-    from collections.abc import Iterable, Mapping
-except ImportError:
-    from collections import Iterable, Mapping # py2
-
-try:
-    from itertools import izip
-except ImportError:  #python3.x
-    izip = zip
+from collections.abc import Iterable, Mapping
 from itertools import chain
 
 from .widget_description import DescriptionWidget, DescriptionStyle
@@ -26,7 +18,6 @@ from .widget import register, widget_serialization
 from .docutils import doc_subst
 from traitlets import (Unicode, Bool, Int, Any, Dict, TraitError, CaselessStrEnum,
                        Tuple, Union, observe, validate)
-from ipython_genutils.py3compat import unicode_type
 
 _doc_snippets = {}
 _doc_snippets['selection_params'] = """
@@ -119,17 +110,17 @@ def _make_options(x):
     if isinstance(x, Mapping):
         import warnings
         warnings.warn("Support for mapping types has been deprecated and will be dropped in a future release.", DeprecationWarning)
-        return tuple((unicode_type(k), v) for k, v in x.items())
+        return tuple((str(k), v) for k, v in x.items())
 
     # only iterate once through the options.
     xlist = tuple(x)
 
     # Check if x is an iterable of (label, value) pairs
     if all((isinstance(i, (list, tuple)) and len(i) == 2) for i in xlist):
-        return tuple((unicode_type(k), v) for k, v in xlist)
+        return tuple((str(k), v) for k, v in xlist)
 
     # Otherwise, assume x is an iterable of values
-    return tuple((unicode_type(i), i) for i in xlist)
+    return tuple((str(i), i) for i in xlist)
 
 def findvalue(array, value, compare = lambda x, y: x == y):
     "A function that uses the compare function to return a value from the list."
@@ -187,7 +178,7 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
             kwargs['index'] = 0 if nonempty else None
             kwargs['label'], kwargs['value'] = options[0] if nonempty else (None, None)
 
-        super(_Selection, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._initializing_traits_ = False
 
     @validate('options')
@@ -271,7 +262,7 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
             self.index = index
 
     def _repr_keys(self):
-        keys = super(_Selection, self)._repr_keys()
+        keys = super()._repr_keys()
         # Include options manually, as it isn't marked as synced:
         for key in sorted(chain(keys, ('options',))):
             if key == 'index' and self.index == 0:
@@ -323,7 +314,7 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
         self.set_trait('_options_labels', tuple(i[0] for i in options))
         self._options_values = tuple(i[1] for i in options)
 
-        super(_MultipleSelection, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._initializing_traits_ = False
 
     @validate('options')
@@ -389,10 +380,9 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
             self.index = index
 
     def _repr_keys(self):
-        keys = super(_MultipleSelection, self)._repr_keys()
+        keys = super()._repr_keys()
         # Include options manually, as it isn't marked as synced:
-        for key in sorted(chain(keys, ('options',))):
-            yield key
+        yield from sorted(chain(keys, ('options',)))
 
 
 @register
@@ -528,7 +518,7 @@ class _SelectionNonempty(_Selection):
     def __init__(self, *args, **kwargs):
         if len(kwargs.get('options', ())) == 0:
             raise TraitError('options must be nonempty')
-        super(_SelectionNonempty, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @validate('options')
     def _validate_options(self, proposal):
@@ -552,7 +542,7 @@ class _MultipleSelectionNonempty(_MultipleSelection):
     def __init__(self, *args, **kwargs):
         if len(kwargs.get('options', ())) == 0:
             raise TraitError('options must be nonempty')
-        super(_MultipleSelectionNonempty, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @validate('options')
     def _validate_options(self, proposal):
@@ -592,7 +582,7 @@ class SelectionSlider(_SelectionNonempty):
 class SelectionRangeSlider(_MultipleSelectionNonempty):
     """
     Slider to select multiple contiguous items from a list.
-    
+
     The index, value, and label attributes contain the start and end of
     the selection range, not all items in the range.
 
