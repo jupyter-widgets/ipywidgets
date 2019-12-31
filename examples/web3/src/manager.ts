@@ -39,7 +39,7 @@ class WidgetManager extends HTMLManager {
      * Create a comm.
      */
     async _create_comm(target_name: string, model_id: string, data?: any, metadata?: any): Promise<base.shims.services.Comm> {
-            let comm = await this.kernel.connectToComm(target_name, model_id);
+            let comm = this.kernel.createComm(target_name, model_id);
             if (data || metadata) {
                 comm.open(data, metadata);
             }
