@@ -19,7 +19,7 @@ jobs:
           ${{ runner.os }}-pip-
     - name: Install dependencies
       run: |
-        sudo apt install pandoc
+        sudo apt-get install -y pandoc
         python -m pip install --upgrade pip
         pip install file://$PWD#egg=ipywidgets
         pip install -r ./docs/requirements.txt

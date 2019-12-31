@@ -12,6 +12,9 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 10.x
+    - name: Install dependencies
+      run: |
+        sudo apt-get install -y firefox
     - name: Get yarn cache
       id: yarn-cache
       run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -26,6 +29,21 @@ jobs:
         yarn install
         yarn run build
         yarn run integrity
-# TODO: run the actual js tests somehow. Require firefox and xvfb?
+        
+        pushd packages/base
+        yarn run test:unit:firefox:headless
+        popd
+
+        pushd packages/controls
+        yarn run test:unit:firefox:headless
+        popd
+
+        pushd packages/html-manager
+        yarn run test:unit:firefox:headless
+        popd
+
+        pushd examples/web1
+        yarn run test:firefox:headless
+        popd
       env:
         CI: true

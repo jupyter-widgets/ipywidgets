@@ -12,7 +12,8 @@
     "test": "npm run test:firefox && npm run test:chrome",
     "test:chrome": "npm run test:default",
     "test:default": "karma start karma.config.js --log-level debug",
-    "test:firefox": "npm run test:default -- --browsers Firefox"
+    "test:firefox": "npm run test:default -- --browsers Firefox",
+    "test:firefox:headless": "npm run test:default -- --browsers=FirefoxHeadless"
   },
   "dependencies": {
     "@jupyter-widgets/base": "^2.0.2",
