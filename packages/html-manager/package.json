@@ -51,9 +51,8 @@
     "@types/mocha": "^5.2.7",
     "@types/requirejs": "^2.1.31",
     "chai": "^4.0.0",
-    "css-loader": "^3.0.0",
-    "file-loader": "^4.0.0",
-    "json-loader": "^0.5.7",
+    "css-loader": "^3.4.0",
+    "file-loader": "^5.0.2",
     "karma": "^4.1.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-firefox-launcher": "^1.1.0",
@@ -62,11 +61,11 @@
     "karma-mocha-reporter": "^2.2.5",
     "mocha": "^6.1.4",
     "rimraf": "^2.6.1",
-    "style-loader": "^0.23.1",
+    "style-loader": "^1.1.2",
     "tslint": "^5.20.1",
     "typescript": "~3.7.4",
-    "url-loader": "^2.0.0",
-    "webpack": "^4.35.0",
+    "url-loader": "^3.0.0",
+    "webpack": "^4.41.5",
     "webpack-cli": "^3.3.4"
   }
 }
