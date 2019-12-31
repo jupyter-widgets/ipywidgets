@@ -246,7 +246,7 @@ class interactive(VBox):
         except Exception as e:
             ip = get_ipython()
             if ip is None:
-                self.log.warn("Exception in interact callback: %s", e, exc_info=True)
+                self.log.warning("Exception in interact callback: %s", e, exc_info=True)
             else:
                 ip.showtraceback()
         finally:
