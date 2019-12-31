@@ -2,7 +2,8 @@
 // Distributed under the terms of the Modified BSD License.
 
 
-import { ISettingRegistry, nbformat } from '@jupyterlab/coreutils';
+import { ISettingRegistry } from '@jupyterlab/settingregistry';
+import * as nbformat from '@jupyterlab/nbformat';
 
 import {
   DocumentRegistry

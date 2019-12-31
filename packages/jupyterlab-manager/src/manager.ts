@@ -113,16 +113,20 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
       await this.handle_comm_open(oldComm, msg);
     };
 
-    context.session.kernelChanged.connect((sender, args) => {
+    context.sessionContext.kernelChanged.connect((sender, args) => {
       this._handleKernelChanged(args);
     });
 
-    context.session.statusChanged.connect((sender, args) => {
+    context.sessionContext.statusChanged.connect((sender, args) => {
       this._handleKernelStatusChange(args);
     });
+    context.sessionContext.connectionStatusChanged.connect((sender, args) => {
+      this._handleKernelConnectionStatusChange(args);
+    });
 
-    if (context.session.kernel) {
-      this._handleKernelChanged({oldValue: null, newValue: context.session.kernel});
+
+    if (context.sessionContext.session?.kernel) {
+      this._handleKernelChanged({name: 'kernel', oldValue: null, newValue: context.sessionContext.session?.kernel});
     }
     this.restoreWidgets(this._context.model);
 
@@ -160,7 +164,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Register a new kernel
    */
-  _handleKernelChanged({oldValue, newValue}: Session.IKernelChangedArgs) {
+  _handleKernelChanged({oldValue, newValue}: Session.ISessionConnection.IKernelChangedArgs) {
     if (oldValue) {
       oldValue.removeCommTarget(this.comm_target_name, this._handleCommOpen);
     }
@@ -170,19 +174,20 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     }
   }
 
-  _handleKernelStatusChange(args: Kernel.Status) {
-    switch (args) {
-    case 'connected':
-      // Only restore if our initial restore at construction is finished
-      if (this._initialRestoredStatus) {
-        // We only want to restore widgets from the kernel, not ones saved in the notebook.
-        this.restoreWidgets(this._context.model, {loadKernel: true, loadNotebook: false});
-      }
-      break;
-    case 'restarting':
+  _handleKernelConnectionStatusChange(status: Kernel.ConnectionStatus) {
+    if (status === 'connected') {
+        // Only restore if our initial restore at construction is finished
+        if (this._initialRestoredStatus) {
+          // We only want to restore widgets from the kernel, not ones saved in the notebook.
+          this.restoreWidgets(this._context.model, {loadKernel: true, loadNotebook: false});
+        }
+
+    }
+  }
+
+  _handleKernelStatusChange(status: Kernel.Status) {
+    if (status === 'restarting') {
       this.disconnect();
-      break;
-    default:
     }
   }
 
@@ -211,13 +216,13 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   }
 
   async _loadFromKernel(): Promise<void> {
-    if (!this.context.session) {
+    if (!this.context.sessionContext) {
       return;
     }
-    await this.context.session.ready;
+    await this.context.sessionContext.ready;
     // TODO: when we upgrade to @jupyterlab/services 4.1 or later, we can
     // remove this 'any' cast.
-    if ((this.context.session.kernel as any).handleComms === false) {
+    if (this.context.sessionContext.session?.kernel.handleComms === false) {
       return;
     }
     const comm_ids = await this._get_comm_info();
@@ -310,7 +315,11 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * Create a comm.
    */
   async _create_comm(target_name: string, model_id: string, data?: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): Promise<IClassicComm> {
-    let comm = this._context.session.kernel.connectToComm(target_name, model_id);
+    let kernel = this._context.sessionContext.session?.kernel;
+    if (!kernel) {
+      throw new Error('No current kernel');
+    }
+    let comm = kernel.createComm(target_name, model_id);
     if (data || metadata) {
       comm.open(data, metadata, buffers);
     }
@@ -321,7 +330,11 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * Get the currently-registered comms.
    */
   async _get_comm_info(): Promise<any> {
-    const reply = await this._context.session.kernel.requestCommInfo({target: this.comm_target_name});
+    let kernel = this._context.sessionContext.session?.kernel;
+    if (!kernel) {
+      throw new Error('No current kernel');
+    }
+    const reply = await kernel.requestCommInfo({target: this.comm_target_name});
     if (reply.content.status === 'ok') {
         return (reply.content as any).comms;
     } else {

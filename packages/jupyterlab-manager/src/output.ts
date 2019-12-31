@@ -23,9 +23,7 @@ import {
   OutputAreaModel, OutputArea
 } from '@jupyterlab/outputarea';
 
-import {
-  nbformat
-} from '@jupyterlab/coreutils';
+import * as nbformat from '@jupyterlab/nbformat';
 
 import {
   KernelMessage, Session
@@ -54,7 +52,7 @@ class OutputModel extends outputBase.OutputModel {
       return false;
     };
 
-    this.widget_manager.context.session.kernelChanged.connect((sender, args) => {
+    this.widget_manager.context.sessionContext.kernelChanged.connect((sender, args) => {
       this._handleKernelChanged(args);
     });
     this.listenTo(this, 'change:msg_id', this.reset_msg_id);
@@ -65,7 +63,7 @@ class OutputModel extends outputBase.OutputModel {
   /**
    * Register a new kernel
    */
-  _handleKernelChanged({oldValue}: Session.IKernelChangedArgs) {
+  _handleKernelChanged({oldValue}: Session.ISessionConnection.IKernelChangedArgs) {
     const msgId = this.get('msg_id');
     if (msgId && oldValue) {
       oldValue.removeMessageHook(msgId, this._msgHook);
@@ -77,7 +75,7 @@ class OutputModel extends outputBase.OutputModel {
    * Reset the message id.
    */
   reset_msg_id() {
-    const kernel = this.widget_manager.context.session.kernel;
+    const kernel = this.widget_manager.context.sessionContext.session.kernel;
     const msgId = this.get('msg_id');
     const oldMsgId = this.previous('msg_id');
 
