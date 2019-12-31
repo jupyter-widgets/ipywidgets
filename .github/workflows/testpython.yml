@@ -1,10 +1,7 @@
 name: Test Python
 
-on:
-  push:
-  pull_request:
-    branches:
-      - master
+on: [push, pull_request]
+
 
 jobs:
   build:
