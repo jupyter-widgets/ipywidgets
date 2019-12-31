@@ -9,11 +9,11 @@ import {
 
 import {
   Message
-} from '@phosphor/messaging';
+} from '@lumino/messaging';
 
 import {
   Panel
-} from '@phosphor/widgets';
+} from '@lumino/widgets';
 
 import {
   WidgetManager

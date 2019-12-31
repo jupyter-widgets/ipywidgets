@@ -11,11 +11,11 @@ import {
 
 import {
     Widget, Panel
-} from '@phosphor/widgets';
+} from '@lumino/widgets';
 
 import {
     ArrayExt
-} from '@phosphor/algorithm';
+} from '@lumino/algorithm';
 
 import * as _ from 'underscore';
 

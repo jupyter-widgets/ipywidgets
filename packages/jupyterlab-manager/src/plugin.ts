@@ -34,15 +34,15 @@ import {
 
 import {
   toArray, filter
-} from '@phosphor/algorithm';
+} from '@lumino/algorithm';
 
 import {
   DisposableDelegate
-} from '@phosphor/disposable';
+} from '@lumino/disposable';
 
 import {
   AttachedProperty
-} from '@phosphor/properties';
+} from '@lumino/properties';
 
 import {
   WidgetRenderer

@@ -1,5 +1,5 @@
 import * as base from '@jupyter-widgets/base';
-import * as pWidget from '@phosphor/widgets';
+import * as pWidget from '@lumino/widgets';
 
 import {
   Kernel

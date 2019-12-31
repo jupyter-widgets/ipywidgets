@@ -4,7 +4,7 @@
 import { expect } from 'chai';
 import { spy } from 'sinon';
 
-import { ArrayExt } from '@phosphor/algorithm';
+import { ArrayExt } from '@lumino/algorithm';
 
 import { Selection } from '../../../lib/phosphor/currentselection';
 

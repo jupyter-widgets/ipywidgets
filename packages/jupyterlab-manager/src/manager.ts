@@ -11,15 +11,15 @@ import {
 
 import {
   IDisposable
-} from '@phosphor/disposable';
+} from '@lumino/disposable';
 
 import {
   PromiseDelegate
-} from '@phosphor/coreutils';
+} from '@lumino/coreutils';
 
 import {
   Widget
-} from '@phosphor/widgets';
+} from '@lumino/widgets';
 
 import {
   INotebookModel
@@ -39,7 +39,7 @@ import {
 
 import {
   ISignal, Signal
-} from '@phosphor/signaling';
+} from '@lumino/signaling';
 
 import {
   valid
