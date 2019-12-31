@@ -1,6 +1,10 @@
 name: Test JS
 
-on: [push]
+on:
+  push:
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:
@@ -30,6 +34,6 @@ jobs:
       run: |
         yarn install
         yarn run build
-        yarn run test
+        yarn run integrity
       env:
         CI: true
