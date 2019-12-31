@@ -20,8 +20,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install file://$PWD#egg=ipywidgets[test] coveralls
-    - name: Test spec
+        pip install file://$PWD#egg=ipywidgets
+    - name: Compare spec with latest version
       run: |
         python ./packages/schema/generate-spec.py > spec.md
         diff -u ./packages/schema/jupyterwidgetmodels.latest.md ./spec.md
