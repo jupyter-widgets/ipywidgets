@@ -472,8 +472,8 @@ def test_call_decorated_on_trait_change(clear_display):
         def foo(a='default'):
             d['a'] = a
             return a
-    assert len(displayed) == 1
-    w = displayed[0].children[0]
+    assert len(displayed) == 2 # display the result and the interact
+    w = displayed[1].children[0]
     check_widget(w,
         cls=widgets.Text,
         value='default',
@@ -487,7 +487,7 @@ def test_call_decorated_on_trait_change(clear_display):
     with patch.object(interaction, 'display', record_display):
         w.value = 'called'
     assert d['a'] == 'called'
-    assert len(displayed) == 2
+    assert len(displayed) == 3
     assert w.value == displayed[-1]
 
 def test_call_decorated_kwargs_on_trait_change(clear_display):
@@ -498,8 +498,8 @@ def test_call_decorated_kwargs_on_trait_change(clear_display):
         def foo(a='default'):
             d['a'] = a
             return a
-    assert len(displayed) == 1
-    w = displayed[0].children[0]
+    assert len(displayed) == 2 # display the result and the interact
+    w = displayed[1].children[0]
     check_widget(w,
         cls=widgets.Text,
         value='kwarg',
@@ -513,7 +513,7 @@ def test_call_decorated_kwargs_on_trait_change(clear_display):
     with patch.object(interaction, 'display', record_display):
         w.value = 'called'
     assert d['a'] == 'called'
-    assert len(displayed) == 2
+    assert len(displayed) == 3
     assert w.value == displayed[-1]
 
 
