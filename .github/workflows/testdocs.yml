@@ -21,7 +21,7 @@ jobs:
       run: |
         sudo apt install pandoc
         python -m pip install --upgrade pip
-        pip install file://$PWD#egg=ipywidgets[test] coveralls
+        pip install file://$PWD#egg=ipywidgets
         pip install -r ./docs/requirements.txt
     - name: Build docs
       run: |

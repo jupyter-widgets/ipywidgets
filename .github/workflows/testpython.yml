@@ -25,10 +25,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install file://$PWD#egg=ipywidgets[test] coveralls
+        pip install file://$PWD#egg=ipywidgets[test]
     - name: Test with pytest
       run: |
         pip install pytest
         pytest --cov=ipywidgets ipywidgets
-    - name: Coverals
-      run: coveralls
