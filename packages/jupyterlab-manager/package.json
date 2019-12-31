@@ -39,7 +39,6 @@
     "@jupyter-widgets/controls": "^1.5.3",
     "@jupyter-widgets/output": "^2.0.1",
     "@jupyterlab/application": "^2.0.0-beta.1",
-    "@jupyterlab/coreutils": "^4.0.0-beta.1",
     "@jupyterlab/docregistry": "^2.0.0-beta.1",
     "@jupyterlab/logconsole": "^2.0.0-beta.1",
     "@jupyterlab/mainmenu": "^2.0.0-beta.1",
