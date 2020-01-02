@@ -1,5 +1,5 @@
 const widgetsRendered = new Promise((resolve, reject) => {
-    setTimeout(() => reject(Error('timeout waiting for widgets to render')), 10000); // 10s timeout
+    setTimeout(() => reject(Error('timeout waiting for widgets to render')), 5000); // 5s timeout
 
     const listener = () => {
         resolve();
