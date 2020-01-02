@@ -32,19 +32,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import {
   MessageLoop
-} from '@phosphor/messaging';
+} from '@lumino/messaging';
 
 import {
   ISignal, Signal
-} from '@phosphor/signaling';
+} from '@lumino/signaling';
 
 import {
   Platform
-} from '@phosphor/domutils';
+} from '@lumino/domutils';
 
 import {
   Panel, PanelLayout, TabBar, Widget
-} from '@phosphor/widgets';
+} from '@lumino/widgets';
 
 
 

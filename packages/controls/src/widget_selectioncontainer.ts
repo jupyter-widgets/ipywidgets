@@ -11,7 +11,7 @@ import {
 
 import {
     TabBar
-} from '@phosphor/widgets';
+} from '@lumino/widgets';
 
 import {
     TabPanel
@@ -23,15 +23,15 @@ import {
 
 import {
     Widget
-} from '@phosphor/widgets';
+} from '@lumino/widgets';
 
 import {
     each, ArrayExt
-} from '@phosphor/algorithm';
+} from '@lumino/algorithm';
 
 import {
     Message, MessageLoop
-} from '@phosphor/messaging';
+} from '@lumino/messaging';
 
 import * as _ from 'underscore';
 import * as utils from './utils';

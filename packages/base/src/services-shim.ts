@@ -90,7 +90,7 @@ namespace shims {
          */
         export
         class CommManager {
-            constructor(jsServicesKernel: Kernel.IKernel) {
+            constructor(jsServicesKernel: Kernel.IKernelConnection) {
                 this.init_kernel(jsServicesKernel);
             }
 
@@ -98,7 +98,7 @@ namespace shims {
              * Hookup kernel events.
              * @param  {Kernel.IKernel} jsServicesKernel - @jupyterlab/services Kernel.IKernel instance
              */
-            init_kernel(jsServicesKernel: Kernel.IKernel) {
+            init_kernel(jsServicesKernel: Kernel.IKernelConnection) {
                 this.kernel = jsServicesKernel; // These aren't really the same.
                 this.jsServicesKernel = jsServicesKernel;
             }
@@ -107,7 +107,7 @@ namespace shims {
              * Creates a new connected comm
              */
             async new_comm(target_name: string, data: any, callbacks: any, metadata: any, comm_id: string, buffers?: ArrayBuffer[] | ArrayBufferView[]): Promise<Comm> {
-                let c = await Promise.resolve(this.jsServicesKernel.connectToComm(target_name, comm_id));
+                let c = this.jsServicesKernel.createComm(target_name, comm_id);
                 let comm = new Comm(c);
                 this.register_comm(comm);
                 comm.open(data, callbacks, metadata, buffers);
@@ -160,8 +160,8 @@ namespace shims {
 
             targets = Object.create(null);
             comms = Object.create(null);
-            kernel: Kernel.IKernel = null;
-            jsServicesKernel: Kernel.IKernel = null;
+            kernel: Kernel.IKernelConnection = null;
+            jsServicesKernel: Kernel.IKernelConnection = null;
         }
 
         /**
@@ -289,7 +289,7 @@ namespace shims {
             }
 
             jsServicesComm: Kernel.IComm = null;
-            kernel: Kernel.IKernel = null;
+            kernel: Kernel.IKernelConnection = null;
         }
     }
 }

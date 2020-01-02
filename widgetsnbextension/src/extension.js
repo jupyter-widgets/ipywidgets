@@ -18,7 +18,7 @@ var CLASS_NAME = 'jupyter-widgets-view';
 var mngr = require("./manager");
 require("./save_state");
 require("./embed_widgets");
-var PhosphorWidget = require("@phosphor/widgets");
+var PhosphorWidget = require("@lumino/widgets");
 
 /**
  * Create a widget manager for a kernel instance.
@@ -162,7 +162,7 @@ function load_ipython_extension () {
             "base/js/events",
             "notebook/js/outputarea"
         ], function(Jupyter, events, outputarea) {
-            require("@phosphor/widgets/style/index.css");
+            require("@lumino/widgets/style/index.css");
             require("@jupyter-widgets/base/css/index.css");
             require('@jupyter-widgets/controls/css/widgets.css');
             register_events(Jupyter, events, outputarea);
