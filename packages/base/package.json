@@ -29,6 +29,7 @@
     "test:unit:chrome": "npm run test:unit:default -- --browsers=Chrome",
     "test:unit:default": "npm run build:test && karma start test/karma.conf.js --log-level debug",
     "test:unit:firefox": "npm run test:unit:default -- --browsers=Firefox",
+    "test:unit:firefox:headless": "npm run test:unit:default -- --browsers=FirefoxHeadless",
     "test:unit:ie": "npm run test:unit:default -- --browsers=IE"
   },
   "dependencies": {
