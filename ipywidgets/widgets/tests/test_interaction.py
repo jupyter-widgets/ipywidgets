@@ -14,7 +14,6 @@ import ipywidgets as widgets
 from traitlets import TraitError
 from ipywidgets import (interact, interact_manual, interactive,
     interaction, Output)
-from ipython_genutils.py3compat import annotate
 
 #-----------------------------------------------------------------------------
 # Utility stuff
@@ -249,7 +248,8 @@ def test_iterable_tuple():
     check_widgets(c, lis=d)
 
 def test_mapping():
-    from collections import Mapping, OrderedDict
+    from collections.abc import Mapping
+    from collections import OrderedDict
     class TestMapping(Mapping):
         def __init__(self, values):
             self.values = values
@@ -275,115 +275,6 @@ def test_mapping():
         _options_values=(300, 100, 200),
     )
     check_widgets(c, lis=d)
-
-
-def test_defaults():
-    @annotate(n=10)
-    def f(n, f=4.5, g=1):
-        pass
-
-    c = interactive(f)
-    check_widgets(c,
-        n=dict(
-            cls=widgets.IntSlider,
-            value=10,
-        ),
-        f=dict(
-            cls=widgets.FloatSlider,
-            value=4.5,
-        ),
-        g=dict(
-            cls=widgets.IntSlider,
-            value=1,
-        ),
-    )
-
-def test_default_values():
-    @annotate(n=10, f=(0, 10.), g=5, h=OrderedDict([('a',1), ('b',2)]), j=['hi', 'there'])
-    def f(n, f=4.5, g=1, h=2, j='there'):
-        pass
-
-    c = interactive(f)
-    check_widgets(c,
-        n=dict(
-            cls=widgets.IntSlider,
-            value=10,
-        ),
-        f=dict(
-            cls=widgets.FloatSlider,
-            value=4.5,
-        ),
-        g=dict(
-            cls=widgets.IntSlider,
-            value=5,
-        ),
-        h=dict(
-            cls=widgets.Dropdown,
-            options=OrderedDict([('a',1), ('b',2)]),
-            value=2
-        ),
-        j=dict(
-            cls=widgets.Dropdown,
-            options=('hi', 'there'),
-            value='there'
-        ),
-    )
-
-def test_default_out_of_bounds():
-    @annotate(f=(0, 10.), h={'a': 1}, j=['hi', 'there'])
-    def f(f='hi', h=5, j='other'):
-        pass
-
-    c = interactive(f)
-    check_widgets(c,
-        f=dict(
-            cls=widgets.FloatSlider,
-            value=5.,
-        ),
-        h=dict(
-            cls=widgets.Dropdown,
-            options={'a': 1},
-            value=1,
-        ),
-        j=dict(
-            cls=widgets.Dropdown,
-            options=('hi', 'there'),
-            value='hi',
-        ),
-    )
-
-def test_annotations():
-    @annotate(n=10, f=widgets.FloatText())
-    def f(n, f):
-        pass
-
-    c = interactive(f)
-    check_widgets(c,
-        n=dict(
-            cls=widgets.IntSlider,
-            value=10,
-        ),
-        f=dict(
-            cls=widgets.FloatText,
-        ),
-    )
-
-def test_priority():
-    @annotate(annotate='annotate', kwarg='annotate')
-    def f(kwarg='default', annotate='default', default='default'):
-        pass
-
-    c = interactive(f, kwarg='kwarg')
-    check_widgets(c,
-        kwarg=dict(
-            cls=widgets.Text,
-            value='kwarg',
-        ),
-        annotate=dict(
-            cls=widgets.Text,
-            value='annotate',
-        ),
-    )
 
 def test_decorator_kwarg(clear_display):
     with patch.object(interaction, 'display', record_display):

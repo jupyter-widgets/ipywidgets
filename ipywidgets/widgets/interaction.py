@@ -117,15 +117,11 @@ def _yield_abbreviations_for_parameter(param, kwargs):
     """Get an abbreviation for a function parameter."""
     name = param.name
     kind = param.kind
-    ann = param.annotation
     default = param.default
     not_found = (name, empty, empty)
     if kind in (Parameter.POSITIONAL_OR_KEYWORD, Parameter.KEYWORD_ONLY):
         if name in kwargs:
             value = kwargs.pop(name)
-        elif ann is not empty:
-            warn("Using function annotations to implicitly specify interactive controls is deprecated. Use an explicit keyword argument for the parameter instead.", DeprecationWarning)
-            value = ann
         elif default is not empty:
             value = default
         else:
@@ -246,7 +242,7 @@ class interactive(VBox):
         except Exception as e:
             ip = get_ipython()
             if ip is None:
-                self.log.warn("Exception in interact callback: %s", e, exc_info=True)
+                self.log.warning("Exception in interact callback: %s", e, exc_info=True)
             else:
                 ip.showtraceback()
         finally:
