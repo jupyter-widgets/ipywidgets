@@ -11,6 +11,7 @@ python:
     - 3.5
     - 3.6
     - 3.7
+    - 3.8
 addons:
   apt_packages:
     - pandoc
@@ -25,6 +26,7 @@ before_install:
     - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_before_install_py.sh ; fi'
     - 'if [[ $GROUP == doc ]] ; then bash ./scripts/travis_before_install_py.sh ; fi'
     - 'if [[ $GROUP == spec ]] ; then bash ./scripts/travis_before_install_py.sh ; fi'
+    - 'if [[ $GROUP == js ]] ; then nvm install 12 ; fi'
 install:
     - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_install_py.sh ; fi'
     - 'if [[ $GROUP == doc ]] ; then bash ./scripts/travis_install_py.sh ; fi'
@@ -42,6 +44,6 @@ matrix:
         - python: 3.6
           env: GROUP=doc
         - python: 3.6
-          env: GROUP=js BROWSER=firefox TRAVIS_NODE_VERSION=6.11.0
+          env: GROUP=js BROWSER=firefox
 after_success:
     - coveralls
