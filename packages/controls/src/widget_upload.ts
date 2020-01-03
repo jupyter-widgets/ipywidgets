@@ -65,7 +65,7 @@ export class FileUploadView extends DOMWidgetView {
 
         this.fileInput.addEventListener('change', () => {
 
-            const promisesFile: Promise<{buffer: any, metadata: any, error: string}>[] = [];
+            const promisesFile: Promise<{buffer: any; metadata: any; error: string}>[] = [];
 
             Array.from(this.fileInput.files).forEach(file => {
                 promisesFile.push(
@@ -102,7 +102,7 @@ export class FileUploadView extends DOMWidgetView {
                         metadata.push(c.metadata);
                         li_buffer.push(c.buffer);
                     });
-                    let counter = this.model.get('_counter');
+                    const counter = this.model.get('_counter');
                     this.model.set({
                         _counter: counter + contents.length,
                         metadata,
@@ -129,12 +129,12 @@ export class FileUploadView extends DOMWidgetView {
         this.el.disabled = this.model.get('disabled');
         this.el.setAttribute('title', this.model.get('tooltip'));
 
-        let description = `${this.model.get('description')} (${this.model.get('_counter')})`
-        let icon = this.model.get('icon');
+        const description = `${this.model.get('description')} (${this.model.get('_counter')})`
+        const icon = this.model.get('icon');
         if (description.length || icon.length) {
             this.el.textContent = '';
             if (icon.length) {
-                let i = document.createElement('i');
+                const i = document.createElement('i');
                 i.classList.add('fa');
                 i.classList.add('fa-' + icon);
                 if (description.length === 0) {

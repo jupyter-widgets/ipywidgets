@@ -107,8 +107,8 @@ namespace shims {
              * Creates a new connected comm
              */
             async new_comm(target_name: string, data: any, callbacks: any, metadata: any, comm_id: string, buffers?: ArrayBuffer[] | ArrayBufferView[]): Promise<Comm> {
-                let c = this.jsServicesKernel.createComm(target_name, comm_id);
-                let comm = new Comm(c);
+                const c = this.jsServicesKernel.createComm(target_name, comm_id);
+                const comm = new Comm(c);
                 this.register_comm(comm);
                 comm.open(data, callbacks, metadata, buffers);
                 return comm;
@@ -121,10 +121,10 @@ namespace shims {
              *                         comm is made.  Signature of f(comm, msg).
              */
             register_target(target_name: string, f: (comm: Comm, data: {}) => void) {
-                let handle = this.jsServicesKernel.registerCommTarget(target_name,
+                const handle = this.jsServicesKernel.registerCommTarget(target_name,
                 (jsServicesComm, msg) => {
                     // Create the comm.
-                    let comm = new Comm(jsServicesComm);
+                    const comm = new Comm(jsServicesComm);
                     this.register_comm(comm);
 
                     // Call the callback for the comm.
@@ -144,7 +144,7 @@ namespace shims {
              * @param  {string} target_name
              */
             unregister_target(target_name: string, f: (comm: Comm, data: {}) => void) {
-                let handle = this.targets[target_name];
+                const handle = this.targets[target_name];
                 handle.dispose();
                 delete this.targets[target_name];
             }
@@ -198,7 +198,7 @@ namespace shims {
              * @return msg id
              */
             open(data: any, callbacks: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): string {
-                let future = this.jsServicesComm.open(data, metadata, buffers);
+                const future = this.jsServicesComm.open(data, metadata, buffers);
                 this._hookupCallbacks(future, callbacks);
                 return future.msg.header.msg_id;
             }
@@ -212,7 +212,7 @@ namespace shims {
              * @return message id
              */
             send(data: any, callbacks: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): string {
-                let future = this.jsServicesComm.send(data, metadata, buffers);
+                const future = this.jsServicesComm.send(data, metadata, buffers);
                 this._hookupCallbacks(future, callbacks);
                 return future.msg.header.msg_id;
             }
@@ -225,7 +225,7 @@ namespace shims {
              * @return msg id
              */
             close(data?: any, callbacks?: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): string {
-                let future = this.jsServicesComm.close(data, metadata, buffers);
+                const future = this.jsServicesComm.close(data, metadata, buffers);
                 this._hookupCallbacks(future, callbacks);
                 return future.msg.header.msg_id;
             }

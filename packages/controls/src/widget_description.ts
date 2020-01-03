@@ -66,7 +66,7 @@ class DescriptionView extends DOMWidgetView {
     }
 
     updateDescription() {
-        let description = this.model.get('description');
+        const description = this.model.get('description');
         let description_tooltip = this.model.get('description_tooltip');
         if (description_tooltip === null) {
             description_tooltip = description;

@@ -116,7 +116,7 @@ class TabPanel extends Widget {
     this.tabContents.widgetRemoved.connect(this._onWidgetRemoved, this);
 
     // Create the layout.
-    let layout = new PanelLayout();
+    const layout = new PanelLayout();
 
     // Add the child widgets to the layout.
     layout.addWidget(this.tabBar);
@@ -170,7 +170,7 @@ class TabPanel extends Widget {
    * This will be `null` if there is no selected tab.
    */
   get currentWidget(): Widget | null {
-    let title = this.tabBar.currentTitle;
+    const title = this.tabBar.currentTitle;
     return title ? title.owner : null;
   }
 
@@ -266,11 +266,11 @@ class TabPanel extends Widget {
    */
   private _onCurrentChanged(sender: TabBar<Widget>, args: TabBar.ICurrentChangedArgs<Widget>): void {
     // Extract the previous and current title from the args.
-    let { previousIndex, previousTitle, currentIndex, currentTitle } = args;
+    const { previousIndex, previousTitle, currentIndex, currentTitle } = args;
 
     // Extract the widgets from the titles.
-    let previousWidget = previousTitle ? previousTitle.owner : null;
-    let currentWidget = currentTitle ? currentTitle.owner : null;
+    const previousWidget = previousTitle ? previousTitle.owner : null;
+    const currentWidget = currentTitle ? currentTitle.owner : null;
 
     // Hide the previous widget.
     if (previousWidget) {

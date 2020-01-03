@@ -50,7 +50,7 @@ function deserialize_date(value: SerializedDate) {
     if (value === null) {
         return null;
     } else {
-        let date = new Date();
+        const date = new Date();
         date.setUTCFullYear(value.year, value.month, value.date);
         date.setUTCHours(0, 0, 0, 0);
         return date;

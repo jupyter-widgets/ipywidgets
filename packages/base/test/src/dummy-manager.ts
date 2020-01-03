@@ -102,7 +102,7 @@ class DummyManager extends widgets.ManagerBase<HTMLElement> {
 
 // Dummy widget with custom serializer and binary field
 
-let typesToArray: {[key: string]: any} = {
+const typesToArray: {[key: string]: any} = {
     int8: Int8Array,
     int16: Int16Array,
     int32: Int32Array,
@@ -114,17 +114,17 @@ let typesToArray: {[key: string]: any} = {
 };
 
 
-let JSONToArray = function(obj: any) {
+const JSONToArray = function(obj: any) {
     return new typesToArray[obj.dtype](obj.buffer.buffer);
 };
 
-let arrayToJSON = function(obj: any) {
-    let dtype = Object.keys(typesToArray).filter(
+const arrayToJSON = function(obj: any) {
+    const dtype = Object.keys(typesToArray).filter(
         i => typesToArray[i] === obj.constructor)[0];
     return {dtype, buffer: obj};
 };
 
-let array_serialization = {
+const array_serialization = {
     deserialize: JSONToArray,
     serialize: arrayToJSON
 };
@@ -177,4 +177,4 @@ class BinaryWidgetView extends TestWidgetView {
     _rendered = 0;
 }
 
-let testWidgets = {TestWidget, TestWidgetView, BinaryWidget, BinaryWidgetView};
+const testWidgets = {TestWidget, TestWidgetView, BinaryWidget, BinaryWidgetView};

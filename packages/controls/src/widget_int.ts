@@ -80,7 +80,7 @@ class IntSliderModel extends BoundedIntModel {
             disabled: false,
         });
     }
-    initialize(attributes: any, options: { model_id: string; comm: any; widget_manager: any; }) {
+    initialize(attributes: any, options: { model_id: string; comm: any; widget_manager: any }) {
         super.initialize(attributes, options);
         this.on('change:readout_format', this.update_readout_format, this);
         this.update_readout_format();
@@ -134,12 +134,12 @@ abstract class BaseIntSliderView extends DescriptionView {
         if (options === undefined || options.updated_view !== this) {
             // JQuery slider option keys.  These keys happen to have a
             // one-to-one mapping with the corresponding keys of the model.
-            let jquery_slider_keys = ['step', 'disabled'];
-            let that = this;
+            const jquery_slider_keys = ['step', 'disabled'];
+            const that = this;
             that.$slider.slider({});
 
             jquery_slider_keys.forEach(function(key) {
-                let model_value = that.model.get(key);
+                const model_value = that.model.get(key);
                 if (model_value !== undefined) {
                     that.$slider.slider('option', key, model_value);
                 }
@@ -151,8 +151,8 @@ abstract class BaseIntSliderView extends DescriptionView {
                 this.readout.contentEditable = 'true';
             }
 
-            let max = this.model.get('max');
-            let min = this.model.get('min');
+            const max = this.model.get('max');
+            const min = this.model.get('min');
             if (min <= max) {
                 if (max !== undefined) {
                     this.$slider.slider('option', 'max', max);
@@ -170,7 +170,7 @@ abstract class BaseIntSliderView extends DescriptionView {
             // make sure that the horizontal placement of the
             // handle in the vertical slider is always
             // consistent.
-            let orientation = this.model.get('orientation');
+            const orientation = this.model.get('orientation');
             this.$slider.slider('option', 'orientation', orientation);
 
             // Use the right CSS classes for vertical & horizontal sliders
@@ -186,7 +186,7 @@ abstract class BaseIntSliderView extends DescriptionView {
                 this.el.classList.add('widget-inline-hbox');
             }
 
-            let readout = this.model.get('readout');
+            const readout = this.model.get('readout');
             if (readout) {
                 this.readout.style.display = '';
                 this.displayed.then(function() {
@@ -284,7 +284,7 @@ class IntRangeSliderView extends BaseIntSliderView {
         this.$slider.slider('option', 'range', true);
         // values for the range case are validated python-side in
         // _Bounded{Int,Float}RangeWidget._validate
-        let value = this.model.get('value');
+        const value = this.model.get('value');
         this.$slider.slider('option', 'values', value.slice());
         this.readout.textContent = this.valueToString(value);
         if (this.model.get('value') !== value) {
@@ -297,7 +297,7 @@ class IntRangeSliderView extends BaseIntSliderView {
      * Write value to a string
      */
     valueToString(value: number[]): string {
-        let format = this.model.readout_formatter;
+        const format = this.model.readout_formatter;
         return value.map(function (v) {
                 return format(v);
             }).join(' – ');
@@ -308,7 +308,7 @@ class IntRangeSliderView extends BaseIntSliderView {
      */
     stringToValue(text: string): number[] {
         // ranges can be expressed either 'val-val' or 'val:val' (+spaces)
-        let match = this._range_regex.exec(text);
+        const match = this._range_regex.exec(text);
         if (match) {
             return [this._parse_value(match[1]), this._parse_value(match[2])];
         } else {
@@ -326,8 +326,8 @@ class IntRangeSliderView extends BaseIntSliderView {
      */
     handleTextChange() {
         let value = this.stringToValue(this.readout.textContent);
-        let vmin = this.model.get('min');
-        let vmax = this.model.get('max');
+        const vmin = this.model.get('min');
+        const vmax = this.model.get('max');
         // reject input where NaN or lower > upper
         if (value === null ||
             isNaN(value[0]) ||
@@ -353,7 +353,7 @@ class IntRangeSliderView extends BaseIntSliderView {
      * Called when the slider value is changing.
      */
     handleSliderChange(e: any, ui: { values: number[]}) {
-        let actual_value = ui.values.map(this._validate_slide_value);
+        const actual_value = ui.values.map(this._validate_slide_value);
         this.readout.textContent = this.valueToString(actual_value);
 
         // Only persist the value while sliding if the continuous_update
@@ -370,7 +370,7 @@ class IntRangeSliderView extends BaseIntSliderView {
      * model to update.
      */
     handleSliderChanged(e: Event, ui: { values: number[]}) {
-        let actual_value = ui.values.map(this._validate_slide_value);
+        const actual_value = ui.values.map(this._validate_slide_value);
         this.model.set('value', actual_value, {updated_view: this});
         this.touch();
     }
@@ -385,8 +385,8 @@ class IntSliderView extends BaseIntSliderView {
 
     update(options?: any) {
         super.update(options);
-        let min = this.model.get('min');
-        let max = this.model.get('max');
+        const min = this.model.get('min');
+        const max = this.model.get('max');
         let value = this.model.get('value');
 
         if(value > max) {
@@ -406,7 +406,7 @@ class IntSliderView extends BaseIntSliderView {
      * Write value to a string
      */
     valueToString(value: number): string {
-        let format = this.model.readout_formatter;
+        const format = this.model.readout_formatter;
         return format(value);
     }
 
@@ -427,8 +427,8 @@ class IntSliderView extends BaseIntSliderView {
      */
     handleTextChange() {
         let value = this.stringToValue(this.readout.textContent);
-        let vmin = this.model.get('min');
-        let vmax = this.model.get('max');
+        const vmin = this.model.get('min');
+        const vmax = this.model.get('max');
 
         if (isNaN(value as number)) {
             this.readout.textContent = this.valueToString(this.model.get('value'));
@@ -447,8 +447,8 @@ class IntSliderView extends BaseIntSliderView {
     /**
      * Called when the slider value is changing.
      */
-    handleSliderChange(e: any, ui: { value: number; }) {
-        let actual_value = this._validate_slide_value(ui.value);
+    handleSliderChange(e: any, ui: { value: number }) {
+        const actual_value = this._validate_slide_value(ui.value);
         this.readout.textContent = this.valueToString(actual_value);
 
         // Only persist the value while sliding if the continuous_update
@@ -464,8 +464,8 @@ class IntSliderView extends BaseIntSliderView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    handleSliderChanged(e: Event, ui: { value?: any; }) {
-        let actual_value = this._validate_slide_value(ui.value);
+    handleSliderChanged(e: Event, ui: { value?: any }) {
+        const actual_value = this._validate_slide_value(ui.value);
         this.model.set('value', actual_value, {updated_view: this});
         this.touch();
     }
@@ -522,7 +522,7 @@ class IntTextView extends DescriptionView {
      */
     update(options?: any) {
         if (options === undefined || options.updated_view !== this) {
-            let value: number = this.model.get('value');
+            const value: number = this.model.get('value');
 
             if (this._parse_value(this.textbox.value) !== value) {
                 this.textbox.value = value.toString();
@@ -579,14 +579,14 @@ class IntTextView extends DescriptionView {
         if (e.altKey || e.ctrlKey) {
             return;
         }
-        let target = e.target as HTMLInputElement;
+        const target = e.target as HTMLInputElement;
         /* remove invalid characters */
         let value = target.value;
 
         value = value.replace(/[e,.\s]/g, "");
 
         if (value.length >= 1) {
-            var subvalue = value.substr(1);
+            const subvalue = value.substr(1);
             value = value[0] + subvalue.replace(/[+-]/g, "");
         }
 
@@ -601,9 +601,9 @@ class IntTextView extends DescriptionView {
      * obviously incomplete.
      */
     handleChanging(e: Event) {
-        let target = e.target as HTMLInputElement;
+        const target = e.target as HTMLInputElement;
 
-        let trimmed = target.value.trim();
+        const trimmed = target.value.trim();
         if (trimmed === '' || (['-', '-.', '.', '+.', '+'].indexOf(trimmed) >= 0)) {
             // incomplete number
             return;
@@ -618,7 +618,7 @@ class IntTextView extends DescriptionView {
      * Applies validated input.
      */
     handleChanged(e: Event) {
-        let target = e.target as HTMLInputElement;
+        const target = e.target as HTMLInputElement;
         let numericalValue = this._parse_value(target.value);
 
         // If parse failed, reset value to value stored in model.
@@ -696,8 +696,8 @@ class ProgressView extends DescriptionView {
 
     render() {
         super.render();
-        let orientation = this.model.get('orientation');
-        let className = orientation === 'horizontal' ?
+        const orientation = this.model.get('orientation');
+        const className = orientation === 'horizontal' ?
             'widget-hprogress' : 'widget-vprogress';
         this.el.classList.add(className);
 
@@ -725,11 +725,11 @@ class ProgressView extends DescriptionView {
      * changed by another view or by a state update from the back-end.
      */
     update() {
-        let value = this.model.get('value');
-        let max = this.model.get('max');
-        let min = this.model.get('min');
-        let orientation = this.model.get('orientation');
-        let percent = 100.0 * (value - min) / (max - min);
+        const value = this.model.get('value');
+        const max = this.model.get('max');
+        const min = this.model.get('min');
+        const orientation = this.model.get('orientation');
+        const percent = 100.0 * (value - min) / (max - min);
         if (orientation === 'horizontal') {
             this.el.classList.remove('widget-inline-vbox');
             this.el.classList.remove('widget-vprogress');
@@ -785,13 +785,13 @@ class PlayModel extends BoundedIntModel {
             disabled: false,
         });
     }
-    initialize(attributes: any, options: { model_id: string; comm: any; widget_manager: any; }) {
+    initialize(attributes: any, options: { model_id: string; comm: any; widget_manager: any }) {
         super.initialize(attributes, options);
     }
 
     loop() {
         if (this.get('_playing')) {
-            let next_value = this.get('value') + this.get('step');
+            const next_value = this.get('value') + this.get('step');
             if (next_value <= this.get('max')) {
                 this.set('value', next_value);
                 this.schedule_next();
@@ -865,16 +865,16 @@ class PlayView extends DOMWidgetView {
         this.el.appendChild(this.stopButton);  // Disable if not playing
         this.el.appendChild(this.repeatButton);  // Always enabled, but may be hidden
 
-        let playIcon = document.createElement('i');
+        const playIcon = document.createElement('i');
         playIcon.className = 'fa fa-play';
         this.playButton.appendChild(playIcon);
-        let pauseIcon = document.createElement('i');
+        const pauseIcon = document.createElement('i');
         pauseIcon.className = 'fa fa-pause';
         this.pauseButton.appendChild(pauseIcon);
-        let stopIcon = document.createElement('i');
+        const stopIcon = document.createElement('i');
         stopIcon.className = 'fa fa-stop';
         this.stopButton.appendChild(stopIcon);
-        let repeatIcon = document.createElement('i');
+        const repeatIcon = document.createElement('i');
         repeatIcon.className = 'fa fa-retweet';
         this.repeatButton.appendChild(repeatIcon);
 
@@ -892,7 +892,7 @@ class PlayView extends DOMWidgetView {
     }
 
     update() {
-        let disabled = this.model.get('disabled');
+        const disabled = this.model.get('disabled');
         this.playButton.disabled = disabled;
         this.pauseButton.disabled = disabled;
         this.stopButton.disabled = disabled;
@@ -901,8 +901,8 @@ class PlayView extends DOMWidgetView {
     }
 
     update_playing() {
-        let playing = this.model.get('_playing');
-        let disabled = this.model.get('disabled');
+        const playing = this.model.get('_playing');
+        const disabled = this.model.get('disabled');
         if (playing) {
             if (!disabled) {
                 this.pauseButton.disabled = false;
@@ -917,7 +917,7 @@ class PlayView extends DOMWidgetView {
     }
 
     update_repeat() {
-        let repeat = this.model.get('_repeat');
+        const repeat = this.model.get('_repeat');
         this.repeatButton.style.display = this.model.get('show_repeat') ? this.playButton.style.display : 'none';
         if (repeat) {
             this.repeatButton.classList.add('mod-active');

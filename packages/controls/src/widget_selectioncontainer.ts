@@ -64,7 +64,7 @@ class AccordionModel extends SelectionContainerModel {
 export
 class JupyterPhosphorAccordionWidget extends Accordion {
     constructor(options: JupyterPhosphorWidget.IOptions & Accordion.IOptions) {
-        let view = options.view;
+        const view = options.view;
         delete options.view;
         super(options);
         this._view = view;
@@ -132,7 +132,7 @@ class AccordionView extends DOMWidgetView {
      */
     render() {
         super.render();
-        let accordion = this.pWidget;
+        const accordion = this.pWidget;
         accordion.addClass('jupyter-widgets');
         accordion.addClass('widget-accordion');
         accordion.addClass('widget-container');
@@ -166,8 +166,8 @@ class AccordionView extends DOMWidgetView {
      * Set header titles
      */
     update_titles() {
-        let collapsed = this.pWidget.collapseWidgets;
-        let titles = this.model.get('_titles');
+        const collapsed = this.pWidget.collapseWidgets;
+        const titles = this.model.get('_titles');
         for (let i = 0; i < collapsed.length; i++) {
             if (titles[i] !== void 0) {
                 collapsed[i].widget.title.label = titles[i];
@@ -195,14 +195,14 @@ class AccordionView extends DOMWidgetView {
      */
     add_child_view(model: WidgetModel, index: number) {
         // Placeholder widget to keep our position in the tab panel while we create the view.
-        let accordion = this.pWidget;
-        let placeholder = new Widget();
+        const accordion = this.pWidget;
+        const placeholder = new Widget();
         placeholder.title.label = this.model.get('_titles')[index] || '';
         accordion.addWidget(placeholder);
         return this.create_child_view(model).then((view: DOMWidgetView) => {
-            let widget = view.pWidget;
+            const widget = view.pWidget;
             widget.title.label = placeholder.title.label;
-            let collapse = accordion.collapseWidgets[accordion.indexOf(placeholder)];
+            const collapse = accordion.collapseWidgets[accordion.indexOf(placeholder)];
             collapse.widget = widget;
             placeholder.dispose();
             return view;
@@ -235,7 +235,7 @@ class TabModel extends SelectionContainerModel {
 export
 class JupyterPhosphorTabPanelWidget extends TabPanel {
     constructor(options: JupyterPhosphorWidget.IOptions & TabPanel.IOptions) {
-        let view = options.view;
+        const view = options.view;
         delete options.view;
         super(options);
         this._view = view;
@@ -311,7 +311,7 @@ class TabView extends DOMWidgetView {
      */
     render() {
         super.render();
-        let tabs = this.pWidget;
+        const tabs = this.pWidget;
         tabs.addClass('jupyter-widgets');
         tabs.addClass('widget-container');
         tabs.addClass('widget-tab');
@@ -350,17 +350,17 @@ class TabView extends DOMWidgetView {
      */
     addChildView(model: WidgetModel, index: number) {
         // Placeholder widget to keep our position in the tab panel while we create the view.
-        let label = this.model.get('_titles')[index] || '';
-        let tabs = this.pWidget;
-        let placeholder = new Widget();
+        const label = this.model.get('_titles')[index] || '';
+        const tabs = this.pWidget;
+        const placeholder = new Widget();
         placeholder.title.label = label;
         tabs.addWidget(placeholder);
         return this.create_child_view(model).then((view: DOMWidgetView) => {
-            let widget = view.pWidget;
+            const widget = view.pWidget;
             widget.title.label = placeholder.title.label;
             widget.title.closable = false;
 
-            let i = ArrayExt.firstIndexOf(tabs.widgets, placeholder);
+            const i = ArrayExt.firstIndexOf(tabs.widgets, placeholder);
             // insert after placeholder so that if placholder is selected, the
             // real widget will be selected now (this depends on the tab bar
             // insert behavior)
@@ -388,7 +388,7 @@ class TabView extends DOMWidgetView {
      * Updates the tab page titles.
      */
     updateTitles() {
-        let titles = this.model.get('_titles') || {};
+        const titles = this.model.get('_titles') || {};
         each(this.pWidget.widgets, (widget, i) => {
             widget.title.label = titles[i] || '';
         });
@@ -408,7 +408,7 @@ class TabView extends DOMWidgetView {
 
     _onTabChanged(sender: TabBar<Widget>, args: TabBar.ICurrentChangedArgs<Widget>) {
         if (!this.updatingTabs) {
-            let i = args.currentIndex;
+            const i = args.currentIndex;
             this.model.set('selected_index', i === -1 ? null : i);
             this.touch();
         }
@@ -418,13 +418,13 @@ class TabView extends DOMWidgetView {
      * Handle the `tabMoved` signal from the tab bar.
      */
     _onTabMoved(sender: TabBar<Widget>, args: TabBar.ITabMovedArgs<Widget>): void {
-        let children = this.model.get('children').slice();
+        const children = this.model.get('children').slice();
         ArrayExt.move(children, args.fromIndex, args.toIndex);
         this.model.set('children', children);
         this.touch();
     }
 
-    updatingTabs: boolean = false;
+    updatingTabs = false;
     childrenViews: ViewList<DOMWidgetView>;
     pWidget: JupyterPhosphorTabPanelWidget;
 }

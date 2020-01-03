@@ -53,17 +53,17 @@ class AudioView extends DOMWidgetView {
          */
 
         let url;
-        let format = this.model.get('format');
-        let value = this.model.get('value');
+        const format = this.model.get('format');
+        const value = this.model.get('value');
         if (format !== 'url') {
-            let blob = new Blob([value], {type: `audio/${this.model.get('format')}`});
+            const blob = new Blob([value], {type: `audio/${this.model.get('format')}`});
             url = URL.createObjectURL(blob);
         } else {
             url = (new TextDecoder('utf-8')).decode(value.buffer);
         }
 
         // Clean up the old objectURL
-        let oldurl = this.el.src;
+        const oldurl = this.el.src;
         this.el.src = url;
         if (oldurl && typeof oldurl !== 'string') {
             URL.revokeObjectURL(oldurl);

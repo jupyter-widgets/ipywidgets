@@ -109,7 +109,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
 
     // Set _handleCommOpen so `this` is captured.
     this._handleCommOpen = async (comm, msg) => {
-      let oldComm = new shims.services.Comm(comm);
+      const oldComm = new shims.services.Comm(comm);
       await this.handle_comm_open(oldComm, msg);
     };
 
@@ -249,10 +249,10 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
           if ((msg.parent_header as any).msg_id === msg_id
             && msg.header.msg_type === 'comm_msg'
             && msg.content.data.method === 'update') {
-            let data = (msg.content.data as any);
-            let buffer_paths = data.buffer_paths || [];
+            const data = (msg.content.data as any);
+            const buffer_paths = data.buffer_paths || [];
             // Make sure the buffers are DataViews
-            let buffers = (msg.buffers || []).map(b => {
+            const buffers = (msg.buffers || []).map(b => {
                 if (b instanceof DataView) {
                     return b;
                 } else {
@@ -315,11 +315,11 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * Create a comm.
    */
   async _create_comm(target_name: string, model_id: string, data?: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): Promise<IClassicComm> {
-    let kernel = this._context.sessionContext.session?.kernel;
+    const kernel = this._context.sessionContext.session?.kernel;
     if (!kernel) {
       throw new Error('No current kernel');
     }
-    let comm = kernel.createComm(target_name, model_id);
+    const comm = kernel.createComm(target_name, model_id);
     if (data || metadata) {
       comm.open(data, metadata, buffers);
     }
@@ -330,7 +330,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * Get the currently-registered comms.
    */
   async _get_comm_info(): Promise<any> {
-    let kernel = this._context.sessionContext.session?.kernel;
+    const kernel = this._context.sessionContext.session?.kernel;
     if (!kernel) {
       throw new Error('No current kernel');
     }
@@ -496,7 +496,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    */
   get_state_sync(options: IStateOptions = {}) {
       const models = [];
-      for (let model of this._modelsSync.values()) {
+      for (const model of this._modelsSync.values()) {
         if (model.comm_live) {
           models.push(model);
         }
@@ -535,7 +535,7 @@ export
 namespace WidgetManager {
   export
   type Settings = {
-    saveState: boolean
+    saveState: boolean;
   };
 }
 

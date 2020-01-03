@@ -111,13 +111,13 @@ class WidgetModel extends Backbone.Model {
      *      An ID unique to this model.
      * comm : Comm instance (optional)
      */
-    initialize(attributes: any, options: {model_id: string, comm?: any, widget_manager: any}) {
+    initialize(attributes: any, options: {model_id: string; comm?: any; widget_manager: any}) {
         super.initialize(attributes, options);
 
         // Attributes should be initialized here, since user initialization may depend on it
         this.widget_manager = options.widget_manager;
         this.model_id = options.model_id;
-        let comm = options.comm;
+        const comm = options.comm;
 
         this.views = Object.create(null);
         this.state_change = Promise.resolve();
@@ -160,7 +160,7 @@ class WidgetModel extends Backbone.Model {
      */
     send(content: {}, callbacks: {}, buffers?: ArrayBuffer[] | ArrayBufferView[]) {
         if (this.comm !== undefined) {
-            let data = {method: 'custom', content: content};
+            const data = {method: 'custom', content: content};
             this.comm.send(data, callbacks, {}, buffers);
         }
     }
@@ -172,7 +172,7 @@ class WidgetModel extends Backbone.Model {
      *
      * @returns - a promise that is fulfilled when all the associated views have been removed.
      */
-    close(comm_closed: boolean = false): Promise<void> {
+    close(comm_closed = false): Promise<void> {
         // can only be closed once.
         if (this._closed) {
             return;
@@ -187,7 +187,7 @@ class WidgetModel extends Backbone.Model {
             delete this.comm;
         }
         // Delete all views of this model
-        let views = Object.keys(this.views).map((id: string) => {
+        const views = Object.keys(this.views).map((id: string) => {
             return this.views[id].then(view => view.remove());
         });
         delete this.views;
@@ -207,16 +207,16 @@ class WidgetModel extends Backbone.Model {
      */
     _handle_comm_msg(msg: KernelMessage.ICommMsgMsg): Promise<void> {
         const data = msg.content.data as any;
-        let method = data.method;
+        const method = data.method;
         // tslint:disable-next-line:switch-default
         switch (method) {
             case 'update':
                 this.state_change = this.state_change
                     .then(() => {
-                        let state = data.state;
-                        let buffer_paths = data.buffer_paths || [];
+                        const state = data.state;
+                        const buffer_paths = data.buffer_paths || [];
                         // Make sure the buffers are DataViews
-                        let buffers = (msg.buffers || []).map(b => {
+                        const buffers = (msg.buffers || []).map(b => {
                             if (b instanceof DataView) {
                                 return b;
                             } else {
@@ -259,12 +259,12 @@ class WidgetModel extends Backbone.Model {
      * values are dropped.
      */
     get_state(drop_defaults: boolean) {
-        let fullState = this.attributes;
+        const fullState = this.attributes;
         if (drop_defaults) {
             // if defaults is a function, call it
-            let d = this.defaults;
-            let defaults = (typeof d === 'function') ? d.call(this) : d;
-            let state: {[key: string]: any} = {};
+            const d = this.defaults;
+            const defaults = (typeof d === 'function') ? d.call(this) : d;
+            const state: {[key: string]: any} = {};
             Object.keys(fullState).forEach(key => {
                 if (!(utils.isEqual(fullState[key], defaults[key]))) {
                     state[key] = fullState[key];
@@ -311,7 +311,7 @@ class WidgetModel extends Backbone.Model {
      */
     set(key: any, val?: any, options?: any) {
         // Call our patched backbone set. See #1642 and #1643.
-        let return_value = backbonePatch.set.call(this, key, val, options);
+        const return_value = backbonePatch.set.call(this, key, val, options);
 
         // Backbone only remembers the diff of the most recent set()
         // operation.  Calling set multiple times in a row results in a
@@ -321,7 +321,7 @@ class WidgetModel extends Backbone.Model {
         // defaults), so we first check to see if we've initialized _buffered_state_diff.
         // which happens after the constructor sets attributes at creation.
         if (this._buffered_state_diff !== void 0) {
-            let attrs = this.changedAttributes() || {};
+            const attrs = this.changedAttributes() || {};
 
             // The state_lock lists attributes that are currently being changed
             // right now from a kernel message. We don't want to send these
@@ -367,7 +367,7 @@ class WidgetModel extends Backbone.Model {
             throw 'Syncing error: no comm channel defined';
         }
 
-        let attrs = (method === 'patch') ? options.attrs : model.get_state(options.drop_defaults);
+        const attrs = (method === 'patch') ? options.attrs : model.get_state(options.drop_defaults);
 
         // The state_lock lists attributes that are currently being changed
         // right now from a kernel message. We don't want to send these
@@ -383,14 +383,14 @@ class WidgetModel extends Backbone.Model {
             }
         }
 
-        let msgState = this.serialize(attrs);
+        const msgState = this.serialize(attrs);
 
         if (Object.keys(msgState).length > 0) {
 
             // If this message was sent via backbone itself, it will not
             // have any callbacks.  It's important that we create callbacks
             // so we can listen for status messages, etc...
-            let callbacks = options.callbacks || this.callbacks();
+            const callbacks = options.callbacks || this.callbacks();
 
             // Check throttle.
             if (this._pending_msgs >= 1) {
@@ -459,7 +459,7 @@ class WidgetModel extends Backbone.Model {
     send_sync_message(state: {}, callbacks: any = {}) {
         try {
             callbacks.iopub = callbacks.iopub || {};
-            let statuscb = callbacks.iopub.status;
+            const statuscb = callbacks.iopub.status;
             callbacks.iopub.status = (msg: KernelMessage.IStatusMsg) => {
                 this._handle_status(msg);
                 if (statuscb) {
@@ -468,7 +468,7 @@ class WidgetModel extends Backbone.Model {
             };
 
             // split out the binary buffers
-            let split = utils.remove_buffers(state);
+            const split = utils.remove_buffers(state);
             this.comm.send({
                 method: 'update',
                 state: split.state,
@@ -487,7 +487,7 @@ class WidgetModel extends Backbone.Model {
      */
     save_changes(callbacks?: {}) {
         if (this.comm_live) {
-            let options: any = {patch: true};
+            const options: any = {patch: true};
             if (callbacks) {
                 options.callbacks = callbacks;
             }
@@ -526,11 +526,11 @@ class WidgetModel extends Backbone.Model {
      * deserialization of widget models.
      */
     static _deserialize_state(state: {[key: string]: any}, manager: managerBase.ManagerBase<any>) {
-        let serializers = this.serializers;
+        const serializers = this.serializers;
         let deserialized: {[key: string]: any};
         if (serializers) {
             deserialized = {};
-            for (let k in state) {
+            for (const k in state) {
                 if (serializers[k] && serializers[k].deserialize) {
                      deserialized[k] = (serializers[k].deserialize)(state[k], manager);
                 } else {
@@ -603,7 +603,7 @@ class WidgetView extends NativeView<WidgetModel> {
      */
     initialize(parameters: WidgetView.InitializeParameters) {
         this.listenTo(this.model, 'change', () => {
-            let changed = Object.keys(this.model.changedAttributes() || {});
+            const changed = Object.keys(this.model.changedAttributes() || {});
             if (changed[0] === '_view_count' && changed.length === 1) {
                 // Just the view count was updated
                 return;
@@ -709,7 +709,7 @@ namespace JupyterPhosphorWidget {
 export
 class JupyterPhosphorWidget extends Widget {
     constructor(options: Widget.IOptions & JupyterPhosphorWidget.IOptions) {
-        let view = options.view;
+        const view = options.view;
         delete options.view;
         super(options);
         this._view = view;
@@ -748,7 +748,7 @@ class JupyterPhosphorWidget extends Widget {
 export
 class JupyterPhosphorPanelWidget extends Panel {
     constructor(options: JupyterPhosphorWidget.IOptions & Panel.IOptions) {
-        let view = options.view;
+        const view = options.view;
         delete options.view;
         super(options);
         this._view = view;
@@ -793,7 +793,7 @@ class DOMWidgetView extends WidgetView {
         super.initialize(parameters);
 
         this.listenTo(this.model, 'change:_dom_classes', (model: WidgetModel, new_classes: string[]) => {
-            let old_classes = model.previous('_dom_classes');
+            const old_classes = model.previous('_dom_classes');
             this.update_classes(old_classes, new_classes);
         });
 
@@ -916,16 +916,16 @@ class DOMWidgetView extends WidgetView {
      */
     update_mapped_classes(class_map: {[key: string]: string[]}, trait_name: string, el?: HTMLElement) {
         let key = this.model.previous(trait_name);
-        let old_classes = class_map[key] ? class_map[key] : [];
+        const old_classes = class_map[key] ? class_map[key] : [];
         key = this.model.get(trait_name);
-        let new_classes = class_map[key] ? class_map[key] : [];
+        const new_classes = class_map[key] ? class_map[key] : [];
 
         this.update_classes(old_classes, new_classes, el || this.el);
     }
 
     set_mapped_classes(class_map: {[key: string]: string[]}, trait_name: string, el?: HTMLElement) {
-        let key = this.model.get(trait_name);
-        let new_classes = class_map[key] ? class_map[key] : [];
+        const key = this.model.get(trait_name);
+        const new_classes = class_map[key] ? class_map[key] : [];
         this.update_classes([], new_classes, el || this.el);
     }
 

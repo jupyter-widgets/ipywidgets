@@ -80,10 +80,10 @@ const SETTINGS: WidgetManager.Settings = { saveState: false };
  * Iterate through all widget renderers in a notebook.
  */
 function* widgetRenderers(nb: Notebook) {
-  for (let cell of nb.widgets) {
+  for (const cell of nb.widgets) {
     if (cell.model.type === 'code') {
-      for (let codecell of (cell as CodeCell).outputArea.widgets) {
-        for (let output of toArray(codecell.children())) {
+      for (const codecell of (cell as CodeCell).outputArea.widgets) {
+        for (const output of toArray(codecell.children())) {
           if (output instanceof WidgetRenderer) {
             yield output;
           }
@@ -97,13 +97,13 @@ function* widgetRenderers(nb: Notebook) {
  * Iterate through all matching linked output views
  */
 function* outputViews(app: JupyterFrontEnd, path: string) {
-  let linkedViews = filter(
+  const linkedViews = filter(
     app.shell.widgets(),
     w => w.id.startsWith('LinkedOutputView-') && (w as any).path === path
   );
-  for (let view of toArray(linkedViews)) {
-    for (let outputs of toArray(view.children())) {
-      for (let output of toArray(outputs.children())) {
+  for (const view of toArray(linkedViews)) {
+    for (const outputs of toArray(view.children())) {
+      for (const output of toArray(outputs.children())) {
         if (output instanceof WidgetRenderer) {
           yield output;
         }
@@ -113,7 +113,7 @@ function* outputViews(app: JupyterFrontEnd, path: string) {
 }
 
 function* chain<T>(...args: IterableIterator<T>[]) {
-  for (let it of args) {
+  for (const it of args) {
     yield* it;
   }
 }
@@ -130,7 +130,7 @@ export function registerWidgetManager(
     Private.widgetManagerProperty.set(context, wManager);
   }
 
-  for (let r of renderers) {
+  for (const r of renderers) {
     r.manager = wManager;
   }
 

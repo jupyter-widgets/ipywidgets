@@ -49,8 +49,8 @@ class Selection<T> {
   adjustSelectionForSet(index: number): void {
     // We just need to send a signal if the currentValue changed.
     // Get the current index and value.
-    let pi = this.index;
-    let pv = this.value;
+    const pi = this.index;
+    const pv = this.value;
 
     // Exit early if this doesn't affect the selection
     if (index !== pi) {
@@ -58,7 +58,7 @@ class Selection<T> {
     }
 
     this._updateSelectedValue();
-    let cv = this.value;
+    const cv = this.value;
 
     // The previous item is now null, since it is no longer in the array.
     this._previousValue = null;
@@ -136,8 +136,8 @@ class Selection<T> {
     }
 
     // Look up the previous index and item.
-    let pi = this._index;
-    let pv = this._value;
+    const pi = this._index;
+    const pv = this._value;
 
     // Update the state
     this._index = i;
@@ -193,9 +193,9 @@ class Selection<T> {
    */
   adjustSelectionForInsert(i: number, item: T): void {
     // Lookup commonly used variables.
-    let cv = this._value;
-    let ci = this._index;
-    let bh = this._insertBehavior;
+    const cv = this._value;
+    const ci = this._index;
+    const bh = this._insertBehavior;
 
     // Handle the behavior where the new item is always selected,
     // or the behavior where the new item is selected if needed.
@@ -241,8 +241,8 @@ class Selection<T> {
    */
   clearSelection(): void {
     // Get the current index and item.
-    let pi = this._index;
-    let pv = this._value;
+    const pi = this._index;
+    const pv = this._value;
 
     // Reset the current index and previous item.
     this._index = null;
@@ -274,8 +274,8 @@ class Selection<T> {
    */
   adjustSelectionForRemove(i: number, item: T): void {
     // Lookup commonly used variables.
-    let ci = this._index;
-    let bh = this._removeBehavior;
+    const ci = this._index;
+    const bh = this._removeBehavior;
 
     // Silently adjust the index if the current item is not removed.
     if (ci !== i) {
@@ -352,7 +352,7 @@ class Selection<T> {
    * Set the current value based on the current index.
    */
   private _updateSelectedValue() {
-    let i = this._index;
+    const i = this._index;
     this._value = i !== null ? this._array[i] : null;
   }
 

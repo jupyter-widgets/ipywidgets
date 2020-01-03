@@ -64,7 +64,7 @@ describe('Output widget', function() {
             ],
         }
 
-        let elt = await newWidget(modelState)
+        const elt = await newWidget(modelState)
         expect(elt.querySelectorAll('table').length).to.equal(1);
     })
 

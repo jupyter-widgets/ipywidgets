@@ -53,7 +53,7 @@ class Collapse extends Widget {
     this._content = new Panel();
     this._content.addClass(COLLAPSE_CONTENTS_CLASS);
 
-    let layout = new PanelLayout();
+    const layout = new PanelLayout();
     this.layout = layout;
     layout.addWidget(this._header);
     layout.addWidget(this._content);
@@ -78,7 +78,7 @@ class Collapse extends Widget {
   }
 
   set widget(widget: Widget) {
-    let oldWidget = this._widget;
+    const oldWidget = this._widget;
     if (oldWidget) {
       oldWidget.disposed.disconnect(this._onChildDisposed, this);
       oldWidget.title.changed.disconnect(this._onTitleChanged, this);
@@ -243,7 +243,7 @@ class Accordion extends Panel {
    * The widget will be wrapped in a CollapsedWidget.
    */
   addWidget(widget: Widget): Widget {
-    let collapse = this._wrapWidget(widget);
+    const collapse = this._wrapWidget(widget);
     collapse.collapsed = true;
     super.addWidget(collapse);
     this._selection.adjustSelectionForInsert(this.widgets.length - 1, collapse);
@@ -261,16 +261,16 @@ class Accordion extends Panel {
    * If the widget is already contained in the panel, it will be moved.
    */
   insertWidget(index: number, widget: Widget): void {
-    let collapse = this._wrapWidget(widget);
+    const collapse = this._wrapWidget(widget);
     collapse.collapsed = true;
     super.insertWidget(index, collapse);
     this._selection.adjustSelectionForInsert(index, collapse);
   }
 
   removeWidget(widget: Widget): void {
-    let index = this.indexOf(widget);
+    const index = this.indexOf(widget);
     if (index >= 0) {
-      let collapse = this.collapseWidgets[index] as Collapse;
+      const collapse = this.collapseWidgets[index] as Collapse;
       widget.parent = null;
       collapse.dispose();
       this._selection.adjustSelectionForRemove(index, null);
@@ -278,7 +278,7 @@ class Accordion extends Panel {
   }
 
   private _wrapWidget(widget: Widget) {
-    let collapse = new Collapse({ widget });
+    const collapse = new Collapse({ widget });
     collapse.addClass(ACCORDION_CHILD_CLASS);
     collapse.collapseChanged.connect(this._onCollapseChange, this);
     return collapse;
@@ -294,8 +294,8 @@ class Accordion extends Panel {
 
   private _onSelectionChanged(sender: Selection<Widget>, change: Selection.ISelectionChangedArgs<Collapse>) {
     // Collapse previous widget, open current widget
-    let pv = change.previousValue;
-    let cv = change.currentValue;
+    const pv = change.previousValue;
+    const cv = change.currentValue;
     if (pv) {
       pv.collapsed = true;
       pv.removeClass(ACCORDION_CHILD_ACTIVE_CLASS);

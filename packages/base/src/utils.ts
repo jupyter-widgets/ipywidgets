@@ -34,10 +34,10 @@ function isEqual(a: any, b: any) {
  * This is from code that Typescript 2.4 generates for a polyfill.
  */
 export
-let assign = (Object as any).assign || function(t: any) {
+const assign = (Object as any).assign || function(t: any) {
     for (let i = 1; i < arguments.length; i++) {
-        let s = arguments[i];
-        for (let p in s) {
+        const s = arguments[i];
+        for (const p in s) {
             if (Object.prototype.hasOwnProperty.call(s, p)) {
                 t[p] = s[p];
             }
@@ -83,7 +83,7 @@ class WrappedError extends Error {
  * A simple dictionary type.
  */
 export
-type Dict<T> = { [keys: string]: T; };
+type Dict<T> = { [keys: string]: T };
 
 /**
  * Resolve a promiseful dictionary.
@@ -91,13 +91,13 @@ type Dict<T> = { [keys: string]: T; };
  */
 export
 function resolvePromisesDict<V>(d: Dict<PromiseLike<V>>): Promise<Dict<V>> {
-    let keys = Object.keys(d);
-    let values: PromiseLike<V>[] = [];
+    const keys = Object.keys(d);
+    const values: PromiseLike<V>[] = [];
     keys.forEach(function(key) {
         values.push(d[key]);
     });
     return Promise.all(values).then((v) => {
-        let d: Dict<V> = {};
+        const d: Dict<V> = {};
         for (let i=0; i < keys.length; i++) {
             d[keys[i]] = v[i];
         }
@@ -133,7 +133,7 @@ function reject(message: string, log: boolean) {
 export
 function put_buffers(state: any, buffer_paths: (string | number)[][], buffers: DataView[]) {
     for (let i=0; i < buffer_paths.length; i++) {
-        let buffer_path = buffer_paths[i];
+        const buffer_path = buffer_paths[i];
          // say we want to set state[x][y][z] = buffers[i]
         let obj = state;
         // we first get obj = state[x][y]
@@ -156,9 +156,9 @@ function put_buffers(state: any, buffer_paths: (string | number)[][], buffers: D
  * and the buffers associated to those paths (.buffers).
  */
 export
-function remove_buffers(state: any): {state: any, buffers: ArrayBuffer[], buffer_paths: (string | number)[][]} {
-    let buffers: ArrayBuffer[] = [];
-    let buffer_paths: (string | number)[][] = [];
+function remove_buffers(state: any): {state: any; buffers: ArrayBuffer[]; buffer_paths: (string | number)[][]} {
+    const buffers: ArrayBuffer[] = [];
+    const buffer_paths: (string | number)[][] = [];
     // if we need to remove an object from a list, we need to clone that list, otherwise we may modify
     // the internal state of the widget model
     // however, we do not want to clone everything, for performance
@@ -171,7 +171,7 @@ function remove_buffers(state: any): {state: any, buffers: ArrayBuffer[], buffer
         if (Array.isArray(obj)) {
             let is_cloned = false;
             for (let i = 0; i < obj.length; i++) {
-                let value = obj[i];
+                const value = obj[i];
                 if (value) {
                     if (value instanceof ArrayBuffer || ArrayBuffer.isView(value)) {
                         if (!is_cloned) {
@@ -184,7 +184,7 @@ function remove_buffers(state: any): {state: any, buffers: ArrayBuffer[], buffer
                         // about array length, much easier this way
                         obj[i] = null;
                     } else {
-                        let new_value  = remove(value, path.concat([i]));
+                        const new_value  = remove(value, path.concat([i]));
                         // only assigned when the value changes, we may serialize objects that don't support assignment
                         if (new_value !== value) {
                             if (!is_cloned) {
@@ -197,10 +197,10 @@ function remove_buffers(state: any): {state: any, buffers: ArrayBuffer[], buffer
                 }
             }
         } else if (isPlainObject(obj)) {
-            for (let key in obj) {
+            for (const key in obj) {
                 let is_cloned = false;
                 if (obj.hasOwnProperty(key)) {
-                    let value = obj[key];
+                    const value = obj[key];
                     if (value) {
                         if (value instanceof ArrayBuffer || ArrayBuffer.isView(value)) {
                             if (!is_cloned) {
@@ -211,7 +211,7 @@ function remove_buffers(state: any): {state: any, buffers: ArrayBuffer[], buffer
                             buffer_paths.push(path.concat([key]));
                             delete obj[key]; // for objects/dicts we just delete them
                         } else {
-                            let new_value = remove(value, path.concat([key]));
+                            const new_value = remove(value, path.concat([key]));
                             // only assigned when the value changes, we may serialize objects that don't support assignment
                             if (new_value !== value) {
                                 if (!is_cloned) {
@@ -227,11 +227,11 @@ function remove_buffers(state: any): {state: any, buffers: ArrayBuffer[], buffer
         }
         return obj;
     }
-    let new_state = remove(state, []);
+    const new_state = remove(state, []);
     return {state: new_state, buffers: buffers, buffer_paths: buffer_paths};
 }
 
-let hexTable = [
+const hexTable = [
     '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '0A', '0B', '0C', '0D', '0E', '0F',
     '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '1A', '1B', '1C', '1D', '1E', '1F',
     '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '2A', '2B', '2C', '2D', '2E', '2F',
@@ -255,8 +255,8 @@ let hexTable = [
  */
 export
 function bufferToHex(buffer: ArrayBuffer): string {
-    let x = new Uint8Array(buffer);
-    let s = [];
+    const x = new Uint8Array(buffer);
+    const s = [];
     for (let i = 0; i < x.length; i++) {
         s.push(hexTable[x[i]]);
     }
@@ -268,7 +268,7 @@ function bufferToHex(buffer: ArrayBuffer): string {
  */
 export
 function hexToBuffer(hex: string): ArrayBuffer {
-    let x = new Uint8Array(hex.length / 2);
+    const x = new Uint8Array(hex.length / 2);
     for (let i = 0; i < hex.length; i += 2) {
         x[i / 2] = parseInt(hex.slice(i, i + 2), 16);
     }

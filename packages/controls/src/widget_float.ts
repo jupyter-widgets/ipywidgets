@@ -53,7 +53,7 @@ class FloatSliderModel extends BoundedFloatModel {
             disabled: false,
         });
     }
-    initialize(attributes: any, options: { model_id: string; comm?: any; widget_manager: any; }) {
+    initialize(attributes: any, options: { model_id: string; comm?: any; widget_manager: any }) {
         super.initialize(attributes, options);
         this.on('change:readout_format', this.update_readout_format, this);
         this.update_readout_format();
@@ -86,7 +86,7 @@ class FloatLogSliderModel extends BoundedFloatModel {
             max: 4
         });
     }
-    initialize(attributes: any, options: { model_id: string; comm: any; widget_manager: any; }) {
+    initialize(attributes: any, options: { model_id: string; comm: any; widget_manager: any }) {
         super.initialize(attributes, options);
         this.on('change:readout_format', this.update_readout_format, this);
         this.update_readout_format();
@@ -121,10 +121,10 @@ class FloatLogSliderView extends BaseIntSliderView {
 
     update(options?: any) {
         super.update(options);
-        let min = this.model.get('min');
-        let max = this.model.get('max');
-        let value = this.model.get('value');
-        let base = this.model.get('base');
+        const min = this.model.get('min');
+        const max = this.model.get('max');
+        const value = this.model.get('value');
+        const base = this.model.get('base');
 
         let log_value = Math.log( value ) / Math.log( base );
 
@@ -145,7 +145,7 @@ class FloatLogSliderView extends BaseIntSliderView {
      * Write value to a string
      */
     valueToString(value: number): string {
-        let format = this.model.readout_formatter;
+        const format = this.model.readout_formatter;
         return format(value);
     }
 
@@ -166,9 +166,9 @@ class FloatLogSliderView extends BaseIntSliderView {
      */
     handleTextChange() {
         let value = this.stringToValue(this.readout.textContent);
-        let vmin = this.model.get('min');
-        let vmax = this.model.get('max');
-        let base = this.model.get('base');
+        const vmin = this.model.get('min');
+        const vmax = this.model.get('max');
+        const base = this.model.get('base');
 
         if (isNaN(value)) {
             this.readout.textContent = this.valueToString(this.model.get('value'));
@@ -187,9 +187,9 @@ class FloatLogSliderView extends BaseIntSliderView {
     /**
      * Called when the slider value is changing.
      */
-    handleSliderChange(e: Event, ui: { value: any; }) {
-        let base = this.model.get('base');
-        let actual_value = Math.pow(base, this._validate_slide_value(ui.value));
+    handleSliderChange(e: Event, ui: { value: any }) {
+        const base = this.model.get('base');
+        const actual_value = Math.pow(base, this._validate_slide_value(ui.value));
         this.readout.textContent = this.valueToString(actual_value);
 
         // Only persist the value while sliding if the continuous_update
@@ -205,9 +205,9 @@ class FloatLogSliderView extends BaseIntSliderView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    handleSliderChanged(e: Event, ui: { value: any; }) {
-        let base = this.model.get('base');
-        let actual_value = Math.pow(base,this._validate_slide_value(ui.value));
+    handleSliderChanged(e: Event, ui: { value: any }) {
+        const base = this.model.get('base');
+        const actual_value = Math.pow(base,this._validate_slide_value(ui.value));
         this.model.set('value', actual_value, {updated_view: this});
         this.touch();
     }

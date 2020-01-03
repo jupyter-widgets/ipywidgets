@@ -85,7 +85,7 @@ class CheckboxView extends DescriptionView {
         if (this.checkboxLabel == null) {
             return;
         }
-        let description = this.model.get('description');
+        const description = this.model.get('description');
         this.descriptionSpan.innerHTML = description;
         this.typeset(this.descriptionSpan);
         this.descriptionSpan.title = description;
@@ -97,7 +97,7 @@ class CheckboxView extends DescriptionView {
      * to provide the optional indent.
      */
     updateIndent() {
-        let indent = this.model.get('indent');
+        const indent = this.model.get('indent');
         this.label.style.display = indent ? '' : 'none';
     }
 
@@ -114,7 +114,7 @@ class CheckboxView extends DescriptionView {
      * model to update.
      */
     _handle_click() {
-        let value = this.model.get('value');
+        const value = this.model.get('value');
         this.model.set('value', !value, {updated_view: this});
         this.touch();
     }
@@ -193,14 +193,14 @@ class ToggleButtonView extends DOMWidgetView {
             this.el.disabled = this.model.get('disabled');
             this.el.setAttribute('title', this.model.get('tooltip'));
 
-            let description = this.model.get('description');
-            let icon = this.model.get('icon');
+            const description = this.model.get('description');
+            const icon = this.model.get('icon');
             if (description.trim().length === 0 && icon.trim().length === 0) {
                 this.el.innerHTML = '&nbsp;'; // Preserve button height
             } else {
                 this.el.textContent = '';
                 if (icon.trim().length) {
-                    let i = document.createElement('i');
+                    const i = document.createElement('i');
                     this.el.appendChild(i);
                     i.classList.add('fa');
                     i.classList.add('fa-' + icon);
@@ -226,7 +226,7 @@ class ToggleButtonView extends DOMWidgetView {
      */
     _handle_click(event: MouseEvent) {
         event.preventDefault();
-        let value = this.model.get('value');
+        const value = this.model.get('value');
         this.model.set('value', !value, {updated_view: this});
         this.touch();
     }
@@ -276,7 +276,7 @@ class ValidView extends DescriptionView {
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-valid');
         this.el.classList.add('widget-inline-hbox');
-        let icon = document.createElement('i');
+        const icon = document.createElement('i');
         this.el.appendChild(icon);
         this.readout = document.createElement('span');
         this.readout.classList.add('widget-valid-readout');

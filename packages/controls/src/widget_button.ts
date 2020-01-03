@@ -81,12 +81,12 @@ class ButtonView extends DOMWidgetView {
         this.el.disabled = this.model.get('disabled');
         this.el.setAttribute('title', this.model.get('tooltip'));
 
-        let description = this.model.get('description');
-        let icon = this.model.get('icon');
+        const description = this.model.get('description');
+        const icon = this.model.get('icon');
         if (description.length || icon.length) {
             this.el.textContent = '';
             if (icon.length) {
-                let i = document.createElement('i');
+                const i = document.createElement('i');
                 i.classList.add('fa');
                 i.classList.add('fa-' + icon);
                 if (description.length === 0) {

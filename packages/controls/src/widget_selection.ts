@@ -82,17 +82,17 @@ class DropdownView extends DescriptionView {
         this.listbox.disabled = this.model.get('disabled');
 
         // Select the correct element
-        let index = this.model.get('index');
+        const index = this.model.get('index');
         this.listbox.selectedIndex = index === null ? -1 : index;
         return super.update();
     }
 
     _updateOptions() {
         this.listbox.textContent = '';
-        let items = this.model.get('_options_labels');
+        const items = this.model.get('_options_labels');
         for (let i = 0; i < items.length; i++) {
-            let item = items[i];
-            let option = document.createElement('option');
+            const item = items[i];
+            const option = document.createElement('option');
             option.textContent = item.replace(/ /g, '\xa0'); // space -> &nbsp;
             option.setAttribute('data-value', encodeURIComponent(item));
             option.value = item;
@@ -177,16 +177,16 @@ class SelectView extends DescriptionView {
         if (options.updated_view === this) {
             return;
         }
-        let index = this.model.get('index');
+        const index = this.model.get('index');
         this.listbox.selectedIndex = index === null ? -1 : index;
     }
 
     _updateOptions() {
         this.listbox.textContent = '';
-        let items = this.model.get('_options_labels');
+        const items = this.model.get('_options_labels');
         for (let i = 0; i < items.length; i++) {
-            let item = items[i];
-            let option = document.createElement('option');
+            const item = items[i];
+            const option = document.createElement('option');
             option.textContent = item.replace(/ /g, '\xa0'); // space -> &nbsp;
             option.setAttribute('data-value', encodeURIComponent(item));
             option.value = item;
@@ -251,9 +251,9 @@ class RadioButtonsView extends DescriptionView {
      * changed by another view or by a state update from the back-end.
      */
     update(options?: any) {
-        let view = this;
-        let items: string[] = this.model.get('_options_labels');
-        let radios = _.pluck(
+        const view = this;
+        const items: string[] = this.model.get('_options_labels');
+        const radios = _.pluck(
             this.container.querySelectorAll('input[type="radio"]'),
             'value'
         );
@@ -272,11 +272,11 @@ class RadioButtonsView extends DescriptionView {
             // Add items to the DOM.
             this.container.textContent = '';
             items.forEach(function(item: any, index: number) {
-                let label = document.createElement('label');
+                const label = document.createElement('label');
                 label.textContent = item;
                 view.container.appendChild(label);
 
-                let radio = document.createElement('input');
+                const radio = document.createElement('input');
                 radio.setAttribute('type', 'radio');
                 radio.value = index.toString();
                 radio.setAttribute('data-value', encodeURIComponent(item));
@@ -284,11 +284,11 @@ class RadioButtonsView extends DescriptionView {
            });
         }
         items.forEach(function(item: any, index: number) {
-            let item_query = 'input[data-value="' +
+            const item_query = 'input[data-value="' +
                 encodeURIComponent(item) + '"]';
-                let radio = view.container.querySelectorAll(item_query);
+                const radio = view.container.querySelectorAll(item_query);
             if (radio.length > 0) {
-              let radio_el = radio[0] as HTMLInputElement;
+              const radio_el = radio[0] as HTMLInputElement;
               radio_el.checked = view.model.get('index') === index;
               radio_el.disabled = view.model.get('disabled');
             }
@@ -314,21 +314,21 @@ class RadioButtonsView extends DescriptionView {
      */
     adjustPadding(e: this) {
         // Vertical margins on a widget
-        let elStyles = window.getComputedStyle(e.el);
-        let margins = parseInt(elStyles.marginTop, 10) + parseInt(elStyles.marginBottom, 10);
+        const elStyles = window.getComputedStyle(e.el);
+        const margins = parseInt(elStyles.marginTop, 10) + parseInt(elStyles.marginBottom, 10);
 
         // Total spaces taken by a single-line widget
-        let lineHeight = e.label.offsetHeight + margins;
+        const lineHeight = e.label.offsetHeight + margins;
 
         // Current adjustment value on this widget
-        let cStyles = window.getComputedStyle(e.container);
-        let containerMargin = parseInt(cStyles.marginBottom);
+        const cStyles = window.getComputedStyle(e.container);
+        const containerMargin = parseInt(cStyles.marginBottom);
 
         // How far we are off from a multiple of single windget lines
-        let diff = (e.el.offsetHeight + margins - containerMargin) % lineHeight;
+        const diff = (e.el.offsetHeight + margins - containerMargin) % lineHeight;
 
         // Apply the new adjustment
-        let extraMargin = diff == 0 ? 0 : (lineHeight - diff);
+        const extraMargin = diff == 0 ? 0 : (lineHeight - diff);
         e.container.style.marginBottom = extraMargin + 'px';
     }
 
@@ -345,7 +345,7 @@ class RadioButtonsView extends DescriptionView {
      * model to update.
      */
     _handle_click (event: Event) {
-        let target = event.target as HTMLInputElement;
+        const target = event.target as HTMLInputElement;
         this.model.set('index', parseInt(target.value), {updated_view: this});
         this.touch();
     }
@@ -419,15 +419,15 @@ class ToggleButtonsView extends DescriptionView {
      * changed by another view or by a state update from the back-end.
      */
     update(options?: any) {
-        let view = this;
-        let items: string[] = this.model.get('_options_labels');
-        let icons = this.model.get('icons') || [];
-        let previous_icons = this.model.previous('icons') || [];
-        let previous_bstyle = (ToggleButtonsView.classMap as any)[this.model.previous('button_style')] || '';
-        let tooltips = view.model.get('tooltips') || [];
-        let disabled = this.model.get('disabled');
-        let buttons = this.buttongroup.querySelectorAll('button');
-        let values = _.pluck(buttons, 'value');
+        const view = this;
+        const items: string[] = this.model.get('_options_labels');
+        const icons = this.model.get('icons') || [];
+        const previous_icons = this.model.previous('icons') || [];
+        const previous_bstyle = (ToggleButtonsView.classMap as any)[this.model.previous('button_style')] || '';
+        const tooltips = view.model.get('tooltips') || [];
+        const disabled = this.model.get('disabled');
+        const buttons = this.buttongroup.querySelectorAll('button');
+        const values = _.pluck(buttons, 'value');
         let stale = false;
 
         for (let i = 0, len = items.length; i < len; ++i) {
@@ -442,7 +442,7 @@ class ToggleButtonsView extends DescriptionView {
             this.buttongroup.textContent = '';
             items.forEach((item: any, index: number) => {
                 let item_html;
-                let empty = item.trim().length === 0 &&
+                const empty = item.trim().length === 0 &&
                     (!icons[index] || icons[index].trim().length === 0);
                 if (empty) {
                     item_html = '&nbsp;';
@@ -450,8 +450,8 @@ class ToggleButtonsView extends DescriptionView {
                     item_html = utils.escape_html(item);
                 }
 
-                let icon = document.createElement('i');
-                let button = document.createElement('button');
+                const icon = document.createElement('i');
+                const button = document.createElement('button');
                 if (icons[index]) {
                     icon.className = 'fa fa-' + icons[index];
                 }
@@ -475,8 +475,8 @@ class ToggleButtonsView extends DescriptionView {
 
         // Select active button.
         items.forEach(function(item: any, index: number) {
-            let item_query = '[data-value="' + encodeURIComponent(item) + '"]';
-            let button = view.buttongroup.querySelector(item_query);
+            const item_query = '[data-value="' + encodeURIComponent(item) + '"]';
+            const button = view.buttongroup.querySelector(item_query);
             if (view.model.get('index') === index) {
                 button.classList.add('mod-active');
             } else {
@@ -493,7 +493,7 @@ class ToggleButtonsView extends DescriptionView {
     }
 
     update_style_traits(button?: HTMLButtonElement) {
-        for (let name in this._css_state as string[]) {
+        for (const name in this._css_state as string[]) {
             if (this._css_state.hasOwnProperty(name)) {
                 if (name === 'margin') {
                     this.buttongroup.style[name] = this._css_state[name];
@@ -501,7 +501,7 @@ class ToggleButtonsView extends DescriptionView {
                     if (button) {
                         button.style[name] = this._css_state[name];
                     } else {
-                        let buttons = this.buttongroup
+                        const buttons = this.buttongroup
                             .querySelectorAll('button');
                         if (buttons.length) {
                             (buttons[0]).style[name] = this._css_state[name];
@@ -513,14 +513,14 @@ class ToggleButtonsView extends DescriptionView {
     }
 
     update_button_style() {
-        let buttons = this.buttongroup.querySelectorAll('button');
+        const buttons = this.buttongroup.querySelectorAll('button');
         for (let i = 0; i < buttons.length; i++) {
             this.update_mapped_classes(ToggleButtonsView.classMap, 'button_style', buttons[i]);
         }
     }
 
     set_button_style() {
-        let buttons = this.buttongroup.querySelectorAll('button');
+        const buttons = this.buttongroup.querySelectorAll('button');
         for (let i = 0; i < buttons.length; i++) {
             this.set_mapped_classes(ToggleButtonsView.classMap, 'button_style', buttons[i]);
         }
@@ -539,7 +539,7 @@ class ToggleButtonsView extends DescriptionView {
      * model to update.
      */
     _handle_click (event: Event) {
-        let target = event.target as HTMLButtonElement;
+        const target = event.target as HTMLButtonElement;
         this.model.set('index', parseInt(target.value, 10), {updated_view: this});
         this.touch();
         // We also send a clicked event, since the value is only set if it changed.
@@ -627,9 +627,9 @@ class SelectionSliderView extends DescriptionView {
      */
     update(options?: any) {
         if (options === undefined || options.updated_view !== this) {
-            let labels = this.model.get('_options_labels');
-            let max = labels.length - 1;
-            let min = 0;
+            const labels = this.model.get('_options_labels');
+            const max = labels.length - 1;
+            const min = 0;
             this.$slider.slider('option', 'step', 1);
             this.$slider.slider('option', 'max', max);
             this.$slider.slider('option', 'min', min);
@@ -642,11 +642,11 @@ class SelectionSliderView extends DescriptionView {
             // make sure that the horizontal placement of the
             // handle in the vertical slider is always
             // consistent.
-            let orientation = this.model.get('orientation');
+            const orientation = this.model.get('orientation');
             this.$slider.slider('option', 'value', min);
             this.$slider.slider('option', 'orientation', orientation);
 
-            let disabled = this.model.get('disabled');
+            const disabled = this.model.get('disabled');
             this.$slider.slider('option', 'disabled', disabled);
             if (disabled) {
                 this.readout.contentEditable = 'false';
@@ -667,7 +667,7 @@ class SelectionSliderView extends DescriptionView {
                 this.el.classList.add('widget-inline-hbox');
             }
 
-            let readout = this.model.get('readout');
+            const readout = this.model.get('readout');
             if (readout) {
                 // this.$readout.show();
                 this.readout.style.display = '';
@@ -689,13 +689,13 @@ class SelectionSliderView extends DescriptionView {
     }
 
     updateSelection() {
-        let index = this.model.get('index');
+        const index = this.model.get('index');
         this.$slider.slider('option', 'value', index);
         this.updateReadout(index);
     }
 
     updateReadout(index: any) {
-        let value = this.model.get('_options_labels')[index];
+        const value = this.model.get('_options_labels')[index];
         this.readout.textContent = value;
     }
 
@@ -772,8 +772,8 @@ class SelectMultipleView extends SelectView {
         if (options.updated_view === this) {
             return;
         }
-        let selected = this.model.get('index') || [];
-        let listboxOptions = this.listbox.options;
+        const selected = this.model.get('index') || [];
+        const listboxOptions = this.listbox.options;
         // Clear the selection
         this.listbox.selectedIndex = -1;
         // Select the appropriate options
@@ -786,7 +786,7 @@ class SelectMultipleView extends SelectView {
      * Handle when a new value is selected.
      */
     _handle_change() {
-        let index = Array.prototype.map
+        const index = Array.prototype.map
             .call(this.listbox.selectedOptions || [], function(option: HTMLOptionElement) {
                 return option.index;
             });
@@ -820,22 +820,22 @@ class SelectionRangeSliderView extends SelectionSliderView {
     }
 
     updateSelection() {
-        let index = this.model.get('index');
+        const index = this.model.get('index');
         this.$slider.slider('option', 'values', index.slice());
         this.updateReadout(index);
     }
 
     updateReadout(index: number[]) {
-        let labels = this.model.get('_options_labels');
-        let minValue = labels[index[0]];
-        let maxValue = labels[index[1]];
+        const labels = this.model.get('_options_labels');
+        const minValue = labels[index[0]];
+        const maxValue = labels[index[1]];
         this.readout.textContent = `${minValue}-${maxValue}`;
     }
 
     /**
      * Called when the slider value is changing.
      */
-    handleSliderChange(e: Event, ui: { values: number[]; }) {
+    handleSliderChange(e: Event, ui: { values: number[] }) {
         this.updateReadout(ui.values);
 
         // Only persist the value while sliding if the continuous_update
@@ -851,7 +851,7 @@ class SelectionRangeSliderView extends SelectionSliderView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    handleSliderChanged(e: Event, ui: { values: number[]; }) {
+    handleSliderChanged(e: Event, ui: { values: number[] }) {
         // The jqueryui documentation indicates ui.values doesn't exist on the slidestop event,
         // but it appears that it actually does: https://github.com/jquery/jquery-ui/blob/ae31f2b3b478975f70526bdf3299464b9afa8bb1/ui/widgets/slider.js#L313
         this.updateReadout(ui.values);

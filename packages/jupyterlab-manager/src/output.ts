@@ -91,13 +91,13 @@ class OutputModel extends outputBase.OutputModel {
   }
 
   add(msg: KernelMessage.IIOPubMessage) {
-    let msgType = msg.header.msg_type;
+    const msgType = msg.header.msg_type;
     switch (msgType) {
     case 'execute_result':
     case 'display_data':
     case 'stream':
     case 'error':
-      let model = msg.content as nbformat.IOutput;
+      const model = msg.content as nbformat.IOutput;
       model.output_type = msgType as nbformat.OutputType;
       this._outputs.add(model);
       break;
@@ -111,7 +111,7 @@ class OutputModel extends outputBase.OutputModel {
     this.save_changes();
   }
 
-  clear_output(wait: boolean = false) {
+  clear_output(wait = false) {
     this._outputs.clear(wait);
   }
 
@@ -137,7 +137,7 @@ class OutputModel extends outputBase.OutputModel {
 export
 class JupyterPhosphorPanelWidget extends Panel {
     constructor(options: JupyterPhosphorWidget.IOptions & Panel.IOptions) {
-        let view = options.view;
+        const view = options.view;
         delete options.view;
         super(options);
         this._view = view;

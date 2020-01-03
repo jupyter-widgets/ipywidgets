@@ -251,7 +251,7 @@ class TextareaView extends DescriptionView {
      * @param e Event
      */
     handleChanged(e: Event) {
-        let target = e.target as HTMLTextAreaElement;
+        const target = e.target as HTMLTextAreaElement;
         this.model.set('value', target.value, {updated_view: this});
         this.touch();
     }
@@ -301,7 +301,7 @@ class TextView extends DescriptionView {
     }
 
     update_title() {
-        let title = this.model.get('description_tooltip');
+        const title = this.model.get('description_tooltip');
         if (!title) {
             this.textbox.removeAttribute('title');
         } else if (this.model.get('description').length === 0) {
@@ -374,7 +374,7 @@ class TextView extends DescriptionView {
      * model to update.
      */
     handleChanged(e: Event) {
-        let target = e.target as HTMLInputElement;
+        const target = e.target as HTMLInputElement;
         this.model.set('value', target.value, {updated_view: this});
         this.touch();
     }

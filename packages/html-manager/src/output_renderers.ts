@@ -22,7 +22,7 @@ export class WidgetRenderer extends Widget implements IRenderMime.IRenderer {
         const modelPromise = this._manager.get_model(source.model_id);
         if (modelPromise) {
             try {
-                let wModel = await modelPromise;
+                const wModel = await modelPromise;
                 await this._manager.display_model(null, wModel, {el: this.node});
             } catch(err) {
                 console.log('Error displaying widget');

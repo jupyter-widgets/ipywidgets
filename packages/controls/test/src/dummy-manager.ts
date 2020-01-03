@@ -125,4 +125,4 @@ class TestWidgetView extends base.WidgetView {
     _rendered = 0;
 }
 
-let testWidgets = {TestWidget, TestWidgetView};
+const testWidgets = {TestWidget, TestWidgetView};

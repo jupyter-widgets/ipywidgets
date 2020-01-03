@@ -16,9 +16,9 @@ Array.prototype.forEach.call(scripts, (script: HTMLScriptElement) => {
  *
  * @param pkg Package name or names to load
  */
-let requirePromise = function(pkg: string | string[]): Promise<any> {
+const requirePromise = function(pkg: string | string[]): Promise<any> {
     return new Promise((resolve, reject) => {
-        let require = (window as any).requirejs;
+        const require = (window as any).requirejs;
         if (require === undefined) {
             reject("Requirejs is needed, please ensure it is loaded on the page.");
         } else {
@@ -61,10 +61,10 @@ function moduleNameToCDNUrl(moduleName: string, moduleVersion: string) {
 export
 function requireLoader(moduleName: string, moduleVersion: string) {
     return requirePromise([`${moduleName}`]).catch((err) => {
-        let failedId = err.requireModules && err.requireModules[0];
+        const failedId = err.requireModules && err.requireModules[0];
         if (failedId) {
             console.log(`Falling back to ${cdn} for ${moduleName}@${moduleVersion}`);
-            let require = (window as any).requirejs;
+            const require = (window as any).requirejs;
             if (require === undefined) {
                 throw new Error("Requirejs is needed, please ensure it is loaded on the page.");
             }
@@ -88,7 +88,7 @@ function requireLoader(moduleName: string, moduleVersion: string) {
 export
 function renderWidgets(element = document.documentElement, loader: (moduleName: string, moduleVersion: string) => Promise<any>  = requireLoader) {
     requirePromise(['@jupyter-widgets/html-manager']).then((htmlmanager) => {
-        let managerFactory = () => {
+        const managerFactory = () => {
             return new htmlmanager.HTMLManager({loader: loader});
         }
         libembed.renderWidgets(managerFactory, element);

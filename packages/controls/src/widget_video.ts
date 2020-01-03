@@ -56,31 +56,31 @@ class VideoView extends DOMWidgetView {
          */
 
         let url;
-        let format = this.model.get('format');
-        let value = this.model.get('value');
+        const format = this.model.get('format');
+        const value = this.model.get('value');
         if (format !== 'url') {
-            let blob = new Blob([value], {type: `video/${this.model.get('format')}`});
+            const blob = new Blob([value], {type: `video/${this.model.get('format')}`});
             url = URL.createObjectURL(blob);
         } else {
             url = (new TextDecoder('utf-8')).decode(value.buffer);
         }
 
         // Clean up the old objectURL
-        let oldurl = this.el.src;
+        const oldurl = this.el.src;
         this.el.src = url;
         if (oldurl && typeof oldurl !== 'string') {
             URL.revokeObjectURL(oldurl);
         }
 
         // Height and width
-        let width = this.model.get('width');
+        const width = this.model.get('width');
         if (width !== undefined && width.length > 0) {
             this.el.setAttribute('width', width);
         } else {
             this.el.removeAttribute('width');
         }
 
-        let height = this.model.get('height');
+        const height = this.model.get('height');
         if (height !== undefined && height.length > 0) {
             this.el.setAttribute('height', height);
         } else {

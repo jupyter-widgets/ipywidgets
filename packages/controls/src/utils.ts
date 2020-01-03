@@ -21,7 +21,7 @@ import * as _ from 'underscore';
 export
 function reject(message: any, log: any) {
     return function promiseRejection(error: any) {
-        let wrapped_error = new WrappedError(message, error);
+        const wrapped_error = new WrappedError(message, error);
         if (log) {
             console.error(wrapped_error);
         }
@@ -56,7 +56,7 @@ function typeset(element: HTMLElement, text?: string): void {
  */
 export
 function escape_html(text: string): string {
-    let esc  = document.createElement('div');
+    const esc  = document.createElement('div');
     esc.textContent = text;
     return esc.innerHTML;
 }

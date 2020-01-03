@@ -186,10 +186,10 @@ class ControllerModel extends CoreDOMWidgetModel {
      * populates the update of axes and button values.
      */
     wait_loop() {
-        let index = this.get('index');
-        let pad = navigator.getGamepads()[index];
+        const index = this.get('index');
+        const pad = navigator.getGamepads()[index];
         if (pad) {
-            let that = this;
+            const that = this;
             this.setup(pad).then(function(controls) {
                 that.set(controls);
                 that.save_changes();
@@ -217,7 +217,7 @@ class ControllerModel extends CoreDOMWidgetModel {
             timestamp: pad.timestamp
         });
         // Create buttons and axes. When done, start the update loop
-        let that = this;
+        const that = this;
         return utils.resolvePromisesDict({
             buttons: Promise.all(pad.buttons.map(function(btn, index) {
                 return that._create_button_model(index);
@@ -233,9 +233,9 @@ class ControllerModel extends CoreDOMWidgetModel {
      * When the gamepad is disconnected, this.reset_gamepad is called.
      */
     update_loop() {
-        let index = this.get('index');
-        let id = this.get('name');
-        let pad = navigator.getGamepads()[index];
+        const index = this.get('index');
+        const id = this.get('name');
+        const pad = navigator.getGamepads()[index];
         if (pad && index === pad.index && id === pad.id) {
             this.set({
                 timestamp: pad.timestamp,
@@ -382,12 +382,12 @@ class ControllerView extends DOMWidgetView {
     add_button(model: ControllerButtonModel) {
         // we insert a dummy element so the order is preserved when we add
         // the rendered content later.
-        let dummy = new Widget();
+        const dummy = new Widget();
         this.button_box.addWidget(dummy);
 
         return this.create_child_view(model).then((view: ControllerButtonView) => {
             // replace the dummy widget with the new one.
-            let i = ArrayExt.firstIndexOf(this.button_box.widgets, dummy);
+            const i = ArrayExt.firstIndexOf(this.button_box.widgets, dummy);
             this.button_box.insertWidget(i, view.pWidget);
             dummy.dispose();
             return view;
@@ -397,12 +397,12 @@ class ControllerView extends DOMWidgetView {
     add_axis(model: ControllerAxisModel) {
         // we insert a dummy element so the order is preserved when we add
         // the rendered content later.
-        let dummy = new Widget();
+        const dummy = new Widget();
         this.axis_box.addWidget(dummy);
 
         return this.create_child_view(model).then((view: ControllerAxisView) => {
             // replace the dummy widget with the new one.
-            let i = ArrayExt.firstIndexOf(this.axis_box.widgets, dummy);
+            const i = ArrayExt.firstIndexOf(this.axis_box.widgets, dummy);
             this.axis_box.insertWidget(i, view.pWidget);
             dummy.dispose();
             return view;

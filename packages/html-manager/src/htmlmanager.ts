@@ -29,7 +29,7 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
      * Display the specified view. Element where the view is displayed
      * is specified in the `options.el` argument.
      */
-    display_view(msg: any, view: any, options: { el: HTMLElement; }) {
+    display_view(msg: any, view: any, options: { el: HTMLElement }) {
         return Promise.resolve(view).then((view) => {
             PhosphorWidget.Widget.attach(view.pWidget, options.el);
             view.on('remove', () => {
