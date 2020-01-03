@@ -23,7 +23,6 @@
     "build:test": "tsc --project test && webpack --config test/webpack.conf.js",
     "clean": "npm run clean:src",
     "clean:src": "rimraf lib && rimraf tsconfig.tsbuildinfo",
-    "lint": "tslint --project tslint.json --format stylish",
     "prepublish": "npm run clean && npm run build",
     "test": "npm run test:unit",
     "test:coverage": "npm run build:test && webpack --config test/webpack-cov.conf.js && karma start test/karma-cov.conf.js",
@@ -76,7 +75,6 @@
     "sinon": "^7.3.2",
     "sinon-chai": "^3.3.0",
     "style-loader": "^1.1.2",
-    "tslint": "^5.20.1",
     "typescript": "~3.7.4",
     "url-loader": "^3.0.0",
     "webpack": "^4.41.5"
