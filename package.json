@@ -11,12 +11,25 @@
     "clean": "lerna run clean",
     "integrity": "node scripts/package-integrity.js",
     "lint": "lerna run lint",
+    "integrity2": "node buildutils/lib/integrity.js",
+    "lint2": "yarn && yarn run prettier && yarn run tslint",
+    "lint:check": "yarn run prettier:check && yarn run tslint:check",
+    "prettier": "prettier --ignore-path .gitignore --write '**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}'",
+    "prettier:check": "prettier --ignore-path .gitignore --check '**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}'",
+    "sort-package-json": "lerna exec --parallel sort-package-json && sort-package-json",
+    "tslint": "tslint --fix -c tslint.json --project tsconfigbase.json '**/*{.ts,.tsx}'",
+    "tslint:check": "tslint -c tslint.json --project tsconfigbase.json '**/*{.ts,.tsx}'",
     "publish": "yarn run clean && yarn run build && lerna publish -m \"Publish npm packages\"",
     "update-dependency": "update-dependency --lerna",
     "updated": "lerna updated"
   },
   "devDependencies": {
     "@jupyterlab/buildutils": "^2.0.0-beta.1",
-    "lerna": "^3.2.1"
+    "lerna": "^3.20.2",
+    "prettier": "^1.19.1",
+    "sort-package-json": "~1.35",
+    "tslint": "^5.20.1",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.1.0"
   }
 }
