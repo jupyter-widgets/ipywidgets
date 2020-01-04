@@ -1,0 +1,15 @@
+name: ipywidgets_binder
+channels:
+  - conda-forge
+dependencies:
+  - bqplot
+  - ipyleaflet
+  - jupyterlab
+  - matplotlib
+  - networkx
+  - numpy
+  - pandas
+  - scikit-image
+  - scikit-learn
+  - sympy
+  - yarn
