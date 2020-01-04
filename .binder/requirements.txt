@@ -1,0 +1,9 @@
+bqplot
+ipyleaflet
+matplotlib
+networkx
+numpy
+pandas
+scikit-image
+scikit-learn
+sympy
