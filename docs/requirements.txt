@@ -8,5 +8,5 @@ recommonmark
 sphinx>=1.4.6
 sphinx_rtd_theme
 matplotlib
-numpy
-bqplot
+ipyleaflet
+pandas

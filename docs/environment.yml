@@ -18,5 +18,5 @@ dependencies:
 - python-dateutil
 - recommonmark
 - matplotlib
-- bqplot
-- numpy
+- ipyleaflet
+- pandas
