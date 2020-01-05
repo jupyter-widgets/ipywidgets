@@ -1,17 +1,8 @@
 #!/usr/bin/env python3
 #
 
-import os
 import subprocess
 import sys
-
-
-# -- path -------------------------------------------------------
-
-from os.path import dirname
-docs = dirname(dirname(__file__))
-root = dirname(docs)
-sys.path.insert(0, root)
 
 
 # -- bash utility function --------------------------------------
