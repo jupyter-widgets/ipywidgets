@@ -3,7 +3,6 @@ ipywidgets>=7.5.0
 bqplot
 numpy
 jupyter_client
-jupyter_sphinx
 nbsphinx>=0.2.13
 recommonmark
 sphinx>=1.4.6
