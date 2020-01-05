@@ -1,16 +1,6 @@
 #!/usr/bin/env python3
 #
 
-import subprocess
-import sys
-
-
-# -- bash utility function --------------------------------------
-def bash(filename):
-    """Runs a bash script in the local directory"""
-    sys.stdout.flush()
-    subprocess.call("bash {}".format(filename), shell=True)
-
 
 # -- source files and parsers -----------------------------------
 
