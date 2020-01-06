@@ -776,7 +776,7 @@ class PlayModel extends BoundedIntModel {
         return _.extend(super.defaults(), {
             _model_name: 'PlayModel',
             _view_name: 'PlayView',
-            _repeat: false,
+            repeat: false,
             playing: false,
             show_repeat: true,
             interval: 100,
@@ -797,7 +797,7 @@ class PlayModel extends BoundedIntModel {
             this.set('value', next_value);
             this.schedule_next();
         } else {
-            if (this.get('_repeat')) {
+            if (this.get('repeat')) {
                 this.set('value', this.get('min'));
                 this.schedule_next();
             } else {
@@ -847,7 +847,7 @@ class PlayModel extends BoundedIntModel {
     }
 
     repeat(): void {
-        this.set('_repeat', !this.get('_repeat'));
+        this.set('repeat', !this.get('repeat'));
         this.save_changes();
     }
 
@@ -896,10 +896,10 @@ class PlayView extends DOMWidgetView {
         this.repeatButton.onclick = this.model.repeat.bind(this.model);
 
         this.listenTo(this.model, 'change:playing', this.onPlayingChanged);
-        this.listenTo(this.model, 'change:_repeat', this.update_repeat);
-        this.listenTo(this.model, 'change:show_repeat', this.update_repeat);
+        this.listenTo(this.model, 'change:repeat', this.updateRepeat);
+        this.listenTo(this.model, 'change:show_repeat', this.updateRepeat);
         this.updatePlaying();
-        this.update_repeat();
+        this.updateRepeat();
         this.update();
     }
 
@@ -939,8 +939,8 @@ class PlayView extends DOMWidgetView {
         }
     }
 
-    update_repeat(): void {
-        const repeat = this.model.get('_repeat');
+    updateRepeat(): void {
+        const repeat = this.model.get('repeat');
         this.repeatButton.style.display = this.model.get('show_repeat') ? this.playButton.style.display : 'none';
         if (repeat) {
             this.repeatButton.classList.add('mod-active');

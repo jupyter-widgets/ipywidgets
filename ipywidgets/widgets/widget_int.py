@@ -228,7 +228,7 @@ class Play(_BoundedInt):
     _model_name = Unicode('PlayModel').tag(sync=True)
 
     playing = Bool(help="Whether the control is currently playing.").tag(sync=True)
-    _repeat = Bool(help="Whether the control will repeat in a continous loop.").tag(sync=True)
+    repeat = Bool(help="Whether the control will repeat in a continous loop.").tag(sync=True)
 
     interval = CInt(100, help="The time between two animation steps (ms).").tag(sync=True)
     step = CInt(1, help="Increment step").tag(sync=True)
