@@ -13,6 +13,7 @@ export class FileUploadModel extends CoreDOMWidgetModel {
             _view_name: 'FileUploadView',
 
             _counter: 0,
+            _file_count: 0,
             accept: '',
             description: 'Upload',
             disabled: false,
@@ -104,6 +105,7 @@ export class FileUploadView extends DOMWidgetView {
                     const counter = this.model.get('_counter');
                     this.model.set({
                         _counter: counter + contents.length,
+                        _file_count: contents.length,
                         metadata,
                         data: li_buffer,
                         error: '',
@@ -128,8 +130,9 @@ export class FileUploadView extends DOMWidgetView {
         this.el.disabled = this.model.get('disabled');
         this.el.setAttribute('title', this.model.get('tooltip'));
 
-        const description = `${this.model.get('description')} (${this.model.get('_counter')})`
+        const description = `${this.model.get('description')} (${this.model.get('_file_count')})`;
         const icon = this.model.get('icon');
+
         if (description.length || icon.length) {
             this.el.textContent = '';
             if (icon.length) {

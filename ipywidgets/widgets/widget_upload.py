@@ -52,9 +52,6 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
 
     @observe('_counter')
     def on_incr_counter(self, change):
-        """
-        counter increment triggers the update of trait value
-        """
         res = {}
         msg = 'Error: length of metadata and data must be equal'
         assert len(self.metadata) == len(self.data), msg
