@@ -801,28 +801,33 @@ class PlayModel extends BoundedIntModel {
                 this.set('value', this.get('min'));
                 this.schedule_next();
             } else {
-                this.set('playing', false);
+                this.pause();
             }
         }
         this.save_changes();
     }
 
     schedule_next(): void {
-        window.setTimeout(this.loop.bind(this), this.get('interval'));
+        this._timerId = window.setTimeout(this.loop.bind(this), this.get('interval'));
     }
 
     stop(): void {
-        this.set('playing', false);
+        this.pause();
         this.set('value', this.get('min'));
         this.save_changes();
     }
 
     pause(): void {
+        window.clearTimeout(this._timerId);
+        this._timerId = null;
         this.set('playing', false);
         this.save_changes();
     }
 
     animate(): void {
+        if (this._timerId !== null) {
+            return;
+        }
         if (this.get('value') === this.get('max')) {
             // if the value is at the end, reset it first, and then schedule the next
             this.set('value', this.get('min'));
@@ -845,6 +850,8 @@ class PlayModel extends BoundedIntModel {
         this.set('_repeat', !this.get('_repeat'));
         this.save_changes();
     }
+
+    private _timerId: number | null = null;
 }
 
 export
