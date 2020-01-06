@@ -214,7 +214,14 @@ class TextareaView extends DescriptionView {
         if (!this.textbox) {
             return; // we might be constructing the parent
         }
-        super.updateTabindex();
+        let tabbable = this.model.get('tabbable');
+        if (tabbable === true) {
+            this.el.setAttribute('tabIndex', '0');
+        } else if (tabbable === false) {
+            this.el.setAttribute('tabIndex', '-1');
+        } else if (tabbable === null) {
+            this.el.removeAttribute('tabIndex');
+        }
     }
 
     events() {
@@ -322,7 +329,14 @@ class TextView extends DescriptionView {
         if (!this.textbox) {
             return; // we might be constructing the parent
         }
-        super.updateTabindex();
+        let tabbable = this.model.get('tabbable');
+        if (tabbable === true) {
+            this.el.setAttribute('tabIndex', '0');
+        } else if (tabbable === false) {
+            this.el.setAttribute('tabIndex', '-1');
+        } else if (tabbable === null) {
+            this.el.removeAttribute('tabIndex');
+        }
     }
 
     update(options?: any) {
