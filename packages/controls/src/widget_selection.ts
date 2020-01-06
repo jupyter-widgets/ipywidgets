@@ -64,11 +64,11 @@ class SelectionView extends DescriptionView {
         }
         let tabbable = this.model.get('tabbable');
         if (tabbable === true) {
-            this.el.setAttribute('tabIndex', '0');
+            this.listbox.setAttribute('tabIndex', '0');
         } else if (tabbable === false) {
-            this.el.setAttribute('tabIndex', '-1');
+            this.listbox.setAttribute('tabIndex', '-1');
         } else if (tabbable === null) {
-            this.el.removeAttribute('tabIndex');
+            this.listbox.removeAttribute('tabIndex');
         }
     }
 
