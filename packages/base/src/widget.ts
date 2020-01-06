@@ -578,7 +578,7 @@ class DOMWidgetModel extends WidgetModel {
     defaults() {
         return utils.assign(super.defaults(), {
             _dom_classes: [],
-	    tabbable: null
+            tabbable: null
             // We do not declare defaults for the layout and style attributes.
             // Those defaults are constructed on the kernel side and synced here
             // as needed, and our code here copes with those attributes being
