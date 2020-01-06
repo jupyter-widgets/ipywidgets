@@ -12,7 +12,7 @@ from .widget_drop import DropWidget
 from .widget import CallbackDispatcher, register
 from .widget_core import CoreWidget
 from .trait_types import TypedTuple
-from traitlets import Unicode, Bool, Int, Dict
+from traitlets import Unicode, Bool, Int
 from warnings import warn
 
 
