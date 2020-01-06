@@ -89,8 +89,9 @@ export abstract class ManagerBase<T> implements IWidgetManager {
      * Make sure the view creation is not out of order with
      * any state updates.
      */
-    create_view(model: DOMWidgetModel, options: any): Promise<DOMWidgetView>;
-    create_view(model: WidgetModel, options = {}): Promise<WidgetView> {
+    create_view<VT extends DOMWidgetView = DOMWidgetView>(model: DOMWidgetModel, options?: any): Promise<VT>;
+    create_view<VT extends WidgetView = WidgetView>(model: WidgetModel, options?: any): Promise<VT>;
+    create_view<VT extends WidgetView = WidgetView>(model: WidgetModel, options = {}): Promise<VT> {
         const viewPromise = model.state_change = model.state_change.then(() => {
             return this.loadClass(model.get('_view_name'),
                 model.get('_view_module'),

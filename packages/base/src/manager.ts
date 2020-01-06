@@ -170,8 +170,8 @@ interface IWidgetManager {
      * Make sure the view creation is not out of order with
      * any state updates.
      */
-    create_view(model: DOMWidgetModel, options?: unknown): Promise<DOMWidgetView>;
-    create_view(model: WidgetModel, options?: unknown): Promise<WidgetView>;
+    create_view<VT extends DOMWidgetView = DOMWidgetView>(model: DOMWidgetModel, options?: unknown): Promise<VT>;
+    create_view<VT extends WidgetView = WidgetView>(model: WidgetModel, options?: unknown): Promise<VT>;
 
     /**
      * callback handlers specific to a view
