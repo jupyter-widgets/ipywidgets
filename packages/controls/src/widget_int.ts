@@ -776,8 +776,8 @@ class PlayModel extends BoundedIntModel {
         return _.extend(super.defaults(), {
             _model_name: 'PlayModel',
             _view_name: 'PlayView',
-            _playing: false,
             _repeat: false,
+            playing: false,
             show_repeat: true,
             interval: 100,
             step: 1,
@@ -789,21 +789,22 @@ class PlayModel extends BoundedIntModel {
     }
 
     loop(): void {
-        if (this.get('_playing')) {
-            const next_value = this.get('value') + this.get('step');
-            if (next_value <= this.get('max')) {
-                this.set('value', next_value);
+        if (!this.get('playing')) {
+            return;
+        }
+        const next_value = this.get('value') + this.get('step');
+        if (next_value <= this.get('max')) {
+            this.set('value', next_value);
+            this.schedule_next();
+        } else {
+            if (this.get('_repeat')) {
+                this.set('value', this.get('min'));
                 this.schedule_next();
             } else {
-                if(this.get('_repeat')) {
-                    this.set('value', this.get('min'));
-                    this.schedule_next();
-                } else {
-                    this.set('_playing', false);
-                }
+                this.set('playing', false);
             }
-            this.save_changes();
         }
+        this.save_changes();
     }
 
     schedule_next(): void {
@@ -811,20 +812,19 @@ class PlayModel extends BoundedIntModel {
     }
 
     stop(): void {
-        this.set('_playing', false);
+        this.set('playing', false);
         this.set('value', this.get('min'));
         this.save_changes();
     }
 
     pause(): void {
-        this.set('_playing', false);
+        this.set('playing', false);
         this.save_changes();
     }
 
-    play(): void {
-        this.set('_playing', true);
-        if (this.get('value') == this.get('max')) {
-            // if the value is at the end, reset if first, and then schedule the next
+    animate(): void {
+        if (this.get('value') === this.get('max')) {
+            // if the value is at the end, reset it first, and then schedule the next
             this.set('value', this.get('min'));
             this.schedule_next();
             this.save_changes();
@@ -833,6 +833,12 @@ class PlayModel extends BoundedIntModel {
             // loop will call save_changes in this case
            this.loop();
         }
+        this.save_changes();
+    }
+
+    play(): void {
+        this.set('playing', !this.get('playing'));
+        this.save_changes();
     }
 
     repeat(): void {
@@ -882,10 +888,10 @@ class PlayView extends DOMWidgetView {
         this.stopButton.onclick = this.model.stop.bind(this.model);
         this.repeatButton.onclick = this.model.repeat.bind(this.model);
 
-        this.listenTo(this.model, 'change:_playing', this.update_playing);
+        this.listenTo(this.model, 'change:playing', this.onPlayingChanged);
         this.listenTo(this.model, 'change:_repeat', this.update_repeat);
         this.listenTo(this.model, 'change:show_repeat', this.update_repeat);
-        this.update_playing();
+        this.updatePlaying();
         this.update_repeat();
         this.update();
     }
@@ -896,11 +902,22 @@ class PlayView extends DOMWidgetView {
         this.pauseButton.disabled = disabled;
         this.stopButton.disabled = disabled;
         this.repeatButton.disabled = disabled;
-        this.update_playing();
+        this.updatePlaying();
     }
 
-    update_playing(): void {
-        const playing = this.model.get('_playing');
+    onPlayingChanged() {
+        this.updatePlaying();
+        const previous = this.model.previous('playing');
+        const current = this.model.get('playing');
+        if (!previous && current) {
+            this.model.animate();
+        } else {
+            this.model.pause();
+        }
+    }
+
+    updatePlaying(): void {
+        const playing = this.model.get('playing');
         const disabled = this.model.get('disabled');
         if (playing) {
             if (!disabled) {
