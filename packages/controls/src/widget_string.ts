@@ -197,7 +197,7 @@ class TextareaView extends DescriptionView {
      * changed by another view or by a state update from the back-end.
      */
     update(options?: any) {
-        if (options === undefined || options.updated_view != this) {
+        if (options === undefined || options.updated_view !== this) {
             this.textbox.value = this.model.get('value');
             let rows = this.model.get('rows');
             if (rows === null) {
@@ -211,10 +211,17 @@ class TextareaView extends DescriptionView {
     }
 
     updateTabindex() {
-        if (!this.textbox) return; // we might be constructing the parent
+        if (!this.textbox) {
+            return; // we might be constructing the parent
+        }
         let tabbable = this.model.get('tabbable');
-        if (tabbable == true) this.textbox.setAttribute('tabIndex', "0");
-        else if (tabbable == false) this.textbox.setAttribute('tabIndex', "-1");
+        if (tabbable === true) {
+            this.el.setAttribute('tabIndex', '0');
+        } else if (tabbable === false) {
+            this.el.setAttribute('tabIndex', '-1');
+        } else if (tabbable === null) {
+            this.el.removeAttribute('tabIndex');
+        }
     }
 
     events() {
@@ -319,10 +326,17 @@ class TextView extends DescriptionView {
     }
 
     updateTabindex() {
-        if (!this.textbox) return; // we might be constructing the parent
+        if (!this.textbox) {
+            return; // we might be constructing the parent
+        }
         let tabbable = this.model.get('tabbable');
-        if (tabbable == true) this.textbox.setAttribute('tabIndex', "0");
-        else if (tabbable == false) this.textbox.setAttribute('tabIndex', "-1");
+        if (tabbable === true) {
+            this.el.setAttribute('tabIndex', '0');
+        } else if (tabbable === false) {
+            this.el.setAttribute('tabIndex', '-1');
+        } else if (tabbable === null) {
+            this.el.removeAttribute('tabIndex');
+        }
     }
 
     update(options?: any) {
