@@ -32,6 +32,7 @@ import {
     KernelMessage
 } from '@jupyterlab/services';
 
+
 /**
  * Replace model ids with models recursively.
  */
@@ -629,8 +630,23 @@ class WidgetView extends NativeView<WidgetModel> {
 
         this.displayed = new Promise((resolve, reject) => {
             this.once('displayed', resolve);
+
+        this.model.on('msg:custom', this.handle_message.bind(this));
         });
     }
+
+    /**
+     * Handle message sent to the front end.
+     *
+     * Used to focus or blur the widget.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+	    this.el.focus();
+        } else if (content.do == 'blur') {
+	    this.el.blur();
+	}
+    };
 
     /**
      * Triggered on model change.
@@ -690,6 +706,7 @@ class WidgetView extends NativeView<WidgetModel> {
      * A promise that resolves to the parent view when a child view is displayed.
      */
     displayed: Promise<WidgetView>;
+
 }
 
 export namespace WidgetView {

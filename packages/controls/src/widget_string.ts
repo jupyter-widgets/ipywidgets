@@ -71,6 +71,17 @@ class HTMLView extends DescriptionView {
         return super.update();
     }
 
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+	    this.content.focus();
+        } else if (content.do == 'blur') {
+	    this.content.blur();
+	}
+    };
+
     content: HTMLDivElement;
 }
 
@@ -109,6 +120,17 @@ class HTMLMathView extends DescriptionView {
         this.typeset(this.content);
         return super.update();
     }
+
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+	    this.content.focus();
+        } else if (content.do == 'blur') {
+	    this.content.blur();
+	}
+    };
 
     content: HTMLDivElement;
 }
@@ -255,6 +277,18 @@ class TextareaView extends DescriptionView {
         this.model.set('value', target.value, {updated_view: this});
         this.touch();
     }
+
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+	    this.textbox.focus();
+        } else if (content.do == 'blur') {
+	    this.textbox.blur();
+	}
+    };
+
     textbox: HTMLTextAreaElement;
 }
 
@@ -379,6 +413,16 @@ class TextView extends DescriptionView {
         this.touch();
     }
 
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+	    this.textbox.focus();
+        } else if (content.do == 'blur') {
+	    this.textbox.blur();
+	}
+    };
 
     protected readonly inputType: string = 'text';
     textbox: HTMLInputElement;
@@ -487,6 +531,17 @@ class ComboboxView extends TextView {
             super.handleChanged(e);
         }
     }
+
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+	    this.textbox.focus();
+        } else if (content.do == 'blur') {
+	    this.textbox.blur();
+	}
+    };
 
     highlightValidState(valid: boolean): void {
         this.textbox.classList.toggle(INVALID_VALUE_CLASS, !valid);

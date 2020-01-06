@@ -114,6 +114,17 @@ class DropdownView extends DescriptionView {
         this.touch();
     }
 
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+	    this.listbox.focus();
+        } else if (content.do == 'blur') {
+	    this.listbox.blur();
+	}
+    };
+
     listbox: HTMLSelectElement;
 }
 
