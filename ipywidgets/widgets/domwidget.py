@@ -49,21 +49,3 @@ class DOMWidget(Widget):
         # We also need to include _dom_classes in repr for reproducibility
         if self._dom_classes:
             yield '_dom_classes'
-
-    def set_tabbable(self, tabbable):
-        """Make this DOM element (un)reachable
-        to keyboard tabulation navigation.
-        """
-        self.tabbable = tabbable
-
-    def make_tabbable(self):
-        """Make this DOM element reachable
-        to keyboard tabulation navigation.
-        """
-        self.set_tabbable(True)
-
-    def make_untabbable(self):
-        """Make this DOM element unreachable
-        to keyboard tabulation navigation.
-        """
-        self.set_tabbable(False)
