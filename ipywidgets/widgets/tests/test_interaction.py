@@ -182,40 +182,6 @@ def test_list_tuple_invalid():
             print(bad) # because there is no custom message in assert_raises
             c = interactive(f, tup=bad)
 
-def test_dict():
-    for d in [
-        dict(a=5),
-        dict(a=5, b='b', c=dict),
-    ]:
-        c = interactive(f, d=d)
-        w = c.children[0]
-        check = dict(
-            cls=widgets.Dropdown,
-            description='d',
-            value=next(iter(d.values())),
-            options=d,
-            _options_labels=tuple(d.keys()),
-            _options_values=tuple(d.values()),
-        )
-        check_widget(w, **check)
-
-
-def test_ordereddict():
-    from collections import OrderedDict
-    items = [(3, 300), (1, 100), (2, 200)]
-    first = items[0][1]
-    values = OrderedDict(items)
-    c = interactive(f, lis=values)
-    assert len(c.children) == 2
-    d = dict(
-        cls=widgets.Dropdown,
-        value=first,
-        options=values,
-        _options_labels=("3", "1", "2"),
-        _options_values=(300, 100, 200),
-    )
-    check_widgets(c, lis=d)
-
 def test_iterable():
     def yield_values():
         yield 3

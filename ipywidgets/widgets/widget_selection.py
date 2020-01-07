@@ -106,12 +106,6 @@ def _make_options(x):
     * an iterable of (label, value) pairs
     * an iterable of values, and labels will be generated
     """
-    # Check if x is a mapping of labels to values
-    if isinstance(x, Mapping):
-        import warnings
-        warnings.warn("Support for mapping types has been deprecated and will be dropped in a future release.", DeprecationWarning)
-        return tuple((str(k), v) for k, v in x.items())
-
     # only iterate once through the options.
     xlist = tuple(x)
 
@@ -132,10 +126,10 @@ def findvalue(array, value, compare = lambda x, y: x == y):
 class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
     """Base class for Selection widgets
 
-    ``options`` can be specified as a list of values, list of (label, value)
-    tuples, or a dict of {label: value}. The labels are the strings that will be
-    displayed in the UI, representing the actual Python choices, and should be
-    unique. If labels are not specified, they are generated from the values.
+    ``options`` can be specified as a list of values or list of (label, value)
+    tuples. The labels are the strings that will be displayed in the UI,
+    representing the actual Python choices, and should be unique.
+    If labels are not specified, they are generated from the values.
 
     When programmatically setting the value, a reverse lookup is performed
     among the options to check that the value is valid. The reverse lookup uses
@@ -149,7 +143,7 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
     index = Int(None, help="Selected index", allow_none=True).tag(sync=True)
 
     options = Any((),
-    help="""Iterable of values, (label, value) pairs, or a mapping of {label: value} pairs that the user can select.
+    help="""Iterable of values or (label, value) pairs that the user can select.
 
     The labels are the strings that will be displayed in the UI, representing the
     actual Python choices, and should be unique.
@@ -183,9 +177,7 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
 
     @validate('options')
     def _validate_options(self, proposal):
-        # if an iterator is provided, exhaust it
-        if isinstance(proposal.value, Iterable) and not isinstance(proposal.value, Mapping):
-            proposal.value = tuple(proposal.value)
+        proposal.value = tuple(proposal.value)
         # throws an error if there is a problem converting to full form
         self._options_full = _make_options(proposal.value)
         return proposal.value
