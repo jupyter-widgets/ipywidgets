@@ -15,15 +15,15 @@ import {
 
 import {
     ArrayExt
-} from '@phosphor/algorithm';
+} from '@lumino/algorithm';
 
 import {
     MessageLoop
-} from '@phosphor/messaging';
+} from '@lumino/messaging';
 
 import {
     Widget
-} from '@phosphor/widgets';
+} from '@lumino/widgets';
 
 import * as _ from 'underscore';
 import $ from 'jquery';

@@ -5,7 +5,7 @@ import * as widgets from '@jupyter-widgets/controls';
 import * as base from '@jupyter-widgets/base';
 import * as outputWidgets from './output';
 
-import * as PhosphorWidget from '@phosphor/widgets';
+import * as PhosphorWidget from '@lumino/widgets';
 import { RenderMimeRegistry, standardRendererFactories } from '@jupyterlab/rendermime';
 
 import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers';

@@ -3,15 +3,15 @@
 
 import {
   PromiseDelegate
-} from '@phosphor/coreutils';
+} from '@lumino/coreutils';
 
 import {
   IDisposable
-} from '@phosphor/disposable';
+} from '@lumino/disposable';
 
 import {
   Panel, Widget
-} from '@phosphor/widgets';
+} from '@lumino/widgets';
 
 import {
   IRenderMime

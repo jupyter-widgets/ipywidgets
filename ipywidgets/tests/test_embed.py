@@ -1,4 +1,6 @@
 
+from io import StringIO
+from html.parser import HTMLParser
 import json
 import os
 import re
@@ -10,17 +12,6 @@ import traitlets
 from ..widgets import IntSlider, IntText, Text, Widget, jslink, HBox, widget_serialization
 from ..embed import embed_data, embed_snippet, embed_minimal_html, dependency_state
 
-try:
-    from io import StringIO
-except ImportError:
-    from StringIO import StringIO
-
-try:
-    # Python 3
-    from html.parser import HTMLParser
-except ImportError:
-    # Python 2
-    from HTMLParser import HTMLParser
 
 class CaseWidget(Widget):
     """Widget to test dependency traversal"""

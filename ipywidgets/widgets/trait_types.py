@@ -9,8 +9,6 @@ import re
 import traitlets
 import datetime as dt
 
-from .util import string_types
-
 
 _color_names = ['aliceblue', 'antiquewhite', 'aqua', 'aquamarine', 'azure', 'beige', 'bisque', 'black', 'blanchedalmond', 'blue', 'blueviolet', 'brown', 'burlywood', 'cadetblue', 'chartreuse', 'chocolate', 'coral', 'cornflowerblue', 'cornsilk', 'crimson', 'cyan', 'darkblue', 'darkcyan', 'darkgoldenrod', 'darkgray', 'darkgreen', 'darkkhaki', 'darkmagenta', 'darkolivegreen', 'darkorange', 'darkorchid', 'darkred', 'darksalmon', 'darkseagreen', 'darkslateblue', 'darkslategray', 'darkturquoise', 'darkviolet', 'deeppink', 'deepskyblue', 'dimgray', 'dodgerblue', 'firebrick', 'floralwhite', 'forestgreen', 'fuchsia', 'gainsboro', 'ghostwhite', 'gold', 'goldenrod', 'gray', 'green', 'greenyellow', 'honeydew', 'hotpink', 'indianred ', 'indigo ', 'ivory', 'khaki', 'lavender', 'lavenderblush', 'lawngreen', 'lemonchiffon', 'lightblue', 'lightcoral', 'lightcyan', 'lightgoldenrodyellow', 'lightgray', 'lightgreen', 'lightpink', 'lightsalmon', 'lightseagreen', 'lightskyblue', 'lightslategray', 'lightsteelblue', 'lightyellow', 'lime', 'limegreen', 'linen', 'magenta', 'maroon', 'mediumaquamarine', 'mediumblue', 'mediumorchid', 'mediumpurple', 'mediumseagreen', 'mediumslateblue', 'mediumspringgreen', 'mediumturquoise', 'mediumvioletred', 'midnightblue', 'mintcream', 'mistyrose', 'moccasin', 'navajowhite', 'navy', 'oldlace', 'olive', 'olivedrab', 'orange', 'orangered', 'orchid', 'palegoldenrod', 'palegreen', 'paleturquoise', 'palevioletred', 'papayawhip', 'peachpuff', 'peru', 'pink', 'plum', 'powderblue', 'purple', 'rebeccapurple', 'red', 'rosybrown', 'royalblue', 'saddlebrown', 'salmon', 'sandybrown', 'seagreen', 'seashell', 'sienna', 'silver', 'skyblue', 'slateblue', 'slategray', 'snow', 'springgreen', 'steelblue', 'tan', 'teal', 'thistle', 'tomato', 'transparent', 'turquoise', 'violet', 'wheat', 'white', 'whitesmoke', 'yellow', 'yellowgreen']
 
@@ -30,7 +28,7 @@ _color_hsl = r'hsl\({fp},{fp},{fp}\)'
 _color_hsla = r'hsla\({fp},{fp},{fp},{fp}\)'
 
 # Regex colors rgb/rgba/hsl/hsla
-_color_rgbhsl_re = re.compile('({0})|({1})|({2})|({3})'.format(
+_color_rgbhsl_re = re.compile('({})|({})|({})|({})'.format(
     _color_rgb, _color_rgba, _color_hsl, _color_hsla
 ).format(ip=_color_int_percent, fp=_color_frac_percent))
 
@@ -44,7 +42,7 @@ class Color(traitlets.Unicode):
     def validate(self, obj, value):
         if value is None and self.allow_none:
             return value
-        if isinstance(value, string_types):
+        if isinstance(value, str):
             if (value.lower() in _color_names or _color_hex_re.match(value) or
                 _color_hexa_re.match(value) or _color_rgbhsl_re.match(value)):
                 return value
@@ -160,9 +158,9 @@ class InstanceDict(traitlets.Instance):
 
     def validate(self, obj, value):
         if isinstance(value, dict):
-            return super(InstanceDict, self).validate(obj, self.klass(**value))
+            return super().validate(obj, self.klass(**value))
         else:
-            return super(InstanceDict, self).validate(obj, value)
+            return super().validate(obj, value)
 
     def make_dynamic_default(self):
         return self.klass(*(self.default_args or ()),
@@ -192,7 +190,7 @@ class NumberFormat(traitlets.Unicode):
     default_value = traitlets.Undefined
 
     def validate(self, obj, value):
-        value = super(NumberFormat, self).validate(obj, value)
+        value = super().validate(obj, value)
         re_match = _number_format_re.match(value)
         if re_match is None:
             self.error(obj, value)

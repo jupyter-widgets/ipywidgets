@@ -3,7 +3,7 @@
 
 import * as outputBase from '@jupyter-widgets/output';
 
-import { Panel } from '@phosphor/widgets';
+import { Panel } from '@lumino/widgets';
 
 import { OutputAreaModel, OutputArea } from '@jupyterlab/outputarea';
 

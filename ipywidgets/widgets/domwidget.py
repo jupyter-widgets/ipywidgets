@@ -3,7 +3,7 @@
 
 """Contains the DOMWidget class"""
 
-from traitlets import Unicode
+from traitlets import Bool, Unicode
 from .widget import Widget, widget_serialization
 from .trait_types import InstanceDict, TypedTuple
 from .widget_layout import Layout
@@ -15,6 +15,7 @@ class DOMWidget(Widget):
 
     _model_name = Unicode('DOMWidgetModel').tag(sync=True)
     _dom_classes = TypedTuple(trait=Unicode(), help="CSS classes applied to widget DOM element").tag(sync=True)
+    tabbable = Bool(help="Is widget tabbable?", allow_none=True, default_value=None).tag(sync=True)
     layout = InstanceDict(Layout).tag(sync=True, **widget_serialization)
 
     def add_class(self, className):
@@ -50,7 +51,7 @@ class DOMWidget(Widget):
         self.send({'do':'blur'})
 
     def _repr_keys(self):
-        for key in super(DOMWidget, self)._repr_keys():
+        for key in super()._repr_keys():
             # Exclude layout if it had the default value
             if key == 'layout':
                 value = getattr(self, key)

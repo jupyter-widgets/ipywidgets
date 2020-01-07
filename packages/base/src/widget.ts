@@ -14,11 +14,11 @@ import {
 
 import {
     Widget, Panel
-} from '@phosphor/widgets';
+} from '@lumino/widgets';
 
 import {
     Message, MessageLoop
-} from '@phosphor/messaging';
+} from '@lumino/messaging';
 
 import {
     IClassicComm, ICallbacks
@@ -578,7 +578,8 @@ class DOMWidgetModel extends WidgetModel {
 
     defaults() {
         return utils.assign(super.defaults(), {
-            _dom_classes: []
+            _dom_classes: [],
+            tabbable: null
             // We do not declare defaults for the layout and style attributes.
             // Those defaults are constructed on the kernel side and synced here
             // as needed, and our code here copes with those attributes being
@@ -980,6 +981,17 @@ class DOMWidgetView extends WidgetView {
             this.pWidget.removeClass('jupyter-widgets-disconnected');
         } else {
             this.pWidget.addClass('jupyter-widgets-disconnected');
+        }
+    }
+
+    updateTabindex() {
+        let tabbable = this.model.get('tabbable');
+        if (tabbable === true) {
+            this.el.setAttribute('tabIndex', '0');
+        } else if (tabbable === false) {
+            this.el.setAttribute('tabIndex', '-1');
+        } else if (tabbable === null) {
+            this.el.removeAttribute('tabIndex');
         }
     }
 

@@ -91,6 +91,6 @@ class LayoutTraitType(Instance):
 
     def validate(self, obj, value):
         if isinstance(value, dict):
-            return super(LayoutTraitType, self).validate(obj, self.klass(**value))
+            return super().validate(obj, self.klass(**value))
         else:
-            return super(LayoutTraitType, self).validate(obj, value)
+            return super().validate(obj, value)

@@ -25,7 +25,7 @@ class DescriptionWidget(DOMWidget, CoreWidget):
     style = InstanceDict(DescriptionStyle, help="Styling customizations").tag(sync=True, **widget_serialization)
 
     def _repr_keys(self):
-        for key in super(DescriptionWidget, self)._repr_keys():
+        for key in super()._repr_keys():
             # Exclude style if it had the default value
             if key == 'style':
                 value = getattr(self, key)

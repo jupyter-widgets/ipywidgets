@@ -2,14 +2,15 @@
 // Distributed under the terms of the Modified BSD License.
 
 
-import { ISettingRegistry } from '@jupyterlab/coreutils';
+import { ISettingRegistry } from '@jupyterlab/settingregistry';
+import * as nbformat from '@jupyterlab/nbformat';
 
 import {
   DocumentRegistry
 } from '@jupyterlab/docregistry';
 
 import {
-  INotebookModel, INotebookTracker, Notebook
+  INotebookModel, INotebookTracker, Notebook, NotebookPanel
 } from '@jupyterlab/notebook';
 
 import {
@@ -25,20 +26,24 @@ import {
 } from '@jupyterlab/rendermime';
 
 import {
+  ILoggerRegistry, LogLevel
+} from '@jupyterlab/logconsole';
+
+import {
   CodeCell
 } from '@jupyterlab/cells';
 
 import {
   toArray, filter
-} from '@phosphor/algorithm';
+} from '@lumino/algorithm';
 
 import {
   DisposableDelegate
-} from '@phosphor/disposable';
+} from '@lumino/disposable';
 
 import {
   AttachedProperty
-} from '@phosphor/properties';
+} from '@lumino/properties';
 
 import {
   WidgetRenderer
@@ -62,6 +67,7 @@ import {
 
 import '@jupyter-widgets/base/css/index.css';
 import '@jupyter-widgets/controls/css/widgets-base.css';
+import { KernelMessage } from '@jupyterlab/services';
 
 const WIDGET_REGISTRY: base.IWidgetRegistryData[] = [];
 
@@ -152,7 +158,7 @@ export function registerWidgetManager(
 const plugin: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> = {
   id: '@jupyter-widgets/jupyterlab-manager:plugin',
   requires: [INotebookTracker, IRenderMimeRegistry, ISettingRegistry],
-  optional: [IMainMenu],
+  optional: [IMainMenu, ILoggerRegistry],
   provides: base.IJupyterWidgetRegistry,
   activate: activateWidgetExtension,
   autoStart: true
@@ -168,10 +174,42 @@ function updateSettings(settings: ISettingRegistry.ISettings) {
 /**
  * Activate the widget extension.
  */
-function activateWidgetExtension(app: JupyterFrontEnd, tracker: INotebookTracker, rendermime: IRenderMimeRegistry, settingRegistry: ISettingRegistry, menu: IMainMenu | null): base.IJupyterWidgetRegistry {
+function activateWidgetExtension(
+  app: JupyterFrontEnd,
+  tracker: INotebookTracker,
+  rendermime: IRenderMimeRegistry,
+  settingRegistry: ISettingRegistry,
+  menu: IMainMenu | null,
+  loggerRegistry: ILoggerRegistry | null): base.IJupyterWidgetRegistry {
 
   const {commands} = app;
 
+  const bindUnhandledIOPubMessageSignal = (nb: NotebookPanel) => {
+    if (!loggerRegistry) {
+      return;
+    }
+
+    const wManager = Private.widgetManagerProperty.get(nb.context);
+    if (wManager) {
+      wManager.onUnhandledIOPubMessage.connect(
+        (sender: WidgetManager, msg: KernelMessage.IIOPubMessage) => {
+          const logger = loggerRegistry.getLogger(nb.context.path);
+          let level: LogLevel = 'warning';
+          if (
+            KernelMessage.isErrorMsg(msg) ||
+            (KernelMessage.isStreamMsg(msg) && msg.content.name === 'stderr')
+          ) {
+            level = 'error';
+          }
+          const data: nbformat.IOutput = {
+            ...msg.content,
+            output_type: msg.header.msg_type
+          };
+          logger.rendermime = nb.content.rendermime;
+          logger.log({type: 'output', data, level});
+      });
+    }
+  };
 
   settingRegistry.load(plugin.id).then((settings: ISettingRegistry.ISettings) => {
     settings.changed.connect(updateSettings);
@@ -199,6 +237,8 @@ function activateWidgetExtension(app: JupyterFrontEnd, tracker: INotebookTracker
         outputViews(app, panel.context.path)
       )
     );
+
+    bindUnhandledIOPubMessageSignal(panel);
   });
   tracker.widgetAdded.connect((sender, panel) => {
     registerWidgetManager(
@@ -209,6 +249,8 @@ function activateWidgetExtension(app: JupyterFrontEnd, tracker: INotebookTracker
         outputViews(app, panel.context.path)
       )
     );
+
+    bindUnhandledIOPubMessageSignal(panel);
   });
 
   // Add a command for creating a new Markdown file.

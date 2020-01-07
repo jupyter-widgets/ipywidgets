@@ -85,7 +85,7 @@ def test_set_value_from_file():
 
 
 def test_from_url_unicode():
-    img = Image.from_url(u'https://jupyter.org/assets/main-logo.svg')
+    img = Image.from_url('https://jupyter.org/assets/main-logo.svg')
     assert img.value == b'https://jupyter.org/assets/main-logo.svg'
 
 

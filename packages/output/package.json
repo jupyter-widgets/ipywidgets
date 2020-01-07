@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/output",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Jupyter widget wrapping cell output",
   "bugs": {
     "url": "https://github.com/jupyter-widgets/ipywidgets/issues"
@@ -26,11 +26,11 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^2.0.1"
+    "@jupyter-widgets/base": "^2.0.2"
   },
   "devDependencies": {
     "rimraf": "^2.6.1",
-    "tslint": "^5.18.0",
-    "typescript": "~3.5.2"
+    "tslint": "^5.20.1",
+    "typescript": "~3.7.4"
   }
 }

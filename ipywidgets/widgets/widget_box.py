@@ -61,13 +61,7 @@ class Box(DOMWidget, CoreWidget):
 
     def __init__(self, children=(), **kwargs):
         kwargs['children'] = children
-        super(Box, self).__init__(**kwargs)
-        self.on_displayed(Box._fire_children_displayed)
-
-    def _fire_children_displayed(self):
-        for child in self.children:
-            child._handle_displayed()
-
+        super().__init__(**kwargs)
 
 @register
 @doc_subst(_doc_snippets)

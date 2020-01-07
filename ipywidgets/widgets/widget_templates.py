@@ -77,7 +77,7 @@ class LayoutProperties(HasTraits):
 
 
     def __init__(self, **kwargs):
-        super(LayoutProperties, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self._property_rewrite = defaultdict(dict)
         self._property_rewrite['align_items'] = {'top': 'flex-start',
                                                  'bottom': 'flex-end'}
@@ -154,7 +154,7 @@ class AppLayout(GridBox, LayoutProperties):
     merge = Bool(default_value=True)
 
     def __init__(self, **kwargs):
-        super(AppLayout, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self._update_layout()
 
     @staticmethod
@@ -278,7 +278,7 @@ class GridspecLayout(GridBox, LayoutProperties):
     n_columns = Integer()
 
     def __init__(self, n_rows=None, n_columns=None, **kwargs):
-        super(GridspecLayout, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.n_rows = n_rows
         self.n_columns = n_columns
         self._grid_template_areas = [['.'] * self.n_columns for i in range(self.n_rows)]
@@ -394,7 +394,7 @@ class TwoByTwoLayout(GridBox, LayoutProperties):
     merge = Bool(default_value=True)
 
     def __init__(self, **kwargs):
-        super(TwoByTwoLayout, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self._update_layout()
 
     def _update_layout(self):

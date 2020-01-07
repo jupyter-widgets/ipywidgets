@@ -3,19 +3,10 @@
 
 """Interact with functions using widgets."""
 
-from __future__ import print_function
-from __future__ import division
-
-try:  # Python >= 3.3
-    from inspect import signature, Parameter
-except ImportError:
-    from IPython.utils.signatures import signature, Parameter
+from collections.abc import Iterable, Mapping
+from inspect import signature, Parameter
 from inspect import getcallargs
-
-try:
-    from inspect import getfullargspec as check_argspec
-except ImportError:
-    from inspect import getargspec as check_argspec # py2
+from inspect import getfullargspec as check_argspec
 import sys
 
 from IPython.core.getipython import get_ipython
@@ -23,15 +14,10 @@ from . import (ValueWidget, Text,
     FloatSlider, IntSlider, Checkbox, Dropdown,
     VBox, Button, DOMWidget, Output)
 from IPython.display import display, clear_output
-from ipython_genutils.py3compat import string_types, unicode_type
 from traitlets import HasTraits, Any, Unicode, observe
 from numbers import Real, Integral
 from warnings import warn
 
-try:
-    from collections.abc import Iterable, Mapping
-except ImportError:
-    from collections import Iterable, Mapping # py2
 
 
 empty = Parameter.empty
@@ -98,7 +84,7 @@ def _get_min_max_value(min, max, value=None, step=None):
     # Either min and max need to be given, or value needs to be given
     if value is None:
         if min is None or max is None:
-            raise ValueError('unable to infer range, value from: ({0}, {1}, {2})'.format(min, max, value))
+            raise ValueError('unable to infer range, value from: ({}, {}, {})'.format(min, max, value))
         diff = max - min
         value = min + (diff / 2)
         # Ensure that value has the same type as diff
@@ -124,22 +110,18 @@ def _get_min_max_value(min, max, value=None, step=None):
         tick = int((value - min) / step)
         value = min + tick * step
     if not min <= value <= max:
-        raise ValueError('value must be between min and max (min={0}, value={1}, max={2})'.format(min, value, max))
+        raise ValueError('value must be between min and max (min={}, value={}, max={})'.format(min, value, max))
     return min, max, value
 
 def _yield_abbreviations_for_parameter(param, kwargs):
     """Get an abbreviation for a function parameter."""
     name = param.name
     kind = param.kind
-    ann = param.annotation
     default = param.default
     not_found = (name, empty, empty)
     if kind in (Parameter.POSITIONAL_OR_KEYWORD, Parameter.KEYWORD_ONLY):
         if name in kwargs:
             value = kwargs.pop(name)
-        elif ann is not empty:
-            warn("Using function annotations to implicitly specify interactive controls is deprecated. Use an explicit keyword argument for the parameter instead.", DeprecationWarning)
-            value = ann
         elif default is not empty:
             value = default
         else:
@@ -228,8 +210,7 @@ class interactive(VBox):
         else:
             for widget in self.kwargs_widgets:
                 widget.observe(self.update, names='value')
-
-            self.on_displayed(self.update)
+            self.update()
 
     # Callback function
     def update(self, *args):
@@ -260,7 +241,7 @@ class interactive(VBox):
         except Exception as e:
             ip = get_ipython()
             if ip is None:
-                self.log.warn("Exception in interact callback: %s", e, exc_info=True)
+                self.log.warning("Exception in interact callback: %s", e, exc_info=True)
             else:
                 ip.showtraceback()
         finally:
@@ -345,8 +326,8 @@ class interactive(VBox):
     @staticmethod
     def widget_from_single_value(o):
         """Make widgets from single values, which can be used as parameter defaults."""
-        if isinstance(o, string_types):
-            return Text(value=unicode_type(o))
+        if isinstance(o, str):
+            return Text(value=str(o))
         elif isinstance(o, bool):
             return Checkbox(value=o)
         elif isinstance(o, Integral):
@@ -399,7 +380,7 @@ class interactive(VBox):
         return _InteractFactory(cls, options)
 
 
-class _InteractFactory(object):
+class _InteractFactory:
     """
     Factory for instances of :class:`interactive`.
 
@@ -567,7 +548,7 @@ class fixed(HasTraits):
     value = Any(help="Any Python object")
     description = Unicode('', help="Any Python object")
     def __init__(self, value, **kwargs):
-        super(fixed, self).__init__(value=value, **kwargs)
+        super().__init__(value=value, **kwargs)
     def get_interact_value(self):
         """Return the value for this widget which should be passed to
         interactive functions. Custom widgets can change this method

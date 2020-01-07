@@ -225,14 +225,23 @@ in your documentation
 
 ### Using the `nbsphinx` Project
 
-The [nbsphinx](https://github.com/spatialaudio/nbsphinx) sphinx extension
+The [nbsphinx](https://nbsphinx.readthedocs.io/) Sphinx extension
 provides a source parser for `*.ipynb` files. Custom Sphinx directives are used
 to show Jupyter Notebook code cells (and of course their results) in both HTML
 and LaTeX output.
-
 In the case of the HTML output, Jupyter Interactive Widgets are also supported.
-However, it is a requirement that the notebook was correctly saved with the
+
+For notebooks that are executed by `nbsphinx` the widget state is automatically
+generated.
+For others, it is a requirement that the notebook was correctly saved with the
 special "Save Notebook Widget State" action in the widgets menu.
+
+The necessary JavaScript code is automatically embedded in the generated HTML
+files.
+A custom URL or a local JavaScript file can be specified with the
+`nbsphinx_widgets_path` configuration option.
+For more configuration options, have a look at the
+[documentation](https://nbsphinx.readthedocs.io/usage.html).
 
 ## Rendering Interactive Widgets on [nbviewer](http://nbviewer.jupyter.org/)
 
