@@ -4,44 +4,17 @@ dist: xenial
 os: linux
 arch:
   - amd64
-  - arm64
 python:
-    - 3.5
-    - 3.6
-    - 3.7
     - 3.8
 addons:
-  apt_packages:
-    - pandoc
   firefox: latest
 services:
   - xvfb
 cache: yarn
-env:
-    - GROUP=python
 sudo: false
 before_install:
-    - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_before_install_py.sh ; fi'
-    - 'if [[ $GROUP == doc ]] ; then bash ./scripts/travis_before_install_py.sh ; fi'
-    - 'if [[ $GROUP == spec ]] ; then bash ./scripts/travis_before_install_py.sh ; fi'
-    - 'if [[ $GROUP == js ]] ; then nvm install 12 ; fi'
+    - 'nvm install 12'
 install:
-    - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_install_py.sh ; fi'
-    - 'if [[ $GROUP == doc ]] ; then bash ./scripts/travis_install_py.sh ; fi'
-    - 'if [[ $GROUP == spec ]] ; then bash ./scripts/travis_install_py.sh ; fi'
-    - 'if [[ $GROUP == js ]] ; then bash ./scripts/travis_install_js.sh ; fi'
+    - 'bash ./scripts/travis_install_js.sh'
 script:
-    - 'if [[ $GROUP == python ]] ; then bash ./scripts/travis_script_py.sh ; fi'
-    - 'if [[ $GROUP == doc ]] ; then bash ./scripts/travis_script_doc.sh ; fi'
-    - 'if [[ $GROUP == spec ]] ; then bash ./scripts/travis_script_spec.sh ; fi'
-    - 'if [[ $GROUP == js ]] ; then bash ./scripts/travis_script_js.sh ; fi'
-matrix:
-    include:
-        - python: 3.6
-          env: GROUP=spec
-        - python: 3.6
-          env: GROUP=doc
-        - python: 3.6
-          env: GROUP=js BROWSER=firefox
-after_success:
-    - coveralls
+    - 'bash ./scripts/travis_script_js.sh'
