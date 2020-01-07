@@ -197,6 +197,7 @@ class TextareaView extends StringView {
         });
 
         this.update_placeholder();
+        this.updateTooltip();
     }
 
     update_placeholder(value?: string) {
@@ -313,6 +314,7 @@ class TextView extends StringView {
         });
 
         this.update_placeholder();
+        this.updateTooltip();
     }
 
     update_placeholder(value?: string) {
@@ -449,6 +451,7 @@ class ComboboxView extends TextView {
 
         this.textbox.setAttribute('list', this.datalist.id);
         this.el.appendChild(this.datalist);
+        this.updateTooltip();
     }
 
     update(options?: any) {

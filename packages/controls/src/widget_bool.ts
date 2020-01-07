@@ -72,6 +72,7 @@ class CheckboxView extends DescriptionView {
         this.update(); // Set defaults.
         this.updateDescription();
         this.updateIndent();
+        this.updateTooltip();
     }
 
     /**
