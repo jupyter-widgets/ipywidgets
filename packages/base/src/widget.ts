@@ -639,13 +639,13 @@ class WidgetView extends NativeView<WidgetModel> {
      *
      * Used to focus or blur the widget.
      */
-    handle_message(content: any) {
+    handle_message(content: any): void {
         if (content.do == 'focus') {
-	    this.el.focus();
+            this.el.focus();
         } else if (content.do == 'blur') {
-	    this.el.blur();
-	}
-    };
+            this.el.blur();
+        }
+    }
 
     /**
      * Triggered on model change.
@@ -981,8 +981,8 @@ class DOMWidgetView extends WidgetView {
         }
     }
 
-    updateTabindex() {
-        let tabbable = this.model.get('tabbable');
+    updateTabindex(): void {
+        const tabbable = this.model.get('tabbable');
         if (tabbable === true) {
             this.el.setAttribute('tabIndex', '0');
         } else if (tabbable === false) {

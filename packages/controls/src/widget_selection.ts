@@ -34,7 +34,7 @@ class SelectionView extends DescriptionView {
     /**
      * Called when view is rendered.
      */
-    render() {
+    render(): void {
         super.render(); // Incl. setting some defaults.
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-inline-hbox');
@@ -46,7 +46,7 @@ class SelectionView extends DescriptionView {
      * Called when the model is changed.  The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update() {
+    update(): void {
         super.update();
 
         // Disable listbox if needed
@@ -58,11 +58,11 @@ class SelectionView extends DescriptionView {
         this.updateTabindex();
     }
 
-    updateTabindex() {
+    updateTabindex(): void {
         if (!this.listbox) {
             return; // we might be constructing the parent
         }
-        let tabbable = this.model.get('tabbable');
+        const tabbable = this.model.get('tabbable');
         if (tabbable === true) {
             this.listbox.setAttribute('tabIndex', '0');
         } else if (tabbable === false) {
@@ -158,13 +158,13 @@ class DropdownView extends SelectionView {
     /**
      * Handle message sent to the front end.
      */
-    handle_message(content: any) {
+    handle_message(content: any): void {
         if (content.do == 'focus') {
             this.listbox.focus();
         } else if (content.do == 'blur') {
             this.listbox.blur();
         }
-    };
+    }
 
     listbox: HTMLSelectElement;
 }

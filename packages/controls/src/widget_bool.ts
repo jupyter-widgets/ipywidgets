@@ -105,11 +105,11 @@ class CheckboxView extends DescriptionView {
         this.label.style.display = indent ? '' : 'none';
     }
 
-    updateTabindex() {
+    updateTabindex(): void {
         if (!this.checkbox) {
             return; // we might be constructing the parent
         }
-        let tabbable = this.model.get('tabbable');
+        const tabbable = this.model.get('tabbable');
         if (tabbable === true) {
             this.checkbox.setAttribute('tabIndex', '0');
         } else if (tabbable === false) {
