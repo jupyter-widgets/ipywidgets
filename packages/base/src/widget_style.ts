@@ -6,10 +6,6 @@ import {
 } from './utils';
 
 import {
-    ObjectHash
-} from 'Backbone';
-
-import {
     WidgetModel, WidgetView, DOMWidgetView
 } from './widget';
 
@@ -79,14 +75,14 @@ class StyleView extends WidgetView {
             let styleProperties = ModelType.styleProperties;
             let attribute = styleProperties[trait].attribute;
             let selector  = styleProperties[trait].selector;
-            let elements = selector ? parent.el.querySelectorAll(selector) : [ parent.el ];
+            let elements = selector ? parent.el.querySelectorAll<HTMLElement>(selector) : [ parent.el ];
             if (value === null) {
                 for (let i = 0; i !== elements.length; ++i) {
                     elements[i].style.removeProperty(attribute);
                 }
             } else {
                 for (let i = 0; i !== elements.length; ++i) {
-                    elements[i].style[attribute] = value;
+                    elements[i].style.setProperty(attribute, value);
                 }
             }
         } else {
@@ -114,7 +110,7 @@ class StyleView extends WidgetView {
             if (parent) {
                 let attribute = styleProperties[trait].attribute;
                 let selector  = styleProperties[trait].selector;
-                let elements = selector ? parent.el.querySelectorAll(selector) : [ parent.el ];
+                let elements = selector ? parent.el.querySelectorAll<HTMLElement>(selector) : [ parent.el ];
                 for (let i = 0; i !== elements.length; ++i) {
                     elements[i].style.removeProperty(attribute);
                 }

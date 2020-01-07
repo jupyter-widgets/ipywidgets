@@ -2,19 +2,14 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    JSONObject, JSONArray, JSONValue
-} from '@phosphor/coreutils';
-
-import {
     toByteArray, fromByteArray
 } from 'base64-js';
 
 import {
-    UUID
+    JSONObject, JSONArray, JSONValue, UUID, JSONExt
 } from '@lumino/coreutils';
 
 import _isEqual from 'lodash/isEqual';
-import isPlainObject from 'lodash/isPlainObject';
 
 /**
  * Find all strings in the first argument that are not in the second.
@@ -69,7 +64,7 @@ function uuid(): string {
  */
 export
 class WrappedError extends Error {
-    constructor(message, error) {
+    constructor(message: string, error: Error) {
         super(message);
         console.warn('WrappedError has been deprecated!');
         // Keep a stack of the original error messages.
@@ -135,11 +130,11 @@ function reject(message: string, log: boolean) {
  * Will lead to {a: 1, b: {data: array1}, c: [0, array2]}
  */
 export
-function put_buffers(state: JSONObject | JSONArray, buffer_paths: (string | number)[][], buffers: DataView[]) {
+function put_buffers(state: JSONObject, buffer_paths: (string | number)[][], buffers: DataView[]) {
     for (let i=0; i < buffer_paths.length; i++) {
         let buffer_path = buffer_paths[i];
          // say we want to set state[x][y][z] = buffers[i]
-        let obj = state;
+        let obj: any= state;
         // we first get obj = state[x][y]
         for (let j = 0; j < buffer_path.length - 1; j++) {
             obj = obj[buffer_path[j]];
@@ -147,6 +142,24 @@ function put_buffers(state: JSONObject | JSONArray, buffer_paths: (string | numb
         // and then set: obj[z] = buffers[i]
         obj[buffer_path[buffer_path.length - 1]] = buffers[i];
     }
+}
+
+export
+interface ISerializedState {
+    state: JSONValue;
+    buffers: ArrayBuffer[];
+    buffer_paths: (string | number)[][];
+}
+
+
+export
+interface ISerializeable {
+    toJSON(options?: {}): JSONObject | JSONArray;
+}
+
+export
+function isSerializable(object: any): object is ISerializeable {
+    return object.toJSON;
 }
 
 
@@ -160,19 +173,19 @@ function put_buffers(state: JSONObject | JSONArray, buffer_paths: (string | numb
  * and the buffers associated to those paths (.buffers).
  */
 export
-function remove_buffers(state: JSONObject | JSONArray | Serializeable): ISerializedState {
+function remove_buffers(state: JSONObject | JSONArray | ISerializeable): ISerializedState {
     let buffers: ArrayBuffer[] = [];
     let buffer_paths: (string | number)[][] = [];
     // if we need to remove an object from a list, we need to clone that list, otherwise we may modify
     // the internal state of the widget model
     // however, we do not want to clone everything, for performance
-    function remove(obj: JSONObject | JSONArray | Serializeable, path: (string | number)[]) {
+    function remove(obj: JSONValue | ISerializeable, path: (string | number)[]): JSONValue {
         if (isSerializable(obj)) {
             // We need to get the JSON form of the object before recursing.
             // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#toJSON()_behavior
             obj = obj.toJSON();
         }
-        if (Array.isArray(obj)) {
+        if (JSONExt.isArray(obj)) {
             let is_cloned = false;
             for (let i = 0; i < obj.length; i++) {
                 let value = obj[i];
@@ -200,7 +213,7 @@ function remove_buffers(state: JSONObject | JSONArray | Serializeable): ISeriali
                     }
                 }
             }
-        } else if (isPlainObject(obj)) {
+        } else if (JSONExt.isObject(obj)) {
             for (let key in obj) {
                 let is_cloned = false;
                 if (obj.hasOwnProperty(key)) {

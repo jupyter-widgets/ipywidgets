@@ -5,8 +5,8 @@ import * as utils from './utils';
 import * as services from '@jupyterlab/services';
 
 import {
-    JSONObject, JSONValue
-} from '@phosphor/coreutils';
+    JSONObject
+} from '@lumino/coreutils';
 
 import {
     DOMWidgetView, WidgetModel, WidgetView, DOMWidgetModel
@@ -125,9 +125,6 @@ interface WidgetOptions {
     model_id?: string;
 }
 
-
-}
-
 export
 interface IState {
     buffers?: Base64Buffers;
@@ -148,12 +145,12 @@ interface Base64Buffers {
     data: string;
     path: (string | number)[];
     encoding: 'base64';
+}
 
 /**
  * Manager abstract base class
  */
-export
-abstract class ManagerBase<T> {
+export abstract class ManagerBase<T> {
 
     /**
      * Display a DOMWidgetView for a particular model.
@@ -535,7 +532,7 @@ abstract class ManagerBase<T> {
      */
     protected abstract _create_comm(
         comm_target_name: string,
-        model_id: string,
+        model_id?: string,
         data?: any,
         metadata?: any,
         buffers?: ArrayBuffer[] | ArrayBufferView[]):

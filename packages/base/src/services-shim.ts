@@ -160,8 +160,8 @@ namespace shims {
 
             targets = Object.create(null);
             comms = Object.create(null);
-            kernel: Kernel.IKernelConnection = null;
-            jsServicesKernel: Kernel.IKernelConnection = null;
+            kernel: Kernel.IKernelConnection;
+            jsServicesKernel: Kernel.IKernelConnection;
         }
 
         /**
@@ -288,8 +288,8 @@ namespace shims {
                 }
             }
 
-            jsServicesComm: Kernel.IComm = null;
-            kernel: Kernel.IKernelConnection = null;
+            jsServicesComm: Kernel.IComm;
+            kernel: Kernel.IKernelConnection;
         }
     }
 }
