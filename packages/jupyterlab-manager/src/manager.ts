@@ -334,7 +334,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     if (!kernel) {
       throw new Error('No current kernel');
     }
-    const reply = await kernel.requestCommInfo({target: this.comm_target_name});
+    const reply = await kernel.requestCommInfo({target_name: this.comm_target_name});
     if (reply.content.status === 'ok') {
         return (reply.content as any).comms;
     } else {
