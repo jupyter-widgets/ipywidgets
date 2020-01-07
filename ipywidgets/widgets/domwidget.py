@@ -38,6 +38,18 @@ class DOMWidget(Widget):
             self._dom_classes = [c for c in self._dom_classes if c != className]
         return self
 
+    def focus(self):
+        """
+        Focus on the widget.
+        """
+        self.send({'do':'focus'})
+
+    def blur(self):
+        """
+        Blur the widget.
+        """
+        self.send({'do':'blur'})
+
     def _repr_keys(self):
         for key in super()._repr_keys():
             # Exclude layout if it had the default value

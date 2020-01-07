@@ -154,6 +154,19 @@ class DropdownView extends SelectionView {
         this.model.set('index', this.listbox.selectedIndex === -1 ? null : this.listbox.selectedIndex);
         this.touch();
     }
+
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+            this.listbox.focus();
+        } else if (content.do == 'blur') {
+            this.listbox.blur();
+        }
+    };
+
+    listbox: HTMLSelectElement;
 }
 
 
