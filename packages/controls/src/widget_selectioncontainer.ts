@@ -15,11 +15,11 @@ import {
 
 import {
     TabPanel
-} from './phosphor/tabpanel';
+} from './lumino/tabpanel';
 
 import {
     Accordion
-} from './phosphor/accordion';
+} from './lumino/accordion';
 
 import {
     Widget
