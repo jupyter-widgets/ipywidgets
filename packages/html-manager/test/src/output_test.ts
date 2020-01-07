@@ -14,7 +14,7 @@ const newWidget = async (modelState: any): Promise<HTMLElement> => {
     document.body.appendChild(widgetTag);
     const manager = new HTMLManager();
     const modelId = 'u-u-i-d';
-    const modelCreate: base.ModelOptions = {
+    const modelCreate: base.IModelOptions = {
         model_name: 'OutputModel',
         model_id: modelId,
         model_module: '@jupyter-widgets/output',
@@ -128,7 +128,7 @@ describe('Output widget', function() {
             version_minor: 0
         });
         const modelId = 'u-u-i-d';
-        const modelCreate: base.ModelOptions = {
+        const modelCreate: base.IModelOptions = {
             model_name: 'OutputModel',
             model_id: modelId,
             model_module: '@jupyter-widgets/output',
@@ -178,7 +178,7 @@ describe('Output widget', function() {
         }, 0);
 
         const modelId = 'u-u-i-d';
-        const modelCreate: base.ModelOptions = {
+        const modelCreate: base.IModelOptions = {
             model_name: 'OutputModel',
             model_id: modelId,
             model_module: '@jupyter-widgets/output',
