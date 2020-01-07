@@ -197,7 +197,7 @@ class TextareaView extends DescriptionView {
      * changed by another view or by a state update from the back-end.
      */
     update(options?: any) {
-        if (options === undefined || options.updated_view != this) {
+        if (options === undefined || options.updated_view !== this) {
             this.textbox.value = this.model.get('value');
             let rows = this.model.get('rows');
             if (rows === null) {
@@ -206,7 +206,22 @@ class TextareaView extends DescriptionView {
             this.textbox.setAttribute('rows', rows);
             this.textbox.disabled = this.model.get('disabled');
         }
+        this.updateTabindex();
         return super.update();
+    }
+
+    updateTabindex() {
+        if (!this.textbox) {
+            return; // we might be constructing the parent
+        }
+        let tabbable = this.model.get('tabbable');
+        if (tabbable === true) {
+            this.textbox.setAttribute('tabIndex', '0');
+        } else if (tabbable === false) {
+            this.textbox.setAttribute('tabIndex', '-1');
+        } else if (tabbable === null) {
+            this.textbox.removeAttribute('tabIndex');
+        }
     }
 
     events() {
@@ -294,6 +309,7 @@ class TextView extends DescriptionView {
 
         this.update_placeholder();
         this.update_title();
+        this.updateTabindex();
     }
 
     update_placeholder(value?: string) {
@@ -306,6 +322,20 @@ class TextView extends DescriptionView {
             this.textbox.removeAttribute('title');
         } else if (this.model.get('description').length === 0) {
             this.textbox.setAttribute('title', title);
+        }
+    }
+
+    updateTabindex() {
+        if (!this.textbox) {
+            return; // we might be constructing the parent
+        }
+        let tabbable = this.model.get('tabbable');
+        if (tabbable === true) {
+            this.textbox.setAttribute('tabIndex', '0');
+        } else if (tabbable === false) {
+            this.textbox.setAttribute('tabIndex', '-1');
+        } else if (tabbable === null) {
+            this.textbox.removeAttribute('tabIndex');
         }
     }
 
