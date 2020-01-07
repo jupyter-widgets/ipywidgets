@@ -54,15 +54,12 @@ class ToggleButton(_Bool):
         value of the toggle button: True-pressed, False-unpressed
     description : str
 	      description displayed next to the button
-    tooltip: str
-        tooltip caption of the toggle button
     icon: str
         font-awesome icon name
     """
     _view_name = Unicode('ToggleButtonView').tag(sync=True)
     _model_name = Unicode('ToggleButtonModel').tag(sync=True)
 
-    tooltip = Unicode(help="Tooltip caption of the toggle button.").tag(sync=True)
     icon = Unicode('', help= "Font-awesome icon.").tag(sync=True)
 
     button_style = CaselessStrEnum(

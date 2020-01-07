@@ -11,11 +11,20 @@ from .widget_style import Style
 
 
 class DOMWidget(Widget):
-    """Widget that can be inserted into the DOM"""
+    """Widget that can be inserted into the DOM
+
+    Parameters
+    ----------
+    tooltip: str
+       tooltip caption
+    layout: InstanceDict(Layout)
+       widget layout
+    """
 
     _model_name = Unicode('DOMWidgetModel').tag(sync=True)
     _dom_classes = TypedTuple(trait=Unicode(), help="CSS classes applied to widget DOM element").tag(sync=True)
     tabbable = Bool(help="Is widget tabbable?", allow_none=True, default_value=None).tag(sync=True)
+    tooltip = Unicode(None, allow_none=True, help="A tooltip caption.").tag(sync=True)
     layout = InstanceDict(Layout).tag(sync=True, **widget_serialization)
 
     def add_class(self, className):
