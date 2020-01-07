@@ -68,12 +68,10 @@ class CheckboxView extends DescriptionView {
         this.checkboxLabel.appendChild(this.descriptionSpan);
 
         this.listenTo(this.model, 'change:indent', this.updateIndent);
-        this.listenTo(this.model, 'change:tooltip', this.updateTooltip);
 
         this.update(); // Set defaults.
         this.updateDescription();
         this.updateIndent();
-        this.updateTooltip();
     }
 
     /**
@@ -158,7 +156,6 @@ class ToggleButtonModel extends BoolModel {
         return _.extend(super.defaults(), {
             _view_name: 'ToggleButtonView',
             _model_name: 'ToggleButtonModel',
-            tooltip: '',
             icon: '',
             button_style: ''
         });
@@ -176,7 +173,6 @@ class ToggleButtonView extends DOMWidgetView {
         this.el.classList.add('jupyter-button');
         this.el.classList.add('widget-toggle-button');
         this.listenTo(this.model, 'change:button_style', this.update_button_style);
-        this.listenTo(this.model, 'change:tooltip', this.updateTooltip);
         this.set_button_style();
         this.update(); // Set defaults.
     }
@@ -204,7 +200,6 @@ class ToggleButtonView extends DOMWidgetView {
 
         if (options === undefined || options.updated_view !== this) {
             this.el.disabled = this.model.get('disabled');
-            this.el.setAttribute('title', this.model.get('tooltip'));
 
             let description = this.model.get('description');
             let icon = this.model.get('icon');
@@ -221,7 +216,6 @@ class ToggleButtonView extends DOMWidgetView {
                 this.el.appendChild(document.createTextNode(description));
             }
         }
-        this.updateTooltip();
         return super.update();
     }
 

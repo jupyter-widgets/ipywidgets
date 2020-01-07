@@ -76,7 +76,7 @@ class HTMLView extends StringView {
         this.content = document.createElement('div');
         this.content.classList.add('widget-html-content');
         this.el.appendChild(this.content);
-        this.update();
+        this.update(); // Set defaults.
     }
 
     /**
@@ -115,7 +115,7 @@ class HTMLMathView extends StringView {
         this.content = document.createElement('div');
         this.content.classList.add('widget-htmlmath-content');
         this.el.appendChild(this.content);
-        this.update();
+        this.update(); // Set defaults.
     }
 
     /**
@@ -195,11 +195,8 @@ class TextareaView extends StringView {
             (model, value, options) => {
                 this.update_placeholder(value);
         });
-        this.listenTo(this.model, 'change:description_tooltip', this.updateTooltip);
-        this.listenTo(this.model, 'change:description', this.updateTooltip);
 
         this.update_placeholder();
-        this.updateTooltip();
     }
 
     update_placeholder(value?: string) {
@@ -209,7 +206,7 @@ class TextareaView extends StringView {
 
     updateTooltip() {
         if (!this.textbox) return; // we might be constructing the parent
-        let title = this.model.get('description_tooltip');
+        let title = this.model.get('tooltip');
         if (!title) {
             this.textbox.removeAttribute('title');
         } else if (this.model.get('description').length === 0) {
@@ -314,11 +311,8 @@ class TextView extends StringView {
         this.listenTo(this.model, 'change:placeholder', (model, value, options) => {
             this.update_placeholder(value);
         });
-        this.listenTo(this.model, 'change:description_tooltip', this.updateTooltip);
-        this.listenTo(this.model, 'change:description', this.updateTooltip);
 
         this.update_placeholder();
-        this.updateTooltip();
     }
 
     update_placeholder(value?: string) {
@@ -327,7 +321,7 @@ class TextView extends StringView {
 
     updateTooltip() {
         if (!this.textbox) return; // we might be constructing the parent
-        let title = this.model.get('description_tooltip');
+        let title = this.model.get('tooltip');
         if (!title) {
             this.textbox.removeAttribute('title');
         } else if (this.model.get('description').length === 0) {

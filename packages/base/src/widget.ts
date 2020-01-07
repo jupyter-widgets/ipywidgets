@@ -578,7 +578,7 @@ class DOMWidgetModel extends WidgetModel {
     defaults() {
         return utils.assign(super.defaults(), {
             _dom_classes: [],
-            _tooltip: null
+            tooltip: null
             // We do not declare defaults for the layout and style attributes.
             // Those defaults are constructed on the kernel side and synced here
             // as needed, and our code here copes with those attributes being
@@ -818,6 +818,8 @@ class DOMWidgetView extends WidgetView {
         this.listenTo(this.model, 'comm_live_update', () => {
             this._comm_live_update();
         });
+        this.listenTo(this.model, 'change:tooltip', this.updateTooltip);
+        this.updateTooltip();
     }
 
     setLayout(layout: WidgetModel, oldLayout?: WidgetModel) {
@@ -931,9 +933,12 @@ class DOMWidgetView extends WidgetView {
     }
 
     updateTooltip() {
-        let tooltip = this.model.get('_tooltip')
-        if (tooltip) this.el.setAttribute('_tooltip', tooltip);
-        else this.el.removeAttribute('_tooltip');
+        let title = this.model.get('tooltip')
+        if (!title) {
+            this.el.removeAttribute('title');
+        } else if (this.model.get('description').length === 0) {
+            this.el.setAttribute('title', title);
+        }
     }
 
     _setElement(el: HTMLElement) {

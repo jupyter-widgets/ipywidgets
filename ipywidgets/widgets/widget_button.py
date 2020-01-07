@@ -13,7 +13,7 @@ from .widget_core import CoreWidget
 from .widget_style import Style
 from .trait_types import Color, InstanceDict
 
-from traitlets import Unicode, Bool, CaselessStrEnum, Instance, validate, default, link
+from traitlets import Unicode, Bool, CaselessStrEnum, Instance, validate, default
 import warnings
 
 
@@ -36,8 +36,6 @@ class Button(DOMWidget, CoreWidget):
     ----------
     description: str
        description displayed next to the button
-    tooltip: str
-       tooltip caption of the toggle button
     icon: str
        font-awesome icon name
     disabled: bool
@@ -47,7 +45,6 @@ class Button(DOMWidget, CoreWidget):
     _model_name = Unicode('ButtonModel').tag(sync=True)
 
     description = Unicode(help="Button label.").tag(sync=True)
-    tooltip = Unicode(help="Tooltip caption of the button.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes.").tag(sync=True)
     icon = Unicode('', help="Font-awesome icon name, without the 'fa-' prefix.").tag(sync=True)
 
@@ -61,7 +58,6 @@ class Button(DOMWidget, CoreWidget):
         super(Button, self).__init__(**kwargs)
         self._click_handlers = CallbackDispatcher()
         self.on_msg(self._handle_button_msg)
-        link((self, 'tooltip'), (self, '_tooltip'))
 
     @validate('icon')
     def _validate_icon(self, proposal):

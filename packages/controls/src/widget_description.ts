@@ -42,8 +42,7 @@ class DescriptionModel extends DOMWidgetModel {
             _model_module: '@jupyter-widgets/controls',
             _view_module_version: JUPYTER_CONTROLS_VERSION,
             _model_module_version: JUPYTER_CONTROLS_VERSION,
-            description: '',
-            description_tooltip: null,
+            description: ''
         };
     }
 }
@@ -57,10 +56,7 @@ class DescriptionView extends DOMWidgetView {
         this.label.style.display = 'none';
 
         this.listenTo(this.model, 'change:description', this.updateDescription);
-        this.listenTo(this.model, 'change:description', this.updateTooltip);
-        this.listenTo(this.model, 'change:description_tooltip', this.updateTooltip);
         this.updateDescription();
-        this.updateTooltip();
     }
 
     typeset(element: HTMLElement, text?: string){

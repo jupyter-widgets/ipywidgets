@@ -15,7 +15,6 @@ export class FileUploadModel extends CoreDOMWidgetModel {
             _counter: 0,
             accept: '',
             description: 'Upload',
-            tooltip: '',
             disabled: false,
             icon: 'upload',
             button_style: '',
@@ -127,7 +126,6 @@ export class FileUploadView extends DOMWidgetView {
 
     update() {
         this.el.disabled = this.model.get('disabled');
-        this.el.setAttribute('title', this.model.get('tooltip'));
 
         let description = `${this.model.get('description')} (${this.model.get('_counter')})`
         let icon = this.model.get('icon');
