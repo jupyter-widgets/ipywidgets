@@ -15,11 +15,11 @@ import {
 
 import {
     TabPanel
-} from './phosphor/tabpanel';
+} from './lumino/tabpanel';
 
 import {
     Accordion
-} from './phosphor/accordion';
+} from './lumino/accordion';
 
 import {
     Widget
@@ -94,7 +94,7 @@ class JupyterPhosphorAccordionWidget extends Accordion {
         if (this._view) {
             this._view.remove();
         }
-        this._view = null;
+        this._view = null!;
     }
 
     private _view: DOMWidgetView;
@@ -143,7 +143,7 @@ class AccordionView extends DOMWidgetView {
             }
         });
 
-        this.children_views.update(this.model.get('children'));
+        this.children_views?.update(this.model.get('children'));
         this.update_titles();
         this.update_selected_index();
     }
@@ -157,7 +157,7 @@ class AccordionView extends DOMWidgetView {
         // which would then set off another sync cycle.
         this.updatingChildren = true;
         this.pWidget.selection.index = null;
-        this.children_views.update(this.model.get('children'));
+        this.children_views?.update(this.model.get('children'));
         this.update_selected_index();
         this.updatingChildren = false;
     }
@@ -206,7 +206,7 @@ class AccordionView extends DOMWidgetView {
             collapse.widget = widget;
             placeholder.dispose();
             return view;
-        }).catch(utils.reject('Could not add child view to box', true));
+        }).catch(utils.reject('Could not add child view to box'));
     }
 
     remove() {
@@ -214,7 +214,7 @@ class AccordionView extends DOMWidgetView {
         super.remove();
     }
 
-    children_views: ViewList<DOMWidgetView>;
+    children_views: ViewList<DOMWidgetView> | null;
     pWidget: Accordion;
     updatingChildren: boolean;
 }
@@ -263,7 +263,7 @@ class JupyterPhosphorTabPanelWidget extends TabPanel {
         if (this._view) {
             this._view.remove();
         }
-        this._view = null;
+        this._view = null!;
     }
 
     private _view: DOMWidgetView;
@@ -299,7 +299,7 @@ class TabView extends DOMWidgetView {
         super.initialize(parameters);
         this.childrenViews = new ViewList(
             this.addChildView,
-            (view) => {view.remove();},
+            (view) => { view.remove(); },
             this
         );
         this.listenTo(this.model, 'change:children', () => this.updateTabs());
@@ -340,7 +340,7 @@ class TabView extends DOMWidgetView {
         // which would then set off another sync cycle.
         this.updatingTabs = true;
         this.pWidget.currentIndex = null;
-        this.childrenViews.update(this.model.get('children'));
+        this.childrenViews?.update(this.model.get('children'));
         this.pWidget.currentIndex = this.model.get('selected_index');
         this.updatingTabs = false;
     }
@@ -364,10 +364,10 @@ class TabView extends DOMWidgetView {
             // insert after placeholder so that if placholder is selected, the
             // real widget will be selected now (this depends on the tab bar
             // insert behavior)
-            tabs.insertWidget(i+1, widget);
+            tabs.insertWidget(i + 1, widget);
             placeholder.dispose();
             return view;
-        }).catch(utils.reject('Could not add child view to box', true));
+        }).catch(utils.reject('Could not add child view to box'));
     }
 
     /**
@@ -425,6 +425,6 @@ class TabView extends DOMWidgetView {
     }
 
     updatingTabs: boolean = false;
-    childrenViews: ViewList<DOMWidgetView>;
+    childrenViews: ViewList<DOMWidgetView> | null;
     pWidget: JupyterPhosphorTabPanelWidget;
 }

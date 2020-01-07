@@ -155,7 +155,7 @@ export abstract class ManagerBase<T> {
     /**
      * Display a DOMWidgetView for a particular model.
      */
-    display_model(msg: services.KernelMessage.IMessage, model: DOMWidgetModel, options: any = {}): Promise<T> {
+    display_model(msg: services.KernelMessage.IMessage | null, model: DOMWidgetModel, options: any = {}): Promise<T> {
         return this.create_view(model, options).then(
             view => this.display_view(msg, view, options)).catch(utils.reject('Could not create view', true));
     }
@@ -167,7 +167,7 @@ export abstract class ManagerBase<T> {
      * This must be implemented by a subclass. The implementation must trigger the view's displayed
      * event after the view is on the page: `view.trigger('displayed')`
      */
-    abstract display_view(msg: services.KernelMessage.IMessage, view: DOMWidgetView, options: any): Promise<T>;
+    abstract display_view(msg: services.KernelMessage.IMessage | null, view: DOMWidgetView, options: any): Promise<T>;
 
     /**
      * Modifies view options. Generally overloaded in custom widget manager

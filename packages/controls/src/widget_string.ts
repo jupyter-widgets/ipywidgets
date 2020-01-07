@@ -75,12 +75,12 @@ class HTMLView extends DescriptionView {
      * Handle message sent to the front end.
      */
     handle_message(content: any) {
-        if (content.do == 'focus') {
-	    this.content.focus();
-        } else if (content.do == 'blur') {
-	    this.content.blur();
-	}
-    };
+        if (content.do === 'focus') {
+            this.content.focus();
+        } else if (content.do === 'blur') {
+            this.content.blur();
+        }
+    }
 
     content: HTMLDivElement;
 }
@@ -125,12 +125,12 @@ class HTMLMathView extends DescriptionView {
      * Handle message sent to the front end.
      */
     handle_message(content: any) {
-        if (content.do == 'focus') {
-	    this.content.focus();
-        } else if (content.do == 'blur') {
-	    this.content.blur();
-	}
-    };
+        if (content.do === 'focus') {
+            this.content.focus();
+        } else if (content.do === 'blur') {
+            this.content.blur();
+        }
+    }
 
     content: HTMLDivElement;
 }
@@ -208,8 +208,8 @@ class TextareaView extends DescriptionView {
     }
 
     update_placeholder(value?: string) {
-        value = value || this.model.get('placeholder');
-        this.textbox.setAttribute('placeholder', value.toString());
+        const v = value || this.model.get('placeholder');
+        this.textbox.setAttribute('placeholder', v.toString());
     }
 
     /**
@@ -297,12 +297,12 @@ class TextareaView extends DescriptionView {
      * Handle message sent to the front end.
      */
     handle_message(content: any) {
-        if (content.do == 'focus') {
-	    this.textbox.focus();
-        } else if (content.do == 'blur') {
-	    this.textbox.blur();
-	}
-    };
+        if (content.do === 'focus') {
+            this.textbox.focus();
+        } else if (content.do === 'blur') {
+            this.textbox.blur();
+        }
+    }
 
     textbox: HTMLTextAreaElement;
 }
@@ -447,12 +447,12 @@ class TextView extends DescriptionView {
      * Handle message sent to the front end.
      */
     handle_message(content: any) {
-        if (content.do == 'focus') {
-	    this.textbox.focus();
-        } else if (content.do == 'blur') {
-	    this.textbox.blur();
-	}
-    };
+        if (content.do === 'focus') {
+            this.textbox.focus();
+        } else if (content.do === 'blur') {
+            this.textbox.blur();
+        }
+    }
 
     protected readonly inputType: string = 'text';
     textbox: HTMLInputElement;
@@ -566,12 +566,12 @@ class ComboboxView extends TextView {
      * Handle message sent to the front end.
      */
     handle_message(content: any) {
-        if (content.do == 'focus') {
-	    this.textbox.focus();
-        } else if (content.do == 'blur') {
-	    this.textbox.blur();
-	}
-    };
+        if (content.do === 'focus') {
+            this.textbox.focus();
+        } else if (content.do === 'blur') {
+            this.textbox.blur();
+        }
+    }
 
     highlightValidState(valid: boolean): void {
         this.textbox.classList.toggle(INVALID_VALUE_CLASS, !valid);

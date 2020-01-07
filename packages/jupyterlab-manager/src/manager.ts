@@ -89,11 +89,11 @@ class BackboneViewWrapper extends Widget {
   }
 
   dispose() {
-    this._view = null;
+    this._view = null!;
     super.dispose();
   }
 
-  private _view: Backbone.View<any> = null;
+  private _view: Backbone.View<any>;
 }
 
 
@@ -222,7 +222,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     await this.context.sessionContext.ready;
     // TODO: when we upgrade to @jupyterlab/services 4.1 or later, we can
     // remove this 'any' cast.
-    if (this.context.sessionContext.session?.kernel.handleComms === false) {
+    if (this.context.sessionContext.session?.kernel?.handleComms === false) {
       return;
     }
     const comm_ids = await this._get_comm_info();
@@ -363,7 +363,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     if (this._commRegistration) {
       this._commRegistration.dispose();
     }
-    this._context = null;
+    this._context = null!;
   }
 
   /**

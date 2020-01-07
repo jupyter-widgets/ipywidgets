@@ -159,12 +159,12 @@ class DropdownView extends SelectionView {
      * Handle message sent to the front end.
      */
     handle_message(content: any) {
-        if (content.do == 'focus') {
+        if (content.do === 'focus') {
             this.listbox.focus();
-        } else if (content.do == 'blur') {
+        } else if (content.do === 'blur') {
             this.listbox.blur();
         }
-    };
+    }
 
     listbox: HTMLSelectElement;
 }
@@ -301,7 +301,7 @@ class RadioButtonsView extends DescriptionView {
             this.container.querySelectorAll('input[type="radio"]'),
             'value'
         );
-        let stale = items.length != radios.length;
+        let stale = items.length !== radios.length;
 
         if (!stale) {
             for (let i = 0, len = items.length; i < len; ++i) {
@@ -330,9 +330,9 @@ class RadioButtonsView extends DescriptionView {
         items.forEach(function(item: any, index: number) {
             let item_query = 'input[data-value="' +
                 encodeURIComponent(item) + '"]';
-                let radio = view.container.querySelectorAll(item_query);
+            let radio = view.container.querySelectorAll<HTMLInputElement>(item_query);
             if (radio.length > 0) {
-              let radio_el = radio[0] as HTMLInputElement;
+              let radio_el = radio[0];
               radio_el.checked = view.model.get('index') === index;
               radio_el.disabled = view.model.get('disabled');
             }
@@ -366,13 +366,13 @@ class RadioButtonsView extends DescriptionView {
 
         // Current adjustment value on this widget
         let cStyles = window.getComputedStyle(e.container);
-        let containerMargin = parseInt(cStyles.marginBottom);
+        let containerMargin = parseInt(cStyles.marginBottom, 10);
 
         // How far we are off from a multiple of single windget lines
         let diff = (e.el.offsetHeight + margins - containerMargin) % lineHeight;
 
         // Apply the new adjustment
-        let extraMargin = diff == 0 ? 0 : (lineHeight - diff);
+        let extraMargin = diff === 0 ? 0 : (lineHeight - diff);
         e.container.style.marginBottom = extraMargin + 'px';
     }
 
@@ -390,7 +390,7 @@ class RadioButtonsView extends DescriptionView {
      */
     _handle_click (event: Event) {
         let target = event.target as HTMLInputElement;
-        this.model.set('index', parseInt(target.value), {updated_view: this});
+        this.model.set('index', parseInt(target.value, 10), {updated_view: this});
         this.touch();
     }
 
@@ -518,7 +518,7 @@ class ToggleButtonsView extends DescriptionView {
         // Select active button.
         items.forEach(function(item: any, index: number) {
             let item_query = '[data-value="' + encodeURIComponent(item) + '"]';
-            let button = view.buttongroup.querySelector(item_query);
+            let button = view.buttongroup.querySelector(item_query)!;
             if (view.model.get('index') === index) {
                 button.classList.add('mod-active');
             } else {

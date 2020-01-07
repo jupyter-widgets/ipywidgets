@@ -174,7 +174,7 @@ abstract class BaseIntSliderView extends DescriptionView {
             this.$slider.slider('option', 'orientation', orientation);
 
             // Use the right CSS classes for vertical & horizontal sliders
-            if (orientation==='vertical') {
+            if (orientation === 'vertical') {
                 this.el.classList.remove('widget-hslider');
                 this.el.classList.add('widget-vslider');
                 this.el.classList.remove('widget-inline-hbox');
@@ -219,7 +219,7 @@ abstract class BaseIntSliderView extends DescriptionView {
     /**
      * Parse value from a string
      */
-    abstract stringToValue(text: string): number | number[];
+    abstract stringToValue(text: string): number | number[] | null;
 
     events(): {[e: string]: string} {
         return {
@@ -306,7 +306,10 @@ class IntRangeSliderView extends BaseIntSliderView {
     /**
      * Parse value from a string
      */
-    stringToValue(text: string): number[] {
+    stringToValue(text: string | null): number[] | null {
+        if (text === null) {
+            return null;
+        }
         // ranges can be expressed either 'val-val' or 'val:val' (+spaces)
         let match = this._range_regex.exec(text);
         if (match) {
@@ -389,14 +392,14 @@ class IntSliderView extends BaseIntSliderView {
         let max = this.model.get('max');
         let value = this.model.get('value');
 
-        if(value > max) {
+        if (value > max) {
             value = max;
-        } else if(value < min) {
+        } else if (value < min) {
             value = min;
         }
         this.$slider.slider('option', 'value', value);
         this.readout.textContent = this.valueToString(value);
-        if(this.model.get('value') !== value) {
+        if (this.model.get('value') !== value) {
             this.model.set('value', value, {updated_view: this});
             this.touch();
         }
@@ -413,8 +416,8 @@ class IntSliderView extends BaseIntSliderView {
     /**
      * Parse value from a string
      */
-    stringToValue(text: string): number {
-            return this._parse_value(text);
+    stringToValue(text: string | null): number {
+        return text === null ? NaN : this._parse_value(text);
     }
 
     /**
@@ -583,14 +586,14 @@ class IntTextView extends DescriptionView {
         /* remove invalid characters */
         let value = target.value;
 
-        value = value.replace(/[e,.\s]/g, "");
+        value = value.replace(/[e,.\s]/g, '');
 
         if (value.length >= 1) {
-            var subvalue = value.substr(1);
-            value = value[0] + subvalue.replace(/[+-]/g, "");
+            const subvalue = value.substr(1);
+            value = value[0] + subvalue.replace(/[+-]/g, '');
         }
 
-        if (target.value != value) {
+        if (target.value !== value) {
             e.preventDefault();
             target.value = value;
         }
@@ -796,7 +799,7 @@ class PlayModel extends BoundedIntModel {
                 this.set('value', next_value);
                 this.schedule_next();
             } else {
-                if(this.get('_repeat')) {
+                if (this.get('_repeat')) {
                     this.set('value', this.get('min'));
                     this.schedule_next();
                 } else {
@@ -824,7 +827,7 @@ class PlayModel extends BoundedIntModel {
 
     play() {
         this.set('_playing', true);
-        if (this.get('value') == this.get('max')) {
+        if (this.get('value') === this.get('max')) {
             // if the value is at the end, reset if first, and then schedule the next
             this.set('value', this.get('min'));
             this.schedule_next();

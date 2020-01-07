@@ -67,7 +67,7 @@ export class FileUploadView extends DOMWidgetView {
 
             const promisesFile: Promise<{buffer: any, metadata: any, error: string}>[] = [];
 
-            Array.from(this.fileInput.files).forEach(file => {
+            Array.from(this.fileInput.files ?? []).forEach(file => {
                 promisesFile.push(
                     new Promise((resolve, reject) => {
                         const metadata = {
@@ -129,7 +129,7 @@ export class FileUploadView extends DOMWidgetView {
         this.el.disabled = this.model.get('disabled');
         this.el.setAttribute('title', this.model.get('tooltip'));
 
-        let description = `${this.model.get('description')} (${this.model.get('_counter')})`
+        let description = `${this.model.get('description')} (${this.model.get('_counter')})`;
         let icon = this.model.get('icon');
         if (description.length || icon.length) {
             this.el.textContent = '';

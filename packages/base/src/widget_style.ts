@@ -122,4 +122,3 @@ class StyleView extends WidgetView {
 
     private _traitNames: string[];
 }
-

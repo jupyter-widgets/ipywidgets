@@ -10,10 +10,6 @@ import {
 } from './widget_core';
 
 import {
-    reject
-} from './utils';
-
-import {
     ArrayExt
 } from '@lumino/algorithm';
 
@@ -27,6 +23,11 @@ import {
 
 import * as _ from 'underscore';
 import $ from 'jquery';
+
+import {
+    reject
+} from './utils';
+
 
 export
 class BoxModel extends CoreDOMWidgetModel {
@@ -101,7 +102,7 @@ class BoxView extends DOMWidgetView {
     }
 
     update_children() {
-        this.children_views.update(this.model.get('children')).then((views: DOMWidgetView[]) => {
+        this.children_views?.update(this.model.get('children')).then((views: DOMWidgetView[]) => {
             // Notify all children that their sizes may have changed.
             views.forEach( (view) => {
                 MessageLoop.postMessage(view.pWidget, Widget.ResizeMessage.UnknownSize);
@@ -129,7 +130,7 @@ class BoxView extends DOMWidgetView {
             this.pWidget.insertWidget(i, view.pWidget);
             dummy.dispose();
             return view;
-        }).catch(reject('Could not add child view to box', true));
+        }).catch(reject('Could not add child view to box'));
     }
 
     remove() {
@@ -137,7 +138,7 @@ class BoxView extends DOMWidgetView {
         super.remove();
     }
 
-    children_views: ViewList<DOMWidgetView>;
+    children_views: ViewList<DOMWidgetView> | null;
     pWidget: JupyterPhosphorPanelWidget;
 
     static class_map = {
@@ -178,7 +179,7 @@ class GridBoxView extends BoxView {
     initialize(parameters: any) {
         super.initialize(parameters);
         this.pWidget.addClass('widget-gridbox');
-        // display needn't be set to flex and grid 
+        // display needn't be set to flex and grid
         this.pWidget.removeClass('widget-box');
     }
 }

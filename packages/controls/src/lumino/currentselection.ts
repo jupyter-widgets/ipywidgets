@@ -194,7 +194,7 @@ class Selection<T> {
   adjustSelectionForInsert(i: number, item: T): void {
     // Lookup commonly used variables.
     let cv = this._value;
-    let ci = this._index;
+    const ci = this._index;
     let bh = this._insertBehavior;
 
     // Handle the behavior where the new item is always selected,
@@ -211,28 +211,8 @@ class Selection<T> {
     }
 
     // Otherwise, silently adjust the current index if needed.
-    if (ci >= i) {
-      this._index++;
-    }
-  }
-
-  /**
-   * Adjust the current index for move operation.
-   *
-   * @param i - The previous index of the item.
-   * @param j - The new index of the item.
-   *
-   * #### Notes
-   * This method will not cause the actual current item to change. It silently
-   * adjusts the current index to account for the given move.
-   */
-  adjustSelectionForMove(i: number, j: number): void {
-    if (this._index === i) {
-      this._index = j;
-    } else if (this._index < i && this._index >= j) {
-      this._index++;
-    } else if (this._index > i && this._index <= j) {
-      this._index--;
+    if (ci !== null && ci >= i) {
+      this._index!++;
     }
   }
 
@@ -272,7 +252,12 @@ class Selection<T> {
    * index and emitting the changed signal. It should be called after the item
    * is removed.
    */
-  adjustSelectionForRemove(i: number, item: T): void {
+  adjustSelectionForRemove(i: number, item: T | null): void {
+    // If we have no selection, there is nothing to do
+    if (this._index === null) {
+      return;
+    }
+
     // Lookup commonly used variables.
     let ci = this._index;
     let bh = this._removeBehavior;
@@ -280,7 +265,7 @@ class Selection<T> {
     // Silently adjust the index if the current item is not removed.
     if (ci !== i) {
       if (ci > i) {
-        this._index--;
+        this._index!--;
       }
       return;
     }

@@ -244,13 +244,13 @@ class ControllerModel extends CoreDOMWidgetModel {
             this.save_changes();
             this.get('buttons').forEach(function(model: ControllerButtonModel, index: number) {
                 model.set({
-                    value: pad.buttons[index].value,
-                    pressed: pad.buttons[index].pressed
+                    value: pad!.buttons[index].value,
+                    pressed: pad!.buttons[index].pressed
                 });
                 model.save_changes();
             });
             this.get('axes').forEach(function(model: ControllerAxisModel, index: number) {
-                model.set('value', pad.axes[index]);
+                model.set('value', pad!.axes[index]);
                 model.save_changes();
             });
             window.requestAnimationFrame(this.update_loop.bind(this));
@@ -343,12 +343,12 @@ class ControllerView extends DOMWidgetView {
         super.initialize(parameters);
 
         this.button_views = new ViewList(this.add_button, null, this);
-        this.listenTo(this.model, 'change:buttons', function(model, value) {
+        this.listenTo(this.model, 'change:buttons', (model, value) => {
             this.button_views.update(value);
         });
 
         this.axis_views = new ViewList(this.add_axis, null, this);
-        this.listenTo(this.model, 'change:axes', function(model, value) {
+        this.listenTo(this.model, 'change:axes', (model, value) =>  {
             this.axis_views.update(value);
         });
 
@@ -391,7 +391,7 @@ class ControllerView extends DOMWidgetView {
             this.button_box.insertWidget(i, view.pWidget);
             dummy.dispose();
             return view;
-        }).catch(utils.reject('Could not add child button view to controller', true));
+        }).catch(utils.reject('Could not add child button view to controller'));
     }
 
     add_axis(model: ControllerAxisModel) {
@@ -406,7 +406,7 @@ class ControllerView extends DOMWidgetView {
             this.axis_box.insertWidget(i, view.pWidget);
             dummy.dispose();
             return view;
-        }).catch(utils.reject('Could not add child axis view to controller', true));
+        }).catch(utils.reject('Could not add child axis view to controller'));
     }
 
     remove() {

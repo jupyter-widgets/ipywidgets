@@ -15,11 +15,19 @@
  */
 export
 class ViewList<T> {
-    constructor(create_view: (model: any, index: any) => T | Promise<T>, remove_view: (view: T) => void, context: any) {
+    constructor(
+        create_view: (model: any, index: any) => T | Promise<T>,
+        remove_view: ((view: T) => void) | null,
+        context: any
+    ) {
         this.initialize(create_view, remove_view, context);
     }
 
-    initialize(create_view: (model: any, index: any) => T | Promise<T>, remove_view: (view: T) => void, context: any) {
+    initialize(
+        create_view: (model: any, index: any) => T | Promise<T>,
+        remove_view: ((view: T) => void) | null,
+        context: any
+    ) {
         this._handler_context = context || this;
         this._models = [];
         this.views = []; // list of promises for views

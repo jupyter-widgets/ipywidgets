@@ -56,29 +56,6 @@ function uuid(): string {
 }
 
 /**
- * Wrappable Error class
- *
- * The Error class doesn't actually act on `this`.  Instead it always
- * returns a new instance of Error.  Here we capture that instance so we
- * can apply it's properties to `this`.
- */
-export
-class WrappedError extends Error {
-    constructor(message: string, error: Error) {
-        super(message);
-        console.warn('WrappedError has been deprecated!');
-        // Keep a stack of the original error messages.
-        if (error instanceof WrappedError) {
-            this.error_stack = error.error_stack;
-        } else {
-            this.error_stack = [error];
-        }
-        this.error_stack.push(this);
-    }
-    error_stack: any[];
-}
-
-/**
  * A simple dictionary type.
  */
 export

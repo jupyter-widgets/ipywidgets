@@ -68,11 +68,11 @@ class DirectionalLinkModel extends CoreWidgetModel {
     cleanup() {
         // Stop listening to 'change' and 'destroy' events of the source and target
         if (this.sourceModel) {
-            this.stopListening(this.sourceModel, 'change:' + this.sourceAttr, null);
-            this.stopListening(this.sourceModel, 'destroy', null);
+            this.stopListening(this.sourceModel, 'change:' + this.sourceAttr, undefined);
+            this.stopListening(this.sourceModel, 'destroy', undefined);
         }
         if (this.targetModel) {
-            this.stopListening(this.targetModel, 'destroy', null);
+            this.stopListening(this.targetModel, 'destroy', undefined);
         }
     }
 
@@ -104,7 +104,7 @@ class LinkModel extends DirectionalLinkModel {
     cleanup() {
         super.cleanup();
         if (this.targetModel) {
-            this.stopListening(this.targetModel, 'change:' + this.targetAttr, null);
+            this.stopListening(this.targetModel, 'change:' + this.targetAttr, undefined);
         }
     }
 }

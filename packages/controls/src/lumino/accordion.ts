@@ -14,7 +14,7 @@ import {
 } from '@lumino/widgets';
 
 import {
-    Selection
+  Selection
 } from './currentselection';
 
 

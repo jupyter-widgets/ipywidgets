@@ -2,14 +2,12 @@
 // Distributed under the terms of the Modified BSD License.
 
 export {
-    uuid, WrappedError, resolvePromisesDict
-} from '@jupyter-widgets/base';
-
-import {
-    WrappedError
+    uuid, resolvePromisesDict
 } from '@jupyter-widgets/base';
 
 import * as _ from 'underscore';
+
+/*
  * Apply MathJax rendering to an element, and optionally set its text.
  *
  * If MathJax is not available, make no changes.
@@ -38,4 +36,15 @@ function escape_html(text: string): string {
     let esc  = document.createElement('div');
     esc.textContent = text;
     return esc.innerHTML;
+}
+
+/**
+ * Creates a wrappable Promise rejection function.
+ */
+export
+function reject(message: string) {
+    return function promiseRejection(error: Error) {
+        console.error(message);
+        return Promise.reject(error);
+    };
 }
