@@ -42,9 +42,11 @@ function escape_html(text: string): string {
  * Creates a wrappable Promise rejection function.
  */
 export
-function reject(message: string) {
+function reject(message: string, log: boolean) {
     return function promiseRejection(error: Error) {
-        console.error(message);
-        return Promise.reject(error);
+        if (log) {
+            console.error(new Error(message));
+        }
+        throw error;
     };
 }

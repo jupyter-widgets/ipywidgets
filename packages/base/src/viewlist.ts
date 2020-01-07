@@ -104,4 +104,3 @@ class ViewList<T> {
     _create_view: (model: any, index: any) => T | Promise<T>;
     _remove_view: (view: T) => void;
 }
-

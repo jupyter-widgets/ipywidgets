@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetView, ViewList, JupyterPhosphorWidget, WidgetModel
+    DOMWidgetView, ViewList, JupyterPhosphorWidget, WidgetModel, reject, WidgetView
 } from '@jupyter-widgets/base';
 
 import {
@@ -34,7 +34,6 @@ import {
 } from '@lumino/messaging';
 
 import * as _ from 'underscore';
-import * as utils from './utils';
 import $ from 'jquery';
 
 export
@@ -119,7 +118,7 @@ class AccordionView extends DOMWidgetView {
         this.$el = $(this.pWidget.node);
      }
 
-    initialize(parameters: any) {
+    initialize(parameters: WidgetView.InitializeParameters) {
         super.initialize(parameters);
         this.children_views = new ViewList(this.add_child_view, this.remove_child_view, this);
         this.listenTo(this.model, 'change:children', () => this.updateChildren());
@@ -206,7 +205,7 @@ class AccordionView extends DOMWidgetView {
             collapse.widget = widget;
             placeholder.dispose();
             return view;
-        }).catch(utils.reject('Could not add child view to box'));
+        }).catch(reject('Could not add child view to box', true));
     }
 
     remove() {
@@ -295,7 +294,7 @@ class TabView extends DOMWidgetView {
     /**
      * Public constructor.
      */
-    initialize(parameters: any) {
+    initialize(parameters: WidgetView.InitializeParameters) {
         super.initialize(parameters);
         this.childrenViews = new ViewList(
             this.addChildView,
@@ -367,7 +366,7 @@ class TabView extends DOMWidgetView {
             tabs.insertWidget(i + 1, widget);
             placeholder.dispose();
             return view;
-        }).catch(utils.reject('Could not add child view to box'));
+        }).catch(reject('Could not add child view to box', true));
     }
 
     /**

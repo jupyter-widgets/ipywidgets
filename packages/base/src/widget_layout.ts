@@ -142,7 +142,7 @@ class LayoutView extends WidgetView {
     /**
      * Handles when the value of overflow_x or overflow_y changes
      */
-    handleOverflowChange(trait: string, value: any) {
+    handleOverflowChange(trait: string, value: string | null) {
         // This differs from the default handleChange method
         // in that setting `overflow_x` or `overflow_y` to null
         // when `overflow` is null removes the attribute.

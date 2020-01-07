@@ -23,7 +23,7 @@ function difference(a: string[], b: string[]): string[] {
  * Compare two objects deeply to see if they are equal.
  */
 export
-function isEqual(a: any, b: any) {
+function isEqual(a: unknown, b: unknown) {
     return _isEqual(a, b);
 }
 
@@ -111,7 +111,7 @@ function put_buffers(state: JSONObject, buffer_paths: (string | number)[][], buf
     for (let i=0; i < buffer_paths.length; i++) {
         let buffer_path = buffer_paths[i];
          // say we want to set state[x][y][z] = buffers[i]
-        let obj: any= state;
+        let obj: any = state;
         // we first get obj = state[x][y]
         for (let j = 0; j < buffer_path.length - 1; j++) {
             obj = obj[buffer_path[j]];
@@ -123,7 +123,7 @@ function put_buffers(state: JSONObject, buffer_paths: (string | number)[][], buf
 
 export
 interface ISerializedState {
-    state: JSONValue;
+    state: JSONObject;
     buffers: ArrayBuffer[];
     buffer_paths: (string | number)[][];
 }
@@ -135,8 +135,8 @@ interface ISerializeable {
 }
 
 export
-function isSerializable(object: any): object is ISerializeable {
-    return object.toJSON;
+function isSerializable(object: unknown): object is ISerializeable {
+    return (typeof object === 'object' && object && 'toJSON' in object) ?? false;
 }
 
 
@@ -150,7 +150,7 @@ function isSerializable(object: any): object is ISerializeable {
  * and the buffers associated to those paths (.buffers).
  */
 export
-function remove_buffers(state: JSONObject | JSONArray | ISerializeable): ISerializedState {
+function remove_buffers(state: JSONObject | ISerializeable): ISerializedState {
     let buffers: ArrayBuffer[] = [];
     let buffer_paths: (string | number)[][] = [];
     // if we need to remove an object from a list, we need to clone that list, otherwise we may modify
@@ -221,7 +221,7 @@ function remove_buffers(state: JSONObject | JSONArray | ISerializeable): ISerial
         }
         return obj;
     }
-    let new_state = remove(state, []);
+    let new_state = remove(state, []) as JSONObject;
     return {state: new_state, buffers: buffers, buffer_paths: buffer_paths};
 }
 

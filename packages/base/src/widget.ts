@@ -54,7 +54,7 @@ import {
  */
 export
 function unpack_models(
-    value: any | Backbone.ObjectHash | string | (Backbone.ObjectHash | string)[],
+    value: any | Dict<unknown> | string | (Dict<unknown> | string)[],
     manager: managerBase.ManagerBase<any>
 ): Promise<WidgetModel | Dict<WidgetModel> | WidgetModel[] | any> {
     if (Array.isArray(value)) {
@@ -262,7 +262,7 @@ class WidgetModel extends Backbone.Model {
      *
      * This function is meant for internal use only. Values set here will not be propagated on a sync.
      */
-    set_state(state: any) {
+    set_state(state: Dict<unknown>) {
         this._state_lock = state;
         try {
             this.set(state);
@@ -279,7 +279,7 @@ class WidgetModel extends Backbone.Model {
      * If drop_default is truthy, attributes that are equal to their default
      * values are dropped.
      */
-    get_state(drop_defaults?: boolean) {
+    get_state(drop_defaults?: boolean): JSONObject {
         let fullState = this.attributes;
         if (drop_defaults) {
             // if defaults is a function, call it
@@ -453,7 +453,7 @@ class WidgetModel extends Backbone.Model {
      * primitive object that is a snapshot of the widget state that may have
      * binary array buffers.
      */
-    serialize(state: {[key: string]: any}) {
+    serialize(state: Dict<any>): JSONObject {
         const serializers = (this.constructor as typeof WidgetModel).serializers || {};
         for (const k of Object.keys(state)) {
             try {
@@ -548,9 +548,9 @@ class WidgetModel extends Backbone.Model {
      */
     static _deserialize_state(state: JSONObject, manager: managerBase.ManagerBase<any>) {
         let serializers = this.serializers;
-        let deserialized: {[key: string]: any};
+        let deserialized: Dict<any>;
         if (serializers) {
-            deserialized = {} as JSONObject;
+            deserialized = {};
             for (let k in state) {
                 if (serializers[k] && serializers[k].deserialize) {
                      deserialized[k] = (serializers[k].deserialize!)(state[k], manager);

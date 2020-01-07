@@ -16,6 +16,7 @@ import {
 import * as _ from 'underscore';
 import * as utils from './utils';
 import $ from 'jquery';
+import { WidgetView } from '@jupyter-widgets/base/src';
 
 export
 class SelectionModel extends CoreDescriptionModel {
@@ -98,7 +99,7 @@ class DropdownView extends SelectionView {
     /**
      * Public constructor.
      */
-    initialize(parameters: any) {
+    initialize(parameters: WidgetView.InitializeParameters) {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:_options_labels', () => this._updateOptions());
     }
@@ -187,7 +188,7 @@ class SelectView extends SelectionView {
     /**
      * Public constructor.
      */
-    initialize(parameters: any) {
+    initialize(parameters: WidgetView.InitializeParameters) {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:_options_labels', () => this._updateOptions());
         this.listenTo(this.model, 'change:index', (model, value, options) => this.updateSelection(options));
@@ -433,7 +434,7 @@ export
 
 export
 class ToggleButtonsView extends DescriptionView {
-    initialize(options: any) {
+    initialize(options: WidgetView.InitializeParameters) {
         this._css_state = {};
         super.initialize(options);
         this.listenTo(this.model, 'change:button_style', this.update_button_style);
@@ -795,7 +796,7 @@ class SelectMultipleView extends SelectView {
     /**
      * Public constructor.
      */
-    initialize(parameters: any) {
+    initialize(parameters: WidgetView.InitializeParameters) {
         super.initialize(parameters);
         this.listbox.multiple = true;
     }

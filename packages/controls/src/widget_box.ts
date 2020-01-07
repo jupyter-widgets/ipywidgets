@@ -2,7 +2,8 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetView, unpack_models, ViewList, JupyterPhosphorPanelWidget, WidgetModel
+    DOMWidgetView, unpack_models, ViewList, JupyterPhosphorPanelWidget,
+    reject, WidgetModel, WidgetView
 } from '@jupyter-widgets/base';
 
 import {
@@ -23,11 +24,6 @@ import {
 
 import * as _ from 'underscore';
 import $ from 'jquery';
-
-import {
-    reject
-} from './utils';
-
 
 export
 class BoxModel extends CoreDOMWidgetModel {
@@ -84,7 +80,7 @@ class BoxView extends DOMWidgetView {
         this.$el = $(this.pWidget.node);
     }
 
-    initialize(parameters: any) {
+    initialize(parameters: WidgetView.InitializeParameters) {
         super.initialize(parameters);
         this.children_views = new ViewList(this.add_child_model, null, this);
         this.listenTo(this.model, 'change:children', this.update_children);
@@ -130,7 +126,7 @@ class BoxView extends DOMWidgetView {
             this.pWidget.insertWidget(i, view.pWidget);
             dummy.dispose();
             return view;
-        }).catch(reject('Could not add child view to box'));
+        }).catch(reject('Could not add child view to box', true));
     }
 
     remove() {
@@ -154,7 +150,7 @@ class HBoxView extends BoxView {
     /**
      * Public constructor
      */
-    initialize(parameters: any) {
+    initialize(parameters: WidgetView.InitializeParameters) {
         super.initialize(parameters);
         this.pWidget.addClass('widget-hbox');
     }
@@ -165,7 +161,7 @@ class VBoxView extends BoxView {
     /**
      * Public constructor
      */
-    initialize(parameters: any) {
+    initialize(parameters: WidgetView.InitializeParameters) {
         super.initialize(parameters);
         this.pWidget.addClass('widget-vbox');
     }
@@ -176,7 +172,7 @@ class GridBoxView extends BoxView {
     /**
      * Public constructor
      */
-    initialize(parameters: any) {
+    initialize(parameters: WidgetView.InitializeParameters) {
         super.initialize(parameters);
         this.pWidget.addClass('widget-gridbox');
         // display needn't be set to flex and grid

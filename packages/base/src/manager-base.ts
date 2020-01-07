@@ -5,7 +5,7 @@ import * as utils from './utils';
 import * as services from '@jupyterlab/services';
 
 import {
-    JSONObject
+    JSONObject, PartialJSONObject
 } from '@lumino/coreutils';
 
 import {
@@ -15,6 +15,10 @@ import {
 import {
     IClassicComm, ICallbacks
 } from './services-shim';
+
+import {
+    ISerializedState
+} from './utils';
 
 import {
     PROTOCOL_VERSION
@@ -126,22 +130,29 @@ interface WidgetOptions {
 }
 
 export
-interface IState {
-    buffers?: Base64Buffers;
-    model_name: string | null;
-    model_module: string | null;
+interface IState extends PartialJSONObject {
+    buffers?: Base64Buffers[];
+    model_name: string;
+    model_module: string;
     model_module_version: string;
     state: JSONObject;
 }
 
 
 export
-interface IStateMap {
+interface IManagerStateMap extends PartialJSONObject {
     [key: string]: IState;
 }
 
 export
-interface Base64Buffers {
+interface IManagerState extends PartialJSONObject {
+    version_major: number;
+    version_minor: number;
+    state: IManagerStateMap;
+}
+
+export
+interface Base64Buffers extends PartialJSONObject {
     data: string;
     path: (string | number)[];
     encoding: 'base64';
@@ -238,7 +249,7 @@ export abstract class ManagerBase<T> {
             console.error(error);
             return Promise.reject(error);
         }
-        let data = (msg.content.data as any);
+        let data = msg.content.data as unknown as ISerializedState;
         let buffer_paths = data.buffer_paths || [];
         // Make sure the buffers are DataViews
         let buffers = (msg.buffers || []).map(b => {
@@ -250,9 +261,9 @@ export abstract class ManagerBase<T> {
         });
         utils.put_buffers(data.state, buffer_paths, buffers);
         return this.new_model({
-            model_name: data.state['_model_name'],
-            model_module: data.state['_model_module'],
-            model_module_version: data.state['_model_module_version'],
+            model_name: data.state['_model_name'] as string,
+            model_module: data.state['_model_module'] as string,
+            model_module_version: data.state['_model_module_version'] as string,
             comm: comm
         }, data.state).catch(utils.reject('Could not create a model.', true));
     }
@@ -263,7 +274,7 @@ export abstract class ManagerBase<T> {
      *                          required and additional options are available.
      * @param  serialized_state - serialized model attributes.
      */
-    new_widget(options: ModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
+    new_widget(options: ModelOptions, serialized_state: JSONObject = {}): Promise<WidgetModel> {
         let commPromise;
         // we check to make sure the view information is provided, to help catch
         // backwards incompatibility errors.
@@ -339,7 +350,7 @@ export abstract class ManagerBase<T> {
      *  (err) => {console.error(err)});
      *
      */
-    async new_model(options: ModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
+    async new_model(options: ModelOptions, serialized_state: JSONObject = {}): Promise<WidgetModel> {
         let model_id;
         if (options.model_id) {
             model_id = options.model_id;
@@ -355,7 +366,7 @@ export abstract class ManagerBase<T> {
         return await modelPromise;
     }
 
-    async _make_model(options: ModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
+    async _make_model(options: ModelOptions, serialized_state: JSONObject = {}): Promise<WidgetModel> {
         let model_id = options.model_id;
         let model_promise = this.loadClass(
             options.model_name,
@@ -407,7 +418,7 @@ export abstract class ManagerBase<T> {
      * @param options - The options for what state to return.
      * @returns Promise for a state dictionary
      */
-    get_state(options: IStateOptions = {}): Promise<any> {
+    get_state(options: IStateOptions = {}): Promise<IManagerState> {
         const modelPromises = Object.keys(this._models).map(id => this._models[id]);
         return Promise.all(modelPromises).then(models => {
             return serialize_state(models, options);
@@ -423,12 +434,12 @@ export abstract class ManagerBase<T> {
      * current manager state, and then attempts to redisplay the widgets in the
      * state.
      */
-    set_state(state: any): Promise<WidgetModel[]> {
+    set_state(state: IManagerState): Promise<WidgetModel[]> {
         // Check to make sure that it's the same version we are parsing.
         if (!(state.version_major && state.version_major <= 2)) {
             throw 'Unsupported widget state format';
         }
-        let models = state.state as any;
+        let models = state.state;
         // Recreate all the widget models for the given widget manager state.
         let all_models = this._get_comm_info().then(live_comms => {
             /* Note: It is currently safe to just loop over the models in any order,
@@ -448,9 +459,9 @@ export abstract class ManagerBase<T> {
                 let model = models[model_id];
                 let modelState = model.state;
                 if (model.buffers) {
-                    let bufferPaths = model.buffers.map((b: any) => b.path);
+                    let bufferPaths = model.buffers.map(b => b.path);
                     // put_buffers expects buffers to be DataViews
-                    let buffers = model.buffers.map((b: any) => new DataView(decode[b.encoding](b.data)));
+                    let buffers = model.buffers.map(b => new DataView(decode[b.encoding](b.data)));
                     utils.put_buffers(model.state, bufferPaths, buffers);
                 }
 
@@ -533,8 +544,8 @@ export abstract class ManagerBase<T> {
     protected abstract _create_comm(
         comm_target_name: string,
         model_id?: string,
-        data?: any,
-        metadata?: any,
+        data?: JSONObject,
+        metadata?: JSONObject,
         buffers?: ArrayBuffer[] | ArrayBufferView[]):
         Promise<IClassicComm>;
     protected abstract _get_comm_info(): Promise<{}>;
@@ -546,16 +557,16 @@ export abstract class ManagerBase<T> {
      *
      * @returns {*} A copy of the state, with its 'state' attribute filtered
      */
-    protected filterExistingModelState(serialized_state: any) {
-      let models = serialized_state.state as {[key: string]: any};
+    protected filterExistingModelState(serialized_state: IManagerState) {
+      let models = serialized_state.state;
       models = Object.keys(models)
           .filter((model_id) => {
               return !this._models[model_id];
           })
-          .reduce((res, model_id) => {
+          .reduce<IManagerStateMap>((res, model_id) => {
               res[model_id] = models[model_id];
               return res;
-          }, {} as {[key: string]: any});
+          }, {});
       return {...serialized_state, state: models};
     }
 
@@ -584,12 +595,12 @@ interface IStateOptions {
  * @jupyter-widgets/schema package.
  */
 export
-function serialize_state(models: WidgetModel[], options: IStateOptions = {}) {
-    const state: {[key: string]: any} = {};
+function serialize_state(models: WidgetModel[], options: IStateOptions = {}): IManagerState {
+    const state: IManagerStateMap = {};
     models.forEach(model => {
         const model_id = model.model_id;
         const split = utils.remove_buffers(model.serialize(model.get_state(options.drop_defaults)));
-        const buffers = split.buffers.map((buffer, index) => {
+        const buffers: Base64Buffers[] = split.buffers.map((buffer, index) => {
             return {
                 data: utils.bufferToBase64(buffer),
                 path: split.buffer_paths[index],

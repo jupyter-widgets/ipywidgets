@@ -6,7 +6,7 @@ import {
 } from './widget_core';
 
 import {
-    DOMWidgetView, unpack_models, ViewList, JupyterPhosphorPanelWidget
+    DOMWidgetView, unpack_models, ViewList, JupyterPhosphorPanelWidget, reject, WidgetView
 } from '@jupyter-widgets/base';
 
 import {
@@ -158,7 +158,7 @@ class ControllerModel extends CoreDOMWidgetModel {
         });
     }
 
-    initialize(attributes: any, options: any) {
+    initialize(attributes: Backbone.ObjectHash, options: any) {
         super.initialize(attributes, options);
         if (navigator.getGamepads === void 0) {
             // Checks if the browser supports the gamepad API
@@ -339,7 +339,7 @@ class ControllerView extends DOMWidgetView {
         this.$el = $(this.pWidget.node);
     }
 
-    initialize(parameters: any) {
+    initialize(parameters: WidgetView.InitializeParameters) {
         super.initialize(parameters);
 
         this.button_views = new ViewList(this.add_button, null, this);
@@ -391,7 +391,7 @@ class ControllerView extends DOMWidgetView {
             this.button_box.insertWidget(i, view.pWidget);
             dummy.dispose();
             return view;
-        }).catch(utils.reject('Could not add child button view to controller'));
+        }).catch(reject('Could not add child button view to controller', true));
     }
 
     add_axis(model: ControllerAxisModel) {
@@ -406,7 +406,7 @@ class ControllerView extends DOMWidgetView {
             this.axis_box.insertWidget(i, view.pWidget);
             dummy.dispose();
             return view;
-        }).catch(utils.reject('Could not add child axis view to controller'));
+        }).catch(reject('Could not add child axis view to controller', true));
     }
 
     remove() {

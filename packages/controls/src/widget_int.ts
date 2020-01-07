@@ -10,7 +10,7 @@ import {
 } from './widget_description';
 
 import {
-    DOMWidgetView
+    DOMWidgetView, WidgetView
 } from '@jupyter-widgets/base';
 
 import {
@@ -80,7 +80,7 @@ class IntSliderModel extends BoundedIntModel {
             disabled: false,
         });
     }
-    initialize(attributes: any, options: { model_id: string; comm: any; widget_manager: any; }) {
+    initialize(attributes: Backbone.ObjectHash, options: { model_id: string; comm: any; widget_manager: any; }) {
         super.initialize(attributes, options);
         this.on('change:readout_format', this.update_readout_format, this);
         this.update_readout_format();
@@ -691,7 +691,7 @@ class IntProgressModel extends BoundedIntModel {
 
 export
 class ProgressView extends DescriptionView {
-    initialize(parameters: any) {
+    initialize(parameters: WidgetView.InitializeParameters) {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:bar_style', this.update_bar_style);
         this.pWidget.addClass('jupyter-widgets');

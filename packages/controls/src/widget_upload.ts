@@ -29,7 +29,7 @@ export class FileUploadModel extends CoreDOMWidgetModel {
 
     static serializers = {
         ...CoreDOMWidgetModel.serializers,
-        data: { serialize: (buffers: any) => { return [...buffers]; } },
+        data: { serialize: (buffers: any[]) => { return [...buffers]; } },
     };
 }
 
