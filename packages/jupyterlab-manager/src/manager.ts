@@ -98,7 +98,7 @@ class BackboneViewWrapper extends Widget {
 
 
 /**
- * A widget manager that returns phosphor widgets.
+ * A widget manager that returns Lumino widgets.
  */
 export
 class WidgetManager extends ManagerBase<Widget> implements IDisposable {
@@ -305,7 +305,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   }
 
   /**
-   * Return a phosphor widget representing the view
+   * Return a Lumino widget representing the view
    */
   async display_view(msg: any, view: Backbone.View<Backbone.Model>, options: any): Promise<Widget> {
     return (view as any).pWidget || new BackboneViewWrapper(view);
