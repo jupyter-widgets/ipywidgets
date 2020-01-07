@@ -15,6 +15,13 @@ import {
 
 import * as _ from 'underscore';
 
+
+/**
+ * Class name for a combobox with an invlid value.
+ */
+const INVALID_VALUE_CLASS = 'jpwidgets-invalidComboValue';
+
+
 export
 class StringModel extends CoreDescriptionModel {
     defaults() {
@@ -64,6 +71,17 @@ class HTMLView extends DescriptionView {
         return super.update();
     }
 
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+	    this.content.focus();
+        } else if (content.do == 'blur') {
+	    this.content.blur();
+	}
+    };
+
     content: HTMLDivElement;
 }
 
@@ -102,6 +120,17 @@ class HTMLMathView extends DescriptionView {
         this.typeset(this.content);
         return super.update();
     }
+
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+	    this.content.focus();
+        } else if (content.do == 'blur') {
+	    this.content.blur();
+	}
+    };
 
     content: HTMLDivElement;
 }
@@ -171,14 +200,14 @@ class TextareaView extends DescriptionView {
         this.update(); // Set defaults.
 
         this.listenTo(this.model, 'change:placeholder',
-            function(model, value, options) {
+            (model, value, options) => {
                 this.update_placeholder(value);
         });
 
         this.update_placeholder();
     }
 
-    update_placeholder(value?) {
+    update_placeholder(value?: string) {
         value = value || this.model.get('placeholder');
         this.textbox.setAttribute('placeholder', value.toString());
     }
@@ -189,21 +218,40 @@ class TextareaView extends DescriptionView {
      * Called when the model is changed.  The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update(options?) {
-        if (options === undefined || options.updated_view != this) {
+    update(options?: any) {
+        if (options === undefined || options.updated_view !== this) {
             this.textbox.value = this.model.get('value');
-            this.textbox.rows = this.model.get('rows');
+            let rows = this.model.get('rows');
+            if (rows === null) {
+                rows = '';
+            }
+            this.textbox.setAttribute('rows', rows);
             this.textbox.disabled = this.model.get('disabled');
         }
+        this.updateTabindex();
         return super.update();
+    }
+
+    updateTabindex() {
+        if (!this.textbox) {
+            return; // we might be constructing the parent
+        }
+        let tabbable = this.model.get('tabbable');
+        if (tabbable === true) {
+            this.textbox.setAttribute('tabIndex', '0');
+        } else if (tabbable === false) {
+            this.textbox.setAttribute('tabIndex', '-1');
+        } else if (tabbable === null) {
+            this.textbox.removeAttribute('tabIndex');
+        }
     }
 
     events() {
         return {
-            'keydown input'  : 'handleKeyDown',
-            'keypress input' : 'handleKeypress',
-            'input textarea'  : 'handleChanging',
-            'change textarea' : 'handleChanged'
+            'keydown input': 'handleKeyDown',
+            'keypress input': 'handleKeypress',
+            'input textarea': 'handleChanging',
+            'change textarea': 'handleChanged'
         };
     }
 
@@ -212,7 +260,7 @@ class TextareaView extends DescriptionView {
      *
      * Stop propagation so the event isn't sent to the application.
      */
-    handleKeyDown(e) {
+    handleKeyDown(e: Event) {
         e.stopPropagation();
     }
 
@@ -221,14 +269,14 @@ class TextareaView extends DescriptionView {
      *
      * Stop propagation so the keypress isn't sent to the application.
      */
-    handleKeypress(e) {
+    handleKeypress(e: Event) {
         e.stopPropagation();
     }
 
     /**
      * Triggered on input change
      */
-    handleChanging(e) {
+    handleChanging(e: Event) {
         if (this.model.get('continuous_update')) {
             this.handleChanged(e);
         }
@@ -239,10 +287,23 @@ class TextareaView extends DescriptionView {
      *
      * @param e Event
      */
-    handleChanged(e) {
-        this.model.set('value', e.target.value, {updated_view: this});
+    handleChanged(e: Event) {
+        let target = e.target as HTMLTextAreaElement;
+        this.model.set('value', target.value, {updated_view: this});
         this.touch();
     }
+
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+	    this.textbox.focus();
+        } else if (content.do == 'blur') {
+	    this.textbox.blur();
+	}
+    };
+
     textbox: HTMLTextAreaElement;
 }
 
@@ -274,30 +335,54 @@ class TextView extends DescriptionView {
         this.el.appendChild(this.textbox);
 
         this.update(); // Set defaults.
-        this.listenTo(this.model, 'change:placeholder', function(model, value, options) {
+        this.listenTo(this.model, 'change:placeholder', (model, value, options) => {
             this.update_placeholder(value);
         });
+        this.listenTo(this.model, 'change:description_tooltip', this.update_title);
+        this.listenTo(this.model, 'change:description', this.update_title);
 
         this.update_placeholder();
+        this.update_title();
+        this.updateTabindex();
     }
 
-    update_placeholder(value?) {
-        if (!value) {
-            value = this.model.get('placeholder');
+    update_placeholder(value?: string) {
+        this.textbox.setAttribute('placeholder', value || this.model.get('placeholder'));
+    }
+
+    update_title() {
+        let title = this.model.get('description_tooltip');
+        if (!title) {
+            this.textbox.removeAttribute('title');
+        } else if (this.model.get('description').length === 0) {
+            this.textbox.setAttribute('title', title);
         }
-        this.textbox.setAttribute('placeholder', value);
     }
 
-    update(options?) {
+    updateTabindex() {
+        if (!this.textbox) {
+            return; // we might be constructing the parent
+        }
+        let tabbable = this.model.get('tabbable');
+        if (tabbable === true) {
+            this.textbox.setAttribute('tabIndex', '0');
+        } else if (tabbable === false) {
+            this.textbox.setAttribute('tabIndex', '-1');
+        } else if (tabbable === null) {
+            this.textbox.removeAttribute('tabIndex');
+        }
+    }
+
+    update(options?: any) {
         /**
          * Update the contents of this view
          *
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        if (options === undefined || options.updated_view != this) {
-            if (this.textbox.value != this.model.get('value')) {
-              this.textbox.value = this.model.get('value');
+        if (options === undefined || options.updated_view !== this) {
+            if (this.textbox.value !== this.model.get('value')) {
+                this.textbox.value = this.model.get('value');
             }
 
             this.textbox.disabled = this.model.get('disabled');
@@ -307,10 +392,10 @@ class TextView extends DescriptionView {
 
     events() {
         return {
-            'keydown input'  : 'handleKeyDown',
-            'keypress input' : 'handleKeypress',
-            'input input'  : 'handleChanging',
-            'change input' : 'handleChanged'
+            'keydown input': 'handleKeyDown',
+            'keypress input': 'handleKeypress',
+            'input input': 'handleChanging',
+            'change input': 'handleChanged'
         };
     }
 
@@ -319,17 +404,17 @@ class TextView extends DescriptionView {
      *
      * Stop propagation so the keypress isn't sent to the application.
      */
-    handleKeyDown(e) {
+    handleKeyDown(e: Event) {
         e.stopPropagation();
     }
 
     /**
      * Handles text submission
      */
-    handleKeypress(e) {
+    handleKeypress(e: KeyboardEvent) {
         e.stopPropagation();
         // The submit message is deprecated in widgets 7
-        if (e.keyCode == 13) { // Return key
+        if (e.keyCode === 13) { // Return key
             this.send({event: 'submit'});
         }
     }
@@ -340,7 +425,7 @@ class TextView extends DescriptionView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    handleChanging(e) {
+    handleChanging(e: Event) {
         if (this.model.get('continuous_update')) {
             this.handleChanged(e);
         }
@@ -352,11 +437,22 @@ class TextView extends DescriptionView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    handleChanged(e) {
-        this.model.set('value', e.target.value, {updated_view: this});
+    handleChanged(e: Event) {
+        let target = e.target as HTMLInputElement;
+        this.model.set('value', target.value, {updated_view: this});
         this.touch();
     }
 
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+	    this.textbox.focus();
+        } else if (content.do == 'blur') {
+	    this.textbox.blur();
+	}
+    };
 
     protected readonly inputType: string = 'text';
     textbox: HTMLInputElement;
@@ -373,7 +469,115 @@ class PasswordModel extends TextModel {
 }
 
 export
-class PasswordView extends TextView
-{
+class PasswordView extends TextView {
     protected readonly inputType: string = 'password';
+}
+
+
+/**
+ * Combobox widget model class.
+ */
+export
+class ComboboxModel extends TextModel {
+    defaults() {
+        return {...super.defaults(),
+            _model_name: 'ComboboxModel',
+            _view_name: 'ComboboxView',
+            options: [],
+            ensure_options: false,
+        };
+    }
+}
+
+
+/**
+ * Combobox widget view class.
+ */
+export
+class ComboboxView extends TextView {
+    render() {
+        this.datalist = document.createElement('datalist');
+        this.datalist.id = uuid();
+
+        super.render();
+
+        this.textbox.setAttribute('list', this.datalist.id);
+        this.el.appendChild(this.datalist);
+    }
+
+    update(options?: any) {
+        super.update(options);
+        if (!this.datalist) {
+            return;
+        }
+
+        const valid = this.isValid(this.model.get('value'));
+        this.highlightValidState(valid);
+
+        // Check if we need to update options
+        if ((options !== undefined && options.updated_view) || (
+            !this.model.hasChanged('options') &&
+            !this.isInitialRender
+        )) {
+            // Value update only, keep current options
+            return;
+        }
+
+        this.isInitialRender = false;
+
+        const opts = this.model.get('options') as string[];
+        const optLines = opts.map(o => {
+            return `<option value="${o}"></option>`;
+        });
+        this.datalist.innerHTML = optLines.join('\n');
+    }
+
+    isValid(value: string): boolean {
+        if (true === this.model.get('ensure_option')) {
+            const options = this.model.get('options') as string[];
+            if (options.indexOf(value) === -1) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    handleChanging(e: KeyboardEvent) {
+        // Override to validate value
+        const target = e.target as HTMLInputElement;
+        const valid = this.isValid(target.value);
+        this.highlightValidState(valid);
+        if (valid) {
+            super.handleChanging(e);
+        }
+    }
+
+    handleChanged(e: KeyboardEvent) {
+        // Override to validate value
+        const target = e.target as HTMLInputElement;
+        const valid = this.isValid(target.value);
+        this.highlightValidState(valid);
+        if (valid) {
+            super.handleChanged(e);
+        }
+    }
+
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+	    this.textbox.focus();
+        } else if (content.do == 'blur') {
+	    this.textbox.blur();
+	}
+    };
+
+    highlightValidState(valid: boolean): void {
+        this.textbox.classList.toggle(INVALID_VALUE_CLASS, !valid);
+    }
+
+    datalist: HTMLDataListElement | undefined;
+
+    isInitialRender = true;
 }

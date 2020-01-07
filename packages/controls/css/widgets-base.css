@@ -8,6 +8,7 @@
  * have been defined.
  */
 
+@import "./phosphor.css";
 
 :root {
     --jp-widgets-color: var(--jp-content-font-color1);
@@ -94,6 +95,13 @@
     overflow: auto;
 }
 
+.widget-gridbox {
+    box-sizing: border-box;
+    display: grid;
+    margin: 0;
+    overflow: auto;
+}
+
 .widget-hbox {
     flex-direction: row;
 }
@@ -126,6 +134,7 @@
     background-color: var(--jp-layout-color2);
     border-color: var(--jp-border-color2);
     border: none;
+    user-select: none;
 }
 
 .jupyter-button i.fa {
@@ -250,9 +259,9 @@
     background-color: var(--jp-error-color0);
 }
 
-/* Widget Button*/
+/* Widget Button, Widget Toggle Button, Widget Upload */
 
-.widget-button, .widget-toggle-button {
+.widget-button, .widget-toggle-button, .widget-upload {
     width: var(--jp-widgets-inline-width-short);
 }
 
@@ -407,26 +416,33 @@
     width: var(--jp-widgets-inline-width);
 }
 
-.widget-text input[type="text"], .widget-text input[type="number"]{
+.widget-text input[type="text"], .widget-text input[type="number"], .widget-text input[type="password"] {
     height: var(--jp-widgets-inline-height);
     line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-text input[type="text"]:disabled, .widget-text input[type="number"]:disabled, .widget-textarea textarea:disabled {
+.widget-text input[type="text"]:disabled, .widget-text input[type="number"]:disabled, .widget-text input[type="password"]:disabled, .widget-textarea textarea:disabled {
     opacity: var(--jp-widgets-disabled-opacity);
 }
 
-.widget-text input[type="text"], .widget-text input[type="number"], .widget-textarea textarea {
+.widget-text input[type="text"], .widget-text input[type="number"], .widget-text input[type="password"], .widget-textarea textarea {
     box-sizing: border-box;
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     background-color: var(--jp-widgets-input-background-color);
     color: var(--jp-widgets-input-color);
     font-size: var(--jp-widgets-font-size);
-    padding: var(--jp-widgets-input-padding) calc( var(--jp-widgets-input-padding) *  2 );
     flex-grow: 1;
     min-width: 0; /* This makes it possible for the flexbox to shrink this input */
     flex-shrink: 1;
     outline: none !important;
+}
+    
+.widget-text input[type="text"], .widget-text input[type="password"], .widget-textarea textarea {
+    padding: var(--jp-widgets-input-padding) calc( var(--jp-widgets-input-padding) *  2);
+}
+
+.widget-text input[type="number"] {
+    padding: var(--jp-widgets-input-padding) 0 var(--jp-widgets-input-padding) calc(var(--jp-widgets-input-padding) *  2);
 }
 
 .widget-textarea textarea {
@@ -656,6 +672,7 @@
 }
 
 .widget-dropdown > select {
+    padding-right: 20px;
     border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
     border-radius: 0;
     height: inherit;
@@ -692,11 +709,6 @@
     text-shadow: 0 0 0 #000;
 }
 
-.widget-dropdown > select > option:checked {
-    color: var(--jp-ui-font-color0);
-    background: var(--jp-layout-color0) repeat url("data:image/gif;base64,R0lGO...");
-}
-
 /* Select and SelectMultiple */
 
 .widget-select {
@@ -727,11 +739,6 @@
 
 .widget-select > select:focus {
     border-color: var(--jp-widgets-input-focus-border-color);
-}
-
-.widget-select > select > option:checked {
-    color: var(--jp-ui-font-color0);
-    background: var(--jp-layout-color0) repeat url("data:image/gif;base64,R0lGO...");
 }
 
 .wiget-select > select > option {
@@ -897,20 +904,22 @@
 
 /* Tab Widget */
 
-.jupyter-widgets .p-TabBar {
+.jupyter-widgets.widget-tab {
+    display: flex;
+    flex-direction: column;
+}
+
+.jupyter-widgets.widget-tab > .p-TabBar {
     /* Necessary so that a tab can be shifted down to overlay the border of the box below. */
     overflow-x: visible;
     overflow-y: visible;
 }
 
-.jupyter-widgets.widget-tab .p-TabBar.p-mod-horizontal > .p-TabBar-content {
+.jupyter-widgets.widget-tab > .p-TabBar > .p-TabBar-content {
+    /* Make sure that the tab grows from bottom up */
     align-items: flex-end;
-    margin-bottom: 0;
-}
-
-.jupyter-widgets.widget-tab {
-    display: flex;
-    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
 }
 
 .jupyter-widgets.widget-tab > .widget-tab-contents {
@@ -925,15 +934,12 @@
     overflow: auto;
 }
 
-.jupyter-widgets.widget-tab .widget-tab-contents .widget-tab-child.p-mod-hidden {
-    display: none !important;
-}
-
-.jupyter-widgets.widget-tab .widget-tab-bar.p-TabBar {
+.jupyter-widgets.widget-tab > .p-TabBar {
     font: var(--jp-widgets-font-size) Helvetica, Arial, sans-serif;
+    min-height: calc(var(--jp-widgets-horizontal-tab-height) + var(--jp-border-width));
 }
 
-.jupyter-widgets.widget-tab .p-TabBar-tab {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab {
     flex: 0 1 var(--jp-widgets-horizontal-tab-width);
     min-width: 35px;
     min-height: calc(var(--jp-widgets-horizontal-tab-height) + var(--jp-border-width));
@@ -947,15 +953,16 @@
     position: relative;
 }
 
-.jupyter-widgets.widget-tab .p-TabBar-tab.p-mod-current {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current {
     color: var(--jp-ui-font-color0);
     /* We want the background to match the tab content background */
     background: var(--jp-layout-color1);
     min-height: calc(var(--jp-widgets-horizontal-tab-height) + 2 * var(--jp-border-width));
     transform: translateY(var(--jp-border-width));
+    overflow: visible;
 }
 
-.jupyter-widgets.widget-tab .p-TabBar-tab.p-mod-current:before {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current:before {
     position: absolute;
     top: calc(-1 * var(--jp-border-width));
     left: calc(-1 * var(--jp-border-width));
@@ -965,27 +972,27 @@
     background: var(--jp-brand-color1);
 }
 
-.jupyter-widgets.widget-tab .p-TabBar-tab:first-child {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab:first-child {
     margin-left: 0;
 }
 
-.jupyter-widgets.widget-tab .p-TabBar-tab:hover:not(.p-mod-current) {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab:hover:not(.p-mod-current) {
     background: var(--jp-layout-color1);
     color: var(--jp-ui-font-color1);
 }
 
-.jupyter-widgets.widget-tab.p-mod-closable > .p-TabBar-tabCloseIcon {
+.jupyter-widgets.widget-tab > .p-TabBar .p-mod-closable > .p-TabBar-tabCloseIcon {
     margin-left: 4px;
 }
 
-.jupyter-widgets.widget-tab.p-mod-closable > .p-TabBar-tabCloseIcon:before {
+.jupyter-widgets.widget-tab > .p-TabBar .p-mod-closable > .p-TabBar-tabCloseIcon:before {
     font-family: FontAwesome;
     content: '\f00d'; /* close */
 }
 
-.jupyter-widgets.widget-tab .p-TabBar-tabIcon,
-.jupyter-widgets.widget-tab .p-TabBar-tabLabel,
-.jupyter-widgets.widget-tab .p-TabBar-tabCloseIcon {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabIcon,
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabLabel,
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabCloseIcon {
     line-height: var(--jp-widgets-horizontal-tab-height);
 }
 
@@ -1074,4 +1081,12 @@
     line-height: var(--jp-widgets-inline-height);
     /* Make it possible to have absolutely-positioned elements in the html */
     position: relative;
+}
+
+
+/* Image widget  */
+
+.widget-image {
+    max-width: 100%;
+    height: auto;
 }

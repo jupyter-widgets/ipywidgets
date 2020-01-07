@@ -27,7 +27,7 @@ class DescriptionStyleModel extends StyleModel {
         description_width: {
             selector: '.widget-label',
             attribute: 'width',
-            default: null
+            default: null as any
         },
     };
 }
@@ -43,6 +43,7 @@ class DescriptionModel extends DOMWidgetModel {
             _view_module_version: JUPYTER_CONTROLS_VERSION,
             _model_module_version: JUPYTER_CONTROLS_VERSION,
             description: '',
+            description_tooltip: null,
         };
     }
 }
@@ -56,15 +57,23 @@ class DescriptionView extends DOMWidgetView {
         this.label.style.display = 'none';
 
         this.listenTo(this.model, 'change:description', this.updateDescription);
+        this.listenTo(this.model, 'change:description_tooltip', this.updateDescription);
+        this.listenTo(this.model, 'change:tabbable', this.updateTabindex);
         this.updateDescription();
+        this.updateTabindex();
     }
 
-    typeset(element, text?){
+    typeset(element: HTMLElement, text?: string){
         this.displayed.then(() => typeset(element, text));
     }
 
     updateDescription() {
         let description = this.model.get('description');
+        let description_tooltip = this.model.get('description_tooltip');
+        if (description_tooltip === null) {
+            description_tooltip = description;
+        }
+
         if (description.length === 0) {
             this.label.style.display = 'none';
         } else {
@@ -72,7 +81,7 @@ class DescriptionView extends DOMWidgetView {
             this.typeset(this.label);
             this.label.style.display = '';
         }
-        this.label.title = description;
+        this.label.title = description_tooltip;
     }
 
     label: HTMLLabelElement;
@@ -84,7 +93,7 @@ class DescriptionView extends DOMWidgetView {
  * Use DescriptionModel instead.
  */
 export
-class LabeledDOMWidgetModel extends DescriptionModel {};
+class LabeledDOMWidgetModel extends DescriptionModel {}
 
 /**
  * For backwards compatibility with jupyter-js-widgets 2.x.
@@ -92,4 +101,4 @@ class LabeledDOMWidgetModel extends DescriptionModel {};
  * Use DescriptionView instead.
  */
 export
-class LabeledDOMWidgetView extends DescriptionView {};
+class LabeledDOMWidgetView extends DescriptionView {}

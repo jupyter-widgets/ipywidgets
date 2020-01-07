@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetView, ViewList, JupyterPhosphorWidget
+    DOMWidgetView, ViewList, JupyterPhosphorWidget, WidgetModel
 } from '@jupyter-widgets/base';
 
 import {
@@ -11,7 +11,7 @@ import {
 
 import {
     TabBar
-} from '@phosphor/widgets';
+} from '@lumino/widgets';
 
 import {
     TabPanel
@@ -22,20 +22,20 @@ import {
 } from './phosphor/accordion';
 
 import {
-    Panel, Widget
-} from '@phosphor/widgets';
+    Widget
+} from '@lumino/widgets';
 
 import {
     each, ArrayExt
-} from '@phosphor/algorithm';
+} from '@lumino/algorithm';
 
 import {
     Message, MessageLoop
-} from '@phosphor/messaging';
+} from '@lumino/messaging';
 
 import * as _ from 'underscore';
 import * as utils from './utils';
-import * as $ from 'jquery';
+import $ from 'jquery';
 
 export
 class SelectionContainerModel extends BoxModel {
@@ -119,8 +119,8 @@ class AccordionView extends DOMWidgetView {
         this.$el = $(this.pWidget.node);
      }
 
-    initialize(parameters){
-        super.initialize(parameters)
+    initialize(parameters: any) {
+        super.initialize(parameters);
         this.children_views = new ViewList(this.add_child_view, this.remove_child_view, this);
         this.listenTo(this.model, 'change:children', () => this.updateChildren());
         this.listenTo(this.model, 'change:selected_index', () => this.update_selected_index());
@@ -185,7 +185,7 @@ class AccordionView extends DOMWidgetView {
     /**
      * Called when a child is removed from children list.
      */
-    remove_child_view(view) {
+    remove_child_view(view: DOMWidgetView) {
         this.pWidget.removeWidget(view.pWidget);
         view.remove();
     }
@@ -193,11 +193,11 @@ class AccordionView extends DOMWidgetView {
     /**
      * Called when a child is added to children list.
      */
-    add_child_view(model, index) {
+    add_child_view(model: WidgetModel, index: number) {
         // Placeholder widget to keep our position in the tab panel while we create the view.
         let accordion = this.pWidget;
         let placeholder = new Widget();
-        placeholder.title.label = this.model.get('_titles')[index] || '';;
+        placeholder.title.label = this.model.get('_titles')[index] || '';
         accordion.addWidget(placeholder);
         return this.create_child_view(model).then((view: DOMWidgetView) => {
             let widget = view.pWidget;
@@ -295,11 +295,11 @@ class TabView extends DOMWidgetView {
     /**
      * Public constructor.
      */
-    initialize(parameters) {
+    initialize(parameters: any) {
         super.initialize(parameters);
         this.childrenViews = new ViewList(
             this.addChildView,
-            (view) => {view.remove()},
+            (view) => {view.remove();},
             this
         );
         this.listenTo(this.model, 'change:children', () => this.updateTabs());
@@ -348,7 +348,7 @@ class TabView extends DOMWidgetView {
     /**
      * Called when a child is added to children list.
      */
-    addChildView(model, index) {
+    addChildView(model: WidgetModel, index: number) {
         // Placeholder widget to keep our position in the tab panel while we create the view.
         let label = this.model.get('_titles')[index] || '';
         let tabs = this.pWidget;
@@ -358,7 +358,7 @@ class TabView extends DOMWidgetView {
         return this.create_child_view(model).then((view: DOMWidgetView) => {
             let widget = view.pWidget;
             widget.title.label = placeholder.title.label;
-            widget.title.closable = true;
+            widget.title.closable = false;
 
             let i = ArrayExt.firstIndexOf(tabs.widgets, placeholder);
             // insert after placeholder so that if placholder is selected, the
@@ -388,7 +388,7 @@ class TabView extends DOMWidgetView {
      * Updates the tab page titles.
      */
     updateTitles() {
-        var titles = this.model.get('_titles') || {};
+        let titles = this.model.get('_titles') || {};
         each(this.pWidget.widgets, (widget, i) => {
             widget.title.label = titles[i] || '';
         });

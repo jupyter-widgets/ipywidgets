@@ -5,13 +5,15 @@
 import array
 import datetime as dt
 
+import pytest
+
 from unittest import TestCase
-from traitlets import HasTraits
+from traitlets import HasTraits, Int, TraitError
 from traitlets.tests.test_traitlets import TraitTestBase
 
 from ipywidgets import Color, NumberFormat
 from ipywidgets.widgets.widget import _remove_buffers, _put_buffers
-from ipywidgets.widgets.trait_types import date_serialization
+from ipywidgets.widgets.trait_types import date_serialization, TypedTuple
 
 
 class NumberFormatTrait(HasTraits):
@@ -35,8 +37,43 @@ class ColorTrait(HasTraits):
 class TestColor(TraitTestBase):
     obj = ColorTrait()
 
-    _good_values = ["blue", "#AA0", "#FFFFFF"]
-    _bad_values = ["vanilla", "blues"]
+
+    _good_values = [
+        "blue", # valid color name
+        "#AA0", # single digit hex
+        "#FFFFFF", # double digit hex
+        "transparent", # special color name
+        '#aaaa', # single digit hex with alpha
+        '#ffffffff',  # double digit hex with alpha
+        'rgb(0, 0, 0)', # rgb
+        'rgb( 20,70,50 )', # rgb with spaces
+        'rgba(10,10,10, 0.5)', # rgba with float alpha
+        'rgba(255, 255, 255, 255)', # out of bounds alpha (spec says clamp to 1)
+        'hsl(0.0, .0, 0)', # hsl
+        'hsl( 0.5,0.3,0 )', # hsl with spaces
+        'hsla(10,10,10, 0.5)', # rgba with float alpha
+    ]
+    _bad_values = [
+        "vanilla", "blues",  # Invald color names
+        1.2, 0.0,  # Should fail with float input
+        0, 1, 2,  # Should fail with int input
+        'rgb(0.4, 512, -40)',
+        'hsl(0.4, 512, -40)',
+        'rgba(0, 0, 0)',
+        'hsla(0, 0, 0)',
+        None,
+    ]
+
+
+class ColorTraitWithNone(HasTraits):
+    value = Color("black", allow_none=True)
+
+
+class TestColorWithNone(TraitTestBase):
+    obj = ColorTraitWithNone()
+
+    _good_values = TestColor._good_values + [None]
+    _bad_values = list(filter(lambda v: v is not None, TestColor._bad_values))
 
 
 class TestDateSerialization(TestCase):
@@ -129,3 +166,80 @@ class TestBuffers(TestCase):
         # we know that tuples get converted to list, so help the comparison by changing the tuple to a list
         state_before['z'] = list(state_before['z'])
         self.assertEqual(state_before, state)
+
+
+
+def test_typed_tuple_uninitialized_ints():
+    class TestCase(HasTraits):
+        value = TypedTuple(trait=Int())
+
+    obj = TestCase()
+    assert obj.value == ()
+
+
+def test_typed_tuple_init_ints():
+    class TestCase(HasTraits):
+        value = TypedTuple(trait=Int())
+
+    obj = TestCase(value=(1, 2, 3))
+    assert obj.value == (1, 2, 3)
+
+
+def test_typed_tuple_set_ints():
+    class TestCase(HasTraits):
+        value = TypedTuple(trait=Int())
+
+    obj = TestCase()
+    obj.value = (1, 2, 3)
+    assert obj.value == (1, 2, 3)
+
+
+def test_typed_tuple_default():
+    class TestCase(HasTraits):
+        value = TypedTuple(default_value=(1, 2, 3))
+
+    obj = TestCase()
+    assert obj.value == (1, 2, 3)
+
+
+def test_typed_tuple_mixed_default():
+    class TestCase(HasTraits):
+        value = TypedTuple(default_value=(1, 2, 'foobar'))
+
+    obj = TestCase()
+    assert obj.value == (1, 2, 'foobar')
+
+
+def test_typed_tuple_bad_default():
+    class TestCase(HasTraits):
+        value = TypedTuple(trait=Int(), default_value=(1, 2, 'foobar'))
+
+
+    with pytest.raises(TraitError):
+        obj = TestCase()
+        a = obj.value   # a read might be needed to trigger default validation
+
+
+def test_typed_tuple_bad_set():
+    class TestCase(HasTraits):
+        value = TypedTuple(trait=Int())
+
+    obj = TestCase()
+    with pytest.raises(TraitError):
+        obj.value = (1, 2, 'foobar')
+
+
+def test_typed_tuple_positional_trait():
+    class TestCase(HasTraits):
+        value = TypedTuple(Int())
+
+    obj = TestCase(value=(1, 2, 3))
+    assert obj.value == (1, 2, 3)
+
+
+def test_typed_tuple_positional_default():
+    class TestCase(HasTraits):
+        value = TypedTuple((1, 2, 3))
+
+    obj = TestCase()
+    assert obj.value == (1, 2, 3)

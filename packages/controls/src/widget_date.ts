@@ -26,24 +26,24 @@ function serialize_date(value: Date) {
             date: value.getUTCDate()
         };
     }
-};
+}
 
 export interface SerializedDate {
     /**
      * Full year
      */
-    year: number,
+    year: number;
 
     /**
      * Zero-based month (0 means January, 11 means December)
      */
-    month: number,
+    month: number;
 
     /**
      * Day of month
      */
-    date: number
-};
+    date: number;
+}
 
 export
 function deserialize_date(value: SerializedDate) {
@@ -55,7 +55,7 @@ function deserialize_date(value: SerializedDate) {
         date.setUTCHours(0, 0, 0, 0);
         return date;
     }
-};
+}
 
 export
 class DatePickerModel extends CoreDescriptionModel {
@@ -65,7 +65,7 @@ class DatePickerModel extends CoreDescriptionModel {
             serialize: serialize_date,
             deserialize: deserialize_date
         }
-    }
+    };
 
     defaults() {
         return _.extend(super.defaults(), {
@@ -101,17 +101,22 @@ class DatePickerView extends DescriptionView {
      * Called when the model is changed. The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update(options?) {
-        if (options === undefined || options.updated_view != this) {
+    update(options?: any) {
+        if (options === undefined || options.updated_view !== this) {
             this._datepicker.disabled = this.model.get('disabled');
         }
         return super.update();
     }
 
     events(): {[e: string]: string} {
+        // Typescript doesn't understand that these functions are called, so we
+        // specifically use them here so it knows they are being used.
+        void this._picker_change;
+        void this._picker_focusout;
         return {
             'change [type="date"]': '_picker_change',
-        }
+            'focusout [type="date"]': '_picker_focusout'
+        };
     }
 
     private _update_value() {
@@ -122,6 +127,13 @@ class DatePickerView extends DescriptionView {
     private _picker_change() {
         if (!this._datepicker.validity.badInput) {
             this.model.set('value', this._datepicker.valueAsDate);
+            this.touch();
+        }
+    }
+
+    private _picker_focusout() {
+        if (this._datepicker.validity.badInput) {
+            this.model.set('value', null);
             this.touch();
         }
     }

@@ -9,7 +9,7 @@ class DummyComm(Comm):
     kernel = 'Truthy'
 
     def __init__(self, *args, **kwargs):
-        super(DummyComm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.messages = []
 
     def open(self, *args, **kwargs):
@@ -27,10 +27,10 @@ undefined = object()
 def setup_test_comm():
     _widget_attrs['_comm_default'] = getattr(Widget, '_comm_default', undefined)
     Widget._comm_default = lambda self: DummyComm()
-    _widget_attrs['_ipython_display_'] = Widget._ipython_display_
+    _widget_attrs['_repr_mimebundle_'] = Widget._repr_mimebundle_
     def raise_not_implemented(*args, **kwargs):
         raise NotImplementedError()
-    Widget._ipython_display_ = raise_not_implemented
+    Widget._repr_mimebundle_ = raise_not_implemented
 
 def teardown_test_comm():
     for attr, value in _widget_attrs.items():

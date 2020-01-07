@@ -35,19 +35,23 @@ OTHER DEALINGS IN THE SOFTWARE.
 import * as Backbone from 'backbone';
 
 // Caches a local reference to `Element.prototype` for faster access.
-var ElementProto: Element = Element.prototype;//: typeof Element = (typeof Element !== 'undefined' && Element.prototype) || {};
+const ElementProto: any = Element.prototype; // : typeof Element = (typeof Element !== 'undefined' && Element.prototype) || {};
 
 // Find the right `Element#matches` for IE>=9 and modern browsers.
-var matchesSelector = ElementProto.matches ||
-    (ElementProto as any)['webkitMatchesSelector'] ||
-    (ElementProto as any)['mozMatchesSelector'] ||
-    (ElementProto as any)['msMatchesSelector'] ||
-    (ElementProto as any)['oMatchesSelector'] ||
-    function matches(selector) {
-        var matches = (this.document || this.ownerDocument).querySelectorAll(selector),
-        i = matches.length;
-        while (--i >= 0 && matches.item(i) !== this) {}
+let matchesSelector = ElementProto.matches ||
+    ElementProto['webkitMatchesSelector'] ||
+    ElementProto['mozMatchesSelector'] ||
+    ElementProto['msMatchesSelector'] ||
+    ElementProto['oMatchesSelector'] ||
+    function matches(selector: string) {
+        /* tslint:disable:no-invalid-this */
+        let matches = (this.document || this.ownerDocument).querySelectorAll(selector);
+        let i = matches.length;
+        while (--i >= 0 && matches.item(i) !== this) {
+          continue;
+        }
         return i > -1;
+        /* tslint:enable:no-invalid-this */
     };
 
 interface IDOMEvent {
@@ -74,7 +78,7 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
     // Set a hash of attributes to the view's `el`. We use the "prop" version
     // if available, falling back to `setAttribute` for the catch-all.
     _setAttributes(attrs: Backbone.ObjectHash) {
-      for (var attr in attrs) {
+      for (let attr in attrs) {
         attr in this.el ? this.el[attr] = attrs[attr] : this.el.setAttribute(attr, attrs[attr]);
       }
     }
@@ -108,12 +112,12 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
           this._domEvents = [];
       }
 
-      var root = this.el;
-      var handler = selector ? function (e: any) {
-        var node: any = e.target || e.srcElement;
-        for (; node && node != root; node = (node as any).parentNode) {
+      let root = this.el;
+      let handler = selector ? function (e: Event) {
+        let node = (e.target as HTMLElement) || (e.srcElement as HTMLElement);
+        for (; node && node !== root; node = node.parentNode as HTMLElement) {
           if (matchesSelector.call(node, selector)) {
-            e.delegateTarget = node;
+            (e as any).delegateTarget = node;
             if (listener.handleEvent) {
                 return listener.handleEvent(e);
             } else {
@@ -139,16 +143,18 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
       }
 
       if (this.el && this._domEvents) {
-        var handlers = this._domEvents.slice();
-        var i = handlers.length;
+        let handlers = this._domEvents.slice();
+        let i = handlers.length;
         while (i--) {
-          var item = handlers[i];
+          let item = handlers[i];
 
-          var match = item.eventName === eventName &&
+          let match = item.eventName === eventName &&
               (listener ? item.listener === listener : true) &&
               (selector ? item.selector === selector : true);
 
-          if (!match) continue;
+          if (!match) {
+            continue;
+          }
 
           this.el.removeEventListener(item.eventName, item.handler, false);
           this._domEvents.splice(i, 1);
@@ -160,10 +166,11 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
     // Remove all events created with `delegate` from `el`
     undelegateEvents() {
       if (this.el && this._domEvents) {
-        for (var i = 0, len = this._domEvents.length; i < len; i++) {
-          var item = this._domEvents[i];
+        let len = this._domEvents.length;
+        for (let i = 0; i < len; i++) {
+          let item = this._domEvents[i];
           this.el.removeEventListener(item.eventName, item.handler, false);
-        };
+        }
         this._domEvents.length = 0;
       }
       return this;

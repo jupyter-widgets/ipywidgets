@@ -6,35 +6,26 @@
 Represents an enumeration using a widget.
 """
 
-from collections import Mapping, Iterable
-try:
-    from itertools import izip
-except ImportError:  #python3.x
-    izip = zip
+from collections.abc import Iterable, Mapping
 from itertools import chain
 
-from .widget_description import DescriptionWidget
+from .widget_description import DescriptionWidget, DescriptionStyle
 from .valuewidget import ValueWidget
 from .widget_core import CoreWidget
 from .widget_style import Style
-from .trait_types import InstanceDict
+from .trait_types import InstanceDict, TypedTuple
 from .widget import register, widget_serialization
+from .docutils import doc_subst
 from traitlets import (Unicode, Bool, Int, Any, Dict, TraitError, CaselessStrEnum,
-                       Tuple, List, Union, observe, validate)
-from ipython_genutils.py3compat import unicode_type
+                       Tuple, Union, observe, validate)
 
 _doc_snippets = {}
 _doc_snippets['selection_params'] = """
-    options: list or dict
+    options: list
         The options for the dropdown. This can either be a list of values, e.g.
-        ``['Galileo', 'Brahe', 'Hubble']`` or ``[0, 1, 2]``, a list of
+        ``['Galileo', 'Brahe', 'Hubble']`` or ``[0, 1, 2]``, or a list of
         (label, value) pairs, e.g.
-        ``[('Galileo', 0), ('Brahe', 1), ('Hubble', 2)]``,
-        or a dictionary mapping the labels to the values, e.g. ``{'Galileo': 0,
-        'Brahe': 1, 'Hubble': 2}``. The labels are the strings that will be
-        displayed in the UI, representing the actual Python choices, and should
-        be unique. If this is a dictionary, the order in which they are
-        displayed is not guaranteed.
+        ``[('Galileo', 0), ('Brahe', 1), ('Hubble', 2)]``.
 
     index: int
         The index of the current selection.
@@ -106,39 +97,30 @@ _doc_snippets['slider_params'] = """
 """
 
 
-def _doc_subst(cls):
-    """ Substitute format strings in class docstring """
-    # Strip the snippets to avoid trailing new lines and whitespace
-    stripped_snippets = {
-        key: snippet.strip() for (key, snippet) in _doc_snippets.items()
-    }
-    cls.__doc__ = cls.__doc__.format(**stripped_snippets)
-    return cls
-
-
 def _make_options(x):
     """Standardize the options tuple format.
 
     The returned tuple should be in the format (('label', value), ('label', value), ...).
 
     The input can be
-    * a Mapping of labels to values
     * an iterable of (label, value) pairs
     * an iterable of values, and labels will be generated
     """
     # Check if x is a mapping of labels to values
     if isinstance(x, Mapping):
-        return tuple((unicode_type(k), v) for k, v in x.items())
+        import warnings
+        warnings.warn("Support for mapping types has been deprecated and will be dropped in a future release.", DeprecationWarning)
+        return tuple((str(k), v) for k, v in x.items())
 
     # only iterate once through the options.
     xlist = tuple(x)
 
     # Check if x is an iterable of (label, value) pairs
     if all((isinstance(i, (list, tuple)) and len(i) == 2) for i in xlist):
-        return tuple((unicode_type(k), v) for k, v in xlist)
+        return tuple((str(k), v) for k, v in xlist)
 
     # Otherwise, assume x is an iterable of values
-    return tuple((unicode_type(i), i) for i in xlist)
+    return tuple((str(i), i) for i in xlist)
 
 def findvalue(array, value, compare = lambda x, y: x == y):
     "A function that uses the compare function to return a value from the list."
@@ -175,8 +157,8 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
 
     _options_full = None
 
-    # This being read-only means that it cannot be changed from the frontend!
-    _options_labels = Tuple(read_only=True, help="The labels for the options.").tag(sync=True)
+    # This being read-only means that it cannot be changed by the user.
+    _options_labels = TypedTuple(trait=Unicode(), read_only=True, help="The labels for the options.").tag(sync=True)
 
     disabled = Bool(help="Enable or disable user changes").tag(sync=True)
 
@@ -196,7 +178,7 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
             kwargs['index'] = 0 if nonempty else None
             kwargs['label'], kwargs['value'] = options[0] if nonempty else (None, None)
 
-        super(_Selection, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._initializing_traits_ = False
 
     @validate('options')
@@ -215,7 +197,16 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
         self.set_trait('_options_labels', tuple(i[0] for i in options))
         self._options_values = tuple(i[1] for i in options)
         if self._initializing_traits_ is not True:
-            self.index = 0 if len(options) > 0 else None
+            if len(options) > 0:
+                if self.index == 0:
+                    # Explicitly trigger the observers to pick up the new value and
+                    # label. Just setting the value would not trigger the observers
+                    # since traitlets thinks the value hasn't changed.
+                    self._notify_trait('index', 0, 0)
+                else:
+                    self.index = 0
+            else:
+                self.index = None
 
     @validate('index')
     def _validate_index(self, proposal):
@@ -244,7 +235,12 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
 
     @observe('value')
     def _propagate_value(self, change):
-        index = self._options_values.index(change.new) if change.new is not None else None
+        if change.new is None:
+            index = None
+        elif self.index is not None and self._options_values[self.index] == change.new:
+            index = self.index
+        else:
+            index = self._options_values.index(change.new)
         if self.index != index:
             self.index = index
 
@@ -256,12 +252,17 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
 
     @observe('label')
     def _propagate_label(self, change):
-        index = self._options_labels.index(change.new) if change.new is not None else None
+        if change.new is None:
+            index = None
+        elif self.index is not None and self._options_labels[self.index] == change.new:
+            index = self.index
+        else:
+            index = self._options_labels.index(change.new)
         if self.index != index:
             self.index = index
 
     def _repr_keys(self):
-        keys = super(_Selection, self)._repr_keys()
+        keys = super()._repr_keys()
         # Include options manually, as it isn't marked as synced:
         for key in sorted(chain(keys, ('options',))):
             if key == 'index' and self.index == 0:
@@ -285,9 +286,9 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
     one may set equals=np.array_equal.
     """
 
-    value = Tuple(help="Selected values")
-    label = Tuple(help="Selected labels")
-    index = Tuple(help="Selected indices").tag(sync=True)
+    value = TypedTuple(trait=Any(), help="Selected values")
+    label = TypedTuple(trait=Unicode(), help="Selected labels")
+    index = TypedTuple(trait=Int(), help="Selected indices").tag(sync=True)
 
     options = Any((),
     help="""Iterable of values, (label, value) pairs, or a mapping of {label: value} pairs that the user can select.
@@ -298,7 +299,7 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
     _options_full = None
 
     # This being read-only means that it cannot be changed from the frontend!
-    _options_labels = Tuple(read_only=True, help="The labels for the options.").tag(sync=True)
+    _options_labels = TypedTuple(trait=Unicode(), read_only=True, help="The labels for the options.").tag(sync=True)
 
     disabled = Bool(help="Enable or disable user changes").tag(sync=True)
 
@@ -313,7 +314,7 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
         self.set_trait('_options_labels', tuple(i[0] for i in options))
         self._options_values = tuple(i[1] for i in options)
 
-        super(_MultipleSelection, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._initializing_traits_ = False
 
     @validate('options')
@@ -379,13 +380,13 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
             self.index = index
 
     def _repr_keys(self):
-        keys = super(_MultipleSelection, self)._repr_keys()
+        keys = super()._repr_keys()
         # Include options manually, as it isn't marked as synced:
-        for key in sorted(chain(keys, ('options',))):
-            yield key
+        yield from sorted(chain(keys, ('options',)))
+
 
 @register
-class ToggleButtonsStyle(Style, CoreWidget):
+class ToggleButtonsStyle(DescriptionStyle, CoreWidget):
     """Button style widget.
 
     Parameters
@@ -393,12 +394,18 @@ class ToggleButtonsStyle(Style, CoreWidget):
     button_width: str
         The width of each button. This should be a valid CSS
         width, e.g. '10px' or '5em'.
+
+    font_weight: str
+        The text font weight of each button, This should be a valid CSS font
+        weight unit, for example 'bold' or '600'
     """
     _model_name = Unicode('ToggleButtonsStyleModel').tag(sync=True)
     button_width = Unicode(help="The width of each button.").tag(sync=True)
+    font_weight = Unicode(help="Text font weight of each button.").tag(sync=True)
+
 
 @register
-@_doc_subst
+@doc_subst(_doc_snippets)
 class ToggleButtons(_Selection):
     """Group of toggle buttons that represent an enumeration.
 
@@ -427,8 +434,8 @@ class ToggleButtons(_Selection):
     _view_name = Unicode('ToggleButtonsView').tag(sync=True)
     _model_name = Unicode('ToggleButtonsModel').tag(sync=True)
 
-    tooltips = List(Unicode(), help="Tooltips for each button.").tag(sync=True)
-    icons = List(Unicode(), help="Icons names for each button (FontAwesome names without the fa- prefix).").tag(sync=True)
+    tooltips = TypedTuple(Unicode(), help="Tooltips for each button.").tag(sync=True)
+    icons = TypedTuple(Unicode(), help="Icons names for each button (FontAwesome names without the fa- prefix).").tag(sync=True)
     style = InstanceDict(ToggleButtonsStyle).tag(sync=True, **widget_serialization)
 
     button_style = CaselessStrEnum(
@@ -437,7 +444,7 @@ class ToggleButtons(_Selection):
 
 
 @register
-@_doc_subst
+@doc_subst(_doc_snippets)
 class Dropdown(_Selection):
     """Allows you to select a single item from a dropdown.
 
@@ -450,7 +457,7 @@ class Dropdown(_Selection):
 
 
 @register
-@_doc_subst
+@doc_subst(_doc_snippets)
 class RadioButtons(_Selection):
     """Group of radio buttons that represent an enumeration.
 
@@ -465,7 +472,7 @@ class RadioButtons(_Selection):
 
 
 @register
-@_doc_subst
+@doc_subst(_doc_snippets)
 class Select(_Selection):
     """
     Listbox that only allows one item to be selected at any given time.
@@ -482,7 +489,7 @@ class Select(_Selection):
     rows = Int(5, help="The number of rows to display.").tag(sync=True)
 
 @register
-@_doc_subst
+@doc_subst(_doc_snippets)
 class SelectMultiple(_MultipleSelection):
     """
     Listbox that allows many items to be selected at any given time.
@@ -511,7 +518,7 @@ class _SelectionNonempty(_Selection):
     def __init__(self, *args, **kwargs):
         if len(kwargs.get('options', ())) == 0:
             raise TraitError('options must be nonempty')
-        super(_SelectionNonempty, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @validate('options')
     def _validate_options(self, proposal):
@@ -522,13 +529,20 @@ class _SelectionNonempty(_Selection):
             raise TraitError("Option list must be nonempty")
         return proposal.value
 
+    @validate('index')
+    def _validate_index(self, proposal):
+        if 0 <= proposal.value < len(self._options_labels):
+            return proposal.value
+        else:
+            raise TraitError('Invalid selection: index out of bounds')
+
 class _MultipleSelectionNonempty(_MultipleSelection):
     """Selection that is guaranteed to have an option available."""
 
     def __init__(self, *args, **kwargs):
         if len(kwargs.get('options', ())) == 0:
             raise TraitError('options must be nonempty')
-        super(_MultipleSelectionNonempty, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @validate('options')
     def _validate_options(self, proposal):
@@ -541,7 +555,7 @@ class _MultipleSelectionNonempty(_MultipleSelection):
         return proposal.value
 
 @register
-@_doc_subst
+@doc_subst(_doc_snippets)
 class SelectionSlider(_SelectionNonempty):
     """
     Slider to select a single item from a list or dictionary.
@@ -557,18 +571,18 @@ class SelectionSlider(_SelectionNonempty):
 
     orientation = CaselessStrEnum(
         values=['horizontal', 'vertical'], default_value='horizontal',
-        allow_none=False, help="Vertical or horizontal.").tag(sync=True)
+        help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True,
         help="Display the current selected label next to the slider").tag(sync=True)
     continuous_update = Bool(True,
         help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
 
 @register
-@_doc_subst
+@doc_subst(_doc_snippets)
 class SelectionRangeSlider(_MultipleSelectionNonempty):
     """
     Slider to select multiple contiguous items from a list.
-    
+
     The index, value, and label attributes contain the start and end of
     the selection range, not all items in the range.
 
@@ -606,7 +620,7 @@ class SelectionRangeSlider(_MultipleSelectionNonempty):
 
     orientation = CaselessStrEnum(
         values=['horizontal', 'vertical'], default_value='horizontal',
-        allow_none=False, help="Vertical or horizontal.").tag(sync=True)
+        help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True,
         help="Display the current selected label next to the slider").tag(sync=True)
     continuous_update = Bool(True,

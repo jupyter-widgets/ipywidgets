@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 
 import os
 import subprocess
 import sys
-import recommonmark.parser
 
 
 # -- path -------------------------------------------------------
@@ -25,9 +23,9 @@ def bash(filename):
 
 # -- source files and parsers -----------------------------------
 
-source_suffix = ['.rst', '.md', '.ipynb']
-source_parsers = {
-    '.md': recommonmark.parser.CommonMarkParser,
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
 }
 
 
@@ -39,9 +37,9 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
     'nbsphinx',
-    'jupyter_sphinx.embed_widgets',
+    'jupyter_sphinx.execute',
     'IPython.sphinxext.ipython_console_highlighting',
-    'jupyter_alabaster_theme',
+    'recommonmark',
 ]
 
 intersphinx_mapping = {
@@ -52,6 +50,9 @@ intersphinx_mapping = {
 }
 
 nbsphinx_allow_errors = True   # exception ipstruct.py ipython_genutils
+nbsphinx_execute = 'always'
+# Disable including require.js because it is also included by jupyter_sphinx:
+nbsphinx_requirejs_path = ''
 
 # -- General information -------
 
@@ -69,13 +70,27 @@ copyright = '2017 Project Jupyter'
 author = 'Jupyter Team'
 
 language = None
-exclude_patterns = ['_build', '**.ipynb_checkpoints', 'examples/Imag*', 'examples/Index.ipynb']
+exclude_patterns = [
+    '**.ipynb_checkpoints',
+    'examples.md',
+    'examples/Beat Frequencies.ipynb',
+    'examples/Controller.ipynb',
+    'examples/Exploring Graphs.ipynb',
+    'examples/Export As (nbconvert).ipynb',
+    'examples/Factoring.ipynb',
+    'examples/Imag*',
+    'examples/Index.ipynb',
+    'examples/Lorenz Differential Equations.ipynb',
+    'examples/Media widgets.ipynb',
+    'examples/Variable Inspector.ipynb',
+    'examples/Widget Alignment.ipynb',
+]
 pygments_style = 'sphinx'
 todo_include_todos = False
 
 
 # -- html --------------------------
-html_theme = 'jupyter_alabaster_theme'
+html_theme = 'sphinx_rtd_theme'
 
 # html_static_path = ['_static']
 htmlhelp_basename = 'ipywidgetsdoc'

@@ -10,11 +10,11 @@ import {
 
 import * as chai from 'chai';
 
-import * as chaiAsPromised from 'chai-as-promised';
+import chaiAsPromised from 'chai-as-promised';
 chai.use(chaiAsPromised);
 
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
+import sinonChai from 'sinon-chai';
 chai.use(sinonChai);
 
 
@@ -23,7 +23,7 @@ chai.use(sinonChai);
 // test ManagerBase by creating a simple derived class
 // and testing it.
 
-describe("ManagerBase", function() {
+describe('ManagerBase', function() {
     beforeEach(function() {
         this.managerBase = new DummyManager();
         this.modelOptions = {
@@ -48,10 +48,10 @@ describe("ManagerBase", function() {
         let manager = this.managerBase;
         sinon.spy(manager, 'create_view');
         sinon.spy(manager, 'display_view');
-        let msg = {msg:true}
-        let viewOptions = {viewOptions:true}
+        let msg = {msg: true};
+        let viewOptions = {viewOptions: true};
         let model = await manager.new_model(this.modelOptions);
-        await manager.display_model(msg, model, viewOptions)
+        await manager.display_model(msg, model, viewOptions);
         expect(manager.create_view.calledWith(model, viewOptions)).to.be.true;
         expect(manager.display_view.calledWith(msg)).to.be.true;
         expect(manager.display_view.getCall(0).args[2]).to.deep.equal(viewOptions);
@@ -63,9 +63,9 @@ describe("ManagerBase", function() {
         expect(this.managerBase.setViewOptions()).to.deep.equal({});
       });
       it('returns the passed options', function() {
-        let options = {a: 1}
+        let options = {a: 1};
         expect(this.managerBase.setViewOptions(options)).to.deep.equal(options);
-      })
+      });
     });
 
     describe('create_view', function() {
@@ -93,9 +93,9 @@ describe("ManagerBase", function() {
         let manager = this.managerBase;
         let model = await manager.new_model(this.modelOptions);
         let view = await manager.create_view(model);
-        //TODO: when we upgrade sinon-chai to handle chai 4.0,
+        // TODO: when we upgrade sinon-chai to handle chai 4.0,
         // uncomment the following and the test statement
-        //sinon.spy(view, 'remove');
+        // sinon.spy(view, 'remove');
         await model.close();
         // expect(view.removed.calledOnce).to.be.true;
         expect(view._removed).to.equal(1);
@@ -105,7 +105,7 @@ describe("ManagerBase", function() {
         let manager = this.managerBase;
         sinon.spy(manager, 'setViewOptions');
         let model = await manager.new_model(this.modelOptions);
-        let options = {a: 1}
+        let options = {a: 1};
         let view = await manager.create_view(model, options);
         expect(manager.setViewOptions.calledWith(options)).to.be.true;
         expect(view.options).to.deep.equal(options);
@@ -133,14 +133,14 @@ describe("ManagerBase", function() {
 
     describe('get_model', function() {
       it('returns a promise to the model', async function() {
-        let manager = this.managerBase
+        let manager = this.managerBase;
         let model = await manager.new_model(this.modelOptions);
         expect(await manager.get_model(model.model_id)).to.be.equal(model);
       });
 
       it('returns undefined when model is not registered', function() {
         expect(this.managerBase.get_model('not-defined')).to.be.undefined;
-      })
+      });
     });
 
     describe('handle_comm_open', function() {
@@ -161,7 +161,7 @@ describe("ManagerBase", function() {
           metadata: {
             version: '2.0.0'
           }
-        })
+        });
         expect(model.comm).to.equal(comm);
         expect(model.get('value')).to.equal(50);
       });
@@ -180,7 +180,7 @@ describe("ManagerBase", function() {
               }
             }
           },
-        })
+        });
         expect(model).to.be.rejected;
       });
 
@@ -201,7 +201,7 @@ describe("ManagerBase", function() {
           metadata: {
             version: '1.0'
           }
-        })
+        });
         expect(model).to.be.rejected;
       });
 
@@ -215,18 +215,18 @@ describe("ManagerBase", function() {
                 _model_name: 'BinaryWidget',
                 _model_module: 'test-widgets',
                 _model_module_version: '1.0.0',
-                array: {dtype: "uint8"}
+                array: {dtype: 'uint8'}
               },
-              buffer_paths: [["array", "buffer"]]
+              buffer_paths: [['array', 'buffer']]
             }
           },
-          buffers: [new DataView((new Uint8Array([1,2,3])).buffer)],
+          buffers: [new DataView((new Uint8Array([1, 2, 3])).buffer)],
           metadata: {
             version: '2.0.0'
           }
         });
         expect(model.comm).to.equal(comm);
-        expect(model.get('array')).to.deep.equal(new Uint8Array([1,2,3]));
+        expect(model.get('array')).to.deep.equal(new Uint8Array([1, 2, 3]));
       });
     });
 
@@ -244,7 +244,7 @@ describe("ManagerBase", function() {
             comm: comm
         };
         let manager = this.managerBase;
-        let model = await manager.new_widget(spec);
+        await manager.new_widget(spec);
         expect((comm.send as any).calledOnce).to.be.true;
       });
 
@@ -342,14 +342,14 @@ describe("ManagerBase", function() {
             comm: comm
         };
         let manager = this.managerBase;
-        let model = await manager.new_model(spec);
+        await manager.new_model(spec);
         expect((comm.send as any).notCalled).to.be.true;
       });
 
       it('calls loadClass to retrieve model class', async function() {
         let manager = this.managerBase;
-        var spy = sinon.spy(manager, "loadClass");
-        let model = await manager.new_model(this.modelOptions);
+        sinon.spy(manager, 'loadClass');
+        await manager.new_model(this.modelOptions);
         expect(manager.loadClass.calledOnce).to.be.true;
       });
 
@@ -362,13 +362,12 @@ describe("ManagerBase", function() {
             model_id: 'u-u-i-d'
         }, {array: {
           dtype: 'uint8',
-          buffer: new DataView((new Uint8Array([1,2,3]).buffer))
+          buffer: new DataView((new Uint8Array([1, 2, 3]).buffer))
         }});
-        expect(model.get('array')).to.deep.equal(new Uint8Array([1,2,3]));
+        expect(model.get('array')).to.deep.equal(new Uint8Array([1, 2, 3]));
       });
 
       it('sets up a comm close handler to delete the model', async function() {
-        var callback = sinon.spy();
         let comm = new MockComm();
         let spec = {
             model_name: 'TestWidget',
@@ -414,78 +413,77 @@ describe("ManagerBase", function() {
     describe('get_state', function() {
       it('returns a valid schema', async function() {
         let manager = this.managerBase;
-        let model = await manager.new_model(this.modelOptions);
+        await manager.new_model(this.modelOptions);
         let state = await manager.get_state();
-        {
-      }
+
         let expectedState = {
-          "version_major":2,
-          "version_minor":0,
-          "state":{
-            "u-u-i-d":{
-              "model_name":"TestWidget",
-              "model_module":"test-widgets",
-              "model_module_version":"1.0.0",
-              "state":{
-                "_model_module":"test-widgets",
-                "_model_name":"TestWidget",
-                "_model_module_version":"1.0.0",
-                "_view_module":"test-widgets",
-                "_view_name":"TestWidgetView",
-                "_view_module_version":"1.0.0",
-                "_view_count":null,
+          'version_major': 2,
+          'version_minor': 0,
+          'state': {
+            'u-u-i-d': {
+              'model_name': 'TestWidget',
+              'model_module': 'test-widgets',
+              'model_module_version': '1.0.0',
+              'state': {
+                '_model_module': 'test-widgets',
+                '_model_name': 'TestWidget',
+                '_model_module_version': '1.0.0',
+                '_view_module': 'test-widgets',
+                '_view_name': 'TestWidgetView',
+                '_view_module_version': '1.0.0',
+                '_view_count': null as any,
         }}}};
         expect(state).to.deep.equal(expectedState);
       });
 
       it('handles the drop_defaults option', async function() {
         let manager = this.managerBase;
-        let model = await manager.new_model(this.modelOptions,
+        await manager.new_model(this.modelOptions,
           {value: 50});
         let state = await manager.get_state({drop_defaults: true});
         let expectedState = {
-          "version_major":2,
-          "version_minor":0,
-          "state":{
-            "u-u-i-d":{
-              "model_name":"TestWidget",
-              "model_module":"test-widgets",
-              "model_module_version":"1.0.0",
-              "state":{
-                "value":50
+          'version_major': 2,
+          'version_minor': 0,
+          'state': {
+            'u-u-i-d': {
+              'model_name': 'TestWidget',
+              'model_module': 'test-widgets',
+              'model_module_version': '1.0.0',
+              'state': {
+                'value': 50
         }}}};
         expect(state).to.deep.equal(expectedState);
       });
 
       it('encodes binary buffers to base64 using custom serializers', async function() {
         let manager = this.managerBase;
-        let model = await manager.new_model({
+        await manager.new_model({
             model_name: 'BinaryWidget',
             model_module: 'test-widgets',
             model_module_version: '1.0.0',
             model_id: 'u-u-i-d'
         }, {array: {
           dtype: 'uint8',
-          buffer: new DataView((new Uint8Array([1,2,3]).buffer))
+          buffer: new DataView((new Uint8Array([1, 2, 3]).buffer))
         }});
         let state = await manager.get_state({drop_defaults: true});
         let expectedState = {
-          "version_major":2,
-          "version_minor":0,
-          "state":{
-            "u-u-i-d":{
-              "model_name":"BinaryWidget",
-              "model_module":"test-widgets",
-              "model_module_version":"1.0.0",
-              "state":{
-                "array":{"dtype":"uint8"}
+          'version_major': 2,
+          'version_minor': 0,
+          'state': {
+            'u-u-i-d': {
+              'model_name': 'BinaryWidget',
+              'model_module': 'test-widgets',
+              'model_module_version': '1.0.0',
+              'state': {
+                'array': {'dtype': 'uint8'}
               },
-              "buffers":[{
-                "data":"AQID",
-                "path":["array","buffer"],
-                "encoding":"base64"
+              'buffers': [{
+                'data': 'AQID',
+                'path': ['array', 'buffer'],
+                'encoding': 'base64'
               }]
-        }}}
+        }}};
         expect(state).to.deep.equal(expectedState);
       });
     });
@@ -493,50 +491,50 @@ describe("ManagerBase", function() {
     describe('set_state', function() {
       it('handles binary base64 buffers', async function() {
         let state = {
-          "version_major":2,
-          "version_minor":0,
-          "state":{
-            "u-u-i-d":{
-              "model_name":"BinaryWidget",
-              "model_module":"test-widgets",
-              "model_module_version":"1.0.0",
-              "state":{
-                "array":{"dtype":"uint8"}
+          'version_major': 2,
+          'version_minor': 0,
+          'state': {
+            'u-u-i-d': {
+              'model_name': 'BinaryWidget',
+              'model_module': 'test-widgets',
+              'model_module_version': '1.0.0',
+              'state': {
+                'array': {'dtype': 'uint8'}
               },
-              "buffers":[{
-                "data":"AQID",
-                "path":["array","buffer"],
-                "encoding":"base64"
+              'buffers': [{
+                'data': 'AQID',
+                'path': ['array', 'buffer'],
+                'encoding': 'base64'
               }]
         }}};
         let manager = this.managerBase;
         await manager.set_state(state);
         let model = await manager.get_model('u-u-i-d');
-        expect(model.get('array')).to.deep.equal(new Uint8Array([1,2,3]));
+        expect(model.get('array')).to.deep.equal(new Uint8Array([1, 2, 3]));
       });
 
       it('handles binary hex buffers', async function() {
         let state = {
-          "version_major":2,
-          "version_minor":0,
-          "state":{
-            "u-u-i-d":{
-              "model_name":"BinaryWidget",
-              "model_module":"test-widgets",
-              "model_module_version":"1.0.0",
-              "state":{
-                "array":{"dtype":"uint8"}
+          'version_major': 2,
+          'version_minor': 0,
+          'state': {
+            'u-u-i-d': {
+              'model_name': 'BinaryWidget',
+              'model_module': 'test-widgets',
+              'model_module_version': '1.0.0',
+              'state': {
+                'array': {'dtype': 'uint8'}
               },
-              "buffers":[{
-                "data":"010203",
-                "path":["array","buffer"],
-                "encoding":"hex"
+              'buffers': [{
+                'data': '010203',
+                'path': ['array', 'buffer'],
+                'encoding': 'hex'
               }]
         }}};
         let manager = this.managerBase;
         await manager.set_state(state);
         let model = await manager.get_model('u-u-i-d');
-        expect(model.get('array')).to.deep.equal(new Uint8Array([1,2,3]));
+        expect(model.get('array')).to.deep.equal(new Uint8Array([1, 2, 3]));
       });
     });
 });

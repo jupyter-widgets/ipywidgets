@@ -3,23 +3,17 @@
 
 """Test interact and interactive."""
 
-from __future__ import print_function
-
-try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch
+from unittest.mock import patch
 
 import os
-import nose.tools as nt
 from collections import OrderedDict
+import pytest
 
 import ipywidgets as widgets
 
 from traitlets import TraitError
 from ipywidgets import (interact, interact_manual, interactive,
     interaction, Output)
-from ipython_genutils.py3compat import annotate
 
 #-----------------------------------------------------------------------------
 # Utility stuff
@@ -31,6 +25,7 @@ def f(**kwargs):
     pass
 
 displayed = []
+@pytest.fixture()
 def clear_display():
     global displayed
     displayed = []
@@ -46,19 +41,16 @@ def check_widget(w, **d):
     """Check a single widget against a dict"""
     for attr, expected in d.items():
         if attr == 'cls':
-            nt.assert_is(w.__class__, expected)
+            assert w.__class__ is expected
         else:
             value = getattr(w, attr)
-            nt.assert_equal(value, expected,
-                "%s.%s = %r != %r" % (w.__class__.__name__, attr, value, expected)
-            )
+            assert value == expected, "{}.{} = {!r} != {!r}".format(w.__class__.__name__, attr, value, expected)
+
             # For numeric values, the types should match too
             if isinstance(value, (int, float)):
                 tv = type(value)
                 te = type(expected)
-                nt.assert_is(tv, te,
-                    "type(%s.%s) = %r != %r" % (w.__class__.__name__, attr, tv, te)
-                )
+                assert tv is te, "type({}.{}) = {!r} != {!r}".format(w.__class__.__name__, attr, tv, te)
 
 def check_widgets(container, **to_check):
     """Check that widgets are created as expected"""
@@ -69,12 +61,12 @@ def check_widgets(container, **to_check):
             widgets[w.description] = w
 
     for key, d in to_check.items():
-        nt.assert_in(key, widgets)
+        assert key in widgets
         check_widget(widgets[key], **d)
 
 
 def test_single_value_string():
-    a = u'hello'
+    a = 'hello'
     c = interactive(f, a=a)
     w = c.children[0]
     check_widget(w,
@@ -128,7 +120,7 @@ def test_single_value_int():
             expected_min = 3*a
             expected_max = -a
         c = interactive(f, a=a)
-        nt.assert_equal(len(c.children), 2)
+        assert len(c.children) == 2
         w = c.children[0]
         check_widget(w,
             cls=widgets.IntSlider,
@@ -144,7 +136,7 @@ def test_list_str():
     values = ['hello', 'there', 'guy']
     first = values[0]
     c = interactive(f, lis=values)
-    nt.assert_equal(len(c.children), 2)
+    assert len(c.children) == 2
     d = dict(
         cls=widgets.Dropdown,
         value=first,
@@ -158,7 +150,7 @@ def test_list_int():
     values = [3, 1, 2]
     first = values[0]
     c = interactive(f, lis=values)
-    nt.assert_equal(len(c.children), 2)
+    assert len(c.children) == 2
     d = dict(
         cls=widgets.Dropdown,
         value=first,
@@ -172,7 +164,7 @@ def test_list_tuple():
     values = [(3, 300), (1, 100), (2, 200)]
     first = values[0][1]
     c = interactive(f, lis=values)
-    nt.assert_equal(len(c.children), 2)
+    assert len(c.children) == 2
     d = dict(
         cls=widgets.Dropdown,
         value=first,
@@ -186,7 +178,7 @@ def test_list_tuple_invalid():
     for bad in [
         (),
     ]:
-        with nt.assert_raises(ValueError):
+        with pytest.raises(ValueError):
             print(bad) # because there is no custom message in assert_raises
             c = interactive(f, tup=bad)
 
@@ -214,7 +206,7 @@ def test_ordereddict():
     first = items[0][1]
     values = OrderedDict(items)
     c = interactive(f, lis=values)
-    nt.assert_equal(len(c.children), 2)
+    assert len(c.children) == 2
     d = dict(
         cls=widgets.Dropdown,
         value=first,
@@ -231,7 +223,7 @@ def test_iterable():
         yield 2
     first = next(yield_values())
     c = interactive(f, lis=yield_values())
-    nt.assert_equal(len(c.children), 2)
+    assert len(c.children) == 2
     d = dict(
         cls=widgets.Dropdown,
         value=first,
@@ -245,7 +237,7 @@ def test_iterable_tuple():
     values = [(3, 300), (1, 100), (2, 200)]
     first = values[0][1]
     c = interactive(f, lis=iter(values))
-    nt.assert_equal(len(c.children), 2)
+    assert len(c.children) == 2
     d = dict(
         cls=widgets.Dropdown,
         value=first,
@@ -256,7 +248,8 @@ def test_iterable_tuple():
     check_widgets(c, lis=d)
 
 def test_mapping():
-    from collections import Mapping, OrderedDict
+    from collections.abc import Mapping
+    from collections import OrderedDict
     class TestMapping(Mapping):
         def __init__(self, values):
             self.values = values
@@ -273,7 +266,7 @@ def test_mapping():
     first = items[0][1]
     values = TestMapping(items)
     c = interactive(f, lis=values)
-    nt.assert_equal(len(c.children), 2)
+    assert len(c.children) == 2
     d = dict(
         cls=widgets.Dropdown,
         value=first,
@@ -283,131 +276,20 @@ def test_mapping():
     )
     check_widgets(c, lis=d)
 
-
-def test_defaults():
-    @annotate(n=10)
-    def f(n, f=4.5, g=1):
-        pass
-
-    c = interactive(f)
-    check_widgets(c,
-        n=dict(
-            cls=widgets.IntSlider,
-            value=10,
-        ),
-        f=dict(
-            cls=widgets.FloatSlider,
-            value=4.5,
-        ),
-        g=dict(
-            cls=widgets.IntSlider,
-            value=1,
-        ),
-    )
-
-def test_default_values():
-    @annotate(n=10, f=(0, 10.), g=5, h=OrderedDict([('a',1), ('b',2)]), j=['hi', 'there'])
-    def f(n, f=4.5, g=1, h=2, j='there'):
-        pass
-
-    c = interactive(f)
-    check_widgets(c,
-        n=dict(
-            cls=widgets.IntSlider,
-            value=10,
-        ),
-        f=dict(
-            cls=widgets.FloatSlider,
-            value=4.5,
-        ),
-        g=dict(
-            cls=widgets.IntSlider,
-            value=5,
-        ),
-        h=dict(
-            cls=widgets.Dropdown,
-            options=OrderedDict([('a',1), ('b',2)]),
-            value=2
-        ),
-        j=dict(
-            cls=widgets.Dropdown,
-            options=('hi', 'there'),
-            value='there'
-        ),
-    )
-
-def test_default_out_of_bounds():
-    @annotate(f=(0, 10.), h={'a': 1}, j=['hi', 'there'])
-    def f(f='hi', h=5, j='other'):
-        pass
-
-    c = interactive(f)
-    check_widgets(c,
-        f=dict(
-            cls=widgets.FloatSlider,
-            value=5.,
-        ),
-        h=dict(
-            cls=widgets.Dropdown,
-            options={'a': 1},
-            value=1,
-        ),
-        j=dict(
-            cls=widgets.Dropdown,
-            options=('hi', 'there'),
-            value='hi',
-        ),
-    )
-
-def test_annotations():
-    @annotate(n=10, f=widgets.FloatText())
-    def f(n, f):
-        pass
-
-    c = interactive(f)
-    check_widgets(c,
-        n=dict(
-            cls=widgets.IntSlider,
-            value=10,
-        ),
-        f=dict(
-            cls=widgets.FloatText,
-        ),
-    )
-
-def test_priority():
-    @annotate(annotate='annotate', kwarg='annotate')
-    def f(kwarg='default', annotate='default', default='default'):
-        pass
-
-    c = interactive(f, kwarg='kwarg')
-    check_widgets(c,
-        kwarg=dict(
-            cls=widgets.Text,
-            value='kwarg',
-        ),
-        annotate=dict(
-            cls=widgets.Text,
-            value='annotate',
-        ),
-    )
-
-@nt.with_setup(clear_display)
-def test_decorator_kwarg():
+def test_decorator_kwarg(clear_display):
     with patch.object(interaction, 'display', record_display):
         @interact(a=5)
         def foo(a):
             pass
-    nt.assert_equal(len(displayed), 1)
+    assert len(displayed) == 1
     w = displayed[0].children[0]
     check_widget(w,
         cls=widgets.IntSlider,
         value=5,
     )
 
-@nt.with_setup(clear_display)
-def test_interact_instancemethod():
-    class Foo(object):
+def test_interact_instancemethod(clear_display):
+    class Foo:
         def show(self, x):
             print(x)
 
@@ -415,46 +297,43 @@ def test_interact_instancemethod():
 
     with patch.object(interaction, 'display', record_display):
         g = interact(f.show, x=(1,10))
-    nt.assert_equal(len(displayed), 1)
+    assert len(displayed) == 1
     w = displayed[0].children[0]
     check_widget(w,
         cls=widgets.IntSlider,
         value=5,
     )
 
-@nt.with_setup(clear_display)
-def test_decorator_no_call():
+def test_decorator_no_call(clear_display):
     with patch.object(interaction, 'display', record_display):
         @interact
         def foo(a='default'):
             pass
-    nt.assert_equal(len(displayed), 1)
+    assert len(displayed) == 1
     w = displayed[0].children[0]
     check_widget(w,
         cls=widgets.Text,
         value='default',
     )
 
-@nt.with_setup(clear_display)
-def test_call_interact():
+def test_call_interact(clear_display):
     def foo(a='default'):
         pass
     with patch.object(interaction, 'display', record_display):
         ifoo = interact(foo)
-    nt.assert_equal(len(displayed), 1)
+    assert len(displayed) == 1
     w = displayed[0].children[0]
     check_widget(w,
         cls=widgets.Text,
         value='default',
     )
 
-@nt.with_setup(clear_display)
-def test_call_interact_on_trait_changed_none_return():
+def test_call_interact_on_trait_changed_none_return(clear_display):
     def foo(a='default'):
         pass
     with patch.object(interaction, 'display', record_display):
         ifoo = interact(foo)
-    nt.assert_equal(len(displayed), 1)
+    assert len(displayed) == 1
     w = displayed[0].children[0]
     check_widget(w,
         cls=widgets.Text,
@@ -462,23 +341,21 @@ def test_call_interact_on_trait_changed_none_return():
     )
     with patch.object(interaction, 'display', record_display):
         w.value = 'called'
-    nt.assert_equal(len(displayed), 1)
+    assert len(displayed) == 1
 
-@nt.with_setup(clear_display)
-def test_call_interact_kwargs():
+def test_call_interact_kwargs(clear_display):
     def foo(a='default'):
         pass
     with patch.object(interaction, 'display', record_display):
         ifoo = interact(foo, a=10)
-    nt.assert_equal(len(displayed), 1)
+    assert len(displayed) == 1
     w = displayed[0].children[0]
     check_widget(w,
         cls=widgets.IntSlider,
         value=10,
     )
 
-@nt.with_setup(clear_display)
-def test_call_decorated_on_trait_change():
+def test_call_decorated_on_trait_change(clear_display):
     """test calling @interact decorated functions"""
     d = {}
     with patch.object(interaction, 'display', record_display):
@@ -486,26 +363,25 @@ def test_call_decorated_on_trait_change():
         def foo(a='default'):
             d['a'] = a
             return a
-    nt.assert_equal(len(displayed), 1)
-    w = displayed[0].children[0]
+    assert len(displayed) == 2 # display the result and the interact
+    w = displayed[1].children[0]
     check_widget(w,
         cls=widgets.Text,
         value='default',
     )
     # test calling the function directly
     a = foo('hello')
-    nt.assert_equal(a, 'hello')
-    nt.assert_equal(d['a'], 'hello')
+    assert a == 'hello'
+    assert d['a'] == 'hello'
 
     # test that setting trait values calls the function
     with patch.object(interaction, 'display', record_display):
         w.value = 'called'
-    nt.assert_equal(d['a'], 'called')
-    nt.assert_equal(len(displayed), 2)
-    nt.assert_equal(w.value, displayed[-1])
+    assert d['a'] == 'called'
+    assert len(displayed) == 3
+    assert w.value == displayed[-1]
 
-@nt.with_setup(clear_display)
-def test_call_decorated_kwargs_on_trait_change():
+def test_call_decorated_kwargs_on_trait_change(clear_display):
     """test calling @interact(foo=bar) decorated functions"""
     d = {}
     with patch.object(interaction, 'display', record_display):
@@ -513,29 +389,29 @@ def test_call_decorated_kwargs_on_trait_change():
         def foo(a='default'):
             d['a'] = a
             return a
-    nt.assert_equal(len(displayed), 1)
-    w = displayed[0].children[0]
+    assert len(displayed) == 2 # display the result and the interact
+    w = displayed[1].children[0]
     check_widget(w,
         cls=widgets.Text,
         value='kwarg',
     )
     # test calling the function directly
     a = foo('hello')
-    nt.assert_equal(a, 'hello')
-    nt.assert_equal(d['a'], 'hello')
+    assert a == 'hello'
+    assert d['a'] == 'hello'
 
     # test that setting trait values calls the function
     with patch.object(interaction, 'display', record_display):
         w.value = 'called'
-    nt.assert_equal(d['a'], 'called')
-    nt.assert_equal(len(displayed), 2)
-    nt.assert_equal(w.value, displayed[-1])
+    assert d['a'] == 'called'
+    assert len(displayed) == 3
+    assert w.value == displayed[-1]
 
 
 
 def test_fixed():
     c = interactive(f, a=widgets.fixed(5), b='text')
-    nt.assert_equal(len(c.children), 2)
+    assert len(c.children) == 2
     w = c.children[0]
     check_widget(w,
         cls=widgets.Text,
@@ -566,7 +442,7 @@ def test_custom_description():
         description='foo',
     )
     w.value = 'different text'
-    nt.assert_equal(d, {'b': 'different text'})
+    assert d == {'b': 'different text'}
 
 def test_interact_manual_button():
     c = interact.options(manual=True).widget(f)
@@ -579,7 +455,7 @@ def test_interact_manual_nocall():
         callcount += 1
     c = interact.options(manual=True)(calltest, testarg=5).widget
     c.children[0].value = 10
-    nt.assert_equal(callcount, 0)
+    assert callcount == 0
 
 def test_interact_call():
     w = interact.widget(f)
@@ -592,16 +468,16 @@ def test_interact_options():
     def f(x):
         return x
     w = interact.options(manual=False).options(manual=True)(f, x=21).widget
-    nt.assert_equal(w.manual, True)
+    assert w.manual == True
 
     w = interact_manual.options(manual=False).options()(x=21).widget(f)
-    nt.assert_equal(w.manual, False)
+    assert w.manual == False
 
     w = interact(x=21)().options(manual=True)(f).widget
-    nt.assert_equal(w.manual, True)
+    assert w.manual == True
 
 def test_interact_options_bad():
-    with nt.assert_raises(ValueError):
+    with pytest.raises(ValueError):
         interact.options(bad="foo")
 
 def test_int_range_logic():
@@ -624,9 +500,9 @@ def test_int_range_logic():
     w.lower = 2
     check_widget(w, cls=irsw, value=(2, 6), min=0, max=6)
 
-    with nt.assert_raises(TraitError):
+    with pytest.raises(TraitError):
         w.min = 7
-    with nt.assert_raises(TraitError):
+    with pytest.raises(TraitError):
         w.max = -1
 
     w = irsw(min=2, max=3, value=(2, 3))
@@ -634,7 +510,7 @@ def test_int_range_logic():
     w = irsw(min=100, max=200, value=(125, 175))
     check_widget(w, value=(125, 175))
 
-    with nt.assert_raises(TraitError):
+    with pytest.raises(TraitError):
         irsw(min=2, max=1)
 
 
@@ -655,15 +531,15 @@ def test_float_range_logic():
     w.lower = .2
     check_widget(w, cls=frsw, value=(.2, .6), min=0., max=.6)
 
-    with nt.assert_raises(TraitError):
+    with pytest.raises(TraitError):
         w.min = .7
-    with nt.assert_raises(TraitError):
+    with pytest.raises(TraitError):
         w.max = -.1
 
     w = frsw(min=2, max=3, value=(2.2, 2.5))
     check_widget(w, min=2., max=3.)
 
-    with nt.assert_raises(TraitError):
+    with pytest.raises(TraitError):
         frsw(min=.2, max=.1)
 
 
@@ -675,7 +551,7 @@ def test_multiple_selection():
     check_widget(w, value=tuple())
 
     # don't accept random other value when no options
-    with nt.assert_raises(TraitError):
+    with pytest.raises(TraitError):
         w.value = (2,)
     check_widget(w, value=tuple())
 
@@ -684,7 +560,7 @@ def test_multiple_selection():
     check_widget(w, cls=smw, value=(1,), options=((1, 1),))
 
     # don't accept random other value
-    with nt.assert_raises(TraitError):
+    with pytest.raises(TraitError):
         w.value = w.value + (2,)
     check_widget(w, value=(1,))
 
@@ -701,13 +577,13 @@ def test_multiple_selection():
     check_widget(w, options={1:1})
 
     # updating
-    with nt.assert_raises(TraitError):
+    with pytest.raises(TraitError):
         w.value = (2,)
     check_widget(w, options={1:1})
 
 
 def test_interact_noinspect():
-    a = u'hello'
+    a = 'hello'
     c = interactive(print, a=a)
     w = c.children[0]
     check_widget(w,
@@ -728,7 +604,7 @@ def test_get_interact_value():
     w = TheAnswer()
     c = interactive(lambda v: v, v=w)
     c.update()
-    nt.assert_equal(c.result, 42)
+    assert c.result == 42
 
 def test_state_schema():
     from ipywidgets.widgets import IntSlider, Widget

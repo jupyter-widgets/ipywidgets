@@ -11,6 +11,75 @@ import {
     Kernel, KernelMessage
 } from '@jupyterlab/services';
 
+
+/**
+ * Callbacks for services shim comms.
+ */
+export
+interface ICallbacks {
+    shell?: { [key: string]: (msg: KernelMessage.IMessage) => void };
+    iopub?: { [key: string]: (msg: KernelMessage.IMessage) => void };
+    input?: (msg: KernelMessage.IMessage) => void;
+}
+
+
+export
+interface IClassicComm {
+    /**
+     * Comm id
+     * @return {string}
+     */
+    comm_id: string;
+
+    /**
+     * Target name
+     * @return {string}
+     */
+    target_name: string;
+
+    /**
+     * Opens a sibling comm in the backend
+     * @param  data
+     * @param  callbacks
+     * @param  metadata
+     * @param  buffers
+     * @return msg id
+     */
+    open(data: any, callbacks: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): string;
+
+    /**
+     * Sends a message to the sibling comm in the backend
+     * @param  data
+     * @param  callbacks
+     * @param  metadata
+     * @param  buffers
+     * @return message id
+     */
+    send(data: any, callbacks: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): string;
+
+    /**
+     * Closes the sibling comm in the backend
+     * @param  data
+     * @param  callbacks
+     * @param  metadata
+     * @param  buffers
+     * @return msg id
+     */
+    close(data?: any, callbacks?: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): string;
+
+    /**
+     * Register a message handler
+     * @param  callback, which is given a message
+     */
+    on_msg(callback: (x: any) => void): void;
+
+    /**
+     * Register a handler for when the comm is closed by the backend
+     * @param  callback, which is given a message
+     */
+    on_close(callback: (x: any) => void): void;
+}
+
 export
 namespace shims {
     export
@@ -21,34 +90,29 @@ namespace shims {
          */
         export
         class CommManager {
-            constructor(jsServicesKernel: Kernel.IKernel) {
+            constructor(jsServicesKernel: Kernel.IKernelConnection) {
                 this.init_kernel(jsServicesKernel);
-            };
+            }
 
             /**
              * Hookup kernel events.
              * @param  {Kernel.IKernel} jsServicesKernel - @jupyterlab/services Kernel.IKernel instance
              */
-            init_kernel(jsServicesKernel: Kernel.IKernel) {
+            init_kernel(jsServicesKernel: Kernel.IKernelConnection) {
                 this.kernel = jsServicesKernel; // These aren't really the same.
                 this.jsServicesKernel = jsServicesKernel;
-            };
+            }
 
             /**
              * Creates a new connected comm
-             * @param  {string} target_name
-             * @param  {object} data
-             * @param  {object} callbacks
-             * @param  {object} metadata
-             * @param  {string} comm_id
-             * @return {Comm}
              */
-            new_comm(target_name: string, data: any, callbacks: any, metadata: any, comm_id: string): Comm {
-                var comm = new Comm(this.jsServicesKernel.connectToComm(target_name, comm_id));
+            async new_comm(target_name: string, data: any, callbacks: any, metadata: any, comm_id: string, buffers?: ArrayBuffer[] | ArrayBufferView[]): Promise<Comm> {
+                let c = this.jsServicesKernel.createComm(target_name, comm_id);
+                let comm = new Comm(c);
                 this.register_comm(comm);
-                comm.open(data, callbacks, metadata);
+                comm.open(data, callbacks, metadata, buffers);
                 return comm;
-            };
+            }
 
             /**
              * Register a comm target
@@ -56,11 +120,11 @@ namespace shims {
              * @param  {(Comm, object) => void} f - callback that is called when the
              *                         comm is made.  Signature of f(comm, msg).
              */
-            register_target (target_name: string, f: (comm: Comm, object: KernelMessage.IMessage) => void): void {
-                var handle = this.jsServicesKernel.registerCommTarget(target_name,
+            register_target(target_name: string, f: (comm: Comm, object: KernelMessage.IMessage) => void): void {
+                let handle = this.jsServicesKernel.registerCommTarget(target_name,
                 (jsServicesComm, msg) => {
                     // Create the comm.
-                    var comm = new Comm(jsServicesComm);
+                    let comm = new Comm(jsServicesComm);
                     this.register_comm(comm);
 
                     // Call the callback for the comm.
@@ -73,31 +137,31 @@ namespace shims {
                     }
                 });
                 this.targets[target_name] = handle;
-            };
+            }
 
             /**
              * Unregisters a comm target
              * @param  {string} target_name
              */
-            unregister_target (target_name: string, f: (comm: Comm, object: KernelMessage.IMessage) => void): void {
-                var handle = this.targets[target_name];
+            unregister_target(target_name: string, f: (comm: Comm, object: KernelMessage.IMessage) => void): void {
+                let handle = this.targets[target_name];
                 handle.dispose();
                 delete this.targets[target_name];
-            };
+            }
 
             /**
              * Register a comm in the mapping
              */
-            register_comm = function (comm: USEACOMMTYPEHERE) {
+            register_comm(comm: Comm) {
               this.comms[comm.comm_id] = Promise.resolve(comm);
               comm.kernel = this.kernel;
               return comm.comm_id;
-            };
+            }
 
             targets = Object.create(null);
             comms = Object.create(null);
-            kernel: Kernel.IKernel;
-            jsServicesKernel: Kernel.IKernel;
+            kernel: Kernel.IKernelConnection = null;
+            jsServicesKernel: Kernel.IKernelConnection = null;
         }
 
         /**
@@ -105,7 +169,7 @@ namespace shims {
          * @param  {IComm} jsServicesComm - @jupyterlab/services IComm instance
          */
         export
-        class Comm {
+        class Comm implements IClassicComm {
             constructor(jsServicesComm: Kernel.IComm) {
                 this.jsServicesComm = jsServicesComm;
             }
@@ -133,11 +197,11 @@ namespace shims {
              * @param  metadata
              * @return msg id
              */
-            open(data: any, callbacks: any, metadata: any): string {
-                var future = this.jsServicesComm.open(data, metadata);
+            open(data: any, callbacks: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): string {
+                let future = this.jsServicesComm.open(data, metadata, buffers);
                 this._hookupCallbacks(future, callbacks);
                 return future.msg.header.msg_id;
-            };
+            }
 
             /**
              * Sends a message to the sibling comm in the backend
@@ -147,11 +211,11 @@ namespace shims {
              * @param  buffers
              * @return message id
              */
-            send(data: any, callbacks: any, metadata: any, buffers: ArrayBuffer[] | ArrayBufferView[]): string {
-                var future = this.jsServicesComm.send(data, metadata, buffers);
+            send(data: any, callbacks: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): string {
+                let future = this.jsServicesComm.send(data, metadata, buffers);
                 this._hookupCallbacks(future, callbacks);
                 return future.msg.header.msg_id;
-            };
+            }
 
             /**
              * Closes the sibling comm in the backend
@@ -160,11 +224,11 @@ namespace shims {
              * @param  metadata
              * @return msg id
              */
-            close(data?: any, callbacks?: any, metadata?: any): string {
-                var future = this.jsServicesComm.close(data, metadata);
+            close(data?: any, callbacks?: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): string {
+                let future = this.jsServicesComm.close(data, metadata, buffers);
                 this._hookupCallbacks(future, callbacks);
                 return future.msg.header.msg_id;
-            };
+            }
 
             /**
              * Register a message handler
@@ -172,7 +236,7 @@ namespace shims {
              */
             on_msg(callback: (x: any) => void): void {
                 this.jsServicesComm.onMsg = callback.bind(this);
-            };
+            }
 
             /**
              * Register a handler for when the comm is closed by the backend
@@ -180,44 +244,52 @@ namespace shims {
              */
             on_close(callback: (x: any) => void): void {
                 this.jsServicesComm.onClose = callback.bind(this);
-            };
+            }
 
             /**
              * Hooks callback object up with @jupyterlab/services IKernelFuture
              * @param  @jupyterlab/services IKernelFuture instance
              * @param  callbacks
              */
-            _hookupCallbacks(future: Kernel.IFuture, callbacks: any) {
+            _hookupCallbacks(future: Kernel.IShellFuture, callbacks: ICallbacks) {
                 if (callbacks) {
                     future.onReply = function(msg) {
-                        if (callbacks.shell && callbacks.shell.reply) callbacks.shell.reply(msg);
+                        if (callbacks.shell && callbacks.shell.reply) {
+                            callbacks.shell.reply(msg);
+                        }
                         // TODO: Handle payloads.  See https://github.com/jupyter/notebook/blob/master/notebook/static/services/kernels/kernel.js#L923-L947
                     };
 
                     future.onStdin = function(msg) {
-                        if (callbacks.input) callbacks.input(msg);
+                        if (callbacks.input) {
+                            callbacks.input(msg);
+                        }
                     };
 
                     future.onIOPub = function(msg) {
-                        if(callbacks.iopub) {
+                        if (callbacks.iopub) {
                             if (callbacks.iopub.status && msg.header.msg_type === 'status') {
                                 callbacks.iopub.status(msg);
                             } else if (callbacks.iopub.clear_output && msg.header.msg_type === 'clear_output') {
                                 callbacks.iopub.clear_output(msg);
                             } else if (callbacks.iopub.output) {
-                                switch(msg.header.msg_type) {
+                                switch (msg.header.msg_type) {
                                     case 'display_data':
                                     case 'execute_result':
+                                    case 'stream':
+                                    case 'error':
                                         callbacks.iopub.output(msg);
                                         break;
-                                };
+                                    default: break;
+                                }
                             }
                         }
                     };
                 }
-            };
+            }
 
-            jsServicesComm: Kernel.IComm;
+            jsServicesComm: Kernel.IComm = null;
+            kernel: Kernel.IKernelConnection = null;
         }
     }
 }

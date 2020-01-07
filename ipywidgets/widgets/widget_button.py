@@ -58,7 +58,7 @@ class Button(DOMWidget, CoreWidget):
     style = InstanceDict(ButtonStyle).tag(sync=True, **widget_serialization)
 
     def __init__(self, **kwargs):
-        super(Button, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self._click_handlers = CallbackDispatcher()
         self.on_msg(self._handle_button_msg)
 
@@ -85,6 +85,14 @@ class Button(DOMWidget, CoreWidget):
         """
         self._click_handlers.register_callback(callback, remove=remove)
 
+    def click(self):
+        """Programmatically trigger a click event.
+
+        This will call the callbacks registered to the clicked button
+        widget instance.
+        """
+        self._click_handlers(self)
+
     def _handle_button_msg(self, _, content, buffers):
         """Handle a msg from the front-end.
 
@@ -94,4 +102,4 @@ class Button(DOMWidget, CoreWidget):
             Content of the msg.
         """
         if content.get('event', '') == 'click':
-            self._click_handlers(self)
+            self.click()

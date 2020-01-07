@@ -3,15 +3,15 @@
 
 import {
   ArrayExt
-} from '@phosphor/algorithm';
+} from '@lumino/algorithm';
 
 import {
   ISignal, Signal
-} from '@phosphor/signaling';
+} from '@lumino/signaling';
 
 import {
   Panel, PanelLayout, Widget, Title
-} from '@phosphor/widgets';
+} from '@lumino/widgets';
 
 import {
     Selection

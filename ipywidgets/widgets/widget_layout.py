@@ -3,7 +3,7 @@
 
 """Contains the Layout class"""
 
-from traitlets import Unicode, Instance, CaselessStrEnum
+from traitlets import Unicode, Instance, CaselessStrEnum, validate
 from .widget import Widget, register
 from .._version import __jupyter_widgets_base_version__
 
@@ -45,21 +45,44 @@ class Layout(Widget):
     height = Unicode(None, allow_none=True, help="The height CSS attribute.").tag(sync=True)
     justify_content = CaselessStrEnum(['flex-start', 'flex-end', 'center',
         'space-between', 'space-around'] + CSS_PROPERTIES, allow_none=True, help="The justify-content CSS attribute.").tag(sync=True)
+    justify_items = CaselessStrEnum(['flex-start', 'flex-end', 'center'] + CSS_PROPERTIES,
+        allow_none=True, help="The justify-items CSS attribute.").tag(sync=True)
     left = Unicode(None, allow_none=True, help="The left CSS attribute.").tag(sync=True)
     margin = Unicode(None, allow_none=True, help="The margin CSS attribute.").tag(sync=True)
     max_height = Unicode(None, allow_none=True, help="The max-height CSS attribute.").tag(sync=True)
     max_width = Unicode(None, allow_none=True, help="The max-width CSS attribute.").tag(sync=True)
     min_height = Unicode(None, allow_none=True, help="The min-height CSS attribute.").tag(sync=True)
     min_width = Unicode(None, allow_none=True, help="The min-width CSS attribute.").tag(sync=True)
-    overflow = CaselessStrEnum(['visible', 'hidden', 'scroll', 'auto'] + CSS_PROPERTIES, allow_none=True, help="The overflow CSS attribute.").tag(sync=True)
-    overflow_x = CaselessStrEnum(['visible', 'hidden', 'scroll', 'auto'] + CSS_PROPERTIES, allow_none=True, help="The overflow-x CSS attribute.").tag(sync=True)
-    overflow_y = CaselessStrEnum(['visible', 'hidden', 'scroll', 'auto'] + CSS_PROPERTIES, allow_none=True, help="The overflow-y CSS attribute.").tag(sync=True)
+    overflow = Unicode(None, allow_none=True, help="The overflow CSS attribute.").tag(sync=True)
+    overflow_x = CaselessStrEnum(['visible', 'hidden', 'scroll', 'auto'] + CSS_PROPERTIES, allow_none=True, help="The overflow-x CSS attribute (deprecated).").tag(sync=True)
+    overflow_y = CaselessStrEnum(['visible', 'hidden', 'scroll', 'auto'] + CSS_PROPERTIES, allow_none=True, help="The overflow-y CSS attribute (deprecated).").tag(sync=True)
     order = Unicode(None, allow_none=True, help="The order CSS attribute.").tag(sync=True)
     padding = Unicode(None, allow_none=True, help="The padding CSS attribute.").tag(sync=True)
     right = Unicode(None, allow_none=True, help="The right CSS attribute.").tag(sync=True)
     top = Unicode(None, allow_none=True, help="The top CSS attribute.").tag(sync=True)
     visibility = CaselessStrEnum(['visible', 'hidden']+CSS_PROPERTIES, allow_none=True, help="The visibility CSS attribute.").tag(sync=True)
     width = Unicode(None, allow_none=True, help="The width CSS attribute.").tag(sync=True)
+
+    object_fit = CaselessStrEnum(['contain', 'cover', 'fill', 'scale-down', 'none'], allow_none=True, help="The object-fit CSS attribute.").tag(sync=True)
+    object_position = Unicode(None, allow_none=True, help="The object-position CSS attribute.").tag(sync=True)
+
+    grid_auto_columns = Unicode(None, allow_none=True, help="The grid-auto-columns CSS attribute.").tag(sync=True)
+    grid_auto_flow = CaselessStrEnum(['column','row','row dense','column dense']+ CSS_PROPERTIES, allow_none=True, help="The grid-auto-flow CSS attribute.").tag(sync=True)
+    grid_auto_rows = Unicode(None, allow_none=True, help="The grid-auto-rows CSS attribute.").tag(sync=True)
+    grid_gap = Unicode(None, allow_none=True, help="The grid-gap CSS attribute.").tag(sync=True)
+    grid_template_rows = Unicode(None, allow_none=True, help="The grid-template-rows CSS attribute.").tag(sync=True)
+    grid_template_columns = Unicode(None, allow_none=True, help="The grid-template-columns CSS attribute.").tag(sync=True)
+    grid_template_areas = Unicode(None, allow_none=True, help="The grid-template-areas CSS attribute.").tag(sync=True)
+    grid_row = Unicode(None, allow_none=True, help="The grid-row CSS attribute.").tag(sync=True)
+    grid_column = Unicode(None, allow_none=True, help="The grid-column CSS attribute.").tag(sync=True)
+    grid_area = Unicode(None, allow_none=True, help="The grid-area CSS attribute.").tag(sync=True)
+
+    @validate('overflow_x', 'overflow_y')
+    def _validate_overflows(self, proposal):
+        if proposal.value is not None:
+            import warnings
+            warnings.warn("Layout properties overflow_x and overflow_y have been deprecated and will be dropped in a future release. Please use the overflow shorthand property instead", DeprecationWarning)
+        return proposal.value
 
 
 class LayoutTraitType(Instance):
@@ -68,6 +91,6 @@ class LayoutTraitType(Instance):
 
     def validate(self, obj, value):
         if isinstance(value, dict):
-            return super(LayoutTraitType, self).validate(obj, self.klass(**value))
+            return super().validate(obj, self.klass(**value))
         else:
-            return super(LayoutTraitType, self).validate(obj, value)
+            return super().validate(obj, value)

@@ -15,10 +15,10 @@ This example also displays a read-only text area containing the code
 provided in the `widget_code.json`, which we used to generate the widget state.
 
 This example does not implement the communication with a Python backend. For
-such an example, check out the `web-kernel` example.
+such an example, check out the `web3` example.
 
 ## Try it
 
-1. Start with a repository checkout, and run `npm install` in the root directory.
-2. Run `npm run build:examples` in the root directory.
+1. Start with a repository checkout, and run `yarn install` in the root directory.
+2. Run `yarn run build:examples` in the root directory.
 3. Open the `index.html` file in this directory.

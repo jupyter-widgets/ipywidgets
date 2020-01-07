@@ -191,24 +191,28 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
+`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.0.0'`        | 
 `_model_name`    | string           | `'ControllerAxisModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.0.0'`        | 
 `_view_name`     | string           | `'ControllerAxisView'` | 
+`layout`         | reference to Layout widget | reference to new instance | 
 `value`          | number (float)   | `0.0`            | The value of the axis.
 
 ### ControllerButtonModel (@jupyter-widgets/controls, 1.0.0); ControllerButtonView (@jupyter-widgets/controls, 1.0.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
+`_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.0.0'`        | 
 `_model_name`    | string           | `'ControllerButtonModel'` | 
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.0.0'`        | 
 `_view_name`     | string           | `'ControllerButtonView'` | 
+`layout`         | reference to Layout widget | reference to new instance | 
 `pressed`        | boolean          | `false`          | Whether the button is pressed.
 `value`          | number (float)   | `0.0`            | The value of the button.
 
@@ -432,7 +436,6 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_b64value`      | string           | `''`             | The base64 encoded image data.
 `_dom_classes`   | array            | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.0.0'`        | 
@@ -443,6 +446,7 @@ Attribute        | Type             | Default          | Help
 `format`         | string           | `'png'`          | The format of the image.
 `height`         | string           | `''`             | Height of the image in pixels.
 `layout`         | reference to Layout widget | reference to new instance | 
+`value`          | Bytes            | `b''`            | The image data as a byte string.
 `width`          | string           | `''`             | Width of the image in pixels.
 
 ### IntProgressModel (@jupyter-widgets/controls, 1.0.0); ProgressView (@jupyter-widgets/controls, 1.0.0)
@@ -886,103 +890,3 @@ Attribute        | Type             | Default          | Help
 `msg_id`         | string           | `''`             | Parent message id of messages to capture
 `outputs`        | array            | `[]`             | The output messages synced from the frontend.
 
-
-## Automated documentation
-
-The code to generate the model attribute listing is below.
-
-```python
-import ipywidgets as widgets
-from ipywidgets.widgets.widget_link import Link
-
-
-from traitlets import CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat, Float, CInt, Int, Instance, Undefined, Dict, Any
-from ipywidgets import Color
-
-widgets_to_document = sorted(widgets.Widget.widget_types.items())
-
-def typing(x):
-    s = ''
-    if isinstance(x, CaselessStrEnum):
-        s = 'string (one of %s)'%(', '.join('`%r`'%i for i in x.values))
-    elif isinstance(x, Unicode):
-        s = 'string'
-    elif isinstance(x, (Tuple, List)):
-        s = 'array'
-    elif isinstance(x, Bool):
-        s = 'boolean'
-    elif isinstance(x, (CFloat, Float)):
-        s = 'number (float)'
-    elif isinstance(x, (CInt, Int)):
-        s = 'number (integer)'
-    elif isinstance(x, Color):
-        s = 'string (valid color)'
-    elif isinstance(x, Dict):
-        s = 'object'
-    elif isinstance(x, Instance) and issubclass(x.klass, widgets.Widget):
-        s = 'reference to %s widget'%(x.klass.__name__)
-        # ADD the widget to this documenting list
-        if x.klass not in [i[1] for i in widgets_to_document]:
-            widgets_to_document.append((x.klass.__name__, x.klass))
-    elif isinstance(x, Any):
-        # In our case, these all happen to be values that are converted to strings
-        s = 'string (valid option label)'
-    else:
-        s = x.__class__.__name__
-    if x.allow_none:
-        s = "`null` or "+s
-    return s
-
-def jsdefault(t):
-    x = t.default_value
-    if isinstance(t, Instance):
-        x = t.make_dynamic_default()
-        if issubclass(t.klass, widgets.Widget):
-            return 'reference to new instance'
-    if x is True:
-        return '`true`'
-    elif x is False:
-        return '`false`'
-    elif x is None:
-        return '`null`'
-    elif isinstance(x, tuple):
-        return '`{0}`'.format(list(x))
-    else:
-        return '`%s`'%t.default_value_repr()
-
-def format_widget(n, w):
-    out = []
-    name = dict(zip(['m_module', 'm_version', 'model', 'v_module', 'v_version', 'view'], n))
-
-    out.append('### %(model)s (%(m_module)s, %(m_version)s); %(view)s (%(v_module)s, %(v_version)s)'%name)
-    out.append('')
-    out.append('{name: <16} | {typing: <16} | {default: <16} | {help}'.format(name='Attribute', typing='Type', 
-                                                                             allownone='Nullable', default='Default', help='Help'))
-    out.append('{0:-<16}-|-{0:-<16}-|-{0:-<16}-|----'.format('-'))
-    for name, t in sorted(w.traits(sync=True).items()):
-        if name in ('_model_module', '_view_module', '_model_module_version', '_view_module_version', 
-                    '_dom_classes', 'layout'):
-            # document these separately, since they apply to all classes
-            pass
-        if name in ('_view_count'):
-            # don't document this since it is totally experimental at this point
-            continue
-
-        s = '{name: <16} | {typing: <16} | {default: <16} | {help}'.format(name='`%s`'%name, typing=typing(t), 
-                                                            allownone='*' if t.allow_none else '', 
-                                                                                               default=jsdefault(t),
-                                                                                              help=t.help if t.help else '')
-        out.append(s)
-    out.append('')
-    return '\n'.join(out)
-
-out = ''
-for n,w in widgets_to_document:
-    if issubclass(w, Link):
-        out += '\n'+format_widget(n, w((widgets.IntSlider(), 'value'), (widgets.IntSlider(), 'value')))
-    elif issubclass(w, widgets.SelectionRangeSlider) or issubclass(w, widgets.SelectionSlider):
-        out += '\n'+format_widget(n,w(options=[1]))
-    else:
-        out += '\n'+format_widget(n,w())
-print(out)
-```

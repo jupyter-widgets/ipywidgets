@@ -1,10 +1,10 @@
 # ipywidgets: Interactive HTML Widgets
 
 [![Version](https://img.shields.io/pypi/v/ipywidgets.svg)](https://pypi.python.org/pypi/ipywidgets)
-[![Downloads](https://img.shields.io/pypi/dm/ipywidgets.svg)](https://pypi.python.org/pypi/ipywidgets)
 [![Build Status](https://travis-ci.org/jupyter-widgets/ipywidgets.svg?branch=master)](https://travis-ci.org/jupyter-widgets/ipywidgets)
 [![Documentation Status](http://readthedocs.org/projects/ipywidgets/badge/?version=latest)](https://ipywidgets.readthedocs.io/en/latest/?badge=latest)
 [![Join the chat at https://gitter.im/ipython/ipywidgets](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jupyter-widgets/Lobby)
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/jupyter-widgets/ipywidgets/master?filepath=docs%2Fsource%2Fexamples)
 
 ipywidgets are [interactive HTML widgets](https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb)
 for Jupyter notebooks and the IPython kernel.
@@ -12,7 +12,7 @@ for Jupyter notebooks and the IPython kernel.
 Notebooks come alive when interactive widgets are used. Users gain control of
 their data and can visualize changes in the data.
 
-Learning becomes an immersive, plus fun, experience. Researchers can easily see
+Learning becomes an immersive, fun experience. Researchers can easily see
 how changing inputs to a model impact the results. We hope you will add
 ipywidgets to your notebooks, and we're here to help you get started.
 
@@ -32,7 +32,7 @@ A [demonstration notebook](https://github.com/jupyter-widgets/ipywidgets/blob/ma
 Besides the widgets already provided with the library, the framework can be
 extended with custom widget libraries.
 
-A template project is available in the form of a cookie cutter [here](https://github.com/jupyter/widget-cookiecutter).
+A template project is available in the form of a cookie cutter [here](https://github.com/jupyter-widgets/widget-ts-cookiecutter).
 
 This project is meant to help custom widget authors get started with the
 packaging and the distribution of Jupyter interactive widgets.
@@ -69,7 +69,7 @@ Install the current version of ipywidgets using pip or conda.
 
 ```
 pip install ipywidgets
-jupyter nbextension enable --py --sys-prefix widgetsnbextension
+jupyter nbextension enable --py --sys-prefix widgetsnbextension  # can be skipped for notebook version 5.3 and above
 ```
 
 - With conda:
@@ -82,7 +82,9 @@ See the [Installation](docs/source/user_install.md) section of the documentation
 
 ### Installing from git
 
-If you want to install ipywidgets from git, **you will need [npm](https://www.npmjs.com/) version 3.x or later** (check you version by running `npm -v` from a terminal).  Installing from git is more complicated and requires a developer install, see the [developer install](docs/source/dev_install.md) instructions.
+If you want to install ipywidgets from git, **you will need the
+[yarn](https://yarnpkg.com/) package manager version 1.2.1 or later**.
+Installing from git is more complicated and requires a developer install, see the [developer install](docs/source/dev_install.md) instructions.
 
 To install the latest master version from the root directory of the source
 code, run ``dev-install.sh``. To only build the Python package enter ``pip install -e .``.
@@ -106,7 +108,7 @@ See the [examples](docs/source/examples.md) section of the documentation. The wi
 
 ## Contributing to ipywidgets
 
-- [Developer install](docs/source/dev_install.md)
+- [Developer information](CONTRIBUTING.md)
 
 ## License
 

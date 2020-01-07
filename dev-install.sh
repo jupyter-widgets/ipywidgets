@@ -1,22 +1,13 @@
 #!/usr/bin/env bash
 
-# For a clean conda environment, do:
+# For a clean conda environment please read docs/source/dev_install.md
 
-# conda create -c conda-forge -n ipywidgets notebook=4.4.1
-# source activate ipywidgets
-# pip install jupyterlab==0.16.2
-# ipython kernel install --name ipywidgets --display-name "ipywidgets" --sys-prefix
-# git clone https://github.com/jupyter-widgets/ipywidgets.git
-# cd ipywidgets
-# ./dev-install.sh
-
-echo -n "Checking npm... "
-npm -v
+echo -n "Checking yarn... "
+yarn -v
 if [ $? -ne 0 ]; then
-    echo "'npm -v' failed, therefore npm is not installed.  In order to perform a
-    developer install of ipywidgets you must have both npm and pip installed on your
-    machine! See http://blog.npmjs.org/post/85484771375/how-to-install-npm for
-    installation instructions."
+    echo "'yarn -v' failed, therefore yarn is not installed.  In order to perform a
+    developer install of ipywidgets you must have both yarn and pip installed on your
+    machine! See https://yarnpkg.com/lang/en/docs/install/ for installation instructions."
     exit 1
 fi
 
@@ -24,7 +15,7 @@ echo -n "Checking pip... "
 pip --version
 if [ $? -ne 0 ]; then
     echo "'pip --version' failed, therefore pip is not installed. In order to perform
-    a developer install of ipywidgets you must have both pip and npm installed on
+    a developer install of ipywidgets you must have both pip and yarn installed on
     your machine! See https://packaging.python.org/installing/ for installation instructions."
     exit 1
 fi
@@ -42,9 +33,9 @@ set -e
 
 nbExtFlags="--sys-prefix $1"
 
-echo -n "Installing and building all npm packages"
-npm install
-npm run build
+echo -n "Installing and building all yarn packages"
+yarn install
+yarn run build
 
 echo -n "widgetsnbextension"
 cd widgetsnbextension
@@ -61,5 +52,8 @@ echo -n "ipywidgets"
 pip install -v -e .
 
 if test "$skip_jupyter_lab" != yes; then
-    jupyter labextension install @jupyter-widgets/jupyterlab-manager
+    jupyter labextension link ./packages/base --no-build
+    jupyter labextension link ./packages/controls --no-build
+    jupyter labextension link ./packages/output --no-build
+    jupyter labextension install ./packages/jupyterlab-manager
 fi

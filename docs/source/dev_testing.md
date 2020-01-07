@@ -3,10 +3,10 @@ Testing
 
 To run the Python tests:
 
-    nosetests --with-coverage --cover-package=ipywidgets ipywidgets
+    pytest --cov=ipywidgets ipywidgets
 
-To run the Javascript tests:
+To run the Javascript tests in each package directory:
 
-    npm run test
+    yarn test
 
 This will run the test suite using `karma` with 'debug' level logging.

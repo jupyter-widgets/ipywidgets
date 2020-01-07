@@ -11,37 +11,37 @@ let WidgetModel = widgets.WidgetModel;
 
 import * as chai from 'chai';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
+import sinonChai from 'sinon-chai';
 chai.use(sinonChai);
 
-describe("unpack_models", function() {
+describe('unpack_models', function() {
     beforeEach(async function() {
         this.manager = new DummyManager();
         this.widgetA = await this.manager.new_widget({
             model_name: 'WidgetModel',
             model_module: '@jupyter-widgets/base',
-            model_module_version: '1.0.0',
+            model_module_version: '1.2.0',
             view_name: 'WidgetView',
             view_module: '@jupyter-widgets/base',
-            view_module_version: '1.0.0',
+            view_module_version: '1.2.0',
             model_id: 'widgetA',
-        })
+        });
         this.widgetB = await this.manager.new_widget({
             model_name: 'WidgetModel',
             model_module: '@jupyter-widgets/base',
-            model_module_version: '1.0.0',
+            model_module_version: '1.2.0',
             view_name: 'WidgetView',
             view_module: '@jupyter-widgets/base',
-            view_module_version: '1.0.0',
+            view_module_version: '1.2.0',
             model_id: 'widgetB',
         });
-    })
+    });
     it('unpacks strings', async function() {
         let serialized = 'IPY_MODEL_widgetA';
         let deserialized = this.widgetA;
         let value = await widgets.unpack_models(serialized, this.manager);
         expect(value).to.deep.equal(deserialized);
-    })
+    });
     it('recurses in arrays', async function() {
         let serialized = ['IPY_MODEL_widgetA', 'IPY_MODEL_widgetB', 'IPY_MODEL_widgetA'];
         let deserialized = [this.widgetA, this.widgetB, this.widgetA];
@@ -59,10 +59,10 @@ describe("unpack_models", function() {
         let deserialized = {a: this.widgetA, b: [this.widgetA, this.widgetB, this.widgetA], c: {d: [this.widgetA], e: this.widgetB}};
         let value = await widgets.unpack_models(serialized, this.manager);
         expect(value).to.deep.equal(deserialized);
-    })
+    });
 });
 
-describe("WidgetModel", function() {
+describe('WidgetModel', function() {
     before(async function() {
         this.setup = async function() {
             this.manager = new DummyManager();
@@ -76,34 +76,34 @@ describe("WidgetModel", function() {
             // Create some dummy deserializers.  One returns synchronously, and the
             // other asynchronously using a promise.
             this.serializeToJSON = sinon.spy(() => {
-                return 'serialized'
+                return 'serialized';
             });
             this.widget.constructor.serializers = {
                 times3: {
-                    deserialize: (value, manager) => {
-                        return value*3.0;
+                    deserialize: (value: number, manager: any) => {
+                        return value * 3.0;
                     }
                 },
                 halve: {
-                    deserialize: (value, manager) => {
-                        return Promise.resolve(value/2.0);
+                    deserialize: (value: number, manager: any) => {
+                        return Promise.resolve(value / 2.0);
                     }
                 },
                 spy: {
-                    deserialize: sinon.spy((value, manager) => {
+                    deserialize: sinon.spy((value: any, manager: any) => {
                         return 'deserialized';
                     }),
-                    serialize: sinon.spy((value, widget) => {
+                    serialize: sinon.spy((value: any, widget: any) => {
                         return {
                             toJSON: this.serializeToJSON
-                        }
+                        };
                     })
                 }
             };
-            this.widget.constructor._deserialize_state.reset();
-        }
-        sinon.spy(WidgetModel, '_deserialize_state');
+            sinon.reset();
+        };
         await this.setup();
+        sinon.spy(this.widget.constructor, '_deserialize_state');
     });
 
     describe('constructor', function() {
@@ -115,7 +115,7 @@ describe("WidgetModel", function() {
             let widget = new WidgetModel({a: 1, b: 'b state'}, {
                 model_id: 'widget',
                 widget_manager: this.manager,
-            })
+            });
             expect(widget.attributes).to.deep.equal({
                 ...widget.defaults(),
                 a: 1,
@@ -149,7 +149,7 @@ describe("WidgetModel", function() {
             let widget = new WidgetModel({a: 1, b: 'b state'}, {
                 model_id: 'widget',
                 widget_manager: this.manager,
-            })
+            });
             let x = await widget.state_change;
             expect(x).to.be.undefined;
             expect(widget.views).to.deep.equal({});
@@ -172,7 +172,7 @@ describe("WidgetModel", function() {
             let data1 = {a: 1, b: 'state'};
             let data2 = {a: 2, b: 'state'};
             let callbacks = {iopub: {}};
-            let buffers = [new Int8Array([1,2,3])]
+            let buffers = [new Int8Array([1, 2, 3])];
 
             // send two messages to make sure the throttle does not affect sending.
             widget.send(data1, callbacks, buffers);
@@ -241,13 +241,13 @@ describe("WidgetModel", function() {
         });
 
         it('closes model', function() {
-            let closeSpy = sinon.spy(this.widget, "close");
+            let closeSpy = sinon.spy(this.widget, 'close');
             this.widget._handle_comm_closed({});
             expect(closeSpy).to.be.calledOnce;
         });
 
         it('listens to the widget close event', function() {
-            let closeSpy = sinon.spy(this.widget, "close");
+            let closeSpy = sinon.spy(this.widget, 'close');
             this.widget.comm.close();
             expect(closeSpy).to.be.calledOnce;
         });
@@ -257,7 +257,7 @@ describe("WidgetModel", function() {
             this.widget.on('comm:close', closeEventCallback);
             this.widget._handle_comm_closed({});
             expect(closeEventCallback).to.be.calledOnce;
-        })
+        });
     });
 
     describe('_handle_comm_msg', function() {
@@ -276,10 +276,11 @@ describe("WidgetModel", function() {
             });
             console.log(this.widget.get('a'));
             expect(this.widget.get('a')).to.equal(5);
-        })
+        });
 
         it('handles update messages', async function() {
             let deserialize = this.widget.constructor._deserialize_state;
+
             let setState = sinon.spy(this.widget, 'set_state');
             let state_change = this.widget._handle_comm_msg({
                 content: {
@@ -298,14 +299,14 @@ describe("WidgetModel", function() {
         });
 
         it('updates handle various types of binary buffers', async function() {
-            let buffer1 = new Uint8Array([1,2,3]);
+            let buffer1 = new Uint8Array([1, 2, 3]);
             let buffer2 = new Float64Array([2.3, 6.4]);
-            let buffer3 = new Int16Array([10,20,30]);
+            let buffer3 = new Int16Array([10, 20, 30]);
             await this.widget._handle_comm_msg({
                 content: {
                     data: {
                         method: 'update',
-                        state: {a: 5, c: ['start', null, {}],},
+                        state: {a: 5, c: ['start', null, {}], },
                         buffer_paths: [['b'], ['c', 1], ['c', 2, 'd']]
                     }
                 },
@@ -360,11 +361,11 @@ describe("WidgetModel", function() {
         });
 
         it('calls the deserializer with appropriate arguments', async function() {
-            let state = await this.widget.constructor._deserialize_state({spy: 'value'}, this.manager);
+            await this.widget.constructor._deserialize_state({spy: 'value'}, this.manager);
             let spy = this.widget.constructor.serializers.spy.deserialize;
             expect(spy).to.be.calledOnce;
             expect(spy).to.be.calledWithExactly('value', this.manager);
-        })
+        });
     });
 
     describe('serialize', function() {
@@ -387,14 +388,14 @@ describe("WidgetModel", function() {
         it('serializes null values', function() {
             const state_with_null = {
                 a: 5,
-                b: null
+                b: null as any
             };
             const serialized_state = this.widget.serialize(state_with_null);
             expect(serialized_state.b).to.equal(null);
         });
 
         it('calls custom serializers with appropriate arguments', function() {
-            let serialized_state = this.widget.serialize({spy: 'value'});
+            this.widget.serialize({spy: 'value'});
             let spy = this.widget.constructor.serializers.spy.serialize;
             expect(spy).to.be.calledWithExactly('value', this.widget);
         });
@@ -432,14 +433,14 @@ describe("WidgetModel", function() {
         });
 
         it('updates handle various types of binary buffers', async function() {
-            let buffer1 = new Uint8Array([1,2,3]);
+            let buffer1 = new Uint8Array([1, 2, 3]);
             let buffer2 = new Float64Array([2.3, 6.4]);
-            let buffer3 = new Int16Array([10,20,30]);
+            let buffer3 = new Int16Array([10, 20, 30]);
             await this.widget._handle_comm_msg({
                 content: {
                     data: {
                         method: 'update',
-                        state: {a: 5, c: ['start', null, {}],},
+                        state: {a: 5, c: ['start', null, {}], },
                         buffer_paths: [['b'], ['c', 1], ['c', 2, 'd']]
                     }
                 },
@@ -486,7 +487,7 @@ describe("WidgetModel", function() {
             this.widget.set_state({a: 2, b: 3});
             expect(this.widget.get('a')).to.equal(2);
             expect(this.widget.get('b')).to.equal(3);
-        })
+        });
     });
 
     describe('set', function() {
@@ -495,8 +496,8 @@ describe("WidgetModel", function() {
         });
 
         it('triggers change events', async function() {
-            let changeA = sinon.spy(function changeA(){});
-            let change = sinon.spy(function change(){});
+            let changeA = sinon.spy(function changeA(){ return; });
+            let change = sinon.spy(function change(){ return; });
             this.widget.on('change:a', changeA);
             this.widget.on('change', change);
             this.widget.set('a', 100);
@@ -512,7 +513,7 @@ describe("WidgetModel", function() {
             expect(this.widget.get('a')).to.equal(2);
             expect(this.widget.get('b')).to.equal(3);
         });
-    })
+    });
 
     describe('save_changes', function() {
         beforeEach(async function() {
@@ -533,16 +534,16 @@ describe("WidgetModel", function() {
             sinon.spy(this.widget, 'save');
             expect(this.widget.get('a')).to.be.undefined;
             expect(this.widget.get('b')).to.be.undefined;
-            this.widget.on('change:a', ()=> {
+            this.widget.on('change:a', () => {
                 this.widget.set('b', 15);
-            })
+            });
             this.widget.set_state({a: 10});
             expect(this.widget.get('a')).to.equal(10);
             expect(this.widget.get('b')).to.equal(15);
             this.widget.save_changes();
             expect(this.widget.save).to.be.calledWith({b: 15});
         });
-    })
+    });
 
     describe('get_state', function() {
         beforeEach(async function() {
@@ -554,10 +555,10 @@ describe("WidgetModel", function() {
             expect(this.widget.get_state()).to.deep.equal({
                 _model_module: '@jupyter-widgets/base',
                 _model_name: 'WidgetModel',
-                _model_module_version: '1.0.0',
+                _model_module_version: '1.2.0',
                 _view_module: '@jupyter-widgets/base',
                 _view_name: null,
-                _view_module_version: '1.0.0',
+                _view_module_version: '1.2.0',
                 _view_count: null,
                 a: 'get_state test'
             });
@@ -600,7 +601,7 @@ describe("WidgetModel", function() {
             expect(send).to.be.calledOnce;
             expect(send).to.be.calledWith({
                 a: 'sync test'
-            })
+            });
             // have the comm send a status idle message
             this.widget._handle_status({
                 content: {
@@ -616,7 +617,7 @@ describe("WidgetModel", function() {
 
         it('Initial values are *not* sent on creation', function() {
             expect(this.comm.send.callCount).to.equal(0);
-        })
+        });
     });
 
     describe('send_sync_message', function() {
@@ -640,7 +641,7 @@ describe("WidgetModel", function() {
         });
 
         it('handles buffers in messages', function() {
-            let buffer = new Uint8Array([1,2,3]);
+            let buffer = new Uint8Array([1, 2, 3]);
             this.widget.send_sync_message({
                 a: buffer
             });
@@ -649,8 +650,8 @@ describe("WidgetModel", function() {
                 state: {},
                 buffer_paths: [['a']]
             });
-            expect(this.comm.send.args[0][3]).to.deep.equal([buffer.buffer])
-        })
+            expect(this.comm.send.args[0][3]).to.deep.equal([buffer.buffer]);
+        });
     });
 
     describe('on_some_change', function() {

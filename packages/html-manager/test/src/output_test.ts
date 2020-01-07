@@ -1,17 +1,14 @@
 
 import { expect } from 'chai';
 
-import { RenderedText, RenderMime } from '@jupyterlab/rendermime';
+import { RenderedText } from '@jupyterlab/rendermime';
 import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 
-import { Widget, Panel } from '@phosphor/widgets';
-
 import { HTMLManager } from '../../lib/';
-import { OutputModel, OutputView } from '../../lib/output';
 
 import * as base from '@jupyter-widgets/base'
 
-const newWidget = async (modelState): Promise<HTMLElement> => {
+const newWidget = async (modelState: any): Promise<HTMLElement> => {
     const widgetTag = document.createElement('div');
     widgetTag.className = 'widget-subarea';
     document.body.appendChild(widgetTag);
@@ -24,7 +21,7 @@ const newWidget = async (modelState): Promise<HTMLElement> => {
         model_module_version: '*'
     };
     const model = await manager.new_model(modelCreate, modelState);
-    const view = await manager.display_model(
+    await manager.display_model(
         undefined, model, { el: widgetTag }
     );
     return widgetTag;
@@ -154,7 +151,6 @@ describe('Output widget', function() {
     it('renders custom mimetypes', async function() {
 
         const t = 'hello';
-        let view;
 
         // Text renderer that always renders 'something different'
         class MockTextRenderer extends RenderedText {
@@ -175,13 +171,13 @@ describe('Output widget', function() {
         const widgetTag = document.createElement('div');
         widgetTag.className = 'widget-subarea';
         document.body.appendChild(widgetTag);
-        const manager = new HTMLManager()
+        const manager = new HTMLManager();
 
         manager.renderMime.addFactory({
             safe: true,
             mimeTypes: ['text/plain'],
             createRenderer: options => new MockTextRenderer(options)
-        }, 0)
+        }, 0);
 
         const modelId = 'u-u-i-d';
         const modelCreate: base.ModelOptions = {
@@ -206,7 +202,7 @@ describe('Output widget', function() {
         const model = await manager.new_model(modelCreate, modelState);
         await manager.display_model(
             undefined, model, { el: widgetTag }
-        )
-        expect(widgetTag.innerText).to.equal('something different')
+        );
+        expect(widgetTag.innerText).to.equal('something different');
     });
 });

@@ -7,11 +7,11 @@
 
 import {
   ArrayExt
-} from '@phosphor/algorithm';
+} from '@lumino/algorithm';
 
 import {
   ISignal, Signal
-} from '@phosphor/signaling';
+} from '@lumino/signaling';
 
 export
 class Selection<T> {

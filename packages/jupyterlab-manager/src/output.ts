@@ -4,12 +4,16 @@
 import * as outputBase from '@jupyter-widgets/output';
 
 import {
-  IDisposable
-} from '@phosphor/disposable';
+  DOMWidgetView, JupyterPhosphorWidget
+} from '@jupyter-widgets/base';
 
 import {
-  Panel, Widget
-} from '@phosphor/widgets';
+  Message
+} from '@lumino/messaging';
+
+import {
+  Panel
+} from '@lumino/widgets';
 
 import {
   WidgetManager
@@ -19,16 +23,13 @@ import {
   OutputAreaModel, OutputArea
 } from '@jupyterlab/outputarea';
 
-import {
-  nbformat
-} from '@jupyterlab/coreutils';
+import * as nbformat from '@jupyterlab/nbformat';
 
 import {
-  KernelMessage
+  KernelMessage, Session
 } from '@jupyterlab/services';
 
-import * as _ from 'underscore';
-import * as $ from 'jquery';
+import $ from 'jquery';
 
 export
 const OUTPUT_WIDGET_VERSION = outputBase.OUTPUT_WIDGET_VERSION;
@@ -36,35 +37,56 @@ const OUTPUT_WIDGET_VERSION = outputBase.OUTPUT_WIDGET_VERSION;
 export
 class OutputModel extends outputBase.OutputModel {
   defaults() {
-    return _.extend(super.defaults(), {
-      msg_id: ''
-    });
+    return {...super.defaults(),
+      msg_id: '',
+      outputs: []
+    };
   }
 
   initialize(attributes: any, options: any) {
-    super.initialize(attributes, options)
+    super.initialize(attributes, options);
     // The output area model is trusted since widgets are only rendered in trusted contexts.
     this._outputs = new OutputAreaModel({trusted: true});
-    this.listenTo(this, 'change:msg_id', this.reset_msg_id);
-    this.widget_manager.context.session.kernelChanged.connect((sender, kernel) => {
-      this._msgHook.dispose();
+    this._msgHook = (msg) => {
+      this.add(msg);
+      return false;
+    };
+
+    this.widget_manager.context.sessionContext.kernelChanged.connect((sender, args) => {
+      this._handleKernelChanged(args);
     });
-    this.reset_msg_id();
+    this.listenTo(this, 'change:msg_id', this.reset_msg_id);
+    this.listenTo(this, 'change:outputs', this.setOutputs);
+    this.setOutputs();
   }
 
-  reset_msg_id() {
-    if (this._msgHook) {
-      this._msgHook.dispose();
+  /**
+   * Register a new kernel
+   */
+  _handleKernelChanged({oldValue}: Session.ISessionConnection.IKernelChangedArgs) {
+    const msgId = this.get('msg_id');
+    if (msgId && oldValue) {
+      oldValue.removeMessageHook(msgId, this._msgHook);
+      this.set('msg_id', null);
     }
-    this._msgHook = null;
+  }
 
-    let kernel = this.widget_manager.context.session.kernel;
-    let msgId = this.get('msg_id');
+  /**
+   * Reset the message id.
+   */
+  reset_msg_id() {
+    const kernel = this.widget_manager.context.sessionContext.session.kernel;
+    const msgId = this.get('msg_id');
+    const oldMsgId = this.previous('msg_id');
+
+    // Clear any old handler.
+    if (oldMsgId && kernel) {
+      kernel.removeMessageHook(oldMsgId, this._msgHook);
+    }
+
+    // Register any new handler.
     if (msgId && kernel) {
-      this._msgHook = kernel.registerMessageHook(this.get('msg_id'), msg => {
-        this.add(msg);
-        return false;
-      });
+      kernel.registerMessageHook(msgId, this._msgHook);
     }
   }
 
@@ -80,11 +102,13 @@ class OutputModel extends outputBase.OutputModel {
       this._outputs.add(model);
       break;
     case 'clear_output':
-        this.clear_output((msg as KernelMessage.IClearOutputMsg).content.wait);
-        break;
+      this.clear_output((msg as KernelMessage.IClearOutputMsg).content.wait);
+      break;
     default:
       break;
     }
+    this.set('outputs', this._outputs.toJSON(), {newMessage: true});
+    this.save_changes();
   }
 
   clear_output(wait: boolean = false) {
@@ -94,19 +118,67 @@ class OutputModel extends outputBase.OutputModel {
   get outputs() {
     return this._outputs;
   }
+
+  setOutputs(model?: any, value?: any, options?: any) {
+    if (!(options && options.newMessage)) {
+        // fromJSON does not clear the existing output
+        this.clear_output();
+        // fromJSON does not copy the message, so we make a deep copy
+        this._outputs.fromJSON(JSON.parse(JSON.stringify(this.get('outputs'))));
+    }
+  }
+
   widget_manager: WidgetManager;
 
-  private _msgHook: IDisposable = null;
+  private _msgHook: (msg: KernelMessage.IIOPubMessage) => boolean;
   private _outputs: OutputAreaModel;
 }
 
+export
+class JupyterPhosphorPanelWidget extends Panel {
+    constructor(options: JupyterPhosphorWidget.IOptions & Panel.IOptions) {
+        let view = options.view;
+        delete options.view;
+        super(options);
+        this._view = view;
+    }
+
+    /**
+     * Process the phosphor message.
+     *
+     * Any custom phosphor widget used inside a Jupyter widget should override
+     * the processMessage function like this.
+     */
+    processMessage(msg: Message) {
+        super.processMessage(msg);
+        this._view.processPhosphorMessage(msg);
+    }
+
+    /**
+     * Dispose the widget.
+     *
+     * This causes the view to be destroyed as well with 'remove'
+     */
+    dispose() {
+        if (this.isDisposed) {
+            return;
+        }
+        super.dispose();
+        if (this._view) {
+            this._view.remove();
+        }
+        this._view = null;
+    }
+
+    private _view: DOMWidgetView;
+}
 
 export
 class OutputView extends outputBase.OutputView {
 
     _createElement(tagName: string) {
-        this.pWidget = new Panel();
-        return this.pWidget.node;
+      this.pWidget = new JupyterPhosphorPanelWidget({ view: this });
+      return this.pWidget.node;
     }
 
     _setElement(el: HTMLElement) {
@@ -123,30 +195,21 @@ class OutputView extends outputBase.OutputView {
    * Called when view is rendered.
    */
   render() {
+    super.render();
     this._outputView = new OutputArea({
       rendermime: this.model.widget_manager.rendermime,
       contentFactory: OutputArea.defaultContentFactory,
       model: this.model.outputs
     });
     // TODO: why is this a readonly property now?
-    //this._outputView.model = this.model.outputs;
+    // this._outputView.model = this.model.outputs;
     // TODO: why is this on the model now?
-    //this._outputView.trusted = true;
+    // this._outputView.trusted = true;
     this.pWidget.insertWidget(0, this._outputView);
 
     this.pWidget.addClass('jupyter-widgets');
     this.pWidget.addClass('widget-output');
     this.update(); // Set defaults.
-  }
-
-  /**
-   * Update the contents of this view
-   *
-   * Called when the model is changed.  The model may have been
-   * changed by another view or by a state update from the back-end.
-   */
-  update() {
-    return super.update();
   }
 
   remove() {

@@ -1,10 +1,6 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-export {
-    isEqual, difference, isPlainObject
-} from 'lodash';
-
 import {
     JSONObject, JSONArray, JSONValue
 } from '@phosphor/coreutils';
@@ -13,6 +9,29 @@ import {
     toByteArray, fromByteArray
 } from 'base64-js';
 
+import {
+    UUID
+} from '@lumino/coreutils';
+
+import _isEqual from 'lodash/isEqual';
+import isPlainObject from 'lodash/isPlainObject';
+
+/**
+ * Find all strings in the first argument that are not in the second.
+ */
+export
+function difference(a: string[], b: string[]): string[] {
+    return a.filter(v => b.indexOf(v) === -1);
+}
+
+/**
+ * Compare two objects deeply to see if they are equal.
+ */
+export
+function isEqual(a: any, b: any) {
+    return _isEqual(a, b);
+}
+
 /**
  * A polyfill for Object.assign
  *
@@ -20,28 +39,25 @@ import {
  */
 export
 let assign = (Object as any).assign || function(t: any) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-            t[p] = s[p];
+    for (let i = 1; i < arguments.length; i++) {
+        let s = arguments[i];
+        for (let p in s) {
+            if (Object.prototype.hasOwnProperty.call(s, p)) {
+                t[p] = s[p];
+            }
+        }
     }
     return t;
 };
 
 /**
+ * Generate a UUID
+ *
  * http://www.ietf.org/rfc/rfc4122.txt
  */
 export
 function uuid(): string {
-    var s: string[] = [];
-    var hexDigits = '0123456789ABCDEF';
-    for (var i = 0; i < 32; i++) {
-        s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-    }
-    s[12] = '4';  // bits 12-15 of the time_hi_and_version field to 0010
-    s[16] = hexDigits.substr(((s[16] as any) & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
-
-    return s.join('');
+    return UUID.uuid4();
 }
 
 /**
@@ -53,7 +69,7 @@ function uuid(): string {
  */
 export
 class WrappedError extends Error {
-    constructor(message: string, error: Error) {
+    constructor(message, error) {
         super(message);
         console.warn('WrappedError has been deprecated!');
         // Keep a stack of the original error messages.
@@ -68,19 +84,25 @@ class WrappedError extends Error {
 }
 
 /**
+ * A simple dictionary type.
+ */
+export
+type Dict<T> = { [keys: string]: T; };
+
+/**
  * Resolve a promiseful dictionary.
  * Returns a single Promise.
  */
 export
-function resolvePromisesDict<T>(d: {[key: string]: Promise<T> | T}): Promise<{[key: string]: T}> {
-    var keys = Object.keys(d);
-    var values: (Promise<T> | T)[] = [];
+function resolvePromisesDict<V>(d: Dict<PromiseLike<V>>): Promise<Dict<V>> {
+    let keys = Object.keys(d);
+    let values: PromiseLike<V>[] = [];
     keys.forEach(function(key) {
         values.push(d[key]);
     });
-    return Promise.all(values).then(function(v) {
-        d = {};
-        for(var i=0; i<keys.length; i++) {
+    return Promise.all(values).then((v) => {
+        let d: Dict<V> = {};
+        for (let i=0; i < keys.length; i++) {
             d[keys[i]] = v[i];
         }
         return d;
@@ -96,7 +118,9 @@ function resolvePromisesDict<T>(d: {[key: string]: Promise<T> | T}): Promise<{[k
 export
 function reject(message: string, log: boolean) {
     return function promiseRejection(error: Error) {
-        if (log) console.error(new Error(message));
+        if (log) {
+            console.error(new Error(message));
+        }
         throw error;
     };
 }
@@ -112,35 +136,17 @@ function reject(message: string, log: boolean) {
  */
 export
 function put_buffers(state: JSONObject | JSONArray, buffer_paths: (string | number)[][], buffers: DataView[]) {
-    for (let i=0; i<buffer_paths.length; i++) {
+    for (let i=0; i < buffer_paths.length; i++) {
         let buffer_path = buffer_paths[i];
          // say we want to set state[x][y][z] = buffers[i]
-        let obj = state as any;
+        let obj = state;
         // we first get obj = state[x][y]
-        for (let j = 0; j < buffer_path.length-1; j++)
+        for (let j = 0; j < buffer_path.length - 1; j++) {
             obj = obj[buffer_path[j]];
+        }
         // and then set: obj[z] = buffers[i]
-        obj[buffer_path[buffer_path.length-1]] = buffers[i];
+        obj[buffer_path[buffer_path.length - 1]] = buffers[i];
     }
-}
-
-
-export
-interface ISerializedState {
-    state: JSONValue;
-    buffers: ArrayBuffer[];
-    buffer_paths: (string | number)[][];
-}
-
-
-export
-interface Serializeable {
-    toJSON(options?: {}): JSONObject | JSONArray;
-}
-
-export
-function isSerializable(object: any): object is Serializeable{
-    return object.toJSON;
 }
 
 
@@ -170,13 +176,13 @@ function remove_buffers(state: JSONObject | JSONArray | Serializeable): ISeriali
             let is_cloned = false;
             for (let i = 0; i < obj.length; i++) {
                 let value = obj[i];
-                if(value) {
-                    if (value['buffer'] instanceof ArrayBuffer || value instanceof ArrayBuffer) {
-                        if(!is_cloned) {
+                if (value) {
+                    if (value instanceof ArrayBuffer || ArrayBuffer.isView(value)) {
+                        if (!is_cloned) {
                             obj = obj.slice();
                             is_cloned = true;
                         }
-                        buffers.push(value instanceof ArrayBuffer ? value : value.buffer);
+                        buffers.push(ArrayBuffer.isView(value) ? value.buffer : value);
                         buffer_paths.push(path.concat([i]));
                         // easier to just keep the array, but clear the entry, otherwise we have to think
                         // about array length, much easier this way
@@ -184,8 +190,8 @@ function remove_buffers(state: JSONObject | JSONArray | Serializeable): ISeriali
                     } else {
                         let new_value  = remove(value, path.concat([i]));
                         // only assigned when the value changes, we may serialize objects that don't support assignment
-                        if(new_value !== value) {
-                            if(!is_cloned) {
+                        if (new_value !== value) {
+                            if (!is_cloned) {
                                 obj = obj.slice();
                                 is_cloned = true;
                             }
@@ -194,25 +200,25 @@ function remove_buffers(state: JSONObject | JSONArray | Serializeable): ISeriali
                     }
                 }
             }
-        } else if(isPlainObject(obj)) {
+        } else if (isPlainObject(obj)) {
             for (let key in obj) {
                 let is_cloned = false;
                 if (obj.hasOwnProperty(key)) {
                     let value = obj[key];
-                    if(value) {
-                        if (value.buffer instanceof ArrayBuffer || value instanceof ArrayBuffer) {
-                            if(!is_cloned) {
+                    if (value) {
+                        if (value instanceof ArrayBuffer || ArrayBuffer.isView(value)) {
+                            if (!is_cloned) {
                                 obj = {...obj};
                                 is_cloned = true;
                             }
-                            buffers.push(value instanceof ArrayBuffer ? value : value.buffer);
+                            buffers.push(ArrayBuffer.isView(value) ? value.buffer : value);
                             buffer_paths.push(path.concat([key]));
                             delete obj[key]; // for objects/dicts we just delete them
                         } else {
-                            let new_value  = remove(value, path.concat([key]));
+                            let new_value = remove(value, path.concat([key]));
                             // only assigned when the value changes, we may serialize objects that don't support assignment
-                            if(new_value !== value) {
-                                if(!is_cloned) {
+                            if (new_value !== value) {
+                                if (!is_cloned) {
                                     obj = {...obj};
                                     is_cloned = true;
                                 }
@@ -226,7 +232,7 @@ function remove_buffers(state: JSONObject | JSONArray | Serializeable): ISeriali
         return obj;
     }
     let new_state = remove(state, []);
-    return {state: new_state, buffers: buffers, buffer_paths: buffer_paths}
+    return {state: new_state, buffers: buffers, buffer_paths: buffer_paths};
 }
 
 let hexTable = [

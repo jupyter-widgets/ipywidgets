@@ -40,3 +40,10 @@ make linkcheck
 Windows users can find `make.bat` in the `docs` folder.
 
 You should also have a look at the [Project Jupyter Documentation Guide](https://jupyter.readthedocs.io/en/latest/contrib_docs/index.html).
+
+### Cleaning notebooks for docs
+
+Notebook output and metadata should be stripped with [nbstripoutput](https://github.com/kynan/nbstripout) before commiting. For example:
+```
+nbstripoutput docs/source/examples/Widget\ List.ipynb
+```

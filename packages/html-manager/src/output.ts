@@ -3,13 +3,13 @@
 
 import * as outputBase from '@jupyter-widgets/output';
 
-import { Panel, Widget } from '@phosphor/widgets';
+import { Panel } from '@lumino/widgets';
 
 import { OutputAreaModel, OutputArea } from '@jupyterlab/outputarea';
 
 import { HTMLManager } from './htmlmanager';
 
-import * as $ from 'jquery';
+import $ from 'jquery';
 
 import '../css/output.css';
 
@@ -18,7 +18,7 @@ export class OutputModel extends outputBase.OutputModel {
         return {
             ...super.defaults(),
             msg_id: ''
-        }
+        };
     }
 
     initialize(attributes: any, options: any) {
@@ -55,7 +55,7 @@ export class OutputView extends outputBase.OutputView {
     }
 
     render() {
-        const manager = this.model.widget_manager
+        const manager = this.model.widget_manager;
         const rendermime = manager.renderMime;
         this._outputView = new OutputArea({
             rendermime: rendermime,

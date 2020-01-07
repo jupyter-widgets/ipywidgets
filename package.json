@@ -1,15 +1,22 @@
 {
   "private": true,
+  "workspaces": [
+    "packages/*",
+    "widgetsnbextension",
+    "examples/*"
+  ],
   "scripts": {
-    "install": "lerna bootstrap --hoist",
-    "clean": "lerna run clean",
-    "build:examples": "lerna run build --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
     "build": "lerna run build --ignore \"@jupyter-widgets/example-*\"",
-    "update:dependency": "node scripts/update-dependency.js",
-    "updated": "lerna updated",
-    "publish": "npm run clean && npm run build && lerna publish -m \"Publish npm packages\""
+    "build:examples": "lerna run build --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
+    "clean": "lerna run clean",
+    "integrity": "node scripts/package-integrity.js",
+    "lint": "lerna run lint",
+    "publish": "yarn run clean && yarn run build && lerna publish -m \"Publish npm packages\"",
+    "update-dependency": "update-dependency --lerna",
+    "updated": "lerna updated"
   },
   "devDependencies": {
-    "lerna": "^2.0.0"
+    "@jupyterlab/buildutils": "^2.0.0-beta.1",
+    "lerna": "^3.2.1"
   }
 }

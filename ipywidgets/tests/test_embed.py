@@ -1,4 +1,6 @@
 
+from io import StringIO
+from html.parser import HTMLParser
 import json
 import os
 import re
@@ -7,20 +9,9 @@ import shutil
 
 import traitlets
 
-from ..widgets import IntSlider, IntText, Widget, jslink, HBox, widget_serialization
+from ..widgets import IntSlider, IntText, Text, Widget, jslink, HBox, widget_serialization
 from ..embed import embed_data, embed_snippet, embed_minimal_html, dependency_state
 
-try:
-    from io import StringIO
-except ImportError:
-    from StringIO import StringIO
-
-try:
-    # Python 3
-    from html.parser import HTMLParser
-except ImportError:
-    # Python 2
-    from HTMLParser import HTMLParser
 
 class CaseWidget(Widget):
     """Widget to test dependency traversal"""
@@ -54,6 +45,39 @@ class TestEmbed:
 
         model_names = [s['model_name'] for s in state.values()]
         assert 'IntTextModel' in model_names
+
+    def test_cors(self):
+        w = IntText(4)
+        code = embed_snippet(w)
+         # 1 is from the require
+        assert len(re.findall(' crossorigin', code)) > 1
+        f = StringIO()
+        embed_minimal_html(f, w)
+        assert len(re.findall(' crossorigin', f.getvalue())) > 1
+
+        code = embed_snippet(w, cors=False, requirejs=False)
+        assert ' crossorigin' not in code
+        f = StringIO()
+        embed_minimal_html(f, w, cors=False, requirejs=False)
+        assert ' crossorigin' not in f.getvalue()
+
+        code = embed_snippet(w, cors=False, requirejs=True)
+        assert len(re.findall(' crossorigin', code)) == 1 # 1 is from the require, which is ok
+        f = StringIO()
+        embed_minimal_html(f, w, cors=False, requirejs=True)
+        assert len(re.findall(' crossorigin', f.getvalue())) == 1 # 1 is from the require, which is ok
+
+    def test_escape(self):
+        w = Text('<script A> <ScRipt> </Script> <!-- --> <b>hi</b>')
+        code = embed_snippet(w)
+        assert code.find(r'<script A>') == -1
+        assert code.find(r'\u003cscript A> \u003cScRipt> \u003c/Script> \u003c!-- --> <b>hi</b>') >= 0
+
+        f = StringIO()
+        embed_minimal_html(f, w)
+        content = f.getvalue()
+        assert content.find(r'<script A>') == -1
+        assert content.find(r'\u003cscript A> \u003cScRipt> \u003c/Script> \u003c!-- --> <b>hi</b>') >= 0
 
     def test_embed_data_two_widgets(self):
         w1 = IntText(4)

@@ -8,10 +8,11 @@ User Guide
   examples/Using Interact.ipynb
   examples/Widget Basics.ipynb
   examples/Widget List.ipynb
+  examples/Output Widget.ipynb
   examples/Widget Events.ipynb
   examples/Widget Styling.ipynb
+  examples/Layout Templates.ipynb
   examples/Widget Custom.ipynb
-  examples/Widget Alignment.ipynb
   examples/Widget Low Level.ipynb
   examples/Widget Asynchronous.ipynb
   embedding.md

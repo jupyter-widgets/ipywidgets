@@ -30,7 +30,7 @@ class ButtonStyleModel extends StyleModel {
         button_color: {
             selector: '',
             attribute: 'background-color',
-            default: null
+            default: null as any
         },
         font_weight: {
             selector: '',
@@ -67,6 +67,7 @@ class ButtonView extends DOMWidgetView {
         this.el.classList.add('jupyter-button');
         this.el.classList.add('widget-button');
         this.listenTo(this.model, 'change:button_style', this.update_button_style);
+        this.listenTo(this.model, 'change:tabbable', this.updateTabindex);
         this.set_button_style();
         this.update(); // Set defaults.
     }
@@ -79,14 +80,15 @@ class ButtonView extends DOMWidgetView {
      */
     update() {
         this.el.disabled = this.model.get('disabled');
+        this.updateTabindex();
         this.el.setAttribute('title', this.model.get('tooltip'));
 
-        var description = this.model.get('description');
-        var icon = this.model.get('icon');
+        let description = this.model.get('description');
+        let icon = this.model.get('icon');
         if (description.length || icon.length) {
             this.el.textContent = '';
             if (icon.length) {
-                var i = document.createElement('i');
+                let i = document.createElement('i');
                 i.classList.add('fa');
                 i.classList.add('fa-' + icon);
                 if (description.length === 0) {
@@ -119,7 +121,7 @@ class ButtonView extends DOMWidgetView {
     /**
      * Handles when the button is clicked.
      */
-    _handle_click(event) {
+    _handle_click(event: MouseEvent) {
         event.preventDefault();
         this.send({event: 'click'});
     }

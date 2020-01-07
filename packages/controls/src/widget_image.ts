@@ -20,9 +20,16 @@ class ImageModel extends CoreDOMWidgetModel {
             format: 'png',
             width: '',
             height: '',
-            value: new Uint8Array(0)
+            value: new DataView(new ArrayBuffer(0))
         });
     }
+
+    static serializers = {
+        ...CoreDOMWidgetModel.serializers,
+        value: {serialize: (value: any) => {
+            return new DataView(value.buffer.slice(0));
+        }}
+    };
 }
 
 export
@@ -44,21 +51,31 @@ class ImageView extends DOMWidgetView {
          * Called when the model is changed.  The model may have been
          * changed by another view or by a state update from the back-end.
          */
-        var blob = new Blob([this.model.get('value')], {type: `image/${this.model.get('format')}`});
-        var url = URL.createObjectURL(blob);
-        var oldurl = this.el.src;
+
+        let url;
+        let format = this.model.get('format');
+        let value = this.model.get('value');
+        if (format !== 'url') {
+            let blob = new Blob([value], {type: `image/${this.model.get('format')}`});
+            url = URL.createObjectURL(blob);
+        } else {
+            url = (new TextDecoder('utf-8')).decode(value.buffer);
+        }
+
+        // Clean up the old objectURL
+        let oldurl = this.el.src;
         this.el.src = url;
-        if (oldurl) {
+        if (oldurl && typeof oldurl !== 'string') {
             URL.revokeObjectURL(oldurl);
         }
-        var width = this.model.get('width');
+        let width = this.model.get('width');
         if (width !== undefined && width.length > 0) {
             this.el.setAttribute('width', width);
         } else {
             this.el.removeAttribute('width');
         }
 
-        var height = this.model.get('height');
+        let height = this.model.get('height');
         if (height !== undefined && height.length > 0) {
             this.el.setAttribute('height', height);
         } else {
@@ -71,7 +88,7 @@ class ImageView extends DOMWidgetView {
         if (this.el.src) {
             URL.revokeObjectURL(this.el.src);
         }
-        super.remove()
+        super.remove();
     }
 
     /**

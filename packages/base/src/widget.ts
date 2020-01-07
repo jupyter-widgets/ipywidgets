@@ -3,30 +3,22 @@
 
 import * as managerBase from './manager-base';
 import * as utils from './utils';
-import * as backbonePatch from './backbone-patch'
+import * as backbonePatch from './backbone-patch';
 
 import * as Backbone from 'backbone';
-import * as $ from 'jquery';
+import $ from 'jquery';
 
 import {
     NativeView
 } from './nativeview';
 
 import {
-    ManagerBase
-} from './manager-base';
-
-import {
-    Kernel, KernelMessage
-} from '@jupyterlab/services';
-
-import {
-    Widget
-} from '@phosphor/widgets';
+    Widget, Panel
+} from '@lumino/widgets';
 
 import {
     Message, MessageLoop
-} from '@phosphor/messaging';
+} from '@lumino/messaging';
 
 import {
     JSONObject, JSONValue
@@ -40,8 +32,18 @@ import {
     StyleModel
 } from './widget_style';
 
-export
-const JUPYTER_WIDGETS_VERSION = '1.0.0';
+import {
+    IClassicComm, ICallbacks
+} from './services-shim';
+
+import {
+    JUPYTER_WIDGETS_VERSION
+} from './version';
+
+import {
+    KernelMessage
+} from '@jupyterlab/services';
+
 
 export
 type ModelDict = { [key: string]: WidgetModel };
@@ -61,24 +63,37 @@ export
 function unpack_models(value: any | Backbone.ObjectHash | string | (Backbone.ObjectHash | string)[], manager: ManagerBase<any>): Promise<WidgetModel | ModelDict | WidgetModel[] | any> {
     let unpacked: Promise<WidgetModel> | Promise<WidgetModel>[];
     if (Array.isArray(value)) {
-        let unpacked: Promise<WidgetModel>[] = [];
+        const unpacked: any[] = [];
         value.forEach((sub_value, key) => {
             unpacked.push(unpack_models(sub_value, manager));
         });
         return Promise.all(unpacked);
     } else if (value instanceof Object && typeof value !== 'string') {
-        let unpacked: ModelPromiseDict = {};
+        const unpacked: {[key: string]: any} = {};
         Object.keys(value).forEach((key) => {
-            unpacked[key] = unpack_models((value as Backbone.ObjectHash)[key], manager);
-        })
+            unpacked[key] = unpack_models(value[key], manager);
+        });
         return utils.resolvePromisesDict(unpacked);
-    } else if (typeof value === 'string' && value.slice(0,10) === 'IPY_MODEL_') {
+    } else if (typeof value === 'string' && value.slice(0, 10) === 'IPY_MODEL_') {
         // get_model returns a promise already
         return manager.get_model(value.slice(10, value.length));
     } else {
-        return Promise.resolve(value as any);
+        return Promise.resolve(value);
+    }
+}
+
+
+/**
+ * Type declaration for general widget serializers.
+ */
+export
+interface ISerializers {
+    [key: string]: {
+        deserialize?: (value?: any, manager?: managerBase.ManagerBase<any>) => any;
+        serialize?: (value?: any, widget?: WidgetModel) => any;
     }
 };
+
 
 export
 class WidgetModel extends Backbone.Model {
@@ -88,13 +103,13 @@ class WidgetModel extends Backbone.Model {
      */
     defaults() {
         return {
-            _model_module: "@jupyter-widgets/base",
-            _model_name: "WidgetModel",
+            _model_module: '@jupyter-widgets/base',
+            _model_name: 'WidgetModel',
             _model_module_version: JUPYTER_WIDGETS_VERSION,
-            _view_module: "@jupyter-widgets/base",
-            _view_name: null,
+            _view_module: '@jupyter-widgets/base',
+            _view_name: null as string | null,
             _view_module_version: JUPYTER_WIDGETS_VERSION,
-            _view_count: null,
+            _view_count: null as number | null,
         };
     }
 
@@ -168,7 +183,7 @@ class WidgetModel extends Backbone.Model {
     /**
      * Send a custom msg over the comm.
      */
-    send(content: any, callbacks, buffers?: ArrayBuffer[] | ArrayBufferView[]) {
+    send(content: {}, callbacks: {}, buffers?: ArrayBuffer[] | ArrayBufferView[]) {
         if (this.comm !== undefined) {
             let data = {method: 'custom', content: content};
             this.comm.send(data, callbacks, {}, buffers);
@@ -201,7 +216,7 @@ class WidgetModel extends Backbone.Model {
             return this.views[id].then(view => view.remove());
         });
         delete this.views;
-        return Promise.all(views).then(()=>{});
+        return Promise.all(views).then(() => { return; });
     }
 
     /**
@@ -215,17 +230,16 @@ class WidgetModel extends Backbone.Model {
     /**
      * Handle incoming comm msg.
      */
-    _handle_comm_msg(msg: KernelMessage.ICommOpenMsg): Promise<void> {
-        let data = msg.content.data as JSONObject | null;
-        if (data === null) {
-            return Promise.resolve();
-        }
-        switch (data['method']) {
+    _handle_comm_msg(msg: KernelMessage.ICommMsgMsg): Promise<void> {
+        const data = msg.content.data as any;
+        let method = data.method;
+        // tslint:disable-next-line:switch-default
+        switch (method) {
             case 'update':
                 this.state_change = this.state_change
                     .then(() => {
-                        let state = data!['state'] as JSONObject;
-                        let buffer_paths = (data!['buffer_paths'] || []) as (string | number)[][];
+                        let state = data.state;
+                        let buffer_paths = data.buffer_paths || [];
                         // Make sure the buffers are DataViews
                         let buffers = (msg.buffers || []).map(b => {
                             if (b instanceof DataView) {
@@ -239,10 +253,10 @@ class WidgetModel extends Backbone.Model {
                         return (this.constructor as typeof WidgetModel)._deserialize_state(state, this.widget_manager);
                     }).then((state) => {
                         this.set_state(state);
-                    }).catch(utils.reject(`Could not process update msg for model id: ${this.model_id}`, true))
+                    }).catch(utils.reject(`Could not process update msg for model id: ${this.model_id}`, true));
                 return this.state_change;
             case 'custom':
-                this.trigger('msg:custom', data['content'], msg.buffers);
+                this.trigger('msg:custom', data.content, msg.buffers);
                 return Promise.resolve();
         }
         return Promise.resolve();
@@ -257,7 +271,7 @@ class WidgetModel extends Backbone.Model {
         this._state_lock = state;
         try {
             this.set(state);
-        } catch(e) {
+        } catch (e) {
             console.error(`Error setting state: ${e.message}`);
         } finally {
             this._state_lock = null;
@@ -275,7 +289,7 @@ class WidgetModel extends Backbone.Model {
         if (drop_defaults) {
             // if defaults is a function, call it
             let d = this.defaults;
-            let defaults = (typeof d === "function") ? d.call(this) : d;
+            let defaults = (typeof d === 'function') ? d.call(this) : d;
             let state: JSONObject = {};
             Object.keys(fullState).forEach(key => {
                 if (!(utils.isEqual(fullState[key], defaults[key]))) {
@@ -311,7 +325,7 @@ class WidgetModel extends Backbone.Model {
     /**
      * Create msg callbacks for a comm msg.
      */
-    callbacks(view?: WidgetView) {
+    callbacks(view?: WidgetView): ICallbacks {
         return this.widget_manager.callbacks(view);
     }
 
@@ -458,7 +472,7 @@ class WidgetModel extends Backbone.Model {
                     state[k] = state[k].toJSON();
                 }
             } catch (e) {
-                console.error("Error serializing widget state attribute: ", k);
+                console.error('Error serializing widget state attribute: ', k);
                 throw e;
             }
         }
@@ -471,7 +485,7 @@ class WidgetModel extends Backbone.Model {
     send_sync_message(state: JSONObject, callbacks: any = {}) {
         try {
             callbacks.iopub = callbacks.iopub || {};
-            let statuscb = callbacks.iopub.status
+            let statuscb = callbacks.iopub.status;
             callbacks.iopub.status = (msg: KernelMessage.IStatusMsg) => {
                 this._handle_status(msg);
                 if (statuscb) {
@@ -497,9 +511,9 @@ class WidgetModel extends Backbone.Model {
      *
      * This invokes a Backbone.Sync.
      */
-    save_changes(callbacks?) {
+    save_changes(callbacks?: {}) {
         if (this.comm_live) {
-            let options: any = {patch: true}
+            let options: any = {patch: true};
             if (callbacks) {
                 options.callbacks = callbacks;
             }
@@ -515,9 +529,10 @@ class WidgetModel extends Backbone.Model {
      * the second form will result in foo being called twice
      * while the first will call foo only once.
      */
-    on_some_change(keys: string[], callback, context: any) {
-        this.on('change', function() {
-            if (keys.some(this.hasChanged, this)) {
+    on_some_change(keys: string[], callback: (...args: any[]) => void, context: any) {
+        const scope = this;
+        this.on('change', function () {
+            if (keys.some(scope.hasChanged, scope)) {
                 callback.apply(context, arguments);
             }
         }, this);
@@ -536,9 +551,9 @@ class WidgetModel extends Backbone.Model {
      * is an instance of widget manager, which is required for the
      * deserialization of widget models.
      */
-    static _deserialize_state(state: JSONObject, manager: ManagerBase<any>) {
+    static _deserialize_state(state: JSONObject, manager: managerBase.ManagerBase<any>) {
         let serializers = this.serializers;
-        let deserialized;
+        let deserialized: {[key: string]: any};
         if (serializers) {
             deserialized = {} as JSONObject;
             for (let k in state) {
@@ -554,10 +569,7 @@ class WidgetModel extends Backbone.Model {
         return utils.resolvePromisesDict(deserialized);
     }
 
-    static serializers: {[key: string]: {
-        deserialize?: (value?: any, manager?: managerBase.ManagerBase<any>) => any,
-        serialize?: (value?: any, widget?: WidgetModel) => any
-    }};
+    static serializers: ISerializers;
 
 
     // Backbone calls the overridden initialization function from the
@@ -568,7 +580,7 @@ class WidgetModel extends Backbone.Model {
     model_id: string;
     views: {[key: string]: Promise<WidgetView>};
     state_change: Promise<any>;
-    comm: COMMTYPEHERE;
+    comm: IClassicComm;
     name: string;
     module: string;
 
@@ -583,15 +595,16 @@ class WidgetModel extends Backbone.Model {
 
 export
 class DOMWidgetModel extends WidgetModel {
-    static serializers = {
+    static serializers: ISerializers = {
         ...WidgetModel.serializers,
         layout: {deserialize: unpack_models},
         style: {deserialize: unpack_models},
-    }
+    };
 
     defaults() {
         return utils.assign(super.defaults(), {
-            _dom_classes: []
+            _dom_classes: [],
+            tabbable: null
             // We do not declare defaults for the layout and style attributes.
             // Those defaults are constructed on the kernel side and synced here
             // as needed, and our code here copes with those attributes being
@@ -604,11 +617,18 @@ class DOMWidgetModel extends WidgetModel {
 
 
 export
-abstract class WidgetView extends NativeView<WidgetModel> {
+class WidgetView extends NativeView<WidgetModel> {
     /**
      * Public constructor.
      */
-    initialize(parameters: { options: any} ) {
+    constructor(options?: Backbone.ViewOptions<WidgetModel> & {options?: any}) {
+        super(options);
+    }
+
+    /**
+     * Initializer, called at the end of the constructor.
+     */
+    initialize(parameters: WidgetView.InitializeParameters) {
         this.listenTo(this.model, 'change', () => {
             let changed = Object.keys(this.model.changedAttributes() || {});
             if (changed[0] === '_view_count' && changed.length === 1) {
@@ -621,14 +641,14 @@ abstract class WidgetView extends NativeView<WidgetModel> {
         this.options = parameters.options;
 
         this.once('remove', () => {
-            if (typeof(this.model.get('_view_count')) === "number") {
+            if (typeof(this.model.get('_view_count')) === 'number') {
                 this.model.set('_view_count', this.model.get('_view_count') - 1);
                 this.model.save_changes();
             }
         });
 
         this.once('displayed', () => {
-            if (typeof(this.model.get('_view_count')) === "number") {
+            if (typeof(this.model.get('_view_count')) === 'number') {
                 this.model.set('_view_count', this.model.get('_view_count') + 1);
                 this.model.save_changes();
             }
@@ -636,16 +656,32 @@ abstract class WidgetView extends NativeView<WidgetModel> {
 
         this.displayed = new Promise((resolve, reject) => {
             this.once('displayed', resolve);
+
+        this.model.on('msg:custom', this.handle_message.bind(this));
         });
     }
+
+    /**
+     * Handle message sent to the front end.
+     *
+     * Used to focus or blur the widget.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+	    this.el.focus();
+        } else if (content.do == 'blur') {
+	    this.el.blur();
+	}
+    };
 
     /**
      * Triggered on model change.
      *
      * Update view to be consistent with this.model
      */
-    update(options?: {}) {
-    };
+    update(options?: any) {
+        return;
+    }
 
     /**
      * Render a view
@@ -653,13 +689,13 @@ abstract class WidgetView extends NativeView<WidgetModel> {
      * @returns the view or a promise to the view.
      */
     render(): any {
+        return;
     }
 
     /**
      * Create and promise that resolves to a child view of a given model
      */
     create_child_view(child_model: WidgetModel, options = {}) {
-        let that = this;
         options = { parent: this, ...options};
         return this.model.widget_manager.create_view(child_model, options)
             .catch(utils.reject('Could not create child view', true));
@@ -668,14 +704,14 @@ abstract class WidgetView extends NativeView<WidgetModel> {
     /**
      * Create msg callbacks for a comm msg.
      */
-    callbacks() {
+    callbacks(): ICallbacks {
         return this.model.callbacks(this);
     }
 
     /**
      * Send a custom msg associated with this view.
      */
-    send(content: JSONObject, buffers?: ArrayBuffer[] | ArrayBufferView[]) {
+    send(content: {}, buffers?: ArrayBuffer[] | ArrayBufferView[]) {
         this.model.send(content, this.callbacks(), buffers);
     }
 
@@ -696,6 +732,13 @@ abstract class WidgetView extends NativeView<WidgetModel> {
      * A promise that resolves to the parent view when a child view is displayed.
      */
     displayed: Promise<WidgetView>;
+
+}
+
+export namespace WidgetView {
+    export interface InitializeParameters<T extends WidgetModel = WidgetModel> extends Backbone.ViewOptions<T> {
+        options: any;
+    }
 }
 
 export
@@ -746,25 +789,64 @@ class JupyterPhosphorWidget extends Widget {
 }
 
 export
+class JupyterPhosphorPanelWidget extends Panel {
+    constructor(options: JupyterPhosphorWidget.IOptions & Panel.IOptions) {
+        let view = options.view;
+        delete options.view;
+        super(options);
+        this._view = view;
+    }
+
+    /**
+     * Process the phosphor message.
+     *
+     * Any custom phosphor widget used inside a Jupyter widget should override
+     * the processMessage function like this.
+     */
+    processMessage(msg: Message) {
+        super.processMessage(msg);
+        this._view.processPhosphorMessage(msg);
+    }
+
+    /**
+     * Dispose the widget.
+     *
+     * This causes the view to be destroyed as well with 'remove'
+     */
+    dispose() {
+        if (this.isDisposed) {
+            return;
+        }
+        super.dispose();
+        if (this._view) {
+            this._view.remove();
+        }
+        this._view = null;
+    }
+
+    private _view: DOMWidgetView;
+}
+
+export
 class DOMWidgetView extends WidgetView {
     /**
      * Public constructor
      */
-    initialize(parameters: { options: any }) {
+    initialize(parameters: WidgetView.InitializeParameters) {
         super.initialize(parameters);
 
-        this.listenTo(this.model, 'change:_dom_classes', (model: DOMWidgetModel, new_classes: string[]) => {
+        this.listenTo(this.model, 'change:_dom_classes', (model: WidgetModel, new_classes: string[]) => {
             let old_classes = model.previous('_dom_classes');
             this.update_classes(old_classes, new_classes);
         });
 
         this.layoutPromise = Promise.resolve();
-        this.listenTo(this.model, 'change:layout', (model: DOMWidgetModel, value: LayoutModel) => {
+        this.listenTo(this.model, 'change:layout', (model: WidgetModel, value: WidgetModel) => {
             this.setLayout(value, model.previous('layout'));
         });
 
         this.stylePromise = Promise.resolve();
-        this.listenTo(this.model, 'change:style', (model: DOMWidgetModel, value: StyleModel) => {
+        this.listenTo(this.model, 'change:style', (model: WidgetModel, value: WidgetModel) => {
             this.setStyle(value, model.previous('style'));
         });
 
@@ -777,7 +859,7 @@ class DOMWidgetView extends WidgetView {
         this._comm_live_update();
         this.listenTo(this.model, 'comm_live_update', () => {
             this._comm_live_update();
-        })
+        });
     }
 
     setLayout(layout: LayoutModel, oldLayout?: LayoutModel) {
@@ -876,7 +958,7 @@ class DOMWidgetView extends WidgetView {
      *  Element that the classes are applied to.
      */
     update_mapped_classes(class_map: IClassMap, trait_name: string, el?: HTMLElement) {
-        let key = this.model.previous(trait_name) as string;
+        let key = this.model.previous(trait_name);
         let old_classes = class_map[key] ? class_map[key] : [];
         key = this.model.get(trait_name);
         let new_classes = class_map[key] ? class_map[key] : [];
@@ -911,6 +993,7 @@ class DOMWidgetView extends WidgetView {
     }
 
     processPhosphorMessage(msg: Message) {
+        // tslint:disable-next-line:switch-default
         switch (msg.type) {
         case 'after-attach':
             this.trigger('displayed');
@@ -919,9 +1002,23 @@ class DOMWidgetView extends WidgetView {
     }
 
     private _comm_live_update() {
-        this.pWidget.node.classList.toggle('jupyter-widgets-disconnected', !this.model.comm_live);
+        if (this.model.comm_live) {
+            this.pWidget.removeClass('jupyter-widgets-disconnected');
+        } else {
+            this.pWidget.addClass('jupyter-widgets-disconnected');
+        }
     }
 
+    updateTabindex() {
+        let tabbable = this.model.get('tabbable');
+        if (tabbable === true) {
+            this.el.setAttribute('tabIndex', '0');
+        } else if (tabbable === false) {
+            this.el.setAttribute('tabIndex', '-1');
+        } else if (tabbable === null) {
+            this.el.removeAttribute('tabIndex');
+        }
+    }
     el: HTMLElement;  // Override typing
     '$el': any;
     pWidget: Widget;

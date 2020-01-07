@@ -1,9 +1,6 @@
 {
-  "lerna": "2.0.0-rc.5",
-  "packages": [
-    "packages/*",
-    "widgetsnbextension",
-    "examples/*"
-  ],
+  "lerna": "3.2.1",
+  "npmClient": "yarn",
+  "useWorkspaces": true,
   "version": "independent"
 }

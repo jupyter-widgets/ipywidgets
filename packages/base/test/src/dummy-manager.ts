@@ -6,36 +6,51 @@ import * as services from '@jupyterlab/services';
 import * as Backbone from 'backbone';
 
 import * as sinon from 'sinon';
+void sinon;
 
 let numComms = 0;
 
 export
-class MockComm {
+class MockComm implements widgets.IClassicComm {
     constructor() {
         this.comm_id = `mock-comm-id-${numComms}`;
         numComms += 1;
     }
-    on_close(fn) {
+    on_open(fn: Function) {
+        this._on_open = fn;
+    }
+    on_close(fn: Function) {
         this._on_close = fn;
     }
-    on_msg(fn) {
+    on_msg(fn: Function) {
         this._on_msg = fn;
     }
-    _process_msg(msg) {
+    _process_msg(msg: any) {
         if (this._on_msg) {
             return this._on_msg(msg);
         } else {
             return Promise.resolve();
         }
     }
+    open() {
+        if (this._on_open) {
+            this._on_open();
+        }
+        return '';
+    }
     close() {
         if (this._on_close) {
             this._on_close();
         }
+        return '';
     }
-    send() {}
+    send() {
+        return '';
+    }
     comm_id: string;
+    target_name: string;
     _on_msg: Function = null;
+    _on_open: Function = null;
     _on_close: Function = null;
 }
 
@@ -45,7 +60,7 @@ class DummyManager extends widgets.ManagerBase<HTMLElement> {
         super();
         this.el = window.document.createElement('div');
     }
-    
+
     display_view(msg: services.KernelMessage.IMessage, view: Backbone.View<Backbone.Model>, options: any) {
         // TODO: make this a spy
         // TODO: return an html element
@@ -58,16 +73,16 @@ class DummyManager extends widgets.ManagerBase<HTMLElement> {
 
     protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<any> {
         if (moduleName === '@jupyter-widgets/base') {
-            if (widgets[className]) {
-                return Promise.resolve(widgets[className]);
+            if ((widgets as any)[className]) {
+                return Promise.resolve((widgets as any)[className]);
             } else {
-                return Promise.reject(`Cannot find class ${className}`)
+                return Promise.reject(`Cannot find class ${className}`);
             }
         } else if (moduleName === 'test-widgets') {
-            if (testWidgets[className]) {
-                return Promise.resolve(testWidgets[className]);
+            if ((testWidgets as any)[className]) {
+                return Promise.resolve((testWidgets as any)[className]);
             } else {
-                return Promise.reject(`Cannot find class ${className}`)
+                return Promise.reject(`Cannot find class ${className}`);
             }
         } else {
             return Promise.reject(`Cannot find module ${moduleName}`);
@@ -87,7 +102,7 @@ class DummyManager extends widgets.ManagerBase<HTMLElement> {
 
 // Dummy widget with custom serializer and binary field
 
-let typesToArray = {
+let typesToArray: {[key: string]: any} = {
     int8: Int8Array,
     int16: Int16Array,
     int32: Int32Array,
@@ -96,17 +111,18 @@ let typesToArray = {
     uint32: Uint32Array,
     float32: Float32Array,
     float64: Float64Array
-}
+};
 
-let JSONToArray = function(obj, manager) {
+
+let JSONToArray = function(obj: any) {
     return new typesToArray[obj.dtype](obj.buffer.buffer);
-}
+};
 
-let arrayToJSON = function(obj, manager) {
+let arrayToJSON = function(obj: any) {
     let dtype = Object.keys(typesToArray).filter(
-        i=>typesToArray[i]===obj.constructor)[0]
-    return {dtype, buffer: obj}
-}
+        i => typesToArray[i] === obj.constructor)[0];
+    return {dtype, buffer: obj};
+};
 
 let array_serialization = {
     deserialize: JSONToArray,
@@ -117,14 +133,14 @@ let array_serialization = {
 class TestWidget extends widgets.WidgetModel {
     defaults() {
         return {...super.defaults(),
-            _model_module: "test-widgets",
-            _model_name: "TestWidget",
+            _model_module: 'test-widgets',
+            _model_name: 'TestWidget',
             _model_module_version: '1.0.0',
-            _view_module: "test-widgets",
-            _view_name: "TestWidgetView",
+            _view_module: 'test-widgets',
+            _view_name: 'TestWidgetView',
             _view_module_version: '1.0.0',
-            _view_count: null,
-        }
+            _view_count: null as any,
+        };
     }
 }
 
@@ -134,10 +150,10 @@ class TestWidgetView extends widgets.WidgetView {
         super.render();
     }
     remove() {
-        this._removed +=1;
+        this._removed += 1;
         super.remove();
     }
-    _removed = 0
+    _removed = 0;
     _rendered = 0;
 }
 
@@ -145,20 +161,20 @@ class BinaryWidget extends TestWidget {
     static serializers = {
         ...widgets.WidgetModel.serializers,
         array: array_serialization
-    }
+    };
     defaults() {
         return {...super.defaults(),
-            _model_name: "BinaryWidget",
-            _view_name: "BinaryWidgetView",
+            _model_name: 'BinaryWidget',
+            _view_name: 'BinaryWidgetView',
             array: new Int8Array(0)};
     }
 }
 
 class BinaryWidgetView extends TestWidgetView {
     render() {
-        this._rendered += 1
+        this._rendered += 1;
     }
     _rendered = 0;
 }
 
-let testWidgets = {TestWidget, TestWidgetView, BinaryWidget, BinaryWidgetView}
+let testWidgets = {TestWidget, TestWidgetView, BinaryWidget, BinaryWidgetView};

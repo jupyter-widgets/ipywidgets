@@ -19,6 +19,8 @@ __pycache__
 .xunit.xml
 .tern-project
 npm-debug.log
+.pytest_cache
+.vscode
 
 widgetsnbextension/widgetsnbextension/static
 
@@ -28,3 +30,7 @@ index.built.js.map
 
 **/built
 **/lib/
+
+temp/*
+
+tsconfig.tsbuildinfo
