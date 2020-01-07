@@ -63,7 +63,7 @@
     "@jupyterlab/cells": "^2.0.0-beta.2",
     "@types/semver": "^6.0.1",
     "rimraf": "^2.6.1",
-    "typedoc": "^0.14.2",
+    "typedoc": "^0.15.6",
     "typescript": "~3.7.4"
   },
   "jupyterlab": {
