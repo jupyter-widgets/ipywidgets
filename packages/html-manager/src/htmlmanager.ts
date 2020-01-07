@@ -5,7 +5,7 @@ import * as widgets from '@jupyter-widgets/controls';
 import * as base from '@jupyter-widgets/base';
 import * as outputWidgets from './output';
 
-import * as PhosphorWidget from '@lumino/widgets';
+import * as LuminoWidget from '@lumino/widgets';
 import { RenderMimeRegistry, standardRendererFactories } from '@jupyterlab/rendermime';
 
 import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers';
@@ -32,7 +32,7 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
      */
     display_view(msg: any, view: any, options: { el: HTMLElement }): Promise<HTMLElement> {
         return Promise.resolve(view).then((view) => {
-            PhosphorWidget.Widget.attach(view.pWidget, options.el);
+            LuminoWidget.Widget.attach(view.pWidget, options.el);
             view.on('remove', () => {
                 console.log('View removed', view);
             });

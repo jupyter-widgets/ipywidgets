@@ -70,10 +70,12 @@ class CheckboxView extends DescriptionView {
         this.checkboxLabel.appendChild(this.descriptionSpan);
 
         this.listenTo(this.model, 'change:indent', this.updateIndent);
+        this.listenTo(this.model, 'change:tabbable', this.updateTabindex);
 
         this.update(); // Set defaults.
         this.updateDescription();
         this.updateIndent();
+        this.updateTabindex();
     }
 
     /**
@@ -101,6 +103,20 @@ class CheckboxView extends DescriptionView {
     updateIndent(): void {
         const indent = this.model.get('indent');
         this.label.style.display = indent ? '' : 'none';
+    }
+
+    updateTabindex() {
+        if (!this.checkbox) {
+            return; // we might be constructing the parent
+        }
+        let tabbable = this.model.get('tabbable');
+        if (tabbable === true) {
+            this.checkbox.setAttribute('tabIndex', '0');
+        } else if (tabbable === false) {
+            this.checkbox.setAttribute('tabIndex', '-1');
+        } else if (tabbable === null) {
+            this.checkbox.removeAttribute('tabIndex');
+        }
     }
 
     events(): {[e: string]: string} {
@@ -166,6 +182,7 @@ class ToggleButtonView extends DOMWidgetView {
         this.el.classList.add('jupyter-button');
         this.el.classList.add('widget-toggle-button');
         this.listenTo(this.model, 'change:button_style', this.update_button_style);
+        this.listenTo(this.model, 'change:tabbable', this.updateTabindex);
         this.set_button_style();
         this.update(); // Set defaults.
     }
@@ -193,6 +210,7 @@ class ToggleButtonView extends DOMWidgetView {
 
         if (options === undefined || options.updated_view !== this) {
             this.el.disabled = this.model.get('disabled');
+            this.el.setAttribute('tabbable', this.model.get('tabbable'));
             this.el.setAttribute('title', this.model.get('tooltip'));
 
             const description = this.model.get('description');
@@ -210,6 +228,7 @@ class ToggleButtonView extends DOMWidgetView {
                 this.el.appendChild(document.createTextNode(description));
             }
         }
+        this.updateTabindex();
         return super.update();
     }
 

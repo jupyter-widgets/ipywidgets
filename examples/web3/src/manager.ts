@@ -50,7 +50,7 @@ class WidgetManager extends HTMLManager {
      * Get the currently-registered comms.
      */
     _get_comm_info(): Promise<any> {
-        return this.kernel.requestCommInfo({target: this.comm_target_name}).then(reply => (reply.content as any).comms);
+        return this.kernel.requestCommInfo({target_name: this.comm_target_name}).then(reply => (reply.content as any).comms);
     }
 
     kernel: Kernel.IKernelConnection;

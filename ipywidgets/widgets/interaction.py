@@ -210,8 +210,7 @@ class interactive(VBox):
         else:
             for widget in self.kwargs_widgets:
                 widget.observe(self.update, names='value')
-
-            self.on_displayed(self.update)
+            self.update()
 
     # Callback function
     def update(self, *args):

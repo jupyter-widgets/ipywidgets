@@ -24,7 +24,7 @@
     "updated": "lerna updated"
   },
   "devDependencies": {
-    "@jupyterlab/buildutils": "^2.0.0-beta.1",
+    "@jupyterlab/buildutils": "^2.0.0-beta.2",
     "@typescript-eslint/eslint-plugin": "^2.14.0",
     "@typescript-eslint/parser": "^2.14.0",
     "eslint": "^6.5.0",

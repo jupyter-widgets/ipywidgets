@@ -71,6 +71,17 @@ class HTMLView extends DescriptionView {
         return super.update();
     }
 
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+	    this.content.focus();
+        } else if (content.do == 'blur') {
+	    this.content.blur();
+	}
+    };
+
     content: HTMLDivElement;
 }
 
@@ -109,6 +120,17 @@ class HTMLMathView extends DescriptionView {
         this.typeset(this.content);
         return super.update();
     }
+
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+	    this.content.focus();
+        } else if (content.do == 'blur') {
+	    this.content.blur();
+	}
+    };
 
     content: HTMLDivElement;
 }
@@ -197,7 +219,7 @@ class TextareaView extends DescriptionView {
      * changed by another view or by a state update from the back-end.
      */
     update(options?: any): void {
-        if (options === undefined || options.updated_view != this) {
+        if (options === undefined || options.updated_view !== this) {
             this.textbox.value = this.model.get('value');
             let rows = this.model.get('rows');
             if (rows === null) {
@@ -206,7 +228,22 @@ class TextareaView extends DescriptionView {
             this.textbox.setAttribute('rows', rows);
             this.textbox.disabled = this.model.get('disabled');
         }
+        this.updateTabindex();
         return super.update();
+    }
+
+    updateTabindex() {
+        if (!this.textbox) {
+            return; // we might be constructing the parent
+        }
+        let tabbable = this.model.get('tabbable');
+        if (tabbable === true) {
+            this.textbox.setAttribute('tabIndex', '0');
+        } else if (tabbable === false) {
+            this.textbox.setAttribute('tabIndex', '-1');
+        } else if (tabbable === null) {
+            this.textbox.removeAttribute('tabIndex');
+        }
     }
 
     events(): {[e: string]: string} {
@@ -255,6 +292,18 @@ class TextareaView extends DescriptionView {
         this.model.set('value', target.value, {updated_view: this});
         this.touch();
     }
+
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+	    this.textbox.focus();
+        } else if (content.do == 'blur') {
+	    this.textbox.blur();
+	}
+    };
+
     textbox: HTMLTextAreaElement;
 }
 
@@ -294,6 +343,7 @@ class TextView extends DescriptionView {
 
         this.update_placeholder();
         this.update_title();
+        this.updateTabindex();
     }
 
     update_placeholder(value?: string): void {
@@ -306,6 +356,20 @@ class TextView extends DescriptionView {
             this.textbox.removeAttribute('title');
         } else if (this.model.get('description').length === 0) {
             this.textbox.setAttribute('title', title);
+        }
+    }
+
+    updateTabindex() {
+        if (!this.textbox) {
+            return; // we might be constructing the parent
+        }
+        let tabbable = this.model.get('tabbable');
+        if (tabbable === true) {
+            this.textbox.setAttribute('tabIndex', '0');
+        } else if (tabbable === false) {
+            this.textbox.setAttribute('tabIndex', '-1');
+        } else if (tabbable === null) {
+            this.textbox.removeAttribute('tabIndex');
         }
     }
 
@@ -379,6 +443,16 @@ class TextView extends DescriptionView {
         this.touch();
     }
 
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+	    this.textbox.focus();
+        } else if (content.do == 'blur') {
+	    this.textbox.blur();
+	}
+    };
 
     protected readonly inputType: string = 'text';
     textbox: HTMLInputElement;
@@ -487,6 +561,17 @@ class ComboboxView extends TextView {
             super.handleChanged(e);
         }
     }
+
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+	    this.textbox.focus();
+        } else if (content.do == 'blur') {
+	    this.textbox.blur();
+	}
+    };
 
     highlightValidState(valid: boolean): void {
         this.textbox.classList.toggle(INVALID_VALUE_CLASS, !valid);

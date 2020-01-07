@@ -108,6 +108,7 @@ if 'develop' in sys.argv or any(a.startswith('bdist') for a in sys.argv):
 setuptools_args = {}
 install_requires = setuptools_args['install_requires'] = [
     'ipykernel>=4.5.1',
+    'ipython>=6.1.0', # to use _repr_mimebundle
     'traitlets>=4.3.1',
     # Requiring nbformat to specify bugfix version which is not required by
     # notebook.
@@ -120,7 +121,6 @@ install_requires = setuptools_args['install_requires'] = [
 ]
 
 extras_require = setuptools_args['extras_require'] = {
-    '': ['ipython>=4.0.0'],
     'test': ['pytest>=3.6.0', 'pytest-cov'],
 }
 

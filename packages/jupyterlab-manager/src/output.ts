@@ -4,7 +4,7 @@
 import * as outputBase from '@jupyter-widgets/output';
 
 import {
-  DOMWidgetView, JupyterPhosphorWidget
+  DOMWidgetView, JupyterLuminoWidget
 } from '@jupyter-widgets/base';
 
 import {
@@ -136,23 +136,23 @@ class OutputModel extends outputBase.OutputModel {
 }
 
 export
-class JupyterPhosphorPanelWidget extends Panel {
-    constructor(options: JupyterPhosphorWidget.IOptions & Panel.IOptions) {
-        const view = options.view;
+class JupyterLuminoPanelWidget extends Panel {
+    constructor(options: JupyterLuminoWidget.IOptions & Panel.IOptions) {
+      const view = options.view;
         delete options.view;
         super(options);
         this._view = view;
     }
 
     /**
-     * Process the phosphor message.
+     * Process the Lumino message.
      *
-     * Any custom phosphor widget used inside a Jupyter widget should override
+     * Any custom Lumino widget used inside a Jupyter widget should override
      * the processMessage function like this.
      */
     processMessage(msg: Message): void {
         super.processMessage(msg);
-        this._view.processPhosphorMessage(msg);
+        this._view.processLuminoMessage(msg);
     }
 
     /**
@@ -178,7 +178,7 @@ export
 class OutputView extends outputBase.OutputView {
 
     _createElement(tagName: string): HTMLElement {
-      this.pWidget = new JupyterPhosphorPanelWidget({ view: this });
+      this.pWidget = new JupyterLuminoPanelWidget({ view: this });
       return this.pWidget.node;
     }
 

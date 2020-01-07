@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetView, unpack_models, ViewList, JupyterPhosphorPanelWidget, WidgetModel
+    DOMWidgetView, unpack_models, ViewList, JupyterLuminoPanelWidget, WidgetModel
 } from '@jupyter-widgets/base';
 
 import {
@@ -69,7 +69,7 @@ export
 class BoxView extends DOMWidgetView {
 
     _createElement(tagName: string): HTMLElement {
-        this.pWidget = new JupyterPhosphorPanelWidget({ view: this });
+        this.pWidget = new JupyterLuminoPanelWidget({ view: this });
         return this.pWidget.node;
     }
 
@@ -138,7 +138,7 @@ class BoxView extends DOMWidgetView {
     }
 
     children_views: ViewList<DOMWidgetView>;
-    pWidget: JupyterPhosphorPanelWidget;
+    pWidget: JupyterLuminoPanelWidget;
 
     static class_map = {
         success: ['alert', 'alert-success'],

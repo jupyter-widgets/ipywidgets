@@ -13,7 +13,6 @@ from ipykernel.comm import Comm
 from traitlets import (
     HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default, Container,
     Undefined)
-from IPython.display import display
 from json import loads as jsonloads, dumps as jsondumps
 
 from base64 import standard_b64encode
@@ -381,7 +380,6 @@ class Widget(LoggingHasTraits):
     _property_lock = Dict()
     _holding_sync = False
     _states_to_send = Set()
-    _display_callbacks = Instance(CallbackDispatcher, ())
     _msg_callbacks = Instance(CallbackDispatcher, ())
 
     #-------------------------------------------------------------------------
@@ -449,7 +447,7 @@ class Widget(LoggingHasTraits):
             Widget.widgets.pop(self.model_id, None)
             self.comm.close()
             self.comm = None
-            self._ipython_display_ = None
+            self._repr_mimebundle_ = None
 
     def send_state(self, key=None):
         """Sends the widget state, or a piece of it, to the front-end, if it exists.
@@ -548,21 +546,6 @@ class Widget(LoggingHasTraits):
         remove: bool
             True if the callback should be unregistered."""
         self._msg_callbacks.register_callback(callback, remove=remove)
-
-    def on_displayed(self, callback, remove=False):
-        """(Un)Register a widget displayed callback.
-
-        Parameters
-        ----------
-        callback: method handler
-            Must have a signature of::
-
-                callback(widget, **kwargs)
-
-            kwargs from display are passed through without modification.
-        remove: bool
-            True if the callback should be unregistered."""
-        self._display_callbacks.register_callback(callback, remove=remove)
 
     def add_traits(self, **traits):
         """Dynamically add trait attributes to the Widget."""
@@ -671,10 +654,6 @@ class Widget(LoggingHasTraits):
         """Called when a custom msg is received."""
         self._msg_callbacks(self, content, buffers)
 
-    def _handle_displayed(self, **kwargs):
-        """Called when a view has been displayed for this widget instance"""
-        self._display_callbacks(self, **kwargs)
-
     @staticmethod
     def _trait_to_json(x, self):
         """Convert a trait value to json."""
@@ -685,9 +664,8 @@ class Widget(LoggingHasTraits):
         """Convert json values to objects."""
         return x
 
-    def _ipython_display_(self, **kwargs):
-        """Called when `IPython.display.display` is called on the widget."""
-
+    def _repr_mimebundle_(self, **kwargs):
+        """Called when `IPython.display.display` is called."""
         plaintext = repr(self)
         if len(plaintext) > 110:
             plaintext = plaintext[:110] + '…'
@@ -705,10 +683,7 @@ class Widget(LoggingHasTraits):
                 'version_minor': 0,
                 'model_id': self._model_id
             }
-        display(data, raw=True)
-
-        if self._view_name is not None:
-            self._handle_displayed(**kwargs)
+            return data
 
     def _send(self, msg, buffers=None):
         """Sends a message to the model in the front-end."""

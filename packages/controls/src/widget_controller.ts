@@ -6,7 +6,7 @@ import {
 } from './widget_core';
 
 import {
-    DOMWidgetView, unpack_models, ViewList, JupyterPhosphorPanelWidget, Dict
+    DOMWidgetView, unpack_models, ViewList, JupyterLuminoPanelWidget, Dict
 } from '@jupyter-widgets/base';
 
 import {
@@ -323,7 +323,7 @@ export
 class ControllerView extends DOMWidgetView {
 
     _createElement(tagName: string): HTMLElement {
-        this.pWidget = new JupyterPhosphorPanelWidget({ view: this });
+        this.pWidget = new JupyterLuminoPanelWidget({ view: this });
         return this.pWidget.node;
     }
 
@@ -419,5 +419,5 @@ class ControllerView extends DOMWidgetView {
     axis_box: Panel;
     button_box: Panel;
     model: ControllerModel;
-    pWidget: JupyterPhosphorPanelWidget;
+    pWidget: JupyterLuminoPanelWidget;
 }

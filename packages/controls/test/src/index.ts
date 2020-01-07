@@ -3,4 +3,4 @@
 
 import './widget_date_test';
 import './widget_string_test';
-import './phosphor/currentselection_test';
+import './lumino/currentselection_test';

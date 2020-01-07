@@ -6,7 +6,7 @@ import { spy } from 'sinon';
 
 import { ArrayExt } from '@lumino/algorithm';
 
-import { Selection } from '../../../lib/phosphor/currentselection';
+import { Selection } from '../../../lib/lumino/currentselection';
 
 function getLastMessage(subscriber: { getCall: (arg0: number) => { args: [any, any] } }): any {
     const [, message] = subscriber.getCall(0).args;
