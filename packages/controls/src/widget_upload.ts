@@ -14,14 +14,14 @@ export class FileUploadModel extends CoreDOMWidgetModel {
 
             _counter: 0,
             _file_count: 0,
+            _data: [],
+            _metadata: [],
             accept: '',
             description: 'Upload',
             disabled: false,
             icon: 'upload',
             button_style: '',
             multiple: false,
-            metadata: [],
-            data: [],
             error: '',
             style: null
         });
@@ -29,7 +29,7 @@ export class FileUploadModel extends CoreDOMWidgetModel {
 
     static serializers = {
         ...CoreDOMWidgetModel.serializers,
-        data: { serialize: (buffers: any): any[] => { return [...buffers]; } },
+        _data: { serialize: (buffers: any) => { return [...buffers]; } },
     };
 }
 
@@ -106,8 +106,8 @@ export class FileUploadView extends DOMWidgetView {
                     this.model.set({
                         _counter: counter + contents.length,
                         _file_count: contents.length,
-                        metadata,
-                        data: li_buffer,
+                        _metadata: metadata,
+                        _data: li_buffer,
                         error: '',
                     });
                     this.touch();

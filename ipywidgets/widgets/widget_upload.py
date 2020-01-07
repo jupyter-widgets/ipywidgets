@@ -34,6 +34,10 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
     _model_name = Unicode('FileUploadModel').tag(sync=True)
     _view_name = Unicode('FileUploadView').tag(sync=True)
     _counter = Int(read_only=True).tag(sync=True)
+    _metadata = List(Dict(), read_only=True, help='List of file metadata').tag(sync=True)
+    _data = List(Bytes(), read_only=True, help='List of file content (bytes)').tag(
+        sync=True, from_json=content_from_json
+    )
 
     accept = Unicode(help='File types to accept, empty string for all').tag(sync=True)
     multiple = Bool(help='If True, allow for multiple files upload').tag(sync=True)
@@ -43,10 +47,6 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
         values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
         help="""Use a predefined styling for the button.""").tag(sync=True)
     style = InstanceDict(ButtonStyle).tag(sync=True, **widget_serialization)
-    metadata = List(Dict(), read_only=True, help='List of file metadata').tag(sync=True)
-    data = List(Bytes(), read_only=True, help='List of file content (bytes)').tag(
-        sync=True, from_json=content_from_json
-    )
     error = Unicode(help='Error message').tag(sync=True)
     value = Dict(read_only=True)
 
@@ -54,8 +54,8 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
     def on_incr_counter(self, change):
         res = {}
         msg = 'Error: length of metadata and data must be equal'
-        assert len(self.metadata) == len(self.data), msg
-        for metadata, content in zip(self.metadata, self.data):
+        assert len(self._metadata) == len(self._data), msg
+        for metadata, content in zip(self._metadata, self._data):
             name = metadata['name']
             res[name] = {'metadata': metadata, 'content': content}
         self.set_trait('value', res)
