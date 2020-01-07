@@ -224,7 +224,7 @@ class _IntRange(_Int):
 class Play(_BoundedInt):
     """Play/repeat buttons to step through values automatically, and optionally loop.
     """
-    interval = CInt(100, help="The maximum value for the play control.").tag(sync=True)
+    interval = CInt(100, help="The time between two animation steps (ms).").tag(sync=True)
     step = CInt(1, help="Increment step").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 

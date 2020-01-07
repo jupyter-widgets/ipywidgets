@@ -752,7 +752,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_tooltip` | `null` or string | `null`           | Tooltip for the description (defaults to description).
 `disabled`       | boolean          | `false`          | Enable or disable user changes
-`interval`       | number (integer) | `100`            | The maximum value for the play control.
+`interval`       | number (integer) | `100`            | The time between two animation steps (ms).
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (integer) | `100`            | Max value
 `min`            | number (integer) | `0`              | Min value
