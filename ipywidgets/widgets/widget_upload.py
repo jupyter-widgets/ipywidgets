@@ -33,7 +33,7 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
     """
     _model_name = Unicode('FileUploadModel').tag(sync=True)
     _view_name = Unicode('FileUploadView').tag(sync=True)
-    _counter = Int().tag(sync=True)
+    _counter = Int(read_only=True).tag(sync=True)
 
     accept = Unicode(help='File types to accept, empty string for all').tag(sync=True)
     multiple = Bool(help='If True, allow for multiple files upload').tag(sync=True)
@@ -43,8 +43,8 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
         values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
         help="""Use a predefined styling for the button.""").tag(sync=True)
     style = InstanceDict(ButtonStyle).tag(sync=True, **widget_serialization)
-    metadata = List(Dict(), help='List of file metadata').tag(sync=True)
-    data = List(Bytes(), help='List of file content (bytes)').tag(
+    metadata = List(Dict(), read_only=True, help='List of file metadata').tag(sync=True)
+    data = List(Bytes(), read_only=True, help='List of file content (bytes)').tag(
         sync=True, from_json=content_from_json
     )
     error = Unicode(help='Error message').tag(sync=True)
