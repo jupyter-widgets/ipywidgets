@@ -56,6 +56,7 @@ class SelectionView extends DescriptionView {
 
         // Set tabindex
         this.updateTabindex();
+        this.updateTooltip();
     }
 
     updateTabindex() {
