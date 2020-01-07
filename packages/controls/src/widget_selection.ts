@@ -251,7 +251,6 @@ class RadioButtonsView extends DescriptionView {
      * changed by another view or by a state update from the back-end.
      */
     update(options?: any) {
-        const view = this;
         const items: string[] = this.model.get('_options_labels');
         const radios = _.pluck(
             this.container.querySelectorAll('input[type="radio"]'),
@@ -271,10 +270,10 @@ class RadioButtonsView extends DescriptionView {
         if (stale && (options === undefined || options.updated_view !== this)) {
             // Add items to the DOM.
             this.container.textContent = '';
-            items.forEach(function(item: any, index: number) {
+            items.forEach((item: any, index: number) => {
                 const label = document.createElement('label');
                 label.textContent = item;
-                view.container.appendChild(label);
+                this.container.appendChild(label);
 
                 const radio = document.createElement('input');
                 radio.setAttribute('type', 'radio');
@@ -283,14 +282,14 @@ class RadioButtonsView extends DescriptionView {
                 label.appendChild(radio);
            });
         }
-        items.forEach(function(item: any, index: number) {
+        items.forEach((item: any, index: number) => {
             const item_query = 'input[data-value="' +
                 encodeURIComponent(item) + '"]';
-                const radio = view.container.querySelectorAll(item_query);
+                const radio = this.container.querySelectorAll(item_query);
             if (radio.length > 0) {
               const radio_el = radio[0] as HTMLInputElement;
-              radio_el.checked = view.model.get('index') === index;
-              radio_el.disabled = view.model.get('disabled');
+              radio_el.checked = this.model.get('index') === index;
+              radio_el.disabled = this.model.get('disabled');
             }
         });
 
@@ -419,12 +418,11 @@ class ToggleButtonsView extends DescriptionView {
      * changed by another view or by a state update from the back-end.
      */
     update(options?: any) {
-        const view = this;
         const items: string[] = this.model.get('_options_labels');
         const icons = this.model.get('icons') || [];
         const previous_icons = this.model.previous('icons') || [];
         const previous_bstyle = (ToggleButtonsView.classMap as any)[this.model.previous('button_style')] || '';
-        const tooltips = view.model.get('tooltips') || [];
+        const tooltips = this.model.get('tooltips') || [];
         const disabled = this.model.get('disabled');
         const buttons = this.buttongroup.querySelectorAll('button');
         const values = _.pluck(buttons, 'value');
@@ -468,16 +466,16 @@ class ToggleButtonsView extends DescriptionView {
                 if (tooltips[index]) {
                     button.setAttribute('title', tooltips[index]);
                 }
-                view.update_style_traits(button);
-                view.buttongroup.appendChild(button);
+                this.update_style_traits(button);
+                this.buttongroup.appendChild(button);
             });
         }
 
         // Select active button.
-        items.forEach(function(item: any, index: number) {
+        items.forEach((item: any, index: number) => {
             const item_query = '[data-value="' + encodeURIComponent(item) + '"]';
-            const button = view.buttongroup.querySelector(item_query);
-            if (view.model.get('index') === index) {
+            const button = this.buttongroup.querySelector(item_query);
+            if (this.model.get('index') === index) {
                 button.classList.add('mod-active');
             } else {
                 button.classList.remove('mod-active');
@@ -494,7 +492,7 @@ class ToggleButtonsView extends DescriptionView {
 
     update_style_traits(button?: HTMLButtonElement) {
         for (const name in this._css_state as string[]) {
-            if (this._css_state.hasOwnProperty(name)) {
+            if (Object.prototype.hasOwnProperty.call(this._css_state, 'name')) {
                 if (name === 'margin') {
                     this.buttongroup.style[name] = this._css_state[name];
                 } else if (name !== 'width') {

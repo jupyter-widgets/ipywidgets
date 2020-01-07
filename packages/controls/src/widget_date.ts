@@ -28,7 +28,7 @@ function serialize_date(value: Date) {
     }
 }
 
-export interface SerializedDate {
+export interface ISerializedDate {
     /**
      * Full year
      */
@@ -46,7 +46,7 @@ export interface SerializedDate {
 }
 
 export
-function deserialize_date(value: SerializedDate) {
+function deserialize_date(value: ISerializedDate) {
     if (value === null) {
         return null;
     } else {

@@ -96,11 +96,12 @@ class OutputModel extends outputBase.OutputModel {
     case 'execute_result':
     case 'display_data':
     case 'stream':
-    case 'error':
+    case 'error': {
       const model = msg.content as nbformat.IOutput;
       model.output_type = msgType as nbformat.OutputType;
       this._outputs.add(model);
       break;
+    }
     case 'clear_output':
       this.clear_output((msg as KernelMessage.IClearOutputMsg).content.wait);
       break;

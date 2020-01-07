@@ -243,7 +243,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
         }
         const comm = await this._create_comm(this.comm_target_name, comm_id);
 
-        let msg_id: string;
+        let msg_id = '';
         const info = new PromiseDelegate<Private.ICommUpdateData>();
         comm.on_msg((msg: KernelMessage.ICommMsgMsg) => {
           if ((msg.parent_header as any).msg_id === msg_id

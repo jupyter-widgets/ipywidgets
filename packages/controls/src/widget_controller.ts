@@ -189,11 +189,10 @@ class ControllerModel extends CoreDOMWidgetModel {
         const index = this.get('index');
         const pad = navigator.getGamepads()[index];
         if (pad) {
-            const that = this;
-            this.setup(pad).then(function(controls) {
-                that.set(controls);
-                that.save_changes();
-                window.requestAnimationFrame(that.update_loop.bind(that));
+            this.setup(pad).then((controls) => {
+                this.set(controls);
+                this.save_changes();
+                window.requestAnimationFrame(this.update_loop.bind(this));
             });
         } else {
             window.requestAnimationFrame(this.wait_loop.bind(this));
@@ -217,13 +216,12 @@ class ControllerModel extends CoreDOMWidgetModel {
             timestamp: pad.timestamp
         });
         // Create buttons and axes. When done, start the update loop
-        const that = this;
         return utils.resolvePromisesDict({
-            buttons: Promise.all(pad.buttons.map(function(btn, index) {
-                return that._create_button_model(index);
+            buttons: Promise.all(pad.buttons.map((btn, index) => {
+                return this._create_button_model(index);
             })),
-            axes: Promise.all(pad.axes.map(function(axis, index) {
-                return that._create_axis_model(index);
+            axes: Promise.all(pad.axes.map((axis, index) => {
+                return this._create_axis_model(index);
             })),
         });
     }

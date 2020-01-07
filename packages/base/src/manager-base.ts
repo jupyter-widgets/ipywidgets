@@ -25,8 +25,7 @@ const PROTOCOL_MAJOR_VERSION = PROTOCOL_VERSION.split('.', 1)[0];
  * Either a comm or a model_id must be provided.
  */
 export
-// tslint:disable-next-line:interface-name
-interface ModelOptions {
+interface IModelOptions {
     /**
      * Target name of the widget model to create.
      */
@@ -78,8 +77,7 @@ interface ModelOptions {
  * Either a comm or a model_id must be provided.
  */
 export
-// tslint:disable-next-line:interface-name
-interface WidgetOptions {
+interface IWidgetOptions {
     /**
      * Target name of the widget model to create.
      */
@@ -240,7 +238,7 @@ abstract class ManagerBase<T> {
      *                          required and additional options are available.
      * @param  serialized_state - serialized model attributes.
      */
-    new_widget(options: WidgetOptions, serialized_state: any = {}): Promise<WidgetModel> {
+    new_widget(options: IWidgetOptions, serialized_state: any = {}): Promise<WidgetModel> {
         let commPromise;
         // we check to make sure the view information is provided, to help catch
         // backwards incompatibility errors.
@@ -316,7 +314,7 @@ abstract class ManagerBase<T> {
      *  (err) => {console.error(err)});
      *
      */
-    async new_model(options: ModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
+    async new_model(options: IModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
         let model_id;
         if (options.model_id) {
             model_id = options.model_id;
@@ -332,7 +330,7 @@ abstract class ManagerBase<T> {
         return await modelPromise;
     }
 
-    async _make_model(options: ModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
+    async _make_model(options: IModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
         const model_id = options.model_id;
         const model_promise = this.loadClass(
             options.model_name,
@@ -443,13 +441,13 @@ abstract class ManagerBase<T> {
                     });
                 }
 
-                const modelCreate: ModelOptions = {
+                const modelCreate: IModelOptions = {
                     model_id: model_id,
                     model_name: model.model_name,
                     model_module: model.model_module,
                     model_module_version: model.model_module_version
                 };
-                if (live_comms.hasOwnProperty(model_id)) {  // live comm
+                if (Object.prototype.hasOwnProperty.call(live_comms, 'model_id')) {  // live comm
                     // This connects to an existing comm if it exists, and
                     // should *not* send a comm open message.
                     return this._create_comm(this.comm_target_name, model_id).then(comm => {

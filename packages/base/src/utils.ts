@@ -34,9 +34,9 @@ function isEqual(a: any, b: any) {
  * This is from code that Typescript 2.4 generates for a polyfill.
  */
 export
-const assign = (Object as any).assign || function(t: any) {
-    for (let i = 1; i < arguments.length; i++) {
-        const s = arguments[i];
+const assign = (Object as any).assign || function(t: any, ...args: any[]) {
+    for (let i = 1; i < args.length; i++) {
+        const s = args[i];
         for (const p in s) {
             if (Object.prototype.hasOwnProperty.call(s, p)) {
                 t[p] = s[p];
@@ -199,7 +199,7 @@ function remove_buffers(state: any): {state: any; buffers: ArrayBuffer[]; buffer
         } else if (isPlainObject(obj)) {
             for (const key in obj) {
                 let is_cloned = false;
-                if (obj.hasOwnProperty(key)) {
+                if (Object.prototype.hasOwnProperty.call(obj, key)) {
                     const value = obj[key];
                     if (value) {
                         if (value instanceof ArrayBuffer || ArrayBuffer.isView(value)) {

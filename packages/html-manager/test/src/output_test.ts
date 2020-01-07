@@ -30,7 +30,6 @@ const newWidget = async (modelState: any): Promise<HTMLElement> => {
 
 describe('Output widget', function() {
     it('renders text output', async () => {
-        let elt: HTMLElement;
         const textValue = 'this-is-a-test\n'
         const modelState = {
             _view_module: '@jupyter-widgets/output',
@@ -43,7 +42,7 @@ describe('Output widget', function() {
             ],
         }
 
-        elt = await newWidget(modelState)
+        const elt = await newWidget(modelState)
         expect(elt.textContent).to.equal(textValue)
     })
 
@@ -70,7 +69,6 @@ describe('Output widget', function() {
 
 
     it('renders widgets', async function() {
-        let elt;
         const modelState = {
             _view_module: "@jupyter-widgets/output",
             outputs: [
@@ -89,7 +87,7 @@ describe('Output widget', function() {
             ]
         };
 
-        elt = document.createElement('div');
+        const elt = document.createElement('div');
         elt.className = 'widget-subarea';
         document.body.appendChild(elt);
         const manager = new HTMLManager()

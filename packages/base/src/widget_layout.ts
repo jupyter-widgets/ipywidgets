@@ -75,7 +75,7 @@ class LayoutView extends WidgetView {
     /**
      * Public constructor
      */
-    initialize(parameters: WidgetView.InitializeParameters) {
+    initialize(parameters: WidgetView.IInitializeParameters) {
         this._traitNames = [];
         super.initialize(parameters);
         // Register the traits that live on the Python side

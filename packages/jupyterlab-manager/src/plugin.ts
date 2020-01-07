@@ -293,6 +293,7 @@ function activateWidgetExtension(
     exports: () => {
       return new Promise((resolve, reject) => {
         (require as any).ensure(['@jupyter-widgets/controls'], (require: NodeRequire) => {
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
           resolve(require('@jupyter-widgets/controls'));
         },
         (err: any) => {

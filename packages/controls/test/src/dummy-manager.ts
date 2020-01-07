@@ -52,6 +52,35 @@ class MockComm {
     _on_close: Function = null;
 }
 
+class TestWidget extends base.WidgetModel {
+    defaults() {
+        return {...super.defaults(),
+            _model_module: 'test-widgets',
+            _model_name: 'TestWidget',
+            _model_module_version: '1.0.0',
+            _view_module: 'test-widgets',
+            _view_name: 'TestWidgetView',
+            _view_module_version: '1.0.0',
+            _view_count: null as any,
+        };
+    }
+}
+
+class TestWidgetView extends base.WidgetView {
+    render() {
+        this._rendered += 1;
+        super.render();
+    }
+    remove() {
+        this._removed +=1;
+        super.remove();
+    }
+    _removed = 0;
+    _rendered = 0;
+}
+
+const testWidgets = {TestWidget, TestWidgetView};
+
 export
 class DummyManager extends base.ManagerBase<HTMLElement> {
     constructor() {
@@ -97,32 +126,3 @@ class DummyManager extends base.ManagerBase<HTMLElement> {
 
     el: HTMLElement;
 }
-
-class TestWidget extends base.WidgetModel {
-    defaults() {
-        return {...super.defaults(),
-            _model_module: 'test-widgets',
-            _model_name: 'TestWidget',
-            _model_module_version: '1.0.0',
-            _view_module: 'test-widgets',
-            _view_name: 'TestWidgetView',
-            _view_module_version: '1.0.0',
-            _view_count: null as any,
-        };
-    }
-}
-
-class TestWidgetView extends base.WidgetView {
-    render() {
-        this._rendered += 1;
-        super.render();
-    }
-    remove() {
-        this._removed +=1;
-        super.remove();
-    }
-    _removed = 0;
-    _rendered = 0;
-}
-
-const testWidgets = {TestWidget, TestWidgetView};

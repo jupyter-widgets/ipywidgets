@@ -135,13 +135,12 @@ abstract class BaseIntSliderView extends DescriptionView {
             // JQuery slider option keys.  These keys happen to have a
             // one-to-one mapping with the corresponding keys of the model.
             const jquery_slider_keys = ['step', 'disabled'];
-            const that = this;
-            that.$slider.slider({});
+            this.$slider.slider({});
 
-            jquery_slider_keys.forEach(function(key) {
-                const model_value = that.model.get(key);
+            jquery_slider_keys.forEach((key) => {
+                const model_value = this.model.get(key);
                 if (model_value !== undefined) {
-                    that.$slider.slider('option', key, model_value);
+                    this.$slider.slider('option', key, model_value);
                 }
             });
 
@@ -190,10 +189,10 @@ abstract class BaseIntSliderView extends DescriptionView {
             if (readout) {
                 this.readout.style.display = '';
                 this.displayed.then(function() {
-                    if (that.readout_overflow()) {
-                        that.readout.classList.add('overflow');
+                    if (this.readout_overflow()) {
+                        this.readout.classList.add('overflow');
                     } else {
-                        that.readout.classList.remove('overflow');
+                        this.readout.classList.remove('overflow');
                     }
                 });
             } else {

@@ -1,7 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-declare let  __webpack_public_path__: string;
+declare let __webpack_public_path__: string;
+// eslint-disable-next-line prefer-const
 __webpack_public_path__ = (window as any).__jupyter_widgets_assets_path__ || __webpack_public_path__;
 
 import 'font-awesome/css/font-awesome.css';
@@ -15,11 +16,11 @@ import {
 } from './index';
 
 // Load json schema validator
-const Ajv = require('ajv');
+import Ajv from 'ajv';
 const widget_state_schema = require('@jupyter-widgets/schema').v2.state;
 const widget_view_schema = require('@jupyter-widgets/schema').v2.view;
 
-const ajv = new Ajv()
+const ajv = new Ajv();
 const model_validate = ajv.compile(widget_state_schema);
 const view_validate = ajv.compile(widget_view_schema);
 

@@ -208,7 +208,6 @@ class WidgetModel extends Backbone.Model {
     _handle_comm_msg(msg: KernelMessage.ICommMsgMsg): Promise<void> {
         const data = msg.content.data as any;
         const method = data.method;
-        // tslint:disable-next-line:switch-default
         switch (method) {
             case 'update':
                 this.state_change = this.state_change
@@ -504,10 +503,9 @@ class WidgetModel extends Backbone.Model {
      * while the first will call foo only once.
      */
     on_some_change(keys: string[], callback: (...args: any[]) => void, context: any) {
-        const scope = this;
-        this.on('change', function () {
-            if (keys.some(scope.hasChanged, scope)) {
-                callback.apply(context, arguments);
+        this.on('change', (...args) => {
+            if (keys.some(this.hasChanged, this)) {
+                callback.apply(context, args);
             }
         }, this);
     }
@@ -601,7 +599,7 @@ class WidgetView extends NativeView<WidgetModel> {
     /**
      * Initializer, called at the end of the constructor.
      */
-    initialize(parameters: WidgetView.InitializeParameters) {
+    initialize(parameters: WidgetView.IInitializeParameters) {
         this.listenTo(this.model, 'change', () => {
             const changed = Object.keys(this.model.changedAttributes() || {});
             if (changed[0] === '_view_count' && changed.length === 1) {
@@ -693,7 +691,7 @@ class WidgetView extends NativeView<WidgetModel> {
 }
 
 export namespace WidgetView {
-    export interface InitializeParameters<T extends WidgetModel = WidgetModel> extends Backbone.ViewOptions<T> {
+    export interface IInitializeParameters<T extends WidgetModel = WidgetModel> extends Backbone.ViewOptions<T> {
         options: any;
     }
 }
@@ -789,7 +787,7 @@ class DOMWidgetView extends WidgetView {
     /**
      * Public constructor
      */
-    initialize(parameters: WidgetView.InitializeParameters) {
+    initialize(parameters: WidgetView.IInitializeParameters) {
         super.initialize(parameters);
 
         this.listenTo(this.model, 'change:_dom_classes', (model: WidgetModel, new_classes: string[]) => {
@@ -950,7 +948,6 @@ class DOMWidgetView extends WidgetView {
     }
 
     processPhosphorMessage(msg: Message) {
-        // tslint:disable-next-line:switch-default
         switch (msg.type) {
         case 'after-attach':
             this.trigger('displayed');
