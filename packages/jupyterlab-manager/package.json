@@ -30,7 +30,7 @@
     "build": "npm run build:src",
     "build:src": "tsc",
     "clean": "rimraf docs && rimraf lib && rimraf tsconfig.tsbuildinfo",
-    "docs": "typedoc --mode file --module commonjs --excludeNotExported --target es5 --moduleResolution node --out docs/ src",
+    "docs": "typedoc --mode file --module esnext --excludeNotExported --target es2017 --moduleResolution node --out docs/ src",
     "prepublish": "npm run clean && npm run build"
   },
   "dependencies": {
