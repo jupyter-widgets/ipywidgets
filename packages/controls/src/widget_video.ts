@@ -13,7 +13,7 @@ import * as _ from 'underscore';
 
 export
 class VideoModel extends CoreDOMWidgetModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'VideoModel',
             _view_name: 'VideoView',
@@ -29,7 +29,7 @@ class VideoModel extends CoreDOMWidgetModel {
 
     static serializers = {
         ...CoreDOMWidgetModel.serializers,
-        value: {serialize: (value: any) => {
+        value: {serialize: (value: any): DataView => {
             return new DataView(value.buffer.slice(0));
         }}
     };
@@ -37,7 +37,7 @@ class VideoModel extends CoreDOMWidgetModel {
 
 export
 class VideoView extends DOMWidgetView {
-    render() {
+    render(): void {
         /**
          * Called when view is rendered.
          */
@@ -47,7 +47,7 @@ class VideoView extends DOMWidgetView {
         this.update(); // Set defaults.
     }
 
-    update() {
+    update(): void {
         /**
          * Update the contents of this view
          *
@@ -95,7 +95,7 @@ class VideoView extends DOMWidgetView {
         return super.update();
     }
 
-    remove() {
+    remove(): void {
         if (this.el.src) {
             URL.revokeObjectURL(this.el.src);
         }
@@ -108,7 +108,7 @@ class VideoView extends DOMWidgetView {
      * #### Notes
      * This is a read-only attribute.
      */
-    get tagName() {
+    get tagName(): string {
         // We can't make this an attribute with a default value
         // since it would be set after it is needed in the
         // constructor.

@@ -9,8 +9,6 @@ import {
     WrappedError
 } from '@jupyter-widgets/base';
 
-import * as _ from 'underscore';
-
 /**
  * Creates a wrappable Promise rejection function.
  *
@@ -20,7 +18,7 @@ import * as _ from 'underscore';
  */
 export
 function reject(message: any, log: any) {
-    return function promiseRejection(error: any) {
+    return function promiseRejection(error: any): Promise<any> {
         const wrapped_error = new WrappedError(message, error);
         if (log) {
             console.error(wrapped_error);

@@ -64,7 +64,7 @@ describe('unpack_models', function() {
 
 describe('WidgetModel', function() {
     before(async function() {
-        this.setup = async function() {
+        this.setup = async function(): Promise<void> {
             this.manager = new DummyManager();
             this.comm = new MockComm();
             sinon.spy(this.comm, 'send');
@@ -80,12 +80,12 @@ describe('WidgetModel', function() {
             });
             this.widget.constructor.serializers = {
                 times3: {
-                    deserialize: (value: number, manager: any) => {
+                    deserialize: (value: number, manager: any): number => {
                         return value * 3.0;
                     }
                 },
                 halve: {
-                    deserialize: (value: number, manager: any) => {
+                    deserialize: (value: number, manager: any): Promise<number> => {
                         return Promise.resolve(value / 2.0);
                     }
                 },

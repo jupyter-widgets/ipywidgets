@@ -11,7 +11,7 @@ import {
  */
 export
 class SemVerCache<T> {
-  set(key: string, version: string, object: T) {
+  set(key: string, version: string, object: T): void {
     if (!(key in this._cache)) {
       this._cache[key] = Object.create(null);
     }

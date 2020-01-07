@@ -12,7 +12,7 @@ import {
 
 export
 class StyleModel extends WidgetModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         const Derived = this.constructor as typeof StyleModel;
         return assign(super.defaults(), {
             _model_name: 'StyleModel',
@@ -38,7 +38,7 @@ class StyleView extends WidgetView {
     /**
      * Public constructor
      */
-    initialize(parameters: WidgetView.IInitializeParameters) {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         this._traitNames = [];
         super.initialize(parameters);
         // Register the traits that live on the Python side
@@ -55,7 +55,7 @@ class StyleView extends WidgetView {
      * Register a CSS trait that is known by the model
      * @param trait
      */
-    registerTrait(trait: string) {
+    registerTrait(trait: string): void {
         this._traitNames.push(trait);
 
         // Listen to changes, and set the value on change.
@@ -67,7 +67,7 @@ class StyleView extends WidgetView {
     /**
      * Handles when a trait value changes
      */
-    handleChange(trait: string, value: any) {
+    handleChange(trait: string, value: any): void {
         // should be synchronous so that we can measure later.
         const parent = this.options.parent as DOMWidgetView;
         if (parent) {
@@ -93,7 +93,7 @@ class StyleView extends WidgetView {
     /**
      * Apply styles for all registered traits
      */
-    style() {
+    style(): void {
         for (const trait of this._traitNames) {
             this.handleChange(trait, this.model.get(trait));
         }
@@ -102,7 +102,7 @@ class StyleView extends WidgetView {
     /**
      * Remove the styling from the parent view.
      */
-    unstyle() {
+    unstyle(): void {
         const parent = this.options.parent as DOMWidgetView;
         const ModelType = this.model.constructor as typeof StyleModel;
         const styleProperties = ModelType.styleProperties;

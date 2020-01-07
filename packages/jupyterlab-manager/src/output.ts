@@ -36,18 +36,18 @@ const OUTPUT_WIDGET_VERSION = outputBase.OUTPUT_WIDGET_VERSION;
 
 export
 class OutputModel extends outputBase.OutputModel {
-  defaults() {
+  defaults(): Backbone.ObjectHash {
     return {...super.defaults(),
       msg_id: '',
       outputs: []
     };
   }
 
-  initialize(attributes: any, options: any) {
+  initialize(attributes: any, options: any): void {
     super.initialize(attributes, options);
     // The output area model is trusted since widgets are only rendered in trusted contexts.
     this._outputs = new OutputAreaModel({trusted: true});
-    this._msgHook = (msg) => {
+    this._msgHook = (msg): boolean => {
       this.add(msg);
       return false;
     };
@@ -63,7 +63,7 @@ class OutputModel extends outputBase.OutputModel {
   /**
    * Register a new kernel
    */
-  _handleKernelChanged({oldValue}: Session.ISessionConnection.IKernelChangedArgs) {
+  _handleKernelChanged({oldValue}: Session.ISessionConnection.IKernelChangedArgs): void {
     const msgId = this.get('msg_id');
     if (msgId && oldValue) {
       oldValue.removeMessageHook(msgId, this._msgHook);
@@ -74,7 +74,7 @@ class OutputModel extends outputBase.OutputModel {
   /**
    * Reset the message id.
    */
-  reset_msg_id() {
+  reset_msg_id(): void {
     const kernel = this.widget_manager.context.sessionContext.session.kernel;
     const msgId = this.get('msg_id');
     const oldMsgId = this.previous('msg_id');
@@ -90,7 +90,7 @@ class OutputModel extends outputBase.OutputModel {
     }
   }
 
-  add(msg: KernelMessage.IIOPubMessage) {
+  add(msg: KernelMessage.IIOPubMessage): void {
     const msgType = msg.header.msg_type;
     switch (msgType) {
     case 'execute_result':
@@ -112,15 +112,15 @@ class OutputModel extends outputBase.OutputModel {
     this.save_changes();
   }
 
-  clear_output(wait = false) {
+  clear_output(wait = false): void {
     this._outputs.clear(wait);
   }
 
-  get outputs() {
+  get outputs(): OutputAreaModel {
     return this._outputs;
   }
 
-  setOutputs(model?: any, value?: any, options?: any) {
+  setOutputs(model?: any, value?: any, options?: any): void {
     if (!(options && options.newMessage)) {
         // fromJSON does not clear the existing output
         this.clear_output();
@@ -150,7 +150,7 @@ class JupyterPhosphorPanelWidget extends Panel {
      * Any custom phosphor widget used inside a Jupyter widget should override
      * the processMessage function like this.
      */
-    processMessage(msg: Message) {
+    processMessage(msg: Message): void {
         super.processMessage(msg);
         this._view.processPhosphorMessage(msg);
     }
@@ -160,7 +160,7 @@ class JupyterPhosphorPanelWidget extends Panel {
      *
      * This causes the view to be destroyed as well with 'remove'
      */
-    dispose() {
+    dispose(): void {
         if (this.isDisposed) {
             return;
         }
@@ -177,12 +177,12 @@ class JupyterPhosphorPanelWidget extends Panel {
 export
 class OutputView extends outputBase.OutputView {
 
-    _createElement(tagName: string) {
+    _createElement(tagName: string): HTMLElement {
       this.pWidget = new JupyterPhosphorPanelWidget({ view: this });
       return this.pWidget.node;
     }
 
-    _setElement(el: HTMLElement) {
+    _setElement(el: HTMLElement): void {
         if (this.el || el !== this.pWidget.node) {
             // Boxes don't allow setting the element beyond the initial creation.
             throw new Error('Cannot reset the DOM element.');
@@ -195,7 +195,7 @@ class OutputView extends outputBase.OutputView {
   /**
    * Called when view is rendered.
    */
-  render() {
+  render(): void {
     super.render();
     this._outputView = new OutputArea({
       rendermime: this.model.widget_manager.rendermime,
@@ -213,7 +213,7 @@ class OutputView extends outputBase.OutputView {
     this.update(); // Set defaults.
   }
 
-  remove() {
+  remove(): any {
     this._outputView.dispose();
     return super.remove();
   }

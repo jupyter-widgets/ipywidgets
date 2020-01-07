@@ -8,7 +8,7 @@ import { ArrayExt } from '@lumino/algorithm';
 
 import { Selection } from '../../../lib/phosphor/currentselection';
 
-function getLastMessage(subscriber: { getCall: (arg0: number) => { args: [any, any] } }) {
+function getLastMessage(subscriber: { getCall: (arg0: number) => { args: [any, any] } }): any {
     const [, message] = subscriber.getCall(0).args;
     return message;
 }

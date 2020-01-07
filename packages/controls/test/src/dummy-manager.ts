@@ -5,6 +5,7 @@ import * as widgets from '../../lib';
 import * as services from '@jupyterlab/services';
 import * as Backbone from 'backbone';
 import * as base from '@jupyter-widgets/base';
+import { WidgetModel, WidgetView } from '@jupyter-widgets/base';
 
 let numComms = 0;
 
@@ -14,35 +15,35 @@ class MockComm {
         this.comm_id = `mock-comm-id-${numComms}`;
         numComms += 1;
     }
-    on_open(fn: Function) {
+    on_open(fn: Function): void {
         this._on_open = fn;
     }
-    on_close(fn: Function) {
+    on_close(fn: Function): void {
         this._on_close = fn;
     }
-    on_msg(fn: Function) {
+    on_msg(fn: Function): void {
         this._on_msg = fn;
     }
-    _process_msg(msg: any) {
+    _process_msg(msg: any): any {
         if (this._on_msg) {
             return this._on_msg(msg);
         } else {
             return Promise.resolve();
         }
     }
-    open() {
+    open(): string {
         if (this._on_open) {
             this._on_open();
         }
         return '';
     }
-    close() {
+    close(): string {
         if (this._on_close) {
             this._on_close();
         }
         return '';
     }
-    send() {
+    send(): string {
         return '';
     }
     comm_id: string;
@@ -53,7 +54,7 @@ class MockComm {
 }
 
 class TestWidget extends base.WidgetModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return {...super.defaults(),
             _model_module: 'test-widgets',
             _model_name: 'TestWidget',
@@ -67,11 +68,11 @@ class TestWidget extends base.WidgetModel {
 }
 
 class TestWidgetView extends base.WidgetView {
-    render() {
+    render(): void {
         this._rendered += 1;
         super.render();
     }
-    remove() {
+    remove(): void {
         this._removed +=1;
         super.remove();
     }
@@ -88,7 +89,7 @@ class DummyManager extends base.ManagerBase<HTMLElement> {
         this.el = window.document.createElement('div');
     }
 
-    display_view(msg: services.KernelMessage.IMessage, view: Backbone.View<Backbone.Model>, options: any) {
+    display_view(msg: services.KernelMessage.IMessage, view: Backbone.View<Backbone.Model>, options: any): Promise<HTMLElement> {
         // TODO: make this a spy
         // TODO: return an html element
         return Promise.resolve(view).then(view => {
@@ -98,7 +99,7 @@ class DummyManager extends base.ManagerBase<HTMLElement> {
         });
     }
 
-    protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<any> {
+    protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<typeof WidgetModel | typeof WidgetView> {
         if (moduleName === '@jupyter-widgets/controls') {
             if ((widgets as any)[className]) {
                 return Promise.resolve((widgets as any)[className]);
@@ -116,11 +117,11 @@ class DummyManager extends base.ManagerBase<HTMLElement> {
         }
     }
 
-    _get_comm_info() {
+    _get_comm_info(): Promise<{}> {
         return Promise.resolve({});
     }
 
-    _create_comm() {
+    _create_comm(): Promise<MockComm> {
         return Promise.resolve(new MockComm());
     }
 

@@ -39,7 +39,7 @@ import $ from 'jquery';
 
 export
 class SelectionContainerModel extends BoxModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'SelectionContainerModel',
             selected_index: 0,
@@ -50,7 +50,7 @@ class SelectionContainerModel extends BoxModel {
 
 export
 class AccordionModel extends SelectionContainerModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'AccordionModel',
             _view_name: 'AccordionView'
@@ -76,7 +76,7 @@ class JupyterPhosphorAccordionWidget extends Accordion {
      * Any custom phosphor widget used inside a Jupyter widget should override
      * the processMessage function like this.
      */
-    processMessage(msg: Message) {
+    processMessage(msg: Message): void {
         super.processMessage(msg);
         this._view.processPhosphorMessage(msg);
     }
@@ -86,7 +86,7 @@ class JupyterPhosphorAccordionWidget extends Accordion {
      *
      * This causes the view to be destroyed as well with 'remove'
      */
-    dispose() {
+    dispose(): void {
         if (this.isDisposed) {
             return;
         }
@@ -104,12 +104,12 @@ class JupyterPhosphorAccordionWidget extends Accordion {
 export
 class AccordionView extends DOMWidgetView {
 
-    _createElement(tagName: string) {
+    _createElement(tagName: string): HTMLElement {
         this.pWidget = new JupyterPhosphorAccordionWidget({ view: this });
         return this.pWidget.node;
     }
 
-    _setElement(el: HTMLElement) {
+    _setElement(el: HTMLElement): void {
         if (this.el || el !== this.pWidget.node) {
             // Accordions don't allow setting the element beyond the initial creation.
             throw new Error('Cannot reset the DOM element.');
@@ -119,7 +119,7 @@ class AccordionView extends DOMWidgetView {
         this.$el = $(this.pWidget.node);
      }
 
-    initialize(parameters: any) {
+    initialize(parameters: any): void {
         super.initialize(parameters);
         this.children_views = new ViewList(this.add_child_view, this.remove_child_view, this);
         this.listenTo(this.model, 'change:children', () => this.updateChildren());
@@ -130,7 +130,7 @@ class AccordionView extends DOMWidgetView {
     /**
      * Called when view is rendered.
      */
-    render() {
+    render(): void {
         super.render();
         const accordion = this.pWidget;
         accordion.addClass('jupyter-widgets');
@@ -151,7 +151,7 @@ class AccordionView extends DOMWidgetView {
     /**
      * Update children
      */
-    updateChildren() {
+    updateChildren(): void {
         // While we are updating, the index may not be valid, so deselect the
         // tabs before updating so we don't get spurious changes in the index,
         // which would then set off another sync cycle.
@@ -165,7 +165,7 @@ class AccordionView extends DOMWidgetView {
     /**
      * Set header titles
      */
-    update_titles() {
+    update_titles(): void {
         const collapsed = this.pWidget.collapseWidgets;
         const titles = this.model.get('_titles');
         for (let i = 0; i < collapsed.length; i++) {
@@ -178,14 +178,14 @@ class AccordionView extends DOMWidgetView {
     /**
      * Make the rendering and selected index consistent.
      */
-    update_selected_index() {
+    update_selected_index(): void {
         this.pWidget.selection.index = this.model.get('selected_index');
     }
 
     /**
      * Called when a child is removed from children list.
      */
-    remove_child_view(view: DOMWidgetView) {
+    remove_child_view(view: DOMWidgetView): void {
         this.pWidget.removeWidget(view.pWidget);
         view.remove();
     }
@@ -193,7 +193,7 @@ class AccordionView extends DOMWidgetView {
     /**
      * Called when a child is added to children list.
      */
-    add_child_view(model: WidgetModel, index: number) {
+    add_child_view(model: WidgetModel, index: number): Promise<DOMWidgetView> {
         // Placeholder widget to keep our position in the tab panel while we create the view.
         const accordion = this.pWidget;
         const placeholder = new Widget();
@@ -209,7 +209,7 @@ class AccordionView extends DOMWidgetView {
         }).catch(utils.reject('Could not add child view to box', true));
     }
 
-    remove() {
+    remove(): void {
         this.children_views = null;
         super.remove();
     }
@@ -221,7 +221,7 @@ class AccordionView extends DOMWidgetView {
 
 export
 class TabModel extends SelectionContainerModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'TabModel',
             _view_name: 'TabView'
@@ -255,7 +255,7 @@ class JupyterPhosphorTabPanelWidget extends TabPanel {
      *
      * This causes the view to be destroyed as well with 'remove'
      */
-    dispose() {
+    dispose(): void {
         if (this.isDisposed) {
             return;
         }
@@ -275,14 +275,14 @@ class JupyterPhosphorTabPanelWidget extends TabPanel {
 export
 class TabView extends DOMWidgetView {
 
-    _createElement(tagName: string) {
+    _createElement(tagName: string): HTMLElement {
         this.pWidget = new JupyterPhosphorTabPanelWidget({
             view: this,
         });
         return this.pWidget.node;
     }
 
-    _setElement(el: HTMLElement) {
+    _setElement(el: HTMLElement): void {
         if (this.el || el !== this.pWidget.node) {
             // TabViews don't allow setting the element beyond the initial creation.
             throw new Error('Cannot reset the DOM element.');
@@ -295,7 +295,7 @@ class TabView extends DOMWidgetView {
     /**
      * Public constructor.
      */
-    initialize(parameters: any) {
+    initialize(parameters: any): void {
         super.initialize(parameters);
         this.childrenViews = new ViewList(
             this.addChildView,
@@ -309,7 +309,7 @@ class TabView extends DOMWidgetView {
     /**
      * Called when view is rendered.
      */
-    render() {
+    render(): void{
         super.render();
         const tabs = this.pWidget;
         tabs.addClass('jupyter-widgets');
@@ -334,7 +334,7 @@ class TabView extends DOMWidgetView {
     /**
      * Render tab views based on the current model's children.
      */
-    updateTabs() {
+    updateTabs(): void {
         // While we are updating, the index may not be valid, so deselect the
         // tabs before updating so we don't get spurious changes in the index,
         // which would then set off another sync cycle.
@@ -348,7 +348,7 @@ class TabView extends DOMWidgetView {
     /**
      * Called when a child is added to children list.
      */
-    addChildView(model: WidgetModel, index: number) {
+    addChildView(model: WidgetModel, index: number): Promise<DOMWidgetView> {
         // Placeholder widget to keep our position in the tab panel while we create the view.
         const label = this.model.get('_titles')[index] || '';
         const tabs = this.pWidget;
@@ -376,7 +376,7 @@ class TabView extends DOMWidgetView {
      * Called when the model is changed.  The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update() {
+    update(): void {
         // Update the selected index in the overall update method because it
         // should be run after the tabs have been updated. Otherwise the
         // selected index may not be a valid tab in the tab bar.
@@ -387,7 +387,7 @@ class TabView extends DOMWidgetView {
     /**
      * Updates the tab page titles.
      */
-    updateTitles() {
+    updateTitles(): void {
         const titles = this.model.get('_titles') || {};
         each(this.pWidget.widgets, (widget, i) => {
             widget.title.label = titles[i] || '';
@@ -397,16 +397,16 @@ class TabView extends DOMWidgetView {
     /**
      * Updates the selected index.
      */
-    updateSelectedIndex() {
+    updateSelectedIndex(): void {
         this.pWidget.currentIndex = this.model.get('selected_index');
     }
 
-    remove() {
+    remove(): void {
         this.childrenViews = null;
         super.remove();
     }
 
-    _onTabChanged(sender: TabBar<Widget>, args: TabBar.ICurrentChangedArgs<Widget>) {
+    _onTabChanged(sender: TabBar<Widget>, args: TabBar.ICurrentChangedArgs<Widget>): void {
         if (!this.updatingTabs) {
             const i = args.currentIndex;
             this.model.set('selected_index', i === -1 ? null : i);

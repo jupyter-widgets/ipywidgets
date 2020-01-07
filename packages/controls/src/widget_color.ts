@@ -19,7 +19,7 @@ const named_colors: {[key: string]: string} = { aliceblue: '#f0f8ff', antiquewhi
 
 export
 class ColorPickerModel extends CoreDescriptionModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             value: 'black',
             concise: false,
@@ -31,7 +31,7 @@ class ColorPickerModel extends CoreDescriptionModel {
 
 export
 class ColorPickerView extends DescriptionView {
-    render() {
+    render(): void {
         super.render();
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-inline-hbox');
@@ -66,7 +66,7 @@ class ColorPickerView extends DescriptionView {
      * Called when the model is changed. The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update(options?: any) {
+    update(options?: any): void {
         if (options === undefined || options.updated_view != this) {
             const disabled = this.model.get('disabled');
             this._textbox.disabled = disabled;
@@ -86,13 +86,13 @@ class ColorPickerView extends DescriptionView {
         };
     }
 
-    private _update_value() {
+    private _update_value(): void {
         const value = this.model.get('value');
         this._colorpicker.value = color2hex(value);
         this._textbox.value = value;
     }
 
-    private _update_concise() {
+    private _update_concise(): void {
         const concise = this.model.get('concise');
         if (concise) {
             this.el.classList.add('concise');
@@ -103,12 +103,12 @@ class ColorPickerView extends DescriptionView {
         }
     }
 
-    private _picker_change() {
+    private _picker_change(): void {
         this.model.set('value', this._colorpicker.value);
         this.touch();
     }
 
-    private _text_change() {
+    private _text_change(): void {
         const value = this._validate_color(
             this._textbox.value,
             this.model.get('value')
@@ -117,7 +117,7 @@ class ColorPickerView extends DescriptionView {
         this.touch();
     }
 
-    private _validate_color(color: string, fallback: any) {
+    private _validate_color(color: string, fallback: any): any {
         return color.match(/#[a-fA-F0-9]{3}(?:[a-fA-F0-9]{3})?$/) ||
           named_colors[color.toLowerCase()] ? color: fallback;
     }
@@ -131,11 +131,11 @@ class ColorPickerView extends DescriptionView {
  * From a valid html color (named color, 6-digits or 3-digits hex format)
  * return a 6-digits hexadecimal color #rrggbb.
  */
-function color2hex(color: string) {
+function color2hex(color: string): string {
     return named_colors[color.toLowerCase()] || rgb3_to_rgb6(color);
 }
 
-function rgb3_to_rgb6(rgb: string) {
+function rgb3_to_rgb6(rgb: string): string {
     if (rgb.length === 7) {
         return rgb;
     } else {

@@ -19,12 +19,12 @@ class ViewList<T> {
         this.initialize(create_view, remove_view, context);
     }
 
-    initialize(create_view: (model: any, index: any) => T | Promise<T>, remove_view: (view: T) => void, context: any) {
+    initialize(create_view: (model: any, index: any) => T | Promise<T>, remove_view: (view: T) => void, context: any): void {
         this._handler_context = context || this;
         this._models = [];
         this.views = []; // list of promises for views
         this._create_view = create_view;
-        this._remove_view = remove_view || function(view) { (view as any).remove(); };
+        this._remove_view = remove_view || function(view): void { (view as any).remove(); };
     }
 
     /**

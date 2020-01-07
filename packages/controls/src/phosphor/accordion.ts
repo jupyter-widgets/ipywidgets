@@ -63,7 +63,7 @@ class Collapse extends Widget {
     this.collapsed = false;
   }
 
-  dispose() {
+  dispose(): void {
     if (this.isDisposed) {
       return;
     }
@@ -73,7 +73,7 @@ class Collapse extends Widget {
     this._content = null;
   }
 
-  get widget() {
+  get widget(): Widget {
     return this._widget;
   }
 
@@ -91,7 +91,7 @@ class Collapse extends Widget {
     this._content.addWidget(widget);
   }
 
-  get collapsed() {
+  get collapsed(): boolean {
     return this._collapsed;
   }
 
@@ -107,7 +107,7 @@ class Collapse extends Widget {
     }
   }
 
-  toggle() {
+  toggle(): void {
     this.collapsed = !this.collapsed;
   }
 
@@ -115,7 +115,7 @@ class Collapse extends Widget {
     return this._collapseChanged;
   }
 
-  private _collapse() {
+  private _collapse(): void {
     this._collapsed = true;
     if (this._content) {
       this._content.hide();
@@ -123,7 +123,7 @@ class Collapse extends Widget {
     this.removeClass(COLLAPSE_CLASS_OPEN);
     this._collapseChanged.emit(void 0);
   }
-  private _uncollapse() {
+  private _uncollapse(): void {
     this._collapsed = false;
     if (this._content) {
       this._content.show();
@@ -152,7 +152,7 @@ class Collapse extends Widget {
     }
   }
 
-  private _evtClick(event: MouseEvent) {
+  private _evtClick(event: MouseEvent): void {
     this.toggle();
   }
 
@@ -277,14 +277,14 @@ class Accordion extends Panel {
     }
   }
 
-  private _wrapWidget(widget: Widget) {
+  private _wrapWidget(widget: Widget): Collapse {
     const collapse = new Collapse({ widget });
     collapse.addClass(ACCORDION_CHILD_CLASS);
     collapse.collapseChanged.connect(this._onCollapseChange, this);
     return collapse;
   }
 
-  private _onCollapseChange(sender: Collapse) {
+  private _onCollapseChange(sender: Collapse): void {
     if (!sender.collapsed) {
       this._selection.value = sender;
     } else if (this._selection.value === sender && sender.collapsed) {
@@ -292,7 +292,7 @@ class Accordion extends Panel {
     }
   }
 
-  private _onSelectionChanged(sender: Selection<Widget>, change: Selection.ISelectionChangedArgs<Collapse>) {
+  private _onSelectionChanged(sender: Selection<Widget>, change: Selection.ISelectionChangedArgs<Collapse>): void {
     // Collapse previous widget, open current widget
     const pv = change.previousValue;
     const cv = change.currentValue;

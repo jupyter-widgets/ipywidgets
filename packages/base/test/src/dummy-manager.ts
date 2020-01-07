@@ -16,35 +16,35 @@ class MockComm implements widgets.IClassicComm {
         this.comm_id = `mock-comm-id-${numComms}`;
         numComms += 1;
     }
-    on_open(fn: Function) {
+    on_open(fn: Function): void {
         this._on_open = fn;
     }
-    on_close(fn: Function) {
+    on_close(fn: Function): void {
         this._on_close = fn;
     }
-    on_msg(fn: Function) {
+    on_msg(fn: Function): void {
         this._on_msg = fn;
     }
-    _process_msg(msg: any) {
+    _process_msg(msg: any): any {
         if (this._on_msg) {
             return this._on_msg(msg);
         } else {
             return Promise.resolve();
         }
     }
-    open() {
+    open(): string {
         if (this._on_open) {
             this._on_open();
         }
         return '';
     }
-    close() {
+    close(): string {
         if (this._on_close) {
             this._on_close();
         }
         return '';
     }
-    send() {
+    send(): string {
         return '';
     }
     comm_id: string;
@@ -66,11 +66,11 @@ const typesToArray: {[key: string]: any} = {
 };
 
 
-const JSONToArray = function(obj: any) {
+const JSONToArray = function(obj: any): any {
     return new typesToArray[obj.dtype](obj.buffer.buffer);
 };
 
-const arrayToJSON = function(obj: any) {
+const arrayToJSON = function(obj: any): any {
     const dtype = Object.keys(typesToArray).filter(
         i => typesToArray[i] === obj.constructor)[0];
     return {dtype, buffer: obj};
@@ -83,7 +83,7 @@ const array_serialization = {
 
 
 class TestWidget extends widgets.WidgetModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return {...super.defaults(),
             _model_module: 'test-widgets',
             _model_name: 'TestWidget',
@@ -97,11 +97,11 @@ class TestWidget extends widgets.WidgetModel {
 }
 
 class TestWidgetView extends widgets.WidgetView {
-    render() {
+    render(): void {
         this._rendered += 1;
         super.render();
     }
-    remove() {
+    remove(): void {
         this._removed += 1;
         super.remove();
     }
@@ -114,7 +114,7 @@ class BinaryWidget extends TestWidget {
         ...widgets.WidgetModel.serializers,
         array: array_serialization
     };
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return {...super.defaults(),
             _model_name: 'BinaryWidget',
             _view_name: 'BinaryWidgetView',
@@ -123,7 +123,7 @@ class BinaryWidget extends TestWidget {
 }
 
 class BinaryWidgetView extends TestWidgetView {
-    render() {
+    render(): void {
         this._rendered += 1;
     }
     _rendered = 0;
@@ -138,7 +138,7 @@ class DummyManager extends widgets.ManagerBase<HTMLElement> {
         this.el = window.document.createElement('div');
     }
 
-    display_view(msg: services.KernelMessage.IMessage, view: Backbone.View<Backbone.Model>, options: any) {
+    display_view(msg: services.KernelMessage.IMessage, view: Backbone.View<Backbone.Model>, options: any): Promise<HTMLElement> {
         // TODO: make this a spy
         // TODO: return an html element
         return Promise.resolve(view).then(view => {
@@ -166,11 +166,11 @@ class DummyManager extends widgets.ManagerBase<HTMLElement> {
         }
     }
 
-    _get_comm_info() {
+    _get_comm_info(): Promise<{}> {
         return Promise.resolve({});
     }
 
-    _create_comm() {
+    _create_comm(): Promise<MockComm> {
         return Promise.resolve(new MockComm());
     }
 

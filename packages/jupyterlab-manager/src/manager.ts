@@ -6,7 +6,7 @@ import * as Backbone from 'backbone';
 
 import {
     ManagerBase, shims, IClassicComm, IWidgetRegistryData, ExportMap,
-    ExportData, WidgetModel, WidgetView, put_buffers, serialize_state, IStateOptions
+    ExportData, WidgetModel, WidgetView, put_buffers, serialize_state, IStateOptions, ICallbacks
 } from '@jupyter-widgets/base';
 
 import {
@@ -14,7 +14,7 @@ import {
 } from '@lumino/disposable';
 
 import {
-  PromiseDelegate
+  PromiseDelegate, ReadonlyPartialJSONValue
 } from '@lumino/coreutils';
 
 import {
@@ -84,11 +84,11 @@ class BackboneViewWrapper extends Widget {
     this.node.appendChild(view.el);
   }
 
-  onAfterAttach(msg: any) {
+  onAfterAttach(msg: any): void {
     this._view.trigger('displayed');
   }
 
-  dispose() {
+  dispose(): void {
     this._view = null;
     super.dispose();
   }
@@ -108,7 +108,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     this._rendermime = rendermime;
 
     // Set _handleCommOpen so `this` is captured.
-    this._handleCommOpen = async (comm, msg) => {
+    this._handleCommOpen = async (comm, msg): Promise<void> => {
       const oldComm = new shims.services.Comm(comm);
       await this.handle_comm_open(oldComm, msg);
     };
@@ -141,7 +141,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Save the widget state to the context model.
    */
-  private _saveState() {
+  private _saveState(): void {
     const state = this.get_state_sync({ drop_defaults: true });
     this._context.model.metadata.set('widgets', {
       'application/vnd.jupyter.widget-state+json' : state
@@ -151,10 +151,10 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Default callback handler to emit unhandled kernel messages.
    */
-  callbacks(view?: WidgetView) {
+  callbacks(view?: WidgetView): ICallbacks {
     return {
         iopub: {
-            output: (msg: KernelMessage.IIOPubMessage) => {
+            output: (msg: KernelMessage.IIOPubMessage): void => {
               this._onUnhandledIOPubMessage.emit(msg);
             }
         }
@@ -164,7 +164,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Register a new kernel
    */
-  _handleKernelChanged({oldValue, newValue}: Session.ISessionConnection.IKernelChangedArgs) {
+  _handleKernelChanged({oldValue, newValue}: Session.ISessionConnection.IKernelChangedArgs): void {
     if (oldValue) {
       oldValue.removeCommTarget(this.comm_target_name, this._handleCommOpen);
     }
@@ -174,7 +174,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     }
   }
 
-  _handleKernelConnectionStatusChange(status: Kernel.ConnectionStatus) {
+  _handleKernelConnectionStatusChange(status: Kernel.ConnectionStatus): void {
     if (status === 'connected') {
         // Only restore if our initial restore at construction is finished
         if (this._initialRestoredStatus) {
@@ -185,7 +185,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     }
   }
 
-  _handleKernelStatusChange(status: Kernel.Status) {
+  _handleKernelStatusChange(status: Kernel.Status): void {
     if (status === 'restarting') {
       this.disconnect();
     }
@@ -210,7 +210,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * Disconnect the widget manager from the kernel, setting each model's comm
    * as dead.
    */
-  disconnect() {
+  disconnect(): void {
     super.disconnect();
     this._restoredStatus = false;
   }
@@ -406,11 +406,11 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     return cls;
   }
 
-  get context() {
+  get context(): DocumentRegistry.IContext<INotebookModel> {
     return this._context;
   }
 
-  get rendermime() {
+  get rendermime(): IRenderMimeRegistry {
     return this._rendermime;
   }
 
@@ -439,7 +439,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     return this._onUnhandledIOPubMessage;
   }
 
-  register(data: IWidgetRegistryData) {
+  register(data: IWidgetRegistryData): void {
     this._registry.set(data.name, data.version, data.exports);
   }
 
@@ -492,9 +492,9 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * the @jupyter-widgets/schema package.
    *
    * @param options - The options for what state to return.
-   * @returns Promise for a state dictionary
+   * @returns A state dictionary
    */
-  get_state_sync(options: IStateOptions = {}) {
+  get_state_sync(options: IStateOptions = {}): ReadonlyPartialJSONValue {
       const models = [];
       for (const model of this._modelsSync.values()) {
         if (model.comm_live) {
@@ -509,7 +509,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    *
    * TODO: perhaps should also set dirty when any model changes any data
    */
-  setDirty() {
+  setDirty(): void {
     if (this._settings.saveState) {
       this._context.model.dirty = true;
     }

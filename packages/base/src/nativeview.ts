@@ -43,7 +43,7 @@ const matchesSelector = ElementProto.matches ||
     ElementProto['mozMatchesSelector'] ||
     ElementProto['msMatchesSelector'] ||
     ElementProto['oMatchesSelector'] ||
-    function matches(selector: string) {
+    function matches(selector: string): boolean {
         /* tslint:disable:no-invalid-this */
         const matches = (this.document || this.ownerDocument).querySelectorAll(selector);
         let i = matches.length;
@@ -63,7 +63,7 @@ interface IDOMEvent {
 
 export
 class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
-    _removeElement() {
+    _removeElement(): void {
       this.undelegateEvents();
       if (this.el.parentNode) {
           this.el.parentNode.removeChild(this.el);
@@ -71,13 +71,13 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
     }
 
     // Apply the `element` to the view.
-    _setElement(element: HTMLElement) {
+    _setElement(element: HTMLElement): void {
         this.el = element;
     }
 
     // Set a hash of attributes to the view's `el`. We use the "prop" version
     // if available, falling back to `setAttribute` for the catch-all.
-    _setAttributes(attrs: {[key: string]: string}) {
+    _setAttributes(attrs: {[key: string]: string}): void {
       for (const attr in attrs) {
         attr in this.el ? this.el[attr] = attrs[attr] : this.el.setAttribute(attr, attrs[attr]);
       }
@@ -97,7 +97,7 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
      * https://github.com/jquery/jquery/blob/7d21f02b9ec9f655583e898350badf89165ed4d5/src/event.js#L442
      * for some similar exceptional cases).
      */
-    delegate(eventName: string, selector: any, listener: any) {
+    delegate(eventName: string, selector: any, listener: any): any {
       if (typeof selector !== 'string') {
         listener = selector;
         selector = null;
@@ -111,7 +111,7 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
       }
 
       const root = this.el;
-      const handler = selector ? function (e: Event) {
+      const handler = selector ? function (e: Event): any {
         let node = (e.target as HTMLElement) || (e.srcElement as HTMLElement);
         for (; node && node !== root; node = node.parentNode as HTMLElement) {
           if (matchesSelector.call(node, selector)) {
@@ -132,7 +132,7 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
 
     // Remove a single delegated event. Either `eventName` or `selector` must
     // be included, `selector` and `listener` are optional.
-    undelegate(eventName: string, selector?: any, listener?: any) {
+    undelegate(eventName: string, selector?: any, listener?: any): NativeView<T> {
       if (typeof selector === 'function') {
         listener = selector;
         selector = null;
@@ -160,7 +160,7 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
     }
 
     // Remove all events created with `delegate` from `el`
-    undelegateEvents() {
+    undelegateEvents(): NativeView<T> {
       if (this.el && this._domEvents) {
         const len = this._domEvents.length;
         for (let i = 0; i < len; i++) {

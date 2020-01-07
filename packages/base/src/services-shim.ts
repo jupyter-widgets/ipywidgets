@@ -98,7 +98,7 @@ namespace shims {
              * Hookup kernel events.
              * @param  {Kernel.IKernel} jsServicesKernel - @jupyterlab/services Kernel.IKernel instance
              */
-            init_kernel(jsServicesKernel: Kernel.IKernelConnection) {
+            init_kernel(jsServicesKernel: Kernel.IKernelConnection): void {
                 this.kernel = jsServicesKernel; // These aren't really the same.
                 this.jsServicesKernel = jsServicesKernel;
             }
@@ -120,7 +120,7 @@ namespace shims {
              * @param  {(Comm, object) => void} f - callback that is called when the
              *                         comm is made.  Signature of f(comm, msg).
              */
-            register_target(target_name: string, f: (comm: Comm, data: {}) => void) {
+            register_target(target_name: string, f: (comm: Comm, data: {}) => void): void {
                 const handle = this.jsServicesKernel.registerCommTarget(target_name,
                 (jsServicesComm, msg) => {
                     // Create the comm.
@@ -143,7 +143,7 @@ namespace shims {
              * Unregisters a comm target
              * @param  {string} target_name
              */
-            unregister_target(target_name: string, f: (comm: Comm, data: {}) => void) {
+            unregister_target(target_name: string, f: (comm: Comm, data: {}) => void): void {
                 const handle = this.targets[target_name];
                 handle.dispose();
                 delete this.targets[target_name];
@@ -152,7 +152,7 @@ namespace shims {
             /**
              * Register a comm in the mapping
              */
-            register_comm(comm: Comm) {
+            register_comm(comm: Comm): string {
               this.comms[comm.comm_id] = Promise.resolve(comm);
               comm.kernel = this.kernel;
               return comm.comm_id;
@@ -178,7 +178,7 @@ namespace shims {
              * Comm id
              * @return {string}
              */
-            get comm_id() {
+            get comm_id(): string {
                 return this.jsServicesComm.commId;
             }
 
@@ -186,7 +186,7 @@ namespace shims {
              * Target name
              * @return {string}
              */
-            get target_name() {
+            get target_name(): string {
                 return this.jsServicesComm.targetName;
             }
 
@@ -251,22 +251,22 @@ namespace shims {
              * @param  @jupyterlab/services IKernelFuture instance
              * @param  callbacks
              */
-            _hookupCallbacks(future: Kernel.IShellFuture, callbacks: ICallbacks) {
+            _hookupCallbacks(future: Kernel.IShellFuture, callbacks: ICallbacks): void {
                 if (callbacks) {
-                    future.onReply = function(msg) {
+                    future.onReply = function(msg): void {
                         if (callbacks.shell && callbacks.shell.reply) {
                             callbacks.shell.reply(msg);
                         }
                         // TODO: Handle payloads.  See https://github.com/jupyter/notebook/blob/master/notebook/static/services/kernels/kernel.js#L923-L947
                     };
 
-                    future.onStdin = function(msg) {
+                    future.onStdin = function(msg): void {
                         if (callbacks.input) {
                             callbacks.input(msg);
                         }
                     };
 
-                    future.onIOPub = function(msg) {
+                    future.onIOPub = function(msg): void {
                         if (callbacks.iopub) {
                             if (callbacks.iopub.status && msg.header.msg_type === 'status') {
                                 callbacks.iopub.status(msg);

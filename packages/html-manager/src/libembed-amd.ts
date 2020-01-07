@@ -27,7 +27,7 @@ const requirePromise = function(pkg: string | string[]): Promise<any> {
     });
 }
 
-function moduleNameToCDNUrl(moduleName: string, moduleVersion: string) {
+function moduleNameToCDNUrl(moduleName: string, moduleVersion: string): string {
     let packageName = moduleName;
     let fileName = 'index'; // default filename
     // if a '/' is present, like 'foo/bar', packageName is changed to 'foo', and path to 'bar'
@@ -59,7 +59,7 @@ function moduleNameToCDNUrl(moduleName: string, moduleVersion: string) {
  * The semver range is only used with the CDN.
  */
 export
-function requireLoader(moduleName: string, moduleVersion: string) {
+function requireLoader(moduleName: string, moduleVersion: string): Promise<any> {
     return requirePromise([`${moduleName}`]).catch((err) => {
         const failedId = err.requireModules && err.requireModules[0];
         if (failedId) {
@@ -86,9 +86,9 @@ function requireLoader(moduleName: string, moduleVersion: string) {
  * the widgets' models and views classes. (The default loader looks them up on unpkg.com)
  */
 export
-function renderWidgets(element = document.documentElement, loader: (moduleName: string, moduleVersion: string) => Promise<any>  = requireLoader) {
+function renderWidgets(element = document.documentElement, loader: (moduleName: string, moduleVersion: string) => Promise<any> = requireLoader): void {
     requirePromise(['@jupyter-widgets/html-manager']).then((htmlmanager) => {
-        const managerFactory = () => {
+        const managerFactory = (): any => {
             return new htmlmanager.HTMLManager({loader: loader});
         }
         libembed.renderWidgets(managerFactory, element);

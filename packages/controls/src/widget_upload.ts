@@ -7,7 +7,7 @@ import { DOMWidgetView } from '@jupyter-widgets/base';
 import * as _ from 'underscore';
 
 export class FileUploadModel extends CoreDOMWidgetModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'FileUploadModel',
             _view_name: 'FileUploadView',
@@ -29,7 +29,7 @@ export class FileUploadModel extends CoreDOMWidgetModel {
 
     static serializers = {
         ...CoreDOMWidgetModel.serializers,
-        data: { serialize: (buffers: any) => { return [...buffers]; } },
+        data: { serialize: (buffers: any): any[] => { return [...buffers]; } },
     };
 }
 
@@ -39,11 +39,11 @@ export class FileUploadView extends DOMWidgetView {
     fileInput: HTMLInputElement;
     fileReader: FileReader;
 
-    get tagName() {
+    get tagName(): string {
         return 'button';
     }
 
-    render() {
+    render(): void {
         super.render();
 
         this.el.classList.add('jupyter-widgets');
@@ -77,7 +77,7 @@ export class FileUploadView extends DOMWidgetView {
                             lastModified: file.lastModified,
                         };
                         this.fileReader = new FileReader();
-                        this.fileReader.onload = event => {
+                        this.fileReader.onload = (event): any => {
                             const buffer = (event as any).target.result;
                             resolve({
                                 buffer,
@@ -85,7 +85,7 @@ export class FileUploadView extends DOMWidgetView {
                                 error: '',
                             });
                         };
-                        this.fileReader.onerror = () => {
+                        this.fileReader.onerror = (): any => {
                             reject();
                         };
                         this.fileReader.onabort = this.fileReader.onerror;
@@ -125,7 +125,7 @@ export class FileUploadView extends DOMWidgetView {
         this.update(); // Set defaults.
     }
 
-    update() {
+    update(): void {
         this.el.disabled = this.model.get('disabled');
         this.el.setAttribute('title', this.model.get('tooltip'));
 
@@ -151,11 +151,11 @@ export class FileUploadView extends DOMWidgetView {
         return super.update();
     }
 
-    update_button_style() {
+    update_button_style(): void {
         this.update_mapped_classes(FileUploadView.class_map, 'button_style', this.el);
     }
 
-    set_button_style() {
+    set_button_style(): void {
         this.set_mapped_classes(FileUploadView.class_map, 'button_style', this.el);
     }
 

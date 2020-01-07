@@ -6,7 +6,7 @@ import {
 } from './widget_core';
 
 import {
-    DOMWidgetView, unpack_models, ViewList, JupyterPhosphorPanelWidget
+    DOMWidgetView, unpack_models, ViewList, JupyterPhosphorPanelWidget, Dict
 } from '@jupyter-widgets/base';
 
 import {
@@ -24,7 +24,7 @@ import $ from 'jquery';
 
 export
 class ControllerButtonModel extends CoreDOMWidgetModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'ControllerButtonModel',
             _view_name: 'ControllerButtonView',
@@ -39,7 +39,7 @@ class ControllerButtonModel extends CoreDOMWidgetModel {
  */
 export
 class ControllerButtonView extends DOMWidgetView {
-    render() {
+    render(): void {
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-controller-button');
         this.el.style.width = 'fit-content';
@@ -67,7 +67,7 @@ class ControllerButtonView extends DOMWidgetView {
         this.el.appendChild(this.label);
     }
 
-    update() {
+    update(): void {
         this.bar.style.height = (100 * this.model.get('value')) + '%';
     }
 
@@ -79,7 +79,7 @@ class ControllerButtonView extends DOMWidgetView {
 
 export
 class ControllerAxisModel extends CoreDOMWidgetModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'ControllerAxisModel',
             _view_name: 'ControllerAxisView',
@@ -93,7 +93,7 @@ class ControllerAxisModel extends CoreDOMWidgetModel {
  */
 export
 class ControllerAxisView extends DOMWidgetView {
-    render() {
+    render(): void {
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-controller-axis');
         this.el.style.width = '16px';
@@ -126,7 +126,7 @@ class ControllerAxisView extends DOMWidgetView {
         this.update();
     }
 
-    update() {
+    update(): void {
         this.bullet.style.top = (50 * (this.model.get('value') + 1)) + '%';
     }
 
@@ -144,7 +144,7 @@ class ControllerModel extends CoreDOMWidgetModel {
         axes: {deserialize: unpack_models}
     };
 
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'ControllerModel',
             _view_name: 'ControllerView',
@@ -158,7 +158,7 @@ class ControllerModel extends CoreDOMWidgetModel {
         });
     }
 
-    initialize(attributes: any, options: any) {
+    initialize(attributes: any, options: any): void {
         super.initialize(attributes, options);
         if (navigator.getGamepads === void 0) {
             // Checks if the browser supports the gamepad API
@@ -185,7 +185,7 @@ class ControllerModel extends CoreDOMWidgetModel {
      * Once one is connected, it will start the update loop, which
      * populates the update of axes and button values.
      */
-    wait_loop() {
+    wait_loop(): void {
         const index = this.get('index');
         const pad = navigator.getGamepads()[index];
         if (pad) {
@@ -207,7 +207,7 @@ class ControllerModel extends CoreDOMWidgetModel {
      *     axes: list of Axis models,
      * }
      */
-    setup(pad: Gamepad) {
+    setup(pad: Gamepad): Promise<Dict<ControllerButtonModel[]>> {
         // Set up the main gamepad attributes
         this.set({
             name: pad.id,
@@ -230,7 +230,7 @@ class ControllerModel extends CoreDOMWidgetModel {
      * Update axes and buttons values, until the gamepad is disconnected.
      * When the gamepad is disconnected, this.reset_gamepad is called.
      */
-    update_loop() {
+    update_loop(): void {
         const index = this.get('index');
         const id = this.get('name');
         const pad = navigator.getGamepads()[index];
@@ -260,7 +260,7 @@ class ControllerModel extends CoreDOMWidgetModel {
     /**
      * Resets the gamepad attributes, and start the wait_loop.
      */
-    reset_gamepad() {
+    reset_gamepad(): void {
         this.get('buttons').forEach(function(button: ControllerButtonModel) {
             button.close();
         });
@@ -322,12 +322,12 @@ class ControllerModel extends CoreDOMWidgetModel {
 export
 class ControllerView extends DOMWidgetView {
 
-    _createElement(tagName: string) {
+    _createElement(tagName: string): HTMLElement {
         this.pWidget = new JupyterPhosphorPanelWidget({ view: this });
         return this.pWidget.node;
     }
 
-    _setElement(el: HTMLElement) {
+    _setElement(el: HTMLElement): void {
         if (this.el || el !== this.pWidget.node) {
             // Boxes don't allow setting the element beyond the initial creation.
             throw new Error('Cannot reset the DOM element.');
@@ -337,7 +337,7 @@ class ControllerView extends DOMWidgetView {
         this.$el = $(this.pWidget.node);
     }
 
-    initialize(parameters: any) {
+    initialize(parameters: any): void {
         super.initialize(parameters);
 
         this.button_views = new ViewList(this.add_button, null, this);
@@ -353,7 +353,7 @@ class ControllerView extends DOMWidgetView {
         this.listenTo(this.model, 'change:name', this.update_label);
     }
 
-    render() {
+    render(): void {
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-controller');
         this.label = document.createElement('div');
@@ -373,11 +373,11 @@ class ControllerView extends DOMWidgetView {
         this.update_label();
     }
 
-    update_label() {
+    update_label(): void {
         this.label.textContent = this.model.get('name') || this.model.readout;
     }
 
-    add_button(model: ControllerButtonModel) {
+    add_button(model: ControllerButtonModel): Promise<ControllerButtonView> {
         // we insert a dummy element so the order is preserved when we add
         // the rendered content later.
         const dummy = new Widget();
@@ -392,7 +392,7 @@ class ControllerView extends DOMWidgetView {
         }).catch(utils.reject('Could not add child button view to controller', true));
     }
 
-    add_axis(model: ControllerAxisModel) {
+    add_axis(model: ControllerAxisModel): Promise<ControllerAxisView> {
         // we insert a dummy element so the order is preserved when we add
         // the rendered content later.
         const dummy = new Widget();
@@ -407,7 +407,7 @@ class ControllerView extends DOMWidgetView {
         }).catch(utils.reject('Could not add child axis view to controller', true));
     }
 
-    remove() {
+    remove(): void {
         super.remove();
         this.button_views.remove();
         this.axis_views.remove();

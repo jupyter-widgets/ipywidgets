@@ -31,7 +31,7 @@ const view_validate = ajv.compile(widget_view_schema);
  * @param element (default document.documentElement) The document element in which to process for widget state.
  */
 export
-function renderWidgets(managerFactory: () => HTMLManager, element: HTMLElement = document.documentElement) {
+function renderWidgets(managerFactory: () => HTMLManager, element: HTMLElement = document.documentElement): void {
     const tags = element.querySelectorAll('script[type="application/vnd.jupyter.widget-state+json"]');
     for (let i=0; i!=tags.length; ++i) {
         renderManager(element, JSON.parse(tags[i].innerHTML), managerFactory);
@@ -52,7 +52,7 @@ function renderWidgets(managerFactory: () => HTMLManager, element: HTMLElement =
  * Additionally, if the script tag has a prior img sibling with class
  * 'jupyter-widget', then that img tag is deleted.
  */
-function renderManager(element: HTMLElement, widgetState: any, managerFactory: () => HTMLManager) {
+function renderManager(element: HTMLElement, widgetState: any, managerFactory: () => HTMLManager): void {
     const valid = model_validate(widgetState);
     if (!valid) {
         console.error('Model state has errors.', model_validate.errors);

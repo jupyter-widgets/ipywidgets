@@ -17,7 +17,7 @@ import * as _ from 'underscore';
 
 export
 class ButtonStyleModel extends StyleModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'ButtonStyleModel',
             _model_module: '@jupyter-widgets/controls',
@@ -42,7 +42,7 @@ class ButtonStyleModel extends StyleModel {
 
 export
 class ButtonModel extends CoreDOMWidgetModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             description: '',
             tooltip: '',
@@ -61,7 +61,7 @@ class ButtonView extends DOMWidgetView {
     /**
      * Called when view is rendered.
      */
-    render() {
+    render(): void {
         super.render();
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('jupyter-button');
@@ -77,7 +77,7 @@ class ButtonView extends DOMWidgetView {
      * Called when the model is changed. The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update() {
+    update(): void {
         this.el.disabled = this.model.get('disabled');
         this.el.setAttribute('title', this.model.get('tooltip'));
 
@@ -99,11 +99,11 @@ class ButtonView extends DOMWidgetView {
         return super.update();
     }
 
-    update_button_style() {
+    update_button_style(): void {
         this.update_mapped_classes(ButtonView.class_map, 'button_style');
     }
 
-    set_button_style() {
+    set_button_style(): void {
         this.set_mapped_classes(ButtonView.class_map, 'button_style');
     }
 
@@ -119,7 +119,7 @@ class ButtonView extends DOMWidgetView {
     /**
      * Handles when the button is clicked.
      */
-    _handle_click(event: MouseEvent) {
+    _handle_click(event: MouseEvent): void {
         event.preventDefault();
         this.send({event: 'click'});
     }
@@ -130,7 +130,7 @@ class ButtonView extends DOMWidgetView {
      * #### Notes
      * This is a read-only attribute.
      */
-    get tagName() {
+    get tagName(): string {
         // We can't make this an attribute with a default value
         // since it would be set after it is needed in the
         // constructor.

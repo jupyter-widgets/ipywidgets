@@ -351,7 +351,7 @@ class Selection<T> {
   /**
    * Set the current value based on the current index.
    */
-  private _updateSelectedValue() {
+  private _updateSelectedValue(): void {
     const i = this._index;
     this._value = i !== null ? this._array[i] : null;
   }

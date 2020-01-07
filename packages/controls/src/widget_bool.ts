@@ -16,9 +16,11 @@ import {
 import * as _ from 'underscore';
 
 
+
+
 export
 class BoolModel extends CoreDescriptionModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             value: false,
             disabled: false,
@@ -29,7 +31,7 @@ class BoolModel extends CoreDescriptionModel {
 
 export
 class CheckboxModel extends CoreDescriptionModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             indent: true,
             _view_name: 'CheckboxView',
@@ -43,7 +45,7 @@ class CheckboxView extends DescriptionView {
     /**
      * Called when view is rendered.
      */
-    render() {
+    render(): void {
         super.render();
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-inline-hbox');
@@ -80,7 +82,7 @@ class CheckboxView extends DescriptionView {
      * Update the description span (rather than the label) since
      * we want the description to the right of the checkbox.
      */
-    updateDescription() {
+    updateDescription(): void {
         // can be called before the view is fully initialized
         if (this.checkboxLabel == null) {
             return;
@@ -96,7 +98,7 @@ class CheckboxView extends DescriptionView {
      * Update the visibility of the label in the super class
      * to provide the optional indent.
      */
-    updateIndent() {
+    updateIndent(): void {
         const indent = this.model.get('indent');
         this.label.style.display = indent ? '' : 'none';
     }
@@ -113,7 +115,7 @@ class CheckboxView extends DescriptionView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    _handle_click() {
+    _handle_click(): void {
         const value = this.model.get('value');
         this.model.set('value', !value, {updated_view: this});
         this.touch();
@@ -125,7 +127,7 @@ class CheckboxView extends DescriptionView {
      * Called when the model is changed. The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update(options?: any) {
+    update(options?: any): void {
         this.checkbox.checked = this.model.get('value');
 
         if (options === undefined || options.updated_view != this) {
@@ -142,7 +144,7 @@ class CheckboxView extends DescriptionView {
 
 export
 class ToggleButtonModel extends BoolModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _view_name: 'ToggleButtonView',
             _model_name: 'ToggleButtonModel',
@@ -158,7 +160,7 @@ class ToggleButtonView extends DOMWidgetView {
     /**
      * Called when view is rendered.
      */
-    render() {
+    render(): void {
         super.render();
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('jupyter-button');
@@ -168,11 +170,11 @@ class ToggleButtonView extends DOMWidgetView {
         this.update(); // Set defaults.
     }
 
-    update_button_style() {
+    update_button_style(): void {
         this.update_mapped_classes(ToggleButtonView.class_map, 'button_style');
     }
 
-    set_button_style() {
+    set_button_style(): void {
         this.set_mapped_classes(ToggleButtonView.class_map, 'button_style');
     }
 
@@ -182,7 +184,7 @@ class ToggleButtonView extends DOMWidgetView {
      * Called when the model is changed. The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update(options?: any){
+    update(options?: any): void {
         if (this.model.get('value')) {
             this.el.classList.add('mod-active');
         } else {
@@ -224,7 +226,7 @@ class ToggleButtonView extends DOMWidgetView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    _handle_click(event: MouseEvent) {
+    _handle_click(event: MouseEvent): void {
         event.preventDefault();
         const value = this.model.get('value');
         this.model.set('value', !value, {updated_view: this});
@@ -237,7 +239,7 @@ class ToggleButtonView extends DOMWidgetView {
      * #### Notes
      * This is a read-only attribute.
      */
-    get tagName() {
+    get tagName(): string {
         // We can't make this an attribute with a default value
         // since it would be set after it is needed in the
         // constructor.
@@ -257,7 +259,7 @@ class ToggleButtonView extends DOMWidgetView {
 
 export
 class ValidModel extends BoolModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             readout: 'Invalid',
             _view_name: 'ValidView',
@@ -271,7 +273,7 @@ class ValidView extends DescriptionView {
     /**
      * Called when view is rendered.
      */
-    render() {
+    render(): void {
         super.render();
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-valid');
@@ -291,7 +293,7 @@ class ValidView extends DescriptionView {
      * Called when the model is changed.  The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update() {
+    update(): void {
         this.el.classList.remove('mod-valid');
         this.el.classList.remove('mod-invalid');
         this.readout.textContent = this.model.get('readout');

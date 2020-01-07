@@ -13,7 +13,7 @@ import * as _ from 'underscore';
 
 export
 class AudioModel extends CoreDOMWidgetModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'AudioModel',
             _view_name: 'AudioView',
@@ -27,7 +27,7 @@ class AudioModel extends CoreDOMWidgetModel {
 
     static serializers = {
         ...CoreDOMWidgetModel.serializers,
-        value: {serialize: (value: any) => {
+        value: {serialize: (value: any): DataView => {
             return new DataView(value.buffer.slice(0));
         }}
     };
@@ -35,7 +35,7 @@ class AudioModel extends CoreDOMWidgetModel {
 
 export
 class AudioView extends DOMWidgetView {
-    render() {
+    render(): void {
         /**
          * Called when view is rendered.
          */
@@ -44,7 +44,7 @@ class AudioView extends DOMWidgetView {
         this.update(); // Set defaults.
     }
 
-    update() {
+    update(): void {
         /**
          * Update the contents of this view
          *
@@ -77,7 +77,7 @@ class AudioView extends DOMWidgetView {
         return super.update();
     }
 
-    remove() {
+    remove(): void {
         if (this.el.src) {
             URL.revokeObjectURL(this.el.src);
         }
@@ -90,7 +90,7 @@ class AudioView extends DOMWidgetView {
      * #### Notes
      * This is a read-only attribute.
      */
-    get tagName() {
+    get tagName(): string {
         // We can't make this an attribute with a default value
         // since it would be set after it is needed in the
         // constructor.

@@ -15,7 +15,7 @@ import {
 
 export
 class DescriptionStyleModel extends StyleModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return {...super.defaults(),
             _model_name: 'DescriptionStyleModel',
             _model_module: '@jupyter-widgets/controls',
@@ -34,7 +34,7 @@ class DescriptionStyleModel extends StyleModel {
 
 export
 class DescriptionModel extends DOMWidgetModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return {...super.defaults(),
             _model_name: 'DescriptionModel',
             _view_name: 'DescriptionView',
@@ -50,7 +50,7 @@ class DescriptionModel extends DOMWidgetModel {
 
 export
 class DescriptionView extends DOMWidgetView {
-    render() {
+    render(): void {
         this.label = document.createElement('label');
         this.el.appendChild(this.label);
         this.label.className = 'widget-label';
@@ -61,11 +61,11 @@ class DescriptionView extends DOMWidgetView {
         this.updateDescription();
     }
 
-    typeset(element: HTMLElement, text?: string){
+    typeset(element: HTMLElement, text?: string): void {
         this.displayed.then(() => typeset(element, text));
     }
 
-    updateDescription() {
+    updateDescription(): void {
         const description = this.model.get('description');
         let description_tooltip = this.model.get('description_tooltip');
         if (description_tooltip === null) {

@@ -17,7 +17,7 @@ export class WidgetRenderer extends Widget implements IRenderMime.IRenderer {
         this._manager = manager;
     }
 
-    async renderModel(model: IRenderMime.IMimeModel) {
+    async renderModel(model: IRenderMime.IMimeModel): Promise<void> {
         const source: any = model.data[this.mimeType];
         const modelPromise = this._manager.get_model(source.model_id);
         if (modelPromise) {

@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async function(event) {
     // Run backend code to create the widgets.  You could also create the
     // widgets in the frontend, like the other widget examples demonstrate.
     const execution = kernel.requestExecute({ code: code });
-    execution.onIOPub = (msg) => {
+    execution.onIOPub = (msg): void => {
         // If we have a display message, display the widget.
         if (KernelMessage.isDisplayDataMsg(msg)) {
             const widgetData: any = msg.content.data['application/vnd.jupyter.widget-view+json'];

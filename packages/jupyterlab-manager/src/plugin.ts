@@ -79,7 +79,7 @@ const SETTINGS: WidgetManager.Settings = { saveState: false };
 /**
  * Iterate through all widget renderers in a notebook.
  */
-function* widgetRenderers(nb: Notebook) {
+function* widgetRenderers(nb: Notebook): Generator<WidgetRenderer, void, unknown> {
   for (const cell of nb.widgets) {
     if (cell.model.type === 'code') {
       for (const codecell of (cell as CodeCell).outputArea.widgets) {
@@ -96,7 +96,7 @@ function* widgetRenderers(nb: Notebook) {
 /**
  * Iterate through all matching linked output views
  */
-function* outputViews(app: JupyterFrontEnd, path: string) {
+function* outputViews(app: JupyterFrontEnd, path: string): Generator<WidgetRenderer, void, unknown> {
   const linkedViews = filter(
     app.shell.widgets(),
     w => w.id.startsWith('LinkedOutputView-') && (w as any).path === path
@@ -112,7 +112,7 @@ function* outputViews(app: JupyterFrontEnd, path: string) {
   }
 }
 
-function* chain<T>(...args: IterableIterator<T>[]) {
+function* chain<T>(...args: IterableIterator<T>[]): Generator<T, void, undefined> {
   for (const it of args) {
     yield* it;
   }
@@ -122,7 +122,7 @@ export function registerWidgetManager(
   context: DocumentRegistry.IContext<INotebookModel>,
   rendermime: IRenderMimeRegistry,
   renderers: IterableIterator<WidgetRenderer>
-) {
+): DisposableDelegate {
   let wManager = Private.widgetManagerProperty.get(context);
   if (!wManager) {
     wManager = new WidgetManager(context, rendermime, SETTINGS);
@@ -167,7 +167,7 @@ const plugin: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> = {
 export default plugin;
 
 
-function updateSettings(settings: ISettingRegistry.ISettings) {
+function updateSettings(settings: ISettingRegistry.ISettings): void {
   SETTINGS.saveState = settings.get('saveState').composite as boolean;
 }
 
@@ -184,7 +184,7 @@ function activateWidgetExtension(
 
   const {commands} = app;
 
-  const bindUnhandledIOPubMessageSignal = (nb: NotebookPanel) => {
+  const bindUnhandledIOPubMessageSignal = (nb: NotebookPanel): void => {
     if (!loggerRegistry) {
       return;
     }
@@ -327,6 +327,6 @@ namespace Private {
     WidgetManager | undefined
   >({
     name: 'widgetManager',
-    create: () => undefined
+    create: (owner: DocumentRegistry.Context): WidgetManager => undefined
   });
 }

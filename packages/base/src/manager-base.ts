@@ -16,6 +16,8 @@ import {
     PROTOCOL_VERSION
 } from './version';
 
+import { ReadonlyPartialJSONValue } from '@lumino/coreutils';
+
 const PROTOCOL_MAJOR_VERSION = PROTOCOL_VERSION.split('.', 1)[0];
 
 /**
@@ -467,7 +469,7 @@ abstract class ManagerBase<T> {
      * Disconnect the widget manager from the kernel, setting each model's comm
      * as dead.
      */
-    disconnect() {
+    disconnect(): void {
         Object.keys(this._models).forEach((i) => {
             this._models[i].then(model => { model.comm_live = false; });
         });
@@ -521,7 +523,7 @@ abstract class ManagerBase<T> {
      *
      * @returns {*} A copy of the state, with its 'state' attribute filtered
      */
-    protected filterExistingModelState(serialized_state: any) {
+    protected filterExistingModelState(serialized_state: any): any {
       let models = serialized_state.state as {[key: string]: any};
       models = Object.keys(models)
           .filter((model_id) => {
@@ -559,7 +561,7 @@ interface IStateOptions {
  * @jupyter-widgets/schema package.
  */
 export
-function serialize_state(models: WidgetModel[], options: IStateOptions = {}) {
+function serialize_state(models: WidgetModel[], options: IStateOptions = {}): ReadonlyPartialJSONValue {
     const state: {[key: string]: any} = {};
     models.forEach(model => {
         const model_id = model.model_id;

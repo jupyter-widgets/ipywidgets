@@ -24,7 +24,7 @@ function difference(a: string[], b: string[]): string[] {
  * Compare two objects deeply to see if they are equal.
  */
 export
-function isEqual(a: any, b: any) {
+function isEqual(a: any, b: any): boolean {
     return _isEqual(a, b);
 }
 
@@ -34,7 +34,7 @@ function isEqual(a: any, b: any) {
  * This is from code that Typescript 2.4 generates for a polyfill.
  */
 export
-const assign = (Object as any).assign || function(t: any, ...args: any[]) {
+const assign = (Object as any).assign || function(t: any, ...args: any[]): any {
     for (let i = 1; i < args.length; i++) {
         const s = args[i];
         for (const p in s) {
@@ -113,7 +113,7 @@ function resolvePromisesDict<V>(d: Dict<PromiseLike<V>>): Promise<Dict<V>> {
  */
 export
 function reject(message: string, log: boolean) {
-    return function promiseRejection(error: any) {
+    return function promiseRejection(error: any): never {
         if (log) {
             console.error(new Error(message));
         }
@@ -131,7 +131,7 @@ function reject(message: string, log: boolean) {
  * Will lead to {a: 1, b: {data: array1}, c: [0, array2]}
  */
 export
-function put_buffers(state: any, buffer_paths: (string | number)[][], buffers: DataView[]) {
+function put_buffers(state: any, buffer_paths: (string | number)[][], buffers: DataView[]): void {
     for (let i=0; i < buffer_paths.length; i++) {
         const buffer_path = buffer_paths[i];
          // say we want to set state[x][y][z] = buffers[i]
@@ -162,7 +162,7 @@ function remove_buffers(state: any): {state: any; buffers: ArrayBuffer[]; buffer
     // if we need to remove an object from a list, we need to clone that list, otherwise we may modify
     // the internal state of the widget model
     // however, we do not want to clone everything, for performance
-    function remove(obj: any, path: (string | number)[]) {
+    function remove(obj: any, path: (string | number)[]): any {
         if (obj.toJSON) {
             // We need to get the JSON form of the object before recursing.
             // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#toJSON()_behavior

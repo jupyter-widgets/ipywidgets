@@ -43,7 +43,7 @@ import * as utils from './utils';
 // anyone who needs to know about the change in state. The heart of the beast.
 // This *MUST* be called with the model as the `this` context.
 export
-function set(key: string|{}, val: any, options: any) {
+function set(key: string|{}, val: any, options: any): any {
     /* tslint:disable:no-invalid-this */
     if (key == null) {
         return this;

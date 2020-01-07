@@ -285,7 +285,7 @@ describe('ManagerBase', function() {
             view_module_version: '1.0.0',
         };
         class NewWidgetManager extends DummyManager {
-          _create_comm() {
+          _create_comm(): Promise<MockComm> {
             return Promise.reject('failed creation');
           }
         }

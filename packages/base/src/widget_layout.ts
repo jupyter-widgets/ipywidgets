@@ -62,7 +62,7 @@ const css_properties: {[key: string]: string} = {
 
 export
 class LayoutModel extends WidgetModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return assign(super.defaults(), {
         _model_name: 'LayoutModel',
         _view_name: 'LayoutView'
@@ -75,7 +75,7 @@ class LayoutView extends WidgetView {
     /**
      * Public constructor
      */
-    initialize(parameters: WidgetView.IInitializeParameters) {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         this._traitNames = [];
         super.initialize(parameters);
         // Register the traits that live on the Python side
@@ -88,7 +88,7 @@ class LayoutView extends WidgetView {
      * Register a CSS trait that is known by the model
      * @param trait
      */
-    registerTrait(trait: string) {
+    registerTrait(trait: string): void {
         this._traitNames.push(trait);
 
         // Treat overflow_x and overflow_y as a special case since they are deprecated
@@ -125,7 +125,7 @@ class LayoutView extends WidgetView {
     /**
      * Handles when a trait value changes
      */
-    handleChange(trait: string, value: any) {
+    handleChange(trait: string, value: any): void {
         // should be synchronous so that we can measure later.
         const parent = this.options.parent as DOMWidgetView;
         if (parent) {
@@ -142,7 +142,7 @@ class LayoutView extends WidgetView {
     /**
      * Handles when the value of overflow_x or overflow_y changes
      */
-    handleOverflowChange(trait: string, value: any) {
+    handleOverflowChange(trait: string, value: any): void {
         // This differs from the default handleChange method
         // in that setting `overflow_x` or `overflow_y` to null
         // when `overflow` is null removes the attribute.
@@ -163,7 +163,7 @@ class LayoutView extends WidgetView {
     /**
      * Remove the styling from the parent view.
      */
-    unlayout() {
+    unlayout(): void {
         const parent = this.options.parent as DOMWidgetView;
         this._traitNames.forEach((trait) => {
             if (parent) {
