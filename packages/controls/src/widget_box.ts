@@ -110,13 +110,13 @@ class BoxView extends DOMWidgetView {
                'dragover' : 'on_dragover'};
      }
 
-   on_dragover(event) {
+   on_dragover(event: any) {
       event.preventDefault();
       event.stopPropagation();
       event.dataTransfer.dropEffect = 'copy';
    }
 
-   on_drop(event) {
+   on_drop(event: any) {
         event.preventDefault();
         event.stopPropagation();
         event.dataTransfer.dropEffect = 'copy';
@@ -239,7 +239,7 @@ class DropBoxView extends BoxView implements Droppable {
     /**
      * Public constructor
      */
-    initialize(parameters) {
+    initialize(parameters: any) {
         super.initialize(parameters);
         this.pWidget.addClass('widget-dropbox');
     }
@@ -275,7 +275,7 @@ class DraggableBoxView extends BoxView implements Draggable {
     /**
      * Public constructor
      */
-    initialize(parameters) {
+    initialize(parameters: any) {
         super.initialize(parameters);
         this.pWidget.addClass('widget-draggablebox');
         this.dragSetup();
