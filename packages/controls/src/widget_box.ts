@@ -27,7 +27,7 @@ import $ from 'jquery';
 
 export
 class BoxModel extends CoreDOMWidgetModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _view_name: 'BoxView',
             _model_name: 'BoxModel',
@@ -44,7 +44,7 @@ class BoxModel extends CoreDOMWidgetModel {
 
 export
 class HBoxModel extends BoxModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _view_name: 'HBoxView',
             _model_name: 'HBoxModel',
@@ -54,7 +54,7 @@ class HBoxModel extends BoxModel {
 
 export
 class VBoxModel extends BoxModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _view_name: 'VBoxView',
             _model_name: 'VBoxModel',
@@ -65,12 +65,12 @@ class VBoxModel extends BoxModel {
 export
 class BoxView extends DOMWidgetView {
 
-    _createElement(tagName: string) {
+    _createElement(tagName: string): HTMLElement {
         this.pWidget = new JupyterLuminoPanelWidget({ view: this });
         return this.pWidget.node;
     }
 
-    _setElement(el: HTMLElement) {
+    _setElement(el: HTMLElement): void {
         if (this.el || el !== this.pWidget.node) {
             // Boxes don't allow setting the element beyond the initial creation.
             throw new Error('Cannot reset the DOM element.');
@@ -80,7 +80,7 @@ class BoxView extends DOMWidgetView {
         this.$el = $(this.pWidget.node);
     }
 
-    initialize(parameters: WidgetView.InitializeParameters) {
+    initialize(parameters: WidgetView.InitializeParameters): void {
         super.initialize(parameters);
         this.children_views = new ViewList(this.add_child_model, null, this);
         this.listenTo(this.model, 'change:children', this.update_children);
@@ -91,13 +91,13 @@ class BoxView extends DOMWidgetView {
         this.pWidget.addClass('widget-box');
     }
 
-    render() {
+    render(): void {
         super.render();
         this.update_children();
         this.set_box_style();
     }
 
-    update_children() {
+    update_children(): void {
         this.children_views?.update(this.model.get('children')).then((views: DOMWidgetView[]) => {
             // Notify all children that their sizes may have changed.
             views.forEach( (view) => {
@@ -106,30 +106,30 @@ class BoxView extends DOMWidgetView {
         });
     }
 
-    update_box_style() {
+    update_box_style(): void {
         this.update_mapped_classes(BoxView.class_map, 'box_style');
     }
 
-    set_box_style() {
+    set_box_style(): void {
         this.set_mapped_classes(BoxView.class_map, 'box_style');
     }
 
-    add_child_model(model: WidgetModel) {
+    add_child_model(model: WidgetModel): Promise<DOMWidgetView> {
         // we insert a dummy element so the order is preserved when we add
         // the rendered content later.
-        let dummy = new Widget();
+        const dummy = new Widget();
         this.pWidget.addWidget(dummy);
 
         return this.create_child_view(model).then((view: DOMWidgetView) => {
             // replace the dummy widget with the new one.
-            let i = ArrayExt.firstIndexOf(this.pWidget.widgets, dummy);
+            const i = ArrayExt.firstIndexOf(this.pWidget.widgets, dummy);
             this.pWidget.insertWidget(i, view.pWidget);
             dummy.dispose();
             return view;
         }).catch(reject('Could not add child view to box', true));
     }
 
-    remove() {
+    remove(): void {
         this.children_views = null;
         super.remove();
     }
@@ -150,7 +150,7 @@ class HBoxView extends BoxView {
     /**
      * Public constructor
      */
-    initialize(parameters: WidgetView.InitializeParameters) {
+    initialize(parameters: WidgetView.InitializeParameters): void {
         super.initialize(parameters);
         this.pWidget.addClass('widget-hbox');
     }
@@ -161,7 +161,7 @@ class VBoxView extends BoxView {
     /**
      * Public constructor
      */
-    initialize(parameters: WidgetView.InitializeParameters) {
+    initialize(parameters: WidgetView.InitializeParameters): void {
         super.initialize(parameters);
         this.pWidget.addClass('widget-vbox');
     }
@@ -172,7 +172,7 @@ class GridBoxView extends BoxView {
     /**
      * Public constructor
      */
-    initialize(parameters: WidgetView.InitializeParameters) {
+    initialize(parameters: WidgetView.InitializeParameters): void {
         super.initialize(parameters);
         this.pWidget.addClass('widget-gridbox');
         // display needn't be set to flex and grid
@@ -182,7 +182,7 @@ class GridBoxView extends BoxView {
 
 export
 class GridBoxModel extends BoxModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _view_name: 'GridBoxView',
             _model_name: 'GridBoxModel',

@@ -14,14 +14,14 @@ import $ from 'jquery';
 import '../css/output.css';
 
 export class OutputModel extends outputBase.OutputModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return {
             ...super.defaults(),
             msg_id: ''
         };
     }
 
-    initialize(attributes: any, options: any) {
+    initialize(attributes: any, options: any): void {
         super.initialize(attributes, options);
         this._outputs = new OutputAreaModel({
             values: attributes.outputs,
@@ -31,7 +31,7 @@ export class OutputModel extends outputBase.OutputModel {
         });
     }
 
-    get outputs() {
+    get outputs(): OutputAreaModel {
         return this._outputs;
     }
 
@@ -40,12 +40,12 @@ export class OutputModel extends outputBase.OutputModel {
 }
 
 export class OutputView extends outputBase.OutputView {
-    _createElement(tagName: string) {
+    _createElement(tagName: string): HTMLElement {
         this.pWidget = new Panel();
         return this.pWidget.node;
     }
 
-    _setElement(el: HTMLElement) {
+    _setElement(el: HTMLElement): void {
         if (this.el || el !== this.pWidget.node) {
             // Boxes don't allow setting the element beyond the initial creation.
             throw new Error('Cannot reset the DOM element.');
@@ -54,7 +54,7 @@ export class OutputView extends outputBase.OutputView {
         this.$el = $(this.pWidget.node)
     }
 
-    render() {
+    render(): void {
         const manager = this.model.widget_manager;
         const rendermime = manager.renderMime;
         this._outputView = new OutputArea({

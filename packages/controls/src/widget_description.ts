@@ -15,7 +15,7 @@ import {
 
 export
 class DescriptionStyleModel extends StyleModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return {...super.defaults(),
             _model_name: 'DescriptionStyleModel',
             _model_module: '@jupyter-widgets/controls',
@@ -34,7 +34,7 @@ class DescriptionStyleModel extends StyleModel {
 
 export
 class DescriptionModel extends DOMWidgetModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return {...super.defaults(),
             _model_name: 'DescriptionModel',
             _view_name: 'DescriptionView',
@@ -42,38 +42,32 @@ class DescriptionModel extends DOMWidgetModel {
             _model_module: '@jupyter-widgets/controls',
             _view_module_version: JUPYTER_CONTROLS_VERSION,
             _model_module_version: JUPYTER_CONTROLS_VERSION,
-            description: '',
-            description_tooltip: null,
+            description: ''
         };
     }
 }
 
 export
 class DescriptionView extends DOMWidgetView {
-    render() {
+    render(): void {
         this.label = document.createElement('label');
         this.el.appendChild(this.label);
         this.label.className = 'widget-label';
         this.label.style.display = 'none';
 
         this.listenTo(this.model, 'change:description', this.updateDescription);
-        this.listenTo(this.model, 'change:description_tooltip', this.updateDescription);
         this.listenTo(this.model, 'change:tabbable', this.updateTabindex);
         this.updateDescription();
         this.updateTabindex();
+        this.updateTooltip();
     }
 
-    typeset(element: HTMLElement, text?: string){
+    typeset(element: HTMLElement, text?: string): void {
         this.displayed.then(() => typeset(element, text));
     }
 
-    updateDescription() {
-        let description = this.model.get('description');
-        let description_tooltip = this.model.get('description_tooltip');
-        if (description_tooltip === null) {
-            description_tooltip = description;
-        }
-
+    updateDescription(): void {
+        const description = this.model.get('description');
         if (description.length === 0) {
             this.label.style.display = 'none';
         } else {
@@ -81,7 +75,11 @@ class DescriptionView extends DOMWidgetView {
             this.typeset(this.label);
             this.label.style.display = '';
         }
-        this.label.title = description_tooltip;
+    }
+
+    updateTooltip(): void {
+        if (!this.label) return;
+        this.label.title = this.model.get('tooltip');
     }
 
     label: HTMLLabelElement;

@@ -436,7 +436,7 @@
     flex-shrink: 1;
     outline: none !important;
 }
-    
+
 .widget-text input[type="text"], .widget-text input[type="password"], .widget-textarea textarea {
     padding: var(--jp-widgets-input-padding) calc( var(--jp-widgets-input-padding) *  2);
 }
@@ -686,12 +686,12 @@
     font-size: var(--jp-widgets-font-size);
     vertical-align: top;
     padding-left: calc( var(--jp-widgets-input-padding) * 2);
-	appearance: none;
-	-webkit-appearance: none;
-	-moz-appearance: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
     background-repeat: no-repeat;
-	background-size: 20px;
-	background-position: right center;
+    background-size: 20px;
+    background-position: right center;
     background-image: var(--jp-widgets-dropdown-arrow);
 }
 .widget-dropdown > select:focus {

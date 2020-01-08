@@ -16,35 +16,35 @@ class MockComm implements widgets.IClassicComm {
         this.comm_id = `mock-comm-id-${numComms}`;
         numComms += 1;
     }
-    on_open(fn: Function) {
+    on_open(fn: Function): void {
         this._on_open = fn;
     }
-    on_close(fn: Function) {
+    on_close(fn: Function): void {
         this._on_close = fn;
     }
-    on_msg(fn: Function) {
+    on_msg(fn: Function): void {
         this._on_msg = fn;
     }
-    _process_msg(msg: any) {
+    _process_msg(msg: any): any {
         if (this._on_msg) {
             return this._on_msg(msg);
         } else {
             return Promise.resolve();
         }
     }
-    open() {
+    open(): string {
         if (this._on_open) {
             this._on_open();
         }
         return '';
     }
-    close() {
+    close(): string {
         if (this._on_close) {
             this._on_close();
         }
         return '';
     }
-    send() {
+    send(): string {
         return '';
     }
     comm_id: string;
@@ -54,6 +54,83 @@ class MockComm implements widgets.IClassicComm {
     _on_close: Function | null = null;
 }
 
+const typesToArray: {[key: string]: any} = {
+    int8: Int8Array,
+    int16: Int16Array,
+    int32: Int32Array,
+    uint8: Uint8Array,
+    uint16: Uint16Array,
+    uint32: Uint32Array,
+    float32: Float32Array,
+    float64: Float64Array
+};
+
+
+const JSONToArray = function(obj: any): any {
+    return new typesToArray[obj.dtype](obj.buffer.buffer);
+};
+
+const arrayToJSON = function(obj: any): any {
+    const dtype = Object.keys(typesToArray).filter(
+        i => typesToArray[i] === obj.constructor)[0];
+    return {dtype, buffer: obj};
+};
+
+const array_serialization = {
+    deserialize: JSONToArray,
+    serialize: arrayToJSON
+};
+
+
+class TestWidget extends widgets.WidgetModel {
+    defaults(): Backbone.ObjectHash {
+        return {...super.defaults(),
+            _model_module: 'test-widgets',
+            _model_name: 'TestWidget',
+            _model_module_version: '1.0.0',
+            _view_module: 'test-widgets',
+            _view_name: 'TestWidgetView',
+            _view_module_version: '1.0.0',
+            _view_count: null as any,
+        };
+    }
+}
+
+class TestWidgetView extends widgets.WidgetView {
+    render(): void {
+        this._rendered += 1;
+        super.render();
+    }
+    remove(): void {
+        this._removed += 1;
+        super.remove();
+    }
+    _removed = 0;
+    _rendered = 0;
+}
+
+class BinaryWidget extends TestWidget {
+    static serializers = {
+        ...widgets.WidgetModel.serializers,
+        array: array_serialization
+    };
+    defaults(): Backbone.ObjectHash {
+        return {...super.defaults(),
+            _model_name: 'BinaryWidget',
+            _view_name: 'BinaryWidgetView',
+            array: new Int8Array(0)};
+    }
+}
+
+class BinaryWidgetView extends TestWidgetView {
+    render(): void {
+        this._rendered += 1;
+    }
+    _rendered = 0;
+}
+
+const testWidgets = {TestWidget, TestWidgetView, BinaryWidget, BinaryWidgetView};
+
 export
 class DummyManager extends widgets.ManagerBase<HTMLElement> {
     constructor() {
@@ -61,7 +138,7 @@ class DummyManager extends widgets.ManagerBase<HTMLElement> {
         this.el = window.document.createElement('div');
     }
 
-    display_view(msg: services.KernelMessage.IMessage, view: Backbone.View<Backbone.Model>, options: any) {
+    display_view(msg: services.KernelMessage.IMessage, view: Backbone.View<Backbone.Model>, options: any): Promise<HTMLElement> {
         // TODO: make this a spy
         // TODO: return an html element
         return Promise.resolve(view).then(view => {
@@ -89,92 +166,13 @@ class DummyManager extends widgets.ManagerBase<HTMLElement> {
         }
     }
 
-    _get_comm_info() {
+    _get_comm_info(): Promise<{}> {
         return Promise.resolve({});
     }
 
-    _create_comm() {
+    _create_comm(): Promise<MockComm> {
         return Promise.resolve(new MockComm());
     }
 
     el: HTMLElement;
 }
-
-// Dummy widget with custom serializer and binary field
-
-let typesToArray: {[key: string]: any} = {
-    int8: Int8Array,
-    int16: Int16Array,
-    int32: Int32Array,
-    uint8: Uint8Array,
-    uint16: Uint16Array,
-    uint32: Uint32Array,
-    float32: Float32Array,
-    float64: Float64Array
-};
-
-
-let JSONToArray = function(obj: any) {
-    return new typesToArray[obj.dtype](obj.buffer.buffer);
-};
-
-let arrayToJSON = function(obj: any) {
-    let dtype = Object.keys(typesToArray).filter(
-        i => typesToArray[i] === obj.constructor)[0];
-    return {dtype, buffer: obj};
-};
-
-let array_serialization = {
-    deserialize: JSONToArray,
-    serialize: arrayToJSON
-};
-
-
-class TestWidget extends widgets.WidgetModel {
-    defaults() {
-        return {...super.defaults(),
-            _model_module: 'test-widgets',
-            _model_name: 'TestWidget',
-            _model_module_version: '1.0.0',
-            _view_module: 'test-widgets',
-            _view_name: 'TestWidgetView',
-            _view_module_version: '1.0.0',
-            _view_count: null as any,
-        };
-    }
-}
-
-class TestWidgetView extends widgets.WidgetView {
-    render() {
-        this._rendered += 1;
-        super.render();
-    }
-    remove() {
-        this._removed += 1;
-        super.remove();
-    }
-    _removed = 0;
-    _rendered = 0;
-}
-
-class BinaryWidget extends TestWidget {
-    static serializers = {
-        ...widgets.WidgetModel.serializers,
-        array: array_serialization
-    };
-    defaults() {
-        return {...super.defaults(),
-            _model_name: 'BinaryWidget',
-            _view_name: 'BinaryWidgetView',
-            array: new Int8Array(0)};
-    }
-}
-
-class BinaryWidgetView extends TestWidgetView {
-    render() {
-        this._rendered += 1;
-    }
-    _rendered = 0;
-}
-
-let testWidgets = {TestWidget, TestWidgetView, BinaryWidget, BinaryWidgetView};

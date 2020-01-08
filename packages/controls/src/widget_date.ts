@@ -15,20 +15,7 @@ import {
 
 import * as _ from 'underscore';
 
-export
-function serialize_date(value: Date | null) {
-    if (value === null) {
-        return null;
-    } else {
-        return {
-            year: value.getUTCFullYear(),
-            month: value.getUTCMonth(),
-            date: value.getUTCDate()
-        };
-    }
-}
-
-export interface SerializedDate {
+export interface ISerializedDate {
     /**
      * Full year
      */
@@ -46,11 +33,24 @@ export interface SerializedDate {
 }
 
 export
-function deserialize_date(value: SerializedDate | null) {
+function serialize_date(value: Date | null): ISerializedDate | null {
     if (value === null) {
         return null;
     } else {
-        let date = new Date();
+        return {
+            year: value.getUTCFullYear(),
+            month: value.getUTCMonth(),
+            date: value.getUTCDate()
+        };
+    }
+}
+
+export
+function deserialize_date(value: ISerializedDate | null): Date | null {
+    if (value === null) {
+        return null;
+    } else {
+        const date = new Date();
         date.setUTCFullYear(value.year, value.month, value.date);
         date.setUTCHours(0, 0, 0, 0);
         return date;
@@ -67,7 +67,7 @@ class DatePickerModel extends CoreDescriptionModel {
         }
     };
 
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             value: null,
             _model_name: 'DatePickerModel',
@@ -78,7 +78,7 @@ class DatePickerModel extends CoreDescriptionModel {
 
 export
 class DatePickerView extends DescriptionView {
-    render() {
+    render(): void {
         super.render();
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-inline-hbox');
@@ -101,7 +101,7 @@ class DatePickerView extends DescriptionView {
      * Called when the model is changed. The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update(options?: any) {
+    update(options?: any): void {
         if (options === undefined || options.updated_view !== this) {
             this._datepicker.disabled = this.model.get('disabled');
         }
@@ -119,19 +119,19 @@ class DatePickerView extends DescriptionView {
         };
     }
 
-    private _update_value() {
+    private _update_value(): void {
         const value = this.model.get('value');
         this._datepicker.valueAsDate = value;
     }
 
-    private _picker_change() {
+    private _picker_change(): void {
         if (!this._datepicker.validity.badInput) {
             this.model.set('value', this._datepicker.valueAsDate);
             this.touch();
         }
     }
 
-    private _picker_focusout() {
+    private _picker_focusout(): void {
         if (this._datepicker.validity.badInput) {
             this.model.set('value', null);
             this.touch();

@@ -214,13 +214,5 @@ if 'setuptools' in sys.modules:
     from setuptools.command.develop import develop
     setup_args['cmdclass']['develop'] = js_prerelease(develop, strict=True)
 
-setuptools_args = {}
-install_requires = setuptools_args['install_requires'] = [
-    'notebook>=4.4.1',
-]
-
-if 'setuptools' in sys.modules:
-    setup_args.update(setuptools_args)
-
 if __name__ == '__main__':
     setup(**setup_args)

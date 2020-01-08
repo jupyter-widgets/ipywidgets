@@ -54,8 +54,6 @@ class Layout(Widget):
     min_height = Unicode(None, allow_none=True, help="The min-height CSS attribute.").tag(sync=True)
     min_width = Unicode(None, allow_none=True, help="The min-width CSS attribute.").tag(sync=True)
     overflow = Unicode(None, allow_none=True, help="The overflow CSS attribute.").tag(sync=True)
-    overflow_x = CaselessStrEnum(['visible', 'hidden', 'scroll', 'auto'] + CSS_PROPERTIES, allow_none=True, help="The overflow-x CSS attribute (deprecated).").tag(sync=True)
-    overflow_y = CaselessStrEnum(['visible', 'hidden', 'scroll', 'auto'] + CSS_PROPERTIES, allow_none=True, help="The overflow-y CSS attribute (deprecated).").tag(sync=True)
     order = Unicode(None, allow_none=True, help="The order CSS attribute.").tag(sync=True)
     padding = Unicode(None, allow_none=True, help="The padding CSS attribute.").tag(sync=True)
     right = Unicode(None, allow_none=True, help="The right CSS attribute.").tag(sync=True)
@@ -76,13 +74,6 @@ class Layout(Widget):
     grid_row = Unicode(None, allow_none=True, help="The grid-row CSS attribute.").tag(sync=True)
     grid_column = Unicode(None, allow_none=True, help="The grid-column CSS attribute.").tag(sync=True)
     grid_area = Unicode(None, allow_none=True, help="The grid-area CSS attribute.").tag(sync=True)
-
-    @validate('overflow_x', 'overflow_y')
-    def _validate_overflows(self, proposal):
-        if proposal.value is not None:
-            import warnings
-            warnings.warn("Layout properties overflow_x and overflow_y have been deprecated and will be dropped in a future release. Please use the overflow shorthand property instead", DeprecationWarning)
-        return proposal.value
 
 
 class LayoutTraitType(Instance):

@@ -3,12 +3,12 @@
 # Distributed under the terms of the Modified BSD License.
 
 """Base Widget class.  Allows user to create widgets in the back-end that render
-in the IPython notebook front-end.
+in the Jupyter notebook front-end.
 """
 
 from contextlib import contextmanager
 from collections.abc import Iterable
-from IPython.core.getipython import get_ipython
+from IPython import get_ipython
 from ipykernel.comm import Comm
 from traitlets import (
     HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default, Container,
@@ -191,7 +191,7 @@ class CallbackDispatcher(LoggingHasTraits):
             self.callbacks.append(callback)
 
 def _show_traceback(method):
-    """decorator for showing tracebacks in IPython"""
+    """decorator for showing tracebacks"""
     def m(self, *args, **kwargs):
         try:
             return(method(self, *args, **kwargs))
@@ -244,25 +244,17 @@ class WidgetRegistry:
                             for view_name, widget in sorted(vn.items()):
                                     yield (model_module, model_version, model_name, view_module, view_version, view_name), widget
 
-def register(name=''):
-    "For backwards compatibility, we support @register(name) syntax."
-    def reg(widget):
-        """A decorator registering a widget class in the widget registry."""
-        w = widget.class_traits()
-        Widget.widget_types.register(w['_model_module'].default_value,
-                                    w['_model_module_version'].default_value,
-                                    w['_model_name'].default_value,
-                                    w['_view_module'].default_value,
-                                    w['_view_module_version'].default_value,
-                                    w['_view_name'].default_value,
-                                    widget)
-        return widget
-    if isinstance(name, str):
-        import warnings
-        warnings.warn("Widget registration using a string name has been deprecated. Widget registration now uses a plain `@register` decorator.", DeprecationWarning)
-        return reg
-    else:
-        return reg(name)
+def register(widget):
+    """A decorator registering a widget class in the widget registry."""
+    w = widget.class_traits()
+    Widget.widget_types.register(w['_model_module'].default_value,
+                                 w['_model_module_version'].default_value,
+                                 w['_model_name'].default_value,
+                                 w['_view_module'].default_value,
+                                 w['_view_module_version'].default_value,
+                                 w['_view_name'].default_value,
+                                 widget)
+    return widget
 
 
 class Widget(LoggingHasTraits):
@@ -665,7 +657,6 @@ class Widget(LoggingHasTraits):
         return x
 
     def _repr_mimebundle_(self, **kwargs):
-        """Called when `IPython.display.display` is called."""
         plaintext = repr(self)
         if len(plaintext) > 110:
             plaintext = plaintext[:110] + '…'

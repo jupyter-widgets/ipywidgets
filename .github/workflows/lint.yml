@@ -1,4 +1,4 @@
-name: Test JS
+name: Lint
 
 on: [push, pull_request]
 
@@ -12,9 +12,6 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 10.x
-    - name: Install dependencies
-      run: |
-        sudo apt-get install -y firefox
     - name: Get yarn cache
       id: yarn-cache
       run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -24,27 +21,8 @@ jobs:
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-yarn-
-    - name: yarn install, build, test
+    - name: yarn install, integrity, lint
       run: |
         yarn install --frozen-lockfile
-        yarn run build
-        yarn run build:examples
-
-        pushd packages/base
-        yarn run test:unit:firefox:headless
-        popd
-
-        pushd packages/controls
-        yarn run test:unit:firefox:headless
-        popd
-
-        pushd packages/html-manager
-        yarn run test:unit:firefox:headless
-        popd
-
-        pushd examples/web1
-        yarn run test:firefox:headless
-        popd
-
-      env:
-        CI: true
+        yarn run integrity
+        yarn run eslint:check

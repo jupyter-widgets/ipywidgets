@@ -51,7 +51,7 @@ import {
 // anyone who needs to know about the change in state. The heart of the beast.
 // This *MUST* be called with the model as the `this` context.
 export
-function set(key: string | {}, val: any, options: ModelSetOptions & {unset?: boolean}) {
+function set(key: string | {}, val: any, options: ModelSetOptions & {unset?: boolean}): any {
     /* tslint:disable:no-invalid-this */
     if (key == null) {
         return this;
@@ -74,10 +74,10 @@ function set(key: string | {}, val: any, options: ModelSetOptions & {unset?: boo
     }
 
     // Extract attributes and options.
-    let unset      = options.unset;
-    let silent     = options.silent;
-    let changes    = [];
-    let changing   = this._changing;
+    const unset      = options.unset;
+    const silent     = options.silent;
+    const changes    = [];
+    const changing   = this._changing;
     this._changing = true;
 
     if (!changing) {
@@ -86,12 +86,12 @@ function set(key: string | {}, val: any, options: ModelSetOptions & {unset?: boo
         this.changed = {};
     }
 
-    let current = this.attributes;
-    let changed = this.changed;
-    let prev    = this._previousAttributes;
+    const current = this.attributes;
+    const changed = this.changed;
+    const prev    = this._previousAttributes;
 
     // For each `set` attribute, update or delete the current value.
-    for (let attr in attrs) {
+    for (const attr in attrs) {
         val = attrs[attr];
         // EDIT: the following two lines use our isEqual instead of _.isEqual
         if (!utils.isEqual(current[attr], val)) {

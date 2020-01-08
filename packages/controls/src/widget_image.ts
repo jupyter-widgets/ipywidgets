@@ -13,7 +13,7 @@ import * as _ from 'underscore';
 
 export
 class ImageModel extends CoreDOMWidgetModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'ImageModel',
             _view_name: 'ImageView',
@@ -26,7 +26,7 @@ class ImageModel extends CoreDOMWidgetModel {
 
     static serializers = {
         ...CoreDOMWidgetModel.serializers,
-        value: {serialize: (value: any) => {
+        value: {serialize: (value: any): DataView => {
             return new DataView(value.buffer.slice(0));
         }}
     };
@@ -34,7 +34,7 @@ class ImageModel extends CoreDOMWidgetModel {
 
 export
 class ImageView extends DOMWidgetView {
-    render() {
+    render(): void {
         /**
          * Called when view is rendered.
          */
@@ -44,7 +44,7 @@ class ImageView extends DOMWidgetView {
         this.update(); // Set defaults.
     }
 
-    update() {
+    update(): void {
         /**
          * Update the contents of this view
          *
@@ -53,29 +53,29 @@ class ImageView extends DOMWidgetView {
          */
 
         let url;
-        let format = this.model.get('format');
-        let value = this.model.get('value');
+        const format = this.model.get('format');
+        const value = this.model.get('value');
         if (format !== 'url') {
-            let blob = new Blob([value], {type: `image/${this.model.get('format')}`});
+            const blob = new Blob([value], {type: `image/${this.model.get('format')}`});
             url = URL.createObjectURL(blob);
         } else {
             url = (new TextDecoder('utf-8')).decode(value.buffer);
         }
 
         // Clean up the old objectURL
-        let oldurl = this.el.src;
+        const oldurl = this.el.src;
         this.el.src = url;
         if (oldurl && typeof oldurl !== 'string') {
             URL.revokeObjectURL(oldurl);
         }
-        let width = this.model.get('width');
+        const width = this.model.get('width');
         if (width !== undefined && width.length > 0) {
             this.el.setAttribute('width', width);
         } else {
             this.el.removeAttribute('width');
         }
 
-        let height = this.model.get('height');
+        const height = this.model.get('height');
         if (height !== undefined && height.length > 0) {
             this.el.setAttribute('height', height);
         } else {
@@ -84,7 +84,7 @@ class ImageView extends DOMWidgetView {
         return super.update();
     }
 
-    remove() {
+    remove(): void {
         if (this.el.src) {
             URL.revokeObjectURL(this.el.src);
         }
@@ -97,7 +97,7 @@ class ImageView extends DOMWidgetView {
      * #### Notes
      * This is a read-only attribute.
      */
-    get tagName() {
+    get tagName(): string {
         // We can't make this an attribute with a default value
         // since it would be set after it is needed in the
         // constructor.

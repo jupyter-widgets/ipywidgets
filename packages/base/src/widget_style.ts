@@ -12,8 +12,8 @@ import {
 
 export
 class StyleModel extends WidgetModel {
-    defaults() {
-        let Derived = this.constructor as typeof StyleModel;
+    defaults(): Backbone.ObjectHash {
+        const Derived = this.constructor as typeof StyleModel;
         return assign(super.defaults(), {
             _model_name: 'StyleModel',
             _view_name: 'StyleView',
@@ -38,12 +38,12 @@ class StyleView extends WidgetView {
     /**
      * Public constructor
      */
-    initialize(parameters: WidgetView.InitializeParameters) {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         this._traitNames = [];
         super.initialize(parameters);
         // Register the traits that live on the Python side
-        let ModelType = this.model.constructor as typeof StyleModel;
-        for (let key of Object.keys(ModelType.styleProperties)) {
+        const ModelType = this.model.constructor as typeof StyleModel;
+        for (const key of Object.keys(ModelType.styleProperties)) {
             this.registerTrait(key);
         }
 
@@ -55,7 +55,7 @@ class StyleView extends WidgetView {
      * Register a CSS trait that is known by the model
      * @param trait
      */
-    registerTrait(trait: string) {
+    registerTrait(trait: string): void {
         this._traitNames.push(trait);
 
         // Listen to changes, and set the value on change.
@@ -67,15 +67,15 @@ class StyleView extends WidgetView {
     /**
      * Handles when a trait value changes
      */
-    handleChange(trait: string, value: any) {
+    handleChange(trait: string, value: any): void {
         // should be synchronous so that we can measure later.
-        let parent = this.options.parent as DOMWidgetView;
+        const parent = this.options.parent as DOMWidgetView;
         if (parent) {
-            let ModelType = this.model.constructor as typeof StyleModel;
-            let styleProperties = ModelType.styleProperties;
-            let attribute = styleProperties[trait].attribute;
-            let selector  = styleProperties[trait].selector;
-            let elements = selector ? parent.el.querySelectorAll<HTMLElement>(selector) : [ parent.el ];
+            const ModelType = this.model.constructor as typeof StyleModel;
+            const styleProperties = ModelType.styleProperties;
+            const attribute = styleProperties[trait].attribute;
+            const selector  = styleProperties[trait].selector;
+            const elements = selector ? parent.el.querySelectorAll<HTMLElement>(selector) : [ parent.el ];
             if (value === null) {
                 for (let i = 0; i !== elements.length; ++i) {
                     elements[i].style.removeProperty(attribute);
@@ -93,8 +93,8 @@ class StyleView extends WidgetView {
     /**
      * Apply styles for all registered traits
      */
-    style() {
-        for (let trait of this._traitNames) {
+    style(): void {
+        for (const trait of this._traitNames) {
             this.handleChange(trait, this.model.get(trait));
         }
      }
@@ -102,15 +102,15 @@ class StyleView extends WidgetView {
     /**
      * Remove the styling from the parent view.
      */
-    unstyle() {
-        let parent = this.options.parent as DOMWidgetView;
-        let ModelType = this.model.constructor as typeof StyleModel;
-        let styleProperties = ModelType.styleProperties;
+    unstyle(): void {
+        const parent = this.options.parent as DOMWidgetView;
+        const ModelType = this.model.constructor as typeof StyleModel;
+        const styleProperties = ModelType.styleProperties;
         this._traitNames.forEach((trait) => {
             if (parent) {
-                let attribute = styleProperties[trait].attribute;
-                let selector  = styleProperties[trait].selector;
-                let elements = selector ? parent.el.querySelectorAll<HTMLElement>(selector) : [ parent.el ];
+                const attribute = styleProperties[trait].attribute;
+                const selector  = styleProperties[trait].selector;
+                const elements = selector ? parent.el.querySelectorAll<HTMLElement>(selector) : [ parent.el ];
                 for (let i = 0; i !== elements.length; ++i) {
                     elements[i].style.removeProperty(attribute);
                 }

@@ -43,7 +43,7 @@ class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable
     this._manager.resolve(value);
   }
 
-  async renderModel(model: IRenderMime.IMimeModel) {
+  async renderModel(model: IRenderMime.IMimeModel): Promise<void> {
     const source: any = model.data[this.mimeType];
 
     // Let's be optimistic, and hope the widget state will come later.
@@ -121,7 +121,7 @@ class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable
     this._manager = null!;
   }
 
-  private _rerender() {
+  private _rerender(): void {
     if (this._rerenderMimeModel) {
       // Clear the error message
       this.node.textContent = '';

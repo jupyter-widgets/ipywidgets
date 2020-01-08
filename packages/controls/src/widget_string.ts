@@ -24,7 +24,7 @@ const INVALID_VALUE_CLASS = 'jpwidgets-invalidComboValue';
 
 export
 class StringModel extends CoreDescriptionModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             value: '',
             disabled: false,
@@ -35,8 +35,29 @@ class StringModel extends CoreDescriptionModel {
 }
 
 export
+class StringView extends DescriptionView {
+    /**
+     * Called when view is rendered.
+     */
+   render(): void {
+        super.render(); // Incl. setting some defaults.
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-inline-hbox');
+    }
+
+    /**
+     * Update the contents of this view
+     *
+     * Called when the model is changed.  The model may have been
+     * changed by another view or by a state update from the back-end.
+     */
+
+    content: HTMLDivElement;
+}
+
+export
 class HTMLModel extends StringModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _view_name: 'HTMLView',
             _model_name: 'HTMLModel'
@@ -45,14 +66,12 @@ class HTMLModel extends StringModel {
 }
 
 export
-class HTMLView extends DescriptionView {
+class HTMLView extends StringView {
     /**
      * Called when view is rendered.
      */
-    render() {
+    render(): void {
         super.render();
-        this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-html');
         this.content = document.createElement('div');
         this.content.classList.add('widget-html-content');
@@ -66,7 +85,7 @@ class HTMLView extends DescriptionView {
      * Called when the model is changed.  The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update() {
+    update(): void {
         this.content.innerHTML = this.model.get('value');
         return super.update();
     }
@@ -74,7 +93,7 @@ class HTMLView extends DescriptionView {
     /**
      * Handle message sent to the front end.
      */
-    handle_message(content: any) {
+    handle_message(content: any): void {
         if (content.do === 'focus') {
             this.content.focus();
         } else if (content.do === 'blur') {
@@ -88,7 +107,7 @@ class HTMLView extends DescriptionView {
 
 export
 class HTMLMathModel extends StringModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _view_name: 'HTMLMathView',
             _model_name: 'HTMLMathModel'
@@ -97,14 +116,12 @@ class HTMLMathModel extends StringModel {
 }
 
 export
-class HTMLMathView extends DescriptionView {
+class HTMLMathView extends StringView {
     /**
      * Called when view is rendered.
      */
-    render() {
+    render(): void {
         super.render();
-        this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-htmlmath');
         this.content = document.createElement('div');
         this.content.classList.add('widget-htmlmath-content');
@@ -115,7 +132,7 @@ class HTMLMathView extends DescriptionView {
     /**
      * Update the contents of this view
      */
-    update() {
+    update(): void {
         this.content.innerHTML = this.model.get('value');
         this.typeset(this.content);
         return super.update();
@@ -124,7 +141,7 @@ class HTMLMathView extends DescriptionView {
     /**
      * Handle message sent to the front end.
      */
-    handle_message(content: any) {
+    handle_message(content: any): void {
         if (content.do === 'focus') {
             this.content.focus();
         } else if (content.do === 'blur') {
@@ -137,7 +154,7 @@ class HTMLMathView extends DescriptionView {
 
 export
 class LabelModel extends StringModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _view_name: 'LabelView',
             _model_name: 'LabelModel'
@@ -146,13 +163,12 @@ class LabelModel extends StringModel {
 }
 
 export
-class LabelView extends DescriptionView {
+class LabelView extends StringView {
     /**
      * Called when view is rendered.
      */
-    render() {
+    render(): void {
         super.render();
-        this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-label');
         this.update(); // Set defaults.
     }
@@ -163,7 +179,7 @@ class LabelView extends DescriptionView {
      * Called when the model is changed.  The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update() {
+    update(): void {
         this.typeset(this.el, this.model.get('value'));
         return super.update();
     }
@@ -171,7 +187,7 @@ class LabelView extends DescriptionView {
 
 export
 class TextareaModel extends StringModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _view_name: 'TextareaView',
             _model_name: 'TextareaModel',
@@ -182,14 +198,12 @@ class TextareaModel extends StringModel {
 }
 
 export
-class TextareaView extends DescriptionView {
+class TextareaView extends StringView {
     /**
      * Called when view is rendered.
      */
-    render() {
+    render(): void {
         super.render();
-        this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-textarea');
 
         this.textbox = document.createElement('textarea');
@@ -205,9 +219,10 @@ class TextareaView extends DescriptionView {
         });
 
         this.update_placeholder();
+        this.updateTooltip();	
     }
 
-    update_placeholder(value?: string) {
+    update_placeholder(value?: string): void {
         const v = value || this.model.get('placeholder');
         this.textbox.setAttribute('placeholder', v.toString());
     }
@@ -218,7 +233,7 @@ class TextareaView extends DescriptionView {
      * Called when the model is changed.  The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update(options?: any) {
+    update(options?: any): void {
         if (options === undefined || options.updated_view !== this) {
             this.textbox.value = this.model.get('value');
             let rows = this.model.get('rows');
@@ -229,14 +244,15 @@ class TextareaView extends DescriptionView {
             this.textbox.disabled = this.model.get('disabled');
         }
         this.updateTabindex();
+        this.updateTooltip();
         return super.update();
     }
 
-    updateTabindex() {
+    updateTabindex(): void {
         if (!this.textbox) {
             return; // we might be constructing the parent
         }
-        let tabbable = this.model.get('tabbable');
+        const tabbable = this.model.get('tabbable');
         if (tabbable === true) {
             this.textbox.setAttribute('tabIndex', '0');
         } else if (tabbable === false) {
@@ -246,7 +262,17 @@ class TextareaView extends DescriptionView {
         }
     }
 
-    events() {
+    updateTooltip(): void {
+        if (!this.textbox) return; // we might be constructing the parent
+        const title = this.model.get('tooltip');
+        if (!title) {
+            this.textbox.removeAttribute('title');
+        } else if (this.model.get('description').length === 0) {
+            this.textbox.setAttribute('title', title);
+        }
+    }
+
+    events(): {[e: string]: string} {
         return {
             'keydown input': 'handleKeyDown',
             'keypress input': 'handleKeypress',
@@ -260,7 +286,7 @@ class TextareaView extends DescriptionView {
      *
      * Stop propagation so the event isn't sent to the application.
      */
-    handleKeyDown(e: Event) {
+    handleKeyDown(e: Event): void {
         e.stopPropagation();
     }
 
@@ -269,14 +295,14 @@ class TextareaView extends DescriptionView {
      *
      * Stop propagation so the keypress isn't sent to the application.
      */
-    handleKeypress(e: Event) {
+    handleKeypress(e: Event): void {
         e.stopPropagation();
     }
 
     /**
      * Triggered on input change
      */
-    handleChanging(e: Event) {
+    handleChanging(e: Event): void {
         if (this.model.get('continuous_update')) {
             this.handleChanged(e);
         }
@@ -287,8 +313,8 @@ class TextareaView extends DescriptionView {
      *
      * @param e Event
      */
-    handleChanged(e: Event) {
-        let target = e.target as HTMLTextAreaElement;
+    handleChanged(e: Event): void {
+        const target = e.target as HTMLTextAreaElement;
         this.model.set('value', target.value, {updated_view: this});
         this.touch();
     }
@@ -296,7 +322,7 @@ class TextareaView extends DescriptionView {
     /**
      * Handle message sent to the front end.
      */
-    handle_message(content: any) {
+    handle_message(content: any): void {
         if (content.do === 'focus') {
             this.textbox.focus();
         } else if (content.do === 'blur') {
@@ -309,7 +335,7 @@ class TextareaView extends DescriptionView {
 
 export
 class TextModel extends StringModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _view_name: 'TextView',
             _model_name: 'TextModel',
@@ -319,14 +345,12 @@ class TextModel extends StringModel {
 }
 
 export
-class TextView extends DescriptionView {
+class TextView extends StringView {
     /**
      * Called when view is rendered.
      */
-    render() {
+    render(): void {
         super.render();
-        this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-text');
 
         this.textbox = document.createElement('input');
@@ -338,32 +362,20 @@ class TextView extends DescriptionView {
         this.listenTo(this.model, 'change:placeholder', (model, value, options) => {
             this.update_placeholder(value);
         });
-        this.listenTo(this.model, 'change:description_tooltip', this.update_title);
-        this.listenTo(this.model, 'change:description', this.update_title);
-
         this.update_placeholder();
-        this.update_title();
         this.updateTabindex();
+        this.updateTooltip();
     }
 
-    update_placeholder(value?: string) {
+    update_placeholder(value?: string): void {
         this.textbox.setAttribute('placeholder', value || this.model.get('placeholder'));
     }
 
-    update_title() {
-        let title = this.model.get('description_tooltip');
-        if (!title) {
-            this.textbox.removeAttribute('title');
-        } else if (this.model.get('description').length === 0) {
-            this.textbox.setAttribute('title', title);
-        }
-    }
-
-    updateTabindex() {
+    updateTabindex(): void {
         if (!this.textbox) {
             return; // we might be constructing the parent
         }
-        let tabbable = this.model.get('tabbable');
+        const tabbable = this.model.get('tabbable');
         if (tabbable === true) {
             this.textbox.setAttribute('tabIndex', '0');
         } else if (tabbable === false) {
@@ -373,7 +385,17 @@ class TextView extends DescriptionView {
         }
     }
 
-    update(options?: any) {
+    updateTooltip(): void {
+        if (!this.textbox) return; // we might be constructing the parent
+        const title = this.model.get('tooltip');
+        if (!title) {
+            this.textbox.removeAttribute('title');
+        } else if (this.model.get('description').length === 0) {
+            this.textbox.setAttribute('title', title);
+        }
+    }
+
+    update(options?: any): void {
         /**
          * Update the contents of this view
          *
@@ -390,7 +412,7 @@ class TextView extends DescriptionView {
         return super.update();
     }
 
-    events() {
+    events(): {[e: string]: string} {
         return {
             'keydown input': 'handleKeyDown',
             'keypress input': 'handleKeypress',
@@ -404,14 +426,14 @@ class TextView extends DescriptionView {
      *
      * Stop propagation so the keypress isn't sent to the application.
      */
-    handleKeyDown(e: Event) {
+    handleKeyDown(e: Event): void {
         e.stopPropagation();
     }
 
     /**
      * Handles text submission
      */
-    handleKeypress(e: KeyboardEvent) {
+    handleKeypress(e: KeyboardEvent): void {
         e.stopPropagation();
         // The submit message is deprecated in widgets 7
         if (e.keyCode === 13) { // Return key
@@ -425,7 +447,7 @@ class TextView extends DescriptionView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    handleChanging(e: Event) {
+    handleChanging(e: Event): void {
         if (this.model.get('continuous_update')) {
             this.handleChanged(e);
         }
@@ -437,8 +459,8 @@ class TextView extends DescriptionView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    handleChanged(e: Event) {
-        let target = e.target as HTMLInputElement;
+    handleChanged(e: Event): void {
+        const target = e.target as HTMLInputElement;
         this.model.set('value', target.value, {updated_view: this});
         this.touch();
     }
@@ -446,7 +468,7 @@ class TextView extends DescriptionView {
     /**
      * Handle message sent to the front end.
      */
-    handle_message(content: any) {
+    handle_message(content: any): void {
         if (content.do === 'focus') {
             this.textbox.focus();
         } else if (content.do === 'blur') {
@@ -460,7 +482,7 @@ class TextView extends DescriptionView {
 
 export
 class PasswordModel extends TextModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _view_name: 'PasswordView',
             _model_name: 'PasswordModel'
@@ -479,7 +501,7 @@ class PasswordView extends TextView {
  */
 export
 class ComboboxModel extends TextModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return {...super.defaults(),
             _model_name: 'ComboboxModel',
             _view_name: 'ComboboxView',
@@ -495,7 +517,7 @@ class ComboboxModel extends TextModel {
  */
 export
 class ComboboxView extends TextView {
-    render() {
+    render(): void {
         this.datalist = document.createElement('datalist');
         this.datalist.id = uuid();
 
@@ -503,9 +525,10 @@ class ComboboxView extends TextView {
 
         this.textbox.setAttribute('list', this.datalist.id);
         this.el.appendChild(this.datalist);
+        this.updateTooltip();
     }
 
-    update(options?: any) {
+    update(options?: any): void {
         super.update(options);
         if (!this.datalist) {
             return;
@@ -542,7 +565,7 @@ class ComboboxView extends TextView {
         return true;
     }
 
-    handleChanging(e: KeyboardEvent) {
+    handleChanging(e: KeyboardEvent): void {
         // Override to validate value
         const target = e.target as HTMLInputElement;
         const valid = this.isValid(target.value);
@@ -552,7 +575,7 @@ class ComboboxView extends TextView {
         }
     }
 
-    handleChanged(e: KeyboardEvent) {
+    handleChanged(e: KeyboardEvent): void {
         // Override to validate value
         const target = e.target as HTMLInputElement;
         const valid = this.isValid(target.value);
@@ -565,7 +588,7 @@ class ComboboxView extends TextView {
     /**
      * Handle message sent to the front end.
      */
-    handle_message(content: any) {
+    handle_message(content: any): void {
         if (content.do === 'focus') {
             this.textbox.focus();
         } else if (content.do === 'blur') {
