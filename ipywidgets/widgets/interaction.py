@@ -9,7 +9,7 @@ from inspect import getcallargs
 from inspect import getfullargspec as check_argspec
 import sys
 
-from IPython.core.getipython import get_ipython
+from IPython import get_ipython
 from . import (ValueWidget, Text,
     FloatSlider, IntSlider, Checkbox, Dropdown,
     VBox, Button, DOMWidget, Output)
@@ -454,7 +454,7 @@ class _InteractFactory:
             # 1. Using interact as a function
             def greeting(text="World"):
                 print("Hello {}".format(text))
-            interact(greeting, text="IPython Widgets")
+            interact(greeting, text="Jupyter Widgets")
 
             # 2. Using interact as a decorator
             @interact
@@ -462,7 +462,7 @@ class _InteractFactory:
                 print("Hello {}".format(text))
 
             # 3. Using interact as a decorator with named parameters
-            @interact(text="IPython Widgets")
+            @interact(text="Jupyter Widgets")
             def greeting(text="World"):
                 print("Hello {}".format(text))
 
