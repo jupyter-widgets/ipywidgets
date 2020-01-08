@@ -28,6 +28,7 @@ jobs:
       run: |
         yarn install
         yarn run build
+        yarn run build:examples
         yarn run integrity
         
         pushd packages/base
