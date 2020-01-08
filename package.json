@@ -5,6 +5,11 @@
     "widgetsnbextension",
     "examples/*"
   ],
+  "engines": {
+    "npm": "please-use-yarn",
+    "node": ">=10.15.3",
+    "yarn": ">=1.15.0"
+  },
   "scripts": {
     "build": "lerna run build --ignore \"@jupyter-widgets/example-*\"",
     "build:examples": "lerna run build --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
