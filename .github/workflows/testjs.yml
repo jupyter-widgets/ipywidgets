@@ -28,7 +28,9 @@ jobs:
       run: |
         yarn install --frozen-lockfile
         yarn run build
-
+        yarn run build:examples
+        yarn run integrity
+        
         pushd packages/base
         yarn run test:unit:firefox:headless
         popd
@@ -41,9 +43,9 @@ jobs:
         yarn run test:unit:firefox:headless
         popd
 
-#        # TODO: This is erroring out with 'timeout waiting for widgets to render' on the before each hook
-#        pushd examples/web1
-#        yarn run test:firefox:headless
-#        popd
+        pushd examples/web1
+        yarn run test:firefox:headless
+        popd
+
       env:
         CI: true

@@ -165,8 +165,6 @@ class DropdownView extends SelectionView {
             this.listbox.blur();
         }
     }
-
-    listbox: HTMLSelectElement;
 }
 
 
@@ -255,6 +253,17 @@ class SelectView extends SelectionView {
         this.model.set('index', this.listbox.selectedIndex, {updated_view: this});
         this.touch();
     }
+
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+            this.listbox.focus();
+        } else if (content.do == 'blur') {
+            this.listbox.blur();
+        }
+    };
 }
 
 export
@@ -391,6 +400,21 @@ class RadioButtonsView extends DescriptionView {
         const target = event.target as HTMLInputElement;
         this.model.set('index', parseInt(target.value), {updated_view: this});
         this.touch();
+    }
+
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+            const firstItem = this.container.firstElementChild as HTMLElement;
+            firstItem.focus();
+        } else if (content.do == 'blur') {
+            for (let i = 0; i < this.container.children.length; i++) {
+                const item = this.container.children[i] as HTMLElement;
+                item.blur();
+            }
+        }
     }
 
     container: HTMLDivElement;

@@ -90,7 +90,7 @@ class ButtonView extends DOMWidgetView {
             if (icon.length) {
                 const i = document.createElement('i');
                 i.classList.add('fa');
-                i.classList.add('fa-' + icon);
+                i.classList.add(...icon.split(/[\s]+/).filter(Boolean).map((v: string) => `fa-${v}`));
                 if (description.length === 0) {
                     i.classList.add('center');
                 }

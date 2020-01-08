@@ -35,7 +35,7 @@ class Checkbox(_Bool):
     value : {True,False}
         value of the checkbox: True-checked, False-unchecked
     description : str
-	    description displayed next to the checkbox
+        description displayed next to the checkbox
     indent : {True,False}
         indent the control to align with other controls with a description. The style.description_width attribute controls this width for consistence with other controls.
     """
@@ -53,7 +53,7 @@ class ToggleButton(_Bool):
     value : {True,False}
         value of the toggle button: True-pressed, False-unpressed
     description : str
-	      description displayed next to the button
+          description displayed next to the button
     tooltip: str
         tooltip caption of the toggle button
     icon: str
