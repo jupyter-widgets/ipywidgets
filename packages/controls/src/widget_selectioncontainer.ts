@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetView, ViewList, JupyterLuminoWidget, WidgetModel
+    DOMWidgetView, ViewList, JupyterLuminoWidget, WidgetModel, WidgetView
 } from '@jupyter-widgets/base';
 
 import {
@@ -443,7 +443,7 @@ class StackedModel extends SelectionContainerModel {
 export
 class StackedView extends BoxView {
 
-    initialize(parameters) {
+    initialize(parameters: WidgetView.InitializeParameters) {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:selected_index', this.update_children);
     }
