@@ -157,11 +157,11 @@ class CheckboxView extends DescriptionView {
 
     handle_message(content: any) {
         if (content.do == 'focus') {
-	    this.checkbox.focus();
+            this.checkbox.focus();
         } else if (content.do == 'blur') {
-	    this.checkbox.blur();
-	}
-    };
+            this.checkbox.blur();
+        }
+    }
 
     checkbox: HTMLInputElement;
     checkboxLabel: HTMLLabelElement;
