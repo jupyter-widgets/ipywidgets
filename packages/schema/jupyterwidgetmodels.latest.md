@@ -393,7 +393,6 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_counter`       | number (integer) | `0`              | 
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
@@ -403,17 +402,16 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'FileUploadView'` | 
 `accept`         | string           | `''`             | File types to accept, empty string for all
 `button_style`   | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the button.
-`data`           | array            | `[]`             | List of file content (bytes)
 `description`    | string           | `''`             | Description of the control.
 `disabled`       | boolean          | `false`          | Enable or disable button
 `error`          | string           | `''`             | Error message
 `icon`           | string           | `'upload'`       | Font-awesome icon name, without the 'fa-' prefix.
 `layout`         | reference to Layout widget | reference to new instance | 
-`metadata`       | array            | `[]`             | List of file metadata
 `multiple`       | boolean          | `false`          | If True, allow for multiple files upload
 `style`          | reference to ButtonStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
+`value`          | array            | `[]`             | The file upload value
 
 ### FloatLogSliderModel (@jupyter-widgets/controls, 1.5.0); FloatLogSliderView (@jupyter-widgets/controls, 1.5.0)
 
