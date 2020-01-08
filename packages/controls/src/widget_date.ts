@@ -114,9 +114,15 @@ class DatePickerView extends DescriptionView {
         void this._picker_change;
         void this._picker_focusout;
         return {
-            'change [type="date"]': '_picker_change',
-            'focusout [type="date"]': '_picker_focusout'
+            'keypress input' : '_handle_keypress',
+            'focusout [type="date"]': '_picker_update'
         };
+    }
+
+    private _handle_keypress(e) {
+        if (e.keyCode === 13) {
+            this._picker_update();
+        }
     }
 
     private _update_value() {
@@ -124,18 +130,14 @@ class DatePickerView extends DescriptionView {
         this._datepicker.valueAsDate = value;
     }
 
-    private _picker_change() {
-        if (!this._datepicker.validity.badInput) {
-            this.model.set('value', this._datepicker.valueAsDate);
-            this.touch();
-        }
-    }
-
-    private _picker_focusout() {
+    private _picker_update() {
         if (this._datepicker.validity.badInput) {
             this.model.set('value', null);
-            this.touch();
         }
+        else {
+            this.model.set('value', this._datepicker.valueAsDate)
+        }
+        this.touch();
     }
 
     private _datepicker: HTMLInputElement;
