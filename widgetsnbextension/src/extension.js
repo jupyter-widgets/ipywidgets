@@ -18,7 +18,7 @@ var CLASS_NAME = 'jupyter-widgets-view';
 var mngr = require("./manager");
 require("./save_state");
 require("./embed_widgets");
-var PhosphorWidget = require("@lumino/widgets");
+var LuminoWidget = require("@lumino/widgets");
 
 /**
  * Create a widget manager for a kernel instance.
@@ -75,7 +75,7 @@ function register_events(Jupyter, events, outputarea) {
             viewids.forEach(function(id) {
                 // this may be called after the widget is pulled off the page
                 // so we temporarily put it back on the page as a kludge
-                // so that phosphor can trigger the appropriate detach signals
+                // so that Lumino can trigger the appropriate detach signals
                 var view = views[id];
                 view.el.style.display="none";
                 document.body.appendChild(view.el);
@@ -123,7 +123,7 @@ function register_events(Jupyter, events, outputarea) {
                 output._jupyterWidgetViews = output._jupyterWidgetViews || [];
                 output._jupyterWidgetViews.push(id);
                 views[id] = view;
-                PhosphorWidget.Widget.attach(view.pWidget, node);
+                LuminoWidget.Widget.attach(view.pWidget, node);
 
                 // Make the node completely disappear if the view is removed.
                 view.once('remove', () => {

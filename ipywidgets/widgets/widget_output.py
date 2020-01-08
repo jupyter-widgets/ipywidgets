@@ -122,7 +122,7 @@ class Output(DOMWidget):
         self.__counter -= 1
         if self.__counter == 0:
             self.msg_id = ''
-        # suppress exceptions when in IPython, since they are shown above,
+        # suppress exceptions when in a kernel, since they are shown above,
         # otherwise let someone else handle it
         return True if ip else None
 

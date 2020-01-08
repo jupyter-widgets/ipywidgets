@@ -95,10 +95,10 @@ class HTMLView extends StringView {
      */
     handle_message(content: any) {
         if (content.do == 'focus') {
-	    this.content.focus();
+            this.content.focus();
         } else if (content.do == 'blur') {
-	    this.content.blur();
-	}
+            this.content.blur();
+        }
     };
 
     content: HTMLDivElement;
@@ -143,10 +143,10 @@ class HTMLMathView extends StringView {
      */
     handle_message(content: any) {
         if (content.do == 'focus') {
-	    this.content.focus();
+            this.content.focus();
         } else if (content.do == 'blur') {
-	    this.content.blur();
-	}
+            this.content.blur();
+        }
     };
 
     content: HTMLDivElement;
@@ -324,10 +324,10 @@ class TextareaView extends StringView {
      */
     handle_message(content: any) {
         if (content.do == 'focus') {
-	    this.textbox.focus();
+            this.textbox.focus();
         } else if (content.do == 'blur') {
-	    this.textbox.blur();
-	}
+            this.textbox.blur();
+        }
     };
 
     textbox: HTMLTextAreaElement;
@@ -470,10 +470,10 @@ class TextView extends StringView {
      */
     handle_message(content: any) {
         if (content.do == 'focus') {
-	    this.textbox.focus();
+            this.textbox.focus();
         } else if (content.do == 'blur') {
-	    this.textbox.blur();
-	}
+            this.textbox.blur();
+        }
     };
 
     protected readonly inputType: string = 'text';
@@ -590,10 +590,10 @@ class ComboboxView extends TextView {
      */
     handle_message(content: any) {
         if (content.do == 'focus') {
-	    this.textbox.focus();
+            this.textbox.focus();
         } else if (content.do == 'blur') {
-	    this.textbox.blur();
-	}
+            this.textbox.blur();
+        }
     };
 
     highlightValidState(valid: boolean): void {

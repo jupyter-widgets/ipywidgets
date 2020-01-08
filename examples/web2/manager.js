@@ -1,6 +1,6 @@
 var base = require('@jupyter-widgets/base');
 var controls = require('@jupyter-widgets/controls');
-var PhosphorWidget = require('@lumino/widgets').Widget;
+var LuminoWidget = require('@lumino/widgets').Widget;
 
 class WidgetManager extends base.ManagerBase {
     constructor(el) {
@@ -38,7 +38,7 @@ class WidgetManager extends base.ManagerBase {
     display_view(msg, view, options) {
         var that = this;
         return Promise.resolve(view).then(function(view) {
-            PhosphorWidget.attach(view.pWidget, that.el);
+            LuminoWidget.attach(view.pWidget, that.el);
             view.on('remove', function() {
                 console.log('View removed', view);
             });

@@ -37,7 +37,7 @@ class Button(DOMWidget, CoreWidget):
     description: str
        description displayed next to the button
     icon: str
-       font-awesome icon name
+       font-awesome icon names, without the 'fa-' prefix
     disabled: bool
        whether user interaction is enabled
     """
@@ -46,7 +46,7 @@ class Button(DOMWidget, CoreWidget):
 
     description = Unicode(help="Button label.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes.").tag(sync=True)
-    icon = Unicode('', help="Font-awesome icon name, without the 'fa-' prefix.").tag(sync=True)
+    icon = Unicode('', help="Font-awesome icon names, without the 'fa-' prefix.").tag(sync=True)
 
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
@@ -63,10 +63,10 @@ class Button(DOMWidget, CoreWidget):
     def _validate_icon(self, proposal):
         """Strip 'fa-' if necessary'"""
         value = proposal['value']
-        if value.startswith('fa-'):
-            warnings.warn("icons names no longer start with 'fa-', "
-            "just use the class name itself (for example, 'check' instead of 'fa-check')", DeprecationWarning)
-            value = value[3:]
+        if 'fa-' in value:
+            warnings.warn("icons names no longer need 'fa-', "
+            "just use the class names themselves (for example, 'gear spin' instead of 'fa-gear fa-spin')", DeprecationWarning)
+            value = value.replace('fa-', '')
         return value
 
     def on_click(self, callback, remove=False):

@@ -97,7 +97,7 @@ class DropdownModel extends SelectionModel {
     }
 }
 
-// TODO: Make a phosphor dropdown control, wrapped in DropdownView. Also, fix
+// TODO: Make a Lumino dropdown control, wrapped in DropdownView. Also, fix
 // bugs in keyboard handling. See
 // https://github.com/jupyter-widgets/ipywidgets/issues/1055 and
 // https://github.com/jupyter-widgets/ipywidgets/issues/1049
@@ -176,8 +176,6 @@ class DropdownView extends SelectionView {
             this.listbox.blur();
         }
     };
-
-    listbox: HTMLSelectElement;
 }
 
 
@@ -266,6 +264,17 @@ class SelectView extends SelectionView {
         this.model.set('index', this.listbox.selectedIndex, {updated_view: this});
         this.touch();
     }
+
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+            this.listbox.focus();
+        } else if (content.do == 'blur') {
+            this.listbox.blur();
+        }
+    };
 }
 
 export
@@ -403,6 +412,21 @@ class RadioButtonsView extends DescriptionView {
         let target = event.target as HTMLInputElement;
         this.model.set('index', parseInt(target.value), {updated_view: this});
         this.touch();
+    }
+
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+            const firstItem = this.container.firstElementChild as HTMLElement;
+            firstItem.focus();
+        } else if (content.do == 'blur') {
+            for (let i = 0; i < this.container.children.length; i++) {
+                const item = this.container.children[i] as HTMLElement;
+                item.blur();
+            }
+        }
     }
 
     container: HTMLDivElement;

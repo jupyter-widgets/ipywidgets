@@ -644,10 +644,10 @@ class WidgetView extends NativeView<WidgetModel> {
      */
     handle_message(content: any) {
         if (content.do == 'focus') {
-	    this.el.focus();
+            this.el.focus();
         } else if (content.do == 'blur') {
-	    this.el.blur();
-	}
+            this.el.blur();
+        }
     };
 
     /**
@@ -718,7 +718,7 @@ export namespace WidgetView {
 }
 
 export
-namespace JupyterPhosphorWidget {
+namespace JupyterLuminoWidget {
     export
     interface IOptions {
         view: DOMWidgetView;
@@ -726,8 +726,8 @@ namespace JupyterPhosphorWidget {
 }
 
 export
-class JupyterPhosphorWidget extends Widget {
-    constructor(options: Widget.IOptions & JupyterPhosphorWidget.IOptions) {
+class JupyterLuminoWidget extends Widget {
+    constructor(options: Widget.IOptions & JupyterLuminoWidget.IOptions) {
         let view = options.view;
         delete options.view;
         super(options);
@@ -751,22 +751,22 @@ class JupyterPhosphorWidget extends Widget {
     }
 
     /**
-     * Process the phosphor message.
+     * Process the Lumino message.
      *
-     * Any custom phosphor widget used inside a Jupyter widget should override
+     * Any custom Lumino widget used inside a Jupyter widget should override
      * the processMessage function like this.
      */
     processMessage(msg: Message) {
         super.processMessage(msg);
-        this._view.processPhosphorMessage(msg);
+        this._view.processLuminoMessage(msg);
     }
 
     private _view: DOMWidgetView;
 }
 
 export
-class JupyterPhosphorPanelWidget extends Panel {
-    constructor(options: JupyterPhosphorWidget.IOptions & Panel.IOptions) {
+class JupyterLuminoPanelWidget extends Panel {
+    constructor(options: JupyterLuminoWidget.IOptions & Panel.IOptions) {
         let view = options.view;
         delete options.view;
         super(options);
@@ -774,14 +774,14 @@ class JupyterPhosphorPanelWidget extends Panel {
     }
 
     /**
-     * Process the phosphor message.
+     * Process the Lumino message.
      *
-     * Any custom phosphor widget used inside a Jupyter widget should override
+     * Any custom Lumino widget used inside a Jupyter widget should override
      * the processMessage function like this.
      */
     processMessage(msg: Message) {
         super.processMessage(msg);
-        this._view.processPhosphorMessage(msg);
+        this._view.processLuminoMessage(msg);
     }
 
     /**
@@ -880,7 +880,7 @@ class DOMWidgetView extends WidgetView {
                     return this.displayed.then(() => {
                         view.trigger('displayed');
                         // Unlike for the layout attribute, style changes don't
-                        // trigger phosphor resize messages.
+                        // trigger Lumino resize messages.
                         return view;
                     });
                 }).catch(utils.reject('Could not add styleView to DOMWidgetView', true));
@@ -967,7 +967,7 @@ class DOMWidgetView extends WidgetView {
 
         this.$el = el instanceof $ ? el : $(el);
         this.el = this.$el[0];
-        this.pWidget = new JupyterPhosphorWidget({
+        this.pWidget = new JupyterLuminoWidget({
             node: el,
             view: this
         });
@@ -980,7 +980,7 @@ class DOMWidgetView extends WidgetView {
         return super.remove();
     }
 
-    processPhosphorMessage(msg: Message) {
+    processLuminoMessage(msg: Message) {
         // tslint:disable-next-line:switch-default
         switch (msg.type) {
         case 'after-attach':
