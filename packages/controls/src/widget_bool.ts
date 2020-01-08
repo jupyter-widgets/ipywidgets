@@ -149,6 +149,19 @@ class CheckboxView extends DescriptionView {
         }
         return super.update();
     }
+    /**
+     * Handle message sent to the front end.
+     *
+     * Used to focus or blur the widget.
+     */
+
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+            this.checkbox.focus();
+        } else if (content.do == 'blur') {
+            this.checkbox.blur();
+        }
+    }
 
     checkbox: HTMLInputElement;
     checkboxLabel: HTMLLabelElement;
