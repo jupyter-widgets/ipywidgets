@@ -10,18 +10,28 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
-        python-version: 3.7
+        python-version: 3.6
     - name: Install dependencies
       run: |
         sudo apt-get install -y pandoc
-    - name: Setup conda environment
-      uses: matthewrmshin/conda-action@v1
+        conda install 
+    - uses: goanpeca/setup-miniconda@v1
       with:
-        args: conda env create --file docs/environment.yml
+        auto-update-conda: true
+        environment-file: docs/environment.yml
+        activate-environment: ipywidget_docs
     - name: Install ipywidgets
       run: |
+        which python
+        which conda
+        python --version
+        conda info
         pip install file://$PWD#egg=ipywidgets
     - name: Build docs
       run: |
+        which python
+        which conda
+        python --version
+        conda info
         cd docs
         make html
