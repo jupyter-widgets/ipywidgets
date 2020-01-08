@@ -643,10 +643,10 @@ class WidgetView extends NativeView<WidgetModel> {
      */
     handle_message(content: any) {
         if (content.do == 'focus') {
-	    this.el.focus();
+            this.el.focus();
         } else if (content.do == 'blur') {
-	    this.el.blur();
-	}
+            this.el.blur();
+        }
     };
 
     /**
