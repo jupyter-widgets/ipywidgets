@@ -42,8 +42,7 @@ class DescriptionModel extends DOMWidgetModel {
             _model_module: '@jupyter-widgets/controls',
             _view_module_version: JUPYTER_CONTROLS_VERSION,
             _model_module_version: JUPYTER_CONTROLS_VERSION,
-            description: '',
-            description_tooltip: null,
+            description: ''
         };
     }
 }
@@ -57,10 +56,10 @@ class DescriptionView extends DOMWidgetView {
         this.label.style.display = 'none';
 
         this.listenTo(this.model, 'change:description', this.updateDescription);
-        this.listenTo(this.model, 'change:description_tooltip', this.updateDescription);
         this.listenTo(this.model, 'change:tabbable', this.updateTabindex);
         this.updateDescription();
         this.updateTabindex();
+        this.updateTooltip();
     }
 
     typeset(element: HTMLElement, text?: string){
@@ -69,11 +68,6 @@ class DescriptionView extends DOMWidgetView {
 
     updateDescription() {
         let description = this.model.get('description');
-        let description_tooltip = this.model.get('description_tooltip');
-        if (description_tooltip === null) {
-            description_tooltip = description;
-        }
-
         if (description.length === 0) {
             this.label.style.display = 'none';
         } else {
@@ -81,7 +75,11 @@ class DescriptionView extends DOMWidgetView {
             this.typeset(this.label);
             this.label.style.display = '';
         }
-        this.label.title = description_tooltip;
+    }
+
+    updateTooltip() {
+        if (!this.label) return;
+        this.label.title = this.model.get('tooltip');
     }
 
     label: HTMLLabelElement;

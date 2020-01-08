@@ -74,6 +74,7 @@ class CheckboxView extends DescriptionView {
         this.updateDescription();
         this.updateIndent();
         this.updateTabindex();
+        this.updateTooltip();
     }
 
     /**
@@ -114,6 +115,16 @@ class CheckboxView extends DescriptionView {
             this.checkbox.setAttribute('tabIndex', '-1');
         } else if (tabbable === null) {
             this.checkbox.removeAttribute('tabIndex');
+        }
+    }
+
+    updateTooltip() {
+        if (!this.checkbox) return; // we might be constructing the parent
+        let title = this.model.get('tooltip');
+        if (!title) {
+            this.checkbox.removeAttribute('title');
+        } else if (this.model.get('description').length === 0) {
+            this.checkbox.setAttribute('title', title);
         }
     }
 
