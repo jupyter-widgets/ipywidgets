@@ -56,6 +56,7 @@ class SelectionView extends DescriptionView {
 
         // Set tabindex
         this.updateTabindex();
+        this.updateTooltip();
     }
 
     updateTabindex(): void {
@@ -69,6 +70,16 @@ class SelectionView extends DescriptionView {
             this.listbox.setAttribute('tabIndex', '-1');
         } else if (tabbable === null) {
             this.listbox.removeAttribute('tabIndex');
+        }
+    }
+
+    updateTooltip() {
+        if (!this.listbox) return; // we might be constructing the parent
+        let title = this.model.get('tooltip');
+        if (!title) {
+            this.listbox.removeAttribute('title');
+        } else if (this.model.get('description').length === 0) {
+            this.listbox.setAttribute('title', title);
         }
     }
 

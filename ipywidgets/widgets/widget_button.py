@@ -36,8 +36,6 @@ class Button(DOMWidget, CoreWidget):
     ----------
     description: str
        description displayed next to the button
-    tooltip: str
-       tooltip caption of the toggle button
     icon: str
        font-awesome icon names, without the 'fa-' prefix
     disabled: bool
@@ -47,7 +45,6 @@ class Button(DOMWidget, CoreWidget):
     _model_name = Unicode('ButtonModel').tag(sync=True)
 
     description = Unicode(help="Button label.").tag(sync=True)
-    tooltip = Unicode(help="Tooltip caption of the button.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes.").tag(sync=True)
     icon = Unicode('', help="Font-awesome icon names, without the 'fa-' prefix.").tag(sync=True)
 

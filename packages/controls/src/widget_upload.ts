@@ -15,7 +15,6 @@ export class FileUploadModel extends CoreDOMWidgetModel {
             _counter: 0,
             accept: '',
             description: 'Upload',
-            tooltip: '',
             disabled: false,
             icon: 'upload',
             button_style: '',
