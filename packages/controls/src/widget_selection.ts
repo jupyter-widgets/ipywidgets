@@ -257,13 +257,13 @@ class SelectView extends SelectionView {
     /**
      * Handle message sent to the front end.
      */
-    handle_message(content: any) {
+    handle_message(content: any): void {
         if (content.do == 'focus') {
             this.listbox.focus();
         } else if (content.do == 'blur') {
             this.listbox.blur();
         }
-    };
+    }
 }
 
 export
@@ -405,7 +405,7 @@ class RadioButtonsView extends DescriptionView {
     /**
      * Handle message sent to the front end.
      */
-    handle_message(content: any) {
+    handle_message(content: any): void {
         if (content.do == 'focus') {
             const firstItem = this.container.firstElementChild as HTMLElement;
             firstItem.focus();

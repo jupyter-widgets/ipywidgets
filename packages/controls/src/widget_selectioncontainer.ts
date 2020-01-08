@@ -432,7 +432,7 @@ class TabView extends DOMWidgetView {
 
 export
 class StackedModel extends SelectionContainerModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'StackedModel',
             _view_name: 'StackedView'
@@ -443,13 +443,13 @@ class StackedModel extends SelectionContainerModel {
 export
 class StackedView extends BoxView {
 
-    initialize(parameters: WidgetView.InitializeParameters) {
+    initialize(parameters: WidgetView.InitializeParameters): void {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:selected_index', this.update_children);
     }
 
-    update_children() {
-        let selected_child = this.model.get('children')[this.model.get('selected_index')];
+    update_children(): void {
+        const selected_child = this.model.get('children')[this.model.get('selected_index')];
         this.children_views.update([selected_child]).then((views: DOMWidgetView[]) => {
                 // Notify all children that their sizes may have changed.
                 views.forEach( (view) => {

@@ -157,7 +157,7 @@ class CheckboxView extends DescriptionView {
      * Used to focus or blur the widget.
      */
 
-    handle_message(content: any) {
+    handle_message(content: any): void {
         if (content.do == 'focus') {
             this.checkbox.focus();
         } else if (content.do == 'blur') {
