@@ -29,7 +29,7 @@ jobs:
         yarn install
         yarn run build
         yarn run integrity
-        
+
         pushd packages/base
         yarn run test:unit:firefox:headless
         popd

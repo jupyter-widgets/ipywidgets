@@ -8,6 +8,7 @@
   "scripts": {
     "build": "lerna run build --ignore \"@jupyter-widgets/example-*\"",
     "build:examples": "lerna run build --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
+    "build:test": "lerna run build:test --ignore \"@jupyter-widgets/example-*\"",
     "clean": "lerna run clean",
     "integrity": "node scripts/package-integrity.js",
     "lint": "lerna run lint",

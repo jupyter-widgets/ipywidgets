@@ -1,6 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { WidgetView } from '@jupyter-widgets/base';
+
 import {
     CoreDescriptionModel,
 } from './widget_core';
@@ -16,7 +18,6 @@ import {
 import * as _ from 'underscore';
 import * as utils from './utils';
 import $ from 'jquery';
-import { WidgetView } from '@jupyter-widgets/base/src';
 
 export
 class SelectionModel extends CoreDescriptionModel {

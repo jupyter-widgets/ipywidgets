@@ -16,7 +16,7 @@ import {
 import * as _ from 'underscore';
 
 export
-function serialize_date(value: Date) {
+function serialize_date(value: Date | null) {
     if (value === null) {
         return null;
     } else {
@@ -46,7 +46,7 @@ export interface SerializedDate {
 }
 
 export
-function deserialize_date(value: SerializedDate) {
+function deserialize_date(value: SerializedDate | null) {
     if (value === null) {
         return null;
     } else {

@@ -6,7 +6,7 @@ import {
 } from 'base64-js';
 
 import {
-    JSONObject, JSONArray, JSONValue, UUID, JSONExt
+    JSONObject, JSONValue, UUID, JSONExt
 } from '@lumino/coreutils';
 
 import _isEqual from 'lodash/isEqual';
@@ -107,11 +107,11 @@ function reject(message: string, log: boolean) {
  * Will lead to {a: 1, b: {data: array1}, c: [0, array2]}
  */
 export
-function put_buffers(state: JSONObject, buffer_paths: (string | number)[][], buffers: DataView[]) {
+function put_buffers(state: Dict<BufferJSON>, buffer_paths: (string | number)[][], buffers: DataView[]) {
     for (let i=0; i < buffer_paths.length; i++) {
         let buffer_path = buffer_paths[i];
          // say we want to set state[x][y][z] = buffers[i]
-        let obj: any = state;
+        let obj = state as any;
         // we first get obj = state[x][y]
         for (let j = 0; j < buffer_path.length - 1; j++) {
             obj = obj[buffer_path[j]];
@@ -131,12 +131,29 @@ interface ISerializedState {
 
 export
 interface ISerializeable {
-    toJSON(options?: {}): JSONObject | JSONArray;
+    toJSON(options?: {}): JSONObject;
 }
+
+export
+type BufferJSON =
+    | { [property: string]: BufferJSON }
+    | BufferJSON[]
+    | string
+    | number
+    | boolean
+    | null
+    | ArrayBuffer
+    | DataView;
+
 
 export
 function isSerializable(object: unknown): object is ISerializeable {
     return (typeof object === 'object' && object && 'toJSON' in object) ?? false;
+}
+
+export
+function isObject(data: BufferJSON): data is Dict<BufferJSON> {
+    return JSONExt.isObject(data as JSONValue);
 }
 
 
@@ -150,19 +167,19 @@ function isSerializable(object: unknown): object is ISerializeable {
  * and the buffers associated to those paths (.buffers).
  */
 export
-function remove_buffers(state: JSONObject | ISerializeable): ISerializedState {
+function remove_buffers(state: BufferJSON | ISerializeable): ISerializedState {
     let buffers: ArrayBuffer[] = [];
     let buffer_paths: (string | number)[][] = [];
     // if we need to remove an object from a list, we need to clone that list, otherwise we may modify
     // the internal state of the widget model
     // however, we do not want to clone everything, for performance
-    function remove(obj: JSONValue | ISerializeable, path: (string | number)[]): JSONValue {
+    function remove(obj: BufferJSON | ISerializeable, path: (string | number)[]): BufferJSON {
         if (isSerializable(obj)) {
             // We need to get the JSON form of the object before recursing.
             // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#toJSON()_behavior
             obj = obj.toJSON();
         }
-        if (JSONExt.isArray(obj)) {
+        if (Array.isArray(obj)) {
             let is_cloned = false;
             for (let i = 0; i < obj.length; i++) {
                 let value = obj[i];
@@ -190,7 +207,7 @@ function remove_buffers(state: JSONObject | ISerializeable): ISerializedState {
                     }
                 }
             }
-        } else if (JSONExt.isObject(obj)) {
+        } else if (isObject(obj)) {
             for (let key in obj) {
                 let is_cloned = false;
                 if (obj.hasOwnProperty(key)) {
