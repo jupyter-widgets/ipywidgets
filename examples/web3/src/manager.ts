@@ -25,13 +25,14 @@ class WidgetManager extends HTMLManager {
         });
     }
 
-    display_view(msg: any, view: DOMWidgetView, options: any): Promise<base.DOMWidgetView> {
+    display_view(msg: any, view: DOMWidgetView, options: any): Promise<HTMLElement> {
         return Promise.resolve(view).then((view) => {
             pWidget.Widget.attach(view.pWidget, this.el);
             view.on('remove', function() {
                 console.log('view removed', view);
             });
-            return view;
+            // We will resolve this lie in another PR.
+            return view as any;
         });
     }
 

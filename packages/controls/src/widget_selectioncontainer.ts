@@ -443,7 +443,7 @@ class StackedModel extends SelectionContainerModel {
 export
 class StackedView extends BoxView {
 
-    initialize(parameters: WidgetView.InitializeParameters): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:selected_index', this.update_children);
     }
