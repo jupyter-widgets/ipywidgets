@@ -394,6 +394,21 @@ class RadioButtonsView extends DescriptionView {
         this.touch();
     }
 
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any) {
+        if (content.do == 'focus') {
+        const firstItem = this.container.firstElementChild as HTMLElement;
+        firstItem.focus();
+        } else if (content.do == 'blur') {
+        for (let i = 0; i < this.container.children.length; i++) {
+                const item = this.container.children[i] as HTMLElement;
+                item.blur();
+            }
+        }
+    };
+
     container: HTMLDivElement;
 }
 
