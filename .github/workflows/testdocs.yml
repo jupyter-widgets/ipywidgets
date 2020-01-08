@@ -10,19 +10,17 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
-        python-version: 3.5
-    - uses: actions/cache@v1
-      with:
-        path: ~/.cache/pip
-        key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}-${{hashFiles('**/requirements.txt')}}
-        restore-keys: |
-          ${{ runner.os }}-pip-
+        python-version: 3.7
     - name: Install dependencies
       run: |
         sudo apt-get install -y pandoc
-        python -m pip install --upgrade pip
+    - name: Setup conda environment
+      uses: matthewrmshin/conda-action@v1
+      with:
+        args: conda env create --file docs/environment.yml
+    - name: Install ipywidgets
+      run: |
         pip install file://$PWD#egg=ipywidgets
-        pip install -r ./docs/requirements.txt
     - name: Build docs
       run: |
         cd docs
