@@ -339,6 +339,15 @@ class IntRangeSliderView extends BaseIntSliderView {
             value = [Math.max(Math.min(value[0], vmax), vmin),
                         Math.max(Math.min(value[1], vmax), vmin)];
 
+            let min_gap = this.model.get('min_gap');
+            if (min_gap > 0) {
+                let value_gap = value[1] - value[2];
+                if (value_gap < min_gap) {
+                    // reject input where value gap < min_gap
+                    this.readout.textContent = this.valueToString(this.model.get('value'));
+                    return;
+                }
+            }
             if ((value[0] !== this.model.get('value')[0]) ||
                 (value[1] !== this.model.get('value')[1])) {
                 this.readout.textContent = this.valueToString(value);
@@ -371,6 +380,40 @@ class IntRangeSliderView extends BaseIntSliderView {
      */
     handleSliderChanged(e: Event, ui: { values: number[]}) {
         let actual_value = ui.values.map(this._validate_slide_value);
+        let min_gap = this.model.get('min_gap');
+        if (min_gap > 0) {
+            let old_lower = this.model.get('value')[0];
+            let old_upper = this.model.get('value')[1];
+            let value_gap = actual_value[1] - actual_value[0];
+            let max = this.model.get('max');
+            let min = this.model.get('min');
+            // if value gap is smaller than min_gap, clamp
+            // values within the min-max range of the slider
+            if (value_gap < min_gap) {
+                if (actual_value[0] !== this.model.get('value')[0]) {
+                    actual_value[0] = Math.max(min, actual_value[1] - min_gap);
+                    value_gap = actual_value[1] - actual_value[0];
+                    if (value_gap < min_gap) {
+                        actual_value[1] = Math.min(max, actual_value[0] + min_gap);
+                    }
+                }
+                else if (actual_value[1] !== this.model.get('value')[1]) {
+                    actual_value[1] = Math.min(max, actual_value[0] + min_gap);
+                    value_gap = actual_value[1] - actual_value[0];
+                    if (value_gap < min_gap) {
+                        actual_value[0] = Math.max(min, actual_value[1] - min_gap);
+                    }
+                }
+                // fallback, we shouldn't reach this point,
+                // but if we do, reset values to min/max
+                value_gap = actual_value[1] - actual_value[0];
+                if (value_gap < min_gap) {
+                    actual_value[0] = min;
+                    actual_value[1] = max;
+                }
+            }
+        }
+        this.$slider.slider('option', 'values', actual_value.slice());
         this.model.set('value', actual_value, {updated_view: this});
         this.touch();
     }

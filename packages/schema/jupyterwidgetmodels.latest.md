@@ -660,6 +660,7 @@ Attribute        | Type             | Default          | Help
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (integer) | `100`            | Max value
 `min`            | number (integer) | `0`              | Min value
+`min_gap`        | number (integer) | `0`              | Min gap between integer pair
 `orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
 `readout`        | boolean          | `true`           | Display the current value of the slider next to it.
 `readout_format` | string           | `'d'`            | Format for the readout

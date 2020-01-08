@@ -238,9 +238,10 @@ class Play(_BoundedInt):
 class _BoundedIntRange(_IntRange):
     max = CInt(100, help="Max value").tag(sync=True)
     min = CInt(0, help="Min value").tag(sync=True)
+    min_gap = CInt(0, help="Min gap between integer pair").tag(sync=True)
 
     def __init__(self, *args, **kwargs):
-        min, max = kwargs.get('min', 0), kwargs.get('max', 100)
+        min, max, min_gap = kwargs.get('min', 0), kwargs.get('max', 100), kwargs.get('min_gap', 0)
         if not kwargs.get('value', None):
             kwargs['value'] = (0.75 * min + 0.25 * max,
                                0.25 * min + 0.75 * max)
@@ -258,13 +259,50 @@ class _BoundedIntRange(_IntRange):
             self.value = (max(new, self.value[0]), max(new, self.value[1]))
         if trait.name == 'max':
             self.value = (min(new, self.value[0]), min(new, self.value[1]))
+        if self.min_gap > 0:
+            # make sure new max/min range is > min_gap
+            value_gap = self.value[1] - self.value[0]
+            range_gap = self.max - self.min
+            if range_gap < self.min_gap:
+                raise TraitError('new min/max violates min_gap')
+            if value_gap < self.min_gap:
+                # if value gap is < min_gap, revert to min or max
+                if trait.name == 'min':
+                    self.value = (self.value[0], self.max)
+                if trait.name == 'max':
+                    self.value = (self.min, self.value[1])
+                value_gap = self.value[1] - self.value[0]
+                # fallback, we shouldn't reach this point,
+                # but if we do, reset values to min/max
+                if value_gap < self.min_gap:
+                    self.value = (self.min, self.max)
         return new
+
+        @validate('min_gap')
+        def _validate_min_gap(self, proposal):
+            new_gap = proposal['value']
+            if new_gap > 0:
+                value_gap = self.value[1] - self.value[0]
+                range_gap = self.max - self.min
+                if range_gap < new_gap:
+                    raise TraitError('new min_gap violates min/max range')
+                if value_gap < range_gap:
+                    raise TraitError('new min_gap violates gap between values')
+            return new_gap
+
 
     @validate('value')
     def _validate_value(self, proposal):
         lower, upper = super()._validate_value(proposal)
         lower, upper = min(lower, self.max), min(upper, self.max)
         lower, upper = max(lower, self.min), max(upper, self.min)
+        if self.min_gap > 0:
+            value_gap = upper - lower
+            if value_gap < self.min_gap:
+                # if value gap is smaller than min_gap, clamp
+                # values within the min-max range of the slider
+                lower = self.min
+                upper = self.max
         return lower, upper
 
 
@@ -280,6 +318,8 @@ class IntRangeSlider(_BoundedIntRange):
         The lowest allowed value for `lower`
     max : int
         The highest allowed value for `upper`
+    min_gap : int
+        The lowest allowed distance between pair of ints on slider
     """
     _view_name = Unicode('IntRangeSliderView').tag(sync=True)
     _model_name = Unicode('IntRangeSliderModel').tag(sync=True)
