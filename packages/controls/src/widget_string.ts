@@ -39,7 +39,7 @@ class StringView extends DescriptionView {
     /**
      * Called when view is rendered.
      */
-   render() {
+   render(): void {
         super.render(); // Incl. setting some defaults.
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-inline-hbox');
@@ -385,7 +385,7 @@ class TextView extends StringView {
         }
     }
 
-    updateTooltip() {
+    updateTooltip(): void {
         if (!this.textbox) return; // we might be constructing the parent
         const title = this.model.get('tooltip');
         if (!title) {
