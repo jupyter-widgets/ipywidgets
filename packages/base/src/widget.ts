@@ -886,8 +886,8 @@ class DOMWidgetView extends WidgetView {
         }
     }
 
-    updateTooltip() {
-        let title = this.model.get('tooltip')
+    updateTooltip(): void {
+        const title = this.model.get('tooltip')
         if (!title) {
             this.el.removeAttribute('title');
         } else if (this.model.get('description').length === 0) {

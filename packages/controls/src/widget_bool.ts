@@ -120,9 +120,9 @@ class CheckboxView extends DescriptionView {
         }
     }
 
-    updateTooltip() {
+    updateTooltip(): void {
         if (!this.checkbox) return; // we might be constructing the parent
-        let title = this.model.get('tooltip');
+        const title = this.model.get('tooltip');
         if (!title) {
             this.checkbox.removeAttribute('title');
         } else if (this.model.get('description').length === 0) {

@@ -77,7 +77,7 @@ class DescriptionView extends DOMWidgetView {
         }
     }
 
-    updateTooltip() {
+    updateTooltip(): void {
         if (!this.label) return;
         this.label.title = this.model.get('tooltip');
     }
