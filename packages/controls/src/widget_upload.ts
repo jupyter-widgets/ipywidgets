@@ -12,16 +12,13 @@ export class FileUploadModel extends CoreDOMWidgetModel {
             _model_name: 'FileUploadModel',
             _view_name: 'FileUploadView',
 
-            _counter: 0,
-            _file_count: 0,
-            _data: [],
-            _metadata: [],
             accept: '',
             description: 'Upload',
             disabled: false,
             icon: 'upload',
             button_style: '',
             multiple: false,
+            value: [],
             error: '',
             style: null
         });
@@ -29,7 +26,7 @@ export class FileUploadModel extends CoreDOMWidgetModel {
 
     static serializers = {
         ...CoreDOMWidgetModel.serializers,
-        _data: { serialize: (buffers: any) => { return [...buffers]; } },
+        value: { serialize: (x: any) => x },
     };
 }
 
@@ -96,18 +93,14 @@ export class FileUploadView extends DOMWidgetView {
 
             Promise.all(promisesFile)
                 .then(contents => {
-                    const metadata: any[] = [];
-                    const li_buffer: any[] = [];
-                    contents.forEach(c => {
-                        metadata.push(c.metadata);
-                        li_buffer.push(c.buffer);
+                    const value = contents.map(c => {
+                        return {
+                            metadata: c.metadata,
+                            content: c.buffer
+                        };
                     });
-                    const counter = this.model.get('_counter');
                     this.model.set({
-                        _counter: counter + contents.length,
-                        _file_count: contents.length,
-                        _metadata: metadata,
-                        _data: li_buffer,
+                        value,
                         error: '',
                     });
                     this.touch();
@@ -130,7 +123,8 @@ export class FileUploadView extends DOMWidgetView {
         this.el.disabled = this.model.get('disabled');
         this.el.setAttribute('title', this.model.get('tooltip'));
 
-        const description = `${this.model.get('description')} (${this.model.get('_file_count')})`;
+        const value: [] = this.model.get('value');
+        const description = `${this.model.get('description')} (${value.length})`;
         const icon = this.model.get('icon');
 
         if (description.length || icon.length) {

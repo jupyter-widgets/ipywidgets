@@ -393,10 +393,7 @@ Attribute        | Type             | Default          | Help
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
-`_counter`       | number (integer) | `0`              | 
-`_data`          | array            | `[]`             | List of file content (bytes)
 `_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
-`_metadata`      | array            | `[]`             | List of file metadata
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'FileUploadModel'` | 
@@ -414,6 +411,7 @@ Attribute        | Type             | Default          | Help
 `style`          | reference to ButtonStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
+`value`          | array            | `[]`             | The file upload value
 
 ### FloatLogSliderModel (@jupyter-widgets/controls, 1.5.0); FloatLogSliderView (@jupyter-widgets/controls, 1.5.0)
 
