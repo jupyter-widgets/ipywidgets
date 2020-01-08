@@ -2,9 +2,9 @@
 # Distributed under the terms of the Modified BSD License.
 
 """Contains the DropWidget class"""
-from .widget import Widget
-from .widget import CallbackDispatcher
+from .widget import Widget, CallbackDispatcher, widget_serialization
 from traitlets import Bool, Dict
+
 
 class DropWidget(Widget):
     """Widget that has the ondrop handler. Used as a mixin"""
@@ -14,8 +14,9 @@ class DropWidget(Widget):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._click_handlers = CallbackDispatcher()
-        self.on_msg(self._handle_drop_msg)
+        self._drop_handlers = CallbackDispatcher()
+        self._dragstart_handlers = CallbackDispatcher()
+        self.on_msg(self._handle_dragdrop_msg)
 
     def on_drop(self, callback, remove=False):
         """Register a callback to execute when an element is dropped.
@@ -28,7 +29,7 @@ class DropWidget(Widget):
         remove: bool (optional)
             Set to true to remove the callback from the list of callbacks.
         """
-        self._click_handlers.register_callback(callback, remove=remove)
+        self._drop_handlers.register_callback(callback, remove=remove)
 
     def drop(self, data):
         """Programmatically trigger a drop event.
@@ -36,9 +37,18 @@ class DropWidget(Widget):
         This will call the callbacks registered to the  drop event.
         """
 
-        self._click_handlers(self, data)
+        if data.get('application/x-widget'):
+            widget = widget_serialization['from_json']('IPY_MODEL_' + data['application/x-widget'])        
+            data['widget'] = widget
+        self._drop_handlers(self, data)
 
-    def _handle_drop_msg(self, _, content, buffers):
+    def on_dragstart(self, callback, remove=False):
+        self._dragstart_handlers.register_callback(callback, remove=remove)
+
+    def dragstart(self):
+        self._dragstart_handlers(self)
+
+    def _handle_dragdrop_msg(self, _, content, buffers):
         """Handle a msg from the front-end.
 
         Parameters
@@ -48,3 +58,5 @@ class DropWidget(Widget):
         """
         if content.get('event', '') == 'drop':
             self.drop(content.get('data', {}))
+        elif content.get('event', '') == 'dragstart':
+            self.dragstart()

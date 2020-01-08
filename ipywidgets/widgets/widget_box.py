@@ -61,8 +61,6 @@ class Box(DOMWidget, CoreWidget):
         values=['success', 'info', 'warning', 'danger', ''], default_value='',
         help="""Use a predefined styling for the box.""").tag(sync=True)
 
-    dropzone = Bool(default=False).tag(sync=True)
-
     def __init__(self, children=(), **kwargs):
         kwargs['children'] = children
         super().__init__(**kwargs)

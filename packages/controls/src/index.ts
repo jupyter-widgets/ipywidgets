@@ -20,5 +20,6 @@ export * from './widget_selectioncontainer';
 export * from './widget_string';
 export * from './widget_description';
 export * from './widget_upload';
+export * from './widget_dragdrop';
 
 export const version = (require('../package.json') as any).version;

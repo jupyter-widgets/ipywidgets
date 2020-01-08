@@ -21,110 +21,6 @@ import * as _ from 'underscore';
 const INVALID_VALUE_CLASS = 'jpwidgets-invalidComboValue';
 
 export
-class Droppable {
-
-    /** Droppbable mixin
-     * Implements handler for drop events.
-     * The view class implementing this interface needs to
-     * listen to 'drop' event with '_handle_drop', and to
-     * 'dragover' event with 'on_dragover'
-     *
-     * In order to use this mixin, the view class needs to
-     * implement the Droppable interface, define the following
-     * placeholders:
-     *
-     *  _handle_drop : (event: Object) => void;
-     * on_dragover : (event : Object) => void;
-     *
-     * and you need to call applyMixin on class definition.
-     *
-     * follows the example from typescript docs
-     * https://www.typescriptlang.org/docs/handbook/mixins.html
-     */
-
-    send : (content : any, buffers? : any) => void;
-
-    _handle_drop(event: any) {
-        event.preventDefault();
-        // var data = Array.from(event.dataTransfer.items, item => item.getAsString())
-
-        let datamap : any = {};
-
-        for (let i=0; i < event.dataTransfer.types.length; i++) {
-          let t = event.dataTransfer.types[i];
-          datamap[t] = event.dataTransfer.getData(t);
-        }
-
-        console.log(event.dataTransfer);
-        this.send({event: 'drop', data: datamap});
-    }
-
-    on_dragover(event: any) {
-        event.preventDefault();
-        event.stopPropagation();
-        event.dataTransfer.dropEffect = 'copy';
-    }
-
-}
-
-export
-function applyMixins(derivedCtor: any, baseCtors: any[]) {
-    baseCtors.forEach(baseCtor => {
-        Object.getOwnPropertyNames(baseCtor.prototype).forEach(name => {
-            Object.defineProperty(derivedCtor.prototype, name, Object.getOwnPropertyDescriptor(baseCtor.prototype, name));
-        });
-    });
-}
-
-export
-class Draggable {
-
-    /** Draggable mixin.
-     * Allows the widget to be draggable
-     *
-     * Note: In order to use it, you will need to add
-     * handlers for dragstartevent in the view class
-     * also need to call dragSetup at initialization time
-     *
-     * The view class must implement Draggable interface and
-     * declare the methods (no definition).
-     * For example:
-     *
-     * on_dragstart : (event: Object) => void;
-     * on_change_draggable : () => void;
-     * dragSetup : () => void;
-     *
-     * Also need to call applyMixin on the view class
-     * The model class needs to have drag_data attribute
-     *
-     * follows the example from typescript docs
-     * https://www.typescriptlang.org/docs/handbook/mixins.html
-     */
-
-    model : StringModel;
-    el : any;
-
-    on_dragstart(event: any) {
-        event.dataTransfer.setData('text/plain', this.model.get('value'));
-        let drag_data = this.model.get('drag_data');
-        for (let datatype in drag_data) {
-          event.dataTransfer.setData(datatype, drag_data[datatype]);
-        }
-        event.dataTransfer.setData('application/x-widget', this.model.model_id);
-        event.dataTransfer.dropEffect = 'copy';
-    }
-
-    dragSetup() {
-        this.el.draggable = this.model.get('draggable');
-        this.model.on('change:draggable', this.on_change_draggable, this);
-    }
-
-    on_change_draggable() {
-      this.el.draggable = this.model.get('draggable');
-    }
-
-
-}export
 class StringModel extends CoreDescriptionModel {
     defaults() {
         return _.extend(super.defaults(), {
@@ -227,7 +123,7 @@ class LabelModel extends StringModel {
 }
 
 export
-class LabelView extends DescriptionView implements Droppable {
+class LabelView extends DescriptionView {
     /**
      * Called when view is rendered.
      */
@@ -235,25 +131,7 @@ class LabelView extends DescriptionView implements Droppable {
         super.render();
         this.el.classList.add('jupyter-widgets');
         this.el.classList.add('widget-label');
-        this.model.on("change:draggable", this.dragSetup, this)
-
-        this.el.addEventListener("dragover", (event: any) => {
-          event.preventDefault();
-          event.stopPropagation();
-          event.dataTransfer.dropEffect = "copy";
-        });
-
         this.update(); // Set defaults.
-
-    }
-
-    dragSetup() {
-      this.el.draggable = true;
-      this.el.addEventListener('dragstart', (event: any) => {
-        event.dataTransfer.setData("text/plain", this.model.get("value"));
-        event.dataTransfer.setData("application/x-widget", this.model.model_id);
-        event.dataTransfer.dropEffect = 'copy';
-      })
     }
 
     /**
@@ -265,54 +143,6 @@ class LabelView extends DescriptionView implements Droppable {
     update() {
         this.typeset(this.el, this.model.get('value'));
         return super.update();
-    }
-
-    // on_dragover: (event: Event) => void;
-    // _handle_drop: (event: Event) => void;
-    on_dragover(event: Event) : void {};
-    _handle_drop(event: Event) : void {};
-}
-
-applyMixins(LabelView, [Droppable])
-
-
-export
-class DraggableLabelView extends LabelView implements Droppable, Draggable {
-
-    render() {
-      super.render();
-      this.dragSetup();
-    }
-
-    /**
-     * Dictionary of events and handlers
-     */
-    events() {
-          return {'drop': '_handle_drop',
-                  'dragstart': 'on_dragstart',
-                  'dragover': 'on_dragover'
-           };
-    }
-
-    // placeholders for the mixin methods
-    _handle_drop : (event: any) => void;
-    on_dragstart : (event: any) => void;
-    on_dragover : (event: any) => void;
-    on_change_draggable : () => void;
-    dragSetup : () => void;
-}
-
-applyMixins(DraggableLabelView, [Droppable, Draggable]);
-
-export
-class DraggableLabelModel extends LabelModel {
-    defaults() {
-        return _.extend(super.defaults(), {
-            _view_name: 'DraggableLabelView',
-            _model_name: 'DraggableLabelModel',
-            draggable : false,
-            drag_data: {}
-        });
     }
 }
 

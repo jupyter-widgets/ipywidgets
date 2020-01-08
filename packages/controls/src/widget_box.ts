@@ -27,7 +27,7 @@ import {
 
 import {
   Droppable, Draggable, applyMixins
-} from './widget_string';
+} from './widget_dragdrop';
 
 import * as _ from 'underscore';
 import $ from 'jquery';
@@ -39,8 +39,7 @@ class BoxModel extends CoreDOMWidgetModel {
             _view_name: 'BoxView',
             _model_name: 'BoxModel',
             children: [],
-            box_style: '',
-            dropzone: false
+            box_style: ''
         });
     }
 
@@ -104,32 +103,6 @@ class BoxView extends DOMWidgetView {
         this.update_children();
         this.set_box_style();
     }
-
-   events(): {[e: string] : string; } {
-       return {'drop' : 'on_drop',
-               'dragover' : 'on_dragover'};
-     }
-
-   on_dragover(event: any) {
-      event.preventDefault();
-      event.stopPropagation();
-      event.dataTransfer.dropEffect = 'copy';
-   }
-
-   on_drop(event: any) {
-        event.preventDefault();
-        event.stopPropagation();
-        event.dataTransfer.dropEffect = 'copy';
-        if (this.model.get('dropzone')) {
-            let model_id = event.dataTransfer.getData('application/x-widget');
-            var promise = this.model.widget_manager.get_model(model_id);
-            promise.then((model) => {
-              let childs = this.model.get('children');
-              childs.push(model);
-              this.update_children();
-            });
-        }
-   }
 
     update_children() {
         this.children_views.update(this.model.get('children')).then((views: DOMWidgetView[]) => {
@@ -248,8 +221,10 @@ class DropBoxView extends BoxView implements Droppable {
      * Dictionary of events and handlers
      */
     events(): {[e: string] : string; } {
-        return {'drop': '_handle_drop',
-                'dragover' : 'on_dragover'};
+        return {
+            'drop': '_handle_drop',
+            'dragover': 'on_dragover'
+        };
     }
 
     _handle_drop : (event: Object) => void;
@@ -288,7 +263,7 @@ class DraggableBoxView extends BoxView implements Draggable {
         return {'dragstart' : 'on_dragstart'};
     }
 
-    on_dragstart : (event : Object) => void;
+    on_dragstart : (event : Object) => void ;
     on_change_draggable : () => void;
     dragSetup : () => void;
 }

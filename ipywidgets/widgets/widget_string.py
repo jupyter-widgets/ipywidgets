@@ -62,28 +62,6 @@ class Label(_String):
         super(Label, self).__init__(*args, **kwargs)
 
 @register
-class DraggableLabel(DropWidget, Label):
-    """ Draggable Label.
-
-    A label that can be dragged and responds to drop events.
-
-    Properties:
-
-    draggable : bool
-       activate or deactivate drag behaviour    
-
-    Methods:
-
-    on_drop :
-        function that adds a drop event handler
-
-    """
-    _view_name = Unicode('DraggableLabelView').tag(sync=True)
-    _model_name = Unicode('DraggableLabelModel').tag(sync=True)
-
-
-
-@register
 class Textarea(_String):
     """Multiline text area widget."""
     _view_name = Unicode('TextareaView').tag(sync=True)
