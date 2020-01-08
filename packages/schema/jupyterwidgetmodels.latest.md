@@ -171,7 +171,7 @@ Attribute        | Type             | Default          | Help
 `button_style`   | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the button.
 `description`    | string           | `''`             | Button label.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
-`icon`           | string           | `''`             | Font-awesome icon name, without the 'fa-' prefix.
+`icon`           | string           | `''`             | Font-awesome icon names, without the 'fa-' prefix.
 `layout`         | reference to Layout widget | reference to new instance | 
 `style`          | reference to ButtonStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
