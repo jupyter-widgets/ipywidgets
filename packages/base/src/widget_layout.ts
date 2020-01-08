@@ -13,7 +13,7 @@ import {
 /**
  * css properties exposed by the layout widget with their default values.
  */
-let css_properties: {[key: string]: string} = {
+const css_properties: {[key: string]: string} = {
     align_content: null,
     align_items: null,
     align_self: null,
@@ -60,7 +60,7 @@ let css_properties: {[key: string]: string} = {
 
 export
 class LayoutModel extends WidgetModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return assign(super.defaults(), {
         _model_name: 'LayoutModel',
         _view_name: 'LayoutView'
@@ -73,11 +73,11 @@ class LayoutView extends WidgetView {
     /**
      * Public constructor
      */
-    initialize(parameters: WidgetView.InitializeParameters) {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         this._traitNames = [];
         super.initialize(parameters);
         // Register the traits that live on the Python side
-        for (let key of Object.keys(css_properties)) {
+        for (const key of Object.keys(css_properties)) {
             this.registerTrait(key);
         }
     }
@@ -86,7 +86,7 @@ class LayoutView extends WidgetView {
      * Register a CSS trait that is known by the model
      * @param trait
      */
-    registerTrait(trait: string) {
+    registerTrait(trait: string): void {
         this._traitNames.push(trait);
 
         // Listen to changes, and set the value on change.
@@ -110,9 +110,9 @@ class LayoutView extends WidgetView {
     /**
      * Handles when a trait value changes
      */
-    handleChange(trait: string, value: any) {
+    handleChange(trait: string, value: any): void {
         // should be synchronous so that we can measure later.
-        let parent = this.options.parent as DOMWidgetView;
+        const parent = this.options.parent as DOMWidgetView;
         if (parent) {
             if (value === null) {
                 parent.el.style.removeProperty(this.css_name(trait));
@@ -127,8 +127,8 @@ class LayoutView extends WidgetView {
     /**
      * Remove the styling from the parent view.
      */
-    unlayout() {
-        let parent = this.options.parent as DOMWidgetView;
+    unlayout(): void {
+        const parent = this.options.parent as DOMWidgetView;
         this._traitNames.forEach((trait) => {
             if (parent) {
                 parent.el.style.removeProperty(this.css_name(trait));

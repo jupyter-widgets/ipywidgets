@@ -11,7 +11,7 @@ import {
  */
 export
 class SemVerCache<T> {
-  set(key: string, version: string, object: T) {
+  set(key: string, version: string, object: T): void {
     if (!(key in this._cache)) {
       this._cache[key] = Object.create(null);
     }
@@ -24,8 +24,8 @@ class SemVerCache<T> {
 
   get(key: string, semver: string): T {
     if (key in this._cache) {
-      let versions = this._cache[key];
-      let best = maxSatisfying(Object.keys(versions), semver);
+      const versions = this._cache[key];
+      const best = maxSatisfying(Object.keys(versions), semver);
       return versions[best];
     }
   }

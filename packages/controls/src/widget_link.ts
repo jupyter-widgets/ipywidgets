@@ -20,7 +20,7 @@ class DirectionalLinkModel extends CoreWidgetModel {
         source: {deserialize: unpack_models}
     };
 
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             target: undefined,
             source: undefined,
@@ -28,13 +28,13 @@ class DirectionalLinkModel extends CoreWidgetModel {
         });
     }
 
-    initialize(attributes: any, options: { model_id: string; comm: any; widget_manager: any; }) {
+    initialize(attributes: any, options: { model_id: string; comm: any; widget_manager: any }): void {
         super.initialize(attributes, options);
         this.on('change', this.updateBindings, this);
         this.updateBindings();
     }
 
-    updateValue(sourceModel: WidgetModel, sourceAttr: string, targetModel: WidgetModel, targetAttr: string) {
+    updateValue(sourceModel: WidgetModel, sourceAttr: string, targetModel: WidgetModel, targetAttr: string): void {
         if (this._updating) {
             return;
         }
@@ -49,7 +49,7 @@ class DirectionalLinkModel extends CoreWidgetModel {
         }
     }
 
-    updateBindings() {
+    updateBindings(): void {
         this.cleanup();
         [this.sourceModel, this.sourceAttr] = this.get('source') || [null, null];
         [this.targetModel, this.targetAttr] = this.get('target') || [null, null];
@@ -65,7 +65,7 @@ class DirectionalLinkModel extends CoreWidgetModel {
         }
     }
 
-    cleanup() {
+    cleanup(): void {
         // Stop listening to 'change' and 'destroy' events of the source and target
         if (this.sourceModel) {
             this.stopListening(this.sourceModel, 'change:' + this.sourceAttr, null);
@@ -86,13 +86,13 @@ class DirectionalLinkModel extends CoreWidgetModel {
 
 export
 class LinkModel extends DirectionalLinkModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'LinkModel'
         });
     }
 
-    updateBindings() {
+    updateBindings(): void {
         super.updateBindings();
         if (this.targetModel) {
             this.listenTo(this.targetModel, 'change:' + this.targetAttr, () => {
@@ -101,7 +101,7 @@ class LinkModel extends DirectionalLinkModel {
         }
     }
 
-    cleanup() {
+    cleanup(): void {
         super.cleanup();
         if (this.targetModel) {
             this.stopListening(this.targetModel, 'change:' + this.targetAttr, null);

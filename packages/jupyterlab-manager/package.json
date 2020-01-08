@@ -30,8 +30,7 @@
     "build": "npm run build:src",
     "build:src": "tsc",
     "clean": "rimraf docs && rimraf lib && rimraf tsconfig.tsbuildinfo",
-    "docs": "typedoc --mode file --module commonjs --excludeNotExported --target es5 --moduleResolution node --out docs/ src",
-    "lint": "tslint --project tslint.json --format stylish",
+    "docs": "typedoc --mode file --module esnext --excludeNotExported --target es2017 --moduleResolution node --out docs/ src",
     "prepublish": "npm run clean && npm run build"
   },
   "dependencies": {
@@ -64,8 +63,7 @@
     "@jupyterlab/cells": "^2.0.0-beta.2",
     "@types/semver": "^6.0.1",
     "rimraf": "^2.6.1",
-    "tslint": "^5.20.1",
-    "typedoc": "^0.14.2",
+    "typedoc": "^0.15.6",
     "typescript": "~3.7.4"
   },
   "jupyterlab": {

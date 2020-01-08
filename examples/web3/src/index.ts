@@ -10,22 +10,22 @@ import {
     KernelManager, ServerConnection, KernelMessage
 } from '@jupyterlab/services';
 
-let BASEURL = prompt('Notebook BASEURL', 'http://localhost:8888');
-let WSURL = 'ws:' + BASEURL.split(':').slice(1).join(':');
+const BASEURL = prompt('Notebook BASEURL', 'http://localhost:8888');
+const WSURL = 'ws:' + BASEURL.split(':').slice(1).join(':');
 
 document.addEventListener('DOMContentLoaded', async function(event) {
 
     // Connect to the notebook webserver.
-    let connectionInfo = ServerConnection.makeSettings({
+    const connectionInfo = ServerConnection.makeSettings({
         baseUrl: BASEURL,
         wsUrl: WSURL
     });
-    let kernelManager = new KernelManager({serverSettings: connectionInfo});
-    let kernel = await kernelManager.startNew();
+    const kernelManager = new KernelManager({serverSettings: connectionInfo});
+    const kernel = await kernelManager.startNew();
 
     // Create a codemirror instance
-    let code = require('../widget_code.json').join('\n');
-    let inputarea = document.getElementsByClassName('inputarea')[0] as HTMLElement;
+    const code = require('../widget_code.json').join('\n');
+    const inputarea = document.getElementsByClassName('inputarea')[0] as HTMLElement;
     CodeMirror(inputarea, {
         value: code,
         mode: 'python',
@@ -36,18 +36,18 @@ document.addEventListener('DOMContentLoaded', async function(event) {
     });
 
     // Create the widget area and widget manager
-    let widgetarea = document.getElementsByClassName('widgetarea')[0] as HTMLElement;
-    let manager = new WidgetManager(kernel, widgetarea);
+    const widgetarea = document.getElementsByClassName('widgetarea')[0] as HTMLElement;
+    const manager = new WidgetManager(kernel, widgetarea);
 
     // Run backend code to create the widgets.  You could also create the
     // widgets in the frontend, like the other widget examples demonstrate.
-    let execution = kernel.requestExecute({ code: code });
-    execution.onIOPub = (msg) => {
+    const execution = kernel.requestExecute({ code: code });
+    execution.onIOPub = (msg): void => {
         // If we have a display message, display the widget.
         if (KernelMessage.isDisplayDataMsg(msg)) {
-            let widgetData: any = msg.content.data['application/vnd.jupyter.widget-view+json'];
+            const widgetData: any = msg.content.data['application/vnd.jupyter.widget-view+json'];
             if (widgetData !== undefined && widgetData.version_major === 2) {
-                let model = manager.get_model(widgetData.model_id);
+                const model = manager.get_model(widgetData.model_id);
                 if (model !== undefined) {
                     model.then(model => {
                         manager.display_model(msg, model);

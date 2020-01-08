@@ -8,7 +8,7 @@ export
 const version = (require('../package.json') as any).version;
 
 export
-function generateEmbedScript(widgetState: any, imageDataUrl: string) {
+function generateEmbedScript(widgetState: any, imageDataUrl: string): string {
   return `<img src=${imageDataUrl} class="jupyter-widget">
 <script type="application/vnd.jupyter.widgets-state+json">${JSON.stringify(widgetState)}</script>`;
 }

@@ -6,7 +6,6 @@
     "types": ["node"]
   },
   "include": ["src/**/*"],
-  "exclude": ["src/typedoc.d.ts"],
   "references": [
     {
       "path": "../base"

@@ -10,7 +10,6 @@
     "build": "npm run clean && tsc && node scripts/copyfiles.js && webpack",
     "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo && rimraf built",
     "host": "http-server",
-    "lint": "tslint --project tslint.json --format stylish",
     "test": "npm run test:default",
     "test:default": "echo \"No test specified\""
   },
@@ -36,7 +35,6 @@
     "postcss-loader": "^3.0.0",
     "rimraf": "^2.6.1",
     "style-loader": "^1.1.2",
-    "tslint": "^5.20.1",
     "typescript": "~3.7.4",
     "url-loader": "^3.0.0",
     "webpack": "^4.41.5"

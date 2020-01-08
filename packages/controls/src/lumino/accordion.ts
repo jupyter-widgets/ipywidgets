@@ -53,7 +53,7 @@ class Collapse extends Widget {
     this._content = new Panel();
     this._content.addClass(COLLAPSE_CONTENTS_CLASS);
 
-    let layout = new PanelLayout();
+    const layout = new PanelLayout();
     this.layout = layout;
     layout.addWidget(this._header);
     layout.addWidget(this._content);
@@ -63,7 +63,7 @@ class Collapse extends Widget {
     this.collapsed = false;
   }
 
-  dispose() {
+  dispose(): void {
     if (this.isDisposed) {
       return;
     }
@@ -73,12 +73,12 @@ class Collapse extends Widget {
     this._content = null;
   }
 
-  get widget() {
+  get widget(): Widget {
     return this._widget;
   }
 
   set widget(widget: Widget) {
-    let oldWidget = this._widget;
+    const oldWidget = this._widget;
     if (oldWidget) {
       oldWidget.disposed.disconnect(this._onChildDisposed, this);
       oldWidget.title.changed.disconnect(this._onTitleChanged, this);
@@ -91,7 +91,7 @@ class Collapse extends Widget {
     this._content.addWidget(widget);
   }
 
-  get collapsed() {
+  get collapsed(): boolean {
     return this._collapsed;
   }
 
@@ -107,7 +107,7 @@ class Collapse extends Widget {
     }
   }
 
-  toggle() {
+  toggle(): void {
     this.collapsed = !this.collapsed;
   }
 
@@ -115,7 +115,7 @@ class Collapse extends Widget {
     return this._collapseChanged;
   }
 
-  private _collapse() {
+  private _collapse(): void {
     this._collapsed = true;
     if (this._content) {
       this._content.hide();
@@ -123,7 +123,7 @@ class Collapse extends Widget {
     this.removeClass(COLLAPSE_CLASS_OPEN);
     this._collapseChanged.emit(void 0);
   }
-  private _uncollapse() {
+  private _uncollapse(): void {
     this._collapsed = false;
     if (this._content) {
       this._content.show();
@@ -152,7 +152,7 @@ class Collapse extends Widget {
     }
   }
 
-  private _evtClick(event: MouseEvent) {
+  private _evtClick(event: MouseEvent): void {
     this.toggle();
   }
 
@@ -243,7 +243,7 @@ class Accordion extends Panel {
    * The widget will be wrapped in a CollapsedWidget.
    */
   addWidget(widget: Widget): Widget {
-    let collapse = this._wrapWidget(widget);
+    const collapse = this._wrapWidget(widget);
     collapse.collapsed = true;
     super.addWidget(collapse);
     this._selection.adjustSelectionForInsert(this.widgets.length - 1, collapse);
@@ -261,30 +261,30 @@ class Accordion extends Panel {
    * If the widget is already contained in the panel, it will be moved.
    */
   insertWidget(index: number, widget: Widget): void {
-    let collapse = this._wrapWidget(widget);
+    const collapse = this._wrapWidget(widget);
     collapse.collapsed = true;
     super.insertWidget(index, collapse);
     this._selection.adjustSelectionForInsert(index, collapse);
   }
 
   removeWidget(widget: Widget): void {
-    let index = this.indexOf(widget);
+    const index = this.indexOf(widget);
     if (index >= 0) {
-      let collapse = this.collapseWidgets[index] as Collapse;
+      const collapse = this.collapseWidgets[index] as Collapse;
       widget.parent = null;
       collapse.dispose();
       this._selection.adjustSelectionForRemove(index, null);
     }
   }
 
-  private _wrapWidget(widget: Widget) {
-    let collapse = new Collapse({ widget });
+  private _wrapWidget(widget: Widget): Collapse {
+    const collapse = new Collapse({ widget });
     collapse.addClass(ACCORDION_CHILD_CLASS);
     collapse.collapseChanged.connect(this._onCollapseChange, this);
     return collapse;
   }
 
-  private _onCollapseChange(sender: Collapse) {
+  private _onCollapseChange(sender: Collapse): void {
     if (!sender.collapsed) {
       this._selection.value = sender;
     } else if (this._selection.value === sender && sender.collapsed) {
@@ -292,10 +292,10 @@ class Accordion extends Panel {
     }
   }
 
-  private _onSelectionChanged(sender: Selection<Widget>, change: Selection.ISelectionChangedArgs<Collapse>) {
+  private _onSelectionChanged(sender: Selection<Widget>, change: Selection.ISelectionChangedArgs<Collapse>): void {
     // Collapse previous widget, open current widget
-    let pv = change.previousValue;
-    let cv = change.currentValue;
+    const pv = change.previousValue;
+    const cv = change.currentValue;
     if (pv) {
       pv.collapsed = true;
       pv.removeClass(ACCORDION_CHILD_ACTIVE_CLASS);

@@ -14,7 +14,7 @@ const newWidget = async (modelState: any): Promise<HTMLElement> => {
     document.body.appendChild(widgetTag);
     const manager = new HTMLManager();
     const modelId = 'u-u-i-d';
-    const modelCreate: base.ModelOptions = {
+    const modelCreate: base.IModelOptions = {
         model_name: 'OutputModel',
         model_id: modelId,
         model_module: '@jupyter-widgets/output',
@@ -30,7 +30,6 @@ const newWidget = async (modelState: any): Promise<HTMLElement> => {
 
 describe('Output widget', function() {
     it('renders text output', async () => {
-        let elt: HTMLElement;
         const textValue = 'this-is-a-test\n'
         const modelState = {
             _view_module: '@jupyter-widgets/output',
@@ -43,7 +42,7 @@ describe('Output widget', function() {
             ],
         }
 
-        elt = await newWidget(modelState)
+        const elt = await newWidget(modelState)
         expect(elt.textContent).to.equal(textValue)
     })
 
@@ -64,13 +63,12 @@ describe('Output widget', function() {
             ],
         }
 
-        let elt = await newWidget(modelState)
+        const elt = await newWidget(modelState)
         expect(elt.querySelectorAll('table').length).to.equal(1);
     })
 
 
     it('renders widgets', async function() {
-        let elt;
         const modelState = {
             _view_module: "@jupyter-widgets/output",
             outputs: [
@@ -89,7 +87,7 @@ describe('Output widget', function() {
             ]
         };
 
-        elt = document.createElement('div');
+        const elt = document.createElement('div');
         elt.className = 'widget-subarea';
         document.body.appendChild(elt);
         const manager = new HTMLManager()
@@ -130,7 +128,7 @@ describe('Output widget', function() {
             version_minor: 0
         });
         const modelId = 'u-u-i-d';
-        const modelCreate: base.ModelOptions = {
+        const modelCreate: base.IModelOptions = {
             model_name: 'OutputModel',
             model_id: modelId,
             model_module: '@jupyter-widgets/output',
@@ -180,7 +178,7 @@ describe('Output widget', function() {
         }, 0);
 
         const modelId = 'u-u-i-d';
-        const modelCreate: base.ModelOptions = {
+        const modelCreate: base.IModelOptions = {
             model_name: 'OutputModel',
             model_id: modelId,
             model_module: '@jupyter-widgets/output',

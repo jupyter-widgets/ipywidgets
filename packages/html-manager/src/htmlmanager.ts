@@ -9,6 +9,7 @@ import * as LuminoWidget from '@lumino/widgets';
 import { RenderMimeRegistry, standardRendererFactories } from '@jupyterlab/rendermime';
 
 import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers';
+import { WidgetModel, WidgetView } from '@jupyter-widgets/base';
 
 export
 class HTMLManager extends base.ManagerBase<HTMLElement> {
@@ -29,7 +30,7 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
      * Display the specified view. Element where the view is displayed
      * is specified in the `options.el` argument.
      */
-    display_view(msg: any, view: any, options: { el: HTMLElement; }) {
+    display_view(msg: any, view: any, options: { el: HTMLElement }): Promise<HTMLElement> {
         return Promise.resolve(view).then((view) => {
             LuminoWidget.Widget.attach(view.pWidget, options.el);
             view.on('remove', () => {
@@ -42,7 +43,7 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
     /**
      * Placeholder implementation for _get_comm_info.
      */
-    _get_comm_info() {
+    _get_comm_info(): Promise<{}> {
         return Promise.resolve({});
     }
 
@@ -60,7 +61,7 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
     /**
      * Load a class and return a promise to the loaded object.
      */
-    protected loadClass(className: string, moduleName: string, moduleVersion: string) {
+    protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<typeof WidgetModel | typeof WidgetView> {
         return new Promise((resolve, reject) => {
             if (moduleName === '@jupyter-widgets/base') {
                 resolve(base);

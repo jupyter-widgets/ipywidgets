@@ -20,18 +20,19 @@ class WidgetManager extends HTMLManager {
         this.el = el;
 
         kernel.registerCommTarget(this.comm_target_name, async (comm, msg) => {
-            let oldComm = new base.shims.services.Comm(comm);
+            const oldComm = new base.shims.services.Comm(comm);
             await this.handle_comm_open(oldComm, msg);
         });
     }
 
-    display_view(msg: any, view: DOMWidgetView, options: any) {
+    display_view(msg: any, view: DOMWidgetView, options: any): Promise<HTMLElement> {
         return Promise.resolve(view).then((view) => {
             pWidget.Widget.attach(view.pWidget, this.el);
             view.on('remove', function() {
                 console.log('view removed', view);
             });
-            return view;
+            // We will resolve this lie in another PR.
+            return view as any;
         });
     }
 
@@ -39,7 +40,7 @@ class WidgetManager extends HTMLManager {
      * Create a comm.
      */
     async _create_comm(target_name: string, model_id: string, data?: any, metadata?: any): Promise<base.shims.services.Comm> {
-            let comm = this.kernel.createComm(target_name, model_id);
+            const comm = this.kernel.createComm(target_name, model_id);
             if (data || metadata) {
                 comm.open(data, metadata);
             }

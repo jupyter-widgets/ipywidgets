@@ -79,11 +79,11 @@ const SETTINGS: WidgetManager.Settings = { saveState: false };
 /**
  * Iterate through all widget renderers in a notebook.
  */
-function* widgetRenderers(nb: Notebook) {
-  for (let cell of nb.widgets) {
+function* widgetRenderers(nb: Notebook): Generator<WidgetRenderer, void, unknown> {
+  for (const cell of nb.widgets) {
     if (cell.model.type === 'code') {
-      for (let codecell of (cell as CodeCell).outputArea.widgets) {
-        for (let output of toArray(codecell.children())) {
+      for (const codecell of (cell as CodeCell).outputArea.widgets) {
+        for (const output of toArray(codecell.children())) {
           if (output instanceof WidgetRenderer) {
             yield output;
           }
@@ -96,14 +96,14 @@ function* widgetRenderers(nb: Notebook) {
 /**
  * Iterate through all matching linked output views
  */
-function* outputViews(app: JupyterFrontEnd, path: string) {
-  let linkedViews = filter(
+function* outputViews(app: JupyterFrontEnd, path: string): Generator<WidgetRenderer, void, unknown> {
+  const linkedViews = filter(
     app.shell.widgets(),
     w => w.id.startsWith('LinkedOutputView-') && (w as any).path === path
   );
-  for (let view of toArray(linkedViews)) {
-    for (let outputs of toArray(view.children())) {
-      for (let output of toArray(outputs.children())) {
+  for (const view of toArray(linkedViews)) {
+    for (const outputs of toArray(view.children())) {
+      for (const output of toArray(outputs.children())) {
         if (output instanceof WidgetRenderer) {
           yield output;
         }
@@ -112,8 +112,8 @@ function* outputViews(app: JupyterFrontEnd, path: string) {
   }
 }
 
-function* chain<T>(...args: IterableIterator<T>[]) {
-  for (let it of args) {
+function* chain<T>(...args: IterableIterator<T>[]): Generator<T, void, undefined> {
+  for (const it of args) {
     yield* it;
   }
 }
@@ -122,7 +122,7 @@ export function registerWidgetManager(
   context: DocumentRegistry.IContext<INotebookModel>,
   rendermime: IRenderMimeRegistry,
   renderers: IterableIterator<WidgetRenderer>
-) {
+): DisposableDelegate {
   let wManager = Private.widgetManagerProperty.get(context);
   if (!wManager) {
     wManager = new WidgetManager(context, rendermime, SETTINGS);
@@ -130,7 +130,7 @@ export function registerWidgetManager(
     Private.widgetManagerProperty.set(context, wManager);
   }
 
-  for (let r of renderers) {
+  for (const r of renderers) {
     r.manager = wManager;
   }
 
@@ -167,7 +167,7 @@ const plugin: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> = {
 export default plugin;
 
 
-function updateSettings(settings: ISettingRegistry.ISettings) {
+function updateSettings(settings: ISettingRegistry.ISettings): void {
   SETTINGS.saveState = settings.get('saveState').composite as boolean;
 }
 
@@ -184,7 +184,7 @@ function activateWidgetExtension(
 
   const {commands} = app;
 
-  const bindUnhandledIOPubMessageSignal = (nb: NotebookPanel) => {
+  const bindUnhandledIOPubMessageSignal = (nb: NotebookPanel): void => {
     if (!loggerRegistry) {
       return;
     }
@@ -293,6 +293,7 @@ function activateWidgetExtension(
     exports: () => {
       return new Promise((resolve, reject) => {
         (require as any).ensure(['@jupyter-widgets/controls'], (require: NodeRequire) => {
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
           resolve(require('@jupyter-widgets/controls'));
         },
         (err: any) => {
@@ -326,6 +327,6 @@ namespace Private {
     WidgetManager | undefined
   >({
     name: 'widgetManager',
-    create: () => undefined
+    create: (owner: DocumentRegistry.Context): WidgetManager => undefined
   });
 }
