@@ -57,8 +57,10 @@ class DescriptionView extends DOMWidgetView {
 
         this.listenTo(this.model, 'change:description', this.updateDescription);
         this.listenTo(this.model, 'change:tabbable', this.updateTabindex);
+        this.listenTo(this.model, 'change:tooltip', this.updateTooltip);
         this.updateDescription();
         this.updateTabindex();
+        this.updateTooltip();
     }
 
     typeset(element: HTMLElement, text?: string){
@@ -77,6 +79,7 @@ class DescriptionView extends DOMWidgetView {
     }
 
     updateTooltip() {
+        if (!this.label) return;
         this.label.title = this.model.get('tooltip');
     }
 
