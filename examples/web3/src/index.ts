@@ -10,14 +10,18 @@ import {
     KernelManager, ServerConnection, KernelMessage
 } from '@jupyterlab/services';
 
-let BASEURL = prompt('Notebook BASEURL', 'http://localhost:8888');
-let WSURL = 'ws:' + BASEURL.split(':').slice(1).join(':');
+const BASEURL = prompt('Notebook BASEURL', 'http://localhost:8888');
+if (BASEURL === null) {
+    alert('A base URL is needed to run the example!');
+    throw new Error('A base URL is needed to run the example!');
+}
+const WSURL = 'ws:' + BASEURL.split(':').slice(1).join(':');
 
 document.addEventListener('DOMContentLoaded', async function(event) {
 
     // Connect to the notebook webserver.
     let connectionInfo = ServerConnection.makeSettings({
-        baseUrl: BASEURL,
+        baseUrl: BASEURL!,
         wsUrl: WSURL
     });
     let kernelManager = new KernelManager({serverSettings: connectionInfo});
