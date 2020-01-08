@@ -133,6 +133,11 @@
     unique-filename "^1.1.1"
     which "^1.3.1"
 
+"@fortawesome/fontawesome-free@^5.12.0":
+  version "5.12.0"
+  resolved "https://registry.npmjs.org/@fortawesome/fontawesome-free/-/fontawesome-free-5.12.0.tgz#8ceb9f09edfb85ea18a6c7bf098f6f5dd5ffd62b"
+  integrity sha512-vKDJUuE2GAdBERaQWmmtsciAMzjwNrROXA5KTGSZvayAsmuTGjam5z6QNqNPCwDfVljLWuov1nEC3mEQf/n6fQ==
+
 "@jupyterlab/application@^2.0.0-beta.2":
   version "2.0.0-beta.2"
   resolved "https://registry.npmjs.org/@jupyterlab/application/-/application-2.0.0-beta.2.tgz#1c700c0ce14343c8400c08bd1903e4d0fe6c02be"

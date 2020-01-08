@@ -34,6 +34,7 @@
     "prepublish": "npm run clean && npm run build"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.12.0",
     "@jupyter-widgets/base": "^2.0.2",
     "@jupyter-widgets/controls": "^1.5.3",
     "@jupyter-widgets/output": "^2.0.1",
