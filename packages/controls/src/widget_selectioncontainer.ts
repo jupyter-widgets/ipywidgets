@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetView, ViewList, JupyterPhosphorWidget, WidgetModel, reject, WidgetView
+    DOMWidgetView, ViewList, JupyterLuminoWidget, WidgetModel, reject, WidgetView
 } from '@jupyter-widgets/base';
 
 import {
@@ -61,8 +61,8 @@ class AccordionModel extends SelectionContainerModel {
 // positioning BoxLayout, but we want a more an html/css-based Panel layout.
 
 export
-class JupyterPhosphorAccordionWidget extends Accordion {
-    constructor(options: JupyterPhosphorWidget.IOptions & Accordion.IOptions) {
+class JupyterLuminoAccordionWidget extends Accordion {
+    constructor(options: JupyterLuminoWidget.IOptions & Accordion.IOptions) {
         let view = options.view;
         delete options.view;
         super(options);
@@ -70,14 +70,14 @@ class JupyterPhosphorAccordionWidget extends Accordion {
     }
 
     /**
-     * Process the phosphor message.
+     * Process the Lumino message.
      *
-     * Any custom phosphor widget used inside a Jupyter widget should override
+     * Any custom Lumino widget used inside a Jupyter widget should override
      * the processMessage function like this.
      */
     processMessage(msg: Message) {
         super.processMessage(msg);
-        this._view.processPhosphorMessage(msg);
+        this._view.processLuminoMessage(msg);
     }
 
     /**
@@ -104,7 +104,7 @@ export
 class AccordionView extends DOMWidgetView {
 
     _createElement(tagName: string) {
-        this.pWidget = new JupyterPhosphorAccordionWidget({ view: this });
+        this.pWidget = new JupyterLuminoAccordionWidget({ view: this });
         return this.pWidget.node;
     }
 
@@ -232,8 +232,8 @@ class TabModel extends SelectionContainerModel {
 // positioning BoxLayout, but we want a more an html/css-based Panel layout.
 
 export
-class JupyterPhosphorTabPanelWidget extends TabPanel {
-    constructor(options: JupyterPhosphorWidget.IOptions & TabPanel.IOptions) {
+class JupyterLuminoTabPanelWidget extends TabPanel {
+    constructor(options: JupyterLuminoWidget.IOptions & TabPanel.IOptions) {
         let view = options.view;
         delete options.view;
         super(options);
@@ -244,7 +244,7 @@ class JupyterPhosphorTabPanelWidget extends TabPanel {
             // There may be times when we want the view's handler to be called
             // *after* the message has been processed by the widget, in which
             // case we'll need to revisit using a message hook.
-            this._view.processPhosphorMessage(msg);
+            this._view.processLuminoMessage(msg);
             return true;
         });
     }
@@ -275,7 +275,7 @@ export
 class TabView extends DOMWidgetView {
 
     _createElement(tagName: string) {
-        this.pWidget = new JupyterPhosphorTabPanelWidget({
+        this.pWidget = new JupyterLuminoTabPanelWidget({
             view: this,
         });
         return this.pWidget.node;
@@ -425,5 +425,5 @@ class TabView extends DOMWidgetView {
 
     updatingTabs: boolean = false;
     childrenViews: ViewList<DOMWidgetView> | null;
-    pWidget: JupyterPhosphorTabPanelWidget;
+    pWidget: JupyterLuminoTabPanelWidget;
 }

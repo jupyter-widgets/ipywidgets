@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetView, unpack_models, ViewList, JupyterPhosphorPanelWidget,
+    DOMWidgetView, unpack_models, ViewList, JupyterLuminoPanelWidget,
     reject, WidgetModel, WidgetView
 } from '@jupyter-widgets/base';
 
@@ -66,7 +66,7 @@ export
 class BoxView extends DOMWidgetView {
 
     _createElement(tagName: string) {
-        this.pWidget = new JupyterPhosphorPanelWidget({ view: this });
+        this.pWidget = new JupyterLuminoPanelWidget({ view: this });
         return this.pWidget.node;
     }
 
@@ -135,7 +135,7 @@ class BoxView extends DOMWidgetView {
     }
 
     children_views: ViewList<DOMWidgetView> | null;
-    pWidget: JupyterPhosphorPanelWidget;
+    pWidget: JupyterLuminoPanelWidget;
 
     static class_map = {
         success: ['alert', 'alert-success'],

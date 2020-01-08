@@ -8,7 +8,7 @@
  * have been defined.
  */
 
-@import "./phosphor.css";
+@import "./lumino.css";
 
 :root {
     --jp-widgets-color: var(--jp-content-font-color1);

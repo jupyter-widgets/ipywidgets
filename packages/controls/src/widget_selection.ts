@@ -87,7 +87,7 @@ class DropdownModel extends SelectionModel {
     }
 }
 
-// TODO: Make a phosphor dropdown control, wrapped in DropdownView. Also, fix
+// TODO: Make a Lumino dropdown control, wrapped in DropdownView. Also, fix
 // bugs in keyboard handling. See
 // https://github.com/jupyter-widgets/ipywidgets/issues/1055 and
 // https://github.com/jupyter-widgets/ipywidgets/issues/1049
