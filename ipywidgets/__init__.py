@@ -24,22 +24,17 @@ from ._version import version_info, __version__, __protocol_version__, __jupyter
 from .widgets import *
 from traitlets import link, dlink
 
-
 def load_ipython_extension(ip):
     """Set up Jupyter to work with widgets"""
     if not hasattr(ip, 'kernel'):
         return
     register_comm_target(ip.kernel)
 
-
 def register_comm_target(kernel=None):
     """Register the jupyter.widget comm target"""
     if kernel is None:
         kernel = get_ipython().kernel
     kernel.comm_manager.register_target('jupyter.widget', Widget.handle_comm_opened)
-
-# deprecated alias
-handle_kernel = register_comm_target
 
 def _handle_ipython():
     """Register with the comm target at import if running in Jupyter"""
