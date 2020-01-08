@@ -44,14 +44,12 @@ const matchesSelector = ElementProto.matches ||
     ElementProto['msMatchesSelector'] ||
     ElementProto['oMatchesSelector'] ||
     function matches(selector: string): boolean {
-        /* tslint:disable:no-invalid-this */
         const matches = (this.document || this.ownerDocument).querySelectorAll(selector);
         let i = matches.length;
         while (--i >= 0 && matches.item(i) !== this) {
           continue;
         }
         return i > -1;
-        /* tslint:enable:no-invalid-this */
     };
 
 interface IDOMEvent {
