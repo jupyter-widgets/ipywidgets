@@ -26,6 +26,7 @@ export class FileUploadModel extends CoreDOMWidgetModel {
 
     static serializers = {
         ...CoreDOMWidgetModel.serializers,
+        // use a dummy serializer for value to circumvent the default serializer.
         value: { serialize: (x: any) => x },
     };
 }
