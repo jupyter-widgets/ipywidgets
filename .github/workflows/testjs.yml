@@ -29,7 +29,6 @@ jobs:
         yarn install --frozen-lockfile
         yarn run build
         yarn run build:examples
-        yarn run integrity
         
         pushd packages/base
         yarn run test:unit:firefox:headless
