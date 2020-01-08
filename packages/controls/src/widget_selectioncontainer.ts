@@ -2,11 +2,11 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetView, ViewList, JupyterLuminoWidget, WidgetModel
+    DOMWidgetView, ViewList, JupyterLuminoWidget, WidgetModel, WidgetView
 } from '@jupyter-widgets/base';
 
 import {
-    BoxModel
+    BoxModel, BoxView
 } from './widget_box';
 
 import {
@@ -427,4 +427,35 @@ class TabView extends DOMWidgetView {
     updatingTabs: boolean = false;
     childrenViews: ViewList<DOMWidgetView>;
     pWidget: JupyterLuminoTabPanelWidget;
+}
+
+
+export
+class StackedModel extends SelectionContainerModel {
+    defaults() {
+        return _.extend(super.defaults(), {
+            _model_name: 'StackedModel',
+            _view_name: 'StackedView'
+        });
+    }
+}
+
+export
+class StackedView extends BoxView {
+
+    initialize(parameters: WidgetView.InitializeParameters) {
+        super.initialize(parameters);
+        this.listenTo(this.model, 'change:selected_index', this.update_children);
+    }
+
+    update_children() {
+        let selected_child = this.model.get('children')[this.model.get('selected_index')];
+        this.children_views.update([selected_child]).then((views: DOMWidgetView[]) => {
+                // Notify all children that their sizes may have changed.
+                views.forEach( (view) => {
+                    MessageLoop.postMessage(view.pWidget, Widget.ResizeMessage.UnknownSize);
+                });
+        });
+    }
+
 }

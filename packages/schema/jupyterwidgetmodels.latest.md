@@ -926,6 +926,24 @@ Attribute        | Type             | Default          | Help
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 `handle_color`   | `null` or string | `null`           | Color of the slider handle.
 
+### StackedModel (@jupyter-widgets/controls, 1.5.0); StackedView (@jupyter-widgets/controls, 1.5.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'1.5.0'`        | 
+`_model_name`    | string           | `'StackedModel'` | 
+`_titles`        | object           | `{}`             | Titles of the pages
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'1.5.0'`        | 
+`_view_name`     | string           | `'StackedView'`  | 
+`box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
+`children`       | array of reference to Widget widget | `[]`             | List of widget children
+`layout`         | reference to Layout widget | reference to new instance | 
+`selected_index` | `null` or number (integer) | `0`              | The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.
+`tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+
 ### TabModel (@jupyter-widgets/controls, 1.5.0); TabView (@jupyter-widgets/controls, 1.5.0)
 
 Attribute        | Type             | Default          | Help
