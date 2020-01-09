@@ -28,7 +28,7 @@
   "typings": "lib/index.d.ts",
   "scripts": {
     "build": "npm run build:src",
-    "build:src": "tsc",
+    "build:src": "tsc --build",
     "clean": "rimraf docs && rimraf lib && rimraf tsconfig.tsbuildinfo",
     "docs": "typedoc --mode file --module esnext --excludeNotExported --target es2017 --moduleResolution node --out docs/ src",
     "prepublish": "npm run clean && npm run build"

@@ -19,7 +19,7 @@
   "typings": "lib/index.d.ts",
   "scripts": {
     "build": "npm run build:src",
-    "build:src": "tsc",
+    "build:src": "tsc --build",
     "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo",
     "prepublish": "npm run clean && npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
