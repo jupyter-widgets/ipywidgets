@@ -280,7 +280,7 @@ class interactive(VBox):
             widget = self.widget_from_abbrev(abbrev, default)
             if widget is None:
                 raise ValueError("{!r} cannot be transformed to a widget".format(abbrev))
-            if not hasattr(widget,"description") or not widget.description:
+            if not hasattr(widget, "description") or not widget.description:
                 widget.description = name
             widget._kwarg = name
             result.append(widget)
