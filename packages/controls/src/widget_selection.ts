@@ -553,7 +553,7 @@ class ToggleButtonsView extends DescriptionView {
         // Select active button.
         items.forEach((item: any, index: number) => {
             const item_query = '[data-value="' + encodeURIComponent(item) + '"]';
-            const button = view.buttongroup.querySelector(item_query)!;
+            const button = this.buttongroup.querySelector(item_query)!;
             if (this.model.get('index') === index) {
                 button.classList.add('mod-active');
             } else {
