@@ -118,7 +118,7 @@ class AccordionView extends DOMWidgetView {
         this.$el = $(this.pWidget.node);
      }
 
-    initialize(parameters: WidgetView.InitializeParameters): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.children_views = new ViewList(this.add_child_view, this.remove_child_view, this);
         this.listenTo(this.model, 'change:children', () => this.updateChildren());
@@ -294,7 +294,7 @@ class TabView extends DOMWidgetView {
     /**
      * Public constructor.
      */
-    initialize(parameters: WidgetView.InitializeParameters): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.childrenViews = new ViewList(
             this.addChildView,
@@ -449,7 +449,7 @@ class StackedView extends BoxView {
 
     update_children(): void {
         const selected_child = this.model.get('children')[this.model.get('selected_index')];
-        this.children_views.update([selected_child]).then((views: DOMWidgetView[]) => {
+        this.children_views?.update([selected_child]).then((views: DOMWidgetView[]) => {
                 // Notify all children that their sizes may have changed.
                 views.forEach( (view) => {
                     MessageLoop.postMessage(view.pWidget, Widget.ResizeMessage.UnknownSize);

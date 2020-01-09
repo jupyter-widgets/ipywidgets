@@ -327,6 +327,6 @@ namespace Private {
     WidgetManager | undefined
   >({
     name: 'widgetManager',
-    create: (owner: DocumentRegistry.Context): WidgetManager => undefined
+    create: (owner: DocumentRegistry.Context): undefined => undefined
   });
 }

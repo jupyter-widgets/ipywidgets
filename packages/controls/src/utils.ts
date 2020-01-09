@@ -41,7 +41,7 @@ function escape_html(text: string): string {
  */
 export
 function reject(message: string, log: boolean) {
-    return function promiseRejection(error: Error) {
+    return function promiseRejection(error: Error): never {
         if (log) {
             console.error(new Error(message));
         }

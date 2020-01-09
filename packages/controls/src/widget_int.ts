@@ -690,7 +690,7 @@ class IntProgressModel extends BoundedIntModel {
 
 export
 class ProgressView extends DescriptionView {
-    initialize(parameters: WidgetView.InitializeParameters): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:bar_style', this.update_bar_style);
         this.pWidget.addClass('jupyter-widgets');

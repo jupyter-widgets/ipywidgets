@@ -337,7 +337,7 @@ class ControllerView extends DOMWidgetView {
         this.$el = $(this.pWidget.node);
     }
 
-    initialize(parameters: WidgetView.InitializeParameters): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
 
         this.button_views = new ViewList(this.add_button, null, this);

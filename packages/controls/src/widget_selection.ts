@@ -111,7 +111,7 @@ class DropdownView extends SelectionView {
     /**
      * Public constructor.
      */
-    initialize(parameters: WidgetView.InitializeParameters): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:_options_labels', () => this._updateOptions());
     }
@@ -198,7 +198,7 @@ class SelectView extends SelectionView {
     /**
      * Public constructor.
      */
-    initialize(parameters: WidgetView.InitializeParameters): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:_options_labels', () => this._updateOptions());
         this.listenTo(this.model, 'change:index', (model, value, options) => this.updateSelection(options));
@@ -469,7 +469,7 @@ export
 
 export
 class ToggleButtonsView extends DescriptionView {
-    initialize(options: WidgetView.InitializeParameters): void {
+    initialize(options: WidgetView.IInitializeParameters): void {
         this._css_state = {};
         super.initialize(options);
         this.listenTo(this.model, 'change:button_style', this.update_button_style);
@@ -830,7 +830,7 @@ class SelectMultipleView extends SelectView {
     /**
      * Public constructor.
      */
-    initialize(parameters: WidgetView.InitializeParameters): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.listbox.multiple = true;
     }

@@ -80,7 +80,7 @@ class BoxView extends DOMWidgetView {
         this.$el = $(this.pWidget.node);
     }
 
-    initialize(parameters: WidgetView.InitializeParameters): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.children_views = new ViewList(this.add_child_model, null, this);
         this.listenTo(this.model, 'change:children', this.update_children);
@@ -150,7 +150,7 @@ class HBoxView extends BoxView {
     /**
      * Public constructor
      */
-    initialize(parameters: WidgetView.InitializeParameters): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.pWidget.addClass('widget-hbox');
     }
@@ -161,7 +161,7 @@ class VBoxView extends BoxView {
     /**
      * Public constructor
      */
-    initialize(parameters: WidgetView.InitializeParameters): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.pWidget.addClass('widget-vbox');
     }
@@ -172,7 +172,7 @@ class GridBoxView extends BoxView {
     /**
      * Public constructor
      */
-    initialize(parameters: WidgetView.InitializeParameters): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.pWidget.addClass('widget-gridbox');
         // display needn't be set to flex and grid

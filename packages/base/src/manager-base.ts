@@ -24,8 +24,6 @@ import {
     PROTOCOL_VERSION
 } from './version';
 
-import { ReadonlyPartialJSONValue } from '@lumino/coreutils';
-
 const PROTOCOL_MAJOR_VERSION = PROTOCOL_VERSION.split('.', 1)[0];
 
 /**
@@ -36,6 +34,7 @@ const PROTOCOL_MAJOR_VERSION = PROTOCOL_VERSION.split('.', 1)[0];
  */
 export
 interface IModelOptions {
+    
     /**
      * Target name of the widget model to create.
      */
@@ -54,12 +53,12 @@ interface IModelOptions {
     /**
      * Target name of the widget view to create.
      */
-    view_name?: string;
+    view_name?: string | null;
 
     /**
      * Module name of the widget view to create.
      */
-    view_module?: string;
+    view_module?: string | null;
 
     /**
      * Semver version requirement for the view module.
@@ -87,7 +86,7 @@ interface IModelOptions {
  * Either a comm or a model_id must be provided.
  */
 export
-interface IWidgetOptions {
+interface IWidgetOptions extends IModelOptions {
     /**
      * Target name of the widget model to create.
      */
@@ -131,7 +130,7 @@ interface IWidgetOptions {
 
 export
 interface IState extends PartialJSONObject {
-    buffers?: Base64Buffers[];
+    buffers?: IBase64Buffers[];
     model_name: string;
     model_module: string;
     model_module_version: string;
@@ -152,7 +151,7 @@ interface IManagerState extends PartialJSONObject {
 }
 
 export
-interface Base64Buffers extends PartialJSONObject {
+interface IBase64Buffers extends PartialJSONObject {
     data: string;
     path: (string | number)[];
     encoding: 'base64';
@@ -350,7 +349,7 @@ export abstract class ManagerBase<T> {
      *  (err) => {console.error(err)});
      *
      */
-    async new_model(options: ModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
+    async new_model(options: IModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
         let model_id;
         if (options.model_id) {
             model_id = options.model_id;
@@ -366,7 +365,7 @@ export abstract class ManagerBase<T> {
         return await modelPromise;
     }
 
-    async _make_model(options: ModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
+    async _make_model(options: IModelOptions, serialized_state: any = {}): Promise<WidgetModel> {
         const model_id = options.model_id;
         const model_promise = this.loadClass(
             options.model_name,
@@ -439,7 +438,7 @@ export abstract class ManagerBase<T> {
         if (!(state.version_major && state.version_major <= 2)) {
             throw 'Unsupported widget state format';
         }
-        let models = state.state as any;
+        const models = state.state as any;
         // Recreate all the widget models for the given widget manager state.
         const all_models = this._get_comm_info().then(live_comms => {
             /* Note: It is currently safe to just loop over the models in any order,
@@ -459,9 +458,9 @@ export abstract class ManagerBase<T> {
                 const model = models[model_id];
                 const modelState = model.state;
                 if (model.buffers) {
-                    let bufferPaths = model.buffers.map((b: any) => b.path);
+                    const bufferPaths = model.buffers.map((b: any) => b.path);
                     // put_buffers expects buffers to be DataViews
-                    let buffers = model.buffers.map((b: any) => new DataView(decode[b.encoding](b.data)));
+                    const buffers = model.buffers.map((b: any) => new DataView(decode[b.encoding](b.data)));
                     utils.put_buffers(model.state, bufferPaths, buffers);
                 }
 
@@ -557,7 +556,7 @@ export abstract class ManagerBase<T> {
      *
      * @returns {*} A copy of the state, with its 'state' attribute filtered
      */
-    protected filterExistingModelState(serialized_state: any) {
+    protected filterExistingModelState(serialized_state: any): any {
       let models = serialized_state.state;
       models = Object.keys(models)
           .filter((model_id) => {
@@ -595,12 +594,12 @@ interface IStateOptions {
  * @jupyter-widgets/schema package.
  */
 export
-function serialize_state(models: WidgetModel[], options: IStateOptions = {}) {
+function serialize_state(models: WidgetModel[], options: IStateOptions = {}): IManagerState {
     const state: IManagerStateMap = {};
     models.forEach(model => {
         const model_id = model.model_id;
         const split = utils.remove_buffers(model.serialize(model.get_state(options.drop_defaults)));
-        const buffers: Base64Buffers[] = split.buffers.map((buffer, index) => {
+        const buffers: IBase64Buffers[] = split.buffers.map((buffer, index) => {
             return {
                 data: utils.bufferToBase64(buffer),
                 path: split.buffer_paths[index],
