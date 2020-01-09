@@ -717,8 +717,8 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.4.0'`        | 
 `_model_name`    | string           | `'PlayModel'`    | 
-`_playing`       | boolean          | `false`          | Whether the control is currently playing.
-`_repeat`        | boolean          | `false`          | Whether the control will repeat in a continous loop.
+`playing`       | boolean          | `false`          | Whether the control is currently playing.
+`repeat`         | boolean          | `false`          | Whether the control will repeat in a continous loop.
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.4.0'`        | 
 `_view_name`     | string           | `'PlayView'`     | 

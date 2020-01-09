@@ -52,7 +52,6 @@ import {
 // This *MUST* be called with the model as the `this` context.
 export
 function set(key: string | {}, val: any, options: ModelSetOptions & {unset?: boolean}): any {
-    /* tslint:disable:no-invalid-this */
     if (key == null) {
         return this;
     }
@@ -133,5 +132,4 @@ function set(key: string | {}, val: any, options: ModelSetOptions & {unset?: boo
     this._pending = false;
     this._changing = false;
     return this;
-    /* tslint:enable:no-invalid-this */
 }

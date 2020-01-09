@@ -5,6 +5,11 @@
     "widgetsnbextension",
     "examples/*"
   ],
+  "engines": {
+    "npm": "please-use-yarn",
+    "node": ">=10.15.3",
+    "yarn": ">=1.15.0"
+  },
   "scripts": {
     "build": "lerna run build --ignore \"@jupyter-widgets/example-*\"",
     "build:examples": "lerna run build --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
@@ -13,9 +18,8 @@
     "integrity": "node scripts/package-integrity.js",
     "eslint": "eslint . --fix --ignore-path .gitignore --ext .ts,.tsx",
     "eslint:check": "eslint . --ignore-path .gitignore --ext .ts,.tsx",
-    "lint": "lerna run lint",
     "integrity2": "node buildutils/lib/integrity.js",
-    "lint2": "yarn && yarn run prettier && yarn run eslint",
+    "lint": "yarn && yarn run prettier && yarn run eslint",
     "lint:check": "yarn run prettier:check && yarn run eslint:check",
     "prettier": "prettier --ignore-path .gitignore --write '**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}'",
     "prettier:check": "prettier --ignore-path .gitignore --check '**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}'",

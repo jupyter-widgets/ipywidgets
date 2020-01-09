@@ -224,16 +224,17 @@ class _IntRange(_Int):
 class Play(_BoundedInt):
     """Play/repeat buttons to step through values automatically, and optionally loop.
     """
-    interval = CInt(100, help="The time between two animation steps (ms).").tag(sync=True)
-    step = CInt(1, help="Increment step").tag(sync=True)
-    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
-
     _view_name = Unicode('PlayView').tag(sync=True)
     _model_name = Unicode('PlayModel').tag(sync=True)
 
-    _playing = Bool(help="Whether the control is currently playing.").tag(sync=True)
-    _repeat = Bool(help="Whether the control will repeat in a continous loop.").tag(sync=True)
+    playing = Bool(help="Whether the control is currently playing.").tag(sync=True)
+    repeat = Bool(help="Whether the control will repeat in a continous loop.").tag(sync=True)
+
+    interval = CInt(100, help="The time between two animation steps (ms).").tag(sync=True)
+    step = CInt(1, help="Increment step").tag(sync=True)
+    disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
     show_repeat = Bool(True, help="Show the repeat toggle button in the widget.").tag(sync=True)
+
 
 class _BoundedIntRange(_IntRange):
     max = CInt(100, help="Max value").tag(sync=True)
