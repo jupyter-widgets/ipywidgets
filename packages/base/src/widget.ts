@@ -1,7 +1,6 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import * as managerBase from './manager-base';
 import * as utils from './utils';
 import * as backbonePatch from './backbone-patch';
 
@@ -48,6 +47,122 @@ import {
     KernelMessage
 } from '@jupyterlab/services';
 
+/**
+ * The options for a model.
+ *
+ * #### Notes
+ * Either a comm or a model_id must be provided.
+ */
+export
+interface IModelOptions {
+
+    /**
+     * Target name of the widget model to create.
+     */
+    model_name: string;
+
+    /**
+     * Module name of the widget model to create.
+     */
+    model_module: string;
+
+    /**
+     * Semver version requirement for the model module.
+     */
+    model_module_version: string;
+
+    /**
+     * Target name of the widget view to create.
+     */
+    view_name?: string | null;
+
+    /**
+     * Module name of the widget view to create.
+     */
+    view_module?: string | null;
+
+    /**
+     * Semver version requirement for the view module.
+     */
+    view_module_version?: string;
+
+    /**
+     * Comm object associated with the widget.
+     */
+    comm?: any;
+
+    /**
+     * The model id to use. If not provided, the comm id of the comm is used.
+     */
+    model_id?: string;
+}
+
+/**
+ * The options for a connected model.
+ *
+ * This gives all of the information needed to instantiate a comm to a new
+ * widget on the kernel side (so view information is mandatory).
+ *
+ * #### Notes
+ * Either a comm or a model_id must be provided.
+ */
+export
+interface IWidgetOptions extends IModelOptions {
+    /**
+     * Target name of the widget model to create.
+     */
+    model_name: string;
+
+    /**
+     * Module name of the widget model to create.
+     */
+    model_module: string;
+
+    /**
+     * Semver version requirement for the model module.
+     */
+    model_module_version: string;
+
+    /**
+     * Target name of the widget view to create.
+     */
+    view_name: string | null;
+
+    /**
+     * Module name of the widget view to create.
+     */
+    view_module: string | null;
+
+    /**
+     * Semver version requirement for the view module.
+     */
+    view_module_version: string;
+
+    /**
+     * Comm object associated with the widget.
+     */
+    comm?: IClassicComm;
+
+    /**
+     * The model id to use. If not provided, the comm id of the comm is used.
+     */
+    model_id?: string;
+}
+
+/**
+ *
+ */
+export
+interface IWidgetManager {
+    get_model(model_id: string): Promise<WidgetModel> | undefined;
+    new_widget(options: IWidgetOptions, serialized_state?: JSONObject): Promise<WidgetModel>;
+    new_model(options: IModelOptions, serialized_state?: any): Promise<WidgetModel>;
+    register_model(model_id: string, modelPromise: Promise<WidgetModel>): void;
+    create_view(model: DOMWidgetModel, options?: any): Promise<DOMWidgetView>;
+    create_view(model: WidgetModel, options?: any): Promise<WidgetView>;
+    callbacks(view?: WidgetView): ICallbacks;
+}
+
 
 /**
  * Replace model ids with models recursively.
@@ -55,7 +170,7 @@ import {
 export
 function unpack_models(
     value: any | Dict<unknown> | string | (Dict<unknown> | string)[],
-    manager: managerBase.ManagerBase<any>
+    manager: IWidgetManager
 ): Promise<WidgetModel | Dict<WidgetModel> | WidgetModel[] | any> {
     if (Array.isArray(value)) {
         const unpacked: any[] = [];
@@ -84,7 +199,7 @@ function unpack_models(
 export
 interface ISerializers {
     [key: string]: {
-        deserialize?: (value?: any, manager?: managerBase.ManagerBase<any>) => any;
+        deserialize?: (value?: any, manager?: IWidgetManager) => any;
         serialize?: (value?: any, widget?: WidgetModel) => any;
     };
 }
@@ -544,7 +659,7 @@ class WidgetModel extends Backbone.Model {
      * is an instance of widget manager, which is required for the
      * deserialization of widget models.
      */
-    static _deserialize_state(state: JSONObject, manager: managerBase.ManagerBase<any>): Promise<utils.Dict<unknown>>  {
+    static _deserialize_state(state: JSONObject, manager: IWidgetManager): Promise<utils.Dict<unknown>>  {
         const serializers = this.serializers;
         let deserialized: Dict<any>;
         if (serializers) {
@@ -569,7 +684,7 @@ class WidgetModel extends Backbone.Model {
     // constructor. We initialize the default values above in the initialization
     // function so that they are ready for the user code, and to not override
     // values subclasses may set in their initialization functions.
-    widget_manager: managerBase.ManagerBase<any>;
+    widget_manager: IWidgetManager;
     model_id: string;
     views: {[key: string]: Promise<WidgetView>};
     state_change: Promise<any>;

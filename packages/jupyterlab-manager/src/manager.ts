@@ -5,9 +5,13 @@
 import * as Backbone from 'backbone';
 
 import {
-    ManagerBase, shims, IClassicComm, IWidgetRegistryData, ExportMap,
-    ExportData, WidgetModel, WidgetView, put_buffers, serialize_state, IStateOptions, ICallbacks
+    shims, IClassicComm, IWidgetRegistryData, ExportMap,
+    ExportData, WidgetModel, WidgetView, put_buffers, ICallbacks
 } from '@jupyter-widgets/base';
+
+import {
+  ManagerBase, serialize_state, IStateOptions
+} from '@jupyter-widgets/base-manager';
 
 import {
   IDisposable

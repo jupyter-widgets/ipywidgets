@@ -4,6 +4,7 @@
 
 var _ = require("underscore");
 var base = require("@jupyter-widgets/base");
+var ManagerBase = require('@jupyter-widgets/base-manager').ManagerBase;
 var widgets = require("@jupyter-widgets/controls");
 var outputWidgets = require("./widget_output");
 var saveState = require("./save_state");
@@ -51,7 +52,7 @@ function new_comm(manager, target_name, data, callbacks, metadata, comm_id, buff
 //--------------------------------------------------------------------
 
 
-export class WidgetManager extends base.ManagerBase {
+export class WidgetManager extends ManagerBase {
     constructor(comm_manager, notebook) {
         super();
         // Managers are stored in *reverse* order, so that _managers[0] is the most recent.
@@ -327,7 +328,7 @@ export class WidgetManager extends base.ManagerBase {
      * Callback handlers for a specific view
      */
     callbacks(view) {
-        var callbacks = base.ManagerBase.prototype.callbacks.call(this, view);
+        var callbacks = ManagerBase.prototype.callbacks.call(this, view);
         if (view && view.options.iopub_callbacks) {
             callbacks.iopub = view.options.iopub_callbacks
         }
