@@ -2,7 +2,6 @@ bqplot
 ipykernel
 ipyleaflet
 jupyter_client
-jupyter_sphinx
 matplotlib
 nbsphinx>=0.5
 numpy
