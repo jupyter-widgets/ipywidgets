@@ -11,9 +11,9 @@ import pytest
 
 import ipywidgets as widgets
 
-from traitlets import TraitError
+from traitlets import TraitError, Float
 from ipywidgets import (interact, interact_manual, interactive,
-    interaction, Output)
+                        interaction, Output, Widget)
 
 #-----------------------------------------------------------------------------
 # Utility stuff
@@ -443,6 +443,16 @@ def test_custom_description():
     )
     w.value = 'different text'
     assert d == {'b': 'different text'}
+
+def test_raises_on_non_value_widget():
+    """ Test that passing in a non-value widget raises an error """
+
+    class BadWidget(Widget):
+        """ A widget that contains a `value` traitlet """
+        value = Float()
+
+    with pytest.raises(TypeError, match=".* not a ValueWidget.*"):
+        interactive(f, b=BadWidget())
 
 def test_interact_manual_button():
     c = interact.options(manual=True).widget(f)
