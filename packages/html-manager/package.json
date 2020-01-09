@@ -23,8 +23,8 @@
   "scripts": {
     "build": "npm run build:src && webpack && npm run build:embed-amd",
     "build:embed-amd": "node scripts/concat-amd-build.js && rimraf dist/amd",
-    "build:src": "tsc",
-    "build:test": "tsc --project test && webpack --config test/webpack.conf.js",
+    "build:src": "tsc --build",
+    "build:test": "tsc --build test && webpack --config test/webpack.conf.js",
     "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo && rimraf dist",
     "prepublish": "npm run clean && npm run build",
     "test": "npm run test:unit",
