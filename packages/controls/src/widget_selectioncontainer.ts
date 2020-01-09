@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetView, ViewList, JupyterLuminoWidget, WidgetModel, WidgetView
+    DOMWidgetView, ViewList, JupyterLuminoWidget, WidgetModel, reject, WidgetView
 } from '@jupyter-widgets/base';
 
 import {
@@ -34,7 +34,6 @@ import {
 } from '@lumino/messaging';
 
 import * as _ from 'underscore';
-import * as utils from './utils';
 import $ from 'jquery';
 
 export
@@ -94,7 +93,7 @@ class JupyterLuminoAccordionWidget extends Accordion {
         if (this._view) {
             this._view.remove();
         }
-        this._view = null;
+        this._view = null!;
     }
 
     private _view: DOMWidgetView;
@@ -119,7 +118,7 @@ class AccordionView extends DOMWidgetView {
         this.$el = $(this.pWidget.node);
      }
 
-    initialize(parameters: any): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.children_views = new ViewList(this.add_child_view, this.remove_child_view, this);
         this.listenTo(this.model, 'change:children', () => this.updateChildren());
@@ -143,7 +142,7 @@ class AccordionView extends DOMWidgetView {
             }
         });
 
-        this.children_views.update(this.model.get('children'));
+        this.children_views?.update(this.model.get('children'));
         this.update_titles();
         this.update_selected_index();
     }
@@ -157,7 +156,7 @@ class AccordionView extends DOMWidgetView {
         // which would then set off another sync cycle.
         this.updatingChildren = true;
         this.pWidget.selection.index = null;
-        this.children_views.update(this.model.get('children'));
+        this.children_views?.update(this.model.get('children'));
         this.update_selected_index();
         this.updatingChildren = false;
     }
@@ -206,7 +205,7 @@ class AccordionView extends DOMWidgetView {
             collapse.widget = widget;
             placeholder.dispose();
             return view;
-        }).catch(utils.reject('Could not add child view to box', true));
+        }).catch(reject('Could not add child view to box', true));
     }
 
     remove(): void {
@@ -214,7 +213,7 @@ class AccordionView extends DOMWidgetView {
         super.remove();
     }
 
-    children_views: ViewList<DOMWidgetView>;
+    children_views: ViewList<DOMWidgetView> | null;
     pWidget: Accordion;
     updatingChildren: boolean;
 }
@@ -263,7 +262,7 @@ class JupyterLuminoTabPanelWidget extends TabPanel {
         if (this._view) {
             this._view.remove();
         }
-        this._view = null;
+        this._view = null!;
     }
 
     private _view: DOMWidgetView;
@@ -295,11 +294,11 @@ class TabView extends DOMWidgetView {
     /**
      * Public constructor.
      */
-    initialize(parameters: any): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.childrenViews = new ViewList(
             this.addChildView,
-            (view) => {view.remove();},
+            (view) => { view.remove(); },
             this
         );
         this.listenTo(this.model, 'change:children', () => this.updateTabs());
@@ -340,7 +339,7 @@ class TabView extends DOMWidgetView {
         // which would then set off another sync cycle.
         this.updatingTabs = true;
         this.pWidget.currentIndex = null;
-        this.childrenViews.update(this.model.get('children'));
+        this.childrenViews?.update(this.model.get('children'));
         this.pWidget.currentIndex = this.model.get('selected_index');
         this.updatingTabs = false;
     }
@@ -364,10 +363,10 @@ class TabView extends DOMWidgetView {
             // insert after placeholder so that if placholder is selected, the
             // real widget will be selected now (this depends on the tab bar
             // insert behavior)
-            tabs.insertWidget(i+1, widget);
+            tabs.insertWidget(i + 1, widget);
             placeholder.dispose();
             return view;
-        }).catch(utils.reject('Could not add child view to box', true));
+        }).catch(reject('Could not add child view to box', true));
     }
 
     /**
@@ -425,7 +424,7 @@ class TabView extends DOMWidgetView {
     }
 
     updatingTabs = false;
-    childrenViews: ViewList<DOMWidgetView>;
+    childrenViews: ViewList<DOMWidgetView> | null;
     pWidget: JupyterLuminoTabPanelWidget;
 }
 
@@ -450,7 +449,7 @@ class StackedView extends BoxView {
 
     update_children(): void {
         const selected_child = this.model.get('children')[this.model.get('selected_index')];
-        this.children_views.update([selected_child]).then((views: DOMWidgetView[]) => {
+        this.children_views?.update([selected_child]).then((views: DOMWidgetView[]) => {
                 // Notify all children that their sizes may have changed.
                 views.forEach( (view) => {
                     MessageLoop.postMessage(view.pWidget, Widget.ResizeMessage.UnknownSize);

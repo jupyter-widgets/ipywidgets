@@ -10,7 +10,7 @@ import {
 } from './widget_description';
 
 import {
-    DOMWidgetView
+    DOMWidgetView, WidgetView
 } from '@jupyter-widgets/base';
 
 import {
@@ -80,7 +80,7 @@ class IntSliderModel extends BoundedIntModel {
             disabled: false,
         });
     }
-    initialize(attributes: any, options: { model_id: string; comm: any; widget_manager: any }): void {
+    initialize(attributes: Backbone.ObjectHash, options: { model_id: string; comm: any; widget_manager: any }): void {
         super.initialize(attributes, options);
         this.on('change:readout_format', this.update_readout_format, this);
         this.update_readout_format();
@@ -173,7 +173,7 @@ abstract class BaseIntSliderView extends DescriptionView {
             this.$slider.slider('option', 'orientation', orientation);
 
             // Use the right CSS classes for vertical & horizontal sliders
-            if (orientation==='vertical') {
+            if (orientation === 'vertical') {
                 this.el.classList.remove('widget-hslider');
                 this.el.classList.add('widget-vslider');
                 this.el.classList.remove('widget-inline-hbox');
@@ -218,7 +218,7 @@ abstract class BaseIntSliderView extends DescriptionView {
     /**
      * Parse value from a string
      */
-    abstract stringToValue(text: string): number | number[];
+    abstract stringToValue(text: string): number | number[] | null;
 
     events(): {[e: string]: string} {
         return {
@@ -305,7 +305,10 @@ class IntRangeSliderView extends BaseIntSliderView {
     /**
      * Parse value from a string
      */
-    stringToValue(text: string): number[] {
+    stringToValue(text: string | null): number[] | null {
+        if (text === null) {
+            return null;
+        }
         // ranges can be expressed either 'val-val' or 'val:val' (+spaces)
         const match = this._range_regex.exec(text);
         if (match) {
@@ -388,14 +391,14 @@ class IntSliderView extends BaseIntSliderView {
         const max = this.model.get('max');
         let value = this.model.get('value');
 
-        if(value > max) {
+        if (value > max) {
             value = max;
-        } else if(value < min) {
+        } else if (value < min) {
             value = min;
         }
         this.$slider.slider('option', 'value', value);
         this.readout.textContent = this.valueToString(value);
-        if(this.model.get('value') !== value) {
+        if (this.model.get('value') !== value) {
             this.model.set('value', value, {updated_view: this});
             this.touch();
         }
@@ -412,8 +415,8 @@ class IntSliderView extends BaseIntSliderView {
     /**
      * Parse value from a string
      */
-    stringToValue(text: string): number {
-            return this._parse_value(text);
+    stringToValue(text: string | null): number {
+        return text === null ? NaN : this._parse_value(text);
     }
 
     /**
@@ -582,14 +585,14 @@ class IntTextView extends DescriptionView {
         /* remove invalid characters */
         let value = target.value;
 
-        value = value.replace(/[e,.\s]/g, "");
+        value = value.replace(/[e,.\s]/g, '');
 
         if (value.length >= 1) {
             const subvalue = value.substr(1);
-            value = value[0] + subvalue.replace(/[+-]/g, "");
+            value = value[0] + subvalue.replace(/[+-]/g, '');
         }
 
-        if (target.value != value) {
+        if (target.value !== value) {
             e.preventDefault();
             target.value = value;
         }
@@ -687,7 +690,7 @@ class IntProgressModel extends BoundedIntModel {
 
 export
 class ProgressView extends DescriptionView {
-    initialize(parameters: any): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:bar_style', this.update_bar_style);
         this.pWidget.addClass('jupyter-widgets');
@@ -819,13 +822,13 @@ class PlayModel extends BoundedIntModel {
 
     pause(): void {
         window.clearTimeout(this._timerId);
-        this._timerId = null;
+        this._timerId = undefined;
         this.set('playing', false);
         this.save_changes();
     }
 
     animate(): void {
-        if (this._timerId !== null) {
+        if (this._timerId !== undefined) {
             return;
         }
         if (this.get('value') === this.get('max')) {
@@ -851,7 +854,7 @@ class PlayModel extends BoundedIntModel {
         this.save_changes();
     }
 
-    private _timerId: number | null = null;
+    private _timerId: number | undefined;
 }
 
 export
@@ -912,7 +915,7 @@ class PlayView extends DOMWidgetView {
         this.updatePlaying();
     }
 
-    onPlayingChanged() {
+    onPlayingChanged(): void {
         this.updatePlaying();
         const previous = this.model.previous('playing');
         const current = this.model.get('playing');

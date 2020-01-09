@@ -16,7 +16,7 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
 
     constructor(options?: {loader?: (moduleName: string, moduleVersion: string) => Promise<any>}) {
         super();
-        this.loader = options && options.loader;
+        this.loader = options?.loader;
         this.renderMime = new RenderMimeRegistry({
             initialFactories: standardRendererFactories
         });
@@ -93,5 +93,5 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
     /**
      * A loader for a given module name and module version, and returns a promise to a module
      */
-    loader: (moduleName: string, moduleVersion: string) => Promise<any>;
+    loader: ((moduleName: string, moduleVersion: string) => Promise<any>) | undefined;
 }

@@ -76,12 +76,12 @@ function renderManager(element: HTMLElement, widgetState: any, managerFactory: (
             if (model !== undefined) {
                 const prev = viewtag.previousElementSibling;
                 if (prev && prev.tagName === 'img' && prev.classList.contains('jupyter-widget')) {
-                    viewtag.parentElement.removeChild(prev);
+                    viewtag.parentElement?.removeChild(prev);
                 }
                 const widgetTag = document.createElement('div');
                 widgetTag.className = 'widget-subarea';
-                viewtag.parentElement.insertBefore(widgetTag, viewtag);
-                manager.display_model(undefined, model, { el : widgetTag });
+                viewtag.parentElement?.insertBefore(widgetTag, viewtag);
+                manager.display_model(null, model, { el : widgetTag });
             }
         }
     });

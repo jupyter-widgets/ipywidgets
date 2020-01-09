@@ -94,9 +94,9 @@ class HTMLView extends StringView {
      * Handle message sent to the front end.
      */
     handle_message(content: any): void {
-        if (content.do == 'focus') {
+        if (content.do === 'focus') {
             this.content.focus();
-        } else if (content.do == 'blur') {
+        } else if (content.do === 'blur') {
             this.content.blur();
         }
     }
@@ -142,9 +142,9 @@ class HTMLMathView extends StringView {
      * Handle message sent to the front end.
      */
     handle_message(content: any): void {
-        if (content.do == 'focus') {
+        if (content.do === 'focus') {
             this.content.focus();
-        } else if (content.do == 'blur') {
+        } else if (content.do === 'blur') {
             this.content.blur();
         }
     }
@@ -223,8 +223,8 @@ class TextareaView extends StringView {
     }
 
     update_placeholder(value?: string): void {
-        value = value || this.model.get('placeholder');
-        this.textbox.setAttribute('placeholder', value.toString());
+        const v = value || this.model.get('placeholder');
+        this.textbox.setAttribute('placeholder', v.toString());
     }
 
     /**
@@ -323,9 +323,9 @@ class TextareaView extends StringView {
      * Handle message sent to the front end.
      */
     handle_message(content: any): void {
-        if (content.do == 'focus') {
+        if (content.do === 'focus') {
             this.textbox.focus();
-        } else if (content.do == 'blur') {
+        } else if (content.do === 'blur') {
             this.textbox.blur();
         }
     }
@@ -469,9 +469,9 @@ class TextView extends StringView {
      * Handle message sent to the front end.
      */
     handle_message(content: any): void {
-        if (content.do == 'focus') {
+        if (content.do === 'focus') {
             this.textbox.focus();
-        } else if (content.do == 'blur') {
+        } else if (content.do === 'blur') {
             this.textbox.blur();
         }
     }
@@ -589,9 +589,9 @@ class ComboboxView extends TextView {
      * Handle message sent to the front end.
      */
     handle_message(content: any): void {
-        if (content.do == 'focus') {
+        if (content.do === 'focus') {
             this.textbox.focus();
-        } else if (content.do == 'blur') {
+        } else if (content.do === 'blur') {
             this.textbox.blur();
         }
     }

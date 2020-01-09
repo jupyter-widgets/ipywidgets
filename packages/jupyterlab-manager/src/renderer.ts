@@ -79,7 +79,7 @@ class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable
 
     let widget: Widget;
     try {
-      widget = await manager.display_model(undefined, wModel, undefined);
+      widget = await manager.display_model(null, wModel, undefined);
     } catch (err) {
       this.node.textContent = 'Error displaying widget';
       this.addClass('jupyter-widgets');
@@ -118,7 +118,7 @@ class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable
       return;
     }
     super.dispose();
-    this._manager = null;
+    this._manager = null!;
   }
 
   private _rerender(): void {

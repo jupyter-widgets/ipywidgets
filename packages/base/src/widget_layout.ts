@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    assign
+    assign, Dict
 } from './utils';
 
 import {
@@ -13,7 +13,7 @@ import {
 /**
  * css properties exposed by the layout widget with their default values.
  */
-const css_properties: {[key: string]: string} = {
+const css_properties: Dict<string | null> = {
     align_content: null,
     align_items: null,
     align_self: null,
@@ -117,7 +117,7 @@ class LayoutView extends WidgetView {
             if (value === null) {
                 parent.el.style.removeProperty(this.css_name(trait));
             } else {
-                parent.el.style[this.css_name(trait)] = value;
+                parent.el.style.setProperty(this.css_name(trait), value);
             }
         } else {
             console.warn('Style not applied because a parent view does not exist');

@@ -126,7 +126,7 @@ export function registerWidgetManager(
   let wManager = Private.widgetManagerProperty.get(context);
   if (!wManager) {
     wManager = new WidgetManager(context, rendermime, SETTINGS);
-    WIDGET_REGISTRY.forEach(data => wManager.register(data));
+    WIDGET_REGISTRY.forEach(data => wManager!.register(data));
     Private.widgetManagerProperty.set(context, wManager);
   }
 
@@ -148,7 +148,7 @@ export function registerWidgetManager(
     if (rendermime) {
       rendermime.removeMimeType(WIDGET_VIEW_MIMETYPE);
     }
-    wManager.dispose();
+    wManager!.dispose();
   });
 }
 
@@ -327,6 +327,6 @@ namespace Private {
     WidgetManager | undefined
   >({
     name: 'widgetManager',
-    create: (owner: DocumentRegistry.Context): WidgetManager => undefined
+    create: (owner: DocumentRegistry.Context): undefined => undefined
   });
 }

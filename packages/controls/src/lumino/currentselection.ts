@@ -65,11 +65,11 @@ class Selection<T> {
 
     // Send signal if there was a change
     if (pv !== cv) {
-        // Emit the current changed signal.
-        this._selectionChanged.emit({
+      // Emit the current changed signal.
+      this._selectionChanged.emit({
         previousIndex: pi, previousValue: pv,
         currentIndex: pi, currentValue: cv
-        });
+      });
     }
   }
 
@@ -80,7 +80,7 @@ class Selection<T> {
    * #### Notes
    * This will be `null` if no item is selected.
    */
-  get value(): T {
+  get value(): T |null {
     return this._value;
   }
 
@@ -91,8 +91,8 @@ class Selection<T> {
    * If the item does not exist in the vector, the currentValue will be set to
    * `null`. This selects the first entry equal to the desired item.
    */
-  set value(value: T) {
-    if (value === null) {
+  set value(value: T | null) {
+    if (value === null || this._array === null) {
       this.index = null;
     } else {
       this.index = ArrayExt.firstIndexOf(this._array, value);
@@ -121,7 +121,7 @@ class Selection<T> {
   set index(index: number | null) {
     // Coerce the value to an index.
     let i;
-    if (index !== null) {
+    if (index !== null && this._array !== null) {
         i = Math.floor(index);
         if (i < 0 || i >= this._array.length) {
             i = null;
@@ -211,28 +211,8 @@ class Selection<T> {
     }
 
     // Otherwise, silently adjust the current index if needed.
-    if (ci >= i) {
-      this._index++;
-    }
-  }
-
-  /**
-   * Adjust the current index for move operation.
-   *
-   * @param i - The previous index of the item.
-   * @param j - The new index of the item.
-   *
-   * #### Notes
-   * This method will not cause the actual current item to change. It silently
-   * adjusts the current index to account for the given move.
-   */
-  adjustSelectionForMove(i: number, j: number): void {
-    if (this._index === i) {
-      this._index = j;
-    } else if (this._index < i && this._index >= j) {
-      this._index++;
-    } else if (this._index > i && this._index <= j) {
-      this._index--;
+    if (ci !== null && ci >= i) {
+      this._index!++;
     }
   }
 
@@ -272,7 +252,12 @@ class Selection<T> {
    * index and emitting the changed signal. It should be called after the item
    * is removed.
    */
-  adjustSelectionForRemove(i: number, item: T): void {
+  adjustSelectionForRemove(i: number, item: T | null): void {
+    // If we have no selection, there is nothing to do
+    if (this._index === null) {
+      return;
+    }
+
     // Lookup commonly used variables.
     const ci = this._index;
     const bh = this._removeBehavior;
@@ -280,13 +265,13 @@ class Selection<T> {
     // Silently adjust the index if the current item is not removed.
     if (ci !== i) {
       if (ci > i) {
-        this._index--;
+        this._index!--;
       }
       return;
     }
 
     // No item gets selected if the vector is empty.
-    if (this._array.length === 0) {
+    if (!this._array || this._array.length === 0) {
       // Reset the current index and previous item.
       this._index = null;
       this._value = null;
@@ -353,13 +338,13 @@ class Selection<T> {
    */
   private _updateSelectedValue(): void {
     const i = this._index;
-    this._value = i !== null ? this._array[i] : null;
+    this._value = i !== null && this._array ? this._array[i] : null;
   }
 
-  private _array: ReadonlyArray<T> = null;
-  private _index: number;
-  private _value: T = null;
-  private _previousValue: T = null;
+  private _array: ReadonlyArray<T> | null = null;
+  private _index: number | null;
+  private _value: T | null = null;
+  private _previousValue: T | null = null;
   private _insertBehavior: Selection.InsertBehavior;
   private _removeBehavior: Selection.RemoveBehavior;
   private _selectionChanged = new Signal<Selection<T>, Selection.ISelectionChangedArgs<T>>(this);
@@ -395,22 +380,22 @@ namespace Selection {
     /**
      * The previously selected index.
      */
-    previousIndex: number;
+    previousIndex: number | null;
 
     /**
      * The previous selected item.
      */
-    previousValue: T;
+    previousValue: T | null;
 
     /**
      * The currently selected index.
      */
-    currentIndex: number;
+    currentIndex: number | null;
 
     /**
      * The currently selected item.
      */
-    currentValue: T;
+    currentValue: T | null;
   }
 
 

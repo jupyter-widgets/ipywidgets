@@ -48,9 +48,9 @@ class MockComm {
     }
     comm_id: string;
     target_name: string;
-    _on_msg: Function = null;
-    _on_open: Function = null;
-    _on_close: Function = null;
+    _on_msg: Function | null = null;
+    _on_open: Function | null = null;
+    _on_close: Function | null = null;
 }
 
 class TestWidget extends base.WidgetModel {

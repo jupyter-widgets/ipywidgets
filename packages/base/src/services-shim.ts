@@ -120,7 +120,7 @@ namespace shims {
              * @param  {(Comm, object) => void} f - callback that is called when the
              *                         comm is made.  Signature of f(comm, msg).
              */
-            register_target(target_name: string, f: (comm: Comm, data: {}) => void): void {
+            register_target(target_name: string, f: (comm: Comm, object: KernelMessage.IMessage) => void): void {
                 const handle = this.jsServicesKernel.registerCommTarget(target_name,
                 (jsServicesComm, msg) => {
                     // Create the comm.
@@ -143,7 +143,7 @@ namespace shims {
              * Unregisters a comm target
              * @param  {string} target_name
              */
-            unregister_target(target_name: string, f: (comm: Comm, data: {}) => void): void {
+            unregister_target(target_name: string, f: (comm: Comm, object: KernelMessage.IMessage) => void): void {
                 const handle = this.targets[target_name];
                 handle.dispose();
                 delete this.targets[target_name];
@@ -160,8 +160,8 @@ namespace shims {
 
             targets = Object.create(null);
             comms = Object.create(null);
-            kernel: Kernel.IKernelConnection = null;
-            jsServicesKernel: Kernel.IKernelConnection = null;
+            kernel: Kernel.IKernelConnection;
+            jsServicesKernel: Kernel.IKernelConnection;
         }
 
         /**
@@ -288,8 +288,8 @@ namespace shims {
                 }
             }
 
-            jsServicesComm: Kernel.IComm = null;
-            kernel: Kernel.IKernelConnection = null;
+            jsServicesComm: Kernel.IComm;
+            kernel: Kernel.IKernelConnection;
         }
     }
 }

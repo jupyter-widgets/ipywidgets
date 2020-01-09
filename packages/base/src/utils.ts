@@ -6,11 +6,10 @@ import {
 } from 'base64-js';
 
 import {
-    UUID
+    JSONObject, JSONValue, UUID, JSONExt
 } from '@lumino/coreutils';
 
 import _isEqual from 'lodash/isEqual';
-import isPlainObject from 'lodash/isPlainObject';
 
 /**
  * Find all strings in the first argument that are not in the second.
@@ -24,7 +23,7 @@ function difference(a: string[], b: string[]): string[] {
  * Compare two objects deeply to see if they are equal.
  */
 export
-function isEqual(a: any, b: any): boolean {
+function isEqual(a: unknown, b: unknown): boolean {
     return _isEqual(a, b);
 }
 
@@ -54,29 +53,6 @@ const assign = (Object as any).assign || function(t: any, ...args: any[]): any {
 export
 function uuid(): string {
     return UUID.uuid4();
-}
-
-/**
- * Wrappable Error class
- *
- * The Error class doesn't actually act on `this`.  Instead it always
- * returns a new instance of Error.  Here we capture that instance so we
- * can apply it's properties to `this`.
- */
-export
-class WrappedError extends Error {
-    constructor(message: string, error: any) {
-        super(message);
-        console.warn('WrappedError has been deprecated!');
-        // Keep a stack of the original error messages.
-        if (error instanceof WrappedError) {
-            this.error_stack = error.error_stack;
-        } else {
-            this.error_stack = [error];
-        }
-        this.error_stack.push(this);
-    }
-    error_stack: any[];
 }
 
 /**
@@ -113,7 +89,7 @@ function resolvePromisesDict<V>(d: Dict<PromiseLike<V>>): Promise<Dict<V>> {
  */
 export
 function reject(message: string, log: boolean) {
-    return function promiseRejection(error: any): never {
+    return function promiseRejection(error: Error): never {
         if (log) {
             console.error(new Error(message));
         }
@@ -131,11 +107,11 @@ function reject(message: string, log: boolean) {
  * Will lead to {a: 1, b: {data: array1}, c: [0, array2]}
  */
 export
-function put_buffers(state: any, buffer_paths: (string | number)[][], buffers: DataView[]): void {
+function put_buffers(state: Dict<BufferJSON>, buffer_paths: (string | number)[][], buffers: DataView[]): void {
     for (let i=0; i < buffer_paths.length; i++) {
         const buffer_path = buffer_paths[i];
          // say we want to set state[x][y][z] = buffers[i]
-        let obj = state;
+        let obj = state as any;
         // we first get obj = state[x][y]
         for (let j = 0; j < buffer_path.length - 1; j++) {
             obj = obj[buffer_path[j]];
@@ -143,6 +119,41 @@ function put_buffers(state: any, buffer_paths: (string | number)[][], buffers: D
         // and then set: obj[z] = buffers[i]
         obj[buffer_path[buffer_path.length - 1]] = buffers[i];
     }
+}
+
+export
+interface ISerializedState {
+    state: JSONObject;
+    buffers: ArrayBuffer[];
+    buffer_paths: (string | number)[][];
+}
+
+
+export
+interface ISerializeable {
+    toJSON(options?: {}): JSONObject;
+}
+
+export
+type BufferJSON =
+    | { [property: string]: BufferJSON }
+    | BufferJSON[]
+    | string
+    | number
+    | boolean
+    | null
+    | ArrayBuffer
+    | DataView;
+
+
+export
+function isSerializable(object: unknown): object is ISerializeable {
+    return (typeof object === 'object' && object && 'toJSON' in object) ?? false;
+}
+
+export
+function isObject(data: BufferJSON): data is Dict<BufferJSON> {
+    return JSONExt.isObject(data as JSONValue);
 }
 
 
@@ -156,14 +167,14 @@ function put_buffers(state: any, buffer_paths: (string | number)[][], buffers: D
  * and the buffers associated to those paths (.buffers).
  */
 export
-function remove_buffers(state: any): {state: any; buffers: ArrayBuffer[]; buffer_paths: (string | number)[][]} {
+function remove_buffers(state: BufferJSON | ISerializeable): ISerializedState {
     const buffers: ArrayBuffer[] = [];
     const buffer_paths: (string | number)[][] = [];
     // if we need to remove an object from a list, we need to clone that list, otherwise we may modify
     // the internal state of the widget model
     // however, we do not want to clone everything, for performance
-    function remove(obj: any, path: (string | number)[]): any {
-        if (obj.toJSON) {
+    function remove(obj: BufferJSON | ISerializeable, path: (string | number)[]): BufferJSON {
+        if (isSerializable(obj)) {
             // We need to get the JSON form of the object before recursing.
             // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#toJSON()_behavior
             obj = obj.toJSON();
@@ -196,7 +207,7 @@ function remove_buffers(state: any): {state: any; buffers: ArrayBuffer[]; buffer
                     }
                 }
             }
-        } else if (isPlainObject(obj)) {
+        } else if (isObject(obj)) {
             for (const key in obj) {
                 let is_cloned = false;
                 if (Object.prototype.hasOwnProperty.call(obj, key)) {
@@ -227,7 +238,7 @@ function remove_buffers(state: any): {state: any; buffers: ArrayBuffer[]; buffer
         }
         return obj;
     }
-    const new_state = remove(state, []);
+    const new_state = remove(state, []) as JSONObject;
     return {state: new_state, buffers: buffers, buffer_paths: buffer_paths};
 }
 

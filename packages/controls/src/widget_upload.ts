@@ -65,7 +65,7 @@ export class FileUploadView extends DOMWidgetView {
 
             const promisesFile: Promise<{buffer: any; metadata: any; error: string}>[] = [];
 
-            Array.from(this.fileInput.files).forEach(file => {
+            Array.from(this.fileInput.files ?? []).forEach(file => {
                 promisesFile.push(
                     new Promise((resolve, reject) => {
                         const metadata = {

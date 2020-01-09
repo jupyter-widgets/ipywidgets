@@ -2,16 +2,13 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    DOMWidgetView, unpack_models, ViewList, JupyterLuminoPanelWidget, WidgetModel
+    DOMWidgetView, unpack_models, ViewList, JupyterLuminoPanelWidget,
+    reject, WidgetModel, WidgetView
 } from '@jupyter-widgets/base';
 
 import {
     CoreDOMWidgetModel
 } from './widget_core';
-
-import {
-    reject
-} from './utils';
 
 import {
     ArrayExt
@@ -83,7 +80,7 @@ class BoxView extends DOMWidgetView {
         this.$el = $(this.pWidget.node);
     }
 
-    initialize(parameters: any): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.children_views = new ViewList(this.add_child_model, null, this);
         this.listenTo(this.model, 'change:children', this.update_children);
@@ -101,7 +98,7 @@ class BoxView extends DOMWidgetView {
     }
 
     update_children(): void {
-        this.children_views.update(this.model.get('children')).then((views: DOMWidgetView[]) => {
+        this.children_views?.update(this.model.get('children')).then((views: DOMWidgetView[]) => {
             // Notify all children that their sizes may have changed.
             views.forEach( (view) => {
                 MessageLoop.postMessage(view.pWidget, Widget.ResizeMessage.UnknownSize);
@@ -137,7 +134,7 @@ class BoxView extends DOMWidgetView {
         super.remove();
     }
 
-    children_views: ViewList<DOMWidgetView>;
+    children_views: ViewList<DOMWidgetView> | null;
     pWidget: JupyterLuminoPanelWidget;
 
     static class_map = {
@@ -153,7 +150,7 @@ class HBoxView extends BoxView {
     /**
      * Public constructor
      */
-    initialize(parameters: any): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.pWidget.addClass('widget-hbox');
     }
@@ -164,7 +161,7 @@ class VBoxView extends BoxView {
     /**
      * Public constructor
      */
-    initialize(parameters: any): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.pWidget.addClass('widget-vbox');
     }
@@ -175,10 +172,10 @@ class GridBoxView extends BoxView {
     /**
      * Public constructor
      */
-    initialize(parameters: any): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.pWidget.addClass('widget-gridbox');
-        // display needn't be set to flex and grid 
+        // display needn't be set to flex and grid
         this.pWidget.removeClass('widget-box');
     }
 }

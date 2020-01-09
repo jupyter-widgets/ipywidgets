@@ -5,7 +5,7 @@ export * from "./htmlmanager";
 export { requireLoader } from "./libembed-amd";
 
 export
-const version = (require('../package.json') as any).version;
+const version = require('../package.json').version;
 
 export
 function generateEmbedScript(widgetState: any, imageDataUrl: string): string {

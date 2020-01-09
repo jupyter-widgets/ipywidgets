@@ -2,31 +2,8 @@
 // Distributed under the terms of the Modified BSD License.
 
 export {
-    uuid, WrappedError, resolvePromisesDict
+    uuid, resolvePromisesDict
 } from '@jupyter-widgets/base';
-
-import {
-    WrappedError
-} from '@jupyter-widgets/base';
-
-/**
- * Creates a wrappable Promise rejection function.
- *
- * Creates a function that returns a Promise.reject with a new WrappedError
- * that has the provided message and wraps the original error that
- * caused the promise to reject.
- */
-export
-function reject(message: any, log: any) {
-    return function promiseRejection(error: any): Promise<any> {
-        const wrapped_error = new WrappedError(message, error);
-        if (log) {
-            console.error(wrapped_error);
-        }
-        return Promise.reject(wrapped_error);
-    };
-}
-
 
 /**
  * Apply MathJax rendering to an element, and optionally set its text.
@@ -44,7 +21,7 @@ function typeset(element: HTMLElement, text?: string): void {
         element.textContent = text;
     }
     if ((window as any).MathJax !== void 0) {
-        MathJax.Hub.Queue(['Typeset', MathJax.Hub, element]);
+        MathJax!.Hub!.Queue(['Typeset', MathJax.Hub, element]);
     }
 }
 
@@ -57,4 +34,17 @@ function escape_html(text: string): string {
     const esc  = document.createElement('div');
     esc.textContent = text;
     return esc.innerHTML;
+}
+
+/**
+ * Creates a wrappable Promise rejection function.
+ */
+export
+function reject(message: string, log: boolean) {
+    return function promiseRejection(error: Error): never {
+        if (log) {
+            console.error(new Error(message));
+        }
+        throw error;
+    };
 }

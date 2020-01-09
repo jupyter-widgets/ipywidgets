@@ -33,7 +33,7 @@ export interface ISerializedDate {
 }
 
 export
-function serialize_date(value: Date): ISerializedDate | null {
+function serialize_date(value: Date | null): ISerializedDate | null {
     if (value === null) {
         return null;
     } else {
@@ -46,7 +46,7 @@ function serialize_date(value: Date): ISerializedDate | null {
 }
 
 export
-function deserialize_date(value: ISerializedDate): Date | null {
+function deserialize_date(value: ISerializedDate | null): Date | null {
     if (value === null) {
         return null;
     } else {

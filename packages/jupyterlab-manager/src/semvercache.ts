@@ -22,11 +22,13 @@ class SemVerCache<T> {
     }
   }
 
-  get(key: string, semver: string): T {
+  get(key: string, semver: string): T | undefined {
     if (key in this._cache) {
       const versions = this._cache[key];
       const best = maxSatisfying(Object.keys(versions), semver);
-      return versions[best];
+      if (best !== null) {
+        return versions[best];
+      }
     }
   }
 

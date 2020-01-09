@@ -75,7 +75,7 @@ class OutputModel extends outputBase.OutputModel {
    * Reset the message id.
    */
   reset_msg_id(): void {
-    const kernel = this.widget_manager.context.sessionContext.session.kernel;
+    const kernel = this.widget_manager.context.sessionContext?.session?.kernel;
     const msgId = this.get('msg_id');
     const oldMsgId = this.previous('msg_id');
 
@@ -168,7 +168,7 @@ class JupyterLuminoPanelWidget extends Panel {
         if (this._view) {
             this._view.remove();
         }
-        this._view = null;
+        this._view = null!;
     }
 
     private _view: DOMWidgetView;
@@ -220,5 +220,5 @@ class OutputView extends outputBase.OutputView {
 
   model: OutputModel;
   _outputView: OutputArea;
-  pWidget: Panel
+  pWidget: Panel;
 }

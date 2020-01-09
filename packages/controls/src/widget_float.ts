@@ -128,14 +128,14 @@ class FloatLogSliderView extends BaseIntSliderView {
 
         let log_value = Math.log( value ) / Math.log( base );
 
-        if(log_value > max) {
+        if (log_value > max) {
             log_value = max;
-        } else if(log_value < min) {
+        } else if (log_value < min) {
             log_value = min;
         }
         this.$slider.slider('option', 'value', log_value);
         this.readout.textContent = this.valueToString(value);
-        if(this.model.get('value') !== value) {
+        if (this.model.get('value') !== value) {
             this.model.set('value', value, {updated_view: this});
             this.touch();
         }
@@ -152,8 +152,8 @@ class FloatLogSliderView extends BaseIntSliderView {
     /**
      * Parse value from a string
      */
-    stringToValue(text: string): number {
-        return this._parse_value(text);
+    stringToValue(text: string | null): number {
+        return text === null ? NaN : this._parse_value(text);
     }
 
     /**
@@ -173,7 +173,7 @@ class FloatLogSliderView extends BaseIntSliderView {
         if (isNaN(value)) {
             this.readout.textContent = this.valueToString(this.model.get('value'));
         } else {
-            value = Math.max(Math.min(value, Math.pow(base,vmax)), Math.pow(base,vmin));
+            value = Math.max(Math.min(value, Math.pow(base, vmax)), Math.pow(base, vmin));
 
             if (value !== this.model.get('value')) {
                 this.readout.textContent = this.valueToString(value);
@@ -207,7 +207,7 @@ class FloatLogSliderView extends BaseIntSliderView {
      */
     handleSliderChanged(e: Event, ui: { value: any }): void {
         const base = this.model.get('base');
-        const actual_value = Math.pow(base,this._validate_slide_value(ui.value));
+        const actual_value = Math.pow(base, this._validate_slide_value(ui.value));
         this.model.set('value', actual_value, {updated_view: this});
         this.touch();
     }

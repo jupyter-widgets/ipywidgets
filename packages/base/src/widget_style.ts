@@ -75,14 +75,14 @@ class StyleView extends WidgetView {
             const styleProperties = ModelType.styleProperties;
             const attribute = styleProperties[trait].attribute;
             const selector  = styleProperties[trait].selector;
-            const elements = selector ? parent.el.querySelectorAll(selector) : [ parent.el ];
+            const elements = selector ? parent.el.querySelectorAll<HTMLElement>(selector) : [ parent.el ];
             if (value === null) {
                 for (let i = 0; i !== elements.length; ++i) {
                     elements[i].style.removeProperty(attribute);
                 }
             } else {
                 for (let i = 0; i !== elements.length; ++i) {
-                    elements[i].style[attribute] = value;
+                    elements[i].style.setProperty(attribute, value);
                 }
             }
         } else {
@@ -110,7 +110,7 @@ class StyleView extends WidgetView {
             if (parent) {
                 const attribute = styleProperties[trait].attribute;
                 const selector  = styleProperties[trait].selector;
-                const elements = selector ? parent.el.querySelectorAll(selector) : [ parent.el ];
+                const elements = selector ? parent.el.querySelectorAll<HTMLElement>(selector) : [ parent.el ];
                 for (let i = 0; i !== elements.length; ++i) {
                     elements[i].style.removeProperty(attribute);
                 }
@@ -122,4 +122,3 @@ class StyleView extends WidgetView {
 
     private _traitNames: string[];
 }
-

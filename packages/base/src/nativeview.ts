@@ -75,7 +75,7 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
 
     // Set a hash of attributes to the view's `el`. We use the "prop" version
     // if available, falling back to `setAttribute` for the catch-all.
-    _setAttributes(attrs: {[key: string]: string}): void {
+    _setAttributes(attrs: Backbone.ObjectHash): void {
       for (const attr in attrs) {
         attr in this.el ? this.el[attr] = attrs[attr] : this.el.setAttribute(attr, attrs[attr]);
       }
@@ -95,10 +95,12 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
      * https://github.com/jquery/jquery/blob/7d21f02b9ec9f655583e898350badf89165ed4d5/src/event.js#L442
      * for some similar exceptional cases).
      */
-    delegate(eventName: string, selector: any, listener: any): any {
+    delegate(eventName: string, listener: Function): Backbone.View<T>;
+    delegate(eventName: string, selector: string, listener: Function): Backbone.View<T>;
+    delegate(eventName: string, selector: string | Function, listener?: any): Backbone.View<T> {
       if (typeof selector !== 'string') {
         listener = selector;
-        selector = null;
+        selector = null!;
       }
 
       // We have to initialize this here, instead of in the constructor, because the
@@ -130,10 +132,12 @@ class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
 
     // Remove a single delegated event. Either `eventName` or `selector` must
     // be included, `selector` and `listener` are optional.
-    undelegate(eventName: string, selector?: any, listener?: any): NativeView<T> {
+    undelegate(eventName: string, selector?: string, listener?: Function): NativeView<T>;
+    undelegate(selector: string, listener?: Function): NativeView<T>;
+    undelegate(eventName: string, selector?: string | Function, listener?: Function): NativeView<T> {
       if (typeof selector === 'function') {
         listener = selector;
-        selector = null;
+        selector = null!;
       }
 
       if (this.el && this._domEvents) {

@@ -1,6 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { WidgetView } from '@jupyter-widgets/base';
+
 import {
     CoreDescriptionModel,
 } from './widget_core';
@@ -109,7 +111,7 @@ class DropdownView extends SelectionView {
     /**
      * Public constructor.
      */
-    initialize(parameters: any): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:_options_labels', () => this._updateOptions());
     }
@@ -170,9 +172,9 @@ class DropdownView extends SelectionView {
      * Handle message sent to the front end.
      */
     handle_message(content: any): void {
-        if (content.do == 'focus') {
+        if (content.do === 'focus') {
             this.listbox.focus();
-        } else if (content.do == 'blur') {
+        } else if (content.do === 'blur') {
             this.listbox.blur();
         }
     }
@@ -196,7 +198,7 @@ class SelectView extends SelectionView {
     /**
      * Public constructor.
      */
-    initialize(parameters: any): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:_options_labels', () => this._updateOptions());
         this.listenTo(this.model, 'change:index', (model, value, options) => this.updateSelection(options));
@@ -320,7 +322,7 @@ class RadioButtonsView extends DescriptionView {
             this.container.querySelectorAll('input[type="radio"]'),
             'value'
         );
-        let stale = items.length != radios.length;
+        let stale = items.length !== radios.length;
 
         if (!stale) {
             for (let i = 0, len = items.length; i < len; ++i) {
@@ -349,9 +351,9 @@ class RadioButtonsView extends DescriptionView {
         items.forEach((item: any, index: number) => {
             const item_query = 'input[data-value="' +
                 encodeURIComponent(item) + '"]';
-                const radio = this.container.querySelectorAll(item_query);
+            const radio = this.container.querySelectorAll<HTMLInputElement>(item_query);
             if (radio.length > 0) {
-              const radio_el = radio[0] as HTMLInputElement;
+              const radio_el = radio[0];
               radio_el.checked = this.model.get('index') === index;
               radio_el.disabled = this.model.get('disabled');
             }
@@ -385,13 +387,13 @@ class RadioButtonsView extends DescriptionView {
 
         // Current adjustment value on this widget
         const cStyles = window.getComputedStyle(e.container);
-        const containerMargin = parseInt(cStyles.marginBottom);
+        const containerMargin = parseInt(cStyles.marginBottom, 10);
 
         // How far we are off from a multiple of single windget lines
         const diff = (e.el.offsetHeight + margins - containerMargin) % lineHeight;
 
         // Apply the new adjustment
-        const extraMargin = diff == 0 ? 0 : (lineHeight - diff);
+        const extraMargin = diff === 0 ? 0 : (lineHeight - diff);
         e.container.style.marginBottom = extraMargin + 'px';
     }
 
@@ -409,7 +411,7 @@ class RadioButtonsView extends DescriptionView {
      */
     _handle_click (event: Event): void {
         const target = event.target as HTMLInputElement;
-        this.model.set('index', parseInt(target.value), {updated_view: this});
+        this.model.set('index', parseInt(target.value, 10), {updated_view: this});
         this.touch();
     }
 
@@ -467,7 +469,7 @@ export
 
 export
 class ToggleButtonsView extends DescriptionView {
-    initialize(options: any): void {
+    initialize(options: WidgetView.IInitializeParameters): void {
         this._css_state = {};
         super.initialize(options);
         this.listenTo(this.model, 'change:button_style', this.update_button_style);
@@ -551,7 +553,7 @@ class ToggleButtonsView extends DescriptionView {
         // Select active button.
         items.forEach((item: any, index: number) => {
             const item_query = '[data-value="' + encodeURIComponent(item) + '"]';
-            const button = this.buttongroup.querySelector(item_query);
+            const button = this.buttongroup.querySelector(item_query)!;
             if (this.model.get('index') === index) {
                 button.classList.add('mod-active');
             } else {
@@ -828,7 +830,7 @@ class SelectMultipleView extends SelectView {
     /**
      * Public constructor.
      */
-    initialize(parameters: any): void {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.listbox.multiple = true;
     }
