@@ -80,7 +80,7 @@ class IntSliderModel extends BoundedIntModel {
             disabled: false,
         });
     }
-    initialize(attributes: Backbone.ObjectHash, options: { model_id: string; comm: any; widget_manager: any; }): void {
+    initialize(attributes: Backbone.ObjectHash, options: { model_id: string; comm: any; widget_manager: any }): void {
         super.initialize(attributes, options);
         this.on('change:readout_format', this.update_readout_format, this);
         this.update_readout_format();
@@ -822,13 +822,13 @@ class PlayModel extends BoundedIntModel {
 
     pause(): void {
         window.clearTimeout(this._timerId);
-        this._timerId = null;
+        this._timerId = undefined;
         this.set('playing', false);
         this.save_changes();
     }
 
     animate(): void {
-        if (this._timerId !== null) {
+        if (this._timerId !== undefined) {
             return;
         }
         if (this.get('value') === this.get('max')) {
@@ -854,7 +854,7 @@ class PlayModel extends BoundedIntModel {
         this.save_changes();
     }
 
-    private _timerId: number | null = null;
+    private _timerId: number | undefined;
 }
 
 export
@@ -915,7 +915,7 @@ class PlayView extends DOMWidgetView {
         this.updatePlaying();
     }
 
-    onPlayingChanged() {
+    onPlayingChanged(): void {
         this.updatePlaying();
         const previous = this.model.previous('playing');
         const current = this.model.get('playing');

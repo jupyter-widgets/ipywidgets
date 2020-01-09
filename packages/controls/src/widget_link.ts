@@ -28,7 +28,7 @@ class DirectionalLinkModel extends CoreWidgetModel {
         });
     }
 
-    initialize(attributes: Backbone.ObjectHash, options: { model_id: string; comm: any; widget_manager: any; }): void {
+    initialize(attributes: Backbone.ObjectHash, options: { model_id: string; comm: any; widget_manager: any }): void {
         super.initialize(attributes, options);
         this.on('change', this.updateBindings, this);
         this.updateBindings();
