@@ -9,7 +9,6 @@ from .valuewidget import ValueWidget
 from .widget import register
 from traitlets import Unicode, CUnicode, Bytes, Bool
 from .trait_types import bytes_serialization
-from .util import text_type
 
 
 @register
@@ -68,8 +67,8 @@ class _Media(DOMWidget, ValueWidget, CoreWidget):
         url: [str, bytes]
             The location of a URL to load.
         """
-        if isinstance(url, text_type):
-            # If unicode (str in Python 3), it needs to be encoded to bytes
+        if isinstance(url, str):
+            # If str, it needs to be encoded to bytes
             url = url.encode('utf-8')
 
         return cls(value=url, format='url')
@@ -122,15 +121,15 @@ class _Media(DOMWidget, ValueWidget, CoreWidget):
         content = rest[:-1]
         if len(content) > 100:
             sig_value = "{}'{}...'".format(prefix, content[0:100])
-        signature.append('%s=%s' % ('value', sig_value))
+        signature.append('{}={}'.format('value', sig_value))
 
         for key in super(cls, self)._repr_keys():
             if key == 'value':
                 continue
             value = str(getattr(self, key))
-            signature.append('%s=%r' % (key, value))
+            signature.append('{}={!r}'.format(key, value))
         signature = ', '.join(signature)
-        return '%s(%s)' % (class_name, signature)
+        return '{}({})'.format(class_name, signature)
 
 
 @register
@@ -150,8 +149,13 @@ class Image(_Media):
 
     # Define the custom state properties to sync with the front-end
     format = Unicode('png', help="The format of the image.").tag(sync=True)
-    width = CUnicode(help="Width of the image in pixels.").tag(sync=True)
-    height = CUnicode(help="Height of the image in pixels.").tag(sync=True)
+    width = CUnicode(help="Width of the image in pixels. Use layout.width "
+                          "for styling the widget.").tag(sync=True)
+    height = CUnicode(help="Height of the image in pixels. Use layout.height "
+                           "for styling the widget.").tag(sync=True)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_file(cls, filename, **kwargs):

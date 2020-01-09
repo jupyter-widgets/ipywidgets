@@ -1,6 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { WidgetView } from '@jupyter-widgets/base';
+
 import {
     CoreDescriptionModel,
 } from './widget_core';
@@ -15,11 +17,11 @@ import {
 
 import * as _ from 'underscore';
 import * as utils from './utils';
-import * as $ from 'jquery';
+import $ from 'jquery';
 
 export
 class SelectionModel extends CoreDescriptionModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return {...super.defaults(),
             _model_name: 'SelectionModel',
             index: '',
@@ -30,8 +32,65 @@ class SelectionModel extends CoreDescriptionModel {
 }
 
 export
+class SelectionView extends DescriptionView {
+    /**
+     * Called when view is rendered.
+     */
+    render(): void {
+        super.render(); // Incl. setting some defaults.
+        this.el.classList.add('jupyter-widgets');
+        this.el.classList.add('widget-inline-hbox');
+    }
+
+    /**
+     * Update the contents of this view
+     *
+     * Called when the model is changed.  The model may have been
+     * changed by another view or by a state update from the back-end.
+     */
+    update(): void {
+        super.update();
+
+        // Disable listbox if needed
+        if (this.listbox) {
+            this.listbox.disabled = this.model.get('disabled');
+        }
+
+        // Set tabindex
+        this.updateTabindex();
+        this.updateTooltip();
+    }
+
+    updateTabindex(): void {
+        if (!this.listbox) {
+            return; // we might be constructing the parent
+        }
+        const tabbable = this.model.get('tabbable');
+        if (tabbable === true) {
+            this.listbox.setAttribute('tabIndex', '0');
+        } else if (tabbable === false) {
+            this.listbox.setAttribute('tabIndex', '-1');
+        } else if (tabbable === null) {
+            this.listbox.removeAttribute('tabIndex');
+        }
+    }
+
+    updateTooltip(): void {
+        if (!this.listbox) return; // we might be constructing the parent
+        const title = this.model.get('tooltip');
+        if (!title) {
+            this.listbox.removeAttribute('title');
+        } else if (this.model.get('description').length === 0) {
+            this.listbox.setAttribute('title', title);
+        }
+    }
+
+    listbox: HTMLSelectElement;
+}
+
+export
 class DropdownModel extends SelectionModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return {...super.defaults(),
             _model_name: 'DropdownModel',
             _view_name: 'DropdownView',
@@ -40,7 +99,7 @@ class DropdownModel extends SelectionModel {
     }
 }
 
-// TODO: Make a phosphor dropdown control, wrapped in DropdownView. Also, fix
+// TODO: Make a Lumino dropdown control, wrapped in DropdownView. Also, fix
 // bugs in keyboard handling. See
 // https://github.com/jupyter-widgets/ipywidgets/issues/1055 and
 // https://github.com/jupyter-widgets/ipywidgets/issues/1049
@@ -48,11 +107,11 @@ class DropdownModel extends SelectionModel {
 // For the old code, see commit f68bfbc566f3a78a8f3350b438db8ed523ce3642
 
 export
-class DropdownView extends DescriptionView {
+class DropdownView extends SelectionView {
     /**
      * Public constructor.
      */
-    initialize(parameters) {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:_options_labels', () => this._updateOptions());
     }
@@ -60,11 +119,9 @@ class DropdownView extends DescriptionView {
     /**
      * Called when view is rendered.
      */
-    render() {
+    render(): void {
         super.render();
 
-        this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-dropdown');
 
         this.listbox = document.createElement('select');
@@ -77,22 +134,19 @@ class DropdownView extends DescriptionView {
     /**
      * Update the contents of this view
      */
-    update() {
-        // Disable listbox if needed
-        this.listbox.disabled = this.model.get('disabled');
-
+    update(): void {
         // Select the correct element
-        let index = this.model.get('index');
+        const index = this.model.get('index');
         this.listbox.selectedIndex = index === null ? -1 : index;
         return super.update();
     }
 
-    _updateOptions() {
+    _updateOptions(): void {
         this.listbox.textContent = '';
-        let items = this.model.get('_options_labels');
+        const items = this.model.get('_options_labels');
         for (let i = 0; i < items.length; i++) {
-            let item = items[i];
-            let option = document.createElement('option');
+            const item = items[i];
+            const option = document.createElement('option');
             option.textContent = item.replace(/ /g, '\xa0'); // space -> &nbsp;
             option.setAttribute('data-value', encodeURIComponent(item));
             option.value = item;
@@ -109,19 +163,28 @@ class DropdownView extends DescriptionView {
     /**
      * Handle when a new value is selected.
      */
-    _handle_change() {
+    _handle_change(): void {
         this.model.set('index', this.listbox.selectedIndex === -1 ? null : this.listbox.selectedIndex);
         this.touch();
     }
 
-    listbox: HTMLSelectElement;
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any): void {
+        if (content.do === 'focus') {
+            this.listbox.focus();
+        } else if (content.do === 'blur') {
+            this.listbox.blur();
+        }
+    }
 }
 
 
 
 export
 class SelectModel extends SelectionModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return {...super.defaults(),
             _model_name: 'SelectModel',
             _view_name: 'SelectView',
@@ -131,11 +194,11 @@ class SelectModel extends SelectionModel {
 }
 
 export
-class SelectView extends DescriptionView {
+class SelectView extends SelectionView {
     /**
      * Public constructor.
      */
-    initialize(parameters) {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.listenTo(this.model, 'change:_options_labels', () => this._updateOptions());
         this.listenTo(this.model, 'change:index', (model, value, options) => this.updateSelection(options));
@@ -146,11 +209,8 @@ class SelectView extends DescriptionView {
     /**
      * Called when view is rendered.
      */
-    render() {
+    render(): void {
         super.render();
-
-        this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-select');
 
         this.listbox.id = this.label.htmlFor = uuid();
@@ -163,9 +223,8 @@ class SelectView extends DescriptionView {
     /**
      * Update the contents of this view
      */
-    update() {
+    update(): void {
         super.update();
-        this.listbox.disabled = this.model.get('disabled');
         let rows = this.model.get('rows');
         if (rows === null) {
             rows = '';
@@ -173,20 +232,20 @@ class SelectView extends DescriptionView {
         this.listbox.setAttribute('size', rows);
     }
 
-    updateSelection(options: any = {}) {
+    updateSelection(options: any = {}): void {
         if (options.updated_view === this) {
             return;
         }
-        let index = this.model.get('index');
+        const index = this.model.get('index');
         this.listbox.selectedIndex = index === null ? -1 : index;
     }
 
-    _updateOptions() {
+    _updateOptions(): void {
         this.listbox.textContent = '';
-        let items = this.model.get('_options_labels');
+        const items = this.model.get('_options_labels');
         for (let i = 0; i < items.length; i++) {
-            let item = items[i];
-            let option = document.createElement('option');
+            const item = items[i];
+            const option = document.createElement('option');
             option.textContent = item.replace(/ /g, '\xa0'); // space -> &nbsp;
             option.setAttribute('data-value', encodeURIComponent(item));
             option.value = item;
@@ -203,17 +262,26 @@ class SelectView extends DescriptionView {
     /**
      * Handle when a new value is selected.
      */
-    _handle_change() {
+    _handle_change(): void {
         this.model.set('index', this.listbox.selectedIndex, {updated_view: this});
         this.touch();
     }
 
-    listbox: HTMLSelectElement;
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any): void {
+        if (content.do == 'focus') {
+            this.listbox.focus();
+        } else if (content.do == 'blur') {
+            this.listbox.blur();
+        }
+    }
 }
 
 export
 class RadioButtonsModel extends SelectionModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return {...super.defaults(),
             _model_name: 'RadioButtonsModel',
             _view_name: 'RadioButtonsView',
@@ -230,11 +298,9 @@ class RadioButtonsView extends DescriptionView {
     /**
      * Called when view is rendered.
      */
-    render() {
+    render(): void {
         super.render();
 
-        this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-radio');
 
         this.container = document.createElement('div');
@@ -250,14 +316,13 @@ class RadioButtonsView extends DescriptionView {
      * Called when the model is changed.  The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update(options?) {
-        let view = this;
-        let items: string[] = this.model.get('_options_labels');
-        let radios = _.pluck(
+    update(options?: any): void {
+        const items: string[] = this.model.get('_options_labels');
+        const radios = _.pluck(
             this.container.querySelectorAll('input[type="radio"]'),
             'value'
         );
-        let stale = items.length != radios.length;
+        let stale = items.length !== radios.length;
 
         if (!stale) {
             for (let i = 0, len = items.length; i < len; ++i) {
@@ -271,26 +336,26 @@ class RadioButtonsView extends DescriptionView {
         if (stale && (options === undefined || options.updated_view !== this)) {
             // Add items to the DOM.
             this.container.textContent = '';
-            items.forEach(function(item: any, index: number) {
-                let label = document.createElement('label');
+            items.forEach((item: any, index: number) => {
+                const label = document.createElement('label');
                 label.textContent = item;
-                view.container.appendChild(label);
+                this.container.appendChild(label);
 
-                let radio = document.createElement('input');
+                const radio = document.createElement('input');
                 radio.setAttribute('type', 'radio');
                 radio.value = index.toString();
                 radio.setAttribute('data-value', encodeURIComponent(item));
                 label.appendChild(radio);
            });
         }
-        items.forEach(function(item: any, index: number) {
-            let item_query = 'input[data-value="' +
+        items.forEach((item: any, index: number) => {
+            const item_query = 'input[data-value="' +
                 encodeURIComponent(item) + '"]';
-                let radio = view.container.querySelectorAll(item_query);
+            const radio = this.container.querySelectorAll<HTMLInputElement>(item_query);
             if (radio.length > 0) {
-              let radio_el = radio[0] as HTMLInputElement;
-              radio_el.checked = view.model.get('index') === index;
-              radio_el.disabled = view.model.get('disabled');
+              const radio_el = radio[0];
+              radio_el.checked = this.model.get('index') === index;
+              radio_el.disabled = this.model.get('disabled');
             }
         });
 
@@ -312,23 +377,23 @@ class RadioButtonsView extends DescriptionView {
      * yet we would like the full widget line up properly
      * when displayed side-by-side with other widgets.
      */
-    adjustPadding(e) {
+    adjustPadding(e: this): void {
         // Vertical margins on a widget
-        let elStyles = window.getComputedStyle(e.el);
-        let margins = parseInt(elStyles.marginTop) + parseInt(elStyles.marginBottom);
+        const elStyles = window.getComputedStyle(e.el);
+        const margins = parseInt(elStyles.marginTop, 10) + parseInt(elStyles.marginBottom, 10);
 
         // Total spaces taken by a single-line widget
-        let lineHeight = e.label.offsetHeight + margins;
+        const lineHeight = e.label.offsetHeight + margins;
 
         // Current adjustment value on this widget
-        let cStyles = window.getComputedStyle(e.container);
-        let containerMargin = parseInt(cStyles.marginBottom);
+        const cStyles = window.getComputedStyle(e.container);
+        const containerMargin = parseInt(cStyles.marginBottom, 10);
 
         // How far we are off from a multiple of single windget lines
-        let diff = (e.el.offsetHeight + margins - containerMargin) % lineHeight;
+        const diff = (e.el.offsetHeight + margins - containerMargin) % lineHeight;
 
         // Apply the new adjustment
-        let extraMargin = diff == 0 ? 0 : (lineHeight - diff);
+        const extraMargin = diff === 0 ? 0 : (lineHeight - diff);
         e.container.style.marginBottom = extraMargin + 'px';
     }
 
@@ -344,9 +409,25 @@ class RadioButtonsView extends DescriptionView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    _handle_click (event) {
-        this.model.set('index', parseInt(event.target.value), {updated_view: this});
+    _handle_click (event: Event): void {
+        const target = event.target as HTMLInputElement;
+        this.model.set('index', parseInt(target.value, 10), {updated_view: this});
         this.touch();
+    }
+
+    /**
+     * Handle message sent to the front end.
+     */
+    handle_message(content: any): void {
+        if (content.do == 'focus') {
+            const firstItem = this.container.firstElementChild as HTMLElement;
+            firstItem.focus();
+        } else if (content.do == 'blur') {
+            for (let i = 0; i < this.container.children.length; i++) {
+                const item = this.container.children[i] as HTMLElement;
+                item.blur();
+            }
+        }
     }
 
     container: HTMLDivElement;
@@ -354,7 +435,7 @@ class RadioButtonsView extends DescriptionView {
 
 export
 class ToggleButtonsStyleModel extends DescriptionStyleModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'ToggleButtonsStyleModel',
         });
@@ -365,7 +446,7 @@ class ToggleButtonsStyleModel extends DescriptionStyleModel {
         button_width: {
             selector: '.widget-toggle-button',
             attribute: 'width',
-            default: null
+            default: null as any
         },
         font_weight: {
             selector: '.widget-toggle-button',
@@ -377,7 +458,7 @@ class ToggleButtonsStyleModel extends DescriptionStyleModel {
 
 export
  class ToggleButtonsModel extends SelectionModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return {...super.defaults(),
             _model_name: 'ToggleButtonsModel',
             _view_name: 'ToggleButtonsView'
@@ -388,7 +469,7 @@ export
 
 export
 class ToggleButtonsView extends DescriptionView {
-    initialize(options) {
+    initialize(options: WidgetView.IInitializeParameters): void {
         this._css_state = {};
         super.initialize(options);
         this.listenTo(this.model, 'change:button_style', this.update_button_style);
@@ -397,11 +478,9 @@ class ToggleButtonsView extends DescriptionView {
     /**
      * Called when view is rendered.
      */
-    render() {
+    render(): void {
         super.render();
 
-        this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-toggle-buttons');
 
         this.buttongroup = document.createElement('div');
@@ -417,16 +496,15 @@ class ToggleButtonsView extends DescriptionView {
      * Called when the model is changed.  The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update(options?) {
-        let view = this;
-        let items: string[] = this.model.get('_options_labels');
-        let icons = this.model.get('icons') || [];
-        let previous_icons = this.model.previous('icons') || [];
-        let previous_bstyle = ToggleButtonsView.classMap[this.model.previous('button_style')] || '';
-        let tooltips = view.model.get('tooltips') || [];
-        let disabled = this.model.get('disabled');
-        let buttons = this.buttongroup.querySelectorAll('button');
-        let values = _.pluck(buttons, 'value');
+    update(options?: any): void {
+        const items: string[] = this.model.get('_options_labels');
+        const icons = this.model.get('icons') || [];
+        const previous_icons = this.model.previous('icons') || [];
+        const previous_bstyle = (ToggleButtonsView.classMap as any)[this.model.previous('button_style')] || '';
+        const tooltips = this.model.get('tooltips') || [];
+        const disabled = this.model.get('disabled');
+        const buttons = this.buttongroup.querySelectorAll('button');
+        const values = _.pluck(buttons, 'value');
         let stale = false;
 
         for (let i = 0, len = items.length; i < len; ++i) {
@@ -441,7 +519,7 @@ class ToggleButtonsView extends DescriptionView {
             this.buttongroup.textContent = '';
             items.forEach((item: any, index: number) => {
                 let item_html;
-                let empty = item.trim().length === 0 &&
+                const empty = item.trim().length === 0 &&
                     (!icons[index] || icons[index].trim().length === 0);
                 if (empty) {
                     item_html = '&nbsp;';
@@ -449,8 +527,8 @@ class ToggleButtonsView extends DescriptionView {
                     item_html = utils.escape_html(item);
                 }
 
-                let icon = document.createElement('i');
-                let button = document.createElement('button');
+                const icon = document.createElement('i');
+                const button = document.createElement('button');
                 if (icons[index]) {
                     icon.className = 'fa fa-' + icons[index];
                 }
@@ -467,16 +545,16 @@ class ToggleButtonsView extends DescriptionView {
                 if (tooltips[index]) {
                     button.setAttribute('title', tooltips[index]);
                 }
-                view.update_style_traits(button);
-                view.buttongroup.appendChild(button);
+                this.update_style_traits(button);
+                this.buttongroup.appendChild(button);
             });
         }
 
         // Select active button.
-        items.forEach(function(item: any, index: number) {
-            let item_query = '[data-value="' + encodeURIComponent(item) + '"]';
-            let button = view.buttongroup.querySelector(item_query);
-            if (view.model.get('index') === index) {
+        items.forEach((item: any, index: number) => {
+            const item_query = '[data-value="' + encodeURIComponent(item) + '"]';
+            const button = this.buttongroup.querySelector(item_query)!;
+            if (this.model.get('index') === index) {
                 button.classList.add('mod-active');
             } else {
                 button.classList.remove('mod-active');
@@ -491,16 +569,16 @@ class ToggleButtonsView extends DescriptionView {
         return super.update(options);
     }
 
-    update_style_traits(button?) {
-        for (let name in this._css_state) {
-            if (this._css_state.hasOwnProperty(name)) {
+    update_style_traits(button?: HTMLButtonElement): void {
+        for (const name in this._css_state as string[]) {
+            if (Object.prototype.hasOwnProperty.call(this._css_state, 'name')) {
                 if (name === 'margin') {
                     this.buttongroup.style[name] = this._css_state[name];
                 } else if (name !== 'width') {
                     if (button) {
                         button.style[name] = this._css_state[name];
                     } else {
-                        let buttons = this.buttongroup
+                        const buttons = this.buttongroup
                             .querySelectorAll('button');
                         if (buttons.length) {
                             (buttons[0]).style[name] = this._css_state[name];
@@ -511,15 +589,15 @@ class ToggleButtonsView extends DescriptionView {
         }
     }
 
-    update_button_style() {
-        let buttons = this.buttongroup.querySelectorAll('button');
+    update_button_style(): void {
+        const buttons = this.buttongroup.querySelectorAll('button');
         for (let i = 0; i < buttons.length; i++) {
             this.update_mapped_classes(ToggleButtonsView.classMap, 'button_style', buttons[i]);
         }
     }
 
-    set_button_style() {
-        let buttons = this.buttongroup.querySelectorAll('button');
+    set_button_style(): void {
+        const buttons = this.buttongroup.querySelectorAll('button');
         for (let i = 0; i < buttons.length; i++) {
             this.set_mapped_classes(ToggleButtonsView.classMap, 'button_style', buttons[i]);
         }
@@ -537,8 +615,9 @@ class ToggleButtonsView extends DescriptionView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    _handle_click (event) {
-        this.model.set('index', parseInt(event.target.value), {updated_view: this});
+    _handle_click(event: Event): void {
+        const target = event.target as HTMLButtonElement;
+        this.model.set('index', parseInt(target.value, 10), {updated_view: this});
         this.touch();
         // We also send a clicked event, since the value is only set if it changed.
         // See https://github.com/jupyter-widgets/ipywidgets/issues/763
@@ -564,7 +643,7 @@ namespace ToggleButtonsView {
 
 export
 class SelectionSliderModel extends SelectionModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return {...super.defaults(),
             _model_name: 'SelectionSliderModel',
             _view_name: 'SelectionSliderView',
@@ -581,11 +660,9 @@ class SelectionSliderView extends DescriptionView {
     /**
      * Called when view is rendered.
      */
-    render () {
+    render(): void {
         super.render();
 
-        this.el.classList.add('jupyter-widgets');
-        this.el.classList.add('widget-inline-hbox');
         this.el.classList.add('widget-hslider');
         this.el.classList.add('widget-slider');
 
@@ -623,11 +700,11 @@ class SelectionSliderView extends DescriptionView {
      * Called when the model is changed.  The model may have been
      * changed by another view or by a state update from the back-end.
      */
-    update(options?) {
+    update(options?: any): void {
         if (options === undefined || options.updated_view !== this) {
-            let labels = this.model.get('_options_labels');
-            let max = labels.length - 1;
-            let min = 0;
+            const labels = this.model.get('_options_labels');
+            const max = labels.length - 1;
+            const min = 0;
             this.$slider.slider('option', 'step', 1);
             this.$slider.slider('option', 'max', max);
             this.$slider.slider('option', 'min', min);
@@ -640,11 +717,11 @@ class SelectionSliderView extends DescriptionView {
             // make sure that the horizontal placement of the
             // handle in the vertical slider is always
             // consistent.
-            let orientation = this.model.get('orientation');
+            const orientation = this.model.get('orientation');
             this.$slider.slider('option', 'value', min);
             this.$slider.slider('option', 'orientation', orientation);
 
-            let disabled = this.model.get('disabled');
+            const disabled = this.model.get('disabled');
             this.$slider.slider('option', 'disabled', disabled);
             if (disabled) {
                 this.readout.contentEditable = 'false';
@@ -665,7 +742,7 @@ class SelectionSliderView extends DescriptionView {
                 this.el.classList.add('widget-inline-hbox');
             }
 
-            let readout = this.model.get('readout');
+            const readout = this.model.get('readout');
             if (readout) {
                 // this.$readout.show();
                 this.readout.style.display = '';
@@ -686,21 +763,21 @@ class SelectionSliderView extends DescriptionView {
         };
     }
 
-    updateSelection() {
-        let index = this.model.get('index');
+    updateSelection(): void {
+        const index = this.model.get('index');
         this.$slider.slider('option', 'value', index);
         this.updateReadout(index);
     }
 
-    updateReadout(index) {
-        let value = this.model.get('_options_labels')[index];
+    updateReadout(index: any): void {
+        const value = this.model.get('_options_labels')[index];
         this.readout.textContent = value;
     }
 
     /**
      * Called when the slider value is changing.
      */
-    handleSliderChange(e, ui) {
+    handleSliderChange(e: Event, ui: { value?: number; values?: number[] }): void {
         this.updateReadout(ui.value);
 
         // Only persist the value while sliding if the continuous_update
@@ -716,7 +793,7 @@ class SelectionSliderView extends DescriptionView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    handleSliderChanged(e, ui) {
+    handleSliderChanged(e: Event, ui: { value?: number; values?: number[] }): void {
         this.updateReadout(ui.value);
         this.model.set('index', ui.value, {updated_view: this});
         this.touch();
@@ -729,7 +806,7 @@ class SelectionSliderView extends DescriptionView {
 
 export
 class MultipleSelectionModel extends SelectionModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return { ...super.defaults(),
             _model_name: 'MultipleSelectionModel',
         };
@@ -739,7 +816,7 @@ class MultipleSelectionModel extends SelectionModel {
 
 export
 class SelectMultipleModel extends MultipleSelectionModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return {...super.defaults(),
             _model_name: 'SelectMultipleModel',
             _view_name: 'SelectMultipleView',
@@ -753,7 +830,7 @@ class SelectMultipleView extends SelectView {
     /**
      * Public constructor.
      */
-    initialize(parameters) {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.listbox.multiple = true;
     }
@@ -761,21 +838,21 @@ class SelectMultipleView extends SelectView {
     /**
      * Called when view is rendered.
      */
-    render() {
+    render(): void {
         super.render();
         this.el.classList.add('widget-select-multiple');
     }
 
-    updateSelection(options: any = {}) {
+    updateSelection(options: any = {}): void {
         if (options.updated_view === this) {
             return;
         }
-        let selected = this.model.get('index') || [];
-        let listboxOptions = this.listbox.options;
+        const selected = this.model.get('index') || [];
+        const listboxOptions = this.listbox.options;
         // Clear the selection
         this.listbox.selectedIndex = -1;
         // Select the appropriate options
-        selected.forEach((i) => {
+        selected.forEach((i: number) => {
             listboxOptions[i].selected = true;
         });
     }
@@ -783,9 +860,9 @@ class SelectMultipleView extends SelectView {
     /**
      * Handle when a new value is selected.
      */
-    _handle_change() {
-        let index = Array.prototype.map
-            .call(this.listbox.selectedOptions || [], function(option) {
+    _handle_change(): void {
+        const index = Array.prototype.map
+            .call(this.listbox.selectedOptions || [], function(option: HTMLOptionElement) {
                 return option.index;
             });
         this.model.set('index', index, {updated_view: this});
@@ -795,7 +872,7 @@ class SelectMultipleView extends SelectView {
 
 export
 class SelectionRangeSliderModel extends MultipleSelectionModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return {...super.defaults(),
             _model_name: 'SelectionSliderModel',
             _view_name: 'SelectionSliderView',
@@ -812,28 +889,28 @@ class SelectionRangeSliderView extends SelectionSliderView {
     /**
      * Called when view is rendered.
      */
-    render () {
+    render(): void {
         super.render();
         this.$slider.slider('option', 'range', true);
     }
 
-    updateSelection() {
-        let index = this.model.get('index');
+    updateSelection(): void {
+        const index = this.model.get('index');
         this.$slider.slider('option', 'values', index.slice());
         this.updateReadout(index);
     }
 
-    updateReadout(index) {
-        let labels = this.model.get('_options_labels');
-        let minValue = labels[index[0]];
-        let maxValue = labels[index[1]];
+    updateReadout(index: number[]): void {
+        const labels = this.model.get('_options_labels');
+        const minValue = labels[index[0]];
+        const maxValue = labels[index[1]];
         this.readout.textContent = `${minValue}-${maxValue}`;
     }
 
     /**
      * Called when the slider value is changing.
      */
-    handleSliderChange(e, ui) {
+    handleSliderChange(e: Event, ui: { values: number[] }): void {
         this.updateReadout(ui.values);
 
         // Only persist the value while sliding if the continuous_update
@@ -849,7 +926,7 @@ class SelectionRangeSliderView extends SelectionSliderView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    handleSliderChanged(e, ui) {
+    handleSliderChanged(e: Event, ui: { values: number[] }): void {
         // The jqueryui documentation indicates ui.values doesn't exist on the slidestop event,
         // but it appears that it actually does: https://github.com/jquery/jquery-ui/blob/ae31f2b3b478975f70526bdf3299464b9afa8bb1/ui/widgets/slider.js#L313
         this.updateReadout(ui.values);

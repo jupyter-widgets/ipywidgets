@@ -1,33 +1,12 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
-
-import os
-import subprocess
-import sys
-import recommonmark.parser
-
-
-# -- path -------------------------------------------------------
-
-from os.path import dirname
-docs = dirname(dirname(__file__))
-root = dirname(docs)
-sys.path.insert(0, root)
-
-
-# -- bash utility function --------------------------------------
-def bash(filename):
-    """Runs a bash script in the local directory"""
-    sys.stdout.flush()
-    subprocess.call("bash {}".format(filename), shell=True)
 
 
 # -- source files and parsers -----------------------------------
 
-source_suffix = ['.rst', '.md', '.ipynb']
-source_parsers = {
-    '.md': recommonmark.parser.CommonMarkParser,
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
 }
 
 
@@ -39,8 +18,8 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
     'nbsphinx',
-    'jupyter_sphinx.embed_widgets',
     'IPython.sphinxext.ipython_console_highlighting',
+    'recommonmark',
 ]
 
 intersphinx_mapping = {
@@ -50,7 +29,7 @@ intersphinx_mapping = {
     'jupyter': ('https://jupyter.readthedocs.io/en/latest/', None),
 }
 
-nbsphinx_allow_errors = True   # exception ipstruct.py ipython_genutils
+nbsphinx_execute = 'always'
 
 # -- General information -------
 
@@ -68,7 +47,21 @@ copyright = '2017 Project Jupyter'
 author = 'Jupyter Team'
 
 language = None
-exclude_patterns = ['_build', '**.ipynb_checkpoints', 'examples/Imag*', 'examples/Index.ipynb']
+exclude_patterns = [
+    '**.ipynb_checkpoints',
+    'examples.md',
+    'examples/Beat Frequencies.ipynb',
+    'examples/Controller.ipynb',
+    'examples/Exploring Graphs.ipynb',
+    'examples/Export As (nbconvert).ipynb',
+    'examples/Factoring.ipynb',
+    'examples/Imag*',
+    'examples/Index.ipynb',
+    'examples/Lorenz Differential Equations.ipynb',
+    'examples/Media widgets.ipynb',
+    'examples/Variable Inspector.ipynb',
+    'examples/Widget Alignment.ipynb',
+]
 pygments_style = 'sphinx'
 todo_include_todos = False
 

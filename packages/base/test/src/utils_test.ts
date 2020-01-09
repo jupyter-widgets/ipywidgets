@@ -5,8 +5,9 @@ import {
 import * as utils from '../../lib/utils';
 
 import * as chai from 'chai';
-import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
+import sinon from 'sinon';
+void sinon;
+import sinonChai from 'sinon-chai';
 chai.use(sinonChai);
 
 describe('remove_buffers', function() {
@@ -65,36 +66,36 @@ describe('remove_buffers', function() {
     describe('nested structures', function() {
 
         it('array in object', function() {
-            let rawState = {
+            const rawState = {
                 buffers: [uintArray, floatArray.buffer]
             };
-            let {state, buffers, buffer_paths} = utils.remove_buffers(rawState);
+            const {state, buffers, buffer_paths} = utils.remove_buffers(rawState);
             expect(state).to.deep.equal({buffers: [null, null]});
             expect(buffers).to.deep.equal([uintArray.buffer, floatArray.buffer]);
             expect(buffer_paths).to.deep.equal([['buffers', 0], ['buffers', 1]]);
         });
 
         it('object in array', function() {
-            let rawState = [
+            const rawState = [
                 { buffer: uintArray },
                 { buffer: floatArray.buffer },
             ];
-            let {state, buffers, buffer_paths} = utils.remove_buffers(rawState);
+            const {state, buffers, buffer_paths} = utils.remove_buffers(rawState);
             expect(state).to.deep.equal([{}, {}]);
             expect(buffers).to.deep.equal([uintArray.buffer, floatArray.buffer]);
             expect(buffer_paths).to.deep.equal([[0, 'buffer'], [1, 'buffer']]);
         });
 
         it('array in array', function() {
-            let rawState = ['string', 45, [uintArray, floatArray.buffer]];
-            let {state, buffers, buffer_paths} = utils.remove_buffers(rawState);
+            const rawState = ['string', 45, [uintArray, floatArray.buffer]];
+            const {state, buffers, buffer_paths} = utils.remove_buffers(rawState);
             expect(state).to.deep.equal(['string', 45, [null, null]]);
             expect(buffers).to.deep.equal([uintArray.buffer, floatArray.buffer]);
             expect(buffer_paths).to.deep.equal([[2, 0], [2, 1]]);
         });
 
         it('object in object', function() {
-            let rawState = {
+            const rawState = {
                 a: 'string',
                 b: 45,
                 buffers: {
@@ -102,7 +103,7 @@ describe('remove_buffers', function() {
                     bufferB: floatArray.buffer,
                 },
             };
-            let {state, buffers, buffer_paths} = utils.remove_buffers(rawState);
+            const {state, buffers, buffer_paths} = utils.remove_buffers(rawState);
             expect(state).to.deep.equal({a: 'string', b: 45, buffers: {}});
             expect(buffers).to.deep.equal([uintArray.buffer, floatArray.buffer]);
             expect(buffer_paths).to.deep.equal(

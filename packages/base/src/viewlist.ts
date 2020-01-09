@@ -15,16 +15,24 @@
  */
 export
 class ViewList<T> {
-    constructor(create_view: (model: any, index: any) => T | Promise<T>, remove_view: (view: T) => void, context: any) {
+    constructor(
+        create_view: (model: any, index: any) => T | Promise<T>,
+        remove_view: ((view: T) => void) | null,
+        context: any
+    ) {
         this.initialize(create_view, remove_view, context);
     }
 
-    initialize(create_view: (model: any, index: any) => T | Promise<T>, remove_view: (view: T) => void, context: any) {
+    initialize(
+        create_view: (model: any, index: any) => T | Promise<T>,
+        remove_view: ((view: T) => void) | null,
+        context: any
+    ): void {
         this._handler_context = context || this;
         this._models = [];
         this.views = []; // list of promises for views
         this._create_view = create_view;
-        this._remove_view = remove_view || function(view) { (view as any).remove(); };
+        this._remove_view = remove_view || function(view): void { (view as any).remove(); };
     }
 
     /**
@@ -35,8 +43,8 @@ class ViewList<T> {
      * `Promise.all(myviewlist.views).then(function(views) {...});`
      */
     update(new_models: any[], create_view?: (model: any, index: any) => T | Promise<T>, remove_view?: (view: T) => void, context?: any): Promise<T[]> {
-        let remove = remove_view || this._remove_view;
-        let create = create_view || this._create_view;
+        const remove = remove_view || this._remove_view;
+        const create = create_view || this._create_view;
         context = context || this._handler_context;
         let i = 0;
         // first, skip past the beginning of the lists if they are identical
@@ -45,9 +53,9 @@ class ViewList<T> {
                 break;
             }
         }
-        let first_removed = i;
+        const first_removed = i;
         // Remove the non-matching items from the old list.
-        let removed = this.views.splice(first_removed, this.views.length - first_removed);
+        const removed = this.views.splice(first_removed, this.views.length - first_removed);
         for (let j = 0; j < removed.length; j++) {
             removed[j].then(function(view) {
                 remove.call(context, view);
@@ -86,8 +94,8 @@ class ViewList<T> {
      * another way.
      */
     dispose(): void {
-        this.views = null;
-        this._models = null;
+        this.views = null!;
+        this._models = null!;
     }
 
     _handler_context: any;
@@ -96,4 +104,3 @@ class ViewList<T> {
     _create_view: (model: any, index: any) => T | Promise<T>;
     _remove_view: (view: T) => void;
 }
-

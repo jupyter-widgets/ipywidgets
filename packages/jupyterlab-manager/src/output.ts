@@ -4,16 +4,16 @@
 import * as outputBase from '@jupyter-widgets/output';
 
 import {
-  DOMWidgetView, JupyterPhosphorWidget
+  DOMWidgetView, JupyterLuminoWidget
 } from '@jupyter-widgets/base';
 
 import {
   Message
-} from '@phosphor/messaging';
+} from '@lumino/messaging';
 
 import {
   Panel
-} from '@phosphor/widgets';
+} from '@lumino/widgets';
 
 import {
   WidgetManager
@@ -23,9 +23,7 @@ import {
   OutputAreaModel, OutputArea
 } from '@jupyterlab/outputarea';
 
-import {
-  nbformat
-} from '@jupyterlab/coreutils';
+import * as nbformat from '@jupyterlab/nbformat';
 
 import {
   KernelMessage, Session
@@ -38,23 +36,23 @@ const OUTPUT_WIDGET_VERSION = outputBase.OUTPUT_WIDGET_VERSION;
 
 export
 class OutputModel extends outputBase.OutputModel {
-  defaults() {
+  defaults(): Backbone.ObjectHash {
     return {...super.defaults(),
       msg_id: '',
       outputs: []
     };
   }
 
-  initialize(attributes: any, options: any) {
+  initialize(attributes: any, options: any): void {
     super.initialize(attributes, options);
     // The output area model is trusted since widgets are only rendered in trusted contexts.
     this._outputs = new OutputAreaModel({trusted: true});
-    this._msgHook = (msg) => {
+    this._msgHook = (msg): boolean => {
       this.add(msg);
       return false;
     };
 
-    this.widget_manager.context.session.kernelChanged.connect((sender, args) => {
+    this.widget_manager.context.sessionContext.kernelChanged.connect((sender, args) => {
       this._handleKernelChanged(args);
     });
     this.listenTo(this, 'change:msg_id', this.reset_msg_id);
@@ -65,7 +63,7 @@ class OutputModel extends outputBase.OutputModel {
   /**
    * Register a new kernel
    */
-  _handleKernelChanged({oldValue}: Session.IKernelChangedArgs) {
+  _handleKernelChanged({oldValue}: Session.ISessionConnection.IKernelChangedArgs): void {
     const msgId = this.get('msg_id');
     if (msgId && oldValue) {
       oldValue.removeMessageHook(msgId, this._msgHook);
@@ -76,8 +74,8 @@ class OutputModel extends outputBase.OutputModel {
   /**
    * Reset the message id.
    */
-  reset_msg_id() {
-    const kernel = this.widget_manager.context.session.kernel;
+  reset_msg_id(): void {
+    const kernel = this.widget_manager.context.sessionContext?.session?.kernel;
     const msgId = this.get('msg_id');
     const oldMsgId = this.previous('msg_id');
 
@@ -92,17 +90,18 @@ class OutputModel extends outputBase.OutputModel {
     }
   }
 
-  add(msg: KernelMessage.IIOPubMessage) {
-    let msgType = msg.header.msg_type;
+  add(msg: KernelMessage.IIOPubMessage): void {
+    const msgType = msg.header.msg_type;
     switch (msgType) {
     case 'execute_result':
     case 'display_data':
     case 'stream':
-    case 'error':
-      let model = msg.content as nbformat.IOutput;
+    case 'error': {
+      const model = msg.content as nbformat.IOutput;
       model.output_type = msgType as nbformat.OutputType;
       this._outputs.add(model);
       break;
+    }
     case 'clear_output':
       this.clear_output((msg as KernelMessage.IClearOutputMsg).content.wait);
       break;
@@ -113,15 +112,15 @@ class OutputModel extends outputBase.OutputModel {
     this.save_changes();
   }
 
-  clear_output(wait: boolean = false) {
+  clear_output(wait = false): void {
     this._outputs.clear(wait);
   }
 
-  get outputs() {
+  get outputs(): OutputAreaModel {
     return this._outputs;
   }
 
-  setOutputs(model?: any, value?: any, options?: any) {
+  setOutputs(model?: any, value?: any, options?: any): void {
     if (!(options && options.newMessage)) {
         // fromJSON does not clear the existing output
         this.clear_output();
@@ -137,23 +136,23 @@ class OutputModel extends outputBase.OutputModel {
 }
 
 export
-class JupyterPhosphorPanelWidget extends Panel {
-    constructor(options: JupyterPhosphorWidget.IOptions & Panel.IOptions) {
-        let view = options.view;
+class JupyterLuminoPanelWidget extends Panel {
+    constructor(options: JupyterLuminoWidget.IOptions & Panel.IOptions) {
+      const view = options.view;
         delete options.view;
         super(options);
         this._view = view;
     }
 
     /**
-     * Process the phosphor message.
+     * Process the Lumino message.
      *
-     * Any custom phosphor widget used inside a Jupyter widget should override
+     * Any custom Lumino widget used inside a Jupyter widget should override
      * the processMessage function like this.
      */
-    processMessage(msg: Message) {
+    processMessage(msg: Message): void {
         super.processMessage(msg);
-        this._view.processPhosphorMessage(msg);
+        this._view.processLuminoMessage(msg);
     }
 
     /**
@@ -161,7 +160,7 @@ class JupyterPhosphorPanelWidget extends Panel {
      *
      * This causes the view to be destroyed as well with 'remove'
      */
-    dispose() {
+    dispose(): void {
         if (this.isDisposed) {
             return;
         }
@@ -169,7 +168,7 @@ class JupyterPhosphorPanelWidget extends Panel {
         if (this._view) {
             this._view.remove();
         }
-        this._view = null;
+        this._view = null!;
     }
 
     private _view: DOMWidgetView;
@@ -178,12 +177,12 @@ class JupyterPhosphorPanelWidget extends Panel {
 export
 class OutputView extends outputBase.OutputView {
 
-    _createElement(tagName: string) {
-      this.pWidget = new JupyterPhosphorPanelWidget({ view: this });
+    _createElement(tagName: string): HTMLElement {
+      this.pWidget = new JupyterLuminoPanelWidget({ view: this });
       return this.pWidget.node;
     }
 
-    _setElement(el: HTMLElement) {
+    _setElement(el: HTMLElement): void {
         if (this.el || el !== this.pWidget.node) {
             // Boxes don't allow setting the element beyond the initial creation.
             throw new Error('Cannot reset the DOM element.');
@@ -196,7 +195,7 @@ class OutputView extends outputBase.OutputView {
   /**
    * Called when view is rendered.
    */
-  render() {
+  render(): void {
     super.render();
     this._outputView = new OutputArea({
       rendermime: this.model.widget_manager.rendermime,
@@ -214,12 +213,12 @@ class OutputView extends outputBase.OutputView {
     this.update(); // Set defaults.
   }
 
-  remove() {
+  remove(): any {
     this._outputView.dispose();
     return super.remove();
   }
 
   model: OutputModel;
   _outputView: OutputArea;
-  pWidget: Panel
+  pWidget: Panel;
 }

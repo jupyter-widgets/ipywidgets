@@ -5,18 +5,18 @@ import * as widgets from '@jupyter-widgets/controls';
 import * as base from '@jupyter-widgets/base';
 import * as outputWidgets from './output';
 
-import * as PhosphorWidget from '@phosphor/widgets';
+import * as LuminoWidget from '@lumino/widgets';
 import { RenderMimeRegistry, standardRendererFactories } from '@jupyterlab/rendermime';
 
-import { OutputModel, OutputView } from './output';
 import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers';
+import { WidgetModel, WidgetView } from '@jupyter-widgets/base';
 
 export
 class HTMLManager extends base.ManagerBase<HTMLElement> {
 
     constructor(options?: {loader?: (moduleName: string, moduleVersion: string) => Promise<any>}) {
         super();
-        this.loader = options && options.loader;
+        this.loader = options?.loader;
         this.renderMime = new RenderMimeRegistry({
             initialFactories: standardRendererFactories
         });
@@ -30,9 +30,9 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
      * Display the specified view. Element where the view is displayed
      * is specified in the `options.el` argument.
      */
-    display_view(msg, view, options) {
+    display_view(msg: any, view: any, options: { el: HTMLElement }): Promise<HTMLElement> {
         return Promise.resolve(view).then((view) => {
-            PhosphorWidget.Widget.attach(view.pWidget, options.el);
+            LuminoWidget.Widget.attach(view.pWidget, options.el);
             view.on('remove', () => {
                 console.log('View removed', view);
             });
@@ -43,7 +43,7 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
     /**
      * Placeholder implementation for _get_comm_info.
      */
-    _get_comm_info() {
+    _get_comm_info(): Promise<{}> {
         return Promise.resolve({});
     }
 
@@ -61,7 +61,7 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
     /**
      * Load a class and return a promise to the loaded object.
      */
-    protected loadClass(className: string, moduleName: string, moduleVersion: string) {
+    protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<typeof WidgetModel | typeof WidgetView> {
         return new Promise((resolve, reject) => {
             if (moduleName === '@jupyter-widgets/base') {
                 resolve(base);
@@ -75,8 +75,8 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
                 reject(`Could not load module ${moduleName}@${moduleVersion}`);
             }
         }).then((module) => {
-            if (module[className]) {
-                return module[className];
+            if ((module as any)[className]) {
+                return (module as any)[className];
             } else {
                 return Promise.reject(`Class ${className} not found in module ${moduleName}@${moduleVersion}`);
             }
@@ -93,5 +93,5 @@ class HTMLManager extends base.ManagerBase<HTMLElement> {
     /**
      * A loader for a given module name and module version, and returns a promise to a module
      */
-    loader: (moduleName: string, moduleVersion: string) => Promise<any>;
+    loader: ((moduleName: string, moduleVersion: string) => Promise<any>) | undefined;
 }

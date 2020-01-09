@@ -6,11 +6,10 @@ import {
 } from 'base64-js';
 
 import {
-    UUID
-} from '@phosphor/coreutils';
+    JSONObject, JSONValue, UUID, JSONExt
+} from '@lumino/coreutils';
 
-import _isEqual = require('lodash/isEqual');
-import isPlainObject = require('lodash/isPlainObject');
+import _isEqual from 'lodash/isEqual';
 
 /**
  * Find all strings in the first argument that are not in the second.
@@ -24,7 +23,7 @@ function difference(a: string[], b: string[]): string[] {
  * Compare two objects deeply to see if they are equal.
  */
 export
-function isEqual(a: any, b: any) {
+function isEqual(a: unknown, b: unknown): boolean {
     return _isEqual(a, b);
 }
 
@@ -34,10 +33,10 @@ function isEqual(a: any, b: any) {
  * This is from code that Typescript 2.4 generates for a polyfill.
  */
 export
-let assign = (Object as any).assign || function(t: any) {
-    for (let i = 1; i < arguments.length; i++) {
-        let s = arguments[i];
-        for (let p in s) {
+const assign = (Object as any).assign || function(t: any, ...args: any[]): any {
+    for (let i = 1; i < args.length; i++) {
+        const s = args[i];
+        for (const p in s) {
             if (Object.prototype.hasOwnProperty.call(s, p)) {
                 t[p] = s[p];
             }
@@ -57,33 +56,10 @@ function uuid(): string {
 }
 
 /**
- * Wrappable Error class
- *
- * The Error class doesn't actually act on `this`.  Instead it always
- * returns a new instance of Error.  Here we capture that instance so we
- * can apply it's properties to `this`.
- */
-export
-class WrappedError extends Error {
-    constructor(message: string, error: any) {
-        super(message);
-        console.warn('WrappedError has been deprecated!');
-        // Keep a stack of the original error messages.
-        if (error instanceof WrappedError) {
-            this.error_stack = error.error_stack;
-        } else {
-            this.error_stack = [error];
-        }
-        this.error_stack.push(this);
-    }
-    error_stack: any[];
-}
-
-/**
  * A simple dictionary type.
  */
 export
-type Dict<T> = { [keys: string]: T; };
+type Dict<T> = { [keys: string]: T };
 
 /**
  * Resolve a promiseful dictionary.
@@ -91,13 +67,13 @@ type Dict<T> = { [keys: string]: T; };
  */
 export
 function resolvePromisesDict<V>(d: Dict<PromiseLike<V>>): Promise<Dict<V>> {
-    let keys = Object.keys(d);
-    let values: PromiseLike<V>[] = [];
+    const keys = Object.keys(d);
+    const values: PromiseLike<V>[] = [];
     keys.forEach(function(key) {
         values.push(d[key]);
     });
     return Promise.all(values).then((v) => {
-        let d: Dict<V> = {};
+        const d: Dict<V> = {};
         for (let i=0; i < keys.length; i++) {
             d[keys[i]] = v[i];
         }
@@ -113,7 +89,7 @@ function resolvePromisesDict<V>(d: Dict<PromiseLike<V>>): Promise<Dict<V>> {
  */
 export
 function reject(message: string, log: boolean) {
-    return function promiseRejection(error: any) {
+    return function promiseRejection(error: Error): never {
         if (log) {
             console.error(new Error(message));
         }
@@ -131,11 +107,11 @@ function reject(message: string, log: boolean) {
  * Will lead to {a: 1, b: {data: array1}, c: [0, array2]}
  */
 export
-function put_buffers(state: any, buffer_paths: (string | number)[][], buffers: DataView[]) {
+function put_buffers(state: Dict<BufferJSON>, buffer_paths: (string | number)[][], buffers: DataView[]): void {
     for (let i=0; i < buffer_paths.length; i++) {
-        let buffer_path = buffer_paths[i];
+        const buffer_path = buffer_paths[i];
          // say we want to set state[x][y][z] = buffers[i]
-        let obj = state;
+        let obj = state as any;
         // we first get obj = state[x][y]
         for (let j = 0; j < buffer_path.length - 1; j++) {
             obj = obj[buffer_path[j]];
@@ -143,6 +119,41 @@ function put_buffers(state: any, buffer_paths: (string | number)[][], buffers: D
         // and then set: obj[z] = buffers[i]
         obj[buffer_path[buffer_path.length - 1]] = buffers[i];
     }
+}
+
+export
+interface ISerializedState {
+    state: JSONObject;
+    buffers: ArrayBuffer[];
+    buffer_paths: (string | number)[][];
+}
+
+
+export
+interface ISerializeable {
+    toJSON(options?: {}): JSONObject;
+}
+
+export
+type BufferJSON =
+    | { [property: string]: BufferJSON }
+    | BufferJSON[]
+    | string
+    | number
+    | boolean
+    | null
+    | ArrayBuffer
+    | DataView;
+
+
+export
+function isSerializable(object: unknown): object is ISerializeable {
+    return (typeof object === 'object' && object && 'toJSON' in object) ?? false;
+}
+
+export
+function isObject(data: BufferJSON): data is Dict<BufferJSON> {
+    return JSONExt.isObject(data as JSONValue);
 }
 
 
@@ -156,14 +167,14 @@ function put_buffers(state: any, buffer_paths: (string | number)[][], buffers: D
  * and the buffers associated to those paths (.buffers).
  */
 export
-function remove_buffers(state: any): {state: any, buffers: ArrayBuffer[], buffer_paths: (string | number)[][]} {
-    let buffers: ArrayBuffer[] = [];
-    let buffer_paths: (string | number)[][] = [];
+function remove_buffers(state: BufferJSON | ISerializeable): ISerializedState {
+    const buffers: ArrayBuffer[] = [];
+    const buffer_paths: (string | number)[][] = [];
     // if we need to remove an object from a list, we need to clone that list, otherwise we may modify
     // the internal state of the widget model
     // however, we do not want to clone everything, for performance
-    function remove(obj: any, path: (string | number)[]) {
-        if (obj.toJSON) {
+    function remove(obj: BufferJSON | ISerializeable, path: (string | number)[]): BufferJSON {
+        if (isSerializable(obj)) {
             // We need to get the JSON form of the object before recursing.
             // See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#toJSON()_behavior
             obj = obj.toJSON();
@@ -171,7 +182,7 @@ function remove_buffers(state: any): {state: any, buffers: ArrayBuffer[], buffer
         if (Array.isArray(obj)) {
             let is_cloned = false;
             for (let i = 0; i < obj.length; i++) {
-                let value = obj[i];
+                const value = obj[i];
                 if (value) {
                     if (value instanceof ArrayBuffer || ArrayBuffer.isView(value)) {
                         if (!is_cloned) {
@@ -184,7 +195,7 @@ function remove_buffers(state: any): {state: any, buffers: ArrayBuffer[], buffer
                         // about array length, much easier this way
                         obj[i] = null;
                     } else {
-                        let new_value  = remove(value, path.concat([i]));
+                        const new_value  = remove(value, path.concat([i]));
                         // only assigned when the value changes, we may serialize objects that don't support assignment
                         if (new_value !== value) {
                             if (!is_cloned) {
@@ -196,11 +207,11 @@ function remove_buffers(state: any): {state: any, buffers: ArrayBuffer[], buffer
                     }
                 }
             }
-        } else if (isPlainObject(obj)) {
-            for (let key in obj) {
+        } else if (isObject(obj)) {
+            for (const key in obj) {
                 let is_cloned = false;
-                if (obj.hasOwnProperty(key)) {
-                    let value = obj[key];
+                if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                    const value = obj[key];
                     if (value) {
                         if (value instanceof ArrayBuffer || ArrayBuffer.isView(value)) {
                             if (!is_cloned) {
@@ -211,7 +222,7 @@ function remove_buffers(state: any): {state: any, buffers: ArrayBuffer[], buffer
                             buffer_paths.push(path.concat([key]));
                             delete obj[key]; // for objects/dicts we just delete them
                         } else {
-                            let new_value = remove(value, path.concat([key]));
+                            const new_value = remove(value, path.concat([key]));
                             // only assigned when the value changes, we may serialize objects that don't support assignment
                             if (new_value !== value) {
                                 if (!is_cloned) {
@@ -227,11 +238,11 @@ function remove_buffers(state: any): {state: any, buffers: ArrayBuffer[], buffer
         }
         return obj;
     }
-    let new_state = remove(state, []);
+    const new_state = remove(state, []) as JSONObject;
     return {state: new_state, buffers: buffers, buffer_paths: buffer_paths};
 }
 
-let hexTable = [
+const hexTable = [
     '00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '0A', '0B', '0C', '0D', '0E', '0F',
     '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '1A', '1B', '1C', '1D', '1E', '1F',
     '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '2A', '2B', '2C', '2D', '2E', '2F',
@@ -255,8 +266,8 @@ let hexTable = [
  */
 export
 function bufferToHex(buffer: ArrayBuffer): string {
-    let x = new Uint8Array(buffer);
-    let s = [];
+    const x = new Uint8Array(buffer);
+    const s = [];
     for (let i = 0; i < x.length; i++) {
         s.push(hexTable[x[i]]);
     }
@@ -268,7 +279,7 @@ function bufferToHex(buffer: ArrayBuffer): string {
  */
 export
 function hexToBuffer(hex: string): ArrayBuffer {
-    let x = new Uint8Array(hex.length / 2);
+    const x = new Uint8Array(hex.length / 2);
     for (let i = 0; i < hex.length; i += 2) {
         x[i / 2] = parseInt(hex.slice(i, i + 2), 16);
     }

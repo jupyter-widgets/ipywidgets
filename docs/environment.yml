@@ -5,14 +5,18 @@ channels:
 dependencies:
 - ipykernel
 - jinja2
-- jupyter_sphinx
 - ipywidgets
+- bqplot
+- numpy
 - nbformat
 - nbsphinx
 - notebook>=4.2
-- python=3.6
+- python=3.7
 - sphinx>=1.4.6
 - sphinx_rtd_theme
 - tornado
 - python-dateutil
 - recommonmark
+- matplotlib
+- ipyleaflet
+- pandas

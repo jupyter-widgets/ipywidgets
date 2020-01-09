@@ -11,7 +11,6 @@ from .widget_box import Box
 from .widget import register
 from .widget_core import CoreWidget
 from traitlets import Unicode, Dict, CInt, TraitError, validate
-from ipython_genutils.py3compat import unicode_type
 
 
 class _SelectionContainer(Box, CoreWidget):
@@ -41,7 +40,7 @@ class _SelectionContainer(Box, CoreWidget):
             New title
         """
         # JSON dictionaries have string keys, so we convert index to a string
-        index = unicode_type(int(index))
+        index = str(int(index))
         self._titles[index] = title
         self.send_state('_titles')
 
@@ -54,7 +53,7 @@ class _SelectionContainer(Box, CoreWidget):
             Index of the container page
         """
         # JSON dictionaries have string keys, so we convert index to a string
-        index = unicode_type(int(index))
+        index = str(int(index))
         if index in self._titles:
             return self._titles[index]
         else:
@@ -62,8 +61,7 @@ class _SelectionContainer(Box, CoreWidget):
 
     def _repr_keys(self):
         # We also need to include _titles in repr for reproducibility
-        for key in super(_SelectionContainer, self)._repr_keys():
-            yield key
+        yield from super()._repr_keys()
         if self._titles:
             yield '_titles'
 
@@ -80,3 +78,10 @@ class Tab(_SelectionContainer):
     """Displays children each on a separate accordion tab."""
     _view_name = Unicode('TabView').tag(sync=True)
     _model_name = Unicode('TabModel').tag(sync=True)
+
+
+@register
+class Stacked(_SelectionContainer):
+    """Displays only the selected child."""
+    _view_name = Unicode('StackedView').tag(sync=True)
+    _model_name = Unicode('StackedModel').tag(sync=True)

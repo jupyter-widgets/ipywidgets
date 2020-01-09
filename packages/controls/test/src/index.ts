@@ -2,4 +2,5 @@
 // Distributed under the terms of the Modified BSD License.
 
 import './widget_date_test';
-import './phosphor/currentselection_test';
+import './widget_string_test';
+import './lumino/currentselection_test';

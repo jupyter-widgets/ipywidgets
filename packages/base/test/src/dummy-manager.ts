@@ -6,6 +6,7 @@ import * as services from '@jupyterlab/services';
 import * as Backbone from 'backbone';
 
 import * as sinon from 'sinon';
+void sinon;
 
 let numComms = 0;
 
@@ -15,93 +16,45 @@ class MockComm implements widgets.IClassicComm {
         this.comm_id = `mock-comm-id-${numComms}`;
         numComms += 1;
     }
-    on_open(fn) {
+    on_open(fn: Function): void {
         this._on_open = fn;
     }
-    on_close(fn) {
+    on_close(fn: Function): void {
         this._on_close = fn;
     }
-    on_msg(fn) {
+    on_msg(fn: Function): void {
         this._on_msg = fn;
     }
-    _process_msg(msg) {
+    _process_msg(msg: any): any {
         if (this._on_msg) {
             return this._on_msg(msg);
         } else {
             return Promise.resolve();
         }
     }
-    open() {
+    open(): string {
         if (this._on_open) {
             this._on_open();
         }
         return '';
     }
-    close() {
+    close(): string {
         if (this._on_close) {
             this._on_close();
         }
         return '';
     }
-    send() {
+    send(): string {
         return '';
     }
     comm_id: string;
     target_name: string;
-    _on_msg: Function = null;
-    _on_open: Function = null;
-    _on_close: Function = null;
+    _on_msg: Function | null = null;
+    _on_open: Function | null = null;
+    _on_close: Function | null = null;
 }
 
-export
-class DummyManager extends widgets.ManagerBase<HTMLElement> {
-    constructor() {
-        super();
-        this.el = window.document.createElement('div');
-    }
-
-    display_view(msg: services.KernelMessage.IMessage, view: Backbone.View<Backbone.Model>, options: any) {
-        // TODO: make this a spy
-        // TODO: return an html element
-        return Promise.resolve(view).then(view => {
-            this.el.appendChild(view.el);
-            view.on('remove', () => console.log('view removed', view));
-            return view.el;
-        });
-    }
-
-    protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<any> {
-        if (moduleName === '@jupyter-widgets/base') {
-            if (widgets[className]) {
-                return Promise.resolve(widgets[className]);
-            } else {
-                return Promise.reject(`Cannot find class ${className}`);
-            }
-        } else if (moduleName === 'test-widgets') {
-            if (testWidgets[className]) {
-                return Promise.resolve(testWidgets[className]);
-            } else {
-                return Promise.reject(`Cannot find class ${className}`);
-            }
-        } else {
-            return Promise.reject(`Cannot find module ${moduleName}`);
-        }
-    }
-
-    _get_comm_info() {
-        return Promise.resolve({});
-    }
-
-    _create_comm() {
-        return Promise.resolve(new MockComm());
-    }
-
-    el: HTMLElement;
-}
-
-// Dummy widget with custom serializer and binary field
-
-let typesToArray = {
+const typesToArray: {[key: string]: any} = {
     int8: Int8Array,
     int16: Int16Array,
     int32: Int32Array,
@@ -112,24 +65,25 @@ let typesToArray = {
     float64: Float64Array
 };
 
-let JSONToArray = function(obj, manager) {
+
+const JSONToArray = function(obj: any): any {
     return new typesToArray[obj.dtype](obj.buffer.buffer);
 };
 
-let arrayToJSON = function(obj, manager) {
-    let dtype = Object.keys(typesToArray).filter(
+const arrayToJSON = function(obj: any): any {
+    const dtype = Object.keys(typesToArray).filter(
         i => typesToArray[i] === obj.constructor)[0];
     return {dtype, buffer: obj};
 };
 
-let array_serialization = {
+const array_serialization = {
     deserialize: JSONToArray,
     serialize: arrayToJSON
 };
 
 
 class TestWidget extends widgets.WidgetModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return {...super.defaults(),
             _model_module: 'test-widgets',
             _model_name: 'TestWidget',
@@ -137,17 +91,17 @@ class TestWidget extends widgets.WidgetModel {
             _view_module: 'test-widgets',
             _view_name: 'TestWidgetView',
             _view_module_version: '1.0.0',
-            _view_count: null,
+            _view_count: null as any,
         };
     }
 }
 
 class TestWidgetView extends widgets.WidgetView {
-    render() {
+    render(): void {
         this._rendered += 1;
         super.render();
     }
-    remove() {
+    remove(): void {
         this._removed += 1;
         super.remove();
     }
@@ -160,7 +114,7 @@ class BinaryWidget extends TestWidget {
         ...widgets.WidgetModel.serializers,
         array: array_serialization
     };
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return {...super.defaults(),
             _model_name: 'BinaryWidget',
             _view_name: 'BinaryWidgetView',
@@ -169,10 +123,56 @@ class BinaryWidget extends TestWidget {
 }
 
 class BinaryWidgetView extends TestWidgetView {
-    render() {
+    render(): void {
         this._rendered += 1;
     }
     _rendered = 0;
 }
 
-let testWidgets = {TestWidget, TestWidgetView, BinaryWidget, BinaryWidgetView};
+const testWidgets = {TestWidget, TestWidgetView, BinaryWidget, BinaryWidgetView};
+
+export
+class DummyManager extends widgets.ManagerBase<HTMLElement> {
+    constructor() {
+        super();
+        this.el = window.document.createElement('div');
+    }
+
+    display_view(msg: services.KernelMessage.IMessage, view: Backbone.View<Backbone.Model>, options: any): Promise<HTMLElement> {
+        // TODO: make this a spy
+        // TODO: return an html element
+        return Promise.resolve(view).then(view => {
+            this.el.appendChild(view.el);
+            view.on('remove', () => console.log('view removed', view));
+            return view.el;
+        });
+    }
+
+    protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<any> {
+        if (moduleName === '@jupyter-widgets/base') {
+            if ((widgets as any)[className]) {
+                return Promise.resolve((widgets as any)[className]);
+            } else {
+                return Promise.reject(`Cannot find class ${className}`);
+            }
+        } else if (moduleName === 'test-widgets') {
+            if ((testWidgets as any)[className]) {
+                return Promise.resolve((testWidgets as any)[className]);
+            } else {
+                return Promise.reject(`Cannot find class ${className}`);
+            }
+        } else {
+            return Promise.reject(`Cannot find module ${moduleName}`);
+        }
+    }
+
+    _get_comm_info(): Promise<{}> {
+        return Promise.resolve({});
+    }
+
+    _create_comm(): Promise<MockComm> {
+        return Promise.resolve(new MockComm());
+    }
+
+    el: HTMLElement;
+}

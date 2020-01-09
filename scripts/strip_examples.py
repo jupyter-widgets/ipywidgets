@@ -53,11 +53,9 @@ def _cells(nb):
     """Yield all cells in an nbformat-insensitive manner"""
     if nb.nbformat < 4:
         for ws in nb.worksheets:
-            for cell in ws.cells:
-                yield cell
+            yield from ws.cells
     else:
-        for cell in nb.cells:
-            yield cell
+        yield from nb.cells
 
 
 def strip_output(nb):
@@ -74,8 +72,8 @@ def strip_output(nb):
 
 if __name__ == '__main__':
     filename = sys.argv[1]
-    with io.open(filename, 'r', encoding='utf8') as f:
+    with open(filename, 'r', encoding='utf8') as f:
         nb = read(f, as_version=NO_CONVERT)
     nb = strip_output(nb)
-    with io.open(filename, 'w', encoding='utf8') as f:
+    with open(filename, 'w', encoding='utf8') as f:
         write(nb, f)

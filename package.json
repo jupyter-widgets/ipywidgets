@@ -1,27 +1,41 @@
 {
   "private": true,
-  "scripts": {
-    "build": "lerna run build --ignore \"@jupyter-widgets/example-*\"",
-    "build:examples": "lerna run build --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
-    "clean": "lerna run clean",
-    "integrity": "node scripts/package-integrity.js",
-    "lint": "lerna run lint",
-    "publish": "yarn run clean && yarn run build && lerna publish -m \"Publish npm packages\"",
-    "update-dependency": "update-dependency --lerna",
-    "updated": "lerna updated"
-  },
-  "devDependencies": {
-    "@jupyterlab/buildutils": "1.0.0-alpha.8",
-    "lerna": "^3.2.1"
-  },
   "workspaces": [
     "packages/*",
     "widgetsnbextension",
     "examples/*"
   ],
-  "resolutions": {
-    "@jupyter-widgets/notebook-manager/**/@jupyterlab/services": "^2.0.0",
-    "@jupyter-widgets/jupyterlab-manager/**/@jupyterlab/services": "4.0.0-alpha.8",
-    "**/@jupyterlab/services": "4.0.0-alpha.8"
+  "engines": {
+    "npm": "please-use-yarn",
+    "node": ">=10.15.3",
+    "yarn": ">=1.15.0"
+  },
+  "scripts": {
+    "build": "lerna run build --ignore \"@jupyter-widgets/example-*\"",
+    "build:examples": "lerna run build --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
+    "build:test": "lerna run build:test --ignore \"@jupyter-widgets/example-*\"",
+    "clean": "lerna run clean",
+    "integrity": "node scripts/package-integrity.js",
+    "eslint": "eslint . --fix --ignore-path .gitignore --ext .ts,.tsx",
+    "eslint:check": "eslint . --ignore-path .gitignore --ext .ts,.tsx",
+    "integrity2": "node buildutils/lib/integrity.js",
+    "lint": "yarn && yarn run prettier && yarn run eslint",
+    "lint:check": "yarn run prettier:check && yarn run eslint:check",
+    "prettier": "prettier --ignore-path .gitignore --write '**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}'",
+    "prettier:check": "prettier --ignore-path .gitignore --check '**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}'",
+    "sort-package-json": "lerna exec --parallel sort-package-json && sort-package-json",
+    "publish": "yarn run clean && yarn run build && lerna publish -m \"Publish npm packages\"",
+    "update-dependency": "update-dependency --lerna",
+    "updated": "lerna updated"
+  },
+  "devDependencies": {
+    "@jupyterlab/buildutils": "^2.0.0-beta.2",
+    "@typescript-eslint/eslint-plugin": "^2.14.0",
+    "@typescript-eslint/parser": "^2.14.0",
+    "eslint": "^6.5.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "lerna": "^3.20.2",
+    "prettier": "^1.19.1",
+    "sort-package-json": "~1.35"
   }
 }

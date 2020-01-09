@@ -2,7 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import {
-    assign
+    assign, Dict
 } from './utils';
 
 import {
@@ -13,7 +13,7 @@ import {
 /**
  * css properties exposed by the layout widget with their default values.
  */
-let css_properties: {[key: string]: string} = {
+const css_properties: Dict<string | null> = {
     align_content: null,
     align_items: null,
     align_self: null,
@@ -32,14 +32,16 @@ let css_properties: {[key: string]: string} = {
     min_height: null,
     min_width: null,
     overflow: null,
-    overflow_x: null,  // deprecated
-    overflow_y: null,  // deprecated
     order: null,
     padding: null,
     right: null,
     top: null,
     visibility: null,
     width: null,
+
+    // image-specific
+    object_fit: null,
+    object_position: null,
 
     // container
     grid_auto_columns: null,
@@ -58,7 +60,7 @@ let css_properties: {[key: string]: string} = {
 
 export
 class LayoutModel extends WidgetModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return assign(super.defaults(), {
         _model_name: 'LayoutModel',
         _view_name: 'LayoutView'
@@ -71,11 +73,11 @@ class LayoutView extends WidgetView {
     /**
      * Public constructor
      */
-    initialize(parameters: WidgetView.InitializeParameters) {
+    initialize(parameters: WidgetView.IInitializeParameters): void {
         this._traitNames = [];
         super.initialize(parameters);
         // Register the traits that live on the Python side
-        for (let key of Object.keys(css_properties)) {
+        for (const key of Object.keys(css_properties)) {
             this.registerTrait(key);
         }
     }
@@ -84,21 +86,8 @@ class LayoutView extends WidgetView {
      * Register a CSS trait that is known by the model
      * @param trait
      */
-    registerTrait(trait: string) {
+    registerTrait(trait: string): void {
         this._traitNames.push(trait);
-
-        // Treat overflow_x and overflow_y as a special case since they are deprecated
-        // and interact in special ways with the overflow attribute.
-        if (trait === 'overflow_x' || trait === 'overflow_y') {
-            // Listen to changes, and set the value on change.
-            this.listenTo(this.model, 'change:' + trait, (model: any, value: any) => {
-                this.handleOverflowChange(trait, value);
-            });
-
-            // Set the initial value on display.
-            this.handleOverflowChange(trait, this.model.get(trait));
-            return;
-        }
 
         // Listen to changes, and set the value on change.
         this.listenTo(this.model, 'change:' + trait, (model: LayoutModel, value: any) => {
@@ -121,35 +110,14 @@ class LayoutView extends WidgetView {
     /**
      * Handles when a trait value changes
      */
-    handleChange(trait: string, value: any) {
+    handleChange(trait: string, value: any): void {
         // should be synchronous so that we can measure later.
-        let parent = this.options.parent as DOMWidgetView;
+        const parent = this.options.parent as DOMWidgetView;
         if (parent) {
             if (value === null) {
                 parent.el.style.removeProperty(this.css_name(trait));
             } else {
-                parent.el.style[this.css_name(trait)] = value;
-            }
-        } else {
-            console.warn('Style not applied because a parent view does not exist');
-        }
-    }
-
-    /**
-     * Handles when the value of overflow_x or overflow_y changes
-     */
-    handleOverflowChange(trait: string, value: any) {
-        // This differs from the default handleChange method
-        // in that setting `overflow_x` or `overflow_y` to null
-        // when `overflow` is null removes the attribute.
-        let parent = this.options.parent as DOMWidgetView;
-        if (parent) {
-            if (value === null) {
-                if (this.model.get('overflow') === null) {
-                    parent.el.style.removeProperty(this.css_name(trait));
-                }
-            } else {
-                parent.el.style[this.css_name(trait)] = value;
+                parent.el.style.setProperty(this.css_name(trait), value);
             }
         } else {
             console.warn('Style not applied because a parent view does not exist');
@@ -159,8 +127,8 @@ class LayoutView extends WidgetView {
     /**
      * Remove the styling from the parent view.
      */
-    unlayout() {
-        let parent = this.options.parent as DOMWidgetView;
+    unlayout(): void {
+        const parent = this.options.parent as DOMWidgetView;
         this._traitNames.forEach((trait) => {
             if (parent) {
                 parent.el.style.removeProperty(this.css_name(trait));

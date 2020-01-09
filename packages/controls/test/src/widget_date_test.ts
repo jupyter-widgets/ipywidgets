@@ -6,13 +6,11 @@ import {
     expect
 } from 'chai';
 
-import * as sinon from 'sinon';
-
 import * as widgets from '../../lib';
 
 function getDatepicker(parent: Element): HTMLInputElement {
     const elem = parent.querySelector('input[type="date"]');
-    return <HTMLInputElement>elem;
+    return elem as HTMLInputElement;
 }
 
 describe('DatePickerView', function() {
@@ -39,7 +37,7 @@ describe('DatePickerView', function() {
         const options = { model: this.model };
         const view = new widgets.DatePickerView(options);
         view.render();
-        expect(getDatepicker(view.el).valueAsDate.getTime())
+        expect(getDatepicker(view.el).valueAsDate!.getTime())
             .to.equal(testDate.getTime());
     });
 
@@ -76,7 +74,7 @@ describe('DatePickerView', function() {
         const testDate = new Date('2015-02-22');
         this.model.set('value', testDate);
         const datepicker = getDatepicker(view.el);
-        expect(datepicker.valueAsDate.getTime())
+        expect(datepicker.valueAsDate!.getTime())
             .to.equal(testDate.getTime());
     });
 
@@ -133,7 +131,7 @@ describe('deserialize_date', function() {
             date: 12
         };
         const expectedDate = new Date('2017-05-12');
-        expect(widgets.deserialize_date(serialized).getTime())
+        expect(widgets.deserialize_date(serialized)!.getTime())
             .to.equal(expectedDate.getTime());
     });
 });

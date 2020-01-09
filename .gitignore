@@ -20,6 +20,8 @@ __pycache__
 .tern-project
 npm-debug.log
 .pytest_cache
+.vscode/*
+!.vscode/extensions.json
 
 widgetsnbextension/widgetsnbextension/static
 
@@ -29,3 +31,7 @@ index.built.js.map
 
 **/built
 **/lib/
+
+temp/*
+
+tsconfig.tsbuildinfo

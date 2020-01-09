@@ -3,15 +3,15 @@
 
 import {
   PromiseDelegate
-} from '@phosphor/coreutils';
+} from '@lumino/coreutils';
 
 import {
   IDisposable
-} from '@phosphor/disposable';
+} from '@lumino/disposable';
 
 import {
   Panel, Widget
-} from '@phosphor/widgets';
+} from '@lumino/widgets';
 
 import {
   IRenderMime
@@ -43,7 +43,7 @@ class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable
     this._manager.resolve(value);
   }
 
-  async renderModel(model: IRenderMime.IMimeModel) {
+  async renderModel(model: IRenderMime.IMimeModel): Promise<void> {
     const source: any = model.data[this.mimeType];
 
     // Let's be optimistic, and hope the widget state will come later.
@@ -79,7 +79,7 @@ class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable
 
     let widget: Widget;
     try {
-      widget = await manager.display_model(undefined, wModel, undefined);
+      widget = await manager.display_model(null, wModel, undefined);
     } catch (err) {
       this.node.textContent = 'Error displaying widget';
       this.addClass('jupyter-widgets');
@@ -118,10 +118,10 @@ class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable
       return;
     }
     super.dispose();
-    this._manager = null;
+    this._manager = null!;
   }
 
-  private _rerender() {
+  private _rerender(): void {
     if (this._rerenderMimeModel) {
       // Clear the error message
       this.node.textContent = '';

@@ -1,7 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { Widget, Panel } from '@phosphor/widgets';
+import { Widget } from '@lumino/widgets';
 
 import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 
@@ -17,12 +17,12 @@ export class WidgetRenderer extends Widget implements IRenderMime.IRenderer {
         this._manager = manager;
     }
 
-    async renderModel(model: IRenderMime.IMimeModel) {
+    async renderModel(model: IRenderMime.IMimeModel): Promise<void> {
         const source: any = model.data[this.mimeType];
         const modelPromise = this._manager.get_model(source.model_id);
         if (modelPromise) {
             try {
-                let wModel = await modelPromise;
+                const wModel = await modelPromise;
                 await this._manager.display_model(null, wModel, {el: this.node});
             } catch(err) {
                 console.log('Error displaying widget');

@@ -1,27 +1,21 @@
-# coding: utf-8
 
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
 """Base Widget class.  Allows user to create widgets in the back-end that render
-in the IPython notebook front-end.
+in the Jupyter notebook front-end.
 """
 
 from contextlib import contextmanager
-import collections
-import sys
-
-from IPython.core.getipython import get_ipython
+from collections.abc import Iterable
+from IPython import get_ipython
 from ipykernel.comm import Comm
-from traitlets.utils.importstring import import_item
 from traitlets import (
     HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default, Container,
     Undefined)
-from ipython_genutils.py3compat import string_types, PY3
-from IPython.display import display
 from json import loads as jsonloads, dumps as jsondumps
 
-from base64 import standard_b64decode, standard_b64encode
+from base64 import standard_b64encode
 
 from .._version import __protocol_version__, __jupyter_widgets_base_version__
 PROTOCOL_VERSION_MAJOR = __protocol_version__.split('.')[0]
@@ -41,7 +35,7 @@ def _json_to_widget(x, obj):
         return {k: _json_to_widget(v, obj) for k, v in x.items()}
     elif isinstance(x, (list, tuple)):
         return [_json_to_widget(v, obj) for v in x]
-    elif isinstance(x, string_types) and x.startswith('IPY_MODEL_') and x[10:] in Widget.widgets:
+    elif isinstance(x, str) and x.startswith('IPY_MODEL_') and x[10:] in Widget.widgets:
         return Widget.widgets[x[10:]]
     else:
         return x
@@ -51,10 +45,7 @@ widget_serialization = {
     'to_json': _widget_to_json
 }
 
-if PY3:
-    _binary_types = (memoryview, bytearray, bytes)
-else:
-    _binary_types = (memoryview, bytearray)
+_binary_types = (memoryview, bytearray, bytes)
 
 def _put_buffers(state, buffer_paths, buffers):
     """The inverse of _remove_buffers, except here we modify the existing dict/lists.
@@ -113,7 +104,6 @@ def _separate_buffers(substate, path, buffer_paths, buffers):
         raise ValueError("expected state to be a list or dict, not %r" % substate)
     return substate
 
-
 def _remove_buffers(state):
     """Return (state_without_buffers, buffer_paths, buffers) for binary message parts
 
@@ -146,18 +136,9 @@ def _buffer_list_equal(a, b):
         # NOTE: Simple ia != ib does not always work as intended, as
         # e.g. memoryview(np.frombuffer(ia, dtype='float32')) !=
         # memoryview(np.frombuffer(b)), since the format info differs.
-        if PY3:
-            # compare without copying
-            if memoryview(ia).cast('B') != memoryview(ib).cast('B'):
-                return False
-        else:
-            # python 2 doesn't have memoryview.cast, so we may have to copy
-            if isinstance(ia, memoryview) and ia.format != 'B':
-                ia = ia.tobytes()
-            if isinstance(ib, memoryview) and ib.format != 'B':
-                ib = ib.tobytes()
-            if ia != ib:
-                return False
+        # Compare without copying.
+        if memoryview(ia).cast('B') != memoryview(ib).cast('B'):
+            return False
     return True
 
 
@@ -210,7 +191,7 @@ class CallbackDispatcher(LoggingHasTraits):
             self.callbacks.append(callback)
 
 def _show_traceback(method):
-    """decorator for showing tracebacks in IPython"""
+    """decorator for showing tracebacks"""
     def m(self, *args, **kwargs):
         try:
             return(method(self, *args, **kwargs))
@@ -223,7 +204,7 @@ def _show_traceback(method):
     return m
 
 
-class WidgetRegistry(object):
+class WidgetRegistry:
 
     def __init__(self):
         self._registry = {}
@@ -263,25 +244,18 @@ class WidgetRegistry(object):
                             for view_name, widget in sorted(vn.items()):
                                     yield (model_module, model_version, model_name, view_module, view_version, view_name), widget
 
-def register(name=''):
-    "For backwards compatibility, we support @register(name) syntax."
-    def reg(widget):
-        """A decorator registering a widget class in the widget registry."""
-        w = widget.class_traits()
-        Widget.widget_types.register(w['_model_module'].default_value,
-                                    w['_model_module_version'].default_value,
-                                    w['_model_name'].default_value,
-                                    w['_view_module'].default_value,
-                                    w['_view_module_version'].default_value,
-                                    w['_view_name'].default_value,
-                                    widget)
-        return widget
-    if isinstance(name, string_types):
-        import warnings
-        warnings.warn("Widget registration using a string name has been deprecated. Widget registration now uses a plain `@register` decorator.", DeprecationWarning)
-        return reg
-    else:
-        return reg(name)
+def register(widget):
+    """A decorator registering a widget class in the widget registry."""
+    w = widget.class_traits()
+    Widget.widget_types.register(w['_model_module'].default_value,
+                                 w['_model_module_version'].default_value,
+                                 w['_model_name'].default_value,
+                                 w['_view_module'].default_value,
+                                 w['_view_module_version'].default_value,
+                                 w['_view_name'].default_value,
+                                 widget)
+    return widget
+
 
 class Widget(LoggingHasTraits):
     #-------------------------------------------------------------------------
@@ -351,7 +325,6 @@ class Widget(LoggingHasTraits):
             state[widget.model_id] = widget._get_embed_state(drop_defaults=drop_defaults)
         return {'version_major': 2, 'version_minor': 0, 'state': state}
 
-
     def _get_embed_state(self, drop_defaults=False):
         state = {
             'model_name': self._model_name,
@@ -399,7 +372,6 @@ class Widget(LoggingHasTraits):
     _property_lock = Dict()
     _holding_sync = False
     _states_to_send = Set()
-    _display_callbacks = Instance(CallbackDispatcher, ())
     _msg_callbacks = Instance(CallbackDispatcher, ())
 
     #-------------------------------------------------------------------------
@@ -408,7 +380,7 @@ class Widget(LoggingHasTraits):
     def __init__(self, **kwargs):
         """Public constructor"""
         self._model_id = kwargs.pop('model_id', None)
-        super(Widget, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         Widget._call_widget_constructed(self)
         self.open()
@@ -467,7 +439,7 @@ class Widget(LoggingHasTraits):
             Widget.widgets.pop(self.model_id, None)
             self.comm.close()
             self.comm = None
-            self._ipython_display_ = None
+            self._repr_mimebundle_ = None
 
     def send_state(self, key=None):
         """Sends the widget state, or a piece of it, to the front-end, if it exists.
@@ -504,9 +476,9 @@ class Widget(LoggingHasTraits):
         """
         if key is None:
             keys = self.keys
-        elif isinstance(key, string_types):
+        elif isinstance(key, str):
             keys = [key]
-        elif isinstance(key, collections.Iterable):
+        elif isinstance(key, Iterable):
             keys = key
         else:
             raise ValueError("key must be a string, an iterable of keys, or None")
@@ -515,8 +487,6 @@ class Widget(LoggingHasTraits):
         for k in keys:
             to_json = self.trait_metadata(k, 'to_json', self._trait_to_json)
             value = to_json(getattr(self, k), self)
-            if not PY3 and isinstance(traits[k], Bytes) and isinstance(value, bytes):
-                value = memoryview(value)
             if not drop_defaults or not self._compare(value, traits[k].default_value):
                 state[k] = value
         return state
@@ -569,24 +539,9 @@ class Widget(LoggingHasTraits):
             True if the callback should be unregistered."""
         self._msg_callbacks.register_callback(callback, remove=remove)
 
-    def on_displayed(self, callback, remove=False):
-        """(Un)Register a widget displayed callback.
-
-        Parameters
-        ----------
-        callback: method handler
-            Must have a signature of::
-
-                callback(widget, **kwargs)
-
-            kwargs from display are passed through without modification.
-        remove: bool
-            True if the callback should be unregistered."""
-        self._display_callbacks.register_callback(callback, remove=remove)
-
     def add_traits(self, **traits):
         """Dynamically add trait attributes to the Widget."""
-        super(Widget, self).add_traits(**traits)
+        super().add_traits(**traits)
         for name, trait in traits.items():
             if trait.get_metadata('sync'):
                 self.keys.append(name)
@@ -602,7 +557,7 @@ class Widget(LoggingHasTraits):
             if name in self.keys and self._should_send_property(name, getattr(self, name)):
                 # Send new state to front-end
                 self.send_state(key=name)
-        super(Widget, self).notify_change(change)
+        super().notify_change(change)
 
     def __repr__(self):
         return self._gen_repr_from_keys(self._repr_keys())
@@ -610,6 +565,7 @@ class Widget(LoggingHasTraits):
     #-------------------------------------------------------------------------
     # Support methods
     #-------------------------------------------------------------------------
+
     @contextmanager
     def _lock_property(self, **properties):
         """Lock a property-value pair.
@@ -690,10 +646,6 @@ class Widget(LoggingHasTraits):
         """Called when a custom msg is received."""
         self._msg_callbacks(self, content, buffers)
 
-    def _handle_displayed(self, **kwargs):
-        """Called when a view has been displayed for this widget instance"""
-        self._display_callbacks(self, **kwargs)
-
     @staticmethod
     def _trait_to_json(x, self):
         """Convert a trait value to json."""
@@ -704,9 +656,7 @@ class Widget(LoggingHasTraits):
         """Convert json values to objects."""
         return x
 
-    def _ipython_display_(self, **kwargs):
-        """Called when `IPython.display.display` is called on the widget."""
-
+    def _repr_mimebundle_(self, **kwargs):
         plaintext = repr(self)
         if len(plaintext) > 110:
             plaintext = plaintext[:110] + '…'
@@ -724,10 +674,7 @@ class Widget(LoggingHasTraits):
                 'version_minor': 0,
                 'model_id': self._model_id
             }
-        display(data, raw=True)
-
-        if self._view_name is not None:
-            self._handle_displayed(**kwargs)
+            return data
 
     def _send(self, msg, buffers=None):
         """Sends a message to the model in the front-end."""
@@ -755,7 +702,7 @@ class Widget(LoggingHasTraits):
     def _gen_repr_from_keys(self, keys):
         class_name = self.__class__.__name__
         signature = ', '.join(
-            '%s=%r' % (key, getattr(self, key))
+            '{}={!r}'.format(key, getattr(self, key))
             for key in keys
         )
-        return '%s(%s)' % (class_name, signature)
+        return '{}({})'.format(class_name, signature)

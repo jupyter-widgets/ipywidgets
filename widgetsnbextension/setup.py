@@ -1,10 +1,7 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 # Copyright (c) IPython Development Team.
 # Distributed under the terms of the Modified BSD License.
-
-from __future__ import print_function
 
 # the name of the package
 name = 'widgetsnbextension'
@@ -38,12 +35,10 @@ instructions.
 import sys
 
 v = sys.version_info
-if v[:2] < (2,7) or (v[0] >= 3 and v[:2] < (3,3)):
-    error = "ERROR: %s requires Python version 2.7 or 3.3 or above." % name
+if v[:2] < (3, 5):
+    error = "ERROR: %s requires Python version 3.5 or above." % name
     print(error, file=sys.stderr)
     sys.exit(1)
-
-PY3 = (sys.version_info[0] >= 3)
 
 #-----------------------------------------------------------------------------
 # get on with it
@@ -191,8 +186,8 @@ setup_args = dict(
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3 :: Only',
         'Framework :: Jupyter'
     ],
     cmdclass        = {
@@ -218,14 +213,6 @@ if 'setuptools' in sys.modules:
     # setup.py develop should check for submodules
     from setuptools.command.develop import develop
     setup_args['cmdclass']['develop'] = js_prerelease(develop, strict=True)
-
-setuptools_args = {}
-install_requires = setuptools_args['install_requires'] = [
-    'notebook>=4.4.1',
-]
-
-if 'setuptools' in sys.modules:
-    setup_args.update(setuptools_args)
 
 if __name__ == '__main__':
     setup(**setup_args)

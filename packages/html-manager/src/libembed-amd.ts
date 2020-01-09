@@ -7,7 +7,7 @@ let cdn = 'https://unpkg.com/';
 
 // find the data-cdn for any script tag, assuming it is only used for embed-amd.js
 const scripts = document.getElementsByTagName('script');
-Array.prototype.forEach.call(scripts, (script) => {
+Array.prototype.forEach.call(scripts, (script: HTMLScriptElement) => {
     cdn = script.getAttribute('data-jupyter-widgets-cdn') || cdn;
 });
 
@@ -16,9 +16,9 @@ Array.prototype.forEach.call(scripts, (script) => {
  *
  * @param pkg Package name or names to load
  */
-let requirePromise = function(pkg: string | string[]): Promise<any> {
+const requirePromise = function(pkg: string | string[]): Promise<any> {
     return new Promise((resolve, reject) => {
-        let require = (window as any).requirejs;
+        const require = (window as any).requirejs;
         if (require === undefined) {
             reject("Requirejs is needed, please ensure it is loaded on the page.");
         } else {
@@ -27,7 +27,7 @@ let requirePromise = function(pkg: string | string[]): Promise<any> {
     });
 }
 
-function moduleNameToCDNUrl(moduleName: string, moduleVersion: string) {
+function moduleNameToCDNUrl(moduleName: string, moduleVersion: string): string {
     let packageName = moduleName;
     let fileName = 'index'; // default filename
     // if a '/' is present, like 'foo/bar', packageName is changed to 'foo', and path to 'bar'
@@ -59,16 +59,16 @@ function moduleNameToCDNUrl(moduleName: string, moduleVersion: string) {
  * The semver range is only used with the CDN.
  */
 export
-function requireLoader(moduleName: string, moduleVersion: string) {
+function requireLoader(moduleName: string, moduleVersion: string): Promise<any> {
     return requirePromise([`${moduleName}`]).catch((err) => {
-        let failedId = err.requireModules && err.requireModules[0];
+        const failedId = err.requireModules && err.requireModules[0];
         if (failedId) {
             console.log(`Falling back to ${cdn} for ${moduleName}@${moduleVersion}`);
-            let require = (window as any).requirejs;
+            const require = (window as any).requirejs;
             if (require === undefined) {
                 throw new Error("Requirejs is needed, please ensure it is loaded on the page.");
             }
-            const conf = {paths: {}};
+            const conf: {paths: {[key: string]: string}} = {paths: {}};
             conf.paths[moduleName] = moduleNameToCDNUrl(moduleName, moduleVersion);
             require.undef(failedId);
             require.config(conf);
@@ -86,9 +86,9 @@ function requireLoader(moduleName: string, moduleVersion: string) {
  * the widgets' models and views classes. (The default loader looks them up on unpkg.com)
  */
 export
-function renderWidgets(element = document.documentElement, loader: (moduleName: string, moduleVersion: string) => Promise<any>  = requireLoader) {
+function renderWidgets(element = document.documentElement, loader: (moduleName: string, moduleVersion: string) => Promise<any> = requireLoader): void {
     requirePromise(['@jupyter-widgets/html-manager']).then((htmlmanager) => {
-        let managerFactory = () => {
+        const managerFactory = (): any => {
             return new htmlmanager.HTMLManager({loader: loader});
         }
         libembed.renderWidgets(managerFactory, element);

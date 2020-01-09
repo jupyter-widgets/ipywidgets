@@ -69,7 +69,7 @@ def jsdefault(t):
     elif x is None:
         return '`null`'
     elif isinstance(x, tuple):
-        return '`{0}`'.format(list(x))
+        return '`{}`'.format(list(x))
     else:
         return '`%s`'%t.default_value_repr()
 

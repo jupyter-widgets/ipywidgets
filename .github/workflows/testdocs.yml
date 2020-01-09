@@ -1,0 +1,29 @@
+name: Test Docs
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - uses: actions/cache@v1
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}-${{hashFiles('**/requirements.txt')}}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - name: Install dependencies
+      run: |
+        sudo apt-get install -y pandoc
+        python -m pip install --upgrade pip
+        pip install file://$PWD#egg=ipywidgets
+        pip install -r ./docs/requirements.txt
+    - name: Build docs
+      run: |
+        cd docs
+        make html

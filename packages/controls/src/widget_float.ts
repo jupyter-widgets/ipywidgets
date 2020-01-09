@@ -5,10 +5,6 @@ import {
     CoreDescriptionModel
 } from './widget_core';
 
-import {
-    DescriptionView
-} from './widget_description';
-
 import * as _ from 'underscore';
 
 import {
@@ -22,7 +18,7 @@ import {
 
 export
 class FloatModel extends CoreDescriptionModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'FloatModel',
             value: 0,
@@ -32,7 +28,7 @@ class FloatModel extends CoreDescriptionModel {
 
 export
 class BoundedFloatModel extends FloatModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'BoundedFloatModel',
             max: 100.0,
@@ -43,7 +39,7 @@ class BoundedFloatModel extends FloatModel {
 
 export
 class FloatSliderModel extends BoundedFloatModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'FloatSliderModel',
             _view_name: 'FloatSliderView',
@@ -57,13 +53,13 @@ class FloatSliderModel extends BoundedFloatModel {
             disabled: false,
         });
     }
-    initialize(attributes, options) {
+    initialize(attributes: any, options: { model_id: string; comm?: any; widget_manager: any }): void {
         super.initialize(attributes, options);
         this.on('change:readout_format', this.update_readout_format, this);
         this.update_readout_format();
     }
 
-    update_readout_format() {
+    update_readout_format(): void {
         this.readout_formatter = format(this.get('readout_format'));
     }
 
@@ -72,7 +68,7 @@ class FloatSliderModel extends BoundedFloatModel {
 
 export
 class FloatLogSliderModel extends BoundedFloatModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'FloatLogSliderModel',
             _view_name: 'FloatLogSliderView',
@@ -90,13 +86,13 @@ class FloatLogSliderModel extends BoundedFloatModel {
             max: 4
         });
     }
-    initialize(attributes, options) {
+    initialize(attributes: any, options: { model_id: string; comm: any; widget_manager: any }): void {
         super.initialize(attributes, options);
         this.on('change:readout_format', this.update_readout_format, this);
         this.update_readout_format();
     }
 
-    update_readout_format() {
+    update_readout_format(): void {
         this.readout_formatter = format(this.get('readout_format'));
     }
 
@@ -112,7 +108,7 @@ class FloatSliderView extends IntSliderView {
      * Validate the value of the slider before sending it to the back-end
      * and applying it to the other views on the page.
      */
-    _validate_slide_value(x) {
+    _validate_slide_value(x: any): any {
         return x;
     }
 
@@ -123,23 +119,23 @@ class FloatSliderView extends IntSliderView {
 export
 class FloatLogSliderView extends BaseIntSliderView {
 
-    update(options?) {
+    update(options?: any): void {
         super.update(options);
-        let min = this.model.get('min');
-        let max = this.model.get('max');
-        let value = this.model.get('value');
-        let base = this.model.get('base');
+        const min = this.model.get('min');
+        const max = this.model.get('max');
+        const value = this.model.get('value');
+        const base = this.model.get('base');
 
         let log_value = Math.log( value ) / Math.log( base );
 
-        if(log_value > max) {
+        if (log_value > max) {
             log_value = max;
-        } else if(log_value < min) {
+        } else if (log_value < min) {
             log_value = min;
         }
         this.$slider.slider('option', 'value', log_value);
         this.readout.textContent = this.valueToString(value);
-        if(this.model.get('value') !== value) {
+        if (this.model.get('value') !== value) {
             this.model.set('value', value, {updated_view: this});
             this.touch();
         }
@@ -149,15 +145,15 @@ class FloatLogSliderView extends BaseIntSliderView {
      * Write value to a string
      */
     valueToString(value: number): string {
-        let format = this.model.readout_formatter;
+        const format = this.model.readout_formatter;
         return format(value);
     }
 
     /**
      * Parse value from a string
      */
-    stringToValue(text: string): number {
-            return this._parse_value(text);
+    stringToValue(text: string | null): number {
+        return text === null ? NaN : this._parse_value(text);
     }
 
     /**
@@ -168,16 +164,16 @@ class FloatLogSliderView extends BaseIntSliderView {
      *
      * if any of these conditions are not met, the text is reset
      */
-    handleTextChange() {
+    handleTextChange(): void {
         let value = this.stringToValue(this.readout.textContent);
-        let vmin = this.model.get('min');
-        let vmax = this.model.get('max');
-        let base = this.model.get('base');
+        const vmin = this.model.get('min');
+        const vmax = this.model.get('max');
+        const base = this.model.get('base');
 
         if (isNaN(value)) {
             this.readout.textContent = this.valueToString(this.model.get('value'));
         } else {
-            value = Math.max(Math.min(value, Math.pow(base,vmax)), Math.pow(base,vmin));
+            value = Math.max(Math.min(value, Math.pow(base, vmax)), Math.pow(base, vmin));
 
             if (value !== this.model.get('value')) {
                 this.readout.textContent = this.valueToString(value);
@@ -191,9 +187,9 @@ class FloatLogSliderView extends BaseIntSliderView {
     /**
      * Called when the slider value is changing.
      */
-    handleSliderChange(e, ui) {
-        let base = this.model.get('base');
-        let actual_value = Math.pow(base,this._validate_slide_value(ui.value));
+    handleSliderChange(e: Event, ui: { value: any }): void {
+        const base = this.model.get('base');
+        const actual_value = Math.pow(base, this._validate_slide_value(ui.value));
         this.readout.textContent = this.valueToString(actual_value);
 
         // Only persist the value while sliding if the continuous_update
@@ -209,14 +205,14 @@ class FloatLogSliderView extends BaseIntSliderView {
      * Calling model.set will trigger all of the other views of the
      * model to update.
      */
-    handleSliderChanged(e, ui) {
-        let base = this.model.get('base');
-        let actual_value = Math.pow(base,this._validate_slide_value(ui.value));
+    handleSliderChanged(e: Event, ui: { value: any }): void {
+        const base = this.model.get('base');
+        const actual_value = Math.pow(base, this._validate_slide_value(ui.value));
         this.model.set('value', actual_value, {updated_view: this});
         this.touch();
     }
 
-    _validate_slide_value(x) {
+    _validate_slide_value(x: any): any {
         return x;
     }
 
@@ -231,7 +227,7 @@ class FloatRangeSliderView extends IntRangeSliderView {
      * Validate the value of the slider before sending it to the back-end
      * and applying it to the other views on the page.
      */
-    _validate_slide_value(x) {
+    _validate_slide_value(x: any): any {
         return x;
     }
 
@@ -243,7 +239,7 @@ class FloatRangeSliderView extends IntRangeSliderView {
 
 export
 class FloatTextModel extends FloatModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'FloatTextModel',
             _view_name: 'FloatTextView',
@@ -255,7 +251,7 @@ class FloatTextModel extends FloatModel {
 
 export
 class BoundedFloatTextModel extends BoundedFloatModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'BoundedFloatTextModel',
             _view_name: 'FloatTextView',
@@ -270,11 +266,28 @@ export
 class FloatTextView extends IntTextView {
     _parse_value = parseFloat;
     _default_step = 'any';
+
+    /**
+     * Handle key press
+     */
+    handleKeypress(e: KeyboardEvent): void {
+        // Overwrite IntTextView's handleKeypress
+        // which prevents decimal points.
+        e.stopPropagation();
+    }
+
+    /**
+     * Handle key up
+     */
+    handleKeyUp(e: KeyboardEvent): void {
+        // Overwrite IntTextView's handleKeyUp
+        // which prevents decimal points.
+    }
 }
 
 export
 class FloatProgressModel extends BoundedFloatModel {
-    defaults() {
+    defaults(): Backbone.ObjectHash {
         return _.extend(super.defaults(), {
             _model_name: 'FloatProgressModel',
             _view_name: 'ProgressView',
