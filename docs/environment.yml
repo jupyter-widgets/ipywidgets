@@ -5,7 +5,6 @@ channels:
 dependencies:
 - ipykernel
 - jinja2
-- jupyter_sphinx
 - ipywidgets
 - bqplot
 - numpy
@@ -19,5 +18,5 @@ dependencies:
 - python-dateutil
 - recommonmark
 - matplotlib
-- bqplot
-- numpy
+- ipyleaflet
+- pandas

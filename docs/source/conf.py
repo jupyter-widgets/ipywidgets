@@ -1,25 +1,6 @@
 #!/usr/bin/env python3
 #
 
-import os
-import subprocess
-import sys
-
-
-# -- path -------------------------------------------------------
-
-from os.path import dirname
-docs = dirname(dirname(__file__))
-root = dirname(docs)
-sys.path.insert(0, root)
-
-
-# -- bash utility function --------------------------------------
-def bash(filename):
-    """Runs a bash script in the local directory"""
-    sys.stdout.flush()
-    subprocess.call("bash {}".format(filename), shell=True)
-
 
 # -- source files and parsers -----------------------------------
 
@@ -37,7 +18,6 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
     'nbsphinx',
-    'jupyter_sphinx.execute',
     'IPython.sphinxext.ipython_console_highlighting',
     'recommonmark',
 ]
@@ -49,10 +29,7 @@ intersphinx_mapping = {
     'jupyter': ('https://jupyter.readthedocs.io/en/latest/', None),
 }
 
-nbsphinx_allow_errors = True   # exception ipstruct.py ipython_genutils
 nbsphinx_execute = 'always'
-# Disable including require.js because it is also included by jupyter_sphinx:
-nbsphinx_requirejs_path = ''
 
 # -- General information -------
 

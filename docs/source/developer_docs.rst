@@ -7,7 +7,7 @@ The Jupyter widgets packages are developed in the `https://github.com/jupyter-wi
 Scope of ipywidgets
 -------------------
 
-``ipywidgets`` is a framework to provide eventful python objects that have a representation in the browser (see :doc:`examples/Widget Basics.ipynb` for more on the definition of widgets). This requires two components:
+``ipywidgets`` is a framework to provide eventful python objects that have a representation in the browser (see :doc:`examples/Widget Basics` for more on the definition of widgets). This requires two components:
 
 1. The framework for widget interactions between the widgets represented in the Python kernel and the (javascript) representation of the widgets in the browser.
 2. A basic, lightweight set of form controls that *use* this framework, based on standard HTML form controls. These included controls include a text area, text box, select and multiselect controls, checkbox, etc. A few more advanced controls that are very popular are also included, such as a slider and basic tab panels.
