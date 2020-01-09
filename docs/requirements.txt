@@ -1,5 +1,4 @@
 ipykernel
-ipywidgets>=7.5.0
 bqplot
 numpy
 jupyter_client
