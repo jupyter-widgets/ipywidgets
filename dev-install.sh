@@ -49,7 +49,7 @@ jupyter nbextension enable --py $nbExtFlags widgetsnbextension
 cd ..
 
 echo -n "ipywidgets"
-pip install -v -e .
+pip install -v -e ".[test]"
 
 if test "$skip_jupyter_lab" != yes; then
     jupyter labextension link ./packages/base --no-build
