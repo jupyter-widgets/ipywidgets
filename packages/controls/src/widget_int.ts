@@ -188,7 +188,7 @@ abstract class BaseIntSliderView extends DescriptionView {
             const readout = this.model.get('readout');
             if (readout) {
                 this.readout.style.display = '';
-                this.displayed.then(function() {
+                this.displayed.then(() => {
                     if (this.readout_overflow()) {
                         this.readout.classList.add('overflow');
                     } else {
