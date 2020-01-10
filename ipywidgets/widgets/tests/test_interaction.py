@@ -8,6 +8,7 @@ from unittest.mock import patch
 import os
 from collections import OrderedDict
 import pytest
+from math import isclose
 
 import ipywidgets as widgets
 
@@ -44,7 +45,13 @@ def check_widget(w, **d):
             assert w.__class__ is expected
         else:
             value = getattr(w, attr)
-            assert value == expected, "{}.{} = {!r} != {!r}".format(w.__class__.__name__, attr, value, expected)
+            def strict_isequal(a, b, rel_tol=None):
+                return a == b
+            if isinstance(value, float):
+                isequal = isclose
+            else:
+                isequal = strict_isequal
+            assert isequal(value, expected, rel_tol=1e-10), "{}.{} = {!r} != {!r}".format(w.__class__.__name__, attr, value, expected)
 
             # For numeric values, the types should match too
             if isinstance(value, (int, float)):

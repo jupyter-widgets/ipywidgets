@@ -7,7 +7,7 @@ Represents an unbounded float using a widget.
 # Distributed under the terms of the Modified BSD License.
 
 from traitlets import (
-    Instance, Unicode, CFloat, Bool, CaselessStrEnum, Tuple, TraitError, validate, default
+    Instance, Unicode, CFloat, CInt, Bool, CaselessStrEnum, Tuple, TraitError, validate, default
 )
 from .widget_description import DescriptionWidget
 from .trait_types import InstanceDict, NumberFormat
@@ -153,6 +153,12 @@ class FloatSlider(_BoundedFloat):
         maximal position of the slider
     step : float
         step of the trackbar
+    num : integer
+        number of values in the [min, max] interval, takes precedence over
+        the step parameter.
+    round : bool
+        default is False, round the value set from Python to the closest value
+        in the interval
     description : str
         name of the slider
     orientation : {'horizontal', 'vertical'}
@@ -167,6 +173,8 @@ class FloatSlider(_BoundedFloat):
     _view_name = Unicode('FloatSliderView').tag(sync=True)
     _model_name = Unicode('FloatSliderModel').tag(sync=True)
     step = CFloat(0.1, allow_none=True, help="Minimum step to increment the value").tag(sync=True)
+    num = CInt(help="Number of values in the [min, max] interval").tag(sync=True)
+    round = Bool(False, help="Round the value set from Python to the closest value in the interval").tag(sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
@@ -176,6 +184,33 @@ class FloatSlider(_BoundedFloat):
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
     style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
+
+    @validate('value')
+    def _validate_value(self, proposal):
+        value = proposal['value']
+        if not self.round:
+            return value
+        # round value to closest one in interval
+        values = [self.min]
+        while values[-1] <= self.max:
+            values.append(values[-1] + self.step)
+        rounded_value = min(values, key=lambda x:abs(x-value))
+        return rounded_value
+
+    @validate('num')
+    def _validate_num(self, proposal):
+        # step value is computed from num
+        # num is not used in the front-end
+        num = proposal['value']
+        if self.min == self.max:
+            if num != 1:
+                raise TraitError('num must be 1 because min == max')
+            self.step = 0
+        elif num <= 1:
+            raise TraitError('num must be greater than 1')
+        else:
+            self.step = (self.max - self.min) / (num - 1)
+        return num
 
 
 @register
@@ -337,6 +372,9 @@ class FloatRangeSlider(_BoundedFloatRange):
         maximal position of the slider
     step : float
         step of the trackbar
+    num : integer
+        number of values in the [min, max] interval, takes precedence over
+        the step parameter.
     description : str
         name of the slider
     orientation : {'horizontal', 'vertical'}
@@ -351,6 +389,7 @@ class FloatRangeSlider(_BoundedFloatRange):
     _view_name = Unicode('FloatRangeSliderView').tag(sync=True)
     _model_name = Unicode('FloatRangeSliderModel').tag(sync=True)
     step = CFloat(0.1, allow_none=True, help="Minimum step to increment the value").tag(sync=True)
+    num = CInt(help="Number of values in the [min, max] interval").tag(sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
@@ -360,3 +399,18 @@ class FloatRangeSlider(_BoundedFloatRange):
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
 
     style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
+
+    @validate('num')
+    def _validate_num(self, proposal):
+        # step value is computed from num
+        # num is not used in the front-end
+        num = proposal['value']
+        if self.min == self.max:
+            if num != 1:
+                raise TraitError('num must be 1 because min == max')
+            self.step = 0
+        elif num <= 1:
+            raise TraitError('num must be greater than 1')
+        else:
+            self.step = (self.max - self.min) / (num - 1)
+        return num
