@@ -1,7 +1,6 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import * as managerBase from './manager-base';
 import * as utils from './utils';
 import * as backbonePatch from './backbone-patch';
 
@@ -33,6 +32,10 @@ import {
 } from './widget_style';
 
 import {
+    IWidgetManager
+} from './manager';
+
+import {
     IClassicComm, ICallbacks
 } from './services-shim';
 
@@ -48,14 +51,13 @@ import {
     KernelMessage
 } from '@jupyterlab/services';
 
-
 /**
  * Replace model ids with models recursively.
  */
 export
 function unpack_models(
     value: any | Dict<unknown> | string | (Dict<unknown> | string)[],
-    manager: managerBase.ManagerBase<any>
+    manager: IWidgetManager
 ): Promise<WidgetModel | Dict<WidgetModel> | WidgetModel[] | any> {
     if (Array.isArray(value)) {
         const unpacked: any[] = [];
@@ -84,7 +86,7 @@ function unpack_models(
 export
 interface ISerializers {
     [key: string]: {
-        deserialize?: (value?: any, manager?: managerBase.ManagerBase<any>) => any;
+        deserialize?: (value?: any, manager?: IWidgetManager) => any;
         serialize?: (value?: any, widget?: WidgetModel) => any;
     };
 }
@@ -544,7 +546,7 @@ class WidgetModel extends Backbone.Model {
      * is an instance of widget manager, which is required for the
      * deserialization of widget models.
      */
-    static _deserialize_state(state: JSONObject, manager: managerBase.ManagerBase<any>): Promise<utils.Dict<unknown>>  {
+    static _deserialize_state(state: JSONObject, manager: IWidgetManager): Promise<utils.Dict<unknown>>  {
         const serializers = this.serializers;
         let deserialized: Dict<any>;
         if (serializers) {
@@ -569,7 +571,7 @@ class WidgetModel extends Backbone.Model {
     // constructor. We initialize the default values above in the initialization
     // function so that they are ready for the user code, and to not override
     // values subclasses may set in their initialization functions.
-    widget_manager: managerBase.ManagerBase<any>;
+    widget_manager: IWidgetManager;
     model_id: string;
     views: {[key: string]: Promise<WidgetView>};
     state_change: Promise<any>;

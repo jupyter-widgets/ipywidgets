@@ -1,132 +1,28 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import * as utils from './utils';
 import * as services from '@jupyterlab/services';
 
 import {
     JSONObject, PartialJSONObject
 } from '@lumino/coreutils';
 
-import {
-    DOMWidgetView, WidgetModel, WidgetView, DOMWidgetModel
-} from './widget';
 
 import {
-    IClassicComm, ICallbacks
-} from './services-shim';
+    DOMWidgetView, WidgetModel, WidgetView, DOMWidgetModel,
+    IClassicComm, ICallbacks,
+    put_buffers, remove_buffers, resolvePromisesDict,
+    ISerializedState, reject, uuid, PROTOCOL_VERSION,
+    IWidgetManager, IModelOptions, IWidgetOptions
+} from '@jupyter-widgets/base';
 
 import {
-    ISerializedState
+    base64ToBuffer, bufferToBase64, hexToBuffer
 } from './utils';
 
-import {
-    PROTOCOL_VERSION
-} from './version';
 
 const PROTOCOL_MAJOR_VERSION = PROTOCOL_VERSION.split('.', 1)[0];
 
-/**
- * The options for a model.
- *
- * #### Notes
- * Either a comm or a model_id must be provided.
- */
-export
-interface IModelOptions {
-    
-    /**
-     * Target name of the widget model to create.
-     */
-    model_name: string;
-
-    /**
-     * Module name of the widget model to create.
-     */
-    model_module: string;
-
-    /**
-     * Semver version requirement for the model module.
-     */
-    model_module_version: string;
-
-    /**
-     * Target name of the widget view to create.
-     */
-    view_name?: string | null;
-
-    /**
-     * Module name of the widget view to create.
-     */
-    view_module?: string | null;
-
-    /**
-     * Semver version requirement for the view module.
-     */
-    view_module_version?: string;
-
-    /**
-     * Comm object associated with the widget.
-     */
-    comm?: any;
-
-    /**
-     * The model id to use. If not provided, the comm id of the comm is used.
-     */
-    model_id?: string;
-}
-
-/**
- * The options for a connected model.
- *
- * This gives all of the information needed to instantiate a comm to a new
- * widget on the kernel side (so view information is mandatory).
- *
- * #### Notes
- * Either a comm or a model_id must be provided.
- */
-export
-interface IWidgetOptions extends IModelOptions {
-    /**
-     * Target name of the widget model to create.
-     */
-    model_name: string;
-
-    /**
-     * Module name of the widget model to create.
-     */
-    model_module: string;
-
-    /**
-     * Semver version requirement for the model module.
-     */
-    model_module_version: string;
-
-    /**
-     * Target name of the widget view to create.
-     */
-    view_name: string | null;
-
-    /**
-     * Module name of the widget view to create.
-     */
-    view_module: string | null;
-
-    /**
-     * Semver version requirement for the view module.
-     */
-    view_module_version: string;
-
-    /**
-     * Comm object associated with the widget.
-     */
-    comm?: IClassicComm;
-
-    /**
-     * The model id to use. If not provided, the comm id of the comm is used.
-     */
-    model_id?: string;
-}
 
 export
 interface IState extends PartialJSONObject {
@@ -160,14 +56,14 @@ interface IBase64Buffers extends PartialJSONObject {
 /**
  * Manager abstract base class
  */
-export abstract class ManagerBase<T> {
+export abstract class ManagerBase<T> implements IWidgetManager {
 
     /**
      * Display a DOMWidgetView for a particular model.
      */
     display_model(msg: services.KernelMessage.IMessage | null, model: DOMWidgetModel, options: any = {}): Promise<T> {
         return this.create_view(model, options).then(
-            view => this.display_view(msg, view, options)).catch(utils.reject('Could not create view', true));
+            view => this.display_view(msg, view, options)).catch(reject('Could not create view', true));
     }
 
     /**
@@ -206,9 +102,9 @@ export abstract class ManagerBase<T> {
                 });
                 view.listenTo(model, 'destroy', view.remove);
                 return Promise.resolve(view.render()).then(() => { return view; });
-            }).catch(utils.reject('Could not create a view for model id ' + model.model_id, true));
+            }).catch(reject('Could not create a view for model id ' + model.model_id, true));
         });
-        const id = utils.uuid();
+        const id = uuid();
         model.views[id] = viewPromise;
         viewPromise.then((view) => {
             view.once('remove', () => { delete view.model.views[id]; }, this);
@@ -219,7 +115,7 @@ export abstract class ManagerBase<T> {
     /**
      * callback handlers specific to a view
      */
-    callbacks (view?: WidgetView): ICallbacks {
+    callbacks(view?: WidgetView): ICallbacks {
         return {};
     }
 
@@ -258,13 +154,13 @@ export abstract class ManagerBase<T> {
                 return new DataView(b instanceof ArrayBuffer ? b : b.buffer);
             }
         });
-        utils.put_buffers(data.state, buffer_paths, buffers);
+        put_buffers(data.state, buffer_paths, buffers);
         return this.new_model({
             model_name: data.state['_model_name'] as string,
             model_module: data.state['_model_module'] as string,
             model_module_version: data.state['_model_module_version'] as string,
             comm: comm
-        }, data.state).catch(utils.reject('Could not create a model.', true));
+        }, data.state).catch(reject('Could not create a model.', true));
     }
 
     /**
@@ -318,7 +214,7 @@ export abstract class ManagerBase<T> {
         }, () => {
             // Comm Promise Rejected.
             if (!options_clone.model_id) {
-                options_clone.model_id = utils.uuid();
+                options_clone.model_id = uuid();
             }
             return this.new_model(options_clone, serialized_state);
         });
@@ -402,7 +298,7 @@ export abstract class ManagerBase<T> {
      * @return Promise that resolves when the widget state is cleared.
      */
     clear_state(): Promise<void> {
-        return utils.resolvePromisesDict(this._models).then((models) => {
+        return resolvePromisesDict(this._models).then((models) => {
             Object.keys(models).forEach(id => models[id].close());
             this._models = Object.create(null);
         });
@@ -454,14 +350,14 @@ export abstract class ManagerBase<T> {
             return Promise.all(Object.keys(models).map(model_id => {
 
                 // First put back the binary buffers
-                const decode: { [s: string]: (s: string) => ArrayBuffer } = {'base64': utils.base64ToBuffer, 'hex': utils.hexToBuffer};
+                const decode: { [s: string]: (s: string) => ArrayBuffer } = {'base64': base64ToBuffer, 'hex': hexToBuffer};
                 const model = models[model_id];
                 const modelState = model.state;
                 if (model.buffers) {
                     const bufferPaths = model.buffers.map((b: any) => b.path);
                     // put_buffers expects buffers to be DataViews
                     const buffers = model.buffers.map((b: any) => new DataView(decode[b.encoding](b.data)));
-                    utils.put_buffers(model.state, bufferPaths, buffers);
+                    put_buffers(model.state, bufferPaths, buffers);
                 }
 
                 // If the model has already been created, set its state and then
@@ -598,10 +494,10 @@ function serialize_state(models: WidgetModel[], options: IStateOptions = {}): IM
     const state: IManagerStateMap = {};
     models.forEach(model => {
         const model_id = model.model_id;
-        const split = utils.remove_buffers(model.serialize(model.get_state(options.drop_defaults)));
+        const split = remove_buffers(model.serialize(model.get_state(options.drop_defaults)));
         const buffers: IBase64Buffers[] = split.buffers.map((buffer, index) => {
             return {
-                data: utils.bufferToBase64(buffer),
+                data: bufferToBase64(buffer),
                 path: split.buffer_paths[index],
                 encoding: 'base64'
             };

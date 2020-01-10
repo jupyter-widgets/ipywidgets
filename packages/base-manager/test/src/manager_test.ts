@@ -2,7 +2,7 @@ import {
     DummyManager, MockComm
 } from './dummy-manager';
 
-import * as widgets from '../../lib';
+import * as widgets from '@jupyter-widgets/base';
 
 import {
     expect

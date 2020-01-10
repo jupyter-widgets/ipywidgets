@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@jupyter-widgets/base": "^2.0.2",
+    "@jupyter-widgets/base-manager": "^0.1.0",
     "@jupyter-widgets/controls": "^1.5.3",
     "codemirror": "^5.48.0",
     "font-awesome": "^4.7.0"

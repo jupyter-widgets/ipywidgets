@@ -35,6 +35,7 @@
   },
   "dependencies": {
     "@jupyter-widgets/base": "^2.0.2",
+    "@jupyter-widgets/base-manager": "^0.1.0",
     "@jupyter-widgets/controls": "^1.5.3",
     "@jupyter-widgets/output": "^2.0.1",
     "@jupyterlab/application": "^2.0.0-beta.2",

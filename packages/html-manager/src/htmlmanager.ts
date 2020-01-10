@@ -4,6 +4,7 @@
 import * as widgets from '@jupyter-widgets/controls';
 import * as base from '@jupyter-widgets/base';
 import * as outputWidgets from './output';
+import { ManagerBase } from '@jupyter-widgets/base-manager';
 
 import * as LuminoWidget from '@lumino/widgets';
 import { RenderMimeRegistry, standardRendererFactories } from '@jupyterlab/rendermime';
@@ -12,7 +13,7 @@ import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers';
 import { WidgetModel, WidgetView } from '@jupyter-widgets/base';
 
 export
-class HTMLManager extends base.ManagerBase<HTMLElement> {
+class HTMLManager extends ManagerBase<HTMLElement> {
 
     constructor(options?: {loader?: (moduleName: string, moduleVersion: string) => Promise<any>}) {
         super();

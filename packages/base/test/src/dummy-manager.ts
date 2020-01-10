@@ -2,11 +2,14 @@
 // Distributed under the terms of the Modified BSD License.
 
 import * as widgets from '../../lib';
-import * as services from '@jupyterlab/services';
 import * as Backbone from 'backbone';
 
 import * as sinon from 'sinon';
 void sinon;
+
+import {
+    JSONObject
+} from '@lumino/coreutils';
 
 let numComms = 0;
 
@@ -132,20 +135,9 @@ class BinaryWidgetView extends TestWidgetView {
 const testWidgets = {TestWidget, TestWidgetView, BinaryWidget, BinaryWidgetView};
 
 export
-class DummyManager extends widgets.ManagerBase<HTMLElement> {
+class DummyManager implements widgets.IWidgetManager {
     constructor() {
-        super();
         this.el = window.document.createElement('div');
-    }
-
-    display_view(msg: services.KernelMessage.IMessage, view: Backbone.View<Backbone.Model>, options: any): Promise<HTMLElement> {
-        // TODO: make this a spy
-        // TODO: return an html element
-        return Promise.resolve(view).then(view => {
-            this.el.appendChild(view.el);
-            view.on('remove', () => console.log('view removed', view));
-            return view.el;
-        });
     }
 
     protected loadClass(className: string, moduleName: string, moduleVersion: string): Promise<any> {
@@ -166,13 +158,136 @@ class DummyManager extends widgets.ManagerBase<HTMLElement> {
         }
     }
 
-    _get_comm_info(): Promise<{}> {
-        return Promise.resolve({});
-    }
-
-    _create_comm(): Promise<MockComm> {
-        return Promise.resolve(new MockComm());
-    }
-
     el: HTMLElement;
+
+
+    /**
+     * Creates a promise for a view of a given model
+     *
+     * Make sure the view creation is not out of order with
+     * any state updates.
+     */
+    create_view(model: widgets.DOMWidgetModel, options?: any): Promise<widgets.DOMWidgetView>
+    create_view(model: widgets.WidgetModel, options?: any): Promise<widgets.WidgetView> {
+        throw new Error('Not implemented in dummy manager');
+    }
+
+    /**
+     * callback handlers specific to a view
+     */
+    callbacks(view?: widgets.WidgetView): widgets.ICallbacks {
+        return {};
+    }
+
+    /**
+     * Get a promise for a model by model id.
+     *
+     * #### Notes
+     * If a model is not found, undefined is returned (NOT a promise). However,
+     * the calling code should also deal with the case where a rejected promise
+     * is returned, and should treat that also as a model not found.
+     */
+    get_model(model_id: string): Promise<widgets.WidgetModel> | undefined {
+        // TODO: Perhaps we should return a Promise.reject if the model is not
+        // found. Right now this isn't a true async function because it doesn't
+        // always return a promise.
+        return this._models[model_id];
+    }
+
+    /**
+     * Create a comm and new widget model.
+     * @param  options - same options as new_model but comm is not
+     *                          required and additional options are available.
+     * @param  serialized_state - serialized model attributes.
+     */
+    new_widget(options: widgets.IWidgetOptions, serialized_state: JSONObject = {}): Promise<widgets.WidgetModel> {
+        return this.new_model(options, serialized_state);
+    }
+
+    register_model(model_id: string, modelPromise: Promise<widgets.WidgetModel>): void {
+        this._models[model_id] = modelPromise;
+        modelPromise.then(model => {
+            model.once('comm:close', () => {
+                delete this._models[model_id];
+            });
+        });
+    }
+
+    /**
+     * Create and return a promise for a new widget model
+     *
+     * @param options - the options for creating the model.
+     * @param serialized_state - attribute values for the model.
+     *
+     * @example
+     * widget_manager.new_model({
+     *      model_name: 'IntSlider',
+     *      model_module: '@jupyter-widgets/controls',
+     *      model_module_version: '1.0.0',
+     *      model_id: 'u-u-i-d'
+     * }).then((model) => { console.log('Create success!', model); },
+     *  (err) => {console.error(err)});
+     *
+     */
+    async new_model(options: widgets.IModelOptions, serialized_state: any = {}): Promise<widgets.WidgetModel> {
+        let model_id;
+        if (options.model_id) {
+            model_id = options.model_id;
+        } else if (options.comm) {
+            model_id = options.model_id = options.comm.comm_id;
+        } else {
+            throw new Error('Neither comm nor model_id provided in options object. At least one must exist.');
+        }
+
+        const modelPromise = this._make_model(options, serialized_state);
+        // this call needs to happen before the first `await`, see note in `set_state`:
+        this.register_model(model_id, modelPromise);
+        return await modelPromise;
+    }
+
+    async _make_model(options: any, serialized_state: any = {}): Promise<widgets.WidgetModel> {
+        const model_id = options.model_id;
+        const model_promise = this.loadClass(
+            options.model_name,
+            options.model_module,
+            options.model_module_version
+        );
+        let ModelType;
+        try {
+            ModelType = await model_promise;
+        } catch (error) {
+            console.error('Could not instantiate widget');
+            throw error;
+        }
+
+        if (!ModelType) {
+            throw new Error(`Cannot find model module ${options.model_module}@${options.model_module_version}, ${options.model_name}`);
+        }
+
+        const attributes = await ModelType._deserialize_state(serialized_state, this);
+        const modelOptions = {
+            widget_manager: this,
+            model_id: model_id,
+            comm: options.comm,
+        };
+        const widget_model = new ModelType(attributes, modelOptions);
+        widget_model.name = options.model_name;
+        widget_model.module = options.model_module;
+        return widget_model;
+
+    }
+
+    /**
+     * Resolve a URL relative to the current notebook location.
+     *
+     * The default implementation just returns the original url.
+     */
+    resolveUrl(url: string): Promise<string> {
+        return Promise.resolve(url);
+    }
+
+    /**
+     * Dictionary of model ids and model instance promises
+     */
+    private _models: {[key: string]: Promise<widgets.WidgetModel>} = Object.create(null);
 }

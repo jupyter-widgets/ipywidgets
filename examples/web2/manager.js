@@ -1,8 +1,9 @@
 var base = require('@jupyter-widgets/base');
+var ManagerBase = require('@jupyter-widgets/base-manager').ManagerBase;
 var controls = require('@jupyter-widgets/controls');
 var LuminoWidget = require('@lumino/widgets').Widget;
 
-class WidgetManager extends base.ManagerBase {
+class WidgetManager extends ManagerBase {
     constructor(el) {
         super();
         this.el = el;
