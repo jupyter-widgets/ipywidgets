@@ -20,7 +20,7 @@ from base64 import standard_b64encode
 from .._version import __protocol_version__, __jupyter_widgets_base_version__
 PROTOCOL_VERSION_MAJOR = __protocol_version__.split('.')[0]
 
-def _widget_to_json(x, obj):
+def _widget_to_json(x, obj=None):
     if isinstance(x, dict):
         return {k: _widget_to_json(v, obj) for k, v in x.items()}
     elif isinstance(x, (list, tuple)):
@@ -30,7 +30,7 @@ def _widget_to_json(x, obj):
     else:
         return x
 
-def _json_to_widget(x, obj):
+def _json_to_widget(x, obj=None):
     if isinstance(x, dict):
         return {k: _json_to_widget(v, obj) for k, v in x.items()}
     elif isinstance(x, (list, tuple)):
