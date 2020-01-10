@@ -21,7 +21,12 @@ if [ $? -ne 0 ]; then
 fi
 
 echo -n "Checking jupyter lab... "
-skip_jupyter_lab=yes
+jupyter lab --version 2>/dev/null
+if [ $? -ne 0 ]; then
+    echo "no, skipping installation of widgets for jupyterlab"
+    skip_jupyter_lab=yes
+fi
+
 
 # All following commands must run successfully
 set -e

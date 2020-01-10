@@ -8,7 +8,6 @@ Represents a unicode string using a widget.
 
 from .widget_description import DescriptionWidget
 from .valuewidget import ValueWidget
-from .widget_drop import DropWidget
 from .widget import CallbackDispatcher, register
 from .widget_core import CoreWidget
 from .trait_types import TypedTuple
@@ -58,8 +57,6 @@ class Label(_String):
     _view_name = Unicode('LabelView').tag(sync=True)
     _model_name = Unicode('LabelModel').tag(sync=True)
 
-    def __init__(self, *args, **kwargs):
-        super(Label, self).__init__(*args, **kwargs)
 
 @register
 class Textarea(_String):
