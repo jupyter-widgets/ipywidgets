@@ -119,4 +119,5 @@ export class DummyManager extends ManagerBase {
   }
 
   el: HTMLElement;
+  testClasses: { [key: string]: any } = testWidgets;
 }

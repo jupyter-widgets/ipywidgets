@@ -1,54 +1,59 @@
-# Copyright (c) Jupyter Development Team.
+#!/usr/bin/env python
+# coding: utf-8
+
+# Copyright (c) Vidar Tonaas Fauske.
 # Distributed under the terms of the Modified BSD License.
 
-"""Color class.
-
-Represents an HTML Color .
+"""
+Time and datetime picker widgets
 """
 
-from .widget_description import DescriptionWidget
+from traitlets import Unicode, Bool, validate, TraitError
+
+from .trait_types import datetime_serialization, Datetime
 from .valuewidget import ValueWidget
 from .widget import register
 from .widget_core import CoreWidget
-from .trait_types import Date, date_serialization
-from traitlets import Unicode, Bool, Union, CInt, CaselessStrEnum, TraitError, validate
+from .widget_description import DescriptionWidget
 
 
 @register
-class DatePicker(DescriptionWidget, ValueWidget, CoreWidget):
+class DatetimePicker(DescriptionWidget, ValueWidget, CoreWidget):
     """
-    Display a widget for picking dates.
+    Display a widget for picking times.
 
     Parameters
     ----------
 
-    value: datetime.date
+    value: datetime.datetime
         The current value of the widget.
 
     disabled: bool
         Whether to disable user changes.
 
+    min: datetime.datetime
+        The lower allowed datetime bound
+
+    max: datetime.datetime
+        The upper allowed datetime bound
+
     Examples
     --------
 
     >>> import datetime
-    >>> import ipywidgets as widgets
-    >>> date_pick = widgets.DatePicker()
-    >>> date_pick.value = datetime.date(2019, 7, 9)
+    >>> import ipydatetime
+    >>> datetime_pick = ipydatetime.TimePicker()
+    >>> datetime_pick.value = datetime.datetime(2018, 09, 5, 12, 34, 3)
     """
 
-    _view_name = Unicode('DatePickerView').tag(sync=True)
-    _model_name = Unicode('DatePickerModel').tag(sync=True)
+    _view_name = Unicode("DatetimeView").tag(sync=True)
+    _model_name = Unicode("DatetimeModel").tag(sync=True)
 
-    value = Date(None, allow_none=True).tag(sync=True, **date_serialization)
+    value = Datetime(None, allow_none=True).tag(sync=True, **datetime_serialization)
     disabled = Bool(False, help="Enable or disable user changes.").tag(sync=True)
 
-    min = Date(None, allow_none=True).tag(sync=True, **date_serialization)
-    max = Date(None, allow_none=True).tag(sync=True, **date_serialization)
-    step = Union(
-        (CInt(1), CaselessStrEnum(["any"])),
-        help='The date step to use for the picker, in days, or "any".',
-    ).tag(sync=True)
+    min = Datetime(None, allow_none=True).tag(sync=True, **datetime_serialization)
+    max = Datetime(None, allow_none=True).tag(sync=True, **datetime_serialization)
 
     @validate("value")
     def _validate_value(self, proposal):

@@ -1,53 +1,65 @@
-# Copyright (c) Jupyter Development Team.
+#!/usr/bin/env python
+# coding: utf-8
+
+# Copyright (c) Vidar Tonaas Fauske.
 # Distributed under the terms of the Modified BSD License.
 
-"""Color class.
-
-Represents an HTML Color .
+"""
+Time picker widget
 """
 
-from .widget_description import DescriptionWidget
+from traitlets import Unicode, Bool, Union, CaselessStrEnum, CFloat, validate, TraitError
+
+from .trait_types import Time, time_serialization
 from .valuewidget import ValueWidget
 from .widget import register
 from .widget_core import CoreWidget
-from .trait_types import Date, date_serialization
-from traitlets import Unicode, Bool, Union, CInt, CaselessStrEnum, TraitError, validate
+from .widget_description import DescriptionWidget
 
 
 @register
-class DatePicker(DescriptionWidget, ValueWidget, CoreWidget):
+class TimePicker(DescriptionWidget, ValueWidget, CoreWidget):
     """
-    Display a widget for picking dates.
+    Display a widget for picking times.
 
     Parameters
     ----------
 
-    value: datetime.date
+    value: datetime.time
         The current value of the widget.
 
     disabled: bool
         Whether to disable user changes.
 
+    min: datetime.time
+        The lower allowed time bound
+
+    max: datetime.time
+        The upper allowed time bound
+
+    step: float | 'any'
+        The time step to use for the picker, in seconds, or "any"
+
     Examples
     --------
 
     >>> import datetime
-    >>> import ipywidgets as widgets
-    >>> date_pick = widgets.DatePicker()
-    >>> date_pick.value = datetime.date(2019, 7, 9)
+    >>> import ipydatetime
+    >>> time_pick = ipydatetime.TimePicker()
+    >>> time_pick.value = datetime.time(12, 34, 3)
     """
 
-    _view_name = Unicode('DatePickerView').tag(sync=True)
-    _model_name = Unicode('DatePickerModel').tag(sync=True)
+    _view_name = Unicode("TimeView").tag(sync=True)
+    _model_name = Unicode("TimeModel").tag(sync=True)
 
-    value = Date(None, allow_none=True).tag(sync=True, **date_serialization)
+    value = Time(None, allow_none=True).tag(sync=True, **time_serialization)
     disabled = Bool(False, help="Enable or disable user changes.").tag(sync=True)
 
-    min = Date(None, allow_none=True).tag(sync=True, **date_serialization)
-    max = Date(None, allow_none=True).tag(sync=True, **date_serialization)
+    min = Time(None, allow_none=True).tag(sync=True, **time_serialization)
+    max = Time(None, allow_none=True).tag(sync=True, **time_serialization)
     step = Union(
-        (CInt(1), CaselessStrEnum(["any"])),
-        help='The date step to use for the picker, in days, or "any".',
+        (CFloat(60), CaselessStrEnum(["any"])),
+        help='The time step to use for the picker, in seconds, or "any".',
     ).tag(sync=True)
 
     @validate("value")
