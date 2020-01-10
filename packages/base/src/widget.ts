@@ -691,9 +691,11 @@ class WidgetView extends NativeView<WidgetModel> {
     /**
      * Create and promise that resolves to a child view of a given model
      */
-    create_child_view(child_model: WidgetModel, options = {}): Promise<DOMWidgetView> {
+    create_child_view<VT extends DOMWidgetView = DOMWidgetView>(child_model: DOMWidgetModel, options?: any): Promise<VT>;
+    create_child_view<VT extends WidgetView = WidgetView>(child_model: WidgetModel, options?: any): Promise<VT>;
+    create_child_view<VT extends WidgetView = WidgetView>(child_model: WidgetModel, options = {}): Promise<VT> {
         options = { parent: this, ...options};
-        return this.model.widget_manager.create_view(child_model, options)
+        return this.model.widget_manager.create_view<VT>(child_model, options)
             .catch(utils.reject('Could not create child view', true));
     }
 
