@@ -1,110 +1,211 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-import ipywidgets as widgets
-from ipywidgets.widgets.widget_link import Link
+import argparse
+import json
+from operator import itemgetter
 
-from traitlets import CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat, Float, CInt, Int, Instance, Dict, Any
+from traitlets import (CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat,
+                       Float, CInt, Int, Instance, Dict, Bytes, Any)
+
+import ipywidgets as widgets
 from ipywidgets import Color
 from ipywidgets.widgets.trait_types import TypedTuple
+from ipywidgets.widgets.widget_link import Link
 
-header = '''# Model State
+HEADER = '''# Model State
 
-This is a description of the model state for each widget in the core Jupyter widgets library. The model ID of a widget is the id of the comm object the widget is using. A reference to a widget is serialized to JSON as a string of the form `"IPY_MODEL_<MODEL_ID>"`, where `<MODEL_ID>` is the model ID of a previously created widget of the specified type.
+This is a description of the model state for each widget in the core Jupyter
+widgets library. The model ID of a widget is the id of the comm object the
+widget is using. A reference to a widget is serialized to JSON as a string of
+the form `"IPY_MODEL_<MODEL_ID>"`, where `<MODEL_ID>` is the model ID of a
+previously created widget of the specified type.
 
-This model specification is for ipywidgets 7.4.*, @jupyter-widgets/base 1.1.*, and @jupyter-widgets/controls 1.4.*.
+This model specification is for ipywidgets 7.4.*, @jupyter-widgets/base 1.1.*,
+and @jupyter-widgets/controls 1.4.*.
 
 ## Model attributes
 
-Each widget in the Jupyter core widgets is represented below. The heading represents the model name, module, and version, view name, module, and version that the widget is registered with.
+Each widget in the Jupyter core widgets is represented below. The heading
+represents the model name, module, and version, view name, module, and version
+that the widget is registered with.
 
 '''
 
-widgets_to_document = sorted(widgets.Widget.widget_types.items())
+NUMBER_MAP = {
+    'int': 'number (integer)',
+    'float': 'number (float)',
+    'bool': 'boolean',
+    'bytes': 'Bytes'
+}
 
-def typing(x):
-    s = ''
-    if isinstance(x, CaselessStrEnum):
-        s = 'string (one of %s)'%(', '.join('`%r`'%i for i in x.values))
-    elif isinstance(x, Unicode):
-        s = 'string'
-    elif isinstance(x, (Tuple, List)):
-        s = 'array'
-    elif isinstance(x, TypedTuple):
-        s = 'array of ' + typing(x._trait)
-    elif isinstance(x, Bool):
-        s = 'boolean'
-    elif isinstance(x, (CFloat, Float)):
-        s = 'number (float)'
-    elif isinstance(x, (CInt, Int)):
-        s = 'number (integer)'
-    elif isinstance(x, Color):
-        s = 'string (valid color)'
-    elif isinstance(x, Dict):
-        s = 'object'
-    elif isinstance(x, Instance) and issubclass(x.klass, widgets.Widget):
-        s = 'reference to %s widget'%(x.klass.__name__)
+
+def widget_type(widget, widget_list):
+    attributes = {}
+    if isinstance(widget, CaselessStrEnum):
+        w_type = 'string'
+        attributes['enum'] = widget.values
+    elif isinstance(widget, Unicode):
+        w_type = 'string'
+    elif isinstance(widget, (Tuple, List)):
+        w_type = 'array'
+    elif isinstance(widget, TypedTuple):
+        w_type = 'array'
+        attributes['items'] = widget_type(widget._trait, widget_list)
+    elif isinstance(widget, Bool):
+        w_type = 'bool'
+    elif isinstance(widget, (CFloat, Float)):
+        w_type = 'float'
+    elif isinstance(widget, (CInt, Int)):
+        w_type = 'int'
+    elif isinstance(widget, Color):
+        w_type = 'color'
+    elif isinstance(widget, Dict):
+        w_type = 'object'
+    elif isinstance(widget, Bytes):
+        w_type = 'bytes'
+    elif isinstance(widget, Instance) and issubclass(widget.klass,
+                                                     widgets.Widget):
+        w_type = 'reference'
+        attributes['widget'] = widget.klass.__name__
         # ADD the widget to this documenting list
-        if x.klass not in [i[1] for i in widgets_to_document] and x.klass != widgets.Widget:
-            widgets_to_document.append((x.klass.__name__, x.klass))
-    elif isinstance(x, Any):
-        # In our case, these all happen to be values that are converted to strings
-        s = 'string (valid option label)'
+        if (widget.klass not in [i[1] for i in widget_list]
+                and widget.klass is not widgets.Widget):
+            widget_list.append((widget.klass.__name__, widget.klass))
+    elif isinstance(widget, Any):
+        # In our case, these all happen to be values that are converted to
+        # strings
+        w_type = 'label'
     else:
-        s = x.__class__.__name__
-    if x.allow_none:
-        s = "`null` or "+s
-    return s
+        w_type = widget.__class__.__name__
+    attributes['type'] = w_type
+    if widget.allow_none:
+        attributes['allow_none'] = True
+    return attributes
 
-def jsdefault(t):
-    x = t.default_value
-    if isinstance(t, Instance):
-        x = t.make_dynamic_default()
-        if issubclass(t.klass, widgets.Widget):
+
+def jsdefault(trait):
+    if isinstance(trait, Instance):
+        default = trait.make_dynamic_default()
+        if issubclass(trait.klass, widgets.Widget):
             return 'reference to new instance'
-    if x is True:
-        return '`true`'
-    elif x is False:
-        return '`false`'
-    elif x is None:
-        return '`null`'
-    elif isinstance(x, tuple):
-        return '`{}`'.format(list(x))
     else:
-        return '`%s`'%t.default_value_repr()
+        default = trait.default_value
+        if isinstance(default, bytes):
+            default = trait.default_value_repr()
+    return default
 
-def format_widget(n, w):
+
+def mddefault(attribute):
+    default = attribute['default']
+    is_ref = isinstance(default, str) and default.startswith('reference')
+    if default is None:
+        default = 'null'
+    elif isinstance(default, bool):
+        default = str(default).lower()
+    elif not is_ref and attribute['type'] != 'bytes':
+        default = "{!r}".format(default)
+    if not is_ref:
+        default = '`{}`'.format(default)
+    return default
+
+
+def mdtype(attribute):
+    md_type = attribute['type']
+    if md_type in NUMBER_MAP:
+        md_type = NUMBER_MAP[md_type]
+    if attribute.get('allow_none'):
+        md_type = '`null` or {}'.format(md_type)
+    if 'enum' in attribute:
+        md_type = '{} (one of {})'.format(
+            md_type, ', '.join('`{!r}`'.format(n) for n in attribute['enum'])
+        )
+    if 'items' in attribute:
+        md_type = '{} of {}'.format(md_type, mdtype(attribute['items']))
+    if 'widget' in attribute:
+        md_type = '{} to {} widget'.format(md_type, attribute['widget'])
+    return md_type
+
+
+def format_widget(widget):
     out = []
-    name = dict(zip(['m_module', 'm_version', 'model', 'v_module', 'v_version', 'view'], n))
-
-    out.append('### %(model)s (%(m_module)s, %(m_version)s); %(view)s (%(v_module)s, %(v_version)s)'%name)
+    fmt = '%(name)s (%(module)s, %(version)s)'
+    out.append('### %s; %s' % (fmt % widget['model'], fmt % widget['view']))
     out.append('')
-    out.append('{name: <16} | {typing: <16} | {default: <16} | {help}'.format(name='Attribute', typing='Type', 
-                                                                              default='Default', help='Help'))
+    out.append('{name: <16} | {typing: <16} | {default: <16} | {help}'.format(
+        name='Attribute', typing='Type', default='Default', help='Help')
+    )
     out.append('{0:-<16}-|-{0:-<16}-|-{0:-<16}-|----'.format('-'))
-    for name, t in sorted(w.traits(sync=True).items()):
-        if name in ('_model_module', '_view_module', '_model_module_version', '_view_module_version', 
-                    '_dom_classes', 'layout'):
-            # document these separately, since they apply to all classes
-            pass
-        if name in ('_view_count'):
-            # don't document this since it is totally experimental at this point
-            continue
 
-        s = '{name: <16} | {typing: <16} | {default: <16} | {help}'.format(name='`%s`'%name, typing=typing(t), 
-                                                            allownone='*' if t.allow_none else '', 
-                                                                                               default=jsdefault(t),
-                                                                                              help=t.help if t.help else '')
+    for attribute in sorted(widget['attributes'], key=itemgetter('name')):
+        s = '{name: <16} | {type: <16} | {default: <16} | {help}'.format(
+            name='`{}`'.format(attribute['name']),
+            default=mddefault(attribute),
+            type=mdtype(attribute),
+            help=attribute['help']
+        )
         out.append(s)
     out.append('')
     return '\n'.join(out)
 
-out = header
-for n,w in widgets_to_document:
-    if issubclass(w, Link):
-        out += '\n'+format_widget(n, w((widgets.IntSlider(), 'value'), (widgets.IntSlider(), 'value')))
-    elif issubclass(w, widgets.SelectionRangeSlider) or issubclass(w, widgets.SelectionSlider):
-        out += '\n'+format_widget(n,w(options=[1]))
-    else:
-        out += '\n'+format_widget(n,w())
-print(out)
+
+def jsonify(identifier, widget, widget_list):
+    model = dict(zip(['module', 'version', 'name'], identifier[:3]))
+    view = dict(zip(['module', 'version', 'name'], identifier[3:]))
+    attributes = []
+    for name, trait in widget.traits(sync=True).items():
+        if name == '_view_count':
+            # don't document this since it is totally experimental at this point
+            continue
+
+        attribute = dict(
+            name=name,
+            help=trait.help or '',
+            default=jsdefault(trait)
+        )
+        attribute.update(widget_type(trait, widget_list))
+        attributes.append(attribute)
+
+    return dict(model=model, view=view, attributes=attributes)
+
+
+def create_spec(widget_list):
+    widget_data = []
+    for widget_name, widget_cls in widget_list:
+        if issubclass(widget_cls, Link):
+            widget = widget_cls((widgets.IntSlider(), 'value'),
+                                (widgets.IntSlider(), 'value'))
+        elif issubclass(widget_cls, (widgets.SelectionRangeSlider,
+                                     widgets.SelectionSlider)):
+            widget = widget_cls(options=[1])
+        else:
+            widget = widget_cls()
+
+        widget_data.append(jsonify(widget_name, widget, widget_list))
+    return widget_data
+
+
+def create_markdown(spec):
+    output = [HEADER]
+    for widget in spec:
+        output.append(format_widget(widget))
+    return '\n'.join(output)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Description of your program')
+    parser.add_argument('-f', '--format', choices=['json', 'json-pretty', 'markdown'], 
+        help='Format to generate', default='json')
+    args = parser.parse_args()
+    format = args.format
+
+    widgets_to_document = sorted(widgets.Widget.widget_types.items())
+    spec = create_spec(widgets_to_document)
+    if format == 'json':
+        print(json.dumps(spec, sort_keys=True))
+    elif format == 'json-pretty':
+        print(json.dumps(spec, sort_keys=True,
+              indent=2, separators=(',', ': ')))
+    elif format == 'markdown':
+        # We go through the json engine to convert tuples to lists, etc.
+        print(create_markdown(json.loads(json.dumps(spec))))
