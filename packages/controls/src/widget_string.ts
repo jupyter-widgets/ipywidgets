@@ -3,14 +3,116 @@
 
 import { CoreDescriptionModel } from './widget_core';
 
-import { DescriptionView } from './widget_description';
+import { DescriptionStyleModel, DescriptionView } from './widget_description';
 
 import { uuid } from './utils';
 
+import { JUPYTER_CONTROLS_VERSION } from './version';
+
 /**
- * Class name for a combobox with an invlid value.
+ * Class name for a combobox with an invalid value.
  */
 const INVALID_VALUE_CLASS = 'jpwidgets-invalidComboValue';
+
+export class StringStyleModel extends DescriptionStyleModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'StringStyleModel',
+      _model_module: '@jupyter-widgets/controls',
+      _model_module_version: JUPYTER_CONTROLS_VERSION
+    };
+  }
+
+  public static styleProperties = {
+    ...DescriptionStyleModel.styleProperties,
+    background: {
+      selector: '',
+      attribute: 'background',
+      default: null as any
+    },
+    font_size: {
+      selector: '',
+      attribute: 'font-size',
+      default: ''
+    },
+    text_color: {
+      selector: '',
+      attribute: 'color',
+      default: ''
+    }
+  };
+}
+
+export class LabelStyleModel extends StringStyleModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'LabelStyleModel',
+      _model_module: '@jupyter-widgets/controls',
+      _model_module_version: JUPYTER_CONTROLS_VERSION
+    };
+  }
+
+  public static styleProperties = {
+    ...StringStyleModel.styleProperties,
+    font_family: {
+      selector: '',
+      attribute: 'font-family',
+      default: ''
+    },
+    font_style: {
+      selector: '',
+      attribute: 'font-style',
+      default: ''
+    },
+    font_variant: {
+      selector: '',
+      attribute: 'font-variant',
+      default: ''
+    },
+    font_weight: {
+      selector: '',
+      attribute: 'font-weight',
+      default: ''
+    },
+    text_decoration: {
+      selector: '',
+      attribute: 'text-decoration',
+      default: ''
+    }
+  };
+}
+
+export class TextStyleModel extends DescriptionStyleModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'TextStyleModel',
+      _model_module: '@jupyter-widgets/controls',
+      _model_module_version: JUPYTER_CONTROLS_VERSION
+    };
+  }
+
+  public static styleProperties = {
+    ...DescriptionStyleModel.styleProperties,
+    background: {
+      selector: '.widget-input',
+      attribute: 'background',
+      default: null as any
+    },
+    font_size: {
+      selector: '.widget-input',
+      attribute: 'font-size',
+      default: ''
+    },
+    text_color: {
+      selector: '.widget-input',
+      attribute: 'color',
+      default: ''
+    }
+  };
+}
 
 export class StringModel extends CoreDescriptionModel {
   defaults(): Backbone.ObjectHash {
@@ -193,6 +295,7 @@ export class TextareaView extends StringView {
     this.textbox = document.createElement('textarea');
     this.textbox.setAttribute('rows', '5');
     this.textbox.id = this.label.htmlFor = uuid();
+    this.textbox.classList.add('widget-input');
     this.el.appendChild(this.textbox);
 
     this.update(); // Set defaults.
@@ -338,6 +441,7 @@ export class TextView extends StringView {
     this.textbox = document.createElement('input');
     this.textbox.setAttribute('type', this.inputType);
     this.textbox.id = this.label.htmlFor = uuid();
+    this.textbox.classList.add('widget-input');
     this.el.appendChild(this.textbox);
 
     this.update(); // Set defaults.

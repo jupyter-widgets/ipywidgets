@@ -5,6 +5,11 @@ import { assign } from './utils';
 
 import { WidgetModel, WidgetView, DOMWidgetView } from './widget';
 
+/**
+ * Three functions to deal with some CSS attributes
+ * to make them easier to use.
+ */
+
 export class StyleModel extends WidgetModel {
   defaults(): Backbone.ObjectHash {
     const Derived = this.constructor as typeof StyleModel;

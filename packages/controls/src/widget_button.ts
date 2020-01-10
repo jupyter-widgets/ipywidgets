@@ -13,19 +13,119 @@ export class ButtonStyleModel extends StyleModel {
       ...super.defaults(),
       _model_name: 'ButtonStyleModel',
       _model_module: '@jupyter-widgets/controls',
-      _model_module_version: JUPYTER_CONTROLS_VERSION
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
+      _view_name: 'ButtonStyleView',
+      _view_module: '@jupyter-widgets/controls',
+      _view_module_version: JUPYTER_CONTROLS_VERSION
+  
+    public static styleProperties = {
+        button_color: {
+            selector: '',
+            attribute: 'background-color',
+            default: null as any
+        },
+        font_family: {
+            selector: '',
+            attribute: 'font-family',
+            default: ''
+        },
+        font_size: {
+            selector: '',
+            attribute: 'font-size',
+            default: ''
+        },
+        font_style: {
+            selector: '',
+            attribute: 'font-style',
+            default: ''
+        },
+        font_variant: {
+            selector: '',
+            attribute: 'font-variant',
+            default: ''
+        },
+        font_weight: {
+            selector: '',
+            attribute: 'font-weight',
+            default: ''
+        },
+        text_color: {
+            selector: '',
+            attribute: 'color',
+            default: ''
+        },
+        text_decoration: {
+            selector: '',
+            attribute: 'text-decoration',
+            default: ''
+        }
     };
   }
 
   public static styleProperties = {
+    bold: {
+      selector: '',
+      attribute: 'font-weight',
+      default: ''
+    },
     button_color: {
       selector: '',
       attribute: 'background-color',
       default: null as any
     },
+    font_family: {
+      selector: '',
+      attribute: 'font-family',
+      default: ''
+    },
+    font_size: {
+      selector: '',
+      attribute: 'font-size',
+      default: ''
+    },
+    font_style: {
+      selector: '',
+      attribute: 'font-style',
+      default: ''
+    },
+    font_variant: {
+      selector: '',
+      attribute: 'font-variant',
+      default: ''
+    },
     font_weight: {
       selector: '',
-      attribute: 'font-weight',
+      attribute: 'font-family',
+      default: ''
+    },
+    font_size: {
+      selector: '',
+      attribute: 'font-size',
+      default: ''
+    },
+    italic: {
+      selector: '',
+      attribute: 'font-style',
+      default: ''
+    },
+    text_color: {
+      selector: '',
+      attribute: 'color',
+      default: ''
+    },
+    underline: {
+      selector: '',
+      attribute: 'text-decoration',
+      default: ''
+    },
+    text_color: {
+      selector: '',
+      attribute: 'color',
+      default: ''
+    },
+    text_decoration: {
+      selector: '',
+      attribute: 'text-decoration',
       default: ''
     }
   };
