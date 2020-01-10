@@ -32,6 +32,10 @@ import {
 } from './widget_style';
 
 import {
+    IWidgetManager
+} from './manager';
+
+import {
     IClassicComm, ICallbacks
 } from './services-shim';
 
@@ -46,123 +50,6 @@ import {
 import {
     KernelMessage
 } from '@jupyterlab/services';
-
-/**
- * The options for a model.
- *
- * #### Notes
- * Either a comm or a model_id must be provided.
- */
-export
-interface IModelOptions {
-
-    /**
-     * Target name of the widget model to create.
-     */
-    model_name: string;
-
-    /**
-     * Module name of the widget model to create.
-     */
-    model_module: string;
-
-    /**
-     * Semver version requirement for the model module.
-     */
-    model_module_version: string;
-
-    /**
-     * Target name of the widget view to create.
-     */
-    view_name?: string | null;
-
-    /**
-     * Module name of the widget view to create.
-     */
-    view_module?: string | null;
-
-    /**
-     * Semver version requirement for the view module.
-     */
-    view_module_version?: string;
-
-    /**
-     * Comm object associated with the widget.
-     */
-    comm?: any;
-
-    /**
-     * The model id to use. If not provided, the comm id of the comm is used.
-     */
-    model_id?: string;
-}
-
-/**
- * The options for a connected model.
- *
- * This gives all of the information needed to instantiate a comm to a new
- * widget on the kernel side (so view information is mandatory).
- *
- * #### Notes
- * Either a comm or a model_id must be provided.
- */
-export
-interface IWidgetOptions extends IModelOptions {
-    /**
-     * Target name of the widget model to create.
-     */
-    model_name: string;
-
-    /**
-     * Module name of the widget model to create.
-     */
-    model_module: string;
-
-    /**
-     * Semver version requirement for the model module.
-     */
-    model_module_version: string;
-
-    /**
-     * Target name of the widget view to create.
-     */
-    view_name: string | null;
-
-    /**
-     * Module name of the widget view to create.
-     */
-    view_module: string | null;
-
-    /**
-     * Semver version requirement for the view module.
-     */
-    view_module_version: string;
-
-    /**
-     * Comm object associated with the widget.
-     */
-    comm?: IClassicComm;
-
-    /**
-     * The model id to use. If not provided, the comm id of the comm is used.
-     */
-    model_id?: string;
-}
-
-/**
- *
- */
-export
-interface IWidgetManager {
-    get_model(model_id: string): Promise<WidgetModel> | undefined;
-    new_widget(options: IWidgetOptions, serialized_state?: JSONObject): Promise<WidgetModel>;
-    new_model(options: IModelOptions, serialized_state?: any): Promise<WidgetModel>;
-    register_model(model_id: string, modelPromise: Promise<WidgetModel>): void;
-    create_view(model: DOMWidgetModel, options?: any): Promise<DOMWidgetView>;
-    create_view(model: WidgetModel, options?: any): Promise<WidgetView>;
-    callbacks(view?: WidgetView): ICallbacks;
-}
-
 
 /**
  * Replace model ids with models recursively.

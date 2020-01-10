@@ -2,6 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 export * from './widget';
+export * from './manager';
 export * from './widget_layout';
 export * from './widget_style';
 export * from './services-shim';
