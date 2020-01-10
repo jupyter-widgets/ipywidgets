@@ -5,7 +5,9 @@ declare let __webpack_public_path__: string;
 // eslint-disable-next-line prefer-const
 __webpack_public_path__ = (window as any).__jupyter_widgets_assets_path__ || __webpack_public_path__;
 
-import 'font-awesome/css/font-awesome.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import '@fortawesome/fontawesome-free/css/v4-shims.min.css';
+
 import '@lumino/widgets/style/index.css';
 import '@jupyter-widgets/controls/css/widgets.css';
 
