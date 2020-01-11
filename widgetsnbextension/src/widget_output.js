@@ -4,23 +4,24 @@
 
 // This widget is strongly coupled to the notebook because of the outputarea
 // dependency.
-var widgets = require("@jupyter-widgets/controls");
 var outputBase = require("@jupyter-widgets/output");
-var _ = require("underscore");
 require('./widget_output.css');
 
 var outputArea = new Promise(function(resolve, reject) {
         requirejs(["notebook/js/outputarea"], resolve, reject)
 });
 
-var OutputModel = outputBase.OutputModel.extend({
-    defaults: _.extend({}, outputBase.OutputModel.prototype.defaults(), {
-        msg_id: "",
-        outputs: []
-    }),
+export class OutputModel extends outputBase.OutputModel {
+    defaults() {
+        return {
+            ...super.defaults(),
+            msg_id: "",
+            outputs: []    
+        }
+    }
 
-    initialize: function(attributes, options) {
-        OutputModel.__super__.initialize.apply(this, arguments);
+    initialize(attributes, options) {
+        super.initialize(attributes, options)
         this.listenTo(this, 'change:msg_id', this.reset_msg_id);
 
         if (this.comm && this.comm.kernel) {
@@ -50,14 +51,14 @@ var OutputModel = outputBase.OutputModel.extend({
             that.listenTo(that, 'change:outputs', that.setOutputs);
             that.setOutputs();
         });
-    },
+    }
 
     // make callbacks
-    callbacks: function() {
+    callbacks() {
         // Merge our callbacks with the base class callbacks.
-        var cb = OutputModel.__super__.callbacks.apply(this, arguments);
+        var cb = super.callbacks();
         var iopub = cb.iopub || {};
-        var iopubCallbacks = _.extend({}, iopub, {
+        var iopubCallbacks = {...iopub,
             output: function(msg) {
                 this.trigger('new_message', msg);
                 if (iopub.output) {
@@ -70,11 +71,11 @@ var OutputModel = outputBase.OutputModel.extend({
                     iopub.clear_output.apply(this, arguments);
                 }
             }.bind(this)
-        });
-        return _.extend({}, cb, {iopub: iopubCallbacks});
-    },
+        };
+        return {...cb, iopub: iopubCallbacks};
+    }
 
-    reset_msg_id: function() {
+    reset_msg_id() {
         var kernel = this.kernel;
         // Pop previous message id
         var prev_msg_id = this.previous('msg_id');
@@ -88,21 +89,21 @@ var OutputModel = outputBase.OutputModel.extend({
         if (msg_id && kernel) {
             kernel.output_callback_overrides_push(msg_id, this.model_id);
         }
-    },
+    }
 
-    setOutputs: function(model, value, options) {
+    setOutputs(model, value, options) {
         if (!(options && options.newMessage)) {
             // fromJSON does not clear the existing output
             this.output_area.clear_output();
             // fromJSON does not copy the message, so we make a deep copy
             this.output_area.fromJSON(JSON.parse(JSON.stringify(this.get('outputs'))));
         }
-    },
+    }
 
-});
+}
 
-var OutputView = outputBase.OutputView.extend({
-    render: function(){
+export class OutputView extends outputBase.OutputView {
+    render(){
         var that = this;
         this.el.classList.add('jupyter-widgets-output-area');
         outputArea.then(function(outputArea) {
@@ -128,10 +129,10 @@ var OutputView = outputBase.OutputView.extend({
             that.listenTo(that.model, 'change:outputs', that.setOutputs);
             that.setOutputs();
         });
-        OutputView.__super__.render.apply(this, arguments);
-    },
+        super.render();
+    }
 
-    setOutputs: function(model, value, options) {
+    setOutputs(model, value, options) {
         if (!(options && options.newMessage)) {
             // fromJSON does not clear the existing output
             this.output_area.clear_output();
@@ -139,9 +140,4 @@ var OutputView = outputBase.OutputView.extend({
             this.output_area.fromJSON(JSON.parse(JSON.stringify(this.model.get('outputs'))));
         }
     }
-});
-
-module.exports = {
-    OutputView: OutputView,
-    OutputModel: OutputModel,
-};
+}
