@@ -157,6 +157,8 @@ class ByteMemoryView(traitlets.TraitType):
             return value
         self.error(obj, value)
 
+    def default_value_repr(self):
+        return repr(self.default_value.tobytes())
 
 class CByteMemoryView(ByteMemoryView):
     """A casting version of the byte memory view trait."""

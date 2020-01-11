@@ -100,7 +100,7 @@ Attribute        | Type             | Default          | Help
 `loop`           | boolean          | `true`           | When true, the audio will start from the beginning after finishing
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
-`value`          | Bytes            | `b''`            | The media data as a byte string.
+`value`          | Bytes            | `b''`            | The media data as a memory view of bytes.
 
 ### BoundedFloatTextModel (@jupyter-widgets/controls, 1.5.0); FloatTextView (@jupyter-widgets/controls, 1.5.0)
 
@@ -330,7 +330,7 @@ Attribute        | Type             | Default          | Help
 `layout`         | reference to Layout widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
-`value`          | Bytes            | `b''`            | The media data as a byte string.
+`value`          | Bytes            | `b''`            | The media data as a memory view of bytes.
 
 ### DatePickerModel (@jupyter-widgets/controls, 1.5.0); DatePickerView (@jupyter-widgets/controls, 1.5.0)
 
@@ -630,7 +630,7 @@ Attribute        | Type             | Default          | Help
 `layout`         | reference to Layout widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
-`value`          | Bytes            | `b''`            | The media data as a byte string.
+`value`          | Bytes            | `b''`            | The media data as a memory view of bytes.
 `width`          | string           | `''`             | Width of the image in pixels. Use layout.width for styling the widget.
 
 ### IntProgressModel (@jupyter-widgets/controls, 1.5.0); ProgressView (@jupyter-widgets/controls, 1.5.0)
@@ -1136,7 +1136,7 @@ Attribute        | Type             | Default          | Help
 `loop`           | boolean          | `true`           | When true, the video will start from the beginning after finishing
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
-`value`          | Bytes            | `b''`            | The media data as a byte string.
+`value`          | Bytes            | `b''`            | The media data as a memory view of bytes.
 `width`          | string           | `''`             | Width of the video in pixels.
 
 ### OutputModel (@jupyter-widgets/output, 1.0.0); OutputView (@jupyter-widgets/output, 1.0.0)
