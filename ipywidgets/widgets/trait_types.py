@@ -146,6 +146,32 @@ date_serialization = {
     'to_json': date_to_json
 }
 
+class ByteMemoryView(traitlets.TraitType):
+    """A trait for memory views of bytes."""
+
+    default_value = memoryview(b'')
+    info_text = 'a memory view object'
+
+    def validate(self, obj, value):
+        if isinstance(value, memoryview) and value.format == 'B':
+            return value
+        self.error(obj, value)
+
+
+class CByteMemoryView(ByteMemoryView):
+    """A casting version of the byte memory view trait."""
+
+    def validate(self, obj, value):
+        if isinstance(value, memoryview) and value.format == 'B':
+            return value
+
+        try:
+            mv = memoryview(value)
+            if mv.format != 'B':
+                mv = mv.cast('B')
+            return mv
+        except Exception:
+            self.error(obj, value)
 
 class InstanceDict(traitlets.Instance):
     """An instance trait which coerces a dict to an instance.
