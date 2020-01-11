@@ -157,8 +157,8 @@ export function registerWidgetManager(
  */
 const plugin: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> = {
   id: '@jupyter-widgets/jupyterlab-manager:plugin',
-  requires: [INotebookTracker, IRenderMimeRegistry, ISettingRegistry],
-  optional: [IMainMenu, ILoggerRegistry],
+  requires: [IRenderMimeRegistry],
+  optional: [INotebookTracker, ISettingRegistry, IMainMenu, ILoggerRegistry],
   provides: base.IJupyterWidgetRegistry,
   activate: activateWidgetExtension,
   autoStart: true
@@ -176,11 +176,12 @@ function updateSettings(settings: ISettingRegistry.ISettings): void {
  */
 function activateWidgetExtension(
   app: JupyterFrontEnd,
-  tracker: INotebookTracker,
   rendermime: IRenderMimeRegistry,
-  settingRegistry: ISettingRegistry,
+  tracker: INotebookTracker | null,
+  settingRegistry: ISettingRegistry | null,
   menu: IMainMenu | null,
-  loggerRegistry: ILoggerRegistry | null): base.IJupyterWidgetRegistry {
+  loggerRegistry: ILoggerRegistry | null
+): base.IJupyterWidgetRegistry {
 
   const {commands} = app;
 
@@ -210,13 +211,14 @@ function activateWidgetExtension(
       });
     }
   };
-
-  settingRegistry.load(plugin.id).then((settings: ISettingRegistry.ISettings) => {
-    settings.changed.connect(updateSettings);
-    updateSettings(settings);
-  }).catch((reason: Error) => {
-    console.error(reason.message);
-  });
+  if (settingRegistry !== null) {
+    settingRegistry.load(plugin.id).then((settings: ISettingRegistry.ISettings) => {
+      settings.changed.connect(updateSettings);
+      updateSettings(settings);
+    }).catch((reason: Error) => {
+      console.error(reason.message);
+    });
+  }
 
   // Add a placeholder widget renderer.
   rendermime.addFactory(
@@ -228,43 +230,47 @@ function activateWidgetExtension(
     0
   );
 
-  tracker.forEach(panel => {
-    registerWidgetManager(
-      panel.context,
-      panel.content.rendermime,
-      chain(
-        widgetRenderers(panel.content),
-        outputViews(app, panel.context.path)
-      )
-    );
+  if (tracker !== null) {
+    tracker.forEach(panel => {
+      registerWidgetManager(
+        panel.context,
+        panel.content.rendermime,
+        chain(
+          widgetRenderers(panel.content),
+          outputViews(app, panel.context.path)
+        )
+      );
 
-    bindUnhandledIOPubMessageSignal(panel);
-  });
-  tracker.widgetAdded.connect((sender, panel) => {
-    registerWidgetManager(
-      panel.context,
-      panel.content.rendermime,
-      chain(
-        widgetRenderers(panel.content),
-        outputViews(app, panel.context.path)
-      )
-    );
+      bindUnhandledIOPubMessageSignal(panel);
+    });
+    tracker.widgetAdded.connect((sender, panel) => {
+      registerWidgetManager(
+        panel.context,
+        panel.content.rendermime,
+        chain(
+          widgetRenderers(panel.content),
+          outputViews(app, panel.context.path)
+        )
+      );
 
-    bindUnhandledIOPubMessageSignal(panel);
-  });
+      bindUnhandledIOPubMessageSignal(panel);
+    });
+  }
 
-  // Add a command for creating a new Markdown file.
-  commands.addCommand('@jupyter-widgets/jupyterlab-manager:saveWidgetState', {
-    label: 'Save Widget State Automatically',
-    execute: args => {
-      return settingRegistry
-        .set(plugin.id, 'saveState', !SETTINGS.saveState)
-        .catch((reason: Error) => {
-          console.error(`Failed to set ${plugin.id}: ${reason.message}`);
-        });
-    },
-    isToggled: () => SETTINGS.saveState
-  });
+  if (settingRegistry !== null) {
+    // Add a command for creating a new Markdown file.
+    commands.addCommand('@jupyter-widgets/jupyterlab-manager:saveWidgetState', {
+      label: 'Save Widget State Automatically',
+      execute: args => {
+        return settingRegistry
+          .set(plugin.id, 'saveState', !SETTINGS.saveState)
+          .catch((reason: Error) => {
+            console.error(`Failed to set ${plugin.id}: ${reason.message}`);
+          });
+      },
+      isToggled: () => SETTINGS.saveState
+    });
+  }
 
   if (menu) {
     menu.settingsMenu.addGroup([
