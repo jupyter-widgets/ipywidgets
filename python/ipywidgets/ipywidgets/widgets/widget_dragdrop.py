@@ -65,18 +65,18 @@ class DropWidget(DOMWidget, CoreWidget):
 class DropBox(DropWidget):
     _model_name = Unicode('DropBoxModel').tag(sync=True)
     _view_name = Unicode('DropBoxView').tag(sync=True)
-    child = Instance(Widget).tag(sync=True, **widget_serialization)
+    child = Instance(Widget, allow_none=True).tag(sync=True, **widget_serialization)
 
-    def __init__(self, child, *args, **kwargs):
-        super(DropBox, self).__init__(*args, **kwargs, child=child)
+    def __init__(self, child=None, **kwargs):
+        super(DropBox, self).__init__(**kwargs, child=child)
 
 @register
 class DraggableBox(DropWidget):
     _model_name = Unicode('DraggableBoxModel').tag(sync=True)
     _view_name = Unicode('DraggableBoxView').tag(sync=True) 
-    child = Instance(Widget).tag(sync=True, **widget_serialization)
+    child = Instance(Widget, allow_none=True).tag(sync=True, **widget_serialization)
     draggable = Bool(True).tag(sync=True)
     drag_data = Dict().tag(sync=True)
 
-    def __init__(self, child, *args, **kwargs):
-        super(DraggableBox, self).__init__(*args, **kwargs, child=child)
+    def __init__(self, child=None, **kwargs):
+        super(DraggableBox, self).__init__(**kwargs, child=child)

@@ -129,29 +129,30 @@ class DraggableBoxView extends DragDropBoxViewBase {
         this.dragSetup();
     }
 
-    events(): {[e: string] : string; } {
+    events(): {[e: string]: string} {
         return {'dragstart' : 'on_dragstart'};
     }
 
-    on_dragstart(event: any) {
-        if (this.model.get('child')?.get('value')) {
-            event.dataTransfer.setData('text/plain', this.model.get('child').get('value'));
+    on_dragstart(event: DragEvent): void {
+        if (event.dataTransfer) {
+            if (this.model.get('child').get('value')) {
+                event.dataTransfer?.setData('text/plain', this.model.get('child').get('value'));
+            }
+            const drag_data = this.model.get('drag_data');
+            for (const datatype in drag_data) {
+              event.dataTransfer.setData(datatype, drag_data[datatype]);
+            }
+            event.dataTransfer.setData('application/vnd.jupyter.widget-view+json', this.model.model_id);
+            event.dataTransfer.dropEffect = 'copy';
         }
-        let drag_data = this.model.get('drag_data');
-        for (let datatype in drag_data) {
-          event.dataTransfer.setData(datatype, drag_data[datatype]);
-        }
-
-        event.dataTransfer.setData('application/vnd.jupyter.widget-view+json', this.model.model_id);
-        event.dataTransfer.dropEffect = 'copy';
     }
 
-    dragSetup() {
+    dragSetup(): void {
         this.el.draggable = this.model.get('draggable');
         this.model.on('change:draggable', this.on_change_draggable, this);
     }
 
-    on_change_draggable() {
+    on_change_draggable(): void {
       this.el.draggable = this.model.get('draggable');
     }
 }
@@ -177,29 +178,34 @@ class DropBoxView extends DragDropBoxViewBase {
      * https://www.typescriptlang.org/docs/handbook/mixins.html
      */
 
-    events(): {[e: string] : string; } {
+    events(): {[e: string]: string} {
         return {
             'drop': '_handle_drop',
             'dragover': 'on_dragover'
         };
     }
 
-    _handle_drop(event: any) {
+    _handle_drop(event: DragEvent): void {
         event.preventDefault();
 
-        let datamap: any = {};
+        const datamap: {[e: string]: string} = {};
 
-        for (let i=0; i < event.dataTransfer.types.length; i++) {
-          let t = event.dataTransfer.types[i];
-          datamap[t] = event.dataTransfer.getData(t);
+        if (event.dataTransfer)
+        {
+            for (let i=0; i < event.dataTransfer.types.length; i++) {
+              const t = event.dataTransfer.types[i];
+              datamap[t] = event.dataTransfer?.getData(t);
+            }
         }
 
         this.send({event: 'drop', data: datamap});
     }
 
-    on_dragover(event: any) {
+    on_dragover(event: DragEvent): void {
         event.preventDefault();
         event.stopPropagation();
-        event.dataTransfer.dropEffect = 'copy';
+        if (event.dataTransfer) {
+            event.dataTransfer.dropEffect = 'copy';
+        }
     }
 }
