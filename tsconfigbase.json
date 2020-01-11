@@ -16,7 +16,6 @@
     "preserveWatchOutput": true,
     "resolveJsonModule": true,
     "strictNullChecks": true,
-    "target": "es2017",
-    "types": []
+    "target": "es2017"
   }
 }
