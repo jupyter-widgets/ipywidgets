@@ -117,8 +117,8 @@ class _Media(DOMWidget, ValueWidget, CoreWidget):
         # Return value first like a ValueWidget
         signature = []
 
-        sig_value = 'value={!r}'.format(self.value[:100].tobytes())
-        if len(sig_value) > 120:
+        sig_value = 'value={!r}'.format(self.value[:30].tobytes())
+        if self.value.nbytes > 30:
             sig_value = sig_value[:-1]+"..."+sig_value[-1]
         signature.append(sig_value)
 
