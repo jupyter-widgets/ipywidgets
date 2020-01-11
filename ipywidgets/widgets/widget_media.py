@@ -117,12 +117,10 @@ class _Media(DOMWidget, ValueWidget, CoreWidget):
         # Return value first like a ValueWidget
         signature = []
 
-        # strip off the starting b' and ending ' so we can truncate if needed
-        sig_value = repr(self.value[:100].tobytes())[2:-1]
-
-        if self.value.nbytes > 100:
-            sig_value += '...'
-        signature.append("{}=b'{}'".format('value', sig_value))
+        sig_value = 'value={!r}'.format(self.value[:100].tobytes())
+        if len(sig_value) > 120:
+            sig_value = sig_value[:-1]+"..."+sig_value[-1]
+        signature.append(sig_value)
 
         for key in super(cls, self)._repr_keys():
             if key == 'value':
