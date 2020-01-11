@@ -96,7 +96,7 @@ export class FileUploadView extends DOMWidgetView {
                 .then(contents => {
                     const value = contents.map(c => {
                         return {
-                            metadata: c.metadata,
+                            ...c.metadata,
                             content: c.buffer
                         };
                     });
