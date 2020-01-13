@@ -1053,7 +1053,7 @@ Attribute        | Type             | Default          | Help
 `font_variant`   | string           | `''`             | Button text font variant.
 `font_weight`    | string           | `''`             | Button text font weight.
 `text_color`     | `null` or string | `null`           | Text color
-`text_decoration` | `null` or string | `null`           | Text decoration
+`text_decoration` | string           | `''`             | Text decoration
 
 ### ToggleButtonsModel (@jupyter-widgets/controls, 1.5.0); ToggleButtonsView (@jupyter-widgets/controls, 1.5.0)
 
