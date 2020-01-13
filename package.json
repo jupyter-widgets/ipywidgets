@@ -36,12 +36,14 @@
     "eslint-plugin-prettier": "^3.1.2",
     "husky": "^2.3.0",
     "lerna": "^3.20.2",
+    "lint-staged": "^9.5.0",
     "prettier": "^1.19.1",
     "sort-package-json": "~1.35"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "pre-push": "jlpm run integrity"
     }
   }
 }
