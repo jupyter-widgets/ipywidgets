@@ -213,7 +213,7 @@ Attribute        | Type             | Default          | Help
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `indent`         | boolean          | `true`           | Indent the control to align with other controls with a description.
 `layout`         | reference to Layout widget | reference to new instance | 
-`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`style`          | reference to _BoolStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | boolean          | `false`          | Bool value
@@ -1038,10 +1038,29 @@ Attribute        | Type             | Default          | Help
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `icon`           | string           | `''`             | Font-awesome icon.
 `layout`         | reference to Layout widget | reference to new instance | 
-`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`style`          | reference to ToggleButtonStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | boolean          | `false`          | Bool value
+
+### ToggleButtonStyleModel (@jupyter-widgets/controls, 1.5.0); StyleView (@jupyter-widgets/base, 1.2.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'1.5.0'`        | 
+`_model_name`    | string           | `'ToggleButtonStyleModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/base'` | 
+`_view_module_version` | string           | `'1.2.0'`        | 
+`_view_name`     | string           | `'StyleView'`    | 
+`background_color` | `null` or string | `null`           | Background color
+`font_family`    | string           | `''`             | Button text font family.
+`font_size`      | string           | `''`             | Button text font size.
+`font_style`     | string           | `''`             | Button text font style.
+`font_variant`   | string           | `''`             | Button text font variant.
+`font_weight`    | string           | `''`             | Button text font weight.
+`text_color`     | `null` or string | `null`           | Text color
+`text_decoration` | `null` or string | `null`           | Text decoration
 
 ### ToggleButtonsModel (@jupyter-widgets/controls, 1.5.0); ToggleButtonsView (@jupyter-widgets/controls, 1.5.0)
 
@@ -1112,7 +1131,7 @@ Attribute        | Type             | Default          | Help
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `layout`         | reference to Layout widget | reference to new instance | 
 `readout`        | string           | `'Invalid'`      | Message displayed when the value is False
-`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`style`          | reference to _BoolStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | boolean          | `false`          | Bool value
@@ -1155,4 +1174,16 @@ Attribute        | Type             | Default          | Help
 `outputs`        | array of object  | `[]`             | The output messages synced from the frontend.
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
+
+### o (_, B); S (o, l)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'1.5.0'`        | 
+`_model_name`    | string           | `'BoolStyleModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/base'` | 
+`_view_module_version` | string           | `'1.2.0'`        | 
+`_view_name`     | string           | `'StyleView'`    | 
+`background_color` | `null` or string | `null`           | Background color
 

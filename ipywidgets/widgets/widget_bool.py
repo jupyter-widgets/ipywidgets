@@ -8,15 +8,37 @@ Represents a boolean using a widget.
 
 from .widget_description import DescriptionWidget
 from .widget_core import CoreWidget
+from .widget_style import Style
 from .valuewidget import ValueWidget
-from .widget import register
+from .widget import register, widget_serialization
+from .trait_types import Color, InstanceDict
+
 from traitlets import Unicode, Bool, CaselessStrEnum
+
+
+class _BoolStyle(Style, CoreWidget):
+    """_Bool widget style."""
+    _model_name = Unicode('BoolStyleModel').tag(sync=True)
+    background_color = Color(None, allow_none=True, help="Background color").tag(sync=True)
+
+@register
+class ToggleButtonStyle(_BoolStyle, CoreWidget):
+    """ToggleButton widget style."""
+    _model_name = Unicode('ToggleButtonStyleModel').tag(sync=True)
+    font_family = Unicode(help="Button text font family.").tag(sync=True)
+    font_size = Unicode(help="Button text font size.").tag(sync=True)
+    font_style = Unicode(help="Button text font style.").tag(sync=True)
+    font_variant = Unicode(help="Button text font variant.").tag(sync=True)
+    font_weight = Unicode(help="Button text font weight.").tag(sync=True)
+    text_color = Color(None, allow_none=True, help="Text color").tag(sync=True)
+    text_decoration = Unicode(help="Text decoration").tag(sync=True)
 
 
 class _Bool(DescriptionWidget, ValueWidget, CoreWidget):
     """A base class for creating widgets that represent booleans."""
     value = Bool(False, help="Bool value").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes.").tag(sync=True)
+    style = InstanceDict(_BoolStyle, help="Styling customizations").tag(sync=True, **widget_serialization)
 
     def __init__(self, value=None, **kwargs):
         if value is not None:
@@ -65,6 +87,7 @@ class ToggleButton(_Bool):
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
         help="""Use a predefined styling for the button.""").tag(sync=True)
+    style = InstanceDict(ToggleButtonStyle, help="Styling customizations").tag(sync=True, **widget_serialization)
 
 
 @register

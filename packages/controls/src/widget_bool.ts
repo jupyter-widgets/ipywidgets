@@ -6,17 +6,86 @@ import {
 } from './widget_core';
 
 import {
-    DescriptionView
+    DescriptionStyleModel, DescriptionView
 } from './widget_description';
 
 import {
     DOMWidgetView
 } from '@jupyter-widgets/base';
 
+import {
+    JUPYTER_CONTROLS_VERSION
+} from './version';
+
 import * as _ from 'underscore';
 
+export
+class BoolStyleModel extends DescriptionStyleModel {
+    defaults(): Backbone.ObjectHash {
+        return _.extend(super.defaults(), {
+            _model_name: 'BoolStyleModel',
+            _model_module: '@jupyter-widgets/controls',
+            _model_module_version: JUPYTER_CONTROLS_VERSION,
+        });
+    }
 
+    public static styleProperties = {
+        ...DescriptionStyleModel.styleProperties,
+        background_color: {
+            selector: '',
+            attribute: 'background-color',
+            default: null as any
+        }
+    };
+}
 
+export
+class ToggleButtonStyleModel extends BoolStyleModel {
+    defaults(): Backbone.ObjectHash {
+        return _.extend(super.defaults(), {
+            _model_name: 'ToggleButtonStyleModel',
+        });
+    }
+
+    public static styleProperties = {
+        ...BoolStyleModel.styleProperties,
+        font_family: {
+            selector: '',
+            attribute: 'font-family',
+            default: ''
+        },
+        font_size: {
+            selector: '',
+            attribute: 'font-size',
+            default: ''
+        },
+        font_style: {
+            selector: '',
+            attribute: 'font-style',
+            default: ''
+        },
+        font_variant: {
+            selector: '',
+            attribute: 'font-variant',
+            default: ''
+        },
+        font_weight: {
+            selector: '',
+            attribute: 'font-weight',
+            default: ''
+        },
+        text_color: {
+            selector: '',
+            attribute: 'color',
+            default: ''
+        },
+        text_decoration: {
+            selector: '',
+            attribute: 'text-decoration',
+            default: ''
+         }
+     };
+ }
 
 export
 class BoolModel extends CoreDescriptionModel {
@@ -24,6 +93,7 @@ class BoolModel extends CoreDescriptionModel {
         return _.extend(super.defaults(), {
             value: false,
             disabled: false,
+            style: null,
             _model_name: 'BoolModel'
         });
     }
@@ -190,7 +260,8 @@ class ToggleButtonModel extends BoolModel {
             _model_name: 'ToggleButtonModel',
             tooltip: '',
             icon: '',
-            button_style: ''
+            button_style: '',
+            style: null
         });
     }
 }
