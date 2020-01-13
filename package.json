@@ -43,7 +43,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "jlpm run integrity"
+      "pre-push": "yarn run integrity"
     }
   }
 }
