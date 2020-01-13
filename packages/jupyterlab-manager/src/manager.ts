@@ -7,7 +7,6 @@ import * as Backbone from 'backbone';
 import {
   shims,
   IClassicComm,
-  IWidgetRegistryData,
   ExportMap,
   ExportData,
   WidgetModel,
@@ -93,11 +92,13 @@ export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   constructor(
     context: DocumentRegistry.IContext<INotebookModel>,
     rendermime: IRenderMimeRegistry,
-    settings: WidgetManager.Settings
+    settings: WidgetManager.Settings,
+    widgetRegistry: SemVerCache<ExportData>
   ) {
     super();
     this._context = context;
     this._rendermime = rendermime;
+    this._registry = widgetRegistry;
 
     // Set _handleCommOpen so `this` is captured.
     this._handleCommOpen = async (comm, msg): Promise<void> => {
@@ -420,7 +421,7 @@ export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
       moduleVersion = `^${moduleVersion}`;
     }
 
-    const mod = this._registry.get(moduleName, moduleVersion);
+    const mod = await this._registry.get(moduleName, moduleVersion);
     if (!mod) {
       throw new Error(
         `Module ${moduleName}, semver range ${moduleVersion} is not registered as a widget module`
@@ -470,10 +471,6 @@ export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    */
   get onUnhandledIOPubMessage(): ISignal<this, KernelMessage.IIOPubMessage> {
     return this._onUnhandledIOPubMessage;
-  }
-
-  register(data: IWidgetRegistryData): void {
-    this._registry.set(data.name, data.version, data.exports);
   }
 
   /**
@@ -552,7 +549,7 @@ export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     msg: KernelMessage.ICommOpenMsg
   ) => Promise<void>;
   private _context: DocumentRegistry.IContext<INotebookModel>;
-  private _registry: SemVerCache<ExportData> = new SemVerCache<ExportData>();
+  private _registry: SemVerCache<ExportData>;
   private _rendermime: IRenderMimeRegistry;
 
   _commRegistration: IDisposable;

@@ -38,6 +38,8 @@ import { WidgetManager, WIDGET_VIEW_MIMETYPE } from './manager';
 
 import { OutputModel, OutputView, OUTPUT_WIDGET_VERSION } from './output';
 
+import { SemVerCache } from './semvercache';
+
 import * as base from '@jupyter-widgets/base';
 
 // We import only the version from the specific module in controls so that the
@@ -48,7 +50,7 @@ import '@jupyter-widgets/base/css/index.css';
 import '@jupyter-widgets/controls/css/widgets-base.css';
 import { KernelMessage } from '@jupyterlab/services';
 
-const WIDGET_REGISTRY: base.IWidgetRegistryData[] = [];
+const WIDGET_REGISTRY = new SemVerCache<base.ExportData>();
 
 /**
  * The cached settings.
@@ -111,8 +113,12 @@ export function registerWidgetManager(
 ): DisposableDelegate {
   let wManager = Private.widgetManagerProperty.get(context);
   if (!wManager) {
-    wManager = new WidgetManager(context, rendermime, SETTINGS);
-    WIDGET_REGISTRY.forEach(data => wManager!.register(data));
+    wManager = new WidgetManager(
+      context,
+      rendermime,
+      SETTINGS,
+      WIDGET_REGISTRY
+    );
     Private.widgetManagerProperty.set(context, wManager);
   }
 
@@ -268,10 +274,10 @@ function activateWidgetExtension(
     ]);
   }
 
-  WIDGET_REGISTRY.push({
+  WIDGET_REGISTRY.set({
     name: '@jupyter-widgets/base',
     version: base.JUPYTER_WIDGETS_VERSION,
-    exports: {
+    object: {
       WidgetModel: base.WidgetModel,
       WidgetView: base.WidgetView,
       DOMWidgetView: base.DOMWidgetView,
@@ -283,10 +289,10 @@ function activateWidgetExtension(
     }
   });
 
-  WIDGET_REGISTRY.push({
+  WIDGET_REGISTRY.set({
     name: '@jupyter-widgets/controls',
     version: JUPYTER_CONTROLS_VERSION,
-    exports: () => {
+    object: () => {
       return new Promise((resolve, reject) => {
         (require as any).ensure(
           ['@jupyter-widgets/controls'],
@@ -303,15 +309,19 @@ function activateWidgetExtension(
     }
   });
 
-  WIDGET_REGISTRY.push({
+  WIDGET_REGISTRY.set({
     name: '@jupyter-widgets/output',
     version: OUTPUT_WIDGET_VERSION,
-    exports: { OutputModel, OutputView }
+    object: { OutputModel, OutputView }
   });
 
   return {
     registerWidget(data: base.IWidgetRegistryData): void {
-      WIDGET_REGISTRY.push(data);
+      WIDGET_REGISTRY.set({
+        name: data.name,
+        version: data.version,
+        object: data.exports
+      });
     }
   };
 }
