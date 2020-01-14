@@ -7,6 +7,8 @@ import { PromiseDelegate } from '@lumino/coreutils';
 
 import { ArrayExt } from '@lumino/algorithm';
 
+import { Throttler } from '@lumino/polling';
+
 const TIMEOUT = 500;
 
 type TPromiseCache<T> = [
@@ -33,54 +35,9 @@ export class SemVerCache<T> {
     } else {
       throw `Version ${version} of name ${name} already registered.`;
     }
-    this._retry();
-  }
 
-  _retry(): void {
-    clearTimeout(this._timeout);
-
-    this._promiseDelegates.forEach(([key, semver, pd], idx) => {
-      const mod = this._getSync(key, semver);
-      if (mod) {
-        pd.resolve(mod);
-        this._promiseDelegates[idx][3] = null;
-      }
-    });
-
-    this._checkTimeouts();
-  }
-
-  _getSync(key: string, semver: string): T | undefined {
-    if (key in this._cache) {
-      const versions = this._cache[key];
-      const best = maxSatisfying(Object.keys(versions), semver);
-      if (best !== null) {
-        return versions[best];
-      }
-    }
-  }
-
-  _checkTimeouts(now: number = Date.now()): void {
-    ArrayExt.removeAllWhere(
-      this._promiseDelegates,
-      (pc: TPromiseCache<T>, index: number) => {
-        if (pc[3] === null || now - pc[3] < TIMEOUT) {
-          // clear off this one
-          pc[2].resolve(undefined);
-          return true;
-        }
-        return false;
-      }
-    );
-    // reset timeout if we still have elements
-    if (this._promiseDelegates.length > 0) {
-      // all nulls have beend
-      const newTimeout = now - (this._promiseDelegates[0][3] as number);
-      this._timeout = (setTimeout(
-        () => this._checkTimeouts,
-        newTimeout
-      ) as unknown) as number;
-    }
+    // Schedule a pending request retry.
+    this._throttle.invoke();
   }
 
   async get(key: string, semver: string): Promise<T | undefined> {
@@ -90,19 +47,58 @@ export class SemVerCache<T> {
     } else {
       const pd = new PromiseDelegate<T | undefined>();
       this._promiseDelegates.push([key, semver, pd, Date.now()]);
-      if (this._promiseDelegates.length === 1) {
-        this._timeout = (setTimeout(
-          () => this._checkTimeouts,
-          TIMEOUT
-        ) as unknown) as number;
-      }
+      this._throttle.invoke();
       return pd.promise;
+    }
+  }
+
+  private _getSync(key: string, semver: string): T | undefined {
+    if (key in this._cache) {
+      const versions = this._cache[key];
+      const best = maxSatisfying(Object.keys(versions), semver);
+      if (best !== null) {
+        return versions[best];
+      }
+    }
+  }
+
+  private _retry(): void {
+    const now = Date.now();
+    // Try to resolve each pending request successfully.
+    this._promiseDelegates.forEach(([key, semver, pd], idx) => {
+      const mod = this._getSync(key, semver);
+      if (mod) {
+        pd.resolve(mod);
+        this._promiseDelegates[idx][3] = null;
+      }  
+    });
+
+    // Clear out all requests which were fulfilled or expired.
+    ArrayExt.removeAllWhere(
+      this._promiseDelegates,
+      (pc: TPromiseCache<T>) => {
+        if (pc[3] === null) {
+          // Request fulfilled, so remove the entry.
+          return true
+        } else if (now - pc[3] > TIMEOUT) {
+          // Request expired, so remove the entry.
+          pc[2].resolve(undefined);
+          return true;
+        }
+        return false;
+      }
+    );
+    
+    // If we still have pending requests, try again later.
+    if (this._promiseDelegates.length > 0) {
+      this._throttle.invoke();
     }
   }
 
   private _cache: { [key: string]: { [version: string]: T } } = Object.create(
     null
   );
+  private _throttle = new Throttler(() => {this._retry();}, 200);
 }
 
 export namespace SemVerCache {
