@@ -9,7 +9,7 @@ import { ArrayExt } from '@lumino/algorithm';
 
 import { Throttler } from '@lumino/polling';
 
-const TIMEOUT = 500;
+const TIMEOUT = 300;
 
 type TPromiseCache<T> = [
   string,
@@ -22,9 +22,6 @@ type TPromiseCache<T> = [
  * A cache using semver ranges to retrieve values.
  */
 export class SemVerCache<T> {
-  _promiseDelegates: TPromiseCache<T>[] = [];
-  _timeout: number;
-
   set(options: SemVerCache.IRegistryData<T>): void {
     const { name, version, object } = options;
     if (!(name in this._cache)) {
@@ -36,8 +33,10 @@ export class SemVerCache<T> {
       throw `Version ${version} of name ${name} already registered.`;
     }
 
-    // Schedule a pending request retry.
-    this._throttle.invoke();
+    // Schedule a pending request retry if needed.
+    if (this._promiseDelegates.length > 0) {
+      this._throttle.invoke();
+    }
   }
 
   async get(key: string, semver: string): Promise<T | undefined> {
@@ -95,10 +94,11 @@ export class SemVerCache<T> {
     }
   }
 
+  private _promiseDelegates: TPromiseCache<T>[] = [];
   private _cache: { [key: string]: { [version: string]: T } } = Object.create(
     null
   );
-  private _throttle = new Throttler(() => {this._retry();}, 200);
+  private _throttle = new Throttler(() => {this._retry();}, TIMEOUT);
 }
 
 export namespace SemVerCache {
