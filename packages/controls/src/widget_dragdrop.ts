@@ -59,7 +59,6 @@ class DragDropBoxViewBase extends DOMWidgetView {
             // Boxes don't allow setting the element beyond the initial creation.
             throw new Error('Cannot reset the DOM element.');
         }
-
         this.el = this.pWidget.node;
         this.$el = $(this.pWidget.node);
     }
@@ -89,41 +88,16 @@ class DragDropBoxViewBase extends DOMWidgetView {
         this.add_child_model(this.model.get('child'));
     }
 
-    render(): void {
-        super.render();
-    }
-
     remove(): void {
         this.child_view = null;
         super.remove();
     }
 }
 
+const JUPYTER_VIEW_MIME = 'application/vnd.jupyter.widget-view+json';
+
 export
 class DraggableBoxView extends DragDropBoxViewBase {
-    /** 
-     * Draggable mixin.
-     * Allows the widget to be draggable
-     *
-     * Note: In order to use it, you will need to add
-     * handlers for dragstartevent in the view class
-     * also need to call dragSetup at initialization time
-     *
-     * The view class must implement Draggable interface and
-     * declare the methods (no definition).
-     * For example:
-     *
-     * on_dragstart : (event: Object) => void;
-     * on_change_draggable : () => void;
-     * dragSetup : () => void;
-     *
-     * Also need to call applyMixin on the view class
-     * The model class needs to have drag_data attribute
-     *
-     * follows the example from typescript docs
-     * https://www.typescriptlang.org/docs/handbook/mixins.html
-     */
-
     initialize(parameters: WidgetView.IInitializeParameters): void {
         super.initialize(parameters);
         this.dragSetup();
@@ -142,7 +116,11 @@ class DraggableBoxView extends DragDropBoxViewBase {
             for (const datatype in drag_data) {
               event.dataTransfer.setData(datatype, drag_data[datatype]);
             }
-            event.dataTransfer.setData('application/vnd.jupyter.widget-view+json', this.model.model_id);
+            event.dataTransfer.setData(JUPYTER_VIEW_MIME, JSON.stringify({
+                "model_id": this.model.model_id,
+                "version_major": 2,
+                "version_minor": 0
+            }));
             event.dataTransfer.dropEffect = 'copy';
         }
     }
@@ -159,25 +137,6 @@ class DraggableBoxView extends DragDropBoxViewBase {
 
 export
 class DropBoxView extends DragDropBoxViewBase {
-    /** Droppbable mixin
-     * Implements handler for drop events.
-     * The view class implementing this interface needs to
-     * listen to 'drop' event with '_handle_drop', and to
-     * 'dragover' event with 'on_dragover'
-     *
-     * In order to use this mixin, the view class needs to
-     * implement the Droppable interface, define the following
-     * placeholders:
-     *
-     *  _handle_drop : (event: Object) => void;
-     * on_dragover : (event : Object) => void;
-     *
-     * and you need to call applyMixin on class definition.
-     *
-     * follows the example from typescript docs
-     * https://www.typescriptlang.org/docs/handbook/mixins.html
-     */
-
     events(): {[e: string]: string} {
         return {
             'drop': '_handle_drop',
