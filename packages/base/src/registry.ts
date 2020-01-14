@@ -1,41 +1,40 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import {
-  Token
-} from '@lumino/coreutils';
+import { Token } from '@lumino/coreutils';
 
-import {
-  WidgetModel, WidgetView
-} from './widget';
+import { WidgetModel, WidgetView } from './widget';
 
 /**
  * A runtime interface token for a widget registry.
  */
-export
-const IJupyterWidgetRegistry = new Token<IJupyterWidgetRegistry>('jupyter.extensions.jupyterWidgetRegistry');
+export const IJupyterWidgetRegistry = new Token<IJupyterWidgetRegistry>(
+  'jupyter.extensions.jupyterWidgetRegistry'
+);
 
 /**
  * A registry of Jupyter Widgets.
  *
  * This is used by widget managers that support an external registry.
  */
-export
-interface IJupyterWidgetRegistry {
+export interface IJupyterWidgetRegistry {
   /**
    * Register a widget module.
    */
   registerWidget(data: IWidgetRegistryData): void;
 }
 
-export
-type ExportMap = {[key: string]: typeof WidgetModel | typeof WidgetView};
+export type ExportMap = {
+  [key: string]: typeof WidgetModel | typeof WidgetView;
+};
 
-export
-type ExportData = ExportMap | Promise<ExportMap> | (() => ExportMap) | (() => Promise<ExportMap>);
+export type ExportData =
+  | ExportMap
+  | Promise<ExportMap>
+  | (() => ExportMap)
+  | (() => Promise<ExportMap>);
 
-export
-interface IWidgetRegistryData {
+export interface IWidgetRegistryData {
   /**
    * The widget module name.
    */

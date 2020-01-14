@@ -5,74 +5,60 @@
 import * as Backbone from 'backbone';
 
 import {
-    shims, IClassicComm, IWidgetRegistryData, ExportMap,
-    ExportData, WidgetModel, WidgetView, put_buffers, ICallbacks
+  shims,
+  IClassicComm,
+  IWidgetRegistryData,
+  ExportMap,
+  ExportData,
+  WidgetModel,
+  WidgetView,
+  put_buffers,
+  ICallbacks
 } from '@jupyter-widgets/base';
 
 import {
-  ManagerBase, serialize_state, IStateOptions
+  ManagerBase,
+  serialize_state,
+  IStateOptions
 } from '@jupyter-widgets/base-manager';
 
-import {
-  IDisposable
-} from '@lumino/disposable';
+import { IDisposable } from '@lumino/disposable';
 
-import {
-  PromiseDelegate, ReadonlyPartialJSONValue
-} from '@lumino/coreutils';
+import { PromiseDelegate, ReadonlyPartialJSONValue } from '@lumino/coreutils';
 
-import {
-  Widget
-} from '@lumino/widgets';
+import { Widget } from '@lumino/widgets';
 
-import {
-  INotebookModel
-} from '@jupyterlab/notebook';
+import { INotebookModel } from '@jupyterlab/notebook';
 
-import {
-  IRenderMimeRegistry
-} from '@jupyterlab/rendermime';
+import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 
-import {
-  Kernel, KernelMessage, Session
-} from '@jupyterlab/services';
+import { Kernel, KernelMessage, Session } from '@jupyterlab/services';
 
-import {
-  DocumentRegistry
-} from '@jupyterlab/docregistry';
+import { DocumentRegistry } from '@jupyterlab/docregistry';
 
-import {
-  ISignal, Signal
-} from '@lumino/signaling';
+import { ISignal, Signal } from '@lumino/signaling';
 
-import {
-  valid
-} from 'semver';
+import { valid } from 'semver';
 
-import {
-  SemVerCache
-} from './semvercache';
-
+import { SemVerCache } from './semvercache';
 
 /**
  * The mime type for a widget view.
  */
-export
-const WIDGET_VIEW_MIMETYPE = 'application/vnd.jupyter.widget-view+json';
+export const WIDGET_VIEW_MIMETYPE = 'application/vnd.jupyter.widget-view+json';
 
 /**
  * The mime type for widget state data.
  */
-export
-const WIDGET_STATE_MIMETYPE = 'application/vnd.jupyter.widget-state+json';
+export const WIDGET_STATE_MIMETYPE =
+  'application/vnd.jupyter.widget-state+json';
 
 /**
  * The class name added to an BackboneViewWrapper widget.
  */
 const BACKBONEVIEWWRAPPER_CLASS = 'jp-BackboneViewWrapper';
 
-export
-class BackboneViewWrapper extends Widget {
+export class BackboneViewWrapper extends Widget {
   /**
    * Construct a new `Backbone` wrapper widget.
    *
@@ -100,13 +86,15 @@ class BackboneViewWrapper extends Widget {
   private _view: Backbone.View<any>;
 }
 
-
 /**
  * A widget manager that returns Lumino widgets.
  */
-export
-class WidgetManager extends ManagerBase<Widget> implements IDisposable {
-  constructor(context: DocumentRegistry.IContext<INotebookModel>, rendermime: IRenderMimeRegistry, settings: WidgetManager.Settings) {
+export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
+  constructor(
+    context: DocumentRegistry.IContext<INotebookModel>,
+    rendermime: IRenderMimeRegistry,
+    settings: WidgetManager.Settings
+  ) {
     super();
     this._context = context;
     this._rendermime = rendermime;
@@ -128,9 +116,12 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
       this._handleKernelConnectionStatusChange(args);
     });
 
-
     if (context.sessionContext.session?.kernel) {
-      this._handleKernelChanged({name: 'kernel', oldValue: null, newValue: context.sessionContext.session?.kernel});
+      this._handleKernelChanged({
+        name: 'kernel',
+        oldValue: null,
+        newValue: context.sessionContext.session?.kernel
+      });
     }
     this.restoreWidgets(this._context.model);
 
@@ -148,7 +139,7 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   private _saveState(): void {
     const state = this.get_state_sync({ drop_defaults: true });
     this._context.model.metadata.set('widgets', {
-      'application/vnd.jupyter.widget-state+json' : state
+      'application/vnd.jupyter.widget-state+json': state
     });
   }
 
@@ -157,18 +148,21 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    */
   callbacks(view?: WidgetView): ICallbacks {
     return {
-        iopub: {
-            output: (msg: KernelMessage.IIOPubMessage): void => {
-              this._onUnhandledIOPubMessage.emit(msg);
-            }
+      iopub: {
+        output: (msg: KernelMessage.IIOPubMessage): void => {
+          this._onUnhandledIOPubMessage.emit(msg);
         }
+      }
     };
   }
 
   /**
    * Register a new kernel
    */
-  _handleKernelChanged({oldValue, newValue}: Session.ISessionConnection.IKernelChangedArgs): void {
+  _handleKernelChanged({
+    oldValue,
+    newValue
+  }: Session.ISessionConnection.IKernelChangedArgs): void {
     if (oldValue) {
       oldValue.removeCommTarget(this.comm_target_name, this._handleCommOpen);
     }
@@ -180,12 +174,14 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
 
   _handleKernelConnectionStatusChange(status: Kernel.ConnectionStatus): void {
     if (status === 'connected') {
-        // Only restore if our initial restore at construction is finished
-        if (this._initialRestoredStatus) {
-          // We only want to restore widgets from the kernel, not ones saved in the notebook.
-          this.restoreWidgets(this._context.model, {loadKernel: true, loadNotebook: false});
-        }
-
+      // Only restore if our initial restore at construction is finished
+      if (this._initialRestoredStatus) {
+        // We only want to restore widgets from the kernel, not ones saved in the notebook.
+        this.restoreWidgets(this._context.model, {
+          loadKernel: true,
+          loadNotebook: false
+        });
+      }
     }
   }
 
@@ -198,7 +194,10 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Restore widgets from kernel and saved state.
    */
-  async restoreWidgets(notebook: INotebookModel, {loadKernel, loadNotebook} = {loadKernel: true, loadNotebook: true}): Promise<void> {
+  async restoreWidgets(
+    notebook: INotebookModel,
+    { loadKernel, loadNotebook } = { loadKernel: true, loadNotebook: true }
+  ): Promise<void> {
     if (loadKernel) {
       await this._loadFromKernel();
     }
@@ -232,68 +231,79 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     const comm_ids = await this._get_comm_info();
 
     // For each comm id that we do not know about, create the comm, and request the state.
-    const widgets_info = await Promise.all(Object.keys(comm_ids).map(async (comm_id) => {
-      try {
-        await this.get_model(comm_id);
-        // If we successfully get the model, do no more.
-        return;
-      } catch (e) {
-        // If we have the widget model not found error, then we can create the
-        // widget. Otherwise, rethrow the error. We have to check the error
-        // message text explicitly because the get_model function in this
-        // class throws a generic error with this specific text.
-        if (e.message !== 'widget model not found') {
-          throw e;
-        }
-        const comm = await this._create_comm(this.comm_target_name, comm_id);
-
-        let msg_id = '';
-        const info = new PromiseDelegate<Private.ICommUpdateData>();
-        comm.on_msg((msg: KernelMessage.ICommMsgMsg) => {
-          if ((msg.parent_header as any).msg_id === msg_id
-            && msg.header.msg_type === 'comm_msg'
-            && msg.content.data.method === 'update') {
-            const data = (msg.content.data as any);
-            const buffer_paths = data.buffer_paths || [];
-            // Make sure the buffers are DataViews
-            const buffers = (msg.buffers || []).map(b => {
-                if (b instanceof DataView) {
-                    return b;
-                } else {
-                    return new DataView(b instanceof ArrayBuffer ? b : b.buffer);
-                }
-            });
-            put_buffers(data.state, buffer_paths, buffers);
-            info.resolve({comm, msg});
+    const widgets_info = await Promise.all(
+      Object.keys(comm_ids).map(async comm_id => {
+        try {
+          await this.get_model(comm_id);
+          // If we successfully get the model, do no more.
+          return;
+        } catch (e) {
+          // If we have the widget model not found error, then we can create the
+          // widget. Otherwise, rethrow the error. We have to check the error
+          // message text explicitly because the get_model function in this
+          // class throws a generic error with this specific text.
+          if (e.message !== 'widget model not found') {
+            throw e;
           }
-        });
-        msg_id = comm.send({
-          method: 'request_state'
-        }, this.callbacks(undefined));
+          const comm = await this._create_comm(this.comm_target_name, comm_id);
 
-        return info.promise;
-      }
-    }));
+          let msg_id = '';
+          const info = new PromiseDelegate<Private.ICommUpdateData>();
+          comm.on_msg((msg: KernelMessage.ICommMsgMsg) => {
+            if (
+              (msg.parent_header as any).msg_id === msg_id &&
+              msg.header.msg_type === 'comm_msg' &&
+              msg.content.data.method === 'update'
+            ) {
+              const data = msg.content.data as any;
+              const buffer_paths = data.buffer_paths || [];
+              // Make sure the buffers are DataViews
+              const buffers = (msg.buffers || []).map(b => {
+                if (b instanceof DataView) {
+                  return b;
+                } else {
+                  return new DataView(b instanceof ArrayBuffer ? b : b.buffer);
+                }
+              });
+              put_buffers(data.state, buffer_paths, buffers);
+              info.resolve({ comm, msg });
+            }
+          });
+          msg_id = comm.send(
+            {
+              method: 'request_state'
+            },
+            this.callbacks(undefined)
+          );
+
+          return info.promise;
+        }
+      })
+    );
 
     // We put in a synchronization barrier here so that we don't have to
     // topologically sort the restored widgets. `new_model` synchronously
     // registers the widget ids before reconstructing their state
     // asynchronously, so promises to every widget reference should be available
     // by the time they are used.
-    await Promise.all(widgets_info.map(async widget_info => {
-      if (!widget_info) {
-        return;
-      }
-      const content = widget_info.msg.content as any;
-      await this.new_model({
-        model_name: content.data.state._model_name,
-        model_module: content.data.state._model_module,
-        model_module_version: content.data.state._model_module_version,
-        comm: widget_info.comm,
-      }, content.data.state);
-    }));
+    await Promise.all(
+      widgets_info.map(async widget_info => {
+        if (!widget_info) {
+          return;
+        }
+        const content = widget_info.msg.content as any;
+        await this.new_model(
+          {
+            model_name: content.data.state._model_name,
+            model_module: content.data.state._model_module,
+            model_module_version: content.data.state._model_module_version,
+            comm: widget_info.comm
+          },
+          content.data.state
+        );
+      })
+    );
   }
-
 
   /**
    * Load widget state from notebook metadata
@@ -311,14 +321,24 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Return a Lumino widget representing the view
    */
-  async display_view(msg: any, view: Backbone.View<Backbone.Model>, options: any): Promise<Widget> {
+  async display_view(
+    msg: any,
+    view: Backbone.View<Backbone.Model>,
+    options: any
+  ): Promise<Widget> {
     return (view as any).pWidget || new BackboneViewWrapper(view);
   }
 
   /**
    * Create a comm.
    */
-  async _create_comm(target_name: string, model_id: string, data?: any, metadata?: any, buffers?: ArrayBuffer[] | ArrayBufferView[]): Promise<IClassicComm> {
+  async _create_comm(
+    target_name: string,
+    model_id: string,
+    data?: any,
+    metadata?: any,
+    buffers?: ArrayBuffer[] | ArrayBufferView[]
+  ): Promise<IClassicComm> {
     const kernel = this._context.sessionContext.session?.kernel;
     if (!kernel) {
       throw new Error('No current kernel');
@@ -338,11 +358,13 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     if (!kernel) {
       throw new Error('No current kernel');
     }
-    const reply = await kernel.requestCommInfo({target_name: this.comm_target_name});
+    const reply = await kernel.requestCommInfo({
+      target_name: this.comm_target_name
+    });
     if (reply.content.status === 'ok') {
-        return (reply.content as any).comms;
+      return (reply.content as any).comms;
     } else {
-        return {};
+      return {};
     }
   }
 
@@ -381,21 +403,28 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Load a class and return a promise to the loaded object.
    */
-  protected async loadClass(className: string, moduleName: string, moduleVersion: string): Promise<typeof WidgetModel | typeof WidgetView> {
-
+  protected async loadClass(
+    className: string,
+    moduleName: string,
+    moduleVersion: string
+  ): Promise<typeof WidgetModel | typeof WidgetView> {
     // Special-case the Jupyter base and controls packages. If we have just a
     // plain version, with no indication of the compatible range, prepend a ^ to
     // get all compatible versions. We may eventually apply this logic to all
     // widget modules. See issues #2006 and #2017 for more discussion.
-    if ((moduleName === '@jupyter-widgets/base'
-         || moduleName === '@jupyter-widgets/controls')
-        && valid(moduleVersion)) {
+    if (
+      (moduleName === '@jupyter-widgets/base' ||
+        moduleName === '@jupyter-widgets/controls') &&
+      valid(moduleVersion)
+    ) {
       moduleVersion = `^${moduleVersion}`;
     }
 
     const mod = this._registry.get(moduleName, moduleVersion);
     if (!mod) {
-      throw new Error(`Module ${moduleName}, semver range ${moduleVersion} is not registered as a widget module`);
+      throw new Error(
+        `Module ${moduleName}, semver range ${moduleVersion} is not registered as a widget module`
+      );
     }
     let module: ExportMap;
     if (typeof mod === 'function') {
@@ -470,14 +499,13 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
 
     // Update the synchronous model map
     modelPromise.then(model => {
-        this._modelsSync.set(model_id, model);
-        model.once('comm:close', () => {
-            this._modelsSync.delete(model_id);
-        });
+      this._modelsSync.set(model_id, model);
+      model.once('comm:close', () => {
+        this._modelsSync.delete(model_id);
+      });
     });
     this.setDirty();
   }
-
 
   /**
    * Close all widgets and empty the widget state.
@@ -499,13 +527,13 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * @returns A state dictionary
    */
   get_state_sync(options: IStateOptions = {}): ReadonlyPartialJSONValue {
-      const models = [];
-      for (const model of this._modelsSync.values()) {
-        if (model.comm_live) {
-          models.push(model);
-        }
+    const models = [];
+    for (const model of this._modelsSync.values()) {
+      if (model.comm_live) {
+        models.push(model);
       }
-      return serialize_state(models, options);
+    }
+    return serialize_state(models, options);
   }
 
   /**
@@ -519,7 +547,10 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     }
   }
 
-  private _handleCommOpen: (comm: Kernel.IComm, msg: KernelMessage.ICommOpenMsg) => Promise<void>;
+  private _handleCommOpen: (
+    comm: Kernel.IComm,
+    msg: KernelMessage.ICommOpenMsg
+  ) => Promise<void>;
   private _context: DocumentRegistry.IContext<INotebookModel>;
   private _registry: SemVerCache<ExportData> = new SemVerCache<ExportData>();
   private _rendermime: IRenderMimeRegistry;
@@ -531,26 +562,23 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
 
   private _modelsSync = new Map<string, WidgetModel>();
   private _settings: WidgetManager.Settings;
-  private _onUnhandledIOPubMessage = new Signal<this, KernelMessage.IIOPubMessage>(this);
+  private _onUnhandledIOPubMessage = new Signal<
+    this,
+    KernelMessage.IIOPubMessage
+  >(this);
 }
 
-
-export
-namespace WidgetManager {
-  export
-  type Settings = {
+export namespace WidgetManager {
+  export type Settings = {
     saveState: boolean;
   };
 }
 
-
 namespace Private {
-
   /**
    * Data promised when a comm info request resolves.
    */
-  export
-  interface ICommUpdateData {
+  export interface ICommUpdateData {
     comm: IClassicComm;
     msg: KernelMessage.ICommMsgMsg;
   }

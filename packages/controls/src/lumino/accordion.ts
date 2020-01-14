@@ -1,22 +1,13 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import {
-  ArrayExt
-} from '@lumino/algorithm';
+import { ArrayExt } from '@lumino/algorithm';
 
-import {
-  ISignal, Signal
-} from '@lumino/signaling';
+import { ISignal, Signal } from '@lumino/signaling';
 
-import {
-  Panel, PanelLayout, Widget, Title
-} from '@lumino/widgets';
+import { Panel, PanelLayout, Widget, Title } from '@lumino/widgets';
 
-import {
-  Selection
-} from './currentselection';
-
+import { Selection } from './currentselection';
 
 /**
  * The class name added to Collapse instances.
@@ -42,8 +33,7 @@ const COLLAPSE_CLASS_OPEN = 'p-Collapse-open';
  * A panel that supports a collapsible header, made from the widget's title.
  * Clicking on the title expands or contracts the widget.
  */
-export
-class Collapse extends Widget {
+export class Collapse extends Widget {
   constructor(options: Collapse.IOptions) {
     super(options);
     this.addClass(COLLAPSE_CLASS);
@@ -144,11 +134,11 @@ class Collapse extends Widget {
    */
   handleEvent(event: Event): void {
     switch (event.type) {
-    case 'click':
-      this._evtClick(event as MouseEvent);
-      break;
-    default:
-      break;
+      case 'click':
+        this._evtClick(event as MouseEvent);
+        break;
+      default:
+        break;
     }
   }
 
@@ -175,14 +165,11 @@ class Collapse extends Widget {
   _header: Widget;
 }
 
-export
-namespace Collapse {
-  export
-  interface IOptions extends Widget.IOptions {
+export namespace Collapse {
+  export interface IOptions extends Widget.IOptions {
     widget: Widget;
   }
 }
-
 
 /**
  * The class name added to Accordion instances.
@@ -200,9 +187,7 @@ const ACCORDION_CHILD_ACTIVE_CLASS = 'p-Accordion-child-active';
  * A panel that supports a collapsible header, made from the widget's title.
  * Clicking on the title expands or contracts the widget.
  */
-export
-class Accordion extends Panel {
-
+export class Accordion extends Panel {
   constructor(options?: Accordion.IOptions) {
     super(options);
     this._selection = new Selection(this.widgets as ReadonlyArray<Collapse>);
@@ -216,7 +201,7 @@ class Accordion extends Panel {
    * #### Notes
    * This is a read-only property.
    */
-/*  get widgets(): ISequence<Widget> {
+  /*  get widgets(): ISequence<Widget> {
     return new ArraySequence(toArray(map((this.layout as PanelLayout).widgets, (w: Collapse) => w.widget)));
   }
 */
@@ -229,7 +214,10 @@ class Accordion extends Panel {
   }
 
   indexOf(widget: Widget): number {
-    return ArrayExt.findFirstIndex(this.collapseWidgets, (w: Collapse) => w.widget === widget);
+    return ArrayExt.findFirstIndex(
+      this.collapseWidgets,
+      (w: Collapse) => w.widget === widget
+    );
   }
 
   /**
@@ -292,7 +280,10 @@ class Accordion extends Panel {
     }
   }
 
-  private _onSelectionChanged(sender: Selection<Widget>, change: Selection.ISelectionChangedArgs<Collapse>): void {
+  private _onSelectionChanged(
+    sender: Selection<Widget>,
+    change: Selection.ISelectionChangedArgs<Collapse>
+  ): void {
     // Collapse previous widget, open current widget
     const pv = change.previousValue;
     const cv = change.currentValue;
@@ -307,11 +298,8 @@ class Accordion extends Panel {
   }
 
   private _selection: Selection<Collapse>;
-
 }
 
-export
-namespace Accordion {
-  export
-  type IOptions = Panel.IOptions;
+export namespace Accordion {
+  export type IOptions = Panel.IOptions;
 }

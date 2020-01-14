@@ -5,10 +5,10 @@
 
 /* Override the correction for the prompt area in https://github.com/jupyter/notebook/blob/dd41d9fd5c4f698bd7468612d877828a7eeb0e7a/IPython/html/static/notebook/less/outputarea.less#L110 */
 .jupyter-widgets-output-area div.output_subarea {
-    max-width: 100%;
+  max-width: 100%;
 }
 
 /* Work-around for the bug fixed in https://github.com/jupyter/notebook/pull/2961 */
 .jupyter-widgets-output-area > .out_prompt_overlay {
-    display: none;
+  display: none;
 }

@@ -3,58 +3,43 @@
 
 import * as outputBase from '@jupyter-widgets/output';
 
-import {
-  DOMWidgetView, JupyterLuminoWidget
-} from '@jupyter-widgets/base';
+import { DOMWidgetView, JupyterLuminoWidget } from '@jupyter-widgets/base';
 
-import {
-  Message
-} from '@lumino/messaging';
+import { Message } from '@lumino/messaging';
 
-import {
-  Panel
-} from '@lumino/widgets';
+import { Panel } from '@lumino/widgets';
 
-import {
-  WidgetManager
-} from './manager';
+import { WidgetManager } from './manager';
 
-import {
-  OutputAreaModel, OutputArea
-} from '@jupyterlab/outputarea';
+import { OutputAreaModel, OutputArea } from '@jupyterlab/outputarea';
 
 import * as nbformat from '@jupyterlab/nbformat';
 
-import {
-  KernelMessage, Session
-} from '@jupyterlab/services';
+import { KernelMessage, Session } from '@jupyterlab/services';
 
 import $ from 'jquery';
 
-export
-const OUTPUT_WIDGET_VERSION = outputBase.OUTPUT_WIDGET_VERSION;
+export const OUTPUT_WIDGET_VERSION = outputBase.OUTPUT_WIDGET_VERSION;
 
-export
-class OutputModel extends outputBase.OutputModel {
+export class OutputModel extends outputBase.OutputModel {
   defaults(): Backbone.ObjectHash {
-    return {...super.defaults(),
-      msg_id: '',
-      outputs: []
-    };
+    return { ...super.defaults(), msg_id: '', outputs: [] };
   }
 
   initialize(attributes: any, options: any): void {
     super.initialize(attributes, options);
     // The output area model is trusted since widgets are only rendered in trusted contexts.
-    this._outputs = new OutputAreaModel({trusted: true});
+    this._outputs = new OutputAreaModel({ trusted: true });
     this._msgHook = (msg): boolean => {
       this.add(msg);
       return false;
     };
 
-    this.widget_manager.context.sessionContext.kernelChanged.connect((sender, args) => {
-      this._handleKernelChanged(args);
-    });
+    this.widget_manager.context.sessionContext.kernelChanged.connect(
+      (sender, args) => {
+        this._handleKernelChanged(args);
+      }
+    );
     this.listenTo(this, 'change:msg_id', this.reset_msg_id);
     this.listenTo(this, 'change:outputs', this.setOutputs);
     this.setOutputs();
@@ -63,7 +48,9 @@ class OutputModel extends outputBase.OutputModel {
   /**
    * Register a new kernel
    */
-  _handleKernelChanged({oldValue}: Session.ISessionConnection.IKernelChangedArgs): void {
+  _handleKernelChanged({
+    oldValue
+  }: Session.ISessionConnection.IKernelChangedArgs): void {
     const msgId = this.get('msg_id');
     if (msgId && oldValue) {
       oldValue.removeMessageHook(msgId, this._msgHook);
@@ -93,22 +80,22 @@ class OutputModel extends outputBase.OutputModel {
   add(msg: KernelMessage.IIOPubMessage): void {
     const msgType = msg.header.msg_type;
     switch (msgType) {
-    case 'execute_result':
-    case 'display_data':
-    case 'stream':
-    case 'error': {
-      const model = msg.content as nbformat.IOutput;
-      model.output_type = msgType as nbformat.OutputType;
-      this._outputs.add(model);
-      break;
+      case 'execute_result':
+      case 'display_data':
+      case 'stream':
+      case 'error': {
+        const model = msg.content as nbformat.IOutput;
+        model.output_type = msgType as nbformat.OutputType;
+        this._outputs.add(model);
+        break;
+      }
+      case 'clear_output':
+        this.clear_output((msg as KernelMessage.IClearOutputMsg).content.wait);
+        break;
+      default:
+        break;
     }
-    case 'clear_output':
-      this.clear_output((msg as KernelMessage.IClearOutputMsg).content.wait);
-      break;
-    default:
-      break;
-    }
-    this.set('outputs', this._outputs.toJSON(), {newMessage: true});
+    this.set('outputs', this._outputs.toJSON(), { newMessage: true });
     this.save_changes();
   }
 
@@ -122,10 +109,10 @@ class OutputModel extends outputBase.OutputModel {
 
   setOutputs(model?: any, value?: any, options?: any): void {
     if (!(options && options.newMessage)) {
-        // fromJSON does not clear the existing output
-        this.clear_output();
-        // fromJSON does not copy the message, so we make a deep copy
-        this._outputs.fromJSON(JSON.parse(JSON.stringify(this.get('outputs'))));
+      // fromJSON does not clear the existing output
+      this.clear_output();
+      // fromJSON does not copy the message, so we make a deep copy
+      this._outputs.fromJSON(JSON.parse(JSON.stringify(this.get('outputs'))));
     }
   }
 
@@ -135,62 +122,59 @@ class OutputModel extends outputBase.OutputModel {
   private _outputs: OutputAreaModel;
 }
 
-export
-class JupyterLuminoPanelWidget extends Panel {
-    constructor(options: JupyterLuminoWidget.IOptions & Panel.IOptions) {
-      const view = options.view;
-        delete options.view;
-        super(options);
-        this._view = view;
-    }
+export class JupyterLuminoPanelWidget extends Panel {
+  constructor(options: JupyterLuminoWidget.IOptions & Panel.IOptions) {
+    const view = options.view;
+    delete options.view;
+    super(options);
+    this._view = view;
+  }
 
-    /**
-     * Process the Lumino message.
-     *
-     * Any custom Lumino widget used inside a Jupyter widget should override
-     * the processMessage function like this.
-     */
-    processMessage(msg: Message): void {
-        super.processMessage(msg);
-        this._view.processLuminoMessage(msg);
-    }
+  /**
+   * Process the Lumino message.
+   *
+   * Any custom Lumino widget used inside a Jupyter widget should override
+   * the processMessage function like this.
+   */
+  processMessage(msg: Message): void {
+    super.processMessage(msg);
+    this._view.processLuminoMessage(msg);
+  }
 
-    /**
-     * Dispose the widget.
-     *
-     * This causes the view to be destroyed as well with 'remove'
-     */
-    dispose(): void {
-        if (this.isDisposed) {
-            return;
-        }
-        super.dispose();
-        if (this._view) {
-            this._view.remove();
-        }
-        this._view = null!;
+  /**
+   * Dispose the widget.
+   *
+   * This causes the view to be destroyed as well with 'remove'
+   */
+  dispose(): void {
+    if (this.isDisposed) {
+      return;
     }
+    super.dispose();
+    if (this._view) {
+      this._view.remove();
+    }
+    this._view = null!;
+  }
 
-    private _view: DOMWidgetView;
+  private _view: DOMWidgetView;
 }
 
-export
-class OutputView extends outputBase.OutputView {
+export class OutputView extends outputBase.OutputView {
+  _createElement(tagName: string): HTMLElement {
+    this.pWidget = new JupyterLuminoPanelWidget({ view: this });
+    return this.pWidget.node;
+  }
 
-    _createElement(tagName: string): HTMLElement {
-      this.pWidget = new JupyterLuminoPanelWidget({ view: this });
-      return this.pWidget.node;
+  _setElement(el: HTMLElement): void {
+    if (this.el || el !== this.pWidget.node) {
+      // Boxes don't allow setting the element beyond the initial creation.
+      throw new Error('Cannot reset the DOM element.');
     }
 
-    _setElement(el: HTMLElement): void {
-        if (this.el || el !== this.pWidget.node) {
-            // Boxes don't allow setting the element beyond the initial creation.
-            throw new Error('Cannot reset the DOM element.');
-        }
-
-        this.el = this.pWidget.node;
-        this.$el = $(this.pWidget.node);
-     }
+    this.el = this.pWidget.node;
+    this.$el = $(this.pWidget.node);
+  }
 
   /**
    * Called when view is rendered.

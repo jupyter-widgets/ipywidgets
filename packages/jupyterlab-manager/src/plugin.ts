@@ -1,69 +1,48 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
 import * as nbformat from '@jupyterlab/nbformat';
 
-import {
-  DocumentRegistry
-} from '@jupyterlab/docregistry';
+import { DocumentRegistry } from '@jupyterlab/docregistry';
 
 import {
-  INotebookModel, INotebookTracker, Notebook, NotebookPanel
+  INotebookModel,
+  INotebookTracker,
+  Notebook,
+  NotebookPanel
 } from '@jupyterlab/notebook';
 
 import {
-  JupyterFrontEndPlugin, JupyterFrontEnd
+  JupyterFrontEndPlugin,
+  JupyterFrontEnd
 } from '@jupyterlab/application';
 
-import {
-  IMainMenu,
-} from '@jupyterlab/mainmenu';
+import { IMainMenu } from '@jupyterlab/mainmenu';
 
-import {
-  IRenderMimeRegistry
-} from '@jupyterlab/rendermime';
+import { IRenderMimeRegistry } from '@jupyterlab/rendermime';
 
-import {
-  ILoggerRegistry, LogLevel
-} from '@jupyterlab/logconsole';
+import { ILoggerRegistry, LogLevel } from '@jupyterlab/logconsole';
 
-import {
-  CodeCell
-} from '@jupyterlab/cells';
+import { CodeCell } from '@jupyterlab/cells';
 
-import {
-  toArray, filter
-} from '@lumino/algorithm';
+import { toArray, filter } from '@lumino/algorithm';
 
-import {
-  DisposableDelegate
-} from '@lumino/disposable';
+import { DisposableDelegate } from '@lumino/disposable';
 
-import {
-  AttachedProperty
-} from '@lumino/properties';
+import { AttachedProperty } from '@lumino/properties';
 
-import {
-  WidgetRenderer
-} from './renderer';
+import { WidgetRenderer } from './renderer';
 
-import {
-  WidgetManager, WIDGET_VIEW_MIMETYPE
-} from './manager';
+import { WidgetManager, WIDGET_VIEW_MIMETYPE } from './manager';
 
-import {
-  OutputModel, OutputView, OUTPUT_WIDGET_VERSION
-} from './output';
+import { OutputModel, OutputView, OUTPUT_WIDGET_VERSION } from './output';
 
 import * as base from '@jupyter-widgets/base';
 
 // We import only the version from the specific module in controls so that the
 // controls code can be split and dynamically loaded in webpack.
-import {
-  JUPYTER_CONTROLS_VERSION
-} from '@jupyter-widgets/controls/lib/version';
+import { JUPYTER_CONTROLS_VERSION } from '@jupyter-widgets/controls/lib/version';
 
 import '@jupyter-widgets/base/css/index.css';
 import '@jupyter-widgets/controls/css/widgets-base.css';
@@ -79,7 +58,9 @@ const SETTINGS: WidgetManager.Settings = { saveState: false };
 /**
  * Iterate through all widget renderers in a notebook.
  */
-function* widgetRenderers(nb: Notebook): Generator<WidgetRenderer, void, unknown> {
+function* widgetRenderers(
+  nb: Notebook
+): Generator<WidgetRenderer, void, unknown> {
   for (const cell of nb.widgets) {
     if (cell.model.type === 'code') {
       for (const codecell of (cell as CodeCell).outputArea.widgets) {
@@ -96,7 +77,10 @@ function* widgetRenderers(nb: Notebook): Generator<WidgetRenderer, void, unknown
 /**
  * Iterate through all matching linked output views
  */
-function* outputViews(app: JupyterFrontEnd, path: string): Generator<WidgetRenderer, void, unknown> {
+function* outputViews(
+  app: JupyterFrontEnd,
+  path: string
+): Generator<WidgetRenderer, void, unknown> {
   const linkedViews = filter(
     app.shell.widgets(),
     w => w.id.startsWith('LinkedOutputView-') && (w as any).path === path
@@ -112,7 +96,9 @@ function* outputViews(app: JupyterFrontEnd, path: string): Generator<WidgetRende
   }
 }
 
-function* chain<T>(...args: IterableIterator<T>[]): Generator<T, void, undefined> {
+function* chain<T>(
+  ...args: IterableIterator<T>[]
+): Generator<T, void, undefined> {
   for (const it of args) {
     yield* it;
   }
@@ -139,10 +125,12 @@ export function registerWidgetManager(
   rendermime.removeMimeType(WIDGET_VIEW_MIMETYPE);
   rendermime.addFactory(
     {
-    safe: false,
-    mimeTypes: [WIDGET_VIEW_MIMETYPE],
-      createRenderer: (options) => new WidgetRenderer(options, wManager)
-    }, 0);
+      safe: false,
+      mimeTypes: [WIDGET_VIEW_MIMETYPE],
+      createRenderer: options => new WidgetRenderer(options, wManager)
+    },
+    0
+  );
 
   return new DisposableDelegate(() => {
     if (rendermime) {
@@ -166,7 +154,6 @@ const plugin: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> = {
 
 export default plugin;
 
-
 function updateSettings(settings: ISettingRegistry.ISettings): void {
   SETTINGS.saveState = settings.get('saveState').composite as boolean;
 }
@@ -182,8 +169,7 @@ function activateWidgetExtension(
   menu: IMainMenu | null,
   loggerRegistry: ILoggerRegistry | null
 ): base.IJupyterWidgetRegistry {
-
-  const {commands} = app;
+  const { commands } = app;
 
   const bindUnhandledIOPubMessageSignal = (nb: NotebookPanel): void => {
     if (!loggerRegistry) {
@@ -207,17 +193,21 @@ function activateWidgetExtension(
             output_type: msg.header.msg_type
           };
           logger.rendermime = nb.content.rendermime;
-          logger.log({type: 'output', data, level});
-      });
+          logger.log({ type: 'output', data, level });
+        }
+      );
     }
   };
   if (settingRegistry !== null) {
-    settingRegistry.load(plugin.id).then((settings: ISettingRegistry.ISettings) => {
-      settings.changed.connect(updateSettings);
-      updateSettings(settings);
-    }).catch((reason: Error) => {
-      console.error(reason.message);
-    });
+    settingRegistry
+      .load(plugin.id)
+      .then((settings: ISettingRegistry.ISettings) => {
+        settings.changed.connect(updateSettings);
+        updateSettings(settings);
+      })
+      .catch((reason: Error) => {
+        console.error(reason.message);
+      });
   }
 
   // Add a placeholder widget renderer.
@@ -274,7 +264,7 @@ function activateWidgetExtension(
 
   if (menu) {
     menu.settingsMenu.addGroup([
-      {command: '@jupyter-widgets/jupyterlab-manager:saveWidgetState'}
+      { command: '@jupyter-widgets/jupyterlab-manager:saveWidgetState' }
     ]);
   }
 
@@ -298,14 +288,16 @@ function activateWidgetExtension(
     version: JUPYTER_CONTROLS_VERSION,
     exports: () => {
       return new Promise((resolve, reject) => {
-        (require as any).ensure(['@jupyter-widgets/controls'], (require: NodeRequire) => {
-          // eslint-disable-next-line @typescript-eslint/no-var-requires
-          resolve(require('@jupyter-widgets/controls'));
-        },
-        (err: any) => {
-          reject(err);
-        },
-        '@jupyter-widgets/controls'
+        (require as any).ensure(
+          ['@jupyter-widgets/controls'],
+          (require: NodeRequire) => {
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            resolve(require('@jupyter-widgets/controls'));
+          },
+          (err: any) => {
+            reject(err);
+          },
+          '@jupyter-widgets/controls'
         );
       });
     }
@@ -314,7 +306,7 @@ function activateWidgetExtension(
   WIDGET_REGISTRY.push({
     name: '@jupyter-widgets/output',
     version: OUTPUT_WIDGET_VERSION,
-    exports: {OutputModel, OutputView}
+    exports: { OutputModel, OutputView }
   });
 
   return {

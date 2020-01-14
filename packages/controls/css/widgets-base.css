@@ -8,1085 +8,1176 @@
  * have been defined.
  */
 
-@import "./lumino.css";
+@import './lumino.css';
 
 :root {
-    --jp-widgets-color: var(--jp-content-font-color1);
-    --jp-widgets-label-color: var(--jp-widgets-color);
-    --jp-widgets-readout-color: var(--jp-widgets-color);
-    --jp-widgets-font-size: var(--jp-ui-font-size1);
-    --jp-widgets-margin: 2px;
-    --jp-widgets-inline-height: 28px;
-    --jp-widgets-inline-width: 300px;
-    --jp-widgets-inline-width-short: calc(var(--jp-widgets-inline-width) / 2 - var(--jp-widgets-margin));
-    --jp-widgets-inline-width-tiny: calc(var(--jp-widgets-inline-width-short) / 2 - var(--jp-widgets-margin));
-    --jp-widgets-inline-margin: 4px; /* margin between inline elements */
-    --jp-widgets-inline-label-width: 80px;
-    --jp-widgets-border-width: var(--jp-border-width);
-    --jp-widgets-vertical-height: 200px;
-    --jp-widgets-horizontal-tab-height: 24px;
-    --jp-widgets-horizontal-tab-width: 144px;
-    --jp-widgets-horizontal-tab-top-border: 2px;
-    --jp-widgets-progress-thickness: 20px;
-    --jp-widgets-container-padding: 15px;
-    --jp-widgets-input-padding: 4px;
-    --jp-widgets-radio-item-height-adjustment: 8px;
-    --jp-widgets-radio-item-height: calc(var(--jp-widgets-inline-height) - var(--jp-widgets-radio-item-height-adjustment));
-    --jp-widgets-slider-track-thickness: 4px;
-    --jp-widgets-slider-border-width: var(--jp-widgets-border-width);
-    --jp-widgets-slider-handle-size: 16px;
-    --jp-widgets-slider-handle-border-color: var(--jp-border-color1);
-    --jp-widgets-slider-handle-background-color: var(--jp-layout-color1);
-    --jp-widgets-slider-active-handle-color: var(--jp-brand-color1);
-    --jp-widgets-menu-item-height: 24px;
-    --jp-widgets-dropdown-arrow: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE5LjIuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAxOCAxOCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTggMTg7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbDpub25lO30KPC9zdHlsZT4KPHBhdGggZD0iTTUuMiw1LjlMOSw5LjdsMy44LTMuOGwxLjIsMS4ybC00LjksNWwtNC45LTVMNS4yLDUuOXoiLz4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTAtMC42aDE4djE4SDBWLTAuNnoiLz4KPC9zdmc+Cg");
-    --jp-widgets-input-color: var(--jp-ui-font-color1);
-    --jp-widgets-input-background-color: var(--jp-layout-color1);
-    --jp-widgets-input-border-color: var(--jp-border-color1);
-    --jp-widgets-input-focus-border-color: var(--jp-brand-color2);
-    --jp-widgets-input-border-width: var(--jp-widgets-border-width);
-    --jp-widgets-disabled-opacity: 0.6;
+  --jp-widgets-color: var(--jp-content-font-color1);
+  --jp-widgets-label-color: var(--jp-widgets-color);
+  --jp-widgets-readout-color: var(--jp-widgets-color);
+  --jp-widgets-font-size: var(--jp-ui-font-size1);
+  --jp-widgets-margin: 2px;
+  --jp-widgets-inline-height: 28px;
+  --jp-widgets-inline-width: 300px;
+  --jp-widgets-inline-width-short: calc(
+    var(--jp-widgets-inline-width) / 2 - var(--jp-widgets-margin)
+  );
+  --jp-widgets-inline-width-tiny: calc(
+    var(--jp-widgets-inline-width-short) / 2 - var(--jp-widgets-margin)
+  );
+  --jp-widgets-inline-margin: 4px; /* margin between inline elements */
+  --jp-widgets-inline-label-width: 80px;
+  --jp-widgets-border-width: var(--jp-border-width);
+  --jp-widgets-vertical-height: 200px;
+  --jp-widgets-horizontal-tab-height: 24px;
+  --jp-widgets-horizontal-tab-width: 144px;
+  --jp-widgets-horizontal-tab-top-border: 2px;
+  --jp-widgets-progress-thickness: 20px;
+  --jp-widgets-container-padding: 15px;
+  --jp-widgets-input-padding: 4px;
+  --jp-widgets-radio-item-height-adjustment: 8px;
+  --jp-widgets-radio-item-height: calc(
+    var(--jp-widgets-inline-height) -
+      var(--jp-widgets-radio-item-height-adjustment)
+  );
+  --jp-widgets-slider-track-thickness: 4px;
+  --jp-widgets-slider-border-width: var(--jp-widgets-border-width);
+  --jp-widgets-slider-handle-size: 16px;
+  --jp-widgets-slider-handle-border-color: var(--jp-border-color1);
+  --jp-widgets-slider-handle-background-color: var(--jp-layout-color1);
+  --jp-widgets-slider-active-handle-color: var(--jp-brand-color1);
+  --jp-widgets-menu-item-height: 24px;
+  --jp-widgets-dropdown-arrow: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDE5LjIuMSwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAxOCAxOCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgMTggMTg7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KCS5zdDB7ZmlsbDpub25lO30KPC9zdHlsZT4KPHBhdGggZD0iTTUuMiw1LjlMOSw5LjdsMy44LTMuOGwxLjIsMS4ybC00LjksNWwtNC45LTVMNS4yLDUuOXoiLz4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTAtMC42aDE4djE4SDBWLTAuNnoiLz4KPC9zdmc+Cg');
+  --jp-widgets-input-color: var(--jp-ui-font-color1);
+  --jp-widgets-input-background-color: var(--jp-layout-color1);
+  --jp-widgets-input-border-color: var(--jp-border-color1);
+  --jp-widgets-input-focus-border-color: var(--jp-brand-color2);
+  --jp-widgets-input-border-width: var(--jp-widgets-border-width);
+  --jp-widgets-disabled-opacity: 0.6;
 
-    /* From Material Design Lite */
-    --md-shadow-key-umbra-opacity: 0.2;
-    --md-shadow-key-penumbra-opacity: 0.14;
-    --md-shadow-ambient-shadow-opacity: 0.12;
+  /* From Material Design Lite */
+  --md-shadow-key-umbra-opacity: 0.2;
+  --md-shadow-key-penumbra-opacity: 0.14;
+  --md-shadow-ambient-shadow-opacity: 0.12;
 }
 
 .jupyter-widgets {
-    margin: var(--jp-widgets-margin);
-    box-sizing: border-box;
-    color: var(--jp-widgets-color);
-    overflow: visible;
+  margin: var(--jp-widgets-margin);
+  box-sizing: border-box;
+  color: var(--jp-widgets-color);
+  overflow: visible;
 }
 
 .jupyter-widgets.jupyter-widgets-disconnected::before {
-    line-height: var(--jp-widgets-inline-height);
-    height: var(--jp-widgets-inline-height);
+  line-height: var(--jp-widgets-inline-height);
+  height: var(--jp-widgets-inline-height);
 }
 
 .jp-Output-result > .jupyter-widgets {
-    margin-left: 0;
-    margin-right: 0;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 /* vbox and hbox */
 
 .widget-inline-hbox {
-    /* Horizontal widgets */
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    align-items: baseline;
+  /* Horizontal widgets */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
 }
 
 .widget-inline-vbox {
-    /* Vertical Widgets */
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  /* Vertical Widgets */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .widget-box {
-    box-sizing: border-box;
-    display: flex;
-    margin: 0;
-    overflow: auto;
+  box-sizing: border-box;
+  display: flex;
+  margin: 0;
+  overflow: auto;
 }
 
 .widget-gridbox {
-    box-sizing: border-box;
-    display: grid;
-    margin: 0;
-    overflow: auto;
+  box-sizing: border-box;
+  display: grid;
+  margin: 0;
+  overflow: auto;
 }
 
 .widget-hbox {
-    flex-direction: row;
+  flex-direction: row;
 }
 
 .widget-vbox {
-    flex-direction: column;
+  flex-direction: column;
 }
 
 /* General Button Styling */
 
 .jupyter-button {
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 0px;
-    padding-bottom: 0px;
-    display: inline-block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-align: center;
-    font-size: var(--jp-widgets-font-size);
-    cursor: pointer;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  font-size: var(--jp-widgets-font-size);
+  cursor: pointer;
 
-    height: var(--jp-widgets-inline-height);
-    border: 0px solid;
-    line-height: var(--jp-widgets-inline-height);
-    box-shadow: none;
+  height: var(--jp-widgets-inline-height);
+  border: 0px solid;
+  line-height: var(--jp-widgets-inline-height);
+  box-shadow: none;
 
-    color: var(--jp-ui-font-color1);
-    background-color: var(--jp-layout-color2);
-    border-color: var(--jp-border-color2);
-    border: none;
-    user-select: none;
+  color: var(--jp-ui-font-color1);
+  background-color: var(--jp-layout-color2);
+  border-color: var(--jp-border-color2);
+  border: none;
+  user-select: none;
 }
 
 .jupyter-button i.fa {
-    margin-right: var(--jp-widgets-inline-margin);
-    pointer-events: none;
+  margin-right: var(--jp-widgets-inline-margin);
+  pointer-events: none;
 }
 
 .jupyter-button:empty:before {
-    content: "\200b"; /* zero-width space */
+  content: '\200b'; /* zero-width space */
 }
 
 .jupyter-widgets.jupyter-button:disabled {
-    opacity: var(--jp-widgets-disabled-opacity);
+  opacity: var(--jp-widgets-disabled-opacity);
 }
 
 .jupyter-button i.fa.center {
-    margin-right: 0;
+  margin-right: 0;
 }
 
-.jupyter-button:hover:enabled, .jupyter-button:focus:enabled {
-    /* MD Lite 2dp shadow */
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, var(--md-shadow-key-penumbra-opacity)),
-                0 3px 1px -2px rgba(0, 0, 0, var(--md-shadow-key-umbra-opacity)),
-                0 1px 5px 0 rgba(0, 0, 0, var(--md-shadow-ambient-shadow-opacity));
+.jupyter-button:hover:enabled,
+.jupyter-button:focus:enabled {
+  /* MD Lite 2dp shadow */
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, var(--md-shadow-key-penumbra-opacity)),
+    0 3px 1px -2px rgba(0, 0, 0, var(--md-shadow-key-umbra-opacity)),
+    0 1px 5px 0 rgba(0, 0, 0, var(--md-shadow-ambient-shadow-opacity));
 }
 
-.jupyter-button:active, .jupyter-button.mod-active {
-    /* MD Lite 4dp shadow */
-    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, var(--md-shadow-key-penumbra-opacity)),
-                0 1px 10px 0 rgba(0, 0, 0, var(--md-shadow-ambient-shadow-opacity)),
-                0 2px 4px -1px rgba(0, 0, 0, var(--md-shadow-key-umbra-opacity));
-    color: var(--jp-ui-font-color1);
-    background-color: var(--jp-layout-color3);
+.jupyter-button:active,
+.jupyter-button.mod-active {
+  /* MD Lite 4dp shadow */
+  box-shadow: 0 4px 5px 0 rgba(0, 0, 0, var(--md-shadow-key-penumbra-opacity)),
+    0 1px 10px 0 rgba(0, 0, 0, var(--md-shadow-ambient-shadow-opacity)),
+    0 2px 4px -1px rgba(0, 0, 0, var(--md-shadow-key-umbra-opacity));
+  color: var(--jp-ui-font-color1);
+  background-color: var(--jp-layout-color3);
 }
 
 .jupyter-button:focus:enabled {
-    outline: 1px solid var(--jp-widgets-input-focus-border-color);
+  outline: 1px solid var(--jp-widgets-input-focus-border-color);
 }
 
 /* Button "Primary" Styling */
 
 .jupyter-button.mod-primary {
-    color: var(--jp-inverse-ui-font-color1);
-    background-color: var(--jp-brand-color1);
+  color: var(--jp-inverse-ui-font-color1);
+  background-color: var(--jp-brand-color1);
 }
 
 .jupyter-button.mod-primary.mod-active {
-    color: var(--jp-inverse-ui-font-color0);
-    background-color: var(--jp-brand-color0);
+  color: var(--jp-inverse-ui-font-color0);
+  background-color: var(--jp-brand-color0);
 }
 
 .jupyter-button.mod-primary:active {
-    color: var(--jp-inverse-ui-font-color0);
-    background-color: var(--jp-brand-color0);
+  color: var(--jp-inverse-ui-font-color0);
+  background-color: var(--jp-brand-color0);
 }
 
 /* Button "Success" Styling */
 
 .jupyter-button.mod-success {
-    color: var(--jp-inverse-ui-font-color1);
-    background-color: var(--jp-success-color1);
+  color: var(--jp-inverse-ui-font-color1);
+  background-color: var(--jp-success-color1);
 }
 
 .jupyter-button.mod-success.mod-active {
-    color: var(--jp-inverse-ui-font-color0);
-    background-color: var(--jp-success-color0);
- }
+  color: var(--jp-inverse-ui-font-color0);
+  background-color: var(--jp-success-color0);
+}
 
 .jupyter-button.mod-success:active {
-    color: var(--jp-inverse-ui-font-color0);
-    background-color: var(--jp-success-color0);
- }
+  color: var(--jp-inverse-ui-font-color0);
+  background-color: var(--jp-success-color0);
+}
 
- /* Button "Info" Styling */
+/* Button "Info" Styling */
 
 .jupyter-button.mod-info {
-    color: var(--jp-inverse-ui-font-color1);
-    background-color: var(--jp-info-color1);
+  color: var(--jp-inverse-ui-font-color1);
+  background-color: var(--jp-info-color1);
 }
 
 .jupyter-button.mod-info.mod-active {
-    color: var(--jp-inverse-ui-font-color0);
-    background-color: var(--jp-info-color0);
+  color: var(--jp-inverse-ui-font-color0);
+  background-color: var(--jp-info-color0);
 }
 
 .jupyter-button.mod-info:active {
-    color: var(--jp-inverse-ui-font-color0);
-    background-color: var(--jp-info-color0);
+  color: var(--jp-inverse-ui-font-color0);
+  background-color: var(--jp-info-color0);
 }
 
 /* Button "Warning" Styling */
 
 .jupyter-button.mod-warning {
-    color: var(--jp-inverse-ui-font-color1);
-    background-color: var(--jp-warn-color1);
+  color: var(--jp-inverse-ui-font-color1);
+  background-color: var(--jp-warn-color1);
 }
 
 .jupyter-button.mod-warning.mod-active {
-    color: var(--jp-inverse-ui-font-color0);
-    background-color: var(--jp-warn-color0);
+  color: var(--jp-inverse-ui-font-color0);
+  background-color: var(--jp-warn-color0);
 }
 
 .jupyter-button.mod-warning:active {
-    color: var(--jp-inverse-ui-font-color0);
-    background-color: var(--jp-warn-color0);
+  color: var(--jp-inverse-ui-font-color0);
+  background-color: var(--jp-warn-color0);
 }
 
 /* Button "Danger" Styling */
 
 .jupyter-button.mod-danger {
-    color: var(--jp-inverse-ui-font-color1);
-    background-color: var(--jp-error-color1);
+  color: var(--jp-inverse-ui-font-color1);
+  background-color: var(--jp-error-color1);
 }
 
 .jupyter-button.mod-danger.mod-active {
-    color: var(--jp-inverse-ui-font-color0);
-    background-color: var(--jp-error-color0);
+  color: var(--jp-inverse-ui-font-color0);
+  background-color: var(--jp-error-color0);
 }
 
 .jupyter-button.mod-danger:active {
-    color: var(--jp-inverse-ui-font-color0);
-    background-color: var(--jp-error-color0);
+  color: var(--jp-inverse-ui-font-color0);
+  background-color: var(--jp-error-color0);
 }
 
 /* Widget Button, Widget Toggle Button, Widget Upload */
 
-.widget-button, .widget-toggle-button, .widget-upload {
-    width: var(--jp-widgets-inline-width-short);
+.widget-button,
+.widget-toggle-button,
+.widget-upload {
+  width: var(--jp-widgets-inline-width-short);
 }
 
 /* Widget Label Styling */
 
 /* Override Bootstrap label css */
 .jupyter-widgets label {
-    margin-bottom: initial;
+  margin-bottom: initial;
 }
 
 .widget-label-basic {
-    /* Basic Label */
-    color: var(--jp-widgets-label-color);
-    font-size: var(--jp-widgets-font-size);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    line-height: var(--jp-widgets-inline-height);
+  /* Basic Label */
+  color: var(--jp-widgets-label-color);
+  font-size: var(--jp-widgets-font-size);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: var(--jp-widgets-inline-height);
 }
 
 .widget-label {
-    /* Label */
-    color: var(--jp-widgets-label-color);
-    font-size: var(--jp-widgets-font-size);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    line-height: var(--jp-widgets-inline-height);
+  /* Label */
+  color: var(--jp-widgets-label-color);
+  font-size: var(--jp-widgets-font-size);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: var(--jp-widgets-inline-height);
 }
 
 .widget-inline-hbox .widget-label {
-    /* Horizontal Widget Label */
-    color: var(--jp-widgets-label-color);
-    text-align: right;
-    margin-right: calc( var(--jp-widgets-inline-margin) * 2 );
-    width: var(--jp-widgets-inline-label-width);
-    flex-shrink: 0;
+  /* Horizontal Widget Label */
+  color: var(--jp-widgets-label-color);
+  text-align: right;
+  margin-right: calc(var(--jp-widgets-inline-margin) * 2);
+  width: var(--jp-widgets-inline-label-width);
+  flex-shrink: 0;
 }
 
 .widget-inline-vbox .widget-label {
-    /* Vertical Widget Label */
-    color: var(--jp-widgets-label-color);
-    text-align: center;
-    line-height: var(--jp-widgets-inline-height);
+  /* Vertical Widget Label */
+  color: var(--jp-widgets-label-color);
+  text-align: center;
+  line-height: var(--jp-widgets-inline-height);
 }
 
 /* Widget Readout Styling */
 
 .widget-readout {
-    color: var(--jp-widgets-readout-color);
-    font-size: var(--jp-widgets-font-size);
-    height: var(--jp-widgets-inline-height);
-    line-height: var(--jp-widgets-inline-height);
-    overflow: hidden;
-    white-space: nowrap;
-    text-align: center;
+  color: var(--jp-widgets-readout-color);
+  font-size: var(--jp-widgets-font-size);
+  height: var(--jp-widgets-inline-height);
+  line-height: var(--jp-widgets-inline-height);
+  overflow: hidden;
+  white-space: nowrap;
+  text-align: center;
 }
 
 .widget-readout.overflow {
-    /* Overflowing Readout */
+  /* Overflowing Readout */
 
-    /* From Material Design Lite
+  /* From Material Design Lite
         shadow-key-umbra-opacity: 0.2;
         shadow-key-penumbra-opacity: 0.14;
         shadow-ambient-shadow-opacity: 0.12;
      */
-    -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
-                        0 3px 1px -2px rgba(0, 0, 0, 0.14),
-                        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+    0 3px 1px -2px rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
 
-    -moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
-                     0 3px 1px -2px rgba(0, 0, 0, 0.14),
-                     0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  -moz-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
+    0 3px 1px -2px rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
 
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2),
-                0 3px 1px -2px rgba(0, 0, 0, 0.14),
-                0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.2), 0 3px 1px -2px rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 
 .widget-inline-hbox .widget-readout {
-    /* Horizontal Readout */
-    text-align: center;
-    max-width: var(--jp-widgets-inline-width-short);
-    min-width: var(--jp-widgets-inline-width-tiny);
-    margin-left: var(--jp-widgets-inline-margin);
+  /* Horizontal Readout */
+  text-align: center;
+  max-width: var(--jp-widgets-inline-width-short);
+  min-width: var(--jp-widgets-inline-width-tiny);
+  margin-left: var(--jp-widgets-inline-margin);
 }
 
 .widget-inline-vbox .widget-readout {
-    /* Vertical Readout */
-    margin-top: var(--jp-widgets-inline-margin);
-    /* as wide as the widget */
-    width: inherit;
+  /* Vertical Readout */
+  margin-top: var(--jp-widgets-inline-margin);
+  /* as wide as the widget */
+  width: inherit;
 }
 
 /* Widget Checkbox Styling */
 
 .widget-checkbox {
-    width: var(--jp-widgets-inline-width);
-    height: var(--jp-widgets-inline-height);
-    line-height: var(--jp-widgets-inline-height);
+  width: var(--jp-widgets-inline-width);
+  height: var(--jp-widgets-inline-height);
+  line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-checkbox input[type="checkbox"] {
-    margin: 0px calc( var(--jp-widgets-inline-margin) * 2 ) 0px 0px;
-    line-height: var(--jp-widgets-inline-height);
-    font-size: large;
-    flex-grow: 1;
-    flex-shrink: 0;
-    align-self: center;
+.widget-checkbox input[type='checkbox'] {
+  margin: 0px calc(var(--jp-widgets-inline-margin) * 2) 0px 0px;
+  line-height: var(--jp-widgets-inline-height);
+  font-size: large;
+  flex-grow: 1;
+  flex-shrink: 0;
+  align-self: center;
 }
 
 /* Widget Valid Styling */
 
 .widget-valid {
-    height: var(--jp-widgets-inline-height);
-    line-height: var(--jp-widgets-inline-height);
-    width: var(--jp-widgets-inline-width-short);
-    font-size: var(--jp-widgets-font-size);
+  height: var(--jp-widgets-inline-height);
+  line-height: var(--jp-widgets-inline-height);
+  width: var(--jp-widgets-inline-width-short);
+  font-size: var(--jp-widgets-font-size);
 }
 
 .widget-valid i:before {
-    line-height: var(--jp-widgets-inline-height);
-    margin-right: var(--jp-widgets-inline-margin);
-    margin-left: var(--jp-widgets-inline-margin);
+  line-height: var(--jp-widgets-inline-height);
+  margin-right: var(--jp-widgets-inline-margin);
+  margin-left: var(--jp-widgets-inline-margin);
 
-    /* from the fa class in FontAwesome: https://github.com/FortAwesome/Font-Awesome/blob/49100c7c3a7b58d50baa71efef11af41a66b03d3/css/font-awesome.css#L14 */
-    display: inline-block;
-    font: normal normal normal 14px/1 FontAwesome;
-    font-size: inherit;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  /* from the fa class in FontAwesome: https://github.com/FortAwesome/Font-Awesome/blob/49100c7c3a7b58d50baa71efef11af41a66b03d3/css/font-awesome.css#L14 */
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .widget-valid.mod-valid i:before {
-    content: "\f00c";
-    color: green;
+  content: '\f00c';
+  color: green;
 }
 
 .widget-valid.mod-invalid i:before {
-    content: "\f00d";
-    color: red;
+  content: '\f00d';
+  color: red;
 }
 
 .widget-valid.mod-valid .widget-valid-readout {
-    display: none;
+  display: none;
 }
 
 /* Widget Text and TextArea Stying */
 
-.widget-textarea, .widget-text {
-    width: var(--jp-widgets-inline-width);
+.widget-textarea,
+.widget-text {
+  width: var(--jp-widgets-inline-width);
 }
 
-.widget-text input[type="text"], .widget-text input[type="number"], .widget-text input[type="password"] {
-    height: var(--jp-widgets-inline-height);
-    line-height: var(--jp-widgets-inline-height);
+.widget-text input[type='text'],
+.widget-text input[type='number'],
+.widget-text input[type='password'] {
+  height: var(--jp-widgets-inline-height);
+  line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-text input[type="text"]:disabled, .widget-text input[type="number"]:disabled, .widget-text input[type="password"]:disabled, .widget-textarea textarea:disabled {
-    opacity: var(--jp-widgets-disabled-opacity);
+.widget-text input[type='text']:disabled,
+.widget-text input[type='number']:disabled,
+.widget-text input[type='password']:disabled,
+.widget-textarea textarea:disabled {
+  opacity: var(--jp-widgets-disabled-opacity);
 }
 
-.widget-text input[type="text"], .widget-text input[type="number"], .widget-text input[type="password"], .widget-textarea textarea {
-    box-sizing: border-box;
-    border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
-    background-color: var(--jp-widgets-input-background-color);
-    color: var(--jp-widgets-input-color);
-    font-size: var(--jp-widgets-font-size);
-    flex-grow: 1;
-    min-width: 0; /* This makes it possible for the flexbox to shrink this input */
-    flex-shrink: 1;
-    outline: none !important;
+.widget-text input[type='text'],
+.widget-text input[type='number'],
+.widget-text input[type='password'],
+.widget-textarea textarea {
+  box-sizing: border-box;
+  border: var(--jp-widgets-input-border-width) solid
+    var(--jp-widgets-input-border-color);
+  background-color: var(--jp-widgets-input-background-color);
+  color: var(--jp-widgets-input-color);
+  font-size: var(--jp-widgets-font-size);
+  flex-grow: 1;
+  min-width: 0; /* This makes it possible for the flexbox to shrink this input */
+  flex-shrink: 1;
+  outline: none !important;
 }
 
-.widget-text input[type="text"], .widget-text input[type="password"], .widget-textarea textarea {
-    padding: var(--jp-widgets-input-padding) calc( var(--jp-widgets-input-padding) *  2);
+.widget-text input[type='text'],
+.widget-text input[type='password'],
+.widget-textarea textarea {
+  padding: var(--jp-widgets-input-padding)
+    calc(var(--jp-widgets-input-padding) * 2);
 }
 
-.widget-text input[type="number"] {
-    padding: var(--jp-widgets-input-padding) 0 var(--jp-widgets-input-padding) calc(var(--jp-widgets-input-padding) *  2);
+.widget-text input[type='number'] {
+  padding: var(--jp-widgets-input-padding) 0 var(--jp-widgets-input-padding)
+    calc(var(--jp-widgets-input-padding) * 2);
 }
 
 .widget-textarea textarea {
-    height: inherit;
-    width: inherit;
+  height: inherit;
+  width: inherit;
 }
 
-.widget-text input:focus, .widget-textarea textarea:focus {
-    border-color: var(--jp-widgets-input-focus-border-color);
+.widget-text input:focus,
+.widget-textarea textarea:focus {
+  border-color: var(--jp-widgets-input-focus-border-color);
 }
 
 /* Widget Slider */
 
 .widget-slider .ui-slider {
-    /* Slider Track */
-    border: var(--jp-widgets-slider-border-width) solid var(--jp-layout-color3);
-    background: var(--jp-layout-color3);
-    box-sizing: border-box;
-    position: relative;
-    border-radius: 0px;
+  /* Slider Track */
+  border: var(--jp-widgets-slider-border-width) solid var(--jp-layout-color3);
+  background: var(--jp-layout-color3);
+  box-sizing: border-box;
+  position: relative;
+  border-radius: 0px;
 }
 
 .widget-slider .ui-slider .ui-slider-handle {
-    /* Slider Handle */
-    outline: none !important; /* focused slider handles are colored - see below */
-    position: absolute;
-    background-color: var(--jp-widgets-slider-handle-background-color);
-    border: var(--jp-widgets-slider-border-width) solid var(--jp-widgets-slider-handle-border-color);
-    box-sizing: border-box;
-    z-index: 1;
-    background-image: none; /* Override jquery-ui */
+  /* Slider Handle */
+  outline: none !important; /* focused slider handles are colored - see below */
+  position: absolute;
+  background-color: var(--jp-widgets-slider-handle-background-color);
+  border: var(--jp-widgets-slider-border-width) solid
+    var(--jp-widgets-slider-handle-border-color);
+  box-sizing: border-box;
+  z-index: 1;
+  background-image: none; /* Override jquery-ui */
 }
 
 /* Override jquery-ui */
-.widget-slider .ui-slider .ui-slider-handle:hover, .widget-slider .ui-slider .ui-slider-handle:focus {
-    background-color: var(--jp-widgets-slider-active-handle-color);
-    border: var(--jp-widgets-slider-border-width) solid var(--jp-widgets-slider-active-handle-color);
+.widget-slider .ui-slider .ui-slider-handle:hover,
+.widget-slider .ui-slider .ui-slider-handle:focus {
+  background-color: var(--jp-widgets-slider-active-handle-color);
+  border: var(--jp-widgets-slider-border-width) solid
+    var(--jp-widgets-slider-active-handle-color);
 }
 
 .widget-slider .ui-slider .ui-slider-handle:active {
-    background-color: var(--jp-widgets-slider-active-handle-color);
-    border-color: var(--jp-widgets-slider-active-handle-color);
-    z-index: 2;
-    transform: scale(1.2);
+  background-color: var(--jp-widgets-slider-active-handle-color);
+  border-color: var(--jp-widgets-slider-active-handle-color);
+  z-index: 2;
+  transform: scale(1.2);
 }
 
-.widget-slider  .ui-slider .ui-slider-range {
-    /* Interval between the two specified value of a double slider */
-    position: absolute;
-    background: var(--jp-widgets-slider-active-handle-color);
-    z-index: 0;
+.widget-slider .ui-slider .ui-slider-range {
+  /* Interval between the two specified value of a double slider */
+  position: absolute;
+  background: var(--jp-widgets-slider-active-handle-color);
+  z-index: 0;
 }
 
 /* Shapes of Slider Handles */
 
 .widget-hslider .ui-slider .ui-slider-handle {
-    width: var(--jp-widgets-slider-handle-size);
-    height: var(--jp-widgets-slider-handle-size);
-    margin-top: calc((var(--jp-widgets-slider-track-thickness) - var(--jp-widgets-slider-handle-size)) / 2 - var(--jp-widgets-slider-border-width));
-    margin-left: calc(var(--jp-widgets-slider-handle-size) / -2 + var(--jp-widgets-slider-border-width));
-    border-radius: 50%;
-    top: 0;
+  width: var(--jp-widgets-slider-handle-size);
+  height: var(--jp-widgets-slider-handle-size);
+  margin-top: calc(
+    (
+        var(--jp-widgets-slider-track-thickness) -
+          var(--jp-widgets-slider-handle-size)
+      ) / 2 - var(--jp-widgets-slider-border-width)
+  );
+  margin-left: calc(
+    var(--jp-widgets-slider-handle-size) / -2 +
+      var(--jp-widgets-slider-border-width)
+  );
+  border-radius: 50%;
+  top: 0;
 }
 
 .widget-vslider .ui-slider .ui-slider-handle {
-    width: var(--jp-widgets-slider-handle-size);
-    height: var(--jp-widgets-slider-handle-size);
-    margin-bottom: calc(var(--jp-widgets-slider-handle-size) / -2 + var(--jp-widgets-slider-border-width));
-    margin-left: calc((var(--jp-widgets-slider-track-thickness) - var(--jp-widgets-slider-handle-size)) / 2 - var(--jp-widgets-slider-border-width));
-    border-radius: 50%;
-    left: 0;
+  width: var(--jp-widgets-slider-handle-size);
+  height: var(--jp-widgets-slider-handle-size);
+  margin-bottom: calc(
+    var(--jp-widgets-slider-handle-size) / -2 +
+      var(--jp-widgets-slider-border-width)
+  );
+  margin-left: calc(
+    (
+        var(--jp-widgets-slider-track-thickness) -
+          var(--jp-widgets-slider-handle-size)
+      ) / 2 - var(--jp-widgets-slider-border-width)
+  );
+  border-radius: 50%;
+  left: 0;
 }
 
 .widget-hslider .ui-slider .ui-slider-range {
-    height: calc( var(--jp-widgets-slider-track-thickness) * 2 );
-    margin-top: calc((var(--jp-widgets-slider-track-thickness) - var(--jp-widgets-slider-track-thickness) * 2 ) / 2 - var(--jp-widgets-slider-border-width));
+  height: calc(var(--jp-widgets-slider-track-thickness) * 2);
+  margin-top: calc(
+    (
+        var(--jp-widgets-slider-track-thickness) -
+          var(--jp-widgets-slider-track-thickness) * 2
+      ) / 2 - var(--jp-widgets-slider-border-width)
+  );
 }
 
 .widget-vslider .ui-slider .ui-slider-range {
-    width: calc( var(--jp-widgets-slider-track-thickness) * 2 );
-    margin-left: calc((var(--jp-widgets-slider-track-thickness) - var(--jp-widgets-slider-track-thickness) * 2 ) / 2 - var(--jp-widgets-slider-border-width));
+  width: calc(var(--jp-widgets-slider-track-thickness) * 2);
+  margin-left: calc(
+    (
+        var(--jp-widgets-slider-track-thickness) -
+          var(--jp-widgets-slider-track-thickness) * 2
+      ) / 2 - var(--jp-widgets-slider-border-width)
+  );
 }
 
 /* Horizontal Slider */
 
 .widget-hslider {
-    width: var(--jp-widgets-inline-width);
-    height: var(--jp-widgets-inline-height);
-    line-height: var(--jp-widgets-inline-height);
+  width: var(--jp-widgets-inline-width);
+  height: var(--jp-widgets-inline-height);
+  line-height: var(--jp-widgets-inline-height);
 
-    /* Override the align-items baseline. This way, the description and readout
+  /* Override the align-items baseline. This way, the description and readout
     still seem to align their baseline properly, and we don't have to have
     align-self: stretch in the .slider-container. */
-    align-items: center;
+  align-items: center;
 }
 
 .widgets-slider .slider-container {
-    overflow: visible;
+  overflow: visible;
 }
 
 .widget-hslider .slider-container {
-    height: var(--jp-widgets-inline-height);
-    margin-left: calc(var(--jp-widgets-slider-handle-size) / 2 - 2 * var(--jp-widgets-slider-border-width));
-    margin-right: calc(var(--jp-widgets-slider-handle-size) / 2 - 2 * var(--jp-widgets-slider-border-width));
-    flex: 1 1 var(--jp-widgets-inline-width-short);
+  height: var(--jp-widgets-inline-height);
+  margin-left: calc(
+    var(--jp-widgets-slider-handle-size) / 2 - 2 *
+      var(--jp-widgets-slider-border-width)
+  );
+  margin-right: calc(
+    var(--jp-widgets-slider-handle-size) / 2 - 2 *
+      var(--jp-widgets-slider-border-width)
+  );
+  flex: 1 1 var(--jp-widgets-inline-width-short);
 }
 
 .widget-hslider .ui-slider {
-    /* Inner, invisible slide div */
-    height: var(--jp-widgets-slider-track-thickness);
-    margin-top: calc((var(--jp-widgets-inline-height) - var(--jp-widgets-slider-track-thickness)) / 2);
-    width: 100%;
+  /* Inner, invisible slide div */
+  height: var(--jp-widgets-slider-track-thickness);
+  margin-top: calc(
+    (var(--jp-widgets-inline-height) - var(--jp-widgets-slider-track-thickness)) /
+      2
+  );
+  width: 100%;
 }
 
 /* Vertical Slider */
 
 .widget-vbox .widget-label {
-    height: var(--jp-widgets-inline-height);
-    line-height: var(--jp-widgets-inline-height);
+  height: var(--jp-widgets-inline-height);
+  line-height: var(--jp-widgets-inline-height);
 }
 
 .widget-vslider {
-    /* Vertical Slider */
-    height: var(--jp-widgets-vertical-height);
-    width: var(--jp-widgets-inline-width-tiny);
+  /* Vertical Slider */
+  height: var(--jp-widgets-vertical-height);
+  width: var(--jp-widgets-inline-width-tiny);
 }
 
 .widget-vslider .slider-container {
-    flex: 1 1 var(--jp-widgets-inline-width-short);
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: calc(var(--jp-widgets-slider-handle-size) / 2 - 2 * var(--jp-widgets-slider-border-width));
-    margin-top: calc(var(--jp-widgets-slider-handle-size) / 2 - 2 * var(--jp-widgets-slider-border-width));
-    display: flex;
-    flex-direction: column;
+  flex: 1 1 var(--jp-widgets-inline-width-short);
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: calc(
+    var(--jp-widgets-slider-handle-size) / 2 - 2 *
+      var(--jp-widgets-slider-border-width)
+  );
+  margin-top: calc(
+    var(--jp-widgets-slider-handle-size) / 2 - 2 *
+      var(--jp-widgets-slider-border-width)
+  );
+  display: flex;
+  flex-direction: column;
 }
 
 .widget-vslider .ui-slider-vertical {
-    /* Inner, invisible slide div */
-    width: var(--jp-widgets-slider-track-thickness);
-    flex-grow: 1;
-    margin-left: auto;
-    margin-right: auto;
+  /* Inner, invisible slide div */
+  width: var(--jp-widgets-slider-track-thickness);
+  flex-grow: 1;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Widget Progress Styling */
 
 .progress-bar {
-    -webkit-transition: none;
-    -moz-transition: none;
-    -ms-transition: none;
-    -o-transition: none;
-    transition: none;
+  -webkit-transition: none;
+  -moz-transition: none;
+  -ms-transition: none;
+  -o-transition: none;
+  transition: none;
 }
 
 .progress-bar {
-    height: var(--jp-widgets-inline-height);
+  height: var(--jp-widgets-inline-height);
 }
 
 .progress-bar {
-    background-color: var(--jp-brand-color1);
+  background-color: var(--jp-brand-color1);
 }
 
 .progress-bar-success {
-    background-color: var(--jp-success-color1);
+  background-color: var(--jp-success-color1);
 }
 
 .progress-bar-info {
-    background-color: var(--jp-info-color1);
+  background-color: var(--jp-info-color1);
 }
 
 .progress-bar-warning {
-    background-color: var(--jp-warn-color1);
+  background-color: var(--jp-warn-color1);
 }
 
 .progress-bar-danger {
-    background-color: var(--jp-error-color1);
+  background-color: var(--jp-error-color1);
 }
 
 .progress {
-    background-color: var(--jp-layout-color2);
-    border: none;
-    box-shadow: none;
+  background-color: var(--jp-layout-color2);
+  border: none;
+  box-shadow: none;
 }
 
 /* Horisontal Progress */
 
 .widget-hprogress {
-    /* Progress Bar */
-    height: var(--jp-widgets-inline-height);
-    line-height: var(--jp-widgets-inline-height);
-    width: var(--jp-widgets-inline-width);
-    align-items: center;
-
+  /* Progress Bar */
+  height: var(--jp-widgets-inline-height);
+  line-height: var(--jp-widgets-inline-height);
+  width: var(--jp-widgets-inline-width);
+  align-items: center;
 }
 
 .widget-hprogress .progress {
-    flex-grow: 1;
-    margin-top: var(--jp-widgets-input-padding);
-    margin-bottom: var(--jp-widgets-input-padding);
-    align-self: stretch;
-    /* Override bootstrap style */
-    height: initial;
+  flex-grow: 1;
+  margin-top: var(--jp-widgets-input-padding);
+  margin-bottom: var(--jp-widgets-input-padding);
+  align-self: stretch;
+  /* Override bootstrap style */
+  height: initial;
 }
 
 /* Vertical Progress */
 
 .widget-vprogress {
-    height: var(--jp-widgets-vertical-height);
-    width: var(--jp-widgets-inline-width-tiny);
+  height: var(--jp-widgets-vertical-height);
+  width: var(--jp-widgets-inline-width-tiny);
 }
 
 .widget-vprogress .progress {
-    flex-grow: 1;
-    width: var(--jp-widgets-progress-thickness);
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 0;
+  flex-grow: 1;
+  width: var(--jp-widgets-progress-thickness);
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 0;
 }
 
 /* Select Widget Styling */
 
 .widget-dropdown {
-    height: var(--jp-widgets-inline-height);
-    width: var(--jp-widgets-inline-width);
-    line-height: var(--jp-widgets-inline-height);
+  height: var(--jp-widgets-inline-height);
+  width: var(--jp-widgets-inline-width);
+  line-height: var(--jp-widgets-inline-height);
 }
 
 .widget-dropdown > select {
-    padding-right: 20px;
-    border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
-    border-radius: 0;
-    height: inherit;
-    flex: 1 1 var(--jp-widgets-inline-width-short);
-    min-width: 0; /* This makes it possible for the flexbox to shrink this input */
-    box-sizing: border-box;
-    outline: none !important;
-    box-shadow: none;
-    background-color: var(--jp-widgets-input-background-color);
-    color: var(--jp-widgets-input-color);
-    font-size: var(--jp-widgets-font-size);
-    vertical-align: top;
-    padding-left: calc( var(--jp-widgets-input-padding) * 2);
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-repeat: no-repeat;
-    background-size: 20px;
-    background-position: right center;
-    background-image: var(--jp-widgets-dropdown-arrow);
+  padding-right: 20px;
+  border: var(--jp-widgets-input-border-width) solid
+    var(--jp-widgets-input-border-color);
+  border-radius: 0;
+  height: inherit;
+  flex: 1 1 var(--jp-widgets-inline-width-short);
+  min-width: 0; /* This makes it possible for the flexbox to shrink this input */
+  box-sizing: border-box;
+  outline: none !important;
+  box-shadow: none;
+  background-color: var(--jp-widgets-input-background-color);
+  color: var(--jp-widgets-input-color);
+  font-size: var(--jp-widgets-font-size);
+  vertical-align: top;
+  padding-left: calc(var(--jp-widgets-input-padding) * 2);
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-repeat: no-repeat;
+  background-size: 20px;
+  background-position: right center;
+  background-image: var(--jp-widgets-dropdown-arrow);
 }
 .widget-dropdown > select:focus {
-    border-color: var(--jp-widgets-input-focus-border-color);
+  border-color: var(--jp-widgets-input-focus-border-color);
 }
 
 .widget-dropdown > select:disabled {
-    opacity: var(--jp-widgets-disabled-opacity);
+  opacity: var(--jp-widgets-disabled-opacity);
 }
 
 /* To disable the dotted border in Firefox around select controls.
    See http://stackoverflow.com/a/18853002 */
 .widget-dropdown > select:-moz-focusring {
-    color: transparent;
-    text-shadow: 0 0 0 #000;
+  color: transparent;
+  text-shadow: 0 0 0 #000;
 }
 
 /* Select and SelectMultiple */
 
 .widget-select {
-    width: var(--jp-widgets-inline-width);
-    line-height: var(--jp-widgets-inline-height);
+  width: var(--jp-widgets-inline-width);
+  line-height: var(--jp-widgets-inline-height);
 
-    /* Because Firefox defines the baseline of a select as the bottom of the
+  /* Because Firefox defines the baseline of a select as the bottom of the
     control, we align the entire control to the top and add padding to the
     select to get an approximate first line baseline alignment. */
-    align-items: flex-start;
+  align-items: flex-start;
 }
 
 .widget-select > select {
-    border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
-    background-color: var(--jp-widgets-input-background-color);
-    color: var(--jp-widgets-input-color);
-    font-size: var(--jp-widgets-font-size);
-    flex: 1 1 var(--jp-widgets-inline-width-short);
-    outline: none !important;
-    overflow: auto;
-    height: inherit;
+  border: var(--jp-widgets-input-border-width) solid
+    var(--jp-widgets-input-border-color);
+  background-color: var(--jp-widgets-input-background-color);
+  color: var(--jp-widgets-input-color);
+  font-size: var(--jp-widgets-font-size);
+  flex: 1 1 var(--jp-widgets-inline-width-short);
+  outline: none !important;
+  overflow: auto;
+  height: inherit;
 
-    /* Because Firefox defines the baseline of a select as the bottom of the
+  /* Because Firefox defines the baseline of a select as the bottom of the
     control, we align the entire control to the top and add padding to the
     select to get an approximate first line baseline alignment. */
-    padding-top: 5px;
+  padding-top: 5px;
 }
 
 .widget-select > select:focus {
-    border-color: var(--jp-widgets-input-focus-border-color);
+  border-color: var(--jp-widgets-input-focus-border-color);
 }
 
 .wiget-select > select > option {
-    padding-left: var(--jp-widgets-input-padding);
-    line-height: var(--jp-widgets-inline-height);
-    /* line-height doesn't work on some browsers for select options */
-    padding-top: calc(var(--jp-widgets-inline-height)-var(--jp-widgets-font-size)/2);
-    padding-bottom: calc(var(--jp-widgets-inline-height)-var(--jp-widgets-font-size)/2);
+  padding-left: var(--jp-widgets-input-padding);
+  line-height: var(--jp-widgets-inline-height);
+  /* line-height doesn't work on some browsers for select options */
+  padding-top: calc(
+    var(--jp-widgets-inline-height)-var(--jp-widgets-font-size) / 2
+  );
+  padding-bottom: calc(
+    var(--jp-widgets-inline-height)-var(--jp-widgets-font-size) / 2
+  );
 }
-
-
 
 /* Toggle Buttons Styling */
 
 .widget-toggle-buttons {
-    line-height: var(--jp-widgets-inline-height);
+  line-height: var(--jp-widgets-inline-height);
 }
 
 .widget-toggle-buttons .widget-toggle-button {
-    margin-left: var(--jp-widgets-margin);
-    margin-right: var(--jp-widgets-margin);
+  margin-left: var(--jp-widgets-margin);
+  margin-right: var(--jp-widgets-margin);
 }
 
 .widget-toggle-buttons .jupyter-button:disabled {
-    opacity: var(--jp-widgets-disabled-opacity);
+  opacity: var(--jp-widgets-disabled-opacity);
 }
 
 /* Radio Buttons Styling */
 
 .widget-radio {
-    width: var(--jp-widgets-inline-width);
-    line-height: var(--jp-widgets-inline-height);
+  width: var(--jp-widgets-inline-width);
+  line-height: var(--jp-widgets-inline-height);
 }
 
 .widget-radio-box {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    box-sizing: border-box;
-    flex-grow: 1;
-    margin-bottom: var(--jp-widgets-radio-item-height-adjustment);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  flex-grow: 1;
+  margin-bottom: var(--jp-widgets-radio-item-height-adjustment);
 }
 
 .widget-radio-box label {
-    height: var(--jp-widgets-radio-item-height);
-    line-height: var(--jp-widgets-radio-item-height);
-    font-size: var(--jp-widgets-font-size);
+  height: var(--jp-widgets-radio-item-height);
+  line-height: var(--jp-widgets-radio-item-height);
+  font-size: var(--jp-widgets-font-size);
 }
 
 .widget-radio-box input {
-    height: var(--jp-widgets-radio-item-height);
-    line-height: var(--jp-widgets-radio-item-height);
-    margin: 0 calc( var(--jp-widgets-input-padding) * 2 ) 0 1px;
-    float: left;
+  height: var(--jp-widgets-radio-item-height);
+  line-height: var(--jp-widgets-radio-item-height);
+  margin: 0 calc(var(--jp-widgets-input-padding) * 2) 0 1px;
+  float: left;
 }
 
 /* Color Picker Styling */
 
 .widget-colorpicker {
-    width: var(--jp-widgets-inline-width);
-    height: var(--jp-widgets-inline-height);
-    line-height: var(--jp-widgets-inline-height);
+  width: var(--jp-widgets-inline-width);
+  height: var(--jp-widgets-inline-height);
+  line-height: var(--jp-widgets-inline-height);
 }
 
 .widget-colorpicker > .widget-colorpicker-input {
-    flex-grow: 1;
-    flex-shrink: 1;
-    min-width: var(--jp-widgets-inline-width-tiny);
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-width: var(--jp-widgets-inline-width-tiny);
 }
 
-.widget-colorpicker input[type="color"] {
-    width: var(--jp-widgets-inline-height);
-    height: var(--jp-widgets-inline-height);
-    padding: 0 2px; /* make the color square actually square on Chrome on OS X */
-    background: var(--jp-widgets-input-background-color);
-    color: var(--jp-widgets-input-color);
-    border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
-    border-left: none;
-    flex-grow: 0;
-    flex-shrink: 0;
-    box-sizing: border-box;
-    align-self: stretch;
-    outline: none !important;
+.widget-colorpicker input[type='color'] {
+  width: var(--jp-widgets-inline-height);
+  height: var(--jp-widgets-inline-height);
+  padding: 0 2px; /* make the color square actually square on Chrome on OS X */
+  background: var(--jp-widgets-input-background-color);
+  color: var(--jp-widgets-input-color);
+  border: var(--jp-widgets-input-border-width) solid
+    var(--jp-widgets-input-border-color);
+  border-left: none;
+  flex-grow: 0;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  align-self: stretch;
+  outline: none !important;
 }
 
-.widget-colorpicker.concise input[type="color"] {
-    border-left: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
+.widget-colorpicker.concise input[type='color'] {
+  border-left: var(--jp-widgets-input-border-width) solid
+    var(--jp-widgets-input-border-color);
 }
 
-.widget-colorpicker input[type="color"]:focus, .widget-colorpicker input[type="text"]:focus {
-    border-color: var(--jp-widgets-input-focus-border-color);
+.widget-colorpicker input[type='color']:focus,
+.widget-colorpicker input[type='text']:focus {
+  border-color: var(--jp-widgets-input-focus-border-color);
 }
 
-.widget-colorpicker input[type="text"] {
-    flex-grow: 1;
-    outline: none !important;
-    height: var(--jp-widgets-inline-height);
-    line-height: var(--jp-widgets-inline-height);
-    background: var(--jp-widgets-input-background-color);
-    color: var(--jp-widgets-input-color);
-    border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
-    font-size: var(--jp-widgets-font-size);
-    padding: var(--jp-widgets-input-padding) calc( var(--jp-widgets-input-padding) *  2 );
-    min-width: 0; /* This makes it possible for the flexbox to shrink this input */
-    flex-shrink: 1;
-    box-sizing: border-box;
+.widget-colorpicker input[type='text'] {
+  flex-grow: 1;
+  outline: none !important;
+  height: var(--jp-widgets-inline-height);
+  line-height: var(--jp-widgets-inline-height);
+  background: var(--jp-widgets-input-background-color);
+  color: var(--jp-widgets-input-color);
+  border: var(--jp-widgets-input-border-width) solid
+    var(--jp-widgets-input-border-color);
+  font-size: var(--jp-widgets-font-size);
+  padding: var(--jp-widgets-input-padding)
+    calc(var(--jp-widgets-input-padding) * 2);
+  min-width: 0; /* This makes it possible for the flexbox to shrink this input */
+  flex-shrink: 1;
+  box-sizing: border-box;
 }
 
-.widget-colorpicker input[type="text"]:disabled {
-    opacity: var(--jp-widgets-disabled-opacity);
+.widget-colorpicker input[type='text']:disabled {
+  opacity: var(--jp-widgets-disabled-opacity);
 }
 
 /* Date Picker Styling */
 
 .widget-datepicker {
-    width: var(--jp-widgets-inline-width);
-    height: var(--jp-widgets-inline-height);
-    line-height: var(--jp-widgets-inline-height);
+  width: var(--jp-widgets-inline-width);
+  height: var(--jp-widgets-inline-height);
+  line-height: var(--jp-widgets-inline-height);
 }
 
-.widget-datepicker input[type="date"] {
-    flex-grow: 1;
-    flex-shrink: 1;
-    min-width: 0; /* This makes it possible for the flexbox to shrink this input */
-    outline: none !important;
-    height: var(--jp-widgets-inline-height);
-    border: var(--jp-widgets-input-border-width) solid var(--jp-widgets-input-border-color);
-    background-color: var(--jp-widgets-input-background-color);
-    color: var(--jp-widgets-input-color);
-    font-size: var(--jp-widgets-font-size);
-    padding: var(--jp-widgets-input-padding) calc( var(--jp-widgets-input-padding) *  2 );
-    box-sizing: border-box;
+.widget-datepicker input[type='date'] {
+  flex-grow: 1;
+  flex-shrink: 1;
+  min-width: 0; /* This makes it possible for the flexbox to shrink this input */
+  outline: none !important;
+  height: var(--jp-widgets-inline-height);
+  border: var(--jp-widgets-input-border-width) solid
+    var(--jp-widgets-input-border-color);
+  background-color: var(--jp-widgets-input-background-color);
+  color: var(--jp-widgets-input-color);
+  font-size: var(--jp-widgets-font-size);
+  padding: var(--jp-widgets-input-padding)
+    calc(var(--jp-widgets-input-padding) * 2);
+  box-sizing: border-box;
 }
 
-.widget-datepicker input[type="date"]:focus {
-    border-color: var(--jp-widgets-input-focus-border-color);
+.widget-datepicker input[type='date']:focus {
+  border-color: var(--jp-widgets-input-focus-border-color);
 }
 
-.widget-datepicker input[type="date"]:invalid {
-    border-color: var(--jp-warn-color1);
+.widget-datepicker input[type='date']:invalid {
+  border-color: var(--jp-warn-color1);
 }
 
-.widget-datepicker input[type="date"]:disabled {
-    opacity: var(--jp-widgets-disabled-opacity);
+.widget-datepicker input[type='date']:disabled {
+  opacity: var(--jp-widgets-disabled-opacity);
 }
 
 /* Play Widget */
 
 .widget-play {
-    width: var(--jp-widgets-inline-width-short);
-    display: flex;
-    align-items: stretch;
+  width: var(--jp-widgets-inline-width-short);
+  display: flex;
+  align-items: stretch;
 }
 
 .widget-play .jupyter-button {
-    flex-grow: 1;
-    height: auto;
+  flex-grow: 1;
+  height: auto;
 }
 
 .widget-play .jupyter-button:disabled {
-    opacity: var(--jp-widgets-disabled-opacity);
+  opacity: var(--jp-widgets-disabled-opacity);
 }
 
 /* Tab Widget */
 
 .jupyter-widgets.widget-tab {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .jupyter-widgets.widget-tab > .p-TabBar {
-    /* Necessary so that a tab can be shifted down to overlay the border of the box below. */
-    overflow-x: visible;
-    overflow-y: visible;
+  /* Necessary so that a tab can be shifted down to overlay the border of the box below. */
+  overflow-x: visible;
+  overflow-y: visible;
 }
 
 .jupyter-widgets.widget-tab > .p-TabBar > .p-TabBar-content {
-    /* Make sure that the tab grows from bottom up */
-    align-items: flex-end;
-    min-width: 0;
-    min-height: 0;
+  /* Make sure that the tab grows from bottom up */
+  align-items: flex-end;
+  min-width: 0;
+  min-height: 0;
 }
 
 .jupyter-widgets.widget-tab > .widget-tab-contents {
-    width: 100%;
-    box-sizing: border-box;
-    margin: 0;
-    background: var(--jp-layout-color1);
-    color: var(--jp-ui-font-color1);
-    border: var(--jp-border-width) solid var(--jp-border-color1);
-    padding: var(--jp-widgets-container-padding);
-    flex-grow: 1;
-    overflow: auto;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  background: var(--jp-layout-color1);
+  color: var(--jp-ui-font-color1);
+  border: var(--jp-border-width) solid var(--jp-border-color1);
+  padding: var(--jp-widgets-container-padding);
+  flex-grow: 1;
+  overflow: auto;
 }
 
 .jupyter-widgets.widget-tab > .p-TabBar {
-    font: var(--jp-widgets-font-size) Helvetica, Arial, sans-serif;
-    min-height: calc(var(--jp-widgets-horizontal-tab-height) + var(--jp-border-width));
+  font: var(--jp-widgets-font-size) Helvetica, Arial, sans-serif;
+  min-height: calc(
+    var(--jp-widgets-horizontal-tab-height) + var(--jp-border-width)
+  );
 }
 
 .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab {
-    flex: 0 1 var(--jp-widgets-horizontal-tab-width);
-    min-width: 35px;
-    min-height: calc(var(--jp-widgets-horizontal-tab-height) + var(--jp-border-width));
-    line-height: var(--jp-widgets-horizontal-tab-height);
-    margin-left: calc(-1 * var(--jp-border-width));
-    padding: 0px 10px;
-    background: var(--jp-layout-color2);
-    color: var(--jp-ui-font-color2);
-    border: var(--jp-border-width) solid var(--jp-border-color1);
-    border-bottom: none;
-    position: relative;
+  flex: 0 1 var(--jp-widgets-horizontal-tab-width);
+  min-width: 35px;
+  min-height: calc(
+    var(--jp-widgets-horizontal-tab-height) + var(--jp-border-width)
+  );
+  line-height: var(--jp-widgets-horizontal-tab-height);
+  margin-left: calc(-1 * var(--jp-border-width));
+  padding: 0px 10px;
+  background: var(--jp-layout-color2);
+  color: var(--jp-ui-font-color2);
+  border: var(--jp-border-width) solid var(--jp-border-color1);
+  border-bottom: none;
+  position: relative;
 }
 
 .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current {
-    color: var(--jp-ui-font-color0);
-    /* We want the background to match the tab content background */
-    background: var(--jp-layout-color1);
-    min-height: calc(var(--jp-widgets-horizontal-tab-height) + 2 * var(--jp-border-width));
-    transform: translateY(var(--jp-border-width));
-    overflow: visible;
+  color: var(--jp-ui-font-color0);
+  /* We want the background to match the tab content background */
+  background: var(--jp-layout-color1);
+  min-height: calc(
+    var(--jp-widgets-horizontal-tab-height) + 2 * var(--jp-border-width)
+  );
+  transform: translateY(var(--jp-border-width));
+  overflow: visible;
 }
 
 .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current:before {
-    position: absolute;
-    top: calc(-1 * var(--jp-border-width));
-    left: calc(-1 * var(--jp-border-width));
-    content: '';
-    height: var(--jp-widgets-horizontal-tab-top-border);
-    width: calc(100% + 2 * var(--jp-border-width));
-    background: var(--jp-brand-color1);
+  position: absolute;
+  top: calc(-1 * var(--jp-border-width));
+  left: calc(-1 * var(--jp-border-width));
+  content: '';
+  height: var(--jp-widgets-horizontal-tab-top-border);
+  width: calc(100% + 2 * var(--jp-border-width));
+  background: var(--jp-brand-color1);
 }
 
 .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab:first-child {
-    margin-left: 0;
+  margin-left: 0;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab:hover:not(.p-mod-current) {
-    background: var(--jp-layout-color1);
-    color: var(--jp-ui-font-color1);
+.jupyter-widgets.widget-tab
+  > .p-TabBar
+  .p-TabBar-tab:hover:not(.p-mod-current) {
+  background: var(--jp-layout-color1);
+  color: var(--jp-ui-font-color1);
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-mod-closable > .p-TabBar-tabCloseIcon {
-    margin-left: 4px;
+.jupyter-widgets.widget-tab
+  > .p-TabBar
+  .p-mod-closable
+  > .p-TabBar-tabCloseIcon {
+  margin-left: 4px;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-mod-closable > .p-TabBar-tabCloseIcon:before {
-    font-family: FontAwesome;
-    content: '\f00d'; /* close */
+.jupyter-widgets.widget-tab
+  > .p-TabBar
+  .p-mod-closable
+  > .p-TabBar-tabCloseIcon:before {
+  font-family: FontAwesome;
+  content: '\f00d'; /* close */
 }
 
 .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabIcon,
 .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabLabel,
 .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabCloseIcon {
-    line-height: var(--jp-widgets-horizontal-tab-height);
+  line-height: var(--jp-widgets-horizontal-tab-height);
 }
 
 /* Accordion Widget */
 
 .p-Collapse {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 .p-Collapse-header {
-    padding: var(--jp-widgets-input-padding);
-    cursor: pointer;
-    color: var(--jp-ui-font-color2);
-    background-color: var(--jp-layout-color2);
-    border: var(--jp-widgets-border-width) solid var(--jp-border-color1);
-    padding: calc(var(--jp-widgets-container-padding) * 2 / 3) var(--jp-widgets-container-padding);
-    font-weight: bold;
+  padding: var(--jp-widgets-input-padding);
+  cursor: pointer;
+  color: var(--jp-ui-font-color2);
+  background-color: var(--jp-layout-color2);
+  border: var(--jp-widgets-border-width) solid var(--jp-border-color1);
+  padding: calc(var(--jp-widgets-container-padding) * 2 / 3)
+    var(--jp-widgets-container-padding);
+  font-weight: bold;
 }
 
 .p-Collapse-header:hover {
-    background-color: var(--jp-layout-color1);
-    color: var(--jp-ui-font-color1);
+  background-color: var(--jp-layout-color1);
+  color: var(--jp-ui-font-color1);
 }
 
 .p-Collapse-open > .p-Collapse-header {
-    background-color: var(--jp-layout-color1);
-    color: var(--jp-ui-font-color0);
-    cursor: default;
-    border-bottom: none;
+  background-color: var(--jp-layout-color1);
+  color: var(--jp-ui-font-color0);
+  cursor: default;
+  border-bottom: none;
 }
 
 .p-Collapse .p-Collapse-header::before {
-    content: '\f0da\00A0';  /* caret-right, non-breaking space */
-    display: inline-block;
-    font: normal normal normal 14px/1 FontAwesome;
-    font-size: inherit;
-    text-rendering: auto;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  content: '\f0da\00A0'; /* caret-right, non-breaking space */
+  display: inline-block;
+  font: normal normal normal 14px/1 FontAwesome;
+  font-size: inherit;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .p-Collapse-open > .p-Collapse-header::before {
-    content: '\f0d7\00A0'; /* caret-down, non-breaking space */
+  content: '\f0d7\00A0'; /* caret-down, non-breaking space */
 }
 
 .p-Collapse-contents {
-    padding: var(--jp-widgets-container-padding);
-    background-color: var(--jp-layout-color1);
-    color: var(--jp-ui-font-color1);
-    border-left: var(--jp-widgets-border-width) solid var(--jp-border-color1);
-    border-right: var(--jp-widgets-border-width) solid var(--jp-border-color1);
-    border-bottom: var(--jp-widgets-border-width) solid var(--jp-border-color1);
-    overflow: auto;
+  padding: var(--jp-widgets-container-padding);
+  background-color: var(--jp-layout-color1);
+  color: var(--jp-ui-font-color1);
+  border-left: var(--jp-widgets-border-width) solid var(--jp-border-color1);
+  border-right: var(--jp-widgets-border-width) solid var(--jp-border-color1);
+  border-bottom: var(--jp-widgets-border-width) solid var(--jp-border-color1);
+  overflow: auto;
 }
 
 .p-Accordion {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 .p-Accordion .p-Collapse {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .p-Accordion .p-Collapse + .p-Collapse {
-    margin-top: 4px;
+  margin-top: 4px;
 }
-
-
 
 /* HTML widget */
 
-.widget-html, .widget-htmlmath {
-    font-size: var(--jp-widgets-font-size);
+.widget-html,
+.widget-htmlmath {
+  font-size: var(--jp-widgets-font-size);
 }
 
-.widget-html > .widget-html-content, .widget-htmlmath > .widget-html-content {
-    /* Fill out the area in the HTML widget */
-    align-self: stretch;
-    flex-grow: 1;
-    flex-shrink: 1;
-    /* Makes sure the baseline is still aligned with other elements */
-    line-height: var(--jp-widgets-inline-height);
-    /* Make it possible to have absolutely-positioned elements in the html */
-    position: relative;
+.widget-html > .widget-html-content,
+.widget-htmlmath > .widget-html-content {
+  /* Fill out the area in the HTML widget */
+  align-self: stretch;
+  flex-grow: 1;
+  flex-shrink: 1;
+  /* Makes sure the baseline is still aligned with other elements */
+  line-height: var(--jp-widgets-inline-height);
+  /* Make it possible to have absolutely-positioned elements in the html */
+  position: relative;
 }
-
 
 /* Image widget  */
 
 .widget-image {
-    max-width: 100%;
-    height: auto;
+  max-width: 100%;
+  height: auto;
 }
