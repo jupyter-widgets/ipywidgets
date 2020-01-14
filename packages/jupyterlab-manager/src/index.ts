@@ -6,19 +6,10 @@ import * as output from './output';
 
 export default WidgetManagerProvider;
 
-export {
-  registerWidgetManager
-} from './plugin';
+export { registerWidgetManager } from './plugin';
 
-export {
-  WidgetManager
-} from './manager';
+export { WidgetManager } from './manager';
 
-export {
-  WidgetRenderer
-} from './renderer';
+export { WidgetRenderer } from './renderer';
 
-export {
-  output
-};
-
+export { output };

@@ -1,110 +1,134 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import {
-    WidgetModel, unpack_models
-} from '@jupyter-widgets/base';
+import { WidgetModel, unpack_models } from '@jupyter-widgets/base';
 
-import {
-    CoreWidgetModel
-} from './widget_core';
+import { CoreWidgetModel } from './widget_core';
 
 import * as _ from 'underscore';
 
+export class DirectionalLinkModel extends CoreWidgetModel {
+  static serializers = {
+    ...CoreWidgetModel.serializers,
+    target: { deserialize: unpack_models },
+    source: { deserialize: unpack_models }
+  };
 
-export
-class DirectionalLinkModel extends CoreWidgetModel {
-    static serializers = {
-        ...CoreWidgetModel.serializers,
-        target: {deserialize: unpack_models},
-        source: {deserialize: unpack_models}
-    };
+  defaults(): Backbone.ObjectHash {
+    return _.extend(super.defaults(), {
+      target: undefined,
+      source: undefined,
+      _model_name: 'DirectionalLinkModel'
+    });
+  }
 
-    defaults(): Backbone.ObjectHash {
-        return _.extend(super.defaults(), {
-            target: undefined,
-            source: undefined,
-            _model_name: 'DirectionalLinkModel'
-        });
+  initialize(
+    attributes: Backbone.ObjectHash,
+    options: { model_id: string; comm: any; widget_manager: any }
+  ): void {
+    super.initialize(attributes, options);
+    this.on('change', this.updateBindings, this);
+    this.updateBindings();
+  }
+
+  updateValue(
+    sourceModel: WidgetModel,
+    sourceAttr: string,
+    targetModel: WidgetModel,
+    targetAttr: string
+  ): void {
+    if (this._updating) {
+      return;
     }
-
-    initialize(attributes: Backbone.ObjectHash, options: { model_id: string; comm: any; widget_manager: any }): void {
-        super.initialize(attributes, options);
-        this.on('change', this.updateBindings, this);
-        this.updateBindings();
+    this._updating = true;
+    try {
+      if (targetModel) {
+        targetModel.set(targetAttr, sourceModel.get(sourceAttr));
+        targetModel.save_changes();
+      }
+    } finally {
+      this._updating = false;
     }
+  }
 
-    updateValue(sourceModel: WidgetModel, sourceAttr: string, targetModel: WidgetModel, targetAttr: string): void {
-        if (this._updating) {
-            return;
-        }
-        this._updating = true;
-        try {
-            if (targetModel) {
-                targetModel.set(targetAttr, sourceModel.get(sourceAttr));
-                targetModel.save_changes();
-            }
-        } finally {
-            this._updating = false;
-        }
+  updateBindings(): void {
+    this.cleanup();
+    [this.sourceModel, this.sourceAttr] = this.get('source') || [null, null];
+    [this.targetModel, this.targetAttr] = this.get('target') || [null, null];
+    if (this.sourceModel) {
+      this.listenTo(this.sourceModel, 'change:' + this.sourceAttr, () => {
+        this.updateValue(
+          this.sourceModel,
+          this.sourceAttr,
+          this.targetModel,
+          this.targetAttr
+        );
+      });
+      this.updateValue(
+        this.sourceModel,
+        this.sourceAttr,
+        this.targetModel,
+        this.targetAttr
+      );
+      this.listenToOnce(this.sourceModel, 'destroy', this.cleanup);
     }
-
-    updateBindings(): void {
-        this.cleanup();
-        [this.sourceModel, this.sourceAttr] = this.get('source') || [null, null];
-        [this.targetModel, this.targetAttr] = this.get('target') || [null, null];
-        if (this.sourceModel) {
-            this.listenTo(this.sourceModel, 'change:' + this.sourceAttr, () => {
-                this.updateValue(this.sourceModel, this.sourceAttr, this.targetModel, this.targetAttr);
-            });
-            this.updateValue(this.sourceModel, this.sourceAttr, this.targetModel, this.targetAttr);
-            this.listenToOnce(this.sourceModel, 'destroy', this.cleanup);
-        }
-        if (this.targetModel) {
-            this.listenToOnce(this.targetModel, 'destroy', this.cleanup);
-        }
+    if (this.targetModel) {
+      this.listenToOnce(this.targetModel, 'destroy', this.cleanup);
     }
+  }
 
-    cleanup(): void {
-        // Stop listening to 'change' and 'destroy' events of the source and target
-        if (this.sourceModel) {
-            this.stopListening(this.sourceModel, 'change:' + this.sourceAttr, undefined);
-            this.stopListening(this.sourceModel, 'destroy', undefined);
-        }
-        if (this.targetModel) {
-            this.stopListening(this.targetModel, 'destroy', undefined);
-        }
+  cleanup(): void {
+    // Stop listening to 'change' and 'destroy' events of the source and target
+    if (this.sourceModel) {
+      this.stopListening(
+        this.sourceModel,
+        'change:' + this.sourceAttr,
+        undefined
+      );
+      this.stopListening(this.sourceModel, 'destroy', undefined);
     }
+    if (this.targetModel) {
+      this.stopListening(this.targetModel, 'destroy', undefined);
+    }
+  }
 
-    sourceModel: WidgetModel;
-    sourceAttr: string;
-    targetModel: WidgetModel;
-    targetAttr: string;
+  sourceModel: WidgetModel;
+  sourceAttr: string;
+  targetModel: WidgetModel;
+  targetAttr: string;
 
-    private _updating: boolean;
+  private _updating: boolean;
 }
 
-export
-class LinkModel extends DirectionalLinkModel {
-    defaults(): Backbone.ObjectHash {
-        return _.extend(super.defaults(), {
-            _model_name: 'LinkModel'
-        });
-    }
+export class LinkModel extends DirectionalLinkModel {
+  defaults(): Backbone.ObjectHash {
+    return _.extend(super.defaults(), {
+      _model_name: 'LinkModel'
+    });
+  }
 
-    updateBindings(): void {
-        super.updateBindings();
-        if (this.targetModel) {
-            this.listenTo(this.targetModel, 'change:' + this.targetAttr, () => {
-                this.updateValue(this.targetModel, this.targetAttr, this.sourceModel, this.sourceAttr);
-            });
-        }
+  updateBindings(): void {
+    super.updateBindings();
+    if (this.targetModel) {
+      this.listenTo(this.targetModel, 'change:' + this.targetAttr, () => {
+        this.updateValue(
+          this.targetModel,
+          this.targetAttr,
+          this.sourceModel,
+          this.sourceAttr
+        );
+      });
     }
+  }
 
-    cleanup(): void {
-        super.cleanup();
-        if (this.targetModel) {
-            this.stopListening(this.targetModel, 'change:' + this.targetAttr, undefined);
-        }
+  cleanup(): void {
+    super.cleanup();
+    if (this.targetModel) {
+      this.stopListening(
+        this.targetModel,
+        'change:' + this.targetAttr,
+        undefined
+      );
     }
+  }
 }
