@@ -3,7 +3,8 @@
 
 declare let __webpack_public_path__: string;
 // eslint-disable-next-line prefer-const
-__webpack_public_path__ = (window as any).__jupyter_widgets_assets_path__ || __webpack_public_path__;
+__webpack_public_path__ =
+  (window as any).__jupyter_widgets_assets_path__ || __webpack_public_path__;
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import '@fortawesome/fontawesome-free/css/v4-shims.min.css';
@@ -13,9 +14,7 @@ import '@jupyter-widgets/controls/css/widgets.css';
 
 // Used just for the typing. We must not import the javascript because we don't
 // want to include it in the require embedding.
-import {
-    HTMLManager
-} from './index';
+import { HTMLManager } from './index';
 
 // Load json schema validator
 import Ajv from 'ajv';
@@ -32,12 +31,16 @@ const view_validate = ajv.compile(widget_view_schema);
  * @param managerFactory A function that returns a new HTMLManager
  * @param element (default document.documentElement) The document element in which to process for widget state.
  */
-export
-function renderWidgets(managerFactory: () => HTMLManager, element: HTMLElement = document.documentElement): void {
-    const tags = element.querySelectorAll('script[type="application/vnd.jupyter.widget-state+json"]');
-    for (let i=0; i!=tags.length; ++i) {
-        renderManager(element, JSON.parse(tags[i].innerHTML), managerFactory);
-    }
+export function renderWidgets(
+  managerFactory: () => HTMLManager,
+  element: HTMLElement = document.documentElement
+): void {
+  const tags = element.querySelectorAll(
+    'script[type="application/vnd.jupyter.widget-state+json"]'
+  );
+  for (let i = 0; i != tags.length; ++i) {
+    renderManager(element, JSON.parse(tags[i].innerHTML), managerFactory);
+  }
 }
 
 /**
@@ -54,37 +57,47 @@ function renderWidgets(managerFactory: () => HTMLManager, element: HTMLElement =
  * Additionally, if the script tag has a prior img sibling with class
  * 'jupyter-widget', then that img tag is deleted.
  */
-function renderManager(element: HTMLElement, widgetState: any, managerFactory: () => HTMLManager): void {
-    const valid = model_validate(widgetState);
-    if (!valid) {
-        console.error('Model state has errors.', model_validate.errors);
-    }
-    const manager = managerFactory();
-    manager.set_state(widgetState).then(function(models) {
-        const tags = element.querySelectorAll('script[type="application/vnd.jupyter.widget-view+json"]');
-        for (let i=0; i!=tags.length; ++i) {
-            const viewtag = tags[i];
-            const widgetViewObject = JSON.parse(viewtag.innerHTML);
-            const valid = view_validate(widgetViewObject);
-            if (!valid) {
-                console.error('View state has errors.', view_validate.errors);
-            }
-            const model_id: string = widgetViewObject.model_id;
-            // Find the model id in the models. We should use .find, but IE
-            // doesn't support .find
-            const model = models.filter( (item) => {
-                return item.model_id == model_id;
-            })[0];
-            if (model !== undefined) {
-                const prev = viewtag.previousElementSibling;
-                if (prev && prev.tagName === 'img' && prev.classList.contains('jupyter-widget')) {
-                    viewtag.parentElement?.removeChild(prev);
-                }
-                const widgetTag = document.createElement('div');
-                widgetTag.className = 'widget-subarea';
-                viewtag.parentElement?.insertBefore(widgetTag, viewtag);
-                manager.display_model(null, model, { el : widgetTag });
-            }
+function renderManager(
+  element: HTMLElement,
+  widgetState: any,
+  managerFactory: () => HTMLManager
+): void {
+  const valid = model_validate(widgetState);
+  if (!valid) {
+    console.error('Model state has errors.', model_validate.errors);
+  }
+  const manager = managerFactory();
+  manager.set_state(widgetState).then(function(models) {
+    const tags = element.querySelectorAll(
+      'script[type="application/vnd.jupyter.widget-view+json"]'
+    );
+    for (let i = 0; i != tags.length; ++i) {
+      const viewtag = tags[i];
+      const widgetViewObject = JSON.parse(viewtag.innerHTML);
+      const valid = view_validate(widgetViewObject);
+      if (!valid) {
+        console.error('View state has errors.', view_validate.errors);
+      }
+      const model_id: string = widgetViewObject.model_id;
+      // Find the model id in the models. We should use .find, but IE
+      // doesn't support .find
+      const model = models.filter(item => {
+        return item.model_id == model_id;
+      })[0];
+      if (model !== undefined) {
+        const prev = viewtag.previousElementSibling;
+        if (
+          prev &&
+          prev.tagName === 'img' &&
+          prev.classList.contains('jupyter-widget')
+        ) {
+          viewtag.parentElement?.removeChild(prev);
         }
-    });
+        const widgetTag = document.createElement('div');
+        widgetTag.className = 'widget-subarea';
+        viewtag.parentElement?.insertBefore(widgetTag, viewtag);
+        manager.display_model(null, model, { el: widgetTag });
+      }
+    }
+  });
 }

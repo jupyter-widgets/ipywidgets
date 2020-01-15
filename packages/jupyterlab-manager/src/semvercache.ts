@@ -1,16 +1,12 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import {
-  maxSatisfying
-} from 'semver';
-
+import { maxSatisfying } from 'semver';
 
 /**
  * A cache using semver ranges to retrieve values.
  */
-export
-class SemVerCache<T> {
+export class SemVerCache<T> {
   set(key: string, version: string, object: T): void {
     if (!(key in this._cache)) {
       this._cache[key] = Object.create(null);
@@ -32,5 +28,7 @@ class SemVerCache<T> {
     }
   }
 
-  private _cache: { [key: string]: {[version: string]: T} } = Object.create(null);
+  private _cache: { [key: string]: { [version: string]: T } } = Object.create(
+    null
+  );
 }

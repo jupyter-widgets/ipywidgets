@@ -58,23 +58,13 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-import {
-  MessageLoop
-} from '@lumino/messaging';
+import { MessageLoop } from '@lumino/messaging';
 
-import {
-  ISignal, Signal
-} from '@lumino/signaling';
+import { ISignal, Signal } from '@lumino/signaling';
 
-import {
-  Platform
-} from '@lumino/domutils';
+import { Platform } from '@lumino/domutils';
 
-import {
-  Panel, PanelLayout, TabBar, Widget
-} from '@lumino/widgets';
-
-
+import { Panel, PanelLayout, TabBar, Widget } from '@lumino/widgets';
 
 /**
  * A panel where visible widgets are stacked atop one another.
@@ -82,16 +72,13 @@ import {
  * #### Notes
  * This class provides a convenience wrapper around a [[PanelLayout]].
  */
-export
-class EventedPanel extends Panel {
-
+export class EventedPanel extends Panel {
   /**
    * A signal emitted when a widget is removed from the panel.
    */
   get widgetRemoved(): ISignal<EventedPanel, Widget> {
     return this._widgetRemoved;
   }
-
 
   /**
    * A message handler invoked on a `'child-removed'` message.
@@ -102,7 +89,6 @@ class EventedPanel extends Panel {
 
   private _widgetRemoved = new Signal<EventedPanel, Widget>(this);
 }
-
 
 /**
  * A widget which combines a `TabBar` and a `EventedPanel`.
@@ -117,8 +103,7 @@ class EventedPanel extends Panel {
  *
  * TODO: Support setting the direction??
  */
-export
-class TabPanel extends Widget {
+export class TabPanel extends Widget {
   /**
    * Construct a new tab panel.
    *
@@ -138,7 +123,10 @@ class TabPanel extends Widget {
     this.tabBar.tabMoved.connect(this._onTabMoved, this);
     this.tabBar.currentChanged.connect(this._onCurrentChanged, this);
     this.tabBar.tabCloseRequested.connect(this._onTabCloseRequested, this);
-    this.tabBar.tabActivateRequested.connect(this._onTabActivateRequested, this);
+    this.tabBar.tabActivateRequested.connect(
+      this._onTabActivateRequested,
+      this
+    );
 
     // Connect the evented panel signal handlers.
     this.tabContents.widgetRemoved.connect(this._onWidgetRemoved, this);
@@ -178,7 +166,7 @@ class TabPanel extends Widget {
   get currentIndex(): number | null {
     const currentIndex = this.tabBar.currentIndex;
     // Lumino tab bars have an index of -1 if no tab is selected
-    return (currentIndex === -1 ? null : currentIndex);
+    return currentIndex === -1 ? null : currentIndex;
   }
 
   /**
@@ -188,7 +176,7 @@ class TabPanel extends Widget {
    * If the index is out of range, it will be set to `null`.
    */
   set currentIndex(value: number | null) {
-    this.tabBar.currentIndex = (value === null ? -1 : value);
+    this.tabBar.currentIndex = value === null ? -1 : value;
   }
 
   /**
@@ -292,7 +280,10 @@ class TabPanel extends Widget {
   /**
    * Handle the `currentChanged` signal from the tab bar.
    */
-  private _onCurrentChanged(sender: TabBar<Widget>, args: TabBar.ICurrentChangedArgs<Widget>): void {
+  private _onCurrentChanged(
+    sender: TabBar<Widget>,
+    args: TabBar.ICurrentChangedArgs<Widget>
+  ): void {
     // Extract the previous and current title from the args.
     const { previousIndex, previousTitle, currentIndex, currentTitle } = args;
 
@@ -312,7 +303,10 @@ class TabPanel extends Widget {
 
     // Emit the `currentChanged` signal for the tab panel.
     this._currentChanged.emit({
-      previousIndex, previousWidget, currentIndex, currentWidget
+      previousIndex,
+      previousWidget,
+      currentIndex,
+      currentWidget
     });
 
     // Flush the message loop on IE and Edge to prevent flicker.
@@ -324,21 +318,30 @@ class TabPanel extends Widget {
   /**
    * Handle the `tabActivateRequested` signal from the tab bar.
    */
-  private _onTabActivateRequested(sender: TabBar<Widget>, args: TabBar.ITabActivateRequestedArgs<Widget>): void {
+  private _onTabActivateRequested(
+    sender: TabBar<Widget>,
+    args: TabBar.ITabActivateRequestedArgs<Widget>
+  ): void {
     args.title.owner.activate();
   }
 
   /**
    * Handle the `tabCloseRequested` signal from the tab bar.
    */
-  private _onTabCloseRequested(sender: TabBar<Widget>, args: TabBar.ITabCloseRequestedArgs<Widget>): void {
+  private _onTabCloseRequested(
+    sender: TabBar<Widget>,
+    args: TabBar.ITabCloseRequestedArgs<Widget>
+  ): void {
     args.title.owner.close();
   }
 
   /**
    * Handle the `tabMoved` signal from the tab bar.
    */
-  private _onTabMoved(sender: TabBar<Widget>, args: TabBar.ITabMovedArgs<Widget>): void {
+  private _onTabMoved(
+    sender: TabBar<Widget>,
+    args: TabBar.ITabMovedArgs<Widget>
+  ): void {
     this.tabContents.insertWidget(args.toIndex, args.title.owner);
   }
 
@@ -349,21 +352,19 @@ class TabPanel extends Widget {
     this.tabBar.removeTab(widget.title);
   }
 
-  private _currentChanged = new Signal<this, TabPanel.ICurrentChangedArgs>(this);
+  private _currentChanged = new Signal<this, TabPanel.ICurrentChangedArgs>(
+    this
+  );
 }
-
 
 /**
  * The namespace for the `TabPanel` class statics.
  */
-export
-namespace TabPanel {
-
+export namespace TabPanel {
   /**
    * An options object for initializing a tab panel.
    */
-  export
-  interface IOptions {
+  export interface IOptions {
     /**
      * Whether the tabs are movable by the user.
      *
@@ -382,8 +383,7 @@ namespace TabPanel {
   /**
    * The arguments object for the `currentChanged` signal.
    */
-  export
-  interface ICurrentChangedArgs {
+  export interface ICurrentChangedArgs {
     /**
      * The previously selected index.
      */
@@ -405,5 +405,3 @@ namespace TabPanel {
     currentWidget: Widget | null;
   }
 }
-
-

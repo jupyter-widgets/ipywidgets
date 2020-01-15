@@ -1,39 +1,29 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import {
-  PromiseDelegate
-} from '@lumino/coreutils';
+import { PromiseDelegate } from '@lumino/coreutils';
 
-import {
-  IDisposable
-} from '@lumino/disposable';
+import { IDisposable } from '@lumino/disposable';
 
-import {
-  Panel, Widget
-} from '@lumino/widgets';
+import { Panel, Widget } from '@lumino/widgets';
 
-import {
-  IRenderMime
-} from '@jupyterlab/rendermime-interfaces';
+import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 
-import {
-    WidgetManager
-} from './manager';
+import { WidgetManager } from './manager';
 import { WidgetModel } from '@jupyter-widgets/base';
 
 /**
  * A renderer for widgets.
  */
-export
-class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable {
-    constructor(options: IRenderMime.IRendererOptions, manager?: WidgetManager) {
-        super();
-        this.mimeType = options.mimeType;
-        if (manager) {
-          this.manager = manager;
-        }
+export class WidgetRenderer extends Panel
+  implements IRenderMime.IRenderer, IDisposable {
+  constructor(options: IRenderMime.IRendererOptions, manager?: WidgetManager) {
+    super();
+    this.mimeType = options.mimeType;
+    if (manager) {
+      this.manager = manager;
     }
+  }
 
   /**
    * The widget manager.
@@ -97,7 +87,6 @@ class WidgetRenderer extends Panel implements IRenderMime.IRenderer, IDisposable
       this.hide();
       source.model_id = '';
     });
-
   }
 
   /**

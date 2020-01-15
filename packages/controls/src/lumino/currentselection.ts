@@ -5,17 +5,11 @@
  * A variety of convenience methods for maintaining a current selection
  */
 
-import {
-  ArrayExt
-} from '@lumino/algorithm';
+import { ArrayExt } from '@lumino/algorithm';
 
-import {
-  ISignal, Signal
-} from '@lumino/signaling';
+import { ISignal, Signal } from '@lumino/signaling';
 
-export
-class Selection<T> {
-
+export class Selection<T> {
   constructor(sequence: ReadonlyArray<T>, options: Selection.IOptions = {}) {
     this._array = sequence;
     this._insertBehavior = options.insertBehavior || 'select-item-if-needed';
@@ -34,7 +28,10 @@ class Selection<T> {
    * current item remains the same. It is only emitted when the actual current
    * item is changed.
    */
-  get selectionChanged(): ISignal<Selection<T>, Selection.ISelectionChangedArgs<T>> {
+  get selectionChanged(): ISignal<
+    Selection<T>,
+    Selection.ISelectionChangedArgs<T>
+  > {
     return this._selectionChanged;
   }
 
@@ -54,7 +51,7 @@ class Selection<T> {
 
     // Exit early if this doesn't affect the selection
     if (index !== pi) {
-        return;
+      return;
     }
 
     this._updateSelectedValue();
@@ -67,12 +64,13 @@ class Selection<T> {
     if (pv !== cv) {
       // Emit the current changed signal.
       this._selectionChanged.emit({
-        previousIndex: pi, previousValue: pv,
-        currentIndex: pi, currentValue: cv
+        previousIndex: pi,
+        previousValue: pv,
+        currentIndex: pi,
+        currentValue: cv
       });
     }
   }
-
 
   /**
    * Get the currently selected item.
@@ -80,7 +78,7 @@ class Selection<T> {
    * #### Notes
    * This will be `null` if no item is selected.
    */
-  get value(): T |null {
+  get value(): T | null {
     return this._value;
   }
 
@@ -122,10 +120,10 @@ class Selection<T> {
     // Coerce the value to an index.
     let i;
     if (index !== null && this._array !== null) {
-        i = Math.floor(index);
-        if (i < 0 || i >= this._array.length) {
-            i = null;
-        }
+      i = Math.floor(index);
+      if (i < 0 || i >= this._array.length) {
+        i = null;
+      }
     } else {
       i = null;
     }
@@ -146,8 +144,10 @@ class Selection<T> {
 
     // Emit the current changed signal.
     this._selectionChanged.emit({
-      previousIndex: pi, previousValue: pv,
-      currentIndex: i, currentValue: this._value
+      previousIndex: pi,
+      previousValue: pv,
+      currentIndex: i,
+      currentValue: this._value
     });
   }
 
@@ -179,7 +179,6 @@ class Selection<T> {
     this._removeBehavior = value;
   }
 
-
   /**
    * Adjust the current index for a tab insert operation.
    *
@@ -199,13 +198,18 @@ class Selection<T> {
 
     // Handle the behavior where the new item is always selected,
     // or the behavior where the new item is selected if needed.
-    if (bh === 'select-item' || (bh === 'select-item-if-needed' && ci === null)) {
+    if (
+      bh === 'select-item' ||
+      (bh === 'select-item-if-needed' && ci === null)
+    ) {
       this._index = i;
       this._value = item;
       this._previousValue = cv;
       this._selectionChanged.emit({
-        previousIndex: ci, previousValue: cv,
-        currentIndex: i, currentValue: item
+        previousIndex: ci,
+        previousValue: cv,
+        currentIndex: i,
+        currentValue: item
       });
       return;
     }
@@ -236,8 +240,10 @@ class Selection<T> {
 
     // Emit the current changed signal.
     this._selectionChanged.emit({
-      previousIndex: pi, previousValue: pv,
-      currentIndex: this._index, currentValue: this._value
+      previousIndex: pi,
+      previousValue: pv,
+      currentIndex: this._index,
+      currentValue: this._value
     });
   }
 
@@ -277,8 +283,10 @@ class Selection<T> {
       this._value = null;
       this._previousValue = null;
       this._selectionChanged.emit({
-        previousIndex: i, previousValue: item,
-        currentIndex: this._index, currentValue: this._value
+        previousIndex: i,
+        previousValue: item,
+        currentIndex: this._index,
+        currentValue: this._value
       });
       return;
     }
@@ -289,8 +297,10 @@ class Selection<T> {
       this._updateSelectedValue();
       this._previousValue = null;
       this._selectionChanged.emit({
-        previousIndex: i, previousValue: item,
-        currentIndex: this._index, currentValue: this._value
+        previousIndex: i,
+        previousValue: item,
+        currentIndex: this._index,
+        currentValue: this._value
       });
       return;
     }
@@ -301,8 +311,10 @@ class Selection<T> {
       this._updateSelectedValue();
       this._previousValue = null;
       this._selectionChanged.emit({
-        previousIndex: i, previousValue: item,
-        currentIndex: this._index, currentValue: this._value
+        previousIndex: i,
+        previousValue: item,
+        currentIndex: this._index,
+        currentValue: this._value
       });
       return;
     }
@@ -317,8 +329,10 @@ class Selection<T> {
       }
       this._previousValue = null;
       this._selectionChanged.emit({
-        previousIndex: i, previousValue: item,
-        currentIndex: this._index, currentValue: this.value
+        previousIndex: i,
+        previousValue: item,
+        currentIndex: this._index,
+        currentValue: this.value
       });
       return;
     }
@@ -328,8 +342,10 @@ class Selection<T> {
     this._value = null;
     this._previousValue = null;
     this._selectionChanged.emit({
-      previousIndex: i, previousValue: item,
-      currentIndex: this._index, currentValue: this._value
+      previousIndex: i,
+      previousValue: item,
+      currentIndex: this._index,
+      currentValue: this._value
     });
   }
 
@@ -347,16 +363,17 @@ class Selection<T> {
   private _previousValue: T | null = null;
   private _insertBehavior: Selection.InsertBehavior;
   private _removeBehavior: Selection.RemoveBehavior;
-  private _selectionChanged = new Signal<Selection<T>, Selection.ISelectionChangedArgs<T>>(this);
+  private _selectionChanged = new Signal<
+    Selection<T>,
+    Selection.ISelectionChangedArgs<T>
+  >(this);
 }
 
-export
-namespace Selection {
+export namespace Selection {
   /**
    * An options object for creating a tab bar.
    */
-  export
-  interface IOptions {
+  export interface IOptions {
     /**
      * The selection behavior when inserting a tab.
      *
@@ -375,8 +392,7 @@ namespace Selection {
   /**
    * The arguments object for the `currentChanged` signal.
    */
-  export
-  interface ISelectionChangedArgs<T> {
+  export interface ISelectionChangedArgs<T> {
     /**
      * The previously selected index.
      */
@@ -398,51 +414,46 @@ namespace Selection {
     currentValue: T | null;
   }
 
-
   /**
    * A type alias for the selection behavior on item insert.
    */
-  export
-  type InsertBehavior = (
+  export type InsertBehavior =
     /**
      * The selected item will not be changed.
      */
-    'none' |
+    | 'none'
 
     /**
      * The inserted item will be selected.
      */
-    'select-item' |
+    | 'select-item'
 
     /**
      * The inserted item will be selected if the current item is null.
      */
-    'select-item-if-needed'
-  );
+    | 'select-item-if-needed';
 
   /**
    * A type alias for the selection behavior on item remove.
    */
-  export
-  type RemoveBehavior = (
+  export type RemoveBehavior =
     /**
      * No item will be selected.
      */
-    'none' |
+    | 'none'
 
     /**
      * The item after the removed item will be selected if possible.
      */
-    'select-item-after' |
+    | 'select-item-after'
 
     /**
      * The item before the removed item will be selected if possible.
      */
-    'select-item-before' |
+    | 'select-item-before'
 
     /**
      * The previously selected item will be selected if possible.
      */
-    'select-previous-item'
-  );
+    | 'select-previous-item';
 }
