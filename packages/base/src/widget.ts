@@ -948,15 +948,6 @@ export class DOMWidgetView extends WidgetView {
     }
   }
 
-  updateTooltip(): void {
-    const title = this.model.get('tooltip');
-    if (!title) {
-      this.el.removeAttribute('title');
-    } else if (this.model.get('description').length === 0) {
-      this.el.setAttribute('title', title);
-    }
-  }
-
   /**
    * Update the DOM classes applied to an element, default to this.el.
    */
@@ -1033,6 +1024,26 @@ export class DOMWidgetView extends WidgetView {
     this.update_classes([], new_classes, el || this.el);
   }
 
+  updateTabindex(): void {
+    const tabbable = this.model.get('tabbable');
+    if (tabbable === true) {
+      this.el.setAttribute('tabIndex', '0');
+    } else if (tabbable === false) {
+      this.el.setAttribute('tabIndex', '-1');
+    } else if (tabbable === null) {
+      this.el.removeAttribute('tabIndex');
+    }
+  }
+
+  updateTooltip(): void {
+    const title = this.model.get('tooltip');
+    if (!title) {
+      this.el.removeAttribute('title');
+    } else if (this.model.get('description').length === 0) {
+      this.el.setAttribute('title', title);
+    }
+  }
+
   _setElement(el: HTMLElement): void {
     if (this.pWidget) {
       this.pWidget.dispose();
@@ -1069,16 +1080,28 @@ export class DOMWidgetView extends WidgetView {
     }
   }
 
-  updateTabindex(): void {
-    const tabbable = this.model.get('tabbable');
-    if (tabbable === true) {
-      this.el.setAttribute('tabIndex', '0');
-    } else if (tabbable === false) {
-      this.el.setAttribute('tabIndex', '-1');
-    } else if (tabbable === null) {
-      this.el.removeAttribute('tabIndex');
+ /**
+  * Return something like the event position relative to the widget view
+  * This is essentially what layerX and layerY are supposed to be (and are in chrome) but those event properties have
+  * red box warnings in the MDN documentation that they are not part of any
+  * standard and are not on any standards tracks, so get what we need here.
+  * (Code copied from `ipyevents` by M. Craig)
+  *
+  * Parameters
+  * ----------
+  * event: mouse event object.
+  */
+
+  _get_relative_xy(event: MouseEvent): {[i: string]: number} {
+    let bounding_rect = this.el.getBoundingClientRect();
+    let y_offset = bounding_rect.top;
+    let x_offset = bounding_rect.left;
+    return {
+        'x': Math.round(event.clientX - x_offset),
+        'y': Math.round(event.clientY - y_offset)
     }
   }
+
   el: HTMLElement; // Override typing
   '$el': any;
   pWidget: Widget;

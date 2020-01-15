@@ -385,7 +385,7 @@ export class RadioButtonsView extends DescriptionView {
     const cStyles = window.getComputedStyle(e.container);
     const containerMargin = parseInt(cStyles.marginBottom, 10);
 
-    // How far we are off from a multiple of single windget lines
+    // How far we are off from a multiple of single widget lines
     const diff = (e.el.offsetHeight + margins - containerMargin) % lineHeight;
 
     // Apply the new adjustment

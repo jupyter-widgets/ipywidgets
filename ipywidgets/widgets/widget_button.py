@@ -100,3 +100,5 @@ class Button(DOMWidget, CoreWidget):
         """
         if content.get('event', '') == 'click':
             self.click()
+        if content.get('click_pos', ''):
+            print(content.get('click_pos'))
