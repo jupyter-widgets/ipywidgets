@@ -276,7 +276,9 @@ export abstract class LabWidgetManager extends ManagerBase<Widget>
    * #### Notes
    * This is a read-only property.
    */
-  abstract get isDisposed(): boolean;
+  get isDisposed(): boolean {
+    return this._isDisposed;
+  }
 
   /**
    * Dispose the resources held by the manager.
@@ -285,6 +287,7 @@ export abstract class LabWidgetManager extends ManagerBase<Widget>
     if (this.isDisposed) {
       return;
     }
+    this._isDisposed = true;
 
     if (this._commRegistration) {
       this._commRegistration.dispose();
@@ -442,6 +445,7 @@ export abstract class LabWidgetManager extends ManagerBase<Widget>
   protected _restoredStatus = false;
   protected _initialRestoredStatus = false;
 
+  private _isDisposed = false;
   private _registry: SemVerCache<ExportData> = new SemVerCache<ExportData>();
   private _rendermime: IRenderMimeRegistry;
 
@@ -507,16 +511,6 @@ export class KernelWidgetManager extends LabWidgetManager {
   }
 
   /**
-   * Get whether the manager is disposed.
-   *
-   * #### Notes
-   * This is a read-only property.
-   */
-  get isDisposed(): boolean {
-    return this._kernel === null;
-  }
-
-  /**
    * Dispose the resources held by the manager.
    */
   dispose(): void {
@@ -524,9 +518,8 @@ export class KernelWidgetManager extends LabWidgetManager {
       return;
     }
 
-    super.dispose();
-
     this._kernel = null!;
+    super.dispose();
   }
 
   get kernel(): Kernel.IKernelConnection {
@@ -629,16 +622,6 @@ export class WidgetManager extends LabWidgetManager {
   }
 
   /**
-   * Get whether the manager is disposed.
-   *
-   * #### Notes
-   * This is a read-only property.
-   */
-  get isDisposed(): boolean {
-    return this._context === null;
-  }
-
-  /**
    * Dispose the resources held by the manager.
    */
   dispose(): void {
@@ -646,8 +629,8 @@ export class WidgetManager extends LabWidgetManager {
       return;
     }
 
-    super.dispose();
     this._context = null!;
+    super.dispose();
   }
 
   /**
