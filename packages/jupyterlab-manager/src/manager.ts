@@ -433,13 +433,15 @@ export abstract class LabWidgetManager extends ManagerBase<Widget>
     return serialize_state(models, options);
   }
 
-  protected async _handleCommOpen(
+  // _handleCommOpen is an attribute, not a method, so `this` is captured in a
+  // single object that can be registered and removed
+  protected _handleCommOpen = async (
     comm: Kernel.IComm,
     msg: KernelMessage.ICommOpenMsg
-  ): Promise<void> {
+  ): Promise<void> => {
     const oldComm = new shims.services.Comm(comm);
     await this.handle_comm_open(oldComm, msg);
-  }
+  };
 
   protected _restored = new Signal<this, void>(this);
   protected _restoredStatus = false;
