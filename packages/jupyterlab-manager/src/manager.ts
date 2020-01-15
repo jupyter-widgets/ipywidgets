@@ -138,8 +138,6 @@ export abstract class LabWidgetManager extends ManagerBase<Widget>
     if (!this.kernel) {
       return;
     }
-    // TODO: when we upgrade to @jupyterlab/services 4.1 or later, we can
-    // remove this 'any' cast.
     if (this.kernel?.handleComms === false) {
       return;
     }
