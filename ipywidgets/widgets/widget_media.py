@@ -210,6 +210,49 @@ class MappedImage(Image):
     areas = TypedTuple(trait=Instance(MapArea), help="List of mapped shapes").tag(sync=True, **widget_serialization)
 
 
+class MapArea(object):
+    r"""
+    An <area> tag, part of an image map <map>.
+    """
+    def __init__(self, name, shape, coords, href=None):
+        """
+        Parameters
+        ----------
+        name: str
+            Area name. Will be used as 'alt' attribute.
+
+        shape: str
+            Area shape: rect/circle/poly/default.
+
+        coords: tuple
+            Area coordinates: tuple of integers.
+
+        href: str
+            URL to load when area is clicked.
+        """
+        self.name = name
+        self.shape = shape
+        self.coords = coords # a tuple of integers
+        self.href = href
+
+    def html(self):
+        return  '<area alt="{}" shape="{}" coords="{}" href="{}">' . format(
+            self.name,
+            self.shape,
+            ",". join([str(i) for i in self.coords]),
+            self.href
+        )
+
+
+@register
+class MappedImage(Image):
+    _view_name = Unicode('MappedImageView').tag(sync=True)
+    _model_name = Unicode('MappedImageModel').tag(sync=True)
+
+    map_name = Unicode("Map", help="The map name").tag(sync=True)
+    areas = TypedTuple(trait=Instance(MapArea), help="List of mapped shapes").tag(sync=True)
+
+
 @register
 class Video(_Media):
     """Displays a video as a widget.

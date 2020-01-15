@@ -144,6 +144,7 @@ export class MappedImageView extends ImageView {
     /**
      * Called when view is rendered.
      */
+<<<<<<< HEAD
     this.pWidget.addClass('jupyter-widgets');
     this.pWidget.addClass('widget-mapped-image');
     const map_name = uuid();
@@ -151,6 +152,29 @@ export class MappedImageView extends ImageView {
     this.map = document.createElement('map');
     this.map.setAttribute('name', map_name);
     this.el.appendChild(this.map);
+=======
+    super.render();
+    const mapEl = document.createElement('map');
+    let map_name = this.model.get('map_name');
+    if (map_name == null || map_name.length == 0) map_name = 'Map';
+    mapEl.setAttribute('name', map_name);
+    const areas = this.model.get('areas');
+    for (let i = 0; i < areas.length; i++) {
+      let area = areas[i];
+      let areaEl = document.createElement('area');
+      areaEl.setAttribute('name', area.name);
+      areaEl.setAttribute('shape', area.shape);
+      areaEl.setAttribute('coords', area.coords);
+      if (area.href !== undefined && area.href.length > 0) {
+        areaEl.setAttribute('href', area.href);
+      }
+      mapEl.appendChild(areaEl);
+    }
+    this.el.appendChild(mapEl);
+    this.el.setAttribute('usemap', '#' + map_name);
+    this.pWidget.addClass('jupyter-widgets');
+    this.pWidget.addClass('widget-image');
+>>>>>>> A MappedImage widget (WIP).
     this.update(); // Set defaults.
   }
 
@@ -161,6 +185,7 @@ export class MappedImageView extends ImageView {
      * Called when the model is changed.  The model may have been
      * changed by another view or by a state update from the back-end.
      */
+<<<<<<< HEAD
     super.update(); // Render image
     const areas = this.model.get('areas');
     for (let i = 0; i < areas.length; i++) {
@@ -177,4 +202,9 @@ export class MappedImageView extends ImageView {
   _handle_click(event: MouseEvent): void {}
 
   map: HTMLMapElement;
+=======
+
+    return super.update();
+  }
+>>>>>>> A MappedImage widget (WIP).
 }
