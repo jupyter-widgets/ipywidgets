@@ -38,7 +38,7 @@ import { WidgetManager, WIDGET_VIEW_MIMETYPE } from './manager';
 
 import { OutputModel, OutputView, OUTPUT_WIDGET_VERSION } from './output';
 
-import { SemVerCache } from './semvercache';
+import { SemVerRegistry } from './semverregistry';
 
 import * as base from '@jupyter-widgets/base';
 
@@ -50,7 +50,7 @@ import '@jupyter-widgets/base/css/index.css';
 import '@jupyter-widgets/controls/css/widgets-base.css';
 import { KernelMessage } from '@jupyterlab/services';
 
-const WIDGET_REGISTRY = new SemVerCache<base.ExportData>();
+const WIDGET_REGISTRY = new SemVerRegistry<base.ExportData>();
 
 /**
  * The cached settings.
@@ -274,7 +274,7 @@ function activateWidgetExtension(
     ]);
   }
 
-  WIDGET_REGISTRY.set({
+  WIDGET_REGISTRY.register({
     name: '@jupyter-widgets/base',
     version: base.JUPYTER_WIDGETS_VERSION,
     object: {
@@ -289,7 +289,7 @@ function activateWidgetExtension(
     }
   });
 
-  WIDGET_REGISTRY.set({
+  WIDGET_REGISTRY.register({
     name: '@jupyter-widgets/controls',
     version: JUPYTER_CONTROLS_VERSION,
     object: () => {
@@ -309,7 +309,7 @@ function activateWidgetExtension(
     }
   });
 
-  WIDGET_REGISTRY.set({
+  WIDGET_REGISTRY.register({
     name: '@jupyter-widgets/output',
     version: OUTPUT_WIDGET_VERSION,
     object: { OutputModel, OutputView }
@@ -317,7 +317,7 @@ function activateWidgetExtension(
 
   return {
     registerWidget(data: base.IWidgetRegistryData): void {
-      WIDGET_REGISTRY.set({
+      WIDGET_REGISTRY.register({
         name: data.name,
         version: data.version,
         object: data.exports

@@ -39,7 +39,7 @@ import { ISignal, Signal } from '@lumino/signaling';
 
 import { valid } from 'semver';
 
-import { SemVerCache } from './semvercache';
+import { SemVerRegistry } from './semverregistry';
 
 /**
  * The mime type for a widget view.
@@ -93,7 +93,7 @@ export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     context: DocumentRegistry.IContext<INotebookModel>,
     rendermime: IRenderMimeRegistry,
     settings: WidgetManager.Settings,
-    widgetRegistry: SemVerCache<ExportData>
+    widgetRegistry: SemVerRegistry<ExportData>
   ) {
     super();
     this._context = context;
@@ -549,7 +549,7 @@ export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     msg: KernelMessage.ICommOpenMsg
   ) => Promise<void>;
   private _context: DocumentRegistry.IContext<INotebookModel>;
-  private _registry: SemVerCache<ExportData>;
+  private _registry: SemVerRegistry<ExportData>;
   private _rendermime: IRenderMimeRegistry;
 
   _commRegistration: IDisposable;
