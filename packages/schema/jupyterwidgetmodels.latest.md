@@ -760,6 +760,27 @@ Attribute        | Type             | Default          | Help
 `source`         | array            | `[]`             | The source (widget, 'trait_name') pair
 `target`         | array            | `[]`             | The target (widget, 'trait_name') pair
 
+### MappedImageModel (@jupyter-widgets/controls, 1.5.0); MappedImageView (@jupyter-widgets/controls, 1.5.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'1.5.0'`        | 
+`_model_name`    | string           | `'MappedImageModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'1.5.0'`        | 
+`_view_name`     | string           | `'MappedImageView'` | 
+`areas`          | array of Instance | `[]`             | List of mapped shapes
+`format`         | string           | `'png'`          | The format of the image.
+`height`         | string           | `''`             | Height of the image in pixels. Use layout.height for styling the widget.
+`layout`         | reference to Layout widget | reference to new instance | 
+`map_name`       | string           | `'Map'`          | The map name
+`tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`tooltip`        | `null` or string | `null`           | A tooltip caption.
+`value`          | Bytes            | `b''`            | The media data as a byte string.
+`width`          | string           | `''`             | Width of the image in pixels. Use layout.width for styling the widget.
+
 ### PasswordModel (@jupyter-widgets/controls, 1.5.0); PasswordView (@jupyter-widgets/controls, 1.5.0)
 
 Attribute        | Type             | Default          | Help

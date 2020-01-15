@@ -127,8 +127,8 @@ export class MappedImageView extends ImageView {
     mapEl.setAttribute('name', map_name);
     const areas = this.model.get('areas');
     for (let i = 0; i < areas.length; i++) {
-      let area = areas[i];
-      let areaEl = document.createElement('area');
+      const area = areas[i];
+      const areaEl = document.createElement('area');
       areaEl.setAttribute('name', area.name);
       areaEl.setAttribute('shape', area.shape);
       areaEl.setAttribute('coords', area.coords);
