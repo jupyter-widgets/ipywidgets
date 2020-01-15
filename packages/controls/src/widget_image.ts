@@ -103,3 +103,55 @@ export class ImageView extends DOMWidgetView {
 
   el: HTMLImageElement;
 }
+
+export class MappedImageModel extends ImageModel {
+  defaults(): Backbone.ObjectHash {
+    return _.extend(super.defaults(), {
+      _model_name: 'MappedImageModel',
+      _view_name: 'MappedImageView',
+      map_name: null,
+      areas: null
+    });
+  }
+}
+
+export class MappedImageView extends ImageView {
+  render(): void {
+    /**
+     * Called when view is rendered.
+     */
+    super.render();
+    const mapEl = document.createElement('map');
+    let map_name = this.model.get('map_name');
+    if (map_name == null || map_name.length == 0) map_name = 'Map';
+    mapEl.setAttribute('name', map_name);
+    const areas = this.model.get('areas');
+    for (let i = 0; i < areas.length; i++) {
+      let area = areas[i];
+      let areaEl = document.createElement('area');
+      areaEl.setAttribute('name', area.name);
+      areaEl.setAttribute('shape', area.shape);
+      areaEl.setAttribute('coords', area.coords);
+      if (area.href !== undefined && area.href.length > 0) {
+        areaEl.setAttribute('href', area.href);
+      }
+      mapEl.appendChild(areaEl);
+    }
+    this.el.appendChild(mapEl);
+    this.el.setAttribute('usemap', '#' + map_name);
+    this.pWidget.addClass('jupyter-widgets');
+    this.pWidget.addClass('widget-image');
+    this.update(); // Set defaults.
+  }
+
+  update(): void {
+    /**
+     * Update the contents of this view
+     *
+     * Called when the model is changed.  The model may have been
+     * changed by another view or by a state update from the back-end.
+     */
+
+    return super.update();
+  }
+}
