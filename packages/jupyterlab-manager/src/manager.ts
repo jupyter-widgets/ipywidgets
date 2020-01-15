@@ -588,7 +588,10 @@ export class WidgetManager extends LabWidgetManager {
       // Only restore if our initial restore at construction is finished
       if (this._initialRestoredStatus) {
         // We only want to restore widgets from the kernel, not ones saved in the notebook.
-        this.restoreWidgets(this._context!.model);
+        this.restoreWidgets(this._context!.model, {
+          loadKernel: true,
+          loadNotebook: false
+        });
       }
     }
   }
@@ -602,9 +605,16 @@ export class WidgetManager extends LabWidgetManager {
   /**
    * Restore widgets from kernel and saved state.
    */
-  async restoreWidgets(notebook: INotebookModel): Promise<void> {
-    await this._loadFromKernel();
-    await this._loadFromNotebook(notebook);
+  async restoreWidgets(
+    notebook: INotebookModel,
+    { loadKernel, loadNotebook } = { loadKernel: true, loadNotebook: true }
+  ): Promise<void> {
+    if (loadKernel) {
+      await this._loadFromKernel();
+    }
+    if (loadNotebook) {
+      await this._loadFromNotebook(notebook);
+    }
     this._restoredStatus = true;
     this._initialRestoredStatus = true;
     this._restored.emit();
