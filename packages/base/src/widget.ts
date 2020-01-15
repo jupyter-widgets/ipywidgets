@@ -1093,9 +1093,9 @@ export class DOMWidgetView extends WidgetView {
   */
 
   _get_relative_xy(event: MouseEvent): {[i: string]: number} {
-    let bounding_rect = this.el.getBoundingClientRect();
-    let y_offset = bounding_rect.top;
-    let x_offset = bounding_rect.left;
+    const bounding_rect = this.el.getBoundingClientRect();
+    const y_offset = bounding_rect.top;
+    const x_offset = bounding_rect.left;
     return {
         'x': Math.round(event.clientX - x_offset),
         'y': Math.round(event.clientY - y_offset)

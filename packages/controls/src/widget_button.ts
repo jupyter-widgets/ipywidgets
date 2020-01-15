@@ -118,7 +118,7 @@ export class ButtonView extends DOMWidgetView {
    */
   _handle_click(event: MouseEvent): void {
     event.preventDefault();
-    let relative_xy = this._get_relative_xy(event);
+    const relative_xy = this._get_relative_xy(event);
     this.send({event: 'click', click_pos: JSON.stringify(relative_xy)});
   }
 
