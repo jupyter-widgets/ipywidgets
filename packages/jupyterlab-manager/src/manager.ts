@@ -444,7 +444,7 @@ export abstract class LabWidgetManager extends ManagerBase<Widget>
 
   protected _restored = new Signal<this, void>(this);
   protected _restoredStatus = false;
-  protected _initialRestoredStatus = false;
+  protected _kernelRestoreInProgress = false;
 
   private _isDisposed = false;
   private _registry: SemVerCache<ExportData> = new SemVerCache<ExportData>();
@@ -487,9 +487,9 @@ export class KernelWidgetManager extends LabWidgetManager {
 
   _handleKernelConnectionStatusChange(status: Kernel.ConnectionStatus): void {
     if (status === 'connected') {
-      // Only restore if our initial restore at construction is finished
-      if (this._initialRestoredStatus) {
-        // We only want to restore widgets from the kernel, not ones saved in the notebook.
+      // Only restore if we aren't currently trying to restore from the kernel
+      // (for example, in our initial restore from the constructor).
+      if (!this._kernelRestoreInProgress) {
         this.restoreWidgets();
       }
     }
@@ -506,13 +506,14 @@ export class KernelWidgetManager extends LabWidgetManager {
    */
   async restoreWidgets(): Promise<void> {
     try {
+      this._kernelRestoreInProgress = true;
       await this._loadFromKernel();
       this._restoredStatus = true;
-      this._initialRestoredStatus = true;
       this._restored.emit();
     } catch (err) {
       // Do nothing
     }
+    this._kernelRestoreInProgress = false;
   }
 
   /**
@@ -588,8 +589,9 @@ export class WidgetManager extends LabWidgetManager {
 
   _handleKernelConnectionStatusChange(status: Kernel.ConnectionStatus): void {
     if (status === 'connected') {
-      // Only restore if our initial restore at construction is finished
-      if (this._initialRestoredStatus) {
+      // Only restore if we aren't currently trying to restore from the kernel
+      // (for example, in our initial restore from the constructor).
+      if (!this._kernelRestoreInProgress) {
         // We only want to restore widgets from the kernel, not ones saved in the notebook.
         this.restoreWidgets(this._context!.model, {
           loadKernel: true,
@@ -614,7 +616,12 @@ export class WidgetManager extends LabWidgetManager {
   ): Promise<void> {
     try {
       if (loadKernel) {
-        await this._loadFromKernel();
+        try {
+          this._kernelRestoreInProgress = true;
+          await this._loadFromKernel();
+        } finally {
+          this._kernelRestoreInProgress = false;
+        }
       }
       if (loadNotebook) {
         await this._loadFromNotebook(notebook);
@@ -626,9 +633,6 @@ export class WidgetManager extends LabWidgetManager {
     } catch (err) {
       // Do nothing if the restore did not work.
     }
-    // We *always* claim that the initial restore happened, so when we connect
-    // to a kernel, we will initiate another restore. Maybe this should really be a "restore in progress" variable?
-    this._initialRestoredStatus = true;
   }
 
   /**
