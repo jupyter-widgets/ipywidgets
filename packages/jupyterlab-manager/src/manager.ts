@@ -611,6 +611,7 @@ export class WidgetManager extends LabWidgetManager {
     await this._loadFromKernel();
     await this._loadFromNotebook(notebook);
     this._restoredStatus = true;
+    this._initialRestoredStatus = true;
     this._restored.emit();
   }
 
