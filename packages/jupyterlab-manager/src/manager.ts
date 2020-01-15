@@ -136,9 +136,10 @@ export abstract class LabWidgetManager extends ManagerBase<Widget>
 
   protected async _loadFromKernel(): Promise<void> {
     if (!this.kernel) {
-      return;
+      throw new Error('Kernel not set');
     }
     if (this.kernel?.handleComms === false) {
+      // A "load" for a kernel that does not handle comms does nothing.
       return;
     }
     const comm_ids = await this._get_comm_info();
@@ -504,10 +505,14 @@ export class KernelWidgetManager extends LabWidgetManager {
    * Restore widgets from kernel and saved state.
    */
   async restoreWidgets(): Promise<void> {
-    await this._loadFromKernel();
-    this._restoredStatus = true;
-    this._initialRestoredStatus = true;
-    this._restored.emit();
+    try {
+      await this._loadFromKernel();
+      this._restoredStatus = true;
+      this._initialRestoredStatus = true;
+      this._restored.emit();
+    } catch (err) {
+      // Do nothing
+    }
   }
 
   /**
@@ -607,15 +612,23 @@ export class WidgetManager extends LabWidgetManager {
     notebook: INotebookModel,
     { loadKernel, loadNotebook } = { loadKernel: true, loadNotebook: true }
   ): Promise<void> {
-    if (loadKernel) {
-      await this._loadFromKernel();
+    try {
+      if (loadKernel) {
+        await this._loadFromKernel();
+      }
+      if (loadNotebook) {
+        await this._loadFromNotebook(notebook);
+      }
+
+      // If the restore worked above, then update our state.
+      this._restoredStatus = true;
+      this._restored.emit();
+    } catch (err) {
+      // Do nothing if the restore did not work.
     }
-    if (loadNotebook) {
-      await this._loadFromNotebook(notebook);
-    }
-    this._restoredStatus = true;
+    // We *always* claim that the initial restore happened, so when we connect
+    // to a kernel, we will initiate another restore. Maybe this should really be a "restore in progress" variable?
     this._initialRestoredStatus = true;
-    this._restored.emit();
   }
 
   /**
