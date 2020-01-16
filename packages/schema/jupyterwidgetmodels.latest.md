@@ -576,6 +576,26 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
+### HTMLElementModel (@jupyter-widgets/controls, 1.5.0); HTMLElementView (@jupyter-widgets/controls, 1.5.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'1.5.0'`        | 
+`_model_name`    | string           | `'HTMLElementModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'1.5.0'`        | 
+`_view_name`     | string           | `'HTMLElementView'` | 
+`description`    | string           | `''`             | Description of the control.
+`layout`         | reference to Layout widget | reference to new instance | 
+`placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
+`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`tagname`        | `null` or string | `null`           | HTML tag name
+`tooltip`        | `null` or string | `null`           | A tooltip caption.
+`value`          | string           | `''`             | String value
+
 ### HTMLMathModel (@jupyter-widgets/controls, 1.5.0); HTMLMathView (@jupyter-widgets/controls, 1.5.0)
 
 Attribute        | Type             | Default          | Help
