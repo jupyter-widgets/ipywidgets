@@ -250,7 +250,7 @@ class MappedImage(Image):
     _model_name = Unicode('MappedImageModel').tag(sync=True)
 
     map_name = Unicode("Map", help="The map name").tag(sync=True)
-    areas = TypedTuple(trait=Instance(MapArea), help="List of mapped shapes").tag(sync=True)
+    areas = TypedTuple(trait=Instance(MapArea), help="List of mapped shapes").tag(sync=True, **widget_serialization)
 
 
 @register
