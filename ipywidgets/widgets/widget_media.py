@@ -7,15 +7,9 @@ from .widget_core import CoreWidget
 from .widget_string import HTML
 from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
-<<<<<<< HEAD
 from .widget import register, widget_serialization
 from traitlets import Unicode, CUnicode, Bytes, Bool, Instance, observe
 from .trait_types import CByteMemoryView, TypedTuple, bytes_serialization
-=======
-from .widget import register
-from traitlets import Unicode, CUnicode, Bytes, Bool, Instance
-from .trait_types import TypedTuple, bytes_serialization
->>>>>>> A MappedImage widget (WIP).
 
 
 @register
