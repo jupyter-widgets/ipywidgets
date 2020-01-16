@@ -6,8 +6,8 @@ import mimetypes
 from .widget_core import CoreWidget
 from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
-from .widget import register
-from traitlets import Unicode, CUnicode, Bool
+from .widget import register, widget_serialization
+from traitlets import Unicode, CUnicode, Bytes, Bool, Instance
 from .trait_types import CByteMemoryView, TypedTuple, bytes_serialization
 
 
@@ -204,7 +204,7 @@ class MappedImage(Image):
     _model_name = Unicode('MappedImageModel').tag(sync=True)
 
     map_name = Unicode("Map", help="The map name").tag(sync=True)
-    areas = TypedTuple(trait=Instance(MapArea), help="List of mapped shapes").tag(sync=True)
+    areas = TypedTuple(trait=Instance(MapArea), help="List of mapped shapes").tag(sync=True, **widget_serialization)
 
 
 @register
