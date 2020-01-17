@@ -7,8 +7,11 @@ import { CoreDOMWidgetModel } from './widget_core';
 
 import { uuid } from './utils';
 
+<<<<<<< HEAD
 import * as _ from 'underscore';
 
+=======
+>>>>>>> A working implementation of Image Map.
 export class ImageModel extends CoreDOMWidgetModel {
   defaults(): Backbone.ObjectHash {
     return {
@@ -145,6 +148,7 @@ export class MappedImageView extends ImageView {
      * Called when view is rendered.
      */
 <<<<<<< HEAD
+<<<<<<< HEAD
     this.pWidget.addClass('jupyter-widgets');
     this.pWidget.addClass('widget-mapped-image');
     const map_name = uuid();
@@ -175,6 +179,15 @@ export class MappedImageView extends ImageView {
     this.pWidget.addClass('jupyter-widgets');
     this.pWidget.addClass('widget-image');
 >>>>>>> A MappedImage widget (WIP).
+=======
+    this.pWidget.addClass('jupyter-widgets');
+    this.pWidget.addClass('widget-mapped-image');
+    const map_name = uuid();
+    this.el.setAttribute('usemap', '#' + map_name);
+    this.map = document.createElement('map');
+    this.map.setAttribute('name', map_name);
+    this.el.appendChild(this.map);
+>>>>>>> A working implementation of Image Map.
     this.update(); // Set defaults.
   }
 
@@ -185,7 +198,6 @@ export class MappedImageView extends ImageView {
      * Called when the model is changed.  The model may have been
      * changed by another view or by a state update from the back-end.
      */
-<<<<<<< HEAD
     super.update(); // Render image
     const areas = this.model.get('areas');
     for (let i = 0; i < areas.length; i++) {
@@ -202,9 +214,7 @@ export class MappedImageView extends ImageView {
   _handle_click(event: MouseEvent): void {}
 
   map: HTMLMapElement;
-=======
 
     return super.update();
   }
->>>>>>> A MappedImage widget (WIP).
 }

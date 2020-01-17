@@ -4,7 +4,11 @@
 import mimetypes
 
 from .widget_core import CoreWidget
+<<<<<<< HEAD
 from .widget_string import HTML
+=======
+from .widget_string import HTMLElement
+>>>>>>> A working implementation of Image Map.
 from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
 from .widget import register, widget_serialization
@@ -164,16 +168,16 @@ class Image(_Media):
     def __repr__(self):
         return self._get_repr(Image)
 
-@register
-class MapArea(HTML):
+
+class MapArea(object):
     r"""
     An <area> tag, part of an image map <map>.
     """
     tagname = Unicode('area')
-    name = Unicode('')
-    shape = Unicode('')
-    coords = Unicode('')
-    href = Unicode(None, allow_none=True)
+    name = Unicode('')#.tag(sync=True)
+    shape = Unicode('')#.tag(sync=True)
+    coords = Unicode('')#.tag(sync=True)
+    href = Unicode(None, allow_none=True)#.tag(sync=True)
 
     def __init__(self, name='noname', shape='rect', coords='', href=''):
         """
@@ -207,49 +211,6 @@ class MapArea(HTML):
 class MappedImage(Image):
     _view_name = Unicode('MappedImageView').tag(sync=True)
     _model_name = Unicode('MappedImageModel').tag(sync=True)
-    areas = TypedTuple(trait=Instance(MapArea), help="List of mapped shapes").tag(sync=True, **widget_serialization)
-
-
-class MapArea(object):
-    r"""
-    An <area> tag, part of an image map <map>.
-    """
-    def __init__(self, name, shape, coords, href=None):
-        """
-        Parameters
-        ----------
-        name: str
-            Area name. Will be used as 'alt' attribute.
-
-        shape: str
-            Area shape: rect/circle/poly/default.
-
-        coords: tuple
-            Area coordinates: tuple of integers.
-
-        href: str
-            URL to load when area is clicked.
-        """
-        self.name = name
-        self.shape = shape
-        self.coords = coords # a tuple of integers
-        self.href = href
-
-    def html(self):
-        return  '<area alt="{}" shape="{}" coords="{}" href="{}">' . format(
-            self.name,
-            self.shape,
-            ",". join([str(i) for i in self.coords]),
-            self.href
-        )
-
-
-@register
-class MappedImage(Image):
-    _view_name = Unicode('MappedImageView').tag(sync=True)
-    _model_name = Unicode('MappedImageModel').tag(sync=True)
-
-    map_name = Unicode("Map", help="The map name").tag(sync=True)
     areas = TypedTuple(trait=Instance(MapArea), help="List of mapped shapes").tag(sync=True, **widget_serialization)
 
 
