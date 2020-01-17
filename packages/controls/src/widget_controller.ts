@@ -17,19 +17,18 @@ import { Widget, Panel } from '@lumino/widgets';
 
 import { ArrayExt } from '@lumino/algorithm';
 
-import * as _ from 'underscore';
-
 import * as utils from './utils';
 import $ from 'jquery';
 
 export class ControllerButtonModel extends CoreDOMWidgetModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'ControllerButtonModel',
       _view_name: 'ControllerButtonView',
       value: 0.0,
       pressed: false
-    });
+    };
   }
 }
 
@@ -76,11 +75,12 @@ export class ControllerButtonView extends DOMWidgetView {
 
 export class ControllerAxisModel extends CoreDOMWidgetModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'ControllerAxisModel',
       _view_name: 'ControllerAxisView',
       value: 0.0
-    });
+    };
   }
 }
 
@@ -138,7 +138,8 @@ export class ControllerModel extends CoreDOMWidgetModel {
   };
 
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'ControllerModel',
       _view_name: 'ControllerView',
       index: 0,
@@ -148,7 +149,7 @@ export class ControllerModel extends CoreDOMWidgetModel {
       timestamp: 0,
       buttons: [],
       axes: []
-    });
+    };
   }
 
   initialize(attributes: Backbone.ObjectHash, options: any): void {

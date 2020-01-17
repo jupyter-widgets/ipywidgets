@@ -7,8 +7,6 @@ import { DescriptionView } from './widget_description';
 
 import { uuid } from './utils';
 
-import * as _ from 'underscore';
-
 /**
  * Class name for a combobox with an invlid value.
  */
@@ -16,12 +14,13 @@ const INVALID_VALUE_CLASS = 'jpwidgets-invalidComboValue';
 
 export class StringModel extends CoreDescriptionModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       value: '',
       disabled: false,
       placeholder: '\u200b',
       _model_name: 'StringModel'
-    });
+    };
   }
 }
 
@@ -47,10 +46,11 @@ export class StringView extends DescriptionView {
 
 export class HTMLModel extends StringModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _view_name: 'HTMLView',
       _model_name: 'HTMLModel'
-    });
+    };
   }
 }
 
@@ -94,10 +94,11 @@ export class HTMLView extends StringView {
 
 export class HTMLMathModel extends StringModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _view_name: 'HTMLMathView',
       _model_name: 'HTMLMathModel'
-    });
+    };
   }
 }
 
@@ -139,10 +140,11 @@ export class HTMLMathView extends StringView {
 
 export class LabelModel extends StringModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _view_name: 'LabelView',
       _model_name: 'LabelModel'
-    });
+    };
   }
 }
 
@@ -170,12 +172,13 @@ export class LabelView extends StringView {
 
 export class TextareaModel extends StringModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _view_name: 'TextareaView',
       _model_name: 'TextareaModel',
       rows: null,
       continuous_update: true
-    });
+    };
   }
 }
 
@@ -315,11 +318,12 @@ export class TextareaView extends StringView {
 
 export class TextModel extends StringModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _view_name: 'TextView',
       _model_name: 'TextModel',
       continuous_update: true
-    });
+    };
   }
 }
 
@@ -464,10 +468,11 @@ export class TextView extends StringView {
 
 export class PasswordModel extends TextModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _view_name: 'PasswordView',
       _model_name: 'PasswordModel'
-    });
+    };
   }
 }
 

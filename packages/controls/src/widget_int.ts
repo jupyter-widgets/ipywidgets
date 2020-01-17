@@ -11,26 +11,27 @@ import { uuid } from './utils';
 
 import { format } from 'd3-format';
 
-import * as _ from 'underscore';
 import $ from 'jquery';
 import 'jquery-ui/ui/widgets/slider';
 
 export class IntModel extends CoreDescriptionModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'IntModel',
       value: 0
-    });
+    };
   }
 }
 
 export class BoundedIntModel extends IntModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'BoundedIntModel',
       max: 100,
       min: 0
-    });
+    };
   }
 }
 
@@ -51,7 +52,8 @@ export class SliderStyleModel extends DescriptionStyleModel {
 
 export class IntSliderModel extends BoundedIntModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'IntSliderModel',
       _view_name: 'IntSliderView',
       step: 1,
@@ -61,7 +63,7 @@ export class IntSliderModel extends BoundedIntModel {
       continuous_update: true,
       style: null,
       disabled: false
-    });
+    };
   }
   initialize(
     attributes: Backbone.ObjectHash,
@@ -468,24 +470,26 @@ export class IntSliderView extends BaseIntSliderView {
 
 export class IntTextModel extends IntModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'IntTextModel',
       _view_name: 'IntTextView',
       disabled: false,
       continuous_update: false
-    });
+    };
   }
 }
 
 export class BoundedIntTextModel extends BoundedIntModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'BoundedIntTextModel',
       _view_name: 'IntTextView',
       disabled: false,
       continuous_update: false,
       step: 1
-    });
+    };
   }
 }
 
@@ -662,13 +666,14 @@ export class ProgressStyleModel extends DescriptionStyleModel {
 
 export class IntProgressModel extends BoundedIntModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'IntProgressModel',
       _view_name: 'ProgressView',
       orientation: 'horizontal',
       bar_style: '',
       style: null
-    });
+    };
   }
 }
 
@@ -758,7 +763,8 @@ export class ProgressView extends DescriptionView {
 
 export class PlayModel extends BoundedIntModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'PlayModel',
       _view_name: 'PlayView',
       repeat: false,
@@ -767,7 +773,7 @@ export class PlayModel extends BoundedIntModel {
       interval: 100,
       step: 1,
       disabled: false
-    });
+    };
   }
   initialize(
     attributes: any,
