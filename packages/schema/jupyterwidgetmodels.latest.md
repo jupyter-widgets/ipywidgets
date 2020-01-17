@@ -592,7 +592,6 @@ Attribute        | Type             | Default          | Help
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
-`tagname`        | `null` or string | `null`           | HTML tag name
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | string           | `''`             | String value
 
@@ -791,11 +790,10 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'MappedImageView'` | 
-`areas`          | array of Instance | `[]`             | List of mapped shapes
+`areas`          | array of reference to MapArea widget | `[]`             | List of mapped shapes
 `format`         | string           | `'png'`          | The format of the image.
 `height`         | string           | `''`             | Height of the image in pixels. Use layout.height for styling the widget.
 `layout`         | reference to Layout widget | reference to new instance | 
-`map_name`       | string           | `'Map'`          | The map name
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | Bytes            | `b''`            | The media data as a byte string.
