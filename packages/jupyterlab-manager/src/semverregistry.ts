@@ -110,20 +110,17 @@ export class SemVerRegistry<T> {
     });
 
     // Clear out all requests which were fulfilled or expired.
-    ArrayExt.removeAllWhere(
-      this._pendingRequests,
-      ({ result, timestamp }) => {
-        if (timestamp === null) {
-          // Request fulfilled, so remove the entry.
-          return true;
-        } else if (now - timestamp > TIMEOUT) {
-          // Request expired, so give up and remove the entry.
-          result.resolve(undefined);
-          return true;
-        }
-        return false;
+    ArrayExt.removeAllWhere(this._pendingRequests, ({ result, timestamp }) => {
+      if (timestamp === null) {
+        // Request fulfilled, so remove the entry.
+        return true;
+      } else if (now - timestamp > TIMEOUT) {
+        // Request expired, so give up and remove the entry.
+        result.resolve(undefined);
+        return true;
       }
-    );
+      return false;
+    });
 
     // If we still have pending requests, try again later.
     if (this._pendingRequests.length > 0) {
