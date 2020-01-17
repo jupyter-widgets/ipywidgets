@@ -171,10 +171,10 @@ class MapArea(HTML):
     An <area> tag, part of an image map <map>.
     """
     tagname = Unicode('area')
-    name = Unicode('')#.tag(sync=True)
-    shape = Unicode('')#.tag(sync=True)
-    coords = Unicode('')#.tag(sync=True)
-    href = Unicode(None, allow_none=True)#.tag(sync=True)
+    name = Unicode('')
+    shape = Unicode('')
+    coords = Unicode('')
+    href = Unicode(None, allow_none=True)
 
     def __init__(self, name='noname', shape='rect', coords='', href=''):
         """

@@ -1,8 +1,6 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { DOMWidgetView } from '@jupyter-widgets/base';
-
 import { CoreDescriptionModel } from './widget_core';
 
 import { DescriptionView } from './widget_description';
@@ -85,106 +83,6 @@ export class HTMLView extends StringView {
   }
 
   content: HTMLDivElement;
-}
-
-export class HTMLElementModel extends StringModel {
-  defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
-      _view_name: 'HTMLElementView',
-      _model_name: 'HTMLElementModel',
-      tagname: null
-    });
-  }
-}
-
-export class HTMLElementView extends DOMWidgetView {
-  /**
-   * Called when view is rendered.
-   */
-  render(): void {
-    super.render();
-    this.pWidget.addClass('jupyter-widgets');
-    this.pWidget.addClass('widget-html');
-    this.update(); // Set defaults.
-  }
-
-  /**
-   * Update the contents of this view
-   *
-   * Called when the model is changed.  The model may have been
-   * changed by another view or by a state update from the back-end.
-   */
-  update(): void {
-    this.el.outerHTML = this.model.get('value');
-    return super.update();
-  }
-
-  /**
-   * Handle message sent to the front end.
-   */
-  handle_message(content: any): void {
-    if (content.do === 'focus') {
-      this.content.focus();
-    } else if (content.do === 'blur') {
-      this.content.blur();
-    }
-  }
-
-  content: HTMLElement;
-}
-
-export class HTMLElementModel extends StringModel {
-  defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
-      _view_name: 'HTMLElementView',
-      _model_name: 'HTMLElementModel',
-      tagname: null
-    });
-  }
-}
-
-export class HTMLElementView extends DescriptionView {
-  /**
-   * Called when view is rendered.
-   */
-  render(): void {
-    super.render();
-    this.el.classList.add('jupyter-widgets');
-    this.el.classList.add('widget-inline-hbox');
-    this.el.classList.add('widget-html');
-    this.content = document.createElement('span');
-    this.content.classList.add('widget-html-content');
-    this.el.appendChild(this.content);
-    this.update(); // Set defaults.
-  }
-
-  /**
-   * Update the contents of this view
-   *
-   * Called when the model is changed.  The model may have been
-   * changed by another view or by a state update from the back-end.
-   */
-  update(): void {
-    this.content.outerHTML = this.model.get('value');
-    return super.update();
-  }
-
-  /**
-   * Handle message sent to the front end.
-   */
-  handle_message(content: any): void {
-    if (content.do === 'focus') {
-      this.el.focus();
-    } else if (content.do === 'blur') {
-      this.el.blur();
-    }
-  }
-
-  get tagName(): string {
-    return this.model.get('tagname') || 'span';
-  }
-
-  el: HTMLElement;
 }
 
 export class HTMLMathModel extends StringModel {

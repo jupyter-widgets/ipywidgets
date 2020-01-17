@@ -7,11 +7,6 @@ import { CoreDOMWidgetModel } from './widget_core';
 
 import { uuid } from './utils';
 
-<<<<<<< HEAD
-import * as _ from 'underscore';
-
-=======
->>>>>>> A working implementation of Image Map.
 export class ImageModel extends CoreDOMWidgetModel {
   defaults(): Backbone.ObjectHash {
     return {
@@ -129,11 +124,12 @@ export class ImageView extends DOMWidgetView {
 
 export class MappedImageModel extends ImageModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'MappedImageModel',
       _view_name: 'MappedImageView',
       areas: null
-    });
+    };
   }
 
   static serializers = {
@@ -147,8 +143,6 @@ export class MappedImageView extends ImageView {
     /**
      * Called when view is rendered.
      */
-<<<<<<< HEAD
-<<<<<<< HEAD
     this.pWidget.addClass('jupyter-widgets');
     this.pWidget.addClass('widget-mapped-image');
     const map_name = uuid();
@@ -156,38 +150,6 @@ export class MappedImageView extends ImageView {
     this.map = document.createElement('map');
     this.map.setAttribute('name', map_name);
     this.el.appendChild(this.map);
-=======
-    super.render();
-    const mapEl = document.createElement('map');
-    let map_name = this.model.get('map_name');
-    if (map_name == null || map_name.length == 0) map_name = 'Map';
-    mapEl.setAttribute('name', map_name);
-    const areas = this.model.get('areas');
-    for (let i = 0; i < areas.length; i++) {
-      let area = areas[i];
-      let areaEl = document.createElement('area');
-      areaEl.setAttribute('name', area.name);
-      areaEl.setAttribute('shape', area.shape);
-      areaEl.setAttribute('coords', area.coords);
-      if (area.href !== undefined && area.href.length > 0) {
-        areaEl.setAttribute('href', area.href);
-      }
-      mapEl.appendChild(areaEl);
-    }
-    this.el.appendChild(mapEl);
-    this.el.setAttribute('usemap', '#' + map_name);
-    this.pWidget.addClass('jupyter-widgets');
-    this.pWidget.addClass('widget-image');
->>>>>>> A MappedImage widget (WIP).
-=======
-    this.pWidget.addClass('jupyter-widgets');
-    this.pWidget.addClass('widget-mapped-image');
-    const map_name = uuid();
-    this.el.setAttribute('usemap', '#' + map_name);
-    this.map = document.createElement('map');
-    this.map.setAttribute('name', map_name);
-    this.el.appendChild(this.map);
->>>>>>> A working implementation of Image Map.
     this.update(); // Set defaults.
   }
 
@@ -214,7 +176,4 @@ export class MappedImageView extends ImageView {
   _handle_click(event: MouseEvent): void {}
 
   map: HTMLMapElement;
-
-    return super.update();
-  }
 }
