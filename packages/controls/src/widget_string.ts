@@ -1,6 +1,8 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { DOMWidgetView } from '@jupyter-widgets/base';
+
 import { CoreDescriptionModel } from './widget_core';
 
 import { DescriptionView } from './widget_description';
@@ -95,12 +97,11 @@ export class HTMLElementModel extends StringModel {
   }
 }
 
-export class HTMLElementView extends DescriptionView {
+export class HTMLElementView extends DOMWidgetView {
   /**
    * Called when view is rendered.
    */
   render(): void {
-    super.render();
     this.el.classList.add('jupyter-widgets');
     this.el.classList.add('widget-inline-hbox');
     this.el.classList.add('widget-html');
