@@ -102,12 +102,9 @@ export class HTMLElementView extends DOMWidgetView {
    * Called when view is rendered.
    */
   render(): void {
-    this.el.classList.add('jupyter-widgets');
-    this.el.classList.add('widget-inline-hbox');
-    this.el.classList.add('widget-html');
-    this.content = document.createElement('span');
-    this.content.classList.add('widget-html-content');
-    this.el.appendChild(this.content);
+    super.render();
+    this.pWidget.addClass('jupyter-widgets');
+    this.pWidget.addClass('widget-html');
     this.update(); // Set defaults.
   }
 
@@ -118,7 +115,7 @@ export class HTMLElementView extends DOMWidgetView {
    * changed by another view or by a state update from the back-end.
    */
   update(): void {
-    this.content.outerHTML = this.model.get('value');
+    this.el.outerHTML = this.model.get('value');
     return super.update();
   }
 
@@ -177,13 +174,17 @@ export class HTMLElementView extends DescriptionView {
    */
   handle_message(content: any): void {
     if (content.do === 'focus') {
-      this.content.focus();
+      this.el.focus();
     } else if (content.do === 'blur') {
-      this.content.blur();
+      this.el.blur();
     }
   }
 
-  content: HTMLElement;
+  get tagName(): string {
+    return this.model.get('tagname') || 'span';
+  }
+
+  el: HTMLElement;
 }
 
 export class HTMLMathModel extends StringModel {
