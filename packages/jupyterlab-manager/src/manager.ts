@@ -88,60 +88,15 @@ export class BackboneViewWrapper extends Widget {
 /**
  * A widget manager that returns Lumino widgets.
  */
-export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
+export abstract class LabWidgetManager extends ManagerBase<Widget>
+  implements IDisposable {
   constructor(
-    context: DocumentRegistry.IContext<INotebookModel>,
     rendermime: IRenderMimeRegistry,
-    settings: WidgetManager.Settings,
     widgetRegistry: SemVerRegistry<ExportData>
   ) {
     super();
-    this._context = context;
     this._rendermime = rendermime;
     this._registry = widgetRegistry;
-
-    // Set _handleCommOpen so `this` is captured.
-    this._handleCommOpen = async (comm, msg): Promise<void> => {
-      const oldComm = new shims.services.Comm(comm);
-      await this.handle_comm_open(oldComm, msg);
-    };
-
-    context.sessionContext.kernelChanged.connect((sender, args) => {
-      this._handleKernelChanged(args);
-    });
-
-    context.sessionContext.statusChanged.connect((sender, args) => {
-      this._handleKernelStatusChange(args);
-    });
-    context.sessionContext.connectionStatusChanged.connect((sender, args) => {
-      this._handleKernelConnectionStatusChange(args);
-    });
-
-    if (context.sessionContext.session?.kernel) {
-      this._handleKernelChanged({
-        name: 'kernel',
-        oldValue: null,
-        newValue: context.sessionContext.session?.kernel
-      });
-    }
-    this.restoreWidgets(this._context.model);
-
-    this._settings = settings;
-    context.saveState.connect((sender, saveState) => {
-      if (saveState === 'started' && settings.saveState) {
-        this._saveState();
-      }
-    });
-  }
-
-  /**
-   * Save the widget state to the context model.
-   */
-  private _saveState(): void {
-    const state = this.get_state_sync({ drop_defaults: true });
-    this._context.model.metadata.set('widgets', {
-      'application/vnd.jupyter.widget-state+json': state
-    });
   }
 
   /**
@@ -160,7 +115,7 @@ export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   /**
    * Register a new kernel
    */
-  _handleKernelChanged({
+  protected _handleKernelChanged({
     oldValue,
     newValue
   }: Session.ISessionConnection.IKernelChangedArgs): void {
@@ -173,43 +128,6 @@ export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     }
   }
 
-  _handleKernelConnectionStatusChange(status: Kernel.ConnectionStatus): void {
-    if (status === 'connected') {
-      // Only restore if our initial restore at construction is finished
-      if (this._initialRestoredStatus) {
-        // We only want to restore widgets from the kernel, not ones saved in the notebook.
-        this.restoreWidgets(this._context.model, {
-          loadKernel: true,
-          loadNotebook: false
-        });
-      }
-    }
-  }
-
-  _handleKernelStatusChange(status: Kernel.Status): void {
-    if (status === 'restarting') {
-      this.disconnect();
-    }
-  }
-
-  /**
-   * Restore widgets from kernel and saved state.
-   */
-  async restoreWidgets(
-    notebook: INotebookModel,
-    { loadKernel, loadNotebook } = { loadKernel: true, loadNotebook: true }
-  ): Promise<void> {
-    if (loadKernel) {
-      await this._loadFromKernel();
-    }
-    if (loadNotebook) {
-      await this._loadFromNotebook(notebook);
-    }
-    this._restoredStatus = true;
-    this._initialRestoredStatus = true;
-    this._restored.emit();
-  }
-
   /**
    * Disconnect the widget manager from the kernel, setting each model's comm
    * as dead.
@@ -219,14 +137,12 @@ export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     this._restoredStatus = false;
   }
 
-  async _loadFromKernel(): Promise<void> {
-    if (!this.context.sessionContext) {
-      return;
+  protected async _loadFromKernel(): Promise<void> {
+    if (!this.kernel) {
+      throw new Error('Kernel not set');
     }
-    await this.context.sessionContext.ready;
-    // TODO: when we upgrade to @jupyterlab/services 4.1 or later, we can
-    // remove this 'any' cast.
-    if (this.context.sessionContext.session?.kernel?.handleComms === false) {
+    if (this.kernel?.handleComms === false) {
+      // A "load" for a kernel that does not handle comms does nothing.
       return;
     }
     const comm_ids = await this._get_comm_info();
@@ -307,19 +223,6 @@ export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   }
 
   /**
-   * Load widget state from notebook metadata
-   */
-  async _loadFromNotebook(notebook: INotebookModel): Promise<void> {
-    const widget_md = notebook.metadata.get('widgets') as any;
-    // Restore any widgets from saved state that are not live
-    if (widget_md && widget_md[WIDGET_STATE_MIMETYPE]) {
-      let state = widget_md[WIDGET_STATE_MIMETYPE];
-      state = this.filterExistingModelState(state);
-      await this.set_state(state);
-    }
-  }
-
-  /**
    * Return a Lumino widget representing the view
    */
   async display_view(
@@ -340,7 +243,7 @@ export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     metadata?: any,
     buffers?: ArrayBuffer[] | ArrayBufferView[]
   ): Promise<IClassicComm> {
-    const kernel = this._context.sessionContext.session?.kernel;
+    const kernel = this.kernel;
     if (!kernel) {
       throw new Error('No current kernel');
     }
@@ -355,7 +258,7 @@ export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * Get the currently-registered comms.
    */
   async _get_comm_info(): Promise<any> {
-    const kernel = this._context.sessionContext.session?.kernel;
+    const kernel = this.kernel;
     if (!kernel) {
       throw new Error('No current kernel');
     }
@@ -376,7 +279,7 @@ export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    * This is a read-only property.
    */
   get isDisposed(): boolean {
-    return this._context === null;
+    return this._isDisposed;
   }
 
   /**
@@ -386,19 +289,18 @@ export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     if (this.isDisposed) {
       return;
     }
+    this._isDisposed = true;
 
     if (this._commRegistration) {
       this._commRegistration.dispose();
     }
-    this._context = null!;
   }
 
   /**
    * Resolve a URL relative to the current notebook location.
    */
   async resolveUrl(url: string): Promise<string> {
-    const partial = await this.context.urlResolver.resolveUrl(url);
-    return this.context.urlResolver.getDownloadUrl(partial);
+    return url;
   }
 
   /**
@@ -440,9 +342,7 @@ export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     return cls;
   }
 
-  get context(): DocumentRegistry.IContext<INotebookModel> {
-    return this._context;
-  }
+  abstract get kernel(): Kernel.IKernelConnection | null;
 
   get rendermime(): IRenderMimeRegistry {
     return this._rendermime;
@@ -501,7 +401,6 @@ export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
         this._modelsSync.delete(model_id);
       });
     });
-    this.setDirty();
   }
 
   /**
@@ -511,7 +410,6 @@ export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
   async clear_state(): Promise<void> {
     await super.clear_state();
     this._modelsSync = new Map();
-    this.setDirty();
   }
 
   /**
@@ -533,6 +431,269 @@ export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     return serialize_state(models, options);
   }
 
+  // _handleCommOpen is an attribute, not a method, so `this` is captured in a
+  // single object that can be registered and removed
+  protected _handleCommOpen = async (
+    comm: Kernel.IComm,
+    msg: KernelMessage.ICommOpenMsg
+  ): Promise<void> => {
+    const oldComm = new shims.services.Comm(comm);
+    await this.handle_comm_open(oldComm, msg);
+  };
+
+  protected _restored = new Signal<this, void>(this);
+  protected _restoredStatus = false;
+  protected _kernelRestoreInProgress = false;
+
+  private _isDisposed = false;
+  private _registry: SemVerRegistry<ExportData>;
+  private _rendermime: IRenderMimeRegistry;
+
+  private _commRegistration: IDisposable;
+
+  private _modelsSync = new Map<string, WidgetModel>();
+  private _onUnhandledIOPubMessage = new Signal<
+    this,
+    KernelMessage.IIOPubMessage
+  >(this);
+}
+
+/**
+ * A widget manager that returns phosphor widgets.
+ */
+export class KernelWidgetManager extends LabWidgetManager {
+  constructor(
+    kernel: Kernel.IKernelConnection,
+    rendermime: IRenderMimeRegistry,
+    widgetRegistry: SemVerRegistry<ExportData>
+  ) {
+    super(rendermime, widgetRegistry);
+    this._kernel = kernel;
+
+    kernel.statusChanged.connect((sender, args) => {
+      this._handleKernelStatusChange(args);
+    });
+    kernel.connectionStatusChanged.connect((sender, args) => {
+      this._handleKernelConnectionStatusChange(args);
+    });
+
+    this._handleKernelChanged({
+      name: 'kernel',
+      oldValue: null,
+      newValue: kernel
+    });
+    this.restoreWidgets();
+  }
+
+  _handleKernelConnectionStatusChange(status: Kernel.ConnectionStatus): void {
+    if (status === 'connected') {
+      // Only restore if we aren't currently trying to restore from the kernel
+      // (for example, in our initial restore from the constructor).
+      if (!this._kernelRestoreInProgress) {
+        this.restoreWidgets();
+      }
+    }
+  }
+
+  _handleKernelStatusChange(status: Kernel.Status): void {
+    if (status === 'restarting') {
+      this.disconnect();
+    }
+  }
+
+  /**
+   * Restore widgets from kernel and saved state.
+   */
+  async restoreWidgets(): Promise<void> {
+    try {
+      this._kernelRestoreInProgress = true;
+      await this._loadFromKernel();
+      this._restoredStatus = true;
+      this._restored.emit();
+    } catch (err) {
+      // Do nothing
+    }
+    this._kernelRestoreInProgress = false;
+  }
+
+  /**
+   * Dispose the resources held by the manager.
+   */
+  dispose(): void {
+    if (this.isDisposed) {
+      return;
+    }
+
+    this._kernel = null!;
+    super.dispose();
+  }
+
+  get kernel(): Kernel.IKernelConnection {
+    return this._kernel;
+  }
+
+  private _kernel: Kernel.IKernelConnection;
+}
+
+/**
+ * A widget manager that returns phosphor widgets.
+ */
+export class WidgetManager extends LabWidgetManager {
+  constructor(
+    context: DocumentRegistry.IContext<INotebookModel>,
+    rendermime: IRenderMimeRegistry,
+    widgetRegistry: SemVerRegistry<ExportData>,
+    settings: WidgetManager.Settings
+  ) {
+    super(rendermime, widgetRegistry);
+    this._context = context;
+
+    context.sessionContext.kernelChanged.connect((sender, args) => {
+      this._handleKernelChanged(args);
+    });
+
+    context.sessionContext.statusChanged.connect((sender, args) => {
+      this._handleKernelStatusChange(args);
+    });
+
+    context.sessionContext.connectionStatusChanged.connect((sender, args) => {
+      this._handleKernelConnectionStatusChange(args);
+    });
+
+    if (context.sessionContext.session?.kernel) {
+      this._handleKernelChanged({
+        name: 'kernel',
+        oldValue: null,
+        newValue: context.sessionContext.session?.kernel
+      });
+    }
+
+    this.restoreWidgets(this._context!.model);
+
+    this._settings = settings;
+    context.saveState.connect((sender, saveState) => {
+      if (saveState === 'started' && settings.saveState) {
+        this._saveState();
+      }
+    });
+  }
+
+  /**
+   * Save the widget state to the context model.
+   */
+  private _saveState(): void {
+    const state = this.get_state_sync({ drop_defaults: true });
+    this._context.model.metadata.set('widgets', {
+      'application/vnd.jupyter.widget-state+json': state
+    });
+  }
+
+  _handleKernelConnectionStatusChange(status: Kernel.ConnectionStatus): void {
+    if (status === 'connected') {
+      // Only restore if we aren't currently trying to restore from the kernel
+      // (for example, in our initial restore from the constructor).
+      if (!this._kernelRestoreInProgress) {
+        // We only want to restore widgets from the kernel, not ones saved in the notebook.
+        this.restoreWidgets(this._context!.model, {
+          loadKernel: true,
+          loadNotebook: false
+        });
+      }
+    }
+  }
+
+  _handleKernelStatusChange(status: Kernel.Status): void {
+    if (status === 'restarting') {
+      this.disconnect();
+    }
+  }
+
+  /**
+   * Restore widgets from kernel and saved state.
+   */
+  async restoreWidgets(
+    notebook: INotebookModel,
+    { loadKernel, loadNotebook } = { loadKernel: true, loadNotebook: true }
+  ): Promise<void> {
+    try {
+      if (loadKernel) {
+        try {
+          this._kernelRestoreInProgress = true;
+          await this._loadFromKernel();
+        } finally {
+          this._kernelRestoreInProgress = false;
+        }
+      }
+      if (loadNotebook) {
+        await this._loadFromNotebook(notebook);
+      }
+
+      // If the restore worked above, then update our state.
+      this._restoredStatus = true;
+      this._restored.emit();
+    } catch (err) {
+      // Do nothing if the restore did not work.
+    }
+  }
+
+  /**
+   * Load widget state from notebook metadata
+   */
+  async _loadFromNotebook(notebook: INotebookModel): Promise<void> {
+    const widget_md = notebook.metadata.get('widgets') as any;
+    // Restore any widgets from saved state that are not live
+    if (widget_md && widget_md[WIDGET_STATE_MIMETYPE]) {
+      let state = widget_md[WIDGET_STATE_MIMETYPE];
+      state = this.filterExistingModelState(state);
+      await this.set_state(state);
+    }
+  }
+
+  /**
+   * Dispose the resources held by the manager.
+   */
+  dispose(): void {
+    if (this.isDisposed) {
+      return;
+    }
+
+    this._context = null!;
+    super.dispose();
+  }
+
+  /**
+   * Resolve a URL relative to the current notebook location.
+   */
+  async resolveUrl(url: string): Promise<string> {
+    const partial = await this.context.urlResolver.resolveUrl(url);
+    return this.context.urlResolver.getDownloadUrl(partial);
+  }
+
+  get context(): DocumentRegistry.IContext<INotebookModel> {
+    return this._context;
+  }
+
+  get kernel(): Kernel.IKernelConnection | null {
+    return this._context.sessionContext?.session?.kernel ?? null;
+  }
+
+  /**
+   * Register a widget model.
+   */
+  register_model(model_id: string, modelPromise: Promise<WidgetModel>): void {
+    super.register_model(model_id, modelPromise);
+    this.setDirty();
+  }
+
+  /**
+   * Close all widgets and empty the widget state.
+   * @return Promise that resolves when the widget state is cleared.
+   */
+  async clear_state(): Promise<void> {
+    await super.clear_state();
+    this.setDirty();
+  }
+
   /**
    * Set the dirty state of the notebook model if applicable.
    *
@@ -540,29 +701,12 @@ export class WidgetManager extends ManagerBase<Widget> implements IDisposable {
    */
   setDirty(): void {
     if (this._settings.saveState) {
-      this._context.model.dirty = true;
+      this._context!.model.dirty = true;
     }
   }
 
-  private _handleCommOpen: (
-    comm: Kernel.IComm,
-    msg: KernelMessage.ICommOpenMsg
-  ) => Promise<void>;
   private _context: DocumentRegistry.IContext<INotebookModel>;
-  private _registry: SemVerRegistry<ExportData>;
-  private _rendermime: IRenderMimeRegistry;
-
-  _commRegistration: IDisposable;
-  private _restored = new Signal<this, void>(this);
-  private _restoredStatus = false;
-  private _initialRestoredStatus = false;
-
-  private _modelsSync = new Map<string, WidgetModel>();
   private _settings: WidgetManager.Settings;
-  private _onUnhandledIOPubMessage = new Signal<
-    this,
-    KernelMessage.IIOPubMessage
-  >(this);
 }
 
 export namespace WidgetManager {

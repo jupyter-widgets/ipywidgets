@@ -10,40 +10,41 @@ import { DescriptionModel } from './widget_description';
 
 import { JUPYTER_CONTROLS_VERSION } from './version';
 
-import * as _ from 'underscore';
-
 export class CoreWidgetModel extends WidgetModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'CoreWidgetModel',
       _view_module: '@jupyter-widgets/controls',
       _model_module: '@jupyter-widgets/controls',
       _view_module_version: JUPYTER_CONTROLS_VERSION,
       _model_module_version: JUPYTER_CONTROLS_VERSION
-    });
+    };
   }
 }
 
 export class CoreDOMWidgetModel extends DOMWidgetModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'CoreDOMWidgetModel',
       _view_module: '@jupyter-widgets/controls',
       _model_module: '@jupyter-widgets/controls',
       _view_module_version: JUPYTER_CONTROLS_VERSION,
       _model_module_version: JUPYTER_CONTROLS_VERSION
-    });
+    };
   }
 }
 
 export class CoreDescriptionModel extends DescriptionModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'CoreDescriptionModel',
       _view_module: '@jupyter-widgets/controls',
       _model_module: '@jupyter-widgets/controls',
       _view_module_version: JUPYTER_CONTROLS_VERSION,
       _model_module_version: JUPYTER_CONTROLS_VERSION
-    });
+    };
   }
 }

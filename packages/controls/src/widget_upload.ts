@@ -4,14 +4,12 @@
 import { CoreDOMWidgetModel } from './widget_core';
 import { DOMWidgetView } from '@jupyter-widgets/base';
 
-import * as _ from 'underscore';
-
 export class FileUploadModel extends CoreDOMWidgetModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'FileUploadModel',
       _view_name: 'FileUploadView',
-
       accept: '',
       description: 'Upload',
       disabled: false,
@@ -21,7 +19,7 @@ export class FileUploadModel extends CoreDOMWidgetModel {
       value: [],
       error: '',
       style: null
-    });
+    };
   }
 
   static serializers = {

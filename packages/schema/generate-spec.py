@@ -10,7 +10,7 @@ from traitlets import (CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat,
 
 import ipywidgets as widgets
 from ipywidgets import Color
-from ipywidgets.widgets.trait_types import TypedTuple
+from ipywidgets.widgets.trait_types import TypedTuple, ByteMemoryView
 from ipywidgets.widgets.widget_link import Link
 
 HEADER = '''# Model State
@@ -40,46 +40,46 @@ NUMBER_MAP = {
 }
 
 
-def widget_type(widget, widget_list):
+def trait_type(trait, widget_list):
     attributes = {}
-    if isinstance(widget, CaselessStrEnum):
+    if isinstance(trait, CaselessStrEnum):
         w_type = 'string'
-        attributes['enum'] = widget.values
-    elif isinstance(widget, Unicode):
+        attributes['enum'] = trait.values
+    elif isinstance(trait, Unicode):
         w_type = 'string'
-    elif isinstance(widget, (Tuple, List)):
+    elif isinstance(trait, (Tuple, List)):
         w_type = 'array'
-    elif isinstance(widget, TypedTuple):
+    elif isinstance(trait, TypedTuple):
         w_type = 'array'
-        attributes['items'] = widget_type(widget._trait, widget_list)
-    elif isinstance(widget, Bool):
+        attributes['items'] = trait_type(trait._trait, widget_list)
+    elif isinstance(trait, Bool):
         w_type = 'bool'
-    elif isinstance(widget, (CFloat, Float)):
+    elif isinstance(trait, (CFloat, Float)):
         w_type = 'float'
-    elif isinstance(widget, (CInt, Int)):
+    elif isinstance(trait, (CInt, Int)):
         w_type = 'int'
-    elif isinstance(widget, Color):
+    elif isinstance(trait, Color):
         w_type = 'color'
-    elif isinstance(widget, Dict):
+    elif isinstance(trait, Dict):
         w_type = 'object'
-    elif isinstance(widget, Bytes):
+    elif isinstance(trait, Bytes) or isinstance(trait, ByteMemoryView):
         w_type = 'bytes'
-    elif isinstance(widget, Instance) and issubclass(widget.klass,
+    elif isinstance(trait, Instance) and issubclass(trait.klass,
                                                      widgets.Widget):
         w_type = 'reference'
-        attributes['widget'] = widget.klass.__name__
+        attributes['widget'] = trait.klass.__name__
         # ADD the widget to this documenting list
-        if (widget.klass not in [i[1] for i in widget_list]
-                and widget.klass is not widgets.Widget):
-            widget_list.append((widget.klass.__name__, widget.klass))
-    elif isinstance(widget, Any):
+        if (trait.klass not in [i[1] for i in widget_list]
+                and trait.klass is not widgets.Widget):
+            widget_list.append((trait.klass.__name__, trait.klass))
+    elif isinstance(trait, Any):
         # In our case, these all happen to be values that are converted to
         # strings
         w_type = 'label'
     else:
-        w_type = widget.__class__.__name__
+        w_type = trait.__class__.__name__
     attributes['type'] = w_type
-    if widget.allow_none:
+    if trait.allow_none:
         attributes['allow_none'] = True
     return attributes
 
@@ -91,7 +91,7 @@ def jsdefault(trait):
             return 'reference to new instance'
     else:
         default = trait.default_value
-        if isinstance(default, bytes):
+        if isinstance(default, bytes) or isinstance(default, memoryview):
             default = trait.default_value_repr()
     return default
 
@@ -163,7 +163,7 @@ def jsonify(identifier, widget, widget_list):
             help=trait.help or '',
             default=jsdefault(trait)
         )
-        attribute.update(widget_type(trait, widget_list))
+        attribute.update(trait_type(trait, widget_list))
         attributes.append(attribute)
 
     return dict(model=model, view=view, attributes=attributes)

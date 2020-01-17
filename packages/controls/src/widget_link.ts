@@ -5,8 +5,6 @@ import { WidgetModel, unpack_models } from '@jupyter-widgets/base';
 
 import { CoreWidgetModel } from './widget_core';
 
-import * as _ from 'underscore';
-
 export class DirectionalLinkModel extends CoreWidgetModel {
   static serializers = {
     ...CoreWidgetModel.serializers,
@@ -15,11 +13,12 @@ export class DirectionalLinkModel extends CoreWidgetModel {
   };
 
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       target: undefined,
       source: undefined,
       _model_name: 'DirectionalLinkModel'
-    });
+    };
   }
 
   initialize(
@@ -102,9 +101,10 @@ export class DirectionalLinkModel extends CoreWidgetModel {
 
 export class LinkModel extends DirectionalLinkModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'LinkModel'
-    });
+    };
   }
 
   updateBindings(): void {

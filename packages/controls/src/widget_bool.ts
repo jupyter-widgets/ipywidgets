@@ -7,25 +7,25 @@ import { DescriptionView } from './widget_description';
 
 import { DOMWidgetView } from '@jupyter-widgets/base';
 
-import * as _ from 'underscore';
-
 export class BoolModel extends CoreDescriptionModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       value: false,
       disabled: false,
       _model_name: 'BoolModel'
-    });
+    };
   }
 }
 
 export class CheckboxModel extends CoreDescriptionModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       indent: true,
       _view_name: 'CheckboxView',
       _model_name: 'CheckboxModel'
-    });
+    };
   }
 }
 
@@ -171,13 +171,14 @@ export class CheckboxView extends DescriptionView {
 
 export class ToggleButtonModel extends BoolModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _view_name: 'ToggleButtonView',
       _model_name: 'ToggleButtonModel',
       tooltip: '',
       icon: '',
       button_style: ''
-    });
+    };
   }
 }
 
@@ -287,11 +288,12 @@ export class ToggleButtonView extends DOMWidgetView {
 
 export class ValidModel extends BoolModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       readout: 'Invalid',
       _view_name: 'ValidView',
       _model_name: 'ValidModel'
-    });
+    };
   }
 }
 

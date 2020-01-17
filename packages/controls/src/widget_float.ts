@@ -3,8 +3,6 @@
 
 import { CoreDescriptionModel } from './widget_core';
 
-import * as _ from 'underscore';
-
 import {
   IntSliderView,
   IntRangeSliderView,
@@ -16,26 +14,29 @@ import { format } from 'd3-format';
 
 export class FloatModel extends CoreDescriptionModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'FloatModel',
       value: 0
-    });
+    };
   }
 }
 
 export class BoundedFloatModel extends FloatModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'BoundedFloatModel',
       max: 100.0,
       min: 0.0
-    });
+    };
   }
 }
 
 export class FloatSliderModel extends BoundedFloatModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'FloatSliderModel',
       _view_name: 'FloatSliderView',
       step: 1.0,
@@ -46,7 +47,7 @@ export class FloatSliderModel extends BoundedFloatModel {
       slider_color: null,
       continuous_update: true,
       disabled: false
-    });
+    };
   }
   initialize(
     attributes: any,
@@ -66,7 +67,8 @@ export class FloatSliderModel extends BoundedFloatModel {
 
 export class FloatLogSliderModel extends BoundedFloatModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'FloatLogSliderModel',
       _view_name: 'FloatLogSliderView',
       step: 0.1,
@@ -81,7 +83,7 @@ export class FloatLogSliderModel extends BoundedFloatModel {
       value: 1.0,
       min: 0,
       max: 4
-    });
+    };
   }
   initialize(
     attributes: any,
@@ -234,24 +236,26 @@ export class FloatRangeSliderView extends IntRangeSliderView {
 
 export class FloatTextModel extends FloatModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'FloatTextModel',
       _view_name: 'FloatTextView',
       disabled: false,
       continuous_update: false
-    });
+    };
   }
 }
 
 export class BoundedFloatTextModel extends BoundedFloatModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'BoundedFloatTextModel',
       _view_name: 'FloatTextView',
       disabled: false,
       continuous_update: false,
       step: 0.1
-    });
+    };
   }
 }
 
@@ -279,12 +283,13 @@ export class FloatTextView extends IntTextView {
 
 export class FloatProgressModel extends BoundedFloatModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'FloatProgressModel',
       _view_name: 'ProgressView',
       orientation: 'horizontal',
       bar_style: '',
       style: null
-    });
+    };
   }
 }

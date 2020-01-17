@@ -7,8 +7,6 @@ import { DescriptionView } from './widget_description';
 
 import { uuid } from './utils';
 
-import * as _ from 'underscore';
-
 const named_colors: { [key: string]: string } = {
   aliceblue: '#f0f8ff',
   antiquewhite: '#faebd7',
@@ -161,12 +159,13 @@ const named_colors: { [key: string]: string } = {
 
 export class ColorPickerModel extends CoreDescriptionModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       value: 'black',
       concise: false,
       _model_name: 'ColorPickerModel',
       _view_name: 'ColorPickerView'
-    });
+    };
   }
 }
 

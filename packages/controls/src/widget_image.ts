@@ -5,18 +5,17 @@ import { DOMWidgetView } from '@jupyter-widgets/base';
 
 import { CoreDOMWidgetModel } from './widget_core';
 
-import * as _ from 'underscore';
-
 export class ImageModel extends CoreDOMWidgetModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'ImageModel',
       _view_name: 'ImageView',
       format: 'png',
       width: '',
       height: '',
       value: new DataView(new ArrayBuffer(0))
-    });
+    };
   }
 
   static serializers = {

@@ -19,17 +19,17 @@ import { MessageLoop } from '@lumino/messaging';
 
 import { Widget } from '@lumino/widgets';
 
-import * as _ from 'underscore';
 import $ from 'jquery';
 
 export class BoxModel extends CoreDOMWidgetModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _view_name: 'BoxView',
       _model_name: 'BoxModel',
       children: [],
       box_style: ''
-    });
+    };
   }
 
   static serializers = {
@@ -40,19 +40,21 @@ export class BoxModel extends CoreDOMWidgetModel {
 
 export class HBoxModel extends BoxModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _view_name: 'HBoxView',
       _model_name: 'HBoxModel'
-    });
+    };
   }
 }
 
 export class VBoxModel extends BoxModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _view_name: 'VBoxView',
       _model_name: 'VBoxModel'
-    });
+    };
   }
 }
 
@@ -178,9 +180,10 @@ export class GridBoxView extends BoxView {
 
 export class GridBoxModel extends BoxModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _view_name: 'GridBoxView',
       _model_name: 'GridBoxModel'
-    });
+    };
   }
 }
