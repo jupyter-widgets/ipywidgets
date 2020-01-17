@@ -113,12 +113,12 @@ export function registerWidgetManager(
 ): DisposableDelegate {
   let wManager = Private.widgetManagerProperty.get(context);
   if (!wManager) {
-    wManager = new WidgetManager(
+    wManager = new WidgetManager({
       context,
       rendermime,
-      SETTINGS,
-      WIDGET_REGISTRY
-    );
+      settings: SETTINGS,
+      widgetRegistry: WIDGET_REGISTRY
+    });
     Private.widgetManagerProperty.set(context, wManager);
   }
 

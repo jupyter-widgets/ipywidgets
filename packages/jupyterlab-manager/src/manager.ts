@@ -90,10 +90,7 @@ export class BackboneViewWrapper extends Widget {
  */
 export abstract class LabWidgetManager extends ManagerBase<Widget>
   implements IDisposable {
-  constructor(
-    rendermime: IRenderMimeRegistry,
-    widgetRegistry: SemVerRegistry<ExportData>
-  ) {
+  constructor({ rendermime, widgetRegistry }: LabWidgetManager.IOptions) {
     super();
     this._rendermime = rendermime;
     this._registry = widgetRegistry;
@@ -458,16 +455,23 @@ export abstract class LabWidgetManager extends ManagerBase<Widget>
   >(this);
 }
 
+export namespace LabWidgetManager {
+  export interface IOptions {
+    rendermime: IRenderMimeRegistry;
+    widgetRegistry: SemVerRegistry<ExportData>;
+  }
+}
+
 /**
  * A widget manager that returns phosphor widgets.
  */
 export class KernelWidgetManager extends LabWidgetManager {
-  constructor(
-    kernel: Kernel.IKernelConnection,
-    rendermime: IRenderMimeRegistry,
-    widgetRegistry: SemVerRegistry<ExportData>
-  ) {
-    super(rendermime, widgetRegistry);
+  constructor({
+    kernel,
+    rendermime,
+    widgetRegistry
+  }: KernelWidgetManager.IOptions) {
+    super({ rendermime, widgetRegistry });
     this._kernel = kernel;
 
     kernel.statusChanged.connect((sender, args) => {
@@ -535,17 +539,23 @@ export class KernelWidgetManager extends LabWidgetManager {
   private _kernel: Kernel.IKernelConnection;
 }
 
+export namespace KernelWidgetManager {
+  export interface IOptions extends LabWidgetManager.IOptions {
+    kernel: Kernel.IKernelConnection;
+  }
+}
+
 /**
  * A widget manager that returns phosphor widgets.
  */
 export class WidgetManager extends LabWidgetManager {
-  constructor(
-    context: DocumentRegistry.IContext<INotebookModel>,
-    rendermime: IRenderMimeRegistry,
-    widgetRegistry: SemVerRegistry<ExportData>,
-    settings: WidgetManager.Settings
-  ) {
-    super(rendermime, widgetRegistry);
+  constructor({
+    context,
+    rendermime,
+    settings,
+    widgetRegistry
+  }: WidgetManager.IOptions) {
+    super({ rendermime, widgetRegistry });
     this._context = context;
 
     context.sessionContext.kernelChanged.connect((sender, args) => {
@@ -710,6 +720,11 @@ export class WidgetManager extends LabWidgetManager {
 }
 
 export namespace WidgetManager {
+  export interface IOptions extends LabWidgetManager.IOptions {
+    context: DocumentRegistry.IContext<INotebookModel>;
+    settings: Settings;
+  }
+
   export type Settings = {
     saveState: boolean;
   };
