@@ -313,7 +313,9 @@ export class RadioButtonsView extends DescriptionView {
    */
   update(options?: any): void {
     const items: string[] = this.model.get('_options_labels');
-    const radios = Array.from(this.container.querySelectorAll('input[type="radio"]')).map(x => x.value);
+    const radios = Array.from(
+      this.container.querySelectorAll('input[type="radio"]')
+    ).map((x: HTMLInputElement) => x.value);
     let stale = items.length !== radios.length;
 
     if (!stale) {
@@ -430,7 +432,7 @@ export class RadioButtonsView extends DescriptionView {
 export class ToggleButtonsStyleModel extends DescriptionStyleModel {
   defaults(): Backbone.ObjectHash {
     return {
-       ...super.defaults(),
+      ...super.defaults(),
       _model_name: 'ToggleButtonsStyleModel'
     };
   }
