@@ -42,18 +42,6 @@ class HTML(_String):
 
 
 @register
-class HTMLElement(_String):
-    """Renders the string `value` as HTML."""
-    _view_name = Unicode('HTMLElementView').tag(sync=True)
-    _model_name = Unicode('HTMLElementModel').tag(sync=True)
-    tagname = Unicode(None, allow_none=True, help="HTML tag name").tag(sync=True)
-
-    def __init__(self, tagname=None, **kwargs):
-        self.tagname = tagname
-        super().__init__(**kwargs)
-
-
-@register
 class HTMLMath(_String):
     """Renders the string `value` as HTML, and render mathematics."""
     _view_name = Unicode('HTMLMathView').tag(sync=True)
