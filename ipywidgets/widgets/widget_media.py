@@ -4,10 +4,11 @@
 import mimetypes
 
 from .widget_core import CoreWidget
+from .widget_string import HTMLElement
 from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
 from .widget import register, widget_serialization
-from traitlets import Unicode, CUnicode, Bytes, Bool, Instance
+from traitlets import Unicode, CUnicode, Bytes, Bool, Instance, observe
 from .trait_types import CByteMemoryView, TypedTuple, bytes_serialization
 
 
@@ -163,12 +164,18 @@ class Image(_Media):
     def __repr__(self):
         return self._get_repr(Image)
 
-
-class MapArea(object):
+@register
+class MapArea(HTMLElement):
     r"""
     An <area> tag, part of an image map <map>.
     """
-    def __init__(self, name, shape, coords, href=None):
+    tagname = Unicode('area')
+    name = Unicode('')#.tag(sync=True)
+    shape = Unicode('')#.tag(sync=True)
+    coords = Unicode('')#.tag(sync=True)
+    href = Unicode(None, allow_none=True)#.tag(sync=True)
+
+    def __init__(self, name='noname', shape='rect', coords='', href=''):
         """
         Parameters
         ----------
@@ -178,32 +185,28 @@ class MapArea(object):
         shape: str
             Area shape: rect/circle/poly/default.
 
-        coords: tuple
-            Area coordinates: tuple of integers.
+        coords: str
+            Area coordinates: tuple of integers, string represented.
 
         href: str
             URL to load when area is clicked.
         """
-        self.name = name
-        self.shape = shape
-        self.coords = coords # a tuple of integers
-        self.href = href
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, tagname='area', **kwargs)
+        self._compute_value(self.name, self.shape, self.coords, self.href)
 
-    def html(self):
-        return  '<area alt="{}" shape="{}" coords="{}" href="{}">' . format(
-            self.name,
-            self.shape,
-            ",". join([str(i) for i in self.coords]),
-            self.href
-        )
+    def _compute_value(self, name, shape, coords, href):
+        self.value = '<area alt="{}" shape="{}" coords="{}" href="{}">' . format(name, shape, coords, href)
+
+    @observe('name', 'shape', 'coords', 'href')
+    def _attr_changed(self, change):
+        self._compute_value(self.name, self.shape, self.coords, self.href)
 
 
 @register
 class MappedImage(Image):
     _view_name = Unicode('MappedImageView').tag(sync=True)
     _model_name = Unicode('MappedImageModel').tag(sync=True)
-
-    map_name = Unicode("Map", help="The map name").tag(sync=True)
     areas = TypedTuple(trait=Instance(MapArea), help="List of mapped shapes").tag(sync=True, **widget_serialization)
 
 

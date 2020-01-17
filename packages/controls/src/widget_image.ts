@@ -1,9 +1,13 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { DOMWidgetView } from '@jupyter-widgets/base';
+import { DOMWidgetView, unpack_models } from '@jupyter-widgets/base';
 
 import { CoreDOMWidgetModel } from './widget_core';
+
+import { uuid } from './utils';
+
+import * as _ from 'underscore';
 
 export class ImageModel extends CoreDOMWidgetModel {
   defaults(): Backbone.ObjectHash {
@@ -109,10 +113,14 @@ export class MappedImageModel extends ImageModel {
     return _.extend(super.defaults(), {
       _model_name: 'MappedImageModel',
       _view_name: 'MappedImageView',
-      map_name: null,
       areas: null
     });
   }
+
+  static serializers = {
+    ...ImageModel.serializers,
+    areas: { deserialize: unpack_models }
+  };
 }
 
 export class MappedImageView extends ImageView {
@@ -120,27 +128,13 @@ export class MappedImageView extends ImageView {
     /**
      * Called when view is rendered.
      */
-    super.render();
-    const mapEl = document.createElement('map');
-    let map_name = this.model.get('map_name');
-    if (map_name == null || map_name.length == 0) map_name = 'Map';
-    mapEl.setAttribute('name', map_name);
-    const areas = this.model.get('areas');
-    for (let i = 0; i < areas.length; i++) {
-      const area = areas[i];
-      const areaEl = document.createElement('area');
-      areaEl.setAttribute('name', area.name);
-      areaEl.setAttribute('shape', area.shape);
-      areaEl.setAttribute('coords', area.coords);
-      if (area.href !== undefined && area.href.length > 0) {
-        areaEl.setAttribute('href', area.href);
-      }
-      mapEl.appendChild(areaEl);
-    }
-    this.el.appendChild(mapEl);
-    this.el.setAttribute('usemap', '#' + map_name);
     this.pWidget.addClass('jupyter-widgets');
-    this.pWidget.addClass('widget-image');
+    this.pWidget.addClass('widget-mapped-image');
+    const map_name = uuid();
+    this.el.setAttribute('usemap', '#' + map_name);
+    this.map = document.createElement('map');
+    this.map.setAttribute('name', map_name);
+    this.el.appendChild(this.map);
     this.update(); // Set defaults.
   }
 
@@ -151,7 +145,14 @@ export class MappedImageView extends ImageView {
      * Called when the model is changed.  The model may have been
      * changed by another view or by a state update from the back-end.
      */
-
-    return super.update();
+    super.update(); // Render image
+    const areas = this.model.get('areas');
+    for (let i = 0; i < areas.length; i++) {
+      const area = document.createElement('area');
+      this.map.appendChild(area);
+      area.outerHTML = areas[i].get('value');
+    }
   }
+
+  map: HTMLMapElement;
 }
