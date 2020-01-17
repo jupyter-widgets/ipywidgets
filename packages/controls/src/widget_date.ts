@@ -7,8 +7,6 @@ import { CoreDescriptionModel } from './widget_core';
 
 import { uuid } from './utils';
 
-import * as _ from 'underscore';
-
 export interface ISerializedDate {
   /**
    * Full year
@@ -59,11 +57,12 @@ export class DatePickerModel extends CoreDescriptionModel {
   };
 
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       value: null,
       _model_name: 'DatePickerModel',
       _view_name: 'DatePickerView'
-    });
+    };
   }
 }
 

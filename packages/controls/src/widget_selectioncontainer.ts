@@ -24,25 +24,26 @@ import { each, ArrayExt } from '@lumino/algorithm';
 
 import { Message, MessageLoop } from '@lumino/messaging';
 
-import * as _ from 'underscore';
 import $ from 'jquery';
 
 export class SelectionContainerModel extends BoxModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'SelectionContainerModel',
       selected_index: 0,
       _titles: {}
-    });
+    };
   }
 }
 
 export class AccordionModel extends SelectionContainerModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'AccordionModel',
       _view_name: 'AccordionView'
-    });
+    };
   }
 }
 
@@ -214,10 +215,11 @@ export class AccordionView extends DOMWidgetView {
 
 export class TabModel extends SelectionContainerModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'TabModel',
       _view_name: 'TabView'
-    });
+    };
   }
 }
 
@@ -426,10 +428,11 @@ export class TabView extends DOMWidgetView {
 
 export class StackedModel extends SelectionContainerModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'StackedModel',
       _view_name: 'StackedView'
-    });
+    };
   }
 }
 

@@ -9,7 +9,6 @@ import { DescriptionView, DescriptionStyleModel } from './widget_description';
 
 import { uuid } from './utils';
 
-import * as _ from 'underscore';
 import * as utils from './utils';
 import $ from 'jquery';
 
@@ -314,10 +313,7 @@ export class RadioButtonsView extends DescriptionView {
    */
   update(options?: any): void {
     const items: string[] = this.model.get('_options_labels');
-    const radios = _.pluck(
-      this.container.querySelectorAll('input[type="radio"]'),
-      'value'
-    );
+    const radios = Array.from(this.container.querySelectorAll('input[type="radio"]')).map(x => x.value);
     let stale = items.length !== radios.length;
 
     if (!stale) {
@@ -433,9 +429,10 @@ export class RadioButtonsView extends DescriptionView {
 
 export class ToggleButtonsStyleModel extends DescriptionStyleModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+       ...super.defaults(),
       _model_name: 'ToggleButtonsStyleModel'
-    });
+    };
   }
 
   public static styleProperties = {
@@ -502,7 +499,7 @@ export class ToggleButtonsView extends DescriptionView {
     const tooltips = this.model.get('tooltips') || [];
     const disabled = this.model.get('disabled');
     const buttons = this.buttongroup.querySelectorAll('button');
-    const values = _.pluck(buttons, 'value');
+    const values = Array.from(buttons).map(x => x.value);
     let stale = false;
 
     for (let i = 0, len = items.length; i < len; ++i) {

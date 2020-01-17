@@ -2,7 +2,6 @@
 // Distributed under the terms of the Modified BSD License.
 'use strict';
 
-var _ = require('underscore');
 var base = require('@jupyter-widgets/base');
 var ManagerBase = require('@jupyter-widgets/base-manager').ManagerBase;
 var widgets = require('@jupyter-widgets/controls');
@@ -97,7 +96,7 @@ export class WidgetManager extends ManagerBase {
     // Register with the comm manager. (1)
     this.comm_manager.register_target(
       this.comm_target_name,
-      _.bind(this.handle_comm_open, this)
+      this.handle_comm_open.bind(this)
     );
 
     // Attempt to reconstruct any live comms by requesting them from the back-end (2).

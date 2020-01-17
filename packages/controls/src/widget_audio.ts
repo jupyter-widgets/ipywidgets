@@ -5,11 +5,10 @@ import { DOMWidgetView } from '@jupyter-widgets/base';
 
 import { CoreDOMWidgetModel } from './widget_core';
 
-import * as _ from 'underscore';
-
 export class AudioModel extends CoreDOMWidgetModel {
   defaults(): Backbone.ObjectHash {
-    return _.extend(super.defaults(), {
+    return {
+      ...super.defaults(),
       _model_name: 'AudioModel',
       _view_name: 'AudioView',
       format: 'mp3',
@@ -17,7 +16,7 @@ export class AudioModel extends CoreDOMWidgetModel {
       loop: true,
       controls: true,
       value: new DataView(new ArrayBuffer(0))
-    });
+    };
   }
 
   static serializers = {

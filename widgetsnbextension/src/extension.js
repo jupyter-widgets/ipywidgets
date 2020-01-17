@@ -182,12 +182,9 @@ function load_ipython_extension() {
   });
 }
 
-var _ = require('underscore');
-module.exports = _.extend(
-  {
-    load_ipython_extension: load_ipython_extension
-  },
-  require('@jupyter-widgets/controls'),
-  require('@jupyter-widgets/base'),
-  require('./widget_output')
-);
+module.exports = {
+  load_ipython_extension: load_ipython_extension
+  ...require('@jupyter-widgets/controls'),
+  ...require('@jupyter-widgets/base'),
+  ...require('./widget_output')
+};
