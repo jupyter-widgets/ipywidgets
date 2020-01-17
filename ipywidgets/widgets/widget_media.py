@@ -4,11 +4,7 @@
 import mimetypes
 
 from .widget_core import CoreWidget
-<<<<<<< HEAD
 from .widget_string import HTML
-=======
-from .widget_string import HTMLElement
->>>>>>> A working implementation of Image Map.
 from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
 from .widget import register, widget_serialization
@@ -169,7 +165,8 @@ class Image(_Media):
         return self._get_repr(Image)
 
 
-class MapArea(object):
+@register
+class MapArea(HTML):
     r"""
     An <area> tag, part of an image map <map>.
     """
