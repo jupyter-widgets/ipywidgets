@@ -4,7 +4,7 @@
 import mimetypes
 
 from .widget_core import CoreWidget
-from .widget_string import HTMLElement
+from .widget_string import HTML
 from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
 from .widget import register, widget_serialization
@@ -165,7 +165,7 @@ class Image(_Media):
         return self._get_repr(Image)
 
 @register
-class MapArea(HTMLElement):
+class MapArea(HTML):
     r"""
     An <area> tag, part of an image map <map>.
     """
