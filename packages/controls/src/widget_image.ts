@@ -93,6 +93,22 @@ export class ImageView extends DOMWidgetView {
   }
 
   /**
+   * Dictionary of events and handlers
+   */
+  events(): { [e: string]: string } {
+    return { click: '_handle_click' };
+  }
+
+  /**
+   * Handles when the image is clicked.
+   */
+  _handle_click(event: MouseEvent): void {
+    event.preventDefault();
+    const relative_xy = this._get_relative_xy(event);
+    this.send({ event: 'click', click_pos: JSON.stringify(relative_xy) });
+  }
+
+  /**
    * The default tag name.
    *
    * #### Notes
@@ -153,6 +169,12 @@ export class MappedImageView extends ImageView {
       area.outerHTML = areas[i].get('value');
     }
   }
+
+  /**
+   * Handles when the image is clicked.
+   * Let the browser do it!
+   */
+  _handle_click(event: MouseEvent): void {}
 
   map: HTMLMapElement;
 }
