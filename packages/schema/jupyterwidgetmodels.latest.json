@@ -3310,13 +3310,6 @@
       {
         "allow_none": true,
         "default": null,
-        "help": "HTML tag name",
-        "name": "tagname",
-        "type": "string"
-      },
-      {
-        "allow_none": true,
-        "default": null,
         "help": "A tooltip caption.",
         "name": "tooltip",
         "type": "string"
