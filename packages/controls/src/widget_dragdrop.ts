@@ -9,6 +9,8 @@ import {
     DOMWidgetView, unpack_models, WidgetModel, WidgetView, JupyterLuminoPanelWidget, reject
 } from '@jupyter-widgets/base';
 
+import $ from 'jquery';
+
 export
 class DraggableBoxModel extends CoreDOMWidgetModel {
     defaults(): Backbone.ObjectHash {
