@@ -124,5 +124,9 @@ export class StyleView extends WidgetView {
     }, this);
   }
 
+  get_traitNames(): string[] {
+    return this._traitNames;
+  }
+
   private _traitNames: string[];
 }

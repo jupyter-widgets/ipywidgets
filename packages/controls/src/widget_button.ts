@@ -1,11 +1,29 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { DOMWidgetView, StyleModel } from '@jupyter-widgets/base';
+import { DOMWidgetView, StyleModel, StyleView } from '@jupyter-widgets/base';
 
 import { CoreDOMWidgetModel } from './widget_core';
 
 import { JUPYTER_CONTROLS_VERSION } from './version';
+
+export function bold_to_weight(value: boolean): string | null {
+  if (value == true) return 'bold';
+  if (value == false) return 'normal';
+  return null;
+}
+
+export function italic_to_style(value: boolean): string | null {
+  if (value == true) return 'italic';
+  if (value == false) return 'normal';
+  return null;
+}
+
+export function underline_to_decoration(value: boolean): string | null {
+  if (value == true) return 'underline';
+  if (value == false) return 'none';
+  return null;
+}
 
 export class ButtonStyleModel extends StyleModel {
   defaults(): Backbone.ObjectHash {
@@ -13,11 +31,19 @@ export class ButtonStyleModel extends StyleModel {
       ...super.defaults(),
       _model_name: 'ButtonStyleModel',
       _model_module: '@jupyter-widgets/controls',
-      _model_module_version: JUPYTER_CONTROLS_VERSION
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
+      _view_name: 'ButtonStyleView',
+      _view_module: '@jupyter-widgets/controls',
+      _view_module_version: JUPYTER_CONTROLS_VERSION
     };
   }
 
   public static styleProperties = {
+    bold: {
+      selector: '',
+      attribute: 'font-weight',
+      default: ''
+    },
     button_color: {
       selector: '',
       attribute: 'background-color',
@@ -33,7 +59,7 @@ export class ButtonStyleModel extends StyleModel {
       attribute: 'font-size',
       default: ''
     },
-    font_style: {
+    italic: {
       selector: '',
       attribute: 'font-style',
       default: ''
@@ -43,22 +69,52 @@ export class ButtonStyleModel extends StyleModel {
       attribute: 'font-variant',
       default: ''
     },
-    font_weight: {
-      selector: '',
-      attribute: 'font-weight',
-      default: ''
-    },
     text_color: {
       selector: '',
       attribute: 'color',
       default: ''
     },
-    text_decoration: {
+    underline: {
       selector: '',
       attribute: 'text-decoration',
       default: ''
     }
   };
+}
+
+export class ButtonStyleView extends StyleView {
+  /**
+   * Handles when a trait value changes
+   */
+  handleChange(trait: string, value: any): void {
+    // should be synchronous so that we can measure later.
+    const parent = this.options.parent as DOMWidgetView;
+    if (parent) {
+      const ModelType = this.model.constructor as typeof StyleModel;
+      const styleProperties = ModelType.styleProperties;
+      const attribute = styleProperties[trait].attribute;
+      const selector = styleProperties[trait].selector;
+      const elements = selector
+        ? parent.el.querySelectorAll<HTMLElement>(selector)
+        : [parent.el];
+      let transform = undefined;
+      if (trait == 'bold') transform = bold_to_weight;
+      if (trait == 'italic') transform = italic_to_style;
+      if (trait == 'underline') transform = underline_to_decoration;
+      if (transform !== undefined) value = transform(value);
+      if (value === null) {
+        for (let i = 0; i !== elements.length; ++i) {
+          elements[i].style.removeProperty(attribute);
+        }
+      } else {
+        for (let i = 0; i !== elements.length; ++i) {
+          elements[i].style.setProperty(attribute, value);
+        }
+      }
+    } else {
+      console.warn('Style not applied because a parent view does not exist');
+    }
+  }
 }
 
 export class ButtonModel extends CoreDOMWidgetModel {

@@ -196,13 +196,12 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'1.2.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
 `button_color`   | `null` or string | `null`           | Color of the button
-`font_family`    | string           | `''`             | Button text font family.
+`font_family`    | `null` or string | `null`           | Button text font family.
 `font_size`      | string           | `''`             | Button text font size.
-`font_style`     | string           | `''`             | Button text font style.
-`font_variant`   | string           | `''`             | Button text font variant.
-`font_weight`    | string           | `''`             | Button text font weight.
+`font_variant`   | `null` or string | `null`           | Button text font variant.
+`italic`         | boolean          | `false`          | Button text italic.
 `text_color`     | string           | `''`             | Button text color.
-`text_decoration` | string           | `''`             | Button text decoration.
+`underline`      | `null` or boolean | `null`           | Button text underline.
 
 ### CheckboxModel (@jupyter-widgets/controls, 1.5.0); CheckboxView (@jupyter-widgets/controls, 1.5.0)
 
