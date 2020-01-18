@@ -9,18 +9,17 @@ import {
     DOMWidgetView, unpack_models, WidgetModel, WidgetView, JupyterLuminoPanelWidget, reject
 } from '@jupyter-widgets/base';
 
-import * as _ from 'underscore';
-
 export
 class DraggableBoxModel extends CoreDOMWidgetModel {
     defaults(): Backbone.ObjectHash {
-        return _.extend(super.defaults(), {
+        return {
+            ...super.defaults(),
             _view_name: 'DraggableBoxView',
             _model_name: 'DraggableBoxModel',
             child: null,
             draggable: true,
             drag_data: {}
-        });
+        };
     }
 
     static serializers = {
@@ -32,11 +31,12 @@ class DraggableBoxModel extends CoreDOMWidgetModel {
 export
 class DropBoxModel extends CoreDOMWidgetModel {
     defaults(): Backbone.ObjectHash {
-        return _.extend(super.defaults(), {
+        return {
+            ...super.defaults(),
             _view_name: 'DropBoxView',
             _model_name: 'DropBoxModel',
             child: null
-        });
+        };
     }
 
     static serializers = {
