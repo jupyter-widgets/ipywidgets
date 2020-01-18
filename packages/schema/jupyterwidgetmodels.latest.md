@@ -185,21 +185,22 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
-### ButtonStyleModel (@jupyter-widgets/controls, 1.5.0); StyleView (@jupyter-widgets/base, 1.2.0)
+### ButtonStyleModel (@jupyter-widgets/controls, 1.5.0); ButtonStyleView (@jupyter-widgets/controls, 1.5.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'ButtonStyleModel'` | 
-`_view_module`   | string           | `'@jupyter-widgets/base'` | 
-`_view_module_version` | string           | `'1.2.0'`        | 
-`_view_name`     | string           | `'StyleView'`    | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'1.5.0'`        | 
+`_view_name`     | string           | `'ButtonStyleView'` | 
+`bold`           | `null` or boolean | `null`           | Button text bold.
 `button_color`   | `null` or string | `null`           | Color of the button
 `font_family`    | `null` or string | `null`           | Button text font family.
 `font_size`      | string           | `''`             | Button text font size.
 `font_variant`   | `null` or string | `null`           | Button text font variant.
-`italic`         | boolean          | `false`          | Button text italic.
+`italic`         | `null` or boolean | `null`           | Button text italic.
 `text_color`     | string           | `''`             | Button text color.
 `underline`      | `null` or boolean | `null`           | Button text underline.
 

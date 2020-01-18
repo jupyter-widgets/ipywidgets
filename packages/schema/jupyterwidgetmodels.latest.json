@@ -1072,22 +1072,29 @@
         "type": "string"
       },
       {
-        "default": "@jupyter-widgets/base",
+        "default": "@jupyter-widgets/controls",
         "help": "",
         "name": "_view_module",
         "type": "string"
       },
       {
-        "default": "1.2.0",
+        "default": "1.5.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
       },
       {
-        "default": "StyleView",
+        "default": "ButtonStyleView",
         "help": "",
         "name": "_view_name",
         "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Button text bold.",
+        "name": "bold",
+        "type": "bool"
       },
       {
         "allow_none": true,
@@ -1117,7 +1124,8 @@
         "type": "string"
       },
       {
-        "default": false,
+        "allow_none": true,
+        "default": null,
         "help": "Button text italic.",
         "name": "italic",
         "type": "bool"
@@ -1142,9 +1150,9 @@
       "version": "1.5.0"
     },
     "view": {
-      "module": "@jupyter-widgets/base",
-      "name": "StyleView",
-      "version": "1.2.0"
+      "module": "@jupyter-widgets/controls",
+      "name": "ButtonStyleView",
+      "version": "1.5.0"
     }
   },
   {
