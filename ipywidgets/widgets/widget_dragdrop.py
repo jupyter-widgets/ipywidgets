@@ -18,7 +18,6 @@ class DropWidget(DOMWidget, CoreWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._drop_handlers = CallbackDispatcher()
-        self._dragstart_handlers = CallbackDispatcher()
         self.on_msg(self._handle_dragdrop_msg)
 
     def on_drop(self, callback, remove=False):
