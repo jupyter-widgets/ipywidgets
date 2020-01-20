@@ -23,8 +23,8 @@ class DropWidget(DOMWidget, CoreWidget):
     def on_drop(self, callback, remove=False):
         """ Register a callback to execute when an element is dropped.
 
-        The callback will be called with two arguments, the clicked button
-        widget instance, and the dropped element data.
+        The callback will be called with two arguments, the drop box
+        widget instance receiving the drop event, and the dropped element data.
 
         Parameters
         ----------
@@ -95,7 +95,7 @@ class DraggableBox(DropWidget):
     The child widget instance that is displayed inside the DropBox
 
     draggable: Boolean (default True)
-    Trait that flips wether the draggable box is draggable or not
+    Trait that flips whether the draggable box is draggable or not
 
     drag_data: Dictionary
     You can attach custom drag data here, which will be received as an argument on the receiver
@@ -109,7 +109,7 @@ class DraggableBox(DropWidget):
     """
 
     _model_name = Unicode('DraggableBoxModel').tag(sync=True)
-    _view_name = Unicode('DraggableBoxView').tag(sync=True) 
+    _view_name = Unicode('DraggableBoxView').tag(sync=True)
     child = Instance(Widget, allow_none=True).tag(sync=True, **widget_serialization)
     draggable = Bool(True).tag(sync=True)
     drag_data = Dict().tag(sync=True)
