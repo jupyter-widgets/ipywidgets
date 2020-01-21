@@ -29,7 +29,6 @@ class ButtonStyle(Style, CoreWidget):
     button_color = Color(None, allow_none=True, help="Color of the button").tag(sync=True)
     font_family = Unicode(None, allow_none=True, help="Button text font family.").tag(sync=True)
     font_size = Unicode(help="Button text font size.").tag(sync=True)
-    font_variant = Unicode(None, allow_none=True, help="Button text font variant.").tag(sync=True)
     italic = Bool(None, allow_none=True, help="Button text italic.").tag(sync=True)
     text_color = Unicode(help="Button text color.").tag(sync=True)
     underline = Bool(None, allow_none=True, help="Button text underline.").tag(sync=True)

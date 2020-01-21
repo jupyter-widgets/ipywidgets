@@ -1119,13 +1119,6 @@
       {
         "allow_none": true,
         "default": null,
-        "help": "Button text font variant.",
-        "name": "font_variant",
-        "type": "string"
-      },
-      {
-        "allow_none": true,
-        "default": null,
         "help": "Button text italic.",
         "name": "italic",
         "type": "bool"

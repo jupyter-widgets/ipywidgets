@@ -64,11 +64,6 @@ export class ButtonStyleModel extends StyleModel {
       attribute: 'font-style',
       default: ''
     },
-    font_variant: {
-      selector: '',
-      attribute: 'font-variant',
-      default: ''
-    },
     text_color: {
       selector: '',
       attribute: 'color',

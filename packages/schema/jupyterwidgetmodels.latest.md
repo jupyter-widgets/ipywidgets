@@ -199,7 +199,6 @@ Attribute        | Type             | Default          | Help
 `button_color`   | `null` or string | `null`           | Color of the button
 `font_family`    | `null` or string | `null`           | Button text font family.
 `font_size`      | string           | `''`             | Button text font size.
-`font_variant`   | `null` or string | `null`           | Button text font variant.
 `italic`         | `null` or boolean | `null`           | Button text italic.
 `text_color`     | string           | `''`             | Button text color.
 `underline`      | `null` or boolean | `null`           | Button text underline.
