@@ -6,32 +6,36 @@
 Represents a boolean using a widget.
 """
 
-from .widget_description import DescriptionWidget
+from .widget_description import DescriptionStyle, DescriptionWidget
 from .widget_core import CoreWidget
-from .widget_style import Style
 from .valuewidget import ValueWidget
 from .widget import register, widget_serialization
 from .trait_types import Color, InstanceDict
+from .._version import __jupyter_widgets_controls_version__
 
 from traitlets import Unicode, Bool, CaselessStrEnum
 
 
-class _BoolStyle(Style, CoreWidget):
+class _BoolStyle(DescriptionStyle, CoreWidget):
     """_Bool widget style."""
     _model_name = Unicode('BoolStyleModel').tag(sync=True)
     background_color = Color(None, allow_none=True, help="Background color").tag(sync=True)
+
 
 @register
 class ToggleButtonStyle(_BoolStyle, CoreWidget):
     """ToggleButton widget style."""
     _model_name = Unicode('ToggleButtonStyleModel').tag(sync=True)
-    font_family = Unicode(help="Button text font family.").tag(sync=True)
+    _view_name = Unicode('ToggleButtonStyleView').tag(sync=True)
+    _view_module = Unicode('@jupyter-widgets/controls').tag(sync=True)
+    _view_module_version = Unicode(__jupyter_widgets_controls_version__).tag(sync=True)
+    bold = Bool(None, allow_none=True, help="Toggle button text bold.").tag(sync=True)
+    button_color = Color(None, allow_none=True, help="Background color").tag(sync=True)
+    font_family = Unicode(help="Toggle button text font family.").tag(sync=True)
     font_size = Unicode(help="Button text font size.").tag(sync=True)
-    font_style = Unicode(help="Button text font style.").tag(sync=True)
-    font_variant = Unicode(help="Button text font variant.").tag(sync=True)
-    font_weight = Unicode(help="Button text font weight.").tag(sync=True)
+    italic = Bool(None, allow_none=True, help="Toggle button text italic.").tag(sync=True)
+    underline = Bool(None, allow_none=True, help="Toggle button text underline.").tag(sync=True)
     text_color = Color(None, allow_none=True, help="Text color").tag(sync=True)
-    text_decoration = Unicode(help="Text decoration").tag(sync=True)
 
 
 class _Bool(DescriptionWidget, ValueWidget, CoreWidget):

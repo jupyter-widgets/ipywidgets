@@ -6,8 +6,7 @@ import { assign } from './utils';
 import { WidgetModel, WidgetView, DOMWidgetView } from './widget';
 
 /**
- * Three functions to deal with some CSS attributes
- * to make them easier to use.
+ * Three functions to adapt some CSS attributes and make them easier to use.
  */
 export function bold_to_weight(value: boolean): string | null {
   if (value == true) return 'bold';

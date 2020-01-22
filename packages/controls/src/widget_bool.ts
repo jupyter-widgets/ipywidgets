@@ -1,13 +1,126 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import {
+  DOMWidgetView,
+  StyleModel,
+  StyleView,
+  bold_to_weight,
+  italic_to_style,
+  underline_to_decoration
+} from '@jupyter-widgets/base';
+
 import { CoreDescriptionModel } from './widget_core';
 
-import { DescriptionView } from './widget_description';
-
-import { DOMWidgetView } from '@jupyter-widgets/base';
+import { DescriptionStyleModel, DescriptionView } from './widget_description';
 
 import { JUPYTER_CONTROLS_VERSION } from './version';
+
+export class BoolStyleModel extends DescriptionStyleModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'BoolStyleModel',
+      _model_module: '@jupyter-widgets/controls',
+      _model_module_version: JUPYTER_CONTROLS_VERSION
+    };
+  }
+
+  public static styleProperties = {
+    ...DescriptionStyleModel.styleProperties,
+    background_color: {
+      selector: '',
+      attribute: 'background-color',
+      default: null as any
+    }
+  };
+}
+
+export class ToggleButtonStyleModel extends BoolStyleModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'ToggleButtonStyleModel',
+      _view_name: 'ToggleButtonStyleView',
+      _view_module: '@jupyter-widgets/controls',
+      _view_module_version: JUPYTER_CONTROLS_VERSION
+    };
+  }
+
+  public static styleProperties = {
+    ...BoolStyleModel.styleProperties,
+    bold: {
+      selector: '',
+      attribute: 'font-weight',
+      default: ''
+    },
+    button_color: {
+      selector: '',
+      attribute: 'background-color',
+      default: null as any
+    },
+    font_family: {
+      selector: '',
+      attribute: 'font-family',
+      default: ''
+    },
+    font_size: {
+      selector: '',
+      attribute: 'font-size',
+      default: ''
+    },
+    italic: {
+      selector: '',
+      attribute: 'font-style',
+      default: ''
+    },
+    text_color: {
+      selector: '',
+      attribute: 'color',
+      default: ''
+    },
+    underline: {
+      selector: '',
+      attribute: 'text-decoration',
+      default: ''
+    }
+  };
+}
+
+export class ToggleButtonStyleView extends StyleView {
+  /**
+   * Handles when a trait value changes
+   */
+  handleChange(trait: string, value: any): void {
+    // should be synchronous so that we can measure later.
+    const parent = this.options.parent as DOMWidgetView;
+    if (parent) {
+      const ModelType = this.model.constructor as typeof StyleModel;
+      const styleProperties = ModelType.styleProperties;
+      const attribute = styleProperties[trait].attribute;
+      const selector = styleProperties[trait].selector;
+      const elements = selector
+        ? parent.el.querySelectorAll<HTMLElement>(selector)
+        : [parent.el];
+      let transform = undefined;
+      if (trait == 'bold') transform = bold_to_weight;
+      if (trait == 'italic') transform = italic_to_style;
+      if (trait == 'underline') transform = underline_to_decoration;
+      if (transform !== undefined) value = transform(value);
+      if (value === null) {
+        for (let i = 0; i !== elements.length; ++i) {
+          elements[i].style.removeProperty(attribute);
+        }
+      } else {
+        for (let i = 0; i !== elements.length; ++i) {
+          elements[i].style.setProperty(attribute, value);
+        }
+      }
+    } else {
+      console.warn('Style not applied because a parent view does not exist');
+    }
+  }
+}
 
 export class BoolModel extends CoreDescriptionModel {
   defaults(): Backbone.ObjectHash {
@@ -15,6 +128,7 @@ export class BoolModel extends CoreDescriptionModel {
       ...super.defaults(),
       value: false,
       disabled: false,
+      style: null,
       _model_name: 'BoolModel'
     };
   }
