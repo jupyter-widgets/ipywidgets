@@ -747,25 +747,24 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | string           | `''`             | String value
 
-### LabelStyleModel (@jupyter-widgets/controls, 1.5.0); StyleView (@jupyter-widgets/base, 1.2.0)
+### LabelStyleModel (@jupyter-widgets/controls, 1.5.0); LabelStyleView (@jupyter-widgets/controls, 1.5.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'LabelStyleModel'` | 
-`_view_module`   | string           | `'@jupyter-widgets/base'` | 
-`_view_module_version` | string           | `'1.2.0'`        | 
-`_view_name`     | string           | `'StyleView'`    | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'1.5.0'`        | 
+`_view_name`     | string           | `'LabelStyleView'` | 
 `background_color` | `null` or string | `null`           | Background color
+`bold`           | `null` or boolean | `null`           | Label text bold.
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 `font_family`    | string           | `''`             | Label text font family.
 `font_size`      | string           | `''`             | Text font size.
-`font_style`     | string           | `''`             | Label text font style.
-`font_variant`   | string           | `''`             | Label text font variant.
-`font_weight`    | string           | `''`             | Label text font weight.
+`italic`         | `null` or boolean | `null`           | Label text italic.
 `text_color`     | `null` or string | `null`           | Text color
-`text_decoration` | string           | `''`             | Label text decoration.
+`underline`      | `null` or boolean | `null`           | Label text underline.
 
 ### LinkModel (@jupyter-widgets/controls, 1.5.0); None (@jupyter-widgets/controls, 1.5.0)
 

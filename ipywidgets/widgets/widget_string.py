@@ -11,6 +11,7 @@ from .valuewidget import ValueWidget
 from .widget import CallbackDispatcher, register, widget_serialization
 from .widget_core import CoreWidget
 from .trait_types import Color, InstanceDict, TypedTuple
+from .._version import __jupyter_widgets_controls_version__
 from traitlets import Unicode, Bool, Int
 from warnings import warn
 
@@ -28,11 +29,13 @@ class _StringStyle(DescriptionStyle, CoreWidget):
 class LabelStyle(_StringStyle, CoreWidget):
     """Label style widget."""
     _model_name = Unicode('LabelStyleModel').tag(sync=True)
+    _view_name = Unicode('LabelStyleView').tag(sync=True)
+    _view_module = Unicode('@jupyter-widgets/controls').tag(sync=True)
+    _view_module_version = Unicode(__jupyter_widgets_controls_version__).tag(sync=True)
+    bold = Bool(None, allow_none=True, help="Label text bold.").tag(sync=True)
     font_family = Unicode(help="Label text font family.").tag(sync=True)
-    font_style = Unicode(help="Label text font style.").tag(sync=True)
-    font_variant = Unicode(help="Label text font variant.").tag(sync=True)
-    font_weight = Unicode(help="Label text font weight.").tag(sync=True)
-    text_decoration = Unicode(help="Label text decoration.").tag(sync=True)
+    italic = Bool(None, allow_none=True, help="Label text italic.").tag(sync=True)
+    underline = Bool(None, allow_none=True, help="Label text underline.").tag(sync=True)
 
 
 @register

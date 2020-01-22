@@ -3,6 +3,15 @@
 
 import { CoreDescriptionModel } from './widget_core';
 
+import {
+  DOMWidgetView,
+  StyleModel,
+  StyleView,
+  bold_to_weight,
+  italic_to_style,
+  underline_to_decoration
+} from '@jupyter-widgets/base';
+
 import { DescriptionStyleModel, DescriptionView } from './widget_description';
 
 import { uuid } from './utils';
@@ -50,38 +59,71 @@ export class LabelStyleModel extends StringStyleModel {
       ...super.defaults(),
       _model_name: 'LabelStyleModel',
       _model_module: '@jupyter-widgets/controls',
-      _model_module_version: JUPYTER_CONTROLS_VERSION
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
+      _view_name: 'LabelStyleView',
+      _view_module: '@jupyter-widgets/controls',
+      _view_module_version: JUPYTER_CONTROLS_VERSION
     };
   }
 
   public static styleProperties = {
     ...StringStyleModel.styleProperties,
+    bold: {
+      selector: '',
+      attribute: 'font-weight',
+      default: ''
+    },
     font_family: {
       selector: '',
       attribute: 'font-family',
       default: ''
     },
-    font_style: {
+    italic: {
       selector: '',
       attribute: 'font-style',
       default: ''
     },
-    font_variant: {
-      selector: '',
-      attribute: 'font-variant',
-      default: ''
-    },
-    font_weight: {
-      selector: '',
-      attribute: 'font-weight',
-      default: ''
-    },
-    text_decoration: {
+    underline: {
       selector: '',
       attribute: 'text-decoration',
       default: ''
     }
   };
+}
+
+export class LabelStyleView extends StyleView {
+  /**
+   * Handles when a trait value changes
+   */
+  handleChange(trait: string, value: any): void {
+    // should be synchronous so that we can measure later.
+    const parent = this.options.parent as DOMWidgetView;
+    if (parent) {
+      const ModelType = this.model.constructor as typeof StyleModel;
+      const styleProperties = ModelType.styleProperties;
+      const attribute = styleProperties[trait].attribute;
+      const selector = styleProperties[trait].selector;
+      const elements = selector
+        ? parent.el.querySelectorAll<HTMLElement>(selector)
+        : [parent.el];
+      let adapter = undefined;
+      if (trait == 'bold') adapter = bold_to_weight;
+      if (trait == 'italic') adapter = italic_to_style;
+      if (trait == 'underline') adapter = underline_to_decoration;
+      if (adapter !== undefined) value = adapter(value);
+      if (value === null) {
+        for (let i = 0; i !== elements.length; ++i) {
+          elements[i].style.removeProperty(attribute);
+        }
+      } else {
+        for (let i = 0; i !== elements.length; ++i) {
+          elements[i].style.setProperty(attribute, value);
+        }
+      }
+    } else {
+      console.warn('Style not applied because a parent view does not exist');
+    }
+  }
 }
 
 export class TextStyleModel extends DescriptionStyleModel {
