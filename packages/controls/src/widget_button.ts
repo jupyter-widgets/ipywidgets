@@ -1,29 +1,18 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { DOMWidgetView, StyleModel, StyleView } from '@jupyter-widgets/base';
+import {
+  DOMWidgetView,
+  StyleModel,
+  StyleView,
+  bold_to_weight,
+  italic_to_style,
+  underline_to_decoration
+} from '@jupyter-widgets/base';
 
 import { CoreDOMWidgetModel } from './widget_core';
 
 import { JUPYTER_CONTROLS_VERSION } from './version';
-
-export function bold_to_weight(value: boolean): string | null {
-  if (value == true) return 'bold';
-  if (value == false) return 'normal';
-  return null;
-}
-
-export function italic_to_style(value: boolean): string | null {
-  if (value == true) return 'italic';
-  if (value == false) return 'normal';
-  return null;
-}
-
-export function underline_to_decoration(value: boolean): string | null {
-  if (value == true) return 'underline';
-  if (value == false) return 'none';
-  return null;
-}
 
 export class ButtonStyleModel extends StyleModel {
   defaults(): Backbone.ObjectHash {
