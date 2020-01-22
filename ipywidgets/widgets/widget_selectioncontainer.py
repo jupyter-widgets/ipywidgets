@@ -90,11 +90,6 @@ class Tab(_SelectionContainer):
             kwargs['selected_index'] = 0
         super(Tab, self).__init__(**kwargs)
 
-    @observe('children')
-    def _observe_children(self, change):
-        if len(change.new) > 0:
-            self.selected_index = 0
-
 @register
 class Stacked(_SelectionContainer):
     """Displays only the selected child."""
