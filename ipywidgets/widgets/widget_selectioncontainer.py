@@ -29,34 +29,6 @@ class _SelectionContainer(Box, CoreWidget):
         else:
             raise TraitError('Invalid selection: index out of bounds')
 
-    # Public methods
-    def set_title(self, index, title):
-        """Sets the title of a container page.
-
-        Parameters
-        ----------
-        index : int
-            Index of the container page
-        title : unicode
-            New title
-        """
-        titles = list(self.titles)
-        titles[index] = title
-        self.titles = titles
-
-    def get_title(self, index):
-        """Gets the title of a container page.
-
-        Parameters
-        ----------
-        index : int
-            Index of the container page
-        """
-        if 0<=index<len(self.titles):
-            return self.titles[index]
-        else:
-            return None
-
 @register
 class Accordion(_SelectionContainer):
     """Displays children each on a separate accordion page."""
