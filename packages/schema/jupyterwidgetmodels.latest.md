@@ -100,7 +100,7 @@ Attribute        | Type             | Default          | Help
 `loop`           | boolean          | `true`           | When true, the audio will start from the beginning after finishing
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
-`value`          | Bytes            | `b''`            | The media data as a byte string.
+`value`          | Bytes            | `b''`            | The media data as a memory view of bytes.
 
 ### BoundedFloatTextModel (@jupyter-widgets/controls, 1.5.0); FloatTextView (@jupyter-widgets/controls, 1.5.0)
 
@@ -185,18 +185,23 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
-### ButtonStyleModel (@jupyter-widgets/controls, 1.5.0); StyleView (@jupyter-widgets/base, 1.2.0)
+### ButtonStyleModel (@jupyter-widgets/controls, 1.5.0); ButtonStyleView (@jupyter-widgets/controls, 1.5.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'ButtonStyleModel'` | 
-`_view_module`   | string           | `'@jupyter-widgets/base'` | 
-`_view_module_version` | string           | `'1.2.0'`        | 
-`_view_name`     | string           | `'StyleView'`    | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'1.5.0'`        | 
+`_view_name`     | string           | `'ButtonStyleView'` | 
+`bold`           | `null` or boolean | `null`           | Button text bold.
 `button_color`   | `null` or string | `null`           | Color of the button
-`font_weight`    | string           | `''`             | Button text font weight.
+`font_family`    | `null` or string | `null`           | Button text font family.
+`font_size`      | string           | `''`             | Button text font size.
+`italic`         | `null` or boolean | `null`           | Button text italic.
+`text_color`     | string           | `''`             | Button text color.
+`underline`      | `null` or boolean | `null`           | Button text underline.
 
 ### CheckboxModel (@jupyter-widgets/controls, 1.5.0); CheckboxView (@jupyter-widgets/controls, 1.5.0)
 
@@ -330,7 +335,7 @@ Attribute        | Type             | Default          | Help
 `layout`         | reference to Layout widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
-`value`          | Bytes            | `b''`            | The media data as a byte string.
+`value`          | Bytes            | `b''`            | The media data as a memory view of bytes.
 
 ### DatePickerModel (@jupyter-widgets/controls, 1.5.0); DatePickerView (@jupyter-widgets/controls, 1.5.0)
 
@@ -630,7 +635,7 @@ Attribute        | Type             | Default          | Help
 `layout`         | reference to Layout widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
-`value`          | Bytes            | `b''`            | The media data as a byte string.
+`value`          | Bytes            | `b''`            | The media data as a memory view of bytes.
 `width`          | string           | `''`             | Width of the image in pixels. Use layout.width for styling the widget.
 
 ### IntProgressModel (@jupyter-widgets/controls, 1.5.0); ProgressView (@jupyter-widgets/controls, 1.5.0)
@@ -1155,7 +1160,7 @@ Attribute        | Type             | Default          | Help
 `loop`           | boolean          | `true`           | When true, the video will start from the beginning after finishing
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
-`value`          | Bytes            | `b''`            | The media data as a byte string.
+`value`          | Bytes            | `b''`            | The media data as a memory view of bytes.
 `width`          | string           | `''`             | Width of the video in pixels.
 
 ### OutputModel (@jupyter-widgets/output, 1.0.0); OutputView (@jupyter-widgets/output, 1.0.0)

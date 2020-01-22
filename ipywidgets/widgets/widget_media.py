@@ -7,8 +7,8 @@ from .widget_core import CoreWidget
 from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
 from .widget import register
-from traitlets import Unicode, CUnicode, Bytes, Bool
-from .trait_types import bytes_serialization
+from traitlets import Unicode, CUnicode, Bool
+from .trait_types import CByteMemoryView
 
 
 @register
@@ -23,7 +23,7 @@ class _Media(DOMWidget, ValueWidget, CoreWidget):
     """
 
     # Define the custom state properties to sync with the front-end
-    value = Bytes(help="The media data as a byte string.").tag(sync=True, **bytes_serialization)
+    value = CByteMemoryView(help="The media data as a memory view of bytes.").tag(sync=True)
 
     @classmethod
     def _from_file(cls, tag, filename, **kwargs):
@@ -116,12 +116,11 @@ class _Media(DOMWidget, ValueWidget, CoreWidget):
 
         # Return value first like a ValueWidget
         signature = []
-        sig_value = repr(self.value)
-        prefix, rest = sig_value.split("'", 1)
-        content = rest[:-1]
-        if len(content) > 100:
-            sig_value = "{}'{}...'".format(prefix, content[0:100])
-        signature.append('{}={}'.format('value', sig_value))
+
+        sig_value = 'value={!r}'.format(self.value[:40].tobytes())
+        if self.value.nbytes > 40:
+            sig_value = sig_value[:-1]+"..."+sig_value[-1]
+        signature.append(sig_value)
 
         for key in super(cls, self)._repr_keys():
             if key == 'value':

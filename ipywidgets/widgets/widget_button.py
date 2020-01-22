@@ -12,6 +12,7 @@ from .widget import CallbackDispatcher, register, widget_serialization
 from .widget_core import CoreWidget
 from .widget_style import Style
 from .trait_types import Color, InstanceDict
+from .._version import __jupyter_widgets_controls_version__
 
 from traitlets import Unicode, Bool, CaselessStrEnum, Instance, validate, default
 import warnings
@@ -21,8 +22,16 @@ import warnings
 class ButtonStyle(Style, CoreWidget):
     """Button style widget."""
     _model_name = Unicode('ButtonStyleModel').tag(sync=True)
+    _view_name = Unicode('ButtonStyleView').tag(sync=True)
+    _view_module = Unicode('@jupyter-widgets/controls').tag(sync=True)
+    _view_module_version = Unicode(__jupyter_widgets_controls_version__).tag(sync=True)
+    bold = Bool(None, allow_none=True, help="Button text bold.").tag(sync=True)
     button_color = Color(None, allow_none=True, help="Color of the button").tag(sync=True)
-    font_weight = Unicode(help="Button text font weight.").tag(sync=True)
+    font_family = Unicode(None, allow_none=True, help="Button text font family.").tag(sync=True)
+    font_size = Unicode(help="Button text font size.").tag(sync=True)
+    italic = Bool(None, allow_none=True, help="Button text italic.").tag(sync=True)
+    text_color = Unicode(help="Button text color.").tag(sync=True)
+    underline = Bool(None, allow_none=True, help="Button text underline.").tag(sync=True)
 
 
 @register
