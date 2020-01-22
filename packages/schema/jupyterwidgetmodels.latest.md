@@ -71,7 +71,6 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'AccordionModel'` | 
-`_titles`        | object           | `{}`             | Titles of the pages
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'AccordionView'` | 
@@ -80,6 +79,7 @@ Attribute        | Type             | Default          | Help
 `layout`         | reference to Layout widget | reference to new instance | 
 `selected_index` | `null` or number (integer) | `0`              | The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`titles`         | array of string  | `[]`             | Titles of the pages
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
 ### AudioModel (@jupyter-widgets/controls, 1.5.0); AudioView (@jupyter-widgets/controls, 1.5.0)
@@ -949,7 +949,6 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'StackedModel'` | 
-`_titles`        | object           | `{}`             | Titles of the pages
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'StackedView'`  | 
@@ -958,6 +957,7 @@ Attribute        | Type             | Default          | Help
 `layout`         | reference to Layout widget | reference to new instance | 
 `selected_index` | `null` or number (integer) | `0`              | The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`titles`         | array of string  | `[]`             | Titles of the pages
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
 ### TabModel (@jupyter-widgets/controls, 1.5.0); TabView (@jupyter-widgets/controls, 1.5.0)
@@ -968,7 +968,6 @@ Attribute        | Type             | Default          | Help
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'1.5.0'`        | 
 `_model_name`    | string           | `'TabModel'`     | 
-`_titles`        | object           | `{}`             | Titles of the pages
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'1.5.0'`        | 
 `_view_name`     | string           | `'TabView'`      | 
@@ -977,6 +976,7 @@ Attribute        | Type             | Default          | Help
 `layout`         | reference to Layout widget | reference to new instance | 
 `selected_index` | `null` or number (integer) | `0`              | The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`titles`         | array of string  | `[]`             | Titles of the pages
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
 ### TextModel (@jupyter-widgets/controls, 1.5.0); TextView (@jupyter-widgets/controls, 1.5.0)
