@@ -78,7 +78,7 @@ Attribute        | Type             | Default          | Help
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
 `children`       | array of reference to Widget widget | `[]`             | List of widget children
 `layout`         | reference to Layout widget | reference to new instance | 
-`selected_index` | `null` or number (integer) | `0`              | The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.
+`selected_index` | `null` or number (integer) | `null`           | The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
@@ -956,7 +956,7 @@ Attribute        | Type             | Default          | Help
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
 `children`       | array of reference to Widget widget | `[]`             | List of widget children
 `layout`         | reference to Layout widget | reference to new instance | 
-`selected_index` | `null` or number (integer) | `0`              | The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.
+`selected_index` | `null` or number (integer) | `null`           | The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
@@ -975,7 +975,7 @@ Attribute        | Type             | Default          | Help
 `box_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the box.
 `children`       | array of reference to Widget widget | `[]`             | List of widget children
 `layout`         | reference to Layout widget | reference to new instance | 
-`selected_index` | `null` or number (integer) | `0`              | The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.
+`selected_index` | `null` or number (integer) | `null`           | The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
