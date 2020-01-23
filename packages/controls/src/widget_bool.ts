@@ -1,11 +1,86 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { DOMWidgetView } from '@jupyter-widgets/base';
+
 import { CoreDescriptionModel } from './widget_core';
 
-import { DescriptionView } from './widget_description';
+import { DescriptionStyleModel, DescriptionView } from './widget_description';
 
-import { DOMWidgetView } from '@jupyter-widgets/base';
+import { JUPYTER_CONTROLS_VERSION } from './version';
+
+export class BoolStyleModel extends DescriptionStyleModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'BoolStyleModel',
+      _model_module: '@jupyter-widgets/controls',
+      _model_module_version: JUPYTER_CONTROLS_VERSION
+    };
+  }
+
+  public static styleProperties = {
+    ...DescriptionStyleModel.styleProperties,
+    background_color: {
+      selector: '',
+      attribute: 'background-color',
+      default: null as any
+    }
+  };
+}
+
+export class ToggleButtonStyleModel extends BoolStyleModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'ToggleButtonStyleModel'
+    };
+  }
+
+  public static styleProperties = {
+    ...BoolStyleModel.styleProperties,
+    background_color: {
+      selector: '',
+      attribute: 'background-color',
+      default: null as any
+    },
+    font_family: {
+      selector: '',
+      attribute: 'font-family',
+      default: ''
+    },
+    font_size: {
+      selector: '',
+      attribute: 'font-size',
+      default: ''
+    },
+    font_style: {
+      selector: '',
+      attribute: 'font-style',
+      default: ''
+    },
+    font_variant: {
+      selector: '',
+      attribute: 'font-variant',
+      default: ''
+    },
+    font_weight: {
+      selector: '',
+      attribute: 'font-weight',
+      default: ''
+    },
+    text_color: {
+      selector: '',
+      attribute: 'color',
+      default: ''
+    },
+    text_decoration: {
+      selector: '',
+      attribute: 'text-decoration',
+      default: ''
+    }
+  };
+}
 
 export class BoolModel extends CoreDescriptionModel {
   defaults(): Backbone.ObjectHash {
@@ -13,6 +88,7 @@ export class BoolModel extends CoreDescriptionModel {
       ...super.defaults(),
       value: false,
       disabled: false,
+      style: null,
       _model_name: 'BoolModel'
     };
   }
@@ -23,6 +99,7 @@ export class CheckboxModel extends CoreDescriptionModel {
     return {
       ...super.defaults(),
       indent: true,
+      style: null,
       _view_name: 'CheckboxView',
       _model_name: 'CheckboxModel'
     };
@@ -177,7 +254,8 @@ export class ToggleButtonModel extends BoolModel {
       _model_name: 'ToggleButtonModel',
       tooltip: '',
       icon: '',
-      button_style: ''
+      button_style: '',
+      style: null
     };
   }
 }
@@ -291,6 +369,7 @@ export class ValidModel extends BoolModel {
     return {
       ...super.defaults(),
       readout: 'Invalid',
+      style: null,
       _view_name: 'ValidView',
       _model_name: 'ValidModel'
     };
