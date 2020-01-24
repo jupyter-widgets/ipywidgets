@@ -38,7 +38,12 @@ class Layout(Widget):
     align_self = CaselessStrEnum(['auto', 'flex-start', 'flex-end',
         'center', 'baseline', 'stretch'] + CSS_PROPERTIES, allow_none=True, help="The align-self CSS attribute.").tag(sync=True)
     bottom = Unicode(None, allow_none=True, help="The bottom CSS attribute.").tag(sync=True)
-    border = Unicode(None, allow_none=True, help="The border CSS attribute.").tag(sync=True)
+    border_collapse = Unicode(None, allow_none=True, help="The border collapse CSS attribute.").tag(sync=True)
+    border_color = Unicode(None, allow_none=True, help="The border color CSS attribute.").tag(sync=True)
+    border_image = Unicode(None, allow_none=True, help="The border image CSS attribute.").tag(sync=True)
+    border_radius = Unicode(None, allow_none=True, help="The border radius CSS attribute.").tag(sync=True)
+    border_style = Unicode(None, allow_none=True, help="The border style CSS attribute.").tag(sync=True)
+    border_width = Unicode(None, allow_none=True, help="The border width CSS attribute.").tag(sync=True)
     display = Unicode(None, allow_none=True, help="The display CSS attribute.").tag(sync=True)
     flex = Unicode(None, allow_none=True, help="The flex CSS attribute.").tag(sync=True)
     flex_flow = Unicode(None, allow_none=True, help="The flex-flow CSS attribute.").tag(sync=True)
