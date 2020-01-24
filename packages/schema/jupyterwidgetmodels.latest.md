@@ -29,7 +29,12 @@ Attribute        | Type             | Default          | Help
 `align_content`  | `null` or string (one of `'flex-start'`, `'flex-end'`, `'center'`, `'space-between'`, `'space-around'`, `'space-evenly'`, `'stretch'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The align-content CSS attribute.
 `align_items`    | `null` or string (one of `'flex-start'`, `'flex-end'`, `'center'`, `'baseline'`, `'stretch'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The align-items CSS attribute.
 `align_self`     | `null` or string (one of `'auto'`, `'flex-start'`, `'flex-end'`, `'center'`, `'baseline'`, `'stretch'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The align-self CSS attribute.
-`border`         | `null` or string | `null`           | The border CSS attribute.
+`border_collapse` | `null` or string | `null`           | The border collapse CSS attribute.
+`border_color`   | `null` or string | `null`           | The border color CSS attribute.
+`border_image`   | `null` or string | `null`           | The border image CSS attribute.
+`border_radius`  | `null` or string | `null`           | The border radius CSS attribute.
+`border_style`   | `null` or string | `null`           | The border style CSS attribute.
+`border_width`   | `null` or string | `null`           | The border width CSS attribute.
 `bottom`         | `null` or string | `null`           | The bottom CSS attribute.
 `display`        | `null` or string | `null`           | The display CSS attribute.
 `flex`           | `null` or string | `null`           | The flex CSS attribute.
