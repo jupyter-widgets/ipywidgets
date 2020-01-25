@@ -75,7 +75,7 @@ export class FileUploadView extends DOMWidgetView {
             fileReader.onload = () => {
               // We know we can read the result as an array buffer since
               // we use the `.readAsArrayBuffer` method
-              const content: ArrayBuffer = <ArrayBuffer>fileReader.result;
+              const content: ArrayBuffer = fileReader.result as ArrayBuffer;
               resolve({
                 content,
                 name: file.name,
