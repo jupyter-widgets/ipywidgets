@@ -138,6 +138,6 @@ describe('FileUploadView', function() {
       );
       expect(contentInModel).to.equal('some file content');
       done();
-    }, 1000);
+    }, 100);
   });
 });
