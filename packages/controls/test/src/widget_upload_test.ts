@@ -14,7 +14,22 @@ function getProxyButton(view: widgets.FileUploadView): HTMLButtonElement {
   return elem as HTMLButtonElement;
 }
 
-describe.only('FileUploadView', function() {
+function simulateUpload(fileInput: HTMLInputElement, files: Array<File>) {
+  // The 'files' property on an input element is normally not writeable
+  // programmatically, so we explicitly overwrite it.
+
+  // The type of fileInput.files is FileList, an Array with an
+  // extra `.item` method.
+  const fileList: any = files;
+  fileList.item = (index: number) => files[index];
+  Object.defineProperty(fileInput, 'files', {
+    value: fileList,
+    writable: false
+  });
+  fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+describe.only('FileUploadView construction', function() {
   beforeEach(async function() {
     this.manager = new DummyManager();
     const modelId = 'u-u-i-d';
@@ -99,5 +114,30 @@ describe.only('FileUploadView', function() {
     this.model.set('description', 'some text');
     const proxyButton = proxyButtonForModel(this.model);
     expect(proxyButton.innerText).to.equal('some text (0)');
+  });
+
+  it('set model value on upload', function(done) {
+    const fileInput = fileInputForModel(this.model);
+    const lastModified = Date.UTC(2019, 0, 0);
+
+    const uploadedFile = new File(['some file content'], 'some-name', {
+      type: 'text/plain',
+      lastModified
+    });
+
+    simulateUpload(fileInput, [uploadedFile]);
+    setTimeout(() => {
+      expect(this.model.get('value')).to.have.length(1);
+      const [fileInModel] = this.model.get('value');
+      expect(fileInModel.name).to.equal('some-name');
+      expect(fileInModel.type).to.equal('text/plain');
+      expect(fileInModel.lastModified).to.equal(lastModified);
+
+      const contentInModel = new TextDecoder('utf-8').decode(
+        fileInModel.content
+      );
+      expect(contentInModel).to.equal('some file content');
+      done();
+    }, 1000);
   });
 });
