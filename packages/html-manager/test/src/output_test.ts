@@ -131,9 +131,11 @@ describe('Output widget', function() {
     };
     const model = await manager.new_model(modelCreate, modelState);
     await manager.display_view(manager.create_view(model), elt);
-    // Pause one more time to give the asynchronous output renderer time
-    // to render the widgets.
-    await Promise.resolve();
+
+    // Give the widget time to render
+    await new Promise(resolve => {
+      setTimeout(resolve, 20);
+    });
 
     expect(elt.querySelectorAll('.slider').length).to.equal(1);
   });
