@@ -48,7 +48,6 @@ export class FileUploadView extends DOMWidgetView {
     this.fileInput = document.createElement('input');
     this.fileInput.type = 'file';
     this.fileInput.style.display = 'none';
-    this.el.appendChild(this.fileInput);
 
     this.el.addEventListener('click', () => {
       this.fileInput.click();
