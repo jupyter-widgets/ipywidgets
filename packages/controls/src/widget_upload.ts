@@ -41,7 +41,6 @@ export class FileUploadModel extends CoreDOMWidgetModel {
 export class FileUploadView extends DOMWidgetView {
   el: HTMLButtonElement;
   fileInput: HTMLInputElement;
-  fileReader: FileReader;
 
   get tagName(): string {
     return 'button';
