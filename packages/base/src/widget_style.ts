@@ -9,21 +9,6 @@ import { WidgetModel, WidgetView, DOMWidgetView } from './widget';
  * Three functions to deal with some CSS attributes
  * to make them easier to use.
  */
-export function bold_to_weight(value: boolean): string | null {
-  if (value == true) return 'bold';
-  if (value == false) return 'normal';
-  return null;
-}
-export function italic_to_style(value: boolean): string | null {
-  if (value == true) return 'italic';
-  if (value == false) return 'normal';
-  return null;
-}
-export function underline_to_decoration(value: boolean): string | null {
-  if (value == true) return 'underline';
-  if (value == false) return 'none';
-  return null;
-}
 
 export class StyleModel extends WidgetModel {
   defaults(): Backbone.ObjectHash {
