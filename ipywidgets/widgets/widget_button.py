@@ -28,11 +28,12 @@ class ButtonStyle(Style, CoreWidget):
     bold = Bool(None, allow_none=True, help="Button text bold.").tag(sync=True)
     button_color = Color(None, allow_none=True, help="Color of the button").tag(sync=True)
     font_family = Unicode(None, allow_none=True, help="Button text font family.").tag(sync=True)
-    font_size = Unicode(help="Button text font size.").tag(sync=True)
+    font_size = Unicode(None, allow_none=True, help="Button text font size.").tag(sync=True)
+    font_style = Unicode(None, allow_none=True, help="Button text font style.").tag(sync=True)
     font_variant = Unicode(None, allow_none=True, help="Button text font variant.").tag(sync=True)
-    italic = Bool(None, allow_none=True, help="Button text italic.").tag(sync=True)
-    text_color = Unicode(help="Button text color.").tag(sync=True)
-    underline = Bool(None, allow_none=True, help="Button text underline.").tag(sync=True)
+    font_weight = Unicode(None, allow_none=True, help="Button text font weight.").tag(sync=True)
+    text_color = Unicode(None, allow_none=True, help="Button text color.").tag(sync=True)
+    text_decoration = Unicode(None, allow_none=True, help="Button text decoration.").tag(sync=True)
 
 
 @register

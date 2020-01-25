@@ -6,13 +6,39 @@
 Represents a unicode string using a widget.
 """
 
-from .widget_description import DescriptionWidget
+from .widget_description import DescriptionStyle, DescriptionWidget
 from .valuewidget import ValueWidget
-from .widget import CallbackDispatcher, register
+from .widget import CallbackDispatcher, register, widget_serialization
 from .widget_core import CoreWidget
-from .trait_types import TypedTuple
+from .trait_types import Color, InstanceDict, TypedTuple
 from traitlets import Unicode, Bool, Int
 from warnings import warn
+
+
+@register
+class _StringStyle(DescriptionStyle, CoreWidget):
+    """Text input style widget."""
+    _model_name = Unicode('StringStyleModel').tag(sync=True)
+    background_color = Color(None, allow_none=True, help="Background color").tag(sync=True)
+    font_size = Unicode(None, allow_none=True, help="Text font size.").tag(sync=True)
+    text_color = Color(None, allow_none=True, help="Text color").tag(sync=True)
+
+
+@register
+class LabelStyle(_StringStyle, CoreWidget):
+    """Label style widget."""
+    _model_name = Unicode('LabelStyleModel').tag(sync=True)
+    font_family = Unicode(None, allow_none=True, help="Label text font family.").tag(sync=True)
+    font_style = Unicode(None, allow_none=True, help="Label text font style.").tag(sync=True)
+    font_variant = Unicode(None, allow_none=True, help="Label text font variant.").tag(sync=True)
+    font_weight = Unicode(None, allow_none=True, help="Label text font weight.").tag(sync=True)
+    text_decoration = Unicode(None, allow_none=True, help="Label text decoration.").tag(sync=True)
+
+
+@register
+class TextStyle(_StringStyle, CoreWidget):
+    """Text input style widget."""
+    _model_name = Unicode('TextStyleModel').tag(sync=True)
 
 
 class _String(DescriptionWidget, ValueWidget, CoreWidget):
@@ -24,7 +50,7 @@ class _String(DescriptionWidget, ValueWidget, CoreWidget):
     # the text, not the bottom margin. See the last paragraph of
     # https://www.w3.org/TR/CSS2/visudet.html#leading
     placeholder = Unicode('\u200b', help="Placeholder text to display when nothing has been typed").tag(sync=True)
-
+    style = InstanceDict(_StringStyle).tag(sync=True, **widget_serialization)
 
     def __init__(self, value=None, **kwargs):
         if value is not None:
@@ -32,7 +58,6 @@ class _String(DescriptionWidget, ValueWidget, CoreWidget):
         super().__init__(**kwargs)
 
     _model_name = Unicode('StringModel').tag(sync=True)
-
 
 @register
 class HTML(_String):
@@ -56,6 +81,7 @@ class Label(_String):
     """
     _view_name = Unicode('LabelView').tag(sync=True)
     _model_name = Unicode('LabelModel').tag(sync=True)
+    style = InstanceDict(LabelStyle).tag(sync=True, **widget_serialization)
 
 
 @register
@@ -66,6 +92,7 @@ class Textarea(_String):
     rows = Int(None, allow_none=True, help="The number of rows to display.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
     continuous_update = Bool(True, help="Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.").tag(sync=True)
+    style = InstanceDict(TextStyle).tag(sync=True, **widget_serialization)
 
 @register
 class Text(_String):
@@ -74,6 +101,7 @@ class Text(_String):
     _model_name = Unicode('TextModel').tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
     continuous_update = Bool(True, help="Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.").tag(sync=True)
+    style = InstanceDict(TextStyle).tag(sync=True, **widget_serialization)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
