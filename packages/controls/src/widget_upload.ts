@@ -73,8 +73,8 @@ export class FileUploadView extends DOMWidgetView {
               size: file.size,
               lastModified: file.lastModified
             };
-            this.fileReader = new FileReader();
-            this.fileReader.onload = (event): any => {
+            const fileReader = new FileReader();
+            fileReader.onload = (event): any => {
               const buffer = (event as any).target.result;
               resolve({
                 buffer,
@@ -82,11 +82,11 @@ export class FileUploadView extends DOMWidgetView {
                 error: ''
               });
             };
-            this.fileReader.onerror = (): any => {
+            fileReader.onerror = (): any => {
               reject();
             };
-            this.fileReader.onabort = this.fileReader.onerror;
-            this.fileReader.readAsArrayBuffer(file);
+            fileReader.onabort = fileReader.onerror;
+            fileReader.readAsArrayBuffer(file);
           })
         );
       });
