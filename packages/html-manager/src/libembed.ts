@@ -16,10 +16,6 @@ import '@jupyter-widgets/controls/css/widgets.css';
 // want to include it in the require embedding.
 import { HTMLManager } from './index';
 
-// Used to attach the Lumino widget to the DOM node
-// TODO: make sure the require embedding does not contain any extra js because of this import! Perhaps we should pass in the Widget.attach function we use below, or keep and use a convenience function on html manager to attach the view.
-import { Widget } from '@lumino/widgets';
-
 // Load json schema validator
 import Ajv from 'ajv';
 const widget_state_schema = require('@jupyter-widgets/schema').v2.state;
@@ -99,8 +95,7 @@ async function renderManager(
         widgetTag.className = 'widget-subarea';
         viewtag.parentElement.insertBefore(widgetTag, viewtag);
         const view = await manager.create_view(model);
-
-        Widget.attach(view.pWidget, widgetTag);
+        manager.display_view(view, widgetTag);
       }
     })
   );

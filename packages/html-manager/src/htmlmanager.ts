@@ -36,14 +36,12 @@ export class HTMLManager extends ManagerBase {
   /**
    * Display the specified view. Element where the view is displayed
    * is specified in the `options.el` argument.
-   *
-   * TODO: Maybe we keep this function as a convenience function, so people do not have to deal with the Lumino widget attach function? Should we keep the first dummy argument?
    */
   async display_view(
     view: Promise<DOMWidgetView> | DOMWidgetView,
-    options: { el: HTMLElement }
+    el: HTMLElement
   ): Promise<void> {
-    LuminoWidget.Widget.attach((await view).pWidget, options.el);
+    LuminoWidget.Widget.attach((await view).pWidget, el);
   }
 
   /**
