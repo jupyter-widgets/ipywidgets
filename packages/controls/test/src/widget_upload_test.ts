@@ -14,6 +14,22 @@ function getProxyButton(view: widgets.FileUploadView): HTMLButtonElement {
   return elem as HTMLButtonElement;
 }
 
+function fileInputForModel(model: widgets.FileUploadModel) {
+  // For a given model, create and render a view and return the
+  // view's input.
+  const options = { model };
+  const view = new widgets.FileUploadView(options);
+  view.render();
+  return getFileInput(view);
+}
+
+function proxyButtonForModel(model: widgets.FileUploadModel) {
+  const options = { model };
+  const view = new widgets.FileUploadView(options);
+  view.render();
+  return getProxyButton(view);
+}
+
 function simulateUpload(fileInput: HTMLInputElement, files: Array<File>) {
   // The 'files' property on an input element is normally not writeable
   // programmatically, so we explicitly overwrite it.
@@ -29,7 +45,7 @@ function simulateUpload(fileInput: HTMLInputElement, files: Array<File>) {
   fileInput.dispatchEvent(new Event('change', { bubbles: true }));
 }
 
-describe.only('FileUploadView construction', function() {
+describe('FileUploadView', function() {
   beforeEach(async function() {
     this.manager = new DummyManager();
     const modelId = 'u-u-i-d';
@@ -43,22 +59,6 @@ describe.only('FileUploadView construction', function() {
       {}
     );
   });
-
-  function fileInputForModel(model: widgets.FileUploadModel) {
-    // For a given model, create and render a view and return the
-    // view's input.
-    const options = { model };
-    const view = new widgets.FileUploadView(options);
-    view.render();
-    return getFileInput(view);
-  }
-
-  function proxyButtonForModel(model: widgets.FileUploadModel) {
-    const options = { model };
-    const view = new widgets.FileUploadView(options);
-    view.render();
-    return getProxyButton(view);
-  }
 
   it('construction', function() {
     const options = { model: this.model };
