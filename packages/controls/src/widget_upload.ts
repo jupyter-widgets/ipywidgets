@@ -72,18 +72,15 @@ export class FileUploadView extends DOMWidgetView {
       Array.from(this.fileInput.files ?? []).forEach((file: File) => {
         promisesFile.push(
           new Promise((resolve, reject) => {
-            const metadata = {
-              name: file.name,
-              type: file.type,
-              size: file.size,
-              lastModified: file.lastModified
-            };
             const fileReader = new FileReader();
             fileReader.onload = (event): any => {
               const content = (event as any).target.result;
               resolve({
                 content,
-                ...metadata,
+                name: file.name,
+                type: file.type,
+                size: file.size,
+                lastModified: file.lastModified,
                 error: ''
               });
             };
