@@ -4,6 +4,15 @@
 import { CoreDOMWidgetModel } from './widget_core';
 import { DOMWidgetView } from '@jupyter-widgets/base';
 
+interface IFileUploaded {
+  content: any;
+  name: string;
+  size: number;
+  type: string;
+  lastModified: number;
+  error: string;
+}
+
 export class FileUploadModel extends CoreDOMWidgetModel {
   defaults(): Backbone.ObjectHash {
     return {
@@ -58,16 +67,9 @@ export class FileUploadView extends DOMWidgetView {
     });
 
     this.fileInput.addEventListener('change', () => {
-      const promisesFile: Promise<{
-        content: any;
-        name: string;
-        size: number;
-        type: string;
-        lastModified: number;
-        error: string;
-      }>[] = [];
+      const promisesFile: Promise<IFileUploaded>[] = [];
 
-      Array.from(this.fileInput.files ?? []).forEach(file => {
+      Array.from(this.fileInput.files ?? []).forEach((file: File) => {
         promisesFile.push(
           new Promise((resolve, reject) => {
             const metadata = {
