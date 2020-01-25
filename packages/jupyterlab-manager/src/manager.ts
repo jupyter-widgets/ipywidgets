@@ -1,9 +1,6 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-// Just need typings
-import * as Backbone from 'backbone';
-
 import {
   shims,
   IClassicComm,
@@ -25,8 +22,6 @@ import {
 import { IDisposable } from '@lumino/disposable';
 
 import { PromiseDelegate, ReadonlyPartialJSONValue } from '@lumino/coreutils';
-
-import { Widget } from '@lumino/widgets';
 
 import { INotebookModel } from '@jupyterlab/notebook';
 
@@ -54,42 +49,9 @@ export const WIDGET_STATE_MIMETYPE =
   'application/vnd.jupyter.widget-state+json';
 
 /**
- * The class name added to an BackboneViewWrapper widget.
- */
-const BACKBONEVIEWWRAPPER_CLASS = 'jp-BackboneViewWrapper';
-
-export class BackboneViewWrapper extends Widget {
-  /**
-   * Construct a new `Backbone` wrapper widget.
-   *
-   * @param view - The `Backbone.View` instance being wrapped.
-   */
-  constructor(view: Backbone.View<any>) {
-    super();
-    this._view = view;
-    view.on('remove', () => {
-      this.dispose();
-    });
-    this.addClass(BACKBONEVIEWWRAPPER_CLASS);
-    this.node.appendChild(view.el);
-  }
-
-  onAfterAttach(msg: any): void {
-    this._view.trigger('displayed');
-  }
-
-  dispose(): void {
-    this._view = null!;
-    super.dispose();
-  }
-
-  private _view: Backbone.View<any>;
-}
-
-/**
  * A widget manager that returns Lumino widgets.
  */
-export abstract class LabWidgetManager extends ManagerBase<Widget>
+export abstract class LabWidgetManager extends ManagerBase
   implements IDisposable {
   constructor(rendermime: IRenderMimeRegistry) {
     super();
@@ -217,17 +179,6 @@ export abstract class LabWidgetManager extends ManagerBase<Widget>
         );
       })
     );
-  }
-
-  /**
-   * Return a Lumino widget representing the view
-   */
-  async display_view(
-    msg: any,
-    view: Backbone.View<Backbone.Model>,
-    options: any
-  ): Promise<Widget> {
-    return (view as any).pWidget || new BackboneViewWrapper(view);
   }
 
   /**

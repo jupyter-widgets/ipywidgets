@@ -16,6 +16,10 @@ import '@jupyter-widgets/controls/css/widgets.css';
 // want to include it in the require embedding.
 import { HTMLManager } from './index';
 
+// Used to attach the Lumino widget to the DOM node
+// TODO: make sure the require embedding does not contain any extra js because of this import! Perhaps we should pass in the Widget.attach function we use below, or keep and use a convenience function on html manager to attach the view.
+import { Widget } from '@lumino/widgets';
+
 // Load json schema validator
 import Ajv from 'ajv';
 const widget_state_schema = require('@jupyter-widgets/schema').v2.state;
@@ -31,16 +35,18 @@ const view_validate = ajv.compile(widget_view_schema);
  * @param managerFactory A function that returns a new HTMLManager
  * @param element (default document.documentElement) The document element in which to process for widget state.
  */
-export function renderWidgets(
+export async function renderWidgets(
   managerFactory: () => HTMLManager,
   element: HTMLElement = document.documentElement
-): void {
+): Promise<void> {
   const tags = element.querySelectorAll(
     'script[type="application/vnd.jupyter.widget-state+json"]'
   );
-  for (let i = 0; i != tags.length; ++i) {
-    renderManager(element, JSON.parse(tags[i].innerHTML), managerFactory);
-  }
+  await Promise.all(
+    Array.from(tags).map(async t =>
+      renderManager(element, JSON.parse(t.innerHTML), managerFactory)
+    )
+  );
 }
 
 /**
@@ -57,47 +63,45 @@ export function renderWidgets(
  * Additionally, if the script tag has a prior img sibling with class
  * 'jupyter-widget', then that img tag is deleted.
  */
-function renderManager(
+async function renderManager(
   element: HTMLElement,
   widgetState: any,
   managerFactory: () => HTMLManager
-): void {
+): Promise<void> {
   const valid = model_validate(widgetState);
   if (!valid) {
-    console.error('Model state has errors.', model_validate.errors);
+    throw new Error(`Model state has errors: ${model_validate.errors}`);
   }
   const manager = managerFactory();
-  manager.set_state(widgetState).then(function(models) {
-    const tags = element.querySelectorAll(
-      'script[type="application/vnd.jupyter.widget-view+json"]'
-    );
-    for (let i = 0; i != tags.length; ++i) {
-      const viewtag = tags[i];
+  const models = await manager.set_state(widgetState);
+  const tags = element.querySelectorAll(
+    'script[type="application/vnd.jupyter.widget-view+json"]'
+  );
+  await Promise.all(
+    Array.from(tags).map(async viewtag => {
       const widgetViewObject = JSON.parse(viewtag.innerHTML);
       const valid = view_validate(widgetViewObject);
       if (!valid) {
-        console.error('View state has errors.', view_validate.errors);
+        throw new Error(`View state has errors: ${view_validate.errors}`);
       }
       const model_id: string = widgetViewObject.model_id;
-      // Find the model id in the models. We should use .find, but IE
-      // doesn't support .find
-      const model = models.filter(item => {
-        return item.model_id == model_id;
-      })[0];
-      if (model !== undefined) {
+      const model = models.find(item => item.model_id == model_id);
+      if (model !== undefined && viewtag.parentElement !== null) {
         const prev = viewtag.previousElementSibling;
         if (
           prev &&
           prev.tagName === 'img' &&
           prev.classList.contains('jupyter-widget')
         ) {
-          viewtag.parentElement?.removeChild(prev);
+          viewtag.parentElement.removeChild(prev);
         }
         const widgetTag = document.createElement('div');
         widgetTag.className = 'widget-subarea';
-        viewtag.parentElement?.insertBefore(widgetTag, viewtag);
-        manager.display_model(null, model, { el: widgetTag });
+        viewtag.parentElement.insertBefore(widgetTag, viewtag);
+        const view = await manager.create_view(model);
+
+        Widget.attach(view.pWidget, widgetTag);
       }
-    }
-  });
+    })
+  );
 }
