@@ -28,11 +28,6 @@ export class ButtonStyleModel extends StyleModel {
   }
 
   public static styleProperties = {
-    bold: {
-      selector: '',
-      attribute: 'font-weight',
-      default: ''
-    },
     button_color: {
       selector: '',
       attribute: 'background-color',
@@ -48,9 +43,19 @@ export class ButtonStyleModel extends StyleModel {
       attribute: 'font-size',
       default: ''
     },
-    italic: {
+    font_style: {
       selector: '',
       attribute: 'font-style',
+      default: ''
+    },
+    font_variant: {
+      selector: '',
+      attribute: 'font-variant',
+      default: ''
+    },
+    font_weight: {
+      selector: '',
+      attribute: 'font-family',
       default: ''
     },
     text_color: {
@@ -58,7 +63,7 @@ export class ButtonStyleModel extends StyleModel {
       attribute: 'color',
       default: ''
     },
-    underline: {
+    text_decoration: {
       selector: '',
       attribute: 'text-decoration',
       default: ''
