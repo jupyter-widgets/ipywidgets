@@ -2,7 +2,6 @@
 // Distributed under the terms of the Modified BSD License.
 
 import * as widgets from '@jupyter-widgets/base';
-import * as services from '@jupyterlab/services';
 import * as Backbone from 'backbone';
 
 import { ManagerBase } from '../../lib';

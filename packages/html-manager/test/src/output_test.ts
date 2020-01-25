@@ -20,7 +20,7 @@ const newWidget = async (modelState: any): Promise<HTMLElement> => {
     model_module_version: '*'
   };
   const model = await manager.new_model(modelCreate, modelState);
-  await manager.display_model(null, model, { el: widgetTag });
+  await manager.display_view(manager.create_view(model), widgetTag);
   return widgetTag;
 };
 
@@ -130,7 +130,7 @@ describe('Output widget', function() {
       model_module_version: '*'
     };
     const model = await manager.new_model(modelCreate, modelState);
-    await manager.display_model(null, model, { el: elt });
+    await manager.display_view(manager.create_view(model), elt);
     // Pause one more time to give the asynchronous output renderer time
     // to render the widgets.
     await Promise.resolve();
@@ -192,7 +192,7 @@ describe('Output widget', function() {
       ]
     };
     const model = await manager.new_model(modelCreate, modelState);
-    await manager.display_model(null, model, { el: widgetTag });
+    await manager.display_view(manager.create_view(model), widgetTag);
     expect(widgetTag.innerText).to.equal('something different');
   });
 });
