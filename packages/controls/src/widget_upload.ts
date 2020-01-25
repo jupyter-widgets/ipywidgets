@@ -59,8 +59,11 @@ export class FileUploadView extends DOMWidgetView {
 
     this.fileInput.addEventListener('change', () => {
       const promisesFile: Promise<{
-        buffer: any;
-        metadata: any;
+        content: any;
+        name: string;
+        size: number;
+        type: string;
+        lastModified: number;
         error: string;
       }>[] = [];
 
@@ -75,10 +78,10 @@ export class FileUploadView extends DOMWidgetView {
             };
             const fileReader = new FileReader();
             fileReader.onload = (event): any => {
-              const buffer = (event as any).target.result;
+              const content = (event as any).target.result;
               resolve({
-                buffer,
-                metadata,
+                content,
+                ...metadata,
                 error: ''
               });
             };
@@ -92,15 +95,9 @@ export class FileUploadView extends DOMWidgetView {
       });
 
       Promise.all(promisesFile)
-        .then(contents => {
-          const value = contents.map(c => {
-            return {
-              ...c.metadata,
-              content: c.buffer
-            };
-          });
+        .then(files => {
           this.model.set({
-            value,
+            value: files,
             error: ''
           });
           this.touch();
