@@ -5,7 +5,7 @@ import { CoreDOMWidgetModel } from './widget_core';
 import { DOMWidgetView } from '@jupyter-widgets/base';
 
 interface IFileUploaded {
-  content: any;
+  content: ArrayBuffer;
   name: string;
   size: number;
   type: string;
@@ -25,7 +25,7 @@ export class FileUploadModel extends CoreDOMWidgetModel {
       icon: 'upload',
       button_style: '',
       multiple: false,
-      value: [],
+      value: [], // has type Array<IFileUploaded>
       error: '',
       style: null
     };
@@ -67,14 +67,16 @@ export class FileUploadView extends DOMWidgetView {
     });
 
     this.fileInput.addEventListener('change', () => {
-      const promisesFile: Promise<IFileUploaded>[] = [];
+      const promisesFile: Array<Promise<IFileUploaded>> = [];
 
       Array.from(this.fileInput.files ?? []).forEach((file: File) => {
         promisesFile.push(
           new Promise((resolve, reject) => {
             const fileReader = new FileReader();
-            fileReader.onload = (event): any => {
-              const content = (event as any).target.result;
+            fileReader.onload = () => {
+              // We know we can read the result as an array buffer since
+              // we use the `.readAsArrayBuffer` method
+              const content: ArrayBuffer = <ArrayBuffer>fileReader.result;
               resolve({
                 content,
                 name: file.name,
@@ -84,7 +86,7 @@ export class FileUploadView extends DOMWidgetView {
                 error: ''
               });
             };
-            fileReader.onerror = (): any => {
+            fileReader.onerror = () => {
               reject();
             };
             fileReader.onabort = fileReader.onerror;
@@ -94,7 +96,7 @@ export class FileUploadView extends DOMWidgetView {
       });
 
       Promise.all(promisesFile)
-        .then(files => {
+        .then((files: Array<IFileUploaded>) => {
           this.model.set({
             value: files,
             error: ''
