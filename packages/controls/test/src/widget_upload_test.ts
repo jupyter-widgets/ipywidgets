@@ -14,7 +14,7 @@ function getProxyButton(view: widgets.FileUploadView): HTMLButtonElement {
   return elem as HTMLButtonElement;
 }
 
-function fileInputForModel(model: widgets.FileUploadModel) {
+function fileInputForModel(model: widgets.FileUploadModel): HTMLInputElement {
   // For a given model, create and render a view and return the
   // view's input.
   const options = { model };
@@ -23,21 +23,23 @@ function fileInputForModel(model: widgets.FileUploadModel) {
   return getFileInput(view);
 }
 
-function proxyButtonForModel(model: widgets.FileUploadModel) {
+function proxyButtonForModel(
+  model: widgets.FileUploadModel
+): HTMLButtonElement {
   const options = { model };
   const view = new widgets.FileUploadView(options);
   view.render();
   return getProxyButton(view);
 }
 
-function simulateUpload(fileInput: HTMLInputElement, files: Array<File>) {
+function simulateUpload(fileInput: HTMLInputElement, files: Array<File>): void {
   // The 'files' property on an input element is normally not writeable
   // programmatically, so we explicitly overwrite it.
 
   // The type of fileInput.files is FileList, an Array with an
   // extra `.item` method.
   const fileList: any = files;
-  fileList.item = (index: number) => files[index];
+  fileList.item = (index: number): File => files[index];
   Object.defineProperty(fileInput, 'files', {
     value: fileList,
     writable: false

@@ -72,7 +72,7 @@ export class FileUploadView extends DOMWidgetView {
         promisesFile.push(
           new Promise((resolve, reject) => {
             const fileReader = new FileReader();
-            fileReader.onload = () => {
+            fileReader.onload = (): void => {
               // We know we can read the result as an array buffer since
               // we use the `.readAsArrayBuffer` method
               const content: ArrayBuffer = fileReader.result as ArrayBuffer;
@@ -85,7 +85,7 @@ export class FileUploadView extends DOMWidgetView {
                 error: ''
               });
             };
-            fileReader.onerror = () => {
+            fileReader.onerror = (): void => {
               reject();
             };
             fileReader.onabort = fileReader.onerror;
