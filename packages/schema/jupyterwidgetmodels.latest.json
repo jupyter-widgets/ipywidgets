@@ -94,43 +94,36 @@
       {
         "allow_none": true,
         "default": null,
-        "help": "The border collapse CSS attribute.",
-        "name": "border_collapse",
+        "help": "The border CSS attribute.",
+        "name": "border",
         "type": "string"
       },
       {
         "allow_none": true,
         "default": null,
-        "help": "The border color CSS attribute.",
-        "name": "border_color",
+        "help": "The border bottom CSS attribute.",
+        "name": "border_bottom",
         "type": "string"
       },
       {
         "allow_none": true,
         "default": null,
-        "help": "The border image CSS attribute.",
-        "name": "border_image",
+        "help": "The border left CSS attribute.",
+        "name": "border_left",
         "type": "string"
       },
       {
         "allow_none": true,
         "default": null,
-        "help": "The border radius CSS attribute.",
-        "name": "border_radius",
+        "help": "The border right CSS attribute.",
+        "name": "border_right",
         "type": "string"
       },
       {
         "allow_none": true,
         "default": null,
-        "help": "The border style CSS attribute.",
-        "name": "border_style",
-        "type": "string"
-      },
-      {
-        "allow_none": true,
-        "default": null,
-        "help": "The border width CSS attribute.",
-        "name": "border_width",
+        "help": "The border top CSS attribute.",
+        "name": "border_top",
         "type": "string"
       },
       {
