@@ -65,6 +65,36 @@ class _SelectionContainer(Box, CoreWidget):
         else:
             return None
 
+    @property
+    def as_dict(self):
+        """Access the children of the selection container like a dictionary."""
+        # Test to make sure every section has a child widget.
+        if len(self.children) is len(self._titles):
+            # Test for repeated titles
+            if len(set(self._titles.values())) is len(self._titles):
+                return dict((v, self.children[int(k)]) for k, v in self._titles.items())
+            else:
+                # FIXME: Add warning
+                result = dict()
+                repeats = dict()
+                for k, v in self._titles.items():
+                    if v not in result:
+                        result[v] = self.children[int(k)]
+                    else:
+                        if v not in repeats:
+                            repeats[v] = 0
+                            result[v+str(repeats[v])] = self.children[int(k)]
+                        else:
+                            repeats[v] += 1
+                            result[v+str(repeats[v])] = self.children[int(k)]
+                return result
+
+        else:
+            print("Must have same number of children and titles.")
+            # FIXME: Add warning
+            # TODO: Some type of place holders for sections without children.
+            return None
+
     def _repr_keys(self):
         # We also need to include _titles in repr for reproducibility
         yield from super()._repr_keys()
