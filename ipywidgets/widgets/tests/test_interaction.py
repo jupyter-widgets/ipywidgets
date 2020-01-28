@@ -182,6 +182,23 @@ def test_list_tuple_invalid():
             print(bad) # because there is no custom message in assert_raises
             c = interactive(f, tup=bad)
 
+def test_dict():
+    for d in [
+        dict(a=5),
+        dict(a=5, b='b', c=dict),
+    ]:
+        with pytest.raises(TypeError):
+            c = interactive(f, d=d)
+
+
+def test_ordereddict():
+    from collections import OrderedDict
+    items = [(3, 300), (1, 100), (2, 200)]
+    first = items[0][1]
+    values = OrderedDict(items)
+    with pytest.raises(TypeError):
+        c = interactive(f, lis=values)
+
 def test_iterable():
     def yield_values():
         yield 3
@@ -549,13 +566,14 @@ def test_multiple_selection():
     check_widget(w, value=(1, 2))
 
     # dict style
-    w.options = {1: 1}
-    check_widget(w, options={1:1})
+    with pytest.raises(TypeError):
+        w = smw(options={1: 1})
 
     # updating
+    w.options = (1,)
     with pytest.raises(TraitError):
         w.value = (2,)
-    check_widget(w, options={1:1})
+    check_widget(w, options=(1,))
 
 
 def test_interact_noinspect():

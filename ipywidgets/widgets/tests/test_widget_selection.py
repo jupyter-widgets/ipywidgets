@@ -1,7 +1,10 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
+import inspect
 from unittest import TestCase
+
+import pytest
 
 from traitlets import TraitError
 
@@ -12,6 +15,10 @@ class TestDropdown(TestCase):
 
     def test_construction(self):
         Dropdown()
+
+    def test_raise_mapping_options(self):
+        with pytest.raises(TypeError):
+            Dropdown(options={'One': 1, 'Two': 2, 'Three': 3})
 
 
 class TestSelectionSlider(TestCase):
