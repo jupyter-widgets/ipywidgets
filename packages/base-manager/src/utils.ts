@@ -298,3 +298,22 @@ export function bufferToBase64(buffer: ArrayBuffer): string {
 export function base64ToBuffer(base64: string): ArrayBuffer {
   return toByteArray(base64).buffer;
 }
+
+/**
+ * Map a function onto a list in batches, resolving each batch of returned
+ * promises before moving to the next batch.
+ */
+export async function mapBatch<T, U>(
+  list: T[],
+  step: number,
+  fn: (value: T, index: number, array: T[]) => Promise<U> | U,
+  thisArg?: any
+): Promise<U[]> {
+  const results = [];
+  for (let i = 0; i < list.length; i += step) {
+    results.push(
+      ...(await Promise.all(list.slice(i, i + step).map(fn, thisArg)))
+    );
+  }
+  return results;
+}

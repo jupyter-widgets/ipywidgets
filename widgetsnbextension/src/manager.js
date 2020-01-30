@@ -3,7 +3,7 @@
 'use strict';
 
 var base = require('@jupyter-widgets/base');
-var ManagerBase = require('@jupyter-widgets/base-manager').ManagerBase;
+var baseManager = require('@jupyter-widgets/base-manager');
 var widgets = require('@jupyter-widgets/controls');
 var outputWidgets = require('./widget_output');
 var saveState = require('./save_state');
@@ -74,7 +74,7 @@ function new_comm(
 // WidgetManager class
 //--------------------------------------------------------------------
 
-export class WidgetManager extends ManagerBase {
+export class WidgetManager extends baseManager.ManagerBase {
   constructor(comm_manager, notebook) {
     super();
     // Managers are stored in *reverse* order, so that _managers[0] is the most recent.
@@ -111,34 +111,32 @@ export class WidgetManager extends ManagerBase {
       // for the responses (2).
       return Promise.all(comm_promises)
         .then(function(comms) {
-          return Promise.all(
-            comms.map(function(comm) {
-              var update_promise = new Promise(function(resolve, reject) {
-                comm.on_msg(function(msg) {
-                  base.put_buffers(
-                    msg.content.data.state,
-                    msg.content.data.buffer_paths,
-                    msg.buffers
-                  );
-                  // A suspected response was received, check to see if
-                  // it's a state update. If so, resolve.
-                  if (msg.content.data.method === 'update') {
-                    resolve({
-                      comm: comm,
-                      msg: msg
-                    });
-                  }
-                });
+          return baseManager.mapBatch(comms, 100, function(comm) {
+            var update_promise = new Promise(function(resolve, reject) {
+              comm.on_msg(function(msg) {
+                base.put_buffers(
+                  msg.content.data.state,
+                  msg.content.data.buffer_paths,
+                  msg.buffers
+                );
+                // A suspected response was received, check to see if
+                // it's a state update. If so, resolve.
+                if (msg.content.data.method === 'update') {
+                  resolve({
+                    comm: comm,
+                    msg: msg
+                  });
+                }
               });
-              comm.send(
-                {
-                  method: 'request_state'
-                },
-                that.callbacks()
-              );
-              return update_promise;
-            })
-          );
+            });
+            comm.send(
+              {
+                method: 'request_state'
+              },
+              that.callbacks()
+            );
+            return update_promise;
+          });
         })
         .then(function(widgets_info) {
           return Promise.all(
@@ -411,7 +409,10 @@ export class WidgetManager extends ManagerBase {
    * Callback handlers for a specific view
    */
   callbacks(view) {
-    var callbacks = ManagerBase.prototype.callbacks.call(this, view);
+    var callbacks = baseManager.ManagerBase.prototype.callbacks.call(
+      this,
+      view
+    );
     if (view && view.options.iopub_callbacks) {
       callbacks.iopub = view.options.iopub_callbacks;
     }
