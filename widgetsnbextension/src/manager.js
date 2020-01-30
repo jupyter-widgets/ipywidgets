@@ -9,6 +9,7 @@ var outputWidgets = require('./widget_output');
 var saveState = require('./save_state');
 var embedWidgets = require('./embed_widgets');
 var pMap = require('p-map');
+var pThrottle = require('p-throttle');
 
 var MIME_TYPE = 'application/vnd.jupyter.widget-view+json';
 
@@ -112,37 +113,43 @@ export class WidgetManager extends baseManager.ManagerBase {
       // for the responses (2).
       return Promise.all(comm_promises)
         .then(function(comms) {
-          // We must do this in chunks to make sure we do not
-          // exceed the ZMQ high water mark limiting messages from the kernel. See
-          // https://github.com/voila-dashboards/voila/issues/534 for more details.
+          // We must do this in chunks to make sure we do not exceed the ZMQ
+          // high water mark limiting messages from the kernel. See
+          // https://github.com/voila-dashboards/voila/issues/534 for more
+          // details. We also throttle calls to respect the server's default
+          // iopub rate limit.
           return pMap(
             comms,
-            function(comm) {
-              var update_promise = new Promise(function(resolve, reject) {
-                comm.on_msg(function(msg) {
-                  base.put_buffers(
-                    msg.content.data.state,
-                    msg.content.data.buffer_paths,
-                    msg.buffers
-                  );
-                  // A suspected response was received, check to see if
-                  // it's a state update. If so, resolve.
-                  if (msg.content.data.method === 'update') {
-                    resolve({
-                      comm: comm,
-                      msg: msg
-                    });
-                  }
+            pThrottle(
+              function(comm) {
+                var update_promise = new Promise(function(resolve, reject) {
+                  comm.on_msg(function(msg) {
+                    base.put_buffers(
+                      msg.content.data.state,
+                      msg.content.data.buffer_paths,
+                      msg.buffers
+                    );
+                    // A suspected response was received, check to see if
+                    // it's a state update. If so, resolve.
+                    if (msg.content.data.method === 'update') {
+                      resolve({
+                        comm: comm,
+                        msg: msg
+                      });
+                    }
+                  });
                 });
-              });
-              comm.send(
-                {
-                  method: 'request_state'
-                },
-                that.callbacks()
-              );
-              return update_promise;
-            },
+                comm.send(
+                  {
+                    method: 'request_state'
+                  },
+                  that.callbacks()
+                );
+                return update_promise;
+              },
+              4 /* calls*/,
+              5 /* ms */
+            ),
             { concurrency: 100 }
           );
         })
