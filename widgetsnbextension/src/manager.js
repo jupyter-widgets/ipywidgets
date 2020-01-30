@@ -116,7 +116,7 @@ export class WidgetManager extends baseManager.ManagerBase {
           // https://github.com/voila-dashboards/voila/issues/534 for more details.
           return baseManager.chunkMap(
             comms,
-            { chunkSize: 10, concurrency: 10 },
+            { chunkSize: 20, concurrency: 5 },
             function(comm) {
               var update_promise = new Promise(function(resolve, reject) {
                 comm.on_msg(function(msg) {

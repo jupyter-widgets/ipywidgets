@@ -152,7 +152,7 @@ export abstract class LabWidgetManager extends ManagerBase<Widget>
     // more details.
     const widgets_info = await chunkMap(
       Object.keys(comm_ids),
-      { chunkSize: 10, concurrency: 10 },
+      { chunkSize: 20, concurrency: 5 },
       async (comm_id: string) => {
         try {
           await this.get_model(comm_id);
