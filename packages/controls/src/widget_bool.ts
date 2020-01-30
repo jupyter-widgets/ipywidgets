@@ -21,9 +21,9 @@ export class BoolStyleModel extends DescriptionStyleModel {
 
   public static styleProperties = {
     ...DescriptionStyleModel.styleProperties,
-    background_color: {
+    background: {
       selector: '',
-      attribute: 'background-color',
+      attribute: 'background',
       default: null as any
     }
   };
@@ -39,9 +39,9 @@ export class ToggleButtonStyleModel extends BoolStyleModel {
 
   public static styleProperties = {
     ...BoolStyleModel.styleProperties,
-    background_color: {
+    background: {
       selector: '',
-      attribute: 'background-color',
+      attribute: 'background',
       default: null as any
     },
     font_family: {

@@ -17,7 +17,7 @@ from traitlets import Unicode, Bool, CaselessStrEnum
 class _BoolStyle(DescriptionStyle, CoreWidget):
     """_Bool widget style."""
     _model_name = Unicode('BoolStyleModel').tag(sync=True)
-    background_color = Color(None, allow_none=True, help="Background color").tag(sync=True)
+    background = Unicode(None, allow_none=True, help="Background specifications.").tag(sync=True)
 
 
 @register

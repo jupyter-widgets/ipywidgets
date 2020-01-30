@@ -1,14 +1,7 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import {
-  DOMWidgetView,
-  StyleModel,
-  StyleView,
-  bold_to_weight,
-  italic_to_style,
-  underline_to_decoration
-} from '@jupyter-widgets/base';
+import { DOMWidgetView, StyleModel } from '@jupyter-widgets/base';
 
 import { CoreDOMWidgetModel } from './widget_core';
 
@@ -20,10 +13,7 @@ export class ButtonStyleModel extends StyleModel {
       ...super.defaults(),
       _model_name: 'ButtonStyleModel',
       _model_module: '@jupyter-widgets/controls',
-      _model_module_version: JUPYTER_CONTROLS_VERSION,
-      _view_name: 'ButtonStyleView',
-      _view_module: '@jupyter-widgets/controls',
-      _view_module_version: JUPYTER_CONTROLS_VERSION
+      _model_module_version: JUPYTER_CONTROLS_VERSION
     };
   }
 
@@ -69,41 +59,6 @@ export class ButtonStyleModel extends StyleModel {
       default: ''
     }
   };
-}
-
-export class ButtonStyleView extends StyleView {
-  /**
-   * Handles when a trait value changes
-   */
-  handleChange(trait: string, value: any): void {
-    // should be synchronous so that we can measure later.
-    const parent = this.options.parent as DOMWidgetView;
-    if (parent) {
-      const ModelType = this.model.constructor as typeof StyleModel;
-      const styleProperties = ModelType.styleProperties;
-      const attribute = styleProperties[trait].attribute;
-      const selector = styleProperties[trait].selector;
-      const elements = selector
-        ? parent.el.querySelectorAll<HTMLElement>(selector)
-        : [parent.el];
-      let transform = undefined;
-      if (trait == 'bold') transform = bold_to_weight;
-      if (trait == 'italic') transform = italic_to_style;
-      if (trait == 'underline') transform = underline_to_decoration;
-      if (transform !== undefined) value = transform(value);
-      if (value === null) {
-        for (let i = 0; i !== elements.length; ++i) {
-          elements[i].style.removeProperty(attribute);
-        }
-      } else {
-        for (let i = 0; i !== elements.length; ++i) {
-          elements[i].style.setProperty(attribute, value);
-        }
-      }
-    } else {
-      console.warn('Style not applied because a parent view does not exist');
-    }
-  }
 }
 
 export class ButtonModel extends CoreDOMWidgetModel {

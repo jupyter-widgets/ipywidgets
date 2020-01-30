@@ -26,9 +26,9 @@ export class StringStyleModel extends DescriptionStyleModel {
 
   public static styleProperties = {
     ...DescriptionStyleModel.styleProperties,
-    background_color: {
+    background: {
       selector: '',
-      attribute: 'background-color',
+      attribute: 'background',
       default: null as any
     },
     font_size: {
@@ -96,9 +96,9 @@ export class TextStyleModel extends DescriptionStyleModel {
 
   public static styleProperties = {
     ...DescriptionStyleModel.styleProperties,
-    background_color: {
+    background: {
       selector: '.widget-input',
-      attribute: 'background-color',
+      attribute: 'background',
       default: null as any
     },
     font_size: {
