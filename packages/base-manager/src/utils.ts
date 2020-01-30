@@ -307,10 +307,6 @@ export function base64ToBuffer(base64: string): ArrayBuffer {
  * @param chunkOptions - The options for chunking and evaluating.
  * @param fn - The function to map, with the same arguments as an array map
  * @param thisArg - An optional thisArg for the function
- * @param chunkSize - The maximum size of each chunk, default to 1
- * @param concurrency - The maximum number of chunks to evaluate concurently,
- * default to 1
- *
  * @returns - the equivalent of `Promise.all(list.map(fn, thisArg))`
  */
 export async function chunkMap<T, U>(
