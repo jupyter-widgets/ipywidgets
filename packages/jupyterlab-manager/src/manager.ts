@@ -19,8 +19,7 @@ import {
 import {
   ManagerBase,
   serialize_state,
-  IStateOptions,
-  chunkMap
+  IStateOptions
 } from '@jupyter-widgets/base-manager';
 
 import { IDisposable } from '@lumino/disposable';
