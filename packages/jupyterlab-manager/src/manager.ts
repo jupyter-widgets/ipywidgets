@@ -20,7 +20,7 @@ import {
   ManagerBase,
   serialize_state,
   IStateOptions,
-  mapBatch
+  chunkMap
 } from '@jupyter-widgets/base-manager';
 
 import { IDisposable } from '@lumino/disposable';
@@ -146,13 +146,14 @@ export abstract class LabWidgetManager extends ManagerBase<Widget>
     const comm_ids = await this._get_comm_info();
 
     // For each comm id that we do not know about, create the comm, and
-    // request the state. We must do this in batches to make sure we do not
-    // exceed the ZMQ high water mark limiting messages from the kernel. See
-    // https://github.com/voila-dashboards/voila/issues/534 for more details.
-    const widgets_info = await mapBatch(
+    // request the state. We must do this processing in chunksto make sure we
+    // do not exceed the ZMQ high water mark limiting messages from the
+    // kernel. See https://github.com/voila-dashboards/voila/issues/534 for
+    // more details.
+    const widgets_info = await chunkMap(
       Object.keys(comm_ids),
-      100,
-      async comm_id => {
+      { chunkSize: 10, concurrency: 10 },
+      async (comm_id: string) => {
         try {
           await this.get_model(comm_id);
           // If we successfully get the model, do no more.

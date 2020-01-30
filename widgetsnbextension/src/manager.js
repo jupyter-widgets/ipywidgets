@@ -111,35 +111,39 @@ export class WidgetManager extends baseManager.ManagerBase {
       // for the responses (2).
       return Promise.all(comm_promises)
         .then(function(comms) {
-          // We must do this in batches to make sure we do not
+          // We must do this in chunks to make sure we do not
           // exceed the ZMQ high water mark limiting messages from the kernel. See
           // https://github.com/voila-dashboards/voila/issues/534 for more details.
-          return baseManager.mapBatch(comms, 100, function(comm) {
-            var update_promise = new Promise(function(resolve, reject) {
-              comm.on_msg(function(msg) {
-                base.put_buffers(
-                  msg.content.data.state,
-                  msg.content.data.buffer_paths,
-                  msg.buffers
-                );
-                // A suspected response was received, check to see if
-                // it's a state update. If so, resolve.
-                if (msg.content.data.method === 'update') {
-                  resolve({
-                    comm: comm,
-                    msg: msg
-                  });
-                }
+          return baseManager.chunkMap(
+            comms,
+            { chunkSize: 10, concurrency: 10 },
+            function(comm) {
+              var update_promise = new Promise(function(resolve, reject) {
+                comm.on_msg(function(msg) {
+                  base.put_buffers(
+                    msg.content.data.state,
+                    msg.content.data.buffer_paths,
+                    msg.buffers
+                  );
+                  // A suspected response was received, check to see if
+                  // it's a state update. If so, resolve.
+                  if (msg.content.data.method === 'update') {
+                    resolve({
+                      comm: comm,
+                      msg: msg
+                    });
+                  }
+                });
               });
-            });
-            comm.send(
-              {
-                method: 'request_state'
-              },
-              that.callbacks()
-            );
-            return update_promise;
-          });
+              comm.send(
+                {
+                  method: 'request_state'
+                },
+                that.callbacks()
+              );
+              return update_promise;
+            }
+          );
         })
         .then(function(widgets_info) {
           return Promise.all(

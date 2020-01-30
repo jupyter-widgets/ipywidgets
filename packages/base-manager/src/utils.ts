@@ -300,20 +300,72 @@ export function base64ToBuffer(base64: string): ArrayBuffer {
 }
 
 /**
- * Map a function onto a list in batches, resolving each batch of returned
- * promises before moving to the next batch.
+ * A map that chunks the list into chunkSize pieces and evaluates chunks
+ * concurrently.
+ *
+ * @param list - The list to map over
+ * @param chunkOptions - The options for chunking and evaluating.
+ * @param fn - The function to map, with the same arguments as an array map
+ * @param thisArg - An optional thisArg for the function
+ * @param chunkSize - The maximum size of each chunk, default to 1
+ * @param concurrency - The maximum number of chunks to evaluate concurently,
+ * default to 1
+ *
+ * @returns - the equivalent of `Promise.all(list.map(fn, thisArg))`
  */
-export async function mapBatch<T, U>(
+export async function chunkMap<T, U>(
   list: T[],
-  step: number,
+  chunkOptions: chunkMap.IOptions,
   fn: (value: T, index: number, array: T[]) => Promise<U> | U,
   thisArg?: any
 ): Promise<U[]> {
-  const results = [];
-  for (let i = 0; i < list.length; i += step) {
-    results.push(
-      ...(await Promise.all(list.slice(i, i + step).map(fn, thisArg)))
+  // Default to equivalent to Promise.all(list.map(fn, thisarg))
+  const chunkSize = chunkOptions.chunkSize ?? list.length;
+  const concurrency = chunkOptions.concurrency ?? 1;
+
+  const results = new Array(list.length);
+  const chunks: (() => Promise<void>)[] = [];
+
+  // Process a single chunk and resolve to the next chunk if available
+  async function processChunk(chunk: any[], start: number): Promise<void> {
+    const chunkResult = await Promise.all(
+      chunk.map((v, i) => fn.call(thisArg, v, start + i, list))
     );
+
+    // Splice the chunk results into the results array. We use
+    // chunkResult.length because the last chunk may not be full size.
+    results.splice(start, chunkResult.length, ...chunkResult);
+
+    // Start the next work item by processing it
+    if (chunks.length > 0) {
+      return chunks.shift()!();
+    }
   }
+
+  // Make closures for each batch of work.
+  for (let i = 0; i < list.length; i += chunkSize) {
+    chunks.push(() => processChunk(list.slice(i, i + chunkSize), i));
+  }
+
+  // Start the first concurrent chunks. Each chunk will automatically start
+  // the next available chunk when it finishes.
+  await Promise.all(chunks.splice(0, concurrency).map(f => f()));
   return results;
+}
+
+export namespace chunkMap {
+  /**
+   * The options for chunking and evaluating.
+   */
+  export interface IOptions {
+    /**
+     * The maximum size of a chunk. Defaults to the list size.
+     */
+    chunkSize?: number;
+
+    /**
+     * The maximum number of chunks to evaluate simultaneously. Defaults to 1.
+     */
+    concurrency?: number;
+  }
 }
