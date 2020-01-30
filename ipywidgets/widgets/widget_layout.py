@@ -79,6 +79,14 @@ class Layout(Widget):
     grid_column = Unicode(None, allow_none=True, help="The grid-column CSS attribute.").tag(sync=True)
     grid_area = Unicode(None, allow_none=True, help="The grid-area CSS attribute.").tag(sync=True)
 
+    def __init__(self, **kwargs):
+        """Public constructor"""
+        super().__init__(**kwargs)
+        if self.border is not None:
+            for side in ['top', 'right', 'bottom', 'left']:
+                if getattr(self, "border_" + side) is None:
+                    setattr(self, "border_" + side, self.border)
+
 
 class LayoutTraitType(Instance):
 
