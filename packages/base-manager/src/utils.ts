@@ -321,6 +321,7 @@ export async function chunkMap<T, U>(
 
   const results = new Array(list.length);
   const chunks: (() => Promise<void>)[] = [];
+  let stop = false;
 
   // Process a single chunk and resolve to the next chunk if available
   async function processChunk(chunk: any[], start: number): Promise<void> {
@@ -333,7 +334,7 @@ export async function chunkMap<T, U>(
     results.splice(start, chunkResult.length, ...chunkResult);
 
     // Start the next work item by processing it
-    if (chunks.length > 0) {
+    if (chunks.length > 0 && !stop) {
       return chunks.shift()!();
     }
   }
@@ -345,7 +346,13 @@ export async function chunkMap<T, U>(
 
   // Start the first concurrent chunks. Each chunk will automatically start
   // the next available chunk when it finishes.
-  await Promise.all(chunks.splice(0, concurrency).map(f => f()));
+  try {
+    await Promise.all(chunks.splice(0, concurrency).map(f => f()));
+  } catch (e) {
+    // Flag that there is an error to stop all other processing.
+    stop = true;
+    throw e;
+  }
   return results;
 }
 
