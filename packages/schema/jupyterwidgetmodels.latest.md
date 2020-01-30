@@ -763,7 +763,7 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
 `_view_module_version` | string           | `'1.2.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
-`background_color` | `null` or string | `null`           | Background color
+`background`     | `null` or string | `null`           | Background specifications.
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 `font_family`    | `null` or string | `null`           | Label text font family.
 `font_size`      | `null` or string | `null`           | Text font size.
@@ -996,7 +996,7 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
 `_view_module_version` | string           | `'1.2.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
-`background_color` | `null` or string | `null`           | Background color
+`background`     | `null` or string | `null`           | Background specifications.
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 `font_size`      | `null` or string | `null`           | Text font size.
 `text_color`     | `null` or string | `null`           | Text color
@@ -1051,7 +1051,7 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
 `_view_module_version` | string           | `'1.2.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
-`background_color` | `null` or string | `null`           | Background color
+`background`     | `null` or string | `null`           | Background specifications.
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 `font_size`      | `null` or string | `null`           | Text font size.
 `text_color`     | `null` or string | `null`           | Text color
@@ -1109,7 +1109,7 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
 `_view_module_version` | string           | `'1.2.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
-`background_color` | `null` or string | `null`           | Background color
+`background`     | `null` or string | `null`           | Background specifications.
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 `font_family`    | `null` or string | `null`           | Toggle button text font family.
 `font_size`      | `null` or string | `null`           | Toggle button text font size.
@@ -1242,6 +1242,6 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
 `_view_module_version` | string           | `'1.2.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
-`background_color` | `null` or string | `null`           | Background color
+`background`     | `null` or string | `null`           | Background specifications.
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 
