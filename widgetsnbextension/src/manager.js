@@ -111,6 +111,9 @@ export class WidgetManager extends baseManager.ManagerBase {
       // for the responses (2).
       return Promise.all(comm_promises)
         .then(function(comms) {
+          // We must do this in batches to make sure we do not
+          // exceed the ZMQ high water mark limiting messages from the kernel. See
+          // https://github.com/voila-dashboards/voila/issues/534 for more details.
           return baseManager.mapBatch(comms, 100, function(comm) {
             var update_promise = new Promise(function(resolve, reject) {
               comm.on_msg(function(msg) {
