@@ -8,6 +8,7 @@ var widgets = require('@jupyter-widgets/controls');
 var outputWidgets = require('./widget_output');
 var saveState = require('./save_state');
 var embedWidgets = require('./embed_widgets');
+var pMap = require('p-map');
 
 var MIME_TYPE = 'application/vnd.jupyter.widget-view+json';
 
@@ -114,9 +115,8 @@ export class WidgetManager extends baseManager.ManagerBase {
           // We must do this in chunks to make sure we do not
           // exceed the ZMQ high water mark limiting messages from the kernel. See
           // https://github.com/voila-dashboards/voila/issues/534 for more details.
-          return baseManager.chunkMap(
+          return pMap(
             comms,
-            { chunkSize: 20, concurrency: 5 },
             function(comm) {
               var update_promise = new Promise(function(resolve, reject) {
                 comm.on_msg(function(msg) {
@@ -142,7 +142,8 @@ export class WidgetManager extends baseManager.ManagerBase {
                 that.callbacks()
               );
               return update_promise;
-            }
+            },
+            { concurrency: 100 }
           );
         })
         .then(function(widgets_info) {

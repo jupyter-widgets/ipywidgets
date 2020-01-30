@@ -39,6 +39,8 @@ import { DocumentRegistry } from '@jupyterlab/docregistry';
 
 import { ISignal, Signal } from '@lumino/signaling';
 
+import pMap from 'p-map';
+
 import { valid } from 'semver';
 
 import { SemVerCache } from './semvercache';
@@ -146,13 +148,12 @@ export abstract class LabWidgetManager extends ManagerBase<Widget>
     const comm_ids = await this._get_comm_info();
 
     // For each comm id that we do not know about, create the comm, and
-    // request the state. We must do this processing in chunksto make sure we
+    // request the state. We must do this processing in chunks to make sure we
     // do not exceed the ZMQ high water mark limiting messages from the
     // kernel. See https://github.com/voila-dashboards/voila/issues/534 for
     // more details.
-    const widgets_info = await chunkMap(
+    const widgets_info = await pMap(
       Object.keys(comm_ids),
-      { chunkSize: 20, concurrency: 5 },
       async (comm_id: string) => {
         try {
           await this.get_model(comm_id);
@@ -199,7 +200,8 @@ export abstract class LabWidgetManager extends ManagerBase<Widget>
 
           return info.promise;
         }
-      }
+      },
+      { concurrency: 100 }
     );
 
     // We put in a synchronization barrier here so that we don't have to
