@@ -11,11 +11,11 @@ from .widget_box import Box
 from .widget import register
 from .widget_core import CoreWidget
 from traitlets import Unicode, Dict, CInt, TraitError, validate, observe
-
+from .trait_types import TypedTuple
 
 class _SelectionContainer(Box, CoreWidget):
     """Base class used to display multiple child widgets."""
-    _titles = Dict(help="Titles of the pages").tag(sync=True)
+    titles = TypedTuple(trait=Unicode(), help="Titles of the pages").tag(sync=True)
     selected_index = CInt(
         help="""The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.""",
         allow_none=True,
@@ -33,44 +33,6 @@ class _SelectionContainer(Box, CoreWidget):
     def _observe_children(self, change):
         if self.selected_index is not None and len(change.new) < self.selected_index:
             self.selected_index = None
-
-    # Public methods
-    def set_title(self, index, title):
-        """Sets the title of a container page.
-
-        Parameters
-        ----------
-        index : int
-            Index of the container page
-        title : unicode
-            New title
-        """
-        # JSON dictionaries have string keys, so we convert index to a string
-        index = str(int(index))
-        self._titles[index] = title
-        self.send_state('_titles')
-
-    def get_title(self, index):
-        """Gets the title of a container pages.
-
-        Parameters
-        ----------
-        index : int
-            Index of the container page
-        """
-        # JSON dictionaries have string keys, so we convert index to a string
-        index = str(int(index))
-        if index in self._titles:
-            return self._titles[index]
-        else:
-            return None
-
-    def _repr_keys(self):
-        # We also need to include _titles in repr for reproducibility
-        yield from super()._repr_keys()
-        if self._titles:
-            yield '_titles'
-
 
 @register
 class Accordion(_SelectionContainer):
