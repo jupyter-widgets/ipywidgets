@@ -16,6 +16,19 @@ from .widget_core import CoreWidget
 from .widget_button import ButtonStyle
 from .widget import register, widget_serialization
 from .trait_types import InstanceDict
+from traitlets.utils.bunch import Bunch
+
+
+def _upload_single_value_from_json(js):
+    entry = Bunch()
+    for attribute in ["name", "type", "size", "content"]:
+        entry[attribute] = js[attribute]
+    entry["last_modified"] = js["lastModified"]
+    return entry
+
+
+def _upload_value_from_json(js, manager):
+    return [_upload_single_value_from_json(entry) for entry in js]
 
 
 @register
@@ -35,7 +48,8 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
         help="""Use a predefined styling for the button.""").tag(sync=True)
     style = InstanceDict(ButtonStyle).tag(sync=True, **widget_serialization)
     error = Unicode(help='Error message').tag(sync=True)
-    value = List(Dict(), help="The file upload value").tag(sync=True)
+    value = List(Dict(), help="The file upload value").tag(
+        sync=True, from_json=_upload_value_from_json)
 
     @default('description')
     def _default_description(self):
