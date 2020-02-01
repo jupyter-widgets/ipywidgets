@@ -23,3 +23,7 @@ class TestFileUpload(TestCase):
         assert uploader.accept == '.txt'
         assert uploader.multiple
         assert uploader.disabled
+
+    def test_empty_initial_value(self):
+        uploader = FileUpload()
+        assert uploader.value == []
