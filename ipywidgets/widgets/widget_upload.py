@@ -5,6 +5,7 @@
 
 Represents a file upload button.
 """
+import datetime as dt
 
 from traitlets import (
     observe, default, Unicode, Dict, List, Int, Bool, Bytes, CaselessStrEnum
@@ -23,7 +24,10 @@ def _upload_single_value_from_json(js):
     entry = Bunch()
     for attribute in ["name", "type", "size", "content"]:
         entry[attribute] = js[attribute]
-    entry["last_modified"] = js["lastModified"]
+    entry["last_modified"] = dt.datetime.fromtimestamp(
+        js["lastModified"] / 1000,
+        tz=dt.timezone.utc
+    )
     return entry
 
 

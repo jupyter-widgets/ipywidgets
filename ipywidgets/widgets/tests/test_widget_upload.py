@@ -1,6 +1,7 @@
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
+import datetime as dt
 from unittest import TestCase
 
 from traitlets import TraitError
@@ -50,3 +51,7 @@ class TestFileUpload(TestCase):
         assert uploaded_file.type == "text/plain"
         assert uploaded_file.size == 20760
         assert uploaded_file.content.tobytes() == b"file content"
+        assert (
+            uploaded_file.last_modified ==
+            dt.datetime(2020, 1, 9, 13, 58, 16, 434000, tzinfo=dt.timezone.utc)
+        )
