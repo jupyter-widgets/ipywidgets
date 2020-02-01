@@ -22,10 +22,10 @@ from traitlets.utils.bunch import Bunch
 
 def _upload_single_value_from_json(js):
     entry = Bunch()
-    for attribute in ["name", "type", "size", "content"]:
+    for attribute in ['name', 'type', 'size', 'content']:
         entry[attribute] = js[attribute]
-    entry["last_modified"] = dt.datetime.fromtimestamp(
-        js["lastModified"] / 1000,
+    entry['last_modified'] = dt.datetime.fromtimestamp(
+        js['lastModified'] / 1000,
         tz=dt.timezone.utc
     )
     return entry
