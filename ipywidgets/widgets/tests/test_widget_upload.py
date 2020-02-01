@@ -18,9 +18,8 @@ class TestFileUpload(TestCase):
         assert not uploader.disabled
 
     def test_construction_with_params(self):
-        uploader = FileUpload(accept='.txt',
-                              multiple=True,
-                              disabled=True)
+        uploader = FileUpload(
+            accept='.txt', multiple=True, disabled=True)
         assert uploader.accept == '.txt'
         assert uploader.multiple
         assert uploader.disabled
