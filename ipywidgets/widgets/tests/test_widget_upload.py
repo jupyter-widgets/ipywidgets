@@ -9,6 +9,16 @@ from traitlets import TraitError
 from ipywidgets import FileUpload
 
 
+FILE_UPLOAD_FRONTEND_CONTENT = {
+    'name': 'file-name.txt',
+    'type': 'text/plain',
+    'size': 20760,
+    'lastModified': 1578578296434,
+    'error': '',
+    'content': memoryview(b'file content'),
+}
+
+
 class TestFileUpload(TestCase):
 
     def test_construction(self):
@@ -31,19 +41,7 @@ class TestFileUpload(TestCase):
 
     def test_receive_single_file(self):
         uploader = FileUpload()
-        content = memoryview(b'file content')
-        message = {
-            'value': [
-                {
-                    'name': 'file-name.txt',
-                    'type': 'text/plain',
-                    'size': 20760,
-                    'lastModified': 1578578296434,
-                    'error': '',
-                    'content': content,
-                }
-            ]
-        }
+        message = {"value": [FILE_UPLOAD_FRONTEND_CONTENT]}
         uploader.set_state(message)
         assert len(uploader.value) == 1
         [uploaded_file] = uploader.value
