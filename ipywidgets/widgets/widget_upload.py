@@ -39,7 +39,7 @@ def _serialize_single_file(uploaded_file):
     js = {}
     for attribute in ['name', 'type', 'size', 'content']:
         js[attribute] = uploaded_file[attribute]
-    js['lastModified'] = int(uploaded_file.last_modified.timestamp() * 1000)
+    js['lastModified'] = int(uploaded_file['last_modified'].timestamp() * 1000)
     return js
 
 
