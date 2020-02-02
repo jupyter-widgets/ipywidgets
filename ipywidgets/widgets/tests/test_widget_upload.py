@@ -41,7 +41,7 @@ class TestFileUpload(TestCase):
 
     def test_receive_single_file(self):
         uploader = FileUpload()
-        message = {"value": [FILE_UPLOAD_FRONTEND_CONTENT]}
+        message = {'value': [FILE_UPLOAD_FRONTEND_CONTENT]}
         uploader.set_state(message)
         assert len(uploader.value) == 1
         [uploaded_file] = uploader.value
@@ -57,7 +57,7 @@ class TestFileUpload(TestCase):
     def test_receive_multiple_files(self):
         uploader = FileUpload(multiple=True)
         message = {
-            "value": [
+            'value': [
                 FILE_UPLOAD_FRONTEND_CONTENT,
                 {**FILE_UPLOAD_FRONTEND_CONTENT, **{'name': 'other-file-name.txt'}}
             ]
@@ -76,7 +76,7 @@ class TestFileUpload(TestCase):
         from ipykernel.comm import Comm
         uploader = FileUpload()
         mock_comm = MagicMock(spec=Comm)
-        mock_comm.kernel = "does not matter"
+        mock_comm.kernel = 'does not matter'
         mock_comm.send = MagicMock()
         uploader.comm = mock_comm
         message = {'value': [FILE_UPLOAD_FRONTEND_CONTENT]}

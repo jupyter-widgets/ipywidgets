@@ -67,10 +67,10 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
     icon = Unicode('upload', help="Font-awesome icon name, without the 'fa-' prefix.").tag(sync=True)
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
-        help="""Use a predefined styling for the button.""").tag(sync=True)
+        help='Use a predefined styling for the button.').tag(sync=True)
     style = InstanceDict(ButtonStyle).tag(sync=True, **widget_serialization)
     error = Unicode(help='Error message').tag(sync=True)
-    value = List(Dict(), help="The file upload value").tag(
+    value = List(Dict(), help='The file upload value').tag(
         sync=True, **_value_serialization)
 
     @default('description')
