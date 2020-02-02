@@ -20,19 +20,19 @@ from .trait_types import InstanceDict
 from traitlets.utils.bunch import Bunch
 
 
-def _upload_single_value_from_json(js):
-    entry = Bunch()
+def _deserialize_single_file(js):
+    uploaded_file = Bunch()
     for attribute in ['name', 'type', 'size', 'content']:
-        entry[attribute] = js[attribute]
-    entry['last_modified'] = dt.datetime.fromtimestamp(
+        uploaded_file[attribute] = js[attribute]
+    uploaded_file['last_modified'] = dt.datetime.fromtimestamp(
         js['lastModified'] / 1000,
         tz=dt.timezone.utc
     )
-    return entry
+    return uploaded_file
 
 
-def _upload_value_from_json(js, manager):
-    return [_upload_single_value_from_json(entry) for entry in js]
+def _deserialize_value(js, manager):
+    return [_deserialize_single_file(entry) for entry in js]
 
 
 @register
@@ -53,7 +53,7 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
     style = InstanceDict(ButtonStyle).tag(sync=True, **widget_serialization)
     error = Unicode(help='Error message').tag(sync=True)
     value = List(Dict(), help="The file upload value").tag(
-        sync=True, from_json=_upload_value_from_json)
+        sync=True, from_json=_deserialize_value)
 
     @default('description')
     def _default_description(self):
