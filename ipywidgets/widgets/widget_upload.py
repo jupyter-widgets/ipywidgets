@@ -31,8 +31,29 @@ def _deserialize_single_file(js):
     return uploaded_file
 
 
-def _deserialize_value(js, manager):
+def _deserialize_value(js, _):
     return [_deserialize_single_file(entry) for entry in js]
+
+
+def _serialize_single_file(uploaded_file):
+    js = {}
+    for attribute in ['name', 'type', 'size', 'content']:
+        js[attribute] = uploaded_file[attribute]
+    js['lastModified'] = int(uploaded_file.last_modified.timestamp() * 1000)
+    js['error'] = ''  # Currently unused, but we need to retain the same object
+                      # following a full serialization / deserialization round trip
+                      # otherwise the state gets flushed back to the frontend.
+    return js
+
+
+def _serialize_value(value, _):
+    return [_serialize_single_file(entry) for entry in value]
+
+
+_value_serialization = {
+    'from_json': _deserialize_value,
+    'to_json': _serialize_value
+}
 
 
 @register
@@ -53,7 +74,7 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
     style = InstanceDict(ButtonStyle).tag(sync=True, **widget_serialization)
     error = Unicode(help='Error message').tag(sync=True)
     value = List(Dict(), help="The file upload value").tag(
-        sync=True, from_json=_deserialize_value)
+        sync=True, **_value_serialization)
 
     @default('description')
     def _default_description(self):

@@ -3,6 +3,7 @@
 
 import datetime as dt
 from unittest import TestCase
+from unittest.mock import MagicMock
 
 from traitlets import TraitError
 
@@ -61,8 +62,29 @@ class TestFileUpload(TestCase):
                 FILE_UPLOAD_FRONTEND_CONTENT,
                 {**FILE_UPLOAD_FRONTEND_CONTENT, **{'name': 'other-file-name.txt'}}
             ]
-            }
+        }
         uploader.set_state(message)
         assert len(uploader.value) == 2
         assert uploader.value[0].name == 'file-name.txt'
         assert uploader.value[1].name == 'other-file-name.txt'
+
+    def test_serialization_deserialization_integrity(self):
+        # The value traitlet needs to remain unchanged following
+        # a serialization / deserialization roundtrip, otherwise
+        # the kernel dispatches it back to the frontend following
+        # a state change, because it doesn't recognize that the
+        # property_lock entry is the same as the new value.
+        from ipykernel.comm import Comm
+        uploader = FileUpload()
+        mock_comm = MagicMock(spec=Comm)
+        mock_comm.kernel = "kernel"
+        mock_comm.send = MagicMock()
+        uploader.comm = mock_comm
+        message = {'value': [FILE_UPLOAD_FRONTEND_CONTENT]}
+        uploader.set_state(message)
+
+        # Check that no message is sent back to the frontend
+        # as a result of setting the state.
+        mock_comm.send.assert_not_called()
+
+
