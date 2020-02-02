@@ -85,3 +85,14 @@ class TestFileUpload(TestCase):
         # Check that no message is sent back to the frontend
         # as a result of setting the state.
         mock_comm.send.assert_not_called()
+
+    def test_resetting_value(self):
+        # Simulate an upload, then resetting the value from the
+        # kernel.
+        uploader = FileUpload()
+        message = {'value': [FILE_UPLOAD_FRONTEND_CONTENT]}
+        uploader.set_state(message)
+
+        uploader.value = []  # reset value to an empty file list
+
+        assert uploader.get_state(key='value') == {'value': []}
