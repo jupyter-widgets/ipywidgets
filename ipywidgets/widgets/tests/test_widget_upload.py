@@ -76,7 +76,7 @@ class TestFileUpload(TestCase):
         from ipykernel.comm import Comm
         uploader = FileUpload()
         mock_comm = MagicMock(spec=Comm)
-        mock_comm.kernel = "kernel"
+        mock_comm.kernel = "does not matter"
         mock_comm.send = MagicMock()
         uploader.comm = mock_comm
         message = {'value': [FILE_UPLOAD_FRONTEND_CONTENT]}
