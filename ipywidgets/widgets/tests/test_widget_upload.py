@@ -15,7 +15,6 @@ FILE_UPLOAD_FRONTEND_CONTENT = {
     'type': 'text/plain',
     'size': 20760,
     'lastModified': 1578578296434,
-    'error': '',
     'content': memoryview(b'file content'),
 }
 
@@ -86,5 +85,3 @@ class TestFileUpload(TestCase):
         # Check that no message is sent back to the frontend
         # as a result of setting the state.
         mock_comm.send.assert_not_called()
-
-

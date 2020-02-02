@@ -40,9 +40,6 @@ def _serialize_single_file(uploaded_file):
     for attribute in ['name', 'type', 'size', 'content']:
         js[attribute] = uploaded_file[attribute]
     js['lastModified'] = int(uploaded_file.last_modified.timestamp() * 1000)
-    js['error'] = ''  # Currently unused, but we need to retain the same object
-                      # following a full serialization / deserialization round trip
-                      # otherwise the state gets flushed back to the frontend.
     return js
 
 
