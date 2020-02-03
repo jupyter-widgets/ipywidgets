@@ -52,13 +52,11 @@ _doc_snippets['selection_params'] = """
 _doc_snippets['multiple_selection_params'] = """
     options: dict or list
         The options for the dropdown. This can either be a list of values, e.g.
-        ``['Galileo', 'Brahe', 'Hubble']`` or ``[0, 1, 2]``, a list of
+        ``['Galileo', 'Brahe', 'Hubble']`` or ``[0, 1, 2]``, or a list of
         (label, value) pairs, e.g.
         ``[('Galileo', 0), ('Brahe', 1), ('Hubble', 2)]``.
         The labels are the strings that will be displayed in the UI,
         representing the actual Python choices, and should be unique.
-        If this is a dictionary, the order in which they are displayed is
-        not guaranteed.
 
     index: iterable of int
         The indices of the options that are selected.
