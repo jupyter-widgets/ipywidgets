@@ -121,6 +121,54 @@ datetime_serialization = {
 }
 
 
+def naive_to_json(pydt, manager):
+    """Serialize a naive Python datetime object to json.
+
+    Instantiating a JavaScript Date object with a string assumes that the
+    string is a UTC string, while instantiating it with constructor arguments
+    assumes that it's in local time:
+
+    >>> cdate = new Date('2015-05-12')
+    Mon May 11 2015 20:00:00 GMT-0400 (Eastern Daylight Time)
+    >>> cdate = new Date(2015, 4, 12) // Months are 0-based indices in JS
+    Tue May 12 2015 00:00:00 GMT-0400 (Eastern Daylight Time)
+
+    Attributes of this dictionary are to be passed to the JavaScript Date
+    constructor.
+    """
+    if pydt is None:
+        return None
+    else:
+        naivedt = pydt.replace(tzinfo=None)
+        return dict(
+            year=naivedt.year,
+            month=naivedt.month - 1,  # Months are 0-based indices in JS
+            date=naivedt.day,
+            hours=naivedt.hour,  # Hours, Minutes, Seconds and Milliseconds
+            minutes=naivedt.minute,  # are plural in JS
+            seconds=naivedt.second,
+            milliseconds=naivedt.microsecond / 1000,
+        )
+
+
+def naive_from_json(js, manager):
+    """Deserialize a naive Python datetime object from json."""
+    if js is None:
+        return None
+    else:
+        return dt.datetime(
+            js["year"],
+            js["month"] + 1,  # Months are 1-based in Python
+            js["date"],
+            js["hours"],
+            js["minutes"],
+            js["seconds"],
+            js["milliseconds"] * 1000,
+        )
+
+naive_serialization = {"from_json": naive_from_json, "to_json": naive_to_json}
+
+
 def date_to_json(pydate, manager):
     """Serialize a Python date object.
 

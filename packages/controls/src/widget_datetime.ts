@@ -305,3 +305,94 @@ namespace Private {
     return value ? dt_as_dt_string(value).split('T', 2)[1] : '';
   }
 }
+
+export interface ISerializedNaiveDatetime {
+  /**
+   * full year
+   */
+  year: number;
+
+  /**
+   * zero-based month (0 means January, 11 means December)
+   */
+  month: number;
+
+  /**
+   * day of month
+   */
+  date: number;
+
+  /**
+   * hour (24H format)
+   */
+  hours: number;
+
+  /**
+   * minutes
+   */
+  minutes: number;
+
+  /**
+   * seconds
+   */
+  seconds: number;
+
+  /**
+   * millisconds
+   */
+  milliseconds: number;
+}
+
+export function serialize_naive(
+  value: Date | null
+): ISerializedNaiveDatetime | null {
+  if (value === null) {
+    return null;
+  } else {
+    return {
+      year: value.getFullYear(),
+      month: value.getMonth(),
+      date: value.getDate(),
+      hours: value.getHours(),
+      minutes: value.getMinutes(),
+      seconds: value.getSeconds(),
+      milliseconds: value.getMilliseconds()
+    };
+  }
+}
+
+export function deserialize_naive(
+  value: ISerializedNaiveDatetime
+): Date | null {
+  if (value === null) {
+    return null;
+  } else {
+    const date = new Date();
+    date.setFullYear(value.year, value.month, value.date);
+    date.setHours(
+      value.hours,
+      value.minutes,
+      value.seconds,
+      value.milliseconds
+    );
+    return date;
+  }
+}
+
+export const naive_serializers = {
+  serialize: serialize_naive,
+  deserialize: deserialize_naive
+};
+
+export class NaiveDatetimeModel extends DatetimeModel {
+  defaults(): Backbone.ObjectHash {
+    return { ...super.defaults(), _model_name: 'NaiveDatetimeModel' };
+  }
+
+  static serializers: ISerializers = {
+    ...CoreDescriptionModel.serializers,
+    value: naive_serializers,
+    min: naive_serializers,
+    max: naive_serializers
+  };
+}
