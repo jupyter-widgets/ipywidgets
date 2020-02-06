@@ -8,7 +8,7 @@ First create a [conda environment](http://conda.pydata.org/docs/using/envs.html#
 
 ```bash
 # create the environment
-conda env create -n ipywidgets_docs -c conda-forge python pip
+conda create -n ipywidgets_docs -c conda-forge python pip
 
 # activate the environment
 conda activate ipywidgets_docs   # Linux and OS X
