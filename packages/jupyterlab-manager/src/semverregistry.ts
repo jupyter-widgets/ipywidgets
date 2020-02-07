@@ -66,14 +66,19 @@ export class SemVerRegistry<T> {
    * Resolution may be delayed for a short timeout to allow for some delay in
    * registering the object.
    */
-  async get(name: string, semVer: string): Promise<T | undefined> {
+  async get(
+    name: string,
+    semVer: string,
+    isKernelRestore: boolean
+  ): Promise<T | undefined> {
     const mod = this._getSync(name, semVer);
     if (mod || this._already_retried.indexOf(name + ':' + semVer)) {
       return mod;
     }
     this._already_retried.push(name + ':' + semVer);
     const result = new PromiseDelegate<T | undefined>();
-    const timestamp = Date.now();
+    let timestamp = Date.now() + TIMEOUT;
+    if (isKernelRestore) timestamp += TIMEOUT * 4;
     this._pendingRequests.push({ name, semVer, result, timestamp });
     this._debounce.invoke();
     return result.promise;
@@ -115,7 +120,7 @@ export class SemVerRegistry<T> {
       if (timestamp === null) {
         // Request fulfilled, so remove the entry.
         return true;
-      } else if (now - timestamp > TIMEOUT) {
+      } else if (now > timestamp) {
         // Request expired, so give up and remove the entry.
         result.resolve(undefined);
         return true;

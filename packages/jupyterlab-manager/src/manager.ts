@@ -320,7 +320,11 @@ export abstract class LabWidgetManager extends ManagerBase<Widget>
       moduleVersion = `^${moduleVersion}`;
     }
 
-    const mod = await this._registry.get(moduleName, moduleVersion);
+    const mod = await this._registry.get(
+      moduleName,
+      moduleVersion,
+      this._kernelRestoreInProgress
+    );
     if (!mod) {
       throw new Error(
         `Module ${moduleName}, semver range ${moduleVersion} is not registered as a widget module`
