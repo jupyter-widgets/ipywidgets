@@ -7,7 +7,7 @@ import { ArrayExt } from '@lumino/algorithm';
 
 import { PromiseDelegate } from '@lumino/coreutils';
 
-import { Throttler } from '@lumino/polling';
+import { Debouncer } from '@lumino/polling';
 
 const TIMEOUT = 300;
 
@@ -51,7 +51,7 @@ export class SemVerRegistry<T> {
 
     // Some pending requests may now be satisfied, so schedule a retry.
     if (this._pendingRequests.length > 0) {
-      this._throttle.invoke();
+      this._debounce.invoke();
     }
   }
 
@@ -68,13 +68,14 @@ export class SemVerRegistry<T> {
    */
   async get(name: string, semVer: string): Promise<T | undefined> {
     const mod = this._getSync(name, semVer);
-    if (mod) {
+    if (mod || this._already_retried.indexOf(name + ':' + semVer)) {
       return mod;
     }
+    this._already_retried.push(name + ':' + semVer);
     const result = new PromiseDelegate<T | undefined>();
     const timestamp = Date.now();
     this._pendingRequests.push({ name, semVer, result, timestamp });
-    this._throttle.invoke();
+    this._debounce.invoke();
     return result.promise;
   }
 
@@ -124,13 +125,14 @@ export class SemVerRegistry<T> {
 
     // If we still have pending requests, try again later.
     if (this._pendingRequests.length > 0) {
-      this._throttle.invoke();
+      this._debounce.invoke();
     }
   }
 
+  private _already_retried = new Array<string>();
   private _registry = new Map<string, Map<string, T>>();
   private _pendingRequests: IRequest<T>[] = [];
-  private _throttle = new Throttler(() => {
+  private _debounce = new Debouncer(() => {
     this._retry();
   }, TIMEOUT);
 }
