@@ -304,7 +304,7 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
         # so we don't have errors the first time validators run
         self._initializing_traits_ = True
         options = _make_options(kwargs.get('options', ()))
-        self._full_options = options
+        self._options_full = options
         self.set_trait('_options_labels', tuple(i[0] for i in options))
         self._options_values = tuple(i[1] for i in options)
 
