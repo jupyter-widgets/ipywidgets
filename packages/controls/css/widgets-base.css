@@ -9,6 +9,7 @@
  */
 
 @import './lumino.css';
+@import './nouislider.css';
 
 :root {
   --jp-widgets-color: var(--jp-content-font-color1);
@@ -477,109 +478,7 @@
   border-color: var(--jp-widgets-input-focus-border-color);
 }
 
-/* Widget Slider */
-
-.widget-slider .ui-slider {
-  /* Slider Track */
-  border: var(--jp-widgets-slider-border-width) solid var(--jp-layout-color3);
-  background: var(--jp-layout-color3);
-  box-sizing: border-box;
-  position: relative;
-  border-radius: 0px;
-}
-
-.widget-slider .ui-slider .ui-slider-handle {
-  /* Slider Handle */
-  outline: none !important; /* focused slider handles are colored - see below */
-  position: absolute;
-  background-color: var(--jp-widgets-slider-handle-background-color);
-  border: var(--jp-widgets-slider-border-width) solid
-    var(--jp-widgets-slider-handle-border-color);
-  box-sizing: border-box;
-  z-index: 1;
-  background-image: none; /* Override jquery-ui */
-}
-
-/* Override jquery-ui */
-.widget-slider .ui-slider .ui-slider-handle:hover,
-.widget-slider .ui-slider .ui-slider-handle:focus {
-  background-color: var(--jp-widgets-slider-active-handle-color);
-  border: var(--jp-widgets-slider-border-width) solid
-    var(--jp-widgets-slider-active-handle-color);
-}
-
-.widget-slider .ui-slider .ui-slider-handle:active {
-  background-color: var(--jp-widgets-slider-active-handle-color);
-  border-color: var(--jp-widgets-slider-active-handle-color);
-  z-index: 2;
-  transform: scale(1.2);
-}
-
-.widget-slider .ui-slider .ui-slider-range {
-  /* Interval between the two specified value of a double slider */
-  position: absolute;
-  background: var(--jp-widgets-slider-active-handle-color);
-  z-index: 0;
-}
-
-/* Shapes of Slider Handles */
-
-.widget-hslider .ui-slider .ui-slider-handle {
-  width: var(--jp-widgets-slider-handle-size);
-  height: var(--jp-widgets-slider-handle-size);
-  margin-top: calc(
-    (
-        var(--jp-widgets-slider-track-thickness) -
-          var(--jp-widgets-slider-handle-size)
-      ) / 2 - var(--jp-widgets-slider-border-width)
-  );
-  margin-left: calc(
-    var(--jp-widgets-slider-handle-size) / -2 +
-      var(--jp-widgets-slider-border-width)
-  );
-  border-radius: 50%;
-  top: 0;
-}
-
-.widget-vslider .ui-slider .ui-slider-handle {
-  width: var(--jp-widgets-slider-handle-size);
-  height: var(--jp-widgets-slider-handle-size);
-  margin-bottom: calc(
-    var(--jp-widgets-slider-handle-size) / -2 +
-      var(--jp-widgets-slider-border-width)
-  );
-  margin-left: calc(
-    (
-        var(--jp-widgets-slider-track-thickness) -
-          var(--jp-widgets-slider-handle-size)
-      ) / 2 - var(--jp-widgets-slider-border-width)
-  );
-  border-radius: 50%;
-  left: 0;
-}
-
-.widget-hslider .ui-slider .ui-slider-range {
-  height: calc(var(--jp-widgets-slider-track-thickness) * 2);
-  margin-top: calc(
-    (
-        var(--jp-widgets-slider-track-thickness) -
-          var(--jp-widgets-slider-track-thickness) * 2
-      ) / 2 - var(--jp-widgets-slider-border-width)
-  );
-}
-
-.widget-vslider .ui-slider .ui-slider-range {
-  width: calc(var(--jp-widgets-slider-track-thickness) * 2);
-  margin-left: calc(
-    (
-        var(--jp-widgets-slider-track-thickness) -
-          var(--jp-widgets-slider-track-thickness) * 2
-      ) / 2 - var(--jp-widgets-slider-border-width)
-  );
-}
-
 /* Horizontal Slider */
-
 .widget-hslider {
   width: var(--jp-widgets-inline-width);
   height: var(--jp-widgets-inline-height);
@@ -606,16 +505,6 @@
       var(--jp-widgets-slider-border-width)
   );
   flex: 1 1 var(--jp-widgets-inline-width-short);
-}
-
-.widget-hslider .ui-slider {
-  /* Inner, invisible slide div */
-  height: var(--jp-widgets-slider-track-thickness);
-  margin-top: calc(
-    (var(--jp-widgets-inline-height) - var(--jp-widgets-slider-track-thickness)) /
-      2
-  );
-  width: 100%;
 }
 
 /* Vertical Slider */
@@ -645,14 +534,6 @@
   );
   display: flex;
   flex-direction: column;
-}
-
-.widget-vslider .ui-slider-vertical {
-  /* Inner, invisible slide div */
-  width: var(--jp-widgets-slider-track-thickness);
-  flex-grow: 1;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 /* Widget Progress Styling */
