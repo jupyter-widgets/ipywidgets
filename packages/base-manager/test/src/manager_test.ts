@@ -33,26 +33,6 @@ describe('ManagerBase', function() {
     });
   });
 
-  describe('display_model', function() {
-    it('exists', function() {
-      expect(this.managerBase.display_model).to.not.be.undefined;
-    });
-    it('calls create_view and display_view', async function() {
-      const manager = this.managerBase;
-      sinon.spy(manager, 'create_view');
-      sinon.spy(manager, 'display_view');
-      const msg = { msg: true };
-      const viewOptions = { viewOptions: true };
-      const model = await manager.new_model(this.modelOptions);
-      await manager.display_model(msg, model, viewOptions);
-      expect(manager.create_view.calledWith(model, viewOptions)).to.be.true;
-      expect(manager.display_view.calledWith(msg)).to.be.true;
-      expect(manager.display_view.getCall(0).args[2]).to.deep.equal(
-        viewOptions
-      );
-    });
-  });
-
   describe('setViewOptions', function() {
     it('returns an object', function() {
       expect(this.managerBase.setViewOptions()).to.deep.equal({});

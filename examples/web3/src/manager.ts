@@ -1,37 +1,19 @@
 import * as base from '@jupyter-widgets/base';
-import * as pWidget from '@lumino/widgets';
 
 import { Kernel } from '@jupyterlab/services';
 
 import { HTMLManager } from '@jupyter-widgets/html-manager';
 
 import './widgets.css';
-import { DOMWidgetView } from '@jupyter-widgets/base';
 
 export class WidgetManager extends HTMLManager {
-  constructor(kernel: Kernel.IKernelConnection, el: HTMLElement) {
+  constructor(kernel: Kernel.IKernelConnection) {
     super();
     this.kernel = kernel;
-    this.el = el;
 
     kernel.registerCommTarget(this.comm_target_name, async (comm, msg) => {
       const oldComm = new base.shims.services.Comm(comm);
       await this.handle_comm_open(oldComm, msg);
-    });
-  }
-
-  display_view(
-    msg: any,
-    view: DOMWidgetView,
-    options: any
-  ): Promise<HTMLElement> {
-    return Promise.resolve(view).then(view => {
-      pWidget.Widget.attach(view.pWidget, this.el);
-      view.on('remove', function() {
-        console.log('view removed', view);
-      });
-      // We will resolve this lie in another PR.
-      return view as any;
     });
   }
 
@@ -61,5 +43,4 @@ export class WidgetManager extends HTMLManager {
   }
 
   kernel: Kernel.IKernelConnection;
-  el: HTMLElement;
 }

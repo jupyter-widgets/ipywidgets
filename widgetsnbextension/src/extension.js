@@ -127,7 +127,7 @@ function register_events(Jupyter, events, outputarea) {
     if (model) {
       model
         .then(function(model) {
-          return manager.display_model(void 0, model, { output: output });
+          return manager.create_view(model, { output: output });
         })
         .then(function(view) {
           var id = view.cid;

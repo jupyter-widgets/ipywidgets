@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
       }, console.error.bind(console))
       .then(function(view) {
         console.log(widgetType + ' view created');
-        manager.display_view(null, view);
+        manager.display_view(view);
         return view;
       }, console.error.bind(console));
   }
