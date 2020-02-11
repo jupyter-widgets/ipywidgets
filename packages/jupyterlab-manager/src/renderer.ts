@@ -38,7 +38,6 @@ export class WidgetRenderer extends Panel
 
     // Let's be optimistic, and hope the widget state will come later.
     this.node.textContent = 'Loading widget...';
-    this.addClass('jupyter-widgets');
 
     const manager = await this._manager.promise;
     // If there is no model id, the view was removed, so hide the node.
