@@ -16,7 +16,7 @@ from .widget_style import Style
 from .trait_types import InstanceDict, TypedTuple
 from .widget import register, widget_serialization
 from .docutils import doc_subst
-from traitlets import (Unicode, Bool, Int, Any, Dict, TraitError, CaselessStrEnum,
+from traitlets import (Unicode, Bool, Bunch, Int, Any, Dict, TraitError, CaselessStrEnum,
                        Tuple, Union, observe, validate)
 
 _doc_snippets = {}
@@ -161,10 +161,8 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
         # We have to make the basic options bookkeeping consistent
         # so we don't have errors the first time validators run
         self._initializing_traits_ = True
-        options = _make_options(kwargs.get('options', ()))
-        self._options_full = options
-        self.set_trait('_options_labels', tuple(i[0] for i in options))
-        self._options_values = tuple(i[1] for i in options)
+        kwargs['options'] = self._validate_options(Bunch(value = kwargs.get('options', ())))
+        self._propagate_options(None)
 
         # Select the first item by default, if we can
         if 'index' not in kwargs and 'value' not in kwargs and 'label' not in kwargs:
@@ -303,10 +301,8 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
         # We have to make the basic options bookkeeping consistent
         # so we don't have errors the first time validators run
         self._initializing_traits_ = True
-        options = _make_options(kwargs.get('options', ()))
-        self._options_full = options
-        self.set_trait('_options_labels', tuple(i[0] for i in options))
-        self._options_values = tuple(i[1] for i in options)
+        kwargs['options'] = self._validate_options(Bunch(value = kwargs.get('options', ())))
+        self._propagate_options(None)
 
         super().__init__(*args, **kwargs)
         self._initializing_traits_ = False
