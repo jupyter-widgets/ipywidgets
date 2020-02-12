@@ -418,7 +418,7 @@ Attribute        | Type             | Default          | Help
 `style`          | reference to ButtonStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
-`value`          | array            | `[]`             | The file upload value
+`value`          | array of object  | `[]`             | The file upload value
 
 ### FloatLogSliderModel (@jupyter-widgets/controls, 1.5.0); FloatLogSliderView (@jupyter-widgets/controls, 1.5.0)
 
