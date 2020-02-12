@@ -746,6 +746,7 @@ export class SelectionSliderView extends DescriptionView {
     const labels = this.model.get('_options_labels');
     const min = 0;
     const max = labels.length - 1;
+    const orientation = this.model.get('orientation');
 
     noUiSlider.create(this.$slider, {
       animate: true,
@@ -756,7 +757,8 @@ export class SelectionSliderView extends DescriptionView {
         max: max
       },
       step: 1,
-      orientation: this.model.get('orientation'),
+      orientation: orientation,
+      direction: orientation === 'horizontal' ? 'ltr' : 'rtl',
       format: {
         from: (value: number) => value,
         to: (value: number) => value

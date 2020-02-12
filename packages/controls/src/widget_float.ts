@@ -146,6 +146,7 @@ export class FloatLogSliderView extends BaseIntSliderView {
   }
 
   createSlider() {
+    const orientation = this.model.get('orientation');
     noUiSlider.create(this.$slider, {
       start: this.logCalc(this.model.get('value')),
       range: {
@@ -153,7 +154,8 @@ export class FloatLogSliderView extends BaseIntSliderView {
         max: this.model.get('max')
       },
       step: this.model.get('step') ?? undefined,
-      orientation: this.model.get('orientation'),
+      orientation: orientation,
+      direction: orientation === 'horizontal' ? 'ltr' : 'rtl',
       format: {
         from: (value: number) => value,
         to: (value: number) => value
