@@ -395,7 +395,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 }
 
 .widget-slider .noUi-connects {
-  overflow: hidden;
+  overflow: visible;
   z-index: 0;
   background: var(--jp-layout-color3);
+}
+
+.widget-slider .noUi-vertical .noUi-connect {
+  width: calc(100% + 2px);
+  right: -1px;
 }
