@@ -42,7 +42,7 @@ export class SliderStyleModel extends DescriptionStyleModel {
   public static styleProperties = {
     ...DescriptionStyleModel.styleProperties,
     handle_color: {
-      selector: '.ui-slider-handle',
+      selector: '.noUi-handle',
       attribute: 'background-color',
       default: null as any
     }
