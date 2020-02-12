@@ -17,7 +17,7 @@ from .widget_core import CoreWidget
 from .widget_button import ButtonStyle
 from .widget import register, widget_serialization
 from .trait_types import InstanceDict
-from traitlets.utils.bunch import Bunch
+from traitlets import Bunch
 
 
 def _deserialize_single_file(js):
