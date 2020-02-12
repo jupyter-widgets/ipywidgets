@@ -9,8 +9,7 @@ interface IFileUploaded {
   name: string;
   size: number;
   type: string;
-  lastModified: number;
-  error: string;
+  last_modified: number;
 }
 
 export class FileUploadModel extends CoreDOMWidgetModel {
@@ -81,8 +80,7 @@ export class FileUploadView extends DOMWidgetView {
                 name: file.name,
                 type: file.type,
                 size: file.size,
-                lastModified: file.lastModified,
-                error: ''
+                last_modified: file.lastModified
               });
             };
             fileReader.onerror = (): void => {
