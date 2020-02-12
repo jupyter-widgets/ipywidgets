@@ -8,7 +8,7 @@ Represents a file upload button.
 import datetime as dt
 
 from traitlets import (
-    observe, default, Unicode, Dict, List, Int, Bool, Bytes, CaselessStrEnum
+    observe, default, Unicode, Dict, Int, Bool, Bytes, CaselessStrEnum
 )
 
 from .widget_description import DescriptionWidget
@@ -16,7 +16,7 @@ from .valuewidget import ValueWidget
 from .widget_core import CoreWidget
 from .widget_button import ButtonStyle
 from .widget import register, widget_serialization
-from .trait_types import InstanceDict
+from .trait_types import InstanceDict, TypedTuple
 from traitlets import Bunch
 
 
@@ -111,7 +111,7 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
     style: widgets.widget_button.ButtonStyle, optional
         Style configuration for the button.
 
-    value: List[Dict], optional
+    value: Tuple[Dict], optional
         The value of the last uploaded file or set of files. See the
         documentation for details of how to use this to retrieve file
         content and metadata:
@@ -132,7 +132,7 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
         help='Use a predefined styling for the button.').tag(sync=True)
     style = InstanceDict(ButtonStyle).tag(sync=True, **widget_serialization)
     error = Unicode(help='Error message').tag(sync=True)
-    value = List(Dict(), help='The file upload value').tag(
+    value = TypedTuple(Dict(), help='The file upload value').tag(
         sync=True, **_value_serialization)
 
     @default('description')

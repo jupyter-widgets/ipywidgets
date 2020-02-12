@@ -37,14 +37,14 @@ class TestFileUpload(TestCase):
 
     def test_empty_initial_value(self):
         uploader = FileUpload()
-        assert uploader.value == []
+        assert uploader.value == ()
 
     def test_receive_single_file(self):
         uploader = FileUpload()
         message = {'value': [FILE_UPLOAD_FRONTEND_CONTENT]}
         uploader.set_state(message)
         assert len(uploader.value) == 1
-        [uploaded_file] = uploader.value
+        (uploaded_file,) = uploader.value
         assert uploaded_file.name == 'file-name.txt'
         assert uploaded_file.type == 'text/plain'
         assert uploaded_file.size == 20760
