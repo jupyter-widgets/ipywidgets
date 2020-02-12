@@ -331,35 +331,27 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 .widget-slider .noUi-horizontal .noUi-handle {
   width: var(--jp-widgets-slider-handle-size);
   height: var(--jp-widgets-slider-handle-size);
-  margin-top: calc(
+  border-radius: 50%;
+  top: calc(
     (
         var(--jp-widgets-slider-track-thickness) -
           var(--jp-widgets-slider-handle-size)
-      ) / 2 - var(--jp-widgets-slider-border-width)
+      ) / 2
   );
-  margin-left: calc(
-    var(--jp-widgets-slider-handle-size) / -2 +
-      var(--jp-widgets-slider-border-width)
-  );
-  border-radius: 50%;
-  top: 0;
+  right: calc(var(--jp-widgets-slider-handle-size) / -2);
 }
 
 .widget-slider .noUi-vertical .noUi-handle {
   height: var(--jp-widgets-slider-handle-size);
   width: var(--jp-widgets-slider-handle-size);
-  margin-top: calc(
-    (
-        var(--jp-widgets-slider-track-thickness) -
-          var(--jp-widgets-slider-handle-size)
-      ) / 2 - var(--jp-widgets-slider-border-width)
-  );
-  margin-left: calc(
-    var(--jp-widgets-slider-handle-size) / -2 +
-      var(--jp-widgets-slider-border-width)
-  );
   border-radius: 50%;
-  top: 0;
+  right: calc(
+    (
+        var(--jp-widgets-slider-handle-size) -
+          var(--jp-widgets-slider-track-thickness)
+      ) / -2
+  );
+  top: calc(var(--jp-widgets-slider-handle-size) / -2);
 }
 
 .widget-slider .noUi-handle:after {
@@ -383,10 +375,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   box-sizing: border-box;
   position: relative;
   border-radius: 0px;
-}
-
-.widget-slider .noUi-horizontal .noUi-handle {
-  right: -13px;
 }
 
 .widget-slider .noUi-handle {
