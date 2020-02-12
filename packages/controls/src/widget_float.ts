@@ -252,7 +252,6 @@ export class FloatLogSliderView extends BaseIntSliderView {
 
   updateSliderValue(model: any, value: any, options: any): void {
     if (options.updated_view === this) {
-      console.log('this view triggered');
       return;
     }
     const log_value = this.logCalc(this.model.get('value'));
