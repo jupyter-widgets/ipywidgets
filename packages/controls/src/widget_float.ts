@@ -154,6 +154,7 @@ export class FloatLogSliderView extends BaseIntSliderView {
         max: this.model.get('max')
       },
       step: this.model.get('step') ?? undefined,
+      animate: false,
       orientation: orientation,
       direction: orientation === 'horizontal' ? 'ltr' : 'rtl',
       format: {

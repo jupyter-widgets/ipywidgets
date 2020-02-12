@@ -749,7 +749,6 @@ export class SelectionSliderView extends DescriptionView {
     const orientation = this.model.get('orientation');
 
     noUiSlider.create(this.$slider, {
-      animate: true,
       start: this.model.get('index'),
       connect: true,
       range: {
@@ -757,6 +756,7 @@ export class SelectionSliderView extends DescriptionView {
         max: max
       },
       step: 1,
+      animate: false,
       orientation: orientation,
       direction: orientation === 'horizontal' ? 'ltr' : 'rtl',
       format: {

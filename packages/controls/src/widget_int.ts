@@ -204,7 +204,6 @@ export abstract class BaseIntSliderView extends DescriptionView {
   createSlider() {
     const orientation = this.model.get('orientation');
     noUiSlider.create(this.$slider, {
-      animate: true,
       start: this.model.get('value'),
       connect: true,
       range: {
@@ -212,6 +211,7 @@ export abstract class BaseIntSliderView extends DescriptionView {
         max: this.model.get('max')
       },
       step: this.model.get('step'),
+      animate: false,
       orientation: orientation,
       direction: orientation === 'horizontal' ? 'ltr' : 'rtl',
       format: {
