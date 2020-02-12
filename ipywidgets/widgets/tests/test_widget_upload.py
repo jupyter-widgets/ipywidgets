@@ -14,7 +14,7 @@ FILE_UPLOAD_FRONTEND_CONTENT = {
     'name': 'file-name.txt',
     'type': 'text/plain',
     'size': 20760,
-    'lastModified': 1578578296434,
+    'last_modified': 1578578296434,
     'content': memoryview(b'file content'),
 }
 
@@ -114,5 +114,5 @@ class TestFileUpload(TestCase):
         assert entry['name'] == 'some-name.txt'
         assert entry['type'] == 'text/plain'
         assert entry['size'] == 561
-        assert entry['lastModified'] == 1578578296434
+        assert entry['last_modified'] == 1578578296434
         assert entry['content'] == content

@@ -25,7 +25,7 @@ def _deserialize_single_file(js):
     for attribute in ['name', 'type', 'size', 'content']:
         uploaded_file[attribute] = js[attribute]
     uploaded_file['last_modified'] = dt.datetime.fromtimestamp(
-        js['lastModified'] / 1000,
+        js['last_modified'] / 1000,
         tz=dt.timezone.utc
     )
     return uploaded_file
@@ -39,7 +39,7 @@ def _serialize_single_file(uploaded_file):
     js = {}
     for attribute in ['name', 'type', 'size', 'content']:
         js[attribute] = uploaded_file[attribute]
-    js['lastModified'] = int(uploaded_file['last_modified'].timestamp() * 1000)
+    js['last_modified'] = int(uploaded_file['last_modified'].timestamp() * 1000)
     return js
 
 
