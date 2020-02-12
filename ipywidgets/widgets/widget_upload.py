@@ -116,6 +116,7 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
         documentation for details of how to use this to retrieve file
         content and metadata:
         https://ipywidgets.readthedocs.io/en/stable/examples/Widget%20List.html#File-Upload
+
     error: str, optional
         Whether the last upload triggered an error.
     """
