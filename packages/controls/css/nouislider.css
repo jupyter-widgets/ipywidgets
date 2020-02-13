@@ -404,3 +404,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   width: calc(100% + 2px);
   right: -1px;
 }
+
+.widget-slider .noUi-horizontal .noUi-connect {
+  height: calc(100% + 2px);
+  top: -1px;
+}
