@@ -391,9 +391,14 @@ export class IntRangeSliderView extends BaseIntSliderView {
     });
   }
 
-  updateSliderValue(e: any) {
+  updateSliderValue(model: any, _: any, options: any) {
+    if (options.updated_view === this) {
+      return;
+    }
+
     const prev_value = this.$slider.noUiSlider.get();
     const value = this.model.get('value');
+
     if (prev_value[0] !== value[0] || prev_value[1] !== value[1]) {
       this.$slider.noUiSlider.set(value);
     }
@@ -484,9 +489,14 @@ export class IntSliderView extends BaseIntSliderView {
     });
   }
 
-  updateSliderValue(e: any): void {
+  updateSliderValue(model: any, _: any, options: any): void {
+    if (options.updated_view === this) {
+      return;
+    }
+
     const prev_value = this.$slider.noUiSlider.get();
     const value = this.model.get('value');
+
     if (prev_value !== value) {
       this.$slider.noUiSlider.set(value);
     }

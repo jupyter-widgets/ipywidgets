@@ -834,7 +834,11 @@ export class SelectionSliderView extends DescriptionView {
     });
   }
 
-  updateSliderValue(e: any) {
+  updateSliderValue(model: any, _: any, options: any) {
+    if (options.updated_view === this) {
+      return;
+    }
+
     const prev_index = this.$slider.noUiSlider.get();
     const index = this.model.get('index');
     if (prev_index !== index) {
@@ -972,7 +976,11 @@ export class SelectionRangeSliderView extends SelectionSliderView {
     this.touch();
   }
 
-  updateSliderValue(e: any) {
+  updateSliderValue(model: any, _: any, options: any) {
+    if (options.updated_view === this) {
+      return;
+    }
+
     // Rounding values to avoid floating point precision error for the if statement below
     const prev_index = this.$slider.noUiSlider.get().map(Math.round);
     const index = this.model.get('index').map(Math.round);
