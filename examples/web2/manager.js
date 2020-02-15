@@ -1,6 +1,6 @@
 var base = require('@jupyter-widgets/base');
 var controls = require('@jupyter-widgets/controls');
-var PhosphorWidget = require('@phosphor/widgets').Widget;
+var PhosphorWidget = require('@lumino/widgets').Widget;
 
 class WidgetManager extends base.ManagerBase {
     constructor(el) {

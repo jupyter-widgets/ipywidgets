@@ -14,11 +14,11 @@ import {
 
 import {
     Widget, Panel
-} from '@phosphor/widgets';
+} from '@lumino/widgets';
 
 import {
     Message, MessageLoop
-} from '@phosphor/messaging';
+} from '@lumino/messaging';
 
 import {
     IClassicComm, ICallbacks
