@@ -40,7 +40,8 @@ export class DescriptionModel extends DOMWidgetModel {
       _model_module: '@jupyter-widgets/controls',
       _view_module_version: JUPYTER_CONTROLS_VERSION,
       _model_module_version: JUPYTER_CONTROLS_VERSION,
-      description: ''
+      description: '',
+      description_html: false
     };
   }
 }
@@ -68,7 +69,11 @@ export class DescriptionView extends DOMWidgetView {
     if (description.length === 0) {
       this.label.style.display = 'none';
     } else {
-      this.label.innerHTML = description;
+      if (this.model.get('description_html')) {
+        this.label.innerHTML = description;
+      } else {
+        this.label.textContent = description;
+      }
       this.typeset(this.label);
       this.label.style.display = '';
     }

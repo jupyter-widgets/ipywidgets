@@ -79,7 +79,11 @@ export class CheckboxView extends DescriptionView {
       return;
     }
     const description = this.model.get('description');
-    this.descriptionSpan.innerHTML = description;
+    if (this.model.get('description_html')) {
+      this.descriptionSpan.innerHTML = description;
+    } else {
+      this.descriptionSpan.textContent = description;
+    }
     this.typeset(this.descriptionSpan);
     this.descriptionSpan.title = description;
     this.checkbox.title = description;
