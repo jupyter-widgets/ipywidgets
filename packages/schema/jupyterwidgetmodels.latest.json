@@ -393,12 +393,6 @@
         "type": "string"
       },
       {
-        "default": {},
-        "help": "Titles of the pages",
-        "name": "_titles",
-        "type": "object"
-      },
-      {
         "default": "@jupyter-widgets/controls",
         "help": "",
         "name": "_view_module",
@@ -442,7 +436,7 @@
       },
       {
         "allow_none": true,
-        "default": 0,
+        "default": null,
         "help": "The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.",
         "name": "selected_index",
         "type": "int"
@@ -453,6 +447,15 @@
         "help": "Is widget tabbable?",
         "name": "tabbable",
         "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "Titles of the pages",
+        "items": {
+          "type": "string"
+        },
+        "name": "titles",
+        "type": "array"
       },
       {
         "allow_none": true,
@@ -567,7 +570,7 @@
       },
       {
         "default": "b''",
-        "help": "The media data as a byte string.",
+        "help": "The media data as a memory view of bytes.",
         "name": "value",
         "type": "bytes"
       }
@@ -1847,7 +1850,7 @@
       },
       {
         "default": "b''",
-        "help": "The media data as a byte string.",
+        "help": "The media data as a memory view of bytes.",
         "name": "value",
         "type": "bytes"
       }
@@ -2324,6 +2327,9 @@
       {
         "default": [],
         "help": "The file upload value",
+        "items": {
+          "type": "object"
+        },
         "name": "value",
         "type": "array"
       }
@@ -3519,7 +3525,7 @@
       },
       {
         "default": "b''",
-        "help": "The media data as a byte string.",
+        "help": "The media data as a memory view of bytes.",
         "name": "value",
         "type": "bytes"
       },
@@ -4339,7 +4345,7 @@
       },
       {
         "default": "b''",
-        "help": "The media data as a byte string.",
+        "help": "The media data as a memory view of bytes.",
         "name": "value",
         "type": "bytes"
       },
@@ -5406,12 +5412,6 @@
         "type": "string"
       },
       {
-        "default": {},
-        "help": "Titles of the pages",
-        "name": "_titles",
-        "type": "object"
-      },
-      {
         "default": "@jupyter-widgets/controls",
         "help": "",
         "name": "_view_module",
@@ -5455,7 +5455,7 @@
       },
       {
         "allow_none": true,
-        "default": 0,
+        "default": null,
         "help": "The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.",
         "name": "selected_index",
         "type": "int"
@@ -5466,6 +5466,15 @@
         "help": "Is widget tabbable?",
         "name": "tabbable",
         "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "Titles of the pages",
+        "items": {
+          "type": "string"
+        },
+        "name": "titles",
+        "type": "array"
       },
       {
         "allow_none": true,
@@ -5516,12 +5525,6 @@
         "type": "string"
       },
       {
-        "default": {},
-        "help": "Titles of the pages",
-        "name": "_titles",
-        "type": "object"
-      },
-      {
         "default": "@jupyter-widgets/controls",
         "help": "",
         "name": "_view_module",
@@ -5565,7 +5568,7 @@
       },
       {
         "allow_none": true,
-        "default": 0,
+        "default": null,
         "help": "The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.",
         "name": "selected_index",
         "type": "int"
@@ -5576,6 +5579,15 @@
         "help": "Is widget tabbable?",
         "name": "tabbable",
         "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "Titles of the pages",
+        "items": {
+          "type": "string"
+        },
+        "name": "titles",
+        "type": "array"
       },
       {
         "allow_none": true,
@@ -6472,7 +6484,7 @@
       },
       {
         "default": "b''",
-        "help": "The media data as a byte string.",
+        "help": "The media data as a memory view of bytes.",
         "name": "value",
         "type": "bytes"
       },
