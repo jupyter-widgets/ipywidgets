@@ -173,7 +173,9 @@ export class MappedImageView extends ImageView {
    * Handles when the image is clicked.
    * Let the browser do it!
    */
-  _handle_click(event: MouseEvent): void {}
+  _handle_click(event: MouseEvent): void {
+    return;
+  }
 
   map: HTMLMapElement;
 }
