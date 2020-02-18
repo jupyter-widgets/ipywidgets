@@ -154,7 +154,7 @@ describe('Datetime', () => {
         k => state_out.state[k].state
       );
       expect(models.length).to.eql(1);
-      expect(models[0]._model_name).to.be.a('NaiveDatetimeModel');
+      expect(models[0]._model_name).to.eql('NaiveDatetimeModel');
       expect(models[0].value).to.eql(state_in.value);
     });
 
