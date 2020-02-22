@@ -441,7 +441,7 @@ Attribute        | Type             | Default          | Help
 `orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
 `readout`        | boolean          | `true`           | Display the current value of the slider next to it.
 `readout_format` | string           | `'.3g'`          | Format for the readout
-`step`           | number (float)   | `0.1`            | Minimum step in the exponent to increment the value
+`step`           | `null` or number (float) | `0.1`            | Minimum step in the exponent to increment the value
 `style`          | reference to SliderStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
@@ -489,7 +489,7 @@ Attribute        | Type             | Default          | Help
 `orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
 `readout`        | boolean          | `true`           | Display the current value of the slider next to it.
 `readout_format` | string           | `'.2f'`          | Format for the readout
-`step`           | number (float)   | `0.1`            | Minimum step to increment the value
+`step`           | `null` or number (float) | `0.1`            | Minimum step to increment the value
 `style`          | reference to SliderStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
@@ -515,7 +515,7 @@ Attribute        | Type             | Default          | Help
 `orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
 `readout`        | boolean          | `true`           | Display the current value of the slider next to it.
 `readout_format` | string           | `'.2f'`          | Format for the readout
-`step`           | number (float)   | `0.1`            | Minimum step to increment the value
+`step`           | `null` or number (float) | `0.1`            | Minimum step to increment the value
 `style`          | reference to SliderStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
