@@ -10,7 +10,7 @@ import { DescriptionView, DescriptionStyleModel } from './widget_description';
 import { uuid } from './utils';
 
 import * as utils from './utils';
-import $ from 'jquery';
+import noUiSlider from 'nouislider';
 
 export class SelectionModel extends CoreDescriptionModel {
   defaults(): Backbone.ObjectHash {
@@ -666,17 +666,14 @@ export class SelectionSliderView extends DescriptionView {
     this.el.classList.add('widget-hslider');
     this.el.classList.add('widget-slider');
 
-    (this.$slider = $('<div />') as any)
-      .slider({
-        slide: this.handleSliderChange.bind(this),
-        stop: this.handleSliderChanged.bind(this)
-      })
-      .addClass('slider');
+    // Creating noUiSlider instance and scaffolding
+    this.$slider = document.createElement('div');
+    this.$slider.classList.add('slider');
 
     // Put the slider in a container
     this.slider_container = document.createElement('div');
     this.slider_container.classList.add('slider-container');
-    this.slider_container.appendChild(this.$slider[0]);
+    this.slider_container.appendChild(this.$slider);
     this.el.appendChild(this.slider_container);
 
     this.readout = document.createElement('div');
@@ -684,11 +681,12 @@ export class SelectionSliderView extends DescriptionView {
     this.readout.classList.add('widget-readout');
     this.readout.style.display = 'none';
 
-    this.listenTo(this.model, 'change:slider_color', (sender, value) => {
-      this.$slider.find('a').css('background', value);
-    });
+    // noUiSlider constructor and event handlers
+    this.createSlider();
 
-    this.$slider.find('a').css('background', this.model.get('slider_color'));
+    // Event handlers
+    this.model.on('change:orientation', this.regenSlider, this);
+    this.model.on('change:index', this.updateSliderValue, this);
 
     // Set defaults.
     this.update();
@@ -702,31 +700,15 @@ export class SelectionSliderView extends DescriptionView {
    */
   update(options?: any): void {
     if (options === undefined || options.updated_view !== this) {
-      const labels = this.model.get('_options_labels');
-      const max = labels.length - 1;
-      const min = 0;
-      this.$slider.slider('option', 'step', 1);
-      this.$slider.slider('option', 'max', max);
-      this.$slider.slider('option', 'min', min);
-
-      // WORKAROUND FOR JQUERY SLIDER BUG.
-      // The horizontal position of the slider handle
-      // depends on the value of the slider at the time
-      // of orientation change.  Before applying the new
-      // workaround, we set the value to the minimum to
-      // make sure that the horizontal placement of the
-      // handle in the vertical slider is always
-      // consistent.
+      this.updateSliderOptions(this.model);
       const orientation = this.model.get('orientation');
-      this.$slider.slider('option', 'value', min);
-      this.$slider.slider('option', 'orientation', orientation);
-
       const disabled = this.model.get('disabled');
-      this.$slider.slider('option', 'disabled', disabled);
       if (disabled) {
         this.readout.contentEditable = 'false';
+        this.$slider.setAttribute('disabled', true);
       } else {
         this.readout.contentEditable = 'true';
+        this.$slider.removeAttribute('disabled');
       }
 
       // Use the right CSS classes for vertical & horizontal sliders
@@ -755,6 +737,44 @@ export class SelectionSliderView extends DescriptionView {
     return super.update(options);
   }
 
+  regenSlider(e: any) {
+    this.$slider.noUiSlider.destroy();
+    this.createSlider();
+  }
+
+  createSlider() {
+    const labels = this.model.get('_options_labels');
+    const min = 0;
+    const max = labels.length - 1;
+    const orientation = this.model.get('orientation');
+
+    noUiSlider.create(this.$slider, {
+      start: this.model.get('index'),
+      connect: true,
+      range: {
+        min: min,
+        max: max
+      },
+      step: 1,
+      animate: false,
+      orientation: orientation,
+      direction: orientation === 'horizontal' ? 'ltr' : 'rtl',
+      format: {
+        from: (value: number) => value,
+        to: (value: number) => value
+      }
+    });
+
+    // Using noUiSlider's event handler
+    this.$slider.noUiSlider.on('update', (values: number[], handle: number) => {
+      this.handleSliderChange(values, handle);
+    });
+
+    this.$slider.noUiSlider.on('end', (values: number[], handle: number) => {
+      this.handleSliderChanged(values, handle);
+    });
+  }
+
   events(): { [e: string]: string } {
     return {
       slide: 'handleSliderChange',
@@ -764,7 +784,6 @@ export class SelectionSliderView extends DescriptionView {
 
   updateSelection(): void {
     const index = this.model.get('index');
-    this.$slider.slider('option', 'value', index);
     this.updateReadout(index);
   }
 
@@ -776,16 +795,14 @@ export class SelectionSliderView extends DescriptionView {
   /**
    * Called when the slider value is changing.
    */
-  handleSliderChange(
-    e: Event,
-    ui: { value?: number; values?: number[] }
-  ): void {
-    this.updateReadout(ui.value);
+  handleSliderChange(values: number[], handle: number): void {
+    const index = values[0];
+    this.updateReadout(index);
 
     // Only persist the value while sliding if the continuous_update
     // trait is set to true.
     if (this.model.get('continuous_update')) {
-      this.handleSliderChanged(e, ui);
+      this.handleSliderChanged(values, handle);
     }
   }
 
@@ -795,13 +812,38 @@ export class SelectionSliderView extends DescriptionView {
    * Calling model.set will trigger all of the other views of the
    * model to update.
    */
-  handleSliderChanged(
-    e: Event,
-    ui: { value?: number; values?: number[] }
-  ): void {
-    this.updateReadout(ui.value);
-    this.model.set('index', ui.value, { updated_view: this });
+  handleSliderChanged(values: number[], handle: number) {
+    const index = values[0];
+    this.updateReadout(index);
+    this.model.set('index', index, { updated_view: this });
     this.touch();
+  }
+
+  updateSliderOptions(e: any) {
+    const labels = this.model.get('_options_labels');
+    const min = 0;
+    const max = labels.length - 1;
+
+    this.$slider.noUiSlider.updateOptions({
+      start: this.model.get('index'),
+      range: {
+        min: min,
+        max: max
+      },
+      step: 1
+    });
+  }
+
+  updateSliderValue(model: any, _: any, options: any) {
+    if (options.updated_view === this) {
+      return;
+    }
+
+    const prev_index = this.$slider.noUiSlider.get();
+    const index = this.model.get('index');
+    if (prev_index !== index) {
+      this.$slider.noUiSlider.set(index);
+    }
   }
 
   $slider: any;
@@ -891,12 +933,10 @@ export class SelectionRangeSliderView extends SelectionSliderView {
    */
   render(): void {
     super.render();
-    this.$slider.slider('option', 'range', true);
   }
 
   updateSelection(): void {
     const index = this.model.get('index');
-    this.$slider.slider('option', 'values', index.slice());
     this.updateReadout(index);
   }
 
@@ -910,13 +950,14 @@ export class SelectionRangeSliderView extends SelectionSliderView {
   /**
    * Called when the slider value is changing.
    */
-  handleSliderChange(e: Event, ui: { values: number[] }): void {
-    this.updateReadout(ui.values);
+  handleSliderChange(values: number[], handle: any) {
+    const intValues = values.map(Math.trunc);
+    this.updateReadout(intValues);
 
     // Only persist the value while sliding if the continuous_update
     // trait is set to true.
     if (this.model.get('continuous_update')) {
-      this.handleSliderChanged(e, ui);
+      this.handleSliderChanged(values, handle);
     }
   }
 
@@ -926,12 +967,27 @@ export class SelectionRangeSliderView extends SelectionSliderView {
    * Calling model.set will trigger all of the other views of the
    * model to update.
    */
-  handleSliderChanged(e: Event, ui: { values: number[] }): void {
-    // The jqueryui documentation indicates ui.values doesn't exist on the slidestop event,
-    // but it appears that it actually does: https://github.com/jquery/jquery-ui/blob/ae31f2b3b478975f70526bdf3299464b9afa8bb1/ui/widgets/slider.js#L313
-    this.updateReadout(ui.values);
-    this.model.set('index', ui.values.slice(), { updated_view: this });
+  handleSliderChanged(values: number[], handle: number) {
+    const intValues = values.map(Math.round);
+    this.updateReadout(intValues);
+
+    // set index to a snapshot of the values passed by the slider
+    this.model.set('index', intValues.slice(), { updated_view: this });
     this.touch();
+  }
+
+  updateSliderValue(model: any, _: any, options: any) {
+    if (options.updated_view === this) {
+      return;
+    }
+
+    // Rounding values to avoid floating point precision error for the if statement below
+    const prev_index = this.$slider.noUiSlider.get().map(Math.round);
+    const index = this.model.get('index').map(Math.round);
+
+    if (prev_index[0] !== index[0] || prev_index[1] !== index[1]) {
+      this.$slider.noUiSlider.set(index);
+    }
   }
 
   $slider: any;

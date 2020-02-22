@@ -12,6 +12,8 @@ import {
 
 import { format } from 'd3-format';
 
+import noUiSlider from 'nouislider';
+
 export class FloatModel extends CoreDescriptionModel {
   defaults(): Backbone.ObjectHash {
     return {
@@ -118,11 +120,20 @@ export class FloatSliderView extends IntSliderView {
 export class FloatLogSliderView extends BaseIntSliderView {
   update(options?: any): void {
     super.update(options);
+    const value = this.model.get('value');
+    this.readout.textContent = this.valueToString(value);
+  }
+
+  /**
+   * Convert from value to exponent
+   *
+   * @param value the widget value
+   * @returns the log-value between the min/max exponents
+   */
+  logCalc(value: number): number {
     const min = this.model.get('min');
     const max = this.model.get('max');
-    const value = this.model.get('value');
     const base = this.model.get('base');
-
     let log_value = Math.log(value) / Math.log(base);
 
     if (log_value > max) {
@@ -130,12 +141,36 @@ export class FloatLogSliderView extends BaseIntSliderView {
     } else if (log_value < min) {
       log_value = min;
     }
-    this.$slider.slider('option', 'value', log_value);
-    this.readout.textContent = this.valueToString(value);
-    if (this.model.get('value') !== value) {
-      this.model.set('value', value, { updated_view: this });
-      this.touch();
-    }
+
+    return log_value;
+  }
+
+  createSlider() {
+    const orientation = this.model.get('orientation');
+    noUiSlider.create(this.$slider, {
+      start: this.logCalc(this.model.get('value')),
+      range: {
+        min: this.model.get('min'),
+        max: this.model.get('max')
+      },
+      step: this.model.get('step') ?? undefined,
+      animate: false,
+      orientation: orientation,
+      direction: orientation === 'horizontal' ? 'ltr' : 'rtl',
+      format: {
+        from: (value: number) => value,
+        to: (value: number) => value
+      }
+    });
+
+    // Using noUiSlider's event handler
+    this.$slider.noUiSlider.on('update', (values: any, handle: any) => {
+      this.handleSliderChange(values, handle);
+    });
+
+    this.$slider.noUiSlider.on('end', (values: any, handle: any) => {
+      this.handleSliderChanged(values, handle);
+    });
   }
 
   /**
@@ -187,15 +222,15 @@ export class FloatLogSliderView extends BaseIntSliderView {
   /**
    * Called when the slider value is changing.
    */
-  handleSliderChange(e: Event, ui: { value: any }): void {
+  handleSliderChange(values: number[], handle: number): void {
     const base = this.model.get('base');
-    const actual_value = Math.pow(base, this._validate_slide_value(ui.value));
+    const actual_value = Math.pow(base, this._validate_slide_value(values[0]));
     this.readout.textContent = this.valueToString(actual_value);
 
     // Only persist the value while sliding if the continuous_update
     // trait is set to true.
     if (this.model.get('continuous_update')) {
-      this.handleSliderChanged(e, ui);
+      this.handleSliderChanged(values, handle);
     }
   }
 
@@ -205,18 +240,41 @@ export class FloatLogSliderView extends BaseIntSliderView {
    * Calling model.set will trigger all of the other views of the
    * model to update.
    */
-  handleSliderChanged(e: Event, ui: { value: any }): void {
+  handleSliderChanged(values: number[], handle: number): void {
+    if (this._updating_slider) {
+      return;
+    }
     const base = this.model.get('base');
-    const actual_value = Math.pow(base, this._validate_slide_value(ui.value));
+    const actual_value = Math.pow(base, this._validate_slide_value(values[0]));
     this.model.set('value', actual_value, { updated_view: this });
     this.touch();
   }
 
-  _validate_slide_value(x: any): any {
+  updateSliderValue(model: any, value: any, options: any): void {
+    if (options.updated_view === this) {
+      return;
+    }
+    const log_value = this.logCalc(this.model.get('value'));
+    this.$slider.noUiSlider.set(log_value);
+  }
+
+  updateSliderOptions(e: any) {
+    this.$slider.noUiSlider.updateOptions({
+      start: this.logCalc(this.model.get('value')),
+      range: {
+        min: this.model.get('min'),
+        max: this.model.get('max')
+      },
+      step: this.model.get('step')
+    });
+  }
+
+  _validate_slide_value(x: any) {
     return x;
   }
 
   _parse_value = parseFloat;
+  private _updating_slider: boolean;
 }
 
 export class FloatRangeSliderView extends IntRangeSliderView {
