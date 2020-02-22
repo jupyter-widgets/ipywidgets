@@ -187,12 +187,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 }
 /* Disabled state;
  */
-[disabled] .noUi-connect {
+.widget-slider [disabled] .noUi-connect {
   background: #b8b8b8;
 }
-[disabled].noUi-target,
-[disabled].noUi-handle,
-[disabled] .noUi-handle {
+.widget-slider [disabled].noUi-target,
+.widget-slider [disabled].noUi-handle,
+.widget-slider [disabled] .noUi-handle {
   cursor: not-allowed;
 }
 /* Base;
@@ -387,11 +387,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   outline: none;
 }
 
-.widget-slider .noUi-handle:hover,
-.noUi-handle:focus {
+.widget-slider .noUi-target:not([disabled]) .noUi-handle:hover,
+.widget-slider .noUi-target:not([disabled]) .noUi-handle:focus {
   background-color: var(--jp-widgets-slider-active-handle-color);
   border: var(--jp-widgets-slider-border-width) solid
     var(--jp-widgets-slider-active-handle-color);
+}
+
+.widget-slider [disabled].noUi-target {
+  opacity: 0.35;
 }
 
 .widget-slider .noUi-connects {
