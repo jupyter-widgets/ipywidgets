@@ -4,7 +4,6 @@
 import {
   shims,
   IClassicComm,
-  IWidgetRegistryData,
   ExportMap,
   ExportData,
   WidgetModel,
@@ -35,7 +34,7 @@ import { ISignal, Signal } from '@lumino/signaling';
 
 import { valid } from 'semver';
 
-import { SemVerCache } from './semvercache';
+import { SemVerRegistry } from './semverregistry';
 
 /**
  * The mime type for a widget view.
@@ -53,9 +52,10 @@ export const WIDGET_STATE_MIMETYPE =
  */
 export abstract class LabWidgetManager extends ManagerBase
   implements IDisposable {
-  constructor(rendermime: IRenderMimeRegistry) {
+  constructor({ rendermime, widgetRegistry }: LabWidgetManager.IOptions) {
     super();
     this._rendermime = rendermime;
+    this._registry = widgetRegistry;
   }
 
   /**
@@ -271,7 +271,11 @@ export abstract class LabWidgetManager extends ManagerBase
       moduleVersion = `^${moduleVersion}`;
     }
 
-    const mod = this._registry.get(moduleName, moduleVersion);
+    const mod = await this._registry.get(
+      moduleName,
+      moduleVersion,
+      this._kernelRestoreInProgress
+    );
     if (!mod) {
       throw new Error(
         `Module ${moduleName}, semver range ${moduleVersion} is not registered as a widget module`
@@ -319,10 +323,6 @@ export abstract class LabWidgetManager extends ManagerBase
    */
   get onUnhandledIOPubMessage(): ISignal<this, KernelMessage.IIOPubMessage> {
     return this._onUnhandledIOPubMessage;
-  }
-
-  register(data: IWidgetRegistryData): void {
-    this._registry.set(data.name, data.version, data.exports);
   }
 
   /**
@@ -398,7 +398,7 @@ export abstract class LabWidgetManager extends ManagerBase
   protected _kernelRestoreInProgress = false;
 
   private _isDisposed = false;
-  private _registry: SemVerCache<ExportData> = new SemVerCache<ExportData>();
+  private _registry: SemVerRegistry<ExportData>;
   private _rendermime: IRenderMimeRegistry;
 
   private _commRegistration: IDisposable;
@@ -410,15 +410,23 @@ export abstract class LabWidgetManager extends ManagerBase
   >(this);
 }
 
+export namespace LabWidgetManager {
+  export interface IOptions {
+    rendermime: IRenderMimeRegistry;
+    widgetRegistry: SemVerRegistry<ExportData>;
+  }
+}
+
 /**
  * A widget manager that returns phosphor widgets.
  */
 export class KernelWidgetManager extends LabWidgetManager {
-  constructor(
-    kernel: Kernel.IKernelConnection,
-    rendermime: IRenderMimeRegistry
-  ) {
-    super(rendermime);
+  constructor({
+    kernel,
+    rendermime,
+    widgetRegistry
+  }: KernelWidgetManager.IOptions) {
+    super({ rendermime, widgetRegistry });
     this._kernel = kernel;
 
     kernel.statusChanged.connect((sender, args) => {
@@ -486,16 +494,23 @@ export class KernelWidgetManager extends LabWidgetManager {
   private _kernel: Kernel.IKernelConnection;
 }
 
+export namespace KernelWidgetManager {
+  export interface IOptions extends LabWidgetManager.IOptions {
+    kernel: Kernel.IKernelConnection;
+  }
+}
+
 /**
  * A widget manager that returns phosphor widgets.
  */
 export class WidgetManager extends LabWidgetManager {
-  constructor(
-    context: DocumentRegistry.IContext<INotebookModel>,
-    rendermime: IRenderMimeRegistry,
-    settings: WidgetManager.Settings
-  ) {
-    super(rendermime);
+  constructor({
+    context,
+    rendermime,
+    settings,
+    widgetRegistry
+  }: WidgetManager.IOptions) {
+    super({ rendermime, widgetRegistry });
     this._context = context;
 
     context.sessionContext.kernelChanged.connect((sender, args) => {
@@ -660,6 +675,11 @@ export class WidgetManager extends LabWidgetManager {
 }
 
 export namespace WidgetManager {
+  export interface IOptions extends LabWidgetManager.IOptions {
+    context: DocumentRegistry.IContext<INotebookModel>;
+    settings: Settings;
+  }
+
   export type Settings = {
     saveState: boolean;
   };
