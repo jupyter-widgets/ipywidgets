@@ -495,7 +495,6 @@
 }
 
 .widget-hslider .slider-container {
-  height: var(--jp-widgets-inline-height);
   margin-left: calc(
     var(--jp-widgets-slider-handle-size) / 2 - 2 *
       var(--jp-widgets-slider-border-width)
