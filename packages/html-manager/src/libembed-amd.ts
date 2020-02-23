@@ -4,11 +4,14 @@
 import * as libembed from './libembed';
 
 let cdn = 'https://unpkg.com/';
+let onlyCDN = false;
 
 // find the data-cdn for any script tag, assuming it is only used for embed-amd.js
 const scripts = document.getElementsByTagName('script');
 Array.prototype.forEach.call(scripts, (script: HTMLScriptElement) => {
   cdn = script.getAttribute('data-jupyter-widgets-cdn') || cdn;
+  onlyCDN =
+    onlyCDN || script.getAttribute('data-jupyter-widgets-cdn-only') != null;
 });
 
 /**
@@ -62,22 +65,28 @@ export function requireLoader(
   moduleName: string,
   moduleVersion: string
 ): Promise<any> {
+  const require = (window as any).requirejs;
+  if (require === undefined) {
+    throw new Error(
+      'Requirejs is needed, please ensure it is loaded on the page.'
+    );
+  }
+  function loadFromCDN(): Promise<any> {
+    const conf: { paths: { [key: string]: string } } = { paths: {} };
+    conf.paths[moduleName] = moduleNameToCDNUrl(moduleName, moduleVersion);
+    require.config(conf);
+    return requirePromise([`${moduleName}`]);
+  }
+  if (onlyCDN) {
+    console.log(`Loading from ${cdn} for ${moduleName}@${moduleVersion}`);
+    return loadFromCDN();
+  }
   return requirePromise([`${moduleName}`]).catch(err => {
     const failedId = err.requireModules && err.requireModules[0];
     if (failedId) {
-      console.log(`Falling back to ${cdn} for ${moduleName}@${moduleVersion}`);
-      const require = (window as any).requirejs;
-      if (require === undefined) {
-        throw new Error(
-          'Requirejs is needed, please ensure it is loaded on the page.'
-        );
-      }
-      const conf: { paths: { [key: string]: string } } = { paths: {} };
-      conf.paths[moduleName] = moduleNameToCDNUrl(moduleName, moduleVersion);
       require.undef(failedId);
-      require.config(conf);
-
-      return requirePromise([`${moduleName}`]);
+      console.log(`Falling back to ${cdn} for ${moduleName}@${moduleVersion}`);
+      loadFromCDN();
     }
   });
 }
