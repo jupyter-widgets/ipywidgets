@@ -34,13 +34,6 @@ export class StringView extends DescriptionView {
     this.el.classList.add('widget-inline-hbox');
   }
 
-  /**
-   * Update the contents of this view
-   *
-   * Called when the model is changed.  The model may have been
-   * changed by another view or by a state update from the back-end.
-   */
-
   content: HTMLDivElement;
 }
 

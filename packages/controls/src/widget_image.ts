@@ -1,9 +1,11 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
-import { DOMWidgetView } from '@jupyter-widgets/base';
+import { DOMWidgetView, unpack_models } from '@jupyter-widgets/base';
 
 import { CoreDOMWidgetModel } from './widget_core';
+
+import { uuid } from './utils';
 
 export class ImageModel extends CoreDOMWidgetModel {
   defaults(): Backbone.ObjectHash {
@@ -89,6 +91,22 @@ export class ImageView extends DOMWidgetView {
   }
 
   /**
+   * Dictionary of events and handlers
+   */
+  events(): { [e: string]: string } {
+    return { click: '_handle_click' };
+  }
+
+  /**
+   * Handles when the image is clicked.
+   */
+  _handle_click(event: MouseEvent): void {
+    event.preventDefault();
+    const relative_xy = this._get_relative_xy(event);
+    this.send({ event: 'click', click_pos: JSON.stringify(relative_xy) });
+  }
+
+  /**
    * The default tag name.
    *
    * #### Notes
@@ -102,4 +120,62 @@ export class ImageView extends DOMWidgetView {
   }
 
   el: HTMLImageElement;
+}
+
+export class MappedImageModel extends ImageModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'MappedImageModel',
+      _view_name: 'MappedImageView',
+      areas: null
+    };
+  }
+
+  static serializers = {
+    ...ImageModel.serializers,
+    areas: { deserialize: unpack_models }
+  };
+}
+
+export class MappedImageView extends ImageView {
+  render(): void {
+    /**
+     * Called when view is rendered.
+     */
+    this.pWidget.addClass('jupyter-widgets');
+    this.pWidget.addClass('widget-mapped-image');
+    const map_name = uuid();
+    this.el.setAttribute('usemap', '#' + map_name);
+    this.map = document.createElement('map');
+    this.map.setAttribute('name', map_name);
+    this.el.appendChild(this.map);
+    this.update(); // Set defaults.
+  }
+
+  update(): void {
+    /**
+     * Update the contents of this view
+     *
+     * Called when the model is changed.  The model may have been
+     * changed by another view or by a state update from the back-end.
+     */
+    super.update(); // Render image
+    const areas = this.model.get('areas');
+    for (let i = 0; i < areas.length; i++) {
+      const area = document.createElement('area');
+      this.map.appendChild(area);
+      area.outerHTML = areas[i].get('value');
+    }
+  }
+
+  /**
+   * Handles when the image is clicked.
+   * Let the browser do it!
+   */
+  _handle_click(event: MouseEvent): void {
+    return;
+  }
+
+  map: HTMLMapElement;
 }

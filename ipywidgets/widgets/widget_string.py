@@ -40,6 +40,7 @@ class HTML(_String):
     _view_name = Unicode('HTMLView').tag(sync=True)
     _model_name = Unicode('HTMLModel').tag(sync=True)
 
+
 @register
 class HTMLMath(_String):
     """Renders the string `value` as HTML, and render mathematics."""

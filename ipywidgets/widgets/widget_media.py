@@ -4,11 +4,12 @@
 import mimetypes
 
 from .widget_core import CoreWidget
+from .widget_string import HTML
 from .domwidget import DOMWidget
 from .valuewidget import ValueWidget
-from .widget import register
-from traitlets import Unicode, CUnicode, Bool
-from .trait_types import CByteMemoryView
+from .widget import register, widget_serialization
+from traitlets import Unicode, CUnicode, Bytes, Bool, Instance, observe
+from .trait_types import CByteMemoryView, TypedTuple, bytes_serialization
 
 
 @register
@@ -162,6 +163,52 @@ class Image(_Media):
 
     def __repr__(self):
         return self._get_repr(Image)
+
+
+@register
+class MapArea(HTML):
+    r"""
+    An <area> tag, part of an image map <map>.
+    """
+    tagname = Unicode('area')
+    name = Unicode('')
+    shape = Unicode('')
+    coords = Unicode('')
+    href = Unicode(None, allow_none=True)
+
+    def __init__(self, name='noname', shape='rect', coords='', href=''):
+        """
+        Parameters
+        ----------
+        name: str
+            Area name. Will be used as 'alt' attribute.
+
+        shape: str
+            Area shape: rect/circle/poly/default.
+
+        coords: str
+            Area coordinates: tuple of integers, string represented.
+
+        href: str
+            URL to load when area is clicked.
+        """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, tagname='area', **kwargs)
+        self._compute_value(self.name, self.shape, self.coords, self.href)
+
+    def _compute_value(self, name, shape, coords, href):
+        self.value = '<area alt="{}" shape="{}" coords="{}" href="{}">' . format(name, shape, coords, href)
+
+    @observe('name', 'shape', 'coords', 'href')
+    def _attr_changed(self, change):
+        self._compute_value(self.name, self.shape, self.coords, self.href)
+
+
+@register
+class MappedImage(Image):
+    _view_name = Unicode('MappedImageView').tag(sync=True)
+    _model_name = Unicode('MappedImageModel').tag(sync=True)
+    areas = TypedTuple(trait=Instance(MapArea), help="List of mapped shapes").tag(sync=True, **widget_serialization)
 
 
 @register
