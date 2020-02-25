@@ -50,6 +50,13 @@ class Collapse extends Widget {
     this._header = new Widget();
     this._header.addClass(COLLAPSE_HEADER_CLASS);
     this._header.node.addEventListener('click', this);
+    // Fontawesome icon for caret
+    const icon = document.createElement('i');
+    icon.classList.add('fa', 'fa-fw', 'fa-caret-right');
+    this._header.node.appendChild(icon);
+    // Label content
+    this._header.node.appendChild(document.createElement('span'));
+
     this._content = new Panel();
     this._content.addClass(COLLAPSE_CONTENTS_CLASS);
 
@@ -121,14 +128,19 @@ class Collapse extends Widget {
       this._content.hide();
     }
     this.removeClass(COLLAPSE_CLASS_OPEN);
+    this._header.node.children[0].classList.add('fa-caret-right');
+    this._header.node.children[0].classList.remove('fa-caret-down');
     this._collapseChanged.emit(void 0);
   }
+
   private _uncollapse() {
     this._collapsed = false;
     if (this._content) {
       this._content.show();
     }
     this.addClass(COLLAPSE_CLASS_OPEN);
+    this._header.node.children[0].classList.add('fa-caret-down');
+    this._header.node.children[0].classList.remove('fa-caret-right');
     this._collapseChanged.emit(void 0);
   }
 
@@ -160,7 +172,7 @@ class Collapse extends Widget {
    * Handle the `changed` signal of a title object.
    */
   private _onTitleChanged(sender: Title<Widget>): void {
-    this._header.node.textContent = this._widget.title.label;
+    this._header.node.children[1].textContent = this._widget.title.label;
   }
 
   private _onChildDisposed(sender: Widget): void {
