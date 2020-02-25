@@ -301,13 +301,14 @@ export class ValidView extends DescriptionView {
   /**
    * Called when view is rendered.
    */
-  render(): void {
+  render() {
     super.render();
     this.el.classList.add('jupyter-widgets');
     this.el.classList.add('widget-valid');
     this.el.classList.add('widget-inline-hbox');
-    const icon = document.createElement('i');
-    this.el.appendChild(icon);
+    this.icon = document.createElement('i');
+    this.icon.classList.add('fa', 'fa-fw');
+    this.el.appendChild(this.icon);
     this.readout = document.createElement('span');
     this.readout.classList.add('widget-valid-readout');
     this.readout.classList.add('widget-readout');
@@ -321,15 +322,20 @@ export class ValidView extends DescriptionView {
    * Called when the model is changed.  The model may have been
    * changed by another view or by a state update from the back-end.
    */
-  update(): void {
+  update() {
     this.el.classList.remove('mod-valid');
     this.el.classList.remove('mod-invalid');
+    this.icon.classList.remove('fa-check');
+    this.icon.classList.remove('fa-times');
     this.readout.textContent = this.model.get('readout');
     if (this.model.get('value')) {
       this.el.classList.add('mod-valid');
+      this.icon.classList.add('fa-check');
     } else {
       this.el.classList.add('mod-invalid');
+      this.icon.classList.add('fa-times');
     }
   }
   readout: HTMLSpanElement;
+  icon: HTMLElement;
 }
