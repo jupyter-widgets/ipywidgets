@@ -33,6 +33,9 @@ import { DocumentRegistry } from '@jupyterlab/docregistry';
 
 import { ISignal, Signal } from '@lumino/signaling';
 
+import pMap from 'p-map';
+import pThrottle from 'p-throttle';
+
 import { valid } from 'semver';
 
 import { SemVerCache } from './semvercache';
@@ -106,55 +109,71 @@ export abstract class LabWidgetManager extends ManagerBase
     }
     const comm_ids = await this._get_comm_info();
 
-    // For each comm id that we do not know about, create the comm, and request the state.
-    const widgets_info = await Promise.all(
-      Object.keys(comm_ids).map(async comm_id => {
-        try {
-          await this.get_model(comm_id);
-          // If we successfully get the model, do no more.
-          return;
-        } catch (e) {
-          // If we have the widget model not found error, then we can create the
-          // widget. Otherwise, rethrow the error. We have to check the error
-          // message text explicitly because the get_model function in this
-          // class throws a generic error with this specific text.
-          if (e.message !== 'widget model not found') {
-            throw e;
-          }
-          const comm = await this._create_comm(this.comm_target_name, comm_id);
-
-          let msg_id = '';
-          const info = new PromiseDelegate<Private.ICommUpdateData>();
-          comm.on_msg((msg: KernelMessage.ICommMsgMsg) => {
-            if (
-              (msg.parent_header as any).msg_id === msg_id &&
-              msg.header.msg_type === 'comm_msg' &&
-              msg.content.data.method === 'update'
-            ) {
-              const data = msg.content.data as any;
-              const buffer_paths = data.buffer_paths || [];
-              // Make sure the buffers are DataViews
-              const buffers = (msg.buffers || []).map(b => {
-                if (b instanceof DataView) {
-                  return b;
-                } else {
-                  return new DataView(b instanceof ArrayBuffer ? b : b.buffer);
-                }
-              });
-              put_buffers(data.state, buffer_paths, buffers);
-              info.resolve({ comm, msg });
+    // For each comm id that we do not know about, create the comm, and
+    // request the state. We must do this processing in chunks to make sure we
+    // do not exceed the ZMQ high water mark limiting messages from the
+    // kernel. See https://github.com/voila-dashboards/voila/issues/534 for
+    // more details. We also throttle the function to respect the default
+    // iopub message rate limit in the notebook server.
+    const widgets_info = await pMap(
+      Object.keys(comm_ids),
+      pThrottle(
+        async (comm_id: string) => {
+          try {
+            await this.get_model(comm_id);
+            // If we successfully get the model, do no more.
+            return;
+          } catch (e) {
+            // If we have the widget model not found error, then we can create the
+            // widget. Otherwise, rethrow the error. We have to check the error
+            // message text explicitly because the get_model function in this
+            // class throws a generic error with this specific text.
+            if (e.message !== 'widget model not found') {
+              throw e;
             }
-          });
-          msg_id = comm.send(
-            {
-              method: 'request_state'
-            },
-            this.callbacks(undefined)
-          );
+            const comm = await this._create_comm(
+              this.comm_target_name,
+              comm_id
+            );
 
-          return info.promise;
-        }
-      })
+            let msg_id = '';
+            const info = new PromiseDelegate<Private.ICommUpdateData>();
+            comm.on_msg((msg: KernelMessage.ICommMsgMsg) => {
+              if (
+                (msg.parent_header as any).msg_id === msg_id &&
+                msg.header.msg_type === 'comm_msg' &&
+                msg.content.data.method === 'update'
+              ) {
+                const data = msg.content.data as any;
+                const buffer_paths = data.buffer_paths || [];
+                // Make sure the buffers are DataViews
+                const buffers = (msg.buffers || []).map(b => {
+                  if (b instanceof DataView) {
+                    return b;
+                  } else {
+                    return new DataView(
+                      b instanceof ArrayBuffer ? b : b.buffer
+                    );
+                  }
+                });
+                put_buffers(data.state, buffer_paths, buffers);
+                info.resolve({ comm, msg });
+              }
+            });
+            msg_id = comm.send(
+              {
+                method: 'request_state'
+              },
+              this.callbacks(undefined)
+            );
+
+            return info.promise;
+          }
+        },
+        4 /* calls */,
+        5 /* ms */
+      ),
+      { concurrency: 100 }
     );
 
     // We put in a synchronization barrier here so that we don't have to

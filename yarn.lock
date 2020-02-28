@@ -7554,6 +7554,11 @@ p-reduce@^1.0.0:
   resolved "https://registry.npmjs.org/p-reduce/-/p-reduce-1.0.0.tgz#18c2b0dd936a4690a529f8231f58a0fdb6a47dfa"
   integrity sha1-GMKw3ZNqRpClKfgjH1ig/bakffo=
 
+p-throttle@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.npmjs.org/p-throttle/-/p-throttle-3.1.0.tgz#dee34ce4e77d7cc2dfdc1fea0daedccc64147214"
+  integrity sha512-rLo81NXBihs3GJQhq89IXa0Egj/sbW1zW8/qnyadOwUhIUrZSUvyGdQ46ISRKELFBkVvmMJ4JUqWki4oAh30Qw==
+
 p-try@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/p-try/-/p-try-1.0.0.tgz#cbc79cdbaf8fd4228e13f621f2b1a237c1b207b3"
