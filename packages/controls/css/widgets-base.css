@@ -177,86 +177,86 @@
 /* Button "Primary" Styling */
 
 .jupyter-button.mod-primary {
-  color: var(--jp-ui-inverse-font-color1, var(--jp-inverse-ui-font-color1));
-  background-color: var(--jp-brand-color1);
+    color: var(--jp-ui-inverse-font-color1, var(--jp-inverse-ui-font-color1));
+    background-color: var(--jp-brand-color1);
 }
 
 .jupyter-button.mod-primary.mod-active {
-  color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
-  background-color: var(--jp-brand-color0);
+    color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
+    background-color: var(--jp-brand-color0);
 }
 
 .jupyter-button.mod-primary:active {
-  color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
-  background-color: var(--jp-brand-color0);
+    color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
+    background-color: var(--jp-brand-color0);
 }
 
 /* Button "Success" Styling */
 
 .jupyter-button.mod-success {
-  color: var(--jp-ui-inverse-font-color1, var(--jp-inverse-ui-font-color1));
-  background-color: var(--jp-success-color1);
+    color: var(--jp-ui-inverse-font-color1, var(--jp-inverse-ui-font-color1));
+    background-color: var(--jp-success-color1);
 }
 
 .jupyter-button.mod-success.mod-active {
-  color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
-  background-color: var(--jp-success-color0);
+    color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
+    background-color: var(--jp-success-color0);
 }
 
 .jupyter-button.mod-success:active {
-  color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
-  background-color: var(--jp-success-color0);
+    color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
+    background-color: var(--jp-success-color0);
 }
 
  /* Button "Info" Styling */
 
 .jupyter-button.mod-info {
-  color: var(--jp-ui-inverse-font-color1, var(--jp-inverse-ui-font-color1));
-  background-color: var(--jp-info-color1);
+    color: var(--jp-ui-inverse-font-color1, var(--jp-inverse-ui-font-color1));
+    background-color: var(--jp-info-color1);
 }
 
 .jupyter-button.mod-info.mod-active {
-  color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
-  background-color: var(--jp-info-color0);
+    color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
+    background-color: var(--jp-info-color0);
 }
 
 .jupyter-button.mod-info:active {
-  color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
-  background-color: var(--jp-info-color0);
+    color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
+    background-color: var(--jp-info-color0);
 }
 
 /* Button "Warning" Styling */
 
 .jupyter-button.mod-warning {
-  color: var(--jp-ui-inverse-font-color1, var(--jp-inverse-ui-font-color1));
-  background-color: var(--jp-warn-color1);
+    color: var(--jp-ui-inverse-font-color1, var(--jp-inverse-ui-font-color1));
+    background-color: var(--jp-warn-color1);
 }
 
 .jupyter-button.mod-warning.mod-active {
-  color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
-  background-color: var(--jp-warn-color0);
+    color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
+    background-color: var(--jp-warn-color0);
 }
 
 .jupyter-button.mod-warning:active {
-  color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
-  background-color: var(--jp-warn-color0);
+    color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
+    background-color: var(--jp-warn-color0);
 }
 
 /* Button "Danger" Styling */
 
 .jupyter-button.mod-danger {
-  color: var(--jp-ui-inverse-font-color1, var(--jp-inverse-ui-font-color1));
-  background-color: var(--jp-error-color1);
+    color: var(--jp-ui-inverse-font-color1, var(--jp-inverse-ui-font-color1));
+    background-color: var(--jp-error-color1);
 }
 
 .jupyter-button.mod-danger.mod-active {
-  color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
-  background-color: var(--jp-error-color0);
+    color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
+    background-color: var(--jp-error-color0);
 }
 
 .jupyter-button.mod-danger:active {
-  color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
-  background-color: var(--jp-error-color0);
+    color: var(--jp-ui-inverse-font-color0, var(--jp-inverse-ui-font-color0));
+    background-color: var(--jp-error-color0);
 }
 
 /* Widget Button, Widget Toggle Button, Widget Upload */
