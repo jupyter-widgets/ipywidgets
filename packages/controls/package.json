@@ -46,7 +46,7 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "@jupyterlab/services": "^5.0.0-rc.0",
+    "@jupyterlab/services": "^5.0.0",
     "@types/d3-format": "^1.3.1",
     "@types/expect.js": "^0.3.29",
     "@types/mathjax": "^0.0.35",
