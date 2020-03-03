@@ -1,6 +1,6 @@
 {
   "name": "@jupyter-widgets/controls",
-  "version": "2.0.0-rc.13",
+  "version": "2.0.0",
   "description": "Jupyter interactive widgets",
   "repository": {
     "type": "git",
@@ -34,7 +34,7 @@
     "test:unit:ie": "npm run test:unit:default -- --browsers=IE"
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^3.0.0-rc.1",
+    "@jupyter-widgets/base": "^3.0.0",
     "@lumino/algorithm": "^1.1.0",
     "@lumino/domutils": "^1.1.0",
     "@lumino/messaging": "^1.2.1",
