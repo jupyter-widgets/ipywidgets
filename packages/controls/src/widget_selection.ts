@@ -737,12 +737,12 @@ export class SelectionSliderView extends DescriptionView {
     return super.update(options);
   }
 
-  regenSlider(e: any) {
+  regenSlider(e: any): void {
     this.$slider.noUiSlider.destroy();
     this.createSlider();
   }
 
-  createSlider() {
+  createSlider(): void {
     const labels = this.model.get('_options_labels');
     const min = 0;
     const max = labels.length - 1;
@@ -760,8 +760,8 @@ export class SelectionSliderView extends DescriptionView {
       orientation: orientation,
       direction: orientation === 'horizontal' ? 'ltr' : 'rtl',
       format: {
-        from: (value: number) => value,
-        to: (value: number) => value
+        from: (value: number): number => value,
+        to: (value: number): number => value
       }
     });
 
@@ -812,14 +812,14 @@ export class SelectionSliderView extends DescriptionView {
    * Calling model.set will trigger all of the other views of the
    * model to update.
    */
-  handleSliderChanged(values: number[], handle: number) {
+  handleSliderChanged(values: number[], handle: number): void {
     const index = values[0];
     this.updateReadout(index);
     this.model.set('index', index, { updated_view: this });
     this.touch();
   }
 
-  updateSliderOptions(e: any) {
+  updateSliderOptions(e: any): void {
     const labels = this.model.get('_options_labels');
     const min = 0;
     const max = labels.length - 1;
@@ -834,7 +834,7 @@ export class SelectionSliderView extends DescriptionView {
     });
   }
 
-  updateSliderValue(model: any, _: any, options: any) {
+  updateSliderValue(model: any, _: any, options: any): void {
     if (options.updated_view === this) {
       return;
     }
@@ -950,7 +950,7 @@ export class SelectionRangeSliderView extends SelectionSliderView {
   /**
    * Called when the slider value is changing.
    */
-  handleSliderChange(values: number[], handle: any) {
+  handleSliderChange(values: number[], handle: any): void {
     const intValues = values.map(Math.trunc);
     this.updateReadout(intValues);
 
@@ -967,7 +967,7 @@ export class SelectionRangeSliderView extends SelectionSliderView {
    * Calling model.set will trigger all of the other views of the
    * model to update.
    */
-  handleSliderChanged(values: number[], handle: number) {
+  handleSliderChanged(values: number[], handle: number): void {
     const intValues = values.map(Math.round);
     this.updateReadout(intValues);
 
@@ -976,7 +976,7 @@ export class SelectionRangeSliderView extends SelectionSliderView {
     this.touch();
   }
 
-  updateSliderValue(model: any, _: any, options: any) {
+  updateSliderValue(model: any, _: any, options: any): void {
     if (options.updated_view === this) {
       return;
     }

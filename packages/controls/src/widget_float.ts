@@ -145,7 +145,7 @@ export class FloatLogSliderView extends BaseIntSliderView {
     return log_value;
   }
 
-  createSlider() {
+  createSlider(): void {
     const orientation = this.model.get('orientation');
     noUiSlider.create(this.$slider, {
       start: this.logCalc(this.model.get('value')),
@@ -158,8 +158,8 @@ export class FloatLogSliderView extends BaseIntSliderView {
       orientation: orientation,
       direction: orientation === 'horizontal' ? 'ltr' : 'rtl',
       format: {
-        from: (value: number) => value,
-        to: (value: number) => value
+        from: (value: number): number => value,
+        to: (value: number): number => value
       }
     });
 
@@ -258,7 +258,7 @@ export class FloatLogSliderView extends BaseIntSliderView {
     this.$slider.noUiSlider.set(log_value);
   }
 
-  updateSliderOptions(e: any) {
+  updateSliderOptions(e: any): void {
     this.$slider.noUiSlider.updateOptions({
       start: this.logCalc(this.model.get('value')),
       range: {
@@ -269,7 +269,7 @@ export class FloatLogSliderView extends BaseIntSliderView {
     });
   }
 
-  _validate_slide_value(x: any) {
+  _validate_slide_value(x: any): any {
     return x;
   }
 
