@@ -4,15 +4,15 @@
 # Distributed under the terms of the Modified BSD License.
 
 # the name of the package
-name = 'widgetsnbextension'
+name = 'jupyter_widgets_frontend'
 
 LONG_DESCRIPTION = """
-.. image:: https://img.shields.io/pypi/v/widgetsnbextension.svg
-   :target: https://pypi.python.org/pypi/widgetsnbextension/
+.. image:: https://img.shields.io/pypi/v/jupyter_widgets_frontend.svg
+   :target: https://pypi.python.org/pypi/jupyter_widgets_frontend/
    :alt: Version Number
 
-.. image:: https://img.shields.io/pypi/dm/widgetsnbextension.svg
-   :target: https://pypi.python.org/pypi/widgetsnbextension/
+.. image:: https://img.shields.io/pypi/dm/jupyter_widgets_frontend.svg
+   :target: https://pypi.python.org/pypi/jupyter_widgets_frontend/
    :alt: Number of PyPI downloads
 
 Interactive HTML Widgets
@@ -44,6 +44,7 @@ if v[:2] < (3, 5):
 # get on with it
 #-----------------------------------------------------------------------------
 
+import json
 import os
 import logging as log
 from setuptools import setup, Command
@@ -64,6 +65,20 @@ npm_path = os.pathsep.join([
     pjoin(repo_root, 'node_modules', '.bin'),
     os.environ.get("PATH", os.defpath),
 ])
+
+def get_data_files():
+    with open('package.json') as f:
+        package_json = json.load(f)
+    tgz = '%s-%s.tgz' % (package_json['name'], package_json['version'])
+
+    return [
+        ('share/jupyter/nbextensions/jupyter-js-widgets', [
+            'jupyter_widgets_frontend/static/extension.js',
+            'jupyter_widgets_frontend/static/extension.js.map'
+        ]),
+        ('etc/jupyter/nbconfig/notebook.d', ['jupyter_widgets_frontend.json']),
+        ('share/jupyter/lab/extensions', ['js/' + tgz]),
+    ]
 
 def mtime(path):
     """shorthand for mtime"""
@@ -99,7 +114,7 @@ def js_prerelease(command, strict=False):
 def update_package_data(distribution):
     """update package_data to catch changes during setup"""
     build_py = distribution.get_command_obj('build_py')
-    # distribution.package_data = find_package_data()
+    distribution.data_files = get_data_files()
     # re-init build_py options which load package_data
     build_py.finalize_options()
 
@@ -112,7 +127,7 @@ class NPM(Command):
     node_modules = pjoin(repo_root, 'node_modules')
 
     targets = [
-        pjoin(repo_root, 'widgetsnbextension', 'static', 'extension.js')
+        pjoin(repo_root, 'jupyter_widgets_frontend', 'static', 'extension.js')
     ]
 
     def initialize_options(self):
@@ -142,13 +157,15 @@ class NPM(Command):
             log.info("Installing build dependencies with npm.  This may take a while...")
             check_call(['npm', 'install'], cwd=repo_root, stdout=sys.stdout, stderr=sys.stderr,
                        shell=(sys.platform == 'win32'))
+            check_call(['npm', 'pack'], cwd=repo_root, stdout=sys.stdout, stderr=sys.stderr,
+                       shell=(sys.platform == 'win32'))
             os.utime(self.node_modules, None)
 
         for t in self.targets:
             if not os.path.exists(t):
                 msg = "Missing file: %s" % t
                 if not has_npm:
-                    msg += '\nnpm is required to build a development version of widgetsnbextension'
+                    msg += '\nnpm is required to build a development version of jupyter_widgets_frontend'
                 raise ValueError(msg)
 
 
@@ -168,9 +185,9 @@ setup_args = dict(
     name            = name,
     version         = version_ns['__version__'],
     scripts         = [],
-    packages        = ['widgetsnbextension'],
+    packages        = ['jupyter_widgets_frontend'],
     package_data    = {
-                        'widgetsnbextension': ['widgetsnbextension/static/extension.js'],
+                        'jupyter_widgets_frontend': ['jupyter_widgets_frontend/static/extension.js'],
                     },
     description     = "IPython HTML widgets for Jupyter",
     long_description = LONG_DESCRIPTION,
@@ -195,13 +212,7 @@ setup_args = dict(
         'sdist': js_prerelease(sdist, strict=True),
         'jsdeps': NPM,
     },
-    data_files      = [(
-            'share/jupyter/nbextensions/jupyter-js-widgets', [
-                'widgetsnbextension/static/extension.js',
-                'widgetsnbextension/static/extension.js.map'
-        ]),
-        ('etc/jupyter/nbconfig/notebook.d' , ['widgetsnbextension.json'])
-    ],
+    data_files      = get_data_files(),
     zip_safe=False,
     include_package_data = True,
 )

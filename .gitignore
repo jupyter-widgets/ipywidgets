@@ -23,7 +23,8 @@ npm-debug.log
 .vscode/*
 !.vscode/extensions.json
 
-widgetsnbextension/widgetsnbextension/static
+jupyter_widgets_frontend/jupyter_widgets_frontend/static
+jupyter_widgets_frontend/jupyter_widgets_frontend-*.tgz
 
 index.built.js
 index.built.js.map
