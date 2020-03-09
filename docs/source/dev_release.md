@@ -28,7 +28,8 @@ First, update the relevant model specification versions. For example, the commit
 
 Next, regenerate the model spec with the new version numbers by doing something like this in the repository root directory:
 ```
-python ./packages/schema/generate-spec.py > packages/schema/jupyterwidgetmodels.latest.md
+python ./packages/schema/generate-spec.py -f json-pretty > packages/schema/jupyterwidgetmodels.latest.json
+python ./packages/schema/generate-spec.py -f markdown > packages/schema/jupyterwidgetmodels.latest.md
 ```
 
 Copy `packages/schema/jupyterwidgetmodels.latest.md` to an appropriately-named
