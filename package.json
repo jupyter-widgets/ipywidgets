@@ -21,7 +21,8 @@
     "publish": "yarn run clean && yarn run build && lerna publish -m \"Publish npm packages\"",
     "sort-package-json": "lerna exec --parallel sort-package-json && sort-package-json",
     "update-dependency": "update-dependency --lerna",
-    "updated": "lerna updated"
+    "updated": "lerna updated",
+    "version": "yarn run clean && yarn run build && lerna version --no-push -m \"Bump version\" "
   },
   "husky": {
     "hooks": {
