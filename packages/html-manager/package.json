@@ -44,7 +44,7 @@
     "@jupyterlab/outputarea": "^2.0.2",
     "@jupyterlab/rendermime": "^2.0.2",
     "@jupyterlab/rendermime-interfaces": "^2.0.1",
-    "@lumino/widgets": "^1.6.0",
+    "@lumino/widgets": "^1.11.1",
     "ajv": "^6.10.0",
     "jquery": "^3.1.1"
   },

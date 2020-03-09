@@ -34,7 +34,7 @@
   "dependencies": {
     "@jupyter-widgets/base": "^2.0.2",
     "@jupyterlab/services": "^5.0.2",
-    "@lumino/coreutils": "^1.2.0",
+    "@lumino/coreutils": "^1.4.2",
     "base64-js": "^1.2.1"
   },
   "devDependencies": {
