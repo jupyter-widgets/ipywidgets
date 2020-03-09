@@ -18,7 +18,7 @@
     "lint:check": "yarn run prettier:check && yarn run eslint:check",
     "prettier": "prettier --ignore-path .gitignore --write \"**/*{.ts,.tsx,.js,.jsx,.css,.json}\"",
     "prettier:check": "prettier --ignore-path .gitignore --check \"**/*{.ts,.tsx,.js,.jsx,.css,.json}\"",
-    "publish": "yarn run clean && yarn run build && lerna publish --pre-dist-tag next -m \"Publish npm packages\"",
+    "publish": "yarn run clean && yarn run build && lerna publish --pre-dist-tag next from-git",
     "sort-package-json": "lerna exec --parallel sort-package-json && sort-package-json",
     "update-dependency": "update-dependency --lerna",
     "updated": "lerna updated",
