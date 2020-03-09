@@ -48,10 +48,12 @@ git pull origin master
 git reset --hard origin/master
 git clean -fdx
 yarn install
+yarn run version
+# Check the latest commit to make sure it is correct
 yarn run publish
 ```
 
-Lerna will prompt you for version numbers for each of the changed npm packages. Lerna will then change the versions appropriately (including the interdependency versions), commit, tag, and publish the new packages to npm.
+Lerna will prompt you for version numbers for each of the changed npm packages in the version step. Lerna will then change the versions appropriately (including the interdependency versions), commit, and tag. The `yarn run publish` step then publishes the public packages that were versioned to npm.
 
 ### widgetsnbextension
 
