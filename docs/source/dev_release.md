@@ -28,7 +28,8 @@ First, update the relevant model specification versions. For example, the commit
 
 Next, regenerate the model spec with the new version numbers by doing something like this in the repository root directory:
 ```
-python ./packages/schema/generate-spec.py > packages/schema/jupyterwidgetmodels.latest.md
+python ./packages/schema/generate-spec.py -f json-pretty > packages/schema/jupyterwidgetmodels.latest.json
+python ./packages/schema/generate-spec.py -f markdown > packages/schema/jupyterwidgetmodels.latest.md
 ```
 
 Copy `packages/schema/jupyterwidgetmodels.latest.md` to an appropriately-named
@@ -47,10 +48,12 @@ git pull origin master
 git reset --hard origin/master
 git clean -fdx
 yarn install
+yarn run version
+# Check the latest commit to make sure it is correct
 yarn run publish
 ```
 
-Lerna will prompt you for version numbers for each of the changed npm packages. Lerna will then change the versions appropriately (including the interdependency versions), commit, tag, and publish the new packages to npm.
+Lerna will prompt you for version numbers for each of the changed npm packages in the version step. Lerna will then change the versions appropriately (including the interdependency versions), commit, and tag. The `yarn run publish` step then publishes the public packages that were versioned to npm.
 
 ### widgetsnbextension
 
