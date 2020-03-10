@@ -123,7 +123,7 @@ export abstract class BaseIntSliderView extends DescriptionView {
    * Called when the model is changed.  The model may have been
    * changed by another view or by a state update from the back-end.
    */
-  update(options?: any) {
+  update(options?: any): void {
     if (options === undefined || options.updated_view !== this) {
       if (this.model.get('disabled')) {
         this.readout.contentEditable = 'false';
@@ -201,7 +201,7 @@ export abstract class BaseIntSliderView extends DescriptionView {
   /**
    * Create a new noUiSlider object
    */
-  createSlider() {
+  createSlider(): void {
     const orientation = this.model.get('orientation');
     noUiSlider.create(this.$slider, {
       start: this.model.get('value'),
@@ -215,8 +215,8 @@ export abstract class BaseIntSliderView extends DescriptionView {
       orientation: orientation,
       direction: orientation === 'horizontal' ? 'ltr' : 'rtl',
       format: {
-        from: (value: number) => value,
-        to: (value: number) => value
+        from: (value: number): number => value,
+        to: (value: number): number => value
       }
     });
 
@@ -238,7 +238,7 @@ export abstract class BaseIntSliderView extends DescriptionView {
    * handled in a separate function and has a dedicated event
    * handler.
    */
-  regenSlider(e: any) {
+  regenSlider(e: any): void {
     this.$slider.noUiSlider.destroy();
     this.createSlider();
   }
@@ -293,7 +293,7 @@ export abstract class BaseIntSliderView extends DescriptionView {
 }
 
 export class IntRangeSliderView extends BaseIntSliderView {
-  update(options?: any) {
+  update(options?: any): void {
     super.update(options);
     const value = this.model.get('value');
     this.readout.textContent = this.valueToString(value);
@@ -363,7 +363,7 @@ export class IntRangeSliderView extends BaseIntSliderView {
     }
   }
 
-  handleSliderChange(values: any, handle: any) {
+  handleSliderChange(values: any, handle: any): void {
     const actual_value = values.map(this._validate_slide_value);
     this.readout.textContent = this.valueToString(actual_value);
 
@@ -374,13 +374,13 @@ export class IntRangeSliderView extends BaseIntSliderView {
     }
   }
 
-  handleSliderChanged(values: number[], handle: number) {
+  handleSliderChanged(values: number[], handle: number): void {
     const actual_value = values.map(this._validate_slide_value);
     this.model.set('value', actual_value, { updated_view: this });
     this.touch();
   }
 
-  updateSliderOptions(e: any) {
+  updateSliderOptions(e: any): void {
     this.$slider.noUiSlider.updateOptions({
       start: this.model.get('value'),
       range: {
@@ -391,7 +391,7 @@ export class IntRangeSliderView extends BaseIntSliderView {
     });
   }
 
-  updateSliderValue(model: any, _: any, options: any) {
+  updateSliderValue(model: any, _: any, options: any): void {
     if (options.updated_view === this) {
       return;
     }
@@ -457,7 +457,7 @@ export class IntSliderView extends BaseIntSliderView {
     }
   }
 
-  handleSliderChange(values: any, handle: any) {
+  handleSliderChange(values: any, handle: any): void {
     const actual_value = this._validate_slide_value(values[handle]);
     this.readout.textContent = this.valueToString(actual_value);
 
@@ -468,7 +468,7 @@ export class IntSliderView extends BaseIntSliderView {
     }
   }
 
-  handleSliderChanged(values: any, handle: any) {
+  handleSliderChanged(values: any, handle: any): void {
     const actual_value = this._validate_slide_value(values[handle]);
     const model_value = this.model.get('value');
 
