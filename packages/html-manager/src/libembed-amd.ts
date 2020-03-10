@@ -11,7 +11,7 @@ const scripts = document.getElementsByTagName('script');
 Array.prototype.forEach.call(scripts, (script: HTMLScriptElement) => {
   cdn = script.getAttribute('data-jupyter-widgets-cdn') || cdn;
   onlyCDN =
-    onlyCDN || script.getAttribute('data-jupyter-widgets-cdn-only') != null;
+    onlyCDN || script.hasAttribute('data-jupyter-widgets-cdn-only');
 });
 
 /**
