@@ -64,5 +64,8 @@
     "sinon-chai": "^3.3.0",
     "typescript": "~3.7.4",
     "webpack": "^4.41.5"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
