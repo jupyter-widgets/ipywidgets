@@ -166,6 +166,7 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
 
         # Select the first item by default, if we can
         if 'index' not in kwargs and 'value' not in kwargs and 'label' not in kwargs:
+            options = self._options_full
             nonempty = (len(options) > 0)
             kwargs['index'] = 0 if nonempty else None
             kwargs['label'], kwargs['value'] = options[0] if nonempty else (None, None)
