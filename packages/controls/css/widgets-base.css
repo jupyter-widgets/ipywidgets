@@ -391,17 +391,17 @@
   font-size: var(--jp-widgets-font-size);
 }
 
-.widget-valid i:before {
+.widget-valid i {
   line-height: var(--jp-widgets-inline-height);
   margin-right: var(--jp-widgets-inline-margin);
   margin-left: var(--jp-widgets-inline-margin);
 }
 
-.widget-valid.mod-valid i:before {
+.widget-valid.mod-valid i {
   color: green;
 }
 
-.widget-valid.mod-invalid i:before {
+.widget-valid.mod-invalid i {
   color: red;
 }
 
