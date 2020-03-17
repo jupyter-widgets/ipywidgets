@@ -16,7 +16,7 @@ from .widget_style import Style
 from .trait_types import InstanceDict, TypedTuple
 from .widget import register, widget_serialization
 from .docutils import doc_subst
-from traitlets import (Unicode, Bool, Bunch, Int, Any, Dict, TraitError, CaselessStrEnum,
+from traitlets import (Unicode, Bool, Int, Any, Dict, TraitError, CaselessStrEnum,
                        Tuple, Union, observe, validate)
 
 _doc_snippets = {}
@@ -94,6 +94,13 @@ _doc_snippets['slider_params'] = """
 """
 
 
+def _exhaust_iterable(x):
+    """Exhaust any non-mapping iterable into a tuple"""
+    if isinstance(x, Iterable) and not isinstance(x, Mapping):
+        return tuple(x)
+    return x
+
+
 def _make_options(x):
     """Standardize the options tuple format.
 
@@ -161,7 +168,8 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
         # We have to make the basic options bookkeeping consistent
         # so we don't have errors the first time validators run
         self._initializing_traits_ = True
-        kwargs['options'] = self._validate_options(Bunch(value = kwargs.get('options', ())))
+        kwargs['options'] = _exhaust_iterable(kwargs.get('options', ()))
+        self._options_full = _make_options(kwargs['options'])
         self._propagate_options(None)
 
         # Select the first item by default, if we can
@@ -177,8 +185,7 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
     @validate('options')
     def _validate_options(self, proposal):
         # if an iterator is provided, exhaust it
-        if isinstance(proposal.value, Iterable) and not isinstance(proposal.value, Mapping):
-            proposal.value = tuple(proposal.value)
+        proposal.value = _exhaust_iterable(proposal.value)
         # throws an error if there is a problem converting to full form
         self._options_full = _make_options(proposal.value)
         return proposal.value
@@ -302,7 +309,8 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
         # We have to make the basic options bookkeeping consistent
         # so we don't have errors the first time validators run
         self._initializing_traits_ = True
-        kwargs['options'] = self._validate_options(Bunch(value = kwargs.get('options', ())))
+        kwargs['options'] = _exhaust_iterable(kwargs.get('options', ()))
+        self._options_full = _make_options(kwargs['options'])
         self._propagate_options(None)
 
         super().__init__(*args, **kwargs)
@@ -310,8 +318,7 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
 
     @validate('options')
     def _validate_options(self, proposal):
-        if isinstance(proposal.value, Iterable) and not isinstance(proposal.value, Mapping):
-            proposal.value = tuple(proposal.value)
+        proposal.value = _exhaust_iterable(proposal.value)
         # throws an error if there is a problem converting to full form
         self._options_full = _make_options(proposal.value)
         return proposal.value
@@ -513,8 +520,7 @@ class _SelectionNonempty(_Selection):
 
     @validate('options')
     def _validate_options(self, proposal):
-        if isinstance(proposal.value, Iterable) and not isinstance(proposal.value, Mapping):
-            proposal.value = tuple(proposal.value)
+        proposal.value = _exhaust_iterable(proposal.value)
         self._options_full = _make_options(proposal.value)
         if len(self._options_full) == 0:
             raise TraitError("Option list must be nonempty")
@@ -537,8 +543,7 @@ class _MultipleSelectionNonempty(_MultipleSelection):
 
     @validate('options')
     def _validate_options(self, proposal):
-        if isinstance(proposal.value, Iterable) and not isinstance(proposal.value, Mapping):
-            proposal.value = tuple(proposal.value)
+        proposal.value = _exhaust_iterable(proposal.value)
         # throws an error if there is a problem converting to full form
         self._options_full = _make_options(proposal.value)
         if len(self._options_full) == 0:
