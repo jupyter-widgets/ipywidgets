@@ -301,7 +301,7 @@ export class ValidView extends DescriptionView {
   /**
    * Called when view is rendered.
    */
-  render() {
+  render(): void {
     super.render();
     this.el.classList.add('jupyter-widgets');
     this.el.classList.add('widget-valid');
@@ -322,7 +322,7 @@ export class ValidView extends DescriptionView {
    * Called when the model is changed.  The model may have been
    * changed by another view or by a state update from the back-end.
    */
-  update() {
+  update(): void {
     this.el.classList.remove('mod-valid');
     this.el.classList.remove('mod-invalid');
     this.icon.classList.remove('fa-check');
