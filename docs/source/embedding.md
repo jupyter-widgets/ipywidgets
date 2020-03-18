@@ -51,7 +51,7 @@ This HTML snippet is composed of multiple `<script>` tags embedded into an HTML 
 
 - Then there are a number of script tags, each with mime type
   `application/vnd.jupyter.widget-view+json`, corresponding to the views which
-  you want to display in the web page. These script tags must be in the body of
+  you want to display on the web page. These script tags must be in the body of
   the page, and are replaced with the rendered widgets. The JSON schema for the
   content of these script tags is found in the `@jupyter-widgets/schema` npm
   package.
@@ -73,7 +73,7 @@ the `application/vnd.jupyter.widget-state+json` format specified in the
 
 Embeddable code for the widgets can also be produced from Python. The
 `ipywidgets.embed` module provides several functions for embedding widgets
-into HTML documents programatically.
+into HTML documents programmatically.
 
 Use `embed_minimal_html` to create a simple, stand-alone HTML page:
 
