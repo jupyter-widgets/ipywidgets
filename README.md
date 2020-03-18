@@ -7,7 +7,7 @@
 [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/jupyter-widgets/ipywidgets/master?filepath=docs%2Fsource%2Fexamples)
 
 ipywidgets are [interactive HTML widgets](https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb)
-for Jupyter notebooks and the IPython kernel.
+for Jupyter notebooks, JupyterLab and the IPython kernel.
 
 Notebooks come alive when interactive widgets are used. Users gain control of
 their data and can visualize changes in the data.
@@ -76,6 +76,12 @@ jupyter nbextension enable --py --sys-prefix widgetsnbextension  # can be skippe
 
 ```
 conda install -c conda-forge ipywidgets
+```
+
+- With JupyterLab:
+
+```
+jupyter labextension install @jupyter-widgets/jupyterlab-manager
 ```
 
 See the [Installation](docs/source/user_install.md) section of the documentation for additional details.
