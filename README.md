@@ -78,7 +78,7 @@ jupyter nbextension enable --py --sys-prefix widgetsnbextension  # can be skippe
 conda install -c conda-forge ipywidgets
 ```
 
-- With JupyterLab (note that it requires nodejs to be installed and that the package name is different):
+- Add ipywidgets to JupyterLab after installing with pip or conda (note that this requires nodejs to be installed and that the package name is different):
 
 
 ```
