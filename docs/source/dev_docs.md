@@ -50,5 +50,5 @@ You should also have a look at the [Project Jupyter Documentation Guide](https:/
 
 Notebook output and metadata should be stripped with [nbstripoutput](https://github.com/kynan/nbstripout) before commiting. For example:
 ```
-nbstripoutput docs/source/examples/Widget\ List.ipynb
+nbstripoutput share/jupyter/notebook_templates/ipywidgets/Widget\ List.ipynb
 ```

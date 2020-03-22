@@ -5,16 +5,16 @@ User Guide
   :maxdepth: 3
 
   user_install.md
-  examples/Using Interact.ipynb
-  examples/Widget Basics.ipynb
-  examples/Widget List.ipynb
-  examples/Output Widget.ipynb
-  examples/Widget Events.ipynb
-  examples/Widget Styling.ipynb
-  examples/Layout Templates.ipynb
-  examples/Widget Custom.ipynb
-  examples/Widget Low Level.ipynb
-  examples/Widget Asynchronous.ipynb
+  ../share/jupyter/notebook_templates/ipywidgets/Using Interact.ipynb
+  ../share/jupyter/notebook_templates/ipywidgets/Widget Basics.ipynb
+  ../share/jupyter/notebook_templates/ipywidgets/Widget List.ipynb
+  ../share/jupyter/notebook_templates/ipywidgets/Output Widget.ipynb
+  ../share/jupyter/notebook_templates/ipywidgets/Widget Events.ipynb
+  ../share/jupyter/notebook_templates/ipywidgets/Widget Styling.ipynb
+  ../share/jupyter/notebook_templates/ipywidgets/Layout Templates.ipynb
+  ../share/jupyter/notebook_templates/ipywidgets/Widget Custom.ipynb
+  ../share/jupyter/notebook_templates/ipywidgets/Widget Low Level.ipynb
+  ../share/jupyter/notebook_templates/ipywidgets/Widget Asynchronous.ipynb
   embedding.md
   contributing.md
   migration_guides.md

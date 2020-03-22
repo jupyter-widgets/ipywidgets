@@ -253,7 +253,7 @@ If your notebook was saved with the special "Save Notebook Widget State" action
 in the Widgets menu, interactive widgets displayed in your notebook should also
 be rendered on nbviewer.
 
-See e.g. the [Widget List](http://nbviewer.jupyter.org/github/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Widget%20List.ipynb)
+See e.g. the [Widget List](http://nbviewer.jupyter.org/github/jupyter-widgets/ipywidgets/blob/master/share/jupyter/notebook_templates/ipywidgets/Widget%20List.ipynb)
 example from the documentation.
 
 ## The Case of Custom Widget Libraries
@@ -307,7 +307,7 @@ Specifically:
    the `Sphinx` extension, `nbviewer`, and the "Embed Widgets" command
    discussed above.
 
-We provide [additional examples](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples) of specializations of the base widget manager
+We provide [additional examples](https://github.com/jupyter-widgets/ipywidgets/tree/master/share/jupyter/notebook_templates/ipywidgets) of specializations of the base widget manager
 implementing other usages of Jupyter widgets in web contexts.
 
 1. The [`web1`](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples/web1) example is a simplistic example showcasing the use of

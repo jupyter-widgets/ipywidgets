@@ -1,11 +1,18 @@
+# License file and basic information
+
 include LICENSE
 include CONTRIBUTING.md
 include README.md
+
+# JavaScript packaging
 include package.json
 
 # Documentation
 graft docs
 exclude docs/\#*
+
+# Example notebook
+graft share
 
 # Tests
 graft ipywidgets/tests
