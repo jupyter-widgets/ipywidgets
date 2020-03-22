@@ -2,19 +2,18 @@ include LICENSE
 include CONTRIBUTING.md
 include README.md
 include package.json
-include bower.json
-include .bowerrc
-include ipywidgets/build_css.js
 
 # Documentation
 graft docs
 exclude docs/\#*
 
-# Examples
+# Tests
 graft ipywidgets/tests
+
+# Static Assets
 graft ipywidgets/static
 
-# docs subdirs we want to skip
+# Docs subdirs we want to skip
 prune docs/build
 prune docs/dist
 
