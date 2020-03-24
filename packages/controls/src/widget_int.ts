@@ -203,9 +203,12 @@ export abstract class BaseIntSliderView extends DescriptionView {
    */
   createSlider(): void {
     const orientation = this.model.get('orientation');
+    const behaviour = this.model.get('behaviour');
+
     noUiSlider.create(this.$slider, {
       start: this.model.get('value'),
       connect: true,
+      behaviour: behaviour,
       range: {
         min: this.model.get('min'),
         max: this.model.get('max'),
