@@ -4,6 +4,7 @@ dist
 _build
 docs/man/*.gz
 docs/source/api/generated
+docs/source/notebooks
 node_modules
 *.py[co]
 __pycache__
