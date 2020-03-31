@@ -8,7 +8,7 @@
         "type": "string"
       },
       {
-        "default": "1.2.0",
+        "default": "2.0.0",
         "help": "A semver requirement for namespace version containing the model.",
         "name": "_model_module_version",
         "type": "string"
@@ -26,7 +26,7 @@
         "type": "string"
       },
       {
-        "default": "1.2.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -383,12 +383,12 @@
     "model": {
       "module": "@jupyter-widgets/base",
       "name": "LayoutModel",
-      "version": "1.2.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/base",
       "name": "LayoutView",
-      "version": "1.2.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -409,7 +409,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -421,19 +421,13 @@
         "type": "string"
       },
       {
-        "default": {},
-        "help": "Titles of the pages",
-        "name": "_titles",
-        "type": "object"
-      },
-      {
         "default": "@jupyter-widgets/controls",
         "help": "",
         "name": "_view_module",
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -470,7 +464,7 @@
       },
       {
         "allow_none": true,
-        "default": 0,
+        "default": null,
         "help": "The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.",
         "name": "selected_index",
         "type": "int"
@@ -483,6 +477,15 @@
         "type": "bool"
       },
       {
+        "default": [],
+        "help": "Titles of the pages",
+        "items": {
+          "type": "string"
+        },
+        "name": "titles",
+        "type": "array"
+      },
+      {
         "allow_none": true,
         "default": null,
         "help": "A tooltip caption.",
@@ -493,12 +496,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "AccordionModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "AccordionView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -519,7 +522,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -537,7 +540,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -603,12 +606,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "AudioModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "AudioView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -629,7 +632,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -647,7 +650,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -733,12 +736,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "BoundedFloatTextModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "FloatTextView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -759,7 +762,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -777,7 +780,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -862,12 +865,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "BoundedIntTextModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "IntTextView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -888,7 +891,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -906,7 +909,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -959,12 +962,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "BoxModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "BoxView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -985,7 +988,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -1003,7 +1006,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -1071,12 +1074,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "ButtonModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "ButtonView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -1088,7 +1091,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -1106,7 +1109,7 @@
         "type": "string"
       },
       {
-        "default": "1.2.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -1134,12 +1137,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "ButtonStyleModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/base",
       "name": "StyleView",
-      "version": "1.2.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -1160,7 +1163,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -1178,7 +1181,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -1245,12 +1248,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "CheckboxModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "CheckboxView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -1271,7 +1274,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -1289,7 +1292,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -1356,12 +1359,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "ColorPickerModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "ColorPickerView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -1382,7 +1385,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -1400,7 +1403,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -1488,12 +1491,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "ComboboxModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "ComboboxView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -1514,7 +1517,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -1532,7 +1535,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -1574,12 +1577,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "ControllerAxisModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "ControllerAxisView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -1600,7 +1603,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -1618,7 +1621,99 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ControllerButtonView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": false,
+        "help": "Whether the button is pressed.",
+        "name": "pressed",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": 0.0,
+        "help": "The value of the button.",
+        "name": "value",
+        "type": "float"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ControllerButtonModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ControllerButtonView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ControllerButtonModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -1796,12 +1891,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "ControllerModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "ControllerView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -1822,7 +1917,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -1840,7 +1935,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -1883,12 +1978,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "DOMWidgetModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": null,
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -1909,7 +2004,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -1927,7 +2022,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -1989,12 +2084,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "DatePickerModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "DatePickerView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -2006,7 +2101,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -2024,7 +2119,7 @@
         "type": "string"
       },
       {
-        "default": "1.2.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -2045,12 +2140,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "DescriptionStyleModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/base",
       "name": "StyleView",
-      "version": "1.2.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -2062,7 +2157,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -2080,7 +2175,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -2108,12 +2203,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "DirectionalLinkModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": null,
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -2134,7 +2229,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -2161,7 +2256,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -2223,12 +2318,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "DropdownModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "DropdownView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -2249,7 +2344,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -2267,7 +2362,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -2352,6 +2447,9 @@
       {
         "default": [],
         "help": "The file upload value",
+        "items": {
+          "type": "object"
+        },
         "name": "value",
         "type": "array"
       }
@@ -2359,12 +2457,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "FileUploadModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "FileUploadView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -2385,7 +2483,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -2403,7 +2501,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -2477,6 +2575,7 @@
         "type": "string"
       },
       {
+        "allow_none": true,
         "default": 0.1,
         "help": "Minimum step in the exponent to increment the value",
         "name": "step",
@@ -2513,12 +2612,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "FloatLogSliderModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "FloatLogSliderView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -2539,7 +2638,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -2557,7 +2656,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -2639,12 +2738,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "FloatProgressModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "ProgressView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -2665,7 +2764,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -2683,7 +2782,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -2751,6 +2850,7 @@
         "type": "string"
       },
       {
+        "allow_none": true,
         "default": 0.1,
         "help": "Minimum step to increment the value",
         "name": "step",
@@ -2787,12 +2887,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "FloatRangeSliderModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "FloatRangeSliderView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -2813,7 +2913,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -2831,7 +2931,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -2899,6 +2999,7 @@
         "type": "string"
       },
       {
+        "allow_none": true,
         "default": 0.1,
         "help": "Minimum step to increment the value",
         "name": "step",
@@ -2935,12 +3036,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "FloatSliderModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "FloatSliderView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -2961,7 +3062,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -2979,7 +3080,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -3053,12 +3154,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "FloatTextModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "FloatTextView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -3079,7 +3180,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -3097,7 +3198,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -3150,12 +3251,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "GridBoxModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "GridBoxView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -3176,7 +3277,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -3194,7 +3295,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -3247,12 +3348,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "HBoxModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "HBoxView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -3273,7 +3374,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -3291,7 +3392,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -3352,12 +3453,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "HTMLMathModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "HTMLMathView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -3378,7 +3479,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -3396,7 +3497,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -3457,12 +3558,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "HTMLModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "HTMLView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -3483,7 +3584,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -3501,7 +3602,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -3561,12 +3662,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "ImageModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "ImageView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -3587,7 +3688,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -3605,7 +3706,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -3686,12 +3787,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "IntProgressModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "ProgressView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -3712,7 +3813,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -3730,7 +3831,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -3834,12 +3935,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "IntRangeSliderModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "IntRangeSliderView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -3860,7 +3961,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -3878,7 +3979,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -3982,12 +4083,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "IntSliderModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "IntSliderView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -4008,7 +4109,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -4026,7 +4127,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -4099,12 +4200,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "IntTextModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "IntTextView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -4125,7 +4226,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -4143,7 +4244,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -4204,12 +4305,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "LabelModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "LabelView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -4221,7 +4322,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -4239,7 +4340,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -4267,12 +4368,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "LinkModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": null,
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -4293,7 +4394,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -4311,7 +4412,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -4384,12 +4485,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "PasswordModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "PasswordView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -4410,7 +4511,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -4428,7 +4529,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -4531,12 +4632,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "PlayModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "PlayView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -4548,7 +4649,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -4566,7 +4667,7 @@
         "type": "string"
       },
       {
-        "default": "1.2.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -4594,12 +4695,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "ProgressStyleModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/base",
       "name": "StyleView",
-      "version": "1.2.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -4620,7 +4721,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -4647,7 +4748,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -4709,12 +4810,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "RadioButtonsModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "RadioButtonsView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -4735,7 +4836,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -4762,7 +4863,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -4830,12 +4931,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "SelectModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "SelectView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -4856,7 +4957,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -4883,7 +4984,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -4953,12 +5054,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "SelectMultipleModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "SelectMultipleView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -4979,7 +5080,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -5006,7 +5107,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -5086,12 +5187,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "SelectionRangeSliderModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "SelectionRangeSliderView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -5112,7 +5213,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -5139,7 +5240,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -5219,12 +5320,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "SelectionSliderModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "SelectionSliderView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -5236,7 +5337,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -5254,7 +5355,7 @@
         "type": "string"
       },
       {
-        "default": "1.2.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -5282,12 +5383,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "SliderStyleModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/base",
       "name": "StyleView",
-      "version": "1.2.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -5308,7 +5409,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -5320,19 +5421,13 @@
         "type": "string"
       },
       {
-        "default": {},
-        "help": "Titles of the pages",
-        "name": "_titles",
-        "type": "object"
-      },
-      {
         "default": "@jupyter-widgets/controls",
         "help": "",
         "name": "_view_module",
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -5369,7 +5464,7 @@
       },
       {
         "allow_none": true,
-        "default": 0,
+        "default": null,
         "help": "The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.",
         "name": "selected_index",
         "type": "int"
@@ -5382,6 +5477,15 @@
         "type": "bool"
       },
       {
+        "default": [],
+        "help": "Titles of the pages",
+        "items": {
+          "type": "string"
+        },
+        "name": "titles",
+        "type": "array"
+      },
+      {
         "allow_none": true,
         "default": null,
         "help": "A tooltip caption.",
@@ -5392,12 +5496,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "StackedModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "StackedView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -5418,7 +5522,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -5430,19 +5534,13 @@
         "type": "string"
       },
       {
-        "default": {},
-        "help": "Titles of the pages",
-        "name": "_titles",
-        "type": "object"
-      },
-      {
         "default": "@jupyter-widgets/controls",
         "help": "",
         "name": "_view_module",
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -5479,7 +5577,7 @@
       },
       {
         "allow_none": true,
-        "default": 0,
+        "default": null,
         "help": "The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.",
         "name": "selected_index",
         "type": "int"
@@ -5492,6 +5590,15 @@
         "type": "bool"
       },
       {
+        "default": [],
+        "help": "Titles of the pages",
+        "items": {
+          "type": "string"
+        },
+        "name": "titles",
+        "type": "array"
+      },
+      {
         "allow_none": true,
         "default": null,
         "help": "A tooltip caption.",
@@ -5502,12 +5609,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "TabModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "TabView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -5528,7 +5635,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -5546,7 +5653,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -5619,12 +5726,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "TextModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "TextView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -5645,7 +5752,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -5663,7 +5770,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -5743,12 +5850,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "TextareaModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "TextareaView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -5769,7 +5876,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -5787,7 +5894,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -5861,12 +5968,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "ToggleButtonModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "ToggleButtonView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -5887,7 +5994,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -5914,7 +6021,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -6002,12 +6109,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "ToggleButtonsModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "ToggleButtonsView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -6019,7 +6126,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -6037,7 +6144,7 @@
         "type": "string"
       },
       {
-        "default": "1.2.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -6070,12 +6177,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "ToggleButtonsStyleModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/base",
       "name": "StyleView",
-      "version": "1.2.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -6096,7 +6203,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -6114,7 +6221,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -6167,12 +6274,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "VBoxModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "VBoxView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -6193,7 +6300,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -6211,7 +6318,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -6278,12 +6385,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "ValidModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "ValidView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {
@@ -6304,7 +6411,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_model_module_version",
         "type": "string"
@@ -6322,7 +6429,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"
@@ -6400,12 +6507,12 @@
     "model": {
       "module": "@jupyter-widgets/controls",
       "name": "VideoModel",
-      "version": "1.5.0"
+      "version": "2.0.0"
     },
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "VideoView",
-      "version": "1.5.0"
+      "version": "2.0.0"
     }
   },
   {

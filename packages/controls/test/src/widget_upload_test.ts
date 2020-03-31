@@ -133,7 +133,7 @@ describe('FileUploadView', function() {
       const [fileInModel] = this.model.get('value');
       expect(fileInModel.name).to.equal('some-name');
       expect(fileInModel.type).to.equal('text/plain');
-      expect(fileInModel.lastModified).to.equal(lastModified);
+      expect(fileInModel.last_modified).to.equal(lastModified);
 
       const contentInModel = new TextDecoder('utf-8').decode(
         fileInModel.content

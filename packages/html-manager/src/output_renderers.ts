@@ -23,7 +23,8 @@ export class WidgetRenderer extends Widget implements IRenderMime.IRenderer {
     if (modelPromise) {
       try {
         const wModel = await modelPromise;
-        await this._manager.display_model(null, wModel, { el: this.node });
+        const wView = await this._manager.create_view(wModel);
+        Widget.attach(wView.pWidget, this.node);
       } catch (err) {
         console.log('Error displaying widget');
         console.log(err);
@@ -33,7 +34,6 @@ export class WidgetRenderer extends Widget implements IRenderMime.IRenderer {
     } else {
       this.node.textContent = 'Error creating widget: could not find model';
       this.addClass('jupyter-widgets');
-      return Promise.resolve();
     }
   }
 

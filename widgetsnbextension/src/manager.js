@@ -322,10 +322,6 @@ export class WidgetManager extends ManagerBase {
     return item;
   }
 
-  display_view(msg, view, options) {
-    return Promise.resolve(view);
-  }
-
   _create_comm(comm_target_name, comm_id, data, metadata, buffers) {
     var that = this;
     return this._get_connected_kernel().then(function(kernel) {

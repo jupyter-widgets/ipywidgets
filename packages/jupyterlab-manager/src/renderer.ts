@@ -5,12 +5,12 @@ import { PromiseDelegate } from '@lumino/coreutils';
 
 import { IDisposable } from '@lumino/disposable';
 
-import { Panel, Widget } from '@lumino/widgets';
+import { Panel, Widget as LuminoWidget } from '@lumino/widgets';
 
 import { IRenderMime } from '@jupyterlab/rendermime-interfaces';
 
 import { WidgetManager } from './manager';
-import { WidgetModel } from '@jupyter-widgets/base';
+import { DOMWidgetModel } from '@jupyter-widgets/base';
 
 /**
  * A renderer for widgets.
@@ -38,7 +38,6 @@ export class WidgetRenderer extends Panel
 
     // Let's be optimistic, and hope the widget state will come later.
     this.node.textContent = 'Loading widget...';
-    this.addClass('jupyter-widgets');
 
     const manager = await this._manager.promise;
     // If there is no model id, the view was removed, so hide the node.
@@ -47,9 +46,10 @@ export class WidgetRenderer extends Panel
       return Promise.resolve();
     }
 
-    let wModel: WidgetModel;
+    let wModel: DOMWidgetModel;
     try {
-      wModel = await manager.get_model(source.model_id);
+      // Presume we have a DOMWidgetModel. Should we check for sure?
+      wModel = (await manager.get_model(source.model_id)) as DOMWidgetModel;
     } catch (err) {
       if (manager.restoredStatus) {
         // The manager has been restored, so this error won't be going away.
@@ -67,9 +67,9 @@ export class WidgetRenderer extends Panel
     // Successful getting the model, so we don't need to try to rerender.
     this._rerenderMimeModel = null;
 
-    let widget: Widget;
+    let widget: LuminoWidget;
     try {
-      widget = await manager.display_model(null, wModel, undefined);
+      widget = (await manager.create_view(wModel)).pWidget;
     } catch (err) {
       this.node.textContent = 'Error displaying widget';
       this.addClass('jupyter-widgets');

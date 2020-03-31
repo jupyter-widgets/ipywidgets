@@ -52,14 +52,11 @@ _doc_snippets['selection_params'] = """
 _doc_snippets['multiple_selection_params'] = """
     options: dict or list
         The options for the dropdown. This can either be a list of values, e.g.
-        ``['Galileo', 'Brahe', 'Hubble']`` or ``[0, 1, 2]``, a list of
+        ``['Galileo', 'Brahe', 'Hubble']`` or ``[0, 1, 2]``, or a list of
         (label, value) pairs, e.g.
-        ``[('Galileo', 0), ('Brahe', 1), ('Hubble', 2)]``,
-        or a dictionary mapping the labels to the values, e.g. ``{'Galileo': 0,
-        'Brahe': 1, 'Hubble': 2}``. The labels are the strings that will be
-        displayed in the UI, representing the actual Python choices, and should
-        be unique. If this is a dictionary, the order in which they are
-        displayed is not guaranteed.
+        ``[('Galileo', 0), ('Brahe', 1), ('Hubble', 2)]``.
+        The labels are the strings that will be displayed in the UI,
+        representing the actual Python choices, and should be unique.
 
     index: iterable of int
         The indices of the options that are selected.
@@ -97,6 +94,13 @@ _doc_snippets['slider_params'] = """
 """
 
 
+def _exhaust_iterable(x):
+    """Exhaust any non-mapping iterable into a tuple"""
+    if isinstance(x, Iterable) and not isinstance(x, Mapping):
+        return tuple(x)
+    return x
+
+
 def _make_options(x):
     """Standardize the options tuple format.
 
@@ -106,11 +110,8 @@ def _make_options(x):
     * an iterable of (label, value) pairs
     * an iterable of values, and labels will be generated
     """
-    # Check if x is a mapping of labels to values
     if isinstance(x, Mapping):
-        import warnings
-        warnings.warn("Support for mapping types has been deprecated and will be dropped in a future release.", DeprecationWarning)
-        return tuple((str(k), v) for k, v in x.items())
+        raise TypeError("options must be a list of values or a list of (label, value) tuples")
 
     # only iterate once through the options.
     xlist = tuple(x)
@@ -132,10 +133,10 @@ def findvalue(array, value, compare = lambda x, y: x == y):
 class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
     """Base class for Selection widgets
 
-    ``options`` can be specified as a list of values, list of (label, value)
-    tuples, or a dict of {label: value}. The labels are the strings that will be
-    displayed in the UI, representing the actual Python choices, and should be
-    unique. If labels are not specified, they are generated from the values.
+    ``options`` can be specified as a list of values or a list of (label, value)
+    tuples. The labels are the strings that will be displayed in the UI,
+    representing the actual Python choices, and should be unique.
+    If labels are not specified, they are generated from the values.
 
     When programmatically setting the value, a reverse lookup is performed
     among the options to check that the value is valid. The reverse lookup uses
@@ -149,7 +150,7 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
     index = Int(None, help="Selected index", allow_none=True).tag(sync=True)
 
     options = Any((),
-    help="""Iterable of values, (label, value) pairs, or a mapping of {label: value} pairs that the user can select.
+    help="""Iterable of values or (label, value) pairs that the user can select.
 
     The labels are the strings that will be displayed in the UI, representing the
     actual Python choices, and should be unique.
@@ -167,13 +168,13 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
         # We have to make the basic options bookkeeping consistent
         # so we don't have errors the first time validators run
         self._initializing_traits_ = True
-        options = _make_options(kwargs.get('options', ()))
-        self._options_full = options
-        self.set_trait('_options_labels', tuple(i[0] for i in options))
-        self._options_values = tuple(i[1] for i in options)
+        kwargs['options'] = _exhaust_iterable(kwargs.get('options', ()))
+        self._options_full = _make_options(kwargs['options'])
+        self._propagate_options(None)
 
         # Select the first item by default, if we can
         if 'index' not in kwargs and 'value' not in kwargs and 'label' not in kwargs:
+            options = self._options_full
             nonempty = (len(options) > 0)
             kwargs['index'] = 0 if nonempty else None
             kwargs['label'], kwargs['value'] = options[0] if nonempty else (None, None)
@@ -184,8 +185,7 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
     @validate('options')
     def _validate_options(self, proposal):
         # if an iterator is provided, exhaust it
-        if isinstance(proposal.value, Iterable) and not isinstance(proposal.value, Mapping):
-            proposal.value = tuple(proposal.value)
+        proposal.value = _exhaust_iterable(proposal.value)
         # throws an error if there is a problem converting to full form
         self._options_full = _make_options(proposal.value)
         return proposal.value
@@ -291,7 +291,7 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
     index = TypedTuple(trait=Int(), help="Selected indices").tag(sync=True)
 
     options = Any((),
-    help="""Iterable of values, (label, value) pairs, or a mapping of {label: value} pairs that the user can select.
+    help="""Iterable of values or (label, value) pairs that the user can select.
 
     The labels are the strings that will be displayed in the UI, representing the
     actual Python choices, and should be unique.
@@ -309,18 +309,16 @@ class _MultipleSelection(DescriptionWidget, ValueWidget, CoreWidget):
         # We have to make the basic options bookkeeping consistent
         # so we don't have errors the first time validators run
         self._initializing_traits_ = True
-        options = _make_options(kwargs.get('options', ()))
-        self._full_options = options
-        self.set_trait('_options_labels', tuple(i[0] for i in options))
-        self._options_values = tuple(i[1] for i in options)
+        kwargs['options'] = _exhaust_iterable(kwargs.get('options', ()))
+        self._options_full = _make_options(kwargs['options'])
+        self._propagate_options(None)
 
         super().__init__(*args, **kwargs)
         self._initializing_traits_ = False
 
     @validate('options')
     def _validate_options(self, proposal):
-        if isinstance(proposal.value, Iterable) and not isinstance(proposal.value, Mapping):
-            proposal.value = tuple(proposal.value)
+        proposal.value = _exhaust_iterable(proposal.value)
         # throws an error if there is a problem converting to full form
         self._options_full = _make_options(proposal.value)
         return proposal.value
@@ -522,8 +520,7 @@ class _SelectionNonempty(_Selection):
 
     @validate('options')
     def _validate_options(self, proposal):
-        if isinstance(proposal.value, Iterable) and not isinstance(proposal.value, Mapping):
-            proposal.value = tuple(proposal.value)
+        proposal.value = _exhaust_iterable(proposal.value)
         self._options_full = _make_options(proposal.value)
         if len(self._options_full) == 0:
             raise TraitError("Option list must be nonempty")
@@ -546,8 +543,7 @@ class _MultipleSelectionNonempty(_MultipleSelection):
 
     @validate('options')
     def _validate_options(self, proposal):
-        if isinstance(proposal.value, Iterable) and not isinstance(proposal.value, Mapping):
-            proposal.value = tuple(proposal.value)
+        proposal.value = _exhaust_iterable(proposal.value)
         # throws an error if there is a problem converting to full form
         self._options_full = _make_options(proposal.value)
         if len(self._options_full) == 0:

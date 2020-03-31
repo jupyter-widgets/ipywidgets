@@ -9,6 +9,7 @@
  */
 
 @import './lumino.css';
+@import './nouislider.css';
 
 :root {
   --jp-widgets-color: var(--jp-content-font-color1);
@@ -186,85 +187,85 @@
 /* Button "Primary" Styling */
 
 .jupyter-button.mod-primary {
-  color: var(--jp-inverse-ui-font-color1);
+  color: var(--jp-ui-inverse-font-color1);
   background-color: var(--jp-brand-color1);
 }
 
 .jupyter-button.mod-primary.mod-active {
-  color: var(--jp-inverse-ui-font-color0);
+  color: var(--jp-ui-inverse-font-color0);
   background-color: var(--jp-brand-color0);
 }
 
 .jupyter-button.mod-primary:active {
-  color: var(--jp-inverse-ui-font-color0);
+  color: var(--jp-ui-inverse-font-color0);
   background-color: var(--jp-brand-color0);
 }
 
 /* Button "Success" Styling */
 
 .jupyter-button.mod-success {
-  color: var(--jp-inverse-ui-font-color1);
+  color: var(--jp-ui-inverse-font-color1);
   background-color: var(--jp-success-color1);
 }
 
 .jupyter-button.mod-success.mod-active {
-  color: var(--jp-inverse-ui-font-color0);
+  color: var(--jp-ui-inverse-font-color0);
   background-color: var(--jp-success-color0);
 }
 
 .jupyter-button.mod-success:active {
-  color: var(--jp-inverse-ui-font-color0);
+  color: var(--jp-ui-inverse-font-color0);
   background-color: var(--jp-success-color0);
 }
 
 /* Button "Info" Styling */
 
 .jupyter-button.mod-info {
-  color: var(--jp-inverse-ui-font-color1);
+  color: var(--jp-ui-inverse-font-color1);
   background-color: var(--jp-info-color1);
 }
 
 .jupyter-button.mod-info.mod-active {
-  color: var(--jp-inverse-ui-font-color0);
+  color: var(--jp-ui-inverse-font-color0);
   background-color: var(--jp-info-color0);
 }
 
 .jupyter-button.mod-info:active {
-  color: var(--jp-inverse-ui-font-color0);
+  color: var(--jp-ui-inverse-font-color0);
   background-color: var(--jp-info-color0);
 }
 
 /* Button "Warning" Styling */
 
 .jupyter-button.mod-warning {
-  color: var(--jp-inverse-ui-font-color1);
+  color: var(--jp-ui-inverse-font-color1);
   background-color: var(--jp-warn-color1);
 }
 
 .jupyter-button.mod-warning.mod-active {
-  color: var(--jp-inverse-ui-font-color0);
+  color: var(--jp-ui-inverse-font-color0);
   background-color: var(--jp-warn-color0);
 }
 
 .jupyter-button.mod-warning:active {
-  color: var(--jp-inverse-ui-font-color0);
+  color: var(--jp-ui-inverse-font-color0);
   background-color: var(--jp-warn-color0);
 }
 
 /* Button "Danger" Styling */
 
 .jupyter-button.mod-danger {
-  color: var(--jp-inverse-ui-font-color1);
+  color: var(--jp-ui-inverse-font-color1);
   background-color: var(--jp-error-color1);
 }
 
 .jupyter-button.mod-danger.mod-active {
-  color: var(--jp-inverse-ui-font-color0);
+  color: var(--jp-ui-inverse-font-color0);
   background-color: var(--jp-error-color0);
 }
 
 .jupyter-button.mod-danger:active {
-  color: var(--jp-inverse-ui-font-color0);
+  color: var(--jp-ui-inverse-font-color0);
   background-color: var(--jp-error-color0);
 }
 
@@ -390,27 +391,17 @@
   font-size: var(--jp-widgets-font-size);
 }
 
-.widget-valid i:before {
+.widget-valid i {
   line-height: var(--jp-widgets-inline-height);
   margin-right: var(--jp-widgets-inline-margin);
   margin-left: var(--jp-widgets-inline-margin);
-
-  /* from the fa class in FontAwesome: https://github.com/FortAwesome/Font-Awesome/blob/49100c7c3a7b58d50baa71efef11af41a66b03d3/css/font-awesome.css#L14 */
-  display: inline-block;
-  font: normal normal normal 14px/1 FontAwesome;
-  font-size: inherit;
-  text-rendering: auto;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
-.widget-valid.mod-valid i:before {
-  content: '\f00c';
+.widget-valid.mod-valid i {
   color: green;
 }
 
-.widget-valid.mod-invalid i:before {
-  content: '\f00d';
+.widget-valid.mod-invalid i {
   color: red;
 }
 
@@ -477,109 +468,7 @@
   border-color: var(--jp-widgets-input-focus-border-color);
 }
 
-/* Widget Slider */
-
-.widget-slider .ui-slider {
-  /* Slider Track */
-  border: var(--jp-widgets-slider-border-width) solid var(--jp-layout-color3);
-  background: var(--jp-layout-color3);
-  box-sizing: border-box;
-  position: relative;
-  border-radius: 0px;
-}
-
-.widget-slider .ui-slider .ui-slider-handle {
-  /* Slider Handle */
-  outline: none !important; /* focused slider handles are colored - see below */
-  position: absolute;
-  background-color: var(--jp-widgets-slider-handle-background-color);
-  border: var(--jp-widgets-slider-border-width) solid
-    var(--jp-widgets-slider-handle-border-color);
-  box-sizing: border-box;
-  z-index: 1;
-  background-image: none; /* Override jquery-ui */
-}
-
-/* Override jquery-ui */
-.widget-slider .ui-slider .ui-slider-handle:hover,
-.widget-slider .ui-slider .ui-slider-handle:focus {
-  background-color: var(--jp-widgets-slider-active-handle-color);
-  border: var(--jp-widgets-slider-border-width) solid
-    var(--jp-widgets-slider-active-handle-color);
-}
-
-.widget-slider .ui-slider .ui-slider-handle:active {
-  background-color: var(--jp-widgets-slider-active-handle-color);
-  border-color: var(--jp-widgets-slider-active-handle-color);
-  z-index: 2;
-  transform: scale(1.2);
-}
-
-.widget-slider .ui-slider .ui-slider-range {
-  /* Interval between the two specified value of a double slider */
-  position: absolute;
-  background: var(--jp-widgets-slider-active-handle-color);
-  z-index: 0;
-}
-
-/* Shapes of Slider Handles */
-
-.widget-hslider .ui-slider .ui-slider-handle {
-  width: var(--jp-widgets-slider-handle-size);
-  height: var(--jp-widgets-slider-handle-size);
-  margin-top: calc(
-    (
-        var(--jp-widgets-slider-track-thickness) -
-          var(--jp-widgets-slider-handle-size)
-      ) / 2 - var(--jp-widgets-slider-border-width)
-  );
-  margin-left: calc(
-    var(--jp-widgets-slider-handle-size) / -2 +
-      var(--jp-widgets-slider-border-width)
-  );
-  border-radius: 50%;
-  top: 0;
-}
-
-.widget-vslider .ui-slider .ui-slider-handle {
-  width: var(--jp-widgets-slider-handle-size);
-  height: var(--jp-widgets-slider-handle-size);
-  margin-bottom: calc(
-    var(--jp-widgets-slider-handle-size) / -2 +
-      var(--jp-widgets-slider-border-width)
-  );
-  margin-left: calc(
-    (
-        var(--jp-widgets-slider-track-thickness) -
-          var(--jp-widgets-slider-handle-size)
-      ) / 2 - var(--jp-widgets-slider-border-width)
-  );
-  border-radius: 50%;
-  left: 0;
-}
-
-.widget-hslider .ui-slider .ui-slider-range {
-  height: calc(var(--jp-widgets-slider-track-thickness) * 2);
-  margin-top: calc(
-    (
-        var(--jp-widgets-slider-track-thickness) -
-          var(--jp-widgets-slider-track-thickness) * 2
-      ) / 2 - var(--jp-widgets-slider-border-width)
-  );
-}
-
-.widget-vslider .ui-slider .ui-slider-range {
-  width: calc(var(--jp-widgets-slider-track-thickness) * 2);
-  margin-left: calc(
-    (
-        var(--jp-widgets-slider-track-thickness) -
-          var(--jp-widgets-slider-track-thickness) * 2
-      ) / 2 - var(--jp-widgets-slider-border-width)
-  );
-}
-
 /* Horizontal Slider */
-
 .widget-hslider {
   width: var(--jp-widgets-inline-width);
   height: var(--jp-widgets-inline-height);
@@ -596,7 +485,6 @@
 }
 
 .widget-hslider .slider-container {
-  height: var(--jp-widgets-inline-height);
   margin-left: calc(
     var(--jp-widgets-slider-handle-size) / 2 - 2 *
       var(--jp-widgets-slider-border-width)
@@ -606,16 +494,6 @@
       var(--jp-widgets-slider-border-width)
   );
   flex: 1 1 var(--jp-widgets-inline-width-short);
-}
-
-.widget-hslider .ui-slider {
-  /* Inner, invisible slide div */
-  height: var(--jp-widgets-slider-track-thickness);
-  margin-top: calc(
-    (var(--jp-widgets-inline-height) - var(--jp-widgets-slider-track-thickness)) /
-      2
-  );
-  width: 100%;
 }
 
 /* Vertical Slider */
@@ -645,14 +523,6 @@
   );
   display: flex;
   flex-direction: column;
-}
-
-.widget-vslider .ui-slider-vertical {
-  /* Inner, invisible slide div */
-  width: var(--jp-widgets-slider-track-thickness);
-  flex-grow: 1;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 /* Widget Progress Styling */
@@ -1073,6 +943,8 @@
   margin-left: 4px;
 }
 
+/* This font-awesome strategy may not work across FA4 and FA5, but we don't
+actually support closable tabs, so it really doesn't matter */
 .jupyter-widgets.widget-tab
   > .p-TabBar
   .p-mod-closable
@@ -1116,20 +988,6 @@
   color: var(--jp-ui-font-color0);
   cursor: default;
   border-bottom: none;
-}
-
-.p-Collapse .p-Collapse-header::before {
-  content: '\f0da\00A0'; /* caret-right, non-breaking space */
-  display: inline-block;
-  font: normal normal normal 14px/1 FontAwesome;
-  font-size: inherit;
-  text-rendering: auto;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-.p-Collapse-open > .p-Collapse-header::before {
-  content: '\f0d7\00A0'; /* caret-down, non-breaking space */
 }
 
 .p-Collapse-contents {
