@@ -25,7 +25,6 @@ class ButtonStyle(Style, CoreWidget):
     _view_name = Unicode('ButtonStyleView').tag(sync=True)
     _view_module = Unicode('@jupyter-widgets/controls').tag(sync=True)
     _view_module_version = Unicode(__jupyter_widgets_controls_version__).tag(sync=True)
-    bold = Bool(None, allow_none=True, help="Button text bold.").tag(sync=True)
     button_color = Color(None, allow_none=True, help="Color of the button").tag(sync=True)
     font_family = Unicode(None, allow_none=True, help="Button text font family.").tag(sync=True)
     font_size = Unicode(None, allow_none=True, help="Button text font size.").tag(sync=True)
