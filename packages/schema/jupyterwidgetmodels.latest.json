@@ -94,13 +94,6 @@
       {
         "allow_none": true,
         "default": null,
-        "help": "The border CSS attribute.",
-        "name": "border",
-        "type": "string"
-      },
-      {
-        "allow_none": true,
-        "default": null,
         "help": "The border bottom CSS attribute.",
         "name": "border_bottom",
         "type": "string"
@@ -1701,98 +1694,6 @@
         "type": "string"
       },
       {
-        "default": "ControllerButtonModel",
-        "help": "",
-        "name": "_model_name",
-        "type": "string"
-      },
-      {
-        "default": "@jupyter-widgets/controls",
-        "help": "",
-        "name": "_view_module",
-        "type": "string"
-      },
-      {
-        "default": "2.0.0",
-        "help": "",
-        "name": "_view_module_version",
-        "type": "string"
-      },
-      {
-        "default": "ControllerButtonView",
-        "help": "",
-        "name": "_view_name",
-        "type": "string"
-      },
-      {
-        "default": "reference to new instance",
-        "help": "",
-        "name": "layout",
-        "type": "reference",
-        "widget": "Layout"
-      },
-      {
-        "default": false,
-        "help": "Whether the button is pressed.",
-        "name": "pressed",
-        "type": "bool"
-      },
-      {
-        "allow_none": true,
-        "default": null,
-        "help": "Is widget tabbable?",
-        "name": "tabbable",
-        "type": "bool"
-      },
-      {
-        "allow_none": true,
-        "default": null,
-        "help": "A tooltip caption.",
-        "name": "tooltip",
-        "type": "string"
-      },
-      {
-        "default": 0.0,
-        "help": "The value of the button.",
-        "name": "value",
-        "type": "float"
-      }
-    ],
-    "model": {
-      "module": "@jupyter-widgets/controls",
-      "name": "ControllerButtonModel",
-      "version": "1.5.0"
-    },
-    "view": {
-      "module": "@jupyter-widgets/controls",
-      "name": "ControllerButtonView",
-      "version": "1.5.0"
-    }
-  },
-  {
-    "attributes": [
-      {
-        "default": [],
-        "help": "CSS classes applied to widget DOM element",
-        "items": {
-          "type": "string"
-        },
-        "name": "_dom_classes",
-        "type": "array"
-      },
-      {
-        "default": "@jupyter-widgets/controls",
-        "help": "",
-        "name": "_model_module",
-        "type": "string"
-      },
-      {
-        "default": "1.5.0",
-        "help": "",
-        "name": "_model_module_version",
-        "type": "string"
-      },
-      {
         "default": "ControllerModel",
         "help": "",
         "name": "_model_name",
@@ -1805,7 +1706,7 @@
         "type": "string"
       },
       {
-        "default": "1.5.0",
+        "default": "2.0.0",
         "help": "",
         "name": "_view_module_version",
         "type": "string"

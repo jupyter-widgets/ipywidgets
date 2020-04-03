@@ -12,7 +12,6 @@ const css_properties: Dict<string | null> = {
   align_content: null,
   align_items: null,
   align_self: null,
-  border: null,
   border_top: null,
   border_right: null,
   border_bottom: null,

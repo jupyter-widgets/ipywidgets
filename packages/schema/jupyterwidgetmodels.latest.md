@@ -29,7 +29,6 @@ Attribute        | Type             | Default          | Help
 `align_content`  | `null` or string (one of `'flex-start'`, `'flex-end'`, `'center'`, `'space-between'`, `'space-around'`, `'space-evenly'`, `'stretch'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The align-content CSS attribute.
 `align_items`    | `null` or string (one of `'flex-start'`, `'flex-end'`, `'center'`, `'baseline'`, `'stretch'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The align-items CSS attribute.
 `align_self`     | `null` or string (one of `'auto'`, `'flex-start'`, `'flex-end'`, `'center'`, `'baseline'`, `'stretch'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The align-self CSS attribute.
-`border`         | `null` or string | `null`           | The border CSS attribute.
 `border_bottom`  | `null` or string | `null`           | The border bottom CSS attribute.
 `border_left`    | `null` or string | `null`           | The border left CSS attribute.
 `border_right`   | `null` or string | `null`           | The border right CSS attribute.
