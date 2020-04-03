@@ -11,8 +11,7 @@ import { uuid } from './utils';
 
 import { format } from 'd3-format';
 
-import $ from 'jquery';
-import 'jquery-ui/ui/widgets/slider';
+import noUiSlider from 'nouislider';
 
 export class IntModel extends CoreDescriptionModel {
   defaults(): Backbone.ObjectHash {
@@ -43,7 +42,7 @@ export class SliderStyleModel extends DescriptionStyleModel {
   public static styleProperties = {
     ...DescriptionStyleModel.styleProperties,
     handle_color: {
-      selector: '.ui-slider-handle',
+      selector: '.noUi-handle',
       attribute: 'background-color',
       default: null as any
     }
@@ -89,16 +88,14 @@ export abstract class BaseIntSliderView extends DescriptionView {
     this.el.classList.add('widget-slider');
     this.el.classList.add('widget-hslider');
 
-    (this.$slider = $('<div />') as any)
-      .slider({
-        slide: this.handleSliderChange.bind(this),
-        stop: this.handleSliderChanged.bind(this)
-      })
-      .addClass('slider');
+    // Creating noUiSlider instance and scaffolding
+    this.$slider = document.createElement('div');
+    this.$slider.classList.add('slider');
+
     // Put the slider in a container
     this.slider_container = document.createElement('div');
     this.slider_container.classList.add('slider-container');
-    this.slider_container.appendChild(this.$slider[0]);
+    this.slider_container.appendChild(this.$slider);
     this.el.appendChild(this.slider_container);
     this.readout = document.createElement('div');
     this.el.appendChild(this.readout);
@@ -106,59 +103,39 @@ export abstract class BaseIntSliderView extends DescriptionView {
     this.readout.contentEditable = 'true';
     this.readout.style.display = 'none';
 
+    // noUiSlider constructor and event handlers
+    this.createSlider();
+
+    // Event handlers
+    this.model.on('change:orientation', this.regenSlider, this);
+    this.model.on('change:max', this.updateSliderOptions, this);
+    this.model.on('change:min', this.updateSliderOptions, this);
+    this.model.on('change:step', this.updateSliderOptions, this);
+    this.model.on('change:value', this.updateSliderValue, this);
+
     // Set defaults.
     this.update();
   }
 
+  /**
+   * Update the contents of this view
+   *
+   * Called when the model is changed.  The model may have been
+   * changed by another view or by a state update from the back-end.
+   */
   update(options?: any): void {
-    /**
-     * Update the contents of this view
-     *
-     * Called when the model is changed.  The model may have been
-     * changed by another view or by a state update from the back-end.
-     */
     if (options === undefined || options.updated_view !== this) {
-      // JQuery slider option keys.  These keys happen to have a
-      // one-to-one mapping with the corresponding keys of the model.
-      const jquery_slider_keys = ['step', 'disabled'];
-      this.$slider.slider({});
-
-      jquery_slider_keys.forEach(key => {
-        const model_value = this.model.get(key);
-        if (model_value !== undefined) {
-          this.$slider.slider('option', key, model_value);
-        }
-      });
-
       if (this.model.get('disabled')) {
         this.readout.contentEditable = 'false';
+        this.$slider.setAttribute('disabled', true);
       } else {
         this.readout.contentEditable = 'true';
+        this.$slider.removeAttribute('disabled');
       }
-
-      const max = this.model.get('max');
-      const min = this.model.get('min');
-      if (min <= max) {
-        if (max !== undefined) {
-          this.$slider.slider('option', 'max', max);
-        }
-        if (min !== undefined) {
-          this.$slider.slider('option', 'min', min);
-        }
-      }
-
-      // WORKAROUND FOR JQUERY SLIDER BUG.
-      // The horizontal position of the slider handle
-      // depends on the value of the slider at the time
-      // of orientation change.  Before applying the new
-      // workaround, we set the value to the minimum to
-      // make sure that the horizontal placement of the
-      // handle in the vertical slider is always
-      // consistent.
-      const orientation = this.model.get('orientation');
-      this.$slider.slider('option', 'orientation', orientation);
 
       // Use the right CSS classes for vertical & horizontal sliders
+      const orientation = this.model.get('orientation');
+
       if (orientation === 'vertical') {
         this.el.classList.remove('widget-hslider');
         this.el.classList.add('widget-vslider');
@@ -208,8 +185,6 @@ export abstract class BaseIntSliderView extends DescriptionView {
   events(): { [e: string]: string } {
     return {
       // Dictionary of events and their handlers.
-      slide: 'handleSliderChange',
-      slidestop: 'handleSliderChanged',
       'blur [contentEditable=true]': 'handleTextChange',
       'keydown [contentEditable=true]': 'handleKeyDown'
     };
@@ -224,6 +199,62 @@ export abstract class BaseIntSliderView extends DescriptionView {
   }
 
   /**
+   * Create a new noUiSlider object
+   */
+  createSlider(): void {
+    const orientation = this.model.get('orientation');
+    noUiSlider.create(this.$slider, {
+      start: this.model.get('value'),
+      connect: true,
+      range: {
+        min: this.model.get('min'),
+        max: this.model.get('max')
+      },
+      step: this.model.get('step'),
+      animate: false,
+      orientation: orientation,
+      direction: orientation === 'horizontal' ? 'ltr' : 'rtl',
+      format: {
+        from: (value: number): number => value,
+        to: (value: number): number => value
+      }
+    });
+
+    // Using noUiSlider's event handler
+    this.$slider.noUiSlider.on('update', (values: any, handle: any) => {
+      this.handleSliderChange(values, handle);
+    });
+
+    this.$slider.noUiSlider.on('end', (values: any, handle: any) => {
+      this.handleSliderChanged(values, handle);
+    });
+  }
+
+  /**
+   * Recreate/Regenerate a slider object
+   * noUiSlider does not support in-place mutation of the orientation
+   * state. We therefore need to destroy the current instance
+   * and create a new one with the new properties. This is
+   * handled in a separate function and has a dedicated event
+   * handler.
+   */
+  regenSlider(e: any): void {
+    this.$slider.noUiSlider.destroy();
+    this.createSlider();
+  }
+
+  /**
+   * Update noUiSlider object in-place with new options
+   */
+  abstract updateSliderOptions(e: any): void;
+
+  /**
+   * Update noUiSlider's state so that it is
+   * synced with the Backbone.jas model
+   */
+  abstract updateSliderValue(model: any, value: any, options: any): void;
+
+  /**
    * this handles the entry of text into the contentEditable label first, the
    * value is checked if it contains a parseable value then it is clamped
    * within the min-max range of the slider finally, the model is updated if
@@ -236,10 +267,7 @@ export abstract class BaseIntSliderView extends DescriptionView {
   /**
    * Called when the slider value is changing.
    */
-  abstract handleSliderChange(
-    e: any,
-    ui: { value?: number; values?: number[] }
-  ): void;
+  abstract handleSliderChange(value: any, handle: any): void;
 
   /**
    * Called when the slider value has changed.
@@ -247,10 +275,7 @@ export abstract class BaseIntSliderView extends DescriptionView {
    * Calling model.set will trigger all of the other views of the
    * model to update.
    */
-  abstract handleSliderChanged(
-    e: Event,
-    ui: { value?: number; values?: number[] }
-  ): void;
+  abstract handleSliderChanged(values: number[], handle: number): void;
 
   /**
    * Validate the value of the slider before sending it to the back-end
@@ -270,11 +295,7 @@ export abstract class BaseIntSliderView extends DescriptionView {
 export class IntRangeSliderView extends BaseIntSliderView {
   update(options?: any): void {
     super.update(options);
-    this.$slider.slider('option', 'range', true);
-    // values for the range case are validated python-side in
-    // _Bounded{Int,Float}RangeWidget._validate
     const value = this.model.get('value');
-    this.$slider.slider('option', 'values', value.slice());
     this.readout.textContent = this.valueToString(value);
     if (this.model.get('value') !== value) {
       this.model.set('value', value, { updated_view: this });
@@ -310,14 +331,6 @@ export class IntRangeSliderView extends BaseIntSliderView {
     }
   }
 
-  /**
-   * this handles the entry of text into the contentEditable label first, the
-   * value is checked if it contains a parseable value then it is clamped
-   * within the min-max range of the slider finally, the model is updated if
-   * the value is to be changed
-   *
-   * if any of these conditions are not met, the text is reset
-   */
   handleTextChange(): void {
     let value = this.stringToValue(this.readout.textContent);
     const vmin = this.model.get('min');
@@ -349,30 +362,46 @@ export class IntRangeSliderView extends BaseIntSliderView {
       }
     }
   }
-  /**
-   * Called when the slider value is changing.
-   */
-  handleSliderChange(e: any, ui: { values: number[] }): void {
-    const actual_value = ui.values.map(this._validate_slide_value);
+
+  handleSliderChange(values: any, handle: any): void {
+    const actual_value = values.map(this._validate_slide_value);
     this.readout.textContent = this.valueToString(actual_value);
 
     // Only persist the value while sliding if the continuous_update
     // trait is set to true.
     if (this.model.get('continuous_update')) {
-      this.handleSliderChanged(e, ui);
+      this.handleSliderChanged(values, handle);
     }
   }
 
-  /**
-   * Called when the slider value has changed.
-   *
-   * Calling model.set will trigger all of the other views of the
-   * model to update.
-   */
-  handleSliderChanged(e: Event, ui: { values: number[] }): void {
-    const actual_value = ui.values.map(this._validate_slide_value);
+  handleSliderChanged(values: number[], handle: number): void {
+    const actual_value = values.map(this._validate_slide_value);
     this.model.set('value', actual_value, { updated_view: this });
     this.touch();
+  }
+
+  updateSliderOptions(e: any): void {
+    this.$slider.noUiSlider.updateOptions({
+      start: this.model.get('value'),
+      range: {
+        min: this.model.get('min'),
+        max: this.model.get('max')
+      },
+      step: this.model.get('step')
+    });
+  }
+
+  updateSliderValue(model: any, _: any, options: any): void {
+    if (options.updated_view === this) {
+      return;
+    }
+
+    const prev_value = this.$slider.noUiSlider.get();
+    const value = this.model.get('value');
+
+    if (prev_value[0] !== value[0] || prev_value[1] !== value[1]) {
+      this.$slider.noUiSlider.set(value);
+    }
   }
 
   // range numbers can be separated by a hyphen, colon, or an en-dash
@@ -391,7 +420,7 @@ export class IntSliderView extends BaseIntSliderView {
     } else if (value < min) {
       value = min;
     }
-    this.$slider.slider('option', 'value', value);
+
     this.readout.textContent = this.valueToString(value);
     if (this.model.get('value') !== value) {
       this.model.set('value', value, { updated_view: this });
@@ -399,31 +428,17 @@ export class IntSliderView extends BaseIntSliderView {
     }
   }
 
-  /**
-   * Write value to a string
-   */
-  valueToString(value: number): string {
+  valueToString(value: number | number[]): string {
     const format = this.model.readout_formatter;
     return format(value);
   }
 
-  /**
-   * Parse value from a string
-   */
-  stringToValue(text: string | null): number {
-    return text === null ? NaN : this._parse_value(text);
+  stringToValue(text: string): number | number[] {
+    return this._parse_value(text);
   }
 
-  /**
-   * this handles the entry of text into the contentEditable label first, the
-   * value is checked if it contains a parseable value then it is clamped
-   * within the min-max range of the slider finally, the model is updated if
-   * the value is to be changed
-   *
-   * if any of these conditions are not met, the text is reset
-   */
   handleTextChange(): void {
-    let value = this.stringToValue(this.readout.textContent);
+    let value = this.stringToValue(this.readout.textContent ?? '');
     const vmin = this.model.get('min');
     const vmax = this.model.get('max');
 
@@ -441,30 +456,50 @@ export class IntSliderView extends BaseIntSliderView {
       }
     }
   }
-  /**
-   * Called when the slider value is changing.
-   */
-  handleSliderChange(e: any, ui: { value: number }): void {
-    const actual_value = this._validate_slide_value(ui.value);
+
+  handleSliderChange(values: any, handle: any): void {
+    const actual_value = this._validate_slide_value(values[handle]);
     this.readout.textContent = this.valueToString(actual_value);
 
     // Only persist the value while sliding if the continuous_update
     // trait is set to true.
     if (this.model.get('continuous_update')) {
-      this.handleSliderChanged(e, ui);
+      this.handleSliderChanged(values, handle);
     }
   }
 
-  /**
-   * Called when the slider value has changed.
-   *
-   * Calling model.set will trigger all of the other views of the
-   * model to update.
-   */
-  handleSliderChanged(e: Event, ui: { value?: any }): void {
-    const actual_value = this._validate_slide_value(ui.value);
-    this.model.set('value', actual_value, { updated_view: this });
-    this.touch();
+  handleSliderChanged(values: any, handle: any): void {
+    const actual_value = this._validate_slide_value(values[handle]);
+    const model_value = this.model.get('value');
+
+    if (parseFloat(model_value) !== actual_value) {
+      this.model.set('value', actual_value, { updated_view: this });
+      this.touch();
+    }
+  }
+
+  updateSliderOptions(e: any): void {
+    this.$slider.noUiSlider.updateOptions({
+      start: this.model.get('value'),
+      range: {
+        min: this.model.get('min'),
+        max: this.model.get('max')
+      },
+      step: this.model.get('step')
+    });
+  }
+
+  updateSliderValue(model: any, _: any, options: any): void {
+    if (options.updated_view === this) {
+      return;
+    }
+
+    const prev_value = this.$slider.noUiSlider.get();
+    const value = this.model.get('value');
+
+    if (prev_value !== value) {
+      this.$slider.noUiSlider.set(value);
+    }
   }
 }
 

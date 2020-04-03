@@ -166,7 +166,7 @@ class FloatSlider(_BoundedFloat):
     """
     _view_name = Unicode('FloatSliderView').tag(sync=True)
     _model_name = Unicode('FloatSliderModel').tag(sync=True)
-    step = CFloat(0.1, help="Minimum step to increment the value").tag(sync=True)
+    step = CFloat(0.1, allow_none=True, help="Minimum step to increment the value").tag(sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
@@ -207,7 +207,7 @@ class FloatLogSlider(_BoundedLogFloat):
     """
     _view_name = Unicode('FloatLogSliderView').tag(sync=True)
     _model_name = Unicode('FloatLogSliderModel').tag(sync=True)
-    step = CFloat(0.1, help="Minimum step in the exponent to increment the value").tag(sync=True)
+    step = CFloat(0.1, allow_none=True, help="Minimum step in the exponent to increment the value").tag(sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)
@@ -350,7 +350,7 @@ class FloatRangeSlider(_BoundedFloatRange):
     """
     _view_name = Unicode('FloatRangeSliderView').tag(sync=True)
     _model_name = Unicode('FloatRangeSliderModel').tag(sync=True)
-    step = CFloat(0.1, help="Minimum step to increment the value").tag(sync=True)
+    step = CFloat(0.1, allow_none=True, help="Minimum step to increment the value").tag(sync=True)
     orientation = CaselessStrEnum(values=['horizontal', 'vertical'],
         default_value='horizontal', help="Vertical or horizontal.").tag(sync=True)
     readout = Bool(True, help="Display the current value of the slider next to it.").tag(sync=True)

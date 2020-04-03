@@ -4,6 +4,14 @@
 import { CoreDOMWidgetModel } from './widget_core';
 import { DOMWidgetView } from '@jupyter-widgets/base';
 
+interface IFileUploaded {
+  content: ArrayBuffer;
+  name: string;
+  size: number;
+  type: string;
+  last_modified: number;
+}
+
 export class FileUploadModel extends CoreDOMWidgetModel {
   defaults(): Backbone.ObjectHash {
     return {
@@ -16,7 +24,7 @@ export class FileUploadModel extends CoreDOMWidgetModel {
       icon: 'upload',
       button_style: '',
       multiple: false,
-      value: [],
+      value: [], // has type Array<IFileUploaded>
       error: '',
       style: null
     };
@@ -32,7 +40,6 @@ export class FileUploadModel extends CoreDOMWidgetModel {
 export class FileUploadView extends DOMWidgetView {
   el: HTMLButtonElement;
   fileInput: HTMLInputElement;
-  fileReader: FileReader;
 
   get tagName(): string {
     return 'button';
@@ -48,7 +55,6 @@ export class FileUploadView extends DOMWidgetView {
     this.fileInput = document.createElement('input');
     this.fileInput.type = 'file';
     this.fileInput.style.display = 'none';
-    this.el.appendChild(this.fileInput);
 
     this.el.addEventListener('click', () => {
       this.fileInput.click();
@@ -59,49 +65,37 @@ export class FileUploadView extends DOMWidgetView {
     });
 
     this.fileInput.addEventListener('change', () => {
-      const promisesFile: Promise<{
-        buffer: any;
-        metadata: any;
-        error: string;
-      }>[] = [];
+      const promisesFile: Array<Promise<IFileUploaded>> = [];
 
-      Array.from(this.fileInput.files ?? []).forEach(file => {
+      Array.from(this.fileInput.files ?? []).forEach((file: File) => {
         promisesFile.push(
           new Promise((resolve, reject) => {
-            const metadata = {
-              name: file.name,
-              type: file.type,
-              size: file.size,
-              lastModified: file.lastModified
-            };
-            this.fileReader = new FileReader();
-            this.fileReader.onload = (event): any => {
-              const buffer = (event as any).target.result;
+            const fileReader = new FileReader();
+            fileReader.onload = (): void => {
+              // We know we can read the result as an array buffer since
+              // we use the `.readAsArrayBuffer` method
+              const content: ArrayBuffer = fileReader.result as ArrayBuffer;
               resolve({
-                buffer,
-                metadata,
-                error: ''
+                content,
+                name: file.name,
+                type: file.type,
+                size: file.size,
+                last_modified: file.lastModified
               });
             };
-            this.fileReader.onerror = (): any => {
+            fileReader.onerror = (): void => {
               reject();
             };
-            this.fileReader.onabort = this.fileReader.onerror;
-            this.fileReader.readAsArrayBuffer(file);
+            fileReader.onabort = fileReader.onerror;
+            fileReader.readAsArrayBuffer(file);
           })
         );
       });
 
       Promise.all(promisesFile)
-        .then(contents => {
-          const value = contents.map(c => {
-            return {
-              ...c.metadata,
-              content: c.buffer
-            };
-          });
+        .then((files: Array<IFileUploaded>) => {
           this.model.set({
-            value,
+            value: files,
             error: ''
           });
           this.touch();

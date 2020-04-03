@@ -5,31 +5,33 @@
     "widgetsnbextension",
     "examples/*"
   ],
-  "engines": {
-    "npm": "please-use-yarn",
-    "node": ">=10.15.3",
-    "yarn": ">=1.15.0"
-  },
   "scripts": {
     "build": "lerna run build --ignore \"@jupyter-widgets/example-*\"",
     "build:examples": "lerna run build --scope \"@jupyter-widgets/example-*\" --include-filtered-dependencies",
     "build:test": "lerna run build:test --ignore \"@jupyter-widgets/example-*\"",
     "clean": "lerna run clean",
-    "integrity": "node scripts/package-integrity.js",
     "eslint": "eslint . --fix --ignore-path .gitignore --ext .ts,.tsx",
     "eslint:check": "eslint . --ignore-path .gitignore --ext .ts,.tsx",
+    "integrity": "node scripts/package-integrity.js",
     "integrity2": "node buildutils/lib/integrity.js",
     "lint": "yarn && yarn run prettier && yarn run eslint",
     "lint:check": "yarn run prettier:check && yarn run eslint:check",
     "prettier": "prettier --ignore-path .gitignore --write \"**/*{.ts,.tsx,.js,.jsx,.css,.json}\"",
     "prettier:check": "prettier --ignore-path .gitignore --check \"**/*{.ts,.tsx,.js,.jsx,.css,.json}\"",
+    "publish": "yarn run clean && yarn run build && lerna publish --pre-dist-tag next from-git",
     "sort-package-json": "lerna exec --parallel sort-package-json && sort-package-json",
-    "publish": "yarn run clean && yarn run build && lerna publish -m \"Publish npm packages\"",
     "update-dependency": "update-dependency --lerna",
-    "updated": "lerna updated"
+    "updated": "lerna updated",
+    "version": "yarn run clean && yarn run build && lerna version --no-push -m \"Bump version\" "
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "yarn run integrity"
+    }
   },
   "devDependencies": {
-    "@jupyterlab/buildutils": "^2.0.0-beta.2",
+    "@jupyterlab/buildutils": "^2.0.2",
     "@typescript-eslint/eslint-plugin": "^2.14.0",
     "@typescript-eslint/parser": "^2.14.0",
     "eslint": "^6.5.0",
@@ -40,10 +42,9 @@
     "prettier": "^1.19.1",
     "sort-package-json": "~1.35"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "yarn run integrity"
-    }
+  "engines": {
+    "node": ">=10.15.3",
+    "npm": "please-use-yarn",
+    "yarn": ">=1.15.0"
   }
 }

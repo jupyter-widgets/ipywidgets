@@ -1,0 +1,6493 @@
+[
+  {
+    "attributes": [
+      {
+        "default": "@jupyter-widgets/base",
+        "help": "The namespace for the model.",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "A semver requirement for namespace version containing the model.",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "LayoutModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/base",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "LayoutView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "enum": [
+          "flex-start",
+          "flex-end",
+          "center",
+          "space-between",
+          "space-around",
+          "space-evenly",
+          "stretch",
+          "inherit",
+          "initial",
+          "unset"
+        ],
+        "help": "The align-content CSS attribute.",
+        "name": "align_content",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "enum": [
+          "flex-start",
+          "flex-end",
+          "center",
+          "baseline",
+          "stretch",
+          "inherit",
+          "initial",
+          "unset"
+        ],
+        "help": "The align-items CSS attribute.",
+        "name": "align_items",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "enum": [
+          "auto",
+          "flex-start",
+          "flex-end",
+          "center",
+          "baseline",
+          "stretch",
+          "inherit",
+          "initial",
+          "unset"
+        ],
+        "help": "The align-self CSS attribute.",
+        "name": "align_self",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The border CSS attribute.",
+        "name": "border",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The bottom CSS attribute.",
+        "name": "bottom",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The display CSS attribute.",
+        "name": "display",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The flex CSS attribute.",
+        "name": "flex",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The flex-flow CSS attribute.",
+        "name": "flex_flow",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The grid-area CSS attribute.",
+        "name": "grid_area",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The grid-auto-columns CSS attribute.",
+        "name": "grid_auto_columns",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "enum": [
+          "column",
+          "row",
+          "row dense",
+          "column dense",
+          "inherit",
+          "initial",
+          "unset"
+        ],
+        "help": "The grid-auto-flow CSS attribute.",
+        "name": "grid_auto_flow",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The grid-auto-rows CSS attribute.",
+        "name": "grid_auto_rows",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The grid-column CSS attribute.",
+        "name": "grid_column",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The grid-gap CSS attribute.",
+        "name": "grid_gap",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The grid-row CSS attribute.",
+        "name": "grid_row",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The grid-template-areas CSS attribute.",
+        "name": "grid_template_areas",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The grid-template-columns CSS attribute.",
+        "name": "grid_template_columns",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The grid-template-rows CSS attribute.",
+        "name": "grid_template_rows",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The height CSS attribute.",
+        "name": "height",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "enum": [
+          "flex-start",
+          "flex-end",
+          "center",
+          "space-between",
+          "space-around",
+          "inherit",
+          "initial",
+          "unset"
+        ],
+        "help": "The justify-content CSS attribute.",
+        "name": "justify_content",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "enum": [
+          "flex-start",
+          "flex-end",
+          "center",
+          "inherit",
+          "initial",
+          "unset"
+        ],
+        "help": "The justify-items CSS attribute.",
+        "name": "justify_items",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The left CSS attribute.",
+        "name": "left",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The margin CSS attribute.",
+        "name": "margin",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The max-height CSS attribute.",
+        "name": "max_height",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The max-width CSS attribute.",
+        "name": "max_width",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The min-height CSS attribute.",
+        "name": "min_height",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The min-width CSS attribute.",
+        "name": "min_width",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "enum": ["contain", "cover", "fill", "scale-down", "none"],
+        "help": "The object-fit CSS attribute.",
+        "name": "object_fit",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The object-position CSS attribute.",
+        "name": "object_position",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The order CSS attribute.",
+        "name": "order",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The overflow CSS attribute.",
+        "name": "overflow",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The padding CSS attribute.",
+        "name": "padding",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The right CSS attribute.",
+        "name": "right",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The top CSS attribute.",
+        "name": "top",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "enum": ["visible", "hidden", "inherit", "initial", "unset"],
+        "help": "The visibility CSS attribute.",
+        "name": "visibility",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The width CSS attribute.",
+        "name": "width",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/base",
+      "name": "LayoutModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/base",
+      "name": "LayoutView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "AccordionModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "AccordionView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "enum": ["success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the box.",
+        "name": "box_style",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "List of widget children",
+        "items": {
+          "type": "reference",
+          "widget": "Widget"
+        },
+        "name": "children",
+        "type": "array"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.",
+        "name": "selected_index",
+        "type": "int"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "Titles of the pages",
+        "items": {
+          "type": "string"
+        },
+        "name": "titles",
+        "type": "array"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "AccordionModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "AccordionView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "AudioModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "AudioView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "When true, the audio starts when it's displayed",
+        "name": "autoplay",
+        "type": "bool"
+      },
+      {
+        "default": true,
+        "help": "Specifies that audio controls should be displayed (such as a play/pause button etc)",
+        "name": "controls",
+        "type": "bool"
+      },
+      {
+        "default": "mp3",
+        "help": "The format of the audio.",
+        "name": "format",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": true,
+        "help": "When true, the audio will start from the beginning after finishing",
+        "name": "loop",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": "b''",
+        "help": "The media data as a memory view of bytes.",
+        "name": "value",
+        "type": "bytes"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "AudioModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "AudioView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "BoundedFloatTextModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "FloatTextView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.",
+        "name": "continuous_update",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": 100.0,
+        "help": "Max value",
+        "name": "max",
+        "type": "float"
+      },
+      {
+        "default": 0.0,
+        "help": "Min value",
+        "name": "min",
+        "type": "float"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Minimum step to increment the value",
+        "name": "step",
+        "type": "float"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": 0.0,
+        "help": "Float value",
+        "name": "value",
+        "type": "float"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "BoundedFloatTextModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "FloatTextView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "BoundedIntTextModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "IntTextView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.",
+        "name": "continuous_update",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": 100,
+        "help": "Max value",
+        "name": "max",
+        "type": "int"
+      },
+      {
+        "default": 0,
+        "help": "Min value",
+        "name": "min",
+        "type": "int"
+      },
+      {
+        "default": 1,
+        "help": "Minimum step to increment the value",
+        "name": "step",
+        "type": "int"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": 0,
+        "help": "Int value",
+        "name": "value",
+        "type": "int"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "BoundedIntTextModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "IntTextView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "BoxModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "BoxView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "enum": ["success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the box.",
+        "name": "box_style",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "List of widget children",
+        "items": {
+          "type": "reference",
+          "widget": "Widget"
+        },
+        "name": "children",
+        "type": "array"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "BoxModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "BoxView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ButtonModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ButtonView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "enum": ["primary", "success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the button.",
+        "name": "button_style",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Button label.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes.",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "help": "Font-awesome icon names, without the 'fa-' prefix.",
+        "name": "icon",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "style",
+        "type": "reference",
+        "widget": "ButtonStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ButtonModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ButtonView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ButtonStyleModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/base",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "StyleView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Color of the button",
+        "name": "button_color",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Button text font weight.",
+        "name": "font_weight",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ButtonStyleModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/base",
+      "name": "StyleView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "CheckboxModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "CheckboxView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes.",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": true,
+        "help": "Indent the control to align with other controls with a description.",
+        "name": "indent",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Bool value",
+        "name": "value",
+        "type": "bool"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "CheckboxModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "CheckboxView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ColorPickerModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ColorPickerView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Display short version with just a color selector.",
+        "name": "concise",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes.",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": "black",
+        "help": "The color value.",
+        "name": "value",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ColorPickerModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ColorPickerView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ComboboxModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ComboboxView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.",
+        "name": "continuous_update",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": false,
+        "help": "If set, ensure value is in options. Implies continuous_update=False.",
+        "name": "ensure_option",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": [],
+        "help": "Dropdown options for the combobox",
+        "items": {
+          "type": "string"
+        },
+        "name": "options",
+        "type": "array"
+      },
+      {
+        "default": "\u200b",
+        "help": "Placeholder text to display when nothing has been typed",
+        "name": "placeholder",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "String value",
+        "name": "value",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ComboboxModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ComboboxView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ControllerAxisModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ControllerAxisView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": 0.0,
+        "help": "The value of the axis.",
+        "name": "value",
+        "type": "float"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ControllerAxisModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ControllerAxisView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ControllerButtonModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ControllerButtonView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": false,
+        "help": "Whether the button is pressed.",
+        "name": "pressed",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": 0.0,
+        "help": "The value of the button.",
+        "name": "value",
+        "type": "float"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ControllerButtonModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ControllerButtonView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ControllerModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ControllerView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "The axes on the gamepad.",
+        "items": {
+          "type": "reference",
+          "widget": "Axis"
+        },
+        "name": "axes",
+        "type": "array"
+      },
+      {
+        "default": [],
+        "help": "The buttons on the gamepad.",
+        "items": {
+          "type": "reference",
+          "widget": "Button"
+        },
+        "name": "buttons",
+        "type": "array"
+      },
+      {
+        "default": false,
+        "help": "Whether the gamepad is connected.",
+        "name": "connected",
+        "type": "bool"
+      },
+      {
+        "default": 0,
+        "help": "The id number of the controller.",
+        "name": "index",
+        "type": "int"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "",
+        "help": "The name of the control mapping.",
+        "name": "mapping",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "The name of the controller.",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "default": 0.0,
+        "help": "The last time the data from this gamepad was updated.",
+        "name": "timestamp",
+        "type": "float"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ControllerModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ControllerView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "DOMWidgetModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Name of the view.",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": "b''",
+        "help": "The media data as a memory view of bytes.",
+        "name": "value",
+        "type": "bytes"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "DOMWidgetModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": null,
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "DatePickerModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "DatePickerView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes.",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "value",
+        "type": "Date"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "DatePickerModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "DatePickerView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "DescriptionStyleModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/base",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "StyleView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Width of the description to the side of the control.",
+        "name": "description_width",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "DescriptionStyleModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/base",
+      "name": "StyleView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "DirectionalLinkModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Name of the view.",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "The source (widget, 'trait_name') pair",
+        "name": "source",
+        "type": "array"
+      },
+      {
+        "default": [],
+        "help": "The target (widget, 'trait_name') pair",
+        "name": "target",
+        "type": "array"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "DirectionalLinkModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": null,
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "DropdownModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "The labels for the options.",
+        "items": {
+          "type": "string"
+        },
+        "name": "_options_labels",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "DropdownView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Selected index",
+        "name": "index",
+        "type": "int"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "DropdownModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "DropdownView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "FileUploadModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "FileUploadView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "File types to accept, empty string for all",
+        "name": "accept",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "enum": ["primary", "success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the button.",
+        "name": "button_style",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable button",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "help": "Error message",
+        "name": "error",
+        "type": "string"
+      },
+      {
+        "default": "upload",
+        "help": "Font-awesome icon name, without the 'fa-' prefix.",
+        "name": "icon",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": false,
+        "help": "If True, allow for multiple files upload",
+        "name": "multiple",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "style",
+        "type": "reference",
+        "widget": "ButtonStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "The file upload value",
+        "items": {
+          "type": "object"
+        },
+        "name": "value",
+        "type": "array"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "FileUploadModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "FileUploadView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "FloatLogSliderModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "FloatLogSliderView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": 10.0,
+        "help": "Base for the logarithm",
+        "name": "base",
+        "type": "float"
+      },
+      {
+        "default": true,
+        "help": "Update the value of the widget as the user is holding the slider.",
+        "name": "continuous_update",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": 4.0,
+        "help": "Max value for the exponent",
+        "name": "max",
+        "type": "float"
+      },
+      {
+        "default": 0.0,
+        "help": "Min value for the exponent",
+        "name": "min",
+        "type": "float"
+      },
+      {
+        "default": "horizontal",
+        "enum": ["horizontal", "vertical"],
+        "help": "Vertical or horizontal.",
+        "name": "orientation",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "Display the current value of the slider next to it.",
+        "name": "readout",
+        "type": "bool"
+      },
+      {
+        "default": ".3g",
+        "help": "Format for the readout",
+        "name": "readout_format",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": 0.1,
+        "help": "Minimum step in the exponent to increment the value",
+        "name": "step",
+        "type": "float"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "style",
+        "type": "reference",
+        "widget": "SliderStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": 1.0,
+        "help": "Float value",
+        "name": "value",
+        "type": "float"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "FloatLogSliderModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "FloatLogSliderView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "FloatProgressModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ProgressView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": "",
+        "enum": ["success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the progess bar.",
+        "name": "bar_style",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": 100.0,
+        "help": "Max value",
+        "name": "max",
+        "type": "float"
+      },
+      {
+        "default": 0.0,
+        "help": "Min value",
+        "name": "min",
+        "type": "float"
+      },
+      {
+        "default": "horizontal",
+        "enum": ["horizontal", "vertical"],
+        "help": "Vertical or horizontal.",
+        "name": "orientation",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "style",
+        "type": "reference",
+        "widget": "ProgressStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": 0.0,
+        "help": "Float value",
+        "name": "value",
+        "type": "float"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "FloatProgressModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ProgressView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "FloatRangeSliderModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "FloatRangeSliderView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "Update the value of the widget as the user is sliding the slider.",
+        "name": "continuous_update",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": 100.0,
+        "help": "Max value",
+        "name": "max",
+        "type": "float"
+      },
+      {
+        "default": 0.0,
+        "help": "Min value",
+        "name": "min",
+        "type": "float"
+      },
+      {
+        "default": "horizontal",
+        "enum": ["horizontal", "vertical"],
+        "help": "Vertical or horizontal.",
+        "name": "orientation",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "Display the current value of the slider next to it.",
+        "name": "readout",
+        "type": "bool"
+      },
+      {
+        "default": ".2f",
+        "help": "Format for the readout",
+        "name": "readout_format",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": 0.1,
+        "help": "Minimum step to increment the value",
+        "name": "step",
+        "type": "float"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "style",
+        "type": "reference",
+        "widget": "SliderStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": [0.0, 1.0],
+        "help": "Tuple of (lower, upper) bounds",
+        "name": "value",
+        "type": "array"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "FloatRangeSliderModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "FloatRangeSliderView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "FloatSliderModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "FloatSliderView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "Update the value of the widget as the user is holding the slider.",
+        "name": "continuous_update",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": 100.0,
+        "help": "Max value",
+        "name": "max",
+        "type": "float"
+      },
+      {
+        "default": 0.0,
+        "help": "Min value",
+        "name": "min",
+        "type": "float"
+      },
+      {
+        "default": "horizontal",
+        "enum": ["horizontal", "vertical"],
+        "help": "Vertical or horizontal.",
+        "name": "orientation",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "Display the current value of the slider next to it.",
+        "name": "readout",
+        "type": "bool"
+      },
+      {
+        "default": ".2f",
+        "help": "Format for the readout",
+        "name": "readout_format",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": 0.1,
+        "help": "Minimum step to increment the value",
+        "name": "step",
+        "type": "float"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "style",
+        "type": "reference",
+        "widget": "SliderStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": 0.0,
+        "help": "Float value",
+        "name": "value",
+        "type": "float"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "FloatSliderModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "FloatSliderView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "FloatTextModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "FloatTextView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.",
+        "name": "continuous_update",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Minimum step to increment the value",
+        "name": "step",
+        "type": "float"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": 0.0,
+        "help": "Float value",
+        "name": "value",
+        "type": "float"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "FloatTextModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "FloatTextView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "GridBoxModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "GridBoxView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "enum": ["success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the box.",
+        "name": "box_style",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "List of widget children",
+        "items": {
+          "type": "reference",
+          "widget": "Widget"
+        },
+        "name": "children",
+        "type": "array"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "GridBoxModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "GridBoxView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "HBoxModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "HBoxView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "enum": ["success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the box.",
+        "name": "box_style",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "List of widget children",
+        "items": {
+          "type": "reference",
+          "widget": "Widget"
+        },
+        "name": "children",
+        "type": "array"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "HBoxModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "HBoxView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "HTMLMathModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "HTMLMathView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "\u200b",
+        "help": "Placeholder text to display when nothing has been typed",
+        "name": "placeholder",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "String value",
+        "name": "value",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "HTMLMathModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "HTMLMathView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "HTMLModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "HTMLView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "\u200b",
+        "help": "Placeholder text to display when nothing has been typed",
+        "name": "placeholder",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "String value",
+        "name": "value",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "HTMLModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "HTMLView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ImageModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ImageView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "png",
+        "help": "The format of the image.",
+        "name": "format",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Height of the image in pixels. Use layout.height for styling the widget.",
+        "name": "height",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": "b''",
+        "help": "The media data as a memory view of bytes.",
+        "name": "value",
+        "type": "bytes"
+      },
+      {
+        "default": "",
+        "help": "Width of the image in pixels. Use layout.width for styling the widget.",
+        "name": "width",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ImageModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ImageView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "IntProgressModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ProgressView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "enum": ["success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the progess bar.",
+        "name": "bar_style",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": 100,
+        "help": "Max value",
+        "name": "max",
+        "type": "int"
+      },
+      {
+        "default": 0,
+        "help": "Min value",
+        "name": "min",
+        "type": "int"
+      },
+      {
+        "default": "horizontal",
+        "enum": ["horizontal", "vertical"],
+        "help": "Vertical or horizontal.",
+        "name": "orientation",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "style",
+        "type": "reference",
+        "widget": "ProgressStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": 0,
+        "help": "Int value",
+        "name": "value",
+        "type": "int"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "IntProgressModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ProgressView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "IntRangeSliderModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "IntRangeSliderView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "Update the value of the widget as the user is sliding the slider.",
+        "name": "continuous_update",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": 100,
+        "help": "Max value",
+        "name": "max",
+        "type": "int"
+      },
+      {
+        "default": 0,
+        "help": "Min value",
+        "name": "min",
+        "type": "int"
+      },
+      {
+        "default": "horizontal",
+        "enum": ["horizontal", "vertical"],
+        "help": "Vertical or horizontal.",
+        "name": "orientation",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "Display the current value of the slider next to it.",
+        "name": "readout",
+        "type": "bool"
+      },
+      {
+        "default": "d",
+        "help": "Format for the readout",
+        "name": "readout_format",
+        "type": "string"
+      },
+      {
+        "default": 1,
+        "help": "Minimum step that the value can take",
+        "name": "step",
+        "type": "int"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Slider style customizations.",
+        "name": "style",
+        "type": "reference",
+        "widget": "SliderStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": [0, 1],
+        "help": "Tuple of (lower, upper) bounds",
+        "name": "value",
+        "type": "array"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "IntRangeSliderModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "IntRangeSliderView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "IntSliderModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "IntSliderView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "Update the value of the widget as the user is holding the slider.",
+        "name": "continuous_update",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": 100,
+        "help": "Max value",
+        "name": "max",
+        "type": "int"
+      },
+      {
+        "default": 0,
+        "help": "Min value",
+        "name": "min",
+        "type": "int"
+      },
+      {
+        "default": "horizontal",
+        "enum": ["horizontal", "vertical"],
+        "help": "Vertical or horizontal.",
+        "name": "orientation",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "Display the current value of the slider next to it.",
+        "name": "readout",
+        "type": "bool"
+      },
+      {
+        "default": "d",
+        "help": "Format for the readout",
+        "name": "readout_format",
+        "type": "string"
+      },
+      {
+        "default": 1,
+        "help": "Minimum step to increment the value",
+        "name": "step",
+        "type": "int"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "style",
+        "type": "reference",
+        "widget": "SliderStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": 0,
+        "help": "Int value",
+        "name": "value",
+        "type": "int"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "IntSliderModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "IntSliderView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "IntTextModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "IntTextView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.",
+        "name": "continuous_update",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": 1,
+        "help": "Minimum step to increment the value",
+        "name": "step",
+        "type": "int"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": 0,
+        "help": "Int value",
+        "name": "value",
+        "type": "int"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "IntTextModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "IntTextView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "LabelModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "LabelView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "\u200b",
+        "help": "Placeholder text to display when nothing has been typed",
+        "name": "placeholder",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "String value",
+        "name": "value",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "LabelModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "LabelView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "LinkModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Name of the view.",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "The source (widget, 'trait_name') pair",
+        "name": "source",
+        "type": "array"
+      },
+      {
+        "default": [],
+        "help": "The target (widget, 'trait_name') pair",
+        "name": "target",
+        "type": "array"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "LinkModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": null,
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "PasswordModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "PasswordView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.",
+        "name": "continuous_update",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "\u200b",
+        "help": "Placeholder text to display when nothing has been typed",
+        "name": "placeholder",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "String value",
+        "name": "value",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "PasswordModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "PasswordView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "PlayModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "PlayView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": 100,
+        "help": "The time between two animation steps (ms).",
+        "name": "interval",
+        "type": "int"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": 100,
+        "help": "Max value",
+        "name": "max",
+        "type": "int"
+      },
+      {
+        "default": 0,
+        "help": "Min value",
+        "name": "min",
+        "type": "int"
+      },
+      {
+        "default": false,
+        "help": "Whether the control is currently playing.",
+        "name": "playing",
+        "type": "bool"
+      },
+      {
+        "default": false,
+        "help": "Whether the control will repeat in a continous loop.",
+        "name": "repeat",
+        "type": "bool"
+      },
+      {
+        "default": true,
+        "help": "Show the repeat toggle button in the widget.",
+        "name": "show_repeat",
+        "type": "bool"
+      },
+      {
+        "default": 1,
+        "help": "Increment step",
+        "name": "step",
+        "type": "int"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": 0,
+        "help": "Int value",
+        "name": "value",
+        "type": "int"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "PlayModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "PlayView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ProgressStyleModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/base",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "StyleView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Color of the progress bar.",
+        "name": "bar_color",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Width of the description to the side of the control.",
+        "name": "description_width",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ProgressStyleModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/base",
+      "name": "StyleView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "RadioButtonsModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "The labels for the options.",
+        "items": {
+          "type": "string"
+        },
+        "name": "_options_labels",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "RadioButtonsView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Selected index",
+        "name": "index",
+        "type": "int"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "RadioButtonsModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "RadioButtonsView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "SelectModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "The labels for the options.",
+        "items": {
+          "type": "string"
+        },
+        "name": "_options_labels",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "SelectView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Selected index",
+        "name": "index",
+        "type": "int"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": 5,
+        "help": "The number of rows to display.",
+        "name": "rows",
+        "type": "int"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "SelectModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "SelectView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "SelectMultipleModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "The labels for the options.",
+        "items": {
+          "type": "string"
+        },
+        "name": "_options_labels",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "SelectMultipleView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "Selected indices",
+        "items": {
+          "type": "int"
+        },
+        "name": "index",
+        "type": "array"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": 5,
+        "help": "The number of rows to display.",
+        "name": "rows",
+        "type": "int"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "SelectMultipleModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "SelectMultipleView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "SelectionRangeSliderModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "The labels for the options.",
+        "items": {
+          "type": "string"
+        },
+        "name": "_options_labels",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "SelectionRangeSliderView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "Update the value of the widget as the user is holding the slider.",
+        "name": "continuous_update",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": [0, 0],
+        "help": "Min and max selected indices",
+        "name": "index",
+        "type": "array"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "horizontal",
+        "enum": ["horizontal", "vertical"],
+        "help": "Vertical or horizontal.",
+        "name": "orientation",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "Display the current selected label next to the slider",
+        "name": "readout",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "SelectionRangeSliderModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "SelectionRangeSliderView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "SelectionSliderModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "The labels for the options.",
+        "items": {
+          "type": "string"
+        },
+        "name": "_options_labels",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "SelectionSliderView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "Update the value of the widget as the user is holding the slider.",
+        "name": "continuous_update",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": 0,
+        "help": "Selected index",
+        "name": "index",
+        "type": "int"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "horizontal",
+        "enum": ["horizontal", "vertical"],
+        "help": "Vertical or horizontal.",
+        "name": "orientation",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "Display the current selected label next to the slider",
+        "name": "readout",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "SelectionSliderModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "SelectionSliderView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "SliderStyleModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/base",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "StyleView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Width of the description to the side of the control.",
+        "name": "description_width",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Color of the slider handle.",
+        "name": "handle_color",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "SliderStyleModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/base",
+      "name": "StyleView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "StackedModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "StackedView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "enum": ["success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the box.",
+        "name": "box_style",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "List of widget children",
+        "items": {
+          "type": "reference",
+          "widget": "Widget"
+        },
+        "name": "children",
+        "type": "array"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.",
+        "name": "selected_index",
+        "type": "int"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "Titles of the pages",
+        "items": {
+          "type": "string"
+        },
+        "name": "titles",
+        "type": "array"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "StackedModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "StackedView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "TabModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "TabView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "enum": ["success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the box.",
+        "name": "box_style",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "List of widget children",
+        "items": {
+          "type": "reference",
+          "widget": "Widget"
+        },
+        "name": "children",
+        "type": "array"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The index of the selected page. This is either an integer selecting a particular sub-widget, or None to have no widgets selected.",
+        "name": "selected_index",
+        "type": "int"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "Titles of the pages",
+        "items": {
+          "type": "string"
+        },
+        "name": "titles",
+        "type": "array"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "TabModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "TabView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "TextModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "TextView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.",
+        "name": "continuous_update",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "\u200b",
+        "help": "Placeholder text to display when nothing has been typed",
+        "name": "placeholder",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "String value",
+        "name": "value",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "TextModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "TextView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "TextareaModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "TextareaView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.",
+        "name": "continuous_update",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "\u200b",
+        "help": "Placeholder text to display when nothing has been typed",
+        "name": "placeholder",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The number of rows to display.",
+        "name": "rows",
+        "type": "int"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "String value",
+        "name": "value",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "TextareaModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "TextareaView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ToggleButtonModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ToggleButtonView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "enum": ["primary", "success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the button.",
+        "name": "button_style",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes.",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "help": "Font-awesome icon.",
+        "name": "icon",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Bool value",
+        "name": "value",
+        "type": "bool"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ToggleButtonModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ToggleButtonView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ToggleButtonsModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "The labels for the options.",
+        "items": {
+          "type": "string"
+        },
+        "name": "_options_labels",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ToggleButtonsView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": "",
+        "enum": ["primary", "success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the buttons.",
+        "name": "button_style",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "Icons names for each button (FontAwesome names without the fa- prefix).",
+        "items": {
+          "type": "string"
+        },
+        "name": "icons",
+        "type": "array"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Selected index",
+        "name": "index",
+        "type": "int"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "style",
+        "type": "reference",
+        "widget": "ToggleButtonsStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "Tooltips for each button.",
+        "items": {
+          "type": "string"
+        },
+        "name": "tooltips",
+        "type": "array"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ToggleButtonsModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ToggleButtonsView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ToggleButtonsStyleModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/base",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "StyleView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "The width of each button.",
+        "name": "button_width",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Width of the description to the side of the control.",
+        "name": "description_width",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Text font weight of each button.",
+        "name": "font_weight",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ToggleButtonsStyleModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/base",
+      "name": "StyleView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "VBoxModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "VBoxView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "enum": ["success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the box.",
+        "name": "box_style",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "List of widget children",
+        "items": {
+          "type": "reference",
+          "widget": "Widget"
+        },
+        "name": "children",
+        "type": "array"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "VBoxModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "VBoxView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ValidModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ValidView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes.",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "Invalid",
+        "help": "Message displayed when the value is False",
+        "name": "readout",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Bool value",
+        "name": "value",
+        "type": "bool"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ValidModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ValidView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "VideoModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "VideoView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "When true, the video starts when it's displayed",
+        "name": "autoplay",
+        "type": "bool"
+      },
+      {
+        "default": true,
+        "help": "Specifies that video controls should be displayed (such as a play/pause button etc)",
+        "name": "controls",
+        "type": "bool"
+      },
+      {
+        "default": "mp4",
+        "help": "The format of the video.",
+        "name": "format",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Height of the video in pixels.",
+        "name": "height",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": true,
+        "help": "When true, the video will start from the beginning after finishing",
+        "name": "loop",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": "b''",
+        "help": "The media data as a memory view of bytes.",
+        "name": "value",
+        "type": "bytes"
+      },
+      {
+        "default": "",
+        "help": "Width of the video in pixels.",
+        "name": "width",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "VideoModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "VideoView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/output",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "1.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "OutputModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/output",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "1.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "OutputView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "",
+        "help": "Parent message id of messages to capture",
+        "name": "msg_id",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "The output messages synced from the frontend.",
+        "items": {
+          "type": "object"
+        },
+        "name": "outputs",
+        "type": "array"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/output",
+      "name": "OutputModel",
+      "version": "1.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/output",
+      "name": "OutputView",
+      "version": "1.0.0"
+    }
+  }
+]
