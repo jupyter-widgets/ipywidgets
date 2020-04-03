@@ -186,9 +186,6 @@ Attribute        | Type             | Default          | Help
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
 ### ButtonStyleModel (@jupyter-widgets/controls, 2.0.0); ButtonStyleView (@jupyter-widgets/controls, 2.0.0)
-=======
-### ButtonStyleModel (@jupyter-widgets/controls, 2.0.0); StyleView (@jupyter-widgets/base, 2.0.0)
->>>>>>> master
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
