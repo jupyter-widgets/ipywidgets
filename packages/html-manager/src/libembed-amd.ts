@@ -10,8 +10,7 @@ let onlyCDN = false;
 const scripts = document.getElementsByTagName('script');
 Array.prototype.forEach.call(scripts, (script: HTMLScriptElement) => {
   cdn = script.getAttribute('data-jupyter-widgets-cdn') || cdn;
-  onlyCDN =
-    onlyCDN || script.hasAttribute('data-jupyter-widgets-cdn-only');
+  onlyCDN = onlyCDN || script.hasAttribute('data-jupyter-widgets-cdn-only');
 });
 
 /**

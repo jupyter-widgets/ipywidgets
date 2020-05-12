@@ -17,6 +17,7 @@ export * from './widget_float';
 export * from './widget_controller';
 export * from './widget_selection';
 export * from './widget_selectioncontainer';
+export * from './widget_tagsinput';
 export * from './widget_string';
 export * from './widget_description';
 export * from './widget_upload';
