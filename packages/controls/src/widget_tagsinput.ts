@@ -26,7 +26,7 @@ function clamp(value: number, min: number, max: number): number {
 /**
  * Remove children from an HTMLElement
  */
-function removeChildren(el: HTMLElement) {
+function removeChildren(el: HTMLElement): void {
   while (el.firstChild) {
     el.removeChild(el.firstChild);
   }
@@ -92,7 +92,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
   /**
    * Called when view is rendered.
    */
-  render() {
+  render(): void {
     super.render();
 
     this.el.classList.add('jupyter-widgets');
@@ -120,11 +120,11 @@ abstract class TagsInputBaseView extends DOMWidgetView {
     this.taginputWrapper.appendChild(this.autocompleteList);
 
     this.el.onclick = this.focus.bind(this);
-    this.el.ondrop = (event: DragEvent) => {
+    this.el.ondrop = (event: DragEvent): void => {
       // Put the tag at the end of the list if there is no currently hovered tag
       const index =
         this.hoveredTagIndex == null ? this.tags.length : this.hoveredTagIndex;
-      this.ondrop(event, index);
+      return this.ondrop(event, index);
     };
     this.el.ondragover = this.ondragover.bind(this);
 
@@ -148,7 +148,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
    * Called when the model is changed. The model may have been
    * changed by another view or by a state update from the back-end.
    */
-  update() {
+  update(): void {
     // Prevent hiding the input element and clearing the selection when updating everything
     this.preventLoosingFocus = true;
 
@@ -168,7 +168,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
       // Drag and drop
       tag.draggable = true;
       tag.ondragstart = ((index: number, value: any) => {
-        return (event: DragEvent) => {
+        return (event: DragEvent): void => {
           this.ondragstart(event, index, value, this.model.model_id);
         };
       })(index, value[index]);
@@ -202,7 +202,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
   /**
    * Update the auto-completion list
    */
-  updateAutocomplete() {
+  updateAutocomplete(): void {
     removeChildren(this.autocompleteList);
 
     const allowedTags = this.model.get('allowed_tags');
@@ -217,7 +217,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
   /**
    * Update the tags, called when the selection has changed and we need to update the tags CSS
    */
-  updateTags() {
+  updateTags(): void {
     const value: Array<any> = this.model.get('value');
 
     for (const idx in this.tags) {
@@ -235,7 +235,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
   /**
    * Handle a new value is added from the input element
    */
-  handleValueAdded(event: Event) {
+  handleValueAdded(event: Event): void {
     const newTagValue = trim(this.taginput.value);
     const tagIndex = this.inputIndex;
 
@@ -296,7 +296,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
   /**
    * Resize the input element
    */
-  resizeInput() {
+  resizeInput(): void {
     const size = this.taginput.value.length + 1;
     this.taginput.setAttribute('size', String(size));
   }
@@ -304,7 +304,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
   /**
    * Handle key events on the input element
    */
-  handleKeyEvent(event: KeyboardEvent) {
+  handleKeyEvent(event: KeyboardEvent): void {
     const valueLength = this.model.get('value').length;
 
     // Do nothing if the user is typing something
@@ -376,7 +376,12 @@ abstract class TagsInputBaseView extends DOMWidgetView {
   /**
    * Function that gets called when a tag with a given `value` is being dragged.
    */
-  ondragstart(event: DragEvent, index: number, tagValue: any, origin: string) {
+  ondragstart(
+    event: DragEvent,
+    index: number,
+    tagValue: any,
+    origin: string
+  ): void {
     if (event.dataTransfer == null) {
       return;
     }
@@ -388,7 +393,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
   /**
    * Function that gets called when a tag has been dragged on the tag at the `index` position.
    */
-  ondrop(event: DragEvent, index: number) {
+  ondrop(event: DragEvent, index: number): void {
     if (event.dataTransfer == null) {
       return;
     }
@@ -432,12 +437,12 @@ abstract class TagsInputBaseView extends DOMWidgetView {
     this.addTag(index, draggedTagValue);
   }
 
-  ondragover(event: DragEvent) {
+  ondragover(event: DragEvent): void {
     // This is needed for the drag and drop to work
     event.preventDefault();
   }
 
-  ondragenter(event: DragEvent, index: number) {
+  ondragenter(event: DragEvent, index: number): void {
     if (this.hoveredTag != null && this.hoveredTag != this.tags[index]) {
       this.hoveredTag.style.marginLeft = '1px';
     }
@@ -447,7 +452,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
     this.hoveredTag.style.marginLeft = '30px';
   }
 
-  ondragend() {
+  ondragend(): void {
     if (this.hoveredTag != null) {
       this.hoveredTag.style.marginLeft = '1px';
     }
@@ -458,7 +463,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
   /**
    * Select tags from `start` to `start + dx` not included.
    */
-  select(start: number, dx: number) {
+  select(start: number, dx: number): void {
     const valueLength = this.model.get('value').length;
 
     if (!this.selection) {
@@ -471,7 +476,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
   /**
    * Remove all the selected tags.
    */
-  removeSelectedTags() {
+  removeSelectedTags(): void {
     const value: Array<string> = [...this.model.get('value')];
     const valueLength = value.length;
 
@@ -494,7 +499,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
   /**
    * Remove a tag given its index in the list
    */
-  removeTag(tagIndex: number) {
+  removeTag(tagIndex: number): void {
     const value: Array<string> = [...this.model.get('value')];
 
     value.splice(tagIndex, 1);
@@ -511,7 +516,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
   /**
    * Focus on the input element
    */
-  focus() {
+  focus(): void {
     this.taginputWrapper.style.display = 'inline-block';
     this.taginput.focus();
   }
@@ -519,7 +524,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
   /**
    * Lose focus on the input element
    */
-  loseFocus() {
+  loseFocus(): void {
     if (this.preventLoosingFocus) {
       return;
     }
@@ -539,7 +544,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
    * #### Notes
    * This is a read-only attribute.
    */
-  get tagName() {
+  get tagName(): string {
     // We can't make this an attribute with a default value
     // since it would be set after it is needed in the
     // constructor.
@@ -624,7 +629,7 @@ export class TagsInputView extends TagsInputBaseView {
   /**
    * Returns the text that should be displayed in the tag element
    */
-  getTagText(value: string) {
+  getTagText(value: string): string {
     return value;
   }
 
@@ -753,7 +758,7 @@ abstract class NumbersInputModel extends TagsInputModel {
 }
 
 abstract class NumbersInputView extends TagsInputView {
-  render() {
+  render(): void {
     // Initialize text formatter
     this.model.on('change:format', () => {
       this.formatter = d3Format.format(this.model.get('format'));
@@ -767,7 +772,7 @@ abstract class NumbersInputView extends TagsInputView {
   /**
    * Returns the text that should be displayed in the tag element
    */
-  getTagText(value: string) {
+  getTagText(value: string): string {
     return this.formatter(this.parseNumber(value));
   }
 
