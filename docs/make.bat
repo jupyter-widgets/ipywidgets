@@ -26,6 +26,9 @@ if "%1" == "help" (
 if "%1" == "clean" (
 	for /d %%i in (%BUILDDIR%\*) do rmdir /q /s %%i
 	del /q /s %BUILDDIR%\*
+       REM rm -rf ./source/notebooks
+	for /d %%i in (.\source\notebooks\*) do rmdir /q /s %%i
+	del /q /s .\source\notebooks\*
 	goto end
 )
 
@@ -55,6 +58,11 @@ if errorlevel 9009 (
 
 
 if "%1" == "html" (
+       REM rm -rf ./source/notebooks
+	for /d %%i in (.\source\notebooks\*) do rmdir /q /s %%i
+	del /q /s .\source\notebooks\*
+       mkdir source\notebooks
+	copy ..\share\jupyter\notebook_templates\ipywidgets\*  .\source\notebooks\
 	%SPHINXBUILD% -b html %ALLSPHINXOPTS% %BUILDDIR%/html
 	if errorlevel 1 exit /b 1
 	echo.
