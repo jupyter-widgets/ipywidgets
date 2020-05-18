@@ -75,7 +75,9 @@ export class DescriptionView extends DOMWidgetView {
       this.label.style.display = 'none';
     } else {
       if (this.model.get('description_html')) {
-        this.label.innerHTML = description;
+        this.label.innerHTML = this.model.widget_manager.description_sanitize(
+          description
+        );
       } else {
         this.label.textContent = description;
       }

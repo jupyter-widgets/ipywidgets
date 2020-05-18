@@ -11,9 +11,38 @@ import {
   RenderMimeRegistry,
   standardRendererFactories
 } from '@jupyterlab/rendermime';
+import DOMPurify from 'dompurify';
 
 import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers';
 import { WidgetModel, WidgetView, DOMWidgetView } from '@jupyter-widgets/base';
+
+/**
+ * Sanitize HTML-formatted descriptions.
+ */
+export function default_description_sanitize(html: string): string {
+  let config = {
+    ALLOWED_TAGS: [
+      'a',
+      'abbr',
+      'b',
+      'blockquote',
+      'code',
+      'em',
+      'i',
+      'img',
+      'li',
+      'ol',
+      'strong',
+      'style',
+      'ul'
+    ],
+    ALLOWED_ATTRIBUTES: ['href', 'media', 'src', 'title']
+  };
+  return DOMPurify.sanitize(
+    DOMPurify(html, { FORBID_TAGS: ['script'], KEEP_CONTENT: false }),
+    config
+  );
+}
 
 export class HTMLManager extends ManagerBase {
   constructor(options?: {
@@ -111,6 +140,13 @@ export class HTMLManager extends ManagerBase {
    * Defines how outputs in the output widget should be rendered.
    */
   renderMime: RenderMimeRegistry;
+
+  /**
+   * How to sanitize HTML-formatted descriptions.
+   */
+  protected description_sanitize(html: string): string {
+    return default_description_sanitize(html);
+  }
 
   /**
    * A loader for a given module name and module version, and returns a promise to a module
