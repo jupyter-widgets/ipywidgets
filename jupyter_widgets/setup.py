@@ -69,7 +69,7 @@ npm_path = os.pathsep.join([
 def get_data_files():
     with open('package.json') as f:
         package_json = json.load(f)
-    tgz = '%s-%s.tgz' % (package_json['name'], package_json['version'])
+    tgz = '%s-%s.tgz' % ('jupyter-widgets-jupyter_widgets', package_json['version'])
 
     return [
         ('share/jupyter/nbextensions/jupyter-js-widgets', [
@@ -77,7 +77,7 @@ def get_data_files():
             'jupyter_widgets/static/extension.js.map'
         ]),
         ('etc/jupyter/nbconfig/notebook.d', ['jupyter_widgets.json']),
-        ('share/jupyter/lab/extensions', ['js/' + tgz]),
+        ('share/jupyter/lab/extensions', [tgz]),
     ]
 
 def mtime(path):
