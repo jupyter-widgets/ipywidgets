@@ -173,13 +173,13 @@ abstract class TagsInputBaseView extends DOMWidgetView {
         };
       })(index, value[index]);
       tag.ondrop = ((index: number) => {
-        return (event: DragEvent) => {
+        return (event: DragEvent): void => {
           this.ondrop(event, index);
         };
       })(index);
       tag.ondragover = this.ondragover.bind(this);
       tag.ondragenter = ((index: number) => {
-        return (event: DragEvent) => {
+        return (event: DragEvent): void => {
           this.ondragenter(event, index);
         };
       })(index);
@@ -617,7 +617,7 @@ export class TagsInputView extends TagsInputBaseView {
     tag.appendChild(i);
 
     i.onmousedown = ((index: number) => {
-      return () => {
+      return (): void => {
         this.removeTag(index);
         this.loseFocus();
       };
@@ -700,7 +700,7 @@ export class ColorsInputView extends TagsInputBaseView {
     tag.appendChild(i);
 
     i.onmousedown = ((index: number) => {
-      return () => {
+      return (): void => {
         this.removeTag(index);
         this.loseFocus();
       };
