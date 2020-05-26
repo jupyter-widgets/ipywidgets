@@ -212,6 +212,14 @@ setup_args = dict(
         'sdist': js_prerelease(sdist, strict=True),
         'jsdeps': NPM,
     },
+    extras_require  = {
+        'jupyterlab': [
+            'jupyterlab<=2'
+        ],
+        'notebook': [
+            'notebook>=4.4'
+        ]
+    },
     data_files      = get_data_files(),
     zip_safe=False,
     include_package_data = True,
