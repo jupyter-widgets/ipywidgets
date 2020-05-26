@@ -4,15 +4,15 @@
 # Distributed under the terms of the Modified BSD License.
 
 # the name of the package
-name = 'jupyter_widgets_frontend'
+name = 'jupyter_widgets'
 
 LONG_DESCRIPTION = """
-.. image:: https://img.shields.io/pypi/v/jupyter_widgets_frontend.svg
-   :target: https://pypi.python.org/pypi/jupyter_widgets_frontend/
+.. image:: https://img.shields.io/pypi/v/jupyter_widgets.svg
+   :target: https://pypi.python.org/pypi/jupyter_widgets/
    :alt: Version Number
 
-.. image:: https://img.shields.io/pypi/dm/jupyter_widgets_frontend.svg
-   :target: https://pypi.python.org/pypi/jupyter_widgets_frontend/
+.. image:: https://img.shields.io/pypi/dm/jupyter_widgets.svg
+   :target: https://pypi.python.org/pypi/jupyter_widgets/
    :alt: Number of PyPI downloads
 
 Interactive HTML Widgets
@@ -73,10 +73,10 @@ def get_data_files():
 
     return [
         ('share/jupyter/nbextensions/jupyter-js-widgets', [
-            'jupyter_widgets_frontend/static/extension.js',
-            'jupyter_widgets_frontend/static/extension.js.map'
+            'jupyter_widgets/static/extension.js',
+            'jupyter_widgets/static/extension.js.map'
         ]),
-        ('etc/jupyter/nbconfig/notebook.d', ['jupyter_widgets_frontend.json']),
+        ('etc/jupyter/nbconfig/notebook.d', ['jupyter_widgets.json']),
         ('share/jupyter/lab/extensions', ['js/' + tgz]),
     ]
 
@@ -127,7 +127,7 @@ class NPM(Command):
     node_modules = pjoin(repo_root, 'node_modules')
 
     targets = [
-        pjoin(repo_root, 'jupyter_widgets_frontend', 'static', 'extension.js')
+        pjoin(repo_root, 'jupyter_widgets', 'static', 'extension.js')
     ]
 
     def initialize_options(self):
@@ -165,7 +165,7 @@ class NPM(Command):
             if not os.path.exists(t):
                 msg = "Missing file: %s" % t
                 if not has_npm:
-                    msg += '\nnpm is required to build a development version of jupyter_widgets_frontend'
+                    msg += '\nnpm is required to build a development version of jupyter_widgets'
                 raise ValueError(msg)
 
 
@@ -185,9 +185,9 @@ setup_args = dict(
     name            = name,
     version         = version_ns['__version__'],
     scripts         = [],
-    packages        = ['jupyter_widgets_frontend'],
+    packages        = ['jupyter_widgets'],
     package_data    = {
-                        'jupyter_widgets_frontend': ['jupyter_widgets_frontend/static/extension.js'],
+                        'jupyter_widgets': ['jupyter_widgets/static/extension.js'],
                     },
     description     = "IPython HTML widgets for Jupyter",
     long_description = LONG_DESCRIPTION,
