@@ -37,15 +37,15 @@ echo -n "Installing and building all yarn packages"
 yarn install
 yarn run build
 
-echo -n "jupyter_widgets_frontend"
-cd jupyter_widgets_frontend
+echo -n "jupyter_widgets"
+cd jupyter_widgets
 pip install -v -e .
 if [[ "$OSTYPE" == "msys" ]]; then
-    jupyter nbextension install --overwrite --py $nbExtFlags jupyter_widgets_frontend
+    jupyter nbextension install --overwrite --py $nbExtFlags jupyter_widgets
 else
-    jupyter nbextension install --overwrite --py --symlink $nbExtFlags jupyter_widgets_frontend
+    jupyter nbextension install --overwrite --py --symlink $nbExtFlags jupyter_widgets
 fi
-jupyter nbextension enable --py $nbExtFlags jupyter_widgets_frontend
+jupyter nbextension enable --py $nbExtFlags jupyter_widgets
 cd ..
 
 echo -n "ipywidgets"
