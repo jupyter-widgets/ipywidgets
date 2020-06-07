@@ -94,8 +94,29 @@
       {
         "allow_none": true,
         "default": null,
-        "help": "The border CSS attribute.",
-        "name": "border",
+        "help": "The border bottom CSS attribute.",
+        "name": "border_bottom",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The border left CSS attribute.",
+        "name": "border_left",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The border right CSS attribute.",
+        "name": "border_right",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "The border top CSS attribute.",
+        "name": "border_top",
         "type": "string"
       },
       {
@@ -3285,10 +3306,11 @@
         "type": "string"
       },
       {
-        "default": true,
-        "help": "",
-        "name": "allow_duplicates",
-        "type": "bool"
+        "default": "",
+        "enum": ["success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the box.",
+        "name": "box_style",
+        "type": "string"
       },
       {
         "default": [],
@@ -3424,103 +3446,6 @@
       },
       {
         "default": "GridBoxView",
-        "help": "",
-        "name": "_view_name",
-        "type": "string"
-      },
-      {
-        "default": "",
-        "enum": ["success", "info", "warning", "danger", ""],
-        "help": "Use a predefined styling for the box.",
-        "name": "box_style",
-        "type": "string"
-      },
-      {
-        "default": [],
-        "help": "List of widget children",
-        "items": {
-          "type": "reference",
-          "widget": "Widget"
-        },
-        "name": "children",
-        "type": "array"
-      },
-      {
-        "default": "reference to new instance",
-        "help": "",
-        "name": "layout",
-        "type": "reference",
-        "widget": "Layout"
-      },
-      {
-        "allow_none": true,
-        "default": null,
-        "help": "Is widget tabbable?",
-        "name": "tabbable",
-        "type": "bool"
-      },
-      {
-        "allow_none": true,
-        "default": null,
-        "help": "A tooltip caption.",
-        "name": "tooltip",
-        "type": "string"
-      }
-    ],
-    "model": {
-      "module": "@jupyter-widgets/controls",
-      "name": "GridBoxModel",
-      "version": "2.0.0"
-    },
-    "view": {
-      "module": "@jupyter-widgets/controls",
-      "name": "GridBoxView",
-      "version": "2.0.0"
-    }
-  },
-  {
-    "attributes": [
-      {
-        "default": [],
-        "help": "CSS classes applied to widget DOM element",
-        "items": {
-          "type": "string"
-        },
-        "name": "_dom_classes",
-        "type": "array"
-      },
-      {
-        "default": "@jupyter-widgets/controls",
-        "help": "",
-        "name": "_model_module",
-        "type": "string"
-      },
-      {
-        "default": "2.0.0",
-        "help": "",
-        "name": "_model_module_version",
-        "type": "string"
-      },
-      {
-        "default": "HBoxModel",
-        "help": "",
-        "name": "_model_name",
-        "type": "string"
-      },
-      {
-        "default": "@jupyter-widgets/controls",
-        "help": "",
-        "name": "_view_module",
-        "type": "string"
-      },
-      {
-        "default": "2.0.0",
-        "help": "",
-        "name": "_view_module_version",
-        "type": "string"
-      },
-      {
-        "default": "HBoxView",
         "help": "",
         "name": "_view_name",
         "type": "string"
