@@ -11,7 +11,7 @@ import {
   RenderMimeRegistry,
   standardRendererFactories
 } from '@jupyterlab/rendermime';
-import DOMPurify from 'dompurify';
+import sanitize from 'sanitize-html';
 
 import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers';
 import { WidgetModel, WidgetView, DOMWidgetView } from '@jupyter-widgets/base';
@@ -19,13 +19,12 @@ import { WidgetModel, WidgetView, DOMWidgetView } from '@jupyter-widgets/base';
 /**
  * Sanitize HTML-formatted descriptions.
  */
-export function default_description_sanitize(html: string): string {
-  let config = {
-    ALLOWED_TAGS: [
+export function default_inline_sanitize(html: string): string {
+  return sanitize(html, {
+    allowedTags: [
       'a',
       'abbr',
       'b',
-      'blockquote',
       'code',
       'em',
       'i',
@@ -36,12 +35,13 @@ export function default_description_sanitize(html: string): string {
       'style',
       'ul'
     ],
-    ALLOWED_ATTRIBUTES: ['href', 'media', 'src', 'title']
-  };
-  return DOMPurify.sanitize(
-    DOMPurify(html, { FORBID_TAGS: ['script'], KEEP_CONTENT: false }),
-    config
-  );
+    allowedAttributes: {
+      '*': ['aria-*', 'title'],
+      a: ['href'],
+      img: ['src'],
+      style: ['media']
+    }
+  });
 }
 
 export class HTMLManager extends ManagerBase {
@@ -144,8 +144,8 @@ export class HTMLManager extends ManagerBase {
   /**
    * How to sanitize HTML-formatted descriptions.
    */
-  protected description_sanitize(html: string): string {
-    return default_description_sanitize(html);
+  protected inline_sanitize(html: string): string {
+    return default_inline_sanitize(html);
   }
 
   /**

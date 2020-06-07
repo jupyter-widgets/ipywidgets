@@ -80,7 +80,7 @@ export class CheckboxView extends DescriptionView {
     }
     const description = this.model.get('description');
     if (this.model.get('description_html')) {
-      this.descriptionSpan.innerHTML = this.model.widget_manager.description_sanitize(
+      this.descriptionSpan.innerHTML = this.model.widget_manager.inline_sanitize(
         description
       );
     } else {
