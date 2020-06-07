@@ -79,7 +79,9 @@ export class DescriptionView extends DOMWidgetView {
           description
         );
       } else {
-        this.label.textContent = description;
+        this.label.textContent = this.model.widget_manager.plaintext_sanitize(
+          description
+        );
       }
       this.typeset(this.label);
       this.label.style.display = '';

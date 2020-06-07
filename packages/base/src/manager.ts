@@ -190,5 +190,7 @@ export interface IWidgetManager {
    * The default implementation just returns the original url.
    */
   resolveUrl(url: string): Promise<string>;
-  inline_sanitize(html: string): string;
+
+  plaintext_sanitize(s: string): string;
+  inline_sanitize(s: string): string;
 }

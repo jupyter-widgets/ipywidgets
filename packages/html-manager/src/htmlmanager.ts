@@ -17,9 +17,19 @@ import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers';
 import { WidgetModel, WidgetView, DOMWidgetView } from '@jupyter-widgets/base';
 
 /**
+ * Strip unwanted tags from plaintext descriptions.
+ */
+function default_plaintext_sanitize(s: string): string {
+  return sanitize(s, {
+    allowedTags: [],
+    allowedAttributes: {}
+  });
+}
+
+/**
  * Sanitize HTML-formatted descriptions.
  */
-export function default_inline_sanitize(html: string): string {
+function default_inline_sanitize(html: string): string {
   return sanitize(html, {
     allowedTags: [
       'a',
@@ -142,9 +152,16 @@ export class HTMLManager extends ManagerBase {
   renderMime: RenderMimeRegistry;
 
   /**
+   * How to sanitize plain text (ie strip unwanted tags).
+   */
+  plaintext_sanitize(html: string): string {
+    return default_plaintext_sanitize(html);
+  }
+
+  /**
    * How to sanitize HTML-formatted descriptions.
    */
-  public inline_sanitize(html: string): string {
+  inline_sanitize(html: string): string {
     return default_inline_sanitize(html);
   }
 
