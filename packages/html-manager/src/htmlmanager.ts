@@ -144,7 +144,7 @@ export class HTMLManager extends ManagerBase {
   /**
    * How to sanitize HTML-formatted descriptions.
    */
-  protected inline_sanitize(html: string): string {
+  public inline_sanitize(html: string): string {
     return default_inline_sanitize(html);
   }
 

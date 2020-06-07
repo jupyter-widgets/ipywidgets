@@ -462,6 +462,10 @@ export abstract class ManagerBase implements IWidgetManager {
     return Promise.resolve(url);
   }
 
+  inline_sanitize(s: string): string {
+    return s;
+  }
+
   /**
    * The comm target name to register
    */
