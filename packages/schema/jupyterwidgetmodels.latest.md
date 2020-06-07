@@ -256,6 +256,7 @@ Attribute        | Type             | Default          | Help
 `allow_duplicates` | boolean          | `true`           | 
 `allowed_tags`   | array            | `[]`             | 
 `description`    | string           | `''`             | Description of the control.
+`description_html` | boolean          | `false`          | Accept HTML in the description.
 `layout`         | reference to Layout widget | reference to new instance | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
@@ -589,6 +590,7 @@ Attribute        | Type             | Default          | Help
 `allow_duplicates` | boolean          | `true`           | 
 `allowed_tags`   | array            | `[]`             | 
 `description`    | string           | `''`             | Description of the control.
+`description_html` | boolean          | `false`          | Accept HTML in the description.
 `format`         | string           | `'.1f'`          | 
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | `null` or number (float) | `null`           | 
@@ -805,6 +807,7 @@ Attribute        | Type             | Default          | Help
 `allow_duplicates` | boolean          | `true`           | 
 `allowed_tags`   | array            | `[]`             | 
 `description`    | string           | `''`             | Description of the control.
+`description_html` | boolean          | `false`          | Accept HTML in the description.
 `format`         | string           | `'.3g'`          | 
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | `null` or number (integer) | `null`           | 
@@ -1088,6 +1091,7 @@ Attribute        | Type             | Default          | Help
 `allow_duplicates` | boolean          | `true`           | 
 `allowed_tags`   | array            | `[]`             | 
 `description`    | string           | `''`             | Description of the control.
+`description_html` | boolean          | `false`          | Accept HTML in the description.
 `layout`         | reference to Layout widget | reference to new instance | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
