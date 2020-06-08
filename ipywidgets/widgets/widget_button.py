@@ -35,7 +35,7 @@ class Button(DOMWidget, CoreWidget):
     Parameters
     ----------
     description: str
-       description displayed next to the button
+       description displayed on the button
     icon: str
        font-awesome icon names, without the 'fa-' prefix
     disabled: bool
