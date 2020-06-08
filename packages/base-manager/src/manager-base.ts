@@ -54,6 +54,7 @@ function default_inline_sanitize(html: string): string {
       'img',
       'li',
       'ol',
+      'span',
       'strong',
       'style',
       'ul'
