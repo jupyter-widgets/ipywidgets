@@ -63,7 +63,7 @@ function default_inline_sanitize(html: string): string {
       '*': ['aria-*', 'style', 'title'],
       a: ['href'],
       img: ['src'],
-      style: ['media']
+      style: ['media', 'type']
     }
   });
 }
