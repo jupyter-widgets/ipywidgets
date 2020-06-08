@@ -60,7 +60,7 @@ function default_inline_sanitize(html: string): string {
       'ul'
     ],
     allowedAttributes: {
-      '*': ['aria-*', 'title'],
+      '*': ['aria-*', 'style', 'title'],
       a: ['href'],
       img: ['src'],
       style: ['media']
