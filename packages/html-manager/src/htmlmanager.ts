@@ -11,48 +11,9 @@ import {
   RenderMimeRegistry,
   standardRendererFactories
 } from '@jupyterlab/rendermime';
-import sanitize from 'sanitize-html';
 
 import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers';
 import { WidgetModel, WidgetView, DOMWidgetView } from '@jupyter-widgets/base';
-
-/**
- * Strip unwanted tags from plaintext descriptions.
- */
-function default_plaintext_sanitize(s: string): string {
-  return sanitize(s, {
-    allowedTags: [],
-    allowedAttributes: {}
-  });
-}
-
-/**
- * Sanitize HTML-formatted descriptions.
- */
-function default_inline_sanitize(html: string): string {
-  return sanitize(html, {
-    allowedTags: [
-      'a',
-      'abbr',
-      'b',
-      'code',
-      'em',
-      'i',
-      'img',
-      'li',
-      'ol',
-      'strong',
-      'style',
-      'ul'
-    ],
-    allowedAttributes: {
-      '*': ['aria-*', 'title'],
-      a: ['href'],
-      img: ['src'],
-      style: ['media']
-    }
-  });
-}
 
 export class HTMLManager extends ManagerBase {
   constructor(options?: {
@@ -150,20 +111,6 @@ export class HTMLManager extends ManagerBase {
    * Defines how outputs in the output widget should be rendered.
    */
   renderMime: RenderMimeRegistry;
-
-  /**
-   * How to sanitize plain text (ie strip unwanted tags).
-   */
-  plaintext_sanitize(html: string): string {
-    return default_plaintext_sanitize(html);
-  }
-
-  /**
-   * How to sanitize HTML-formatted descriptions.
-   */
-  inline_sanitize(html: string): string {
-    return default_inline_sanitize(html);
-  }
 
   /**
    * A loader for a given module name and module version, and returns a promise to a module

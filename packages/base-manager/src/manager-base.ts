@@ -25,8 +25,47 @@ import {
 } from '@jupyter-widgets/base';
 
 import { base64ToBuffer, bufferToBase64, hexToBuffer } from './utils';
+import sanitize from 'sanitize-html';
 
 const PROTOCOL_MAJOR_VERSION = PROTOCOL_VERSION.split('.', 1)[0];
+
+/**
+ * Strip unwanted tags from plaintext descriptions.
+ */
+function default_plaintext_sanitize(s: string): string {
+  return sanitize(s, {
+    allowedTags: [],
+    allowedAttributes: {}
+  });
+}
+
+/**
+ * Sanitize HTML-formatted descriptions.
+ */
+function default_inline_sanitize(html: string): string {
+  return sanitize(html, {
+    allowedTags: [
+      'a',
+      'abbr',
+      'b',
+      'code',
+      'em',
+      'i',
+      'img',
+      'li',
+      'ol',
+      'strong',
+      'style',
+      'ul'
+    ],
+    allowedAttributes: {
+      '*': ['aria-*', 'title'],
+      a: ['href'],
+      img: ['src'],
+      style: ['media']
+    }
+  });
+}
 
 export interface IState extends PartialJSONObject {
   buffers?: IBase64Buffers[];
@@ -463,11 +502,11 @@ export abstract class ManagerBase implements IWidgetManager {
   }
 
   plaintext_sanitize(s: string): string {
-    return s;
+    return default_plaintext_sanitize(s);
   }
 
   inline_sanitize(s: string): string {
-    return s;
+    return default_inline_sanitize(s);
   }
 
   /**
