@@ -41,7 +41,7 @@ export class DescriptionModel extends DOMWidgetModel {
       _view_module_version: JUPYTER_CONTROLS_VERSION,
       _model_module_version: JUPYTER_CONTROLS_VERSION,
       description: '',
-      description_html: false
+      description_allow_html: false
     };
   }
 }
@@ -56,7 +56,7 @@ export class DescriptionView extends DOMWidgetView {
     this.listenTo(this.model, 'change:description', this.updateDescription);
     this.listenTo(
       this.model,
-      'change:description_html',
+      'change:description_allow_html',
       this.updateDescription
     );
     this.listenTo(this.model, 'change:tabbable', this.updateTabindex);
@@ -74,7 +74,7 @@ export class DescriptionView extends DOMWidgetView {
     if (description.length === 0) {
       this.label.style.display = 'none';
     } else {
-      if (this.model.get('description_html')) {
+      if (this.model.get('description_allow_html')) {
         this.label.innerHTML = this.model.widget_manager.inline_sanitize(
           description
         );

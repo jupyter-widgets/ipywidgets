@@ -669,7 +669,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -805,7 +805,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -1206,7 +1206,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -1329,7 +1329,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -1452,7 +1452,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -1563,7 +1563,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -2090,7 +2090,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -2330,7 +2330,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -2455,7 +2455,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -2599,7 +2599,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -2756,7 +2756,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -2886,7 +2886,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -3041,7 +3041,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -3196,7 +3196,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -3327,7 +3327,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -3556,7 +3556,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -3667,7 +3667,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -3889,7 +3889,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -4019,7 +4019,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -4173,7 +4173,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -4327,7 +4327,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -4456,7 +4456,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -4588,7 +4588,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -4768,7 +4768,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -4885,7 +4885,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -5110,7 +5110,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -5231,7 +5231,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -5358,7 +5358,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -5493,7 +5493,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -5632,7 +5632,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -6057,7 +6057,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -6175,7 +6175,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -6298,7 +6298,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -6429,7 +6429,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -6563,7 +6563,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {
@@ -6858,7 +6858,7 @@
       {
         "default": false,
         "help": "Accept HTML in the description.",
-        "name": "description_html",
+        "name": "description_allow_html",
         "type": "bool"
       },
       {

@@ -21,7 +21,7 @@ class DescriptionWidget(DOMWidget, CoreWidget):
     """Widget that has a description label to the side."""
     _model_name = Unicode('DescriptionModel').tag(sync=True)
     description = Unicode('', help="Description of the control.").tag(sync=True)
-    description_html = Bool(False, help="Accept HTML in the description.").tag(sync=True)
+    description_allow_html = Bool(False, help="Accept HTML in the description.").tag(sync=True)
     style = InstanceDict(DescriptionStyle, help="Styling customizations").tag(sync=True, **widget_serialization)
 
     def _repr_keys(self):
