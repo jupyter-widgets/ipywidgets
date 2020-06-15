@@ -43,7 +43,7 @@ function default_plaintext_sanitize(s: string): string {
  * Sanitize HTML-formatted descriptions.
  */
 function default_inline_sanitize(html: string): string {
-  var allowedTags = [
+  const allowedTags = [
     'a',
     'abbr',
     'b',
@@ -58,7 +58,7 @@ function default_inline_sanitize(html: string): string {
     'style',
     'ul'
   ];
-  var allowedAttributes = {
+  const allowedAttributes = {
     '*': ['aria-*', 'style', 'title'],
     a: ['href'],
     img: ['src'],
