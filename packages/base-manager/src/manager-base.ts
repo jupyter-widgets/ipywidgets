@@ -43,29 +43,47 @@ function default_plaintext_sanitize(s: string): string {
  * Sanitize HTML-formatted descriptions.
  */
 function default_inline_sanitize(html: string): string {
-  return sanitize(html, {
-    allowedTags: [
-      'a',
-      'abbr',
-      'b',
-      'code',
-      'em',
-      'i',
-      'img',
-      'li',
-      'ol',
-      'span',
-      'strong',
-      'style',
-      'ul'
-    ],
-    allowedAttributes: {
-      '*': ['aria-*', 'style', 'title'],
-      a: ['href'],
-      img: ['src'],
-      style: ['media', 'type']
-    }
-  });
+  var allowedTags = [
+    'a',
+    'abbr',
+    'b',
+    'code',
+    'em',
+    'i',
+    'img',
+    'li',
+    'ol',
+    'span',
+    'strong',
+    'style',
+    'ul'
+  ];
+  var allowedAttributes = {
+    '*': ['aria-*', 'style', 'title'],
+    a: ['href'],
+    img: ['src'],
+    style: ['media', 'type']
+  };
+  var res = '';
+  var m = html.match(/\$[^$]+\$/);
+  while (1) {
+    if (m == null) break;
+    var matched = String(m);
+    res +=
+      '$' +
+      sanitize(matched.substr(1, matched.length - 1), {
+        allowedTags: allowedTags,
+        allowedAttributes: allowedAttributes
+      }) +
+      '$';
+    var ind = m.index;
+    if (ind == undefined) break;
+    var len = matched.length;
+    if (len == undefined) break;
+    html = html.substr(ind + len);
+    m = html.match(/\$[^$]+\$/);
+  }
+  return res;
 }
 
 export interface IState extends PartialJSONObject {
