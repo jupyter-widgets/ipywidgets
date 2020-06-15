@@ -71,7 +71,7 @@ function default_inline_sanitize(html: string): string {
     var matched = String(m);
     res +=
       '$' +
-      sanitize(matched.substr(1, matched.length - 1), {
+      sanitize(matched.substr(1, matched.length - 2), {
         allowedTags: allowedTags,
         allowedAttributes: allowedAttributes
       }) +
