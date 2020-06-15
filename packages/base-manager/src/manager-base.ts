@@ -64,11 +64,10 @@ function default_inline_sanitize(html: string): string {
     img: ['src'],
     style: ['media', 'type']
   };
-  var res = '';
-  var m = html.match(/\$[^$]+\$/);
-  while (1) {
-    if (m == null) break;
-    var matched = String(m);
+  let res = '';
+  let m = html.match(/\$[^$]+\$/);
+  while (m != null) {
+    const matched = String(m);
     res +=
       '$' +
       sanitize(matched.substr(1, matched.length - 2), {
@@ -76,9 +75,9 @@ function default_inline_sanitize(html: string): string {
         allowedAttributes: allowedAttributes
       }) +
       '$';
-    var ind = m.index;
+    const ind = m.index;
     if (ind == undefined) break;
-    var len = matched.length;
+    const len = matched.length;
     if (len == undefined) break;
     html = html.substr(ind + len);
     m = html.match(/\$[^$]+\$/);
