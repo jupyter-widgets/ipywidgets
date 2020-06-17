@@ -21,12 +21,14 @@ document.addEventListener('DOMContentLoaded', function(event) {
   var state = require('./widget_state.json');
   var widgetarea = document.getElementsByClassName('widgetarea')[0];
   var manager = new WidgetManager(widgetarea);
-  manager.set_state(state).then(function(models) {
-    manager.display_model(
-      undefined,
-      models.find(function(element) {
-        return element.model_id == '8621699ecc804983a612f09b7dfe806b';
-      })
-    );
-  });
+  manager
+    .set_state(state)
+    .then(models =>
+      manager.create_view(
+        models.find(
+          element => element.model_id == '8621699ecc804983a612f09b7dfe806b'
+        )
+      )
+    )
+    .then(view => manager.display_view(view));
 });

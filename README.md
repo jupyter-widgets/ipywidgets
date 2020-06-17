@@ -1,13 +1,13 @@
 # ipywidgets: Interactive HTML Widgets
 
 [![Version](https://img.shields.io/pypi/v/ipywidgets.svg)](https://pypi.python.org/pypi/ipywidgets)
-[![Build Status](https://travis-ci.org/jupyter-widgets/ipywidgets.svg?branch=master)](https://travis-ci.org/jupyter-widgets/ipywidgets)
+![Build Status](https://img.shields.io/github/workflow/status/jupyter-widgets/ipywidgets/Test/master)
 [![Documentation Status](http://readthedocs.org/projects/ipywidgets/badge/?version=stable)](https://ipywidgets.readthedocs.io/)
 [![Join the chat at https://gitter.im/ipython/ipywidgets](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jupyter-widgets/Lobby)
 [![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/jupyter-widgets/ipywidgets/master?filepath=docs%2Fsource%2Fexamples)
 
 ipywidgets are [interactive HTML widgets](https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb)
-for Jupyter notebooks and the IPython kernel.
+for Jupyter notebooks, JupyterLab and the IPython kernel.
 
 Notebooks come alive when interactive widgets are used. Users gain control of
 their data and can visualize changes in the data.
@@ -78,7 +78,13 @@ jupyter nbextension enable --py --sys-prefix widgetsnbextension  # can be skippe
 conda install -c conda-forge ipywidgets
 ```
 
-See the [Installation](docs/source/user_install.md) section of the documentation for additional details.
+- Install the front-end extension to JupyterLab (note that this requires nodejs to be installed):
+
+   * For JupyterLab 1.0.x and 1.1.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@1.0`
+   * For JupyterLab 1.2.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@1.1`
+   * For JupyterLab 2.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@2.0`
+
+   See the [Installation](docs/source/user_install.md) section of the documentation for additional details.
 
 ### Installing from git
 

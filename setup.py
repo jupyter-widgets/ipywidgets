@@ -51,7 +51,6 @@ from distutils.command.build_py import build_py
 from distutils.command.sdist import sdist
 from os.path import join as pjoin
 
-
 pjoin = os.path.join
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -75,11 +74,11 @@ setup_args = dict(
         # Test data needs to be packaged until tests are moved out of module
         'ipywidgets.widgets.tests': ['data/jupyter-logo-transparent.png']
     },
-    description     = "IPython HTML widgets for Jupyter",
+    description     = "Jupyter interactive widgets",
     long_description = LONG_DESCRIPTION,
-    author          = 'IPython Development Team',
-    author_email    = 'ipython-dev@scipy.org',
-    url             = 'http://ipython.org',
+    author          = 'Jupyter Development Team',
+    author_email    = 'jupyter@googlegroups.com',
+    url             = 'http://jupyter.org',
     license         = 'BSD',
     platforms       = "Linux, Mac OS X, Windows",
     keywords        = ['Interactive', 'Interpreter', 'Shell', 'Web'],
@@ -117,7 +116,7 @@ install_requires = setuptools_args['install_requires'] = [
     # only if notebook 4.x is installed in this
     # interpreter, to allow ipywidgets to be
     # installed on bare kernels.
-    'widgetsnbextension~=3.5.0',
+    'widgetsnbextension~=4.0a0',
 ]
 
 extras_require = setuptools_args['extras_require'] = {

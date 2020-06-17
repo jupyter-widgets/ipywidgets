@@ -51,7 +51,7 @@ This HTML snippet is composed of multiple `<script>` tags embedded into an HTML 
 
 - Then there are a number of script tags, each with mime type
   `application/vnd.jupyter.widget-view+json`, corresponding to the views which
-  you want to display in the web page. These script tags must be in the body of
+  you want to display on the web page. These script tags must be in the body of
   the page, and are replaced with the rendered widgets. The JSON schema for the
   content of these script tags is found in the `@jupyter-widgets/schema` npm
   package.
@@ -73,7 +73,7 @@ the `application/vnd.jupyter.widget-state+json` format specified in the
 
 Embeddable code for the widgets can also be produced from Python. The
 `ipywidgets.embed` module provides several functions for embedding widgets
-into HTML documents programatically.
+into HTML documents programmatically.
 
 Use `embed_minimal_html` to create a simple, stand-alone HTML page:
 
@@ -124,6 +124,7 @@ html_template = """
     <!-- Load IPywidgets bundle for embedding. -->
     <script
       data-jupyter-widgets-cdn="https://cdn.jsdelivr.net/npm/"
+      data-jupyter-widgets-cdn-only
       src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" 
       crossorigin="anonymous">
     </script>
@@ -180,6 +181,9 @@ documents, you may want to use a templating engine like
 
 We also change the CDN from its default of unpkg to use jsdelivr by setting the
 `data-jupyter-widgets-cdn` attribute.
+
+What's more, we only load modules from the CDN by setting the
+`data-jupyter-widgets-cdn-only` attribute.
 
 In all embedding functions in `ipywidgets.embed`, the state of all widgets
 known to the widget manager is included by default. You can alternatively
@@ -269,6 +273,11 @@ which holds the webpack bundle for the bqplot library.
 While the default CDN is using https://unpkg.com it can be configured by
 setting the optional `data-jupyter-widgets-cdn` attribute for script tag which loads `embed-amd.js`,
 as shown in the example above.
+
+While the default strategy is loading modules from the same site, and then
+falling back to CDN. This can be configured by setting the optional
+`data-jupyter-widgets-cdn-only` attribute for script tag which loads `embed-amd.js`
+as shown in the example above too.
 
 The [widget-cookiecutter](https://github.com/jupyter/widget-cookiecutter)
 template project contains a template project for a custom widget library

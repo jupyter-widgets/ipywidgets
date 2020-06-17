@@ -2,7 +2,6 @@
 // Distributed under the terms of the Modified BSD License.
 
 import * as widgets from '@jupyter-widgets/base';
-import * as services from '@jupyterlab/services';
 import * as Backbone from 'backbone';
 
 import { ManagerBase } from '../../lib';
@@ -139,24 +138,10 @@ const testWidgets = {
   BinaryWidgetView
 };
 
-export class DummyManager extends ManagerBase<HTMLElement> {
+export class DummyManager extends ManagerBase {
   constructor() {
     super();
     this.el = window.document.createElement('div');
-  }
-
-  display_view(
-    msg: services.KernelMessage.IMessage,
-    view: Backbone.View<Backbone.Model>,
-    options: any
-  ): Promise<HTMLElement> {
-    // TODO: make this a spy
-    // TODO: return an html element
-    return Promise.resolve(view).then(view => {
-      this.el.appendChild(view.el);
-      view.on('remove', () => console.log('view removed', view));
-      return view.el;
-    });
   }
 
   protected loadClass(

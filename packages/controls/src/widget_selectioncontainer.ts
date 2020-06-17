@@ -32,7 +32,7 @@ export class SelectionContainerModel extends BoxModel {
       ...super.defaults(),
       _model_name: 'SelectionContainerModel',
       selected_index: null,
-      _titles: {}
+      _titles: []
     };
   }
 }
@@ -115,7 +115,7 @@ export class AccordionView extends DOMWidgetView {
     this.listenTo(this.model, 'change:selected_index', () =>
       this.update_selected_index()
     );
-    this.listenTo(this.model, 'change:_titles', () => this.update_titles());
+    this.listenTo(this.model, 'change:titles', () => this.update_titles());
   }
 
   /**
@@ -158,7 +158,7 @@ export class AccordionView extends DOMWidgetView {
    */
   update_titles(): void {
     const collapsed = this.pWidget.collapseWidgets;
-    const titles = this.model.get('_titles');
+    const titles = this.model.get('titles');
     for (let i = 0; i < collapsed.length; i++) {
       if (titles[i] !== void 0) {
         collapsed[i].widget.title.label = titles[i];
@@ -188,7 +188,7 @@ export class AccordionView extends DOMWidgetView {
     // Placeholder widget to keep our position in the tab panel while we create the view.
     const accordion = this.pWidget;
     const placeholder = new Widget();
-    placeholder.title.label = this.model.get('_titles')[index] || '';
+    placeholder.title.label = this.model.get('titles')[index] || '';
     accordion.addWidget(placeholder);
     return this.create_child_view(model)
       .then((view: DOMWidgetView) => {
@@ -293,7 +293,7 @@ export class TabView extends DOMWidgetView {
       this
     );
     this.listenTo(this.model, 'change:children', () => this.updateTabs());
-    this.listenTo(this.model, 'change:_titles', () => this.updateTitles());
+    this.listenTo(this.model, 'change:titles', () => this.updateTitles());
   }
 
   /**
@@ -339,7 +339,7 @@ export class TabView extends DOMWidgetView {
    */
   addChildView(model: WidgetModel, index: number): Promise<DOMWidgetView> {
     // Placeholder widget to keep our position in the tab panel while we create the view.
-    const label = this.model.get('_titles')[index] || '';
+    const label = this.model.get('titles')[index] || '';
     const tabs = this.pWidget;
     const placeholder = new Widget();
     placeholder.title.label = label;
@@ -379,7 +379,7 @@ export class TabView extends DOMWidgetView {
    * Updates the tab page titles.
    */
   updateTitles(): void {
-    const titles = this.model.get('_titles') || {};
+    const titles = this.model.get('titles') || [];
     each(this.pWidget.widgets, (widget, i) => {
       widget.title.label = titles[i] || '';
     });

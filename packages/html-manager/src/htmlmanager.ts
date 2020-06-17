@@ -13,9 +13,9 @@ import {
 } from '@jupyterlab/rendermime';
 
 import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers';
-import { WidgetModel, WidgetView } from '@jupyter-widgets/base';
+import { WidgetModel, WidgetView, DOMWidgetView } from '@jupyter-widgets/base';
 
-export class HTMLManager extends ManagerBase<HTMLElement> {
+export class HTMLManager extends ManagerBase {
   constructor(options?: {
     loader?: (moduleName: string, moduleVersion: string) => Promise<any>;
   }) {
@@ -37,18 +37,11 @@ export class HTMLManager extends ManagerBase<HTMLElement> {
    * Display the specified view. Element where the view is displayed
    * is specified in the `options.el` argument.
    */
-  display_view(
-    msg: any,
-    view: any,
-    options: { el: HTMLElement }
-  ): Promise<HTMLElement> {
-    return Promise.resolve(view).then(view => {
-      LuminoWidget.Widget.attach(view.pWidget, options.el);
-      view.on('remove', () => {
-        console.log('View removed', view);
-      });
-      return view;
-    });
+  async display_view(
+    view: Promise<DOMWidgetView> | DOMWidgetView,
+    el: HTMLElement
+  ): Promise<void> {
+    LuminoWidget.Widget.attach((await view).pWidget, el);
   }
 
   /**

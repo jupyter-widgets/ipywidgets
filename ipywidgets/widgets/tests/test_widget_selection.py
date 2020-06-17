@@ -2,8 +2,9 @@
 # Distributed under the terms of the Modified BSD License.
 
 import inspect
-import warnings
 from unittest import TestCase
+
+import pytest
 
 from traitlets import TraitError
 
@@ -15,19 +16,29 @@ class TestDropdown(TestCase):
     def test_construction(self):
         Dropdown()
 
-    def test_deprecation_warning_mapping_options(self):
-        with warnings.catch_warnings(record=True) as w:
-            warnings.simplefilter("always")
-
-            # Clearing the internal __warningregistry__ seems to be required for
-            # Python 2 (but not for Python 3)
-            module = inspect.getmodule(Dropdown)
-            getattr(module, '__warningregistry__', {}).clear()
-
+    def test_raise_mapping_options(self):
+        with pytest.raises(TypeError):
             Dropdown(options={'One': 1, 'Two': 2, 'Three': 3})
-            assert len(w) > 0
-            assert issubclass(w[-1].category, DeprecationWarning)
-            assert "Support for mapping types has been deprecated" in str(w[-1].message)
+
+    def test_setting_options_from_list(self):
+        d = Dropdown()
+        assert d.options == ()
+        d.options = ['One', 'Two', 'Three']
+        assert d.get_state('_options_labels') == {'_options_labels': ('One', 'Two', 'Three')}
+
+    def test_setting_options_from_list_tuples(self):
+        d = Dropdown()
+        assert d.options == ()
+        d.options = [('One', 1), ('Two', 2), ('Three', 3)]
+        assert d.get_state('_options_labels') == {'_options_labels': ('One', 'Two', 'Three')}
+        d.value = 2
+        assert d.get_state('index') == {'index': 1}
+
+    def test_setting_options_from_dict(self):
+        d = Dropdown()
+        assert d.options == ()
+        with pytest.raises(TypeError):
+            d.options = {'One': 1}
 
 
 class TestSelectionSlider(TestCase):

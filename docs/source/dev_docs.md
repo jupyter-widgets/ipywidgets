@@ -4,25 +4,36 @@ Building the Documentation
 To build the documentation you'll need [Sphinx](http://www.sphinx-doc.org/), [pandoc](http://pandoc.org/)
 and a few other packages.
 
-To install (and activate) a [conda environment](http://conda.pydata.org/docs/using/envs.html#use-environment-from-file) named `notebook_docs`
-containing all the necessary packages (except pandoc), use:
+First create a [conda environment](http://conda.pydata.org/docs/using/envs.html#use-environment-from-file) named `ipywidgets_docs` to install all the necessary packages:
 
-```
-conda env create -f docs/environment.yml
-source activate ipywidget_docs  # Linux and OS X
-activate ipywidget_docs         # Windows
+```bash
+# create the environment
+conda create -n ipywidgets_docs -c conda-forge python pip
+
+# activate the environment
+conda activate ipywidgets_docs   # Linux and OS X
+activate ipywidgets_docs         # Windows
 ```
 
-If you want to install the necessary packages with `pip` instead, use
-(omitting `--user` if working in a virtual environment):
+Alternatively, it is also possible to create a virtual environment and activate it with the following commands:
 
+```bash
+# create the environment
+python -m venv .
+
+# activate the environment
+source bin/activate
 ```
-pip install -r docs/requirements.txt --user
+
+In the environment, install the packages:
+
+```bash
+python -m pip install -r docs/requirements.txt
 ```
 
 Once you have installed the required packages, you can build the docs with:
 
-```
+```bash
 cd docs
 make clean
 make html
@@ -30,12 +41,6 @@ make html
 
 After that, the generated HTML files will be available at
 `build/html/index.html`. You may view the docs in your browser.
-
-You can automatically check if all hyperlinks are still valid::
-
-```
-make linkcheck
-```
 
 Windows users can find `make.bat` in the `docs` folder.
 

@@ -55,33 +55,7 @@ export interface IBase64Buffers extends PartialJSONObject {
 /**
  * Manager abstract base class
  */
-export abstract class ManagerBase<T> implements IWidgetManager {
-  /**
-   * Display a DOMWidgetView for a particular model.
-   */
-  display_model(
-    msg: services.KernelMessage.IMessage | null,
-    model: DOMWidgetModel,
-    options: any = {}
-  ): Promise<T> {
-    return this.create_view(model, options)
-      .then(view => this.display_view(msg, view, options))
-      .catch(reject('Could not create view', true));
-  }
-
-  /**
-   * Display a DOMWidget view.
-   *
-   * #### Notes
-   * This must be implemented by a subclass. The implementation must trigger the view's displayed
-   * event after the view is on the page: `view.trigger('displayed')`
-   */
-  abstract display_view(
-    msg: services.KernelMessage.IMessage | null,
-    view: DOMWidgetView,
-    options: any
-  ): Promise<T>;
-
+export abstract class ManagerBase implements IWidgetManager {
   /**
    * Modifies view options. Generally overloaded in custom widget manager
    * implementations.
@@ -93,8 +67,12 @@ export abstract class ManagerBase<T> implements IWidgetManager {
   /**
    * Creates a promise for a view of a given model
    *
+   * #### Notes
+   * The implementation must trigger the Lumino 'after-attach' and 'after-show' events when appropriate, which in turn will trigger the view's 'displayed' events.
+   *
    * Make sure the view creation is not out of order with
    * any state updates.
+   *
    */
   create_view<VT extends DOMWidgetView = DOMWidgetView>(
     model: DOMWidgetModel,
@@ -108,38 +86,38 @@ export abstract class ManagerBase<T> implements IWidgetManager {
     model: WidgetModel,
     options = {}
   ): Promise<VT> {
-    const viewPromise = (model.state_change = model.state_change.then(() => {
-      return this.loadClass(
-        model.get('_view_name'),
-        model.get('_view_module'),
-        model.get('_view_module_version')
-      )
-        .then((ViewType: typeof WidgetView) => {
-          const view: WidgetView = new ViewType({
+    const id = uuid();
+    const viewPromise = (model.state_change = model.state_change.then(
+      async () => {
+        try {
+          const ViewType = (await this.loadClass(
+            model.get('_view_name'),
+            model.get('_view_module'),
+            model.get('_view_module_version')
+          )) as typeof WidgetView;
+          const view = new ViewType({
             model: model,
             options: this.setViewOptions(options)
           });
           view.listenTo(model, 'destroy', view.remove);
-          return Promise.resolve(view.render()).then(() => {
-            return view;
+          await view.render();
+
+          // This presumes the view is added to the list of model views below
+          view.once('remove', () => {
+            delete model.views[id];
           });
-        })
-        .catch(
-          reject('Could not create a view for model id ' + model.model_id, true)
-        );
-    }));
-    const id = uuid();
+
+          return view;
+        } catch (e) {
+          console.error(
+            `Could not create a view for model id ${model.model_id}`
+          );
+          throw e;
+        }
+      }
+    ));
     model.views[id] = viewPromise;
-    viewPromise.then(view => {
-      view.once(
-        'remove',
-        () => {
-          delete view.model.views[id];
-        },
-        this
-      );
-    });
-    return model.state_change;
+    return viewPromise;
   }
 
   /**

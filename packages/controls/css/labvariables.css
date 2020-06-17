@@ -91,10 +91,10 @@ all of MD as it is not optimized for dense, information rich UIs.
      These will typically go from light to darker, in both a dark and light theme
    */
 
-  --jp-inverse-ui-font-color0: rgba(255, 255, 255, 1);
-  --jp-inverse-ui-font-color1: rgba(255, 255, 255, 1);
-  --jp-inverse-ui-font-color2: rgba(255, 255, 255, 0.7);
-  --jp-inverse-ui-font-color3: rgba(255, 255, 255, 0.5);
+  --jp-ui-inverse-font-color0: rgba(255, 255, 255, 1);
+  --jp-ui-inverse-font-color1: rgba(255, 255, 255, 1);
+  --jp-ui-inverse-font-color2: rgba(255, 255, 255, 0.7);
+  --jp-ui-inverse-font-color3: rgba(255, 255, 255, 0.5);
 
   /* Content Fonts
 

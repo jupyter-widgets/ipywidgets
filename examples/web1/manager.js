@@ -46,13 +46,10 @@ class WidgetManager extends ManagerBase {
     });
   }
 
-  display_view(msg, view, options) {
+  display_view(view) {
     var that = this;
-    return Promise.resolve(view).then(function(view) {
+    return Promise.resolve(view).then(view => {
       LuminoWidget.attach(view.pWidget, that.el);
-      view.on('remove', function() {
-        console.log('View removed', view);
-      });
       return view;
     });
   }
