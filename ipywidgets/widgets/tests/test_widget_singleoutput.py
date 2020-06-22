@@ -1,17 +1,15 @@
 from unittest import TestCase
-from contextlib import contextmanager
-from widgets.widget_singleoutput import SingleOutput
 from ipywidgets.widgets.widget import Widget
-from ipywidgets import widget_output
+from ipywidgets import widget_singleoutput
 
 
 class TestSingleOutputWidget(TestCase):
     def test_init(self):
-        w = SingleOutput(value=6)
+        w = widget_singleoutput.SingleOutput(value=6)
         self.assertEqual(w.value, 6)
 
     def test_assignement(self):
-        w = SingleOutput()
+        w = widget_singleoutput.SingleOutput()
         self.assertEqual(w.value, None)
         w.value = 4
         self.assertEqual(w.value, 4)
@@ -26,9 +24,5 @@ class TestSingleOutputWidget(TestCase):
         self.assertEqual(w.value, 7)
 
     def test_widget(self):
-        w = SingleOutput()
+        w = widget_singleoutput.SingleOutput()
         self.assertIsInstance(w, Widget)
-
-
-if __name__ == "__main__":
-    unittest.main()
