@@ -4,12 +4,11 @@ Represents a widget that can be used to display a single output within the widge
 
 """
 
-import ipywidgets as widgets
 import traitlets
 from IPython.display import display
+from .widget_output import Output
 
-
-class SingleOutput(widgets.Output):
+class SingleOutput(Output):
     """Value widget to display a single output.
     
     This widget can capture and display stdout, stderr, and rich output into a value called 'value'.  To use
