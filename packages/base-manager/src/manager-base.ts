@@ -25,6 +25,7 @@ import {
 } from '@jupyter-widgets/base';
 
 import { base64ToBuffer, bufferToBase64, hexToBuffer } from './utils';
+import { removeMath, replaceMath } from './latex';
 import sanitize from 'sanitize-html';
 
 const PROTOCOL_MAJOR_VERSION = PROTOCOL_VERSION.split('.', 1)[0];
@@ -42,7 +43,7 @@ function default_plaintext_sanitize(s: string): string {
 /**
  * Sanitize HTML-formatted descriptions.
  */
-function default_inline_sanitize(html: string): string {
+function default_inline_sanitize(s: string): string {
   const allowedTags = [
     'a',
     'abbr',
@@ -64,25 +65,10 @@ function default_inline_sanitize(html: string): string {
     img: ['src'],
     style: ['media', 'type']
   };
-  let res = '';
-  let m = html.match(/\$[^$]+\$/);
-  while (m != null) {
-    const matched = String(m);
-    res +=
-      '$' +
-      sanitize(matched.substr(1, matched.length - 2), {
-        allowedTags: allowedTags,
-        allowedAttributes: allowedAttributes
-      }) +
-      '$';
-    const ind = m.index;
-    if (ind == undefined) break;
-    const len = matched.length;
-    if (len == undefined) break;
-    html = html.substr(ind + len);
-    m = html.match(/\$[^$]+\$/);
-  }
-  return res;
+  return sanitize(s, {
+    allowedTags: allowedTags,
+    allowedAttributes: allowedAttributes
+  });
 }
 
 export interface IState extends PartialJSONObject {
@@ -519,12 +505,20 @@ export abstract class ManagerBase implements IWidgetManager {
     return Promise.resolve(url);
   }
 
-  plaintext_sanitize(s: string): string {
-    return default_plaintext_sanitize(s);
+  plaintext_sanitize(source: string): string {
+    // Separate math from normal markdown text.
+    let parts = removeMath(source);
+    // Extract plain text
+    let sanitized = default_plaintext_sanitize(parts['text']);
+    // Replace math and return.
+    return replaceMath(sanitized, parts['math']);
   }
 
-  inline_sanitize(s: string): string {
-    return default_inline_sanitize(s);
+  inline_sanitize(source: string): string {
+    let parts = removeMath(source);
+    // Sanitize tags for inline output.
+    let sanitized = default_inline_sanitize(parts['text']);
+    return replaceMath(sanitized, parts['math']);
   }
 
   /**
