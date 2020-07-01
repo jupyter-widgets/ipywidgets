@@ -15,6 +15,7 @@ class DescriptionStyle(Style, CoreWidget, Widget):
     """Description style widget."""
     _model_name = Unicode('DescriptionStyleModel').tag(sync=True)
     description_width = Unicode(help="Width of the description to the side of the control.").tag(sync=True)
+    description_max_width = Unicode(help="Maximum width of the description to the side of the control.").tag(sync=True)
 
 
 class DescriptionWidget(DOMWidget, CoreWidget):
