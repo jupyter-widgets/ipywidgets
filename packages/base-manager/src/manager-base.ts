@@ -507,17 +507,17 @@ export abstract class ManagerBase implements IWidgetManager {
 
   plaintext_sanitize(source: string): string {
     // Separate math from normal markdown text.
-    let parts = removeMath(source);
+    const parts = removeMath(source);
     // Extract plain text
-    let sanitized = default_plaintext_sanitize(parts['text']);
+    const sanitized = default_plaintext_sanitize(parts['text']);
     // Replace math and return.
     return replaceMath(sanitized, parts['math']);
   }
 
   inline_sanitize(source: string): string {
-    let parts = removeMath(source);
+    const parts = removeMath(source);
     // Sanitize tags for inline output.
-    let sanitized = default_inline_sanitize(parts['text']);
+    const sanitized = default_inline_sanitize(parts['text']);
     return replaceMath(sanitized, parts['math']);
   }
 
