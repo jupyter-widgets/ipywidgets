@@ -1384,6 +1384,117 @@
         "type": "string"
       },
       {
+        "default": "ColorsInputModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ColorsInputView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "",
+        "name": "allow_duplicates",
+        "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "",
+        "name": "allowed_tags",
+        "type": "array"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "List of string tags",
+        "name": "value",
+        "type": "array"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ColorsInputModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ColorsInputView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
         "default": "ComboboxModel",
         "help": "",
         "name": "_model_name",
@@ -2029,6 +2140,12 @@
         "default": "StyleView",
         "help": "",
         "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Maximum width of the description to the side of the control.",
+        "name": "description_max_width",
         "type": "string"
       },
       {
@@ -3060,6 +3177,144 @@
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "FloatTextView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "FloatsInputModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "FloatsInputView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "",
+        "name": "allow_duplicates",
+        "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "",
+        "name": "allowed_tags",
+        "type": "array"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": ".1f",
+        "help": "",
+        "name": "format",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "max",
+        "type": "float"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "min",
+        "type": "float"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "enum": ["primary", "success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the tags.",
+        "name": "tag_style",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "List of float tags",
+        "name": "value",
+        "type": "array"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "FloatsInputModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "FloatsInputView",
       "version": "2.0.0"
     }
   },
@@ -4133,6 +4388,144 @@
         "type": "string"
       },
       {
+        "default": "IntsInputModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "IntsInputView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "",
+        "name": "allow_duplicates",
+        "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "",
+        "name": "allowed_tags",
+        "type": "array"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": ".3g",
+        "help": "",
+        "name": "format",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "max",
+        "type": "int"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "min",
+        "type": "int"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "enum": ["primary", "success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the tags.",
+        "name": "tag_style",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "List of int tags",
+        "name": "value",
+        "type": "array"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "IntsInputModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "IntsInputView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
         "default": "LabelModel",
         "help": "",
         "name": "_model_name",
@@ -4584,6 +4977,12 @@
         "default": null,
         "help": "Color of the progress bar.",
         "name": "bar_color",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Maximum width of the description to the side of the control.",
+        "name": "description_max_width",
         "type": "string"
       },
       {
@@ -5269,6 +5668,12 @@
       },
       {
         "default": "",
+        "help": "Maximum width of the description to the side of the control.",
+        "name": "description_max_width",
+        "type": "string"
+      },
+      {
+        "default": "",
         "help": "Width of the description to the side of the control.",
         "name": "description_width",
         "type": "string"
@@ -5515,6 +5920,124 @@
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "TabView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "TagsInputModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "TagsInputView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "",
+        "name": "allow_duplicates",
+        "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "",
+        "name": "allowed_tags",
+        "type": "array"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "enum": ["primary", "success", "info", "warning", "danger", ""],
+        "help": "Use a predefined styling for the tags.",
+        "name": "tag_style",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "List of string tags",
+        "name": "value",
+        "type": "array"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "TagsInputModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "TagsInputView",
       "version": "2.0.0"
     }
   },
@@ -6060,6 +6583,12 @@
         "default": "",
         "help": "The width of each button.",
         "name": "button_width",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Maximum width of the description to the side of the control.",
+        "name": "description_max_width",
         "type": "string"
       },
       {

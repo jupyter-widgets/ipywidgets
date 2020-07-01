@@ -384,6 +384,7 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
+`description_max_width` | string           | `''`             | Maximum width of the description to the side of the control.
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 
 ### DirectionalLinkModel (@jupyter-widgets/controls, 2.0.0); None (@jupyter-widgets/controls, 2.0.0)
@@ -889,6 +890,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
 `bar_color`      | `null` or string | `null`           | Color of the progress bar.
+`description_max_width` | string           | `''`             | Maximum width of the description to the side of the control.
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 
 ### RadioButtonsModel (@jupyter-widgets/controls, 2.0.0); RadioButtonsView (@jupyter-widgets/controls, 2.0.0)
@@ -1009,6 +1011,7 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
+`description_max_width` | string           | `''`             | Maximum width of the description to the side of the control.
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 `handle_color`   | `null` or string | `null`           | Color of the slider handle.
 
@@ -1169,6 +1172,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
 `button_width`   | string           | `''`             | The width of each button.
+`description_max_width` | string           | `''`             | Maximum width of the description to the side of the control.
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 `font_weight`    | string           | `''`             | Text font weight of each button.
 
