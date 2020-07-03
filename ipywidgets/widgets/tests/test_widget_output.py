@@ -226,11 +226,11 @@ def test_append_display_data():
     
 class TestSingleOutputWidget(TestCase):
     def test_init(self):
-        w = widget_singleoutput.SingleOutput(value=6)
+        w = widget_output.SingleOutput(value=6)
         self.assertEqual(w.value, 6)
 
     def test_assignement(self):
-        w = widget_singleoutput.SingleOutput()
+        w = widget_output.SingleOutput()
         self.assertEqual(w.value, None)
         w.value = 4
         self.assertEqual(w.value, 4)
@@ -245,5 +245,5 @@ class TestSingleOutputWidget(TestCase):
         self.assertEqual(w.value, 7)
 
     def test_widget(self):
-        w = widget_singleoutput.SingleOutput()
+        w = widget_output.SingleOutput()
         self.assertIsInstance(w, Widget)
