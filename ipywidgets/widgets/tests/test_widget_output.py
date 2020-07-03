@@ -4,6 +4,7 @@ from contextlib import contextmanager
 
 from IPython.display import Markdown, Image
 from ipywidgets import widget_output
+from ipywidgets.widgets.widget import Widget
 
 
 class TestOutputWidget(TestCase):
@@ -221,3 +222,28 @@ def test_append_display_data():
         },
     )
     assert widget.outputs == expected, repr(widget.outputs)
+    
+    
+class TestSingleOutputWidget(TestCase):
+    def test_init(self):
+        w = widget_singleoutput.SingleOutput(value=6)
+        self.assertEqual(w.value, 6)
+
+    def test_assignement(self):
+        w = widget_singleoutput.SingleOutput()
+        self.assertEqual(w.value, None)
+        w.value = 4
+        self.assertEqual(w.value, 4)
+        observations = []
+        
+        def f(change):
+            observations.append(change.new)
+
+        w.observe(f, "value")
+        w.value = 7
+        self.assertEqual(observations[0], 7)
+        self.assertEqual(w.value, 7)
+
+    def test_widget(self):
+        w = widget_singleoutput.SingleOutput()
+        self.assertIsInstance(w, Widget)
