@@ -14,12 +14,11 @@ exemptLabels: []
 lockLabel: resolved-locked
 
 # Comment to post before locking. Set to `false` to disable
-lockComment: false
 
-# lockComment: >
-#   This thread has been automatically locked since there has not been
-#   any recent activity after it was closed. Please open a [new issue](https://github.com/jupyterlab/jupyterlab/issues/new/choose)
-#   for related discussion.
+lockComment: >
+   This thread has been automatically locked since there has not been
+   any recent activity after it was closed. Please open a [new issue](https://github.com/jupyter-widgets/ipywidgets/issues/new/choose)
+   for related discussion.
 
 # Assign `resolved` as the reason for locking. Set to `false` to disable
 setLockReason: true
