@@ -18,7 +18,7 @@ from traitlets import Unicode, Dict
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.display import clear_output
 from IPython import get_ipython
-
+import traceback
 
 @register
 class Output(DOMWidget):
@@ -107,24 +107,35 @@ class Output(DOMWidget):
     def __enter__(self):
         """Called upon entering output widget context manager."""
         self._flush()
-        ip = get_ipython()
-        if ip and hasattr(ip, 'kernel') and hasattr(ip.kernel, '_parent_header'):
-            self.msg_id = ip.kernel._parent_header['header']['msg_id']
+        if self.comm is not None and self.comm.kernel is not None and \
+               hasattr(self.comm.kernel, '_parent_header'):
+            self.msg_id = self.comm.kernel._parent_header['header']['msg_id']
             self.__counter += 1
 
     def __exit__(self, etype, evalue, tb):
         """Called upon exiting output widget context manager."""
-        ip = get_ipython()
+        kernel = None
         if etype is not None:
+            ip = get_ipython()
             if ip:
+                kernel = ip
                 ip.showtraceback((etype, evalue, tb), tb_offset=0)
+            elif self.comm is not None and self.comm.kernel is not None:
+                kernel = self.comm.kernel
+                kernel.send_response(kernel.iopub_socket,
+                                     u'error',
+                                     {
+                    u'traceback': ["".join(traceback.format_exception(etype, evalue, tb))],
+                    u'evalue': repr(evalue.args),
+                    u'ename': etype.__name__
+                    })
         self._flush()
         self.__counter -= 1
         if self.__counter == 0:
             self.msg_id = ''
-        # suppress exceptions when in a kernel, since they are shown above,
+        # suppress exceptions when in IPython, since they are shown above,
         # otherwise let someone else handle it
-        return True if ip else None
+        return True if kernel else None
 
     def _flush(self):
         """Flush stdout and stderr buffers."""
