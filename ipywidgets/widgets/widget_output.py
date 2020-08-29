@@ -107,7 +107,12 @@ class Output(DOMWidget):
     def __enter__(self):
         """Called upon entering output widget context manager."""
         self._flush()
-        if self.comm is not None and self.comm.kernel is not None and \
+        ip = get_ipython()
+        if ip and hasattr(ip, 'kernel') and \
+               hasattr(ip.kernel, '_parent_header'):
+            self.msg_id = ip.kernel._parent_header['header']['msg_id']
+            self.__counter += 1
+        elif self.comm is not None and self.comm.kernel is not None and \
                hasattr(self.comm.kernel, '_parent_header'):
             self.msg_id = self.comm.kernel._parent_header['header']['msg_id']
             self.__counter += 1
