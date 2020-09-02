@@ -2,6 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import * as services from '@jupyterlab/services';
+import * as widgets from '@jupyter-widgets/base';
 
 import { JSONObject, PartialJSONObject } from '@lumino/coreutils';
 
@@ -129,7 +130,7 @@ export abstract class ManagerBase implements IWidgetManager {
     const viewPromise = (model.state_change = model.state_change.then(
       async () => {
         try {
-          const ViewType = (await this.loadClass(
+          const ViewType = (await this.loadViewClass(
             model.get('_view_name'),
             model.get('_view_module'),
             model.get('_view_module_version')
@@ -330,11 +331,11 @@ export abstract class ManagerBase implements IWidgetManager {
     serialized_state: any = {}
   ): Promise<WidgetModel> {
     const model_id = options.model_id;
-    const model_promise = this.loadClass(
+    const model_promise = this.loadModelClass(
       options.model_name,
       options.model_module,
       options.model_module_version
-    ) as Promise<typeof WidgetModel>;
+    );
     let ModelType: typeof WidgetModel;
     try {
       ModelType = await model_promise;
@@ -519,6 +520,42 @@ export abstract class ManagerBase implements IWidgetManager {
     moduleName: string,
     moduleVersion: string
   ): Promise<typeof WidgetModel | typeof WidgetView>;
+
+  protected async loadModelClass(
+    className: string,
+    moduleName: string,
+    moduleVersion: string
+  ): Promise<typeof WidgetModel> {
+    try {
+      const promise: Promise<typeof WidgetModel> = this.loadClass(
+        className,
+        moduleName,
+        moduleVersion
+      ) as Promise<typeof WidgetModel>;
+      await promise;
+      return promise;
+    } catch (error) {
+      return widgets.createErrorWidget(error);
+    }
+  }
+
+  protected async loadViewClass(
+    className: string,
+    moduleName: string,
+    moduleVersion: string
+  ): Promise<typeof WidgetView> {
+    try {
+      const promise: Promise<typeof WidgetView> = this.loadClass(
+        className,
+        moduleName,
+        moduleVersion
+      ) as Promise<typeof WidgetView>;
+      await promise;
+      return promise;
+    } catch (error) {
+      return widgets.createErrorWidgetView(error);
+    }
+  }
 
   /**
    * Create a comm which can be used for communication for a widget.
