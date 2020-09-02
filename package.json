@@ -3,7 +3,8 @@
   "workspaces": [
     "packages/*",
     "widgetsnbextension",
-    "examples/*"
+    "examples/*",
+    "jupyterlab_widgets"
   ],
   "scripts": {
     "build": "lerna run build --ignore \"@jupyter-widgets/example-*\"",
