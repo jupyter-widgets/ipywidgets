@@ -279,7 +279,8 @@ function activateWidgetExtension(
       LayoutModel: base.LayoutModel,
       LayoutView: base.LayoutView,
       StyleModel: base.StyleModel,
-      StyleView: base.StyleView
+      StyleView: base.StyleView,
+      ErrorWidgetView: base.ErrorWidgetView
     }
   });
 
