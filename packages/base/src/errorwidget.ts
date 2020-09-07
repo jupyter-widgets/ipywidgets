@@ -21,7 +21,6 @@ export function createErrorWidget(error: Error): typeof WidgetModel {
         error: error
       };
       super(attributes, options);
-      console.log(attributes);
     }
   }
   return ErrorWidget;
@@ -30,7 +29,6 @@ export function createErrorWidget(error: Error): typeof WidgetModel {
 export function createErrorWidgetView(error?: Error): typeof WidgetView {
   return class ErrorWidgetView extends DOMWidgetView {
     render() {
-      console.log('render');
       const module = this.model.get('_model_module');
       const name = this.model.get('_model_name');
       const viewModule = this.model.get('_view_module');
