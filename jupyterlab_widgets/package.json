@@ -30,8 +30,7 @@
     "schema/*.json"
   ],
   "scripts": {
-    "build": "jlpm run build:lib",
-    "build:all": "jlpm run build:lib && jlpm run build:labextension",
+    "build": "jlpm run build:lib && jlpm run build:labextension",
     "build:labextension": "jupyter labextension build .",
     "build:labextension:dev": "jupyter labextension build --development True .",
     "build:lib": "tsc",
@@ -41,11 +40,11 @@
     "clean:lib": "rimraf lib tsconfig.tsbuildinfo",
     "eslint": "eslint . --ext .ts,.tsx --fix",
     "eslint:check": "eslint . --ext .ts,.tsx",
-    "install:extension": "pip install -e . && jupyter labextension develop --overwrite .",
+    "install:extension": "jupyter labextension develop --overwrite .",
     "prepare": "jlpm run clean && jlpm run build",
     "watch": "run-p watch:src watch:labextension",
-    "watch:labextension": "jupyter labextension watch .",
-    "watch:src": "tsc -w"
+    "watch:src": "tsc -w",
+    "watch:labextension": "jupyter labextension watch ."
   },
   "dependencies": {
     "@jupyter-widgets/base": "^3.0.0",

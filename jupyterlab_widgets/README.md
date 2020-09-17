@@ -56,16 +56,16 @@ The `jlpm` command is JupyterLab's pinned version of
 # Install package in development mode
 pip install -e .
 # Link your development version of the extension with JupyterLab
-jupyter labextension develop .
+jupyter labextension develop . --overwrite
 # Rebuild extension Typescript source after making changes
-jlpm build
+jlpm run build
 ```
 
 You can watch the source directory and run JupyterLab at the same time in different terminals to watch for changes in the extension's source and automatically rebuild the extension.
 
 ```bash
 # Watch the source directory in one terminal, automatically rebuilding when needed
-jlpm watch
+jlpm run watch
 # Run JupyterLab in another terminal
 jupyter lab
 ```
