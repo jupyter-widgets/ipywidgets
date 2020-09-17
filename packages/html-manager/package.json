@@ -12,14 +12,14 @@
   },
   "license": "BSD-3-Clause",
   "author": "Jupyter Project",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "files": [
     "lib/**/*.d.ts",
     "lib/**/*.js",
     "dist/",
     "css/*.css"
   ],
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
   "scripts": {
     "build": "npm run build:src && webpack && npm run build:embed-amd",
     "build:embed-amd": "node scripts/concat-amd-build.js && rimraf dist/amd",
@@ -39,9 +39,9 @@
     "@jupyter-widgets/controls": "^2.0.0",
     "@jupyter-widgets/output": "^3.0.0",
     "@jupyter-widgets/schema": "^0.4.0",
-    "@jupyterlab/outputarea": "^2.0.0",
-    "@jupyterlab/rendermime": "^2.0.0",
-    "@jupyterlab/rendermime-interfaces": "^2.0.0",
+    "@jupyterlab/outputarea": "^3.0.0-beta.6",
+    "@jupyterlab/rendermime": "^3.0.0-beta.6",
+    "@jupyterlab/rendermime-interfaces": "^3.0.0-beta.6",
     "@lumino/widgets": "^1.6.0",
     "ajv": "^6.10.0",
     "font-awesome": "^4.7.0",
@@ -65,7 +65,7 @@
     "tslint": "^5.20.1",
     "typescript": "~3.7.4",
     "url-loader": "^3.0.0",
-    "webpack": "^4.41.5",
+    "webpack": "^5.0.0-beta.29",
     "webpack-cli": "^3.3.4"
   }
 }
