@@ -28,7 +28,6 @@ jobs:
         jlpm
         jlpm run build
         cd jupyterlab_widgets
-        jlpm run eslint:check
 
         jupyter labextension install .
 
