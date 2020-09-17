@@ -38,6 +38,7 @@ labext_name = "@jupyter-widgets/jupyterlab-manager"
 
 data_files_spec = [
     ("share/jupyter/labextensions/%s" % labext_name, lab_path, "*.*"),
+    ("share/jupyter/lab/schemas/%s" % labext_name, os.path.join(lab_path, 'schemas', labext_name), "*.*"),
 ]
 
 cmdclass = create_cmdclass("jsdeps", 
