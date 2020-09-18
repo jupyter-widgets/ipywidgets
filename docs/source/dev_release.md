@@ -10,8 +10,10 @@ conda deactivate
 conda remove --all -y -n releasewidgets
 rm -rf ipywidgets
 
-conda create -c conda-forge --override-channels -y -n releasewidgets jupyter_packaging notebook nodejs twine
+conda create -c conda-forge --override-channels -y -n releasewidgets notebook nodejs yarn twine
 conda activate releasewidgets
+pip install jupyter_packaging
+pip install --pre jupyterlab
 
 git clone git@github.com:jupyter-widgets/ipywidgets.git
 cd ipywidgets
@@ -51,6 +53,19 @@ yarn run publish
 ```
 
 Lerna will prompt you for version numbers for each of the changed npm packages. Lerna will then change the versions appropriately (including the interdependency versions), commit, tag, and publish the new packages to npm.
+
+### jupyterlab_widgets
+
+Go into the `jupyterlab_widgets` directory. Change `jupyterlab_widgets/_version.py` to reflect the new version number.
+```
+python setup.py sdist bdist_wheel
+twine upload dist/*
+```
+
+Verify that the package is uploaded.
+```
+curl -s https://pypi.org/pypi/jupyterlab-widgets/json | jq  -r '[.releases[][] | [.upload_time, .digests.sha256, .filename] | join(" ")] | sort '
+```
 
 ### widgetsnbextension
 
