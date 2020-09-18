@@ -3,7 +3,8 @@
   "workspaces": [
     "packages/*",
     "widgetsnbextension",
-    "examples/*"
+    "examples/*",
+    "jupyterlab_widgets"
   ],
   "scripts": {
     "build": "lerna run build --ignore \"@jupyter-widgets/example-*\"",
@@ -16,7 +17,7 @@
     "updated": "lerna updated"
   },
   "devDependencies": {
-    "@jupyterlab/buildutils": "^2.0.0-rc.0",
+    "@jupyterlab/buildutils": "^3.0.0-beta.7",
     "lerna": "^3.2.1"
   }
 }
