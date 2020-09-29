@@ -7,9 +7,9 @@ This does mostly the same thing as the `Clear All Output` command in the noteboo
 LICENSE: Public Domain
 From https://gist.github.com/minrk/6176788
 
-ls docs/source/examples/*.ipynb | xargs -I {} ./scripts/strip_examples.py "{}"
+ls share/jupyter/notebook_templates/ipywidgets/*.ipynb | xargs -I {} ./scripts/strip_notebooks.py "{}"
 
-After running this on the examples, re-run the outputs on:
+After running this on the notebooks, re-run the outputs on:
 
 Using Interact.ipynb
 Output Widget.ipynb

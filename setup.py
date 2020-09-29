@@ -63,6 +63,15 @@ version_ns = {}
 with open(pjoin(here, name, '_version.py')) as f:
     exec(f.read(), {}, version_ns)
 
+def get_data_files():
+    """Get the data files for the package.
+    """
+    data_files = []
+    # Add example notebooks
+    for (dirpath, dirnames, filenames) in os.walk('share/jupyter/notebook_templates'):
+        if filenames:
+            data_files.append((dirpath, [os.path.join(dirpath, filename) for filename in filenames]))
+    return data_files
 
 setup_args = dict(
     name            = name,
@@ -95,6 +104,7 @@ setup_args = dict(
         'Programming Language :: Python :: 3 :: Only',
         'Framework :: Jupyter'
     ],
+    data_files      = get_data_files(),
     cmdclass        = {
         'build_py': build_py,
         'sdist': sdist,

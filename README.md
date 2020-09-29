@@ -4,9 +4,9 @@
 ![Build Status](https://img.shields.io/github/workflow/status/jupyter-widgets/ipywidgets/Test/master)
 [![Documentation Status](http://readthedocs.org/projects/ipywidgets/badge/?version=stable)](https://ipywidgets.readthedocs.io/)
 [![Join the chat at https://gitter.im/ipython/ipywidgets](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jupyter-widgets/Lobby)
-[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/jupyter-widgets/ipywidgets/master?filepath=docs%2Fsource%2Fexamples)
+[![Binder](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/jupyter-widgets/ipywidgets/master?filepath=share/jupyter/notebook_templates/ipywidgets)
 
-ipywidgets are [interactive HTML widgets](https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb)
+ipywidgets are [interactive HTML widgets](https://github.com/jupyter-widgets/ipywidgets/blob/master/share/jupyter/notebook_templates/ipywidgets/Index.ipynb)
 for Jupyter notebooks, JupyterLab and the IPython kernel.
 
 Notebooks come alive when interactive widgets are used. Users gain control of
@@ -18,7 +18,7 @@ ipywidgets to your notebooks, and we're here to help you get started.
 
 ## Core Interactive Widgets
 
-A [demonstration notebook](https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb) provides an overview of the core interactive widgets, including:
+A [demonstration notebook](https://github.com/jupyter-widgets/ipywidgets/blob/master/share/jupyter/notebook_templates/ipywidgets/Index.ipynb) provides an overview of the core interactive widgets, including:
 
 - sliders
 - progress bars
@@ -110,7 +110,7 @@ code, run ``dev-install.sh``. To only build the Python package enter ``pip insta
 
 See the [examples](docs/source/examples.md) section of the documentation. The widgets are being used in a variety of ways; some uses can be seen in these notebooks:
 
-- [Demo notebook of interactive widgets](https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb)
+- [Demo notebook of interactive widgets](https://github.com/jupyter-widgets/ipywidgets/blob/master/share/jupyter/notebook_templates/ipywidgets/Index.ipynb)
 
 ## Contributing to ipywidgets
 
