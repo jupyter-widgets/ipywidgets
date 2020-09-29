@@ -85,7 +85,7 @@ export function requireLoader(
     if (failedId) {
       require.undef(failedId);
       console.log(`Falling back to ${cdn} for ${moduleName}@${moduleVersion}`);
-      loadFromCDN();
+      return loadFromCDN();
     }
   });
 }
