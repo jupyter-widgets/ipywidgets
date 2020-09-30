@@ -83,6 +83,17 @@ module.exports = [
     mode: 'production'
   },
   {
+    // script that renders widgets using the amd embedding and can render third-party custom widgets
+    entry: './lib/embed-amd-render-nolabvars.js',
+    output: {
+      filename: 'embed-amd-render-nolabvars.js',
+      path: path.resolve(__dirname, 'dist', 'amd'),
+      publicPath: publicPath
+    },
+    module: { rules: rules },
+    mode: 'production'
+  },
+  {
     // embed library that depends on requirejs, and can load third-party widgets dynamically
     entry: './lib/libembed-amd.js',
     output: {

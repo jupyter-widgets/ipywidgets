@@ -27,3 +27,18 @@ var output = files
   })
   .join(';\n\n');
 fs.writeFileSync('./dist/embed-amd.js', output);
+
+
+files = [
+  'base.js',
+  'controls.js',
+  'index.js',
+  'libembed-amd.js',
+  'embed-amd-render-nolabvars.js'
+];
+var output = files
+  .map(f => {
+    return fs.readFileSync('./dist/amd/' + f).toString();
+  })
+  .join(';\n\n');
+fs.writeFileSync('./dist/embed-amd-nolabvars.js', output);
