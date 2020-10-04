@@ -24,7 +24,6 @@ lab_path = os.path.join(HERE, name, "static")
 
 # Representative files that should exist after a successful build
 jstargets = [
-    os.path.join(HERE, "lib", "index.js"),
     os.path.join(HERE, name, "static", "package.json"),
 ]
 
@@ -46,10 +45,15 @@ cmdclass = create_cmdclass("jsdeps",
     data_files_spec=data_files_spec
 )
 
-cmdclass["jsdeps"] = combine_commands(
-    install_npm(HERE, build_cmd="build", npm=["jlpm"]),
-    ensure_targets(jstargets),
-)
+# if the static assets already exist, do not invoke npm so we can make a wheel
+# from the sdist package, since the npm build really only works from this
+# repo.
+jsbuild = []
+if all(os.path.exists(f) for f in jstargets):
+    jsbuild.append(install_npm(HERE, build_cmd="build", npm=["jlpm"]))
+jsbuild.append(ensure_targets(jstargets))
+
+cmdclass["jsdeps"] = combine_commands(*jsbuild)
 
 with open("README.md", "r") as fh:
     long_description = fh.read()

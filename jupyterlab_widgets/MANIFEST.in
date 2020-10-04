@@ -8,8 +8,8 @@ include ts*.json
 graft jupyterlab_widgets/static
 
 # Javascript files
-graft src
-graft style
+prune src
+prune style
 prune **/node_modules
 prune lib
 
