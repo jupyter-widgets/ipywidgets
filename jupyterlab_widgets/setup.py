@@ -12,7 +12,7 @@ import setuptools
 HERE = os.path.abspath(os.path.dirname(__file__))
 
 # The name of the project
-name="jupyterlab_widgets"
+name = "jupyterlab_widgets"
 
 # Ensure a valid python version
 ensure_python(">=3.6")
@@ -40,7 +40,8 @@ data_files_spec = [
     ("share/jupyter/lab/schemas/%s" % labext_name, os.path.join(lab_path, 'schemas', labext_name), "*.*"),
 ]
 
-cmdclass = create_cmdclass("jsdeps", 
+cmdclass = create_cmdclass(
+    "jsdeps",
     package_data_spec=package_data_spec,
     data_files_spec=data_files_spec
 )
@@ -66,11 +67,9 @@ setup_args = dict(
     description="A JupyterLab extension.",
     long_description= long_description,
     long_description_content_type="text/markdown",
-    cmdclass= cmdclass,
+    cmdclass=cmdclass,
     packages=setuptools.find_packages(),
-    install_requires=[
-        "jupyterlab~=3.0.0rc4",
-    ],
+    install_requires=[],
     zip_safe=False,
     include_package_data=True,
     python_requires=">=3.6",
