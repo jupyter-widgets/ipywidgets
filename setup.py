@@ -120,6 +120,7 @@ install_requires = setuptools_args['install_requires'] = [
     # interpreter, to allow ipywidgets to be
     # installed on bare kernels.
     'widgetsnbextension~=3.5.0',
+    'jupyterlab_widgets>=1.0.0a6',
 ]
 
 extras_require = setuptools_args['extras_require'] = {
