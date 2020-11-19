@@ -11,7 +11,7 @@ from unittest import TestCase
 from traitlets import HasTraits, Int, TraitError
 from traitlets.tests.test_traitlets import TraitTestBase
 
-from ipywidgets import Color, NumberFormat
+from ipywidgets import Button, Color, NumberFormat
 from ipywidgets.widgets.widget import _remove_buffers, _put_buffers
 from ipywidgets.widgets.trait_types import date_serialization, TypedTuple
 
@@ -243,3 +243,13 @@ def test_typed_tuple_positional_default():
 
     obj = TestCase()
     assert obj.value == (1, 2, 3)
+
+
+def test_add_trait():
+    button = Button()
+    keys = list(button.keys)
+    assert 'foobar' not in keys
+    button.add_traits(foobar=Int().tag(sync=True))
+    assert 'foobar' in button.keys
+    assert 'foobar' not in Button().keys
+    assert set(button.keys) != set(keys)

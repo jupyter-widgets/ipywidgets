@@ -10,6 +10,7 @@ from contextlib import contextmanager
 from collections.abc import Iterable
 from IPython import get_ipython
 from ipykernel.comm import Comm
+import functools
 from traitlets import (
     HasTraits, Unicode, Dict, Instance, List, Int, Set, Bytes, observe, default, Container,
     Undefined)
@@ -367,7 +368,7 @@ class Widget(LoggingHasTraits):
 
     @default('keys')
     def _default_keys(self):
-        return [name for name in self.traits(sync=True)]
+        return [name for name in self.class_traits(sync=True)]
 
     _property_lock = Dict()
     _holding_sync = False
@@ -483,7 +484,7 @@ class Widget(LoggingHasTraits):
         else:
             raise ValueError("key must be a string, an iterable of keys, or None")
         state = {}
-        traits = self.traits()
+        traits = self.class_traits()
         for k in keys:
             to_json = self.trait_metadata(k, 'to_json', self._trait_to_json)
             value = to_json(getattr(self, k), self)
@@ -546,6 +547,13 @@ class Widget(LoggingHasTraits):
             if trait.get_metadata('sync'):
                 self.keys.append(name)
                 self.send_state(name)
+
+    @classmethod
+    @functools.lru_cache(None)
+    def class_traits(cls, **metadata):
+        # we cache it for performance reasons
+        return super().class_traits(**metadata)
+
 
     def notify_change(self, change):
         """Called when a property has changed."""
@@ -682,7 +690,7 @@ class Widget(LoggingHasTraits):
             self.comm.send(data=msg, buffers=buffers)
 
     def _repr_keys(self):
-        traits = self.traits()
+        traits = self.class_traits()
         for key in sorted(self.keys):
             # Exclude traits that start with an underscore
             if key[0] == '_':
