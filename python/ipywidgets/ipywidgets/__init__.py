@@ -36,6 +36,7 @@ def register_comm_target(kernel=None):
     if kernel is None:
         kernel = get_ipython().kernel
     kernel.comm_manager.register_target('jupyter.widget', Widget.handle_comm_opened)
+    kernel.comm_manager.register_target('jupyter.widget.control', Widget.handle_control_comm_opened)
 
 def _handle_ipython():
     """Register with the comm target at import if running in Jupyter"""

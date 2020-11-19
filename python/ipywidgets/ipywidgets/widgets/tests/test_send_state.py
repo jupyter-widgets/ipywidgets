@@ -3,7 +3,7 @@
 
 from traitlets import Bool, Tuple, List
 
-from .utils import setup, teardown
+from .utils import setup, teardown, DummyComm
 
 from ..widget import Widget
 
@@ -23,3 +23,12 @@ def test_empty_hold_sync():
     with w.hold_sync():
         pass
     assert w.comm.messages == []
+
+
+def test_control():
+    comm = DummyComm()
+    Widget.close_all()
+    w = SimpleWidget()
+    Widget.handle_control_comm_opened(comm, {})
+    Widget.handle_control_comm_msg({'type': 'models-request'})
+    assert comm.messages
