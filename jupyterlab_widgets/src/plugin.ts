@@ -157,8 +157,8 @@ export function registerWidgetManager(
  */
 const plugin: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> = {
   id: '@jupyter-widgets/jupyterlab-manager:plugin',
-  requires: [INotebookTracker, IRenderMimeRegistry, ISettingRegistry],
-  optional: [IMainMenu, ILoggerRegistry],
+  requires: [IRenderMimeRegistry, ISettingRegistry],
+  optional: [INotebookTracker, IMainMenu, ILoggerRegistry],
   provides: base.IJupyterWidgetRegistry,
   activate: activateWidgetExtension,
   autoStart: true
@@ -176,9 +176,9 @@ function updateSettings(settings: ISettingRegistry.ISettings) {
  */
 function activateWidgetExtension(
   app: JupyterFrontEnd,
-  tracker: INotebookTracker,
   rendermime: IRenderMimeRegistry,
   settingRegistry: ISettingRegistry,
+  tracker: INotebookTracker | null,
   menu: IMainMenu | null,
   loggerRegistry: ILoggerRegistry | null): base.IJupyterWidgetRegistry {
 
@@ -228,30 +228,32 @@ function activateWidgetExtension(
     0
   );
 
-  tracker.forEach(panel => {
-    registerWidgetManager(
-      panel.context,
-      panel.content.rendermime,
-      chain(
-        widgetRenderers(panel.content),
-        outputViews(app, panel.context.path)
-      )
-    );
+  if (tracker) {
+    tracker.forEach(panel => {
+      registerWidgetManager(
+        panel.context,
+        panel.content.rendermime,
+        chain(
+          widgetRenderers(panel.content),
+          outputViews(app, panel.context.path)
+        )
+      );
 
-    bindUnhandledIOPubMessageSignal(panel);
-  });
-  tracker.widgetAdded.connect((sender, panel) => {
-    registerWidgetManager(
-      panel.context,
-      panel.content.rendermime,
-      chain(
-        widgetRenderers(panel.content),
-        outputViews(app, panel.context.path)
-      )
-    );
+      bindUnhandledIOPubMessageSignal(panel);
+    });
+    tracker.widgetAdded.connect((sender, panel) => {
+      registerWidgetManager(
+        panel.context,
+        panel.content.rendermime,
+        chain(
+          widgetRenderers(panel.content),
+          outputViews(app, panel.context.path)
+        )
+      );
 
-    bindUnhandledIOPubMessageSignal(panel);
-  });
+      bindUnhandledIOPubMessageSignal(panel);
+    });
+  }
 
   // Add a command for creating a new Markdown file.
   commands.addCommand('@jupyter-widgets/jupyterlab-manager:saveWidgetState', {
