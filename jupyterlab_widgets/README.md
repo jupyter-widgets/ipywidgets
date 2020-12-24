@@ -1,25 +1,15 @@
 Jupyter Widgets JupyterLab Extension
 ====================================
 
-![Github Actions Status](https://github.com/jupyter-widgets/ipywidgets/workflows/Build/badge.svg)
+A JupyterLab 3.0 extension for Jupyter/IPython widgets.
 
-A JupyterLab extension for Jupyter/IPython widgets.
+## Installation
 
-Package Install
----------------
-
-
-
-## Requirements
-
-* JupyterLab >= 3.0
-
-## Install
+To enable ipywidgets support in JupyterLab 3.x:
 
 ```bash
 pip install jupyterlab_widgets
 ```
-
 
 ### Version compatibility
 
@@ -44,7 +34,7 @@ to install a compatible JupyterLab extension.
 
 ### Development install
 
-Note: You will need NodeJS to build the extension package.
+Note: You will need Node.js to build the extension package.
 
 The `jlpm` command is JupyterLab's pinned version of
 [yarn](https://yarnpkg.com/) that is installed with JupyterLab. You may use
