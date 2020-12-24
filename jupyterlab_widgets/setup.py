@@ -20,11 +20,11 @@ ensure_python(">=3.6")
 # Get our version
 version = get_version(os.path.join(name, "_version.py"))
 
-lab_path = os.path.join(HERE, name, "static")
+lab_path = os.path.join(HERE, name, "labextension")
 
 # Representative files that should exist after a successful build
 jstargets = [
-    os.path.join(HERE, name, "static", "package.json"),
+    os.path.join(lab_path, "package.json"),
 ]
 
 package_data_spec = {
@@ -36,8 +36,8 @@ package_data_spec = {
 labext_name = "@jupyter-widgets/jupyterlab-manager"
 
 data_files_spec = [
-    ("share/jupyter/labextensions/%s" % labext_name, lab_path, "*.*"),
-    ("share/jupyter/lab/schemas/%s" % labext_name, os.path.join(lab_path, 'schemas', labext_name), "*.*"),
+    ("share/jupyter/labextensions/%s" % labext_name, lab_path, "**"),
+    ("share/jupyter/labextensions/%s" % labext_name, HERE, "install.json"),
 ]
 
 cmdclass = create_cmdclass(
@@ -51,7 +51,7 @@ cmdclass = create_cmdclass(
 # repo.
 jsbuild = []
 if all(os.path.exists(f) for f in jstargets):
-    jsbuild.append(install_npm(HERE, build_cmd="build", npm=["jlpm"]))
+    jsbuild.append(install_npm(HERE, build_cmd="build:prod", npm=["jlpm"]))
 jsbuild.append(ensure_targets(jstargets))
 
 cmdclass["jsdeps"] = combine_commands(*jsbuild)
@@ -75,7 +75,7 @@ setup_args = dict(
     python_requires=">=3.6",
     license="BSD-3-Clause",
     platforms="Linux, Mac OS X, Windows",
-    keywords=["Jupyter", "JupyterLab"],
+    keywords=["Jupyter", "JupyterLab", "JupyterLab3"],
     classifiers=[
         "License :: OSI Approved :: BSD License",
         "Programming Language :: Python",

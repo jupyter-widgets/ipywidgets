@@ -3,9 +3,10 @@ include README.md
 include pyproject.toml
 
 include package.json
+include install.json
 include ts*.json
 
-graft jupyterlab_widgets/static
+graft jupyterlab_widgets/labextension
 
 # Javascript files
 prune src

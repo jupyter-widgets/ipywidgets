@@ -76,5 +76,4 @@ With the watch command running, every saved change will immediately be built loc
 
 ```bash
 pip uninstall jupyterlab_widgets
-jupyter labextension uninstall @jupyter-widgets/jupyterlab-manager
 ```
