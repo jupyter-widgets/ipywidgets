@@ -114,6 +114,7 @@ Using the above script, you can do:
 ```
 hashes dist/*
 hashes widgetsnbextension/dist/*
+hashes jupyterlab_widgets/dist/*
 ```
 
 Commit the changes you've made above, and include the uploaded files hashes in the commit message. Tag the release if ipywidgets was released. Push to origin master (and include the tag in the push).
