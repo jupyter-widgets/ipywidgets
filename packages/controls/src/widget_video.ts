@@ -85,9 +85,30 @@ export class VideoView extends DOMWidgetView {
     }
 
     // Video attributes
-    this.el.loop = this.model.get('loop');
-    this.el.autoplay = this.model.get('autoplay');
-    this.el.controls = this.model.get('controls');
+    const loop  = this.model.get('loop');
+    if (loop != undefined && loop !== false)
+    {
+      this.el.setAttribute('loop', loop);
+    } else {
+      this.el.removeAttribute('loop')
+    }
+
+    const autoplay  = this.model.get('autoplay');
+    if (autoplay != undefined && autoplay !== false)
+    {
+      this.el.setAttribute('autoplay', loop);
+    } else {
+      this.el.removeAttribute('autoplay')
+    }
+
+    const controls  = this.model.get('controls');
+    if (controls != undefined && controls !== false)
+    {
+      this.el.setAttribute('controls', loop);
+    } else {
+      this.el.removeAttribute('controls')
+    }
+
 
     return super.update();
   }
