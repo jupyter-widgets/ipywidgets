@@ -86,7 +86,7 @@ export class VideoView extends DOMWidgetView {
 
     // Video attributes
     const loop  = this.model.get('loop');
-    if (loop != undefined && loop !== false)
+    if (loop != undefined && loop)
     {
       this.el.setAttribute('loop', loop);
     } else {
@@ -94,17 +94,17 @@ export class VideoView extends DOMWidgetView {
     }
 
     const autoplay  = this.model.get('autoplay');
-    if (autoplay != undefined && autoplay !== false)
+    if (autoplay != undefined && autoplay)
     {
-      this.el.setAttribute('autoplay', loop);
+      this.el.setAttribute('autoplay', autoplay);
     } else {
       this.el.removeAttribute('autoplay')
     }
 
     const controls  = this.model.get('controls');
-    if (controls != undefined && controls !== false)
+    if (controls != undefined && controls)
     {
-      this.el.setAttribute('controls', loop);
+      this.el.setAttribute('controls', controls);
     } else {
       this.el.removeAttribute('controls')
     }
