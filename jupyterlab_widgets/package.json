@@ -48,9 +48,10 @@
     "watch:src": "tsc -w"
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^4.0.0",
-    "@jupyter-widgets/controls": "^3.0.0",
-    "@jupyter-widgets/output": "^4.0.0",
+    "@jupyter-widgets/base": "^5.0.0-alpha.0",
+    "@jupyter-widgets/base-manager": "^1.0.0-alpha.0",
+    "@jupyter-widgets/controls": "^4.0.0-alpha.0",
+    "@jupyter-widgets/output": "^5.0.0-alpha.0",
     "@jupyterlab/application": "^3.0.0",
     "@jupyterlab/docregistry": "^3.0.0",
     "@jupyterlab/logconsole": "^3.0.0",

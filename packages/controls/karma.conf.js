@@ -25,7 +25,6 @@ module.exports = function(config) {
     webpack: {
       module: {
         loaders: [
-          {
                     { test: /\.jsx?$/, exclude: /node_modules/, loader: "babel?presets[]=es2015" },
                     { test: /\.css$/, use: ['style-loader', 'css-loader']},
                     { test: /\.json$/, loader: "json-loader" },

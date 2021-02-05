@@ -96,9 +96,6 @@ all of MD as it is not optimized for dense, information rich UIs.
   --jp-ui-inverse-font-color2: rgba(255, 255, 255, 0.7);
   --jp-ui-inverse-font-color3: rgba(255, 255, 255, 0.5);
 
-  /* For backwards compatibility, we still define these below until ipywidgets 8.0.
-  See https://github.com/jupyter-widgets/ipywidgets/pull/2801 */
-
   /* Content Fonts
 
   Content font variables are used for typography of user generated content.

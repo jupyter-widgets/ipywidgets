@@ -37,6 +37,7 @@
     "@typescript-eslint/parser": "^2.14.0",
     "eslint": "^6.5.0",
     "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-prettier": "^3.3.1",
     "husky": "^2.3.0",
     "lerna": "^3.20.2",
     "lint-staged": "^9.5.0",
