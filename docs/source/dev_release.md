@@ -10,7 +10,7 @@ conda deactivate
 conda remove --all -y -n releasewidgets
 rm -rf ipywidgets
 
-conda create -c conda-forge --override-channels -y -n releasewidgets notebook nodejs twine
+conda create -c conda-forge --override-channels -y -n releasewidgets notebook nodejs yarn twine jupyterlab=3 jupyter-packaging
 conda activate releasewidgets
 
 git clone git@github.com:jupyter-widgets/ipywidgets.git
@@ -54,6 +54,20 @@ yarn run publish
 ```
 
 Lerna will prompt you for version numbers for each of the changed npm packages in the version step. Lerna will then change the versions appropriately (including the interdependency versions), commit, and tag. The `yarn run publish` step then publishes the public packages that were versioned to npm.
+
+### jupyterlab_widgets
+
+Go into the `jupyterlab_widgets` directory. Change `jupyterlab_widgets/_version.py` to reflect the new version number.
+```
+python setup.py sdist bdist_wheel
+twine check dist/*
+twine upload dist/*
+```
+
+Verify that the package is uploaded.
+```
+curl -s https://pypi.org/pypi/jupyterlab-widgets/json | jq  -r '[.releases[][] | [.upload_time, .digests.sha256, .filename] | join(" ")] | sort '
+```
 
 ### widgetsnbextension
 
@@ -103,6 +117,7 @@ Using the above script, you can do:
 ```
 hashes dist/*
 hashes widgetsnbextension/dist/*
+hashes jupyterlab_widgets/dist/*
 ```
 
 Commit the changes you've made above, and include the uploaded files hashes in the commit message. Tag the release if ipywidgets was released. Push to origin master (and include the tag in the push).

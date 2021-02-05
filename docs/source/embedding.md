@@ -211,7 +211,7 @@ The [jupyter_sphinx](https://jupyter-sphinx.readthedocs.io) extension
 enables jupyter-specific features in sphinx. It can be installed with `pip` and
 `conda`.
 
-In the `conf.py` sphinx configuration file, add `jupyter_sphinx.execute`
+In the `conf.py` sphinx configuration file, add `jupyter_sphinx`
 to the list of enabled extensions.
 
 Then use the `jupyter-execute` directive to embed the output of code execution

@@ -120,6 +120,7 @@ install_requires = setuptools_args['install_requires'] = [
 ]
 
 extras_require = setuptools_args['extras_require'] = {
+    ':python_version>="3.6"': ['jupyterlab_widgets>=1.0.0'],
     'test': ['pytest>=3.6.0', 'pytest-cov'],
 }
 
