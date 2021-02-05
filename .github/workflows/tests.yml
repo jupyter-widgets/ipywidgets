@@ -22,8 +22,8 @@ jobs:
       run: |
         sudo apt-get install -y pandoc
         python -m pip install --upgrade pip
-        pip install file://$PWD#egg=ipywidgets
-        pip install -r ./docs/requirements.txt
+        python -m pip install file://$PWD#egg=ipywidgets
+        python -m pip install -r ./docs/requirements.txt
     - name: Build docs
       run: |
         cd docs
@@ -34,13 +34,26 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js 10.x
-      uses: actions/setup-node@v1
+    - name: Set up Python
+      uses: actions/setup-python@v1
       with:
-        node-version: 10.x
+        python-version: 3.7
+    - uses: actions/cache@v1
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}-${{hashFiles('**/requirements.txt')}}
+        restore-keys: |
+          ${{ runner.os }}-pip-
     - name: Install dependencies
       run: |
         sudo apt-get install -y firefox
+        python -m pip install --upgrade pip
+        python -m pip install jupyterlab~=3.0
+
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
     - name: Get yarn cache
       id: yarn-cache
       run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -50,6 +63,7 @@ jobs:
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-yarn-
+
     - name: yarn install, build, test
       run: |
         yarn install --frozen-lockfile
