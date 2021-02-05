@@ -25,9 +25,13 @@ module.exports = function(config) {
     webpack: {
       module: {
         loaders: [
-                    { test: /\.jsx?$/, exclude: /node_modules/, loader: "babel?presets[]=es2015" },
-                    { test: /\.css$/, use: ['style-loader', 'css-loader']},
-                    { test: /\.json$/, loader: "json-loader" },
+          {
+            test: /\.jsx?$/,
+            exclude: /node_modules/,
+            loader: 'babel?presets[]=es2015'
+          },
+          { test: /\.css$/, use: ['style-loader', 'css-loader'] },
+          { test: /\.json$/, loader: 'json-loader' },
           // jquery-ui loads some images
           { test: /\.(jpg|png|gif)$/, loader: 'file' },
           // required to load font-awesome
