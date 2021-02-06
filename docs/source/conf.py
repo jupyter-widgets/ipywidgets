@@ -38,7 +38,6 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
     'nbsphinx',
-    'jupyter_sphinx',
     'IPython.sphinxext.ipython_console_highlighting',
     'recommonmark',
 ]
