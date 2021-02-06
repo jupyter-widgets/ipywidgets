@@ -1,4 +1,7 @@
-conda:
-    file: docs/environment.yml
+version: 2
 python:
-    version: 3
+    version: 3.7
+    install:
+      - method: setuptools
+        path: .
+      - requirements: docs/requirements.txt
