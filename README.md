@@ -7,7 +7,8 @@
 | **Communication** | [![Join the chat at https://gitter.im/ipython/ipywidgets](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jupyter-widgets/Lobby) [![Discourse](https://img.shields.io/badge/help_forum-discourse-blue?logo=discourse)](https://discourse.jupyter.org/) |
 | | |
 
-**ipywidgets**, also known as jupyter-widgets or simply are [interactive HTML widgets](https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb)
+**ipywidgets**, also known as jupyter-widgets or simply widgets, are
+[interactive HTML widgets](https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb)
 for Jupyter notebooks and the IPython kernel.
 
 Notebooks come alive when interactive widgets are used. Users gain control of
@@ -47,9 +48,9 @@ following the current best practices for using interactive widgets. An
 implementation for a placeholder "Hello World" widget is provided as an example.
 
 Popular widget libraries such as
-[bqplot](https://github.com/bloomberg/bqplot),
-[pythreejs](https://github.com/jovyan/pythreejs) and
-[ipyleaflet](https://github.com/ellisonbg/ipyleaflet)
+[bqplot](https://github.com/bqplot/bqplot),
+[pythreejs](https://github.com/jupyter-widgets/pythreejs) and
+[ipyleaflet](https://github.com/jupyter-widgets/ipyleaflet)
 follow exactly the same template and directory structure. They serve as
 more advanced examples of usage of the Jupyter widget infrastructure.
 
@@ -57,11 +58,11 @@ more advanced examples of usage of the Jupyter widget infrastructure.
 
 Examples of custom widget libraries built upon ipywidgets are
 
-- [bqplot](https://github.com/bloomberg/bqplot) a 2d data visualization library
+- [bqplot](https://github.com/bqplot/bqplot) a 2d data visualization library
   enabling custom user interactions.
-- [pythreejs](https://github.com/jovyan/pythreejs) a Jupyter - Three.js wrapper,
+- [pythreejs](https://github.com/jupyter-widgets/pythreejs) a Jupyter - Three.js wrapper,
   bringing Three.js to the notebook.
-- [ipyleaflet](https://github.com/ellisonbg/ipyleaflet) a leaflet widget for Jupyter.
+- [ipyleaflet](https://github.com/jupyter-widgets/ipyleaflet) a leaflet widget for Jupyter.
 
 ## Install
 
