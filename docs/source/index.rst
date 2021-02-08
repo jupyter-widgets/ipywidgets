@@ -3,7 +3,7 @@ ipywidgets
 
 .. only:: html
 
-    :Release: |version|
+    :Release: |release|
     :Date: |today|
 
 **ipywidgets**, also known as jupyter-widgets or simply widgets, are
