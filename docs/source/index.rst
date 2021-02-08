@@ -49,7 +49,7 @@ ipywidgets to your notebooks, and we're here to help you get started.
    developer_docs
    dev_install.md
    dev_testing.md
-   dev_docs
+   dev_docs.md
    contributing.md
    dev_release.md
 
