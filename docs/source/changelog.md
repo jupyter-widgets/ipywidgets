@@ -1,4 +1,4 @@
-# ipwidgets Changelog
+# ipywidgets Changelog
 
 A summary of changes in ipywidgets. For more detailed information, see the issues and pull requests for the appropriate milestone on [GitHub](https://github.com/jupyter-widgets/ipywidgets).
 
