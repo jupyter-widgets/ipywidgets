@@ -219,6 +219,24 @@ export class WidgetManager extends ManagerBase {
    */
   _init_actions() {
     var notifier = Jupyter.notification_area.widget('widgets');
+    this.notebook.events.on('before_save.Notebook', async () => {
+      var cells = Jupyter.notebook.get_cells();
+      // notebook.js save_notebook doesn't want for this promise, we are simply lucky when this
+      // finishes before saving.
+      await Promise.all(
+        cells.map(async cell => {
+          var widget_output = cell.output_area.outputs.find(output => {
+            return output.data && output.data[MIME_TYPE];
+          });
+          if (widget_output) {
+            var model_id = widget_output.data[MIME_TYPE].model_id;
+            var model = await this.get_model(model_id);
+            var bundle = await model.generateMimeBundle();
+            _.extend(widget_output.data, bundle);
+          }
+        })
+      );
+    });
     this.saveWidgetsAction = {
       handler: function () {
         this.get_state({
