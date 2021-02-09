@@ -26,6 +26,15 @@ export class ImageModel extends CoreDOMWidgetModel {
       },
     },
   };
+
+  async generateMimeBundle() {
+    const view: ImageView = await this.widget_manager.create_view<ImageView>(
+      this
+    );
+    return Promise.resolve({
+      'text/html': view.el.outerHTML
+    });
+  }
 }
 
 export class ImageView extends DOMWidgetView {
