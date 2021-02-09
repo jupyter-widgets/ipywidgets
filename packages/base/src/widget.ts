@@ -88,15 +88,10 @@ export class WidgetModel extends Backbone.Model {
     };
   }
 
-  generateMimeBundle() {
-    return Promise.resolve({
-      'application/vnd.jupyter.widget-view+json': {
-        model_id: this.model_id,
-        version_major: 2,
-        version_minor: 0
-      },
+  async generateMimeBundle() {
+    return {
       'text/html': '<h1>Hi!</h1>'
-    });
+    };
   }
 
   /**
