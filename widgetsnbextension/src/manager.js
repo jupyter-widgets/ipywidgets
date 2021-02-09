@@ -231,8 +231,10 @@ export class WidgetManager extends ManagerBase {
           if (widget_output) {
             var model_id = widget_output.data[MIME_TYPE].model_id;
             var model = await this.get_model(model_id);
-            var bundle = await model.generateMimeBundle();
-            _.extend(widget_output.data, bundle);
+            if (model) {
+              var bundle = await model.generateMimeBundle();
+              _.extend(widget_output.data, bundle);
+            }
           }
         })
       );
