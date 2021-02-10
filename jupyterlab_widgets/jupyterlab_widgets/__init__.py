@@ -1,3 +1,5 @@
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
 
 import json
 import os.path as osp
@@ -14,6 +16,3 @@ def _jupyter_labextension_paths():
         'src': 'labextension',
         'dest': data['name']
     }]
-
-
-
