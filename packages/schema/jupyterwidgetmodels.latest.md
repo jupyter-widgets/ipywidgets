@@ -396,8 +396,8 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | `null` or string | `null`           | Name of the view.
-`source`         | array            | `[]`             | The source (widget, 'trait_name') pair
-`target`         | array            | `[]`             | The target (widget, 'trait_name') pair
+`source`         | array            | `null`           | The source (widget, 'trait_name') pair
+`target`         | array            | `null`           | The target (widget, 'trait_name') pair
 
 ### DropdownModel (@jupyter-widgets/controls, 2.0.0); DropdownView (@jupyter-widgets/controls, 2.0.0)
 
@@ -828,8 +828,8 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | `null` or string | `null`           | Name of the view.
-`source`         | array            | `[]`             | The source (widget, 'trait_name') pair
-`target`         | array            | `[]`             | The target (widget, 'trait_name') pair
+`source`         | array            | `null`           | The source (widget, 'trait_name') pair
+`target`         | array            | `null`           | The target (widget, 'trait_name') pair
 
 ### PasswordModel (@jupyter-widgets/controls, 2.0.0); PasswordView (@jupyter-widgets/controls, 2.0.0)
 
