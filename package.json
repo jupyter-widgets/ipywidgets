@@ -3,7 +3,8 @@
   "workspaces": [
     "packages/*",
     "widgetsnbextension",
-    "examples/*"
+    "examples/*",
+    "jupyterlab_widgets"
   ],
   "scripts": {
     "build": "lerna run build --ignore \"@jupyter-widgets/example-*\"",
@@ -31,11 +32,12 @@
     }
   },
   "devDependencies": {
-    "@jupyterlab/buildutils": "^2.0.2",
+    "@jupyterlab/buildutils": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^2.14.0",
     "@typescript-eslint/parser": "^2.14.0",
     "eslint": "^6.5.0",
     "eslint-config-prettier": "^6.9.0",
+    "eslint-plugin-prettier": "^3.3.1",
     "husky": "^2.3.0",
     "lerna": "^3.20.2",
     "lint-staged": "^9.5.0",

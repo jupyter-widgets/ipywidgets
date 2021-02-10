@@ -24,6 +24,7 @@ npm-debug.log
 !.vscode/extensions.json
 
 widgetsnbextension/widgetsnbextension/static
+jupyterlab_widgets/jupyterlab_widgets/labextension/
 
 index.built.js
 index.built.js.map

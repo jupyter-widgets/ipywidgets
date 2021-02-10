@@ -30,7 +30,7 @@ module.exports = function(config) {
             exclude: /node_modules/,
             loader: 'babel?presets[]=es2015'
           },
-          { test: /\.css$/, loader: 'style-loader!css-loader' },
+          { test: /\.css$/, use: ['style-loader', 'css-loader'] },
           { test: /\.json$/, loader: 'json-loader' },
           // jquery-ui loads some images
           { test: /\.(jpg|png|gif)$/, loader: 'file' },

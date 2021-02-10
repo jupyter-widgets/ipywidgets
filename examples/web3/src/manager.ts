@@ -1,5 +1,4 @@
 import * as base from '@jupyter-widgets/base';
-
 import { Kernel } from '@jupyterlab/services';
 
 import { HTMLManager } from '@jupyter-widgets/html-manager';

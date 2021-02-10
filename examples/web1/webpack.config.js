@@ -10,7 +10,7 @@ module.exports = {
   },
   module: {
     rules: [
-      { test: /\.css$/, loader: 'style-loader!css-loader' },
+      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
       // jquery-ui loads some images
       { test: /\.(jpg|png|gif)$/, use: 'file-loader' }
     ]

@@ -32,8 +32,8 @@
     "test:unit:ie": "npm run test:unit:default -- --browsers=IE"
   },
   "dependencies": {
-    "@jupyter-widgets/base": "^4.0.0-alpha.0",
-    "@jupyterlab/services": "^5.0.2",
+    "@jupyter-widgets/base": "^5.0.0-alpha.0",
+    "@jupyterlab/services": "^6.0.0",
     "@lumino/coreutils": "^1.4.2",
     "base64-js": "^1.2.1"
   },
