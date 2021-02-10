@@ -187,7 +187,7 @@ class FloatSlider(_BoundedFloat):
 
     @validate('value')
     def _validate_value(self, proposal):
-        value = proposal['value']
+        value = super()._validate_value(proposal)
         if not self.round:
             return value
         # round value to closest one in interval
@@ -264,7 +264,7 @@ class FloatLogSlider(_BoundedLogFloat):
 
     @validate('value')
     def _validate_value(self, proposal):
-        value = proposal['value']
+        value = super()._validate_value(proposal)
         if not self.round:
             return value
         # round value to closest one in interval
@@ -440,7 +440,7 @@ class FloatRangeSlider(_BoundedFloatRange):
 
     @validate('value')
     def _validate_value(self, proposal):
-        value = proposal['value']
+        value = super()._validate_value(proposal)
         if not self.round:
             return value
         # round value to closest one in interval
