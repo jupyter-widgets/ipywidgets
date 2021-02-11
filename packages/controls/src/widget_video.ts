@@ -50,6 +50,18 @@ export class VideoView extends DOMWidgetView {
      * changed by another view or by a state update from the back-end.
      */
 
+    const changed = Object.keys(this.model.changedAttributes() || {});
+    if (changed[0] === 'playing' && changed.length === 1) {
+      // Only change the playing state
+      if (this.model.get('playing')) {
+        this.el.play();
+      } else {
+        this.el.pause();
+      }
+
+      return;
+    }
+
     let url;
     const format = this.model.get('format');
     const value = this.model.get('value');

@@ -576,6 +576,12 @@
         "type": "bool"
       },
       {
+        "default": true,
+        "help": "Specifies that video is currently playing",
+        "name": "playing",
+        "type": "bool"
+      },
+      {
         "allow_none": true,
         "default": null,
         "help": "Is widget tabbable?",
@@ -8097,6 +8103,12 @@
         "default": true,
         "help": "When true, the video will start from the beginning after finishing",
         "name": "loop",
+        "type": "bool"
+      },
+      {
+        "default": true,
+        "help": "Specifies that video is currently playing",
+        "name": "playing",
         "type": "bool"
       },
       {
