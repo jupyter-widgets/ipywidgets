@@ -4,6 +4,7 @@
 import { JSONObject, JSONValue, UUID, JSONExt } from '@lumino/coreutils';
 
 import _isEqual from 'lodash/isEqual';
+import { WidgetModel } from './widget';
 
 /**
  * Find all strings in the first argument that are not in the second.
@@ -229,4 +230,103 @@ export function remove_buffers(
   }
   const new_state = remove(state, []) as JSONObject;
   return { state: new_state, buffers: buffers, buffer_paths: buffer_paths };
+}
+
+export function findWidgetChildren(
+  widget: WidgetModel,
+  recursive = false
+): Set<WidgetModel> {
+  const children = new Set<WidgetModel>();
+  _findWidgetChildren(widget, children, recursive ? Infinity : 1);
+  children.delete(widget);
+  return children;
+}
+
+function _findWidgetChildren(
+  obj: any,
+  found: Set<WidgetModel>,
+  levels: number
+): void {
+  if (obj instanceof WidgetModel) {
+    const widget: WidgetModel = obj;
+    // stop collecting if already found
+    if (found.has(widget)) {
+      return;
+    }
+    found.add(widget);
+    if (levels >= 1) {
+      for (const name in widget.attributes) {
+        const value = widget.attributes[name];
+        _findWidgetChildren(value, found, levels - 1);
+      }
+    }
+  } else if (Array.isArray(obj)) {
+    for (const value of obj) {
+      _findWidgetChildren(value, found, levels);
+    }
+  } else if (isObject(obj)) {
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        const value = obj[key];
+        _findWidgetChildren(value, found, levels);
+      }
+    }
+  }
+}
+
+interface IWidgetRelations {
+  widget: WidgetModel;
+  children: Set<WidgetModel>;
+  parents: Set<WidgetModel>;
+}
+
+function _removeConnected(
+  widget_id: string,
+  relations: Map<string, IWidgetRelations>
+): void {
+  const relation = relations.get(widget_id);
+  if (relation) {
+    relations.delete(widget_id);
+    relation.children.forEach(child => {
+      _removeConnected(child.model_id, relations);
+    });
+    relation.parents.forEach(parent => {
+      _removeConnected(parent.model_id, relations);
+    });
+  }
+}
+
+export function findConnectedWidgets(
+  widgets: Array<string>,
+  allWidgets: Map<string, WidgetModel>
+): Set<WidgetModel> {
+  const relations = new Map<string, IWidgetRelations>();
+  // builds up a 'graph'
+  allWidgets.forEach((widget, widget_id) => {
+    const relation: IWidgetRelations = {
+      widget,
+      children: widget.getChildren(),
+      parents: new Set()
+    };
+    relations.set(widget_id, relation);
+  });
+  // find all parents
+  allWidgets.forEach((widget, widget_id) => {
+    relations.get(widget_id)?.children.forEach(child => {
+      relations.get(child.model_id)?.parents.add(widget);
+    });
+  });
+  // It is easier to think of solving the inverse problem. So we delete all widgets that
+  // we connect to from relations
+  widgets.forEach(model_id => {
+    _removeConnected(model_id, relations);
+  });
+  // Then the connected widgets, are all widgets that are not anymore in the relations map
+  const connected = new Set<WidgetModel>();
+  allWidgets.forEach((widget, widget_id) => {
+    if (!relations.has(widget_id)) {
+      connected.add(widget);
+    }
+  });
+  return connected;
 }

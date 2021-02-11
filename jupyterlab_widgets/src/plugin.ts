@@ -53,7 +53,7 @@ const WIDGET_REGISTRY: base.IWidgetRegistryData[] = [];
 /**
  * The cached settings.
  */
-const SETTINGS: WidgetManager.Settings = { saveState: false };
+const SETTINGS: WidgetManager.Settings = { saveState: true };
 
 /**
  * Iterate through all widget renderers in a notebook.

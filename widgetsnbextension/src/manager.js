@@ -4,6 +4,7 @@
 
 var base = require('@jupyter-widgets/base');
 var ManagerBase = require('@jupyter-widgets/base-manager').ManagerBase;
+var serialize_state = require('@jupyter-widgets/base-manager').serialize_state;
 var widgets = require('@jupyter-widgets/controls');
 var outputWidgets = require('./widget_output');
 var saveState = require('./save_state');
@@ -68,6 +69,21 @@ function new_comm(
     manager,
     Array.prototype.slice.call(arguments, 1)
   );
+}
+
+function findVisibleWidgetIds(notebook) {
+  var ids = new Set();
+  var cells = Jupyter.notebook.get_cells();
+  cells.map(cell => {
+    var widget_output = cell.output_area.outputs.find(output => {
+      return output.data && output.data[MIME_TYPE];
+    });
+    if (widget_output) {
+      var model_id = widget_output.data[MIME_TYPE].model_id;
+      ids.add(model_id);
+    }
+  });
+  return ids;
 }
 
 //--------------------------------------------------------------------
@@ -219,45 +235,18 @@ export class WidgetManager extends ManagerBase {
    */
   _init_actions() {
     var notifier = Jupyter.notification_area.widget('widgets');
-    this.saveWidgetsAction = {
-      handler: function() {
-        this.get_state({
-          drop_defaults: true
-        }).then(function(state) {
-          Jupyter.notebook.metadata.widgets = {
-            'application/vnd.jupyter.widget-state+json': state
-          };
-          Jupyter.menubar.actions
-            .get('jupyter-notebook:save-notebook')
-            .handler({
-              notebook: Jupyter.notebook
-            });
-        });
-      }.bind(this),
-      icon: 'fa-truck',
-      help:
-        'Save the notebook with the widget state information for static rendering'
-    };
-    Jupyter.menubar.actions.register(
-      this.saveWidgetsAction,
-      'save-with-widgets',
-      'widgets'
-    );
-
-    this.clearWidgetsAction = {
-      handler: function() {
-        delete Jupyter.notebook.metadata.widgets;
-        Jupyter.menubar.actions.get('jupyter-notebook:save-notebook').handler({
-          notebook: Jupyter.notebook
-        });
-      },
-      help: 'Clear the widget state information from the notebook'
-    };
-    Jupyter.menubar.actions.register(
-      this.saveWidgetsAction,
-      'save-clear-widgets',
-      'widgets'
-    );
+    this.notebook.events.on('before_save.Notebook', () => {
+      var visibleWidgetsIds = findVisibleWidgetIds(Jupyter.notebook);
+      var models = base.findConnectedWidgets(
+        visibleWidgetsIds,
+        this.get_models_sync()
+      );
+      var state = serialize_state(models, { drop_defaults: true });
+      console.log('Only saving visible widgets', models);
+      Jupyter.notebook.metadata.widgets = {
+        'application/vnd.jupyter.widget-state+json': state
+      };
+    });
   }
 
   /**
@@ -285,16 +274,6 @@ export class WidgetManager extends ManagerBase {
     var divider = document.createElement('ul');
     divider.classList.add('divider');
 
-    widgetsSubmenu.appendChild(
-      this._createMenuItem('Save Notebook Widget State', this.saveWidgetsAction)
-    );
-    widgetsSubmenu.appendChild(
-      this._createMenuItem(
-        'Clear Notebook Widget State',
-        this.clearWidgetsAction
-      )
-    );
-    widgetsSubmenu.appendChild(divider);
     widgetsSubmenu.appendChild(
       this._createMenuItem('Download Widget State', saveState.action)
     );
