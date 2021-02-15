@@ -30,21 +30,10 @@ Usage
 """
 
 #-----------------------------------------------------------------------------
-# Minimal Python version sanity check
-#-----------------------------------------------------------------------------
-
-import sys
-
-v = sys.version_info
-if v[:2] < (3, 5):
-    error = "ERROR: %s requires Python version 3.5 or above." % name
-    print(error, file=sys.stderr)
-    sys.exit(1)
-
-#-----------------------------------------------------------------------------
 # get on with it
 #-----------------------------------------------------------------------------
 
+import sys
 import os
 from distutils.core import setup
 from distutils.command.build_py import build_py
@@ -99,6 +88,7 @@ setup_args = dict(
         'build_py': build_py,
         'sdist': sdist,
     },
+    python_requires = '>=3.5',
 )
 
 if 'develop' in sys.argv or any(a.startswith('bdist') for a in sys.argv):
