@@ -41,17 +41,17 @@ export class OutputModel extends outputBase.OutputModel {
 
 export class OutputView extends outputBase.OutputView {
   _createElement(tagName: string): HTMLElement {
-    this.pWidget = new Panel();
-    return this.pWidget.node;
+    this.lmWidget = new Panel();
+    return this.lmWidget.node;
   }
 
   _setElement(el: HTMLElement): void {
-    if (this.el || el !== this.pWidget.node) {
+    if (this.el || el !== this.lmWidget.node) {
       // Boxes don't allow setting the element beyond the initial creation.
       throw new Error('Cannot reset the DOM element.');
     }
-    this.el = this.pWidget.node;
-    this.$el = $(this.pWidget.node);
+    this.el = this.lmWidget.node;
+    this.$el = $(this.lmWidget.node);
   }
 
   render(): void {
@@ -61,13 +61,13 @@ export class OutputView extends outputBase.OutputView {
       rendermime: rendermime,
       model: this.model.outputs
     });
-    this.pWidget.insertWidget(0, this._outputView);
-    this.pWidget.addClass('jupyter-widgets');
-    this.pWidget.addClass('widget-output');
+    this.lmWidget.insertWidget(0, this._outputView);
+    this.lmWidget.addClass('jupyter-widgets');
+    this.lmWidget.addClass('widget-output');
     this.update();
   }
 
   model: OutputModel;
   private _outputView: OutputArea;
-  pWidget: Panel;
+  lmWidget: Panel;
 }

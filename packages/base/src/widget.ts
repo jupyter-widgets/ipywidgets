@@ -886,6 +886,16 @@ export class DOMWidgetView extends WidgetView {
     this.updateTooltip();
   }
 
+  /**
+   * Getter for backward compatibility.
+   *
+   * pWidget is deprecated and will be removed in the future,
+   * please use lmWidget instead.
+   */
+  get pWidget(): Widget {
+    return this.lmWidget;
+  }
+
   setLayout(layout: LayoutModel, oldLayout?: LayoutModel): void {
     if (layout) {
       this.layoutPromise = this.layoutPromise.then(oldLayoutView => {
@@ -904,12 +914,12 @@ export class DOMWidgetView extends WidgetView {
                 // Post (asynchronous) so layout changes can take
                 // effect first.
                 MessageLoop.postMessage(
-                  this.pWidget,
+                  this.lmWidget,
                   Widget.ResizeMessage.UnknownSize
                 );
               });
               MessageLoop.postMessage(
-                this.pWidget,
+                this.lmWidget,
                 Widget.ResizeMessage.UnknownSize
               );
               return view;
@@ -1034,21 +1044,21 @@ export class DOMWidgetView extends WidgetView {
   }
 
   _setElement(el: HTMLElement): void {
-    if (this.pWidget) {
-      this.pWidget.dispose();
+    if (this.lmWidget) {
+      this.lmWidget.dispose();
     }
 
     this.$el = el instanceof $ ? el : $(el);
     this.el = this.$el[0];
-    this.pWidget = new JupyterLuminoWidget({
+    this.lmWidget = new JupyterLuminoWidget({
       node: el,
       view: this
     });
   }
 
   remove(): any {
-    if (this.pWidget) {
-      this.pWidget.dispose();
+    if (this.lmWidget) {
+      this.lmWidget.dispose();
     }
     return super.remove();
   }
@@ -1063,9 +1073,9 @@ export class DOMWidgetView extends WidgetView {
 
   private _comm_live_update(): void {
     if (this.model.comm_live) {
-      this.pWidget.removeClass('jupyter-widgets-disconnected');
+      this.lmWidget.removeClass('jupyter-widgets-disconnected');
     } else {
-      this.pWidget.addClass('jupyter-widgets-disconnected');
+      this.lmWidget.addClass('jupyter-widgets-disconnected');
     }
   }
 
@@ -1081,7 +1091,7 @@ export class DOMWidgetView extends WidgetView {
   }
   el: HTMLElement; // Override typing
   '$el': any;
-  pWidget: Widget;
+  lmWidget: Widget;
   layoutPromise: Promise<any>;
   stylePromise: Promise<any>;
 }

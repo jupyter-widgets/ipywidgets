@@ -90,18 +90,18 @@ export class JupyterLuminoAccordionWidget extends Accordion {
 
 export class AccordionView extends DOMWidgetView {
   _createElement(tagName: string): HTMLElement {
-    this.pWidget = new JupyterLuminoAccordionWidget({ view: this });
-    return this.pWidget.node;
+    this.lmWidget = new JupyterLuminoAccordionWidget({ view: this });
+    return this.lmWidget.node;
   }
 
   _setElement(el: HTMLElement): void {
-    if (this.el || el !== this.pWidget.node) {
+    if (this.el || el !== this.lmWidget.node) {
       // Accordions don't allow setting the element beyond the initial creation.
       throw new Error('Cannot reset the DOM element.');
     }
 
-    this.el = this.pWidget.node;
-    this.$el = $(this.pWidget.node);
+    this.el = this.lmWidget.node;
+    this.$el = $(this.lmWidget.node);
   }
 
   initialize(parameters: WidgetView.IInitializeParameters): void {
@@ -123,7 +123,7 @@ export class AccordionView extends DOMWidgetView {
    */
   render(): void {
     super.render();
-    const accordion = this.pWidget;
+    const accordion = this.lmWidget;
     accordion.addClass('jupyter-widgets');
     accordion.addClass('widget-accordion');
     accordion.addClass('widget-container');
@@ -147,7 +147,7 @@ export class AccordionView extends DOMWidgetView {
     // tabs before updating so we don't get spurious changes in the index,
     // which would then set off another sync cycle.
     this.updatingChildren = true;
-    this.pWidget.selection.index = null;
+    this.lmWidget.selection.index = null;
     this.children_views?.update(this.model.get('children'));
     this.update_selected_index();
     this.updatingChildren = false;
@@ -157,7 +157,7 @@ export class AccordionView extends DOMWidgetView {
    * Set header titles
    */
   update_titles(): void {
-    const collapsed = this.pWidget.collapseWidgets;
+    const collapsed = this.lmWidget.collapseWidgets;
     const titles = this.model.get('titles');
     for (let i = 0; i < collapsed.length; i++) {
       if (titles[i] !== void 0) {
@@ -170,14 +170,14 @@ export class AccordionView extends DOMWidgetView {
    * Make the rendering and selected index consistent.
    */
   update_selected_index(): void {
-    this.pWidget.selection.index = this.model.get('selected_index');
+    this.lmWidget.selection.index = this.model.get('selected_index');
   }
 
   /**
    * Called when a child is removed from children list.
    */
   remove_child_view(view: DOMWidgetView): void {
-    this.pWidget.removeWidget(view.pWidget);
+    this.lmWidget.removeWidget(view.lmWidget);
     view.remove();
   }
 
@@ -186,13 +186,13 @@ export class AccordionView extends DOMWidgetView {
    */
   add_child_view(model: WidgetModel, index: number): Promise<DOMWidgetView> {
     // Placeholder widget to keep our position in the tab panel while we create the view.
-    const accordion = this.pWidget;
+    const accordion = this.lmWidget;
     const placeholder = new Widget();
     placeholder.title.label = this.model.get('titles')[index] || '';
     accordion.addWidget(placeholder);
     return this.create_child_view(model)
       .then((view: DOMWidgetView) => {
-        const widget = view.pWidget;
+        const widget = view.lmWidget;
         widget.title.label = placeholder.title.label;
         const collapse =
           accordion.collapseWidgets[accordion.indexOf(placeholder)];
@@ -209,7 +209,7 @@ export class AccordionView extends DOMWidgetView {
   }
 
   children_views: ViewList<DOMWidgetView> | null;
-  pWidget: Accordion;
+  lmWidget: Accordion;
   updatingChildren: boolean;
 }
 
@@ -264,20 +264,20 @@ export class JupyterLuminoTabPanelWidget extends TabPanel {
 
 export class TabView extends DOMWidgetView {
   _createElement(tagName: string): HTMLElement {
-    this.pWidget = new JupyterLuminoTabPanelWidget({
+    this.lmWidget = new JupyterLuminoTabPanelWidget({
       view: this
     });
-    return this.pWidget.node;
+    return this.lmWidget.node;
   }
 
   _setElement(el: HTMLElement): void {
-    if (this.el || el !== this.pWidget.node) {
+    if (this.el || el !== this.lmWidget.node) {
       // TabViews don't allow setting the element beyond the initial creation.
       throw new Error('Cannot reset the DOM element.');
     }
 
-    this.el = this.pWidget.node;
-    this.$el = $(this.pWidget.node);
+    this.el = this.lmWidget.node;
+    this.$el = $(this.lmWidget.node);
   }
 
   /**
@@ -301,7 +301,7 @@ export class TabView extends DOMWidgetView {
    */
   render(): void {
     super.render();
-    const tabs = this.pWidget;
+    const tabs = this.lmWidget;
     tabs.addClass('jupyter-widgets');
     tabs.addClass('widget-container');
     tabs.addClass('widget-tab');
@@ -328,9 +328,9 @@ export class TabView extends DOMWidgetView {
     // tabs before updating so we don't get spurious changes in the index,
     // which would then set off another sync cycle.
     this.updatingTabs = true;
-    this.pWidget.currentIndex = null;
+    this.lmWidget.currentIndex = null;
     this.childrenViews?.update(this.model.get('children'));
-    this.pWidget.currentIndex = this.model.get('selected_index');
+    this.lmWidget.currentIndex = this.model.get('selected_index');
     this.updatingTabs = false;
   }
 
@@ -340,13 +340,13 @@ export class TabView extends DOMWidgetView {
   addChildView(model: WidgetModel, index: number): Promise<DOMWidgetView> {
     // Placeholder widget to keep our position in the tab panel while we create the view.
     const label = this.model.get('titles')[index] || '';
-    const tabs = this.pWidget;
+    const tabs = this.lmWidget;
     const placeholder = new Widget();
     placeholder.title.label = label;
     tabs.addWidget(placeholder);
     return this.create_child_view(model)
       .then((view: DOMWidgetView) => {
-        const widget = view.pWidget;
+        const widget = view.lmWidget;
         widget.title.label = placeholder.title.label;
         widget.title.closable = false;
 
@@ -380,7 +380,7 @@ export class TabView extends DOMWidgetView {
    */
   updateTitles(): void {
     const titles = this.model.get('titles') || [];
-    each(this.pWidget.widgets, (widget, i) => {
+    each(this.lmWidget.widgets, (widget, i) => {
       widget.title.label = titles[i] || '';
     });
   }
@@ -389,7 +389,7 @@ export class TabView extends DOMWidgetView {
    * Updates the selected index.
    */
   updateSelectedIndex(): void {
-    this.pWidget.currentIndex = this.model.get('selected_index');
+    this.lmWidget.currentIndex = this.model.get('selected_index');
   }
 
   remove(): void {
@@ -423,7 +423,7 @@ export class TabView extends DOMWidgetView {
 
   updatingTabs = false;
   childrenViews: ViewList<DOMWidgetView> | null;
-  pWidget: JupyterLuminoTabPanelWidget;
+  lmWidget: JupyterLuminoTabPanelWidget;
 }
 
 export class StackedModel extends SelectionContainerModel {
@@ -452,7 +452,7 @@ export class StackedView extends BoxView {
         // Notify all children that their sizes may have changed.
         views.forEach(view => {
           MessageLoop.postMessage(
-            view.pWidget,
+            view.lmWidget,
             Widget.ResizeMessage.UnknownSize
           );
         });

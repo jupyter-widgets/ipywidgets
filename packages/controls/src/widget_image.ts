@@ -34,8 +34,8 @@ export class ImageView extends DOMWidgetView {
      * Called when view is rendered.
      */
     super.render();
-    this.pWidget.addClass('jupyter-widgets');
-    this.pWidget.addClass('widget-image');
+    this.lmWidget.addClass('jupyter-widgets');
+    this.lmWidget.addClass('widget-image');
     this.update(); // Set defaults.
   }
 
