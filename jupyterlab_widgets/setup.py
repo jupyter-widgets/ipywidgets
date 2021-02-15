@@ -6,6 +6,7 @@ import os
 from jupyter_packaging import (
     create_cmdclass, install_npm, ensure_targets,
     combine_commands, ensure_python, get_version,
+    skip_if_exists
 )
 import setuptools
 
@@ -49,12 +50,16 @@ cmdclass = create_cmdclass(
 # if the static assets already exist, do not invoke npm so we can make a wheel
 # from the sdist package, since the npm build really only works from this
 # repo.
-jsbuild = []
-if all(os.path.exists(f) for f in jstargets):
-    jsbuild.append(install_npm(HERE, build_cmd="build:prod", npm=["jlpm"]))
-jsbuild.append(ensure_targets(jstargets))
+js_command = combine_commands(
+    install_npm(HERE, build_cmd="build:prod", npm=["jlpm"]),
+    ensure_targets(jstargets),
+)
 
-cmdclass["jsdeps"] = combine_commands(*jsbuild)
+is_repo = os.path.exists(os.path.join(HERE, os.pardir, ".git"))
+if is_repo:
+    cmdclass["jsdeps"] = js_command
+else:
+    cmdclass["jsdeps"] = skip_if_exists(jstargets, js_command)
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
