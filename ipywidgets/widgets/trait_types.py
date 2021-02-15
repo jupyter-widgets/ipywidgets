@@ -89,14 +89,20 @@ def datetime_to_json(pydt, manager):
     if pydt is None:
         return None
     else:
+        try:
+            utcdt = pydt.astimezone(dt.timezone.utc)
+        except (ValueError, OSError):
+            # If year is outside valid range for conversion,
+            # use it as-is
+            utcdt = pydt
         return dict(
-            year=pydt.year,
-            month=pydt.month - 1,  # Months are 0-based indices in JS
-            date=pydt.day,
-            hours=pydt.hour,       # Hours, Minutes, Seconds and Milliseconds
-            minutes=pydt.minute,   # are plural in JS
-            seconds=pydt.second,
-            milliseconds=pydt.microsecond / 1000
+            year=utcdt.year,
+            month=utcdt.month - 1,  # Months are 0-based indices in JS
+            date=utcdt.day,
+            hours=utcdt.hour,  # Hours, Minutes, Seconds and Milliseconds
+            minutes=utcdt.minute,  # are plural in JS
+            seconds=utcdt.second,
+            milliseconds=utcdt.microsecond / 1000,
         )
 
 
@@ -105,15 +111,29 @@ def datetime_from_json(js, manager):
     if js is None:
         return None
     else:
-        return dt.datetime(
-            js['year'],
-            js['month'] + 1,  # Months are 1-based in Python
-            js['date'],
-            js['hours'],
-            js['minutes'],
-            js['seconds'],
-            js['milliseconds'] * 1000
-        )
+        try:
+            return dt.datetime(
+                js["year"],
+                js["month"] + 1,  # Months are 1-based in Python
+                js["date"],
+                js["hours"],
+                js["minutes"],
+                js["seconds"],
+                js["milliseconds"] * 1000,
+            ).astimezone()
+        except (ValueError, OSError):
+            # If year is outside valid range for conversion,
+            # return UTC datetime
+            return dt.datetime(
+                js["year"],
+                js["month"] + 1,  # Months are 1-based in Python
+                js["date"],
+                js["hours"],
+                js["minutes"],
+                js["seconds"],
+                js["milliseconds"] * 1000,
+                dt.timezone.utc,
+            )
 
 datetime_serialization = {
     'from_json': datetime_from_json,
