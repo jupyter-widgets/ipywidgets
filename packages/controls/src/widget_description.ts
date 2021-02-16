@@ -26,6 +26,11 @@ export class DescriptionStyleModel extends StyleModel {
       selector: '.widget-label',
       attribute: 'width',
       default: null as any
+    },
+    description_max_width: {
+      selector: '.widget-label',
+      attribute: 'max-width',
+      default: null as any
     }
   };
 }

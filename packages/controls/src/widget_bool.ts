@@ -45,7 +45,7 @@ export class CheckboxView extends DescriptionView {
 
     // label containing the checkbox and description span
     this.checkboxLabel = document.createElement('label');
-    this.checkboxLabel.classList.add('widget-label-basic');
+    this.checkboxLabel.classList.add('widget-label');
     this.el.appendChild(this.checkboxLabel);
 
     // checkbox
