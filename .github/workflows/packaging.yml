@@ -42,6 +42,13 @@ jobs:
         cd jupyterlab_widgets
         python setup.py sdist bdist_wheel
         cp ./dist/* ../dist
+    - name: Build PyPI distributions for widgetsnbextension
+      run: |
+        jlpm
+        jlpm run build
+        cd widgetsnbextension
+        python setup.py sdist bdist_wheel
+        cp ./dist/* ../dist
     - name: Build checksum file
       run: |
         cd dist
@@ -67,6 +74,8 @@ jobs:
             dist: 'ipywidgets*.whl'
           - python: '3.9'
             dist: 'jupyterlab_widgets*.tar.gz'
+          - python: '3.9'
+            dist: 'widgetsnbextension*.tar.gz'
           - os: windows
             py_cmd: python
           - os: macos
@@ -95,12 +104,12 @@ jobs:
           ${{ matrix.py_cmd }} -m pip freeze
           ${{ matrix.py_cmd }} -m pip check
       - name: Validate the install
+        if: matrix.dist != 'widgetsnbextension*.tar.gz'
         run: |
           ${{ matrix.py_cmd }} -m pip install jupyterlab~=3.0
 
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "@jupyter-widgets/jupyterlab-manager.*enabled.*ok" -
-
       - name: Check the Classic Notebook extension is installed
         if: matrix.dist != 'jupyterlab_widgets*.tar.gz'
         run: |
