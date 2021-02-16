@@ -247,7 +247,7 @@ class WidgetRegistry:
 def register(widget):
     """A decorator registering a widget class in the widget registry."""
     w = widget.class_traits()
-    Widget.widget_types.register(w['_model_module'].default_value,
+    Widget._widget_types.register(w['_model_module'].default_value,
                                  w['_model_module_version'].default_value,
                                  w['_model_name'].default_value,
                                  w['_view_module'].default_value,
@@ -266,8 +266,8 @@ class Widget(LoggingHasTraits):
     # _active_widgets is a dictionary of all active widget objects
     _active_widgets = {}
 
-    # widget_types is a registry of widgets by module, version, and name:
-    widget_types = WidgetRegistry()
+    # _widget_types is a registry of widgets by module, version, and name:
+    _widget_types = WidgetRegistry()
 
     @classmethod
     def close_all(cls):
@@ -299,7 +299,7 @@ class Widget(LoggingHasTraits):
         state = data['state']
 
         # Find the widget class to instantiate in the registered widgets
-        widget_class = Widget.widget_types.get(state['_model_module'],
+        widget_class = Widget._widget_types.get(state['_model_module'],
                                                state['_model_module_version'],
                                                state['_model_name'],
                                                state['_view_module'],
