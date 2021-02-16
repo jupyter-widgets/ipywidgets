@@ -199,7 +199,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     format = args.format
 
-    widgets_to_document = sorted(widgets.Widget.widget_types.items())
+    widgets_to_document = sorted(widgets.Widget._widget_types.items())
     spec = create_spec(widgets_to_document)
     if format == 'json':
         print(json.dumps(spec, sort_keys=True))
