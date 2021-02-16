@@ -129,7 +129,7 @@ def _get_recursive_state(widget, store=None, drop_defaults=False):
 
 def add_resolved_links(store, drop_defaults):
     """Adds the state of any link models between two models in store"""
-    for widget_id, widget in Widget.widgets.items(): # go over all widgets
+    for widget_id, widget in Widget._active_widgets.items(): # go over all widgets
         if isinstance(widget, Link) and widget_id not in store:
             if widget.source[0].model_id in store and widget.target[0].model_id in store:
                 store[widget.model_id] = widget._get_embed_state(drop_defaults=drop_defaults)
@@ -207,7 +207,7 @@ def embed_data(views, drop_defaults=True, state=None):
         view_specs: a list of widget view specs
     """
     if views is None:
-        views = [w for w in Widget.widgets.values() if isinstance(w, DOMWidget)]
+        views = [w for w in Widget._active_widgets.values() if isinstance(w, DOMWidget)]
     else:
         try:
             views[0]
