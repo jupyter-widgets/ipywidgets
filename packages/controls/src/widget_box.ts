@@ -136,6 +136,7 @@ export class BoxView extends DOMWidgetView {
   }
 
   children_views: ViewList<DOMWidgetView> | null;
+  pWidget: JupyterLuminoPanelWidget;
   lmWidget: JupyterLuminoPanelWidget;
 
   static class_map = {

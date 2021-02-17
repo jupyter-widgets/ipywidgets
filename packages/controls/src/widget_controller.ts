@@ -429,5 +429,6 @@ export class ControllerView extends DOMWidgetView {
   axis_box: Panel;
   button_box: Panel;
   model: ControllerModel;
+  pWidget: JupyterLuminoPanelWidget;
   lmWidget: JupyterLuminoPanelWidget;
 }
