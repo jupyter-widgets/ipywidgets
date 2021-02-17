@@ -58,8 +58,8 @@ widget_view_template = """<script type="application/vnd.jupyter.widget-view+json
 {view_spec}
 </script>"""
 
-DEFAULT_EMBED_SCRIPT_URL = 'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed.js'%__html_manager_version__
-DEFAULT_EMBED_REQUIREJS_URL = 'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed-amd.js'%__html_manager_version__
+DEFAULT_EMBED_SCRIPT_URL = 'https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@%s/dist/embed.js'%__html_manager_version__
+DEFAULT_EMBED_REQUIREJS_URL = 'https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@%s/dist/embed-amd.js'%__html_manager_version__
 
 _doc_snippets = {}
 _doc_snippets['views_attribute'] = """
@@ -81,7 +81,7 @@ _doc_snippets['embed_kwargs'] = """
         full description.
     embed_url: string or None
         Allows for overriding the URL used to fetch the widget manager
-        for the embedded code. This defaults (None) to an `unpkg` CDN url.
+        for the embedded code. This defaults (None) to a `jsDelivr` CDN url.
     requirejs: boolean (True)
         Enables the requirejs-based embedding, which allows for custom widgets.
         If True, the embed_url should point to an AMD module.
