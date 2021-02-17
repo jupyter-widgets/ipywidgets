@@ -125,6 +125,16 @@ Update conda-forge packages (if the requirements changed to ipywidgets, make sur
 Release Notes
 =============
 
+### Changelog
+
+- Modify `scripts/milestone_check.py` to include the release and commit range for the release, and run `python scripts/milestone_check.py` to check the issues assigned to this milestone
+- Write release highlights. You can use the list generated below as a starting point:
+  ```bash
+  loghub jupyter-widgets/ipywidgets -m XXX -t $GITHUB_TOKEN --template scripts/release_template.txt
+  ```
+
+### Example
+
 Here is an example of the release statistics for ipywidgets 7.0.
 
 It has been 157 days since the last release. In this release, we closed [127 issues](https://github.com/jupyter-widgets/ipywidgets/issues?q=is%3Aissue+is%3Aclosed+milestone%3A7.0) and [216 pull requests](https://github.com/jupyter-widgets/ipywidgets/pulls?q=is%3Apr+milestone%3A7.0+is%3Aclosed) with [1069](https://github.com/jupyter-widgets/ipywidgets/compare/6.0.0...7.0.0) commits, of which 851 are not merges.
