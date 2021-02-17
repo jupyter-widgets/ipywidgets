@@ -28,6 +28,25 @@ jobs:
       with:
         python-version: '3.9'
         architecture: 'x64'
+
+    - uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+    - uses: actions/cache@v2
+      id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+      with:
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip wheel
@@ -65,52 +84,64 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu, macos, windows]
+        os: [ubuntu, windows]
         python: ['3.6', '3.9']
-        dist: ['ipywidgets*.tar.gz', 'ipywidgets*.whl']
+        dist: ['ipywidgets*.tar.gz']
         include:
           - python: '3.9'
             dist: 'jupyterlab_widgets*.tar.gz'
+            os: 'ubuntu'
           - python: '3.9'
             dist: 'widgetsnbextension*.tar.gz'
-          - os: windows
-            py_cmd: python
-          - os: macos
-            py_cmd: python3
-          - os: ubuntu
-            py_cmd: python
+            os: 'ubuntu'
+          - python: '3.9'
+            dist: 'ipywidgets*.whl'
+            os: 'ubuntu'
     steps:
       - name: Install Python
         uses: actions/setup-python@v2
         with:
           python-version: ${{ matrix.python }}
           architecture: 'x64'
+
+      - name: Get pip cache dir
+        id: pip-cache
+        run: |
+          echo "::set-output name=dir::$(pip cache dir)"
+      - name: pip cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.pip-cache.outputs.dir }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install the prerequisites
+        run: |
+          python -m pip install pip wheel
       - uses: actions/download-artifact@v2
         with:
           name: dist ${{ github.run_number }}
           path: ./dist
-      - name: Install the prerequisites
-        run: |
-          ${{ matrix.py_cmd }} -m pip install pip wheel
       - name: Install the package
         run: |
           cd dist
-          ${{ matrix.py_cmd }} -m pip install -vv ${{ matrix.dist }}
+          python -m pip install -vv ${{ matrix.dist }}
       - name: Validate environment
         run: |
-          ${{ matrix.py_cmd }} -m pip freeze
-          ${{ matrix.py_cmd }} -m pip check
+          python -m pip freeze
+          python -m pip check
       - name: Check the JupyterLab extension is installed
         if: matrix.dist != 'widgetsnbextension*.tar.gz'
         run: |
-          ${{ matrix.py_cmd }} -m pip install jupyterlab~=3.0
+          python -m pip install jupyterlab~=3.0
 
           jupyter labextension list
           jupyter labextension list 2>&1 | grep -ie "@jupyter-widgets/jupyterlab-manager.*enabled.*ok" -
       - name: Check the Classic Notebook extension is installed
         if: matrix.dist != 'jupyterlab_widgets*.tar.gz'
         run: |
-          ${{ matrix.py_cmd }} -m pip install notebook~=6.0
+          python -m pip install notebook~=6.0
 
           jupyter nbextension list
           jupyter nbextension list 2>&1 | grep -ie "jupyter-js-widgets/extension.*enabled" -
