@@ -183,7 +183,7 @@ export abstract class ManagerBase implements IWidgetManager {
    *                          required and additional options are available.
    * @param  serialized_state - serialized model attributes.
    */
-  new_widget(
+  async new_widget(
     options: IWidgetOptions,
     serialized_state: JSONObject = {}
   ): Promise<WidgetModel> {
@@ -224,24 +224,19 @@ export abstract class ManagerBase implements IWidgetManager {
     const options_clone = { ...options };
     // Create the model. In the case where the comm promise is rejected a
     // comm-less model is still created with the required model id.
-    return commPromise.then(
-      comm => {
-        // Comm Promise Resolved.
-        options_clone.comm = comm;
-        const widget_model = this.new_model(options_clone, serialized_state);
-        return widget_model.then(model => {
-          model.sync('create', model);
-          return model;
-        });
-      },
-      () => {
-        // Comm Promise Rejected.
-        if (!options_clone.model_id) {
-          options_clone.model_id = uuid();
-        }
-        return this.new_model(options_clone, serialized_state);
+    try {
+      const comm = await commPromise;
+      options_clone.comm = comm;
+      const model = await this.new_model(options_clone, serialized_state);
+      model.sync('create', model);
+      return model;
+    } catch {
+      // Comm Promise Rejected.
+      if (!options_clone.model_id) {
+        options_clone.model_id = uuid();
       }
-    );
+      return this.new_model(options_clone, serialized_state);
+    }
   }
 
   register_model(model_id: string, modelPromise: Promise<WidgetModel>): void {
@@ -333,11 +328,13 @@ export abstract class ManagerBase implements IWidgetManager {
    * Close all widgets and empty the widget state.
    * @return Promise that resolves when the widget state is cleared.
    */
-  clear_state(): Promise<void> {
-    return resolvePromisesDict(this._models).then(models => {
-      Object.keys(models).forEach(id => models[id].close());
-      this._models = Object.create(null);
-    });
+  async clear_state(): Promise<void> {
+    await Promise.all(
+      Object.keys(this._models).map(async id =>
+        (await this._models[id]).close()
+      )
+    );
+    this._models = Object.create(null);
   }
 
   /**

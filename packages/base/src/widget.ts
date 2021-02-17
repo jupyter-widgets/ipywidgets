@@ -172,7 +172,7 @@ export class WidgetModel extends Backbone.Model {
    *
    * @returns - a promise that is fulfilled when all the associated views have been removed.
    */
-  close(comm_closed = false): Promise<void> {
+  async close(comm_closed = false): Promise<void> {
     // can only be closed once.
     if (this._closed) {
       return Promise.resolve();
@@ -187,13 +187,12 @@ export class WidgetModel extends Backbone.Model {
       delete this.comm;
     }
     // Delete all views of this model
-    const views = Object.keys(this.views).map((id: string) => {
-      return this.views[id].then(view => view.remove());
-    });
+    await Promise.all(
+      Object.keys(this.views).map(async (id: string) => {
+        (await this.views[id]).remove();
+      })
+    );
     delete this.views;
-    return Promise.all(views).then(() => {
-      return;
-    });
   }
 
   /**
@@ -213,7 +212,7 @@ export class WidgetModel extends Backbone.Model {
     switch (method) {
       case 'update':
         this.state_change = this.state_change
-          .then(() => {
+          .then(async () => {
             const state = data.state;
             const buffer_paths = data.buffer_paths || [];
             // Make sure the buffers are DataViews
@@ -226,13 +225,12 @@ export class WidgetModel extends Backbone.Model {
             });
 
             utils.put_buffers(state, buffer_paths, buffers);
-            return (this.constructor as typeof WidgetModel)._deserialize_state(
-              state,
-              this.widget_manager
+            this.set_state(
+              await (this.constructor as typeof WidgetModel)._deserialize_state(
+                state,
+                this.widget_manager
+              )
             );
-          })
-          .then(state => {
-            this.set_state(state);
           })
           .catch(
             utils.reject(
@@ -657,7 +655,7 @@ export class WidgetView extends NativeView<WidgetModel> {
       }
     });
 
-    this.displayed = new Promise((resolve, reject) => {
+    this.displayed = new Promise(resolve => {
       this.once('displayed', resolve);
 
       this.model.on('msg:custom', this.handle_message.bind(this));
@@ -859,7 +857,7 @@ export class DOMWidgetView extends WidgetView {
       this.model,
       'change:layout',
       (model: WidgetModel, value: WidgetModel) => {
-        this.setLayout(value, model.previous('layout'));
+        this.setLayout(value);
       }
     );
 
@@ -868,7 +866,7 @@ export class DOMWidgetView extends WidgetView {
       this.model,
       'change:style',
       (model: WidgetModel, value: WidgetModel) => {
-        this.setStyle(value, model.previous('style'));
+        this.setStyle(value);
       }
     );
 
@@ -886,64 +884,50 @@ export class DOMWidgetView extends WidgetView {
     this.updateTooltip();
   }
 
-  setLayout(layout: LayoutModel, oldLayout?: LayoutModel): void {
+  setLayout(layout: LayoutModel): void {
     if (layout) {
-      this.layoutPromise = this.layoutPromise.then(oldLayoutView => {
+      // We use a promise chain to ensure that setting layouts occurs in
+      // order, even though the process is asynchronous.
+      this.layoutPromise = this.layoutPromise.then(async oldLayoutView => {
         if (oldLayoutView) {
           oldLayoutView.unlayout();
           this.stopListening(oldLayoutView.model);
           oldLayoutView.remove();
         }
 
-        return this.create_child_view(layout)
-          .then(view => {
-            // Trigger the displayed event of the child view.
-            return this.displayed.then(() => {
-              view.trigger('displayed');
-              this.listenTo(view.model, 'change', () => {
-                // Post (asynchronous) so layout changes can take
-                // effect first.
-                MessageLoop.postMessage(
-                  this.pWidget,
-                  Widget.ResizeMessage.UnknownSize
-                );
-              });
-              MessageLoop.postMessage(
-                this.pWidget,
-                Widget.ResizeMessage.UnknownSize
-              );
-              return view;
-            });
-          })
-          .catch(
-            utils.reject('Could not add LayoutView to DOMWidgetView', true)
+        const view = await this.create_child_view(layout);
+        await this.displayed;
+        view.trigger('displayed');
+        const postResize = (): void => {
+          // Post (asynchronous) so layout changes can take
+          // effect first.
+          MessageLoop.postMessage(
+            this.pWidget,
+            Widget.ResizeMessage.UnknownSize
           );
+        };
+        this.listenTo(view.model, 'change', postResize);
+        postResize();
+        return view;
       });
     }
   }
 
-  setStyle(style: StyleModel, oldStyle?: StyleModel): void {
+  setStyle(style: StyleModel): void {
     if (style) {
-      this.stylePromise = this.stylePromise.then(oldStyleView => {
+      this.stylePromise = this.stylePromise.then(async oldStyleView => {
         if (oldStyleView) {
           oldStyleView.unstyle();
           this.stopListening(oldStyleView.model);
           oldStyleView.remove();
         }
 
-        return this.create_child_view(style)
-          .then(view => {
-            // Trigger the displayed event of the child view.
-            return this.displayed.then(() => {
-              view.trigger('displayed');
-              // Unlike for the layout attribute, style changes don't
-              // trigger Lumino resize messages.
-              return view;
-            });
-          })
-          .catch(
-            utils.reject('Could not add styleView to DOMWidgetView', true)
-          );
+        const view = await this.create_child_view(style);
+        await this.displayed;
+        view.trigger('displayed');
+        // Unlike for the layout attribute, style changes don't
+        // trigger Lumino resize messages.
+        return view;
       });
     }
   }
