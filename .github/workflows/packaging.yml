@@ -67,11 +67,8 @@ jobs:
       matrix:
         os: [ubuntu, macos, windows]
         python: ['3.6', '3.9']
+        dist: ['ipywidgets*.tar.gz', 'ipywidgets*.whl']
         include:
-          - python: '3.6'
-            dist: 'ipywidgets*.tar.gz'
-          - python: '3.9'
-            dist: 'ipywidgets*.whl'
           - python: '3.9'
             dist: 'jupyterlab_widgets*.tar.gz'
           - python: '3.9'
@@ -103,7 +100,7 @@ jobs:
         run: |
           ${{ matrix.py_cmd }} -m pip freeze
           ${{ matrix.py_cmd }} -m pip check
-      - name: Validate the install
+      - name: Check the JupyterLab extension is installed
         if: matrix.dist != 'widgetsnbextension*.tar.gz'
         run: |
           ${{ matrix.py_cmd }} -m pip install jupyterlab~=3.0
