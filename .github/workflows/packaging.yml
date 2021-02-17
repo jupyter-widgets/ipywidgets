@@ -113,5 +113,7 @@ jobs:
       - name: Check the Classic Notebook extension is installed
         if: matrix.dist != 'jupyterlab_widgets*.tar.gz'
         run: |
+          ${{ matrix.py_cmd }} -m pip install notebook~=6.0
+
           jupyter nbextension list
           jupyter nbextension list 2>&1 | grep -ie "jupyter-js-widgets/extension.*enabled" -
