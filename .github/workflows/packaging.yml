@@ -103,6 +103,8 @@ jobs:
         with:
           python-version: ${{ matrix.python }}
           architecture: 'x64'
+      - name: Checkout # For the cache keys
+        uses: actions/checkout@v2
 
       - name: Get pip cache dir
         id: pip-cache
