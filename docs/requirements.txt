@@ -7,3 +7,4 @@ numpy
 recommonmark
 sphinx>=1.4.6
 sphinx_rtd_theme
+packaging
