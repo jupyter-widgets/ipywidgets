@@ -35,7 +35,7 @@ export class AudioView extends DOMWidgetView {
      * Called when view is rendered.
      */
     super.render();
-    this.pWidget.addClass('jupyter-widgets');
+    this.lmWidget.addClass('jupyter-widgets');
     this.update(); // Set defaults.
   }
 

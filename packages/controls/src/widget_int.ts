@@ -716,7 +716,7 @@ export class ProgressView extends DescriptionView {
   initialize(parameters: WidgetView.IInitializeParameters): void {
     super.initialize(parameters);
     this.listenTo(this.model, 'change:bar_style', this.update_bar_style);
-    this.pWidget.addClass('jupyter-widgets');
+    this.lmWidget.addClass('jupyter-widgets');
   }
 
   render(): void {
