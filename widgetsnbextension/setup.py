@@ -34,12 +34,6 @@ instructions.
 
 import sys
 
-v = sys.version_info
-if v[:2] < (3, 5):
-    error = "ERROR: %s requires Python version 3.5 or above." % name
-    print(error, file=sys.stderr)
-    sys.exit(1)
-
 #-----------------------------------------------------------------------------
 # get on with it
 #-----------------------------------------------------------------------------
@@ -204,6 +198,7 @@ setup_args = dict(
     ],
     zip_safe=False,
     include_package_data = True,
+    python_requires = '>=3.6'
 )
 
 if 'develop' in sys.argv or any(a.startswith('bdist') for a in sys.argv):

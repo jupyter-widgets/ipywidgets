@@ -78,9 +78,10 @@ setup_args = dict(
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3 :: Only',
         'Framework :: Jupyter'
     ],
@@ -88,7 +89,7 @@ setup_args = dict(
         'build_py': build_py,
         'sdist': sdist,
     },
-    python_requires = '>=3.5',
+    python_requires = '>=3.6',
 )
 
 if 'develop' in sys.argv or any(a.startswith('bdist') for a in sys.argv):
@@ -107,10 +108,10 @@ install_requires = setuptools_args['install_requires'] = [
     # interpreter, to allow ipywidgets to be
     # installed on bare kernels.
     'widgetsnbextension~=4.0a0',
+    'jupyterlab_widgets~=2.0a0'
 ]
 
 extras_require = setuptools_args['extras_require'] = {
-    ':python_version>="3.6"': ['jupyterlab_widgets~=2.0a0'],
     'test': ['pytest>=3.6.0', 'pytest-cov'],
 }
 
