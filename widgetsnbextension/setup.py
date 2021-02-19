@@ -30,7 +30,7 @@ data_files_spec = [(
 
 cmdclass = create_cmdclass('jsdeps', data_files_spec=data_files_spec)
 js_command = combine_commands(
-    install_npm(js_dir, npm=['yarn'], build_cmd='build'),
+    install_npm(JS_DIR, npm=['yarn'], build_cmd='build'),
     ensure_targets(js_targets),
 )
 
