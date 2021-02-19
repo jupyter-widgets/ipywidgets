@@ -19,6 +19,7 @@ var mngr = require('./manager');
 require('./save_state');
 require('./embed_widgets');
 var LuminoWidget = require('@lumino/widgets');
+var LuminoMessaging = require('@lumino/messaging');
 
 /**
  * Create a widget manager for a kernel instance.
@@ -73,6 +74,16 @@ function register_events(Jupyter, events, outputarea) {
    * method when a view is removed from the page.
    */
   var views = {};
+
+  window.addEventListener('resize', () => {
+    Objects.keys(views).forEach(viewKey => {
+      LuminoMessaging.MessageLoop.postMessage(
+        views[viewKey].lmWidget,
+        Widget.ResizeMessage.UnknownSize
+      );
+    });
+  });
+
   var removeView = function(event, data) {
     var output = data.cell ? data.cell.output_area : data.output_area;
     var viewids = output ? output._jupyterWidgetViews : void 0;
