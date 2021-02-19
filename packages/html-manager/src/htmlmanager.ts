@@ -5,6 +5,8 @@ import * as widgets from '@jupyter-widgets/controls';
 import * as base from '@jupyter-widgets/base';
 import * as outputWidgets from './output';
 import { ManagerBase } from '@jupyter-widgets/base-manager';
+import { MessageLoop } from '@lumino/messaging';
+import { Widget } from '@lumino/widgets';
 
 import * as LuminoWidget from '@lumino/widgets';
 import {
@@ -32,6 +34,16 @@ export class HTMLManager extends ManagerBase {
       },
       0
     );
+
+    this._viewList = new Set<DOMWidgetView>();
+    window.addEventListener('resize', () => {
+      this._viewList.forEach(view => {
+        MessageLoop.postMessage(
+          view.lmWidget,
+          Widget.ResizeMessage.UnknownSize
+        );
+      });
+    });
   }
   /**
    * Display the specified view. Element where the view is displayed
@@ -41,7 +53,13 @@ export class HTMLManager extends ManagerBase {
     view: Promise<DOMWidgetView> | DOMWidgetView,
     el: HTMLElement
   ): Promise<void> {
-    LuminoWidget.Widget.attach((await view).luminoWidget, el);
+    const v = await view;
+    LuminoWidget.Widget.attach(v.luminoWidget, el);
+
+    this._viewList.add(v);
+    v.once('remove', () => {
+      this._viewList.delete(v);
+    });
   }
 
   /**
@@ -118,4 +136,6 @@ export class HTMLManager extends ManagerBase {
   loader:
     | ((moduleName: string, moduleVersion: string) => Promise<any>)
     | undefined;
+
+  private _viewList: Set<DOMWidgetView>;
 }
