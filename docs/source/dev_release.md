@@ -59,8 +59,8 @@ Lerna will prompt you for version numbers for each of the changed npm packages i
 
 Go into the `jupyterlab_widgets` directory. Change `jupyterlab_widgets/_version.py` to reflect the new version number.
 ```
-python setup.py sdist bdist_wheel
-twine check dist/*
+pip install build
+python -m build
 twine upload dist/*
 ```
 

@@ -19,4 +19,5 @@ global-exclude *~
 global-exclude *.pyc
 global-exclude *.pyo
 global-exclude .git
+global-exclude .gitignore
 global-exclude .ipynb_checkpoints
