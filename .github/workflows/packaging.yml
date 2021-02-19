@@ -53,17 +53,17 @@ jobs:
     - name: Build PyPI distributions for ipywidgets
       run: |
         python -m build
+    - name: Build and link packages
+      run: |
+        jlpm install
+        jlpm run build
     - name: Build PyPI distributions for jupyterlab_widgets
       run: |
-        jlpm
-        jlpm run build
         cd jupyterlab_widgets
         python -m build
         cp ./dist/* ../dist
     - name: Build PyPI distributions for widgetsnbextension
       run: |
-        jlpm
-        jlpm run build
         cd widgetsnbextension
         python -m build
         cp ./dist/* ../dist
