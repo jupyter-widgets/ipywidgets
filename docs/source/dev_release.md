@@ -73,7 +73,8 @@ curl -s https://pypi.org/pypi/jupyterlab-widgets/json | jq  -r '[.releases[][] |
 
 Go into the `widgetsnbextension` directory. Change `widgetsnbextension/_version.py` to reflect the new version number.
 ```
-python setup.py sdist bdist_wheel
+pip install build
+python -m build
 twine upload dist/*
 ```
 
