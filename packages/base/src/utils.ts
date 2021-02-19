@@ -100,7 +100,12 @@ export function reject(message: string, log: boolean) {
 export function put_buffers(
   state: Dict<BufferJSON>,
   buffer_paths: (string | number)[][],
-  buffers: any[]
+  buffers: (
+    | DataView
+    | ArrayBuffer
+    | ArrayBufferView
+    | { buffer: ArrayBuffer }
+  )[]
 ): void {
   for (let i = 0; i < buffer_paths.length; i++) {
     const buffer_path = buffer_paths[i];
