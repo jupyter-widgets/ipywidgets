@@ -4,21 +4,23 @@
 # Distributed under the terms of the Modified BSD License.
 
 from jupyter_packaging import (
-    create_cmdclass,
-    install_npm,
-    ensure_targets,
     combine_commands,
+    create_cmdclass,
+    ensure_targets,
     get_version,
+    install_npm,
+    skip_if_exists
 )
-import os
+from pathlib import Path
 from setuptools import setup
 
-here = os.path.abspath(os.path.dirname(__file__))
-js_dir = os.path.join(here, 'src')
+HERE = Path(__file__).parent.resolve()
+IS_REPO = (HERE.parent / '.git').exists()
+JS_DIR = HERE / 'src'
 
 # Representative files that should exist after a successful build
-jstargets = [
-    os.path.join(here, 'widgetsnbextension', 'static', 'extension.js')
+js_targets = [
+    HERE / 'widgetsnbextension' / 'static' / 'extension.js'
 ]
 
 data_files_spec = [(
@@ -27,10 +29,15 @@ data_files_spec = [(
 ]
 
 cmdclass = create_cmdclass('jsdeps', data_files_spec=data_files_spec)
-cmdclass['jsdeps'] = combine_commands(
-    install_npm(js_dir, npm=['yarn'], build_cmd='build'), ensure_targets(jstargets),
+js_command = combine_commands(
+    install_npm(js_dir, npm=['yarn'], build_cmd='build'),
+    ensure_targets(js_targets),
 )
 
+if IS_REPO:
+    cmdclass["jsdeps"] = js_command
+else:
+    cmdclass["jsdeps"] = skip_if_exists(js_targets, js_command)
 
 if __name__ == '__main__':
     setup(cmdclass=cmdclass)
