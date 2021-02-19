@@ -55,8 +55,8 @@ jobs:
         python -m build
     - name: Build and link packages
       run: |
-        jlpm install
-        jlpm run build
+        yarn install
+        yarn run build
     - name: Build PyPI distributions for jupyterlab_widgets
       run: |
         cd jupyterlab_widgets
