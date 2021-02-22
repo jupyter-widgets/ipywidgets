@@ -69,31 +69,17 @@ Examples of custom widget libraries built upon ipywidgets are
 The stable version of ipywidgets can be installed with [pip](#with-pip) or [conda](#with-conda).
 If using JupyterLab, review the [Front-end extension for JupyterLab](#front-end-extension-for-jupyterlab) section.
 
-### With pip
+With pip:
 
 ```sh
 pip install ipywidgets
-# Skip the next step if using JupyterLab or Classic notebook version 5.3 and above
-jupyter nbextension enable --py --sys-prefix widgetsnbextension
 ```
 
-### With conda
+With conda:
 
 ```sh
 conda install -c conda-forge ipywidgets
 ```
-
-### Front-end extension for JupyterLab
-
-Install the front-end extension to JupyterLab (note that this requires nodejs
-to be installed):
-
-- For JupyterLab 1.0.x and 1.1.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@1.0`
-- For JupyterLab 1.2.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@1.1`
-- For JupyterLab 2.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@2.0`
-
-See the [Installation](docs/source/user_install.md) section of the documentation
-for additional details.
 
 ### Developer install from source
 

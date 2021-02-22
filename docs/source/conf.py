@@ -35,7 +35,9 @@ nbsphinx_execute = 'always'
 
 _release = {}
 exec(compile(open('../../ipywidgets/_version.py').read(), '../../ipywidgets/_version.py', 'exec'), _release)
-version = '.'.join(map(str, _release['version_info'][:2]))
+from packaging.version import Version
+v = Version(_release['__version__'])
+version = f'{v.major}.{v.minor}'
 release = _release['__version__']
 
 # Add any paths that contain templates here, relative to this directory.

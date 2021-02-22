@@ -49,24 +49,23 @@ jobs:
 
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip wheel
-        python -m pip install setuptools jupyter_packaging "jupyterlab>=3,<4"
+        python -m pip install --upgrade pip wheel build jupyterlab~=3.0
     - name: Build PyPI distributions for ipywidgets
       run: |
-        python setup.py sdist bdist_wheel
+        python -m build
+    - name: Build and link packages
+      run: |
+        yarn install
+        yarn run build
     - name: Build PyPI distributions for jupyterlab_widgets
       run: |
-        jlpm
-        jlpm run build
         cd jupyterlab_widgets
-        python setup.py sdist bdist_wheel
+        python -m build
         cp ./dist/* ../dist
     - name: Build PyPI distributions for widgetsnbextension
       run: |
-        jlpm
-        jlpm run build
         cd widgetsnbextension
-        python setup.py sdist bdist_wheel
+        python -m build
         cp ./dist/* ../dist
     - name: Build checksum file
       run: |
