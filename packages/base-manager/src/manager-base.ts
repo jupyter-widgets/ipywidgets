@@ -157,14 +157,7 @@ export abstract class ManagerBase implements IWidgetManager {
     }
     const data = (msg.content.data as unknown) as ISerializedState;
     const buffer_paths = data.buffer_paths || [];
-    // Make sure the buffers are DataViews
-    const buffers = (msg.buffers || []).map(b => {
-      if (b instanceof DataView) {
-        return b;
-      } else {
-        return new DataView(b instanceof ArrayBuffer ? b : b.buffer);
-      }
-    });
+    const buffers = msg.buffers || [];
     put_buffers(data.state, buffer_paths, buffers);
     return this.new_model(
       {

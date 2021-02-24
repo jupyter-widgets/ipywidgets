@@ -216,15 +216,7 @@ export class WidgetModel extends Backbone.Model {
           .then(() => {
             const state = data.state;
             const buffer_paths = data.buffer_paths || [];
-            // Make sure the buffers are DataViews
-            const buffers = (msg.buffers || []).map(b => {
-              if (b instanceof DataView) {
-                return b;
-              } else {
-                return new DataView(b instanceof ArrayBuffer ? b : b.buffer);
-              }
-            });
-
+            const buffers = msg.buffers || [];
             utils.put_buffers(state, buffer_paths, buffers);
             return (this.constructor as typeof WidgetModel)._deserialize_state(
               state,
