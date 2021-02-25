@@ -15,6 +15,7 @@ from .widget_core import CoreWidget
 from .widget_style import Style
 from .trait_types import InstanceDict, TypedTuple
 from .widget import register, widget_serialization
+from .widget_int import SliderStyle
 from .docutils import doc_subst
 from traitlets import (Unicode, Bool, Int, Any, Dict, TraitError, CaselessStrEnum,
                        Tuple, Union, observe, validate)
@@ -573,6 +574,9 @@ class SelectionSlider(_SelectionNonempty):
     continuous_update = Bool(True,
         help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
 
+    style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
+
+
 @register
 @doc_subst(_doc_snippets)
 class SelectionRangeSlider(_MultipleSelectionNonempty):
@@ -621,3 +625,5 @@ class SelectionRangeSlider(_MultipleSelectionNonempty):
         help="Display the current selected label next to the slider").tag(sync=True)
     continuous_update = Bool(True,
         help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
+
+    style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
