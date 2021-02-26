@@ -915,18 +915,6 @@ export class DOMWidgetView extends WidgetView {
           oldLayoutView.remove();
         }
 
-        const resizeFunc = () => {
-          MessageLoop.postMessage(
-            this.pWidget,
-            Widget.ResizeMessage.UnknownSize
-          );
-        };
-
-        window.addEventListener('resize', resizeFunc);
-        this.once('remove', () => {
-          window.removeEventListener('resize', resizeFunc);
-        });
-
         return this.create_child_view(layout)
           .then(view => {
             // Trigger the displayed event of the child view.
