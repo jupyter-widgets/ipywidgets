@@ -79,7 +79,7 @@ function register_events(Jupyter, events, outputarea) {
     Object.keys(views).forEach(viewKey => {
       LuminoMessaging.MessageLoop.postMessage(
         views[viewKey].lmWidget,
-        Widget.ResizeMessage.UnknownSize
+        LuminoWidget.Widget.ResizeMessage.UnknownSize
       );
     });
   });

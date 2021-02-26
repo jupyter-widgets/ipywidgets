@@ -6,7 +6,6 @@ import * as base from '@jupyter-widgets/base';
 import * as outputWidgets from './output';
 import { ManagerBase } from '@jupyter-widgets/base-manager';
 import { MessageLoop } from '@lumino/messaging';
-import { Widget } from '@lumino/widgets';
 
 import * as LuminoWidget from '@lumino/widgets';
 import {
@@ -40,7 +39,7 @@ export class HTMLManager extends ManagerBase {
       this._viewList.forEach(view => {
         MessageLoop.postMessage(
           view.lmWidget,
-          Widget.ResizeMessage.UnknownSize
+          LuminoWidget.Widget.ResizeMessage.UnknownSize
         );
       });
     });
