@@ -37,8 +37,8 @@ export class VideoView extends DOMWidgetView {
      * Called when view is rendered.
      */
     super.render();
-    this.lmWidget.addClass('jupyter-widgets');
-    this.lmWidget.addClass('widget-image');
+    this.luminoWidget.addClass('jupyter-widgets');
+    this.luminoWidget.addClass('widget-image');
     this.update(); // Set defaults.
   }
 
