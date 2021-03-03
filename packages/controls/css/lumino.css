@@ -63,7 +63,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * We've scoped the rules so that they are consistent with exactly our code.
  */
 
-.jupyter-widgets.widget-tab > .p-TabBar {
+.jupyter-widgets.widget-tab > .p-TabBar,
+.jupyter-widgets.jupyter-widget-tab > .p-TabBar {
   display: flex;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -71,15 +72,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   user-select: none;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar[data-orientation='horizontal'] {
+.jupyter-widgets.widget-tab > .p-TabBar[data-orientation='horizontal'],
+.jupyter-widgets.jupyter-widget-tab > .p-TabBar[data-orientation='horizontal'] {
   flex-direction: row;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar[data-orientation='vertical'] {
+.jupyter-widgets.widget-tab > .p-TabBar[data-orientation='vertical'],
+.jupyter-widgets.jupyter-widget-tab > .p-TabBar[data-orientation='vertical'] {
   flex-direction: column;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar > .p-TabBar-content {
+.jupyter-widgets.widget-tab > .p-TabBar > .p-TabBar-content,
+.jupyter-widgets.jupyter-widget-tab > .p-TabBar > .p-TabBar-content {
   margin: 0;
   padding: 0;
   display: flex;
@@ -89,17 +93,24 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .jupyter-widgets.widget-tab
   > .p-TabBar[data-orientation='horizontal']
+  > .p-TabBar-content,
+.jupyter-widgets.jupyter-widget-tab
+  > .p-TabBar[data-orientation='horizontal']
   > .p-TabBar-content {
   flex-direction: row;
 }
 
 .jupyter-widgets.widget-tab
   > .p-TabBar[data-orientation='vertical']
+  > .p-TabBar-content,
+.jupyter-widgets.jupyter-widget-tab
+  > .p-TabBar[data-orientation='vertical']
   > .p-TabBar-content {
   flex-direction: column;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab,
+.jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tab {
   display: flex;
   flex-direction: row;
   box-sizing: border-box;
@@ -107,25 +118,33 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 }
 
 .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabIcon,
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabCloseIcon {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabCloseIcon,
+.jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tabIcon,
+.jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tabCloseIcon {
   flex: 0 0 auto;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabLabel {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabLabel,
+.jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tabLabel {
   flex: 1 1 auto;
   overflow: hidden;
   white-space: nowrap;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-hidden {
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-hidden,
+.jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tab.p-mod-hidden {
   display: none !important;
 }
 
-.jupyter-widgets.widget-tab > .p-TabBar.p-mod-dragging .p-TabBar-tab {
+.jupyter-widgets.widget-tab > .p-TabBar.p-mod-dragging .p-TabBar-tab,
+.jupyter-widgets.jupyter-widget-tab > .p-TabBar.p-mod-dragging .p-TabBar-tab {
   position: relative;
 }
 
 .jupyter-widgets.widget-tab
+  > .p-TabBar.p-mod-dragging[data-orientation='horizontal']
+  .p-TabBar-tab,
+.jupyter-widgets.jupyter-widget-tab
   > .p-TabBar.p-mod-dragging[data-orientation='horizontal']
   .p-TabBar-tab {
   left: 0;
@@ -134,12 +153,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .jupyter-widgets.widget-tab
   > .p-TabBar.p-mod-dragging[data-orientation='vertical']
+  .p-TabBar-tab,
+.jupyter-widgets.jupyter-widget-tab
+  > .p-TabBar.p-mod-dragging[data-orientation='vertical']
   .p-TabBar-tab {
   top: 0;
   transition: top 150ms ease;
 }
 
 .jupyter-widgets.widget-tab
+  > .p-TabBar.p-mod-dragging
+  .p-TabBar-tab.p-mod-dragging,
+.jupyter-widgets.jupyter-widget-tab
   > .p-TabBar.p-mod-dragging
   .p-TabBar-tab.p-mod-dragging {
   transition: none;

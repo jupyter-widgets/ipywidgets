@@ -3,6 +3,6 @@
 | Distributed under the terms of the Modified BSD License.
 |----------------------------------------------------------------------------*/
 
-.jupyter-widgets.widget-output .jp-OutputArea-prompt {
+.jupyter-widgets.widget-output .jupyter-widgets.jupyter-widget-output .jp-OutputArea-prompt {
   display: none;
 }

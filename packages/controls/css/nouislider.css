@@ -20,7 +20,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
  */
 
 .widget-slider .noUi-target,
-.widget-slider .noUi-target * {
+.widget-slider .noUi-target *,
+.jupyter-widget-slider .noUi-target,
+.jupyter-widget-slider .noUi-target * {
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   -webkit-user-select: none;
@@ -32,11 +34,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-.widget-slider .noUi-target {
+.widget-slider .noUi-target,
+.jupyter-widget-slider .noUi-target {
   position: relative;
 }
 .widget-slider .noUi-base,
-.widget-slider .noUi-connects {
+.widget-slider .noUi-connects,
+.jupyter-widget-slider .noUi-base,
+.jupyter-widget-slider .noUi-connects {
   width: 100%;
   height: 100%;
   position: relative;
@@ -44,12 +49,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 }
 /* Wrapper for all connect elements.
  */
-.widget-slider .noUi-connects {
+.widget-slider .noUi-connects,
+.jupyter-widget-slider .noUi-connects {
   overflow: hidden;
   z-index: 0;
 }
 .widget-slider .noUi-connect,
-.widget-slider .noUi-origin {
+.widget-slider .noUi-origin,
+.jupyter-widget-slider .noUi-connect,
+.jupyter-widget-slider .noUi-origin {
   will-change: transform;
   position: absolute;
   z-index: 1;
@@ -61,108 +69,132 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   transform-origin: 0 0;
   transform-style: flat;
 }
-.widget-slider .noUi-connect {
+.widget-slider .noUi-connect,
+.jupyter-widget-slider .noUi-connect {
   height: 100%;
   width: 100%;
 }
-.widget-slider .noUi-origin {
+.widget-slider .noUi-origin,
+.jupyter-widget-slider .noUi-origin {
   height: 10%;
   width: 10%;
 }
 /* Offset direction
  */
-.widget-slider .noUi-txt-dir-rtl.noUi-horizontal .noUi-origin {
+.widget-slider .noUi-txt-dir-rtl.noUi-horizontal .noUi-origin,
+.jupyter-widget-slider .noUi-txt-dir-rtl.noUi-horizontal .noUi-origin {
   left: 0;
   right: auto;
 }
 /* Give origins 0 height/width so they don't interfere with clicking the
  * connect elements.
  */
-.widget-slider .noUi-vertical .noUi-origin {
+.widget-slider .noUi-vertical .noUi-origin,
+.jupyter-widget-slider .noUi-vertical .noUi-origin {
   width: 0;
 }
-.widget-slider .noUi-horizontal .noUi-origin {
+.widget-slider .noUi-horizontal .noUi-origin,
+.jupyter-widget-slider .noUi-horizontal .noUi-origin {
   height: 0;
 }
-.widget-slider .noUi-handle {
+.widget-slider .noUi-handle,
+.jupyter-widget-slider .noUi-handle {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   position: absolute;
 }
-.widget-slider .noUi-touch-area {
+.widget-slider .noUi-touch-area,
+.jupyter-widget-slider .noUi-touch-area {
   height: 100%;
   width: 100%;
 }
 .widget-slider .noUi-state-tap .noUi-connect,
-.widget-slider .noUi-state-tap .noUi-origin {
+.widget-slider .noUi-state-tap .noUi-origin,
+.jupyter-widget-slider .noUi-state-tap .noUi-connect,
+.jupyter-widget-slider .noUi-state-tap .noUi-origin {
   -webkit-transition: transform 0.3s;
   transition: transform 0.3s;
 }
-.widget-slider .noUi-state-drag * {
+.widget-slider .noUi-state-drag *,
+.jupyter-widget-slider .noUi-state-drag * {
   cursor: inherit !important;
 }
 /* Slider size and handle placement;
  */
-.widget-slider .noUi-horizontal {
+.widget-slider .noUi-horizontal,
+.jupyter-widget-slider .noUi-horizontal {
   height: 18px;
 }
-.widget-slider .noUi-horizontal .noUi-handle {
+.widget-slider .noUi-horizontal .noUi-handle,
+.jupyter-widget-slider .noUi-horizontal .noUi-handle {
   width: 34px;
   height: 28px;
   right: -17px;
   top: -6px;
 }
-.widget-slider .noUi-vertical {
+.widget-slider .noUi-vertical,
+.jupyter-widget-slider .noUi-vertical {
   height: 100%;
   width: 18px;
 }
-.widget-slider .noUi-vertical .noUi-handle {
+.widget-slider .noUi-vertical .noUi-handle,
+.jupyter-widget-slider .noUi-vertical .noUi-handle {
   width: 28px;
   height: 34px;
   right: -6px;
   top: -17px;
 }
-.widget-slider .noUi-txt-dir-rtl.noUi-horizontal .noUi-handle {
+.widget-slider .noUi-txt-dir-rtl.noUi-horizontal .noUi-handle,
+.jupyter-widget-slider .noUi-txt-dir-rtl.noUi-horizontal .noUi-handle {
   left: -17px;
   right: auto;
 }
 /* Styling;
  * Giving the connect element a border radius causes issues with using transform: scale
  */
-.widget-slider .noUi-target {
+.widget-slider .noUi-target,
+.jupyter-widget-slider .noUi-target {
   background: #fafafa;
   border-radius: 4px;
   border: 1px solid #d3d3d3;
   box-shadow: inset 0 1px 1px #f0f0f0, 0 3px 6px -5px #bbb;
 }
-.widget-slider .noUi-connects {
+.widget-slider .noUi-connects,
+.jupyter-widget-slider .noUi-connects {
   border-radius: 3px;
 }
-.widget-slider .noUi-connect {
+.widget-slider .noUi-connect,
+.jupyter-widget-slider .noUi-connect {
   background: #3fb8af;
 }
 /* Handles and cursors;
  */
-.widget-slider .noUi-draggable {
+.widget-slider .noUi-draggable,
+.jupyter-widget-slider .noUi-draggable {
   cursor: ew-resize;
 }
-.widget-slider .noUi-vertical .noUi-draggable {
+.widget-slider .noUi-vertical .noUi-draggable,
+.jupyter-widget-slider .noUi-vertical .noUi-draggable {
   cursor: ns-resize;
 }
-.widget-slider .noUi-handle {
+.widget-slider .noUi-handle,
+.jupyter-widget-slider .noUi-handle {
   border: 1px solid #d9d9d9;
   border-radius: 3px;
   background: #fff;
   cursor: default;
   box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ebebeb, 0 3px 6px -3px #bbb;
 }
-.widget-slider .noUi-active {
+.widget-slider .noUi-active,
+.jupyter-widget-slider .noUi-active {
   box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ddd, 0 3px 6px -3px #bbb;
 }
 /* Handle stripes;
  */
 .widget-slider .noUi-handle:before,
-.widget-slider .noUi-handle:after {
+.widget-slider .noUi-handle:after,
+.jupyter-widget-slider .noUi-handle:before,
+.jupyter-widget-slider .noUi-handle:after {
   content: '';
   display: block;
   position: absolute;
@@ -172,125 +204,154 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   left: 14px;
   top: 6px;
 }
-.widget-slider .noUi-handle:after {
+.widget-slider .noUi-handle:after,
+.jupyter-widget-slider .noUi-handle:after {
   left: 17px;
 }
 .widget-slider .noUi-vertical .noUi-handle:before,
-.widget-slider .noUi-vertical .noUi-handle:after {
+.widget-slider .noUi-vertical .noUi-handle:after,
+.jupyter-widget-slider .noUi-vertical .noUi-handle:before,
+.jupyter-widget-slider .noUi-vertical .noUi-handle:after {
   width: 14px;
   height: 1px;
   left: 6px;
   top: 14px;
 }
-.widget-slider .noUi-vertical .noUi-handle:after {
+.widget-slider .noUi-vertical .noUi-handle:after,
+.jupyter-widget-slider .noUi-vertical .noUi-handle:after {
   top: 17px;
 }
 /* Disabled state;
  */
-.widget-slider [disabled] .noUi-connect {
+.widget-slider [disabled] .noUi-connect,
+.jupyter-widget-slider [disabled] .noUi-connect {
   background: #b8b8b8;
 }
 .widget-slider [disabled].noUi-target,
 .widget-slider [disabled].noUi-handle,
-.widget-slider [disabled] .noUi-handle {
+.widget-slider [disabled] .noUi-handle,
+.jupyter-widget-slider [disabled].noUi-target,
+.jupyter-widget-slider [disabled].noUi-handle,
+.jupyter-widget-slider [disabled] .noUi-handle {
   cursor: not-allowed;
 }
 /* Base;
  *
  */
 .widget-slider .noUi-pips,
-.widget-slider .noUi-pips * {
+.widget-slider .noUi-pips *,
+.jupyter-widget-slider .noUi-pips,
+.jupyter-widget-slider .noUi-pips * {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-.widget-slider .noUi-pips {
+.widget-slider .noUi-pips,
+.jupyter-widget-slider .noUi-pips {
   position: absolute;
   color: #999;
 }
 /* Values;
  *
  */
-.widget-slider .noUi-value {
+.widget-slider .noUi-value,
+.jupyter-widget-slider .noUi-value {
   position: absolute;
   white-space: nowrap;
   text-align: center;
 }
-.widget-slider .noUi-value-sub {
+.widget-slider .noUi-value-sub,
+.jupyter-widget-slider .noUi-value-sub {
   color: #ccc;
   font-size: 10px;
 }
 /* Markings;
  *
  */
-.widget-slider .noUi-marker {
+.widget-slider .noUi-marker,
+.jupyter-widget-slider .noUi-marker {
   position: absolute;
   background: #ccc;
 }
-.widget-slider .noUi-marker-sub {
+.widget-slider .noUi-marker-sub,
+.jupyter-widget-slider .noUi-marker-sub {
   background: #aaa;
 }
-.widget-slider .noUi-marker-large {
+.widget-slider .noUi-marker-large,
+.jupyter-widget-slider .noUi-marker-large {
   background: #aaa;
 }
 /* Horizontal layout;
  *
  */
-.widget-slider .noUi-pips-horizontal {
+.widget-slider .noUi-pips-horizontal,
+.jupyter-widget-slider .noUi-pips-horizontal {
   padding: 10px 0;
   height: 80px;
   top: 100%;
   left: 0;
   width: 100%;
 }
-.widget-slider .noUi-value-horizontal {
+.widget-slider .noUi-value-horizontal,
+.jupyter-widget-slider .noUi-value-horizontal {
   -webkit-transform: translate(-50%, 50%);
   transform: translate(-50%, 50%);
 }
-.widget-slider .noUi-rtl .noUi-value-horizontal {
+.widget-slider .noUi-rtl .noUi-value-horizontal,
+.jupyter-widget-slider .noUi-rtl .noUi-value-horizontal {
   -webkit-transform: translate(50%, 50%);
   transform: translate(50%, 50%);
 }
-.widget-slider .noUi-marker-horizontal.noUi-marker {
+.widget-slider .noUi-marker-horizontal.noUi-marker,
+.jupyter-widget-slider .noUi-marker-horizontal.noUi-marker {
   margin-left: -1px;
   width: 2px;
   height: 5px;
 }
-.widget-slider .noUi-marker-horizontal.noUi-marker-sub {
+.widget-slider .noUi-marker-horizontal.noUi-marker-sub,
+.jupyter-widget-slider .noUi-marker-horizontal.noUi-marker-sub {
   height: 10px;
 }
-.widget-slider .noUi-marker-horizontal.noUi-marker-large {
+.widget-slider .noUi-marker-horizontal.noUi-marker-large,
+.jupyter-widget-slider .noUi-marker-horizontal.noUi-marker-large {
   height: 15px;
 }
 /* Vertical layout;
  *
  */
-.widget-slider .noUi-pips-vertical {
+.widget-slider .noUi-pips-vertical,
+.jupyter-widget-slider .noUi-pips-vertical {
   padding: 0 10px;
   height: 100%;
   top: 0;
   left: 100%;
 }
-.widget-slider .noUi-value-vertical {
+.widget-slider .noUi-value-vertical,
+.jupyter-widget-slider .noUi-value-vertical {
   -webkit-transform: translate(0, -50%);
   transform: translate(0, -50%);
   padding-left: 25px;
 }
-.widget-slider .noUi-rtl .noUi-value-vertical {
+.widget-slider .noUi-rtl .noUi-value-vertical,
+.jupyter-widget-slider .noUi-rtl .noUi-value-vertical {
   -webkit-transform: translate(0, 50%);
   transform: translate(0, 50%);
 }
-.widget-slider .noUi-marker-vertical.noUi-marker {
+.widget-slider .noUi-marker-vertical.noUi-marker,
+.jupyter-widget-slider .noUi-marker-vertical.noUi-marker {
   width: 5px;
   height: 2px;
   margin-top: -1px;
 }
-.widget-slider .noUi-marker-vertical.noUi-marker-sub {
+.widget-slider .noUi-marker-vertical.noUi-marker-sub,
+.jupyter-widget-slider .noUi-marker-vertical.noUi-marker-sub {
   width: 10px;
 }
-.widget-slider .noUi-marker-vertical.noUi-marker-large {
+.widget-slider .noUi-marker-vertical.noUi-marker-large,
+.jupyter-widget-slider .noUi-marker-vertical.noUi-marker-large {
   width: 15px;
 }
-.widget-slider .noUi-tooltip {
+.widget-slider .noUi-tooltip,
+.jupyter-widget-slider .noUi-tooltip {
   display: block;
   position: absolute;
   border: 1px solid #d9d9d9;
@@ -301,13 +362,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   text-align: center;
   white-space: nowrap;
 }
-.widget-slider .noUi-horizontal .noUi-tooltip {
+.widget-slider .noUi-horizontal .noUi-tooltip,
+.jupyter-widget-slider .noUi-horizontal .noUi-tooltip {
   -webkit-transform: translate(-50%, 0);
   transform: translate(-50%, 0);
   left: 50%;
   bottom: 120%;
 }
-.widget-slider .noUi-vertical .noUi-tooltip {
+.widget-slider .noUi-vertical .noUi-tooltip,
+.jupyter-widget-slider .noUi-vertical .noUi-tooltip {
   -webkit-transform: translate(0, -50%);
   transform: translate(0, -50%);
   top: 50%;
@@ -316,19 +379,23 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 /* Custom CSS */
 
-.widget-slider .noUi-connect {
+.widget-slider .noUi-connect,
+.jupyter-widget-slider .noUi-connect {
   background: rgb(33, 150, 243);
 }
 
-.widget-slider .noUi-horizontal {
+.widget-slider .noUi-horizontal,
+.jupyter-widget-slider .noUi-horizontal {
   height: var(--jp-widgets-slider-track-thickness);
 }
 
-.widget-slider .noUi-vertical {
+.widget-slider .noUi-vertical,
+.jupyter-widget-slider .noUi-vertical {
   width: var(--jp-widgets-slider-track-thickness);
 }
 
-.widget-slider .noUi-horizontal .noUi-handle {
+.widget-slider .noUi-horizontal .noUi-handle,
+.jupyter-widget-slider .noUi-horizontal .noUi-handle {
   width: var(--jp-widgets-slider-handle-size);
   height: var(--jp-widgets-slider-handle-size);
   border-radius: 50%;
@@ -341,7 +408,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   right: calc(var(--jp-widgets-slider-handle-size) / -2);
 }
 
-.widget-slider .noUi-vertical .noUi-handle {
+.widget-slider .noUi-vertical .noUi-handle,
+.jupyter-widget-slider .noUi-vertical .noUi-handle {
   height: var(--jp-widgets-slider-handle-size);
   width: var(--jp-widgets-slider-handle-size);
   border-radius: 50%;
@@ -354,22 +422,26 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   top: calc(var(--jp-widgets-slider-handle-size) / -2);
 }
 
-.widget-slider .noUi-handle:after {
+.widget-slider .noUi-handle:after,
+.jupyter-widget-slider .noUi-handle:after {
   content: none;
 }
 
-.widget-slider .noUi-handle:before {
+.widget-slider .noUi-handle:before,
+.jupyter-widget-slider .noUi-handle:before {
   content: none;
 }
 
-.widget-slider .noUi-target {
+.widget-slider .noUi-target,
+.jupyter-widget-slider .noUi-target {
   background: #fafafa;
   border-radius: 4px;
   border: 1px;
   /* box-shadow: inset 0 1px 1px #F0F0F0, 0 3px 6px -5px #BBB; */
 }
 
-.widget-slider .ui-slider {
+.widget-slider .ui-slider,
+.jupyter-widget-slider .ui-slider {
   border: var(--jp-widgets-slider-border-width) solid var(--jp-layout-color3);
   background: var(--jp-layout-color3);
   box-sizing: border-box;
@@ -377,7 +449,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   border-radius: 0px;
 }
 
-.widget-slider .noUi-handle {
+.widget-slider .noUi-handle,
+.jupyter-widget-slider .noUi-handle {
   width: var(--jp-widgets-slider-handle-size);
   border: 1px solid #d9d9d9;
   border-radius: 3px;
@@ -388,28 +461,34 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 }
 
 .widget-slider .noUi-target:not([disabled]) .noUi-handle:hover,
-.widget-slider .noUi-target:not([disabled]) .noUi-handle:focus {
+.widget-slider .noUi-target:not([disabled]) .noUi-handle:focus,
+.jupyter-widget-slider .noUi-target:not([disabled]) .noUi-handle:hover,
+.jupyter-widget-slider .noUi-target:not([disabled]) .noUi-handle:focus {
   background-color: var(--jp-widgets-slider-active-handle-color);
   border: var(--jp-widgets-slider-border-width) solid
     var(--jp-widgets-slider-active-handle-color);
 }
 
-.widget-slider [disabled].noUi-target {
+.widget-slider [disabled].noUi-target,
+.jupyter-widget-slider [disabled].noUi-target {
   opacity: 0.35;
 }
 
-.widget-slider .noUi-connects {
+.widget-slider .noUi-connects,
+.jupyter-widget-slider .noUi-connects {
   overflow: visible;
   z-index: 0;
   background: var(--jp-layout-color3);
 }
 
-.widget-slider .noUi-vertical .noUi-connect {
+.widget-slider .noUi-vertical .noUi-connect,
+.jupyter-widget-slider .noUi-vertical .noUi-connect {
   width: calc(100% + 2px);
   right: -1px;
 }
 
-.widget-slider .noUi-horizontal .noUi-connect {
+.widget-slider .noUi-horizontal .noUi-connect,
+.jupyter-widget-slider .noUi-horizontal .noUi-connect {
   height: calc(100% + 2px);
   top: -1px;
 }
