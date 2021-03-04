@@ -147,7 +147,7 @@ class BoundedIntText(_BoundedInt):
 class SliderStyle(DescriptionStyle, CoreWidget):
     """Button style widget."""
     _model_name = Unicode('SliderStyleModel').tag(sync=True)
-    handle_color = Color(None, allow_none=True, help="Color of the slider handle.").tag(sync=True)
+    handle_color = Color("red", allow_none=True, help="Color of the slider handle.").tag(sync=True)
 
 
 @register
