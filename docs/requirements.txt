@@ -1,5 +1,5 @@
 bqplot
-ipykernel
+ipykernel<6
 jupyter_client
 matplotlib
 nbsphinx>=0.5
