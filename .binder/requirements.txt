@@ -1,6 +1,6 @@
 bqplot
 ipyleaflet
-jupyterlab>=2
+jupyterlab~=3.0
 matplotlib
 networkx
 numpy
