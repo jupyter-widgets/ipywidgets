@@ -90,7 +90,8 @@ function* consoleWidgetRenderers(
 ): Generator<WidgetRenderer, void, unknown> {
   for (const cell of toArray(console.cells)) {
     if (cell.model.type === 'code') {
-      for (const codecell of (cell as CodeCell).outputArea.widgets) {
+      for (const codecell of ((cell as unknown) as CodeCell).outputArea
+        .widgets) {
         for (const output of toArray(codecell.children())) {
           if (output instanceof WidgetRenderer) {
             yield output;
