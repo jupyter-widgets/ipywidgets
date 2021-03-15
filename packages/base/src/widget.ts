@@ -187,13 +187,16 @@ export class WidgetModel extends Backbone.Model {
       delete this.comm;
     }
     // Delete all views of this model
-    const views = Object.keys(this.views).map((id: string) => {
-      return this.views[id].then(view => view.remove());
-    });
-    delete this.views;
-    return Promise.all(views).then(() => {
-      return;
-    });
+    if (this.views) {
+      const views = Object.keys(this.views).map((id: string) => {
+        return this.views![id].then(view => view.remove());
+      });
+      delete this.views;
+      return Promise.all(views).then(() => {
+        return;
+      });
+    }
+    return Promise.resolve();
   }
 
   /**
@@ -466,6 +469,9 @@ export class WidgetModel extends Backbone.Model {
    * Send a sync message to the kernel.
    */
   send_sync_message(state: JSONObject, callbacks: any = {}): void {
+    if (!this.comm) {
+      return;
+    }
     try {
       callbacks.iopub = callbacks.iopub || {};
       const statuscb = callbacks.iopub.status;
@@ -575,9 +581,9 @@ export class WidgetModel extends Backbone.Model {
   // values subclasses may set in their initialization functions.
   widget_manager: IWidgetManager;
   model_id: string;
-  views: { [key: string]: Promise<WidgetView> };
+  views?: { [key: string]: Promise<WidgetView> };
   state_change: Promise<any>;
-  comm: IClassicComm;
+  comm?: IClassicComm;
   name: string;
   module: string;
 
@@ -750,7 +756,7 @@ export namespace WidgetView {
 
 export namespace JupyterLuminoWidget {
   export interface IOptions {
-    view: DOMWidgetView;
+    view?: DOMWidgetView;
   }
 }
 
@@ -759,7 +765,7 @@ export class JupyterLuminoWidget extends Widget {
     const view = options.view;
     delete options.view;
     super(options);
-    this._view = view;
+    this._view = view ?? null;
   }
 
   /**
@@ -775,7 +781,7 @@ export class JupyterLuminoWidget extends Widget {
     if (this._view) {
       this._view.remove();
     }
-    this._view = null!;
+    this._view = null;
   }
 
   /**
@@ -786,10 +792,10 @@ export class JupyterLuminoWidget extends Widget {
    */
   processMessage(msg: Message): void {
     super.processMessage(msg);
-    this._view.processLuminoMessage(msg);
+    this._view?.processLuminoMessage(msg);
   }
 
-  private _view: DOMWidgetView;
+  private _view: DOMWidgetView | null;
 }
 
 export class JupyterLuminoPanelWidget extends Panel {
@@ -797,7 +803,7 @@ export class JupyterLuminoPanelWidget extends Panel {
     const view = options.view;
     delete options.view;
     super(options);
-    this._view = view;
+    this._view = view ?? null;
   }
 
   /**
@@ -808,7 +814,7 @@ export class JupyterLuminoPanelWidget extends Panel {
    */
   processMessage(msg: Message): void {
     super.processMessage(msg);
-    this._view.processLuminoMessage(msg);
+    this._view?.processLuminoMessage(msg);
   }
 
   /**
@@ -827,7 +833,7 @@ export class JupyterLuminoPanelWidget extends Panel {
     this._view = null!;
   }
 
-  private _view: DOMWidgetView;
+  private _view: DOMWidgetView | null;
 }
 
 export class DOMWidgetView extends WidgetView {
