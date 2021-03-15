@@ -1659,10 +1659,10 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@types/backbone@1.4.1":
-  version "1.4.1"
-  resolved "https://registry.npmjs.org/@types/backbone/-/backbone-1.4.1.tgz#aa03f9f69994bd96646c50cfc70b5f30d38aafaa"
-  integrity sha512-KYfGuQy4d2vvYXbn0uHFZ6brFLndatTMomxBlljpbWf4kFpA3BG/6LA3ec+J9iredrX6eAVI7sm9SVAvwiIM6g==
+"@types/backbone@1.4.10":
+  version "1.4.10"
+  resolved "https://registry.npmjs.org/@types/backbone/-/backbone-1.4.10.tgz#042e72ffc966fe920ed02ff92afa66984a036844"
+  integrity sha512-X6UM8N9i4WFtO1F53Z3DE7mjI7UxEfxyFtMTYHOPFhYFvExDuu0UJENstnA023+/FnVOdxltMIKc4picZxW4dA==
   dependencies:
     "@types/jquery" "*"
     "@types/underscore" "*"
