@@ -111,7 +111,7 @@ export class WidgetModel extends Backbone.Model {
       model_id: string;
       comm?: any;
       widget_manager: any;
-    } & Backbone.ModelConstructorOptions<this>
+    } & Backbone.CombinedModelConstructorOptions<this>
   ): void {
     super.initialize(attributes, options);
 
