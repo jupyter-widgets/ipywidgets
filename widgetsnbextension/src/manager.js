@@ -235,17 +235,78 @@ export class WidgetManager extends ManagerBase {
    */
   _init_actions() {
     var notifier = Jupyter.notification_area.widget('widgets');
+    let createStoreAction = (help, value) => {
+      return {
+        handler: e => {
+          // store the setting, clear the widget metadata
+          Jupyter.notebook.metadata.widgets = {
+            store: value
+          };
+          // and save the notebook
+          Jupyter.menubar.actions
+            .get('jupyter-notebook:save-notebook')
+            .handler({
+              notebook: Jupyter.notebook
+            });
+        },
+        icon: 'fa-truck',
+        help: help
+      };
+    };
+    this.setWidgetsStoreStateNoneAction = createStoreAction(
+      'Do not store the widgets in the notebook',
+      'none'
+    );
+    this.setWidgetsStoreStateDisplayedAction = createStoreAction(
+      'Store displayed widget in the notebook (and dependencies)',
+      'displayed'
+    );
+    this.setWidgetsStoreStateAllAction = createStoreAction(
+      'Store all widgets in the notebook',
+      'all'
+    );
+    Jupyter.menubar.actions.register(
+      this.setWidgetsStoreStateNoneAction,
+      'save-no-widgets',
+      'widgets'
+    );
+    Jupyter.menubar.actions.register(
+      this.setWidgetsStoreStateDisplayedAction,
+      'save-displayed-widgets',
+      'widgets'
+    );
+    Jupyter.menubar.actions.register(
+      this.setWidgetsStoreStateAllAction,
+      'save-all-widgets',
+      'widgets'
+    );
+
     this.notebook.events.on('before_save.Notebook', () => {
       var visibleWidgetsIds = findVisibleWidgetIds(Jupyter.notebook);
-      var models = base.findConnectedWidgets(
-        visibleWidgetsIds,
-        this.get_models_sync()
-      );
-      var state = serialize_state(models, { drop_defaults: true });
-      console.log('Only saving visible widgets', models);
-      Jupyter.notebook.metadata.widgets = {
-        'application/vnd.jupyter.widget-state+json': state
-      };
+      var store = 'none';
+      var models = new Set();
+      if (
+        Jupyter.notebook.metadata &&
+        Jupyter.notebook.metadata.widgets &&
+        Jupyter.notebook.metadata.widgets.store
+      ) {
+        store = Jupyter.notebook.metadata.widgets.store;
+      }
+      if (store == 'displayed') {
+        models = base.findConnectedWidgets(
+          visibleWidgetsIds,
+          this.get_models_sync()
+        );
+      } else if (store == 'all') {
+        models = this.get_models_sync();
+      }
+      if (models.size) {
+        var state = serialize_state(models, { drop_defaults: true });
+        Jupyter.notebook.metadata.widgets = {
+          store: store,
+          'application/vnd.jupyter.widget-state+json': state
+        };
+      }
     });
   }
 
@@ -274,6 +335,45 @@ export class WidgetManager extends ManagerBase {
     var divider = document.createElement('ul');
     divider.classList.add('divider');
 
+    var store = 'none';
+    var models = new Set();
+    if (
+      Jupyter.notebook.metadata &&
+      Jupyter.notebook.metadata.widgets &&
+      Jupyter.notebook.metadata.widgets.store
+    ) {
+      store = Jupyter.notebook.metadata.widgets.store;
+    }
+
+    widgetsSubmenu.appendChild(
+      this._createMenuChoice(
+        'Do not store widgets',
+        'none',
+        store,
+        'widget-state-store',
+        this.setWidgetsStoreStateNoneAction
+      )
+    );
+    widgetsSubmenu.appendChild(
+      this._createMenuChoice(
+        'Store displayed widgets',
+        'visible',
+        store,
+        'widget-state-store',
+        this.setWidgetsStoreStateDisplayedAction
+      )
+    );
+    widgetsSubmenu.appendChild(
+      this._createMenuChoice(
+        'Store all widgets',
+        'all',
+        store,
+        'widget-state-store',
+        this.setWidgetsStoreStateAllAction
+      )
+    );
+    widgetsSubmenu.appendChild(divider);
+
     widgetsSubmenu.appendChild(
       this._createMenuItem('Download Widget State', saveState.action)
     );
@@ -296,6 +396,27 @@ export class WidgetManager extends ManagerBase {
     itemLink.setAttribute('href', '#');
     itemLink.innerText = title;
     item.appendChild(itemLink);
+
+    item.onclick = action.handler;
+    return item;
+  }
+
+  _createMenuChoice(title, value, currentValue, groupName, action) {
+    var item = document.createElement('li');
+    item.classList.add('radio');
+    item.setAttribute('title', action.help);
+
+    var itemLabel = document.createElement('label');
+    var itemRadio = document.createElement('input');
+    itemRadio.setAttribute('type', 'radio');
+    itemRadio.setAttribute('name', groupName);
+    itemRadio.setAttribute('value', value);
+    if (value == currentValue) {
+      itemRadio.setAttribute('checked', '');
+    }
+    itemLabel.appendChild(itemRadio);
+    itemLabel.appendChild(document.createTextNode(title));
+    item.appendChild(itemLabel);
 
     item.onclick = action.handler;
     return item;
