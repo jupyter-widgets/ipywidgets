@@ -247,24 +247,45 @@ function activateWidgetExtension(
     });
   }
 
+  function isNotebookActive(): boolean {
+    return (
+      tracker?.currentWidget !== null &&
+      tracker?.currentWidget === app.shell.currentWidget
+    );
+  }
+
   if (settingRegistry !== null) {
-    // Add a command for automatically saving (jupyter-)widget state.
-    commands.addCommand('@jupyter-widgets/jupyterlab-manager:saveWidgetState', {
-      label: 'Save Widget State Automatically',
-      execute: args => {
-        return settingRegistry
-          .set(plugin.id, 'saveState', !SETTINGS.saveState)
-          .catch((reason: Error) => {
-            console.error(`Failed to set ${plugin.id}: ${reason.message}`);
-          });
-      },
-      isToggled: () => SETTINGS.saveState
-    });
+    // Add commands for changing how we save (jupyter-)widget state.
+    const createStoreCommand = (name: string, value: string, label: string) => {
+      commands.addCommand(`@jupyter-widgets/jupyterlab-manager:${name}`, {
+        label: label,
+        execute: args => {
+          const current = tracker?.currentWidget || null;
+          current?.model?.metadata.set('widgets', { store: value });
+          app.commands.execute('docmanager:save');
+        },
+        isToggled: () => {
+          const current = tracker?.currentWidget || null;
+          const metadata: any = current?.model?.metadata.toJSON() || null;
+          return metadata?.widgets?.store === value;
+        },
+        isEnabled: isNotebookActive
+      });
+    };
+    createStoreCommand('saveNoWidgets', 'none', 'Store No Widgets');
+    createStoreCommand(
+      'saveDisplayedWidgets',
+      'displayed',
+      'Store Displayed Widgets'
+    );
+    createStoreCommand('saveAllWidgets', 'all', 'Store All Widgets');
   }
 
   if (menu) {
     menu.settingsMenu.addGroup([
-      { command: '@jupyter-widgets/jupyterlab-manager:saveWidgetState' }
+      { command: '@jupyter-widgets/jupyterlab-manager:saveNoWidgets' },
+      { command: '@jupyter-widgets/jupyterlab-manager:saveDisplayedWidgets' },
+      { command: '@jupyter-widgets/jupyterlab-manager:saveAllWidgets' }
     ]);
   }
 

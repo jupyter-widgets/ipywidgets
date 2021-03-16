@@ -517,16 +517,26 @@ export class WidgetManager extends LabWidgetManager {
    * Save the widget state to the context model.
    */
   private _saveState(): void {
-    const visibleWidgets = [];
-    for (const cell of toArray(this._context.model.cells)) {
-      if (cell.type === 'code') {
-        const codeCell = cell as ICodeCellModel;
-        for (let i = 0; i < codeCell.outputs.length; i++) {
-          const output = codeCell.outputs.get(i);
-          if (output.data[WIDGET_VIEW_MIMETYPE]) {
-            const widgetData = output.data[WIDGET_VIEW_MIMETYPE] as any;
-            const modelId = widgetData['model_id'];
-            visibleWidgets.push(modelId);
+    const metadata: any = this._context.model?.metadata.toJSON() || null;
+    // the default is to not store widgets
+    const store = metadata?.widgets?.store || 'none';
+    if (store === 'none') {
+      return;
+    }
+
+    let visibleWidgets = undefined;
+    if (store === 'displayed') {
+      visibleWidgets = [];
+      for (const cell of toArray(this._context.model.cells)) {
+        if (cell.type === 'code') {
+          const codeCell = cell as ICodeCellModel;
+          for (let i = 0; i < codeCell.outputs.length; i++) {
+            const output = codeCell.outputs.get(i);
+            if (output.data[WIDGET_VIEW_MIMETYPE]) {
+              const widgetData = output.data[WIDGET_VIEW_MIMETYPE] as any;
+              const modelId = widgetData['model_id'];
+              visibleWidgets.push(modelId);
+            }
           }
         }
       }
@@ -536,6 +546,7 @@ export class WidgetManager extends LabWidgetManager {
       visibleWidgets: visibleWidgets
     });
     this._context.model.metadata.set('widgets', {
+      store: store,
       'application/vnd.jupyter.widget-state+json': state
     });
   }
