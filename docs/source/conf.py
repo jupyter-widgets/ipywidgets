@@ -30,7 +30,7 @@ intersphinx_mapping = {
 }
 
 
-# prolog taken based on https://github.com/spatialaudio/nbsphinx/blob/98005a9d6b331b7d6d14221539154df69f7ae51a/doc/conf.py#L38
+# prolog based on https://github.com/spatialaudio/nbsphinx/blob/98005a9d6b331b7d6d14221539154df69f7ae51a/doc/conf.py#L38
 nbsphinx_prolog = r"""
 {% set docname_link = env.doc2path(env.docname, base=None).replace(' ', '%20') %}
 {% set docname_display = env.doc2path(env.docname, base=None) %}
