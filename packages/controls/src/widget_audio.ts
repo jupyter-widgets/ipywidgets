@@ -62,9 +62,8 @@ export class AudioView extends DOMWidgetView {
     // Clean up the old objectURL
     const oldurl = this.el.src;
     this.el.src = url;
-    if (oldurl && typeof oldurl !== 'string') {
-      URL.revokeObjectURL(oldurl);
-    }
+
+    URL.revokeObjectURL(oldurl);
 
     // Audio attributes
     this.el.loop = this.model.get('loop');
