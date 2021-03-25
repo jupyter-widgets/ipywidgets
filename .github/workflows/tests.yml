@@ -182,7 +182,16 @@ jobs:
       run: |
         yarn install --frozen-lockfile
         yarn run build
-        pip install file://$PWD#egg=ipywidgets
+    - name: Build the extension
+      run: |
+        pip install .
+        jlpm install
+        jlpm run build
+        cd jupyterlab_widgets
+        pwd
+        pip install -e .
+        jupyter labextension develop . --overwrite
+        jupyter labextension list
     - name: Install Galata
       run: |
         cd ui-tests
@@ -201,6 +210,7 @@ jobs:
         cd ui-tests
         npm run test
     - name: Upload UI Test artifacts
+      if: always()
       uses: actions/upload-artifact@v2
       with:
         name: ui-test-output
