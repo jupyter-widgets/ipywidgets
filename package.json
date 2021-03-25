@@ -24,6 +24,8 @@
     "update-dependency": "update-dependency --lerna",
     "updated": "lerna updated",
     "version": "yarn run clean && yarn run build && lerna version --no-push -m \"Bump version\" ",
+    "start-jlab": "jupyter lab --config ./ui-tests/jupyter_server_config.py",
+    "start-jlab:detached": "yarn run start-jlab&",
     "test:ui": "galata"
   },
   "husky": {
