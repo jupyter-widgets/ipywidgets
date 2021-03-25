@@ -893,7 +893,6 @@
   integrity sha512-g334GMDQdSlIOngfWLW9GR8ENc9Kegu3OkCrYPdheE2lYJJsgeiO+3n7lg4Iar5b8LtQTu9P0by3IhEFRtEATA==
   dependencies:
     "@types/dateformat" "^3.0.1"
-    "@types/jest" "^25.1.2"
     "@types/js-beautify" "^1.8.2"
     "@types/node" "^13.1.1"
     "@types/pixelmatch" "^5.0.0"
@@ -2294,14 +2293,6 @@
   dependencies:
     "@types/istanbul-lib-coverage" "*"
     "@types/istanbul-lib-report" "*"
-
-"@types/jest@^25.1.2":
-  version "25.2.3"
-  resolved "https://registry.npmjs.org/@types/jest/-/jest-25.2.3.tgz#33d27e4c4716caae4eced355097a47ad363fdcaf"
-  integrity sha512-JXc1nK/tXHiDhV55dvfzqtmP4S3sy3T3ouV2tkViZgxY/zeUkcpQcQPGRlgF4KmWzWW5oiWYSZwtCB+2RsE4Fw==
-  dependencies:
-    jest-diff "^25.2.1"
-    pretty-format "^25.2.1"
 
 "@types/jquery@*":
   version "3.5.5"
