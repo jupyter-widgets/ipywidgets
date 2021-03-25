@@ -23,10 +23,7 @@
     "sort-package-json": "lerna exec --parallel sort-package-json && sort-package-json",
     "update-dependency": "update-dependency --lerna",
     "updated": "lerna updated",
-    "version": "yarn run clean && yarn run build && lerna version --no-push -m \"Bump version\" ",
-    "start-jlab": "jupyter lab --config ./ui-tests/jupyter_server_config.py",
-    "start-jlab:detached": "yarn run start-jlab&",
-    "test:ui": "galata"
+    "version": "yarn run clean && yarn run build && lerna version --no-push -m \"Bump version\" "
   },
   "husky": {
     "hooks": {
@@ -36,8 +33,6 @@
   },
   "devDependencies": {
     "@jupyterlab/buildutils": "^3.0.0",
-    "@jupyterlab/galata": "3.0.3-3",
-    "ts-jest": "^25.2.0",
     "@typescript-eslint/eslint-plugin": "^2.14.0",
     "@typescript-eslint/parser": "^2.14.0",
     "eslint": "^6.5.0",
