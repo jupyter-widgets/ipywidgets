@@ -1,0 +1,6 @@
+{
+  "testPathPattern": "^.*/ui-tests/tests/.*ts$",
+  "referenceDir": "./ui-tests/reference-output",
+  "outputDir": "./ui-tests/test-output",
+  "testId": "test"
+}
