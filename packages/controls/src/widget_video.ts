@@ -65,8 +65,9 @@ export class VideoView extends DOMWidgetView {
     // Clean up the old objectURL
     const oldurl = this.el.src;
     this.el.src = url;
-
-    URL.revokeObjectURL(oldurl);
+    if (oldurl) {
+      URL.revokeObjectURL(oldurl);
+    }
 
     // Height and width
     const width = this.model.get('width');

@@ -62,8 +62,9 @@ export class ImageView extends DOMWidgetView {
     // Clean up the old objectURL
     const oldurl = this.el.src;
     this.el.src = url;
-
-    URL.revokeObjectURL(oldurl);
+    if (oldurl) {
+      URL.revokeObjectURL(oldurl);
+    }
 
     const width = this.model.get('width');
     if (width !== undefined && width.length > 0) {
