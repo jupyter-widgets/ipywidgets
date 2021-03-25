@@ -161,9 +161,9 @@ jobs:
           ${{ runner.os }}-pip-
     - name: Install dependencies
       run: |
-        sudo apt-get install -y firefox
         python -m pip install --upgrade pip
         python -m pip install jupyterlab==3.0.3
+        pip install file://$PWD#egg=ipywidgets
 
     - name: Use Node.js 12.x
       uses: actions/setup-node@v1
