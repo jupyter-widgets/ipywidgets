@@ -183,9 +183,14 @@ jobs:
       run: |
         yarn install --frozen-lockfile
         yarn run build
+    - name: Install Galata
+      run: |
+        cd ui-tests
+        npm install
     - name: Launch JupyterLab
       run: |
-        yarn run start-jlab:detached
+        cd ui-tests
+        npm run start-jlab:detached
     - name: Wait for JupyterLab
       uses: ifaxity/wait-on-action@v1
       with:
@@ -193,7 +198,8 @@ jobs:
         timeout: 20000
     - name: Run UI Tests
       run: |
-        yarn run test:ui
+        cd ui-tests
+        npm run test
 
       env:
         CI: true
