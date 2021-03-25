@@ -200,6 +200,12 @@ jobs:
       run: |
         cd ui-tests
         npm run test
+    - name: Upload UI Test artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ui-test-output
+          path: |
+            ui-tests/test-output
 
       env:
         CI: true
