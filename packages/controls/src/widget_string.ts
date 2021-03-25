@@ -531,10 +531,13 @@ export class ComboboxView extends TextView {
     this.isInitialRender = false;
 
     const opts = this.model.get('options') as string[];
-    const optLines = opts.map(o => {
-      return `<option value="${o}"></option>`;
-    });
-    this.datalist.innerHTML = optLines.join('\n');
+    const optionFragment = document.createDocumentFragment();
+    for (const v of opts) {
+      const o = document.createElement('option');
+      o.value = v;
+      optionFragment.appendChild(o);
+    }
+    this.datalist.appendChild(optionFragment);
   }
 
   isValid(value: string): boolean {
