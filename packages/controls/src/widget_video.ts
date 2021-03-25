@@ -65,7 +65,7 @@ export class VideoView extends DOMWidgetView {
     // Clean up the old objectURL
     const oldurl = this.el.src;
     this.el.src = url;
-    if (oldurl && typeof oldurl !== 'string') {
+    if (oldurl) {
       URL.revokeObjectURL(oldurl);
     }
 
