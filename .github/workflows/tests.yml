@@ -163,7 +163,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install jupyterlab==3.0.3
-        pip install file://$PWD#egg=ipywidgets
 
     - name: Use Node.js 12.x
       uses: actions/setup-node@v1
@@ -179,10 +178,11 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-yarn-
 
-    - name: yarn install, build
+    - name: Build and Install ipywidgets
       run: |
         yarn install --frozen-lockfile
         yarn run build
+        pip install file://$PWD#egg=ipywidgets
     - name: Install Galata
       run: |
         cd ui-tests
