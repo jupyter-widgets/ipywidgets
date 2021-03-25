@@ -72,7 +72,7 @@ describe('Widget Visual Regression', () => {
     for (let c = 0; c < numCellImages; ++c) {
       expect(
         await galata.capture.compareScreenshot(getCaptureImageName(c))
-      ).toBe('same');
+      ).toBe('missing-reference');
     }
   });
 
