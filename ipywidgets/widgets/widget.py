@@ -271,7 +271,7 @@ class Widget(LoggingHasTraits):
 
     @classmethod
     def close_all(cls):
-        for widget in list(cls.widgets.values()):
+        for widget in list(cls._active_widgets.values()):
             widget.close()
 
 
