@@ -4,6 +4,8 @@
 import argparse
 import json
 from operator import itemgetter
+import pathlib
+import sys
 
 from traitlets import (
     CaselessStrEnum,
@@ -231,21 +233,33 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Description of your program')
     parser.add_argument('-f', '--format', choices=['json', 'json-pretty', 'markdown'], 
         help='Format to generate', default='json')
+    parser.add_argument('output', nargs='?', type=pathlib.Path)
     args = parser.parse_args()
     format = args.format
 
+    if args.output:
+        args.output.parent.mkdir(exist_ok=True)
+        output = open(args.output, mode='w', encoding='utf8')
+    else:
+        output = sys.stdout
+
     widgets_to_document = sorted(widgets.Widget._widget_types.items())
     spec = create_spec(widgets_to_document)
-    if format == 'json':
-        try:
-            print(json.dumps(spec, sort_keys=True))
-        except TypeError:
-            print('Encountered error when converting spec to JSON. Here is the spec:')
-            print(spec)
-            raise
-    elif format == 'json-pretty':
-        print(json.dumps(spec, sort_keys=True,
-              indent=2, separators=(',', ': ')))
-    elif format == 'markdown':
-        # We go through the json engine to convert tuples to lists, etc.
-        print(create_markdown(json.loads(json.dumps(spec))))
+    try:
+        if format == 'json':
+            try:
+                json.dump(spec, output, sort_keys=True)
+            except TypeError:
+                print('Encountered error when converting spec to JSON. Here is the spec:')
+                print(spec)
+                raise
+        elif format == 'json-pretty':
+            json.dump(spec, output, sort_keys=True,
+                indent=2, separators=(',', ': '))
+        elif format == 'markdown':
+            # We go through the json engine to convert tuples to lists, etc.
+            output.write(create_markdown(json.loads(json.dumps(spec))))
+        output.write('\n')
+    finally:
+        if args.output:
+            output.close()

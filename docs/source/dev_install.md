@@ -75,8 +75,8 @@ Updating widget model specification
 
 To update the widget model specification with changes, do something like this in the repo root:
 ```
-python ./packages/schema/generate-spec.py -f json-pretty > packages/schema/jupyterwidgetmodels.latest.json
-python ./packages/schema/generate-spec.py -f markdown > packages/schema/jupyterwidgetmodels.latest.md
+python ./packages/schema/generate-spec.py -f json-pretty packages/schema/jupyterwidgetmodels.latest.json
+python ./packages/schema/generate-spec.py -f markdown packages/schema/jupyterwidgetmodels.latest.md
 ```
 
 Releasing new versions
