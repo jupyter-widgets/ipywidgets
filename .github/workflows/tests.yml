@@ -195,11 +195,11 @@ jobs:
     - name: Install Galata
       run: |
         cd ui-tests
-        npm install
+        yarn install --frozen-lockfile
     - name: Launch JupyterLab
       run: |
         cd ui-tests
-        npm run start-jlab:detached
+        yarn run start-jlab:detached
     - name: Wait for JupyterLab
       uses: ifaxity/wait-on-action@v1
       with:
@@ -208,7 +208,7 @@ jobs:
     - name: Run UI Tests
       run: |
         cd ui-tests
-        npm run test
+        yarn run test
     - name: Upload UI Test artifacts
       if: always()
       uses: actions/upload-artifact@v2

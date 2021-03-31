@@ -24,31 +24,40 @@ Galata UI tests are written using typescript and [jest](https://github.com/faceb
 
 ## Running Tests Locally
 
-First install dependencies
+First install the dependencies:
+
 ```sh
 cd ui-tests
-npm install
+yarn install
 ```
+
 Galata needs to connect to a running instance of JupyterLab 3 to run UI tests. First launch JupyterLab and keep it running in a terminal window.
+
 ```sh
 # in ui-tests directory
-npm run start-jlab
+yarn run start-jlab
 ```
-Alternatively, you can use the command below to launch JupyterLab which is equivalent to `start-jlab` script.
+Alternatively, you can use the command below to launch JupyterLab which is equivalent to `start-jlab` script:
+
 ```sh
 jupyter lab --expose-app-in-browser --no-browser --ServerApp.token='' --ServerApp.password='' --ServerApp.disable_check_xsrf='True'
 ```
-Then you can run `test` npm script which in turn launches Galata to run UI tests.
+
+Then you can run the `test` script which in turn launches Galata to run UI tests:
+
 ```sh
-# in ui-tests directory
-npm run test
+# in the ui-tests directory
+yarn run test
 ```
-You can pass additional arguments to Galata by appending to npm run command as in `npm run test -- --no-headless`. For a full list of Galata command-line options see [https://github.com/jupyterlab/galata#command-line-options](https://github.com/jupyterlab/galata#command-line-options).
+
+You can pass additional arguments to Galata by appending parameters to the command as in `yarn run test -- --no-headless`. For a full list of Galata command-line options see [https://github.com/jupyterlab/galata#command-line-options](https://github.com/jupyterlab/galata#command-line-options).
 
 ## Adding new UI tests
+
 New test suites can be added into [ui-tests/tests](./ui-tests/tests) directory. Their names need to end with `.test.ts`. You can see some additional example test suites in [Galata repo](https://github.com/jupyterlab/galata/blob/main/packages/galata/tests). If tests in new suites are doing visual regression tests or HTML source regression tests then you also need to add their reference images / HTML files into [ui-tests/tests/reference-output](./ui-tests/tests/reference-output) directory.
 
 ## Reference Image Captures
+
 When doing visual regression tests, it is important to use reference images that were generated in the same environment. Otherwise, even though the same browser is used for testing, there might be minor differences in image renderings generated that could cause visual regression tests to fail.
 
 When adding a new visual regression test, first make sure your tests pass locally on your development environment, with a reference image generated in your dev environment. You can use images captured by Galata as reference images. They will be saved as part of test output, under [ui-tests/test-output/test/screenshots](ui-tests/test-output/test/screenshots). However, you shouldn't push these references images generated in your development environment to github. Instead, have the new regression tests run and fail by GitHub Actions first, then download the artifacts from GitHub and use the captures generated in GitHub testing environment as the reference images and push those in a separate commit.
