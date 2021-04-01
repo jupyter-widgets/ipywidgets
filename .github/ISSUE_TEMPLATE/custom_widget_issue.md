@@ -1,7 +1,7 @@
 ---
 name: Custom Widget
 about: Issues or questions related to developing a custom widget
-labels: type:custom-widget
+labels: "Custom Widget"
 ---
 
 <!-- 
