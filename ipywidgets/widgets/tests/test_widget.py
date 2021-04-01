@@ -43,3 +43,15 @@ def test_widget_view():
     assert 'application/vnd.jupyter.widget-view+json' in mime_bundle, "widget should have have a view"
     assert cap.stdout == '', repr(cap.stdout)
     assert cap.stderr == '', repr(cap.stderr)
+
+
+def test_close_all():
+    # create a couple of widgets
+    widgets = [Button() for i in range(10)]
+
+    assert len(Widget._active_widgets) > 0, "expect active widgets"
+
+    # close all the widgets
+    Widget.close_all()
+
+    assert len(Widget._active_widgets) == 0, "active widgets should be cleared"
