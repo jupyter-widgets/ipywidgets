@@ -28,6 +28,12 @@ export class SemVerCache<T> {
     }
   }
 
+  getAllModules(key: string): Object | undefined {
+    if (key in this._cache) {
+      return this._cache[key];
+    }
+  }
+
   private _cache: { [key: string]: { [version: string]: T } } = Object.create(
     null
   );

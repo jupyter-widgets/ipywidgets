@@ -264,10 +264,18 @@ export abstract class LabWidgetManager extends ManagerBase
       moduleVersion = `^${moduleVersion}`;
     }
 
+    const allMod = this._registry.getAllModules(moduleName);
+    if (!allMod) {
+      throw new Error(`No version of module ${moduleName} is registered`);
+    }
     const mod = this._registry.get(moduleName, moduleVersion);
     if (!mod) {
+      const registeredVersionList = Object.keys(allMod);
       throw new Error(
-        `Module ${moduleName}, semver range ${moduleVersion} is not registered as a widget module`
+        `Module ${moduleName}, version ${moduleVersion} is not registered, however, \
+        ${registeredVersionList.join(',')} ${
+          registeredVersionList.length > 1 ? 'are' : 'is'
+        }`
       );
     }
     let module: ExportMap;
