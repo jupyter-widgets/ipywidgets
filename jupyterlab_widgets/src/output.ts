@@ -125,7 +125,7 @@ export class OutputModel extends outputBase.OutputModel {
 export class JupyterLuminoPanelWidget extends Panel {
   constructor(options: JupyterLuminoWidget.IOptions & Panel.IOptions) {
     const view = options.view;
-    delete options.view;
+    delete (options as any).view;
     super(options);
     this._view = view;
   }
