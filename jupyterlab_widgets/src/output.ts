@@ -162,18 +162,18 @@ export class JupyterLuminoPanelWidget extends Panel {
 
 export class OutputView extends outputBase.OutputView {
   _createElement(tagName: string): HTMLElement {
-    this.pWidget = new JupyterLuminoPanelWidget({ view: this });
-    return this.pWidget.node;
+    this.luminoWidget = new JupyterLuminoPanelWidget({ view: this });
+    return this.luminoWidget.node;
   }
 
   _setElement(el: HTMLElement): void {
-    if (this.el || el !== this.pWidget.node) {
+    if (this.el || el !== this.luminoWidget.node) {
       // Boxes don't allow setting the element beyond the initial creation.
       throw new Error('Cannot reset the DOM element.');
     }
 
-    this.el = this.pWidget.node;
-    this.$el = $(this.pWidget.node);
+    this.el = this.luminoWidget.node;
+    this.$el = $(this.luminoWidget.node);
   }
 
   /**
@@ -190,10 +190,10 @@ export class OutputView extends outputBase.OutputView {
     // this._outputView.model = this.model.outputs;
     // TODO: why is this on the model now?
     // this._outputView.trusted = true;
-    this.pWidget.insertWidget(0, this._outputView);
+    this.luminoWidget.insertWidget(0, this._outputView);
 
-    this.pWidget.addClass('jupyter-widgets');
-    this.pWidget.addClass('widget-output');
+    this.luminoWidget.addClass('jupyter-widgets');
+    this.luminoWidget.addClass('widget-output');
     this.update(); // Set defaults.
   }
 
@@ -204,5 +204,5 @@ export class OutputView extends outputBase.OutputView {
 
   model: OutputModel;
   _outputView: OutputArea;
-  pWidget: Panel;
+  luminoWidget: Panel;
 }

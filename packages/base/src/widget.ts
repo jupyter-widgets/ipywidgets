@@ -881,16 +881,6 @@ export class DOMWidgetView extends WidgetView {
     this.updateTooltip();
   }
 
-  /**
-   * Getter for backward compatibility.
-   *
-   * pWidget is deprecated and will be removed in the future,
-   * please use luminoWidget instead.
-   */
-  get pWidget(): Widget {
-    return this.luminoWidget;
-  }
-
   setLayout(layout: LayoutModel, oldLayout?: LayoutModel): void {
     if (layout) {
       this.layoutPromise = this.layoutPromise.then(oldLayoutView => {

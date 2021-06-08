@@ -70,7 +70,7 @@ export class WidgetRenderer
 
     let widget: LuminoWidget;
     try {
-      widget = (await manager.create_view(wModel)).pWidget;
+      widget = (await manager.create_view(wModel)).luminoWidget;
     } catch (err) {
       this.node.textContent = 'Error displaying widget';
       this.addClass('jupyter-widgets');

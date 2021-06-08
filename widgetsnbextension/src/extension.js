@@ -134,7 +134,7 @@ function register_events(Jupyter, events, outputarea) {
           output._jupyterWidgetViews = output._jupyterWidgetViews || [];
           output._jupyterWidgetViews.push(id);
           views[id] = view;
-          LuminoWidget.Widget.attach(view.pWidget, node);
+          LuminoWidget.Widget.attach(view.luminoWidget, node);
 
           // Make the node completely disappear if the view is removed.
           view.once('remove', () => {

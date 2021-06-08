@@ -207,7 +207,6 @@ export class AccordionView extends DOMWidgetView {
   }
 
   children_views: ViewList<DOMWidgetView> | null;
-  pWidget: Accordion;
   luminoWidget: Accordion;
   updatingChildren: boolean;
 }
@@ -420,7 +419,6 @@ export class TabView extends DOMWidgetView {
 
   updatingTabs = false;
   childrenViews: ViewList<DOMWidgetView> | null;
-  pWidget: JupyterLuminoTabPanelWidget;
   luminoWidget: JupyterLuminoTabPanelWidget;
 }
 
