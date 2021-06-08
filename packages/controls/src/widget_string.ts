@@ -8,7 +8,7 @@ import { DescriptionView } from './widget_description';
 import { uuid } from './utils';
 
 /**
- * Class name for a combobox with an invlid value.
+ * Class name for a combobox with an invalid value.
  */
 const INVALID_VALUE_CLASS = 'jpwidgets-invalidComboValue';
 
