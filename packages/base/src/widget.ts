@@ -756,16 +756,17 @@ export namespace WidgetView {
 
 export namespace JupyterLuminoWidget {
   export interface IOptions {
-    view?: DOMWidgetView;
+    view: DOMWidgetView;
   }
 }
 
 export class JupyterLuminoWidget extends Widget {
   constructor(options: Widget.IOptions & JupyterLuminoWidget.IOptions) {
     const view = options.view;
-    delete options.view;
+    // Cast as any since we cannot delete a mandatory value
+    delete (options as any).view;
     super(options);
-    this._view = view ?? null;
+    this._view = view;
   }
 
   /**
@@ -778,10 +779,8 @@ export class JupyterLuminoWidget extends Widget {
       return;
     }
     super.dispose();
-    if (this._view) {
-      this._view.remove();
-    }
-    this._view = null;
+    this._view.remove();
+    this._view = null!;
   }
 
   /**
@@ -792,18 +791,18 @@ export class JupyterLuminoWidget extends Widget {
    */
   processMessage(msg: Message): void {
     super.processMessage(msg);
-    this._view?.processLuminoMessage(msg);
+    this._view.processLuminoMessage(msg);
   }
 
-  private _view: DOMWidgetView | null;
+  private _view: DOMWidgetView;
 }
 
 export class JupyterLuminoPanelWidget extends Panel {
   constructor(options: JupyterLuminoWidget.IOptions & Panel.IOptions) {
     const view = options.view;
-    delete options.view;
+    delete (options as any).view;
     super(options);
-    this._view = view ?? null;
+    this._view = view;
   }
 
   /**
@@ -814,7 +813,7 @@ export class JupyterLuminoPanelWidget extends Panel {
    */
   processMessage(msg: Message): void {
     super.processMessage(msg);
-    this._view?.processLuminoMessage(msg);
+    this._view.processLuminoMessage(msg);
   }
 
   /**
@@ -827,13 +826,11 @@ export class JupyterLuminoPanelWidget extends Panel {
       return;
     }
     super.dispose();
-    if (this._view) {
-      this._view.remove();
-    }
+    this._view.remove();
     this._view = null!;
   }
 
-  private _view: DOMWidgetView | null;
+  private _view: DOMWidgetView;
 }
 
 export class DOMWidgetView extends WidgetView {

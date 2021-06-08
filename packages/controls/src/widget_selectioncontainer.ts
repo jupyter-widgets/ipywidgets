@@ -53,9 +53,9 @@ export class AccordionModel extends SelectionContainerModel {
 export class JupyterLuminoAccordionWidget extends Accordion {
   constructor(options: JupyterLuminoWidget.IOptions & Accordion.IOptions) {
     const view = options.view;
-    delete options.view;
+    delete (options as any).view;
     super(options);
-    this._view = view ?? null;
+    this._view = view;
   }
 
   /**
@@ -79,13 +79,11 @@ export class JupyterLuminoAccordionWidget extends Accordion {
       return;
     }
     super.dispose();
-    if (this._view) {
-      this._view.remove();
-    }
+    this._view.remove();
     this._view = null!;
   }
 
-  private _view: DOMWidgetView | null;
+  private _view: DOMWidgetView;
 }
 
 export class AccordionView extends DOMWidgetView {
@@ -230,16 +228,16 @@ export class TabModel extends SelectionContainerModel {
 export class JupyterLuminoTabPanelWidget extends TabPanel {
   constructor(options: JupyterLuminoWidget.IOptions & TabPanel.IOptions) {
     const view = options.view;
-    delete options.view;
+    delete (options as any).view;
     super(options);
-    this._view = view ?? null;
+    this._view = view;
     // We want the view's messages to be the messages the tabContents panel
     // gets.
     MessageLoop.installMessageHook(this.tabContents, (handler, msg) => {
       // There may be times when we want the view's handler to be called
       // *after* the message has been processed by the widget, in which
       // case we'll need to revisit using a message hook.
-      this._view?.processLuminoMessage(msg);
+      this._view.processLuminoMessage(msg);
       return true;
     });
   }
@@ -254,13 +252,11 @@ export class JupyterLuminoTabPanelWidget extends TabPanel {
       return;
     }
     super.dispose();
-    if (this._view) {
-      this._view.remove();
-    }
-    this._view = null;
+    this._view.remove();
+    this._view = null!;
   }
 
-  private _view: DOMWidgetView | null;
+  private _view: DOMWidgetView;
 }
 
 export class TabView extends DOMWidgetView {

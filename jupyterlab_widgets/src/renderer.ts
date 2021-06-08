@@ -91,24 +91,14 @@ export class WidgetRenderer
   }
 
   /**
-   * Get whether the manager is disposed.
-   *
-   * #### Notes
-   * This is a read-only property.
-   */
-  get isDisposed(): boolean {
-    return this._manager === null;
-  }
-
-  /**
    * Dispose the resources held by the manager.
    */
   dispose(): void {
     if (this.isDisposed) {
       return;
     }
-    super.dispose();
     this._manager = null!;
+    super.dispose();
   }
 
   private _rerender(): void {
