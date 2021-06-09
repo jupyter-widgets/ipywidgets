@@ -22,8 +22,8 @@
   },
   "devDependencies": {
     "chai": "^4.0.0",
-    "css-loader": "^3.4.0",
-    "file-loader": "^5.0.2",
+    "css-loader": "^5.2.6",
+    "file-loader": "^6.2.0",
     "karma": "^4.1.0",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^2.2.0",
@@ -31,7 +31,7 @@
     "karma-mocha": "^1.3.0",
     "karma-mocha-reporter": "^2.2.5",
     "mocha": "^6.1.4",
-    "style-loader": "^1.1.2",
-    "webpack": "^4.41.5"
+    "style-loader": "^2.0.0",
+    "webpack": "^5.38.1"
   }
 }
