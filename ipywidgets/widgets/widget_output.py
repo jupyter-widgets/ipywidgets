@@ -31,7 +31,7 @@ class Output(DOMWidget):
     context will be captured and displayed in the widget instead of the standard output
     area.
 
-    You can also use the .capture() method to decorate a function or a method. Any output 
+    You can also use the .capture() method to decorate a function or a method. Any output
     produced by the function will then go to the output widget. This is useful for
     debugging widget callbacks, for example.
 
@@ -108,9 +108,16 @@ class Output(DOMWidget):
         """Called upon entering output widget context manager."""
         self._flush()
         ip = get_ipython()
-        if ip and hasattr(ip, 'kernel') and hasattr(ip.kernel, '_parent_header'):
-            self.msg_id = ip.kernel._parent_header['header']['msg_id']
-            self.__counter += 1
+        if ip and getattr(ip, "kernel", None) is not None:
+            if hasattr(ip.kernel, "get_parent"):
+                parent = ip.kernel.get_parent()
+            elif hasattr(ip.kernel, "_parent_header"):
+                # ipykernel < 6: kernel._parent_header is the parent *request*
+                parent = ip.kernel._parent_header
+
+            if parent and parent.get("header"):
+                self.msg_id = parent["header"]["msg_id"]
+                self.__counter += 1
 
     def __exit__(self, etype, evalue, tb):
         """Called upon exiting output widget context manager."""
