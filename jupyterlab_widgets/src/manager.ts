@@ -36,6 +36,9 @@ import { ISignal, Signal } from '@lumino/signaling';
 import { valid } from 'semver';
 
 import { SemVerCache } from './semvercache';
+import { toArray } from '@lumino/algorithm';
+import { ICodeCellModel } from '@jupyterlab/cells';
+import { findConnectedWidgets } from '@jupyter-widgets/base';
 
 /**
  * The mime type for a widget view.
@@ -334,30 +337,6 @@ export abstract class LabWidgetManager extends ManagerBase
   }
 
   /**
-   * Register a widget model.
-   */
-  register_model(model_id: string, modelPromise: Promise<WidgetModel>): void {
-    super.register_model(model_id, modelPromise);
-
-    // Update the synchronous model map
-    modelPromise.then(model => {
-      this._modelsSync.set(model_id, model);
-      model.once('comm:close', () => {
-        this._modelsSync.delete(model_id);
-      });
-    });
-  }
-
-  /**
-   * Close all widgets and empty the widget state.
-   * @return Promise that resolves when the widget state is cleared.
-   */
-  async clear_state(): Promise<void> {
-    await super.clear_state();
-    this._modelsSync = new Map();
-  }
-
-  /**
    * Synchronously get the state of the live widgets in the widget manager.
    *
    * This includes all of the live widget models, and follows the format given in
@@ -367,10 +346,17 @@ export abstract class LabWidgetManager extends ManagerBase
    * @returns A state dictionary
    */
   get_state_sync(options: IStateOptions = {}): ReadonlyPartialJSONValue {
-    const models = [];
-    for (const model of this._modelsSync.values()) {
-      if (model.comm_live) {
-        models.push(model);
+    let models: Array<WidgetModel> = [];
+    if (options.visibleWidgets) {
+      models = [
+        ...findConnectedWidgets(options.visibleWidgets, this.get_models_sync())
+      ];
+      console.log('Saving only visible widgets: ', models);
+    } else {
+      for (const model of this.get_models_sync().values()) {
+        if (model.comm_live) {
+          models.push(model);
+        }
       }
     }
     return serialize_state(models, options);
@@ -396,7 +382,6 @@ export abstract class LabWidgetManager extends ManagerBase
 
   private _commRegistration: IDisposable;
 
-  private _modelsSync = new Map<string, WidgetModel>();
   private _onUnhandledIOPubMessage = new Signal<
     this,
     KernelMessage.IIOPubMessage
@@ -525,8 +510,36 @@ export class WidgetManager extends LabWidgetManager {
    * Save the widget state to the context model.
    */
   private _saveState(): void {
-    const state = this.get_state_sync({ drop_defaults: true });
+    const metadata: any = this._context.model?.metadata.toJSON() || null;
+    // the default is to not store widgets
+    const store = metadata?.widgets?.store || 'none';
+    if (store === 'none') {
+      return;
+    }
+
+    let visibleWidgets = undefined;
+    if (store === 'displayed') {
+      visibleWidgets = [];
+      for (const cell of toArray(this._context.model.cells)) {
+        if (cell.type === 'code') {
+          const codeCell = cell as ICodeCellModel;
+          for (let i = 0; i < codeCell.outputs.length; i++) {
+            const output = codeCell.outputs.get(i);
+            if (output.data[WIDGET_VIEW_MIMETYPE]) {
+              const widgetData = output.data[WIDGET_VIEW_MIMETYPE] as any;
+              const modelId = widgetData['model_id'];
+              visibleWidgets.push(modelId);
+            }
+          }
+        }
+      }
+    }
+    const state = this.get_state_sync({
+      drop_defaults: true,
+      visibleWidgets: visibleWidgets
+    });
     this._context.model.metadata.set('widgets', {
+      store: store,
       'application/vnd.jupyter.widget-state+json': state
     });
   }

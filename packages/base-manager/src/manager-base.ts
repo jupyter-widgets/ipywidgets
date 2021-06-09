@@ -143,6 +143,21 @@ export abstract class ManagerBase implements IWidgetManager {
   }
 
   /**
+   * Return a Map with all widgets that are created, note that this misses widgets
+   * that are in the process of being created (e.g. we may be in the process of fetching
+   * libraries)
+   */
+
+  get_models_sync(): Map<string, WidgetModel> {
+    // since map is mutable, return a copy
+    const copy = new Map<string, WidgetModel>();
+    this._modelsSync.forEach((value, key) => {
+      copy.set(key, value);
+    });
+    return copy;
+  }
+
+  /**
    * Handle when a comm is opened.
    */
   handle_comm_open(
@@ -240,6 +255,7 @@ export abstract class ManagerBase implements IWidgetManager {
   register_model(model_id: string, modelPromise: Promise<WidgetModel>): void {
     this._models[model_id] = modelPromise;
     modelPromise.then(model => {
+      this._modelsSync.set(model_id, model);
       model.once('comm:close', () => {
         delete this._models[model_id];
       });
@@ -330,6 +346,7 @@ export abstract class ManagerBase implements IWidgetManager {
     return resolvePromisesDict(this._models).then(models => {
       Object.keys(models).forEach(id => models[id].close());
       this._models = Object.create(null);
+      this._modelsSync = new Map();
     });
   }
 
@@ -517,6 +534,7 @@ export abstract class ManagerBase implements IWidgetManager {
   private _models: { [key: string]: Promise<WidgetModel> } = Object.create(
     null
   );
+  private _modelsSync = new Map<string, WidgetModel>();
 }
 
 export interface IStateOptions {
@@ -526,6 +544,7 @@ export interface IStateOptions {
    * @default false
    */
   drop_defaults?: boolean;
+  visibleWidgets?: Array<string>;
 }
 
 /**

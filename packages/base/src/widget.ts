@@ -25,7 +25,7 @@ import { IClassicComm, ICallbacks } from './services-shim';
 
 import { JUPYTER_WIDGETS_VERSION } from './version';
 
-import { Dict } from './utils';
+import { Dict, findWidgetChildren } from './utils';
 
 import { KernelMessage } from '@jupyterlab/services';
 
@@ -141,6 +141,15 @@ export class WidgetModel extends Backbone.Model {
     } else {
       this.comm_live = false;
     }
+  }
+
+  /**
+   * Get a set of all children widget. The default implementation will look for all
+   * attributes, and resursively inspect Arrays and Objects. If this is not sufficient,
+   * library authors can override this method.
+   */
+  getChildren(): Set<WidgetModel> {
+    return findWidgetChildren(this);
   }
 
   get comm_live(): boolean {

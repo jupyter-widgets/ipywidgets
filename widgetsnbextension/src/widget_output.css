@@ -12,3 +12,7 @@
 .jupyter-widgets-output-area > .out_prompt_overlay {
   display: none;
 }
+
+#widget-submenu li {
+  margin-left: 10px;
+}
