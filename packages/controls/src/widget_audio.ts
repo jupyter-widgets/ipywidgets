@@ -81,17 +81,9 @@ export class AudioView extends DOMWidgetView {
     super.remove();
   }
 
-  /**
-   * The default tag name.
-   *
-   * #### Notes
-   * This is a read-only attribute.
-   */
-  get tagName(): string {
-    // We can't make this an attribute with a default value
-    // since it would be set after it is needed in the
-    // constructor.
-    return 'audio';
+  preinitialize() {
+    // Must set this before the initialize method creates the element
+    this.tagName = 'audio';
   }
 
   el: HTMLAudioElement;
