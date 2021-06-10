@@ -19,24 +19,26 @@ module.exports = {
           {
             loader: 'postcss-loader',
             options: {
-              plugins: [
-                postcss.plugin('delete-tilde', function() {
-                  return function(css) {
-                    css.walkAtRules('import', function(rule) {
-                      rule.params = rule.params.replace('~', '');
-                    });
-                  };
-                }),
-                postcss.plugin('prepend', function() {
-                  return function(css) {
-                    css.prepend(
-                      "@import '@jupyter-widgets/controls/css/labvariables.css';"
-                    );
-                  };
-                }),
-                require('postcss-import')(),
-                require('postcss-cssnext')()
-              ]
+              postcssOptions: {
+                plugins: [
+                  postcss.plugin('delete-tilde', function() {
+                    return function(css) {
+                      css.walkAtRules('import', function(rule) {
+                        rule.params = rule.params.replace('~', '');
+                      });
+                    };
+                  }),
+                  postcss.plugin('prepend', function() {
+                    return function(css) {
+                      css.prepend(
+                        "@import '@jupyter-widgets/controls/css/labvariables.css';"
+                      );
+                    };
+                  }),
+                  require('postcss-import')(),
+                  require('postcss-cssnext')()
+                ]  
+              }
             }
           }
         ]
