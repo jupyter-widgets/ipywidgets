@@ -187,13 +187,16 @@ export class WidgetModel extends Backbone.Model {
       delete this.comm;
     }
     // Delete all views of this model
-    const views = Object.keys(this.views).map((id: string) => {
-      return this.views[id].then(view => view.remove());
-    });
-    delete this.views;
-    return Promise.all(views).then(() => {
-      return;
-    });
+    if (this.views) {
+      const views = Object.keys(this.views).map((id: string) => {
+        return this.views![id].then(view => view.remove());
+      });
+      delete this.views;
+      return Promise.all(views).then(() => {
+        return;
+      });
+    }
+    return Promise.resolve();
   }
 
   /**
@@ -466,6 +469,9 @@ export class WidgetModel extends Backbone.Model {
    * Send a sync message to the kernel.
    */
   send_sync_message(state: JSONObject, callbacks: any = {}): void {
+    if (!this.comm) {
+      return;
+    }
     try {
       callbacks.iopub = callbacks.iopub || {};
       const statuscb = callbacks.iopub.status;
@@ -575,9 +581,9 @@ export class WidgetModel extends Backbone.Model {
   // values subclasses may set in their initialization functions.
   widget_manager: IWidgetManager;
   model_id: string;
-  views: { [key: string]: Promise<WidgetView> };
+  views?: { [key: string]: Promise<WidgetView> };
   state_change: Promise<any>;
-  comm: IClassicComm;
+  comm?: IClassicComm;
   name: string;
   module: string;
 
@@ -757,7 +763,8 @@ export namespace JupyterLuminoWidget {
 export class JupyterLuminoWidget extends Widget {
   constructor(options: Widget.IOptions & JupyterLuminoWidget.IOptions) {
     const view = options.view;
-    delete options.view;
+    // Cast as any since we cannot delete a mandatory value
+    delete (options as any).view;
     super(options);
     this._view = view;
   }
@@ -772,9 +779,7 @@ export class JupyterLuminoWidget extends Widget {
       return;
     }
     super.dispose();
-    if (this._view) {
-      this._view.remove();
-    }
+    this._view.remove();
     this._view = null!;
   }
 
@@ -795,7 +800,7 @@ export class JupyterLuminoWidget extends Widget {
 export class JupyterLuminoPanelWidget extends Panel {
   constructor(options: JupyterLuminoWidget.IOptions & Panel.IOptions) {
     const view = options.view;
-    delete options.view;
+    delete (options as any).view;
     super(options);
     this._view = view;
   }
@@ -821,9 +826,7 @@ export class JupyterLuminoPanelWidget extends Panel {
       return;
     }
     super.dispose();
-    if (this._view) {
-      this._view.remove();
-    }
+    this._view.remove();
     this._view = null!;
   }
 
@@ -876,16 +879,6 @@ export class DOMWidgetView extends WidgetView {
     });
     this.listenTo(this.model, 'change:tooltip', this.updateTooltip);
     this.updateTooltip();
-  }
-
-  /**
-   * Getter for backward compatibility.
-   *
-   * pWidget is deprecated and will be removed in the future,
-   * please use luminoWidget instead.
-   */
-  get pWidget(): Widget {
-    return this.luminoWidget;
   }
 
   setLayout(layout: LayoutModel, oldLayout?: LayoutModel): void {

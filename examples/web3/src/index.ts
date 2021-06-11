@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async function(event) {
         const model = await manager.get_model(widgetData.model_id);
         if (model !== undefined) {
           const view = await manager.create_view(model);
-          luminoWidget.Widget.attach(view.pWidget, widgetarea);
+          luminoWidget.Widget.attach(view.luminoWidget, widgetarea);
         }
       }
     }

@@ -11,12 +11,12 @@
   },
   "license": "BSD-3-Clause",
   "author": "Project Jupyter",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "files": [
     "lib/**/*.d.ts",
     "lib/**/*.js"
   ],
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
   "scripts": {
     "build": "npm run build:src",
     "build:src": "tsc --build",
@@ -29,6 +29,6 @@
   },
   "devDependencies": {
     "rimraf": "^2.6.1",
-    "typescript": "~3.7.4"
+    "typescript": "~4.3.2"
   }
 }
