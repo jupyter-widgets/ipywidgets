@@ -28,7 +28,7 @@ export class SemVerCache<T> {
     }
   }
 
-  getAllVersions(key: string): Record<string, any> | undefined {
+  getAllModules(key: string): Record<string, any> | undefined {
     if (key in this._cache) {
       return this._cache[key];
     }
