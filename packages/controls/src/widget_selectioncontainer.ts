@@ -7,7 +7,7 @@ import {
   JupyterLuminoWidget,
   WidgetModel,
   reject,
-  WidgetView
+  WidgetView,
 } from '@jupyter-widgets/base';
 
 import { BoxModel, BoxView } from './widget_box';
@@ -32,7 +32,7 @@ export class SelectionContainerModel extends BoxModel {
       ...super.defaults(),
       _model_name: 'SelectionContainerModel',
       selected_index: null,
-      _titles: []
+      _titles: [],
     };
   }
 }
@@ -42,7 +42,7 @@ export class AccordionModel extends SelectionContainerModel {
     return {
       ...super.defaults(),
       _model_name: 'AccordionModel',
-      _view_name: 'AccordionView'
+      _view_name: 'AccordionView',
     };
   }
 }
@@ -53,7 +53,7 @@ export class AccordionModel extends SelectionContainerModel {
 export class JupyterLuminoAccordionWidget extends Accordion {
   constructor(options: JupyterLuminoWidget.IOptions & Accordion.IOptions) {
     const view = options.view;
-    delete options.view;
+    delete (options as any).view;
     super(options);
     this._view = view;
   }
@@ -66,7 +66,7 @@ export class JupyterLuminoAccordionWidget extends Accordion {
    */
   processMessage(msg: Message): void {
     super.processMessage(msg);
-    this._view.processLuminoMessage(msg);
+    this._view?.processLuminoMessage(msg);
   }
 
   /**
@@ -79,9 +79,7 @@ export class JupyterLuminoAccordionWidget extends Accordion {
       return;
     }
     super.dispose();
-    if (this._view) {
-      this._view.remove();
-    }
+    this._view.remove();
     this._view = null!;
   }
 
@@ -127,7 +125,7 @@ export class AccordionView extends DOMWidgetView {
     accordion.addClass('jupyter-widgets');
     accordion.addClass('widget-accordion');
     accordion.addClass('widget-container');
-    accordion.selection.selectionChanged.connect(sender => {
+    accordion.selection.selectionChanged.connect((sender) => {
       if (!this.updatingChildren) {
         this.model.set('selected_index', accordion.selection.index);
         this.touch();
@@ -209,7 +207,6 @@ export class AccordionView extends DOMWidgetView {
   }
 
   children_views: ViewList<DOMWidgetView> | null;
-  pWidget: Accordion;
   luminoWidget: Accordion;
   updatingChildren: boolean;
 }
@@ -219,7 +216,7 @@ export class TabModel extends SelectionContainerModel {
     return {
       ...super.defaults(),
       _model_name: 'TabModel',
-      _view_name: 'TabView'
+      _view_name: 'TabView',
     };
   }
 }
@@ -230,7 +227,7 @@ export class TabModel extends SelectionContainerModel {
 export class JupyterLuminoTabPanelWidget extends TabPanel {
   constructor(options: JupyterLuminoWidget.IOptions & TabPanel.IOptions) {
     const view = options.view;
-    delete options.view;
+    delete (options as any).view;
     super(options);
     this._view = view;
     // We want the view's messages to be the messages the tabContents panel
@@ -254,9 +251,7 @@ export class JupyterLuminoTabPanelWidget extends TabPanel {
       return;
     }
     super.dispose();
-    if (this._view) {
-      this._view.remove();
-    }
+    this._view.remove();
     this._view = null!;
   }
 
@@ -266,7 +261,7 @@ export class JupyterLuminoTabPanelWidget extends TabPanel {
 export class TabView extends DOMWidgetView {
   _createElement(tagName: string): HTMLElement {
     this.luminoWidget = new JupyterLuminoTabPanelWidget({
-      view: this
+      view: this,
     });
     return this.luminoWidget.node;
   }
@@ -288,7 +283,7 @@ export class TabView extends DOMWidgetView {
     super.initialize(parameters);
     this.childrenViews = new ViewList(
       this.addChildView,
-      view => {
+      (view) => {
         view.remove();
       },
       this
@@ -424,7 +419,6 @@ export class TabView extends DOMWidgetView {
 
   updatingTabs = false;
   childrenViews: ViewList<DOMWidgetView> | null;
-  pWidget: JupyterLuminoTabPanelWidget;
   luminoWidget: JupyterLuminoTabPanelWidget;
 }
 
@@ -433,7 +427,7 @@ export class StackedModel extends SelectionContainerModel {
     return {
       ...super.defaults(),
       _model_name: 'StackedModel',
-      _view_name: 'StackedView'
+      _view_name: 'StackedView',
     };
   }
 }
@@ -452,7 +446,7 @@ export class StackedView extends BoxView {
       ?.update([selected_child])
       .then((views: DOMWidgetView[]) => {
         // Notify all children that their sizes may have changed.
-        views.forEach(view => {
+        views.forEach((view) => {
           MessageLoop.postMessage(
             view.luminoWidget,
             Widget.ResizeMessage.UnknownSize

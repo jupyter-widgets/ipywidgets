@@ -10,12 +10,12 @@ import {
   INotebookModel,
   INotebookTracker,
   Notebook,
-  NotebookPanel
+  NotebookPanel,
 } from '@jupyterlab/notebook';
 
 import {
   JupyterFrontEndPlugin,
-  JupyterFrontEnd
+  JupyterFrontEnd,
 } from '@jupyterlab/application';
 
 import { IMainMenu } from '@jupyterlab/mainmenu';
@@ -83,7 +83,7 @@ function* outputViews(
 ): Generator<WidgetRenderer, void, unknown> {
   const linkedViews = filter(
     app.shell.widgets(),
-    w => w.id.startsWith('LinkedOutputView-') && (w as any).path === path
+    (w) => w.id.startsWith('LinkedOutputView-') && (w as any).path === path
   );
   for (const view of toArray(linkedViews)) {
     for (const outputs of toArray(view.children())) {
@@ -112,7 +112,7 @@ export function registerWidgetManager(
   let wManager = Private.widgetManagerProperty.get(context);
   if (!wManager) {
     wManager = new WidgetManager(context, rendermime, SETTINGS);
-    WIDGET_REGISTRY.forEach(data => wManager!.register(data));
+    WIDGET_REGISTRY.forEach((data) => wManager!.register(data));
     Private.widgetManagerProperty.set(context, wManager);
   }
 
@@ -127,7 +127,7 @@ export function registerWidgetManager(
     {
       safe: false,
       mimeTypes: [WIDGET_VIEW_MIMETYPE],
-      createRenderer: options => new WidgetRenderer(options, wManager)
+      createRenderer: (options) => new WidgetRenderer(options, wManager),
     },
     0
   );
@@ -149,7 +149,7 @@ const plugin: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> = {
   optional: [INotebookTracker, ISettingRegistry, IMainMenu, ILoggerRegistry],
   provides: base.IJupyterWidgetRegistry,
   activate: activateWidgetExtension,
-  autoStart: true
+  autoStart: true,
 };
 
 export default plugin;
@@ -190,7 +190,7 @@ function activateWidgetExtension(
           }
           const data: nbformat.IOutput = {
             ...msg.content,
-            output_type: msg.header.msg_type
+            output_type: msg.header.msg_type,
           };
           logger.rendermime = nb.content.rendermime;
           logger.log({ type: 'output', data, level });
@@ -215,13 +215,13 @@ function activateWidgetExtension(
     {
       safe: false,
       mimeTypes: [WIDGET_VIEW_MIMETYPE],
-      createRenderer: options => new WidgetRenderer(options)
+      createRenderer: (options) => new WidgetRenderer(options),
     },
     0
   );
 
   if (tracker !== null) {
-    tracker.forEach(panel => {
+    tracker.forEach((panel) => {
       registerWidgetManager(
         panel.context,
         panel.content.rendermime,
@@ -251,20 +251,20 @@ function activateWidgetExtension(
     // Add a command for automatically saving (jupyter-)widget state.
     commands.addCommand('@jupyter-widgets/jupyterlab-manager:saveWidgetState', {
       label: 'Save Widget State Automatically',
-      execute: args => {
+      execute: (args) => {
         return settingRegistry
           .set(plugin.id, 'saveState', !SETTINGS.saveState)
           .catch((reason: Error) => {
             console.error(`Failed to set ${plugin.id}: ${reason.message}`);
           });
       },
-      isToggled: () => SETTINGS.saveState
+      isToggled: () => SETTINGS.saveState,
     });
   }
 
   if (menu) {
     menu.settingsMenu.addGroup([
-      { command: '@jupyter-widgets/jupyterlab-manager:saveWidgetState' }
+      { command: '@jupyter-widgets/jupyterlab-manager:saveWidgetState' },
     ]);
   }
 
@@ -279,8 +279,8 @@ function activateWidgetExtension(
       LayoutModel: base.LayoutModel,
       LayoutView: base.LayoutView,
       StyleModel: base.StyleModel,
-      StyleView: base.StyleView
-    }
+      StyleView: base.StyleView,
+    },
   });
 
   WIDGET_REGISTRY.push({
@@ -300,19 +300,19 @@ function activateWidgetExtension(
           '@jupyter-widgets/controls'
         );
       });
-    }
+    },
   });
 
   WIDGET_REGISTRY.push({
     name: '@jupyter-widgets/output',
     version: OUTPUT_WIDGET_VERSION,
-    exports: { OutputModel, OutputView }
+    exports: { OutputModel, OutputView },
   });
 
   return {
     registerWidget(data: base.IWidgetRegistryData): void {
       WIDGET_REGISTRY.push(data);
-    }
+    },
   };
 }
 
@@ -325,6 +325,6 @@ namespace Private {
     WidgetManager | undefined
   >({
     name: 'widgetManager',
-    create: (owner: DocumentRegistry.Context): undefined => undefined
+    create: (owner: DocumentRegistry.Context): undefined => undefined,
   });
 }

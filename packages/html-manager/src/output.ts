@@ -69,6 +69,5 @@ export class OutputView extends outputBase.OutputView {
 
   model: OutputModel;
   private _outputView: OutputArea;
-  pWidget: Panel;
   luminoWidget: Panel;
 }

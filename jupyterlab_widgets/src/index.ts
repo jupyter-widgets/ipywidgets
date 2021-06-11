@@ -11,7 +11,7 @@ export { registerWidgetManager } from './plugin';
 export {
   KernelWidgetManager,
   LabWidgetManager,
-  WidgetManager
+  WidgetManager,
 } from './manager';
 
 export { WidgetRenderer } from './renderer';
