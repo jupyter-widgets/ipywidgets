@@ -43,7 +43,7 @@
     "d3-color": "^3.0.1",
     "d3-format": "^3.0.1",
     "jquery": "^3.1.1",
-    "nouislider": "^15.1.1"
+    "nouislider": "^14.1.1"
   },
   "devDependencies": {
     "@jupyterlab/services": "^6.0.0",
@@ -53,7 +53,7 @@
     "@types/mathjax": "^0.0.36",
     "@types/mocha": "^8.2.2",
     "@types/node": "^15.12.2",
-    "@types/nouislider": "^15.0.0",
+    "@types/nouislider": "^9.0.6",
     "chai": "^4.0.0",
     "css-loader": "^5.2.6",
     "expect.js": "^0.3.1",
