@@ -12,7 +12,7 @@ module.exports = {
     rules: [
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
       { test: /\.md$/, loader: 'raw-loader' },
-      { test: /\.html$/, loader: 'file', options: { name: '[name].[ext]' } },
+      { test: /\.html$/, use: {loader: 'file-loader', options: { name: '[name].[ext]' } } },
       { test: /\.ipynb$/, loader: 'json-loader' }
     ]
   },
