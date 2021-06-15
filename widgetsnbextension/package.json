@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "css-loader": "^5.2.6",
-    "rimraf": "^2.6.1",
+    "rimraf": "^3.0.2",
     "style-loader": "^2.0.0",
     "url-loader": "^4.1.1",
     "webpack": "^5.38.1",

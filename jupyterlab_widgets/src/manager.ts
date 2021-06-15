@@ -53,7 +53,8 @@ export const WIDGET_STATE_MIMETYPE =
  */
 export abstract class LabWidgetManager
   extends ManagerBase
-  implements IDisposable {
+  implements IDisposable
+{
   constructor(rendermime: IRenderMimeRegistry) {
     super();
     this._rendermime = rendermime;

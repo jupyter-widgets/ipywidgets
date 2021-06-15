@@ -16,5 +16,6 @@ module.exports = {
       { test: /\.ipynb$/, use: 'json-loader' }
     ]
   },
-  mode: 'development'
+  mode: 'development',
+  resolve: {fallback: { util: false } }
 };

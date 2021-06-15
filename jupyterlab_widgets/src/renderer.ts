@@ -17,7 +17,8 @@ import { DOMWidgetModel } from '@jupyter-widgets/base';
  */
 export class WidgetRenderer
   extends Panel
-  implements IRenderMime.IRenderer, IDisposable {
+  implements IRenderMime.IRenderer, IDisposable
+{
   constructor(options: IRenderMime.IRendererOptions, manager?: WidgetManager) {
     super();
     this.mimeType = options.mimeType;
