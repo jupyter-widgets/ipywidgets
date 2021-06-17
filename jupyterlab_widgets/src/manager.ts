@@ -265,7 +265,7 @@ export abstract class LabWidgetManager
       moduleVersion = `^${moduleVersion}`;
     }
 
-    const allMod = this._registry.getAllModules(moduleName);
+    const allMod = this._registry.getAllVersions(moduleName);
     if (!allMod) {
       throw new Error(`No version of module ${moduleName} is registered`);
     }
