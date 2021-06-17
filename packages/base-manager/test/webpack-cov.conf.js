@@ -5,7 +5,7 @@ module.exports = {
   output: {
     path: __dirname + '/build',
     filename: 'coverage.js',
-    publicPath: './build/',
+    publicPath: './build/'
   },
   bail: true,
   module: {
@@ -20,8 +20,8 @@ module.exports = {
       {
         test: /\.js$/,
         include: path.resolve('lib/'),
-        loader: 'istanbul-instrumenter',
-      },
-    ],
-  },
+        loader: 'istanbul-instrumenter'
+      }
+    ]
+  }
 };

@@ -1,7 +1,7 @@
 // Karma configuration
 // Generated on Mon Dec 07 2015 08:28:33 GMT-0800 (PST)
 
-module.exports = function (config) {
+module.exports = function(config) {
   var cfg = {
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
@@ -19,7 +19,7 @@ module.exports = function (config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'test/**/*.js': ['webpack'],
+      'test/**/*.js': ['webpack']
     },
 
     webpack: {
@@ -28,7 +28,7 @@ module.exports = function (config) {
           {
             test: /\.jsx?$/,
             exclude: /node_modules/,
-            loader: 'babel?presets[]=es2015',
+            loader: 'babel?presets[]=es2015'
           },
           { test: /\.css$/, use: ['style-loader', 'css-loader'] },
           // jquery-ui loads some images
@@ -36,28 +36,28 @@ module.exports = function (config) {
           // required to load font-awesome
           {
             test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-            use: 'url-loader?limit=10000&mimetype=application/font-woff',
+            use: 'url-loader?limit=10000&mimetype=application/font-woff'
           },
           {
             test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-            use: 'url-loader?limit=10000&mimetype=application/font-woff',
+            use: 'url-loader?limit=10000&mimetype=application/font-woff'
           },
           {
             test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-            use: 'url-loader?limit=10000&mimetype=application/octet-stream',
+            use: 'url-loader?limit=10000&mimetype=application/octet-stream'
           },
           { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, use: 'file-loader' },
-          {
+            {
             test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-            use: 'url?limit=10000&mimetype=image/svg+xml',
-          },
-        ],
+            use: 'url?limit=10000&mimetype=image/svg+xml'
+          }
+        ]
       },
       externals: {
         'base/js/namespace': 'base/js/namespace',
         'notebook/js/outputarea': 'notebook/js/outputarea',
-        'services/kernels/comm': 'services/kernels/comm',
-      },
+        'services/kernels/comm': 'services/kernels/comm'
+      }
     },
 
     // test results reporter to use
@@ -85,8 +85,8 @@ module.exports = function (config) {
     customLaunchers: {
       Chrome_travis_ci: {
         base: 'Chrome',
-        flags: ['--no-sandbox'],
-      },
+        flags: ['--no-sandbox']
+      }
     },
 
     // Continuous Integration mode
@@ -95,17 +95,17 @@ module.exports = function (config) {
 
     // Capture console output
     client: {
-      captureConsole: true,
+      captureConsole: true
     },
     browserConsoleLogOptions: {
       level: '',
       format: '%b %T: %m',
-      terminal: true,
+      terminal: true
     },
 
     // Concurrency level
     // how many browser should be started simultanous
-    concurrency: Infinity,
+    concurrency: Infinity
   };
 
   if (process.env.TRAVIS) {

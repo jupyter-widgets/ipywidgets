@@ -28,12 +28,6 @@ export class SemVerCache<T> {
     }
   }
 
-  getAllVersions(key: string): Record<string, any> | undefined {
-    if (key in this._cache) {
-      return this._cache[key];
-    }
-  }
-  private _cache: { [key: string]: { [version: string]: T } } = Object.create(
-    null
-  );
+  private _cache: { [key: string]: { [version: string]: T } } =
+    Object.create(null);
 }

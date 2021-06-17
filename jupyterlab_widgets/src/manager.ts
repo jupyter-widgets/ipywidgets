@@ -53,7 +53,8 @@ export const WIDGET_STATE_MIMETYPE =
  */
 export abstract class LabWidgetManager
   extends ManagerBase
-  implements IDisposable {
+  implements IDisposable
+{
   constructor(rendermime: IRenderMimeRegistry) {
     super();
     this._rendermime = rendermime;
@@ -265,18 +266,10 @@ export abstract class LabWidgetManager
       moduleVersion = `^${moduleVersion}`;
     }
 
-    const allMod = this._registry.getAllVersions(moduleName);
-    if (!allMod) {
-      throw new Error(`No version of module ${moduleName} is registered`);
-    }
     const mod = this._registry.get(moduleName, moduleVersion);
     if (!mod) {
-      const registeredVersionList = Object.keys(allMod);
       throw new Error(
-        `Module ${moduleName}, version ${moduleVersion} is not registered, however, \
-        ${registeredVersionList.join(',')} ${
-          registeredVersionList.length > 1 ? 'are' : 'is'
-        }`
+        `Module ${moduleName}, semver range ${moduleVersion} is not registered as a widget module`
       );
     }
     let module: ExportMap;
