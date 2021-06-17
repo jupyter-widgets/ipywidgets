@@ -278,7 +278,7 @@ export abstract class LabWidgetManager
         `Module ${moduleName}, version ${moduleVersion} is not registered, however, \
         ${registeredVersionList.join(',')} ${
           registeredVersionList.length > 1 ? 'are' : 'is'
-        }`      
+        }`
       );
     }
     let module: ExportMap;
