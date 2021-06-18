@@ -21,7 +21,8 @@ import {
   PROTOCOL_VERSION,
   IWidgetManager,
   IModelOptions,
-  IWidgetOptions
+  IWidgetOptions,
+  IBackboneModelOptions
 } from '@jupyter-widgets/base';
 
 import { base64ToBuffer, bufferToBase64, hexToBuffer } from './utils';
@@ -51,6 +52,11 @@ export interface IBase64Buffers extends PartialJSONObject {
   path: (string | number)[];
   encoding: 'base64';
 }
+
+/**
+ * Make all properties in K (of T) required
+ */
+export type RequiredSome<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 
 /**
  * Manager abstract base class
@@ -270,25 +276,21 @@ export abstract class ManagerBase implements IWidgetManager {
     options: IModelOptions,
     serialized_state: any = {}
   ): Promise<WidgetModel> {
-    let model_id;
-    if (options.model_id) {
-      model_id = options.model_id;
-    } else if (options.comm) {
-      model_id = options.model_id = options.comm.comm_id;
-    } else {
+    const model_id = options.model_id ?? options.comm?.comm_id;
+    if (!model_id) {
       throw new Error(
         'Neither comm nor model_id provided in options object. At least one must exist.'
       );
     }
-
-    const modelPromise = this._make_model(options, serialized_state);
+    options.model_id = model_id;
+    const modelPromise = this._make_model(options as RequiredSome<IModelOptions, 'model_id'>, serialized_state);
     // this call needs to happen before the first `await`, see note in `set_state`:
     this.register_model(model_id, modelPromise);
     return await modelPromise;
   }
 
   async _make_model(
-    options: IModelOptions,
+    options: RequiredSome<IModelOptions, 'model_id'>,
     serialized_state: any = {}
   ): Promise<WidgetModel> {
     const model_id = options.model_id;
@@ -315,7 +317,7 @@ export abstract class ManagerBase implements IWidgetManager {
       serialized_state,
       this
     );
-    const modelOptions = {
+    const modelOptions: IBackboneModelOptions = {
       widget_manager: this,
       model_id: model_id,
       comm: options.comm

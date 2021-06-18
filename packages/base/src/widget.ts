@@ -66,6 +66,10 @@ export interface ISerializers {
   };
 }
 
+export interface IBackboneModelOptions extends Backbone.ModelSetOptions {
+  model_id: string; comm?: any; widget_manager: any
+}
+
 export class WidgetModel extends Backbone.Model {
   /**
    * The default attributes.
@@ -107,7 +111,7 @@ export class WidgetModel extends Backbone.Model {
    */
   initialize(
     attributes: Backbone.ObjectHash,
-    options: { model_id: string; comm?: any; widget_manager: any }
+    options: IBackboneModelOptions
   ): void {
     super.initialize(attributes, options);
 
