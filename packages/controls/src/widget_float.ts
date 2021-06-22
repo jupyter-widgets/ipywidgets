@@ -158,7 +158,7 @@ export class FloatLogSliderView extends BaseIntSliderView {
       orientation: orientation,
       direction: orientation === 'horizontal' ? 'ltr' : 'rtl',
       format: {
-        from: (value: number): number => value,
+        from: (value: string): number => Number(value),
         to: (value: number): number => value
       }
     });
