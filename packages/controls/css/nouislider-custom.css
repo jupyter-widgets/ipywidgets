@@ -10,6 +10,7 @@
 
 .widget-slider .noUi-vertical {
   width: var(--jp-widgets-slider-track-thickness);
+  height: 100%;
 }
 
 .widget-slider .noUi-horizontal .noUi-handle {
