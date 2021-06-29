@@ -66,8 +66,7 @@ Examples of custom widget libraries built upon ipywidgets are
 
 ## Install
 
-The stable version of ipywidgets can be installed with [pip](#with-pip) or [conda](#with-conda).
-If using JupyterLab, review the [Front-end extension for JupyterLab](#front-end-extension-for-jupyterlab) section.
+The stable version of ipywidgets can be installed with pip or conda.
 
 With pip:
 
