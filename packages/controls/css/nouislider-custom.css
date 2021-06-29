@@ -1,19 +1,29 @@
-/* Custom CSS */
+/* Copyright (c) Jupyter Development Team.
+ * Distributed under the terms of the Modified BSD License.
+ */
 
-.widget-slider .noUi-connect {
+/* Custom CSS for nouislider */
+
+/* <DEPRECATED> */ .widget-slider .noUi-connect, /* <DEPRECATED> */
+.jupyter-widget-slider .noUi-connect {
   background: rgb(33, 150, 243);
 }
 
-.widget-slider .noUi-horizontal {
+
+/* <DEPRECATED> */ .widget-slider .noUi-horizontal, /* <DEPRECATED> */
+.jupyter-widget-slider .noUi-horizontal {
   height: var(--jp-widgets-slider-track-thickness);
 }
 
-.widget-slider .noUi-vertical {
+
+/* <DEPRECATED> */ .widget-slider .noUi-vertical, /* <DEPRECATED> */
+.jupyter-widget-slider .noUi-vertical {
   width: var(--jp-widgets-slider-track-thickness);
   height: 100%;
 }
 
-.widget-slider .noUi-horizontal .noUi-handle {
+/* <DEPRECATED> */ .widget-slider .noUi-horizontal .noUi-handle, /* <DEPRECATED> */
+.jupyter-widget-slider .noUi-horizontal .noUi-handle {
   width: var(--jp-widgets-slider-handle-size);
   height: var(--jp-widgets-slider-handle-size);
   border-radius: 50%;
@@ -26,7 +36,8 @@
   right: calc(var(--jp-widgets-slider-handle-size) / -2);
 }
 
-.widget-slider .noUi-vertical .noUi-handle {
+/* <DEPRECATED> */ .widget-slider .noUi-vertical .noUi-handle, /* <DEPRECATED> */
+.jupyter-widget-slider .noUi-vertical .noUi-handle {
   height: var(--jp-widgets-slider-handle-size);
   width: var(--jp-widgets-slider-handle-size);
   border-radius: 50%;
@@ -39,22 +50,28 @@
   top: calc(var(--jp-widgets-slider-handle-size) / -2);
 }
 
-.widget-slider .noUi-handle:after {
+/* <DEPRECATED> */ .widget-slider .noUi-handle:after, /* <DEPRECATED> */
+.jupyter-widget-slider .noUi-handle:after {
   content: none;
 }
 
-.widget-slider .noUi-handle:before {
+
+/* <DEPRECATED> */ .widget-slider .noUi-handle:before, /* <DEPRECATED> */
+.jupyter-widget-slider .noUi-handle:before {
   content: none;
 }
 
-.widget-slider .noUi-target {
+
+/* <DEPRECATED> */ .widget-slider .noUi-target, /* <DEPRECATED> */
+.jupyter-widget-slider .noUi-target {
   background: #fafafa;
   border-radius: 4px;
   border: 1px;
   /* box-shadow: inset 0 1px 1px #F0F0F0, 0 3px 6px -5px #BBB; */
 }
 
-.widget-slider .ui-slider {
+/* <DEPRECATED> */ .widget-slider .ui-slider, /* <DEPRECATED> */
+.jupyter-widget-slider .ui-slider {
   border: var(--jp-widgets-slider-border-width) solid var(--jp-layout-color3);
   background: var(--jp-layout-color3);
   box-sizing: border-box;
@@ -62,7 +79,8 @@
   border-radius: 0px;
 }
 
-.widget-slider .noUi-handle {
+/* <DEPRECATED> */ .widget-slider .noUi-handle, /* <DEPRECATED> */
+.jupyter-widget-slider .noUi-handle {
   width: var(--jp-widgets-slider-handle-size);
   border: 1px solid #d9d9d9;
   border-radius: 3px;
@@ -72,29 +90,36 @@
   outline: none;
 }
 
-.widget-slider .noUi-target:not([disabled]) .noUi-handle:hover,
-.widget-slider .noUi-target:not([disabled]) .noUi-handle:focus {
+/* <DEPRECATED> */ .widget-slider .noUi-target:not([disabled]) .noUi-handle:hover, /* <DEPRECATED> */
+/* <DEPRECATED> */ .widget-slider .noUi-target:not([disabled]) .noUi-handle:focus, /* <DEPRECATED> */
+.jupyter-widget-slider .noUi-target:not([disabled]) .noUi-handle:hover,
+.jupyter-widget-slider .noUi-target:not([disabled]) .noUi-handle:focus {
   background-color: var(--jp-widgets-slider-active-handle-color);
   border: var(--jp-widgets-slider-border-width) solid
     var(--jp-widgets-slider-active-handle-color);
 }
 
-.widget-slider [disabled].noUi-target {
+/* <DEPRECATED> */ .widget-slider [disabled].noUi-target, /* <DEPRECATED> */
+.jupyter-widget-slider [disabled].noUi-target {
   opacity: 0.35;
 }
 
-.widget-slider .noUi-connects {
+/* <DEPRECATED> */ .widget-slider .noUi-connects, /* <DEPRECATED> */
+.jupyter-widget-slider .noUi-connects {
   overflow: visible;
   z-index: 0;
   background: var(--jp-layout-color3);
 }
 
-.widget-slider .noUi-vertical .noUi-connect {
+
+/* <DEPRECATED> */ .widget-slider .noUi-vertical .noUi-connect, /* <DEPRECATED> */
+.jupyter-widget-slider .noUi-vertical .noUi-connect {
   width: calc(100% + 2px);
   right: -1px;
 }
 
-.widget-slider .noUi-horizontal .noUi-connect {
+/* <DEPRECATED */ .widget-slider .noUi-horizontal .noUi-connect, /* <DEPRECATED */
+.jupyter-widget-slider .noUi-horizontal .noUi-connect {
   height: calc(100% + 2px);
   top: -1px;
 }
