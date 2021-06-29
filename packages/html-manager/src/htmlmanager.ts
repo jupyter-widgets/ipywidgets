@@ -38,7 +38,7 @@ export class HTMLManager extends ManagerBase {
     window.addEventListener('resize', () => {
       this._viewList.forEach(view => {
         MessageLoop.postMessage(
-          view.lmWidget,
+          view.luminoWidget,
           LuminoWidget.Widget.ResizeMessage.UnknownSize
         );
       });

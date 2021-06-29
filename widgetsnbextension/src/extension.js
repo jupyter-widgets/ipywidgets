@@ -78,7 +78,7 @@ function register_events(Jupyter, events, outputarea) {
   window.addEventListener('resize', () => {
     Object.keys(views).forEach(viewKey => {
       LuminoMessaging.MessageLoop.postMessage(
-        views[viewKey].lmWidget,
+        views[viewKey].luminoWidget,
         LuminoWidget.Widget.ResizeMessage.UnknownSize
       );
     });
