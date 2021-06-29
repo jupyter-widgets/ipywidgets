@@ -347,10 +347,24 @@ export class WidgetModel extends Backbone.Model {
         }
       }
 
+      // _buffered_state_diff_synced lists things that have already been sent to the kernel during a top-level call to .set(), so we don't need to buffer these things either.
+      if (this._buffered_state_diff_synced) {
+        for (const key of Object.keys(this._buffered_state_diff_synced)) {
+          if (attrs[key] === this._buffered_state_diff_synced[key]) {
+            delete attrs[key];
+          }
+        }
+      }
+
       this._buffered_state_diff = utils.assign(
         this._buffered_state_diff,
         attrs
       );
+    }
+
+    // If this ended a top-level call to .set, then reset _buffered_state_diff_synced
+    if ((this as any)._changing === false) {
+      this._buffered_state_diff_synced = {};
     }
     return return_value;
   }
@@ -516,6 +530,12 @@ export class WidgetModel extends Backbone.Model {
         options.callbacks = callbacks;
       }
       this.save(this._buffered_state_diff, options);
+
+      // If we are currently in a .set() call, save what state we have synced
+      // to the kernel so we don't buffer it again as we come out of the .set call.
+      if ((this as any)._changing) {
+        utils.assign(this._buffered_state_diff_synced, this._buffered_state_diff);
+      }
       this._buffered_state_diff = {};
     }
   }
@@ -595,6 +615,7 @@ export class WidgetModel extends Backbone.Model {
   private _closed: boolean;
   private _state_lock: any;
   private _buffered_state_diff: any;
+  private _buffered_state_diff_synced: any;
   private _msg_buffer: any;
   private _msg_buffer_callbacks: any;
   private _pending_msgs: number;
