@@ -11,7 +11,7 @@ module.exports = {
   module: {
     rules: [
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
-      { test: /\.py$/, loader: 'raw-loader' },
+      { test: /\.py$/, use: 'raw-loader' },
       // jquery-ui loads some images
       { test: /\.(jpg|png|gif)$/, use: 'file-loader' },
       // required to load font-awesome

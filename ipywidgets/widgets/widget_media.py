@@ -71,7 +71,7 @@ class _Media(DOMWidget, ValueWidget, CoreWidget):
             # If str, it needs to be encoded to bytes
             url = url.encode('utf-8')
 
-        return cls(value=url, format='url')
+        return cls(value=url, format='url', **kwargs)
 
     def set_value_from_file(self, filename):
         """

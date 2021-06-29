@@ -10,13 +10,13 @@ import {
   WidgetModel,
   WidgetView,
   put_buffers,
-  ICallbacks
+  ICallbacks,
 } from '@jupyter-widgets/base';
 
 import {
   ManagerBase,
   serialize_state,
-  IStateOptions
+  IStateOptions,
 } from '@jupyter-widgets/base-manager';
 
 import { IDisposable } from '@lumino/disposable';
@@ -51,8 +51,10 @@ export const WIDGET_STATE_MIMETYPE =
 /**
  * A widget manager that returns Lumino widgets.
  */
-export abstract class LabWidgetManager extends ManagerBase
-  implements IDisposable {
+export abstract class LabWidgetManager
+  extends ManagerBase
+  implements IDisposable
+{
   constructor(rendermime: IRenderMimeRegistry) {
     super();
     this._rendermime = rendermime;
@@ -66,8 +68,8 @@ export abstract class LabWidgetManager extends ManagerBase
       iopub: {
         output: (msg: KernelMessage.IIOPubMessage): void => {
           this._onUnhandledIOPubMessage.emit(msg);
-        }
-      }
+        },
+      },
     };
   }
 
@@ -76,7 +78,7 @@ export abstract class LabWidgetManager extends ManagerBase
    */
   protected _handleKernelChanged({
     oldValue,
-    newValue
+    newValue,
   }: Session.ISessionConnection.IKernelChangedArgs): void {
     if (oldValue) {
       oldValue.removeCommTarget(this.comm_target_name, this._handleCommOpen);
@@ -108,7 +110,7 @@ export abstract class LabWidgetManager extends ManagerBase
 
     // For each comm id that we do not know about, create the comm, and request the state.
     const widgets_info = await Promise.all(
-      Object.keys(comm_ids).map(async comm_id => {
+      Object.keys(comm_ids).map(async (comm_id) => {
         try {
           await this.get_model(comm_id);
           // If we successfully get the model, do no more.
@@ -133,21 +135,14 @@ export abstract class LabWidgetManager extends ManagerBase
             ) {
               const data = msg.content.data as any;
               const buffer_paths = data.buffer_paths || [];
-              // Make sure the buffers are DataViews
-              const buffers = (msg.buffers || []).map(b => {
-                if (b instanceof DataView) {
-                  return b;
-                } else {
-                  return new DataView(b instanceof ArrayBuffer ? b : b.buffer);
-                }
-              });
+              const buffers = msg.buffers || [];
               put_buffers(data.state, buffer_paths, buffers);
               info.resolve({ comm, msg });
             }
           });
           msg_id = comm.send(
             {
-              method: 'request_state'
+              method: 'request_state',
             },
             this.callbacks(undefined)
           );
@@ -163,7 +158,7 @@ export abstract class LabWidgetManager extends ManagerBase
     // asynchronously, so promises to every widget reference should be available
     // by the time they are used.
     await Promise.all(
-      widgets_info.map(async widget_info => {
+      widgets_info.map(async (widget_info) => {
         if (!widget_info) {
           return;
         }
@@ -173,7 +168,7 @@ export abstract class LabWidgetManager extends ManagerBase
             model_name: content.data.state._model_name,
             model_module: content.data.state._model_module,
             model_module_version: content.data.state._model_module_version,
-            comm: widget_info.comm
+            comm: widget_info.comm,
           },
           content.data.state
         );
@@ -211,7 +206,7 @@ export abstract class LabWidgetManager extends ManagerBase
       throw new Error('No current kernel');
     }
     const reply = await kernel.requestCommInfo({
-      target_name: this.comm_target_name
+      target_name: this.comm_target_name,
     });
     if (reply.content.status === 'ok') {
       return (reply.content as any).comms;
@@ -271,10 +266,19 @@ export abstract class LabWidgetManager extends ManagerBase
       moduleVersion = `^${moduleVersion}`;
     }
 
+    const allVersions = this._registry.getAllVersions(moduleName);
+    if (!allVersions) {
+      throw new Error(`No version of module ${moduleName} is registered`);
+    }
     const mod = this._registry.get(moduleName, moduleVersion);
+
     if (!mod) {
+      const registeredVersionList = Object.keys(allVersions);
       throw new Error(
-        `Module ${moduleName}, semver range ${moduleVersion} is not registered as a widget module`
+        `Module ${moduleName}, version ${moduleVersion} is not registered, however, \
+        ${registeredVersionList.join(',')} ${
+          registeredVersionList.length > 1 ? 'are' : 'is'
+        }`
       );
     }
     let module: ExportMap;
@@ -347,7 +351,7 @@ export abstract class LabWidgetManager extends ManagerBase
     super.register_model(model_id, modelPromise);
 
     // Update the synchronous model map
-    modelPromise.then(model => {
+    modelPromise.then((model) => {
       this._modelsSync.set(model_id, model);
       model.once('comm:close', () => {
         this._modelsSync.delete(model_id);
@@ -431,7 +435,7 @@ export class KernelWidgetManager extends LabWidgetManager {
     this._handleKernelChanged({
       name: 'kernel',
       oldValue: null,
-      newValue: kernel
+      newValue: kernel,
     });
     this.restoreWidgets();
   }
@@ -514,7 +518,7 @@ export class WidgetManager extends LabWidgetManager {
       this._handleKernelChanged({
         name: 'kernel',
         oldValue: null,
-        newValue: context.sessionContext.session?.kernel
+        newValue: context.sessionContext.session?.kernel,
       });
     }
 
@@ -534,7 +538,7 @@ export class WidgetManager extends LabWidgetManager {
   private _saveState(): void {
     const state = this.get_state_sync({ drop_defaults: true });
     this._context.model.metadata.set('widgets', {
-      'application/vnd.jupyter.widget-state+json': state
+      'application/vnd.jupyter.widget-state+json': state,
     });
   }
 
@@ -546,7 +550,7 @@ export class WidgetManager extends LabWidgetManager {
         // We only want to restore widgets from the kernel, not ones saved in the notebook.
         this.restoreWidgets(this._context!.model, {
           loadKernel: true,
-          loadNotebook: false
+          loadNotebook: false,
         });
       }
     }

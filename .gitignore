@@ -36,3 +36,5 @@ index.built.js.map
 temp/*
 
 tsconfig.tsbuildinfo
+
+ui-tests/test-output/*

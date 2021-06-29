@@ -41,7 +41,7 @@ export class HTMLManager extends ManagerBase {
     view: Promise<DOMWidgetView> | DOMWidgetView,
     el: HTMLElement
   ): Promise<void> {
-    LuminoWidget.Widget.attach((await view).pWidget, el);
+    LuminoWidget.Widget.attach((await view).luminoWidget, el);
   }
 
   /**

@@ -146,7 +146,8 @@ class interactive(VBox):
         should match the function signature.
     __options : dict
         A dict of options. Currently, the only supported keys are
-        ``"manual"`` and ``"manual_name"``.
+        ``"manual"`` (defaults to ``False``), ``"manual_name"`` (defaults
+        to ``"Run Interact"``) and ``"auto_display"`` (defaults to ``False``).
     **kwargs : various, optional
         An interactive widget is created for each keyword argument that is a
         valid widget abbreviation.

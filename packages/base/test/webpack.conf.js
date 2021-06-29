@@ -11,10 +11,11 @@ module.exports = {
   module: {
     rules: [
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
-      { test: /\.md$/, loader: 'raw-loader' },
-      { test: /\.html$/, loader: 'file', options: { name: '[name].[ext]' } },
-      { test: /\.ipynb$/, loader: 'json-loader' }
+      { test: /\.md$/, use: 'raw-loader' },
+      { test: /\.html$/, use: {loader: 'file-loader', options: { name: '[name].[ext]' } } },
+      { test: /\.ipynb$/, use: 'json-loader' }
     ]
   },
-  mode: 'development'
+  mode: 'development',
+  resolve: {fallback: { util: false } }
 };

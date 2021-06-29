@@ -2,9 +2,9 @@
 
 |    Purpose                        |     Badges                       |
 |----------------------------|----------------------------|
-| **Latest (master: future 8.0)**  | [![Build Status](https://travis-ci.org/jupyter-widgets/ipywidgets.svg?branch=master)](https://travis-ci.org/jupyter-widgets/ipywidgets) [![Documentation Status: latest](https://img.shields.io/readthedocs/ipywidgets?logo=read-the-docs)](https://ipywidgets.readthedocs.io/en/latest/?badge=latest) [![Binder:master](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/jupyter-widgets/ipywidgets/master?filepath=docs%2Fsource%2Fexamples) |
-| **Stable (7.6.3)** | [![Version](https://img.shields.io/pypi/v/ipywidgets.svg?logo=pypi)](https://pypi.python.org/pypi/ipywidgets) [![Conda Version](https://img.shields.io/conda/vn/conda-forge/ipywidgets.svg?logo=conda-forge)](https://anaconda.org/conda-forge/ipywidgets) [![Documentation Status: 7.6.3](https://img.shields.io/readthedocs/ipywidgets?logo=read-the-docs)](https://ipywidgets.readthedocs.io/en/7.6.3/?badge=7.6.3) [![Binder:7.x](https://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/jupyter-widgets/ipywidgets/7.x?filepath=docs%2Fsource%2Fexamples) |
-| **Communication** | [![Join the chat at https://gitter.im/ipython/ipywidgets](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jupyter-widgets/Lobby) [![Discourse](https://img.shields.io/badge/help_forum-discourse-blue?logo=discourse)](https://discourse.jupyter.org/) |
+| **Latest (master: future 8.0)**  | [![Test Status](https://github.com/jupyter-widgets/ipywidgets/actions/workflows/tests.yml/badge.svg?query=branch%3Amaster)](https://github.com/jupyter-widgets/ipywidgets/actions?query=branch%3Amaster) [![Documentation Status: latest](https://img.shields.io/readthedocs/ipywidgets?logo=read-the-docs)](https://ipywidgets.readthedocs.io/en/latest/?badge=latest) [![Binder:master](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyter-widgets/ipywidgets/master?urlpath=lab/tree/docs%2Fsource%2Fexamples) |
+| **Stable** | [![Version](https://img.shields.io/pypi/v/ipywidgets.svg?logo=pypi)](https://pypi.python.org/pypi/ipywidgets) [![Conda Version](https://img.shields.io/conda/vn/conda-forge/ipywidgets.svg?logo=conda-forge)](https://anaconda.org/conda-forge/ipywidgets) [![Documentation Status](https://img.shields.io/readthedocs/ipywidgets?logo=read-the-docs)](https://ipywidgets.readthedocs.io/en/stable/?badge=stable) [![Binder:7.x](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyter-widgets/ipywidgets/7.x?urlpath=lab/tree/docs%2Fsource%2Fexamples) |
+| **Communication** | [![Join the chat at https://gitter.im/ipython/ipywidgets](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/jupyter-widgets/Lobby) [![Discourse](https://img.shields.io/badge/help_forum-discourse-blue?logo=discourse)](https://discourse.jupyter.org/c/widgets/46) |
 | | |
 
 **ipywidgets**, also known as jupyter-widgets or simply widgets, are
@@ -66,34 +66,19 @@ Examples of custom widget libraries built upon ipywidgets are
 
 ## Install
 
-The stable version of ipywidgets can be installed with [pip](#with-pip) or [conda](#with-conda).
-If using JupyterLab, review the [Front-end extension for JupyterLab](#front-end-extension-for-jupyterlab) section.
+The stable version of ipywidgets can be installed with pip or conda.
 
-### With pip
+With pip:
 
 ```sh
 pip install ipywidgets
-# Skip the next step if using JupyterLab or Classic notebook version 5.3 and above
-jupyter nbextension enable --py --sys-prefix widgetsnbextension
 ```
 
-### With conda
+With conda:
 
 ```sh
 conda install -c conda-forge ipywidgets
 ```
-
-### Front-end extension for JupyterLab
-
-Install the front-end extension to JupyterLab (note that this requires nodejs
-to be installed):
-
-- For JupyterLab 1.0.x and 1.1.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@1.0`
-- For JupyterLab 1.2.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@1.1`
-- For JupyterLab 2.x, use `jupyter labextension install @jupyter-widgets/jupyterlab-manager@2.0`
-
-See the [Installation](docs/source/user_install.md) section of the documentation
-for additional details.
 
 ### Developer install from source
 

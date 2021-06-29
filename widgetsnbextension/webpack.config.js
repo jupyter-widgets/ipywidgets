@@ -4,7 +4,7 @@ module.exports = {
   output: {
     filename: 'extension.js',
     path: path.resolve(__dirname, 'widgetsnbextension', 'static'),
-    libraryTarget: 'amd'
+    libraryTarget: 'amd',
   },
   devtool: 'source-map',
   module: {
@@ -15,21 +15,45 @@ module.exports = {
       // required to load font-awesome
       {
         test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-        use: 'url-loader?limit=10000&mimetype=application/font-woff'
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 10000,
+            mimetype: 'application/font-woff',
+          },
+        },
       },
       {
         test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-        use: 'url-loader?limit=10000&mimetype=application/font-woff'
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 10000,
+            mimetype: 'application/font-woff',
+          },
+        },
       },
       {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        use: 'url-loader?limit=10000&mimetype=application/octet-stream'
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 10000,
+            mimetype: 'application/octet-stream',
+          },
+        },
       },
       { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, use: 'file-loader' },
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        use: 'url-loader?limit=10000&mimetype=image/svg+xml'
-      }
-    ]
-  }
+        use: {
+          loader: 'url-loader',
+          options: {
+            limit: 10000,
+            mimetype: 'image/svg+xml',
+          },
+        },
+      },
+    ],
+  },
 };

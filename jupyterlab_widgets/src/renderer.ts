@@ -15,8 +15,10 @@ import { DOMWidgetModel } from '@jupyter-widgets/base';
 /**
  * A renderer for widgets.
  */
-export class WidgetRenderer extends Panel
-  implements IRenderMime.IRenderer, IDisposable {
+export class WidgetRenderer
+  extends Panel
+  implements IRenderMime.IRenderer, IDisposable
+{
   constructor(options: IRenderMime.IRendererOptions, manager?: WidgetManager) {
     super();
     this.mimeType = options.mimeType;
@@ -69,7 +71,7 @@ export class WidgetRenderer extends Panel
 
     let widget: LuminoWidget;
     try {
-      widget = (await manager.create_view(wModel)).pWidget;
+      widget = (await manager.create_view(wModel)).luminoWidget;
     } catch (err) {
       this.node.textContent = 'Error displaying widget';
       this.addClass('jupyter-widgets');
@@ -90,24 +92,14 @@ export class WidgetRenderer extends Panel
   }
 
   /**
-   * Get whether the manager is disposed.
-   *
-   * #### Notes
-   * This is a read-only property.
-   */
-  get isDisposed(): boolean {
-    return this._manager === null;
-  }
-
-  /**
    * Dispose the resources held by the manager.
    */
   dispose(): void {
     if (this.isDisposed) {
       return;
     }
-    super.dispose();
     this._manager = null!;
+    super.dispose();
   }
 
   private _rerender(): void {

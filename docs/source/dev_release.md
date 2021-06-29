@@ -10,7 +10,7 @@ conda deactivate
 conda remove --all -y -n releasewidgets
 rm -rf ipywidgets
 
-conda create -c conda-forge --override-channels -y -n releasewidgets notebook nodejs yarn twine jupyterlab=3 jupyter-packaging
+conda create -c conda-forge --override-channels -y -n releasewidgets notebook nodejs yarn twine jupyterlab=3 jupyter-packaging python-build
 conda activate releasewidgets
 
 git clone git@github.com:jupyter-widgets/ipywidgets.git
@@ -59,8 +59,7 @@ Lerna will prompt you for version numbers for each of the changed npm packages i
 
 Go into the `jupyterlab_widgets` directory. Change `jupyterlab_widgets/_version.py` to reflect the new version number.
 ```
-python setup.py sdist bdist_wheel
-twine check dist/*
+python -m build
 twine upload dist/*
 ```
 
@@ -73,7 +72,7 @@ curl -s https://pypi.org/pypi/jupyterlab-widgets/json | jq  -r '[.releases[][] |
 
 Go into the `widgetsnbextension` directory. Change `widgetsnbextension/_version.py` to reflect the new version number.
 ```
-python setup.py sdist bdist_wheel
+python -m build
 twine upload dist/*
 ```
 
@@ -87,7 +86,7 @@ curl -s https://pypi.org/pypi/widgetsnbextension/json | jq  -r '[.releases[][] |
 Change `ipywidgets/_version.py` to reflect the new version number, and if necessary, a new `__html_manager_version__`. Change the `install_requires` parameter in `setup.py` reference the new widgetsnbextension version.
 
 ```
-python setup.py sdist bdist_wheel
+python -m build
 twine upload dist/*
 ```
 
@@ -124,6 +123,16 @@ Update conda-forge packages (if the requirements changed to ipywidgets, make sur
 
 Release Notes
 =============
+
+### Changelog
+
+- Modify `scripts/milestone_check.py` to include the release and commit range for the release, and run `python scripts/milestone_check.py` to check the issues assigned to this milestone
+- Write release highlights. You can use the list generated below as a starting point:
+  ```bash
+  loghub jupyter-widgets/ipywidgets -m XXX -t $GITHUB_TOKEN --template scripts/release_template.txt
+  ```
+
+### Example
 
 Here is an example of the release statistics for ipywidgets 7.0.
 

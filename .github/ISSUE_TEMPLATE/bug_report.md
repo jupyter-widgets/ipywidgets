@@ -6,11 +6,9 @@ about: Create a report to help us improve
 <!--
 Welcome! Before creating a new issue please search for relevant issues and recreate the issue in a fresh environment:
 
-1. conda create -n ipywidgets-test --override-channels --strict-channel-priority -c conda-forge -c anaconda jupyterlab nodejs=12
+1. conda create -n ipywidgets-test --override-channels --strict-channel-priority -c conda-forge -c anaconda jupyterlab
 2. conda activate ipywidgets-test
 3. pip install --upgrade ipywidgets
-# If using jupyterlab
-4. jupyter labextension install @jupyter-widgets/jupyterlab-manager
 -->
 
 ## Description

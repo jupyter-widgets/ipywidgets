@@ -17,10 +17,11 @@ Moving the slider will change the value. Most Widgets have a current value,
 accessible as a `value` attribute.
 """
 
-import os
+# Must import __version__ first to avoid errors importing this file during the build process. See https://github.com/pypa/setuptools/issues/1724#issuecomment-627241822
+from ._version import __version__, __protocol_version__, __jupyter_widgets_controls_version__, __jupyter_widgets_base_version__
 
+import os
 from IPython import get_ipython
-from ._version import version_info, __version__, __protocol_version__, __jupyter_widgets_controls_version__, __jupyter_widgets_base_version__
 from .widgets import *
 from traitlets import link, dlink
 

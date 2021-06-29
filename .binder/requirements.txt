@@ -1,0 +1,10 @@
+bqplot
+ipyleaflet
+jupyterlab~=3.0
+matplotlib
+networkx
+numpy
+pandas
+scikit-image
+scikit-learn
+sympy
