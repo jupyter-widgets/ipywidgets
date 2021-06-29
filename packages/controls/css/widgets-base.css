@@ -81,7 +81,7 @@
 
 /* vbox and hbox */
 
-/* <DEPRECATED> */ .widget-inline-hbox /* <DEPRECATED> */
+/* <DEPRECATED> */ .widget-inline-hbox, /* <DEPRECATED> */
  .jupyter-widget-inline-hbox {
   /* Horizontal widgets */
   box-sizing: border-box;
@@ -90,7 +90,7 @@
   align-items: baseline;
 }
 
-/* <DEPRECATED> */ .widget-inline-vbox /* <DEPRECATED> */
+/* <DEPRECATED> */ .widget-inline-vbox, /* <DEPRECATED> */
  .jupyter-widget-inline-vbox {
   /* Vertical Widgets */
   box-sizing: border-box;
