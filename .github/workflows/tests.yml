@@ -213,9 +213,21 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v2
       with:
-        name: ui-test-output
+        name: ipywidgets-ui-test-output
         path: |
           ui-tests/test-output
+    - name: Run UI Tests
+      if: ${{ failure() }}
+      run: |
+        cd ui-tests
+        jlpm run test:create-references
+    - name: Upload UI Test new reference artifacts
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: ipywidgets-ui-test-new-reference
+        path: |
+          ui-tests/test-output/test/screenshots/*.png
 
       env:
         CI: true
