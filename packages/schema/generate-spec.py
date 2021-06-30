@@ -5,8 +5,22 @@ import argparse
 import json
 from operator import itemgetter
 
-from traitlets import (CaselessStrEnum, Unicode, Tuple, List, Bool, CFloat,
-                       Float, CInt, Int, Instance, Dict, Bytes, Any)
+from traitlets import (
+    CaselessStrEnum,
+    Unicode,
+    Tuple,
+    List,
+    Bool,
+    CFloat,
+    Float,
+    CInt,
+    Int,
+    Instance,
+    Dict,
+    Bytes,
+    Any,
+    Union,
+)
 
 import ipywidgets as widgets
 from ipywidgets import Color
@@ -62,7 +76,16 @@ def trait_type(trait, widget_list):
         w_type = 'color'
     elif isinstance(trait, Dict):
         w_type = 'object'
-    elif isinstance(trait, Bytes) or isinstance(trait, ByteMemoryView):
+    elif isinstance(trait, Union):
+        union_attributes = []
+        union_types = []
+        for ut in trait.trait_types:
+            ua = trait_type(ut, widget_list)
+            union_attributes.append(ua)
+            union_types.append(ua['type'])
+        w_type = union_types
+        attributes['union_attributes'] = union_attributes
+    elif isinstance(trait, (Bytes, ByteMemoryView)):
         w_type = 'bytes'
     elif isinstance(trait, Instance) and issubclass(trait.klass,
                                                      widgets.Widget):
@@ -89,6 +112,8 @@ def jsdefault(trait):
         default = trait.make_dynamic_default()
         if issubclass(trait.klass, widgets.Widget):
             return 'reference to new instance'
+    elif isinstance(trait, Union):
+        default = trait.make_dynamic_default()
     else:
         default = trait.default_value
         if isinstance(default, bytes) or isinstance(default, memoryview):
@@ -112,6 +137,10 @@ def mddefault(attribute):
 
 def mdtype(attribute):
     md_type = attribute['type']
+    if 'union_attributes' in attribute and isinstance(md_type, (list, tuple)):
+        md_type = ' or '.join(
+            mdtype(ua) for ua in attribute['union_attributes']
+        )
     if md_type in NUMBER_MAP:
         md_type = NUMBER_MAP[md_type]
     if attribute.get('allow_none'):
