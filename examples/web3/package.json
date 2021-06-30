@@ -18,7 +18,6 @@
     "@jupyter-widgets/controls": "^4.0.0-alpha.3",
     "@jupyter-widgets/html-manager": "^0.21.0-alpha.3",
     "@jupyterlab/services": "^6.0.0",
-    "@lumino/widgets": "^1.11.1",
     "codemirror": "^5.48.0",
     "font-awesome": "^4.7.0",
     "http-server": "^0.12.3"
