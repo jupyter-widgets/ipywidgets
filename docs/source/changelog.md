@@ -1,6 +1,91 @@
-# ipywidgets changelog
+# ipywidgets Changelog
 
 A summary of changes in ipywidgets. For more detailed information, see the issues and pull requests for the appropriate milestone on [GitHub](https://github.com/jupyter-widgets/ipywidgets).
+
+## [8.0](https://github.com/jupyter-widgets/ipywidgets/releases/tag/v8.0) (not released yet)
+
+See the [ipywidgets
+8.0](https://github.com/jupyter-widgets/ipywidgets/milestone/30?closed=1)
+milestone on GitHub for the full list of pull requests and issues closed.
+
+### Users
+
+* The default CDN is changed from unpkg to jsDelivr ([#3121](https://github.com/jupyter-widgets/ipywidgets/pull/3121), [#1627](https://github.com/jupyter-widgets/ipywidgets/issues/1627))
+* Documentation overhaul ([#3104](https://github.com/jupyter-widgets/ipywidgets/pull/3104), [#3096](https://github.com/jupyter-widgets/ipywidgets/issues/3096), [#3099](https://github.com/jupyter-widgets/ipywidgets/pull/3099), [#3076](https://github.com/jupyter-widgets/ipywidgets/issues/3076), [#2824](https://github.com/jupyter-widgets/ipywidgets/pull/2824))
+* Use data-jupyter-widgets-cdn-only attribute to load modules only from cdn ([#2792](https://github.com/jupyter-widgets/ipywidgets/pull/2792), [#2786](https://github.com/jupyter-widgets/ipywidgets/issues/2786))
+* Revamp file upload widget `.value` attribute ([#2767](https://github.com/jupyter-widgets/ipywidgets/pull/2767), [#2724](https://github.com/jupyter-widgets/ipywidgets/pull/2724), [#2666](https://github.com/jupyter-widgets/ipywidgets/pull/2666), [#2480](https://github.com/jupyter-widgets/ipywidgets/issues/2480))
+* Borders independently: `border_top`, `border_right`, `border_bottom`, `border_left` ([#2757](https://github.com/jupyter-widgets/ipywidgets/pull/2757))
+* Make selection container titles a tuple of strings ([#2746](https://github.com/jupyter-widgets/ipywidgets/pull/2746))
+* Change media widgets to use memory views. ([#2723](https://github.com/jupyter-widgets/ipywidgets/pull/2723))
+* Upgrade to FontAwesome 5 in html-manager ([#2713](https://github.com/jupyter-widgets/ipywidgets/pull/2713))
+* Slider implementation now uses [nouislider](https://refreshless.com/nouislider/) instead of jquery-ui ([#2712](https://github.com/jupyter-widgets/ipywidgets/pull/2712), [#630](https://github.com/jupyter-widgets/ipywidgets/issues/630))
+* Play widget now toggles between play and pause button as needed ([#2703](https://github.com/jupyter-widgets/ipywidgets/pull/2703), [#2671](https://github.com/jupyter-widgets/ipywidgets/issues/2671))
+* Tooltips everywhere ([#2680](https://github.com/jupyter-widgets/ipywidgets/pull/2680))
+* Drop support for mapping types as selection options ([#2679](https://github.com/jupyter-widgets/ipywidgets/pull/2679), [#1958](https://github.com/jupyter-widgets/ipywidgets/issues/1958))
+* Focus or blur a widget. ([#2664](https://github.com/jupyter-widgets/ipywidgets/pull/2664), [#2692](https://github.com/jupyter-widgets/ipywidgets/pull/2692), [#2691](https://github.com/jupyter-widgets/ipywidgets/pull/2691), [#2690](https://github.com/jupyter-widgets/ipywidgets/pull/2690))
+* Tabbable or not tabbable ([#2640](https://github.com/jupyter-widgets/ipywidgets/pull/2640))
+* Tagsinput widget ([#2591](https://github.com/jupyter-widgets/ipywidgets/pull/2591))
+* Drop notebook dependency from widgetsnbextension ([#2590](https://github.com/jupyter-widgets/ipywidgets/pull/2590))
+* Drop support for legacy python 2.7 and eol 3.4 ([#2558](https://github.com/jupyter-widgets/ipywidgets/pull/2558), [#2655](https://github.com/jupyter-widgets/ipywidgets/pull/2655))
+* Cast 'value' in range sliders to a tuple ([#2441](https://github.com/jupyter-widgets/ipywidgets/pull/2441))
+* Added a layout widget for 'stacked' layout ([#2376](https://github.com/jupyter-widgets/ipywidgets/pull/2376))
+* Play widget: expose playing and repeat  ([#2283](https://github.com/jupyter-widgets/ipywidgets/pull/2283), [#1897](https://github.com/jupyter-widgets/ipywidgets/issues/1897))
+* Fix debouncing and throttling code ([#3060](https://github.com/jupyter-widgets/ipywidgets/pull/3060))
+* Fix regression on spinning icons ([#2685](https://github.com/jupyter-widgets/ipywidgets/pull/2685), [#2477](https://github.com/jupyter-widgets/ipywidgets/issues/2477))
+* Fix selection container default index ([#1823](https://github.com/jupyter-widgets/ipywidgets/pull/1823))
+* Remove deprecated overflow properties ([#2688](https://github.com/jupyter-widgets/ipywidgets/pull/2688))
+
+### Developers
+
+#### Python
+
+* `Widget.widgets` and `Widget.widget_types` are now private variables ([#3122](https://github.com/jupyter-widgets/ipywidgets/pull/3122))
+* Generate the widget data spec as JSON ([#2193](https://github.com/jupyter-widgets/ipywidgets/pull/2193))
+* Use _repr_mimebundle_ and require ipython 6.1 or later. ([#2021](https://github.com/jupyter-widgets/ipywidgets/pull/2021), [#1811](https://github.com/jupyter-widgets/ipywidgets/issues/1811))
+
+#### Javascript
+
+* Fix CSS variable names to match JupyterLab names ([#2801](https://github.com/jupyter-widgets/ipywidgets/pull/2801), [#2062](https://github.com/jupyter-widgets/ipywidgets/issues/2062))
+* Delete display_model and display_view ([#2752](https://github.com/jupyter-widgets/ipywidgets/pull/2752), [#2751](https://github.com/jupyter-widgets/ipywidgets/issues/2751))
+* Drop underscore usage ([#2742](https://github.com/jupyter-widgets/ipywidgets/pull/2742))
+* Upgrade to es2017 javascript ([#2725](https://github.com/jupyter-widgets/ipywidgets/pull/2725))
+* Split base manager into separate packages ([#2710](https://github.com/jupyter-widgets/ipywidgets/pull/2710), [#2561](https://github.com/jupyter-widgets/ipywidgets/issues/2561))
+* Change phosphor to lumino ([#2681](https://github.com/jupyter-widgets/ipywidgets/pull/2681))
+* Widgetmanagerbase: improve create_view return type ([#2662](https://github.com/jupyter-widgets/ipywidgets/pull/2662))
+* Labmanager refactor ([#2532](https://github.com/jupyter-widgets/ipywidgets/pull/2532))
+* Make more of lab manager dependencies optional ([#2528](https://github.com/jupyter-widgets/ipywidgets/pull/2528))
+* Remove class `jupyter-widgets` from jp-outputarea-output node ([#2500](https://github.com/jupyter-widgets/ipywidgets/pull/2500))
+* Removed deprecated signature of the `register` decorator ([#2695](https://github.com/jupyter-widgets/ipywidgets/pull/2695))
+* Remove deprecated `handle_kernel` alias ([#2694](https://github.com/jupyter-widgets/ipywidgets/pull/2694))
+
+
+## 7.6
+
+To see the full list of pull requests and issues, see the [7.6.0 milestone](https://github.com/jupyter-widgets/ipywidgets/milestone/31?closed=1) on GitHub.
+
+The main change in this release is that installing `ipywidgets` 7.6.0 will now automatically enable ipywidgets support in JupyterLab 3.0—a user has no extra JupyterLab installation step and no rebuild of JupyterLab, nor do they need Node.js installed. Simply install the python ipywidgets package with pip (`pip install ipywidgets==7.6.0`) or conda/mamba (`conda install -c conda-forge ipywidgets=7.6.0`) and ipywidgets will automatically work in classic Jupyter Notebook and in JupyterLab 3.0.
+
+This is accomplished with the new python package `jupyterlab_widgets` version 1.0, on which `ipywidgets` 7.6.0 now depends (similar to how `ipywidgets` already depends on the `widgetsnbextension` package to configure ipywidgets for the classic Jupyter Notebook). The `jupyterlab_widgets` Python package is a JupyterLab 3.0 prebuilt extension, meaning that it can be installed into JupyterLab 3.0 without rebuilding JupyterLab and without needing Node.js installed.
+
+### Updates for Widget Maintainers
+
+Custom widget maintainers will need to make two changes to update for JupyterLab 3:
+
+1. Update the `@jupyter-widgets/base` dependency version to include `^4` to work in JupyterLab 3.0. For example, if you had a dependency on `@jupyter-widgets/base` version `^2 || ^3`, update to `^2 || ^3 || ^4` for your widget to work in classic Jupyter Notebook, JupyterLab 1, JupyterLab 2, and JupyterLab 3. See [#2472](https://github.com/jupyter-widgets/ipywidgets/pull/2472) for background.
+2. In the `package.json`, add the following `sharedPackages` configuration inside the `jupyterlab` key. See the [JupyterLab extension documentation](https://jupyterlab.readthedocs.io/en/stable/extension/extension_dev.html#requiring-a-service) for more information.
+
+   ```json
+     "jupyterlab": {
+       "sharedPackages": {
+         "@jupyter-widgets/base": {
+           "bundled": false,
+           "singleton": true
+         }
+       }
+     }
+   ```
+
+Separate from these two steps to update for JupyterLab 3, we also recommend that you make your widget's JupyterLab extension a prebuilt extension for JupyterLab 3.0. Users will be able to install your JupyterLab 3.0 prebuilt extension without rebuilding JupyterLab or needing Node.js. See the [JupyterLab 3 extension developer documentation](https://jupyterlab.readthedocs.io/en/stable/extension/extension_dev.html) or the new [widget extension cookiecutter](https://github.com/jupyter-widgets/widget-ts-cookiecutter/tree/jlab3) for more details.
 
 ## 7.5
 
@@ -17,6 +102,7 @@ Changes include:
 
 Custom widget maintainers will need to update their `@jupyter-widgets/base` dependency version to work in JupyterLab 1.0. For example, if you had a dependency on `@jupyter-widgets/base` version `^1.1`, update to `^1.1 || ^2` for your widget to work in classic notebook, JupyterLab 0.35, and JupyterLab 1.0. See [#2472](https://github.com/jupyter-widgets/ipywidgets/pull/2472) for background.
 
+
 ## 7.4
 
 To see the full list of pull requests and issues, see the [7.4 milestone](https://github.com/jupyter-widgets/ipywidgets/milestone/26?closed=1) on GitHub.
@@ -24,7 +110,7 @@ To see the full list of pull requests and issues, see the [7.4 milestone](https:
 Changes include:
 
 - New `Video` and `Audio` widgets have been introduced. [#2162](https://github.com/jupyter-widgets/ipywidgets/pull/2162)
-  We updated the `@jupyter-widgets/controls` widget specification version to `1.4.0`, leading to the version bump to 7.4.
+We updated the `@jupyter-widgets/controls` widget specification version to `1.4.0`, leading to the version bump to 7.4.
 - The use of mappings for the `options` attribute of selection widgets is deprecated. [#2130](https://github.com/jupyter-widgets/ipywidgets/pull/2130)
 
 ## 7.3
@@ -61,7 +147,6 @@ User-visible changes include:
 - `link` and `dlink` are now exported from ipywidgets for convenience, so that you can import them directly from ipywidgets instead of needing to import them from traitlets. ([#1923](https://github.com/jupyter-widgets/ipywidgets/pull/1923))
 - A new option `manual_name` has been added to `interact_manual()` to change the name of the update button, for example `interact_manual(manual_name='Update')`. ([#1924](https://github.com/jupyter-widgets/ipywidgets/pull/1923))
 - The Output widget now has a `.capture()` method, which returns a decorator to capture the output of a function.
-
   ```python
   from ipywidgets import Output
   out = Output()
@@ -70,9 +155,7 @@ User-visible changes include:
   def f():
     print('This output is captured')
   ```
-
   The `.capture()` method has a `clear_output` boolean argument to automatically clear the output every time the function is run, as well as a `wait` argument corresponding to the `clear_output` wait argument. ([#1934](https://github.com/jupyter-widgets/ipywidgets/pull/1934))
-
 - The Output widget has much more comprehensive documentation in its own section. ([#2020](https://github.com/jupyter-widgets/ipywidgets/pull/2020))
 - Installing `widgetsnbextension` now automatically enables the nbextension in Jupyter Notebook 5.3 or later. ([#1911](https://github.com/jupyter-widgets/ipywidgets/pull/1911))
 - The default rendering of a widget if widgets are not installed is now a short description of the widget in text instead of a much longer HTML message. ([#2007](https://github.com/jupyter-widgets/ipywidgets/pull/2007))
@@ -149,19 +232,19 @@ If you are developing a custom widget or widget manager, here are some major cha
 
 Major user-visible changes in ipywidgets 6.0 include:
 
-- Rendering of Jupyter interactive widgets in various web contexts
+ - Rendering of Jupyter interactive widgets in various web contexts
 
-  sphinx documentation: http://ipywidgets.readthedocs.io/en/latest/examples/Widget%20List.html
-  nbviewer: http://nbviewer.jupyter.org/github/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Widget%20List.ipynb
-  Static web pages: http://jupyter.org/widgets
+     sphinx documentation: http://ipywidgets.readthedocs.io/en/latest/examples/Widget%20List.html
+     nbviewer: http://nbviewer.jupyter.org/github/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Widget%20List.ipynb
+     Static web pages: http://jupyter.org/widgets
 
 - Addition of a DatePicker widget in the core widget collection.
 
-- Changes to the automatic control generation syntax in @interact, inspired by the Sage interact syntax.
+ - Changes to the automatic control generation syntax in @interact, inspired by the Sage interact syntax.
 
-- Removal of APIs which had been deprecated in 5.0, including top-level styling in attributes of DOMWidgets and some corner cases in the behavior of `@interact`.
+ - Removal of APIs which had been deprecated in 5.0, including top-level styling in attributes of DOMWidgets and some corner cases in the behavior of `@interact`.
 
-- A new API for custom styling of widgets is provided, through a top-level `style` attribute. For example, the color of a slider handler can be set by `slider.style.handle_color`.
+ - A new API for custom styling of widgets is provided, through a top-level `style` attribute. For example, the color of a slider handler can be set by `slider.style.handle_color`.
 
 - Removal of the Proxy and PlaceProxy widgets.
 
@@ -175,16 +258,15 @@ Major user-visible changes in ipywidgets 6.0 include:
 
 - Removal of the `button_style` attribute of the Dropdown widget
 
-- Addition of an OutputWidget for capturing output and rich display objects. @interact has changed to use an OutputWidget for function output instead of overwriting the output area of a cell.
+ - Addition of an OutputWidget for capturing output and rich display objects. @interact has changed to use an OutputWidget for function output instead of overwriting the output area of a cell.
 
-- The jupyter-js-widgets Javascript implementation now relies on the PhosphorJS framework for the management of rich layout and a better integration of JupyterLab.
+ - The jupyter-js-widgets Javascript implementation now relies on the PhosphorJS framework for the management of rich layout and a better integration of JupyterLab.
 
 - Numerous bug fixes.
 
 _Note for custom widget authors:_
 
 ipywidgets 6.0 breaks backward compatibility with respect to the handling of default values of the JavaScript side. Now, the default values for core widget models are specified with a `default()` method returning a dictionary instead of a `default` dictionary attribute. If you want your library to be backwards compatible with ipywidgets 5.x, you could use [\_.result](http://underscorejs.org/#result) like this:
-
 ```javascript
 ...
 defaults: function() {
@@ -194,6 +276,7 @@ defaults: function() {
 },
 ...
 ```
+
 
 This should not have an impact when using your custom widgets in the classic notebook, but will be really important when deploying your interactive widgets in web contexts.
 

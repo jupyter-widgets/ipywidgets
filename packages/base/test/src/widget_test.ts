@@ -2,6 +2,7 @@ import { DummyManager, MockComm } from './dummy-manager';
 
 import { expect } from 'chai';
 
+import { IBackboneModelOptions } from '../../lib/';
 import * as widgets from '../../lib/';
 const WidgetModel = widgets.WidgetModel;
 
@@ -82,7 +83,7 @@ describe('WidgetModel', function() {
           model_id: 'widget',
           widget_manager: this.manager,
           comm: this.comm
-        }
+        } as IBackboneModelOptions
       );
       // Create some dummy deserializers.  One returns synchronously, and the
       // other asynchronously using a promise.
@@ -128,7 +129,7 @@ describe('WidgetModel', function() {
         {
           model_id: 'widget',
           widget_manager: this.manager
-        }
+        } as IBackboneModelOptions
       );
       expect(widget.attributes).to.deep.equal({
         ...widget.defaults(),
@@ -143,7 +144,7 @@ describe('WidgetModel', function() {
         {
           model_id: 'widgetDead',
           widget_manager: this.manager
-        }
+        } as IBackboneModelOptions
       );
       expect(widgetDead.model_id).to.equal('widgetDead');
       expect(widgetDead.widget_manager).to.equal(this.manager);
@@ -157,7 +158,7 @@ describe('WidgetModel', function() {
           model_id: 'widgetLive',
           widget_manager: this.manager,
           comm: comm
-        }
+        } as IBackboneModelOptions
       );
       expect(widgetLive.model_id).to.equal('widgetLive');
       expect(widgetLive.widget_manager).to.equal(this.manager);
@@ -171,7 +172,7 @@ describe('WidgetModel', function() {
         {
           model_id: 'widget',
           widget_manager: this.manager
-        }
+        } as IBackboneModelOptions
       );
       const x = await widget.state_change;
       expect(x).to.be.undefined;
@@ -193,7 +194,7 @@ describe('WidgetModel', function() {
           model_id: 'widget',
           widget_manager: this.manager,
           comm: comm
-        }
+        } as IBackboneModelOptions
       );
       const data1 = { a: 1, b: 'state' };
       const data2 = { a: 2, b: 'state' };

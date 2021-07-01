@@ -20,7 +20,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo -n "Checking jupyter lab... "
+echo -n "Checking JupyterLab (assuming JupyterLab >=3)... "
 jupyter lab --version 2>/dev/null
 if [ $? -ne 0 ]; then
     echo "no, skipping installation of widgets for jupyterlab"
@@ -52,9 +52,7 @@ echo -n "ipywidgets"
 pip install -v -e ".[test]"
 
 if test "$skip_jupyter_lab" != yes; then
-    jupyter labextension link ./packages/base --no-build
-    jupyter labextension link ./packages/base-manager --no-build
-    jupyter labextension link ./packages/controls --no-build
-    jupyter labextension link ./packages/output --no-build
-    jupyter labextension install ./packages/jupyterlab-manager
+    pip install jupyter_packaging
+    pip install -ve ./jupyterlab_widgets
+    jupyter labextension develop ./jupyterlab_widgets --overwrite
 fi

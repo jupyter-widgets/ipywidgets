@@ -310,7 +310,13 @@
       {
         "allow_none": true,
         "default": null,
-        "enum": ["contain", "cover", "fill", "scale-down", "none"],
+        "enum": [
+          "contain",
+          "cover",
+          "fill",
+          "scale-down",
+          "none"
+        ],
         "help": "The object-fit CSS attribute.",
         "name": "object_fit",
         "type": "string"
@@ -360,7 +366,13 @@
       {
         "allow_none": true,
         "default": null,
-        "enum": ["visible", "hidden", "inherit", "initial", "unset"],
+        "enum": [
+          "visible",
+          "hidden",
+          "inherit",
+          "initial",
+          "unset"
+        ],
         "help": "The visibility CSS attribute.",
         "name": "visibility",
         "type": "string"
@@ -433,7 +445,13 @@
       },
       {
         "default": "",
-        "enum": ["success", "info", "warning", "danger", ""],
+        "enum": [
+          "success",
+          "info",
+          "warning",
+          "danger",
+          ""
+        ],
         "help": "Use a predefined styling for the box.",
         "name": "box_style",
         "type": "string"
@@ -915,7 +933,13 @@
       },
       {
         "default": "",
-        "enum": ["success", "info", "warning", "danger", ""],
+        "enum": [
+          "success",
+          "info",
+          "warning",
+          "danger",
+          ""
+        ],
         "help": "Use a predefined styling for the box.",
         "name": "box_style",
         "type": "string"
@@ -1012,7 +1036,14 @@
       },
       {
         "default": "",
-        "enum": ["primary", "success", "info", "warning", "danger", ""],
+        "enum": [
+          "primary",
+          "success",
+          "info",
+          "warning",
+          "danger",
+          ""
+        ],
         "help": "Use a predefined styling for the button.",
         "name": "button_style",
         "type": "string"
@@ -1357,6 +1388,117 @@
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "ColorPickerView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ColorsInputModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ColorsInputView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "",
+        "name": "allow_duplicates",
+        "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "",
+        "name": "allowed_tags",
+        "type": "array"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "List of string tags",
+        "name": "value",
+        "type": "array"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ColorsInputModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ColorsInputView",
       "version": "2.0.0"
     }
   },
@@ -1954,6 +2096,40 @@
         "widget": "Layout"
       },
       {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "max",
+        "type": "Date"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "min",
+        "type": "Date"
+      },
+      {
+        "default": 1,
+        "help": "The date step to use for the picker, in days, or \"any\".",
+        "name": "step",
+        "type": [
+          "int",
+          "string"
+        ],
+        "union_attributes": [
+          {
+            "type": "int"
+          },
+          {
+            "enum": [
+              "any"
+            ],
+            "type": "string"
+          }
+        ]
+      },
+      {
         "default": "reference to new instance",
         "help": "Styling customizations",
         "name": "style",
@@ -1990,6 +2166,126 @@
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "DatePickerView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "DatetimeModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "DatetimeView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes.",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "max",
+        "type": "Datetime"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "min",
+        "type": "Datetime"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "value",
+        "type": "Datetime"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "DatetimeModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "DatetimeView",
       "version": "2.0.0"
     }
   },
@@ -2282,7 +2578,14 @@
       },
       {
         "default": "",
-        "enum": ["primary", "success", "info", "warning", "danger", ""],
+        "enum": [
+          "primary",
+          "success",
+          "info",
+          "warning",
+          "danger",
+          ""
+        ],
         "help": "Use a predefined styling for the button.",
         "name": "button_style",
         "type": "string"
@@ -2458,7 +2761,10 @@
       },
       {
         "default": "horizontal",
-        "enum": ["horizontal", "vertical"],
+        "enum": [
+          "horizontal",
+          "vertical"
+        ],
         "help": "Vertical or horizontal.",
         "name": "orientation",
         "type": "string"
@@ -2571,7 +2877,13 @@
       {
         "allow_none": true,
         "default": "",
-        "enum": ["success", "info", "warning", "danger", ""],
+        "enum": [
+          "success",
+          "info",
+          "warning",
+          "danger",
+          ""
+        ],
         "help": "Use a predefined styling for the progess bar.",
         "name": "bar_style",
         "type": "string"
@@ -2603,7 +2915,10 @@
       },
       {
         "default": "horizontal",
-        "enum": ["horizontal", "vertical"],
+        "enum": [
+          "horizontal",
+          "vertical"
+        ],
         "help": "Vertical or horizontal.",
         "name": "orientation",
         "type": "string"
@@ -2733,7 +3048,10 @@
       },
       {
         "default": "horizontal",
-        "enum": ["horizontal", "vertical"],
+        "enum": [
+          "horizontal",
+          "vertical"
+        ],
         "help": "Vertical or horizontal.",
         "name": "orientation",
         "type": "string"
@@ -2779,7 +3097,10 @@
         "type": "string"
       },
       {
-        "default": [0.0, 1.0],
+        "default": [
+          0.0,
+          1.0
+        ],
         "help": "Tuple of (lower, upper) bounds",
         "name": "value",
         "type": "array"
@@ -2882,7 +3203,10 @@
       },
       {
         "default": "horizontal",
-        "enum": ["horizontal", "vertical"],
+        "enum": [
+          "horizontal",
+          "vertical"
+        ],
         "help": "Vertical or horizontal.",
         "name": "orientation",
         "type": "string"
@@ -3087,6 +3411,151 @@
         "type": "string"
       },
       {
+        "default": "FloatsInputModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "FloatsInputView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "",
+        "name": "allow_duplicates",
+        "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "",
+        "name": "allowed_tags",
+        "type": "array"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": ".1f",
+        "help": "",
+        "name": "format",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "max",
+        "type": "float"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "min",
+        "type": "float"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "enum": [
+          "primary",
+          "success",
+          "info",
+          "warning",
+          "danger",
+          ""
+        ],
+        "help": "Use a predefined styling for the tags.",
+        "name": "tag_style",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "List of float tags",
+        "name": "value",
+        "type": "array"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "FloatsInputModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "FloatsInputView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
         "default": "GridBoxModel",
         "help": "",
         "name": "_model_name",
@@ -3112,7 +3581,13 @@
       },
       {
         "default": "",
-        "enum": ["success", "info", "warning", "danger", ""],
+        "enum": [
+          "success",
+          "info",
+          "warning",
+          "danger",
+          ""
+        ],
         "help": "Use a predefined styling for the box.",
         "name": "box_style",
         "type": "string"
@@ -3209,7 +3684,13 @@
       },
       {
         "default": "",
-        "enum": ["success", "info", "warning", "danger", ""],
+        "enum": [
+          "success",
+          "info",
+          "warning",
+          "danger",
+          ""
+        ],
         "help": "Use a predefined styling for the box.",
         "name": "box_style",
         "type": "string"
@@ -3620,7 +4101,13 @@
       },
       {
         "default": "",
-        "enum": ["success", "info", "warning", "danger", ""],
+        "enum": [
+          "success",
+          "info",
+          "warning",
+          "danger",
+          ""
+        ],
         "help": "Use a predefined styling for the progess bar.",
         "name": "bar_style",
         "type": "string"
@@ -3652,7 +4139,10 @@
       },
       {
         "default": "horizontal",
-        "enum": ["horizontal", "vertical"],
+        "enum": [
+          "horizontal",
+          "vertical"
+        ],
         "help": "Vertical or horizontal.",
         "name": "orientation",
         "type": "string"
@@ -3782,7 +4272,10 @@
       },
       {
         "default": "horizontal",
-        "enum": ["horizontal", "vertical"],
+        "enum": [
+          "horizontal",
+          "vertical"
+        ],
         "help": "Vertical or horizontal.",
         "name": "orientation",
         "type": "string"
@@ -3827,7 +4320,10 @@
         "type": "string"
       },
       {
-        "default": [0, 1],
+        "default": [
+          0,
+          1
+        ],
         "help": "Tuple of (lower, upper) bounds",
         "name": "value",
         "type": "array"
@@ -3930,7 +4426,10 @@
       },
       {
         "default": "horizontal",
-        "enum": ["horizontal", "vertical"],
+        "enum": [
+          "horizontal",
+          "vertical"
+        ],
         "help": "Vertical or horizontal.",
         "name": "orientation",
         "type": "string"
@@ -4133,6 +4632,151 @@
         "type": "string"
       },
       {
+        "default": "IntsInputModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "IntsInputView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "",
+        "name": "allow_duplicates",
+        "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "",
+        "name": "allowed_tags",
+        "type": "array"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": ".3g",
+        "help": "",
+        "name": "format",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "max",
+        "type": "int"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "min",
+        "type": "int"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "enum": [
+          "primary",
+          "success",
+          "info",
+          "warning",
+          "danger",
+          ""
+        ],
+        "help": "Use a predefined styling for the tags.",
+        "name": "tag_style",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "List of int tags",
+        "name": "value",
+        "type": "array"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "IntsInputModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "IntsInputView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
         "default": "LabelModel",
         "help": "",
         "name": "_model_name",
@@ -4274,6 +4918,126 @@
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": null,
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "NaiveDatetimeModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "DatetimeView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes.",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "max",
+        "type": "Datetime"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "min",
+        "type": "Datetime"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "value",
+        "type": "Datetime"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "NaiveDatetimeModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "DatetimeView",
       "version": "2.0.0"
     }
   },
@@ -5038,7 +5802,10 @@
         "type": "bool"
       },
       {
-        "default": [0, 0],
+        "default": [
+          0,
+          0
+        ],
         "help": "Min and max selected indices",
         "name": "index",
         "type": "array"
@@ -5052,7 +5819,10 @@
       },
       {
         "default": "horizontal",
-        "enum": ["horizontal", "vertical"],
+        "enum": [
+          "horizontal",
+          "vertical"
+        ],
         "help": "Vertical or horizontal.",
         "name": "orientation",
         "type": "string"
@@ -5185,7 +5955,10 @@
       },
       {
         "default": "horizontal",
-        "enum": ["horizontal", "vertical"],
+        "enum": [
+          "horizontal",
+          "vertical"
+        ],
         "help": "Vertical or horizontal.",
         "name": "orientation",
         "type": "string"
@@ -5341,7 +6114,13 @@
       },
       {
         "default": "",
-        "enum": ["success", "info", "warning", "danger", ""],
+        "enum": [
+          "success",
+          "info",
+          "warning",
+          "danger",
+          ""
+        ],
         "help": "Use a predefined styling for the box.",
         "name": "box_style",
         "type": "string"
@@ -5454,7 +6233,13 @@
       },
       {
         "default": "",
-        "enum": ["success", "info", "warning", "danger", ""],
+        "enum": [
+          "success",
+          "info",
+          "warning",
+          "danger",
+          ""
+        ],
         "help": "Use a predefined styling for the box.",
         "name": "box_style",
         "type": "string"
@@ -5515,6 +6300,131 @@
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "TabView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "TagsInputModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "TagsInputView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": true,
+        "help": "",
+        "name": "allow_duplicates",
+        "type": "bool"
+      },
+      {
+        "default": [],
+        "help": "",
+        "name": "allowed_tags",
+        "type": "array"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "default": "",
+        "enum": [
+          "primary",
+          "success",
+          "info",
+          "warning",
+          "danger",
+          ""
+        ],
+        "help": "Use a predefined styling for the tags.",
+        "name": "tag_style",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "default": [],
+        "help": "List of string tags",
+        "name": "value",
+        "type": "array"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "TagsInputModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "TagsInputView",
       "version": "2.0.0"
     }
   },
@@ -5783,6 +6693,146 @@
         "type": "string"
       },
       {
+        "default": "TimeModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "TimeView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Description of the control.",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "default": false,
+        "help": "Enable or disable user changes.",
+        "name": "disabled",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "max",
+        "type": "Time"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "min",
+        "type": "Time"
+      },
+      {
+        "default": 60,
+        "help": "The time step to use for the picker, in seconds, or \"any\".",
+        "name": "step",
+        "type": [
+          "float",
+          "string"
+        ],
+        "union_attributes": [
+          {
+            "type": "float"
+          },
+          {
+            "enum": [
+              "any"
+            ],
+            "type": "string"
+          }
+        ]
+      },
+      {
+        "default": "reference to new instance",
+        "help": "Styling customizations",
+        "name": "style",
+        "type": "reference",
+        "widget": "DescriptionStyle"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "",
+        "name": "value",
+        "type": "Time"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "TimeModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "TimeView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
         "default": "ToggleButtonModel",
         "help": "",
         "name": "_model_name",
@@ -5808,7 +6858,14 @@
       },
       {
         "default": "",
-        "enum": ["primary", "success", "info", "warning", "danger", ""],
+        "enum": [
+          "primary",
+          "success",
+          "info",
+          "warning",
+          "danger",
+          ""
+        ],
         "help": "Use a predefined styling for the button.",
         "name": "button_style",
         "type": "string"
@@ -5936,7 +6993,14 @@
       {
         "allow_none": true,
         "default": "",
-        "enum": ["primary", "success", "info", "warning", "danger", ""],
+        "enum": [
+          "primary",
+          "success",
+          "info",
+          "warning",
+          "danger",
+          ""
+        ],
         "help": "Use a predefined styling for the buttons.",
         "name": "button_style",
         "type": "string"
@@ -6135,7 +7199,13 @@
       },
       {
         "default": "",
-        "enum": ["success", "info", "warning", "danger", ""],
+        "enum": [
+          "success",
+          "info",
+          "warning",
+          "danger",
+          ""
+        ],
         "help": "Use a predefined styling for the box.",
         "name": "box_style",
         "type": "string"

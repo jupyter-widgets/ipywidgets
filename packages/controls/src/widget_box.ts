@@ -60,18 +60,18 @@ export class VBoxModel extends BoxModel {
 
 export class BoxView extends DOMWidgetView {
   _createElement(tagName: string): HTMLElement {
-    this.pWidget = new JupyterLuminoPanelWidget({ view: this });
-    return this.pWidget.node;
+    this.luminoWidget = new JupyterLuminoPanelWidget({ view: this });
+    return this.luminoWidget.node;
   }
 
   _setElement(el: HTMLElement): void {
-    if (this.el || el !== this.pWidget.node) {
+    if (this.el || el !== this.luminoWidget.node) {
       // Boxes don't allow setting the element beyond the initial creation.
       throw new Error('Cannot reset the DOM element.');
     }
 
-    this.el = this.pWidget.node;
-    this.$el = $(this.pWidget.node);
+    this.el = this.luminoWidget.node;
+    this.$el = $(this.luminoWidget.node);
   }
 
   initialize(parameters: WidgetView.IInitializeParameters): void {
@@ -80,9 +80,9 @@ export class BoxView extends DOMWidgetView {
     this.listenTo(this.model, 'change:children', this.update_children);
     this.listenTo(this.model, 'change:box_style', this.update_box_style);
 
-    this.pWidget.addClass('jupyter-widgets');
-    this.pWidget.addClass('widget-container');
-    this.pWidget.addClass('widget-box');
+    this.luminoWidget.addClass('jupyter-widgets');
+    this.luminoWidget.addClass('widget-container');
+    this.luminoWidget.addClass('widget-box');
   }
 
   render(): void {
@@ -98,7 +98,7 @@ export class BoxView extends DOMWidgetView {
         // Notify all children that their sizes may have changed.
         views.forEach(view => {
           MessageLoop.postMessage(
-            view.pWidget,
+            view.luminoWidget,
             Widget.ResizeMessage.UnknownSize
           );
         });
@@ -117,13 +117,13 @@ export class BoxView extends DOMWidgetView {
     // we insert a dummy element so the order is preserved when we add
     // the rendered content later.
     const dummy = new Widget();
-    this.pWidget.addWidget(dummy);
+    this.luminoWidget.addWidget(dummy);
 
     return this.create_child_view(model)
       .then((view: DOMWidgetView) => {
         // replace the dummy widget with the new one.
-        const i = ArrayExt.firstIndexOf(this.pWidget.widgets, dummy);
-        this.pWidget.insertWidget(i, view.pWidget);
+        const i = ArrayExt.firstIndexOf(this.luminoWidget.widgets, dummy);
+        this.luminoWidget.insertWidget(i, view.luminoWidget);
         dummy.dispose();
         return view;
       })
@@ -136,7 +136,7 @@ export class BoxView extends DOMWidgetView {
   }
 
   children_views: ViewList<DOMWidgetView> | null;
-  pWidget: JupyterLuminoPanelWidget;
+  luminoWidget: JupyterLuminoPanelWidget;
 
   static class_map = {
     success: ['alert', 'alert-success'],
@@ -152,7 +152,7 @@ export class HBoxView extends BoxView {
    */
   initialize(parameters: WidgetView.IInitializeParameters): void {
     super.initialize(parameters);
-    this.pWidget.addClass('widget-hbox');
+    this.luminoWidget.addClass('widget-hbox');
   }
 }
 
@@ -162,7 +162,7 @@ export class VBoxView extends BoxView {
    */
   initialize(parameters: WidgetView.IInitializeParameters): void {
     super.initialize(parameters);
-    this.pWidget.addClass('widget-vbox');
+    this.luminoWidget.addClass('widget-vbox');
   }
 }
 
@@ -172,9 +172,9 @@ export class GridBoxView extends BoxView {
    */
   initialize(parameters: WidgetView.IInitializeParameters): void {
     super.initialize(parameters);
-    this.pWidget.addClass('widget-gridbox');
+    this.luminoWidget.addClass('widget-gridbox');
     // display needn't be set to flex and grid
-    this.pWidget.removeClass('widget-box');
+    this.luminoWidget.removeClass('widget-box');
   }
 }
 

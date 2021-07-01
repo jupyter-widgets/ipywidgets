@@ -215,7 +215,7 @@ export abstract class BaseIntSliderView extends DescriptionView {
       orientation: orientation,
       direction: orientation === 'horizontal' ? 'ltr' : 'rtl',
       format: {
-        from: (value: number): number => value,
+        from: (value: string): number => Number(value),
         to: (value: number): number => value
       }
     });
@@ -716,7 +716,7 @@ export class ProgressView extends DescriptionView {
   initialize(parameters: WidgetView.IInitializeParameters): void {
     super.initialize(parameters);
     this.listenTo(this.model, 'change:bar_style', this.update_bar_style);
-    this.pWidget.addClass('jupyter-widgets');
+    this.luminoWidget.addClass('jupyter-widgets');
   }
 
   render(): void {

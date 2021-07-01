@@ -22,8 +22,8 @@ jobs:
       run: |
         sudo apt-get install -y pandoc
         python -m pip install --upgrade pip
-        pip install file://$PWD#egg=ipywidgets
-        pip install -r ./docs/requirements.txt
+        python -m pip install file://$PWD#egg=ipywidgets
+        python -m pip install -r ./docs/requirements.txt
     - name: Build docs
       run: |
         cd docs
@@ -34,13 +34,26 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js 10.x
-      uses: actions/setup-node@v1
+    - name: Set up Python
+      uses: actions/setup-python@v1
       with:
-        node-version: 10.x
+        python-version: 3.7
+    - uses: actions/cache@v1
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}-${{hashFiles('**/requirements.txt')}}
+        restore-keys: |
+          ${{ runner.os }}-pip-
     - name: Install dependencies
       run: |
         sudo apt-get install -y firefox
+        python -m pip install --upgrade pip
+        python -m pip install jupyterlab~=3.0
+
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
     - name: Get yarn cache
       id: yarn-cache
       run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -50,6 +63,7 @@ jobs:
         key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
           ${{ runner.os }}-yarn-
+
     - name: yarn install, build, test
       run: |
         yarn install --frozen-lockfile
@@ -84,7 +98,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8]
+        python-version: [3.6, 3.7, 3.8, 3.9]
 
     steps:
     - uses: actions/checkout@v2
@@ -114,7 +128,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
-        python-version: 3.5
+        python-version: 3.6
     - uses: actions/cache@v1
       with:
         path: ~/.cache/pip
@@ -129,3 +143,79 @@ jobs:
       run: |
         python ./packages/schema/generate-spec.py -f markdown > spec.md
         diff -u ./packages/schema/jupyterwidgetmodels.latest.md ./spec.md
+  ui-test:
+    name: Visual Regression
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - uses: actions/cache@v1
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/setup.py') }}-${{hashFiles('**/requirements.txt')}}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install jupyterlab==3.0.3
+
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12.x
+    - name: Get yarn cache
+      id: yarn-cache
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+    - uses: actions/cache@v1
+      with:
+        path: ${{ steps.yarn-cache.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+
+    - name: Build and Install ipywidgets
+      run: |
+        yarn install --frozen-lockfile
+        yarn run build
+    - name: Build the extension
+      run: |
+        pip install .
+        jlpm install
+        jlpm run build
+        cd jupyterlab_widgets
+        pwd
+        pip install -e .
+        jupyter labextension develop . --overwrite
+        jupyter labextension list
+    - name: Install Galata
+      run: |
+        cd ui-tests
+        yarn install --frozen-lockfile
+    - name: Launch JupyterLab
+      run: |
+        cd ui-tests
+        yarn run start-jlab:detached
+    - name: Wait for JupyterLab
+      uses: ifaxity/wait-on-action@v1
+      with:
+        resource: http-get://localhost:8888/api
+        timeout: 20000
+    - name: Run UI Tests
+      run: |
+        cd ui-tests
+        yarn run test
+    - name: Upload UI Test artifacts
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+        name: ui-test-output
+        path: |
+          ui-tests/test-output
+
+      env:
+        CI: true

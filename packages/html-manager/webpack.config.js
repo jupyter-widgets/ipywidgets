@@ -56,7 +56,9 @@ var rules = [
 ];
 
 var publicPath =
-  'https://unpkg.com/@jupyter-widgets/html-manager@' + version + '/dist/';
+  'https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@' +
+  version +
+  '/dist/';
 
 module.exports = [
   {

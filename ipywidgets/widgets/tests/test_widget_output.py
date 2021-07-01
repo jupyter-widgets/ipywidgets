@@ -202,7 +202,7 @@ def test_append_display_data():
 
     # Now try appending an Image.
     image_data = b"foobar"
-    image_data_b64 = image_data if sys.version_info[0] < 3 else 'Zm9vYmFy\n'
+    image_data_b64 = 'Zm9vYmFy\n'
 
     widget.append_display_data(Image(image_data, width=123, height=456))
     expected += (

@@ -35,8 +35,8 @@ def _json_to_widget(x, obj):
         return {k: _json_to_widget(v, obj) for k, v in x.items()}
     elif isinstance(x, (list, tuple)):
         return [_json_to_widget(v, obj) for v in x]
-    elif isinstance(x, str) and x.startswith('IPY_MODEL_') and x[10:] in Widget.widgets:
-        return Widget.widgets[x[10:]]
+    elif isinstance(x, str) and x.startswith('IPY_MODEL_') and x[10:] in Widget._active_widgets:
+        return Widget._active_widgets[x[10:]]
     else:
         return x
 
@@ -247,7 +247,7 @@ class WidgetRegistry:
 def register(widget):
     """A decorator registering a widget class in the widget registry."""
     w = widget.class_traits()
-    Widget.widget_types.register(w['_model_module'].default_value,
+    Widget._widget_types.register(w['_model_module'].default_value,
                                  w['_model_module_version'].default_value,
                                  w['_model_name'].default_value,
                                  w['_view_module'].default_value,
@@ -263,15 +263,15 @@ class Widget(LoggingHasTraits):
     #-------------------------------------------------------------------------
     _widget_construction_callback = None
 
-    # widgets is a dictionary of all active widget objects
-    widgets = {}
+    # _active_widgets is a dictionary of all active widget objects
+    _active_widgets = {}
 
-    # widget_types is a registry of widgets by module, version, and name:
-    widget_types = WidgetRegistry()
+    # _widget_types is a registry of widgets by module, version, and name:
+    _widget_types = WidgetRegistry()
 
     @classmethod
     def close_all(cls):
-        for widget in list(cls.widgets.values()):
+        for widget in list(cls._active_widgets.values()):
             widget.close()
 
 
@@ -299,7 +299,7 @@ class Widget(LoggingHasTraits):
         state = data['state']
 
         # Find the widget class to instantiate in the registered widgets
-        widget_class = Widget.widget_types.get(state['_model_module'],
+        widget_class = Widget._widget_types.get(state['_model_module'],
                                                state['_model_module_version'],
                                                state['_model_name'],
                                                state['_view_module'],
@@ -320,7 +320,7 @@ class Widget(LoggingHasTraits):
         """
         state = {}
         if widgets is None:
-            widgets = Widget.widgets.values()
+            widgets = Widget._active_widgets.values()
         for widget in widgets:
             state[widget.model_id] = widget._get_embed_state(drop_defaults=drop_defaults)
         return {'version_major': 2, 'version_minor': 0, 'state': state}
@@ -416,7 +416,7 @@ class Widget(LoggingHasTraits):
         self._model_id = self.model_id
 
         self.comm.on_msg(self._handle_msg)
-        Widget.widgets[self.model_id] = self
+        Widget._active_widgets[self.model_id] = self
 
     @property
     def model_id(self):
@@ -436,7 +436,7 @@ class Widget(LoggingHasTraits):
         When the comm is closed, all of the widget views are automatically
         removed from the front-end."""
         if self.comm is not None:
-            Widget.widgets.pop(self.model_id, None)
+            Widget._active_widgets.pop(self.model_id, None)
             self.comm.close()
             self.comm = None
             self._repr_mimebundle_ = None

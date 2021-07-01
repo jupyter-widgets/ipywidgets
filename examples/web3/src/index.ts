@@ -3,7 +3,6 @@ import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/python/python';
 import 'font-awesome/css/font-awesome.css';
 import { WidgetManager } from './manager';
-import * as lmWidget from '@lumino/widgets';
 
 import {
   KernelManager,
@@ -62,8 +61,7 @@ document.addEventListener('DOMContentLoaded', async function(event) {
       if (widgetData !== undefined && widgetData.version_major === 2) {
         const model = await manager.get_model(widgetData.model_id);
         if (model !== undefined) {
-          const view = await manager.create_view(model);
-          lmWidget.Widget.attach(view.pWidget, widgetarea);
+          manager.display_view(manager.create_view(model), widgetarea);
         }
       }
     }

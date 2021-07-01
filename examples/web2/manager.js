@@ -20,11 +20,11 @@ class WidgetManager extends ManagerBase {
           let failedId = err.requireModules && err.requireModules[0];
           if (failedId) {
             console.log(
-              `Falling back to unpkg.com for ${moduleName}@${moduleVersion}`
+              `Falling back to jsDelivr for ${moduleName}@${moduleVersion}`
             );
             window.require(
               [
-                `https://unpkg.com/${moduleName}@${moduleVersion}/dist/index.js`
+                `https://cdn.jsdelivr.net/npm/${moduleName}@${moduleVersion}/dist/index.js`
               ],
               resolve,
               reject
@@ -49,7 +49,7 @@ class WidgetManager extends ManagerBase {
   display_view(view) {
     var that = this;
     return Promise.resolve(view).then(function(view) {
-      LuminoWidget.attach(view.pWidget, that.el);
+      LuminoWidget.attach(view.luminoWidget, that.el);
       return view;
     });
   }
