@@ -369,10 +369,34 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `layout`         | reference to Layout widget | reference to new instance | 
+`max`            | `null` or Date   | `null`           | 
+`min`            | `null` or Date   | `null`           | 
+`step`           | number (integer) or string (one of `'any'`) | `1`              | The date step to use for the picker, in days, or "any".
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | `null` or Date   | `null`           | 
+
+### DatetimeModel (@jupyter-widgets/controls, 2.0.0); DatetimeView (@jupyter-widgets/controls, 2.0.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_name`    | string           | `'DatetimeModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_name`     | string           | `'DatetimeView'` | 
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes.
+`layout`         | reference to Layout widget | reference to new instance | 
+`max`            | `null` or Datetime | `null`           | 
+`min`            | `null` or Datetime | `null`           | 
+`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`tooltip`        | `null` or string | `null`           | A tooltip caption.
+`value`          | `null` or Datetime | `null`           | 
 
 ### DescriptionStyleModel (@jupyter-widgets/controls, 2.0.0); StyleView (@jupyter-widgets/base, 2.0.0)
 
@@ -831,6 +855,27 @@ Attribute        | Type             | Default          | Help
 `source`         | array            | `[]`             | The source (widget, 'trait_name') pair
 `target`         | array            | `[]`             | The target (widget, 'trait_name') pair
 
+### NaiveDatetimeModel (@jupyter-widgets/controls, 2.0.0); DatetimeView (@jupyter-widgets/controls, 2.0.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_name`    | string           | `'NaiveDatetimeModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_name`     | string           | `'DatetimeView'` | 
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes.
+`layout`         | reference to Layout widget | reference to new instance | 
+`max`            | `null` or Datetime | `null`           | 
+`min`            | `null` or Datetime | `null`           | 
+`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`tooltip`        | `null` or string | `null`           | A tooltip caption.
+`value`          | `null` or Datetime | `null`           | 
+
 ### PasswordModel (@jupyter-widgets/controls, 2.0.0); PasswordView (@jupyter-widgets/controls, 2.0.0)
 
 Attribute        | Type             | Default          | Help
@@ -1113,6 +1158,28 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | string           | `''`             | String value
+
+### TimeModel (@jupyter-widgets/controls, 2.0.0); TimeView (@jupyter-widgets/controls, 2.0.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_name`    | string           | `'TimeModel'`    | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_name`     | string           | `'TimeView'`     | 
+`description`    | string           | `''`             | Description of the control.
+`disabled`       | boolean          | `false`          | Enable or disable user changes.
+`layout`         | reference to Layout widget | reference to new instance | 
+`max`            | `null` or Time   | `null`           | 
+`min`            | `null` or Time   | `null`           | 
+`step`           | number (float) or string (one of `'any'`) | `60`             | The time step to use for the picker, in seconds, or "any".
+`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`tooltip`        | `null` or string | `null`           | A tooltip caption.
+`value`          | `null` or Time   | `null`           | 
 
 ### ToggleButtonModel (@jupyter-widgets/controls, 2.0.0); ToggleButtonView (@jupyter-widgets/controls, 2.0.0)
 

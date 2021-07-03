@@ -1950,13 +1950,6 @@
   resolved "https://registry.npmjs.org/@types/normalize-package-data/-/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
   integrity sha512-f5j5b/Gf71L+dbqxIpQ4Z2WlmI/mPJ0fOkGGmFgtb6sAu97EPczzbS3/tJKxmcYDj55OX6ssqwDAWOHIYDRDGA==
 
-"@types/nouislider@^9.0.6":
-  version "9.0.10"
-  resolved "https://registry.npmjs.org/@types/nouislider/-/nouislider-9.0.10.tgz#4c03990e37aa885826a5be8d5c226508f78aecdd"
-  integrity sha512-aQ7U5oQ/h/joc93kwJvpGpGOkWGRg6doDvFyU9Do+K2JwwQnhAAcfnT9mMN1fgHAlnKLlyWTWRGs90B6FL0l4w==
-  dependencies:
-    "@types/wnumb" "*"
-
 "@types/parse-json@^4.0.0":
   version "4.0.0"
   resolved "https://registry.npmjs.org/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
@@ -2017,11 +2010,6 @@
   version "1.11.2"
   resolved "https://registry.npmjs.org/@types/underscore/-/underscore-1.11.2.tgz#9441e0f6402bbcb72dbee771582fa57c5a1dedd3"
   integrity sha512-Ls2ylbo7++ITrWk2Yc3G/jijwSq5V3GT0tlgVXEl2kKYXY3ImrtmTCoE2uyTWFRI5owMBriloZFWbE1SXOsE7w==
-
-"@types/wnumb@*":
-  version "1.2.0"
-  resolved "https://registry.npmjs.org/@types/wnumb/-/wnumb-1.2.0.tgz#de93478a0d10ea2e27809b5e3fc90ac52c1acd43"
-  integrity sha512-74+3MQqSTrDUtYisxrE8xbrTxmc3pi3G+yr1/TKNrMD7nfXIgUSgYeOu5R7g6Nsn/hl1GxKZ5VW2BuOQg9aLYg==
 
 "@typescript-eslint/eslint-plugin@^4.17.0":
   version "4.26.1"
@@ -6410,10 +6398,10 @@ normalize.css@^8.0.1:
   resolved "https://registry.npmjs.org/normalize.css/-/normalize.css-8.0.1.tgz#9b98a208738b9cc2634caacbc42d131c97487bf3"
   integrity sha512-qizSNPO93t1YUuUhP22btGOo3chcvDFqFaj2TRybP0DMxkHOCTYwp3n34fel4a31ORXy4m1Xq0Gyqpb5m33qIg==
 
-nouislider@^14.1.1:
-  version "14.7.0"
-  resolved "https://registry.npmjs.org/nouislider/-/nouislider-14.7.0.tgz#a71db0587c92567b6da1df57d251d3696d942362"
-  integrity sha512-4RtQ1+LHJKesDCNJrXkQcwXAWCrC2aggdLYMstS/G5fEWL+fXZbUA9pwVNHFghMGuFGRATlDLNInRaPeRKzpFQ==
+nouislider@15.2.0:
+  version "15.2.0"
+  resolved "https://registry.npmjs.org/nouislider/-/nouislider-15.2.0.tgz#21d6c94b34c70fe8097c3806f5e48eaa97332bd9"
+  integrity sha512-LoZwN+wwU+z/0/UtjQY8VUcVElFJX6GfHkgJ5z1NIt/+KpOsjxEW4EAtBkBWvHNxf9HBzR62K6ft9NpNBkA5/w==
 
 npm-bundled@^1.1.1:
   version "1.1.2"
