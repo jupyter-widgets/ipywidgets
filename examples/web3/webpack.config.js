@@ -1,6 +1,6 @@
 const postcss = require('postcss');
 var path = require('path');
-var webpack = require('webpack');
+const webpack = require('webpack');
 
 module.exports = {
   mode: 'development',
