@@ -13,7 +13,8 @@ const inline = '$'; // the inline math delimiter
 
 // MATHSPLIT contains the pattern for math delimiters and special symbols
 // needed for searching for math in the text input.
-const MATHSPLIT = /(\$\$?|\\(?:begin|end)\{[a-z]*\*?\}|\\[{}$]|[{}]|(?:\n\s*)+|@@\d+@@|\\\\(?:\(|\)|\[|\]))/i;
+const MATHSPLIT =
+  /(\$\$?|\\(?:begin|end)\{[a-z]*\*?\}|\\[{}$]|[{}]|(?:\n\s*)+|@@\d+@@|\\\\(?:\(|\)|\[|\]))/i;
 
 /**
  *  Break up the text into its component parts and search
@@ -39,7 +40,7 @@ export function removeMath(text: string): { text: string; math: string[] } {
   if (hasCodeSpans) {
     text = text
       .replace(/~/g, '~T')
-      .replace(/(^|[^\\])(`+)([^\n]*?[^`\n])\2(?!`)/gm, wholematch =>
+      .replace(/(^|[^\\])(`+)([^\n]*?[^`\n])\2(?!`)/gm, (wholematch) =>
         wholematch.replace(/\$/g, '~D')
       );
     deTilde = (text: string) => {

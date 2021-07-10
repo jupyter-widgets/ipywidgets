@@ -49,7 +49,7 @@ export class OutputModel extends outputBase.OutputModel {
    * Register a new kernel
    */
   _handleKernelChanged({
-    oldValue
+    oldValue,
   }: Session.ISessionConnection.IKernelChangedArgs): void {
     const msgId = this.get('msg_id');
     if (msgId && oldValue) {
@@ -184,7 +184,7 @@ export class OutputView extends outputBase.OutputView {
     this._outputView = new OutputArea({
       rendermime: this.model.widget_manager.rendermime,
       contentFactory: OutputArea.defaultContentFactory,
-      model: this.model.outputs
+      model: this.model.outputs,
     });
     // TODO: why is this a readonly property now?
     // this._outputView.model = this.model.outputs;

@@ -5,7 +5,7 @@ module.exports = {
   output: {
     path: __dirname + '/build',
     filename: 'coverage.js',
-    publicPath: './build/'
+    publicPath: './build/',
   },
   bail: true,
   module: {
@@ -15,16 +15,16 @@ module.exports = {
       { test: /\.md$/, use: 'raw-loader' },
       {
         test: /\.html$/,
-        use: { loader: 'file-loader', options: { name: '[name].[ext]' } }
-      }
+        use: { loader: 'file-loader', options: { name: '[name].[ext]' } },
+      },
     ],
     preLoaders: [
       // instrument only testing sources with Istanbul
       {
         test: /\.js$/,
         include: path.resolve('lib/'),
-        loader: 'istanbul-instrumenter'
-      }
-    ]
-  }
+        loader: 'istanbul-instrumenter',
+      },
+    ],
+  },
 };

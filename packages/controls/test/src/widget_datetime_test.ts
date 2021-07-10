@@ -8,7 +8,7 @@ import { DummyManager } from './dummy-manager';
 import {
   createTestModel,
   createTestView,
-  createTestModelFromSerialized
+  createTestModelFromSerialized,
 } from './utils';
 
 import { DatetimeModel, DatetimeView, NaiveDatetimeModel } from '../../lib';
@@ -39,8 +39,8 @@ describe('Datetime', () => {
           hours: 20,
           minutes: 2,
           seconds: 20,
-          milliseconds: 2
-        }
+          milliseconds: 2,
+        },
       };
 
       const model = await createTestModelFromSerialized(
@@ -52,9 +52,11 @@ describe('Datetime', () => {
         Promise.resolve(model)
       );
 
-      const state_out = await (model.widget_manager as DummyManager).get_state();
+      const state_out = await (
+        model.widget_manager as DummyManager
+      ).get_state();
       const models = Object.keys(state_out.state).map(
-        k => state_out.state[k].state
+        (k) => state_out.state[k].state
       );
       expect(models.length).to.equal(1);
       expect(models[0]._model_name).to.equal('DatetimeModel');
@@ -70,8 +72,8 @@ describe('Datetime', () => {
           hours: 20,
           minutes: 2,
           seconds: 20,
-          milliseconds: 2
-        }
+          milliseconds: 2,
+        },
       };
 
       const model = await createTestModelFromSerialized(
@@ -136,8 +138,8 @@ describe('Datetime', () => {
           hours: 20,
           minutes: 2,
           seconds: 20,
-          milliseconds: 2
-        }
+          milliseconds: 2,
+        },
       };
 
       const model = await createTestModelFromSerialized(
@@ -149,9 +151,11 @@ describe('Datetime', () => {
         Promise.resolve(model)
       );
 
-      const state_out = await (model.widget_manager as DummyManager).get_state();
+      const state_out = await (
+        model.widget_manager as DummyManager
+      ).get_state();
       const models = Object.keys(state_out.state).map(
-        k => state_out.state[k].state
+        (k) => state_out.state[k].state
       );
       expect(models.length).to.eql(1);
       expect(models[0]._model_name).to.eql('NaiveDatetimeModel');
@@ -167,8 +171,8 @@ describe('Datetime', () => {
           hours: 20,
           minutes: 2,
           seconds: 20,
-          milliseconds: 2
-        }
+          milliseconds: 2,
+        },
       };
 
       const model = await createTestModelFromSerialized(

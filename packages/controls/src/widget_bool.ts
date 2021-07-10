@@ -13,7 +13,7 @@ export class BoolModel extends CoreDescriptionModel {
       ...super.defaults(),
       value: false,
       disabled: false,
-      _model_name: 'BoolModel'
+      _model_name: 'BoolModel',
     };
   }
 }
@@ -24,7 +24,7 @@ export class CheckboxModel extends CoreDescriptionModel {
       ...super.defaults(),
       indent: true,
       _view_name: 'CheckboxView',
-      _model_name: 'CheckboxModel'
+      _model_name: 'CheckboxModel',
     };
   }
 }
@@ -80,9 +80,8 @@ export class CheckboxView extends DescriptionView {
     }
     const description = this.model.get('description');
     if (this.model.get('description_allow_html')) {
-      this.descriptionSpan.innerHTML = this.model.widget_manager.inline_sanitize(
-        description
-      );
+      this.descriptionSpan.innerHTML =
+        this.model.widget_manager.inline_sanitize(description);
     } else {
       this.descriptionSpan.textContent = description;
     }
@@ -126,7 +125,7 @@ export class CheckboxView extends DescriptionView {
 
   events(): { [e: string]: string } {
     return {
-      'click input[type="checkbox"]': '_handle_click'
+      'click input[type="checkbox"]': '_handle_click',
     };
   }
 
@@ -183,7 +182,7 @@ export class ToggleButtonModel extends BoolModel {
       _model_name: 'ToggleButtonModel',
       tooltip: '',
       icon: '',
-      button_style: ''
+      button_style: '',
     };
   }
 }
@@ -251,7 +250,7 @@ export class ToggleButtonView extends DOMWidgetView {
   events(): { [e: string]: string } {
     return {
       // Dictionary of events and their handlers.
-      click: '_handle_click'
+      click: '_handle_click',
     };
   }
 
@@ -280,7 +279,7 @@ export class ToggleButtonView extends DOMWidgetView {
     success: ['mod-success'],
     info: ['mod-info'],
     warning: ['mod-warning'],
-    danger: ['mod-danger']
+    danger: ['mod-danger'],
   };
 }
 
@@ -290,7 +289,7 @@ export class ValidModel extends BoolModel {
       ...super.defaults(),
       readout: 'Invalid',
       _view_name: 'ValidView',
-      _model_name: 'ValidModel'
+      _model_name: 'ValidModel',
     };
   }
 }

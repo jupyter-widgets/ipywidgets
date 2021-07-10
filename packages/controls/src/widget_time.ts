@@ -45,7 +45,7 @@ export function serialize_time(value: string): ISerializedTime | null {
       hours: Math.min(23, parseInt(res[1], 10)),
       minutes: Math.min(59, parseInt(res[2], 10)),
       seconds: res[4] ? Math.min(59, parseInt(res[4], 10)) : 0,
-      milliseconds: res[6] ? parseInt(res[6], 10) : 0
+      milliseconds: res[6] ? parseInt(res[6], 10) : 0,
     };
   }
 }
@@ -55,9 +55,9 @@ export function deserialize_time(value: ISerializedTime): string | null {
     return null;
   } else {
     const parts = [
-      `${value.hours
+      `${value.hours.toString().padStart(2, '0')}:${value.minutes
         .toString()
-        .padStart(2, '0')}:${value.minutes.toString().padStart(2, '0')}`
+        .padStart(2, '0')}`,
     ];
     if (value.seconds > 0 || value.milliseconds > 0) {
       parts.push(`:${value.seconds.toString().padStart(2, '0')}`);
@@ -71,7 +71,7 @@ export function deserialize_time(value: ISerializedTime): string | null {
 
 export const time_serializers = {
   serialize: serialize_time,
-  deserialize: deserialize_time
+  deserialize: deserialize_time,
 };
 
 export class TimeModel extends CoreDescriptionModel {
@@ -84,7 +84,7 @@ export class TimeModel extends CoreDescriptionModel {
       disabled: false,
       min: null,
       max: null,
-      step: 60
+      step: 60,
     };
   }
 
@@ -92,7 +92,7 @@ export class TimeModel extends CoreDescriptionModel {
     ...CoreDescriptionModel.serializers,
     value: time_serializers,
     min: time_serializers,
-    max: time_serializers
+    max: time_serializers,
   };
 
   static model_name = 'TimeModel';
@@ -141,7 +141,7 @@ export class TimeView extends DescriptionView {
     void this._picker_focusout;
     return {
       'change [type="time"]': '_picker_change',
-      'focusout [type="time"]': '_picker_focusout'
+      'focusout [type="time"]': '_picker_focusout',
     };
   }
 

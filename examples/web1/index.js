@@ -3,7 +3,7 @@ var WidgetManager = require('./manager').WidgetManager;
 
 require('@jupyter-widgets/controls/css/widgets.css');
 
-document.addEventListener('DOMContentLoaded', function(event) {
+document.addEventListener('DOMContentLoaded', function (event) {
   var manager = new WidgetManager(document.body);
 
   /**
@@ -16,20 +16,20 @@ document.addEventListener('DOMContentLoaded', function(event) {
       .new_model({
         model_module: '@jupyter-widgets/controls',
         model_name: widgetType + 'Model',
-        model_id: 'widget-1'
+        model_id: 'widget-1',
         // Create a view for the model.
       })
-      .then(function(model) {
+      .then(function (model) {
         console.log(widgetType + ' model created');
 
         model.set({
           description: description || '',
-          value: value
+          value: value,
         });
 
         return manager.create_view(model);
       }, console.error.bind(console))
-      .then(function(view) {
+      .then(function (view) {
         console.log(widgetType + ' view created');
         manager.display_view(view);
         return view;
@@ -48,26 +48,26 @@ document.addEventListener('DOMContentLoaded', function(event) {
       model_id: 'widget-2',
       state: {
         source: null,
-        target: null
-      }
+        target: null,
+      },
       // Set the link model state.
     })
-    .then(function(link) {
+    .then(function (link) {
       console.log('link created');
 
-      return Promise.all([textArea, html]).then(function(models) {
+      return Promise.all([textArea, html]).then(function (models) {
         console.log('setting link');
         var textArea = models[0];
         var html = models[1];
         link.set({
           source: [textArea.model, 'value'],
-          target: [html.model, 'value']
+          target: [html.model, 'value'],
         });
         link.save_changes();
         console.log('link set');
       });
     })
-    .then(function() {
+    .then(function () {
       var event = new Event('widgetsRendered');
       document.dispatchEvent(event);
     });

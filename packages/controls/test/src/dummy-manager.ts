@@ -62,7 +62,7 @@ class TestWidget extends base.WidgetModel {
       _view_module: 'test-widgets',
       _view_name: 'TestWidgetView',
       _view_module_version: '1.0.0',
-      _view_count: null as any
+      _view_count: null as any,
     };
   }
 }

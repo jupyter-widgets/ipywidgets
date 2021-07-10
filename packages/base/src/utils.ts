@@ -9,7 +9,7 @@ import _isEqual from 'lodash/isEqual';
  * Find all strings in the first argument that are not in the second.
  */
 export function difference(a: string[], b: string[]): string[] {
-  return a.filter(v => b.indexOf(v) === -1);
+  return a.filter((v) => b.indexOf(v) === -1);
 }
 
 /**
@@ -26,7 +26,7 @@ export function isEqual(a: unknown, b: unknown): boolean {
  */
 export const assign =
   (Object as any).assign ||
-  function(t: any, ...args: any[]): any {
+  function (t: any, ...args: any[]): any {
     for (let i = 1; i < args.length; i++) {
       const s = args[i];
       for (const p in s) {
@@ -61,10 +61,10 @@ export function resolvePromisesDict<V>(
 ): Promise<Dict<V>> {
   const keys = Object.keys(d);
   const values: PromiseLike<V>[] = [];
-  keys.forEach(function(key) {
+  keys.forEach(function (key) {
     values.push(d[key]);
   });
-  return Promise.all(values).then(v => {
+  return Promise.all(values).then((v) => {
     const d: Dict<V> = {};
     for (let i = 0; i < keys.length; i++) {
       d[keys[i]] = v[i];

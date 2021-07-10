@@ -5,7 +5,7 @@ module.exports = {
   output: {
     path: __dirname + '/build',
     filename: 'bundle.js',
-    publicPath: './build/'
+    publicPath: './build/',
   },
   bail: true,
   module: {
@@ -14,11 +14,11 @@ module.exports = {
       { test: /\.md$/, loader: 'raw-loader' },
       {
         test: /\.html$/,
-        use: { loader: 'file-loader', options: { name: '[name].[ext]' } }
+        use: { loader: 'file-loader', options: { name: '[name].[ext]' } },
       },
-      { test: /\.ipynb$/, loader: 'json-loader' }
-    ]
+      { test: /\.ipynb$/, loader: 'json-loader' },
+    ],
   },
   mode: 'development',
-  resolve: { fallback: { util: false } }
+  resolve: { fallback: { util: false } },
 };

@@ -10,7 +10,7 @@ import { MessageLoop } from '@lumino/messaging';
 import * as LuminoWidget from '@lumino/widgets';
 import {
   RenderMimeRegistry,
-  standardRendererFactories
+  standardRendererFactories,
 } from '@jupyterlab/rendermime';
 
 import { WidgetRenderer, WIDGET_MIMETYPE } from './output_renderers';
@@ -23,20 +23,20 @@ export class HTMLManager extends ManagerBase {
     super();
     this.loader = options?.loader;
     this.renderMime = new RenderMimeRegistry({
-      initialFactories: standardRendererFactories
+      initialFactories: standardRendererFactories,
     });
     this.renderMime.addFactory(
       {
         safe: false,
         mimeTypes: [WIDGET_MIMETYPE],
-        createRenderer: options => new WidgetRenderer(options, this)
+        createRenderer: (options) => new WidgetRenderer(options, this),
       },
       0
     );
 
     this._viewList = new Set<DOMWidgetView>();
     window.addEventListener('resize', () => {
-      this._viewList.forEach(view => {
+      this._viewList.forEach((view) => {
         MessageLoop.postMessage(
           view.luminoWidget,
           LuminoWidget.Widget.ResizeMessage.UnknownSize
@@ -87,7 +87,7 @@ export class HTMLManager extends ManagerBase {
       },
       close: () => {
         return;
-      }
+      },
     });
   }
 
@@ -111,7 +111,7 @@ export class HTMLManager extends ManagerBase {
       } else {
         reject(`Could not load module ${moduleName}@${moduleVersion}`);
       }
-    }).then(module => {
+    }).then((module) => {
       if ((module as any)[className]) {
         return (module as any)[className];
       } else {

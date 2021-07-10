@@ -83,7 +83,7 @@ class TagsInputBaseModel extends CoreDOMWidgetModel {
       ...super.defaults(),
       value: [],
       allowed_tags: null,
-      allow_duplicates: true
+      allow_duplicates: true,
     };
   }
 }
@@ -580,7 +580,7 @@ export class TagsInputModel extends TagsInputBaseModel {
       value: [],
       tag_style: '',
       _view_name: 'TagsInputView',
-      _model_name: 'TagsInputModel'
+      _model_name: 'TagsInputModel',
     };
   }
 }
@@ -648,7 +648,7 @@ export class TagsInputView extends TagsInputBaseView {
     success: 'mod-success',
     info: 'mod-info',
     warning: 'mod-warning',
-    danger: 'mod-danger'
+    danger: 'mod-danger',
   };
 }
 
@@ -658,7 +658,7 @@ export class ColorsInputModel extends TagsInputBaseModel {
       ...super.defaults(),
       value: [],
       _view_name: 'ColorsInputView',
-      _model_name: 'ColorsInputModel'
+      _model_name: 'ColorsInputModel',
     };
   }
 }
@@ -670,10 +670,7 @@ export class ColorsInputView extends TagsInputBaseView {
   createTag(value: string, index: number, selected: boolean): HTMLDivElement {
     const tag = document.createElement('div');
     const color = value;
-    const darkerColor: string = d3Color
-      .color(value)!
-      .darker()
-      .toString();
+    const darkerColor: string = d3Color.color(value)!.darker().toString();
 
     tag.classList.add('jupyter-widget-tag');
     tag.classList.add('jupyter-widget-colortag');
@@ -711,10 +708,7 @@ export class ColorsInputView extends TagsInputBaseView {
     selected: boolean
   ): void {
     const color = value;
-    const darkerColor: string = d3Color
-      .color(value)!
-      .darker()
-      .toString();
+    const darkerColor: string = d3Color.color(value)!.darker().toString();
 
     if (!selected) {
       tag.classList.remove('mod-active');
@@ -744,7 +738,7 @@ abstract class NumbersInputModel extends TagsInputModel {
     return {
       ...super.defaults(),
       min: null,
-      max: null
+      max: null,
     };
   }
 }
@@ -781,12 +775,14 @@ abstract class NumbersInputView extends TagsInputView {
       (min != null && parsed < min) ||
       (max != null && parsed > max)
     ) {
-      throw value +
+      throw (
+        value +
         ' is not a valid number, it should be in the range [' +
         min +
         ', ' +
         max +
-        ']';
+        ']'
+      );
     }
 
     return parsed;
@@ -803,7 +799,7 @@ export class FloatsInputModel extends NumbersInputModel {
       ...super.defaults(),
       _view_name: 'FloatsInputView',
       _model_name: 'FloatsInputModel',
-      format: '.1f'
+      format: '.1f',
     };
   }
 }
@@ -822,7 +818,7 @@ export class IntsInputModel extends NumbersInputModel {
       ...super.defaults(),
       _view_name: 'IntsInputView',
       _model_name: 'IntsInputModel',
-      format: '.3g'
+      format: '.3g',
     };
   }
 }

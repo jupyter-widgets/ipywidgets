@@ -4,7 +4,7 @@
 import {
   DOMWidgetModel,
   DOMWidgetView,
-  StyleModel
+  StyleModel,
 } from '@jupyter-widgets/base';
 
 import { typeset } from './utils';
@@ -17,7 +17,7 @@ export class DescriptionStyleModel extends StyleModel {
       ...super.defaults(),
       _model_name: 'DescriptionStyleModel',
       _model_module: '@jupyter-widgets/controls',
-      _model_module_version: JUPYTER_CONTROLS_VERSION
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
     };
   }
 
@@ -25,8 +25,8 @@ export class DescriptionStyleModel extends StyleModel {
     description_width: {
       selector: '.widget-label',
       attribute: 'width',
-      default: null as any
-    }
+      default: null as any,
+    },
   };
 }
 
@@ -41,7 +41,7 @@ export class DescriptionModel extends DOMWidgetModel {
       _view_module_version: JUPYTER_CONTROLS_VERSION,
       _model_module_version: JUPYTER_CONTROLS_VERSION,
       description: '',
-      description_allow_html: false
+      description_allow_html: false,
     };
   }
 }
@@ -75,9 +75,8 @@ export class DescriptionView extends DOMWidgetView {
       this.label.style.display = 'none';
     } else {
       if (this.model.get('description_allow_html')) {
-        this.label.innerHTML = this.model.widget_manager.inline_sanitize(
-          description
-        );
+        this.label.innerHTML =
+          this.model.widget_manager.inline_sanitize(description);
       } else {
         this.label.textContent = description;
       }

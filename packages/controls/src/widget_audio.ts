@@ -15,7 +15,7 @@ export class AudioModel extends CoreDOMWidgetModel {
       autoplay: true,
       loop: true,
       controls: true,
-      value: new DataView(new ArrayBuffer(0))
+      value: new DataView(new ArrayBuffer(0)),
     };
   }
 
@@ -24,8 +24,8 @@ export class AudioModel extends CoreDOMWidgetModel {
     value: {
       serialize: (value: any): DataView => {
         return new DataView(value.buffer.slice(0));
-      }
-    }
+      },
+    },
   };
 }
 
@@ -52,7 +52,7 @@ export class AudioView extends DOMWidgetView {
     const value = this.model.get('value');
     if (format !== 'url') {
       const blob = new Blob([value], {
-        type: `audio/${this.model.get('format')}`
+        type: `audio/${this.model.get('format')}`,
       });
       url = URL.createObjectURL(blob);
     } else {

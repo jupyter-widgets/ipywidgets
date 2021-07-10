@@ -19,7 +19,7 @@ export class StringModel extends CoreDescriptionModel {
       value: '',
       disabled: false,
       placeholder: '\u200b',
-      _model_name: 'StringModel'
+      _model_name: 'StringModel',
     };
   }
 }
@@ -49,7 +49,7 @@ export class HTMLModel extends StringModel {
     return {
       ...super.defaults(),
       _view_name: 'HTMLView',
-      _model_name: 'HTMLModel'
+      _model_name: 'HTMLModel',
     };
   }
 }
@@ -97,7 +97,7 @@ export class HTMLMathModel extends StringModel {
     return {
       ...super.defaults(),
       _view_name: 'HTMLMathView',
-      _model_name: 'HTMLMathModel'
+      _model_name: 'HTMLMathModel',
     };
   }
 }
@@ -143,7 +143,7 @@ export class LabelModel extends StringModel {
     return {
       ...super.defaults(),
       _view_name: 'LabelView',
-      _model_name: 'LabelModel'
+      _model_name: 'LabelModel',
     };
   }
 }
@@ -177,7 +177,7 @@ export class TextareaModel extends StringModel {
       _view_name: 'TextareaView',
       _model_name: 'TextareaModel',
       rows: null,
-      continuous_update: true
+      continuous_update: true,
     };
   }
 }
@@ -260,7 +260,7 @@ export class TextareaView extends StringView {
       'keydown input': 'handleKeyDown',
       'keypress input': 'handleKeypress',
       'input textarea': 'handleChanging',
-      'change textarea': 'handleChanged'
+      'change textarea': 'handleChanged',
     };
   }
 
@@ -322,7 +322,7 @@ export class TextModel extends StringModel {
       ...super.defaults(),
       _view_name: 'TextView',
       _model_name: 'TextModel',
-      continuous_update: true
+      continuous_update: true,
     };
   }
 }
@@ -402,7 +402,7 @@ export class TextView extends StringView {
       'keydown input': 'handleKeyDown',
       'keypress input': 'handleKeypress',
       'input input': 'handleChanging',
-      'change input': 'handleChanged'
+      'change input': 'handleChanged',
     };
   }
 
@@ -471,7 +471,7 @@ export class PasswordModel extends TextModel {
     return {
       ...super.defaults(),
       _view_name: 'PasswordView',
-      _model_name: 'PasswordModel'
+      _model_name: 'PasswordModel',
     };
   }
 }
@@ -490,7 +490,7 @@ export class ComboboxModel extends TextModel {
       _model_name: 'ComboboxModel',
       _view_name: 'ComboboxView',
       options: [],
-      ensure_options: false
+      ensure_options: false,
     };
   }
 }

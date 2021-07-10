@@ -120,7 +120,7 @@ export class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
 
     const root = this.el;
     const handler = selector
-      ? function(e: Event): any {
+      ? function (e: Event): any {
           let node = (e.target as HTMLElement) || (e.srcElement as HTMLElement);
           for (; node && node !== root; node = node.parentNode as HTMLElement) {
             if (matchesSelector.call(node, selector)) {

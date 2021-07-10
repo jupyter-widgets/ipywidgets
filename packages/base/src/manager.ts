@@ -9,7 +9,7 @@ import {
   DOMWidgetModel,
   DOMWidgetView,
   WidgetModel,
-  WidgetView
+  WidgetView,
 } from './widget';
 
 /**

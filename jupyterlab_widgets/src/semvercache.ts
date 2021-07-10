@@ -34,7 +34,6 @@ export class SemVerCache<T> {
     }
   }
 
-  private _cache: { [key: string]: { [version: string]: T } } = Object.create(
-    null
-  );
+  private _cache: { [key: string]: { [version: string]: T } } =
+    Object.create(null);
 }

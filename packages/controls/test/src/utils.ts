@@ -78,7 +78,7 @@ export function createTestModel<T extends widgets.WidgetModel>(
   const id = widgets.uuid();
   const modelOptions = {
     widget_manager: widget_manager || new DummyManager(),
-    model_id: id
+    model_id: id,
   };
 
   return new constructor(attributes, modelOptions);
