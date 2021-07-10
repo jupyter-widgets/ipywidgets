@@ -112,10 +112,16 @@ def jsdefault(trait):
         default = trait.make_dynamic_default()
         if issubclass(trait.klass, widgets.Widget):
             return 'reference to new instance'
-    elif isinstance(trait, Union):
-        default = trait.make_dynamic_default()
     else:
-        default = trait.default_value
+        try:
+            # traitlets 5
+            default = trait.default()
+        except AttributeError:
+            # traitlets 4 - can be deleted when we depend only on traitlets 5
+            if isinstance(trait, Union):
+                default = trait.make_dynamic_default()
+            else:
+                default = trait.default_value
         if isinstance(default, bytes) or isinstance(default, memoryview):
             default = trait.default_value_repr()
     return default
@@ -231,7 +237,12 @@ if __name__ == '__main__':
     widgets_to_document = sorted(widgets.Widget._widget_types.items())
     spec = create_spec(widgets_to_document)
     if format == 'json':
-        print(json.dumps(spec, sort_keys=True))
+        try:
+            print(json.dumps(spec, sort_keys=True))
+        except TypeError:
+            print('Encountered error when converting spec to JSON. Here is the spec:')
+            print(spec)
+            raise
     elif format == 'json-pretty':
         print(json.dumps(spec, sort_keys=True,
               indent=2, separators=(',', ': ')))
