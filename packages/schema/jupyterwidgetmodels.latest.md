@@ -396,6 +396,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'DatetimeView'` | 
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | `null` or Datetime | `null`           | 
@@ -890,6 +891,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'DatetimeView'` | 
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | `null` or Datetime | `null`           | 
@@ -1204,6 +1206,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'TimeView'`     | 
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | `null` or Time   | `null`           | 
