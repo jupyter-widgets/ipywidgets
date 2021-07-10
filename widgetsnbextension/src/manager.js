@@ -26,15 +26,15 @@ function polyfill_new_comm_buffers(
    *
    * argument comm_id is optional
    */
-  return new Promise(function(resolve) {
-    requirejs(['services/kernels/comm'], function(comm) {
+  return new Promise(function (resolve) {
+    requirejs(['services/kernels/comm'], function (comm) {
       var comm = new comm.Comm(target_name, comm_id);
       manager.register_comm(comm);
       // inline Comm.open(), but with buffers
       var content = {
         comm_id: comm_id,
         target_name: target_name,
-        data: data || {}
+        data: data || {},
       };
       comm.kernel.send_shell_message(
         'comm_open',
@@ -101,20 +101,20 @@ export class WidgetManager extends ManagerBase {
 
     // Attempt to reconstruct any live comms by requesting them from the back-end (2).
     var that = this;
-    this._get_comm_info().then(function(comm_ids) {
+    this._get_comm_info().then(function (comm_ids) {
       // Create comm class instances from comm ids (2).
-      var comm_promises = Object.keys(comm_ids).map(function(comm_id) {
+      var comm_promises = Object.keys(comm_ids).map(function (comm_id) {
         return that._create_comm(that.comm_target_name, comm_id);
       });
 
       // Send a state request message out for each widget comm and wait
       // for the responses (2).
       return Promise.all(comm_promises)
-        .then(function(comms) {
+        .then(function (comms) {
           return Promise.all(
-            comms.map(function(comm) {
-              var update_promise = new Promise(function(resolve, reject) {
-                comm.on_msg(function(msg) {
+            comms.map(function (comm) {
+              var update_promise = new Promise(function (resolve, reject) {
+                comm.on_msg(function (msg) {
                   base.put_buffers(
                     msg.content.data.state,
                     msg.content.data.buffer_paths,
@@ -125,14 +125,14 @@ export class WidgetManager extends ManagerBase {
                   if (msg.content.data.method === 'update') {
                     resolve({
                       comm: comm,
-                      msg: msg
+                      msg: msg,
                     });
                   }
                 });
               });
               comm.send(
                 {
-                  method: 'request_state'
+                  method: 'request_state',
                 },
                 that.callbacks()
               );
@@ -140,9 +140,9 @@ export class WidgetManager extends ManagerBase {
             })
           );
         })
-        .then(function(widgets_info) {
+        .then(function (widgets_info) {
           return Promise.all(
-            widgets_info.map(function(widget_info) {
+            widgets_info.map(function (widget_info) {
               return that.new_model(
                 {
                   model_name: widget_info.msg.content.data.state._model_name,
@@ -150,14 +150,14 @@ export class WidgetManager extends ManagerBase {
                     widget_info.msg.content.data.state._model_module,
                   model_module_version:
                     widget_info.msg.content.data.state._model_module_version,
-                  comm: widget_info.comm
+                  comm: widget_info.comm,
                 },
                 widget_info.msg.content.data.state
               );
             })
           );
         })
-        .then(function() {
+        .then(function () {
           // Now that we have mirrored any widgets from the kernel...
           // Restore any widgets from saved state that are not live (3)
           if (
@@ -172,12 +172,12 @@ export class WidgetManager extends ManagerBase {
             return that.set_state(state);
           }
         })
-        .then(function() {
+        .then(function () {
           // Rerender cells that have widget data
-          that.notebook.get_cells().forEach(function(cell) {
+          that.notebook.get_cells().forEach(function (cell) {
             var rerender =
               cell.output_area &&
-              cell.output_area.outputs.find(function(output) {
+              cell.output_area.outputs.find(function (output) {
                 return output.data && output.data[MIME_TYPE];
               });
             if (rerender) {
@@ -200,9 +200,9 @@ export class WidgetManager extends ManagerBase {
     } else if (moduleName == '@jupyter-widgets/output') {
       return Promise.resolve(outputWidgets[className]);
     } else {
-      return new Promise(function(resolve, reject) {
+      return new Promise(function (resolve, reject) {
         window.require([moduleName], resolve, reject);
-      }).then(function(mod) {
+      }).then(function (mod) {
         if (mod[className]) {
           return mod[className];
         } else {
@@ -220,23 +220,22 @@ export class WidgetManager extends ManagerBase {
   _init_actions() {
     var notifier = Jupyter.notification_area.widget('widgets');
     this.saveWidgetsAction = {
-      handler: function() {
+      handler: function () {
         this.get_state({
-          drop_defaults: true
-        }).then(function(state) {
+          drop_defaults: true,
+        }).then(function (state) {
           Jupyter.notebook.metadata.widgets = {
-            'application/vnd.jupyter.widget-state+json': state
+            'application/vnd.jupyter.widget-state+json': state,
           };
           Jupyter.menubar.actions
             .get('jupyter-notebook:save-notebook')
             .handler({
-              notebook: Jupyter.notebook
+              notebook: Jupyter.notebook,
             });
         });
       }.bind(this),
       icon: 'fa-truck',
-      help:
-        'Save the notebook with the widget state information for static rendering'
+      help: 'Save the notebook with the widget state information for static rendering',
     };
     Jupyter.menubar.actions.register(
       this.saveWidgetsAction,
@@ -245,13 +244,13 @@ export class WidgetManager extends ManagerBase {
     );
 
     this.clearWidgetsAction = {
-      handler: function() {
+      handler: function () {
         delete Jupyter.notebook.metadata.widgets;
         Jupyter.menubar.actions.get('jupyter-notebook:save-notebook').handler({
-          notebook: Jupyter.notebook
+          notebook: Jupyter.notebook,
         });
       },
-      help: 'Clear the widget state information from the notebook'
+      help: 'Clear the widget state information from the notebook',
     };
     Jupyter.menubar.actions.register(
       this.saveWidgetsAction,
@@ -324,7 +323,7 @@ export class WidgetManager extends ManagerBase {
 
   _create_comm(comm_target_name, comm_id, data, metadata, buffers) {
     var that = this;
-    return this._get_connected_kernel().then(function(kernel) {
+    return this._get_connected_kernel().then(function (kernel) {
       if (data || metadata) {
         return new_comm(
           kernel.comm_manager,
@@ -340,8 +339,8 @@ export class WidgetManager extends ManagerBase {
         // don't want to send an open message, which would supersede the
         // kernel comm object, so we instead do by hand the necessary parts
         // of the new_comm call above.
-        return new Promise(function(resolve) {
-          requirejs(['services/kernels/comm'], function(comm) {
+        return new Promise(function (resolve) {
+          requirejs(['services/kernels/comm'], function (comm) {
             var new_comm = new comm.Comm(comm_target_name, comm_id);
             kernel.comm_manager.register_comm(new_comm);
             resolve(new_comm);
@@ -356,9 +355,9 @@ export class WidgetManager extends ManagerBase {
      * Gets a promise for the valid widget models.
      */
     var that = this;
-    return this._get_connected_kernel().then(function(kernel) {
-      return new Promise(function(resolve, reject) {
-        kernel.comm_info('jupyter.widget', function(msg) {
+    return this._get_connected_kernel().then(function (kernel) {
+      return new Promise(function (resolve, reject) {
+        kernel.comm_info('jupyter.widget', function (msg) {
           resolve(msg['content']['comms']);
         });
       });
@@ -370,7 +369,7 @@ export class WidgetManager extends ManagerBase {
      * Gets a promise for a connected kernel
      */
     var that = this;
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       if (
         that.comm_manager &&
         that.comm_manager.kernel &&
@@ -378,12 +377,12 @@ export class WidgetManager extends ManagerBase {
       ) {
         resolve(that.comm_manager.kernel);
       } else {
-        that.notebook.events.on('kernel_connected.Kernel', function(
-          event,
-          data
-        ) {
-          resolve(data.kernel);
-        });
+        that.notebook.events.on(
+          'kernel_connected.Kernel',
+          function (event, data) {
+            resolve(data.kernel);
+          }
+        );
       }
     });
   }
@@ -397,7 +396,7 @@ export class WidgetManager extends ManagerBase {
     if (options.output) {
       options.iopub_callbacks = {
         output: options.output.handle_output.bind(options.output),
-        clear_output: options.output.handle_clear_output.bind(options.output)
+        clear_output: options.output.handle_clear_output.bind(options.output),
       };
     }
     return options;

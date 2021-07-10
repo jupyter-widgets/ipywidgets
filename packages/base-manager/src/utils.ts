@@ -259,7 +259,7 @@ const hexTable = [
   'FC',
   'FD',
   'FE',
-  'FF'
+  'FF',
 ];
 
 /**

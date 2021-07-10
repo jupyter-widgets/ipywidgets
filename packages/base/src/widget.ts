@@ -44,7 +44,7 @@ export function unpack_models(
     return Promise.all(unpacked);
   } else if (value instanceof Object && typeof value !== 'string') {
     const unpacked: { [key: string]: any } = {};
-    Object.keys(value).forEach(key => {
+    Object.keys(value).forEach((key) => {
       unpacked[key] = unpack_models(value[key], manager);
     });
     return utils.resolvePromisesDict(unpacked);
@@ -67,7 +67,9 @@ export interface ISerializers {
 }
 
 export interface IBackboneModelOptions extends Backbone.ModelSetOptions {
-  model_id: string; comm?: any; widget_manager: any
+  model_id: string;
+  comm?: any;
+  widget_manager: any;
 }
 
 export class WidgetModel extends Backbone.Model {
@@ -82,7 +84,7 @@ export class WidgetModel extends Backbone.Model {
       _view_module: '@jupyter-widgets/base',
       _view_name: null as string | null,
       _view_module_version: JUPYTER_WIDGETS_VERSION,
-      _view_count: null as number | null
+      _view_count: null as number | null,
     };
   }
 
@@ -193,7 +195,7 @@ export class WidgetModel extends Backbone.Model {
     // Delete all views of this model
     if (this.views) {
       const views = Object.keys(this.views).map((id: string) => {
-        return this.views![id].then(view => view.remove());
+        return this.views![id].then((view) => view.remove());
       });
       delete this.views;
       return Promise.all(views).then(() => {
@@ -230,7 +232,7 @@ export class WidgetModel extends Backbone.Model {
               this.widget_manager
             );
           })
-          .then(state => {
+          .then((state) => {
             this.set_state(state);
           })
           .catch(
@@ -276,7 +278,7 @@ export class WidgetModel extends Backbone.Model {
       const d = this.defaults;
       const defaults = typeof d === 'function' ? d.call(this) : d;
       const state: JSONObject = {};
-      Object.keys(fullState).forEach(key => {
+      Object.keys(fullState).forEach((key) => {
         if (!utils.isEqual(fullState[key], defaults[key])) {
           state[key] = fullState[key];
         }
@@ -506,7 +508,7 @@ export class WidgetModel extends Backbone.Model {
         {
           method: 'update',
           state: split.state,
-          buffer_paths: split.buffer_paths
+          buffer_paths: split.buffer_paths,
         },
         callbacks,
         {},
@@ -534,7 +536,10 @@ export class WidgetModel extends Backbone.Model {
       // If we are currently in a .set() call, save what state we have synced
       // to the kernel so we don't buffer it again as we come out of the .set call.
       if ((this as any)._changing) {
-        utils.assign(this._buffered_state_diff_synced, this._buffered_state_diff);
+        utils.assign(
+          this._buffered_state_diff_synced,
+          this._buffered_state_diff
+        );
       }
       this._buffered_state_diff = {};
     }
@@ -625,14 +630,14 @@ export class DOMWidgetModel extends WidgetModel {
   static serializers: ISerializers = {
     ...WidgetModel.serializers,
     layout: { deserialize: unpack_models },
-    style: { deserialize: unpack_models }
+    style: { deserialize: unpack_models },
   };
 
   defaults(): Backbone.ObjectHash {
     return utils.assign(super.defaults(), {
       _dom_classes: [],
       tabbable: null,
-      tooltip: null
+      tooltip: null,
       // We do not declare defaults for the layout and style attributes.
       // Those defaults are constructed on the kernel side and synced here
       // as needed, and our code here copes with those attributes being
@@ -908,7 +913,7 @@ export class DOMWidgetView extends WidgetView {
 
   setLayout(layout: LayoutModel, oldLayout?: LayoutModel): void {
     if (layout) {
-      this.layoutPromise = this.layoutPromise.then(oldLayoutView => {
+      this.layoutPromise = this.layoutPromise.then((oldLayoutView) => {
         if (oldLayoutView) {
           oldLayoutView.unlayout();
           this.stopListening(oldLayoutView.model);
@@ -916,7 +921,7 @@ export class DOMWidgetView extends WidgetView {
         }
 
         return this.create_child_view(layout)
-          .then(view => {
+          .then((view) => {
             // Trigger the displayed event of the child view.
             return this.displayed.then(() => {
               view.trigger('displayed');
@@ -944,7 +949,7 @@ export class DOMWidgetView extends WidgetView {
 
   setStyle(style: StyleModel, oldStyle?: StyleModel): void {
     if (style) {
-      this.stylePromise = this.stylePromise.then(oldStyleView => {
+      this.stylePromise = this.stylePromise.then((oldStyleView) => {
         if (oldStyleView) {
           oldStyleView.unstyle();
           this.stopListening(oldStyleView.model);
@@ -952,7 +957,7 @@ export class DOMWidgetView extends WidgetView {
         }
 
         return this.create_child_view(style)
-          .then(view => {
+          .then((view) => {
             // Trigger the displayed event of the child view.
             return this.displayed.then(() => {
               view.trigger('displayed');
@@ -988,7 +993,7 @@ export class DOMWidgetView extends WidgetView {
     if (el === undefined) {
       el = this.el;
     }
-    utils.difference(old_classes, new_classes).map(function(c) {
+    utils.difference(old_classes, new_classes).map(function (c) {
       if (el!.classList) {
         // classList is not supported by IE for svg elements
         el!.classList.remove(c);
@@ -996,7 +1001,7 @@ export class DOMWidgetView extends WidgetView {
         el!.setAttribute('class', el!.getAttribute('class')!.replace(c, ''));
       }
     });
-    utils.difference(new_classes, old_classes).map(function(c) {
+    utils.difference(new_classes, old_classes).map(function (c) {
       if (el!.classList) {
         // classList is not supported by IE for svg elements
         el!.classList.add(c);
@@ -1062,7 +1067,7 @@ export class DOMWidgetView extends WidgetView {
     this.el = this.$el[0];
     this.luminoWidget = new JupyterLuminoWidget({
       node: el,
-      view: this
+      view: this,
     });
   }
 

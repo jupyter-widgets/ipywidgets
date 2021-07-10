@@ -13,7 +13,7 @@ export class ButtonStyleModel extends StyleModel {
       ...super.defaults(),
       _model_name: 'ButtonStyleModel',
       _model_module: '@jupyter-widgets/controls',
-      _model_module_version: JUPYTER_CONTROLS_VERSION
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
     };
   }
 
@@ -21,13 +21,13 @@ export class ButtonStyleModel extends StyleModel {
     button_color: {
       selector: '',
       attribute: 'background-color',
-      default: null as any
+      default: null as any,
     },
     font_weight: {
       selector: '',
       attribute: 'font-weight',
-      default: ''
-    }
+      default: '',
+    },
   };
 }
 
@@ -42,7 +42,7 @@ export class ButtonModel extends CoreDOMWidgetModel {
       button_style: '',
       _view_name: 'ButtonView',
       _model_name: 'ButtonModel',
-      style: null
+      style: null,
     };
   }
 }
@@ -133,6 +133,6 @@ export class ButtonView extends DOMWidgetView {
     success: ['mod-success'],
     info: ['mod-info'],
     warning: ['mod-warning'],
-    danger: ['mod-danger']
+    danger: ['mod-danger'],
   };
 }

@@ -306,7 +306,7 @@ export class TabPanel extends Widget {
       previousIndex,
       previousWidget,
       currentIndex,
-      currentWidget
+      currentWidget,
     });
 
     // Flush the message loop on IE and Edge to prevent flicker.

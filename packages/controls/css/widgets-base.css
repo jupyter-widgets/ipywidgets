@@ -81,7 +81,8 @@
 
 /* vbox and hbox */
 
-/* <DEPRECATED> */ .widget-inline-hbox, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-inline-hbox, /* <DEPRECATED> */
  .jupyter-widget-inline-hbox {
   /* Horizontal widgets */
   box-sizing: border-box;
@@ -90,7 +91,8 @@
   align-items: baseline;
 }
 
-/* <DEPRECATED> */ .widget-inline-vbox, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-inline-vbox, /* <DEPRECATED> */
  .jupyter-widget-inline-vbox {
   /* Vertical Widgets */
   box-sizing: border-box;
@@ -99,7 +101,8 @@
   align-items: center;
 }
 
-/* <DEPRECATED> */ .widget-box, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-box, /* <DEPRECATED> */
 .jupyter-widget-box {
   box-sizing: border-box;
   display: flex;
@@ -107,7 +110,8 @@
   overflow: auto;
 }
 
-/* <DEPRECATED> */ .widget-gridbox, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-gridbox, /* <DEPRECATED> */
 .jupyter-widget-gridbox {
   box-sizing: border-box;
   display: grid;
@@ -115,12 +119,14 @@
   overflow: auto;
 }
 
-/* <DEPRECATED> */ .widget-hbox, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-hbox, /* <DEPRECATED> */
 .jupyter-widget-hbox {
   flex-direction: row;
 }
 
-/* <DEPRECATED> */ .widget-vbox, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-vbox, /* <DEPRECATED> */
 .jupyter-widget-vbox {
   flex-direction: column;
 }
@@ -416,7 +422,8 @@
 
 /* Widget Button, Widget Toggle Button, Widget Upload */
 
-/* <DEPRECATED> */ .widget-button, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-button, /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-toggle-button, /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-upload, /* <DEPRECATED> */
 .jupyter-widget-button,
@@ -432,7 +439,8 @@
   margin-bottom: initial;
 }
 
-/* <DEPRECATED> */ .widget-label-basic, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-label-basic, /* <DEPRECATED> */
 .jupyter-widget-label-basic {
   /* Basic Label */
   color: var(--jp-widgets-label-color);
@@ -443,7 +451,8 @@
   line-height: var(--jp-widgets-inline-height);
 }
 
-/* <DEPRECATED> */ .widget-label, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-label, /* <DEPRECATED> */
 .jupyter-widget-label {
   /* Label */
   color: var(--jp-widgets-label-color);
@@ -454,7 +463,8 @@
   line-height: var(--jp-widgets-inline-height);
 }
 
-/* <DEPRECATED> */ .widget-inline-hbox .widget-label, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-inline-hbox .widget-label, /* <DEPRECATED> */
 .jupyter-widget-inline-hbox .jupyter-widget-label {
   /* Horizontal Widget Label */
   color: var(--jp-widgets-label-color);
@@ -464,7 +474,8 @@
   flex-shrink: 0;
 }
 
-/* <DEPRECATED> */ .widget-inline-vbox .widget-label, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-inline-vbox .widget-label, /* <DEPRECATED> */
 .jupyter-widget-inline-vbox .jupyter-widget-label {
   /* Vertical Widget Label */
   color: var(--jp-widgets-label-color);
@@ -474,7 +485,8 @@
 
 /* Widget Readout Styling */
 
-/* <DEPRECATED> */ .widget-readout, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-readout, /* <DEPRECATED> */
 .jupyter-widget-readout {
   color: var(--jp-widgets-readout-color);
   font-size: var(--jp-widgets-font-size);
@@ -485,7 +497,8 @@
   text-align: center;
 }
 
-/* <DEPRECATED> */ .widget-readout.overflow, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-readout.overflow, /* <DEPRECATED> */
 .jupyter-widget-readout.overflow {
   /* Overflowing Readout */
 
@@ -504,7 +517,8 @@
     0 1px 5px 0 rgba(0, 0, 0, 0.12);
 }
 
-/* <DEPRECATED> */ .widget-inline-hbox .widget-readout, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-inline-hbox .widget-readout, /* <DEPRECATED> */
 .jupyter-widget-inline-hbox .jupyter-widget-readout {
   /* Horizontal Readout */
   text-align: center;
@@ -513,7 +527,8 @@
   margin-left: var(--jp-widgets-inline-margin);
 }
 
-/* <DEPRECATED> */ .widget-inline-vbox .widget-readout, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-inline-vbox .widget-readout, /* <DEPRECATED> */
 .jupyter-widget-inline-vbox .jupyter-widget-readout {
   /* Vertical Readout */
   margin-top: var(--jp-widgets-inline-margin);
@@ -523,14 +538,16 @@
 
 /* Widget Checkbox Styling */
 
-/* <DEPRECATED> */ .widget-checkbox, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-checkbox, /* <DEPRECATED> */
 .jupyter-widget-checkbox {
   width: var(--jp-widgets-inline-width);
   height: var(--jp-widgets-inline-height);
   line-height: var(--jp-widgets-inline-height);
 }
 
-/* <DEPRECATED> */ .widget-checkbox input[type='checkbox'], /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-checkbox input[type='checkbox'], /* <DEPRECATED> */
 .jupyter-widget-checkbox input[type='checkbox'] {
   margin: 0px calc(var(--jp-widgets-inline-margin) * 2) 0px 0px;
   line-height: var(--jp-widgets-inline-height);
@@ -542,7 +559,8 @@
 
 /* Widget Valid Styling */
 
-/* <DEPRECATED> */ .widget-valid, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-valid, /* <DEPRECATED> */
 .jupyter-widget-valid {
   height: var(--jp-widgets-inline-height);
   line-height: var(--jp-widgets-inline-height);
@@ -550,38 +568,44 @@
   font-size: var(--jp-widgets-font-size);
 }
 
-/* <DEPRECATED> */ .widget-valid i, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-valid i, /* <DEPRECATED> */
 .jupyter-widget-valid i {
   line-height: var(--jp-widgets-inline-height);
   margin-right: var(--jp-widgets-inline-margin);
   margin-left: var(--jp-widgets-inline-margin);
 }
 
-/* <DEPRECATED> */ .widget-valid.mod-valid i, /* <DEPRECATED> */
-.jupyter-widget-valid.mod-valid i  {
+/* <DEPRECATED> */
+.widget-valid.mod-valid i, /* <DEPRECATED> */
+.jupyter-widget-valid.mod-valid i {
   color: green;
 }
 
-/* <DEPRECATED> */ .widget-valid.mod-invalid i, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-valid.mod-invalid i, /* <DEPRECATED> */
 .jupyter-widget-valid.mod-invalid i {
   color: red;
 }
 
-/* <DEPRECATED> */ .widget-valid.mod-valid .widget-valid-readout, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-valid.mod-valid .widget-valid-readout, /* <DEPRECATED> */
 .jupyter-widget-valid.mod-valid .jupyter-widget-valid-readout {
   display: none;
 }
 
 /* Widget Text and TextArea Stying */
 
-/* <DEPRECATED> */ .widget-textarea, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-textarea, /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-text, /* <DEPRECATED> */
 .jupyter-widget-textarea,
 .jupyter-widget-text {
   width: var(--jp-widgets-inline-width);
 }
 
-/* <DEPRECATED> */ .widget-text input[type='text'], /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-text input[type='text'], /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-text input[type='number'], /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-text input[type='password'], /* <DEPRECATED> */
 .jupyter-widget-text input[type='text'],
@@ -591,7 +615,8 @@
   line-height: var(--jp-widgets-inline-height);
 }
 
-/* <DEPRECATED> */ .widget-text input[type='text']:disabled, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-text input[type='text']:disabled, /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-text input[type='number']:disabled, /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-text input[type='password']:disabled, /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-textarea textarea:disabled, /* <DEPRECATED> */
@@ -602,7 +627,8 @@
   opacity: var(--jp-widgets-disabled-opacity);
 }
 
-/* <DEPRECATED> */ .widget-text input[type='text'], /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-text input[type='text'], /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-text input[type='number'], /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-text input[type='password'], /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-textarea textarea, /* <DEPRECATED> */
@@ -622,7 +648,8 @@
   outline: none !important;
 }
 
-/* <DEPRECATED> */ .widget-text input[type='text'], /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-text input[type='text'], /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-text input[type='password'], /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-textarea textarea, /* <DEPRECATED> */
 .jupyter-widget-text input[type='text'],
@@ -632,19 +659,22 @@
     calc(var(--jp-widgets-input-padding) * 2);
 }
 
-/* <DEPRECATED> */ .widget-text input[type='number'], /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-text input[type='number'], /* <DEPRECATED> */
 .jupyter-widget-text input[type='number'] {
   padding: var(--jp-widgets-input-padding) 0 var(--jp-widgets-input-padding)
     calc(var(--jp-widgets-input-padding) * 2);
 }
 
-/* <DEPRECATED> */ .widget-textarea textarea, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-textarea textarea, /* <DEPRECATED> */
 .jupyter-widget-textarea textarea {
   height: inherit;
   width: inherit;
 }
 
-/* <DEPRECATED> */ .widget-text input:focus, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-text input:focus, /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-textarea textarea:focus, /* <DEPRECATED> */
 .jupyter-widget-text input:focus,
 .jupyter-widget-textarea textarea:focus {
@@ -652,7 +682,8 @@
 }
 
 /* Horizontal Slider */
-/* <DEPRECATED> */ .widget-hslider, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-hslider, /* <DEPRECATED> */
 .jupyter-widget-hslider {
   width: var(--jp-widgets-inline-width);
   height: var(--jp-widgets-inline-height);
@@ -664,12 +695,14 @@
   align-items: center;
 }
 
-/* <DEPRECATED> */ .widgets-slider .slider-container, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widgets-slider .slider-container, /* <DEPRECATED> */
 .jupyter-widgets-slider .slider-container {
   overflow: visible;
 }
 
-/* <DEPRECATED> */ .widget-hslider .slider-container, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-hslider .slider-container, /* <DEPRECATED> */
 .jupyter-widget-hslider .slider-container {
   margin-left: calc(
     var(--jp-widgets-slider-handle-size) / 2 - 2 *
@@ -684,20 +717,23 @@
 
 /* Vertical Slider */
 
-/* <DEPRECATED> */ .widget-vbox .widget-label, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-vbox .widget-label, /* <DEPRECATED> */
 .jupyter-widget-vbox .jupyter-widget-label {
   height: var(--jp-widgets-inline-height);
   line-height: var(--jp-widgets-inline-height);
 }
 
-/* <DEPRECATED> */ .widget-vslider, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-vslider, /* <DEPRECATED> */
 .jupyter-widget-vslider {
   /* Vertical Slider */
   height: var(--jp-widgets-vertical-height);
   width: var(--jp-widgets-inline-width-tiny);
 }
 
-/* <DEPRECATED> */ .widget-vslider .slider-container, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-vslider .slider-container, /* <DEPRECATED> */
 .jupyter-widget-vslider .slider-container {
   flex: 1 1 var(--jp-widgets-inline-width-short);
   margin-left: auto;
@@ -756,7 +792,8 @@
 
 /* Horisontal Progress */
 
-/* <DEPRECATED> */ .widget-hprogress, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-hprogress, /* <DEPRECATED> */
 .jupyter-widget-hprogress {
   /* Progress Bar */
   height: var(--jp-widgets-inline-height);
@@ -765,7 +802,8 @@
   align-items: center;
 }
 
-/* <DEPRECATED> */ .widget-hprogress .progress, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-hprogress .progress, /* <DEPRECATED> */
 .jupyter-widget-hprogress .progress {
   flex-grow: 1;
   margin-top: var(--jp-widgets-input-padding);
@@ -777,13 +815,15 @@
 
 /* Vertical Progress */
 
-/* <DEPRECATED> */ .widget-vprogress, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-vprogress, /* <DEPRECATED> */
 .jupyter-widget-vprogress {
   height: var(--jp-widgets-vertical-height);
   width: var(--jp-widgets-inline-width-tiny);
 }
 
-/* <DEPRECATED> */ .widget-vprogress .progress, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-vprogress .progress, /* <DEPRECATED> */
 .jupyter-widget-vprogress .progress {
   flex-grow: 1;
   width: var(--jp-widgets-progress-thickness);
@@ -794,14 +834,16 @@
 
 /* Select Widget Styling */
 
-/* <DEPRECATED> */ .widget-dropdown, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-dropdown, /* <DEPRECATED> */
 .jupyter-widget-dropdown {
   height: var(--jp-widgets-inline-height);
   width: var(--jp-widgets-inline-width);
   line-height: var(--jp-widgets-inline-height);
 }
 
-/* <DEPRECATED> */ .widget-dropdown > select, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-dropdown > select, /* <DEPRECATED> */
 .jupyter-widget-dropdown > select {
   padding-right: 20px;
   border: var(--jp-widgets-input-border-width) solid
@@ -826,19 +868,22 @@
   background-position: right center;
   background-image: var(--jp-widgets-dropdown-arrow);
 }
-/* <DEPRECATED> */ .widget-dropdown > select:focus, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-dropdown > select:focus, /* <DEPRECATED> */
 .jupyter-widget-dropdown > select:focus {
   border-color: var(--jp-widgets-input-focus-border-color);
 }
 
-/* <DEPRECATED> */ .widget-dropdown > select:disabled, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-dropdown > select:disabled, /* <DEPRECATED> */
 .jupyter-widget-dropdown > select:disabled {
   opacity: var(--jp-widgets-disabled-opacity);
 }
 
 /* To disable the dotted border in Firefox around select controls.
    See http://stackoverflow.com/a/18853002 */
-/* <DEPRECATED> */ .widget-dropdown > select:-moz-focusring, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-dropdown > select:-moz-focusring, /* <DEPRECATED> */
 .jupyter-widget-dropdown > select:-moz-focusring {
   color: transparent;
   text-shadow: 0 0 0 #000;
@@ -846,7 +891,8 @@
 
 /* Select and SelectMultiple */
 
-/* <DEPRECATED> */ .widget-select, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-select, /* <DEPRECATED> */
 .jupyter-widget-select {
   width: var(--jp-widgets-inline-width);
   line-height: var(--jp-widgets-inline-height);
@@ -857,7 +903,8 @@
   align-items: flex-start;
 }
 
-/* <DEPRECATED> */ .widget-select > select, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-select > select, /* <DEPRECATED> */
 .jupyter-widget-select > select {
   border: var(--jp-widgets-input-border-width) solid
     var(--jp-widgets-input-border-color);
@@ -875,7 +922,8 @@
   padding-top: 5px;
 }
 
-/* <DEPRECATED> */ .widget-select > select:focus, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-select > select:focus, /* <DEPRECATED> */
 .jupyter-widget-select > select:focus {
   border-color: var(--jp-widgets-input-focus-border-color);
 }
@@ -895,31 +943,36 @@
 
 /* Toggle Buttons Styling */
 
-/* <DEPRECATED> */ .widget-toggle-buttons, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-toggle-buttons, /* <DEPRECATED> */
 .jupyter-widget-toggle-buttons {
   line-height: var(--jp-widgets-inline-height);
 }
 
-/* <DEPRECATED> */ .widget-toggle-buttons .widget-toggle-button, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-toggle-buttons .widget-toggle-button, /* <DEPRECATED> */
 .jupyter-widget-toggle-buttons .jupyter-widget-toggle-button {
   margin-left: var(--jp-widgets-margin);
   margin-right: var(--jp-widgets-margin);
 }
 
-/* <DEPRECATED> */ .widget-toggle-buttons .jupyter-button:disabled, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-toggle-buttons .jupyter-button:disabled, /* <DEPRECATED> */
 .jupyter-widget-toggle-buttons .jupyter-button:disabled {
   opacity: var(--jp-widgets-disabled-opacity);
 }
 
 /* Radio Buttons Styling */
 
-/* <DEPRECATED> */ .widget-radio, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-radio, /* <DEPRECATED> */
 .jupyter-widget-radio {
   width: var(--jp-widgets-inline-width);
   line-height: var(--jp-widgets-inline-height);
 }
 
-/* <DEPRECATED> */ .widget-radio-box, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-radio-box, /* <DEPRECATED> */
 .jupyter-widget-radio-box {
   display: flex;
   flex-direction: column;
@@ -929,14 +982,16 @@
   margin-bottom: var(--jp-widgets-radio-item-height-adjustment);
 }
 
-/* <DEPRECATED> */ .widget-radio-box label, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-radio-box label, /* <DEPRECATED> */
 .jupyter-widget-radio-box label {
   height: var(--jp-widgets-radio-item-height);
   line-height: var(--jp-widgets-radio-item-height);
   font-size: var(--jp-widgets-font-size);
 }
 
-/* <DEPRECATED> */ .widget-radio-box input, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-radio-box input, /* <DEPRECATED> */
 .jupyter-widget-radio-box input {
   height: var(--jp-widgets-radio-item-height);
   line-height: var(--jp-widgets-radio-item-height);
@@ -946,21 +1001,24 @@
 
 /* Color Picker Styling */
 
-/* <DEPRECATED> */ .widget-colorpicker, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-colorpicker, /* <DEPRECATED> */
 .jupyter-widget-colorpicker {
   width: var(--jp-widgets-inline-width);
   height: var(--jp-widgets-inline-height);
   line-height: var(--jp-widgets-inline-height);
 }
 
-/* <DEPRECATED> */ .widget-colorpicker > .widget-colorpicker-input, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-colorpicker > .widget-colorpicker-input, /* <DEPRECATED> */
 .jupyter-widget-colorpicker > .jupyter-widget-colorpicker-input {
   flex-grow: 1;
   flex-shrink: 1;
   min-width: var(--jp-widgets-inline-width-tiny);
 }
 
-/* <DEPRECATED> */ .widget-colorpicker input[type='color'], /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-colorpicker input[type='color'], /* <DEPRECATED> */
 .jupyter-widget-colorpicker input[type='color'] {
   width: var(--jp-widgets-inline-height);
   height: var(--jp-widgets-inline-height);
@@ -977,20 +1035,23 @@
   outline: none !important;
 }
 
-/* <DEPRECATED> */ .widget-colorpicker.concise input[type='color'], /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-colorpicker.concise input[type='color'], /* <DEPRECATED> */
 .jupyter-widget-colorpicker.concise input[type='color'] {
   border-left: var(--jp-widgets-input-border-width) solid
     var(--jp-widgets-input-border-color);
 }
 
-/* <DEPRECATED> */ .widget-colorpicker input[type='color']:focus, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-colorpicker input[type='color']:focus, /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-colorpicker input[type='text']:focus, /* <DEPRECATED> */
 .jupyter-widget-colorpicker input[type='color']:focus,
 .jupyter-widget-colorpicker input[type='text']:focus {
   border-color: var(--jp-widgets-input-focus-border-color);
 }
 
-/* <DEPRECATED> */ .widget-colorpicker input[type='text'], /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-colorpicker input[type='text'], /* <DEPRECATED> */
 .jupyter-widget-colorpicker input[type='text'] {
   flex-grow: 1;
   outline: none !important;
@@ -1008,21 +1069,24 @@
   box-sizing: border-box;
 }
 
-/* <DEPRECATED> */ .widget-colorpicker input[type='text']:disabled, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-colorpicker input[type='text']:disabled, /* <DEPRECATED> */
 .jupyter-widget-colorpicker input[type='text']:disabled {
   opacity: var(--jp-widgets-disabled-opacity);
 }
 
 /* Date Picker Styling */
 
-/* <DEPRECATED> */ .widget-datepicker, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-datepicker, /* <DEPRECATED> */
 .jupyter-widget-datepicker {
   width: var(--jp-widgets-inline-width);
   height: var(--jp-widgets-inline-height);
   line-height: var(--jp-widgets-inline-height);
 }
 
-/* <DEPRECATED> */ .widget-datepicker input[type='date'], /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-datepicker input[type='date'], /* <DEPRECATED> */
 .jupyter-widget-datepicker input[type='date'] {
   flex-grow: 1;
   flex-shrink: 1;
@@ -1039,57 +1103,66 @@
   box-sizing: border-box;
 }
 
-/* <DEPRECATED> */ .widget-datepicker input[type='date']:focus, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-datepicker input[type='date']:focus, /* <DEPRECATED> */
 .jupyter-widget-datepicker input[type='date']:focus {
   border-color: var(--jp-widgets-input-focus-border-color);
 }
 
-/* <DEPRECATED> */ .widget-datepicker input[type='date']:invalid, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-datepicker input[type='date']:invalid, /* <DEPRECATED> */
 .jupyter-widget-datepicker input[type='date']:invalid {
   border-color: var(--jp-warn-color1);
 }
 
-/* <DEPRECATED> */ .widget-datepicker input[type='date']:disabled, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-datepicker input[type='date']:disabled, /* <DEPRECATED> */
 .jupyter-widget-datepicker input[type='date']:disabled {
   opacity: var(--jp-widgets-disabled-opacity);
 }
 
 /* Play Widget */
 
-/* <DEPRECATED> */ .widget-play, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-play, /* <DEPRECATED> */
 .jupyter-widget-play {
   width: var(--jp-widgets-inline-width-short);
   display: flex;
   align-items: stretch;
 }
 
-/* <DEPRECATED> */ .widget-play .jupyter-button, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-play .jupyter-button, /* <DEPRECATED> */
 .jupyter-widget-play .jupyter-button {
   flex-grow: 1;
   height: auto;
 }
 
-/* <DEPRECATED> */ .widget-play .jupyter-button:disabled, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-play .jupyter-button:disabled, /* <DEPRECATED> */
 .jupyter-widget-play .jupyter-button:disabled {
   opacity: var(--jp-widgets-disabled-opacity);
 }
 
 /* Tab Widget */
 
-/* <DEPRECATED> */ .jupyter-widgets.widget-tab, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab, /* <DEPRECATED> */
 .jupyter-widgets.jupyter-widget-tab {
   display: flex;
   flex-direction: column;
 }
 
-/* <DEPRECATED> */ .jupyter-widgets.widget-tab > .p-TabBar, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar, /* <DEPRECATED> */
 .jupyter-widgets.jupyter-widget-tab > .p-TabBar {
   /* Necessary so that a tab can be shifted down to overlay the border of the box below. */
   overflow-x: visible;
   overflow-y: visible;
 }
 
-/* <DEPRECATED> */ .jupyter-widgets.widget-tab > .p-TabBar > .p-TabBar-content, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar > .p-TabBar-content, /* <DEPRECATED> */
 .jupyter-widgets.jupyter-widget-tab > .p-TabBar > .p-TabBar-content {
   /* Make sure that the tab grows from bottom up */
   align-items: flex-end;
@@ -1097,7 +1170,8 @@
   min-height: 0;
 }
 
-/* <DEPRECATED> */ .jupyter-widgets.widget-tab > .widget-tab-contents, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .widget-tab-contents, /* <DEPRECATED> */
 .jupyter-widgets.jupyter-widget-tab > .widget-tab-contents {
   width: 100%;
   box-sizing: border-box;
@@ -1110,7 +1184,8 @@
   overflow: auto;
 }
 
-/* <DEPRECATED> */ .jupyter-widgets.widget-tab > .p-TabBar, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar, /* <DEPRECATED> */
 .jupyter-widgets.jupyter-widget-tab > .p-TabBar {
   font: var(--jp-widgets-font-size) Helvetica, Arial, sans-serif;
   min-height: calc(
@@ -1118,7 +1193,8 @@
   );
 }
 
-/* <DEPRECATED> */ .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab, /* <DEPRECATED> */
 .jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tab {
   flex: 0 1 var(--jp-widgets-horizontal-tab-width);
   min-width: 35px;
@@ -1135,7 +1211,8 @@
   position: relative;
 }
 
-/* <DEPRECATED> */ .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current, /* <DEPRECATED> */
 .jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current {
   color: var(--jp-ui-font-color0);
   /* We want the background to match the tab content background */
@@ -1147,7 +1224,8 @@
   overflow: visible;
 }
 
-/* <DEPRECATED> */ .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current:before, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current:before, /* <DEPRECATED> */
 .jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tab.p-mod-current:before {
   position: absolute;
   top: calc(-1 * var(--jp-border-width));
@@ -1158,7 +1236,8 @@
   background: var(--jp-brand-color1);
 }
 
-/* <DEPRECATED> */ .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab:first-child, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tab:first-child, /* <DEPRECATED> */
 .jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tab:first-child {
   margin-left: 0;
 }
@@ -1204,7 +1283,8 @@ actually support closable tabs, so it really doesn't matter */
   content: '\f00d'; /* close */
 }
 
-/* <DEPRECATED> */ .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabIcon, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabIcon, /* <DEPRECATED> */
 /* <DEPRECATED> */ .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabLabel, /* <DEPRECATED> */
 /* <DEPRECATED> */ .jupyter-widgets.widget-tab > .p-TabBar .p-TabBar-tabCloseIcon, /* <DEPRECATED> */
 .jupyter-widgets.jupyter-widget-tab > .p-TabBar .p-TabBar-tabIcon,
@@ -1270,14 +1350,16 @@ actually support closable tabs, so it really doesn't matter */
 
 /* HTML widget */
 
-/* <DEPRECATED> */ .widget-html, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-html, /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-htmlmath, /* <DEPRECATED> */
 .jupyter-widget-html,
 .jupyter-widget-htmlmath {
   font-size: var(--jp-widgets-font-size);
 }
 
-/* <DEPRECATED> */ .widget-html > .widget-html-content, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-html > .widget-html-content, /* <DEPRECATED> */
 /* <DEPRECATED> */.widget-htmlmath > .widget-html-content, /* <DEPRECATED> */
 .jupyter-widget-html > .jupyter-widget-html-content,
 .jupyter-widget-htmlmath > .jupyter-widget-html-content {
@@ -1293,7 +1375,8 @@ actually support closable tabs, so it really doesn't matter */
 
 /* Image widget  */
 
-/* <DEPRECATED> */ .widget-image, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-image, /* <DEPRECATED> */
 .jupyter-widget-image {
   max-width: 100%;
   height: auto;

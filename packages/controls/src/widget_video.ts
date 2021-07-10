@@ -17,7 +17,7 @@ export class VideoModel extends CoreDOMWidgetModel {
       autoplay: true,
       loop: true,
       controls: true,
-      value: new DataView(new ArrayBuffer(0))
+      value: new DataView(new ArrayBuffer(0)),
     };
   }
 
@@ -26,8 +26,8 @@ export class VideoModel extends CoreDOMWidgetModel {
     value: {
       serialize: (value: any): DataView => {
         return new DataView(value.buffer.slice(0));
-      }
-    }
+      },
+    },
   };
 }
 
@@ -55,7 +55,7 @@ export class VideoView extends DOMWidgetView {
     const value = this.model.get('value');
     if (format !== 'url') {
       const blob = new Blob([value], {
-        type: `video/${this.model.get('format')}`
+        type: `video/${this.model.get('format')}`,
       });
       url = URL.createObjectURL(blob);
     } else {

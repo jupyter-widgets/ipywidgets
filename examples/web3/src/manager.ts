@@ -38,7 +38,7 @@ export class WidgetManager extends HTMLManager {
   _get_comm_info(): Promise<any> {
     return this.kernel
       .requestCommInfo({ target_name: this.comm_target_name })
-      .then(reply => (reply.content as any).comms);
+      .then((reply) => (reply.content as any).comms);
   }
 
   kernel: Kernel.IKernelConnection;

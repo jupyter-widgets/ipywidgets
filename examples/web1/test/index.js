@@ -11,7 +11,7 @@ const widgetsRendered = new Promise((resolve, reject) => {
   document.addEventListener('widgetsRendered', listener);
 });
 
-describe('index.html', function() {
+describe('index.html', function () {
   this.timeout(10000);
 
   beforeEach(() => {

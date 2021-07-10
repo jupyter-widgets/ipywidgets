@@ -17,7 +17,7 @@ export class OutputModel extends outputBase.OutputModel {
   defaults(): Backbone.ObjectHash {
     return {
       ...super.defaults(),
-      msg_id: ''
+      msg_id: '',
     };
   }
 
@@ -27,7 +27,7 @@ export class OutputModel extends outputBase.OutputModel {
       values: attributes.outputs,
       // Widgets (including this output widget) are only rendered in
       // trusted contexts
-      trusted: true
+      trusted: true,
     });
   }
 
@@ -59,7 +59,7 @@ export class OutputView extends outputBase.OutputView {
     const rendermime = manager.renderMime;
     this._outputView = new OutputArea({
       rendermime: rendermime,
-      model: this.model.outputs
+      model: this.model.outputs,
     });
     this.luminoWidget.insertWidget(0, this._outputView);
     this.luminoWidget.addClass('jupyter-widgets');

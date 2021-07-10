@@ -100,11 +100,7 @@ export class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
    * for some similar exceptional cases).
    */
   delegate(eventName: string, listener: Function): this;
-  delegate(
-    eventName: string,
-    selector: string,
-    listener: Function
-  ): this;
+  delegate(eventName: string, selector: string, listener: Function): this;
   delegate(
     eventName: string,
     selector: string | Function,
@@ -124,7 +120,7 @@ export class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
 
     const root = this.el;
     const handler = selector
-      ? function(e: Event): any {
+      ? function (e: Event): any {
           let node = (e.target as HTMLElement) || (e.srcElement as HTMLElement);
           for (; node && node !== root; node = node.parentNode as HTMLElement) {
             if (matchesSelector.call(node, selector)) {
@@ -146,11 +142,7 @@ export class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
 
   // Remove a single delegated event. Either `eventName` or `selector` must
   // be included, `selector` and `listener` are optional.
-  undelegate(
-    eventName: string,
-    selector?: string,
-    listener?: Function
-  ): this;
+  undelegate(eventName: string, selector?: string, listener?: Function): this;
   undelegate(selector: string, listener?: Function): this;
   undelegate(
     eventName: string,

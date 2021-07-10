@@ -7,9 +7,9 @@ window['requirejs'].config({
     '*': {
       '@jupyter-widgets/controls': 'nbextensions/jupyter-js-widgets/extension',
       '@jupyter-widgets/base': 'nbextensions/jupyter-js-widgets/extension',
-      '@jupyter-widgets/output': 'nbextensions/jupyter-js-widgets/extension'
-    }
-  }
+      '@jupyter-widgets/output': 'nbextensions/jupyter-js-widgets/extension',
+    },
+  },
 });
 
 var MIME_TYPE = 'application/vnd.jupyter.widget-view+json';
@@ -24,7 +24,7 @@ var LuminoMessaging = require('@lumino/messaging');
 /**
  * Create a widget manager for a kernel instance.
  */
-var handle_kernel = function(Jupyter, kernel) {
+var handle_kernel = function (Jupyter, kernel) {
   if (kernel.comm_manager && kernel.widget_manager === undefined) {
     // Clear any old widget manager
     if (Jupyter.WidgetManager) {
@@ -51,17 +51,17 @@ function register_events(Jupyter, events, outputarea) {
     handle_kernel(Jupyter, Jupyter.notebook.kernel);
   }
   // When the kernel is created, create a widget manager.
-  events.on('kernel_created.Kernel kernel_created.Session', function(
-    event,
-    data
-  ) {
-    handle_kernel(Jupyter, data.kernel);
-  });
+  events.on(
+    'kernel_created.Kernel kernel_created.Session',
+    function (event, data) {
+      handle_kernel(Jupyter, data.kernel);
+    }
+  );
 
   // When a kernel dies, disconnect the widgets.
   events.on(
     'kernel_killed.Session kernel_killed.Kernel kernel_restarting.Kernel',
-    function(event, data) {
+    function (event, data) {
       var kernel = data.kernel;
       if (kernel && kernel.widget_manager) {
         kernel.widget_manager.disconnect();
@@ -76,7 +76,7 @@ function register_events(Jupyter, events, outputarea) {
   var views = {};
 
   window.addEventListener('resize', () => {
-    Object.keys(views).forEach(viewKey => {
+    Object.keys(views).forEach((viewKey) => {
       LuminoMessaging.MessageLoop.postMessage(
         views[viewKey].luminoWidget,
         LuminoWidget.Widget.ResizeMessage.UnknownSize
@@ -84,11 +84,11 @@ function register_events(Jupyter, events, outputarea) {
     });
   });
 
-  var removeView = function(event, data) {
+  var removeView = function (event, data) {
     var output = data.cell ? data.cell.output_area : data.output_area;
     var viewids = output ? output._jupyterWidgetViews : void 0;
     if (viewids) {
-      viewids.forEach(function(id) {
+      viewids.forEach(function (id) {
         // this may be called after the widget is pulled off the page
         // so we temporarily put it back on the page as a kludge
         // so that Lumino can trigger the appropriate detach signals
@@ -137,10 +137,10 @@ function register_events(Jupyter, events, outputarea) {
     var model = manager.get_model(data.model_id);
     if (model) {
       model
-        .then(function(model) {
+        .then(function (model) {
           return manager.create_view(model, { output: output });
         })
-        .then(function(view) {
+        .then(function (view) {
           var id = view.cid;
           output._jupyterWidgetViews = output._jupyterWidgetViews || [];
           output._jupyterWidgetViews.push(id);
@@ -162,7 +162,7 @@ function register_events(Jupyter, events, outputarea) {
   }
 
   // `this` is the output area we are appending to
-  var append_mime = function(json, md, element) {
+  var append_mime = function (json, md, element) {
     var toinsert = this.create_output_subarea(md, CLASS_NAME, MIME_TYPE);
     this.keyboard_manager.register_events(toinsert);
     render(this, json, toinsert[0]);
@@ -174,15 +174,15 @@ function register_events(Jupyter, events, outputarea) {
     // An output widget could contain arbitrary user javascript
     safe: false,
     // Index of renderer in `output_area.display_order`
-    index: 0
+    index: 0,
   });
 }
 
 function load_ipython_extension() {
-  return new Promise(function(resolve) {
+  return new Promise(function (resolve) {
     requirejs(
       ['base/js/namespace', 'base/js/events', 'notebook/js/outputarea'],
-      function(Jupyter, events, outputarea) {
+      function (Jupyter, events, outputarea) {
         require('@lumino/widgets/style/index.css');
         require('@jupyter-widgets/base/css/index.css');
         require('@jupyter-widgets/controls/css/widgets.css');
@@ -197,5 +197,5 @@ module.exports = {
   load_ipython_extension: load_ipython_extension,
   ...require('@jupyter-widgets/controls'),
   ...require('@jupyter-widgets/base'),
-  ...require('./widget_output')
+  ...require('./widget_output'),
 };

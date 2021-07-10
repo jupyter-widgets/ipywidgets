@@ -14,7 +14,7 @@ export class ImageModel extends CoreDOMWidgetModel {
       format: 'png',
       width: '',
       height: '',
-      value: new DataView(new ArrayBuffer(0))
+      value: new DataView(new ArrayBuffer(0)),
     };
   }
 
@@ -23,8 +23,8 @@ export class ImageModel extends CoreDOMWidgetModel {
     value: {
       serialize: (value: any): DataView => {
         return new DataView(value.buffer.slice(0));
-      }
-    }
+      },
+    },
   };
 }
 
@@ -52,7 +52,7 @@ export class ImageView extends DOMWidgetView {
     const value = this.model.get('value');
     if (format !== 'url') {
       const blob = new Blob([value], {
-        type: `image/${this.model.get('format')}`
+        type: `image/${this.model.get('format')}`,
       });
       url = URL.createObjectURL(blob);
     } else {

@@ -7,7 +7,7 @@
 var outputBase = require('@jupyter-widgets/output');
 require('./widget_output.css');
 
-var outputArea = new Promise(function(resolve, reject) {
+var outputArea = new Promise(function (resolve, reject) {
   requirejs(['notebook/js/outputarea'], resolve, reject);
 });
 
@@ -16,7 +16,7 @@ export class OutputModel extends outputBase.OutputModel {
     return {
       ...super.defaults(),
       msg_id: '',
-      outputs: []
+      outputs: [],
     };
   }
 
@@ -31,25 +31,25 @@ export class OutputModel extends outputBase.OutputModel {
 
     var that = this;
     // Create an output area to handle the data model part
-    outputArea.then(function(outputArea) {
+    outputArea.then(function (outputArea) {
       that.output_area = new outputArea.OutputArea({
         selector: document.createElement('div'),
         config: { data: { OutputArea: {} } },
         prompt_area: false,
         events: that.widget_manager.notebook.events,
-        keyboard_manager: that.widget_manager.keyboard_manager
+        keyboard_manager: that.widget_manager.keyboard_manager,
       });
       that.listenTo(
         that,
         'new_message',
-        function(msg) {
+        function (msg) {
           that.output_area.handle_output(msg);
           that.set('outputs', that.output_area.toJSON(), { newMessage: true });
           that.save_changes();
         },
         that
       );
-      that.listenTo(that, 'clear_output', function(msg) {
+      that.listenTo(that, 'clear_output', function (msg) {
         that.output_area.handle_clear_output(msg);
         that.set('outputs', that.output_area.toJSON(), { newMessage: true });
         that.save_changes();
@@ -66,18 +66,18 @@ export class OutputModel extends outputBase.OutputModel {
     var iopub = cb.iopub || {};
     var iopubCallbacks = {
       ...iopub,
-      output: function(msg) {
+      output: function (msg) {
         this.trigger('new_message', msg);
         if (iopub.output) {
           iopub.output.apply(this, arguments);
         }
       }.bind(this),
-      clear_output: function(msg) {
+      clear_output: function (msg) {
         this.trigger('clear_output', msg);
         if (iopub.clear_output) {
           iopub.clear_output.apply(this, arguments);
         }
-      }.bind(this)
+      }.bind(this),
     };
     return { ...cb, iopub: iopubCallbacks };
   }
@@ -120,24 +120,24 @@ export class OutputView extends outputBase.OutputView {
   render() {
     var that = this;
     this.el.classList.add('jupyter-widgets-output-area');
-    outputArea.then(function(outputArea) {
+    outputArea.then(function (outputArea) {
       that.output_area = new outputArea.OutputArea({
         selector: that.el,
         // use default values for the output area config
         config: { data: { OutputArea: {} } },
         prompt_area: false,
         events: that.model.widget_manager.notebook.events,
-        keyboard_manager: that.model.widget_manager.keyboard_manager
+        keyboard_manager: that.model.widget_manager.keyboard_manager,
       });
       that.listenTo(
         that.model,
         'new_message',
-        function(msg) {
+        function (msg) {
           that.output_area.handle_output(msg);
         },
         that
       );
-      that.listenTo(that.model, 'clear_output', function(msg) {
+      that.listenTo(that.model, 'clear_output', function (msg) {
         that.output_area.handle_clear_output(msg);
         // fake the event on the output area element. This can be
         // deleted when we can rely on

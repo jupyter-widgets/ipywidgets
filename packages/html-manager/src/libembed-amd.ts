@@ -18,7 +18,7 @@ Array.prototype.forEach.call(scripts, (script: HTMLScriptElement) => {
  *
  * @param pkg Package name or names to load
  */
-const requirePromise = function(pkg: string | string[]): Promise<any> {
+const requirePromise = function (pkg: string | string[]): Promise<any> {
   return new Promise((resolve, reject) => {
     const require = (window as any).requirejs;
     if (require === undefined) {
@@ -80,7 +80,7 @@ export function requireLoader(
     console.log(`Loading from ${cdn} for ${moduleName}@${moduleVersion}`);
     return loadFromCDN();
   }
-  return requirePromise([`${moduleName}`]).catch(err => {
+  return requirePromise([`${moduleName}`]).catch((err) => {
     const failedId = err.requireModules && err.requireModules[0];
     if (failedId) {
       require.undef(failedId);
@@ -104,7 +104,7 @@ export function renderWidgets(
     moduleVersion: string
   ) => Promise<any> = requireLoader
 ): void {
-  requirePromise(['@jupyter-widgets/html-manager']).then(htmlmanager => {
+  requirePromise(['@jupyter-widgets/html-manager']).then((htmlmanager) => {
     const managerFactory = (): any => {
       return new htmlmanager.HTMLManager({ loader: loader });
     };

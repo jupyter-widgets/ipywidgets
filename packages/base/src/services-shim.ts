@@ -291,20 +291,20 @@ export namespace shims {
         callbacks: ICallbacks
       ): void {
         if (callbacks) {
-          future.onReply = function(msg): void {
+          future.onReply = function (msg): void {
             if (callbacks.shell && callbacks.shell.reply) {
               callbacks.shell.reply(msg);
             }
             // TODO: Handle payloads.  See https://github.com/jupyter/notebook/blob/master/notebook/static/services/kernels/kernel.js#L923-L947
           };
 
-          future.onStdin = function(msg): void {
+          future.onStdin = function (msg): void {
             if (callbacks.input) {
               callbacks.input(msg);
             }
           };
 
-          future.onIOPub = function(msg): void {
+          future.onIOPub = function (msg): void {
             if (callbacks.iopub) {
               if (callbacks.iopub.status && msg.header.msg_type === 'status') {
                 callbacks.iopub.status(msg);

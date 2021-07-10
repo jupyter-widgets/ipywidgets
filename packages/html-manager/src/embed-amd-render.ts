@@ -3,11 +3,11 @@
 
 (window as any).require(
   ['@jupyter-widgets/html-manager/dist/libembed-amd'],
-  function(embed: { renderWidgets: { (): void; (): void } }) {
+  function (embed: { renderWidgets: { (): void; (): void } }) {
     if (document.readyState === 'complete') {
       embed.renderWidgets();
     } else {
-      window.addEventListener('load', function() {
+      window.addEventListener('load', function () {
         embed.renderWidgets();
       });
     }

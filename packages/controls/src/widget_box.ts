@@ -8,7 +8,7 @@ import {
   JupyterLuminoPanelWidget,
   reject,
   WidgetModel,
-  WidgetView
+  WidgetView,
 } from '@jupyter-widgets/base';
 
 import { CoreDOMWidgetModel } from './widget_core';
@@ -28,13 +28,13 @@ export class BoxModel extends CoreDOMWidgetModel {
       _view_name: 'BoxView',
       _model_name: 'BoxModel',
       children: [],
-      box_style: ''
+      box_style: '',
     };
   }
 
   static serializers = {
     ...CoreDOMWidgetModel.serializers,
-    children: { deserialize: unpack_models }
+    children: { deserialize: unpack_models },
   };
 }
 
@@ -43,7 +43,7 @@ export class HBoxModel extends BoxModel {
     return {
       ...super.defaults(),
       _view_name: 'HBoxView',
-      _model_name: 'HBoxModel'
+      _model_name: 'HBoxModel',
     };
   }
 }
@@ -53,7 +53,7 @@ export class VBoxModel extends BoxModel {
     return {
       ...super.defaults(),
       _view_name: 'VBoxView',
-      _model_name: 'VBoxModel'
+      _model_name: 'VBoxModel',
     };
   }
 }
@@ -96,7 +96,7 @@ export class BoxView extends DOMWidgetView {
       ?.update(this.model.get('children'))
       .then((views: DOMWidgetView[]) => {
         // Notify all children that their sizes may have changed.
-        views.forEach(view => {
+        views.forEach((view) => {
           MessageLoop.postMessage(
             view.luminoWidget,
             Widget.ResizeMessage.UnknownSize
@@ -142,7 +142,7 @@ export class BoxView extends DOMWidgetView {
     success: ['alert', 'alert-success'],
     info: ['alert', 'alert-info'],
     warning: ['alert', 'alert-warning'],
-    danger: ['alert', 'alert-danger']
+    danger: ['alert', 'alert-danger'],
   };
 }
 
@@ -183,7 +183,7 @@ export class GridBoxModel extends BoxModel {
     return {
       ...super.defaults(),
       _view_name: 'GridBoxView',
-      _model_name: 'GridBoxModel'
+      _model_name: 'GridBoxModel',
     };
   }
 }
