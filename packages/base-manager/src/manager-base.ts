@@ -47,7 +47,6 @@ function default_inline_sanitize(s: string): string {
     'ol',
     'span',
     'strong',
-    'style',
     'ul'
   ];
   const allowedAttributes = {
