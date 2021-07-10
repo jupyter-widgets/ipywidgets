@@ -79,19 +79,16 @@ export class CheckboxView extends DescriptionView {
       return;
     }
     const description = this.model.get('description');
-    const plaintext_description = this.model.widget_manager.plaintext_sanitize(
-      description
-    );
     if (this.model.get('description_allow_html')) {
       this.descriptionSpan.innerHTML = this.model.widget_manager.inline_sanitize(
         description
       );
     } else {
-      this.descriptionSpan.textContent = plaintext_description;
+      this.descriptionSpan.textContent = description;
     }
     this.typeset(this.descriptionSpan);
-    this.descriptionSpan.title = plaintext_description;
-    this.checkbox.title = plaintext_description;
+    this.descriptionSpan.title = description;
+    this.checkbox.title = description;
   }
 
   /**

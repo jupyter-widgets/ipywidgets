@@ -31,16 +31,6 @@ import sanitize from 'sanitize-html';
 const PROTOCOL_MAJOR_VERSION = PROTOCOL_VERSION.split('.', 1)[0];
 
 /**
- * Strip unwanted tags from plaintext descriptions.
- */
-function default_plaintext_sanitize(s: string): string {
-  return sanitize(s, {
-    allowedTags: [],
-    allowedAttributes: {}
-  });
-}
-
-/**
  * Sanitize HTML-formatted descriptions.
  */
 function default_inline_sanitize(s: string): string {
@@ -503,15 +493,6 @@ export abstract class ManagerBase implements IWidgetManager {
    */
   resolveUrl(url: string): Promise<string> {
     return Promise.resolve(url);
-  }
-
-  plaintext_sanitize(source: string): string {
-    // Separate math from normal markdown text.
-    const parts = removeMath(source);
-    // Extract plain text
-    const sanitized = default_plaintext_sanitize(parts['text']);
-    // Replace math and return.
-    return replaceMath(sanitized, parts['math']);
   }
 
   inline_sanitize(source: string): string {

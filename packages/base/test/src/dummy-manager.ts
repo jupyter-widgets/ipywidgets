@@ -316,9 +316,6 @@ export class DummyManager implements widgets.IWidgetManager {
     return Promise.resolve(url);
   }
 
-  plaintext_sanitize(s: string): string {
-    return s;
-  }
   inline_sanitize(s: string): string {
     return s;
   }

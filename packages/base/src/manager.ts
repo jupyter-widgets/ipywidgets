@@ -191,6 +191,5 @@ export interface IWidgetManager {
    */
   resolveUrl(url: string): Promise<string>;
 
-  plaintext_sanitize(s: string): string;
   inline_sanitize(s: string): string;
 }
