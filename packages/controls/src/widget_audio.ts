@@ -35,7 +35,7 @@ export class AudioView extends DOMWidgetView {
      * Called when view is rendered.
      */
     super.render();
-    this.pWidget.addClass('jupyter-widgets');
+    this.luminoWidget.addClass('jupyter-widgets');
     this.update(); // Set defaults.
   }
 
@@ -62,7 +62,7 @@ export class AudioView extends DOMWidgetView {
     // Clean up the old objectURL
     const oldurl = this.el.src;
     this.el.src = url;
-    if (oldurl && typeof oldurl !== 'string') {
+    if (oldurl) {
       URL.revokeObjectURL(oldurl);
     }
 
@@ -81,17 +81,9 @@ export class AudioView extends DOMWidgetView {
     super.remove();
   }
 
-  /**
-   * The default tag name.
-   *
-   * #### Notes
-   * This is a read-only attribute.
-   */
-  get tagName(): string {
-    // We can't make this an attribute with a default value
-    // since it would be set after it is needed in the
-    // constructor.
-    return 'audio';
+  preinitialize() {
+    // Must set this before the initialize method creates the element
+    this.tagName = 'audio';
   }
 
   el: HTMLAudioElement;

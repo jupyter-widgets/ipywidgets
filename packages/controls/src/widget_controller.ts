@@ -329,18 +329,18 @@ export class ControllerModel extends CoreDOMWidgetModel {
  */
 export class ControllerView extends DOMWidgetView {
   _createElement(tagName: string): HTMLElement {
-    this.pWidget = new JupyterLuminoPanelWidget({ view: this });
-    return this.pWidget.node;
+    this.luminoWidget = new JupyterLuminoPanelWidget({ view: this });
+    return this.luminoWidget.node;
   }
 
   _setElement(el: HTMLElement): void {
-    if (this.el || el !== this.pWidget.node) {
+    if (this.el || el !== this.luminoWidget.node) {
       // Boxes don't allow setting the element beyond the initial creation.
       throw new Error('Cannot reset the DOM element.');
     }
 
-    this.el = this.pWidget.node;
-    this.$el = $(this.pWidget.node);
+    this.el = this.luminoWidget.node;
+    this.$el = $(this.luminoWidget.node);
   }
 
   initialize(parameters: WidgetView.IInitializeParameters): void {
@@ -367,11 +367,11 @@ export class ControllerView extends DOMWidgetView {
 
     this.axis_box = new Panel();
     this.axis_box.node.style.display = 'flex';
-    this.pWidget.addWidget(this.axis_box);
+    this.luminoWidget.addWidget(this.axis_box);
 
     this.button_box = new Panel();
     this.button_box.node.style.display = 'flex';
-    this.pWidget.addWidget(this.button_box);
+    this.luminoWidget.addWidget(this.button_box);
 
     this.button_views.update(this.model.get('buttons'));
     this.axis_views.update(this.model.get('axes'));
@@ -393,7 +393,7 @@ export class ControllerView extends DOMWidgetView {
       .then((view: ControllerButtonView) => {
         // replace the dummy widget with the new one.
         const i = ArrayExt.firstIndexOf(this.button_box.widgets, dummy);
-        this.button_box.insertWidget(i, view.pWidget);
+        this.button_box.insertWidget(i, view.luminoWidget);
         dummy.dispose();
         return view;
       })
@@ -410,7 +410,7 @@ export class ControllerView extends DOMWidgetView {
       .then((view: ControllerAxisView) => {
         // replace the dummy widget with the new one.
         const i = ArrayExt.firstIndexOf(this.axis_box.widgets, dummy);
-        this.axis_box.insertWidget(i, view.pWidget);
+        this.axis_box.insertWidget(i, view.luminoWidget);
         dummy.dispose();
         return view;
       })
@@ -429,5 +429,5 @@ export class ControllerView extends DOMWidgetView {
   axis_box: Panel;
   button_box: Panel;
   model: ControllerModel;
-  pWidget: JupyterLuminoPanelWidget;
+  luminoWidget: JupyterLuminoPanelWidget;
 }

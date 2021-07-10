@@ -34,8 +34,8 @@ export class ImageView extends DOMWidgetView {
      * Called when view is rendered.
      */
     super.render();
-    this.pWidget.addClass('jupyter-widgets');
-    this.pWidget.addClass('widget-image');
+    this.luminoWidget.addClass('jupyter-widgets');
+    this.luminoWidget.addClass('widget-image');
     this.update(); // Set defaults.
   }
 
@@ -62,9 +62,10 @@ export class ImageView extends DOMWidgetView {
     // Clean up the old objectURL
     const oldurl = this.el.src;
     this.el.src = url;
-    if (oldurl && typeof oldurl !== 'string') {
+    if (oldurl) {
       URL.revokeObjectURL(oldurl);
     }
+
     const width = this.model.get('width');
     if (width !== undefined && width.length > 0) {
       this.el.setAttribute('width', width);
@@ -88,17 +89,9 @@ export class ImageView extends DOMWidgetView {
     super.remove();
   }
 
-  /**
-   * The default tag name.
-   *
-   * #### Notes
-   * This is a read-only attribute.
-   */
-  get tagName(): string {
-    // We can't make this an attribute with a default value
-    // since it would be set after it is needed in the
-    // constructor.
-    return 'img';
+  preinitialize() {
+    // Must set this before the initialize method creates the element
+    this.tagName = 'img';
   }
 
   el: HTMLImageElement;

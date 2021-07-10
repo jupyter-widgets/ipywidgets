@@ -1,0 +1,12 @@
+{
+  "cookiecutter": {
+    "author_name": "Jupyter Development Team",
+    "python_name": "jupyterlab_widgets",
+    "labextension_name": "@jupyter-widgets/jupyterlab-manager",
+    "project_short_description": "A JupyterLab extension.",
+    "has_server_extension": "n",
+    "has_binder": "n",
+    "repository": "https://github.com/jupyter-widgets/ipywidgets",
+    "_template": "https://github.com/jupyterlab/extension-cookiecutter-ts"
+  }
+}

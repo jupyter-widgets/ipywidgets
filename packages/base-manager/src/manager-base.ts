@@ -21,7 +21,8 @@ import {
   PROTOCOL_VERSION,
   IWidgetManager,
   IModelOptions,
-  IWidgetOptions
+  IWidgetOptions,
+  IBackboneModelOptions
 } from '@jupyter-widgets/base';
 
 import { base64ToBuffer, bufferToBase64, hexToBuffer } from './utils';
@@ -86,6 +87,12 @@ export interface IBase64Buffers extends PartialJSONObject {
 }
 
 /**
+ * Make all properties in K (of T) required
+ */
+export type RequiredSome<T, K extends keyof T> = Omit<T, K> &
+  Required<Pick<T, K>>;
+
+/**
  * Manager abstract base class
  */
 export abstract class ManagerBase implements IWidgetManager {
@@ -137,7 +144,9 @@ export abstract class ManagerBase implements IWidgetManager {
 
           // This presumes the view is added to the list of model views below
           view.once('remove', () => {
-            delete model.views[id];
+            if (model.views) {
+              delete model.views[id];
+            }
           });
 
           return view;
@@ -149,7 +158,9 @@ export abstract class ManagerBase implements IWidgetManager {
         }
       }
     ));
-    model.views[id] = viewPromise;
+    if (model.views) {
+      model.views[id] = viewPromise;
+    }
     return viewPromise;
   }
 
@@ -190,14 +201,7 @@ export abstract class ManagerBase implements IWidgetManager {
     }
     const data = (msg.content.data as unknown) as ISerializedState;
     const buffer_paths = data.buffer_paths || [];
-    // Make sure the buffers are DataViews
-    const buffers = (msg.buffers || []).map(b => {
-      if (b instanceof DataView) {
-        return b;
-      } else {
-        return new DataView(b instanceof ArrayBuffer ? b : b.buffer);
-      }
-    });
+    const buffers = msg.buffers || [];
     put_buffers(data.state, buffer_paths, buffers);
     return this.new_model(
       {
@@ -306,25 +310,24 @@ export abstract class ManagerBase implements IWidgetManager {
     options: IModelOptions,
     serialized_state: any = {}
   ): Promise<WidgetModel> {
-    let model_id;
-    if (options.model_id) {
-      model_id = options.model_id;
-    } else if (options.comm) {
-      model_id = options.model_id = options.comm.comm_id;
-    } else {
+    const model_id = options.model_id ?? options.comm?.comm_id;
+    if (!model_id) {
       throw new Error(
         'Neither comm nor model_id provided in options object. At least one must exist.'
       );
     }
-
-    const modelPromise = this._make_model(options, serialized_state);
+    options.model_id = model_id;
+    const modelPromise = this._make_model(
+      options as RequiredSome<IModelOptions, 'model_id'>,
+      serialized_state
+    );
     // this call needs to happen before the first `await`, see note in `set_state`:
     this.register_model(model_id, modelPromise);
     return await modelPromise;
   }
 
   async _make_model(
-    options: IModelOptions,
+    options: RequiredSome<IModelOptions, 'model_id'>,
     serialized_state: any = {}
   ): Promise<WidgetModel> {
     const model_id = options.model_id;
@@ -351,7 +354,7 @@ export abstract class ManagerBase implements IWidgetManager {
       serialized_state,
       this
     );
-    const modelOptions = {
+    const modelOptions: IBackboneModelOptions = {
       widget_manager: this,
       model_id: model_id,
       comm: options.comm

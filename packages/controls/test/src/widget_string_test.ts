@@ -66,4 +66,27 @@ describe('ComboboxView', function() {
       view.textbox.classList.contains('jpwidgets-invalidComboValue')
     ).to.equal(true);
   });
+
+  it('escapes characters in options', function() {
+    const input = [
+      'foo"',
+      '"><script>alert("foo")</script><a "',
+      '" onmouseover=alert(1) "'
+    ];
+    this.model.set({
+      value: 'ABC',
+      options: input,
+      ensure_option: true
+    });
+    const options = { model: this.model };
+    const view = new widgets.ComboboxView(options);
+    view.render();
+    expect(view.datalist!.children.length).to.equal(3);
+    for (let i = 0; i < view.datalist!.children.length; ++i) {
+      const el = view.datalist!.children[i];
+      expect(el.tagName.toLowerCase()).to.equal('option');
+      expect(el.getAttributeNames()).to.eqls(['value']);
+      expect(el.getAttribute('value')).to.equal(input[i]);
+    }
+  });
 });

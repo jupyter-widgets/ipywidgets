@@ -12,6 +12,8 @@ export * from './widget_video';
 export * from './widget_audio';
 export * from './widget_color';
 export * from './widget_date';
+export * from './widget_datetime';
+export * from './widget_time';
 export * from './widget_int';
 export * from './widget_float';
 export * from './widget_controller';

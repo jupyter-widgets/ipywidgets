@@ -10,11 +10,15 @@ module.exports = {
   bail: true,
   module: {
     rules: [
-      { test: /\.css$/, loader: 'style-loader!css-loader' },
+      { test: /\.css$/, use: ['style-loader', 'css-loader'] },
       { test: /\.md$/, loader: 'raw-loader' },
-      { test: /\.html$/, loader: 'file?name=[name].[ext]' },
+      {
+        test: /\.html$/,
+        use: { loader: 'file-loader', options: { name: '[name].[ext]' } }
+      },
       { test: /\.ipynb$/, loader: 'json-loader' }
     ]
   },
-  mode: 'development'
+  mode: 'development',
+  resolve: { fallback: { util: false } }
 };

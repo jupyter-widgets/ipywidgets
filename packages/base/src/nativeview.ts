@@ -80,7 +80,7 @@ export class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
   _setAttributes(attrs: Backbone.ObjectHash): void {
     for (const attr in attrs) {
       attr in this.el
-        ? (this.el[attr] = attrs[attr])
+        ? ((this.el as any)[attr] = attrs[attr])
         : this.el.setAttribute(attr, attrs[attr]);
     }
   }
@@ -99,17 +99,13 @@ export class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
    * https://github.com/jquery/jquery/blob/7d21f02b9ec9f655583e898350badf89165ed4d5/src/event.js#L442
    * for some similar exceptional cases).
    */
-  delegate(eventName: string, listener: Function): Backbone.View<T>;
-  delegate(
-    eventName: string,
-    selector: string,
-    listener: Function
-  ): Backbone.View<T>;
+  delegate(eventName: string, listener: Function): this;
+  delegate(eventName: string, selector: string, listener: Function): this;
   delegate(
     eventName: string,
     selector: string | Function,
     listener?: any
-  ): Backbone.View<T> {
+  ): this {
     if (typeof selector !== 'string') {
       listener = selector;
       selector = null!;
@@ -146,12 +142,8 @@ export class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
 
   // Remove a single delegated event. Either `eventName` or `selector` must
   // be included, `selector` and `listener` are optional.
-  undelegate(
-    eventName: string,
-    selector?: string,
-    listener?: Function
-  ): NativeView<T>;
-  undelegate(selector: string, listener?: Function): NativeView<T>;
+  undelegate(eventName: string, selector?: string, listener?: Function): this;
+  undelegate(selector: string, listener?: Function): this;
   undelegate(
     eventName: string,
     selector?: string | Function,
@@ -185,7 +177,7 @@ export class NativeView<T extends Backbone.Model> extends Backbone.View<T> {
   }
 
   // Remove all events created with `delegate` from `el`
-  undelegateEvents(): NativeView<T> {
+  undelegateEvents(): this {
     if (this.el && this._domEvents) {
       const len = this._domEvents.length;
       for (let i = 0; i < len; i++) {

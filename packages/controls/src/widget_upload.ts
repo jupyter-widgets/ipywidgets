@@ -41,8 +41,9 @@ export class FileUploadView extends DOMWidgetView {
   el: HTMLButtonElement;
   fileInput: HTMLInputElement;
 
-  get tagName(): string {
-    return 'button';
+  preinitialize() {
+    // Must set this before the initialize method creates the element
+    this.tagName = 'button';
   }
 
   render(): void {
