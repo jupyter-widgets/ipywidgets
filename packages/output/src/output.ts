@@ -11,7 +11,7 @@ export class OutputModel extends DOMWidgetModel {
       _model_module: '@jupyter-widgets/output',
       _view_module: '@jupyter-widgets/output',
       _model_module_version: OUTPUT_WIDGET_VERSION,
-      _view_module_version: OUTPUT_WIDGET_VERSION
+      _view_module_version: OUTPUT_WIDGET_VERSION,
     };
   }
 }

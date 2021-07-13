@@ -310,13 +310,7 @@
       {
         "allow_none": true,
         "default": null,
-        "enum": [
-          "contain",
-          "cover",
-          "fill",
-          "scale-down",
-          "none"
-        ],
+        "enum": ["contain", "cover", "fill", "scale-down", "none"],
         "help": "The object-fit CSS attribute.",
         "name": "object_fit",
         "type": "string"
@@ -366,13 +360,7 @@
       {
         "allow_none": true,
         "default": null,
-        "enum": [
-          "visible",
-          "hidden",
-          "inherit",
-          "initial",
-          "unset"
-        ],
+        "enum": ["visible", "hidden", "inherit", "initial", "unset"],
         "help": "The visibility CSS attribute.",
         "name": "visibility",
         "type": "string"
@@ -445,13 +433,7 @@
       },
       {
         "default": "",
-        "enum": [
-          "success",
-          "info",
-          "warning",
-          "danger",
-          ""
-        ],
+        "enum": ["success", "info", "warning", "danger", ""],
         "help": "Use a predefined styling for the box.",
         "name": "box_style",
         "type": "string"
@@ -933,13 +915,7 @@
       },
       {
         "default": "",
-        "enum": [
-          "success",
-          "info",
-          "warning",
-          "danger",
-          ""
-        ],
+        "enum": ["success", "info", "warning", "danger", ""],
         "help": "Use a predefined styling for the box.",
         "name": "box_style",
         "type": "string"
@@ -1036,14 +1012,7 @@
       },
       {
         "default": "",
-        "enum": [
-          "primary",
-          "success",
-          "info",
-          "warning",
-          "danger",
-          ""
-        ],
+        "enum": ["primary", "success", "info", "warning", "danger", ""],
         "help": "Use a predefined styling for the button.",
         "name": "button_style",
         "type": "string"
@@ -2113,18 +2082,13 @@
         "default": 1,
         "help": "The date step to use for the picker, in days, or \"any\".",
         "name": "step",
-        "type": [
-          "int",
-          "string"
-        ],
+        "type": ["int", "string"],
         "union_attributes": [
           {
             "type": "int"
           },
           {
-            "enum": [
-              "any"
-            ],
+            "enum": ["any"],
             "type": "string"
           }
         ]
@@ -2578,14 +2542,7 @@
       },
       {
         "default": "",
-        "enum": [
-          "primary",
-          "success",
-          "info",
-          "warning",
-          "danger",
-          ""
-        ],
+        "enum": ["primary", "success", "info", "warning", "danger", ""],
         "help": "Use a predefined styling for the button.",
         "name": "button_style",
         "type": "string"
@@ -2761,10 +2718,7 @@
       },
       {
         "default": "horizontal",
-        "enum": [
-          "horizontal",
-          "vertical"
-        ],
+        "enum": ["horizontal", "vertical"],
         "help": "Vertical or horizontal.",
         "name": "orientation",
         "type": "string"
@@ -2877,13 +2831,7 @@
       {
         "allow_none": true,
         "default": "",
-        "enum": [
-          "success",
-          "info",
-          "warning",
-          "danger",
-          ""
-        ],
+        "enum": ["success", "info", "warning", "danger", ""],
         "help": "Use a predefined styling for the progess bar.",
         "name": "bar_style",
         "type": "string"
@@ -2915,10 +2863,7 @@
       },
       {
         "default": "horizontal",
-        "enum": [
-          "horizontal",
-          "vertical"
-        ],
+        "enum": ["horizontal", "vertical"],
         "help": "Vertical or horizontal.",
         "name": "orientation",
         "type": "string"
@@ -3048,10 +2993,7 @@
       },
       {
         "default": "horizontal",
-        "enum": [
-          "horizontal",
-          "vertical"
-        ],
+        "enum": ["horizontal", "vertical"],
         "help": "Vertical or horizontal.",
         "name": "orientation",
         "type": "string"
@@ -3097,10 +3039,7 @@
         "type": "string"
       },
       {
-        "default": [
-          0.0,
-          1.0
-        ],
+        "default": [0.0, 1.0],
         "help": "Tuple of (lower, upper) bounds",
         "name": "value",
         "type": "array"
@@ -3203,10 +3142,7 @@
       },
       {
         "default": "horizontal",
-        "enum": [
-          "horizontal",
-          "vertical"
-        ],
+        "enum": ["horizontal", "vertical"],
         "help": "Vertical or horizontal.",
         "name": "orientation",
         "type": "string"
@@ -3495,14 +3431,7 @@
       },
       {
         "default": "",
-        "enum": [
-          "primary",
-          "success",
-          "info",
-          "warning",
-          "danger",
-          ""
-        ],
+        "enum": ["primary", "success", "info", "warning", "danger", ""],
         "help": "Use a predefined styling for the tags.",
         "name": "tag_style",
         "type": "string"
@@ -3581,13 +3510,7 @@
       },
       {
         "default": "",
-        "enum": [
-          "success",
-          "info",
-          "warning",
-          "danger",
-          ""
-        ],
+        "enum": ["success", "info", "warning", "danger", ""],
         "help": "Use a predefined styling for the box.",
         "name": "box_style",
         "type": "string"
@@ -3684,13 +3607,7 @@
       },
       {
         "default": "",
-        "enum": [
-          "success",
-          "info",
-          "warning",
-          "danger",
-          ""
-        ],
+        "enum": ["success", "info", "warning", "danger", ""],
         "help": "Use a predefined styling for the box.",
         "name": "box_style",
         "type": "string"
@@ -4101,13 +4018,7 @@
       },
       {
         "default": "",
-        "enum": [
-          "success",
-          "info",
-          "warning",
-          "danger",
-          ""
-        ],
+        "enum": ["success", "info", "warning", "danger", ""],
         "help": "Use a predefined styling for the progess bar.",
         "name": "bar_style",
         "type": "string"
@@ -4139,10 +4050,7 @@
       },
       {
         "default": "horizontal",
-        "enum": [
-          "horizontal",
-          "vertical"
-        ],
+        "enum": ["horizontal", "vertical"],
         "help": "Vertical or horizontal.",
         "name": "orientation",
         "type": "string"
@@ -4272,10 +4180,7 @@
       },
       {
         "default": "horizontal",
-        "enum": [
-          "horizontal",
-          "vertical"
-        ],
+        "enum": ["horizontal", "vertical"],
         "help": "Vertical or horizontal.",
         "name": "orientation",
         "type": "string"
@@ -4320,10 +4225,7 @@
         "type": "string"
       },
       {
-        "default": [
-          0,
-          1
-        ],
+        "default": [0, 1],
         "help": "Tuple of (lower, upper) bounds",
         "name": "value",
         "type": "array"
@@ -4426,10 +4328,7 @@
       },
       {
         "default": "horizontal",
-        "enum": [
-          "horizontal",
-          "vertical"
-        ],
+        "enum": ["horizontal", "vertical"],
         "help": "Vertical or horizontal.",
         "name": "orientation",
         "type": "string"
@@ -4716,14 +4615,7 @@
       },
       {
         "default": "",
-        "enum": [
-          "primary",
-          "success",
-          "info",
-          "warning",
-          "danger",
-          ""
-        ],
+        "enum": ["primary", "success", "info", "warning", "danger", ""],
         "help": "Use a predefined styling for the tags.",
         "name": "tag_style",
         "type": "string"
@@ -5802,10 +5694,7 @@
         "type": "bool"
       },
       {
-        "default": [
-          0,
-          0
-        ],
+        "default": [0, 0],
         "help": "Min and max selected indices",
         "name": "index",
         "type": "array"
@@ -5819,10 +5708,7 @@
       },
       {
         "default": "horizontal",
-        "enum": [
-          "horizontal",
-          "vertical"
-        ],
+        "enum": ["horizontal", "vertical"],
         "help": "Vertical or horizontal.",
         "name": "orientation",
         "type": "string"
@@ -5955,10 +5841,7 @@
       },
       {
         "default": "horizontal",
-        "enum": [
-          "horizontal",
-          "vertical"
-        ],
+        "enum": ["horizontal", "vertical"],
         "help": "Vertical or horizontal.",
         "name": "orientation",
         "type": "string"
@@ -6114,13 +5997,7 @@
       },
       {
         "default": "",
-        "enum": [
-          "success",
-          "info",
-          "warning",
-          "danger",
-          ""
-        ],
+        "enum": ["success", "info", "warning", "danger", ""],
         "help": "Use a predefined styling for the box.",
         "name": "box_style",
         "type": "string"
@@ -6233,13 +6110,7 @@
       },
       {
         "default": "",
-        "enum": [
-          "success",
-          "info",
-          "warning",
-          "danger",
-          ""
-        ],
+        "enum": ["success", "info", "warning", "danger", ""],
         "help": "Use a predefined styling for the box.",
         "name": "box_style",
         "type": "string"
@@ -6391,14 +6262,7 @@
       },
       {
         "default": "",
-        "enum": [
-          "primary",
-          "success",
-          "info",
-          "warning",
-          "danger",
-          ""
-        ],
+        "enum": ["primary", "success", "info", "warning", "danger", ""],
         "help": "Use a predefined styling for the tags.",
         "name": "tag_style",
         "type": "string"
@@ -6753,18 +6617,13 @@
         "default": 60,
         "help": "The time step to use for the picker, in seconds, or \"any\".",
         "name": "step",
-        "type": [
-          "float",
-          "string"
-        ],
+        "type": ["float", "string"],
         "union_attributes": [
           {
             "type": "float"
           },
           {
-            "enum": [
-              "any"
-            ],
+            "enum": ["any"],
             "type": "string"
           }
         ]
@@ -6858,14 +6717,7 @@
       },
       {
         "default": "",
-        "enum": [
-          "primary",
-          "success",
-          "info",
-          "warning",
-          "danger",
-          ""
-        ],
+        "enum": ["primary", "success", "info", "warning", "danger", ""],
         "help": "Use a predefined styling for the button.",
         "name": "button_style",
         "type": "string"
@@ -6993,14 +6845,7 @@
       {
         "allow_none": true,
         "default": "",
-        "enum": [
-          "primary",
-          "success",
-          "info",
-          "warning",
-          "danger",
-          ""
-        ],
+        "enum": ["primary", "success", "info", "warning", "danger", ""],
         "help": "Use a predefined styling for the buttons.",
         "name": "button_style",
         "type": "string"
@@ -7199,13 +7044,7 @@
       },
       {
         "default": "",
-        "enum": [
-          "success",
-          "info",
-          "warning",
-          "danger",
-          ""
-        ],
+        "enum": ["success", "info", "warning", "danger", ""],
         "help": "Use a predefined styling for the box.",
         "name": "box_style",
         "type": "string"

@@ -59,7 +59,7 @@ export function serialize_datetime(value: Date): ISerializedDatetime | null {
       hours: value.getUTCHours(),
       minutes: value.getUTCMinutes(),
       seconds: value.getUTCSeconds(),
-      milliseconds: value.getUTCMilliseconds()
+      milliseconds: value.getUTCMilliseconds(),
     };
   }
 }
@@ -82,7 +82,7 @@ export function deserialize_datetime(value: ISerializedDatetime): Date | null {
 
 export const datetime_serializers = {
   serialize: serialize_datetime,
-  deserialize: deserialize_datetime
+  deserialize: deserialize_datetime,
 };
 
 export class DatetimeModel extends CoreDescriptionModel {
@@ -94,7 +94,7 @@ export class DatetimeModel extends CoreDescriptionModel {
       value: null,
       disabled: false,
       min: null,
-      max: null
+      max: null,
     };
   }
 
@@ -102,7 +102,7 @@ export class DatetimeModel extends CoreDescriptionModel {
     ...CoreDescriptionModel.serializers,
     value: datetime_serializers,
     min: datetime_serializers,
-    max: datetime_serializers
+    max: datetime_serializers,
   };
 }
 
@@ -177,7 +177,7 @@ export class DatetimeView extends DescriptionView {
       'change [type="datetime-local"]': '_picker_change',
       'focusout [type="date"]': '_picker_focusout',
       'focusout [type="datetime-local"]': '_picker_focusout',
-      'focusout [type="time"]': '_picker_focusout'
+      'focusout [type="time"]': '_picker_focusout',
     };
   }
 
@@ -232,7 +232,7 @@ export class DatetimeView extends DescriptionView {
 
   private _picker_focusout(): void {
     const pickers = [this._datetimepicker, this._datepicker, this._timepicker];
-    if (pickers.some(p => p && p.validity.badInput)) {
+    if (pickers.some((p) => p && p.validity.badInput)) {
       this.model.set('value', null);
       this.touch();
     }
@@ -251,45 +251,15 @@ namespace Private {
     }
     // Replicate `toISOString()` but in local time zone:
     const parts = [];
-    parts.push(
-      `${value
-        .getFullYear()
-        .toString()
-        .padStart(4, '0')}`
-    );
+    parts.push(`${value.getFullYear().toString().padStart(4, '0')}`);
     parts.push(`-${(value.getMonth() + 1).toString().padStart(2, '0')}`);
-    parts.push(
-      `-${value
-        .getDate()
-        .toString()
-        .padStart(2, '0')}`
-    );
-    parts.push(
-      `T${value
-        .getHours()
-        .toString()
-        .padStart(2, '0')}`
-    );
-    parts.push(
-      `:${value
-        .getMinutes()
-        .toString()
-        .padStart(2, '0')}`
-    );
+    parts.push(`-${value.getDate().toString().padStart(2, '0')}`);
+    parts.push(`T${value.getHours().toString().padStart(2, '0')}`);
+    parts.push(`:${value.getMinutes().toString().padStart(2, '0')}`);
     if (value.getSeconds() > 0 || value.getMilliseconds() > 0) {
-      parts.push(
-        `:${value
-          .getSeconds()
-          .toString()
-          .padStart(2, '0')}`
-      );
+      parts.push(`:${value.getSeconds().toString().padStart(2, '0')}`);
       if (value.getMilliseconds() > 0) {
-        parts.push(
-          `.${value
-            .getMilliseconds()
-            .toString()
-            .padStart(3, '0')}`
-        );
+        parts.push(`.${value.getMilliseconds().toString().padStart(3, '0')}`);
       }
     }
     return parts.join('');
@@ -356,7 +326,7 @@ export function serialize_naive(
       hours: value.getHours(),
       minutes: value.getMinutes(),
       seconds: value.getSeconds(),
-      milliseconds: value.getMilliseconds()
+      milliseconds: value.getMilliseconds(),
     };
   }
 }
@@ -381,7 +351,7 @@ export function deserialize_naive(
 
 export const naive_serializers = {
   serialize: serialize_naive,
-  deserialize: deserialize_naive
+  deserialize: deserialize_naive,
 };
 
 export class NaiveDatetimeModel extends DatetimeModel {
@@ -393,6 +363,6 @@ export class NaiveDatetimeModel extends DatetimeModel {
     ...CoreDescriptionModel.serializers,
     value: naive_serializers,
     min: naive_serializers,
-    max: naive_serializers
+    max: naive_serializers,
   };
 }

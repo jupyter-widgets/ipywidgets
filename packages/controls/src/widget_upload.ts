@@ -26,14 +26,14 @@ export class FileUploadModel extends CoreDOMWidgetModel {
       multiple: false,
       value: [], // has type Array<IFileUploaded>
       error: '',
-      style: null
+      style: null,
     };
   }
 
   static serializers = {
     ...CoreDOMWidgetModel.serializers,
     // use a dummy serializer for value to circumvent the default serializer.
-    value: { serialize: <T>(x: T): T => x }
+    value: { serialize: <T>(x: T): T => x },
   };
 }
 
@@ -81,7 +81,7 @@ export class FileUploadView extends DOMWidgetView {
                 name: file.name,
                 type: file.type,
                 size: file.size,
-                last_modified: file.lastModified
+                last_modified: file.lastModified,
               });
             };
             fileReader.onerror = (): void => {
@@ -97,14 +97,14 @@ export class FileUploadView extends DOMWidgetView {
         .then((files: Array<IFileUploaded>) => {
           this.model.set({
             value: files,
-            error: ''
+            error: '',
           });
           this.touch();
         })
-        .catch(err => {
+        .catch((err) => {
           console.error('error in file upload: %o', err);
           this.model.set({
-            error: err
+            error: err,
           });
           this.touch();
         });
@@ -160,6 +160,6 @@ export class FileUploadView extends DOMWidgetView {
     success: ['mod-success'],
     info: ['mod-info'],
     warning: ['mod-warning'],
-    danger: ['mod-danger']
+    danger: ['mod-danger'],
   };
 }

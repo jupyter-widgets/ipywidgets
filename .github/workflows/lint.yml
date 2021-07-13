@@ -26,4 +26,4 @@ jobs:
       run: |
         yarn install --frozen-lockfile
         yarn run integrity
-        yarn run eslint:check
+        yarn run lint:check

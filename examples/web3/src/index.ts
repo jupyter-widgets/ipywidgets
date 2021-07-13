@@ -7,7 +7,7 @@ import { WidgetManager } from './manager';
 import {
   KernelManager,
   ServerConnection,
-  KernelMessage
+  KernelMessage,
 } from '@jupyterlab/services';
 
 const BASEURL = prompt('Notebook BASEURL', 'http://localhost:8888');
@@ -15,17 +15,13 @@ if (BASEURL === null) {
   alert('A base URL is needed to run the example!');
   throw new Error('A base URL is needed to run the example!');
 }
-const WSURL =
-  'ws:' +
-  BASEURL.split(':')
-    .slice(1)
-    .join(':');
+const WSURL = 'ws:' + BASEURL.split(':').slice(1).join(':');
 
-document.addEventListener('DOMContentLoaded', async function(event) {
+document.addEventListener('DOMContentLoaded', async function (event) {
   // Connect to the notebook webserver.
   const connectionInfo = ServerConnection.makeSettings({
     baseUrl: BASEURL!,
-    wsUrl: WSURL
+    wsUrl: WSURL,
   });
   const kernelManager = new KernelManager({ serverSettings: connectionInfo });
   const kernel = await kernelManager.startNew();
@@ -41,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async function(event) {
     tabSize: 4,
     showCursorWhenSelecting: true,
     viewportMargin: Infinity,
-    readOnly: true
+    readOnly: true,
   });
 
   // Create the widget area and widget manager

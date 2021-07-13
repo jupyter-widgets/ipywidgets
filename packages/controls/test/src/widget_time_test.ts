@@ -6,17 +6,14 @@ import { expect } from 'chai';
 import {
   createTestModel,
   createTestView,
-  createTestModelFromSerialized
+  createTestModelFromSerialized,
 } from './utils';
 
 import { TimeModel, TimeView } from '../../lib';
 import { DummyManager } from './dummy-manager';
 
 describe('Time', () => {
-  const timeString = new Date()
-    .toISOString()
-    .split('T', 2)[1]
-    .slice(0, -1);
+  const timeString = new Date().toISOString().split('T', 2)[1].slice(0, -1);
 
   describe('TimeModel', () => {
     it('should be createable', () => {
@@ -38,8 +35,8 @@ describe('Time', () => {
           hours: 13,
           minutes: 37,
           seconds: 42,
-          milliseconds: 333
-        }
+          milliseconds: 333,
+        },
       };
 
       const model = await createTestModelFromSerialized(TimeModel, state_in);
@@ -48,9 +45,11 @@ describe('Time', () => {
         Promise.resolve(model)
       );
 
-      const state_out = await (model.widget_manager as DummyManager).get_state();
+      const state_out = await (
+        model.widget_manager as DummyManager
+      ).get_state();
       const models = Object.keys(state_out.state).map(
-        k => state_out.state[k].state
+        (k) => state_out.state[k].state
       );
       expect(models.length).to.equal(1);
       expect(models[0]._model_name).to.equal('TimeModel');
@@ -63,8 +62,8 @@ describe('Time', () => {
           hours: 13,
           minutes: 37,
           seconds: 0,
-          milliseconds: 0
-        }
+          milliseconds: 0,
+        },
       };
 
       const model = await createTestModelFromSerialized(TimeModel, state_in);
@@ -77,8 +76,8 @@ describe('Time', () => {
           hours: 13,
           minutes: 37,
           seconds: 42,
-          milliseconds: 0
-        }
+          milliseconds: 0,
+        },
       };
 
       const model = await createTestModelFromSerialized(TimeModel, state_in);
@@ -91,8 +90,8 @@ describe('Time', () => {
           hours: 0,
           minutes: 0,
           seconds: 0,
-          milliseconds: 7
-        }
+          milliseconds: 7,
+        },
       };
 
       const model = await createTestModelFromSerialized(TimeModel, state_in);

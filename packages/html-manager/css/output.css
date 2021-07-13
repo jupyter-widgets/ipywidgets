@@ -3,7 +3,8 @@
 | Distributed under the terms of the Modified BSD License.
 |----------------------------------------------------------------------------*/
 
-/* <DEPRECATED> */ .jupyter-widgets.widget-output .jp-OutputArea-prompt, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.jupyter-widgets.widget-output .jp-OutputArea-prompt, /* <DEPRECATED> */
 .jupyter-widgets.jupyter-widget-output .jp-OutputArea-prompt {
   display: none;
 }

@@ -19,7 +19,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
  */
 
-/* <DEPRECATED> */ .widget-slider .noUi-target, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-target, /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-slider .noUi-target *, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-target,
 .jupyter-widget-slider .noUi-target * {
@@ -34,11 +35,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-target, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-target, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-target {
   position: relative;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-base, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-base, /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-slider .noUi-connects, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-base,
 .jupyter-widget-slider .noUi-connects {
@@ -49,12 +52,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 }
 /* Wrapper for all connect elements.
 */
-/* <DEPRECATED> */ .widget-slider .noUi-connects, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-connects, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-connects {
   overflow: hidden;
   z-index: 0;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-connect, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-connect, /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-slider .noUi-origin, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-connect,
 .jupyter-widget-slider .noUi-origin {
@@ -69,19 +74,22 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   transform-origin: 0 0;
   transform-style: flat;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-connect, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-connect, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-connect {
   height: 100%;
   width: 100%;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-origin, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-origin, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-origin {
   height: 10%;
   width: 10%;
 }
 /* Offset direction
  */
-/* <DEPRECATED> */ .widget-slider .noUi-txt-dir-rtl.noUi-horizontal .noUi-origin, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-txt-dir-rtl.noUi-horizontal .noUi-origin, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-txt-dir-rtl.noUi-horizontal .noUi-origin {
   left: 0;
   right: auto;
@@ -89,62 +97,73 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 /* Give origins 0 height/width so they don't interfere with clicking the
  * connect elements.
  */
-/* <DEPRECATED> */ .widget-slider .noUi-vertical .noUi-origin, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-vertical .noUi-origin, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-vertical .noUi-origin {
   width: 0;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-horizontal .noUi-origin, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-horizontal .noUi-origin, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-horizontal .noUi-origin {
   height: 0;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-handle, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-handle, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-handle {
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   position: absolute;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-touch-area, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-touch-area, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-touch-area {
   height: 100%;
   width: 100%;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-state-tap .noUi-connect, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-state-tap .noUi-connect, /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-slider .noUi-state-tap .noUi-origin, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-state-tap .noUi-connect,
 .jupyter-widget-slider .noUi-state-tap .noUi-origin {
   -webkit-transition: transform 0.3s;
   transition: transform 0.3s;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-state-drag *, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-state-drag *, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-state-drag * {
   cursor: inherit !important;
 }
 /* Slider size and handle placement;
  */
-/* <DEPRECATED> */ .widget-slider .noUi-horizontal, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-horizontal, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-horizontal {
   height: 18px;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-horizontal .noUi-handle, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-horizontal .noUi-handle, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-horizontal .noUi-handle {
   width: 34px;
   height: 28px;
   right: -17px;
   top: -6px;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-vertical, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-vertical, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-vertical {
   height: 100%;
   width: 18px;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-vertical .noUi-handle, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-vertical .noUi-handle, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-vertical .noUi-handle {
   width: 28px;
   height: 34px;
   right: -6px;
   top: -17px;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-txt-dir-rtl.noUi-horizontal .noUi-handle, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-txt-dir-rtl.noUi-horizontal .noUi-handle, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-txt-dir-rtl.noUi-horizontal .noUi-handle {
   left: -17px;
   right: auto;
@@ -152,63 +171,73 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 /* Styling;
  * Giving the connect element a border radius causes issues with using transform: scale
  */
-/* <DEPRECATED> */ .widget-slider .noUi-target, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-target, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-target {
   background: #fafafa;
   border-radius: 4px;
-  border: 1px solid #D3D3D3;
-  box-shadow: inset 0 1px 1px #F0F0F0, 0 3px 6px -5px #BBB;
+  border: 1px solid #d3d3d3;
+  box-shadow: inset 0 1px 1px #f0f0f0, 0 3px 6px -5px #bbb;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-connects, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-connects, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-connects {
   border-radius: 3px;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-connect, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-connect, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-connect {
-  background: #3FB8AF;
+  background: #3fb8af;
 }
 /* Handles and cursors;
  */
-/* <DEPRECATED> */ .widget-slider .noUi-draggable, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-draggable, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-draggable {
   cursor: ew-resize;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-vertical .noUi-draggable, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-vertical .noUi-draggable, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-vertical .noUi-draggable {
   cursor: ns-resize;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-handle, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-handle, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-handle {
-  border: 1px solid #D9D9D9;
+  border: 1px solid #d9d9d9;
   border-radius: 3px;
-  background: #FFF;
+  background: #fff;
   cursor: default;
-  box-shadow: inset 0 0 1px #FFF, inset 0 1px 7px #EBEBEB, 0 3px 6px -3px #BBB;
+  box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ebebeb, 0 3px 6px -3px #bbb;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-active, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-active, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-active {
-  box-shadow: inset 0 0 1px #FFF, inset 0 1px 7px #DDD, 0 3px 6px -3px #BBB;
+  box-shadow: inset 0 0 1px #fff, inset 0 1px 7px #ddd, 0 3px 6px -3px #bbb;
 }
 /* Handle stripes;
  */
-/* <DEPRECATED> */ .widget-slider .noUi-handle:before, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-handle:before, /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-slider .noUi-handle:after, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-handle:before,
 .jupyter-widget-slider .noUi-handle:after {
-  content: "";
+  content: '';
   display: block;
   position: absolute;
   height: 14px;
   width: 1px;
-  background: #E8E7E6;
+  background: #e8e7e6;
   left: 14px;
   top: 6px;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-handle:after, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-handle:after, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-handle:after {
   left: 17px;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-vertical .noUi-handle:before, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-vertical .noUi-handle:before, /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-slider .noUi-vertical .noUi-handle:after, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-vertical .noUi-handle:before,
 .jupyter-widget-slider .noUi-vertical .noUi-handle:after {
@@ -217,17 +246,20 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   left: 6px;
   top: 14px;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-vertical .noUi-handle:after, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-vertical .noUi-handle:after, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-vertical .noUi-handle:after {
   top: 17px;
 }
 /* Disabled state;
  */
-/* <DEPRECATED> */ .widget-slider [disabled] .noUi-connect, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider [disabled] .noUi-connect, /* <DEPRECATED> */
 .jupyter-widget-slider [disabled] .noUi-connect {
-  background: #B8B8B8;
+  background: #b8b8b8;
 }
-/* <DEPRECATED> */ .widget-slider [disabled].noUi-target, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider [disabled].noUi-target, /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-slider [disabled].noUi-handle, /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-slider [disabled] .noUi-handle, /* <DEPRECATED> */
 .jupyter-widget-slider [disabled].noUi-target,
@@ -238,14 +270,16 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 /* Base;
  *
  */
-/* <DEPRECATED> */ .widget-slider .noUi-pips, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-pips, /* <DEPRECATED> */
 /* <DEPRECATED> */ .widget-slider .noUi-pips *, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-pips,
 .jupyter-widget-slider .noUi-pips * {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-pips, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-pips, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-pips {
   position: absolute;
   color: #999;
@@ -253,13 +287,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 /* Values;
  *
  */
-/* <DEPRECATED> */ .widget-slider .noUi-value, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-value, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-value {
   position: absolute;
   white-space: nowrap;
   text-align: center;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-value-sub, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-value-sub, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-value-sub {
   color: #ccc;
   font-size: 10px;
@@ -267,23 +303,27 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 /* Markings;
  *
  */
-/* <DEPRECATED> */ .widget-slider .noUi-marker, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-marker, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-marker {
   position: absolute;
-  background: #CCC;
+  background: #ccc;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-marker-sub, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-marker-sub, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-marker-sub {
-  background: #AAA;
+  background: #aaa;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-marker-large, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-marker-large, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-marker-large {
-  background: #AAA;
+  background: #aaa;
 }
 /* Horizontal layout;
  *
  */
-/* <DEPRECATED> */ .widget-slider .noUi-pips-horizontal, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-pips-horizontal, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-pips-horizontal {
   padding: 10px 0;
   height: 80px;
@@ -291,70 +331,82 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   left: 0;
   width: 100%;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-value-horizontal, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-value-horizontal, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-value-horizontal {
   -webkit-transform: translate(-50%, 50%);
   transform: translate(-50%, 50%);
 }
-/* <DEPRECATED> */ .widget-slider .noUi-rtl .noUi-value-horizontal, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-rtl .noUi-value-horizontal, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-rtl .noUi-value-horizontal {
   -webkit-transform: translate(50%, 50%);
   transform: translate(50%, 50%);
 }
-/* <DEPRECATED> */ .widget-slider .noUi-marker-horizontal.noUi-marker, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-marker-horizontal.noUi-marker, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-marker-horizontal.noUi-marker {
   margin-left: -1px;
   width: 2px;
   height: 5px;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-marker-horizontal.noUi-marker-sub, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-marker-horizontal.noUi-marker-sub, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-marker-horizontal.noUi-marker-sub {
   height: 10px;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-marker-horizontal.noUi-marker-large, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-marker-horizontal.noUi-marker-large, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-marker-horizontal.noUi-marker-large {
   height: 15px;
 }
 /* Vertical layout;
  *
  */
-/* <DEPRECATED> */ .widget-slider .noUi-pips-vertical, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-pips-vertical, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-pips-vertical {
   padding: 0 10px;
   height: 100%;
   top: 0;
   left: 100%;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-value-vertical, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-value-vertical, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-value-vertical {
   -webkit-transform: translate(0, -50%);
   transform: translate(0, -50%);
   padding-left: 25px;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-rtl .noUi-value-vertical, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-rtl .noUi-value-vertical, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-rtl .noUi-value-vertical {
   -webkit-transform: translate(0, 50%);
   transform: translate(0, 50%);
 }
-/* <DEPRECATED> */ .widget-slider .noUi-marker-vertical.noUi-marker, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-marker-vertical.noUi-marker, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-marker-vertical.noUi-marker {
   width: 5px;
   height: 2px;
   margin-top: -1px;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-marker-vertical.noUi-marker-sub, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-marker-vertical.noUi-marker-sub, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-marker-vertical.noUi-marker-sub {
   width: 10px;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-marker-vertical.noUi-marker-large, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-marker-vertical.noUi-marker-large, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-marker-vertical.noUi-marker-large {
   width: 15px;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-tooltip, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-tooltip, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-tooltip {
   display: block;
   position: absolute;
-  border: 1px solid #D9D9D9;
+  border: 1px solid #d9d9d9;
   border-radius: 3px;
   background: #fff;
   color: #000;
@@ -362,28 +414,32 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   text-align: center;
   white-space: nowrap;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-horizontal .noUi-tooltip, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-horizontal .noUi-tooltip, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-horizontal .noUi-tooltip {
   -webkit-transform: translate(-50%, 0);
   transform: translate(-50%, 0);
   left: 50%;
   bottom: 120%;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-vertical .noUi-tooltip, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-vertical .noUi-tooltip, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-vertical .noUi-tooltip {
   -webkit-transform: translate(0, -50%);
   transform: translate(0, -50%);
   top: 50%;
   right: 120%;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-horizontal .noUi-origin > .noUi-tooltip, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-horizontal .noUi-origin > .noUi-tooltip, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-horizontal .noUi-origin > .noUi-tooltip {
   -webkit-transform: translate(50%, 0);
   transform: translate(50%, 0);
   left: auto;
   bottom: 10px;
 }
-/* <DEPRECATED> */ .widget-slider .noUi-vertical .noUi-origin > .noUi-tooltip, /* <DEPRECATED> */
+/* <DEPRECATED> */
+.widget-slider .noUi-vertical .noUi-origin > .noUi-tooltip, /* <DEPRECATED> */
 .jupyter-widget-slider .noUi-vertical .noUi-origin > .noUi-tooltip {
   -webkit-transform: translate(0, -18px);
   transform: translate(0, -18px);

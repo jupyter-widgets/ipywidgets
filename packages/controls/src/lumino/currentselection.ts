@@ -67,7 +67,7 @@ export class Selection<T> {
         previousIndex: pi,
         previousValue: pv,
         currentIndex: pi,
-        currentValue: cv
+        currentValue: cv,
       });
     }
   }
@@ -147,7 +147,7 @@ export class Selection<T> {
       previousIndex: pi,
       previousValue: pv,
       currentIndex: i,
-      currentValue: this._value
+      currentValue: this._value,
     });
   }
 
@@ -209,7 +209,7 @@ export class Selection<T> {
         previousIndex: ci,
         previousValue: cv,
         currentIndex: i,
-        currentValue: item
+        currentValue: item,
       });
       return;
     }
@@ -243,7 +243,7 @@ export class Selection<T> {
       previousIndex: pi,
       previousValue: pv,
       currentIndex: this._index,
-      currentValue: this._value
+      currentValue: this._value,
     });
   }
 
@@ -286,7 +286,7 @@ export class Selection<T> {
         previousIndex: i,
         previousValue: item,
         currentIndex: this._index,
-        currentValue: this._value
+        currentValue: this._value,
       });
       return;
     }
@@ -300,7 +300,7 @@ export class Selection<T> {
         previousIndex: i,
         previousValue: item,
         currentIndex: this._index,
-        currentValue: this._value
+        currentValue: this._value,
       });
       return;
     }
@@ -314,7 +314,7 @@ export class Selection<T> {
         previousIndex: i,
         previousValue: item,
         currentIndex: this._index,
-        currentValue: this._value
+        currentValue: this._value,
       });
       return;
     }
@@ -332,7 +332,7 @@ export class Selection<T> {
         previousIndex: i,
         previousValue: item,
         currentIndex: this._index,
-        currentValue: this.value
+        currentValue: this.value,
       });
       return;
     }
@@ -345,7 +345,7 @@ export class Selection<T> {
       previousIndex: i,
       previousValue: item,
       currentIndex: this._index,
-      currentValue: this._value
+      currentValue: this._value,
     });
   }
 

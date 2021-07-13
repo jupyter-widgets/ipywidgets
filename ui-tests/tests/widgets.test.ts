@@ -66,7 +66,7 @@ describe('Widget Visual Regression', () => {
             numCellImages++;
           }
         }
-      }
+      },
     });
 
     for (let c = 0; c < numCellImages; ++c) {

@@ -42,13 +42,13 @@ function simulateUpload(fileInput: HTMLInputElement, files: Array<File>): void {
   fileList.item = (index: number): File => files[index];
   Object.defineProperty(fileInput, 'files', {
     value: fileList,
-    writable: false
+    writable: false,
   });
   fileInput.dispatchEvent(new Event('change', { bubbles: true }));
 }
 
-describe('FileUploadView', function() {
-  beforeEach(async function() {
+describe('FileUploadView', function () {
+  beforeEach(async function () {
     this.manager = new DummyManager();
     const modelId = 'u-u-i-d';
     this.model = await this.manager.new_model(
@@ -56,19 +56,19 @@ describe('FileUploadView', function() {
         model_name: 'FileUploadModel',
         model_module: '@jupyter-widgets/controls',
         model_module_version: '1.0.0',
-        model_id: modelId
+        model_id: modelId,
       },
       {}
     );
   });
 
-  it('construction', function() {
+  it('construction', function () {
     const options = { model: this.model };
     const view = new widgets.FileUploadView(options);
     expect(view).to.not.be.undefined;
   });
 
-  it('default options', function() {
+  it('default options', function () {
     const options = { model: this.model };
     const view = new widgets.FileUploadView(options);
     view.render();
@@ -81,50 +81,50 @@ describe('FileUploadView', function() {
     expect(proxyButton.querySelector('i')!.className).to.equal('fa fa-upload');
   });
 
-  it('multiple', function() {
+  it('multiple', function () {
     this.model.set('multiple', true);
     const fileInput = fileInputForModel(this.model);
     expect(fileInput.multiple).to.be.true;
   });
 
-  it('accept', function() {
+  it('accept', function () {
     this.model.set('accept', 'text/csv');
     const fileInput = fileInputForModel(this.model);
     expect(fileInput.accept).to.equal('text/csv');
   });
 
-  it('disabled', function() {
+  it('disabled', function () {
     this.model.set('disabled', true);
     const proxyButton = proxyButtonForModel(this.model);
     expect(proxyButton.disabled).to.be.true;
   });
 
-  it('no icon', function() {
+  it('no icon', function () {
     this.model.set('icon', '');
     const proxyButton = proxyButtonForModel(this.model);
     expect(proxyButton.querySelector('i')).to.be.null;
   });
 
-  it('other icon', function() {
+  it('other icon', function () {
     this.model.set('icon', 'check');
     const proxyButton = proxyButtonForModel(this.model);
     expect(proxyButton.querySelector('i')).to.not.be.null;
     expect(proxyButton.querySelector('i')!.className).to.equal('fa fa-check');
   });
 
-  it('description', function() {
+  it('description', function () {
     this.model.set('description', 'some text');
     const proxyButton = proxyButtonForModel(this.model);
     expect(proxyButton.innerText).to.equal('some text (0)');
   });
 
-  it('set model value on upload', function(done) {
+  it('set model value on upload', function (done) {
     const fileInput = fileInputForModel(this.model);
     const lastModified = Date.UTC(2019, 0, 0);
 
     const uploadedFile = new File(['some file content'], 'some-name', {
       type: 'text/plain',
-      lastModified
+      lastModified,
     });
 
     simulateUpload(fileInput, [uploadedFile]);

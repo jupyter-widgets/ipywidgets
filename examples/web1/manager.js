@@ -10,13 +10,13 @@ class WidgetManager extends ManagerBase {
   }
 
   loadClass(className, moduleName, moduleVersion) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       if (moduleName === '@jupyter-widgets/controls') {
         resolve(controls);
       } else if (moduleName === '@jupyter-widgets/base') {
         resolve(base);
       } else {
-        var fallback = function(err) {
+        var fallback = function (err) {
           let failedId = err.requireModules && err.requireModules[0];
           if (failedId) {
             console.log(
@@ -24,7 +24,7 @@ class WidgetManager extends ManagerBase {
             );
             window.require(
               [
-                `https://cdn.jsdelivr.net/npm/${moduleName}@${moduleVersion}/dist/index.js`
+                `https://cdn.jsdelivr.net/npm/${moduleName}@${moduleVersion}/dist/index.js`,
               ],
               resolve,
               reject
@@ -35,7 +35,7 @@ class WidgetManager extends ManagerBase {
         };
         window.require([`${moduleName}.js`], resolve, fallback);
       }
-    }).then(function(module) {
+    }).then(function (module) {
       if (module[className]) {
         return module[className];
       } else {
@@ -48,7 +48,7 @@ class WidgetManager extends ManagerBase {
 
   display_view(view) {
     var that = this;
-    return Promise.resolve(view).then(view => {
+    return Promise.resolve(view).then((view) => {
       LuminoWidget.attach(view.luminoWidget, that.el);
       return view;
     });

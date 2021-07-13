@@ -4,7 +4,7 @@
 import {
   DOMWidgetModel,
   DOMWidgetView,
-  StyleModel
+  StyleModel,
 } from '@jupyter-widgets/base';
 
 import { typeset } from './utils';
@@ -17,7 +17,7 @@ export class DescriptionStyleModel extends StyleModel {
       ...super.defaults(),
       _model_name: 'DescriptionStyleModel',
       _model_module: '@jupyter-widgets/controls',
-      _model_module_version: JUPYTER_CONTROLS_VERSION
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
     };
   }
 
@@ -25,8 +25,8 @@ export class DescriptionStyleModel extends StyleModel {
     description_width: {
       selector: '.widget-label',
       attribute: 'width',
-      default: null as any
-    }
+      default: null as any,
+    },
   };
 }
 
@@ -40,7 +40,7 @@ export class DescriptionModel extends DOMWidgetModel {
       _model_module: '@jupyter-widgets/controls',
       _view_module_version: JUPYTER_CONTROLS_VERSION,
       _model_module_version: JUPYTER_CONTROLS_VERSION,
-      description: ''
+      description: '',
     };
   }
 }

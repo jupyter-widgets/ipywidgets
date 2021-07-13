@@ -39,7 +39,7 @@ export async function renderWidgets(
     'script[type="application/vnd.jupyter.widget-state+json"]'
   );
   await Promise.all(
-    Array.from(tags).map(async t =>
+    Array.from(tags).map(async (t) =>
       renderManager(element, JSON.parse(t.innerHTML), managerFactory)
     )
   );
@@ -74,14 +74,14 @@ async function renderManager(
     'script[type="application/vnd.jupyter.widget-view+json"]'
   );
   await Promise.all(
-    Array.from(tags).map(async viewtag => {
+    Array.from(tags).map(async (viewtag) => {
       const widgetViewObject = JSON.parse(viewtag.innerHTML);
       const valid = view_validate(widgetViewObject);
       if (!valid) {
         throw new Error(`View state has errors: ${view_validate.errors}`);
       }
       const model_id: string = widgetViewObject.model_id;
-      const model = models.find(item => item.model_id == model_id);
+      const model = models.find((item) => item.model_id == model_id);
       if (model !== undefined && viewtag.parentElement !== null) {
         const prev = viewtag.previousElementSibling;
         if (

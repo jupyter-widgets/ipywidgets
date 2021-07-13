@@ -439,9 +439,8 @@ export class StackedView extends BoxView {
   }
 
   update_children(): void {
-    const selected_child = this.model.get('children')[
-      this.model.get('selected_index')
-    ];
+    const selected_child =
+      this.model.get('children')[this.model.get('selected_index')];
     this.children_views
       ?.update([selected_child])
       .then((views: DOMWidgetView[]) => {
