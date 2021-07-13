@@ -492,6 +492,29 @@
     codemirror "~5.58.0"
     react "^17.0.1"
 
+"@jupyterlab/console@^3.0.0":
+  version "3.0.10"
+  resolved "https://registry.npmjs.org/@jupyterlab/console/-/console-3.0.10.tgz#7b4a56753650141e699cd556085971c5f75d13b4"
+  integrity sha512-0Qv1cQxBOtQ7ZpRK1BEucS0TeIQBmya7+FPCi9meurb+uqPp2eXNtH8epy72VL+NyVEcmuED/AqcwxLRem+Yww==
+  dependencies:
+    "@jupyterlab/apputils" "^3.0.9"
+    "@jupyterlab/cells" "^3.0.11"
+    "@jupyterlab/codeeditor" "^3.0.9"
+    "@jupyterlab/coreutils" "^5.0.6"
+    "@jupyterlab/nbformat" "^3.0.6"
+    "@jupyterlab/observables" "^4.0.6"
+    "@jupyterlab/rendermime" "^3.0.10"
+    "@jupyterlab/services" "^6.0.9"
+    "@jupyterlab/translation" "^3.0.9"
+    "@jupyterlab/ui-components" "^3.0.7"
+    "@lumino/algorithm" "^1.3.3"
+    "@lumino/coreutils" "^1.5.3"
+    "@lumino/disposable" "^1.4.3"
+    "@lumino/dragdrop" "^1.7.1"
+    "@lumino/messaging" "^1.4.3"
+    "@lumino/signaling" "^1.4.3"
+    "@lumino/widgets" "^1.16.1"
+
 "@jupyterlab/coreutils@^5.0.6":
   version "5.0.6"
   resolved "https://registry.npmjs.org/@jupyterlab/coreutils/-/coreutils-5.0.6.tgz#dd36591d01191762ff35e3b096f324e990e0e617"

@@ -53,6 +53,7 @@
     "@jupyter-widgets/controls": "^4.0.0-alpha.3",
     "@jupyter-widgets/output": "^5.0.0-alpha.3",
     "@jupyterlab/application": "^3.0.0",
+    "@jupyterlab/console": "^3.0.0",
     "@jupyterlab/docregistry": "^3.0.0",
     "@jupyterlab/logconsole": "^3.0.0",
     "@jupyterlab/mainmenu": "^3.0.0",

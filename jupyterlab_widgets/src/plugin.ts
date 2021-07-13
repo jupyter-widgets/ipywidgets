@@ -2,12 +2,16 @@
 // Distributed under the terms of the Modified BSD License.
 
 import { ISettingRegistry } from '@jupyterlab/settingregistry';
+
 import * as nbformat from '@jupyterlab/nbformat';
 
-import { DocumentRegistry } from '@jupyterlab/docregistry';
+import {
+  IConsoleTracker,
+  CodeConsole,
+  ConsolePanel,
+} from '@jupyterlab/console';
 
 import {
-  INotebookModel,
   INotebookTracker,
   Notebook,
   NotebookPanel,
@@ -30,11 +34,13 @@ import { toArray, filter } from '@lumino/algorithm';
 
 import { DisposableDelegate } from '@lumino/disposable';
 
-import { AttachedProperty } from '@lumino/properties';
-
 import { WidgetRenderer } from './renderer';
 
-import { WidgetManager, WIDGET_VIEW_MIMETYPE } from './manager';
+import {
+  WidgetManager,
+  WIDGET_VIEW_MIMETYPE,
+  KernelWidgetManager,
+} from './manager';
 
 import { OutputModel, OutputView, OUTPUT_WIDGET_VERSION } from './output';
 
@@ -47,7 +53,7 @@ import { JUPYTER_CONTROLS_VERSION } from '@jupyter-widgets/controls/lib/version'
 import '@jupyter-widgets/base/css/index.css';
 import '@jupyter-widgets/controls/css/widgets-base.css';
 import { KernelMessage } from '@jupyterlab/services';
-
+import { ISessionContext } from '@jupyterlab/apputils';
 const WIDGET_REGISTRY: base.IWidgetRegistryData[] = [];
 
 /**
@@ -58,12 +64,31 @@ const SETTINGS: WidgetManager.Settings = { saveState: false };
 /**
  * Iterate through all widget renderers in a notebook.
  */
-function* widgetRenderers(
+function* notebookWidgetRenderers(
   nb: Notebook
 ): Generator<WidgetRenderer, void, unknown> {
   for (const cell of nb.widgets) {
     if (cell.model.type === 'code') {
       for (const codecell of (cell as CodeCell).outputArea.widgets) {
+        for (const output of toArray(codecell.children())) {
+          if (output instanceof WidgetRenderer) {
+            yield output;
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Iterate through all widget renderers in a console.
+ */
+function* consoleWidgetRenderers(
+  console: CodeConsole
+): Generator<WidgetRenderer, void, unknown> {
+  for (const cell of toArray(console.cells)) {
+    if (cell.model.type === 'code') {
+      for (const codecell of (cell as unknown as CodeCell).outputArea.widgets) {
         for (const output of toArray(codecell.children())) {
           if (output instanceof WidgetRenderer) {
             yield output;
@@ -104,16 +129,69 @@ function* chain<T>(
   }
 }
 
-export function registerWidgetManager(
-  context: DocumentRegistry.IContext<INotebookModel>,
+/**
+ * Get the kernel id of current notebook or console panel, this value
+ * is used as key for `Private.widgetManagerProperty` to store the widget
+ * manager of current notebook or console panel.
+ *
+ * @param {ISessionContext} sessionContext The session context of notebook or
+ * console panel.
+ */
+async function getWidgetManagerOwner(
+  sessionContext: ISessionContext
+): Promise<Private.IWidgetManagerOwner> {
+  await sessionContext.ready;
+  return sessionContext.session!.kernel!.id;
+}
+
+/**
+ * Common handler for registering both notebook and console
+ * `WidgetManager`
+ *
+ * @param {(Notebook | CodeConsole)} content Context of panel.
+ * @param {ISessionContext} sessionContext Session context of panel.
+ * @param {IRenderMimeRegistry} rendermime Rendermime of panel.
+ * @param {IterableIterator<WidgetRenderer>} renderers Iterator of
+ * `WidgetRenderer` inside panel
+ * @param {(() => WidgetManager | KernelWidgetManager)} widgetManagerFactory
+ * function to create widget manager.
+ */
+async function registerWidgetHandler(
+  content: Notebook | CodeConsole,
+  sessionContext: ISessionContext,
   rendermime: IRenderMimeRegistry,
-  renderers: IterableIterator<WidgetRenderer>
-): DisposableDelegate {
-  let wManager = Private.widgetManagerProperty.get(context);
+  renderers: IterableIterator<WidgetRenderer>,
+  widgetManagerFactory: () => WidgetManager | KernelWidgetManager
+): Promise<DisposableDelegate> {
+  const wManagerOwner = await getWidgetManagerOwner(sessionContext);
+  let wManager = Private.widgetManagerProperty.get(wManagerOwner);
+  let currentOwner: string;
+
   if (!wManager) {
-    wManager = new WidgetManager(context, rendermime, SETTINGS);
+    wManager = widgetManagerFactory();
     WIDGET_REGISTRY.forEach((data) => wManager!.register(data));
-    Private.widgetManagerProperty.set(context, wManager);
+    Private.widgetManagerProperty.set(wManagerOwner, wManager);
+    currentOwner = wManagerOwner;
+    content.disposed.connect((_) => {
+      const currentwManager = Private.widgetManagerProperty.get(currentOwner);
+      if (currentwManager) {
+        Private.widgetManagerProperty.delete(currentOwner);
+      }
+    });
+
+    sessionContext.kernelChanged.connect((_, args) => {
+      const { newValue } = args;
+      if (newValue) {
+        const newKernelId = newValue.id;
+        const oldwManager = Private.widgetManagerProperty.get(currentOwner);
+
+        if (oldwManager) {
+          Private.widgetManagerProperty.delete(currentOwner);
+          Private.widgetManagerProperty.set(newKernelId, oldwManager);
+        }
+        currentOwner = newKernelId;
+      }
+    });
   }
 
   for (const r of renderers) {
@@ -140,13 +218,58 @@ export function registerWidgetManager(
   });
 }
 
+export async function registerWidgetManager(
+  panel: NotebookPanel,
+  renderers: IterableIterator<WidgetRenderer>
+): Promise<DisposableDelegate> {
+  const content = panel.content;
+  const context = panel.context;
+  const sessionContext = context.sessionContext;
+  const rendermime = content.rendermime;
+  const widgetManagerFactory = () =>
+    new WidgetManager(context, rendermime, SETTINGS);
+
+  return registerWidgetHandler(
+    content,
+    sessionContext,
+    rendermime,
+    renderers,
+    widgetManagerFactory
+  );
+}
+
+export async function registerConsoleWidgetManager(
+  panel: ConsolePanel,
+  renderers: IterableIterator<WidgetRenderer>
+): Promise<DisposableDelegate> {
+  const content = panel.console;
+  const sessionContext = content.sessionContext;
+  const rendermime = content.rendermime;
+  const widgetManagerFactory = () =>
+    new KernelWidgetManager(sessionContext.session!.kernel!, rendermime);
+
+  return registerWidgetHandler(
+    content,
+    sessionContext,
+    rendermime,
+    renderers,
+    widgetManagerFactory
+  );
+}
+
 /**
  * The widget manager provider.
  */
 const plugin: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> = {
   id: '@jupyter-widgets/jupyterlab-manager:plugin',
   requires: [IRenderMimeRegistry],
-  optional: [INotebookTracker, ISettingRegistry, IMainMenu, ILoggerRegistry],
+  optional: [
+    INotebookTracker,
+    IConsoleTracker,
+    ISettingRegistry,
+    IMainMenu,
+    ILoggerRegistry,
+  ],
   provides: base.IJupyterWidgetRegistry,
   activate: activateWidgetExtension,
   autoStart: true,
@@ -165,21 +288,30 @@ function activateWidgetExtension(
   app: JupyterFrontEnd,
   rendermime: IRenderMimeRegistry,
   tracker: INotebookTracker | null,
+  consoleTracker: IConsoleTracker | null,
   settingRegistry: ISettingRegistry | null,
   menu: IMainMenu | null,
   loggerRegistry: ILoggerRegistry | null
 ): base.IJupyterWidgetRegistry {
   const { commands } = app;
 
-  const bindUnhandledIOPubMessageSignal = (nb: NotebookPanel): void => {
+  const bindUnhandledIOPubMessageSignal = async (
+    nb: NotebookPanel
+  ): Promise<void> => {
     if (!loggerRegistry) {
       return;
     }
+    const wManagerOwner = await getWidgetManagerOwner(
+      nb.context.sessionContext
+    );
+    const wManager = Private.widgetManagerProperty.get(wManagerOwner);
 
-    const wManager = Private.widgetManagerProperty.get(nb.context);
     if (wManager) {
       wManager.onUnhandledIOPubMessage.connect(
-        (sender: WidgetManager, msg: KernelMessage.IIOPubMessage) => {
+        (
+          sender: WidgetManager | KernelWidgetManager,
+          msg: KernelMessage.IIOPubMessage
+        ) => {
           const logger = loggerRegistry.getLogger(nb.context.path);
           let level: LogLevel = 'warning';
           if (
@@ -221,32 +353,32 @@ function activateWidgetExtension(
   );
 
   if (tracker !== null) {
-    tracker.forEach((panel) => {
-      registerWidgetManager(
-        panel.context,
-        panel.content.rendermime,
-        chain(
-          widgetRenderers(panel.content),
-          outputViews(app, panel.context.path)
-        )
+    const rendererIterator = (panel: NotebookPanel) =>
+      chain(
+        notebookWidgetRenderers(panel.content),
+        outputViews(app, panel.context.path)
       );
-
+    tracker.forEach(async (panel) => {
+      await registerWidgetManager(panel, rendererIterator(panel));
       bindUnhandledIOPubMessageSignal(panel);
     });
-    tracker.widgetAdded.connect((sender, panel) => {
-      registerWidgetManager(
-        panel.context,
-        panel.content.rendermime,
-        chain(
-          widgetRenderers(panel.content),
-          outputViews(app, panel.context.path)
-        )
-      );
-
+    tracker.widgetAdded.connect(async (sender, panel) => {
+      await registerWidgetManager(panel, rendererIterator(panel));
       bindUnhandledIOPubMessageSignal(panel);
     });
   }
 
+  if (consoleTracker !== null) {
+    const rendererIterator = (panel: ConsolePanel) =>
+      chain(consoleWidgetRenderers(panel.console));
+
+    consoleTracker.forEach(async (panel) => {
+      await registerConsoleWidgetManager(panel, rendererIterator(panel));
+    });
+    consoleTracker.widgetAdded.connect(async (sender, panel) => {
+      await registerConsoleWidgetManager(panel, rendererIterator(panel));
+    });
+  }
   if (settingRegistry !== null) {
     // Add a command for automatically saving (jupyter-)widget state.
     commands.addCommand('@jupyter-widgets/jupyterlab-manager:saveWidgetState', {
@@ -318,13 +450,23 @@ function activateWidgetExtension(
 
 namespace Private {
   /**
-   * A private attached property for a widget manager.
+   * A type alias for keys of `widgetManagerProperty` .
    */
-  export const widgetManagerProperty = new AttachedProperty<
-    DocumentRegistry.Context,
-    WidgetManager | undefined
-  >({
-    name: 'widgetManager',
-    create: (owner: DocumentRegistry.Context): undefined => undefined,
-  });
+  export type IWidgetManagerOwner = string;
+
+  /**
+   * A type alias for values of `widgetManagerProperty` .
+   */
+  export type IWidgetManagerValue =
+    | WidgetManager
+    | KernelWidgetManager
+    | undefined;
+
+  /**
+   * A private map for a widget manager.
+   */
+  export const widgetManagerProperty = new Map<
+    IWidgetManagerOwner,
+    IWidgetManagerValue
+  >();
 }
