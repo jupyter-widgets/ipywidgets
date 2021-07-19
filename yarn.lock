@@ -314,7 +314,7 @@
     "@lumino/signaling" "^1.4.3"
     "@lumino/widgets" "^1.16.1"
 
-"@jupyterlab/apputils@^3.0.9":
+"@jupyterlab/apputils@^3.0.0", "@jupyterlab/apputils@^3.0.9":
   version "3.0.9"
   resolved "https://registry.npmjs.org/@jupyterlab/apputils/-/apputils-3.0.9.tgz#504273fc0b69f74d8a8b87b7a89ee3d4decd679d"
   integrity sha512-fsJjl+NX2+e+1FM7SMfpI1VsaPQsaIPnPGsdpQoboJJqdQJHuj1oPXNwc/aI1daEElirB15fYGCUGc2oUrv6RQ==
