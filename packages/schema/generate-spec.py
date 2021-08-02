@@ -237,14 +237,15 @@ if __name__ == '__main__':
     args = parser.parse_args()
     format = args.format
 
+    widgets_to_document = sorted(widgets.Widget._widget_types.items())
+    spec = create_spec(widgets_to_document)
+
     if args.output:
         args.output.parent.mkdir(exist_ok=True)
         output = open(args.output, mode='w', encoding='utf8')
     else:
         output = sys.stdout
 
-    widgets_to_document = sorted(widgets.Widget._widget_types.items())
-    spec = create_spec(widgets_to_document)
     try:
         if format == 'json':
             try:
