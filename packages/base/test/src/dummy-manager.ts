@@ -316,6 +316,10 @@ export class DummyManager implements widgets.IWidgetManager {
     return Promise.resolve(url);
   }
 
+  inline_sanitize(s: string): string {
+    return s;
+  }
+
   /**
    * Dictionary of model ids and model instance promises
    */

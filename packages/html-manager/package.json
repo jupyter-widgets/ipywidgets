@@ -52,6 +52,7 @@
   "devDependencies": {
     "@types/mocha": "^8.2.2",
     "@types/node": "^15.12.2",
+    "@types/sanitize-html": "^1.20",
     "chai": "^4.0.0",
     "css-loader": "^5.2.6",
     "file-loader": "^6.2.0",
