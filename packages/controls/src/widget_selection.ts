@@ -19,7 +19,7 @@ export class SelectionModel extends CoreDescriptionModel {
       _model_name: 'SelectionModel',
       index: '',
       _options_labels: [],
-      disabled: false
+      disabled: false,
     };
   }
 }
@@ -86,7 +86,7 @@ export class DropdownModel extends SelectionModel {
       ...super.defaults(),
       _model_name: 'DropdownModel',
       _view_name: 'DropdownView',
-      button_style: ''
+      button_style: '',
     };
   }
 }
@@ -149,7 +149,7 @@ export class DropdownView extends SelectionView {
 
   events(): { [e: string]: string } {
     return {
-      'change select': '_handle_change'
+      'change select': '_handle_change',
     };
   }
 
@@ -182,7 +182,7 @@ export class SelectModel extends SelectionModel {
       ...super.defaults(),
       _model_name: 'SelectModel',
       _view_name: 'SelectView',
-      rows: 5
+      rows: 5,
     };
   }
 }
@@ -252,7 +252,7 @@ export class SelectView extends SelectionView {
 
   events(): { [e: string]: string } {
     return {
-      'change select': '_handle_change'
+      'change select': '_handle_change',
     };
   }
 
@@ -284,7 +284,7 @@ export class RadioButtonsModel extends SelectionModel {
       _view_name: 'RadioButtonsView',
       tooltips: [],
       icons: [],
-      button_style: ''
+      button_style: '',
     };
   }
 }
@@ -344,9 +344,8 @@ export class RadioButtonsView extends DescriptionView {
     }
     items.forEach((item: any, index: number) => {
       const item_query = 'input[data-value="' + encodeURIComponent(item) + '"]';
-      const radio = this.container.querySelectorAll<HTMLInputElement>(
-        item_query
-      );
+      const radio =
+        this.container.querySelectorAll<HTMLInputElement>(item_query);
       if (radio.length > 0) {
         const radio_el = radio[0];
         radio_el.checked = this.model.get('index') === index;
@@ -395,7 +394,7 @@ export class RadioButtonsView extends DescriptionView {
 
   events(): { [e: string]: string } {
     return {
-      'click input[type="radio"]': '_handle_click'
+      'click input[type="radio"]': '_handle_click',
     };
   }
 
@@ -433,7 +432,7 @@ export class ToggleButtonsStyleModel extends DescriptionStyleModel {
   defaults(): Backbone.ObjectHash {
     return {
       ...super.defaults(),
-      _model_name: 'ToggleButtonsStyleModel'
+      _model_name: 'ToggleButtonsStyleModel',
     };
   }
 
@@ -442,13 +441,13 @@ export class ToggleButtonsStyleModel extends DescriptionStyleModel {
     button_width: {
       selector: '.widget-toggle-button',
       attribute: 'width',
-      default: null as any
+      default: null as any,
     },
     font_weight: {
       selector: '.widget-toggle-button',
       attribute: 'font-weight',
-      default: ''
-    }
+      default: '',
+    },
   };
 }
 
@@ -457,7 +456,7 @@ export class ToggleButtonsModel extends SelectionModel {
     return {
       ...super.defaults(),
       _model_name: 'ToggleButtonsModel',
-      _view_name: 'ToggleButtonsView'
+      _view_name: 'ToggleButtonsView',
     };
   }
 }
@@ -501,7 +500,7 @@ export class ToggleButtonsView extends DescriptionView {
     const tooltips = this.model.get('tooltips') || [];
     const disabled = this.model.get('disabled');
     const buttons = this.buttongroup.querySelectorAll('button');
-    const values = Array.from(buttons).map(x => x.value);
+    const values = Array.from(buttons).map((x) => x.value);
     let stale = false;
 
     for (let i = 0, len = items.length; i < len; ++i) {
@@ -559,7 +558,7 @@ export class ToggleButtonsView extends DescriptionView {
       }
     });
 
-    this.stylePromise.then(function(style) {
+    this.stylePromise.then(function (style) {
       if (style) {
         style.style();
       }
@@ -610,7 +609,7 @@ export class ToggleButtonsView extends DescriptionView {
 
   events(): { [e: string]: string } {
     return {
-      'click button': '_handle_click'
+      'click button': '_handle_click',
     };
   }
 
@@ -639,7 +638,7 @@ export namespace ToggleButtonsView {
     success: ['mod-success'],
     info: ['mod-info'],
     warning: ['mod-warning'],
-    danger: ['mod-danger']
+    danger: ['mod-danger'],
   };
 }
 
@@ -651,7 +650,7 @@ export class SelectionSliderModel extends SelectionModel {
       _view_name: 'SelectionSliderView',
       orientation: 'horizontal',
       readout: true,
-      continuous_update: true
+      continuous_update: true,
     };
   }
 }
@@ -753,16 +752,16 @@ export class SelectionSliderView extends DescriptionView {
       connect: true,
       range: {
         min: min,
-        max: max
+        max: max,
       },
       step: 1,
       animate: false,
       orientation: orientation,
       direction: orientation === 'horizontal' ? 'ltr' : 'rtl',
       format: {
-        from: (value: number): number => value,
-        to: (value: number): number => value
-      }
+        from: (value: string): number => Number(value),
+        to: (value: number): number => value,
+      },
     });
 
     // Using noUiSlider's event handler
@@ -778,7 +777,7 @@ export class SelectionSliderView extends DescriptionView {
   events(): { [e: string]: string } {
     return {
       slide: 'handleSliderChange',
-      slidestop: 'handleSliderChanged'
+      slidestop: 'handleSliderChanged',
     };
   }
 
@@ -828,9 +827,9 @@ export class SelectionSliderView extends DescriptionView {
       start: this.model.get('index'),
       range: {
         min: min,
-        max: max
+        max: max,
       },
-      step: 1
+      step: 1,
     });
   }
 
@@ -863,7 +862,7 @@ export class SelectMultipleModel extends MultipleSelectionModel {
       ...super.defaults(),
       _model_name: 'SelectMultipleModel',
       _view_name: 'SelectMultipleView',
-      rows: null
+      rows: null,
     };
   }
 }
@@ -905,7 +904,7 @@ export class SelectMultipleView extends SelectView {
   _handle_change(): void {
     const index = Array.prototype.map.call(
       this.listbox.selectedOptions || [],
-      function(option: HTMLOptionElement) {
+      function (option: HTMLOptionElement) {
         return option.index;
       }
     );
@@ -922,7 +921,7 @@ export class SelectionRangeSliderModel extends MultipleSelectionModel {
       _view_name: 'SelectionSliderView',
       orientation: 'horizontal',
       readout: true,
-      continuous_update: true
+      continuous_update: true,
     };
   }
 }

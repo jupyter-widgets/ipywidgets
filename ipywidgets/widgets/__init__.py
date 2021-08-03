@@ -15,6 +15,8 @@ from .widget_float import FloatText, BoundedFloatText, FloatSlider, FloatProgres
 from .widget_int import IntText, BoundedIntText, IntSlider, IntProgress, IntRangeSlider, Play, SliderStyle
 from .widget_color import ColorPicker
 from .widget_date import DatePicker
+from .widget_datetime import DatetimePicker
+from .widget_time import TimePicker
 from .widget_output import Output
 from .widget_selection import RadioButtons, ToggleButtons, ToggleButtonsStyle, Dropdown, Select, SelectionSlider, SelectMultiple, SelectionRangeSlider
 from .widget_selectioncontainer import Tab, Accordion, Stacked
@@ -24,6 +26,7 @@ from .interaction import interact, interactive, fixed, interact_manual, interact
 from .widget_link import jslink, jsdlink
 from .widget_layout import Layout
 from .widget_media import Image, Video, Audio
+from .widget_tagsinput import TagsInput, ColorsInput, FloatsInput, IntsInput
 from .widget_style import Style
 from .widget_templates import TwoByTwoLayout, AppLayout, GridspecLayout
 from .widget_upload import FileUpload

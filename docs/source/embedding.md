@@ -123,9 +123,9 @@ html_template = """
 
     <!-- Load IPywidgets bundle for embedding. -->
     <script
-      data-jupyter-widgets-cdn="https://cdn.jsdelivr.net/npm/"
+      data-jupyter-widgets-cdn="https://unpkg.com/"
       data-jupyter-widgets-cdn-only
-      src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" 
+      src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@*/dist/embed-amd.js" 
       crossorigin="anonymous">
     </script>
 
@@ -179,7 +179,7 @@ In this example, we used a Python string for the template, and used the
 documents, you may want to use a templating engine like
 [Jinja2](http://jinja.pocoo.org/).
 
-We also change the CDN from its default of unpkg to use jsdelivr by setting the
+We also change the CDN from its default of jsdelivr to use unpkg by setting the
 `data-jupyter-widgets-cdn` attribute.
 
 What's more, we only load modules from the CDN by setting the
@@ -211,7 +211,7 @@ The [jupyter_sphinx](https://jupyter-sphinx.readthedocs.io) extension
 enables jupyter-specific features in sphinx. It can be installed with `pip` and
 `conda`.
 
-In the `conf.py` sphinx configuration file, add `jupyter_sphinx.execute`
+In the `conf.py` sphinx configuration file, add `jupyter_sphinx`
 to the list of enabled extensions.
 
 Then use the `jupyter-execute` directive to embed the output of code execution
@@ -263,14 +263,14 @@ documentation. An illustration of this is the http://jupyter.org/widgets
 gallery.
 
 The widget embedder attempts to fetch the model and view implementation of the
-custom widget from the npm CDN https://unpkg.com by default. The URL that is requested
+custom widget from the npm CDN https://cdn.jsdelivr.net/npm by default. The URL that is requested
 for, e.g. the `bqplot` module name, with the semver range `^2.0.0` is
 
-`https://unpkg.com/bqplot@^2.0.0/dist/index.js`
+`https://cdn.jsdelivr.net/npm/bqplot@^2.0.0/dist/index.js`
 
 which holds the webpack bundle for the bqplot library.
 
-While the default CDN is using https://unpkg.com it can be configured by
+While the default CDN is using https://cdn.jsdelivr.net/npm it can be configured by
 setting the optional `data-jupyter-widgets-cdn` attribute for script tag which loads `embed-amd.js`,
 as shown in the example above.
 
@@ -316,7 +316,6 @@ implementing other usages of Jupyter widgets in web contexts.
    `application/vnd.jupyter.widget-state+json` mime type.
 3. The [`web3`](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples/web3) example showcases how communication with a Jupyter kernel can
    happen in a web context outside of the notebook or jupyterlab contexts.
-4. The [`web-tmpnb`](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples/web-tmpnb) example makes use of the `tmpnb` service to spawn a Jupyter
-   server, request a kernel from this server and implement the same feature as
-   the `web3` example.
+4. The [`web4`](https://github.com/jupyter-widgets/ipywidgets/tree/master/examples/web4) example shows how to embed widgets in an HTML document
+   using the HTML widget manager.
 

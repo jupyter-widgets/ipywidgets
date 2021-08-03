@@ -147,7 +147,7 @@ values of the `version` field in your `package.json`).
 
 The `_model_module_version` and `_view_module_version` are used to find your
 JavaScript bundle when embedding widgets. The embed manager will look for the
-bundle at `https://unpkg.com/<module-name>@<module-version>/dist/index.js`
+bundle at `https://cdn.jsdelivr.net/npm/<module-name>@<module-version>/dist/index.js`
 when it finds a widget.
 
 ### Updating embedded widgets
@@ -159,7 +159,7 @@ There are now two options for embedding widgets in an HTML page outside of the n
 If you are just embedding the standard widgets that come with ipywidgets, then you can simply include the following script tag:
 
 ```html
-<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@*/dist/embed.js" crossorigin="anonymous"></script>
 ```
 
 If you want to use a specific version of the embedder, you replace the `@*` with a semver range, such as `@^0.9.0`
@@ -175,7 +175,7 @@ In order to embed third-party widgets, you can use the RequireJS-based embedding
 
 Then include the following script, which defines the embedding libraries and runs the function to render widgets:
 ```html
-<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>
 ```
 If you want to use a specific version of the embedder, you replace the `@*` with a semver range, such as `@^0.9.0`
 

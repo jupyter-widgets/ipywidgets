@@ -5,10 +5,10 @@
 
 var VIEW_MIME_TYPE = 'application/vnd.jupyter.widget-view+json';
 
-var htmlManagerVersion = require('@jupyter-widgets/html-manager/package.json')
-  .version;
+var htmlManagerVersion =
+  require('@jupyter-widgets/html-manager/package.json').version;
 
-var embed_widgets = function() {
+var embed_widgets = function () {
   /**
    * Escape a string that will be the content of an HTML script tag.
    *
@@ -24,17 +24,17 @@ var embed_widgets = function() {
     return s.replace(/<(script|\/script|!--)/gi, '\\u003c$1');
   }
 
-  return new Promise(function(resolve, reject) {
+  return new Promise(function (resolve, reject) {
     requirejs(
       ['base/js/namespace', 'base/js/dialog', '@jupyter-widgets/controls'],
-      function(Jupyter, dialog, widgets) {
+      function (Jupyter, dialog, widgets) {
         var wm = Jupyter.WidgetManager._managers[0];
         if (!wm) {
           reject('No widget manager');
         }
         wm.get_state({
-          drop_defaults: true
-        }).then(function(state) {
+          drop_defaults: true,
+        }).then(function (state) {
           var data = escapeScript(JSON.stringify(state, null, '    '));
           var value = [
             '<html><head>',
@@ -42,19 +42,19 @@ var embed_widgets = function() {
             '',
             '<!-- Load require.js. Delete this if your page already loads require.js -->',
             '<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" crossorigin="anonymous"></script>',
-            '<script src="https://unpkg.com/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>',
+            '<script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@*/dist/embed-amd.js" crossorigin="anonymous"></script>',
             '<script type="application/vnd.jupyter.widget-state+json">',
             data,
             '</script>',
             '</head>',
             '<body>',
-            ''
+            '',
           ].join('\n');
           var views = [];
           var cells = Jupyter.notebook.get_cells();
-          Jupyter.notebook.get_cells().forEach(function(cell) {
+          Jupyter.notebook.get_cells().forEach(function (cell) {
             if (cell.output_area) {
-              cell.output_area.outputs.forEach(function(output) {
+              cell.output_area.outputs.forEach(function (output) {
                 if (
                   output.data &&
                   output.data[VIEW_MIME_TYPE] &&
@@ -94,12 +94,12 @@ var embed_widgets = function() {
             buttons: {
               'Copy to Clipboard': {
                 class: 'btn-primary',
-                click: function(event) {
+                click: function (event) {
                   content.select();
                   return document.execCommand('copy');
-                }
-              }
-            }
+                },
+              },
+            },
           });
         });
       }
@@ -111,12 +111,12 @@ var action = {
   help: 'Embed interactive widgets',
   icon: 'fa-sliders',
   help_index: 'zz',
-  handler: embed_widgets
+  handler: embed_widgets,
 };
 
 var action_name = 'embed-interactive-widgets';
 var prefix = 'widgets';
-requirejs(['base/js/namespace'], function(Jupyter) {
+requirejs(['base/js/namespace'], function (Jupyter) {
   Jupyter.notebook.keyboard_manager.actions.register(
     action,
     action_name,
@@ -125,5 +125,5 @@ requirejs(['base/js/namespace'], function(Jupyter) {
 });
 
 module.exports = {
-  action: action
+  action: action,
 };

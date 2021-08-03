@@ -33,7 +33,7 @@ export class ViewList<T> {
     this._create_view = create_view;
     this._remove_view =
       remove_view ||
-      function(view): void {
+      function (view): void {
         (view as any).remove();
       };
   }
@@ -68,7 +68,7 @@ export class ViewList<T> {
       this.views.length - first_removed
     );
     for (let j = 0; j < removed.length; j++) {
-      removed[j].then(function(view) {
+      removed[j].then(function (view) {
         remove.call(context, view);
       });
     }
@@ -89,8 +89,8 @@ export class ViewList<T> {
    * returns a promise that resolves after this removal is done
    */
   remove(): Promise<void> {
-    return Promise.all(this.views).then(views => {
-      views.forEach(value =>
+    return Promise.all(this.views).then((views) => {
+      views.forEach((value) =>
         this._remove_view.call(this._handler_context, value)
       );
       this.views = [];

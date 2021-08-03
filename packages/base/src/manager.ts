@@ -9,7 +9,7 @@ import {
   DOMWidgetModel,
   DOMWidgetView,
   WidgetModel,
-  WidgetView
+  WidgetView,
 } from './widget';
 
 /**
@@ -190,4 +190,6 @@ export interface IWidgetManager {
    * The default implementation just returns the original url.
    */
   resolveUrl(url: string): Promise<string>;
+
+  inline_sanitize(s: string): string;
 }

@@ -7,7 +7,7 @@ import {
   IntSliderView,
   IntRangeSliderView,
   IntTextView,
-  BaseIntSliderView
+  BaseIntSliderView,
 } from './widget_int';
 
 import { format } from 'd3-format';
@@ -19,7 +19,7 @@ export class FloatModel extends CoreDescriptionModel {
     return {
       ...super.defaults(),
       _model_name: 'FloatModel',
-      value: 0
+      value: 0,
     };
   }
 }
@@ -30,7 +30,7 @@ export class BoundedFloatModel extends FloatModel {
       ...super.defaults(),
       _model_name: 'BoundedFloatModel',
       max: 100.0,
-      min: 0.0
+      min: 0.0,
     };
   }
 }
@@ -48,7 +48,7 @@ export class FloatSliderModel extends BoundedFloatModel {
       readout_format: '.2f',
       slider_color: null,
       continuous_update: true,
-      disabled: false
+      disabled: false,
     };
   }
   initialize(
@@ -84,7 +84,7 @@ export class FloatLogSliderModel extends BoundedFloatModel {
       base: 10,
       value: 1.0,
       min: 0,
-      max: 4
+      max: 4,
     };
   }
   initialize(
@@ -151,16 +151,16 @@ export class FloatLogSliderView extends BaseIntSliderView {
       start: this.logCalc(this.model.get('value')),
       range: {
         min: this.model.get('min'),
-        max: this.model.get('max')
+        max: this.model.get('max'),
       },
       step: this.model.get('step') ?? undefined,
       animate: false,
       orientation: orientation,
       direction: orientation === 'horizontal' ? 'ltr' : 'rtl',
       format: {
-        from: (value: number): number => value,
-        to: (value: number): number => value
-      }
+        from: (value: string): number => Number(value),
+        to: (value: number): number => value,
+      },
     });
 
     // Using noUiSlider's event handler
@@ -263,9 +263,9 @@ export class FloatLogSliderView extends BaseIntSliderView {
       start: this.logCalc(this.model.get('value')),
       range: {
         min: this.model.get('min'),
-        max: this.model.get('max')
+        max: this.model.get('max'),
       },
-      step: this.model.get('step')
+      step: this.model.get('step'),
     });
   }
 
@@ -289,7 +289,8 @@ export class FloatRangeSliderView extends IntRangeSliderView {
   _parse_value = parseFloat;
 
   // matches: whitespace?, float, whitespace?, (hyphen, colon, or en-dash), whitespace?, float
-  _range_regex = /^\s*([+-]?(?:\d*\.?\d+|\d+\.)(?:[eE][-:]?\d+)?)\s*[-:–]\s*([+-]?(?:\d*\.?\d+|\d+\.)(?:[eE][+-]?\d+)?)/;
+  _range_regex =
+    /^\s*([+-]?(?:\d*\.?\d+|\d+\.)(?:[eE][-:]?\d+)?)\s*[-:–]\s*([+-]?(?:\d*\.?\d+|\d+\.)(?:[eE][+-]?\d+)?)/;
 }
 
 export class FloatTextModel extends FloatModel {
@@ -299,7 +300,7 @@ export class FloatTextModel extends FloatModel {
       _model_name: 'FloatTextModel',
       _view_name: 'FloatTextView',
       disabled: false,
-      continuous_update: false
+      continuous_update: false,
     };
   }
 }
@@ -312,7 +313,7 @@ export class BoundedFloatTextModel extends BoundedFloatModel {
       _view_name: 'FloatTextView',
       disabled: false,
       continuous_update: false,
-      step: 0.1
+      step: 0.1,
     };
   }
 }
@@ -347,7 +348,7 @@ export class FloatProgressModel extends BoundedFloatModel {
       _view_name: 'ProgressView',
       orientation: 'horizontal',
       bar_style: '',
-      style: null
+      style: null,
     };
   }
 }

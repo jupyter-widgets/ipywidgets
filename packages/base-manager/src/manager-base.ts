@@ -21,12 +21,45 @@ import {
   PROTOCOL_VERSION,
   IWidgetManager,
   IModelOptions,
-  IWidgetOptions
+  IWidgetOptions,
+  IBackboneModelOptions,
 } from '@jupyter-widgets/base';
 
 import { base64ToBuffer, bufferToBase64, hexToBuffer } from './utils';
+import { removeMath, replaceMath } from './latex';
+import sanitize from 'sanitize-html';
 
 const PROTOCOL_MAJOR_VERSION = PROTOCOL_VERSION.split('.', 1)[0];
+
+/**
+ * Sanitize HTML-formatted descriptions.
+ */
+function default_inline_sanitize(s: string): string {
+  const allowedTags = [
+    'a',
+    'abbr',
+    'b',
+    'code',
+    'em',
+    'i',
+    'img',
+    'li',
+    'ol',
+    'span',
+    'strong',
+    'ul',
+  ];
+  const allowedAttributes = {
+    '*': ['aria-*', 'style', 'title'],
+    a: ['href'],
+    img: ['src'],
+    style: ['media', 'type'],
+  };
+  return sanitize(s, {
+    allowedTags: allowedTags,
+    allowedAttributes: allowedAttributes,
+  });
+}
 
 export interface IState extends PartialJSONObject {
   buffers?: IBase64Buffers[];
@@ -51,6 +84,12 @@ export interface IBase64Buffers extends PartialJSONObject {
   path: (string | number)[];
   encoding: 'base64';
 }
+
+/**
+ * Make all properties in K (of T) required
+ */
+export type RequiredSome<T, K extends keyof T> = Omit<T, K> &
+  Required<Pick<T, K>>;
 
 /**
  * Manager abstract base class
@@ -97,14 +136,16 @@ export abstract class ManagerBase implements IWidgetManager {
           )) as typeof WidgetView;
           const view = new ViewType({
             model: model,
-            options: this.setViewOptions(options)
+            options: this.setViewOptions(options),
           });
           view.listenTo(model, 'destroy', view.remove);
           await view.render();
 
           // This presumes the view is added to the list of model views below
           view.once('remove', () => {
-            delete model.views[id];
+            if (model.views) {
+              delete model.views[id];
+            }
           });
 
           return view;
@@ -116,7 +157,9 @@ export abstract class ManagerBase implements IWidgetManager {
         }
       }
     ));
-    model.views[id] = viewPromise;
+    if (model.views) {
+      model.views[id] = viewPromise;
+    }
     return viewPromise;
   }
 
@@ -155,23 +198,16 @@ export abstract class ManagerBase implements IWidgetManager {
       console.error(error);
       return Promise.reject(error);
     }
-    const data = (msg.content.data as unknown) as ISerializedState;
+    const data = msg.content.data as unknown as ISerializedState;
     const buffer_paths = data.buffer_paths || [];
-    // Make sure the buffers are DataViews
-    const buffers = (msg.buffers || []).map(b => {
-      if (b instanceof DataView) {
-        return b;
-      } else {
-        return new DataView(b instanceof ArrayBuffer ? b : b.buffer);
-      }
-    });
+    const buffers = msg.buffers || [];
     put_buffers(data.state, buffer_paths, buffers);
     return this.new_model(
       {
         model_name: data.state['_model_name'] as string,
         model_module: data.state['_model_module'] as string,
         model_module_version: data.state['_model_module_version'] as string,
-        comm: comm
+        comm: comm,
       },
       data.state
     ).catch(reject('Could not create a model.', true));
@@ -214,8 +250,8 @@ export abstract class ManagerBase implements IWidgetManager {
             _model_name: options.model_name,
             _view_module: options.view_module,
             _view_module_version: options.view_module_version,
-            _view_name: options.view_name
-          }
+            _view_name: options.view_name,
+          },
         },
         { version: PROTOCOL_VERSION }
       );
@@ -225,11 +261,11 @@ export abstract class ManagerBase implements IWidgetManager {
     // Create the model. In the case where the comm promise is rejected a
     // comm-less model is still created with the required model id.
     return commPromise.then(
-      comm => {
+      (comm) => {
         // Comm Promise Resolved.
         options_clone.comm = comm;
         const widget_model = this.new_model(options_clone, serialized_state);
-        return widget_model.then(model => {
+        return widget_model.then((model) => {
           model.sync('create', model);
           return model;
         });
@@ -246,7 +282,7 @@ export abstract class ManagerBase implements IWidgetManager {
 
   register_model(model_id: string, modelPromise: Promise<WidgetModel>): void {
     this._models[model_id] = modelPromise;
-    modelPromise.then(model => {
+    modelPromise.then((model) => {
       model.once('comm:close', () => {
         delete this._models[model_id];
       });
@@ -273,25 +309,24 @@ export abstract class ManagerBase implements IWidgetManager {
     options: IModelOptions,
     serialized_state: any = {}
   ): Promise<WidgetModel> {
-    let model_id;
-    if (options.model_id) {
-      model_id = options.model_id;
-    } else if (options.comm) {
-      model_id = options.model_id = options.comm.comm_id;
-    } else {
+    const model_id = options.model_id ?? options.comm?.comm_id;
+    if (!model_id) {
       throw new Error(
         'Neither comm nor model_id provided in options object. At least one must exist.'
       );
     }
-
-    const modelPromise = this._make_model(options, serialized_state);
+    options.model_id = model_id;
+    const modelPromise = this._make_model(
+      options as RequiredSome<IModelOptions, 'model_id'>,
+      serialized_state
+    );
     // this call needs to happen before the first `await`, see note in `set_state`:
     this.register_model(model_id, modelPromise);
     return await modelPromise;
   }
 
   async _make_model(
-    options: IModelOptions,
+    options: RequiredSome<IModelOptions, 'model_id'>,
     serialized_state: any = {}
   ): Promise<WidgetModel> {
     const model_id = options.model_id;
@@ -318,10 +353,10 @@ export abstract class ManagerBase implements IWidgetManager {
       serialized_state,
       this
     );
-    const modelOptions = {
+    const modelOptions: IBackboneModelOptions = {
       widget_manager: this,
       model_id: model_id,
-      comm: options.comm
+      comm: options.comm,
     };
     const widget_model = new ModelType(attributes, modelOptions);
     widget_model.name = options.model_name;
@@ -334,8 +369,8 @@ export abstract class ManagerBase implements IWidgetManager {
    * @return Promise that resolves when the widget state is cleared.
    */
   clear_state(): Promise<void> {
-    return resolvePromisesDict(this._models).then(models => {
-      Object.keys(models).forEach(id => models[id].close());
+    return resolvePromisesDict(this._models).then((models) => {
+      Object.keys(models).forEach((id) => models[id].close());
       this._models = Object.create(null);
     });
   }
@@ -350,8 +385,10 @@ export abstract class ManagerBase implements IWidgetManager {
    * @returns Promise for a state dictionary
    */
   get_state(options: IStateOptions = {}): Promise<IManagerState> {
-    const modelPromises = Object.keys(this._models).map(id => this._models[id]);
-    return Promise.all(modelPromises).then(models => {
+    const modelPromises = Object.keys(this._models).map(
+      (id) => this._models[id]
+    );
+    return Promise.all(modelPromises).then((models) => {
       return serialize_state(models, options);
     });
   }
@@ -372,7 +409,7 @@ export abstract class ManagerBase implements IWidgetManager {
     }
     const models = state.state as any;
     // Recreate all the widget models for the given widget manager state.
-    const all_models = this._get_comm_info().then(live_comms => {
+    const all_models = this._get_comm_info().then((live_comms) => {
       /* Note: It is currently safe to just loop over the models in any order,
                given that the following holds (does at the time of writing):
                1: any call to `new_model` with state registers the model promise (e.g. with `register_model`)
@@ -384,11 +421,11 @@ export abstract class ManagerBase implements IWidgetManager {
               to another model that doesn't exist yet!
             */
       return Promise.all(
-        Object.keys(models).map(model_id => {
+        Object.keys(models).map((model_id) => {
           // First put back the binary buffers
           const decode: { [s: string]: (s: string) => ArrayBuffer } = {
             base64: base64ToBuffer,
-            hex: hexToBuffer
+            hex: hexToBuffer,
           };
           const model = models[model_id];
           const modelState = model.state;
@@ -404,11 +441,11 @@ export abstract class ManagerBase implements IWidgetManager {
           // If the model has already been created, set its state and then
           // return it.
           if (this._models[model_id]) {
-            return this._models[model_id].then(model => {
+            return this._models[model_id].then((model) => {
               // deserialize state
               return (model.constructor as typeof WidgetModel)
                 ._deserialize_state(modelState || {}, this)
-                .then(attributes => {
+                .then((attributes) => {
                   model.set_state(attributes); // case 2
                   return model;
                 });
@@ -419,14 +456,14 @@ export abstract class ManagerBase implements IWidgetManager {
             model_id: model_id,
             model_name: model.model_name,
             model_module: model.model_module,
-            model_module_version: model.model_module_version
+            model_module_version: model.model_module_version,
           };
           if (Object.prototype.hasOwnProperty.call(live_comms, 'model_id')) {
             // live comm
             // This connects to an existing comm if it exists, and
             // should *not* send a comm open message.
             return this._create_comm(this.comm_target_name, model_id).then(
-              comm => {
+              (comm) => {
                 modelCreate.comm = comm;
                 return this.new_model(modelCreate); // No state, so safe wrt. case 1
               }
@@ -446,8 +483,8 @@ export abstract class ManagerBase implements IWidgetManager {
    * as dead.
    */
   disconnect(): void {
-    Object.keys(this._models).forEach(i => {
-      this._models[i].then(model => {
+    Object.keys(this._models).forEach((i) => {
+      this._models[i].then((model) => {
         model.comm_live = false;
       });
     });
@@ -460,6 +497,13 @@ export abstract class ManagerBase implements IWidgetManager {
    */
   resolveUrl(url: string): Promise<string> {
     return Promise.resolve(url);
+  }
+
+  inline_sanitize(source: string): string {
+    const parts = removeMath(source);
+    // Sanitize tags for inline output.
+    const sanitized = default_inline_sanitize(parts['text']);
+    return replaceMath(sanitized, parts['math']);
   }
 
   /**
@@ -508,7 +552,7 @@ export abstract class ManagerBase implements IWidgetManager {
   protected filterExistingModelState(serialized_state: any): any {
     let models = serialized_state.state;
     models = Object.keys(models)
-      .filter(model_id => {
+      .filter((model_id) => {
         return !this._models[model_id];
       })
       .reduce<IManagerStateMap>((res, model_id) => {
@@ -521,9 +565,8 @@ export abstract class ManagerBase implements IWidgetManager {
   /**
    * Dictionary of model ids and model instance promises
    */
-  private _models: { [key: string]: Promise<WidgetModel> } = Object.create(
-    null
-  );
+  private _models: { [key: string]: Promise<WidgetModel> } =
+    Object.create(null);
 }
 
 export interface IStateOptions {
@@ -547,7 +590,7 @@ export function serialize_state(
   options: IStateOptions = {}
 ): IManagerState {
   const state: IManagerStateMap = {};
-  models.forEach(model => {
+  models.forEach((model) => {
     const model_id = model.model_id;
     const split = remove_buffers(
       model.serialize(model.get_state(options.drop_defaults))
@@ -556,14 +599,14 @@ export function serialize_state(
       return {
         data: bufferToBase64(buffer),
         path: split.buffer_paths[index],
-        encoding: 'base64'
+        encoding: 'base64',
       };
     });
     state[model_id] = {
       model_name: model.name,
       model_module: model.module,
       model_module_version: model.get('_model_module_version'),
-      state: split.state
+      state: split.state,
     };
     // To save space, only include the buffers key if we have buffers
     if (buffers.length > 0) {

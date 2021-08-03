@@ -37,8 +37,11 @@ class Layout(Widget):
         'baseline', 'stretch'] + CSS_PROPERTIES, allow_none=True, help="The align-items CSS attribute.").tag(sync=True)
     align_self = CaselessStrEnum(['auto', 'flex-start', 'flex-end',
         'center', 'baseline', 'stretch'] + CSS_PROPERTIES, allow_none=True, help="The align-self CSS attribute.").tag(sync=True)
+    border_top = Unicode(None, allow_none=True, help="The border top CSS attribute.").tag(sync=True)
+    border_right = Unicode(None, allow_none=True, help="The border right CSS attribute.").tag(sync=True)
+    border_bottom = Unicode(None, allow_none=True, help="The border bottom CSS attribute.").tag(sync=True)
+    border_left = Unicode(None, allow_none=True, help="The border left CSS attribute.").tag(sync=True)
     bottom = Unicode(None, allow_none=True, help="The bottom CSS attribute.").tag(sync=True)
-    border = Unicode(None, allow_none=True, help="The border CSS attribute.").tag(sync=True)
     display = Unicode(None, allow_none=True, help="The display CSS attribute.").tag(sync=True)
     flex = Unicode(None, allow_none=True, help="The flex CSS attribute.").tag(sync=True)
     flex_flow = Unicode(None, allow_none=True, help="The flex-flow CSS attribute.").tag(sync=True)
@@ -74,6 +77,30 @@ class Layout(Widget):
     grid_row = Unicode(None, allow_none=True, help="The grid-row CSS attribute.").tag(sync=True)
     grid_column = Unicode(None, allow_none=True, help="The grid-column CSS attribute.").tag(sync=True)
     grid_area = Unicode(None, allow_none=True, help="The grid-area CSS attribute.").tag(sync=True)
+
+    def _get_border(self):
+        """
+        `border` property getter. Return the common value of all side
+        borders if they are identical. Otherwise return None.
+
+        """
+        found = None
+        for side in ['top', 'right', 'bottom', 'left']:
+            if not hasattr(self, "border_" + side):
+                return
+            old, found = found, getattr(self, "border_" + side)
+            if found is None or (old is not None and found != old):
+                return
+        return found
+
+    def _set_border(self, border):
+        """
+        `border` property setter. Set all 4 sides to `border` string.
+        """
+        for side in ['top', 'right', 'bottom', 'left']:
+            setattr(self, "border_" + side, border)
+
+    border = property(_get_border, _set_border)
 
 
 class LayoutTraitType(Instance):

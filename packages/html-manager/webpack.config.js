@@ -18,9 +18,9 @@ var rules = [
       loader: 'url-loader',
       options: {
         limit: 10000,
-        mimetype: 'application/font-woff'
-      }
-    }
+        mimetype: 'application/font-woff',
+      },
+    },
   },
   {
     test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
@@ -28,9 +28,9 @@ var rules = [
       loader: 'url-loader',
       options: {
         limit: 10000,
-        mimetype: 'application/font-woff'
-      }
-    }
+        mimetype: 'application/font-woff',
+      },
+    },
   },
   {
     test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
@@ -38,9 +38,9 @@ var rules = [
       loader: 'url-loader',
       options: {
         limit: 10000,
-        mimetype: 'application/octet-stream'
-      }
-    }
+        mimetype: 'application/octet-stream',
+      },
+    },
   },
   { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, use: 'file-loader' },
   {
@@ -49,14 +49,16 @@ var rules = [
       loader: 'url-loader',
       options: {
         limit: 10000,
-        mimetype: 'image/svg+xml'
-      }
-    }
-  }
+        mimetype: 'image/svg+xml',
+      },
+    },
+  },
 ];
 
 var publicPath =
-  'https://unpkg.com/@jupyter-widgets/html-manager@' + version + '/dist/';
+  'https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@' +
+  version +
+  '/dist/';
 
 module.exports = [
   {
@@ -65,11 +67,11 @@ module.exports = [
     output: {
       filename: 'embed.js',
       path: path.resolve(__dirname, 'dist'),
-      publicPath: publicPath
+      publicPath: publicPath,
     },
     devtool: 'source-map',
     module: { rules: rules },
-    mode: 'production'
+    mode: 'production',
   },
   {
     // script that renders widgets using the amd embedding and can render third-party custom widgets
@@ -77,10 +79,10 @@ module.exports = [
     output: {
       filename: 'embed-amd-render.js',
       path: path.resolve(__dirname, 'dist', 'amd'),
-      publicPath: publicPath
+      publicPath: publicPath,
     },
     module: { rules: rules },
-    mode: 'production'
+    mode: 'production',
   },
   {
     // embed library that depends on requirejs, and can load third-party widgets dynamically
@@ -90,10 +92,10 @@ module.exports = [
       filename: 'libembed-amd.js',
       path: path.resolve(__dirname, 'dist', 'amd'),
       publicPath: publicPath,
-      libraryTarget: 'amd'
+      libraryTarget: 'amd',
     },
     module: { rules: rules },
-    mode: 'production'
+    mode: 'production',
   },
   {
     // @jupyter-widgets/html-manager
@@ -103,11 +105,11 @@ module.exports = [
       filename: 'index.js',
       path: path.resolve(__dirname, 'dist', 'amd'),
       publicPath: publicPath,
-      libraryTarget: 'amd'
+      libraryTarget: 'amd',
     },
     module: { rules: rules },
     externals: ['@jupyter-widgets/base', '@jupyter-widgets/controls'],
-    mode: 'production'
+    mode: 'production',
   },
   {
     // @jupyter-widgets/base
@@ -117,10 +119,10 @@ module.exports = [
       filename: 'base.js',
       path: path.resolve(__dirname, 'dist', 'amd'),
       publicPath: publicPath,
-      libraryTarget: 'amd'
+      libraryTarget: 'amd',
     },
     module: { rules: rules },
-    mode: 'production'
+    mode: 'production',
   },
   {
     // @jupyter-widgets/controls
@@ -130,10 +132,10 @@ module.exports = [
       filename: 'controls.js',
       path: path.resolve(__dirname, 'dist', 'amd'),
       publicPath: publicPath,
-      libraryTarget: 'amd'
+      libraryTarget: 'amd',
     },
     module: { rules: rules },
     externals: ['@jupyter-widgets/base'],
-    mode: 'production'
-  }
+    mode: 'production',
+  },
 ];

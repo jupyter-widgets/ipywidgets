@@ -154,7 +154,7 @@ const named_colors: { [key: string]: string } = {
   white: '#ffffff',
   whitesmoke: '#f5f5f5',
   yellow: '#ffff00',
-  yellowgreen: '#9acd32'
+  yellowgreen: '#9acd32',
 };
 
 export class ColorPickerModel extends CoreDescriptionModel {
@@ -164,7 +164,7 @@ export class ColorPickerModel extends CoreDescriptionModel {
       value: 'black',
       concise: false,
       _model_name: 'ColorPickerModel',
-      _view_name: 'ColorPickerView'
+      _view_name: 'ColorPickerView',
     };
   }
 }
@@ -222,7 +222,7 @@ export class ColorPickerView extends DescriptionView {
     void this._text_change;
     return {
       'change [type="color"]': '_picker_change',
-      'change [type="text"]': '_text_change'
+      'change [type="text"]': '_text_change',
     };
   }
 

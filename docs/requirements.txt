@@ -1,6 +1,5 @@
 bqplot
 ipykernel
-ipyleaflet
 jupyter_client
 matplotlib
 nbsphinx>=0.5
@@ -8,3 +7,4 @@ numpy
 recommonmark
 sphinx>=1.4.6
 sphinx_rtd_theme
+packaging

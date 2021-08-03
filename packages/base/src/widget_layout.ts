@@ -12,7 +12,10 @@ const css_properties: Dict<string | null> = {
   align_content: null,
   align_items: null,
   align_self: null,
-  border: null,
+  border_top: null,
+  border_right: null,
+  border_bottom: null,
+  border_left: null,
   bottom: null,
   display: null,
   flex: null,
@@ -50,7 +53,7 @@ const css_properties: Dict<string | null> = {
   // items
   grid_row: null,
   grid_column: null,
-  grid_area: null
+  grid_area: null,
 };
 
 export class LayoutModel extends WidgetModel {
@@ -59,7 +62,7 @@ export class LayoutModel extends WidgetModel {
       super.defaults(),
       {
         _model_name: 'LayoutModel',
-        _view_name: 'LayoutView'
+        _view_name: 'LayoutView',
       },
       css_properties
     );
@@ -130,7 +133,7 @@ export class LayoutView extends WidgetView {
    */
   unlayout(): void {
     const parent = this.options.parent as DOMWidgetView;
-    this._traitNames.forEach(trait => {
+    this._traitNames.forEach((trait) => {
       if (parent) {
         parent.el.style.removeProperty(this.css_name(trait));
       } else {

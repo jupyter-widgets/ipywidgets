@@ -17,7 +17,7 @@ export class VideoModel extends CoreDOMWidgetModel {
       autoplay: true,
       loop: true,
       controls: true,
-      value: new DataView(new ArrayBuffer(0))
+      value: new DataView(new ArrayBuffer(0)),
     };
   }
 
@@ -26,8 +26,8 @@ export class VideoModel extends CoreDOMWidgetModel {
     value: {
       serialize: (value: any): DataView => {
         return new DataView(value.buffer.slice(0));
-      }
-    }
+      },
+    },
   };
 }
 
@@ -37,8 +37,8 @@ export class VideoView extends DOMWidgetView {
      * Called when view is rendered.
      */
     super.render();
-    this.pWidget.addClass('jupyter-widgets');
-    this.pWidget.addClass('widget-image');
+    this.luminoWidget.addClass('jupyter-widgets');
+    this.luminoWidget.addClass('widget-image');
     this.update(); // Set defaults.
   }
 
@@ -55,7 +55,7 @@ export class VideoView extends DOMWidgetView {
     const value = this.model.get('value');
     if (format !== 'url') {
       const blob = new Blob([value], {
-        type: `video/${this.model.get('format')}`
+        type: `video/${this.model.get('format')}`,
       });
       url = URL.createObjectURL(blob);
     } else {
@@ -65,7 +65,7 @@ export class VideoView extends DOMWidgetView {
     // Clean up the old objectURL
     const oldurl = this.el.src;
     this.el.src = url;
-    if (oldurl && typeof oldurl !== 'string') {
+    if (oldurl) {
       URL.revokeObjectURL(oldurl);
     }
 
@@ -99,17 +99,9 @@ export class VideoView extends DOMWidgetView {
     super.remove();
   }
 
-  /**
-   * The default tag name.
-   *
-   * #### Notes
-   * This is a read-only attribute.
-   */
-  get tagName(): string {
-    // We can't make this an attribute with a default value
-    // since it would be set after it is needed in the
-    // constructor.
-    return 'video';
+  preinitialize() {
+    // Must set this before the initialize method creates the element
+    this.tagName = 'video';
   }
 
   el: HTMLVideoElement;

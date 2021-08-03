@@ -29,7 +29,10 @@ Attribute        | Type             | Default          | Help
 `align_content`  | `null` or string (one of `'flex-start'`, `'flex-end'`, `'center'`, `'space-between'`, `'space-around'`, `'space-evenly'`, `'stretch'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The align-content CSS attribute.
 `align_items`    | `null` or string (one of `'flex-start'`, `'flex-end'`, `'center'`, `'baseline'`, `'stretch'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The align-items CSS attribute.
 `align_self`     | `null` or string (one of `'auto'`, `'flex-start'`, `'flex-end'`, `'center'`, `'baseline'`, `'stretch'`, `'inherit'`, `'initial'`, `'unset'`) | `null`           | The align-self CSS attribute.
-`border`         | `null` or string | `null`           | The border CSS attribute.
+`border_bottom`  | `null` or string | `null`           | The border bottom CSS attribute.
+`border_left`    | `null` or string | `null`           | The border left CSS attribute.
+`border_right`   | `null` or string | `null`           | The border right CSS attribute.
+`border_top`     | `null` or string | `null`           | The border top CSS attribute.
 `bottom`         | `null` or string | `null`           | The bottom CSS attribute.
 `display`        | `null` or string | `null`           | The display CSS attribute.
 `flex`           | `null` or string | `null`           | The flex CSS attribute.
@@ -115,6 +118,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'FloatTextView'` | 
 `continuous_update` | boolean          | `false`          | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (float)   | `100.0`          | Max value
@@ -138,6 +142,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'IntTextView'`  | 
 `continuous_update` | boolean          | `false`          | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (integer) | `100`            | Max value
@@ -216,6 +221,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'CheckboxView'` | 
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `indent`         | boolean          | `true`           | Indent the control to align with other controls with a description.
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -237,12 +243,34 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'ColorPickerView'` | 
 `concise`        | boolean          | `false`          | Display short version with just a color selector.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `layout`         | reference to Layout widget | reference to new instance | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | string           | `'black'`        | The color value.
+
+### ColorsInputModel (@jupyter-widgets/controls, 2.0.0); ColorsInputView (@jupyter-widgets/controls, 2.0.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_name`    | string           | `'ColorsInputModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_name`     | string           | `'ColorsInputView'` | 
+`allow_duplicates` | boolean          | `true`           | 
+`allowed_tags`   | array            | `[]`             | 
+`description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
+`layout`         | reference to Layout widget | reference to new instance | 
+`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`tooltip`        | `null` or string | `null`           | A tooltip caption.
+`value`          | array            | `[]`             | List of string tags
 
 ### ComboboxModel (@jupyter-widgets/controls, 2.0.0); ComboboxView (@jupyter-widgets/controls, 2.0.0)
 
@@ -257,6 +285,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'ComboboxView'` | 
 `continuous_update` | boolean          | `true`           | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `ensure_option`  | boolean          | `false`          | If set, ensure value is in options. Implies continuous_update=False.
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -350,12 +379,38 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'DatePickerView'` | 
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `layout`         | reference to Layout widget | reference to new instance | 
+`max`            | `null` or Date   | `null`           | 
+`min`            | `null` or Date   | `null`           | 
+`step`           | number (integer) or string (one of `'any'`) | `1`              | The date step to use for the picker, in days, or "any".
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | `null` or Date   | `null`           | 
+
+### DatetimeModel (@jupyter-widgets/controls, 2.0.0); DatetimeView (@jupyter-widgets/controls, 2.0.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_name`    | string           | `'DatetimeModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_name`     | string           | `'DatetimeView'` | 
+`description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
+`disabled`       | boolean          | `false`          | Enable or disable user changes.
+`layout`         | reference to Layout widget | reference to new instance | 
+`max`            | `null` or Datetime | `null`           | 
+`min`            | `null` or Datetime | `null`           | 
+`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`tooltip`        | `null` or string | `null`           | A tooltip caption.
+`value`          | `null` or Datetime | `null`           | 
 
 ### DescriptionStyleModel (@jupyter-widgets/controls, 2.0.0); StyleView (@jupyter-widgets/base, 2.0.0)
 
@@ -395,6 +450,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'DropdownView'` | 
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `index`          | `null` or number (integer) | `null`           | Selected index
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -416,6 +472,7 @@ Attribute        | Type             | Default          | Help
 `accept`         | string           | `''`             | File types to accept, empty string for all
 `button_style`   | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the button.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable button
 `error`          | string           | `''`             | Error message
 `icon`           | string           | `'upload'`       | Font-awesome icon name, without the 'fa-' prefix.
@@ -440,6 +497,7 @@ Attribute        | Type             | Default          | Help
 `base`           | number (float)   | `10.0`           | Base for the logarithm
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is holding the slider.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (float)   | `4.0`            | Max value for the exponent
@@ -466,6 +524,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'ProgressView'` | 
 `bar_style`      | `null` or string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progess bar.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (float)   | `100.0`          | Max value
 `min`            | number (float)   | `0.0`            | Min value
@@ -488,6 +547,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'FloatRangeSliderView'` | 
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is sliding the slider.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (float)   | `100.0`          | Max value
@@ -514,6 +574,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'FloatSliderView'` | 
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is holding the slider.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (float)   | `100.0`          | Max value
@@ -540,6 +601,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'FloatTextView'` | 
 `continuous_update` | boolean          | `false`          | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `step`           | `null` or number (float) | `null`           | Minimum step to increment the value
@@ -547,6 +609,31 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | number (float)   | `0.0`            | Float value
+
+### FloatsInputModel (@jupyter-widgets/controls, 2.0.0); FloatsInputView (@jupyter-widgets/controls, 2.0.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_name`    | string           | `'FloatsInputModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_name`     | string           | `'FloatsInputView'` | 
+`allow_duplicates` | boolean          | `true`           | 
+`allowed_tags`   | array            | `[]`             | 
+`description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
+`format`         | string           | `'.1f'`          | 
+`layout`         | reference to Layout widget | reference to new instance | 
+`max`            | `null` or number (float) | `null`           | 
+`min`            | `null` or number (float) | `null`           | 
+`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`tag_style`      | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the tags.
+`tooltip`        | `null` or string | `null`           | A tooltip caption.
+`value`          | array            | `[]`             | List of float tags
 
 ### GridBoxModel (@jupyter-widgets/controls, 2.0.0); GridBoxView (@jupyter-widgets/controls, 2.0.0)
 
@@ -594,6 +681,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'HTMLMathView'` | 
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `layout`         | reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `style`          | reference to _StringStyle widget | reference to new instance | 
@@ -613,6 +701,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'HTMLView'`     | 
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `layout`         | reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `style`          | reference to _StringStyle widget | reference to new instance | 
@@ -652,6 +741,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'ProgressView'` | 
 `bar_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progess bar.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (integer) | `100`            | Max value
 `min`            | number (integer) | `0`              | Min value
@@ -674,6 +764,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'IntRangeSliderView'` | 
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is sliding the slider.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (integer) | `100`            | Max value
@@ -700,6 +791,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'IntSliderView'` | 
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is holding the slider.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (integer) | `100`            | Max value
@@ -726,6 +818,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'IntTextView'`  | 
 `continuous_update` | boolean          | `false`          | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `step`           | number (integer) | `1`              | Minimum step to increment the value
@@ -733,6 +826,31 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | number (integer) | `0`              | Int value
+
+### IntsInputModel (@jupyter-widgets/controls, 2.0.0); IntsInputView (@jupyter-widgets/controls, 2.0.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_name`    | string           | `'IntsInputModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_name`     | string           | `'IntsInputView'` | 
+`allow_duplicates` | boolean          | `true`           | 
+`allowed_tags`   | array            | `[]`             | 
+`description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
+`format`         | string           | `'.3g'`          | 
+`layout`         | reference to Layout widget | reference to new instance | 
+`max`            | `null` or number (integer) | `null`           | 
+`min`            | `null` or number (integer) | `null`           | 
+`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`tag_style`      | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the tags.
+`tooltip`        | `null` or string | `null`           | A tooltip caption.
+`value`          | array            | `[]`             | List of int tags
 
 ### LabelModel (@jupyter-widgets/controls, 2.0.0); LabelView (@jupyter-widgets/controls, 2.0.0)
 
@@ -746,6 +864,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'LabelView'`    | 
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `layout`         | reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
 `style`          | reference to LabelStyle widget | reference to new instance | 
@@ -786,6 +905,28 @@ Attribute        | Type             | Default          | Help
 `source`         | array            | `[]`             | The source (widget, 'trait_name') pair
 `target`         | array            | `[]`             | The target (widget, 'trait_name') pair
 
+### NaiveDatetimeModel (@jupyter-widgets/controls, 2.0.0); DatetimeView (@jupyter-widgets/controls, 2.0.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_name`    | string           | `'NaiveDatetimeModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_name`     | string           | `'DatetimeView'` | 
+`description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
+`disabled`       | boolean          | `false`          | Enable or disable user changes.
+`layout`         | reference to Layout widget | reference to new instance | 
+`max`            | `null` or Datetime | `null`           | 
+`min`            | `null` or Datetime | `null`           | 
+`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`tooltip`        | `null` or string | `null`           | A tooltip caption.
+`value`          | `null` or Datetime | `null`           | 
+
 ### PasswordModel (@jupyter-widgets/controls, 2.0.0); PasswordView (@jupyter-widgets/controls, 2.0.0)
 
 Attribute        | Type             | Default          | Help
@@ -799,6 +940,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'PasswordView'` | 
 `continuous_update` | boolean          | `true`           | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
@@ -819,6 +961,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'PlayView'`     | 
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `interval`       | number (integer) | `100`            | The time between two animation steps (ms).
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -859,6 +1002,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'RadioButtonsView'` | 
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `index`          | `null` or number (integer) | `null`           | Selected index
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -879,6 +1023,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'SelectView'`   | 
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `index`          | `null` or number (integer) | `null`           | Selected index
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -900,6 +1045,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'SelectMultipleView'` | 
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `index`          | array of number (integer) | `[]`             | Selected indices
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -922,6 +1068,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'SelectionRangeSliderView'` | 
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is holding the slider.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `index`          | array            | `[0, 0]`         | Min and max selected indices
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -945,6 +1092,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'SelectionSliderView'` | 
 `continuous_update` | boolean          | `true`           | Update the value of the widget as the user is holding the slider.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `index`          | number (integer) | `0`              | Selected index
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -1020,6 +1168,28 @@ Attribute        | Type             | Default          | Help
 `titles`         | array of string  | `[]`             | Titles of the pages
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
+### TagsInputModel (@jupyter-widgets/controls, 2.0.0); TagsInputView (@jupyter-widgets/controls, 2.0.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_name`    | string           | `'TagsInputModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_name`     | string           | `'TagsInputView'` | 
+`allow_duplicates` | boolean          | `true`           | 
+`allowed_tags`   | array            | `[]`             | 
+`description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
+`layout`         | reference to Layout widget | reference to new instance | 
+`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`tag_style`      | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the tags.
+`tooltip`        | `null` or string | `null`           | A tooltip caption.
+`value`          | array            | `[]`             | List of string tags
+
 ### TextModel (@jupyter-widgets/controls, 2.0.0); TextView (@jupyter-widgets/controls, 2.0.0)
 
 Attribute        | Type             | Default          | Help
@@ -1033,6 +1203,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'TextView'`     | 
 `continuous_update` | boolean          | `true`           | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
@@ -1069,6 +1240,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'TextareaView'` | 
 `continuous_update` | boolean          | `true`           | Update the value as the user types. If False, update on submission, e.g., pressing Enter or navigating away.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `layout`         | reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
@@ -1077,6 +1249,29 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | string           | `''`             | String value
+
+### TimeModel (@jupyter-widgets/controls, 2.0.0); TimeView (@jupyter-widgets/controls, 2.0.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_name`    | string           | `'TimeModel'`    | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_name`     | string           | `'TimeView'`     | 
+`description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
+`disabled`       | boolean          | `false`          | Enable or disable user changes.
+`layout`         | reference to Layout widget | reference to new instance | 
+`max`            | `null` or Time   | `null`           | 
+`min`            | `null` or Time   | `null`           | 
+`step`           | number (float) or string (one of `'any'`) | `60`             | The time step to use for the picker, in seconds, or "any".
+`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
+`tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`tooltip`        | `null` or string | `null`           | A tooltip caption.
+`value`          | `null` or Time   | `null`           | 
 
 ### ToggleButtonModel (@jupyter-widgets/controls, 2.0.0); ToggleButtonView (@jupyter-widgets/controls, 2.0.0)
 
@@ -1091,6 +1286,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'ToggleButtonView'` | 
 `button_style`   | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the button.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `icon`           | string           | `''`             | Font-awesome icon.
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -1133,6 +1329,7 @@ Attribute        | Type             | Default          | Help
 `_view_name`     | string           | `'ToggleButtonsView'` | 
 `button_style`   | `null` or string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the buttons.
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes
 `icons`          | array of string  | `[]`             | Icons names for each button (FontAwesome names without the fa- prefix).
 `index`          | `null` or number (integer) | `null`           | Selected index
@@ -1185,6 +1382,7 @@ Attribute        | Type             | Default          | Help
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'ValidView'`    | 
 `description`    | string           | `''`             | Description of the control.
+`description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `layout`         | reference to Layout widget | reference to new instance | 
 `readout`        | string           | `'Invalid'`      | Message displayed when the value is False

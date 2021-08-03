@@ -18,7 +18,7 @@ from traitlets import Unicode, Dict
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.display import clear_output
 from IPython import get_ipython
-
+import traceback
 
 @register
 class Output(DOMWidget):
@@ -31,7 +31,7 @@ class Output(DOMWidget):
     context will be captured and displayed in the widget instead of the standard output
     area.
 
-    You can also use the .capture() method to decorate a function or a method. Any output 
+    You can also use the .capture() method to decorate a function or a method. Any output
     produced by the function will then go to the output widget. This is useful for
     debugging widget callbacks, for example.
 
@@ -108,23 +108,48 @@ class Output(DOMWidget):
         """Called upon entering output widget context manager."""
         self._flush()
         ip = get_ipython()
-        if ip and hasattr(ip, 'kernel') and hasattr(ip.kernel, '_parent_header'):
-            self.msg_id = ip.kernel._parent_header['header']['msg_id']
-            self.__counter += 1
+        kernel = None
+        if ip and getattr(ip, "kernel", None) is not None:
+            kernel = ip.kernel
+        elif self.comm is not None and self.comm.kernel is not None:
+            kernel = self.comm.kernel
+        
+        if kernel:
+            parent = None
+            if hasattr(kernel, "get_parent"):
+                parent = kernel.get_parent()
+            elif hasattr(kernel, "_parent_header"):
+                # ipykernel < 6: kernel._parent_header is the parent *request*
+                parent = kernel._parent_header
+
+            if parent and parent.get("header"):
+                self.msg_id = parent["header"]["msg_id"]
+                self.__counter += 1
 
     def __exit__(self, etype, evalue, tb):
         """Called upon exiting output widget context manager."""
-        ip = get_ipython()
+        kernel = None
         if etype is not None:
+            ip = get_ipython()
             if ip:
+                kernel = ip
                 ip.showtraceback((etype, evalue, tb), tb_offset=0)
+            elif self.comm is not None and self.comm.kernel is not None:
+                kernel = self.comm.kernel
+                kernel.send_response(kernel.iopub_socket,
+                                     u'error',
+                                     {
+                    u'traceback': ["".join(traceback.format_exception(etype, evalue, tb))],
+                    u'evalue': repr(evalue.args),
+                    u'ename': etype.__name__
+                    })
         self._flush()
         self.__counter -= 1
         if self.__counter == 0:
             self.msg_id = ''
-        # suppress exceptions when in a kernel, since they are shown above,
+        # suppress exceptions when in IPython, since they are shown above,
         # otherwise let someone else handle it
-        return True if ip else None
+        return True if kernel else None
 
     def _flush(self):
         """Flush stdout and stderr buffers."""

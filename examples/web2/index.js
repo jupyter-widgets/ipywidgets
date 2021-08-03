@@ -6,7 +6,7 @@ var WidgetManager = require('./manager').WidgetManager;
 require('@jupyter-widgets/controls/css/widgets.css');
 require('font-awesome/css/font-awesome.css');
 
-document.addEventListener('DOMContentLoaded', function(event) {
+document.addEventListener('DOMContentLoaded', function (event) {
   var code = require('./widget_code.py').default;
   var inputarea = document.getElementsByClassName('inputarea')[0];
   new CodeMirror(inputarea, {
@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function(event) {
     tabSize: 4,
     showCursorWhenSelecting: true,
     viewportMargin: Infinity,
-    readOnly: true
+    readOnly: true,
   });
 
   var state = require('./widget_state.json');
@@ -23,12 +23,12 @@ document.addEventListener('DOMContentLoaded', function(event) {
   var manager = new WidgetManager(widgetarea);
   manager
     .set_state(state)
-    .then(models =>
+    .then((models) =>
       manager.create_view(
         models.find(
-          element => element.model_id == '8621699ecc804983a612f09b7dfe806b'
+          (element) => element.model_id == '8621699ecc804983a612f09b7dfe806b'
         )
       )
     )
-    .then(view => manager.display_view(view));
+    .then((view) => manager.display_view(view));
 });

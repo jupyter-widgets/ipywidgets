@@ -62,23 +62,23 @@ const typesToArray: { [key: string]: any } = {
   uint16: Uint16Array,
   uint32: Uint32Array,
   float32: Float32Array,
-  float64: Float64Array
+  float64: Float64Array,
 };
 
-const JSONToArray = function(obj: any): any {
+const JSONToArray = function (obj: any): any {
   return new typesToArray[obj.dtype](obj.buffer.buffer);
 };
 
-const arrayToJSON = function(obj: any): any {
+const arrayToJSON = function (obj: any): any {
   const dtype = Object.keys(typesToArray).filter(
-    i => typesToArray[i] === obj.constructor
+    (i) => typesToArray[i] === obj.constructor
   )[0];
   return { dtype, buffer: obj };
 };
 
 const array_serialization = {
   deserialize: JSONToArray,
-  serialize: arrayToJSON
+  serialize: arrayToJSON,
 };
 
 class TestWidget extends widgets.WidgetModel {
@@ -91,7 +91,7 @@ class TestWidget extends widgets.WidgetModel {
       _view_module: 'test-widgets',
       _view_name: 'TestWidgetView',
       _view_module_version: '1.0.0',
-      _view_count: null as any
+      _view_count: null as any,
     };
   }
 }
@@ -112,14 +112,14 @@ class TestWidgetView extends widgets.WidgetView {
 class BinaryWidget extends TestWidget {
   static serializers = {
     ...widgets.WidgetModel.serializers,
-    array: array_serialization
+    array: array_serialization,
   };
   defaults(): Backbone.ObjectHash {
     return {
       ...super.defaults(),
       _model_name: 'BinaryWidget',
       _view_name: 'BinaryWidgetView',
-      array: new Int8Array(0)
+      array: new Int8Array(0),
     };
   }
 }
@@ -135,7 +135,7 @@ const testWidgets = {
   TestWidget,
   TestWidgetView,
   BinaryWidget,
-  BinaryWidgetView
+  BinaryWidgetView,
 };
 
 export class DummyManager implements widgets.IWidgetManager {
@@ -224,7 +224,7 @@ export class DummyManager implements widgets.IWidgetManager {
     modelPromise: Promise<widgets.WidgetModel>
   ): void {
     this._models[model_id] = modelPromise;
-    modelPromise.then(model => {
+    modelPromise.then((model) => {
       model.once('comm:close', () => {
         delete this._models[model_id];
       });
@@ -299,7 +299,7 @@ export class DummyManager implements widgets.IWidgetManager {
     const modelOptions = {
       widget_manager: this,
       model_id: model_id,
-      comm: options.comm
+      comm: options.comm,
     };
     const widget_model = new ModelType(attributes, modelOptions);
     widget_model.name = options.model_name;
@@ -314,6 +314,10 @@ export class DummyManager implements widgets.IWidgetManager {
    */
   resolveUrl(url: string): Promise<string> {
     return Promise.resolve(url);
+  }
+
+  inline_sanitize(s: string): string {
+    return s;
   }
 
   /**

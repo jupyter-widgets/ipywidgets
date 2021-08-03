@@ -58,8 +58,8 @@ widget_view_template = """<script type="application/vnd.jupyter.widget-view+json
 {view_spec}
 </script>"""
 
-DEFAULT_EMBED_SCRIPT_URL = 'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed.js'%__html_manager_version__
-DEFAULT_EMBED_REQUIREJS_URL = 'https://unpkg.com/@jupyter-widgets/html-manager@%s/dist/embed-amd.js'%__html_manager_version__
+DEFAULT_EMBED_SCRIPT_URL = 'https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@%s/dist/embed.js'%__html_manager_version__
+DEFAULT_EMBED_REQUIREJS_URL = 'https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@%s/dist/embed-amd.js'%__html_manager_version__
 
 _doc_snippets = {}
 _doc_snippets['views_attribute'] = """
@@ -81,7 +81,7 @@ _doc_snippets['embed_kwargs'] = """
         full description.
     embed_url: string or None
         Allows for overriding the URL used to fetch the widget manager
-        for the embedded code. This defaults (None) to an `unpkg` CDN url.
+        for the embedded code. This defaults (None) to a `jsDelivr` CDN url.
     requirejs: boolean (True)
         Enables the requirejs-based embedding, which allows for custom widgets.
         If True, the embed_url should point to an AMD module.
@@ -129,7 +129,7 @@ def _get_recursive_state(widget, store=None, drop_defaults=False):
 
 def add_resolved_links(store, drop_defaults):
     """Adds the state of any link models between two models in store"""
-    for widget_id, widget in Widget.widgets.items(): # go over all widgets
+    for widget_id, widget in Widget._active_widgets.items(): # go over all widgets
         if isinstance(widget, Link) and widget_id not in store:
             if widget.source[0].model_id in store and widget.target[0].model_id in store:
                 store[widget.model_id] = widget._get_embed_state(drop_defaults=drop_defaults)
@@ -207,7 +207,7 @@ def embed_data(views, drop_defaults=True, state=None):
         view_specs: a list of widget view specs
     """
     if views is None:
-        views = [w for w in Widget.widgets.values() if isinstance(w, DOMWidget)]
+        views = [w for w in Widget._active_widgets.values() if isinstance(w, DOMWidget)]
     else:
         try:
             views[0]

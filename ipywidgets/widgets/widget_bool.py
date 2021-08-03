@@ -74,9 +74,13 @@ class ToggleButton(_Bool):
     value : {True,False}
         value of the toggle button: True-pressed, False-unpressed
     description : str
-        description displayed next to the button
+        description displayed on the button
     icon: str
         font-awesome icon name
+    style: instance of DescriptionStyle
+        styling customizations
+    button_style: enum
+        button predefined styling
     """
     _view_name = Unicode('ToggleButtonView').tag(sync=True)
     _model_name = Unicode('ToggleButtonModel').tag(sync=True)

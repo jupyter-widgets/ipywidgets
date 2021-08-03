@@ -1,4 +1,4 @@
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     basePath: '..',
     frameworks: ['mocha'],
@@ -8,6 +8,6 @@ module.exports = function(config) {
     colors: true,
     singleRun: true,
     logLevel: config.LOG_INFO,
-    browserNoActivityTimeout: 30000
+    browserNoActivityTimeout: 30000,
   });
 };

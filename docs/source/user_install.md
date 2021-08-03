@@ -5,11 +5,24 @@ Users can install the current version of **ipywidgets** with
 [pip](https://pip.pypa.io/en/stable/) or
 [conda](https://conda.readthedocs.io/en/latest/).
 
-With pip
---------
+In most cases, installing the Python `ipywidgets` package will also automatically configure classic Jupyter Notebook and JupyterLab 3.0 to display ipywidgets. With pip, do:
 
 ``` bash
 pip install ipywidgets
+```
+
+or with conda, do:
+
+``` bash
+conda install -c conda-forge ipywidgets
+```
+
+Installing in classic Jupyter Notebook
+--------------------------------------
+
+Most of the time, installing `ipywidgets` automatically configures Jupyter Notebook to use widgets. The `ipywidgets` package does this by depending on the `widgetsnbextension` package, which configures the classic Jupyter Notebook to display and use widgets. If you have an old version of Jupyter Notebook installed, you may need to manually enable the ipywidgets notebook extension with:
+
+```bash
 jupyter nbextension enable --py widgetsnbextension
 ```
 
@@ -18,41 +31,51 @@ an activated virtual environment, the ``--sys-prefix`` option may be required
 to enable the extension and keep the environment isolated (i.e.
 ``jupyter nbextension enable --py widgetsnbextension --sys-prefix``).
 
-With conda
-----------
 
-``` bash
-conda install -c conda-forge ipywidgets
-```
+If your Jupyter Notebook and the IPython kernel are installed in different
+environments (for example, separate environments are providing different
+Python kernels), then the installation requires two steps:
 
-Installing **ipywidgets** with conda will also enable the extension for you.
+1. Install the `widgetsnbextension` package in the environment
+containing the Jupyter Notebook server.
+2. Install `ipywidgets` in each kernel's environment that will use ipywidgets.
 
-Installing with multiple environments
--------------------------------------
-
-Sometimes the Jupyter Notebook and the IPython kernel are installed in different
-environments (either virtualenv or conda environments).
-This happens when environments are used to
-provide different IPython kernels. In this case, the installation requires two steps.
-
-First, you need to install the `widgetsnbextension` package in the environment
-containing the Jupyter Notebook server. Next, you need to install 
-`ipywidgets` in each kernel's environment that will use ipywidgets.
-
-For example, if using conda environments, with the notebook installed on the 
+For example, if using conda environments, with Jupyter Notebook installed on the 
 `base` environment and the kernel installed in an environment called `py36`,
 the commands are:
 
 ```bash
 conda install -n base -c conda-forge widgetsnbextension
 conda install -n py36 -c conda-forge ipywidgets
-
 ```
 
-Installing the JupyterLab Extension
------------------------------------
+Installing in JupyterLab 3.0
+----------------------------
 
-To install the JupyterLab extension you also need to run the command below in
+Most of the time, installing `ipywidgets` automatically configures JupyterLab 3.0 to use widgets. The `ipywidgets` package does this by depending on the `jupyterlab_widgets` package, version 1.0, which configures JupyterLab 3 to display and use widgets. 
+
+If your JupyterLab and the IPython kernel are installed in different
+environments (for example, separate environments are providing different
+Python kernels), then the installation requires two steps:
+
+1. Install the `jupyterlab_widgets` package (version 1.0 or later) in the environment
+containing JupyterLab.
+2. Install `ipywidgets` in each kernel's environment that will use ipywidgets.
+
+For example, if using conda environments, with JupyterLab installed on the 
+`base` environment and the kernel installed in an environment called `py36`,
+the commands are:
+
+```bash
+conda install -n base -c conda-forge jupyterlab_widgets
+conda install -n py36 -c conda-forge ipywidgets
+```
+
+
+Installing into JupyterLab 1 or 2
+---------------------------------
+
+To install the JupyterLab extension into JupyterLab 1 or 2, you also need to run the command below in
 a terminal which requires that you have [nodejs](https://nodejs.org/en/)
 installed.
 

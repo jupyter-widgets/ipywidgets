@@ -9,7 +9,7 @@ import _isEqual from 'lodash/isEqual';
  * Find all strings in the first argument that are not in the second.
  */
 export function difference(a: string[], b: string[]): string[] {
-  return a.filter(v => b.indexOf(v) === -1);
+  return a.filter((v) => b.indexOf(v) === -1);
 }
 
 /**
@@ -26,7 +26,7 @@ export function isEqual(a: unknown, b: unknown): boolean {
  */
 export const assign =
   (Object as any).assign ||
-  function(t: any, ...args: any[]): any {
+  function (t: any, ...args: any[]): any {
     for (let i = 1; i < args.length; i++) {
       const s = args[i];
       for (const p in s) {
@@ -61,10 +61,10 @@ export function resolvePromisesDict<V>(
 ): Promise<Dict<V>> {
   const keys = Object.keys(d);
   const values: PromiseLike<V>[] = [];
-  keys.forEach(function(key) {
+  keys.forEach(function (key) {
     values.push(d[key]);
   });
-  return Promise.all(values).then(v => {
+  return Promise.all(values).then((v) => {
     const d: Dict<V> = {};
     for (let i = 0; i < keys.length; i++) {
       d[keys[i]] = v[i];
@@ -100,18 +100,30 @@ export function reject(message: string, log: boolean) {
 export function put_buffers(
   state: Dict<BufferJSON>,
   buffer_paths: (string | number)[][],
-  buffers: DataView[]
+  buffers: (
+    | DataView
+    | ArrayBuffer
+    | ArrayBufferView
+    | { buffer: ArrayBuffer }
+  )[]
 ): void {
   for (let i = 0; i < buffer_paths.length; i++) {
     const buffer_path = buffer_paths[i];
-    // say we want to set state[x][y][z] = buffers[i]
+    // make sure the buffers are DataViews
+    let buffer = buffers[i];
+    if (!(buffer instanceof DataView)) {
+      buffer = new DataView(
+        buffer instanceof ArrayBuffer ? buffer : buffer.buffer
+      );
+    }
+    // say we want to set state[x][y][z] = buffer
     let obj = state as any;
     // we first get obj = state[x][y]
     for (let j = 0; j < buffer_path.length - 1; j++) {
       obj = obj[buffer_path[j]];
     }
-    // and then set: obj[z] = buffers[i]
-    obj[buffer_path[buffer_path.length - 1]] = buffers[i];
+    // and then set: obj[z] = buffer
+    obj[buffer_path[buffer_path.length - 1]] = buffer;
   }
 }
 

@@ -1,7 +1,7 @@
 // Karma configuration
 // Generated on Mon Dec 07 2015 08:28:33 GMT-0800 (PST)
 
-module.exports = function(config) {
+module.exports = function (config) {
   var cfg = {
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
@@ -42,8 +42,8 @@ module.exports = function(config) {
     customLaunchers: {
       Chrome_travis_ci: {
         base: 'Chrome',
-        flags: ['--no-sandbox']
-      }
+        flags: ['--no-sandbox'],
+      },
     },
 
     // Continuous Integration mode
@@ -52,7 +52,7 @@ module.exports = function(config) {
 
     // Concurrency level
     // how many browser should be started simultanous
-    concurrency: Infinity
+    concurrency: Infinity,
   };
 
   if (process.env.TRAVIS) {

@@ -18,7 +18,7 @@ export class IntModel extends CoreDescriptionModel {
     return {
       ...super.defaults(),
       _model_name: 'IntModel',
-      value: 0
+      value: 0,
     };
   }
 }
@@ -29,7 +29,7 @@ export class BoundedIntModel extends IntModel {
       ...super.defaults(),
       _model_name: 'BoundedIntModel',
       max: 100,
-      min: 0
+      min: 0,
     };
   }
 }
@@ -44,8 +44,8 @@ export class SliderStyleModel extends DescriptionStyleModel {
     handle_color: {
       selector: '.noUi-handle',
       attribute: 'background-color',
-      default: null as any
-    }
+      default: null as any,
+    },
   };
 }
 
@@ -61,7 +61,7 @@ export class IntSliderModel extends BoundedIntModel {
       readout_format: 'd',
       continuous_update: true,
       style: null,
-      disabled: false
+      disabled: false,
     };
   }
   initialize(
@@ -186,7 +186,7 @@ export abstract class BaseIntSliderView extends DescriptionView {
     return {
       // Dictionary of events and their handlers.
       'blur [contentEditable=true]': 'handleTextChange',
-      'keydown [contentEditable=true]': 'handleKeyDown'
+      'keydown [contentEditable=true]': 'handleKeyDown',
     };
   }
 
@@ -208,16 +208,16 @@ export abstract class BaseIntSliderView extends DescriptionView {
       connect: true,
       range: {
         min: this.model.get('min'),
-        max: this.model.get('max')
+        max: this.model.get('max'),
       },
       step: this.model.get('step'),
       animate: false,
       orientation: orientation,
       direction: orientation === 'horizontal' ? 'ltr' : 'rtl',
       format: {
-        from: (value: number): number => value,
-        to: (value: number): number => value
-      }
+        from: (value: string): number => Number(value),
+        to: (value: number): number => value,
+      },
     });
 
     // Using noUiSlider's event handler
@@ -309,7 +309,7 @@ export class IntRangeSliderView extends BaseIntSliderView {
   valueToString(value: number[]): string {
     const format = this.model.readout_formatter;
     return value
-      .map(function(v) {
+      .map(function (v) {
         return format(v);
       })
       .join(' – ');
@@ -347,7 +347,7 @@ export class IntRangeSliderView extends BaseIntSliderView {
       // clamp to range
       value = [
         Math.max(Math.min(value[0], vmax), vmin),
-        Math.max(Math.min(value[1], vmax), vmin)
+        Math.max(Math.min(value[1], vmax), vmin),
       ];
 
       if (
@@ -385,9 +385,9 @@ export class IntRangeSliderView extends BaseIntSliderView {
       start: this.model.get('value'),
       range: {
         min: this.model.get('min'),
-        max: this.model.get('max')
+        max: this.model.get('max'),
       },
-      step: this.model.get('step')
+      step: this.model.get('step'),
     });
   }
 
@@ -483,9 +483,9 @@ export class IntSliderView extends BaseIntSliderView {
       start: this.model.get('value'),
       range: {
         min: this.model.get('min'),
-        max: this.model.get('max')
+        max: this.model.get('max'),
       },
-      step: this.model.get('step')
+      step: this.model.get('step'),
     });
   }
 
@@ -510,7 +510,7 @@ export class IntTextModel extends IntModel {
       _model_name: 'IntTextModel',
       _view_name: 'IntTextView',
       disabled: false,
-      continuous_update: false
+      continuous_update: false,
     };
   }
 }
@@ -523,7 +523,7 @@ export class BoundedIntTextModel extends BoundedIntModel {
       _view_name: 'IntTextView',
       disabled: false,
       continuous_update: false,
-      step: 1
+      step: 1,
     };
   }
 }
@@ -582,7 +582,7 @@ export class IntTextView extends DescriptionView {
       'keypress input': 'handleKeypress',
       'keyup input': 'handleKeyUp',
       'input input': 'handleChanging',
-      'change input': 'handleChanged'
+      'change input': 'handleChanged',
     };
   }
 
@@ -694,8 +694,8 @@ export class ProgressStyleModel extends DescriptionStyleModel {
     bar_color: {
       selector: '.progress-bar',
       attribute: 'background-color',
-      default: null as any
-    }
+      default: null as any,
+    },
   };
 }
 
@@ -707,7 +707,7 @@ export class IntProgressModel extends BoundedIntModel {
       _view_name: 'ProgressView',
       orientation: 'horizontal',
       bar_style: '',
-      style: null
+      style: null,
     };
   }
 }
@@ -716,7 +716,7 @@ export class ProgressView extends DescriptionView {
   initialize(parameters: WidgetView.IInitializeParameters): void {
     super.initialize(parameters);
     this.listenTo(this.model, 'change:bar_style', this.update_bar_style);
-    this.pWidget.addClass('jupyter-widgets');
+    this.luminoWidget.addClass('jupyter-widgets');
   }
 
   render(): void {
@@ -792,7 +792,7 @@ export class ProgressView extends DescriptionView {
     success: ['progress-bar-success'],
     info: ['progress-bar-info'],
     warning: ['progress-bar-warning'],
-    danger: ['progress-bar-danger']
+    danger: ['progress-bar-danger'],
   };
 }
 
@@ -807,7 +807,7 @@ export class PlayModel extends BoundedIntModel {
       show_repeat: true,
       interval: 100,
       step: 1,
-      disabled: false
+      disabled: false,
     };
   }
   initialize(

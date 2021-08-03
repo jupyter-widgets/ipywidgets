@@ -13,7 +13,7 @@ export class ButtonStyleModel extends StyleModel {
       ...super.defaults(),
       _model_name: 'ButtonStyleModel',
       _model_module: '@jupyter-widgets/controls',
-      _model_module_version: JUPYTER_CONTROLS_VERSION
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
     };
   }
 
@@ -21,43 +21,43 @@ export class ButtonStyleModel extends StyleModel {
     button_color: {
       selector: '',
       attribute: 'background-color',
-      default: null as any
+      default: null as any,
     },
     font_family: {
       selector: '',
       attribute: 'font-family',
-      default: ''
+      default: '',
     },
     font_size: {
       selector: '',
       attribute: 'font-size',
-      default: ''
+      default: '',
     },
     font_style: {
       selector: '',
       attribute: 'font-style',
-      default: ''
+      default: '',
     },
     font_variant: {
       selector: '',
       attribute: 'font-variant',
-      default: ''
+      default: '',
     },
     font_weight: {
       selector: '',
       attribute: 'font-family',
-      default: ''
+      default: '',
     },
     text_color: {
       selector: '',
       attribute: 'color',
-      default: ''
+      default: '',
     },
     text_decoration: {
       selector: '',
       attribute: 'text-decoration',
-      default: ''
-    }
+      default: '',
+    },
   };
 }
 
@@ -72,7 +72,7 @@ export class ButtonModel extends CoreDOMWidgetModel {
       button_style: '',
       _view_name: 'ButtonView',
       _model_name: 'ButtonModel',
-      style: null
+      style: null,
     };
   }
 }
@@ -151,17 +151,9 @@ export class ButtonView extends DOMWidgetView {
     this.send({ event: 'click' });
   }
 
-  /**
-   * The default tag name.
-   *
-   * #### Notes
-   * This is a read-only attribute.
-   */
-  get tagName(): string {
-    // We can't make this an attribute with a default value
-    // since it would be set after it is needed in the
-    // constructor.
-    return 'button';
+  preinitialize() {
+    // Must set this before the initialize method creates the element
+    this.tagName = 'button';
   }
 
   el: HTMLButtonElement;
@@ -171,6 +163,6 @@ export class ButtonView extends DOMWidgetView {
     success: ['mod-success'],
     info: ['mod-info'],
     warning: ['mod-warning'],
-    danger: ['mod-danger']
+    danger: ['mod-danger'],
   };
 }
