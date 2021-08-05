@@ -20,7 +20,7 @@ export class StringStyleModel extends DescriptionStyleModel {
       ...super.defaults(),
       _model_name: 'StringStyleModel',
       _model_module: '@jupyter-widgets/controls',
-      _model_module_version: JUPYTER_CONTROLS_VERSION
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
     };
   }
 
@@ -29,18 +29,18 @@ export class StringStyleModel extends DescriptionStyleModel {
     background: {
       selector: '',
       attribute: 'background',
-      default: null as any
+      default: null as any,
     },
     font_size: {
       selector: '',
       attribute: 'font-size',
-      default: ''
+      default: '',
     },
     text_color: {
       selector: '',
       attribute: 'color',
-      default: ''
-    }
+      default: '',
+    },
   };
 }
 
@@ -50,7 +50,7 @@ export class LabelStyleModel extends StringStyleModel {
       ...super.defaults(),
       _model_name: 'LabelStyleModel',
       _model_module: '@jupyter-widgets/controls',
-      _model_module_version: JUPYTER_CONTROLS_VERSION
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
     };
   }
 
@@ -59,28 +59,28 @@ export class LabelStyleModel extends StringStyleModel {
     font_family: {
       selector: '',
       attribute: 'font-family',
-      default: ''
+      default: '',
     },
     font_style: {
       selector: '',
       attribute: 'font-style',
-      default: ''
+      default: '',
     },
     font_variant: {
       selector: '',
       attribute: 'font-variant',
-      default: ''
+      default: '',
     },
     font_weight: {
       selector: '',
       attribute: 'font-weight',
-      default: ''
+      default: '',
     },
     text_decoration: {
       selector: '',
       attribute: 'text-decoration',
-      default: ''
-    }
+      default: '',
+    },
   };
 }
 
@@ -90,7 +90,7 @@ export class TextStyleModel extends DescriptionStyleModel {
       ...super.defaults(),
       _model_name: 'TextStyleModel',
       _model_module: '@jupyter-widgets/controls',
-      _model_module_version: JUPYTER_CONTROLS_VERSION
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
     };
   }
 
@@ -99,18 +99,18 @@ export class TextStyleModel extends DescriptionStyleModel {
     background: {
       selector: '.widget-input',
       attribute: 'background',
-      default: null as any
+      default: null as any,
     },
     font_size: {
       selector: '.widget-input',
       attribute: 'font-size',
-      default: ''
+      default: '',
     },
     text_color: {
       selector: '.widget-input',
       attribute: 'color',
-      default: ''
-    }
+      default: '',
+    },
   };
 }
 
