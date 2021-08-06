@@ -45,7 +45,7 @@ export class ButtonStyleModel extends StyleModel {
     },
     font_weight: {
       selector: '',
-      attribute: 'font-family',
+      attribute: 'font-weight',
       default: '',
     },
     text_color: {
