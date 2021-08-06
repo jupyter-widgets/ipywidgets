@@ -7,15 +7,11 @@ import { CoreDescriptionModel } from './widget_core';
 
 import { DescriptionStyleModel, DescriptionView } from './widget_description';
 
-import { JUPYTER_CONTROLS_VERSION } from './version';
-
-export class BoolStyleModel extends DescriptionStyleModel {
+export class CheckboxStyleModel extends DescriptionStyleModel {
   defaults(): Backbone.ObjectHash {
     return {
       ...super.defaults(),
-      _model_name: 'BoolStyleModel',
-      _model_module: '@jupyter-widgets/controls',
-      _model_module_version: JUPYTER_CONTROLS_VERSION,
+      _model_name: 'CheckboxStyleModel'
     };
   }
 
@@ -29,7 +25,7 @@ export class BoolStyleModel extends DescriptionStyleModel {
   };
 }
 
-export class ToggleButtonStyleModel extends BoolStyleModel {
+export class ToggleButtonStyleModel extends DescriptionStyleModel {
   defaults(): Backbone.ObjectHash {
     return {
       ...super.defaults(),
@@ -38,12 +34,7 @@ export class ToggleButtonStyleModel extends BoolStyleModel {
   }
 
   public static styleProperties = {
-    ...BoolStyleModel.styleProperties,
-    background: {
-      selector: '',
-      attribute: 'background',
-      default: null as any,
-    },
+    ...DescriptionStyleModel.styleProperties,
     font_family: {
       selector: '',
       attribute: 'font-family',
@@ -88,7 +79,6 @@ export class BoolModel extends CoreDescriptionModel {
       ...super.defaults(),
       value: false,
       disabled: false,
-      style: null,
       _model_name: 'BoolModel',
     };
   }
@@ -366,7 +356,6 @@ export class ValidModel extends BoolModel {
     return {
       ...super.defaults(),
       readout: 'Invalid',
-      style: null,
       _view_name: 'ValidView',
       _model_name: 'ValidModel',
     };

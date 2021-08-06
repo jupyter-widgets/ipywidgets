@@ -14,14 +14,15 @@ from .trait_types import Color, InstanceDict
 from traitlets import Unicode, Bool, CaselessStrEnum
 
 
-class _BoolStyle(DescriptionStyle, CoreWidget):
-    """_Bool widget style."""
-    _model_name = Unicode('BoolStyleModel').tag(sync=True)
+@register
+class CheckboxStyle(DescriptionStyle, CoreWidget):
+    """Checkbox widget style."""
+    _model_name = Unicode('CheckboxStyleModel').tag(sync=True)
     background = Unicode(None, allow_none=True, help="Background specifications.").tag(sync=True)
 
 
 @register
-class ToggleButtonStyle(_BoolStyle, CoreWidget):
+class ToggleButtonStyle(DescriptionStyle, CoreWidget):
     """ToggleButton widget style."""
     _model_name = Unicode('ToggleButtonStyleModel').tag(sync=True)
     font_family = Unicode(None, allow_none=True, help="Toggle button text font family.").tag(sync=True)
@@ -37,7 +38,6 @@ class _Bool(DescriptionWidget, ValueWidget, CoreWidget):
     """A base class for creating widgets that represent booleans."""
     value = Bool(False, help="Bool value").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes.").tag(sync=True)
-    style = InstanceDict(_BoolStyle, help="Styling customizations").tag(sync=True, **widget_serialization)
 
     def __init__(self, value=None, **kwargs):
         if value is not None:
@@ -63,6 +63,8 @@ class Checkbox(_Bool):
     _view_name = Unicode('CheckboxView').tag(sync=True)
     _model_name = Unicode('CheckboxModel').tag(sync=True)
     indent = Bool(True, help="Indent the control to align with other controls with a description.").tag(sync=True)
+    style = InstanceDict(CheckboxStyle, help="Styling customizations").tag(sync=True, **widget_serialization)
+
 
 
 @register
