@@ -697,10 +697,25 @@ Attribute        | Type             | Default          | Help
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `layout`         | reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
-`style`          | reference to _StringStyle widget | reference to new instance | 
+`style`          | reference to HTMLMathStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | string           | `''`             | String value
+
+### HTMLMathStyleModel (@jupyter-widgets/controls, 2.0.0); StyleView (@jupyter-widgets/base, 2.0.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_name`    | string           | `'HTMLMathStyleModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/base'` | 
+`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_name`     | string           | `'StyleView'`    | 
+`background`     | `null` or string | `null`           | Background specifications.
+`description_width` | string           | `''`             | Width of the description to the side of the control.
+`font_size`      | `null` or string | `null`           | Text font size.
+`text_color`     | `null` or string | `null`           | Text color
 
 ### HTMLModel (@jupyter-widgets/controls, 2.0.0); HTMLView (@jupyter-widgets/controls, 2.0.0)
 
@@ -717,10 +732,25 @@ Attribute        | Type             | Default          | Help
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `layout`         | reference to Layout widget | reference to new instance | 
 `placeholder`    | string           | `'\u200b'`       | Placeholder text to display when nothing has been typed
-`style`          | reference to _StringStyle widget | reference to new instance | 
+`style`          | reference to HTMLStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | string           | `''`             | String value
+
+### HTMLStyleModel (@jupyter-widgets/controls, 2.0.0); StyleView (@jupyter-widgets/base, 2.0.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_name`    | string           | `'HTMLStyleModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/base'` | 
+`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_name`     | string           | `'StyleView'`    | 
+`background`     | `null` or string | `null`           | Background specifications.
+`description_width` | string           | `''`             | Width of the description to the side of the control.
+`font_size`      | `null` or string | `null`           | Text font size.
+`text_color`     | `null` or string | `null`           | Text color
 
 ### ImageModel (@jupyter-widgets/controls, 2.0.0); ImageView (@jupyter-widgets/controls, 2.0.0)
 

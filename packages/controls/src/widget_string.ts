@@ -14,7 +14,7 @@ import { JUPYTER_CONTROLS_VERSION } from './version';
  */
 const INVALID_VALUE_CLASS = 'jpwidgets-invalidComboValue';
 
-export class StringStyleModel extends DescriptionStyleModel {
+class StringStyleModel extends DescriptionStyleModel {
   defaults(): Backbone.ObjectHash {
     return {
       ...super.defaults(),
@@ -43,6 +43,37 @@ export class StringStyleModel extends DescriptionStyleModel {
     },
   };
 }
+
+export class HTMLStyleModel extends StringStyleModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'HTMLStyleModel',
+      _model_module: '@jupyter-widgets/controls',
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
+    };
+  }
+
+  public static styleProperties = {
+    ...StringStyleModel.styleProperties,
+  };
+}
+
+export class HTMLMathStyleModel extends StringStyleModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'HTMLMathStyleModel',
+      _model_module: '@jupyter-widgets/controls',
+      _model_module_version: JUPYTER_CONTROLS_VERSION,
+    };
+  }
+
+  public static styleProperties = {
+    ...StringStyleModel.styleProperties,
+  };
+}
+
 
 export class LabelStyleModel extends StringStyleModel {
   defaults(): Backbone.ObjectHash {

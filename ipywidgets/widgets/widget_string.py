@@ -40,6 +40,16 @@ class TextStyle(_StringStyle):
     """Text input style widget."""
     _model_name = Unicode('TextStyleModel').tag(sync=True)
 
+@register
+class HTMLStyle(_StringStyle):
+    """HTML style widget."""
+    _model_name = Unicode('HTMLStyleModel').tag(sync=True)
+
+@register
+class HTMLMathStyle(_StringStyle):
+    """HTML with math style widget."""
+    _model_name = Unicode('HTMLMathStyleModel').tag(sync=True)
+
 
 class _String(DescriptionWidget, ValueWidget, CoreWidget):
     """Base class used to create widgets that represent a string."""
@@ -64,12 +74,14 @@ class HTML(_String):
     """Renders the string `value` as HTML."""
     _view_name = Unicode('HTMLView').tag(sync=True)
     _model_name = Unicode('HTMLModel').tag(sync=True)
+    style = InstanceDict(HTMLStyle).tag(sync=True, **widget_serialization)
 
 @register
 class HTMLMath(_String):
     """Renders the string `value` as HTML, and render mathematics."""
     _view_name = Unicode('HTMLMathView').tag(sync=True)
     _model_name = Unicode('HTMLMathModel').tag(sync=True)
+    style = InstanceDict(HTMLMathStyle).tag(sync=True, **widget_serialization)
 
 
 @register
