@@ -15,7 +15,6 @@ from traitlets import Unicode, Bool, Int
 from warnings import warn
 
 
-@register
 class _StringStyle(DescriptionStyle, CoreWidget):
     """Text input style widget."""
     _model_name = Unicode('StringStyleModel').tag(sync=True)

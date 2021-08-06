@@ -1177,21 +1177,6 @@ Attribute        | Type             | Default          | Help
 `titles`         | array of string  | `[]`             | Titles of the pages
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
-### StringStyleModel (@jupyter-widgets/controls, 2.0.0); StyleView (@jupyter-widgets/base, 2.0.0)
-
-Attribute        | Type             | Default          | Help
------------------|------------------|------------------|----
-`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
-`_model_name`    | string           | `'StringStyleModel'` | 
-`_view_module`   | string           | `'@jupyter-widgets/base'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
-`_view_name`     | string           | `'StyleView'`    | 
-`background`     | `null` or string | `null`           | Background specifications.
-`description_width` | string           | `''`             | Width of the description to the side of the control.
-`font_size`      | `null` or string | `null`           | Text font size.
-`text_color`     | `null` or string | `null`           | Text color
-
 ### TabModel (@jupyter-widgets/controls, 2.0.0); TabView (@jupyter-widgets/controls, 2.0.0)
 
 Attribute        | Type             | Default          | Help
