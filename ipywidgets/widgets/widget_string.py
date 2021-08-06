@@ -25,7 +25,7 @@ class _StringStyle(DescriptionStyle, CoreWidget):
 
 
 @register
-class LabelStyle(_StringStyle, CoreWidget):
+class LabelStyle(_StringStyle):
     """Label style widget."""
     _model_name = Unicode('LabelStyleModel').tag(sync=True)
     font_family = Unicode(None, allow_none=True, help="Label text font family.").tag(sync=True)
@@ -36,7 +36,7 @@ class LabelStyle(_StringStyle, CoreWidget):
 
 
 @register
-class TextStyle(_StringStyle, CoreWidget):
+class TextStyle(_StringStyle):
     """Text input style widget."""
     _model_name = Unicode('TextStyleModel').tag(sync=True)
 
