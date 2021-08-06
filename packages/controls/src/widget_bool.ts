@@ -68,7 +68,7 @@ export class CheckboxView extends DescriptionView {
   }
 
   /**
-   * Overriden from super class
+   * Overridden from super class
    *
    * Update the description span (rather than the label) since
    * we want the description to the right of the checkbox.

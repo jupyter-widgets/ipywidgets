@@ -143,7 +143,7 @@ def dependency_state(widgets, drop_defaults=True):
      - any widget in a list/tuple attribute in the state of an included widget
      - any widget in a dict attribute in the state of an included widget
      - any jslink/jsdlink between two included widgets
-    What this alogrithm does not do:
+    What this alogorithm does not do:
      - Find widget references in nested list/dict structures
      - Find widget references in other types of attributes
 

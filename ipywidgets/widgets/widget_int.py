@@ -188,7 +188,7 @@ class IntProgress(_BoundedInt):
 
     bar_style = CaselessStrEnum(
         values=['success', 'info', 'warning', 'danger', ''], default_value='',
-        help="""Use a predefined styling for the progess bar.""").tag(sync=True)
+        help="""Use a predefined styling for the progress bar.""").tag(sync=True)
 
     style = InstanceDict(ProgressStyle).tag(sync=True, **widget_serialization)
 
@@ -228,7 +228,7 @@ class Play(_BoundedInt):
     _model_name = Unicode('PlayModel').tag(sync=True)
 
     playing = Bool(help="Whether the control is currently playing.").tag(sync=True)
-    repeat = Bool(help="Whether the control will repeat in a continous loop.").tag(sync=True)
+    repeat = Bool(help="Whether the control will repeat in a continuous loop.").tag(sync=True)
 
     interval = CInt(100, help="The time between two animation steps (ms).").tag(sync=True)
     step = CInt(1, help="Increment step").tag(sync=True)

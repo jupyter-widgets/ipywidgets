@@ -54,7 +54,7 @@ class TestColor(TraitTestBase):
         'hsla(10,10,10, 0.5)', # rgba with float alpha
     ]
     _bad_values = [
-        "vanilla", "blues",  # Invald color names
+        "vanilla", "blues",  # Invalid color names
         1.2, 0.0,  # Should fail with float input
         0, 1, 2,  # Should fail with int input
         'rgb(0.4, 512, -40)',
@@ -124,7 +124,7 @@ class TestBuffers(TestCase):
         state = {'plain': [0, 'text'], # should not get removed
                  'x': {'ar': mv1}, # should result in an empty dict
                  'y': {'shape': (10, 10), 'data': mv1},
-                 'z': (mv1, mv2), # tests tuple assigment
+                 'z': (mv1, mv2), # tests tuple assignment
                  'top': mv1, # test a top level removal
                  'deep': {'a': 1, 'b':[0,{'deeper':mv2}]}} # deeply nested
         plain = state['plain']

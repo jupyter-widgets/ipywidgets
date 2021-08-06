@@ -57,7 +57,7 @@ def test_datetime_serialize_value():
 
 
 def test_datetime_serialize_non_utz():
-    # Non-existant timezone, so it wil never be the local one:
+    # Non-existent timezone, so it will never be the local one:
     tz = pytz.FixedOffset(42)
     t = datetime.datetime(2002, 2, 20, 13, 37, 42, 7000, tz)
     assert datetime_to_json(t, None) == dict(

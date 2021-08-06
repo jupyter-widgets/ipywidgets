@@ -189,7 +189,7 @@ class TestTwoByTwoLayout(TestCase):
         assert box.layout.justify_content == "center"
         assert box.layout.align_items == "center"
 
-        # values passed directly in the constructor should overwite layout options
+        # values passed directly in the constructor should overwrite layout options
         layout = widgets.Layout(grid_gap="10px", justify_content="center",
                                 align_items="center")
         box = widgets.TwoByTwoLayout(top_left=button1, top_right=button2,

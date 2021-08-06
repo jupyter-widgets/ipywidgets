@@ -516,7 +516,7 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'ProgressView'` | 
-`bar_style`      | `null` or string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progess bar.
+`bar_style`      | `null` or string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progress bar.
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -733,7 +733,7 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'@jupyter-widgets/controls'` | 
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'ProgressView'` | 
-`bar_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progess bar.
+`bar_style`      | string (one of `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the progress bar.
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `layout`         | reference to Layout widget | reference to new instance | 
@@ -942,7 +942,7 @@ Attribute        | Type             | Default          | Help
 `max`            | number (integer) | `100`            | Max value
 `min`            | number (integer) | `0`              | Min value
 `playing`        | boolean          | `false`          | Whether the control is currently playing.
-`repeat`         | boolean          | `false`          | Whether the control will repeat in a continous loop.
+`repeat`         | boolean          | `false`          | Whether the control will repeat in a continuous loop.
 `show_repeat`    | boolean          | `true`           | Show the repeat toggle button in the widget.
 `step`           | number (integer) | `1`              | Increment step
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
