@@ -74,7 +74,6 @@ export class HTMLMathStyleModel extends StringStyleModel {
   };
 }
 
-
 export class LabelStyleModel extends StringStyleModel {
   defaults(): Backbone.ObjectHash {
     return {
