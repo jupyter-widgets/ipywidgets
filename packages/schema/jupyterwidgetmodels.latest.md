@@ -190,16 +190,16 @@ Attribute        | Type             | Default          | Help
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 
-### ButtonStyleModel (@jupyter-widgets/controls, 2.0.0); ButtonStyleView (@jupyter-widgets/controls, 2.0.0)
+### ButtonStyleModel (@jupyter-widgets/controls, 2.0.0); StyleView (@jupyter-widgets/base, 2.0.0)
 
 Attribute        | Type             | Default          | Help
 -----------------|------------------|------------------|----
 `_model_module`  | string           | `'@jupyter-widgets/controls'` | 
 `_model_module_version` | string           | `'2.0.0'`        | 
 `_model_name`    | string           | `'ButtonStyleModel'` | 
-`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module`   | string           | `'@jupyter-widgets/base'` | 
 `_view_module_version` | string           | `'2.0.0'`        | 
-`_view_name`     | string           | `'ButtonStyleView'` | 
+`_view_name`     | string           | `'StyleView'`    | 
 `button_color`   | `null` or string | `null`           | Color of the button
 `font_family`    | `null` or string | `null`           | Button text font family.
 `font_size`      | `null` or string | `null`           | Button text font size.
@@ -225,10 +225,23 @@ Attribute        | Type             | Default          | Help
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `indent`         | boolean          | `true`           | Indent the control to align with other controls with a description.
 `layout`         | reference to Layout widget | reference to new instance | 
-`style`          | reference to _BoolStyle widget | reference to new instance | Styling customizations
+`style`          | reference to CheckboxStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | boolean          | `false`          | Bool value
+
+### CheckboxStyleModel (@jupyter-widgets/controls, 2.0.0); StyleView (@jupyter-widgets/base, 2.0.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_name`    | string           | `'CheckboxStyleModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/base'` | 
+`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_name`     | string           | `'StyleView'`    | 
+`background`     | `null` or string | `null`           | Background specifications.
+`description_width` | string           | `''`             | Width of the description to the side of the control.
 
 ### ColorPickerModel (@jupyter-widgets/controls, 2.0.0); ColorPickerView (@jupyter-widgets/controls, 2.0.0)
 
@@ -1305,7 +1318,6 @@ Attribute        | Type             | Default          | Help
 `_view_module`   | string           | `'@jupyter-widgets/base'` | 
 `_view_module_version` | string           | `'2.0.0'`        | 
 `_view_name`     | string           | `'StyleView'`    | 
-`background`     | `null` or string | `null`           | Background specifications.
 `description_width` | string           | `''`             | Width of the description to the side of the control.
 `font_family`    | `null` or string | `null`           | Toggle button text font family.
 `font_size`      | `null` or string | `null`           | Toggle button text font size.
@@ -1386,7 +1398,7 @@ Attribute        | Type             | Default          | Help
 `disabled`       | boolean          | `false`          | Enable or disable user changes.
 `layout`         | reference to Layout widget | reference to new instance | 
 `readout`        | string           | `'Invalid'`      | Message displayed when the value is False
-`style`          | reference to _BoolStyle widget | reference to new instance | Styling customizations
+`style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | boolean          | `false`          | Bool value
@@ -1429,17 +1441,4 @@ Attribute        | Type             | Default          | Help
 `outputs`        | array of object  | `[]`             | The output messages synced from the frontend.
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
-
-### o (_, B); S (o, l)
-
-Attribute        | Type             | Default          | Help
------------------|------------------|------------------|----
-`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
-`_model_module_version` | string           | `'2.0.0'`        | 
-`_model_name`    | string           | `'BoolStyleModel'` | 
-`_view_module`   | string           | `'@jupyter-widgets/base'` | 
-`_view_module_version` | string           | `'2.0.0'`        | 
-`_view_name`     | string           | `'StyleView'`    | 
-`background`     | `null` or string | `null`           | Background specifications.
-`description_width` | string           | `''`             | Width of the description to the side of the control.
 
