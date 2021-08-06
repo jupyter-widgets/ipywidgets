@@ -11,7 +11,7 @@ export class CheckboxStyleModel extends DescriptionStyleModel {
   defaults(): Backbone.ObjectHash {
     return {
       ...super.defaults(),
-      _model_name: 'CheckboxStyleModel'
+      _model_name: 'CheckboxStyleModel',
     };
   }
 
