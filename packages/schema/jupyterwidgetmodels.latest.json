@@ -2892,7 +2892,7 @@
         "allow_none": true,
         "default": "",
         "enum": ["success", "info", "warning", "danger", ""],
-        "help": "Use a predefined styling for the progess bar.",
+        "help": "Use a predefined styling for the progress bar.",
         "name": "bar_style",
         "type": "string"
       },
@@ -4163,7 +4163,7 @@
       {
         "default": "",
         "enum": ["success", "info", "warning", "danger", ""],
-        "help": "Use a predefined styling for the progess bar.",
+        "help": "Use a predefined styling for the progress bar.",
         "name": "bar_style",
         "type": "string"
       },
@@ -5472,7 +5472,7 @@
       },
       {
         "default": false,
-        "help": "Whether the control will repeat in a continous loop.",
+        "help": "Whether the control will repeat in a continuous loop.",
         "name": "repeat",
         "type": "bool"
       },

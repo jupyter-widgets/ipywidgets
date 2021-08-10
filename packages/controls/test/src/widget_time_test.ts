@@ -22,7 +22,7 @@ describe('Time', () => {
       expect(model.get('value')).to.be.a('null');
     });
 
-    it('should be createable with a value', () => {
+    it('should be creatable with a value', () => {
       const state = { value: timeString };
       const model = createTestModel(TimeModel, state);
       expect(model).to.be.an.instanceof(TimeModel);

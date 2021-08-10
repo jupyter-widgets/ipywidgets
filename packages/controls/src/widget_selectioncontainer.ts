@@ -347,7 +347,7 @@ export class TabView extends DOMWidgetView {
         widget.title.closable = false;
 
         const i = ArrayExt.firstIndexOf(tabs.widgets, placeholder);
-        // insert after placeholder so that if placholder is selected, the
+        // insert after placeholder so that if placeholder is selected, the
         // real widget will be selected now (this depends on the tab bar
         // insert behavior)
         tabs.insertWidget(i + 1, widget);

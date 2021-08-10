@@ -23,7 +23,7 @@ describe('Datetime', () => {
       expect(model.get('value')).to.be.a('null');
     });
 
-    it('should be createable with a value', () => {
+    it('should be creatable with a value', () => {
       const state = { value: date };
       const model = createTestModel(DatetimeModel, state);
       expect(model).to.be.instanceof(DatetimeModel);
@@ -122,7 +122,7 @@ describe('Datetime', () => {
       expect(model.get('value')).to.be.a('null');
     });
 
-    it('should be createable with a value', () => {
+    it('should be creatable with a value', () => {
       const state = { value: date };
       const model = createTestModel(NaiveDatetimeModel, state);
       expect(model).to.be.an.instanceof(NaiveDatetimeModel);

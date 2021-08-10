@@ -13,7 +13,7 @@ For more details on the `comm` infrastructure, see the [Custom messages section]
 
 Throughout this document, relevant parts of messages to the discussion are quoted, and fields irrelevant to the discussion are not displayed.
 
-## Implementating the Jupyter widgets protocol in the kernel
+## Implementing the Jupyter widgets protocol in the kernel
 
 In this section, we concentrate on implementing the Jupyter widget messaging protocol in the kernel.
 
@@ -240,7 +240,7 @@ The core idea of widgets is that some state is automatically synced back and for
 
 These fields are assumed immutable (set at initialization, and never changed).
 
-## Implementating the Jupyter widgets protocol in the kernel
+## Implementing the Jupyter widgets protocol in the kernel
 
 In this section, we concentrate on implementing the Jupyter widget messaging protocol in the kernel.
 

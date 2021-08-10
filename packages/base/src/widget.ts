@@ -49,7 +49,7 @@ export function unpack_models(
     });
     return utils.resolvePromisesDict(unpacked);
   } else if (typeof value === 'string' && value.slice(0, 10) === 'IPY_MODEL_') {
-    // get_model returns a promise already (except when it retunrs undefined!)
+    // get_model returns a promise already (except when it returns undefined!)
     return Promise.resolve(manager.get_model(value.slice(10, value.length)));
   } else {
     return Promise.resolve(value);
