@@ -141,7 +141,7 @@ jobs:
         pip install file://$PWD#egg=ipywidgets
     - name: Compare spec with latest version
       run: |
-        python ./packages/schema/generate-spec.py -f markdown > spec.md
+        python ./packages/schema/generate-spec.py -f markdown spec.md
         diff -u ./packages/schema/jupyterwidgetmodels.latest.md ./spec.md
   ui-test:
     name: Visual Regression

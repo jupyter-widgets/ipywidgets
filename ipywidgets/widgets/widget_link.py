@@ -19,6 +19,12 @@ class WidgetTraitTuple(Tuple):
 
     def __init__(self, **kwargs):
         super().__init__(Instance(Widget), Unicode(), **kwargs)
+        if "default_value" not in kwargs and not kwargs.get("allow_none", False):
+            # This is to keep consistent behavior for spec generation between traitlets 4 and 5
+            # Having a default empty container is explicitly not allowed in traitlets 5 when
+            # there are traits specified (as the default value will be invalid), but we do it
+            # anyway as there is no empty "default" that makes sense.
+            self.default_args = ()
 
     def validate_elements(self, obj, value):
         value = super().validate_elements(obj, value)
