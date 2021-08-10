@@ -5,13 +5,24 @@ import * as libembed from './libembed';
 
 let cdn = 'https://cdn.jsdelivr.net/npm/';
 let onlyCDN = false;
+const modulesCDN: { [key:string]: string } = {};
 
 // find the data-cdn for any script tag, assuming it is only used for embed-amd.js
 const scripts = document.getElementsByTagName('script');
 Array.prototype.forEach.call(scripts, (script: HTMLScriptElement) => {
   cdn = script.getAttribute('data-jupyter-widgets-cdn') || cdn;
   onlyCDN = onlyCDN || script.hasAttribute('data-jupyter-widgets-cdn-only');
+  if (script.hasAttribute('data-jupyter-widgets-module-cdn')) {
+    const CDNTuple = script.getAttribute('data-jupyter-widgets-module-cdn');
+    if (CDNTuple) {
+      const [moduleName, moduleCND] = CDNTuple.split(",").map((s) => s.trim());
+      if (moduleName && moduleCND) {
+        modulesCDN[moduleName] = moduleCND;
+      }
+    }
+  }
 });
+console.log('Modules CDNs found:', modulesCDN);
 
 /**
  * Load a package using requirejs and return a promise
@@ -30,6 +41,10 @@ const requirePromise = function (pkg: string | string[]): Promise<any> {
 };
 
 function moduleNameToCDNUrl(moduleName: string, moduleVersion: string): string {
+  if (modulesCDN && modulesCDN[moduleName]) {
+    console.log(`Loading ${moduleName} from ${modulesCDN[moduleName]}`);
+    return modulesCDN[moduleName];
+  }
   let packageName = moduleName;
   let fileName = 'index'; // default filename
   // if a '/' is present, like 'foo/bar', packageName is changed to 'foo', and path to 'bar'
@@ -45,7 +60,9 @@ function moduleNameToCDNUrl(moduleName: string, moduleVersion: string): string {
     fileName = moduleName.substr(index + 1);
     packageName = moduleName.substr(0, index);
   }
-  return `${cdn}${packageName}@${moduleVersion}/dist/${fileName}`;
+  const CDNURL = `${cdn}${packageName}@${moduleVersion}/dist/${fileName}`;
+  console.log(`Loading ${packageName} from ${CDNURL}`);
+  return CDNURL;
 }
 
 /**
@@ -77,14 +94,12 @@ export function requireLoader(
     return requirePromise([`${moduleName}`]);
   }
   if (onlyCDN) {
-    console.log(`Loading from ${cdn} for ${moduleName}@${moduleVersion}`);
     return loadFromCDN();
   }
   return requirePromise([`${moduleName}`]).catch((err) => {
     const failedId = err.requireModules && err.requireModules[0];
     if (failedId) {
       require.undef(failedId);
-      console.log(`Falling back to ${cdn} for ${moduleName}@${moduleVersion}`);
       return loadFromCDN();
     }
   });
