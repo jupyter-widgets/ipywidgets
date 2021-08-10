@@ -237,7 +237,7 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
     def _propagate_value(self, change):
         if change.new is None:
             index = None
-        elif self.index is not None and self._options_values[self.index] == change.new:
+        elif self.index is not None and self.equals(self._options_values[self.index], change.new):
             index = self.index
         else:
             index = self._options_values.index(change.new)
