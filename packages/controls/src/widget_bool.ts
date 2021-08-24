@@ -1,11 +1,77 @@
 // Copyright (c) Jupyter Development Team.
 // Distributed under the terms of the Modified BSD License.
 
+import { DOMWidgetView } from '@jupyter-widgets/base';
+
 import { CoreDescriptionModel } from './widget_core';
 
-import { DescriptionView } from './widget_description';
+import { DescriptionStyleModel, DescriptionView } from './widget_description';
 
-import { DOMWidgetView } from '@jupyter-widgets/base';
+export class CheckboxStyleModel extends DescriptionStyleModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'CheckboxStyleModel',
+    };
+  }
+
+  public static styleProperties = {
+    ...DescriptionStyleModel.styleProperties,
+    background: {
+      selector: '',
+      attribute: 'background',
+      default: null as any,
+    },
+  };
+}
+
+export class ToggleButtonStyleModel extends DescriptionStyleModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_name: 'ToggleButtonStyleModel',
+    };
+  }
+
+  public static styleProperties = {
+    ...DescriptionStyleModel.styleProperties,
+    font_family: {
+      selector: '',
+      attribute: 'font-family',
+      default: '',
+    },
+    font_size: {
+      selector: '',
+      attribute: 'font-size',
+      default: '',
+    },
+    font_style: {
+      selector: '',
+      attribute: 'font-style',
+      default: '',
+    },
+    font_variant: {
+      selector: '',
+      attribute: 'font-variant',
+      default: '',
+    },
+    font_weight: {
+      selector: '',
+      attribute: 'font-weight',
+      default: '',
+    },
+    text_color: {
+      selector: '',
+      attribute: 'color',
+      default: '',
+    },
+    text_decoration: {
+      selector: '',
+      attribute: 'text-decoration',
+      default: '',
+    },
+  };
+}
 
 export class BoolModel extends CoreDescriptionModel {
   defaults(): Backbone.ObjectHash {
@@ -23,6 +89,7 @@ export class CheckboxModel extends CoreDescriptionModel {
     return {
       ...super.defaults(),
       indent: true,
+      style: null,
       _view_name: 'CheckboxView',
       _model_name: 'CheckboxModel',
     };
@@ -183,6 +250,7 @@ export class ToggleButtonModel extends BoolModel {
       tooltip: '',
       icon: '',
       button_style: '',
+      style: null,
     };
   }
 }

@@ -6,11 +6,32 @@
 Represents a boolean using a widget.
 """
 
-from .widget_description import DescriptionWidget
+from .widget_description import DescriptionStyle, DescriptionWidget
 from .widget_core import CoreWidget
 from .valuewidget import ValueWidget
-from .widget import register
+from .widget import register, widget_serialization
+from .trait_types import Color, InstanceDict
 from traitlets import Unicode, Bool, CaselessStrEnum
+
+
+@register
+class CheckboxStyle(DescriptionStyle, CoreWidget):
+    """Checkbox widget style."""
+    _model_name = Unicode('CheckboxStyleModel').tag(sync=True)
+    background = Unicode(None, allow_none=True, help="Background specifications.").tag(sync=True)
+
+
+@register
+class ToggleButtonStyle(DescriptionStyle, CoreWidget):
+    """ToggleButton widget style."""
+    _model_name = Unicode('ToggleButtonStyleModel').tag(sync=True)
+    font_family = Unicode(None, allow_none=True, help="Toggle button text font family.").tag(sync=True)
+    font_size = Unicode(None, allow_none=True, help="Toggle button text font size.").tag(sync=True)
+    font_style = Unicode(None, allow_none=True, help="Toggle button text font style.").tag(sync=True)
+    font_variant = Unicode(None, allow_none=True, help="Toggle button text font variant.").tag(sync=True)
+    font_weight = Unicode(None, allow_none=True, help="Toggle button text font weight.").tag(sync=True)
+    text_color = Color(None, allow_none=True, help="Toggle button text color").tag(sync=True)
+    text_decoration = Unicode(None, allow_none=True, help="Toggle button text decoration.").tag(sync=True)
 
 
 class _Bool(DescriptionWidget, ValueWidget, CoreWidget):
@@ -42,6 +63,8 @@ class Checkbox(_Bool):
     _view_name = Unicode('CheckboxView').tag(sync=True)
     _model_name = Unicode('CheckboxModel').tag(sync=True)
     indent = Bool(True, help="Indent the control to align with other controls with a description.").tag(sync=True)
+    style = InstanceDict(CheckboxStyle, help="Styling customizations").tag(sync=True, **widget_serialization)
+
 
 
 @register
@@ -69,6 +92,7 @@ class ToggleButton(_Bool):
     button_style = CaselessStrEnum(
         values=['primary', 'success', 'info', 'warning', 'danger', ''], default_value='',
         help="""Use a predefined styling for the button.""").tag(sync=True)
+    style = InstanceDict(ToggleButtonStyle, help="Styling customizations").tag(sync=True, **widget_serialization)
 
 
 @register

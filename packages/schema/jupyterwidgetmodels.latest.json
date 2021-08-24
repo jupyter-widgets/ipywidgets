@@ -1108,7 +1108,7 @@
         "type": "string"
       },
       {
-        "default": "@jupyter-widgets/base",
+        "default": "@jupyter-widgets/controls",
         "help": "",
         "name": "_view_module",
         "type": "string"
@@ -1120,7 +1120,7 @@
         "type": "string"
       },
       {
-        "default": "StyleView",
+        "default": "ButtonStyleView",
         "help": "",
         "name": "_view_name",
         "type": "string"
@@ -1133,9 +1133,52 @@
         "type": "string"
       },
       {
-        "default": "",
+        "allow_none": true,
+        "default": null,
+        "help": "Button text font family.",
+        "name": "font_family",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Button text font size.",
+        "name": "font_size",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Button text font style.",
+        "name": "font_style",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Button text font variant.",
+        "name": "font_variant",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
         "help": "Button text font weight.",
         "name": "font_weight",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Button text color.",
+        "name": "text_color",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Button text decoration.",
+        "name": "text_decoration",
         "type": "string"
       }
     ],
@@ -1145,8 +1188,8 @@
       "version": "2.0.0"
     },
     "view": {
-      "module": "@jupyter-widgets/base",
-      "name": "StyleView",
+      "module": "@jupyter-widgets/controls",
+      "name": "ButtonStyleView",
       "version": "2.0.0"
     }
   },
@@ -1233,7 +1276,7 @@
         "help": "Styling customizations",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "_BoolStyle"
       },
       {
         "allow_none": true,
@@ -1602,10 +1645,10 @@
       },
       {
         "default": "reference to new instance",
-        "help": "Styling customizations",
+        "help": "",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "TextStyle"
       },
       {
         "allow_none": true,
@@ -3762,6 +3805,19 @@
         "widget": "Layout"
       },
       {
+        "default": "\u200b",
+        "help": "Placeholder text to display when nothing has been typed",
+        "name": "placeholder",
+        "type": "string"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "style",
+        "type": "reference",
+        "widget": "_StringStyle"
+      },
+      {
         "allow_none": true,
         "default": null,
         "help": "Is widget tabbable?",
@@ -3972,10 +4028,10 @@
       },
       {
         "default": "reference to new instance",
-        "help": "Styling customizations",
+        "help": "",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "_StringStyle"
       },
       {
         "allow_none": true,
@@ -5031,10 +5087,10 @@
       },
       {
         "default": "reference to new instance",
-        "help": "Styling customizations",
+        "help": "",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "LabelStyle"
       },
       {
         "allow_none": true,
@@ -5065,6 +5121,118 @@
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "LabelView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "LabelStyleModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/base",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "StyleView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Background specifications.",
+        "name": "background",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Width of the description to the side of the control.",
+        "name": "description_width",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Label text font family.",
+        "name": "font_family",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Text font size.",
+        "name": "font_size",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Label text font style.",
+        "name": "font_style",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Label text font variant.",
+        "name": "font_variant",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Label text font weight.",
+        "name": "font_weight",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Text color",
+        "name": "text_color",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Label text decoration.",
+        "name": "text_decoration",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "LabelStyleModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/base",
+      "name": "StyleView",
       "version": "2.0.0"
     }
   },
@@ -5337,10 +5505,10 @@
       },
       {
         "default": "reference to new instance",
-        "help": "Styling customizations",
+        "help": "",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "TextStyle"
       },
       {
         "allow_none": true,
@@ -6537,6 +6705,83 @@
   {
     "attributes": [
       {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "StringStyleModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/base",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "StyleView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Background specifications.",
+        "name": "background",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Width of the description to the side of the control.",
+        "name": "description_width",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Text font size.",
+        "name": "font_size",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Text color",
+        "name": "text_color",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "StringStyleModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/base",
+      "name": "StyleView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
         "default": [],
         "help": "CSS classes applied to widget DOM element",
         "items": {
@@ -6744,10 +6989,10 @@
       },
       {
         "default": "reference to new instance",
-        "help": "Styling customizations",
+        "help": "",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "TextStyle"
       },
       {
         "allow_none": true,
@@ -6778,6 +7023,83 @@
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "TextView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "TextStyleModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/base",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "StyleView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Background specifications.",
+        "name": "background",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Width of the description to the side of the control.",
+        "name": "description_width",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Text font size.",
+        "name": "font_size",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Text color",
+        "name": "text_color",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "TextStyleModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/base",
+      "name": "StyleView",
       "version": "2.0.0"
     }
   },
@@ -6874,10 +7196,10 @@
       },
       {
         "default": "reference to new instance",
-        "help": "Styling customizations",
+        "help": "",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "TextStyle"
       },
       {
         "allow_none": true,
@@ -7136,7 +7458,7 @@
         "help": "Styling customizations",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "ToggleButtonStyle"
       },
       {
         "allow_none": true,
@@ -7167,6 +7489,118 @@
     "view": {
       "module": "@jupyter-widgets/controls",
       "name": "ToggleButtonView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "ToggleButtonStyleModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/base",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "StyleView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Background specifications.",
+        "name": "background",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Width of the description to the side of the control.",
+        "name": "description_width",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Toggle button text font family.",
+        "name": "font_family",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Toggle button text font size.",
+        "name": "font_size",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Toggle button text font style.",
+        "name": "font_style",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Toggle button text font variant.",
+        "name": "font_variant",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Toggle button text font weight.",
+        "name": "font_weight",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Toggle button text color",
+        "name": "text_color",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Toggle button text decoration.",
+        "name": "text_decoration",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "ToggleButtonStyleModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/base",
+      "name": "StyleView",
       "version": "2.0.0"
     }
   },
@@ -7565,7 +7999,7 @@
         "help": "Styling customizations",
         "name": "style",
         "type": "reference",
-        "widget": "DescriptionStyle"
+        "widget": "_BoolStyle"
       },
       {
         "allow_none": true,
@@ -7814,6 +8248,69 @@
       "module": "@jupyter-widgets/output",
       "name": "OutputView",
       "version": "1.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "BoolStyleModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/base",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "StyleView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Background specifications.",
+        "name": "background",
+        "type": "string"
+      },
+      {
+        "default": "",
+        "help": "Width of the description to the side of the control.",
+        "name": "description_width",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "_",
+      "name": "o",
+      "version": "B"
+    },
+    "view": {
+      "module": "o",
+      "name": "S",
+      "version": "l"
     }
   }
 ]
