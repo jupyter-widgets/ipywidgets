@@ -96,12 +96,21 @@ export function requireLoader(
   if (onlyCDN) {
     return loadFromCDN();
   }
-  return requirePromise([`${moduleName}`]).catch((err) => {
+  return requirePromise([`${moduleName}`])
+  .then((ret) => {
+    // TODO: get current directory and print?
+    console.log(`Successfully loaded ${moduleName} from current directory`);
+    return ret;
+  })
+  .catch((err) => {
     const failedId = err.requireModules && err.requireModules[0];
     if (failedId) {
       require.undef(failedId);
       return loadFromCDN();
     }
+  })
+  .catch((err) => {
+    console.warn(`Unable to load module ${moduleName}.`, err)
   });
 }
 
