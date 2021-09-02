@@ -415,7 +415,7 @@ export abstract class LabWidgetManager
 }
 
 /**
- * A widget manager that returns phosphor widgets.
+ * A widget manager that returns Lumino widgets.
  */
 export class KernelWidgetManager extends LabWidgetManager {
   constructor(
