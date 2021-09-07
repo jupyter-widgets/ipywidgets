@@ -24,7 +24,6 @@ class Layout(Widget):
     - ``flex-wrap`` and ``flex-direction`` are bound to ``flex-flow``.
     - ``margin-[top/bottom/left/right]`` values are bound to ``margin``, etc.
     """
-
     _view_name = Unicode('LayoutView').tag(sync=True)
     _view_module = Unicode('@jupyter-widgets/base').tag(sync=True)
     _view_module_version = Unicode(__jupyter_widgets_base_version__).tag(sync=True)
@@ -77,6 +76,14 @@ class Layout(Widget):
     grid_row = Unicode(None, allow_none=True, help="The grid-row CSS attribute.").tag(sync=True)
     grid_column = Unicode(None, allow_none=True, help="The grid-column CSS attribute.").tag(sync=True)
     grid_area = Unicode(None, allow_none=True, help="The grid-area CSS attribute.").tag(sync=True)
+
+    def __init__(self, **kwargs):
+        if 'border' in kwargs:
+            border = kwargs.pop('border')
+            for side in ['top', 'right', 'bottom', 'left']:
+                kwargs.setdefault(f'border_{side}', border)
+
+        super().__init__(**kwargs)
 
     def _get_border(self):
         """
