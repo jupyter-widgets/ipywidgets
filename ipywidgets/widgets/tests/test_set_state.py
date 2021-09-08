@@ -236,12 +236,9 @@ def test_property_lock():
     widget.set_state({'value': 42})
     assert widget.value == 42
 
-    # we expect first the {'value': 2.0} state to be send, followed by the {'value': 42.0} state
-    msg = {'method': 'update', 'state': {'value': 2.0}, 'buffer_paths': []}
-    call2 = mock.call(msg, buffers=[])
-
+    # we expect only single state to be sent, i.e. the {'value': 42.0} state
     msg = {'method': 'update', 'state': {'value': 42.0}, 'buffer_paths': []}
     call42 = mock.call(msg, buffers=[])
 
-    calls = [call2, call42]
+    calls = [call42]
     widget._send.assert_has_calls(calls)
