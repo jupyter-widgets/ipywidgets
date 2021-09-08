@@ -82,6 +82,7 @@ class TagsInputBaseModel extends CoreDOMWidgetModel {
     return {
       ...super.defaults(),
       value: [],
+      placeholder: '\u200b',
       allowed_tags: null,
       allow_duplicates: true,
     };
@@ -100,8 +101,13 @@ abstract class TagsInputBaseView extends DOMWidgetView {
 
     this.taginputWrapper = document.createElement('div');
 
-    // The taginput is not displayed until the user focuses on the widget
-    this.taginputWrapper.style.display = 'none';
+    // The taginput is hidden until the user focuses on the widget
+    // Unless there is no value
+    if (this.model.get('value').length) {
+      this.taginputWrapper.style.display = 'none';
+    } else {
+      this.taginputWrapper.style.display = 'inline-block';
+    }
 
     this.datalistID = uuid();
 
@@ -109,6 +115,7 @@ abstract class TagsInputBaseView extends DOMWidgetView {
     this.taginput.classList.add('jupyter-widget-tag');
     this.taginput.classList.add('jupyter-widget-taginput');
     this.taginput.setAttribute('list', this.datalistID);
+    this.taginput.setAttribute('type', 'text');
 
     this.autocompleteList = document.createElement('datalist');
     this.autocompleteList.id = this.datalistID;
@@ -116,6 +123,10 @@ abstract class TagsInputBaseView extends DOMWidgetView {
     this.updateAutocomplete();
     this.model.on('change:allowed_tags', this.updateAutocomplete.bind(this));
 
+    this.updatePlaceholder();
+    this.model.on('change:placeholder', this.updatePlaceholder.bind(this));
+
+    this.taginputWrapper.classList.add('widget-text');
     this.taginputWrapper.appendChild(this.taginput);
     this.taginputWrapper.appendChild(this.autocompleteList);
 
@@ -194,6 +205,14 @@ abstract class TagsInputBaseView extends DOMWidgetView {
       this.el.children[this.inputIndex]
     );
 
+    // The taginput is hidden until the user focuses on the widget
+    // Unless there is no value
+    if (this.model.get('value').length) {
+      this.taginputWrapper.style.display = 'none';
+    } else {
+      this.taginputWrapper.style.display = 'inline-block';
+    }
+
     this.preventLoosingFocus = false;
 
     return super.update();
@@ -212,6 +231,14 @@ abstract class TagsInputBaseView extends DOMWidgetView {
       option.value = tag;
       this.autocompleteList.appendChild(option);
     }
+  }
+
+  /**
+   * Update the auto-completion list
+   */
+  updatePlaceholder(): void {
+    this.taginput.placeholder = this.model.get('placeholder');
+    this.resizeInput();
   }
 
   /**
@@ -297,7 +324,15 @@ abstract class TagsInputBaseView extends DOMWidgetView {
    * Resize the input element
    */
   resizeInput(): void {
-    const size = this.taginput.value.length + 1;
+    let content: string;
+
+    if (this.taginput.value.length != 0) {
+      content = this.taginput.value;
+    } else {
+      content = this.model.get('placeholder');
+    }
+
+    const size = content.length + 1;
     this.taginput.setAttribute('size', String(size));
   }
 
