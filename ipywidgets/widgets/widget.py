@@ -608,6 +608,8 @@ class Widget(LoggingHasTraits):
             if (jsonloads(jsondumps(split_value[0])) == split_lock[0]
                 and split_value[1] == split_lock[1]
                 and _buffer_list_equal(split_value[2], split_lock[2])):
+                if self._holding_sync:
+                    self._states_to_send.discard(key)
                 return False
         if self._holding_sync:
             self._states_to_send.add(key)

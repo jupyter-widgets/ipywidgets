@@ -236,8 +236,34 @@ def test_property_lock():
     widget.set_state({'value': 42})
     assert widget.value == 42
 
+    # we expect no new state to be sent
+    calls = []
+    widget._send.assert_has_calls(calls)
+
+def test_hold_sync():
+    # when this widget's value is set to 42, it sets the value to 2, and also sets a different trait value
+    class AnnoyingWidget(Widget):
+        value = Float().tag(sync=True)
+        other = Float().tag(sync=True)
+
+        @observe('value')
+        def _propagate_value(self, change):
+            print('_propagate_value', change.new)
+            if change.new == 42:
+                self.value = 2
+                self.other = 11
+
+    widget = AnnoyingWidget(value=1)
+    assert widget.value == 1
+
+    widget._send = mock.MagicMock()
+    # this mimics a value coming from the front end
+    widget.set_state({'value': 42})
+    assert widget.value == 2
+    assert widget.other == 11
+
     # we expect only single state to be sent, i.e. the {'value': 42.0} state
-    msg = {'method': 'update', 'state': {'value': 42.0}, 'buffer_paths': []}
+    msg = {'method': 'update', 'state': {'value': 2.0, 'other': 11.0}, 'buffer_paths': []}
     call42 = mock.call(msg, buffers=[])
 
     calls = [call42]
