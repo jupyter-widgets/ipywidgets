@@ -58,7 +58,8 @@ def show_inline_matplotlib_plots():
     except ImportError:
         return
 
-    if mpl.get_backend() == 'module://ipykernel.pylab.backend_inline':
+    if (mpl.get_backend() == 'module://ipykernel.pylab.backend_inline' or
+        mpl.get_backend() == 'module://matplotlib_inline.backend_inline'):
         flush_figures()
 
 
