@@ -225,6 +225,10 @@ export class WidgetManager extends ManagerBase {
       // finishes before saving.
       await Promise.all(
         cells.map(async cell => {
+          if (!cell.output_area) {
+            return;
+          }
+
           var widget_output = cell.output_area.outputs.find(output => {
             return output.data && output.data[MIME_TYPE];
           });
