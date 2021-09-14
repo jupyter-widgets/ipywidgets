@@ -88,10 +88,19 @@ export class WidgetModel extends Backbone.Model {
     };
   }
 
+  /**
+   * Generate extra mime bundle for this widget
+   */
   async generateMimeBundle() {
-    return {
-      'text/html': '<h1>Hi!</h1>'
-    };
+    return {};
+  }
+
+  /**
+   * Whether the `generateMimeBundle` output should
+   * overwrite the mimeBundle or extend it
+   */
+  shouldOverwriteMimeBundle() : boolean {
+    return false;
   }
 
   /**
