@@ -186,7 +186,7 @@ export class HTMLModel extends StringModel {
   }
   generateMimeBundle() {
     return Promise.resolve({
-      'text/html': this.get('value')
+      'text/html': this.get('value'),
     });
   }
 }

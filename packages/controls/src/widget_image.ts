@@ -32,7 +32,7 @@ export class ImageModel extends CoreDOMWidgetModel {
       this
     );
     return Promise.resolve({
-      'text/html': view.el.outerHTML
+      'text/html': view.el.outerHTML,
     });
   }
 }

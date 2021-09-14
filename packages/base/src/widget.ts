@@ -99,7 +99,7 @@ export class WidgetModel extends Backbone.Model {
    * Whether the `generateMimeBundle` output should
    * overwrite the mimeBundle or extend it
    */
-  shouldOverwriteMimeBundle() : boolean {
+  shouldOverwriteMimeBundle(): boolean {
     return false;
   }
 
