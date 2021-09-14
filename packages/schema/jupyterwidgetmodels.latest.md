@@ -280,6 +280,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `layout`         | reference to Layout widget | reference to new instance | 
+`placeholder`    | string           | `'\u200b'`       | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
@@ -642,6 +643,7 @@ Attribute        | Type             | Default          | Help
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | `null` or number (float) | `null`           | 
 `min`            | `null` or number (float) | `null`           | 
+`placeholder`    | string           | `'\u200b'`       | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tag_style`      | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the tags.
@@ -889,6 +891,7 @@ Attribute        | Type             | Default          | Help
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | `null` or number (integer) | `null`           | 
 `min`            | `null` or number (integer) | `null`           | 
+`placeholder`    | string           | `'\u200b'`       | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tag_style`      | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the tags.
@@ -1212,6 +1215,7 @@ Attribute        | Type             | Default          | Help
 `description`    | string           | `''`             | Description of the control.
 `description_allow_html` | boolean          | `false`          | Accept HTML in the description.
 `layout`         | reference to Layout widget | reference to new instance | 
+`placeholder`    | string           | `'\u200b'`       | 
 `style`          | reference to DescriptionStyle widget | reference to new instance | Styling customizations
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tag_style`      | string (one of `'primary'`, `'success'`, `'info'`, `'warning'`, `'danger'`, `''`) | `''`             | Use a predefined styling for the tags.

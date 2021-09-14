@@ -20,6 +20,7 @@ from .trait_types import Color, NumberFormat
 class TagsInputBase(DescriptionWidget, ValueWidget, CoreWidget):
     _model_name = Unicode('TagsInputBaseModel').tag(sync=True)
     value = List().tag(sync=True)
+    placeholder = Unicode('\u200b').tag(sync=True)
     allowed_tags = List().tag(sync=True)
     allow_duplicates = Bool(True).tag(sync=True)
 
