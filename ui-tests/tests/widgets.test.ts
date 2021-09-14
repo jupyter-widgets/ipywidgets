@@ -13,36 +13,35 @@ test.describe('Widget Visual Regression', () => {
       path.resolve(__dirname, './notebooks'),
       tmpPath
     );
-    await page.dblclick(`text=${tmpPath}`);
+    await page.filebrowser.openDirectory(tmpPath);
   });
 
   test('Run notebook widgets.ipynb and capture cell outputs', async ({
     page,
+    tmpPath,
   }) => {
     const notebook = 'widgets.ipynb';
-    await page.notebook.open(notebook);
-    expect(await page.notebook.isOpen(notebook)).toBeTruthy();
+    await page.notebook.openByPath(`${tmpPath}/${notebook}`);
     await page.notebook.activate(notebook);
-    expect(await page.notebook.isActive(notebook)).toBeTruthy();
 
-    let numCellImages = 0;
-
-    const getCaptureImageName = (id: number): string => {
-      return `cell-${id}`;
-    };
+    const captures = new Array<Buffer>();
+    const cellCount = await page.notebook.getCellCount();
 
     await page.notebook.runCellByCell({
       onAfterCellRun: async (cellIndex: number) => {
         const cell = await page.notebook.getCellOutput(cellIndex);
         if (cell) {
-          expect(cell.screenshot()).toMatchSnapshot(
-            getCaptureImageName(numCellImages)
-          );
-          {
-            numCellImages++;
-          }
+          captures.push(await cell.screenshot());
         }
       },
     });
+
+    await page.notebook.runCellByCell();
+    await page.notebook.save();
+
+    for (let i = 0; i < cellCount; i++) {
+      const image = `widgets-cell-${i}.png`;
+      expect(captures[i]).toMatchSnapshot(image);
+    }
   });
 });

@@ -37,4 +37,5 @@ temp/*
 
 tsconfig.tsbuildinfo
 
-ui-tests/test-output/*
+ui-tests/test-results
+ui-tests/playwright-report
