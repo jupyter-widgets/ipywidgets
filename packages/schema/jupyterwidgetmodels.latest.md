@@ -516,9 +516,11 @@ Attribute        | Type             | Default          | Help
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (float)   | `4.0`            | Max value for the exponent
 `min`            | number (float)   | `0.0`            | Min value for the exponent
+`num`            | number (integer) | `0`              | Number of values in the [min, max] interval
 `orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
 `readout`        | boolean          | `true`           | Display the current value of the slider next to it.
 `readout_format` | string           | `'.3g'`          | Format for the readout
+`round`          | boolean          | `false`          | Round the value set from Python to the closest value in the interval
 `step`           | `null` or number (float) | `0.1`            | Minimum step in the exponent to increment the value
 `style`          | reference to SliderStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
@@ -566,9 +568,11 @@ Attribute        | Type             | Default          | Help
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (float)   | `100.0`          | Max value
 `min`            | number (float)   | `0.0`            | Min value
+`num`            | number (integer) | `0`              | Number of values in the [min, max] interval
 `orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
 `readout`        | boolean          | `true`           | Display the current value of the slider next to it.
 `readout_format` | string           | `'.2f'`          | Format for the readout
+`round`          | boolean          | `false`          | Round the value set from Python to the closest value in the interval
 `step`           | `null` or number (float) | `0.1`            | Minimum step to increment the value
 `style`          | reference to SliderStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
@@ -593,9 +597,11 @@ Attribute        | Type             | Default          | Help
 `layout`         | reference to Layout widget | reference to new instance | 
 `max`            | number (float)   | `100.0`          | Max value
 `min`            | number (float)   | `0.0`            | Min value
+`num`            | number (integer) | `0`              | Number of values in the [min, max] interval
 `orientation`    | string (one of `'horizontal'`, `'vertical'`) | `'horizontal'`   | Vertical or horizontal.
 `readout`        | boolean          | `true`           | Display the current value of the slider next to it.
 `readout_format` | string           | `'.2f'`          | Format for the readout
+`round`          | boolean          | `false`          | Round the value set from Python to the closest value in the interval
 `step`           | `null` or number (float) | `0.1`            | Minimum step to increment the value
 `style`          | reference to SliderStyle widget | reference to new instance | 
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
