@@ -34,8 +34,8 @@ max: integer
     The upper limit for the value.
 step: integer
     The step between allowed values.
-behaviour : str
-    slider handle and connector dragging behaviour. Default is 'drag-tap'.
+behavior : str
+    slider handle and connector dragging behavior. Default is 'drag-tap'.
 """
 
 def _int_doc(cls):
@@ -168,8 +168,8 @@ class IntSlider(_BoundedInt):
     continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
     style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
-    behaviour = CaselessStrEnum(values=['drag-tap', 'drag-snap', 'tap', 'drag', 'snap'],
-        default_value='drag-tap', help="Slider dragging behaviour.").tag(sync=True)
+    behavior = CaselessStrEnum(values=['drag-tap', 'drag-snap', 'tap', 'drag', 'snap'],
+        default_value='drag-tap', help="Slider dragging behavior.").tag(sync=True)
 
 
 @register
@@ -300,8 +300,8 @@ class IntRangeSlider(_BoundedIntRange):
         default is 'horizontal'
     readout : {True, False}
         default is True, display the current value of the slider next to it
-    behaviour : str
-        slider handle and connector dragging behaviour. Default is 'drag-tap'.
+    behavior : str
+        slider handle and connector dragging behavior. Default is 'drag-tap'.
     readout_format : str
         default is '.2f', specifier for the format function used to represent
         slider value for human consumption, modeled after Python 3's format
@@ -318,5 +318,5 @@ class IntRangeSlider(_BoundedIntRange):
     continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)
     style = InstanceDict(SliderStyle, help="Slider style customizations.").tag(sync=True, **widget_serialization)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
-    behaviour = CaselessStrEnum(values=['drag-tap', 'drag-snap', 'tap', 'drag', 'snap'],
-        default_value='drag-tap', help="Slider dragging behaviour.").tag(sync=True)
+    behavior = CaselessStrEnum(values=['drag-tap', 'drag-snap', 'tap', 'drag', 'snap'],
+        default_value='drag-tap', help="Slider dragging behavior.").tag(sync=True)
