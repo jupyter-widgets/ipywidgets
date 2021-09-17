@@ -34,6 +34,8 @@ max: integer
     The upper limit for the value.
 step: integer
     The step between allowed values.
+behavior : str
+    slider handle and connector dragging behavior. Default is 'drag-tap'.
 """
 
 def _int_doc(cls):
@@ -165,8 +167,9 @@ class IntSlider(_BoundedInt):
         'd', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
-
     style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
+    behavior = CaselessStrEnum(values=['drag-tap', 'drag-snap', 'tap', 'drag', 'snap'],
+        default_value='drag-tap', help="Slider dragging behavior.").tag(sync=True)
 
 
 @register
@@ -289,6 +292,20 @@ class IntRangeSlider(_BoundedIntRange):
         The lowest allowed value for `lower`
     max : int
         The highest allowed value for `upper`
+    step : int
+        step of the trackbar
+    description : str
+        name of the slider
+    orientation : {'horizontal', 'vertical'}
+        default is 'horizontal'
+    readout : {True, False}
+        default is True, display the current value of the slider next to it
+    behavior : str
+        slider handle and connector dragging behavior. Default is 'drag-tap'.
+    readout_format : str
+        default is '.2f', specifier for the format function used to represent
+        slider value for human consumption, modeled after Python 3's format
+        specification mini-language (PEP 3101).
     """
     _view_name = Unicode('IntRangeSliderView').tag(sync=True)
     _model_name = Unicode('IntRangeSliderModel').tag(sync=True)
@@ -301,3 +318,5 @@ class IntRangeSlider(_BoundedIntRange):
     continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)
     style = InstanceDict(SliderStyle, help="Slider style customizations.").tag(sync=True, **widget_serialization)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
+    behavior = CaselessStrEnum(values=['drag-tap', 'drag-snap', 'tap', 'drag', 'snap'],
+        default_value='drag-tap', help="Slider dragging behavior.").tag(sync=True)

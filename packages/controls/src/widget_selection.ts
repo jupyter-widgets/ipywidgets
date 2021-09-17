@@ -746,10 +746,12 @@ export class SelectionSliderView extends DescriptionView {
     const min = 0;
     const max = labels.length - 1;
     const orientation = this.model.get('orientation');
+    const behavior = this.model.get('behavior');
 
     noUiSlider.create(this.$slider, {
       start: this.model.get('index'),
       connect: true,
+      behaviour: behavior,
       range: {
         min: min,
         max: max,

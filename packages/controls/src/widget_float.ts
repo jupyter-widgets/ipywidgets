@@ -147,8 +147,11 @@ export class FloatLogSliderView extends BaseIntSliderView {
 
   createSlider(): void {
     const orientation = this.model.get('orientation');
+    const behavior = this.model.get('behavior');
+
     noUiSlider.create(this.$slider, {
       start: this.logCalc(this.model.get('value')),
+      behaviour: behavior,
       range: {
         min: this.model.get('min'),
         max: this.model.get('max'),

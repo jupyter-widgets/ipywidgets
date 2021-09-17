@@ -159,6 +159,8 @@ class FloatSlider(_BoundedFloat):
         default is 'horizontal', orientation of the slider
     readout : {True, False}
         default is True, display the current value of the slider next to it
+    behavior : str
+        slider handle and connector dragging behavior. Default is 'drag-tap'.
     readout_format : str
         default is '.2f', specifier for the format function used to represent
         slider value for human consumption, modeled after Python 3's format
@@ -174,8 +176,9 @@ class FloatSlider(_BoundedFloat):
         '.2f', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
-
     style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
+    behavior = CaselessStrEnum(values=['drag-tap', 'drag-snap', 'tap', 'drag', 'snap'],
+        default_value='drag-tap', help="Slider dragging behavior.").tag(sync=True)
 
 
 @register
@@ -200,6 +203,8 @@ class FloatLogSlider(_BoundedLogFloat):
         default is 'horizontal', orientation of the slider
     readout : {True, False}
         default is True, display the current value of the slider next to it
+    behavior : str
+        slider handle and connector dragging behavior. Default is 'drag-tap'.
     readout_format : str
         default is '.3g', specifier for the format function used to represent
         slider value for human consumption, modeled after Python 3's format
@@ -216,8 +221,9 @@ class FloatLogSlider(_BoundedLogFloat):
     continuous_update = Bool(True, help="Update the value of the widget as the user is holding the slider.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
     base = CFloat(10., help="Base for the logarithm").tag(sync=True)
-
     style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
+    behavior = CaselessStrEnum(values=['drag-tap', 'drag-snap', 'tap', 'drag', 'snap'],
+        default_value='drag-tap', help="Slider dragging behavior.").tag(sync=True)
 
 
 @register
@@ -343,6 +349,8 @@ class FloatRangeSlider(_BoundedFloatRange):
         default is 'horizontal'
     readout : {True, False}
         default is True, display the current value of the slider next to it
+    behavior : str
+        slider handle and connector dragging behavior. Default is 'drag-tap'.
     readout_format : str
         default is '.2f', specifier for the format function used to represent
         slider value for human consumption, modeled after Python 3's format
@@ -358,5 +366,6 @@ class FloatRangeSlider(_BoundedFloatRange):
         '.2f', help="Format for the readout").tag(sync=True)
     continuous_update = Bool(True, help="Update the value of the widget as the user is sliding the slider.").tag(sync=True)
     disabled = Bool(False, help="Enable or disable user changes").tag(sync=True)
-
     style = InstanceDict(SliderStyle).tag(sync=True, **widget_serialization)
+    behavior = CaselessStrEnum(values=['drag-tap', 'drag-snap', 'tap', 'drag', 'snap'],
+        default_value='drag-tap', help="Slider dragging behavior.").tag(sync=True)
