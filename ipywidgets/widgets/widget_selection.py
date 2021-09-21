@@ -197,6 +197,12 @@ class _Selection(DescriptionWidget, ValueWidget, CoreWidget):
         options = self._options_full
         self.set_trait('_options_labels', tuple(i[0] for i in options))
         self._options_values = tuple(i[1] for i in options)
+
+        if self.index is None:
+            # Do nothing, we don't want to force a selection if
+            # the options list changed
+            return
+
         if self._initializing_traits_ is not True:
             if len(options) > 0:
                 if self.index == 0:
