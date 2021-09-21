@@ -4,6 +4,7 @@
 // Here we generate the /dist files that allow widget embedding
 
 var path = require('path');
+var webpack = require('webpack');
 
 var version = require('./package.json').version;
 
@@ -60,6 +61,15 @@ var publicPath =
   version +
   '/dist/';
 
+var plugins = [
+  new webpack.DefinePlugin({
+    // Needed for Blueprint. See https://github.com/palantir/blueprint/issues/4393
+    'process.env': '{}',
+    // Needed for various packages using cwd(), like the path polyfill
+    process: { cwd: () => '/' },
+  }),
+];
+
 module.exports = [
   {
     // script that renders widgets using the standard embedding and can only render standard controls
@@ -72,6 +82,7 @@ module.exports = [
     devtool: 'source-map',
     module: { rules: rules },
     mode: 'production',
+    plugins: plugins,
   },
   {
     // script that renders widgets using the amd embedding and can render third-party custom widgets
@@ -83,6 +94,7 @@ module.exports = [
     },
     module: { rules: rules },
     mode: 'production',
+    plugins: plugins,
   },
   {
     // embed library that depends on requirejs, and can load third-party widgets dynamically
@@ -96,6 +108,7 @@ module.exports = [
     },
     module: { rules: rules },
     mode: 'production',
+    plugins: plugins,
   },
   {
     // @jupyter-widgets/html-manager
@@ -110,6 +123,7 @@ module.exports = [
     module: { rules: rules },
     externals: ['@jupyter-widgets/base', '@jupyter-widgets/controls'],
     mode: 'production',
+    plugins: plugins,
   },
   {
     // @jupyter-widgets/base
@@ -123,6 +137,7 @@ module.exports = [
     },
     module: { rules: rules },
     mode: 'production',
+    plugins: plugins,
   },
   {
     // @jupyter-widgets/controls
@@ -137,5 +152,6 @@ module.exports = [
     module: { rules: rules },
     externals: ['@jupyter-widgets/base'],
     mode: 'production',
+    plugins: plugins,
   },
 ];
