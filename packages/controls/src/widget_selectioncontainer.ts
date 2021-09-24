@@ -156,7 +156,7 @@ export class AccordionView extends DOMWidgetView {
    */
   update_titles(): void {
     const collapsed = this.luminoWidget.collapseWidgets;
-    const titles = this.model.get('titles');
+    const titles = this.model.get('titles') || [];
     for (let i = 0; i < collapsed.length; i++) {
       if (titles[i] !== void 0) {
         collapsed[i].widget.title.label = titles[i];
@@ -186,7 +186,8 @@ export class AccordionView extends DOMWidgetView {
     // Placeholder widget to keep our position in the tab panel while we create the view.
     const accordion = this.luminoWidget;
     const placeholder = new Widget();
-    placeholder.title.label = this.model.get('titles')[index] || '';
+    const titles = this.model.get('titles') || [];
+    placeholder.title.label = titles[index] || '';
     accordion.addWidget(placeholder);
     return this.create_child_view(model)
       .then((view: DOMWidgetView) => {
@@ -335,7 +336,8 @@ export class TabView extends DOMWidgetView {
    */
   addChildView(model: WidgetModel, index: number): Promise<DOMWidgetView> {
     // Placeholder widget to keep our position in the tab panel while we create the view.
-    const label = this.model.get('titles')[index] || '';
+    const titles = this.model.get('titles') || [];
+    const label = titles[index] || '';
     const tabs = this.luminoWidget;
     const placeholder = new Widget();
     placeholder.title.label = label;
