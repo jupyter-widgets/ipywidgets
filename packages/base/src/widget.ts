@@ -897,11 +897,9 @@ export class DOMWidgetView extends WidgetView {
       }
     );
 
-    this.displayed.then(() => {
-      this.update_classes([], this.model.get('_dom_classes'));
-      this.setLayout(this.model.get('layout'));
-      this.setStyle(this.model.get('style'));
-    });
+    this.update_classes([], this.model.get('_dom_classes'));
+    this.setLayout(this.model.get('layout'));
+    this.setStyle(this.model.get('style'));
 
     this._comm_live_update();
     this.listenTo(this.model, 'comm_live_update', () => {
@@ -920,23 +918,25 @@ export class DOMWidgetView extends WidgetView {
           oldLayoutView.remove();
         }
 
-        return this.create_child_view(layout)
+        this.create_child_view(layout)
           .then((view) => {
-            // Trigger the displayed event of the child view.
-            return this.displayed.then(() => {
-              view.trigger('displayed');
-              this.listenTo(view.model, 'change', () => {
-                // Post (asynchronous) so layout changes can take
-                // effect first.
-                MessageLoop.postMessage(
-                  this.luminoWidget,
-                  Widget.ResizeMessage.UnknownSize
-                );
-              });
+            this.trigger('layout-applied');
+            this.listenTo(view.model, 'change', () => {
+              // Post (asynchronous) so layout changes can take
+              // effect first.
               MessageLoop.postMessage(
                 this.luminoWidget,
                 Widget.ResizeMessage.UnknownSize
               );
+            });
+            MessageLoop.postMessage(
+              this.luminoWidget,
+              Widget.ResizeMessage.UnknownSize
+            );
+
+            // Trigger the displayed event of the child view.
+            return this.displayed.then(() => {
+              view.trigger('displayed');
               return view;
             });
           })
@@ -956,7 +956,7 @@ export class DOMWidgetView extends WidgetView {
           oldStyleView.remove();
         }
 
-        return this.create_child_view(style)
+        this.create_child_view(style)
           .then((view) => {
             // Trigger the displayed event of the child view.
             return this.displayed.then(() => {
