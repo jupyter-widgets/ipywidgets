@@ -21,6 +21,16 @@ require('./embed_widgets');
 var LuminoWidget = require('@lumino/widgets');
 var LuminoMessaging = require('@lumino/messaging');
 
+var NOTEBOOK_VERSION_INFO = Jupyter.version.split('.');
+var NOTEBOOK_MAJOR = parseInt(NOTEBOOK_VERSION_INFO[0]);
+var NOTEBOOK_MINOR = parseInt(NOTEBOOK_VERSION_INFO[1]);
+var NOTEBOOK_PATCH = parseInt(NOTEBOOK_VERSION_INFO[2]);
+
+var RENDER_SHOULD_THROW =
+  NOTEBOOK_MAJOR > 6 ||
+  (NOTEBOOK_MAJOR == 6 && NOTEBOOK_MINOR > 4) ||
+  (NOTEBOOK_MAJOR == 6 && NOTEBOOK_MINOR == 4 && NOTEBOOK_PATCH > 4);
+
 /**
  * Create a widget manager for a kernel instance.
  */
@@ -123,13 +133,19 @@ function register_events(Jupyter, events, outputarea) {
       Jupyter.notebook.kernel &&
       Jupyter.notebook.kernel.widget_manager;
     if (!manager) {
-      node.textContent =
-        'Error rendering Jupyter widget: missing widget manager';
+      var msg = 'Error rendering Jupyter widget: missing widget manager';
+      if (RENDER_SHOULD_THROW) {
+        throw new Error(msg);
+      }
+      node.textContent = msg;
       return;
     }
 
     // Missing model id means the view was removed. Hide this element.
     if (data.model_id === '') {
+      if (RENDER_SHOULD_THROW) {
+        throw new Error('Jupyter Widgets model not found');
+      }
       node.style.display = 'none';
       return;
     }
@@ -156,8 +172,13 @@ function register_events(Jupyter, events, outputarea) {
           });
         });
     } else {
-      node.textContent =
+      var msg =
         'A Jupyter widget could not be displayed because the widget state could not be found. This could happen if the kernel storing the widget is no longer available, or if the widget state was not saved in the notebook. You may be able to create the widget by running the appropriate cells.';
+      if (RENDER_SHOULD_THROW) {
+        throw new Error(msg);
+      }
+      node.textContent = msg;
+      return;
     }
   }
 
@@ -169,6 +190,7 @@ function register_events(Jupyter, events, outputarea) {
     element.append(toinsert);
     return toinsert;
   };
+
   // Register mime type with the output area
   outputarea.OutputArea.prototype.register_mime_type(MIME_TYPE, append_mime, {
     // An output widget could contain arbitrary user javascript
