@@ -47,6 +47,7 @@ import { JUPYTER_CONTROLS_VERSION } from '@jupyter-widgets/controls/lib/version'
 import '@jupyter-widgets/base/css/index.css';
 import '@jupyter-widgets/controls/css/widgets-base.css';
 import { KernelMessage } from '@jupyterlab/services';
+import { ITranslator, nullTranslator } from '@jupyterlab/translation';
 
 const WIDGET_REGISTRY: base.IWidgetRegistryData[] = [];
 
@@ -146,7 +147,13 @@ export function registerWidgetManager(
 const plugin: JupyterFrontEndPlugin<base.IJupyterWidgetRegistry> = {
   id: '@jupyter-widgets/jupyterlab-manager:plugin',
   requires: [IRenderMimeRegistry],
-  optional: [INotebookTracker, ISettingRegistry, IMainMenu, ILoggerRegistry],
+  optional: [
+    INotebookTracker,
+    ISettingRegistry,
+    IMainMenu,
+    ILoggerRegistry,
+    ITranslator,
+  ],
   provides: base.IJupyterWidgetRegistry,
   activate: activateWidgetExtension,
   autoStart: true,
@@ -167,9 +174,11 @@ function activateWidgetExtension(
   tracker: INotebookTracker | null,
   settingRegistry: ISettingRegistry | null,
   menu: IMainMenu | null,
-  loggerRegistry: ILoggerRegistry | null
+  loggerRegistry: ILoggerRegistry | null,
+  translator: ITranslator | null
 ): base.IJupyterWidgetRegistry {
   const { commands } = app;
+  const trans = (translator ?? nullTranslator).load('jupyterlab_widgets');
 
   const bindUnhandledIOPubMessageSignal = (nb: NotebookPanel): void => {
     if (!loggerRegistry) {
@@ -250,7 +259,7 @@ function activateWidgetExtension(
   if (settingRegistry !== null) {
     // Add a command for automatically saving (jupyter-)widget state.
     commands.addCommand('@jupyter-widgets/jupyterlab-manager:saveWidgetState', {
-      label: 'Save Widget State Automatically',
+      label: trans.__('Save Widget State Automatically'),
       execute: (args) => {
         return settingRegistry
           .set(plugin.id, 'saveState', !SETTINGS.saveState)
