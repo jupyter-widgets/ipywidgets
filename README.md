@@ -98,7 +98,7 @@ See the [examples](docs/source/examples.md) section of the documentation. The wi
 
 ## Change log
 
-[Change log](docs/source/changelog.md)
+[Change log](CHANGELOG.md)
 
 ### Version Compatibility with Front-End Clients
 

@@ -26,7 +26,6 @@
     "build:src": "tsc --build",
     "build:test": "tsc --build test && webpack --config test/webpack.conf.js",
     "clean": "rimraf lib && rimraf tsconfig.tsbuildinfo && rimraf dist",
-    "prepublish": "npm run clean && npm run build",
     "test": "npm run test:unit",
     "test:unit": "npm run test:unit:firefox && npm run test:unit:chrome",
     "test:unit:chrome": "npm run test:unit:default -- --browsers=Chrome",

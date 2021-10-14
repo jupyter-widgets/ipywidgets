@@ -1,4 +1,6 @@
 {
+  "name": "@jupyter-widgets/root",
+  "version": "0.1.0",
   "private": true,
   "workspaces": [
     "packages/*",
@@ -19,11 +21,7 @@
     "lint:check": "yarn run prettier:check && yarn run eslint:check",
     "prettier": "prettier --ignore-path .gitignore --write \"**/*{.ts,.tsx,.js,.jsx,.css,.json}\"",
     "prettier:check": "prettier --ignore-path .gitignore --check \"**/*{.ts,.tsx,.js,.jsx,.css,.json}\"",
-    "publish": "yarn run clean && yarn run build && lerna publish --pre-dist-tag next from-git",
-    "sort-package-json": "lerna exec --parallel sort-package-json && sort-package-json",
-    "update-dependency": "update-dependency --lerna",
-    "updated": "lerna updated",
-    "version": "yarn run clean && yarn run build && lerna version --no-push -m \"Bump version\" "
+    "sort-package-json": "lerna exec --parallel sort-package-json && sort-package-json"
   },
   "husky": {
     "hooks": {

@@ -2,6 +2,8 @@
 
 A summary of changes in ipywidgets. For more detailed information, see the issues and pull requests for the appropriate milestone on [GitHub](https://github.com/jupyter-widgets/ipywidgets).
 
+<!-- <START NEW CHANGELOG ENTRY> -->
+
 ## [8.0](https://github.com/jupyter-widgets/ipywidgets/releases/tag/v8.0) (not released yet)
 
 See the [ipywidgets
@@ -58,6 +60,7 @@ milestone on GitHub for the full list of pull requests and issues closed.
 * Removed deprecated signature of the `register` decorator ([#2695](https://github.com/jupyter-widgets/ipywidgets/pull/2695))
 * Remove deprecated `handle_kernel` alias ([#2694](https://github.com/jupyter-widgets/ipywidgets/pull/2694))
 
+<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 7.6
 

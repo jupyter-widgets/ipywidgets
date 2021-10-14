@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 #
 
+import os.path as osp
+import shutil
 
 # -- source files and parsers -----------------------------------
 
@@ -135,3 +137,9 @@ html_theme_options = {
     'includehidden': True,
     'titles_only': False
 }
+
+
+def setup(app):
+    HERE = osp.abspath(osp.dirname(__file__))
+    dest = osp.join(HERE, 'changelog.md')
+    shutil.copy(osp.join(HERE, '..', '..', 'CHANGELOG.md'), dest)
