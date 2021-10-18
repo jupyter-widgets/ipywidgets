@@ -937,6 +937,7 @@ export class DOMWidgetView extends WidgetView {
                 this.luminoWidget,
                 Widget.ResizeMessage.UnknownSize
               );
+              this.trigger('layout-changed');
               return view;
             });
           })
@@ -961,6 +962,7 @@ export class DOMWidgetView extends WidgetView {
             // Trigger the displayed event of the child view.
             return this.displayed.then(() => {
               view.trigger('displayed');
+              this.trigger('style-changed');
               // Unlike for the layout attribute, style changes don't
               // trigger Lumino resize messages.
               return view;
@@ -1082,6 +1084,9 @@ export class DOMWidgetView extends WidgetView {
     switch (msg.type) {
       case 'after-attach':
         this.trigger('displayed');
+        break;
+      case 'show':
+        this.trigger('shown');
         break;
     }
   }
