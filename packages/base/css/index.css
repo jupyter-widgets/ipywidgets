@@ -14,3 +14,11 @@
   padding: 3px;
   align-self: flex-start;
 }
+
+.jupyter-widgets-error-widget {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    min-width: var(--jp-widgets-inline-width-tiny);
+}

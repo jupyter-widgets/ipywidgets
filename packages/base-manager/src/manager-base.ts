@@ -154,7 +154,16 @@ export abstract class ManagerBase implements IWidgetManager {
           console.error(
             `Could not create a view for model id ${model.model_id}`
           );
-          throw e;
+          const ModelCls =  widgets.createErrorWidget(e);
+          const errorModel = new ModelCls({ _model_module: model.get('_model_module'),_model_name: model.get('_model_name')});
+        
+          const ViewCls = widgets.createErrorWidgetView(e);
+          console.log('view option', options);
+          
+          const view = new ViewCls({model: errorModel, options: this.setViewOptions(options)});
+          await view.render();
+
+          return view
         }
       }
     ));
@@ -359,7 +368,13 @@ export abstract class ManagerBase implements IWidgetManager {
       model_id: model_id,
       comm: options.comm,
     };
-    const widget_model = new ModelType(attributes, modelOptions);
+    let widget_model: WidgetModel;
+    try {
+      widget_model = new ModelType(attributes, modelOptions);
+    } catch (error) {
+      const Cls = widgets.createErrorWidget(error);
+      widget_model = new Cls({ _model_module: options.model_module,_model_name: options.model_name});
+    }
     widget_model.name = options.model_name;
     widget_model.module = options.model_module;
     return widget_model;
