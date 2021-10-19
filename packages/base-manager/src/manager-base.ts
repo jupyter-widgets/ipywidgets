@@ -158,7 +158,6 @@ export abstract class ManagerBase implements IWidgetManager {
           const errorModel = new ModelCls({ _model_module: model.get('_model_module'),_model_name: model.get('_model_name')});
         
           const ViewCls = widgets.createErrorWidgetView(e);
-          console.log('view option', options);
           
           const view = new ViewCls({model: errorModel, options: this.setViewOptions(options)});
           await view.render();

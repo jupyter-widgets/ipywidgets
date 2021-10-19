@@ -20,5 +20,13 @@
     flex-direction: column;
     justify-content: center;
     height: 100%;
-    min-width: var(--jp-widgets-inline-width-tiny);
+    border: solid 1px red;
+}
+
+.jupyter-widgets-error-widget.icon-error {
+    min-width: var(--jp-widgets-inline-width-short);
+  }
+  .jupyter-widgets-error-widget.text-error {
+    min-width: calc( 2* var(--jp-widgets-inline-width));
+    min-height: calc( 3 * var(--jp-widgets-inline-height));
 }
