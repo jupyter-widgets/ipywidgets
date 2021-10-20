@@ -56,7 +56,7 @@ nbsphinx_execute = 'always'
 # -- General information -------
 
 _release = {}
-exec(compile(open('../../ipywidgets/_version.py').read(), '../../ipywidgets/_version.py', 'exec'), _release)
+exec(compile(open('../../python/ipywidgets/ipywidgets/_version.py').read(), '../../python/ipywidgets/ipywidgets/_version.py', 'exec'), _release)
 from packaging.version import Version
 v = Version(_release['__version__'])
 version = f'{v.major}.{v.minor}'

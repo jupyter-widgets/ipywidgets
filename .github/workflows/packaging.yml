@@ -52,21 +52,24 @@ jobs:
         python -m pip install --upgrade pip wheel build jupyterlab~=3.0
     - name: Build PyPI distributions for ipywidgets
       run: |
+        mkdir -p dist/
+        cd python/ipywidgets
         python -m build
+        cp ./dist/* ../../dist
     - name: Build and link packages
       run: |
         yarn install
         yarn run build
     - name: Build PyPI distributions for jupyterlab_widgets
       run: |
-        cd jupyterlab_widgets
+        cd python/jupyterlab_widgets
         python -m build
-        cp ./dist/* ../dist
+        cp ./dist/* ../../dist
     - name: Build PyPI distributions for widgetsnbextension
       run: |
-        cd widgetsnbextension
+        cd python/widgetsnbextension
         python -m build
-        cp ./dist/* ../dist
+        cp ./dist/* ../../dist
     - name: Build checksum file
       run: |
         cd dist

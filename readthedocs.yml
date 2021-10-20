@@ -2,6 +2,6 @@ version: 2
 python:
     version: 3.7
     install:
-      - method: setuptools
-        path: .
+      - method: pip
+        path: ./python/ipywidgets
       - requirements: docs/requirements.txt

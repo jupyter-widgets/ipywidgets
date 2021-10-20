@@ -46,13 +46,15 @@ else
     jupyter nbextension install --overwrite --py --symlink $nbExtFlags widgetsnbextension
 fi
 jupyter nbextension enable --py $nbExtFlags widgetsnbextension
-cd ..
+cd ../..
 
 echo -n "ipywidgets"
+cd python/ipywidgets
 pip install -v -e ".[test]"
+cd ../..
 
 if test "$skip_jupyter_lab" != yes; then
     pip install jupyter_packaging
-    pip install -ve ./jupyterlab_widgets
-    jupyter labextension develop ./jupyterlab_widgets --overwrite
+    pip install -ve ./python/jupyterlab_widgets
+    jupyter labextension develop ./python/jupyterlab_widgets --overwrite
 fi

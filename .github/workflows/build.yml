@@ -46,13 +46,16 @@ jobs:
         python -m pip install jupyterlab~=3.0 jupyter_packaging~=0.10
     - name: Build the extension
       run: |
+        pushd python/ipywidgets
         pip install .
+        popd
         jlpm install
         jlpm run build
-        cd jupyterlab_widgets
+        pushd python/jupyterlab_widgets
         pwd
         pip install -e .
         jupyter labextension develop . --overwrite
+        popd
         jupyter labextension list
 
         python -m jupyterlab.browser_check
