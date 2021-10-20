@@ -2,10 +2,9 @@ import {
   WidgetModel,
   DOMWidgetModel,
   DOMWidgetView,
-  WidgetView
+  WidgetView,
 } from './widget';
 import { JUPYTER_WIDGETS_VERSION } from './version';
-
 
 const SVG_ICON = `<svg style="height:50%;max-height: 50px;" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
 <g >
@@ -15,10 +14,13 @@ const SVG_ICON = `<svg style="height:50%;max-height: 50px;" role="img" xmlns="ht
     <path enable-background="new" d="m 31.443464,11.086514 c 2.754,-0.019 4.106,-0.49 5.702,0.19 -1.299,-1.8809998 -4.358,-3.3439998 -5.728,-4.0279998 0.188,0.775 0.026,3.8379998 0.026,3.8379998 z" style="opacity:0.36930003;fill:none;stroke:url(#linearGradient3442)" />
   </g>
 </g>
-</svg>`
+</svg>`;
 
 // create a Widget Model that captures an error object
-export function createErrorWidget(error: Error): typeof WidgetModel {
+export function createErrorWidget(
+  error: Error,
+  msg?: string
+): typeof WidgetModel {
   class ErrorWidget extends DOMWidgetModel {
     constructor(attributes: any, options: any) {
       attributes = {
@@ -27,9 +29,8 @@ export function createErrorWidget(error: Error): typeof WidgetModel {
         _view_module: '@jupyter-widgets/base',
         _model_module_version: JUPYTER_WIDGETS_VERSION,
         _view_module_version: JUPYTER_WIDGETS_VERSION,
-        failed_module: attributes._model_module,
-        failed_model_name: attributes._model_name,
-        error: error
+        msg: msg,
+        error: error,
       };
       super(attributes, options);
       this.comm_live = true;
@@ -38,48 +39,57 @@ export function createErrorWidget(error: Error): typeof WidgetModel {
   return ErrorWidget;
 }
 
-
 export class ErrorWidgetView extends DOMWidgetView {
-  generateErrorMessage(): string {
-    return String(this.model.get('error').stack);
+  generateErrorMessage(): { msg?: string; stack: string } {
+    return {
+      msg: this.model.get('msg'),
+      stack: String(this.model.get('error').stack),
+    };
   }
   render(): void {
-    const module = this.model.get('failed_module');
-    const name = this.model.get('failed_model_name');
-    const errorMessage = this.generateErrorMessage();
+    const { msg, stack } = this.generateErrorMessage();
     this.el.classList.add('jupyter-widgets');
 
     const content = document.createElement('div');
-    content.classList.add('jupyter-widgets-error-widget','icon-error');
-    content.style.margin = '0 auto'
+    content.classList.add('jupyter-widgets-error-widget', 'icon-error');
     content.innerHTML = SVG_ICON;
+    const text = document.createElement('p');
+    text.innerText = 'Click to show error.';
+    content.append(text);
+
     this.el.appendChild(content);
+
     let width: number;
     let height: number;
     this.el.onclick = () => {
-      if(content.classList.contains('icon-error')){
+      if (content.classList.contains('icon-error')) {
         height = height || content.clientHeight;
         width = width || content.clientWidth;
         content.classList.remove('icon-error');
-        content.innerHTML = ` <pre>Failed to load widget '${name}' from module '${module} \n ${errorMessage}</pre>`;
+        content.innerHTML = `<pre>[Double click to close this message]\n${msg}\n${stack}</pre>`;
         content.style.height = `${height}px`;
-
         content.style.width = `${width}px`;
         content.classList.add('text-error');
-      } else if(content.classList.contains('text-error')){
+      }
+    };
+    this.el.ondblclick = () => {
+      if (content.classList.contains('text-error')) {
         content.classList.remove('text-error');
         content.innerHTML = SVG_ICON;
+        content.append(text);
         content.classList.add('icon-error');
       }
-    }
+    };
   }
 }
 
-export function createErrorWidgetView(error?: Error): typeof WidgetView {
+export function createErrorWidgetView(
+  error?: Error,
+  msg?: string
+): typeof WidgetView {
   return class InnerErrorWidgetView extends ErrorWidgetView {
-    generateErrorMessage(): string {
-      return String(error?.stack);
-    } 
+    generateErrorMessage(): { msg?: string; stack: string } {
+      return { msg, stack: String(error?.stack) };
+    }
   };
 }
-
