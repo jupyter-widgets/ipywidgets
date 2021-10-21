@@ -64,6 +64,36 @@ describe('ManagerBase', function () {
       expect(view._rendered).to.equal(1);
     });
 
+    it('return ErrorWidget if view class can not be loaded', async function () {
+      const spec = {
+        model_name: 'ModelWithMissingView',
+        model_module: 'test-widgets',
+        model_module_version: '1.0.0',
+        model_id: 'id'
+      };
+      const manager = this.managerBase;
+      const model =  await manager.new_model(spec);
+      const view = await manager.create_view(model);
+      expect(view.generateErrorMessage()['msg']).to.be.equal(
+        'Failed to load view class \'MissingView\' from module \'test-widgets\''
+      );
+    });
+
+    it('return ErrorWidget if view class can not be created', async function () {
+      const spec = {
+        model_name: 'ModelWithViewError',
+        model_module: 'test-widgets',
+        model_module_version: '1.0.0',
+        model_id: 'id'
+      };
+      const manager = this.managerBase;
+      const model =  await manager.new_model(spec);
+      const view = await manager.create_view(model);
+      expect(view.generateErrorMessage()['msg']).to.be.equal(
+        'Failed to create view for \'ViewErrorWidget\' from module \'test-widgets\' with model \'ModelWithViewError\' from module \'test-widgets\''
+      );
+    });
+
     it('removes the view on model destroy', async function () {
       const manager = this.managerBase;
       const model = await manager.new_model(this.modelOptions);
@@ -313,7 +343,33 @@ describe('ManagerBase', function () {
       );
     });
 
-    it('throws an error if there is an error loading the class');
+    it('return ErrorWidget if model class can not be loaded', async function () {
+      const spec = {
+        model_name: 'Foo',
+        model_module: 'bar',
+        model_module_version: '1.0.0',
+        model_id: 'id'
+      };
+      const manager = this.managerBase;
+      const model =  await manager.new_model(spec);
+      expect(model.get('msg')).to.be.equal(
+        'Failed to load model class \'Foo\' from module \'bar\''
+      );
+    });
+
+    it('return ErrorWidget if model can not be created', async function () {
+      const spec = {
+        model_name: 'ModelErrorWidget',
+        model_module: 'test-widgets',
+        model_module_version: '1.0.0',
+        model_id: 'id'
+      };
+      const manager = this.managerBase;
+      const model =  await manager.new_model(spec);
+      expect(model.get('msg')).to.be.equal(
+        'Model class \'ModelErrorWidget\' from module \'test-widgets\' is loaded but can not be instantiated'
+      );
+    });
 
     it('does not sync on creation', async function () {
       const comm = new MockComm();

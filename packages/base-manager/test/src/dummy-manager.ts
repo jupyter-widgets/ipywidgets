@@ -95,6 +95,51 @@ class TestWidget extends widgets.WidgetModel {
     };
   }
 }
+class ModelErrorWidget extends widgets.WidgetModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_module: 'test-widgets',
+      _model_name: 'ModelErrorWidget',
+      _model_module_version: '1.0.0',
+    };
+  }
+  initialize(attributes: Backbone.ObjectHash, options: any) {
+    throw new Error('Model error');
+  }
+}
+class ModelWithMissingView extends widgets.WidgetModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_module: 'test-widgets',
+      _model_name: 'ModelWithViewError',
+      _model_module_version: '1.0.0',
+      _view_module: 'test-widgets',
+      _view_name: 'MissingView',
+      _view_module_version: '1.0.0',
+    };
+  }
+}
+class ModelWithViewError extends widgets.WidgetModel {
+  defaults(): Backbone.ObjectHash {
+    return {
+      ...super.defaults(),
+      _model_module: 'test-widgets',
+      _model_name: 'ModelWithViewError',
+      _model_module_version: '1.0.0',
+      _view_module: 'test-widgets',
+      _view_name: 'ViewErrorWidget',
+      _view_module_version: '1.0.0',
+    };
+  }
+}
+
+class ViewErrorWidget extends widgets.WidgetView {
+  render(): void {
+    throw new Error('Render error');
+  }
+}
 
 class TestWidgetView extends widgets.WidgetView {
   render(): void {
@@ -136,6 +181,10 @@ const testWidgets = {
   TestWidgetView,
   BinaryWidget,
   BinaryWidgetView,
+  ModelErrorWidget,
+  ModelWithViewError,
+  ViewErrorWidget,
+  ModelWithMissingView
 };
 
 export class DummyManager extends ManagerBase {
@@ -149,6 +198,7 @@ export class DummyManager extends ManagerBase {
     moduleName: string,
     moduleVersion: string
   ): Promise<any> {
+    
     if (moduleName === '@jupyter-widgets/base') {
       if ((widgets as any)[className]) {
         return Promise.resolve((widgets as any)[className]);
@@ -161,7 +211,7 @@ export class DummyManager extends ManagerBase {
       } else {
         return Promise.reject(`Cannot find class ${className}`);
       }
-    } else {
+    } else {      
       return Promise.reject(`Cannot find module ${moduleName}`);
     }
   }
