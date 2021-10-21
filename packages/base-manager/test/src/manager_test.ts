@@ -69,13 +69,13 @@ describe('ManagerBase', function () {
         model_name: 'ModelWithMissingView',
         model_module: 'test-widgets',
         model_module_version: '1.0.0',
-        model_id: 'id'
+        model_id: 'id',
       };
       const manager = this.managerBase;
-      const model =  await manager.new_model(spec);
+      const model = await manager.new_model(spec);
       const view = await manager.create_view(model);
       expect(view.generateErrorMessage()['msg']).to.be.equal(
-        'Failed to load view class \'MissingView\' from module \'test-widgets\''
+        "Failed to load view class 'MissingView' from module 'test-widgets'"
       );
     });
 
@@ -84,13 +84,13 @@ describe('ManagerBase', function () {
         model_name: 'ModelWithViewError',
         model_module: 'test-widgets',
         model_module_version: '1.0.0',
-        model_id: 'id'
+        model_id: 'id',
       };
       const manager = this.managerBase;
-      const model =  await manager.new_model(spec);
+      const model = await manager.new_model(spec);
       const view = await manager.create_view(model);
       expect(view.generateErrorMessage()['msg']).to.be.equal(
-        'Failed to create view for \'ViewErrorWidget\' from module \'test-widgets\' with model \'ModelWithViewError\' from module \'test-widgets\''
+        "Failed to create view for 'ViewErrorWidget' from module 'test-widgets' with model 'ModelWithViewError' from module 'test-widgets'"
       );
     });
 
@@ -348,12 +348,12 @@ describe('ManagerBase', function () {
         model_name: 'Foo',
         model_module: 'bar',
         model_module_version: '1.0.0',
-        model_id: 'id'
+        model_id: 'id',
       };
       const manager = this.managerBase;
-      const model =  await manager.new_model(spec);
+      const model = await manager.new_model(spec);
       expect(model.get('msg')).to.be.equal(
-        'Failed to load model class \'Foo\' from module \'bar\''
+        "Failed to load model class 'Foo' from module 'bar'"
       );
     });
 
@@ -362,12 +362,12 @@ describe('ManagerBase', function () {
         model_name: 'ModelErrorWidget',
         model_module: 'test-widgets',
         model_module_version: '1.0.0',
-        model_id: 'id'
+        model_id: 'id',
       };
       const manager = this.managerBase;
-      const model =  await manager.new_model(spec);
+      const model = await manager.new_model(spec);
       expect(model.get('msg')).to.be.equal(
-        'Model class \'ModelErrorWidget\' from module \'test-widgets\' is loaded but can not be instantiated'
+        "Model class 'ModelErrorWidget' from module 'test-widgets' is loaded but can not be instantiated"
       );
     });
 

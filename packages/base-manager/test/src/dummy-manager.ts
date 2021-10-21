@@ -184,7 +184,7 @@ const testWidgets = {
   ModelErrorWidget,
   ModelWithViewError,
   ViewErrorWidget,
-  ModelWithMissingView
+  ModelWithMissingView,
 };
 
 export class DummyManager extends ManagerBase {
@@ -198,7 +198,6 @@ export class DummyManager extends ManagerBase {
     moduleName: string,
     moduleVersion: string
   ): Promise<any> {
-    
     if (moduleName === '@jupyter-widgets/base') {
       if ((widgets as any)[className]) {
         return Promise.resolve((widgets as any)[className]);
@@ -211,7 +210,7 @@ export class DummyManager extends ManagerBase {
       } else {
         return Promise.reject(`Cannot find class ${className}`);
       }
-    } else {      
+    } else {
       return Promise.reject(`Cannot find module ${moduleName}`);
     }
   }

@@ -156,13 +156,16 @@ export abstract class ManagerBase implements IWidgetManager {
           console.error(
             `Could not create a view for model id ${model.model_id}`
           );
-          const msg = `Failed to create view for '${_view_name}' from module '${_view_module}' with model '${model.name}' from module '${model.module}'`
-          const ModelCls =  widgets.createErrorWidget(e, msg);
+          const msg = `Failed to create view for '${_view_name}' from module '${_view_module}' with model '${model.name}' from module '${model.module}'`;
+          const ModelCls = widgets.createErrorWidget(e, msg);
           const errorModel = new ModelCls();
-          const view = new widgets.ErrorWidgetView({model: errorModel, options: this.setViewOptions(options)});
+          const view = new widgets.ErrorWidgetView({
+            model: errorModel,
+            options: this.setViewOptions(options),
+          });
           await view.render();
 
-          return view
+          return view;
         }
       }
     ));
@@ -368,15 +371,18 @@ export abstract class ManagerBase implements IWidgetManager {
       comm: options.comm,
     };
     let widget_model: WidgetModel;
-    try {      
+    try {
       widget_model = new ModelType(attributes, modelOptions);
     } catch (error) {
-      const msg = `Model class '${ options.model_name}' from module '${options.model_module}' is loaded but can not be instantiated`;
+      const msg = `Model class '${options.model_name}' from module '${options.model_module}' is loaded but can not be instantiated`;
       const Cls = widgets.createErrorWidget(error, msg);
-      widget_model = new Cls({ _model_module: options.model_module,_model_name: options.model_name});
+      widget_model = new Cls({
+        _model_module: options.model_module,
+        _model_name: options.model_name,
+      });
     }
     widget_model.name = options.model_name;
-    widget_model.module = options.model_module;    
+    widget_model.module = options.model_module;
     return widget_model;
   }
 
@@ -546,11 +552,11 @@ export abstract class ManagerBase implements IWidgetManager {
         className,
         moduleName,
         moduleVersion
-      ) as Promise<typeof WidgetModel>; 
+      ) as Promise<typeof WidgetModel>;
       await promise;
       return promise;
     } catch (error) {
-      const msg = `Failed to load model class '${className}' from module '${moduleName}'`
+      const msg = `Failed to load model class '${className}' from module '${moduleName}'`;
       return widgets.createErrorWidget(error, msg);
     }
   }
@@ -570,7 +576,7 @@ export abstract class ManagerBase implements IWidgetManager {
       return promise;
     } catch (error) {
       console.error(error);
-      const msg = `Failed to load view class '${className}' from module '${moduleName}'`
+      const msg = `Failed to load view class '${className}' from module '${moduleName}'`;
       return widgets.createErrorWidgetView(error, msg);
     }
   }
