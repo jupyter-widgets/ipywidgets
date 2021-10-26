@@ -100,16 +100,6 @@ export class DropdownModel extends SelectionModel {
 
 export class DropdownView extends SelectionView {
   /**
-   * Public constructor.
-   */
-  initialize(parameters: WidgetView.IInitializeParameters): void {
-    super.initialize(parameters);
-    this.listenTo(this.model, 'change:_options_labels', () =>
-      this._updateOptions()
-    );
-  }
-
-  /**
    * Called when view is rendered.
    */
   render(): void {
@@ -127,7 +117,15 @@ export class DropdownView extends SelectionView {
   /**
    * Update the contents of this view
    */
-  update(): void {
+  update(options?: { updated_view?: DropdownView }): void {
+    // Debounce set calls from ourselves:
+    if (options?.updated_view !== this) {
+      const optsChanged = this.model.hasChanged('_options_labels');
+      if (optsChanged) {
+        // Need to update options:
+        this._updateOptions();
+      }
+    }
     // Select the correct element
     const index = this.model.get('index');
     this.listbox.selectedIndex = index === null ? -1 : index;
@@ -159,7 +157,8 @@ export class DropdownView extends SelectionView {
   _handle_change(): void {
     this.model.set(
       'index',
-      this.listbox.selectedIndex === -1 ? null : this.listbox.selectedIndex
+      this.listbox.selectedIndex === -1 ? null : this.listbox.selectedIndex,
+      { updated_view: this }
     );
     this.touch();
   }
@@ -193,12 +192,6 @@ export class SelectView extends SelectionView {
    */
   initialize(parameters: WidgetView.IInitializeParameters): void {
     super.initialize(parameters);
-    this.listenTo(this.model, 'change:_options_labels', () =>
-      this._updateOptions()
-    );
-    this.listenTo(this.model, 'change:index', (model, value, options) =>
-      this.updateSelection(options)
-    );
     // Create listbox here so that subclasses can modify it before it is populated in render()
     this.listbox = document.createElement('select');
   }
@@ -220,7 +213,20 @@ export class SelectView extends SelectionView {
   /**
    * Update the contents of this view
    */
-  update(): void {
+  update(options?: { updated_view?: WidgetView }): void {
+    // Don't update options/index on set calls from ourselves:
+    if (options?.updated_view !== this) {
+      const optsChange = this.model.hasChanged('_options_labels');
+      const idxChange = this.model.hasChanged('index');
+      if (optsChange || idxChange) {
+        // Stash the index to guard against change events
+        const idx = this.model.get('index');
+        if (optsChange) {
+          this._updateOptions();
+        }
+        this.updateSelection(idx);
+      }
+    }
     super.update();
     let rows = this.model.get('rows');
     if (rows === null) {
@@ -229,11 +235,8 @@ export class SelectView extends SelectionView {
     this.listbox.setAttribute('size', rows);
   }
 
-  updateSelection(options: any = {}): void {
-    if (options.updated_view === this) {
-      return;
-    }
-    const index = this.model.get('index');
+  updateSelection(index?: null | number): void {
+    index = index || (this.model.get('index') as null | number);
     this.listbox.selectedIndex = index === null ? -1 : index;
   }
 
@@ -697,8 +700,8 @@ export class SelectionSliderView extends DescriptionView {
    * Called when the model is changed.  The model may have been
    * changed by another view or by a state update from the back-end.
    */
-  update(options?: any): void {
-    if (options === undefined || options.updated_view !== this) {
+  update(options?: { updated_view?: WidgetView }): void {
+    if (options?.updated_view !== this) {
       this.updateSliderOptions(this.model);
       const orientation = this.model.get('orientation');
       const disabled = this.model.get('disabled');
@@ -886,10 +889,7 @@ export class SelectMultipleView extends SelectView {
     this.el.classList.add('widget-select-multiple');
   }
 
-  updateSelection(options: any = {}): void {
-    if (options.updated_view === this) {
-      return;
-    }
+  updateSelection(): void {
     const selected = this.model.get('index') || [];
     const listboxOptions = this.listbox.options;
     // Clear the selection
@@ -936,8 +936,8 @@ export class SelectionRangeSliderView extends SelectionSliderView {
     super.render();
   }
 
-  updateSelection(): void {
-    const index = this.model.get('index');
+  updateSelection(index?: number[]): void {
+    index = index || (this.model.get('index') as number[]);
     this.updateReadout(index);
   }
 
