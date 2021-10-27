@@ -72,9 +72,16 @@ class Output(DOMWidget):
         wait: bool
             If True, wait to clear the output until new output is
             available to replace it. Default: False
+
+        If any parameters are given, then this should be run on the main thread,
+        because race conditions may occur if run from multiple threads.  It is
+        safe to call this function without any arguments from multiple threads.
         """
-        with self:
-            clear_output(*pargs, **kwargs)
+        if not pargs and not kwargs:
+            self.outputs = ()
+        else:
+            with self:
+                clear_output(*pargs, **kwargs)
 
     # PY3: Force passing clear_output and clear_kwargs as kwargs
     def capture(self, clear_output=False, *clear_args, **clear_kwargs):
