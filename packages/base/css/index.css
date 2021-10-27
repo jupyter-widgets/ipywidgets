@@ -35,3 +35,7 @@
 .jupyter-widgets-error-widget p {
   text-align: center;
 }
+
+.jupyter-widgets-error-widget.text-error pre::first-line {
+  font-weight: bold;
+}

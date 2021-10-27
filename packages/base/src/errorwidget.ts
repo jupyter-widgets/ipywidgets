@@ -53,8 +53,9 @@ export class ErrorWidgetView extends DOMWidgetView {
     const content = document.createElement('div');
     content.classList.add('jupyter-widgets-error-widget', 'icon-error');
     content.innerHTML = SVG_ICON;
-    const text = document.createElement('p');
-    text.innerText = 'Click to show error.';
+    const text = document.createElement('pre');
+    text.style.textAlign = 'center';
+    text.innerText = 'Click to show javascript error.';
     content.append(text);
 
     this.el.appendChild(content);
@@ -66,7 +67,9 @@ export class ErrorWidgetView extends DOMWidgetView {
         height = height || content.clientHeight;
         width = width || content.clientWidth;
         content.classList.remove('icon-error');
-        content.innerHTML = `<pre>[Double click to close this message]\n${msg}\n${stack}</pre>`;
+        content.innerHTML = `
+        <pre>[Open Browser Console for more detailed log - Double click to close this message]\n${msg}\n${stack}</pre>
+        `;
         content.style.height = `${height}px`;
         content.style.width = `${width}px`;
         content.classList.add('text-error');
