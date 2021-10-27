@@ -186,6 +186,7 @@ class Video(_Media):
     autoplay = Bool(True, help="When true, the video starts when it's displayed").tag(sync=True)
     loop = Bool(True, help="When true, the video will start from the beginning after finishing").tag(sync=True)
     controls = Bool(True, help="Specifies that video controls should be displayed (such as a play/pause button etc)").tag(sync=True)
+    playing = Bool(True, help="Specifies that video is currently playing").tag(sync=True)
 
     @classmethod
     def from_file(cls, filename, **kwargs):
@@ -215,6 +216,7 @@ class Audio(_Media):
     autoplay = Bool(True, help="When true, the audio starts when it's displayed").tag(sync=True)
     loop = Bool(True, help="When true, the audio will start from the beginning after finishing").tag(sync=True)
     controls = Bool(True, help="Specifies that audio controls should be displayed (such as a play/pause button etc)").tag(sync=True)
+    playing = Bool(True, help="Specifies that video is currently playing").tag(sync=True)
 
     @classmethod
     def from_file(cls, filename, **kwargs):

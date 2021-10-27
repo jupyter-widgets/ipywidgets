@@ -101,6 +101,7 @@ Attribute        | Type             | Default          | Help
 `format`         | string           | `'mp3'`          | The format of the audio.
 `layout`         | reference to Layout widget | reference to new instance | 
 `loop`           | boolean          | `true`           | When true, the audio will start from the beginning after finishing
+`playing`        | boolean          | `true`           | Specifies that video is currently playing
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | Bytes            | `b''`            | The media data as a memory view of bytes.
@@ -1446,6 +1447,7 @@ Attribute        | Type             | Default          | Help
 `height`         | string           | `''`             | Height of the video in pixels.
 `layout`         | reference to Layout widget | reference to new instance | 
 `loop`           | boolean          | `true`           | When true, the video will start from the beginning after finishing
+`playing`        | boolean          | `true`           | Specifies that video is currently playing
 `tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
 `tooltip`        | `null` or string | `null`           | A tooltip caption.
 `value`          | Bytes            | `b''`            | The media data as a memory view of bytes.
