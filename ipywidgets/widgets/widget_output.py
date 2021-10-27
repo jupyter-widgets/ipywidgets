@@ -170,6 +170,43 @@ class Output(DOMWidget):
         """Append text to the stderr stream."""
         self._append_stream_output(text, stream_name='stderr')
 
+    def register_logger(self, logger, *args, **kwargs):
+        """Registers a handler to given logger to send output to output widget"""
+
+        import logging
+
+        class WidgetLogger(logging.Handler):
+            """ Class to implement a logging interface that outputs to the
+             Output widget"""
+
+            # have a class member to store the existing logger
+            logger_instance = logging.getLogger("__name__")
+
+            def __init__(self, output_widget):
+                # Initialize the Handler
+                logging.Handler.__init__(self, *args)
+
+                # save outer_instance
+                self.output = output_widget
+
+                # optional take format
+                # setFormatter function is derived from logging.Handler
+                for key, value in kwargs.items():
+                    if "{}".format(key) == "format":
+                        self.setFormatter(value)
+
+                # make the logger send data to this class
+                self.logger_instance.addHandler(self)
+
+            def emit(self, record):
+                """ Overload of logging.Handler method """
+
+                record = self.format(record)
+                self.output.outputs = ({'name': 'stdout',
+                                                'output_type': 'stream',
+                                                'text': (record + '\n')},) + self.output.outputs
+        logger.addHandler(WidgetLogger(self))
+
     def append_display_data(self, display_object):
         """Append a display object as an output.
 
