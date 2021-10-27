@@ -184,6 +184,11 @@ export class HTMLModel extends StringModel {
       _model_name: 'HTMLModel',
     };
   }
+  generateMimeBundle() {
+    return Promise.resolve({
+      'text/html': this.get('value'),
+    });
+  }
 }
 
 export class HTMLView extends StringView {

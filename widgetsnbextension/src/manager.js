@@ -219,6 +219,49 @@ export class WidgetManager extends ManagerBase {
    */
   _init_actions() {
     var notifier = Jupyter.notification_area.widget('widgets');
+    this.notebook.events.on('before_save.Notebook', async () => {
+      var cells = Jupyter.notebook.get_cells();
+      // notebook.js save_notebook doesn't want for this promise, we are simply lucky when this
+      // finishes before saving.
+      await Promise.all(
+        cells.map(async (cell) => {
+          if (!cell.output_area) {
+            return;
+          }
+
+          var widget_output = cell.output_area.outputs.find((output) => {
+            return (
+              (output.data && output.data[MIME_TYPE]) ||
+              (output.metadata && output.metadata[MIME_TYPE])
+            );
+          });
+          if (widget_output) {
+            var model_id = widget_output.data[MIME_TYPE]
+              ? widget_output.data[MIME_TYPE].model_id
+              : widget_output.metadata[MIME_TYPE].model_id;
+            var model = await this.get_model(model_id);
+            if (model) {
+              var bundle = await model.generateMimeBundle();
+
+              if (
+                widget_output.data[MIME_TYPE] &&
+                model.shouldOverwriteMimeBundle()
+              ) {
+                widget_output.metadata[MIME_TYPE] =
+                  widget_output.data[MIME_TYPE];
+                widget_output.metadata['text/plain'] =
+                  widget_output.data['text/plain'];
+
+                delete widget_output.data[MIME_TYPE];
+                delete widget_output.data['text/plain'];
+              }
+
+              _.extend(widget_output.data, bundle);
+            }
+          }
+        })
+      );
+    });
     this.saveWidgetsAction = {
       handler: function () {
         this.get_state({
