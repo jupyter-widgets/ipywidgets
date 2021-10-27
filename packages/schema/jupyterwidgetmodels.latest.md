@@ -451,6 +451,42 @@ Attribute        | Type             | Default          | Help
 `source`         | array            | `[]`             | The source (widget, 'trait_name') pair
 `target`         | array            | `[]`             | The target (widget, 'trait_name') pair
 
+### DraggableBoxModel (@jupyter-widgets/controls, 2.0.0); DraggableBoxView (@jupyter-widgets/controls, 2.0.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_name`    | string           | `'DraggableBoxModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_name`     | string           | `'DraggableBoxView'` | 
+`child`          | `null` or reference to Widget widget | reference to new instance | 
+`drag_data`      | object           | `{}`             | 
+`draggable`      | boolean          | `true`           | 
+`layout`         | reference to Layout widget | reference to new instance | 
+`tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`tooltip`        | `null` or string | `null`           | A tooltip caption.
+
+### DropBoxModel (@jupyter-widgets/controls, 2.0.0); DropBoxView (@jupyter-widgets/controls, 2.0.0)
+
+Attribute        | Type             | Default          | Help
+-----------------|------------------|------------------|----
+`_dom_classes`   | array of string  | `[]`             | CSS classes applied to widget DOM element
+`_model_module`  | string           | `'@jupyter-widgets/controls'` | 
+`_model_module_version` | string           | `'2.0.0'`        | 
+`_model_name`    | string           | `'DropBoxModel'` | 
+`_view_module`   | string           | `'@jupyter-widgets/controls'` | 
+`_view_module_version` | string           | `'2.0.0'`        | 
+`_view_name`     | string           | `'DropBoxView'`  | 
+`child`          | `null` or reference to Widget widget | reference to new instance | 
+`drag_data`      | object           | `{}`             | 
+`draggable`      | boolean          | `false`          | 
+`layout`         | reference to Layout widget | reference to new instance | 
+`tabbable`       | `null` or boolean | `null`           | Is widget tabbable?
+`tooltip`        | `null` or string | `null`           | A tooltip caption.
+
 ### DropdownModel (@jupyter-widgets/controls, 2.0.0); DropdownView (@jupyter-widgets/controls, 2.0.0)
 
 Attribute        | Type             | Default          | Help

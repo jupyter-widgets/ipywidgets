@@ -2556,6 +2556,206 @@
         "type": "string"
       },
       {
+        "default": "DraggableBoxModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "DraggableBoxView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": "reference to new instance",
+        "help": "",
+        "name": "child",
+        "type": "reference",
+        "widget": "Widget"
+      },
+      {
+        "default": {},
+        "help": "",
+        "name": "drag_data",
+        "type": "object"
+      },
+      {
+        "default": true,
+        "help": "",
+        "name": "draggable",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "DraggableBoxModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "DraggableBoxView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
+        "default": "DropBoxModel",
+        "help": "",
+        "name": "_model_name",
+        "type": "string"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_view_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_view_module_version",
+        "type": "string"
+      },
+      {
+        "default": "DropBoxView",
+        "help": "",
+        "name": "_view_name",
+        "type": "string"
+      },
+      {
+        "allow_none": true,
+        "default": "reference to new instance",
+        "help": "",
+        "name": "child",
+        "type": "reference",
+        "widget": "Widget"
+      },
+      {
+        "default": {},
+        "help": "",
+        "name": "drag_data",
+        "type": "object"
+      },
+      {
+        "default": false,
+        "help": "",
+        "name": "draggable",
+        "type": "bool"
+      },
+      {
+        "default": "reference to new instance",
+        "help": "",
+        "name": "layout",
+        "type": "reference",
+        "widget": "Layout"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "Is widget tabbable?",
+        "name": "tabbable",
+        "type": "bool"
+      },
+      {
+        "allow_none": true,
+        "default": null,
+        "help": "A tooltip caption.",
+        "name": "tooltip",
+        "type": "string"
+      }
+    ],
+    "model": {
+      "module": "@jupyter-widgets/controls",
+      "name": "DropBoxModel",
+      "version": "2.0.0"
+    },
+    "view": {
+      "module": "@jupyter-widgets/controls",
+      "name": "DropBoxView",
+      "version": "2.0.0"
+    }
+  },
+  {
+    "attributes": [
+      {
+        "default": [],
+        "help": "CSS classes applied to widget DOM element",
+        "items": {
+          "type": "string"
+        },
+        "name": "_dom_classes",
+        "type": "array"
+      },
+      {
+        "default": "@jupyter-widgets/controls",
+        "help": "",
+        "name": "_model_module",
+        "type": "string"
+      },
+      {
+        "default": "2.0.0",
+        "help": "",
+        "name": "_model_module_version",
+        "type": "string"
+      },
+      {
         "default": "DropdownModel",
         "help": "",
         "name": "_model_name",

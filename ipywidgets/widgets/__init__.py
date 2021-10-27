@@ -30,3 +30,4 @@ from .widget_tagsinput import TagsInput, ColorsInput, FloatsInput, IntsInput
 from .widget_style import Style
 from .widget_templates import TwoByTwoLayout, AppLayout, GridspecLayout
 from .widget_upload import FileUpload
+from .widget_dragdrop import DraggableBox, DropBox
