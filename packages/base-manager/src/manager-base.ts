@@ -348,17 +348,33 @@ export abstract class ManagerBase implements IWidgetManager {
       options.model_module_version
     );
     let ModelType: typeof WidgetModel;
+
+    const makeErrorModel = (error: any, msg: string) => {
+      const Cls = widgets.createErrorWidget(error, msg);
+      const widget_model = new Cls({
+        _model_module: options.model_module,
+        _model_name: options.model_name,
+      });
+      widget_model.name = options.model_name;
+      widget_model.module = options.model_module;
+      return widget_model;
+    };
+
     try {
       ModelType = await model_promise;
     } catch (error) {
-      console.error('Could not instantiate widget');
-      throw error;
+      const msg = 'Could not instantiate widget';
+      console.error(msg);
+      return makeErrorModel(error, msg);
     }
 
     if (!ModelType) {
-      throw new Error(
+      const msg = 'Could not instantiate widget';
+      console.error(msg);
+      const error = new Error(
         `Cannot find model module ${options.model_module}@${options.model_module_version}, ${options.model_name}`
       );
+      return makeErrorModel(error, msg);
     }
 
     const attributes = await ModelType._deserialize_state(
@@ -375,11 +391,7 @@ export abstract class ManagerBase implements IWidgetManager {
       widget_model = new ModelType(attributes, modelOptions);
     } catch (error) {
       const msg = `Model class '${options.model_name}' from module '${options.model_module}' is loaded but can not be instantiated`;
-      const Cls = widgets.createErrorWidget(error, msg);
-      widget_model = new Cls({
-        _model_module: options.model_module,
-        _model_name: options.model_name,
-      });
+      widget_model = makeErrorModel(error, msg);
     }
     widget_model.name = options.model_name;
     widget_model.module = options.model_module;

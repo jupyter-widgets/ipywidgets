@@ -52,9 +52,21 @@ export class HTMLManager extends ManagerBase {
     view: Promise<DOMWidgetView> | DOMWidgetView,
     el: HTMLElement
   ): Promise<void> {
-    const v = await view;
-    LuminoWidget.Widget.attach(v.luminoWidget, el);
+    let v: DOMWidgetView;
+    try {
+      v = await view;
+    } catch (error) {
+      const msg = `Could not create a view for ${view}`;
+      console.error(msg);
+      const ModelCls = base.createErrorWidget(error, msg);
+      const errorModel = new ModelCls();
+      v = new base.ErrorWidgetView({
+        model: errorModel,
+      });
+      v.render();
+    }
 
+    LuminoWidget.Widget.attach(v.luminoWidget, el);
     this._viewList.add(v);
     v.once('remove', () => {
       this._viewList.delete(v);
