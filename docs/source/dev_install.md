@@ -18,19 +18,16 @@ To install ipywidgets from git, you will need:
 
 
 
-### Installing With Conda 
+### Installing With Conda
 
 ```bash
-conda create -c conda-forge -n ipywidgets yarn notebook
+conda create -c conda-forge -n ipywidgets yarn notebook jupyterlab
 conda activate ipywidgets
 ipython kernel install --name ipywidgets --display-name "ipywidgets" --sys-prefix
-pip install --pre jupyterlab
 git clone https://github.com/jupyter-widgets/ipywidgets.git
 cd ipywidgets
 ./dev-install.sh
 ```
-
-Notice that we install the prerelease of JupyterLab currently, which is only available via `pip`.
 
 Rebuilding after making changes
 ----------------------------

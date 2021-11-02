@@ -3,7 +3,7 @@
 To run the Python tests:
 
 ```sh
-pytest --cov=ipywidgets ipywidgets
+pytest --cov=ipywidgets ./python/ipywidgets
 ```
 
 To run the Javascript tests in each package directory:

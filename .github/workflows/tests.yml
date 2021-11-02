@@ -22,7 +22,7 @@ jobs:
       run: |
         sudo apt-get install -y pandoc
         python -m pip install --upgrade pip
-        python -m pip install file://$PWD#egg=ipywidgets
+        python -m pip install file://$PWD/python/ipywidgets#egg=ipywidgets
         python -m pip install -r ./docs/requirements.txt
     - name: Build docs
       run: |
@@ -115,10 +115,11 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install file://$PWD#egg=ipywidgets[test]
+        pip install file://$PWD/python/ipywidgets#egg=ipywidgets[test]
     - name: Test with pytest
       run: |
         pip install pytest
+        cd python/ipywidgets
         pytest --cov=ipywidgets ipywidgets
   spec:
     name: Message Specification
@@ -138,7 +139,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install file://$PWD#egg=ipywidgets
+        pip install file://$PWD/python/ipywidgets#egg=ipywidgets
     - name: Compare spec with latest version
       run: |
         python ./packages/schema/generate-spec.py -f markdown spec.md
@@ -184,10 +185,12 @@ jobs:
         yarn run build
     - name: Build the extension
       run: |
+        cd python/ipywidgets
         pip install .
+        cd ../..
         jlpm install
         jlpm run build
-        cd jupyterlab_widgets
+        cd python/jupyterlab_widgets
         pwd
         pip install -e .
         jupyter labextension develop . --overwrite

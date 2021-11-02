@@ -2,9 +2,9 @@
   "private": true,
   "workspaces": [
     "packages/*",
-    "widgetsnbextension",
+    "python/widgetsnbextension",
     "examples/*",
-    "jupyterlab_widgets"
+    "python/jupyterlab_widgets"
   ],
   "scripts": {
     "build": "lerna run build --ignore \"@jupyter-widgets/example-*\"",
