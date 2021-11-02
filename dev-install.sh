@@ -38,22 +38,19 @@ yarn install
 yarn run build
 
 echo -n "widgetsnbextension"
-cd widgetsnbextension
-pip install -v -e .
+pip install -v -e ./python/widgetsnbextension
 if [[ "$OSTYPE" == "msys" ]]; then
     jupyter nbextension install --overwrite --py $nbExtFlags widgetsnbextension
 else
     jupyter nbextension install --overwrite --py --symlink $nbExtFlags widgetsnbextension
 fi
 jupyter nbextension enable --py $nbExtFlags widgetsnbextension
-cd ../..
 
 echo -n "ipywidgets"
-cd python/ipywidgets
-pip install -v -e ".[test]"
-cd ../..
+pip install -v -e "./python/ipywidgets[test]"
 
 if test "$skip_jupyter_lab" != yes; then
+    echo -n "jupyterlab_ipywidgets"
     pip install jupyter_packaging
     pip install -ve ./python/jupyterlab_widgets
     jupyter labextension develop ./python/jupyterlab_widgets --overwrite
