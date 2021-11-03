@@ -376,18 +376,18 @@ export abstract class ManagerBase implements IWidgetManager {
       );
       return makeErrorModel(error, msg);
     }
-
-    const attributes = await ModelType._deserialize_state(
-      serialized_state,
-      this
-    );
-    const modelOptions: IBackboneModelOptions = {
-      widget_manager: this,
-      model_id: model_id,
-      comm: options.comm,
-    };
     let widget_model: WidgetModel;
     try {
+      const attributes = await ModelType._deserialize_state(
+        serialized_state,
+        this
+      );
+      const modelOptions: IBackboneModelOptions = {
+        widget_manager: this,
+        model_id: model_id,
+        comm: options.comm,
+      };
+
       widget_model = new ModelType(attributes, modelOptions);
     } catch (error) {
       const msg = `Model class '${options.model_name}' from module '${options.model_module}' is loaded but can not be instantiated`;
