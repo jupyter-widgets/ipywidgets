@@ -151,7 +151,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
         python-version: 3.9
     - uses: actions/cache@v1
@@ -166,10 +166,10 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install -U jupyterlab~=3.2 jupyter-packaging~=0.10
 
-    - name: Use Node.js 12.x
-      uses: actions/setup-node@v1
+    - name: Set up Node
+      uses: actions/setup-node@v2
       with:
-        node-version: 12.x
+        node-version: 14.x
 
     - name: Get yarn cache
       id: yarn-cache
