@@ -200,10 +200,11 @@ jobs:
         jupyter labextension develop . --overwrite
         jupyter labextension list
 
-    - name: Install Galata
+    - name: Install Test Dependencies
       run: |
         cd ui-tests
         yarn install --frozen-lockfile
+        yarn playwright install chromium
 
     - name: Launch JupyterLab
       run: |

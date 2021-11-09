@@ -1,8 +1,8 @@
 {
-  "name": "ipywidgets-ui-tests",
-  "version": "1.0.0",
-  "description": "ipywidgets UI Tests",
+  "name": "@jupyter-widgets/ui-tests",
   "private": true,
+  "version": "0.1.0",
+  "description": "ipywidgets UI Tests",
   "scripts": {
     "start": "jupyter lab --config ./jupyter_server_config.py",
     "start:detached": "yarn run start&",
