@@ -58,7 +58,7 @@ export class HTMLManager extends ManagerBase {
     } catch (error) {
       const msg = `Could not create a view for ${view}`;
       console.error(msg);
-      const ModelCls = base.createErrorWidget(error, msg);
+      const ModelCls = base.createErrorWidgetModel(error, msg);
       const errorModel = new ModelCls();
       v = new base.ErrorWidgetView({
         model: errorModel,
