@@ -25,8 +25,9 @@ from json import loads as jsonloads, dumps as jsondumps
 
 from base64 import standard_b64encode
 
-from .._version import __protocol_version__, __jupyter_widgets_base_version__
+from .._version import __protocol_version__, __control_protocol_version__, __jupyter_widgets_base_version__
 PROTOCOL_VERSION_MAJOR = __protocol_version__.split('.')[0]
+CONTROL_PROTOCOL_VERSION_MAJOR = __control_protocol_version__.split('.')[0]
 
 def _widget_to_json(x, obj):
     if isinstance(x, dict):
@@ -290,6 +291,7 @@ class Widget(LoggingHasTraits):
     # Class attributes
     #-------------------------------------------------------------------------
     _widget_construction_callback = None
+    _control_comm = None
 
     # widgets is a dictionary of all active widget objects
     widgets = {}
@@ -301,7 +303,6 @@ class Widget(LoggingHasTraits):
     def close_all(cls):
         for widget in list(cls.widgets.values()):
             widget.close()
-
 
     @staticmethod
     def on_widget_constructed(callback):
@@ -316,6 +317,51 @@ class Widget(LoggingHasTraits):
         """Static method, called when a widget is constructed."""
         if Widget._widget_construction_callback is not None and callable(Widget._widget_construction_callback):
             Widget._widget_construction_callback(widget)
+
+    @classmethod
+    def handle_control_comm_opened(cls, comm, msg):
+        """
+        Class method, called when the comm-open message on the
+        "jupyter.widget.control" comm channel is received
+        """
+        version = msg.get('metadata', {}).get('version', '')
+        if version.split('.')[0] != CONTROL_PROTOCOL_VERSION_MAJOR:
+            raise ValueError("Incompatible widget control protocol versions: received version %r, expected version %r"%(version, __control_protocol_version__))
+
+        cls._control_comm = comm
+        cls._control_comm.on_msg(cls._handle_control_comm_msg)
+
+    @classmethod
+    def _handle_control_comm_msg(cls, msg):
+        # This shouldn't happen unless someone calls this method manually
+        if cls._control_comm is None:
+            raise RuntimeError('Control comm has not been properly opened')
+
+        data = msg['content']['data']
+        method = data['method']
+
+        if method == 'request_states':
+            # Send back the full widgets state
+            cls.get_manager_state()
+            widgets = cls.widgets.values()
+            full_state = {}
+            drop_defaults = False
+            for widget in widgets:
+                full_state[widget.model_id] = {
+                    'model_name': widget._model_name,
+                    'model_module': widget._model_module,
+                    'model_module_version': widget._model_module_version,
+                    'state': widget.get_state(drop_defaults=drop_defaults),
+                }
+            full_state, buffer_paths, buffers = _remove_buffers(full_state)
+            cls._control_comm.send(dict(
+                method='update_states',
+                states=full_state,
+                buffer_paths=buffer_paths
+            ), buffers=buffers)
+
+        else:
+            self.log.error('Unknown front-end to back-end widget control msg with method "%s"' % method)
 
     @staticmethod
     def handle_comm_opened(comm, msg):
