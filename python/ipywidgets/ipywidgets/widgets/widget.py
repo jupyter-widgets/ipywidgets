@@ -315,7 +315,7 @@ class Widget(LoggingHasTraits):
         if method == 'request_states':
             # Send back the full widgets state
             cls.get_manager_state()
-            widgets = cls.widgets.values()
+            widgets = cls._active_widgets.values()
             full_state = {}
             drop_defaults = False
             for widget in widgets:
@@ -333,7 +333,7 @@ class Widget(LoggingHasTraits):
             ), buffers=buffers)
 
         else:
-            self.log.error('Unknown front-end to back-end widget control msg with method "%s"' % method)
+            raise RuntimeError('Unknown front-end to back-end widget control msg with method "%s"' % method)
 
     @staticmethod
     def handle_comm_opened(comm, msg):
