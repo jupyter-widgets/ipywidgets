@@ -361,7 +361,7 @@ class Widget(LoggingHasTraits):
             ), buffers=buffers)
 
         else:
-            self.log.error('Unknown front-end to back-end widget control msg with method "%s"' % method)
+            raise RuntimeError('Unknown front-end to back-end widget control msg with method "%s"' % method)
 
     @staticmethod
     def handle_comm_opened(comm, msg):
