@@ -123,7 +123,7 @@ Refer to change log for more detail.
 We use a shared copyright model that enables all contributors to maintain the
 copyright on their contributions.
 
-See the [LICENSE](LICENSE) file in this repository for details.
+See the [LICENSE](python/ipywidgets/LICENSE) file in this repository for details.
 
 ## Project Jupyter resources
 
