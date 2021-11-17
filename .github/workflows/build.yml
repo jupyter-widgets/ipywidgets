@@ -47,7 +47,7 @@ jobs:
         python -m pip install jupyter_packaging
     - name: Build the extension
       run: |
-        pip install .
+        pip install -e .[test]
         jlpm install
         jlpm run build
         cd jupyterlab_widgets
@@ -57,3 +57,5 @@ jobs:
         jupyter labextension list
 
         python -m jupyterlab.browser_check
+    - name: Run Python tests
+      run: pytest .
