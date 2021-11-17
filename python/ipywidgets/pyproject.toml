@@ -20,14 +20,3 @@ tag_template = "v{new_version}"
 
 [[tool.tbump.file]]
 src = "ipywidgets/_version.py"
-
-[tool.jupyter-releaser]
-skip = ["check-links", "check-manifest"]
-
-[tool.jupyter-releaser.hooks]
-before-prep-git = ["python -m pip install -U jupyterlab~=3.0"]
-before-bump-version = ["python -m pip install bump2version", "yarn"]
-
-[tool.jupyter-releaser.options]
-version-cmd = "python scripts/bump-version.py --force"
-python_packages = [".", "jupyterlab_widgets", "widgetsnbextension"]
