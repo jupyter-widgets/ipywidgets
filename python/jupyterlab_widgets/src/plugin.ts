@@ -289,6 +289,7 @@ function activateWidgetExtension(
       LayoutView: base.LayoutView,
       StyleModel: base.StyleModel,
       StyleView: base.StyleView,
+      ErrorWidgetView: base.ErrorWidgetView,
     },
   });
 

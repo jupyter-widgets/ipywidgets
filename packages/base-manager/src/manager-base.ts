@@ -2,6 +2,7 @@
 // Distributed under the terms of the Modified BSD License.
 
 import * as services from '@jupyterlab/services';
+import * as widgets from '@jupyter-widgets/base';
 
 import { JSONObject, PartialJSONObject } from '@lumino/coreutils';
 
@@ -128,10 +129,12 @@ export abstract class ManagerBase implements IWidgetManager {
     const id = uuid();
     const viewPromise = (model.state_change = model.state_change.then(
       async () => {
+        const _view_name = model.get('_view_name');
+        const _view_module = model.get('_view_module');
         try {
-          const ViewType = (await this.loadClass(
-            model.get('_view_name'),
-            model.get('_view_module'),
+          const ViewType = (await this.loadViewClass(
+            _view_name,
+            _view_module,
             model.get('_view_module_version')
           )) as typeof WidgetView;
           const view = new ViewType({
@@ -153,7 +156,16 @@ export abstract class ManagerBase implements IWidgetManager {
           console.error(
             `Could not create a view for model id ${model.model_id}`
           );
-          throw e;
+          const msg = `Failed to create view for '${_view_name}' from module '${_view_module}' with model '${model.name}' from module '${model.module}'`;
+          const ModelCls = widgets.createErrorWidgetModel(e, msg);
+          const errorModel = new ModelCls();
+          const view = new widgets.ErrorWidgetView({
+            model: errorModel,
+            options: this.setViewOptions(options),
+          });
+          await view.render();
+
+          return view;
         }
       }
     ));
@@ -330,35 +342,53 @@ export abstract class ManagerBase implements IWidgetManager {
     serialized_state: any = {}
   ): Promise<WidgetModel> {
     const model_id = options.model_id;
-    const model_promise = this.loadClass(
+    const model_promise = this.loadModelClass(
       options.model_name,
       options.model_module,
       options.model_module_version
-    ) as Promise<typeof WidgetModel>;
+    );
     let ModelType: typeof WidgetModel;
+
+    const makeErrorModel = (error: any, msg: string) => {
+      const Cls = widgets.createErrorWidgetModel(error, msg);
+      const widget_model = new Cls();
+      return widget_model;
+    };
+
     try {
       ModelType = await model_promise;
     } catch (error) {
-      console.error('Could not instantiate widget');
-      throw error;
+      const msg = 'Could not instantiate widget';
+      console.error(msg);
+      return makeErrorModel(error, msg);
     }
 
     if (!ModelType) {
-      throw new Error(
+      const msg = 'Could not instantiate widget';
+      console.error(msg);
+      const error = new Error(
         `Cannot find model module ${options.model_module}@${options.model_module_version}, ${options.model_name}`
       );
+      return makeErrorModel(error, msg);
     }
+    let widget_model: WidgetModel;
+    try {
+      const attributes = await ModelType._deserialize_state(
+        serialized_state,
+        this
+      );
+      const modelOptions: IBackboneModelOptions = {
+        widget_manager: this,
+        model_id: model_id,
+        comm: options.comm,
+      };
 
-    const attributes = await ModelType._deserialize_state(
-      serialized_state,
-      this
-    );
-    const modelOptions: IBackboneModelOptions = {
-      widget_manager: this,
-      model_id: model_id,
-      comm: options.comm,
-    };
-    const widget_model = new ModelType(attributes, modelOptions);
+      widget_model = new ModelType(attributes, modelOptions);
+    } catch (error) {
+      console.error(error);
+      const msg = `Model class '${options.model_name}' from module '${options.model_module}' is loaded but can not be instantiated`;
+      widget_model = makeErrorModel(error, msg);
+    }
     widget_model.name = options.model_name;
     widget_model.module = options.model_module;
     return widget_model;
@@ -519,6 +549,46 @@ export abstract class ManagerBase implements IWidgetManager {
     moduleName: string,
     moduleVersion: string
   ): Promise<typeof WidgetModel | typeof WidgetView>;
+
+  protected async loadModelClass(
+    className: string,
+    moduleName: string,
+    moduleVersion: string
+  ): Promise<typeof WidgetModel> {
+    try {
+      const promise: Promise<typeof WidgetModel> = this.loadClass(
+        className,
+        moduleName,
+        moduleVersion
+      ) as Promise<typeof WidgetModel>;
+      await promise;
+      return promise;
+    } catch (error) {
+      console.error(error);
+      const msg = `Failed to load model class '${className}' from module '${moduleName}'`;
+      return widgets.createErrorWidgetModel(error, msg);
+    }
+  }
+
+  protected async loadViewClass(
+    className: string,
+    moduleName: string,
+    moduleVersion: string
+  ): Promise<typeof WidgetView> {
+    try {
+      const promise: Promise<typeof WidgetView> = this.loadClass(
+        className,
+        moduleName,
+        moduleVersion
+      ) as Promise<typeof WidgetView>;
+      await promise;
+      return promise;
+    } catch (error) {
+      console.error(error);
+      const msg = `Failed to load view class '${className}' from module '${moduleName}'`;
+      return widgets.createErrorWidgetView(error, msg);
+    }
+  }
 
   /**
    * Create a comm which can be used for communication for a widget.

@@ -10,3 +10,4 @@ export * from './viewlist';
 export * from './version';
 export * from './utils';
 export * from './registry';
+export * from './errorwidget';

@@ -193,12 +193,21 @@ export class WidgetManager extends ManagerBase {
   }
 
   loadClass(className, moduleName, moduleVersion) {
+    const failure = () => {
+      throw new Error(
+        'Class ' + className + ' not found in module ' + moduleName
+      );
+    };
     if (moduleName === '@jupyter-widgets/controls') {
-      return Promise.resolve(widgets[className]);
+      return widgets[className]
+        ? Promise.resolve(widgets[className])
+        : failure();
     } else if (moduleName === '@jupyter-widgets/base') {
-      return Promise.resolve(base[className]);
+      return base[className] ? Promise.resolve(base[className]) : failure();
     } else if (moduleName == '@jupyter-widgets/output') {
-      return Promise.resolve(outputWidgets[className]);
+      return outputWidgets[className]
+        ? Promise.resolve(outputWidgets[className])
+        : failure();
     } else {
       return new Promise(function (resolve, reject) {
         window.require([moduleName], resolve, reject);
@@ -206,9 +215,7 @@ export class WidgetManager extends ManagerBase {
         if (mod[className]) {
           return mod[className];
         } else {
-          return Promise.reject(
-            'Class ' + className + ' not found in module ' + moduleName
-          );
+          return failure();
         }
       });
     }
