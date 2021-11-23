@@ -5,7 +5,7 @@ import {
   WidgetView,
 } from './widget';
 import { JUPYTER_WIDGETS_VERSION } from './version';
-import { SVG_ICON } from './utils';
+import { BROKEN_FILE_SVG_ICON } from './utils';
 
 // create a Widget Model that captures an error object
 export function createErrorWidgetModel(
@@ -43,7 +43,7 @@ export class ErrorWidgetView extends DOMWidgetView {
 
     const content = document.createElement('div');
     content.classList.add('jupyter-widgets-error-widget', 'icon-error');
-    content.innerHTML = SVG_ICON;
+    content.innerHTML = BROKEN_FILE_SVG_ICON;
     const text = document.createElement('pre');
     text.style.textAlign = 'center';
     text.innerText = 'Click to show javascript error.';
@@ -69,7 +69,7 @@ export class ErrorWidgetView extends DOMWidgetView {
     this.el.ondblclick = () => {
       if (content.classList.contains('text-error')) {
         content.classList.remove('text-error');
-        content.innerHTML = SVG_ICON;
+        content.innerHTML = BROKEN_FILE_SVG_ICON;
         content.append(text);
         content.classList.add('icon-error');
       }
