@@ -36,7 +36,6 @@ test.describe('Widget Visual Regression', () => {
       },
     });
 
-    await page.notebook.runCellByCell();
     await page.notebook.save();
 
     for (let i = 0; i < cellCount; i++) {
