@@ -2,7 +2,9 @@
 
 A summary of changes in ipywidgets. For more detailed information, see the issues and pull requests for the appropriate milestone on [GitHub](https://github.com/jupyter-widgets/ipywidgets).
 
-## [8.0](https://github.com/jupyter-widgets/ipywidgets/releases/tag/v8.0) (not released yet)
+<!-- <START NEW CHANGELOG ENTRY> -->
+
+## [8.0](https://github.com/jupyter-widgets/ipywidgets/releases) (not released yet)
 
 See the [ipywidgets
 8.0](https://github.com/jupyter-widgets/ipywidgets/milestone/30?closed=1)
@@ -58,6 +60,7 @@ milestone on GitHub for the full list of pull requests and issues closed.
 * Removed deprecated signature of the `register` decorator ([#2695](https://github.com/jupyter-widgets/ipywidgets/pull/2695))
 * Remove deprecated `handle_kernel` alias ([#2694](https://github.com/jupyter-widgets/ipywidgets/pull/2694))
 
+<!-- <END NEW CHANGELOG ENTRY> -->
 
 ## 7.6
 
@@ -89,7 +92,7 @@ Separate from these two steps to update for JupyterLab 3, we also recommend that
 
 ## 7.5
 
-To see the full list of pull requests and issues, see the [7.5 milestone](https://github.com/jupyter-widgets/ipywidgets/milestone/268?closed=1) on GitHub.
+To see the full list of pull requests and issues, see the [7.5 milestone](https://github.com/jupyter-widgets/ipywidgets/milestone/28?closed=1) on GitHub.
 
 Changes include:
 
@@ -208,7 +211,7 @@ Major user-visible changes in ipywidgets 7.0 include:
 - Using function annotations to specify interact controls for a function is now deprecated and will be removed in a future version of ipywidgets. ([#1292](https://github.com/jupyter-widgets/ipywidgets/pull/1292))
 - There are now two simple ways to embed widgets in an HTML page: with a simple script tag that does not use require.js and does not support anything but the basic widgets, and a require module that does support custom widgets. See the migration guide for more details. ([#1615](https://github.com/jupyter-widgets/ipywidgets/pull/1615), [#1629](https://github.com/jupyter-widgets/ipywidgets/pull/1629), [#1630](https://github.com/jupyter-widgets/ipywidgets/pull/1630))
 
-If you are developing a custom widget or widget manager, here are some major changes that may affect you. The [migration guide](./migration_guides.md) also walks through how to upgrade a custom widget.
+If you are developing a custom widget or widget manager, here are some major changes that may affect you. The [migration guide](./docs/source/migration_guides.md) also walks through how to upgrade a custom widget.
 
 - On the Python/kernel side:
   - The Python `@register` decorator for widget classes no longer takes a string argument, but registers a widget class using the `_model_*` and `_view_*` traits in the class. Using the decorator as `@register('name')` is deprecated and should be changed to just `@register`. [#1228](https://github.com/jupyter-widgets/ipywidgets/pull/1228), [#1276](https://github.com/jupyter-widgets/ipywidgets/pull/1276)
@@ -223,7 +226,7 @@ If you are developing a custom widget or widget manager, here are some major cha
   - A custom serializer is given the widget instance as its second argument, and a custom deserializer is given the widget manager as its second argument.
   - The Javascript model `.id` attribute has been renamed to `.model_id` to avoid conflicting with the Backbone `.id` attribute. ([#1410](https://github.com/jupyter-widgets/ipywidgets/pull/1410))
 - Regarding widget managers and the syncing message protocol:
-  - The widget protocol was significantly overhauled. The new widget messaging protocol (version 2) is specified in the [version 2 protocol documentation](https://github.com/jupyter-widgets/ipywidgets/blob/master/jupyter-widgets-schema/messages.md).
+  - The widget protocol was significantly overhauled. The new widget messaging protocol (version 2) is specified in the [version 2 protocol documentation](https://github.com/jupyter-widgets/ipywidgets/blob/master/packages/schema/messages.md).
   - Widgets are now displayed with a `display_data` message instead of with a custom comm message. See the [ipywidgets](https://github.com/jupyter-widgets/ipywidgets/blob/20cd0f050090b1b19bb9657b8c3fa42ae384cfca/ipywidgets/widgets/widget.py#L656) implementation for an example. ([#1274](https://github.com/jupyter-widgets/ipywidgets/pull/1274))
   - Custom widget managers are now responsible completely for loading widget model and view classes. Widget managers should provide an output model and view class appropriate for their environment so that the `Output` widget works. ([#1313](https://github.com/jupyter-widgets/ipywidgets/pull/1313))
   - The widget manager `clear_state` method no longer has a `commlessOnly` argument. All models in the widget manager will be closed and cleared when `clear_state` is called. ([#1354](https://github.com/jupyter-widgets/ipywidgets/pull/1354))

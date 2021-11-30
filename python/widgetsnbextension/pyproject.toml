@@ -16,3 +16,20 @@ npm = ["yarn"]
 
 [tool.check-manifest]
 ignore = ["widgetnbextension/static/**", "yarn.lock", ".*", "package-lock.json"]
+
+[tool.tbump.version]
+current = "4.0.0a4"
+regex = '''
+  (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)
+  ((?P<channel>a|b|rc|.dev)(?P<release>\d+))?
+'''
+
+[tool.tbump.git]
+message_template = "Bump to {new_version}"
+tag_template = "v{new_version}"
+
+[[tool.tbump.file]]
+src = "widgetsnbextension/_version.py"
+
+[tool.jupyter-releaser]
+skip = ["check-links"]

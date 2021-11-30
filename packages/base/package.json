@@ -21,7 +21,6 @@
     "build:test": "tsc --build test && webpack --config test/webpack.conf.js",
     "clean": "npm run clean:src",
     "clean:src": "rimraf lib && rimraf tsconfig.tsbuildinfo",
-    "prepublish": "npm run clean && npm run build",
     "test": "npm run test:unit",
     "test:coverage": "npm run build:test && webpack --config test/webpack-cov.conf.js && karma start test/karma-cov.conf.js",
     "test:unit": "npm run test:unit:firefox && npm run test:unit:chrome",

@@ -3,3 +3,20 @@
 # https://pip.pypa.io/en/stable/reference/pip/#pep-517-and-518-support
 requires = ["setuptools>=40.8.0", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.check-manifest]
+ignore = [".*"]
+
+[tool.tbump.version]
+current = "8.0.0a6"
+regex = '''
+  (?P<major>\d+)\.(?P<minor>\d+)\.(?P<patch>\d+)
+  ((?P<channel>a|b|rc|.dev)(?P<release>\d+))?
+'''
+
+[tool.tbump.git]
+message_template = "Bump to {new_version}"
+tag_template = "v{new_version}"
+
+[[tool.tbump.file]]
+src = "ipywidgets/_version.py"

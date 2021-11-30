@@ -98,7 +98,7 @@ See the [examples](docs/source/examples.md) section of the documentation. The wi
 
 ## Change log
 
-[Change log](docs/source/changelog.md)
+[Change log](CHANGELOG.md)
 
 ### Version Compatibility with Front-End Clients
 
@@ -123,7 +123,7 @@ Refer to change log for more detail.
 We use a shared copyright model that enables all contributors to maintain the
 copyright on their contributions.
 
-See the [LICENSE](LICENSE) file in this repository for details.
+See the [LICENSE](python/ipywidgets/LICENSE) file in this repository for details.
 
 ## Project Jupyter resources
 
