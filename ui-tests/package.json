@@ -1,17 +1,19 @@
 {
-  "name": "ipywidgets-ui-tests",
-  "version": "1.0.0",
-  "description": "ipywidgets UI Tests",
+  "name": "@jupyter-widgets/ui-tests",
   "private": true,
+  "version": "0.1.0",
+  "description": "ipywidgets UI Tests",
   "scripts": {
-    "start-jlab": "jupyter lab --config ./jupyter_server_config.py",
-    "start-jlab:detached": "yarn run start-jlab&",
-    "test:create-references": "galata --skip-visual-regression --skip-html-regression",
-    "test": "galata"
+    "start": "jupyter lab --config ./jupyter_server_config.py",
+    "start:detached": "yarn run start&",
+    "test": "playwright test",
+    "test:debug": "PWDEBUG=1 playwright test",
+    "test:report": "http-server ./playwright-report -a localhost -o",
+    "test:update": "playwright test --update-snapshots"
   },
   "author": "Project Jupyter",
   "license": "BSD-3-Clause",
   "dependencies": {
-    "@jupyterlab/galata": "3.0.11-2"
+    "@jupyterlab/galata": "~4.0.2"
   }
 }
