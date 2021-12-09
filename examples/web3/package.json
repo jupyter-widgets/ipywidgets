@@ -34,8 +34,8 @@
     "postcss-loader": "^6.1.0",
     "rimraf": "^3.0.2",
     "style-loader": "^2.0.0",
-    "typescript": "~4.3.2",
+    "typescript": "~4.5.2",
     "url-loader": "^4.1.1",
-    "webpack": "^5.38.1"
+    "webpack": "^5.65.0"
   }
 }
