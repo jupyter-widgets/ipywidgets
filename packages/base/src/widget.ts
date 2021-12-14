@@ -233,7 +233,8 @@ export class WidgetModel extends Backbone.Model {
               Object.keys(this.attrLastUpdateMsgId).forEach((attrName) => {
                 // but we don't care about the old messages, only the one send with the
                 // last msgId
-                let isOldMessage = this.attrLastUpdateMsgId[attrName] !== msgId;
+                const isOldMessage =
+                  this.attrLastUpdateMsgId[attrName] !== msgId;
                 console.log(
                   attrName,
                   isOldMessage ? 'is old' : 'requires updating',
@@ -250,7 +251,10 @@ export class WidgetModel extends Backbone.Model {
                   // also ignore the update for this property
                   if (
                     this._msg_buffer !== null &&
-                    this._msg_buffer.hasOwnProperty(attrName)
+                    Object.prototype.hasOwnProperty.call(
+                      this._msg_buffer,
+                      attrName
+                    )
                   ) {
                     delete state[attrName];
                   }
