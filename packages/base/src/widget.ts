@@ -227,15 +227,20 @@ export class WidgetModel extends Backbone.Model {
             const buffer_paths = data.buffer_paths || [];
             const buffers = msg.buffers || [];
             utils.put_buffers(state, buffer_paths, buffers);
-            if(msg.parent_header) {
+            if (msg.parent_header) {
               const msgId = (msg.parent_header as any).msg_id;
               // if we send an update to the kernel, we expect it back
               Object.keys(this.attrLastUpdateMsgId).forEach((attrName) => {
                 // but we don't care about the old messages, only the one send with the
                 // last msgId
-                let isOldMessage = (this.attrLastUpdateMsgId[attrName] !== msgId);
-                console.log(attrName, isOldMessage ? "is old" : "requires updating", msgId, this.attrLastUpdateMsgId[attrName])
-                if(isOldMessage) {
+                let isOldMessage = this.attrLastUpdateMsgId[attrName] !== msgId;
+                console.log(
+                  attrName,
+                  isOldMessage ? 'is old' : 'requires updating',
+                  msgId,
+                  this.attrLastUpdateMsgId[attrName]
+                );
+                if (isOldMessage) {
                   // get rid of old updates
                   delete state[attrName];
                 } else {
@@ -243,11 +248,14 @@ export class WidgetModel extends Backbone.Model {
                   delete this.attrLastUpdateMsgId[attrName];
                   // except, we plan to send out a new state for this soon, so we will
                   // also ignore the update for this property
-                  if (this._msg_buffer !== null && this._msg_buffer.hasOwnProperty(attrName)) {
+                  if (
+                    this._msg_buffer !== null &&
+                    this._msg_buffer.hasOwnProperty(attrName)
+                  ) {
                     delete state[attrName];
                   }
                 }
-              })
+              });
             }
             return (this.constructor as typeof WidgetModel)._deserialize_state(
               state,
@@ -322,7 +330,10 @@ export class WidgetModel extends Backbone.Model {
         this._pending_msgs--;
         // Send buffer if one is waiting and we are below the throttle.
         if (this._msg_buffer !== null && this._pending_msgs < 1) {
-          const msgId = this.send_sync_message(this._msg_buffer, this._msg_buffer_callbacks);
+          const msgId = this.send_sync_message(
+            this._msg_buffer,
+            this._msg_buffer_callbacks
+          );
           this.rememberLastUpdateFor(msgId);
           this._msg_buffer = null;
           this._msg_buffer_callbacks = null;
@@ -438,9 +449,9 @@ export class WidgetModel extends Backbone.Model {
       }
     }
 
-    Object.keys(attrs).forEach((attrName : string) => {
-        this.attrsToUpdate.add(attrName)
-    })
+    Object.keys(attrs).forEach((attrName: string) => {
+      this.attrsToUpdate.add(attrName);
+    });
 
     const msgState = this.serialize(attrs);
 
@@ -484,7 +495,7 @@ export class WidgetModel extends Backbone.Model {
   rememberLastUpdateFor(msgId: string) {
     [...this.attrsToUpdate].forEach((attrName) => {
       this.attrLastUpdateMsgId[attrName] = msgId;
-    })
+    });
     this.attrsToUpdate = new Set<string>();
   }
 
