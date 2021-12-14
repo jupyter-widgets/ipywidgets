@@ -637,16 +637,16 @@ class Widget(LoggingHasTraits):
 
     @contextmanager
     def _lock_property(self, **properties):
-         """Lock a property-value pair.
-         The value should be the JSON state of the property.
-         NOTE: This, in addition to the single lock for all state changes, is
-         flawed.  In the future we may want to look into buffering state changes
-         back to the front-end."""
-         self._property_lock = properties
-         try:
-             yield
-         finally:
-             self._property_lock = {}
+        """Lock a property-value pair.
+        The value should be the JSON state of the property.
+        NOTE: This, in addition to the single lock for all state changes, is
+        flawed.  In the future we may want to look into buffering state changes
+        back to the front-end."""
+        self._property_lock = properties
+        try:
+            yield
+        finally:
+            self._property_lock = {}
 
     @contextmanager
     def hold_sync(self):
@@ -663,26 +663,26 @@ class Widget(LoggingHasTraits):
                 self._states_to_send.clear()
 
     def _should_send_property(self, key, value):
-         """Check the property lock (property_lock)"""
-         to_json = self.trait_metadata(key, 'to_json', self._trait_to_json)
-         if key in self._property_lock:
-             # model_state, buffer_paths, buffers
-             split_value = _remove_buffers({ key: to_json(value, self)})
-             split_lock = _remove_buffers({ key: self._property_lock[key]})
-             # A roundtrip conversion through json in the comparison takes care of
-             # idiosyncracies of how python data structures map to json, for example
-             # tuples get converted to lists.
-             if (jsonloads(jsondumps(split_value[0])) == split_lock[0]
-                 and split_value[1] == split_lock[1]
-                 and _buffer_list_equal(split_value[2], split_lock[2])):
-                 if self._holding_sync:
-                     self._states_to_send.discard(key)
-                 return False
-         if self._holding_sync:
-             self._states_to_send.add(key)
-             return False
-         else:
-             return True
+        """Check the property lock (property_lock)"""
+        to_json = self.trait_metadata(key, 'to_json', self._trait_to_json)
+        if key in self._property_lock:
+            # model_state, buffer_paths, buffers
+            split_value = _remove_buffers({ key: to_json(value, self)})
+            split_lock = _remove_buffers({ key: self._property_lock[key]})
+            # A roundtrip conversion through json in the comparison takes care of
+            # idiosyncracies of how python data structures map to json, for example
+            # tuples get converted to lists.
+            if (jsonloads(jsondumps(split_value[0])) == split_lock[0]
+                and split_value[1] == split_lock[1]
+                and _buffer_list_equal(split_value[2], split_lock[2])):
+                if self._holding_sync:
+                    self._states_to_send.discard(key)
+                return False
+        if self._holding_sync:
+            self._states_to_send.add(key)
+            return False
+        else:
+            return True
 
     @contextmanager
     def _hold_sync_frontend(self):
