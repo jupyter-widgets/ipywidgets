@@ -662,20 +662,6 @@ class Widget(LoggingHasTraits):
                 self.send_state(self._states_to_send)
                 self._states_to_send.clear()
 
-    @contextmanager
-    def _hold_sync_frontend(self):
-        """Same as hold_sync, but will not sync back traits tagged as no_echo"""
-        if self._holding_sync_from_frontend_update is True:
-            with self.hold_sync():
-                yield
-        else:
-            try:
-                self._holding_sync_from_frontend_update = True
-                with self.hold_sync():
-                    yield
-            finally:
-                self._holding_sync_from_frontend_update = False
-
     def _should_send_property(self, key, value):
          """Check the property lock (property_lock)"""
          to_json = self.trait_metadata(key, 'to_json', self._trait_to_json)
@@ -697,6 +683,21 @@ class Widget(LoggingHasTraits):
              return False
          else:
              return True
+
+    @contextmanager
+    def _hold_sync_frontend(self):
+        """Same as hold_sync, but will not sync back traits tagged as no_echo"""
+        if self._holding_sync_from_frontend_update is True:
+            with self.hold_sync():
+                yield
+        else:
+            try:
+                self._holding_sync_from_frontend_update = True
+                with self.hold_sync():
+                    yield
+            finally:
+                self._holding_sync_from_frontend_update = False
+
 
     # Event handlers
     @_show_traceback
