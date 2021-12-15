@@ -115,6 +115,9 @@ export class WidgetModel extends Backbone.Model {
     attributes: Backbone.ObjectHash,
     options: IBackboneModelOptions
   ): void {
+    this.attrLastUpdateMsgId = {};
+    this.attrsToUpdate = new Set<string>();
+
     super.initialize(attributes, options);
 
     // Attributes should be initialized here, since user initialization may depend on it
@@ -227,20 +230,17 @@ export class WidgetModel extends Backbone.Model {
             const buffer_paths = data.buffer_paths || [];
             const buffers = msg.buffers || [];
             utils.put_buffers(state, buffer_paths, buffers);
-            if (msg.parent_header) {
+            if (msg.parent_header && data.echo) {
               const msgId = (msg.parent_header as any).msg_id;
-              // if we send an update to the kernel, we expect it back
-              Object.keys(this.attrLastUpdateMsgId).forEach((attrName) => {
-                // but we don't care about the old messages, only the one send with the
+              // for echoed attributes we ignore old updates
+              data.echo.forEach((attrName: string) => {
+                if (!Object.keys(this.attrLastUpdateMsgId).includes(attrName)) {
+                  console.error(`Kernel send unexpected echo for ${attrName}.`);
+                }
+                // we don't care about the old messages, only the one send with the
                 // last msgId
                 const isOldMessage =
                   this.attrLastUpdateMsgId[attrName] !== msgId;
-                console.log(
-                  attrName,
-                  isOldMessage ? 'is old' : 'requires updating',
-                  msgId,
-                  this.attrLastUpdateMsgId[attrName]
-                );
                 if (isOldMessage) {
                   // get rid of old updates
                   delete state[attrName];
@@ -678,9 +678,9 @@ export class WidgetModel extends Backbone.Model {
   // keep track of the msg id for each attr for updates we send out so
   // that we can ignore old messages that we send in order to avoid
   // 'drunken' sliders going back and forward
-  private attrLastUpdateMsgId: any = {};
+  private attrLastUpdateMsgId: any;
   // because we don't know the attrs in _handle_status, we keep track of what we will send
-  private attrsToUpdate: Set<string> = new Set<string>();
+  private attrsToUpdate: Set<string>;
 }
 
 export class DOMWidgetModel extends WidgetModel {

@@ -432,6 +432,7 @@ class Widget(LoggingHasTraits):
         super().__init__(**kwargs)
 
         Widget._call_widget_constructed(self)
+        self._updated_attrs_from_frontend = None
         self.open()
 
     def __del__(self):
@@ -507,6 +508,9 @@ class Widget(LoggingHasTraits):
                          self._property_lock[name] = value
             state, buffer_paths, buffers = _remove_buffers(state)
             msg = {'method': 'update', 'state': state, 'buffer_paths': buffer_paths}
+            if JUPYTER_WIDGETS_ECHO and self._updated_attrs_from_frontend:
+                msg['echo'] = self._updated_attrs_from_frontend
+                self._updated_attrs_from_frontend = None
             self._send(msg, buffers=buffers)
 
 
@@ -555,6 +559,7 @@ class Widget(LoggingHasTraits):
         """Called when a state is received from the front-end."""
         if JUPYTER_WIDGETS_ECHO:
             with self._hold_sync_frontend(), self.hold_trait_notifications():
+                self._updated_attrs_from_frontend = list({name for name in sync_data if name in self.keys})
                 for name in sync_data:
                     if name in self.keys:
                         from_json = self.trait_metadata(name, 'from_json',
