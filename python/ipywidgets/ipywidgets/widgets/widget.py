@@ -565,16 +565,16 @@ class Widget(LoggingHasTraits):
                         from_json = self.trait_metadata(name, 'from_json',
                                                         self._trait_from_json)
                         self.set_trait(name, from_json(sync_data[name], self))
-        else:
-            # The order of these context managers is important. Properties must
-            # be locked when the hold_trait_notification context manager is
-            # released and notifications are fired.
-            with self.hold_sync(), self._lock_property(**sync_data), self.hold_trait_notifications():
-                for name in sync_data:
-                    if name in self.keys:
-                        from_json = self.trait_metadata(name, 'from_json',
-                                                        self._trait_from_json)
-                        self.set_trait(name, from_json(sync_data[name], self))
+            return
+        # The order of these context managers is important. Properties must
+        # be locked when the hold_trait_notification context manager is
+        # released and notifications are fired.
+        with self.hold_sync(), self._lock_property(**sync_data), self.hold_trait_notifications():
+            for name in sync_data:
+                if name in self.keys:
+                    from_json = self.trait_metadata(name, 'from_json',
+                                                    self._trait_from_json)
+                    self.set_trait(name, from_json(sync_data[name], self))
 
     def send(self, content, buffers=None):
         """Sends a custom msg to the widget model in the front-end.
@@ -625,12 +625,13 @@ class Widget(LoggingHasTraits):
                 else:
                     # otherwise we send it directly
                     self.send_state(key=name)
-        else:
-            if self.comm is not None and self.comm.kernel is not None:
-                # Make sure this isn't information that the front-end just sent us.
-                if name in self.keys and self._should_send_property(name, getattr(self, name)):
-                    # Send new state to front-end
-                    self.send_state(key=name)
+            super().notify_change(change)
+            return
+        if self.comm is not None and self.comm.kernel is not None:
+            # Make sure this isn't information that the front-end just sent us.
+            if name in self.keys and self._should_send_property(name, getattr(self, name)):
+                # Send new state to front-end
+                self.send_state(key=name)
         super().notify_change(change)
 
     def __repr__(self):
