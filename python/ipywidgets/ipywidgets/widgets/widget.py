@@ -501,16 +501,21 @@ class Widget(LoggingHasTraits):
         """
         state = self.get_state(key=key)
         if len(state) > 0:
-            if not JUPYTER_WIDGETS_ECHO:
-                if self._property_lock:  # we need to keep this dict up to date with the front-end values
-                 for name, value in state.items():
-                     if name in self._property_lock:
-                         self._property_lock[name] = value
+            if JUPYTER_WIDGETS_ECHO:
+                state, buffer_paths, buffers = _remove_buffers(state)
+                msg = {'method': 'update', 'state': state, 'buffer_paths': buffer_paths}
+                if self._updated_attrs_from_frontend:
+                    msg['echo'] = self._updated_attrs_from_frontend
+                    self._updated_attrs_from_frontend = None
+                self._send(msg, buffers=buffers)
+                return
+
+            if self._property_lock:  # we need to keep this dict up to date with the front-end values
+                for name, value in state.items():
+                    if name in self._property_lock:
+                        self._property_lock[name] = value
             state, buffer_paths, buffers = _remove_buffers(state)
             msg = {'method': 'update', 'state': state, 'buffer_paths': buffer_paths}
-            if JUPYTER_WIDGETS_ECHO and self._updated_attrs_from_frontend:
-                msg['echo'] = self._updated_attrs_from_frontend
-                self._updated_attrs_from_frontend = None
             self._send(msg, buffers=buffers)
 
 
