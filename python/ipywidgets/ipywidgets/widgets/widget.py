@@ -422,6 +422,7 @@ class Widget(LoggingHasTraits):
     _holding_sync_from_frontend_update = False
     _states_to_send = Set()
     _msg_callbacks = Instance(CallbackDispatcher, ())
+    _updated_attrs_from_frontend = None
 
     #-------------------------------------------------------------------------
     # (Con/de)structor
@@ -432,7 +433,6 @@ class Widget(LoggingHasTraits):
         super().__init__(**kwargs)
 
         Widget._call_widget_constructed(self)
-        self._updated_attrs_from_frontend = None
         self.open()
 
     def __del__(self):

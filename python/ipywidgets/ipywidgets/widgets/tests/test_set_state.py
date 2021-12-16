@@ -94,7 +94,8 @@ def test_set_state_transformer():
         data=dict(
             buffer_paths=[],
             method='update',
-            state=dict(d=[False, True, False])
+            state=dict(d=[False, True, False]),
+            echo=['d'],
         )))]
 
 
@@ -124,7 +125,8 @@ def test_set_state_data_truncate():
         data=dict(
             buffer_paths=[['d', 'data']],
             method='update',
-            state=dict(d={}, a=True)
+            state=dict(d={}, a=True),
+            echo=['a', 'd'],
         )))
 
     # Sanity:
@@ -264,7 +266,7 @@ def test_hold_sync():
     assert widget.other == 11
 
     # we expect only single state to be sent, i.e. the {'value': 42.0} state
-    msg = {'method': 'update', 'state': {'value': 2.0, 'other': 11.0}, 'buffer_paths': []}
+    msg = {'method': 'update', 'state': {'value': 2.0, 'other': 11.0}, 'buffer_paths': [], 'echo': ['value']}
     call42 = mock.call(msg, buffers=[])
 
     calls = [call42]
@@ -286,7 +288,7 @@ def test_echo():
     assert widget.value == 42
 
     # we expect this to be echoed
-    msg = {'method': 'update', 'state': {'value': 42.0}, 'buffer_paths': []}
+    msg = {'method': 'update', 'state': {'value': 42.0}, 'buffer_paths': [], 'echo': ['value']}
     call42 = mock.call(msg, buffers=[])
 
     calls = [call42]
@@ -321,7 +323,8 @@ def test_echo_single():
     assert widget.square == 64
 
     # we expect this to be echoed
-    msg = {'method': 'update', 'state': {'square': 64, 'value': 8.0}, 'buffer_paths': []}
+    # note that only value is echoed, not square
+    msg = {'method': 'update', 'state': {'square': 64, 'value': 8.0}, 'buffer_paths': [], 'echo': ['value']}
     call = mock.call(msg, buffers=[])
 
     calls = [call]
@@ -355,4 +358,4 @@ def test_no_echo():
 
     # a regular set should sync to the frontend
     widget.value = 43
-    widget._send.assert_has_calls([mock.call({'method': 'update', 'state': {'value': 43.0}, 'buffer_paths': []}, buffers=[])])
+    widget._send.assert_has_calls([mock.call({'method': 'update', 'state': {'value': 43.0}, 'buffer_paths': [], 'echo': ['value']}, buffers=[])])
