@@ -115,7 +115,7 @@ export class WidgetModel extends Backbone.Model {
     attributes: Backbone.ObjectHash,
     options: IBackboneModelOptions
   ): void {
-    this.attrLastUpdateMsgId = {};
+    this.expectedEchoMsgIds = {};
     this.attrsToUpdate = new Set<string>();
 
     super.initialize(attributes, options);
@@ -235,19 +235,19 @@ export class WidgetModel extends Backbone.Model {
               // we may have echos coming from other clients, we only care about
               // dropping echos for which we expected a reply
               const expectedEcho = data.echo.filter((attrName: string) =>
-                Object.keys(this.attrLastUpdateMsgId).includes(attrName)
+                Object.keys(this.expectedEchoMsgIds).includes(attrName)
               );
               expectedEcho.forEach((attrName: string) => {
                 // we don't care about the old messages, only the one send with the
                 // last msgId
                 const isOldMessage =
-                  this.attrLastUpdateMsgId[attrName] !== msgId;
+                  this.expectedEchoMsgIds[attrName] !== msgId;
                 if (isOldMessage) {
                   // get rid of old updates
                   delete state[attrName];
                 } else {
                   // we got our confirmation, from now on we accept everything
-                  delete this.attrLastUpdateMsgId[attrName];
+                  delete this.expectedEchoMsgIds[attrName];
                   // except, we plan to send out a new state for this soon, so we will
                   // also ignore the update for this property
                   if (
@@ -499,7 +499,7 @@ export class WidgetModel extends Backbone.Model {
   }
   rememberLastUpdateFor(msgId: string) {
     [...this.attrsToUpdate].forEach((attrName) => {
-      this.attrLastUpdateMsgId[attrName] = msgId;
+      this.expectedEchoMsgIds[attrName] = msgId;
     });
     this.attrsToUpdate = new Set<string>();
   }
@@ -679,7 +679,7 @@ export class WidgetModel extends Backbone.Model {
   // keep track of the msg id for each attr for updates we send out so
   // that we can ignore old messages that we send in order to avoid
   // 'drunken' sliders going back and forward
-  private attrLastUpdateMsgId: any;
+  private expectedEchoMsgIds: any;
   // because we don't know the attrs in _handle_status, we keep track of what we will send
   private attrsToUpdate: Set<string>;
 }
