@@ -564,7 +564,8 @@ class Widget(LoggingHasTraits):
         """Called when a state is received from the front-end."""
         if JUPYTER_WIDGETS_ECHO:
             with self._hold_sync_frontend(), self.hold_trait_notifications():
-                self._updated_attrs_from_frontend = list({name for name in sync_data if name in self.keys})
+                # keep this as a list, not a set, since that preserves order (useful in the test)
+                self._updated_attrs_from_frontend = [name for name in sync_data if name in self.keys]
                 for name in sync_data:
                     if name in self.keys:
                         from_json = self.trait_metadata(name, 'from_json',

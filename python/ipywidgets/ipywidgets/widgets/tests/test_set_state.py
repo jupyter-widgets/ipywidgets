@@ -123,9 +123,9 @@ def test_set_state_data_truncate():
     buffers = msg[1].pop('buffers')
     assert msg == ((), dict(
         data=dict(
-            buffer_paths=[['d', 'data']],
             method='update',
             state=dict(d={}, a=True),
+            buffer_paths=[['d', 'data']],
             echo=['a', 'd'],
         )))
 
