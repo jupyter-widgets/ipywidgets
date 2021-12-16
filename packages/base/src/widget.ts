@@ -232,35 +232,35 @@ export class WidgetModel extends Backbone.Model {
             utils.put_buffers(state, buffer_paths, buffers);
             if (msg.parent_header && data.echo) {
               const msgId = (msg.parent_header as any).msg_id;
-              // for echoed attributes we ignore old updates
-              data.echo
-                .filter((attrName: string) =>
-                  Object.keys(this.attrLastUpdateMsgId).includes(attrName)
-                )
-                .forEach((attrName: string) => {
-                  // we don't care about the old messages, only the one send with the
-                  // last msgId
-                  const isOldMessage =
-                    this.attrLastUpdateMsgId[attrName] !== msgId;
-                  if (isOldMessage) {
-                    // get rid of old updates
+              // we may have echos coming from other clients, we only care about
+              // dropping echos for which we expected a reply
+              const expectedEcho = data.echo.filter((attrName: string) =>
+                Object.keys(this.attrLastUpdateMsgId).includes(attrName)
+              );
+              expectedEcho.forEach((attrName: string) => {
+                // we don't care about the old messages, only the one send with the
+                // last msgId
+                const isOldMessage =
+                  this.attrLastUpdateMsgId[attrName] !== msgId;
+                if (isOldMessage) {
+                  // get rid of old updates
+                  delete state[attrName];
+                } else {
+                  // we got our confirmation, from now on we accept everything
+                  delete this.attrLastUpdateMsgId[attrName];
+                  // except, we plan to send out a new state for this soon, so we will
+                  // also ignore the update for this property
+                  if (
+                    this._msg_buffer !== null &&
+                    Object.prototype.hasOwnProperty.call(
+                      this._msg_buffer,
+                      attrName
+                    )
+                  ) {
                     delete state[attrName];
-                  } else {
-                    // we got our confirmation, from now on we accept everything
-                    delete this.attrLastUpdateMsgId[attrName];
-                    // except, we plan to send out a new state for this soon, so we will
-                    // also ignore the update for this property
-                    if (
-                      this._msg_buffer !== null &&
-                      Object.prototype.hasOwnProperty.call(
-                        this._msg_buffer,
-                        attrName
-                      )
-                    ) {
-                      delete state[attrName];
-                    }
                   }
-                });
+                }
+              });
             }
             return (this.constructor as typeof WidgetModel)._deserialize_state(
               state,
