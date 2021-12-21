@@ -10,7 +10,6 @@
 
 @import './lumino.css';
 @import './nouislider.css';
-@import './nouislider-custom.css';
 
 :root {
   --jp-widgets-color: var(--jp-content-font-color1);
