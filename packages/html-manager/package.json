@@ -50,9 +50,9 @@
     "jquery": "^3.1.1"
   },
   "devDependencies": {
-    "@types/mocha": "^8.2.2",
-    "@types/node": "^15.12.2",
-    "@types/sanitize-html": "^1.20",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "^17.0.2",
+    "@types/sanitize-html": "^2.6.0",
     "chai": "^4.0.0",
     "css-loader": "^6.5.1",
     "file-loader": "^6.2.0",
