@@ -76,7 +76,7 @@ async function renderManager(
     throw new Error(`Model state has errors: ${model_validate.errors}`);
   }
   const manager = managerFactory();
-  const models = await manager.set_state(widgetState);
+  const models = await manager.set_state(widgetState as IManagerState);
   const tags = element.querySelectorAll(
     'script[type="application/vnd.jupyter.widget-view+json"]'
   );

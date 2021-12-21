@@ -87,7 +87,7 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^2.3.2",
     "rimraf": "^3.0.2",
-    "typescript": "~4.5.2"
+    "typescript": "~4.3.2"
   },
   "jupyterlab": {
     "extension": true,
