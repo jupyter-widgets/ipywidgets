@@ -20,10 +20,10 @@
     "font-awesome": "^4.7.0"
   },
   "devDependencies": {
-    "css-loader": "^5.2.6",
+    "css-loader": "^6.5.1",
     "file-loader": "^6.2.0",
     "raw-loader": "^4.0.2",
-    "style-loader": "^2.0.0",
+    "style-loader": "^3.3.1",
     "url-loader": "^4.1.1",
     "webpack": "^5.65.0"
   }
