@@ -98,7 +98,7 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: ['3.7', '3.8', '3.9', '3.10']
 
     steps:
     - uses: actions/checkout@v2
@@ -129,7 +129,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v1
       with:
-        python-version: 3.6
+        python-version: 3.7
     - uses: actions/cache@v1
       with:
         path: ~/.cache/pip
@@ -153,7 +153,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.9
+        python-version: '3.10'
     - uses: actions/cache@v1
       with:
         path: ~/.cache/pip
@@ -169,7 +169,7 @@ jobs:
     - name: Set up Node
       uses: actions/setup-node@v2
       with:
-        node-version: 14.x
+        node-version: '16.x'
 
     - name: Get yarn cache
       id: yarn-cache
