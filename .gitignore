@@ -23,8 +23,10 @@ npm-debug.log
 .vscode/*
 !.vscode/extensions.json
 
+# Generated files
 python/widgetsnbextension/widgetsnbextension/static
 python/jupyterlab_widgets/jupyterlab_widgets/labextension/
+packages/controls/css/nouislider.css
 
 index.built.js
 index.built.js.map

@@ -74,6 +74,11 @@ export interface IManagerStateMap extends PartialJSONObject {
   [key: string]: IState;
 }
 
+/**
+ * Widget manager state.
+ *
+ * The JSON schema for this is in @jupyter-widgets/schema/v2/state.schema.json.
+ */
 export interface IManagerState extends PartialJSONObject {
   version_major: number;
   version_minor: number;
@@ -470,7 +475,7 @@ export abstract class ManagerBase implements IWidgetManager {
 
           // If the model has already been created, set its state and then
           // return it.
-          if (this._models[model_id]) {
+          if (this._models[model_id] !== undefined) {
             return this._models[model_id].then((model) => {
               // deserialize state
               return (model.constructor as typeof WidgetModel)

@@ -18,12 +18,19 @@ import { HTMLManager } from './index';
 
 // Load json schema validator
 import Ajv from 'ajv';
+import { IManagerState } from '@jupyter-widgets/base-manager';
 const widget_state_schema = require('@jupyter-widgets/schema').v2.state;
 const widget_view_schema = require('@jupyter-widgets/schema').v2.view;
 
+interface IViewState {
+  version_major: number;
+  version_minor: number;
+  model_id: string;
+}
+
 const ajv = new Ajv();
-const model_validate = ajv.compile(widget_state_schema);
-const view_validate = ajv.compile(widget_view_schema);
+const model_validate = ajv.compile<IManagerState>(widget_state_schema);
+const view_validate = ajv.compile<IViewState>(widget_view_schema);
 
 /**
  * Render the inline widgets inside a DOM element.
@@ -61,7 +68,7 @@ export async function renderWidgets(
  */
 async function renderManager(
   element: HTMLElement,
-  widgetState: any,
+  widgetState: unknown,
   managerFactory: () => HTMLManager
 ): Promise<void> {
   const valid = model_validate(widgetState);
@@ -69,7 +76,7 @@ async function renderManager(
     throw new Error(`Model state has errors: ${model_validate.errors}`);
   }
   const manager = managerFactory();
-  const models = await manager.set_state(widgetState);
+  const models = await manager.set_state(widgetState as IManagerState);
   const tags = element.querySelectorAll(
     'script[type="application/vnd.jupyter.widget-view+json"]'
   );
