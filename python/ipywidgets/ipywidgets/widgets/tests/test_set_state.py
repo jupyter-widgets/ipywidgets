@@ -80,7 +80,7 @@ def test_set_state_simple():
         c=[False, True, False],
     ))
 
-    assert w.comm.messages == []
+    assert len(w.comm.messages) == 1
 
 
 def test_set_state_transformer():
@@ -94,7 +94,8 @@ def test_set_state_transformer():
         data=dict(
             buffer_paths=[],
             method='update',
-            state=dict(d=[False, True, False])
+            state=dict(d=[False, True, False]),
+            echo=['d'],
         )))]
 
 
@@ -105,7 +106,7 @@ def test_set_state_data():
         a=True,
         d={'data': data},
     ))
-    assert w.comm.messages == []
+    assert len(w.comm.messages) == 1
 
 
 def test_set_state_data_truncate():
@@ -122,9 +123,10 @@ def test_set_state_data_truncate():
     buffers = msg[1].pop('buffers')
     assert msg == ((), dict(
         data=dict(
-            buffer_paths=[['d', 'data']],
             method='update',
-            state=dict(d={})
+            state=dict(d={}, a=True),
+            buffer_paths=[['d', 'data']],
+            echo=['a', 'd'],
         )))
 
     # Sanity:
@@ -144,8 +146,8 @@ def test_set_state_numbers_int():
         i = 3,
         ci = 4,
     ))
-    # Ensure no update message gets produced
-    assert len(w.comm.messages) == 0
+    # Ensure one update message gets produced
+    assert len(w.comm.messages) == 1
 
 
 def test_set_state_numbers_float():
@@ -156,8 +158,8 @@ def test_set_state_numbers_float():
         cf = 2.0,
         ci = 4.0
     ))
-    # Ensure no update message gets produced
-    assert len(w.comm.messages) == 0
+    # Ensure one update message gets produced
+    assert len(w.comm.messages) == 1
 
 
 def test_set_state_float_to_float():
@@ -167,8 +169,8 @@ def test_set_state_float_to_float():
         f = 1.2,
         cf = 2.6,
     ))
-    # Ensure no update message gets produced
-    assert len(w.comm.messages) == 0
+    # Ensure one message gets produced
+    assert len(w.comm.messages) == 1
 
 
 def test_set_state_cint_to_float():
@@ -235,6 +237,7 @@ def test_property_lock():
     # this mimics a value coming from the front end
     widget.set_state({'value': 42})
     assert widget.value == 42
+    assert widget.stop is True
 
     # we expect no new state to be sent
     calls = []
@@ -263,8 +266,96 @@ def test_hold_sync():
     assert widget.other == 11
 
     # we expect only single state to be sent, i.e. the {'value': 42.0} state
-    msg = {'method': 'update', 'state': {'value': 2.0, 'other': 11.0}, 'buffer_paths': []}
+    msg = {'method': 'update', 'state': {'value': 2.0, 'other': 11.0}, 'buffer_paths': [], 'echo': ['value']}
     call42 = mock.call(msg, buffers=[])
 
     calls = [call42]
     widget._send.assert_has_calls(calls)
+
+
+
+def test_echo():
+    # we always echo values back to the frontend
+    class ValueWidget(Widget):
+        value = Float().tag(sync=True)
+
+    widget = ValueWidget(value=1)
+    assert widget.value == 1
+
+    widget._send = mock.MagicMock()
+    # this mimics a value coming from the front end
+    widget.set_state({'value': 42})
+    assert widget.value == 42
+
+    # we expect this to be echoed
+    msg = {'method': 'update', 'state': {'value': 42.0}, 'buffer_paths': [], 'echo': ['value']}
+    call42 = mock.call(msg, buffers=[])
+
+    calls = [call42]
+    widget._send.assert_has_calls(calls)
+
+
+def test_echo_single():
+    # we always echo multiple changes back in 1 update
+    class ValueWidget(Widget):
+        value = Float().tag(sync=True)
+        square = Float().tag(sync=True)
+        @observe('value')
+        def _square(self, change):
+            self.square = self.value**2
+
+    widget = ValueWidget(value=1)
+    assert widget.value == 1
+
+    widget._send = mock.MagicMock()
+    # this mimics a value coming from the front end
+    widget._handle_msg({
+        'content': {
+            'data': {
+                'method': 'update',
+                'state': {
+                    'value': 8,
+                }
+            }
+        }
+    })
+    assert widget.value == 8
+    assert widget.square == 64
+
+    # we expect this to be echoed
+    # note that only value is echoed, not square
+    msg = {'method': 'update', 'state': {'square': 64, 'value': 8.0}, 'buffer_paths': [], 'echo': ['value']}
+    call = mock.call(msg, buffers=[])
+
+    calls = [call]
+    widget._send.assert_has_calls(calls)
+
+
+def test_no_echo():
+    # in cases where values coming fromt the frontend are 'heavy', we might want to opt out
+    class ValueWidget(Widget):
+        value = Float().tag(sync=True, no_echo=True)
+
+    widget = ValueWidget(value=1)
+    assert widget.value == 1
+
+    widget._send = mock.MagicMock()
+    # this mimics a value coming from the front end
+    widget._handle_msg({
+        'content': {
+            'data': {
+                'method': 'update',
+                'state': {
+                    'value': 42,
+                }
+            }
+        }
+    })
+    assert widget.value == 42
+
+    # widget._send.assert_not_called(calls)
+    widget._send.assert_not_called()
+
+    # a regular set should sync to the frontend
+    widget.value = 43
+    widget._send.assert_has_calls([mock.call({'method': 'update', 'state': {'value': 43.0}, 'buffer_paths': [], 'echo': ['value']}, buffers=[])])

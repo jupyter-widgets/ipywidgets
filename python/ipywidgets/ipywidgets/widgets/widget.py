@@ -5,7 +5,8 @@
 """Base Widget class.  Allows user to create widgets in the back-end that render
 in the Jupyter notebook front-end.
 """
-
+import ast
+import os
 from contextlib import contextmanager
 from collections.abc import Iterable
 from IPython import get_ipython
@@ -20,6 +21,7 @@ from base64 import standard_b64encode
 from .._version import __protocol_version__, __control_protocol_version__, __jupyter_widgets_base_version__
 PROTOCOL_VERSION_MAJOR = __protocol_version__.split('.')[0]
 CONTROL_PROTOCOL_VERSION_MAJOR = __control_protocol_version__.split('.')[0]
+JUPYTER_WIDGETS_ECHO = bool(ast.literal_eval(os.environ.get('JUPYTER_WIDGETS_ECHO', '1')))
 
 def _widget_to_json(x, obj):
     if isinstance(x, dict):
@@ -415,10 +417,12 @@ class Widget(LoggingHasTraits):
     def _default_keys(self):
         return [name for name in self.traits(sync=True)]
 
-    _property_lock = Dict()
+    _property_lock = Dict()  # only used when JUPYTER_WIDGETS_ECHO=0
     _holding_sync = False
+    _holding_sync_from_frontend_update = False
     _states_to_send = Set()
     _msg_callbacks = Instance(CallbackDispatcher, ())
+    _updated_attrs_from_frontend = None
 
     #-------------------------------------------------------------------------
     # (Con/de)structor
@@ -497,6 +501,15 @@ class Widget(LoggingHasTraits):
         """
         state = self.get_state(key=key)
         if len(state) > 0:
+            if JUPYTER_WIDGETS_ECHO:
+                state, buffer_paths, buffers = _remove_buffers(state)
+                msg = {'method': 'update', 'state': state, 'buffer_paths': buffer_paths}
+                if self._updated_attrs_from_frontend:
+                    msg['echo'] = self._updated_attrs_from_frontend
+                    self._updated_attrs_from_frontend = None
+                self._send(msg, buffers=buffers)
+                return
+
             if self._property_lock:  # we need to keep this dict up to date with the front-end values
                 for name, value in state.items():
                     if name in self._property_lock:
@@ -549,6 +562,16 @@ class Widget(LoggingHasTraits):
 
     def set_state(self, sync_data):
         """Called when a state is received from the front-end."""
+        if JUPYTER_WIDGETS_ECHO:
+            with self._hold_sync_frontend(), self.hold_trait_notifications():
+                # keep this as a list, not a set, since that preserves order (useful in the test)
+                self._updated_attrs_from_frontend = [name for name in sync_data if name in self.keys]
+                for name in sync_data:
+                    if name in self.keys:
+                        from_json = self.trait_metadata(name, 'from_json',
+                                                        self._trait_from_json)
+                        self.set_trait(name, from_json(sync_data[name], self))
+            return
         # The order of these context managers is important. Properties must
         # be locked when the hold_trait_notification context manager is
         # released and notifications are fired.
@@ -598,6 +621,18 @@ class Widget(LoggingHasTraits):
         # Send the state to the frontend before the user-registered callbacks
         # are called.
         name = change['name']
+        if JUPYTER_WIDGETS_ECHO:
+            if self.comm is not None and self.comm.kernel is not None and name in self.keys:
+                if self._holding_sync:
+                    # if we're holding a sync, we will only record which trait was changed
+                    # but we skip those traits marked no_echo, during an update from the frontend
+                    if not (self._holding_sync_from_frontend_update and self.trait_metadata(name, 'no_echo')):
+                        self._states_to_send.add(name)
+                else:
+                    # otherwise we send it directly
+                    self.send_state(key=name)
+            super().notify_change(change)
+            return
         if self.comm is not None and self.comm.kernel is not None:
             # Make sure this isn't information that the front-end just sent us.
             if name in self.keys and self._should_send_property(name, getattr(self, name)):
@@ -615,9 +650,7 @@ class Widget(LoggingHasTraits):
     @contextmanager
     def _lock_property(self, **properties):
         """Lock a property-value pair.
-
         The value should be the JSON state of the property.
-
         NOTE: This, in addition to the single lock for all state changes, is
         flawed.  In the future we may want to look into buffering state changes
         back to the front-end."""
@@ -663,6 +696,21 @@ class Widget(LoggingHasTraits):
         else:
             return True
 
+    @contextmanager
+    def _hold_sync_frontend(self):
+        """Same as hold_sync, but will not sync back traits tagged as no_echo"""
+        if self._holding_sync_from_frontend_update is True:
+            with self.hold_sync():
+                yield
+        else:
+            try:
+                self._holding_sync_from_frontend_update = True
+                with self.hold_sync():
+                    yield
+            finally:
+                self._holding_sync_from_frontend_update = False
+
+
     # Event handlers
     @_show_traceback
     def _handle_msg(self, msg):
@@ -684,7 +732,11 @@ class Widget(LoggingHasTraits):
         # Handle a custom msg from the front-end.
         elif method == 'custom':
             if 'content' in data:
-                self._handle_custom_msg(data['content'], msg['buffers'])
+                if JUPYTER_WIDGETS_ECHO:
+                    with self._hold_sync_frontend():
+                        self._handle_custom_msg(data['content'], msg['buffers'])
+                else:
+                    self._handle_custom_msg(data['content'], msg['buffers'])
 
         # Catch remainder.
         else:
