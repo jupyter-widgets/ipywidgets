@@ -11,6 +11,9 @@ var embedWidgets = require("./embed_widgets");
 
 var MIME_TYPE = 'application/vnd.jupyter.widget-view+json';
 
+var CONTROL_COMM_TARGET = 'jupyter.widget.control';
+var CONTROL_COMM_VERSION = '1.0.0';
+
 
 function polyfill_new_comm_buffers(manager, target_name, data, callbacks, metadata, comm_id, buffers) {
     /**
@@ -75,7 +78,168 @@ export class WidgetManager extends base.ManagerBase {
 
         // Attempt to reconstruct any live comms by requesting them from the back-end (2).
         var that = this;
-        this._get_comm_info().then(function(comm_ids) {
+
+        this._loadFromKernel()
+            .then(function () {
+                // Now that we have mirrored any widgets from the kernel...
+                // Restore any widgets from saved state that are not live (3)
+                if (widget_md && widget_md['application/vnd.jupyter.widget-state+json']) {
+                    var state = notebook.metadata.widgets['application/vnd.jupyter.widget-state+json'];
+                    state = that.filterExistingModelState(state);
+                    return that.set_state(state);
+                }
+            }).then(function() {
+                // Rerender cells that have widget data
+                that.notebook.get_cells().forEach(function(cell) {
+                    var rerender = cell.output_area && cell.output_area.outputs.find(function(output) {
+                        return output.data && output.data[MIME_TYPE];
+                    });
+                    if (rerender) {
+                        that.notebook.render_cell_output(cell);
+                    }
+                });
+            });
+
+        // Create the actions and menu
+        this._init_actions();
+        this._init_menu();
+    }
+
+    loadClass(className, moduleName, moduleVersion) {
+        if (moduleName === "@jupyter-widgets/controls") {
+            return Promise.resolve(widgets[className]);
+        } else if (moduleName === "@jupyter-widgets/base") {
+            return Promise.resolve(base[className]);
+        } else if (moduleName == "@jupyter-widgets/output") {
+            return Promise.resolve(outputWidgets[className]);
+        } else {
+            return new Promise(function(resolve, reject) {
+                window.require([moduleName], resolve, reject);
+            }).then(function(mod) {
+                if (mod[className]) {
+                    return mod[className];
+                } else {
+                    return Promise.reject('Class ' + className + ' not found in module ' + moduleName);
+                }
+            });
+        }
+    }
+
+    /**
+     * Fetch all widgets states using the control comm channel, or fallback to `_loadFromKernelSlow`
+     * if the backend does not implement the control comm.
+     */
+    _loadFromKernel() {
+        var that = this;
+
+        const commId = base.uuid();
+        return this._create_comm(
+            CONTROL_COMM_TARGET,
+            commId,
+            { widgets: null },
+            { version: CONTROL_COMM_VERSION }
+        ).then(function (initComm) {
+            // Try fetching all widget states through the control comm
+            let data;
+            let buffers;
+            try {
+                var controlCommPromise = new Promise(function (resolve, reject) {
+                    initComm.on_msg(function (msg) {
+                        data = msg['content']['data'];
+
+                        if (data.method !== 'update_states') {
+                            console.warn(`
+                                Unknown ${data.method} message on the Control channel
+                            `);
+                            return;
+                        }
+
+                        buffers = (msg.buffers || []).map(function (b) {
+                            if (b instanceof DataView) {
+                                return b;
+                            } else {
+                                return new DataView(b instanceof ArrayBuffer ? b : b.buffer);
+                            }
+                        });
+
+                        resolve(null);
+                    });
+
+                    initComm.on_close(reject);
+
+                    // Send a states request msg
+                    initComm.send({ method: 'request_states' }, {});
+                });
+
+                return controlCommPromise.then(function () {
+                    initComm.close();
+
+                    const states = data.states;
+
+                    // Extract buffer paths
+                    const bufferPaths = {};
+                    for (const bufferPath of data.buffer_paths) {
+                        if (!bufferPaths[bufferPath[0]]) {
+                            bufferPaths[bufferPath[0]] = [];
+                        }
+                        bufferPaths[bufferPath[0]].push(bufferPath.slice(1));
+                    }
+
+                    // Start creating all widgets
+                    return Promise.all(
+                        Object.keys(states).map(function (widget_id) {
+                            const state = states[widget_id];
+
+                            try {
+                                return that._create_comm('jupyter.widget', widget_id)
+                                    .then(function (comm) {
+                                        // Put binary buffers
+                                        if (widget_id in bufferPaths) {
+                                            const nBuffers = bufferPaths[widget_id].length;
+                                            base.put_buffers(
+                                                state,
+                                                bufferPaths[widget_id],
+                                                buffers.splice(0, nBuffers)
+                                            );
+                                        }
+
+                                        return that.new_model(
+                                            {
+                                                model_name: state.model_name,
+                                                model_module: state.model_module,
+                                                model_module_version: state.model_module_version,
+                                                model_id: widget_id,
+                                                comm: comm,
+                                            },
+                                            state.state
+                                        );
+                                    });
+                            } catch (error) {
+                                // Failed to create a widget model, we continue creating other models so that
+                                // other widgets can render
+                                console.error(error);
+                            }
+                        })
+                    );
+                });
+            } catch (error) {
+                console.warn(
+                    'Failed to open "jupyter.widget.control" comm channel, fallback to slow fetching of widgets.',
+                    error
+                );
+                // Fallback to the old implementation for old ipywidgets backend versions (<=7.6)
+                return this._loadFromKernelSlow();
+            }
+        });
+    }
+
+    /**
+     * Old implementation of fetching widgets one by one using
+     * the request_state message on each comm.
+     */
+    _loadFromKernelSlow() {
+        var that = this;
+        return this._get_comm_info().then(function(comm_ids) {
 
             // Create comm class instances from comm ids (2).
             var comm_promises = Object.keys(comm_ids).map(function(comm_id) {
@@ -113,50 +277,8 @@ export class WidgetManager extends base.ManagerBase {
                         comm: widget_info.comm,
                     }, widget_info.msg.content.data.state);
                 }));
-            }).then(function() {
-                // Now that we have mirrored any widgets from the kernel...
-                // Restore any widgets from saved state that are not live (3)
-                if (widget_md && widget_md['application/vnd.jupyter.widget-state+json']) {
-                    var state = notebook.metadata.widgets['application/vnd.jupyter.widget-state+json'];
-                    state = that.filterExistingModelState(state);
-                    return that.set_state(state);
-                }
-            }).then(function() {
-                // Rerender cells that have widget data
-                that.notebook.get_cells().forEach(function(cell) {
-                    var rerender = cell.output_area && cell.output_area.outputs.find(function(output) {
-                        return output.data && output.data[MIME_TYPE];
-                    });
-                    if (rerender) {
-                        that.notebook.render_cell_output(cell);
-                    }
-                });
             });
         });
-
-        // Create the actions and menu
-        this._init_actions();
-        this._init_menu();
-    }
-
-    loadClass(className, moduleName, moduleVersion) {
-        if (moduleName === "@jupyter-widgets/controls") {
-            return Promise.resolve(widgets[className]);
-        } else if (moduleName === "@jupyter-widgets/base") {
-            return Promise.resolve(base[className]);
-        } else if (moduleName == "@jupyter-widgets/output") {
-            return Promise.resolve(outputWidgets[className]);
-        } else {
-            return new Promise(function(resolve, reject) {
-                window.require([moduleName], resolve, reject);
-            }).then(function(mod) {
-                if (mod[className]) {
-                    return mod[className];
-                } else {
-                    return Promise.reject('Class ' + className + ' not found in module ' + moduleName);
-                }
-            });
-        }
     }
 
     /**
@@ -336,7 +458,7 @@ export class WidgetManager extends base.ManagerBase {
 }
 
 /**
- * List of widget managers in *reverse* order 
+ * List of widget managers in *reverse* order
  * (_managers[0] is the most recent)
  */
-WidgetManager._managers = []; 
+WidgetManager._managers = [];
