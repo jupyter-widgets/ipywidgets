@@ -6,7 +6,8 @@ import * as Backbone from 'backbone';
 
 import {
     ManagerBase, shims, IClassicComm, IWidgetRegistryData, ExportMap,
-    ExportData, WidgetModel, WidgetView, put_buffers, serialize_state, IStateOptions
+    ExportData, WidgetModel, WidgetView, put_buffers, serialize_state, IStateOptions,
+    uuid
 } from '@jupyter-widgets/base';
 
 import {
@@ -61,6 +62,16 @@ const WIDGET_VIEW_MIMETYPE = 'application/vnd.jupyter.widget-view+json';
  */
 export
 const WIDGET_STATE_MIMETYPE = 'application/vnd.jupyter.widget-state+json';
+
+/**
+ * The control comm target name.
+ */
+export const CONTROL_COMM_TARGET = 'jupyter.widget.control';
+
+/**
+ * The supported version for the control comm channel.
+ */
+export const CONTROL_COMM_VERSION = '1.0.0';
 
 /**
  * The class name added to an BackboneViewWrapper widget.
@@ -225,6 +236,102 @@ class WidgetManager extends ManagerBase<Widget> implements IDisposable {
     if (this.context.sessionContext.session?.kernel.handleComms === false) {
       return;
     }
+
+    const commId = uuid();
+    const initComm = await this._create_comm(
+      CONTROL_COMM_TARGET,
+      commId,
+      { widgets: null },
+      { version: CONTROL_COMM_VERSION }
+    );
+
+    // Try fetching all widget states through the control comm
+    let data: any;
+    let buffers: any;
+    try {
+      await new Promise((resolve, reject) => {
+        initComm.on_msg((msg) => {
+          data = msg['content']['data'];
+
+          if (data.method !== 'update_states') {
+            console.warn(`
+              Unknown ${data.method} message on the Control channel
+            `);
+            return;
+          }
+
+          buffers = (msg.buffers || []).map((b: any) => {
+            if (b instanceof DataView) {
+              return b;
+            } else {
+              return new DataView(b instanceof ArrayBuffer ? b : b.buffer);
+            }
+          });
+
+          resolve(null);
+        });
+
+        initComm.on_close(reject);
+
+        // Send a states request msg
+        initComm.send({ method: 'request_states' }, {});
+      });
+    } catch (error) {
+      console.warn(
+        'Failed to open "jupyter.widget.control" comm channel, fallback to slow fetching of widgets.',
+        error
+      );
+      // Fallback to the old implementation for old ipywidgets backend versions (<=7.6)
+      return this._loadFromKernelSlow();
+    }
+
+    initComm.close();
+
+    const states: any = data.states;
+
+    // Extract buffer paths
+    const bufferPaths: any = {};
+    for (const bufferPath of data.buffer_paths) {
+      if (!bufferPaths[bufferPath[0]]) {
+        bufferPaths[bufferPath[0]] = [];
+      }
+      bufferPaths[bufferPath[0]].push(bufferPath.slice(1));
+    }
+
+    // Start creating all widgets
+    for (const [widget_id, state] of Object.entries(states) as any) {
+      try {
+        const comm = await this._create_comm('jupyter.widget', widget_id);
+
+        // Put binary buffers
+        if (widget_id in bufferPaths) {
+          const nBuffers = bufferPaths[widget_id].length;
+          put_buffers(
+            state,
+            bufferPaths[widget_id],
+            buffers.splice(0, nBuffers)
+          );
+        }
+
+        await this.new_model(
+          {
+            model_name: state.model_name,
+            model_module: state.model_module,
+            model_module_version: state.model_module_version,
+            model_id: widget_id,
+            comm: comm,
+          },
+          state.state
+        );
+      } catch (error) {
+        // Failed to create a widget model, we continue creating other models so that
+        // other widgets can render
+        console.error(error);
+      }
+    }
+  }
+
+  async _loadFromKernelSlow(): Promise<void> {
     const comm_ids = await this._get_comm_info();
 
     // For each comm id that we do not know about, create the comm, and request the state.
