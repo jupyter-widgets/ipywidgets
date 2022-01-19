@@ -292,6 +292,28 @@ The `data.state` and `data.buffer_paths` values are the same as in the `comm_ope
 
 See the [Model state](jupyterwidgetmodels.latest.md) documentation for the attributes of core Jupyter widgets.
 
+#### Synchronizing multiple frontends: `update` with echo
+
+Starting with protocol version `3.0.0` the kernel can send a special update message back, to allow all connected frontends to be in sync with the kernel state. This allows multiple frontends to be connected to a single kernel but also resolves a possible out of sync situation when the kernel and a frontend send out an update message at the same time, causing both to think they have the latest state.
+
+In protocol version `3.0.0` the kernel is considered the single source of truth and is expected to send back to the frontends an update message that contains an extra list of keys to indicate which keys in the update are send back to the frontends as a reaction to an update received from a frontend.
+
+```
+{
+  'comm_id' : 'u-u-i-d',
+  'data' : {
+    'method': 'update',
+    'state': { <dictionary of widget state> },
+    'buffer_paths': [ <list with paths corresponding to the binary buffers> ]
+    'echo': [ <list of keys for which the kernel is sending back the state>]
+  }
+}
+```
+
+In situations where a user does many changes to a widget on the frontend (e.g. moving a slider), the frontend will receive from the kernel many update messages (with the echo key set) from the kernel that can be considered old values. A frontend can choose to ignore all updates that are not originating from the last update it send to the kernel. This can be implemented by keeping track of the `msg_id` for each attribyte for which we send out an update message to the kernel, and ignoring all updates as a result from an `echo` for which the [`msg_id` of the parent header](https://jupyter-client.readthedocs.io/en/latest/messaging.html#parent-header) is not equal to `msg_id` we kept track of.
+
+For situations where sending back an echo update for a property is considered to expensive, we have implemented an opt-out mechanism in ipywidgets. A trait can have a `no_echo` metadata attribute to flag that the kernel should not send back an update to the frontends. We suggest other implementations implement a similar opt-out mechanism.
+
 #### State requests: `request_state`
 
 When a frontend wants to request the full state of a widget, the frontend sends a `request_state` message:
