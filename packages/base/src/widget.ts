@@ -885,6 +885,11 @@ export class JupyterLuminoWidget extends Widget {
   private _view: DOMWidgetView;
 }
 
+/**
+ * @deprecated Use {@link JupyterLuminoWidget} instead (Since 8.0).
+ */
+export const JupyterPhosphorWidget = JupyterLuminoWidget;
+
 export class JupyterLuminoPanelWidget extends Panel {
   constructor(options: JupyterLuminoWidget.IOptions & Panel.IOptions) {
     const view = options.view;
@@ -1167,9 +1172,24 @@ export class DOMWidgetView extends WidgetView {
       this.el.removeAttribute('tabIndex');
     }
   }
+
+  /**
+   * @deprecated Use {@link luminoWidget} instead (Since 8.0).
+   */
+  get pWidget(): Widget {
+    if (!DOMWidgetView.deprecationWarningDisplayed) {
+      console.warn(
+        'The use of pWidget is deprecated, use luminoWidget instead.'
+      );
+      DOMWidgetView.deprecationWarningDisplayed = true;
+    }
+    return this.luminoWidget;
+  }
+
   el: HTMLElement; // Override typing
   '$el': any;
   luminoWidget: Widget;
   layoutPromise: Promise<any>;
   stylePromise: Promise<any>;
+  private static deprecationWarningDisplayed = false;
 }
