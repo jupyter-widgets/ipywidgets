@@ -1177,12 +1177,6 @@ export class DOMWidgetView extends WidgetView {
    * @deprecated Use {@link luminoWidget} instead (Since 8.0).
    */
   get pWidget(): Widget {
-    if (!DOMWidgetView.deprecationWarningDisplayed) {
-      console.warn(
-        'The use of pWidget is deprecated, use luminoWidget instead.'
-      );
-      DOMWidgetView.deprecationWarningDisplayed = true;
-    }
     return this.luminoWidget;
   }
 
@@ -1191,5 +1185,4 @@ export class DOMWidgetView extends WidgetView {
   luminoWidget: Widget;
   layoutPromise: Promise<any>;
   stylePromise: Promise<any>;
-  private static deprecationWarningDisplayed = false;
 }
