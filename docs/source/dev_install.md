@@ -29,6 +29,15 @@ cd ipywidgets
 ./dev-install.sh
 ```
 
+### Installing with pip
+
+To do an editable install of the python ipywidgets package into the user site directory with pip, please use
+
+```bash
+pip install --prefix=$(python -m site --user-base) -e .
+```
+Using `pip install --user -e .` will not work due to a bug in pip. See https://github.com/pypa/pip/issues/7953 for more details.
+
 Rebuilding after making changes
 ----------------------------
 
