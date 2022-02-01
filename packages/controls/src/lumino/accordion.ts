@@ -12,22 +12,22 @@ import { Selection } from './currentselection';
 /**
  * The class name added to Collapse instances.
  */
-const COLLAPSE_CLASS = 'p-Collapse';
+const COLLAPSE_CLASS = 'jupyter-widget-Collapse';
 
 /**
  * The class name added to a Collapse's header.
  */
-const COLLAPSE_HEADER_CLASS = 'p-Collapse-header';
+const COLLAPSE_HEADER_CLASS = 'jupyter-widget-Collapse-header';
 
 /**
  * The class name added to a Collapse's contents.
  */
-const COLLAPSE_CONTENTS_CLASS = 'p-Collapse-contents';
+const COLLAPSE_CONTENTS_CLASS = 'jupyter-widget-Collapse-contents';
 
 /**
  * The class name added to a Collapse when it is opened
  */
-const COLLAPSE_CLASS_OPEN = 'p-Collapse-open';
+const COLLAPSE_CLASS_OPEN = 'jupyter-widget-Collapse-open';
 
 /**
  * A panel that supports a collapsible header, made from the widget's title.
@@ -186,14 +186,14 @@ export namespace Collapse {
 /**
  * The class name added to Accordion instances.
  */
-const ACCORDION_CLASS = 'p-Accordion';
+const ACCORDION_CLASS = 'jupyter-widget-Accordion';
 
 /**
  * The class name added to an Accordion child.
  */
-const ACCORDION_CHILD_CLASS = 'p-Accordion-child';
+const ACCORDION_CHILD_CLASS = 'jupyter-widget-Accordion-child';
 
-const ACCORDION_CHILD_ACTIVE_CLASS = 'p-Accordion-child-active';
+const ACCORDION_CHILD_ACTIVE_CLASS = 'jupyter-widget-Accordion-child-active';
 
 /**
  * A panel that supports a collapsible header, made from the widget's title.
