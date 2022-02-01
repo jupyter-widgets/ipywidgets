@@ -219,7 +219,7 @@ export abstract class BaseIntSliderView extends DescriptionView {
       direction: orientation === 'horizontal' ? 'ltr' : 'rtl',
       format: {
         from: (value: string): number => Number(value),
-        to: (value: number): number => value,
+        to: (value: number): number => this._validate_slide_value(value),
       },
     });
 
@@ -285,7 +285,7 @@ export abstract class BaseIntSliderView extends DescriptionView {
    * and applying it to the other views on the page.
    */
   _validate_slide_value(x: number): number {
-    return Math.floor(x);
+    return Math.round(x);
   }
 
   $slider: any;
