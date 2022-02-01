@@ -765,7 +765,7 @@ export class SelectionSliderView extends DescriptionView {
       direction: orientation === 'horizontal' ? 'ltr' : 'rtl',
       format: {
         from: (value: string): number => Number(value),
-        to: (value: number): number => value,
+        to: (value: number): number => Math.round(value),
       },
     });
 
