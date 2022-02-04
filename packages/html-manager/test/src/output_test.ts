@@ -228,17 +228,13 @@ describe('Output widget', function () {
     await manager.display_view(manager.create_view(model), widgetTag);
     expect(widgetTag.innerText).to.equal(startingText);
 
-    model.set(
-      'outputs',
-      [
-        {
-          output_type: 'stream',
-          name: 'stdout',
-          text: endingText,
-        },
-      ]
-    );
+    model.set('outputs', [
+      {
+        output_type: 'stream',
+        name: 'stdout',
+        text: endingText,
+      },
+    ]);
     expect(widgetTag.innerText).to.equal(endingText);
-
   });
 });
