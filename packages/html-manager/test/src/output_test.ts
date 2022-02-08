@@ -209,7 +209,7 @@ describe('Output widget', function() {
     it('renders text output', async () => {
         const manager = new HTMLManager();
         const modelId = 'u-u-i-d';
-        const modelCreate: base.IModelOptions = {
+        const modelCreate = {
         model_name: 'OutputModel',
         model_id: modelId,
         model_module: '@jupyter-widgets/output',
@@ -233,7 +233,9 @@ describe('Output widget', function() {
         widgetTag.className = 'widget-subarea';
         document.body.appendChild(widgetTag);
         const model = await manager.new_model(modelCreate, modelState);
-        await manager.display_view(manager.create_view(model), widgetTag);
+        await manager.display_model(
+            undefined, model, { el: widgetTag }
+        );
         expect(widgetTag.innerText).to.equal(startingText);
 
         model.set('outputs', [
@@ -245,4 +247,4 @@ describe('Output widget', function() {
         ]);
         expect(widgetTag.innerText).to.equal(endingText);
     });
-});
+ });
