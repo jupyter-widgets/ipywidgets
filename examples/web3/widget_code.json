@@ -3,7 +3,7 @@
   "from IPython.display import Image, display",
   "",
   "s = IntSlider(min=1, max=500, value=200, description='Width')",
-  "t = Text(description='Area',)",
+  "t = Text(description='Area', disabled=True)",
   "o = Output()",
   "display(VBox([s, t, o]))",
   "",
