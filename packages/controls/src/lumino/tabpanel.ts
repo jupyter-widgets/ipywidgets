@@ -112,7 +112,6 @@ export class TabPanel extends Widget {
   constructor(options: TabPanel.IOptions = {}) {
     super();
     this.addClass('jupyter-widget-TabPanel');
-    this.addClass('jupyter-widget-TabPanel');
 
     // Create the tab bar and contents panel.
     this.tabBar = new TabBar<Widget>(options);
