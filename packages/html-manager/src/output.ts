@@ -17,22 +17,33 @@ export class OutputModel extends outputBase.OutputModel {
     defaults() {
         return {
             ...super.defaults(),
-            msg_id: ''
+            msg_id: '',
+            outputs: [],
         };
     }
 
-    initialize(attributes: any, options: any) {
+    initialize(attributes: any, options: any): void {
         super.initialize(attributes, options);
-        this._outputs = new OutputAreaModel({
-            values: attributes.outputs,
-            // Widgets (including this output widget) are only rendered in
-            // trusted contexts
-            trusted: true,
-        });
+        this._outputs = new OutputAreaModel({ trusted: true });
+        this.listenTo(this, 'change:outputs', this.setOutputs);
+        this.setOutputs();
     }
 
     get outputs() {
         return this._outputs;
+    }
+
+    clear_output(wait = false): void {
+        this._outputs.clear(wait);
+    }
+
+    setOutputs(model?: any, value?: any, options?: any): void {
+        if (!(options && options.newMessage)) {
+            // fromJSON does not clear the existing output
+            this.clear_output();
+            // fromJSON does not copy the message, so we make a deep copy
+            this._outputs.fromJSON(JSON.parse(JSON.stringify(this.get('outputs'))));
+        }
     }
 
     private _outputs: OutputAreaModel;
