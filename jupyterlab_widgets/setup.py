@@ -5,7 +5,7 @@ import os
 
 from jupyter_packaging import (
     create_cmdclass, install_npm, ensure_targets,
-    combine_commands, ensure_python, get_version,
+    combine_commands, get_version,
 )
 import setuptools
 
@@ -13,9 +13,6 @@ HERE = os.path.abspath(os.path.dirname(__file__))
 
 # The name of the project
 name = "jupyterlab_widgets"
-
-# Ensure a valid python version
-ensure_python(">=3.6")
 
 # Get our version
 version = get_version(os.path.join(name, "_version.py"))
