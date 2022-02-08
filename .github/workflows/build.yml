@@ -48,14 +48,34 @@ jobs:
     - name: Build the extension
       run: |
         pip install -e .[test]
-        jlpm install
-        jlpm run build
-        cd jupyterlab_widgets
+
+        yarn install --frozen-lockfile
+        yarn run build
+        yarn run build:examples
+
+        pushd jupyterlab_widgets
         pwd
         pip install -e .
         jupyter labextension develop . --overwrite
         jupyter labextension list
-
         python -m jupyterlab.browser_check
+        popd
     - name: Run Python tests
       run: pytest .
+    - name: Run JS tests
+      run: |
+        pushd packages/base
+        yarn run test:unit:firefox:headless
+        popd
+
+        pushd packages/controls
+        yarn run test:unit:firefox:headless
+        popd
+
+        pushd packages/html-manager
+        yarn run test:unit:firefox:headless
+        popd
+
+        pushd examples/web1
+        yarn run test:firefox:headless
+        popd
