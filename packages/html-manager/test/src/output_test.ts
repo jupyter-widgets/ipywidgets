@@ -205,4 +205,44 @@ describe('Output widget', function() {
         );
         expect(widgetTag.innerText).to.equal('something different');
     });
+
+    it('renders text output', async () => {
+        const manager = new HTMLManager();
+        const modelId = 'u-u-i-d';
+        const modelCreate: base.IModelOptions = {
+        model_name: 'OutputModel',
+        model_id: modelId,
+        model_module: '@jupyter-widgets/output',
+        model_module_version: '*',
+        };
+
+        const startingText = 'starting text';
+        const endingText = 'ending text';
+        const modelState = {
+        _view_module: '@jupyter-widgets/output',
+        outputs: [
+            {
+            output_type: 'stream',
+            name: 'stdout',
+            text: startingText,
+            },
+        ],
+        };
+
+        const widgetTag = document.createElement('div');
+        widgetTag.className = 'widget-subarea';
+        document.body.appendChild(widgetTag);
+        const model = await manager.new_model(modelCreate, modelState);
+        await manager.display_view(manager.create_view(model), widgetTag);
+        expect(widgetTag.innerText).to.equal(startingText);
+
+        model.set('outputs', [
+        {
+            output_type: 'stream',
+            name: 'stdout',
+            text: endingText,
+        },
+        ]);
+        expect(widgetTag.innerText).to.equal(endingText);
+    });
 });

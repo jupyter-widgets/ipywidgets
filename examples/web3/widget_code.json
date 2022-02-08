@@ -1,14 +1,19 @@
 [
-    "from ipywidgets import IntSlider, Text, VBox",
-    "from IPython.display import display",
+    "from ipywidgets import IntSlider, Output, Text, VBox",
+    "from IPython.display import Image, display",
     "",
-    "s = IntSlider(max=200, value=100)",
-    "t = Text()",
+    "s = IntSlider(min=1, max=500, value=200, description='Width')",
+    "t = Text(description='Area', disabled=True)",
+    "o = Output()",
+    "display(VBox([s, t, o]))",
     "",
-    "def update_text(change=None):",
-    "    t.value = str(s.value ** 2)",
+    "def update(change=None):",
+    "    width = s.value",
+    "    t.value = str(width ** 2)",
+    "    o.outputs = ()",
+    "    img = Image(url='jupyter-logo.svg', width=width)",
+    "    o.append_display_data(img)",
     "",
-    "s.observe(update_text, names='value')",
-    "update_text()",
-    "display(VBox([s, t]))"
+    "s.observe(update, names='value')",
+    "update()"
 ]
