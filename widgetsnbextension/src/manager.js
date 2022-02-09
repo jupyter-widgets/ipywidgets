@@ -75,62 +75,23 @@ export class WidgetManager extends base.ManagerBase {
 
         // Attempt to reconstruct any live comms by requesting them from the back-end (2).
         var that = this;
-        this._get_comm_info().then(function(comm_ids) {
-
-            // Create comm class instances from comm ids (2).
-            var comm_promises = Object.keys(comm_ids).map(function(comm_id) {
-                return that._create_comm(that.comm_target_name, comm_id);
-            });
-
-            // Send a state request message out for each widget comm and wait
-            // for the responses (2).
-            return Promise.all(comm_promises).then(function(comms) {
-                return Promise.all(comms.map(function(comm) {
-                    var update_promise = new Promise(function(resolve, reject) {
-                        comm.on_msg(function (msg) {
-                            base.put_buffers(msg.content.data.state, msg.content.data.buffer_paths, msg.buffers);
-                            // A suspected response was received, check to see if
-                            // it's a state update. If so, resolve.
-                            if (msg.content.data.method === 'update') {
-                                resolve({
-                                    comm: comm,
-                                    msg: msg
-                                });
-                            }
-                        });
-                    });
-                    comm.send({
-                        method: 'request_state'
-                    }, that.callbacks());
-                    return update_promise;
-                }));
-            }).then(function(widgets_info) {
-                return Promise.all(widgets_info.map(function(widget_info) {
-                    return that.new_model({
-                        model_name: widget_info.msg.content.data.state._model_name,
-                        model_module: widget_info.msg.content.data.state._model_module,
-                        model_module_version: widget_info.msg.content.data.state._model_module_version,
-                        comm: widget_info.comm,
-                    }, widget_info.msg.content.data.state);
-                }));
-            }).then(function() {
-                // Now that we have mirrored any widgets from the kernel...
-                // Restore any widgets from saved state that are not live (3)
-                if (widget_md && widget_md['application/vnd.jupyter.widget-state+json']) {
-                    var state = notebook.metadata.widgets['application/vnd.jupyter.widget-state+json'];
-                    state = that.filterExistingModelState(state);
-                    return that.set_state(state);
-                }
-            }).then(function() {
-                // Rerender cells that have widget data
-                that.notebook.get_cells().forEach(function(cell) {
-                    var rerender = cell.output_area && cell.output_area.outputs.find(function(output) {
-                        return output.data && output.data[MIME_TYPE];
-                    });
-                    if (rerender) {
-                        that.notebook.render_cell_output(cell);
-                    }
+        this._loadFromKernel().then(function() {
+            // Now that we have mirrored any widgets from the kernel...
+            // Restore any widgets from saved state that are not live (3)
+            if (widget_md && widget_md['application/vnd.jupyter.widget-state+json']) {
+                var state = notebook.metadata.widgets['application/vnd.jupyter.widget-state+json'];
+                state = that.filterExistingModelState(state);
+                return that.set_state(state);
+            }
+        }).then(function() {
+            // Rerender cells that have widget data
+            that.notebook.get_cells().forEach(function(cell) {
+                var rerender = cell.output_area && cell.output_area.outputs.find(function(output) {
+                    return output.data && output.data[MIME_TYPE];
                 });
+                if (rerender) {
+                    that.notebook.render_cell_output(cell);
+                }
             });
         });
 
@@ -336,7 +297,7 @@ export class WidgetManager extends base.ManagerBase {
 }
 
 /**
- * List of widget managers in *reverse* order 
+ * List of widget managers in *reverse* order
  * (_managers[0] is the most recent)
  */
-WidgetManager._managers = []; 
+WidgetManager._managers = [];
