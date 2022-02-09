@@ -408,7 +408,6 @@
 
 .widget-text input[type="text"], .widget-text input[type="number"], .widget-text input[type="password"] {
     height: var(--jp-widgets-inline-height);
-    line-height: var(--jp-widgets-inline-height);
 }
 
 .widget-text input[type="text"]:disabled, .widget-text input[type="number"]:disabled, .widget-text input[type="password"]:disabled, .widget-textarea textarea:disabled {
