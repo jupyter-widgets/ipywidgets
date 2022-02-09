@@ -611,7 +611,6 @@
 .jupyter-widget-text input[type='number'],
 .jupyter-widget-text input[type='password'] {
   height: var(--jp-widgets-inline-height);
-  line-height: var(--jp-widgets-inline-height);
 }
 
 /* <DEPRECATED> */
