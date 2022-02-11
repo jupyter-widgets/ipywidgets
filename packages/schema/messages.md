@@ -370,11 +370,11 @@ This is implemented in ipywidgets 7.7.
 
 ### The `jupyter.widget.control` comm target
 
-A kernel-side Jupyter widgets library registers a `jupyter.widget.control` comm target that is used for fetching all widgets states through a "one shot" comm message (one for all widget instances). Unlike the `jupyter.widget` comm target, the created comm is global to all widgets,
+A kernel-side Jupyter widgets library may optionally register a `jupyter.widget.control` comm target that is used for fetching all kernel widget state through a single comm message.
 
 #### State requests: `request_states`
 
-When a frontend wants to request the full state of a all widgets, the frontend sends a `request_states` message:
+When a frontend wants to request the full state of all widgets from the kernel in a single message, the frontend sends a `request_states` message through the `jupyter.widget.control` comm channel:
 
 ```
 {
@@ -385,7 +385,7 @@ When a frontend wants to request the full state of a all widgets, the frontend s
 }
 ```
 
-The kernel side of the widget should immediately send an `update_states` message with all widgets states:
+The kernel handler for the `jupyter.widget.control` comm target should immediately send an `update_states` message with all widgets states:
 
 ```
 {
@@ -401,3 +401,7 @@ The kernel side of the widget should immediately send an `update_states` message
   }
 }
 ```
+
+Comm messages for state synchronization may contain binary buffers. The `data.buffer_paths` value contains a list of 'paths' in the `data.states` object corresponding to the binary buffers. For example, if `data.buffer_paths` is `[['widget-id1', 'x'], ['widget-id2', 'y', 'z', 0]]`, then the first binary buffer is the value of the `data.states['widget-id1']['x']` attribute and the second binary buffer is the value of the `data.states['widget-id2']['y']['z'][0]` state attribute. A path representing a list value (i.e., last index of the path is an integer) will have a `null` placeholder in the list in `data.states`, and a path representing a value for a dictionary key (i.e., last index of the path is a string) will not exist in the dictionary in `data.states`.
+
+Since the `update_states` message may be very large, it may be dropped in the communication channel (for example, the message may exceed the websocket message limit size). For that reason, we suggest that frontends fall back to other ways to retrieve state from the kernel if they do not get an `update_states` reply in a reasonable amount of time.
