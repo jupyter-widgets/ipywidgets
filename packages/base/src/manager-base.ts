@@ -5,6 +5,10 @@ import * as utils from './utils';
 import * as services from '@jupyterlab/services';
 
 import {
+    PromiseDelegate,
+  } from '@lumino/coreutils';
+
+import {
     DOMWidgetView, WidgetModel, WidgetView, DOMWidgetModel
 } from './widget';
 
@@ -17,6 +21,21 @@ import {
 } from './version';
 
 const PROTOCOL_MAJOR_VERSION = PROTOCOL_VERSION.split('.', 1)[0];
+
+/**
+ * The control comm target name.
+ */
+export const CONTROL_COMM_TARGET = 'jupyter.widget.control';
+
+/**
+ * The supported version for the control comm channel.
+ */
+export const CONTROL_COMM_PROTOCOL_VERSION = '1.0.0';
+
+/**
+ * Time (in ms) after which we consider the control comm target not responding.
+ */
+export const CONTROL_COMM_TIMEOUT = 4000;
 
 /**
  * The options for a model.
@@ -361,7 +380,236 @@ abstract class ManagerBase<T> {
         widget_model.name = options.model_name;
         widget_model.module = options.model_module;
         return widget_model;
+    }
 
+    /**
+     * Fetch all widgets states from the kernel using the control comm channel
+     * If this fails (control comm handler not implemented kernel side),
+     * it will fall back to `_loadFromKernelModels`.
+     *
+     * This is a utility function that can be used in subclasses.
+     */
+    protected async _loadFromKernel(): Promise<void> {
+        // Try fetching all widget states through the control comm
+        let data: any;
+        let buffers: any;
+        try {
+            const initComm = await this._create_comm(
+                CONTROL_COMM_TARGET,
+                utils.uuid(),
+                {},
+                { version: CONTROL_COMM_PROTOCOL_VERSION }
+            );
+
+            await new Promise((resolve, reject) => {
+                initComm.on_msg((msg: any) => {
+                    data = msg['content']['data'];
+
+                    if (data.method !== 'update_states') {
+                        console.warn(`
+                        Unknown ${data.method} message on the Control channel
+                        `);
+                        return;
+                    }
+
+                    buffers = (msg.buffers || []).map((b: any) => {
+                        if (b instanceof DataView) {
+                        return b;
+                        } else {
+                        return new DataView(b instanceof ArrayBuffer ? b : b.buffer);
+                        }
+                    });
+
+                    resolve(null);
+                });
+
+                initComm.on_close(() => reject('Control comm was closed too early'));
+
+                // Send a states request msg
+                initComm.send({ method: 'request_states' }, {});
+
+                // Reject if we didn't get a response in time
+                setTimeout(
+                    () => reject('Control comm did not respond in time'),
+                    CONTROL_COMM_TIMEOUT
+                );
+            });
+
+            initComm.close();
+        } catch (error) {
+            console.warn(
+                'Failed to fetch ipywidgets through the "jupyter.widget.control" comm channel, fallback to fetching individual model state. Reason:',
+                error
+            );
+            // Fall back to the old implementation for old ipywidgets backend versions (ipywidgets<=7.6)
+            return this._loadFromKernelModels();
+        }
+
+        const states: any = data.states;
+        const bufferPaths: any = {};
+        const bufferGroups: any = {};
+
+        // Group buffers and buffer paths by widget id
+        for (let i = 0; i < data.buffer_paths.length; i++) {
+            const [widget_id, ...path] = data.buffer_paths[i];
+            const b = buffers[i];
+            if (!bufferPaths[widget_id]) {
+                bufferPaths[widget_id] = [];
+                bufferGroups[widget_id] = [];
+            }
+            bufferPaths[widget_id].push(path);
+            bufferGroups[widget_id].push(b);
+        }
+
+        // Create comms for all new widgets.
+        let widget_comms = await Promise.all(
+            Object.keys(states).map(async (widget_id) => {
+                let comm = undefined;
+                let modelPromise = undefined;
+                try {
+                    modelPromise = this.get_model(widget_id);
+                    if (modelPromise === undefined) {
+                        comm = await this._create_comm('jupyter.widget', widget_id);
+                    } else {
+                        // For JLab, the promise is rejected, so we have to await to
+                        // find out if it is actually a model.
+                        await modelPromise;
+                    }    
+                } catch (e) {
+                    // The JLab widget manager will throw an error with this specific error message.
+                    if (e.message !== 'widget model not found') {
+                        throw e;
+                    }
+                    comm = await this._create_comm('jupyter.widget', widget_id);
+                }
+                return {widget_id, comm}
+            })
+        )
+
+        await Promise.all(widget_comms.map(async ({widget_id, comm}) => {
+            const state = states[widget_id];
+            // Put binary buffers
+            if (widget_id in bufferPaths) {
+                utils.put_buffers(
+                    state,
+                    bufferPaths[widget_id],
+                    bufferGroups[widget_id]
+                );
+            }
+            try {
+
+            if (comm === undefined) {
+                // model already exists here
+                const model = await this.get_model(widget_id);
+                model!.set_state(state.state);
+            } else {
+                // This must be the first await in the code path that
+                // reaches here so that registering the model promise in
+                // new_model can register the widget promise before it may
+                // be required by other widgets.
+                await this.new_model(
+                    {
+                        model_name: state.model_name,
+                        model_module: state.model_module,
+                        model_module_version: state.model_module_version,
+                        model_id: widget_id,
+                        comm: comm,
+                    },
+                    state.state
+                );
+            }
+
+            } catch (error) {
+                // Failed to create a widget model, we continue creating other models so that
+                // other widgets can render
+                console.error(error);
+            }
+        }));
+    }
+
+    /**
+     * Old implementation of fetching widget models one by one using
+     * the request_state message on each comm.
+     *
+     * This is a utility function that can be used in subclasses.
+     */
+    protected async _loadFromKernelModels(): Promise<void> {
+        const comm_ids = await this._get_comm_info();
+
+        // For each comm id that we do not know about, create the comm, and request the state.
+        const widgets_info = await Promise.all(
+            Object.keys(comm_ids).map(async (comm_id) => {
+                try {
+                    const model = this.get_model(comm_id);
+                    // TODO Have the same this.get_model implementation for
+                    // the widgetsnbextension and labextension, the one that
+                    // throws an error if the model is not found instead of
+                    // returning undefined
+                    if (model === undefined) {
+                        throw new Error('widget model not found');
+                    }
+                    await model;
+                    // If we successfully get the model, do no more.
+                    return;
+                } catch (e) {
+                    // If we have the widget model not found error, then we can create the
+                    // widget. Otherwise, rethrow the error. We have to check the error
+                    // message text explicitly because the get_model function in this
+                    // class throws a generic error with this specific text.
+                    if (e.message !== 'widget model not found') {
+                        throw e;
+                    }
+                    const comm = await this._create_comm(this.comm_target_name, comm_id);
+
+                    let msg_id = '';
+                    const info = new PromiseDelegate<Private.ICommUpdateData>();
+                    comm.on_msg((msg) => {
+                        if (
+                            (msg.parent_header as any).msg_id === msg_id &&
+                            msg.header.msg_type === 'comm_msg' &&
+                            msg.content.data.method === 'update'
+                        ) {
+                            const data = msg.content.data as any;
+                            const buffer_paths = data.buffer_paths || [];
+                            const buffers = msg.buffers || [];
+                            utils.put_buffers(data.state, buffer_paths, buffers);
+                            info.resolve({ comm, msg });
+                        }
+                    });
+                    msg_id = comm.send(
+                        {
+                        method: 'request_state',
+                        },
+                        this.callbacks(undefined)
+                    );
+
+                    return info.promise;
+                }
+            })
+        );
+
+        // We put in a synchronization barrier here so that we don't have to
+        // topologically sort the restored widgets. `new_model` synchronously
+        // registers the widget ids before reconstructing their state
+        // asynchronously, so promises to every widget reference should be available
+        // by the time they are used.
+        await Promise.all(
+            widgets_info.map(async (widget_info) => {
+                if (!widget_info) {
+                    return;
+                }
+                const content = widget_info.msg.content as any;
+                await this.new_model(
+                    {
+                        model_name: content.data.state._model_name,
+                        model_module: content.data.state._model_module,
+                        model_module_version: content.data.state._model_module_version,
+                        comm: widget_info.comm,
+                    },
+                    content.data.state
+                );
+            })
+        );
     }
 
     /**
@@ -585,4 +833,14 @@ function serialize_state(models: WidgetModel[], options: IStateOptions = {}) {
         }
     });
     return {version_major: 2, version_minor: 0, state: state};
+}
+
+namespace Private {
+    /**
+     * Data promised when a comm info request resolves.
+     */
+    export interface ICommUpdateData {
+        comm: IClassicComm;
+        msg: services.KernelMessage.ICommMsgMsg;
+    }
 }
