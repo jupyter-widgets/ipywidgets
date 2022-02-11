@@ -225,6 +225,16 @@ abstract class ManagerBase<T> {
     }
 
     /**
+     * Returns true if the given model is registered, otherwise false.
+     *
+     * #### Notes
+     * This is a synchronous way to check if a model is registered.
+     */
+    has_model(model_id: string): boolean {
+        return this._models[model_id] !== undefined;
+    }
+
+    /**
      * Handle when a comm is opened.
      */
     handle_comm_open(comm: IClassicComm, msg: services.KernelMessage.ICommOpenMsg): Promise<WidgetModel> {
@@ -464,27 +474,10 @@ abstract class ManagerBase<T> {
         // Create comms for all new widgets.
         let widget_comms = await Promise.all(
             Object.keys(states).map(async (widget_id) => {
-                let comm = undefined;
-                let modelPromise = undefined;
-                try {
-                    modelPromise = this.get_model(widget_id);
-                    if (modelPromise === undefined) {
-                        comm = await this._create_comm('jupyter.widget', widget_id);
-                    } else {
-                        // For JLab, the promise is rejected, so we have to await to
-                        // find out if it is actually a model.
-                        await modelPromise;
-                    }    
-                } catch (e) {
-                    // The JLab widget manager will throw an error with this specific error message.
-                    if (e.message !== 'widget model not found') {
-                        throw e;
-                    }
-                    comm = await this._create_comm('jupyter.widget', widget_id);
-                }
+                const comm = this.has_model(widget_id) ? undefined : await this._create_comm('jupyter.widget', widget_id);
                 return {widget_id, comm}
             })
-        )
+        );
 
         await Promise.all(widget_comms.map(async ({widget_id, comm}) => {
             const state = states[widget_id];
@@ -497,28 +490,26 @@ abstract class ManagerBase<T> {
                 );
             }
             try {
-
-            if (comm === undefined) {
-                // model already exists here
-                const model = await this.get_model(widget_id);
-                model!.set_state(state.state);
-            } else {
-                // This must be the first await in the code path that
-                // reaches here so that registering the model promise in
-                // new_model can register the widget promise before it may
-                // be required by other widgets.
-                await this.new_model(
-                    {
-                        model_name: state.model_name,
-                        model_module: state.model_module,
-                        model_module_version: state.model_module_version,
-                        model_id: widget_id,
-                        comm: comm,
-                    },
-                    state.state
-                );
-            }
-
+                if (comm) {
+                    // This must be the first await in the code path that
+                    // reaches here so that registering the model promise in
+                    // new_model can register the widget promise before it may
+                    // be required by other widgets.
+                    await this.new_model(
+                        {
+                            model_name: state.model_name,
+                            model_module: state.model_module,
+                            model_module_version: state.model_module_version,
+                            model_id: widget_id,
+                            comm: comm,
+                        },
+                        state.state
+                    );
+                } else {
+                    // model already exists here
+                    const model = await this.get_model(widget_id);
+                    model!.set_state(state.state);
+                }
             } catch (error) {
                 // Failed to create a widget model, we continue creating other models so that
                 // other widgets can render
@@ -539,54 +530,36 @@ abstract class ManagerBase<T> {
         // For each comm id that we do not know about, create the comm, and request the state.
         const widgets_info = await Promise.all(
             Object.keys(comm_ids).map(async (comm_id) => {
-                try {
-                    const model = this.get_model(comm_id);
-                    // TODO Have the same this.get_model implementation for
-                    // the widgetsnbextension and labextension, the one that
-                    // throws an error if the model is not found instead of
-                    // returning undefined
-                    if (model === undefined) {
-                        throw new Error('widget model not found');
-                    }
-                    await model;
-                    // If we successfully get the model, do no more.
+                if (this.has_model(comm_id)) {
                     return;
-                } catch (e) {
-                    // If we have the widget model not found error, then we can create the
-                    // widget. Otherwise, rethrow the error. We have to check the error
-                    // message text explicitly because the get_model function in this
-                    // class throws a generic error with this specific text.
-                    if (e.message !== 'widget model not found') {
-                        throw e;
-                    }
-                    const comm = await this._create_comm(this.comm_target_name, comm_id);
-
-                    let msg_id = '';
-                    const info = new PromiseDelegate<Private.ICommUpdateData>();
-                    comm.on_msg((msg) => {
-                        if (
-                            (msg.parent_header as any).msg_id === msg_id &&
-                            msg.header.msg_type === 'comm_msg' &&
-                            msg.content.data.method === 'update'
-                        ) {
-                            const data = msg.content.data as any;
-                            const buffer_paths = data.buffer_paths || [];
-                            const buffers = msg.buffers || [];
-                            utils.put_buffers(data.state, buffer_paths, buffers);
-                            info.resolve({ comm, msg });
-                        }
-                    });
-                    msg_id = comm.send(
-                        {
-                        method: 'request_state',
-                        },
-                        this.callbacks(undefined)
-                    );
-
-                    return info.promise;
                 }
-            })
-        );
+
+                const comm = await this._create_comm(this.comm_target_name, comm_id);
+
+                let msg_id = '';
+                const info = new PromiseDelegate<Private.ICommUpdateData>();
+                comm.on_msg((msg) => {
+                    if (
+                        (msg.parent_header as any).msg_id === msg_id &&
+                        msg.header.msg_type === 'comm_msg' &&
+                        msg.content.data.method === 'update'
+                    ) {
+                        const data = msg.content.data as any;
+                        const buffer_paths = data.buffer_paths || [];
+                        const buffers = msg.buffers || [];
+                        utils.put_buffers(data.state, buffer_paths, buffers);
+                        info.resolve({ comm, msg });
+                    }
+                });
+                msg_id = comm.send(
+                    {
+                    method: 'request_state',
+                    },
+                    this.callbacks(undefined)
+                );
+
+                return info.promise;
+        }));
 
         // We put in a synchronization barrier here so that we don't have to
         // topologically sort the restored widgets. `new_model` synchronously
@@ -681,8 +654,8 @@ abstract class ManagerBase<T> {
 
                 // If the model has already been created, set its state and then
                 // return it.
-                if (this._models[model_id]) {
-                    return this._models[model_id].then(model => {
+                if (this.has_model(model_id)) {
+                    return this.get_model(model_id)!.then(model => {
                         // deserialize state
                         return (model.constructor as typeof WidgetModel)._deserialize_state(modelState || {}, this).then(attributes => {
                             model.set_state(attributes);  // case 2
@@ -774,9 +747,7 @@ abstract class ManagerBase<T> {
     protected filterExistingModelState(serialized_state: any) {
       let models = serialized_state.state as {[key: string]: any};
       models = Object.keys(models)
-          .filter((model_id) => {
-              return !this._models[model_id];
-          })
+          .filter(model_id => !this.has_model(model_id))
           .reduce((res, model_id) => {
               res[model_id] = models[model_id];
               return res;
