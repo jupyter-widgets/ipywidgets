@@ -13,9 +13,12 @@ Highlights include:
 - Fix installation on Python 3.10. [#3368](https://github.com/jupyter-widgets/ipywidgets/pull/3368)
 - Throw an error if we cannot render a widget, enabling the rendering system to fall back to rendering a different data type if available. [#3290](https://github.com/jupyter-widgets/ipywidgets/pull/3290)
 - Create a new widget control comm channel, enabling more efficient fetching of kernel widget state. [#3201](https://github.com/jupyter-widgets/ipywidgets/pull/3021)
+- Refactor logic for fetching kernel widget state to the manager base class. This logic first tries to use the new widget control comm channel, falling back to the existing method of requesting each widget's state individually. [#3337](https://github.com/jupyter-widgets/ipywidgets/pull/3337)
 - Enable HTMLManager output widgets to render state updates. [#3372](https://github.com/jupyter-widgets/ipywidgets/pull/3372)
 - Do not reset JupyterLab CSS variables if they are already defined. [#3344](https://github.com/jupyter-widgets/ipywidgets/pull/3344)
 - Fix variable inspector example. [#3302](https://github.com/jupyter-widgets/ipywidgets/pull/3302)
+- Introduce new widget manager `has_model` method for synchronously checking if a widget model is registered. [#3377](https://github.com/jupyter-widgets/ipywidgets/pull/3377)
+- Work around bug in Chrome rendering Combobox arrows. [#3375](https://github.com/jupyter-widgets/ipywidgets/pull/3375)
 
 7.6
 ---
