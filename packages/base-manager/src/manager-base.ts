@@ -211,10 +211,10 @@ export abstract class ManagerBase implements IWidgetManager {
    *
    * #### Notes
    * If the model is not found, the returned Promise object is rejected.
-   * 
+   *
    * If you would like to synchronously test if a model exists, use .has_model().
    */
-   async get_model(model_id: string): Promise<WidgetModel> {
+  async get_model(model_id: string): Promise<WidgetModel> {
     const modelPromise = this._models[model_id];
     if (modelPromise === undefined) {
       throw new Error('widget model not found');
@@ -466,11 +466,7 @@ export abstract class ManagerBase implements IWidgetManager {
         const state = states[widget_id];
         // Put binary buffers
         if (widget_id in bufferPaths) {
-          put_buffers(
-            state,
-            bufferPaths[widget_id],
-            bufferGroups[widget_id]
-          );
+          put_buffers(state, bufferPaths[widget_id], bufferGroups[widget_id]);
         }
         try {
           if (comm) {

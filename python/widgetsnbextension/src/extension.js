@@ -151,7 +151,9 @@ function register_events(Jupyter, events, outputarea) {
     }
 
     if (manager.has_model(data.model_id)) {
-        manager.get_model(data.model_id).then(function (model) {
+      manager
+        .get_model(data.model_id)
+        .then(function (model) {
           return manager.create_view(model, { output: output });
         })
         .then(function (view) {

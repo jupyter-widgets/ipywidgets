@@ -131,7 +131,7 @@ export interface IWidgetManager {
    * #### Notes
    * This is a synchronous way to check if a model is registered.
    */
-   has_model(model_id: string): boolean;
+  has_model(model_id: string): boolean;
 
   /**
    * Register a model instance promise with the manager.
