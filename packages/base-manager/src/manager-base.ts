@@ -375,7 +375,7 @@ export abstract class ManagerBase implements IWidgetManager {
     try {
       const initComm = await this._create_comm(
         CONTROL_COMM_TARGET,
-        uuid(),
+        utils.uuid(),
         {},
         { version: CONTROL_COMM_PROTOCOL_VERSION }
       );
@@ -386,8 +386,8 @@ export abstract class ManagerBase implements IWidgetManager {
 
           if (data.method !== 'update_states') {
             console.warn(`
-              Unknown ${data.method} message on the Control channel
-            `);
+                    Unknown ${data.method} message on the Control channel
+                    `);
             return;
           }
 
@@ -417,41 +417,75 @@ export abstract class ManagerBase implements IWidgetManager {
       initComm.close();
     } catch (error) {
       console.warn(
-        'Failed to fetch widgets through the "jupyter.widget.control" comm channel, fallback to slow fetching of widgets. Reason:',
+        'Failed to fetch ipywidgets through the "jupyter.widget.control" comm channel, fallback to fetching individual model state. Reason:',
         error
       );
-      // Fallback to the old implementation for old ipywidgets backend versions (<=7.6)
-      return this._loadFromKernelSlow();
+      // Fall back to the old implementation for old ipywidgets backend versions (ipywidgets<=7.6)
+      return this._loadFromKernelModels();
     }
 
     const states: any = data.states;
-
-    // Extract buffer paths
     const bufferPaths: any = {};
-    for (const bufferPath of data.buffer_paths) {
-      if (!bufferPaths[bufferPath[0]]) {
-        bufferPaths[bufferPath[0]] = [];
+    const bufferGroups: any = {};
+
+    // Group buffers and buffer paths by widget id
+    for (let i = 0; i < data.buffer_paths.length; i++) {
+      const [widget_id, ...path] = data.buffer_paths[i];
+      const b = buffers[i];
+      if (!bufferPaths[widget_id]) {
+        bufferPaths[widget_id] = [];
+        bufferGroups[widget_id] = [];
       }
-      bufferPaths[bufferPath[0]].push(bufferPath.slice(1));
+      bufferPaths[widget_id].push(path);
+      bufferGroups[widget_id].push(b);
     }
 
-    // Start creating all widgets
-    await Promise.all(
+    // Create comms for all new widgets.
+    let widget_comms = await Promise.all(
       Object.keys(states).map(async (widget_id) => {
+        let comm = undefined;
+        let modelPromise = undefined;
         try {
-          const state = states[widget_id];
-          const comm = await this._create_comm('jupyter.widget', widget_id);
-
-          // Put binary buffers
-          if (widget_id in bufferPaths) {
-            const nBuffers = bufferPaths[widget_id].length;
-            put_buffers(
-              state,
-              bufferPaths[widget_id],
-              buffers.splice(0, nBuffers)
-            );
+          modelPromise = this.get_model(widget_id);
+          if (modelPromise === undefined) {
+            comm = await this._create_comm('jupyter.widget', widget_id);
+          } else {
+            // For JLab, the promise is rejected, so we have to await to
+            // find out if it is actually a model.
+            await modelPromise;
           }
+        } catch (e) {
+          // The JLab widget manager will throw an error with this specific error message.
+          if (e.message !== 'widget model not found') {
+            throw e;
+          }
+          comm = await this._create_comm('jupyter.widget', widget_id);
+        }
+        return { widget_id, comm }
+      })
+    )
 
+    await Promise.all(widget_comms.map(async ({ widget_id, comm }) => {
+      const state = states[widget_id];
+      // Put binary buffers
+      if (widget_id in bufferPaths) {
+        put_buffers(
+          state,
+          bufferPaths[widget_id],
+          bufferGroups[widget_id]
+        );
+      }
+      try {
+
+        if (comm === undefined) {
+          // model already exists here
+          const model = await this.get_model(widget_id);
+          model!.set_state(state.state);
+        } else {
+          // This must be the first await in the code path that
+          // reaches here so that registering the model promise in
+          // new_model can register the widget promise before it may
+          // be required by other widgets.
           await this.new_model(
             {
               model_name: state.model_name,
@@ -462,13 +496,14 @@ export abstract class ManagerBase implements IWidgetManager {
             },
             state.state
           );
-        } catch (error) {
-          // Failed to create a widget model, we continue creating other models so that
-          // other widgets can render
-          console.error(error);
         }
-      })
-    );
+
+      } catch (error) {
+        // Failed to create a widget model, we continue creating other models so that
+        // other widgets can render
+        console.error(error);
+      }
+    }));
   }
 
   /**
@@ -477,7 +512,7 @@ export abstract class ManagerBase implements IWidgetManager {
    *
    * This is a utility function that can be used in subclasses.
    */
-  protected async _loadFromKernelSlow(): Promise<void> {
+  protected async _loadFromKernelModels(): Promise<void> {
     const comm_ids = await this._get_comm_info();
 
     // For each comm id that we do not know about, create the comm, and request the state.
@@ -507,7 +542,7 @@ export abstract class ManagerBase implements IWidgetManager {
 
           let msg_id = '';
           const info = new PromiseDelegate<Private.ICommUpdateData>();
-          comm.on_msg((msg: services.KernelMessage.ICommMsgMsg) => {
+          comm.on_msg((msg) => {
             if (
               (msg.parent_header as any).msg_id === msg_id &&
               msg.header.msg_type === 'comm_msg' &&
