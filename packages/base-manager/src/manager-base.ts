@@ -385,7 +385,7 @@ export abstract class ManagerBase implements IWidgetManager {
     try {
       const initComm = await this._create_comm(
         CONTROL_COMM_TARGET,
-        utils.uuid(),
+        uuid(),
         {},
         { version: CONTROL_COMM_PROTOCOL_VERSION }
       );
@@ -465,7 +465,7 @@ export abstract class ManagerBase implements IWidgetManager {
         const state = states[widget_id];
         // Put binary buffers
         if (widget_id in bufferPaths) {
-          utils.put_buffers(
+          put_buffers(
             state,
             bufferPaths[widget_id],
             bufferGroups[widget_id]
@@ -521,7 +521,7 @@ export abstract class ManagerBase implements IWidgetManager {
 
         let msg_id = '';
         const info = new PromiseDelegate<Private.ICommUpdateData>();
-        comm.on_msg((msg) => {
+        comm.on_msg((msg: services.KernelMessage.ICommMsgMsg) => {
           if (
             (msg.parent_header as any).msg_id === msg_id &&
             msg.header.msg_type === 'comm_msg' &&
@@ -530,7 +530,7 @@ export abstract class ManagerBase implements IWidgetManager {
             const data = msg.content.data as any;
             const buffer_paths = data.buffer_paths || [];
             const buffers = msg.buffers || [];
-            utils.put_buffers(data.state, buffer_paths, buffers);
+            put_buffers(data.state, buffer_paths, buffers);
             info.resolve({ comm, msg });
           }
         });
