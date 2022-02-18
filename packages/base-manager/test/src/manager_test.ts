@@ -152,6 +152,18 @@ describe('ManagerBase', function () {
     });
   });
 
+  describe('has_model', function () {
+    it('returns true when the model is registered', async function () {
+      const manager = this.managerBase;
+      const model = await manager.new_model(this.modelOptions);
+      expect(manager.has_model(model.model_id)).to.be.true;
+    });
+
+    it('returns false when the model is not registered', function () {
+      expect(this.managerBase.has_model('not-defined')).to.be.false;
+    });
+  });
+
   describe('handle_comm_open', function () {
     it('returns a promise to a model', async function () {
       const manager = this.managerBase;
