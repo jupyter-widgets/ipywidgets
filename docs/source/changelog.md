@@ -84,7 +84,7 @@ See also the
 - Fetch the full widget state via a control Comm ([#3021](https://github.com/jupyter-widgets/ipywidgets/pull/3021))
 - Export LabWidgetManager and KernelWidgetManager ([#3166](https://github.com/jupyter-widgets/ipywidgets/pull/3166))
 - More helpful semver range message ([#3185](https://github.com/jupyter-widgets/ipywidgets/pull/3185))
-
+- Make the base widget manager `.get_model()` method always return a Promise, which is rejected if the requested model is not registered. To test if a model is registered, use the new `.has_model()` method ([#3389](https://github.com/jupyter-widgets/ipywidgets/pull/3389))
 
 ### Documentation improvements
 - Documentation overhaul ([#3104](https://github.com/jupyter-widgets/ipywidgets/pull/3104), 
