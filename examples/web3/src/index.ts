@@ -55,8 +55,8 @@ document.addEventListener('DOMContentLoaded', async function (event) {
       const widgetData: any =
         msg.content.data['application/vnd.jupyter.widget-view+json'];
       if (widgetData !== undefined && widgetData.version_major === 2) {
-        const model = await manager.get_model(widgetData.model_id);
-        if (model !== undefined) {
+        if (manager.has_model(widgetData.model_id)) {
+          const model = await manager.get_model(widgetData.model_id)!;
           manager.display_view(manager.create_view(model), widgetarea);
         }
       }

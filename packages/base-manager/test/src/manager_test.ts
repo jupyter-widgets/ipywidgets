@@ -147,8 +147,8 @@ describe('ManagerBase', function () {
       expect(await manager.get_model(model.model_id)).to.be.equal(model);
     });
 
-    it('returns undefined when model is not registered', function () {
-      expect(this.managerBase.get_model('not-defined')).to.be.undefined;
+    it('returns rejected promise when model is not registered', function () {
+      expect(this.managerBase.get_model('not-defined')).to.be.rejected;
     });
   });
 
@@ -422,7 +422,7 @@ describe('ManagerBase', function () {
       const manager = this.managerBase;
       const model = await manager.new_model(spec);
       comm.close();
-      expect(manager.get_model(model.model_id)).to.be.undefined;
+      expect(manager.get_model(model.model_id)).to.be.rejected;
     });
   });
 
@@ -445,8 +445,8 @@ describe('ManagerBase', function () {
       expect(await manager.get_model(model1.model_id)).to.be.equal(model1);
       expect(await manager.get_model(model2.model_id)).to.be.equal(model2);
       await manager.clear_state();
-      expect(manager.get_model(model1.model_id)).to.be.undefined;
-      expect(manager.get_model(model2.model_id)).to.be.undefined;
+      expect(manager.get_model(model1.model_id)).to.be.rejected;
+      expect(manager.get_model(model2.model_id)).to.be.rejected;
       expect((comm1.close as any).calledOnce).to.be.true;
       expect((comm2.close as any).calledOnce).to.be.true;
       expect(model1.comm).to.be.undefined;

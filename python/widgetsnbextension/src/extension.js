@@ -150,10 +150,8 @@ function register_events(Jupyter, events, outputarea) {
       return;
     }
 
-    var model = manager.get_model(data.model_id);
-    if (model) {
-      model
-        .then(function (model) {
+    if (manager.has_model(data.model_id)) {
+        manager.get_model(data.model_id).then(function (model) {
           return manager.create_view(model, { output: output });
         })
         .then(function (view) {

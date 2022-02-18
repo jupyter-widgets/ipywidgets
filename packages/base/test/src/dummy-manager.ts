@@ -195,15 +195,26 @@ export class DummyManager implements widgets.IWidgetManager {
    * Get a promise for a model by model id.
    *
    * #### Notes
-   * If a model is not found, undefined is returned (NOT a promise). However,
-   * the calling code should also deal with the case where a rejected promise
-   * is returned, and should treat that also as a model not found.
+   * If the model is not found, the returned Promise object is rejected.
+   * 
+   * If you would like to synchronously test if a model exists, use .has_model().
    */
-  get_model(model_id: string): Promise<widgets.WidgetModel> | undefined {
-    // TODO: Perhaps we should return a Promise.reject if the model is not
-    // found. Right now this isn't a true async function because it doesn't
-    // always return a promise.
-    return this._models[model_id];
+   async get_model(model_id: string): Promise<widgets.WidgetModel> {
+    const modelPromise = this._models[model_id];
+    if (modelPromise === undefined) {
+      throw new Error('widget model not found');
+    }
+    return modelPromise;
+  }
+
+  /**
+   * Returns true if the given model is registered, otherwise false.
+   *
+   * #### Notes
+   * This is a synchronous way to check if a model is registered.
+   */
+   has_model(model_id: string): boolean {
+    return this._models[model_id] !== undefined;
   }
 
   /**

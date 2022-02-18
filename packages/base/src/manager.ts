@@ -123,7 +123,15 @@ export interface IWidgetManager {
    * the calling code should also deal with the case where a rejected promise
    * is returned, and should treat that also as a model not found.
    */
-  get_model(model_id: string): Promise<WidgetModel> | undefined;
+  get_model(model_id: string): Promise<WidgetModel>;
+
+  /**
+   * Returns true if the given model is registered, otherwise false.
+   *
+   * #### Notes
+   * This is a synchronous way to check if a model is registered.
+   */
+   has_model(model_id: string): boolean;
 
   /**
    * Register a model instance promise with the manager.
