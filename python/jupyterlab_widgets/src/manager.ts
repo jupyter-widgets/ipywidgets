@@ -263,21 +263,6 @@ export abstract class LabWidgetManager
   }
 
   /**
-   * Get a model
-   *
-   * #### Notes
-   * Unlike super.get_model(), this implementation always returns a promise and
-   * never returns undefined. The promise will reject if the model is not found.
-   */
-  async get_model(model_id: string): Promise<WidgetModel> {
-    const modelPromise = super.get_model(model_id);
-    if (modelPromise === undefined) {
-      throw new Error('widget model not found');
-    }
-    return modelPromise;
-  }
-
-  /**
    * Register a widget model.
    */
   register_model(model_id: string, modelPromise: Promise<WidgetModel>): void {

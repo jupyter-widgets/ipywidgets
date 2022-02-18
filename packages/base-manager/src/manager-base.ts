@@ -210,15 +210,26 @@ export abstract class ManagerBase implements IWidgetManager {
    * Get a promise for a model by model id.
    *
    * #### Notes
-   * If a model is not found, undefined is returned (NOT a promise). However,
-   * the calling code should also deal with the case where a rejected promise
-   * is returned, and should treat that also as a model not found.
+   * If the model is not found, the returned Promise object is rejected.
+   *
+   * If you would like to synchronously test if a model exists, use .has_model().
    */
-  get_model(model_id: string): Promise<WidgetModel> | undefined {
-    // TODO: Perhaps we should return a Promise.reject if the model is not
-    // found. Right now this isn't a true async function because it doesn't
-    // always return a promise.
-    return this._models[model_id];
+  async get_model(model_id: string): Promise<WidgetModel> {
+    const modelPromise = this._models[model_id];
+    if (modelPromise === undefined) {
+      throw new Error('widget model not found');
+    }
+    return modelPromise;
+  }
+
+  /**
+   * Returns true if the given model is registered, otherwise false.
+   *
+   * #### Notes
+   * This is a synchronous way to check if a model is registered.
+   */
+  has_model(model_id: string): boolean {
+    return this._models[model_id] !== undefined;
   }
 
   /**
@@ -364,7 +375,7 @@ export abstract class ManagerBase implements IWidgetManager {
   /**
    * Fetch all widgets states from the kernel using the control comm channel
    * If this fails (control comm handler not implemented kernel side),
-   * it will fallback to `_loadFromKernelSlow`.
+   * it will fall back to `_loadFromKernelModels`.
    *
    * This is a utility function that can be used in subclasses.
    */
@@ -417,51 +428,67 @@ export abstract class ManagerBase implements IWidgetManager {
       initComm.close();
     } catch (error) {
       console.warn(
-        'Failed to fetch widgets through the "jupyter.widget.control" comm channel, fallback to slow fetching of widgets. Reason:',
+        'Failed to fetch ipywidgets through the "jupyter.widget.control" comm channel, fallback to fetching individual model state. Reason:',
         error
       );
-      // Fallback to the old implementation for old ipywidgets backend versions (<=7.6)
-      return this._loadFromKernelSlow();
+      // Fall back to the old implementation for old ipywidgets backend versions (ipywidgets<=7.6)
+      return this._loadFromKernelModels();
     }
 
     const states: any = data.states;
-
-    // Extract buffer paths
     const bufferPaths: any = {};
-    for (const bufferPath of data.buffer_paths) {
-      if (!bufferPaths[bufferPath[0]]) {
-        bufferPaths[bufferPath[0]] = [];
+    const bufferGroups: any = {};
+
+    // Group buffers and buffer paths by widget id
+    for (let i = 0; i < data.buffer_paths.length; i++) {
+      const [widget_id, ...path] = data.buffer_paths[i];
+      const b = buffers[i];
+      if (!bufferPaths[widget_id]) {
+        bufferPaths[widget_id] = [];
+        bufferGroups[widget_id] = [];
       }
-      bufferPaths[bufferPath[0]].push(bufferPath.slice(1));
+      bufferPaths[widget_id].push(path);
+      bufferGroups[widget_id].push(b);
     }
 
-    // Start creating all widgets
-    await Promise.all(
+    // Create comms for all new widgets.
+    const widget_comms = await Promise.all(
       Object.keys(states).map(async (widget_id) => {
+        const comm = this.has_model(widget_id)
+          ? undefined
+          : await this._create_comm('jupyter.widget', widget_id);
+        return { widget_id, comm };
+      })
+    );
+
+    await Promise.all(
+      widget_comms.map(async ({ widget_id, comm }) => {
+        const state = states[widget_id];
+        // Put binary buffers
+        if (widget_id in bufferPaths) {
+          put_buffers(state, bufferPaths[widget_id], bufferGroups[widget_id]);
+        }
         try {
-          const state = states[widget_id];
-          const comm = await this._create_comm('jupyter.widget', widget_id);
-
-          // Put binary buffers
-          if (widget_id in bufferPaths) {
-            const nBuffers = bufferPaths[widget_id].length;
-            put_buffers(
-              state,
-              bufferPaths[widget_id],
-              buffers.splice(0, nBuffers)
+          if (comm) {
+            // This must be the first await in the code path that
+            // reaches here so that registering the model promise in
+            // new_model can register the widget promise before it may
+            // be required by other widgets.
+            await this.new_model(
+              {
+                model_name: state.model_name,
+                model_module: state.model_module,
+                model_module_version: state.model_module_version,
+                model_id: widget_id,
+                comm: comm,
+              },
+              state.state
             );
+          } else {
+            // model already exists here
+            const model = await this.get_model(widget_id);
+            model!.set_state(state.state);
           }
-
-          await this.new_model(
-            {
-              model_name: state.model_name,
-              model_module: state.model_module,
-              model_module_version: state.model_module_version,
-              model_id: widget_id,
-              comm: comm,
-            },
-            state.state
-          );
         } catch (error) {
           // Failed to create a widget model, we continue creating other models so that
           // other widgets can render
@@ -472,63 +499,46 @@ export abstract class ManagerBase implements IWidgetManager {
   }
 
   /**
-   * Old implementation of fetching widgets one by one using
+   * Old implementation of fetching widget models one by one using
    * the request_state message on each comm.
    *
    * This is a utility function that can be used in subclasses.
    */
-  protected async _loadFromKernelSlow(): Promise<void> {
+  protected async _loadFromKernelModels(): Promise<void> {
     const comm_ids = await this._get_comm_info();
 
     // For each comm id that we do not know about, create the comm, and request the state.
     const widgets_info = await Promise.all(
       Object.keys(comm_ids).map(async (comm_id) => {
-        try {
-          const model = this.get_model(comm_id);
-          // TODO Have the same this.get_model implementation for
-          // the widgetsnbextension and labextension, the one that
-          // throws an error if the model is not found instead of
-          // returning undefined
-          if (model === undefined) {
-            throw new Error('widget model not found');
-          }
-          await model;
-          // If we successfully get the model, do no more.
+        if (this.has_model(comm_id)) {
           return;
-        } catch (e) {
-          // If we have the widget model not found error, then we can create the
-          // widget. Otherwise, rethrow the error. We have to check the error
-          // message text explicitly because the get_model function in this
-          // class throws a generic error with this specific text.
-          if (e.message !== 'widget model not found') {
-            throw e;
-          }
-          const comm = await this._create_comm(this.comm_target_name, comm_id);
-
-          let msg_id = '';
-          const info = new PromiseDelegate<Private.ICommUpdateData>();
-          comm.on_msg((msg: services.KernelMessage.ICommMsgMsg) => {
-            if (
-              (msg.parent_header as any).msg_id === msg_id &&
-              msg.header.msg_type === 'comm_msg' &&
-              msg.content.data.method === 'update'
-            ) {
-              const data = msg.content.data as any;
-              const buffer_paths = data.buffer_paths || [];
-              const buffers = msg.buffers || [];
-              put_buffers(data.state, buffer_paths, buffers);
-              info.resolve({ comm, msg });
-            }
-          });
-          msg_id = comm.send(
-            {
-              method: 'request_state',
-            },
-            this.callbacks(undefined)
-          );
-
-          return info.promise;
         }
+
+        const comm = await this._create_comm(this.comm_target_name, comm_id);
+
+        let msg_id = '';
+        const info = new PromiseDelegate<Private.ICommUpdateData>();
+        comm.on_msg((msg: services.KernelMessage.ICommMsgMsg) => {
+          if (
+            (msg.parent_header as any).msg_id === msg_id &&
+            msg.header.msg_type === 'comm_msg' &&
+            msg.content.data.method === 'update'
+          ) {
+            const data = msg.content.data as any;
+            const buffer_paths = data.buffer_paths || [];
+            const buffers = msg.buffers || [];
+            put_buffers(data.state, buffer_paths, buffers);
+            info.resolve({ comm, msg });
+          }
+        });
+        msg_id = comm.send(
+          {
+            method: 'request_state',
+          },
+          this.callbacks(undefined)
+        );
+
+        return info.promise;
       })
     );
 
@@ -689,8 +699,8 @@ export abstract class ManagerBase implements IWidgetManager {
 
           // If the model has already been created, set its state and then
           // return it.
-          if (this._models[model_id] !== undefined) {
-            return this._models[model_id].then((model) => {
+          if (this.has_model(model_id)) {
+            return this.get_model(model_id)!.then((model) => {
               // deserialize state
               return (model.constructor as typeof WidgetModel)
                 ._deserialize_state(modelState || {}, this)
@@ -841,9 +851,7 @@ export abstract class ManagerBase implements IWidgetManager {
   protected filterExistingModelState(serialized_state: any): any {
     let models = serialized_state.state;
     models = Object.keys(models)
-      .filter((model_id) => {
-        return !this._models[model_id];
-      })
+      .filter((model_id) => !this.has_model(model_id))
       .reduce<IManagerStateMap>((res, model_id) => {
         res[model_id] = models[model_id];
         return res;
