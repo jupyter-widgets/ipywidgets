@@ -2,9 +2,10 @@
 // Distributed under the terms of the Modified BSD License.
 
 declare let __webpack_public_path__: string;
-// eslint-disable-next-line prefer-const
+/* eslint-disable prefer-const, @typescript-eslint/no-unused-vars */
 __webpack_public_path__ =
   (window as any).__jupyter_widgets_assets_path__ || __webpack_public_path__;
+/* eslint-enable prefer-const, @typescript-eslint/no-unused-vars */
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import '@fortawesome/fontawesome-free/css/v4-shims.min.css';
