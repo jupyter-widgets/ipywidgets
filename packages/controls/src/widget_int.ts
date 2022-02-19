@@ -599,11 +599,7 @@ export class IntTextView extends DescriptionView {
    * Handles key press
    */
   handleKeypress(e: KeyboardEvent): void {
-    if (/[e,.\s]/.test(String.fromCharCode(e.keyCode))) {
-      // Handle return key submission
-      if (e.keyCode === 13) {
-        this.handleChanged(e);
-      }
+    if (/[e,. ]/.test(String.fromCharCode(e.keyCode))) {
       e.preventDefault();
     }
   }
