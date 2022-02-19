@@ -602,7 +602,7 @@ export class IntTextView extends DescriptionView {
    * Handles key press
    */
   handleKeypress(e: KeyboardEvent): void {
-    if (/[e,.\s]/.test(String.fromCharCode(e.keyCode))) {
+    if (/[e,. ]/.test(String.fromCharCode(e.keyCode))) {
       e.preventDefault();
     }
   }
