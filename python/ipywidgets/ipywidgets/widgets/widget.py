@@ -597,17 +597,23 @@ class Widget(LoggingHasTraits):
 
     def set_state(self, sync_data):
         """Called when a state is received from the front-end."""
+        # Send an echo update message immediately
         if JUPYTER_WIDGETS_ECHO:
-            with self._hold_sync_frontend(), self.hold_trait_notifications():
-                # keep this as a list, not a set, since that preserves order (useful in the test)
-                self._updated_attrs_from_frontend = [name for name in sync_data if name in self.keys]
-                # TODO: this for-loop is the same as below. Only the context managers are different
-                for name in sync_data:
-                    if name in self.keys:
-                        from_json = self.trait_metadata(name, 'from_json',
-                                                        self._trait_from_json)
-                        self.set_trait(name, from_json(sync_data[name], self))
-            return
+            echo_state = {}
+            for attr,value in sync_data.items():
+                if not self.trait_metadata(attr, 'no_echo'):
+                    echo_state[attr] = value
+            if echo_state:
+                echo_state, echo_buffer_paths, echo_buffers = _remove_buffers(echo_state)
+                msg = {
+                    'method': 'update',
+                    'state': {},
+                    'buffer_paths': [],
+                    'echo_state': echo_state,
+                    'echo_buffer_paths': echo_buffer_paths
+                }
+                self._send(msg, buffers=echo_buffers)
+
         # The order of these context managers is important. Properties must
         # be locked when the hold_trait_notification context manager is
         # released and notifications are fired.
