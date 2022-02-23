@@ -115,7 +115,7 @@ export class WidgetModel extends Backbone.Model {
     attributes: Backbone.ObjectHash,
     options: IBackboneModelOptions
   ): void {
-    this.expectedEchoMsgIds = {};
+    this.expectedEchoMsgIds = new Map<string, string>();
     this.attrsToUpdate = new Set<string>();
 
     super.initialize(attributes, options);
@@ -226,30 +226,36 @@ export class WidgetModel extends Backbone.Model {
       case 'update':
         this.state_change = this.state_change
           .then(() => {
+            // TODO: we can either combine state before replacing buffers, or we
+            // can introduce a new echo_state buffer path.
             const state = data.state;
-            const buffer_paths = data.buffer_paths || [];
-            const buffers = msg.buffers || [];
+            const buffer_paths = data.buffer_paths ?? [];
+            const buffers = msg.buffers?.slice(0,buffer_paths.length) ?? [];
             utils.put_buffers(state, buffer_paths, buffers);
-            if (msg.parent_header && data.echo) {
+
+            const echo_state = data.echo_state;
+            const echo_buffer_paths = data.echo_buffer_paths ?? [];
+            const echo_buffers = msg.buffers?.slice(buffer_paths.length) ?? [];
+            utils.put_buffers(echo_state, echo_buffer_paths, echo_buffers);
+
+            if (msg.parent_header && data.echo_state) {
               const msgId = (msg.parent_header as any).msg_id;
               // we may have echos coming from other clients, we only care about
               // dropping echos for which we expected a reply
-              const expectedEcho = data.echo.filter((attrName: string) =>
-                Object.keys(this.expectedEchoMsgIds).includes(attrName)
+              const expectedEcho = Object.keys(data.echo_state).filter(
+                (attrName) => this.expectedEchoMsgIds.has(attrName)
               );
               expectedEcho.forEach((attrName: string) => {
-                // we don't care about the old messages, only the one send with the
-                // last msgId
+                // Skip echo messages until we get the reply we are expecting.
                 const isOldMessage =
-                  this.expectedEchoMsgIds[attrName] !== msgId;
+                  this.expectedEchoMsgIds.get(attrName) !== msgId;
                 if (isOldMessage) {
-                  // get rid of old updates
-                  delete state[attrName];
+                  // Ignore an echo update that comes before our echo.
+                  delete echo_state[attrName];
                 } else {
-                  // we got our confirmation, from now on we accept everything
-                  delete this.expectedEchoMsgIds[attrName];
-                  // except, we plan to send out a new state for this soon, so we will
-                  // also ignore the update for this property
+                  // we got our echo confirmation, so stop looking for it
+                  this.expectedEchoMsgIds.delete(attrName);
+                  // Start accepting echo updates unless we plan to send out a new state soon
                   if (
                     this._msg_buffer !== null &&
                     Object.prototype.hasOwnProperty.call(
@@ -257,13 +263,14 @@ export class WidgetModel extends Backbone.Model {
                       attrName
                     )
                   ) {
-                    delete state[attrName];
+                    delete echo_state[attrName];
                   }
                 }
               });
             }
             return (this.constructor as typeof WidgetModel)._deserialize_state(
-              state,
+              // Combine the state updates, with preference for kernel updates
+              { ...echo_state, ...state },
               this.widget_manager
             );
           })
@@ -498,8 +505,8 @@ export class WidgetModel extends Backbone.Model {
     }
   }
   rememberLastUpdateFor(msgId: string) {
-    [...this.attrsToUpdate].forEach((attrName) => {
-      this.expectedEchoMsgIds[attrName] = msgId;
+    this.attrsToUpdate.forEach((attrName) => {
+      this.expectedEchoMsgIds.set(attrName, msgId);
     });
     this.attrsToUpdate = new Set<string>();
   }
@@ -679,7 +686,7 @@ export class WidgetModel extends Backbone.Model {
   // keep track of the msg id for each attr for updates we send out so
   // that we can ignore old messages that we send in order to avoid
   // 'drunken' sliders going back and forward
-  private expectedEchoMsgIds: any;
+  private expectedEchoMsgIds: Map<string, string>;
   // because we don't know the attrs in _handle_status, we keep track of what we will send
   private attrsToUpdate: Set<string>;
 }
