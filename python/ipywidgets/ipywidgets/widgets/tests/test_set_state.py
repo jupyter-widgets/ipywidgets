@@ -345,7 +345,7 @@ def test_echo_single():
 def test_no_echo():
     # in cases where values coming from the frontend are 'heavy', we might want to opt out
     class ValueWidget(Widget):
-        value = Float().tag(sync=True, no_echo=True)
+        value = Float().tag(sync=True, echo_update=False)
 
     widget = ValueWidget(value=1)
     assert widget.value == 1

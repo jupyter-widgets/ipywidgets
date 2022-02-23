@@ -316,7 +316,7 @@ The `echo_update` messages enable a frontend to optimistically update its widget
 
 Since the `echo_update` update messages are optional, and not all attribute updates may be echoed, it is important that only `echo_update` updates are ignored in the last step above, and `update` message updates are always applied.
 
-For attributes where sending back an `echo_update` is considered too expensive or unnecessary, we have implemented an opt-out mechanism in the ipywidgets package. A model trait can have the `no_echo` metadata attribute to flag that the kernel should not send an `echo_update` update for that attribute to the frontends. We suggest other implementations implement a similar opt-out mechanism.
+Implementation note: For attributes where sending back an `echo_update` is considered too expensive or unnecessary, we have implemented an opt-out mechanism in the ipywidgets package. A model trait can have the `echo_update` metadata attribute set to `False` to flag that the kernel should never send an `echo_update` update for that attribute to the frontends. Additionally, we have a system-wide flag to disable echoing for all attributes via the environment variable `JUPYTER_WIDGETS_ECHO`. For ipywdgets 7.7, we default `JUPYTER_WIDGETS_ECHO` to off (disabling all echo messages) and in ipywidgets 8.0 we default `JUPYTER_WIDGETS_ECHO` to on (enabling echo messages).
 
 #### State requests: `request_state`
 
