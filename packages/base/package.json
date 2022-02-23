@@ -26,6 +26,7 @@
     "test:coverage": "npm run build:test && webpack --config test/webpack-cov.conf.js && karma start test/karma-cov.conf.js",
     "test:unit": "npm run test:unit:firefox && npm run test:unit:chrome",
     "test:unit:chrome": "npm run test:unit:default -- --browsers=Chrome",
+    "test:unit:chrome:debug": "npm run test:unit:default -- --browsers=Chrome --single-run=false",
     "test:unit:default": "npm run build:test && karma start test/karma.conf.js --log-level debug",
     "test:unit:firefox": "npm run test:unit:default -- --browsers=Firefox",
     "test:unit:firefox:headless": "npm run test:unit:default -- --browsers=FirefoxHeadless",
