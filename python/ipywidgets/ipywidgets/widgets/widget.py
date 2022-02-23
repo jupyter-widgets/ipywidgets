@@ -510,33 +510,15 @@ class Widget(LoggingHasTraits):
             A single property's name or iterable of property names to sync with the front-end.
         """
         state = self.get_state(key=key)
-        if len(state) == 0:
-            return
+        if len(state) > 0:
+            if self._property_lock:  # we need to keep this dict up to date with the front-end values
+                for name, value in state.items():
+                    if name in self._property_lock:
+                        self._property_lock[name] = value
+            state, buffer_paths, buffers = _remove_buffers(state)
+            msg = {'method': 'update', 'state': state, 'buffer_paths': buffer_paths}
+            self._send(msg, buffers=buffers)
 
-        # For any values that are currently locked (i.e., we are not echoing,
-        # and we are currently processing an update for), we need to update our
-        # notion of what the frontend value is.
-
-        # TODO: does this handle the case where we get an update from the
-        # frontend, in the middle of this we update the value *and send it*, and
-        # then at the end we have to evaluate whether to send an echo message.
-        # We need to send an echo message at some point so the originator can unblock
-        # other echo messages, and we don't want to send the same data twice. So probably
-        # the first time we send an update for an attribute back, we need to send it as an
-        # echo, and record that we've already sent it. So perhaps we just need to keep
-        # track of what echos we need to send, and we send at the end whatever echos still
-        # need to be sent.
-
-        # Sending echos at the end may send updates out of order, i.e., we may send
-        # some updates in the middle, then send echos at the end. perhaps we should immediately
-        # send echos just as we start processing the message?
-        if self._property_lock:
-            for name, value in state.items():
-                if name in self._property_lock:
-                    self._property_lock[name] = value
-        state, buffer_paths, buffers = _remove_buffers(state)
-        msg = {'method': 'update', 'state': state, 'buffer_paths': buffer_paths}
-        self._send(msg, buffers=buffers)
 
     def get_state(self, key=None, drop_defaults=False):
         """Gets the widget state, or a piece of it.
@@ -664,7 +646,9 @@ class Widget(LoggingHasTraits):
     @contextmanager
     def _lock_property(self, **properties):
         """Lock a property-value pair.
+
         The value should be the JSON state of the property.
+
         NOTE: This, in addition to the single lock for all state changes, is
         flawed.  In the future we may want to look into buffering state changes
         back to the front-end."""
