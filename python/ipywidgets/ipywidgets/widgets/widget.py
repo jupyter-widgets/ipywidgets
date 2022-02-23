@@ -572,11 +572,9 @@ class Widget(LoggingHasTraits):
             if echo_state:
                 echo_state, echo_buffer_paths, echo_buffers = _remove_buffers(echo_state)
                 msg = {
-                    'method': 'update',
-                    'state': {},
-                    'buffer_paths': [],
-                    'echo_state': echo_state,
-                    'echo_buffer_paths': echo_buffer_paths
+                    'method': 'echo_update',
+                    'state': echo_state,
+                    'buffer_paths': echo_buffer_paths,
                 }
                 self._send(msg, buffers=echo_buffers)
 

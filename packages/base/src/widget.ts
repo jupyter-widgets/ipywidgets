@@ -224,26 +224,20 @@ export class WidgetModel extends Backbone.Model {
     const method = data.method;
     switch (method) {
       case 'update':
+      case 'echo_update':
         this.state_change = this.state_change
           .then(() => {
-            // TODO: we can either combine state before replacing buffers, or we
-            // can introduce a new echo_state buffer path.
             const state = data.state;
             const buffer_paths = data.buffer_paths ?? [];
-            const buffers = msg.buffers?.slice(0,buffer_paths.length) ?? [];
+            const buffers = msg.buffers?.slice(0, buffer_paths.length) ?? [];
             utils.put_buffers(state, buffer_paths, buffers);
 
-            const echo_state = data.echo_state;
-            const echo_buffer_paths = data.echo_buffer_paths ?? [];
-            const echo_buffers = msg.buffers?.slice(buffer_paths.length) ?? [];
-            utils.put_buffers(echo_state, echo_buffer_paths, echo_buffers);
-
-            if (msg.parent_header && data.echo_state) {
+            if (msg.parent_header && method === 'echo_update') {
               const msgId = (msg.parent_header as any).msg_id;
               // we may have echos coming from other clients, we only care about
               // dropping echos for which we expected a reply
-              const expectedEcho = Object.keys(data.echo_state).filter(
-                (attrName) => this.expectedEchoMsgIds.has(attrName)
+              const expectedEcho = Object.keys(state).filter((attrName) =>
+                this.expectedEchoMsgIds.has(attrName)
               );
               expectedEcho.forEach((attrName: string) => {
                 // Skip echo messages until we get the reply we are expecting.
@@ -251,7 +245,7 @@ export class WidgetModel extends Backbone.Model {
                   this.expectedEchoMsgIds.get(attrName) !== msgId;
                 if (isOldMessage) {
                   // Ignore an echo update that comes before our echo.
-                  delete echo_state[attrName];
+                  delete state[attrName];
                 } else {
                   // we got our echo confirmation, so stop looking for it
                   this.expectedEchoMsgIds.delete(attrName);
@@ -263,14 +257,14 @@ export class WidgetModel extends Backbone.Model {
                       attrName
                     )
                   ) {
-                    delete echo_state[attrName];
+                    delete state[attrName];
                   }
                 }
               });
             }
             return (this.constructor as typeof WidgetModel)._deserialize_state(
               // Combine the state updates, with preference for kernel updates
-              { ...echo_state, ...state },
+              state,
               this.widget_manager
             );
           })
