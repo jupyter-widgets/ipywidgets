@@ -5,7 +5,6 @@
 """Base Widget class.  Allows user to create widgets in the back-end that render
 in the Jupyter notebook front-end.
 """
-import ast
 import os
 from contextlib import contextmanager
 from collections.abc import Iterable
@@ -19,9 +18,22 @@ from json import loads as jsonloads, dumps as jsondumps
 from base64 import standard_b64encode
 
 from .._version import __protocol_version__, __control_protocol_version__, __jupyter_widgets_base_version__
+
+# Based on jupyter_core.paths.envset
+def envset(name, default):
+    """Return True if the given environment variable is turned on, otherwise False
+    If the environment variable is set, True will be returned if it is assigned to a value
+    other than 'no', 'n', 'false', 'off', '0', or '0.0' (case insensitive).
+    If the environment variable is not set, the default value is returned.
+    """
+    if name in os.environ:
+        return os.environ[name].lower() not in ['no', 'n', 'false', 'off', '0', '0.0']
+    else:
+        return bool(default)
+
 PROTOCOL_VERSION_MAJOR = __protocol_version__.split('.')[0]
 CONTROL_PROTOCOL_VERSION_MAJOR = __control_protocol_version__.split('.')[0]
-JUPYTER_WIDGETS_ECHO = bool(ast.literal_eval(os.environ.get('JUPYTER_WIDGETS_ECHO', '1')))
+JUPYTER_WIDGETS_ECHO = envset('JUPYTER_WIDGETS_ECHO', default=True)
 
 def _widget_to_json(x, obj):
     if isinstance(x, dict):
@@ -502,14 +514,24 @@ class Widget(LoggingHasTraits):
         state = self.get_state(key=key)
         if len(state) > 0:
             if JUPYTER_WIDGETS_ECHO:
-                state, buffer_paths, buffers = _remove_buffers(state)
-                msg = {'method': 'update', 'state': state, 'buffer_paths': buffer_paths}
+                echo_state = {}
                 if self._updated_attrs_from_frontend:
-                    msg['echo'] = self._updated_attrs_from_frontend
+                    for attr in self._updated_attrs_from_frontend:
+                        echo_state[attr] = state[attr]
+                        del state[attr]
                     self._updated_attrs_from_frontend = None
+                state, buffer_paths, buffers = _remove_buffers(state)
+                echo_state, echo_buffer_paths, echo_buffers = _remove_buffers(echo_state)
+                msg = {'method': 'update', 'state': state, 'buffer_paths': buffer_paths}
+                if echo_state or echo_buffer_paths:
+                    msg['echo_state'] = echo_state
+                    msg['echo_buffer_paths'] = echo_buffer_paths
+                    buffers += echo_buffers
                 self._send(msg, buffers=buffers)
                 return
 
+            # TODO: _property_lock is our understanding of what the frontend thinks values are
+            # TODO: it is based on what we've sent the frontend
             if self._property_lock:  # we need to keep this dict up to date with the front-end values
                 for name, value in state.items():
                     if name in self._property_lock:
@@ -566,6 +588,7 @@ class Widget(LoggingHasTraits):
             with self._hold_sync_frontend(), self.hold_trait_notifications():
                 # keep this as a list, not a set, since that preserves order (useful in the test)
                 self._updated_attrs_from_frontend = [name for name in sync_data if name in self.keys]
+                # TODO: this for-loop is the same as below. Only the context managers are different
                 for name in sync_data:
                     if name in self.keys:
                         from_json = self.trait_metadata(name, 'from_json',

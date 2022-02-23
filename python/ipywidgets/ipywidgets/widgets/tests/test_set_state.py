@@ -94,8 +94,8 @@ def test_set_state_transformer():
         data=dict(
             buffer_paths=[],
             method='update',
-            state=dict(d=[False, True, False]),
-            echo=['d'],
+            state=dict(),
+            echo_state=dict(d=[False, True, False]),
         )))]
 
 
@@ -124,9 +124,9 @@ def test_set_state_data_truncate():
     assert msg == ((), dict(
         data=dict(
             method='update',
-            state=dict(d={}, a=True),
-            buffer_paths=[['d', 'data']],
-            echo=['a', 'd'],
+            state=dict(),
+            echo_state=dict(d={}, a=True),
+            buffer_paths=[['d', 'data']]
         )))
 
     # Sanity:
@@ -266,7 +266,12 @@ def test_hold_sync():
     assert widget.other == 11
 
     # we expect only single state to be sent, i.e. the {'value': 42.0} state
-    msg = {'method': 'update', 'state': {'value': 2.0, 'other': 11.0}, 'buffer_paths': [], 'echo': ['value']}
+
+    # TODO: in this case, the echo_state key needs to be set, but we want the
+    # value to come from state. Since we do not want to duplicate the
+    # potentially large value, we just set the echo_state key to null. The
+    # frontend must rank the 'state' value higher than the echo_state value.
+    msg = {'method': 'update', 'state': {'value': 2.0, 'other': 11.0}, 'buffer_paths': [], 'echo_state': {'value': None}}
     call42 = mock.call(msg, buffers=[])
 
     calls = [call42]
@@ -288,7 +293,7 @@ def test_echo():
     assert widget.value == 42
 
     # we expect this to be echoed
-    msg = {'method': 'update', 'state': {'value': 42.0}, 'buffer_paths': [], 'echo': ['value']}
+    msg = {'method': 'update', 'state': {}, 'echo_state': {'value': 42.0}, 'buffer_paths': []}
     call42 = mock.call(msg, buffers=[])
 
     calls = [call42]
@@ -324,7 +329,7 @@ def test_echo_single():
 
     # we expect this to be echoed
     # note that only value is echoed, not square
-    msg = {'method': 'update', 'state': {'square': 64, 'value': 8.0}, 'buffer_paths': [], 'echo': ['value']}
+    msg = {'method': 'update', 'state': {'square': 64}, 'echo_state': {'value': 8.0}, 'buffer_paths': []}
     call = mock.call(msg, buffers=[])
 
     calls = [call]
@@ -332,7 +337,7 @@ def test_echo_single():
 
 
 def test_no_echo():
-    # in cases where values coming fromt the frontend are 'heavy', we might want to opt out
+    # in cases where values coming from the frontend are 'heavy', we might want to opt out
     class ValueWidget(Widget):
         value = Float().tag(sync=True, no_echo=True)
 
@@ -358,4 +363,5 @@ def test_no_echo():
 
     # a regular set should sync to the frontend
     widget.value = 43
-    widget._send.assert_has_calls([mock.call({'method': 'update', 'state': {'value': 43.0}, 'buffer_paths': [], 'echo': ['value']}, buffers=[])])
+    # TODO: the original test had a value in echo, which I think is incorrect - no value should be sent back to the frontend
+    widget._send.assert_has_calls([mock.call({'method': 'update', 'state': {'value': 43.0}, 'buffer_paths': []}, buffers=[])])
