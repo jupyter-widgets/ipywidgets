@@ -7,6 +7,7 @@
 in the IPython notebook front-end.
 """
 
+import os
 from contextlib import contextmanager
 try:
     from collections.abc import Iterable
@@ -26,8 +27,26 @@ from json import loads as jsonloads, dumps as jsondumps
 from base64 import standard_b64encode
 
 from .._version import __protocol_version__, __control_protocol_version__, __jupyter_widgets_base_version__
+
+
+# Based on jupyter_core.paths.envset
+def envset(name, default):
+    """Return True if the given environment variable is turned on, otherwise False
+    If the environment variable is set, True will be returned if it is assigned to a value
+    other than 'no', 'n', 'false', 'off', '0', or '0.0' (case insensitive).
+    If the environment variable is not set, the default value is returned.
+    """
+    if name in os.environ:
+        return os.environ[name].lower() not in ['no', 'n', 'false', 'off', '0', '0.0']
+    else:
+        return bool(default)
+
+
+
+
 PROTOCOL_VERSION_MAJOR = __protocol_version__.split('.')[0]
 CONTROL_PROTOCOL_VERSION_MAJOR = __control_protocol_version__.split('.')[0]
+JUPYTER_WIDGETS_ECHO = envset('JUPYTER_WIDGETS_ECHO', default=True)
 
 def _widget_to_json(x, obj):
     if isinstance(x, dict):
@@ -580,6 +599,21 @@ class Widget(LoggingHasTraits):
 
     def set_state(self, sync_data):
         """Called when a state is received from the front-end."""
+        # Send an echo update message immediately
+        if JUPYTER_WIDGETS_ECHO:
+            echo_state = {}
+            for attr,value in sync_data.items():
+                if self.trait_metadata(attr, 'echo_update', default=True):
+                    echo_state[attr] = value
+            if echo_state:
+                echo_state, echo_buffer_paths, echo_buffers = _remove_buffers(echo_state)
+                msg = {
+                    'method': 'echo_update',
+                    'state': echo_state,
+                    'buffer_paths': echo_buffer_paths,
+                }
+                self._send(msg, buffers=echo_buffers)
+
         # The order of these context managers is important. Properties must
         # be locked when the hold_trait_notification context manager is
         # released and notifications are fired.

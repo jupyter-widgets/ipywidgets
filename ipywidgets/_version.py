@@ -8,7 +8,7 @@ _specifier_ = {'alpha': 'a', 'beta': 'b', 'candidate': 'rc', 'final': ''}
 __version__ = '%s.%s.%s%s'%(version_info[0], version_info[1], version_info[2],
   '' if version_info[3]=='final' else _specifier_[version_info[3]]+str(version_info[4]))
 
-__protocol_version__ = '2.0.0'
+__protocol_version__ = '2.1.0'
 __control_protocol_version__ = '1.0.0'
 
 # These are *protocol* versions for each package, *not* npm versions. To check, look at each package's src/version.ts file for the protocol version the package implements.

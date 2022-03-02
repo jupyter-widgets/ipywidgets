@@ -45,7 +45,7 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
     style = InstanceDict(ButtonStyle).tag(sync=True, **widget_serialization)
     metadata = List(Dict(), help='List of file metadata').tag(sync=True)
     data = List(Bytes(), help='List of file content (bytes)').tag(
-        sync=True, from_json=content_from_json
+        sync=True, echo_update=False, from_json=content_from_json
     )
     error = Unicode(help='Error message').tag(sync=True)
     value = Dict(read_only=True)
