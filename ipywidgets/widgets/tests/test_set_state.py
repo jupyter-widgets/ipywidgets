@@ -265,8 +265,9 @@ def test_hold_sync():
         def _propagate_value(self, change):
             print('_propagate_value', change.new)
             if change.new == 42:
-                self.value = 2
-                self.other = 11
+                with self.hold_sync():
+                    self.value = 2
+                    self.other = 11
 
     widget = AnnoyingWidget(value=1)
     assert widget.value == 1
