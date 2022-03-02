@@ -254,7 +254,7 @@ def test_iterable_tuple():
     check_widgets(c, lis=d)
 
 def test_mapping():
-    from collections import Mapping, OrderedDict
+    from collections.abc import Mapping
     class TestMapping(Mapping):
         def __init__(self, values):
             self.values = values
