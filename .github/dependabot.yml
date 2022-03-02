@@ -1,0 +1,16 @@
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+# Please see the documentation for all configuration options:
+# https://help.github.com/github/administering-a-repository/configuration-options-for-dependency-updates
+
+version: 2
+# PR limit is set to zero to get only security updates
+# Ref https://github.com/dependabot/dependabot-core/issues/2521#issuecomment-863261500
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 0 # in case you don't want to enable version updates
+    allow:
+      - dependency-type: "production"
