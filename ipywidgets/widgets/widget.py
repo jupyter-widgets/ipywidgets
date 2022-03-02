@@ -46,7 +46,7 @@ def envset(name, default):
 
 PROTOCOL_VERSION_MAJOR = __protocol_version__.split('.')[0]
 CONTROL_PROTOCOL_VERSION_MAJOR = __control_protocol_version__.split('.')[0]
-JUPYTER_WIDGETS_ECHO = envset('JUPYTER_WIDGETS_ECHO', default=True)
+JUPYTER_WIDGETS_ECHO = envset('JUPYTER_WIDGETS_ECHO', default=False)
 
 def _widget_to_json(x, obj):
     if isinstance(x, dict):
