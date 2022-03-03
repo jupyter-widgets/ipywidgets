@@ -93,9 +93,15 @@ def test_set_state_transformer():
         buffers=[],
         data=dict(
             buffer_paths=[],
+            method='echo_update',
+            state=dict(d=[True, False, True]),
+        ))),
+        ((), dict(
+        buffers=[],
+        data=dict(
+            buffer_paths=[],
             method='update',
             state=dict(d=[False, True, False]),
-            echo=['d'],
         )))]
 
 
@@ -117,16 +123,15 @@ def test_set_state_data_truncate():
         d={'data': data},
     ))
     # Get message for checking
-    assert len(w.comm.messages) == 1   # ensure we didn't get more than expected
-    msg = w.comm.messages[0]
+    assert len(w.comm.messages) == 2   # ensure we didn't get more than expected
+    msg = w.comm.messages[1]
     # Assert that the data update (truncation) sends an update
     buffers = msg[1].pop('buffers')
     assert msg == ((), dict(
         data=dict(
             method='update',
-            state=dict(d={}, a=True),
-            buffer_paths=[['d', 'data']],
-            echo=['a', 'd'],
+            state=dict(d={}),
+            buffer_paths=[['d', 'data']]
         )))
 
     # Sanity:
@@ -181,8 +186,8 @@ def test_set_state_cint_to_float():
         ci = 5.6
     ))
     # Ensure an update message gets produced
-    assert len(w.comm.messages) == 1
-    msg = w.comm.messages[0]
+    assert len(w.comm.messages) == 2
+    msg = w.comm.messages[1]
     data = msg[1]['data']
     assert data['method'] == 'update'
     assert data['state'] == {'ci': 5}
@@ -265,11 +270,13 @@ def test_hold_sync():
     assert widget.value == 2
     assert widget.other == 11
 
-    # we expect only single state to be sent, i.e. the {'value': 42.0} state
-    msg = {'method': 'update', 'state': {'value': 2.0, 'other': 11.0}, 'buffer_paths': [], 'echo': ['value']}
+    msg = {'method': 'echo_update', 'state': {'value': 42.0}, 'buffer_paths': []}
     call42 = mock.call(msg, buffers=[])
 
-    calls = [call42]
+    msg = {'method': 'update', 'state': {'value': 2.0, 'other': 11.0}, 'buffer_paths': []}
+    call2 = mock.call(msg, buffers=[])
+
+    calls = [call42, call2]
     widget._send.assert_has_calls(calls)
 
 
@@ -288,7 +295,7 @@ def test_echo():
     assert widget.value == 42
 
     # we expect this to be echoed
-    msg = {'method': 'update', 'state': {'value': 42.0}, 'buffer_paths': [], 'echo': ['value']}
+    msg = {'method': 'echo_update', 'state': {'value': 42.0}, 'buffer_paths': []}
     call42 = mock.call(msg, buffers=[])
 
     calls = [call42]
@@ -324,17 +331,21 @@ def test_echo_single():
 
     # we expect this to be echoed
     # note that only value is echoed, not square
-    msg = {'method': 'update', 'state': {'square': 64, 'value': 8.0}, 'buffer_paths': [], 'echo': ['value']}
+    msg = {'method': 'echo_update', 'state': {'value': 8.0}, 'buffer_paths': []}
     call = mock.call(msg, buffers=[])
+    
+    msg = {'method': 'update', 'state': {'square': 64}, 'buffer_paths': []}
+    call2 = mock.call(msg, buffers=[])
 
-    calls = [call]
+
+    calls = [call, call2]
     widget._send.assert_has_calls(calls)
 
 
 def test_no_echo():
-    # in cases where values coming fromt the frontend are 'heavy', we might want to opt out
+    # in cases where values coming from the frontend are 'heavy', we might want to opt out
     class ValueWidget(Widget):
-        value = Float().tag(sync=True, no_echo=True)
+        value = Float().tag(sync=True, echo_update=False)
 
     widget = ValueWidget(value=1)
     assert widget.value == 1
@@ -358,4 +369,4 @@ def test_no_echo():
 
     # a regular set should sync to the frontend
     widget.value = 43
-    widget._send.assert_has_calls([mock.call({'method': 'update', 'state': {'value': 43.0}, 'buffer_paths': [], 'echo': ['value']}, buffers=[])])
+    widget._send.assert_has_calls([mock.call({'method': 'update', 'state': {'value': 43.0}, 'buffer_paths': []}, buffers=[])])

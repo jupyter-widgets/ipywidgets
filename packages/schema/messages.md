@@ -292,27 +292,31 @@ The `data.state` and `data.buffer_paths` values are the same as in the `comm_ope
 
 See the [Model state](jupyterwidgetmodels.latest.md) documentation for the attributes of core Jupyter widgets.
 
-#### Synchronizing multiple frontends: `update` with echo
+#### Synchronizing multiple frontends: `echo_update`
 
-Starting with protocol version `3.0.0` the kernel can send a special update message back, to allow all connected frontends to be in sync with the kernel state. This allows multiple frontends to be connected to a single kernel but also resolves a possible out of sync situation when the kernel and a frontend send out an update message at the same time, causing both to think they have the latest state.
-
-In protocol version `3.0.0` the kernel is considered the single source of truth and is expected to send back to the frontends an update message that contains an extra list of keys to indicate which keys in the update are send back to the frontends as a reaction to an update received from a frontend.
+Starting with protocol version `2.1.0`, `echo_update` messages from the kernel to the frontend are optional update messages for echoing state in messages from a frontend to the kernel back out to all the frontends.
 
 ```
 {
   'comm_id' : 'u-u-i-d',
   'data' : {
-    'method': 'update',
+    'method': 'echo_update',
     'state': { <dictionary of widget state> },
     'buffer_paths': [ <list with paths corresponding to the binary buffers> ]
-    'echo': [ <list of keys for which the kernel is sending back the state>]
   }
 }
 ```
 
-In situations where a user does many changes to a widget on the frontend (e.g. moving a slider), the frontend will receive from the kernel many update messages (with the echo key set) from the kernel that can be considered old values. A frontend can choose to ignore all updates that are not originating from the last update it send to the kernel. This can be implemented by keeping track of the `msg_id` for each attribyte for which we send out an update message to the kernel, and ignoring all updates as a result from an `echo` for which the [`msg_id` of the parent header](https://jupyter-client.readthedocs.io/en/latest/messaging.html#parent-header) is not equal to `msg_id` we kept track of.
+The Jupyter comm protocol is asymmetric in how messages flow: messages flow from a single frontend to a single kernel, but messages are broadcast from the kernel to *all* frontends. In the widget protocol, if a frontend updates the value of a widget, the frontend does not have a way to directly notify other frontends about the state update. The `echo_update` optional messages enable a kernel to broadcast out frontend updates to all frontends. This can also help resolve the race condition where the kernel and a frontend simultaneously send updates to each other since the frontend now knows the order of kernel updates.
 
-For situations where sending back an echo update for a property is considered too expensive, we have implemented an opt-out mechanism in ipywidgets. A trait can have a `no_echo` metadata attribute to flag that the kernel should not send back an update to the frontends. We suggest other implementations implement a similar opt-out mechanism.
+The `echo_update` messages enable a frontend to optimistically update its widget views to reflect its own changes that it knows the kernel will yet process. These messages are intended to be used as follows:
+1. A frontend model attribute is updated, and the frontend views are optimistically updated to reflect the attribute.
+2. The frontend queues an update message to the kernel and records the message id for the attribute.
+3. The frontend ignores updates to the attribute from the kernel contained in `echo_update` messages until it gets an `echo_update` message corresponding to its own update of the attribute (i.e., the [parent_header](https://jupyter-client.readthedocs.io/en/latest/messaging.html#parent-header) id matches the stored message id for the attribute). It also ignores `echo_update` updates if it has a pending attribute update to send to the kernel. Once the frontend receives its own `echo_update` and does not have any more pending attribute updates to send to the kernel, it starts applying attribute updates from `echo_update` messages.
+
+Since the `echo_update` update messages are optional, and not all attribute updates may be echoed, it is important that only `echo_update` updates are ignored in the last step above, and `update` message updates are always applied.
+
+Implementation note: For attributes where sending back an `echo_update` is considered too expensive or unnecessary, we have implemented an opt-out mechanism in the ipywidgets package. A model trait can have the `echo_update` metadata attribute set to `False` to flag that the kernel should never send an `echo_update` update for that attribute to the frontends. Additionally, we have a system-wide flag to disable echoing for all attributes via the environment variable `JUPYTER_WIDGETS_ECHO`. For ipywdgets 7.7, we default `JUPYTER_WIDGETS_ECHO` to off (disabling all echo messages) and in ipywidgets 8.0 we default `JUPYTER_WIDGETS_ECHO` to on (enabling echo messages).
 
 #### State requests: `request_state`
 

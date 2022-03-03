@@ -133,7 +133,7 @@ class FileUpload(DescriptionWidget, ValueWidget, CoreWidget):
     style = InstanceDict(ButtonStyle).tag(sync=True, **widget_serialization)
     error = Unicode(help='Error message').tag(sync=True)
     value = TypedTuple(Dict(), help='The file upload value').tag(
-        sync=True, no_echo=True, **_value_serialization)
+        sync=True, echo_update=False, **_value_serialization)
 
     @default('description')
     def _default_description(self):

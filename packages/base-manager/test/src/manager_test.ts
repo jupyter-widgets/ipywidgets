@@ -180,7 +180,7 @@ describe('ManagerBase', function () {
           },
         },
         metadata: {
-          version: '3.0.0',
+          version: '2.1.0',
         },
       });
       expect(model.comm).to.equal(comm);
@@ -243,7 +243,7 @@ describe('ManagerBase', function () {
         },
         buffers: [new DataView(new Uint8Array([1, 2, 3]).buffer)],
         metadata: {
-          version: '3.0.0',
+          version: '2.1.0',
         },
       });
       expect(model.comm).to.equal(comm);
