@@ -354,19 +354,19 @@ describe('WidgetModel', function () {
       expect(customEventCallback).to.be.calledOnce;
     });
 
-    it('ignores echo_update messages when there is an expected echo_update', async function() {
+    it('ignores echo_update messages when there is an expected echo_update', async function () {
       const send = sinon.spy(this.widget, 'send_sync_message');
       // Set a value, generating an update message, get the message id from the comm?
       this.widget.set('a', 'original value');
       this.widget.save_changes();
 
       // Get the msg id
-      let msgId = send.returnValues[0];
+      const msgId = send.returnValues[0];
 
       // Inject a echo_update message from another client
       await this.widget._handle_comm_msg({
         parent_header: {
-          msg_id: 'other-client'
+          msg_id: 'other-client',
         },
         content: {
           data: {
@@ -381,7 +381,7 @@ describe('WidgetModel', function () {
       // Process a kernel update message, which should set the value
       await this.widget._handle_comm_msg({
         parent_header: {
-          msg_id: 'from-kernel'
+          msg_id: 'from-kernel',
         },
         content: {
           data: {
@@ -393,11 +393,10 @@ describe('WidgetModel', function () {
 
       expect(this.widget.get('a')).to.equal('kernel update');
 
-
       // Inject an echo_update message from us, resetting our value
       await this.widget._handle_comm_msg({
         parent_header: {
-          msg_id: msgId
+          msg_id: msgId,
         },
         content: {
           data: {
@@ -409,11 +408,10 @@ describe('WidgetModel', function () {
 
       expect(this.widget.get('a')).to.equal('original value');
 
-
       // Inject another echo_update message from another client, which also updates us
       await this.widget._handle_comm_msg({
         parent_header: {
-          msg_id: 'other-client-2'
+          msg_id: 'other-client-2',
         },
         content: {
           data: {
@@ -424,7 +422,7 @@ describe('WidgetModel', function () {
       });
 
       expect(this.widget.get('a')).to.equal('other client update 2');
-    })
+    });
   });
 
   describe('_deserialize_state', function () {

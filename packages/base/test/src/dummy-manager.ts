@@ -53,7 +53,7 @@ export class MockComm implements widgets.IClassicComm {
   _on_msg: Function | null = null;
   _on_open: Function | null = null;
   _on_close: Function | null = null;
-  _msgid: number = 0;
+  _msgid = 0;
 }
 
 const typesToArray: { [key: string]: any } = {
