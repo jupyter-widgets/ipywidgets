@@ -353,6 +353,78 @@ describe('WidgetModel', function () {
       });
       expect(customEventCallback).to.be.calledOnce;
     });
+
+    it('ignores echo_update messages when there is an expected echo_update', async function() {
+      const send = sinon.spy(this.widget, 'send_sync_message');
+      // Set a value, generating an update message, get the message id from the comm?
+      this.widget.set('a', 'original value');
+      this.widget.save_changes();
+
+      // Get the msg id
+      let msgId = send.returnValues[0];
+
+      // Inject a echo_update message from another client
+      await this.widget._handle_comm_msg({
+        parent_header: {
+          msg_id: 'other-client'
+        },
+        content: {
+          data: {
+            method: 'echo_update',
+            state: { a: 'other client update 1' },
+          },
+        },
+      });
+
+      expect(this.widget.get('a')).to.equal('original value');
+
+      // Process a kernel update message, which should set the value
+      await this.widget._handle_comm_msg({
+        parent_header: {
+          msg_id: 'from-kernel'
+        },
+        content: {
+          data: {
+            method: 'update',
+            state: { a: 'kernel update' },
+          },
+        },
+      });
+
+      expect(this.widget.get('a')).to.equal('kernel update');
+
+
+      // Inject an echo_update message from us, resetting our value
+      await this.widget._handle_comm_msg({
+        parent_header: {
+          msg_id: msgId
+        },
+        content: {
+          data: {
+            method: 'echo_update',
+            state: { a: 'original value' },
+          },
+        },
+      });
+
+      expect(this.widget.get('a')).to.equal('original value');
+
+
+      // Inject another echo_update message from another client, which also updates us
+      await this.widget._handle_comm_msg({
+        parent_header: {
+          msg_id: 'other-client-2'
+        },
+        content: {
+          data: {
+            method: 'echo_update',
+            state: { a: 'other client update 2' },
+          },
+        },
+      });
+
+      expect(this.widget.get('a')).to.equal('other client update 2');
+    })
   });
 
   describe('_deserialize_state', function () {
@@ -427,78 +499,6 @@ describe('WidgetModel', function () {
       const spy = this.serializeToJSON;
       expect(spy).to.be.calledOnce;
       expect(serialized_state).to.deep.equal({ spy: 'serialized' });
-    });
-  });
-
-  describe('_handle_comm_msg', function () {
-    beforeEach(async function () {
-      await this.setup();
-    });
-
-    it('handles update messages', async function () {
-      const deserialize = this.widget.constructor._deserialize_state;
-      const setState = sinon.spy(this.widget, 'set_state');
-      const state_change = this.widget._handle_comm_msg({
-        content: {
-          data: {
-            method: 'update',
-            state: { a: 5 },
-          },
-        },
-      });
-      expect(this.widget.state_change).to.equal(state_change);
-      await state_change;
-      expect(deserialize).to.be.calledOnce;
-      expect(setState).to.be.calledOnce;
-      expect(deserialize).to.be.calledBefore(setState);
-      expect(this.widget.get('a')).to.equal(5);
-    });
-
-    it('updates handle various types of binary buffers', async function () {
-      const buffer1 = new Uint8Array([1, 2, 3]);
-      const buffer2 = new Float64Array([2.3, 6.4]);
-      const buffer3 = new Int16Array([10, 20, 30]);
-      await this.widget._handle_comm_msg({
-        content: {
-          data: {
-            method: 'update',
-            state: { a: 5, c: ['start', null, {}] },
-            buffer_paths: [['b'], ['c', 1], ['c', 2, 'd']],
-          },
-        },
-        buffers: [buffer1, buffer2.buffer, new DataView(buffer3.buffer)],
-      });
-      expect(this.widget.get('a')).to.equal(5);
-      expect(this.widget.get('b')).to.deep.equal(new DataView(buffer1.buffer));
-      expect(this.widget.get('c')).to.deep.equal([
-        'start',
-        new DataView(buffer2.buffer),
-        { d: new DataView(buffer3.buffer) },
-      ]);
-    });
-
-    it('handles custom deserialization', async function () {
-      await this.widget._handle_comm_msg({
-        content: {
-          data: {
-            method: 'update',
-            state: { halve: 10, times3: 4 },
-          },
-        },
-      });
-      expect(this.widget.get('halve')).to.equal(5);
-      expect(this.widget.get('times3')).to.equal(12);
-    });
-
-    it('handles custom messages', function () {
-      const customEventCallback = sinon.spy();
-      this.widget.on('msg:custom', customEventCallback);
-      this.widget._handle_comm_msg({
-        content: {
-          data: { method: 'custom' },
-        },
-      });
-      expect(customEventCallback).to.be.calledOnce;
     });
   });
 

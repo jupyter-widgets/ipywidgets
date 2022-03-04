@@ -45,13 +45,15 @@ export class MockComm implements widgets.IClassicComm {
     return '';
   }
   send(): string {
-    return '';
+    this._msgid += 1;
+    return this._msgid.toString();
   }
   comm_id: string;
   target_name: string;
   _on_msg: Function | null = null;
   _on_open: Function | null = null;
   _on_close: Function | null = null;
+  _msgid: number = 0;
 }
 
 const typesToArray: { [key: string]: any } = {
