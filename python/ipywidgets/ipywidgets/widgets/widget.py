@@ -37,7 +37,7 @@ JUPYTER_WIDGETS_ECHO = envset('JUPYTER_WIDGETS_ECHO', default=True)
 
 def _widget_to_json(x, obj):
     if isinstance(x, dict):
-        return {k: _widget_to_json(v, obj) for k, v in x.items()}
+        return {str(k): _widget_to_json(v, obj) for k, v in x.items()}
     elif isinstance(x, (list, tuple)):
         return [_widget_to_json(v, obj) for v in x]
     elif isinstance(x, Widget):
