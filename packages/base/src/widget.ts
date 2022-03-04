@@ -538,6 +538,9 @@ export class WidgetModel extends Backbone.Model {
 
   /**
    * Send a sync message to the kernel.
+   *
+   * If a message is sent successfully, this returns the message ID of that
+   * message. Otherwise it returns an empty string
    */
   send_sync_message(state: JSONObject, callbacks: any = {}): string {
     if (!this.comm) {
