@@ -115,8 +115,8 @@ export class WidgetModel extends Backbone.Model {
     attributes: Backbone.ObjectHash,
     options: IBackboneModelOptions
   ): void {
-    this.expectedEchoMsgIds = new Map<string, string>();
-    this.attrsToUpdate = new Set<string>();
+    this._expectedEchoMsgIds = new Map<string, string>();
+    this._attrsToUpdate = new Set<string>();
 
     super.initialize(attributes, options);
 
@@ -237,18 +237,18 @@ export class WidgetModel extends Backbone.Model {
               // we may have echos coming from other clients, we only care about
               // dropping echos for which we expected a reply
               const expectedEcho = Object.keys(state).filter((attrName) =>
-                this.expectedEchoMsgIds.has(attrName)
+                this._expectedEchoMsgIds.has(attrName)
               );
               expectedEcho.forEach((attrName: string) => {
                 // Skip echo messages until we get the reply we are expecting.
                 const isOldMessage =
-                  this.expectedEchoMsgIds.get(attrName) !== msgId;
+                  this._expectedEchoMsgIds.get(attrName) !== msgId;
                 if (isOldMessage) {
                   // Ignore an echo update that comes before our echo.
                   delete state[attrName];
                 } else {
                   // we got our echo confirmation, so stop looking for it
-                  this.expectedEchoMsgIds.delete(attrName);
+                  this._expectedEchoMsgIds.delete(attrName);
                   // Start accepting echo updates unless we plan to send out a new state soon
                   if (
                     this._msg_buffer !== null &&
@@ -456,7 +456,7 @@ export class WidgetModel extends Backbone.Model {
     }
 
     Object.keys(attrs).forEach((attrName: string) => {
-      this.attrsToUpdate.add(attrName);
+      this._attrsToUpdate.add(attrName);
     });
 
     const msgState = this.serialize(attrs);
@@ -499,10 +499,10 @@ export class WidgetModel extends Backbone.Model {
     }
   }
   rememberLastUpdateFor(msgId: string) {
-    this.attrsToUpdate.forEach((attrName) => {
-      this.expectedEchoMsgIds.set(attrName, msgId);
+    this._attrsToUpdate.forEach((attrName) => {
+      this._expectedEchoMsgIds.set(attrName, msgId);
     });
-    this.attrsToUpdate = new Set<string>();
+    this._attrsToUpdate = new Set<string>();
   }
 
   /**
@@ -683,9 +683,9 @@ export class WidgetModel extends Backbone.Model {
   // keep track of the msg id for each attr for updates we send out so
   // that we can ignore old messages that we send in order to avoid
   // 'drunken' sliders going back and forward
-  private expectedEchoMsgIds: Map<string, string>;
+  private _expectedEchoMsgIds: Map<string, string>;
   // because we don't know the attrs in _handle_status, we keep track of what we will send
-  private attrsToUpdate: Set<string>;
+  private _attrsToUpdate: Set<string>;
 }
 
 export class DOMWidgetModel extends WidgetModel {
