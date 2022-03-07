@@ -8,7 +8,16 @@ from traitlets import Bool, Tuple, List, Instance, CFloat, CInt, Float, Int, Tra
 
 from .utils import setup, teardown
 
-from ..widget import Widget
+import ipywidgets
+from ipywidgets import Widget
+
+
+@pytest.fixture(params=[True, False])
+def echo(request):
+    oldvalue = ipywidgets.widgets.widget.JUPYTER_WIDGETS_ECHO
+    ipywidgets.widgets.widget.JUPYTER_WIDGETS_ECHO = request.param
+    yield request.param
+    ipywidgets.widgets.widget.JUPYTER_WIDGETS_ECHO = oldvalue
 
 #
 # First some widgets to test on:
@@ -72,7 +81,7 @@ class TruncateDataWidget(SimpleWidget):
 # Actual tests:
 #
 
-def test_set_state_simple():
+def test_set_state_simple(echo):
     w = SimpleWidget()
     w.set_state(dict(
         a=True,
@@ -80,42 +89,47 @@ def test_set_state_simple():
         c=[False, True, False],
     ))
 
-    assert len(w.comm.messages) == 1
+    assert len(w.comm.messages) == (1 if echo else 0)
 
 
-def test_set_state_transformer():
+def test_set_state_transformer(echo):
     w = TransformerWidget()
     w.set_state(dict(
         d=[True, False, True]
     ))
     # Since the deserialize step changes the state, this should send an update
-    assert w.comm.messages == [((), dict(
-        buffers=[],
-        data=dict(
-            buffer_paths=[],
-            method='echo_update',
-            state=dict(d=[True, False, True]),
-        ))),
+    expected = []
+    if echo:
+        expected.append(
+            ((), dict(
+            buffers=[],
+            data=dict(
+                buffer_paths=[],
+                method='echo_update',
+                state=dict(d=[True, False, True]),
+            ))))
+    expected.append(
         ((), dict(
         buffers=[],
         data=dict(
             buffer_paths=[],
             method='update',
             state=dict(d=[False, True, False]),
-        )))]
+        ))))
+    assert w.comm.messages == expected
 
 
-def test_set_state_data():
+def test_set_state_data(echo):
     w = DataWidget()
     data = memoryview(b'x'*30)
     w.set_state(dict(
         a=True,
         d={'data': data},
     ))
-    assert len(w.comm.messages) == 1
+    assert len(w.comm.messages) == (1 if echo else 0)
 
 
-def test_set_state_data_truncate():
+def test_set_state_data_truncate(echo):
     w = TruncateDataWidget()
     data = memoryview(b'x'*30)
     w.set_state(dict(
@@ -123,8 +137,8 @@ def test_set_state_data_truncate():
         d={'data': data},
     ))
     # Get message for checking
-    assert len(w.comm.messages) == 2   # ensure we didn't get more than expected
-    msg = w.comm.messages[1]
+    assert len(w.comm.messages) == 2 if echo else 1   # ensure we didn't get more than expected
+    msg = w.comm.messages[-1]
     # Assert that the data update (truncation) sends an update
     buffers = msg[1].pop('buffers')
     assert msg == ((), dict(
@@ -139,7 +153,7 @@ def test_set_state_data_truncate():
     assert buffers[0] == data[:20].tobytes()
 
 
-def test_set_state_numbers_int():
+def test_set_state_numbers_int(echo):
     # JS does not differentiate between float/int.
     # Instead, it formats exact floats as ints in JSON (1.0 -> '1').
 
@@ -152,10 +166,10 @@ def test_set_state_numbers_int():
         ci = 4,
     ))
     # Ensure one update message gets produced
-    assert len(w.comm.messages) == 1
+    assert len(w.comm.messages) == (1 if echo else 0)
 
 
-def test_set_state_numbers_float():
+def test_set_state_numbers_float(echo):
     w = NumberWidget()
     # Set floats to int-like floats
     w.set_state(dict(
@@ -164,10 +178,10 @@ def test_set_state_numbers_float():
         ci = 4.0
     ))
     # Ensure one update message gets produced
-    assert len(w.comm.messages) == 1
+    assert len(w.comm.messages) == (1 if echo else 0)
 
 
-def test_set_state_float_to_float():
+def test_set_state_float_to_float(echo):
     w = NumberWidget()
     # Set floats to float
     w.set_state(dict(
@@ -175,10 +189,10 @@ def test_set_state_float_to_float():
         cf = 2.6,
     ))
     # Ensure one message gets produced
-    assert len(w.comm.messages) == 1
+    assert len(w.comm.messages) == (1 if echo else 0)
 
 
-def test_set_state_cint_to_float():
+def test_set_state_cint_to_float(echo):
     w = NumberWidget()
 
     # Set CInt to float
@@ -186,8 +200,8 @@ def test_set_state_cint_to_float():
         ci = 5.6
     ))
     # Ensure an update message gets produced
-    assert len(w.comm.messages) == 2
-    msg = w.comm.messages[1]
+    assert len(w.comm.messages) == (2 if echo else 1)
+    msg = w.comm.messages[-1]
     data = msg[1]['data']
     assert data['method'] == 'update'
     assert data['state'] == {'ci': 5}
@@ -209,7 +223,7 @@ def _x_test_set_state_int_to_int_like():
     assert len(w.comm.messages) == 0
 
 
-def test_set_state_int_to_float():
+def test_set_state_int_to_float(echo):
     w = NumberWidget()
 
     # Set Int to float
@@ -218,7 +232,7 @@ def test_set_state_int_to_float():
             i = 3.5
         ))
 
-def test_property_lock():
+def test_property_lock(echo):
     # when this widget's value is set to 42, it sets itself to 2, and then back to 42 again (and then stops)
     class AnnoyingWidget(Widget):
         value = Float().tag(sync=True)
@@ -248,7 +262,7 @@ def test_property_lock():
     calls = []
     widget._send.assert_has_calls(calls)
 
-def test_hold_sync():
+def test_hold_sync(echo):
     # when this widget's value is set to 42, it sets the value to 2, and also sets a different trait value
     class AnnoyingWidget(Widget):
         value = Float().tag(sync=True)
@@ -276,7 +290,7 @@ def test_hold_sync():
     msg = {'method': 'update', 'state': {'value': 2.0, 'other': 11.0}, 'buffer_paths': []}
     call2 = mock.call(msg, buffers=[])
 
-    calls = [call42, call2]
+    calls = [call42, call2] if echo else [call2]
     widget._send.assert_has_calls(calls)
 
 
@@ -333,7 +347,7 @@ def test_echo_single():
     # note that only value is echoed, not square
     msg = {'method': 'echo_update', 'state': {'value': 8.0}, 'buffer_paths': []}
     call = mock.call(msg, buffers=[])
-    
+
     msg = {'method': 'update', 'state': {'square': 64}, 'buffer_paths': []}
     call2 = mock.call(msg, buffers=[])
 
@@ -342,7 +356,7 @@ def test_echo_single():
     widget._send.assert_has_calls(calls)
 
 
-def test_no_echo():
+def test_no_echo(echo):
     # in cases where values coming from the frontend are 'heavy', we might want to opt out
     class ValueWidget(Widget):
         value = Float().tag(sync=True, echo_update=False)
