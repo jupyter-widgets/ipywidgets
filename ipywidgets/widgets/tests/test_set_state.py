@@ -299,8 +299,8 @@ def test_hold_sync(echo):
     widget._send.assert_has_calls(calls)
 
 
-def test_echo():
-    # we always echo values back to the frontend
+def test_echo(echo):
+    # we always echo values back to the frontend if configured
     class ValueWidget(Widget):
         value = Float().tag(sync=True)
 
@@ -316,12 +316,12 @@ def test_echo():
     msg = {'method': 'echo_update', 'state': {'value': 42.0}, 'buffer_paths': []}
     call42 = mock.call(msg, buffers=[])
 
-    calls = [call42]
+    calls = [call42] if echo else []
     widget._send.assert_has_calls(calls)
 
 
 
-def test_echo_single():
+def test_echo_single(echo):
     # we always echo multiple changes back in 1 update
     class ValueWidget(Widget):
         value = Float().tag(sync=True)
@@ -357,7 +357,7 @@ def test_echo_single():
     call2 = mock.call(msg, buffers=[])
 
 
-    calls = [call, call2]
+    calls = [call, call2] if echo else [call2]
     widget._send.assert_has_calls(calls)
 
 
