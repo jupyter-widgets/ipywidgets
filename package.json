@@ -12,7 +12,7 @@
     "clean": "lerna run clean",
     "integrity": "node scripts/package-integrity.js",
     "lint": "lerna run lint",
-    "publish": "yarn run clean && yarn run build && lerna publish -m \"Publish npm packages\"",
+    "publish": "yarn run clean && yarn run build && lerna publish -m \"Publish npm packages\" --pre-dist-tag next",
     "update-dependency": "update-dependency --lerna",
     "updated": "lerna updated"
   },
