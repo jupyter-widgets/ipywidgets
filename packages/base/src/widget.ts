@@ -112,6 +112,9 @@ class WidgetModel extends Backbone.Model {
      * comm : Comm instance (optional)
      */
     initialize(attributes: any, options: {model_id: string, comm?: any, widget_manager: any}) {
+        this._expectedEchoMsgIds = {};
+        this._attrsToUpdate = {};
+
         super.initialize(attributes, options);
 
         // Attributes should be initialized here, since user initialization may depend on it
@@ -211,12 +214,13 @@ class WidgetModel extends Backbone.Model {
         // tslint:disable-next-line:switch-default
         switch (method) {
             case 'update':
+            case 'echo_update':
                 this.state_change = this.state_change
                     .then(() => {
                         let state = data.state;
-                        let buffer_paths = data.buffer_paths || [];
+                        let buffer_paths = data.buffer_paths ?? [];
                         // Make sure the buffers are DataViews
-                        let buffers = (msg.buffers || []).map(b => {
+                        let buffers = (msg.buffers?.slice(0, buffer_paths.length) ?? []).map(b => {
                             if (b instanceof DataView) {
                                 return b;
                             } else {
@@ -225,6 +229,38 @@ class WidgetModel extends Backbone.Model {
                         });
 
                         utils.put_buffers(state, buffer_paths, buffers);
+
+                        if (msg.parent_header && method === 'echo_update') {
+                            const msgId = (msg.parent_header as any).msg_id;
+                            // we may have echos coming from other clients, we only care about
+                            // dropping echos for which we expected a reply
+                            const expectedEcho = Object.keys(state).filter((attrName) =>
+                              this._expectedEchoMsgIds.hasOwnProperty(attrName)
+                            );
+                            expectedEcho.forEach((attrName: string) => {
+                              // Skip echo messages until we get the reply we are expecting.
+                              const isOldMessage =
+                                this._expectedEchoMsgIds[attrName] !== msgId;
+                              if (isOldMessage) {
+                                // Ignore an echo update that comes before our echo.
+                                delete state[attrName];
+                              } else {
+                                // we got our echo confirmation, so stop looking for it
+                                delete this._expectedEchoMsgIds[attrName];
+                                // Start accepting echo updates unless we plan to send out a new state soon
+                                if (
+                                  this._msg_buffer !== null &&
+                                  Object.prototype.hasOwnProperty.call(
+                                    this._msg_buffer,
+                                    attrName
+                                  )
+                                ) {
+                                  delete state[attrName];
+                                }
+                              }
+                            });
+                        }
+
                         return (this.constructor as typeof WidgetModel)._deserialize_state(state, this.widget_manager);
                     }).then((state) => {
                         this.set_state(state);
@@ -288,7 +324,11 @@ class WidgetModel extends Backbone.Model {
                 // Send buffer if one is waiting and we are below the throttle.
                 if (this._msg_buffer !== null
                     && this._pending_msgs < 1 ) {
-                    this.send_sync_message(this._msg_buffer, this._msg_buffer_callbacks);
+                    const msgId = this.send_sync_message(
+                        this._msg_buffer,
+                        this._msg_buffer_callbacks
+                      );
+                    this.rememberLastUpdateFor(msgId);
                     this._msg_buffer = null;
                     this._msg_buffer_callbacks = null;
                 }
@@ -383,6 +423,10 @@ class WidgetModel extends Backbone.Model {
             }
         }
 
+        Object.keys(attrs).forEach((attrName: string) => {
+            this._attrsToUpdate[attrName] = true;
+        });
+
         let msgState = this.serialize(attrs);
 
         if (Object.keys(msgState).length > 0) {
@@ -413,7 +457,8 @@ class WidgetModel extends Backbone.Model {
             } else {
                 // We haven't exceeded the throttle, send the message like
                 // normal.
-                this.send_sync_message(attrs, callbacks);
+                const msgId = this.send_sync_message(attrs, callbacks);
+                this.rememberLastUpdateFor(msgId);
                 // Since the comm is a one-way communication, assume the message
                 // arrived and was processed successfully.
                 // Don't call options.success since we don't have a model back from
@@ -421,6 +466,13 @@ class WidgetModel extends Backbone.Model {
                 // 'sync' event.
             }
         }
+    }
+
+    rememberLastUpdateFor(msgId: string) {
+      Object.keys(this._attrsToUpdate).forEach((attrName) => {
+        this._expectedEchoMsgIds[attrName] = msgId;
+      });
+      this._attrsToUpdate = {};
     }
 
     /**
@@ -456,7 +508,11 @@ class WidgetModel extends Backbone.Model {
     /**
      * Send a sync message to the kernel.
      */
-    send_sync_message(state: {}, callbacks: any = {}) {
+    send_sync_message(state: {}, callbacks: any = {}): string {
+        if (!this.comm) {
+            return '';
+        }
+
         try {
             callbacks.iopub = callbacks.iopub || {};
             let statuscb = callbacks.iopub.status;
@@ -469,15 +525,17 @@ class WidgetModel extends Backbone.Model {
 
             // split out the binary buffers
             let split = utils.remove_buffers(state);
-            this.comm.send({
+            const msgId = this.comm.send({
                 method: 'update',
                 state: split.state,
                 buffer_paths: split.buffer_paths
             }, callbacks, {}, split.buffers);
             this._pending_msgs++;
+            return msgId;
         } catch (e) {
             console.error('Could not send widget sync message', e);
         }
+        return '';
     }
 
     /**
@@ -565,6 +623,12 @@ class WidgetModel extends Backbone.Model {
     private _msg_buffer: any;
     private _msg_buffer_callbacks: any;
     private _pending_msgs: number;
+    // keep track of the msg id for each attr for updates we send out so
+    // that we can ignore old messages that we send in order to avoid
+    // 'drunken' sliders going back and forward
+    private _expectedEchoMsgIds: {[key: string]: string};
+    // because we don't know the attrs in _handle_status, we keep track of what we will send
+    private _attrsToUpdate: {[key: string]: boolean };
 }
 
 export

@@ -254,7 +254,12 @@ def test_iterable_tuple():
     check_widgets(c, lis=d)
 
 def test_mapping():
-    from collections import Mapping, OrderedDict
+    try:
+        # Python 3
+        from collections.abc import Mapping
+    except ImportError:
+        # Python 2
+        from collections import Mapping
     class TestMapping(Mapping):
         def __init__(self, values):
             self.values = values
