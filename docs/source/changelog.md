@@ -19,6 +19,7 @@ Highlights include:
 - Fix variable inspector example. [#3302](https://github.com/jupyter-widgets/ipywidgets/pull/3302)
 - Introduce new widget manager `has_model` method for synchronously checking if a widget model is registered. [#3377](https://github.com/jupyter-widgets/ipywidgets/pull/3377)
 - Work around bug in Chrome rendering Combobox arrows. [#3375](https://github.com/jupyter-widgets/ipywidgets/pull/3375)
+- Optionally echo update messages from frontends to other frontends. This enables widget views in different frontends to maintain consistent state simultaneously, and also makes sure that simultaneous updates from the kernel and frontend resolve to a consistent state. This is off by default in ipywidgets 7.7, and it is anticipated this will be on by default in ipywidgets 8.0. To enable echo update messages across ipwyidgets, set the environment variable `JUPYTER_WIDGETS_ECHO` to 1. To opt a specific attribute out of echo updates, tag the attribute with `echo_update=False` metadata (we do this in core for the FileUpload widget's `data` attribute). [#3400](https://github.com/jupyter-widgets/ipywidgets/pull/3400)
 
 7.6
 ---
