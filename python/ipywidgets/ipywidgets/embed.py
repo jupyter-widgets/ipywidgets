@@ -249,7 +249,7 @@ def embed_snippet(views,
                   requirejs=True,
                   cors=True,
                   minimize_json=False,
-                  load_template="empty-template"
+                  user_load_template="empty-template"
                  ):
     """Return a snippet that can be embedded in an HTML file.
 
@@ -281,8 +281,8 @@ def embed_snippet(views,
 
     load = load_requirejs_template if requirejs else load_template
 
-    if load_template != "empty-template":
-        load = load_template
+    if user_load_template != "empty-template":
+        load = user_load_template
 
     use_cors = ' crossorigin="anonymous"' if cors else ''
 
