@@ -4,6 +4,139 @@ Migrating custom widget libraries
 These are migration guides aimed specifically at developers of third-party
 widgets.
 
+Migrating from 7.x to 8.0
+-------------------------
+
+For example migrations, see these PRs:
+
+- [ts-cookiecutter](https://github.com/jupyter-widgets/widget-ts-cookiecutter/pull/115)
+- [ipydatagrid](https://github.com/bloomberg/ipydatagrid/pull/282)
+- [bqplot](https://github.com/bqplot/bqplot/pull/1404)
+- [ipyleaflet](https://github.com/jupyter-widgets/ipyleaflet/pull/968)
+- [bqscales](https://github.com/bqplot/bqscales/pull/49)
+- [sidecar](https://github.com/jupyter-widgets/jupyterlab-sidecar/pull/86)
+
+To avoid tying your development cycle to ipywidgets, we recommend starting
+the migration on a branch and keeping that branch open until ipywidgets 8.0
+is released.
+
+We also recommend testing the migration in a completely new notebook, rather
+than one that contains widgets that you instantiated with ipywidgets 7.x.
+
+### Updating setup.py
+
+Start by updating the dependency in your `setup.py` or `setup.cfg` to support 8.x.
+
+*e.g.*
+
+```diff
+ install_requires=[
+-    'ipywidgets>=7,<8',
++    'ipywidgets>=7,<9',
+ ],
+```
+
+### Updating package.json
+
+Next, you should update the JavaScript dependencies. You will need to update
+your `@jupyter-widgets/base` dependency and the `@jupyter-widgets/controls` **if**
+you depend on it.
+
+The diff will look like the following in case you still want to support ipywidgets<8:
+
+```diff
+- "@jupyter-widgets/base": "^2 || ^3 || ^4",
++ "@jupyter-widgets/base": "^2 || ^3 || ^4 || ^5 || ^6",
+```
+
+You can also apply the following diff if you only want to support ipywidgets==8 from now on:
+
+```diff
+- "@jupyter-widgets/base": "^2 || ^3 || ^4",
++ "@jupyter-widgets/base": "^5 || ^6",
+```
+
+Note that "@jupyter-widgets/base" version 5 is for ipywidgets 8 support in the front-end, "@jupyter-widgets/base" version 6 is for ipywidgets 8 **and JupyterLab 4** support in the front-end.
+
+The ``ManagerBase`` class has been moved from the ``@jupyter-widgets/base`` package to the new ``@jupyter-widgets/base-manager`` package. So if you used to depend on that ``ManagerBase`` class, you need to add the new dependency in your ``package.json`` as following, and update your imports accordingly.
+
+```diff
++ "@jupyter-widgets/base-manager": "^1",
+```
+
+### Updating the client-side code
+
+#### Phosphor -> Lumino
+
+The Phosphor library has been archived. It has been forked and renamed "Lumino", and the maintenance is now done under the JupyterLab governance: https://github.com/jupyterlab/lumino
+
+If you used to import classes like ``JupyterPhosphorPanelWidget`` and ``JupyterPhosphorWidget`` from the ``@jupyter-widgets/base`` library, you will need to update them:
+
+```diff
+- import { JupyterPhosphorPanelWidget, JupyterPhosphorWidget } from '@jupyter-widgets/base';
++ import { JupyterLuminoPanelWidget, JupyterLuminoWidget } from '@jupyter-widgets/base';
+```
+
+The ``DOMWidgetView.pWidget`` property has been renamed ``DOMWidgetView.luminoWidget`` (though an alias for ``pWidget`` is available for conveniance):
+
+```diff
+- this.pWidget
++ this.luminoWidget
+```
+
+The ``DOMWidgetView.processPhosphorMessage`` method has been renamed ``DOMWidgetView.processLuminoMessage``. If you want to support both ipywidgets 7.x and 8.x, you should implement both methods:
+
+```diff
+- processPhosphorMessage(msg: Message): void {
+-     super.processPhosphorMessage(msg);
+-     switch (msg.type) {
+-     case 'resize':
+-         this.resize();
+-         break;
+-     }
+- }
++ _processLuminoMessage(msg: Message, _super: (msg: Message) => void): void {
++     _super.call(this, msg);
++     switch (msg.type) {
++     case 'resize':
++         this.resize();
++         break;
++     }
++ }
++
++ processPhosphorMessage(msg: Message): void {
++     this._processLuminoMessage(msg, (DOMWidgetView as any).processPhosphorMessage);
++ }
++
++ processLuminoMessage(msg: Message): void {
++     this._processLuminoMessage(msg, (DOMWidgetView as any).processLuminoMessage);
++ }
+```
+
+I you're dropping ipywidgets 7.x support, you can simply rename the `processPhosphorMessage` method into `processLuminoMessage`.
+
+#### ManagerBase import
+
+As mentionned before, if you depend on the ``ManagerBase`` class, you will need to update the import:
+
+```diff
+- import { ManagerBase } from '@jupyter-widgets/base';
++ import { ManagerBase } from '@jupyter-widgets/base-manager';
+```
+
+#### Backbone extend
+
+If you were extending the base widget model with `var CustomWidgetModel = Widget.extend({ ... });` you will need to update the class definition using the ES6 notation:
+
+```diff
+- var CustomWidgetModel = Widget.extend({
+-     ...
+- });
++ class CustomWidgetModel extends Widget {
++     ...
++ }
+```
+
 Migrating from 6.0 to 7.0
 -------------------------
 
@@ -14,7 +147,7 @@ For example migrations, see these PRs:
 
 To avoid tying your development cycle to ipywidgets, we recommend starting
 the migration on a branch and keeping that branch open until ipywidgets 7.0
-is released. 
+is released.
 
 We also recommend testing the migration in a completely new notebook, rather
 than one that contains widgets that you instantiated with ipywidgets 6.0.
@@ -30,9 +163,9 @@ cycle through the tags until you see the latest 7.0.0 tag.
 
 Next, we should update the JavaScript dependencies. The most important change
 for widget developers is that the JavaScript package for jupyter-widgets has
-been split between `@jupyter-widgets/base` and `@jupyter-widgets/controls`: 
+been split between `@jupyter-widgets/base` and `@jupyter-widgets/controls`:
  - `@jupyter-widgets/base` contains the base widget classes and the layout
-classes 
+classes
  - `@jupyter-widgets/controls` contains the widget classes for the
 user-facing widgets.
 
@@ -105,7 +238,7 @@ that matches a release on NPM. The most common pattern is to request a
 version compatible with the version currently in your `package.json` by using,
 `~{{ version number }}` for `_model_module_version` and `_view_module_version`. See the [cookiecutter
 template](https://github.com/jupyter-widgets/widget-cookiecutter/blob/master/%7B%7Bcookiecutter.github_project_name%7D%7D/js/lib/example.js#L24)
-for details. 
+for details.
 
 Since you probably want to avoid repeating the module version in every
 widget, a common pattern is to import the version from `package.json` and
