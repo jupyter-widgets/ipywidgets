@@ -149,7 +149,7 @@ export async function myDeserializer(
 
 #### Backbone extend
 
-If you were extending the base widget model with `var CustomWidgetModel = Widget.extend({ ... });` you will need to update the class definition using the ES6 notation:
+The version of backbone that ipywidgets depend on has changed from 1.2.3 to 1.4.0. If you were extending the base widget model with `var CustomWidgetModel = Widget.extend({ ... });` you will need to update the class definition using the ES6 notation:
 
 ```diff
 - var CustomWidgetModel = Widget.extend({
@@ -159,6 +159,8 @@ If you were extending the base widget model with `var CustomWidgetModel = Widget
 +     ...
 + }
 ```
+
+Note: If you were relying on setting certain instance attributes via the `extend` method, you might now need override the `preinitialize` method in order for their values to be set in time.
 
 
 Migrating from 6.0 to 7.0
