@@ -53,12 +53,12 @@ You can also apply the following diff if you only want to support ipywidgets==8 
 
 ```diff
 - "@jupyter-widgets/base": "^2 || ^3 || ^4",
-+ "@jupyter-widgets/base": "^5 || ^6",
++ "@jupyter-widgets/base": "^6",
 ```
 
-Note that "@jupyter-widgets/base" version 5 is for ipywidgets 8 support in the front-end, "@jupyter-widgets/base" version 6 is for ipywidgets 8 **and JupyterLab 4** support in the front-end.
+Note that "@jupyter-widgets/base" version 5 is reserved for **ipywidgets 7 support on JupyterLab 4**, "@jupyter-widgets/base" version 6 is the version released with ipywidgets 8.
 
-The ``ManagerBase`` class has been moved from the ``@jupyter-widgets/base`` package to the new ``@jupyter-widgets/base-manager`` package. So if you used to depend on that ``ManagerBase`` class, you need to add the new dependency in your ``package.json`` as following, and update your imports accordingly.
+The ``ManagerBase`` class has been split into an interface type `IWidgetManager` which remains in the ``@jupyter-widgets/base`` package, and its implementation which has moved to the new ``@jupyter-widgets/base-manager`` package. So if you subclass the ``ManagerBase`` class, you will need to add a new dependency in your ``package.json`` as following, and update your imports accordingly.
 
 ```diff
 + "@jupyter-widgets/base-manager": "^1",
@@ -115,13 +115,36 @@ The ``DOMWidgetView.processPhosphorMessage`` method has been renamed ``DOMWidget
 
 I you're dropping ipywidgets 7.x support, you can simply rename the `processPhosphorMessage` method into `processLuminoMessage`.
 
-#### ManagerBase import
+#### Widget manager import
 
-As mentionned before, if you depend on the ``ManagerBase`` class, you will need to update the import:
+As mentioned before, if you depend on the ``ManagerBase`` class, you will **either** need to update the import:
 
 ```diff
 - import { ManagerBase } from '@jupyter-widgets/base';
 + import { ManagerBase } from '@jupyter-widgets/base-manager';
+```
+
+**or**, siwtch to using the new `IWidgetManager` interface in the `base` package:
+
+```diff
+- import { ManagerBase } from '@jupyter-widgets/base';
++ import { IWidgetManager } from '@jupyter-widgets/base';
+```
+
+Which one to pick depends on how you use it. If you are using it as the base class for your own implementation of a widget manager, and want to subclass it in order to reuse the methods/logic in that implementation, you should depend on the `base-manager` package. If you are only interested in the TypeScript type for a widget manager, e.g. for use in the arguments of a deserializer function, you should use the `IWidgetManager` interface type.
+
+Typescript trick:
+If you need to support a deserializer function against both ipywidgets 7 and older and the new version 8, you can change your deserializer function to have the following signature:
+
+```diff
+- import { ManagerBase } from '@jupyter-widgets/base';
++ import { unpack_models } from '@jupyter-widgets/base';
+
+export async function myDeserializer(
+  obj: MyObjectType,
+-  manager?: ManagerBase
++  manager?: Parameters<typeof unpack_models>[1]
+): Promise<JSONValue> {
 ```
 
 #### Backbone extend
@@ -136,6 +159,7 @@ If you were extending the base widget model with `var CustomWidgetModel = Widget
 +     ...
 + }
 ```
+
 
 Migrating from 6.0 to 7.0
 -------------------------
