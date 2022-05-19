@@ -17,10 +17,4 @@ module.exports = {
       { test: /\.svg$/i, type: 'asset' },
     ],
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      // Needed for Blueprint. See https://github.com/palantir/blueprint/issues/4393
-      'process.env': '{}',
-    }),
-  ],
 };
