@@ -4,7 +4,7 @@
 [interactive HTML widgets](https://github.com/jupyter-widgets/ipywidgets/blob/master/docs/source/examples/Index.ipynb)
 for Jupyter notebooks and the IPython kernel.
 
-This folder contains the implementation of the core interactive widgets bundled in ipywidgets.
+This package contains the python implementation of the core interactive widgets bundled in ipywidgets.
 
 ## Core Interactive Widgets
 
