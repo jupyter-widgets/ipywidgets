@@ -49,21 +49,11 @@ jobs:
         sudo apt-get install -y firefox
         python -m pip install --upgrade pip
         python -m pip install jupyterlab~=3.0
-
-    - name: Use Node.js 12.x
-      uses: actions/setup-node@v1
+    - name: Install node
+      uses: actions/setup-node@v3
       with:
-        node-version: 12.x
-    - name: Get yarn cache
-      id: yarn-cache
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-    - uses: actions/cache@v1
-      with:
-        path: ${{ steps.yarn-cache.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
-
+        node-version: '14'
+        cache: 'yarn'
     - name: yarn install, build, test
       run: |
         yarn install --frozen-lockfile
@@ -166,21 +156,14 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install -U jupyterlab~=3.2 jupyter-packaging~=0.10
 
-    - name: Set up Node
-      uses: actions/setup-node@v2
+    - name: Install node
+      uses: actions/setup-node@v3
       with:
-        node-version: '16.x'
-
-    - name: Get yarn cache
-      id: yarn-cache
-      run: echo "::set-output name=dir::$(yarn cache dir)"
-
-    - uses: actions/cache@v1
-      with:
-        path: ${{ steps.yarn-cache.outputs.dir }}
-        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-yarn-
+        node-version: '14'
+        cache: 'yarn'
+        cache-dependency-path: |
+          yarn.lock
+          ui-tests/yarn.lock
 
     - name: Build and Install ipywidgets
       run: |
