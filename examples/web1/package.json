@@ -23,7 +23,6 @@
   "devDependencies": {
     "chai": "^4.0.0",
     "css-loader": "^6.5.1",
-    "file-loader": "^6.2.0",
     "karma": "^6.3.3",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^3.1.0",
