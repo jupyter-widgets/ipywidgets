@@ -4,8 +4,7 @@ module.exports = {
   entry: './test/build/index.js',
   output: {
     path: __dirname + '/build',
-    filename: 'coverage.js',
-    publicPath: './build/',
+    filename: 'coverage.js'
   },
   bail: true,
   module: {
