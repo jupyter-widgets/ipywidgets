@@ -12,40 +12,7 @@ module.exports = {
   },
   module: {
     rules: [
-      {
-        test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          {
-            loader: 'postcss-loader',
-            options: {
-              postcssOptions: {
-                plugins: [
-                  {
-                    postcssPlugin: 'delete-tilde',
-                    AtRule: {
-                      import: (atRule) => {
-                        atRule.params = atRule.params.replace('~', '');
-                      },
-                    },
-                  },
-                  {
-                    postcssPlugin: 'prepend',
-                    Once(css) {
-                      css.prepend(
-                        "@import '@jupyter-widgets/controls/css/labvariables.css';"
-                      );
-                    },
-                  },
-                  require('postcss-import')(),
-                  require('postcss-cssnext')(),
-                ],
-              },
-            },
-          },
-        ],
-      },
+      { test: /\.css$/i, use: ['style-loader', 'css-loader'] },
       // required to load font-awesome
       { test: /\.(woff|woff2|eot|ttf|otf)$/i, type: 'asset/resource' },
       { test: /\.svg$/i, type: 'asset' },
