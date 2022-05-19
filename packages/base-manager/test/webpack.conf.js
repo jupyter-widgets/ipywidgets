@@ -10,12 +10,13 @@ module.exports = {
   module: {
     rules: [
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
-      { test: /\.md$/, use: 'raw-loader' },
+      { test: /\.md$/, type: 'asset/source' },
       {
         test: /\.html$/,
-        use: { loader: 'file-loader', options: { name: '[name].[ext]' } },
+        type: 'asset/resource',
+        generator: { filename: '[name].[ext]' },
       },
-      { test: /\.ipynb$/, use: 'json-loader' },
+      { test: /\.ipynb$/, type: 'json' },
     ],
   },
   mode: 'development',
