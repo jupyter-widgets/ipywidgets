@@ -22,20 +22,22 @@ module.exports = {
             options: {
               postcssOptions: {
                 plugins: [
-                  postcss.plugin('delete-tilde', function () {
-                    return function (css) {
-                      css.walkAtRules('import', function (rule) {
-                        rule.params = rule.params.replace('~', '');
-                      });
-                    };
-                  }),
-                  postcss.plugin('prepend', function () {
-                    return function (css) {
+                  {
+                    postcssPlugin: 'delete-tilde',
+                    AtRule: {
+                      import: (atRule) => {
+                        atRule.params = atRule.params.replace('~', '');
+                      },
+                    },
+                  },
+                  {
+                    postcssPlugin: 'prepend',
+                    Once(css) {
                       css.prepend(
                         "@import '@jupyter-widgets/controls/css/labvariables.css';"
                       );
-                    };
-                  }),
+                    },
+                  },
                   require('postcss-import')(),
                   require('postcss-cssnext')(),
                 ],
