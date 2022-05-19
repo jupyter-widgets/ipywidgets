@@ -56,7 +56,6 @@ var rules = [
   },
 ];
 
-
 var plugins = [
   new webpack.DefinePlugin({
     // Needed for Blueprint. See https://github.com/palantir/blueprint/issues/4393
