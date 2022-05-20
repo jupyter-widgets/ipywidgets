@@ -56,7 +56,6 @@
     "chai": "^4.0.0",
     "css-loader": "^6.5.1",
     "expect.js": "^0.3.1",
-    "file-loader": "^6.2.0",
     "istanbul-instrumenter-loader": "^3.0.1",
     "karma": "^6.3.3",
     "karma-chrome-launcher": "^3.1.0",
@@ -79,7 +78,6 @@
     "sinon-chai": "^3.3.0",
     "style-loader": "^3.3.1",
     "typescript": "~4.3.2",
-    "url-loader": "^4.1.1",
     "webpack": "^5.65.0"
   }
 }
