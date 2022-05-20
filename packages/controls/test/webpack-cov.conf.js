@@ -5,7 +5,6 @@ module.exports = {
   output: {
     path: __dirname + '/build',
     filename: 'coverage.js',
-    publicPath: './build/',
   },
   bail: true,
   module: {

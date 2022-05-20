@@ -56,11 +56,6 @@ var rules = [
   },
 ];
 
-var publicPath =
-  'https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@' +
-  version +
-  '/dist/';
-
 var plugins = [
   new webpack.DefinePlugin({
     // Needed for Blueprint. See https://github.com/palantir/blueprint/issues/4393
@@ -75,7 +70,6 @@ module.exports = [
     output: {
       filename: 'embed.js',
       path: path.resolve(__dirname, 'dist'),
-      publicPath: publicPath,
     },
     devtool: 'source-map',
     module: { rules: rules },
@@ -88,7 +82,6 @@ module.exports = [
     output: {
       filename: 'embed-amd-render.js',
       path: path.resolve(__dirname, 'dist', 'amd'),
-      publicPath: publicPath,
     },
     module: { rules: rules },
     mode: 'production',
@@ -101,7 +94,6 @@ module.exports = [
       library: '@jupyter-widgets/html-manager/dist/libembed-amd',
       filename: 'libembed-amd.js',
       path: path.resolve(__dirname, 'dist', 'amd'),
-      publicPath: publicPath,
       libraryTarget: 'amd',
     },
     module: { rules: rules },
@@ -115,7 +107,6 @@ module.exports = [
       library: '@jupyter-widgets/html-manager',
       filename: 'index.js',
       path: path.resolve(__dirname, 'dist', 'amd'),
-      publicPath: publicPath,
       libraryTarget: 'amd',
     },
     module: { rules: rules },
@@ -130,7 +121,6 @@ module.exports = [
       library: '@jupyter-widgets/base',
       filename: 'base.js',
       path: path.resolve(__dirname, 'dist', 'amd'),
-      publicPath: publicPath,
       libraryTarget: 'amd',
     },
     module: { rules: rules },
@@ -144,7 +134,6 @@ module.exports = [
       library: '@jupyter-widgets/controls',
       filename: 'controls.js',
       path: path.resolve(__dirname, 'dist', 'amd'),
-      publicPath: publicPath,
       libraryTarget: 'amd',
     },
     module: { rules: rules },
